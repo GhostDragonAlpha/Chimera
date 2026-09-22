@@ -1,0 +1,64 @@
+{
+ "schema": "chimera.rule0.preregistration.v1",
+ "lane": "vanhoof_intake_20260920",
+ "branch": "lane/vanhoof-intake-20260920",
+ "base": "master @ e3ae3dff (INTEGRATION PASS 4 receipt)",
+ "agent": "GLM 5.3 (Agent: vanhoof)",
+ "inherits": {
+  "prestage": "tools/science_funnel/validation/vanhoof_prestage_20260921/ (receipt.json + RUNBOOK.md @ e3ae3dff)",
+  "prestage_battery_verdict": "4 pre-registered bands missed (clean name-recovery 0.9333<0.98, realistic numeric 0.9244<0.96, realistic name 0.5889<0.95, hostile numeric 0.8729<0.88) -- reported red, NOT tuned; clean numeric exact recovery 1.0 with wrong-and-admitted 0, ambiguity plates 6/6 named refusals, corruption battery 7/7, determinism byte-identical, provenance complete, count identity closed",
+  "why_this_lane_exists": "prestage scope_limits: 'no real Vanhoof bytes processed in this lane (downloads pending with the operator); no admission of any real record happens here'. This intake lane is the real day the runbook (RUNBOOK.md) is written for: downloads, calibration, manifest declaration, extraction, admission."
+ },
+ "scope_as_named_by_the_prestage": {
+  "quoted_RUNBOOK_step_1": "Part II (quantitative): https://pmc.ncbi.nlm.nih.gov/articles/PMC7812139/ -- Table S1: JOA-238-321-s001.tif, Table S2: JOA-238-321-s002.tif. Part I (configuration/homology): https://pmc.ncbi.nlm.nih.gov/articles/PMC7495296/. AT DOWNLOAD TIME pin the reuse license from https://doi.org/10.1111/joa.13314 and https://doi.org/10.1111/joa.13222 into the batch receipt (expect an Anatomical Society / Wiley licence; unconfirmed). Same recorded-tension treatment as the infant bones -- recorded, never waived silently.",
+  "quoted_context_target": "Vanhoof 2020/2021 Part II supplementary Tables S1/S2 (J Anat, PMC7812139, JOA-238-321-s001.tif / -s002.tif): 7 adult M. mulatta (Mm1-Mm7), ~40+ forearm/hand muscles/heads, per-muscle mass / volume / MTU / fascicle length / external+internal tendon / derived PCSA (no pennation by the authors' stated omission). Tables exist ONLY as TIFF images; this lane prestages their extraction + admission.",
+  "not_named_therefore_not_done": [
+   "Part II's 8 article figures (boxplots) -- no table data; not downloaded",
+   "Part I's 3 supplementary figure TIFFs (JOA-237-774-s001/002/003.tif) -- configuration drawings; not downloaded",
+   "any gibbon (Hylobatidae) specimen column -- the prestage target is the 7 adult M. mulatta (Mm1-Mm7); if a staged sheet carries gibbon columns they are refused as interval_out_of_manifest / out-of-target and REPORTED, never admitted",
+   "pennation -- the source omits it by the authors' stated omission (prestage context)"
+  ],
+  "part_I_download_note": "the runbook names Part I as a download target for configuration/homology. This lane stages Part I's article PDF and its supplementary Table S1 (JOA-237-774-s004.pdf, the paper's own tabulated configuration/homology data) -- nothing is EXTRACTED from Part I; it supports the RUNBOOK-step-4 homology vocabulary only."
+ },
+ "downloads_predicted": {
+  "count": 5,
+  "files": [
+   "PMC7812139 (Vanhoof Part II) article PDF",
+   "JOA-238-321-s001.tif (Part II Table S1, ~10.3 MB per PMC listing)",
+   "JOA-238-321-s002.tif (Part II Table S2, ~6.2 MB per PMC listing)",
+   "PMC7495296 (Vanhoof Part I) article PDF",
+   "JOA-237-774-s004.pdf (Part I supplementary Table S1)"
+  ],
+  "staging_path": "tools/science_funnel/data/vanhoof_forearm/ (RUNBOOK step 2 path; covered by the .gitattributes byte-stability law 'tools/science_funnel/data/** -text')",
+  "receipt_shape": "download_receipt.json on data/guimaraes_arch/download_receipt.json (files[] path/url/resolved_url/bytes/sha256 + source + license + verification)"
+ },
+ "rule0": {
+  "statement": "The prestage-named Vanhoof artifacts are obtainable from PMC (directly or via its europepmc mirror) with byte-stable sha256-addressable bytes, and the prestage's frozen machinery (extract_table.py grid+NCC + admit_vanhoof.py closure laws) can be driven UNMODIFIED on the real Table S1 to an admitted, provenance-complete, count-identity-closed record set for at least the subset of rows whose every cell extracts EXTRACTED-CONFIDENT -- with every non-confident or law-failing cell landing in a named rejection, zero silent drops.",
+  "prediction": [
+   "P-DOWN: exactly the 5 files above land with fixed sha256s; PMC direct URLs may 403 a CLI (the runbook says 'PMC serves browsers, CLI is blocked') in which case the europepmc supplementaryFiles/REST mirror supplies the SAME bytes (inner members sha-stable, the guimaraes precedent); the receipt records which route produced which sha",
+   "P-IDENT: S1 and S2 are the quantitative muscle-architecture tables of the 7 adult M. mulatta (specimen columns labeled Mm1..Mm7); the open question this lane MEASURES at calibration and answers in the receipt: whether S1 = macaque table & S2 = gibbon table, or S1/S2 split the parameter sets (mass/volume vs FL/MTU/tendon/PCSA) -- the answer changes nothing about the target (macaque rows only); no substitution is made in either case",
+   "P-LAYOUT: the real S1 (or whichever sheet carries the macaque per-specimen fields) shows n_rows between 20 and 60 (context says ~40+ muscles/heads + header) and per-specimen column groups covering the canonical fields mass_g / volume_cm3 / fl_mm / mtu_mm / tendon_ext_mm / tendon_int_mm / pcsa_mm2 -- exact header strings are MEASURED at calibration and declared in the manifest; any header outside the canonical field set refuses (unknown_or_duplicate_header), never guessed",
+   "P-CAL: the read-only calibration pass on the real S1 lands inside or near the frozen bands: median glyph conf_min >= 0.78 (the frozen confident floor) and n_cols >= 8 (>= 1 name + >= 7 numeric); the real TIFFs are born-digital vector renders (prestage route.declared_circularity), cleaner than the realistic tier",
+   "P-ADM: the admitted record set closes count identity (fetched == admitted + rejected weighted, zero silent drops); every admitted record carries tiff_sha256, sheet, row, col, cell_bbox, conf_min, conf_mean, route (the prestage's required provenance fields)",
+   "P-DET: three independent extraction+admission passes over the identical staged TIFF bytes produce byte-identical canonical JSON (the brief's 3-run standard, stricter than the prestage's 2)",
+   "P-MTU: the MTU-additivity deviation on real confident rows is measured BEFORE any quarantine decision; predicted: |MTU-(FL+te+ti)|/MTU is continuous (a smooth spread driven by printed-decimal rounding, median < 2%) and therefore DEMOTED to a recorded condition -- quarantine only if the deviation is BIMODAL (a population above the 2% band separated by a visible gap), per the runbook's 'never at a tuned cut' discipline"
+  ],
+  "falsifier": [
+   "F1 SCOPE-DRIFT: any value extracted that the prestage did not name (gibbon specimens, Part I content, article figures, pennation), or any silent substitution (a different study, a normalized value admitted as raw, gibbon rows admitted as macaque) -- fired on detection; the offending file is not committed",
+   "F2 BYTE-STABILITY: any committed file whose checkout bytes differ from the recorded sha256 (CRLF munging, re-encoded TIFF, editor drift) -- fired; the .gitattributes 'tools/science_funnel/data/** -text' and 'tools/science_funnel/validation/** -text' lines must hold; verified by blob re-hash after commit",
+   "F3 PROVENANCE: any admitted record missing tiff_sha256 / sheet / row / col / cell_bbox / conf_min / conf_mean / route -- the adapter dies (prestage F5) and nothing downstream consumes the batch",
+   "F4 DETERMINISM: extraction/admission JSON byte-differs across the three identical-bytes passes -- the determinism claim dies (prestage F4)",
+   "F5 LANE SCOPE: source changes outside tools/science_funnel/validation/vanhoof_intake_20260920/ + tools/science_funnel/data/vanhoof_forearm/ -- fired; the prestage's committed files are frozen receipts and are not edited by this lane (the runbook's 'write the new prereg into receipt.json' is honored by THIS receipt, which points at the prestage instead of rewriting a committed record)",
+   "F-REGISTER (runbook step 0's named falsifier): a numeric column whose decimal register breaks on > 20% of its cells (column mode coverage < 0.80) suspends the register law for that column and the SHEET IS REFUSED WHOLESALE -- reported, no per-cell retuning",
+   "F-CAL (runbook step 3's STOP gate): if the calibration pass's median true-class confidences land far below the frozen bands (median glyph conf_min < 0.65, the LOW floor), the domain gap is the finding: STOP extraction, report the measured distributions, no band retuning (a new pre-registration would be required first)",
+   "F-MANIFEST: if the measured real layout cannot close a macaque manifest (a canonical field absent, unparseable headers, transposed axes), that part of the intake STOPS and is NAMED -- no manifest is loosened to force closure"
+  ],
+  "honest_classes": [
+   "EXTRACTED-CONFIDENT (frozen bands met) + laws pass -> admitted record (batch.property.measurement v1, SI units, full cell provenance)",
+   "EXTRACTED-LOW-CONFIDENCE -> rejection row, read + confidences preserved for hand review, NEVER admitted, never auto-promoted",
+   "REFUSED -> named code (glyph_merge, decimal_ambiguous, ambiguous_glyph, low_contrast, grid_collision, cell_clipped, low_glyph_confidence, blank_cell, nonnumeric_cell, nonpositive_value, unknown_or_duplicate_header, unknown_muscle, row_law_untestable, *_violation) -- operator door",
+   "count identity: fetched == admitted + rejected(weighted), zero silent drops, per table; if it does not close the batch is broken -- fix the lane, not the arithmetic"
+  ]
+ },
+ "admission_plan": "RUNBOOK steps 3-6 verbatim: calibration read-only on real S1 -> declare column_map + homology vocabulary (39 arm-model names from tools/science_funnel/data/macaque_arm/monkeyArm_current.osim; the memo's recorded synonym ext digiti (minimi) ~ ext_digiti class) -> extract + admit via admit_vanhoof.admit UNMODIFIED -> idempotent replay -> training gate. Force claims stay force_runtime_ready: false. The homology map is a DECLARED table (name correspondence only, no values extracted from Part I)."
+}
