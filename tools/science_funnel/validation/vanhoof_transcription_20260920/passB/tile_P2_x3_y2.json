@@ -1,0 +1,178 @@
+{
+ "tile": "P2_x3_y2",
+ "pass": "B",
+ "strategy": "column-wise animal-major, reverse panel order (Mm7 block read downward, field-major)",
+ "reader": "vtrans",
+ "columns_seen": [
+  "[Mm7 FL sliver]",
+  "Mm7 PCSA (mm2)"
+ ],
+ "cells": [
+  [
+   "EDST",
+   "Extensor",
+   "Mm7",
+   "pcsa_mm2",
+   "25.0",
+   "CLEAR",
+   null,
+   null,
+   null
+  ],
+  [
+   "EDM",
+   "Extensor",
+   "Mm7",
+   "pcsa_mm2",
+   null,
+   "CLEAR",
+   "absent (cfr. EDQQ)",
+   "mass_g,fl_mm,pcsa_mm2",
+   "covered"
+  ],
+  [
+   "EDM",
+   "Extensor",
+   "Mm7",
+   "mass_g",
+   null,
+   "CLEAR",
+   "absent (cfr. EDQQ)",
+   "mass_g,fl_mm,pcsa_mm2",
+   "anchor"
+  ],
+  [
+   "EDM",
+   "Extensor",
+   "Mm7",
+   "fl_mm",
+   null,
+   "CLEAR",
+   "absent (cfr. EDQQ)",
+   "mass_g,fl_mm,pcsa_mm2",
+   "covered"
+  ],
+  [
+   "EDQQ",
+   "Extensor",
+   "Mm7",
+   "pcsa_mm2",
+   "21.6",
+   "CLEAR",
+   null,
+   null,
+   null
+  ],
+  [
+   "ECU",
+   "Extensor",
+   "Mm7",
+   "pcsa_mm2",
+   "88.3",
+   "CLEAR",
+   null,
+   null,
+   null
+  ],
+  [
+   "Anc",
+   "Extensor",
+   "Mm7",
+   "pcsa_mm2",
+   "40.0",
+   "CLEAR",
+   null,
+   null,
+   null
+  ],
+  [
+   "BR",
+   "Rotator",
+   "Mm7",
+   "pcsa_mm2",
+   "58.8",
+   "CLEAR",
+   null,
+   null,
+   null
+  ],
+  [
+   "PT",
+   "Rotator",
+   "Mm7",
+   "pcsa_mm2",
+   "157.9",
+   "CLEAR",
+   null,
+   null,
+   null
+  ],
+  [
+   "SUP",
+   "Rotator",
+   "Mm7",
+   "pcsa_mm2",
+   "147.3",
+   "CLEAR",
+   null,
+   null,
+   null
+  ],
+  [
+   "PQ",
+   "Rotator",
+   "Mm7",
+   "pcsa_mm2",
+   "30.2",
+   "CLEAR",
+   null,
+   null,
+   null
+  ],
+  [
+   "FPL",
+   "Ext. Thumb",
+   "Mm7",
+   "pcsa_mm2",
+   null,
+   "CLEAR",
+   "absent",
+   "mass_g,fl_mm,pcsa_mm2",
+   "covered"
+  ],
+  [
+   "EPL",
+   "Ext. Thumb",
+   "Mm7",
+   "pcsa_mm2",
+   "18.9",
+   "CLEAR",
+   null,
+   null,
+   null
+  ],
+  [
+   "EPB",
+   "Ext. Thumb",
+   "Mm7",
+   "pcsa_mm2",
+   null,
+   "CLEAR",
+   "absent",
+   "mass_g,fl_mm,pcsa_mm2",
+   "covered"
+  ],
+  [
+   "APL",
+   "Ext. Thumb",
+   "Mm7",
+   "pcsa_mm2",
+   "75.1",
+   "CLEAR",
+   null,
+   null,
+   null
+  ]
+ ],
+ "crop_sha256": "92fca891395e6f4555e290e104a65fc6007dfb597509f8683ce7293dc7427237"
+}
