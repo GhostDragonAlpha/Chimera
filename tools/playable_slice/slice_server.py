@@ -32,6 +32,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import scene_boot as sb  # noqa: E402
+import push_channel as pchan  # noqa: E402  (lane/push-channel-20260920; the
+# push transport -- additive: new routes only, every legacy route untouched)
 
 NEVER_PORT = 8127
 DEFAULT_EXE = HERE.parent.parent / ".tmp/slice_build/Release/chimera_engine.exe"
@@ -159,8 +161,8 @@ class World:
             self.proc = None
 
     # ── engine proxies ───────────────────────────────────────────────────
-    def verts(self) -> bytes:
-        raw = sb.http_get_raw(self.url, "/verts")
+    def verts(self, timeout: int = 60) -> bytes:
+        raw = sb.http_get_raw(self.url, "/verts", timeout=timeout)
         with self.lock:
             carry = dict(self.mock_carry)
         if not (carry["active"] or carry["x"] or carry["z"]):
@@ -177,21 +179,25 @@ class World:
         return bytes(buf)
 
     # ── thin-client snapshot composition (the pilot's transport) ─────────
-    def snapshot(self, fmt: str = "FULL36", delta_key: bool = False) -> tuple:
+    def snapshot(self, fmt: str = "FULL36", delta_key: bool = False,
+                 timeout: int = 60) -> tuple:
         """One timestamped snapshot: engine /verts (carry-applied) then engine
         /tick_state, framed under SNAP_HDR. Returns (bytes, fmt, n). The
-        measured verts->state gap rides every header (E1 ambiguity, honest)."""
+        measured verts->state gap rides every header (E1 ambiguity, honest).
+        `timeout` bounds each engine pull (the push broadcaster uses a short
+        bound so a hung engine pull cannot wedge composition; legacy routes
+        keep the default)."""
         import struct as _s
         t0 = time.perf_counter()
         if fmt == "DELTA":
             path = "/verts?delta=key" if delta_key else "/verts?delta=1"
-            vraw = sb.http_get_raw(self.url, path)
+            vraw = sb.http_get_raw(self.url, path, timeout=timeout)
             n = _s.unpack_from("<I", vraw, 4)[0] if len(vraw) >= 8 else 0
         else:
-            vraw = self.verts()
+            vraw = self.verts(timeout=timeout)
             n = int.from_bytes(vraw[:4], "little")
         t1 = time.perf_counter()
-        state = sb.http_get_json(self.url, "/tick_state")
+        state = sb.http_get_json(self.url, "/tick_state", timeout=timeout)
         t2 = time.perf_counter()
         gap_us = int((t2 - t1) * 1e6)
         # verts arrived before state: ts postdates the geometry by gap_us.
@@ -234,8 +240,8 @@ class World:
     def topology(self) -> bytes:
         return sb.http_get_raw(self.url, "/topology")
 
-    def tick_state(self) -> dict:
-        return sb.http_get_json(self.url, "/tick_state")
+    def tick_state(self, timeout: int = 60) -> dict:
+        return sb.http_get_json(self.url, "/tick_state", timeout=timeout)
 
     def press(self, payload: bytes) -> dict:
         # REALITY: the engine's own closed-loop press (the web-kernel form:
@@ -359,6 +365,7 @@ class World:
 
 
 WORLD: World | None = None
+CHANNEL: pchan.Channel | None = None   # THE PUSH CHANNEL (lane/push-channel-20260920)
 CARRIER = threading.Timer
 
 # wire-truth counters (the pilot's bandwidth table cross-check): bytes OUT per
@@ -450,6 +457,20 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(200, body, ctype)
             except OSError as e:
                 self._json({"error": str(e)}, 502)
+        elif p == "/api/channel":
+            # THE PUSH CHANNEL's own wire truth (counters, profiles, drops).
+            self._json(CHANNEL.stats() if CHANNEL else {"error": "no channel"})
+        elif p == "/api/stream":
+            # THE PUSH TRANSPORT (lane/push-channel-20260920): one long-lived
+            # GET, server-paced binary records; see push_channel.py. Blocks
+            # THIS client's handler thread only (ThreadingHTTPServer).
+            q = self.path.split("?", 1)
+            pchan.serve_stream(self, WORLD, CHANNEL, q[1] if len(q) > 1 else "")
+        elif p == "/push":
+            # the push CLIENT page (a separate page; index.html untouched --
+            # the rendertruth lane owns it). Served from the pilot dir.
+            pc = HERE.parent / "thin_client_pilot" / "push_client.html"
+            self._send(200, pc.read_bytes(), "text/html")
         elif p == "/api/stats":
             with STATS_LOCK:
                 out = dict(STATS)
@@ -494,7 +515,7 @@ def main() -> int:
                     help="0 = a bind-tested free port (8127 is refused by code)")
     ap.add_argument("--engine-exe", type=Path, default=DEFAULT_EXE)
     a = ap.parse_args()
-    global WORLD
+    global WORLD, CHANNEL
     engine_exe = a.engine_exe
     if not engine_exe.is_file():
         cand = shutil.which("chimera_engine.exe")
@@ -504,6 +525,7 @@ def main() -> int:
             return 1
         engine_exe = Path(cand)
     WORLD = World(engine_exe)
+    CHANNEL = pchan.Channel(WORLD)
     spec = WORLD.boot()
     print("scene booted: scene %s" % spec["scene_sha256"][:16])
     print("standing start: settling in the background (real physics)")
