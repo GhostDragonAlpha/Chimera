@@ -1,0 +1,20 @@
+{
+ "f_vacuous_cone_fires": false,
+ "lane": "agent/cl-L5-transitive-20260921",
+ "read_readonly": {
+  "collapse_fraction": 0.0,
+  "full": [],
+  "n_laws": 2,
+  "opaque_full": [],
+  "steered": [],
+  "structural_collapse_fraction": 0.0
+ },
+ "shared_carrier": {
+  "collapse_fraction": 0.0,
+  "full": [],
+  "n_laws": 4,
+  "opaque_full": [],
+  "steered": [],
+  "structural_collapse_fraction": 0.0
+ }
+}
