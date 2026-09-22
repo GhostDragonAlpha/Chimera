@@ -1,0 +1,93 @@
+{
+ "falsifier": "F-EVENT-GAP",
+ "prereg": "tools/science_funnel/validation/workflow_telemetry_20260921/PREREGISTER_F_EVENT_GAP.md",
+ "independent_records": {
+  "28": [
+   "git telem-agent:0557fc99",
+   "receipt sha256:5f835c35a8ee2234"
+  ],
+  "28b": [
+   "git telem-agent:0759f4b2",
+   "janitor 2026-09-21T07:20:20:would-delete:w28b-agent",
+   "janitor 2026-09-21T09:13:38:deleted:w28b-agent",
+   "janitor 2026-09-21T11:01:22:deleted:w28b-agent"
+  ],
+  "29": [
+   "git telem-agent:ab60a20b",
+   "receipt sha256:4582cd01a1664101"
+  ],
+  "30": [
+   "git telem-agent:5ff710f2",
+   "receipt sha256:6d8ec25916319f0f"
+  ],
+  "31": [
+   "git telem-agent:5b5c1b13",
+   "git telem-agent:cc825fbc",
+   "receipt sha256:313e08855150982e"
+  ],
+  "32": [
+   "git telem-agent:77b36f45",
+   "git telem-agent:a7969d63",
+   "receipt sha256:a1d6497260802e1c"
+  ],
+  "33": [
+   "git w38-agent:1f775503",
+   "git w38-agent:26c8e55d",
+   "git w38-agent:5ff6b988",
+   "git w38-agent:8f28dd64",
+   "git w38-agent:f5d2656f",
+   "receipt sha256:3372bf01fbb982dc"
+  ],
+  "34": [
+   "git w38-agent:0ee71811",
+   "git w38-agent:c73c26c8",
+   "git w38-agent:cc862f07",
+   "git w38-agent:d15b0eea",
+   "janitor 2026-09-21T09:13:40:spared:w34-agent",
+   "janitor 2026-09-21T11:04:30:deleted:w34-agent",
+   "receipt sha256:275e9a21247e399e"
+  ],
+  "35": [
+   "git w38-agent:2953e2dd",
+   "git w38-agent:9d27dc4a",
+   "git w38-agent:e3b1cc83",
+   "janitor 2026-09-21T11:04:32:spared:w35-agent",
+   "receipt sha256:480e56e24860658b"
+  ],
+  "36": [
+   "git w38-agent:38b9c2b1",
+   "git w38-agent:60d6b4b3",
+   "git w38-agent:88f7ecb2",
+   "janitor 2026-09-21T11:04:35:spared:w36-agent",
+   "receipt sha256:bc9f1116ecab7f8c"
+  ],
+  "37": [
+   "git w38-agent:371f80d6",
+   "git w38-agent:dbd69281",
+   "receipt sha256:0c5ed68a251f59ea"
+  ],
+  "38": [
+   "git w38-agent:30821ef7",
+   "git w38-agent:44d9bd8d",
+   "git w38-agent:85bd2b1e",
+   "receipt sha256:eddb8646a9d30658"
+  ]
+ },
+ "ledger_attempts": [
+  "wave-28",
+  "wave-28b",
+  "wave-29",
+  "wave-30",
+  "wave-31",
+  "wave-32",
+  "wave-33",
+  "wave-34",
+  "wave-35",
+  "wave-36",
+  "wave-37",
+  "wave-38"
+ ],
+ "missing_from_ledger": [],
+ "unanchored_attempts": [],
+ "verdict": "PASS"
+}
