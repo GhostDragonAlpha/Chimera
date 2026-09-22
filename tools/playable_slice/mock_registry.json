@@ -1,6 +1,6 @@
 {
   "schema": "chimera.playable_slice.mock_registry.v1",
-  "lane": "agent/playable-slice-20260921",
+  "lane": "agent/slice-real-body-20260922",
   "law": "Two categories only: REALITY (the engine does it) and FANTASY (mocked, named here, named at the code site with a bracketed mock token carrying this id, and named in the UI while active). DECLARED items are real committed geometry shown as an explicit overlay, not claimed as physics.",
   "physics_target": {
     "ticks": 426,
@@ -10,6 +10,7 @@
   },
   "reality": [
     {"id": "render_stream", "what": "WebGL2 indexed TRIANGLES from the engine's /verts + /topology stream (pos3+normal3+color3 per vert)", "engine": "/verts, /topology"},
+    {"id": "physics_body", "what": "THE REAL SKELETON AS THE TICK BODY: the committed CT skeleton (meshes_body_20260922: the committed previews, repaired to the aliveness importer's own closure rule and decimated under its kMaxTris by the cap-derived ratio r = kMaxTris/N_repaired; 499,976 tris, 25 bones, every mesh closed), posed by the standing compose and imported as committed bytes (standing_body.obj, sha-pinned)", "engine": "/mesh_import"},
     {"id": "gravity", "what": "the root law y'' = F_contact/m - g, armed at boot", "engine": "/tick_gravity, MembraneTick::step"},
     {"id": "floor_contact", "what": "penalty-ground contact at the body's lowest vertex (k=1.3562e7 N/m, c=6.062e5 N s/m, m=13824.5 kg)", "engine": "MembraneTick gravity pass"},
     {"id": "press", "what": "the player's click press, engine-picked at the player's own camera, force in newtons", "engine": "/tick_touch"},
@@ -24,22 +25,21 @@
       "ui": "a MOCK CARRY banner while active; the HUD lists it permanently",
       "pending_real": "real locomotion (the gait machine)",
       "physics_target": "426"
-    },
-    {
-      "id": "mock_physics_body",
-      "what": "the tick body is a stand-in capsule DERIVED from the committed standing skeleton's bbox (radius=min(bbox_x,bbox_z)/2, height=bbox_y)",
-      "code_site": "tools/playable_slice/scene_boot.py MOCK[mock_physics_body] (build_stand_in_body)",
-      "ui": "the HUD lists it permanently",
-      "pending_real": "an import-grade creature body: the committed preview set is 712,522 tris vs the aliveness importer's 500,000 engine cap, and 19/25 committed previews carry render-grade seams the closure check refuses (both measured, receipt)",
-      "physics_target": "426"
     }
   ],
   "declared": [
     {
       "id": "ghost_standing_pose",
-      "what": "the committed standing skeleton (the pose of record, full preview resolution) drawn as a TRANSLUCENT overlay riding the tick body's real root; it never animates by itself",
+      "what": "the committed standing skeleton (the pose of record, full preview resolution) drawn as a TRANSLUCENT overlay riding the real skeleton body's root; it never animates by itself. RESOLVES TO the real rendered skeleton: the tick body IS the same pose of record -- the body is the ghost's import-grade twin (repaired + decimated under kMaxTris, meshes_body_20260922), so what the player presses and what the overlay draws are one creature",
       "code_site": "tools/playable_slice/scene_boot.py DECLARED[ghost_standing_pose] (build_ghost_obj)",
       "ui": "labeled 'ghost -- the committed standing pose (overlay)' in the HUD"
+    }
+  ],
+  "retired": [
+    {
+      "id": "mock_physics_body",
+      "retired_in": "agent/slice-real-body-20260922",
+      "what": "the bbox stand-in capsule that used to be the tick body; replaced by the REAL committed skeleton (reality: physics_body). Grep-auditable: zero code sites remain (receipt check_mock_truth.py, mock_truth.json)"
     }
   ]
 }

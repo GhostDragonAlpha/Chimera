@@ -3,26 +3,28 @@
 TWO committed-byte artifacts, both deterministic:
 
 1. THE TICK BODY (the physics actor): the engine's movement law (gravity +
-   floor contact, membrane_tick.cpp) runs on a body admitted by the REAL
-   aliveness ingestion (/mesh_import). The importer's own engine law refuses
-   past 500,000 triangles BY NAME, and the committed preview skeleton measures
-   712,522 triangles -- AND 19 of 25 committed previews carry render-grade
-   seams (boundary/inconsistent-winding edges) that the closure check refuses.
-   BOTH facts were measured this lane (receipt). So the tick body is a STAND-IN
-   capsule DERIVED from the committed standing skeleton's own bbox (one rule,
-   no free numbers), named MOCK[mock_physics_body] in mock_registry.json.
-   Every physics number the slice shows comes from THIS body through the
-   engine's REAL tick.
+   floor contact, membrane_tick.cpp) runs on THE REAL SKELETON -- the
+   committed CT skeleton (meshes_body_20260922: the committed previews,
+   repaired to the aliveness importer's own closure rule and decimated under
+   its 500,000-triangle cap by the cap-derived ratio r = kMaxTris/N_repaired,
+   receipt slice_real_body_20260922), posed by the SAME standing compose the
+   ghost runs, and committed beside this slice as standing_body.obj with its
+   sha pinned in body_manifest.json. The named stand-in debt
+   (mock_physics_body, the bbox capsule) is RETIRED: the payload rides the
+   REAL aliveness ingestion (/mesh_import) and the engine's REAL tick.
 
-2. THE GHOST (the visual creature): the committed standing skeleton -- the pose
-   of record (standing_pose_20260921/pose.json) through the SAME FK the battery
-   verified, full committed preview resolution -- served to the page as a
-   DECLARED OVERLAY that rides the tick body's real root and the named carry
-   mock. The ghost is labeled in the UI; it never animates by itself.
+2. THE GHOST (the visual creature): the committed standing skeleton -- the
+   pose of record (standing_pose_20260921/pose.json) through the SAME FK the
+   battery verified, full committed preview resolution -- served to the page
+   as a DECLARED OVERLAY that rides the real body's root and the named carry
+   mock. The ghost is labeled in the UI; it never animates by itself. Its
+   declaration RESOLVES TO the tick body: body and ghost are the same pose of
+   record -- the body is its import-grade twin (repaired + decimated), not a
+   stand-in.
 
 REALITY: import, gravity, contact, the release transient, the root stream.
-FANTASY: the carry slide (MOCK[mock_carry], server-side), the stand-in body
-(MOCK[mock_physics_body]), the ghost overlay (DECLARED[ghost_standing_pose]).
+FANTASY: the carry slide (MOCK[mock_carry], server-side). DECLARED: the ghost
+overlay (DECLARED[ghost_standing_pose]).
 """
 from __future__ import annotations
 
@@ -54,10 +56,16 @@ SEAT_HEIGHT_M = -0.08977588222411312
 
 # THE ALIVENESS IMPORTER'S OWN LAW (ChimeraEngine/engine/importer.hpp): past
 # kMaxTris = 500,000 triangles a body is refused BY NAME. The committed
-# preview set is 712,522 tris (25 bones x ~30k), and 19/25 previews carry
-# render-grade seams the closure check refuses -- both MEASURED this lane
-# (receipt). Hence the stand-in tick body; hence the ghost.
+# preview set measured 712,522 tris with 19/25 previews failing the
+# importer's closure rule -- both MEASURED (receipt slice_real_body_20260922);
+# the real-body lane repaired and decimated the skeleton UNDER this cap and
+# the slice commits the result as its tick body.
 IMPORT_TRI_CAP = 500000
+
+# THE REAL BODY: committed import payload (posed, merged) + its pin manifest.
+BODY_OBJ = HERE / "standing_body.obj"
+BODY_MANIFEST = (ROOT / "tools/science_funnel/data/morphosource_ct/"
+                 "meshes_body_20260922/body_manifest.json")
 
 
 def sha256(raw: bytes) -> str:
@@ -82,82 +90,45 @@ def edge_audit(tris: np.ndarray, n_verts: int) -> dict:
             "closed": bad == 0 and winding_bad == 0}
 
 
-# ── 1. THE STAND-IN TICK BODY (derived from the committed skeleton bbox) ─────
+# ── 1. THE REAL TICK BODY (the repaired + decimated committed skeleton) ──────
 
-def build_stand_in_body(segments: int = 24, rings: int = 12) -> tuple[bytes, dict]:
-    """A closed capsule sized by ONE rule from the committed standing
-    skeleton's bbox: radius = min(bbox_x, bbox_z)/2, height = bbox_y.
-    Deterministic; edge-audited under the importer's own rule."""
-    ghost_v, ghost_t, _ = build_standing_layer_cached()
-    lo, hi = ghost_v.min(axis=0), ghost_v.max(axis=0)
-    bbox = (hi - lo)
-    radius = float(min(bbox[0], bbox[2]) / 2.0)
-    height = float(bbox[1])
-
-    verts: list[list[float]] = []
-    half = rings // 2
-    # profile: top-hemisphere rings from the equator UP (excluding the pole),
-    # the equator appears once; bottom hemisphere mirrors it
-    for i in range(half + 1):                  # i=0: equator .. i=half: below top pole
-        theta = (math.pi / 2) * i / half
-        r = radius * math.cos(theta)
-        y = height / 2 + radius * math.sin(theta)
-        for j in range(segments):
-            phi = 2 * math.pi * j / segments
-            verts.append([r * math.sin(phi), y, r * math.cos(phi)])
-    for i in range(1, half + 1):               # below the equator, excluding pole
-        theta = (math.pi / 2) * i / half
-        r = radius * math.cos(theta)
-        y = -height / 2 - radius * math.sin(theta)
-        for j in range(segments):
-            phi = 2 * math.pi * j / segments
-            verts.append([r * math.sin(phi), y, r * math.cos(phi)])
-    V = np.array(verts, dtype=np.float64)
-    bands = len(V) // segments                 # = rings + 1
-    tris: list[tuple[int, int, int]] = []
-    for band in range(bands - 1):
-        for j in range(segments):
-            j2 = (j + 1) % segments
-            a = band * segments + j
-            b = band * segments + j2
-            c = (band + 1) * segments + j
-            d = (band + 1) * segments + j2
-            tris.append((a, b, d))
-            tris.append((a, d, c))
-    # pole caps: one apex vertex each, fan to the first/last ring
-    top = len(V); V = np.vstack([V, [[0.0, height / 2 + radius, 0.0]]])
-    bot = len(V); V = np.vstack([V, [[0.0, -height / 2 - radius, 0.0]]])
-    last_band = (bands - 1) * segments
-    for j in range(segments):
-        j2 = (j + 1) % segments
-        tris.append((top, j2, j))                          # outward top fan
-        tris.append((bot, last_band + j, last_band + j2))  # outward bottom fan
-    T = np.array(tris, dtype=np.int64)
-    audit = edge_audit(T, len(V))
-    if not audit["closed"]:
-        raise RuntimeError(f"scene_boot: stand-in body not closed: {audit}")
-
-    out = io.BytesIO()
-    out.write(b"# chimera.playable_slice MOCK[mock_physics_body] stand-in tick body\n")
-    out.write(b"# derived: radius=min(bbox_x,bbox_z)/2, height=bbox_y of the committed standing skeleton\n")
-    for p in V:
-        out.write(("v %.6f %.6f %.6f\n" % (p[0], p[1], p[2])).encode("ascii"))
-    for t in T:
-        out.write(("f %d %d %d\n" % (t[0] + 1, t[1] + 1, t[2] + 1)).encode("ascii"))
-    rec = {"schema": "chimera.playable_slice.stand_in_body.v1",
-           "mock_id": "mock_physics_body",
-           "derived_from": "the committed standing skeleton's bbox",
-           "radius_m": radius, "height_m": height,
-           "vertices": int(len(V)), "triangles": int(len(T)), **audit}
-    return out.getvalue(), rec
+def build_real_body() -> tuple[bytes, dict]:
+    """THE REAL BODY: the committed CT skeleton, repaired to the aliveness
+    importer's own closure rule and decimated under its kMaxTris by the
+    cap-derived ratio (lane slice_real_body_20260922), posed by the SAME
+    standing compose the ghost runs, and committed beside this slice as
+    standing_body.obj -- its sha pinned in body_manifest.json. The named
+    stand-in (mock_physics_body, the bbox capsule) is RETIRED."""
+    man = json.loads(BODY_MANIFEST.read_text(encoding="utf-8"))
+    pin = man["import_payload"]
+    obj = BODY_OBJ.read_bytes()
+    if sha256(obj) != pin["sha256"]:
+        raise RuntimeError("scene_boot: standing_body.obj drift vs the "
+                           "body_manifest.json pin")
+    if pin["triangles"] > IMPORT_TRI_CAP:
+        raise RuntimeError(f"scene_boot: real body past the importer's cap: "
+                           f"{pin['triangles']} > {IMPORT_TRI_CAP}")
+    rec = {"schema": "chimera.playable_slice.real_body.v1",
+           "body_id": "physics_body",
+           "derived_from": pin["compose"]["mesh_dir"],
+           "bones": pin["compose"]["bones"],
+           "vertices": pin["vertices"], "triangles": pin["triangles"],
+           "sha256": pin["sha256"],
+           "under_cap": True}
+    return obj, rec
 
 
 # ── 2. THE GHOST: the committed standing skeleton, full preview resolution ──
 
-def build_standing_layer() -> tuple[np.ndarray, np.ndarray, dict]:
+def build_standing_layer(preview_dir: Path | None = None,
+                         obj_suffix: str = "_lo"
+                         ) -> tuple[np.ndarray, np.ndarray, dict]:
     """The pose of record through the verified FK, as ONE merged indexed mesh
     (scene metres, pads' mean plane at y=0) -- the standing lane's own compose,
-    byte-deterministic from committed files."""
+    byte-deterministic from committed files. `preview_dir`/`obj_suffix` select
+    the per-bone mesh set (default: the full-resolution committed previews);
+    the real-body lane composes its repaired/decimated bones through THIS SAME
+    function, so the tick body's payload and the ghost share one compose."""
     pose = json.loads(POSE_JSON.read_text(encoding="utf-8"))
     x_rec = np.array(pose["variables"]["x_R12"], dtype=np.float64)
     dv = StandingDerivation()
@@ -168,14 +139,15 @@ def build_standing_layer() -> tuple[np.ndarray, np.ndarray, dict]:
     composite = CSL.load_obj_vertices(CSL.PREVIEW_DIR / CSL.COMPOSITE_PREVIEW)
     scale, R_reg, t_reg, reg_diag = CSL.ct_registration(composite, hat, SEAT_HEIGHT_M)
 
+    src_dir = CSL.PREVIEW_DIR if preview_dir is None else Path(preview_dir)
     T = dv.fk(x_rec)
     chunks_v, chunks_t = [], []
     off = 0
     man = json.loads((CSL.CT_DIR / "meshes" / "manifest.json").read_text())
     for entry in man["bones"]:
         name = Path(entry["file"]).name
-        preview = name.replace(".obj", "_lo.obj")
-        verts_mm, tris = CST.load_obj_mesh(CSL.PREVIEW_DIR / preview)
+        preview = name.replace(".obj", obj_suffix + ".obj")
+        verts_mm, tris = CST.load_obj_mesh(src_dir / preview)
         bone = int(name.split("_")[1])
         posed_ct = T[bone].pts(verts_mm)
         scene = CSL.apply_registration(posed_ct, scale, R_reg, t_reg)
@@ -211,9 +183,12 @@ def build_standing_layer() -> tuple[np.ndarray, np.ndarray, dict]:
 
     rec = {"pose_json_sha256": sha256(POSE_JSON.read_bytes()),
            "registration_pin_sha256": CSL.WALKER_DERIVED_SHA256,
+           "mesh_dir": (src_dir.relative_to(ROOT).as_posix()
+                        if src_dir != CSL.PREVIEW_DIR
+                        else "meshes_preview (full committed preview resolution)"),
            "bones": len(man["bones"]),
            "vertices": int(verts.shape[0]), "triangles": int(tris.shape[0]),
-           "declared_id": "ghost_standing_pose",
+           "declared_id": "ghost_standing_pose" if obj_suffix == "_lo" else None,
            "units": "scene metres, +Y up, pads' mean plane at y=0"}
     return verts, tris, rec
 
@@ -294,9 +269,10 @@ def wait_engine(url: str, timeout: float = 60.0) -> None:
 
 
 def boot_standing_start(engine_url: str) -> dict:
-    """Import the stand-in tick body and arm the movement law. DETERMINISTIC:
-    same import bytes every call (the basis of F-SLICE-RESTART)."""
-    obj, rec = build_stand_in_body()
+    """Import THE REAL BODY (the committed repaired + decimated skeleton) and
+    arm the movement law. DETERMINISTIC: committed bytes, same import bytes
+    every call (the basis of F-SLICE-RESTART)."""
+    obj, rec = build_real_body()
     res = http_post(engine_url, "/mesh_import", b"O" + obj)
     if not res.get("ok"):
         raise RuntimeError("scene_boot: import refused: " + str(res.get("error")))

@@ -36,7 +36,7 @@ import scene_boot as sb  # noqa: E402
 NEVER_PORT = 8127
 DEFAULT_EXE = HERE.parent.parent / ".tmp/slice_build/Release/chimera_engine.exe"
 MARKER_AZIMUTH_RAD = 0.6          # level constant (stated, not tuned)
-MARKER_DIST_M = 1.2               # ~2 body lengths (the stand-in body is 0.53 m long)
+MARKER_DIST_M = 1.2               # ~2 body lengths (the standing skeleton measures 0.605 m nose-to-tail)
 CARRY_SPEED_MPS = 0.4
 ARRIVE_RADIUS_M = 0.15
 SETTLE_VY = 0.05                  # the engine's own "settled means settled" bar
@@ -75,8 +75,8 @@ class World:
             sb.wait_engine(self.url)
             if self.ghost_obj is None:
                 self.ghost_obj, self.ghost_rec = sb.build_ghost_obj()
-            body_obj, self.body_rec = sb.build_stand_in_body()
-            rec = sb.boot_standing_start(self.url)
+            rec = sb.boot_standing_start(self.url)   # imports THE REAL BODY
+            self.body_rec = rec
             marker_x = MARKER_DIST_M * math.sin(MARKER_AZIMUTH_RAD)
             marker_z = MARKER_DIST_M * math.cos(MARKER_AZIMUTH_RAD)
             self.scene_spec = {
@@ -143,15 +143,15 @@ class World:
         if not (carry["active"] or carry["x"] or carry["z"]):
             return raw
         # MOCK[mock_carry]: the named XY slide. The Y stream is untouched --
-        # the engine's real root is never edited here.
-        import struct as _s
+        # the engine's real root is never edited here. Vectorized: the real
+        # body streams ~250k verts per poll and a per-vertex struct loop
+        # cannot hold the 10 Hz poll cadence.
+        import numpy as _np
         n = int.from_bytes(raw[:4], "little")
-        buf = bytearray(raw)
-        for i in range(n):
-            off = 4 + i * 36
-            x, y, z = _s.unpack_from("<3f", buf, off)
-            _s.pack_into("<3f", buf, off, x + carry["x"], y, z + carry["z"])
-        return bytes(buf)
+        arr = _np.frombuffer(raw[4:4 + n * 36], dtype=_np.float32).copy()
+        arr[0::9] += _np.float32(carry["x"])
+        arr[2::9] += _np.float32(carry["z"])
+        return raw[:4] + arr.tobytes()
 
     def topology(self) -> bytes:
         return sb.http_get_raw(self.url, "/topology")

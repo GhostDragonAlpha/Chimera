@@ -1,0 +1,1584 @@
+{
+ "schema": "chimera.real_body.v1",
+ "lane": "agent/slice-real-body-20260922",
+ "date": "2026-09-22",
+ "base_commit": "2909bb4e (the slice) + prereg 4aba5bfe",
+ "kMaxTris": 500000,
+ "kMaxVerts": 1500000,
+ "source_previews": [
+  "bone_01_4737869vox_lo.obj",
+  "bone_02_210240vox_lo.obj",
+  "bone_03_208514vox_lo.obj",
+  "bone_04_180534vox_lo.obj",
+  "bone_05_174742vox_lo.obj",
+  "bone_06_154508vox_lo.obj",
+  "bone_07_150102vox_lo.obj",
+  "bone_08_102171vox_lo.obj",
+  "bone_09_100874vox_lo.obj",
+  "bone_10_92842vox_lo.obj",
+  "bone_11_90563vox_lo.obj",
+  "bone_12_88112vox_lo.obj",
+  "bone_13_86590vox_lo.obj",
+  "bone_14_58499vox_lo.obj",
+  "bone_15_54574vox_lo.obj",
+  "bone_16_54463vox_lo.obj",
+  "bone_17_54226vox_lo.obj",
+  "bone_18_53022vox_lo.obj",
+  "bone_19_44805vox_lo.obj",
+  "bone_20_34255vox_lo.obj",
+  "bone_21_33153vox_lo.obj",
+  "bone_22_31952vox_lo.obj",
+  "bone_23_31588vox_lo.obj",
+  "bone_24_25423vox_lo.obj",
+  "bone_25_25400vox_lo.obj"
+ ],
+ "source_manifest": "tools/science_funnel/data/morphosource_ct/meshes/manifest.json",
+ "n_repaired_faces": 712224,
+ "ratio_r": 0.7020263287954351,
+ "budget_rule": "r = kMaxTris / N_repaired; target_i = floor(r * n_i); sum(floor(r*n_i)) <= kMaxTris by construction; the engine refuses only > kMaxTris",
+ "bones": [
+  {
+   "source_preview": "bone_01_4737869vox_lo.obj",
+   "output": "bone_01_4737869vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14658,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 2,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 163,
+     "winding_violations": 326,
+     "faces": 29998,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 2,
+    "duplicate_faces_dropped": 54,
+    "nonman_extra_faces_removed": 230,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 112,
+    "faces_filled": 294,
+    "centroid_fan_fallbacks": 35,
+    "volume_before_mm3": -18771.560866241398,
+    "volume_after_repair_mm3": 19109.510707147227,
+    "volume_repair_rel_delta": -2.0180032893009763,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 30008,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 30008,
+    "target": 21066,
+    "ratio": 0.7020263287954351,
+    "collapses": 4471,
+    "rejected": 607,
+    "faces": 21066,
+    "verts": 10221,
+    "volume_before_mm3": 19109.510707147227,
+    "volume_after_mm3": 18745.600664022735,
+    "volume_decimation_rel_delta": -0.019043399315733605,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.6826362244590498,
+     "mean_dev_mm": 0.03816385859428029
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21066,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_02_210240vox_lo.obj",
+   "output": "bone_02_210240vox_body.obj",
+   "repair": {
+    "source_faces": 29998,
+    "source_verts": 15000,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 5,
+     "winding_violations": 10,
+     "faces": 29998,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 1,
+    "nonman_extra_faces_removed": 9,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 4,
+    "faces_filled": 12,
+    "centroid_fan_fallbacks": 1,
+    "volume_before_mm3": -860.8001690534775,
+    "volume_after_repair_mm3": 1144.4825056796,
+    "volume_repair_rel_delta": -2.3295565531057636,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 30000,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 30000,
+    "target": 21060,
+    "ratio": 0.7020263287954351,
+    "collapses": 4470,
+    "rejected": 272,
+    "faces": 21060,
+    "verts": 10531,
+    "volume_before_mm3": 1144.4825056796,
+    "volume_after_mm3": 1143.1787891056154,
+    "volume_decimation_rel_delta": -0.0011391319373733682,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.15769761233438956,
+     "mean_dev_mm": 0.012794228636077208
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21060,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_03_208514vox_lo.obj",
+   "output": "bone_03_208514vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 15006,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 1,
+     "winding_violations": 2,
+     "faces": 30000,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 2,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 1,
+    "faces_filled": 4,
+    "centroid_fan_fallbacks": 1,
+    "volume_before_mm3": -853.6693537157299,
+    "volume_after_repair_mm3": 1164.3634446603176,
+    "volume_repair_rel_delta": -2.3639513232989366,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 30002,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 30002,
+    "target": 21062,
+    "ratio": 0.7020263287954351,
+    "collapses": 4470,
+    "rejected": 215,
+    "faces": 21062,
+    "verts": 10537,
+    "volume_before_mm3": 1164.3634446603176,
+    "volume_after_mm3": 1162.659178074635,
+    "volume_decimation_rel_delta": -0.001463689532248824,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.14044826743747033,
+     "mean_dev_mm": 0.011540062501334722
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21062,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_04_180534vox_lo.obj",
+   "output": "bone_04_180534vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14994,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 3,
+     "winding_violations": 6,
+     "faces": 30000,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 6,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 3,
+    "faces_filled": 6,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -739.0767599011145,
+    "volume_after_repair_mm3": 847.1394244562738,
+    "volume_repair_rel_delta": -2.146213046354776,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 30000,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 30000,
+    "target": 21060,
+    "ratio": 0.7020263287954351,
+    "collapses": 4470,
+    "rejected": 213,
+    "faces": 21060,
+    "verts": 10524,
+    "volume_before_mm3": 847.1394244562738,
+    "volume_after_mm3": 845.4267003441532,
+    "volume_decimation_rel_delta": -0.002021773586112871,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.22231592670038,
+     "mean_dev_mm": 0.01018289548501465
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21060,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_05_174742vox_lo.obj",
+   "output": "bone_05_174742vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14987,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 10,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29990,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 10,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -715.4780140102752,
+    "volume_after_repair_mm3": 817.8171957165038,
+    "volume_repair_rel_delta": -2.143036095732159,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29990,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29990,
+    "target": 21053,
+    "ratio": 0.7020263287954351,
+    "collapses": 4469,
+    "rejected": 242,
+    "faces": 21052,
+    "verts": 10518,
+    "volume_before_mm3": 817.8171957165038,
+    "volume_after_mm3": 816.0833101030609,
+    "volume_decimation_rel_delta": -0.0021201383665255666,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.11153585086795754,
+     "mean_dev_mm": 0.009597148611806586
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21052,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_06_154508vox_lo.obj",
+   "output": "bone_06_154508vox_body.obj",
+   "repair": {
+    "source_faces": 29998,
+    "source_verts": 14999,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 2,
+     "winding_violations": 4,
+     "faces": 29998,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 4,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 2,
+    "faces_filled": 4,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -632.6428785498987,
+    "volume_after_repair_mm3": 810.3791090058071,
+    "volume_repair_rel_delta": -2.2809424344794706,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29998,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29998,
+    "target": 21059,
+    "ratio": 0.7020263287954351,
+    "collapses": 4470,
+    "rejected": 167,
+    "faces": 21058,
+    "verts": 10529,
+    "volume_before_mm3": 810.3791090058071,
+    "volume_after_mm3": 808.7971467679853,
+    "volume_decimation_rel_delta": -0.0019521261348439778,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.12858736873169574,
+     "mean_dev_mm": 0.010520024515897265
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21058,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_07_150102vox_lo.obj",
+   "output": "bone_07_150102vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 15004,
+    "source_closed": true,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 30000,
+     "closed": true
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -614.7012195873056,
+    "volume_after_repair_mm3": 824.998297090634,
+    "volume_repair_rel_delta": -2.3421126732829918,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 30000,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 30000,
+    "target": 21060,
+    "ratio": 0.7020263287954351,
+    "collapses": 4470,
+    "rejected": 204,
+    "faces": 21060,
+    "verts": 10534,
+    "volume_before_mm3": 824.998297090634,
+    "volume_after_mm3": 823.5050073273479,
+    "volume_decimation_rel_delta": -0.0018100519341096178,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.11362293650284302,
+     "mean_dev_mm": 0.009983400769815182
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21060,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_08_102171vox_lo.obj",
+   "output": "bone_08_102171vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 15016,
+    "source_closed": true,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 30000,
+     "closed": true
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -418.06581849558853,
+    "volume_after_repair_mm3": 420.5467975731917,
+    "volume_repair_rel_delta": -2.005934422207802,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 30000,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 30000,
+    "target": 21060,
+    "ratio": 0.7020263287954351,
+    "collapses": 4470,
+    "rejected": 129,
+    "faces": 21060,
+    "verts": 10546,
+    "volume_before_mm3": 420.5467975731917,
+    "volume_after_mm3": 419.62734215681,
+    "volume_decimation_rel_delta": -0.002186333177871096,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.1372589052659829,
+     "mean_dev_mm": 0.009783697110701085
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21060,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_09_100874vox_lo.obj",
+   "output": "bone_09_100874vox_body.obj",
+   "repair": {
+    "source_faces": 29998,
+    "source_verts": 15006,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 10,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29988,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 10,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -412.7945981908858,
+    "volume_after_repair_mm3": 417.21659799731515,
+    "volume_repair_rel_delta": -2.0107123490128247,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29988,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29988,
+    "target": 21052,
+    "ratio": 0.7020263287954351,
+    "collapses": 4468,
+    "rejected": 495,
+    "faces": 21052,
+    "verts": 10538,
+    "volume_before_mm3": 417.21659799731515,
+    "volume_after_mm3": 416.6549661922066,
+    "volume_decimation_rel_delta": -0.0013461396497753322,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.1700727680582781,
+     "mean_dev_mm": 0.007406295663236622
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21052,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_10_92842vox_lo.obj",
+   "output": "bone_10_92842vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 15007,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 14,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29986,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 14,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -379.86324527942435,
+    "volume_after_repair_mm3": 386.8930188456805,
+    "volume_repair_rel_delta": -2.018506064099687,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29986,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29986,
+    "target": 21050,
+    "ratio": 0.7020263287954351,
+    "collapses": 4468,
+    "rejected": 1816,
+    "faces": 21050,
+    "verts": 10539,
+    "volume_before_mm3": 386.8930188456805,
+    "volume_after_mm3": 386.22408211340417,
+    "volume_decimation_rel_delta": -0.0017289966468564115,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.15179013102830513,
+     "mean_dev_mm": 0.003247642496852542
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21050,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_11_90563vox_lo.obj",
+   "output": "bone_11_90563vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14986,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 48,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29952,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 48,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -370.4584020514964,
+    "volume_after_repair_mm3": 380.4765286260834,
+    "volume_repair_rel_delta": -2.027042514136835,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29952,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29952,
+    "target": 21027,
+    "ratio": 0.7020263287954351,
+    "collapses": 4463,
+    "rejected": 1676,
+    "faces": 21026,
+    "verts": 10523,
+    "volume_before_mm3": 380.4765286260834,
+    "volume_after_mm3": 379.82432546339516,
+    "volume_decimation_rel_delta": -0.0017141744986040818,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.13479874169287695,
+     "mean_dev_mm": 0.0026898363052630697
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21026,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_12_88112vox_lo.obj",
+   "output": "bone_12_88112vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14997,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 14,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29986,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 14,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -360.27225790391714,
+    "volume_after_repair_mm3": 366.67055597418056,
+    "volume_repair_rel_delta": -2.0177596190933187,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29986,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29986,
+    "target": 21050,
+    "ratio": 0.7020263287954351,
+    "collapses": 4468,
+    "rejected": 1674,
+    "faces": 21050,
+    "verts": 10529,
+    "volume_before_mm3": 366.67055597418056,
+    "volume_after_mm3": 366.07455692910395,
+    "volume_decimation_rel_delta": -0.0016254346998033236,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.14313196884249116,
+     "mean_dev_mm": 0.0026824375390351496
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21050,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_13_86590vox_lo.obj",
+   "output": "bone_13_86590vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14984,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 40,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29960,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 40,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -354.05872894301973,
+    "volume_after_repair_mm3": 363.7484886001159,
+    "volume_repair_rel_delta": -2.0273676620995142,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29960,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29960,
+    "target": 21032,
+    "ratio": 0.7020263287954351,
+    "collapses": 4464,
+    "rejected": 2046,
+    "faces": 21032,
+    "verts": 10520,
+    "volume_before_mm3": 363.7484886001159,
+    "volume_after_mm3": 363.1068669462288,
+    "volume_decimation_rel_delta": -0.0017639156559971828,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.13312891842982258,
+     "mean_dev_mm": 0.002197403167206226
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21032,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_14_58499vox_lo.obj",
+   "output": "bone_14_58499vox_body.obj",
+   "repair": {
+    "source_faces": 29998,
+    "source_verts": 14976,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 66,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29932,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 66,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -239.22594101895098,
+    "volume_after_repair_mm3": 277.3763171801829,
+    "volume_repair_rel_delta": -2.1594742443011636,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29932,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29932,
+    "target": 21013,
+    "ratio": 0.7020263287954351,
+    "collapses": 4460,
+    "rejected": 1970,
+    "faces": 21012,
+    "verts": 10516,
+    "volume_before_mm3": 277.3763171801829,
+    "volume_after_mm3": 275.5205091746588,
+    "volume_decimation_rel_delta": -0.006690578432904193,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.1775044596568572,
+     "mean_dev_mm": 0.0034239179493424964
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21012,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_15_54574vox_lo.obj",
+   "output": "bone_15_54574vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14995,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 18,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29982,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 18,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -223.28414865376226,
+    "volume_after_repair_mm3": 232.1379817886265,
+    "volume_repair_rel_delta": -2.0396527616861575,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29982,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29982,
+    "target": 21048,
+    "ratio": 0.7020263287954351,
+    "collapses": 4467,
+    "rejected": 935,
+    "faces": 21048,
+    "verts": 10528,
+    "volume_before_mm3": 232.1379817886265,
+    "volume_after_mm3": 231.9876001526226,
+    "volume_decimation_rel_delta": -0.000647811421660483,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.1131370420244718,
+     "mean_dev_mm": 0.0008921705474115778
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21048,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_16_54463vox_lo.obj",
+   "output": "bone_16_54463vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14999,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 14,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29986,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 14,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -222.81453568540596,
+    "volume_after_repair_mm3": 275.4153643638935,
+    "volume_repair_rel_delta": -2.236074493599265,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29986,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29986,
+    "target": 21050,
+    "ratio": 0.7020263287954351,
+    "collapses": 4468,
+    "rejected": 2457,
+    "faces": 21050,
+    "verts": 10531,
+    "volume_before_mm3": 275.4153643638935,
+    "volume_after_mm3": 274.6352859831938,
+    "volume_decimation_rel_delta": -0.0028323705995901695,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.15842402191285362,
+     "mean_dev_mm": 0.0018108098863527059
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21050,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_17_54226vox_lo.obj",
+   "output": "bone_17_54226vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 15002,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 4,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29996,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 4,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -221.85725629483898,
+    "volume_after_repair_mm3": 229.18294663727784,
+    "volume_repair_rel_delta": -2.033019836559699,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29996,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29996,
+    "target": 21057,
+    "ratio": 0.7020263287954351,
+    "collapses": 4470,
+    "rejected": 979,
+    "faces": 21056,
+    "verts": 10532,
+    "volume_before_mm3": 229.18294663727784,
+    "volume_after_mm3": 229.0924063070477,
+    "volume_decimation_rel_delta": -0.0003950570125683775,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.123168037469105,
+     "mean_dev_mm": 0.0009412455130331554
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21056,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_18_53022vox_lo.obj",
+   "output": "bone_18_53022vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14964,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 40,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29960,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 40,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -216.9006457313143,
+    "volume_after_repair_mm3": 216.90064573123036,
+    "volume_repair_rel_delta": -1.999999999999613,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29960,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29960,
+    "target": 21032,
+    "ratio": 0.7020263287954351,
+    "collapses": 4464,
+    "rejected": 1625,
+    "faces": 21032,
+    "verts": 10500,
+    "volume_before_mm3": 216.90064573123036,
+    "volume_after_mm3": 215.48328973680978,
+    "volume_decimation_rel_delta": -0.0065345863293411926,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.13312640408249524,
+     "mean_dev_mm": 0.003642207198140878
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21032,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_19_44805vox_lo.obj",
+   "output": "bone_19_44805vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 14985,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 26,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29974,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 26,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -183.23103894139135,
+    "volume_after_repair_mm3": 200.56761661540995,
+    "volume_repair_rel_delta": -2.09461594375156,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29974,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29974,
+    "target": 21042,
+    "ratio": 0.7020263287954351,
+    "collapses": 4466,
+    "rejected": 1864,
+    "faces": 21042,
+    "verts": 10519,
+    "volume_before_mm3": 200.56761661540995,
+    "volume_after_mm3": 199.76945701289353,
+    "volume_decimation_rel_delta": -0.003979503850050223,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.14565842061925038,
+     "mean_dev_mm": 0.0019986259586422506
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21042,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_20_34255vox_lo.obj",
+   "output": "bone_20_34255vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 15002,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 4,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29996,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 4,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -139.7051749275764,
+    "volume_after_repair_mm3": 139.89495571684967,
+    "volume_repair_rel_delta": -2.001358437791382,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29996,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29996,
+    "target": 21057,
+    "ratio": 0.7020263287954351,
+    "collapses": 4470,
+    "rejected": 1129,
+    "faces": 21056,
+    "verts": 10532,
+    "volume_before_mm3": 139.89495571684967,
+    "volume_after_mm3": 139.65602819937914,
+    "volume_decimation_rel_delta": -0.0017079065949606024,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.11313518045364042,
+     "mean_dev_mm": 0.0013180051134075766
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21056,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_21_33153vox_lo.obj",
+   "output": "bone_21_33153vox_body.obj",
+   "repair": {
+    "source_faces": 30000,
+    "source_verts": 15003,
+    "source_closed": false,
+    "source_audit": {
+     "index_degenerate_faces": 2,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29998,
+     "closed": false
+    },
+    "idx_degenerate_dropped": 2,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -135.26989244718115,
+    "volume_after_repair_mm3": 137.49572749378828,
+    "volume_repair_rel_delta": -2.0164547705800553,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 29998,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 29998,
+    "target": 21059,
+    "ratio": 0.7020263287954351,
+    "collapses": 4470,
+    "rejected": 1288,
+    "faces": 21058,
+    "verts": 10533,
+    "volume_before_mm3": 137.49572749378828,
+    "volume_after_mm3": 137.361160850136,
+    "volume_decimation_rel_delta": -0.0009786969101156764,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.1249811587069628,
+     "mean_dev_mm": 0.0011413234738683509
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 21058,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_22_31952vox_lo.obj",
+   "output": "bone_22_31952vox_body.obj",
+   "repair": {
+    "source_faces": 26104,
+    "source_verts": 13048,
+    "source_closed": true,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 26104,
+     "closed": true
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -130.8048752982947,
+    "volume_after_repair_mm3": 130.80487529810463,
+    "volume_repair_rel_delta": -1.9999999999985467,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 26104,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 26104,
+    "target": 18325,
+    "ratio": 0.7020263287954351,
+    "collapses": 3890,
+    "rejected": 1034,
+    "faces": 18324,
+    "verts": 9158,
+    "volume_before_mm3": 130.80487529810463,
+    "volume_after_mm3": 130.68899853070454,
+    "volume_decimation_rel_delta": -0.0008858749884972721,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.12370647603906018,
+     "mean_dev_mm": 0.001164100260789984
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 18324,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_23_31588vox_lo.obj",
+   "output": "bone_23_31588vox_body.obj",
+   "repair": {
+    "source_faces": 26450,
+    "source_verts": 13221,
+    "source_closed": true,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 26450,
+     "closed": true
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -129.29998204975053,
+    "volume_after_repair_mm3": 129.29998204958153,
+    "volume_repair_rel_delta": -1.999999999998693,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 26450,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 26450,
+    "target": 18568,
+    "ratio": 0.7020263287954351,
+    "collapses": 3941,
+    "rejected": 844,
+    "faces": 18568,
+    "verts": 9280,
+    "volume_before_mm3": 129.29998204958153,
+    "volume_after_mm3": 129.19056132682684,
+    "volume_decimation_rel_delta": -0.0008462547404897018,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.14087188978839707,
+     "mean_dev_mm": 0.0013696639364687408
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 18568,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_24_25423vox_lo.obj",
+   "output": "bone_24_25423vox_body.obj",
+   "repair": {
+    "source_faces": 14748,
+    "source_verts": 7376,
+    "source_closed": true,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 14748,
+     "closed": true
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -103.93478138600078,
+    "volume_after_repair_mm3": 103.93478138595378,
+    "volume_repair_rel_delta": -1.999999999999548,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 14748,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 14748,
+    "target": 10353,
+    "ratio": 0.7020263287954351,
+    "collapses": 2198,
+    "rejected": 648,
+    "faces": 10352,
+    "verts": 5178,
+    "volume_before_mm3": 103.93478138595378,
+    "volume_after_mm3": 103.89465411048998,
+    "volume_decimation_rel_delta": -0.000386081299529494,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.12977995071024773,
+     "mean_dev_mm": 0.0014763093339664266
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 10352,
+     "closed": true
+    }
+   }
+  },
+  {
+   "source_preview": "bone_25_25400vox_lo.obj",
+   "output": "bone_25_25400vox_body.obj",
+   "repair": {
+    "source_faces": 15228,
+    "source_verts": 7616,
+    "source_closed": true,
+    "source_audit": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 15228,
+     "closed": true
+    },
+    "idx_degenerate_dropped": 0,
+    "duplicate_faces_dropped": 0,
+    "nonman_extra_faces_removed": 0,
+    "orient_flips_applied": 0,
+    "same_direction_edge_residual": 0,
+    "boundary_loops_filled": 0,
+    "faces_filled": 0,
+    "centroid_fan_fallbacks": 0,
+    "volume_before_mm3": -103.87917183581135,
+    "volume_after_repair_mm3": 104.13858563657413,
+    "volume_repair_rel_delta": -2.0024972648142865,
+    "audit_after_repair": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 15228,
+     "closed": true
+    }
+   },
+   "decimation": {
+    "faces_before": 15228,
+    "target": 10690,
+    "ratio": 0.7020263287954351,
+    "collapses": 2269,
+    "rejected": 672,
+    "faces": 10690,
+    "verts": 5347,
+    "volume_before_mm3": 104.13858563657413,
+    "volume_after_mm3": 104.05614946319683,
+    "volume_decimation_rel_delta": -0.000791600662457538,
+    "deviation": {
+     "sampled_verts": 1500,
+     "max_dev_mm": 0.10422409384003607,
+     "mean_dev_mm": 0.000993990838503659
+    },
+    "audit_after": {
+     "index_degenerate_faces": 0,
+     "boundary_edges": 0,
+     "nonmanifold_edges": 0,
+     "winding_violations": 0,
+     "faces": 10690,
+     "closed": true
+    }
+   }
+  }
+ ],
+ "total_faces_after": 499976,
+ "bone_count": 25,
+ "import_payload": {
+  "path": "tools/playable_slice/standing_body.obj",
+  "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "triangles": 499976,
+  "vertices": 249743,
+  "compose": {
+   "pose_json_sha256": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+   "registration_pin_sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "mesh_dir": "tools\\science_funnel\\data\\morphosource_ct\\meshes_body_20260922",
+   "bones": 25,
+   "vertices": 249743,
+   "triangles": 499976,
+   "declared_id": null,
+   "units": "scene metres, +Y up, pads' mean plane at y=0"
+  }
+ }
+}
