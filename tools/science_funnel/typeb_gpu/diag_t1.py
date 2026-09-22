@@ -38,7 +38,7 @@ from walker_numba import CF, CI
 from walker_nb_env import GaitWalkEnv
 say('walker modules imported')
 
-spec = load_spec(str(HERE.parent / '.tmp' / 'gait-walker' / 'scene.json'))
+spec = load_spec(str(HERE.parent.parent / '.tmp' / 'gait-walker' / 'scene.json'))
 env = GaitWalkEnv(spec, E, reflex_level=0)
 say('env built')
 

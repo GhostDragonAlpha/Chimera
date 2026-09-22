@@ -5142,7 +5142,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
 
 
-@cuda.jit(cache=True)
+@cuda.jit(opt=False, cache=True)
 
 def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
