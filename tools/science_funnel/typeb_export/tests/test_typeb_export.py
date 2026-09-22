@@ -38,9 +38,18 @@ def policy(manifest):
 # ---------- schema / loader ----------
 
 def test_schema_is_64_fields_nonprivileged():
-    assert oschema.OBS_DIM == 64
-    assert len(oschema.FIELDS) == 64
-    assert len(set(oschema.FIELD_NAMES)) == 64
+    # AMENDED by agent/obs-split-channels-20260921 (declared in its prereg,
+    # frozen at 97fd15fb BEFORE the build): the schema version bump 64 -> 80
+    # adds the pad_split group (the TYPE-B convergence's channels). The v1
+    # contract is preserved as the frozen legacy block: FIELDS[:64] must equal
+    # the v1 table field-for-field (asserted in
+    # test_obs_split_channels.py against the 1b6d7749 literal) and the legacy
+    # records still project bitwise-identically on [0:64].
+    assert oschema.OBS_SCHEMA_VERSION == 2
+    assert oschema.LEGACY_OBS_DIM == 64
+    assert oschema.OBS_DIM == 80
+    assert len(oschema.FIELDS) == 80
+    assert len(set(oschema.FIELD_NAMES)) == 80
     for f in oschema.FIELDS:
         assert f["privileged"] is False
         assert f["source"].split("[")[0] not in oschema.PRIVILEGED_SOURCES
