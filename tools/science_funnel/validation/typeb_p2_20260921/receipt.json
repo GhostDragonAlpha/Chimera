@@ -1,0 +1,525 @@
+{
+  "pilot": "typeb-p2",
+  "date": "2026-09-21",
+  "agent": "GLM 5.3",
+  "lane": "astra-typeb-pilots-20260921.md (P1 throughput + P2 kind-2 discrepancy)",
+  "repo_commit": "30821ef7c1d00c9d394ff4b3eb466aafcabc6cc6",
+  "branch": "agent/typeb-p2-gpu-20260921",
+  "python": "3.14.3",
+  "model": {
+    "g_earth": 9.8100004196167,
+    "dt": 0.0033333334140479565,
+    "side_m": 1.5,
+    "spacing_m": 0.75,
+    "thickness_m": 0.002,
+    "glue_gap_m": 0.002,
+    "n_membranes": 3,
+    "verts": 27,
+    "mass_total_kg": 14.850000000000001,
+    "mass_vertex_kg": 0.55,
+    "k_membrane_N_per_m": 30000.0,
+    "k_glue_N_per_m": 1500000000.0,
+    "k_ground_N_per_m": 539.5500230789186,
+    "c_ground_N_s_per_m": 34.453012216257974,
+    "f_cap_mult": 50.0
+  },
+  "cpu_reference_ticks_s": 9.68,
+  "toolchain": {
+    "backend": "warp",
+    "warp_version": "1.15.0",
+    "device": "cuda:0",
+    "cuda_init_cold_s": 0.304,
+    "fallback_used": false
+  },
+  "throughput": [
+    {
+      "batch": 256,
+      "ticks": 300,
+      "wall_s": 2.719,
+      "reps_s": [
+        2.6483,
+        2.719,
+        2.8437
+      ],
+      "env_steps_per_s": 28245.7,
+      "vs_cpu_x": 2917.9,
+      "ms_per_tick": 9.063
+    },
+    {
+      "batch": 1024,
+      "ticks": 300,
+      "wall_s": 3.0625,
+      "reps_s": [
+        3.0625,
+        3.5602,
+        2.8286
+      ],
+      "env_steps_per_s": 100310.5,
+      "vs_cpu_x": 10362.7,
+      "ms_per_tick": 10.208
+    },
+    {
+      "batch": 4096,
+      "ticks": 300,
+      "wall_s": 2.9782,
+      "reps_s": [
+        3.3804,
+        2.9263,
+        2.9782
+      ],
+      "env_steps_per_s": 412592.5,
+      "vs_cpu_x": 42623.2,
+      "ms_per_tick": 9.927
+    },
+    {
+      "batch": 16384,
+      "ticks": 300,
+      "wall_s": 2.6707,
+      "reps_s": [
+        2.6707,
+        2.814,
+        2.6706
+      ],
+      "env_steps_per_s": 1840386.9,
+      "vs_cpu_x": 190122.6,
+      "ms_per_tick": 8.902
+    }
+  ],
+  "vram": {
+    "before_alloc_mib": 2256.0,
+    "peak_during_runs_mib": 2591.0,
+    "delta_mib": 335.0,
+    "state_bytes_at_16384": 10616832,
+    "limit_mib": 24564
+  },
+  "fidelity": {
+    "freefall": {
+      "quiescent": {
+        "one_step": {
+          "pos_rel": 4.639952926236695e-07,
+          "vel_rel": 0.09876604746599849,
+          "pos_abs_max": 3.2479445923883077e-06,
+          "vel_abs_max": 0.10174757532494368
+        },
+        "rollout": [
+          {
+            "tick": 30,
+            "pos_rel": 3.1057369540012154e-05,
+            "vel_rel": 0.41006624971583694,
+            "cpu_y_min": 5.986818608564757,
+            "gpu_y_min": 5.98661470413208
+          },
+          {
+            "tick": 60,
+            "pos_rel": 6.918187842928838e-05,
+            "vel_rel": 1.0555901759837587,
+            "cpu_y_min": 5.971162847068937,
+            "gpu_y_min": 5.970693111419678
+          },
+          {
+            "tick": 90,
+            "pos_rel": 0.00010521909904230384,
+            "vel_rel": 0.88125779075055,
+            "cpu_y_min": 5.955502395512107,
+            "gpu_y_min": 5.954771518707275
+          },
+          {
+            "tick": 120,
+            "pos_rel": 0.00014308437056237926,
+            "vel_rel": 0.7121031446485104,
+            "cpu_y_min": 5.939841934987825,
+            "gpu_y_min": 5.938849925994873
+          },
+          {
+            "tick": 150,
+            "pos_rel": 0.0001811209164691076,
+            "vel_rel": 0.6768013061081571,
+            "cpu_y_min": 5.924181474552547,
+            "gpu_y_min": 5.922928333282471
+          },
+          {
+            "tick": 180,
+            "pos_rel": 0.00021932990818878255,
+            "vel_rel": 1.3874961641662567,
+            "cpu_y_min": 5.908521014036013,
+            "gpu_y_min": 5.907006740570068
+          },
+          {
+            "tick": 210,
+            "pos_rel": 0.0002577125234176296,
+            "vel_rel": 0.9863836339450252,
+            "cpu_y_min": 5.8928605536438745,
+            "gpu_y_min": 5.891085147857666
+          },
+          {
+            "tick": 240,
+            "pos_rel": 0.00029626992323392284,
+            "vel_rel": 0.7965197972338396,
+            "cpu_y_min": 5.877200093082095,
+            "gpu_y_min": 5.875163555145264
+          },
+          {
+            "tick": 270,
+            "pos_rel": 0.0003350033490583052,
+            "vel_rel": 1.319586128979433,
+            "cpu_y_min": 5.861539632702572,
+            "gpu_y_min": 5.859241962432861
+          },
+          {
+            "tick": 300,
+            "pos_rel": 0.00037391397662003487,
+            "vel_rel": 1.1744746470635705,
+            "cpu_y_min": 5.845879172272941,
+            "gpu_y_min": 5.843320369720459
+          }
+        ],
+        "gpu_nan": false,
+        "final_pos_rel": 0.00037391397662003487,
+        "bounded": true,
+        "contact_engaged": false,
+        "freefall_contact_leak": false
+      },
+      "energetic": {
+        "one_step": {
+          "pos_rel": 2.0438973981751025e-05,
+          "vel_rel": 0.0848216609413613,
+          "pos_abs_max": 0.00014311724881910237,
+          "vel_abs_max": 8.03823082260378
+        },
+        "rollout": [
+          {
+            "tick": 30,
+            "pos_rel": 0.03077109669895854,
+            "vel_rel": 0.6297617317387071,
+            "cpu_y_min": 5.986334722451739,
+            "gpu_y_min": 5.986069679260254
+          },
+          {
+            "tick": 60,
+            "pos_rel": 0.09567405341758078,
+            "vel_rel": 0.36969463844197564,
+            "cpu_y_min": 5.9710205998338495,
+            "gpu_y_min": 5.970457553863525
+          },
+          {
+            "tick": 90,
+            "pos_rel": 0.1381651593371034,
+            "vel_rel": 1.3943096491921774,
+            "cpu_y_min": 5.955467172126767,
+            "gpu_y_min": 5.954535961151123
+          },
+          {
+            "tick": 120,
+            "pos_rel": 0.1608806563958903,
+            "vel_rel": 0.7172641282632256,
+            "cpu_y_min": 5.941378125194345,
+            "gpu_y_min": 5.946566581726074
+          },
+          {
+            "tick": 150,
+            "pos_rel": 0.12248977327628686,
+            "vel_rel": 0.9159132411441799,
+            "cpu_y_min": 5.907004159047057,
+            "gpu_y_min": 6.354855537414551
+          },
+          {
+            "tick": 180,
+            "pos_rel": 0.15239852158691605,
+            "vel_rel": 0.9435821593564065,
+            "cpu_y_min": 6.901990511490743,
+            "gpu_y_min": 7.986039161682129
+          },
+          {
+            "tick": 210,
+            "pos_rel": 0.1810579444693665,
+            "vel_rel": 1.227951367376425,
+            "cpu_y_min": 8.275566537086894,
+            "gpu_y_min": 9.304917335510254
+          },
+          {
+            "tick": 240,
+            "pos_rel": 0.13214453876289012,
+            "vel_rel": 0.528094681573518,
+            "cpu_y_min": 9.487560003958817,
+            "gpu_y_min": 10.416631698608398
+          },
+          {
+            "tick": 270,
+            "pos_rel": 0.10557808726967641,
+            "vel_rel": 0.53698424122547,
+            "cpu_y_min": 11.113395266489109,
+            "gpu_y_min": 11.450458526611328
+          },
+          {
+            "tick": 300,
+            "pos_rel": 0.08984256507140806,
+            "vel_rel": 0.671107087192841,
+            "cpu_y_min": 12.36536252109747,
+            "gpu_y_min": 12.764898300170898
+          }
+        ],
+        "gpu_nan": false,
+        "final_pos_rel": 0.08984256507140806,
+        "bounded": true,
+        "contact_engaged": false,
+        "freefall_contact_leak": false
+      }
+    },
+    "contact": {
+      "quiescent": {
+        "one_step": {
+          "pos_rel": 4.904613045581497e-07,
+          "vel_rel": 0.09614942479648085,
+          "pos_abs_max": 2.6994995996343363e-06,
+          "vel_abs_max": 0.09905196262205247
+        },
+        "rollout": [
+          {
+            "tick": 30,
+            "pos_rel": 1.0470848880874061e-05,
+            "vel_rel": 0.22014552688749423,
+            "cpu_y_min": 0.286818620485694,
+            "gpu_y_min": 0.28681519627571106
+          },
+          {
+            "tick": 60,
+            "pos_rel": 2.0354142377887517e-05,
+            "vel_rel": 0.610141547887815,
+            "cpu_y_min": 0.2711628589899015,
+            "gpu_y_min": 0.27115753293037415
+          },
+          {
+            "tick": 90,
+            "pos_rel": 3.099658005556894e-05,
+            "vel_rel": 0.2914613592642107,
+            "cpu_y_min": 0.2555024074330812,
+            "gpu_y_min": 0.2554870545864105
+          },
+          {
+            "tick": 120,
+            "pos_rel": 4.1462920061482293e-05,
+            "vel_rel": 0.7948372143198227,
+            "cpu_y_min": 0.23984194690877636,
+            "gpu_y_min": 0.23982854187488556
+          },
+          {
+            "tick": 150,
+            "pos_rel": 5.204482563931656e-05,
+            "vel_rel": 0.7266558313531665,
+            "cpu_y_min": 0.22418148647347041,
+            "gpu_y_min": 0.22416625916957855
+          },
+          {
+            "tick": 180,
+            "pos_rel": 6.330594581060012e-05,
+            "vel_rel": 0.5178343094101848,
+            "cpu_y_min": 0.20852102595695587,
+            "gpu_y_min": 0.20850500464439392
+          },
+          {
+            "tick": 210,
+            "pos_rel": 7.537731099925815e-05,
+            "vel_rel": 1.009528922551697,
+            "cpu_y_min": 0.19286056556482634,
+            "gpu_y_min": 0.1928439438343048
+          },
+          {
+            "tick": 240,
+            "pos_rel": 8.558947725516294e-05,
+            "vel_rel": 1.4463460196688214,
+            "cpu_y_min": 0.17720010500302064,
+            "gpu_y_min": 0.1771826446056366
+          },
+          {
+            "tick": 270,
+            "pos_rel": 9.65367413800492e-05,
+            "vel_rel": 0.6104393957771088,
+            "cpu_y_min": 0.16153964462348955,
+            "gpu_y_min": 0.16152514517307281
+          },
+          {
+            "tick": 300,
+            "pos_rel": 0.00010812012005851558,
+            "vel_rel": 1.5863094543163403,
+            "cpu_y_min": 0.14587918419385018,
+            "gpu_y_min": 0.14586392045021057
+          }
+        ],
+        "gpu_nan": false,
+        "final_pos_rel": 0.00010812012005851558,
+        "bounded": true,
+        "contact_engaged": true,
+        "freefall_contact_leak": false
+      },
+      "energetic": {
+        "one_step": {
+          "pos_rel": 7.332326077562927e-06,
+          "vel_rel": 0.023947332436981578,
+          "pos_abs_max": 4.03591791939828e-05,
+          "vel_abs_max": 2.269404207176116
+        },
+        "rollout": [
+          {
+            "tick": 30,
+            "pos_rel": 0.0035672681359181393,
+            "vel_rel": 0.19895710891633334,
+            "cpu_y_min": 0.28633467484833375,
+            "gpu_y_min": 0.28632277250289917
+          },
+          {
+            "tick": 60,
+            "pos_rel": 0.006072955003614222,
+            "vel_rel": 0.5198612897443033,
+            "cpu_y_min": 0.2710206284043955,
+            "gpu_y_min": 0.27098652720451355
+          },
+          {
+            "tick": 90,
+            "pos_rel": 0.040450736852207896,
+            "vel_rel": 0.7318304363214422,
+            "cpu_y_min": 0.25546839315329495,
+            "gpu_y_min": 0.2554772198200226
+          },
+          {
+            "tick": 120,
+            "pos_rel": 0.13860942368042678,
+            "vel_rel": 0.48770285889529563,
+            "cpu_y_min": 0.241151656117185,
+            "gpu_y_min": 0.24206344783306122
+          },
+          {
+            "tick": 150,
+            "pos_rel": 0.09166435373550987,
+            "vel_rel": 0.2864581079445664,
+            "cpu_y_min": 0.21770052619109476,
+            "gpu_y_min": 0.24386748671531677
+          },
+          {
+            "tick": 180,
+            "pos_rel": 0.11195505453589309,
+            "vel_rel": 1.4979060547998666,
+            "cpu_y_min": 1.2183341571852266,
+            "gpu_y_min": 1.490497350692749
+          },
+          {
+            "tick": 210,
+            "pos_rel": 0.11158980327889141,
+            "vel_rel": 0.8853523957815858,
+            "cpu_y_min": 2.6130738486480696,
+            "gpu_y_min": 2.7807650566101074
+          },
+          {
+            "tick": 240,
+            "pos_rel": 0.1566175350513042,
+            "vel_rel": 1.0847401862217585,
+            "cpu_y_min": 3.841975043282573,
+            "gpu_y_min": 4.281696796417236
+          },
+          {
+            "tick": 270,
+            "pos_rel": 0.12554279246322392,
+            "vel_rel": 0.8456844109389798,
+            "cpu_y_min": 5.494580266925809,
+            "gpu_y_min": 5.546213626861572
+          },
+          {
+            "tick": 300,
+            "pos_rel": 0.11280924007344477,
+            "vel_rel": 0.7164801017009331,
+            "cpu_y_min": 6.775830555091014,
+            "gpu_y_min": 6.529496669769287
+          }
+        ],
+        "gpu_nan": false,
+        "final_pos_rel": 0.11280924007344477,
+        "bounded": true,
+        "contact_engaged": true,
+        "freefall_contact_leak": false
+      }
+    }
+  },
+  "batch_isolation": {
+    "gpu_run_to_run_noise_energetic": 0.14609032457686458,
+    "env0_batch_vs_solo_energetic": 0.11344365414762456,
+    "quiescent_repetition_study": {
+      "n_solo": 5,
+      "n_batch": 5,
+      "solo_vs_solo_max": 2.9033438811025993e-05,
+      "solo_vs_solo_pairs": [
+        3.75e-06,
+        6.07e-06,
+        6.73e-06,
+        8.23e-06,
+        1.161e-05,
+        1.486e-05,
+        1.602e-05,
+        1.843e-05,
+        2.234e-05,
+        2.903e-05
+      ],
+      "batch_vs_solo_median": 4.754076701991947e-05,
+      "batch_vs_solo_max": 6.80298629656342e-05
+    },
+    "neighbor_independence_offset": {
+      "batch=2": 0.00016807123101347386,
+      "batch=8": 0.00010630072188326414,
+      "batch=16": 0.00010630072188326414
+    },
+    "env0_batch_vs_solo_quiescent": 4.754076701991947e-05,
+    "prereg_bar": 1e-05,
+    "contamination_signal_below_run_noise": false
+  },
+  "falsifiers": {
+    "F-GPU-TRAINING-BUDGET": {
+      "bar_env_steps_per_s": 968.0,
+      "measured": 1840386.9,
+      "fired": false
+    },
+    "F-GPU-MEMORY": {
+      "limit_mib": 24564,
+      "peak_mib": 2591.0,
+      "fired": false
+    },
+    "F-PARITY-ONESTEP": {
+      "bar": 0.0001,
+      "worst_quiescent": 4.904613045581497e-07,
+      "fired": false
+    },
+    "F-PARITY-BOUNDS": {
+      "fired": false
+    },
+    "F-BATCH-COUPLING": {
+      "prereg_bar": 1e-05,
+      "measured_quiescent_median": 4.754076701991947e-05,
+      "quiescent_repetition_study": {
+        "n_solo": 5,
+        "n_batch": 5,
+        "solo_vs_solo_max": 2.9033438811025993e-05,
+        "solo_vs_solo_pairs": [
+          3.75e-06,
+          6.07e-06,
+          6.73e-06,
+          8.23e-06,
+          1.161e-05,
+          1.486e-05,
+          1.602e-05,
+          1.843e-05,
+          2.234e-05,
+          2.903e-05
+        ],
+        "batch_vs_solo_median": 4.754076701991947e-05,
+        "batch_vs_solo_max": 6.80298629656342e-05
+      },
+      "neighbor_independence_offset": {
+        "batch=2": 0.00016807123101347386,
+        "batch=8": 0.00010630072188326414,
+        "batch=16": 0.00010630072188326414
+      },
+      "measured_energetic": 0.11344365414762456,
+      "gpu_run_noise_energetic": 0.14609032457686458,
+      "fired": true,
+      "diagnosis": "FIRED AS OPERATIONALIZED (batch-vs-solo 3.2e-5 > bar 1e-5, all 25 cross-pairs, vs solo-noise envelope 1.5e-6). Diagnosis: NOT neighbor-state contamination \u2014 structurally impossible (env-private force slots) and empirically refuted (offset is neighbor-independent; batch=8 and batch=16 with different neighbor sets give BIT-IDENTICAL env0). The offset tracks LAUNCH CONFIGURATION: nondeterministic-order f32 atomic reduction. Tier implication: envs evolve independently (lane contamination claim holds) but bit-reproducibility across batch configs fails; exact-replay requires a deterministic reduction."
+    }
+  },
+  "verdict": "FALSIFIER-FIRED"
+}
