@@ -1,0 +1,78 @@
+{
+ "schema": "chimera.hip_quarantine_review.v1",
+ "lane": "hip-quarantine-review-20260920",
+ "branch": "lane/hip-quarantine-review-20260920 @ 13b3ee5b",
+ "git_trailer_agent": "hqr",
+ "written_utc": "2026-09-20",
+ "written_before_first_gathering": true,
+ "note": "PRE-REGISTRATION. This file was written BEFORE this lane gathered its first literature byte or derived its first arm of the extended book. Every prediction below was hand-derived from COMMITTED, sha-verified artifacts listed in inputs_pinned. The measured block at the bottom is APPENDED AFTER the adjudications and runs; the preregistration above it is never edited.",
+ "mission": "Review the quarantined hip-relevant rows (R_RF, R_SAR, R_AB, R_BFS; R_TP optional context) and adjudicate each QUARANTINE STANDS / RESOLVED-BY-SECOND-SOURCE / RESOLVED-BY-HOMOLOG per the funnel's own laws; for every muscle that gains a lawful force, derive its hip arm curve (landed machinery, imported unmodified, same 2001-sample scan) and re-run the hip-extension book + rear-up C* verdict with the extended set. No touching: gait_controller.hpp, gait_* validation, first_skill_prestage_20260922/, master, shared tooling; no author email; never override an admission verdict with an uncited number.",
+ "inputs_pinned": {
+  "k_fill_book": {
+   "path": "tools/science_funnel/validation/k_fill_20260920/k_fill_book.json",
+   "sha256": "252105017e5fd87728cea0ec77058c08c7244a66e2a78aeff7841296c57eb55c",
+   "consumed_for": "derived_force_set.muscles (byte-equal class forces; QUARANTINED_RF/SAR/AB/BFS/TP entries with their defects), the rearup_verdict machinery (C* in (22.4, 33.6], covered iff > 33.6), conservative caps"
+  },
+  "k_fill_record": {
+   "path": "tools/science_funnel/validation/k_fill_20260920/record.md",
+   "sha256": "234fba2ab8c967b419cbb82d1cc146bc2d765423780d703333e81644640710ed",
+   "consumed_for": "THE BOOKS' SUBSTITUTION LAW (D2): substitutions lawful ONLY for ABSENT rows; quarantined rows stay NAMED GAPS; a homolog number on a quarantined row would be a silent fill - the homolog route is read and CLOSED before any search"
+  },
+  "hip_arms_book": {
+   "path": "tools/science_funnel/validation/hip_arms_20260920/hip_arms_book.json",
+   "sha256": "02a47c7dcc32f02f5cf6f77bdbd1019bb2000052dc371b39734d7eeff221b2ae",
+   "consumed_for": "the landed derived hip book (rear-up cap 10.718030 N.m @ 0 deg; walk cap 15.287148 @ +41.58 deg; mid-stance 10.373501), the geometry audit (R_RF/R_SAR/R_AB/R_BFS path structure), the 2001-sample arm protocol"
+  },
+  "derive_hip_arms": {
+   "path": "tools/science_funnel/validation/hip_arms_20260920/derive_hip_arms.py",
+   "sha256": "40bdfb4c1b42e762376a807426fd39498f7d802070ea6ee87b68155569f61b18",
+   "consumed_for": "imported UNMODIFIED (F5): scan_muscle / fd_arm / purge_wrap_cache / advisory_geo_arm / constants (FD_STEP, N_SCAN, HIP_RANGE_RAD, ARTIFACT_THRESHOLD_M)"
+  },
+  "machinery": {
+   "path": "tools/science_funnel/validation/pulley_rederivation_20260920/derive_pulley_arms.py",
+   "sha256": "ce93c114c4e89d2726dc4c04b15416518e16208ffadfe14595f9cb14cde5cfa1",
+   "consumed_for": "parse_model / forward_kinematics / path_length / resolve_path - imported UNMODIFIED, transitively via derive_hip_arms"
+  },
+  "guimaraes_audit": {
+   "path": "tools/science_funnel/validation/guimaraes_pairing_20260921/audit_table.json",
+   "sha256": "843d1e70a5a881819360e05cef961eee89108ec86e6cb82ff2dbf475a0979d88",
+   "consumed_for": "THE ADMISSION VERDICT RECORDS: quarantined rows with sheet_row + problems, the enforced laws (mass_additivity tol 0.02, pcsa_closure tol 0.02, blanks), the raw quarantined sheet cells, the n=1 known gap"
+  },
+  "guimaraes_fulltext": {
+   "path": "tools/science_funnel/data/guimaraes_arch/PMC13425262_fulltext.xml",
+   "sha256": "a1ded31fa6d615b4b1dabc91bec824c2b05b90ad37fbbcf709480027b3eb9d40",
+   "consumed_for": "the source paper's own text for its specimen count, methods, and any stated anomaly for the quarantined rows"
+  },
+  "deposit_model": {
+   "path": "tools/science_funnel/data/wiseman2026/models/Macaque_model.osim",
+   "sha256": "d5c65cbc0a72bd2d5c2258c6bd018fe850ae25cce6fb07c1f268b91e598c88e9",
+   "consumed_for": "the deposit geometry the arms derive from"
+  },
+  "derived_numbers": {
+   "path": "tools/science_funnel/validation/hind_torque_book_20260921/inputs/derived_numbers.snapshot.json",
+   "sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "consumed_for": "the WALK window (oku_before_alteration.angles.hip)"
+  }
+ },
+ "rule0": {
+  "statement": "The quarantined hip-relevant rows are adjudicable (stand / second-source / homolog) by the funnel's own admission and substitution laws, and any admitted extension re-adjudicates the rear-up class on the landed derived-arm machinery. Disagreements are pre-answered with numbers: (a) defect-vs-misclassification per muscle, from the pinned verdict records; (b) second-source existence, from the search with candidates pinned or named-absent; (c) verdict movement, from the extended book in both directions.",
+  "prediction": "P1/P2/P3 in falsifiers_pre_registered below; hand-derived before any gathering.",
+  "falsifiers": "F1-F5 in falsifiers_pre_registered."
+ },
+ "decisions_preregistered": {
+  "D1_adjudication_law": "per muscle: restate the pinned defect; state resolvability from available sources; verdict QUARANTINE STANDS | RESOLVED-BY-SECOND-SOURCE (explicit substitution record) | RESOLVED-BY-HOMOLOG (read and CLOSED: the books' law does not permit homolog substitution - k-fill record D2 + k-fill receipt citation_integrity - so any muscle without a lawful second source gets QUARANTINE STANDS with Myatt et al. 2011 great-ape homolog named as still-future)",
+  "D2_lawful_second_source": "published peer-reviewed; Macaca-genus muscle architecture BY DISSECTION; per-muscle PCSA published or derivable under the funnel's closure laws; n > 1 specimens; the candidate's own rows pass mass_additivity 0.02 / pcsa_closure 0.02 / no blanks (checked, not assumed); species + n explicit on the substitution record; force = 0.30 MPa x PCSA x 1e4 x cos(pennation) with blank pennation -> factor 1.0 (the k-fill declared law on AM/GRA/PB/PL). Oku 2021 is simulation output per its own intake and never qualifies. A source failing closure itself cannot replace a quarantined row.",
+  "D3_extended_book_law": "extended class = landed class (R_BFL+R_GMax+R_SM+R_ST, forces byte-equal to the k-fill set) + admitted muscles; arms from the landed protocol (hip declared range, 2001 samples, FD 1e-4, wrap-cache purge, artifact flag, stops recorded); cap law + windows + C* unchanged; the sign gate applies to everyone; verdict updates honestly in either direction",
+  "D4_determinism": "3 independent full derivations, byte-identical deliverable sha256, recorded in the measured block"
+ },
+ "falsifiers_pre_registered": {
+  "F1_law_violation": "any silent fill, or any homolog used without the books' substitution law explicitly permitting it. The law is READ IN ADVANCE: k-fill record.md D2 - substitutions lawful only for ABSENT rows, quarantined rows stay NAMED GAPS, 'a homolog number would be a silent fill of a knowingly-conflicted number'; k-fill receipt citation_integrity - any filled quarantined row is a violation. RESOLVED-BY-HOMOLOG is therefore UNAVAILABLE; second-source admission is lawful only as a new intake judged on its own merits with an explicit substitution record (the Guimaraes verdict itself always STANDS).",
+  "F2_sweep_ban": "no constant moves except lawfully-admitted forces + their derived arms (sigma 0.30 MPa fixed; C* fixed; cap law, windows, class law fixed; machinery sha-pinned unmodified)",
+  "F3_traceability": "every source/row sha-pinned or citation-pinned (DOI/PMCID + pinned bytes where fetched); zero uncited numbers anywhere in the deliverable",
+  "F4_determinism": "the extended-book derivation is 3-run byte-identical; sha256 recorded",
+  "F5_scope": "no source changes outside tools/science_funnel/validation/hip_quarantine_review_20260920/ (unittest-asserted via git status --porcelain); landed machinery imported unmodified; forbidden files untouched",
+  "P1_quarantine_stands": "PREDICTED: QUARANTINE STANDS for ALL FIVE rows (RF mass_additivity_dev 0.023; SAR 0.095; AB pcsa_closure_dev 0.684; BFS musc/belly/tendon mass blanks; TP 0.060) - the defects are data-quality facts of the single n=1 Guimaraes specimen row, not classification errors, and no published macaque dissection PCSA with n>1 exists for them. FIRES if any row resolves by a lawful second source.",
+  "P2_structural": "PREDICTED from the pinned geometry audit: no quarantined hip-relevant muscle is a hip EXTENSOR in the deposit - R_RF/R_SAR cross anteriorly (flexors, sign-gated at extension), R_AB is an adductor, R_BFS spans thigh_r->shank_r with NO pelvis point (hip arm identically zero), R_TP spans shank->foot. The only channel that re-opens C* is a large force on a large NEGATIVE arm; no quarantined row has that geometry. FIRES if any quarantined muscle shows a NEGATIVE (extensor-sign) arm sample in the rear-up window with a force that moves the sum materially.",
+  "P3_extension_band": "PREDICTED: any admitted extension adds < 20% to the hip-extension book (add < 2.144 N.m on the landed rear-up cap 10.718030); hand-derivation: RF 88.0932 N raw, x cos(5.0 deg) = 87.7577 N but FLEXOR sign-gated at extension; SAR 12.21 N (pennation blank -> factor 1.0 declared); AB 26.73 x cos(6.1 deg) = 26.5778 N on a small adductor arm; BFS 302.2977 x cos(26.2 deg) = 271.2392 N with arm identically 0 (no hip span). The book stays BELOW the 22.4 window floor (gap 22.4 - 10.718030 = 11.682 N.m, 2.09x). IF P3's mechanism holds: rear-up-static is CLOSED as an engine fact and the move belongs to the dynamic skill layer - said plainly. FIRES if any admitted extension adds >= 20% or crosses the floor; then the verdict RE-OPENS with its numbers."
+ }
+}
