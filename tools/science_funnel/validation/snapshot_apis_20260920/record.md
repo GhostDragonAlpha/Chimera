@@ -61,4 +61,37 @@ first full hind exchange era (fire 98, TD 107) and INSIDE the ride/hold era
 
 ## Measured (append-only)
 
-(appended after the runs)
+VERDICT: **ALL FIVE FALSIFIERS HELD**.
+
+- **F2 SHIP-INVARIANCE, every leg EXACT:** scene `f6844ee...`, ship stdout
+  `8c537cdb...`, ship trace `c6f9b6c0...`, plain stderr `b505bb65...` -- all
+  reproduced byte-exactly at this base. LEG A: the instrument header copy with
+  the flag off, built with the shipped harness source, equals the pristine
+  build byte-for-byte. The EXERCISED build (recording + snapshot active)
+  printed the ship stdout and the full wave-47 trace byte-exactly on all
+  three reference runs.
+- **F1 RESTORE-DRIFT, not fired:** the fresh-process restore at the end of
+  tick 150 carried the future to the refusal BIT-IDENTICALLY: state hashes
+  identical on all 152 compared ticks, action bytes identical
+  (21888 B), refusal 302/gait_positional_correction_budget
+  identical; blind phase matched the snapshot file; round-trip serialization
+  byte-equal.
+- **F3 GAP-CLOSURE:** all four gaps CLOSED. Snapshot = 3129 B
+  (3089 B body) with a 184-field manifest
+  (world_state 7, contact_warm_start
+  10, reflex_state 93,
+  controller_history 74). Every forced-drop
+  probe (class reverted to the fresh-reset serialization) MOVED the
+  continuation -- no reader is vacuous. `rng_stream` recorded: the engine
+  walk carries no random stream; nothing invented.
+- **F4 determinism, not fired:** three fresh-process reference runs
+  byte-identical (states/actions/snapshot/stdout/stderr).
+- **F5 scope, not fired:** zero `ChimeraEngine/` edits (gait_controller.hpp
+  untouched); the diff vs base touches only the lane dir + tools/policy_compat.
+
+The validator now un-blocks production-class certificates only through
+proven readers: `tools/policy_compat/snapshot_api.py` (registry, live-verified:
+all four gaps RESOLVED with proofs) +
+`certificate._validate_inventory`'s proof enforcement. Per-falsifier numbers:
+`receipt.json` `measured`; raw verdicts: `runs/proof_compare.json`,
+`runs/fence.json`.

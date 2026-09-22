@@ -2940,14 +2940,18 @@ public:
  static uint32_t gait_snap_format_version(){return 1u;}
  void gait_snap_dims(uint32_t* n,uint32_t* npts,uint32_t* nd)const{
   *n=(uint32_t)n_;*npts=(uint32_t)npts_;*nd=(uint32_t)nd_;}
- struct SnapField{std::string clazz;std::string name;std::string kind;uint64_t count;uint64_t offset;};
+ struct SnapField{std::string clazz;std::string name;std::string kind;uint64_t count;uint64_t offset;uint64_t size;};
+ static uint64_t snap_kind_unit(const char*kd){
+  std::string k(kd);
+  return k=="u8"?1u:(k=="i32"?4u:8u);} // f64/u64/i64/f64x3 are 8 B per count unit; i32 4; u8 1
  // ── writer: serializes and (optionally) records the manifest ──
  struct SnapW{
   std::vector<uint8_t>* b;std::vector<SnapField>* f;bool rec;
   explicit SnapW(std::vector<uint8_t>* bb,std::vector<SnapField>* ff,bool r):b(bb),f(ff),rec(r){}
   size_t mark()const{return b->size();}
   void done(const char*cl,const char*nm,const char*kd,size_t n,size_t off){
-   if(rec)f->push_back({std::string(cl),std::string(nm),std::string(kd),(uint64_t)n,(uint64_t)off});}
+   if(rec){uint64_t unit=snap_kind_unit(kd);
+    f->push_back({std::string(cl),std::string(nm),std::string(kd),(uint64_t)n,(uint64_t)off,unit*(uint64_t)n});}}
   void putd(double v){uint8_t p[8];std::memcpy(p,&v,8);b->insert(b->end(),p,p+8);}
   void putu(uint64_t v){uint8_t p[8];std::memcpy(p,&v,8);b->insert(b->end(),p,p+8);}
   void puti(int v){uint8_t p[4];std::memcpy(p,&v,4);b->insert(b->end(),p,p+4);}

@@ -104,7 +104,7 @@ int g_restore_at=-1;            // the restore hook fires before step i==g_resto
 int g_drop_class=-1;            // -1 all classes; 0..3 one class left at fresh-reset
 bool g_recording=true;bool g_snap_written=false;bool g_roundtrip_ok=false;
 bool g_blind_matches_file=false;int g_walk_counter=0;
-std::string g_snap_path,g_snap_prefix;
+std::string g_snap_path,g_snap_prefix,g_drop_name;
 std::vector<uint8_t> g_states;std::vector<double> g_actions;
 uint32_t g_n=0,g_npts=0,g_nd=0;size_t g_body=0;
 int drop_from_name(const std::string&s){
@@ -134,9 +134,9 @@ void snap_write_snapshot(const GaitWalker&d,int tick_index){
  m<<"[\n";
  for(size_t k=0;k<man.size();++k){const GaitWalker::SnapField&fl=man[k];
   m<<"  {\"class\":\""<<fl.clazz<<"\",\"field\":\""<<fl.name<<"\",\"kind\":\""<<fl.kind
-   <<"\",\"count\":"<<fl.count<<",\"offset\":"<<fl.offset<<"}"<<(k+1<man.size()?",":"")<<"\n";}
+   <<"\",\"count\":"<<fl.count<<",\"offset\":"<<fl.offset<<",\"size\":"<<fl.size<<"}"<<(k+1<man.size()?",":"")<<"\n";}
  m<<"]\n";}
-void snap_restore_hook(GaitWalker&d,int i){
+void snap_restore_hook(GaitWalker&d,int i,const J* data,double dt,bool capture){
  if(g_restore_at<0||i!=g_restore_at+1||g_walk_counter>1)return;
  std::ifstream f(g_snap_path.c_str(),std::ios::binary);
  require(f.good(),"snap_file_open");
@@ -153,7 +153,25 @@ void snap_restore_hook(GaitWalker&d,int i){
  require((size_t)f.gcount()==(size_t)bb,"snap_body_short");
  std::vector<uint8_t> blind;d.gait_snap_serialize(blind,nullptr);
  g_blind_matches_file=(blind.size()==(size_t)bb&&std::memcmp(blind.data(),body.data()+40,bb)==0);
- d.gait_snap_restore(body,g_drop_class);
+ if(g_drop_class>=0){
+  // THE FORCED-DROP PROBE (the upgate convention): a dropped class reverts to
+  // its FRESH-RESET value -- taken from a freshly constructed walker's own
+  // serialization, never re-authored defaults. The class's byte span in the
+  // dump body is overwritten with the fresh bytes; the restore then applies
+  // all four classes (one of them now carrying reset values).
+  GaitWalker fresh(*data,9.80665,V{0,0,0},dt);
+  fresh.configure({{"capture_enabled",capture},{"reset",true}});
+  std::vector<uint8_t> fb;fresh.gait_snap_serialize(fb,nullptr);
+  require(fb.size()==(size_t)bb,"snap_fresh_size_mismatch");
+  std::vector<uint8_t> tmp;std::vector<GaitWalker::SnapField> man;
+  d.gait_snap_serialize(tmp,&man);
+  uint64_t lo=~0ULL,hi=0;
+  for(const auto&fl:man)if(fl.clazz==g_drop_name){
+   lo=lo<fl.offset?lo:fl.offset;
+   uint64_t end=fl.offset+fl.size;hi=hi>end?hi:end;}
+  require(lo<hi&&hi<=(uint64_t)bb,"snap_class_span");
+  std::memcpy(body.data()+40+lo,fb.data()+lo,(size_t)(hi-lo));}
+ d.gait_snap_restore(body,-1);
  std::vector<uint8_t> post;d.gait_snap_serialize(post,nullptr);
  g_roundtrip_ok=(post.size()==(size_t)bb&&std::memcmp(post.data(),body.data()+40,bb)==0);
  require(g_roundtrip_ok,"snap_roundtrip_mismatch");
@@ -196,6 +214,7 @@ int main(int argc,char**argv){try{
    else{require(argc>=7,"snap_path_required");g_snap_path=argv[6];
     std::string dn=argc>=8?argv[7]:"none";
     g_drop_class=drop_from_name(dn);require(g_drop_class!=-99,"snap_drop_name");
+    g_drop_name=dn;
     g_restore_at=g_snap_T;g_recording=false;g_roundtrip_ok=false;g_blind_matches_file=false;}
    argv[1]=argv[2];argv+=1;argc=2;}}  // scene lands at argv[1]; the ship parse sees its own argc==2 form
 #endif
@@ -274,7 +293,7 @@ int main(int argc,char**argv){try{
   auto t_start=std::chrono::steady_clock::now();
   for(int i=0;i<WALK;++i){
 #ifdef GAIT_SNAPSHOT_API
-   snap_restore_hook(d,i);
+   snap_restore_hook(d,i,&data,dt,capture);
 #endif
    if(cmd_mode)while(cmd_i<cmd_sched.size()&&cmd_sched[cmd_i].first==i){
     d.configure({{"commanded_target_velocity_x",cmd_sched[cmd_i].second}});++cmd_i;} // zero-order hold from this tick boundary

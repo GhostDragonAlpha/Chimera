@@ -57,6 +57,15 @@ def synthetic_scope():
                                         "derivation": "derived for the test"}]}
 
 
+CANONICAL_ITEMS = ("body_state", "contact_warm_start_cache", "reflex_state",
+                   "held_command", "decision_phase", "controller_history",
+                   "rng_stream", "world_state")
+
+
+def production_items():
+    return [{"name": n, "snapshotable": True, "contents": "x"} for n in CANONICAL_ITEMS]
+
+
 def make_cert(inventory):
     return issue_certificate(synthetic_relation(), inventory, synthetic_evidence(),
                              synthetic_scope(),
@@ -72,12 +81,16 @@ def proof_block(**over):
     return base
 
 
-def resolved_gap(item="world_state", **over):
-    g = {"name": f"gap_engine_{item}", "item": item,
-         "status": "RESOLVED (snapshot-api reader + proof)",
-         "cause": "closed by the reader", "clears_when": "n/a",
-         "proof": proof_block(**over)}
-    return g
+_UNSET = object()
+
+
+def resolved_gap(item="world_state", proof=_UNSET, **proof_over):
+    """proof= replaces the whole proof block (named so the parametrize's
+    {'proof': ...} mutations land at the GAP level, not inside the block)."""
+    return {"name": f"gap_engine_{item}", "item": item,
+            "status": "RESOLVED (snapshot-api reader + proof)",
+            "cause": "closed by the reader", "clears_when": "n/a",
+            "proof": proof_block(**proof_over) if proof is _UNSET else proof}
 
 
 def unresolved_gap(item="world_state"):
@@ -99,11 +112,7 @@ def test_surrogate_inventory_still_validates_with_unresolved_gaps():
 
 
 def test_production_with_unresolved_gaps_still_blocked():
-    inv = {"deployment_class": "production",
-           "items": [{"name": n, "snapshotable": True, "contents": "x"}
-                     for n in ("body_state", "contact_warm_start", "reflex_state",
-                               "held_command", "decision_phase", "controller_history",
-                               "rng_stream", "world_state")],
+    inv = {"deployment_class": "production", "items": production_items(),
            "registered_gaps": [unresolved_gap(item) for item in
                                ("contact_warm_start", "reflex_state",
                                 "controller_history", "world_state")]}
@@ -114,13 +123,9 @@ def test_production_with_unresolved_gaps_still_blocked():
 # ------------------------------------------------- RESOLVED gaps need PROOF
 
 def test_resolved_gap_with_full_proof_validates():
-    inv = {"deployment_class": "production",
-           "items": [{"name": n, "snapshotable": True, "contents": "x"}
-                     for n in ("body_state", "contact_warm_start", "reflex_state",
-                               "held_command", "decision_phase", "controller_history",
-                               "rng_stream", "world_state")],
+    inv = {"deployment_class": "production", "items": production_items(),
            "registered_gaps": [resolved_gap(item) for item in
-                               ("contact_warm_start", "reflex_state",
+                               ("contact_warm_start_cache", "reflex_state",
                                 "controller_history", "world_state")]}
     assert validate_certificate(make_cert(inv)) == []
 
@@ -135,11 +140,7 @@ def test_resolved_gap_with_full_proof_validates():
 ])
 def test_resolved_gap_without_verifiable_proof_is_a_violation(mutation, fragment):
     g = resolved_gap(**mutation)
-    inv = {"deployment_class": "production",
-           "items": [{"name": n, "snapshotable": True, "contents": "x"}
-                     for n in ("body_state", "contact_warm_start", "reflex_state",
-                               "held_command", "decision_phase", "controller_history",
-                               "rng_stream", "world_state")],
+    inv = {"deployment_class": "production", "items": production_items(),
            "registered_gaps": [g]}
     errs = validate_certificate(make_cert(inv))
     assert any(fragment in e for e in errs), errs
@@ -151,7 +152,7 @@ def test_resolved_gap_accepted_in_surrogate_class_too():
     inv = inventory_block()
     inv = copy.deepcopy(inv)
     inv["registered_gaps"] = [resolved_gap(item) for item in
-                              ("contact_warm_start", "reflex_state",
+                              ("contact_warm_start_cache", "reflex_state",
                                "controller_history", "world_state")]
     assert validate_certificate(make_cert(inv)) == []
 
