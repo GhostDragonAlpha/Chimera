@@ -1,0 +1,19 @@
+﻿{
+    "schema":  "chimera.real_body_20260920.gates.v1",
+    "matter_kernel_test_definition":  {
+                                          "exit_code":  0,
+                                          "tail":  "Ran 9 tests in 0.062s\r\n\r\nOK"
+                                      },
+    "training_gate":  {
+                          "exit_code":  0,
+                          "tail":  "\r\nPASS -- every target is Froude-consistent with the world this body stands in."
+                      },
+    "creature_graph_root_A_tools_path":  {
+                                             "exit_code":  0,
+                                             "tail":  "19 passed, 27 subtests passed in 0.08s"
+                                         },
+    "creature_graph_root_B_dot_path":  {
+                                           "exit_code":  0,
+                                           "tail":  "19 passed, 27 subtests passed in 0.08s"
+                                       }
+}
