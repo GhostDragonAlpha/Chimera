@@ -93,5 +93,81 @@
   "concentrated_arms_ok_methods_uniform_sigma_excludes": "verdict leans B for the magnitude, with the architecture-side SOL-row conflict recorded as a named secondary (an A-flavor datum, not the primary cause)",
   "uniform_sigma_contains": "sigma NON-DISCRIMINATING; UNDECIDED between B-as-context and A-as-constant unless the context table separates them",
   "no_literature_reaches": "UNDECIDED + the named measurement (F1)"
+ },
+ "measured": {
+  "recorded_utc": "2026-09-20 (ankle-adjudication lane, gathers after prereg commit 19030212)",
+  "note": "APPENDED AFTER THE GATHERS. The preregistration above is unedited. One preregistration hand-arithmetic slip FIRED and recorded; no band moved to fit; nothing adopted.",
+  "deliverable": {
+   "path": "tools/science_funnel/validation/ankle_adjudication_20260920/adjudication_table.json",
+   "sha256": "b501216ebd5f7ccd9a35c18fcc0934afd9b388681de1730dc9f800b20e19d053",
+   "determinism_F4": "HELD - three independent derivations byte-identical (2 in-process + 1 subprocess), unittest-asserted",
+   "prose_verdict": "tools/science_funnel/validation/ankle_adjudication_20260920/verdict.md"
+  },
+  "verdict": {
+   "answer": "B (DEMAND SIDE), with C EXCLUDED and an A-flavor secondary named",
+   "primary_cause": "the consumed demand is the transient peak of a forward-dynamic SIMULATION of a 10.038 kg modeled macaque (Oku, Ide & Ogihara 2021, Commun Biol 4:1831, DOI 10.1038/s42003-021-01831-w, PMC7940622; 2D nine-link neuromusculoskeletal model; level walk, Froude 0.27, GRF peak 1.0823 xBW, duty 0.6832, ankle plantar peak at 25.0% of cycle = 36.6% of stance; muscle forces validated against EMG patterns only), consumed raw at the game's 6.15 kg animal",
+   "mass_context_numbers": {
+    "demand_source_kg": 10.038,
+    "game_band_midpoint_kg": 6.15,
+    "mass_ratio": 1.632195,
+    "mass_scaled_demand_linear_N_m": 3.625241,
+    "coverage_linear_scaled": 1.213341,
+    "mass_scaled_demand_geometric_M_4_3_N_m": 3.079022,
+    "coverage_geometric_scaled": 1.428588,
+    "status": "reported comparison only; k-fill D5 consumption not changed"
+   },
+   "B_flavors": {
+    "speed_grade": "DEAD (level, Froude 0.27)",
+    "subjects_mass": "HELD (1.632x mass ratio)",
+    "peak_not_steady": "HELD (simulation transient peak)"
+   },
+   "C_arm_side": {
+    "status": "EXCLUDED",
+    "evidence": "banked ankle-book arithmetic: V1_S1 6.247077 N.m = 1.0558x the demand; triceps-only sub-envelope 5.318868 N.m = 0.8989x; Oku's own forces ride the measured deposit arms to within 5.6% of Oku's own peak"
+   },
+   "A_architecture_side": {
+    "status": "PARTIALLY_SUPPORTED_AS_SECONDARY",
+    "method_asymmetry": "REFUTED (D4 prediction HELD): one uniform dissection protocol and one PCSA equation (cos(theta) x belly mass / (1060 x FL)) for every hind limb muscle in the pinned Guimaraes 2026 full text (PMC13425262_fulltext.xml, sha a1ded31fa6d615b4b1dabc91bec824c2b05b90ad37fbbcf709480027b3eb9d40); single M. mulatta specimen id 127, 8.0 kg adult male; sheet PCSA column pennation-uncorrected against the paper's own equation (handled uniformly by the pennation lane); PB/PL pennation absent (factor 1.0) so those derived forces are slightly overstated - the shortfall is slightly WORSE than 0.7434x under the exact law",
+    "sol_row_conflict": {
+     "sol_ratio_vs_oku_before_peak": 0.171407,
+     "sol_conflict_factor": 5.834067,
+     "gas_ratio_vs_oku_before_peak": 1.038988,
+     "reading": "Oku's simulation requires a SOL capability 5.83x the measured Guimaraes SOL row while GAS matches - a named dataset conflict between a measured dissection (n=1) and a simulation's force-sharing, not a decided cause"
+    }
+   },
+   "per_muscle_ratio_summary_primary_vs_oku_before_peak": {
+    "SOL": 0.171407,
+    "GAS_lumped_MG_plus_LG": 1.038988,
+    "FDL_whole_as_consumed": 0.674898,
+    "FDL_whole_law_corrected": 0.628368,
+    "TA": 0.337967,
+    "EDL_whole_as_consumed": 0.474793,
+    "class_matched_triceps_force_ratio": 0.491668,
+    "plantar_spread_max_over_min": 6.061526,
+    "concentrated": true
+   },
+   "sigma_diagnostic": {
+    "gap_factor": 1.345207,
+    "diagnostic_sigma_MPa": 0.403562,
+    "diagnostic_sigma_N_per_cm2": 40.356218,
+    "literature_range": "Persad LS, Wang Z, Pino PA, Binder-Markey BI, Kaufman KR, Lieber RL (2024), J Appl Physiol 137(4):945-962, DOI 10.1152/japplphysiol.00296.2024, PMCID PMC11486478: traditional mammalian 22.5 N/cm2; reported human in vivo span 1.8-72.7 N/cm2 (30 studies, 96 values); recommended weighted median 26.8 N/cm2, IQR 20-43",
+    "contained_in_reported_span": true,
+    "contained_in_recommended_IQR": true,
+    "verdict": "NON_DISCRIMINATING - the cited range honestly contains 40.36 N/cm2, so sigma cannot discriminate A from B",
+    "adopted": false
+   },
+   "falsifier_verdicts": {
+    "F1_no_decision": "NOT FIRED - the evidence reached a verdict (B, scoped)",
+    "F2_sweep_ban": "HELD - sigma stays 0.30 MPa; no PCSA, pennation, mass, or arm moved; the diagnostic sigma and mass-scaled demands are reported context only",
+    "F3_traceability": "HELD - 12 receipt pins resolve at load; the literature block carries DOI/PMCID; the table refuses on pin drift",
+    "F4_determinism": "HELD - 3 runs byte-identical, sha256 b501216ebd5f7ccd9a35c18fcc0934afd9b388681de1730dc9f800b20e19d053",
+    "F5_scope": "HELD - git status --porcelain names nothing outside tools/science_funnel/validation/ankle_adjudication_20260920/ (unittest-asserted)",
+    "prereg_slips": [
+     "D2 hand-division slip FIRED and recorded: prereg wrote the gap-closing diagnostic as 0.403542 MPa; exact 0.30 x 1.345207 = 0.403562 MPa; prereg text unedited, this record is the correction"
+    ]
+   },
+   "engine_consequence": "verdict.md D6: the derived force set stands (knee/MTP cover; nothing tuned). Any engine wave must name which side it stands on: raw simulated 10.038 kg-animal peaks as demands (k-fill D5, conservative - ankle plantar under-covered 0.7434x, 7/7 stance-hold plantar nodes over-cap, now EXPLAINED as a mass-context artifact) or a demand-mass-context reading for the 6.15 kg animal (covered 1.21x-1.43x, margin thinner than knee/MTP). The named measurement that would settle the SOL-row secondary: a second macaque/cadaver triceps-surae architecture study (SOL PCSA by dissection, n>1) against Guimaraes' 124.136 mm2 single-specimen row."
+  },
+  "tests": "12/12 green: python -B -m unittest tools.science_funnel.validation.ankle_adjudication_20260920.test_ankle_adjudication; inherited k-fill battery re-run at lane start: 13/13 green"
  }
 }
