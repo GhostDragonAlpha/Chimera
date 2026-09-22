@@ -1,0 +1,37 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "lane/thin-client-pilot-20260920",
+ "agent_trailer": "Agent: thincli",
+ "date": "2026-09-20",
+ "base_commit": "bd4bf630",
+ "branch": "lane/thin-client-pilot-20260920",
+ "worktree": "E:/ChimeraWork/thincli-agent",
+ "status": "PREREGISTERED — falsifier verdicts null until the measured runs land",
+ "preregistration": {
+  "file": "record.md",
+  "committed_before_build": true,
+  "note": "this receipt is committed with the prereg, verdicts null; it is FILLED IN PLACE at the same paths when the runs land — never rewritten to pass"
+ },
+ "budgets": {
+  "BANDWIDTH_BW": "compressed snapshot stream <= 1.25 MB/s (10 Mbps) at 30 Hz while holding BUDGET-VIS",
+  "VISUAL_VIS": "mean-absolute-difference <= 2.0 (0-255) vs the named reference (pixel formats vs full PNG; interpolated views vs 60 Hz truth at the same render point)",
+  "RENDER_RT": "p95 rAF delta <= 16.7 ms on every trace"
+ },
+ "predictions": {
+  "P1": "JPEG q80 at w=960 cuts full-res PNG bytes >= 2x at MAD <= 2.0 vs the PNG reference",
+  "P2": "30 Hz + interpolation holds MAD <= 2.0 on DESCENT and CARRY; 15 Hz within 2x of 30 Hz; 10 Hz holds or F2 fires; LANDING worst at every rate",
+  "P3": "p95 frame <= 16.7 ms on every trace; 200 ms tail causes <= 2 underruns per 20 s, recovery within 2 snapshot intervals",
+  "P4": "engine tick rate with a 60 Hz client subscribed stays >= 295 ticks/s (R6 band)"
+ },
+ "falsifiers": {
+  "F1_BANDWIDTH_FAIL": { "verdict": null, "measured": null },
+  "F2_VISUAL_ERROR_FAIL": { "verdict": null, "measured": null, "worst_phase": null },
+  "F3_SYNC_FAIL": { "verdict": null, "measured": null },
+  "F4_LATENCY_FAIL": { "verdict": null, "measured": null },
+  "F5_DETERMINISM_FAIL": { "verdict": null, "measured": null }
+ },
+ "traces": ["TRACE-CLEAN", "TRACE-50", "TRACE-50J", "TRACE-TAIL"],
+ "snapshot_rates_hz": [60, 30, 15, 10],
+ "engine_service_gaps": ["E1 no in-band timestamp on /verts or /frame", "E2 poll-only transport, no push channel", "E3 C3 delta chain is single-client"],
+ "pass": null
+}
