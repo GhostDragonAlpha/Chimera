@@ -53,3 +53,27 @@ If a Phase-C falsifier fires, the receipt must state whether a deferred law was
 ENGAGED-CLASS on the CPU reference trace near the failure tick before any
 back-port is attempted; a back-port is a NEW prereg addendum committed before
 the re-run, never a silent patch after seeing the number.
+
+## ADDENDUM — power-off semantics disposition (2026-09-22 closeout lane)
+
+The prior premise "the C++ power-off HOLDS the legs frozen while the kernels
+FREE them (tau=0); the kernels must adopt hold" is RETIRED. Verified by direct
+interrogation of the reference (grav_probe/grav_probe2 against
+engine_inc/gait_controller.hpp):
+
+- Both implementations run tau=0 at power-off; there is no hold law in either.
+- The C++ evaluate's generalized gravity at the defaults pose is NONZERO on the
+  hind rows (-0.0558675 N·m) — byte-identical to the kernels' gv — yet the
+  C++ freefall trace shows the joints frozen and the base at exactly
+  -9.80665 m/s^2. The frozen legs are EMERGENT: at the straight-chain zero
+  pose every link CoM hangs below its joint axis, uniform gravity produces no
+  generalized joint torque, and the free-fall solve M^-1*gv is weightless
+  (joint rows ~0, base-y = -g exactly). Free fall IS the hold.
+- The kernels' old -10.038 m/s^2 with joint drift was the fk_eval
+  derivative-frame seed/chain-product defect class (receipt closeout appendix),
+  not a semantics difference. After the fix the GPU freefall reproduces the
+  C++ trace bit-for-bit pre-latch.
+
+No ported-vs-deferred change; no back-port required. The deferral honesty
+clause was checked: no deferred law (all late-survival, ticks > 140) is
+engaged-class anywhere near the tick-40..63 refusal window.

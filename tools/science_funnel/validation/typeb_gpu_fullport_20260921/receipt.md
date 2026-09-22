@@ -240,3 +240,135 @@ joint-stop rows against the C++ at the tick-39 settle phase (rc=5, class 5);
 decision (manifest addendum if the kernels' free-joint reading is kept);
 (4) re-measure C3 with live envs. First tick and a full frozen-bars
 measurement pipeline on the nvcc route are DELIVERED.
+
+---
+
+# CLOSEOUT APPENDIX — the physics-repair lane (2026-09-22, agent GLM 5.3)
+
+Branch agent/typeb-gpu-finish-20260922. Mandate: close the named bars causes
+(C1/C2 refusal, stand parity, power-off semantics, C3 re-measure) without
+re-tuning anything. Method: a three-way tick-by-tick diff — the C++ reference
+(cpu_probe rebuilt against engine_inc/gait_controller.hpp, byte-reproducing
+cpu_walk.txt today) vs the host replay of the translated kernels (host_loop)
+vs the GPU DLL — plus python replicas of the frame recursion for
+component-level attribution.
+
+## HARNESS DEFECTS FOUND FIRST (the host proxy was invalid before this lane)
+
+- host_shim/cst.txt was ~all zeros (mu=0, k_touch=0, k_slip=0, fore poses 0,
+  posture gains 0) and csti_nom.txt had drive_en=0: the host replay had been
+  running a phantom passive config (tau identically 0 — proven by HL_NOPOWER
+  producing a bit-identical trajectory). dump_shim.py now regenerates the shim
+  from walker_env_host.build_env_arrays (single source of truth with the DLL).
+- The host replay tick-1 vx error vs the C++ was 2.7% BEFORE this fix; the
+  prior "GPU and host traces agree" claim held only for freefall.
+
+## THE DEEP DEFECTS (all in fk_eval's frame recursion, walker_numba_split.py)
+
+1. THE DERIVATIVE-FRAME SEED: C++ Transform(n) (coupled_articulation.hpp:43)
+   seeds t=identity but dt=ddt=ZERO; the port seeded all three at identity
+   (eye16(motion_dt), eye16(motion_ddt)). A phantom "one" leaked into every
+   body's frd/frdd: the kernels computed a REST BIAS of bv[y]=-88.4 N at v=0.
+2. THE GROUND-BODY SEED: frd[0]/frdd[0] were identity; the reference ground
+   transform has zero derivatives.
+3. THE CHAIN-PRODUCT LAW: the port composed frd = pfp*motion_dt*fc and
+   frdd = pfp*motion_ddt*fc, dropping the parent chain's dt/ddt entirely
+   (C++ product(): ddt = a.ddt*b.t + 2*a.dt*b.dt + a.t*b.ddt), AND composed
+   the per-axis recursion using POST-update motion/motion_dt where the C++
+   product reads pre-update values.
+
+MEASURED CONSEQUENCES OF THE FIX (DLL, E=1, nominal config):
+- rate() at the capture pose matches the C++ solve to 2.3e-12 (was off by up
+  to 11.3 rad/s^2 on Rknee).
+- Powered tick-1 state divergence vs the C++ walk trace: 3.21e-2 -> 1.40e-5
+  (max component). Passive: 1.39e-6.
+- GPU FREEFALL IS NOW EXACT: base vy decrements by exactly -9.80665/300 per
+  tick, q4 matches cpu_freefall.txt to all printed digits, joints frozen
+  (q6..q13 ~1e-17), no x drift. The pre-latch second-difference estimator
+  measures g = 9.80665000000 (|err| ~ 1e-12; bar <= 0.01).
+
+## POWER-OFF SEMANTICS — DISPOSITION: THE PREMISE DISSOLVED
+
+The prior attribution ("the C++ power-off HOLDS the legs; the kernels FREE
+them; the kernels must adopt hold") was wrong on both ends. Verified today:
+(a) the C++ freefall trace's frozen joints are not a hold law — tau is 0 in
+both; (b) the C++ evaluate's gravity at the defaults pose is nonzero on the
+hind rows (-0.0558675 N·m, byte-verified vs the kernels' gv); (c) the frozen
+legs are EMERGENT physics: at the straight-chain zero pose every link CoM hangs
+below its joint axis, so uniform gravity exerts zero generalized joint torque
+and M^-1*gv reduces to the exact ballistic base (weightlessness). The kernels
+produced -10.038 only because defect (1) above corrupted the bias. After the
+fix both implementations agree bit-for-bit on the trace. NO semantic law was
+adopted; none was needed. Recorded in FIDELITY_MANIFEST.md.
+
+## FREEFALL ESTIMATOR — PREMISE NOTE (not a re-tune)
+
+The env's collapse latch (y<0.20) freezes the trace at tick 51-52; the frozen
+tail diluted the second-difference mean to 0.2614 (the old "measurement"). The
+estimator now runs on the pre-latch window only (latch_tick recorded), and the
+magnitude is taken (the falsifier's 9.80665 is a magnitude; the fall is in -y).
+Threshold untouched. The frozen-tail value is still recorded
+(g_frozen_tail_estimator) for honesty.
+
+## C1/C2 — REMAINING RESIDUAL, PRECISELY ATTRIBUTED
+
+Post-fix trajectory fidelity: the hind pad gaps match the C++ to 6 decimals
+through tick 8; the fore MP pads graze the plane at 1e-6..1e-5 (scene design:
+the fore sole sits AT the solver's knife edges — kTouch=1e-5, the poscorr
+trigger -1e-6, the CoP flat-window 2e-6). Per-substep diff shows the first
+discrete divergence at tick-1 substep 1: the impact projection's cone-validity
+mask choice (project_rows' lam < -1e-10 test and the 42-step localization)
+flips under 1e-12-scale fp-order noise between inverse_spd18 and the C++
+inverse_spd, at the fore-MP contact rows. The flip selects a different active
+set -> O(0.1-1) rad/s fore velocity differences from tick 4 (v15/v17), which
+destabilize the settle: the GPU refuses rc=5 at tick 40-41 / rc=3 at 62-63
+(the host replay jitters vs the DLL exactly as the flip jitters) while the
+C++ survives to 302. The hind trajectory itself re-converges to the constraint
+manifold every tick (1e-5).
+
+VERDICT: C1/C2 remain RED but the refusal is no longer a fixed translation
+defect chain — it is fp-seeded chaos through a discontinuous constraint
+switch at the fore-MP knife edge. The next fix is NOT mechanical: it requires
+either byte-matching the solver's fp order to the C++ (both sides' summation
+order in project_rows/gram_factor, already structurally identical) or a
+preregistered premise change to the scene/probe (the fore sole resting exactly
+on the solver's 2e-6/1e-5/-1e-6 thresholds). Named pair: kernels lam vs C++
+lambda at the -1e-10 cone boundary, fore-MP rows, tick-1 substep 1.
+
+Refusal-tick trajectory across the lane: 39 -> 40 (DLL, rc=5), 63 (host
+replay, rc=3); survival median 39.0 -> 53.0; hind/fore still 0 fires (the
+settle never completes).
+
+## C3 — STILL INVALID, SAME FLAG
+
+1024/1024 and 4096/4096 envs refuse (median horizon 53), so the recorded
+38.5M/143.8M eps are still dead-env dispatch (0.03 ms/tick short-circuit).
+The valid number needs C1 alive first. Memory (C4): 14.15 GB shared GPU, no
+fire.
+
+## BARS VERDICTS AFTER THE FIX (bars_split_b32.json, this build)
+
+- freefall: GREEN with the premise notes above (pre-latch |g| = 9.80665,
+  err ~ 1e-12 <= 0.01; latch_tick recorded; frozen-tail value kept).
+- stand: RED — max_scaled_diff 0.1278 -> 0.0965 (bar <1e-2); same fore-pad
+  knife-edge attribution as C1/C2 (the fore limbs diverge at tick-1 substep 1
+  through the impact projection; the hind tracks to 1e-5).
+- C1 nominal: RED — horizon 40, class 5, hind=0 fore=0 (bar: >=1 hind fire
+  AND >=1 fore lift by 150).
+- C2 survival: RED — pass_100 0/64, median 53.0 (was 39.0).
+- C3 throughput: recorded but flagged invalid (dead-env dispatch, see above).
+- C4 memory: no fire.
+
+## FILES (this lane)
+
+walker_numba_split.py (the three fk_eval fixes + the store-bisection slot fix
+scales[d-1]=mid + the 'K book' device-print removal), walker_kernels.cuh
+(regenerated, numba2cu v4 — verified to contain only the intended diffs),
+walker_env_host.py (build_env_arrays extracted), dump_shim.py, host_loop.cxx
+(HL_NOCONTACT/HL_NOPOWER/HL_NOGAIT/HL_SETTLE knobs + HL_FULL dump),
+cpu_probe.cpp (CP_FULL + CP_CFG), diag_dll_walk.py, diff_walk/diff_matrix/
+py_fk/py_fk_full/py_fk_dyn/gap_track.py, grav_probe/grav_probe2/inv_probe/
+rate_probe (C++-side interrogators), inject_probe.py + gait_controller_instr.hpp
+(throwaway instrumented copies; the tracked reference header untouched),
+build_host_loop.cmd / build_probes.cmd / build_dll.ps1 / rebuild_dll_bg.ps1,
+host_shim/ regenerated.

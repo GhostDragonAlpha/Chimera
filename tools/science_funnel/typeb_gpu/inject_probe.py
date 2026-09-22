@@ -1,30 +1,25 @@
-"""inject_probe.py -- (re)create probe_kernels.cuh: dump rate() entry state and
-RHS ingredients. Trailer Agent: GLM 5.3."""
+"""inject_probe.py -- (re)create probe_kernels.cuh from the CLEAN
+walker_kernels.cuh: dump q/v after each tick-1 substep in tick_integ_kernel.
+Trailer Agent: GLM 5.3."""
 src = open('walker_kernels.cuh', encoding='utf-8').read()
 NL = chr(10)
-BSN = chr(92) + 'n'
+BS = chr(92)  # backslash
 
-old3 = """    double free_acc[18];
-    mat_vec(inv, free, free_acc);
-    for (i = 0; i < (18); ++i) {
-        free[i] = free_acc[i];
+old = """        for (i = 0; i < (18); ++i) {
+            q[i] = trial_q[i];
+            v[i] = trial_v[i];
+            w[i] = trial_w[i];
 }"""
-assert old3 in src, "pattern3 not found"
-old2 = """    for (k = 0; k < (8); ++k) {
-        pb =  pt_body[k];"""
-assert old2 in src, "pattern2 not found"
-marker = ('fprintf(stderr, "PROBEGV '
-          + ' '.join('%.17g ' for _ in range(18)) + BSN + '", '
-          + ', '.join(f'gv[{i}]' for i in range(18)) + ');' + NL +
-          'fprintf(stderr, "PROBEBV '
-          + ' '.join('%.17g ' for _ in range(18)) + BSN + '", '
-          + ', '.join(f'bv[{i}]' for i in range(18)) + ');' + NL)
-src = src.replace(old2, "    " + marker + old2, 1)
+assert old in src, "per-substep commit site not found"
 
-lines = ["    { int _p, _q; fprintf(stderr, \"PROBEM \"); for (_p = 0; _p < 18; ++_p) for (_q = 0; _q < 18; ++_q) fprintf(stderr, \"%.17g \", M[_p*18+_q]); fprintf(stderr, \"" + BSN + "\"); }",
-         "    { int _p, _q; fprintf(stderr, \"PROBEINV \"); for (_p = 0; _p < 18; ++_p) for (_q = 0; _q < 18; ++_q) fprintf(stderr, \"%.17g \", inv[_p*18+_q]); fprintf(stderr, \"" + BSN + "\"); }",
-         "    { int _p; fprintf(stderr, \"PROBEFREE \"); for (_p = 0; _p < 18; ++_p) fprintf(stderr, \"%.17g \", free[_p]); fprintf(stderr, \"" + BSN + "\"); }"]
-src = src.replace(old3, old3 + NL + NL.join(lines), 1)
+fmt = ('[SUB] sub=%d rc=%d q12=%.17g v9=%.17g v12=%.17g v13=%.17g '
+       'v14=%.17g v17=%.17g v4=%.17g' + BS + 'n')
+args = ('sub, rc, q[12], v[9], v[12], v[13], v[14], v[17], v[4]')
+new = (old + NL +
+       '        if (a_ticks[e] == 0) {' + NL +
+       '            printf("' + fmt + '", ' + args + ');' + NL +
+       '        }')
 
-open('probe_kernels.cuh', 'w', encoding='utf-8').write(src)
-print("probe_kernels.cuh written")
+src = src.replace(old, new, 1)
+open('probe_kernels.cuh', 'w', encoding='utf-8', newline=NL).write(src)
+print("probe_kernels.cuh written clean")
