@@ -1,0 +1,1203 @@
+{
+ "tile": "P1_x2_y2",
+ "pass": "A",
+ "strategy": "row-wise muscle-major, forward panel order",
+ "reader": "vtrans",
+ "columns_seen": [
+  "[Mm1 PCSA sliver]",
+  "Mm2 mass/FL/PCSA",
+  "Mm3 label+mass/FL"
+ ],
+ "cells": [
+  {
+   "m": "ED",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "3.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null,
+   "note": "dup of tile P1_x2_y1 read, identical"
+  },
+  {
+   "m": "ED",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "24.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ED",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "138.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EI",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDST)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "EI",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDST)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EI",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDST)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EDST",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "0.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDST",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "17.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDST",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "42.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDQQ)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDQQ)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDQQ)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EDQQ",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "1.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDQQ",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "15.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDQQ",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "66.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECU",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "4.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECU",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "25.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECU",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "156.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Anc",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "0.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Anc",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "12.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Anc",
+   "g": "Extensor",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "18.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "BR",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "14.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "BR",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "139.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "BR",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "93.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PT",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "5.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PT",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "24.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PT",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "202.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "SUP",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "2.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "SUP",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "15.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "SUP",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "160.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PQ",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "1.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PQ",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "20.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PQ",
+   "g": "Rotator",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "72.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FPL",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "FPL",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "FPL",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EPL",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "0.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EPL",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "30.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EPL",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "18.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EPB",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "EPB",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EPB",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "APL",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "3.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "APL",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "25.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "APL",
+   "g": "Ext. Thumb",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "121.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Bb",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "34.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Bb",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "67.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Bb",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "473.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "CB",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "1.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "CB",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "13.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "CB",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "75.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Tb",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "83.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Tb",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "38.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Tb",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "1996.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "DET",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "8.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "DET",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "81.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "DET",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "121.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "B",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "mass_g",
+   "v": "11.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "B",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "fl_mm",
+   "v": "31.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "B",
+   "g": "Upper arm",
+   "s": "Mm2",
+   "f": "pcsa_mm2",
+   "v": "350.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDST",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "0.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDST",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "28.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDQQ",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "1.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDQQ",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "30.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECU",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "7.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECU",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "75.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Anc",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "0.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Anc",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "15.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "BR",
+   "g": "Rotator",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "25.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "BR",
+   "g": "Rotator",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "177.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PT",
+   "g": "Rotator",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "7.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PT",
+   "g": "Rotator",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "19.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "SUP",
+   "g": "Rotator",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "3.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "SUP",
+   "g": "Rotator",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "37.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PQ",
+   "g": "Rotator",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "2.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PQ",
+   "g": "Rotator",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "13.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FPL",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "FPL",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "FPL",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EPL",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "1.2",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EPL",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "26.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EPB",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "EPB",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EPB",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "APL",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "5.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "APL",
+   "g": "Ext. Thumb",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "30.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Bb",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "42.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Bb",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "118.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "CB",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "2.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "CB",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "38.9",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Tb",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "118.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "Tb",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "54.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "DET",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "8.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "DET",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "75.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "B",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": "21.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "B",
+   "g": "Upper arm",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": "103.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EI",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cfr. ... cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "EI",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cfr. ... cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EI",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cfr. ... cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "mass_g",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cfr. ... cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cfr. ... cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm3",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cfr. ... cut at tile edge)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  }
+ ],
+ "crop_sha256": "e9b8acea7adc18e017470fdc243bdacedce21f00dead0342aee60f7347ffffbb"
+}
