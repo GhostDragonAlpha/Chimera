@@ -30,7 +30,12 @@ MF = {
 }
 NBOD = 14
 NAXES = 18
-CHN = 60          # chain_ax length (<=60 covers 14 bodies x ~4)
+CHN = 104         # chain_ax length: MEASURED chain_off[-1]=104 for the compiled
+                  # scene (body_slots repeat axes across the 13 moving bodies;
+                  # the old "<=60 covers 14 bodies x ~4" guess overflowed and
+                  # every later mdi table stomped chain_ax[60:104] — found as an
+                  # illegal-memory-access in fk_eval's ax_slot[chain_ax[idx]]
+                  # on the nvcc route, 2026-09-22)
 PTN = 8
 # f64 blocks: [ax_axis 54][ax_slope 18][ax_const 18][body_mass 14][body_com 42]
 # [body_inertia 42][body_fp 224][body_fc 224][pt_local 24][pt_radius 8]
@@ -51,12 +56,12 @@ for name, size in [('ax_axis', 54), ('ax_slope', 18), ('ax_const', 18),
 NF64 = _off
 
 # int blocks: [ax_rot 18][ax_slot 18][body_axoff 15][body_parent 14]
-# [chain_off 15][chain_ax 60][pt_body 8][drive_coord 12][fore_coord 4]
+# [chain_off 15][chain_ax 104][pt_body 8][drive_coord 12][fore_coord 4]
 # [hind_coord 8][hind_drive 8][fore_drive 4][fore_heel_pt 2][hind_heel_pt 2]
 OI = {}
 _off = 0
 for name, size in [('ax_rot', 18), ('ax_slot', 18), ('body_axoff', 15),
-                   ('body_parent', 14), ('chain_off', 15), ('chain_ax', 60),
+                   ('body_parent', 14), ('chain_off', 15), ('chain_ax', CHN),
                    ('pt_body', 8), ('drive_coord', 12), ('fore_coord', 4),
                    ('hind_coord', 8), ('hind_drive', 8), ('fore_drive', 4),
                    ('fore_heel_pt', 2), ('hind_heel_pt', 2)]:

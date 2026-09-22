@@ -8,7 +8,7 @@ import numpy as np
 from numba import cuda
 from walker_model import (WalkerSpec, T_CYCLE, DUTY_SAMPLED, K_TOUCH, ZETA, FS_HZ,
                           NB, NDRIVE, FOLD_BUDGET_TICKS, UNLOAD_TICKS, SINK_RATE_MAX)
-from walker_numba import OF, OI, CF, CI
+from walker_numba import OF, OI, CF, CI, NI32
 from walker_numba_gen import reset_kernel, tick_kernel
 
 
@@ -20,7 +20,12 @@ def build_model_arrays(spec: WalkerSpec):
     spec.chain_ax = np.array(chain_ax_list, np.int32)
     spec.chain_off = np.array(chain_off, np.int32)
     mdl = np.zeros(900, np.float64)
+    _exp = 0
     for name, off in OF.items():
+        # tiling guard: every table's written length must equal its layout slot
+        # (a mismatch silently stomps the NEXT table — the chain_ax 60-vs-104
+        # class that broke fk_eval on the nvcc route, 2026-09-22)
+        assert off == _exp, ('mdl layout mismatch', name, off, _exp)
         if name == 'ax_axis':
             v = np.concatenate([a['axis'] for a in spec.axes]).astype(np.float64)
         elif name == 'ax_slope':
@@ -70,8 +75,12 @@ def build_model_arrays(spec: WalkerSpec):
         elif name == 'hind_mount':
             v = np.concatenate([spec.hind_mount['left'], spec.hind_mount['right']])
         mdl[off:off + len(v)] = v
-    mdi = np.zeros(200, np.int32)
+        _exp += len(v)
+    assert _exp <= mdl.size, ('mdl overflow', _exp, mdl.size)
+    mdi = np.zeros(NI32, np.int32)
+    _exp = 0
     for name, off in OI.items():
+        assert off == _exp, ('mdi layout mismatch', name, off, _exp)
         if name == 'ax_rot':
             v = np.array([a['rot'] for a in spec.axes], np.int32)
         elif name == 'ax_slot':
@@ -101,6 +110,8 @@ def build_model_arrays(spec: WalkerSpec):
         elif name == 'hind_heel_pt':
             v = np.array(spec.hind_heel_pt, np.int32)
         mdi[off:off + len(v)] = v
+        _exp += len(v)
+    assert _exp == NI32, ('mdi size mismatch', _exp, NI32)
     return mdl, mdi
 
 

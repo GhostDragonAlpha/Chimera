@@ -183,6 +183,20 @@ ENV_API int env_set_command_flat(void* handle, const double* v, const int* live)
     return 1;
 }
 
+// csti access for the probe phase (bars_fullport.py toggles power/contact/
+// gait between probes exactly like the numba env's d_csti copy-modify)
+ENV_API int env_csti_get(void* handle, int* out20) {
+    WalkerEnv* e = (WalkerEnv*)handle;
+    CU_OK(cudaMemcpy(out20, e->d_csti, 20 * sizeof(int), cudaMemcpyDeviceToHost));
+    return 1;
+}
+
+ENV_API int env_csti_set(void* handle, const int* in20) {
+    WalkerEnv* e = (WalkerEnv*)handle;
+    CU_OK(cudaMemcpy(e->d_csti, in20, 20 * sizeof(int), cudaMemcpyHostToDevice));
+    return 1;
+}
+
 ENV_API int env_step(void* handle, int n) {
     WalkerEnv* e = (WalkerEnv*)handle;
     for (int t = 0; t < n; ++t) {

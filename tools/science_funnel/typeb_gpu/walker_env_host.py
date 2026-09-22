@@ -15,7 +15,7 @@ from pathlib import Path
 
 from walker_model import (WalkerSpec, T_CYCLE, DUTY_SAMPLED, K_TOUCH, ZETA, FS_HZ,
                           NB, NDRIVE, FOLD_BUDGET_TICKS, UNLOAD_TICKS, SINK_RATE_MAX)
-from walker_numba import OF, OI, CF, CI
+from walker_numba import OF, OI, CF, CI, NI32
 from walker_nb_env import build_model_arrays
 
 HERE = Path(__file__).parent
@@ -45,6 +45,10 @@ _dll.env_sync.restype = ctypes.c_int
 _dll.env_sync.argtypes = [ctypes.c_void_p]
 _dll.env_status.restype = ctypes.c_int
 _dll.env_status.argtypes = [ctypes.c_void_p] + [ctypes.c_void_p] * 10
+_dll.env_csti_get.restype = ctypes.c_int
+_dll.env_csti_get.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
+_dll.env_csti_set.restype = ctypes.c_int
+_dll.env_csti_set.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
 _dll.env_free.argtypes = [ctypes.c_void_p]
 
 
@@ -70,7 +74,7 @@ class WalkerEnvDLL:
         self.block = int(block)
         E = self.E
         mdl, mdi = build_model_arrays(spec)
-        assert mdl.shape[0] == 900 and mdi.shape[0] == 200, (mdl.shape, mdi.shape)
+        assert mdl.shape[0] == 900 and mdi.shape[0] == NI32, (mdl.shape, mdi.shape, NI32)
         dt = spec.dt
         height_floor = 2.0 * SINK_RATE_MAX + SINK_RATE_MAX * (1.0 / (ZETA * 2.0 * math.pi * FS_HZ)) / dt
         cst = np.zeros(30, np.float64)
@@ -169,6 +173,10 @@ class WalkerEnvDLL:
     def step(self, n=1, readback=False):
         if not _dll.env_step(ctypes.c_void_p(self._h), int(n)):
             raise RuntimeError("env_step failed")
+        # synchronous like the numba env's step + cuda.synchronize() pairing
+        # (bars_fullport.py times step() around an explicit device sync)
+        if not _dll.env_sync(ctypes.c_void_p(self._h)):
+            raise RuntimeError("env_sync failed")
         if readback:
             return self.status()
         return None
@@ -195,6 +203,45 @@ class WalkerEnvDLL:
                 'cmd_first_tick': self._cmd_first_tick.copy(),
                 'hind_tds': self._hind_tds.reshape(E, 2).copy(),
                 'fore_td_count': self._fore_td_count.reshape(E, 2).copy()}
+
+    # ---- device-array shims so the frozen bars_fullport.py probe code (which
+    # was written against the numba env's d_csti / rb device arrays) runs
+    # unchanged on the DLL route ----
+    def _csti_get(self):
+        a = np.zeros(20, np.int32)
+        if not _dll.env_csti_get(ctypes.c_void_p(self._h), _ip(a)):
+            raise RuntimeError("env_csti_get failed")
+        return a
+
+    def _csti_set(self, a):
+        if not _dll.env_csti_set(ctypes.c_void_p(self._h), _ip(np.ascontiguousarray(a, np.int32))):
+            raise RuntimeError("env_csti_set failed")
+
+    class _ArrShim:
+        def __init__(self, get, set):
+            self._get, self._set = get, set
+        def copy_to_host(self):
+            return self._get()
+        def copy_to_device(self, a):
+            self._set(a)
+
+    @property
+    def d_csti(self):
+        return WalkerEnvDLL._ArrShim(self._csti_get, self._csti_set)
+
+    class _RbShim:
+        def __init__(self, env):
+            self._env = env
+        def copy_to_host(self):
+            return self._env._rb
+
+    @property
+    def rb(self):
+        return WalkerEnvDLL._RbShim(self)
+
+    def sync(self):
+        if not _dll.env_sync(ctypes.c_void_p(self._h)):
+            raise RuntimeError("env_sync failed")
 
     def __del__(self):
         try:

@@ -20,12 +20,39 @@ T0 = time.perf_counter()
 def say(m):
     print(f'[{time.perf_counter()-T0:8.2f}s] {m}', flush=True)
 
-from numba import cuda
 from walker_model import load_spec, T_CYCLE, DUTY_SAMPLED
-from walker_nb_split_env import GaitWalkEnv
+
+# --env dll: run the SAME frozen falsifiers on the nvcc-compiled walker_env.dll
+# route (walker_env_host.WalkerEnvDLL) instead of the numba split env. The
+# falsifier definitions (thresholds, seeds, horizons, scoring) are untouched;
+# only the env implementation, the device sync and the VRAM probe swap.
+USE_DLL = '--env' in sys.argv
+if USE_DLL:
+    from walker_env_host import WalkerEnvDLL as GaitWalkEnv
+
+    def dev_sync():
+        pass  # WalkerEnvDLL.step syncs the device before returning
+
+    def vram_info():
+        import subprocess
+        q = subprocess.run(['nvidia-smi', '--query-gpu=memory.used,memory.free',
+                            '--format=csv,noheader,nounits'],
+                           capture_output=True, text=True).stdout.strip().splitlines()[0]
+        used_mib, free_mib = [float(x) for x in q.split(',')]
+        return (free_mib * 1048576.0, used_mib * 1048576.0)
+else:
+    from numba import cuda
+    from walker_nb_split_env import GaitWalkEnv
+
+    def dev_sync():
+        cuda.synchronize()
+
+    def vram_info():
+        return cuda.current_context().get_memory_info()
 
 OUT = HERE.parent / 'validation' / 'typeb_gpu_fullport_20260921'
-BLOCK = int(sys.argv[1]) if len(sys.argv) > 1 else 32
+_pos = [a for a in sys.argv[1:] if not a.startswith('--')]
+BLOCK = int(_pos[0]) if _pos else 32
 
 spec = load_spec(str(HERE.parent.parent / '.tmp' / 'gait-walker' / 'scene.json'))
 R = {'block': BLOCK}
@@ -42,8 +69,6 @@ def cpu_trace(name):
 
 say('== Phase A: probes ==')
 env = GaitWalkEnv(spec, 1, reflex_level=0, block=BLOCK)
-csti = env.d_csti.copy_to_host()
-csti[CI_power] = 0; csti[CI_contact] = 0; csti[CI_gait_enabled] = 0
 from walker_numba import CI as _CI
 CI_power, CI_contact, CI_gait = _CI['power'], _CI['contact'], _CI['gait_enabled']
 csti = env.d_csti.copy_to_host()
@@ -144,17 +169,17 @@ R['survival'] = {'seeds': N, 'horizons': horizons.tolist(), 'classes': classes.t
 say(f"survival: pass_100={pass100}/{N} median={R['survival']['median']} wall={dt_surv:.1f}s pass={R['survival']['pass']}")
 
 say('== Phase C3/C4: throughput + memory ==')
-mem0 = cuda.current_context().get_memory_info()
+mem0 = vram_info()
 tp = []
 for B in (1024, 4096):
     envB = GaitWalkEnv(spec, B, reflex_level=1, block=BLOCK)
     envB.reset()
-    envB.step(30); cuda.synchronize()
+    envB.step(30); dev_sync()
     times = []
     for _ in range(3):
         t0 = time.perf_counter()
         envB.step(300)
-        cuda.synchronize()
+        dev_sync()
         times.append(time.perf_counter() - t0)
     med = sorted(times)[1]
     stt = envB.status()
@@ -164,7 +189,7 @@ for B in (1024, 4096):
                'collapsed': int(stt['collapsed'].sum())})
     say(f"batch {B}: {eps:.0f} eps ({tp[-1]['ms_per_tick']:.2f} ms/tick)")
     del envB
-mem1 = cuda.current_context().get_memory_info()
+mem1 = vram_info()
 R['throughput'] = tp
 R['throughput_pass_1024'] = bool(tp[0]['env_steps_per_s'] >= 968)
 R['memory'] = {'free_gb': mem1[0] / 1e9, 'used_gb': mem1[1] / 1e9,
