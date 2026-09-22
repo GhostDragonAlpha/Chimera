@@ -1,0 +1,50 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "lane/push-channel-20260920",
+ "agent_trailer": "Agent: pushchan",
+ "date": "2026-09-20",
+ "base_commit": "d0a2ff28",
+ "branch": "lane/push-channel-20260920",
+ "worktree": "E:/ChimeraWork/pushchan-agent",
+ "status": "PREREGISTERED \u2014 verdicts null until the runs land; filled IN PLACE at these paths, never rewritten to pass",
+ "preregistration": {
+  "file": "record.md",
+  "committed_before_build": true,
+  "note": "this receipt is committed with the prereg, verdicts null; it is FILLED IN PLACE at the same paths when the runs land \u2014 never rewritten to pass"
+ },
+ "channel_choice": {
+  "chosen": "SSE architecture over a binary HTTP body (one long-lived GET /api/stream, application/octet-stream, server-paced length-prefixed records)",
+  "derivation": "C1 binary budget: SSE text envelope base64 = 4/3 inflation; pilot-measured pixel winner 1.0 MB/s x 4/3 = 1.33 MB/s > 1.25 budget \u2014 envelope alone falsifies text SSE. C2 stdlib: no stdlib WebSocket server; hand-rolled RFC 6455 re-creates the pilot's measured DELTA framing-bug class. Chosen shape: SSE's one-GET push without the text envelope, zero inflation, framing = the integrity instrument.",
+  "e3_note": "DELTA not offered on the stream (engine C3 chain is single-client; E3 recorded, not worked around)"
+ },
+ "budgets": {
+  "BANDWIDTH_BW": "per-client wire <= 1.25 MB/s (1,250,000 B/s decimal) at the declared rate, overhead reported separately",
+  "VISUAL_VIS": "MAD <= 2.0 (0-255) vs 60 Hz twin truth at the same render point, on MEDIAN and MAX over valid rows (torn class must be GONE)",
+  "RENDER_RT": "p95 rAF delta <= 16.7 ms"
+ },
+ "predictions": {
+  "P1": "30 Hz holds to 4 concurrent clients, each >= 28.5 Hz achieved on TRACE-CLEAN; engine pulls/s constant (within noise) at 1 vs 4 clients (composition per-profile)",
+  "P2": "60 Hz state family predicted FAIL (2 engine pulls x ~15 ms caps composition near ~33 Hz < 57 Hz bar); measured pass-or-fail, never tuned to rescue",
+  "P3": "F2 rerun max MAD <= 2.0 on every valid row (pilot max 13.33); torn zero-frame class structurally dead (guard + visible HOLD)",
+  "P4": "stopped-reader wedges nobody: others hold >= 0.95 x declared, no others' gap > 200 ms, wedged client dropped <= 5 s, killed client <= 2 s",
+  "P5": "per-client wire at 30 Hz: Z12 ~0.04, POS12 ~0.12, FULL36 ~0.36, pixel jpg w1280 q85 ~1.0 MB/s \u2014 all <= 1.25"
+ },
+ "falsifiers": {
+  "F1_RATE_FAIL": {"verdict": null, "measured": null},
+  "F2_TORN_FAIL": {"verdict": null, "measured": null},
+  "F3_WEDGE_FAIL": {"verdict": null, "measured": null},
+  "F4_BW_FAIL": {"verdict": null, "measured": null},
+  "F5_DET_FAIL": {"verdict": null, "measured": null}
+ },
+ "engine_service_gaps": {
+  "E1_no_in_band_timestamp": "RECORDED, unchanged by this lane: engine /verts and /frame carry no ts_us; the push composes ts exactly as /api/snapshot does (verts pull then state pull, gap_us rides every THS1 header). Engine-side fix remains named, out of boundary.",
+  "E2_poll_only_transport": "SUBJECT OF THIS LANE: closed at the Python service boundary (slice-server push channel; the broadcaster is the engine's ONE well-behaved poller per profile). Residual recorded honestly: the ENGINE itself still has no native push \u2014 engine-side push remains named, out of boundary.",
+  "E3_no_multiclient_chain": "RECORDED, unchanged: engine C3 chain is single-client; the stream respects it by NOT offering DELTA; per-connection chains would need engine work."
+ },
+ "environment": {
+  "browser": "Playwright BUNDLED chromium only (MACHINE_FINDINGS.md 2026-09-20: installed Chrome 153 cannot navigate any URL on this host)",
+  "engine_binary": "pilot's prebuilt chimera_engine.exe reused unchanged (provenance + byte-equivalence recorded in thin_client_pilot_20260920/); rebuild from this worktree's source on any misbehavior",
+  "shell_law": "PowerShell only via -File; long runs as background processes with redirected logs; shared desktop never touched"
+ },
+ "runs": {}
+}
