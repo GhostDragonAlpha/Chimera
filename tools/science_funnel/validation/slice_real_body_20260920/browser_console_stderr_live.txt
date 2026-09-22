@@ -1,0 +1,22 @@
+[33804:11980:0922/133227.395:INFO:components\enterprise\browser\controller\chrome_browser_cloud_management_controller.cc:241] No machine level policy manager exists.
+[33804:11980:0922/133227.486:WARNING:chrome\browser\extensions\external_registry_loader_win.cc:236] Error observing HKLM: Access is denied. (0x5)
+[33804:11980:0922/133227.927:INFO:CONSOLE:350] "[]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader flag to opt in to lower security guarantees for trusted content.", source: http://127.0.0.1:8301/ (350)
+[33804:8580:0922/133230.657:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[33804:8580:0922/133231.031:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+[33804:8580:0922/133231.033:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+Created TensorFlow Lite XNNPACK delegate for CPU.
+[33804:26372:0922/133246.472:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:75] Failed to open named pipe server process 17748: Access is denied. (0x5)
+[33804:33076:0922/133246.545:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:75] Failed to open named pipe server process 32540: Access is denied. (0x5)
+[33804:26372:0922/133246.620:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:75] Failed to open named pipe server process 8344: Access is denied. (0x5)
+[33804:33076:0922/133246.699:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:75] Failed to open named pipe server process 35212: Access is denied. (0x5)
+[33804:26372:0922/133248.781:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:75] Failed to open named pipe server process 25048: Access is denied. (0x5)
+[33804:33076:0922/133248.855:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:75] Failed to open named pipe server process 35524: Access is denied. (0x5)
+[33804:8580:0922/133251.964:ERROR:google_apis\gcm\engine\registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+[33804:26372:0922/133257.429:INFO:chrome\browser\extensions\extension_garbage_collector.cc:212] Garbage collection for extensions on file thread is complete.
+[33804:8580:0922/134643.907:ERROR:google_apis\gcm\engine\registration_request.cc:275] Registration URL fetching failed.
+[33804:8580:0922/134831.054:WARNING:google_apis\gcm\engine\heartbeat_manager.cc:167] Lost connection to MCS, reconnecting.
+[33804:8580:0922/134909.800:ERROR:google_apis\gcm\engine\connection_handler_impl.cc:473] Timed out waiting for GCM Protocol buffer.
+[33804:8580:0922/134909.801:ERROR:google_apis\gcm\engine\connection_factory_impl.cc:484] ConnectionHandler failed with net error: -7
+[33804:8580:0922/135004.396:ERROR:google_apis\gcm\engine\connection_factory_impl.cc:435] Failed to connect to MCS endpoint with error -7
+[33804:8580:0922/135119.226:ERROR:google_apis\gcm\engine\connection_factory_impl.cc:435] Failed to connect to MCS endpoint with error -7
+[33804:8580:0922/135332.815:ERROR:google_apis\gcm\engine\connection_factory_impl.cc:435] Failed to connect to MCS endpoint with error -7

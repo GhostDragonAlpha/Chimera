@@ -36,10 +36,14 @@ import scene_boot as sb  # noqa: E402
 NEVER_PORT = 8127
 DEFAULT_EXE = HERE.parent.parent / ".tmp/slice_build/Release/chimera_engine.exe"
 MARKER_AZIMUTH_RAD = 0.6          # level constant (stated, not tuned)
-MARKER_DIST_M = 1.2               # ~2 body lengths (the stand-in body is 0.53 m long)
+MARKER_DIST_M = 1.2               # ~2 body lengths (the standing skeleton measures 0.605 m nose-to-tail)
 CARRY_SPEED_MPS = 0.4
 ARRIVE_RADIUS_M = 0.15
 SETTLE_VY = 0.05                  # the engine's own "settled means settled" bar
+# the banked constants (membrane_tick.hpp/cpp): the settled lowest vertex is
+# -(m*g/k) below the floor, so the settled ROOT is -(m*g/k) - ymin with ymin
+# the import's own authored lowest -- the attractor, derived, any body.
+SETTLE_SINK_M = 13824.5 * 9.81 / 1.3562e7    # 0.010000 m
 
 
 class World:
@@ -75,8 +79,8 @@ class World:
             sb.wait_engine(self.url)
             if self.ghost_obj is None:
                 self.ghost_obj, self.ghost_rec = sb.build_ghost_obj()
-            body_obj, self.body_rec = sb.build_stand_in_body()
-            rec = sb.boot_standing_start(self.url)
+            rec = sb.boot_standing_start(self.url)   # imports THE REAL BODY
+            self.body_rec = rec
             marker_x = MARKER_DIST_M * math.sin(MARKER_AZIMUTH_RAD)
             marker_z = MARKER_DIST_M * math.cos(MARKER_AZIMUTH_RAD)
             self.scene_spec = {
@@ -105,16 +109,29 @@ class World:
     def _finish_settle(self):
         """The standing start = the engine's own settle, then CONVERGENCE: the
         root law's fixed point is bit-stable once root_y stops moving (the
-        measured attractor: 0.25529300 constant, /verts sha constant)."""
+        measured attractor: 0.25529300 constant for the capsule; the real
+        skeleton's is -(m*g/k) - ymin, derived below). The convergence WINDOW
+        matters: a drift-only break fires on bounce CRESTS of a body whose
+        oscillation outlives the capsule's (measured this lane: three boots
+        recorded three different crests). So "settled" means residence AT the
+        derived attractor: |root_y - root_eq| < 5e-5 with |vy| < 1e-5, held
+        for 10 s."""
         st = sb.wait_settled(self.url, timeout=30)
-        prev = None
-        deadline = time.time() + 90.0
+        ymin = float(self.body_rec.get("import_stats", {}).get("ymin", 0.0))
+        root_eq = -SETTLE_SINK_M - ymin
+        deadline = time.time() + 180.0
+        settled_since = None
         while time.time() < deadline:
             cur = sb.http_get_json(self.url, "/tick_state")
             ry, vy = float(cur.get("root_y", 0.0)), abs(float(cur.get("root_vy", 1.0)))
-            if prev is not None and abs(ry - prev) < 1e-7 and vy < 1e-5:
-                break
-            prev = ry
+            at_eq = abs(ry - root_eq) < 5e-5 and vy < 1e-5
+            if at_eq:
+                if settled_since is None:
+                    settled_since = time.time()
+                elif time.time() - settled_since >= 10.0:
+                    break
+            else:
+                settled_since = None
             time.sleep(0.25)
         start_verts = sb.verts_payload(self.url)
         start_sha = sb.sha256(start_verts)
@@ -143,15 +160,15 @@ class World:
         if not (carry["active"] or carry["x"] or carry["z"]):
             return raw
         # MOCK[mock_carry]: the named XY slide. The Y stream is untouched --
-        # the engine's real root is never edited here.
-        import struct as _s
+        # the engine's real root is never edited here. Vectorized: the real
+        # body streams ~250k verts per poll and a per-vertex struct loop
+        # cannot hold the 10 Hz poll cadence.
+        import numpy as _np
         n = int.from_bytes(raw[:4], "little")
-        buf = bytearray(raw)
-        for i in range(n):
-            off = 4 + i * 36
-            x, y, z = _s.unpack_from("<3f", buf, off)
-            _s.pack_into("<3f", buf, off, x + carry["x"], y, z + carry["z"])
-        return bytes(buf)
+        arr = _np.frombuffer(raw[4:4 + n * 36], dtype=_np.float32).copy()
+        arr[0::9] += _np.float32(carry["x"])
+        arr[2::9] += _np.float32(carry["z"])
+        return raw[:4] + arr.tobytes()
 
     def topology(self) -> bytes:
         return sb.http_get_raw(self.url, "/topology")

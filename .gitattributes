@@ -47,3 +47,9 @@ tools/science_funnel/data/morphosource_ct/** -text -whitespace
 
 # Visible Monkey intake contracts: byte-stable specs (the CRLF lesson).
 tools/science_funnel/data/visible_monkey/** -text -whitespace
+
+# The playable slice's sha-pinned import payload (standing_body.obj, pinned in
+# meshes_body_20260922/body_manifest.json and verified by scene_boot on every
+# boot): checkout bytes == committed bytes, or the pin is a lie (the CRLF
+# lesson; lane slice-real-body-20260920).
+tools/playable_slice/*.obj -text -whitespace

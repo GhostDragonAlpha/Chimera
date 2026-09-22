@@ -1,0 +1,67 @@
+{
+ "falsifier": "F-ALIGNMENT",
+ "pass": true,
+ "bound_mm": 5.0,
+ "measured": {
+  "compose_anchor_bitwise": {
+   "payload_femur_L": true,
+   "preview_femur_L": true,
+   "payload_femur_R": true,
+   "preview_femur_R": true
+  },
+  "scale_registration": 3.2314822711250724,
+  "payload_femur_blocks": {
+   "L": [
+    10221,
+    20752
+   ],
+   "R": [
+    20752,
+    31289
+   ]
+  },
+  "sides": {
+   "L": {
+    "hip": {
+     "d_payload_mm": 3.228567,
+     "d_preview_mm": 3.286597,
+     "delta_mm": 0.05803,
+     "within_bound": true,
+     "winding_payload": 1.0,
+     "strictly_inside": true,
+     "pass": true
+    },
+    "knee": {
+     "d_payload_mm": 4.703337,
+     "d_preview_mm": 4.703337,
+     "delta_mm": 0.0,
+     "within_bound": true,
+     "gap0_over_2_mm": 1.455474,
+     "preview_vs_gap_cross_check_mm": 3.247863,
+     "pass": true
+    }
+   },
+   "R": {
+    "hip": {
+     "d_payload_mm": 3.58757,
+     "d_preview_mm": 3.654796,
+     "delta_mm": 0.067226,
+     "within_bound": true,
+     "winding_payload": 1.0,
+     "strictly_inside": true,
+     "pass": true
+    },
+    "knee": {
+     "d_payload_mm": 4.63879,
+     "d_preview_mm": 4.566349,
+     "delta_mm": 0.07244,
+     "within_bound": true,
+     "gap0_over_2_mm": 1.413082,
+     "preview_vs_gap_cross_check_mm": 3.153267,
+     "pass": true
+    }
+   }
+  }
+ },
+ "law": "the joint centers are the pose chain's own pivots (hip: the fitted femoral-head fixed points; knee: the realizing-gap midpoints, carried by the femur's FK); the mesh the engine rides may not move the anatomy at any pivot by more than the mission-named 5 mm vs the geometry class the pivots were fitted on, and a hip head center must lie inside its femur"
+}
