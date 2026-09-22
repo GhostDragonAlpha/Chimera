@@ -56,9 +56,26 @@ runbook's "write the new prereg into receipt.json" is honored by this lane's own
 ## The day's ledger (appended as measured)
 
 - prereg written + committed: BEFORE any download (this commit).
-- downloads: see `tools/science_funnel/data/vanhoof_forearm/download_receipt.json` (post-download).
-- calibration: see `calibration_s1.json` (post-run).
-- extraction/admission: see `extraction_s1.json` / `extraction_s2.json` + the staged
-  `s001_records.json` etc. (post-run).
-- falsifier verdicts: `receipt.json` → `real_run` section (post-run), summarized in the
-  final lane message.
+- downloads: `tools/science_funnel/data/vanhoof_forearm/download_receipt.json` — both
+  prestage-named TIFFs staged + sha-pinned via a real Chrome solving PMC's PoW (all CLI
+  routes walled; nine routes documented in `download_attempts_evidence.json`). Article
+  PDFs named-NOT-obtained (no prestage-named artifact missing — the runbook never lists
+  them). License recorded as tension: only "© 2020 Anatomical Society", no explicit reuse
+  grant anywhere on PMC/XML/DOI pages.
+- calibration (runbook step 3): `calibration_real.json` — **F-CAL STOP GATE FIRED**.
+  The real TIFFs are CMYK paper scans, not born-digital renders (the prestage route's
+  premise, measured false). Raw/ink-decoded gray: 0 cells. Best faithful tier
+  (background flattening, constants fixed once, not swept): S2 72/1512 cells CONFIDENT
+  (4.8%), median glyph conf_min 0.0 << 0.65 floor; S1 198/1140 (17.4%), median 0.0.
+  The machinery's refusal taxonomy held (zero guessed numbers, nothing admitted).
+- identity measured: S1 = GIBBONS, S2 = MACAQUES (Mm1-Mm7) — the prestage context's
+  "S1/S2: 7 adult M. mulatta" was half wrong; S1 never entered extraction (scope held).
+- manifest measured: 3 of 7 canonical fields exist (mass/FL/PCSA); no volume/MTU/tendon
+  in the tables — F-MANIFEST's named branch applied, nothing forced.
+- admission: NOT RUN (zero admissible rows; the runbook's own STOP instruction).
+  No records admitted. Successor scope (scan-class route, 3-field manifest, S2-only)
+  named in `receipt.json` → `real_run.successor_scope_named`. Hand transcription stays
+  the operator's door; this lane neither transcribes nor fakes confidence.
+- falsifier verdicts: `receipt.json` → `real_run.falsifier_verdicts`.
+  F2/F5 held, F4 green (3-run byte-identical), F3 vacuous-green (zero admitted),
+  F1 held, F-CAL + F-MANIFEST fired, F-REGISTER not reached.

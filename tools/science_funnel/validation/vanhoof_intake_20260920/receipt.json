@@ -60,5 +60,35 @@
    "count identity: fetched == admitted + rejected(weighted), zero silent drops, per table; if it does not close the batch is broken -- fix the lane, not the arithmetic"
   ]
  },
- "admission_plan": "RUNBOOK steps 3-6 verbatim: calibration read-only on real S1 -> declare column_map + homology vocabulary (39 arm-model names from tools/science_funnel/data/macaque_arm/monkeyArm_current.osim; the memo's recorded synonym ext digiti (minimi) ~ ext_digiti class) -> extract + admit via admit_vanhoof.admit UNMODIFIED -> idempotent replay -> training gate. Force claims stay force_runtime_ready: false. The homology map is a DECLARED table (name correspondence only, no values extracted from Part I)."
+ "admission_plan": "RUNBOOK steps 3-6 verbatim: calibration read-only on real S1 -> declare column_map + homology vocabulary (39 arm-model names from tools/science_funnel/data/macaque_arm/monkeyArm_current.osim; the memo's recorded synonym ext digiti (minimi) ~ ext_digiti class) -> extract + admit via admit_vanhoof.admit UNMODIFIED -> idempotent replay -> training gate. Force claims stay force_runtime_ready: false. The homology map is a DECLARED table (name correspondence only, no values extracted from Part I).",
+ "real_run": {
+  "status": "CALIBRATION STOP GATE FIRED -- no records admitted, domain gap reported as the finding (runbook step 3's own instruction)",
+  "run_utc": "2026-09-22",
+  "downloads_delivered": {
+   "named_targets": "both prestage TIFFs staged + sha-pinned (S1 10,821,004 B sha256 3b799371f646fff77eb2f5806249ea8361820c9817aa57225e5b0128d7f1a041; S2 6,455,574 B sha256 cb9e91be3d2345182b6d2b956245b76905243d4bbf37fff79c3d96a802e5debe)",
+   "route": "PMC's PoW wall (cloudpmc-viewer-pow, difficulty 4) blocked every CLI route; a real Chrome (agent-browser) solved the challenge and navigation downloaded the TIFFs; see data/vanhoof_forearm/download_receipt.json + download_attempts_evidence.json for all nine routes tried",
+   "article_pdfs": "NOT obtained (named, with routes) -- but the prestage's own download list never required them; homology context read from PMC HTML + front-matter XML"
+  },
+  "identity_measured": "S1 = GIBBON table (H1-H5, Nc1, N1, Hp1, Hp2...); S2 = MACAQUE table (Mm1-Mm7 in two panels). The prestage context's 'Tables S1/S2: 7 adult M. mulatta' is measured HALF WRONG -- the macaque data lives in S2 only. S1 was never extracted into records (out of target; prereg scope exclusion held).",
+  "manifest_measured": "the real per-specimen fields are exactly mass (g) / FL (mm) / PCSA (mm2) -- 3 of the 7 canonical fields; volume_cm3 / mtu_mm / tendon_ext_mm / tendon_int_mm do not exist in the tables. Prereg P-LAYOUT missed on field count (predicted the 7-field layout from the prestage context); F-MANIFEST's named branch (a canonical field absent -> that part stops and is NAMED) applies.",
+  "calibration_measured": {
+   "tiers": "raw-naive (prestage load_gray semantics) -> 0 cells on both TIFFs; cmyk-ink (multiplicative ink decode, no ICC present) -> 0 cells; cmyk-flat (ink decode + max-filter-201 background flattening, fixed once, not swept) -> S2: 54 rows x 28 cols, 1512 cells, 72 CONFIDENT (4.8%), conf_min p50 0.0; S1: 38 rows x 30 cols, 1140 cells, 198 CONFIDENT (17.4%), conf_min p50 0.0",
+   "f_cal": "FIRED: median glyph conf_min 0.0 << 0.65 STOP floor on the best faithful tier; artifact calibration_real.json (sha256 0b4c877db5e1f2d6d9aaa8c877a6959a2694f30ac142699818c6e7c730244ae0), 3-run byte-identical",
+   "route_premise_false": "prestage declared the real TIFFs 'born-digital vector renders, cleaner than the hostile tier'; measured: CMYK scans of a printed page -- cream background (~gray 158), gray header cells and spacer bars, merged cells (FDP rows, conn. FDS-FDP), text markers inside value cells ('absent (cf. EDST)', 'damaged', 'not measured'), ~32 px text",
+   "honesty_discipline_held": "the machinery's refusal taxonomy worked in a domain it cannot read: 408 low_glyph_confidence + 404 blank_cell + 178 grid_collision + 159 low_contrast + 8 glyph_merge + 283 LOW on S2-flat; zero guessed numbers; nothing admitted"
+  },
+  "falsifier_verdicts": {
+   "F1_scope_drift": "HELD -- nothing outside the named scope extracted; gibbon S1 refused extraction into records; no substitution of any study",
+   "F2_byte_stability": "HELD -- committed blobs re-hashed == recorded sha256s (git blob-verify after commit); .gitattributes data/** -text in force",
+   "F3_provenance": "VACUOUS-GREEN -- zero admitted records; the requirement stays binding on any successor lane",
+   "F4_determinism": "GREEN -- calibration artifact 3-run byte-identical (0b4c877d...)",
+   "F5_lane_scope": "HELD -- prestage files untouched (prereg honored here instead of rewriting the frozen prestage receipt)",
+   "F_register": "NOT REACHED -- no numeric column extracted past the structural stage",
+   "F_cal": "FIRED (the lane's headline red) -- see calibration_measured",
+   "F_manifest": "FIRED in its prereg-named branch -- 3 of 7 canonical fields exist in the source; the 7-field manifest cannot close and was not forced"
+  },
+  "successor_scope_named": "a NEW pre-registration (new lane) would have to register: (a) a SCAN-CLASS route (background flattening with derived constants, gray-fill-aware grid model handling merged cells and design bars) -- not the frozen born-digital template route; (b) the real 3-field manifest (mass_g/fl_mm/pcsa_mm2) with the pcsa_closure law (rho=1060) as the only runnable row law, density and MTU laws named not-runnable; (c) S2-only target, S1 out of scope; (d) the paper's own markers (absent/damaged/not measured) as named refusal classes; (e) text height ~32 px vs the synthetic 48 px class. Hand transcription remains the memo's A5 alternative and stays the operator's door -- this lane neither transcribes by hand nor fakes machinery confidence on a human read.",
+  "no_records_admitted": 0
+ }
 }
+
