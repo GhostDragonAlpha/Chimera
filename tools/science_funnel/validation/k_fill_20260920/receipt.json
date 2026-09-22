@@ -245,5 +245,107 @@
   "F5_bands": "any P-band miss is FIRED, recorded with its number, never absorbed and never re-written.",
   "citation_integrity": " quarantined rows (RF, SAR, AB, BFS, TP) appear in the deliverable ONLY as named gaps with their quarantine status; any filled quarantined row is a violation."
  },
- "results": "PENDING - appended after the runs, below this line, prereg unedited."
+ "results": {
+  "recorded_utc": "2026-09-20 (k-fill lane, runs after commit 1c52b51f; code checkpoint ddf43925)",
+  "note": "APPENDED AFTER THE RUNS. The pre-registration above is unedited. Three FIRED records stand (F1 as predicted; two preregistration hand-arithmetic slips, recorded with their numbers and never absorbed). No band moved; nothing tuned.",
+  "deliverable": {
+   "path": "tools/science_funnel/validation/k_fill_20260920/k_fill_book.json",
+   "sha256": "c961d9497bae639b3bb8a09a78b083e5caf3adddd11ad3bed9c3cd7790ae0b52"
+  },
+  "derived_force_set_measured": {
+   "sigma": "0.30 MPa (the one cited constant; never swept)",
+   "paired_corrected": 23,
+   "deferred_whole": {
+    "EDL_N": 11.49,
+    "FDL_N": 138.0639,
+    "absent5_admitted_sum_N": 150.5691
+   },
+   "named_gaps": {
+    "R_RF": "quarantined (mass_additivity_dev 0.023) - knee stays vasti-only",
+    "R_TP": "quarantined (mass_additivity_dev 0.060) - plantar carries no TP",
+    "R_SAR": "quarantined (0.095)",
+    "R_AB": "quarantined (pcsa_closure_dev 0.684)",
+    "R_BFS": "quarantined (blanks)"
+   },
+   "coherence_P8": "corrected_force / (record max_force_N x 0.2342083) == 1.0 EXACTLY on all 23 paired muscles - the two admitted sources are the same published PCSA floats at two sigmas"
+  },
+  "capabilities_measured_N_m": {
+   "knee_extension": {
+    "cap": 8.489511,
+    "argmax_q_deg": -42.3,
+    "carried_by": "VL 4.3228 + VMed 2.9097 + VI 1.2571"
+   },
+   "ankle_plantarflexion": {
+    "cap": 4.398653,
+    "argmax_q_deg": -1.8,
+    "carried_by": "LG 1.1424 + MG 0.9784 + PL 0.6308 + SOL 0.5611 + PB 0.4566 + FDL slips 0.7571 + FHL 0.1630"
+   },
+   "ankle_dorsiflexion": {
+    "cap": 0.573906,
+    "argmax_q_deg": -23.4,
+    "carried_by": "TA 0.3757 + EHL 0.1573 + EDL slips 0.0409"
+   },
+   "mtp_flexion": {
+    "cap": 1.163086,
+    "argmax_q_deg": -30.0,
+    "carried_by": "FDL slips 1.1190 + FHL 0.0442"
+   },
+   "hip_extension_context": {
+    "sum": 26.58202,
+    "arm_caveat": "record straight-line arms, declared 25% unknown",
+    "carried_by": "BFL 15.3805 + GMax 4.3915 + SM 3.6681 + ST 3.1419; adductor secondary +3.3417 named, not in the primary class"
+   }
+  },
+  "walk_coverage_measured": {
+   "knee_extension": "8.489511 / 5.3144 = 1.5975x COVERED",
+   "mtp_flexion": "1.163086 / 0.7051 = 1.6495x COVERED (the measured dynamic MP peak)",
+   "ankle_plantarflexion": "4.398653 / 5.9171 = 0.7434x UNDER - THE F1 DIVERGENCE",
+   "ankle_dorsiflexion": "0.573906 / 1.1202 = 0.5123x UNDER"
+  },
+  "stance_hold_measured": {
+   "knee_over_cap_of_15": {
+    "doc_live": 9,
+    "walk_force_V1_S1_banked": 4,
+    "derived_set": 6
+   },
+   "ankle_plantar_over_cap": "7 of 7 plantar-loaded nodes over the derived cap (was 0 at doc 7.4; 6 at the walk-force cap 6.247077)",
+   "ankle_dorsal_over_cap": "6 of 6 dorsal nodes over the derived cap 0.573906 (was 0 at doc)",
+   "mp_over_cap": "6 of 15 (the windlass class, 8.145-8.462 N.m vs 1.163086 - the wave-8 corrected-Jacobian artifact caveat carried, as in the statics lanes)",
+   "hip_posture": "cap-held at 11.2125; no measured-arm hip book outside the context class"
+  },
+  "rearup_measured": {
+   "class": "operator-authored C* in (22.4, 33.6] N.m; COVERED iff max capability > 33.6",
+   "primary_max_capability_N_m": 26.58202,
+   "primary_owner": "hip_extension_context (BFL+GMax+SM+ST x record hip arms)",
+   "conservative_max_capability_N_m": 8.489511,
+   "conservative_owner": "knee_extension (measured arms only)",
+   "verdict": "NOT COVERED - 26.582 < 33.6 under the primary definition and 8.490 < 33.6 under the conservative bound; the verdict is robust to the definition",
+   "context": "the primary sits INSIDE the operator's C* window (22.4, 33.6] - the derived animal can generate rear-up-CLASS hip torque but not beyond the class top; the only book ever above 33.6 was the rejected demand-fitted provisional set (knee 36.247782 at sigma 1.28091414 Pa)"
+  },
+  "mass_set_measured": {
+   "rescale_factor": 1.471776756,
+   "target_sum_kg": 1.135893604,
+   "derived_sum_kg": 1.135893604,
+   "expectation_envelope_kg": [
+    0.99737,
+    1.656
+   ],
+   "inside_envelope": true,
+   "caveats_inherited": [
+    "pelvis-carrying set at a pelvis-exclusive anchor (conservative bound)",
+    "the deposit's 10.897259x foot_l/foot_r asymmetry is preserved by the scale-free fractions"
+   ]
+  },
+  "falsifier_verdicts": {
+   "F1_ankle_band": "FIRED, AS PRE-REGISTERED (predicted FIRED-low in the receipt BEFORE the run): derived ankle plantar capability 4.398653 N.m is BELOW [5.0, 7.5]. REPORTED, never tuned. Named cause: the provisional set's walk consistency came from fitting sigma = 1.28091414 Pa to Oku's mass-adjusted Fmax (a demand-side fit); at the cited physiological sigma (0.30 MPa) the published macaque architecture (Guimaraes 2026) under-covers the Oku measured walk - the two published datasets are mutually inconsistent at physiological specific tension. Both books remain on the table with their provenance named: the derived physiological set (this lane) and the Oku-force internal-consistency set (V1, banked).",
+   "F2_determinism": "HELD - three independent derivations byte-identical (2 in-process + 1 subprocess); deliverable sha256 c961d9497bae639b3bb8a09a78b083e5caf3adddd11ad3bed9c3cd7790ae0b52 reproduced by the unittest",
+   "F3_traceability": "HELD - 21 input pins resolve at load (load REFUSES on drift; unittest-asserted); every capability book carries trace blocks; the sigma carries three citations; the PCSA citation names Guimaraes et al. 2026 AJPA 190(4):e70329, DOI 10.1002/ajpa.70329 (pinned full text a1ded31fa6d615b4b1dabc91bec824c2b05b90ad37fbbcf709480027b3eb9d40); zero uncited constants",
+   "F4_no_source_changes": "HELD - git status --porcelain names nothing outside tools/science_funnel/validation/k_fill_20260920/ (unittest-asserted)",
+   "F5_bands": "HELD AS PROTOCOL, with three FIRED records standing honestly: (1) F1 above (as predicted); (2) P6_coverage.ankle_dorsal FIRED - measured ratio 0.512325 vs the registered band [0.55, 0.72] (the dorsal cap came out 0.573906 vs the hand estimate 0.713; recorded, not absorbed); (3) P7_mass.factor_check FIRED - measured factor 1.471776756 vs the registered hand value 1.471743 +/- 1e-6 (a preregistration hand-division slip; the law itself is exact: closure to 1e-9 holds). ALL other bands HELD: P1 knee [8.3,8.7] measured 8.489511; P2 ankle [4.0,4.9] measured 4.398653; P3 mtp [0.95,1.30] measured 1.163086; P4 hip context [25.5,27.5] measured 26.582020; P5 knee over-cap count 6 in band [5,7]; P6 knee/mtp/plantar; P7 closure + envelope; P8 23/23 exact; rear-up prediction NOT COVERED measured NOT COVERED.",
+   "P8_coherence": "HELD - ratio exactly 1.0 on all 23 paired muscles (VMed alias fixed in the checker after run 1; a completeness fix, no numeric change)",
+   "summary": "F1 FIRED as predicted and REPORTED with its named cause; F2/F3/F4/P8 HELD; F5 protocol held with two additional honest FIRED band records; the derived set was never tuned to re-enter any band"
+  },
+  "the_verdict_this_lane_hands_the_operator": "THE GAME NOW OWNS ITS NUMBERS. (1) The k-gate is closed and banked (k_gate_closure_20260920.md): the deposit scale is the scale of record; the SI branch is dead; the scale-side consumption gates are lifted. (2) The derived force set replaces the placeholder 1 N forces: every muscle force is 0.30 MPa (cited, never swept) x published macaque PCSA (Guimaraes 2026, sheet-row traced) x cos(measured pennation), with the five quarantined rows kept as named gaps - no silent fills. (3) The derived mass set (factor 1.471776756, sum 1.135894 kg) lands inside the anatomical expectation envelope. (4) Capabilities at the physiological set: knee 8.49 N.m (1.60x the measured walk knee peak), MTP 1.16 N.m (1.65x), ankle plantar 4.40 N.m (0.74x - UNDER), ankle dorsal 0.57 N.m (0.51x - UNDER); stance-hold knee over-cap migration 9 -> 4 -> 6 of 15 (doc -> walk forces -> derived set). (5) Rear-up C* NOT COVERED: max capability 26.58 N.m (hip context, record arms) / 8.49 N.m (conservative) vs the 33.6 N.m class top - robust under both definitions. (6) F1 fired exactly as pre-registered: the Oku walk and the Guimaraes architecture are mutually inconsistent at physiological specific tension - the divergence between two published datasets, now named, measured, and on the record; any engine wave must name which side it stands on.",
+  "tests": "13/13 green: python -B -m unittest tools.science_funnel.validation.k_fill_20260920.test_k_fill; existing graph unittests 69/69 green (tools/creature_graph/tests)"
+ }
 }
