@@ -349,7 +349,28 @@ def mv18(a, x, out):
 
 @cuda.jit(device=True)
 
-def fk_eval(q, v, ax_rot, ax_axis, ax_slot, ax_slope, ax_const, body_axoff, body_parent, body_mass, body_com, body_inertia, body_fp, body_fc, chain_off, chain_ax, pt_body, pt_local, pt_radius, nbod, naxes, plane_y, gy, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias):
+def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias):
+    ax_rot = mdi[OI_ax_rot:OI_ax_rot + 18]
+    ax_axis = mdl[OF_ax_axis:OF_ax_axis + 54]
+    ax_slot = mdi[OI_ax_slot:OI_ax_slot + 18]
+    ax_slope = mdl[OF_ax_slope:OF_ax_slope + 18]
+    ax_const = mdl[OF_ax_const:OF_ax_const + 18]
+    body_axoff = mdi[OI_body_axoff:OI_body_axoff + 15]
+    body_parent = mdi[OI_body_parent:OI_body_parent + 14]
+    body_mass = mdl[OF_body_mass:OF_body_mass + 14]
+    body_com = mdl[OF_body_com:OF_body_com + 42]
+    body_inertia = mdl[OF_body_inertia:OF_body_inertia + 42]
+    body_fp = mdl[OF_body_fp:OF_body_fp + 224]
+    body_fc = mdl[OF_body_fc:OF_body_fc + 224]
+    chain_off = mdi[OI_chain_off:OI_chain_off + 15]
+    chain_ax = mdi[OI_chain_ax:OI_chain_ax + 60]
+    pt_body = mdi[OI_pt_body:OI_pt_body + 8]
+    pt_local = mdl[OF_pt_local:OF_pt_local + 24]
+    pt_radius = mdl[OF_pt_radius:OF_pt_radius + 8]
+    nbod = 14
+    naxes = 18
+    plane_y = cst[CF_plane_y]
+    gy = cst[CF_gy]
 
     grav = cuda.local.array(3, dtype=float64); grav[0] = float(0.0); grav[1] = -gy; grav[2] = float(0.0)
 
@@ -1409,15 +1430,11 @@ def friction_solve(initial, inv, row_n, row_t, floor_n, floor_t, mu, slip_sign, 
 
 
 
-def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rq, rv):
+@cuda.jit(device=True)
+def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rq, rv, mdi, csti):
+    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
-    pot = fk_eval(q, v, mdl.ax_rot, mdl.ax_axis, mdl.ax_slot, mdl.ax_slope, mdl.ax_const,
-
-                  mdl.body_axoff, mdl.body_parent, mdl.body_mass, mdl.body_com, mdl.body_inertia,
-
-                  mdl.body_fp, mdl.body_fc, mdl.chain_off, mdl.chain_ax, mdl.pt_body, mdl.pt_local,
-
-                  mdl.pt_radius, csti[CI_nbod], csti[CI_naxes], cst[CF_plane_y], cst[CF_gy],
+    pot = fk_eval(q,  v, mdl, mdi, cst,
 
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
@@ -1509,7 +1526,7 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
 
             rn[i] = ptJ[(r * 3 + 1) * 18 + i]
 
-        g = gap_of_k(ptp, mdl.pt_radius, r * 2, cst[CF_plane_y])
+        g = gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y])
 
         touching[r] = 0
 
@@ -1681,7 +1698,8 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
 
 @cuda.jit(device=True)
 
-def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, q1, v1, w1):
+def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, q1, v1, w1, mdi, csti):
+    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
     rq = cuda.local.array(18, dtype=float64)
 
@@ -1689,13 +1707,7 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
     plane = cuda.local.array(4, dtype=int32)
 
-    pot = fk_eval(q0, v0, mdl.ax_rot, mdl.ax_axis, mdl.ax_slot, mdl.ax_slope, mdl.ax_const,
-
-                  mdl.body_axoff, mdl.body_parent, mdl.body_mass, mdl.body_com, mdl.body_inertia,
-
-                  mdl.body_fp, mdl.body_fc, mdl.chain_off, mdl.chain_ax, mdl.pt_body, mdl.pt_local,
-
-                  mdl.pt_radius, csti[CI_nbod], csti[CI_naxes], cst[CF_plane_y], cst[CF_gy],
+    pot = fk_eval(q0,  v0, mdl, mdi, cst,
 
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
@@ -1715,7 +1727,7 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
             rn[i] = ptJ[(r * 3 + 1) * 18 + i]
 
-        g = gap_of_k(ptp, mdl.pt_radius, r * 2, cst[CF_plane_y])
+        g = gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y])
 
         if live[r] != 0 and g <= cst[CF_k_touch] and row_dot(rn, v0) <= gate:
 
@@ -1723,7 +1735,7 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
     rc = rate(q0, v0, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv)
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
 
     if rc != 0:
 
@@ -1739,7 +1751,7 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
     rc = rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv)
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
 
     if rc != 0:
 
@@ -1763,7 +1775,7 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
     rc = rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv)
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
 
     if rc != 0:
 
@@ -1787,7 +1799,7 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
     rc = rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv)
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
 
     if rc != 0:
 
@@ -1913,15 +1925,10 @@ def gram_factor4(g, k, rhs, lam):
 
 @cuda.jit(device=True)
 
-def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rc):
+def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rc, mdi, csti):
+    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
-    pot = fk_eval(q, v, mdl.ax_rot, mdl.ax_axis, mdl.ax_slot, mdl.ax_slope, mdl.ax_const,
-
-                  mdl.body_axoff, mdl.body_parent, mdl.body_mass, mdl.body_com, mdl.body_inertia,
-
-                  mdl.body_fp, mdl.body_fc, mdl.chain_off, mdl.chain_ax, mdl.pt_body, mdl.pt_local,
-
-                  mdl.pt_radius, csti[CI_nbod], csti[CI_naxes], cst[CF_plane_y], cst[CF_gy],
+    pot = fk_eval(q,  v, mdl, mdi, cst,
 
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
@@ -1985,7 +1992,7 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
 
     for r in range(4):
 
-        g = gap_of_k(ptp, mdl.pt_radius, r * 2, cst[CF_plane_y])
+        g = gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y])
 
         touching[r] = int32(1) if (csti[CI_contact] != 0 and g <= cst[CF_k_touch]) else int32(0)
 
@@ -2097,13 +2104,7 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
 
             v[i] = v[i] + corr[i]
 
-    pot = fk_eval(q, v, mdl.ax_rot, mdl.ax_axis, mdl.ax_slot, mdl.ax_slope, mdl.ax_const,
-
-                  mdl.body_axoff, mdl.body_parent, mdl.body_mass, mdl.body_com, mdl.body_inertia,
-
-                  mdl.body_fp, mdl.body_fc, mdl.chain_off, mdl.chain_ax, mdl.pt_body, mdl.pt_local,
-
-                  mdl.pt_radius, csti[CI_nbod], csti[CI_naxes], cst[CF_plane_y], cst[CF_gy],
+    pot = fk_eval(q,  v, mdl, mdi, cst,
 
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
@@ -2115,7 +2116,7 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
 
     for r in range(4):
 
-        g = gap_of_k(ptp, mdl.pt_radius, r * 2, cst[CF_plane_y])
+        g = gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y])
 
         if csti[CI_contact] != 0 and g < float(-1e-6):
 
@@ -2201,9 +2202,10 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
 
 @cuda.jit(device=True)
 
-def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh, sdep, scl, adv, rc, q1, v1, w1):
+def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh, sdep, scl, adv, rc, q1, v1, w1, mdi, csti):
+    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
-    # The C++ recursive advance() as an explicit LIFO interval stack over the
+    # The C++ recursive advance(, csti, mdi) as an explicit LIFO interval stack over the
 
     # single "current state" thread (q1/v1/w1) -- DFS order preserved.
 
@@ -2285,7 +2287,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
         caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv)
+                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
 
         if rcv[0] != 0:
 
@@ -2309,19 +2311,13 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
             continue
 
-        pot = fk_eval(q1, v1, mdl.ax_rot, mdl.ax_axis, mdl.ax_slot, mdl.ax_slope, mdl.ax_const,
-
-                      mdl.body_axoff, mdl.body_parent, mdl.body_mass, mdl.body_com, mdl.body_inertia,
-
-                      mdl.body_fp, mdl.body_fc, mdl.chain_off, mdl.chain_ax, mdl.pt_body, mdl.pt_local,
-
-                      mdl.pt_radius, csti[CI_nbod], csti[CI_naxes], cst[CF_plane_y], cst[CF_gy],
+        pot = fk_eval(q1,  v1, mdl, mdi, cst,
 
                       M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
         for r in range(4):
 
-            g = gap_of_k(ptp, mdl.pt_radius, r * 2, cst[CF_plane_y])
+            g = gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y])
 
             live[r] = int32(1) if (csti[CI_contact] != 0 and g <= cst[CF_k_touch]) else int32(0)
 
@@ -2329,7 +2325,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                         axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we)
+                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
 
         if rcs != 0:
 
@@ -2389,7 +2385,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                                 axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                                qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we)
+                                qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
 
                 if rcb != 0:
 
@@ -2427,13 +2423,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
         if csti[CI_contact] != 0:
 
-            pot = fk_eval(qe, ve, mdl.ax_rot, mdl.ax_axis, mdl.ax_slot, mdl.ax_slope, mdl.ax_const,
-
-                          mdl.body_axoff, mdl.body_parent, mdl.body_mass, mdl.body_com, mdl.body_inertia,
-
-                          mdl.body_fp, mdl.body_fc, mdl.chain_off, mdl.chain_ax, mdl.pt_body, mdl.pt_local,
-
-                          mdl.pt_radius, csti[CI_nbod], csti[CI_naxes], cst[CF_plane_y], cst[CF_gy],
+            pot = fk_eval(qe,  ve, mdl, mdi, cst,
 
                           M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
@@ -2449,7 +2439,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                     continue
 
-                g = gap_of_k(ptp, mdl.pt_radius, (r - 1) * 2, cst[CF_plane_y])
+                g = gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y])
 
                 if g >= float(0.0):
 
@@ -2477,7 +2467,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                                     axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                                    qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we)
+                                    qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
 
                     if rcb != 0:
 
@@ -2485,7 +2475,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                         return
 
-                    if gap_of_k(ptp, mdl.pt_radius, r * 2, cst[CF_plane_y]) <= float(0.0):
+                    if gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y]) <= float(0.0):
 
                         right = mid
 
@@ -2549,7 +2539,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
             caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv)
+                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
 
             if rcv[0] != 0:
 
@@ -2573,7 +2563,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                             axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                            qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we)
+                            qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
 
             if rcc != 0:
 
@@ -2593,7 +2583,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
             caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv)
+                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
 
             if rcv[0] != 0:
 
@@ -2627,7 +2617,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                         axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we)
+                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
 
         if rcw != 0:
 
@@ -2649,7 +2639,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
         caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv)
+                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
 
         if rcv[0] != 0:
 
@@ -2671,7 +2661,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
 @cuda.jit(device=True)
 
-def fore_ik_at(mdl, cst, fr, leg, paw, branch):
+def fore_ik_at(mdl, cst, fr, leg, paw, branch, mdi, csti):
 
     off = csti[CI_pelvis_row] * 16
 
@@ -2743,7 +2733,7 @@ def fore_ik_at(mdl, cst, fr, leg, paw, branch):
 
 @cuda.jit(device=True)
 
-def fore_D_at(mdl, cst, fr, leg, paw):
+def fore_D_at(mdl, cst, fr, leg, paw, csti):
 
     off = csti[CI_pelvis_row] * 16
 
@@ -2769,7 +2759,7 @@ def fore_D_at(mdl, cst, fr, leg, paw):
 
 @cuda.jit(device=True)
 
-def hind_ik_at(mdl, cst, fr, tgt, ap, branch):
+def hind_ik_at(mdl, cst, fr, tgt, ap, branch, csti):
 
     off = csti[CI_pelvis_row] * 16
 
@@ -2817,9 +2807,8 @@ def hind_ik_at(mdl, cst, fr, tgt, ap, branch):
 
 @cuda.jit(device=True)
 
-def tables_at(mdl, phi):
+def tables_at(mdl, phi, out):
 
-    out = cuda.local.array(18, dtype=float64)
 
     p = phi - math.floor(phi)
 
@@ -2995,9 +2984,9 @@ def reset_kernel(a_q0, a_v0, a_touching0, phi_l0, phi_r0, settle_total, a_store_
 
 @cuda.jit(device=True)
 
-def fore_target_headroom(mdl, cst, fr, leg, paw, branch):
+def fore_target_headroom(mdl, cst, fr, leg, paw, branch, mdi, csti):
 
-    d1a, d1b, q1r, q2r, d1c = fore_ik_at(mdl, cst, fr, leg, paw, branch)
+    d1a, d1b, q1r, q2r, d1c = fore_ik_at(mdl, cst, fr, leg, paw, branch, csti, mdi)
 
     c1 = mdi[OI_fore_coord + leg * 2]
 
@@ -3015,7 +3004,7 @@ def fore_target_headroom(mdl, cst, fr, leg, paw, branch):
 
 @cuda.jit(device=True)
 
-def fore_follow(mdl, cst, fr, leg, paw_t, branch):
+def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
     p = cuda.local.array(3, dtype=float64)
 
@@ -3043,7 +3032,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch):
 
     dirn = float(1.0)
 
-    if fore_target_headroom(mdl, cst, fr, leg, px, branch) < fore_target_headroom(mdl, cst, fr, leg, py, branch):
+    if fore_target_headroom(mdl, cst, fr, leg, px, branch, csti, mdi) < fore_target_headroom(mdl, cst, fr, leg, py, branch, csti, mdi):
 
         dirn = float(-1.0)
 
@@ -3065,7 +3054,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch):
 
         t[2] = p[2]
 
-        if fore_D_at(mdl, cst, fr, leg, t) < dmax:
+        if fore_D_at(mdl, cst, fr, leg, t, csti) < dmax:
 
             lo = mid
 
@@ -3083,9 +3072,12 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch):
 
     te[2] = p[2]
 
-    if fore_target_headroom(mdl, cst, fr, leg, te, branch) < float(0.1022):
+    if fore_target_headroom(mdl, cst, fr, leg, te, branch, csti, mdi) < float(0.1022):
 
-        return te
+        result[0] = te[0]
+        result[1] = te[1]
+        result[2] = te[2]
+        return result
 
     lo = float(0.0)
 
@@ -3103,7 +3095,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch):
 
         t[2] = p[2]
 
-        if fore_target_headroom(mdl, cst, fr, leg, t, branch) < float(0.1022):
+        if fore_target_headroom(mdl, cst, fr, leg, t, branch, csti, mdi) < float(0.1022):
 
             lo = mid
 
@@ -3119,7 +3111,10 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch):
 
     out[2] = p[2]
 
-    return out
+    result[0] = out[0]
+    result[1] = out[1]
+    result[2] = out[2]
+    return result
 
 
 
@@ -3127,7 +3122,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch):
 
 @cuda.jit(device=True)
 
-def fore_env(mdl, cst, fr, leg, paw_t, v3):
+def fore_env(mdl, cst, fr, leg, paw_t, v3, csti):
 
     m16 = cuda.local.array(16, dtype=float64)
 
@@ -3211,9 +3206,8 @@ def hind_deadline_fn(h_lt_o, h_lt_h, tair, fold_budget, unload_ticks):
 
 @cuda.jit(device=True)
 
-def paw_leg(paw_t, leg):
+def paw_leg(paw_t, leg, out):
 
-    out = cuda.local.array(3, dtype=float64)
 
     out[0] = paw_t[leg * 3]
 
@@ -3232,6 +3226,7 @@ def paw_leg(paw_t, leg):
 @cuda.jit
 
 def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi):
+    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
     e = cuda.grid(1)
 
@@ -3549,13 +3544,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
     # ── the tick-start evaluation (eval0) ──
 
-    pot = fk_eval(q, v, mdl.ax_rot, mdl.ax_axis, mdl.ax_slot, mdl.ax_slope, mdl.ax_const,
-
-                  mdl.body_axoff, mdl.body_parent, mdl.body_mass, mdl.body_com, mdl.body_inertia,
-
-                  mdl.body_fp, mdl.body_fc, mdl.chain_off, mdl.chain_ax, mdl.pt_body, mdl.pt_local,
-
-                  mdl.pt_radius, csti[CI_nbod], csti[CI_naxes], cst[CF_plane_y], cst[CF_gy],
+    pot = fk_eval(q,  v, mdl, mdi, cst,
 
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
@@ -3611,9 +3600,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
             c2 = mdi[OI_fore_coord + leg * 2 + 1]
 
-            qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1)
+            qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi)
 
-            qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1)
+            qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi)
 
             e0 = math.sqrt((qa1 - q[c1]) * (qa1 - q[c1]) + (qa2 - q[c2]) * (qa2 - q[c2]))
 
@@ -3721,9 +3710,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
         for leg in range(2):
 
-            g0 = gap_of_k(ptp, mdl.pt_radius, leg * 2, cst[CF_plane_y])
+            g0 = gap_of_k(ptp, pt_radius_g, leg * 2, cst[CF_plane_y])
 
-            g1 = gap_of_k(ptp, mdl.pt_radius, leg * 2 + 1, cst[CF_plane_y])
+            g1 = gap_of_k(ptp, pt_radius_g, leg * 2 + 1, cst[CF_plane_y])
 
             gmin = min(g0, g1)
 
@@ -3755,9 +3744,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
         for leg in range(2):
 
-            g0 = gap_of_k(ptp, mdl.pt_radius, leg * 2, cst[CF_plane_y])
+            g0 = gap_of_k(ptp, pt_radius_g, leg * 2, cst[CF_plane_y])
 
-            g1 = gap_of_k(ptp, mdl.pt_radius, leg * 2 + 1, cst[CF_plane_y])
+            g1 = gap_of_k(ptp, pt_radius_g, leg * 2 + 1, cst[CF_plane_y])
 
             gmin = min(g0, g1)
 
@@ -3891,9 +3880,10 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                         gated = o_prior
 
-                plt = paw_leg(paw_t, leg)
+                plt = cuda.local.array(3, dtype=float64)
+                paw_leg(paw_t, leg, plt)
 
-                dq1, dq2, tq1r, tq2r, dsat = fore_ik_at(mdl, cst, fr, leg, plt, ikb[leg])
+                dq1, dq2, tq1r, tq2r, dsat = fore_ik_at(mdl, cst, fr, leg, plt, ikb[leg], csti, mdi)
 
                 th1 = min(tq1r - mdl[OF_lower + c1], mdl[OF_upper + c1] - tq1r)
 
@@ -3911,7 +3901,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     due = 1
 
-                env_t = fore_env(mdl, cst, fr, leg, paw_t, v[3])
+                env_t = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti)
 
                 act = int32(0)
 
@@ -3923,7 +3913,8 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                 elif gated == 0 and due != 0 and thin_seat != 0 and wall_bound != 0:
 
-                    seat = fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg])
+                    seat = cuda.local.array(3, dtype=float64)
+                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat)
 
                     dsx = seat[0] - paw_t[leg * 3]
 
@@ -3949,7 +3940,8 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     if wall_bound != 0 and min(th1, th2) < float(0.1022):
 
-                        seat = fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg])
+                        seat = cuda.local.array(3, dtype=float64)
+                        fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat)
 
                         dsx = seat[0] - paw_t[leg * 3]
 
@@ -4051,7 +4043,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     f_t[leg] = float(0.0)
 
-                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3])
+                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti)
 
                     f_st[leg] = max(float(0.0), env_t2 - (tair + float(1.0)))
 
@@ -4087,9 +4079,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     cc2 = mdi[OI_fore_coord + leg * 2 + 1]
 
-                    qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1)
+                    qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi)
 
-                    qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1)
+                    qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi)
 
                     e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]))
 
@@ -4107,7 +4099,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     f_t[leg] = float(0.0)
 
-                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3])
+                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti)
 
                     f_st[leg] = max(float(0.0), env_t2 - (tair + float(1.0)))
 
@@ -4145,9 +4137,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                 cc2 = mdi[OI_fore_coord + leg * 2 + 1]
 
-                qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1)
+                qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi)
 
-                qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1)
+                qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi)
 
                 e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]))
 
@@ -4195,7 +4187,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                 if f_en[leg] != 0:
 
-                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3])
+                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti)
 
                     f_st[leg] = max(float(0.0), env_t2 - (tair + float(1.0)))
 
@@ -4371,9 +4363,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                 if h_held[hl] != 0:
 
-                    g1 = gap_of_k(ptp, mdl.pt_radius, mdi[OI_hind_heel_pt + hl], cst[CF_plane_y])
+                    g1 = gap_of_k(ptp, pt_radius_g, mdi[OI_hind_heel_pt + hl], cst[CF_plane_y])
 
-                    g2 = gap_of_k(ptp, mdl.pt_radius, mdi[OI_hind_heel_pt + hl] + 1, cst[CF_plane_y])
+                    g2 = gap_of_k(ptp, pt_radius_g, mdi[OI_hind_heel_pt + hl] + 1, cst[CF_plane_y])
 
                     if min(g1, g2) > cst[CF_k_touch] + cst[CF_k_release]:
 
@@ -4383,9 +4375,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                 if h_t[hl] >= tair:
 
-                    g1 = gap_of_k(ptp, mdl.pt_radius, mdi[OI_hind_heel_pt + hl], cst[CF_plane_y])
+                    g1 = gap_of_k(ptp, pt_radius_g, mdi[OI_hind_heel_pt + hl], cst[CF_plane_y])
 
-                    g2 = gap_of_k(ptp, mdl.pt_radius, mdi[OI_hind_heel_pt + hl] + 1, cst[CF_plane_y])
+                    g2 = gap_of_k(ptp, pt_radius_g, mdi[OI_hind_heel_pt + hl] + 1, cst[CF_plane_y])
 
                     if min(g1, g2) <= cst[CF_k_touch]:
 
@@ -4473,7 +4465,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     for pt in range(2):
 
-                        g = gap_of_k(ptp, mdl.pt_radius, 4 + l2 * 2 + pt, cst[CF_plane_y])
+                        g = gap_of_k(ptp, pt_radius_g, 4 + l2 * 2 + pt, cst[CF_plane_y])
 
                         if g < mn:
 
@@ -4487,7 +4479,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                 for pt in range(2):
 
-                    g = gap_of_k(ptp, mdl.pt_radius, o * 2 + pt, cst[CF_plane_y])
+                    g = gap_of_k(ptp, pt_radius_g, o * 2 + pt, cst[CF_plane_y])
 
                     if g < mn:
 
@@ -4517,7 +4509,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                             for pt in range(2):
 
-                                g = gap_of_k(ptp, mdl.pt_radius, 4 + l2 * 2 + pt, cst[CF_plane_y])
+                                g = gap_of_k(ptp, pt_radius_g, 4 + l2 * 2 + pt, cst[CF_plane_y])
 
                                 if g < mn2:
 
@@ -4715,7 +4707,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
         for k in range(8):
 
-            g = gap_of_k(ptp, mdl.pt_radius, k, cst[CF_plane_y])
+            g = gap_of_k(ptp, pt_radius_g, k, cst[CF_plane_y])
 
             if csti[CI_contact] != 0 and g <= cst[CF_k_touch]:
 
@@ -4867,7 +4859,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     for r in range(4):
 
-                        g = gap_of_k(ptp, mdl.pt_radius, r * 2, cst[CF_plane_y])
+                        g = gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y])
 
                         if not (csti[CI_contact] != 0 and g <= cst[CF_k_touch]):
 
@@ -4967,9 +4959,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                                         touching_leg = int32(0)
 
-                                        g0 = gap_of_k(ptp, mdl.pt_radius, leg * 2, cst[CF_plane_y])
+                                        g0 = gap_of_k(ptp, pt_radius_g, leg * 2, cst[CF_plane_y])
 
-                                        g1 = gap_of_k(ptp, mdl.pt_radius, leg * 2 + 1, cst[CF_plane_y])
+                                        g1 = gap_of_k(ptp, pt_radius_g, leg * 2 + 1, cst[CF_plane_y])
 
                                         if csti[CI_contact] != 0 and min(g0, g1) <= cst[CF_k_touch]:
 
@@ -5001,13 +4993,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
         # the servo: capped mass-normalized PD (targets per the current state)
 
-        pot = fk_eval(q, v, mdl.ax_rot, mdl.ax_axis, mdl.ax_slot, mdl.ax_slope, mdl.ax_const,
-
-                      mdl.body_axoff, mdl.body_parent, mdl.body_mass, mdl.body_com, mdl.body_inertia,
-
-                      mdl.body_fp, mdl.body_fc, mdl.chain_off, mdl.chain_ax, mdl.pt_body, mdl.pt_local,
-
-                      mdl.pt_radius, csti[CI_nbod], csti[CI_naxes], cst[CF_plane_y], cst[CF_gy],
+        pot = fk_eval(q,  v, mdl, mdi, cst,
 
                       M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
@@ -5065,7 +5051,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                             tgt[1] = tgt[1] + carch * math.sin(PI * sg)
 
-                        qh_h, qk_h, qa_h = hind_ik_at(mdl, cst, fr, tgt, h_ap[hl], h_br[hl])
+                        qh_h, qk_h, qa_h = hind_ik_at(mdl, cst, fr, tgt, h_ap[hl], h_br[hl], csti)
 
                         if ji == 0:
 
@@ -5085,7 +5071,8 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     else:
 
-                        qstar = tables_at(mdl, phi[hl])
+                        qstar = cuda.local.array(18, dtype=float64)
+                        tables_at(mdl, phi[hl], qstar)
 
                         target = qstar[ji]
 
@@ -5101,9 +5088,10 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     if capt != 0:
 
-                        plt = paw_leg(paw_t, fl)
+                        plt = cuda.local.array(3, dtype=float64)
+                        paw_leg(paw_t, fl, plt)
 
-                        q1f, q2f, q1rx, q2rx, satf = fore_ik_at(mdl, cst, fr, fl, plt, ikb[fl])
+                        q1f, q2f, q1rx, q2rx, satf = fore_ik_at(mdl, cst, fr, fl, plt, ikb[fl], csti, mdi)
 
                         if ji == 0:
 
@@ -5197,7 +5185,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                 qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl,
 
-                adv, rca, o_q, o_v, o_w)
+                adv, rca, o_q, o_v, o_w, csti, mdi)
 
         for i in range(18):
 
@@ -5287,7 +5275,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                                     qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl,
 
-                                    adv, rca, o_q, o_v, o_w)
+                                    adv, rca, o_q, o_v, o_w, csti, mdi)
 
                             if rca[0] != 0:
 
@@ -5339,7 +5327,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                         qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl,
 
-                        adv, rca, o_q, o_v, o_w)
+                        adv, rca, o_q, o_v, o_w, csti, mdi)
 
                 for i in range(18):
 
