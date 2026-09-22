@@ -2219,7 +2219,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
                         rc[0] = rcb;
                         return;
 }
-                    if (gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y]) <= (double)(0.0)) {
+                    if (gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y]) <= (double)(0.0)) {
                         right =  mid;
 }
                     else {

@@ -43,9 +43,11 @@ def dbg():
 
 q0, v0, rc, adv, ref, tk = dbg()
 print(f"reset: q[3]={q0[3]:.9f} q[4]={q0[4]:.9f} v[3]={v0[3]:.9f} v[4]={v0[4]:.9f} rc={rc} adv={adv}")
-for t in range(1, 6):
+for t in range(1, 101):
     env.step(1)
     q, v, rc, adv, ref, tk = dbg()
+    if t > 12 and t % 10 != 0 and rc == 0 and ref == 0:
+        continue
     print(f"tick {tk}: q[3]={q[3]:.12f} q[4]={q[4]:.12f} v[3]={v[3]:.12f} "
           f"v[4]={v[4]:.12f} rc={rc} adv={adv} refused={ref}")
 print("expected: v[4] decreases by ~9.80665/300 per tick; q[4] drops; "

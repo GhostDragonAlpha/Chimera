@@ -133,3 +133,110 @@ advance itself (drift vs event-DFS vs impact, the LIFO stack hoisted to
 global scratch); the remaining global lever is the original receipt's
 option 2 (a non-numba CUDA compiler path). No falsifier number has changed;
 the bars remain UNMEASURED.
+
+## APPENDIX — TRANSLATOR-FINISH CONTINUATION (the nvcc-route DLL env, 2026-09-22)
+
+Continuation agent (git trailer Agent: GLM 5.3) on branch
+agent/typeb-gpu-finish-20260922, resuming a host-crash-interrupted session.
+The nvcc route now has a WORKING BATCHED ENV TICK: walker_env.dll (nvcc 12.8 +
+VS2022 cl, -arch=sm_89, -lineinfo) driven by walker_env_host.py (ctypes
+mirror of walker_nb_split_env.GaitWalkEnv), first tick achieved and the env
+runs the full phase-split plan/integ/post per tick with a_rc carrying the
+verdict.
+
+### Latent defects found and fixed (the flattened lane was never runtime-
+validated; each fix unmasked the next layer):
+
+1. mdi chain_ax slot 60 vs 104 written (walker_numba.py CHN guess "14 bodies
+   x ~4"); later tables stomped chain_ax[60:104]; fk_eval indexed ax_slot with
+   garbage -> the tick-0 illegal memory access. Fixed at the source: CHN=104,
+   offsets pt_body 184 / drive_coord 192 / fore_coord 204 / hind_coord 208 /
+   hind_drive 216 / fore_drive 224 / fore_heel_pt 228 / hind_heel_pt 230,
+   NI32=232; builder tiling asserts added.
+2. numba2cu SINGLE_INT_ARGS typed the substep h int -> dt/4 truncated to 0 ->
+   advance returned at h<1e-12 every call -> total freeze (rc=0, adv=0).
+3. The flattened source passed (csti, mdi) into defs declaring (..., mdi,
+   csti) at ALL 30 call sites; impact/rate/fk_eval read csti as the model
+   table -> M garbage -> inverse_spd18 rc=8.
+4. wp.zeros semantics lost: ~190 locals (plane[4] among them) uninitialized in
+   the numba forms; phantom contacts cancelled gravity exactly. 411 explicit
+   zero-fills restored (matched against walker_gpu.py's wp.zeros set).
+5. rate() mat_vec(inv, free, free) in-place: bounded forces amplified to 1e41
+   by compounding with inv entries ~1e3. Scratch buffer fixed.
+6. free_step RK4 stage wiring: all four rate calls wrote the same (srq, srv)
+   while the combination read va/brv/crv/drv, and the stage-input states
+   copied states instead of derivatives. Rewired per the C++ (k1->qa/va,
+   k2->brq/brv at shifted states, ...).
+7. advance rep-scan bisection probed gap_of_k(..., r*2) instead of (r-1)*2
+   (the for->while r-1 compensation missed an expression context): phantom
+   contact-loss events -> advance wall-clamp 64-budget chatter -> rc=6 at
+   settle tick 5.
+
+Verification instruments: compute-sanitizer memcheck + a -lineinfo rebuild
+(naming fk_eval walker_kernels.cuh:590); host_probe.cxx / host_loop.cxx with
+host_shim/ run the exact translated kernels on the CPU (seconds per
+iteration). GPU and host traces agree to printed digits.
+
+### State after the repairs (measured):
+
+- GPU freefall (defaults pose): base-y second difference -0.00011154 ->
+  -10.038 m/s^2 per tick for 51 ticks, then the collapse latch (y=0.194 <
+  collapse_y=0.20) freezes the env (rc=0, refused=0). Host trace identical.
+- The frozen bars estimator over the latched trace measures g=0.261426
+  (bar |err|<=0.01) -> F-FULLPORT-PROBE-PARITY freefall FIRES AS WRITTEN.
+  Attribution: (a) the reference trace cpu_freefall.txt has q3 identically 0
+  and an exact -9.807 parabola — the C++ probe's power-off holds the legs
+  (ballistic base), while the kernels' power-off frees the joints (tau=0), so
+  the GPU base carries leg-reaction terms (-10.038 pre-latch, |err|=0.23);
+  (b) the collapse latch truncates the trace at tick 51 and dilutes the mean.
+- stand probe: max_scaled_diff=0.1311 (bar <1e-2) -> FIRES. Attribution
+  incomplete (needs a tick-by-tick GPU-vs-cpu_stand comparison).
+- C1 nominal class (build @ 12:07): horizon=16, class=6 (wall-clamp budget),
+  hind=0, fore=0 -> FIRES. Root cause chain fixed through (7); on the current
+  build the nominal env walks to tick 39 and refuses class 5 (project_rows
+  row budget R>=10 / projection failure) — the next latent layer, not yet
+  root-caused. The 100-tick class bar (hind fire + fore lift by 150) is
+  still RED.
+- C3 batch-1024: env_sync failed on the 12:07 build (diagnosis pending).
+
+### Commits on this branch (this appendix): 6a505814 (checkpoint), 55d39440
+(first tick + chain_ax fix), 87ef39bd (defects 2-5 + instrumentation),
+cec9bbca (host loop + attribution), this commit (defects 6-7 + rep-scan fix).
+
+The bars remain UNMEASURED-to-RED on the nvcc route: probes FIRE with the
+attributions above; C1/C2 blocked by the settle/wall-pin defect chain
+(rc=3/rc=5 now); C3 pending; C4 pending. No falsifier has been re-tuned.
+
+### APPENDIX ADDENDUM — first full bars measurement on the final build
+(rep-scan fix, walker_env.dll @ 13:21, bars_split_b32.json, --env dll, block 32)
+
+- F-FULLPORT-PROBE-PARITY freefall: FIRED — measured_g=0.2614 (bar |err|<=0.01;
+  err=9.545). Attributed: collapse latch (y=0.194<0.20 at tick 51) truncates
+  the trace; pre-latch the coupled base accel is -10.038 vs the C++ trace's
+  ballistic -9.807 (its q3 is identically zero: power-off holds the legs in
+  the C++, frees them in the kernels).
+- F-FULLPORT-PROBE-PARITY stand: FIRED — max_scaled_diff=0.1278 (bar <1e-2).
+  Attribution pending (tick-by-tick vs cpu_stand.txt not yet done).
+- F-FULLPORT-CLASS: FIRES — nominal walk refused at tick 39 (class 5 =
+  project_rows row budget / projection failure), hind_fires=0, fore_lifts=0
+  (bar: >=1 hind fire AND >=1 fore lift by tick 150). The frozen script's
+  class_pass=True is a formula artifact (its boolean never reads hind/fore).
+  Progress across this session's fixes: refused at 5 (class 6 clamp chatter)
+  -> 16 (class 6) -> 39 (class 5).
+- F-FULLPORT-SURVIVAL: FIRED — pass_100=0/64 (median horizon 39.0; bar
+  >=80% of 64 seeds >=100 ticks). Horizons 39-40 across seeds: the settle/
+  wall-pin defect chain is seed-independent.
+- F-FULLPORT-THROUGHPUT: the script records 32,401,645 eps @1024 and
+  135,185,980 eps @4096 (>=968 bar -> throughput_pass_1024=True) but this
+  number is NOT a valid throughput measurement: 1024/1024 and 4096/4096 envs
+  are already refused, so the kernels short-circuit (0.03 ms/tick = dead-env
+  dispatch). Re-measure after C1 goes green.
+- F-FULLPORT-MEMORY: no fire — 14.02 GB used (shared GPU, includes other
+  processes), marginal -0.00128 MB/env (noise-level).
+
+NEXT LANE (in order): (1) audit advance's wall-pin/clamp path and rate's
+joint-stop rows against the C++ at the tick-39 settle phase (rc=5, class 5);
+(2) stand-parity tick-by-tick attribution; (3) power-off joint semantics
+decision (manifest addendum if the kernels' free-joint reading is kept);
+(4) re-measure C3 with live envs. First tick and a full frozen-bars
+measurement pipeline on the nvcc route are DELIVERED.

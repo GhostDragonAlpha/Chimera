@@ -2635,7 +2635,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                         return
 
-                    if gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y]) <= float(0.0):
+                    if gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y]) <= float(0.0):
 
                         right = mid
 
