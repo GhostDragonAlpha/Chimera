@@ -346,10 +346,11 @@ are now derived and banked (see Status below).
 
 ### Status: 2026-09-20 — the real body, the save-any-moment proof, the muscle books
 
-The 2026-09-20 consolidation, merged onto master by two integration passes
-behind full verification: nine lane tips, zero conflicts, every test suite at
+The 2026-09-20 consolidation, merged onto master by three integration passes
+behind full verification: fifteen lane tips, zero conflicts, every test suite at
 its receipt count (`tools/science_funnel/validation/integration_pass4_20260920/receipt.json`,
-`tools/science_funnel/validation/integration_pass5_20260920/receipt.json`).
+`tools/science_funnel/validation/integration_pass5_20260920/receipt.json`,
+`tools/science_funnel/validation/integration_pass6_20260920/receipt.json`).
 Plain words, each with its receipt:
 
 - **The playable slice now rides the real body.** The bounding-box stand-in is
@@ -361,8 +362,10 @@ Plain words, each with its receipt:
   The honest red, measured where it stands: the slice's own 10-second boot bar
   is MISSED — first data at 135.73 s, and the cost is the engine's own mesh
   import at this scale (237.67 s isolated parse, 130-240+ s across boots). The
-  importer-performance successor lane is named and NOT merged
-  (`integration_pass5_20260920/receipt.json`, evaluated_and_NOT_merged).
+  importer-performance successor lane has since merged (integration pass 6,
+  `integration_pass6_20260920/receipt.json`): the admission path serves a
+  derived GLB cache and the cached full boot first-renders data at 2.08-2.10 s
+  against the same 10 s bar (`mesh_parse_20260920/record.md`).
 - **The walk can be saved mid-stride and resumed perfectly.** The walker's
   state was captured at tick 150 of the ship-fenced 302-tick walk and restored
   into a fresh process: state hashes and all 21,888 action bytes identical to
