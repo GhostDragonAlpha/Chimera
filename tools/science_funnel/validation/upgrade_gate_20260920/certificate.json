@@ -1,0 +1,631 @@
+{
+  "base_commit": "bd4bf630",
+  "cert_hash": "b33bd69ea66b9b9af6b8886753ff1d8531db056bccff8dcea790d80fdb8cc3ac",
+  "cert_version": 1,
+  "compat_key": "9de019b7b9ef5e0ceff159558d8da726d678faafff28f12dab8d383b97c21b40",
+  "execution_identity": {
+    "body_domain": {
+      "body_digest": "UNBOUND_dummy (P3 manifest body: status UNBOUND -- binds automatically when the real actor exists)",
+      "domain_tag": "cpu-walk-scene/hind-pad-surrogate"
+    },
+    "physics_build": {
+      "build_id": "cpu-walk-scene-build-N",
+      "params_sha256": "3e770bef8b8707c99cdae2f2b2f4a8afb8d12430d987217016e6720a6d232036",
+      "scene_module": "tools/policy_compat/scene_cpu.py",
+      "scene_module_sha256": "ce12faee34dfdcf2a7c256e91b183c62fe33815898c52aa7e90174d8d38e47b4",
+      "scene_version": "cpu-walk-scene/1.0.0",
+      "timestep_s": 0.0033333333333333335
+    },
+    "policy_bundle": {
+      "activation": "tanh",
+      "architecture": [
+        64,
+        128,
+        128,
+        8
+      ],
+      "loader": "typeb_export.policy_manifest.load_manifest (frozen)",
+      "manifest_file_sha256": "aa5334f797b50c2ac3950cec5b82b439f982c1090dd66827754a1acbb8a26b6f",
+      "manifest_hash": "9ca7e976dfb0dedd3f56dfa404673ee77c00801acb2753cdfd83604c480c35b7",
+      "normalization_clip": 8.0,
+      "weights_file_sha256": "5fb2b7857d872fccc0bb89d6733582647da04d11d636e84c266912ce9c027f0f",
+      "weights_sha256": "5fb2b7857d872fccc0bb89d6733582647da04d11d636e84c266912ce9c027f0f"
+    },
+    "runtime_profile": {
+      "hold_ticks": 15,
+      "inference_recipe": [
+        "project trace record -> x[64] via observation_schema.project_trace",
+        "x = clip((x - mean)/std, -8, +8)",
+        "h1 = tanh(x @ W0 + b0); h2 = tanh(h1 @ W1 + b1); a = tanh(h2 @ W2 + b2)",
+        "applied = clip(center + scale*a, lo, hi)",
+        "decision iff tick % 15 == 0, else hold previous applied"
+      ],
+      "machine": "AMD64",
+      "numpy": "2.2.6",
+      "os": "Windows-11-10.0.26200-SP0",
+      "physics_hz": 300,
+      "policy_hz": 20,
+      "python": "3.14.3"
+    },
+    "test_suite": {
+      "corpus": "frozen P3 900-tick/60-decision sequence",
+      "event_stride": 15,
+      "id": "upgrade_gate_20260920/registered_cases_v1",
+      "prereg_registered_cases_sha256": "d6fa74bd89d14f2e49b4d196a974e00f7a19d167e516122e790f5b564937dea7"
+    }
+  },
+  "issued_by": "upgrade-gate-20260920 lane agent (Agent: upgate)",
+  "kind": "policy_compat_certificate",
+  "lane": "upgrade-gate-20260920",
+  "prereg_receipt": "tools/science_funnel/validation/upgrade_gate_20260920/receipt.json",
+  "prereg_rule0_sha": "5a405a10fe2a9d52750d6d8f6e8c8bb7b22c03d04a7a1feb8d191f916d6fc705",
+  "qualification_scope": {
+    "bars": {
+      "availability_exact": "available_groups exactly the declared set",
+      "bounds_honored": "every applied command within the manifest limiter bounds",
+      "contact_floor": "contact_count >= 2 at every tick",
+      "no_intervention": "intervention_reason == none at every tick",
+      "no_nan_inf": "no NaN/Inf in any recorded state quantity",
+      "velocity_envelope": "|v_t| <= V = 2.977443609022557 m/s at every tick"
+    },
+    "bodies": [
+      "UNBOUND_dummy (the P3 dummy actor; the certificate binds the bundle hashes, so the real actor binds by reissuance with identical machinery)"
+    ],
+    "horizons": {
+      "decisions": 60,
+      "hold_ticks": 15,
+      "ticks": 900
+    },
+    "non_regression_margins": [
+      {
+        "bound": 0.03103119967715015,
+        "derivation": "v_{t+1}=(1-dt*d_eff)v_t+dt*a; d_eff in [d*0.95, d] (the declared warm-start coupling), a in [0, STRIDE_GAIN*stride_amp_hi=0.99]; envelope V = a_max/d_lo = 0.99/(0.35*0.95) = 2.977443609022557 m/s (contraction fixed point); build N+1 scales every d_eff by 1.01, so Delta_{t+1} = (1-dt*d'_t)Delta_t - dt*0.01*d_t*v_t and the geometric sum over ANY horizon gives max|Delta_v| <= delta*V/(1.01*0.95) = 0.01*2.977443609022557/0.9595 = 0.03103119967715015 m/s",
+        "name": "crossbuild_openloop_max_dv",
+        "quantity": "max|v_N1 - v_N| over the registered open-loop cases"
+      }
+    ],
+    "ranges": {
+      "com_speed_m_s": "[0, 2.977443609022557] (the derived envelope V)",
+      "pad_gap_m": "[0, clearance + lift_amp_hi*1 + micro_terrain_amp]",
+      "phase": "[0,1) per leg"
+    },
+    "skills": [
+      "level-ground forward walk surrogate (the declared CPU walk scene)"
+    ],
+    "transitions": [
+      "entry from rest at the manifest center commands"
+    ],
+    "universal_proof_disclaimer": "agreement on registered cases is evidence, never universal proof"
+  },
+  "relation": {
+    "body_domain": {
+      "body_digest": "UNBOUND_dummy (P3 manifest body: status UNBOUND -- binds automatically when the real actor exists)",
+      "domain_tag": "cpu-walk-scene/hind-pad-surrogate"
+    },
+    "physics_build": {
+      "build_id": "cpu-walk-scene-build-N",
+      "params_sha256": "3e770bef8b8707c99cdae2f2b2f4a8afb8d12430d987217016e6720a6d232036",
+      "scene_module": "tools/policy_compat/scene_cpu.py",
+      "scene_module_sha256": "ce12faee34dfdcf2a7c256e91b183c62fe33815898c52aa7e90174d8d38e47b4",
+      "scene_version": "cpu-walk-scene/1.0.0",
+      "timestep_s": 0.0033333333333333335
+    },
+    "policy_bundle": {
+      "activation": "tanh",
+      "architecture": [
+        64,
+        128,
+        128,
+        8
+      ],
+      "loader": "typeb_export.policy_manifest.load_manifest (frozen)",
+      "manifest_file_sha256": "aa5334f797b50c2ac3950cec5b82b439f982c1090dd66827754a1acbb8a26b6f",
+      "manifest_hash": "9ca7e976dfb0dedd3f56dfa404673ee77c00801acb2753cdfd83604c480c35b7",
+      "normalization_clip": 8.0,
+      "weights_file_sha256": "5fb2b7857d872fccc0bb89d6733582647da04d11d636e84c266912ce9c027f0f",
+      "weights_sha256": "5fb2b7857d872fccc0bb89d6733582647da04d11d636e84c266912ce9c027f0f"
+    },
+    "runtime_profile": {
+      "hold_ticks": 15,
+      "inference_recipe": [
+        "project trace record -> x[64] via observation_schema.project_trace",
+        "x = clip((x - mean)/std, -8, +8)",
+        "h1 = tanh(x @ W0 + b0); h2 = tanh(h1 @ W1 + b1); a = tanh(h2 @ W2 + b2)",
+        "applied = clip(center + scale*a, lo, hi)",
+        "decision iff tick % 15 == 0, else hold previous applied"
+      ],
+      "machine": "AMD64",
+      "numpy": "2.2.6",
+      "os": "Windows-11-10.0.26200-SP0",
+      "physics_hz": 300,
+      "policy_hz": 20,
+      "python": "3.14.3"
+    },
+    "test_suite": {
+      "corpus": "frozen P3 900-tick/60-decision sequence",
+      "event_stride": 15,
+      "id": "upgrade_gate_20260920/registered_cases_v1",
+      "prereg_registered_cases_sha256": "d6fa74bd89d14f2e49b4d196a974e00f7a19d167e516122e790f5b564937dea7"
+    }
+  },
+  "replay_evidence": {
+    "events": [
+      {
+        "chain_sha256": "cdfd0d448219012c38f4a3106fc814af208da738b2baa6d0d821549f873ee399",
+        "kind": "state",
+        "state_sha256": "e873fcd61eb3556b5ab8b29ead1da9561a8a52846ede150fc8e4bb5d7f3b4439",
+        "tick": 14
+      },
+      {
+        "chain_sha256": "28303ba2850f6169da6eeb1b7784ba06752d4d410a21161c1c9ab7de7facb5eb",
+        "kind": "state",
+        "state_sha256": "2858e69b6e6e4a5d133f1e9d8429561ea182b682849674af02641873d9a76a80",
+        "tick": 29
+      },
+      {
+        "chain_sha256": "2ea487cbb3b94e57b33598d9b9f8e7f9d915241d9b1c0b76f5534f1b29d5244b",
+        "kind": "state",
+        "state_sha256": "6955810fc8158169e79aa75ee2806526cf87d481306c5aefdec1df37721a5900",
+        "tick": 44
+      },
+      {
+        "chain_sha256": "90e13129db20ef4ba9b4309c05496f5b42099340571295cd35ff8a013fd0ed9c",
+        "kind": "state",
+        "state_sha256": "a044daedcd1bf78c93131a1d790a4d7d93253e39414bd5574bb546977ece1e1c",
+        "tick": 59
+      },
+      {
+        "chain_sha256": "b213eb9893ce7613c374315b871571a3a8d4dad8080718d2781c48731b26b213",
+        "kind": "state",
+        "state_sha256": "1df84717f884cc3b995404e96e70fd33c03c1bb837f999966f335a71a7ace031",
+        "tick": 74
+      },
+      {
+        "chain_sha256": "9dfe5e321c629858457278265d8e090081c6055e3e32ec5d8deac49dd18b5ee0",
+        "kind": "state",
+        "state_sha256": "4f3b05dde6ea4bdcba2a6f049118585097138bc98106beecac9952fc1cf21693",
+        "tick": 89
+      },
+      {
+        "chain_sha256": "bdd17291ecd64966ea488aebba7ba07dc319780bba83e0ff002c9b6f474df39b",
+        "kind": "state",
+        "state_sha256": "fe0e8491b4d9adfbad762ea484dc53ead2f2830d6127da658fb083869892bb42",
+        "tick": 104
+      },
+      {
+        "chain_sha256": "204f2c586f046b3300f6127ba331f0f258c7642ea2b222b33ee8270610c659e0",
+        "kind": "state",
+        "state_sha256": "ca74878c7ecf1657f9c60ffcbe8ab1bd16320b7016960dc34299a0eaf737873b",
+        "tick": 119
+      },
+      {
+        "chain_sha256": "59ac3fe06a8fdde448da2df74e99f2a3e33d531d2606b4947450922e24e4cd72",
+        "kind": "state",
+        "state_sha256": "f8e2dd551299ccf6822bf9a124c2446c0b5866ed6fa087a4624e96fc94d0d9a1",
+        "tick": 134
+      },
+      {
+        "chain_sha256": "62f0ae4498b958ad2bd89c2b80d1db3bdc8fa191c6a7c4eb65127b17f290df7d",
+        "kind": "state",
+        "state_sha256": "e7b15eb8db11f9d1ad6da59d8752b49cda0bc3f22355d5e7c79b23fa3f106c7a",
+        "tick": 149
+      },
+      {
+        "chain_sha256": "eb5553cb3f82752133c1a7f4f41e1ca54902c497a722449ca75a049161a2fd50",
+        "kind": "state",
+        "state_sha256": "4a0b29d90b0aa6600686d096c4bc4cd032a21803a356bcfb3474fbd417d65f3b",
+        "tick": 164
+      },
+      {
+        "chain_sha256": "168a129698732253d6dda47db7bfc6b5c53f791d9ec1fabb72e57a47588543a7",
+        "kind": "state",
+        "state_sha256": "dcd3288ec203c5df45271c0a82d73d739410d81f362e7add84ddfe3ba9dfdba2",
+        "tick": 179
+      },
+      {
+        "chain_sha256": "684ae045dddbfe300084e6df8a1d526c7497c27f41ff6031b4d74f8b3f9dfdec",
+        "kind": "state",
+        "state_sha256": "448b4703fe38c12b08e5e3df16e5b5b8f39355c5e0834fdec0882f3ec010ad7f",
+        "tick": 194
+      },
+      {
+        "chain_sha256": "9c75616ae73b72836fefc6ac2debaa4c5fcaa20567fc7ba3bded00d89f1c64b4",
+        "kind": "state",
+        "state_sha256": "ed775bb8c1f8a5327d0c9445716448f57f69ceecbd39a8e3c4f1a24456ca175d",
+        "tick": 209
+      },
+      {
+        "chain_sha256": "7d4d163fb280c3d83d57137362cfecd304788c577bf0bb5ffaa2afe03597c232",
+        "kind": "state",
+        "state_sha256": "2e62162cd5a6b4eec513bbe070f940c38d268a96076a73264e61a678e20c9524",
+        "tick": 224
+      },
+      {
+        "chain_sha256": "00489c74f1ab86c8862454de167d0352b339f6ed5966cba353791e56c5053d8c",
+        "kind": "state",
+        "state_sha256": "599127e8750c67f0b9d005927f4ec60eaffb048049ec0c9a9b1aa33089a4505c",
+        "tick": 239
+      },
+      {
+        "chain_sha256": "96f9217ad1b6a7b9338f452aa1162107f4fec5b3f08717b7fd615444d71f8684",
+        "kind": "state",
+        "state_sha256": "2b09b0568b0f4e735bdac0447d6656c6b579a5408d964f422b606c0b91d03040",
+        "tick": 254
+      },
+      {
+        "chain_sha256": "96d2ccb3c7d5075e570068b6edc5f3a5680fa6b27fe5d8cc7695bb508eaed199",
+        "kind": "state",
+        "state_sha256": "89484dfa1404658f8b175252bb4baf36dad96ebc3eda94e2e2a28a4143747641",
+        "tick": 269
+      },
+      {
+        "chain_sha256": "ca9904ebdaf98700e14d3d0ad092854c2682786d231c6b9d67578e04ab2a5d28",
+        "kind": "state",
+        "state_sha256": "dd41ea78f26955c349e022d8cc962c1ec1137cb08d880ec907e7404a1879dbb7",
+        "tick": 284
+      },
+      {
+        "chain_sha256": "ae0c8a0d36ea4b69b5c921d78e41aff16180bb84f78bc995b6dee02de1142e79",
+        "kind": "state",
+        "state_sha256": "2d9369244231459ed716cff9332caa3e1aba867a9707e6d61b0a8948f487b749",
+        "tick": 299
+      },
+      {
+        "chain_sha256": "65fb07777dc14e2537615a886884ba2248f423fc5543ea908269b88496a4c74f",
+        "kind": "state",
+        "state_sha256": "925091f8efbb40928e18188e92fd8f95f42798cab786c882baf1c6cf2ea7f1ab",
+        "tick": 314
+      },
+      {
+        "chain_sha256": "b2676ee54879c6ad3627bfa7944ea4b2d1d57a40dbf761033f9a4e28933ee3a3",
+        "kind": "state",
+        "state_sha256": "95be9ee75748a8012584befc07589d5a7cb2ebd8d80019de60633b1493de804a",
+        "tick": 329
+      },
+      {
+        "chain_sha256": "51da3b97edb0bfa1d438321b2704a9c1df388a7298ad7f95ed284cc732838d03",
+        "kind": "state",
+        "state_sha256": "5dde1e155adf46cfbfd20b2fd9c8f2d4086c7e0aeb0d7aed9b57db4588bb4187",
+        "tick": 344
+      },
+      {
+        "chain_sha256": "22b4eb873ebe64bbb3ff8ad33dc02af862f5dd4668b371ba11a1f60b113b9881",
+        "kind": "state",
+        "state_sha256": "870f8dc44e843285f3650c96fbaf33520be59d02bbc9557e148a49206affb00e",
+        "tick": 359
+      },
+      {
+        "chain_sha256": "7e47fe1e8b5d37dec2719727f559ec2e7de07fbbdc41bb3b9d6da345a044f710",
+        "kind": "state",
+        "state_sha256": "63fcc7223d0f3febc267d2c7a0bcad40ea545fafb9fd3d89758f0db928042637",
+        "tick": 374
+      },
+      {
+        "chain_sha256": "fdc77771dabcb83ba238547f67c9dcb993b285406ce46cb7bfe0692247cf98d2",
+        "kind": "state",
+        "state_sha256": "1e5f7dfd3ad4ce99bf18d80eaeef1f12d80f51d7b4277f4b44e164ca3aff3645",
+        "tick": 389
+      },
+      {
+        "chain_sha256": "ac6af2a91b0f81973b9f06c607931918450731c6b677600eb1d24a4ea101040b",
+        "kind": "state",
+        "state_sha256": "dc85a9d8eb5ee516b0df48e2abc460b845e69370d5043cca4060633084381d49",
+        "tick": 404
+      },
+      {
+        "chain_sha256": "779850bfcd64fc8f12b5672aa7458ae7ee2b7dbfd1d2eca2b97e4958f2cca9a2",
+        "kind": "state",
+        "state_sha256": "89a7c209194926d347d668430f9d449dbd5951a601f029f531f990c017729ff1",
+        "tick": 419
+      },
+      {
+        "chain_sha256": "f9e587fb7ac933e99f9951030b325d510ad57ec8a0efa7cd7d18f73309d77408",
+        "kind": "state",
+        "state_sha256": "c86c4d4e6c351c2410977afaa5048306310a44dac9d2af5be194787c5771da3c",
+        "tick": 434
+      },
+      {
+        "chain_sha256": "97696f7289742c3a426a888e563f476f8240d248b7e224908c9261fcb5da36e7",
+        "kind": "state",
+        "state_sha256": "bf9a9e4879590c7886b79c13392753645f1813024f229022a8fcd4dde9232894",
+        "tick": 449
+      },
+      {
+        "chain_sha256": "0dc116c11f6612c7d8043015b72acd483758197c753aa4bc8359b07e9c31d892",
+        "kind": "state",
+        "state_sha256": "ffd34607416baaa63129125bccb1ba3d05a03356b836cb3d1b52eff7a13c9cb1",
+        "tick": 464
+      },
+      {
+        "chain_sha256": "1963cd204247741b6bcd767a6f0bdae3613ef8d47fad4e4f95a3c603ef37e094",
+        "kind": "state",
+        "state_sha256": "942961d83ed624495d4707a4ae933d22373c69926d49d9dc526c350466464c7e",
+        "tick": 479
+      },
+      {
+        "chain_sha256": "cca9b89d8cb0d9a76df0dd2ffe38c047508246ede74fed81c0692525a6b0ea1f",
+        "kind": "state",
+        "state_sha256": "7b3f8a2b8aee15b9e2dc39df145edc1e58853732e5383c91b9a17ae73bffd30f",
+        "tick": 494
+      },
+      {
+        "chain_sha256": "f2a510bb228d2ea79861508e3706e99febdfdc6fa373442c09e133acc3a521a9",
+        "kind": "state",
+        "state_sha256": "900517fa8d2354ab278227b1109cf029a1d67a9998ac8c683d43adff57a6c209",
+        "tick": 509
+      },
+      {
+        "chain_sha256": "0dbfabbf53d7d051ad2c5c0b19752161f55d37136619f0c94c9d8fed3b02bd4f",
+        "kind": "state",
+        "state_sha256": "2bb2acb199a2cadb8adefbfdb645c9dfaf3f0f2add866bef5329caa757f00de6",
+        "tick": 524
+      },
+      {
+        "chain_sha256": "91aa70ad0b6e63c9e7300cbcd8c8e0c39f96017d34ecb9ff0a9494bb2b447bfe",
+        "kind": "state",
+        "state_sha256": "75c016d3e3ff301ad820837d43557c54ca8c9a0c56ba2a382f7df25538d2fc3f",
+        "tick": 539
+      },
+      {
+        "chain_sha256": "e7ee1815c94b511f0e5d0be523064847bb973eba0c211786b5e7d912a648c253",
+        "kind": "state",
+        "state_sha256": "1e37657bba950203996b64ba60f8a64662f4d1169970852ba2979cf0854c8056",
+        "tick": 554
+      },
+      {
+        "chain_sha256": "fb9891aaa3e7db380d632d43a4e0a4982ad58bebbc10fbc19a91748e60a86ede",
+        "kind": "state",
+        "state_sha256": "b8bd53c1d81181543e624c16beb114273e62dd6805770ea8b49ad320ab4c70ae",
+        "tick": 569
+      },
+      {
+        "chain_sha256": "37b141a6718993d98fe50eee3c8cd5eb0b3232a66c03d744d7715cb602bcc088",
+        "kind": "state",
+        "state_sha256": "369a06c0a997b86383e46d14aa77489b365f264c452068457f8e3f260576fedf",
+        "tick": 584
+      },
+      {
+        "chain_sha256": "1be557efa7b22458b29f4b6b0517aa87d3b4eb6af25d3a5dfaf90555dc696c7f",
+        "kind": "state",
+        "state_sha256": "5c58344b34f1dd7ef1161e3ba60b69895a1ca9dce0c022cd8e2fee0ef208b5fd",
+        "tick": 599
+      },
+      {
+        "chain_sha256": "c208334c1db8eee79c7d18c19b8947345b4e6ef61eec47f5d1746babdf5cd455",
+        "kind": "state",
+        "state_sha256": "36b75fc8d1c1d3ee37bba5b48c9766bda17862e5cf3a8871b7450b26f5b31b37",
+        "tick": 614
+      },
+      {
+        "chain_sha256": "90edabec53cf5937fca2f2c3b31e5c91bd45141221adbdeede4f2a7906c244bb",
+        "kind": "state",
+        "state_sha256": "2cf713535c84e1174b1a2c48d8fb21bd5f7f51c6d412d1b434e23b1d0b68c46a",
+        "tick": 629
+      },
+      {
+        "chain_sha256": "2471e0e35a75784f0f57eece459bbca8b22f5e918a401a12e71c6b1980e73f74",
+        "kind": "state",
+        "state_sha256": "57c36e32ce5560cdbd2a828b104a2012bd5b86e259e8d645098612426fcb966c",
+        "tick": 644
+      },
+      {
+        "chain_sha256": "cec51a5a646d7c0f250bbb5de1ab027fb3d35c4ff4d9101393db9a2ea1706c69",
+        "kind": "state",
+        "state_sha256": "239c931711c701c580dc4a74fdb1fd378b89dfbf1eea6ae3be6eb1821c3b8d86",
+        "tick": 659
+      },
+      {
+        "chain_sha256": "cde5580f0d706b65b5485c6ab3b227cc885e34511bc1ccadaaa0a7cc51b1edde",
+        "kind": "state",
+        "state_sha256": "18eb89e52397c9c12f52d34ef675d681ec9481a10093994630d2a670ecae3823",
+        "tick": 674
+      },
+      {
+        "chain_sha256": "0e194ef1f96fec4237aac78dfd073ab61a4a908d4f962f6ef05df13576b771ad",
+        "kind": "state",
+        "state_sha256": "f51824cda81c7075706bc4d82e86fd9d4f14826fa9d1666941bbb85b5a2af2e2",
+        "tick": 689
+      },
+      {
+        "chain_sha256": "72d4ed95ac0979787e0a0c6505590e9d1bc228e9bbb71637ed265bdfd9de562a",
+        "kind": "state",
+        "state_sha256": "908081f44bf43d8f86a23cfe7f4741457e1c25aac3a5029dc6944b50cf6a9592",
+        "tick": 704
+      },
+      {
+        "chain_sha256": "e3e68ad0005c24ffbd39a807330c670371ed0aa8c79dc7b6cfbe3250bb5b11d4",
+        "kind": "state",
+        "state_sha256": "32461edf21c43d41ce2bf1e196fe1ff0721055e697c89005b0dbf66809f20d09",
+        "tick": 719
+      },
+      {
+        "chain_sha256": "785114ccea629816262b6651226ce26426fed8324b5ea3e4aa87ced8de2a6b0e",
+        "kind": "state",
+        "state_sha256": "3d66e9b8c4e310588ff77718c0a1370d0dfb066e0bc54fd8ca3ed02fa1addbe2",
+        "tick": 734
+      },
+      {
+        "chain_sha256": "ed80734fd672da7b5db0afd93df504ea10e813bd345bf459341f9038e72ec32c",
+        "kind": "state",
+        "state_sha256": "13fa8c938035d5d75827f992af9691f0a399ca9737834c31c7429aef17bb7455",
+        "tick": 749
+      },
+      {
+        "chain_sha256": "2aeb7eee67179599d3e8b3405c156338eda6893bf860df0e5133d2488ca48a68",
+        "kind": "state",
+        "state_sha256": "5b7b4d8f9829f715ed06ae209d1b35b0d9599adf2d941d0620474ea5cfe6a80b",
+        "tick": 764
+      },
+      {
+        "chain_sha256": "2b45d4037bb7c7247b8080fb9315f895bcf2aa2baaf5493232c0d674bb7006d0",
+        "kind": "state",
+        "state_sha256": "0f58e686f88ff089b9fc96f099c70d6c71bb350547ac02d684141793ee112570",
+        "tick": 779
+      },
+      {
+        "chain_sha256": "3f943ab303797281529675164494c155e9c71e6f5bb099eb4e7ae64c3c4ce9ae",
+        "kind": "state",
+        "state_sha256": "5d8b52ddd1814697fd7f9a043a8255d6492be475e94baf878deb8633e914c037",
+        "tick": 794
+      },
+      {
+        "chain_sha256": "20aaac96af46d4a07cde6e8d1418d9cf65c8da03306ca00463007e05785e5981",
+        "kind": "state",
+        "state_sha256": "fe0021215e3b5f0826da05ef2be3a255db7bc8290a161fb820aedd5f46a03694",
+        "tick": 809
+      },
+      {
+        "chain_sha256": "4086cf6176ad3ce535f27691ccdb4956abb1d2052158ff1a11fb108e3393e777",
+        "kind": "state",
+        "state_sha256": "d3f30ebda8a598f5638f0ef45c4ab2f26dab819869e152c4a53f618ab990d887",
+        "tick": 824
+      },
+      {
+        "chain_sha256": "a64c873c6ce79875f24a777fdf2b5a7d3818e4d8506e08f3cea191b0867b78ed",
+        "kind": "state",
+        "state_sha256": "62875a85ae4e81522440ec983c2a17f6f6bbbcb9f97366715207de43aa62c85a",
+        "tick": 839
+      },
+      {
+        "chain_sha256": "d7d7e9c5d4e217c03a1617986771cae8f5d47f943a08a6694e4f535938d555aa",
+        "kind": "state",
+        "state_sha256": "c2fbf0d66988b002704eb840c48f261109a1949a0779b984c85aa155f911bbd5",
+        "tick": 854
+      },
+      {
+        "chain_sha256": "f566e08c47287491004a8f8738d888ab25cae4e91f9ac7074ce893d93388a0f3",
+        "kind": "state",
+        "state_sha256": "559388255dd1d1cb3ffc30ce3ee41cac17d47143a904451399b092d9d828e568",
+        "tick": 869
+      },
+      {
+        "chain_sha256": "ceed93ebd34871703f3495d392342e09fa4717a1852149b9e0f4fb0e0d7daa0b",
+        "kind": "state",
+        "state_sha256": "21770ab36526f686845435bfa15b0cda9f205483024fca3ac409576ab66cd02b",
+        "tick": 884
+      },
+      {
+        "chain_sha256": "ec396f7730bafb9f9e2e2a4b6e3918258f37372e8c12ff62c84a4ed9331c1d51",
+        "kind": "state",
+        "state_sha256": "b9a7fb99c32013e2e993c8c81a88b0abea2d5e0ce19e010e344b5d4e8cb27d72",
+        "tick": 899
+      }
+    ],
+    "final_state_sha256": "b9a7fb99c32013e2e993c8c81a88b0abea2d5e0ce19e010e344b5d4e8cb27d72",
+    "initial_snapshot_sha256": "11ac68cfb2c237445902b65bd1ee3bd228d915e1009d01d1cd16a3e5aab13346",
+    "monitors": [
+      {
+        "detail_sha256": "ba92b4295b9243083d9236a381ce12bdf14d9633f23271cd45dfa3d7b9900843",
+        "name": "corpus_reproduces_p3_bytes",
+        "pass": true
+      },
+      {
+        "detail_sha256": "250eca8a301182dc65f957ebec985c11d468304c56a7079cf713a6e65bf27efd",
+        "name": "CHECK_1_replay_resume_bit_identical",
+        "pass": true
+      },
+      {
+        "detail_sha256": "5cf3b261a4d64020986435ca64411bb67ad9e037706162b9094b34075e997f80",
+        "name": "CHECK_2_registered_openloop_within_derived_margin",
+        "pass": true
+      },
+      {
+        "detail_sha256": "ee391518887ee43672f1ee1416768dbbfdc37817f7b3a76ce9ad6f01d9952695",
+        "name": "CHECK_3_closed_loop_requal_gates_and_refusal",
+        "pass": true
+      },
+      {
+        "detail_sha256": "85a5f95ed4480cd32c2d58d6138a774b577b3dcb0240170af1986078d38a5137",
+        "name": "build_N_closed_loop_envelope",
+        "pass": true
+      }
+    ],
+    "periodic_stride": 15,
+    "trajectory_sha256": "cd4944d99be1270951926be53859828a6b0aef21d32d6551f68e78d504ef6c7a"
+  },
+  "restart_state_inventory": {
+    "deployment_class": "surrogate",
+    "gap_rule": "PRODUCTION certificates REQUIRE zero unresolved gaps (validator-enforced BLOCK); surrogate/evaluation classes carry their gaps declared. This lane CANNOT measure the engine's snapshot coverage (no engine binary touched); the gaps are registered at the schema level against the production path.",
+    "items": [
+      {
+        "contents": "com speed v, com position x, per-leg phases",
+        "name": "body_state",
+        "snapshot_key": "scene.body_state",
+        "snapshotable": true
+      },
+      {
+        "contents": "per-hind-leg warm anchors + contact flags (trajectory-visible coupling)",
+        "name": "contact_warm_start_cache",
+        "snapshot_key": "scene.contact_warm_start_cache",
+        "snapshotable": true
+      },
+      {
+        "contents": "per-leg trip tick counters",
+        "name": "reflex_state",
+        "snapshot_key": "scene.reflex_state",
+        "snapshotable": true
+      },
+      {
+        "contents": "held 8-vector + saturation + phase offsets + lift amps",
+        "name": "held_command",
+        "snapshot_key": "scene.held_command",
+        "snapshotable": true
+      },
+      {
+        "contents": "policy clock tick + decision count (hold phase exact)",
+        "name": "decision_phase",
+        "snapshot_key": "policy.decision_phase",
+        "snapshotable": true
+      },
+      {
+        "contents": "prev applied/saturation, ticks-since-intervention/reset, prev yaw rate",
+        "name": "controller_history",
+        "snapshot_key": "policy.controller_history",
+        "snapshotable": true
+      },
+      {
+        "contents": "PCG64 bit-generator state (position matters; one draw/tick)",
+        "name": "rng_stream",
+        "snapshot_key": "scene.rng_stream",
+        "snapshotable": true
+      },
+      {
+        "contents": "terrain draws consumed + last micro height + build/params identity",
+        "name": "world_state",
+        "snapshot_key": "scene.world_state",
+        "snapshotable": true
+      }
+    ],
+    "registered_gaps": [
+      {
+        "cause": "the C++ solver's contact/warm-start caches are not yet exposed by a snapshot API",
+        "clears_when": "the engine exposes solver cache serialize/restore and CHECK 1 passes bit-identical through it",
+        "item": "contact_warm_start_cache",
+        "name": "gap_engine_contact_warm_start",
+        "status": "REGISTERED GAP (pending engine binding)"
+      },
+      {
+        "cause": "the banked reflex set's internal state is not yet snapshotable in the engine controller",
+        "clears_when": "reflex serialize/restore exists and resumes bit-identically",
+        "item": "reflex_state",
+        "name": "gap_engine_reflex_state",
+        "status": "REGISTERED GAP (pending engine binding)"
+      },
+      {
+        "cause": "the gait controller's internal calendars/history are not yet snapshotable",
+        "clears_when": "controller state serialize/restore exists and resumes bit-identically",
+        "item": "controller_history",
+        "name": "gap_engine_controller_history",
+        "status": "REGISTERED GAP (pending engine binding)"
+      },
+      {
+        "cause": "full engine world state beyond the entry pose is not yet serializable",
+        "clears_when": "world serialize/restore exists and resumes bit-identically",
+        "item": "world_state",
+        "name": "gap_engine_world_state",
+        "status": "REGISTERED GAP (pending engine binding)"
+      }
+    ]
+  },
+  "schema_version": "chimera.policy_compat/1.0.0"
+}

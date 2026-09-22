@@ -1,0 +1,326 @@
+{
+  "schema": "chimera.upgrade_gate.v1",
+  "lane": "upgrade-gate-20260920",
+  "branch": "lane/upgrade-gate-20260920",
+  "base": "bd4bf630 (Merge agent/playable-slice-20260921 @ 2909bb4e; verified: worktree E:/ChimeraWork/upgate-agent clean on lane/upgrade-gate-20260920 @ bd4bf630)",
+  "date": "2026-09-20",
+  "agent": "GLM 5.3 (UPGRADE-GATE lane agent, git trailer Agent: upgate)",
+  "mission": "THE ASTRA ROUND-5 DECISION, ENFORCED: a policy trained on build N must never silently degrade on build N+1. The enforcement shape is settled: (policy bundle, physics build, runtime profile, body/domain, test suite) -> COMPATIBILITY CERTIFICATE; a missing or invalidated certificate BLOCKS deployment. This lane BUILDS AND PROVES the gate now, with the TypeB-P3 dummy actor (the frozen 9ca7e976 manifest bundle) plus a DECLARED deterministic CPU walk scene; the certificate binds artifact hashes, so it binds AUTOMATICALLY when the real actor exists -- the same checks re-run against the real bundle with no format change. Deliverables: (1) this Rule-0 prereg, frozen before any build; (2) tools/policy_compat/ -- the certificate format (5-tuple relation, four bundle parts a-d: execution identity / complete restart-state inventory with REGISTERED GAPS / replay inputs + hash-chained evidence / declared qualification scope with non-regression margins), JSON schema + validator CLI; (3) CHECK 1 same-build replay + checkpoint-resume equivalence (resume must be BIT-IDENTICAL to uninterrupted); (4) CHECK 2 cross-build equivalence on registered cases (agreement on cases is documented as EVIDENCE, never universal proof); (5) CHECK 3 closed-loop requalification runner -- observations and actions recomputed from the NEW trajectory, hard gates + non-regression margins, and the harness REFUSES action-replay input (documented: replay misses the feedback loop); (6) the injection suite: each injected incompatibility CAUGHT, 3 clean runs byte-identical (no false positives); (7) tests + this receipt + commits (Agent: upgate) + push.",
+  "pre_registration": {
+    "written_before_any_build": true,
+    "note": "This receipt was written BEFORE tools/policy_compat/ existed and BEFORE any scene run, corpus build, or injection. Every prediction below is unmeasured at freeze time. The freeze sha covers the rule_0 block exactly (convention below); it is re-verified byte-identical at the measurements append.",
+    "the_decision_being_enforced": "Astra round 5: policy-on-build-N must never silently degrade on build N+1. SILENT is the enemy: an undetected incompatible promotion is the failure; detection at the gate is the success, even when the underlying change is real.",
+    "scope_and_honesty_declared_in_advance": [
+      "The physics of record for THIS lane is a DECLARED deterministic CPU walk scene (surrogate), not the C++ engine: the engine is out of this lane's scope (no engine file is touched), and the scene's every constant and coupling is declared in the prereg table below, derived from the banked wave-38 walk clock (cycle_ticks=213, dt=1/300) and the frozen manifest's action bounds. The certificate binds CONTENT HASHES (scene module sha + params canonical sha), so the format and every check transfer to the real engine build unchanged; what waits for the real actor/engine is listed in the receipt's waiting-for section at append time.",
+      "CHECK 2 cross-build equivalence on registered cases is EVIDENCE, NOT universal proof: agreement on finitely many registered cases never proves universal cross-build agreement. The certificate's qualification scope part (d) exists precisely to bound what the evidence covers (bodies, skills, transitions, ranges, horizons, bars, margins); the receipt carries this sentence so the certificate can never be quoted as a universal guarantee.",
+      "The observation/command corpus for F3 is built NOW, in this lane, against the dummy actor THROUGH P3's FROZEN LOADER (tools/science_funnel/typeb_export/policy_manifest.py::load_manifest + infer_numpy.NumpyPolicy) over the frozen P3 slice (trace_slice_wave38.json, sha256 69babe846e2447333b527c7fd8c190499e5ac1d55733dbd043edd0422245daa2, the 900-tick/60-decision fixed sequence the P3 manifest itself pins). No new observation recipe is invented; the corpus is the frozen recipe's own bytes.",
+      "Registered restart-state GAPS: this lane CANNOT measure the C++ engine's snapshot coverage (no engine binary is built or touched). The certificate schema carries a COMPLETE 8-item restart-state inventory; this lane's CPU scene implements ALL EIGHT items as snapshotable and proves bit-identical resume on them. The GAPS are registered AT THE SCHEMA LEVEL against the production path: the engine-side contact/warm-start caches, reflex state, controller history, and full world state are REGISTERED GAP items (status pending-engine-binding, cause and clearing check named per item), and the validator BLOCKS any PRODUCTION-class certificate while a gap is unresolved. An evaluation/surrogate-class certificate with declared gaps is issuable; a production one is not. This is the honest maximum this lane can claim."
+    ],
+    "declared_scene_constants": {
+      "note": "DECLARED, not swept (Rule 1): the scene exists to give the gate a closed loop to guard; every constant is fixed here before any run and none is tuned to any outcome. The clock mirrors the banked wave-38 walk; the drive/lift constants derive from the frozen manifest's own action bounds.",
+      "SCENE_VERSION": "cpu-walk-scene/1.0.0",
+      "dt_s": 0.0033333333333333335,
+      "dt_note": "1/300 s, the manifest's physics_hz=300",
+      "cycle_ticks": 213,
+      "cycle_ticks_note": "the banked wave-38 gait clock (cycle_ticks=213 in the recorded walk stdout)",
+      "stride_gain_m_s2_per_cmd": 0.55,
+      "lift_gain_m_per_cmd": 0.06,
+      "ground_clearance_m": 0.008,
+      "damping_per_s": 0.35,
+      "contact_threshold_m": 0.012,
+      "mp_phase_offset_cycles": 0.08,
+      "micro_terrain_amp_m": 0.0001,
+      "micro_terrain_note": "one PCG64 uniform draw per tick, seeded, part of the snapshotted RNG stream: deterministic, and trajectory-visible so a dropped RNG state cannot resume silently (F2's instrument)",
+      "warm_start_coupling": "effective_damping = damping * (0.95 + 0.1*warm_mean) -- the contact/warm-start cache is TRAJECTORY-VISIBLE by declared coupling (a dropped cache must move the future, F2)",
+      "reflex_rule": "pad gap above contact_threshold+0.01 m while in contact -> reflex trip 90 ticks, leg phase rate halved during trip; deterministic state machine",
+      "build_N1_delta": "damping_1 = damping * 1.01 (the declared 1% build-to-build physics delta used by CHECK 2 and CHECK 3); no other constant moves",
+      "front_feet_note": "the surrogate models the two hind legs' pads; the four fore feet are declared always-contact nominal supports (contact_count = 4 + hind pads in contact)"
+    },
+    "derived_margin_rule1_note": "The ONE numeric bound the lane commits to is DERIVED, not chosen (see pre_data_amendment_20260920 for the pre-data correction): the open-loop cross-build velocity margin. v_{t+1} = v_t (1 - dt*d_eff) + dt*a with d_eff in [damping*0.95, damping] (the declared warm-start coupling) and a in [0, a_max = 0.55*1.8 = 0.99]. Envelope: |v_t| <= V = a_max/d_lo = 2.977443609022557 m/s (contraction fixed point, d_lo = damping*0.95). Build N+1 scales every d_eff by (1+delta), delta = 0.01: Delta_{t+1} = (1-dt*d'_t)Delta_t - dt*delta*d_t*v_t, hence max|Delta_v| <= delta*V/(1.01*0.95) = 0.03103119967715015 m/s at EVERY horizon. The margin applies to OPEN-LOOP registered cases (identical pinned command stream into both builds -- the only configuration where same-input-only-physics-changed is true). Closed-loop cross-build runs are recorded as evidence with the envelope gate only (|v_t| <= V for all t); no closeness claim is made on them.",
+    "registered_cases": {
+      "note": "declared a priori; case seeds are identifiers of the test suite, not tuned parameters",
+      "openloop_crossbuild": [
+        {
+          "case": "OL-1",
+          "seed": 20260919,
+          "horizon_ticks": 900
+        },
+        {
+          "case": "OL-2",
+          "seed": 20260920,
+          "horizon_ticks": 900
+        },
+        {
+          "case": "OL-3",
+          "seed": 20260921,
+          "horizon_ticks": 900
+        }
+      ],
+      "closedloop_requal": {
+        "case": "CL-1",
+        "seed": 20260920,
+        "horizon_ticks": 900,
+        "builds": [
+          "N",
+          "N+1"
+        ]
+      },
+      "resume_checkpoint_tick": 317,
+      "resume_tick_note": "317 is not a decision tick (317 % 15 == 2): the resume lands mid-hold, the hardest place for bit-identity to survive",
+      "command_stream_source": "each open-loop case replays the applied-command stream of the matching-seed clean closed-loop run on build N, pinned by sha256 before the cross-build run"
+    },
+    "restart_state_inventory_declared": {
+      "items": [
+        {
+          "name": "body_state",
+          "contents": "com speed v, com position x, per-leg phase_l/phase_r"
+        },
+        {
+          "name": "contact_warm_start_cache",
+          "contents": "per-hind-leg warm-start anchor scalars (the trajectory-visible cache)"
+        },
+        {
+          "name": "reflex_state",
+          "contents": "per-leg trip ticks remaining + in-contact flags"
+        },
+        {
+          "name": "held_command",
+          "contents": "the held 8-vector + limiter saturation flags"
+        },
+        {
+          "name": "decision_phase",
+          "contents": "policy clock tick + decision count (hold phase must resume mid-hold exactly)"
+        },
+        {
+          "name": "controller_history",
+          "contents": "the policy's internal memory: prev yaw rate, ticks-since-intervention, ticks-since-reset, prior applied/saturation"
+        },
+        {
+          "name": "rng_stream",
+          "contents": "the PCG64 bit-generator state (position matters: draws are consumed per tick)"
+        },
+        {
+          "name": "world_state",
+          "contents": "terrain draw count consumed + scene params identity + build id"
+        }
+      ],
+      "surrogate_status": "ALL EIGHT implemented and snapshotable in the CPU scene; CHECK 1 requires bit-identical resume through ALL of them",
+      "registered_gaps_production_path": [
+        {
+          "name": "gap_engine_contact_warm_start",
+          "item": "contact_warm_start_cache",
+          "status": "REGISTERED GAP (pending engine binding)",
+          "cause": "the C++ solver's contact/warm-start caches are not yet exposed by a snapshot API",
+          "clears_when": "the engine exposes solver cache serialize/restore and CHECK 1 passes bit-identical through it"
+        },
+        {
+          "name": "gap_engine_reflex_state",
+          "item": "reflex_state",
+          "status": "REGISTERED GAP (pending engine binding)",
+          "cause": "the banked reflex set's internal state is not yet snapshotable in the engine controller",
+          "clears_when": "reflex serialize/restore exists and resumes bit-identically"
+        },
+        {
+          "name": "gap_engine_controller_history",
+          "item": "controller_history",
+          "status": "REGISTERED GAP (pending engine binding)",
+          "cause": "the gait controller's internal calendars/history are not yet snapshotable",
+          "clears_when": "controller state serialize/restore exists and resumes bit-identically"
+        },
+        {
+          "name": "gap_engine_world_state",
+          "item": "world_state",
+          "status": "REGISTERED GAP (pending engine binding)",
+          "cause": "full engine world state beyond the entry pose is not yet serializable",
+          "clears_when": "world serialize/restore exists and resumes bit-identically"
+        }
+      ],
+      "validator_rule": "PRODUCTION-class certificates REQUIRE zero unresolved gaps (any gap -> invalid -> deployment BLOCKED); surrogate/evaluation-class certificates carry their gaps declared; every snapshot at runtime must contain every registered snapshotable item or the resume REFUSES"
+    },
+    "certificate_format_declared": {
+      "relation": "(policy bundle, physics build, runtime profile, body/domain, test suite) -> certificate; compat_key = sha256 over the canonical JSON of the 5-tuple; cert_hash = sha256 over the canonical certificate with cert_hash excluded",
+      "part_a_execution_identity": "policy_bundle (manifest_hash, weights_sha256, manifest file sha), physics_build (id, scene module sha, params canonical sha), runtime_profile (python, numpy, os, machine), body_domain (body digest, domain tag), test_suite (id, cases sha)",
+      "part_b_restart_state_inventory": "the 8 items with snapshotable flags + snapshot keys; registered_gaps with status/cause/clears_when; deployment_class (surrogate|evaluation|production) with the gaps rule",
+      "part_c_replay_evidence": "initial snapshot sha; tick-ordered events (tick, kind, state sha) in a HASH CHAIN (each event carries the running chain sha); periodic stride; final state sha; monitor outputs (each check's pass + detail sha). The validator re-verifies the chain and the initial/final pins; ANY mismatch is an invalidation.",
+      "part_d_qualification_scope": "declared format: bodies[], skills[], transitions[], ranges{} (phase, pad gap, |v|), horizons{} (ticks, decisions), bars{} (the hard gates by name), non_regression_margins[] (each: name, quantity, bound, derivation string -- a margin WITHOUT a derivation is a schema violation)"
+    },
+    "rule_0": {
+      "statement": "THE COMPATIBILITY-CERTIFICATE GATE (Astra round 5). THE THEORY: a deployment gate built on a hash-bound 5-tuple certificate carrying (a) execution identity, (b) a complete restart-state inventory, (c) hash-chained replay evidence, (d) declared qualification scope, makes ANY silent incompatible deployment STRUCTURALLY DETECTABLE: every state that could change future behavior is either hash-bound in the certificate or the resumed/requalified trajectory moves measurably; and the gate has NO false positives on the unmodified artifacts (clean runs are byte-identical). A description ('we tested compatibility') survives any result; THIS gate can lose -- the falsifiers below name the exact injections that would kill it, and each is run for real in this lane.",
+      "prediction": {
+        "P1_silent_promotion_caught_F1": "The two F1 injections are CAUGHT: (i) perturbing ONE periodic state hash inside the certificate's evidence chain makes validate() return a chain-mismatch violation and the deploy check BLOCK; (ii) swapping ONE normalization constant in a COPIED manifest moves the canonical manifest hash (the P3 clause-b property), so the deployment request's compat_key no longer matches the certificate's and the deploy check BLOCKS; the tampered manifest also moves the corpus action bytes (second detection). FALSIFIER: either injection validates/passes the deploy check (deploys UNDETECTED).",
+        "P2_resume_drift_detected_F2": "A checkpoint restart that would change the future trajectory is DETECTED TWICE: dropping the RNG stream (or the warm-start cache) from a restart snapshot makes (i) the snapshot loader REFUSE structurally, naming the missing inventory item, and (ii) the FORCED resume (bypassing the loader) produce a continuation TRAJECTORY that differs from the uninterrupted reference -- measured on the declared F2 instrument (pre_data_amendment_2): the tick-wise state-hash sequence and/or the applied-action byte stream (the RNG drop moves the state hashes from the first tick; the warm-start drop moves both, the damping coupling is observed). ONLY the complete snapshot resumes silently, and its continuation is BIT-IDENTICAL to the uninterrupted run in BOTH instruments. FALSIFIER: an incomplete snapshot loads without a named refusal, OR a forced trajectory-changing omission resumes identical on BOTH instruments, OR the COMPLETE snapshot resume differs by one byte or one state hash from uninterrupted.",
+        "P3_legacy_action_drift_detected_F3": "On the frozen observation/command corpus (built NOW through P3's frozen loader over the pinned 900-tick slice, action bytes sha-pinned at corpus build, runtime pinned in the certificate), altering ONE action-mapping entry in a copied manifest (action scale[2] 0.4 -> 0.400001) changes the recomputed corpus action bytes; the byte comparison DETECTS the drift, and the manifest hash moves as the structural second detection. FALSIFIER: the altered mapping reproduces the pinned corpus bytes byte-identically in the same runtime.",
+        "P4_no_false_positives": "THREE clean full-gate runs on the unmodified artifacts (scene run -> certificate issue -> validate -> deploy check ALLOW -> checks 1-3 -> corpus re-verify) produce BYTE-IDENTICAL canonical result bundles (wall-clock excluded from canonical payloads by construction). FALSIFIER: any byte difference between the three clean bundles, or any clean-run verdict that is not ALLOW/PASS on every gate.",
+        "P5_check1_bit_identical_resume": "CHECK 1: the fresh-process full replay AND the checkpoint(317)-resume continuation are BOTH byte-identical to the uninterrupted run (the frozen-ref pattern: sha-pinned trajectory bytes, raw-byte files, no shell redirection). FALSIFIER: one byte differs in either comparison.",
+        "P6_check2_derived_margin_holds": "CHECK 2 on the three registered open-loop cases (identical pinned command streams into builds N and N+1): max|v_N1 - v_N| <= delta*V/(1.01*0.95) = 0.03103119967715015 m/s on EVERY case, where V = a_max/(damping*0.95) = 2.977443609022557 m/s is the drive fixed-point envelope (a_max = STRIDE_GAIN*stride_amp_hi = 0.99, d_lo = 0.35*0.95 = 0.3325; the pre-data amendment corrected the baseline to the declared warm-start damping floor), and the closed-loop runs on both builds satisfy |v_t| <= V = 2.977443609022557 m/s at every tick. The measured deltas are recorded per case as evidence. FALSIFIER: any open-loop case exceeding the derived bound, or any closed-loop tick escaping the envelope.",
+        "P7_check3_requal_and_refusal": "CHECK 3: the closed-loop requalification runner on build N+1 recomputes every observation and action FROM THE NEW TRAJECTORY (the runner's only input channels are the policy bundle, the scene build, and the entry state), passes all hard gates (bounds honored per the manifest limiter, no NaN/Inf, intervention_reason 'none' at every tick, contact_count >= 2, availability groups exactly as the scope declares, |v_t| <= V = 2.977443609022557 m/s at every tick), and REFUSES any action-replay input with the named error ACTION_REPLAY_REFUSED -- the refusal is itself exercised in the tests. The certificate issued from the clean run validates; a deployment request with any mismatched tuple component BLOCKS. FALSIFIER: any hard gate red on the clean run, the runner accepting an action-replay input, an issued certificate failing its own validator, or a mismatched-tuple deployment request being allowed."
+      },
+      "falsifier": {
+        "F1_silent_promotion": "an injected incompatible change (perturbed state hash, swapped normalization constant, altered action mapping) DEPLOYS UNDETECTED -> the gate FAILS; DETECTION (validate violation, deploy BLOCK, or corpus byte movement) = the gate PASSES. Both F1 injections plus the F3 mapping injection are run for real; a single undetected injection fires.",
+        "F2_resume_drift": "a checkpoint restart that would change the future trajectory (dropped cache / dropped RNG in the restart state) NOT detected -- structurally or dynamically -- or a bit-identical resume claimed for anything but the complete snapshot. Only a bit-identical resume may stay silent.",
+        "F3_legacy_action_drift": "any action-bit difference on the frozen observation/command corpus in the same runtime that goes UNDETECTED. The corpus and its harness are built NOW against the dummy actor through P3's frozen loader; the corpus bytes and the runtime are pinned in the certificate.",
+        "FP_no_false_positives": "the three clean runs differing in any byte, or any clean gate red -- the gate crying wolf on unchanged artifacts is the symmetric failure and fires this falsifier.",
+        "scope_guard": "any file changed outside tools/policy_compat/, tools/science_funnel/validation/upgrade_gate_20260920/, and the lane's own .tmp scratch; any edit to gait_controller.hpp, gait_* validation dirs, first_skill_prestage_20260922/, master, or the shared typeb_export tooling (consumed READ-ONLY through its frozen public functions)."
+      }
+    },
+    "frozen_rule_0_sha": "5a405a10fe2a9d52750d6d8f6e8c8bb7b22c03d04a7a1feb8d191f916d6fc705",
+    "frozen_rule_0_sha_convention": "sha256 of json.dumps(rule_0, sort_keys=True, separators=(',',':'), ensure_ascii=True) UTF-8; re-verified byte-identical at every append",
+    "pre_data_amendment_20260920": "AMENDED BEFORE ANY RUN (no scene, corpus, or check had been executed at this commit): the draft derivation of the open-loop cross-build margin used the nominal damping and missed the prereg-declared warm-start damping FLOOR (d_eff in [damping*0.95, damping] is part of the declared scene). Corrected derivation: envelope V = a_max/(damping*0.95) = a_max/d_lo with a_max = 0.55*1.8 = 0.99, d_lo = 0.35*0.95 = 0.3325 -> V = 2.977443609022557 m/s; build N+1 scales every d_eff by (1+delta), Delta_{t+1} = (1-dt*d'_t)Delta_t - dt*delta*d_t*v_t, so the geometric sum over ANY horizon gives max|Delta_v| <= delta*V/(1.01*0.95) = 0.03103119967715015 m/s. The scene module tools/policy_compat/scene_cpu.py implements exactly this derivation in derived_envelope(). The rule_0 block was re-frozen with the corrected P6/P7 numbers; the old freeze sha (4c27fc7fd78f75357bdb015c11e58807028ca996111557d1520e44294b100ed2) is retired by this amendment, which itself is frozen before first data.",
+    "pre_data_amendment_2_f2_instrument": "AMENDED BEFORE ANY MEASUREMENT OF RECORD (the only executions so far were tooling smoke tests in the lane scratch dir, not prereg measurements): the F2 DYNAMIC detection instrument is declared as (i) the tick-wise STATE hash sequence (the certificates own evidence currency -- the trajectory of record) AND (ii) the applied-action byte stream. Reason, derived from the declared scene + the frozen v1 observation schema: the micro-terrain RNG draw enters the pad gaps, and the v1 64-dim observation masks the pad channels, so a dropped RNG state moves the STATE sequence from the first tick while the action bytes can legitimately stay identical; a dropped warm-start cache moves BOTH (the damping coupling feeds com_vel, an observed channel). Detection = divergence in EITHER instrument; the bit-identity letters (replay, complete-snapshot resume) remain BYTE comparisons on the action stream AND now also on the state-hash event sequences. P2s falsifier wording is updated to this instrument.",
+    "pre_data_amendment_3_entry_phase_law": "AMENDED BEFORE ANY MEASUREMENT OF RECORD (found during tooling validation, before the receipt measurements were appended): the registered open-loop cases as first constructed were DEGENERATE -- all three seeds produced BYTE-IDENTICAL closed-loop command streams (measured: stream sha ff961fcd599ffdee190a12d7... for seeds 20260919/20260920/20260921), because the declared micro-terrain draw (amplitude 1e-4 m) never flipped a pad contact in 900 ticks and the frozen v1 observation MASKS the pad channels, so the seed never reached any observed field; three case labels carried one effective command stream and the cross-build margin evidence would have been one-case-deep in stream space. FIX (declared entry law, derived not tuned): the entry state is a function of the case identity -- phase_r(0) = ((seed mod cycle_ticks) + 0.5)/cycle_ticks, the declared half-cycle L/R offset preserved and the seeds residue in the banked 213-tick cycle selecting the entry phase. Distinct seeds now enter at distinct phases, reach the gait_phase observation channels immediately, and produce distinct command streams; every artifact (certificate included) is regenerated under this law before the measurements block is appended. The scene constants, the margin derivation, and the falsifiers are UNCHANGED."
+  },
+  "measured": {
+    "status": "APPENDED AFTER THE RUNS. The pre-registration block above is unedited since its last pre-data amendment; the freeze sha was re-verified byte-identical immediately before this append. ALL PRE-REGISTERED FALSIFIERS HELD: F1, F2, F3 all CAUGHT their injections, the no-false-positives letter held (three byte-identical clean bundles), and every measured number landed inside its pre-derived bound. PASS = TRUE: the compatibility-certificate gate is BUILT, MEASURED, and BLOCKS what it must block.",
+    "deliverables": {
+      "gate_tooling": "tools/policy_compat/ (certificate.py schema+validator+deploy gate; scene_cpu.py the declared CPU walk scene; runner.py checks 1-3 + corpus; injections.py the injection suite; __main__.py the CLI: validate/schema/check-deploy + fresh-process workers; tests/)",
+      "certificate": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/certificate.json",
+        "sha256": "246bfa0af552754e720a9b47653f8e27fa36833e18753b6545bd0822ff71ac74"
+      },
+      "deploy_request": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/deploy_request.json",
+        "sha256": "4fa52054160c557a6809d601145a913ad5a19ed3cf589e7ef39572539e61e0f2"
+      },
+      "corpus": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/corpus.json",
+        "sha256": "85d373b9ed0bd15332148259e235d1fbcbb2d15e82c1e9676d274a761200cb9e"
+      },
+      "check1_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/check1_report.json",
+        "sha256": "082a0e25114f04f5a598582ce3d525be0c5e43c701482b330995a2029b278127"
+      },
+      "check2_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/check2_report.json",
+        "sha256": "43fe41c7adf84b7fb44c4001d2f72b52a18065fbaf81c5b65dbc1da0c04967fe"
+      },
+      "check3_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/check3_report.json",
+        "sha256": "a66ab757a6eb3ed667aff4135630c08fd241e1fa805ee29d2dda10e959a71cd7"
+      },
+      "injections_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/injections_report.json",
+        "sha256": "09bd944f00035e6ad99a36abd7ed3a559f8b4da9f3bda45db8b7d5dd510ae3dc"
+      },
+      "clean_triple_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/clean_triple_report.json",
+        "sha256": "70a4f7b34ab497dc69d536b1b20ac391f8cbdcd4f7b8421c3f2e5b616d5d55a9"
+      },
+      "commits": "d7c69e27 (prereg freeze) -> 893f06b7 (certificate format + scene + amendment 1) -> 68aa57bd (runner + checks + injections, measured artifacts) -> this append"
+    },
+    "check1_measured": {
+      "replay": "two FRESH-process full runs byte-identical: sha256 cd4944d99be12709... (28800 bytes = 900 ticks x 32), PASS",
+      "resume": "checkpoint at tick 317 (mid-hold: 317 % 15 == 2), resumed in a FRESH process: continuation tail sha256 53e5858189853d82... == the uninterrupted tail, BIT-IDENTICAL, PASS",
+      "f2_structural": "dropping rng_stream or contact_warm_start_cache from the snapshot: the loader REFUSED, naming the missing registered inventory item, PASS",
+      "f2_dynamic_measured": {
+        "dropped_warm_start_cache": "forced resume moved BOTH instruments: state hashes moved AND 2325 action bytes differ (the warm->damping coupling is observed via com_vel)",
+        "dropped_rng_stream": "forced resume moved the tick-wise STATE hashes from the first tick (the micro-terrain draws); action bytes moved 0 -- exactly as pre-declared in pre_data_amendment_2: the v1 observation masks the pad channels so the micro-terrain is state-visible but not action-visible; DETECTED on the declared instrument"
+      }
+    },
+    "check2_measured": {
+      "note": "the three registered open-loop cases ran with three DISTINCT pinned command streams (stream shas 8785fcc08aed..., cd4944d99be1..., dfb0e26d6aeb...) after the entry-phase law (pre_data_amendment_3) ended the seed-invisibility degeneracy",
+      "OL-1": {
+        "seed": 20260919,
+        "max_abs_dv_m_s": 0.0038658407484328805,
+        "within_derived_margin": true
+      },
+      "OL-2": {
+        "seed": 20260920,
+        "max_abs_dv_m_s": 0.0038599272742327884,
+        "within_derived_margin": true
+      },
+      "OL-3": {
+        "seed": 20260921,
+        "max_abs_dv_m_s": 0.0038532957169252757,
+        "within_derived_margin": true
+      },
+      "derived_margin_m_s": 0.03103119967715015,
+      "margin_headroom": "the worst measured max|dv| is ~8.0x under the pre-derived bound",
+      "closed_loop_envelope": "build N and build N+1 closed-loop runs: max |v| 0.869917842309973 m/s vs the pre-derived envelope V = 2.977443609022557 m/s, PASS",
+      "honesty": "agreement on the registered cases is EVIDENCE, never universal proof (carried verbatim in check2_report.json and in the certificate scope)"
+    },
+    "check3_measured": {
+      "gates": {
+        "bounds_honored": true,
+        "no_nan_inf": true,
+        "no_intervention": true,
+        "contact_floor": true,
+        "availability_exact": true,
+        "velocity_envelope": true
+      },
+      "action_replay_refusal": "2/2 probes REFUSED with ACTION_REPLAY_REFUSED (a precomputed action stream; the action_replay mode) -- the harness has NO input channel that accepts actions; observations and actions are recomputed from the NEW trajectory every tick",
+      "non_regression_margin_carried": {
+        "name": "crossbuild_openloop_max_dv",
+        "bound": 0.03103119967715015,
+        "derivation": "delta*V/(1.01*0.95), V = a_max/(damping*0.95)"
+      }
+    },
+    "injections_measured": {
+      "I1_perturbed_state_hash": {
+        "falsifier": "F1",
+        "verdict": "CAUGHT",
+        "detail": "perturbed the tick-5 periodic state hash AND recomputed cert_hash (the sophisticated-attacker form): the hash-chain recomputation invalidated the evidence -> deploy BLOCK"
+      },
+      "I2_swapped_normalization_constant": {
+        "falsifier": "F1",
+        "verdict": "CAUGHT",
+        "detail": "normalization.std[0] x1.001 in a COPIED manifest: canonical manifest hash moved -> compat_key mismatch -> deploy BLOCK; corpus action bytes moved (second detection); the copied manifest is still structurally valid (the P3 loader accepts it -- the GATE is what refuses it)"
+      },
+      "I3_dropped_rng_from_restart_snapshot": {
+        "falsifier": "F2",
+        "verdict": "CAUGHT",
+        "detail": "named structural refusal + forced-resume trajectory move (state hashes from the first tick)"
+      },
+      "I4_altered_action_mapping_entry": {
+        "falsifier": "F3",
+        "verdict": "CAUGHT",
+        "detail": "action.scale[2] 0.4 -> 0.400001 on the FROZEN corpus in the SAME runtime: recomputed corpus action bytes differ from the pinned bytes (byte-wise detection) AND the manifest hash moved"
+      },
+      "summary": "4/4 injections CAUGHT; falsifier verdicts F1_silent_promotion CAUGHT, F2_resume_drift CAUGHT, F3_legacy_action_drift CAUGHT"
+    },
+    "clean_triple_measured": {
+      "bundles": "three full-gate pipelines (corpus -> closed-loop runs -> CHECK 1 fresh-process workers -> CHECK 2 -> CHECK 3 -> certificate issue -> validator -> deploy ALLOW/BLOCK/BLOCK) produced BYTE-IDENTICAL canonical bundles: sha256 f11c82ea3ec9fa2a... x3",
+      "verdict": "no false positives on the unmodified artifacts; P4/FP HELD"
+    },
+    "corpus_measured": {
+      "built": "NOW, in this lane, through the FROZEN P3 loader (policy_manifest.load_manifest + infer_numpy.NumpyPolicy) over the pinned 900-tick/60-decision fixed sequence (slice sha 69babe846e2447333b527c7fd8c190499e5ac1d55733dbd043edd0422245daa2)",
+      "actions_sha256": "e25406e86cbf5347...",
+      "cross_check": "the corpus bytes REPRODUCE the P3 lane's own recorded fresh-process action bytes (validation/typeb_p3_20260921/actions_run1.bin) -- an independent re-proof of the F-CHANNELS-INERT claim on this side of the v2 observation-schema merge; a mismatch would have been a corpus-drift finding (the pipeline raises)"
+    },
+    "certificate_measured": {
+      "cert_hash": "b33bd69ea66b9b9a...",
+      "compat_key": "9de019b7b9ef5e0c...",
+      "deployment_class": "surrogate",
+      "validator": "the issued certificate verifies (python -m tools.policy_compat validate -> exit 0)",
+      "deploy_gate": "ALLOW on the matching 5-tuple; BLOCK on a foreign physics build id; BLOCK on a missing certificate",
+      "production_block_rule": "PRODUCTION-class certificates REQUIRE zero unresolved registered gaps -- validator-enforced"
+    },
+    "registered_restart_state_gaps": {
+      "surrogate_status": "ALL EIGHT inventory items implemented, snapshotable, and proven bit-identical through CHECK 1 in the CPU scene",
+      "production_path_gaps_named": [
+        "gap_engine_contact_warm_start (contact_warm_start_cache)",
+        "gap_engine_reflex_state (reflex_state)",
+        "gap_engine_controller_history (controller_history)",
+        "gap_engine_world_state (world_state)"
+      ],
+      "status": "all four REGISTERED GAP (pending engine binding), each with cause + clearing check in the certificate; this lane CANNOT measure the engine's snapshot coverage (no engine binary built or touched); production certificates are BLOCKED while any gap is unresolved"
+    },
+    "falsifier_verdicts": {
+      "F1_silent_promotion": "NOT FIRED -- both injections (perturbed state hash; swapped normalization constant) were CAUGHT at the gate; nothing deployed undetected",
+      "F2_resume_drift": "NOT FIRED -- the dropped-RNG and dropped-cache restarts were DETECTED structurally (named refusal) AND dynamically (trajectory move on the declared instrument); only the complete snapshot resumed, bit-identically",
+      "F3_legacy_action_drift": "NOT FIRED -- the altered action-mapping entry moved the corpus action bytes in the same runtime and was detected byte-wise",
+      "FP_no_false_positives": "NOT FIRED -- three clean full-gate runs byte-identical",
+      "scope_guard": "HELD -- files touched: tools/policy_compat/** (new) and tools/science_funnel/validation/upgrade_gate_20260920/** (this lane's); gait_controller.hpp, gait_* validation, first_skill_prestage_20260922/, master, and the shared typeb_export tooling untouched (typeb_export consumed read-only through its frozen public functions)",
+      "summary": "ALL PRE-REGISTERED FALSIFIERS HELD; no band moved, nothing tuned"
+    },
+    "what_waits_for_the_real_actor": [
+      "BINDING IS AUTOMATIC IN FORMAT: the certificate binds artifact hashes (manifest_hash, weights_sha256, physics build params sha, runtime profile); when the real trained actor freezes, reissue with the real bundle + real physics build ids and the SAME checks re-run unchanged",
+      "the real actor's qualification scope (bodies/skills/transitions/ranges/horizons/bars/margins) must be declared per its own training claims; this lane's surrogate scope is a FORMAT instance",
+      "the four production restart-state gaps must be cleared by the engine binding (snapshot APIs + bit-identical CHECK 1 through them) before ANY production-class certificate can issue",
+      "CHECK 2's registered cases must be re-registered against the real engine's closed-loop streams (the margin law re-derived from the real build's declared parameter deltas); agreement on cases remains evidence, never universal proof",
+      "CHECK 3's hard gates reference the real walk interface's intervention taxonomy and monitor set; the action-replay refusal and the closed-loop recompute requirement transfer verbatim",
+      "the deterministic inference recipe must be re-proven byte-identical on the deployment runtime (the P3 manifest's own engine-runtime note): F-CPU-POLICY-BYTES re-run against the engine's byte stream before deployment"
+    ],
+    "tests": "16/16 green: python -B -m pytest tools/policy_compat/tests -q"
+  },
+  "pass": true
+}
