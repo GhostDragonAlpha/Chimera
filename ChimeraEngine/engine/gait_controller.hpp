@@ -99,6 +99,29 @@ class GaitWalker {
  int settle_ticks_=0; // ORBIT CAPTURE (wave 8): hold the clock at the entry pose under load for the servo's settling time
  int settle_total_=0; // immutable reset value used by the wave-10 gradual vault activation
  double e_ref_=0; // the LEDGER BASELINE: the reset state's actual mechanical energy (the gait entry injects pose+momentum the standing-pose reference never sees; measured offset -0.59 J at tick 0 before this)
+ // ── THE COMMAND CHANNEL (typea-command-adapter 20260921; the TypeB-P1
+ // receipt's F-NO-CONTROL-AUTHORITY named this prerequisite: surface B -- the
+ // derived plant-target law -- is the ONE measured-live injection point, here
+ // surfaced as a declared first-class input) ──
+ // {commanded_target_velocity_x}: the commanded target velocity, m/s, fed by
+ // the scene/test harness through configure() between ticks. ZERO-ORDER HOLD:
+ // a new command applies at the next tick boundary and holds until replaced
+ // (the hold state is value-only, so a constant command re-issued at the
+ // learned layer's 20 Hz decision clock over the 300 Hz physics is
+ // byte-equivalent to one issue). THE AUTHORITY LAW, zero new constants: the
+ // command REPLACES the v argument of the walk's own derived plant law
+ // x_off = v*t_stance/2 (t_stance = DUTY_SAMPLED*T_CYCLE) at its two
+ // plant-target sites (fore_xoff(), the hind step fire) -- the command
+ // multiplies the DERIVED relation; it is not a gain on its output. THE
+ // ENVELOPE: inside the machinery's own reach annulus the plants fit; outside
+ // it the EXISTING clamps (fore_clamped_/hind_step_clamped_) saturate and the
+ // EXISTING budgets refuse -- the adapter adds no refusal, no limiter
+ // constant, and never touches the reflex layer: the envelope, entry and
+ // reach machinery and every budget keep the MEASURED v, and the learned
+ // layer can never disable a reflex. INERT WHEN UNUSED: cmd_vx_live_ false
+ // reads exactly the legacy expression (std::max)(0.,s_.v[3]).
+ bool cmd_vx_live_=false;double cmd_vx_=0.;uint64_t cmd_vx_tick_=0;
+ mutable uint64_t cmd_fires_=0;mutable long long cmd_first_fire_tick_=-1; // census: plant-law consumptions under command (read-only)
  // ── THE ENTRY POSE (wave 14): the pre-capture fore targets, consumed from ──
  // the scene recipe ('fore_entry_pose_rad', derived by the scene-statics
  // derivation derive_entry_pose.py). The wave-12/13 constants (-0.903/0.838)
@@ -1089,8 +1112,11 @@ class GaitWalker {
   paws_captured_=true;
   arm_fore_clock(e);} // THE STEPPING-STRUT CLOCK (wave 13): armed at the entry capture
  // ── THE REPLANT LAW (wave 13, receipt derivation) ──
- double fore_xoff()const{ // x_off = v * t_stance/2 at the CURRENT measured speed
-  return (std::max)(0.,s_.v[3])*(DUTY_SAMPLED*T_CYCLE)/2.;}
+ double v_cmd()const{ // THE PLANT LAW's v argument (the authority law): the live command, else the legacy measured expression -- byte-identical when the channel is unused
+  if(cmd_vx_live_){++cmd_fires_;if(cmd_first_fire_tick_<0)cmd_first_fire_tick_=(long long)ticks_;}
+  return cmd_vx_live_?cmd_vx_:(std::max)(0.,s_.v[3]);}
+ double fore_xoff()const{ // x_off = v * t_stance/2, v the commanded speed when a command is live, else the CURRENT measured speed
+  return v_cmd()*(DUTY_SAMPLED*T_CYCLE)/2.;}
  double fore_amax(const Evaluation& e,size_t leg)const{ // horizontal reach envelope at plant height
   auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
   double h=(std::max)(0.,sh[1]-paw_plant_y_[leg]),d=fore_L1_+fore_rho_,a2=d*d-h*h;
@@ -2222,6 +2248,10 @@ class GaitWalker {
     require(it.value().is_number(),"gait_base_range");double a=number(it.value());require(std::abs(a)<=1.,"gait_base_range");
     require(restart||!config_.contains("base_trans_y_m")||a==number(config_["base_trans_y_m"]),"gait_base_requires_reset");
     c["base_trans_y_m"]=it.value();}
+   else if(it.key()=="commanded_target_velocity_x"){ // THE COMMAND CHANNEL (typea 20260921): first-class, live (NOT restart-gated), zero-order hold at the tick boundary. Declared domain: the plant law's own max(0,.) -- non-negative, m/s. The ENVELOPE is deliberately not re-declared here: outside the walk's own reach annulus the existing clamps saturate and the existing budgets govern (the adapter invents no refusal and holds no limiter constant).
+    require(it.value().is_number()&&!it.value().is_boolean(),"gait_command_number");double a=number(it.value());
+    require(a>=0.,"gait_command_domain");
+    cmd_vx_live_=true;cmd_vx_=a;cmd_vx_tick_=ticks_;}
    else{require(c.contains(it.key()),"unknown_gait_control");c[it.key()]=it.value();}}
   for(auto key:{"power","contact_enabled","gait_enabled","capture_enabled"})require(c[key].is_boolean(),"gait_boolean_control");
   for(size_t d=0;d<nd_;++d)require(c[drives_[d].name+"_drive"].is_boolean(),"gait_boolean_control");
@@ -2584,7 +2614,7 @@ class GaitWalker {
      hind_step_ap_[hl]=s_.q[hind_coord_[hl][0]]+s_.q[hind_coord_[hl][1]]+s_.q[hind_coord_[hl][2]];
      hind_step_mp_[hl]=s_.q[hind_coord_[hl][3]];
      hind_step_branch_[hl]=s_.q[hind_coord_[hl][1]]>=0.?1:-1;
-     double xoff=(std::max)(0.,s_.v[3])*(DUTY_SAMPLED*T_CYCLE)/2.;
+     double xoff=v_cmd()*(DUTY_SAMPLED*T_CYCLE)/2.; // THE COMMAND CHANNEL's second plant-law site (typea 20260921)
      auto hip=e.point(pelvis_row_,hind_mount_[hl]).first;
      double h=(std::max)(0.,hip[1]-hind_step_plant_y_[hl]);
      double a2m=hind_L1_+hind_L2_;
@@ -2735,6 +2765,13 @@ class GaitWalker {
   J gait{{"cycle_duration_s",T_CYCLE},{"duty_factor_sampled",DUTY_SAMPLED},{"servo_frequency_Hz",FS_HZ},
    {"phase_left",phi_[0]},{"phase_right",phi_[1]},{"phase_offset",std::fmod(phi_[1]-phi_[0]+1.,1.)},
    {"capture_events",capture_events_},{"touching_left",touching_prev_[0]},{"touching_right",touching_prev_[1]}};
+  // THE COMMAND CHANNEL's census (typea 20260921): the echo + the plant-law
+  // consumption census, read by the F-G42 command census. Read-only; the
+  // values are inert and the keys additive when the channel is unused (the
+  // stdout fence carries them nowhere: only out.stream absorbs status keys).
+  gait["command"]={{"live",cmd_vx_live_},{"target_velocity_x_m_s",cmd_vx_},
+   {"issued_tick",cmd_vx_tick_},{"plant_law_consumptions",cmd_fires_},
+   {"first_plant_law_tick",cmd_first_fire_tick_}};
   // THE PLANTED STRUT (wave 12) + THE STEPPING CLOCK (wave 13): paw
   // diagnostics -- held/glided target, tracked error, closure round-trip and
   // capture qerr, saturation census, clock phase/mode/schedule.
