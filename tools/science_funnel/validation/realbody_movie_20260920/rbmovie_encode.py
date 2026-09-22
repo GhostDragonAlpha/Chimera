@@ -40,21 +40,49 @@ def main() -> int:
     ap.add_argument("--frames", required=True)
     ap.add_argument("--record", required=True, help="capture_record.json")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--truetime", action="store_true",
+                    help="cut the movie at the MEASURED per-frame timing "
+                         "(ffconcat durations from capture_record's "
+                         "frame_dt_ms): motion speed is exact, not re-timed "
+                         "to a chosen fps")
     a = ap.parse_args()
     frames = Path(a.frames)
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     cap = json.loads(Path(a.record).read_text(encoding="utf-8"))
-    fps = int(round(cap["mean_fps"]))
     n = cap["frames"]
     rec = {"schema": "chimera.realbody_movie_20260920.encode.v1",
-           "measured_mean_fps": cap["mean_fps"], "encoded_fps": fps,
-           "frames": n, "implied_duration_s": round(n / fps, 2),
+           "measured_mean_fps": cap["mean_fps"],
+           "frames": n,
            "crf_ladder": []}
+    if a.truetime:
+        dts = cap["frame_dt_ms"]
+        assert len(dts) == n - 1, "frame_dt_ms must cover every interval"
+        lst = frames / "cut.ffconcat"
+        lines = ["ffconcat version 1.0"]
+        for i in range(n):
+            lines.append("file '%s'" % (frames / ("f%05d.jpg" % i)).as_posix())
+            if i < n - 1:
+                lines.append("duration %.4f" % (dts[i] / 1000.0))
+        lst.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        rec["cut"] = "truetime (ffconcat per-frame durations = measured dt)"
+    else:
+        fps = int(round(cap["mean_fps"]))
+        rec["encoded_fps"] = fps
+        rec["cut"] = "uniform at the rounded measured mean fps"
+        lst = None
+    rec["implied_duration_s"] = (
+        round(sum(dts) / 1000.0 + dts[-1] / 1000.0, 2) if a.truetime
+        else round(n / int(rec["encoded_fps"]), 2))
     for crf in (20, 23, 26):
-        cmd = ["ffmpeg", "-y", "-framerate", str(fps), "-i",
-               str(frames / "f%05d.jpg"), "-c:v", "libx264",
-               "-pix_fmt", "yuv420p", "-crf", str(crf), str(out)]
+        if a.truetime:
+            cmd = ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i",
+                   str(lst), "-fps_mode", "vfr", "-c:v", "libx264",
+                   "-pix_fmt", "yuv420p", "-crf", str(crf), str(out)]
+        else:
+            cmd = ["ffmpeg", "-y", "-framerate", str(rec["encoded_fps"]),
+                   "-i", str(frames / "f%05d.jpg"), "-c:v", "libx264",
+                   "-pix_fmt", "yuv420p", "-crf", str(crf), str(out)]
         r = subprocess.run(cmd, capture_output=True, text=True)
         if r.returncode != 0:
             rec["crf_ladder"].append({"crf": crf, "error": r.stderr[-400:]})

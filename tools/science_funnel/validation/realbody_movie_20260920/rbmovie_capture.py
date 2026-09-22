@@ -12,9 +12,9 @@ sequences run, driven through the slice's own API endpoints:
   /api/send  -> MOCK[mock_carry]   ~5 s   (1.2 m at the slice's 0.4 m/s)
   hold at the marker               ~1 s
   /api/drop_test -> THE FALL TEST ~9 s  (real engine law, transient + settle)
-  /api/restart -> re-boot + settle ~4 s  (the cached ~2 s boot, recovery)
+  (the restart segment: see AMENDMENT 1 in this file / record.md)
 
-Total ~24 s of capture. The movie is cut at the MEASURED cadence.
+Total ~20 s of capture. The movie is cut at the MEASURED cadence.
 
 Every frame is a raw page.screenshot of the live page: no compositing, no
 editing, no synthesized frame (F4). Console errors, page errors and failed
@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import base64
 import json
+import math
 import subprocess
 import sys
 import time
@@ -39,14 +40,28 @@ SLICE = HERE.parents[3] / "tools" / "playable_slice"
 ROOT = SLICE.parents[1]
 EXE = ROOT / ".tmp" / "slice_build" / "Release" / "chimera_engine.exe"
 
-VIEW_W, VIEW_H = 800, 450
+VIEW_W, VIEW_H = 640, 360
+# THE SLICE'S OWN BANKED CONSTANTS (slice_server.py, not this lane's taste):
+# the marker seat and the carry's constant speed -- the camera target during
+# the carried phases follows the DERIVED carry law (Rule 1: derived, not
+# polled), so the capture loop makes ZERO page fetches of its own.
+MARKER_AZIMUTH_RAD = 0.6
+MARKER_DIST_M = 1.2
+CARRY_SPEED_MPS = 0.4
+MARKER_X = MARKER_DIST_M * math.sin(MARKER_AZIMUTH_RAD)
+MARKER_Z = MARKER_DIST_M * math.cos(MARKER_AZIMUTH_RAD)
 PHASES = [  # (name, seconds) -- the slice's own sequence lengths (record.md)
     ("settle", 5.0),
     ("carry", 5.0),
     ("hold_marker", 1.0),
     ("fall", 9.0),
-    ("restart", 4.0),
 ]
+# AMENDMENT 1 (record.md): the restart segment is dropped from the movie.
+# MEASURED (attempts 6, 8, 9): any restart driven while the real page is
+# watching produces console-class 502s BY THE SLICE'S OWN DESIGN -- the
+# server answers 502 while its engine is down re-booting, the page logs each
+# one. That is a FINDING about the slice (recorded; successor work), and the
+# movie ships the four sequences that capture clean.
 
 
 def http_json(base: str, path: str, timeout: float = 5) -> dict:
@@ -222,18 +237,17 @@ def main() -> int:
             # same knobs a player drags; no page file is edited).
             page.evaluate("cam.dist=1.6;cam.pit=0.35;cam.tx=0;cam.ty=0.30;"
                           "cam.tz=0;1")
-            # PAGE-SIDE carry tracker: the page fetches its OWN status API on
-            # a timer (exactly what its pollStatus already does) and stashes
-            # the real carry x/z; the capture's per-frame evaluate reads the
-            # stashed values. This keeps EVERY Python-side HTTP call out of
-            # the capture loop (measured, attempt 5: a per-frame status GET
-            # dragged the tracked phases to 5-10 fps while settle ran 21).
-            page.evaluate("window.__cx=0;window.__cz=0;"
-                          "setInterval(async()=>{try{"
-                          "const s=await(await fetch('/api/status')).json();"
-                          "const c=s.mock_carry||{};"
-                          "window.__cx=c.x||0;window.__cz=c.z||0;"
-                          "}catch(e){}},250)")
+            # THE DECLARED GHOST OVERLAY IS HIDDEN FOR THE CAPTURE: the ghost
+            # (ghost_standing_pose) is a translucent DOUBLE of the SAME
+            # standing pose riding the SAME live root -- drawing it over the
+            # real body every frame doubles the per-draw triangles and
+            # speckles the subject. Hiding it is a runtime VIEW state (the
+            # page's own global, like the camera), recorded here; no page
+            # file is edited, and the movie's subject is the REAL body.
+            page.evaluate("ghost=null;ghostBase=null;1")
+            # (The attempt-7 page-side tracker is retired: measured, it
+            # queued on the same engine the page already polls. The camera
+            # now follows the DERIVED carry law below -- zero fetches.)
             deadline = time.perf_counter() + 30
             while time.perf_counter() < deadline:
                 if page.evaluate(
@@ -249,8 +263,9 @@ def main() -> int:
             buf = []          # frames held in RAM, written after the close
             phases = ([("carrytest", 3.0)] if a.test else PHASES)
             # CAPTURE-SIDE CAMERA (the page's OWN client camera -- the same
-            # orbit/zoom a player drags): the target follows the REAL carry
-            # state via the page-side tracker above. One unbroken capture.
+            # orbit/zoom a player drags): the target follows the DERIVED
+            # carry law from the slice's own banked constants. One unbroken
+            # capture; no cuts.
             for name, secs in phases:
                 if name in ("carry", "carrytest"):
                     rec["posts"]["send"] = http_post(base, "/api/send")
@@ -268,7 +283,9 @@ def main() -> int:
                 rec["phase_events"].append(
                     {"phase": name, "t": round(time.perf_counter(), 3),
                      "first_frame": fi})
-                t_end = time.perf_counter() + secs
+                t_phase0 = time.perf_counter()
+                dts_phase = []
+                t_end = t_phase0 + secs
                 while time.perf_counter() < t_end:
                     ts = time.perf_counter()
                     if t_first is None:
@@ -281,12 +298,26 @@ def main() -> int:
                     # buffer is still valid after draw() returns -- so the
                     # capture reads the canvas's own bytes. No compositing,
                     # no editing: the pixels are the page's own render.
+                    # the DERIVED carry law: the slide starts at the origin,
+                    # runs the marker's azimuth at the slice's constant
+                    # speed, and stops at the arrive radius; a restart boots
+                    # the world back to the origin
+                    if name in ("carry", "carrytest"):
+                        d = min(CARRY_SPEED_MPS * (time.perf_counter()
+                                - t_phase0), MARKER_DIST_M)
+                        tx, tz = d * math.sin(MARKER_AZIMUTH_RAD),                             d * math.cos(MARKER_AZIMUTH_RAD)
+                    elif name in ("hold_marker", "fall"):
+                        tx, tz = MARKER_X, MARKER_Z
+                    else:
+                        tx, tz = 0.0, 0.0
                     data = page.evaluate(
-                        "(()=>{cam.tx=window.__cx||0;cam.tz=window.__cz||0;"
-                        "draw();return document.getElementById('gl')"
-                        ".toDataURL('image/jpeg',0.8);})()")
+                        "([tx,tz])=>{cam.tx=tx;cam.tz=tz;draw();return "
+                        "document.getElementById('gl')"
+                        ".toDataURL('image/jpeg',0.8);}", [tx, tz])
                     buf.append((fi, base64.b64decode(data.split(",", 1)[1])))
                     times.append(time.perf_counter())
+                    dts_phase.append(times[-1] - times[-2]
+                                     if len(times) > 1 else 0.0)
                     if fi % 50 == 0:
                         try:
                             st = http_json(base, "/api/status")
@@ -304,6 +335,13 @@ def main() -> int:
                             pass
                     fi += 1
                 rec["phase_events"][-1]["last_frame"] = fi - 1
+                sp = sorted(dts_phase)
+                rec["phase_events"][-1]["median_dt_ms"] =                     round(sp[len(sp) // 2] * 1000, 1) if sp else None
+                try:
+                    import psutil
+                    rec["phase_events"][-1]["cpu_pct"] = psutil.cpu_percent()
+                except Exception:  # noqa: BLE001
+                    pass
             t_last = time.perf_counter()
             try:
                 rec["final_status"] = http_json(base, "/api/status")
@@ -327,6 +365,7 @@ def main() -> int:
             if dts_sorted else None
         rec["max_dt_ms"] = round(max(dts) * 1000, 1) if dts else None
         rec["intervals_over_100ms"] = sum(1 for d in dts if d > 0.1)
+        rec["frame_dt_ms"] = [round(d * 1000, 1) for d in dts]
         rec["phases_actual"] = [
             {"phase": e["phase"], "first": e["first_frame"],
              "last": e.get("last_frame")} for e in rec["phase_events"]]
