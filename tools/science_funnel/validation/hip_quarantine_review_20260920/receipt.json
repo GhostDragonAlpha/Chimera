@@ -74,5 +74,60 @@
   "P1_quarantine_stands": "PREDICTED: QUARANTINE STANDS for ALL FIVE rows (RF mass_additivity_dev 0.023; SAR 0.095; AB pcsa_closure_dev 0.684; BFS musc/belly/tendon mass blanks; TP 0.060) - the defects are data-quality facts of the single n=1 Guimaraes specimen row, not classification errors, and no published macaque dissection PCSA with n>1 exists for them. FIRES if any row resolves by a lawful second source.",
   "P2_structural": "PREDICTED from the pinned geometry audit: no quarantined hip-relevant muscle is a hip EXTENSOR in the deposit - R_RF/R_SAR cross anteriorly (flexors, sign-gated at extension), R_AB is an adductor, R_BFS spans thigh_r->shank_r with NO pelvis point (hip arm identically zero), R_TP spans shank->foot. The only channel that re-opens C* is a large force on a large NEGATIVE arm; no quarantined row has that geometry. FIRES if any quarantined muscle shows a NEGATIVE (extensor-sign) arm sample in the rear-up window with a force that moves the sum materially.",
   "P3_extension_band": "PREDICTED: any admitted extension adds < 20% to the hip-extension book (add < 2.144 N.m on the landed rear-up cap 10.718030); hand-derivation: RF 88.0932 N raw, x cos(5.0 deg) = 87.7577 N but FLEXOR sign-gated at extension; SAR 12.21 N (pennation blank -> factor 1.0 declared); AB 26.73 x cos(6.1 deg) = 26.5778 N on a small adductor arm; BFS 302.2977 x cos(26.2 deg) = 271.2392 N with arm identically 0 (no hip span). The book stays BELOW the 22.4 window floor (gap 22.4 - 10.718030 = 11.682 N.m, 2.09x). IF P3's mechanism holds: rear-up-static is CLOSED as an engine fact and the move belongs to the dynamic skill layer - said plainly. FIRES if any admitted extension adds >= 20% or crosses the floor; then the verdict RE-OPENS with its numbers."
+ },
+ "status": "MEASURED - the measured block below was appended after the adjudications and runs; the preregistration above it is untouched",
+ "measured": {
+  "recorded_utc": "2026-09-20",
+  "adjudications": {
+   "R_RF": {"verdict": "QUARANTINE_STANDS", "defect_restatement": "mass_additivity_dev 0.023 (belly 28.06 + tendon 3.25 = 31.31 g vs whole 32.06 g; 2.34% vs enforced tol 0.02)", "why": "the row is the ONLY published macaque RF PCSA in existence (Guimaraes Table 1: exactly one M. mulatta in the whole 30-specimen compilation); no lawful second source; homolog route closed by law"},
+   "R_SAR": {"verdict": "QUARANTINE_STANDS", "defect_restatement": "mass_additivity_dev 0.095 (belly 9.39 + tendon 0.90 = 10.29 g vs whole 9.40 g - the parts EXCEED the whole by 9.5%); no pennation published for the row", "why": "no lawful second source; homolog route closed by law"},
+   "R_AB": {"verdict": "QUARANTINE_STANDS", "defect_restatement": "pcsa_closure_dev 0.684 (published PCSA 8.91e-05 m2 vs the dataset's own closure 0.0049/(1060x0.0308) = 1.5010e-04 m2 - 40.6% below its own mass/FL closure; the defect is exactly the number a force would be derived from)", "why": "no lawful second source; homolog route closed by law"},
+   "R_BFS": {"verdict": "QUARANTINE_STANDS", "defect_restatement": "musc/belly/tendon mass cells BLANK (closure identities unchecked) AND its FL/PCSA/pennation are byte-identical to the BFL row-22 cells (sheet-copying smell)", "why": "no published macaque BFS PCSA exists outside this row; homolog route closed by law"},
+   "R_TP": {"verdict": "QUARANTINE_STANDS (context, not hip scope)", "defect_restatement": "mass_additivity_dev 0.060 (14.11 + 1.00 = 15.11 g vs 14.25 g)", "why": "no lawful second source; the plantar book's TP gap is unchanged"}
+  },
+  "search_measured": "no published macaque (Macaca sp.) architecture study with per-muscle PCSA by dissection and n>1 exists for RF, SAR, AB, BFS, or TP. DECISIVE NEGATIVE byte-pinned: Guimaraes 2026 Table 1 (pinned fulltext) details ALL 30 specimens of the study including every prior study it compiles (Vereecke 2005, Payne 2006b, Myatt 2011, Oishi 2009, Charles 2019) - exactly ONE M. mulatta (n=1, specimen 127, KU Leuven). NEAREST MISS citation-pinned: Ogihara et al. 2009 (AJPA 139(3):323-338, PMID 19115360) - per-muscle mass + fascicle length by dissection of 'a cadaver' (singular) of M. fuscata - n=1, the SAME single-specimen defect class; FAILS the n>1 law. Full examination table in adjudication.json (20 sources, each sha- or citation-pinned).",
+  "admitted_set_measured": [],
+  "extended_book_measured": {
+   "class_crosscheck_vs_landed": "all four class curves (R_BFL/R_GMax/R_SM/R_ST) re-derived with the landed protocol are BYTE-EQUAL to the landed hip_arms_book stored samples",
+   "extended_equals_landed": true,
+   "rearup_cap_N_m": 10.71803014,
+   "walk_cap_N_m": 15.287147966,
+   "mid_stance_sum_N_m": 10.37350061,
+   "constants_moved": "NONE (F2): forces byte-equal to the k-fill set (asserted), windows/cap law/C* fixed"
+  },
+  "quarantined_readings_measured": {
+   "R_RF": "flexor-signed across the ENTIRE rear-up window (0 material negative samples); 1 artifact flag at +60.2101 deg hip FLEXION (index 1669, |r| = 0.3017 m > the 0.172 m threshold - the femoralneck-wrap pathology family the landed lane recorded for R_ILI above 47.88 deg); valid 2001/2001; named reading, no force consumed",
+   "R_SAR": "MATERIAL extensor-sign channel EXISTS (705 negative rear-up samples, most negative -30.583 mm) - recorded plainly, never absorbed; its counterfactual force 12.21 N bounds the add at 0.373418 N.m = 3.49% of the landed cap (inside the <20% band)",
+   "R_AB": "no material extensor channel (0 negative rear-up samples; |r| <= 22.12 mm); named reading, no force consumed",
+   "R_BFS": "hip arm IDENTICALLY ZERO (max |r| = 3.47e-13 m, float-sign noise only; thigh_r->shank_r spans no pelvis point) - cannot enter the hip book regardless of any force; named reading, no force consumed"
+  },
+  "counterfactual_bounds_measured_NEVER_CONSUMED": {
+   "sum_of_max_adds_N_m": 0.373417702,
+   "counterfactual_total_N_m": 11.091447842,
+   "vs_floor_22.4": "NOT CROSSED - even admitting EVERY quarantined row at its own conflicted sheet PCSA on its most negative rear-up arm simultaneously",
+   "note": "the bound consumes the DEFECT numbers themselves, labeled never-consumed; it is the robustness certificate of the verdict, not an admission"
+  },
+  "rearup_verdict_measured": {
+   "verdict": "NOT COVERED",
+   "verdict_vs_landed": "UNCHANGED (the verdict did not move; the primary 10.71803014 N.m is byte-identical to the landed book's rear-up cap)",
+   "gap_to_floor_N_m": 11.68196986,
+   "gap_multiple_to_floor": 2.089936,
+   "decisive": "primary BELOW the window floor (the landed lane's finding); conservative bound unchanged (knee 8.489511)"
+  },
+  "predictions_measured": {
+   "P1_quarantine_stands": {"predicted": "STANDS for all five", "measured": "STANDS for all five", "verdict": "HELD"},
+   "P2_structural": {"predicted": "no quarantined hip-relevant muscle is a hip extensor in the deposit; the only C*-re-opening channel is a large force on a large negative arm", "measured": "held in substance: RF/AB zero material negative rear-up samples; BFS arm identically zero; TP not a hip muscle. ONE HONEST SUB-FINDING: R_SAR DOES carry a material extensor-sign channel (705 negative rear-up samples, -30.58 mm max) - but with a 12.21 N counterfactual force its add is 0.373 N.m (3.49%), immaterial by the falsifier's own materiality qualifier", "verdict": "HELD on the materiality reading; the SAR arm channel is recorded, never absorbed"},
+   "P3_extension_band": {"predicted": "any admitted extension < 20% (< 2.144 N.m); book stays below the 22.4 floor", "measured": "admitted set EMPTY -> consumed add 0.0 N.m; counterfactual max possible add 0.373418 N.m (3.49%) even admitting all four quarantined rows; counterfactual total 11.091448 < 22.4", "verdict": "HELD"},
+   "prereg_hand_arithmetic_slip": "the prereg printed RF corrected force 87.7577 N; the exact value is 87.75798 N (a 0.0003 N rounding slip in the label) - recorded per the k-fill slip protocol, never rewritten; zero impact on any band or verdict"
+  },
+  "falsifier_verdicts": {
+   "F1_law_violation": {"verdict": "HELD", "measured": "no silent fill: the admitted set is EMPTY and no quarantined force enters any sum (unittest-asserted); the homolog route was READ IN ADVANCE, found CLOSED by the books' substitution law (k-fill record D2 + k-fill receipt citation_integrity), and was NOT used - Myatt et al. 2011 named as still-future for every row; the quarantined sheet PCSAs appear ONLY inside the labeled NEVER_CONSUMED counterfactual bound"},
+   "F2_sweep_ban": {"verdict": "HELD", "measured": "constants moved: NONE - class forces byte-equal to the k-fill set, windows/cap law/C* fixed, sigma fixed; the extended book EQUALS the landed book (class curves byte-equal to the landed stored samples, caps identical)"},
+   "F3_traceability": {"verdict": "HELD", "measured": "7 input pins verified at load (loader REFUSES on drift); the search table pins 20 sources by sha (Guimaraes fulltext a1ded31f..., Oku fulltext) or citation (PMID/DOI: Ogihara 19115360/10.1002/ajpa.20986 and the rest); zero uncited numbers"},
+   "F4_determinism": {"verdict": "HELD", "protocol": "three independent full derivations (deliverable + two temp paths outside the repo)", "sha256_runs": ["ccca5cabd6b7d31fc89ab0ce98e90f5edccc2a71cdb390b78966932f68b65d79", "ccca5cabd6b7d31fc89ab0ce98e90f5edccc2a71cdb390b78966932f68b65d79", "ccca5cabd6b7d31fc89ab0ce98e90f5edccc2a71cdb390b78966932f68b65d79"], "unittest_subprocess_rerun_matches": true},
+   "F5_scope": {"verdict": "HELD", "measured": "git status --porcelain names nothing outside tools/science_funnel/validation/hip_quarantine_review_20260920/ (unittest-asserted); derive_hip_arms (sha 40bdfb4c...) and the pulley machinery (sha ce93c114...) imported UNMODIFIED, verified at load; gait_controller.hpp, gait_* validation, first_skill_prestage_20260922/, master, shared tooling untouched"}
+  },
+  "tests": "8/8 green: python -B -m unittest tools.science_funnel.validation.hip_quarantine_review_20260920.test_hip_quarantine_review",
+  "the_closing_statement": "REAR-UP-STATIC IS CLOSED AS AN ENGINE FACT. All five quarantined rows STAND their quarantine (real, restated data-quality defects; no lawful second source exists anywhere in the examined literature - the quarantined Guimaraes rows are the ONLY published macaque PCSA for these muscles, n=1; the homolog route is closed by the books' own substitution law with Myatt et al. 2011 named as still-future). Nothing was admitted, so the hip-extension book carries UNCHANGED: 10.718030 N.m at the rear-up window, DECISIVELY NOT COVERED - below the 22.4 N.m C* window floor by 11.681970 N.m (a 2.09x gap), robust even under the never-consumed counterfactual bound that admits every quarantined row at its own conflicted PCSA (total 11.091448 N.m, still 11.3 N.m below the floor). No lawful force in the deposit's geometry reaches the class; the rear-up move belongs to the dynamic skill layer (momentum, not static capability)."
  }
 }
