@@ -25,14 +25,37 @@ def sha256_file(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
+# stderr marker lines that bound the F-G5 phase on BOTH binaries (plain and
+# instrumented print the same markers): the F-G5 span is the
+# instrumentation-overhead probe -- the tc binary runs its FULL hot-path
+# scopes there over the same 500 fixed ticks the plain binary runs bare
+# (PREREG Amendment 3).
+MARKERS = ("run F-G5", "F-G5 refused", "run F-G1..G4 walk")
+
+
 def one_run(exe, scene, prefix):
     t0 = time.perf_counter()
+    markers = []
     with open(prefix + "_stdout.txt", "wb") as so, open(prefix + "_stderr.txt", "wb") as se:
-        p = subprocess.run([str(exe), str(scene)], stdout=so, stderr=se)
+        p = subprocess.Popen([str(exe), str(scene)], stdout=so, stderr=subprocess.PIPE)
+        while True:
+            line = p.stderr.readline()
+            if not line:
+                break
+            now = time.perf_counter() - t0
+            se.write(line)
+            text = line.decode("utf-8", "replace").strip()
+            for mk in MARKERS:
+                if text.startswith(mk):
+                    markers.append({"marker": text[:60], "t_s": round(now, 4)})
+                    break
+        p.stderr.close()
+        p.wait()
     wall = time.perf_counter() - t0
     return {"exit": p.returncode, "wall_s": round(wall, 3),
             "stdout_sha256": sha256_file(prefix + "_stdout.txt"),
-            "stdout_bytes": Path(prefix + "_stdout.txt").stat().st_size}
+            "stdout_bytes": Path(prefix + "_stdout.txt").stat().st_size,
+            "stderr_markers": markers}
 
 
 def main():

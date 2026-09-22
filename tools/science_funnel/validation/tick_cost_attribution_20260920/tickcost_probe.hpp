@@ -77,6 +77,10 @@ struct Rec {
   // explicit per-class begin/end plumbing (used where a RAII block would
   // break scoping, e.g. `s` must outlive the status timer)
   std::chrono::steady_clock::time_point pt_t[CLS_COUNT];
+  // re-entrancy depth for recursively-called scopes (ADV_TOTAL: advance()
+  // recurses on events; a plain RAII scope would accumulate the recursion
+  // depth-over-time integral, inflating the total)
+  int adv_depth; std::chrono::steady_clock::time_point adv_t0;
 
   Rec(){reset_all();}
   void reset_all(){
@@ -84,12 +88,17 @@ struct Rec {
     adv_base=0;adv_per_tick.clear();
     walk_ticks.clear();push_ticks.clear();
     alloc_count=0;alloc_bytes=0;ac_base=0;ab_base=0;alloc_per_tick.clear();
-    loop_on=false;tick_on=false;}
+    loop_on=false;tick_on=false;adv_depth=0;}
   void t_begin(Cls c){pt_t[c]=std::chrono::steady_clock::now();}
   void t_end(Cls c){ns[c]+=std::chrono::duration<double,std::nano>(
     std::chrono::steady_clock::now()-pt_t[c]).count();++hits[c];}
-  void adv_snap(unsigned long long cur){adv_base=cur;}
-  void adv_note(unsigned long long cur){adv_per_tick.push_back(cur-adv_base);}
+  void adv_enter(){if(adv_depth++==0)adv_t0=std::chrono::steady_clock::now();}
+  void adv_leave(){if(--adv_depth==0){ns[ADV_TOTAL]+=std::chrono::duration<
+    double,std::nano>(std::chrono::steady_clock::now()-adv_t0).count();++hits[ADV_TOTAL];}}
+  void adv_snap(unsigned long long cur){(void)cur;}
+  // adv_calls_ is reset to 0 INSIDE step() every tick (the production code's
+  // own work-budget line), so the value read at step end IS this tick's count.
+  void adv_note(unsigned long long cur){adv_per_tick.push_back(cur);}
   void alloc_snap(){ac_base=alloc_count;ab_base=alloc_bytes;}
   void alloc_note(){alloc_per_tick.push_back(std::make_pair(
     alloc_count-ac_base,alloc_bytes-ab_base));}
@@ -111,6 +120,14 @@ struct Scope {
   explicit Scope(Cls c_):t(std::chrono::steady_clock::now()),c(c_){}
   ~Scope(){rec().ns[c]+=std::chrono::duration<double,std::nano>(
     std::chrono::steady_clock::now()-t).count();++rec().hits[c];}
+};
+
+// Re-entrancy-aware scope for advance(): advance() recurses on events, so a
+// plain scope would accumulate the recursion depth-over-time integral; only
+// the OUTERMOST frame books wall time here.
+struct AdvScope {
+  AdvScope(){rec().adv_enter();}
+  ~AdvScope(){rec().adv_leave();}
 };
 
 inline unsigned long long tc_p95(std::vector<unsigned long long>& v){

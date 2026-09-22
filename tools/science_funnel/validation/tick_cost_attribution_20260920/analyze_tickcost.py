@@ -130,7 +130,7 @@ def analyze(raw_dir):
         if "push426" in phs:
             push_phase = phs["push426"]
             break
-    # latency from the median run's arrays
+    # latency from the median run's arrays (the [tc-ticks] samples are NS)
     lat = {}
     if med_phase:
         for kind, arr in med_phase["ticks"].items():
@@ -138,24 +138,38 @@ def analyze(raw_dir):
             s_all, s_ss = sorted(arr), sorted(ss)
             lat[kind] = {
                 "n": len(arr), "n_ss": len(ss),
-                "p50_us": percentile(s_all, 50), "p95_us": percentile(s_all, 95),
-                "p99_us": percentile(s_all, 99),
-                "p50_ss_us": percentile(s_ss, 50), "p95_ss_us": percentile(s_ss, 95),
-                "p99_ss_us": percentile(s_ss, 99),
-                "mean_ss_us": sum(ss) / len(ss) if ss else None}
+                "p50_ns": percentile(s_all, 50), "p95_ns": percentile(s_all, 95),
+                "p99_ns": percentile(s_all, 99),
+                "p50_ss_ns": percentile(s_ss, 50), "p95_ss_ns": percentile(s_ss, 95),
+                "p99_ss_ns": percentile(s_ss, 99),
+                "mean_ss_ns": sum(ss) / len(ss) if ss else None}
     if push_phase and "push" in push_phase["ticks"]:
         arr = sorted(push_phase["ticks"]["push"])
         lat["push426"] = {"n": len(arr),
-                          "p50_us": percentile(arr, 50), "p95_us": percentile(arr, 95),
-                          "p99_us": percentile(arr, 99),
-                          "mean_us": sum(arr) / len(arr)}
+                          "p50_ns": percentile(arr, 50), "p95_ns": percentile(arr, 95),
+                          "p99_ns": percentile(arr, 99),
+                          "mean_ns": sum(arr) / len(arr)}
+    # stand426: the >= 426-tick SUSTAINED interacting scene (PREREG Amendment 2)
+    stand_phase = None
+    for k, phs in tc_runs.items():
+        if "stand426" in phs:
+            stand_phase = phs["stand426"]
+            break
+    if stand_phase and "push" in stand_phase["ticks"]:
+        arr = sorted(stand_phase["ticks"]["push"])
+        lat["stand426"] = {"n": len(arr), "sustained_426": len(arr) >= 426,
+                           "p50_ns": percentile(arr, 50), "p95_ns": percentile(arr, 95),
+                           "p99_ns": percentile(arr, 99),
+                           "mean_ns": sum(arr) / len(arr),
+                           "loop_ms_per_tick": (stand_phase["loop"][0] / stand_phase["loop"][1])
+                           if "loop" in stand_phase else None}
     res["latency_us"] = lat
     # attribution table (walk, steady-state shares) + books + bound
     if med_phase:
         ticks = med_phase["loop"][1] if "loop" in med_phase else None
         tbl = phase_table(med_phase, ticks)
         books = tbl["stage_sum_ms_per_tick"]
-        step_mean_ms = (lat.get("walk", {}).get("mean_ss_us", 0) or 0) / 1000.0
+        step_mean_ms = (lat.get("walk", {}).get("mean_ss_ns", 0) or 0) / 1e6
         tbl["books"] = {"stage_sum_ms_per_tick": books,
                         "step_mean_ms": step_mean_ms,
                         "closure": books / step_mean_ms if step_mean_ms else None,
@@ -172,16 +186,33 @@ def analyze(raw_dir):
         tbl["bound"]["budget_ms_per_tick"] = BUDGET_MS
         tbl["bound"]["cost_gap_fired"] = bool(b is not None and b > BUDGET_MS)
         res["attribution"] = tbl
-    # F3c overhead: process-wall delta spread over SAMPLED ticks only (F-G5
-    # ticks are not sampled, so this is an upper bound on per-tick overhead)
-    wp = res["runs"]["plain"]["wall_s_mean"]
-    wt = res["runs"]["tc"]["wall_s_mean"]
-    n_sampled = sum(len(a) for a in med_phase["ticks"].values()) if med_phase else 0
-    for k, phs in tc_runs.items():
-        n_sampled += sum(len(v) for ph in phs.values() for v in ph["ticks"].values())
-    res["overhead"] = {"plain_wall_mean_s": wp, "tc_wall_mean_s": wt,
-                       "delta_s": wt - wp, "sampled_ticks": n_sampled,
-                       "overhead_ms_per_tick_upper_bound": (wt - wp) * 1000.0 / n_sampled}
+    # F3c overhead: the F-G5 span (timestamped stderr markers, PREREG
+    # Amendment 3). Both binaries run the SAME 500 fixed F-G5 steps; the tc
+    # binary runs its full hot-path instrumentation there, the plain binary
+    # runs bare. Per-tick overhead = (tc span - plain span) / 500.
+    def fg5_span(run):
+        ms = [m["t_s"] for m in run.get("stderr_markers", [])
+              if m["marker"].startswith("run F-G5") or m["marker"].startswith("F-G5 refused")
+              or m["marker"].startswith("run F-G1..G4 walk")]
+        # first marker = "run F-G5" (or a refusal line), last = "run F-G1..G4 walk"
+        if len(ms) >= 2:
+            return ms[-1] - ms[0]
+        return None
+    plains = [r for r in index["runs"] if r["kind"] == "plain"]
+    tcs = [r for r in index["runs"] if r["kind"] == "tc"]
+    p_spans = [fg5_span(r) for r in plains if fg5_span(r)]
+    t_spans = [fg5_span(r) for r in tcs if fg5_span(r)]
+    p_mean = sum(p_spans) / len(p_spans) if p_spans else None
+    t_mean = sum(t_spans) / len(t_spans) if t_spans else None
+    res["overhead"] = {
+        "method": "F-G5 stderr-marker span: (tc_mean_s - plain_mean_s) / 500 fixed ticks",
+        "fg5_span_plain_s": p_spans, "fg5_span_tc_s": t_spans,
+        "fg5_span_plain_mean_s": p_mean, "fg5_span_tc_mean_s": t_mean,
+        "overhead_ms_per_tick": ((t_mean - p_mean) * 1000.0 / 500.0)
+        if (p_mean is not None and t_mean is not None) else None,
+        "overhead_frac_of_23ms_tick": None}
+    if res["overhead"]["overhead_ms_per_tick"] is not None:
+        res["overhead"]["overhead_frac_of_23ms_tick"] =             res["overhead"]["overhead_ms_per_tick"] / 23.0
     return res
 
 

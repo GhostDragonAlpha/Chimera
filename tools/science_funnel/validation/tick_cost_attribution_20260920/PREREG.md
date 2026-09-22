@@ -190,3 +190,75 @@ checks). THE F2 GUARD FOR THIS LANE IS THEREFORE: every instrumented run's stdou
 sha must equal 8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc,
 with the 71065ac5 relation carried here as the explanation (harness-note delta,
 physics byte-faithful). Everything else in F2/F3 stands.
+
+## AMENDMENT 2 (frozen after the instrument smoke run, BEFORE the run matrix)
+
+The instrument smoke run (byte-identity GREEN: stdout sha == the lane fence on
+the instrumented binary) measured three instrument defects; each is fixed or
+rejected here, before any attribution number is recorded:
+
+1. **ADV_TOTAL recursion inflation (fixed)**: `advance()` recurses on events; a
+   plain RAII scope summed the recursion depth-over-time integral (measured
+   1.6x: adv.total 16622 ms vs the true integrate-stage wall 10420 ms over the
+   same 303 ticks). ADV_TOTAL is now a re-entrancy-aware scope (only the
+   outermost frame books wall time).
+2. **Allocation counting REJECTED (F3(c) enforcement)**: the counted global
+   operator new/delete (157k allocations/tick routed through the override)
+   cost ~+12 ms/tick (~53% of the plain tick) — far over the 10% overhead
+   budget. The counting is REMOVED; allocation churn is named UNMEASURED in
+   the receipt; the tick-reset stage chrono scope (cheap) stays.
+3. **adv per-tick counting fixed**: adv_calls_ is zeroed INSIDE step() every
+   tick by the production code's own work-budget line, so the step-end value
+   IS the per-tick count (the previous base-subtraction produced negative
+   deltas that cast to garbage unsigned).
+4. **The >= 426-tick sustained interacting scene (declared)**: the F-G6 push
+   walker is the EXPECTED-TIP regime and refuses at tick 302 on the pinned
+   bytes (measured here; the receipt's own push426_s = 6.80 s is consistent
+   with ~302 ticks at 22.5 ms/tick — the receipt's "426" named the loop bound,
+   not a sustained run). The latency requirement is anchored by a NEW declared
+   phase in the DERIVED harness only: `stand426` — the stage-E stand (contact
+   ON, power ON, the gait clock frozen) under the same scripted F-G6 push
+   (0.1 BW at tick 106 for 30 ticks), run 2*CYCLE_TICKS = 426 ticks. The
+   push426 phase's measured (302-tick) percentiles are reported alongside,
+   named as such.
+
+Also: the plain baseline is rebuilt with the SAME link flags as the instrumented
+binary (-static-libstdc++ -static-libgcc; required by the instrumented build to
+avoid the MinGW dual-allocator heap corruption measured as exit 0xC0000354), so
+the A/B overhead delta isolates the instrument, not the linkage. The stdout
+fence is invariant to linkage (measured: plain dynamic-link, static-link, and
+MSVC cmake all produce 8c537cdb...).
+
+## AMENDMENT 3 (frozen after the first loaded-machine matrix, before the final pinned matrix)
+
+1. **stand426 push removed**: the first stand426 draft injected the F-G6
+   0.1-BW push mid-run; it REFUSED at tick 139 (measured) — a pushed standing
+   pose is the tip regime (F-G6's own "expected-tip" face). The sustained
+   scene is the UNPUSHED stage-E stand: contact ON, power ON, the gait clock
+   frozen — the walk's own stable standing floor, a fully coupled
+   gravity+contact+servo scene, 426 ticks. If it still refuses at N < 426,
+   that N is reported honestly. The pushed phases (push426 at 0.1 BW and the
+   walk's own trajectory) remain in the receipt as measured.
+
+2. **F3(c) overhead method fixed**: the process-wall delta is INVALID as an
+   overhead measure — the tc process runs the extra stand426 phase the plain
+   process does not (the first loaded-machine matrix measured a bogus
+   +23.5 s/process this way). The overhead is now measured on the F-G5 span:
+   both binaries print the same stderr markers ("run F-G5" ... "run
+   F-G1..G4 walk") around the SAME 500 fixed F-G5 ticks; the driver
+   timestamps those lines as they arrive; overhead/tick = (tc span mean −
+   plain span mean) / 500. Both builds exercise the SAME scene bytes and the
+   tc binary runs its full hot-path instrumentation (evaluate/advance/stage
+   scopes) inside that span.
+
+3. **Machine-state control declared**: the box is shared and ran ~60-70%
+   loaded during the first matrix (a game + fleet processes; the receipt-era
+   typeb-p1 runs measured ~30 s/process on a quieter state; the first matrix
+   measured 81 s plain). The final matrix runs under `run_matrix.ps1`:
+   driver + gait_unit children pinned to one thread per P-core (affinity
+   0x5555) at High priority, children inheriting both. The loaded-machine
+   matrix is kept in `raw/` as the noise witness; the pinned matrix in
+   `raw_pinned/` is the receipt's measurement set. Shares (ratios) were
+   stable across both states; the pinned set owns the absolute ms/tick
+   numbers and the F3(b) verdict.
+

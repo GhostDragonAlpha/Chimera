@@ -80,7 +80,7 @@ def header_edits():
     e.ins_after(" double impact(State& s)const{",
                 ["  tickcost::Scope _tc_imp(tickcost::ADV_IMPACT);" + M])
     e.ins_after("  if(h<1e-12)return start;",
-                ["  tickcost::Scope _tc_adv(tickcost::ADV_TOTAL);" + M])
+                ["  tickcost::AdvScope _tc_adv;" + M])
     # -- reflex leaves --------------------------------------------------------
     e.ins_after(" bool update_clock(const Evaluation& e,double dt){",
                 ["  tickcost::Scope _tc_uc(tickcost::UPDATE_CLOCK);" + M])
@@ -92,7 +92,7 @@ def header_edits():
                 ["  tickcost::Scope _tc_cap(tickcost::CAPTURE_FN);" + M])
     # -- step() stages ----------------------------------------------------------
     e.ins_after(" void step(){",
-                ["  tickcost::rec().adv_snap(adv_calls_);tickcost::rec().alloc_snap();" + M])
+                ["  tickcost::rec().adv_snap(adv_calls_);" + M])
     e.ins_before("  s_.impulse=Dense(n_,0.);",
                  ["  {tickcost::Scope _tc_st(tickcost::ST_RESET_ALLOC);" + M])
     e.ins_after("  s_.impulse=Dense(n_,0.);s_.contact_impact_impulse.assign(npts_,0.);s_.contact_force_impulse.assign(npts_,0.);s_.contact_generalized=Dense(n_,0.);s_.friction_impulse.assign(npts_,0.);s_.friction_force_impulse.assign(npts_,0.);s_.friction_heat_tick.assign(npts_,0.);",
@@ -114,7 +114,7 @@ def header_edits():
     e.ins_after("   s_=std::move(trial);}",
                 ["  }" + M])
     e.ins_before("  last_torque_=impulse_torque;++ticks_;}",
-                 ["  tickcost::rec().adv_note(adv_calls_);tickcost::rec().alloc_note();" + M])
+                 ["  tickcost::rec().adv_note(adv_calls_);" + M])
     return e
 
 
@@ -123,17 +123,11 @@ def unit_edits():
     # -- include the DERIVED header instead of the tracked one ---------------
     e.replace('#include "../gait_controller.hpp"',
               '#include "tickcost_gait_controller.hpp"' + M)
-    # -- counted operator new/delete (standard forms only; aligned forms, if
-    #    any request arrives, keep the CRT default and are simply uncounted) --
-    e.ins_after("#include <iostream>",
-                ["#include <cstdlib>" + M,
-                 "#include <new>" + M,
-                 "void* operator new(std::size_t sz){void* p=std::malloc(sz?sz:1);if(!p)throw std::bad_alloc();++tickcost::rec().alloc_count;tickcost::rec().alloc_bytes+=sz;return p;}" + M,
-                 "void* operator new[](std::size_t sz){return operator new(sz);}" + M,
-                 "void operator delete(void* p)noexcept{std::free(p);}" + M,
-                 "void operator delete[](void* p)noexcept{std::free(p);}" + M,
-                 "void operator delete(void* p,std::size_t)noexcept{std::free(p);}" + M,
-                 "void operator delete[](void* p,std::size_t)noexcept{std::free(p);}" + M])
+    # NOTE (PREREG Amendment 2): counted operator new/delete was REMOVED. The
+    # smoke run measured its instrumentation overhead at ~+12 ms/tick
+    # (~157k allocations/tick routed through the override), which would fire
+    # F3(c) (>10% of the tick). Allocation churn is therefore named
+    # UNMEASURED; the tick-reset stage timing (a chrono scope) stays.
     # -- walk loop: loop wall + per-tick wall sample --------------------------
     e.ins_before("  for(int i=0;i<WALK;++i){",
                  ["  tickcost::rec().reset_all();" + M,
@@ -169,6 +163,29 @@ def unit_edits():
                 ["  tickcost::rec().tick_end_push();" + M])
     e.ins_after('  ck(d.capture_events()==0,"f6_disarmed_no_capture");}',
                 ['  tickcost::summary("push426");' + M])
+    # -- THE STAND426 PHASE (PREREG Amendment 2): the >= 426-tick SUSTAINED
+    #    interacting scene. The F-G6 push walker (above) is the expected-tip
+    #    regime and refuses at 302 on the pinned bytes (measured, smoke run;
+    #    the receipt's own push426_s ~ 302 ticks at 22.5 ms/tick), so the
+    #    latency requirement needs a run that SUSTAINS 426 ticks: the stage-E
+    #    stand (contact ON, power ON, the gait clock frozen) -- the walk's own
+    #    stable standing floor, a fully coupled gravity+contact+servo scene.
+    #    Amendment 3 note: the first stand426 draft injected the F-G6 0.1-BW
+    #    push mid-run and REFUSED at 139 (measured) -- a pushed stand is the
+    #    tip regime; the sustained scene is the UNPUSHED stand.
+    #    Lives ONLY in this derived harness; the tracked bytes are untouched.
+    e.ins_before(" // ── F-G7: determinism -- a second identical run is BIT-identical.",
+                 ["  { // TC STAND426 (declared instrument phase; PREREG Amendment 2/3)" + M,
+                  "  GaitWalker d_tc(data,9.80665,V{0,0,0},dt);" + M,
+                  '  d_tc.configure({{"gait_enabled",false},{"power",true},{"reset",true}});' + M,
+                  "  tickcost::rec().reset_all();tickcost::rec().loop_begin();" + M,
+                  "  for(int i=0;i<2*CYCLE_TICKS;++i){" + M,
+                  "   tickcost::rec().tick_begin();" + M,
+                  "   try{d_tc.step();}catch(const Refusal&e){break;} // phase n reports the refusal" + M,
+                  "   tickcost::rec().tick_end_push();" + M,
+                  "  }" + M,
+                  '  tickcost::summary("stand426");' + M,
+                  "  }" + M])
     return e
 
 
