@@ -1454,7 +1454,10 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
 
         free[c] = free[c] + tau[c] - mdl[OF_drive_damping + d] * v[c]
 
-    mat_vec(inv, free, free)
+    free_acc = cuda.local.array(18, dtype=float64)
+    mat_vec(inv, free, free_acc)
+    for i in range(18):
+        free[i] = free_acc[i]
 
     rows = cuda.local.array(180, dtype=float64)
 
@@ -1735,7 +1738,7 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
     rc = rate(q0, v0, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, qa, va, mdi, csti)
 
     if rc != 0:
 
@@ -1749,23 +1752,17 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
         vb[i] = v0[i] + va[i] * half
 
-    rc = rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
-
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
-
-    if rc != 0:
-
-        return rc
-
     brq = cuda.local.array(18, dtype=float64)
 
     brv = cuda.local.array(18, dtype=float64)
 
-    for i in range(18):
+rc = rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-        brq[i] = qb[i]
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, brq, brv, mdi, csti)
 
-        brv[i] = vb[i]
+    if rc != 0:
+
+        return rc
 
     for i in range(18):
 
@@ -1773,23 +1770,17 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
         vc[i] = v0[i] + brv[i] * half
 
-    rc = rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
-
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
-
-    if rc != 0:
-
-        return rc
-
     crq = cuda.local.array(18, dtype=float64)
 
     crv = cuda.local.array(18, dtype=float64)
 
-    for i in range(18):
+rc = rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-        crq[i] = qc[i]
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, crq, crv, mdi, csti)
 
-        crv[i] = vc[i]
+    if rc != 0:
+
+        return rc
 
     for i in range(18):
 
@@ -1797,23 +1788,17 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
         vd[i] = v0[i] + crv[i] * h
 
-    rc = rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
-
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
-
-    if rc != 0:
-
-        return rc
-
     drq = cuda.local.array(18, dtype=float64)
 
     drv = cuda.local.array(18, dtype=float64)
 
-    for i in range(18):
+rc = rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-        drq[i] = qd[i]
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, drq, drv, mdi, csti)
 
-        drv[i] = vd[i]
+    if rc != 0:
+
+        return rc
 
     sixth = h / float(6.0)
 
@@ -2205,7 +2190,7 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
 def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh, sdep, scl, adv, rc, q1, v1, w1, mdi, csti):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
-    # The C++ recursive advance(, csti, mdi) as an explicit LIFO interval stack over the
+    # The C++ recursive advance(, mdi, csti) as an explicit LIFO interval stack over the
 
     # single "current state" thread (q1/v1/w1) -- DFS order preserved.
 
@@ -2287,7 +2272,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
         caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
+                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti)
 
         if rcv[0] != 0:
 
@@ -2325,7 +2310,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                         axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
         if rcs != 0:
 
@@ -2385,7 +2370,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                                 axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                                qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                                qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
                 if rcb != 0:
 
@@ -2467,7 +2452,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                                     axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                                    qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                                    qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
                     if rcb != 0:
 
@@ -2539,7 +2524,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
             caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
+                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti)
 
             if rcv[0] != 0:
 
@@ -2563,7 +2548,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                             axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                            qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                            qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
             if rcc != 0:
 
@@ -2583,7 +2568,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
             caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
+                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti)
 
             if rcv[0] != 0:
 
@@ -2617,7 +2602,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                         axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
         if rcw != 0:
 
@@ -2639,7 +2624,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
         caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
+                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti)
 
         if rcv[0] != 0:
 
@@ -2986,7 +2971,7 @@ def reset_kernel(a_q0, a_v0, a_touching0, phi_l0, phi_r0, settle_total, a_store_
 
 def fore_target_headroom(mdl, cst, fr, leg, paw, branch, mdi, csti):
 
-    d1a, d1b, q1r, q2r, d1c = fore_ik_at(mdl, cst, fr, leg, paw, branch, csti, mdi)
+    d1a, d1b, q1r, q2r, d1c = fore_ik_at(mdl, cst, fr, leg, paw, branch, mdi, csti)
 
     c1 = mdi[OI_fore_coord + leg * 2]
 
@@ -3032,7 +3017,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
     dirn = float(1.0)
 
-    if fore_target_headroom(mdl, cst, fr, leg, px, branch, csti, mdi) < fore_target_headroom(mdl, cst, fr, leg, py, branch, csti, mdi):
+    if fore_target_headroom(mdl, cst, fr, leg, px, branch, mdi, csti) < fore_target_headroom(mdl, cst, fr, leg, py, branch, mdi, csti):
 
         dirn = float(-1.0)
 
@@ -3072,7 +3057,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
     te[2] = p[2]
 
-    if fore_target_headroom(mdl, cst, fr, leg, te, branch, csti, mdi) < float(0.1022):
+    if fore_target_headroom(mdl, cst, fr, leg, te, branch, mdi, csti) < float(0.1022):
 
         result[0] = te[0]
         result[1] = te[1]
@@ -3095,7 +3080,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
         t[2] = p[2]
 
-        if fore_target_headroom(mdl, cst, fr, leg, t, branch, csti, mdi) < float(0.1022):
+        if fore_target_headroom(mdl, cst, fr, leg, t, branch, mdi, csti) < float(0.1022):
 
             lo = mid
 
@@ -3601,9 +3586,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
             c2 = mdi[OI_fore_coord + leg * 2 + 1]
 
-            qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi)
+            qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti)
 
-            qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi)
+            qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti)
 
             e0 = math.sqrt((qa1 - q[c1]) * (qa1 - q[c1]) + (qa2 - q[c2]) * (qa2 - q[c2]))
 
@@ -3885,7 +3870,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
                 plt = cuda.local.array(3, dtype=float64)
                 paw_leg(paw_t, leg, plt)
 
-                dq1, dq2, tq1r, tq2r, dsat = fore_ik_at(mdl, cst, fr, leg, plt, ikb[leg], csti, mdi)
+                dq1, dq2, tq1r, tq2r, dsat = fore_ik_at(mdl, cst, fr, leg, plt, ikb[leg], mdi, csti)
 
                 th1 = min(tq1r - mdl[OF_lower + c1], mdl[OF_upper + c1] - tq1r)
 
@@ -4081,9 +4066,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                     cc2 = mdi[OI_fore_coord + leg * 2 + 1]
 
-                    qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi)
+                    qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti)
 
-                    qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi)
+                    qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti)
 
                     e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]))
 
@@ -4139,9 +4124,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                 cc2 = mdi[OI_fore_coord + leg * 2 + 1]
 
-                qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi)
+                qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti)
 
-                qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi)
+                qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti)
 
                 e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]))
 
@@ -5095,7 +5080,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
                         plt = cuda.local.array(3, dtype=float64)
                         paw_leg(paw_t, fl, plt)
 
-                        q1f, q2f, q1rx, q2rx, satf = fore_ik_at(mdl, cst, fr, fl, plt, ikb[fl], csti, mdi)
+                        q1f, q2f, q1rx, q2rx, satf = fore_ik_at(mdl, cst, fr, fl, plt, ikb[fl], mdi, csti)
 
                         if ji == 0:
 
@@ -5189,7 +5174,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                 qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl,
 
-                adv, rca, o_q, o_v, o_w, csti, mdi)
+                adv, rca, o_q, o_v, o_w, mdi, csti)
 
         for i in range(18):
 
@@ -5279,7 +5264,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                                     qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl,
 
-                                    adv, rca, o_q, o_v, o_w, csti, mdi)
+                                    adv, rca, o_q, o_v, o_w, mdi, csti)
 
                             if rca[0] != 0:
 
@@ -5331,7 +5316,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
                         qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl,
 
-                        adv, rca, o_q, o_v, o_w, csti, mdi)
+                        adv, rca, o_q, o_v, o_w, mdi, csti)
 
                 for i in range(18):
 

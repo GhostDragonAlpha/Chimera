@@ -197,6 +197,28 @@ ENV_API int env_csti_set(void* handle, const int* in20) {
     return 1;
 }
 
+// a_hind_xoff readback for F-FULLPORT-COMMAND-AUTHORITY (the plant-law
+// consumption xoff = cmd*(DUTY_SAMPLED*T_CYCLE)/2 is written to a_hind_xoff
+// at each hind fire; E*2 doubles)
+ENV_API int env_read_xoff(void* handle, double* out2E) {
+    WalkerEnv* e = (WalkerEnv*)handle;
+    CU_OK(cudaMemcpy(out2E, e->a_hind_xoff, (size_t)e->E * 2 * sizeof(double), cudaMemcpyDeviceToHost));
+    return 1;
+}
+
+// diagnostic: env-0 q/v/a_rc/a_adv_calls/a_refused/a_ticks raw readback
+ENV_API int env_dbg_read(void* handle, double* q18, double* v18,
+                         int* rc, int* adv, int* refused, long long* ticks) {
+    WalkerEnv* e = (WalkerEnv*)handle;
+    CU_OK(cudaMemcpy(q18, e->a_q, 18 * sizeof(double), cudaMemcpyDeviceToHost));
+    CU_OK(cudaMemcpy(v18, e->a_v, 18 * sizeof(double), cudaMemcpyDeviceToHost));
+    CU_OK(cudaMemcpy(rc, e->a_rc, sizeof(int), cudaMemcpyDeviceToHost));
+    CU_OK(cudaMemcpy(adv, e->a_adv_calls, sizeof(int), cudaMemcpyDeviceToHost));
+    CU_OK(cudaMemcpy(refused, e->a_refused, sizeof(int), cudaMemcpyDeviceToHost));
+    CU_OK(cudaMemcpy(ticks, e->a_ticks, sizeof(long long), cudaMemcpyDeviceToHost));
+    return 1;
+}
+
 ENV_API int env_step(void* handle, int n) {
     WalkerEnv* e = (WalkerEnv*)handle;
     for (int t = 0; t < n; ++t) {

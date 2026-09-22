@@ -51,10 +51,19 @@ else:
         return cuda.current_context().get_memory_info()
 
 OUT = HERE.parent / 'validation' / 'typeb_gpu_fullport_20260921'
-_pos = [a for a in sys.argv[1:] if not a.startswith('--')]
+_pos, _skip = [], False
+for _a in sys.argv[1:]:
+    if _skip:
+        _skip = False
+        continue
+    if _a == '--env':
+        _skip = True
+        continue
+    if not _a.startswith('--'):
+        _pos.append(_a)
 BLOCK = int(_pos[0]) if _pos else 32
 
-spec = load_spec(str(HERE.parent.parent / '.tmp' / 'gait-walker' / 'scene.json'))
+spec = load_spec(str(HERE.parents[2] / '.tmp' / 'gait-walker' / 'scene.json'))
 R = {'block': BLOCK}
 
 

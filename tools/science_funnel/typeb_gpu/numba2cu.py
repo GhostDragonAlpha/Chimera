@@ -58,6 +58,13 @@ HOST_INT_SCALARS = ("settle_total",)
 INT_ARR_ARGS = set()
 GLOBAL_INTS = {"cu_total_q"}
 SINGLE_INT_ARGS = re.compile(r"^(i|j|k|n|e|leg|hl|hr|h|o|m|ne|E|N|pt|col|row)$")
+# EXACT double-scalar overrides, checked BEFORE the heuristic: "h" is the
+# substep size in advance/free_step (dt/4 ~ 8.3e-4) but the single-letter
+# rule above types it int -- the call truncates 8.3e-4 -> 0, advance returns
+# at its h<1e-12 guard on EVERY call, and the whole walk freezes silently
+# (rc=0, adv_calls=0, q/v bit-identical to reset; measured via env_dbg_read
+# freefall probe, 2026-09-22).
+EXACT_DOUBLE_SCALARS = {("advance", "h"), ("free_step", "h")}
 
 
 def strip_comment(st: str) -> str:
@@ -731,6 +738,8 @@ PTRS = ("double*", "int*", "long long*")
 
 def seed_kind(fn, p):
     i = INFO[fn]
+    if (fn, p) in EXACT_DOUBLE_SCALARS:
+        return "double"
     if p in HOST_INT32_ARGS:
         return "int*"
     if p in HOST_INT64_ARGS:

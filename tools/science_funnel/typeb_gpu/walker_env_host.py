@@ -49,6 +49,10 @@ _dll.env_csti_get.restype = ctypes.c_int
 _dll.env_csti_get.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
 _dll.env_csti_set.restype = ctypes.c_int
 _dll.env_csti_set.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int)]
+_dll.env_read_xoff.restype = ctypes.c_int
+_dll.env_read_xoff.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_double)]
+_dll.env_dbg_read.restype = ctypes.c_int
+_dll.env_dbg_read.argtypes = [ctypes.c_void_p] + [ctypes.c_void_p] * 6
 _dll.env_free.argtypes = [ctypes.c_void_p]
 
 
@@ -242,6 +246,12 @@ class WalkerEnvDLL:
     def sync(self):
         if not _dll.env_sync(ctypes.c_void_p(self._h)):
             raise RuntimeError("env_sync failed")
+
+    def read_xoff(self):
+        a = np.zeros(self.E * 2, np.float64)
+        if not _dll.env_read_xoff(ctypes.c_void_p(self._h), _dp(a)):
+            raise RuntimeError("env_read_xoff failed")
+        return a
 
     def __del__(self):
         try:

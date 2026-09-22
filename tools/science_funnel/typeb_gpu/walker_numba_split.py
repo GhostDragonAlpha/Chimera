@@ -229,6 +229,8 @@ def load16(src, off, out):
 def inverse_spd18(a, out):
 
     l = cuda.local.array(324, dtype=float64)
+    for _zzero0 in range(324):
+        l[_zzero0] = 0.0
 
     for i in range(324):
 
@@ -267,8 +269,12 @@ def inverse_spd18(a, out):
     for col in range(18):
 
         y = cuda.local.array(18, dtype=float64)
+        for _zzero1 in range(18):
+            y[_zzero1] = 0.0
 
         x = cuda.local.array(18, dtype=float64)
+        for _zzero2 in range(18):
+            x[_zzero2] = 0.0
 
         for i in range(18):
 
@@ -418,8 +424,12 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
     rt = cuda.local.array(16, dtype=float64); mtmp = cuda.local.array(16, dtype=float64); mtmp2 = cuda.local.array(16, dtype=float64)
 
     jv = cuda.local.array(54, dtype=float64)
+    for _zzero3 in range(54):
+        jv[_zzero3] = 0.0
 
     jw = cuda.local.array(54, dtype=float64)
+    for _zzero4 in range(54):
+        jw[_zzero4] = 0.0
 
     for b in range(1, nbod):
 
@@ -616,6 +626,8 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
             jv[i] = float(0.0); jw[i] = float(0.0)
 
         comw = cuda.local.array(3, dtype=float64)
+        for _zzero5 in range(3):
+            comw[_zzero5] = 0.0
 
         com = cuda.local.array(3, dtype=float64); com[0] = body_com[b * 3]; com[1] = body_com[b * 3 + 1]; com[2] = body_com[b * 3 + 2]
 
@@ -698,6 +710,8 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
         alpha = cuda.local.array(3, dtype=float64); axial3(mtmp, alpha)
 
         acc_com = cuda.local.array(3, dtype=float64)
+        for _zzero6 in range(3):
+            acc_com[_zzero6] = 0.0
 
         comloc = cuda.local.array(3, dtype=float64); comloc[0] = body_com[b * 3]; comloc[1] = body_com[b * 3 + 1]; comloc[2] = body_com[b * 3 + 2]
 
@@ -736,12 +750,16 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
         # moment = Iw*alpha + omega x (Iw*omega)
 
         Iwom = cuda.local.array(3, dtype=float64)
+        for _zzero7 in range(3):
+            Iwom[_zzero7] = 0.0
 
         for i in range(3):
 
             Iwom[i] = Iw[i * 4 + 0] * omega[0] + Iw[i * 4 + 1] * omega[1] + Iw[i * 4 + 2] * omega[2]
 
         moment = cuda.local.array(3, dtype=float64)
+        for _zzero8 in range(3):
+            moment[_zzero8] = 0.0
 
         moment[0] = Iw[0 * 4 + 0] * alpha[0] + Iw[0 * 4 + 1] * alpha[1] + Iw[0 * 4 + 2] * alpha[2] + (omega[1] * Iwom[2] - omega[2] * Iwom[1])
 
@@ -852,6 +870,8 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
                 a = float(0.0)
 
         loc = cuda.local.array(3, dtype=float64)
+        for _zzero9 in range(3):
+            loc[_zzero9] = 0.0
 
         for c in range(3):
 
@@ -868,6 +888,8 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
         solew = cuda.local.array(3, dtype=float64); apply_point(t1, loc, solew)
 
         t3v = cuda.local.array(3, dtype=float64)
+        for _zzero10 in range(3):
+            t3v[_zzero10] = 0.0
 
         for i in range(16):
 
@@ -1036,6 +1058,8 @@ def gram_factor10(g, k, rhs, lam):
             g[j * k + i] = avg
 
     l = cuda.local.array(100, dtype=float64)
+    for _zzero11 in range(100):
+        l[_zzero11] = 0.0
 
     for i in range(k):
 
@@ -1066,8 +1090,12 @@ def gram_factor10(g, k, rhs, lam):
     for col in range(k):
 
         y = cuda.local.array(10, dtype=float64)
+        for _zzero12 in range(10):
+            y[_zzero12] = 0.0
 
         x = cuda.local.array(10, dtype=float64)
+        for _zzero13 in range(10):
+            x[_zzero13] = 0.0
 
         for i in range(k):
 
@@ -1152,6 +1180,8 @@ def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers):
             if skip == 0:
 
                 act = cuda.local.array(10, dtype=int32)
+                for _zzero14 in range(10):
+                    act[_zzero14] = 0
 
                 cnt = int32(0)
 
@@ -1176,6 +1206,8 @@ def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers):
                         allok = int32(1)
 
                         rk = cuda.local.array(18, dtype=float64)
+                        for _zzero15 in range(18):
+                            rk[_zzero15] = 0.0
 
                         for k in range(R):
 
@@ -1202,14 +1234,24 @@ def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers):
                     else:
 
                         gram = cuda.local.array(100, dtype=float64)
+                        for _zzero16 in range(100):
+                            gram[_zzero16] = 0.0
 
                         rhs = cuda.local.array(10, dtype=float64)
+                        for _zzero17 in range(10):
+                            rhs[_zzero17] = 0.0
 
                         ra = cuda.local.array(18, dtype=float64)
+                        for _zzero18 in range(18):
+                            ra[_zzero18] = 0.0
 
                         rb = cuda.local.array(18, dtype=float64)
+                        for _zzero19 in range(18):
+                            rb[_zzero19] = 0.0
 
                         ia = cuda.local.array(18, dtype=float64)
+                        for _zzero20 in range(18):
+                            ia[_zzero20] = 0.0
 
                         for a in range(cnt):
 
@@ -1234,6 +1276,8 @@ def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers):
                             rhs[a] = floors[act[a]] - row_dot(ra, initial)
 
                         lam = cuda.local.array(10, dtype=float64)
+                        for _zzero21 in range(10):
+                            lam[_zzero21] = 0.0
 
                         if gram_factor10(gram, cnt, rhs, lam) == 1:
 
@@ -1260,6 +1304,8 @@ def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers):
                                         l = float(0.0)
 
                                     rk = cuda.local.array(18, dtype=float64)
+                                    for _zzero22 in range(18):
+                                        rk[_zzero22] = 0.0
 
                                     rows_row(rows, act[k], rk)
 
@@ -1268,10 +1314,14 @@ def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers):
                                         p_out[i] = p_out[i] + l * rk[i]
 
                                 chg = cuda.local.array(18, dtype=float64)
+                                for _zzero23 in range(18):
+                                    chg[_zzero23] = 0.0
 
                                 mat_vec(inv, p_out, chg)
 
                                 rk = cuda.local.array(18, dtype=float64)
+                                for _zzero24 in range(18):
+                                    rk[_zzero24] = 0.0
 
                                 for k in range(R):
 
@@ -1332,10 +1382,14 @@ def friction_solve(initial, inv, row_n, row_t, floor_n, floor_t, mu, slip_sign, 
     mode[0] = 0
 
     rn_v = cuda.local.array(18, dtype=float64)
+    for _zzero25 in range(18):
+        rn_v[_zzero25] = 0.0
 
     mat_vec(inv, row_n, rn_v)
 
     rt_v = cuda.local.array(18, dtype=float64)
+    for _zzero26 in range(18):
+        rt_v[_zzero26] = 0.0
 
     mat_vec(inv, row_t, rt_v)
 
@@ -1461,11 +1515,18 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
 
         free[c] = free[c] + tau[c] - mdl[OF_drive_damping + d] * v[c]
 
-    mat_vec(inv, free, free)
+    free_acc = cuda.local.array(18, dtype=float64)
+    mat_vec(inv, free, free_acc)
+    for i in range(18):
+        free[i] = free_acc[i]
 
     rows = cuda.local.array(180, dtype=float64)
+    for _zzero27 in range(180):
+        rows[_zzero27] = 0.0
 
     floors = cuda.local.array(10, dtype=float64)
+    for _zzero28 in range(10):
+        floors[_zzero28] = 0.0
 
     R = int32(0)
 
@@ -1474,6 +1535,8 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
     stop = int32(0)
 
     jn = cuda.local.array(18, dtype=float64)
+    for _zzero29 in range(18):
+        jn[_zzero29] = 0.0
 
     for d in range(12):
 
@@ -1522,10 +1585,16 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
             stop = 1
 
     touching = cuda.local.array(4, dtype=int32)
+    for _zzero30 in range(4):
+        touching[_zzero30] = 0
 
     mode_k = cuda.local.array(4, dtype=int32)
+    for _zzero31 in range(4):
+        mode_k[_zzero31] = 0
 
     rn = cuda.local.array(18, dtype=float64)
+    for _zzero32 in range(18):
+        rn[_zzero32] = 0.0
 
     for r in range(4):
 
@@ -1548,20 +1617,36 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
     if csti[CI_contact] != 0 and cst[CF_mu] > float(0.0) and stop == 0:
 
         jt1 = cuda.local.array(18, dtype=float64)
+        for _zzero33 in range(18):
+            jt1[_zzero33] = 0.0
 
         jt2 = cuda.local.array(18, dtype=float64)
+        for _zzero34 in range(18):
+            jt2[_zzero34] = 0.0
 
         row_t = cuda.local.array(18, dtype=float64)
+        for _zzero35 in range(18):
+            row_t[_zzero35] = 0.0
 
         force = cuda.local.array(18, dtype=float64)
+        for _zzero36 in range(18):
+            force[_zzero36] = 0.0
 
         corr = cuda.local.array(18, dtype=float64)
+        for _zzero37 in range(18):
+            corr[_zzero37] = 0.0
 
         ln = cuda.local.array(1, dtype=float64)
+        for _zzero38 in range(1):
+            ln[_zzero38] = 0.0
 
         lt = cuda.local.array(1, dtype=float64)
+        for _zzero39 in range(1):
+            lt[_zzero39] = 0.0
 
         md = cuda.local.array(1, dtype=int32)
+        for _zzero40 in range(1):
+            md[_zzero40] = 0
 
         for r in range(4):
 
@@ -1676,14 +1761,20 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
     if R > 0:
 
         p = cuda.local.array(18, dtype=float64)
+        for _zzero41 in range(18):
+            p[_zzero41] = 0.0
 
         mult = cuda.local.array(10, dtype=float64)
+        for _zzero42 in range(10):
+            mult[_zzero42] = 0.0
 
         if project_rows(free, inv, rows, floors, R, n_stops, p, mult) == 0:
 
             return 5
 
         corr = cuda.local.array(18, dtype=float64)
+        for _zzero43 in range(18):
+            corr[_zzero43] = 0.0
 
         mat_vec(inv, p, corr)
 
@@ -1709,10 +1800,16 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
     rq = cuda.local.array(18, dtype=float64)
+    for _zzero44 in range(18):
+        rq[_zzero44] = 0.0
 
     rv = cuda.local.array(18, dtype=float64)
+    for _zzero45 in range(18):
+        rv[_zzero45] = 0.0
 
     plane = cuda.local.array(4, dtype=int32)
+    for _zzero46 in range(4):
+        plane[_zzero46] = 0
 
     pot = fk_eval(q0,  v0, mdl, mdi, cst,
 
@@ -1727,6 +1824,8 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
     gate = float(1e-6) + float(1e-3) * speed_scale
 
     rn = cuda.local.array(18, dtype=float64)
+    for _zzero47 in range(18):
+        rn[_zzero47] = 0.0
 
     for r in range(4):
 
@@ -1742,7 +1841,7 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
     rc = rate(q0, v0, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, qa, va, mdi, csti)
 
     if rc != 0:
 
@@ -1756,23 +1855,21 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
         vb[i] = v0[i] + va[i] * half
 
-    rc = rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
+    brq = cuda.local.array(18, dtype=float64)
+    for _zzero48 in range(18):
+        brq[_zzero48] = 0.0
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
+    brv = cuda.local.array(18, dtype=float64)
+    for _zzero49 in range(18):
+        brv[_zzero49] = 0.0
+
+rc = rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
+
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, brq, brv, mdi, csti)
 
     if rc != 0:
 
         return rc
-
-    brq = cuda.local.array(18, dtype=float64)
-
-    brv = cuda.local.array(18, dtype=float64)
-
-    for i in range(18):
-
-        brq[i] = qb[i]
-
-        brv[i] = vb[i]
 
     for i in range(18):
 
@@ -1780,23 +1877,21 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
         vc[i] = v0[i] + brv[i] * half
 
-    rc = rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
+    crq = cuda.local.array(18, dtype=float64)
+    for _zzero50 in range(18):
+        crq[_zzero50] = 0.0
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
+    crv = cuda.local.array(18, dtype=float64)
+    for _zzero51 in range(18):
+        crv[_zzero51] = 0.0
+
+rc = rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
+
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, crq, crv, mdi, csti)
 
     if rc != 0:
 
         return rc
-
-    crq = cuda.local.array(18, dtype=float64)
-
-    crv = cuda.local.array(18, dtype=float64)
-
-    for i in range(18):
-
-        crq[i] = qc[i]
-
-        crv[i] = vc[i]
 
     for i in range(18):
 
@@ -1804,23 +1899,21 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
         vd[i] = v0[i] + crv[i] * h
 
-    rc = rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
+    drq = cuda.local.array(18, dtype=float64)
+    for _zzero52 in range(18):
+        drq[_zzero52] = 0.0
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi)
+    drv = cuda.local.array(18, dtype=float64)
+    for _zzero53 in range(18):
+        drv[_zzero53] = 0.0
+
+rc = rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
+
+              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, drq, drv, mdi, csti)
 
     if rc != 0:
 
         return rc
-
-    drq = cuda.local.array(18, dtype=float64)
-
-    drv = cuda.local.array(18, dtype=float64)
-
-    for i in range(18):
-
-        drq[i] = qd[i]
-
-        drv[i] = vd[i]
 
     sixth = h / float(6.0)
 
@@ -1861,6 +1954,8 @@ def gram_factor4(g, k, rhs, lam):
         return 0
 
     l = cuda.local.array(16, dtype=float64)
+    for _zzero54 in range(16):
+        l[_zzero54] = 0.0
 
     for i in range(k):
 
@@ -1891,8 +1986,12 @@ def gram_factor4(g, k, rhs, lam):
     for col in range(k):
 
         y = cuda.local.array(4, dtype=float64)
+        for _zzero55 in range(4):
+            y[_zzero55] = 0.0
 
         x = cuda.local.array(4, dtype=float64)
+        for _zzero56 in range(4):
+            x[_zzero56] = 0.0
 
         for i in range(k):
 
@@ -1948,14 +2047,20 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
     caught = float(0.0)
 
     rows = cuda.local.array(180, dtype=float64)
+    for _zzero57 in range(180):
+        rows[_zzero57] = 0.0
 
     floors = cuda.local.array(10, dtype=float64)
+    for _zzero58 in range(10):
+        floors[_zzero58] = 0.0
 
     R = int32(0)
 
     n_stops = int32(0)
 
     jn = cuda.local.array(18, dtype=float64)
+    for _zzero59 in range(18):
+        jn[_zzero59] = 0.0
 
     for d in range(12):
 
@@ -1996,6 +2101,8 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
             n_stops = n_stops + 1
 
     touching = cuda.local.array(4, dtype=int32)
+    for _zzero60 in range(4):
+        touching[_zzero60] = 0
 
     for r in range(4):
 
@@ -2004,24 +2111,42 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
         touching[r] = int32(1) if (csti[CI_contact] != 0 and g <= cst[CF_k_touch]) else int32(0)
 
     rn = cuda.local.array(18, dtype=float64)
+    for _zzero61 in range(18):
+        rn[_zzero61] = 0.0
 
     if cst[CF_mu] > float(0.0) and n_stops == 0 and csti[CI_contact] != 0:
 
         jt1 = cuda.local.array(18, dtype=float64)
+        for _zzero62 in range(18):
+            jt1[_zzero62] = 0.0
 
         jt2 = cuda.local.array(18, dtype=float64)
+        for _zzero63 in range(18):
+            jt2[_zzero63] = 0.0
 
         row_t = cuda.local.array(18, dtype=float64)
+        for _zzero64 in range(18):
+            row_t[_zzero64] = 0.0
 
         force = cuda.local.array(18, dtype=float64)
+        for _zzero65 in range(18):
+            force[_zzero65] = 0.0
 
         corr = cuda.local.array(18, dtype=float64)
+        for _zzero66 in range(18):
+            corr[_zzero66] = 0.0
 
         ln = cuda.local.array(1, dtype=float64)
+        for _zzero67 in range(1):
+            ln[_zzero67] = 0.0
 
         lt = cuda.local.array(1, dtype=float64)
+        for _zzero68 in range(1):
+            lt[_zzero68] = 0.0
 
         md = cuda.local.array(1, dtype=int32)
+        for _zzero69 in range(1):
+            md[_zzero69] = 0
 
         for r in range(4):
 
@@ -2094,8 +2219,12 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
     if R > 0:
 
         p = cuda.local.array(18, dtype=float64)
+        for _zzero70 in range(18):
+            p[_zzero70] = 0.0
 
         mult = cuda.local.array(10, dtype=float64)
+        for _zzero71 in range(10):
+            mult[_zzero71] = 0.0
 
         if project_rows(v, inv, rows, floors, R, n_stops, p, mult) == 0:
 
@@ -2104,6 +2233,8 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
             return float(0.0)
 
         corr = cuda.local.array(18, dtype=float64)
+        for _zzero72 in range(18):
+            corr[_zzero72] = 0.0
 
         mat_vec(inv, p, corr)
 
@@ -2116,10 +2247,14 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
     pen = cuda.local.array(4, dtype=int32)
+    for _zzero73 in range(4):
+        pen[_zzero73] = 0
 
     npen = int32(0)
 
     gaps = cuda.local.array(4, dtype=float64)
+    for _zzero74 in range(4):
+        gaps[_zzero74] = 0.0
 
     for r in range(4):
 
@@ -2136,14 +2271,24 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
     if npen > 0:
 
         gram = cuda.local.array(16, dtype=float64)
+        for _zzero75 in range(16):
+            gram[_zzero75] = 0.0
 
         rhs = cuda.local.array(4, dtype=float64)
+        for _zzero76 in range(4):
+            rhs[_zzero76] = 0.0
 
         lam = cuda.local.array(4, dtype=float64)
+        for _zzero77 in range(4):
+            lam[_zzero77] = 0.0
 
         ra = cuda.local.array(18, dtype=float64)
+        for _zzero78 in range(18):
+            ra[_zzero78] = 0.0
 
         ia = cuda.local.array(18, dtype=float64)
+        for _zzero79 in range(18):
+            ia[_zzero79] = 0.0
 
         for a in range(npen):
 
@@ -2168,6 +2313,8 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
         if gram_factor4(gram, npen, rhs, lam) == 1:
 
             corr = cuda.local.array(18, dtype=float64)
+            for _zzero80 in range(18):
+                corr[_zzero80] = 0.0
 
             for a in range(npen):
 
@@ -2212,7 +2359,7 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
 def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh, sdep, scl, adv, rc, q1, v1, w1, mdi, csti):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
-    # The C++ recursive advance(, csti, mdi) as an explicit LIFO interval stack over the
+    # The C++ recursive advance(, mdi, csti) as an explicit LIFO interval stack over the
 
     # single "current state" thread (q1/v1/w1) -- DFS order preserved.
 
@@ -2237,14 +2384,20 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
     clamps = int32(0)
 
     live = cuda.local.array(4, dtype=int32)
+    for _zzero81 in range(4):
+        live[_zzero81] = 0
 
     probe = cuda.local.array(4, dtype=int32)
+    for _zzero82 in range(4):
+        probe[_zzero82] = 0
 
     it = int32(0)
 
     done = int32(0)
 
     rcv = cuda.local.array(1, dtype=int32)
+    for _zzero83 in range(1):
+        rcv[_zzero83] = 0
 
     while done == 0:
 
@@ -2294,7 +2447,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
         caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
+                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti)
 
         if rcv[0] != 0:
 
@@ -2332,7 +2485,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                         axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
         if rcs != 0:
 
@@ -2392,7 +2545,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                                 axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                                qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                                qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
                 if rcb != 0:
 
@@ -2474,7 +2627,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                                     axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                                    qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                                    qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
                     if rcb != 0:
 
@@ -2546,7 +2699,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
             caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
+                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti)
 
             if rcv[0] != 0:
 
@@ -2570,7 +2723,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                             axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                            qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                            qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
             if rcc != 0:
 
@@ -2590,7 +2743,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
             caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
+                            axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti)
 
             if rcv[0] != 0:
 
@@ -2624,7 +2777,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                         axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv,
 
-                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi)
+                        qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti)
 
         if rcw != 0:
 
@@ -2646,7 +2799,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
         caught = impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi)
+                        axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti)
 
         if rcv[0] != 0:
 
@@ -2993,7 +3146,7 @@ def reset_kernel(a_q0, a_v0, a_touching0, phi_l0, phi_r0, settle_total, a_store_
 
 def fore_target_headroom(mdl, cst, fr, leg, paw, branch, mdi, csti):
 
-    d1a, d1b, q1r, q2r, d1c = fore_ik_at(mdl, cst, fr, leg, paw, branch, csti, mdi)
+    d1a, d1b, q1r, q2r, d1c = fore_ik_at(mdl, cst, fr, leg, paw, branch, mdi, csti)
 
     c1 = mdi[OI_fore_coord + leg * 2]
 
@@ -3014,6 +3167,8 @@ def fore_target_headroom(mdl, cst, fr, leg, paw, branch, mdi, csti):
 def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
     p = cuda.local.array(3, dtype=float64)
+    for _zzero84 in range(3):
+        p[_zzero84] = 0.0
 
     p[0] = paw_t[leg * 3]
 
@@ -3022,8 +3177,12 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
     p[2] = paw_t[leg * 3 + 2]
 
     px = cuda.local.array(3, dtype=float64)
+    for _zzero85 in range(3):
+        px[_zzero85] = 0.0
 
     py = cuda.local.array(3, dtype=float64)
+    for _zzero86 in range(3):
+        py[_zzero86] = 0.0
 
     px[0] = p[0] + float(1e-3)
 
@@ -3039,7 +3198,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
     dirn = float(1.0)
 
-    if fore_target_headroom(mdl, cst, fr, leg, px, branch, csti, mdi) < fore_target_headroom(mdl, cst, fr, leg, py, branch, csti, mdi):
+    if fore_target_headroom(mdl, cst, fr, leg, px, branch, mdi, csti) < fore_target_headroom(mdl, cst, fr, leg, py, branch, mdi, csti):
 
         dirn = float(-1.0)
 
@@ -3054,6 +3213,8 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
         mid = (lo + hi) * float(0.5)
 
         t = cuda.local.array(3, dtype=float64)
+        for _zzero87 in range(3):
+            t[_zzero87] = 0.0
 
         t[0] = p[0] + dirn * mid
 
@@ -3072,6 +3233,8 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
     edge = (lo + hi) * float(0.5)
 
     te = cuda.local.array(3, dtype=float64)
+    for _zzero88 in range(3):
+        te[_zzero88] = 0.0
 
     te[0] = p[0] + dirn * edge
 
@@ -3079,7 +3242,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
     te[2] = p[2]
 
-    if fore_target_headroom(mdl, cst, fr, leg, te, branch, csti, mdi) < float(0.1022):
+    if fore_target_headroom(mdl, cst, fr, leg, te, branch, mdi, csti) < float(0.1022):
 
         result[0] = te[0]
         result[1] = te[1]
@@ -3095,6 +3258,8 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
         mid = (lo + hi) * float(0.5)
 
         t = cuda.local.array(3, dtype=float64)
+        for _zzero89 in range(3):
+            t[_zzero89] = 0.0
 
         t[0] = p[0] + dirn * mid
 
@@ -3102,7 +3267,7 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
         t[2] = p[2]
 
-        if fore_target_headroom(mdl, cst, fr, leg, t, branch, csti, mdi) < float(0.1022):
+        if fore_target_headroom(mdl, cst, fr, leg, t, branch, mdi, csti) < float(0.1022):
 
             lo = mid
 
@@ -3111,6 +3276,8 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
             hi = mid
 
     out = cuda.local.array(3, dtype=float64)
+    for _zzero90 in range(3):
+        out[_zzero90] = 0.0
 
     out[0] = p[0] + dirn * ((lo + hi) * float(0.5))
 
@@ -3132,14 +3299,20 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 def fore_env(mdl, cst, fr, leg, paw_t, v3, csti):
 
     m16 = cuda.local.array(16, dtype=float64)
+    for _zzero91 in range(16):
+        m16[_zzero91] = 0.0
 
     for i in range(16):
 
         m16[i] = fr[csti[CI_pelvis_row] * 16 + i]
 
     shw = cuda.local.array(3, dtype=float64)
+    for _zzero92 in range(3):
+        shw[_zzero92] = 0.0
 
     ml = cuda.local.array(3, dtype=float64)
+    for _zzero93 in range(3):
+        ml[_zzero93] = 0.0
 
     ml[0] = mdl[OF_fore_mount_local + leg * 3]
 
@@ -3252,12 +3425,20 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     tick = a_ticks[e]
 
     q = cuda.local.array(18, dtype=float64)
+    for _zzero94 in range(18):
+        q[_zzero94] = 0.0
 
     v = cuda.local.array(18, dtype=float64)
+    for _zzero95 in range(18):
+        v[_zzero95] = 0.0
 
     w = cuda.local.array(18, dtype=float64)
+    for _zzero96 in range(18):
+        w[_zzero96] = 0.0
 
     ltau = cuda.local.array(18, dtype=float64)
+    for _zzero97 in range(18):
+        ltau[_zzero97] = 0.0
 
     for i in range(18):
 
@@ -3270,6 +3451,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
         ltau[i] = a_last_torque[e * 18 + i]
 
     bat = cuda.local.array(12, dtype=float64)
+    for _zzero98 in range(12):
+        bat[_zzero98] = 0.0
 
     for d in range(12):
 
@@ -3278,12 +3461,16 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     bat_post = a_battery_post[e]
 
     phi = cuda.local.array(2, dtype=float64)
+    for _zzero99 in range(2):
+        phi[_zzero99] = 0.0
 
     phi[0] = a_phi[e * 2]
 
     phi[1] = a_phi[e * 2 + 1]
 
     tch = cuda.local.array(2, dtype=int32)
+    for _zzero100 in range(2):
+        tch[_zzero100] = 0
 
     tch[0] = a_touching[e * 2]
 
@@ -3294,38 +3481,68 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     settle_n = a_settle[e]
 
     ikb = cuda.local.array(2, dtype=int32)
+    for _zzero101 in range(2):
+        ikb[_zzero101] = 0
 
     ikb[0] = a_ik_branch[e * 2]
 
     ikb[1] = a_ik_branch[e * 2 + 1]
 
     paw_t = cuda.local.array(6, dtype=float64)
+    for _zzero102 in range(6):
+        paw_t[_zzero102] = 0.0
 
     paw_y = cuda.local.array(2, dtype=float64)
+    for _zzero103 in range(2):
+        paw_y[_zzero103] = 0.0
 
     swf = cuda.local.array(6, dtype=float64)
+    for _zzero104 in range(6):
+        swf[_zzero104] = 0.0
 
     swt = cuda.local.array(6, dtype=float64)
+    for _zzero105 in range(6):
+        swt[_zzero105] = 0.0
 
     f_t = cuda.local.array(2, dtype=float64)
+    for _zzero106 in range(2):
+        f_t[_zzero106] = 0.0
 
     f_st = cuda.local.array(2, dtype=float64)
+    for _zzero107 in range(2):
+        f_st[_zzero107] = 0.0
 
     f_cy = cuda.local.array(2, dtype=float64)
+    for _zzero108 in range(2):
+        f_cy[_zzero108] = 0.0
 
     f_mo = cuda.local.array(2, dtype=int32)
+    for _zzero109 in range(2):
+        f_mo[_zzero109] = 0
 
     f_en = cuda.local.array(2, dtype=int32)
+    for _zzero110 in range(2):
+        f_en[_zzero110] = 0
 
     f_cv = cuda.local.array(2, dtype=int32)
+    for _zzero111 in range(2):
+        f_cv[_zzero111] = 0
 
     f_dp = cuda.local.array(2, dtype=int32)
+    for _zzero112 in range(2):
+        f_dp[_zzero112] = 0
 
     f_cl = cuda.local.array(2, dtype=int32)
+    for _zzero113 in range(2):
+        f_cl[_zzero113] = 0
 
     f_rp = cuda.local.array(2, dtype=int32)
+    for _zzero114 in range(2):
+        f_rp[_zzero114] = 0
 
     f_td = cuda.local.array(2, dtype=int32)
+    for _zzero115 in range(2):
+        f_td[_zzero115] = 0
 
     for l in range(2):
 
@@ -3360,32 +3577,60 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
         f_td[l] = a_fore_td_count[e * 2 + l]
 
     h_mo = cuda.local.array(2, dtype=int32)
+    for _zzero116 in range(2):
+        h_mo[_zzero116] = 0
 
     h_t = cuda.local.array(2, dtype=float64)
+    for _zzero117 in range(2):
+        h_t[_zzero117] = 0.0
 
     h_from = cuda.local.array(6, dtype=float64)
+    for _zzero118 in range(6):
+        h_from[_zzero118] = 0.0
 
     h_to = cuda.local.array(6, dtype=float64)
+    for _zzero119 in range(6):
+        h_to[_zzero119] = 0.0
 
     h_py = cuda.local.array(2, dtype=float64)
+    for _zzero120 in range(2):
+        h_py[_zzero120] = 0.0
 
     h_ap = cuda.local.array(2, dtype=float64)
+    for _zzero121 in range(2):
+        h_ap[_zzero121] = 0.0
 
     h_mp = cuda.local.array(2, dtype=float64)
+    for _zzero122 in range(2):
+        h_mp[_zzero122] = 0.0
 
     h_br = cuda.local.array(2, dtype=int32)
+    for _zzero123 in range(2):
+        h_br[_zzero123] = 0
 
     h_held = cuda.local.array(2, dtype=int32)
+    for _zzero124 in range(2):
+        h_held[_zzero124] = 0
 
     h_lf = cuda.local.array(2, dtype=int64)
+    for _zzero125 in range(2):
+        h_lf[_zzero125] = 0
 
     h_lt = cuda.local.array(2, dtype=int64)
+    for _zzero126 in range(2):
+        h_lt[_zzero126] = 0
 
     h_fi = cuda.local.array(2, dtype=int32)
+    for _zzero127 in range(2):
+        h_fi[_zzero127] = 0
 
     h_tds = cuda.local.array(2, dtype=int32)
+    for _zzero128 in range(2):
+        h_tds[_zzero128] = 0
 
     h_xo = cuda.local.array(2, dtype=float64)
+    for _zzero129 in range(2):
+        h_xo[_zzero129] = 0.0
 
     for l in range(2):
 
@@ -3430,6 +3675,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     cmd_fires = a_cmd_fires[e]
 
     adv = cuda.local.array(1, dtype=int32)
+    for _zzero130 in range(1):
+        adv[_zzero130] = 0
 
     adv[0] = a_adv_calls[e]
 
@@ -3446,106 +3693,206 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
         walking = 0
 
     M = cuda.local.array(324, dtype=float64)
+    for _zzero131 in range(324):
+        M[_zzero131] = 0.0
 
     gv = cuda.local.array(18, dtype=float64)
+    for _zzero132 in range(18):
+        gv[_zzero132] = 0.0
 
     bv = cuda.local.array(18, dtype=float64)
+    for _zzero133 in range(18):
+        bv[_zzero133] = 0.0
 
     fr = cuda.local.array(224, dtype=float64)
+    for _zzero134 in range(224):
+        fr[_zzero134] = 0.0
 
     frd = cuda.local.array(224, dtype=float64)
+    for _zzero135 in range(224):
+        frd[_zzero135] = 0.0
 
     frdd = cuda.local.array(224, dtype=float64)
+    for _zzero136 in range(224):
+        frdd[_zzero136] = 0.0
 
     axw = cuda.local.array(54, dtype=float64)
+    for _zzero137 in range(54):
+        axw[_zzero137] = 0.0
 
     axpiv = cuda.local.array(54, dtype=float64)
+    for _zzero138 in range(54):
+        axpiv[_zzero138] = 0.0
 
     axdir = cuda.local.array(54, dtype=float64)
+    for _zzero139 in range(54):
+        axdir[_zzero139] = 0.0
 
     ptp = cuda.local.array(24, dtype=float64)
+    for _zzero140 in range(24):
+        ptp[_zzero140] = 0.0
 
     ptJ = cuda.local.array(216, dtype=float64)
+    for _zzero141 in range(216):
+        ptJ[_zzero141] = 0.0
 
     ptcop = cuda.local.array(12, dtype=float64)
+    for _zzero142 in range(12):
+        ptcop[_zzero142] = 0.0
 
     ptbias = cuda.local.array(12, dtype=float64)
+    for _zzero143 in range(12):
+        ptbias[_zzero143] = 0.0
 
     inv = cuda.local.array(324, dtype=float64)
+    for _zzero144 in range(324):
+        inv[_zzero144] = 0.0
 
     free = cuda.local.array(18, dtype=float64)
+    for _zzero145 in range(18):
+        free[_zzero145] = 0.0
 
     qa = cuda.local.array(18, dtype=float64)
+    for _zzero146 in range(18):
+        qa[_zzero146] = 0.0
 
     va = cuda.local.array(18, dtype=float64)
+    for _zzero147 in range(18):
+        va[_zzero147] = 0.0
 
     qb = cuda.local.array(18, dtype=float64)
+    for _zzero148 in range(18):
+        qb[_zzero148] = 0.0
 
     vb = cuda.local.array(18, dtype=float64)
+    for _zzero149 in range(18):
+        vb[_zzero149] = 0.0
 
     qc = cuda.local.array(18, dtype=float64)
+    for _zzero150 in range(18):
+        qc[_zzero150] = 0.0
 
     vc = cuda.local.array(18, dtype=float64)
+    for _zzero151 in range(18):
+        vc[_zzero151] = 0.0
 
     qd = cuda.local.array(18, dtype=float64)
+    for _zzero152 in range(18):
+        qd[_zzero152] = 0.0
 
     vd = cuda.local.array(18, dtype=float64)
+    for _zzero153 in range(18):
+        vd[_zzero153] = 0.0
 
     qe = cuda.local.array(18, dtype=float64)
+    for _zzero154 in range(18):
+        qe[_zzero154] = 0.0
 
     ve = cuda.local.array(18, dtype=float64)
+    for _zzero155 in range(18):
+        ve[_zzero155] = 0.0
 
     we = cuda.local.array(18, dtype=float64)
+    for _zzero156 in range(18):
+        we[_zzero156] = 0.0
 
     sq = cuda.local.array(576, dtype=float64)
+    for _zzero157 in range(576):
+        sq[_zzero157] = 0.0
 
     sh16 = cuda.local.array(16, dtype=float64)
+    for _zzero158 in range(16):
+        sh16[_zzero158] = 0.0
 
     sdep = cuda.local.array(16, dtype=int32)
+    for _zzero159 in range(16):
+        sdep[_zzero159] = 0
 
     scl = cuda.local.array(16, dtype=int32)
+    for _zzero160 in range(16):
+        scl[_zzero160] = 0
 
     tr_q = cuda.local.array(18, dtype=float64)
+    for _zzero161 in range(18):
+        tr_q[_zzero161] = 0.0
 
     tr_v = cuda.local.array(18, dtype=float64)
+    for _zzero162 in range(18):
+        tr_v[_zzero162] = 0.0
 
     tr_w = cuda.local.array(18, dtype=float64)
+    for _zzero163 in range(18):
+        tr_w[_zzero163] = 0.0
 
     cd_q = cuda.local.array(18, dtype=float64)
+    for _zzero164 in range(18):
+        cd_q[_zzero164] = 0.0
 
     cd_v = cuda.local.array(18, dtype=float64)
+    for _zzero165 in range(18):
+        cd_v[_zzero165] = 0.0
 
     cd_w = cuda.local.array(18, dtype=float64)
+    for _zzero166 in range(18):
+        cd_w[_zzero166] = 0.0
 
     tau = cuda.local.array(18, dtype=float64)
+    for _zzero167 in range(18):
+        tau[_zzero167] = 0.0
 
     srq = cuda.local.array(18, dtype=float64)
+    for _zzero168 in range(18):
+        srq[_zzero168] = 0.0
 
     srv = cuda.local.array(18, dtype=float64)
+    for _zzero169 in range(18):
+        srv[_zzero169] = 0.0
 
     scales = cuda.local.array(13, dtype=float64)
+    for _zzero170 in range(13):
+        scales[_zzero170] = 0.0
 
     round_n = int32(0)
 
     dsf = cuda.local.array(1, dtype=int32)
+    for _zzero171 in range(1):
+        dsf[_zzero171] = 0
 
     trial_q = cuda.local.array(18, dtype=float64)
+    for _zzero172 in range(18):
+        trial_q[_zzero172] = 0.0
 
     trial_v = cuda.local.array(18, dtype=float64)
+    for _zzero173 in range(18):
+        trial_v[_zzero173] = 0.0
 
     trial_w = cuda.local.array(18, dtype=float64)
+    for _zzero174 in range(18):
+        trial_w[_zzero174] = 0.0
 
     o_q = cuda.local.array(18, dtype=float64)
+    for _zzero175 in range(18):
+        o_q[_zzero175] = 0.0
 
     o_v = cuda.local.array(18, dtype=float64)
+    for _zzero176 in range(18):
+        o_v[_zzero176] = 0.0
 
     o_w = cuda.local.array(18, dtype=float64)
+    for _zzero177 in range(18):
+        o_w[_zzero177] = 0.0
 
     cur_w = cuda.local.array(18, dtype=float64)
+    for _zzero178 in range(18):
+        cur_w[_zzero178] = 0.0
 
     eff = cuda.local.array(18, dtype=float64)
+    for _zzero179 in range(18):
+        eff[_zzero179] = 0.0
 
     lta = cuda.local.array(18, dtype=float64)
+    for _zzero180 in range(18):
+        lta[_zzero180] = 0.0
 
 
 
@@ -3589,12 +3936,16 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
             hpt = mdi[OI_fore_heel_pt + leg]
 
             prl = cuda.local.array(3, dtype=float64)
+            for _zzero181 in range(3):
+                prl[_zzero181] = 0.0
 
             for c in range(3):
 
                 prl[c] = (mdl[OF_pt_local + hpt * 3 + c] + mdl[OF_pt_local + (hpt + 1) * 3 + c]) * float(0.5)
 
             T16 = cuda.local.array(16, dtype=float64)
+            for _zzero182 in range(16):
+                T16[_zzero182] = 0.0
 
             fb = mdi[OI_pt_body + hpt]
 
@@ -3603,6 +3954,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 T16[i] = fr[fb * 16 + i]
 
             pw = cuda.local.array(3, dtype=float64)
+            for _zzero183 in range(3):
+                pw[_zzero183] = 0.0
 
             apply_point(T16, prl, pw)
 
@@ -3614,9 +3967,9 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
             c2 = mdi[OI_fore_coord + leg * 2 + 1]
 
-            qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi)
+            qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti)
 
-            qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi)
+            qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti)
 
             e0 = math.sqrt((qa1 - q[c1]) * (qa1 - q[c1]) + (qa2 - q[c2]) * (qa2 - q[c2]))
 
@@ -3637,10 +3990,16 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
             paw_y[leg] = paw_t[leg * 3 + 1]
 
             shw = cuda.local.array(3, dtype=float64)
+            for _zzero184 in range(3):
+                shw[_zzero184] = 0.0
 
             ml = cuda.local.array(3, dtype=float64)
+            for _zzero185 in range(3):
+                ml[_zzero185] = 0.0
 
             m16 = cuda.local.array(16, dtype=float64)
+            for _zzero186 in range(16):
+                m16[_zzero186] = 0.0
 
             for i in range(16):
 
@@ -3860,14 +4219,20 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                         if f_t[o] == f_t[leg]:
 
                             m16 = cuda.local.array(16, dtype=float64)
+                            for _zzero187 in range(16):
+                                m16[_zzero187] = 0.0
 
                             for i in range(16):
 
                                 m16[i] = fr[csti[CI_pelvis_row] * 16 + i]
 
                             sha = cuda.local.array(3, dtype=float64)
+                            for _zzero188 in range(3):
+                                sha[_zzero188] = 0.0
 
                             ml0 = cuda.local.array(3, dtype=float64)
+                            for _zzero189 in range(3):
+                                ml0[_zzero189] = 0.0
 
                             ml0[0] = mdl[OF_fore_mount_local + leg * 3]
 
@@ -3878,8 +4243,12 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                             apply_point(m16, ml0, sha)
 
                             sho = cuda.local.array(3, dtype=float64)
+                            for _zzero190 in range(3):
+                                sho[_zzero190] = 0.0
 
                             ml1 = cuda.local.array(3, dtype=float64)
+                            for _zzero191 in range(3):
+                                ml1[_zzero191] = 0.0
 
                             ml1[0] = mdl[OF_fore_mount_local + o * 3]
 
@@ -3898,7 +4267,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 plt = cuda.local.array(3, dtype=float64)
                 paw_leg(paw_t, leg, plt)
 
-                dq1, dq2, tq1r, tq2r, dsat = fore_ik_at(mdl, cst, fr, leg, plt, ikb[leg], csti, mdi)
+                dq1, dq2, tq1r, tq2r, dsat = fore_ik_at(mdl, cst, fr, leg, plt, ikb[leg], mdi, csti)
 
                 th1 = min(tq1r - mdl[OF_lower + c1], mdl[OF_upper + c1] - tq1r)
 
@@ -3921,6 +4290,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 act = int32(0)
 
                 seat = cuda.local.array(3, dtype=float64)
+                for _zzero192 in range(3):
+                    seat[_zzero192] = 0.0
 
                 if gated == 0 and due != 0 and (thin_seat == 0 or wall_bound == 0):
 
@@ -3929,6 +4300,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 elif gated == 0 and due != 0 and thin_seat != 0 and wall_bound != 0:
 
                     seat = cuda.local.array(3, dtype=float64)
+                    for _zzero193 in range(3):
+                        seat[_zzero193] = 0.0
                     fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat)
 
                     dsx = seat[0] - paw_t[leg * 3]
@@ -3956,6 +4329,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                     if wall_bound != 0 and min(th1, th2) < float(0.1022):
 
                         seat = cuda.local.array(3, dtype=float64)
+                        for _zzero194 in range(3):
+                            seat[_zzero194] = 0.0
                         fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat)
 
                         dsx = seat[0] - paw_t[leg * 3]
@@ -3985,12 +4360,16 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                     hpt = mdi[OI_fore_heel_pt + leg]
 
                     prl = cuda.local.array(3, dtype=float64)
+                    for _zzero195 in range(3):
+                        prl[_zzero195] = 0.0
 
                     for c in range(3):
 
                         prl[c] = (mdl[OF_pt_local + hpt * 3 + c] + mdl[OF_pt_local + (hpt + 1) * 3 + c]) * float(0.5)
 
                     T16 = cuda.local.array(16, dtype=float64)
+                    for _zzero196 in range(16):
+                        T16[_zzero196] = 0.0
 
                     fb = mdi[OI_pt_body + hpt]
 
@@ -3999,18 +4378,26 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                         T16[i] = fr[fb * 16 + i]
 
                     pw = cuda.local.array(3, dtype=float64)
+                    for _zzero197 in range(3):
+                        pw[_zzero197] = 0.0
 
                     apply_point(T16, prl, pw)
 
                     m16 = cuda.local.array(16, dtype=float64)
+                    for _zzero198 in range(16):
+                        m16[_zzero198] = 0.0
 
                     for i in range(16):
 
                         m16[i] = fr[csti[CI_pelvis_row] * 16 + i]
 
                     shw = cuda.local.array(3, dtype=float64)
+                    for _zzero199 in range(3):
+                        shw[_zzero199] = 0.0
 
                     ml = cuda.local.array(3, dtype=float64)
+                    for _zzero200 in range(3):
+                        ml[_zzero200] = 0.0
 
                     ml[0] = mdl[OF_fore_mount_local + leg * 3]
 
@@ -4069,12 +4456,16 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                     hpt = mdi[OI_fore_heel_pt + leg]
 
                     prl = cuda.local.array(3, dtype=float64)
+                    for _zzero201 in range(3):
+                        prl[_zzero201] = 0.0
 
                     for c in range(3):
 
                         prl[c] = (mdl[OF_pt_local + hpt * 3 + c] + mdl[OF_pt_local + (hpt + 1) * 3 + c]) * float(0.5)
 
                     T16 = cuda.local.array(16, dtype=float64)
+                    for _zzero202 in range(16):
+                        T16[_zzero202] = 0.0
 
                     fb = mdi[OI_pt_body + hpt]
 
@@ -4083,6 +4474,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                         T16[i] = fr[fb * 16 + i]
 
                     pw = cuda.local.array(3, dtype=float64)
+                    for _zzero203 in range(3):
+                        pw[_zzero203] = 0.0
 
                     apply_point(T16, prl, pw)
 
@@ -4094,9 +4487,9 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     cc2 = mdi[OI_fore_coord + leg * 2 + 1]
 
-                    qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi)
+                    qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti)
 
-                    qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi)
+                    qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti)
 
                     e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]))
 
@@ -4127,12 +4520,16 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 hpt = mdi[OI_fore_heel_pt + leg]
 
                 prl = cuda.local.array(3, dtype=float64)
+                for _zzero204 in range(3):
+                    prl[_zzero204] = 0.0
 
                 for c in range(3):
 
                     prl[c] = (mdl[OF_pt_local + hpt * 3 + c] + mdl[OF_pt_local + (hpt + 1) * 3 + c]) * float(0.5)
 
                 T16 = cuda.local.array(16, dtype=float64)
+                for _zzero205 in range(16):
+                    T16[_zzero205] = 0.0
 
                 fb = mdi[OI_pt_body + hpt]
 
@@ -4141,6 +4538,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                     T16[i] = fr[fb * 16 + i]
 
                 pw = cuda.local.array(3, dtype=float64)
+                for _zzero206 in range(3):
+                    pw[_zzero206] = 0.0
 
                 apply_point(T16, prl, pw)
 
@@ -4152,9 +4551,9 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                 cc2 = mdi[OI_fore_coord + leg * 2 + 1]
 
-                qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi)
+                qa1, qa2, qa1r, qa2r, sata = fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti)
 
-                qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi)
+                qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti)
 
                 e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]))
 
@@ -4179,14 +4578,20 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 if f_en[leg] != 0:
 
                     m16 = cuda.local.array(16, dtype=float64)
+                    for _zzero207 in range(16):
+                        m16[_zzero207] = 0.0
 
                     for i in range(16):
 
                         m16[i] = fr[csti[CI_pelvis_row] * 16 + i]
 
                     shw = cuda.local.array(3, dtype=float64)
+                    for _zzero208 in range(3):
+                        shw[_zzero208] = 0.0
 
                     ml = cuda.local.array(3, dtype=float64)
+                    for _zzero209 in range(3):
+                        ml[_zzero209] = 0.0
 
                     ml[0] = mdl[OF_fore_mount_local + leg * 3]
 
@@ -4247,14 +4652,20 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                     else:
 
                         m16 = cuda.local.array(16, dtype=float64)
+                        for _zzero210 in range(16):
+                            m16[_zzero210] = 0.0
 
                         for i in range(16):
 
                             m16[i] = fr[csti[CI_pelvis_row] * 16 + i]
 
                         shw = cuda.local.array(3, dtype=float64)
+                        for _zzero211 in range(3):
+                            shw[_zzero211] = 0.0
 
                         ml = cuda.local.array(3, dtype=float64)
+                        for _zzero212 in range(3):
+                            ml[_zzero212] = 0.0
 
                         ml[0] = mdl[OF_fore_mount_local + leg * 3]
 
@@ -4331,14 +4742,20 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     if walking != 0 and capt != 0 and cst[CF_height_crit] > float(0.0) and h_latched == 0:
 
         m16 = cuda.local.array(16, dtype=float64)
+        for _zzero213 in range(16):
+            m16[_zzero213] = 0.0
 
         for i in range(16):
 
             m16[i] = fr[csti[CI_pelvis_row] * 16 + i]
 
         shl = cuda.local.array(3, dtype=float64)
+        for _zzero214 in range(3):
+            shl[_zzero214] = 0.0
 
         ml0 = cuda.local.array(3, dtype=float64)
+        for _zzero215 in range(3):
+            ml0[_zzero215] = 0.0
 
         ml0[0] = mdl[OF_fore_mount_local + 0]
 
@@ -4349,8 +4766,12 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
         apply_point(m16, ml0, shl)
 
         shr = cuda.local.array(3, dtype=float64)
+        for _zzero216 in range(3):
+            shr[_zzero216] = 0.0
 
         ml1 = cuda.local.array(3, dtype=float64)
+        for _zzero217 in range(3):
+            ml1[_zzero217] = 0.0
 
         ml1[0] = mdl[OF_fore_mount_local + 3]
 
@@ -4605,8 +5026,12 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
             hpt = mdi[OI_hind_heel_pt + hl]
 
             p1 = cuda.local.array(3, dtype=float64)
+            for _zzero218 in range(3):
+                p1[_zzero218] = 0.0
 
             p2 = cuda.local.array(3, dtype=float64)
+            for _zzero219 in range(3):
+                p2[_zzero219] = 0.0
 
             for c in range(3):
 
@@ -4615,6 +5040,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 p2[c] = mdl[OF_pt_local + (hpt + 1) * 3 + c]
 
             T16 = cuda.local.array(16, dtype=float64)
+            for _zzero220 in range(16):
+                T16[_zzero220] = 0.0
 
             fb = mdi[OI_pt_body + hpt]
 
@@ -4623,10 +5050,14 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 T16[i] = fr[fb * 16 + i]
 
             w1p = cuda.local.array(3, dtype=float64)
+            for _zzero221 in range(3):
+                w1p[_zzero221] = 0.0
 
             apply_point(T16, p1, w1p)
 
             w2p = cuda.local.array(3, dtype=float64)
+            for _zzero222 in range(3):
+                w2p[_zzero222] = 0.0
 
             apply_point(T16, p2, w2p)
 
@@ -4665,14 +5096,20 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
             xoff = v_eff * (cst[CF_duty] * cst[CF_t_cycle]) * float(0.5)
 
             m16 = cuda.local.array(16, dtype=float64)
+            for _zzero223 in range(16):
+                m16[_zzero223] = 0.0
 
             for i in range(16):
 
                 m16[i] = fr[csti[CI_pelvis_row] * 16 + i]
 
             hipw = cuda.local.array(3, dtype=float64)
+            for _zzero224 in range(3):
+                hipw[_zzero224] = 0.0
 
             mlh = cuda.local.array(3, dtype=float64)
+            for _zzero225 in range(3):
+                mlh[_zzero225] = 0.0
 
             mlh[0] = mdl[OF_hind_mount + hl * 3]
 
@@ -4715,8 +5152,12 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     if walking != 0 and csti[CI_capture_enabled] != 0:
 
         hx = cuda.local.array(8, dtype=float64)
+        for _zzero226 in range(8):
+            hx[_zzero226] = 0.0
 
         hz = cuda.local.array(8, dtype=float64)
+        for _zzero227 in range(8):
+            hz[_zzero227] = 0.0
 
         hn = int32(0)
 
@@ -4743,10 +5184,16 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
         comz = float(0.0)
 
         cw = cuda.local.array(3, dtype=float64)
+        for _zzero228 in range(3):
+            cw[_zzero228] = 0.0
 
         cb = cuda.local.array(3, dtype=float64)
+        for _zzero229 in range(3):
+            cb[_zzero229] = 0.0
 
         T16b = cuda.local.array(16, dtype=float64)
+        for _zzero230 in range(16):
+            T16b[_zzero230] = 0.0
 
         for b in range(1, csti[CI_nbod]):
 
@@ -4795,8 +5242,12 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                         tz = hz[i]; hz[i] = hz[j]; hz[j] = tz
 
             ux = cuda.local.array(8, dtype=float64)
+            for _zzero231 in range(8):
+                ux[_zzero231] = 0.0
 
             uz = cuda.local.array(8, dtype=float64)
+            for _zzero232 in range(8):
+                uz[_zzero232] = 0.0
 
             un = int32(0)
 
@@ -4815,8 +5266,12 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 # Andrew monotone chain
 
                 chx = cuda.local.array(16, dtype=float64)
+                for _zzero233 in range(16):
+                    chx[_zzero233] = 0.0
 
                 chz = cuda.local.array(16, dtype=float64)
+                for _zzero234 in range(16):
+                    chz[_zzero234] = 0.0
 
                 kk = int32(0)
 
@@ -5164,12 +5619,20 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
     tick = a_ticks[e]
 
     q = cuda.local.array(18, dtype=float64)
+    for _zzero235 in range(18):
+        q[_zzero235] = 0.0
 
     v = cuda.local.array(18, dtype=float64)
+    for _zzero236 in range(18):
+        v[_zzero236] = 0.0
 
     w = cuda.local.array(18, dtype=float64)
+    for _zzero237 in range(18):
+        w[_zzero237] = 0.0
 
     ltau = cuda.local.array(18, dtype=float64)
+    for _zzero238 in range(18):
+        ltau[_zzero238] = 0.0
 
     for i in range(18):
 
@@ -5182,6 +5645,8 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
         ltau[i] = a_last_torque[e * 18 + i]
 
     bat = cuda.local.array(12, dtype=float64)
+    for _zzero239 in range(12):
+        bat[_zzero239] = 0.0
 
     for d in range(12):
 
@@ -5190,12 +5655,16 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
     bat_post = a_battery_post[e]
 
     phi = cuda.local.array(2, dtype=float64)
+    for _zzero240 in range(2):
+        phi[_zzero240] = 0.0
 
     phi[0] = a_phi[e * 2]
 
     phi[1] = a_phi[e * 2 + 1]
 
     tch = cuda.local.array(2, dtype=int32)
+    for _zzero241 in range(2):
+        tch[_zzero241] = 0
 
     tch[0] = a_touching[e * 2]
 
@@ -5206,38 +5675,68 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
     settle_n = a_settle[e]
 
     ikb = cuda.local.array(2, dtype=int32)
+    for _zzero242 in range(2):
+        ikb[_zzero242] = 0
 
     ikb[0] = a_ik_branch[e * 2]
 
     ikb[1] = a_ik_branch[e * 2 + 1]
 
     paw_t = cuda.local.array(6, dtype=float64)
+    for _zzero243 in range(6):
+        paw_t[_zzero243] = 0.0
 
     paw_y = cuda.local.array(2, dtype=float64)
+    for _zzero244 in range(2):
+        paw_y[_zzero244] = 0.0
 
     swf = cuda.local.array(6, dtype=float64)
+    for _zzero245 in range(6):
+        swf[_zzero245] = 0.0
 
     swt = cuda.local.array(6, dtype=float64)
+    for _zzero246 in range(6):
+        swt[_zzero246] = 0.0
 
     f_t = cuda.local.array(2, dtype=float64)
+    for _zzero247 in range(2):
+        f_t[_zzero247] = 0.0
 
     f_st = cuda.local.array(2, dtype=float64)
+    for _zzero248 in range(2):
+        f_st[_zzero248] = 0.0
 
     f_cy = cuda.local.array(2, dtype=float64)
+    for _zzero249 in range(2):
+        f_cy[_zzero249] = 0.0
 
     f_mo = cuda.local.array(2, dtype=int32)
+    for _zzero250 in range(2):
+        f_mo[_zzero250] = 0
 
     f_en = cuda.local.array(2, dtype=int32)
+    for _zzero251 in range(2):
+        f_en[_zzero251] = 0
 
     f_cv = cuda.local.array(2, dtype=int32)
+    for _zzero252 in range(2):
+        f_cv[_zzero252] = 0
 
     f_dp = cuda.local.array(2, dtype=int32)
+    for _zzero253 in range(2):
+        f_dp[_zzero253] = 0
 
     f_cl = cuda.local.array(2, dtype=int32)
+    for _zzero254 in range(2):
+        f_cl[_zzero254] = 0
 
     f_rp = cuda.local.array(2, dtype=int32)
+    for _zzero255 in range(2):
+        f_rp[_zzero255] = 0
 
     f_td = cuda.local.array(2, dtype=int32)
+    for _zzero256 in range(2):
+        f_td[_zzero256] = 0
 
     for l in range(2):
 
@@ -5272,32 +5771,60 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
         f_td[l] = a_fore_td_count[e * 2 + l]
 
     h_mo = cuda.local.array(2, dtype=int32)
+    for _zzero257 in range(2):
+        h_mo[_zzero257] = 0
 
     h_t = cuda.local.array(2, dtype=float64)
+    for _zzero258 in range(2):
+        h_t[_zzero258] = 0.0
 
     h_from = cuda.local.array(6, dtype=float64)
+    for _zzero259 in range(6):
+        h_from[_zzero259] = 0.0
 
     h_to = cuda.local.array(6, dtype=float64)
+    for _zzero260 in range(6):
+        h_to[_zzero260] = 0.0
 
     h_py = cuda.local.array(2, dtype=float64)
+    for _zzero261 in range(2):
+        h_py[_zzero261] = 0.0
 
     h_ap = cuda.local.array(2, dtype=float64)
+    for _zzero262 in range(2):
+        h_ap[_zzero262] = 0.0
 
     h_mp = cuda.local.array(2, dtype=float64)
+    for _zzero263 in range(2):
+        h_mp[_zzero263] = 0.0
 
     h_br = cuda.local.array(2, dtype=int32)
+    for _zzero264 in range(2):
+        h_br[_zzero264] = 0
 
     h_held = cuda.local.array(2, dtype=int32)
+    for _zzero265 in range(2):
+        h_held[_zzero265] = 0
 
     h_lf = cuda.local.array(2, dtype=int64)
+    for _zzero266 in range(2):
+        h_lf[_zzero266] = 0
 
     h_lt = cuda.local.array(2, dtype=int64)
+    for _zzero267 in range(2):
+        h_lt[_zzero267] = 0
 
     h_fi = cuda.local.array(2, dtype=int32)
+    for _zzero268 in range(2):
+        h_fi[_zzero268] = 0
 
     h_tds = cuda.local.array(2, dtype=int32)
+    for _zzero269 in range(2):
+        h_tds[_zzero269] = 0
 
     h_xo = cuda.local.array(2, dtype=float64)
+    for _zzero270 in range(2):
+        h_xo[_zzero270] = 0.0
 
     for l in range(2):
 
@@ -5342,6 +5869,8 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
     cmd_fires = a_cmd_fires[e]
 
     adv = cuda.local.array(1, dtype=int32)
+    for _zzero271 in range(1):
+        adv[_zzero271] = 0
 
     adv[0] = a_adv_calls[e]
 
@@ -5358,106 +5887,206 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
         walking = 0
 
     M = cuda.local.array(324, dtype=float64)
+    for _zzero272 in range(324):
+        M[_zzero272] = 0.0
 
     gv = cuda.local.array(18, dtype=float64)
+    for _zzero273 in range(18):
+        gv[_zzero273] = 0.0
 
     bv = cuda.local.array(18, dtype=float64)
+    for _zzero274 in range(18):
+        bv[_zzero274] = 0.0
 
     fr = cuda.local.array(224, dtype=float64)
+    for _zzero275 in range(224):
+        fr[_zzero275] = 0.0
 
     frd = cuda.local.array(224, dtype=float64)
+    for _zzero276 in range(224):
+        frd[_zzero276] = 0.0
 
     frdd = cuda.local.array(224, dtype=float64)
+    for _zzero277 in range(224):
+        frdd[_zzero277] = 0.0
 
     axw = cuda.local.array(54, dtype=float64)
+    for _zzero278 in range(54):
+        axw[_zzero278] = 0.0
 
     axpiv = cuda.local.array(54, dtype=float64)
+    for _zzero279 in range(54):
+        axpiv[_zzero279] = 0.0
 
     axdir = cuda.local.array(54, dtype=float64)
+    for _zzero280 in range(54):
+        axdir[_zzero280] = 0.0
 
     ptp = cuda.local.array(24, dtype=float64)
+    for _zzero281 in range(24):
+        ptp[_zzero281] = 0.0
 
     ptJ = cuda.local.array(216, dtype=float64)
+    for _zzero282 in range(216):
+        ptJ[_zzero282] = 0.0
 
     ptcop = cuda.local.array(12, dtype=float64)
+    for _zzero283 in range(12):
+        ptcop[_zzero283] = 0.0
 
     ptbias = cuda.local.array(12, dtype=float64)
+    for _zzero284 in range(12):
+        ptbias[_zzero284] = 0.0
 
     inv = cuda.local.array(324, dtype=float64)
+    for _zzero285 in range(324):
+        inv[_zzero285] = 0.0
 
     free = cuda.local.array(18, dtype=float64)
+    for _zzero286 in range(18):
+        free[_zzero286] = 0.0
 
     qa = cuda.local.array(18, dtype=float64)
+    for _zzero287 in range(18):
+        qa[_zzero287] = 0.0
 
     va = cuda.local.array(18, dtype=float64)
+    for _zzero288 in range(18):
+        va[_zzero288] = 0.0
 
     qb = cuda.local.array(18, dtype=float64)
+    for _zzero289 in range(18):
+        qb[_zzero289] = 0.0
 
     vb = cuda.local.array(18, dtype=float64)
+    for _zzero290 in range(18):
+        vb[_zzero290] = 0.0
 
     qc = cuda.local.array(18, dtype=float64)
+    for _zzero291 in range(18):
+        qc[_zzero291] = 0.0
 
     vc = cuda.local.array(18, dtype=float64)
+    for _zzero292 in range(18):
+        vc[_zzero292] = 0.0
 
     qd = cuda.local.array(18, dtype=float64)
+    for _zzero293 in range(18):
+        qd[_zzero293] = 0.0
 
     vd = cuda.local.array(18, dtype=float64)
+    for _zzero294 in range(18):
+        vd[_zzero294] = 0.0
 
     qe = cuda.local.array(18, dtype=float64)
+    for _zzero295 in range(18):
+        qe[_zzero295] = 0.0
 
     ve = cuda.local.array(18, dtype=float64)
+    for _zzero296 in range(18):
+        ve[_zzero296] = 0.0
 
     we = cuda.local.array(18, dtype=float64)
+    for _zzero297 in range(18):
+        we[_zzero297] = 0.0
 
     sq = cuda.local.array(576, dtype=float64)
+    for _zzero298 in range(576):
+        sq[_zzero298] = 0.0
 
     sh16 = cuda.local.array(16, dtype=float64)
+    for _zzero299 in range(16):
+        sh16[_zzero299] = 0.0
 
     sdep = cuda.local.array(16, dtype=int32)
+    for _zzero300 in range(16):
+        sdep[_zzero300] = 0
 
     scl = cuda.local.array(16, dtype=int32)
+    for _zzero301 in range(16):
+        scl[_zzero301] = 0
 
     tr_q = cuda.local.array(18, dtype=float64)
+    for _zzero302 in range(18):
+        tr_q[_zzero302] = 0.0
 
     tr_v = cuda.local.array(18, dtype=float64)
+    for _zzero303 in range(18):
+        tr_v[_zzero303] = 0.0
 
     tr_w = cuda.local.array(18, dtype=float64)
+    for _zzero304 in range(18):
+        tr_w[_zzero304] = 0.0
 
     cd_q = cuda.local.array(18, dtype=float64)
+    for _zzero305 in range(18):
+        cd_q[_zzero305] = 0.0
 
     cd_v = cuda.local.array(18, dtype=float64)
+    for _zzero306 in range(18):
+        cd_v[_zzero306] = 0.0
 
     cd_w = cuda.local.array(18, dtype=float64)
+    for _zzero307 in range(18):
+        cd_w[_zzero307] = 0.0
 
     tau = cuda.local.array(18, dtype=float64)
+    for _zzero308 in range(18):
+        tau[_zzero308] = 0.0
 
     srq = cuda.local.array(18, dtype=float64)
+    for _zzero309 in range(18):
+        srq[_zzero309] = 0.0
 
     srv = cuda.local.array(18, dtype=float64)
+    for _zzero310 in range(18):
+        srv[_zzero310] = 0.0
 
     scales = cuda.local.array(13, dtype=float64)
+    for _zzero311 in range(13):
+        scales[_zzero311] = 0.0
 
     round_n = int32(0)
 
     dsf = cuda.local.array(1, dtype=int32)
+    for _zzero312 in range(1):
+        dsf[_zzero312] = 0
 
     trial_q = cuda.local.array(18, dtype=float64)
+    for _zzero313 in range(18):
+        trial_q[_zzero313] = 0.0
 
     trial_v = cuda.local.array(18, dtype=float64)
+    for _zzero314 in range(18):
+        trial_v[_zzero314] = 0.0
 
     trial_w = cuda.local.array(18, dtype=float64)
+    for _zzero315 in range(18):
+        trial_w[_zzero315] = 0.0
 
     o_q = cuda.local.array(18, dtype=float64)
+    for _zzero316 in range(18):
+        o_q[_zzero316] = 0.0
 
     o_v = cuda.local.array(18, dtype=float64)
+    for _zzero317 in range(18):
+        o_v[_zzero317] = 0.0
 
     o_w = cuda.local.array(18, dtype=float64)
+    for _zzero318 in range(18):
+        o_w[_zzero318] = 0.0
 
     cur_w = cuda.local.array(18, dtype=float64)
+    for _zzero319 in range(18):
+        cur_w[_zzero319] = 0.0
 
     eff = cuda.local.array(18, dtype=float64)
+    for _zzero320 in range(18):
+        eff[_zzero320] = 0.0
 
     lta = cuda.local.array(18, dtype=float64)
+    for _zzero321 in range(18):
+        lta[_zzero321] = 0.0
 
 
 
@@ -5518,6 +6147,8 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
                         carch = float(2.0) * mdl[OF_pt_radius + mdi[OI_hind_heel_pt + hl]]
 
                         tgt = cuda.local.array(3, dtype=float64)
+                        for _zzero322 in range(3):
+                            tgt[_zzero322] = 0.0
 
                         if h_held[hl] != 0:
 
@@ -5575,7 +6206,7 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
                         plt = cuda.local.array(3, dtype=float64)
                         paw_leg(paw_t, fl, plt)
 
-                        q1f, q2f, q1rx, q2rx, satf = fore_ik_at(mdl, cst, fr, fl, plt, ikb[fl], csti, mdi)
+                        q1f, q2f, q1rx, q2rx, satf = fore_ik_at(mdl, cst, fr, fl, plt, ikb[fl], mdi, csti)
 
                         if ji == 0:
 
@@ -5640,6 +6271,8 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
             cur_w[i] = w[i]
 
         rca = cuda.local.array(1, dtype=int32)
+        for _zzero323 in range(1):
+            rca[_zzero323] = 0
 
         rcs = int32(0)
 
@@ -5669,7 +6302,7 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
 
                 qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl,
 
-                adv, rca, o_q, o_v, o_w, csti, mdi)
+                adv, rca, o_q, o_v, o_w, mdi, csti)
 
         for i in range(18):
 
@@ -5759,7 +6392,7 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
 
                                     qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl,
 
-                                    adv, rca, o_q, o_v, o_w, csti, mdi)
+                                    adv, rca, o_q, o_v, o_w, mdi, csti)
 
                             if rca[0] != 0:
 
@@ -5811,7 +6444,7 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
 
                         qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl,
 
-                        adv, rca, o_q, o_v, o_w, csti, mdi)
+                        adv, rca, o_q, o_v, o_w, mdi, csti)
 
                 for i in range(18):
 
@@ -6082,12 +6715,20 @@ def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     tick = a_ticks[e]
 
     q = cuda.local.array(18, dtype=float64)
+    for _zzero324 in range(18):
+        q[_zzero324] = 0.0
 
     v = cuda.local.array(18, dtype=float64)
+    for _zzero325 in range(18):
+        v[_zzero325] = 0.0
 
     w = cuda.local.array(18, dtype=float64)
+    for _zzero326 in range(18):
+        w[_zzero326] = 0.0
 
     ltau = cuda.local.array(18, dtype=float64)
+    for _zzero327 in range(18):
+        ltau[_zzero327] = 0.0
 
     for i in range(18):
 
@@ -6100,6 +6741,8 @@ def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
         ltau[i] = a_last_torque[e * 18 + i]
 
     bat = cuda.local.array(12, dtype=float64)
+    for _zzero328 in range(12):
+        bat[_zzero328] = 0.0
 
     for d in range(12):
 
@@ -6108,12 +6751,16 @@ def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     bat_post = a_battery_post[e]
 
     phi = cuda.local.array(2, dtype=float64)
+    for _zzero329 in range(2):
+        phi[_zzero329] = 0.0
 
     phi[0] = a_phi[e * 2]
 
     phi[1] = a_phi[e * 2 + 1]
 
     tch = cuda.local.array(2, dtype=int32)
+    for _zzero330 in range(2):
+        tch[_zzero330] = 0
 
     tch[0] = a_touching[e * 2]
 
@@ -6124,38 +6771,68 @@ def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     settle_n = a_settle[e]
 
     ikb = cuda.local.array(2, dtype=int32)
+    for _zzero331 in range(2):
+        ikb[_zzero331] = 0
 
     ikb[0] = a_ik_branch[e * 2]
 
     ikb[1] = a_ik_branch[e * 2 + 1]
 
     paw_t = cuda.local.array(6, dtype=float64)
+    for _zzero332 in range(6):
+        paw_t[_zzero332] = 0.0
 
     paw_y = cuda.local.array(2, dtype=float64)
+    for _zzero333 in range(2):
+        paw_y[_zzero333] = 0.0
 
     swf = cuda.local.array(6, dtype=float64)
+    for _zzero334 in range(6):
+        swf[_zzero334] = 0.0
 
     swt = cuda.local.array(6, dtype=float64)
+    for _zzero335 in range(6):
+        swt[_zzero335] = 0.0
 
     f_t = cuda.local.array(2, dtype=float64)
+    for _zzero336 in range(2):
+        f_t[_zzero336] = 0.0
 
     f_st = cuda.local.array(2, dtype=float64)
+    for _zzero337 in range(2):
+        f_st[_zzero337] = 0.0
 
     f_cy = cuda.local.array(2, dtype=float64)
+    for _zzero338 in range(2):
+        f_cy[_zzero338] = 0.0
 
     f_mo = cuda.local.array(2, dtype=int32)
+    for _zzero339 in range(2):
+        f_mo[_zzero339] = 0
 
     f_en = cuda.local.array(2, dtype=int32)
+    for _zzero340 in range(2):
+        f_en[_zzero340] = 0
 
     f_cv = cuda.local.array(2, dtype=int32)
+    for _zzero341 in range(2):
+        f_cv[_zzero341] = 0
 
     f_dp = cuda.local.array(2, dtype=int32)
+    for _zzero342 in range(2):
+        f_dp[_zzero342] = 0
 
     f_cl = cuda.local.array(2, dtype=int32)
+    for _zzero343 in range(2):
+        f_cl[_zzero343] = 0
 
     f_rp = cuda.local.array(2, dtype=int32)
+    for _zzero344 in range(2):
+        f_rp[_zzero344] = 0
 
     f_td = cuda.local.array(2, dtype=int32)
+    for _zzero345 in range(2):
+        f_td[_zzero345] = 0
 
     for l in range(2):
 
@@ -6190,32 +6867,60 @@ def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
         f_td[l] = a_fore_td_count[e * 2 + l]
 
     h_mo = cuda.local.array(2, dtype=int32)
+    for _zzero346 in range(2):
+        h_mo[_zzero346] = 0
 
     h_t = cuda.local.array(2, dtype=float64)
+    for _zzero347 in range(2):
+        h_t[_zzero347] = 0.0
 
     h_from = cuda.local.array(6, dtype=float64)
+    for _zzero348 in range(6):
+        h_from[_zzero348] = 0.0
 
     h_to = cuda.local.array(6, dtype=float64)
+    for _zzero349 in range(6):
+        h_to[_zzero349] = 0.0
 
     h_py = cuda.local.array(2, dtype=float64)
+    for _zzero350 in range(2):
+        h_py[_zzero350] = 0.0
 
     h_ap = cuda.local.array(2, dtype=float64)
+    for _zzero351 in range(2):
+        h_ap[_zzero351] = 0.0
 
     h_mp = cuda.local.array(2, dtype=float64)
+    for _zzero352 in range(2):
+        h_mp[_zzero352] = 0.0
 
     h_br = cuda.local.array(2, dtype=int32)
+    for _zzero353 in range(2):
+        h_br[_zzero353] = 0
 
     h_held = cuda.local.array(2, dtype=int32)
+    for _zzero354 in range(2):
+        h_held[_zzero354] = 0
 
     h_lf = cuda.local.array(2, dtype=int64)
+    for _zzero355 in range(2):
+        h_lf[_zzero355] = 0
 
     h_lt = cuda.local.array(2, dtype=int64)
+    for _zzero356 in range(2):
+        h_lt[_zzero356] = 0
 
     h_fi = cuda.local.array(2, dtype=int32)
+    for _zzero357 in range(2):
+        h_fi[_zzero357] = 0
 
     h_tds = cuda.local.array(2, dtype=int32)
+    for _zzero358 in range(2):
+        h_tds[_zzero358] = 0
 
     h_xo = cuda.local.array(2, dtype=float64)
+    for _zzero359 in range(2):
+        h_xo[_zzero359] = 0.0
 
     for l in range(2):
 
@@ -6260,6 +6965,8 @@ def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     cmd_fires = a_cmd_fires[e]
 
     adv = cuda.local.array(1, dtype=int32)
+    for _zzero360 in range(1):
+        adv[_zzero360] = 0
 
     adv[0] = a_adv_calls[e]
 
@@ -6276,106 +6983,206 @@ def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
         walking = 0
 
     M = cuda.local.array(324, dtype=float64)
+    for _zzero361 in range(324):
+        M[_zzero361] = 0.0
 
     gv = cuda.local.array(18, dtype=float64)
+    for _zzero362 in range(18):
+        gv[_zzero362] = 0.0
 
     bv = cuda.local.array(18, dtype=float64)
+    for _zzero363 in range(18):
+        bv[_zzero363] = 0.0
 
     fr = cuda.local.array(224, dtype=float64)
+    for _zzero364 in range(224):
+        fr[_zzero364] = 0.0
 
     frd = cuda.local.array(224, dtype=float64)
+    for _zzero365 in range(224):
+        frd[_zzero365] = 0.0
 
     frdd = cuda.local.array(224, dtype=float64)
+    for _zzero366 in range(224):
+        frdd[_zzero366] = 0.0
 
     axw = cuda.local.array(54, dtype=float64)
+    for _zzero367 in range(54):
+        axw[_zzero367] = 0.0
 
     axpiv = cuda.local.array(54, dtype=float64)
+    for _zzero368 in range(54):
+        axpiv[_zzero368] = 0.0
 
     axdir = cuda.local.array(54, dtype=float64)
+    for _zzero369 in range(54):
+        axdir[_zzero369] = 0.0
 
     ptp = cuda.local.array(24, dtype=float64)
+    for _zzero370 in range(24):
+        ptp[_zzero370] = 0.0
 
     ptJ = cuda.local.array(216, dtype=float64)
+    for _zzero371 in range(216):
+        ptJ[_zzero371] = 0.0
 
     ptcop = cuda.local.array(12, dtype=float64)
+    for _zzero372 in range(12):
+        ptcop[_zzero372] = 0.0
 
     ptbias = cuda.local.array(12, dtype=float64)
+    for _zzero373 in range(12):
+        ptbias[_zzero373] = 0.0
 
     inv = cuda.local.array(324, dtype=float64)
+    for _zzero374 in range(324):
+        inv[_zzero374] = 0.0
 
     free = cuda.local.array(18, dtype=float64)
+    for _zzero375 in range(18):
+        free[_zzero375] = 0.0
 
     qa = cuda.local.array(18, dtype=float64)
+    for _zzero376 in range(18):
+        qa[_zzero376] = 0.0
 
     va = cuda.local.array(18, dtype=float64)
+    for _zzero377 in range(18):
+        va[_zzero377] = 0.0
 
     qb = cuda.local.array(18, dtype=float64)
+    for _zzero378 in range(18):
+        qb[_zzero378] = 0.0
 
     vb = cuda.local.array(18, dtype=float64)
+    for _zzero379 in range(18):
+        vb[_zzero379] = 0.0
 
     qc = cuda.local.array(18, dtype=float64)
+    for _zzero380 in range(18):
+        qc[_zzero380] = 0.0
 
     vc = cuda.local.array(18, dtype=float64)
+    for _zzero381 in range(18):
+        vc[_zzero381] = 0.0
 
     qd = cuda.local.array(18, dtype=float64)
+    for _zzero382 in range(18):
+        qd[_zzero382] = 0.0
 
     vd = cuda.local.array(18, dtype=float64)
+    for _zzero383 in range(18):
+        vd[_zzero383] = 0.0
 
     qe = cuda.local.array(18, dtype=float64)
+    for _zzero384 in range(18):
+        qe[_zzero384] = 0.0
 
     ve = cuda.local.array(18, dtype=float64)
+    for _zzero385 in range(18):
+        ve[_zzero385] = 0.0
 
     we = cuda.local.array(18, dtype=float64)
+    for _zzero386 in range(18):
+        we[_zzero386] = 0.0
 
     sq = cuda.local.array(576, dtype=float64)
+    for _zzero387 in range(576):
+        sq[_zzero387] = 0.0
 
     sh16 = cuda.local.array(16, dtype=float64)
+    for _zzero388 in range(16):
+        sh16[_zzero388] = 0.0
 
     sdep = cuda.local.array(16, dtype=int32)
+    for _zzero389 in range(16):
+        sdep[_zzero389] = 0
 
     scl = cuda.local.array(16, dtype=int32)
+    for _zzero390 in range(16):
+        scl[_zzero390] = 0
 
     tr_q = cuda.local.array(18, dtype=float64)
+    for _zzero391 in range(18):
+        tr_q[_zzero391] = 0.0
 
     tr_v = cuda.local.array(18, dtype=float64)
+    for _zzero392 in range(18):
+        tr_v[_zzero392] = 0.0
 
     tr_w = cuda.local.array(18, dtype=float64)
+    for _zzero393 in range(18):
+        tr_w[_zzero393] = 0.0
 
     cd_q = cuda.local.array(18, dtype=float64)
+    for _zzero394 in range(18):
+        cd_q[_zzero394] = 0.0
 
     cd_v = cuda.local.array(18, dtype=float64)
+    for _zzero395 in range(18):
+        cd_v[_zzero395] = 0.0
 
     cd_w = cuda.local.array(18, dtype=float64)
+    for _zzero396 in range(18):
+        cd_w[_zzero396] = 0.0
 
     tau = cuda.local.array(18, dtype=float64)
+    for _zzero397 in range(18):
+        tau[_zzero397] = 0.0
 
     srq = cuda.local.array(18, dtype=float64)
+    for _zzero398 in range(18):
+        srq[_zzero398] = 0.0
 
     srv = cuda.local.array(18, dtype=float64)
+    for _zzero399 in range(18):
+        srv[_zzero399] = 0.0
 
     scales = cuda.local.array(13, dtype=float64)
+    for _zzero400 in range(13):
+        scales[_zzero400] = 0.0
 
     round_n = int32(0)
 
     dsf = cuda.local.array(1, dtype=int32)
+    for _zzero401 in range(1):
+        dsf[_zzero401] = 0
 
     trial_q = cuda.local.array(18, dtype=float64)
+    for _zzero402 in range(18):
+        trial_q[_zzero402] = 0.0
 
     trial_v = cuda.local.array(18, dtype=float64)
+    for _zzero403 in range(18):
+        trial_v[_zzero403] = 0.0
 
     trial_w = cuda.local.array(18, dtype=float64)
+    for _zzero404 in range(18):
+        trial_w[_zzero404] = 0.0
 
     o_q = cuda.local.array(18, dtype=float64)
+    for _zzero405 in range(18):
+        o_q[_zzero405] = 0.0
 
     o_v = cuda.local.array(18, dtype=float64)
+    for _zzero406 in range(18):
+        o_v[_zzero406] = 0.0
 
     o_w = cuda.local.array(18, dtype=float64)
+    for _zzero407 in range(18):
+        o_w[_zzero407] = 0.0
 
     cur_w = cuda.local.array(18, dtype=float64)
+    for _zzero408 in range(18):
+        cur_w[_zzero408] = 0.0
 
     eff = cuda.local.array(18, dtype=float64)
+    for _zzero409 in range(18):
+        eff[_zzero409] = 0.0
 
     lta = cuda.local.array(18, dtype=float64)
+    for _zzero410 in range(18):
+        lta[_zzero410] = 0.0
 
 
 

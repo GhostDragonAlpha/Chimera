@@ -187,17 +187,23 @@ __device__ inline void load16(double* src, int off, double* out) {
 }
 
 __device__ inline long long inverse_spd18(double* a, double* out) {
+    int _zzero0;
     int i;
     int j;
     double t;
     int k;
     int col;
+    int _zzero1;
+    int _zzero2;
     int ii;
     double an;
     double bn;
     double ar;
     double br;
     double l[324];
+    for (_zzero0 = 0; _zzero0 < (324); ++_zzero0) {
+        l[_zzero0] = 0.0;
+}
     for (i = 0; i < (324); ++i) {
         l[i] = (double)(0.0);
 }
@@ -226,7 +232,13 @@ __device__ inline long long inverse_spd18(double* a, double* out) {
 }
     for (col = 0; col < (18); ++col) {
         double y[18];
+        for (_zzero1 = 0; _zzero1 < (18); ++_zzero1) {
+            y[_zzero1] = 0.0;
+}
         double x[18];
+        for (_zzero2 = 0; _zzero2 < (18); ++_zzero2) {
+            x[_zzero2] = 0.0;
+}
         for (i = 0; i < (18); ++i) {
             t =  (double)(0.0);
             if (i == col) {
@@ -290,6 +302,8 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
     double gy;
     int i;
     double potential;
+    int _zzero3;
+    int _zzero4;
     int b;
     int par;
     double tvx;
@@ -313,12 +327,16 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
     double px;
     double py;
     double pz;
+    int _zzero5;
     int idx;
     double rx;
     double ry;
     double rz;
+    int _zzero6;
     double s;
     double* Iw;
+    int _zzero7;
+    int _zzero8;
     double m;
     int nslots;
     int ii;
@@ -337,6 +355,8 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
     double gm;
     double dy;
     double a;
+    int _zzero9;
+    int _zzero10;
     double jx;
     double jy;
     double jz;
@@ -430,7 +450,13 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
     double mtmp[16];
     double mtmp2[16];
     double jv[54];
+    for (_zzero3 = 0; _zzero3 < (54); ++_zzero3) {
+        jv[_zzero3] = 0.0;
+}
     double jw[54];
+    for (_zzero4 = 0; _zzero4 < (54); ++_zzero4) {
+        jw[_zzero4] = 0.0;
+}
     for (b = (1); b < (nbod); ++b) {
         par =  body_parent[b];
         load16(body_fp, b * 16, fp16);
@@ -577,6 +603,9 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
             jw[i] = (double)(0.0);
 }
         double comw[3];
+        for (_zzero5 = 0; _zzero5 < (3); ++_zzero5) {
+            comw[_zzero5] = 0.0;
+}
         double com[3];
         com[0] = body_com[b * 3];
         com[1] = body_com[b * 3 + 1];
@@ -640,6 +669,9 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
         double alpha[3];
         axial3(mtmp, alpha);
         double acc_com[3];
+        for (_zzero6 = 0; _zzero6 < (3); ++_zzero6) {
+            acc_com[_zzero6] = 0.0;
+}
         double comloc[3];
         comloc[0] = body_com[b * 3];
         comloc[1] = body_com[b * 3 + 1];
@@ -669,10 +701,16 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
 }
         Iw =  t2;
         double Iwom[3];
+        for (_zzero7 = 0; _zzero7 < (3); ++_zzero7) {
+            Iwom[_zzero7] = 0.0;
+}
         for (i = 0; i < (3); ++i) {
             Iwom[i] = Iw[i * 4 + 0] * omega[0] + Iw[i * 4 + 1] * omega[1] + Iw[i * 4 + 2] * omega[2];
 }
         double moment[3];
+        for (_zzero8 = 0; _zzero8 < (3); ++_zzero8) {
+            moment[_zzero8] = 0.0;
+}
         moment[0] = Iw[0 * 4 + 0] * alpha[0] + Iw[0 * 4 + 1] * alpha[1] + Iw[0 * 4 + 2] * alpha[2] + (omega[1] * Iwom[2] - omega[2] * Iwom[1]);
         moment[1] = Iw[1 * 4 + 0] * alpha[0] + Iw[1 * 4 + 1] * alpha[1] + Iw[1 * 4 + 2] * alpha[2] + (omega[2] * Iwom[0] - omega[0] * Iwom[2]);
         moment[2] = Iw[2 * 4 + 0] * alpha[0] + Iw[2 * 4 + 1] * alpha[1] + Iw[2 * 4 + 2] * alpha[2] + (omega[0] * Iwom[1] - omega[1] * Iwom[0]);
@@ -746,6 +784,9 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
 }
 }
         double loc[3];
+        for (_zzero9 = 0; _zzero9 < (3); ++_zzero9) {
+            loc[_zzero9] = 0.0;
+}
         for (c = 0; c < (3); ++c) {
             loc[c] = pt_local[k * 3 + c] + (pt_local[(k + 1) * 3 + c] - pt_local[k * 3 + c]) * a;
 }
@@ -759,6 +800,9 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
         double solew[3];
         apply_point(t1, loc, solew);
         double t3v[3];
+        for (_zzero10 = 0; _zzero10 < (3); ++_zzero10) {
+            t3v[_zzero10] = 0.0;
+}
         for (i = 0; i < (16); ++i) {
             t4[i] = frdd[pb * 16 + i];
 }
@@ -855,9 +899,12 @@ __device__ inline long long gram_factor10(double* g, int k, double* rhs, double*
     double d;
     int j;
     double avg;
+    int _zzero11;
     double t;
     int m;
     int col;
+    int _zzero12;
+    int _zzero13;
     int ii;
     scale =  (double)(0.0);
     for (i = 0; i < (k); ++i) {
@@ -880,6 +927,9 @@ __device__ inline long long gram_factor10(double* g, int k, double* rhs, double*
 }
 }
     double l[100];
+    for (_zzero11 = 0; _zzero11 < (100); ++_zzero11) {
+        l[_zzero11] = 0.0;
+}
     for (i = 0; i < (k); ++i) {
         for (j = 0; j < (i + 1); ++j) {
             t =  g[i * k + j];
@@ -902,7 +952,13 @@ __device__ inline long long gram_factor10(double* g, int k, double* rhs, double*
 }
     for (col = 0; col < (k); ++col) {
         double y[10];
+        for (_zzero12 = 0; _zzero12 < (10); ++_zzero12) {
+            y[_zzero12] = 0.0;
+}
         double x[10];
+        for (_zzero13 = 0; _zzero13 < (10); ++_zzero13) {
+            x[_zzero13] = 0.0;
+}
         for (i = 0; i < (k); ++i) {
             t =  (double)(0.0);
             if (col == i) {
@@ -933,16 +989,27 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
     int skip;
     int holds;
     int k;
+    int _zzero14;
     int cnt;
     int legal;
     int allok;
+    int _zzero15;
     double tol;
     int i;
+    int _zzero16;
+    int _zzero17;
+    int _zzero18;
+    int _zzero19;
+    int _zzero20;
     int a;
     int b;
     double s;
+    int _zzero21;
     int valid;
     double l;
+    int _zzero22;
+    int _zzero23;
+    int _zzero24;
     double got;
     if (R < 1 || R > 10) {
         return 0;
@@ -970,6 +1037,9 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
 }
             if (skip == 0) {
                 int act[10];
+                for (_zzero14 = 0; _zzero14 < (10); ++_zzero14) {
+                    act[_zzero14] = 0;
+}
                 cnt =  (int)(0);
                 for (k = 0; k < (R); ++k) {
                     if ((mask >> k) & 1) {
@@ -985,6 +1055,9 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
                     if (cnt == 0) {
                         allok =  (int)(1);
                         double rk[18];
+                        for (_zzero15 = 0; _zzero15 < (18); ++_zzero15) {
+                            rk[_zzero15] = 0.0;
+}
                         for (k = 0; k < (R); ++k) {
                             rows_row(rows, k, rk);
                             tol =  (double)(1e-9) * ((double)(1.0) + fabs(floors[k]));
@@ -1004,10 +1077,25 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
 }
                     else {
                         double gram[100];
+                        for (_zzero16 = 0; _zzero16 < (100); ++_zzero16) {
+                            gram[_zzero16] = 0.0;
+}
                         double rhs[10];
+                        for (_zzero17 = 0; _zzero17 < (10); ++_zzero17) {
+                            rhs[_zzero17] = 0.0;
+}
                         double ra[18];
+                        for (_zzero18 = 0; _zzero18 < (18); ++_zzero18) {
+                            ra[_zzero18] = 0.0;
+}
                         double rb[18];
+                        for (_zzero19 = 0; _zzero19 < (18); ++_zzero19) {
+                            rb[_zzero19] = 0.0;
+}
                         double ia[18];
+                        for (_zzero20 = 0; _zzero20 < (18); ++_zzero20) {
+                            ia[_zzero20] = 0.0;
+}
                         for (a = 0; a < (cnt); ++a) {
                             for (b = 0; b < (cnt); ++b) {
                                 rows_row(rows, act[a], ra);
@@ -1023,6 +1111,9 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
                             rhs[a] = floors[act[a]] - row_dot(ra, initial);
 }
                         double lam[10];
+                        for (_zzero21 = 0; _zzero21 < (10); ++_zzero21) {
+                            lam[_zzero21] = 0.0;
+}
                         if (gram_factor10(gram, cnt, rhs, lam) == 1) {
                             valid =  (int)(1);
                             for (k = 0; k < (cnt); ++k) {
@@ -1040,14 +1131,23 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
                                         l =  (double)(0.0);
 }
                                     double rk[18];
+                                    for (_zzero22 = 0; _zzero22 < (18); ++_zzero22) {
+                                        rk[_zzero22] = 0.0;
+}
                                     rows_row(rows, act[k], rk);
                                     for (i = 0; i < (18); ++i) {
                                         p_out[i] = p_out[i] + l * rk[i];
 }
 }
                                 double chg[18];
+                                for (_zzero23 = 0; _zzero23 < (18); ++_zzero23) {
+                                    chg[_zzero23] = 0.0;
+}
                                 mat_vec(inv, p_out, chg);
                                 double rk[18];
+                                for (_zzero24 = 0; _zzero24 < (18); ++_zzero24) {
+                                    rk[_zzero24] = 0.0;
+}
                                 for (k = 0; k < (R); ++k) {
                                     tol =  (double)(1e-9) * ((double)(1.0) + fabs(floors[k]));
                                     rows_row(rows, k, rk);
@@ -1083,6 +1183,8 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
 
 __device__ inline void friction_solve(double* initial, double* inv, double* row_n, double* row_t, double floor_n, double floor_t, double mu, double slip_sign, double* force, double* ln, double* lt, int* mode) {
     int i;
+    int _zzero25;
+    int _zzero26;
     double A;
     double B;
     double C;
@@ -1101,8 +1203,14 @@ __device__ inline void friction_solve(double* initial, double* inv, double* row_
     lt[0] = (double)(0.0);
     mode[0] = 0;
     double rn_v[18];
+    for (_zzero25 = 0; _zzero25 < (18); ++_zzero25) {
+        rn_v[_zzero25] = 0.0;
+}
     mat_vec(inv, row_n, rn_v);
     double rt_v[18];
+    for (_zzero26 = 0; _zzero26 < (18); ++_zzero26) {
+        rt_v[_zzero26] = 0.0;
+}
     mat_vec(inv, row_t, rt_v);
     A =  row_dot(row_n, rn_v);
     B =  row_dot(row_n, rt_v);
@@ -1165,13 +1273,27 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
     int i;
     int d;
     int c;
+    int _zzero27;
+    int _zzero28;
     int R;
     int n_stops;
     int stop;
+    int _zzero29;
     double speed_scale;
     double gate;
+    int _zzero30;
+    int _zzero31;
+    int _zzero32;
     int r;
     double g;
+    int _zzero33;
+    int _zzero34;
+    int _zzero35;
+    int _zzero36;
+    int _zzero37;
+    int _zzero38;
+    int _zzero39;
+    int _zzero40;
     double bx;
     double by;
     double bz;
@@ -1185,6 +1307,9 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
     double d2;
     double accel;
     double floor_k;
+    int _zzero41;
+    int _zzero42;
+    int _zzero43;
     double pt_radius_g[((OF_pt_radius + 8) - (OF_pt_radius))];
     for (int _si0 = 0; _si0 < ((OF_pt_radius + 8) - (OF_pt_radius)); ++_si0) pt_radius_g[_si0] = mdl[(OF_pt_radius) + _si0];
     pot =  fk_eval(q,  v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
@@ -1199,13 +1324,26 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
         c =  mdi[OI_drive_coord + d];
         free[c] = free[c] + tau[c] - mdl[OF_drive_damping + d] * v[c];
 }
-    mat_vec(inv, free, free);
+    double free_acc[18];
+    mat_vec(inv, free, free_acc);
+    for (i = 0; i < (18); ++i) {
+        free[i] = free_acc[i];
+}
     double rows[180];
+    for (_zzero27 = 0; _zzero27 < (180); ++_zzero27) {
+        rows[_zzero27] = 0.0;
+}
     double floors[10];
+    for (_zzero28 = 0; _zzero28 < (10); ++_zzero28) {
+        floors[_zzero28] = 0.0;
+}
     R =  (int)(0);
     n_stops =  (int)(0);
     stop =  (int)(0);
     double jn[18];
+    for (_zzero29 = 0; _zzero29 < (18); ++_zzero29) {
+        jn[_zzero29] = 0.0;
+}
     for (d = 0; d < (12); ++d) {
         c =  mdi[OI_drive_coord + d];
         jn[c] = (double)(0.0);
@@ -1238,8 +1376,17 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
 }
 }
     int touching[4];
+    for (_zzero30 = 0; _zzero30 < (4); ++_zzero30) {
+        touching[_zzero30] = 0;
+}
     int mode_k[4];
+    for (_zzero31 = 0; _zzero31 < (4); ++_zzero31) {
+        mode_k[_zzero31] = 0;
+}
     double rn[18];
+    for (_zzero32 = 0; _zzero32 < (18); ++_zzero32) {
+        rn[_zzero32] = 0.0;
+}
     for (r = 0; r < (4); ++r) {
         for (i = 0; i < (18); ++i) {
             rn[i] = ptJ[(r * 3 + 1) * 18 + i];
@@ -1255,13 +1402,37 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
 }
     if (csti[CI_contact] != 0 && cst[CF_mu] > (double)(0.0) && stop == 0) {
         double jt1[18];
+        for (_zzero33 = 0; _zzero33 < (18); ++_zzero33) {
+            jt1[_zzero33] = 0.0;
+}
         double jt2[18];
+        for (_zzero34 = 0; _zzero34 < (18); ++_zzero34) {
+            jt2[_zzero34] = 0.0;
+}
         double row_t[18];
+        for (_zzero35 = 0; _zzero35 < (18); ++_zzero35) {
+            row_t[_zzero35] = 0.0;
+}
         double force[18];
+        for (_zzero36 = 0; _zzero36 < (18); ++_zzero36) {
+            force[_zzero36] = 0.0;
+}
         double corr[18];
+        for (_zzero37 = 0; _zzero37 < (18); ++_zzero37) {
+            corr[_zzero37] = 0.0;
+}
         double ln[1];
+        for (_zzero38 = 0; _zzero38 < (1); ++_zzero38) {
+            ln[_zzero38] = 0.0;
+}
         double lt[1];
+        for (_zzero39 = 0; _zzero39 < (1); ++_zzero39) {
+            lt[_zzero39] = 0.0;
+}
         int md[1];
+        for (_zzero40 = 0; _zzero40 < (1); ++_zzero40) {
+            md[_zzero40] = 0;
+}
         for (r = 0; r < (4); ++r) {
             if (touching[r] == 0) {
                 continue;
@@ -1336,11 +1507,20 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
 }
     if (R > 0) {
         double p[18];
+        for (_zzero41 = 0; _zzero41 < (18); ++_zzero41) {
+            p[_zzero41] = 0.0;
+}
         double mult[10];
+        for (_zzero42 = 0; _zzero42 < (10); ++_zzero42) {
+            mult[_zzero42] = 0.0;
+}
         if (project_rows(free, inv, rows, floors, R, n_stops, p, mult) == 0) {
             return 5;
 }
         double corr[18];
+        for (_zzero43 = 0; _zzero43 < (18); ++_zzero43) {
+            corr[_zzero43] = 0.0;
+}
         mat_vec(inv, p, corr);
         for (i = 0; i < (18); ++i) {
             free[i] = free[i] + corr[i];
@@ -1353,22 +1533,41 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
     return 0;
 }
 
-__device__ inline long long free_step(double* q0, double* v0, double* w0, double* tau, int* live, int h, double* mdl, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias, double* inv, double* free, double* srq, double* srv, double* qa, double* va, double* qb, double* vb, double* qc, double* vc, double* qd, double* vd, double* q1, double* v1, double* w1, int* mdi, int* csti) {
+__device__ inline long long free_step(double* q0, double* v0, double* w0, double* tau, int* live, double h, double* mdl, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias, double* inv, double* free, double* srq, double* srv, double* qa, double* va, double* qb, double* vb, double* qc, double* vc, double* qd, double* vd, double* q1, double* v1, double* w1, int* mdi, int* csti) {
+    int _zzero44;
+    int _zzero45;
+    int _zzero46;
     double pot;
     double speed_scale;
     int d;
     double gate;
+    int _zzero47;
     int r;
     int i;
     double g;
     double rc;
     double half;
+    int _zzero48;
+    int _zzero49;
+    int _zzero50;
+    int _zzero51;
+    int _zzero52;
+    int _zzero53;
     double sixth;
     double pt_radius_g[((OF_pt_radius + 8) - (OF_pt_radius))];
     for (int _si0 = 0; _si0 < ((OF_pt_radius + 8) - (OF_pt_radius)); ++_si0) pt_radius_g[_si0] = mdl[(OF_pt_radius) + _si0];
     double rq[18];
+    for (_zzero44 = 0; _zzero44 < (18); ++_zzero44) {
+        rq[_zzero44] = 0.0;
+}
     double rv[18];
+    for (_zzero45 = 0; _zzero45 < (18); ++_zzero45) {
+        rv[_zzero45] = 0.0;
+}
     int plane[4];
+    for (_zzero46 = 0; _zzero46 < (4); ++_zzero46) {
+        plane[_zzero46] = 0;
+}
     pot =  fk_eval(q0,  v0, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
     speed_scale =  (double)(0.0);
     for (d = 0; d < (12); ++d) {
@@ -1376,6 +1575,9 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
 }
     gate =  (double)(1e-6) + (double)(1e-3) * speed_scale;
     double rn[18];
+    for (_zzero47 = 0; _zzero47 < (18); ++_zzero47) {
+        rn[_zzero47] = 0.0;
+}
     for (r = 0; r < (4); ++r) {
         for (i = 0; i < (18); ++i) {
             rn[i] = ptJ[(r * 3 + 1) * 18 + i];
@@ -1385,7 +1587,7 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
             plane[r] = 1;
 }
 }
-    rc =  rate(q0, v0, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi);
+    rc =  rate(q0, v0, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, qa, va, mdi, csti);
     if (rc != 0) {
         return rc;
 }
@@ -1394,43 +1596,49 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
         qb[i] = q0[i] + qa[i] * half;
         vb[i] = v0[i] + va[i] * half;
 }
-    rc =  rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi);
+    double brq[18];
+    for (_zzero48 = 0; _zzero48 < (18); ++_zzero48) {
+        brq[_zzero48] = 0.0;
+}
+    double brv[18];
+    for (_zzero49 = 0; _zzero49 < (18); ++_zzero49) {
+        brv[_zzero49] = 0.0;
+}
+rc =  rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, brq, brv, mdi, csti);
     if (rc != 0) {
         return rc;
-}
-    double brq[18];
-    double brv[18];
-    for (i = 0; i < (18); ++i) {
-        brq[i] = qb[i];
-        brv[i] = vb[i];
 }
     for (i = 0; i < (18); ++i) {
         qc[i] = q0[i] + brq[i] * half;
         vc[i] = v0[i] + brv[i] * half;
 }
-    rc =  rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi);
+    double crq[18];
+    for (_zzero50 = 0; _zzero50 < (18); ++_zzero50) {
+        crq[_zzero50] = 0.0;
+}
+    double crv[18];
+    for (_zzero51 = 0; _zzero51 < (18); ++_zzero51) {
+        crv[_zzero51] = 0.0;
+}
+rc =  rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, crq, crv, mdi, csti);
     if (rc != 0) {
         return rc;
-}
-    double crq[18];
-    double crv[18];
-    for (i = 0; i < (18); ++i) {
-        crq[i] = qc[i];
-        crv[i] = vc[i];
 }
     for (i = 0; i < (18); ++i) {
         qd[i] = q0[i] + crq[i] * h;
         vd[i] = v0[i] + crv[i] * h;
 }
-    rc =  rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi);
+    double drq[18];
+    for (_zzero52 = 0; _zzero52 < (18); ++_zzero52) {
+        drq[_zzero52] = 0.0;
+}
+    double drv[18];
+    for (_zzero53 = 0; _zzero53 < (18); ++_zzero53) {
+        drv[_zzero53] = 0.0;
+}
+rc =  rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, drq, drv, mdi, csti);
     if (rc != 0) {
         return rc;
-}
-    double drq[18];
-    double drv[18];
-    for (i = 0; i < (18); ++i) {
-        drq[i] = qd[i];
-        drv[i] = vd[i];
 }
     sixth =  h / (double)(6.0);
     for (i = 0; i < (18); ++i) {
@@ -1445,10 +1653,13 @@ __device__ inline long long gram_factor4(double* g, int k, double* rhs, double* 
     double scale;
     int i;
     double d;
+    int _zzero54;
     int j;
     double t;
     int m;
     int col;
+    int _zzero55;
+    int _zzero56;
     int ii;
     scale =  (double)(0.0);
     for (i = 0; i < (k); ++i) {
@@ -1464,6 +1675,9 @@ __device__ inline long long gram_factor4(double* g, int k, double* rhs, double* 
         return 0;
 }
     double l[16];
+    for (_zzero54 = 0; _zzero54 < (16); ++_zzero54) {
+        l[_zzero54] = 0.0;
+}
     for (i = 0; i < (k); ++i) {
         for (j = 0; j < (i + 1); ++j) {
             t =  g[i * k + j];
@@ -1486,7 +1700,13 @@ __device__ inline long long gram_factor4(double* g, int k, double* rhs, double* 
 }
     for (col = 0; col < (k); ++col) {
         double y[4];
+        for (_zzero55 = 0; _zzero55 < (4); ++_zzero55) {
+            y[_zzero55] = 0.0;
+}
         double x[4];
+        for (_zzero56 = 0; _zzero56 < (4); ++_zzero56) {
+            x[_zzero56] = 0.0;
+}
         for (i = 0; i < (k); ++i) {
             t =  (double)(0.0);
             if (col == i) {
@@ -1514,21 +1734,45 @@ __device__ inline long long gram_factor4(double* g, int k, double* rhs, double* 
 __device__ inline double impact(double* q, double* v, double* mdl, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias, double* inv, double* free, int* rc, int* mdi, int* csti) {
     double pot;
     double caught;
+    int _zzero57;
+    int _zzero58;
     int R;
     int n_stops;
+    int _zzero59;
     int d;
     int c;
     int i;
+    int _zzero60;
     int r;
     double g;
+    int _zzero61;
+    int _zzero62;
+    int _zzero63;
+    int _zzero64;
+    int _zzero65;
+    int _zzero66;
+    int _zzero67;
+    int _zzero68;
+    int _zzero69;
     double closing;
     double svx;
     double svz;
     double planar;
+    int _zzero70;
+    int _zzero71;
+    int _zzero72;
+    int _zzero73;
     int npen;
+    int _zzero74;
+    int _zzero75;
+    int _zzero76;
+    int _zzero77;
+    int _zzero78;
+    int _zzero79;
     int a;
     int b;
     double s;
+    int _zzero80;
     double dq_max;
     double pt_radius_g[((OF_pt_radius + 8) - (OF_pt_radius))];
     for (int _si0 = 0; _si0 < ((OF_pt_radius + 8) - (OF_pt_radius)); ++_si0) pt_radius_g[_si0] = mdl[(OF_pt_radius) + _si0];
@@ -1539,10 +1783,19 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
 }
     caught =  (double)(0.0);
     double rows[180];
+    for (_zzero57 = 0; _zzero57 < (180); ++_zzero57) {
+        rows[_zzero57] = 0.0;
+}
     double floors[10];
+    for (_zzero58 = 0; _zzero58 < (10); ++_zzero58) {
+        floors[_zzero58] = 0.0;
+}
     R =  (int)(0);
     n_stops =  (int)(0);
     double jn[18];
+    for (_zzero59 = 0; _zzero59 < (18); ++_zzero59) {
+        jn[_zzero59] = 0.0;
+}
     for (d = 0; d < (12); ++d) {
         c =  mdi[OI_drive_coord + d];
         jn[c] = (double)(0.0);
@@ -1570,20 +1823,50 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
 }
 }
     int touching[4];
+    for (_zzero60 = 0; _zzero60 < (4); ++_zzero60) {
+        touching[_zzero60] = 0;
+}
     for (r = 0; r < (4); ++r) {
         g =  gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y]);
         touching[r] = ((csti[CI_contact] != 0 && g <= cst[CF_k_touch])) ? ((int)(1)) : ((int)(0));
 }
     double rn[18];
+    for (_zzero61 = 0; _zzero61 < (18); ++_zzero61) {
+        rn[_zzero61] = 0.0;
+}
     if (cst[CF_mu] > (double)(0.0) && n_stops == 0 && csti[CI_contact] != 0) {
         double jt1[18];
+        for (_zzero62 = 0; _zzero62 < (18); ++_zzero62) {
+            jt1[_zzero62] = 0.0;
+}
         double jt2[18];
+        for (_zzero63 = 0; _zzero63 < (18); ++_zzero63) {
+            jt2[_zzero63] = 0.0;
+}
         double row_t[18];
+        for (_zzero64 = 0; _zzero64 < (18); ++_zzero64) {
+            row_t[_zzero64] = 0.0;
+}
         double force[18];
+        for (_zzero65 = 0; _zzero65 < (18); ++_zzero65) {
+            force[_zzero65] = 0.0;
+}
         double corr[18];
+        for (_zzero66 = 0; _zzero66 < (18); ++_zzero66) {
+            corr[_zzero66] = 0.0;
+}
         double ln[1];
+        for (_zzero67 = 0; _zzero67 < (1); ++_zzero67) {
+            ln[_zzero67] = 0.0;
+}
         double lt[1];
+        for (_zzero68 = 0; _zzero68 < (1); ++_zzero68) {
+            lt[_zzero68] = 0.0;
+}
         int md[1];
+        for (_zzero69 = 0; _zzero69 < (1); ++_zzero69) {
+            md[_zzero69] = 0;
+}
         for (r = 0; r < (4); ++r) {
             if (touching[r] == 0) {
                 continue;
@@ -1634,12 +1917,21 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
 }
     if (R > 0) {
         double p[18];
+        for (_zzero70 = 0; _zzero70 < (18); ++_zzero70) {
+            p[_zzero70] = 0.0;
+}
         double mult[10];
+        for (_zzero71 = 0; _zzero71 < (10); ++_zzero71) {
+            mult[_zzero71] = 0.0;
+}
         if (project_rows(v, inv, rows, floors, R, n_stops, p, mult) == 0) {
             rc[0] = 5;
             return (double)(0.0);
 }
         double corr[18];
+        for (_zzero72 = 0; _zzero72 < (18); ++_zzero72) {
+            corr[_zzero72] = 0.0;
+}
         mat_vec(inv, p, corr);
         for (i = 0; i < (18); ++i) {
             v[i] = v[i] + corr[i];
@@ -1647,8 +1939,14 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
 }
     pot =  fk_eval(q,  v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
     int pen[4];
+    for (_zzero73 = 0; _zzero73 < (4); ++_zzero73) {
+        pen[_zzero73] = 0;
+}
     npen =  (int)(0);
     double gaps[4];
+    for (_zzero74 = 0; _zzero74 < (4); ++_zzero74) {
+        gaps[_zzero74] = 0.0;
+}
     for (r = 0; r < (4); ++r) {
         g =  gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y]);
         if (csti[CI_contact] != 0 && g < (double)(-1e-6)) {
@@ -1659,10 +1957,25 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
 }
     if (npen > 0) {
         double gram[16];
+        for (_zzero75 = 0; _zzero75 < (16); ++_zzero75) {
+            gram[_zzero75] = 0.0;
+}
         double rhs[4];
+        for (_zzero76 = 0; _zzero76 < (4); ++_zzero76) {
+            rhs[_zzero76] = 0.0;
+}
         double lam[4];
+        for (_zzero77 = 0; _zzero77 < (4); ++_zzero77) {
+            lam[_zzero77] = 0.0;
+}
         double ra[18];
+        for (_zzero78 = 0; _zzero78 < (18); ++_zzero78) {
+            ra[_zzero78] = 0.0;
+}
         double ia[18];
+        for (_zzero79 = 0; _zzero79 < (18); ++_zzero79) {
+            ia[_zzero79] = 0.0;
+}
         for (a = 0; a < (npen); ++a) {
             for (i = 0; i < (18); ++i) {
                 ra[i] = ptJ[(pen[a] * 3 + 1) * 18 + i];
@@ -1679,6 +1992,9 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
 }
         if (gram_factor4(gram, npen, rhs, lam) == 1) {
             double corr[18];
+            for (_zzero80 = 0; _zzero80 < (18); ++_zzero80) {
+                corr[_zzero80] = 0.0;
+}
             for (a = 0; a < (npen); ++a) {
                 for (i = 0; i < (18); ++i) {
                     ra[i] = ptJ[(pen[a] * 3 + 1) * 18 + i];
@@ -1706,14 +2022,17 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
     return caught;
 }
 
-__device__ inline void advance(double* q0, double* v0, double* w0, double* tau, int h, double* mdl, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias, double* inv, double* free, double* srq, double* srv, double* qa, double* va, double* qb, double* vb, double* qc, double* vc, double* qd, double* vd, double* qe, double* ve, double* we, double* sq, double* sh, int* sdep, int* scl, int* adv, int* rc, double* q1, double* v1, double* w1, int* mdi, int* csti) {
+__device__ inline void advance(double* q0, double* v0, double* w0, double* tau, double h, double* mdl, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias, double* inv, double* free, double* srq, double* srv, double* qa, double* va, double* qb, double* vb, double* qc, double* vc, double* qd, double* vd, double* qe, double* ve, double* we, double* sq, double* sh, int* sdep, int* scl, int* adv, int* rc, double* q1, double* v1, double* w1, int* mdi, int* csti) {
     int i;
     int sp;
     double rem;
     int depth;
     int clamps;
+    int _zzero81;
+    int _zzero82;
     int it;
     int done;
+    int _zzero83;
     double caught;
     double pot;
     int r;
@@ -1753,10 +2072,19 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
     depth =  (int)(0);
     clamps =  (int)(0);
     int live[4];
+    for (_zzero81 = 0; _zzero81 < (4); ++_zzero81) {
+        live[_zzero81] = 0;
+}
     int probe[4];
+    for (_zzero82 = 0; _zzero82 < (4); ++_zzero82) {
+        probe[_zzero82] = 0;
+}
     it =  (int)(0);
     done =  (int)(0);
     int rcv[1];
+    for (_zzero83 = 0; _zzero83 < (1); ++_zzero83) {
+        rcv[_zzero83] = 0;
+}
     while (done == 0) {
         it =  it + 1;
         if (it > 4000) {
@@ -1786,7 +2114,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
             return;
 }
         rcv[0] = 0;
-        caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi);
+        caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti);
         if (rcv[0] != 0) {
             rc[0] = rcv[0];
             return;
@@ -1805,7 +2133,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
             g =  gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y]);
             live[r] = ((csti[CI_contact] != 0 && g <= cst[CF_k_touch])) ? ((int)(1)) : ((int)(0));
 }
-        rcs =  free_step(q1, v1, w1, tau, live, rem, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
+        rcs =  free_step(q1, v1, w1, tau, live, rem, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti);
         if (rcs != 0) {
             rc[0] = rcs;
             return;
@@ -1838,7 +2166,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
             while (j < 42) {
                 j =  j + 1;
                 mid =  (left + right) * (double)(0.5);
-                rcb =  free_step(q1, v1, w1, tau, live, mid, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
+                rcb =  free_step(q1, v1, w1, tau, live, mid, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti);
                 if (rcb != 0) {
                     rc[0] = rcb;
                     return;
@@ -1886,7 +2214,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
                 while (j < 42) {
                     j =  j + 1;
                     mid =  (left + right) * (double)(0.5);
-                    rcb =  free_step(q1, v1, w1, tau, probe, mid, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
+                    rcb =  free_step(q1, v1, w1, tau, probe, mid, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti);
                     if (rcb != 0) {
                         rc[0] = rcb;
                         return;
@@ -1934,7 +2262,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
                 q1[mdi[OI_drive_coord + which]] = wall;
 }
             rcv[0] = 0;
-            caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi);
+            caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti);
             if (rcv[0] != 0) {
                 rc[0] = rcv[0];
                 return;
@@ -1947,7 +2275,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
                 probe[rr] = live[rr];
 }
             probe[khit] = 0;
-            rcc =  free_step(q1, v1, w1, tau, probe, hit, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
+            rcc =  free_step(q1, v1, w1, tau, probe, hit, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti);
             if (rcc != 0) {
                 rc[0] = rcc;
                 return;
@@ -1958,7 +2286,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
                 w1[i] = we[i];
 }
             rcv[0] = 0;
-            caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi);
+            caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti);
             if (rcv[0] != 0) {
                 rc[0] = rcv[0];
                 return;
@@ -1977,7 +2305,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 }
             continue;
 }
-        rcw =  free_step(q1, v1, w1, tau, live, hit, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
+        rcw =  free_step(q1, v1, w1, tau, live, hit, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti);
         if (rcw != 0) {
             rc[0] = rcw;
             return;
@@ -1989,7 +2317,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 }
         q1[mdi[OI_drive_coord + which]] = wall;
         rcv[0] = 0;
-        caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi);
+        caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti);
         if (rcv[0] != 0) {
             rc[0] = rcv[0];
             return;
@@ -2241,7 +2569,7 @@ __device__ inline double fore_target_headroom(double* mdl, double* cst, double* 
     int c2;
     double h1;
     double h2;
-    fore_ik_at(mdl, cst, fr, leg, paw, branch, csti, mdi, &d1a, &d1b, &q1r, &q2r, &d1c);
+    fore_ik_at(mdl, cst, fr, leg, paw, branch, mdi, csti, &d1a, &d1b, &q1r, &q2r, &d1c);
     c1 =  mdi[OI_fore_coord + leg * 2];
     c2 =  mdi[OI_fore_coord + leg * 2 + 1];
     h1 =  fmin(q1r - mdl[OF_lower + c1], mdl[OF_upper + c1] - q1r);
@@ -2250,19 +2578,35 @@ __device__ inline double fore_target_headroom(double* mdl, double* cst, double* 
 }
 
 __device__ inline void fore_follow(double* mdl, double* cst, double* fr, int leg, double* paw_t, double branch, int* mdi, int* csti, double* result) {
+    int _zzero84;
+    int _zzero85;
+    int _zzero86;
     double dirn;
     double dmax;
     double lo;
     double hi;
     int j;
     double mid;
+    int _zzero87;
     double edge;
+    int _zzero88;
+    int _zzero89;
+    int _zzero90;
     double p[3];
+    for (_zzero84 = 0; _zzero84 < (3); ++_zzero84) {
+        p[_zzero84] = 0.0;
+}
     p[0] = paw_t[leg * 3];
     p[1] = paw_t[leg * 3 + 1];
     p[2] = paw_t[leg * 3 + 2];
     double px[3];
+    for (_zzero85 = 0; _zzero85 < (3); ++_zzero85) {
+        px[_zzero85] = 0.0;
+}
     double py[3];
+    for (_zzero86 = 0; _zzero86 < (3); ++_zzero86) {
+        py[_zzero86] = 0.0;
+}
     px[0] = p[0] + (double)(1e-3);
     px[1] = p[1];
     px[2] = p[2];
@@ -2270,7 +2614,7 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, int leg
     py[1] = p[1];
     py[2] = p[2];
     dirn =  (double)(1.0);
-    if (fore_target_headroom(mdl, cst, fr, leg, px, branch, csti, mdi) < fore_target_headroom(mdl, cst, fr, leg, py, branch, csti, mdi)) {
+    if (fore_target_headroom(mdl, cst, fr, leg, px, branch, mdi, csti) < fore_target_headroom(mdl, cst, fr, leg, py, branch, mdi, csti)) {
         dirn =  (double)(-1.0);
 }
     dmax =  cst[CF_fore_L1] + cst[CF_fore_rho];
@@ -2279,6 +2623,9 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, int leg
     for (j = 0; j < (42); ++j) {
         mid =  (lo + hi) * (double)(0.5);
         double t[3];
+        for (_zzero87 = 0; _zzero87 < (3); ++_zzero87) {
+            t[_zzero87] = 0.0;
+}
         t[0] = p[0] + dirn * mid;
         t[1] = p[1];
         t[2] = p[2];
@@ -2291,10 +2638,13 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, int leg
 }
     edge =  (lo + hi) * (double)(0.5);
     double te[3];
+    for (_zzero88 = 0; _zzero88 < (3); ++_zzero88) {
+        te[_zzero88] = 0.0;
+}
     te[0] = p[0] + dirn * edge;
     te[1] = p[1];
     te[2] = p[2];
-    if (fore_target_headroom(mdl, cst, fr, leg, te, branch, csti, mdi) < (double)(0.1022)) {
+    if (fore_target_headroom(mdl, cst, fr, leg, te, branch, mdi, csti) < (double)(0.1022)) {
         result[0] = te[0];
         result[1] = te[1];
         result[2] = te[2];
@@ -2305,10 +2655,13 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, int leg
     for (j = 0; j < (42); ++j) {
         mid =  (lo + hi) * (double)(0.5);
         double t[3];
+        for (_zzero89 = 0; _zzero89 < (3); ++_zzero89) {
+            t[_zzero89] = 0.0;
+}
         t[0] = p[0] + dirn * mid;
         t[1] = p[1];
         t[2] = p[2];
-        if (fore_target_headroom(mdl, cst, fr, leg, t, branch, csti, mdi) < (double)(0.1022)) {
+        if (fore_target_headroom(mdl, cst, fr, leg, t, branch, mdi, csti) < (double)(0.1022)) {
             lo =  mid;
 }
         else {
@@ -2316,6 +2669,9 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, int leg
 }
 }
     double out[3];
+    for (_zzero90 = 0; _zzero90 < (3); ++_zzero90) {
+        out[_zzero90] = 0.0;
+}
     out[0] = p[0] + dirn * ((lo + hi) * (double)(0.5));
     out[1] = p[1];
     out[2] = p[2];
@@ -2326,7 +2682,10 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, int leg
 }
 
 __device__ inline double fore_env(double* mdl, double* cst, double* fr, int leg, double* paw_t, double v3, int* csti) {
+    int _zzero91;
     int i;
+    int _zzero92;
+    int _zzero93;
     double off;
     double hgt;
     double dd;
@@ -2335,11 +2694,20 @@ __device__ inline double fore_env(double* mdl, double* cst, double* fr, int leg,
     double vv;
     double env_s;
     double m16[16];
+    for (_zzero91 = 0; _zzero91 < (16); ++_zzero91) {
+        m16[_zzero91] = 0.0;
+}
     for (i = 0; i < (16); ++i) {
         m16[i] = fr[csti[CI_pelvis_row] * 16 + i];
 }
     double shw[3];
+    for (_zzero92 = 0; _zzero92 < (3); ++_zzero92) {
+        shw[_zzero92] = 0.0;
+}
     double ml[3];
+    for (_zzero93 = 0; _zzero93 < (3); ++_zzero93) {
+        ml[_zzero93] = 0.0;
+}
     ml[0] = mdl[OF_fore_mount_local + leg * 3];
     ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
@@ -2397,27 +2765,117 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     double ne;
     int rc;
     double tick;
+    int _zzero94;
+    int _zzero95;
+    int _zzero96;
+    int _zzero97;
     int i;
+    int _zzero98;
     int d;
     double bat_post;
+    int _zzero99;
+    int _zzero100;
     double capt;
     double settle_n;
+    int _zzero101;
+    int _zzero102;
+    int _zzero103;
+    int _zzero104;
+    int _zzero105;
+    int _zzero106;
+    int _zzero107;
+    int _zzero108;
+    int _zzero109;
+    int _zzero110;
+    int _zzero111;
+    int _zzero112;
+    int _zzero113;
+    int _zzero114;
+    int _zzero115;
     int l;
     int c;
+    int _zzero116;
+    int _zzero117;
+    int _zzero118;
+    int _zzero119;
+    int _zzero120;
+    int _zzero121;
+    int _zzero122;
+    int _zzero123;
+    int _zzero124;
+    int _zzero125;
+    int _zzero126;
+    int _zzero127;
+    int _zzero128;
+    int _zzero129;
     double h_latched;
     double cmd_v;
     double cmd_on;
     double cmd_first;
     double cmd_fires;
+    int _zzero130;
     double Tf;
     double tair;
     int walking;
+    int _zzero131;
+    int _zzero132;
+    int _zzero133;
+    int _zzero134;
+    int _zzero135;
+    int _zzero136;
+    int _zzero137;
+    int _zzero138;
+    int _zzero139;
+    int _zzero140;
+    int _zzero141;
+    int _zzero142;
+    int _zzero143;
+    int _zzero144;
+    int _zzero145;
+    int _zzero146;
+    int _zzero147;
+    int _zzero148;
+    int _zzero149;
+    int _zzero150;
+    int _zzero151;
+    int _zzero152;
+    int _zzero153;
+    int _zzero154;
+    int _zzero155;
+    int _zzero156;
+    int _zzero157;
+    int _zzero158;
+    int _zzero159;
+    int _zzero160;
+    int _zzero161;
+    int _zzero162;
+    int _zzero163;
+    int _zzero164;
+    int _zzero165;
+    int _zzero166;
+    int _zzero167;
+    int _zzero168;
+    int _zzero169;
+    int _zzero170;
     int round_n;
+    int _zzero171;
+    int _zzero172;
+    int _zzero173;
+    int _zzero174;
+    int _zzero175;
+    int _zzero176;
+    int _zzero177;
+    int _zzero178;
+    int _zzero179;
+    int _zzero180;
     double pot;
     double v_eff;
     int leg;
     int hpt;
+    int _zzero181;
+    int _zzero182;
     int fb;
+    int _zzero183;
     int c1;
     int c2;
     double qa1;
@@ -2432,6 +2890,9 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     double satb;
     double e0;
     double e1;
+    int _zzero184;
+    int _zzero185;
+    int _zzero186;
     double off;
     double xoff;
     double hgt;
@@ -2456,6 +2917,11 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     int wall_bound;
     int gated;
     int o_prior;
+    int _zzero187;
+    int _zzero188;
+    int _zzero189;
+    int _zzero190;
+    int _zzero191;
     double dq1;
     double dq2;
     double tq1r;
@@ -2467,14 +2933,35 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     int due;
     double env_t;
     int act;
+    int _zzero192;
+    int _zzero193;
     double dsx;
     double dsy;
+    int _zzero194;
+    int _zzero195;
+    int _zzero196;
+    int _zzero197;
+    int _zzero198;
+    int _zzero199;
+    int _zzero200;
     double env_t2;
+    int _zzero201;
+    int _zzero202;
+    int _zzero203;
     int cc1;
     int cc2;
+    int _zzero204;
+    int _zzero205;
+    int _zzero206;
+    int _zzero207;
+    int _zzero208;
+    int _zzero209;
     double swing;
     double slot;
     double dslot;
+    int _zzero210;
+    int _zzero211;
+    int _zzero212;
     double offc;
     double envc;
     double smin;
@@ -2483,6 +2970,11 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     int ww;
     double step;
     double stc;
+    int _zzero213;
+    int _zzero214;
+    int _zzero215;
+    int _zzero216;
+    int _zzero217;
     double shmin;
     int hl;
     double g2;
@@ -2504,29 +2996,46 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     double mn2;
     int deadline_fire;
     int stall_era_link;
+    int _zzero218;
+    int _zzero219;
+    int _zzero220;
+    int _zzero221;
+    int _zzero222;
     double fx;
     double fy;
     double fz;
     int c0;
     int c1h;
     int c2h;
+    int _zzero223;
+    int _zzero224;
+    int _zzero225;
     double a2m;
     double dxs;
     double dys;
     double under;
     double xmax;
+    int _zzero226;
+    int _zzero227;
     int hn;
     int k;
     double mtot;
     double comx;
     double comy;
     double comz;
+    int _zzero228;
+    int _zzero229;
+    int _zzero230;
     int b;
     double mb;
     int j;
     double tx;
     double tz;
+    int _zzero231;
+    int _zzero232;
     int un;
+    int _zzero233;
+    int _zzero234;
     double cr;
     int t2;
     int cn;
@@ -2563,9 +3072,21 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     rc =  (int)(0);
     tick =  a_ticks[e];
     double q[18];
+    for (_zzero94 = 0; _zzero94 < (18); ++_zzero94) {
+        q[_zzero94] = 0.0;
+}
     double v[18];
+    for (_zzero95 = 0; _zzero95 < (18); ++_zzero95) {
+        v[_zzero95] = 0.0;
+}
     double w[18];
+    for (_zzero96 = 0; _zzero96 < (18); ++_zzero96) {
+        w[_zzero96] = 0.0;
+}
     double ltau[18];
+    for (_zzero97 = 0; _zzero97 < (18); ++_zzero97) {
+        ltau[_zzero97] = 0.0;
+}
     for (i = 0; i < (18); ++i) {
         q[i] = a_q[e * 18 + i];
         v[i] = a_v[e * 18 + i];
@@ -2573,35 +3094,89 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         ltau[i] = a_last_torque[e * 18 + i];
 }
     double bat[12];
+    for (_zzero98 = 0; _zzero98 < (12); ++_zzero98) {
+        bat[_zzero98] = 0.0;
+}
     for (d = 0; d < (12); ++d) {
         bat[d] = a_battery[e * 12 + d];
 }
     bat_post =  a_battery_post[e];
     double phi[2];
+    for (_zzero99 = 0; _zzero99 < (2); ++_zzero99) {
+        phi[_zzero99] = 0.0;
+}
     phi[0] = a_phi[e * 2];
     phi[1] = a_phi[e * 2 + 1];
     int tch[2];
+    for (_zzero100 = 0; _zzero100 < (2); ++_zzero100) {
+        tch[_zzero100] = 0;
+}
     tch[0] = a_touching[e * 2];
     tch[1] = a_touching[e * 2 + 1];
     capt =  a_captured[e];
     settle_n =  a_settle[e];
     int ikb[2];
+    for (_zzero101 = 0; _zzero101 < (2); ++_zzero101) {
+        ikb[_zzero101] = 0;
+}
     ikb[0] = a_ik_branch[e * 2];
     ikb[1] = a_ik_branch[e * 2 + 1];
     double paw_t[6];
+    for (_zzero102 = 0; _zzero102 < (6); ++_zzero102) {
+        paw_t[_zzero102] = 0.0;
+}
     double paw_y[2];
+    for (_zzero103 = 0; _zzero103 < (2); ++_zzero103) {
+        paw_y[_zzero103] = 0.0;
+}
     double swf[6];
+    for (_zzero104 = 0; _zzero104 < (6); ++_zzero104) {
+        swf[_zzero104] = 0.0;
+}
     double swt[6];
+    for (_zzero105 = 0; _zzero105 < (6); ++_zzero105) {
+        swt[_zzero105] = 0.0;
+}
     double f_t[2];
+    for (_zzero106 = 0; _zzero106 < (2); ++_zzero106) {
+        f_t[_zzero106] = 0.0;
+}
     double f_st[2];
+    for (_zzero107 = 0; _zzero107 < (2); ++_zzero107) {
+        f_st[_zzero107] = 0.0;
+}
     double f_cy[2];
+    for (_zzero108 = 0; _zzero108 < (2); ++_zzero108) {
+        f_cy[_zzero108] = 0.0;
+}
     int f_mo[2];
+    for (_zzero109 = 0; _zzero109 < (2); ++_zzero109) {
+        f_mo[_zzero109] = 0;
+}
     int f_en[2];
+    for (_zzero110 = 0; _zzero110 < (2); ++_zzero110) {
+        f_en[_zzero110] = 0;
+}
     int f_cv[2];
+    for (_zzero111 = 0; _zzero111 < (2); ++_zzero111) {
+        f_cv[_zzero111] = 0;
+}
     int f_dp[2];
+    for (_zzero112 = 0; _zzero112 < (2); ++_zzero112) {
+        f_dp[_zzero112] = 0;
+}
     int f_cl[2];
+    for (_zzero113 = 0; _zzero113 < (2); ++_zzero113) {
+        f_cl[_zzero113] = 0;
+}
     int f_rp[2];
+    for (_zzero114 = 0; _zzero114 < (2); ++_zzero114) {
+        f_rp[_zzero114] = 0;
+}
     int f_td[2];
+    for (_zzero115 = 0; _zzero115 < (2); ++_zzero115) {
+        f_td[_zzero115] = 0;
+}
     for (l = 0; l < (2); ++l) {
         for (c = 0; c < (3); ++c) {
             paw_t[l * 3 + c] = a_paw_target[e * 6 + l * 3 + c];
@@ -2621,19 +3196,61 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         f_td[l] = a_fore_td_count[e * 2 + l];
 }
     int h_mo[2];
+    for (_zzero116 = 0; _zzero116 < (2); ++_zzero116) {
+        h_mo[_zzero116] = 0;
+}
     double h_t[2];
+    for (_zzero117 = 0; _zzero117 < (2); ++_zzero117) {
+        h_t[_zzero117] = 0.0;
+}
     double h_from[6];
+    for (_zzero118 = 0; _zzero118 < (6); ++_zzero118) {
+        h_from[_zzero118] = 0.0;
+}
     double h_to[6];
+    for (_zzero119 = 0; _zzero119 < (6); ++_zzero119) {
+        h_to[_zzero119] = 0.0;
+}
     double h_py[2];
+    for (_zzero120 = 0; _zzero120 < (2); ++_zzero120) {
+        h_py[_zzero120] = 0.0;
+}
     double h_ap[2];
+    for (_zzero121 = 0; _zzero121 < (2); ++_zzero121) {
+        h_ap[_zzero121] = 0.0;
+}
     double h_mp[2];
+    for (_zzero122 = 0; _zzero122 < (2); ++_zzero122) {
+        h_mp[_zzero122] = 0.0;
+}
     int h_br[2];
+    for (_zzero123 = 0; _zzero123 < (2); ++_zzero123) {
+        h_br[_zzero123] = 0;
+}
     int h_held[2];
+    for (_zzero124 = 0; _zzero124 < (2); ++_zzero124) {
+        h_held[_zzero124] = 0;
+}
     long long h_lf[2];
+    for (_zzero125 = 0; _zzero125 < (2); ++_zzero125) {
+        h_lf[_zzero125] = 0;
+}
     long long h_lt[2];
+    for (_zzero126 = 0; _zzero126 < (2); ++_zzero126) {
+        h_lt[_zzero126] = 0;
+}
     int h_fi[2];
+    for (_zzero127 = 0; _zzero127 < (2); ++_zzero127) {
+        h_fi[_zzero127] = 0;
+}
     int h_tds[2];
+    for (_zzero128 = 0; _zzero128 < (2); ++_zzero128) {
+        h_tds[_zzero128] = 0;
+}
     double h_xo[2];
+    for (_zzero129 = 0; _zzero129 < (2); ++_zzero129) {
+        h_xo[_zzero129] = 0.0;
+}
     for (l = 0; l < (2); ++l) {
         h_mo[l] = a_hind_mode[e * 2 + l];
         h_t[l] = a_hind_t[e * 2 + l];
@@ -2658,6 +3275,9 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     cmd_first =  a_cmd_first_tick[e];
     cmd_fires =  a_cmd_fires[e];
     int adv[1];
+    for (_zzero130 = 0; _zzero130 < (1); ++_zzero130) {
+        adv[_zzero130] = 0;
+}
     adv[0] = a_adv_calls[e];
     Tf =  cst[CF_t_cycle] / cst[CF_dt];
     tair =  (double)(csti[CI_tair]);
@@ -2666,56 +3286,206 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         walking =  0;
 }
     double M[324];
+    for (_zzero131 = 0; _zzero131 < (324); ++_zzero131) {
+        M[_zzero131] = 0.0;
+}
     double gv[18];
+    for (_zzero132 = 0; _zzero132 < (18); ++_zzero132) {
+        gv[_zzero132] = 0.0;
+}
     double bv[18];
+    for (_zzero133 = 0; _zzero133 < (18); ++_zzero133) {
+        bv[_zzero133] = 0.0;
+}
     double fr[224];
+    for (_zzero134 = 0; _zzero134 < (224); ++_zzero134) {
+        fr[_zzero134] = 0.0;
+}
     double frd[224];
+    for (_zzero135 = 0; _zzero135 < (224); ++_zzero135) {
+        frd[_zzero135] = 0.0;
+}
     double frdd[224];
+    for (_zzero136 = 0; _zzero136 < (224); ++_zzero136) {
+        frdd[_zzero136] = 0.0;
+}
     double axw[54];
+    for (_zzero137 = 0; _zzero137 < (54); ++_zzero137) {
+        axw[_zzero137] = 0.0;
+}
     double axpiv[54];
+    for (_zzero138 = 0; _zzero138 < (54); ++_zzero138) {
+        axpiv[_zzero138] = 0.0;
+}
     double axdir[54];
+    for (_zzero139 = 0; _zzero139 < (54); ++_zzero139) {
+        axdir[_zzero139] = 0.0;
+}
     double ptp[24];
+    for (_zzero140 = 0; _zzero140 < (24); ++_zzero140) {
+        ptp[_zzero140] = 0.0;
+}
     double ptJ[216];
+    for (_zzero141 = 0; _zzero141 < (216); ++_zzero141) {
+        ptJ[_zzero141] = 0.0;
+}
     double ptcop[12];
+    for (_zzero142 = 0; _zzero142 < (12); ++_zzero142) {
+        ptcop[_zzero142] = 0.0;
+}
     double ptbias[12];
+    for (_zzero143 = 0; _zzero143 < (12); ++_zzero143) {
+        ptbias[_zzero143] = 0.0;
+}
     double inv[324];
+    for (_zzero144 = 0; _zzero144 < (324); ++_zzero144) {
+        inv[_zzero144] = 0.0;
+}
     double free[18];
+    for (_zzero145 = 0; _zzero145 < (18); ++_zzero145) {
+        free[_zzero145] = 0.0;
+}
     double qa[18];
+    for (_zzero146 = 0; _zzero146 < (18); ++_zzero146) {
+        qa[_zzero146] = 0.0;
+}
     double va[18];
+    for (_zzero147 = 0; _zzero147 < (18); ++_zzero147) {
+        va[_zzero147] = 0.0;
+}
     double qb[18];
+    for (_zzero148 = 0; _zzero148 < (18); ++_zzero148) {
+        qb[_zzero148] = 0.0;
+}
     double vb[18];
+    for (_zzero149 = 0; _zzero149 < (18); ++_zzero149) {
+        vb[_zzero149] = 0.0;
+}
     double qc[18];
+    for (_zzero150 = 0; _zzero150 < (18); ++_zzero150) {
+        qc[_zzero150] = 0.0;
+}
     double vc[18];
+    for (_zzero151 = 0; _zzero151 < (18); ++_zzero151) {
+        vc[_zzero151] = 0.0;
+}
     double qd[18];
+    for (_zzero152 = 0; _zzero152 < (18); ++_zzero152) {
+        qd[_zzero152] = 0.0;
+}
     double vd[18];
+    for (_zzero153 = 0; _zzero153 < (18); ++_zzero153) {
+        vd[_zzero153] = 0.0;
+}
     double qe[18];
+    for (_zzero154 = 0; _zzero154 < (18); ++_zzero154) {
+        qe[_zzero154] = 0.0;
+}
     double ve[18];
+    for (_zzero155 = 0; _zzero155 < (18); ++_zzero155) {
+        ve[_zzero155] = 0.0;
+}
     double we[18];
+    for (_zzero156 = 0; _zzero156 < (18); ++_zzero156) {
+        we[_zzero156] = 0.0;
+}
     double sq[576];
+    for (_zzero157 = 0; _zzero157 < (576); ++_zzero157) {
+        sq[_zzero157] = 0.0;
+}
     double sh16[16];
+    for (_zzero158 = 0; _zzero158 < (16); ++_zzero158) {
+        sh16[_zzero158] = 0.0;
+}
     int sdep[16];
+    for (_zzero159 = 0; _zzero159 < (16); ++_zzero159) {
+        sdep[_zzero159] = 0;
+}
     int scl[16];
+    for (_zzero160 = 0; _zzero160 < (16); ++_zzero160) {
+        scl[_zzero160] = 0;
+}
     double tr_q[18];
+    for (_zzero161 = 0; _zzero161 < (18); ++_zzero161) {
+        tr_q[_zzero161] = 0.0;
+}
     double tr_v[18];
+    for (_zzero162 = 0; _zzero162 < (18); ++_zzero162) {
+        tr_v[_zzero162] = 0.0;
+}
     double tr_w[18];
+    for (_zzero163 = 0; _zzero163 < (18); ++_zzero163) {
+        tr_w[_zzero163] = 0.0;
+}
     double cd_q[18];
+    for (_zzero164 = 0; _zzero164 < (18); ++_zzero164) {
+        cd_q[_zzero164] = 0.0;
+}
     double cd_v[18];
+    for (_zzero165 = 0; _zzero165 < (18); ++_zzero165) {
+        cd_v[_zzero165] = 0.0;
+}
     double cd_w[18];
+    for (_zzero166 = 0; _zzero166 < (18); ++_zzero166) {
+        cd_w[_zzero166] = 0.0;
+}
     double tau[18];
+    for (_zzero167 = 0; _zzero167 < (18); ++_zzero167) {
+        tau[_zzero167] = 0.0;
+}
     double srq[18];
+    for (_zzero168 = 0; _zzero168 < (18); ++_zzero168) {
+        srq[_zzero168] = 0.0;
+}
     double srv[18];
+    for (_zzero169 = 0; _zzero169 < (18); ++_zzero169) {
+        srv[_zzero169] = 0.0;
+}
     double scales[13];
+    for (_zzero170 = 0; _zzero170 < (13); ++_zzero170) {
+        scales[_zzero170] = 0.0;
+}
     round_n =  (int)(0);
     int dsf[1];
+    for (_zzero171 = 0; _zzero171 < (1); ++_zzero171) {
+        dsf[_zzero171] = 0;
+}
     double trial_q[18];
+    for (_zzero172 = 0; _zzero172 < (18); ++_zzero172) {
+        trial_q[_zzero172] = 0.0;
+}
     double trial_v[18];
+    for (_zzero173 = 0; _zzero173 < (18); ++_zzero173) {
+        trial_v[_zzero173] = 0.0;
+}
     double trial_w[18];
+    for (_zzero174 = 0; _zzero174 < (18); ++_zzero174) {
+        trial_w[_zzero174] = 0.0;
+}
     double o_q[18];
+    for (_zzero175 = 0; _zzero175 < (18); ++_zzero175) {
+        o_q[_zzero175] = 0.0;
+}
     double o_v[18];
+    for (_zzero176 = 0; _zzero176 < (18); ++_zzero176) {
+        o_v[_zzero176] = 0.0;
+}
     double o_w[18];
+    for (_zzero177 = 0; _zzero177 < (18); ++_zzero177) {
+        o_w[_zzero177] = 0.0;
+}
     double cur_w[18];
+    for (_zzero178 = 0; _zzero178 < (18); ++_zzero178) {
+        cur_w[_zzero178] = 0.0;
+}
     double eff[18];
+    for (_zzero179 = 0; _zzero179 < (18); ++_zzero179) {
+        eff[_zzero179] = 0.0;
+}
     double lta[18];
+    for (_zzero180 = 0; _zzero180 < (18); ++_zzero180) {
+        lta[_zzero180] = 0.0;
+}
     if (settle_n > 0) {
         settle_n =  settle_n - 1;
 }
@@ -2732,23 +3502,32 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         for (leg = 0; leg < (2); ++leg) {
             hpt =  mdi[OI_fore_heel_pt + leg];
             double prl[3];
+            for (_zzero181 = 0; _zzero181 < (3); ++_zzero181) {
+                prl[_zzero181] = 0.0;
+}
             for (c = 0; c < (3); ++c) {
                 prl[c] = (mdl[OF_pt_local + hpt * 3 + c] + mdl[OF_pt_local + (hpt + 1) * 3 + c]) * (double)(0.5);
 }
             double T16[16];
+            for (_zzero182 = 0; _zzero182 < (16); ++_zzero182) {
+                T16[_zzero182] = 0.0;
+}
             fb =  mdi[OI_pt_body + hpt];
             for (i = 0; i < (16); ++i) {
                 T16[i] = fr[fb * 16 + i];
 }
             double pw[3];
+            for (_zzero183 = 0; _zzero183 < (3); ++_zzero183) {
+                pw[_zzero183] = 0.0;
+}
             apply_point(T16, prl, pw);
             for (c = 0; c < (3); ++c) {
                 paw_t[leg * 3 + c] = pw[c];
 }
             c1 =  mdi[OI_fore_coord + leg * 2];
             c2 =  mdi[OI_fore_coord + leg * 2 + 1];
-            fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi, &qa1, &qa2, &qa1r, &qa2r, &sata);
-            fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi, &qb1, &qb2, &qb1r, &qb2r, &satb);
+            fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti, &qa1, &qa2, &qa1r, &qa2r, &sata);
+            fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti, &qb1, &qb2, &qb1r, &qb2r, &satb);
             e0 =  sqrt((qa1 - q[c1]) * (qa1 - q[c1]) + (qa2 - q[c2]) * (qa2 - q[c2]));
             e1 =  sqrt((qb1 - q[c1]) * (qb1 - q[c1]) + (qb2 - q[c2]) * (qb2 - q[c2]));
             ikb[leg] = 1;
@@ -2760,8 +3539,17 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         for (leg = 0; leg < (2); ++leg) {
             paw_y[leg] = paw_t[leg * 3 + 1];
             double shw[3];
+            for (_zzero184 = 0; _zzero184 < (3); ++_zzero184) {
+                shw[_zzero184] = 0.0;
+}
             double ml[3];
+            for (_zzero185 = 0; _zzero185 < (3); ++_zzero185) {
+                ml[_zzero185] = 0.0;
+}
             double m16[16];
+            for (_zzero186 = 0; _zzero186 < (16); ++_zzero186) {
+                m16[_zzero186] = 0.0;
+}
             for (i = 0; i < (16); ++i) {
                 m16[i] = fr[csti[CI_pelvis_row] * 16 + i];
 }
@@ -2895,17 +3683,32 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
                         if (f_t[o] == f_t[leg]) {
                             double m16[16];
+                            for (_zzero187 = 0; _zzero187 < (16); ++_zzero187) {
+                                m16[_zzero187] = 0.0;
+}
                             for (i = 0; i < (16); ++i) {
                                 m16[i] = fr[csti[CI_pelvis_row] * 16 + i];
 }
                             double sha[3];
+                            for (_zzero188 = 0; _zzero188 < (3); ++_zzero188) {
+                                sha[_zzero188] = 0.0;
+}
                             double ml0[3];
+                            for (_zzero189 = 0; _zzero189 < (3); ++_zzero189) {
+                                ml0[_zzero189] = 0.0;
+}
                             ml0[0] = mdl[OF_fore_mount_local + leg * 3];
                             ml0[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
                             ml0[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
                             apply_point(m16, ml0, sha);
                             double sho[3];
+                            for (_zzero190 = 0; _zzero190 < (3); ++_zzero190) {
+                                sho[_zzero190] = 0.0;
+}
                             double ml1[3];
+                            for (_zzero191 = 0; _zzero191 < (3); ++_zzero191) {
+                                ml1[_zzero191] = 0.0;
+}
                             ml1[0] = mdl[OF_fore_mount_local + o * 3];
                             ml1[1] = mdl[OF_fore_mount_local + o * 3 + 1];
                             ml1[2] = mdl[OF_fore_mount_local + o * 3 + 2];
@@ -2919,7 +3722,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
                 double plt[3];
                 paw_leg(paw_t, leg, plt);
-                fore_ik_at(mdl, cst, fr, leg, plt, ikb[leg], csti, mdi, &dq1, &dq2, &tq1r, &tq2r, &dsat);
+                fore_ik_at(mdl, cst, fr, leg, plt, ikb[leg], mdi, csti, &dq1, &dq2, &tq1r, &tq2r, &dsat);
                 th1 =  fmin(tq1r - mdl[OF_lower + c1], mdl[OF_upper + c1] - tq1r);
                 th2 =  fmin(tq2r - mdl[OF_lower + c2], mdl[OF_upper + c2] - tq2r);
                 thin_seat =  (int)(0);
@@ -2933,11 +3736,17 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 env_t =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti);
                 act =  (int)(0);
                 double seat[3];
+                for (_zzero192 = 0; _zzero192 < (3); ++_zzero192) {
+                    seat[_zzero192] = 0.0;
+}
                 if (gated == 0 && due != 0 && (thin_seat == 0 || wall_bound == 0)) {
                     act =  1;
 }
                 else if (gated == 0 && due != 0 && thin_seat != 0 && wall_bound != 0) {
                     double seat[3];
+                    for (_zzero193 = 0; _zzero193 < (3); ++_zzero193) {
+                        seat[_zzero193] = 0.0;
+}
                     fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat);
                     dsx =  seat[0] - paw_t[leg * 3];
                     dsy =  seat[1] - paw_t[leg * 3 + 1];
@@ -2954,6 +3763,9 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 else if (f_t[leg] >= f_cy[leg] || f_t[leg] >= env_t) {
                     if (wall_bound != 0 && fmin(th1, th2) < (double)(0.1022)) {
                         double seat[3];
+                        for (_zzero194 = 0; _zzero194 < (3); ++_zzero194) {
+                            seat[_zzero194] = 0.0;
+}
                         fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat);
                         dsx =  seat[0] - paw_t[leg * 3];
                         dsy =  seat[1] - paw_t[leg * 3 + 1];
@@ -2975,22 +3787,40 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
                     hpt =  mdi[OI_fore_heel_pt + leg];
                     double prl[3];
+                    for (_zzero195 = 0; _zzero195 < (3); ++_zzero195) {
+                        prl[_zzero195] = 0.0;
+}
                     for (c = 0; c < (3); ++c) {
                         prl[c] = (mdl[OF_pt_local + hpt * 3 + c] + mdl[OF_pt_local + (hpt + 1) * 3 + c]) * (double)(0.5);
 }
                     double T16[16];
+                    for (_zzero196 = 0; _zzero196 < (16); ++_zzero196) {
+                        T16[_zzero196] = 0.0;
+}
                     fb =  mdi[OI_pt_body + hpt];
                     for (i = 0; i < (16); ++i) {
                         T16[i] = fr[fb * 16 + i];
 }
                     double pw[3];
+                    for (_zzero197 = 0; _zzero197 < (3); ++_zzero197) {
+                        pw[_zzero197] = 0.0;
+}
                     apply_point(T16, prl, pw);
                     double m16[16];
+                    for (_zzero198 = 0; _zzero198 < (16); ++_zzero198) {
+                        m16[_zzero198] = 0.0;
+}
                     for (i = 0; i < (16); ++i) {
                         m16[i] = fr[csti[CI_pelvis_row] * 16 + i];
 }
                     double shw[3];
+                    for (_zzero199 = 0; _zzero199 < (3); ++_zzero199) {
+                        shw[_zzero199] = 0.0;
+}
                     double ml[3];
+                    for (_zzero200 = 0; _zzero200 < (3); ++_zzero200) {
+                        ml[_zzero200] = 0.0;
+}
                     ml[0] = mdl[OF_fore_mount_local + leg * 3];
                     ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
                     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
@@ -3025,23 +3855,32 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 else if (act == 3) {
                     hpt =  mdi[OI_fore_heel_pt + leg];
                     double prl[3];
+                    for (_zzero201 = 0; _zzero201 < (3); ++_zzero201) {
+                        prl[_zzero201] = 0.0;
+}
                     for (c = 0; c < (3); ++c) {
                         prl[c] = (mdl[OF_pt_local + hpt * 3 + c] + mdl[OF_pt_local + (hpt + 1) * 3 + c]) * (double)(0.5);
 }
                     double T16[16];
+                    for (_zzero202 = 0; _zzero202 < (16); ++_zzero202) {
+                        T16[_zzero202] = 0.0;
+}
                     fb =  mdi[OI_pt_body + hpt];
                     for (i = 0; i < (16); ++i) {
                         T16[i] = fr[fb * 16 + i];
 }
                     double pw[3];
+                    for (_zzero203 = 0; _zzero203 < (3); ++_zzero203) {
+                        pw[_zzero203] = 0.0;
+}
                     apply_point(T16, prl, pw);
                     for (c = 0; c < (3); ++c) {
                         paw_t[leg * 3 + c] = pw[c];
 }
                     cc1 =  mdi[OI_fore_coord + leg * 2];
                     cc2 =  mdi[OI_fore_coord + leg * 2 + 1];
-                    fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi, &qa1, &qa2, &qa1r, &qa2r, &sata);
-                    fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi, &qb1, &qb2, &qb1r, &qb2r, &satb);
+                    fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti, &qa1, &qa2, &qa1r, &qa2r, &sata);
+                    fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti, &qb1, &qb2, &qb1r, &qb2r, &satb);
                     e0 =  sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]));
                     e1 =  sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]));
                     ikb[leg] = 1;
@@ -3059,23 +3898,32 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             if (f_t[leg] >= f_cy[leg]) {
                 hpt =  mdi[OI_fore_heel_pt + leg];
                 double prl[3];
+                for (_zzero204 = 0; _zzero204 < (3); ++_zzero204) {
+                    prl[_zzero204] = 0.0;
+}
                 for (c = 0; c < (3); ++c) {
                     prl[c] = (mdl[OF_pt_local + hpt * 3 + c] + mdl[OF_pt_local + (hpt + 1) * 3 + c]) * (double)(0.5);
 }
                 double T16[16];
+                for (_zzero205 = 0; _zzero205 < (16); ++_zzero205) {
+                    T16[_zzero205] = 0.0;
+}
                 fb =  mdi[OI_pt_body + hpt];
                 for (i = 0; i < (16); ++i) {
                     T16[i] = fr[fb * 16 + i];
 }
                 double pw[3];
+                for (_zzero206 = 0; _zzero206 < (3); ++_zzero206) {
+                    pw[_zzero206] = 0.0;
+}
                 apply_point(T16, prl, pw);
                 for (c = 0; c < (3); ++c) {
                     paw_t[leg * 3 + c] = pw[c];
 }
                 cc1 =  mdi[OI_fore_coord + leg * 2];
                 cc2 =  mdi[OI_fore_coord + leg * 2 + 1];
-                fore_ik_at(mdl, cst, fr, leg, pw, 1, csti, mdi, &qa1, &qa2, &qa1r, &qa2r, &sata);
-                fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi, &qb1, &qb2, &qb1r, &qb2r, &satb);
+                fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti, &qa1, &qa2, &qa1r, &qa2r, &sata);
+                fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti, &qb1, &qb2, &qb1r, &qb2r, &satb);
                 e0 =  sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]));
                 e1 =  sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]));
                 ikb[leg] = 1;
@@ -3089,11 +3937,20 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 f_dp[leg] = 1;
                 if (f_en[leg] != 0) {
                     double m16[16];
+                    for (_zzero207 = 0; _zzero207 < (16); ++_zzero207) {
+                        m16[_zzero207] = 0.0;
+}
                     for (i = 0; i < (16); ++i) {
                         m16[i] = fr[csti[CI_pelvis_row] * 16 + i];
 }
                     double shw[3];
+                    for (_zzero208 = 0; _zzero208 < (3); ++_zzero208) {
+                        shw[_zzero208] = 0.0;
+}
                     double ml[3];
+                    for (_zzero209 = 0; _zzero209 < (3); ++_zzero209) {
+                        ml[_zzero209] = 0.0;
+}
                     ml[0] = mdl[OF_fore_mount_local + leg * 3];
                     ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
                     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
@@ -3131,11 +3988,20 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
                     else {
                         double m16[16];
+                        for (_zzero210 = 0; _zzero210 < (16); ++_zzero210) {
+                            m16[_zzero210] = 0.0;
+}
                         for (i = 0; i < (16); ++i) {
                             m16[i] = fr[csti[CI_pelvis_row] * 16 + i];
 }
                         double shw[3];
+                        for (_zzero211 = 0; _zzero211 < (3); ++_zzero211) {
+                            shw[_zzero211] = 0.0;
+}
                         double ml[3];
+                        for (_zzero212 = 0; _zzero212 < (3); ++_zzero212) {
+                            ml[_zzero212] = 0.0;
+}
                         ml[0] = mdl[OF_fore_mount_local + leg * 3];
                         ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
                         ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
@@ -3185,17 +4051,32 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
     if (walking != 0 && capt != 0 && cst[CF_height_crit] > (double)(0.0) && h_latched == 0) {
         double m16[16];
+        for (_zzero213 = 0; _zzero213 < (16); ++_zzero213) {
+            m16[_zzero213] = 0.0;
+}
         for (i = 0; i < (16); ++i) {
             m16[i] = fr[csti[CI_pelvis_row] * 16 + i];
 }
         double shl[3];
+        for (_zzero214 = 0; _zzero214 < (3); ++_zzero214) {
+            shl[_zzero214] = 0.0;
+}
         double ml0[3];
+        for (_zzero215 = 0; _zzero215 < (3); ++_zzero215) {
+            ml0[_zzero215] = 0.0;
+}
         ml0[0] = mdl[OF_fore_mount_local + 0];
         ml0[1] = mdl[OF_fore_mount_local + 1];
         ml0[2] = mdl[OF_fore_mount_local + 2];
         apply_point(m16, ml0, shl);
         double shr[3];
+        for (_zzero216 = 0; _zzero216 < (3); ++_zzero216) {
+            shr[_zzero216] = 0.0;
+}
         double ml1[3];
+        for (_zzero217 = 0; _zzero217 < (3); ++_zzero217) {
+            ml1[_zzero217] = 0.0;
+}
         ml1[0] = mdl[OF_fore_mount_local + 3];
         ml1[1] = mdl[OF_fore_mount_local + 4];
         ml1[2] = mdl[OF_fore_mount_local + 5];
@@ -3354,19 +4235,34 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             h_lf[hl] = tick;
             hpt =  mdi[OI_hind_heel_pt + hl];
             double p1[3];
+            for (_zzero218 = 0; _zzero218 < (3); ++_zzero218) {
+                p1[_zzero218] = 0.0;
+}
             double p2[3];
+            for (_zzero219 = 0; _zzero219 < (3); ++_zzero219) {
+                p2[_zzero219] = 0.0;
+}
             for (c = 0; c < (3); ++c) {
                 p1[c] = mdl[OF_pt_local + hpt * 3 + c];
                 p2[c] = mdl[OF_pt_local + (hpt + 1) * 3 + c];
 }
             double T16[16];
+            for (_zzero220 = 0; _zzero220 < (16); ++_zzero220) {
+                T16[_zzero220] = 0.0;
+}
             fb =  mdi[OI_pt_body + hpt];
             for (i = 0; i < (16); ++i) {
                 T16[i] = fr[fb * 16 + i];
 }
             double w1p[3];
+            for (_zzero221 = 0; _zzero221 < (3); ++_zzero221) {
+                w1p[_zzero221] = 0.0;
+}
             apply_point(T16, p1, w1p);
             double w2p[3];
+            for (_zzero222 = 0; _zzero222 < (3); ++_zzero222) {
+                w2p[_zzero222] = 0.0;
+}
             apply_point(T16, p2, w2p);
             fx =  (w1p[0] + w2p[0]) * (double)(0.5);
             fy =  (w1p[1] + w2p[1]) * (double)(0.5);
@@ -3387,11 +4283,20 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
             xoff =  v_eff * (cst[CF_duty] * cst[CF_t_cycle]) * (double)(0.5);
             double m16[16];
+            for (_zzero223 = 0; _zzero223 < (16); ++_zzero223) {
+                m16[_zzero223] = 0.0;
+}
             for (i = 0; i < (16); ++i) {
                 m16[i] = fr[csti[CI_pelvis_row] * 16 + i];
 }
             double hipw[3];
+            for (_zzero224 = 0; _zzero224 < (3); ++_zzero224) {
+                hipw[_zzero224] = 0.0;
+}
             double mlh[3];
+            for (_zzero225 = 0; _zzero225 < (3); ++_zzero225) {
+                mlh[_zzero225] = 0.0;
+}
             mlh[0] = mdl[OF_hind_mount + hl * 3];
             mlh[1] = mdl[OF_hind_mount + hl * 3 + 1];
             mlh[2] = mdl[OF_hind_mount + hl * 3 + 2];
@@ -3415,7 +4320,13 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
     if (walking != 0 && csti[CI_capture_enabled] != 0) {
         double hx[8];
+        for (_zzero226 = 0; _zzero226 < (8); ++_zzero226) {
+            hx[_zzero226] = 0.0;
+}
         double hz[8];
+        for (_zzero227 = 0; _zzero227 < (8); ++_zzero227) {
+            hz[_zzero227] = 0.0;
+}
         hn =  (int)(0);
         for (k = 0; k < (8); ++k) {
             g =  gap_of_k(ptp, pt_radius_g, k, cst[CF_plane_y]);
@@ -3430,8 +4341,17 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         comy =  (double)(0.0);
         comz =  (double)(0.0);
         double cw[3];
+        for (_zzero228 = 0; _zzero228 < (3); ++_zzero228) {
+            cw[_zzero228] = 0.0;
+}
         double cb[3];
+        for (_zzero229 = 0; _zzero229 < (3); ++_zzero229) {
+            cb[_zzero229] = 0.0;
+}
         double T16b[16];
+        for (_zzero230 = 0; _zzero230 < (16); ++_zzero230) {
+            T16b[_zzero230] = 0.0;
+}
         for (b = (1); b < (csti[CI_nbod]); ++b) {
             mb =  mdl[OF_body_mass + b];
             if (mb == (double)(0.0)) {
@@ -3465,7 +4385,13 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
 }
             double ux[8];
+            for (_zzero231 = 0; _zzero231 < (8); ++_zzero231) {
+                ux[_zzero231] = 0.0;
+}
             double uz[8];
+            for (_zzero232 = 0; _zzero232 < (8); ++_zzero232) {
+                uz[_zzero232] = 0.0;
+}
             un =  (int)(0);
             for (i = 0; i < (hn); ++i) {
                 if (un == 0 || hx[i] != ux[un - 1] || hz[i] != uz[un - 1]) {
@@ -3476,7 +4402,13 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
             if (un >= 3) {
                 double chx[16];
+                for (_zzero233 = 0; _zzero233 < (16); ++_zzero233) {
+                    chx[_zzero233] = 0.0;
+}
                 double chz[16];
+                for (_zzero234 = 0; _zzero234 < (16); ++_zzero234) {
+                    chz[_zzero234] = 0.0;
+}
                 kk =  (int)(0);
                 for (i = 0; i < (un); ++i) {
                     while (kk >= 2) {
@@ -3667,22 +4599,109 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
     double ne;
     int rc;
     double tick;
+    int _zzero235;
+    int _zzero236;
+    int _zzero237;
+    int _zzero238;
     int i;
+    int _zzero239;
     int d;
     double bat_post;
+    int _zzero240;
+    int _zzero241;
     double capt;
     double settle_n;
+    int _zzero242;
+    int _zzero243;
+    int _zzero244;
+    int _zzero245;
+    int _zzero246;
+    int _zzero247;
+    int _zzero248;
+    int _zzero249;
+    int _zzero250;
+    int _zzero251;
+    int _zzero252;
+    int _zzero253;
+    int _zzero254;
+    int _zzero255;
+    int _zzero256;
     int l;
     int c;
+    int _zzero257;
+    int _zzero258;
+    int _zzero259;
+    int _zzero260;
+    int _zzero261;
+    int _zzero262;
+    int _zzero263;
+    int _zzero264;
+    int _zzero265;
+    int _zzero266;
+    int _zzero267;
+    int _zzero268;
+    int _zzero269;
+    int _zzero270;
     double h_latched;
     double cmd_v;
     double cmd_on;
     double cmd_first;
     double cmd_fires;
+    int _zzero271;
     double Tf;
     double tair;
     int walking;
+    int _zzero272;
+    int _zzero273;
+    int _zzero274;
+    int _zzero275;
+    int _zzero276;
+    int _zzero277;
+    int _zzero278;
+    int _zzero279;
+    int _zzero280;
+    int _zzero281;
+    int _zzero282;
+    int _zzero283;
+    int _zzero284;
+    int _zzero285;
+    int _zzero286;
+    int _zzero287;
+    int _zzero288;
+    int _zzero289;
+    int _zzero290;
+    int _zzero291;
+    int _zzero292;
+    int _zzero293;
+    int _zzero294;
+    int _zzero295;
+    int _zzero296;
+    int _zzero297;
+    int _zzero298;
+    int _zzero299;
+    int _zzero300;
+    int _zzero301;
+    int _zzero302;
+    int _zzero303;
+    int _zzero304;
+    int _zzero305;
+    int _zzero306;
+    int _zzero307;
+    int _zzero308;
+    int _zzero309;
+    int _zzero310;
+    int _zzero311;
     int round_n;
+    int _zzero312;
+    int _zzero313;
+    int _zzero314;
+    int _zzero315;
+    int _zzero316;
+    int _zzero317;
+    int _zzero318;
+    int _zzero319;
+    int _zzero320;
+    int _zzero321;
     int sub;
     double pot;
     double target;
@@ -3690,6 +4709,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
     int ji;
     double sg;
     double carch;
+    int _zzero322;
     int cc2;
     double qh_h;
     double qk_h;
@@ -3704,6 +4724,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
     double cap;
     double amp;
     double tpost;
+    int _zzero323;
     int rcs;
     int enabled;
     int store;
@@ -3730,9 +4751,21 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
     rc =  (int)(0);
     tick =  a_ticks[e];
     double q[18];
+    for (_zzero235 = 0; _zzero235 < (18); ++_zzero235) {
+        q[_zzero235] = 0.0;
+}
     double v[18];
+    for (_zzero236 = 0; _zzero236 < (18); ++_zzero236) {
+        v[_zzero236] = 0.0;
+}
     double w[18];
+    for (_zzero237 = 0; _zzero237 < (18); ++_zzero237) {
+        w[_zzero237] = 0.0;
+}
     double ltau[18];
+    for (_zzero238 = 0; _zzero238 < (18); ++_zzero238) {
+        ltau[_zzero238] = 0.0;
+}
     for (i = 0; i < (18); ++i) {
         q[i] = a_q[e * 18 + i];
         v[i] = a_v[e * 18 + i];
@@ -3740,35 +4773,89 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
         ltau[i] = a_last_torque[e * 18 + i];
 }
     double bat[12];
+    for (_zzero239 = 0; _zzero239 < (12); ++_zzero239) {
+        bat[_zzero239] = 0.0;
+}
     for (d = 0; d < (12); ++d) {
         bat[d] = a_battery[e * 12 + d];
 }
     bat_post =  a_battery_post[e];
     double phi[2];
+    for (_zzero240 = 0; _zzero240 < (2); ++_zzero240) {
+        phi[_zzero240] = 0.0;
+}
     phi[0] = a_phi[e * 2];
     phi[1] = a_phi[e * 2 + 1];
     int tch[2];
+    for (_zzero241 = 0; _zzero241 < (2); ++_zzero241) {
+        tch[_zzero241] = 0;
+}
     tch[0] = a_touching[e * 2];
     tch[1] = a_touching[e * 2 + 1];
     capt =  a_captured[e];
     settle_n =  a_settle[e];
     int ikb[2];
+    for (_zzero242 = 0; _zzero242 < (2); ++_zzero242) {
+        ikb[_zzero242] = 0;
+}
     ikb[0] = a_ik_branch[e * 2];
     ikb[1] = a_ik_branch[e * 2 + 1];
     double paw_t[6];
+    for (_zzero243 = 0; _zzero243 < (6); ++_zzero243) {
+        paw_t[_zzero243] = 0.0;
+}
     double paw_y[2];
+    for (_zzero244 = 0; _zzero244 < (2); ++_zzero244) {
+        paw_y[_zzero244] = 0.0;
+}
     double swf[6];
+    for (_zzero245 = 0; _zzero245 < (6); ++_zzero245) {
+        swf[_zzero245] = 0.0;
+}
     double swt[6];
+    for (_zzero246 = 0; _zzero246 < (6); ++_zzero246) {
+        swt[_zzero246] = 0.0;
+}
     double f_t[2];
+    for (_zzero247 = 0; _zzero247 < (2); ++_zzero247) {
+        f_t[_zzero247] = 0.0;
+}
     double f_st[2];
+    for (_zzero248 = 0; _zzero248 < (2); ++_zzero248) {
+        f_st[_zzero248] = 0.0;
+}
     double f_cy[2];
+    for (_zzero249 = 0; _zzero249 < (2); ++_zzero249) {
+        f_cy[_zzero249] = 0.0;
+}
     int f_mo[2];
+    for (_zzero250 = 0; _zzero250 < (2); ++_zzero250) {
+        f_mo[_zzero250] = 0;
+}
     int f_en[2];
+    for (_zzero251 = 0; _zzero251 < (2); ++_zzero251) {
+        f_en[_zzero251] = 0;
+}
     int f_cv[2];
+    for (_zzero252 = 0; _zzero252 < (2); ++_zzero252) {
+        f_cv[_zzero252] = 0;
+}
     int f_dp[2];
+    for (_zzero253 = 0; _zzero253 < (2); ++_zzero253) {
+        f_dp[_zzero253] = 0;
+}
     int f_cl[2];
+    for (_zzero254 = 0; _zzero254 < (2); ++_zzero254) {
+        f_cl[_zzero254] = 0;
+}
     int f_rp[2];
+    for (_zzero255 = 0; _zzero255 < (2); ++_zzero255) {
+        f_rp[_zzero255] = 0;
+}
     int f_td[2];
+    for (_zzero256 = 0; _zzero256 < (2); ++_zzero256) {
+        f_td[_zzero256] = 0;
+}
     for (l = 0; l < (2); ++l) {
         for (c = 0; c < (3); ++c) {
             paw_t[l * 3 + c] = a_paw_target[e * 6 + l * 3 + c];
@@ -3788,19 +4875,61 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
         f_td[l] = a_fore_td_count[e * 2 + l];
 }
     int h_mo[2];
+    for (_zzero257 = 0; _zzero257 < (2); ++_zzero257) {
+        h_mo[_zzero257] = 0;
+}
     double h_t[2];
+    for (_zzero258 = 0; _zzero258 < (2); ++_zzero258) {
+        h_t[_zzero258] = 0.0;
+}
     double h_from[6];
+    for (_zzero259 = 0; _zzero259 < (6); ++_zzero259) {
+        h_from[_zzero259] = 0.0;
+}
     double h_to[6];
+    for (_zzero260 = 0; _zzero260 < (6); ++_zzero260) {
+        h_to[_zzero260] = 0.0;
+}
     double h_py[2];
+    for (_zzero261 = 0; _zzero261 < (2); ++_zzero261) {
+        h_py[_zzero261] = 0.0;
+}
     double h_ap[2];
+    for (_zzero262 = 0; _zzero262 < (2); ++_zzero262) {
+        h_ap[_zzero262] = 0.0;
+}
     double h_mp[2];
+    for (_zzero263 = 0; _zzero263 < (2); ++_zzero263) {
+        h_mp[_zzero263] = 0.0;
+}
     int h_br[2];
+    for (_zzero264 = 0; _zzero264 < (2); ++_zzero264) {
+        h_br[_zzero264] = 0;
+}
     int h_held[2];
+    for (_zzero265 = 0; _zzero265 < (2); ++_zzero265) {
+        h_held[_zzero265] = 0;
+}
     long long h_lf[2];
+    for (_zzero266 = 0; _zzero266 < (2); ++_zzero266) {
+        h_lf[_zzero266] = 0;
+}
     long long h_lt[2];
+    for (_zzero267 = 0; _zzero267 < (2); ++_zzero267) {
+        h_lt[_zzero267] = 0;
+}
     int h_fi[2];
+    for (_zzero268 = 0; _zzero268 < (2); ++_zzero268) {
+        h_fi[_zzero268] = 0;
+}
     int h_tds[2];
+    for (_zzero269 = 0; _zzero269 < (2); ++_zzero269) {
+        h_tds[_zzero269] = 0;
+}
     double h_xo[2];
+    for (_zzero270 = 0; _zzero270 < (2); ++_zzero270) {
+        h_xo[_zzero270] = 0.0;
+}
     for (l = 0; l < (2); ++l) {
         h_mo[l] = a_hind_mode[e * 2 + l];
         h_t[l] = a_hind_t[e * 2 + l];
@@ -3825,6 +4954,9 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
     cmd_first =  a_cmd_first_tick[e];
     cmd_fires =  a_cmd_fires[e];
     int adv[1];
+    for (_zzero271 = 0; _zzero271 < (1); ++_zzero271) {
+        adv[_zzero271] = 0;
+}
     adv[0] = a_adv_calls[e];
     Tf =  cst[CF_t_cycle] / cst[CF_dt];
     tair =  (double)(csti[CI_tair]);
@@ -3833,56 +4965,206 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
         walking =  0;
 }
     double M[324];
+    for (_zzero272 = 0; _zzero272 < (324); ++_zzero272) {
+        M[_zzero272] = 0.0;
+}
     double gv[18];
+    for (_zzero273 = 0; _zzero273 < (18); ++_zzero273) {
+        gv[_zzero273] = 0.0;
+}
     double bv[18];
+    for (_zzero274 = 0; _zzero274 < (18); ++_zzero274) {
+        bv[_zzero274] = 0.0;
+}
     double fr[224];
+    for (_zzero275 = 0; _zzero275 < (224); ++_zzero275) {
+        fr[_zzero275] = 0.0;
+}
     double frd[224];
+    for (_zzero276 = 0; _zzero276 < (224); ++_zzero276) {
+        frd[_zzero276] = 0.0;
+}
     double frdd[224];
+    for (_zzero277 = 0; _zzero277 < (224); ++_zzero277) {
+        frdd[_zzero277] = 0.0;
+}
     double axw[54];
+    for (_zzero278 = 0; _zzero278 < (54); ++_zzero278) {
+        axw[_zzero278] = 0.0;
+}
     double axpiv[54];
+    for (_zzero279 = 0; _zzero279 < (54); ++_zzero279) {
+        axpiv[_zzero279] = 0.0;
+}
     double axdir[54];
+    for (_zzero280 = 0; _zzero280 < (54); ++_zzero280) {
+        axdir[_zzero280] = 0.0;
+}
     double ptp[24];
+    for (_zzero281 = 0; _zzero281 < (24); ++_zzero281) {
+        ptp[_zzero281] = 0.0;
+}
     double ptJ[216];
+    for (_zzero282 = 0; _zzero282 < (216); ++_zzero282) {
+        ptJ[_zzero282] = 0.0;
+}
     double ptcop[12];
+    for (_zzero283 = 0; _zzero283 < (12); ++_zzero283) {
+        ptcop[_zzero283] = 0.0;
+}
     double ptbias[12];
+    for (_zzero284 = 0; _zzero284 < (12); ++_zzero284) {
+        ptbias[_zzero284] = 0.0;
+}
     double inv[324];
+    for (_zzero285 = 0; _zzero285 < (324); ++_zzero285) {
+        inv[_zzero285] = 0.0;
+}
     double free[18];
+    for (_zzero286 = 0; _zzero286 < (18); ++_zzero286) {
+        free[_zzero286] = 0.0;
+}
     double qa[18];
+    for (_zzero287 = 0; _zzero287 < (18); ++_zzero287) {
+        qa[_zzero287] = 0.0;
+}
     double va[18];
+    for (_zzero288 = 0; _zzero288 < (18); ++_zzero288) {
+        va[_zzero288] = 0.0;
+}
     double qb[18];
+    for (_zzero289 = 0; _zzero289 < (18); ++_zzero289) {
+        qb[_zzero289] = 0.0;
+}
     double vb[18];
+    for (_zzero290 = 0; _zzero290 < (18); ++_zzero290) {
+        vb[_zzero290] = 0.0;
+}
     double qc[18];
+    for (_zzero291 = 0; _zzero291 < (18); ++_zzero291) {
+        qc[_zzero291] = 0.0;
+}
     double vc[18];
+    for (_zzero292 = 0; _zzero292 < (18); ++_zzero292) {
+        vc[_zzero292] = 0.0;
+}
     double qd[18];
+    for (_zzero293 = 0; _zzero293 < (18); ++_zzero293) {
+        qd[_zzero293] = 0.0;
+}
     double vd[18];
+    for (_zzero294 = 0; _zzero294 < (18); ++_zzero294) {
+        vd[_zzero294] = 0.0;
+}
     double qe[18];
+    for (_zzero295 = 0; _zzero295 < (18); ++_zzero295) {
+        qe[_zzero295] = 0.0;
+}
     double ve[18];
+    for (_zzero296 = 0; _zzero296 < (18); ++_zzero296) {
+        ve[_zzero296] = 0.0;
+}
     double we[18];
+    for (_zzero297 = 0; _zzero297 < (18); ++_zzero297) {
+        we[_zzero297] = 0.0;
+}
     double sq[576];
+    for (_zzero298 = 0; _zzero298 < (576); ++_zzero298) {
+        sq[_zzero298] = 0.0;
+}
     double sh16[16];
+    for (_zzero299 = 0; _zzero299 < (16); ++_zzero299) {
+        sh16[_zzero299] = 0.0;
+}
     int sdep[16];
+    for (_zzero300 = 0; _zzero300 < (16); ++_zzero300) {
+        sdep[_zzero300] = 0;
+}
     int scl[16];
+    for (_zzero301 = 0; _zzero301 < (16); ++_zzero301) {
+        scl[_zzero301] = 0;
+}
     double tr_q[18];
+    for (_zzero302 = 0; _zzero302 < (18); ++_zzero302) {
+        tr_q[_zzero302] = 0.0;
+}
     double tr_v[18];
+    for (_zzero303 = 0; _zzero303 < (18); ++_zzero303) {
+        tr_v[_zzero303] = 0.0;
+}
     double tr_w[18];
+    for (_zzero304 = 0; _zzero304 < (18); ++_zzero304) {
+        tr_w[_zzero304] = 0.0;
+}
     double cd_q[18];
+    for (_zzero305 = 0; _zzero305 < (18); ++_zzero305) {
+        cd_q[_zzero305] = 0.0;
+}
     double cd_v[18];
+    for (_zzero306 = 0; _zzero306 < (18); ++_zzero306) {
+        cd_v[_zzero306] = 0.0;
+}
     double cd_w[18];
+    for (_zzero307 = 0; _zzero307 < (18); ++_zzero307) {
+        cd_w[_zzero307] = 0.0;
+}
     double tau[18];
+    for (_zzero308 = 0; _zzero308 < (18); ++_zzero308) {
+        tau[_zzero308] = 0.0;
+}
     double srq[18];
+    for (_zzero309 = 0; _zzero309 < (18); ++_zzero309) {
+        srq[_zzero309] = 0.0;
+}
     double srv[18];
+    for (_zzero310 = 0; _zzero310 < (18); ++_zzero310) {
+        srv[_zzero310] = 0.0;
+}
     double scales[13];
+    for (_zzero311 = 0; _zzero311 < (13); ++_zzero311) {
+        scales[_zzero311] = 0.0;
+}
     round_n =  (int)(0);
     int dsf[1];
+    for (_zzero312 = 0; _zzero312 < (1); ++_zzero312) {
+        dsf[_zzero312] = 0;
+}
     double trial_q[18];
+    for (_zzero313 = 0; _zzero313 < (18); ++_zzero313) {
+        trial_q[_zzero313] = 0.0;
+}
     double trial_v[18];
+    for (_zzero314 = 0; _zzero314 < (18); ++_zzero314) {
+        trial_v[_zzero314] = 0.0;
+}
     double trial_w[18];
+    for (_zzero315 = 0; _zzero315 < (18); ++_zzero315) {
+        trial_w[_zzero315] = 0.0;
+}
     double o_q[18];
+    for (_zzero316 = 0; _zzero316 < (18); ++_zzero316) {
+        o_q[_zzero316] = 0.0;
+}
     double o_v[18];
+    for (_zzero317 = 0; _zzero317 < (18); ++_zzero317) {
+        o_v[_zzero317] = 0.0;
+}
     double o_w[18];
+    for (_zzero318 = 0; _zzero318 < (18); ++_zzero318) {
+        o_w[_zzero318] = 0.0;
+}
     double cur_w[18];
+    for (_zzero319 = 0; _zzero319 < (18); ++_zzero319) {
+        cur_w[_zzero319] = 0.0;
+}
     double eff[18];
+    for (_zzero320 = 0; _zzero320 < (18); ++_zzero320) {
+        eff[_zzero320] = 0.0;
+}
     double lta[18];
+    for (_zzero321 = 0; _zzero321 < (18); ++_zzero321) {
+        lta[_zzero321] = 0.0;
+}
     sub =  (int)(0);
     while (sub < 4) {
         sub =  sub + 1;
@@ -3913,6 +5195,9 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
 }
                         carch =  (double)(2.0) * mdl[OF_pt_radius + mdi[OI_hind_heel_pt + hl]];
                         double tgt[3];
+                        for (_zzero322 = 0; _zzero322 < (3); ++_zzero322) {
+                            tgt[_zzero322] = 0.0;
+}
                         if (h_held[hl] != 0) {
                             for (cc2 = 0; cc2 < (3); ++cc2) {
                                 tgt[cc2] = h_from[hl * 3 + cc2];
@@ -3954,7 +5239,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
                     if (capt != 0) {
                         double plt[3];
                         paw_leg(paw_t, fl, plt);
-                        fore_ik_at(mdl, cst, fr, fl, plt, ikb[fl], csti, mdi, &q1f, &q2f, &q1rx, &q2rx, &satf);
+                        fore_ik_at(mdl, cst, fr, fl, plt, ikb[fl], mdi, csti, &q1f, &q2f, &q1rx, &q2rx, &satf);
                         if (ji == 0) {
                             target =  q1f;
 }
@@ -4001,6 +5286,9 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
             cur_w[i] = w[i];
 }
         int rca[1];
+        for (_zzero323 = 0; _zzero323 < (1); ++_zzero323) {
+            rca[_zzero323] = 0;
+}
         rcs =  (int)(0);
         if (sub == 0) {
             adv[0] = 0;
@@ -4012,7 +5300,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
             eff[mdi[OI_drive_coord + d]] = tau[mdi[OI_drive_coord + d]] * scales[d];
 }
         eff[2] = tau[2] * scales[12];
-        advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl, adv, rca, o_q, o_v, o_w, csti, mdi);
+        advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl, adv, rca, o_q, o_v, o_w, mdi, csti);
         for (i = 0; i < (18); ++i) {
             trial_q[i] = o_q[i];
             trial_v[i] = o_v[i];
@@ -4063,7 +5351,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
                                 eff[mdi[OI_drive_coord + dsc]] = tau[mdi[OI_drive_coord + dsc]] * scales[dsc];
 }
                             eff[2] = tau[2] * scales[12];
-                            advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl, adv, rca, o_q, o_v, o_w, csti, mdi);
+                            advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl, adv, rca, o_q, o_v, o_w, mdi, csti);
                             if (rca[0] != 0) {
                                 rc =  rca[0];
 }
@@ -4097,7 +5385,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
                     eff[mdi[OI_drive_coord + dsc]] = tau[mdi[OI_drive_coord + dsc]] * scales[dsc];
 }
                 eff[2] = tau[2] * scales[12];
-                advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl, adv, rca, o_q, o_v, o_w, csti, mdi);
+                advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl, adv, rca, o_q, o_v, o_w, mdi, csti);
                 for (i = 0; i < (18); ++i) {
                     trial_q[i] = o_q[i];
                     trial_v[i] = o_v[i];
@@ -4246,22 +5534,109 @@ __global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     double ne;
     int rc;
     double tick;
+    int _zzero324;
+    int _zzero325;
+    int _zzero326;
+    int _zzero327;
     int i;
+    int _zzero328;
     int d;
     double bat_post;
+    int _zzero329;
+    int _zzero330;
     double capt;
     double settle_n;
+    int _zzero331;
+    int _zzero332;
+    int _zzero333;
+    int _zzero334;
+    int _zzero335;
+    int _zzero336;
+    int _zzero337;
+    int _zzero338;
+    int _zzero339;
+    int _zzero340;
+    int _zzero341;
+    int _zzero342;
+    int _zzero343;
+    int _zzero344;
+    int _zzero345;
     int l;
     int c;
+    int _zzero346;
+    int _zzero347;
+    int _zzero348;
+    int _zzero349;
+    int _zzero350;
+    int _zzero351;
+    int _zzero352;
+    int _zzero353;
+    int _zzero354;
+    int _zzero355;
+    int _zzero356;
+    int _zzero357;
+    int _zzero358;
+    int _zzero359;
     double h_latched;
     double cmd_v;
     double cmd_on;
     double cmd_first;
     double cmd_fires;
+    int _zzero360;
     double Tf;
     double tair;
     int walking;
+    int _zzero361;
+    int _zzero362;
+    int _zzero363;
+    int _zzero364;
+    int _zzero365;
+    int _zzero366;
+    int _zzero367;
+    int _zzero368;
+    int _zzero369;
+    int _zzero370;
+    int _zzero371;
+    int _zzero372;
+    int _zzero373;
+    int _zzero374;
+    int _zzero375;
+    int _zzero376;
+    int _zzero377;
+    int _zzero378;
+    int _zzero379;
+    int _zzero380;
+    int _zzero381;
+    int _zzero382;
+    int _zzero383;
+    int _zzero384;
+    int _zzero385;
+    int _zzero386;
+    int _zzero387;
+    int _zzero388;
+    int _zzero389;
+    int _zzero390;
+    int _zzero391;
+    int _zzero392;
+    int _zzero393;
+    int _zzero394;
+    int _zzero395;
+    int _zzero396;
+    int _zzero397;
+    int _zzero398;
+    int _zzero399;
+    int _zzero400;
     int round_n;
+    int _zzero401;
+    int _zzero402;
+    int _zzero403;
+    int _zzero404;
+    int _zzero405;
+    int _zzero406;
+    int _zzero407;
+    int _zzero408;
+    int _zzero409;
+    int _zzero410;
     int collapsed;
     double bat_sum;
     double pt_radius_g[((OF_pt_radius + 8) - (OF_pt_radius))];
@@ -4277,9 +5652,21 @@ __global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     rc =  (int)(0);
     tick =  a_ticks[e];
     double q[18];
+    for (_zzero324 = 0; _zzero324 < (18); ++_zzero324) {
+        q[_zzero324] = 0.0;
+}
     double v[18];
+    for (_zzero325 = 0; _zzero325 < (18); ++_zzero325) {
+        v[_zzero325] = 0.0;
+}
     double w[18];
+    for (_zzero326 = 0; _zzero326 < (18); ++_zzero326) {
+        w[_zzero326] = 0.0;
+}
     double ltau[18];
+    for (_zzero327 = 0; _zzero327 < (18); ++_zzero327) {
+        ltau[_zzero327] = 0.0;
+}
     for (i = 0; i < (18); ++i) {
         q[i] = a_q[e * 18 + i];
         v[i] = a_v[e * 18 + i];
@@ -4287,35 +5674,89 @@ __global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         ltau[i] = a_last_torque[e * 18 + i];
 }
     double bat[12];
+    for (_zzero328 = 0; _zzero328 < (12); ++_zzero328) {
+        bat[_zzero328] = 0.0;
+}
     for (d = 0; d < (12); ++d) {
         bat[d] = a_battery[e * 12 + d];
 }
     bat_post =  a_battery_post[e];
     double phi[2];
+    for (_zzero329 = 0; _zzero329 < (2); ++_zzero329) {
+        phi[_zzero329] = 0.0;
+}
     phi[0] = a_phi[e * 2];
     phi[1] = a_phi[e * 2 + 1];
     int tch[2];
+    for (_zzero330 = 0; _zzero330 < (2); ++_zzero330) {
+        tch[_zzero330] = 0;
+}
     tch[0] = a_touching[e * 2];
     tch[1] = a_touching[e * 2 + 1];
     capt =  a_captured[e];
     settle_n =  a_settle[e];
     int ikb[2];
+    for (_zzero331 = 0; _zzero331 < (2); ++_zzero331) {
+        ikb[_zzero331] = 0;
+}
     ikb[0] = a_ik_branch[e * 2];
     ikb[1] = a_ik_branch[e * 2 + 1];
     double paw_t[6];
+    for (_zzero332 = 0; _zzero332 < (6); ++_zzero332) {
+        paw_t[_zzero332] = 0.0;
+}
     double paw_y[2];
+    for (_zzero333 = 0; _zzero333 < (2); ++_zzero333) {
+        paw_y[_zzero333] = 0.0;
+}
     double swf[6];
+    for (_zzero334 = 0; _zzero334 < (6); ++_zzero334) {
+        swf[_zzero334] = 0.0;
+}
     double swt[6];
+    for (_zzero335 = 0; _zzero335 < (6); ++_zzero335) {
+        swt[_zzero335] = 0.0;
+}
     double f_t[2];
+    for (_zzero336 = 0; _zzero336 < (2); ++_zzero336) {
+        f_t[_zzero336] = 0.0;
+}
     double f_st[2];
+    for (_zzero337 = 0; _zzero337 < (2); ++_zzero337) {
+        f_st[_zzero337] = 0.0;
+}
     double f_cy[2];
+    for (_zzero338 = 0; _zzero338 < (2); ++_zzero338) {
+        f_cy[_zzero338] = 0.0;
+}
     int f_mo[2];
+    for (_zzero339 = 0; _zzero339 < (2); ++_zzero339) {
+        f_mo[_zzero339] = 0;
+}
     int f_en[2];
+    for (_zzero340 = 0; _zzero340 < (2); ++_zzero340) {
+        f_en[_zzero340] = 0;
+}
     int f_cv[2];
+    for (_zzero341 = 0; _zzero341 < (2); ++_zzero341) {
+        f_cv[_zzero341] = 0;
+}
     int f_dp[2];
+    for (_zzero342 = 0; _zzero342 < (2); ++_zzero342) {
+        f_dp[_zzero342] = 0;
+}
     int f_cl[2];
+    for (_zzero343 = 0; _zzero343 < (2); ++_zzero343) {
+        f_cl[_zzero343] = 0;
+}
     int f_rp[2];
+    for (_zzero344 = 0; _zzero344 < (2); ++_zzero344) {
+        f_rp[_zzero344] = 0;
+}
     int f_td[2];
+    for (_zzero345 = 0; _zzero345 < (2); ++_zzero345) {
+        f_td[_zzero345] = 0;
+}
     for (l = 0; l < (2); ++l) {
         for (c = 0; c < (3); ++c) {
             paw_t[l * 3 + c] = a_paw_target[e * 6 + l * 3 + c];
@@ -4335,19 +5776,61 @@ __global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         f_td[l] = a_fore_td_count[e * 2 + l];
 }
     int h_mo[2];
+    for (_zzero346 = 0; _zzero346 < (2); ++_zzero346) {
+        h_mo[_zzero346] = 0;
+}
     double h_t[2];
+    for (_zzero347 = 0; _zzero347 < (2); ++_zzero347) {
+        h_t[_zzero347] = 0.0;
+}
     double h_from[6];
+    for (_zzero348 = 0; _zzero348 < (6); ++_zzero348) {
+        h_from[_zzero348] = 0.0;
+}
     double h_to[6];
+    for (_zzero349 = 0; _zzero349 < (6); ++_zzero349) {
+        h_to[_zzero349] = 0.0;
+}
     double h_py[2];
+    for (_zzero350 = 0; _zzero350 < (2); ++_zzero350) {
+        h_py[_zzero350] = 0.0;
+}
     double h_ap[2];
+    for (_zzero351 = 0; _zzero351 < (2); ++_zzero351) {
+        h_ap[_zzero351] = 0.0;
+}
     double h_mp[2];
+    for (_zzero352 = 0; _zzero352 < (2); ++_zzero352) {
+        h_mp[_zzero352] = 0.0;
+}
     int h_br[2];
+    for (_zzero353 = 0; _zzero353 < (2); ++_zzero353) {
+        h_br[_zzero353] = 0;
+}
     int h_held[2];
+    for (_zzero354 = 0; _zzero354 < (2); ++_zzero354) {
+        h_held[_zzero354] = 0;
+}
     long long h_lf[2];
+    for (_zzero355 = 0; _zzero355 < (2); ++_zzero355) {
+        h_lf[_zzero355] = 0;
+}
     long long h_lt[2];
+    for (_zzero356 = 0; _zzero356 < (2); ++_zzero356) {
+        h_lt[_zzero356] = 0;
+}
     int h_fi[2];
+    for (_zzero357 = 0; _zzero357 < (2); ++_zzero357) {
+        h_fi[_zzero357] = 0;
+}
     int h_tds[2];
+    for (_zzero358 = 0; _zzero358 < (2); ++_zzero358) {
+        h_tds[_zzero358] = 0;
+}
     double h_xo[2];
+    for (_zzero359 = 0; _zzero359 < (2); ++_zzero359) {
+        h_xo[_zzero359] = 0.0;
+}
     for (l = 0; l < (2); ++l) {
         h_mo[l] = a_hind_mode[e * 2 + l];
         h_t[l] = a_hind_t[e * 2 + l];
@@ -4372,6 +5855,9 @@ __global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     cmd_first =  a_cmd_first_tick[e];
     cmd_fires =  a_cmd_fires[e];
     int adv[1];
+    for (_zzero360 = 0; _zzero360 < (1); ++_zzero360) {
+        adv[_zzero360] = 0;
+}
     adv[0] = a_adv_calls[e];
     Tf =  cst[CF_t_cycle] / cst[CF_dt];
     tair =  (double)(csti[CI_tair]);
@@ -4380,56 +5866,206 @@ __global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         walking =  0;
 }
     double M[324];
+    for (_zzero361 = 0; _zzero361 < (324); ++_zzero361) {
+        M[_zzero361] = 0.0;
+}
     double gv[18];
+    for (_zzero362 = 0; _zzero362 < (18); ++_zzero362) {
+        gv[_zzero362] = 0.0;
+}
     double bv[18];
+    for (_zzero363 = 0; _zzero363 < (18); ++_zzero363) {
+        bv[_zzero363] = 0.0;
+}
     double fr[224];
+    for (_zzero364 = 0; _zzero364 < (224); ++_zzero364) {
+        fr[_zzero364] = 0.0;
+}
     double frd[224];
+    for (_zzero365 = 0; _zzero365 < (224); ++_zzero365) {
+        frd[_zzero365] = 0.0;
+}
     double frdd[224];
+    for (_zzero366 = 0; _zzero366 < (224); ++_zzero366) {
+        frdd[_zzero366] = 0.0;
+}
     double axw[54];
+    for (_zzero367 = 0; _zzero367 < (54); ++_zzero367) {
+        axw[_zzero367] = 0.0;
+}
     double axpiv[54];
+    for (_zzero368 = 0; _zzero368 < (54); ++_zzero368) {
+        axpiv[_zzero368] = 0.0;
+}
     double axdir[54];
+    for (_zzero369 = 0; _zzero369 < (54); ++_zzero369) {
+        axdir[_zzero369] = 0.0;
+}
     double ptp[24];
+    for (_zzero370 = 0; _zzero370 < (24); ++_zzero370) {
+        ptp[_zzero370] = 0.0;
+}
     double ptJ[216];
+    for (_zzero371 = 0; _zzero371 < (216); ++_zzero371) {
+        ptJ[_zzero371] = 0.0;
+}
     double ptcop[12];
+    for (_zzero372 = 0; _zzero372 < (12); ++_zzero372) {
+        ptcop[_zzero372] = 0.0;
+}
     double ptbias[12];
+    for (_zzero373 = 0; _zzero373 < (12); ++_zzero373) {
+        ptbias[_zzero373] = 0.0;
+}
     double inv[324];
+    for (_zzero374 = 0; _zzero374 < (324); ++_zzero374) {
+        inv[_zzero374] = 0.0;
+}
     double free[18];
+    for (_zzero375 = 0; _zzero375 < (18); ++_zzero375) {
+        free[_zzero375] = 0.0;
+}
     double qa[18];
+    for (_zzero376 = 0; _zzero376 < (18); ++_zzero376) {
+        qa[_zzero376] = 0.0;
+}
     double va[18];
+    for (_zzero377 = 0; _zzero377 < (18); ++_zzero377) {
+        va[_zzero377] = 0.0;
+}
     double qb[18];
+    for (_zzero378 = 0; _zzero378 < (18); ++_zzero378) {
+        qb[_zzero378] = 0.0;
+}
     double vb[18];
+    for (_zzero379 = 0; _zzero379 < (18); ++_zzero379) {
+        vb[_zzero379] = 0.0;
+}
     double qc[18];
+    for (_zzero380 = 0; _zzero380 < (18); ++_zzero380) {
+        qc[_zzero380] = 0.0;
+}
     double vc[18];
+    for (_zzero381 = 0; _zzero381 < (18); ++_zzero381) {
+        vc[_zzero381] = 0.0;
+}
     double qd[18];
+    for (_zzero382 = 0; _zzero382 < (18); ++_zzero382) {
+        qd[_zzero382] = 0.0;
+}
     double vd[18];
+    for (_zzero383 = 0; _zzero383 < (18); ++_zzero383) {
+        vd[_zzero383] = 0.0;
+}
     double qe[18];
+    for (_zzero384 = 0; _zzero384 < (18); ++_zzero384) {
+        qe[_zzero384] = 0.0;
+}
     double ve[18];
+    for (_zzero385 = 0; _zzero385 < (18); ++_zzero385) {
+        ve[_zzero385] = 0.0;
+}
     double we[18];
+    for (_zzero386 = 0; _zzero386 < (18); ++_zzero386) {
+        we[_zzero386] = 0.0;
+}
     double sq[576];
+    for (_zzero387 = 0; _zzero387 < (576); ++_zzero387) {
+        sq[_zzero387] = 0.0;
+}
     double sh16[16];
+    for (_zzero388 = 0; _zzero388 < (16); ++_zzero388) {
+        sh16[_zzero388] = 0.0;
+}
     int sdep[16];
+    for (_zzero389 = 0; _zzero389 < (16); ++_zzero389) {
+        sdep[_zzero389] = 0;
+}
     int scl[16];
+    for (_zzero390 = 0; _zzero390 < (16); ++_zzero390) {
+        scl[_zzero390] = 0;
+}
     double tr_q[18];
+    for (_zzero391 = 0; _zzero391 < (18); ++_zzero391) {
+        tr_q[_zzero391] = 0.0;
+}
     double tr_v[18];
+    for (_zzero392 = 0; _zzero392 < (18); ++_zzero392) {
+        tr_v[_zzero392] = 0.0;
+}
     double tr_w[18];
+    for (_zzero393 = 0; _zzero393 < (18); ++_zzero393) {
+        tr_w[_zzero393] = 0.0;
+}
     double cd_q[18];
+    for (_zzero394 = 0; _zzero394 < (18); ++_zzero394) {
+        cd_q[_zzero394] = 0.0;
+}
     double cd_v[18];
+    for (_zzero395 = 0; _zzero395 < (18); ++_zzero395) {
+        cd_v[_zzero395] = 0.0;
+}
     double cd_w[18];
+    for (_zzero396 = 0; _zzero396 < (18); ++_zzero396) {
+        cd_w[_zzero396] = 0.0;
+}
     double tau[18];
+    for (_zzero397 = 0; _zzero397 < (18); ++_zzero397) {
+        tau[_zzero397] = 0.0;
+}
     double srq[18];
+    for (_zzero398 = 0; _zzero398 < (18); ++_zzero398) {
+        srq[_zzero398] = 0.0;
+}
     double srv[18];
+    for (_zzero399 = 0; _zzero399 < (18); ++_zzero399) {
+        srv[_zzero399] = 0.0;
+}
     double scales[13];
+    for (_zzero400 = 0; _zzero400 < (13); ++_zzero400) {
+        scales[_zzero400] = 0.0;
+}
     round_n =  (int)(0);
     int dsf[1];
+    for (_zzero401 = 0; _zzero401 < (1); ++_zzero401) {
+        dsf[_zzero401] = 0;
+}
     double trial_q[18];
+    for (_zzero402 = 0; _zzero402 < (18); ++_zzero402) {
+        trial_q[_zzero402] = 0.0;
+}
     double trial_v[18];
+    for (_zzero403 = 0; _zzero403 < (18); ++_zzero403) {
+        trial_v[_zzero403] = 0.0;
+}
     double trial_w[18];
+    for (_zzero404 = 0; _zzero404 < (18); ++_zzero404) {
+        trial_w[_zzero404] = 0.0;
+}
     double o_q[18];
+    for (_zzero405 = 0; _zzero405 < (18); ++_zzero405) {
+        o_q[_zzero405] = 0.0;
+}
     double o_v[18];
+    for (_zzero406 = 0; _zzero406 < (18); ++_zzero406) {
+        o_v[_zzero406] = 0.0;
+}
     double o_w[18];
+    for (_zzero407 = 0; _zzero407 < (18); ++_zzero407) {
+        o_w[_zzero407] = 0.0;
+}
     double cur_w[18];
+    for (_zzero408 = 0; _zzero408 < (18); ++_zzero408) {
+        cur_w[_zzero408] = 0.0;
+}
     double eff[18];
+    for (_zzero409 = 0; _zzero409 < (18); ++_zzero409) {
+        eff[_zzero409] = 0.0;
+}
     double lta[18];
+    for (_zzero410 = 0; _zzero410 < (18); ++_zzero410) {
+        lta[_zzero410] = 0.0;
+}
     rc =  a_rc[e];
     if (rc == 0) {
         for (i = 0; i < (18); ++i) {
