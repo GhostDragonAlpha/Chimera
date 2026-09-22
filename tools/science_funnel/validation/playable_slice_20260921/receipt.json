@@ -1,0 +1,129 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "agent/playable-slice-20260921",
+ "date": "2026-09-21",
+ "agent": "GLM 5.3",
+ "base_commit": "1391014f (master, verified by ls-remote before clone; the frozen engine interface)",
+ "branch": "agent/playable-slice-20260921",
+ "worktree": "E:/ChimeraWork/slice-agent (sparse clone, canonical git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git)",
+ "preregistration": {
+  "file": "preregistration.md",
+  "committed_before_build": true,
+  "commit": "e96eb943"
+ },
+ "what_the_slice_is": {
+  "folder": "tools/playable_slice/ (one folder: PlayableSlice.bat + run_slice.ps1 + slice_server.py + scene_boot.py + index.html + mock_registry.json)",
+  "launch": "double-click PlayableSlice.bat -- the R1 pattern (find python, free port, start, wait until it ANSWERS, open the browser); the server owns its own engine on a bind-tested free port, 8127 refused by code",
+  "world": "the engine's ground grid (client-side lines, drawn first, depth-written: the non-occluding guide-grid law) + a marker ring 1.2 m out (level constant, ~2 body lengths)",
+  "creature": "MOCK[mock_physics_body]: a stand-in capsule DERIVED from the committed standing skeleton's own bbox (radius=min(bbox_x,bbox_z)/2, height=bbox_y), imported through the REAL aliveness ingestion (/mesh_import); DECLARED[ghost_standing_pose]: the committed standing skeleton (the pose of record through the verified FK, full preview resolution) as a translucent overlay riding the body's real root",
+  "objective": "carry the creature to the marker and seat it: MOCK[mock_carry] slides it (XY only; the Y stream is never touched), arrival = within 0.15 m",
+  "failure_feedback": "THE FALL TEST (real): the engine's own root law run live -- peak +2.9939 m at the clamp, terminal descent 0.2237 m/s, landing back at the standing start; the verdict reads the engine's own /tick_state numbers",
+  "restart_save": "RESTART re-boots byte-clean (same scene sha, same start-state sha); SAVE writes progress/session_<t>.json",
+  "packaging": "one folder + the built engine beside it; no dev tools to play (python only), the launcher builds nothing"
+ },
+ "falsifiers": {
+  "F-SLICE-LAUNCH": {
+   "pass": true,
+   "measured": {
+    "t_server_up_s": 7.3,
+    "t_first_verts_s": 7.33,
+    "t_settled_s": 20.83,
+    "bar": "first frame < 10 s, no console errors"
+   },
+   "notes": [
+    "server timeline in launch_server_timeline.json; the browser half in launch_browser_record.json (real Chrome via CDP)",
+    "THE CONSOLE CHECK CAUGHT A REAL DEFECT on the first build: a top-level 'Assignment to constant variable' killed the page's boot IIFE (black canvas). Fixed (one shader program built once); the clean re-measure shows ZERO console errors and a live scene (slice_shot_live.png)",
+    "the launcher-pipe lesson: an undrained stdout PIPE fills and wedges the server mid-run (measured); the R1 launcher redirects to files, and so does the final harness"
+   ]
+  },
+  "F-SLICE-FALL": {
+   "pass": true,
+   "measured": {
+    "i1_clamp": {
+     "derived_m": 3.0,
+     "measured_peak_root_y_m": 2.9999
+    },
+    "i2_terminal_descent": {
+     "derived_vt_mps": 0.223719,
+     "measured_median_vt_mps": 0.223719,
+     "rel_error": 1e-06
+    },
+    "i3_equilibrium_sink": {
+     "derived_m": 0.01,
+     "measured_lowest_m": -0.010019,
+     "abs_error_m": 1.9e-05
+    }
+   },
+   "notes": [
+    "PREREGISTERED BRANCH PREDICTION FALSIFIED AND RECORDED, NOT TUNED: the prereg derived a gentle damped rise with no F=0 window; the measurement shows the centered import's stored spring energy LAUNCHES the body to the root clamp, then the law's own vertical damping (c*max(0,-vy), airborne included) gives a ~12 s terminal descent -- a real free-fall regime the prereg said could not exist. The prereg's own falsifier named this case ('fit g directly'); g is identified through vt = m*g/c to 1e-6 relative",
+    "the identified law is the engine's own: y'' = min(50*m*g, k*max(0,-y) + c*max(0,-vy))/m - g, k=1.3562e7 N/m, c=6.062e5 N s/m, m=13824.5 kg, g=9.81 m/s^2 (membrane_tick.hpp/cpp banked constants; nothing fitted)"
+   ]
+  },
+  "F-SLICE-MOCK-TRUTH": {
+   "pass": true,
+   "measured": {
+    "registry_fantasy_ids": [
+     "mock_carry",
+     "mock_physics_body"
+    ],
+    "registry_declared_ids": [
+     "ghost_standing_pose"
+    ],
+    "audit": "grep both directions: every MOCK[...] code token is in the registry, every registry id has code sites; the UI shows the registry-named banner while the carry is active (slice_shot_carry.png)"
+   }
+  },
+  "F-SLICE-RESTART": {
+   "pass": true,
+   "measured": {
+    "boots": 3,
+    "scene_sha256": "cadb6565431e272b81196f9fd92fe4043da7b2fc088ef79491157229d9cd1d0c (identical x3)",
+    "start_state_sha256": "84877cccfacfd74ea0ca9f93ed54516b96cca03731f9292f85002d98e63dd466 (identical x3, the settled attractor's /verts bytes)"
+   },
+   "notes": [
+    "the fixed point is bit-stable (measured: root_y 0.25529300 constant, sha constant over 30 s); the server waits for convergence (root_y drift < 1e-7, |vy| < 1e-5) before recording the start sha"
+   ]
+  },
+  "F-SLICE-NO-SPLAT": {
+   "pass": true,
+   "measured": {
+    "grep_hits": 0,
+    "patterns": [
+     "layer_splat_buffer",
+     "membrane_bin",
+     "splat.wgsl",
+     "/membrane",
+     "splat_mesh",
+     "anysplat",
+     "bake_splat"
+    ],
+    "engine_routes_referenced": [
+     "/frame",
+     "/mesh_import",
+     "/tick_gravity",
+     "/tick_state",
+     "/tick_touch",
+     "/topology",
+     "/verts"
+    ]
+   }
+  }
+ },
+ "mock_registry_count": {
+  "fantasy": 2,
+  "declared": 1,
+  "reality": 6,
+  "file": "tools/playable_slice/mock_registry.json"
+ },
+ "findings_banked": [
+  "THE COMMITTED PREVIEW SKELETON CANNOT RIDE THE PHYSICS: 712,522 tris vs the aliveness importer's 500,000-tri engine cap, AND 19/25 committed _lo previews carry render-grade seams (boundary/inconsistent-winding edges) that the closure check refuses -- both measured. The slice therefore names its tick body MOCK[mock_physics_body] (a bbox-derived stand-in) and shows the committed skeleton as DECLARED[ghost_standing_pose]. The real body is named successor work (an import-grade creature mesh).",
+  "THE ROOT LAW'S LAUNCH FACE: gravity off re-seats the authored (centered, penetrating) rest, so an off->on cycle LAUNCHES the body to the clamp before the terminal descent -- the slice's fall test embraces this as the engine's own measured behavior; the boot transient IS the same launch-descent.",
+  "THE WALL-CLOCK TICK IS BIT-STABLE AT THE FIXED POINT: root_y converges to 0.25529300 and stays byte-identical -- restarts ride the attractor, not the path."
+ ],
+ "gates": {
+  "creature_graph_both_roots": "19 passed + 27 subtests passed, BOTH roots (PYTHONPATH=tools:tools/creature_graph and PYTHONPATH=.)",
+  "matter_kernel": "test_definition: 9/9 OK (PYTHONPATH=.)",
+  "training_gate": "PASS -- every target is Froude-consistent with the world this body stands in"
+ },
+ "physics_target_note": "locomotion is NOT real and is not shown as real: the registry names the wave-38 walk's refusal at 302 ticks against the 426-tick physics target (gait_zero_20260919/receipt_wave38.json) as the pending real component",
+ "pass": true
+}

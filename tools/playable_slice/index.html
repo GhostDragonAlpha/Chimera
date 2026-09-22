@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CHIMERA — playable slice (the standing start)</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#12151acc;--line:#1d232b;--text:#c9d3db;--muted:#7b8792;
+        --accent:#7fd4c1;--warn:#dfb26a;--bad:#e07f7f;--good:#7ddba3}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden;
+        font:13px/1.5 "Segoe UI",system-ui,sans-serif}
+  #gl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+  #gl.dragging{cursor:grabbing}
+  .panel{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+        padding:10px 12px;backdrop-filter:blur(4px);font-size:12px}
+  #honesty{left:10px;top:10px;width:305px;max-height:82vh;overflow-y:auto}
+  #honesty h1{font-size:12px;letter-spacing:.22em;color:var(--accent);margin:0 0 6px}
+  #honesty h2{font-size:10px;letter-spacing:.18em;color:var(--muted);margin:9px 0 3px}
+  #honesty .row{margin:2px 0;color:var(--muted)}
+  #honesty .row b{color:var(--text);font-weight:600}
+  .tag{display:inline-block;padding:0 5px;border-radius:4px;font-size:10px;margin-right:4px}
+  .tag.real{background:#173229;color:var(--good)} .tag.mock{background:#3a2a17;color:var(--warn)}
+  .tag.decl{background:#241a33;color:#c9a7ff}
+  #banner{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:none;
+        background:#3a2a17ee;border:1px solid #6b4c26;color:var(--warn);border-radius:8px;
+        padding:7px 16px;font-size:13px}
+  #verdict{position:absolute;right:10px;top:10px;width:290px}
+  #verdict .big{font-size:14px;margin:4px 0}
+  #controls{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+  button{background:transparent;color:var(--accent);border:1px solid #2b4a43;border-radius:8px;
+        padding:8px 14px;cursor:pointer;font-size:12px}
+  button:hover{background:#7fd4c114} button.warn{color:var(--warn);border-color:#5a4326}
+  button.mut{color:var(--muted);border-color:var(--line)}
+  #status{color:var(--muted);margin-top:6px;white-space:pre-line}
+  a{color:var(--muted)}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="honesty" class="panel">
+  <h1>CHIMERA — PLAYABLE SLICE</h1>
+  <div class="row">the standing start · honesty law enforced</div>
+  <h2>REALITY — the engine does it</h2><div id="reality-list"></div>
+  <h2>FANTASY — mocked, named, pending</h2><div id="fantasy-list"></div>
+  <h2>DECLARED — real geometry, explicit overlay</h2><div id="declared-list"></div>
+  <div class="row" id="phys-target" style="margin-top:8px"></div>
+</div>
+
+<div id="banner"></div>
+
+<div id="verdict" class="panel">
+  <div class="big" id="objective">—</div>
+  <div id="fall-verdict" class="row">the fall test has not run</div>
+  <div id="status"></div>
+</div>
+
+<div id="controls">
+  <button id="btn-send">SEND TO MARKER <span style="color:var(--warn)">(mock carry)</span></button>
+  <button id="btn-stop" class="mut">STOP</button>
+  <button id="btn-fall" class="warn">THE FALL TEST <span style="color:var(--good)">(real)</span></button>
+  <button id="btn-restart" class="mut">RESTART</button>
+  <button id="btn-save" class="mut">SAVE</button>
+</div>
+
+<script>
+"use strict";
+// ── the honesty contract comes from the registry (the same file the audit reads)
+let REGISTRY = null;
+fetch('/mock_registry.json').then(r=>r.json()).then(r=>{
+  REGISTRY = r;
+  const el = (id)=>document.getElementById(id);
+  el('reality-list').innerHTML = r.reality.map(x=>
+    `<div class="row"><span class="tag real">REAL</span><b>${x.id}</b> — ${x.what}</div>`).join('');
+  el('fantasy-list').innerHTML = r.fantasy.map(x=>
+    `<div class="row"><span class="tag mock">MOCK</span><b>${x.id}</b> — ${x.what}<br>
+     <span style="color:var(--faint,#5a6570)">pending: ${x.pending_real} · physics target ${x.physics_target}</span></div>`).join('');
+  el('declared-list').innerHTML = r.declared.map(x=>
+    `<div class="row"><span class="tag decl">GHOST</span><b>${x.id}</b> — ${x.what}</div>`).join('');
+  el('phys-target').innerHTML = `physics target: walk <b>${r.physics_target.ticks}</b> ticks — current <b>${r.physics_target.current}</b> (wave-38 refusal)`;
+});
+
+// ── tiny mat4 ─────────────────────────────────────────────────────────────
+function persp(fov,asp,n,f){const t=1/Math.tan(fov/2);
+  return [t/asp,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,2*f*n/(n-f),0];}
+function lookFrom(yaw,pit,dist,tx,ty,tz){
+  const cx=tx+dist*Math.cos(pit)*Math.sin(yaw), cy=ty+dist*Math.sin(pit),
+        cz=tz+dist*Math.cos(pit)*Math.cos(yaw);
+  let f=[cx-tx,cy-ty,cz-tz], l=Math.hypot(...f); f=f.map(v=>v/l);
+  let up=[0,1,0], s=[f[1]*up[2]-f[2]*up[1], f[2]*up[0]-f[0]*up[2], f[0]*up[1]-f[1]*up[0]];
+  l=Math.hypot(...s)||1e-9; s=s.map(v=>v/l);
+  const u=[s[1]*f[2]-s[2]*f[1], s[2]*f[0]-s[0]*f[2], s[0]*f[1]-s[1]*f[0]];
+  return {mat:[s[0],u[0],f[0],0, s[1],u[1],f[1],0, s[2],u[2],f[2],0,
+    -(s[0]*cx+s[1]*cy+s[2]*cz), -(u[0]*cx+u[1]*cy+u[2]*cz), -(f[0]*cx+f[1]*cy+f[2]*cz), 1],
+    eye:[cx,cy,cz]};
+}
+function mul(a,b){const o=new Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)
+  o[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];return o;}
+
+// ── gl ────────────────────────────────────────────────────────────────────
+const cv=document.getElementById('gl');
+const gl=cv.getContext('webgl2',{antialias:true});
+if(!gl){document.body.insertAdjacentHTML('beforeend',
+  '<div style="position:absolute;inset:0;display:grid;place-items:center">this slice needs WebGL2</div>');}
+function sh(t,src){const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw gl.getShaderInfoLog(s);return s;}
+function prog(vs,fs){const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,vs));
+  gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(p);
+  if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw gl.getProgramInfoLog(p);return p;}
+
+// one program with a model offset: the mesh passes uOff=0, the ghost rides
+// the body's live root through uOff (rebuilt-as-const killed the boot once)
+let MESH_P = prog(`#version 300 es
+  in vec3 aPos; in vec3 aNrm; in vec3 aCol;
+  uniform mat4 uVP; uniform vec3 uOff; out vec3 vN; out vec3 vC; out vec3 vP;
+  void main(){vN=aNrm; vC=aCol; vP=aPos+uOff; gl_Position=uVP*vec4(aPos+uOff,1.0);}`,
+`#version 300 es
+  precision highp float; in vec3 vN; in vec3 vC; in vec3 vP; out vec4 o;
+  uniform float uAlpha;
+  void main(){
+    vec3 L=normalize(vec3(0.5,0.9,0.35));
+    float d=max(dot(normalize(vN),L),0.0)*0.75+0.25;
+    o=vec4(vC*d, uAlpha);}`);
+const LINE_P = prog(`#version 300 es
+  in vec3 aPos; uniform mat4 uVP; void main(){gl_Position=uVP*vec4(aPos,1.0);}`,
+`#version 300 es
+  precision highp float; uniform vec4 uCol; out vec4 o; void main(){o=uCol;}`);
+
+const U = (p,n)=>gl.getUniformLocation(p,n);
+let nVerts=0, vaoMesh=null, vboMesh=null, idxCount=0, ibo=null;
+let ghost = null;         // {vao,n}
+let nGhost=0;
+
+function meshFromTopo(topoBuf, vertBuf){
+  // /topology header = TRIANGLE count; payload = 3 u32 indices per triangle
+  const tris=new DataView(topoBuf).getUint32(0,true);
+  const idx=new Uint32Array(topoBuf,4,tris*3);
+  gl.bindVertexArray(null);
+  if(!vaoMesh){vaoMesh=gl.createVertexArray();vboMesh=gl.createBuffer();ibo=gl.createBuffer();}
+  gl.bindVertexArray(vaoMesh);
+  gl.bindBuffer(gl.ARRAY_BUFFER,vboMesh);
+  gl.bufferData(gl.ARRAY_BUFFER,vertBuf,gl.DYNAMIC_DRAW);
+  const st=36;
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,st,0);
+  gl.enableVertexAttribArray(1);gl.vertexAttribPointer(1,3,gl.FLOAT,false,st,12);
+  gl.enableVertexAttribArray(2);gl.vertexAttribPointer(2,3,gl.FLOAT,false,st,24);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ibo);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,idx,gl.STATIC_DRAW);
+  idxCount=idx.length;
+  gl.bindVertexArray(null);
+}
+
+function linesToVAO(pts){const vao=gl.createVertexArray(),vbo=gl.createBuffer();
+  gl.bindVertexArray(vao);gl.bindBuffer(gl.ARRAY_BUFFER,vbo);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(pts),gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,12,0);
+  gl.bindVertexArray(null);return {vao,n:pts.length/3};}
+
+let cam={yaw:0.7,pit:0.42,dist:2.2,tx:0,ty:0.25,tz:0};
+let MARKER={x:0.678,z:0.966,radius:0.15};
+let worldGrid=null, markerRing=null, markerPost=null;
+
+function buildWorldDecor(){
+  const g=[],R=3.0,s=0.25;
+  for(let x=-R;x<=R+1e-6;x+=s){g.push(x,0,-R,x,0,R);}
+  for(let z=-R;z<=R+1e-6;z+=s){g.push(-R,0,z,R,0,z);}
+  worldGrid=linesToVAO(g);
+  const r=[],N=64;
+  for(let i=0;i<=N;i++){const a=2*Math.PI*i/N;r.push(MARKER.x+MARKER.radius*Math.sin(a),0.004,MARKER.z+MARKER.radius*Math.cos(a));}
+  markerRing=linesToVAO(r);
+  markerPost=linesToVAO([MARKER.x,0,MARKER.z, MARKER.x,0.5,MARKER.z]);
+}
+
+// the ghost: the committed standing pose, parsed client-side from /ghost.obj
+async function loadGhost(){
+  const txt=await (await fetch('/ghost.obj')).text();
+  const vs=[],tr=[];
+  for(const line of txt.split('\n')){
+    if(line.startsWith('v ')){const p=line.trim().split(/\s+/);vs.push(+p[1],+p[2],+p[3]);}
+    else if(line.startsWith('f ')){const p=line.trim().split(/\s+/).slice(1).map(x=>parseInt(x)-1);
+      for(let i=1;i<p.length-1;i++)tr.push(p[0],p[i],p[i+1]);}
+  }
+  const vao=gl.createVertexArray(),vb=gl.createBuffer(),ib=gl.createBuffer();
+  gl.bindVertexArray(vao);
+  gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(vs),gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,3,gl.FLOAT,false,12,0);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(tr),gl.STATIC_DRAW);
+  gl.bindVertexArray(null);
+  ghost={vao,vb,ib,n:tr.length};
+  nGhost=vs.length/3;
+  ghostBase=new Float32Array(vs);
+  // center the ghost on the body's authored center (the importer centers the body)
+  let mnx=1e9,mny=1e9,mnz=1e9,mxx=-1e9,mxy=-1e9,mxz=-1e9;
+  for(let i=0;i<vs.length;i+=3){mnx=Math.min(mnx,vs[i]);mxx=Math.max(mxx,vs[i]);
+    mny=Math.min(mny,vs[i+1]);mxy=Math.max(mxy,vs[i+1]);mnz=Math.min(mnz,vs[i+2]);mxz=Math.max(mxz,vs[i+2]);}
+  ghostCenter=[(mnx+mxx)/2,(mny+mxy)/2,(mnz+mxz)/2];
+  for(let i=0;i<vs.length;i+=3){ghostBase[i]-=ghostCenter[0];ghostBase[i+1]-=ghostCenter[1];ghostBase[i+2]-=ghostCenter[2];}
+}
+let ghostBase=null, ghostCenter=[0,0,0];
+
+// ── the stream ────────────────────────────────────────────────────────────
+let liveVerts=null;      // the Float32Array the renderer + the picker share
+async function pollVerts(){
+  try{
+    const b=await (await fetch('/api/verts')).arrayBuffer();
+    liveVerts=new Float32Array(b);
+    if(!idxCount){
+      const t=await (await fetch('/api/topology')).arrayBuffer();
+      meshFromTopo(t,b);
+    }else{
+      gl.bindVertexArray(vaoMesh);
+      gl.bindBuffer(gl.ARRAY_BUFFER,vboMesh);
+      gl.bufferData(gl.ARRAY_BUFFER,b,gl.DYNAMIC_DRAW);
+      gl.bindVertexArray(null);
+    }
+  }catch(e){/* the HUD shows link state */}
+}
+
+// ── render ────────────────────────────────────────────────────────────────
+function resize(){const d=devicePixelRatio||1;
+  if(cv.width!==innerWidth*d||cv.height!==innerHeight*d){cv.width=innerWidth*d;cv.height=innerHeight*d;}
+  gl.viewport(0,0,cv.width,cv.height);}
+function draw(){
+  if(!gl)return; resize();
+  gl.enable(gl.DEPTH_TEST);gl.clearColor(0.043,0.051,0.063,1);
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  const vp=mul(persp(0.9,cv.width/cv.height,0.05,60),
+               lookFrom(cam.yaw,cam.pit,cam.dist,cam.tx,cam.ty,cam.tz).mat);
+  // the guide grid: drawn FIRST, depth-written, behind the body always
+  if(worldGrid){gl.useProgram(LINE_P);gl.uniformMatrix4fv(U(LINE_P,'uVP'),false,vp);
+    gl.uniform4f(U(LINE_P,'uCol'),0.16,0.2,0.24,1);
+    gl.bindVertexArray(worldGrid.vao);gl.drawArrays(gl.LINES,0,worldGrid.n);}
+  if(markerRing){gl.uniform4f(U(LINE_P,'uCol'),0.5,0.75,0.55,1);
+    gl.bindVertexArray(markerRing.vao);gl.drawArrays(gl.LINE_STRIP,0,markerRing.n);
+    gl.uniform4f(U(LINE_P,'uCol'),0.35,0.55,0.4,1);
+    gl.bindVertexArray(markerPost.vao);gl.drawArrays(gl.LINES,0,markerPost.n);}
+  if(vaoMesh&&idxCount){gl.useProgram(MESH_P);gl.uniformMatrix4fv(U(MESH_P,'uVP'),false,vp);
+    gl.uniform1f(U(MESH_P,'uAlpha'),1);
+    gl.bindVertexArray(vaoMesh);gl.drawElements(gl.TRIANGLES,idxCount,gl.UNSIGNED_INT,0);}
+  if(ghost&&ghostBase){
+    // the ghost rides the body's live root (REAL) — offset by the live mean
+    let ox=0,oy=0,oz=0,cnt=0;
+    if(liveVerts){for(let i=0;i<liveVerts.length;i+=36){ox+=liveVerts[i];oy+=liveVerts[i+1];oz+=liveVerts[i+2];cnt++;}}
+    if(cnt){ox/=cnt;oy/=cnt;oz/=cnt;
+      gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+      gl.depthMask(false);
+      gl.useProgram(MESH_P);gl.uniformMatrix4fv(U(MESH_P,'uVP'),false,vp);
+      gl.uniform1f(U(MESH_P,'uAlpha'),0.16);
+      gl.uniform3f(U(MESH_P,'uOff'),ox,oy,oz);   // the ghost rides the live root
+      gl.bindVertexArray(ghost.vao);
+      gl.drawElements(gl.TRIANGLES,ghost.n,gl.UNSIGNED_INT,0);
+      gl.uniform3f(U(MESH_P,'uOff'),0,0,0);      // the mesh path stays unshifted
+      gl.depthMask(true);gl.disable(gl.BLEND);gl.bindVertexArray(null);}
+  }
+  requestAnimationFrame(draw);
+}
+
+// ── camera control (orbit/zoom — the slice's own view) ────────────────────
+let drag=false,lx=0,ly=0;
+cv.addEventListener('pointerdown',e=>{drag=true;lx=e.clientX;ly=e.clientY;
+  cv.classList.add('dragging');cv.setPointerCapture(e.pointerId);});
+cv.addEventListener('pointermove',e=>{if(!drag)return;
+  cam.yaw+=(e.clientX-lx)*0.008; cam.pit=Math.min(1.4,Math.max(-0.15,cam.pit+(e.clientY-ly)*0.006));
+  lx=e.clientX;ly=e.clientY;});
+cv.addEventListener('pointerup',e=>{if(drag){drag=false;cv.classList.remove('dragging');
+  if(!moved(e))pressAt(e);} });
+let downXY=null;
+cv.addEventListener('pointerdown',e=>{downXY=[e.clientX,e.clientY];});
+function moved(e){return downXY&&Math.hypot(e.clientX-downXY[0],e.clientY-downXY[1])>4;}
+cv.addEventListener('wheel',e=>{e.preventDefault();
+  cam.dist=Math.min(9,Math.max(0.5,cam.dist*(1+Math.sign(e.deltaY)*0.09)));},{passive:false});
+
+// ── the press (REALITY): the page raycasts its own verts (the H16 lesson:
+//    one path, the page's own camera convention), snaps to a vertex, posts
+//    the engine's ready-world-point form. Force stated, never defaulted.
+async function pressAt(e){
+  if(!liveVerts||!liveVerts.length)return;
+  const r=cv.getBoundingClientRect();
+  const px=e.clientX-r.left, py=e.clientY-r.top;
+  const asp=cv.width/cv.height;
+  const V=lookFrom(cam.yaw,cam.pit,cam.dist,cam.tx,cam.ty,cam.tz);
+  const P=persp(0.9,asp,0.05,60), VP=mul(P,V.mat);
+  let best=-1,bd=28*28;
+  const nVerts=liveVerts.length/9;
+  for(let i=0;i<nVerts;i++){
+    const x=liveVerts[i*9],y=liveVerts[i*9+1],z=liveVerts[i*9+2];
+    let cx=VP[0]*x+VP[4]*y+VP[8]*z+VP[12], cy=VP[1]*x+VP[5]*y+VP[9]*z+VP[13],
+        cw=VP[3]*x+VP[7]*y+VP[11]*z+VP[15];
+    if(cw<=0)continue;
+    const sx=(cx/cw*0.5+0.5)*r.width, sy=(-cy/cw*0.5+0.5)*r.height;
+    const d=(sx-px)**2+(sy-py)**2;
+    if(d<bd){bd=d;best=i;}
+  }
+  if(best<0)return;
+  const hit=[liveVerts[best*9],liveVerts[best*9+1],liveVerts[best*9+2]];
+  const res=await (await fetch('/api/press',{method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({hit,force_n:300.0})})).json();
+  document.getElementById('status').textContent =
+    'press (real, 300 N): '+JSON.stringify(res);
+}
+
+// ── HUD / controls ────────────────────────────────────────────────────────
+const banner=document.getElementById('banner');
+async function pollStatus(){
+  try{
+    const s=await (await fetch('/api/status')).json();
+    const c=s.mock_carry||{};
+    banner.style.display=c.active?'block':'none';
+    if(c.active)banner.textContent='MOCK[mock_carry] — the slide is a MOCK · locomotion pending · physics target 426';
+    const st=s.engine_state||{};
+    const dist=s.marker?Math.hypot((c.x||0)-s.marker.x,(c.z||0)-s.marker.z):null;
+    document.getElementById('objective').textContent =
+      dist==null?'booting the world…':
+      (c.arrived?'OBJECTIVE: the creature is at the marker (seated)':
+       `objective: carry to the marker · ${(dist||0).toFixed(2)} m to go (mock carry)`);
+    document.getElementById('status').textContent =
+      `REAL engine numbers — root_y ${(st.root_y??0).toFixed(4)} m · root_vy ${(st.root_vy??0).toFixed(4)} m/s`+
+      (st.gravity_on!==undefined?` · gravity ${st.gravity_on?'ON':'off'}`:'');
+    const ft=s.fall_test;
+    document.getElementById('fall-verdict').textContent = !ft?'the fall test has not run':
+      ft.phase==='done'?`THE FALL (real): peak +${ft.max_root_y} m · max |vy| ${ft.max_abs_vy} m/s · landed root_y ${ft.landed_root_y} — engine law`:
+      ft.phase==='running'?'THE FALL (real): running — the engine is integrating…':'fall test: '+JSON.stringify(ft);
+  }catch(e){document.getElementById('objective').textContent='the world is unreachable';}
+}
+setInterval(pollStatus,250);
+setInterval(pollVerts,100);
+
+document.getElementById('btn-send').onclick=()=>fetch('/api/send',{method:'POST'});
+document.getElementById('btn-stop').onclick=()=>fetch('/api/stop',{method:'POST'});
+document.getElementById('btn-fall').onclick=()=>fetch('/api/drop_test',{method:'POST'});
+document.getElementById('btn-restart').onclick=async()=>{await fetch('/api/restart',{method:'POST'});
+  document.getElementById('fall-verdict').textContent='restarting to the standing start…';};
+document.getElementById('btn-save').onclick=async()=>{
+  const r=await (await fetch('/api/save',{method:'POST'})).json();
+  document.getElementById('status').textContent='saved: '+(r.saved||JSON.stringify(r));};
+
+// ── boot ──────────────────────────────────────────────────────────────────
+(async function boot(){
+  try{
+    const s=await (await fetch('/api/status')).json();
+    if(s.marker)MARKER=s.marker;
+  }catch(e){}
+  buildWorldDecor();
+  await loadGhost();
+  await pollVerts();
+  draw();
+})();
+</script>
+</body>
+</html>
