@@ -10,3 +10,11 @@ Brace-balance at function tails in numba2cu.py's indent->brace emission: consecu
 
 ## STATE
 Branch agent/typeb-gpu-fullport2-20260922 (this commit). Files: numba2cu.py (the translator), walker_kernels.cuh (5900 lines generated, ~114 errors all brace-class), walker_cu_test.cu (compile harness), walker_device.hpp + generator (proof 2), engine_inc/ (headers), the lane's complete numba stack (fallback), lead_takeover2.py (the opt=False numba attempt — pending result).
+
+## V3.1 SESSION ADDENDUM (lead, 2026-09-22 morning)
+State: v3 clean rewrite (indent STACK — braces now correct; mm compiles balanced) + constants-extraction concept + arg-type heuristic. 101 errors remain, ALL normal C++ typing (zero structural). THE FOUR REMAINING CLASSES, in size order:
+1. (66x) INT-INDEX INFERENCE: plain assigns default to double; ints used as array indices (h = k - 2 etc.) — improve classify(): int vars propagate (track declared int names; an expr of int literals/int vars/+-*/ on those → int).
+2. (15x) "expected a" — inspect per-site; likely slice expressions mdl[OF:OF+8] (Python views) — translate `X = arr[a:b]` to a local array + copy loop; uses of X[i] then work. NOTE: constants extraction DID NOT EMIT (walker_numba.py defines OF_/OI_ etc. — check its actual line format; regex may need adjusting) — the 300-series undefined-identifier errors depend on it.
+3. (2x) `t` undefined — a first-use inference miss (find the site ~line 201).
+4. y/z tuple residuals (~line 35 in rot_axis: `x, y, z = axis[0], axis[1], axis[2]` — the tuple handler exists in v3 but missed this site — likely multi-space after commas defeating split).
+Iteration protocol: python numba2cu.py && nvcc -c walker_cu_test.cu (the verbatim invocation) | count errors; fix the top class; repeat. Est. 3-6 more iterations to zero. THEN: scalar-arg hand-fix pass → ctypes host env (reset/set_command/step/status over the SoA arrays; walker_model.py builds the spec on host, cudaMemcpy H2D) → FIRST TICK at E=2 → bars_fullport.py.

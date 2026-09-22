@@ -1,8 +1,8 @@
-// AUTO-TRANSLATED by numba2cu.py v2 (indent-aware). Hand-fix CU_SIZE and scalar args.
+// AUTO-TRANSLATED by numba2cu.py v3.1. Hand-fix CU_SIZE and scalar args.
 #pragma once
 #include <cuda_runtime.h>
 #include <math.h>
-__device__ inline void mm(double* a, double* b, double* out) {
+__device__ inline void mm(double a, double b, double out) {
     for (int i = 0; i < (4); ++i) {
 
         for (int j = 0; j < (4); ++j) {
@@ -23,11 +23,12 @@ __device__ inline void mm(double* a, double* b, double* out) {
 
 }
 }
+}
 
-__device__ inline void rot_axis(double* axis, double* ang, double* out) {
-    double c = math.cos(ang);
+__device__ inline void rot_axis(double axis, double ang, double out) {
+    double c = cos(ang);
 
-    double s = math.sin(ang);
+    double s = sin(ang);
 
     double t = (double)(1.0) - c;
 
@@ -48,7 +49,7 @@ __device__ inline void rot_axis(double* axis, double* ang, double* out) {
 
 }
 
-__device__ inline void eye16(double* out) {
+__device__ inline void eye16(double out) {
     for (int i = 0; i < (16); ++i) {
 
         out[i] = (double)(0.0);
@@ -63,7 +64,7 @@ __device__ inline void eye16(double* out) {
 
 }
 
-__device__ inline void axial3(double* m, double* out) {
+__device__ inline void axial3(int m, double out) {
     out[0] = (m[2 * 4 + 1] - m[1 * 4 + 2]) * (double)(0.5);
 
     out[1] = (m[0 * 4 + 2] - m[2 * 4 + 0]) * (double)(0.5);
@@ -77,7 +78,7 @@ __device__ inline void axial3(double* m, double* out) {
 
 }
 
-__device__ inline void apply_point(double* m, double* p, double* out) {
+__device__ inline void apply_point(int m, double p, double out) {
     for (int i = 0; i < (3); ++i) {
 
         out[i] = m[i * 4 + 0] * p[0] + m[i * 4 + 1] * p[1] + m[i * 4 + 2] * p[2] + m[i * 4 + 3];
@@ -88,8 +89,9 @@ __device__ inline void apply_point(double* m, double* p, double* out) {
 
 
 }
+}
 
-__device__ inline void rot_cols(double* m, double* v, double* out) {
+__device__ inline void rot_cols(int m, double v, double out) {
     for (int i = 0; i < (3); ++i) {
 
         out[i] = m[i * 4 + 0] * v[0] + m[i * 4 + 1] * v[1] + m[i * 4 + 2] * v[2];
@@ -100,8 +102,9 @@ __device__ inline void rot_cols(double* m, double* v, double* out) {
 
 
 }
+}
 
-__device__ inline void transpose_rot(double* m, double* out) {
+__device__ inline void transpose_rot(int m, double out) {
     // 4x4 transpose of the rotational part with identity last row/col,
 
     // translation zeroed (rt used only as a 3x3 in the C++ formulas)
@@ -128,7 +131,7 @@ __device__ inline void transpose_rot(double* m, double* out) {
 
 }
 
-__device__ inline void load16(double* src, double* off, double* out) {
+__device__ inline void load16(double src, double off, double out) {
     for (int i = 0; i < (16); ++i) {
 
         out[i] = src[off + i];
@@ -139,8 +142,9 @@ __device__ inline void load16(double* src, double* off, double* out) {
 
 
 }
+}
 
-__device__ inline void inverse_spd18(double* a, double* out) {
+__device__ inline long long inverse_spd18(double a, double out) {
     double l[324];
 
     for (int i = 0; i < (324); ++i) {
@@ -159,7 +163,7 @@ __device__ inline void inverse_spd18(double* a, double* out) {
                 return 0;
 
 }
-            if (math.isnan(t)) {
+            if (isnan(t)) {
 
                 return 0;
 
@@ -176,9 +180,10 @@ __device__ inline void inverse_spd18(double* a, double* out) {
                     return 0;
 
 }
-                l[i * 18 + j] = math.sqrt(t);
+                l[i * 18 + j] = sqrt(t);
 
-            } else {
+}
+            else {
 
                 l[i * 18 + j] = t / l[j * 18 + j];
 
@@ -255,7 +260,7 @@ __device__ inline void inverse_spd18(double* a, double* out) {
 
 }
 }
-    if (math.isnan(an * bn) || an * bn >= (double)(1e12)) {
+    if (isnan(an * bn) || an * bn >= (double)(1e12)) {
 
         return 0;
 
@@ -269,7 +274,7 @@ __device__ inline void inverse_spd18(double* a, double* out) {
 
 }
 
-__device__ inline void mv18(double* a, double* x, double* out) {
+__device__ inline void mv18(double a, double x, double out) {
     for (int i = 0; i < (18); ++i) {
 
         double s = (double)(0.0);
@@ -289,8 +294,9 @@ __device__ inline void mv18(double* a, double* x, double* out) {
 
 
 }
+}
 
-__device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias) {
+__device__ inline double fk_eval(double q, double v, double* mdl, double* mdi, double* cst, double M, double gv, double bv, double fr, double frd, double frdd, double axw, double axpiv, double axdir, double ptp, double ptJ, double ptcop, double ptbias) {
     double ax_rot = mdi[OI_ax_rot:OI_ax_rot + 18];
     double ax_axis = mdl[OF_ax_axis:OF_ax_axis + 54];
     double ax_slot = mdi[OI_ax_slot:OI_ax_slot + 18];
@@ -313,7 +319,7 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
     double plane_y = cst[CF_plane_y];
     double gy = cst[CF_gy];
 
-    double grav[3];
+    double grav = cuda.local.array(3, dtype=float64); grav[0] = (double)(0.0); grav[1] = -gy; grav[2] = (double)(0.0);
 
     for (int i = 0; i < (18); ++i) {
 
@@ -345,15 +351,15 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 }
     double potential = (double)(0.0);
 
-    double one[16];
+    double one = cuda.local.array(16, dtype=float64); one_dt = cuda.local.array(16, dtype=float64); one_ddt = cuda.local.array(16, dtype=float64); sk = cuda.local.array(16, dtype=float64);
 
-    double motion[16];
+    double motion = cuda.local.array(16, dtype=float64); motion_dt = cuda.local.array(16, dtype=float64); motion_ddt = cuda.local.array(16, dtype=float64);
 
-    double pfp[16];
+    double pfp = cuda.local.array(16, dtype=float64); t1 = cuda.local.array(16, dtype=float64); t2 = cuda.local.array(16, dtype=float64); t3 = cuda.local.array(16, dtype=float64); t4 = cuda.local.array(16, dtype=float64);
 
-    double fp16[16];
+    double fp16 = cuda.local.array(16, dtype=float64); fc16 = cuda.local.array(16, dtype=float64);
 
-    double rt[16];
+    double rt = cuda.local.array(16, dtype=float64); mtmp = cuda.local.array(16, dtype=float64); mtmp2 = cuda.local.array(16, dtype=float64);
 
     double jv[54];
 
@@ -401,7 +407,7 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
                 rate = ax_slope[ai] * v[slot];
 
 }
-            double axis[3];
+            double axis = cuda.local.array(3, dtype=float64); axis[0] = ax_axis[ai * 3]; axis[1] = ax_axis[ai * 3 + 1]; axis[2] = ax_axis[ai * 3 + 2];
 
             if (ax_rot[ai] != 0) {
 
@@ -466,7 +472,8 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
                     motion_ddt[i] = motion_ddt[i] + t3[i];
 
 }
-            } else {
+}
+            else {
 
                 tvx = tvx + axis[0] * ang; tvy = tvy + axis[1] * ang; tvz = tvz + axis[2] * ang;
 
@@ -522,7 +529,7 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 }
         for (int ai = 0; ai < (a0, a1); ++ai) {
 
-            double axis[3];
+            axis = cuda.local.array(3, dtype=float64); axis[0] = ax_axis[ai * 3]; axis[1] = ax_axis[ai * 3 + 1]; axis[2] = ax_axis[ai * 3 + 2];
 
             double wx = (double)(0.0); wy = (double)(0.0); wz = (double)(0.0);
 
@@ -536,11 +543,13 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
                         wx = wx + aij * axis[0];
 
-                    } else if (j == 1) {
+}
+                    else if (j == 1) {
 
                         double wy = wy + aij * axis[1];
 
-                    } else {
+}
+                    else {
 
                         double wz = wz + aij * axis[2];
 
@@ -561,7 +570,8 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
                 axpiv[ai * 3] = px; axpiv[ai * 3 + 1] = py; axpiv[ai * 3 + 2] = pz;
 
-            } else {
+}
+            else {
 
                 axdir[ai * 3] = wx; axdir[ai * 3 + 1] = wy; axdir[ai * 3 + 2] = wz;
 
@@ -576,7 +586,7 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 }
         double comw[3];
 
-        double com[3];
+        double com = cuda.local.array(3, dtype=float64); com[0] = body_com[b * 3]; com[1] = body_com[b * 3 + 1]; com[2] = body_com[b * 3 + 2];
 
         for (int i = 0; i < (16); ++i) {
 
@@ -598,9 +608,9 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 }
             if (ax_rot[ai] != 0) {
 
-                double w[3];
+                double w = cuda.local.array(3, dtype=float64); w[0] = axw[ai * 3]; w[1] = axw[ai * 3 + 1]; w[2] = axw[ai * 3 + 2];
 
-                double pv[3];
+                double pv = cuda.local.array(3, dtype=float64); pv[0] = axpiv[ai * 3]; pv[1] = axpiv[ai * 3 + 1]; pv[2] = axpiv[ai * 3 + 2];
 
                 double rx = comw[0] - pv[0]; ry = comw[1] - pv[1]; rz = comw[2] - pv[2];
 
@@ -616,7 +626,8 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
                 jw[slot * 3 + 2] = jw[slot * 3 + 2] + w[2];
 
-            } else {
+}
+            else {
 
                 jv[slot * 3] = jv[slot * 3] + axdir[ai * 3];
 
@@ -642,7 +653,7 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
         mm(t2, rt, mtmp)                     # frd * R^T;
 
-        double omega[3];
+        double omega = cuda.local.array(3, dtype=float64); axial3(mtmp, omega);
 
         for (int i = 0; i < (16); ++i) {
 
@@ -663,11 +674,11 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
 }
 }
-        double alpha[3];
+        double alpha = cuda.local.array(3, dtype=float64); axial3(mtmp, alpha);
 
         double acc_com[3];
 
-        double comloc[3];
+        double comloc = cuda.local.array(3, dtype=float64); comloc[0] = body_com[b * 3]; comloc[1] = body_com[b * 3 + 1]; comloc[2] = body_com[b * 3 + 2];
 
         for (int i = 0; i < (16); ++i) {
 
@@ -678,7 +689,7 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
     // Iw = R * diag(I) * R^T
 
-        double It[3];
+        double It = cuda.local.array(3, dtype=float64); It[0] = body_inertia[b * 3]; It[1] = body_inertia[b * 3 + 1]; It[2] = body_inertia[b * 3 + 2];
 
         for (int i = 0; i < (16); ++i) {
 
@@ -802,14 +813,14 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
         double pb = pt_body[k];
 
-        double p[3];
+        double p = cuda.local.array(3, dtype=float64); p[0] = pt_local[k * 3]; p[1] = pt_local[k * 3 + 1]; p[2] = pt_local[k * 3 + 2];
 
         for (int i = 0; i < (16); ++i) {
 
             t1[i] = fr[pb * 16 + i];
 
 }
-        double out[3];
+        double out = cuda.local.array(3, dtype=float64); apply_point(t1, p, out);
 
         ptp[k * 3] = out[0]; ptp[k * 3 + 1] = out[1]; ptp[k * 3 + 2] = out[2];
 
@@ -834,7 +845,8 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
                 a = (double)(1.0);
 
-            } else {
+}
+            else {
 
                 a = (double)(0.0);
 
@@ -856,7 +868,7 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
             t1[i] = fr[pb * 16 + i];
 
 }
-        double solew[3];
+        double solew = cuda.local.array(3, dtype=float64); apply_point(t1, loc, solew);
 
         double t3v[3];
 
@@ -891,9 +903,9 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 }
             if (ax_rot[ai] != 0) {
 
-                double w[3];
+                w = cuda.local.array(3, dtype=float64); w[0] = axw[ai * 3]; w[1] = axw[ai * 3 + 1]; w[2] = axw[ai * 3 + 2];
 
-                double pv[3];
+                pv = cuda.local.array(3, dtype=float64); pv[0] = axpiv[ai * 3]; pv[1] = axpiv[ai * 3 + 1]; pv[2] = axpiv[ai * 3 + 2];
 
                 rx = solew[0] - pv[0]; ry = solew[1] - pv[1]; rz = solew[2] - pv[2];
 
@@ -909,7 +921,8 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
                 ptJ[(r * 3 + 2) * 18 + slot] = ptJ[(r * 3 + 2) * 18 + slot] + jz;
 
-            } else {
+}
+            else {
 
                 ptJ[(r * 3 + 0) * 18 + slot] = ptJ[(r * 3 + 0) * 18 + slot] + axdir[ai * 3];
 
@@ -935,7 +948,7 @@ __device__ inline void fk_eval(double* q, double* v, double* mdl, double* mdi, d
 
 }
 
-__device__ inline void gap_of_k(double* ptp, double* pt_radius, double* k, double* plane_y) {
+__device__ inline double gap_of_k(double ptp, double pt_radius, int k, double plane_y) {
     double h = k - (k % 2);
 
     double gh = ptp[h * 3 + 1] + pt_radius[h] - plane_y;
@@ -956,7 +969,7 @@ __device__ inline void gap_of_k(double* ptp, double* pt_radius, double* k, doubl
 
 }
 
-__device__ inline void row_dot(double* row, double* x) {
+__device__ inline double row_dot(int row, double x) {
     double s = (double)(0.0);
 
     for (int i = 0; i < (18); ++i) {
@@ -973,7 +986,7 @@ __device__ inline void row_dot(double* row, double* x) {
 
 }
 
-__device__ inline void mat_vec(double* inv, double* row, double* out) {
+__device__ inline void mat_vec(double inv, int row, double out) {
     // out = inv * row
 
     for (int i = 0; i < (18); ++i) {
@@ -993,8 +1006,9 @@ __device__ inline void mat_vec(double* inv, double* row, double* out) {
 
 
 }
+}
 
-__device__ inline void rows_row(double* rows, double* k, double* out) {
+__device__ inline void rows_row(double rows, int k, double out) {
     for (int i = 0; i < (18); ++i) {
 
         out[i] = rows[k * 18 + i];
@@ -1005,8 +1019,9 @@ __device__ inline void rows_row(double* rows, double* k, double* out) {
 
 
 }
+}
 
-__device__ inline void gram_factor10(double* g, double* k, double* rhs, double* lam) {
+__device__ inline long long gram_factor10(double g, int k, double rhs, double lam) {
     double scale = (double)(0.0);
 
     for (int i = 0; i < (k); ++i) {
@@ -1061,9 +1076,10 @@ __device__ inline void gram_factor10(double* g, double* k, double* rhs, double* 
                     return 0;
 
 }
-                l[i * k + j] = math.sqrt(t);
+                l[i * k + j] = sqrt(t);
 
-            } else {
+}
+            else {
 
                 l[i * k + j] = t / l[j * k + j];
 
@@ -1126,7 +1142,7 @@ __device__ inline void gram_factor10(double* g, double* k, double* rhs, double* 
 
 }
 
-__device__ inline void project_rows(double* initial, double* inv, double* rows, double* floors, double* R, double* n_stops, double* p_out, double* multipliers) {
+__device__ inline long long project_rows(double initial, double inv, double rows, double floors, double R, double n_stops, double p_out, double multipliers) {
     // Mass-metric active-set projection (the free-root D6 law, lifted
 
     // row-count-only): the deterministic full subset enumeration, the
@@ -1165,7 +1181,8 @@ __device__ inline void project_rows(double* initial, double* inv, double* rows, 
                     skip = 1;
 
 }
-            } else {
+}
+            else {
 
                 if (tier != 0) {
 
@@ -1231,7 +1248,8 @@ __device__ inline void project_rows(double* initial, double* inv, double* rows, 
                             return 1;
 
 }
-                    } else {
+}
+                    else {
 
                         double gram[100];
 
@@ -1370,7 +1388,7 @@ __device__ inline void project_rows(double* initial, double* inv, double* rows, 
 
 }
 
-__device__ inline void friction_solve(double* initial, double* inv, double* row_n, double* row_t, double* floor_n, double* floor_t, double* mu, double* slip_sign, double* force, double* ln, double* lt, double* mode) {
+__device__ inline double friction_solve(double initial, double inv, double row_n, double row_t, double floor_n, double floor_t, double mu, double slip_sign, double force, double ln, double lt, double mode) {
     // gait_controller friction_solve verbatim; mode: 0 none, 1 cone, 2 slide,
 
     // -1 = the gait_friction_slide_singular swallow
@@ -1442,13 +1460,15 @@ __device__ inline void friction_solve(double* initial, double* inv, double* row_
 
         s = (double)(slip_sign);
 
-    } else {
+}
+    else {
 
         if (rt >= (double)(0.0)) {
 
             s = (double)(-1.0);
 
-        } else {
+}
+        else {
 
             s = (double)(1.0);
 
@@ -1504,17 +1524,13 @@ __device__ inline void friction_solve(double* initial, double* inv, double* row_
 
 }
 
-__device__ inline void rate(double* q, double* v, double* tau, double* live, double* plane, double* mdl, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias, double* inv, double* free, double* rq, double* rv, double* mdi, double* csti) {
+__device__ inline long long rate(double q, double v, double tau, double live, double plane, double* mdl, double* cst, double M, double gv, double bv, double fr, double frd, double frdd, double axw, double axpiv, double axdir, double ptp, double ptJ, double ptcop, double ptbias, double inv, double free, double rq, double rv, double* mdi, double* csti) {
     double pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8];
 
     double pot = fk_eval(q,  v, mdl, mdi, cst,;
 
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
 
-}
-}
-}
-}
     if (inverse_spd18(M, inv) == 0) {
 
         return 8;
@@ -1558,7 +1574,8 @@ __device__ inline void rate(double* q, double* v, double* tau, double* live, dou
 
             jn[c] = (double)(1.0);
 
-        } else if (fabs(q[c] - mdl[OF_upper + c]) < (double)(1e-10)) {
+}
+        else if (fabs(q[c] - mdl[OF_upper + c]) < (double)(1e-10)) {
 
             jn[c] = (double)(-1.0);
 
@@ -1622,7 +1639,8 @@ __device__ inline void rate(double* q, double* v, double* tau, double* live, dou
 
             touching[r] = 1;
 
-        } else if (live[r] != 0 && g <= cst[CF_k_touch] && row_dot(rn, v) <= gate) {
+}
+        else if (live[r] != 0 && g <= cst[CF_k_touch] && row_dot(rn, v) <= gate) {
 
             touching[r] = 1;
 
@@ -1670,7 +1688,7 @@ __device__ inline void rate(double* q, double* v, double* tau, double* live, dou
 
             double svz = row_dot(jt2, v);
 
-            double planar = math.sqrt(svx * svx + svz * svz);
+            double planar = sqrt(svx * svx + svz * svz);
 
             double dir_x = (double)(0.0);
 
@@ -1686,7 +1704,8 @@ __device__ inline void rate(double* q, double* v, double* tau, double* live, dou
 
                 slip_sign = 1;
 
-            } else {
+}
+            else {
 
                 double d1 = bx;
 
@@ -1699,7 +1718,7 @@ __device__ inline void rate(double* q, double* v, double* tau, double* live, dou
                     d2 = d2 + jt2[i] * free[i];
 
 }
-                double accel = math.sqrt(d1 * d1 + d2 * d2);
+                double accel = sqrt(d1 * d1 + d2 * d2);
 
                 if (accel > (double)(1e-9)) {
 
@@ -1725,10 +1744,6 @@ __device__ inline void rate(double* q, double* v, double* tau, double* live, dou
 
                            force, ln, lt, md);
 
-}
-}
-}
-}
             if (md[0] > 0) {
 
                 mat_vec(inv, force, corr);
@@ -1814,7 +1829,7 @@ __device__ inline void rate(double* q, double* v, double* tau, double* live, dou
 
 }
 
-__device__ inline void free_step(double* q0, double* v0, double* w0, double* tau, double* live, double* h, double* mdl, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias, double* inv, double* free, double* srq, double* srv, double* qa, double* va, double* qb, double* vb, double* qc, double* vc, double* qd, double* vd, double* q1, double* v1, double* w1, double* mdi, double* csti) {
+__device__ inline long long free_step(double q0, double v0, double w0, double tau, double live, int h, double* mdl, double* cst, double M, double gv, double bv, double fr, double frd, double frdd, double axw, double axpiv, double axdir, double ptp, double ptJ, double ptcop, double ptbias, double inv, double free, double srq, double srv, double qa, double va, double qb, double vb, double qc, double vc, double qd, double vd, double q1, double v1, double w1, double* mdi, double* csti) {
     double pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8];
 
     double rq[18];
@@ -1827,10 +1842,6 @@ __device__ inline void free_step(double* q0, double* v0, double* w0, double* tau
 
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
 
-}
-}
-}
-}
     double speed_scale = (double)(0.0);
 
     for (int d = 0; d < (12); ++d) {
@@ -1861,9 +1872,6 @@ __device__ inline void free_step(double* q0, double* v0, double* w0, double* tau
 
               axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi);
 
-}
-}
-}
     if (rc != 0) {
 
         return rc;
@@ -1882,9 +1890,6 @@ __device__ inline void free_step(double* q0, double* v0, double* w0, double* tau
 
               axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi);
 
-}
-}
-}
     if (rc != 0) {
 
         return rc;
@@ -1912,9 +1917,6 @@ __device__ inline void free_step(double* q0, double* v0, double* w0, double* tau
 
               axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi);
 
-}
-}
-}
     if (rc != 0) {
 
         return rc;
@@ -1942,9 +1944,6 @@ __device__ inline void free_step(double* q0, double* v0, double* w0, double* tau
 
               axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, csti, mdi);
 
-}
-}
-}
     if (rc != 0) {
 
         return rc;
@@ -1981,7 +1980,7 @@ __device__ inline void free_step(double* q0, double* v0, double* w0, double* tau
 
 }
 
-__device__ inline void gram_factor4(double* g, double* k, double* rhs, double* lam) {
+__device__ inline long long gram_factor4(double g, int k, double rhs, double lam) {
     double scale = (double)(0.0);
 
     for (int i = 0; i < (k); ++i) {
@@ -2024,9 +2023,10 @@ __device__ inline void gram_factor4(double* g, double* k, double* rhs, double* l
                     return 0;
 
 }
-                l[i * k + j] = math.sqrt(t);
+                l[i * k + j] = sqrt(t);
 
-            } else {
+}
+            else {
 
                 l[i * k + j] = t / l[j * k + j];
 
@@ -2089,17 +2089,13 @@ __device__ inline void gram_factor4(double* g, double* k, double* rhs, double* l
 
 }
 
-__device__ inline void impact(double* q, double* v, double* mdl, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias, double* inv, double* free, double* rc, double* mdi, double* csti) {
+__device__ inline double impact(double q, double v, double* mdl, double* cst, double M, double gv, double bv, double fr, double frd, double frdd, double axw, double axpiv, double axdir, double ptp, double ptJ, double ptcop, double ptbias, double inv, double free, double rc, double* mdi, double* csti) {
     double pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8];
 
     double pot = fk_eval(q,  v, mdl, mdi, cst,;
 
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
 
-}
-}
-}
-}
     if (inverse_spd18(M, inv) == 0) {
 
         rc[0] = 8;
@@ -2129,7 +2125,8 @@ __device__ inline void impact(double* q, double* v, double* mdl, double* cst, do
 
             jn[c] = (double)(1.0);
 
-        } else if (fabs(q[c] - mdl[OF_upper + c]) < (double)(1e-10)) {
+}
+        else if (fabs(q[c] - mdl[OF_upper + c]) < (double)(1e-10)) {
 
             jn[c] = (double)(-1.0);
 
@@ -2219,7 +2216,7 @@ __device__ inline void impact(double* q, double* v, double* mdl, double* cst, do
 
             double svz = row_dot(jt2, v);
 
-            double planar = math.sqrt(svx * svx + svz * svz);
+            double planar = sqrt(svx * svx + svz * svz);
 
             if (planar <= cst[CF_k_slip]) {
 
@@ -2301,10 +2298,6 @@ __device__ inline void impact(double* q, double* v, double* mdl, double* cst, do
 
                   M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
 
-}
-}
-}
-}
     int pen[4];
 
     int npen = (int)(0);
@@ -2415,7 +2408,7 @@ __device__ inline void impact(double* q, double* v, double* mdl, double* cst, do
 
 }
 
-__device__ inline void advance(double* q0, double* v0, double* w0, double* tau, double* h, double* mdl, double* cst, double* M, double* gv, double* bv, double* fr, double* frd, double* frdd, double* axw, double* axpiv, double* axdir, double* ptp, double* ptJ, double* ptcop, double* ptbias, double* inv, double* free, double* srq, double* srv, double* qa, double* va, double* qb, double* vb, double* qc, double* vc, double* qd, double* vd, double* qe, double* ve, double* we, double* sq, double* sh, double* sdep, double* scl, double* adv, double* rc, double* q1, double* v1, double* w1, double* mdi, double* csti) {
+__device__ inline double advance(double q0, double v0, double w0, double tau, int h, double* mdl, double* cst, double M, double gv, double bv, double fr, double frd, double frdd, double axw, double axpiv, double axdir, double ptp, double ptJ, double ptcop, double ptbias, double inv, double free, double srq, double srv, double qa, double va, double qb, double vb, double qc, double vc, double qd, double vd, double qe, double ve, double we, double sq, double sh, double sdep, double scl, double adv, double rc, double q1, double v1, double w1, double* mdi, double* csti) {
     double pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8];
 
     // The C++ recursive advance(, csti, mdi) as an explicit LIFO interval stack over the
@@ -2479,7 +2472,8 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                 continue;
 
-            } else {
+}
+            else {
 
                 done = 1;
 
@@ -2509,10 +2503,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                         axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi);
 
-}
-}
-}
-}
         if (rcv[0] != 0) {
 
             rc[0] = rcv[0];
@@ -2541,10 +2531,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                       M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
 
-}
-}
-}
-}
         for (int r = 0; r < (4); ++r) {
 
             double g = gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y]);
@@ -2558,10 +2544,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                         qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
 
-}
-}
-}
-}
         if (rcs != 0) {
 
             rc[0] = rcs;
@@ -2585,7 +2567,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
             double c = mdi[OI_drive_coord + d - 1];
 
-            double low = (int)(1) if qe[c] < mdl[OF_lower + c] else (int)(0);
+            int low = (int)(1) if qe[c] < mdl[OF_lower + c] else (int)(0);
 
             if (low == 0 && qe[c] <= mdl[OF_upper + c]) {
 
@@ -2596,7 +2578,8 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                 double depth_v = mdl[OF_lower + c] - qe[c];
 
-            } else {
+}
+            else {
 
                 depth_v = qe[c] - mdl[OF_upper + c];
 
@@ -2626,10 +2609,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                                 qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
 
-}
-}
-}
-}
                 if (rcb != 0) {
 
                     rc[0] = rcb;
@@ -2641,7 +2620,8 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                     int ok2 = (int)(1) if qe[c] <= bound else (int)(0);
 
-                } else {
+}
+                else {
 
                     ok2 = (int)(1) if qe[c] >= bound else (int)(0);
 
@@ -2650,7 +2630,8 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                     right = mid;
 
-                } else {
+}
+                else {
 
                     left = mid;
 
@@ -2676,10 +2657,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                           M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
 
-}
-}
-}
-}
             int r = (int)(0);
 
             while (r < 4) {
@@ -2725,10 +2702,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                                     qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
 
-}
-}
-}
-}
                     if (rcb != 0) {
 
                         rc[0] = rcb;
@@ -2740,7 +2713,8 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                         right = mid;
 
-                    } else {
+}
+                    else {
 
                         left = mid;
 
@@ -2784,7 +2758,8 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                 continue;
 
-            } else {
+}
+            else {
 
                 done = 1;
 
@@ -2812,10 +2787,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                             axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi);
 
-}
-}
-}
-}
             if (rcv[0] != 0) {
 
                 rc[0] = rcv[0];
@@ -2843,10 +2814,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                             qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
 
-}
-}
-}
-}
             if (rcc != 0) {
 
                 rc[0] = rcc;
@@ -2869,10 +2836,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                             axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi);
 
-}
-}
-}
-}
             if (rcv[0] != 0) {
 
                 rc[0] = rcv[0];
@@ -2894,7 +2857,8 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                 depth = depth + 1;
 
-            } else {
+}
+            else {
 
                 rem = rem - hit;
 
@@ -2910,10 +2874,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                         qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, csti, mdi);
 
-}
-}
-}
-}
         if (rcw != 0) {
 
             rc[0] = rcw;
@@ -2938,10 +2898,6 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
                         axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, csti, mdi);
 
-}
-}
-}
-}
         if (rcv[0] != 0) {
 
             rc[0] = rcv[0];
@@ -2963,8 +2919,9 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 
 
 }
+}
 
-__device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, double* leg, double* paw, double* branch, double* mdi, double* csti) {
+__device__ inline double fore_ik_at(double* mdl, double* cst, double fr, int leg, double paw, double branch, double* mdi, double* csti) {
     double off = csti[CI_pelvis_row] * 16;
 
     double rx = paw[0] - fr[off + 3];
@@ -2981,7 +2938,7 @@ __device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, double* 
 
     double dy = fr[off + 1] * rx + fr[off + 5] * ry + fr[off + 9] * rz - ml1;
 
-    double D = math.sqrt(dx * dx + dy * dy);
+    double D = sqrt(dx * dx + dy * dy);
 
     double dmax = cst[CF_fore_L1] + cst[CF_fore_rho];
 
@@ -3006,15 +2963,15 @@ __device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, double* 
 
     ca = fmin((double)(1.0), fmax((double)(-1.0), ca));
 
-    double th1 = math.atan2(dy, dx) + (double)(branch) * math.acos(ca);
+    double th1 = atan2(dy, dx) + (double)(branch) * acos(ca);
 
     double q1 = th1 + PI * (double)(0.5);
 
-    double ex = dx - cst[CF_fore_L1] * math.cos(th1);
+    double ex = dx - cst[CF_fore_L1] * cos(th1);
 
-    double ey = dy - cst[CF_fore_L1] * math.sin(th1);
+    double ey = dy - cst[CF_fore_L1] * sin(th1);
 
-    double q2 = math.atan2(ey, ex) - q1 - cst[CF_fore_beta];
+    double q2 = atan2(ey, ex) - q1 - cst[CF_fore_beta];
 
     double c1 = mdi[OI_fore_coord + leg * 2];
 
@@ -3037,7 +2994,7 @@ __device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, double* 
 
 }
 
-__device__ inline void fore_D_at(double* mdl, double* cst, double* fr, double* leg, double* paw, double* csti) {
+__device__ inline double fore_D_at(double* mdl, double* cst, double fr, int leg, double paw, double* csti) {
     double off = csti[CI_pelvis_row] * 16;
 
     double rx = paw[0] - fr[off + 3];
@@ -3054,7 +3011,7 @@ __device__ inline void fore_D_at(double* mdl, double* cst, double* fr, double* l
 
     double dy = fr[off + 1] * rx + fr[off + 5] * ry + fr[off + 9] * rz - ml1;
 
-    return math.sqrt(dx * dx + dy * dy);
+    return sqrt(dx * dx + dy * dy);
 
 
 
@@ -3063,7 +3020,7 @@ __device__ inline void fore_D_at(double* mdl, double* cst, double* fr, double* l
 
 }
 
-__device__ inline void hind_ik_at(double* mdl, double* cst, double* fr, double* tgt, double* ap, double* branch, double* csti) {
+__device__ inline double hind_ik_at(double* mdl, double* cst, double fr, double tgt, double ap, double branch, double* csti) {
     double off = csti[CI_pelvis_row] * 16;
 
     double rx = tgt[0] - fr[off + 3];
@@ -3076,11 +3033,11 @@ __device__ inline void hind_ik_at(double* mdl, double* cst, double* fr, double* 
 
     double dy = fr[off + 1] * rx + fr[off + 5] * ry + fr[off + 9] * rz;
 
-    double wx = dx - cst[CF_hind_xm] * math.cos(ap);
+    double wx = dx - cst[CF_hind_xm] * cos(ap);
 
-    double wy = dy - cst[CF_hind_xm] * math.sin(ap);
+    double wy = dy - cst[CF_hind_xm] * sin(ap);
 
-    double D = math.sqrt(wx * wx + wy * wy);
+    double D = sqrt(wx * wx + wy * wy);
 
     double dmax = cst[CF_hind_L1] + cst[CF_hind_L2];
 
@@ -3092,9 +3049,9 @@ __device__ inline void hind_ik_at(double* mdl, double* cst, double* fr, double* 
 
     ca = fmin((double)(1.0), fmax((double)(-1.0), ca));
 
-    double k = (double)(branch) * math.acos(ca);
+    double k = (double)(branch) * acos(ca);
 
-    double a1 = math.atan2(wy, wx) - math.atan2(-cst[CF_hind_L1] - cst[CF_hind_L2] * math.cos(k), cst[CF_hind_L2] * math.sin(k));
+    double a1 = atan2(wy, wx) - atan2(-cst[CF_hind_L1] - cst[CF_hind_L2] * cos(k), cst[CF_hind_L2] * sin(k));
 
     double qh = a1;
 
@@ -3111,8 +3068,8 @@ __device__ inline void hind_ik_at(double* mdl, double* cst, double* fr, double* 
 
 }
 
-__device__ inline void tables_at(double* mdl, double* phi, double* out) {
-    double p = phi - math.floor(phi);
+__device__ inline double tables_at(double* mdl, double phi, double out) {
+    double p = phi - floor(phi);
 
     double x = p * (double)(20.0);
 
@@ -3142,8 +3099,8 @@ __device__ inline void tables_at(double* mdl, double* phi, double* out) {
 
 }
 
-__device__ inline void vault_at(double* mdl, double* phi) {
-    double p = phi - math.floor(phi);
+__device__ inline double vault_at(double* mdl, double phi) {
+    double p = phi - floor(phi);
 
     double x = p * (double)(20.0);
 
@@ -3165,7 +3122,7 @@ __device__ inline void vault_at(double* mdl, double* phi) {
 
 }
 
-__device__ inline void fore_target_headroom(double* mdl, double* cst, double* fr, double* leg, double* paw, double* branch, double* mdi, double* csti) {
+__device__ inline double fore_target_headroom(double* mdl, double* cst, double fr, int leg, double paw, double branch, double* mdi, double* csti) {
     d1a, d1b, q1r, q2r, d1c = fore_ik_at(mdl, cst, fr, leg, paw, branch, csti, mdi);
 
     double c1 = mdi[OI_fore_coord + leg * 2];
@@ -3185,7 +3142,7 @@ __device__ inline void fore_target_headroom(double* mdl, double* cst, double* fr
 
 }
 
-__device__ inline void fore_follow(double* mdl, double* cst, double* fr, double* leg, double* paw_t, double* branch, double* mdi, double* csti, double* result) {
+__device__ inline double fore_follow(double* mdl, double* cst, double fr, int leg, double paw_t, double branch, double* mdi, double* csti, double result) {
     double p[3];
 
     p[0] = paw_t[leg * 3];
@@ -3239,7 +3196,8 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, double*
 
             lo = mid;
 
-        } else {
+}
+        else {
 
             hi = mid;
 
@@ -3283,7 +3241,8 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, double*
 
             lo = mid;
 
-        } else {
+}
+        else {
 
             hi = mid;
 
@@ -3309,7 +3268,7 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, double*
 
 }
 
-__device__ inline void fore_env(double* mdl, double* cst, double* fr, double* leg, double* paw_t, double* v3, double* csti) {
+__device__ inline double fore_env(double* mdl, double* cst, double fr, int leg, double paw_t, double v3, double* csti) {
     double m16[16];
 
     for (int i = 0; i < (16); ++i) {
@@ -3337,7 +3296,7 @@ __device__ inline void fore_env(double* mdl, double* cst, double* fr, double* le
 
     double a2 = dd * dd - hgt * hgt;
 
-    double amax = math.sqrt(a2) if a2 > (double)(0.0) else (double)(0.0);
+    double amax = sqrt(a2) if a2 > (double)(0.0) else (double)(0.0);
 
     double vv = fmax((double)(0.0), v3);
 
@@ -3362,7 +3321,7 @@ __device__ inline void fore_env(double* mdl, double* cst, double* fr, double* le
 
 }
 
-__device__ inline void hind_deadline_fn(double* h_lt_o, double* h_lt_h, double* tair, double* fold_budget, double* unload_ticks) {
+__device__ inline double hind_deadline_fn(double h_lt_o, double h_lt_h, double tair, double fold_budget, double unload_ticks) {
     // returns (deadline_tick, is_unload); 0 deadline = no completed other step
 
     double dl = np.(long long)(0);
@@ -3399,7 +3358,7 @@ __device__ inline void hind_deadline_fn(double* h_lt_o, double* h_lt_h, double* 
 
 }
 
-__device__ inline void paw_leg(double* paw_t, double* leg, double* out) {
+__device__ inline double paw_leg(double paw_t, int leg, double out) {
     out[0] = paw_t[leg * 3];
 
     out[1] = paw_t[leg * 3 + 1];
@@ -3417,7 +3376,7 @@ __device__ inline void paw_leg(double* paw_t, double* leg, double* out) {
 
 }
 
-__global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, double* a_fore_entry, double* a_fore_conv, double* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, double* a_hind_branch, int* a_hind_held, double* a_hind_last_fire, double* a_hind_last_td, double* a_hind_fires, double* a_hind_tds, double* a_hind_xoff, double* a_height_latched, double* a_cmd_vx, int* a_cmd_live, double* a_cmd_first_tick, double* a_cmd_fires, long long* a_ticks, double* a_adv_calls, long long* a_refused, long long* a_refused_class, int* a_collapsed, int* rb, int* rbi, double* a_rc) {
+__global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, int* a_swing_from, int* a_swing_to, int* a_fore_t, double* a_fore_stance, int* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, int* a_hind_t, double* a_hind_from, int* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, double* a_hind_branch, int* a_hind_held, int* a_hind_last_fire, int* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, double* a_height_latched, double* a_cmd_vx, int* a_cmd_live, int* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, long long* a_adv_calls, long long* a_refused, int* a_refused_class, int* a_collapsed, double rb, int* rbi, double* a_rc) {
     double pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8];
 
     int e = blockIdx.x * blockDim.x + threadIdx.x;
@@ -3761,10 +3720,6 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
     // the plant law's v argument (the adapter's authority law)
 
-}
-}
-}
-}
     double v_eff = fmax((double)(0.0), v[3]);
 
     if (cmd_on != 0) {
@@ -3822,9 +3777,9 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
             qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi);
 
-            double e0 = math.sqrt((qa1 - q[c1]) * (qa1 - q[c1]) + (qa2 - q[c2]) * (qa2 - q[c2]));
+            double e0 = sqrt((qa1 - q[c1]) * (qa1 - q[c1]) + (qa2 - q[c2]) * (qa2 - q[c2]));
 
-            double e1 = math.sqrt((qb1 - q[c1]) * (qb1 - q[c1]) + (qb2 - q[c2]) * (qb2 - q[c2]));
+            double e1 = sqrt((qb1 - q[c1]) * (qb1 - q[c1]) + (qb2 - q[c2]) * (qb2 - q[c2]));
 
             ikb[leg] = 1;
 
@@ -3871,7 +3826,7 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
             double a2 = dd * dd - hgt * hgt;
 
-            double amax = math.sqrt(a2) if a2 > (double)(0.0) else (double)(0.0);
+            double amax = sqrt(a2) if a2 > (double)(0.0) else (double)(0.0);
 
             double vv = fmax((double)(0.0), v[3]);
 
@@ -3890,7 +3845,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 }
                 tau1 = fmax((double)(0.0), env_s / cst[CF_dt] - (tair + (double)(1.0)));
 
-            } else if (xoff > (double)(0.0) && vv > (double)(1e-9)) {
+}
+            else if (xoff > (double)(0.0) && vv > (double)(1e-9)) {
 
                 double lift_wait = fmax((double)(0.0), cst[CF_duty] - phi[leg]) * cst[CF_t_cycle] + (double)(0.25) * cst[CF_t_cycle];
 
@@ -3910,7 +3866,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                 f_cy[leg] = f_st[leg] + tair;
 
-            } else {
+}
+            else {
 
                 f_cy[leg] = f_st[leg] + ((double)(1.0) - cst[CF_duty]) / cst[CF_dt];
 
@@ -3950,11 +3907,13 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                 cls = 1;
 
-            } else if (gmin > cst[CF_k_touch] + cst[CF_k_release]) {
+}
+            else if (gmin > cst[CF_k_touch] + cst[CF_k_release]) {
 
                 cls = 0;
 
-            } else {
+}
+            else {
 
                 cls = tch[leg];
 
@@ -3963,7 +3922,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                 phi[leg] = (double)(0.0);
 
-            } else {
+}
+            else {
 
                 phi[leg] = (phi[leg] + cst[CF_dt] / cst[CF_t_cycle]) % (double)(1.0);
 
@@ -3971,7 +3931,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
             tch[leg] = cls;
 
 }
-    } else {
+}
+    else {
 
         for (int leg = 0; leg < (2); ++leg) {
 
@@ -3987,11 +3948,13 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                 cls = 1;
 
-            } else if (gmin > cst[CF_k_touch] + cst[CF_k_release]) {
+}
+            else if (gmin > cst[CF_k_touch] + cst[CF_k_release]) {
 
                 cls = 0;
 
-            } else {
+}
+            else {
 
                 cls = tch[leg];
 
@@ -4039,7 +4002,7 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
                     paw_t[leg * 3 + c] = swf[leg * 3 + c] + (swt[leg * 3 + c] - swf[leg * 3 + c]) * sg;
 
 }
-                paw_t[leg * 3 + 1] = paw_t[leg * 3 + 1] + carch * math.sin(PI * sg);
+                paw_t[leg * 3 + 1] = paw_t[leg * 3 + 1] + carch * sin(PI * sg);
 
 }
             if (f_mo[leg] == 0 && f_t[leg] >= f_st[leg]) {
@@ -4069,11 +4032,13 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                         gated = 1;
 
-                    } else if (f_mo[o] == 0 && f_en[o] != 0 && f_dp[o] != 0 && f_t[o] < (double)(1.0)) {
+}
+                    else if (f_mo[o] == 0 && f_en[o] != 0 && f_dp[o] != 0 && f_t[o] < (double)(1.0)) {
 
                         gated = 1;
 
-                    } else if (f_mo[o] == 0 && f_en[o] != 0 && f_t[o] >= f_st[o]) {
+}
+                    else if (f_mo[o] == 0 && f_en[o] != 0 && f_t[o] >= f_st[o]) {
 
                         int o_prior = (int)(0);
 
@@ -4158,7 +4123,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                     act = 1;
 
-                } else if (gated == 0 && due != 0 && thin_seat != 0 && wall_bound != 0) {
+}
+                else if (gated == 0 && due != 0 && thin_seat != 0 && wall_bound != 0) {
 
                     double seat[3];
                     fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat);
@@ -4167,22 +4133,25 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                     double dsy = seat[1] - paw_t[leg * 3 + 1];
 
-                    if (math.sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]) {
+                    if (sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]) {
 
                         act = 1;
 
-                    } else {
+}
+                    else {
 
                         act = 2;
 
 }
-                } else if (gated != 0 && wall_bound != 0 && wall_hr < (double)(0.008040)) {
+}
+                else if (gated != 0 && wall_bound != 0 && wall_hr < (double)(0.008040)) {
 
     // the wave-26 wall-adjacent wait override (kWaitFloor)
 
                     act = 1;
 
-                } else if (f_t[leg] >= f_cy[leg] || f_t[leg] >= env_t) {
+}
+                else if (f_t[leg] >= f_cy[leg] || f_t[leg] >= env_t) {
 
     // the wave-20 in-place ground re-plant
 
@@ -4195,16 +4164,18 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                         dsy = seat[1] - paw_t[leg * 3 + 1];
 
-                        if (math.sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]) {
+                        if (sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]) {
 
                             act = 3;
 
-                        } else {
+}
+                        else {
 
                             act = 2;
 
 }
-                    } else {
+}
+                    else {
 
                         act = 3;
 
@@ -4273,7 +4244,7 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                     a2 = dd * dd - hgt * hgt;
 
-                    amax = math.sqrt(a2) if a2 > (double)(0.0) else (double)(0.0);
+                    amax = sqrt(a2) if a2 > (double)(0.0) else (double)(0.0);
 
                     if (xoff > amax) {
 
@@ -4288,7 +4259,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                     swt[leg * 3 + 2] = pw[2];
 
-                } else if (act == 2) {
+}
+                else if (act == 2) {
 
                     for (int c = 0; c < (3); ++c) {
 
@@ -4307,7 +4279,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                     f_cy[leg] = f_st[leg] + tair;
 
-                } else if (act == 3) {
+}
+                else if (act == 3) {
 
                     hpt = mdi[OI_fore_heel_pt + leg];
 
@@ -4344,9 +4317,9 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                     qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi);
 
-                    e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]));
+                    e0 = sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]));
 
-                    e1 = math.sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]));
+                    e1 = sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]));
 
                     ikb[leg] = 1;
 
@@ -4408,9 +4381,9 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                 qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, csti, mdi);
 
-                e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]));
+                e0 = sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]));
 
-                e1 = math.sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]));
+                e1 = sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]));
 
                 ikb[leg] = 1;
 
@@ -4464,13 +4437,15 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                     f_cy[leg] = f_st[leg] + tair;
 
-                } else if (f_cv[leg] != 0) {
+}
+                else if (f_cv[leg] != 0) {
 
                     f_st[leg] = cst[CF_duty] / cst[CF_dt];
 
                     f_cy[leg] = Tf;
 
-                } else {
+}
+                else {
 
     // the grid convergence search (wave 15)
 
@@ -4482,7 +4457,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                         slot = slot + (double)(0.25) * Tf;
 
-                    } else {
+}
+                    else {
 
                         slot = slot + (double)(0.75) * Tf;
 
@@ -4502,7 +4478,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                         f_cy[leg] = Tf;
 
-                    } else {
+}
+                    else {
 
                         double m16[16];
 
@@ -4533,7 +4510,7 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                         a2 = dd * dd - hgt * hgt;
 
-                        amax = math.sqrt(a2) if a2 > (double)(0.0) else (double)(0.0);
+                        amax = sqrt(a2) if a2 > (double)(0.0) else (double)(0.0);
 
                         double envc = (double)(-1.0);
 
@@ -4751,13 +4728,15 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                 gated = 1;
 
-            } else if (h_lt[o] + np.(long long)(1) > tick) {
+}
+            else if (h_lt[o] + np.(long long)(1) > tick) {
 
                 gated = 1;
 
                 gated_b = 1;
 
-            } else {
+}
+            else {
 
     // the support floor: the other three legs >= 2 live pads
 
@@ -4892,7 +4871,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                     pass  # the guard blocks the waive (census DEFERRED);
 
-                } else {
+}
+                else {
 
                     gated = 0;
 
@@ -5003,9 +4983,9 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
             double a2m = cst[CF_hind_L1] + cst[CF_hind_L2];
 
-            double dxs = cst[CF_hind_xm] * math.cos(h_ap[hl]);
+            double dxs = cst[CF_hind_xm] * cos(h_ap[hl]);
 
-            double dys = hgt + cst[CF_hind_xm] * math.sin(h_ap[hl]);
+            double dys = hgt + cst[CF_hind_xm] * sin(h_ap[hl]);
 
             double under = a2m * a2m - dys * dys;
 
@@ -5013,7 +4993,7 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
             if (under > (double)(0.0)) {
 
-                xmax = dxs + math.sqrt(under);
+                xmax = dxs + sqrt(under);
 
 }
             if (xoff > xmax) {
@@ -5161,7 +5141,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                             kk = kk - 1;
 
-                        } else {
+}
+                        else {
 
                             break;
 
@@ -5186,7 +5167,8 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                             kk = kk - 1;
 
-                        } else {
+}
+                        else {
 
                             break;
 
@@ -5229,7 +5211,7 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
                             svz = svz + ptJ[(r * 3 + 2) * 18 + i] * v[i];
 
 }
-                        double sl = math.sqrt(svx * svx + svz * svz);
+                        double sl = sqrt(svx * svx + svz * svz);
 
                         if (sl > slip_mx) {
 
@@ -5258,13 +5240,14 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
                                 continue;
 
 }
-                            double s = (int)(1) if cr > (double)(0.0) else (int)(-1);
+                            int s = (int)(1) if cr > (double)(0.0) else (int)(-1);
 
                             if (side == 0) {
 
                                 side = s;
 
-                            } else if (s != side) {
+}
+                            else if (s != side) {
 
                                 viol = i;
 
@@ -5282,7 +5265,7 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
                             double ez = chz[j] - chz[i];
 
-                            double nl = math.sqrt(ex * ex + ez * ez);
+                            double nl = sqrt(ex * ex + ez * ez);
 
                             if (nl >= (double)(1e-12)) {
 
@@ -5507,7 +5490,7 @@ __global__ void tick_plan_kernel(double* mdl, double* mdi, double* cst, double* 
 
 }
 
-__global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, double* a_fore_entry, double* a_fore_conv, double* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, double* a_hind_branch, int* a_hind_held, double* a_hind_last_fire, double* a_hind_last_td, double* a_hind_fires, double* a_hind_tds, double* a_hind_xoff, double* a_height_latched, double* a_cmd_vx, int* a_cmd_live, double* a_cmd_first_tick, double* a_cmd_fires, long long* a_ticks, double* a_adv_calls, long long* a_refused, long long* a_refused_class, int* a_collapsed, int* rb, int* rbi, double* a_rc) {
+__global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, int* a_swing_from, int* a_swing_to, int* a_fore_t, double* a_fore_stance, int* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, int* a_hind_t, double* a_hind_from, int* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, double* a_hind_branch, int* a_hind_held, int* a_hind_last_fire, int* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, double* a_height_latched, double* a_cmd_vx, int* a_cmd_live, int* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, long long* a_adv_calls, long long* a_refused, int* a_refused_class, int* a_collapsed, double rb, int* rbi, double* a_rc) {
     double pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8];
 
     int e = blockIdx.x * blockDim.x + threadIdx.x;
@@ -5854,10 +5837,6 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                       M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
 
-}
-}
-}
-}
         int d = (int)(0);
 
         while (d < 12) {
@@ -5908,14 +5887,15 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 }
                             tgt[1] = tgt[1] + carch;
 
-                        } else {
+}
+                        else {
 
                             for (int cc2 = 0; cc2 < (3); ++cc2) {
 
                                 tgt[cc2] = h_from[hl * 3 + cc2] + (h_to[hl * 3 + cc2] - h_from[hl * 3 + cc2]) * sg;
 
 }
-                            tgt[1] = tgt[1] + carch * math.sin(PI * sg);
+                            tgt[1] = tgt[1] + carch * sin(PI * sg);
 
 }
                         qh_h, qk_h, qa_h = hind_ik_at(mdl, cst, fr, tgt, h_ap[hl], h_br[hl], csti);
@@ -5924,20 +5904,24 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                             target = qh_h;
 
-                        } else if (ji == 1) {
+}
+                        else if (ji == 1) {
 
                             target = qk_h;
 
-                        } else if (ji == 2) {
+}
+                        else if (ji == 2) {
 
                             target = qa_h;
 
-                        } else {
+}
+                        else {
 
                             target = h_mp[hl];
 
 }
-                    } else {
+}
+                    else {
 
                         double qstar[18];
                         tables_at(mdl, phi[hl], qstar);
@@ -5950,7 +5934,8 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
 }
 }
-                } else {
+}
+                else {
 
                     double fl = (d - 9) // 2;
 
@@ -5967,18 +5952,21 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                             target = q1f;
 
-                        } else {
+}
+                        else {
 
                             target = q2f;
 
 }
-                    } else {
+}
+                    else {
 
                         if (ji == 0) {
 
                             target = cst[CF_fore_pose_sh];
 
-                        } else {
+}
+                        else {
 
                             target = cst[CF_fore_pose_el];
 
@@ -6005,7 +5993,8 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                     amp = (double)(1.0) - (double)(settle_n) / (double)(csti[CI_settle_total]);
 
-                } else {
+}
+                else {
 
                     amp = (double)(1.0);
 
@@ -6071,8 +6060,6 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                 adv, rca, o_q, o_v, o_w, csti, mdi);
 
-}
-}
         for (int i = 0; i < (18); ++i) {
 
             trial_q[i] = o_q[i];
@@ -6111,11 +6098,13 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                         enabled = 0;
 
-                    } else if ((d - 1) < 12 && ((csti[CI_drive_en] >> (d - 1)) & 1) == 0) {
+}
+                    else if ((d - 1) < 12 && ((csti[CI_drive_en] >> (d - 1)) & 1) == 0) {
 
                         enabled = 0;
 
-                    } else if ((d - 1) == 12 && csti[CI_posture_drive] == 0) {
+}
+                    else if ((d - 1) == 12 && csti[CI_posture_drive] == 0) {
 
                         enabled = 0;
 
@@ -6170,8 +6159,6 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                                     adv, rca, o_q, o_v, o_w, csti, mdi);
 
-}
-}
                             if (rca[0] != 0) {
 
                                 rc = rca[0];
@@ -6197,7 +6184,8 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
                                     trial_w[i] = o_w[i];
 
 }
-                            } else {
+}
+                            else {
 
                                 hi = mid;
 
@@ -6234,8 +6222,6 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                         adv, rca, o_q, o_v, o_w, csti, mdi);
 
-}
-}
                 for (int i = 0; i < (18); ++i) {
 
                     trial_q[i] = o_q[i];
@@ -6269,11 +6255,13 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                             enabled = 0;
 
-                        } else if (d < 12 && ((csti[CI_drive_en] >> d) & 1) == 0) {
+}
+                        else if (d < 12 && ((csti[CI_drive_en] >> d) & 1) == 0) {
 
                             enabled = 0;
 
-                        } else if (d == 12 && csti[CI_posture_drive] == 0) {
+}
+                        else if (d == 12 && csti[CI_posture_drive] == 0) {
 
                             enabled = 0;
 
@@ -6327,7 +6315,8 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
                 bat[d] = store - spent;
 
-            } else {
+}
+            else {
 
                 bat_post = store - spent;
 
@@ -6509,7 +6498,7 @@ __global__ void tick_integ_kernel(double* mdl, double* mdi, double* cst, double*
 
 }
 
-__global__ void tick_post_kernel(double* mdl, double* mdi, double* cst, double* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, double* a_fore_entry, double* a_fore_conv, double* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, double* a_hind_branch, int* a_hind_held, double* a_hind_last_fire, double* a_hind_last_td, double* a_hind_fires, double* a_hind_tds, double* a_hind_xoff, double* a_height_latched, double* a_cmd_vx, int* a_cmd_live, double* a_cmd_first_tick, double* a_cmd_fires, long long* a_ticks, double* a_adv_calls, long long* a_refused, long long* a_refused_class, int* a_collapsed, int* rb, int* rbi, double* a_rc) {
+__global__ void tick_post_kernel(double* mdl, double* mdi, double* cst, double* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, int* a_swing_from, int* a_swing_to, int* a_fore_t, double* a_fore_stance, int* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, int* a_hind_t, double* a_hind_from, int* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, double* a_hind_branch, int* a_hind_held, int* a_hind_last_fire, int* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, double* a_height_latched, double* a_cmd_vx, int* a_cmd_live, int* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, long long* a_adv_calls, long long* a_refused, int* a_refused_class, int* a_collapsed, double rb, int* rbi, double* a_rc) {
     double pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8];
 
     int e = blockIdx.x * blockDim.x + threadIdx.x;
@@ -6846,7 +6835,7 @@ __global__ void tick_post_kernel(double* mdl, double* mdi, double* cst, double* 
 
         for (int i = 0; i < (18); ++i) {
 
-            if (math.isnan(q[i]) || math.isnan(v[i]) || math.isinf(q[i]) || math.isinf(v[i])) {
+            if (isnan(q[i]) || isnan(v[i]) || isinf(q[i]) || isinf(v[i])) {
 
                 rc = 1;
 
