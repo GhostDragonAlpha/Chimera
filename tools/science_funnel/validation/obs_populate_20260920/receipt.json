@@ -22,10 +22,73 @@
   }
  },
  "pre_measured_context": {
-  "anchor_trace": {"path": "ifreeze worktree .tmp/ifreeze/audit/audit_stderr.txt (ephemeral; sha-verified at use)", "sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481"},
+  "anchor_trace": {
+   "path": "ifreeze worktree .tmp/ifreeze/audit/audit_stderr.txt (ephemeral; sha-verified at use)",
+   "sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481"
+  },
   "anchor_scene_file_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
   "derivation_comparison": "com-projection-east delta x 300 Hz separates all 21 pairs (margins 3.0e-4 .. 9.1e-2 m/s; thinest (20,35) at one 1e-6 m print quantum); base-x delta x 300 Hz (the audit label) also separates all 21 with larger margins; the com-projection delta is the field's literal named quantity (com_vel_x_heading, CoM velocity) and is the chosen delivery",
   "p3_slice_has_no_com_vel_keys": true
  },
- "measurements": "PENDING (appended after the run; the prereg block above is frozen and never edited)"
+ "measurements": {
+  "run": "run_obs_populate.ps1 (the declared harness): fresh scene generation, out-of-tree cl.exe GAIT_EVENT_TRACE + no-trace builds of the IDENTICAL HEAD source, ONE live walk run + no-trace run + ref-exe run, the interface-freeze fence reused unmodified, the control mine (theirs, verbatim), the treatment mine x3, the pins fences, the determinism comparator",
+  "F1_SEPARATION": {
+   "status": "GREEN",
+   "control": "the interface-freeze pipeline VERBATIM on the fresh trace reproduces their pinned census EXACTLY: 277 distinct observations, 13 bit-identical groups / 38 ticks, 21 aliased pairs + 13 context-only; the fresh aliased_pairs.json is byte-equal to their pinned artifact (committed here as control_aliased_pairs.json)",
+   "treatment": "with field 21 delivered: 302 distinct observations (was 277), 0 bit-identical groups, 0 aliased pairs, 0 context-only; ALL 21 pairs separated via com_vel_x_heading; zero survivors; zero new pairs",
+   "per_pair": "20 body-advance-clause pairs (16 exclusively-body + 4 pad+body) separate on their named deciding field (now delivered); the touch-pattern pair (12,25) separates via field 21 (0.6555 vs 0.6411 m/s) while its NAMED deciding fields (per-foot slots 9-14) stay STRUCTURAL -- declared, not solved",
+   "margins": "thinest pair (20,35) at 3.0e-04 m/s (one 1e-6 m CoM-projection print quantum, far above float32 eps); widest (40,54) at 9.15e-2 m/s; full ledger in pair_ledger.json",
+   "delivery_census": "com_vel_x_heading available on 301/302 ticks (t0 has no predecessor -- masked, mean fill, the group_delivery rule)"
+  },
+  "F2_TRACE_INVARIANCE": {
+   "status": "GREEN",
+   "scene_file_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 (== the wave-38/interface-freeze anchor)",
+   "leg_A": "trace stdout == no-trace stdout BYTE-IDENTICAL, both == the wave-47 ship anchor 8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "leg_B": "ref-exe (stdout 71065ac5...) pure subsequence: 152 lines all present in order, 2 additions all committed F-G39/F-G40 plumbing; walk headline byte-equal (WALK refused_tick=302 worst_ledger_J=30.970714); pass/reds/checks equal; stderr refusal WALK REFUSED tick 302: gait_positional_correction_budget",
+   "trace": "stderr walk trace sha256 c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481 -- the interface-freeze audit's anchor BYTE-EXACT: the delivery moved no physics byte"
+  },
+  "F3_TABLE_INVARIANCE": {
+   "status": "GREEN",
+   "regeneration": "byte-identical, sha256 e8c2d698dee0337414c48e8d2f6569c45f6f61828dabdeff6a4f1188b1c0671c (68230 bytes); OBS_SCHEMA_VERSION 2, OBS_DIM 80 unchanged",
+   "scope_diff": "git diff --name-only 1beb72e9: tools/science_funnel/typeb_export/body_velocity.py (+tests/test_obs_populate.py, the declared test file) + tools/science_funnel/validation/obs_populate_20260920/** -- NOTHING else; ChimeraEngine/ and Chimera/ diff EMPTY (zero engine bytes); observation_schema.py, the table JSON, INTERFACE.md, gait_controller.hpp, gait_*, command_record.py, option_certificate.py untouched"
+  },
+  "F4_CORPUS_REFREEZE": {
+   "status": "GREEN",
+   "declared_mover": "the observation stream, by construction: com_vel_x_heading delivered on 301/302 ticks; the mask census moves (never-available fields 54 -> 52); cause registered in the prereg -- legal PRE-training (no frozen actor exists; this lane IS the pre-training gate)",
+   "discovered_side_effect": "yaw_rate_prev becomes available at the frozen reader's OWN declared default (observation_schema._read_field: float(prev.get('yaw_rate', 0.0) or 0.0)) once the body_velocity group is delivered -- the group gate is the only availability lever and no per-field opt-out exists; this lane delivers NO value for it (the reader supplies its own default); the second field of the 54 -> 52 move; the table is untouched (F3); carried with cause, discovered at first projection",
+   "pins_hold": {
+    "p3_manifest_hash": "9ca7e976dfb0dedd3f56dfa404673ee77c00801acb2753cdfd83604c480c35b7",
+    "p3_action_stream_replay_3run": "e25406e86cbf5347683ee3824d385bc1d07bfd500e83eb6b9133a1e82d4bfbd9 (28800 bytes, 60 decisions)",
+    "section_sha": "3de82a1156ac2f39ed04da24c7fd40357642d7bc029e09b509dfc3ea1af63079",
+    "table_sha": "e8c2d698dee0337414c48e8d2f6569c45f6f61828dabdeff6a4f1188b1c0671c",
+    "slice_sha": "69babe846e2447333b527c7fd8c190499e5ac1d55733dbd043edd0422245daa2",
+    "legacy_64_literal": "FIELDS[:64] == the frozen v1 table"
+   },
+   "normalization_cause": "the body_velocity constants remain the frozen 0/1 never-available placeholders (F3 pins the section); the delivered values ride raw-scale under clip 8.0 (measured range ~0.55..0.78 m/s, no clipping); the measured-constants regeneration for the newly delivered field is the trainer lane's contract (the obs-split lane's 64->80 resize precedent)"
+  },
+  "F5_DETERMINISM": {
+   "status": "GREEN",
+   "three_runs": "aliased_pairs_after.json (sha d6127635...), pair_ledger.json (sha f5f0ab45...), mine_obs_populate_out.txt (sha 6eced0f2...) byte-identical across runs 1..3 (fresh parse + delivery + projection + search each run)"
+  },
+  "prediction_reconciliation": {
+   "P1": "GREEN -- 20/20 body-advance pairs separate (16 exclusively-body + 4 pad+body)",
+   "P2": "GREEN with the declared note -- the touch pair (12,25) separates via field 21; its named deciding fields stay STRUCTURAL; the residual is named: a pair differing ONLY in fore-foot touch identity at equal body advance would still alias (none occurs post-delivery on this walk)",
+   "P3": "GREEN -- 302 distinct observations, no new aliased pairs",
+   "P4": "GREEN with the residual named -- the 4 pad-deformation pairs separate via their body-advance clause; NO frozen-vocabulary field carries the per-paw min-gap deformation rate (the endpoint-signed pad channels ride 'lohi' unavailable and are hind-legs-only): the vocabulary residual is a v3-schema question for another lane, not solved here"
+  },
+  "residual_alias_ledger": {
+   "surviving_aliased_pairs": 0,
+   "structural_residuals": "fields 9-20 per-foot contact/force slots: the frozen reader's all-or-nothing 6-slot vector read vs the FOUR-paw body (ml/mr uninhabited); no lawful delivery exists; slots ride unavailable, never invented",
+   "vocabulary_residuals": "the per-paw min-gap deformation rate (the audit's pad clause label) is not a frozen-vocabulary quantity -- a v3-schema question for another lane",
+   "declared_scope_residuals": "field 22 com_vel_y_heading IS derivable (the south delta) and is NOT delivered -- a scope decision, declared; field 23 com_vel_z is not determined (planar projection); field 24 yaw_rate is not determined by this record",
+   "delivery_mechanism": "field 21 DERIVED-FROM-TRACE (CoM projection east first difference x 300 Hz, the walk's own clock); zero new engine readouts; zero engine bytes"
+  },
+  "harness_notes": "the first harness pass measured every leg GREEN through the treatment runs; MY fences_corpus.py then crashed on a json.load-vs-json.loads bug in its control-census comparison clause (after all pins printed GREEN); fixed and every fence leg re-run to GREEN -- recorded openly, nothing tuned",
+  "gates": {
+   "pytest": "44 passed / 0 failed (the interface-freeze suite + the obs-split suite + 7 new obs-populate tests; the walk_v1 guard test exercised LIVE against the fresh run's trace, byte-identical to the anchor c6f9b6c0, placed at the test's declared ephemeral path)",
+   "training_gate": "PASS exit 0 (Froude-consistency; a delivery lane ships no trained policy)",
+   "graph_suite": "NOT REACHED (zero engine bytes)"
+  }
+ },
+ "pass": true
 }

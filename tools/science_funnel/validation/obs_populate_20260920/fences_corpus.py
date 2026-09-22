@@ -105,9 +105,9 @@ def pins(control_json: str) -> None:
           "sha %s" % shas.pop()[:16])
 
     # the CONTROL instrument reproduces the pinned census on the fresh trace
-    fresh = json.load(open(control_json, "rb").read().decode("utf-8"))
-    pinned = json.load(open(os.path.join(IFREEZE, "aliased_pairs.json"),
-                            "rb").read().decode("utf-8"))
+    fresh = json.loads(open(control_json, "rb").read().decode("utf-8"))
+    pinned = json.loads(open(os.path.join(IFREEZE, "aliased_pairs.json"),
+                             "rb").read().decode("utf-8"))
     check("F2 control census byte-equal (fresh mine == pinned artifact)",
           fresh == pinned,
           "%d aliased pairs, %d distinct obs, trace %s..."
