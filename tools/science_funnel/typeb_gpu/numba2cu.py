@@ -40,16 +40,22 @@ from pathlib import Path
 SRC = Path(__file__).parent / "walker_numba_split.py"
 DST = Path(__file__).parent / "walker_kernels.cuh"
 
-INT_PTR_ARGS = ("a_touching", "a_captured", "a_settle", "a_ik_branch",
-                "a_fore_mode", "a_fore_td_count", "a_hind_mode", "a_hind_held",
-                "a_fore_clamped", "a_fore_replants", "a_cmd_live", "a_cmd_first_tick",
-                "a_refused_class", "a_collapsed", "a_swing_from", "a_swing_to",
-                "a_fore_t", "a_fore_cycle", "a_fore_entry", "a_fore_conv",
-                "a_hind_t", "a_hind_fires", "a_hind_tds", "a_hind_last_fire",
-                "a_hind_last_td", "a_cmd_fires", "rbi")
-LL_PTR_ARGS = ("a_ticks", "a_refused", "a_adv_calls")
-# int-valued pointer args beyond the name-prefix lists
-INT_ARR_ARGS = {"mdi", "csti"}
+# EXACT dtype tables (membership, NOT prefix) -- derived from the lane's host
+# allocation in walker_nb_split_env.py lines 32-64 (z=float64, zi=int32,
+# zl=int64). The old prefix lists typed POSITION arrays int (a_hind_to matched
+# the a_hind_t prefix; a_swing_from/to hold x/y/z footfall targets) and mistyped
+# the int64 clocks -- silent f64 truncation, physics-corrupting.
+HOST_INT32_ARGS = ("a_touching", "a_captured", "a_settle", "a_ik_branch",
+                   "a_fore_mode", "a_fore_entry", "a_fore_conv", "a_fore_td_plant",
+                   "a_fore_clamped", "a_fore_replants", "a_fore_td_count",
+                   "a_hind_mode", "a_hind_branch", "a_hind_held", "a_hind_fires",
+                   "a_hind_tds", "a_height_latched", "a_cmd_live", "a_cmd_fires",
+                   "a_adv_calls", "a_refused", "a_refused_class", "a_collapsed",
+                   "a_rc", "rbi", "mdi", "csti", "a_touching0")
+HOST_INT64_ARGS = ("a_hind_last_fire", "a_hind_last_td", "a_cmd_first_tick", "a_ticks")
+HOST_INT_SCALARS = ("settle_total",)
+# int-valued pointer args beyond the name tables
+INT_ARR_ARGS = set()
 GLOBAL_INTS = {"cu_total_q"}
 SINGLE_INT_ARGS = re.compile(r"^(i|j|k|n|e|leg|hl|hr|h|o|m|ne|E|N|pt|col|row)$")
 
@@ -398,10 +404,12 @@ def translate_function(name, args_str, body_lines, kind, tarity, warn, arg_kind_
     cargs = []
     arg_kind = {}
     for an in argnames:
-        if an.startswith(INT_PTR_ARGS):
+        if an in HOST_INT32_ARGS:
             arg_kind[an] = "int*"
-        elif an.startswith(LL_PTR_ARGS):
+        elif an in HOST_INT64_ARGS:
             arg_kind[an] = "long long*"
+        elif an in HOST_INT_SCALARS:
+            arg_kind[an] = "int"
         elif an in INT_ARR_ARGS:
             arg_kind[an] = "int*"
         elif an in arrays and an in idx_ids:
@@ -723,9 +731,9 @@ PTRS = ("double*", "int*", "long long*")
 
 def seed_kind(fn, p):
     i = INFO[fn]
-    if p.startswith(INT_PTR_ARGS) or p in INT_ARR_ARGS:
+    if p in HOST_INT32_ARGS:
         return "int*"
-    if p.startswith(LL_PTR_ARGS):
+    if p in HOST_INT64_ARGS:
         return "long long*"
     if p in i["subd"] and p in i["idx"]:
         return "int*"
