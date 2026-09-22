@@ -9,3 +9,5 @@ __pycache__/
 *.exe
 # MSVC object files join the built-binaries rule (recompile is minutes).
 *.obj
+*.dll.pre_chainfix
+*.pre_fkfix
