@@ -1,0 +1,63 @@
+{
+ "lane": "agent/first-skill-prestage-20260922 (the FIRST-SKILL PRESTAGE lane)",
+ "date": "2026-09-22",
+ "agent": "GLM 5.3",
+ "base": "73f3a860 (agent/obs-split-channels-20260921, OBS-SPLIT-CHANNELS SHIP); lane branch agent/first-skill-prestage-20260922",
+ "deliverable": "the skill-1 training program staged to launch the hour the GPU environment's first tick lands: the Rule-0 run manifest frozen BEFORE any training exists, the normalized shaping reward, the scripted baseline, the exact acceptance + ranking, and the one-page trigger runbook -- zero decisions left for the executor lane",
+ "status": "PRESTAGE COMPLETE -- nothing trained, nothing measured on a body, no engine byte touched. The manifest is the prereg; the falsifiers fire (or not) only when the run executes.",
+ "rule0_prereg": {
+  "path": "tools/science_funnel/validation/first_skill_prestage_20260922/run_manifest.json",
+  "sha256_frozen": "c85ba5c43aa7cf12969caf8df732dc77025bb1f50ab23ab87ed42685fe3ef39a",
+  "frozen_before_any_training_exists": true,
+  "trigger_runbook": {
+   "path": "tools/science_funnel/validation/first_skill_prestage_20260922/RUNBOOK.md",
+   "sha256": "eb8d19a2fceb661b9f84eb3d18e246ee6616a0933e3166cdda7ebde147f9c821"
+  }
+ },
+ "manifest_frozen_fields": {
+  "algorithm": "PPO (RSL-RL LeggedRobotPPO published defaults, cited not tuned): 4096 envs x 24 steps, gamma 0.99, lam 0.95, clip 0.2, entropy 0.01, adaptive lr 1e-3 (KL 0.01), 4 minibatches, 5 epochs; actor 82->128->128->1 tanh (obs v2 80 + 2 goal channels -> the ONE adapter command)",
+  "budget": "1M-decision registered pilot per seed, floored to the iteration grid: 10 iterations x 98,304 = 983,040 decisions x 3 fixed seeds {20260922, 20260923, 20260924}; a pilot, NOT a convergence claim",
+  "curriculum": "NONE -- flat ground only; terrain is skill-2+",
+  "checkpoint_selection": "eval every 25,000 decisions on the fixed eval seed set {20260922..20260926}; ship the best mean return among the LAST 10% of evals (37..40), ties to the EARLIEST; selection is not acceptance",
+  "action_space": "the Type-A adapter's declared channel commanded_target_velocity_x only, mapped (tanh(u)+1)/2 x 0.7636247890 m/s (the banked envelope ceiling); the walk's 8-channel interface stays reflex-owned and unlearned",
+  "task_constants": "waypoint dead ahead at 0.5 m (reachable in the eval window at the banked 0.60 m/s command); reach disc radius 0.0381812394 m = one decision of seed-speed travel; episode cap 300 ticks (the walk's own banked end-of-life region); no-fall = no engine refusal before tick 270; reach window [60, 270]",
+  "falsifiers": {
+   "F-FIRST-SKILL": "trained policy (worst seed) must strictly beat the scripted baseline: reach rate, paired median time-to-waypoint, no-fall 1.0, CoT in band; a baseline match FIRES it honestly",
+   "F-EXPORT-VALID": "frozen export through P3's harness must replay the training-time actions BIT-EXACTLY on the pinned 4096-observation fixture set, two fresh processes byte-identical",
+   "F-ACCEPTANCE-EXACT": "exported policy closed-loop in the CPU-exact engine must meet every hard condition independently, then the ranking; no blended score exists",
+   "carried": "F-OBSERVATION-LEAK, F-CREDIT-BLOCKED, F-REFLEX-REGRESSION from the registered astra-typeb-pilots envelope"
+  },
+  "no_tuning_clause": "no field adjusts after any result is inspected; amendments create new registrations"
+ },
+ "reward_terms": {
+  "shape": "shaping ONLY, normalized O(1), NEVER acceptance",
+  "r_progress": "(delta CoM x along the body-to-waypoint axis) / (v_seed x T_decision = 0.7636247890 x 0.05 s), clipped [-1,1]: exactly +1 per decision at the banked seed speed",
+  "r_heading": "0.1 x (cos(psi_err) - 1) in [-0.2, 0]: off-axis velocity steering penalty from the declared obs channels; zero at alignment",
+  "w_head_derivation": "the frozen SUBORDINATION INEQUALITY: worst heading total (2 x w x 20 = 4.0) <= one third of the progress reach scale (0.5/0.038181 = 13.096; third = 4.365); w=0.1 is the largest declared candidate {0.05,0.1,0.2,0.5,1.0} satisfying it -- one inequality, evaluated once",
+  "excluded_by_name": "NO alive bonus (the crouch disease), NO terminal term (acceptance leaking into reward), NO effort term (unmeasured Joule scale), NO absolute speed target (the contradictory-reward failure training_gate refuses)"
+ },
+ "baseline": {
+  "exists": true,
+  "form": "tools/science_funnel/first_skill/baseline_controller.py: scripted, action-interface-identical (same adapter channel), constant 0.60 m/s issued once at tick 0 and ZOH-held -- the banked R2 value, the only non-seed command the ship state has measured end-to-end; zero per-tick decisions, reads no observations",
+  "protocol": "measured FIRST on the identical eval seed set/episode rules/CPU-exact engine; its per-episode CoT distribution is the FROZEN BAND (policy median <= baseline median + (baseline max - baseline median)); its bars are in the acceptance ledger before any policy comparison",
+  "honesty_clause": "per Astra: this scripted controller may match the trained policy -- it is built and measured precisely so F-FIRST-SKILL can fire if learning was not necessary"
+ },
+ "tests_and_gates": {
+  "first_skill_prestage_tests": "19 passed, 0 failed (pytest; every test names the falsifier or frozen clause it guards; includes the P3 validator accepting the skill-1 manifest shape with ZERO amendments)",
+  "creature_graph_both_roots": "37 tests OK twice: root A (both roots on PYTHONPATH) and root B (bare PYTHONPATH), CHIMERA_DATA_STORE pinned",
+  "matter_kernel": "test_definition 9/9 OK",
+  "training_gate": "PASS, exit 0, with theHuman's own published numbers (--target-speed 0.9924 = comfortable_speed_ms, --stride-s 1.10 = 2 x step_time_s 0.55): Fr = 0.0990, every target Froude-consistent; the reward carries no speed target at all, and its normalization constant 0.7636247890 m/s is a MEASURED envelope quantity (command_adapter receipt), not a target"
+ },
+ "files": [
+  "tools/science_funnel/validation/first_skill_prestage_20260922/run_manifest.json (THE PREReg, frozen)",
+  "tools/science_funnel/validation/first_skill_prestage_20260922/RUNBOOK.md (the trigger doc)",
+  "tools/science_funnel/validation/first_skill_prestage_20260922/receipt.json (this file)",
+  "tools/science_funnel/first_skill/__init__.py",
+  "tools/science_funnel/first_skill/reward.py (the frozen shaping)",
+  "tools/science_funnel/first_skill/baseline_controller.py (the frozen scripted baseline)",
+  "tools/science_funnel/first_skill/acceptance.py (the frozen hard conditions + ranking)",
+  "tools/science_funnel/first_skill/tests/test_first_skill_prestage.py (19 tests)"
+ ],
+ "not_done_here": "no GPU env, no training run, no policy weights, no engine build, no measurement of any controller on a body -- those belong to the execution lane the hour the tick lands, running exactly the RUNBOOK",
+ "pass": true
+}

@@ -1,0 +1,153 @@
+{
+ "manifest_version": "first-skill-run-manifest/1.0.0",
+ "kind": "first_skill_training_run_manifest",
+ "frozen_at": "2026-09-22",
+ "lane": "agent/first-skill-prestage-20260922",
+ "agent": "GLM 5.3",
+ "base": {
+  "commit": "73f3a860",
+  "branch": "agent/obs-split-channels-20260921",
+  "meaning": "the OBS-SPLIT-CHANNELS ship state: obs v2 (80 = 64 frozen legacy + 16 pad-split), P3 export harness 1b6d7749 frozen beneath it, the Type-A command adapter 9808dc94 beneath that"
+ },
+ "rule_0": {
+  "statement": "THE FIRST-SKILL THEORY. A small PPO actor reading the v2 observation schema (80ch: gait phase, contacts, pad-split, prior commands, interventions) plus 2 declared goal channels, emitting ONE command through the Type-A adapter's declared channel {commanded_target_velocity_x} (the only P0-demonstrated graded authority), can add flat-ground goal tracking (reach a waypoint dead ahead) through the walk's untouched reflex layer, export through P3's frozen harness, and meet the hard conditions in the CPU-exact engine. The skill's PURPOSE is exercising the full pipeline (GPU env -> training -> frozen export -> CPU inference -> exact closed-loop acceptance); passing it does NOT establish learning was necessary -- the scripted baseline settles that question, which is why the baseline is built and measured on the same bars.",
+  "prediction": "Within 1M decisions per seed, at least one of the three fixed seeds yields a checkpoint whose exported closed-loop runs reach the waypoint in every eval episode without a fall, with CoT within the baseline-measured band, in less median time-to-waypoint than the scripted baseline.",
+  "falsifiers_declared_before_any_training_exists": {
+   "F-FIRST-SKILL": "FIRES if the trained policy does not beat the scripted baseline on the acceptance bars under the frozen ranking: worst training seed (of the 3) must have (a) reach_rate strictly greater than the baseline's on the fixed eval seed set, (b) median time-to-waypoint strictly less than the baseline's median over paired eval episodes, (c) no-fall rate 1.0, (d) CoT within the measured band. If a scripted controller matches the trained policy on every bar, F-FIRST-SKILL FIRES and the record carries it: passing the pipeline does not establish learning was necessary.",
+   "F-EXPORT-VALID": "FIRES if the frozen export through P3's harness (tools/science_funnel/typeb_export, policy_manifest + run_f_cpu_policy_bytes machinery) does not reproduce the training-time policy's actions BIT-EXACTLY (float32 byte stream) on the fixed observation fixture set (4096 observations: the first 4096 observations of the eval rollouts at the selected checkpoint, digest-pinned at freeze). Two fresh-process CPU replays must also be byte-identical to each other (the P3 F-CPU-POLICY-BYTES clause).",
+   "F-ACCEPTANCE-EXACT": "FIRES if the exported policy's closed-loop run in the CPU-exact engine (ChimeraEngine gait_unit + the command adapter, the exact CPU kernel) fails ANY hard condition -- a fall (any engine budget refusal before tick 270) on any eval episode, or CoT outside the measured band -- or fails the frozen ranking of F-FIRST-SKILL. Hard conditions are enforced independently; NO blended score exists anywhere in this manifest."
+  },
+  "carried_from_the_shared_envelope": {
+   "source": "lane-archive astra-typeb-pilots-20260921.md (P3/P4) -- registered, not re-invented",
+   "F-OBSERVATION-LEAK": "the P3 schema audit governs: any privileged field in the deployed actor input fires",
+   "F-CREDIT-BLOCKED": "the adapter's F-G42 command census (echo, achieved-velocity tracker, veto horizon) gates on every training run: if the command channel cannot meaningfully affect the task, this fires",
+   "F-REFLEX-REGRESSION": "the walk's protected-condition suite (the wave-38 banked red set) must be unchanged by any training-consumption wiring"
+  }
+ },
+ "task": {
+  "skill": "FLAT-GROUND GOAL TRACKING (skill-1, deliberately simple)",
+  "statement": "reach a waypoint placed d_wp ahead of the body's initial heading on flat ground, through speed commands only; no terrain, no heading authority, no vision, no multi-gait",
+  "waypoint": {
+   "placement": "on the body's initial +heading axis at distance d_wp from the initial CoM x",
+   "d_wp_m": 0.5,
+   "d_wp_derivation": "reachable inside the eval window across the measured envelope's upper band: at the banked in-band mid command 0.60 m/s the reach time is 0.50/0.60 s = 250 ticks + measured onset ~7-10 ticks, inside the 270-tick window with the walk's own banked life (refusals observed at 297-302) intact"
+  },
+  "reach_disc_radius_m": 0.0381812394,
+  "reach_disc_derivation": "one decision period of travel at the measured envelope ceiling: v_seed * T_decision = 0.7636247890 * 15/300 = 0.0381812394 m; the disc is exactly the distance the body covers per decision at its own banked ceiling -- no tighter (unmeasurable), no looser (a free ride)"
+ },
+ "timing_and_clock": {
+  "physics_hz": 300,
+  "policy_hz": 20,
+  "hold_ticks": 15,
+  "decision_tick_rule": "decisions at ticks 0,15,30,...; command zero-order-held at tick boundaries (the adapter's banked ZOH semantics, F-ZOH-CLOCK proven: value-only hold)",
+  "episode_cap_ticks": 300,
+  "episode_cap_derivation": "the walk's own banked end-of-life region (refusals observed at ticks 297-302 under held commands); the episode ends at the engine's own refusal or tick 300, whichever first -- the cap never cuts a live walk shorter than its own machinery would",
+  "eval_window_ticks": 270,
+  "eval_window_derivation": "0.9 of the banked 302-tick life, rounded down to a whole decision grid (270 = 18 x 15); the margin below the natural refusal is the no-fall bar's headroom"
+ },
+ "hard_conditions": {
+  "note": "these live ONLY here and in acceptance.py -- never in the reward, never blended",
+  "no_fall": "an episode is a FALL iff the engine refuses (any budget class) before tick 270. no_fall_rate = fraction of eval episodes with no fall; the hard bar is 1.0 for the trained policy's worst seed.",
+  "reach": "an episode REACHES iff body CoM x >= x_wp - reach_disc_radius at any tick in [60, 270]. reach window starts at tick 60 (the banked entry/settle era: commands issue from tick 0 but the machinery's measured onset is 7-10 ticks and the walk's first strides carry the entry settle); reach_rate = fraction of eval episodes reaching.",
+  "time_to_waypoint": "first tick in [60, 270] with CoM x >= x_wp - reach_disc_radius; undefined (recorded as INF) if no reach.",
+  "cot_within_band": {
+   "definition": "CoT = E_episode / (m_body * d_reached); E_episode = the engine's cumulative mechanical-work ledger over the episode; m_body = 13824.5 kg (the measured membrane inventory at water density); d_reached = the along-heading CoM displacement achieved by episode end (honest denominator whether or not the waypoint is reached)",
+   "band_rule_frozen_now": "the band is MEASURED, not assumed: the scripted baseline runs first on the identical eval protocol on the identical CPU-exact engine; its per-episode CoTs are recorded and frozen into the acceptance ledger BEFORE any policy checkpoint is compared. A policy passes iff median(CoT_policy) <= median(CoT_baseline) + (max(CoT_baseline) - median(CoT_baseline)) -- i.e. not above the baseline's own worst measured efficiency. Every term is measured; zero constants are invented. With a deterministic engine and 5 eval episodes the spread term may be 0, in which case the bar is exact parity with the baseline's efficiency."
+  }
+ },
+ "ranking_rule_frozen_now": {
+  "comparison": "trained policy (WORST of the 3 training seeds, evaluated with deterministic mean actions on the fixed eval seed set) vs the scripted baseline on the same set",
+  "must_hold_all": [
+   "reach_rate(policy_worst_seed) > reach_rate(baseline) (strictly more episodes reached; with 5 eval episodes this is >= 1 episode)",
+   "median(time_to_waypoint over reached episodes, policy_worst_seed) < median(time_to_waypoint, baseline) over paired eval episodes (paired by eval seed; both-INF pairs excluded, an INF on the policy side cannot win)",
+   "no_fall_rate(policy_worst_seed) == 1.0",
+   "cot_within_band holds for policy_worst_seed"
+  ],
+  "baseline_role": "per Astra: a scripted controller may match the trained policy; if it does, F-FIRST-SKILL fires and the honest record is that the pipeline passed but learning was not established as necessary"
+ },
+ "algorithm": {
+  "name": "PPO",
+  "reference": "RSL-RL LeggedRobotPPO published defaults (github.com/leggedrobotics/rsl_rl; Rudin et al., Learning to Walk in Minutes) -- cited defaults, not tuned taste",
+  "num_envs": 4096,
+  "steps_per_env": 24,
+  "decisions_per_iteration": 98304,
+  "iterations": 10,
+  "budget_decisions_per_seed": 983040,
+  "budget_declaration": "1M-decision registered pilot budget (astra-typeb-pilots P3): the iteration grid floors under 1,000,000; a pilot, NOT a convergence claim -- an explicitly new registration is required for any further training",
+  "gamma": 0.99,
+  "gae_lambda": 0.95,
+  "clip_param": 0.2,
+  "value_loss_coef": 1.0,
+  "entropy_coef": 0.01,
+  "learning_rate": "adaptive, init 1.0e-3, KL target 0.01",
+  "num_mini_batches": 4,
+  "num_learning_epochs": 5,
+  "actor_hidden": [128, 128],
+  "actor_activation": "tanh",
+  "critic": "same trunk widths; critic input = actor input + privileged training-only block (true CoM pose, waypoint world coords) which cannot leak into the deployed actor (the P3 manifest bans privileged deployed fields; the actor input is 82 declared non-privileged channels)",
+  "action_space": {
+   "dim": 1,
+   "channel": "commanded_target_velocity_x",
+   "mapping": "a = (tanh(u)+1)/2 * V_CEILING with V_CEILING = 0.7636247890 m/s (the banked measured envelope ceiling, command_adapter receipt seed_v_m_s): in-envelope by construction; the walk's existing annulus clamp governs any residual",
+   "walk_interface_8ch": "UNTOUCHED and UNLEARNED in skill-1: the reflex layer owns the walk's own action vector entirely (Astra architecture: frozen mode-aware derived controller driven by learned low-dimensional commands)"
+  },
+  "actor_input": {
+   "dim": 82,
+   "composition": "80 = the OBS v2 schema (OBS_SCHEMA_VERSION 2, the 73f3a860 frozen table) + 2 declared goal channels: [dist_to_wp / d_wp, com_vel_x_heading / v_seed] (goal geometry is task input, non-privileged; the second channel restates an existing obs channel in goal-normalized form for the actor's convenience)",
+   "availability": "the training env provides all 82 channels every decision (live engine, instrument contract pad_pair_ordering='heel_mp'); no mean-fill is exercised at training time; the availability-mask recipe activates only on recorded-trace replay through the P3 harness"
+  }
+ },
+ "seeds": {
+  "training": [20260922, 20260923, 20260924],
+  "eval_set": [20260922, 20260923, 20260924, 20260925, 20260926],
+  "eval_set_size": 5,
+  "eval_protocol": "fixed initial states (one per eval seed: the walk's seed entry state re-derived per seed), waypoint at d_wp on the initial heading, deterministic mean actions, same CPU-exact engine as acceptance"
+ },
+ "curriculum": "NONE -- flat ground only; the terrain curriculum is skill-2+ and has no registration here",
+ "checkpoint_selection_frozen_now": {
+  "eval_cadence": "eval rollouts on the fixed eval seed set every 25,000 decisions (40 evals across the 983,040-decision run; the executor wires the eval callback at the decision grid, framework defaults do not set this)",
+  "selection_rule": "the shipped checkpoint is the one with the BEST MEAN RETURN (sum of the frozen shaping reward over the 5 eval episodes) among the LAST 10% of evals (evals 37..40, i.e. decision counts 900000..975000); ties break to the EARLIEST",
+  "selection_is_not_acceptance": "the selection rule picks WHICH candidate to export; acceptance is only ever the hard conditions + ranking on the CPU-exact engine"
+ },
+ "reward_frozen": {
+  "see": "tools/science_funnel/first_skill/reward.py (the runnable form) -- shaping ONLY, normalized O(1), never acceptance",
+  "r_progress": "per decision: (delta CoM x projected on the body-to-waypoint axis) / (v_seed * T_decision), clipped to [-1, 1]; at the banked seed speed this reads exactly +1 per decision",
+  "r_heading": "per decision: w_head * (cos(psi_err) - 1), psi_err = angle of the CoM velocity vector off the body-to-waypoint axis from the declared obs channels; in [-2*w_head, 0]; strictly a penalty for steering effort off-axis",
+  "w_head": 0.1,
+  "w_head_derivation": "SUBORDINATION INEQUALITY, frozen: the heading term's worst-case episode total (2 * w_head * N_dec = 2*0.1*20 = 4.0) must not exceed one third of the progress term's reach-scale total (d_wp/(v_seed*T_dec) = 13.096; one third = 4.365): no amount of heading shaping can buy a non-reaching episode above a reaching one. w_head = 0.1 is the largest value in the declared candidate set {0.05, 0.1, 0.2, 0.5, 1.0} satisfying it.",
+  "excluded": [
+   "NO alive bonus -- the alive bonus is the documented crouch disease (training_gate.py header): collecting a survival term while satisfying nothing",
+   "NO terminal success/failure term -- that is acceptance leaking into the reward; the missing future progress after a fall IS the penalty, honestly",
+   "NO effort/energy penalty in skill-1 -- the walk's own budgets and the CoT acceptance band govern effort; a Joule term here would be an unmeasured scale smuggled into shaping",
+   "NO absolute target speed -- the task is reach-the-waypoint; a speed target would re-create the contradictory-reward failure the gate exists to refuse"
+  ]
+ },
+ "baseline_frozen": {
+  "see": "tools/science_funnel/first_skill/baseline_controller.py (the runnable form)",
+  "controller": "scripted, action-interface-identical to the trained policy (same adapter channel): issue commanded_target_velocity_x = 0.60 m/s ONCE at tick 0 and hold (exactly the banked R2 run's value and ZOH semantics, byte-proven veto-free 140 ticks post-onset in the command_adapter receipt); no stop logic, no observation feedback -- a fixed schedule",
+  "value_derivation": "0.60 m/s is the banked R2 in-band mid command (the F-ZOH-CLOCK twin's value): the ONLY non-seed command value the ship state has measured end-to-end; choosing it makes the baseline a banked behavior, not a tuned one",
+  "measured_on_same_bars": "the baseline is evaluated on the identical eval seed set, identical episode rules, identical hard conditions and CoT band protocol, on the identical CPU-exact engine; its record (reach rate, no-fall, time-to-waypoint, CoT band) is frozen into the acceptance ledger BEFORE any policy comparison"
+ },
+ "export_frozen": {
+  "harness": "tools/science_funnel/typeb_export (the 1b6d7749 frozen harness): policy_manifest (validate -- architecture[0]==observation.dim, action.dim==architecture[-1], param/MAC accounting, privileged ban, clock 20*15==300, weights sha) + the deterministic numpy CPU recipe + the fresh-process byte-identity machinery",
+  "manifest_kind": "typeb_policy_manifest with observation.dim 82, architecture [82,128,128,1], action.dim 1 -- validator-compatible with ZERO amendments (verified at prestage)",
+  "fixture_set": "the first 4096 observations of the eval rollouts at the selected checkpoint, digest-pinned at export time, named in the acceptance ledger before comparison"
+ },
+ "gpu_env_contract": {
+  "env_class": "FirstSkillGoalEnv -- the GPU-env lane's wrapper: batched gait_unit bodies + the command adapter channel + waypoint bookkeeping; physics 300 Hz, decisions every 15 ticks, obs v2 (80) + goal (2), action = the adapter channel (1) through the declared mapping",
+  "invariants": [
+   "the reflex layer, budgets, and walk interface are byte-shared with the CPU-exact engine (F-REFLEX-REGRESSION governs)",
+   "the env exposes the engine's own refusal classes as episode termination, never as an env-invented failure",
+   "per-environment seed isolation (Astra F-BATCH-COUPLING fixtures apply to this env)"
+  ]
+ },
+ "budget_and_stop": {
+  "wall_clock_expectation": "NONE registered -- a pilot records its measured throughput; Astra F-GPU-TRAINING-BUDGET governs the GPU-env lane separately",
+  "stop_conditions": [
+   "the run stops at 10 iterations (983,040 decisions) per seed, always",
+   "a mid-run engine-side falsifier (F-CREDIT-BLOCKED via the F-G42 census, F-REFLEX-REGRESSION) stops the run and the record carries it",
+   "no re-run, re-seed, or budget extension without an explicitly new registration"
+  ]
+ },
+ "no_tuning_clause": "no reward weight, window, threshold, bar, seed, cadence, or selection rule in this manifest is adjusted after any training or evaluation result is inspected. Amendments create a NEW registration and preserve this one and all earlier results (the acceleration-pilots doctrine)."
+}
