@@ -142,6 +142,54 @@ rejections as in T2. Clean re-issue: zero violations, deploy ALLOW.
 
 ## Measured (append-only)
 
-Appended in receipt.json `measured` after the runs; per-falsifier verdicts and
-raw numbers there; artifacts under `runs/` (large regenerable stderr traces
-excluded by size, shas recorded).
+VERDICT: **ALL FIVE FALSIFIERS HELD** (per-falsifier numbers in receipt.json
+`measured`; artifacts under `runs/`).
+
+- **The certificate ISSUED:** production class, validator exit 0,
+  `compat_key 091a3e5147f266706a342ab18255a21780ffd6dc03f3280a5db56ddf86bbad2a`,
+  `cert_hash f3efd8c9...`, build_id
+  `engine-walk-instrument/29bf00f0640c75c4`, all four engine gaps RESOLVED
+  with proofs live-verified at issuance; deploy gate ALLOW for the matching
+  5-tuple, BLOCK for a foreign build, BLOCK for a missing certificate.
+- **F1 ISSUANCE-FAIL, not fired:** the clean production certificate validated
+  with ZERO violations on the first issuance through the fixed pipeline.
+- **CHECK 1:** fresh-process replay byte-identical; the tick-150 checkpoint
+  (`0d6f65f9...` -- byte-exactly the snapshot-apis lane's committed snapshot)
+  restored bit-identically in a fresh process: 152/152 tick state hashes,
+  21888/21888 action bytes, refusal face 302/gait_positional_correction_budget
+  identical; ship fence stdout/trace EXACT on this lane's binary; all 4
+  forced drops moved the continuation; 16308 serialized f64 fields NaN/Inf-free.
+- **CHECK 2:** fresh recompile (independent configure; binary stamps differ
+  `64e81814...` vs `9fb65564...` as declared): RC-1 ship-walk EXACT on
+  states/actions/snapshot/stdout/trace; RC-2 pinned-command-zoh `150:1.01`
+  EXACT on stdout+trace with the F-G42 census echo present.
+- **CHECK 3:** engine leg closed-loop with the refusal PROVEN: relative-path
+  actions file REFUSED (`bad command spec (want tick:vx)`) before any step;
+  the nonexistent-path probe RAN without opening the referenced file (no
+  action-file channel exists); runner requalify refusals 2/2. Actor leg: the
+  upgate gates ALL GREEN (six bars), corpus reproduces the frozen P3 bytes,
+  action-replay refusals 2/2, max|v| 0.8699 <= envelope 2.9774 m/s.
+- **F2 TAMPER-PASS, not fired -- 3/3 REJECTED:** T1 bumped state hash
+  (cert_hash recomputed, a self-consistent forgery) -> evidence-chain
+  mismatch; T2 swapped normalization constant -> validator key mismatch AND
+  deploy BLOCK against the frozen-loader request; T3 stale build id -> both
+  layers REJECT. Clean re-issue: zero violations, deploy ALLOW (no false
+  positive).
+- **F3 IDENTITY-WEAKNESS, resolved by binding + naming:** the identity binds
+  the compiled source closure (dormancy-proven from source), both binary
+  stamps, the scene pin, and the ship anchors; the certificate says exactly
+  "instrument build, ship-fenced" and names the first-class engine build id
+  as the engine-service forward gap.
+- **F4 determinism, fired once then held:** the FIRST measurement FIRED (the
+  three payloads differed) -- the cause was INSTRUMENTATION: the engine-CLI
+  probe's recorded argv2 embedded the run-index path, while EVERY walk
+  artifact sha across the three runs was byte-identical. The probe spec was
+  made run-index-free and F4 re-measured CLEAN: three byte-identical
+  canonical payloads, sha `cf036fc77bc59fe217193a94d3d045818d249d0670ec629ab244545419d989a8`.
+  The falsifier did its job; nothing was tuned away.
+- **F5 scope, not fired:** lane dir + tools/policy_compat (+ tests) only;
+  zero ChimeraEngine/ edits; builds under .tmp/ (untracked).
+
+The named forward gaps ride the certificate's registration verbatim: the
+ship-tree `/gait_snapshot` route, the first-class engine build id, and
+per-tick actor-engine coupling -- all NAMED, none implemented.

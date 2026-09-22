@@ -124,7 +124,268 @@
     }
   },
   "measured": {
-    "appended_after_runs": false
+    "appended_after_runs": true,
+    "build_recipe": "scene: python -m tools.science_funnel.gait_scene --output .tmp/certdry/gait-walker (sha pinned f6844ee...); builds A+B: cmake -S tools/science_funnel/validation/snapshot_apis_20260920/instrument -B .tmp/certdry/inst{A,B} (independent configures, Release, target gait_snap); nothing tracked built in place",
+    "identity": {
+      "build_id": "engine-walk-instrument/29bf00f0640c75c4",
+      "engine_source_closure_sha256": "5c767f91b097615b14ca9f37dce512217cf9c47d96c30f4ae112e4e08988c9ba",
+      "instrument_dormancy": {
+        "checks": [
+          "gait_controller.hpp: stripped copy == shipped bytes on every non-blank line (OK; blank-line-only artifacts outside the guards: 1)",
+          "coupled_articulation.hpp: byte-equal to shipped (OK)",
+          "earth_environment.hpp: byte-equal to shipped (OK)",
+          "force_models.hpp: byte-equal to shipped (OK)",
+          "gait_unit.cpp: byte-equal to shipped (OK)",
+          "json.hpp: byte-equal to shipped (OK)",
+          "gait_snap.cpp: instrument blocks stripped == shipped gait_unit.cpp (OK)"
+        ],
+        "pass": true,
+        "rule": "shipped-tree diff confined to #ifdef GAIT_SNAPSHOT_API blocks; flag-off preprocessing == shipped bytes"
+      },
+      "binary_stamp_bound_to_evidence": "64e81814a418c98827090bb6a074e8de5997d885cf42d7f37a0646c140a6fcff",
+      "second_build_stamp": "9fb655642fd0c56d7e806777ed59b874b34e6e403c9aca7f171f18620595c0fc",
+      "what_it_binds": "the exact source closure + binary that executed the walk evidence, scene-pinned and ship-anchored; the identity claim is 'instrument build, ship-fenced' -- no engine-provided build id exists (F3 recorded, not invented)"
+    },
+    "check1_same_build_replay_and_checkpoint_resume": {
+      "pass": true,
+      "replay_byte_identical": true,
+      "ref_runs": [
+        {
+          "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+          "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+          "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        },
+        {
+          "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+          "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+          "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        }
+      ],
+      "ship_fence_legs": {
+        "stdout": {
+          "anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "pass": true
+        },
+        "trace_stderr": {
+          "anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "pass": true
+        }
+      },
+      "walk_face": {
+        "body_bytes": 3089,
+        "identical_to_ship_face": true,
+        "n_states": 302,
+        "refused_class": "gait_positional_correction_budget",
+        "refused_tick": 302
+      },
+      "checkpoint": {
+        "body_is_reference_tick150": true,
+        "snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+        "tick": 150
+      },
+      "restore_bit_identity": {
+        "action_bytes_compared": 21888,
+        "action_bytes_identical": true,
+        "blind_phase_matches_snapshot_file": true,
+        "first_diverging_tick": null,
+        "pass": true,
+        "refusal_tick_and_class_identical": true,
+        "roundtrip_serialization_equal": true,
+        "state_hashes_identical": true,
+        "ticks_compared": 152
+      },
+      "forced_drops": {
+        "contact_warm_start": {
+          "first_diverging_tick": 150,
+          "moved_continuation": true,
+          "n_states": 145,
+          "roundtrip_ok": true
+        },
+        "controller_history": {
+          "first_diverging_tick": 150,
+          "moved_continuation": true,
+          "n_states": 61,
+          "roundtrip_ok": true
+        },
+        "reflex_state": {
+          "first_diverging_tick": 150,
+          "moved_continuation": true,
+          "n_states": 149,
+          "roundtrip_ok": true
+        },
+        "world_state": {
+          "first_diverging_tick": 150,
+          "moved_continuation": true,
+          "n_states": 58,
+          "roundtrip_ok": true
+        }
+      },
+      "dump_nan_free": {
+        "checked_fields": 16308,
+        "pass": true
+      },
+      "detail": "fresh-process replay IDENTICAL; restore at T=150 BIT-IDENTICAL on 152 ticks + 21888 action bytes; ship fence stdout/trace EXACT; all 4 forced drops moved the continuation: True"
+    },
+    "check2_cross_build_registered_cases": {
+      "pass": true,
+      "build_A_binary_sha256": "64e81814a418c98827090bb6a074e8de5997d885cf42d7f37a0646c140a6fcff",
+      "build_B_binary_sha256": "9fb655642fd0c56d7e806777ed59b874b34e6e403c9aca7f171f18620595c0fc",
+      "binary_stamps_differ": true,
+      "cases": [
+        {
+          "case": "RC-1_ship_walk",
+          "exact_agreement": true,
+          "legs": {
+            "actions.bin": true,
+            "run.json_face": true,
+            "snap_t150.bin": true,
+            "states.bin": true,
+            "stderr": true,
+            "stdout": true
+          }
+        },
+        {
+          "case": "RC-2_pinned_command_zoh",
+          "exact_agreement": true,
+          "fg42_echo_present": true,
+          "legs": {
+            "stdout": true,
+            "trace_stderr": true
+          },
+          "schedule": "150:1.01",
+          "stdout_sha256": "8feebc202bd6f5786af343bf65c95c54ef7126a6a0d98701bcba3dbe90fedeb0",
+          "trace_stderr_sha256": "28ddcf74cfb0ff70fc6d2f03a2413ec32cd157a69c05dcece0b854341f8d76d2"
+        }
+      ],
+      "detail": "fresh recompile: RC-1 EXACT; RC-2 EXACT; binary stamps differ as declared"
+    },
+    "check3_engine_closed_loop_and_refusal": {
+      "pass": true,
+      "action_replay_probes": {
+        "engine_cli_nonexistent_absolute_path": {
+          "argv2": "Z:\\no_such\\pre_recorded_actions.bin",
+          "exit_code": 0,
+          "fg42_schedule_echo": true,
+          "probe": "B_nonexistent_absolute_actions_path",
+          "refused_before_any_step": false,
+          "stderr_head": "run F-G5\r\n[tick] 0\r\n[tick] 10\r\n[tick] 20\r\n[tick] 30\r\n[tick] 40\r\n[tick] 50\r\n[tick] 60\r\n[tick] 70\r\n[tick] 80\r\n[tick] 90\r\n[tick] 0\r\n[poscorr] tick=0 points=1 dq_ma"
+        },
+        "engine_cli_relative_actions_path": {
+          "argv2": "refA1.actions.bin",
+          "exit_code": 1,
+          "fg42_schedule_echo": false,
+          "probe": "A_relative_actions_path",
+          "refused_before_any_step": true,
+          "stderr_head": "bad command spec (want tick:vx)"
+        },
+        "runner_requalify": [
+          "ACTION_REPLAY_REFUSED: the requalification harness does not accept pre-recorded actions or an action_replay mode -- replaying build-N actions into the new build tests the old trajectory and misses the feedback-loop divergence the gate exists to detect; observations and actions are recomputed from the NEW trajectory every tick (prereg receipt.json, P7)",
+          "ACTION_REPLAY_REFUSED: the requalification harness does not accept pre-recorded actions or an action_replay mode -- replaying build-N actions into the new build tests the old trajectory and misses the feedback-loop divergence the gate exists to detect; observations and actions are recomputed from the NEW trajectory every tick (prereg receipt.json, P7)"
+        ]
+      },
+      "detail": "engine CLI relative-path probe refused=True; nonexistent-path probe ran without opening the file (fg42 echo=True); runner refusals 2/2"
+    },
+    "check3_actor_leg": {
+      "pass": true,
+      "detail": "actor-leg gates ALL GREEN; corpus reproduces the frozen P3 bytes",
+      "corpus_reproduces_p3_bytes": true
+    },
+    "certificate": {
+      "compat_key": "091a3e5147f266706a342ab18255a21780ffd6dc03f3280a5db56ddf86bbad2a",
+      "cert_hash": "5c100887db6892e97960de942af41b1596a67808c8a1b4b2016ae8d38c626503",
+      "deployment_class": "production",
+      "gaps_resolved_with_proof": [
+        "gap_engine_contact_warm_start",
+        "gap_engine_reflex_state",
+        "gap_engine_controller_history",
+        "gap_engine_world_state"
+      ],
+      "evidence_events": 301,
+      "initial_snapshot_sha256": "666607a87f700715ed7743ad33bdec0e53342c8b7ef7dadde482721a64c9d4d6",
+      "final_state_sha256": "73d7f139058a3683194540346fc979dafbcf64e909c3e1d01b8311a7c4427d6f",
+      "trajectory_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+      "validator_violations": [],
+      "deploy_allow": "ALLOW",
+      "deploy_block_foreign_build": "BLOCK",
+      "deploy_block_missing_certificate": "BLOCK",
+      "registered_claims": "this exact engine walk build (source closure + binary stamp + scene pin + ship anchors), this actor (the P3 dummy bundle hashes), this scene pair (gait scene f6844ee... + the declared CPU walk scene), these bars; the four restart-state gaps RESOLVED through the snapshot-apis readers (proof bound by the receipt sha, live-verified at issuance); deployment class production",
+      "registered_non_claims": [
+        "no trained policy exists: the actor is the declared P3 dummy (64->128->128->8, frozen seeded weights); body UNBOUND_dummy",
+        "no ship-tree build id: the identity is instrument-build-ship-fenced; a first-class engine build id is a NAMED FORWARD GAP",
+        "the ship-tree HTTP snapshot route (GET/POST /gait_snapshot) is a NAMED FORWARD GAP and is NOT implemented here",
+        "no actor-in-the-engine-loop coupling: the engine walk's in-loop actor is the engine controller; the only actor->engine channel in existence is the command adapter at schedule granularity (RC-2)",
+        "the engine walk of record is the ship face INCLUDING its refusal (302) and its own census reds; nothing greener is claimed"
+      ]
+    },
+    "tamper_suite": {
+      "pass": true,
+      "T1_bumped_state_hash": {
+        "rejected": true,
+        "layer": "validator: evidence chain mismatch",
+        "deploy": "BLOCK"
+      },
+      "T2_swapped_normalization_constant": {
+        "rejected": true,
+        "layer_a": "validator: compat_key does not match the relation",
+        "layer_b": "deploy gate: compatibility key mismatch vs the frozen-loader request",
+        "deploy_a": "BLOCK",
+        "deploy_b": "BLOCK"
+      },
+      "T3_stale_build_id": {
+        "rejected": true,
+        "layer_a": "validator: compat_key does not match the relation",
+        "layer_b": "deploy gate: compatibility key mismatch vs the true request",
+        "deploy_a": "BLOCK",
+        "deploy_b": "BLOCK"
+      },
+      "clean_reissue": {
+        "deploy": "ALLOW",
+        "valid": true,
+        "violations": []
+      }
+    },
+    "per_falsifier": {
+      "F1_ISSUANCE_FAIL": {
+        "fired": false,
+        "validator_violations": [],
+        "deploy_allow": "ALLOW"
+      },
+      "F2_TAMPER_PASS": {
+        "fired": false,
+        "rejected": {
+          "T1_bumped_state_hash": true,
+          "T2_swapped_normalization_constant": true,
+          "T3_stale_build_id": true
+        }
+      },
+      "F3_IDENTITY_WEAKNESS": {
+        "fired": false,
+        "resolution": "the strongest available identity is bound (source closure + binary stamp + scene pin + ship anchors); the first-class engine build id is recorded as the engine-service forward gap IN the certificate's registration"
+      },
+      "F4_DETERMINISM": {
+        "fired": false,
+        "payloads": 3,
+        "canonical_payload_sha256": "cf036fc77bc59fe217193a94d3d045818d249d0670ec629ab244545419d989a8",
+        "fired_once_before_fix": true,
+        "fired_once_note": "the FIRST F4 measurement FIRED: the three canonical payloads differed -- the cause was INSTRUMENTATION, not physics: the engine-CLI probe's recorded argv2 embedded the run-index path, while EVERY walk artifact sha (states/actions/stdout/trace/snapshot, 30 runs) was byte-identical across the three runs. The pipeline's probe spec was made run-index-free and F4 was re-measured clean. The falsifier did its job: it caught a canonicalization leak, and it was not tuned away -- it was fixed and re-measured.",
+        "note": "3 independent full pipeline runs, byte-identical canonical payloads (fresh processes throughout; builds reused)"
+      },
+      "F5_SCOPE": {
+        "fired": false,
+        "note": "verified post-commit (git diff vs base f6787ebe)"
+      }
+    },
+    "forward_gaps": {
+      "ship_tree_snapshot_route": "the engine's state surface exposes no walker snapshot route (the current HTTP surface is the renderer's /membrane + /frame); a ship-native GET/POST /gait_snapshot returning the 4-class body would make the readers SHIP-native -- NAMED, NOT IMPLEMENTED",
+      "first_class_engine_build_id": "no engine-provided build id exists on any state surface; the certificate's identity is instrument-build-ship-fenced -- NAMED, NOT IMPLEMENTED",
+      "actor_engine_coupling": "no per-tick actor->engine channel exists (the command adapter is schedule-granularity, exercised by RC-2); coupling the dummy actor INTO the engine loop is future work -- NAMED, NOT IMPLEMENTED"
+    },
+    "evidence_exclusions": "the regenerable stderr traces (refA1/refA2/refB1/rc2A/rc2B traces, 6+ MB each) are NOT committed; their sha256s are recorded in runs/excluded_stderr_shas.json and they regenerate byte-exactly (F4 determinism)",
+    "pass": true
   },
-  "pass": null
+  "pass": true
 }
