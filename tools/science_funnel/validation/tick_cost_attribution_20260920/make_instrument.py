@@ -163,28 +163,27 @@ def unit_edits():
                 ["  tickcost::rec().tick_end_push();" + M])
     e.ins_after('  ck(d.capture_events()==0,"f6_disarmed_no_capture");}',
                 ['  tickcost::summary("push426");' + M])
-    # -- THE STAND426 PHASE (PREREG Amendment 2): the >= 426-tick SUSTAINED
-    #    interacting scene. The F-G6 push walker (above) is the expected-tip
-    #    regime and refuses at 302 on the pinned bytes (measured, smoke run;
-    #    the receipt's own push426_s ~ 302 ticks at 22.5 ms/tick), so the
-    #    latency requirement needs a run that SUSTAINS 426 ticks: the stage-E
-    #    stand (contact ON, power ON, the gait clock frozen) -- the walk's own
-    #    stable standing floor, a fully coupled gravity+contact+servo scene.
-    #    Amendment 3 note: the first stand426 draft injected the F-G6 0.1-BW
-    #    push mid-run and REFUSED at 139 (measured) -- a pushed stand is the
-    #    tip regime; the sustained scene is the UNPUSHED stand.
-    #    Lives ONLY in this derived harness; the tracked bytes are untouched.
+    # -- THE FOLD426 PHASE (PREREG Amendments 2-4): the >= 426-tick SUSTAINED
+    #    interacting scene. Measured refusal ledger on the pinned bytes: the
+    #    walk refuses at 302 (gait_positional_correction_budget), the F-G6
+    #    push walker at 302 (expected-tip), the stand refuses at 139 (pushed
+    #    AND unpushed). The sustained regime is the F-G5 fold WITHOUT its
+    #    early break: power OFF, contact ON (the F-G5 fold config) -- the
+    #    body collapses onto its contact points and joint stops and rests in
+    #    coupled gravity+contact equilibrium; every tick runs the full solver
+    #    (contact generation, active-set, impacts, RK4). Lives ONLY in this
+    #    derived harness; the tracked bytes are untouched.
     e.ins_before(" // ── F-G7: determinism -- a second identical run is BIT-identical.",
-                 ["  { // TC STAND426 (declared instrument phase; PREREG Amendment 2/3)" + M,
+                 ["  { // TC FOLD426 (declared instrument phase; PREREG Amendment 4)" + M,
                   "  GaitWalker d_tc(data,9.80665,V{0,0,0},dt);" + M,
-                  '  d_tc.configure({{"gait_enabled",false},{"power",true},{"reset",true}});' + M,
+                  '  d_tc.configure({{"power",false},{"start_at_tables",false},{"reset",true}});' + M,
                   "  tickcost::rec().reset_all();tickcost::rec().loop_begin();" + M,
                   "  for(int i=0;i<2*CYCLE_TICKS;++i){" + M,
                   "   tickcost::rec().tick_begin();" + M,
                   "   try{d_tc.step();}catch(const Refusal&e){break;} // phase n reports the refusal" + M,
                   "   tickcost::rec().tick_end_push();" + M,
                   "  }" + M,
-                  '  tickcost::summary("stand426");' + M,
+                  '  tickcost::summary("fold426");' + M,
                   "  }" + M])
     return e
 

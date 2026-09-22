@@ -149,15 +149,15 @@ def analyze(raw_dir):
                           "p50_ns": percentile(arr, 50), "p95_ns": percentile(arr, 95),
                           "p99_ns": percentile(arr, 99),
                           "mean_ns": sum(arr) / len(arr)}
-    # stand426: the >= 426-tick SUSTAINED interacting scene (PREREG Amendment 2)
+    # fold426: the >= 426-tick SUSTAINED interacting scene (PREREG Amendment 4)
     stand_phase = None
     for k, phs in tc_runs.items():
-        if "stand426" in phs:
-            stand_phase = phs["stand426"]
+        if "fold426" in phs:
+            stand_phase = phs["fold426"]
             break
     if stand_phase and "push" in stand_phase["ticks"]:
         arr = sorted(stand_phase["ticks"]["push"])
-        lat["stand426"] = {"n": len(arr), "sustained_426": len(arr) >= 426,
+        lat["fold426"] = {"n": len(arr), "sustained_426": len(arr) >= 426,
                            "p50_ns": percentile(arr, 50), "p95_ns": percentile(arr, 95),
                            "p99_ns": percentile(arr, 99),
                            "mean_ns": sum(arr) / len(arr),
@@ -204,10 +204,24 @@ def analyze(raw_dir):
     t_spans = [fg5_span(r) for r in tcs if fg5_span(r)]
     p_mean = sum(p_spans) / len(p_spans) if p_spans else None
     t_mean = sum(t_spans) / len(t_spans) if t_spans else None
+    # ADJACENT-PAIR deltas (interleaved runs, PREREG Amendment 5): the drift
+    # between minutes swamps a sub-ms signal; a pair ~2 min apart does not.
+    pairs = []
+    by_pair = {}
+    for r in index["runs"]:
+        if fg5_span(r) is not None and "pair" in r:
+            by_pair.setdefault(r["pair"], {})[r["kind"]] = fg5_span(r)
+    for k in sorted(by_pair):
+        if "plain" in by_pair[k] and "tc" in by_pair[k]:
+            pairs.append(by_pair[k]["tc"] - by_pair[k]["plain"])
+    pair_ms = [(d * 1000.0 / 500.0) for d in pairs]
     res["overhead"] = {
-        "method": "F-G5 stderr-marker span: (tc_mean_s - plain_mean_s) / 500 fixed ticks",
+        "method": "F-G5 stderr-marker span: adjacent plain/tc pair deltas / 500 fixed ticks",
         "fg5_span_plain_s": p_spans, "fg5_span_tc_s": t_spans,
         "fg5_span_plain_mean_s": p_mean, "fg5_span_tc_mean_s": t_mean,
+        "adjacent_pair_deltas_s": pairs,
+        "adjacent_pair_overhead_ms_per_tick": pair_ms,
+        "overhead_ms_per_tick_pair_mean": (sum(pair_ms) / len(pair_ms)) if pair_ms else None,
         "overhead_ms_per_tick": ((t_mean - p_mean) * 1000.0 / 500.0)
         if (p_mean is not None and t_mean is not None) else None,
         "overhead_frac_of_23ms_tick": None}

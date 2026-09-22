@@ -66,22 +66,44 @@ def main():
     ap.add_argument("--runs-plain", type=int, default=5)
     ap.add_argument("--runs-tc", type=int, default=3)
     ap.add_argument("--raw-dir", default="raw")
+    ap.add_argument("--interleave", action="store_true")
     a = ap.parse_args()
     raw = Path(a.raw_dir); raw.mkdir(parents=True, exist_ok=True)
     scene_sha = sha256_file(a.scene)
     assert scene_sha == SCENE_SHA, "scene is not the pinned bytes: %s" % scene_sha
     index = {"scene_sha256": scene_sha, "lane_fence_sha256": LANE_FENCE,
-             "ancestor_fence_sha256": SHIP_SHA, "runs": []}
-    for k in range(1, a.runs_plain + 1):
-        r = one_run(a.plain_bin, a.scene, str(raw / ("plain_run%d" % k)))
-        r["kind"] = "plain"; r["n"] = k
-        index["runs"].append(r)
-        print("plain_run%d wall=%.3fs sha=%s.. exit=%d" % (k, r["wall_s"], r["stdout_sha256"][:12], r["exit"]))
-    for k in range(1, a.runs_tc + 1):
-        r = one_run(a.tc_bin, a.scene, str(raw / ("tc_run%d" % k)))
-        r["kind"] = "tc"; r["n"] = k
-        index["runs"].append(r)
-        print("tc_run%d wall=%.3fs sha=%s.. exit=%d" % (k, r["wall_s"], r["stdout_sha256"][:12], r["exit"]))
+             "ancestor_fence_sha256": SHIP_SHA, "runs": [],
+             "interleaved": bool(a.interleave)}
+    if a.interleave:
+        # interleaved plain/tc pairs: each F-G5 span pair is adjacent in time
+        # so the overhead A/B is not entangled with minute-scale box drift
+        # (PREREG Amendment 5)
+        n = max(a.runs_plain, a.runs_tc)
+        pi = ti = 0
+        for k in range(1, n + 1):
+            if pi < a.runs_plain:
+                pi += 1
+                r = one_run(a.plain_bin, a.scene, str(raw / ("plain_run%d" % pi)))
+                r["kind"] = "plain"; r["n"] = pi; r["pair"] = k
+                index["runs"].append(r)
+                print("plain_run%d wall=%.3fs sha=%s.. exit=%d" % (pi, r["wall_s"], r["stdout_sha256"][:12], r["exit"]))
+            if ti < a.runs_tc and a.tc_bin:
+                ti += 1
+                r = one_run(a.tc_bin, a.scene, str(raw / ("tc_run%d" % ti)))
+                r["kind"] = "tc"; r["n"] = ti; r["pair"] = k
+                index["runs"].append(r)
+                print("tc_run%d wall=%.3fs sha=%s.. exit=%d" % (ti, r["wall_s"], r["stdout_sha256"][:12], r["exit"]))
+    else:
+        for k in range(1, a.runs_plain + 1):
+            r = one_run(a.plain_bin, a.scene, str(raw / ("plain_run%d" % k)))
+            r["kind"] = "plain"; r["n"] = k
+            index["runs"].append(r)
+            print("plain_run%d wall=%.3fs sha=%s.. exit=%d" % (k, r["wall_s"], r["stdout_sha256"][:12], r["exit"]))
+        for k in range(1, a.runs_tc + 1):
+            r = one_run(a.tc_bin, a.scene, str(raw / ("tc_run%d" % k)))
+            r["kind"] = "tc"; r["n"] = k
+            index["runs"].append(r)
+            print("tc_run%d wall=%.3fs sha=%s.. exit=%d" % (k, r["wall_s"], r["stdout_sha256"][:12], r["exit"]))
     plains = {r["stdout_sha256"] for r in index["runs"] if r["kind"] == "plain"}
     tcs = {r["stdout_sha256"] for r in index["runs"] if r["kind"] == "tc"}
     index["guard"] = {

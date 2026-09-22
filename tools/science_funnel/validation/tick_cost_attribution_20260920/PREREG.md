@@ -262,3 +262,58 @@ MSVC cmake all produce 8c537cdb...).
    stable across both states; the pinned set owns the absolute ms/tick
    numbers and the F3(b) verdict.
 
+
+## AMENDMENT 4 (frozen after the second pinned matrix, before the final matrix)
+
+1. **The sustained scene regime (measured refusal ledger, pinned bytes)**:
+   the walk refuses at 302 (gait_positional_correction_budget -- the pinned
+   physics), the F-G6 push walker at 302 (expected-tip), the stage-E stand at
+   139 (pushed AND unpushed -- deterministic). NO walk-family regime sustains
+   426 ticks on the pinned scene. The >= 426-tick sustained coupled scene is
+   therefore the F-G5 fold regime WITHOUT its early break (`fold426`): power
+   OFF, contact ON -- the body collapses onto its contact points and joint
+   stops and rests in coupled gravity+contact+stops equilibrium; every tick
+   runs the full solver path (contact generation, active-set projection,
+   impact probes, RK4). Percentiles reported for fold426 (sustained) AND for
+   the walk / push426 phases (the interactive workload, 302-tick windows,
+   named as refused-at-302).
+
+2. **F3(c) overhead: analytic bound + microbench** (the F-G5-span A/B of
+   Amendment 3 is carried as measured but is NOISE-DOMINATED: the box drifts
+   on minute scales -- the second pinned matrix measured plain runs at 95-100 s
+   FIRST and tc runs at 59-62 s LAST, a negative "overhead" -- a sequential
+   span A/B cannot resolve a sub-ms signal under this drift). The bound:
+   overhead/tick = (timer pairs/tick) x (measured ns/pair); pairs/tick comes
+   from the instrument's own hit counters (~870 on the walk), ns/pair from
+   `timer_microbench.cpp` (1M Scope pairs) run beside the final matrix. The
+   instrument books ~2 counter adds + 2 chrono reads per pair and nothing
+   else in the hot path.
+
+3. Naming: the phase formerly named stand426 in Amendments 2-3 is SUPERSEDED
+   by fold426 (the stand's measured refusal at 139 makes it unusable as a
+   sustained scene).
+
+## AMENDMENT 5 (frozen after the third pinned matrix, before the final interleaved matrix)
+
+1. **fold426 refusal (measured, deterministic)**: the power-off, contact-on
+   fold regime refuses at tick 129 on the pinned bytes (with 2.13 s/tick p99
+   impact cascades during the collapse). The measured refusal ledger over all
+   regimes now stands: walk 302, push walker 302, stand 139 (pushed and
+   unpushed), fold 129. The pinned scene CANNOT sustain 426 ticks in any
+   regime — itself a finding for the 300 Hz decision (the scene cannot run
+   1.42 simulated seconds without refusing). The receipt therefore reports
+   the longest sustained interacting windows (302-tick walk + push walker)
+   AND the fold's 129-tick collapse window, each named with its refusal
+   class; the ">= 426 ticks sustained" requirement is carried UNMET-BY-THE-
+   PINNED-BYTES (a physics finding, not a measurement gap).
+
+2. **Overhead: interleaved adjacent-pair A/B** (Amendments 3's sequential
+   spans proved drift-entangled: the third matrix's plain runs landed on a
+   quiet box (F-G5 spans 3.57-3.62 s, tight) and the tc runs ~10 minutes
+   later — the sequential delta is uninterpretable). The final overhead
+   matrix interleaves plain/tc runs (`--interleave`); overhead = mean of the
+   ADJACENT-pair F-G5-span deltas / 500, plus the Amendment 4 analytic bound
+   (microbench 42.7 ns/pair x ~870 pairs/tick = 37.1 us/tick = 0.11% of the
+   receipt-state tick) as the floor. The attribution shares and the
+   COST-GAP verdict from the third matrix stand (shares were stable across
+   every machine state measured).
