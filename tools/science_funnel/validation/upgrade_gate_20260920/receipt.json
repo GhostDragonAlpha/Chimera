@@ -170,8 +170,157 @@
     "pre_data_amendment_3_entry_phase_law": "AMENDED BEFORE ANY MEASUREMENT OF RECORD (found during tooling validation, before the receipt measurements were appended): the registered open-loop cases as first constructed were DEGENERATE -- all three seeds produced BYTE-IDENTICAL closed-loop command streams (measured: stream sha ff961fcd599ffdee190a12d7... for seeds 20260919/20260920/20260921), because the declared micro-terrain draw (amplitude 1e-4 m) never flipped a pad contact in 900 ticks and the frozen v1 observation MASKS the pad channels, so the seed never reached any observed field; three case labels carried one effective command stream and the cross-build margin evidence would have been one-case-deep in stream space. FIX (declared entry law, derived not tuned): the entry state is a function of the case identity -- phase_r(0) = ((seed mod cycle_ticks) + 0.5)/cycle_ticks, the declared half-cycle L/R offset preserved and the seeds residue in the banked 213-tick cycle selecting the entry phase. Distinct seeds now enter at distinct phases, reach the gait_phase observation channels immediately, and produce distinct command streams; every artifact (certificate included) is regenerated under this law before the measurements block is appended. The scene constants, the margin derivation, and the falsifiers are UNCHANGED."
   },
   "measured": {
-    "status": "NOT YET MEASURED -- this receipt is committed FROZEN, before any build. The measurements block is appended after the runs, with the freeze sha re-verified byte-identical.",
-    "falsifier_verdicts": "appended at measurement time"
+    "status": "APPENDED AFTER THE RUNS. The pre-registration block above is unedited since its last pre-data amendment; the freeze sha was re-verified byte-identical immediately before this append. ALL PRE-REGISTERED FALSIFIERS HELD: F1, F2, F3 all CAUGHT their injections, the no-false-positives letter held (three byte-identical clean bundles), and every measured number landed inside its pre-derived bound. PASS = TRUE: the compatibility-certificate gate is BUILT, MEASURED, and BLOCKS what it must block.",
+    "deliverables": {
+      "gate_tooling": "tools/policy_compat/ (certificate.py schema+validator+deploy gate; scene_cpu.py the declared CPU walk scene; runner.py checks 1-3 + corpus; injections.py the injection suite; __main__.py the CLI: validate/schema/check-deploy + fresh-process workers; tests/)",
+      "certificate": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/certificate.json",
+        "sha256": "246bfa0af552754e720a9b47653f8e27fa36833e18753b6545bd0822ff71ac74"
+      },
+      "deploy_request": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/deploy_request.json",
+        "sha256": "4fa52054160c557a6809d601145a913ad5a19ed3cf589e7ef39572539e61e0f2"
+      },
+      "corpus": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/corpus.json",
+        "sha256": "85d373b9ed0bd15332148259e235d1fbcbb2d15e82c1e9676d274a761200cb9e"
+      },
+      "check1_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/check1_report.json",
+        "sha256": "082a0e25114f04f5a598582ce3d525be0c5e43c701482b330995a2029b278127"
+      },
+      "check2_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/check2_report.json",
+        "sha256": "43fe41c7adf84b7fb44c4001d2f72b52a18065fbaf81c5b65dbc1da0c04967fe"
+      },
+      "check3_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/check3_report.json",
+        "sha256": "a66ab757a6eb3ed667aff4135630c08fd241e1fa805ee29d2dda10e959a71cd7"
+      },
+      "injections_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/injections_report.json",
+        "sha256": "09bd944f00035e6ad99a36abd7ed3a559f8b4da9f3bda45db8b7d5dd510ae3dc"
+      },
+      "clean_triple_report": {
+        "path": "tools/science_funnel/validation/upgrade_gate_20260920/clean_triple_report.json",
+        "sha256": "70a4f7b34ab497dc69d536b1b20ac391f8cbdcd4f7b8421c3f2e5b616d5d55a9"
+      },
+      "commits": "d7c69e27 (prereg freeze) -> 893f06b7 (certificate format + scene + amendment 1) -> 68aa57bd (runner + checks + injections, measured artifacts) -> this append"
+    },
+    "check1_measured": {
+      "replay": "two FRESH-process full runs byte-identical: sha256 cd4944d99be12709... (28800 bytes = 900 ticks x 32), PASS",
+      "resume": "checkpoint at tick 317 (mid-hold: 317 % 15 == 2), resumed in a FRESH process: continuation tail sha256 53e5858189853d82... == the uninterrupted tail, BIT-IDENTICAL, PASS",
+      "f2_structural": "dropping rng_stream or contact_warm_start_cache from the snapshot: the loader REFUSED, naming the missing registered inventory item, PASS",
+      "f2_dynamic_measured": {
+        "dropped_warm_start_cache": "forced resume moved BOTH instruments: state hashes moved AND 2325 action bytes differ (the warm->damping coupling is observed via com_vel)",
+        "dropped_rng_stream": "forced resume moved the tick-wise STATE hashes from the first tick (the micro-terrain draws); action bytes moved 0 -- exactly as pre-declared in pre_data_amendment_2: the v1 observation masks the pad channels so the micro-terrain is state-visible but not action-visible; DETECTED on the declared instrument"
+      }
+    },
+    "check2_measured": {
+      "note": "the three registered open-loop cases ran with three DISTINCT pinned command streams (stream shas 8785fcc08aed..., cd4944d99be1..., dfb0e26d6aeb...) after the entry-phase law (pre_data_amendment_3) ended the seed-invisibility degeneracy",
+      "OL-1": {
+        "seed": 20260919,
+        "max_abs_dv_m_s": 0.0038658407484328805,
+        "within_derived_margin": true
+      },
+      "OL-2": {
+        "seed": 20260920,
+        "max_abs_dv_m_s": 0.0038599272742327884,
+        "within_derived_margin": true
+      },
+      "OL-3": {
+        "seed": 20260921,
+        "max_abs_dv_m_s": 0.0038532957169252757,
+        "within_derived_margin": true
+      },
+      "derived_margin_m_s": 0.03103119967715015,
+      "margin_headroom": "the worst measured max|dv| is ~8.0x under the pre-derived bound",
+      "closed_loop_envelope": "build N and build N+1 closed-loop runs: max |v| 0.869917842309973 m/s vs the pre-derived envelope V = 2.977443609022557 m/s, PASS",
+      "honesty": "agreement on the registered cases is EVIDENCE, never universal proof (carried verbatim in check2_report.json and in the certificate scope)"
+    },
+    "check3_measured": {
+      "gates": {
+        "bounds_honored": true,
+        "no_nan_inf": true,
+        "no_intervention": true,
+        "contact_floor": true,
+        "availability_exact": true,
+        "velocity_envelope": true
+      },
+      "action_replay_refusal": "2/2 probes REFUSED with ACTION_REPLAY_REFUSED (a precomputed action stream; the action_replay mode) -- the harness has NO input channel that accepts actions; observations and actions are recomputed from the NEW trajectory every tick",
+      "non_regression_margin_carried": {
+        "name": "crossbuild_openloop_max_dv",
+        "bound": 0.03103119967715015,
+        "derivation": "delta*V/(1.01*0.95), V = a_max/(damping*0.95)"
+      }
+    },
+    "injections_measured": {
+      "I1_perturbed_state_hash": {
+        "falsifier": "F1",
+        "verdict": "CAUGHT",
+        "detail": "perturbed the tick-5 periodic state hash AND recomputed cert_hash (the sophisticated-attacker form): the hash-chain recomputation invalidated the evidence -> deploy BLOCK"
+      },
+      "I2_swapped_normalization_constant": {
+        "falsifier": "F1",
+        "verdict": "CAUGHT",
+        "detail": "normalization.std[0] x1.001 in a COPIED manifest: canonical manifest hash moved -> compat_key mismatch -> deploy BLOCK; corpus action bytes moved (second detection); the copied manifest is still structurally valid (the P3 loader accepts it -- the GATE is what refuses it)"
+      },
+      "I3_dropped_rng_from_restart_snapshot": {
+        "falsifier": "F2",
+        "verdict": "CAUGHT",
+        "detail": "named structural refusal + forced-resume trajectory move (state hashes from the first tick)"
+      },
+      "I4_altered_action_mapping_entry": {
+        "falsifier": "F3",
+        "verdict": "CAUGHT",
+        "detail": "action.scale[2] 0.4 -> 0.400001 on the FROZEN corpus in the SAME runtime: recomputed corpus action bytes differ from the pinned bytes (byte-wise detection) AND the manifest hash moved"
+      },
+      "summary": "4/4 injections CAUGHT; falsifier verdicts F1_silent_promotion CAUGHT, F2_resume_drift CAUGHT, F3_legacy_action_drift CAUGHT"
+    },
+    "clean_triple_measured": {
+      "bundles": "three full-gate pipelines (corpus -> closed-loop runs -> CHECK 1 fresh-process workers -> CHECK 2 -> CHECK 3 -> certificate issue -> validator -> deploy ALLOW/BLOCK/BLOCK) produced BYTE-IDENTICAL canonical bundles: sha256 f11c82ea3ec9fa2a... x3",
+      "verdict": "no false positives on the unmodified artifacts; P4/FP HELD"
+    },
+    "corpus_measured": {
+      "built": "NOW, in this lane, through the FROZEN P3 loader (policy_manifest.load_manifest + infer_numpy.NumpyPolicy) over the pinned 900-tick/60-decision fixed sequence (slice sha 69babe846e2447333b527c7fd8c190499e5ac1d55733dbd043edd0422245daa2)",
+      "actions_sha256": "e25406e86cbf5347...",
+      "cross_check": "the corpus bytes REPRODUCE the P3 lane's own recorded fresh-process action bytes (validation/typeb_p3_20260921/actions_run1.bin) -- an independent re-proof of the F-CHANNELS-INERT claim on this side of the v2 observation-schema merge; a mismatch would have been a corpus-drift finding (the pipeline raises)"
+    },
+    "certificate_measured": {
+      "cert_hash": "b33bd69ea66b9b9a...",
+      "compat_key": "9de019b7b9ef5e0c...",
+      "deployment_class": "surrogate",
+      "validator": "the issued certificate verifies (python -m tools.policy_compat validate -> exit 0)",
+      "deploy_gate": "ALLOW on the matching 5-tuple; BLOCK on a foreign physics build id; BLOCK on a missing certificate",
+      "production_block_rule": "PRODUCTION-class certificates REQUIRE zero unresolved registered gaps -- validator-enforced"
+    },
+    "registered_restart_state_gaps": {
+      "surrogate_status": "ALL EIGHT inventory items implemented, snapshotable, and proven bit-identical through CHECK 1 in the CPU scene",
+      "production_path_gaps_named": [
+        "gap_engine_contact_warm_start (contact_warm_start_cache)",
+        "gap_engine_reflex_state (reflex_state)",
+        "gap_engine_controller_history (controller_history)",
+        "gap_engine_world_state (world_state)"
+      ],
+      "status": "all four REGISTERED GAP (pending engine binding), each with cause + clearing check in the certificate; this lane CANNOT measure the engine's snapshot coverage (no engine binary built or touched); production certificates are BLOCKED while any gap is unresolved"
+    },
+    "falsifier_verdicts": {
+      "F1_silent_promotion": "NOT FIRED -- both injections (perturbed state hash; swapped normalization constant) were CAUGHT at the gate; nothing deployed undetected",
+      "F2_resume_drift": "NOT FIRED -- the dropped-RNG and dropped-cache restarts were DETECTED structurally (named refusal) AND dynamically (trajectory move on the declared instrument); only the complete snapshot resumed, bit-identically",
+      "F3_legacy_action_drift": "NOT FIRED -- the altered action-mapping entry moved the corpus action bytes in the same runtime and was detected byte-wise",
+      "FP_no_false_positives": "NOT FIRED -- three clean full-gate runs byte-identical",
+      "scope_guard": "HELD -- files touched: tools/policy_compat/** (new) and tools/science_funnel/validation/upgrade_gate_20260920/** (this lane's); gait_controller.hpp, gait_* validation, first_skill_prestage_20260922/, master, and the shared typeb_export tooling untouched (typeb_export consumed read-only through its frozen public functions)",
+      "summary": "ALL PRE-REGISTERED FALSIFIERS HELD; no band moved, nothing tuned"
+    },
+    "what_waits_for_the_real_actor": [
+      "BINDING IS AUTOMATIC IN FORMAT: the certificate binds artifact hashes (manifest_hash, weights_sha256, physics build params sha, runtime profile); when the real trained actor freezes, reissue with the real bundle + real physics build ids and the SAME checks re-run unchanged",
+      "the real actor's qualification scope (bodies/skills/transitions/ranges/horizons/bars/margins) must be declared per its own training claims; this lane's surrogate scope is a FORMAT instance",
+      "the four production restart-state gaps must be cleared by the engine binding (snapshot APIs + bit-identical CHECK 1 through them) before ANY production-class certificate can issue",
+      "CHECK 2's registered cases must be re-registered against the real engine's closed-loop streams (the margin law re-derived from the real build's declared parameter deltas); agreement on cases remains evidence, never universal proof",
+      "CHECK 3's hard gates reference the real walk interface's intervention taxonomy and monitor set; the action-replay refusal and the closed-loop recompute requirement transfer verbatim",
+      "the deterministic inference recipe must be re-proven byte-identical on the deployment runtime (the P3 manifest's own engine-runtime note): F-CPU-POLICY-BYTES re-run against the engine's byte stream before deployment"
+    ],
+    "tests": "16/16 green: python -B -m pytest tools/policy_compat/tests -q"
   },
-  "pass": null
+  "pass": true
 }
