@@ -1,0 +1,29 @@
+{
+ "schema": "chimera.slice_stranger.v1",
+ "lane": "lane/slice-stranger-20260920",
+ "base_commit": "7d7868d3",
+ "date": "2026-09-22",
+ "agent_trailer": "Agent: stranger",
+ "theory": "the real-body slice with the cached 2s boot can carry a stranger's first minute without any engine edit: first-run on-page guidance in plain words, every control named on the page and keyboard-first (the mouse-through-automation unreliability law), boot->motion->understood-control->deliberate-action->restart each timed, a clean restart, and zero console errors -- measured by a private headless-browser walkthrough (Playwright, channel chrome) acting as the stranger",
+ "prereg": "record.md (this directory), committed before any code",
+ "falsifiers": {
+  "F-STRANGER-60": "pending: scripted stranger's deliberate action < 60 s from launch",
+  "F-EVERY-NAMED-KEY": "pending: every control named on the page works by key path",
+  "F-BOOT-BAR": "pending: t_first_verts < 10 s; page first-frame within 2 s of load",
+  "F-MOTION-BAR": "pending: engine-law motion visible within 20 s of world-up",
+  "F-GUIDE-PLAIN": "pending: first-run guidance names the creature/slice/press keys on the page itself",
+  "F-CLEAN-RESTART": "pending: key R reboots clean, same scene pin, zero errors",
+  "F-ZERO-ERRORS": "pending: on-page error beacon + harness console both empty",
+  "F-SCOPE": "pending: zero engine/gait edits; page + lane dir only; push lane only"
+ },
+ "predictions": {
+  "P-BOOT": "pending",
+  "P-MOTION": "pending",
+  "P-UNDERSTOOD": "pending",
+  "P-ACT": "pending",
+  "P-RESTART": "pending",
+  "P-ZERO-ERRORS": "pending"
+ },
+ "pass": null,
+ "notes": "verdicts filled only from measurements recorded beside this file"
+}
