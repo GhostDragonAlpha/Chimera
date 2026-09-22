@@ -38,6 +38,26 @@ def marker_once(text, marker, label):
     return text.index(marker)
 
 
+# The heavy chain: inlined copies of these multiplied by LLVM's unrolling of
+# the constant-bound loops (range(18)/range(4)/bisection range(42)) explode
+# the IR (measured: plan 16s vs integ >15min). inline='never' turns each
+# call site into one real call; the small per-element helpers stay inlined.
+BIG5 = ('fk_eval', 'rate', 'free_step', 'advance', 'impact')
+
+
+def apply_inline_never(head):
+    for fn in BIG5:
+        pats = [f'@cuda.jit(device=True)\n\ndef {fn}(', f'@cuda.jit(device=True)\ndef {fn}(']
+        hits = [(p, head.count(p)) for p in pats]
+        n = sum(c for _, c in hits)
+        if n != 1:
+            raise SystemExit(f'inline-never: decorator of {fn!r} occurs {n} times (need 1)')
+        for p, c in hits:
+            if c:
+                head = head.replace(p, p.replace('@cuda.jit(device=True)', "@cuda.jit(device=True, inline='never')"), 1)
+    return head
+
+
 def strip_line(block, line, label):
     n = block.count(line)
     if n != 1:
@@ -124,7 +144,7 @@ def main():
                'per-env serial semantics; a_rc carries the integration verdict to post.\n'
                'Device prints dropped; bounds guard added; cache=True for codegen reuse.\n'
                'Trailer Agent: GLM 5.3.\n"""\n')
-    out.append(head)
+    out.append(apply_inline_never(head))
     out.append(kernel('tick_plan_kernel', body_plan))
     out.append('\n\n')
     out.append(kernel('tick_integ_kernel', body_integ))

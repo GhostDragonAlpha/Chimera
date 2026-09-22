@@ -354,7 +354,7 @@ def mv18(a, x, out):
 
 # ───────────────────────── the dynamics evaluation ─────────────────────────
 
-@cuda.jit(device=True)
+@cuda.jit(device=True, inline='never')
 
 def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias):
     ax_rot = mdi[OI_ax_rot:OI_ax_rot + 18]
@@ -1437,7 +1437,7 @@ def friction_solve(initial, inv, row_n, row_t, floor_n, floor_t, mu, slip_sign, 
 
 
 
-@cuda.jit(device=True)
+@cuda.jit(device=True, inline='never')
 def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rq, rv, mdi, csti):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
@@ -1703,7 +1703,7 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
 
 
 
-@cuda.jit(device=True)
+@cuda.jit(device=True, inline='never')
 
 def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, q1, v1, w1, mdi, csti):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
@@ -1930,7 +1930,7 @@ def gram_factor4(g, k, rhs, lam):
 
 
 
-@cuda.jit(device=True)
+@cuda.jit(device=True, inline='never')
 
 def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rc, mdi, csti):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
@@ -2207,7 +2207,7 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
 
 # ───────────────────────── the event-driven advance ─────────────────────────
 
-@cuda.jit(device=True)
+@cuda.jit(device=True, inline='never')
 
 def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh, sdep, scl, adv, rc, q1, v1, w1, mdi, csti):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
@@ -3233,15 +3233,15 @@ def paw_leg(paw_t, leg, out):
 @cuda.jit(cache=True)
 
 def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
+    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
+
+    e = cuda.grid(1)
+
     ne = a_q.shape[0] // 18
 
     if e >= ne:
 
         return
-
-    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
-
-    e = cuda.grid(1)
 
     if a_refused[e] != 0 or a_collapsed[e] != 0:
 
@@ -5145,15 +5145,15 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 @cuda.jit(cache=True)
 
 def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
+    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
+
+    e = cuda.grid(1)
+
     ne = a_q.shape[0] // 18
 
     if e >= ne:
 
         return
-
-    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
-
-    e = cuda.grid(1)
 
     if a_refused[e] != 0 or a_collapsed[e] != 0:
 
@@ -6063,15 +6063,15 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
 @cuda.jit(cache=True)
 
 def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
+    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
+
+    e = cuda.grid(1)
+
     ne = a_q.shape[0] // 18
 
     if e >= ne:
 
         return
-
-    pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
-
-    e = cuda.grid(1)
 
     if a_refused[e] != 0 or a_collapsed[e] != 0:
 
