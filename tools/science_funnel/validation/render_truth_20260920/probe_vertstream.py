@@ -6,13 +6,24 @@ shading route is derived from the DATA (Rule 1), not taste.
 import json
 import struct
 import sys
+import time
 import urllib.request
 
 import numpy as np
 
 base = sys.argv[1].rstrip("/")
-with urllib.request.urlopen(base + "/api/verts", timeout=30) as r:
-    raw = r.read()
+raw = None
+for attempt in range(5):          # the bind race: health can answer one poll
+    try:                          # before the socket accepts; measured once
+        with urllib.request.urlopen(base + "/api/verts", timeout=30) as r:
+            raw = r.read()
+        break
+    except OSError as e:
+        print("probe: verts fetch attempt %d refused: %s" % (attempt, e),
+              flush=True)
+        time.sleep(1.5)
+if raw is None:
+    raise SystemExit("probe: /api/verts never answered")
 n = int.from_bytes(raw[:4], "little")
 arr = np.frombuffer(raw[4:4 + n * 36], dtype=np.float32).reshape(n, 9)
 pos = arr[:, 0:3]
