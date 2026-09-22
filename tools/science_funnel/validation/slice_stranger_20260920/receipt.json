@@ -4,26 +4,49 @@
  "base_commit": "7d7868d3",
  "date": "2026-09-22",
  "agent_trailer": "Agent: stranger",
- "theory": "the real-body slice with the cached 2s boot can carry a stranger's first minute without any engine edit: first-run on-page guidance in plain words, every control named on the page and keyboard-first (the mouse-through-automation unreliability law), boot->motion->understood-control->deliberate-action->restart each timed, a clean restart, and zero console errors -- measured by a private headless-browser walkthrough (Playwright, channel chrome) acting as the stranger",
- "prereg": "record.md (this directory), committed before any code",
+ "theory": "the real-body slice with the cached 2s boot can carry a stranger's first minute without any engine edit: first-run on-page guidance in plain words, every control named on the page and keyboard-first (the mouse-through-automation unreliability law), boot->motion->understood-control->deliberate-action->restart each timed, a clean restart, and zero console errors -- measured by a private headless-browser walkthrough acting as the stranger",
+ "prereg": "record.md (this directory), committed before any code (governing: 4ff5576e; duplicate dispatch reconciled: DUPLICATE_ASSIGNMENT.md)",
+ "instrument": {
+  "script": "walkthrough.js (this directory), driven by run_walkthrough.ps1",
+  "how": "a private headless Playwright browser (fresh context, never the shared desktop) opens the page, reads ONLY what the page itself shows, and acts: it names the first control from the page's own objective text, presses every key the page names and verifies each by its stage effect, restarts with R, and captures console+pageerror+requestfailed for the whole session plus the on-page error beacon",
+  "channel_law": "the prereg names channel 'chrome': the instrument ATTEMPTS it every run via a navigation canary; the machine's installed Chrome fails it (FINDING F-ENV-CHROME below), so the run completes on Playwright's bundled Chromium of the same build and the deviation is recorded verbatim in every artifact",
+  "hardening": "per-stage trace lines, 10 s budget on every page.evaluate, 5 s on every press, a 240 s session watchdog, kill-safe browser close, and progressive artifact flush -- a wedged call can no longer cost the run its artifact (the run-6 lesson)"
+ },
  "falsifiers": {
-  "F-STRANGER-60": "pending: scripted stranger's deliberate action < 60 s from launch",
-  "F-EVERY-NAMED-KEY": "pending: every control named on the page works by key path",
-  "F-BOOT-BAR": "pending: t_first_verts < 10 s; page first-frame within 2 s of load",
-  "F-MOTION-BAR": "pending: engine-law motion visible within 20 s of world-up",
-  "F-GUIDE-PLAIN": "pending: first-run guidance names the creature/slice/press keys on the page itself",
-  "F-CLEAN-RESTART": "pending: key R reboots clean, same scene pin, zero errors",
-  "F-ZERO-ERRORS": "pending: on-page error beacon + harness console both empty",
-  "F-SCOPE": "pending: zero engine/gait edits; page + lane dir only; push lane only"
+  "F-STRANGER-60": "PASS: the scripted stranger reaches a deliberate action with no external help in 0.86 / 0.85 / 0.91 s across three runs (bar: 60 s). The action is chosen from the page's own words (objective names key 1 = send the marker), and the effect is confirmed in the page's state (MOCK[mock_carry] banner on). Artifacts: walkthrough_run_172717/172810/172856.json",
+  "F-EVERY-NAMED-KEY": "PASS: all 13 keys the page names verified by key path with per-stage effects, 3/3 runs: 1 (send), 2 (stop), 3 (fall), Space (300 N press through /tick_touch at a real body vertex), arrows+plus/minus (camera via the read-only view handle), H (guide toggle), S (save), R (restart). Honest RED first: the handler matched k.key (undefined) instead of k.name -- NO named key worked until fixed; that RED is preserved in walkthrough_run_164558.json",
+  "F-BOOT-BAR": "PASS: t_first_verts 2.13 s (< 10 s bar; governing-prereg measurement, boot_timeline.json, committed; base lane inherited 2.08-2.10 s); page first rendered verts frame 0.50-0.59 s after navigation",
+  "F-MOTION-BAR": "PASS: the engine's law moves the body -- root_y settles to the derived attractor 0.124641 m (boot_timeline.json, committed at prereg time; scene sha == payload pin), and the page's live root_y readout shows it; first motion frame on canvas 0.50-0.59 s",
+  "F-GUIDE-PLAIN": "PASS: first-run page names the creature, what the slice does, and every key with its effect in plain words; the walkthrough (the stand-in stranger) reads the guide and the key list off the page and names the first control back to the harness (page_objective_names_send: true, read from the page, never hard-coded)",
+  "F-CLEAN-RESTART": "PASS (3/3 runs): R shows the RESTARTING pill, boot counter increments 1->2 (cumulative server-side counter; the old list-derived count could never increment -- that metric bug is recorded below), world returns in 1.62-1.66 s, scene pin STABLE across the restart (bc9033bfc6c5...), the standing start settles again (measured 15.5 s worst of 3), the carry banner is cleared, and zero errors cross the whole boot->restart->settled span",
+  "F-ZERO-ERRORS": "PASS: on-page error beacon = 0 AND harness-captured console.error + pageerror + requestfailed (minus the page's own by-design poll aborts, counted separately) = 0, across all three runs, including through the restart",
+  "F-SCOPE": "PASS: git diff 7d7868d3 -- ChimeraEngine/ is EMPTY (verified before this receipt); modified trees are tools/playable_slice/index.html and slice_server.py (additive: guidance/keys/beacon layer, restarting-as-state answers, cumulative boot_count) plus this lane directory; no GPU work; push lane branch only"
  },
  "predictions": {
-  "P-BOOT": "pending",
-  "P-MOTION": "pending",
-  "P-UNDERSTOOD": "pending",
-  "P-ACT": "pending",
-  "P-RESTART": "pending",
-  "P-ZERO-ERRORS": "pending"
+  "P-BOOT": "PASS: 2.13 s t_first_verts, cached boot (bar 10 s)",
+  "P-MOTION": "PASS: root_y -> 0.124641 m attractor (derived, banked constants); visible in the page's live HUD",
+  "P-UNDERSTOOD": "PASS: t_understood 0.56 / 0.63 / 0.57 s (guide visible, objective named, keys listed)",
+  "P-ACT": "PASS: t_first_action 0.91 / 0.85 / 0.91 s with confirmed effect (bar 60 s)",
+  "P-RESTART": "PASS: pill, boot 1->2, world back 1.62-1.66 s, pin stable, re-settled, carry cleared",
+  "P-ZERO-ERRORS": "PASS: beacon 0, harness 0, 3/3 runs"
  },
- "pass": null,
- "notes": "verdicts filled only from measurements recorded beside this file"
+ "walkthrough_3run": [
+  {"artifact": "walkthrough_run_172717.json", "t_page_load": 0.08, "t_first_motion": 0.5, "t_understood": 0.56, "t_first_action": 0.91, "t_restart_done": 1.63, "restart_settle_wait_s": 15.54, "keys": "13/13", "beacon": 0, "harness": 0, "pass": true},
+  {"artifact": "walkthrough_run_172810.json", "t_page_load": 0.08, "t_first_motion": 0.57, "t_understood": 0.63, "t_first_action": 0.85, "t_restart_done": 1.62, "keys": "13/13", "beacon": 0, "harness": 0, "pass": true},
+  {"artifact": "walkthrough_run_172856.json", "t_page_load": 0.07, "t_first_motion": 0.5, "t_understood": 0.57, "t_first_action": 0.91, "t_restart_done": 1.66, "keys": "13/13", "beacon": 0, "harness": 0, "pass": true}
+ ],
+ "findings": [
+  {"id": "F-ENV-CHROME", "class": "environmental, first-class, NOT hidden", "detail": "the machine's installed Chrome 153.0.8010.53 hangs EVERY real navigation: loopback and external, headless and full binary, inside Playwright and via chrome --dump-dom directly; instant pre-connect rejections still work; the netlog shows the request sent and no response headers ever (netlog_probe.json, probe_*.js all committed). It broke mid-session between early walkthrough runs. The instrument therefore canaries channel chrome every run and completes on the same build's bundled Chromium when the canary fails -- all three receipt runs record this deviation verbatim"},
+  {"id": "F-DEAD-KEYS-FOUND", "class": "product defect caught by the falsifier", "detail": "the key handler matched k.key (undefined on every KEYLIST entry) instead of k.name, so NO named key had a working path in any earlier run -- the page looked alive but every key was dead. Exactly the defect F-EVERY-NAMED-KEY exists to catch; fixed, and the honest RED artifacts kept"},
+  {"id": "F-BOOT-COUNT-METRIC", "class": "measurement bug fixed in the instrument's target", "detail": "boot_count was derived from an events list that RESETS on every boot, so a real restart could never increment it (measured boots [1,1] twice). The server now carries a cumulative counter; the walkthrough verifies it harness-side"},
+  {"id": "F-POLL-FRAGILITY", "class": "robustness defect found under load", "detail": "the page's original pollers had no in-flight guard or timeout: under machine load the 9 MB /api/verts fetches stacked by the thousands (ERR_INSUFFICIENT_RESOURCES, 4233 errors in run 1) and the server queue collapsed. Fixed: serialized polling + AbortSignal.timeout on the three polling endpoints; by-design aborts counted separately from errors"}
+ ],
+ "honest_red_artifacts": [
+  "walkthrough_run_160844.json (ERR_INSUFFICIENT_RESOURCES flood: unbounded polling)",
+  "walkthrough_run_164558.json (the dead-keys RED: k.key undefined, all keys false)",
+  "walkthrough_run_171524.json (R false, boots [1,1]: the boot-count metric that could not increment)",
+  "walkthrough_run_172112.json (STAGE-TIMEOUT at restart: in-page /api/status stalls behind the boot lock -- read moved harness-side)"
+ ],
+ "pass": true,
+ "notes": "verdicts filled only from measurements recorded beside this file; the prereg's 3-run determinism requirement met with identical verdicts across runs"
 }

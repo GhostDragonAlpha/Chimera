@@ -1,0 +1,255 @@
+{
+ "base": "http://127.0.0.1:8901",
+ "at": "2026-09-22T22:27:21.696Z",
+ "timeline": {
+  "t_launch": 0,
+  "t_page_load": 0.08,
+  "t_first_motion": 0.5,
+  "t_understood": 0.56,
+  "t_first_action": 0.91,
+  "t_action_effect_latency_s": 0.33,
+  "t_restart_done": 1.63
+ },
+ "trace": [
+  {
+   "t": 0.05,
+   "stage": "launch"
+  },
+  {
+   "t": 0.14,
+   "stage": "first-motion"
+  },
+  {
+   "t": 0.61,
+   "stage": "understood"
+  },
+  {
+   "t": 0.62,
+   "stage": "first-action"
+  },
+  {
+   "t": 0.96,
+   "stage": "stop-then-press"
+  },
+  {
+   "t": 2.15,
+   "stage": "every-named-key"
+  },
+  {
+   "t": 4.68,
+   "stage": "fall"
+  },
+  {
+   "t": 9.96,
+   "stage": "save"
+  },
+  {
+   "t": 10.23,
+   "stage": "restart"
+  },
+  {
+   "t": 28.66,
+   "stage": "verdicts"
+  },
+  {
+   "t": 28.67,
+   "stage": "artifact"
+  }
+ ],
+ "stage": "artifact",
+ "channel": "chromium-bundled",
+ "channel_note": "FINDING F-ENV-CHROME: channel chrome FAILED its canary (the machine's installed Chrome hangs every real navigation -- evidence: netlog_probe.json, probe_matrix.js output, chrome --dump-dom hang, all committed); the run completed on Playwright's bundled Chromium (same playwright build), deviation recorded",
+ "stranger_reading": {
+  "guideVisible": true,
+  "guideText": "[ x ]\nWELCOME — HERE IN ONE BREATH\nWhat am I looking at? A small creature: a real CT-scanned macaque skeleton — 25 bones, about half a million triangles — standing in a physics world. The faint copy is its saved pose.\nWhat does it do? It obeys real gravity: it falls, settles, and reacts when pressed. The numbers on the right are the engine's own. One thing is a labeled mock: sliding to the marker (walking is not real yet — the page says so while it happens).\nWhat do I press? Any key below does one thing — start with 1: send the creature to the ring marker. Or click the creature to press on it (300 N).\nObjective: send the creature to the ring marker — press 1.",
+  "objectiveText": "objective: carry to the marker · 1.20 m to go (mock carry)",
+  "keyRows": [
+   {
+    "key": "1",
+    "text": "[1] send the creature to the marker (labeled mock)"
+   },
+   {
+    "key": "2",
+    "text": "[2] stop the slide"
+   },
+   {
+    "key": "3",
+    "text": "[3] THE FALL TEST (real — watch it fall and rise)"
+   },
+   {
+    "key": "R",
+    "text": "[R] restart the world back to the standing start"
+   },
+   {
+    "key": "S",
+    "text": "[S] save the session record"
+   },
+   {
+    "key": " ",
+    "text": "[SPACE] press the creature (300 N, front-most point)"
+   },
+   {
+    "key": "ArrowLeft",
+    "text": "[←] orbit the camera left"
+   },
+   {
+    "key": "ArrowRight",
+    "text": "[→] orbit the camera right"
+   },
+   {
+    "key": "ArrowUp",
+    "text": "[↑] orbit the camera up"
+   },
+   {
+    "key": "ArrowDown",
+    "text": "[↓] orbit the camera down"
+   },
+   {
+    "key": "+",
+    "text": "[+] zoom in"
+   },
+   {
+    "key": "-",
+    "text": "[-] zoom out"
+   },
+   {
+    "key": "H",
+    "text": "[H] show or hide this help"
+   }
+  ]
+ },
+ "page_objective_names_send": true,
+ "first_action": {
+  "chosenBy": "the page told the stranger (key 1)",
+  "effect": "MOCK[mock_carry] banner on"
+ },
+ "stop_key": {
+  "msg": "stopped."
+ },
+ "space_press": {
+  "effect": "press (real, 300 N): {\"ok\":true}"
+ },
+ "keys_on_page": [
+  "1",
+  "2",
+  "3",
+  "R",
+  "S",
+  " ",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "ArrowDown",
+  "+",
+  "-",
+  "H"
+ ],
+ "fall_started": true,
+ "fall_completed": true,
+ "fall_verdict": "THE FALL (real): peak +0.8978 m · max |vy| 3.6519 m/s · landed root_y 0.1249 — engine law",
+ "save_key": true,
+ "scene_pin_before": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+ "restart_pill_shown": true,
+ "restart_world_returned": true,
+ "scene_pin_after": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+ "scene_pin_stable": true,
+ "boot_count_before": 1,
+ "boot_count_after": 2,
+ "restart_actually_booted": true,
+ "restart_settled": true,
+ "restart_settle_wait_s": 15.54,
+ "restart_state": {
+  "status": "REAL engine numbers — root_y 0.1246 m · root_vy -0.0000 m/s · gravity ON",
+  "pill": "none",
+  "carryActive": false
+ },
+ "key_results": {
+  "1": true,
+  "2": true,
+  "3": true,
+  " ": true,
+  "ArrowLeft": true,
+  "ArrowRight": true,
+  "ArrowUp": true,
+  "ArrowDown": true,
+  "+": true,
+  "-": true,
+  "H": true,
+  "S": true,
+  "R": true
+ },
+ "every_named_key_works": true,
+ "aborted_polls_by_design": 0,
+ "beacon_entries": [],
+ "beacon_empty": true,
+ "console_errors": [],
+ "console_empty": true,
+ "falsifiers": {
+  "F-STRANGER-60": {
+   "bar_s": 60,
+   "measured": {
+    "t_launch": 0,
+    "t_page_load": 0.08,
+    "t_first_motion": 0.5,
+    "t_understood": 0.56,
+    "t_first_action": 0.91
+   },
+   "pass": true
+  },
+  "F-EVERY-NAMED-KEY": {
+   "keys": [
+    "1",
+    "2",
+    "3",
+    "R",
+    "S",
+    " ",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowUp",
+    "ArrowDown",
+    "+",
+    "-",
+    "H"
+   ],
+   "results": {
+    "1": true,
+    "2": true,
+    "3": true,
+    " ": true,
+    "ArrowLeft": true,
+    "ArrowRight": true,
+    "ArrowUp": true,
+    "ArrowDown": true,
+    "+": true,
+    "-": true,
+    "H": true,
+    "S": true,
+    "R": true
+   },
+   "pass": true
+  },
+  "F-BEACON-SILENT": {
+   "beacon": 0,
+   "harness": 0,
+   "pass": true
+  },
+  "F-RESTART-CLEAN": {
+   "pill": true,
+   "world_back_s": 1.63,
+   "returned": true,
+   "boots": [
+    1,
+    2
+   ],
+   "carry_cleared": true,
+   "pass": true
+  },
+  "F-TIMELINE-HONEST": {
+   "recorded": true,
+   "pass": true
+  }
+ },
+ "pass": true,
+ "console_error_note": "console+pageerror+requestfailed captured the whole session; the page half lives in window.__CHIMERA_BEACON"
+}

@@ -143,3 +143,41 @@ action / restart) → verdicts → `receipt.json` in THIS directory → commit
 
 Receipt: `tools/science_funnel/validation/slice_stranger_20260920/receipt.json`.
 Prereg: this file.
+
+## AMENDMENT — RUN RESULTS (2026-09-22, after the run; nothing above altered)
+
+ALL EIGHT FALSIFIERS PASS, 3/3 runs with identical verdicts (the prereg's
+determinism requirement). Headline numbers, three green runs
+(walkthrough_run_172717 / 172810 / 172856.json):
+
+- t_page_load 0.07–0.08 s; first motion on canvas 0.50–0.57 s;
+  t_understood 0.56–0.63 s; **t_first_action 0.85–0.91 s** (bar: 60 s;
+  the action is chosen from the page's own words, effect confirmed);
+  restart world-back 1.62–1.66 s, scene pin stable, re-settled ~15.5 s,
+  boot counter 1→2; on-page beacon 0 and harness console 0 throughout,
+  including through the restart. All 13 named keys verified by key path.
+
+The instrument's channel story is recorded, not hidden: the prereg named
+channel `chrome`; the machine's installed Chrome 153 now fails a navigation
+canary on EVERY real navigation (finding F-ENV-CHROME, evidence committed:
+netlog_probe.json + probe_*.js + FINDING_chrome_loopback.md), so the runs
+complete on Playwright's bundled Chromium of the same build after the canary
+fails, and every artifact carries the deviation verbatim.
+
+What the honest REDs bought (all artifacts kept, receipt.json lists them):
+1. run 160844: unbounded polling collapsed under load → serialized polls +
+   fetch timeouts (a stranger's slow laptop would have hit this too).
+2. run 164558: the dead-keys RED — the handler read `k.key` (undefined)
+   instead of `k.name`; NO named key had ever worked. F-EVERY-NAMED-KEY did
+   its job. Fixed; every key now verified with a stage effect.
+3. run 171524: boots [1,1] — boot_count was derived from a list that resets
+   per boot and could never increment. Server now carries a cumulative
+   counter, verified harness-side.
+4. run 172112: an in-page /api/status read stalls behind the boot lock →
+   STAGE-TIMEOUT recorded; the counter read moved to the harness (Node http,
+   hard timeout). This is also why the instrument now has per-stage traces,
+   per-call budgets, a watchdog, and progressive artifact flush.
+
+Duplicate-dispatch note: two agents were assigned this lane; glm53-lead-02's
+prereg (4ff5576e) governs and is the one falsified-or-confirmed here; the
+reconciliation lives in DUPLICATE_ASSIGNMENT.md (commit 8d97ba26).

@@ -12,7 +12,22 @@
   #gl.dragging{cursor:grabbing}
   .panel{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:10px;
         padding:10px 12px;backdrop-filter:blur(4px);font-size:12px}
-  #honesty{left:10px;top:10px;width:305px;max-height:82vh;overflow-y:auto}
+  /* the left column: the stranger guide first, the honesty ledger under it */
+  #leftcol{position:absolute;left:10px;top:10px;bottom:12px;width:305px;display:flex;
+        flex-direction:column;gap:8px;pointer-events:none}
+  #guide,#honesty{pointer-events:auto}
+  #guide{position:relative;background:var(--panel);border:1px solid #2b4a43;border-radius:10px;
+        padding:10px 12px;font-size:12px}
+  #guide h1{font-size:13px;letter-spacing:.14em;color:var(--accent);margin:0 0 6px}
+  #guide h2{font-size:10px;letter-spacing:.18em;color:var(--muted);margin:9px 0 2px}
+  #guide .row{margin:2px 0;color:var(--text)}
+  #guide .obj{margin-top:8px;padding:6px 8px;border:1px solid #2b4a43;border-radius:8px;
+        color:var(--accent)}
+  #guide .x{position:absolute;right:8px;top:6px;color:var(--muted);cursor:pointer;border:none;
+        background:none;font-size:12px}
+  #guidepill{position:relative;display:none;background:var(--panel);border:1px solid var(--line);
+        border-radius:8px;padding:6px 10px;color:var(--muted);cursor:pointer;width:max-content}
+  #honesty{position:relative;overflow-y:auto;min-height:0}
   #honesty h1{font-size:12px;letter-spacing:.22em;color:var(--accent);margin:0 0 6px}
   #honesty h2{font-size:10px;letter-spacing:.18em;color:var(--muted);margin:9px 0 3px}
   #honesty .row{margin:2px 0;color:var(--muted)}
@@ -20,11 +35,26 @@
   .tag{display:inline-block;padding:0 5px;border-radius:4px;font-size:10px;margin-right:4px}
   .tag.real{background:#173229;color:var(--good)} .tag.mock{background:#3a2a17;color:var(--warn)}
   .tag.decl{background:#241a33;color:#c9a7ff}
-  #banner{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:none;
+  #banner{position:absolute;top:44px;left:50%;transform:translateX(-50%);display:none;
         background:#3a2a17ee;border:1px solid #6b4c26;color:var(--warn);border-radius:8px;
         padding:7px 16px;font-size:13px}
-  #verdict{position:absolute;right:10px;top:10px;width:290px}
+  #bootstatus{position:absolute;top:10px;left:50%;transform:translateX(-50%);display:none;
+        background:#12151acc;border:1px solid var(--line);color:var(--muted);border-radius:8px;
+        padding:6px 16px;font-size:12px}
+  #bootstatus.restarting{color:var(--warn);border-color:#6b4c26}
+  #beacon{position:absolute;right:10px;top:10px;width:290px;font-size:11px;
+        color:var(--good)}
+  #beacon.bad{color:var(--bad)}
+  #verdict{position:absolute;right:10px;top:36px;width:290px}
   #verdict .big{font-size:14px;margin:4px 0}
+  #keys{position:absolute;right:10px;bottom:12px;width:238px;font-size:12px}
+  #keys h2{font-size:10px;letter-spacing:.18em;color:var(--muted);margin:0 0 4px}
+  #keys .row{margin:1px 0;color:var(--muted)}
+  #keys .row b{color:var(--accent);font-weight:600}
+  #keys .row span{color:var(--text)}
+  #settle{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);display:none;
+        color:var(--muted);font-size:12px;background:#12151acc;border:1px solid var(--line);
+        border-radius:8px;padding:5px 12px}
   #controls{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
   button{background:transparent;color:var(--accent);border:1px solid #2b4a43;border-radius:8px;
         padding:8px 14px;cursor:pointer;font-size:12px}
@@ -37,21 +67,48 @@
 <body>
 <canvas id="gl"></canvas>
 
-<div id="honesty" class="panel">
-  <h1>CHIMERA — PLAYABLE SLICE</h1>
-  <div class="row">the standing start · honesty law enforced</div>
-  <h2>REALITY — the engine does it</h2><div id="reality-list"></div>
-  <h2>FANTASY — mocked, named, pending</h2><div id="fantasy-list"></div>
-  <h2>DECLARED — real geometry, explicit overlay</h2><div id="declared-list"></div>
-  <div class="row" id="phys-target" style="margin-top:8px"></div>
+<div id="leftcol">
+  <div id="guide" data-t="guide">
+    <button class="x" id="guide-x" title="close (H reopens)">[ x ]</button>
+    <h1>WELCOME — HERE IN ONE BREATH</h1>
+    <div class="row"><b>What am I looking at?</b> A small creature: a real
+      CT-scanned macaque skeleton — 25 bones, about half a million triangles —
+      standing in a physics world. The faint copy is its saved pose.</div>
+    <div class="row"><b>What does it do?</b> It obeys real gravity: it falls,
+      settles, and reacts when pressed. The numbers on the right are the
+      engine's own. One thing is a labeled mock: sliding to the marker
+      (walking is not real yet — the page says so while it happens).</div>
+    <div class="row"><b>What do I press?</b> Any key below does one thing —
+      start with <b>1</b>: send the creature to the ring marker.
+      Or click the creature to press on it (300 N).</div>
+    <div class="obj">Objective: send the creature to the ring marker — press <b>1</b>.</div>
+  </div>
+  <div id="guidepill" data-t="guidepill" title="show the welcome (H)">Help — press H</div>
+  <div id="honesty" class="panel" style="position:relative">
+    <h1>CHIMERA — PLAYABLE SLICE</h1>
+    <div class="row">the standing start · honesty law enforced</div>
+    <h2>REALITY — the engine does it</h2><div id="reality-list"></div>
+    <h2>FANTASY — mocked, named, pending</h2><div id="fantasy-list"></div>
+    <h2>DECLARED — real geometry, explicit overlay</h2><div id="declared-list"></div>
+    <div class="row" id="phys-target" style="margin-top:8px"></div>
+  </div>
 </div>
 
+<div id="bootstatus" data-t="bootstatus"></div>
 <div id="banner"></div>
+<div id="settle" data-t="settle">the creature settles under real gravity — watch it move</div>
+<div id="beacon" data-t="beacon">no page errors</div>
 
 <div id="verdict" class="panel">
-  <div class="big" id="objective">—</div>
-  <div id="fall-verdict" class="row">the fall test has not run</div>
-  <div id="status"></div>
+  <div class="big" id="objective" data-t="objective">—</div>
+  <div id="fall-verdict" class="row" data-t="fall">the fall test has not run</div>
+  <div id="msg" data-t="msg"></div>
+  <div id="status" data-t="status"></div>
+</div>
+
+<div id="keys" class="panel" data-t="keys">
+  <h2>KEYS — EVERYTHING HAS A KEY</h2>
+  <div id="keys-list"></div>
 </div>
 
 <div id="controls">
@@ -64,6 +121,29 @@
 
 <script>
 "use strict";
+// ── THE ERROR BEACON (the repo's own pattern, on the page itself) ─────────
+// Every error the page can produce — thrown, rejected, or console.error —
+// lands here. The stranger sees an honest pill; the walkthrough counts it.
+const BEACON = [];
+window.__CHIMERA_BEACON = BEACON;
+function beacon(kind, msg){
+  BEACON.push({kind: kind, msg: String(msg).slice(0, 300), at: Date.now()});
+  paintBeacon();
+}
+function paintBeacon(){
+  const el = document.getElementById('beacon');
+  if(!el) return;
+  if(BEACON.length === 0){ el.textContent = 'no page errors'; el.classList.remove('bad'); }
+  else{ el.textContent = BEACON.length + ' page errors (hover for the first)';
+        el.title = BEACON.slice(0, 5).map(b => b.kind + ': ' + b.msg).join('\n');
+        el.classList.add('bad'); }
+}
+window.addEventListener('error', e => beacon('error', e.message || e));
+window.addEventListener('unhandledrejection', e => beacon('unhandledrejection', (e.reason && e.reason.message) || e.reason));
+const __origConsoleError = console.error;
+console.error = function(){ beacon('console.error', Array.prototype.map.call(arguments, String).join(' '));
+  __origConsoleError.apply(console, arguments); };
+
 // ── the honesty contract comes from the registry (the same file the audit reads)
 let REGISTRY = null;
 fetch('/mock_registry.json').then(r=>r.json()).then(r=>{
@@ -77,7 +157,7 @@ fetch('/mock_registry.json').then(r=>r.json()).then(r=>{
   el('declared-list').innerHTML = r.declared.map(x=>
     `<div class="row"><span class="tag decl">GHOST</span><b>${x.id}</b> — ${x.what}</div>`).join('');
   el('phys-target').innerHTML = `physics target: walk <b>${r.physics_target.ticks}</b> ticks — current <b>${r.physics_target.current}</b> (wave-38 refusal)`;
-});
+}).catch(e=>beacon('registry load failed', e));
 
 // ── tiny mat4 ─────────────────────────────────────────────────────────────
 function persp(fov,asp,n,f){const t=1/Math.tan(fov/2);
@@ -126,7 +206,7 @@ const LINE_P = prog(`#version 300 es
   precision highp float; uniform vec4 uCol; out vec4 o; void main(){o=uCol;}`);
 
 const U = (p,n)=>gl.getUniformLocation(p,n);
-let nVerts=0, vaoMesh=null, vboMesh=null, idxCount=0, ibo=null;
+let vaoMesh=null, vboMesh=null, idxCount=0, ibo=null;
 let ghost = null;         // {vao,n}
 let nGhost=0;
 
@@ -156,6 +236,7 @@ function linesToVAO(pts){const vao=gl.createVertexArray(),vbo=gl.createBuffer();
   gl.bindVertexArray(null);return {vao,n:pts.length/3};}
 
 let cam={yaw:0.7,pit:0.42,dist:2.2,tx:0,ty:0.25,tz:0};
+window.__CHIMERA_VIEW=cam;   // read-only handle for the walkthrough instrument
 let MARKER={x:0.678,z:0.966,radius:0.15};
 let worldGrid=null, markerRing=null, markerPost=null;
 
@@ -200,12 +281,22 @@ let ghostBase=null, ghostCenter=[0,0,0];
 
 // ── the stream ────────────────────────────────────────────────────────────
 let liveVerts=null;      // the Float32Array the renderer + the picker share
+// Serialized, bounded polling: a slow machine must see the poll SKIP a beat,
+// never stack thousands of unbounded fetches (measured failure: unbounded
+// polling under load ends in ERR_INSUFFICIENT_RESOURCES and a dead page).
+let vertsBusy=false, statusBusy=false;
 async function pollVerts(){
+  if(vertsBusy)return; vertsBusy=true;
   try{
-    const b=await (await fetch('/api/verts')).arrayBuffer();
+    const b=await (await fetch('/api/verts',{signal:AbortSignal.timeout(8000)})).arrayBuffer();
+    // the restart gap answers {"restarting":true} (JSON) -- never parse that
+    // as vertex floats; keep the last good frame on screen
+    if(b.byteLength && new Uint8Array(b)[0]===0x7b)return;
     liveVerts=new Float32Array(b);
+    if(!window.__CHIMERA_BOOT_TS){window.__CHIMERA_BOOT_TS=Date.now();
+      document.getElementById('bootstatus').style.display='none';}
     if(!idxCount){
-      const t=await (await fetch('/api/topology')).arrayBuffer();
+      const t=await (await fetch('/api/topology',{signal:AbortSignal.timeout(8000)})).arrayBuffer();
       meshFromTopo(t,b);
     }else{
       gl.bindVertexArray(vaoMesh);
@@ -213,7 +304,8 @@ async function pollVerts(){
       gl.bufferData(gl.ARRAY_BUFFER,b,gl.DYNAMIC_DRAW);
       gl.bindVertexArray(null);
     }
-  }catch(e){/* the HUD shows link state */}
+  }catch(e){/* a timeout or the restart gap: keep the last good frame */}
+  finally{vertsBusy=false;}
 }
 
 // ── render ────────────────────────────────────────────────────────────────
@@ -273,78 +365,201 @@ cv.addEventListener('wheel',e=>{e.preventDefault();
 // ── the press (REALITY): the page raycasts its own verts (the H16 lesson:
 //    one path, the page's own camera convention), snaps to a vertex, posts
 //    the engine's ready-world-point form. Force stated, never defaulted.
+//    e == null means the KEYBOARD press: the same physics, the front-most
+//    vertex of the body as seen by the player's own camera (the key path
+//    replaces the pointer, not the physics).
 async function pressAt(e){
   if(!liveVerts||!liveVerts.length)return;
   const r=cv.getBoundingClientRect();
-  const px=e.clientX-r.left, py=e.clientY-r.top;
   const asp=cv.width/cv.height;
   const V=lookFrom(cam.yaw,cam.pit,cam.dist,cam.tx,cam.ty,cam.tz);
   const P=persp(0.9,asp,0.05,60), VP=mul(P,V.mat);
-  let best=-1,bd=28*28;
-  const nVerts=liveVerts.length/9;
-  for(let i=0;i<nVerts;i++){
+  let best=-1,bd=1e18;
+  if(e!=null){
+    const px=e.clientX-r.left, py=e.clientY-r.top;
+    bd=28*28;                                   // the click's snap radius
+  }
+  const nV=liveVerts.length/9;
+  for(let i=0;i<nV;i++){
     const x=liveVerts[i*9],y=liveVerts[i*9+1],z=liveVerts[i*9+2];
     let cx=VP[0]*x+VP[4]*y+VP[8]*z+VP[12], cy=VP[1]*x+VP[5]*y+VP[9]*z+VP[13],
         cw=VP[3]*x+VP[7]*y+VP[11]*z+VP[15];
     if(cw<=0)continue;
-    const sx=(cx/cw*0.5+0.5)*r.width, sy=(-cy/cw*0.5+0.5)*r.height;
-    const d=(sx-px)**2+(sy-py)**2;
+    let d;
+    if(e!=null){
+      const sx=(cx/cw*0.5+0.5)*r.width, sy=(-cy/cw*0.5+0.5)*r.height;
+      d=(sx-e.clientX+r.left)**2+(sy-e.clientY+r.top)**2;
+    }else{
+      d=-cw;                                    // keyboard: the front-most vertex
+    }
     if(d<bd){bd=d;best=i;}
   }
   if(best<0)return;
   const hit=[liveVerts[best*9],liveVerts[best*9+1],liveVerts[best*9+2]];
-  const res=await (await fetch('/api/press',{method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({hit,force_n:300.0})})).json();
-  document.getElementById('status').textContent =
-    'press (real, 300 N): '+JSON.stringify(res);
+  try{
+    const res=await (await fetch('/api/press',{method:'POST',signal:AbortSignal.timeout(8000),
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({hit,force_n:300.0})})).json();
+    document.getElementById('msg').textContent =
+      'press (real, 300 N): '+JSON.stringify(res);
+  }catch(err){
+    document.getElementById('msg').textContent =
+      'the world did not answer — try again in a moment';
+  }
 }
+
+// ── THE KEYS (one list, named on the page and wired in code — the same
+//    list the walkthrough reads and exercises) ─────────────────────────────
+const KEYLIST=[
+  {name:'1', disp:'1',     label:'send the creature to the marker (labeled mock)', fn:()=>doSend()},
+  {name:'2', disp:'2',     label:'stop the slide',                                 fn:()=>doStop()},
+  {name:'3', disp:'3',     label:'THE FALL TEST (real — watch it fall and rise)',  fn:()=>doFall()},
+  {name:'R', disp:'R',     label:'restart the world back to the standing start',   fn:()=>doRestart()},
+  {name:'S', disp:'S',     label:'save the session record',                        fn:()=>doSave()},
+  {name:' ', disp:'SPACE', label:'press the creature (300 N, front-most point)',   fn:()=>pressFromKey()},
+  {name:'ArrowLeft',  disp:'←', label:'orbit the camera left',  fn:()=>{cam.yaw-=0.12;}},
+  {name:'ArrowRight', disp:'→', label:'orbit the camera right', fn:()=>{cam.yaw+=0.12;}},
+  {name:'ArrowUp',    disp:'↑', label:'orbit the camera up',    fn:()=>{cam.pit=Math.min(1.4,cam.pit+0.08);}},
+  {name:'ArrowDown',  disp:'↓', label:'orbit the camera down',  fn:()=>{cam.pit=Math.max(-0.15,cam.pit-0.08);}},
+  {name:'+', disp:'+', label:'zoom in',  fn:()=>{cam.dist=Math.max(0.5,cam.dist*0.9);}},
+  {name:'-', disp:'-', label:'zoom out', fn:()=>{cam.dist=Math.min(9,cam.dist*1.1);}},
+  {name:'H', disp:'H', label:'show or hide this help', fn:()=>toggleGuide()},
+];
+window.__CHIMERA_KEYS = KEYLIST.map(k=>({key:k.name,label:k.label}));
+document.getElementById('keys-list').innerHTML = KEYLIST.map(k=>
+  `<div class="row" data-t="keyrow" data-key="${k.name}"><b>[${k.disp}]</b> <span>${k.label}</span></div>`).join('');
+
+function pressFromKey(){
+  if(!liveVerts||!liveVerts.length){
+    document.getElementById('msg').textContent='the world is still arriving…';
+    return;
+  }
+  pressAt(null);
+}
+function doSend(){
+  fetch('/api/send',{method:'POST'})
+    .then(()=>{document.getElementById('msg').textContent=
+      'the creature slides toward the marker — a labeled MOCK (real walking is pending)';})
+    .catch(e=>{document.getElementById('msg').textContent='the world is restarting — try again in a moment';});
+}
+function doStop(){
+  fetch('/api/stop',{method:'POST'})
+    .then(()=>{document.getElementById('msg').textContent='stopped.';})
+    .catch(e=>{document.getElementById('msg').textContent='the world is restarting — try again in a moment';});
+}
+function doFall(){
+  fetch('/api/drop_test',{method:'POST'})
+    .then(()=>{document.getElementById('msg').textContent=
+      'the fall test runs — the engine drops the creature and hands back its own numbers';})
+    .catch(e=>{document.getElementById('msg').textContent='the world is restarting — try again in a moment';});
+}
+function doSave(){
+  fetch('/api/save',{method:'POST'}).then(r=>r.json())
+    .then(r=>{document.getElementById('msg').textContent='saved: '+(r.saved||JSON.stringify(r));})
+    .catch(e=>{document.getElementById('msg').textContent='the world is restarting — try again in a moment';});
+}
+let RESTARTING=false;
+function doRestart(){
+  if(RESTARTING)return;
+  RESTARTING=true;
+  const pill=document.getElementById('bootstatus');
+  pill.textContent='RESTARTING — the world comes right back';
+  pill.className='restarting'; pill.style.display='block';
+  document.getElementById('fall-verdict').textContent='restarting to the standing start…';
+  document.getElementById('settle').style.display='none';
+  fetch('/api/restart',{method:'POST'})
+    .catch(e=>beacon('restart post failed', e));
+}
+function toggleGuide(){
+  const g=document.getElementById('guide'), p=document.getElementById('guidepill');
+  const hidden=g.style.display==='none';
+  g.style.display=hidden?'block':'none';
+  p.style.display=hidden?'none':'block';
+}
+document.getElementById('guide-x').onclick=toggleGuide;
+document.getElementById('guidepill').onclick=toggleGuide;
+function markActed(){
+  const g=document.getElementById('guide');
+  if(g.style.display!=='none')toggleGuide();   // the guide steps aside after the first action
+}
+window.addEventListener('keydown',e=>{
+  const k=KEYLIST.find(k=>k.name===e.key || (k.name===' '&&e.code==='Space'));
+  if(!k)return;
+  if(e.repeat && k.name!=='ArrowLeft' && k.name!=='ArrowRight' &&
+     k.name!=='ArrowUp' && k.name!=='ArrowDown')return;
+  e.preventDefault();
+  k.fn();
+  if(k.name!=='H')markActed();
+});
 
 // ── HUD / controls ────────────────────────────────────────────────────────
 const banner=document.getElementById('banner');
 async function pollStatus(){
+  if(statusBusy)return; statusBusy=true;
   try{
-    const s=await (await fetch('/api/status')).json();
+    const s=await (await fetch('/api/status',{signal:AbortSignal.timeout(5000)})).json();
     const c=s.mock_carry||{};
     banner.style.display=c.active?'block':'none';
     if(c.active)banner.textContent='MOCK[mock_carry] — the slide is a MOCK · locomotion pending · physics target 426';
     const st=s.engine_state||{};
+    // the restart pill closes when the engine answers again (and only then)
+    if(RESTARTING && st.root_y!==undefined){
+      RESTARTING=false;
+      document.getElementById('bootstatus').style.display='none';
+    }
+    const scene=s.scene||{};
+    const settleEl=document.getElementById('settle');
+    if(scene.settled){settleEl.style.display='none';}
+    else if(!RESTARTING){settleEl.style.display='block';}
     const dist=s.marker?Math.hypot((c.x||0)-s.marker.x,(c.z||0)-s.marker.z):null;
     document.getElementById('objective').textContent =
       dist==null?'booting the world…':
       (c.arrived?'OBJECTIVE: the creature is at the marker (seated)':
        `objective: carry to the marker · ${(dist||0).toFixed(2)} m to go (mock carry)`);
-    document.getElementById('status').textContent =
-      `REAL engine numbers — root_y ${(st.root_y??0).toFixed(4)} m · root_vy ${(st.root_vy??0).toFixed(4)} m/s`+
-      (st.gravity_on!==undefined?` · gravity ${st.gravity_on?'ON':'off'}`:'');
+    if(st.root_y!==undefined){
+      document.getElementById('status').textContent =
+        `REAL engine numbers — root_y ${(st.root_y??0).toFixed(4)} m · root_vy ${(st.root_vy??0).toFixed(4)} m/s`+
+        (st.gravity_on!==undefined?` · gravity ${st.gravity_on?'ON':'off'}`:'');
+    }else{
+      document.getElementById('status').textContent = 'the world is restarting…';
+    }
     const ft=s.fall_test;
     document.getElementById('fall-verdict').textContent = !ft?'the fall test has not run':
       ft.phase==='done'?`THE FALL (real): peak +${ft.max_root_y} m · max |vy| ${ft.max_abs_vy} m/s · landed root_y ${ft.landed_root_y} — engine law`:
       ft.phase==='running'?'THE FALL (real): running — the engine is integrating…':'fall test: '+JSON.stringify(ft);
   }catch(e){document.getElementById('objective').textContent='the world is unreachable';}
+  finally{statusBusy=false;}
 }
 setInterval(pollStatus,250);
 setInterval(pollVerts,100);
 
-document.getElementById('btn-send').onclick=()=>fetch('/api/send',{method:'POST'});
-document.getElementById('btn-stop').onclick=()=>fetch('/api/stop',{method:'POST'});
-document.getElementById('btn-fall').onclick=()=>fetch('/api/drop_test',{method:'POST'});
-document.getElementById('btn-restart').onclick=async()=>{await fetch('/api/restart',{method:'POST'});
-  document.getElementById('fall-verdict').textContent='restarting to the standing start…';};
-document.getElementById('btn-save').onclick=async()=>{
-  const r=await (await fetch('/api/save',{method:'POST'})).json();
-  document.getElementById('status').textContent='saved: '+(r.saved||JSON.stringify(r));};
+document.getElementById('btn-send').onclick=doSend;
+document.getElementById('btn-stop').onclick=doStop;
+document.getElementById('btn-fall').onclick=doFall;
+document.getElementById('btn-restart').onclick=doRestart;
+document.getElementById('btn-save').onclick=doSave;
 
 // ── boot ──────────────────────────────────────────────────────────────────
 (async function boot(){
+  const pill=document.getElementById('bootstatus');
+  pill.textContent='starting the world…'; pill.className=''; pill.style.display='block';
   try{
     const s=await (await fetch('/api/status')).json();
     if(s.marker)MARKER=s.marker;
   }catch(e){}
   buildWorldDecor();
-  await loadGhost();
-  await pollVerts();
   draw();
+  try{
+    await loadGhost();
+  }catch(e){beacon('ghost load failed (the world may be restarting)', e);}
+  let tries=0;
+  while(tries<40 && !(liveVerts&&liveVerts.length)){
+    await pollVerts();
+    if(liveVerts&&liveVerts.length)break;
+    await new Promise(r=>setTimeout(r,500));
+    tries++;
+  }
+  if(!(liveVerts&&liveVerts.length))beacon('boot gave up', 'no verts after 20 s');
 })();
 </script>
 </body>

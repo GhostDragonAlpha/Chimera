@@ -63,6 +63,7 @@ class World:
         self.mock_carry = {"active": False, "x": 0.0, "z": 0.0, "arrived": False}
         self.events: list[dict] = []    # the session record (the save)
         self.fall_test: dict | None = None
+        self.boot_count = 0             # cumulative, across restarts
 
     # ── boot / restart (byte-clean) ──────────────────────────────────────
     def boot(self) -> dict:
@@ -99,7 +100,9 @@ class World:
             }
             self.mock_carry = {"active": False, "x": 0.0, "z": 0.0, "arrived": False}
             self.fall_test = None
+            self.boot_count += 1
             self.events = [{"t": time.time(), "event": "boot",
+                            "boot_seq": self.boot_count,
                             "scene_sha256": rec["scene_sha256"]}]
         # the standing start settles in the background: the page is live and
         # the settle itself is REAL physics the player watches
@@ -273,6 +276,10 @@ class World:
                 "fall_test": self.fall_test,
                 "scene": self.scene_spec,
                 "marker": self.scene_spec["marker"] if self.scene_spec else None,
+                # how many times this server's world has booted -- the restart
+                # verifier's honest signal (cumulative: a real restart
+                # increments it even though the event log resets per boot)
+                "boot_count": self.boot_count,
             }
 
     def save(self) -> dict:
@@ -318,17 +325,25 @@ class Handler(BaseHTTPRequestHandler):
         elif p == "/api/verts":
             try:
                 self._send(200, WORLD.verts(), "application/octet-stream")
-            except OSError as e:
-                self._json({"error": str(e)}, 502)
+            except OSError:
+                # the restart gap is a first-class protocol state, not a
+                # transport error: the page asks every 100 ms and the answer
+                # is "not yet" -- never a failed request (the stranger's
+                # console stays empty through a restart)
+                self._json({"restarting": True})
         elif p == "/api/topology":
             try:
                 self._send(200, WORLD.topology(), "application/octet-stream")
-            except OSError as e:
-                self._json({"error": str(e)}, 502)
+            except OSError:
+                self._json({"restarting": True})
         elif p == "/api/status":
             self._json(WORLD.status())
         elif p == "/api/health":
             self._json({"ok": True, "world_booted": WORLD.scene_spec is not None})
+        elif p == "/favicon.ico":
+            # the browser asks once; a 404 here is a console error on an
+            # otherwise clean page
+            self._send(204, b"", "image/x-icon")
         else:
             self._json({"error": "not found"}, 404)
 
@@ -341,7 +356,11 @@ class Handler(BaseHTTPRequestHandler):
         elif p == "/api/stop":
             self._json(WORLD.stop())
         elif p == "/api/press":
-            self._json(WORLD.press(body))
+            try:
+                self._json(WORLD.press(body))
+            except OSError:
+                # the restart gap, answered as a state (see /api/verts)
+                self._json({"restarting": True})
         elif p == "/api/drop_test":
             threading.Thread(target=WORLD.drop_test, daemon=True).start()
             self._json({"ok": True, "started": True})
@@ -361,6 +380,9 @@ def main() -> int:
     ap.add_argument("--port", type=int, default=0,
                     help="0 = a bind-tested free port (8127 is refused by code)")
     ap.add_argument("--engine-exe", type=Path, default=DEFAULT_EXE)
+    ap.add_argument("--no-browser", action="store_true",
+                    help="never open a browser (automated lanes, CI); "
+                         "the launcher scripts open the page themselves")
     a = ap.parse_args()
     global WORLD
     engine_exe = a.engine_exe
@@ -392,11 +414,12 @@ def main() -> int:
 
     url = "http://127.0.0.1:%d/" % httpd.server_address[1]
     print("slice: %s" % url)
-    try:
-        import webbrowser
-        webbrowser.open(url)
-    except Exception:
-        pass
+    if not a.no_browser:
+        try:
+            import webbrowser
+            webbrowser.open(url)
+        except Exception:
+            pass
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
