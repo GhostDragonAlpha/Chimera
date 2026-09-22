@@ -40,6 +40,10 @@ MARKER_DIST_M = 1.2               # ~2 body lengths (the standing skeleton measu
 CARRY_SPEED_MPS = 0.4
 ARRIVE_RADIUS_M = 0.15
 SETTLE_VY = 0.05                  # the engine's own "settled means settled" bar
+# the banked constants (membrane_tick.hpp/cpp): the settled lowest vertex is
+# -(m*g/k) below the floor, so the settled ROOT is -(m*g/k) - ymin with ymin
+# the import's own authored lowest -- the attractor, derived, any body.
+SETTLE_SINK_M = 13824.5 * 9.81 / 1.3562e7    # 0.010000 m
 
 
 class World:
@@ -105,16 +109,29 @@ class World:
     def _finish_settle(self):
         """The standing start = the engine's own settle, then CONVERGENCE: the
         root law's fixed point is bit-stable once root_y stops moving (the
-        measured attractor: 0.25529300 constant, /verts sha constant)."""
+        measured attractor: 0.25529300 constant for the capsule; the real
+        skeleton's is -(m*g/k) - ymin, derived below). The convergence WINDOW
+        matters: a drift-only break fires on bounce CRESTS of a body whose
+        oscillation outlives the capsule's (measured this lane: three boots
+        recorded three different crests). So "settled" means residence AT the
+        derived attractor: |root_y - root_eq| < 5e-5 with |vy| < 1e-5, held
+        for 10 s."""
         st = sb.wait_settled(self.url, timeout=30)
-        prev = None
-        deadline = time.time() + 90.0
+        ymin = float(self.body_rec.get("import_stats", {}).get("ymin", 0.0))
+        root_eq = -SETTLE_SINK_M - ymin
+        deadline = time.time() + 180.0
+        settled_since = None
         while time.time() < deadline:
             cur = sb.http_get_json(self.url, "/tick_state")
             ry, vy = float(cur.get("root_y", 0.0)), abs(float(cur.get("root_vy", 1.0)))
-            if prev is not None and abs(ry - prev) < 1e-7 and vy < 1e-5:
-                break
-            prev = ry
+            at_eq = abs(ry - root_eq) < 5e-5 and vy < 1e-5
+            if at_eq:
+                if settled_since is None:
+                    settled_since = time.time()
+                elif time.time() - settled_since >= 10.0:
+                    break
+            else:
+                settled_since = None
             time.sleep(0.25)
         start_verts = sb.verts_payload(self.url)
         start_sha = sb.sha256(start_verts)

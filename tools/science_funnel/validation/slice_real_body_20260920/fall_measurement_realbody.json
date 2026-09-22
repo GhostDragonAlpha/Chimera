@@ -1,0 +1,46 @@
+{
+ "falsifier": "F-SLICE-FALL",
+ "body": "the real skeleton (standing_body.obj, sha-pinned)",
+ "engine_url": "http://127.0.0.1:56474",
+ "i0_import": {
+  "ok": true,
+  "authored_lowest_ymin_m": -0.134641007,
+  "import_stats": {
+   "verts": 249743,
+   "tris": 499976,
+   "volume": 0.000973470353,
+   "ymin": -0.134641007,
+   "ymax": 0.134641007,
+   "winding_flipped": false
+  }
+ },
+ "transient": {
+  "samples": 639,
+  "peak_root_y_m": 0.9152,
+  "descent_samples": 72,
+  "settled_root_y_m": 0.124641,
+  "root_eq_predicted_m": 0.124641
+ },
+ "i1_clamp": {
+  "derived_m": 3.0,
+  "measured_peak_root_y_m": 0.9152,
+  "abs_error_m": 2.0848,
+  "within_1cm": false
+ },
+ "i2_terminal_descent": {
+  "derived_vt_mps": 0.223718814,
+  "measured_median_vt_mps": 0.223719,
+  "rel_error": 8.31746e-07,
+  "within_1e-6_relative": true,
+  "tau_derived_s": 0.022805,
+  "note": "vt = m*g/c; the descent window (root_y in (2.5, 0.6)) is fully converged: tau = m/c = 0.0228 s"
+ },
+ "i3_equilibrium_sink": {
+  "derived_m": 0.01,
+  "measured_lowest_m": -0.01,
+  "abs_error_m": 0.0,
+  "within_10pct": true
+ },
+ "pass": false,
+ "law": "y'' = min(50*m*g, k*max(0,-y) + c*max(0,-vy))/m - g; k=1.3562e7, c=6.062e5, m=13824.5, g=9.81; damping acts whenever vy<0, airborne included (membrane_tick.cpp); the constants are banked and geometry-independent"
+}

@@ -273,7 +273,10 @@ def boot_standing_start(engine_url: str) -> dict:
     arm the movement law. DETERMINISTIC: committed bytes, same import bytes
     every call (the basis of F-SLICE-RESTART)."""
     obj, rec = build_real_body()
-    res = http_post(engine_url, "/mesh_import", b"O" + obj)
+    # the real body's parse costs minutes on this machine (measured this lane:
+    # 130-238 s, variable with load, for the pinned 499,976-tri payload) --
+    # the capsule's 180 s default cut the boot off mid-parse
+    res = http_post(engine_url, "/mesh_import", b"O" + obj, timeout=900)
     if not res.get("ok"):
         raise RuntimeError("scene_boot: import refused: " + str(res.get("error")))
     # THE MOVEMENT LAW, armed: gravity + ground contact on the root

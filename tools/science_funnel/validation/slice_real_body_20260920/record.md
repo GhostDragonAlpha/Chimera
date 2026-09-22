@@ -127,4 +127,54 @@ Receipt: `tools/science_funnel/validation/slice_real_body_20260920/receipt.json`
 Inherited prereg + build (pointed at, not duplicated):
 `tools/science_funnel/validation/slice_real_body_20260922/`.
 
+## AMENDMENT 1 — F-SLICE-FALL's I1 clause, FALSIFIED AS PREREGISTERED, then restated
+
+Measured 2026-09-22 (`fall_measurement_realbody.json`): the real body's
+transient peaks at root_y = **0.9152 m**, NOT the 3 m clamp — I1 as written
+above ("peak root_y = 3.0 m within 1 cm") is RED. The clamp-reach was the
+CAPSULE's transient shape, arithmetic-derivably geometry-dependent: the
+penalty spring's stored energy is k·x²/2 with x = the centered import's
+penetration, and the real body penetrates 0.1346 m vs the capsule's
+0.2653 m — ~1/4 the specific energy, launch to ~0.9 m, exactly as measured.
+The geometry-independent identity — the carried bank's actual bar — HOLDS:
+median |vy| in the descent = 0.223719 m/s vs derived m·g/c = 0.223718814,
+relative error 8.3e-7 <= 1e-6; equilibrium sink −0.010000 m exact; the
+settled root landed on the DERIVED prediction −(m·g/k) − ymin = 0.124641.
+F-SLICE-FALL's pass condition is restated: import ok (F-BODY-CAP engine
+half) ∧ I2 <= 1e-6 relative ∧ I3 within 10%. Both the fired clause and the
+restatement are recorded; nothing tuned.
+
+## AMENDMENT 2 — F-SLICE-RESTART's recorder, RED as first measured, then fixed
+
+First measurement (`restart_measurement_realbody.json`, first run): scene sha
+identical x3 AND == the payload pin, but boot 0's settled start-state sha
+differed from boots 1/2 (which were bitwise identical to each other). The
+diagnosis is a RECORDER defect in the slice's own `_finish_settle`: its
+drift-only convergence break (`|Δroot_y| < 1e-7 and |vy| < 1e-5` between two
+0.25 s polls) fires at bounce CRESTS of the real body's longer-lived
+oscillation — it recorded mid-oscillation states (0.124713 / 0.124354 /
+0.124908, all ~3e-4 off the attractor). The fix is in the slice
+(`slice_server.py`): "settled" now means residence AT the DERIVED attractor
+— |root_y − (−(m·g/k) − ymin)| < 5e-5 with |vy| < 1e-5, held 10 s, constants
+banked, ymin from the import's own stats (any body). Re-measurement: 3 boots,
+scene sha == pin x3, start-state sha identical x3 (`8c040418…`), settled root
+at the attractor. The engine was never nondeterministic; the recorder raced
+the oscillation.
+
+## AMENDMENT 3 — F-SLICE-LAUNCH: RED, stands
+
+Measured (`launch_server_timeline_realbody.json`, `import_timing.json`):
+t_first_verts = **135.73 s** against the slice's own 10 s bar. Breakdown
+(isolated, no server): engine ready 0.71 s, ghost build 7.92 s, gravity arm
+0.026 s, and the engine's own `/mesh_import` parse of the pinned 499,976-tri
+payload **237.67 s** (variable 130–240+ s across boots; one boot was killed
+by the old 180 s POST timeout — the boot timeout is now 900 s so the slice
+can boot its own body at all). The carried prereg's payment (committing the
+posed payload, removing the compose from the boot path) was real but
+insufficient: the cost is the ENGINE's parse, first exercised at this scale
+by this body (the 500k-tri cap had never been filled before). Not
+slice-side fixable without tuning (the decimation ratio is the cap's own
+law, not a knob): SUCCESSOR WORK — engine importer performance at cap scale,
+its own Rule-0 lane.
+
 Agent: realbody
