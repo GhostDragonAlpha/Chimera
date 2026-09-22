@@ -1,0 +1,29 @@
+{
+ "lane": "lane/policy-interface-freeze-20260920",
+ "date": "2026-09-20",
+ "agent": "INTERFACE-FREEZE lane (trailer Agent: ifreeze)",
+ "base": "bd4bf630 (Merge agent/playable-slice-20260921 @ 2909bb4e; branch lane/policy-interface-freeze-20260920, worktree E:/ChimeraWork/ifreeze-agent)",
+ "prereg": "tools/science_funnel/validation/policy_interface_freeze_20260920/PREREGISTRATION.md (this file frozen BEFORE the audit build, BEFORE the interface table generation, BEFORE any command-record/certificate code)",
+ "serves": "Astra round 5 settled decision: hierarchical -- derived reflexes fixed below, command-conditioned policies WITHIN behavior families at 20 Hz over 300 Hz physics (15-tick holds), certified option-transitions, planner on top. The policy interface (observation content + command encoding) freezes BEFORE skill #1 trains.",
+ "pre_lane_pins": {
+  "p3_manifest_hash": "9ca7e976dfb0dedd3f56dfa404673ee77c00801acb2753cdfd83604c480c35b7",
+  "p3_manifest_file_sha256": "aa5334f797b50c2ac3950cec5b82b439f982c1090dd66827754a1acbb8a26b6f",
+  "obs_section_v2_json_sha256": "3de82a1156ac2f39ed04da24c7fd40357642d7bc029e09b509dfc3ea1af63079",
+  "legacy_v1_table_py_sha256": "be2210d9dddd5a712edadf1831e1cc1a5e5b0bd26cb4659ceccda73145ccc751",
+  "obs_split_prereg_sha256": "23a4ff8dc4c5b01d2418a5312135b2ef8ac6cd1c801b73a6c0d2aeaa335a4765",
+  "obs_split_receipt_sha256": "c6dddd10416e586b55b3583e464decd8a85955d306796d57beb1d8f4aaed35fe",
+  "ship_walk_stdout_sha256": "71065ac54fa988704ce29cd79cfb5cdbe0d4e2eab3f7db69b10d4b8d94517592"
+ },
+ "rule_0": {
+  "statement": "THE 80-FIELD OBSERVATION + THE VERSIONED COMMAND RECORD are a sufficient and sound decision interface for the family-policy layer: every certified-transition guard quantity is in the fields or in the certificate's registered timeout/fallback; and no two states the policy must treat differently present bit-identical 80-field observations while the command record is identical -- except where the audit REPORTS the alias (field + evidence), never speculatively expanded.",
+  "prediction_F1": "On the live CPU walk the aliased-pair count is ZERO once the observation carries the walk's own phase clock and per-foot contact/force census.",
+  "prediction_F2": "The pinning suite passes at commit time; every later frozen-table mutation without a version bump is caught.",
+  "falsifiers": {
+   "F1_STATE_ALIASING": "FIRES on any pair of ticks with bit-identical float32 80-field observations whose labels differ in (a) reflex mode (fore clock mode per leg, capture-event delta, settle window [0,59]), (b) contact regime (per-foot touch pattern at kTouch=1e-5 m), or (c) deformation velocity (pad gap delta differing > kSinkRateMax=2.349e-3 m/tick, or per-tick body advance differing >= 0.05 m/s -- the command-adapter receipt's own frozen graded bar). Pre-committed action: REPORT the pair class + witness pair in the receipt; the 80-field table is NOT amended by this lane.",
+   "F2_FREEZE_DRIFT": "FIRES on any pinned-digest mismatch (interface table JSON, projection bytes, existing-manifest hash 9ca7e976...), any frozen-structure mutation leaving a pin green, or any policy_manifest.load_manifest behavior change on the existing P3 manifest (must load byte-identically, hash unchanged). Pre-committed action: fix the pin or declare the version bump."
+  },
+  "audit_scope_declared": "The audit runs on the channels the CPU walk trace determines ([dv] phases/CoM/hull, [dvp]/[dvfp] 8-pad gap/rxn/frc/slip, [dvf] fore clock mode, the censuses). Undetermined groups (body velocity, command echo, limiter saturation, class flags, pad-split endpoints on this build) are DECLARED UNAVAILABLE per the mask convention; aliases among them are NECESSARY aliases of the record set and are reported as such. The instrument is a scratch GAIT_EVENT_TRACE build whose unexercised stdout must equal the ship stdout sha 71065ac5... exactly or the audit is VOID.",
+  "declared_scene_note": "The audit runs the CURRENT scene (gait_scene.py, byte-identical script at 30821ef7 and HEAD; the derived tables in gait_zero_20260919/ it embeds were refined by waves 39-47, so the scene digest differs from the wave-38 pin f6844ee... -- declared; the live walk machinery is the shipped gait_unit_ref.exe at HEAD, whose stdout reproduces the ship sha exactly on it)."
+ },
+ "not_this_lane": ["stopping bars for v_forward=0", "yaw-rate authority derivation", "reflex changes", "first_skill prestage content", "gait_* validation dirs", "gait_controller.hpp bytes", "engine behavior"]
+}
