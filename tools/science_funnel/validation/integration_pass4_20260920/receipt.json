@@ -1,0 +1,57 @@
+{
+  "lane": "integ/pass4-20260920 (INTEGRATOR-PASS-4)",
+  "date": "2026-09-20",
+  "agent": "INTEGRATOR-PASS-4 (git trailer Agent: integ4)",
+  "base": "bd4bf6300d1633a67d2dae5a8a06bdf278f67f97 (master tip, 'Merge agent/playable-slice-20260921 @ 2909bb4e'); worktree E:/ChimeraWork/integ4-agent off the pass3-integ object store",
+  "method": "merge the landed lane tips into the integration branch behind FULL verification; only on all-green, ff-forward master in the pass3-integ repo and push master ONCE (explicit pinned-sha refspec, no force) over the fleet SSH deploy-key remote (github.com-fleetdeploy). Mechanics are PowerShell-only .ps1 scripts under E:/ChimeraWork/integ4-scripts/; long runs are background processes with redirected logs.",
+  "merges_performed": [
+    {"order": 1, "branch": "lane/hip-arms-20260920", "tip": "13b3ee5ba3bae57a5cd94a485fba18163de8b5f5", "merge_commit": "0808fd50f409155b7de2864b4039cec6434041e7", "result": "CLEAN (brings the k-fill chain 1c52b51f -> ddf43925 -> a13a4d87 + hip prereg 54f15a23 -> hip measured 13b3ee5b)"},
+    {"order": 2, "branch": "lane/ankle-adjudication-20260920", "tip": "9359a44bce61154e88becc9925caf6d9988e5380", "merge_commit": "fd95a8db832a85605e4d8ed5333f18f9b057d646", "result": "CLEAN (6 files, +1219: the adjudication table, derive, receipt, record, verdict, tests)"},
+    {"order": 3, "branch": "lane/obs-populate-20260920", "tip": "726809ee822db118bc3372c7f7bb03860ed1ce96", "merge_commit": "244ca17f2aaa229fa29d72166660af7c607e60fd", "result": "CLEAN (brings the interface-freeze chain 87eb2c50 -> e028d6fb -> 056541bc -> 126fdd74 -> 1beb72e9 + obspop cb39a581 -> 36dd3a9c -> 726809ee)"},
+    {"order": 4, "branch": "lane/upgrade-gate-20260920", "tip": "9ce96d4fda7d594cf72da6f05c404fb4afbe4fa6", "merge_commit": "54a099cbe5bca6c2d0752a3e2ddb4b608ffddaf6", "result": "CLEAN (policy_compat + upgrade_gate_20260920)"}
+  ],
+  "deviation_measured_and_recorded": "THE BRIEFING'S CHAIN PREMISE WAS FALSE AS MEASURED, corrected openly: the briefing said lane/hip-arms-20260920 CONTAINS the linear chain kfill (a13a4d87) -> ankadj (9359a44b) -> hiparms (13b3ee5b) and that 9359a44b is an ancestor of the chain heads, 'do not merge separately'. MEASURED (git log bd4bf630..13b3ee5b + merge-base --is-ancestor): 13b3ee5b's history contains k-fill but NOT ankle-adjudication; 9359a44b is NOT an ancestor of 13b3ee5b, 726809ee, or 9ce96d4f. The actual shape is a FORK, not a chain: k-fill a13a4d87 -> {ankle sibling 9359a44b, hip sibling 13b3ee5b} -- exactly the sibling-drop failure mode integration_rehearsal2_20260921's risk #4 names. Merging only the three named tips would have SILENTLY DROPPED the ankle adjudication lane (its files AND its 12/12 tests, both explicitly required by the same briefing). Action: merged 9359a44b as its own regular merge (order 2), same message style, nothing rebased or rewritten; every other instruction unchanged. All four lane branches root directly at bd4bf630 (merge-base == bd4bf630 for all four); zero cross-lane file conflicts, as predicted (disjoint dirs).",
+  "scope_audit": {
+    "diff": "git diff bd4bf630..54a099cbe5bca6c2d0752a3e2ddb4b608ffddaf6",
+    "changed_paths": 75,
+    "insertions": 56323,
+    "deletions": 0,
+    "chimeraengine_or_chimera_bytes": 0,
+    "gait_star_paths_in_delta": 0,
+    "paths_outside_tools": 0,
+    "non_additive_files": "exactly the 2 lane-declared ifreeze additive extensions -- tools/science_funnel/typeb_export/observation_schema.py (the read_field public delegate, purely additive) and tools/science_funnel/typeb_export/policy_manifest.py (the OPTIONAL inference_freeze block, validated only when present; backward compat pinned in-test: legacy P3 manifest hash 9ca7e976 byte-identical); inspected line-by-line before acceptance; deletions/renames: 0",
+    "verdict": "GREEN"
+  },
+  "verification": {
+    "walk_byte_exactness": {
+      "harness": "the obspop lane's declared run_obs_populate.ps1 mechanics, verbatim: fresh scene from the merged tree's tools/science_funnel/gait_scene.py, out-of-tree cl.exe GAIT_EVENT_TRACE + no-trace builds of the IDENTICAL merged HEAD source (ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp, the gait_unit_trace target's exact flags), raw-byte cmd /c redirection (never a shell re-encode)",
+      "scene_file_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 == the wave-38/interface-freeze/obspop anchor EXACT (the generator's printed internal digest e61ad386 differs pre-canonicalization, the documented correction)",
+      "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc (22530 bytes) -- the wave-47 ship anchor EXACT, BOTH builds (trace == no-trace, plain==trace byte-equal)",
+      "stderr_trace_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481 (65870 lines) -- the interface-freeze/obspop walk trace EXACT",
+      "headline": "WALK refused_tick=302 worst_ledger_J=30.970714 -- EXACT (302 ticks / ledger 30.970714 as briefed)",
+      "verdict": "GREEN"
+    },
+    "training_gate": {"command": "python tools/training_gate.py", "exit": 0, "verdict": "PASS -- every target is Froude-consistent with the world this body stands in", "result": "GREEN"},
+    "lane_test_suites": {
+      "k_fill": {"command": "python -B -m unittest tools.science_funnel.validation.k_fill_20260920.test_k_fill", "measured": "Ran 13 tests -- OK (receipt 13/13)", "verdict": "GREEN"},
+      "ankle_adjudication": {"command": "python -B -m unittest tools.science_funnel.validation.ankle_adjudication_20260920.test_ankle_adjudication", "measured": "Ran 12 tests -- OK (receipt 12/12)", "verdict": "GREEN"},
+      "hip_arms": {"command": "python -B -m unittest tools.science_funnel.validation.hip_arms_20260920.test_hip_arms", "measured": "Ran 12 tests -- OK (receipt 12/12)", "verdict": "GREEN"},
+      "typeb_export": {"command": "python -B -m pytest tools/science_funnel/typeb_export/tests -q", "measured": "44 passed, 0 failed, 0 skipped (obspop receipt 44/0/0) -- first scoped run was 43 passed + 1 skipped: the walk_v1 guard live test skips without the fresh trace at its declared ephemeral path (.tmp/ifreeze/audit/audit_stderr.txt); placed the merged-tree run's own trace there (sha-verified c6f9b6c0 byte-exact, the obspop receipt's declared procedure) and re-ran: 44/0/0", "verdict": "GREEN"},
+      "policy_compat_upgrade_gate": {"command": "python -B -m pytest tools/policy_compat/tests -q", "measured": "16 passed (receipt 16/16)", "verdict": "GREEN"}
+    },
+    "graph_suite": {"command": "python -B tools/creature_graph/tests/test_contracts.py at BOTH roots (PYTHONPATH=tools;tools/creature_graph and PYTHONPATH=. -- the standing two-root invocation, Windows separator)", "measured": "root 1: Ran 19 tests -- OK exit 0; root 2: Ran 19 tests -- OK exit 0 (the 19-tests-each shape the rehearsal2/wave-38 receipts bank)", "verdict": "GREEN"},
+    "tree_clean_after_all_suites": "git status --porcelain EMPTY before the receipt commit (scratch lives under the gitignored .tmp/)"
+  },
+  "push": {
+    "plan": "only on all-green: git -C E:/ChimeraWork/pass3-integ/repo merge --ff-only integ/pass4-20260920 while on master (STOP if not a fast-forward), then ONE push of the pinned head by explicit refspec 'git push origin <receipt-commit-sha>:refs/heads/master' (no force) over the configured fleet remote (git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git, the SSH deploy-key flow); no credential material is echoed, read, or stored by any script",
+    "pushed_master_sha": "THIS COMMIT (the receipt commit is the ff-forward target; the explicit refspec pins the remote tip to this exact commit by construction -- ls-remote verification recorded in the integrator's final report)",
+    "precondition_measured": "local master == origin/master == bd4bf630 before the ff-forward; if origin moved, the ff-only fails and the push is aborted (STOP-and-report)"
+  },
+  "falsifiers": {
+    "f1_scope": "any ChimeraEngine/ or Chimera/ byte, any gait_* path, any deletion, or any undeclared modified file in the merge diff -> STOP. [HELD: 0/0/0/0]",
+    "f2_walk_bytes": "scene sha != f6844eeae..., stdout != 8c537cdb..., trace != c6f9b6c0..., headline numbers moving, or plain!=trace -> STOP, master never moves. [HELD: all four anchors byte-exact]",
+    "f3_gates": "training_gate nonzero, any lane suite count BELOW its receipt count, any graph root failing -> STOP. [HELD: PASS exit 0; 13/12/12/44/16 all at receipt counts; 19+19 OK]",
+    "f4_push_discipline": "master pushed more than once, force of any kind, a non-fast-forward ff, or a push auth failure improvised around -> the push is aborted and reported. [HELD at receipt time: discipline pre-committed; outcome in the final report]"
+  },
+  "pass": true
+}
