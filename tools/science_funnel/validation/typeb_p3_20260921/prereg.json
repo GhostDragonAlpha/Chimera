@@ -1,0 +1,49 @@
+{
+  "kind": "rule0_preregistration",
+  "lane": "TypeB-P3 CPU export and inference harness (astra-typeb-pilots pilot protocol, P4 discipline on a DUMMY policy)",
+  "date": "2026-09-21",
+  "agent": "GLM 5.3 (TypeB-P3)",
+  "base_commit": "30821ef7",
+  "branch": "agent/typeb-p3-export-20260921",
+  "frozen_before_any_build": true,
+  "notes": "Written BEFORE any manifest, actor, or harness code exists in tools/science_funnel/typeb_export/. Predictions below are unmeasured at freeze time.",
+
+  "claims": [
+    {
+      "id": "C1-deterministic-export",
+      "statement": "A policy manifest that pins weights+architecture+observation schema+normalization+action mapping+inference clock+reset semantics+reflex version+physics version+CPU runtime+evaluation distribution+receipts, executed by the pure-numpy deterministic recipe, yields byte-identical action streams across fresh processes on a fixed observation sequence; and the canonical manifest hash changes if ANY pinned component changes.",
+      "prediction": "Two fresh CPython processes replaying the same 60-decision fixed observation sequence produce sha256-identical action-stream byte files; and mutating each of 14 preregistered components (weights bytes, arch dims, activation, one observation field name, one observation field order swap, one normalization entry, one action bound, action scale, hold_ticks, policy_hz, reset phase, reflex version string, physics version string, eval seed) changes the canonical manifest sha256 in all 14 cases.",
+      "falsifier": "F-CPU-POLICY-BYTES",
+      "falsifies_if": [
+        "the two fresh-process action streams differ by one or more bytes, OR",
+        "any single-component mutation leaves the canonical manifest sha256 unchanged"
+      ]
+    },
+    {
+      "id": "C2-inference-budget",
+      "statement": "Batch-one pure-numpy inference of the 64->128->128->8 dummy actor (25,600 MACs/decision, 25,864 float32 parameters) plus typed observation projection, normalization, action mapping and clock bookkeeping fits the 20 Hz game-time decision budget of 50 ms per decision on the lane machine with a large margin.",
+      "prediction": "p99 per-decision wall latency <= 0.5 ms (expected tens of microseconds from the 0.51M MACs/s sizing; measured, not inferred) and peak process RSS <= 256 MB.",
+      "falsifier": "F-INFERENCE-BUDGET",
+      "falsifies_if": [
+        "measured p50, p95 or p99 per-decision latency exceeds 50 ms, OR",
+        "peak process memory exceeds 256 MB"
+      ],
+      "measurement_protocol": "single process, batch one, time.perf_counter, 200 warmup decisions discarded, 3000 timed decisions, each timed end-to-end (projection + normalize + forward + action map + clock), report p50/p95/p99/max plus peak RSS via ctypes GetProcessMemoryInfo on win32"
+    }
+  ],
+
+  "observation_harness_prereg": {
+    "claim": "The 64-dim observation is a typed projection of walk trace quantities (phase, contact state, relevant reflex/intervention memory, previous commands, intervention indicators) containing NO privileged information (no root pose, no anatomy parameters, no acceptance-monitor state such as the moving ledger, no physics internals).",
+    "tested_against": "the recorded wave-38 walk trace slice (contact census, unload/hind-step class tick lists, cycle_ticks=213, refused_tick=295 from the banked run stdout) -- channels the banked record does not contain are declared available=false and exercised through the declared mean-fill + availability-mask recipe",
+    "falsifier": "F-OBSERVATION-LEAK (schema audit) fires if any field sources privileged state, or if the projection on the recorded slice misrepresents the recorded census (wrong contact count/phase/intervention timing), or if an unavailable channel is silently read as data."
+  },
+
+  "budgets": {
+    "latency_per_decision_ms": 50.0,
+    "latency_prediction_ms": 0.5,
+    "peak_memory_mb": 256.0,
+    "clock": { "policy_hz": 20, "physics_hz": 300, "hold_ticks": 15 }
+  },
+
+  "dummy_status": "DUMMY policy: fixed-seed weights, no training. The manifest binds the CONTRACT; body/physics digests are recorded UNBOUND_dummy until a trained actor freezes. No trained-artifact claim is made."
+}

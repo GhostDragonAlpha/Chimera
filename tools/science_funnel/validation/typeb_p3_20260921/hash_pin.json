@@ -1,0 +1,78 @@
+{
+ "falsifier": "F-CPU-POLICY-BYTES",
+ "fires": false,
+ "pass": true,
+ "clause_a_byte_identity": {
+  "pass": true,
+  "sha256_run1": "e25406e86cbf5347683ee3824d385bc1d07bfd500e83eb6b9133a1e82d4bfbd9",
+  "sha256_run2": "e25406e86cbf5347683ee3824d385bc1d07bfd500e83eb6b9133a1e82d4bfbd9",
+  "bytes": 28800,
+  "identical": true
+ },
+ "clause_b_component_pinning": {
+  "pass": true,
+  "base_hash": "9ca7e976dfb0dedd3f56dfa404673ee77c00801acb2753cdfd83604c480c35b7",
+  "mutations": {
+   "weights_sha256_field": {
+    "changed": true,
+    "hash": "644030408bc1e25fb1e515c4d8e7c972a19ddb5cf74fb1cc9b4e623ed9bf9d71"
+   },
+   "arch_dims": {
+    "changed": true,
+    "hash": "747fb2730f2a858a9d5dcb82267cf09a0423641c1f1ff2c4e87f8a91865acfa1"
+   },
+   "activation": {
+    "changed": true,
+    "hash": "d5884e855fd13c7ca482cc1d6447d77bc013e40155ea749851e78ef2e8eaae66"
+   },
+   "obs_field_name": {
+    "changed": true,
+    "hash": "d7a5ad42692977208467c6c8c9e9de5d1ed81dfa76b4d042d98cf69161629ec4"
+   },
+   "obs_order_swap": {
+    "changed": true,
+    "hash": "6c1b4c5ceaa8e2905cea2c623c66fe2e70bbc4509f8d9c05c7c987fbecb88340"
+   },
+   "normalization_entry": {
+    "changed": true,
+    "hash": "54e155afb5d5a7450ba020c37dbe026a78aa8d773c9aa4b0f59eb07d63a09dc3"
+   },
+   "action_bound": {
+    "changed": true,
+    "hash": "68b46a243b56b194bb139ec76036e8f55d1c43ac0b74d76e71cad4ef8f7ce180"
+   },
+   "action_scale": {
+    "changed": true,
+    "hash": "1cfe4bc0a03304c25f47acf2ea4f425c01ece5709d65cc5c2ed87185c4a5e7d4"
+   },
+   "hold_ticks": {
+    "changed": true,
+    "hash": "47cda1b8735ae846a14b54db2353fee47186cd0ae2108d39fa0e65eec47d00fa"
+   },
+   "policy_hz": {
+    "changed": true,
+    "hash": "46ee256fb4eabb459fe317f1de44b3fbc467608b5b7f63a9631558d6a5d763d9"
+   },
+   "reset_phase0": {
+    "changed": true,
+    "hash": "d3825b94bc53f7fba931371f291f03b8284b572f93d1d723204063c300437d58"
+   },
+   "reflex_version": {
+    "changed": true,
+    "hash": "58ec1de8166150d7f6cd22b7acfc02196c5f88942bc5619af9bc1ce013e879d9"
+   },
+   "physics_version": {
+    "changed": true,
+    "hash": "8bf5d9530f5ed23818760149912c45d0fd6a80fd079444dedeead93ea3374d31"
+   },
+   "eval_seed": {
+    "changed": true,
+    "hash": "bb2a60b9381d06cf203c8fc3c92b54f5cec9af4949cb3e6396eb9ef19f73d5be"
+   },
+   "weights_regenerated_seed_plus_1": {
+    "changed": true
+   }
+  }
+ },
+ "detail": "two fresh processes produced BYTE-IDENTICAL action streams (sha256 e25406e86cbf5347..., 28800 bytes, 60 decisions); 15/15 component mutations moved the manifest hash (9ca7e976dfb0dedd...)"
+}

@@ -1,0 +1,87 @@
+THE OBS-SPLIT-CHANNELS MINE -- the wave-47 preserved trace outputs,
+trace: E:\ChimeraWork\w47-agent\.tmp\w47_receipt\base_tr_stderr.txt
+======================================================================================================================================================
+trace sha256: c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481 PIN-MATCH
+trace lines: 65870 (pinned 65870)
+refusal: (302, 'gait_positional_correction_budget')  fires: 18  tds: 17  dvfl (t,leg) first-sample series: 113  reconstructed (dvfa AND dvfl): 113
+------------------------------------------------------------------------------------------------------------------------------------------------------
+F-CHANNELS-DISTINCT (the identity gate; the retrospective's rule, first use)
+  CONTROL -- the band's printed pair ([dvfl] g1 vs g2, the pair-min printed twice):
+    whole-file [dvfl] lines: 452   |g1-g2| == 0: 452   (the collapsed pair: the band view reads gap_of TWICE at two pair-based endpoints)
+  TREATMENT -- the reconstructed individual pair (g_lo=gmin, g_hi=2*pad_y-g_lo):
+    reconstructed (t,leg) samples: 113
+    (a) reconstruction identity |split_abs - 2*(pad_y-gmin)| max: 1.388e-17 m (<= 1e-9: True)
+    (b) split_abs > kTouch=1e-5 m: 112/113 samples (99.1%);  max split_abs = +79.661 mm;  min = +0.005 mm
+    (c) non-degeneracy: std(split_abs) = 2.550628e-02 m (>0: True);  corr(split_abs, gmin) = +0.157339 (|c|<1: True)
+  F-CHANNELS-DISTINCT: GREEN
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE PROJECTION (the V2 schema, identity normalization, ordering 'lohi'):
+  records: 113 ticks;  projected pad_split_abs mask=1 slots: 113 (reconstructed: 113)
+  round-trip max |projected - reconstructed| split_abs: 3.676e-09 m (float32 path)
+  endpoint-signed channels available: 0 (MUST be 0 -- the endpoint identity is not in the preserved outputs: declared unavailable, never invented)
+  signed split/split_rate available: 0 (MUST be 0 under 'lohi')
+------------------------------------------------------------------------------------------------------------------------------------------------------
+extraction artifact written: band_channels_wave47.json (113 samples, pinned to the trace sha)
+------------------------------------------------------------------------------------------------------------------------------------------------------
+F-CHANNELS-SEPARATE (the class backfill; the census FROM the projected channels)
+ERA RATE CENSUS (from the projected pad_split_abs channels; mine_wave47 conventions verbatim):
+    98-> 107 leg=1 LIFT (slot) span= 9 nB= 1 leverMax=  +1.548 mm rate= +0.172 mm/tick maxInc= +1.548 mm/tick cross=99
+   142-> 160 leg=0 LIFT (alt) span=18 nB= 1 leverMax=  +5.090 mm rate= +0.283 mm/tick maxInc= +5.090 mm/tick cross=143
+   160-> 174 leg=1 LIFT (alt) span=14 nB= 1 leverMax=  +4.257 mm rate= +0.304 mm/tick maxInc= +4.257 mm/tick cross=161
+   161-> 170 leg=0 STALL(alt) span= 9 nB= 9 leverMax=  -3.142 mm rate= -0.349 mm/tick maxInc= -0.648 mm/tick cross=never
+   175-> 184 leg=0 STALL(alt) span= 9 nB= 9 leverMax=  -0.003 mm rate= -0.000 mm/tick maxInc= +0.219 mm/tick cross=never
+   184-> 193 leg=1 STALL(alt) span= 9 nB= 9 leverMax=  +0.151 mm rate= +0.017 mm/tick maxInc= +0.043 mm/tick cross=never
+   193-> 202 leg=0 STALL(alt) span= 9 nB= 9 leverMax=  -0.497 mm rate= -0.055 mm/tick maxInc= -0.331 mm/tick cross=never
+   202-> 211 leg=1 LIFT (alt) span= 9 nB= 4 leverMax=  +0.340 mm rate= +0.038 mm/tick maxInc= +0.115 mm/tick cross=206
+   211-> 220 leg=0 LIFT (alt) span= 9 nB= 4 leverMax=  -0.573 mm rate= -0.064 mm/tick maxInc= +0.100 mm/tick cross=215
+   220-> 229 leg=1 LIFT (alt) span= 9 nB= 9 leverMax=  +6.902 mm rate= +0.767 mm/tick maxInc= +0.872 mm/tick cross=never
+   229-> 238 leg=0 LIFT (alt) span= 9 nB= 9 leverMax=  +9.125 mm rate= +1.014 mm/tick maxInc= +1.178 mm/tick cross=never
+   238-> 247 leg=1 LIFT (alt) span= 9 nB= 9 leverMax=  +7.476 mm rate= +0.831 mm/tick maxInc= +0.984 mm/tick cross=never
+   247-> 256 leg=0 LIFT (alt) span= 9 nB= 9 leverMax= +11.577 mm rate= +1.286 mm/tick maxInc= +1.306 mm/tick cross=never
+   256-> 265 leg=1 STALL(alt) span= 9 nB= 9 leverMax=  +0.468 mm rate= +0.052 mm/tick maxInc= +0.203 mm/tick cross=never
+   265-> 274 leg=0 LIFT (alt) span= 9 nB= 9 leverMax= +16.426 mm rate= +1.825 mm/tick maxInc= +2.233 mm/tick cross=never
+   274-> 291 leg=1 STALL(alt) span=17 nB= 1 leverMax=  -0.413 mm rate= -0.024 mm/tick maxInc= -0.413 mm/tick cross=275
+   291-> 300 leg=0 STALL(alt) span= 9 nB= 9 leverMax=  -6.416 mm rate= -0.713 mm/tick maxInc= -2.506 mm/tick cross=never
+   300-> 302 leg=1 STALL(alt) span= 2 nB= 2 leverMax=  +0.551 mm rate= +0.275 mm/tick maxInc= +0.536 mm/tick cross=never
+  era-table shape vs the frozen census (18 rows, fire/ct/leg/label/class/span/nSamp): GREEN
+THE CALIBRATION CROSS-CHECK (the era-total levers vs mine_wave45_out.txt's printed maxima):
+  fire 161 STALL: mine=-3.142 mm  wave45=-3.142 mm  MATCH
+  fire 175 STALL: mine=-0.003 mm  wave45=-0.003 mm  MATCH
+  fire 184 STALL: mine=+0.151 mm  wave45=+0.151 mm  MATCH
+  fire 193 STALL: mine=-0.497 mm  wave45=-0.497 mm  MATCH
+  fire 220 LIFT: mine=+6.902 mm  wave45=+6.902 mm  MATCH
+  fire 229 LIFT: mine=+9.125 mm  wave45=+9.125 mm  MATCH
+  fire 238 LIFT: mine=+7.476 mm  wave45=+7.476 mm  MATCH
+  fire 247 LIFT: mine=+11.577 mm  wave45=+11.577 mm  MATCH
+  fire 256 STALL: mine=+0.468 mm  wave45=+0.468 mm  MATCH
+  fire 265 LIFT: mine=+16.426 mm  wave45=+16.426 mm  MATCH
+  fire 291 STALL: mine=-6.416 mm  wave45=-6.416 mm  MATCH
+  fire 300 STALL: mine=+0.551 mm  wave45=+0.551 mm  MATCH
+  CROSS-CHECK: GREEN (all 12 never-crossed eras match to the printed precision)
+THE CLASS ENVELOPES (never-crossed eras, the wave-45/46 labels):
+  lift_lev  n=5  6.902 .. 16.426   (frozen 6.902 .. 16.426)  MATCH
+  lift_rate n=5  0.767 .. 1.825   (frozen 0.767 .. 1.825)  MATCH
+  lift_inc  n=5  0.872 .. 2.233   (frozen 0.872 .. 2.233)  MATCH
+  stall_lev n=7  -6.416 .. 0.551   (frozen -6.416 .. 0.551)  MATCH
+  stall_rate n=7  -0.713 .. 0.275   (frozen -0.713 .. 0.275)  MATCH
+  stall_inc n=7  -2.506 .. 0.536   (frozen -2.506 .. 0.536)  MATCH
+THE SEPARATING WINDOWS (STALL max < window < LIFT min, measured vs frozen):
+  win_level  measured (0.551, 6.902)  frozen (0.551, 6.902)  INTACT
+  win_rate   measured (0.275, 0.767)  frozen (0.275, 0.767)  INTACT
+  win_inc    measured (0.536, 0.872)  frozen (0.536, 0.872)  INTACT
+  round-trip: GREEN   mask honesty: GREEN
+  F-CHANNELS-SEPARATE: GREEN
+------------------------------------------------------------------------------------------------------------------------------------------------------
+F-CHANNELS-INERT (the pure-addition gate)
+  (a) scope diff vs 9808dc94: 25 paths; outside the declared scope: 0 
+  (b) FIELDS[:64] == the frozen 1b6d7749 v1 table: True
+  (c) P3's banked action-stream replay through the V2 schema: BYTE-IDENTICAL (sha e25406e86cbf5347...)
+  (d) P3 frozen artifact pins (manifest/npz/slice/prereg): GREEN
+  F-CHANNELS-INERT: GREEN
+------------------------------------------------------------------------------------------------------------------------------------------------------
+THE VERDICT (the frozen prereg rule: all three falsifiers GREEN -> the channels ship):
+  F-CHANNELS-DISTINCT : GREEN
+  F-CHANNELS-SEPARATE : GREEN
+  F-CHANNELS-INERT    : GREEN
+  VERDICT: THE PAD-SPLIT CHANNELS SHIP -- OBS_DIM 64->80, the first learned skill reads the split the reflex layer structurally cannot (the free training labels attach: LIFT/STALL windows intact).
+Trailer Agent: GLM 5.3
