@@ -1,0 +1,15 @@
+PROBE=freefall ticks=120
+CONSTRUCTED
+CONFIGURED
+[tick] 0
+[tick] 10
+[tick] 20
+[tick] 30
+[tick] 40
+[tick] 50
+[tick] 60
+[tick] 70
+[tick] 80
+[tick] 90
+[tick] 100
+[tick] 110
