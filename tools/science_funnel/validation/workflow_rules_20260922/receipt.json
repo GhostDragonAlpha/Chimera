@@ -1,0 +1,36 @@
+{
+  "lane": "agent/workflow-rules-conversion-20260922",
+  "date": "2026-09-22",
+  "agent": "GLM 5.3 (trailer Agent: GLM 5.3)",
+  "base": "1391014f (master, verified by git ls-remote BEFORE branching; clone tip == remote tip)",
+  "rule_0": {
+    "statement": "The four retrospective amendments change only their named files: docs/THE_CHECKLIST.md sections physics-lanes/ship/tooling, and the host tool worktree_janitor.py (mtime scope + delete postcondition), plus its provenance copy under tools/agent_fleet/.",
+    "prediction": "The janitor postcondition fix makes the empty-shell anomaly disappear on a test run: shells genuinely removed or logged FAILED, never a false 'deleted'.",
+    "falsifier": "Any other file diff (measured: git diff master --stat = checklist 40 insertions + janitor copy 231 insertions, NOTHING else); or the postcondition check logging 'deleted' for a path that still exists."
+  },
+  "amendments": {
+    "rule_1_identity_gates": "docs/THE_CHECKLIST.md section 4 PHYSICS/WALK LANES, checklist bullet 'Rule 0 -- the instrument identity gate' (append-only; every new trace series ships a pre-registered known-anchor identity check before its numbers enter any mine; wave-42 fire-anchor identity = model instance; wave-45 [dvfl] g1==g2 452/452 = cautionary tale)",
+    "rule_3_publication_gate": "docs/THE_CHECKLIST.md section 6 SHIP, bullet 'The publication gate' (a completion report carries literal ls-remote branch->tip or it may not claim done; instances: vh-agent outage stranding, port lane unpushed at completion)",
+    "rule_4b_postcondition_law": "docs/THE_CHECKLIST.md new section 7 TOOLING (a tool that claims a side effect asserts the effect before logging success; case: janitor cycles 9-11 'deleted' against surviving empty shells)",
+    "rule_2_mtime_scope": "E:/ChimeraWork/tools/worktree_janitor.py recent_mtime() EXCLUDES paths containing /.git/; working-tree mtimes + holder checks unchanged. Provenance copy committed at tools/agent_fleet/worktree_janitor.py",
+    "rule_4a_postcondition": "worktree_janitor.py: after rmtree, asserts path gone; survivor gets ONE retry (os.chmod stat.S_IWRITE via onexc/onerror handler + explicit os.rmdir); logs action=FAILED honestly if it persists; summary line counts FAILED"
+  },
+  "janitor_postcondition_test": {
+    "fixture_1_conv-janitor-test": "clean repo, working tree 6h old, .git/FRESH_MARKER mtime=NOW. DRY-RUN: WOULD DELETE (pre-fix this spare class fired 37x in the log: .git/index, COMMIT_EDITMSG, pack .idx). EXECUTE: DELETED, path verified gone.",
+    "fixture_2_conv-janitor-test2": "same + committed held.txt. EXECUTE: DELETED, path verified gone.",
+    "fixture_3_conv-janitor-test3": "process CWD-locked inside the dir (the cycles 9-11 empty-shell mechanism). EXECUTE: contents removed, empty shell SURVIVED -> logged action=FAILED (log line banked in janitor_log_excerpt.jsonl), NOT 'deleted'. Pre-fix this exact state logged 'deleted'.",
+    "log_honesty": "janitor.jsonl lines verified: fixtures 1-2 action=deleted with dirs confirmed absent; fixture 3 action=FAILED with dir confirmed present.",
+    "isolated_ro_proof": "read-only file (git-object semantics, chmod S_IREAD): plain rmtree(ignore_errors=True) leaves dir AND file surviving; the _clear_ro retry (chmod stat.S_IWRITE) removes it fully. Also observed live: fixture rebuild PermissionError WinError 5 on .git/objects under plain rmtree.",
+    "verdict": "PREDICTION GREEN -- no false 'deleted' in any run; surviving shell logged FAILED."
+  },
+  "gates": {
+    "creature_graph": "19 passed + 27 subtests, green from BOTH roots (repo-root cwd and tools/ cwd), zero reds -- matches the constraint_ledger_20260921 receipt convention ('69 OK' brief; measured 19+27 per root, reported as measured). NOTE: the PYTHONPATH=tools pytest variant from repo root collects nothing under that spelling (path/rootdir mismatch); the tools-cwd root covers the same imports via the harness's own sys.path insert.",
+    "matter_kernel": "test_definition: Ran 9 tests, OK (9/9). Fuller matter_kernel pytest battery in the same tree: 46 passed.",
+    "training_gate": "PASS -- every target Froude-consistent (exit 0; story/theHuman sparse-materialized; g=9.8066 1.000 of Earth, leg 1.0144 m, comfortable 0.9924 m/s)"
+  },
+  "evidence_base": {
+    "janitor_log_scanned": "447 records; 82 spared 'active'; 37 spare events blocked by .git-internal mtimes (the RULE 2 defect, measured)",
+    "wave_receipts": "lane-archive/{w42,w45}-agent/tools/science_funnel/validation/gait_zero_20260919/receipt_wave4{2,5}.json: wave-42 fire-anchor identity (first [dvfa] pad_y == fire fy, all 18 fire ticks); wave-45 [dvfl] g1==g2 to machine precision 452/452 lines, registered read-site does not exist"
+  },
+  "publication_gate_self_application": "this lane's completion report carries its own literal ls-remote output (branch -> tip), run after push; see the lane report."
+}

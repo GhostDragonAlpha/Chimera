@@ -1,0 +1,5 @@
+{"dir": "conv-janitor-test", "action": "would-delete", "branch": "conv-test-branch", "tip": "87b0c3baa2df9898b9edc82943878df13a2b8297", "in_table": false, "ts": "2026-09-22T10:02:20"}
+{"dir": "conv-janitor-test2", "action": "would-delete", "branch": "conv-test-branch", "tip": "eab59abccd5af718737a4620e9096309a2c0253b", "in_table": false, "ts": "2026-09-22T10:02:23"}
+{"dir": "conv-janitor-test", "action": "deleted", "branch": "conv-test-branch", "tip": "87b0c3baa2df9898b9edc82943878df13a2b8297", "in_table": false, "archived_files": 1, "bundled": true, "ts": "2026-09-22T10:02:39"}
+{"dir": "conv-janitor-test2", "action": "deleted", "branch": "conv-test-branch", "tip": "eab59abccd5af718737a4620e9096309a2c0253b", "in_table": false, "archived_files": 2, "bundled": true, "ts": "2026-09-22T10:02:43"}
+{"dir": "conv-janitor-test3", "action": "FAILED", "branch": "conv-test-branch", "tip": "a6a34e47df0ea92aea1fa9867177efe3af27ec1d", "in_table": false, "archived_files": 1, "bundled": true, "ts": "2026-09-22T10:04:04"}
