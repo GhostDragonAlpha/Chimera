@@ -236,7 +236,23 @@
     "engine_service_forward_note": "PRECISELY-NAMED SUCCESSOR WORK (not needed for gap closure at the validator): a SHIPPED engine binding would port the dormant GAIT_SNAPSHOT_API serialize/restore block into the shipped gait_controller.hpp (the copy in this lane is the template) and expose it on the engine's state surface (the engine's current HTTP routes are the renderer's /membrane + /frame; a walker snapshot route -- GET/POST /gait_snapshot returning the 4-class body -- is the missing piece). Until then, production-class certificates un-block through THIS registry for builds carrying the out-of-tree instrument; the ship-tree route is what would make the readers SHIP-native.",
     "what_a_production_certificate_still_lacks": "the validator-side BLOCK is lifted (all four gaps RESOLVED with verifiable proof); a FULL production certificate additionally needs (a) the 5-tuple relation bound to the REAL engine build's identity (build id, scene module sha, params sha -- the certificate format and the upgate checks 1-3 transfer unchanged), (b) the closed-loop requalification evidence run ON the engine walk path through these readers, and (c) if ship-native reading is wanted, the ship-tree snapshot route above.",
     "honest_summary": "ALL FIVE FALSIFIERS HELD. F1 RESTORE-DRIFT: the restored future [150,302) was BIT-IDENTICAL on tick-wise state hashes AND action bytes (21888 B), refusal tick/class identical. F2 SHIP-INVARIANCE: scene f6844ee, stdout 8c537cdb, trace c6f9b6c0, plain stderr b505bb65 -- ALL EXACT at this base; the instrument copy flag-off == pristine bytes; the EXERCISED build with recording active still prints the ship bytes. F3 GAP-CLOSURE: all four gaps CLOSED with load-bearing readers (every forced-drop moved the continuation); rng_stream recorded as non-existent in the engine walk. F4: three fresh-process reference runs byte-identical. F5: zero engine-tree edits; scope confined to the lane dir + tools/policy_compat.",
-    "evidence_exclusions": "three large regenerable stderr traces (pristine trace 6.5 MB, ref1 trace 6.5 MB, restored-run trace 1.7 MB) are NOT committed; their sha256s are recorded in runs/proof_compare.json + runs/fence.json and they regenerate byte-exactly from the committed sources (F4 determinism)"
+    "evidence_exclusions": "three large regenerable stderr traces (pristine trace 6.5 MB, ref1 trace 6.5 MB, restored-run trace 1.7 MB) are NOT committed; their sha256s are recorded in runs/proof_compare.json + runs/fence.json and they regenerate byte-exactly from the committed sources (F4 determinism)",
+    "post_commit_scope_check": {
+      "at_commit": "b864c179",
+      "touched_dirs": [
+        "tools/policy_compat",
+        "tools/policy_compat/tests",
+        "tools/science_funnel/validation/snapshot_apis_20260920",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/engine/tests_coupled_arm",
+        "tools/science_funnel/validation/snapshot_apis_20260920/instrument/native/ChimeraEngine/native/viewer3rd",
+        "tools/science_funnel/validation/snapshot_apis_20260920/runs"
+      ],
+      "out_of_scope": [],
+      "engine_tree_touched": false,
+      "verdict": "F5 CONFIRMED POST-COMMIT: scope confined to the lane dir + tools/policy_compat; zero ChimeraEngine/ edits"
+    }
   },
   "pass": true
 }
