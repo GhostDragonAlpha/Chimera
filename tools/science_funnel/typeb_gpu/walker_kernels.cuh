@@ -306,6 +306,8 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
     int _zzero4;
     int b;
     int par;
+    int _dtseed;
+    int _ddtseed;
     double tvx;
     double tvy;
     double tvz;
@@ -418,14 +420,6 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
     fr[5] = (double)(1.0);
     fr[10] = (double)(1.0);
     fr[15] = (double)(1.0);
-    frd[0] = (double)(1.0);
-    frd[5] = (double)(1.0);
-    frd[10] = (double)(1.0);
-    frd[15] = (double)(1.0);
-    frdd[0] = (double)(1.0);
-    frdd[5] = (double)(1.0);
-    frdd[10] = (double)(1.0);
-    frdd[15] = (double)(1.0);
     for (i = 0; i < (54); ++i) {
         axw[i] = (double)(0.0);
         axpiv[i] = (double)(0.0);
@@ -444,6 +438,8 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
     double t2[16];
     double t3[16];
     double t4[16];
+    double pfpd[16];
+    double pfpedd[16];
     double fp16[16];
     double fc16[16];
     double rt[16];
@@ -466,8 +462,12 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
 }
         mm(t1, fp16, pfp);
         eye16(motion);
-        eye16(motion_dt);
-        eye16(motion_ddt);
+        for (_dtseed = 0; _dtseed < (16); ++_dtseed) {
+            motion_dt[_dtseed] = (double)(0.0);
+}
+        for (_ddtseed = 0; _ddtseed < (16); ++_ddtseed) {
+            motion_ddt[_ddtseed] = (double)(0.0);
+}
         tvx =  (double)(0.0);
         tvy =  (double)(0.0);
         tvz =  (double)(0.0);
@@ -508,22 +508,22 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
                     one_ddt[i] = t3[i] * rate * rate;
 }
                 mm(motion, one, t1);
+                mm(motion_dt, one, t2);
+                mm(motion, one_dt, t3);
+                for (i = 0; i < (16); ++i) {
+                    mtmp[i] = motion_dt[i];
+}
+                mm(mtmp, one_dt, t4);
+                mm(motion_ddt, one, rt);
+                mm(motion, one_ddt, sk);
+                for (i = 0; i < (16); ++i) {
+                    motion_ddt[i] = rt[i] + (double)(2.0) * t4[i] + sk[i];
+}
+                for (i = 0; i < (16); ++i) {
+                    motion_dt[i] = t2[i] + t3[i];
+}
                 for (i = 0; i < (16); ++i) {
                     motion[i] = t1[i];
-}
-                mm(motion_dt, one, t1);
-                mm(motion, one_dt, t2);
-                for (i = 0; i < (16); ++i) {
-                    motion_dt[i] = t1[i] + t2[i];
-}
-                mm(motion_ddt, one, t1);
-                mm(motion_dt, one_dt, t2);
-                for (i = 0; i < (16); ++i) {
-                    motion_ddt[i] = t1[i] + (double)(2.0) * t2[i];
-}
-                mm(motion, one_ddt, t3);
-                for (i = 0; i < (16); ++i) {
-                    motion_ddt[i] = motion_ddt[i] + t3[i];
 }
 }
             else {
@@ -544,18 +544,41 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
         motion_dt[0 * 4 + 3] = vvx;
         motion_dt[1 * 4 + 3] = vvy;
         motion_dt[2 * 4 + 3] = vvz;
+        for (i = 0; i < (16); ++i) {
+            t1[i] = frd[par * 16 + i];
+}
+        mm(t1, fp16, pfpd);
+        for (i = 0; i < (16); ++i) {
+            t1[i] = frdd[par * 16 + i];
+}
+        mm(t1, fp16, pfpedd);
         mm(pfp, motion, t1);
         mm(t1, fc16, t2);
         for (i = 0; i < (16); ++i) {
             fr[b * 16 + i] = t2[i];
 }
-        mm(pfp, motion_dt, t1);
+        mm(pfpd, motion, t1);
         mm(t1, fc16, t2);
+        mm(pfp, motion_dt, t3);
+        mm(t3, fc16, t4);
+        for (i = 0; i < (16); ++i) {
+            t2[i] = t2[i] + t4[i];
+}
         for (i = 0; i < (16); ++i) {
             frd[b * 16 + i] = t2[i];
 }
-        mm(pfp, motion_ddt, t1);
+        mm(pfpedd, motion, t1);
         mm(t1, fc16, t2);
+        mm(pfpd, motion_dt, t1);
+        mm(t1, fc16, t3);
+        for (i = 0; i < (16); ++i) {
+            t2[i] = t2[i] + (double)(2.0) * t3[i];
+}
+        mm(pfp, motion_ddt, t1);
+        mm(t1, fc16, t3);
+        for (i = 0; i < (16); ++i) {
+            t2[i] = t2[i] + t3[i];
+}
         for (i = 0; i < (16); ++i) {
             frdd[b * 16 + i] = t2[i];
 }
@@ -5343,7 +5366,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
                         while (j < 40) {
                             j =  j + 1;
                             mid =  (lo + hi) * (double)(0.5);
-                            scales[d] = mid;
+                            scales[d - 1] = mid;
                             for (i = 0; i < (18); ++i) {
                                 eff[i] = tau[i];
 }

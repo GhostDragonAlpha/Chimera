@@ -399,13 +399,10 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
         fr[i] = float(0.0); frd[i] = float(0.0); frdd[i] = float(0.0)
 
-    # identity frames for the ground body
-
+    # identity frame for the ground body; ITS DERIVATIVES ARE ZERO
+    # (C++ Transform(n): t=identity, dt=ddt=0). Seeding frd/frdd at identity
+    # polluted every body's frame derivatives through the chain product.
     fr[0] = float(1.0); fr[5] = float(1.0); fr[10] = float(1.0); fr[15] = float(1.0)
-
-    frd[0] = float(1.0); frd[5] = float(1.0); frd[10] = float(1.0); frd[15] = float(1.0)
-
-    frdd[0] = float(1.0); frdd[5] = float(1.0); frdd[10] = float(1.0); frdd[15] = float(1.0)
 
     for i in range(54):
 
@@ -418,6 +415,8 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
     motion = cuda.local.array(16, dtype=float64); motion_dt = cuda.local.array(16, dtype=float64); motion_ddt = cuda.local.array(16, dtype=float64)
 
     pfp = cuda.local.array(16, dtype=float64); t1 = cuda.local.array(16, dtype=float64); t2 = cuda.local.array(16, dtype=float64); t3 = cuda.local.array(16, dtype=float64); t4 = cuda.local.array(16, dtype=float64)
+
+    pfpd = cuda.local.array(16, dtype=float64); pfpedd = cuda.local.array(16, dtype=float64)
 
     fp16 = cuda.local.array(16, dtype=float64); fc16 = cuda.local.array(16, dtype=float64)
 
@@ -447,7 +446,17 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
         mm(t1, fp16, pfp)
 
-        eye16(motion); eye16(motion_dt); eye16(motion_ddt)
+        # THE SEED LAW (C++ Transform: t=identity, dt=ddt=ZERO — coupled_articulation.hpp
+        # line 43): the derivative frames seed at ZERO, never identity. The identity
+        # seed leaked a phantom "one" into every body's frd/frdd, producing a huge
+        # REST bias (bv[y]=-88.4 N at v=0 on the walker): freefall measured -10.038
+        # instead of the exact -9.80665 ballistic (joints frozen), stand parity
+        # 0.1278, and the walk's settle diverged from the C++ at tick 1.
+        eye16(motion)
+        for _dtseed in range(16):
+            motion_dt[_dtseed] = float(0.0)
+        for _ddtseed in range(16):
+            motion_ddt[_ddtseed] = float(0.0)
 
         tvx = float(0.0); tvy = float(0.0); tvz = float(0.0)
 
@@ -501,33 +510,38 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
                     one_ddt[i] = t3[i] * rate * rate
 
-                mm(motion, one, t1)                   # motion = motion*one
+                # THE PRE-UPDATE PRODUCT LAW (C++ product(): every factor reads
+                # the PRE-update a.t/a.dt/a.ddt): compose through temporaries.
+                # The old in-place sequence fed the POST-update motion/motion_dt
+                # into the ddt terms — wrong whenever ang != 0 and rate != 0.
+
+                mm(motion, one, t1)                   # t1 = A.t*one  (new motion)
+
+                mm(motion_dt, one, t2)                # t2 = A.dt*one
+
+                mm(motion, one_dt, t3)                # t3 = A.t*one_dt
+
+                for i in range(16):
+
+                    mtmp[i] = motion_dt[i]            # save A.dt (pre)
+
+                mm(mtmp, one_dt, t4)                  # t4 = A.dt*one_dt
+
+                mm(motion_ddt, one, rt)               # rt = A.ddt*one
+
+                mm(motion, one_ddt, sk)               # sk = A.t*one_ddt (pre motion)
+
+                for i in range(16):
+
+                    motion_ddt[i] = rt[i] + float(2.0) * t4[i] + sk[i]
+
+                for i in range(16):
+
+                    motion_dt[i] = t2[i] + t3[i]
 
                 for i in range(16):
 
                     motion[i] = t1[i]
-
-                mm(motion_dt, one, t1)
-
-                mm(motion, one_dt, t2)
-
-                for i in range(16):
-
-                    motion_dt[i] = t1[i] + t2[i]
-
-                mm(motion_ddt, one, t1)
-
-                mm(motion_dt, one_dt, t2)
-
-                for i in range(16):
-
-                    motion_ddt[i] = t1[i] + float(2.0) * t2[i]
-
-                mm(motion, one_ddt, t3)
-
-                for i in range(16):
-
-                    motion_ddt[i] = motion_ddt[i] + t3[i]
 
             else:
 
@@ -543,13 +557,28 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
         motion_dt[0 * 4 + 3] = vvx; motion_dt[1 * 4 + 3] = vvy; motion_dt[2 * 4 + 3] = vvz
 
-        # fr_b = pfp*motion*fc ; frd = prd*fp? -> the product rule with fixed(fp):
+        # THE CHAIN-PRODUCT LAW (C++ product(): dt=a.dt*b.t+a.t*b.dt;
+        # ddt=a.ddt*b.t+2*a.dt*b.dt+a.t*b.ddt): the frame derivatives compose
+        # through the PARENT chain too — fp/fc are fixed (zero derivative), but
+        # fr[par]'s own dt/ddt are NOT zero below the ground body. The old form
+        # (frd = pfp*motion_dt*fc, frdd = pfp*motion_ddt*fc) dropped every
+        # ancestor's velocity/acceleration, corrupting the bias for v != 0.
 
-        # f   = par*fp*motion*fc
+        # pfpd = frd[par] * fp ; pfpedd = frdd[par] * fp
 
-        # fd  = par*fp*motion_dt*fc              (fixed(fp) and fixed(fc) have no dt)
+        for i in range(16):
 
-        # fdd = par*fp*motion_ddt*fc
+            t1[i] = frd[par * 16 + i]
+
+        mm(t1, fp16, pfpd)
+
+        for i in range(16):
+
+            t1[i] = frdd[par * 16 + i]
+
+        mm(t1, fp16, pfpedd)
+
+        # f   = pfp*motion*fc
 
         mm(pfp, motion, t1)
 
@@ -559,17 +588,45 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
             fr[b * 16 + i] = t2[i]
 
-        mm(pfp, motion_dt, t1)
+        # fd  = pfpd*motion*fc + pfp*motion_dt*fc
+
+        mm(pfpd, motion, t1)
 
         mm(t1, fc16, t2)
+
+        mm(pfp, motion_dt, t3)
+
+        mm(t3, fc16, t4)
+
+        for i in range(16):
+
+            t2[i] = t2[i] + t4[i]
 
         for i in range(16):
 
             frd[b * 16 + i] = t2[i]
 
-        mm(pfp, motion_ddt, t1)
+        # fdd = pfpedd*motion*fc + 2*pfpd*motion_dt*fc + pfp*motion_ddt*fc
+
+        mm(pfpedd, motion, t1)
 
         mm(t1, fc16, t2)
+
+        mm(pfpd, motion_dt, t1)
+
+        mm(t1, fc16, t3)
+
+        for i in range(16):
+
+            t2[i] = t2[i] + float(2.0) * t3[i]
+
+        mm(pfp, motion_ddt, t1)
+
+        mm(t1, fc16, t3)
+
+        for i in range(16):
+
+            t2[i] = t2[i] + t3[i]
 
         for i in range(16):
 
@@ -6374,7 +6431,7 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
 
                             mid = (lo + hi) * float(0.5)
 
-                            scales[d] = mid
+                            scales[d - 1] = mid
 
                             for i in range(18):
 

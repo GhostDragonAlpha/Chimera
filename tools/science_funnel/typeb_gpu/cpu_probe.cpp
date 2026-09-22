@@ -63,6 +63,14 @@ int main(int argc,char**argv){
   std::fprintf(stderr,"CONSTRUCTED\n");
   if(probe=="freefall")d.configure({{"power",false},{"contact_enabled",false},{"start_at_tables",false},{"reset",true}});
   if(probe=="stand")d.configure({{"gait_enabled",false},{"reset",true}});
+  if(getenv("CP_CFG")){ // mechanism-split knob: CP_CFG="key:val,key:val"
+   J cfg=J::object();std::string s(getenv("CP_CFG"));size_t p=0;
+   const char* boolkeys[]={"power","contact_enabled","gait_enabled","capture_enabled","posture_drive","start_at_tables","reset"};
+   while(p<s.size()){size_t q=s.find(',',p),r=s.find(':',p);
+    std::string k=s.substr(p,r-p);double val=std::atof(s.substr(r+1,(q==std::string::npos?s.size():q)-r-1).c_str());
+    bool isbool=false;for(const char* bk:boolkeys)if(k==bk)isbool=true;
+    if(isbool)cfg[k]=(val!=0.);else cfg[k]=val;if(q==std::string::npos)break;p=q+1;}
+   cfg["reset"]=true;d.configure(cfg);std::fprintf(stderr,"CP_CFG applied\n");}
   std::fprintf(stderr,"CONFIGURED\n");
   size_t nc=d.model().names.size();
   double bat_prev=0;for(size_t k=0;k<12;++k)bat_prev+=d.batteries()[k];
@@ -87,6 +95,11 @@ int main(int argc,char**argv){
    std::printf("tick=%d q3=%.17g q4=%.17g q2=%.17g v3=%.17g phi0=%.17g phi1=%.17g tL=%d tR=%d bat=%.17g hf=%d,%d fm=%d,%d\n",
     t,q[3],q[4],q[2],v[3],d.phase(0),d.phase(1),
     bat,hf0,hf1,fm0,fm1);
+   if(getenv("CP_FULL")){
+    std::printf("FULL t=%d",t);
+    for(size_t i=0;i<nc;++i)std::printf(" q%zu=%.17g",i,(double)q[i]);
+    for(size_t i=0;i<nc;++i)std::printf(" v%zu=%.17g",i,(double)v[i]);
+    std::printf("\n");}
   }
   std::printf("END refused=%s refused_tick=%d\n",refused.c_str(),refused_tick);
   return 0;

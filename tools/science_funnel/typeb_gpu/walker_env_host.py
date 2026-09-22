@@ -68,6 +68,60 @@ def _lp(a):
     return a.ctypes.data_as(ctypes.POINTER(ctypes.c_longlong))
 
 
+def build_env_arrays(spec: WalkerSpec, reflex_level: int = 1, collapse_y: float = 0.20):
+    """The single source of truth for the env's device-config arrays.
+
+    Returns (mdl, mdi, cst, csti, store_floor) exactly as env_create consumes
+    them. walker_env_host.WalkerEnvDLL and dump_shim.py both call this so the
+    host replay harness can never drift from the DLL's config again.
+    """
+    mdl, mdi = build_model_arrays(spec)
+    assert mdl.shape[0] == 900 and mdi.shape[0] == NI32, (mdl.shape, mdi.shape, NI32)
+    dt = spec.dt
+    height_floor = 2.0 * SINK_RATE_MAX + SINK_RATE_MAX * (1.0 / (ZETA * 2.0 * math.pi * FS_HZ)) / dt
+    cst = np.zeros(30, np.float64)
+    cst[CF['plane_y']] = spec.plane_model_y
+    cst[CF['gy']] = 9.80665
+    cst[CF['dt']] = dt
+    cst[CF['mu']] = spec.mu
+    cst[CF['k_touch']] = K_TOUCH
+    cst[CF['k_slip']] = 1e-9
+    cst[CF['k_release']] = 1e-6
+    cst[CF['t_cycle']] = T_CYCLE
+    cst[CF['duty']] = DUTY_SAMPLED
+    cst[CF['toe_off']] = 0.68
+    cst[CF['capture_phi']] = 0.95
+    cst[CF['kp_post']] = spec.kp_post
+    cst[CF['kd_post']] = spec.kd_post
+    cst[CF['store_post']] = spec.store_post
+    cst[CF['height_crit']] = spec.height_crit
+    cst[CF['height_floor']] = spec.height_floor
+    cst[CF['fore_L1']] = spec.fore_L1
+    cst[CF['fore_rho']] = spec.fore_rho
+    cst[CF['fore_beta']] = spec.fore_beta
+    cst[CF['hind_L1']] = spec.hind_L1
+    cst[CF['hind_L2']] = spec.hind_L2
+    cst[CF['hind_xm']] = spec.hind_xm
+    cst[CF['fore_pose_sh']] = spec.fore_pose_sh
+    cst[CF['fore_pose_el']] = spec.fore_pose_el
+    cst[CF['collapse_y']] = collapse_y
+    csti = np.zeros(20, np.int32)
+    csti[CI['settle_total']] = spec.settle_total
+    csti[CI['contact']] = 1 if spec.contact_enabled else 0
+    csti[CI['power']] = 1
+    csti[CI['gait_enabled']] = 1
+    csti[CI['capture_enabled']] = 1
+    csti[CI['posture_drive']] = 1
+    csti[CI['drive_en']] = sum(1 << d for d in range(12) if spec.drive_enabled[d])
+    csti[CI['reflex_level']] = reflex_level
+    csti[CI['fold_budget']] = FOLD_BUDGET_TICKS
+    csti[CI['unload_ticks']] = UNLOAD_TICKS
+    csti[CI['tair']] = int(np.ceil((T_CYCLE - DUTY_SAMPLED) / dt))
+    csti[CI['pelvis_row']] = spec.pelvis_row
+    store_floor = np.ascontiguousarray(spec.drive_store_floor, np.float64)
+    return mdl, mdi, cst, csti, store_floor
+
+
 class WalkerEnvDLL:
     """The batched nvcc-CUDA walk environment (phase-split tick, DLL route)."""
 
@@ -77,51 +131,8 @@ class WalkerEnvDLL:
         self.E = int(n_envs)
         self.block = int(block)
         E = self.E
-        mdl, mdi = build_model_arrays(spec)
-        assert mdl.shape[0] == 900 and mdi.shape[0] == NI32, (mdl.shape, mdi.shape, NI32)
-        dt = spec.dt
-        height_floor = 2.0 * SINK_RATE_MAX + SINK_RATE_MAX * (1.0 / (ZETA * 2.0 * math.pi * FS_HZ)) / dt
-        cst = np.zeros(30, np.float64)
-        cst[CF['plane_y']] = spec.plane_model_y
-        cst[CF['gy']] = 9.80665
-        cst[CF['dt']] = dt
-        cst[CF['mu']] = spec.mu
-        cst[CF['k_touch']] = K_TOUCH
-        cst[CF['k_slip']] = 1e-9
-        cst[CF['k_release']] = 1e-6
-        cst[CF['t_cycle']] = T_CYCLE
-        cst[CF['duty']] = DUTY_SAMPLED
-        cst[CF['toe_off']] = 0.68
-        cst[CF['capture_phi']] = 0.95
-        cst[CF['kp_post']] = spec.kp_post
-        cst[CF['kd_post']] = spec.kd_post
-        cst[CF['store_post']] = spec.store_post
-        cst[CF['height_crit']] = spec.height_crit
-        cst[CF['height_floor']] = spec.height_floor
-        cst[CF['fore_L1']] = spec.fore_L1
-        cst[CF['fore_rho']] = spec.fore_rho
-        cst[CF['fore_beta']] = spec.fore_beta
-        cst[CF['hind_L1']] = spec.hind_L1
-        cst[CF['hind_L2']] = spec.hind_L2
-        cst[CF['hind_xm']] = spec.hind_xm
-        cst[CF['fore_pose_sh']] = spec.fore_pose_sh
-        cst[CF['fore_pose_el']] = spec.fore_pose_el
-        cst[CF['collapse_y']] = collapse_y
-        csti = np.zeros(20, np.int32)
-        csti[CI['settle_total']] = spec.settle_total
-        csti[CI['contact']] = 1 if spec.contact_enabled else 0
-        csti[CI['power']] = 1
-        csti[CI['gait_enabled']] = 1
-        csti[CI['capture_enabled']] = 1
-        csti[CI['posture_drive']] = 1
-        csti[CI['drive_en']] = sum(1 << d for d in range(12) if spec.drive_enabled[d])
-        csti[CI['reflex_level']] = reflex_level
-        csti[CI['fold_budget']] = FOLD_BUDGET_TICKS
-        csti[CI['unload_ticks']] = UNLOAD_TICKS
-        csti[CI['tair']] = int(np.ceil((T_CYCLE - DUTY_SAMPLED) / dt))
-        csti[CI['pelvis_row']] = spec.pelvis_row
+        mdl, mdi, cst, csti, store_floor = build_env_arrays(spec, reflex_level, collapse_y)
         self.collapse_y = collapse_y
-        store_floor = np.ascontiguousarray(spec.drive_store_floor, np.float64)
         self._h = _dll.env_create(
             E, self.block,
             _dp(np.ascontiguousarray(mdl, np.float64)), mdl.size,

@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cmath>
 #include <cstring>
+#include <cstdlib>
 #define __device__
 #define __global__
 struct Dim3 { unsigned x, y, z; };
@@ -31,6 +32,9 @@ int main() {
     f = fopen("host_shim/mdi.txt", "r"); for (int i = 0; i < 232; ++i) fscanf(f, "%d", &mdi[i]); fclose(f);
     f = fopen("host_shim/cst.txt", "r"); for (int i = 0; i < 30; ++i) fscanf(f, "%lf", &cst[i]); fclose(f);
     f = fopen("host_shim/csti_nom.txt", "r"); for (int i = 0; i < 20; ++i) fscanf(f, "%d", &csti[i]); fclose(f);
+    if (getenv("HL_NOCONTACT")) csti[1] = 0;
+    if (getenv("HL_NOPOWER")) csti[2] = 0;
+    if (getenv("HL_SETTLE")) csti[0] = atoi(getenv("HL_SETTLE"));
     f = fopen("host_shim/q.txt", "r"); for (int i = 0; i < 18; ++i) fscanf(f, "%lf", &q0a[i]); fclose(f);
     f = fopen("host_shim/v.txt", "r"); for (int i = 0; i < 18; ++i) fscanf(f, "%lf", &v0a[i]); fclose(f);
     f = fopen("host_shim/store.txt", "r"); for (int i = 0; i < 12; ++i) fscanf(f, "%lf", &store_floor[i]); fclose(f);
@@ -65,6 +69,12 @@ int main() {
         if (t <= 12 || a_rc[0] != 0 || a_ref[0] != 0 || t % 20 == 0)
             printf("tick %3d: y=%.9f vx=%.6f rc=%d adv=%d refused=%d ticks=%lld\n",
                    t, a_q[4], a_v[3], a_rc[0], a_advc[0], a_ref[0], (long long)a_ticks[0]);
+        if (getenv("HL_FULL")) {
+            printf("FULL t=%d", t);
+            for (int i = 0; i < 18; ++i) printf(" q%d=%.17g", i, a_q[i]);
+            for (int i = 0; i < 18; ++i) printf(" v%d=%.17g", i, a_v[i]);
+            printf("\n");
+        }
         if (a_ref[0] != 0) break;
     }
     return 0;
