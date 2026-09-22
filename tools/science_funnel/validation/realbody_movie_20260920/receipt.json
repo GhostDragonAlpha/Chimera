@@ -1,0 +1,27 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "lane/realbody-movie-20260920",
+ "date": "2026-09-20 (lane); measurements wall-clock this run",
+ "agent": "GLM 5.3 (trailer: Agent: rbmovie)",
+ "base_commit": "7d7868d3 (the landed mesh-parse tip: 'RECEIPT: the parse cost measured dead, per-falsifier verdicts banked (lane mesh-parse-20260920): ALL GREEN.')",
+ "branch": "lane/realbody-movie-20260920",
+ "worktree": "E:/ChimeraWork/rbmovie-agent",
+ "preregistration": {
+  "file": "record.md",
+  "committed_before_any_capture": true,
+  "statement": "the real body's slice motion captures as a watchable movie with zero page errors, and the blind judge reads a single connected physical animal",
+  "prediction": "capture at >=15 fps sustained; the judge names the body parts as moving together (its prior form)"
+ },
+ "deliverable": {
+  "movie": "CHIMERA_PROOF/REAL_BODY_SLICE/real_body_slice.mp4 (repo) + C:/Users/allen/Desktop/CHIMERA_PROOF/REAL_BODY_SLICE/real_body_slice.mp4 (desktop) + a sane-size copy beside this receipt",
+  "target": "~15-30 s at >=15 fps, <= ~25 MB"
+ },
+ "falsifiers": {
+  "F1-NO-MOVIE": {"pass": null, "measured": "PENDING — capture/encode not yet run"},
+  "F2-PAGE-ERROR": {"pass": null, "measured": "PENDING — capture not yet run"},
+  "F3-DISCONNECTED-BODY": {"pass": null, "measured": "PENDING — judge not yet run; verbatim verdict to be recorded either way"},
+  "F4-PROVENANCE": {"pass": null, "measured": "PENDING — shas and frame count to be recorded at receipt time"}
+ },
+ "law": "a RED here is a finding (esp. F3: the judge's read IS the slice's visual truth), recorded verbatim, never tuned away",
+ "status": "OPEN — nothing measured yet; this file is the pre-registered falsifier bank"
+}
