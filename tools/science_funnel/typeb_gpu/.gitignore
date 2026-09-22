@@ -6,3 +6,4 @@
 *.exp
 *.lib
 __pycache__/
+*.exe

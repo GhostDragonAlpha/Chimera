@@ -1604,7 +1604,7 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
     for (_zzero49 = 0; _zzero49 < (18); ++_zzero49) {
         brv[_zzero49] = 0.0;
 }
-rc =  rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, brq, brv, mdi, csti);
+    rc =  rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, brq, brv, mdi, csti);
     if (rc != 0) {
         return rc;
 }
@@ -1620,7 +1620,7 @@ rc =  rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, ax
     for (_zzero51 = 0; _zzero51 < (18); ++_zzero51) {
         crv[_zzero51] = 0.0;
 }
-rc =  rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, crq, crv, mdi, csti);
+    rc =  rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, crq, crv, mdi, csti);
     if (rc != 0) {
         return rc;
 }
@@ -1636,7 +1636,7 @@ rc =  rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, ax
     for (_zzero53 = 0; _zzero53 < (18); ++_zzero53) {
         drv[_zzero53] = 0.0;
 }
-rc =  rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, drq, drv, mdi, csti);
+    rc =  rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, drq, drv, mdi, csti);
     if (rc != 0) {
         return rc;
 }

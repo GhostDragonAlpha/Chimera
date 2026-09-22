@@ -1756,9 +1756,9 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
     brv = cuda.local.array(18, dtype=float64)
 
-rc = rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
+    rc = rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, brq, brv, mdi, csti)
+                  axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, brq, brv, mdi, csti)
 
     if rc != 0:
 
@@ -1774,9 +1774,9 @@ rc = rate(qb, vb, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
     crv = cuda.local.array(18, dtype=float64)
 
-rc = rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
+    rc = rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, crq, crv, mdi, csti)
+                  axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, crq, crv, mdi, csti)
 
     if rc != 0:
 
@@ -1792,9 +1792,9 @@ rc = rate(qc, vc, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
     drv = cuda.local.array(18, dtype=float64)
 
-rc = rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
+    rc = rate(qd, vd, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd,
 
-              axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, drq, drv, mdi, csti)
+                  axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, drq, drv, mdi, csti)
 
     if rc != 0:
 
