@@ -89,6 +89,18 @@ a BLOCKED-with-evidence verdict (AGENTS.md: blocked must be earned), never a wor
 - [ ] **The standing falsifier battery**: free-fall exact, determinism bit-identical, graph
       tests green (both PYTHONPATH roots), caps enforced in code (never raised away), ledger
       diagnostics named per channel.
+- [ ] **Rule 0 — the instrument identity gate**: EVERY NEW TRACE SERIES SHIPS A
+      PRE-REGISTERED KNOWN-ANCHOR IDENTITY CHECK — a measured equality the series must pass
+      BEFORE its numbers enter any mine. An instrument that cannot prove it reads the thing
+      it names is not an instrument; its numbers are prose. Model instance: the wave-42
+      fire-anchor identity — the first [dvfa] pad_y sample equals the fire line's fy at ALL
+      18 fire ticks (max |diff| 4.x mm), which is what licensed the tick-start-evaluation
+      basis. Cautionary tale: the wave-45 [dvfl] pair — g1==g2 to machine precision in every
+      line (452/452 inserted lines); the band's read site structurally erases the pad
+      identity, the registered read-site (g1 vs g2) does not exist, and the degenerate read
+      was reported verbatim, never tuned away.
+      Evidence: waves 42-45 receipts (tools/science_funnel/validation/gait_zero_20260919/,
+      lanes agent/gait-wave42-arch … agent/gait-wave45-*).
 
 ## 5 · VERIFICATION (what the lead runs on YOUR lane)
 
@@ -103,6 +115,12 @@ a BLOCKED-with-evidence verdict (AGENTS.md: blocked must be earned), never a wor
 
 - [ ] Commit (trailer) + push YOUR BRANCH ONLY. Report: the derivation with measured inputs,
       falsifier verdicts (greens AND reds), refusal/pass numbers, commit hash. Done-is-a-commit.
+- [ ] **The publication gate**: a lane's completion report must include its own canonical
+      verification — the literal `git ls-remote <canonical> refs/heads/<branch>` output,
+      branch → tip — proving the branch landed at the tip the report cites. NO REPORT
+      WITHOUT IT MAY CLAIM DONE: an unpushed branch is not a ship, and an outage is not a
+      push. Instances: the vh-agent lane stranded by an SSH outage that nobody re-verified
+      past; the port lane reporting complete with its branch unpushed at completion.
 
 ---
 
@@ -135,3 +153,25 @@ result, a theory can lose. If your step cannot lose, it is not a step — it is 
       skin); never splatified for rendering. Enforced by section 2 ·
       CONSTRUCTION and section 3 · VISUAL. Canonical home: docs/THE_GAME.md,
       Amendment 2; the conformance gate + pixel_truth.
+
+---
+
+## 7 · TOOLING (any tool that claims a side effect)
+
+<!-- Appended 2026-09-22, lane agent/workflow-rules-conversion-20260922. The
+     janitor retrospective cycles 9-11 found the log saying `deleted` for paths
+     that survived as empty shells: rmtree ran, the postcondition was never
+     checked, and the word did the proving. This section is the general law;
+     the instance lives in the tool itself. -->
+
+- [ ] **THE POSTCONDITION LAW — TOOLS VERIFY THEIR OWN EFFECTS**: A TOOL THAT
+      CLAIMS A SIDE EFFECT ASSERTS THE EFFECT BEFORE IT LOGS SUCCESS.
+      `deleted` means the path is gone (the existence check runs AFTER the
+      delete); `FAILED` means it survived — logged honestly, never a success
+      word for an unverified state. A log entry is a claim about the world, and
+      the world, not the call's return code, is the witness. Case:
+      worktree_janitor.py cycles 9-11 — `shutil.rmtree(..., ignore_errors=True)`
+      followed by an unconditional `action="deleted"` recorded surviving empty
+      shells as deleted; the retrospective, not the tool, caught the lie.
+      Instance: `E:/ChimeraWork/tools/worktree_janitor.py` (host-level;
+      provenance copy: `tools/agent_fleet/worktree_janitor.py`).
