@@ -1,0 +1,36 @@
+{
+  "binary_stamps_differ": true,
+  "build_A_binary_sha256": "64e81814a418c98827090bb6a074e8de5997d885cf42d7f37a0646c140a6fcff",
+  "build_B_binary_sha256": "9fb655642fd0c56d7e806777ed59b874b34e6e403c9aca7f171f18620595c0fc",
+  "check": "CHECK_2_cross_build_equivalence_registered_cases",
+  "detail": "fresh recompile: RC-1 EXACT; RC-2 EXACT; binary stamps differ as declared",
+  "honesty_note": "byte-irrelevant rebuild: the two builds' binary stamps MAY differ; the registered cases' artifacts must not. Exact agreement on the registered cases is EVIDENCE, never universal proof.",
+  "pass": true,
+  "reasons": [],
+  "registered_cases": [
+    {
+      "case": "RC-1_ship_walk",
+      "exact_agreement": true,
+      "legs": {
+        "actions.bin": true,
+        "run.json_face": true,
+        "snap_t150.bin": true,
+        "states.bin": true,
+        "stderr": true,
+        "stdout": true
+      }
+    },
+    {
+      "case": "RC-2_pinned_command_zoh",
+      "exact_agreement": true,
+      "fg42_echo_present": true,
+      "legs": {
+        "stdout": true,
+        "trace_stderr": true
+      },
+      "schedule": "150:1.01",
+      "stdout_sha256": "8feebc202bd6f5786af343bf65c95c54ef7126a6a0d98701bcba3dbe90fedeb0",
+      "trace_stderr_sha256": "28ddcf74cfb0ff70fc6d2f03a2413ec32cd157a69c05dcece0b854341f8d76d2"
+    }
+  ]
+}

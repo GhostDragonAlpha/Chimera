@@ -67,6 +67,20 @@ REQUIRED_SCOPE_BARS = (
     "velocity_envelope",    # |v_t| <= v_max at every tick (the drive fixed-point bound)
 )
 
+# A RESOLVED registered gap MUST carry a proof block with these fields (the
+# snapshot-apis registry: tools/policy_compat/snapshot_api.py). A RESOLVED gap
+# without verifiable proof is a violation -- only PROVEN readers un-block the
+# production class (the snapshot-apis lane,
+# tools/science_funnel/validation/snapshot_apis_20260920/receipt.json).
+RESOLVED_GAP_PROOF_KEYS = (
+    "reader",                   # the reader id that closes the gap
+    "kind",                     # what the reader is (build-flag instrument, ...)
+    "proof_receipt_sha256",     # sha256 of the Rule-0 receipt binding the proofs
+    "restore_bit_identity",     # True: restored future == uninterrupted (hashes+actions)
+    "ship_invariance",          # "PASS": unexercised bytes equal the ship anchors
+    "load_bearing_forced_drops",  # True: every dropped class moves the continuation
+)
+
 
 def canonical_json(obj) -> bytes:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"),
@@ -133,6 +147,38 @@ def issue_certificate(relation: dict, inventory: dict, evidence: dict,
 
 # --------------------------------------------------------------- validation
 
+def _validate_gap_proof(g: dict, errs: list[str]) -> None:
+    """A RESOLVED gap must carry a verifiable proof block (the snapshot-apis
+    registry's contract). Anything less is a validator violation."""
+    proof = g.get("proof")
+    if not isinstance(proof, dict):
+        errs.append(f"RESOLVED gap {g['name']} carries NO proof block -- a gap is "
+                    "resolved only by a reader with a bit-identity proof bound "
+                    "by sha (the snapshot_api.ENGINE registry)")
+        return
+    missing = [k for k in RESOLVED_GAP_PROOF_KEYS if k not in proof]
+    if missing:
+        errs.append(f"RESOLVED gap {g['name']} proof missing fields: {missing}")
+        return
+    if not str(proof["reader"]).strip():
+        errs.append(f"RESOLVED gap {g['name']} proof.reader empty")
+    if not str(proof["kind"]).strip():
+        errs.append(f"RESOLVED gap {g['name']} proof.kind empty")
+    sha = str(proof["proof_receipt_sha256"])
+    if len(sha) != 64 or any(c not in "0123456789abcdef" for c in sha):
+        errs.append(f"RESOLVED gap {g['name']} proof.proof_receipt_sha256 is not a "
+                    "sha256 hex digest")
+    if proof["restore_bit_identity"] is not True:
+        errs.append(f"RESOLVED gap {g['name']} proof.restore_bit_identity is not True "
+                    "-- an unproven restore cannot resolve a gap")
+    if proof["ship_invariance"] != "PASS":
+        errs.append(f"RESOLVED gap {g['name']} proof.ship_invariance is not PASS "
+                    "-- a reader that moves the ship bytes resolves nothing")
+    if proof["load_bearing_forced_drops"] is not True:
+        errs.append(f"RESOLVED gap {g['name']} proof.load_bearing_forced_drops is not "
+                    "True -- a snapshot class the continuation ignores proves nothing")
+
+
 def _validate_inventory(inv: dict, errs: list[str]) -> None:
     if not isinstance(inv, dict):
         errs.append("restart_state_inventory must be an object")
@@ -165,6 +211,8 @@ def _validate_inventory(inv: dict, errs: list[str]) -> None:
             errs.append(f"registered gap must carry name/item/status/cause/clears_when: {g!r}")
         elif g["item"] not in INVENTORY_ITEMS:
             errs.append(f"registered gap {g['name']} names unknown item {g['item']}")
+        if isinstance(g, dict) and "RESOLVED" in str(g.get("status", "")).upper():
+            _validate_gap_proof(g, errs)
     if cls == "production":
         unresolved = [g["name"] for g in gaps if "RESOLVED" not in str(g.get("status", "")).upper()]
         if unresolved:

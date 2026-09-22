@@ -1,0 +1,151 @@
+{
+  "lane": "snapshot-apis-20260920",
+  "out": {
+    "action_bytes": "last_torque_ 18 x f64 LE per tick",
+    "f1_restore_bit_identity": {
+      "action_bytes_compared": 21888,
+      "action_bytes_identical": true,
+      "blind_phase_matches_snapshot_file": true,
+      "detail": "restored future ticks [150,302) vs uninterrupted: state hashes IDENTICAL, action bytes IDENTICAL (21888 B), refusal tick/class identical (302/gait_positional_correction_budget)",
+      "first_diverging_tick": null,
+      "pass": true,
+      "refusal_tick_and_class_identical": true,
+      "restored_state_hash_equals_reference": true,
+      "restored_tick": 150,
+      "roundtrip_serialization_equal": true,
+      "state_hashes_identical": true,
+      "ticks_compared": 152
+    },
+    "f2_ship_invariance": {
+      "anchors": {
+        "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+        "ship_plain_stderr_sha256": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+        "ship_stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+        "ship_trace_stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481"
+      },
+      "detail": "scene f6844ee EXACT; ship stdout 8c537cdb EXACT; ship trace c6f9b6c0 EXACT; instrument copy flag-off == pristine bytes (LEG A); the EXERCISED build with recording + snapshot active still prints the ship stdout+trace bytes; the restored run's per-tick telemetry equals the ship walk segment byte-exactly",
+      "legs": {
+        "EXERCISED_ref_stdout_with_recording": {
+          "anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "pass": true
+        },
+        "EXERCISED_ref_trace_with_recording": {
+          "anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "pass": true
+        },
+        "LEG_A_copy_flagoff_stderr": {
+          "measured": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+          "pass": true,
+          "pristine": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab"
+        },
+        "LEG_A_copy_flagoff_stdout": {
+          "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "pass": true,
+          "pristine": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        },
+        "LEG_B_plain_stderr": {
+          "anchor": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+          "measured": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+          "pass": true
+        },
+        "LEG_B_scene_anchor": {
+          "anchor": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+          "measured": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+          "pass": true
+        },
+        "LEG_B_ship_stdout": {
+          "anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+          "pass": true
+        },
+        "LEG_B_ship_trace": {
+          "anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "pass": true
+        },
+        "RESTORED_trace_equals_ship_walk_segment": {
+          "pass": true,
+          "restored_trace_bytes": 1667220,
+          "ship_prefix_match_at_walk1": true
+        }
+      },
+      "pass": true
+    },
+    "f3_forced_drop_load_bearing": {
+      "classes": {
+        "contact_warm_start": {
+          "detail": "dropping contact_warm_start from the restore MOVES the continuation (first divergence tick 150)",
+          "first_diverging_tick": 150,
+          "load_bearing": true,
+          "roundtrip_ok": true
+        },
+        "controller_history": {
+          "detail": "dropping controller_history from the restore MOVES the continuation (first divergence tick 150)",
+          "first_diverging_tick": 150,
+          "load_bearing": true,
+          "roundtrip_ok": true
+        },
+        "reflex_state": {
+          "detail": "dropping reflex_state from the restore MOVES the continuation (first divergence tick 150)",
+          "first_diverging_tick": 150,
+          "load_bearing": true,
+          "roundtrip_ok": true
+        },
+        "world_state": {
+          "detail": "dropping world_state from the restore MOVES the continuation (first divergence tick 150)",
+          "first_diverging_tick": 150,
+          "load_bearing": true,
+          "roundtrip_ok": true
+        }
+      },
+      "pass": true
+    },
+    "f4_determinism": {
+      "detail": "3 fresh-process reference runs byte-identical on states/actions/snapshot/stdout/stderr (states 932878 B, body 3089 B/tick, 302 ticks, refusal tick 302 class gait_positional_correction_budget)",
+      "pass": true,
+      "runs": [
+        {
+          "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+          "refused_class": "gait_positional_correction_budget",
+          "refused_tick": 302,
+          "run": "ref1",
+          "snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+          "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+          "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        },
+        {
+          "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+          "refused_class": "gait_positional_correction_budget",
+          "refused_tick": 302,
+          "run": "ref2",
+          "snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+          "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+          "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        },
+        {
+          "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+          "refused_class": "gait_positional_correction_budget",
+          "refused_tick": 302,
+          "run": "ref3",
+          "snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+          "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+          "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+          "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+        }
+      ]
+    },
+    "instrument": "gait_snapshot_api/out-of-tree@snapshot_apis_20260920",
+    "manifest_fields": 184,
+    "snapshot_body_bytes": 3089,
+    "snapshot_matches_reference_tick": true,
+    "snapshot_tick": 150,
+    "state_hash_input": "sha256(canonical 4-class serialization, one per tick)"
+  },
+  "pass": true,
+  "reasons": [],
+  "schema": "chimera.snapshot_apis.proof/1"
+}
