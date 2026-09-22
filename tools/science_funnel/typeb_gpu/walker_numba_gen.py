@@ -3542,6 +3542,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
 
 
+    print('K eval0', e)
     # ── the tick-start evaluation (eval0) ──
 
     pot = fk_eval(q,  v, mdl, mdi, cst,
@@ -3704,6 +3705,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
 
 
+    print('K clock', e)
     # ── the contact-reset hybrid clock (Section 5.1, wave 22 classes) ──
 
     if walking != 0:
@@ -4975,7 +4977,9 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
 
 
+    print('K substeps', e)
     # ── integrate 4 substeps: servo + store bisection + advance ──
+    print('TICK body enter')
 
     # (dynamic loop: the unrolled body is too large to JIT)
 
@@ -5427,6 +5431,7 @@ def tick_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery,
 
 
 
+    print('K book', e)
     # ── the tick bookkeeping ──
 
     if rc == 0:
