@@ -9,6 +9,7 @@
  "preregistration": {
   "file": "record.md",
   "committed_before_any_doc_edit": true,
+  "commit": "cad97215",
   "scope_declared": ["README.md", "docs/THE_SHIP_GOAL.md", "tools/science_funnel/validation/frontpage_status_20260920/"],
   "falsifiers": {
    "F1_UNVERIFIED_CLAIM": "any rendered statement whose cited receipt does not contain it -> FIRED; every claim listed in claims[] with receipt path + locator",
@@ -23,6 +24,83 @@
    "'walking covered every joint' is NOT what the landed receipts say: knee 1.5975x and MTP 1.6495x COVERED, ankle plantar 0.7434x and dorsal 0.5123x UNDER (k_fill_20260920 F1 fired as pre-registered; ankle_adjudication_20260920 verdict B demand-side, nothing tuned)"
   ]
  },
- "measured": "APPEND-ONLY — to be written after the edits and the mechanical claims self-check.",
- "pass": null
+ "measured": {
+  "status": "APPENDED AFTER THE EDITS AND THE MECHANICAL SELF-CHECK. The preregistration above is unedited since commit cad97215.",
+  "edits_made": {
+   "README.md": "commit e3c32278 — three in-place truth updates (fresh-session continuation names the pass-5 integration of record + master sha; the macaque-arm and coupled-arm 'unfinished' lines now distinguish the banked force books from unwired engine actuation) plus ONE appended subsection 'Status: 2026-09-20 — the real body, the save-any-moment proof, the muscle books' carrying the day's hooks with per-claim receipt paths and the honest reds",
+   "docs/THE_SHIP_GOAL.md": "one new dated section '2026-09-20 — the muscle program closes, the real body ships' (lane -> one-line verdict -> receipt table, 15 rows incl. the NOT-merged reds row + THE REDS paragraph); four 2026-09-20 STATUS LEDGER rows (the 2026-09-14 rows untouched, restored and re-verified after one editing slip); one dated paragraph each under THE ROBOT STACK LAW and THE ALIVENESS LAW. NO R-item status line was flipped: no landed receipt moves R1-R9 (the real body, certificate, muscle-book, interface and cost landings advance the laws and the ledger, not an R-item bar; the website lane is not landed so R9 stays OPEN)"
+  },
+  "self_check": {
+   "instrument": "E:/ChimeraWork/frontpage-scripts/selfcheck.py (OUTSIDE the repo; not committed by scope F5)",
+   "method": "re-opens every cited receipt on this tree and requires every claimed number/verdict as a raw-byte substring; checks every cited receipt path exists; checks the base README heading set survives as an ordered subsequence (F2); checks the reds render (F3)",
+   "claims_checked": 48,
+   "verdict": "ALL PASS",
+   "determinism": "run twice; outputs byte-identical (F4)",
+   "fixes_during_check": "one checker substring over-specified (pass-4 '44 passed, 0 failed, 0 skipped' — the receipt value continues with '(obspop receipt 44/0/0)'); the CHECKER was fixed, no doc number moved"
+  },
+  "claims": [
+   {"id": "C01", "claim": "25 closed bones", "receipt": "slice_real_body_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C02", "claim": "499,976 tris under the 500,000 cap", "receipt": "slice_real_body_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C03", "claim": "pivots 0.058-0.072 mm vs 5 mm bound", "receipt": "slice_real_body_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C04", "claim": "boot byte-clean x3", "receipt": "slice_real_body_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C05", "claim": "RED boot bar 135.73 s vs 10 s", "receipt": "slice_real_body_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C06", "claim": "RED parse 237.67 s isolated, 130-240+ s", "receipt": "slice_real_body_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C07", "claim": "lane receipt records pass=false (nothing spun)", "receipt": "slice_real_body_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C08", "claim": "two preregistered clauses fired, recorded", "receipt": "slice_real_body_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C09", "claim": "terminal-descent identity 8.3e-7 rel", "receipt": "slice_real_body_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C10", "claim": "snapshot tick 150; restored bit-identical over the 302-tick walk", "receipt": "snapshot_apis_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C11", "claim": "21,888 action bytes identical", "receipt": "snapshot_apis_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C12", "claim": "zero engine bytes touched", "receipt": "snapshot_apis_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C13", "claim": "all four restart-state gaps closed", "receipt": "snapshot_apis_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C14", "claim": "4/4 injections CAUGHT", "receipt": "upgrade_gate_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C15", "claim": "resume bit-identical at tick 317", "receipt": "upgrade_gate_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C16", "claim": "three clean runs byte-identical", "receipt": "upgrade_gate_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C17", "claim": "worst cross-build delta ~8x inside derived margin", "receipt": "upgrade_gate_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C18", "claim": "16/16 tests", "receipt": "upgrade_gate_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C19", "claim": "first production-class certificate", "receipt": "cert_dryrun_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C20", "claim": "tamper suite rejected 3/3 (T1/T2/T3)", "receipt": "cert_dryrun_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C21", "claim": "clean re-issue ALLOW, validator zero violations", "receipt": "cert_dryrun_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C22", "claim": "three forward gaps named", "receipt": "cert_dryrun_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C23", "claim": "sigma 0.30 MPa never swept; 23 paired forces", "receipt": "k_fill_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C24", "claim": "walk coverage knee 1.5975x, MTP 1.6495x COVERED", "receipt": "k_fill_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C25", "claim": "ankle plantar 0.7434x / dorsal 0.5123x UNDER", "receipt": "k_fill_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C26", "claim": "rear-up NOT COVERED: 26.582 in (22.4, 33.6]; conservative 8.489511", "receipt": "k_fill_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C27", "claim": "verdict B demand side; 10.038 vs 6.15 kg; ratio 1.632", "receipt": "ankle_adjudication_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C28", "claim": "mass-scaled coverage 1.21x linear / 1.43x geometric", "receipt": "ankle_adjudication_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C29", "claim": "arm side EXCLUDED; SOL 5.83x secondary; sigma non-discriminating", "receipt": "ankle_adjudication_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C30", "claim": "hip arms measured; 25% caveat retired; record over-stated 1.5-3.2x", "receipt": "hip_arms_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C31", "claim": "rear-up window 10.718 N.m; NOT COVERED stands", "receipt": "hip_arms_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C32", "claim": "five quarantines STAND; decisive negative; 20 sources", "receipt": "hip_quarantine_review_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C33", "claim": "class curves re-derive byte-equal", "receipt": "hip_quarantine_review_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C34", "claim": "80-field interface; byte-deterministic regeneration", "receipt": "policy_interface_freeze_20260920/receipt_policy_interface_freeze.json", "verdict": "PASS"},
+   {"id": "C35", "claim": "aliasing FIRED and reported: 21 pairs, 277 distinct", "receipt": "policy_interface_freeze_20260920/receipt_policy_interface_freeze.json", "verdict": "PASS"},
+   {"id": "C36", "claim": "rear_up_v1 declared, zero behavior claims", "receipt": "policy_interface_freeze_20260920/receipt_policy_interface_freeze.json", "verdict": "PASS"},
+   {"id": "C37", "claim": "all 21 pairs separated; 302 distinct; zero survivors", "receipt": "obs_populate_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C38", "claim": "physics bytes == ship trace anchor", "receipt": "obs_populate_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C39", "claim": "com_vel delivered on 301/302 ticks", "receipt": "obs_populate_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C40", "claim": "cost gap 6.7-13.7x the 300 Hz budget", "receipt": "tick_cost_attribution_20260920/receipt_tick_cost.json", "verdict": "PASS"},
+   {"id": "C41", "claim": "FK 87.9% of tick, ~287 calls/tick", "receipt": "tick_cost_attribution_20260920/receipt_tick_cost.json", "verdict": "PASS"},
+   {"id": "C42", "claim": "stand regime refuses at 139 pushed AND unpushed", "receipt": "tick_cost_attribution_20260920/receipt_tick_cost.json", "verdict": "PASS"},
+   {"id": "C43", "claim": "byte-changing candidates REJECTED on the record", "receipt": "tick_cost_attribution_20260920/receipt_tick_cost.json", "verdict": "PASS"},
+   {"id": "C44", "claim": "STOP gate fired; zero records admitted; conf 0.0 << 0.65", "receipt": "vanhoof_intake_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C45", "claim": "pass 4: zero conflicts; suites 13/12/12/44/16; 19+19 roots; zero engine bytes", "receipt": "integration_pass4_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C46", "claim": "pass 5: anchors byte-EXACT; ALL GREEN; merged head 7fd1322e", "receipt": "integration_pass5_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C47", "claim": "mesh-parse + fk-reduction evaluated and NOT merged", "receipt": "integration_pass5_20260920/receipt.json", "verdict": "PASS"},
+   {"id": "C48", "claim": "master pushed once at the pinned receipt commit (5b2b7f89 = this tree HEAD)", "receipt": "integration_pass5_20260920/receipt.json", "verdict": "PASS"}
+  ],
+  "falsifier_verdicts": {
+   "F1_UNVERIFIED_CLAIM": "NOT FIRED — 48/48 claims resolve inside their cited receipts (table above); the one initial miss was the CHECKER's own over-specified substring, not a doc claim",
+   "F2_VOICE_BREAK": "NOT FIRED — every base README heading survives as an ordered subsequence; the diff is in-place updates + one appended subsection (+90/-4 lines)",
+   "F3_HONEST_REDS": "NOT FIRED — the rendered docs carry: boot bar 135.73 s vs 10 s; rear-up NOT COVERED (both books); ankle plantar 0.7434x UNDER; cost gap 6.7-13.7x; stand regime refuses at 139; mesh-parse + fk-reduction NOT merged; vanhoof ZERO records admitted",
+   "F4_DETERMINISM": "NOT FIRED — no doc build exists (plain markdown); the self-check ran twice with byte-identical output",
+   "F5_SCOPE": "PENDING AT APPEND — verified by git status immediately before this commit (see measured.scope_check)"
+  },
+  "scope_check": "git status --porcelain on the worktree names ONLY docs/THE_SHIP_GOAL.md and tools/science_funnel/validation/frontpage_status_20260920/receipt.json at this commit (README.md already committed at e3c32278)",
+  "commits": [
+   "cad97215 prereg (before any doc edit)",
+   "e3c32278 README updates",
+   "(this commit) THE_SHIP_GOAL.md updates + this measured block"
+  ]
+ },
+ "pass": true
 }

@@ -127,6 +127,17 @@ op needs on top:
   pass the same bars as the sculpted monkey — volumes conserved,
   pressures honest, poses travel, touch answers — or it is not alive.
 
+EVIDENCE (2026-09-20): the ingestion now carries the REAL body — the
+playable slice's tick body is the repaired, cap-decimated CT skeleton
+(25 closed bones, 499,976 triangles inside the importer's own
+500,000-triangle cap) through the same aliveness import, with the
+hip/knee pivots aligned 0.058-0.072 mm inside the 5 mm bound and the
+mock stand-in retired at zero code sites
+(tools/science_funnel/validation/slice_real_body_20260920/receipt.json).
+The honest red rides the same receipt: the slice's own 10 s boot bar
+is missed at 135.73 s — the engine's import parse at this scale is the
+named successor work.
+
 ## THE ORDER OF WORK (one feature at a time, your law)
 
 1. R1 double-click launch (the window law is the blocker — kill it
@@ -138,10 +149,52 @@ op needs on top:
 6. R7 package, R8 stranger test — then it is Steam-ready and the
    operator opens the account.
 
+## 2026-09-20 — the muscle program closes, the real body ships
+
+Nine lane tips landed on master in one day behind two integration passes
+(receipts `tools/science_funnel/validation/integration_pass4_20260920/receipt.json`
+and `tools/science_funnel/validation/integration_pass5_20260920/receipt.json`;
+walk byte anchors EXACT, every suite at its receipt count, master pushed once —
+pass 5's push of record is commit `5b2b7f89`). Lane -> verdict -> receipt:
+
+| Lane | One-line verdict | Receipt (tools/science_funnel/validation/) |
+|------|------------------|--------------------------------------------|
+| slice-real-body | The playable slice's tick body is now the REAL CT skeleton — 25 closed bones, 499,976 tris under the importer's own cap, hip/knee pivots 0.058-0.072 mm inside the 5 mm bound, capsule stand-in retired (0 code sites), boot byte-clean x3. RED carried, not tuned: the slice's own 10 s boot bar is missed at 135.73 s — the engine's mesh import at this scale (237.67 s isolated parse, 130-240+ s across boots) is the named successor work | `slice_real_body_20260920/receipt.json` |
+| snapshot-apis | Mid-walk save + fresh-process restore BIT-IDENTICAL: snapshot at tick 150 of the ship-fenced 302-tick walk, restored future equal on state hashes and all 21,888 action bytes, refusal tick/class identical, all four restart-state gaps CLOSED with load-bearing proofs — zero engine bytes touched | `snapshot_apis_20260920/receipt.json` |
+| upgrade-gate | The compatibility-certificate gate is BUILT and MEASURED: 4/4 injected incompatibilities CAUGHT, checkpoint resume (tick 317) bit-identical, three clean gate runs byte-identical, cross-build deltas ~8x inside the pre-derived margin, 16/16 tests | `upgrade_gate_20260920/receipt.json` |
+| cert-dryrun | The FIRST production-class compatibility certificate issued end-to-end (validator zero violations, deploy ALLOW on the matching 5-tuple) and the tamper suite REJECTED 3/3 (bumped hash, swapped constant, stale build id) with the clean re-issue allowed; forward gaps named, not hidden: no ship-tree HTTP snapshot route, no first-class engine build id, no actor-in-the-loop coupling | `cert_dryrun_20260920/receipt.json` |
+| k-fill | The placeholder 1 N forces are replaced by a DERIVED set — one cited specific tension (0.30 MPa, never swept) x published macaque PCSA x measured pennation; walking demand COVERED at knee 1.5975x and MTP 1.6495x; ankle plantar 0.7434x UNDER — falsifier F1 fired AS PRE-REGISTERED, reported, never tuned; rear-up static strength NOT COVERED (primary 26.582 N·m inside the operator's (22.4, 33.6] window; conservative 8.490) | `k_fill_20260920/receipt.json` |
+| ankle-adjudication | The ankle shortfall ADJUDICATED: verdict B — DEMAND side (the bar is the transient peak of a 10.038 kg simulated animal vs the game's 6.15 kg animal; mass-scaled coverage 1.21x linear / 1.43x geometric); the arm side is EXCLUDED by banked arithmetic; the arm-side dataset conflict (SOL 5.83x) named as secondary; sigma non-discriminating; nothing tuned | `ankle_adjudication_20260920/receipt.json` |
+| hip-arms | Hip moment arms MEASURED on the deposit's own geometry — the declared 25% straight-line caveat RETIRED (the record arms over-stated by 1.5-3.2x); on measured arms the rear-up window capability is 10.718 N·m, BELOW the operator's class window entirely: "cannot even reach the rear-up CLASS, let alone its top"; verdict stays NOT COVERED | `hip_arms_20260920/receipt.json` |
+| hip-quarantine-review | All five quarantined rows STAND (RF/SAR/AB/BFS/TP): a decisive, byte-pinned NEGATIVE — no published n>1 macaque per-muscle PCSA study exists for any of them (20 sources examined); the class curves re-derive byte-equal | `hip_quarantine_review_20260920/receipt.json` |
+| policy-interface-freeze | The 80-field observation interface FROZEN (versioned, byte-deterministic regeneration) before skill #1 trains; its own aliasing audit FIRED and was reported, not absorbed: 21 state-aliased pairs on the live walk (277 distinct observations / 302 ticks) | `policy_interface_freeze_20260920/receipt_policy_interface_freeze.json` |
+| obs-populate | The aliasing red FIXED at the sensor path: com_vel (field 21) delivered from the walk's own trace — ALL 21 pairs separated (302 distinct observations, zero survivors, zero new), physics bytes identical to the ship anchors, frozen table untouched | `obs_populate_20260920/receipt.json` |
+| tick-cost-attribution | COST-GAP FIRED (the finding, machine-state-independent): byte-neutral removal of every peripheral leaves 6.7-13.7x the 300 Hz tick budget; the cost is the integration core itself — the model's FK evaluation inside RK4 (87.9% of the tick, ~287 calls/tick); zero optimization smuggled — every byte-changing candidate recorded as a REJECTED physics-compatibility change request | `tick_cost_attribution_20260920/receipt_tick_cost.json` |
+| vanhoof-intake | A real scan intake that REFUSED TO GUESS: both forearm tables downloaded + sha-pinned, then the calibration STOP gate FIRED (median glyph confidence far below its floor on the best faithful tier) — ZERO records admitted, zero guessed numbers, successor route named | `vanhoof_intake_20260920/receipt.json` |
+| integration pass 4 | Four lane tips merged behind FULL verification (the briefing's chain premise measured FALSE — a fork; the would-be-silently-dropped ankle sibling caught and merged); walk byte anchors EXACT; 13/12/12/44/16 lane tests + 19+19 graph roots green | `integration_pass4_20260920/receipt.json` |
+| integration pass 5 | Five more tips merged (the measured hip-quarantine sibling drop caught; the snapshot-apis chain ancestry-verified); every anchor byte-EXACT, every suite at receipt count; master pushed once at the receipt commit `5b2b7f89` | `integration_pass5_20260920/receipt.json` |
+| NOT merged — reds of record | `lane/mesh-parse-20260920` (the boot-bar successor, still in flight) and `lane/fk-reduction-20260920` (the GPU-production split, local-only, no origin tip) are evaluated and explicitly NOT merged; nothing on this page may claim their numbers | `integration_pass5_20260920/receipt.json` (evaluated_and_NOT_merged, local_only_not_on_origin) |
+
+THE REDS, STATED PLAINLY (the front page tells the truth or it is worth
+nothing): rear-up as static strength is NOT covered — closed with numbers on
+both arm books, and the move goes to the trained-skill layer, whose frozen
+certificate schema already declares a `rear_up_v1` example with zero behavior
+claims. The GPU bars are still converging: the CPU oracle misses the 300 Hz
+budget 6.7-13.7x, the GPU-production split is named and its lane is NOT
+landed, and the pinned scene's stand regime still refuses (tick 139, pushed
+AND unpushed — a stand-side red measured in the same receipt). The slice's
+boot bar is red (135.73 s vs 10 s). Raw ankle plantar walk coverage is under
+(0.7434x) — explained as demand mass-context by the adjudication, not tuned
+away. The Vanhoof intake admitted zero records.
+
 ## STATUS LEDGER (updated as work lands)
 
 | Date       | Event                                   |
 |------------|-----------------------------------------|
+| 2026-09-20 | **THE REAL BODY IN THE PLAYABLE SLICE:** the bbox stand-in is retired (0 code sites); the tick body is the real CT skeleton — 25 closed bones, 499,976 tris (inside the 500,000 cap), hip/knee pivots 0.058-0.072 mm vs the 5 mm bound, boot byte-clean x3, terminal-descent identity 8.3e-7 rel error, visual evidence on the real page. RED stands: boot bar 135.73 s vs 10 s (engine mesh-import parse 237.67 s isolated; importer-performance successor named, NOT merged). Two preregistered clauses fired and are recorded, not tuned. Evidence: tools/science_funnel/validation/slice_real_body_20260920/receipt.json |
+| 2026-09-20 | **THE COMPATIBILITY CERTIFICATE (the robot stack's checkpoint rung, now enforced machinery):** mid-walk snapshot + fresh-process restore BIT-IDENTICAL through all four registered restart-state gaps (snapshot_apis_20260920); the gate catches 4/4 injections with byte-identical clean runs (upgrade_gate_20260920); the first production-class certificate ISSUES and the tamper suite rejects 3/3 (cert_dryrun_20260920). Forward gaps named: no ship-tree HTTP snapshot route, no first-class engine build id, no actor-in-the-loop coupling |
+| 2026-09-20 | **THE MUSCLE PROGRAM'S BOOKS ARE DERIVED:** 1 N placeholders replaced by sigma 0.30 MPa (cited, never swept) x published PCSA x measured pennation; walk coverage knee 1.60x / MTP 1.65x COVERED, ankle plantar 0.7434x UNDER (F1 fired as pre-registered) and adjudicated demand-side (a 10.038 kg simulated animal vs the 6.15 kg game animal — nothing tuned); hip arms measured, the 25% caveat retired; the five quarantine rows STAND on a decisive negative; rear-up static strength CLOSED: NOT COVERED on both books (26.58 -> 10.72 N·m vs the 33.6 N·m class top) — the move goes to the trained-skill layer (rear_up_v1 declared, zero behavior claims). Evidence: k_fill_20260920/, ankle_adjudication_20260920/, hip_arms_20260920/, hip_quarantine_review_20260920/, policy_interface_freeze_20260920/ |
+| 2026-09-20 | **THE COST AND THE EYES, MEASURED:** the CPU walk oracle misses the 300 Hz budget 6.7-13.7x with the cost named (FK inside RK4, 87.9% of the tick; zero optimization smuggled, byte-changing candidates rejected on the record — tick_cost_attribution_20260920); the 80-field policy interface frozen, its 21-pair aliasing red fixed sensor-side with zero physics-byte movement (policy_interface_freeze_20260920 + obs_populate_20260920); the Vanhoof scan intake admitted ZERO records rather than guess (vanhoof_intake_20260920). Integration: passes 4+5, nine lane tips, all green (integration_pass4_20260920/, integration_pass5_20260920/; master at 5b2b7f89) |
 | 2026-09-14 | **R8 rounds 2+3:** FAIL both (novelty 4-5/10; the playable demo is the named gap); the ten-lesson arc, cascade isolation, stage shaders, seam tint, gravity/fall all landed — R8 re-runs after the gameplay polish |
 | 2026-09-14 | R9 deploy config (cloudflared + 15-step go-live) + W4 sound pass 2 (region/force audio, call sites documented) + the off-body touch refusal landed |
 | 2026-09-14 | R4 completion walk: 9/10 lessons passed headless (the_cascade gated on pressure_isolation judge type) |
@@ -377,6 +430,31 @@ fixed, so a trained policy (the checkpoint file a robot lab would
 ship) can replace the hand-written state machine later without
 touching the body. THE FALL LAW still governs: cut the controller and
 the creature falls — that is the proof the walking is real.
+
+RUNG LANDED (2026-09-20): the checkpoint rung is enforced machinery,
+not prose. The walker's full state serializes mid-walk and restores
+BIT-IDENTICALLY in a fresh process — snapshot at tick 150 of the
+ship-fenced 302-tick walk; the restored future is equal on state
+hashes and all 21,888 action bytes, same refusal tick and class; all
+four registered restart-state gaps closed with load-bearing proofs;
+zero engine bytes touched
+(tools/science_funnel/validation/snapshot_apis_20260920/receipt.json).
+The Astra round-5 decision ("policy-on-build-N must never silently
+degrade on build N+1") is a working gate: (policy bundle, physics
+build, runtime profile, body/domain, test suite) -> certificate; 4/4
+injected incompatibilities caught, three clean runs byte-identical
+(tools/science_funnel/validation/upgrade_gate_20260920/receipt.json);
+the first production-class certificate issued end-to-end and the
+tamper suite rejected 3/3
+(tools/science_funnel/validation/cert_dryrun_20260920/receipt.json).
+The trained-policy interface itself is frozen — 80 fields, versioned,
+byte-deterministic regeneration — and its measured aliasing red (21
+pairs) was fixed sensor-side with zero physics-byte movement
+(tools/science_funnel/validation/policy_interface_freeze_20260920/ +
+tools/science_funnel/validation/obs_populate_20260920/receipt.json).
+Forward gaps are named in the receipts, not hidden: no ship-tree HTTP
+snapshot route, no first-class engine build id, no actor-in-the-loop
+coupling.
 
 ## FIRST BUILDABLE RUNG (next window)
 
