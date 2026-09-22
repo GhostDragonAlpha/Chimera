@@ -53,3 +53,44 @@ and the laws — not the reader's confidence — decide admission.
 ## Ledger (appended as measured)
 
 - prereg written + committed BEFORE any transcription (this commit).
+- prep: `prep_s2_panels.py` — panel bounds MEASURED CONSTANTS asserted against detected
+  ruling lines; 12 overlapping tiles (2x LANCZOS) pinned in `crops_manifest.json`
+  (sha256 + geometry), 3-run byte-identical. Tiles live out-of-git in
+  `E:/ChimeraWork/vanhoof2-staging/s2_tiles/`.
+- geometry corrected BEFORE keying values from affected bands: rows start at y=114 (P1)
+  and y=1734 (P2), not at the first full-width lines below the headers. Established by
+  three independent mechanical checks: muscle-column text-blob scan (labels vs bands),
+  group-column fill boundary (white→gray at FDS), and 3x band crops. P1: header 14-114,
+  39 rows APB..B (Mm1-Mm4). P2: header 1651-1734, 34 rows APB..APL, NO upper-arm group
+  (Mm5-Mm7). True table = 774 value positions; the intake's 1512 was its coarse 54x28
+  page-grid model — both counts reported, nothing forced.
+- pass A (row-wise muscle-major, forward): 12/12 tiles, committed before pass B began.
+- pass B (column-wise animal-major, REVERSE): 12/12 tiles, produced without consulting
+  pass A. Independent correction found by pass B: Mm7's APB+FPB merged cell (1.0|10.4)
+  — pass A had initially keyed 0.7|13.9 as FPB; corrected in pass A's file with note.
+- reconcile: 774 cells classified: 654 TENTATIVE (numeric, both passes exact) +
+  105 MARKER_AGREED (source's own text markers) + 15 BLANK_AGREED (merged-cell covered
+  positions). Exact-agreement rate on legible numeric cells = 1.0 (floor 0.80 MET).
+  Zero silent drops. Declared normalization rules (marker refusal classes; role ignored
+  for valueless block-spanning marker cells) documented in the receipt.
+- laws (`laws.py`, constants INHERITED not tuned — rho=1060, tol=0.02):
+  **F1 STOP FLOOR FIRED**. pcsa_closure passes only 19/218 checkable rows (8.72% << 90%).
+  Deviation percentiles p5/p50/p95 = 1.2%/3.8%/13.5% — the prereg's P-CLOSURE prediction
+  (rounding-driven, median <1%) is MEASURED FALSE. Implied density median 1.1004 g/cm3
+  (IQR 1.095-1.115): the authors computed PCSA with ~1.10 g/cm3 (and possibly per-row
+  effects), not the funnel's 1060 kg/m3. Zero admission. Constants not moved.
+- refusal taxonomy: marker_absent_cfr 42, marker_absent 45, marker_crossref_APB 6,
+  marker_crossref_FDP 12, merged-covered 15; 654 numeric cells unadmitted under the F1
+  stop (not refused as reads — refused as un-admittable under the preregistered law).
+  Note: P2's conn row has a BLANK muscle-label cell in the source (blob-verified); its
+  values are transcribed and identified by position.
+- determinism: prep manifest, reconcile.py, laws.py, build_receipt.py each 3-run
+  byte-identical (cmp-verified). Tests beyond determinism: not applicable — the two
+  transcription passes are human-class reads; the scripts are pure functions of frozen
+  inputs and their 3-run identity is the verification.
+- falsifier verdicts in `receipt_final.json`: F1 FIRED (honored: STOP, zero admission),
+  F2/F3/F5 HELD, F4 GREEN. Successor scope named: re-register the law at the source's
+  own arithmetic (implied rho 1.1004 g/cm3 median + tolerance from the measured
+  residual distribution, or per-row pennation) — the 654 TENTATIVE values from this
+  lane are the ready input; no re-reading required.
+
