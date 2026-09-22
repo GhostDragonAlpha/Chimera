@@ -116,21 +116,27 @@ def mm(a, b, out):
 
 def rot_axis(axis, ang, out):
 
-    c = math.cos(ang)
-
+    # C++ rotation() (coupled_articulation.hpp): identity() + k*sin(v) + (k*k)*(1-cos(v)),
+    # k = skew(axis). Entry bits: out(i,j) = (delta_ij + k_ij*s) + kk_ij*omc, with
+    # kk = k*k accumulated in the same order as mm. The old direct sincos form
+    # differed from the reference by an ulp at ang != 0 — invisible in freefall
+    # (zero pose), a seed of the tick-1 walk divergence.
+    k = cuda.local.array(16, dtype=float64)
+    kk = cuda.local.array(16, dtype=float64)
+    for i in range(16):
+        k[i] = float(0.0)
+    k[0 * 4 + 1] = -axis[2]; k[0 * 4 + 2] = axis[1]
+    k[1 * 4 + 0] = axis[2]; k[1 * 4 + 2] = -axis[0]
+    k[2 * 4 + 0] = -axis[1]; k[2 * 4 + 1] = axis[0]
+    mm(k, k, kk)
     s = math.sin(ang)
-
-    t = float(1.0) - c
-
-    x = axis[0]; y = axis[1]; z = axis[2]
-
-    out[0] = c + x * x * t; out[1] = x * y * t - z * s; out[2] = x * z * t + y * s; out[3] = float(0.0)
-
-    out[4] = y * x * t + z * s; out[5] = c + y * y * t; out[6] = y * z * t - x * s; out[7] = float(0.0)
-
-    out[8] = z * x * t - y * s; out[9] = z * y * t + x * s; out[10] = c + z * z * t; out[11] = float(0.0)
-
-    out[12] = float(0.0); out[13] = float(0.0); out[14] = float(0.0); out[15] = float(1.0)
+    omc = (float(1.0) - math.cos(ang))
+    for i in range(4):
+        for j in range(4):
+            d = float(0.0)
+            if i == j:
+                d = float(1.0)
+            out[i * 4 + j] = (d + k[i * 4 + j] * s) + kk[i * 4 + j] * omc
 
 
 
@@ -171,6 +177,30 @@ def apply_point(m, p, out):
     for i in range(3):
 
         out[i] = m[i * 4 + 0] * p[0] + m[i * 4 + 1] * p[1] + m[i * 4 + 2] * p[2] + m[i * 4 + 3]
+
+
+
+
+
+@cuda.jit(device=True)
+
+def vec_point(m, p, out):
+
+    # C++ vector(a,b,w=1) addition ORDER: c[i] = a(i,3); c[i] += a(i,j)*b[j] j=0..2.
+    # apply_point's left-to-right product chain rounds differently (the
+    # translation term comes last there, first here) — an ulp-level divergence
+    # in ptp/ptbias/comw that feeds the gap knife edges.
+    for i in range(3):
+
+        acc = m[i * 4 + 3]
+
+        acc = acc + m[i * 4 + 0] * p[0]
+
+        acc = acc + m[i * 4 + 1] * p[1]
+
+        acc = acc + m[i * 4 + 2] * p[2]
+
+        out[i] = acc
 
 
 
@@ -411,6 +441,7 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
     potential = float(0.0)
 
     one = cuda.local.array(16, dtype=float64); one_dt = cuda.local.array(16, dtype=float64); one_ddt = cuda.local.array(16, dtype=float64); sk = cuda.local.array(16, dtype=float64)
+    one_ds = cuda.local.array(16, dtype=float64); ta16 = cuda.local.array(16, dtype=float64); tb16 = cuda.local.array(16, dtype=float64)
 
     motion = cuda.local.array(16, dtype=float64); motion_dt = cuda.local.array(16, dtype=float64); motion_ddt = cuda.local.array(16, dtype=float64)
 
@@ -429,6 +460,34 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
     jw = cuda.local.array(54, dtype=float64)
     for _zzero4 in range(54):
         jw[_zzero4] = 0.0
+
+    # ── C++-faithful Jacobian machinery (the frame-derivative recursion) ──
+    # The old geometric shortcut built axis Jacobians from a world-axis vector
+    # computed as COLUMN SUMS of pfp (not a rotation application) and never
+    # composed the preceding same-body rotations (the free-root tilt), so the
+    # base-rotation Jacobians were wrong at O(tilt) and M[2][5]-class couplings
+    # were structurally zero (C++: 1.36e-6 at tick-1 substep 1). The reference
+    # derives jw = axial(f.d[slot]*rt) and jv = vector(f.d[slot], com, 1) from
+    # the per-coordinate derivative FRAMES; we now do exactly that.
+    owner_of = cuda.local.array(18, dtype=int32)
+    for i in range(18):
+        owner_of[i] = int32(-1)
+    for b2 in range(1, nbod):
+        for ai2 in range(body_axoff[b2], body_axoff[b2 + 1]):
+            s2 = ax_slot[ai2]
+            if s2 >= 0:
+                owner_of[s2] = int32(b2)
+    motion_all = cuda.local.array(224, dtype=float64)
+    mds = cuda.local.array(288, dtype=float64)      # per-own-slot motion.d[s]
+    od16 = cuda.local.array(288, dtype=float64)     # own_a(s) = (pfp*mds)*fc per slot
+    dj = cuda.local.array(54, dtype=float64)        # per-slot translational derivative
+    fd16 = cuda.local.array(16, dtype=float64)      # f_b.d[slot] (descent result)
+    fd2 = cuda.local.array(16, dtype=float64)
+    own_slots = cuda.local.array(8, dtype=int32)
+    pathb = cuda.local.array(10, dtype=int32)
+    vt3 = cuda.local.array(3, dtype=float64)
+    ftT = cuda.local.array(16, dtype=float64)
+    n_own = int32(0)
 
     for b in range(1, nbod):
 
@@ -466,6 +525,12 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
         a1 = body_axoff[b + 1]
 
+        n_own = int32(0)
+        for _mds in range(288):
+            mds[_mds] = float(0.0)
+        for _djj in range(54):
+            dj[_djj] = float(0.0)
+
         for ai in range(a0, a1):
 
             slot = ax_slot[ai]
@@ -486,7 +551,8 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
                 rot_axis(axis, ang, one)
 
-                # sk = skew(axis); dr = sk*R; one_dt = dr*rate; one_ddt = sk*dr*rate^2
+                # sk = skew(axis); dr = sk*R; one_dt = dr*rate; one_ddt = sk*dr*(rate*rate);
+                # one.d[slot] = dr*slope (the C++ per-axis derivative frame).
 
                 for i in range(16):
 
@@ -506,9 +572,49 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
                 mm(sk, t2, t3)                        # t3 = sk*dr
 
+                # C++: (sk*dr) * (rate*rate) — the SQUARE is formed first; the
+                # old (x*rate)*rate rounded differently.
+
+                r2 = rate * rate
+
                 for i in range(16):
 
-                    one_ddt[i] = t3[i] * rate * rate
+                    one_ddt[i] = t3[i] * r2
+
+                # one_ds = one.d[slot] = dr * slope (C++ per-axis derivative frame)
+
+                for i in range(16):
+
+                    one_ds[i] = t2[i] * ax_slope[ai]
+
+                # C++ product(): c.d[i] = a.d[i]*b.t + a.t*b.d[i]. one carries a
+                # derivative frame ONLY for its own slot, so every earlier
+                # own-slot frame propagates through one.t, and this slot's frame
+                # is born as pre-motion.t * one_ds (exact zero-add dropped).
+
+                for _oi in range(n_own):
+
+                    _os = own_slots[_oi]
+
+                    for i in range(16):
+
+                        ta16[i] = mds[_os * 16 + i]
+
+                    mm(ta16, one, tb16)
+
+                    for i in range(16):
+
+                        mds[_os * 16 + i] = tb16[i]
+
+                mm(motion, one_ds, tb16)
+
+                for i in range(16):
+
+                    mds[slot * 16 + i] = tb16[i]
+
+                own_slots[n_own] = int32(slot)
+
+                n_own = int32(n_own + 1)
 
                 # THE PRE-UPDATE PRODUCT LAW (C++ product(): every factor reads
                 # the PRE-update a.t/a.dt/a.ddt): compose through temporaries.
@@ -549,6 +655,20 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
                 vvx = vvx + axis[0] * rate; vvy = vvy + axis[1] * rate; vvz = vvz + axis[2] * rate
 
+                # C++: dj[a.slot] = add(dj[a.slot], mul(a.axis, a.slope))
+
+                if slot >= 0:
+
+                    dj[slot * 3 + 0] = dj[slot * 3 + 0] + axis[0] * ax_slope[ai]
+
+                    dj[slot * 3 + 1] = dj[slot * 3 + 1] + axis[1] * ax_slope[ai]
+
+                    dj[slot * 3 + 2] = dj[slot * 3 + 2] + axis[2] * ax_slope[ai]
+
+                    own_slots[n_own] = int32(slot)
+
+                    n_own = int32(n_own + 1)
+
         for k in range(3):
 
             motion[k * 4 + 3] = float(0.0)
@@ -556,6 +676,46 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
         motion[0 * 4 + 3] = tvx; motion[1 * 4 + 3] = tvy; motion[2 * 4 + 3] = tvz
 
         motion_dt[0 * 4 + 3] = vvx; motion_dt[1 * 4 + 3] = vvy; motion_dt[2 * 4 + 3] = vvz
+
+        # C++: motion.d[i](k,3) = dj[i][k] for EVERY i (col3 overwrite). For
+        # rotational own slots dj is the zero vector and their col3 was already
+        # zero; for translational own slots this BIRTHS the derivative frame.
+
+        for _oi in range(n_own):
+
+            _os = own_slots[_oi]
+
+            mds[_os * 16 + 0 * 4 + 3] = dj[_os * 3 + 0]
+
+            mds[_os * 16 + 1 * 4 + 3] = dj[_os * 3 + 1]
+
+            mds[_os * 16 + 2 * 4 + 3] = dj[_os * 3 + 2]
+
+        # motion_all[b] for the owner->leaf descents below
+
+        for i in range(16):
+
+            motion_all[b * 16 + i] = motion[i]
+
+        # own_a(s) = (pfp * motion.d[s]) * fc — the C++ f_a.d[s]:
+        # Y.d[s] = X.d[s]*motion + X.t*motion.d[s] with X.d[s] = 0 at the owner,
+        # then f.d[s] = Y.d[s]*fc. The zero term adds exactly zero.
+
+        for _oi in range(n_own):
+
+            _os = own_slots[_oi]
+
+            for i in range(16):
+
+                ta16[i] = mds[_os * 16 + i]
+
+            mm(pfp, ta16, tb16)
+
+            mm(tb16, fc16, ta16)
+
+            for i in range(16):
+
+                od16[_os * 16 + i] = ta16[i]
 
         # THE CHAIN-PRODUCT LAW (C++ product(): dt=a.dt*b.t+a.t*b.dt;
         # ddt=a.ddt*b.t+2*a.dt*b.dt+a.t*b.ddt): the frame derivatives compose
@@ -588,95 +748,55 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
             fr[b * 16 + i] = t2[i]
 
-        # fd  = pfpd*motion*fc + pfp*motion_dt*fc
+        # fd  = (pfpd*motion + pfp*motion_dt)*fc — the reference sums the two
+        # product terms FIRST (product(): c.dt = a.dt*b.t + a.t*b.dt) and then
+        # applies fc ONCE; the old per-term-*fc-then-add association rounded
+        # differently at the last ulp.
 
         mm(pfpd, motion, t1)
 
-        mm(t1, fc16, t2)
-
         mm(pfp, motion_dt, t3)
-
-        mm(t3, fc16, t4)
 
         for i in range(16):
 
-            t2[i] = t2[i] + t4[i]
+            t1[i] = t1[i] + t3[i]
+
+        mm(t1, fc16, t2)
 
         for i in range(16):
 
             frd[b * 16 + i] = t2[i]
 
-        # fdd = pfpedd*motion*fc + 2*pfpd*motion_dt*fc + pfp*motion_ddt*fc
+        # fdd = (pfpedd*motion + (pfpd*motion_dt)*2 + pfp*motion_ddt)*fc — same
+        # sum-first law (product(): c.ddt = a.ddt*b.t + (a.dt*b.dt)*2 + a.t*b.ddt,
+        # left-associated adds, then the single fc product).
 
         mm(pfpedd, motion, t1)
 
+        mm(pfpd, motion_dt, t3)
+
+        for i in range(16):
+
+            t1[i] = t1[i] + float(2.0) * t3[i]
+
+        mm(pfp, motion_ddt, t3)
+
+        for i in range(16):
+
+            t1[i] = t1[i] + t3[i]
+
         mm(t1, fc16, t2)
-
-        mm(pfpd, motion_dt, t1)
-
-        mm(t1, fc16, t3)
-
-        for i in range(16):
-
-            t2[i] = t2[i] + float(2.0) * t3[i]
-
-        mm(pfp, motion_ddt, t1)
-
-        mm(t1, fc16, t3)
-
-        for i in range(16):
-
-            t2[i] = t2[i] + t3[i]
 
         for i in range(16):
 
             frdd[b * 16 + i] = t2[i]
 
-        # per-axis world geometric data (Jacobians + pivots)
-
-        for ai in range(a0, a1):
-
-            axis = cuda.local.array(3, dtype=float64); axis[0] = ax_axis[ai * 3]; axis[1] = ax_axis[ai * 3 + 1]; axis[2] = ax_axis[ai * 3 + 2]
-
-            wx = float(0.0); wy = float(0.0); wz = float(0.0)
-
-            for i in range(3):
-
-                for j in range(3):
-
-                    aij = pfp[i * 4 + j]
-
-                    if j == 0:
-
-                        wx = wx + aij * axis[0]
-
-                    elif j == 1:
-
-                        wy = wy + aij * axis[1]
-
-                    else:
-
-                        wz = wz + aij * axis[2]
-
-            if ax_rot[ai] != 0:
-
-                axw[ai * 3] = wx; axw[ai * 3 + 1] = wy; axw[ai * 3 + 2] = wz
-
-                # pivot = pfp.t + pfp.R * t_m
-
-                px = pfp[0 * 4 + 3] + (pfp[0 * 4 + 0] * tvx + pfp[0 * 4 + 1] * tvy + pfp[0 * 4 + 2] * tvz)
-
-                py = pfp[1 * 4 + 3] + (pfp[1 * 4 + 0] * tvx + pfp[1 * 4 + 1] * tvy + pfp[1 * 4 + 2] * tvz)
-
-                pz = pfp[2 * 4 + 3] + (pfp[2 * 4 + 0] * tvx + pfp[2 * 4 + 1] * tvy + pfp[2 * 4 + 2] * tvz)
-
-                axpiv[ai * 3] = px; axpiv[ai * 3 + 1] = py; axpiv[ai * 3 + 2] = pz
-
-            else:
-
-                axdir[ai * 3] = wx; axdir[ai * 3 + 1] = wy; axdir[ai * 3 + 2] = wz
-
-        # ── the body's Jacobian columns over its ancestor chain ──
+        # ── C++-faithful per-slot Jacobians (frame-derivative descent) ──
+        # For slot s owned by body a, the reference f_b.d[s] composes down the
+        # chain: f_c.d[s] = (X_c.d[s]*motion_c + X_c.t*motion_c.d[s])*fc_c with
+        # X_c = frames[par]*fixed(fp). Off-own slots have motion.d[s] = 0, so
+        # each step is ((fd*fp_c)*motion_c)*fc_c — exactly these three products,
+        # in this order, per step. At the owner the frame is od16[s].
 
         for i in range(54):
 
@@ -692,7 +812,19 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
             t1[i] = fr[b * 16 + i]
 
-        apply_point(t1, com, comw)
+        vec_point(t1, com, comw)
+
+        # rt: the reference builds ONLY the 3x3 transpose (rest zero)
+
+        for i in range(16):
+
+            rt[i] = float(0.0)
+
+        for i in range(3):
+
+            for j in range(3):
+
+                rt[i * 4 + j] = fr[b * 16 + j * 4 + i]
 
         for idx in range(chain_off[b], chain_off[b + 1]):
 
@@ -704,33 +836,83 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
                 continue
 
-            if ax_rot[ai] != 0:
+            # fd16 = f_b.d[slot]: start at the owner's own frame, walk down.
 
-                w = cuda.local.array(3, dtype=float64); w[0] = axw[ai * 3]; w[1] = axw[ai * 3 + 1]; w[2] = axw[ai * 3 + 2]
+            for i in range(16):
 
-                pv = cuda.local.array(3, dtype=float64); pv[0] = axpiv[ai * 3]; pv[1] = axpiv[ai * 3 + 1]; pv[2] = axpiv[ai * 3 + 2]
+                fd16[i] = od16[slot * 16 + i]
 
-                rx = comw[0] - pv[0]; ry = comw[1] - pv[1]; rz = comw[2] - pv[2]
+            # collect the path b -> owner (exclusive), then apply downward
 
-                jv[slot * 3] = jv[slot * 3] + (w[1] * rz - w[2] * ry)
+            npath = int32(0)
 
-                jv[slot * 3 + 1] = jv[slot * 3 + 1] + (w[2] * rx - w[0] * rz)
+            cwalk = int32(b)
 
-                jv[slot * 3 + 2] = jv[slot * 3 + 2] + (w[0] * ry - w[1] * rx)
+            while cwalk != owner_of[slot]:
 
-                jw[slot * 3] = jw[slot * 3] + w[0]
+                pathb[npath] = cwalk
 
-                jw[slot * 3 + 1] = jw[slot * 3 + 1] + w[1]
+                npath = int32(npath + 1)
 
-                jw[slot * 3 + 2] = jw[slot * 3 + 2] + w[2]
+                cwalk = int32(body_parent[cwalk])
 
-            else:
+            for _pi in range(npath):
 
-                jv[slot * 3] = jv[slot * 3] + axdir[ai * 3]
+                c = pathb[npath - 1 - _pi]
 
-                jv[slot * 3 + 1] = jv[slot * 3 + 1] + axdir[ai * 3 + 1]
+                load16(body_fp, c * 16, fp16)
 
-                jv[slot * 3 + 2] = jv[slot * 3 + 2] + axdir[ai * 3 + 2]
+                load16(body_fc, c * 16, fc16)
+
+                for i in range(16):
+
+                    ta16[i] = fd16[i]
+
+                mm(ta16, fp16, tb16)
+
+                for i in range(16):
+
+                    ta16[i] = tb16[i]
+
+                for i in range(16):
+
+                    tb16[i] = motion_all[c * 16 + i]
+
+                mm(ta16, tb16, fd2)
+
+                mm(fd2, fc16, ta16)
+
+                for i in range(16):
+
+                    fd16[i] = ta16[i]
+
+            # jv[slot] = vector(f.d[slot], com_local, 1) — the reference order:
+            # start at the translation column, then add the rotation columns.
+
+            jv[slot * 3] = fd16[0 * 4 + 3]
+
+            jv[slot * 3 + 1] = fd16[1 * 4 + 3]
+
+            jv[slot * 3 + 2] = fd16[2 * 4 + 3]
+
+            for c2 in range(3):
+
+                jv[slot * 3 + 0] = jv[slot * 3 + 0] + fd16[0 * 4 + c2] * com[c2]
+
+                jv[slot * 3 + 1] = jv[slot * 3 + 1] + fd16[1 * 4 + c2] * com[c2]
+
+                jv[slot * 3 + 2] = jv[slot * 3 + 2] + fd16[2 * 4 + c2] * com[c2]
+
+            # jw[slot] = axial(f.d[slot] * rt)
+
+            mm(fd16, rt, ta16)
+
+            jw[slot * 3] = (ta16[2 * 4 + 1] - ta16[1 * 4 + 2]) * (float(1.0) / float(2.0))
+
+            jw[slot * 3 + 1] = (ta16[0 * 4 + 2] - ta16[2 * 4 + 0]) * (float(1.0) / float(2.0))
+
+            jw[slot * 3 + 2] = (ta16[1 * 4 + 0] - ta16[0 * 4 + 1]) * (float(1.0) / float(2.0))
+
 
         # ── omega/alpha/acc/moment (the C++ formulas) ──
 
@@ -754,9 +936,17 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
         mm(t3, rt, mtmp)                     # frdd * R^T
 
-        transpose_rot(t2, rt)
+        # C++: f.dt * transpose(f.dt) — the FULL 4x4 transpose, whose col3/row3
+        # outer terms enter the 3x3 block of the product. The old 3x3-only
+        # transpose dropped them.
 
-        mm(t2, rt, mtmp2)                    # frd * frd^T (3x3 part used)
+        for i in range(4):
+
+            for j in range(4):
+
+                ftT[i * 4 + j] = t2[j * 4 + i]
+
+        mm(t2, ftT, mtmp2)                   # frd * frd^T (full transpose)
 
         for i in range(3):
 
@@ -776,9 +966,13 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
             t3[i] = frdd[b * 16 + i]
 
-        apply_point(t3, comloc, acc_com)
+        vec_point(t3, comloc, acc_com)
 
-        # Iw = R * diag(I) * R^T
+        # iw = (f.t * inertia) * rt — the C++ two-pass Mat products (the old
+        # single-pass R(i,k)*(I_k*R(j,k)) grouped the products differently and
+        # rounded differently). The scene inertia tensors are diagonal
+        # (products of inertia all 0), so a diagonal 4x4 with inertia(3,3)=0
+        # mirrors the reference Mat exactly.
 
         It = cuda.local.array(3, dtype=float64); It[0] = body_inertia[b * 3]; It[1] = body_inertia[b * 3 + 1]; It[2] = body_inertia[b * 3 + 2]
 
@@ -792,15 +986,11 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
         for i in range(3):
 
-            for j in range(3):
+            t2[i * 4 + i] = It[i]
 
-                s = float(0.0)
+        mm(t1, t2, mtmp)                     # f.t * inertia
 
-                for k in range(3):
-
-                    s = s + t1[i * 4 + k] * (It[k] * t1[j * 4 + k])
-
-                t2[i * 4 + j] = s
+        mm(mtmp, rt, t2)                     # * rt (3x3-only transpose)
 
         Iw = t2
 
@@ -898,7 +1088,7 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
             t1[i] = fr[pb * 16 + i]
 
-        out = cuda.local.array(3, dtype=float64); apply_point(t1, p, out)
+        out = cuda.local.array(3, dtype=float64); vec_point(t1, p, out)
 
         ptp[k * 3] = out[0]; ptp[k * 3 + 1] = out[1]; ptp[k * 3 + 2] = out[2]
 
@@ -942,7 +1132,7 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
             t1[i] = fr[pb * 16 + i]
 
-        solew = cuda.local.array(3, dtype=float64); apply_point(t1, loc, solew)
+        solew = cuda.local.array(3, dtype=float64); vec_point(t1, loc, solew)
 
         t3v = cuda.local.array(3, dtype=float64)
         for _zzero10 in range(3):
@@ -952,7 +1142,7 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
             t4[i] = frdd[pb * 16 + i]
 
-        apply_point(t4, loc, t3v)
+        vec_point(t4, loc, t3v)
 
         ptbias[r * 3] = t3v[0]; ptbias[r * 3 + 1] = t3v[1]; ptbias[r * 3 + 2] = t3v[2]
 
@@ -964,6 +1154,10 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
             ptJ[(r * 3 + 2) * 18 + c] = float(0.0)
 
+        # C++ contact_row/tangent_row: j = e.point(body, sole_local).second =
+        # vector(f.d[slot], local, 1) per slot — the same faithful per-slot
+        # frames, descended from the owner down to the point's body.
+
         for idx in range(chain_off[pb], chain_off[pb + 1]):
 
             ai = chain_ax[idx]
@@ -974,33 +1168,67 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
                 continue
 
-            if ax_rot[ai] != 0:
+            for i in range(16):
 
-                w = cuda.local.array(3, dtype=float64); w[0] = axw[ai * 3]; w[1] = axw[ai * 3 + 1]; w[2] = axw[ai * 3 + 2]
+                fd16[i] = od16[slot * 16 + i]
 
-                pv = cuda.local.array(3, dtype=float64); pv[0] = axpiv[ai * 3]; pv[1] = axpiv[ai * 3 + 1]; pv[2] = axpiv[ai * 3 + 2]
+            npath = int32(0)
 
-                rx = solew[0] - pv[0]; ry = solew[1] - pv[1]; rz = solew[2] - pv[2]
+            cwalk = int32(pb)
 
-                jx = w[1] * rz - w[2] * ry
+            while cwalk != owner_of[slot]:
 
-                jy = w[2] * rx - w[0] * rz
+                pathb[npath] = cwalk
 
-                jz = w[0] * ry - w[1] * rx
+                npath = int32(npath + 1)
 
-                ptJ[(r * 3 + 0) * 18 + slot] = ptJ[(r * 3 + 0) * 18 + slot] + jx
+                cwalk = int32(body_parent[cwalk])
 
-                ptJ[(r * 3 + 1) * 18 + slot] = ptJ[(r * 3 + 1) * 18 + slot] + jy
+            for _pi in range(npath):
 
-                ptJ[(r * 3 + 2) * 18 + slot] = ptJ[(r * 3 + 2) * 18 + slot] + jz
+                c = pathb[npath - 1 - _pi]
 
-            else:
+                load16(body_fp, c * 16, fp16)
 
-                ptJ[(r * 3 + 0) * 18 + slot] = ptJ[(r * 3 + 0) * 18 + slot] + axdir[ai * 3]
+                load16(body_fc, c * 16, fc16)
 
-                ptJ[(r * 3 + 1) * 18 + slot] = ptJ[(r * 3 + 1) * 18 + slot] + axdir[ai * 3 + 1]
+                for i in range(16):
 
-                ptJ[(r * 3 + 2) * 18 + slot] = ptJ[(r * 3 + 2) * 18 + slot] + axdir[ai * 3 + 2]
+                    ta16[i] = fd16[i]
+
+                mm(ta16, fp16, tb16)
+
+                for i in range(16):
+
+                    ta16[i] = tb16[i]
+
+                for i in range(16):
+
+                    tb16[i] = motion_all[c * 16 + i]
+
+                mm(ta16, tb16, fd2)
+
+                mm(fd2, fc16, ta16)
+
+                for i in range(16):
+
+                    fd16[i] = ta16[i]
+
+            # ptJ component = vector(f.d[slot], loc, 1) — the reference order.
+
+            ptJ[(r * 3 + 0) * 18 + slot] = fd16[0 * 4 + 3]
+
+            ptJ[(r * 3 + 1) * 18 + slot] = fd16[1 * 4 + 3]
+
+            ptJ[(r * 3 + 2) * 18 + slot] = fd16[2 * 4 + 3]
+
+            for c2 in range(3):
+
+                ptJ[(r * 3 + 0) * 18 + slot] = ptJ[(r * 3 + 0) * 18 + slot] + fd16[0 * 4 + c2] * loc[c2]
+
+                ptJ[(r * 3 + 1) * 18 + slot] = ptJ[(r * 3 + 1) * 18 + slot] + fd16[1 * 4 + c2] * loc[c2]
+
+                ptJ[(r * 3 + 2) * 18 + slot] = ptJ[(r * 3 + 2) * 18 + slot] + fd16[2 * 4 + c2] * loc[c2]
 
     return potential
 

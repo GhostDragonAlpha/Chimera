@@ -1,5 +1,7 @@
 #pragma once
-#include "coupled_articulation.hpp"
+#include <cstdio>
+#include <cstdlib>
+#include "coupled_articulation_instr.hpp"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -2560,7 +2562,20 @@ class GaitWalker {
     if(fore_ik(leg,e0).saturated)++ik_sat_ticks_[leg];}}
   const size_t NST=nd_+1; // the leg drives + the trunk-pitch posture drive
   for(int k=0;k<4;++k){
+   if(ticks_==0){auto ed=evaluate(s_);
+    std::fprintf(stderr,"SUBPRE t=0 sub=%d",k);
+    for(size_t i=0;i<s_.q.size();++i)std::fprintf(stderr," q%d=%.17g",(int)i,s_.q[i]);
+    for(size_t i=0;i<s_.v.size();++i)std::fprintf(stderr," v%d=%.17g",(int)i,s_.v[i]);
+    for(size_t i=0;i<ed.mass.size();++i)std::fprintf(stderr," M%d=%.17g",(int)i,ed.mass[i]);
+    for(size_t i=0;i<ed.gravity.size();++i)std::fprintf(stderr," gv%d=%.17g",(int)i,ed.gravity[i]);
+    for(size_t i=0;i<ed.bias.size();++i)std::fprintf(stderr," bv%d=%.17g",(int)i,ed.bias[i]);
+    std::fprintf(stderr," batpost=%.17g w2=%.17g",battery_post_,s_.work[2]);
+    std::fprintf(stderr,"\n");}
    auto tau=servo();
+   if(ticks_==0){std::fprintf(stderr,"TAUFULL t=0 sub=%d",k);
+    for(size_t i=0;i<tau.size();++i)std::fprintf(stderr," tau%d=%.17g",(int)i,tau[i]);
+    std::fprintf(stderr," batpost=%.17g w2=%.17g",battery_post_,s_.work[2]);
+    std::fprintf(stderr,"\n");}
    Dense scales(NST,1.);
    auto effort=[&](){Dense t(tau);for(size_t d=0;d<nd_;++d)t[drives_[d].coordinate]*=scales[d];t[2]*=scales[nd_];return t;};
    auto work_of=[&](const State& s){Dense w(NST,0.);for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;w[d]=(std::max)(0.,s.work[c]-s_.work[c]);}w[nd_]=(std::max)(0.,s.work[2]-s_.work[2]);return w;};
@@ -2598,7 +2613,12 @@ class GaitWalker {
     if(i==2)continue; // the trunk-pitch posture drive: admitted source architecture (the paper's theta_HAT musculature)
     require(trial.work[i]==0,"gait_base_actuator_work");require(tau[i]==0,"gait_base_torque");}
    s_=std::move(trial);
-   if(ticks_==0)std::fprintf(stderr,"[CSUB] sub=%d q12=%.17g v9=%.17g v12=%.17g v13=%.17g v14=%.17g v17=%.17g v4=%.17g\n",k,s_.q[12],s_.v[9],s_.v[12],s_.v[13],s_.v[14],s_.v[17],s_.v[4]);}
+   if(ticks_==0){std::fprintf(stderr,"SUBFULL t=0 sub=%d",k);
+    for(size_t i=0;i<s_.q.size();++i)std::fprintf(stderr," q%d=%.17g",(int)i,s_.q[i]);
+    for(size_t i=0;i<s_.v.size();++i)std::fprintf(stderr," v%d=%.17g",(int)i,s_.v[i]);
+    for(size_t i=0;i<scales.size();++i)std::fprintf(stderr," sc%d=%.17g",(int)i,scales[i]);
+    std::fprintf(stderr," batpost=%.17g w2=%.17g",battery_post_,s_.work[2]);
+    std::fprintf(stderr,"\n");}}
   last_torque_=impulse_torque;++ticks_;}
  J status()const{
   auto e=evaluate(s_);

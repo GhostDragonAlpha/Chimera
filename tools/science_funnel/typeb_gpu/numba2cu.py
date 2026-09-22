@@ -241,6 +241,30 @@ def int_kind(e: str, ints: set):
         return None
     if re.search(r"\d+\.\d*|\.\d+|\d[eE]", e):  # float literal
         return None
+    # conditional expression (py_ternary already produced `cond ? val : alt`):
+    # int only if BOTH result branches are int. The bare comparison rule below
+    # otherwise mis-types `store = bat[d-1] if (d-1) < 12 else bat_post` (a
+    # double load) as int -- measured: the posture store drained to zero at
+    # tick-1 substep-1 in the DLL (closeout-2 lane).
+    if "?" in e:
+        q = e.index("?")
+        depth = 0
+        colon = -1
+        for i2 in range(q + 1, len(e)):
+            ch2 = e[i2]
+            if ch2 in "([":
+                depth += 1
+            elif ch2 in ")]":
+                depth -= 1
+            elif ch2 == ":" and depth == 0:
+                colon = i2
+                break
+        if colon > 0:
+            a = int_kind(e[q + 1:colon], ints)
+            b = int_kind(e[colon + 1:], ints)
+            if a is not None and b is not None:
+                return a if a == "long long" else b
+            return None
     if any(op in e for op in ("<=", ">=", "==", "!=", "<", ">")):
         return "int"  # comparison
     toks = re.findall(r"[A-Za-z_]\w*", e)

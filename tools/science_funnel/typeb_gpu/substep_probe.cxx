@@ -26,7 +26,10 @@ static int a_hl[1], a_cmdlive[1], a_cmdfires[1], a_advc[1], a_ref[1], a_refc[1],
 static double a_cmdvx[1]; static long long a_cft[1], a_ticks[1];
 static double rb[6]; static int rbi[6];
 
+extern int fkdbg;
+
 int main() {
+    fkdbg = getenv("FKDBG") ? 1 : 0;
     FILE* f; int E = 1;
     f = fopen("host_shim/mdl.txt", "r"); for (int i = 0; i < 900; ++i) fscanf(f, "%lf", &mdl[i]); fclose(f);
     f = fopen("host_shim/mdi.txt", "r"); for (int i = 0; i < 232; ++i) fscanf(f, "%d", &mdi[i]); fclose(f);
@@ -40,7 +43,9 @@ int main() {
     f = fopen("host_shim/v.txt", "r"); for (int i = 0; i < 18; ++i) fscanf(f, "%lf", &v0a[i]); fclose(f);
     f = fopen("host_shim/store.txt", "r"); for (int i = 0; i < 12; ++i) fscanf(f, "%lf", &store_floor[i]); fclose(f);
     f = fopen("host_shim/touch0.txt", "r"); t0a[0] = fgetc(f) - 48; t0a[1] = fgetc(f) - 48; fclose(f);
-    double phi_l0 = 0.0, phi_r0 = 0.5; (void)phi_l0; (void)phi_r0; int settle_total = 60; double store_post = 1.0;
+    double phi_l0 = 0.0, phi_r0 = 0.5; (void)phi_l0; (void)phi_r0; int settle_total = 60;
+    // C++: store_post_ = drives_[0].store_floor (gait_controller.hpp:1954)
+    double store_post = store_floor[0];
     reset_kernel(q0a, v0a, t0a, phi_l0, phi_r0, settle_total, store_floor, store_post,
                  a_q, a_v, a_work, a_lt, a_bat, a_batp, a_phi, a_touch, a_cap, a_set, a_ikb,
                  a_pawt, a_pawy, a_swingf, a_swingt, a_ft, a_fst, a_fcy, a_fmo, a_fen, a_fcv,
