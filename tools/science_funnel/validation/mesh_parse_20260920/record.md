@@ -121,4 +121,39 @@ lane/mesh-parse-20260920.
 
 Receipt: tools/science_funnel/validation/mesh_parse_20260920/receipt.json.
 
-Agent: meshparse
+## RESULT — ALL FALSIFIERS GREEN (measured 2026-09-22; numbers in receipt.json)
+
+P-COST held: the parse is the cost. `parse_obj` is 59.18–66.83 s of a
+59.30–67.0 s import (99.8%); `finish()` — the closure law the cache must
+NOT bypass — is 0.12–0.14 s; loopback upload 0.006–0.02 s. The landed
+lane's 237.67 s is the loaded-machine instance of the same parse (its own
+record: "variable 130–240+ s across boots"); this idle-machine run measured
+65.78 s through the same engine route.
+
+The fix is preference 1, admitted by the evidence: an ADMISSION-TIME CACHE
+through the engine's OWN second front door. `standing_body.glb` (8,997,312
+bytes, pinned) is the pinned payload's text→raw conversion, derived once by
+`derive_import_glb` (scene_boot.py) — f32 positions + u32 indices in the
+payload's own order, decimal→double→float32 round-to-nearest on both
+routes. The boot posts `'G' + glb` through the SAME `finish()`: the closure
+law, the cap, and the by-name refusals run on every import byte-for-byte as
+before — the cache removes no check. The ghost's 7.92 s text build gets the
+same class: `ghost_standing.obj` (26,598,562 bytes — exactly the landed
+lane's ghost_bytes) is the unchanged compose's output, pinned, with its
+compose-input file set digested so an input change is a REFUSAL, never a
+stale serve.
+
+Fences, all green: import stats text, /verts sha, /topology sha and the
+instrument-level full-mesh body bytes are BIT-IDENTICAL across the `'O'`
+and `'G'` routes; the settled /verts sha equals the landed bank's
+`8c040418…` x5 boots; scene sha == the payload pin in every boot; isolated
+import 0.476–0.500 s (vs the 65.78 s `'O'` baseline measured this run);
+full-boot t_first_verts **2.08–2.10 s** x3 against the 10 s bar that stood
+RED at 135.73 s. The one structural asymmetry between the doors — the
+`'G'` identity transform folds −0.0 to +0.0 before centering, which would
+bite a negative zero on a zero-centered axis — is refused BY NAME at
+derivation (the payload's single negative zero sits on z, center
+0.14919201; check_caches proves the refusal and its no-false-positive).
+
+NO engine-service gap: `importer.hpp`'s contract already names both doors.
+Engine tree diff vs 9a341b5c: zero files. Agent: meshparse

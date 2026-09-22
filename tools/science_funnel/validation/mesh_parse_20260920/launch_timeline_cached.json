@@ -1,0 +1,63 @@
+{
+ "falsifier": "F-SLICE-LAUNCH bar, full boot, cached import",
+ "bar_s": 10.0,
+ "landed_RED_number_s": 135.73,
+ "boots": [
+  {
+   "boot": 0,
+   "port": 50204,
+   "t_server_up": 2.05,
+   "t_world_up": 2.05,
+   "t_first_verts": 2.1,
+   "first_verts_count": 249743,
+   "t_settled": 16.88,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "import_route": "cache",
+   "import_ok": true,
+   "ghost_source": "cache",
+   "pass_server_side": true
+  },
+  {
+   "boot": 1,
+   "port": 55615,
+   "t_server_up": 2.03,
+   "t_world_up": 2.03,
+   "t_first_verts": 2.08,
+   "first_verts_count": 249743,
+   "t_settled": 17.17,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "import_route": "cache",
+   "import_ok": true,
+   "ghost_source": "cache",
+   "pass_server_side": true
+  },
+  {
+   "boot": 2,
+   "port": 60081,
+   "t_server_up": 2.06,
+   "t_world_up": 2.06,
+   "t_first_verts": 2.09,
+   "first_verts_count": 249743,
+   "t_settled": 17.27,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "import_route": "cache",
+   "import_ok": true,
+   "ghost_source": "cache",
+   "pass_server_side": true
+  }
+ ],
+ "t_first_verts_s": [
+  2.1,
+  2.08,
+  2.09
+ ],
+ "scene_sha_equals_payload_pin_all": true,
+ "import_route_all": [
+  "cache"
+ ],
+ "start_state_sha_equal_x3": true,
+ "pass_all_boots": true
+}

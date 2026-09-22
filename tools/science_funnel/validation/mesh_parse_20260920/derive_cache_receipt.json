@@ -1,0 +1,135 @@
+{
+ "what": "admission-time cache derivation, lane mesh-parse-20260920",
+ "started": 1790106388.591891,
+ "payload": {
+  "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "vertices": 249743,
+  "triangles": 499976
+ },
+ "glb_deterministic": true,
+ "glb": {
+  "path": "E:/ChimeraWork/meshparse-agent/tools/playable_slice/standing_body.glb",
+  "sha256": "adb6aff2babbf2cd2745004b2f51150d3a3f47e55b2ce3b8e63b3c0d595dbae5",
+  "bytes": 8997312
+ },
+ "ghost_deterministic": true,
+ "ghost": {
+  "path": "E:/ChimeraWork/meshparse-agent/tools/playable_slice/ghost_standing.obj",
+  "sha256": "d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d",
+  "bytes": 26598562,
+  "rec": {
+   "pose_json_sha256": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+   "registration_pin_sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "mesh_dir": "meshes_preview (full committed preview resolution)",
+   "bones": 25,
+   "vertices": 355831,
+   "triangles": 712522,
+   "declared_id": "ghost_standing_pose",
+   "units": "scene metres, +Y up, pads' mean plane at y=0"
+  }
+ },
+ "compose_inputs": [
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_01_4737869vox_lo.obj",
+   "sha256": "b95cd329084d4b44ce5eb2fae66cd19a8599134d782fb6a020d67b9714afe9f7"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_02_210240vox_lo.obj",
+   "sha256": "c20aa8364c8d09623755fdbfbdc014d9548fdc3f6d89d1b998cacbaf37b49ed4"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_03_208514vox_lo.obj",
+   "sha256": "f7d638a01c2a34a19c0bc0240b058ccbf79d94cea467314c422d89b2b0ab9a99"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_04_180534vox_lo.obj",
+   "sha256": "00a9a32628c0e6857864326473976f4a2cf07de8f34e8c2480803752bd923cc5"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_05_174742vox_lo.obj",
+   "sha256": "f06fefd372a57e8ba88f384f06cfa67036ffb973e44d444ad6f5b5e77a63fe2d"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_06_154508vox_lo.obj",
+   "sha256": "b1b15ff5e631ec4bac5353e0f2461c7d8561579ab1a78018bd83f3113838f901"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_07_150102vox_lo.obj",
+   "sha256": "5a2e24d5947dd2514205a8187599036ffa349af47fcde2d471f221511d0af157"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_08_102171vox_lo.obj",
+   "sha256": "f053884c6f2b98107db180f95c9ed5bc5904c3144a8956be6d2a39ba79ef5924"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_09_100874vox_lo.obj",
+   "sha256": "10a1f1b21c2b535565048bea69764a99c1c2f35bd5356f004c909ebb89e76281"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_10_92842vox_lo.obj",
+   "sha256": "54678dbca44db5fa7a35c29fdb3baedaeea6fc7b890ad97ed619a8302a972f55"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_11_90563vox_lo.obj",
+   "sha256": "2e1e286207faf65486984b3cf703f8d7ebaef6bc58577917b43ce2b53948f3fa"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_12_88112vox_lo.obj",
+   "sha256": "9f90a8c2d3c23cb296c2be900af8e1d8a922f1597d6ebfa684561da45cc9c9ed"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_13_86590vox_lo.obj",
+   "sha256": "6e7e1c988e78805d20a180447dd57b17b5eb1e2182b3bd975eb8cdbc786ec3a6"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_14_58499vox_lo.obj",
+   "sha256": "1e51c0b691c107a945cab0deb89e19d3b0092c57afcec76cd249ffc7c4f1fae5"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_15_54574vox_lo.obj",
+   "sha256": "f7111f3f1767eac74c510df8667c24798f5f065280ecabb9a65f0f7e7b6ad536"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_16_54463vox_lo.obj",
+   "sha256": "52dfdd47f851a67b738f0f3dd369de833dd501381a849e2fedaac43fa08645dc"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_17_54226vox_lo.obj",
+   "sha256": "74c14826c748245762fb45d966eb12ffb6796503c7fd8043744f4f8dae4f1a8a"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_18_53022vox_lo.obj",
+   "sha256": "c752e9458b6d267c741da1be256737758528e7d7542c92472a3d458a9fa38a50"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_19_44805vox_lo.obj",
+   "sha256": "526d8da177574a3d9d3b248b5b78c8096a02990e00523b383b87721189265a25"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_20_34255vox_lo.obj",
+   "sha256": "6ab6c392b5d65670c88c37f1de7d1b6c0e79a31fa80850b6497d8c35ac771b9b"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_21_33153vox_lo.obj",
+   "sha256": "b4a43a6499e5dd4131678a582e7b002d94fa6de43bd7dcde2e7aba4ad6d5d8e9"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_22_31952vox_lo.obj",
+   "sha256": "15272ed8bab2e9e9c584d5a78a0983c525863368c31f10fcec5311b3351835bf"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_23_31588vox_lo.obj",
+   "sha256": "6afe670eeae573511787ba1b6853de714462a99e0703d01daba85150b7c4b6bd"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_24_25423vox_lo.obj",
+   "sha256": "5e93fd0604d82285ce1f15f613795cf6931257c2a2b09794954948370c660892"
+  },
+  {
+   "path": "tools/science_funnel/data/morphosource_ct/meshes_preview/bone_25_25400vox_lo.obj",
+   "sha256": "e73d847f2d937e3af921821ca8569b57c31456a29d3653c5efa03c45276e7f43"
+  }
+ ],
+ "manifest": "E:/ChimeraWork/meshparse-agent/tools/playable_slice/boot_cache_manifest.json",
+ "ok": true
+}
