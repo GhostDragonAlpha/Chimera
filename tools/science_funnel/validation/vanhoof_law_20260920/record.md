@@ -58,4 +58,23 @@ under test.
 
 ## Ledger (appended as measured)
 
-- prereg written + committed BEFORE any derivation (this commit).
+- prereg written + committed BEFORE any derivation (commit 038aebd8).
+- constant derivation, route (a) STATED-CITED SUCCEEDED — the paper states its
+  constant, explicitly, in Methods 2.3: "For both gibbons and macaques, the average
+  muscle density is 0.0011 g/mm3 (SD <0.0001 g/mm3), which is almost equal to the
+  density defined for human muscles (0.00106 g/mm3) (Ward and Lieber, 2005). ...
+  Therefore, the density value of 0.0011 g/mm3 is used in the calculation of the
+  PCSA for all muscles in this study." (PCSAmass / (FL x density), Eq. 1; density
+  measured per Eq. 2, extrinsic muscles; pennation omitted by the authors' stated
+  omission, cos 0-30 deg = 1-0.87; multi-belly PCSA = sum of bellies.) Registered
+  constant: **rho = 1.1 g/cm3 = 1100 kg/m3** (0.0011 g/mm3 as printed). The
+  funnel's inherited 1060 kg/m3 is the paper's CITED HUMAN constant (Ward & Lieber
+  2005) — the funnel had registered the citation, not the paper's own used value.
+  Cross-check: the landed measured implied median 1.1004 g/cm3 (IQR 1.095-1.115)
+  sits at the stated 1.1 (0.04% off) — measurement corroborates the statement.
+  Evidence in `constants.json` (two independent full-text reads; citation
+  verified against the intake's sha-pinned front-matter XML; that XML is
+  front-matter only and cannot carry the Methods statement). P-CONST measured
+  true at the boundary of its predicted band (1.10 in 1.10-1.112). No pass rate
+  was seen at this constant before registration (F2 order held).
+
