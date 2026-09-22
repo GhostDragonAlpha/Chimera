@@ -1,0 +1,54 @@
+{
+  "batch": "c1",
+  "requested_jobs": 1,
+  "spine_submitted": false,
+  "wip_limit": 1,
+  "policy": {
+    "reserve_cores": 4,
+    "exploratory_wip_cap": 8,
+    "spine_first": true,
+    "per_job_build_parallel": 2
+  },
+  "cores": 32,
+  "commit": "30821ef7",
+  "wall_clock_s": 47.571,
+  "jobs": [
+    {
+      "batch": "c1",
+      "job_id": "job_00",
+      "spine": false,
+      "lane_root": "E:\\ChimeraWork\\farm-agent",
+      "commit": "30821ef7",
+      "scene": "E:\\ChimeraWork\\farm-agent\\.tmp\\farm-scene\\scene.json",
+      "expected_stdout_sha": "71065ac54fa988704ce29cd79cfb5cdbe0d4e2eab3f7db69b10d4b8d94517592",
+      "expected_stdout_bytes": 22184,
+      "expected_scene_sha": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+      "timeout_s": 1800,
+      "admitted_at": 560005.9178735,
+      "worktree_s": 6.733,
+      "build_s": 10.199,
+      "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+      "scene_bytes": 17590,
+      "run_s": 30.577,
+      "queue_delay_s": 16.941,
+      "exit_code": 0,
+      "exe_pid": 250292,
+      "exe_rss_peak_bytes": 8826880,
+      "stdout_bytes": 22184,
+      "stdout_sha256": "71065ac54fa988704ce29cd79cfb5cdbe0d4e2eab3f7db69b10d4b8d94517592",
+      "bytes_ok": true,
+      "f_farm_bytes_fired": false,
+      "done_at": 560053.4363249
+    }
+  ],
+  "run_p50_s": 30.577,
+  "run_p95_s": 30.577,
+  "ram": {
+    "peak_used_bytes": 43244822528,
+    "min_avail_bytes": 93954265088,
+    "total_bytes": 137199087616,
+    "n_samples": 94
+  },
+  "f_farm_bytes_fired": false,
+  "f_farm_tail_fired": false
+}
