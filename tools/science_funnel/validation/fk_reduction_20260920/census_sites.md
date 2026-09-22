@@ -29,6 +29,7 @@ the pinned counter — counted separately as S_CTOR for completeness.
 | S_PIN1 | 1938 | clamp u_pin: evaluate(pinned) | per clamp |
 | S_PIN2 | 1938 | clamp u_pin: evaluate(start) | per clamp |
 | S_CROSS | 1951 | crossing gap require | per contact event |
+| S_BISECT_GAP | 1909 | `gap_of(evaluate(free_step(...)),k)` — the contact-bisection probe's OWN evaluate of each probe state | 1 per bisection iteration (AMENDMENT 1 — see below) |
 | S_CTOR | 2015 | constructor — DIRECT model_->evaluate (NOT in the pinned counter) | once |
 | S_RESET | 2235 | reset touching_prev_ + initial-penetration require | once per reset |
 | S_REFLEX | 2278 | step() reflex-clock stage | 1 per tick |
@@ -77,3 +78,18 @@ the pinned counter — counted separately as S_CTOR for completeness.
     S_RATE == 4F;  S_FSE0 == S_FSP0 == F (walk: contact+friction always);
     S_FSP1 == F;  S_IMP == S_PCEC == I;
     S_ES == S_EE == (entries reaching them — from C_CAUGHT and the event counts).
+
+## AMENDMENT 1 (2026-09-20, post-first-census — F1 FIRED AND RESOLVED)
+
+The frozen table above MISSED one site: line 1909's contact-bisection probe
+carries its own `evaluate(...)` of each integrated probe state (the original
+read "no direct evaluates" for the event loops — wrong for the CONTACT loop;
+the drive-stop loop at 1903 genuinely has none). The first census run measured
+the site sum at 80333 vs the pinned 86549 — a 6216 deficit — and the lane's own
+call counter C_FS_CON measured EXACTLY 6216 contact-bisection probes. F1
+(fires: "find which side is wrong") resolved: the MEASUREMENT was exact on both
+sides; the SOURCE READING (this table) was wrong by one site. The instrument
+was amended (S_BISECT_GAP), rebuilt, and re-run ×2: the site sum is now 86549
+EXACT, matching the pinned counter to the hit. The pre-amendment runs
+(census1/census2) remain in raw/ as the F1 evidence; census3/census4 carry the
+amended reconciliation.

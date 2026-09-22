@@ -1,42 +1,70 @@
 {
  "lane": "lane/fk-reduction-20260920",
- "date": "2026-09-20",
+ "date": "2026-09-20 (lane clock; measurements 2026-09-22)",
  "agent": "fkred",
- "base": "4a241439 (the landed tick-cost-attribution tip; tracked engine bytes == bd4bf630)",
- "status": "PREREG-FROZEN (nothing measured yet; this file is the Rule-0 prereg receipt)",
- "statement": "The ~287-eval/tick fk.evaluate count reconciles EXACTLY from the source text of gait_controller.hpp (RK4 structure x rate()'s internal evaluates x the 42-iteration event bisections x the impact/poscorr paths), and the lawful reduction map bounds the CPU tick cost with every change classified byte-neutral / physics-compatibility / structural.",
- "prediction_pre_named": {
-  "P1_census_reconciles_within_5": "the closed-form census reconciles with the measured 286.586 evals/tick within +/-5 evals/tick",
-  "P2_a_class_small": "the (a)-class (byte-neutral reuse) is small: single-digit % of evaluates -- most evals have genuinely changing inputs inside RK4",
-  "P3_b_class_material": "the (b)-class (substage factorization reuse + bisection bracket reuse) is the material lever, plausibly 2-3x, still short of the 6.7x alone",
-  "P4_only_c_reaches_budget": "only (c)-class (structural: equation-count changes) reaches the 3.33 ms/tick budget"
+ "base": "4a241439 (the landed tick-cost-attribution tip; tracked engine bytes == bd4bf630, verified: git diff on tracked files empty all lane)",
+ "prereg": "record.md + census_sites.md + receipt.json (PREREG-FROZEN state) committed at 720364e4 BEFORE any census run, any build, any measurement",
+ "question": "THE FALSIFIABLE QUESTION: does the ~287-eval/tick Model::evaluate census reconcile EXACTLY from source, and what does the lawful reduction map (byte-neutral / physics-compatibility / structural) bound the CPU tick cost at vs the 3.33 ms/300 Hz budget?",
+ "consumed": "tick_cost_attribution_20260920: fk.evaluate 40.8315 ms/tick (87.9% incl) at 286.586 calls/tick; budget 3.333 ms; per-eval 0.14244 ms (tickcost-matrix state) / 0.06998 ms (receipt state)",
+ "the_census": {
+  "verdict": "RECONCILES EXACTLY: 86549 site-sum == 86549 pinned tickcost fk.evaluate hits (286.586/tick), confirmed by two independent amended-instrument runs (census3, census4, identical counts)",
+  "structure": "RK4 floor 7xF = 62160 (71.82%: 4 rate() + e0 + p0 + p1 per free_step) | contact-bisection gap evaluates 6216 (7.18%: line 1909, 148 searches x 42 probes) | impact base+ec 6886 (7.96%) | estart+eend 4790 (5.53%) | poscorr extras 3929 (4.54%, 1273 fires; du short exactly 1 = the tick-302 refusing fire thrown at the dq_max budget) | controller laws 971 (1.12%) | stages 1457 (1.68%) | crossing 140 (0.16%) | clamps 0",
+  "cross_identities_exact": [
+   "rate == 4 x free_step: 35520 == 4 x 8880",
+   "free_step split: 2395 main + 126 drive-bisect (3x42) + 6216 contact-bisect (148x42) + 140 crossings + 3 wall == 8880",
+   "impact == 3300 entries + 140 crossing + 3 wall == 3443",
+   "advance entries 3300 == 1209 outermost trials + 280 contact-event children + 3 wall + 1808 (2x904) caught-recursions",
+   "estart == eend == 2395 == 3300 - 904 caught-returns - 1 sub-epsilon-h",
+   "store-bisection advances == retry advances == 0 (adv.total outermost == 1209 == 4x302+1 consistent)"
+  ]
  },
- "falsifiers": {
-  "F1_CENSUS_MISMATCH": "derived count does not reconcile with the measured (site sum vs pinned fk.evaluate hits 86549/302; closed-form vs site total beyond +/-5/tick) -> find which side is wrong, report",
-  "F2_FENCE": "any implemented (a)-class reduction moving one output byte (stdout != 8c537cdb..., scene != f6844eea..., trace stderr != tip baseline, plain stderr != plain baseline) = reverted + recorded",
-  "F3_CLASS_MISFILE": "a bytes-changing reduction filed byte-neutral = fired; every (a)-candidate carries a per-candidate purity + no-mutation proof; the fence run is the empirical backstop",
-  "F4_DETERMINISM": "3-run stdout byte-identity per binary shape; trace stderr byte-identity across its 2 runs",
-  "F5_SCOPE": "lane dir + .tmp/fkred only; gait_controller.hpp / coupled_articulation.hpp / gait_unit.cpp / gait_scene.py byte-untouched; instrument + reduction copies out-of-tree via committed generator; CPU-only (shared 4090 untouched)"
+ "the_reduction_implemented": {
+  "candidates": "R1 (rate-a Evaluation reuse) + R2 (estart hoist through every free_step of the advance, including all 42-probe bisections) + R2b (clamp evaluate(start) -> estart; 0 fired this walk) + R3 (poscorr ec reuse for u_before/arows)",
+  "proof": "Model::evaluate is pure (no statics/RNG/caching; coupled_articulation.hpp:82-91) => input-identical calls are bit-identical; each reuse window carries a no-mutation proof (start is const& and unmutated after impact(); shifted() copies; the event search only reads; the poscorr pen scan reads only)",
+  "measured": "29297 evaluates removed per walk = 97.01/tick = 33.9% of all FK evaluates; wall A/B interleaved x3: 56.27 s -> 42.83 s mean (-23.9%, shared-box state carried; the eval count is the state-independent currency)",
+  "vehicle": "OUT-OF-TREE derived copies only (.tmp/fkred/src-reduce via committed generator make_fkred.py --reduce; anchored single-occurrence edits, trailing //@FKRED markers, manifest round-trip byte-exact, brace/paren/bracket balance guard); gait_controller.hpp READ-ONLY all lane"
  },
- "pinned_anchors": {
-  "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 (regenerated by tools/science_funnel/gait_scene.py, re-verified per run)",
-  "stdout_fence_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc (bd4bf630 plain build, MinGW==MSVC; expected to reproduce at 4a241439 -- measured at this tip before use)",
-  "plain_stderr_expected_sha256": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab (measured at this tip before use)",
-  "trace_stderr_reference_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481 (65870 lines, produced at f106fc54; the tip baseline is measured first -- if it differs, the measured tip baseline becomes the lane fence and the drift is reported)",
-  "physics_anchors": ["refusal_tick 302", "refusal_class gait_positional_correction_budget", "worst_moving_ledger_J 30.970714", "red_falsifiers 49", "checks 173"]
+ "fence": {
+  "scene": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 regenerated EXACT (verified per run)",
+  "stdout_plain_x3": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc x3 EXACT (the tip reproduces the tickcost lane fence)",
+  "stdout_reduce_x3": "8c537cdb... x3 EXACT -- THE REDUCTION IS BYTE-NEUTRAL (F2 GREEN)",
+  "stdout_census_x4": "8c537cdb... x4 EXACT (counting is byte-neutral too)",
+  "stderr_plain_x3_and_reduce_x3": "b505bb65... x3 each EXACT",
+  "trace": "the c6f9b6c0 anchor is MACHINE-STATE-BOUND: the harness 120 s WALL-CLOCK window guard (gait_unit.cpp) fired at tick 137/106 on today's loaded shared box (wave-47 era: ~30 s/process), so the full trace files are guard-truncated and the anchor is not reproducible at this box state. CARRIED per the prereg decision rule. The physics identity is nonetheless proven over the trace path: plain_trace vs reduce_trace stderr common prefix = 1,177,780 bytes BYTE-IDENTICAL, splitting EXACTLY at the guard message (faster reduce ran past plain's cut) -- not one physics byte differs",
+  "determinism_F4": "3-run stdout identity per shape GREEN; census counts identical x2 (pre-amendment) and x2 (amended)"
  },
- "consumed_measurements": {
-  "source": "tools/science_funnel/validation/tick_cost_attribution_20260920/receipt_tick_cost.json + raw/tc_stderr_sample.txt (walk_run_1, 302 ticks)",
-  "fk_evaluate": "40.8315 ms/tick, 87.91% of loop, hits 86549/302 = 286.586/tick",
-  "adv_total": "hits 1209/302 = 4.003/tick (outermost advance frames; the +1 over 4x302 is carried to the census reconciliation)",
-  "adv_impact": "hits 3443/302 = 11.401/tick",
-  "adv_free_step": "hits 8880/302 = 29.404/tick",
-  "adv_rate": "hits 35520/302 = 117.616/tick (== 4 x free_step EXACTLY: 35520 = 4x8880)",
-  "adv_calls": "mean 10.924/tick, max 28, n=302",
-  "inverse_spd": "hits 38963/302 = 129.02/tick",
-  "per_eval_cost": "40.8315/286.586 = 0.14244 ms/evaluate at the tickcost matrix machine state"
+ "bounds": {
+  "a_implemented": "189.58 evals/tick (-33.9%); loop 32.63 ms (tickcost-matrix state) / 16.47 ms (receipt state) = 4.9x budget",
+  "a_full": "with R4/R5/R6/R7 ceilings (~16 evals/tick more): ~30.3 / 15.3 ms = 4.6x budget",
+  "a_plus_b": "B1 (bisection 42 -> ~6 Newton iters on the SAME event functions, derived from the census probe population 6342/walk): ~99.6 evals/tick; loop ~19.8 / 10.2 ms = 3.1x budget -- STILL SHORT; bill = the FULL compatibility certificate (all frozen anchors re-derive)",
+  "a_plus_b_plus_c": "only the (c)-stack reaches budget: C2 (RK4 -> semi-implicit: rate calls 117.6 -> 29.4/tick) + C3 (O(n) recurrent FK, Featherstone CRBA class, per-eval constant /3-10) lands ~4.7-8.3 ms (receipt state) -- at or near budget ONLY at the optimistic end; otherwise C4 (GPU batched FK) removes the count from the CPU tick entirely",
+  "verdict": "NO composition of (a) and (b) reaches 3.33 ms/tick. The budget is reached ONLY by the (c)-class architecture change or by the GPU batched path. THE CPU ENGINE'S ROLE STAYS REFERENCE/ORACLE WHILE PRODUCTION THROUGHPUT RIDES THE GPU BATCHED KERNELS -- the deployment split is CONFIRMED, not refuted."
  },
- "methods_frozen": "record.md METHODS 1-5; census site table census_sites.md; reduction candidates R1/R2/R3 with proofs reduction_map.md; generator make_fkred.py (anchored edits, trailing markers, manifest round-trip)",
- "analysis_plan_frozen": "record.md ANALYSIS PLAN; bounds graded against budget_ms_per_tick 3.333; savings reported in eval-counts (primary, state-independent) and interleaved A/B wall (secondary, state-carrying)",
- "pre_committed_action": "any fired falsifier carried verbatim with its numbers; nothing tuned; no tracked byte modified; git diff on tracked files empty at lane close"
+ "compatibility_change_requests": [
+  "B1: event-bisection iteration reduction (42 -> derived Newton count) -- bill: full certificate, every frozen anchor re-derives, F-G suite + qualified coupled classes re-run",
+  "B2: substage inverse_spd reuse -- REJECTED BY PROPORTIONALITY (<=1.4% lever, full-certificate bill)",
+  "B3: bisection bracket warm-start across advances -- subsumed by B1",
+  "C1: tiered FK (gap-only probes) -- architecture change request",
+  "C2: integration-order reduction (semi-implicit Euler) -- architecture change request; the tickcost receipt's F2-rejected candidate, re-derived as lawful only here",
+  "C3: O(n) recurrent FK (RNEA/CRBA class) -- architecture change request; the biggest CPU lever that keeps RK4",
+  "R4/R5/R6/R7: recorded byte-neutral candidates not implemented (implementation limit kept minimal)"
+ ],
+ "falsifier_scoreboard": {
+  "F1_CENSUS_MISMATCH": "FIRED THEN RESOLVED -- first census site-sum 80333 vs pinned 86549 (deficit 6216); the lane's own call counter C_FS_CON measured EXACTLY 6216 contact-bisection probes, locating the miss as line 1909's own evaluate (the site table read 'no direct evaluates' for the event loops -- wrong for the contact loop). THE MEASUREMENT WAS EXACT ON BOTH SIDES; THE SOURCE READING WAS WRONG BY ONE SITE. Amended (S_BISECT_GAP, dated in census_sites.md), rebuilt, re-run x2: 86549 EXACT. Pre-amendment runs kept in raw/ as the F1 evidence",
+  "F2_FENCE": "GREEN -- reduce stdout 8c537cdb x3 byte-exact, stderr b505bb65 x3 byte-exact, scene f6844ee EXACT, trace byte-identical over the full common window (1,177,780 bytes; split = the machine-state wall guard only, anchor carried machine-state-bound)",
+  "F3_CLASS_MISFILE": "GREEN -- every implemented candidate carries a purity+no-mutation proof (reduction_map.md); the generator-level guard test (test_fk_reduction.py) pins the reduce manifest to ONLY the R1/R2/R2b/R3 anchors and the net evaluate-site count (-4); non-(a) candidates explicitly named NOT-(a)",
+  "F4_DETERMINISM": "GREEN -- plain x3, reduce x3, census x4 stdout all identical; stderr identical x3 per shape; census counts identical across runs",
+  "F5_SCOPE": "GREEN -- lane dir + .tmp/fkred only; gait_controller.hpp / coupled_articulation.hpp / gait_unit.cpp / gait_scene.py byte-untouched (git diff empty); CPU-only (the shared 4090 untouched)"
+ },
+ "prediction_grading": "P1 GREEN (exact reconciliation; after F1 fired and was resolved). P2 REFUTED (the (a)-class is 33.9% of FK evaluates, not single-digit -- most evaluates are NOT genuinely-changing RK4 substages; 4 of 7 evaluates per free_step were the same state or dead scaffolding). P3 CONFIRMED IN SUBSTANCE (the material next lever is the bisection class; ~2.3x loop-level combined with (a); still short of budget alone; the factorization-reuse member is <=1.4% and rejected by proportionality). P4 CONFIRMED (only (c) reaches budget).",
+ "artifacts": {
+  "prereg": "record.md + census_sites.md (with Amendment 1) + receipt.json frozen at 720364e4",
+  "instrument_and_reduction_generator": "make_fkred.py (--census / --reduce; anchored edits, trailing markers, round-trip, balance guard)",
+  "analyzer": "analyze_fkred.py -> receipt_input.json",
+  "reduction_map": "reduction_map.md (per-candidate classification with proofs and measured columns)",
+  "tests": "test_fk_reduction.py (7 passing)",
+  "raw": "raw/ (run index with all shas + walls, the [fkred] census block sample incl. the pre-amendment 80333 evidence, the trace A/B verdict)",
+  "binaries": ".tmp/fkred/bin (gitignored): gait_unit_plain.exe, fkred_reduce.exe, fkred_census.exe, gait_unit_plain_trace.exe, fkred_reduce_trace.exe"
+ },
+ "pre_committed_action": "carried out: F1 fired and was resolved with the miss named (source reading, one site); nothing tuned; no tracked byte modified; ship bytes verified untouched at lane close"
 }
