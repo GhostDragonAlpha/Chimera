@@ -58,3 +58,64 @@ environment.
    the only local GPU compiler) — or a co-lane's working integration path.
 3. Phase B (reflex fidelity deepening) proceeds on its dispatched lane
    against this committed interface.
+
+---
+
+# DIAGNOSTIC APPEND — continuation lane (2026-09-22)
+
+Agent: GLM 5.3 · branch `agent/typeb-gpu-fullport2-20260922` @ `0763d27`+.
+Prereg: `tools/science_funnel/typeb_gpu/PREREG_DIAG.md` (frozen before any
+diagnostic run). The Phase-A/C falsifiers remain UNMEASURED — nothing below
+changes that verdict.
+
+## VERDICT: the tick-0 "hang" is HOST-SIDE CODEGEN, not device execution
+
+- F-H1 FIRED. The first `tick_kernel[1,1]` launch call blocks the host in
+  numba's compile pipeline: python.exe at ~94-100% of one core for the whole
+  wait (CPU 627.9→660.8 s over a 35 s window), 9.3 GB working set, no device
+  print flushed, no kernel completion. Attribution probe (`diag_t1.py`,
+  `sample_gpu.ps1`): the box's 87-97% "GPU busy" belongs to ~34 OTHER
+  compute processes (`nvidia-smi --query-compute-apps`); lane 1's GPU-busy
+  reading was attribution error. The monolith codegen ran >66 CPU-min
+  (harness-killed, never completed) — the Warp 45-min wall REPRODUCES on
+  numba 0.63 with the same fully-inlined body. "Second launch in the same
+  process" was never reached: the first never returned.
+- F-H3 NOT FIRED (moot): no kernel ever executed; the while-audit was
+  re-verified independently (all bounded; the `slot` grid-search advances
+  Tf≈213/iteration from a bounded start).
+- F-H2 (run-time local-memory stall) DEAD as the hang cause — no execution
+  started. PTX census (plan kernel): .local 10,056 B/thread; block-ladder
+  untested (blocked behind integ codegen below).
+
+## WHAT THE SPLIT MEASURED (`split_kernels.py` → `walker_numba_split.py`)
+
+plan/integ/post kernels at the receipt's seams, a_rc scratch, settle-dec
+and a_ticks exactly once, bounds guard, cache=True, big-five device
+functions inline='never' (VERIFIED honored: plan PTX has .func + 45 real
+call ops, `diag_t2c.py`):
+
+- plan: 14.1-16.0 s compile; 0.111 s first exec; 3.6 ms steady (E=1,
+  block=1, freefall); 0.08 s cached reload in a FRESH process (cache works).
+- integ: all-inlined >55 CPU-min (killed); inline='never' >62 CPU-min
+  (killed); the advance-only micro-kernel alone 817.8 s (`diag_t2b.py`).
+  The codegen sink is advance's own subtree (rate/free_step/impact/fk_eval
+  + inlined project_rows/friction_solve/inverse_spd18), superlinear in
+  module size (plan PTX 202k chars → 14 s class).
+- opt=False probe: see `logs` committed alongside the branch tip.
+
+## BAR STATUS
+
+The six preregistered falsifiers remain UNMEASURED — the environment still
+does not run, and the bar suite (`bars_fullport.py`, committed) is blocked
+behind the integ kernel's one-time codegen. cache=True makes that cost
+once-per-machine IF the compile is allowed to finish once; no machine has
+yet finished it.
+
+## NEXT (in order)
+
+1. Let one integ compile run to completion uninterrupted (overnight box) —
+   the cache then serves every later process; run `bars_fullport.py`.
+2. If the full integ never lands: split advance itself (drift vs event-DFS
+   vs impact; the LIFO stack in global scratch), or reduce NVVM input size
+   per kernel further.
+3. Then the block ladder (H2's surviving question) and the bars.
