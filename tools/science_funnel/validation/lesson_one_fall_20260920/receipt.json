@@ -1,0 +1,27 @@
+{
+ "schema": "chimera.lesson_one_fall.v1",
+ "lane": "lane/lesson-one-fall-20260920",
+ "base_commit": "2c7f9b08",
+ "date": "2026-09-22",
+ "agent_trailer": "Agent: lesson",
+ "theory": "the real body's fall -- the engine's own root law, measured by the realbody-movie lane -- can be LESSON ONE: the player triggers it with one key and the physics surfaces live as visible elements fed by the engine's own status, every displayed number traced to an engine API response",
+ "prereg": "record.md (this directory), committed before any code",
+ "falsifiers": {
+  "F-LESSON-60": "pending: the stranger's own key press triggers the fall and its landing < 60 s from page load",
+  "F-NUMBERS-ENGINE": "pending: every displayed number traces byte-for-byte to an engine API response (number-trace table)",
+  "F-FALL-SHAPE": "pending: peak 0.9009+/-0.02 m; max |vy| 3.6792+/-0.05 m/s; landed 0.1246+/-0.002 m",
+  "F-SURFACES-LIVE": "pending: hold < weight while airborne, hold == weight at settle, trace >= 1 sample/100 ms",
+  "F-KEYS-NAMED-WORK": "pending: every key named on the page works by key path, verified by the walkthrough",
+  "F-ZERO-ERRORS": "pending: on-page beacon 0 AND harness console empty through boot/fall/settle",
+  "F-ONE-COMMAND": "pending: one .ps1 boots engine + real body + lesson server; measured",
+  "F-SCOPE": "pending: zero engine/slice-page edits; lesson_shell + lane dir only; bundled chromium; lane push only"
+ },
+ "predictions": {
+  "P-KEY": "pending",
+  "P-FALL-SHAPE": "pending",
+  "P-SURFACE": "pending",
+  "P-UNDERSTOOD": "pending"
+ },
+ "pass": null,
+ "notes": "verdicts filled only from measurements recorded beside this file"
+}
