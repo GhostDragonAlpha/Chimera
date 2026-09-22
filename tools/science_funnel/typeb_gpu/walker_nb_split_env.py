@@ -152,7 +152,7 @@ class GaitWalkEnv:
         reset_kernel[self.E, 1](
             qa, va, ta, np.float64(spec.start_phase_left), np.float64(spec.start_phase_right),
             np.int32(spec.settle_total), self._reset_store, np.float64(self._store_post),
-            *self._args(with_obs=False))
+            *self._args(with_obs=False)[4:])
         cuda.synchronize()
 
     def set_command(self, v, env_mask=None):

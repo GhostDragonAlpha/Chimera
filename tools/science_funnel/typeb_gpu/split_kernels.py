@@ -101,9 +101,14 @@ def main():
     if post_book == book_part:
         raise SystemExit('rc injection failed')
 
-    guard = ('    ne = a_q.shape[0] // 18\n\n'
-             '    if e >= ne:\n\n'
-             '        return\n\n')
+    guard_line = '    e = cuda.grid(1)'
+    if pre.count(guard_line) != 1:
+        raise SystemExit(f'grid line occurs {pre.count(guard_line)} times in preamble (need 1)')
+    pre = pre.replace(guard_line,
+                      guard_line + '\n\n'
+                      '    ne = a_q.shape[0] // 18\n\n'
+                      '    if e >= ne:\n\n'
+                      '        return', 1)
 
     body_plan = pre + settle_only + p1 + '\n\n    rc = int32(0)\n\n    collapsed = int32(0)\n\n' + wb_no_ticks
     body_integ = pre + '\n\n' + p2 + '\n\n    a_rc[e] = rc\n\n    rc = int32(0)\n\n    collapsed = int32(0)\n\n' + wb_no_ticks
@@ -111,7 +116,7 @@ def main():
 
     def kernel(name, body):
         dl = defline.replace('{NAME}', name)
-        return f'@cuda.jit(cache=True)\n\n{dl}{guard}{body}\n'
+        return f'@cuda.jit(cache=True)\n\n{dl}{body}\n'
 
     out = []
     out.append('"""AUTO-DERIVED by split_kernels.py from walker_numba_gen.py -- do not edit.\n\n'
