@@ -1,0 +1,60 @@
+refusal: (302, 'gait_positional_correction_budget')  fires: 18  tds: 17
+================================================================================================================
+ERA TABLE: fire->complete leg class C_del_frac heldTicks rxnAtFire_N archPeak_mm heldSat heldCharge trackCharge allocCharge aimErr aimCharge
+    98->107 leg=1 slot f=0.070 ht=2 rxnF= 58.206 arch=  +1.280 sat=1.00 u=+0.061 trk=+0.276 alc=+0.000 aim=0.0174 ac=+0.00
+   142->160 leg=0 alt  f=0.144 ht=1 rxnF= 32.183 arch= +12.127 sat=0.00 u=+0.011 trk=+0.201 alc=+0.000 aim=0.0401 ac=+0.00
+   160->174 leg=1 alt  f=0.068 ht=1 rxnF=  3.795 arch=  +6.804 sat=0.00 u=+0.015 trk=+0.204 alc=+0.000 aim=0.0409 ac=+0.00
+   161->170 leg=0 alt  f=0.078 ht=9 rxnF= 16.160 arch=  +0.010 sat=0.00 u=+0.163 trk=+0.000 alc=+0.000 aim=0.0188 ac=+0.00
+   175->184 leg=0 alt  f=0.038 ht=9 rxnF= 15.864 arch=  +0.008 sat=0.00 u=+0.199 trk=+0.000 alc=+0.000 aim=0.0205 ac=+0.00
+   184->193 leg=1 alt  f=0.033 ht=9 rxnF=  7.485 arch=  +0.009 sat=0.00 u=+0.261 trk=+0.000 alc=+0.000 aim=0.0347 ac=+0.00
+   193->202 leg=0 alt  f=0.038 ht=9 rxnF=  9.739 arch=  +0.007 sat=0.00 u=+0.262 trk=+0.000 alc=+0.000 aim=0.0190 ac=+0.00
+   202->211 leg=1 alt  f=0.043 ht=8 rxnF=  8.271 arch=  +0.011 sat=0.62 u=+0.263 trk=+0.000 alc=+0.296 aim=0.0339 ac=+0.00
+   211->220 leg=0 alt  f=0.053 ht=8 rxnF=  9.614 arch=  +0.002 sat=0.62 u=+0.233 trk=+0.000 alc=+0.262 aim=0.0168 ac=+0.00
+   220->229 leg=1 alt  f=0.024 ht=9 rxnF=  3.694 arch=  +0.003 sat=0.00 u=+0.318 trk=+0.000 alc=+0.000 aim=0.0373 ac=+0.00
+   229->238 leg=0 alt  f=0.043 ht=9 rxnF=  8.044 arch=  +0.007 sat=0.00 u=+0.365 trk=+0.000 alc=+0.000 aim=0.0261 ac=+0.00
+   238->247 leg=1 alt  f=0.027 ht=9 rxnF=  4.159 arch=  +0.001 sat=0.00 u=+0.447 trk=+0.000 alc=+0.000 aim=0.0439 ac=+0.00
+   247->256 leg=0 alt  f=0.064 ht=9 rxnF=  7.982 arch=  +0.004 sat=0.00 u=+0.454 trk=+0.000 alc=+0.000 aim=0.0378 ac=+0.00
+   256->265 leg=1 alt  f=0.037 ht=9 rxnF=  5.504 arch=  +0.087 sat=0.00 u=+0.540 trk=+0.000 alc=+0.000 aim=0.0516 ac=+0.00
+   265->274 leg=0 alt  f=0.097 ht=9 rxnF= 27.122 arch=  +0.000 sat=0.00 u=+0.492 trk=+0.000 alc=+0.000 aim=0.0522 ac=+0.00
+   274->291 leg=1 alt  f=0.163 ht=1 rxnF=  0.000 arch=  +6.364 sat=1.00 u=+0.027 trk=+0.000 alc=+0.458 aim=0.1203 ac=+0.00
+   291->300 leg=0 alt  f=0.144 ht=9 rxnF= 22.235 arch=  +0.000 sat=0.00 u=+0.358 trk=+0.000 alc=+0.000 aim=0.0682 ac=+0.00
+   300->301 leg=1 alt  f=0.002 ht=1 rxnF=315.835 arch=  +0.000 sat=1.00 u=+0.485 trk=+0.000 alc=+0.000 aim=0.0135 ac=+0.00
+----------------------------------------------------------------------------------------------------------------
+TOTAL CHARGED DEFICIT BY CANDIDATE (m): {'aim': 0.0, 'alloc': 1.0164, 'track': 0.6807, 'unload': 4.9536}
+THE OWNER (largest total charged deficit): UNLOAD
+----------------------------------------------------------------------------------------------------------------
+THE PIN ERAS (the standhold spans): span, leg, carrier hind-rxn, swing hind-rxn
+  [176,176] leg=1 carrier mean=14.200 min=14.200 max=14.200 | swing mean=4.876 min=4.876 max=4.876
+  [185,185] leg=0 carrier mean=7.757 min=7.757 max=7.757 | swing mean=6.986 min=6.986 max=6.986
+  [194,194] leg=1 carrier mean=9.127 min=9.127 max=9.127 | swing mean=9.039 min=9.039 max=9.039
+  [198,198] leg=1 carrier mean=7.943 min=7.943 max=7.943 | swing mean=9.196 min=9.196 max=9.196
+  [203,203] leg=0 carrier mean=11.922 min=11.922 max=11.922 | swing mean=7.564 min=7.564 max=7.564
+  [207,207] leg=0 carrier mean=11.984 min=11.984 max=11.984 | swing mean=8.013 min=8.013 max=8.013
+  [212,212] leg=1 carrier mean=19.403 min=19.403 max=19.403 | swing mean=3.807 min=3.807 max=3.807
+  [216,216] leg=1 carrier mean=6.074 min=6.074 max=6.074 | swing mean=2.928 min=2.928 max=2.928
+  [221,221] leg=0 carrier mean=19.151 min=19.151 max=19.151 | swing mean=2.146 min=2.146 max=2.146
+  [230,230] leg=1 carrier mean=4.154 min=4.154 max=4.154 | swing mean=7.695 min=7.695 max=7.695
+  [239,239] leg=0 carrier mean=7.070 min=7.070 max=7.070 | swing mean=2.086 min=2.086 max=2.086
+  [248,248] leg=1 carrier mean=0.803 min=0.803 max=0.803 | swing mean=7.525 min=7.525 max=7.525
+  [257,257] leg=0 carrier mean=10.348 min=10.348 max=10.348 | swing mean=4.687 min=4.687 max=4.687
+  [292,292] leg=1 carrier mean=12.609 min=12.609 max=12.609 | swing mean=30.799 min=30.799 max=30.799
+  [301,301] leg=0 carrier mean=257.906 min=257.906 max=257.906 | swing mean=649.519 min=649.519 max=649.519
+----------------------------------------------------------------------------------------------------------------
+THE STANCE CREEP-X CENSUS: leg [t0,t1) pad_drift_m bx_adv_m relative_m (mm/tick pad vs body)
+  leg=0 [ 160, 161) pad=+0.0000 body=+0.0000 rel=+0.0000 (+0.0 vs +0.0 mm/tick)
+  leg=0 [ 170, 175) pad=-0.0007 body=+0.0095 rel=-0.0102 (-0.1 vs +1.9 mm/tick)
+  leg=0 [ 184, 193) pad=-0.0000 body=+0.0218 rel=-0.0219 (-0.0 vs +2.4 mm/tick)
+  leg=0 [ 202, 211) pad=-0.0001 body=+0.0205 rel=-0.0206 (-0.0 vs +2.3 mm/tick)
+  leg=0 [ 220, 229) pad=+0.0046 body=+0.0235 rel=-0.0189 (+0.5 vs +2.6 mm/tick)
+  leg=0 [ 238, 247) pad=+0.0101 body=+0.0301 rel=-0.0199 (+1.1 vs +3.3 mm/tick)
+  leg=0 [ 256, 265) pad=+0.0367 body=+0.0385 rel=-0.0018 (+4.1 vs +4.3 mm/tick)
+  leg=0 [ 274, 291) pad=+0.1399 body=+0.1069 rel=+0.0329 (+8.2 vs +6.3 mm/tick)
+  leg=0 [ 300, 302) pad=-0.0851 body=+0.0050 rel=-0.0901 (-42.6 vs +2.5 mm/tick)
+  leg=1 [ 107, 160) pad=+0.2069 body=+0.1201 rel=+0.0869 (+3.9 vs +2.3 mm/tick)
+  leg=1 [ 174, 184) pad=+0.0195 body=+0.0243 rel=-0.0049 (+1.9 vs +2.4 mm/tick)
+  leg=1 [ 193, 202) pad=-0.0003 body=+0.0215 rel=-0.0219 (-0.0 vs +2.4 mm/tick)
+  leg=1 [ 211, 220) pad=+0.0045 body=+0.0204 rel=-0.0159 (+0.5 vs +2.3 mm/tick)
+  leg=1 [ 229, 238) pad=+0.0013 body=+0.0268 rel=-0.0255 (+0.1 vs +3.0 mm/tick)
+  leg=1 [ 247, 256) pad=+0.0161 body=+0.0342 rel=-0.0180 (+1.8 vs +3.8 mm/tick)
+  leg=1 [ 265, 274) pad=+0.0439 body=+0.0433 rel=+0.0006 (+4.9 vs +4.8 mm/tick)
+  leg=1 [ 291, 300) pad=+0.1868 body=+0.0552 rel=+0.1316 (+20.8 vs +6.1 mm/tick)

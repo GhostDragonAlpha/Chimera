@@ -86,6 +86,8 @@ struct WalkOut{
  // The fired falsifiers are carried verbatim in the receipt.)
  std::vector<std::array<double,4>> hind37;
  std::vector<std::array<double,4>> hind38;
+ std::vector<std::array<double,4>> hind39;
+ std::vector<std::array<double,6>> hind40; // WAVE 40 APPEND: the load-book drag census
  int lift_tick[2]={-1,-1};double lift_phase[2]={-1.,-1.}; // first HIND liftoff tick/phase (wave 16 clock census)
  double paw_err_max=0;double ik_qerr_max=0;double ik_roundtrip_max=0;bool paw_captured=false;
  double worst_ledger=0;bool hull_all=true;int hull_checks=0;uint64_t captures=0;
@@ -234,6 +236,24 @@ int main(int argc,char**argv){try{
      for(size_t k=0;k<8;++k) // WAVE 30 DEMAND CENSUS: per-tick per-hind-drive {torque, cap} (the [dvq] instrument;
       std::fprintf(stderr,"[dvq] t=%d k=%zu tau=%.6f cap=%.6f\n", //  stderr-only, GAIT_EVENT_TRACE builds; stdout-inert)
        i,k,number(s["joints"][k]["motor_torque_N_m"]),number(s["joints"][k]["torque_cap_N_m"]));
+     { // WAVE 41 SHARE INSTRUMENT (read-only plumbing, receipt_wave41.json):
+       // the per-tick FORE pad detail {gap,rxn,frc,slip,pos} -- the [dvp]
+       // format mirrored, the fore points classified by their own name
+       // prefixes in file order k=0..3 -- and the fore-column rxn sums (the
+       // [dvfs] series). The fore columns' share is in NO other trace series
+       // (the wave-40 bank's declared instrument gap). stderr-only,
+       // GAIT_EVENT_TRACE builds; stdout-inert (the byte equality is the
+       // inertness proof).
+      size_t kf=0;double sl=0.,sr=0.;
+      for(const auto&pt:s["contact"]["points"]){const std::string nm=pt["name"].get<std::string>();
+       if(nm.rfind("fore_",0)!=0)continue;
+       if(kf<4)std::fprintf(stderr,"[dvfp] t=%d k=%zu gap=%.4e rxn=%.5f frc=%.5f slip=%.5f pos=%.9f,%.9f\n",
+        i,kf,number(pt["gap_m"]),number(pt["reaction_N"]),number(pt["friction_force_N"]),
+        number(pt["slip_speed_m_s"]),number(pt["position_m"][0]),number(pt["position_m"][1]));
+       {double rr=number(pt["reaction_N"]);
+        if(nm.rfind("fore_left",0)==0)sl+=rr;else sr+=rr;}
+       ++kf;}
+      std::fprintf(stderr,"[dvfs] t=%d sumL=%.5f sumR=%.5f n=%zu\n",i,sl,sr,kf);}
      if(out.cev.size()>=2&&out.cev[out.cev.size()-2]!=out.cev.back())
       std::fprintf(stderr,"[dvfire] t=%d capture_events %llu->%llu phL=%.5f phR=%.5f in_hull=%d com=(%.6f,%.6f)\n",
        i,(unsigned long long)out.cev[out.cev.size()-2],(unsigned long long)out.cev.back(),
@@ -330,6 +350,19 @@ int main(int argc,char**argv){try{
        if(p.contains("guard_blocks"))h38[2*l]=double(p["guard_blocks"].get<uint64_t>());
        if(p.contains("guard_first_tick"))h38[2*l+1]=number(p["guard_first_tick"]);}
      out.hind38.push_back(h38);}
+    {std::array<double,4> h39;h39.fill(-1.); // WAVE 39 APPEND: the stay-era haul restoration census
+     if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
+      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
+       if(p.contains("refires"))h39[2*l]=double(p["refires"].get<uint64_t>());
+       if(p.contains("refire_first_tick"))h39[2*l+1]=number(p["refire_first_tick"]);}
+     out.hind39.push_back(h39);}
+    {std::array<double,6> h40;h40.fill(-1.); // WAVE 40 APPEND: the load-book drag census
+     if(s["gait"].contains("hind_step")&&s["gait"]["hind_step"].size()>=2)
+      for(size_t l=0;l<2;++l){const auto&p=s["gait"]["hind_step"][l];
+       if(p.contains("drag_arms"))h40[3*l]=double(p["drag_arms"].get<uint64_t>());
+       if(p.contains("drag_first_tick"))h40[3*l+1]=number(p["drag_first_tick"]);
+       if(p.contains("drag_releases"))h40[3*l+2]=double(p["drag_releases"].get<uint64_t>());}
+     out.hind40.push_back(h40);}
     out.fm.push_back(fmm);out.fsat.push_back(sat);out.ftgt.push_back(tgx);out.frep.push_back(rep);
 #ifdef GAIT_EVENT_TRACE
     // WAVE 23 MINING: the per-tick fore joint-wall state (the derivation's
@@ -1643,6 +1676,53 @@ int main(int argc,char**argv){try{
    ck(launch247,"f38_twelfth_launch_247");
    ck(td_Ltwelfth>=258&&td_Ltwelfth<=268,"f38_twelfth_td_window");}
   else note("F-G38 NOT MEASURED: the guard never blocked and no waive fired (the wave-38 law REVERTED per the pre-committed terminal action)");}
+
+ // -- WAVE 39 STAY-ERA HAUL RESTORATION CENSUS (pre-registered in
+ //    receipt_wave39.json, amendment 39a) -- READ-ONLY PLUMBING: the sixth
+ //    clause (the certified stay does not certify the replant; the machine
+ //    re-fires the swing once; the carrier pin disarms on the same
+ //    certificate) measured on the law build; the pre-committed terminal
+ //    action restored the wave-38 law bytes after the rung falsifier fired
+ //    twice (the first build 225, the amended build 231, both
+ //    gait_impact_event_budget -- the wave-34 mined fold/launch class
+ //    re-phased by the re-attempt cascade). The counters below report NOT
+ //    MEASURED on the restored ship bytes; the fired falsifiers are carried
+ //    verbatim in receipt_wave39.json.
+ {const size_t N39=std::min({w.hind39.size(),w.hind35.size(),w.hind38.size()});
+  double refires=N39>0?w.hind39[N39-1][0]+w.hind39[N39-1][2]:-1.;
+  if(N39>1&&refires>0.){
+   int rfirst=(int)w.hind39[N39-1][1]; // the L's first refire tick
+   double refires_L=w.hind39[N39-1][0],refires_R=w.hind39[N39-1][2];
+   int td_L_after=-1; // the L's first td after its first refire (the re-fired era's own certification)
+   if(rfirst>0)for(size_t i=(size_t)rfirst+1;i<w.hindst.size();++i)
+    if(w.hindst[i][3]>w.hindst[i-1][3]){td_L_after=(int)i;break;}
+   int td_L_twelfth=-1; // the L's first td at/after the twelfth window's opening
+   for(size_t i=(size_t)257;i<w.hindst.size();++i)
+    if(w.hindst[i][3]>w.hindst[i-1][3]){td_L_twelfth=(int)i;break;}
+   char b39[640];std::snprintf(b39,640,"F-G39 stay_refires=%.0f (L=%.0f R=%.0f) refire_first=%d [PREDICTED EXACTLY 184: the L's [175,184) chain-link stay] re-fired_era_td=%d [the re-fired era certifies by the shipped band entry -- the balanced-book amendment] td_L_twelfth=%d [window 258..268; carried verbatim if fired]",
+    refires,refires_L,refires_R,rfirst,td_L_after,td_L_twelfth);
+   note(b39);
+   ck(rfirst==184,"f39_refire_first_184");
+   ck(refires_L>=1.,"f39_stay_refires_engaged");}
+  else note("F-G39 NOT MEASURED: the stay-era haul restoration never engaged (the wave-39 law REVERTED per the pre-committed terminal action; the counters stay read-only plumbing)");}
+
+ // -- WAVE 40 LOAD-BOOK RESTORATION CENSUS (pre-registered in
+ //    receipt_wave40.json) -- the lift-first hold's planar re-capture (the
+ //    wave-33 carrier pin's own pattern, mirrored) measured on the law
+ //    build; the pre-committed terminal action restores the ship bytes if
+ //    the rung/ledger falsifier fires. The census reads the drag counters.
+ {const size_t N40=std::min({w.hind40.size(),w.hind39.size()});
+  double arms=N40>0?w.hind40[N40-1][0]+w.hind40[N40-1][3]:-1.;
+  if(N40>0&&arms>0.){
+   int dfirst=(int)(w.hind40[N40-1][1]>=0?w.hind40[N40-1][1]:w.hind40[N40-1][4]); // the earliest arm tick
+   double arms_L=w.hind40[N40-1][0],arms_R=w.hind40[N40-1][3];
+   double releases=w.hind40[N40-1][2]+w.hind40[N40-1][5];
+   char b40[640];std::snprintf(b40,640,"F-G40 loadbook drag_arms=%.0f (L=%.0f R=%.0f) drag_first=%d [PREDICTED EXACTLY 165: the [161,170) stay's stall clock reaching the wave-33 arming read tair-tair/2-kUnloadTicks] drag_releases=%.0f [the dragged holds that RELEASED -- the stay class broken at the load book]",
+    arms,arms_L,arms_R,dfirst,releases);
+   note(b40);
+   ck(dfirst==165,"f40_drag_first_165");
+   ck(releases>=1.,"f40_drag_releases");}
+  else note("F-G40 NOT MEASURED: the load-book restoration never engaged (the wave-40 law REVERTED per the pre-committed terminal action; the counters stay read-only plumbing)");}
 
 
  // ── WAVE 21 HIND-RIDE CENSUSES (pre-registered in receipt_wave21.json; the

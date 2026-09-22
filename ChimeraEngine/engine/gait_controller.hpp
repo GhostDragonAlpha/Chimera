@@ -1232,7 +1232,8 @@ class GaitWalker {
  // them). Branch captured at the fire (the knee's sign); the wrist distance
  // clamped to the chain's own annulus (the nearest reachable configuration,
  // the fore_ik pattern: loud in the census, never silent).
- void hind_step_ik(size_t hl,const Evaluation& e,const V& tgt,double& qh,double& qk,double& qa)const{
+ struct HindIKDiag{double wx=0,wy=0,ap=0,D=0,Dc=0,dmax=0,dmin=0;int clamped=0;}; // wave-43 [dvfj]: the solve's own inputs, read-only plumbing
+ void hind_step_ik(size_t hl,const Evaluation& e,const V& tgt,double& qh,double& qk,double& qa,HindIKDiag* dg=nullptr)const{
   const Mat& T=e.frames[pelvis_row_].t;
   double rx=tgt[0]-T(0,3),ry=tgt[1]-T(1,3),rz=tgt[2]-T(2,3);
   double dx=T(0,0)*rx+T(1,0)*ry+T(2,0)*rz; // the pelvis-plane x (the hip
@@ -1242,6 +1243,7 @@ class GaitWalker {
   double D=std::hypot(wx,wy);
   double dmax=hind_L1_+hind_L2_,dmin=std::abs(hind_L1_-hind_L2_);
   double Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
+  if(dg){dg->wx=wx;dg->wy=wy;dg->ap=ap;dg->D=D;dg->Dc=Dc;dg->dmax=dmax;dg->dmin=dmin;dg->clamped=(Dc!=D)?1:0;}
   double ca=(Dc*Dc-hind_L1_*hind_L1_-hind_L2_*hind_L2_)/(2.*hind_L1_*hind_L2_);
   double k=double(hind_step_branch_[hl])*std::acos((std::max)(-1.,(std::min)(1.,ca)));
   double a1=std::atan2(wy,wx)-std::atan2(-hind_L1_-hind_L2_*std::cos(k),hind_L2_*std::sin(k));
@@ -1584,6 +1586,26 @@ class GaitWalker {
        tgt[1]+=c*std::sin(pi*sg);
       }
       if(!have_fe){fe=evaluate(s_);have_fe=true;}
+#ifdef GAIT_EVENT_TRACE
+      if(dr.joint=="hip"){ // WAVE 42 ARCH INSTRUMENT (read-only plumbing, receipt_wave42.json):
+       double py=0.5*(fe.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first[1]
+        +fe.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first[1]);
+       std::fprintf(stderr,"[dvfa] t=%llu leg=%zu br=%c held=%d sg=%.5f c=%.5f cmd_y=%.9f pad_y=%.9f plant_y=%.9f\n",
+        (unsigned long long)ticks_,hl,hind_step_held_[hl]?'h':'g',hind_step_held_[hl]?1:0,sg,c,tgt[1],py,
+        hind_step_plant_y_[hl]);} // the hold command vs the delivered pad y, one line per leg per tick
+#endif
+#ifdef GAIT_EVENT_TRACE
+      if(dr.joint=="hip"){ // WAVE 43 IK-ABSORPTION INSTRUMENT (read-only plumbing, receipt_wave43.json):
+       double dgh,dgk,dga;HindIKDiag dg;hind_step_ik(hl,fe,tgt,dgh,dgk,dga,&dg);
+       const Mat& Tp=fe.frames[pelvis_row_].t;
+       double cp=std::cos(dg.ap),sp=std::sin(dg.ap);
+       double solx=Tp(0,3)+dg.wx*Tp(0,0)+dg.wy*Tp(0,1)+hind_xm_*(cp*Tp(0,0)+sp*Tp(0,1));
+       double soly=Tp(1,3)+dg.wx*Tp(1,0)+dg.wy*Tp(1,1)+hind_xm_*(cp*Tp(1,0)+sp*Tp(1,1));
+       std::fprintf(stderr,"[dvfj] t=%llu leg=%zu br=%c brn=%+d ap=%.9f qh=%.9f qk=%.9f qa=%.9f mp=%.9f ah=%.9f ak=%.9f aa=%.9f amp=%.9f D=%.9f Dc=%.9f dmax=%.9f clmp=%d sol_x=%.9f sol_y=%.9f\n",
+        (unsigned long long)ticks_,hl,hind_step_held_[hl]?'h':'g',hind_step_branch_[hl],dg.ap,dgh,dgk,dga,
+        hind_step_mp_[hl],s_.q[hind_coord_[hl][0]],s_.q[hind_coord_[hl][1]],s_.q[hind_coord_[hl][2]],
+        s_.q[hind_coord_[hl][3]],dg.D,dg.Dc,dg.dmax,dg.clamped,solx,soly);} // the IK's own solve vs the actuals: WHERE the +8 mm demand goes
+#endif
       double qh,qk,qa;hind_step_ik(hl,fe,tgt,qh,qk,qa);
       target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_mp_[hl];
      }else{
@@ -1594,7 +1616,23 @@ class GaitWalker {
      if(hind_step_stand_[hl]){
       if(!have_fe){fe=evaluate(s_);have_fe=true;}
       V stgt=hind_step_stand_from_[hl];stgt[1]=hind_step_stand_y_[hl];
+#ifdef GAIT_EVENT_TRACE
+      if(dr.joint=="hip"){ // WAVE 42 ARCH INSTRUMENT: the stand-first hold's command (the arm-tick y anchor)
+       double py=0.5*(fe.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first[1]
+        +fe.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first[1]);
+       std::fprintf(stderr,"[dvfa] t=%llu leg=%zu br=%c held=%d sg=%.5f c=%.5f cmd_y=%.9f pad_y=%.9f plant_y=%.9f\n",
+        (unsigned long long)ticks_,hl,'d',0,0.,2.*points_[hind_heel_pt_[hl]].radius,stgt[1],py,
+        hind_step_plant_y_[hl]);}
+#endif
       double qh,qk,qa;hind_step_ik(hl,fe,stgt,qh,qk,qa);
+#ifdef GAIT_EVENT_TRACE
+      if(dr.joint=="hip"){ // WAVE 44 FIRE-GATE INSTRUMENT (read-only plumbing, receipt_wave44.json): the stance-side gap build
+       std::fprintf(stderr,"[dvfk] t=%llu leg=%zu br=d phi=%.9f qh=%.9f qk=%.9f qa=%.9f ah=%.9f ak=%.9f aa=%.9f stag=%llu oth=%d dl=%llu\n",
+        (unsigned long long)ticks_,hl,phi_[hl],qh,qk,qa,
+        s_.q[hind_coord_[hl][0]],s_.q[hind_coord_[hl][1]],s_.q[hind_coord_[hl][2]],
+        (unsigned long long)hind_step_stand_ticks_[hl],(int)hind_step_mode_[1-hl],
+        (unsigned long long)hind_step_deadline_tick_[hl]);} // the pinned solve vs the actuals: WHERE the next fire gap comes from
+#endif
       target=dr.joint=="hip"?qh:dr.joint=="knee"?qk:dr.joint=="ankle"?qa:hind_step_stand_mp_[hl];
      }else{
      double qstar[4];tables_.at(phi_[hl],qstar);
@@ -1607,7 +1645,23 @@ class GaitWalker {
      // swings; it resumes at the next TD. No gain bytes change. The torque
      // is read at the drive's COORDINATE row (last_torque_ is n_-indexed).
      if(hind_height_hold_latched_&&touching_prev_[hl])
-      target+=last_torque_[c]/kp_[d];}}}}
+      target+=last_torque_[c]/kp_[d];
+#ifdef GAIT_EVENT_TRACE
+     if(dr.joint=="hip"){ // WAVE 42 ARCH INSTRUMENT: the stance tables (joint-space, no world command --
+      if(!have_fe){fe=evaluate(s_);have_fe=true;} // cmd_y carries the declared print-only -1 sentinel)
+       double py=0.5*(fe.point(points_[hind_heel_pt_[hl]].index,points_[hind_heel_pt_[hl]].local).first[1]
+        +fe.point(points_[hind_mp_pt_[hl]].index,points_[hind_mp_pt_[hl]].local).first[1]);
+       std::fprintf(stderr,"[dvfa] t=%llu leg=%zu br=%c held=%d sg=%.5f c=%.5f cmd_y=%.9f pad_y=%.9f plant_y=%.9f\n",
+        (unsigned long long)ticks_,hl,'t',0,0.,2.*points_[hind_heel_pt_[hl]].radius,-1.,py,
+        hind_step_plant_y_[hl]);}
+     if(dr.joint=="hip"){ // WAVE 44 FIRE-GATE INSTRUMENT (read-only plumbing, receipt_wave44.json): the stance-side gap build
+      std::fprintf(stderr,"[dvfk] t=%llu leg=%zu br=t phi=%.9f qh=%.9f qk=%.9f qa=%.9f ah=%.9f ak=%.9f aa=%.9f stag=%llu oth=%d dl=%llu\n",
+       (unsigned long long)ticks_,hl,phi_[hl],qstar[0],qstar[1],qstar[2],
+       s_.q[hind_coord_[hl][0]],s_.q[hind_coord_[hl][1]],s_.q[hind_coord_[hl][2]],
+       (unsigned long long)hind_step_stand_ticks_[hl],(int)hind_step_mode_[1-hl],
+       (unsigned long long)hind_step_deadline_tick_[hl]);} // the tables pose vs the actuals: WHERE the next fire gap comes from
+#endif
+     }}}}
 
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
   // The source model's POSTURE CONTROL (the pinned fulltext: the trunk pitch
@@ -2229,7 +2283,21 @@ class GaitWalker {
       // evaluation -- a static vertical demand until the band clears.
       double g1=gap_of(e,hind_heel_pt_[hl]),g2=gap_of(e,hind_mp_pt_[hl]);
       if((g1<g2?g1:g2)>kTouch+kReleaseBand){hind_step_held_[hl]=false;hind_step_clear_tick_[hl]=(int)ticks_;}
-      else{++hind_step_hold_ticks_[hl];++hind_step_stall_[hl];}}
+      else{++hind_step_hold_ticks_[hl];++hind_step_stall_[hl];}
+#ifdef GAIT_EVENT_TRACE
+      // WAVE 45 HOLD-CLEARANCE INSTRUMENT (read-only plumbing, receipt_wave45.json):
+      // the release band's OWN decision view -- the heel/MP gaps the release test
+      // reads, the band edge (the machinery's own constants), the held state after
+      // the test (hd=0 marks THE CROSSING TICK), the hold census clock, the glide
+      // clock pre-increment (the td test this tick evaluates tm+1 >= tair), the
+      // clear tick, the other leg's mode, the deadline. One line per held tick.
+      std::fprintf(stderr,"[dvfl] t=%llu leg=%zu g1=%.9e g2=%.9e edge=%.1e hd=%d ht=%llu tm=%.1f clr=%d oth=%d dl=%llu\n",
+       (unsigned long long)ticks_,hl,g1,g2,kTouch+kReleaseBand,hind_step_held_[hl]?1:0,
+       (unsigned long long)hind_step_hold_ticks_[hl],hind_step_t_[hl],
+       hind_step_clear_tick_[hl],(int)hind_step_mode_[1-hl],
+       (unsigned long long)hind_step_deadline_tick_[hl]);
+#endif
+     }
      ++hind_step_t_[hl];
      // THE GLIDE-RETURN LAW (wave 31, receipt_wave31.json): A REPLANT IS NOT
      // COMPLETE UNTIL THE BAND ENTRY. The wave-28..30 clocked TD delivered the
