@@ -53,3 +53,4 @@ tools/science_funnel/data/visible_monkey/** -text -whitespace
 # boot): checkout bytes == committed bytes, or the pin is a lie (the CRLF
 # lesson; lane slice-real-body-20260920).
 tools/playable_slice/*.obj -text -whitespace
+tools/playable_slice/*.glb -text -whitespace

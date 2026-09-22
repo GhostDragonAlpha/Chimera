@@ -67,6 +67,26 @@ BODY_OBJ = HERE / "standing_body.obj"
 BODY_MANIFEST = (ROOT / "tools/science_funnel/data/morphosource_ct/"
                  "meshes_body_20260922/body_manifest.json")
 
+# THE BOOT CACHE (lane mesh-parse-20260920): admission-time preprocessing.
+# The engine's import contract owns TWO front doors (importer.hpp): kind 'O'
+# (OBJ text) and kind 'G' (glTF 2.0 / GLB binary). The text->raw conversion
+# is what costs the minutes at cap scale -- measured (that lane's instrument,
+# idle machine): parse_obj 59.2-66.8 s of a 59.3-67.0 s import (99.8%),
+# finish() 0.12-0.14 s. So the conversion is done ONCE, offline, from the
+# pinned payload, and the boot posts the derived GLB through the SAME
+# finish(): the closure law, the cap, and the by-name refusals run on every
+# import exactly as before -- the cache removes no check. The ghost's text
+# build (the boot's second term, 7.92 s measured by slice_real_body_20260920)
+# gets the same treatment: the exact derived bytes, pinned. Refusals: a cache
+# file whose sha drifts from its pin, or a cache whose derivation inputs no
+# longer hash to the recorded digest, is refused BY NAME -- never a stale
+# boot. A MISSING cache falls back to an in-process fresh derivation
+# (deterministic, byte-identical -- measured x3 -- and visibly recorded as
+# the route in the boot record).
+BODY_GLB = HERE / "standing_body.glb"
+GHOST_CACHE = HERE / "ghost_standing.obj"
+BOOT_CACHE_MANIFEST = HERE / "boot_cache_manifest.json"
+
 
 def sha256(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
@@ -116,6 +136,126 @@ def build_real_body() -> tuple[bytes, dict]:
            "sha256": pin["sha256"],
            "under_cap": True}
     return obj, rec
+
+
+# ── 1b. THE IMPORT CACHE: the payload's text->raw conversion, done once ──────
+
+def derive_import_glb(obj: bytes) -> bytes:
+    """The pinned payload's OBJ subset -> glTF 2.0 GLB container (the engine's
+    own kind-'G' front door): f32 VEC3 POSITIONs + u32 indices, same order,
+    same values -- decimal -> double -> float32 round-to-nearest on BOTH
+    routes (parse_obj's sscanf and this conversion), so parse_gltf hands
+    finish() the identical RawMesh parse_obj would. Deterministic; measured
+    byte-identical output x3 (lane mesh-parse_20260920). Refuses BY NAME on
+    the one structural trap: a negative-zero coordinate on an axis whose
+    bbox center is exactly zero -- parse_gltf's identity node transform folds
+    -0.0 to +0.0 before finish()'s centering, and a zero center would let
+    that sign bit survive into the resident mesh (measured on the pinned
+    payload: one negative zero, on z, whose center is 0.14919201 -- no bit
+    changes; the parity fence proves it on the whole body anyway)."""
+    import array as _array
+    import struct as _struct
+    pos = _array.array("f")
+    idx = _array.array("I")
+    if pos.itemsize != 4 or idx.itemsize != 4:
+        raise RuntimeError("derive_import_glb: array itemsize is not 4")
+    nverts = 0
+    neg_zeros = []                       # (axis, vertex index)
+    for line in obj.decode("ascii").split("\n"):
+        parts = line.split()
+        if not parts or parts[0] == "#":
+            continue
+        if parts[0] == "v" and len(parts) >= 4:
+            for axis in (0, 1, 2):
+                v = float(parts[1 + axis])
+                if v == 0.0 and math.copysign(1.0, v) < 0.0:
+                    neg_zeros.append((axis, nverts))
+                pos.append(v)
+            nverts += 1
+        elif parts[0] == "f":
+            corners = []
+            for tok in parts[1:]:
+                vi = int(tok.split("/")[0])
+                corners.append(vi - 1 if vi > 0 else nverts + vi)
+            for k in range(1, len(corners) - 1):
+                idx.append(corners[0])
+                idx.append(corners[k])
+                idx.append(corners[k + 1])
+    if nverts == 0 or len(idx) < 3 or len(idx) % 3 != 0:
+        raise ValueError("derive_import_glb: payload has no triangles")
+    if max(idx) >= nverts:
+        raise ValueError("derive_import_glb: index out of vertex range")
+    # finish()'s per-axis center is 0.5*(lo+hi) in f32; recompute it here and
+    # refuse the negative-zero/zero-center combination before it can bite
+    lo = np.array([min(pos[0::3]), min(pos[1::3]), min(pos[2::3])],
+                  dtype=np.float32)
+    hi = np.array([max(pos[0::3]), max(pos[1::3]), max(pos[2::3])],
+                  dtype=np.float32)
+    ctr = (0.5 * (lo + hi)).astype(np.float32)
+    for axis, _vi in neg_zeros:
+        if ctr[axis] == 0.0:
+            raise ValueError(
+                "derive_import_glb: negative-zero coordinate on axis %d whose "
+                "center is exactly zero -- the 'G' identity transform would "
+                "break byte parity; record the gap, do not cache" % axis)
+    pos_blob = pos.tobytes()
+    idx_blob = idx.tobytes()
+    bin_len = len(pos_blob) + len(idx_blob)
+    bin_pad = b"\x00" * ((-bin_len) % 4)
+    gltf = {
+        "asset": {"version": "2.0",
+                  "generator": "chimera.mesh_parse_20260920 admission cache"},
+        "scene": 0, "scenes": [{"nodes": [0]}],
+        "nodes": [{"mesh": 0}],
+        "meshes": [{"primitives": [{"attributes": {"POSITION": 0},
+                                    "indices": 1}]}],
+        "buffers": [{"byteLength": bin_len + len(bin_pad)}],
+        "bufferViews": [
+            {"buffer": 0, "byteOffset": 0, "byteLength": len(pos_blob)},
+            {"buffer": 0, "byteOffset": len(pos_blob),
+             "byteLength": len(idx_blob)}],
+        "accessors": [
+            {"bufferView": 0, "componentType": 5126, "count": nverts,
+             "type": "VEC3",
+             "min": [float(lo[0]), float(lo[1]), float(lo[2])],
+             "max": [float(hi[0]), float(hi[1]), float(hi[2])]},
+            {"bufferView": 1, "componentType": 5125, "count": len(idx),
+             "type": "SCALAR"}],
+    }
+    js = json.dumps(gltf, separators=(",", ":")).encode("ascii")
+    js_pad = b" " * ((-len(js)) % 4)
+    total = 12 + 8 + len(js) + len(js_pad) + 8 + bin_len + len(bin_pad)
+    out = _struct.pack("<4sII", b"glTF", 2, total)
+    out += _struct.pack("<I4s", len(js) + len(js_pad), b"JSON") + js + js_pad
+    out += (_struct.pack("<I4s", bin_len + len(bin_pad), b"BIN\x00")
+            + pos_blob + idx_blob + bin_pad)
+    return out
+
+
+def _load_body_import(obj: bytes, rec: dict) -> tuple[str, bytes]:
+    """The import payload the boot posts: the pinned derived GLB ('cache'),
+    or the same bytes derived in-process ('fresh' -- a missing cache pays the
+    conversion once, ~seconds, and says so). A cache that EXISTS but lies --
+    file bytes off its pin, or derived_from a different payload -- is
+    refused by name, exactly like payload-pin drift. The scene sha stays the
+    OBJ payload's sha either way: the pin is about which body, not which
+    encoding of it."""
+    if not BOOT_CACHE_MANIFEST.is_file():
+        return "fresh", derive_import_glb(obj)
+    man = json.loads(BOOT_CACHE_MANIFEST.read_text(encoding="utf-8"))
+    entry = man.get("import_glb")
+    if entry is None:
+        return "fresh", derive_import_glb(obj)
+    if entry["derived_from"]["payload_sha256"] != rec["sha256"]:
+        raise RuntimeError("scene_boot: boot cache derived_from a different "
+                           "payload than the pinned one -- refusing by name")
+    if BODY_GLB.is_file():
+        raw = BODY_GLB.read_bytes()
+        if sha256(raw) != entry["sha256"]:
+            raise RuntimeError("scene_boot: standing_body.glb drift vs "
+                               "boot_cache_manifest.json pin")
+        return "cache", raw
+    return "fresh", derive_import_glb(obj)
 
 
 # ── 2. THE GHOST: the committed standing skeleton, full preview resolution ──
@@ -205,7 +345,9 @@ def build_standing_layer_cached():
     return _LAYER_CACHE
 
 
-def build_ghost_obj():
+def _build_ghost_obj_fresh():
+    """The ghost bytes through the unchanged compose (the ONLY source of
+    truth; the cache below is a pinned copy of this output)."""
     verts, tris, rec = build_standing_layer_cached()
     out = io.BytesIO()
     out.write(b"# chimera.playable_slice DECLARED[ghost_standing_pose] visual overlay\n")
@@ -215,6 +357,50 @@ def build_ghost_obj():
     np.savetxt(out, verts, fmt="v %.6f %.6f %.6f")
     np.savetxt(out, tris + 1, fmt="f %d %d %d")
     return out.getvalue(), rec
+
+
+def _ghost_cache_drift(entry: dict) -> str | None:
+    """Why the ghost cache may not be served, or None. Two pins: the
+    composition's cheap named inputs (pose of record + the exact file set the
+    compose opened at derivation time -- a changed input means a STALE cache,
+    which is a refusal, never a serve) and, in the caller, the output bytes
+    sha (a corrupted cache file)."""
+    pose_sha = sha256(POSE_JSON.read_bytes())
+    if pose_sha != entry["compose_record"]["pose_json_sha256"]:
+        return "pose of record changed since the cache was derived"
+    for rel in entry.get("compose_inputs", []):
+        p = ROOT / rel["path"]
+        if not p.is_file():
+            return "compose input missing: " + rel["path"]
+        if sha256(p.read_bytes()) != rel["sha256"]:
+            return "compose input changed: " + rel["path"]
+    return None
+
+
+def build_ghost_obj():
+    """The ghost bytes: the committed cache (pinned, compose-input-audited)
+    loads in milliseconds; a MISSING cache or manifest derives fresh through
+    the unchanged compose; a cache whose output pin or input digest drifts is
+    REFUSED BY NAME (stale bytes are a lie about the body, not a slow boot).
+    Byte-identical either way -- measured x3 (lane mesh-parse-20260920)."""
+    entry = None
+    if BOOT_CACHE_MANIFEST.is_file():
+        man = json.loads(BOOT_CACHE_MANIFEST.read_text(encoding="utf-8"))
+        entry = man.get("ghost_obj")
+    if entry is not None and GHOST_CACHE.is_file():
+        why = _ghost_cache_drift(entry)
+        if why:
+            raise RuntimeError("scene_boot: ghost cache refused: " + why)
+        raw = GHOST_CACHE.read_bytes()
+        if sha256(raw) != entry["sha256"]:
+            raise RuntimeError("scene_boot: ghost_standing.obj drift vs "
+                               "boot_cache_manifest.json pin")
+        rec = dict(entry["compose_record"])
+        rec["ghost_source"] = "cache"
+        return raw, rec
+    out, rec = _build_ghost_obj_fresh()
+    rec["ghost_source"] = "fresh_compose"
+    return out, rec
 
 
 # ── the engine front (tiny, own-port law) ───────────────────────────────────
@@ -271,12 +457,17 @@ def wait_engine(url: str, timeout: float = 60.0) -> None:
 def boot_standing_start(engine_url: str) -> dict:
     """Import THE REAL BODY (the committed repaired + decimated skeleton) and
     arm the movement law. DETERMINISTIC: committed bytes, same import bytes
-    every call (the basis of F-SLICE-RESTART)."""
+    every call (the basis of F-SLICE-RESTART). The import rides the boot
+    cache: the derived GLB through the engine's kind-'G' door (same finish(),
+    same closure law); rec["import_route"] names cache vs fresh, and
+    rec["scene_sha256"] STAYS the pinned OBJ's sha -- the pin says which body,
+    not which encoding of it."""
     obj, rec = build_real_body()
-    # the real body's parse costs minutes on this machine (measured this lane:
-    # 130-238 s, variable with load, for the pinned 499,976-tri payload) --
-    # the capsule's 180 s default cut the boot off mid-parse
-    res = http_post(engine_url, "/mesh_import", b"O" + obj, timeout=900)
+    route, payload = _load_body_import(obj, rec)
+    # timeout 900 stays the boot's own safety net: the cached import measures
+    # in seconds (lane mesh-parse-20260920), the fresh fallback pays only the
+    # in-process conversion, and a refused import must never be a timeout
+    res = http_post(engine_url, "/mesh_import", b"G" + payload, timeout=900)
     if not res.get("ok"):
         raise RuntimeError("scene_boot: import refused: " + str(res.get("error")))
     # THE MOVEMENT LAW, armed: gravity + ground contact on the root
@@ -286,6 +477,8 @@ def boot_standing_start(engine_url: str) -> dict:
     if not g.get("ok"):
         raise RuntimeError("scene_boot: gravity refused: " + str(g.get("error")))
     rec["scene_sha256"] = sha256(obj)
+    rec["import_route"] = route
+    rec["import_bytes"] = len(payload)
     rec["import_stats"] = {k: res[k] for k in res if k != "ok"}
     rec["gravity_armed"] = bool(g.get("gravity_on"))
     return rec
