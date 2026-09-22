@@ -1,0 +1,36 @@
+THE OBS-POPULATE MINE -- F1 SEPARATION (preregistered before the delivery build)
+trace: E:\ChimeraWork\obspop-agent\.tmp\obspop\audit\audit_stderr.txt
+======================================================================================================================================================
+trace sha256: c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481 | anchor: True
+ticks parsed: 302 | refusal: (302, 'gait_positional_correction_budget')
+------------------------------------------------------------------------------------------------------------------------------------------------------
+CONTROL (the interface-freeze mine verbatim): 277 distinct observations; 13 bit-identical groups covering 38 ticks; 21 aliased pairs; 13 context-only
+CONTROL vs the pinned aliased_pairs.json (pairs+reasons+census byte-equal): True
+------------------------------------------------------------------------------------------------------------------------------------------------------
+DELIVERY: body_velocity group declared on 302 records; field 21 com_vel_x_heading delivered on 301/302 ticks (t0 has no predecessor -- masked, mean fill, per the group_delivery rule)
+TREATMENT (delivered): 302 distinct observations; 0 bit-identical groups covering 0 ticks; 0 aliased pairs; 0 context-only
+  PAIR (8,38): separated=True | delivered 0.662700 vs 0.648900 m/s (delta -1.38e-02) | via com_vel_x_heading | clauses: body_advance+pad_deformation
+  PAIR (8,39): separated=True | delivered 0.662700 vs 0.651000 m/s (delta -1.17e-02) | via com_vel_x_heading | clauses: body_advance+pad_deformation
+  PAIR (9,38): separated=True | delivered 0.660900 vs 0.648900 m/s (delta -1.20e-02) | via com_vel_x_heading | clauses: body_advance+pad_deformation
+  PAIR (9,39): separated=True | delivered 0.660900 vs 0.651000 m/s (delta -9.90e-03) | via com_vel_x_heading | clauses: body_advance+pad_deformation
+  PAIR (11,38): separated=True | delivered 0.656700 vs 0.648900 m/s (delta -7.80e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (11,39): separated=True | delivered 0.656700 vs 0.651000 m/s (delta -5.70e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (14,38): separated=True | delivered 0.651900 vs 0.648900 m/s (delta -3.00e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (14,39): separated=True | delivered 0.651900 vs 0.651000 m/s (delta -9.00e-04) | via com_vel_x_heading | clauses: body_advance
+  PAIR (23,38): separated=True | delivered 0.643500 vs 0.648900 m/s (delta 5.40e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (23,39): separated=True | delivered 0.643500 vs 0.651000 m/s (delta 7.50e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (24,38): separated=True | delivered 0.642600 vs 0.648900 m/s (delta 6.30e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (24,39): separated=True | delivered 0.642600 vs 0.651000 m/s (delta 8.40e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (27,38): separated=True | delivered 0.638400 vs 0.648900 m/s (delta 1.05e-02) | via com_vel_x_heading | clauses: body_advance
+  PAIR (27,39): separated=True | delivered 0.638400 vs 0.651000 m/s (delta 1.26e-02) | via com_vel_x_heading | clauses: body_advance
+  PAIR (29,38): separated=True | delivered 0.639000 vs 0.648900 m/s (delta 9.90e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (29,39): separated=True | delivered 0.639000 vs 0.651000 m/s (delta 1.20e-02) | via com_vel_x_heading | clauses: body_advance
+  PAIR (12,25): separated=True | delivered 0.655500 vs 0.641100 m/s (delta -1.44e-02) | via com_vel_x_heading | clauses: touch_pattern
+  PAIR (18,33): separated=True | delivered 0.647100 vs 0.642000 m/s (delta -5.10e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (19,34): separated=True | delivered 0.646500 vs 0.643200 m/s (delta -3.30e-03) | via com_vel_x_heading | clauses: body_advance
+  PAIR (20,35): separated=True | delivered 0.645000 vs 0.644700 m/s (delta -3.00e-04) | via com_vel_x_heading | clauses: body_advance
+  PAIR (40,54): separated=True | delivered 0.648300 vs 0.556800 m/s (delta -9.15e-02) | via com_vel_x_heading | clauses: body_advance
+thinest separation margin: pair (20,35) at 3.00e-04 m/s
+------------------------------------------------------------------------------------------------------------------------------------------------------
+mask census after delivery: com_vel_x_heading available on 301/302 ticks; never-available fields now 52 (was 54)
+F1 SEPARATION VERDICT: GREEN -- all 21 aliased pairs separate with the delivered field 21; zero survivors; zero new aliased pairs; the control census is reproduced exactly.
