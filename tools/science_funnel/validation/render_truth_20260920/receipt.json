@@ -1,0 +1,51 @@
+{
+ "schema": "chimera.render_truth.v1",
+ "lane": "lane/render-truth-20260920",
+ "base_commit": "ae1b4599",
+ "date": "2026-09-20",
+ "agent_trailer": "Agent: rendertruth",
+ "theory": "rendering the UNCHANGED GLB payload as SHADED TRIANGLES in the page's own WebGL2 draw path -- one connected surface, fixed-light lambert, backface culling on, the body framed by the page's own client camera -- makes the real CT body read as ONE CONNECTED ANIMAL with identifiable head/torso/limbs to the blind judge at 384 px, without moving any physics byte and without breaking the stranger layer",
+ "fixes_finding": "realbody_movie_20260920 F3 RED verbatim (lane realbody-movie-20260920): the blind judge read SEPARATE FLOATING PARTS -- 'an amorphous, chaotic tangle of lines rather than a distinct shape with a head, torso, and limbs' -- because the body does not resolve into surfaces at judge scale",
+ "prereg": "record.md (this directory), committed before any render code",
+ "route": {
+  "chosen": "webgl-glb-index-buffer (the mission's preferred route)",
+  "why": "the page already owns the triangle path (MESH_P fixed-light lambert, drawElements TRIANGLES); the committed standing_body.glb is ALREADY position+index (mesh-parse lane proved bit parity with the engine's topology route), so the page can upload the index buffer ONCE at load from the GLB's BIN chunk and keep the live /api/verts stream as the vertex source; a display-LOD decimation is NOT needed because WebGL rides the proven capture path (the canvas's own toDataURL in the same JS task as the page's draw(); bundled chromium + --enable-gpu --enable-unsafe-swiftshader, the movie lane's AMENDMENT 2 measurements)",
+  "named_defects_fixed": [
+   "no backface culling in the page's draw(): thin bones draw front and back faces plus interior geometry -- at 384 px the surface collapses into the 'chaotic tangle of lines' the judge named",
+   "the index buffer rides a late engine round trip (/api/topology only after first verts); the GLB index buffer is uploadable at page load, /api/topology kept as the named fallback",
+   "judge-scale framing: the page default cam.dist=2.2 puts the 0.605 m body at ~18% of frame height (measured in the finding's own frames); framing is the page's OWN client camera (zoom keys reach 0.5), set as a recorded runtime view state -- the movie lane's recorded precedent"
+  ],
+  "untouched": ["ChimeraEngine/", "gait_controller.hpp", "gait_* validation", "standing_body.glb bytes", "standing_body.obj bytes", "ghost_standing.obj bytes", "the scene pin", "the physics (root law, gravity, contact)"]
+ },
+ "pins_baseline": {
+  "standing_body.glb_sha256": "adb6aff2babbf2cd2745004b2f51150d3a3f47e55b2ce3b8e63b3c0d595dbae5",
+  "standing_body.obj_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "ghost_standing.obj_sha256": "d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d",
+  "scene_pin_expectation": "scene sha256 == the payload pin bc9033bf...9111 in every boot"
+ },
+ "predictions": {
+  "P-JUDGE": "the judge names at least 2 body parts (head/torso/limbs class) and drops the floating-parts / separate-line class entirely",
+  "P-BOOT": "boot stays in the cached seconds class: t_first_verts < 10 s (~2 s expected; +2 s worst case covers the one-time page-side 6 MB index upload at page load; never a per-frame serialization)",
+  "P-FPS": "capture sustains 15-25 fps through the established toDataURL same-task loop at 640x360"
+ },
+ "falsifiers": {
+  "F-CONNECTED": "the judge bar: re-run the movie machinery through the REAL page, same choreography classes (settle/carry/fall), the SAME blind judge (ollama qwen3.8, think:false, 12 ordered 384 px frames, ONE senses.watch call, blind prompt). PASS iff the verbatim verdict names a single connected creature AND identifiable body parts (head/torso/limbs class) AND never uses the floating-parts/separate-line class. VERBATIM recording, no re-roll, no prompt-tuning.",
+  "F-PAYLOAD-INVARIANT": "GLB bytes + OBJ payload bytes + ghost bytes shas unchanged; scene pin == payload pin in every boot; git diff of ChimeraEngine/ empty vs ae1b4599; any LOD is NOT built (none needed).",
+  "F-STRANGER-REGRESSION": "the stranger walkthrough (committed instrument, re-targeted to this worktree) re-runs GREEN after the render change: 13/13 named keys by key path, beacon 0, harness console 0, restart clean (pill, boot counter 1->2, pin stable, re-settles), first action < 60 s. 1x minimum.",
+  "F-BUDGETS": "boot t_first_verts < 10 s (index upload ONCE at page load, never per frame); capture fps >= 15 sustained; ZERO console-class errors / page errors / failed requests during capture."
+ },
+ "judge_protocol": {
+  "identical_to": "realbody_movie_20260920/rbmovie_judge.py (ollama qwen3.8, think:false, num_ctx sized by senses.py's ollama-branch math, 12 ordered 384 px LANCZOS resizes of evenly spaced captured frames, frame->movie mapping + shas recorded, verdict VERBATIM)",
+  "prompt": "the realbody-movie lane's prompt UNCHANGED (blind: names neither the body's origin, nor 'CT', nor 'macaque', nor the expected verdict)",
+  "no_reroll_law": "a RED F-CONNECTED after the fix is recorded as the finding it is and is never re-rolled with a re-worded prompt"
+ },
+ "choreography": "the slice's OWN endpoints and constants: settle (the boot's own physics), /api/send (MOCK[mock_carry], 1.2 m at 0.4 m/s), hold at the marker, /api/drop_test (THE FALL TEST, real engine law); the restart segment excluded exactly as the movie lane's AMENDMENT 1 recorded (restarts drive the slice's own designed 502-during-boot class); mission choreography classes settle/carry/fall",
+ "view_states_for_capture": {
+  "law": "runtime view states of the page's own client, recorded; no page file edit carries them",
+  "camera": "the page's own orbit/zoom camera, set closer than the 2.2 default so the body fills the frame at judge scale (the finding names judge-scale readability); bounded below by the page's own zoom floor 0.5",
+  "ghost_overlay": "hidden during capture exactly as the movie lane recorded (the declared double rides the same root and speckles the subject); the stranger layer itself untouched and re-verified by the walkthrough"
+ },
+ "run_plan": "prereg (committed) -> vertex-stream data probe -> the render fix in the page's existing draw path (GLB index buffer + culling; additive server route) -> framing probe frames -> capture + blind judge (F-CONNECTED) -> regressions (walkthrough 1x, boot bar, fps, zero errors) -> encode real_body_slice_v2.mp4 at the measured cadence -> copies (repo CHIMERA_PROOF/REAL_BODY_SLICE/, this lane dir, desktop CHIMERA_PROOF/REAL_BODY_SLICE/) -> receipt per-falsifier with the verdict VERBATIM -> commits -> push ONLY this lane branch",
+ "verdicts": "PENDING (filled only from measurements recorded beside this file)",
+ "pass": null
+}
