@@ -77,4 +77,33 @@ under test.
   front-matter only and cannot carry the Methods statement). P-CONST measured
   true at the boundary of its predicted band (1.10 in 1.10-1.112). No pass rate
   was seen at this constant before registration (F2 order held).
+- law re-run at the registered constant (`laws_registered.py` -> laws_registered.json,
+  sha256 9d9a40cee863217286f60f2f49374651881fb8fedd9feb9d24b636ea816cf414, 3-run
+  byte-identical): **F1 LAW-STILL-FAILS — FIRED**. Pass rate 146/218 = 66.97% << 90%
+  floor (P-RATE's predicted 90-98% is MEASURED FALSE; reported, not tuned).
+  What the constant DID fix: dev p50 0.88% (was 3.77% at the inherited 1060 — the
+  median row now closes at the paper's stated arithmetic), p25 0.19%; 202/218 (92.7%)
+  land within the 10% descriptive band. The residual structure is sharp and
+  interpretable: **67 of 72 failing rows have mass < 2 g** — the small intrinsic hand
+  muscles (APB, ODM, ADM, Anc, C5, LUMB, OPP, FPB, FDM...), exactly the muscles the
+  paper itself says it could NOT volume-measure by submersion ("we calculated the
+  muscle density only for the extrinsic muscles") — their printed 1-decimal mass
+  register (±0.05 g on 0.1-2.0 g) cannot carry 2%-closure arithmetic. Only 5 large-mass
+  rows fail (B 11.7 g, Bb 34.1 g, DET 8.6 g, ECU 4.6 g, CB 1.5 g — 4 of them Mm2
+  upper-arm/shoulder rows, implied rho 0.87-1.07). Per-specimen: Mm2 16/35 and Mm7
+  14/27 pass (the worst), Mm3/Mm4 27/34, 27/33 (the best). 15 rows pass at the
+  inherited 1060 but not at 1.1 — implied rho 1.045-1.077, i.e. the funnel's constant
+  was fitting the rounding tail of small muscles, not the source's arithmetic. Deviation
+  classes (descriptive, prereg-declared): law_pass 146, moderate_register_unrounded 56,
+  large_per_row_structure 16; named suspects (large band) listed individually with
+  values + implied rho in laws_registered.json — the F3 pin holds, nothing changed.
+- gate semantics note (transparency): the first draft of laws_registered.py (written
+  pre-run) echoed the VTRANS lane's consequence string ("zero admission") in its
+  gate field; the committed PREREG is the binding instrument and its
+  admission_tiers_original dispose cells unconditionally (law-PASS rows ADMITTED,
+  FAIL rows REFUSED row_closure_violation), while F1's pre-registered consequence is
+  STOP-TUNING + report-structure. The gate string was corrected to prereg semantics
+  AFTER the run; the change touches a report string only — no constant, floor,
+  tolerance, tier, or verdict changed (measured numbers identical pre/post edit:
+  146/218 = 0.6697).
 
