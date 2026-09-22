@@ -1,0 +1,97 @@
+{
+ "schema": "chimera.ankle_adjudication.v1",
+ "lane": "ankle-adjudication-20260920",
+ "agent_trailer": "ankadj",
+ "branch": "lane/ankle-adjudication-20260920 @ a13a4d87 (k-fill close-out; inherited test battery 13/13 green at this head, re-run by this lane)",
+ "written_utc": "2026-09-20",
+ "written_before_first_gathering": true,
+ "note": "PRE-REGISTRATION. This file was written BEFORE this lane's first web gather and BEFORE the adjudication-table script ran. Every prediction is hand-derived from banked sha-pinned bytes; the only new arithmetic is bookkeeping on already-committed numbers. The measured block at the bottom is APPENDED AFTER the gathering; the preregistration is never edited.",
+ "mission": "Adjudicate the k-fill lane's F1 fork: derived ankle plantar capability 4.398653 N.m = 0.7434x the Oku walk demand 5.9171 N.m (ankle dorsal 0.573906 / 1.1202 = 0.5123x) while the SAME derived set covers knee 1.5975x and MTP 1.6495x. Candidates: (A) Guimaraes 2026 ankle PCSAs understate; (B) Oku walk-peak demand context-shifted for our animal; (C) deposit measured ankle arms wrong. Judge, never blend.",
+ "inputs_pinned": {
+  "k_fill_book": {
+   "path": "tools/science_funnel/validation/k_fill_20260920/k_fill_book.json",
+   "sha256": "252105017e5fd87728cea0ec77058c08c7244a66e2a78aeff7841296c57eb55c",
+   "consumed_for": "the finding under adjudication: capabilities, walk coverage, the one sigma, derived force set, rearup verdict"
+  },
+  "k_fill_receipt": {
+   "path": "tools/science_funnel/validation/k_fill_20260920/receipt.json",
+   "sha256": "1e3c69e3dbe646f5016327cb4bd01bf932e18232cd87ee8bffb0e61ecbd71f08",
+   "consumed_for": "the F1 record and its named cause; the preregistered bands"
+  },
+  "derived_numbers_snapshot": {
+   "path": "tools/science_funnel/validation/hind_torque_book_20260921/inputs/derived_numbers.snapshot.json",
+   "sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+   "consumed_for": "Oku walk per-muscle forces (before/after), body model 10.038 kg, GRF 1.0823 xBW, duty 0.6832, ankle plantar peak phase 25.0% of cycle, Froude 0.27"
+  },
+  "pennation_corrected_annotation": {
+   "path": "tools/science_funnel/validation/pennation_correction_20260921/macaque_assembly_force_annotated_pennation_corrected.json",
+   "sha256": "939e0d7a9f908a4664f6f756ad58928b12c52ec4b41c0c3aa7e75c9f777806ee",
+   "consumed_for": "per-muscle derived forces at sigma 0.30 MPa (PCSA, pennation, sheet row, specimen identity per row)"
+  },
+  "ankle_arms_book": {
+   "path": "tools/science_funnel/validation/ankle_arms_20260921/ankle_arms_book.json",
+   "sha256": "7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6",
+   "consumed_for": "the 17 measured deposit ankle-arm curves; the V1_S1 walk-force reproduction 6.247077 and triceps-only sub-envelope 5.318868 (the C-door test)"
+  },
+  "ankle_arms_receipt": {
+   "path": "tools/science_funnel/validation/ankle_arms_20260921/receipt.json",
+   "sha256": "06df272d97638597334a50b8076581839cfef2aade066a12bb7bf2577c91dee4",
+   "consumed_for": "the arm measurement law and named TP gap"
+  },
+  "hind_torque_book": {
+   "path": "tools/science_funnel/validation/hind_torque_book_20260921/hind_torque_book.json",
+   "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c",
+   "consumed_for": "the demand-side book (Oku walk peaks, node tables)"
+  },
+  "muscle_path_geometry_snapshot": {
+   "path": "tools/science_funnel/validation/hind_torque_book_20260921/inputs/muscle_path_geometry.snapshot.json",
+   "sha256": "ca0e890ec69e74d9589c08224d74e74defa53bbc058d371f784175cfca50cb22",
+   "consumed_for": "the rejected demand-side sigma fit (1.28091414 Pa) and its 8-group least-squares method (context for D2)"
+  },
+  "deposit_mass_book": {
+   "path": "tools/science_funnel/validation/deposit_mass_20260921/deposit_mass_book.json",
+   "sha256": "6779e5dc48c8ab93c29a0cd01852b6a4fa5a3f41aee90397525a58732cc0a8d6",
+   "consumed_for": "the deposit segment masses and expectation envelope (context of the 6.15 kg band midpoint)"
+  },
+  "deposit_mass_receipt": {
+   "path": "tools/science_funnel/validation/deposit_mass_20260921/receipt.json",
+   "sha256": "331f332e62b87356d82e0928a0b454ed2409ac02d315a665998e0bde89eef957",
+   "consumed_for": "the band-midpoint 6.15 kg convention (Turnquist & Kessler 1989 band 5.4-6.9 kg)"
+  },
+  "oku2021_xml": {
+   "path": "tools/science_funnel/validation/deposit_mass_20260921/literature/oku2021.xml",
+   "sha256": "e8e60ac390192ed6259d792d317d5c722a62ab23511a0efc653e95ff1a69eef0",
+   "consumed_for": "Oku 2021 experimental context (subjects, mass, speed, grade, phase) - D3"
+  },
+  "oku2021_esm_xlsx": {
+   "path": "tools/science_funnel/data/oku_bipedal/42003_2021_1831_MOESM2_ESM.xlsx",
+   "sha256": "0dd92e443bfc895eebb0e25c1304820adac67679b5989dfb7159f84407433185",
+   "consumed_for": "Oku 2021 supplementary tables (context only; read-only)"
+  }
+ },
+ "rule0": {
+  "statement": "The ankle-specific inconsistency has a decidable cause among A/B/C from: per-muscle force ratios, the cited physiological specific-tension range, Oku's experimental context, and Guimaraes' ankle-vs-knee PCSA methodology - or the honest verdict is UNDECIDED with the named measurement that would decide it.",
+  "prediction": "B (context-shifted demand) pre-named as the most likely primary cause: (1) knee/MTP cover on the same force set rules out any global constant; (2) the demand belongs to a 10.038 kg model animal while the capability rides the game's 6.15 kg mass-set animal (hand arithmetic: mass-scaled demand 3.62522 N.m linear, 2.9478 N.m geometric; coverage 1.2134x / 1.4919x COVERED). Secondary prediction: the shortfall is CONCENTRATED (SOL row 36.8507/214.99 = 0.1714x is the outlier; GAS 130.7047/125.8 = 1.0390x matches); predicted per-muscle spread >= 2x.",
+  "falsifiers": "F1-F5 in falsifiers_pre_registered."
+ },
+ "falsifiers_pre_registered": {
+  "F1_no_decision": "evidence cannot discriminate -> verdict UNDECIDED + the named measurement that would decide it (second measured-force study, or cadaver PCSA by dissection). An honest undecidable is a valid result.",
+  "F2_sweep_ban": "any tuning of sigma, PCSA, or pennation to close the 0.7434x gap FIRES the lane. Constants move only with new citations, never to fit demand. Reporting the mass context of a demand is comparison, not tuning; nothing any book consumes moves.",
+  "F3_traceability": "every number sha-pinned to a committed artifact or cited with DOI/PMCID; zero uncited constants",
+  "F4_determinism": "the adjudication-table script, 3 runs, byte-identical deliverable; sha256 in the measured block",
+  "F5_scope": "no source changes outside tools/science_funnel/validation/ankle_adjudication_20260920/ (unittest-asserted)"
+ },
+ "decisions_preregistered": {
+  "D1_discriminating_table": "per-muscle derived force vs Oku walk peak AND mean (before/after variants both reported); shared ankle classes only (SOL, GAS=MG+LG, FDL, TA, EDL); PL/PB/FHL/EHL have no Oku counterpart and are reported as such; concentration metric = spread max(ratio)/min(ratio) over shared plantar classes, predicted >= 2x",
+  "D2_sigma_honest": "gather the cited mammalian specific-tension range with citations; gap-closing diagnostic sigma = (5.9171/4.398653) x 0.30 MPa = 0.403542 MPa is NEVER adopted, only tested for containment; if contained, sigma is declared NON-DISCRIMINATING",
+  "D3_oku_context": "subject mass, speed, grade, duty, ankle-peak phase from the pinned oku2021.xml + banked snapshot; compared to the 6.15 kg band midpoint; phase is SUPPORTING only",
+  "D4_guimaraes_methods": "PCS A method for ankle vs knee rows in the same paper; predicted BEFORE the gather: uniform method (the repo closure law reproduces the SOL row: 0.01254/(1060 x 0.0953) = 1.2408e-4 m^2 vs sheet 1.24136e-4); any asymmetry FIRES the prediction and supports (A)",
+  "D5_arm_door": "closed (or not) on banked arithmetic only: V1_S1 6.247077/5.9171 = 1.0558x and triceps-only 5.318868/5.9171 = 0.8989x; the arms that carry Oku's own forces to within 5.6% of Oku's own torque cannot explain a 1.345x shortfall; this lane does not recompute arms",
+  "D6_consequence_not_edit": "the verdict names what the engine's force-set choice should consume without touching gait_controller.hpp, gait_* validation, first_skill_prestage_20260922/, master, or shared tooling"
+ },
+ "interpretation_matrix_preregistered": {
+  "concentrated_arms_ok_methods_uniform_sigma_excludes": "verdict leans B for the magnitude, with the architecture-side SOL-row conflict recorded as a named secondary (an A-flavor datum, not the primary cause)",
+  "uniform_sigma_contains": "sigma NON-DISCRIMINATING; UNDECIDED between B-as-context and A-as-constant unless the context table separates them",
+  "no_literature_reaches": "UNDECIDED + the named measurement (F1)"
+ }
+}
