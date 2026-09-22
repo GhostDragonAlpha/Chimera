@@ -1,0 +1,8 @@
+# Built binaries stay on disk, git carries source (recompile is minutes;
+# source is the truth). Banked gotcha 2026-09-22.
+*.o
+*.dll
+*.dll.bak
+*.exp
+*.lib
+__pycache__/

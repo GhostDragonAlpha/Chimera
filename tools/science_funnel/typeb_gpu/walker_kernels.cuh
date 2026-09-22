@@ -1,12 +1,12 @@
 // AUTO-TRANSLATED by numba2cu.py v4. Hand-fix scalar args where the compiler
 // names stragglers. Floordiv sites are positive-operand by inspection.
-// cu_total_q stands in for a_q.shape[0]: the host launches exactly ne = E
-// threads per grid, so the `e >= ne` guards are dead by construction.
+// cu_total_q stands in for a_q.shape[0]: a __device__ symbol the host sets to
+// E*18 at env_create (cudaMemcpyToSymbol), so the `e >= ne` tail-thread guards
+// fire exactly like numba's shape-based guards.
 #pragma once
 #include <cuda_runtime.h>
 #include <math.h>
-static const long long cu_total_q_ = 1073741824LL; /* unused; kept for reference */
-#define cu_total_q 1073741824LL /* shape[0] stand-in: grid launched exactly ne */
+__device__ long long cu_total_q = 1073741824LL;
 #define PI 3.141592653589793
 static const int OF_ax_axis = 0;
 static const int OF_ax_slope = 54;

@@ -811,13 +811,13 @@ for line in src.splitlines():
         consts.append(f"static const int {m.group(1)} = {m.group(2)};")
 header = """// AUTO-TRANSLATED by numba2cu.py v4. Hand-fix scalar args where the compiler
 // names stragglers. Floordiv sites are positive-operand by inspection.
-// cu_total_q stands in for a_q.shape[0]: the host launches exactly ne = E
-// threads per grid, so the `e >= ne` guards are dead by construction.
+// cu_total_q stands in for a_q.shape[0]: a __device__ symbol the host sets to
+// E*18 at env_create (cudaMemcpyToSymbol), so the `e >= ne` tail-thread guards
+// fire exactly like numba's shape-based guards.
 #pragma once
 #include <cuda_runtime.h>
 #include <math.h>
-static const long long cu_total_q_ = 1073741824LL; /* unused; kept for reference */
-#define cu_total_q 1073741824LL /* shape[0] stand-in: grid launched exactly ne */
+__device__ long long cu_total_q = 1073741824LL;
 #define PI 3.141592653589793
 """ + "\n".join(consts)
 DST.write_text(header + "\n\n" + "\n\n".join(funcs) + "\n", encoding="utf-8")
