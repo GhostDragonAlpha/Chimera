@@ -1,0 +1,211 @@
+"""Generate the cert-dryrun-20260920 Rule-0 prereg receipt.json (frozen rule_0 sha).
+
+Run once at prereg time; the receipt is then append-only in `measured`.
+"""
+import hashlib
+import json
+import os
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+rule_0 = {
+  "statement": ("THE FIRST FULL PRODUCTION-CLASS COMPATIBILITY CERTIFICATE ISSUES END-TO-END ON "
+    "EXISTING MACHINERY: the out-of-tree snapshot instrument's engine walk path (ship-fenced) is "
+    "the physics of record, the four restart-state gaps ride the snapshot-apis readers' proofs, the "
+    "P3 dummy actor binds the policy component, and the validator issues the production class clean "
+    "(validator exit 0, deploy ALLOW for the matching 5-tuple) -- AND REJECTS EVERY TAMPERED RE-ISSUE "
+    "(bumped state hash, swapped normalization constant, stale build id: 3/3 rejected; the clean "
+    "re-issue validates -- no false positive). A description ('this machinery can issue a production "
+    "certificate') survives any result; THIS theory can lose: F1 kills it if the validator blocks the "
+    "clean certificate, F2 kills it if any tampered re-issue passes."),
+  "prediction": {
+    "check1_checkpoint_resume": ("the tick-150 bit-identity REPRODUCES THROUGH THE CERTIFICATE PATH: "
+      "fresh-process ref runs byte-identical; the fresh-process restore's continuation equals the "
+      "uninterrupted tail tick-for-tick on state hashes AND action bytes (first diverging tick null), "
+      "refusal 302/gait_positional_correction_budget identical; the certificate's replay-evidence "
+      "hash chain is built from THESE per-tick hashes and verifies"),
+    "check2_cross_build": ("a fresh recompile of the instrument into an independent build tree "
+      "(byte-irrelevant rebuild: binary stamps MAY differ) reproduces the registered cases EXACTLY: "
+      "RC-1 ship-walk states/actions/snapshot/stdout/trace byte-identical across builds A and B; "
+      "RC-2 pinned-command-zoh stdout+trace byte-identical across builds A and B"),
+    "check3_requal_shape": ("the action-replay refusal holds everywhere: the runner's requalify "
+      "refuses precomputed actions and the action_replay mode (2 probes), and the engine path exposes "
+      "NO channel that accepts a pre-recorded action stream (the engine CLI action-replay probe is "
+      "refused before any step); the actor leg's six gates green on the declared CPU scene"),
+    "tamper_suite": ("all 3 tampered re-issues REJECTED: T1 bumped state hash (cert_hash recomputed, "
+      "self-consistent forgery) -> evidence-chain mismatch; T2 swapped normalization constant -> "
+      "compat_key-vs-relation mismatch at the validator AND a deploy BLOCK against the frozen-loader "
+      "request; T3 stale build id -> the same two-layer rejection; the clean re-issue validates with "
+      "ZERO violations and deploys ALLOW"),
+  },
+  "falsifiers": {
+    "F1_ISSUANCE_FAIL": ("validate_certificate(clean certificate) returns ANY violation, or the "
+      "production class is refused (an unresolved/unproven gap, an incomplete inventory, a chain or "
+      "cert_hash mismatch), or check_deploy does not ALLOW the matching 5-tuple request -- the report "
+      "names the blocking condition verbatim; FIRES."),
+    "F2_TAMPER_PASS": ("ANY tampered re-issue passes: a bumped state hash whose certificate still "
+      "validates, a swapped normalization constant that deploys against the frozen-loader request, or "
+      "a stale build id that validates or deploys -- THE GATE IS BROKEN; report loudly, never tuned "
+      "away; FIRES."),
+    "F3_IDENTITY_WEAKNESS": ("the physics build identity cannot be bound tighter than 'the "
+      "instrument's own build': no engine-provided build id exists on any state surface. The lane then "
+      "(a) binds the strongest available identity -- the engine source closure sha + the instrument "
+      "harness sha + the compiled binary stamp + the scene pin + the ship-byte anchors -- and (b) "
+      "records the engine-service gap for a first-class engine build id VERBATIM in the certificate's "
+      "registration; a certificate claiming MORE than 'instrument build, ship-fenced' FIRES."),
+    "F4_DETERMINISM": ("3 independent full pipeline runs produce BYTE-IDENTICAL canonical payloads "
+      "(certificate + check reports + tamper report; wall-clock never written to canonical bytes); "
+      "any run-to-run movement FIRES."),
+    "F5_SCOPE": ("the diff of this lane vs base f6787ebe touches ONLY "
+      "tools/science_funnel/validation/cert_dryrun_20260920/ and tools/policy_compat (+ its tests); "
+      "ANY ChimeraEngine/ edit, gait_* edit, master edit, or shared-tooling edit FIRES; the instrument "
+      "builds under .tmp/ (untracked), nothing tracked is built in place."),
+  },
+  "identity_binding": {
+    "build_id_convention": ('"engine-walk-instrument/" + first 16 hex of sha256(canonical json of '
+      '{closure, harness, scene_pin}) where closure = sorted (relpath, sha256) of the COMPILED source '
+      'closure (the instrument\'s engine header copies + gait_snap.cpp + gait_unit.cpp + json.hpp)'),
+    "closure_files": [
+      "instrument/native/ChimeraEngine/engine/gait_controller.hpp",
+      "instrument/native/ChimeraEngine/engine/coupled_articulation.hpp",
+      "instrument/native/ChimeraEngine/engine/earth_environment.hpp",
+      "instrument/native/ChimeraEngine/engine/force_models.hpp",
+      "instrument/native/ChimeraEngine/engine/tests_coupled_arm/gait_snap.cpp",
+      "instrument/native/ChimeraEngine/engine/tests_coupled_arm/gait_unit.cpp",
+      "instrument/native/ChimeraEngine/native/viewer3rd/json.hpp",
+    ],
+    "dormancy_proof_at_issuance": ("stripping every '#ifdef GAIT_SNAPSHOT_API .. #endif' block from "
+      "the copied gait_controller.hpp must equal the SHIPPED bytes; every other closure file must "
+      "byte-equal the shipped tree at base f6787ebe (coupled_articulation.hpp, earth_environment.hpp, "
+      "force_models.hpp, gait_unit.cpp, json.hpp verbatim; gait_snap.cpp = gait_unit.cpp + the "
+      "instrument blocks only)"),
+    "binary_stamps": ("sha256 of each build tree's gait_snap.exe (build A, build B); the stamps MAY "
+      "differ from each other -- byte-irrelevance is check 2's claim; the certificate binds the stamp "
+      "of the binary that executed its evidence"),
+    "scene_pin": "sha256(gait_scene.json) = f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 (regenerated + re-measured this lane)",
+    "ship_anchor_bindings": {
+      "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+      "trace_stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+      "plain_stderr_sha256": "b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab",
+    },
+    "what_it_binds_and_why_right": ("binds the exact source closure + binary that executed the "
+      "certificate's walk evidence; RIGHT for the engine walk path because the instrument's walk leg "
+      "is FENCED to the ship -- its stdout/trace bytes equal the wave-47 ship anchors with recording "
+      "active (the snapshot-apis F2 legs, re-measured by this lane; the LEG-A/LEG-B fence "
+      "live-verified from the bound proof receipt at issuance)"),
+    "what_it_does_not_bind": ("a ship-tree binary (none exists in this lane); the identity claim is "
+      "exactly 'instrument build, ship-fenced', never 'ship binary' -- the first-class engine build id "
+      "is the named forward gap"),
+  },
+  "registered_cases": {
+    "RC-1_ship_walk": {"schedule": None, "horizon": "the walk life (refusal-terminated; 302 recorded ticks)",
+      "refusal_face": "tick 302 class gait_positional_correction_budget (the ship budget; declared terminal face)",
+      "instruments": ["states.bin", "actions.bin", "snap_t150.bin", "manifest.json", "run.json", "stdout", "trace stderr"]},
+    "RC-2_pinned_command_zoh": {"schedule": "150:1.01", "vx_note": ("1.01 m/s = the walk's own measured "
+      "base speed (the derivation doc's measured gait); issued at the checkpoint tick 150, zero-order hold"),
+      "mode": "plain harness (the --snap-api parse pins argc==2; the command schedule lives at argv[2] of the plain form)",
+      "instruments": ["stdout (the F-G42 command census notes ride it)", "trace stderr"]},
+    "checkpoint_tick": 150,
+    "checkpoint_tick_derivation": ("inherited from the snapshot-apis receipt: the mid-hold tick of the "
+      "shipped ride/hold era [107,152), after the first full hind exchange era, >=150 comparable future "
+      "ticks before the ship refusal; frozen there before any run"),
+  },
+  "evidence_conventions": {
+    "state_hash": "sha256(canonical 4-class serialization body, 3089 B, one per tick) -- the snapshot-apis F1 instrument, unchanged",
+    "certificate_evidence": ("initial_snapshot_sha256 = the tick-0 state hash (the first recorded state "
+      "of the walk of record; convention declared); events = ticks 1..301, each {tick, kind 'state', "
+      "state_sha256, chain_sha256 = sha256(prev:tick:kind:state)}; final_state_sha256 = the tick-301 hash; "
+      "trajectory_sha256 = sha256(actions.bin) (last_torque_ 18 x f64 LE x 302); periodic_stride 1"),
+    "checkpoint_binding": ("the T=150 CHSNAP01 snapshot (header+body) + its 184-field manifest are bound "
+      "in the relation's physics_build; the restore proof is a monitor on the certificate"),
+    "refusal_state_note": ("the refusal state itself is never serialized: the walk refuses AT the step "
+      "boundary of tick 302; the recorded life is ticks [0,301]"),
+  },
+  "bars_and_margins": {
+    "bars": ("the six REQUIRED_SCOPE_BARS, measured GREEN on the actor leg (the upgate gates, unchanged) "
+      "and declared per-leg for the engine leg: bit-identity with the ship walk of record is the engine "
+      "leg's acceptance bound; the engine walk of record is the SHIP FACE -- including its own refusal "
+      "(302) and its own census reds (support_census min_contacts=1, sub2_ticks=46 in the ship's judged "
+      "window) -- byte-fenced; the certificate claims that face bit-identically and NOTHING greener"),
+    "non_regression_margins": [
+      {"name": "engine_walk_bit_identity", "quantity": ("differing bytes vs the ship walk of record "
+        "across states/actions/stdout/trace"), "bound": 0,
+       "derivation": ("the wave-47 ship anchor set is the human-authored reference (no reference, no "
+        "verdict); bit-identity is the tightest possible non-regression bound and the fence proves it "
+        "attainable at this base -- derived from the reference discipline, not tuned")},
+      {"name": "restore_resume_diverging_ticks", "quantity": ("first diverging tick of the restored "
+        "continuation (state hashes or action bytes)"), "bound": 0,
+       "derivation": ("the frozen-ref discipline: a restored future that diverges at ANY tick fires "
+        "F1 RESTORE-DRIFT; zero is the only passing value, derived from the definition of bit-identity")},
+      {"name": "crossbuild_openloop_max_dv", "quantity": "max|v_N1 - v_N| over the registered open-loop cases (actor leg)",
+       "bound": "derived_envelope().openloop_crossbuild_margin_m_s",
+       "derivation": "the upgate's geometric-sum derivation (scene_cpu.derived_envelope), unchanged"},
+    ],
+  },
+  "tamper_suite": {
+    "T1_bumped_state_hash": ("flip one hex of one event's state_sha256 and RECOMPUTE cert_hash (a "
+      "self-consistent forgery); the evidence chain must mismatch -> REJECTED"),
+    "T2_swapped_normalization_constant": ("swap relation.policy_bundle.normalization_clip 8.0 -> 8.5: "
+      "(a) as-stored (compat_key untouched) -> validator: 'compat_key does not match the relation'; "
+      "(b) fully self-consistent (compat_key + cert_hash recomputed) -> the deploy gate BLOCKS the "
+      "request built through the frozen P3 loader (the only legal construction of a deployment "
+      "request): compatibility key mismatch -> REJECTED at both layers"),
+    "T3_stale_build_id": ("relation.physics_build.build_id -> a stale id: (a) as-stored -> validator "
+      "key mismatch; (b) self-consistent -> deploy BLOCK against the true request -> REJECTED"),
+    "clean_reissue": ("the unmodified issuance must validate with ZERO violations and deploy ALLOW "
+      "(no false positive)"),
+  },
+  "forward_gaps_declared_now": {
+    "ship_tree_snapshot_route": ("the engine's state surface exposes no walker snapshot route (the "
+      "current HTTP surface is the renderer's /membrane + /frame); a ship-native GET/POST "
+      "/gait_snapshot returning the 4-class body would make the readers SHIP-native -- NAMED, NOT "
+      "IMPLEMENTED by this lane"),
+    "first_class_engine_build_id": ("no engine-provided build id exists on any state surface; the "
+      "certificate's identity is instrument-build-ship-fenced -- NAMED, NOT IMPLEMENTED by this lane"),
+    "actor_engine_coupling": ("no per-tick actor->engine channel exists (the command adapter is "
+      "schedule-granularity); coupling the dummy actor INTO the engine loop is future work -- NAMED, "
+      "NOT IMPLEMENTED by this lane"),
+  },
+  "no_trained_policy": ("the actor is the declared P3 dummy (64->128->128->8, frozen seeded weights); "
+    "NO trained policy exists; the certificate registers this as a dry run of the ISSUANCE machinery"),
+}
+
+conv = json.dumps(rule_0, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
+frozen = hashlib.sha256(conv).hexdigest()
+
+receipt = {
+  "schema": "chimera.cert_dryrun.v1",
+  "lane": "cert-dryrun-20260920",
+  "branch": "lane/cert-dryrun-20260920",
+  "base": "f6787ebe (SNAPSHOT-API post-commit F5 scope check CONFIRMED; verified: worktree E:/ChimeraWork/certdry-agent fresh on lane/cert-dryrun-20260920 @ f6787ebe)",
+  "date": "2026-09-20",
+  "agent": "GLM 5.3 (CERT-DRYRUN lane agent, git trailer Agent: certdry)",
+  "mission": ("the snapshot-apis lane's named successors (a)+(b) as ONE end-to-end issuance: the FIRST "
+    "full production-class compatibility certificate, dry-run with the P3 dummy actor, using ONLY "
+    "existing machinery (the out-of-tree instrument pattern; NO engine edits): bind the 5-tuple to the "
+    "real engine build's identity; rerun the upgrade-gate checks 1-3 ON the engine walk path through "
+    "the certificate path; issue the production-class certificate (validator exit 0) and register its "
+    "claims; prove the negative controls (3/3 tamper rejections + clean re-issue)."),
+  "pre_registration": {
+    "written_before_any_build": True,
+    "note": ("this file was committed BEFORE this lane's first instrument build, before any run of its "
+      "own; the measured section below is append-only; the rule_0 sha is frozen and re-verified at "
+      "every append"),
+    "rule_0": rule_0,
+    "frozen_rule_0_sha": frozen,
+    "frozen_rule_0_sha_convention": ("sha256 of json.dumps(rule_0, sort_keys=True, separators=(',',':'), "
+      "ensure_ascii=True) UTF-8 (the snapshot-apis convention)"),
+    "inherits": {
+      "snapshot_apis_receipt": "tools/science_funnel/validation/snapshot_apis_20260920/receipt.json",
+      "upgrade_gate_receipt": "tools/science_funnel/validation/upgrade_gate_20260920/receipt.json",
+      "p3_lane": "tools/science_funnel/validation/typeb_p3_20260921/",
+    },
+  },
+  "measured": {"appended_after_runs": False},
+  "pass": None,
+}
+out = os.path.join(HERE, "receipt.json")
+with open(out, "w", encoding="utf-8", newline="\n") as f:
+    json.dump(receipt, f, indent=2, ensure_ascii=False)
+    f.write("\n")
+print("frozen_rule_0_sha:", frozen)
