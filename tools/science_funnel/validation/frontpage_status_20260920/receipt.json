@@ -1,0 +1,28 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "frontpage-status-20260920",
+ "date": "2026-09-20",
+ "agent": "GLM 5.3 (trailer: Agent: frontpage)",
+ "base_commit": "5b2b7f89 (INTEGRATION PASS 5 receipt commit, the pass-5 master push of record; verified by rev-parse at worktree creation)",
+ "branch": "lane/frontpage-status-20260920",
+ "worktree": "E:/ChimeraWork/frontpage-agent",
+ "preregistration": {
+  "file": "record.md",
+  "committed_before_any_doc_edit": true,
+  "scope_declared": ["README.md", "docs/THE_SHIP_GOAL.md", "tools/science_funnel/validation/frontpage_status_20260920/"],
+  "falsifiers": {
+   "F1_UNVERIFIED_CLAIM": "any rendered statement whose cited receipt does not contain it -> FIRED; every claim listed in claims[] with receipt path + locator",
+   "F2_VOICE_BREAK": "any pre-existing README heading removed/renamed, or a redesign-scale diff -> FIRED",
+   "F3_HONEST_REDS": "the open reds (slice boot bar; rear-up NOT COVERED; ankle plantar 0.7434x UNDER; tick-cost cost-gap FIRED; vanhoof calibration STOP; mesh-parse + fk-reduction NOT merged) absent from the rendered docs -> FIRED",
+   "F4_DETERMINISM": "no doc build exists (plain markdown); the claims self-check re-runs with identical verdicts; any doc-build or re-run divergence -> FIRED",
+   "F5_SCOPE": "git status names any file outside the declared scope -> FIRED"
+  },
+  "briefing_corrections_measured_before_edit": [
+   "mesh_parse_20260920/ does not exist on master; lane/mesh-parse-20260920 NOT merged (integration_pass5_20260920/receipt.json evaluated_and_NOT_merged); the boot bar stands RED at 135.73 s vs the 10 s bar (slice_real_body_20260920 F-SLICE-LAUNCH); no 2.10 s figure exists on this tree",
+   "fk_reduction_20260920/ does not exist on master; lane/fk-reduction-20260920 local-only, no origin tip, not landed (integration_pass5_20260920/receipt.json local_only_not_on_origin)",
+   "'walking covered every joint' is NOT what the landed receipts say: knee 1.5975x and MTP 1.6495x COVERED, ankle plantar 0.7434x and dorsal 0.5123x UNDER (k_fill_20260920 F1 fired as pre-registered; ankle_adjudication_20260920 verdict B demand-side, nothing tuned)"
+  ]
+ },
+ "measured": "APPEND-ONLY — to be written after the edits and the mechanical claims self-check.",
+ "pass": null
+}
