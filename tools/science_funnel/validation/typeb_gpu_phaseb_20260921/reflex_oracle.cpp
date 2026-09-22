@@ -49,6 +49,8 @@ int main(int argc,char**argv){
    for(size_t i=0;i<nc;++i)std::printf(" %.17g",q[i]);
    for(size_t i=0;i<nc;++i)std::printf(" %.17g",v[i]);
    std::printf(" %.17g %.17g\n",d.phase(0),d.phase(1));
+   std::fprintf(stderr,"PT t=%d\n",t); // the tick marker: every decision line
+   // printed after it belongs to tick t (the controller stamps ticks_ = t).
    try{d.step();}catch(const Refusal&e){refused=e.what();refused_tick=t;break;}
   }
   std::printf("END refused=%s refused_tick=%d\n",refused.c_str(),refused_tick);

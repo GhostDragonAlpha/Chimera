@@ -1,11 +1,53 @@
 PROBE=walk ticks=303
 CONSTRUCTED
 CONFIGURED
+PT t=0
 [tick] 0
+PT t=1
+PT t=2
+PT t=3
+PT t=4
+PT t=5
+PT t=6
+PT t=7
+PT t=8
+PT t=9
+PT t=10
 [tick] 10
+PT t=11
+PT t=12
+PT t=13
+PT t=14
+PT t=15
+PT t=16
+PT t=17
+PT t=18
+PT t=19
+PT t=20
 [tick] 20
+PT t=21
+PT t=22
+PT t=23
+PT t=24
+PT t=25
+PT t=26
+PT t=27
+PT t=28
+PT t=29
+PT t=30
 [tick] 30
+PT t=31
+PT t=32
+PT t=33
+PT t=34
+PT t=35
+PT t=36
+PT t=37
+PT t=38
+PT t=39
+PT t=40
 [tick] 40
+PT t=41
 [poscorr] tick=41 points=1 dq_max=2.398e-03 du=+6.891570e-05 J
 [poscorr-pt] tick=41 pt=left_heel gap=-2.727130e-05 lam=7.027277e-06 du_pt=-1.916430e-10 J
 [poscorr] tick=41 points=1 dq_max=2.448e-03 du=+1.424735e-04 J
@@ -40,6 +82,7 @@ CONFIGURED
 [poscorr-pt] tick=41 pt=left_heel gap=-9.294718e-06 lam=4.099604e-06 du_pt=-3.810466e-11 J
 [poscorr] tick=41 points=1 dq_max=4.980e-04 du=+1.461420e-05 J
 [poscorr-pt] tick=41 pt=left_heel gap=-5.771408e-06 lam=1.490224e-06 du_pt=-8.600690e-12 J
+PT t=42
 [poscorr] tick=42 points=1 dq_max=1.467e-03 du=+4.313786e-05 J
 [poscorr-pt] tick=42 pt=left_heel gap=-1.703434e-05 lam=4.398752e-06 du_pt=-7.492985e-11 J
 [poscorr] tick=42 points=1 dq_max=1.481e-03 du=+8.503573e-05 J
@@ -100,6 +143,7 @@ CONFIGURED
 [poscorr] tick=42 points=2 dq_max=3.620e-04 du=+1.334007e-05 J
 [poscorr-pt] tick=42 pt=left_heel gap=-4.276503e-06 lam=1.102708e-06 du_pt=-4.715735e-12 J
 [poscorr-pt] tick=42 pt=fore_right_heel gap=-1.419856e-06 lam=2.575944e-07 du_pt=-3.657470e-13 J
+PT t=43
 [poscorr] tick=43 points=1 dq_max=9.766e-04 du=+5.448456e-05 J
 [poscorr-pt] tick=43 pt=left_heel gap=-1.393901e-05 lam=5.555482e-06 du_pt=-7.743791e-11 J
 [poscorr] tick=43 points=1 dq_max=1.205e-03 du=+3.604622e-05 J
@@ -156,6 +200,7 @@ CONFIGURED
 [poscorr] tick=43 points=2 dq_max=2.172e-04 du=+8.408569e-06 J
 [poscorr-pt] tick=43 pt=left_heel gap=-2.604720e-06 lam=6.674775e-07 du_pt=-1.738592e-12 J
 [poscorr-pt] tick=43 pt=fore_right_heel gap=-1.082014e-06 lam=1.899555e-07 du_pt=-2.055345e-13 J
+PT t=44
 [poscorr] tick=44 points=1 dq_max=5.022e-04 du=+1.516236e-05 J
 [poscorr-pt] tick=44 pt=left_heel gap=-6.054771e-06 lam=1.546118e-06 du_pt=-9.361393e-12 J
 [poscorr] tick=44 points=1 dq_max=4.544e-04 du=+2.466194e-05 J
@@ -208,6 +253,7 @@ CONFIGURED
 [poscorr-pt] tick=44 pt=left_heel gap=-1.124962e-05 lam=3.930600e-06 du_pt=-4.421774e-11 J
 [poscorr] tick=44 points=1 dq_max=2.228e-04 du=+6.772554e-06 J
 [poscorr-pt] tick=44 pt=left_heel gap=-2.721574e-06 lam=6.906058e-07 du_pt=-1.879535e-12 J
+PT t=45
 [poscorr] tick=45 points=1 dq_max=8.110e-04 du=+2.466360e-05 J
 [poscorr-pt] tick=45 pt=left_heel gap=-9.914717e-06 lam=2.514953e-06 du_pt=-2.493505e-11 J
 [poscorr] tick=45 points=1 dq_max=7.030e-04 du=+3.723003e-05 J
@@ -259,6 +305,7 @@ CONFIGURED
 [poscorr-pt] tick=45 pt=left_heel gap=-9.445073e-06 lam=2.382233e-06 du_pt=-2.250037e-11 J
 [poscorr] tick=45 points=1 dq_max=1.551e-04 du=+4.745142e-06 J
 [poscorr-pt] tick=45 pt=left_heel gap=-1.919054e-06 lam=4.838686e-07 du_pt=-9.285697e-13 J
+PT t=46
 [poscorr] tick=46 points=1 dq_max=5.057e-04 du=+1.547842e-05 J
 [poscorr-pt] tick=46 pt=left_heel gap=-6.262045e-06 lam=1.578346e-06 du_pt=-9.883674e-12 J
 [poscorr] tick=46 points=1 dq_max=4.221e-04 du=+2.185959e-05 J
@@ -309,6 +356,7 @@ CONFIGURED
 [poscorr-pt] tick=46 pt=fore_right_heel gap=-1.224585e-06 lam=2.031268e-07 du_pt=-2.487460e-13 J
 [poscorr] tick=46 points=1 dq_max=2.304e-04 du=+7.091644e-06 J
 [poscorr-pt] tick=46 pt=left_heel gap=-2.885391e-06 lam=7.231435e-07 du_pt=-2.086552e-12 J
+PT t=47
 [poscorr] tick=47 points=1 dq_max=6.222e-04 du=+1.915854e-05 J
 [poscorr-pt] tick=47 pt=left_heel gap=-7.797679e-06 lam=1.953606e-06 du_pt=-1.523359e-11 J
 [poscorr] tick=47 points=1 dq_max=5.023e-04 du=+2.547965e-05 J
@@ -359,6 +407,7 @@ CONFIGURED
 [poscorr-pt] tick=47 pt=left_heel gap=-5.796638e-06 lam=1.733658e-06 du_pt=-1.004939e-11 J
 [poscorr] tick=47 points=1 dq_max=3.493e-04 du=+1.740563e-05 J
 [poscorr-pt] tick=47 pt=left_heel gap=-5.950618e-06 lam=1.774826e-06 du_pt=-1.056131e-11 J
+PT t=48
 [poscorr] tick=48 points=1 dq_max=4.515e-04 du=+1.398298e-05 J
 [poscorr-pt] tick=48 pt=left_heel gap=-5.723854e-06 lam=1.425856e-06 du_pt=-8.161389e-12 J
 [poscorr] tick=48 points=1 dq_max=3.537e-04 du=+1.760337e-05 J
@@ -410,6 +459,7 @@ CONFIGURED
 [poscorr-pt] tick=48 pt=left_heel gap=-5.345477e-06 lam=1.325068e-06 du_pt=-7.083119e-12 J
 [poscorr] tick=48 points=1 dq_max=2.414e-04 du=+7.514389e-06 J
 [poscorr-pt] tick=48 pt=left_heel gap=-3.091981e-06 lam=7.662510e-07 du_pt=-2.369233e-12 J
+PT t=49
 [poscorr] tick=49 points=2 dq_max=5.310e-04 du=+2.774060e-05 J
 [poscorr-pt] tick=49 pt=left_heel gap=-9.268378e-06 lam=2.647890e-06 du_pt=-2.454165e-11 J
 [poscorr-pt] tick=49 pt=fore_right_heel gap=-1.000470e-06 lam=1.807394e-07 du_pt=-1.808244e-13 J
@@ -461,6 +511,7 @@ CONFIGURED
 [poscorr-pt] tick=49 pt=fore_right_heel gap=-1.048187e-06 lam=1.532522e-07 du_pt=-1.606370e-13 J
 [poscorr] tick=49 points=1 dq_max=2.319e-04 du=+1.115576e-05 J
 [poscorr-pt] tick=49 pt=left_heel gap=-4.138597e-06 lam=1.137548e-06 du_pt=-4.707851e-12 J
+PT t=50
 [tick] 50
 [poscorr] tick=50 points=1 dq_max=4.154e-04 du=+1.299912e-05 J
 [poscorr-pt] tick=50 pt=left_heel gap=-5.379316e-06 lam=1.325531e-06 du_pt=-7.130449e-12 J
@@ -512,6 +563,7 @@ CONFIGURED
 [poscorr] tick=50 points=2 dq_max=1.395e-04 du=+8.066191e-06 J
 [poscorr-pt] tick=50 pt=left_heel gap=-2.531117e-06 lam=6.742947e-07 du_pt=-1.706719e-12 J
 [poscorr-pt] tick=50 pt=fore_right_heel gap=-1.046692e-06 lam=1.482191e-07 du_pt=-1.551397e-13 J
+PT t=51
 [poscorr] tick=51 points=1 dq_max=3.712e-04 du=+1.167445e-05 J
 [poscorr-pt] tick=51 pt=left_heel gap=-4.855798e-06 lam=1.190455e-06 du_pt=-5.780607e-12 J
 [poscorr] tick=51 points=1 dq_max=2.694e-04 du=+1.274308e-05 J
@@ -561,6 +613,7 @@ CONFIGURED
 [poscorr-pt] tick=51 pt=left_heel gap=-4.790996e-06 lam=1.169453e-06 du_pt=-5.602846e-12 J
 [poscorr] tick=51 points=1 dq_max=1.833e-04 du=+5.791279e-06 J
 [poscorr-pt] tick=51 pt=left_heel gap=-2.419924e-06 lam=5.905440e-07 du_pt=-1.429072e-12 J
+PT t=52
 [poscorr] tick=52 points=1 dq_max=4.104e-04 du=+1.911518e-05 J
 [poscorr-pt] tick=52 pt=left_heel gap=-7.627574e-06 lam=1.949132e-06 du_pt=-1.486715e-11 J
 [poscorr] tick=52 points=1 dq_max=3.260e-04 du=+1.030272e-05 J
@@ -611,6 +664,7 @@ CONFIGURED
 [poscorr-pt] tick=52 pt=left_heel gap=-5.986936e-06 lam=1.486773e-06 du_pt=-8.901214e-12 J
 [poscorr] tick=52 points=1 dq_max=1.227e-04 du=+5.634647e-06 J
 [poscorr-pt] tick=52 pt=left_heel gap=-2.318208e-06 lam=5.745676e-07 du_pt=-1.331967e-12 J
+PT t=53
 [poscorr] tick=53 points=1 dq_max=4.546e-04 du=+1.443821e-05 J
 [poscorr-pt] tick=53 pt=left_heel gap=-6.063834e-06 lam=1.472274e-06 du_pt=-8.927627e-12 J
 [poscorr] tick=53 points=1 dq_max=3.161e-04 du=+1.450780e-05 J
@@ -656,6 +710,7 @@ CONFIGURED
 [poscorr-pt] tick=53 pt=left_heel gap=-3.696891e-06 lam=8.938042e-07 du_pt=-3.304297e-12 J
 [poscorr] tick=53 points=1 dq_max=2.465e-04 du=+7.865212e-06 J
 [poscorr-pt] tick=53 pt=left_heel gap=-3.318064e-06 lam=8.020245e-07 du_pt=-2.661169e-12 J
+PT t=54
 [poscorr] tick=54 points=1 dq_max=4.703e-04 du=+2.127778e-05 J
 [poscorr-pt] tick=54 pt=left_heel gap=-9.047066e-06 lam=2.169635e-06 du_pt=-1.962883e-11 J
 [poscorr] tick=54 points=1 dq_max=1.967e-04 du=+6.278249e-06 J
@@ -702,6 +757,7 @@ CONFIGURED
 [poscorr-pt] tick=54 pt=left_heel gap=-3.557736e-06 lam=8.562215e-07 du_pt=-3.046210e-12 J
 [poscorr] tick=54 points=1 dq_max=2.204e-04 du=+7.065417e-06 J
 [poscorr-pt] tick=54 pt=left_heel gap=-2.994365e-06 lam=7.204688e-07 du_pt=-2.157347e-12 J
+PT t=55
 [poscorr] tick=55 points=1 dq_max=4.283e-04 du=+1.911427e-05 J
 [poscorr-pt] tick=55 pt=left_heel gap=-8.370445e-06 lam=1.949035e-06 du_pt=-1.631429e-11 J
 [poscorr] tick=55 points=2 dq_max=2.187e-04 du=+8.169615e-06 J
@@ -751,6 +807,7 @@ CONFIGURED
 [poscorr-pt] tick=55 pt=left_heel gap=-6.499244e-06 lam=1.476097e-06 du_pt=-9.593516e-12 J
 [poscorr] tick=55 points=1 dq_max=9.369e-06 du=+1.134138e-06 J
 [poscorr-pt] tick=55 pt=fore_right_heel gap=-1.064101e-06 lam=1.156497e-07 du_pt=-1.230630e-13 J
+PT t=56
 [poscorr] tick=56 points=1 dq_max=1.184e-04 du=+3.815756e-06 J
 [poscorr-pt] tick=56 pt=left_heel gap=-1.624926e-06 lam=3.890979e-07 du_pt=-6.322554e-13 J
 [poscorr] tick=56 points=1 dq_max=7.782e-05 du=+3.426803e-06 J
@@ -795,6 +852,7 @@ CONFIGURED
 [poscorr-pt] tick=56 pt=left_heel gap=-2.890766e-06 lam=6.895127e-07 du_pt=-1.993220e-12 J
 [poscorr] tick=56 points=1 dq_max=2.146e-04 du=+6.947059e-06 J
 [poscorr-pt] tick=56 pt=left_heel gap=-2.970645e-06 lam=7.083997e-07 du_pt=-2.104404e-12 J
+PT t=57
 [poscorr] tick=57 points=1 dq_max=4.092e-04 du=+1.778187e-05 J
 [poscorr-pt] tick=57 pt=left_heel gap=-8.232249e-06 lam=1.813176e-06 du_pt=-1.492651e-11 J
 [poscorr] tick=57 points=2 dq_max=2.455e-04 du=+9.047681e-06 J
@@ -840,6 +898,7 @@ CONFIGURED
 [poscorr-pt] tick=57 pt=left_heel gap=-6.490165e-06 lam=1.541349e-06 du_pt=-1.000361e-11 J
 [poscorr] tick=57 points=1 dq_max=2.960e-04 du=+1.271958e-05 J
 [poscorr-pt] tick=57 pt=left_heel gap=-6.026352e-06 lam=1.297000e-06 du_pt=-7.816176e-12 J
+PT t=58
 [poscorr] tick=58 points=1 dq_max=1.117e-04 du=+3.633999e-06 J
 [poscorr-pt] tick=58 pt=left_heel gap=-1.561226e-06 lam=3.705639e-07 du_pt=-5.785340e-13 J
 [poscorr] tick=58 points=1 dq_max=7.097e-05 du=+3.045384e-06 J
@@ -885,6 +944,7 @@ CONFIGURED
 [poscorr-pt] tick=58 pt=left_heel gap=-2.678642e-06 lam=5.620414e-07 du_pt=-1.505508e-12 J
 [poscorr] tick=58 points=1 dq_max=1.593e-04 du=+5.204814e-06 J
 [poscorr-pt] tick=58 pt=left_heel gap=-2.245320e-06 lam=5.307415e-07 du_pt=-1.191685e-12 J
+PT t=59
 [poscorr] tick=59 points=1 dq_max=3.133e-04 du=+1.327743e-05 J
 [poscorr-pt] tick=59 pt=left_heel gap=-6.472246e-06 lam=1.353880e-06 du_pt=-8.762645e-12 J
 [poscorr] tick=59 points=1 dq_max=1.835e-04 du=+5.997461e-06 J
@@ -928,6 +988,7 @@ CONFIGURED
 [poscorr-pt] tick=59 pt=left_heel gap=-6.573624e-06 lam=1.547696e-06 du_pt=-1.017397e-11 J
 [poscorr] tick=59 points=1 dq_max=2.853e-04 du=+1.196608e-05 J
 [poscorr-pt] tick=59 pt=left_heel gap=-5.958778e-06 lam=1.220167e-06 du_pt=-7.270705e-12 J
+PT t=60
 [tick] 60
 [pawcap] leg=0 td=0 paw=(0.154768532,0.037180536) branch=-1 qerr=1.734e-15 rad roundtrip=1.059e-16 m
 [pawcap] leg=1 td=0 paw=(0.159496654,0.036056697) branch=-1 qerr=1.256e-15 rad roundtrip=1.010e-16 m
@@ -977,6 +1038,7 @@ CONFIGURED
 [poscorr-pt] tick=60 pt=left_heel gap=-3.192252e-06 lam=7.484293e-07 du_pt=-2.389175e-12 J
 [poscorr] tick=60 points=1 dq_max=1.558e-04 du=+5.141282e-06 J
 [poscorr-pt] tick=60 pt=left_heel gap=-2.236610e-06 lam=5.242631e-07 du_pt=-1.172572e-12 J
+PT t=61
 [foreclk] lift leg=0 tick=61 td=0 entry=1 from=(0.155858,0.037457) to=(0.532709,0.037181) xoff=0.146374 v=0.603690 wall_bound=0
 [poscorr] tick=61 points=1 dq_max=3.177e-04 du=+1.315200e-05 J
 [poscorr-pt] tick=61 pt=left_heel gap=-6.724123e-06 lam=1.341089e-06 du_pt=-9.017648e-12 J
@@ -1016,6 +1078,7 @@ CONFIGURED
 [poscorr-pt] tick=61 pt=left_heel gap=-8.381099e-06 lam=1.638295e-06 du_pt=-1.373071e-11 J
 [poscorr] tick=61 points=1 dq_max=2.028e-04 du=+8.303768e-06 J
 [poscorr-pt] tick=61 pt=left_heel gap=-4.337729e-06 lam=8.467320e-07 du_pt=-3.672894e-12 J
+PT t=62
 [poscorr] tick=62 points=1 dq_max=3.946e-04 du=+1.308631e-05 J
 [poscorr-pt] tick=62 pt=left_heel gap=-5.717799e-06 lam=1.334420e-06 du_pt=-7.629947e-12 J
 [poscorr] tick=62 points=1 dq_max=2.361e-04 du=+9.659388e-06 J
@@ -1042,6 +1105,7 @@ CONFIGURED
 [poscorr-pt] tick=62 pt=left_heel gap=-4.956134e-06 lam=9.524166e-07 du_pt=-4.720304e-12 J
 [poscorr] tick=62 points=1 dq_max=7.023e-05 du=+2.336298e-06 J
 [poscorr-pt] tick=62 pt=left_heel gap=-1.024156e-06 lam=2.382358e-07 du_pt=-2.439907e-13 J
+PT t=63
 [poscorr] tick=63 points=1 dq_max=2.738e-03 du=+9.116251e-05 J
 [poscorr-pt] tick=63 pt=left_heel gap=-4.000090e-05 lam=9.295411e-06 du_pt=-3.718248e-10 J
 [poscorr] tick=63 points=2 dq_max=1.615e-03 du=+6.637008e-05 J
@@ -1071,6 +1135,7 @@ CONFIGURED
 [poscorr-pt] tick=63 pt=left_heel gap=-2.168712e-06 lam=5.025577e-07 du_pt=-1.089903e-12 J
 [poscorr] tick=63 points=1 dq_max=2.738e-04 du=+1.098363e-05 J
 [poscorr-pt] tick=63 pt=left_heel gap=-5.974381e-06 lam=1.119989e-06 du_pt=-6.691240e-12 J
+PT t=64
 [poscorr] tick=64 points=1 dq_max=3.558e-03 du=+1.190443e-04 J
 [poscorr-pt] tick=64 pt=left_heel gap=-5.244719e-05 lam=1.213815e-05 du_pt=-6.366118e-10 J
 [poscorr] tick=64 points=1 dq_max=2.069e-03 du=+8.275175e-05 J
@@ -1084,6 +1149,7 @@ CONFIGURED
 [poscorr-pt] tick=64 pt=fore_right_heel gap=-1.070645e-06 lam=1.099261e-07 du_pt=-1.176918e-13 J
 [poscorr] tick=64 points=1 dq_max=3.073e-03 du=+1.217176e-04 J
 [poscorr-pt] tick=64 pt=left_heel gap=-6.773119e-05 lam=1.240801e-05 du_pt=-8.404091e-10 J
+PT t=65
 [poscorr] tick=65 points=1 dq_max=4.374e-03 du=+1.471330e-04 J
 [poscorr-pt] tick=65 pt=left_heel gap=-6.515420e-05 lam=1.500186e-05 du_pt=-9.774342e-10 J
 [poscorr] tick=65 points=1 dq_max=1.277e-04 du=+5.041675e-06 J
@@ -1096,6 +1162,7 @@ CONFIGURED
 [poscorr-pt] tick=65 pt=left_heel gap=-7.585364e-05 lam=1.358919e-05 du_pt=-1.030789e-09 J
 [poscorr] tick=65 points=1 dq_max=1.239e-05 du=+8.993358e-07 J
 [poscorr-pt] tick=65 pt=fore_right_heel gap=-1.179972e-06 lam=9.170647e-08 du_pt=-1.082110e-13 J
+PT t=66
 [pawcap] leg=1 td=0 paw=(0.167279204,0.037427747) branch=-1 qerr=4.965e-16 rad roundtrip=9.021e-17 m
 [foreclk] inplace leg=1 tick=66 paw=(0.167279,0.037428) stance=0.000 entry=1 follow=0
 [poscorr] tick=66 points=1 dq_max=9.195e-03 du=+3.120671e-04 J
@@ -1108,6 +1175,7 @@ CONFIGURED
 [poscorr-pt] tick=66 pt=left_heel gap=-9.328069e-06 lam=1.640676e-06 du_pt=-1.530434e-11 J
 [poscorr] tick=66 points=1 dq_max=6.328e-04 du=+2.444959e-05 J
 [poscorr-pt] tick=66 pt=left_heel gap=-1.424883e-05 lam=2.493008e-06 du_pt=-3.552245e-11 J
+PT t=67
 [poscorr] tick=67 points=1 dq_max=1.420e-03 du=+4.863957e-05 J
 [poscorr-pt] tick=67 pt=left_heel gap=-2.165825e-05 lam=4.959684e-06 du_pt=-1.074181e-10 J
 [poscorr] tick=67 points=1 dq_max=7.973e-04 du=+3.074666e-05 J
@@ -1120,6 +1188,7 @@ CONFIGURED
 [poscorr-pt] tick=67 pt=left_heel gap=-7.769487e-05 lam=1.774424e-05 du_pt=-1.378636e-09 J
 [poscorr] tick=67 points=1 dq_max=2.812e-03 du=+1.074163e-04 J
 [poscorr-pt] tick=67 pt=left_heel gap=-6.384381e-05 lam=1.095038e-05 du_pt=-6.991137e-10 J
+PT t=68
 [poscorr] tick=68 points=1 dq_max=5.780e-03 du=+1.991973e-04 J
 [poscorr-pt] tick=68 pt=left_heel gap=-8.918456e-05 lam=2.030957e-05 du_pt=-1.811300e-09 J
 [poscorr] tick=68 points=1 dq_max=1.659e-03 du=+6.304983e-05 J
@@ -1132,6 +1201,7 @@ CONFIGURED
 [poscorr-pt] tick=68 pt=left_heel gap=-5.710245e-06 lam=9.610268e-07 du_pt=-5.487698e-12 J
 [poscorr] tick=68 points=1 dq_max=3.361e-04 du=+1.164954e-05 J
 [poscorr-pt] tick=68 pt=left_heel gap=-5.223560e-06 lam=1.187913e-06 du_pt=-6.205133e-12 J
+PT t=69
 [poscorr] tick=69 points=1 dq_max=3.078e-03 du=+1.160139e-04 J
 [poscorr-pt] tick=69 pt=left_heel gap=-7.072602e-05 lam=1.182651e-05 du_pt=-8.364421e-10 J
 [poscorr] tick=69 points=1 dq_max=2.646e-03 du=+9.181168e-05 J
@@ -1144,6 +1214,7 @@ CONFIGURED
 [poscorr-pt] tick=69 pt=left_heel gap=-8.369357e-06 lam=1.897835e-06 du_pt=-1.588366e-11 J
 [poscorr] tick=69 points=1 dq_max=2.829e-03 du=+1.057026e-04 J
 [poscorr-pt] tick=69 pt=left_heel gap=-6.545388e-05 lam=1.077563e-05 du_pt=-7.053071e-10 J
+PT t=70
 [tick] 70
 [pawcap] leg=0 td=0 paw=(0.169647256,0.038878411) branch=-1 qerr=3.886e-16 rad roundtrip=6.939e-17 m
 [foreclk] td leg=0 tick=70 td_count=1 entry=1 stance=0.000 roundtrip=6.939e-17 m
@@ -1157,6 +1228,7 @@ CONFIGURED
 [poscorr-pt] tick=70 pt=left_heel gap=-3.573406e-05 lam=5.787290e-06 du_pt=-2.068034e-10 J
 [poscorr] tick=70 points=1 dq_max=1.349e-03 du=+4.734213e-05 J
 [poscorr-pt] tick=70 pt=left_heel gap=-2.140606e-05 lam=4.827386e-06 du_pt=-1.033353e-10 J
+PT t=71
 [foreclk] deflift leg=1 tick=71 seat_hr=0.102200
 [poscorr] tick=71 points=1 dq_max=2.858e-03 du=+1.005187e-04 J
 [poscorr-pt] tick=71 pt=left_heel gap=-4.549063e-05 lam=1.024930e-05 du_pt=-4.662472e-10 J
@@ -1190,6 +1262,7 @@ CONFIGURED
 [poscorr-pt] tick=71 pt=left_heel gap=-2.356156e-06 lam=3.709939e-07 du_pt=-8.741193e-13 J
 [poscorr] tick=71 points=1 dq_max=8.562e-05 du=+3.119316e-06 J
 [poscorr-pt] tick=71 pt=left_heel gap=-2.022631e-06 lam=3.180790e-07 du_pt=-6.433565e-13 J
+PT t=72
 [foreclk] deflift leg=0 tick=72 seat_hr=0.102200
 [foreclk] hold leg=1 tick=72 armed=1 last=9 off=(-0.253564,-0.063207)
 [foreclk] lift leg=1 tick=72 td=0 entry=1 from=(0.175395,0.038625) to=(0.554883,0.036057) xoff=0.145085 v=0.598376 wall_bound=1
@@ -1203,6 +1276,7 @@ CONFIGURED
 [poscorr-pt] tick=72 pt=left_heel gap=-9.822366e-05 lam=2.196862e-05 du_pt=-2.157838e-09 J
 [poscorr] tick=72 points=1 dq_max=1.200e-03 du=+4.327807e-05 J
 [poscorr-pt] tick=72 pt=left_heel gap=-2.855906e-05 lam=4.412605e-06 du_pt=-1.260199e-10 J
+PT t=73
 [foreclk] hold leg=0 tick=73 armed=1 last=9 off=(-0.254164,-0.060750)
 [foreclk] lift leg=0 tick=73 td=1 entry=1 from=(0.173546,0.039485) to=(0.557665,0.037181) xoff=0.145667 v=0.600776 wall_bound=1
 [ik] leg=1 tick=73 SATURATED paw=(0.158371,0.036131) shoulder=(0.411935,0.099338) D=0.261323 reach=[0.011324,0.261324]
@@ -1224,6 +1298,7 @@ CONFIGURED
 [poscorr-pt] tick=73 pt=left_heel gap=-1.402532e-05 lam=3.122128e-06 du_pt=-4.378884e-11 J
 [poscorr] tick=73 points=1 dq_max=3.347e-04 du=+1.190561e-05 J
 [poscorr-pt] tick=73 pt=left_heel gap=-8.058699e-06 lam=1.213994e-06 du_pt=-9.783212e-12 J
+PT t=74
 [ik] leg=0 tick=74 SATURATED paw=(0.159973,0.037567) shoulder=(0.414137,0.098317) D=0.261323 reach=[0.011324,0.261324]
 [poscorr] tick=74 points=1 dq_max=2.005e-03 du=+7.244112e-05 J
 [poscorr-pt] tick=74 pt=left_heel gap=-3.321143e-05 lam=7.386536e-06 du_pt=-2.453174e-10 J
@@ -1237,6 +1312,7 @@ CONFIGURED
 [poscorr-pt] tick=74 pt=left_heel gap=-3.897865e-06 lam=8.652760e-07 du_pt=-3.372729e-12 J
 [poscorr] tick=74 points=1 dq_max=9.297e-04 du=+3.278179e-05 J
 [poscorr-pt] tick=74 pt=left_heel gap=-2.253641e-05 lam=3.342500e-06 du_pt=-7.532795e-11 J
+PT t=75
 [poscorr] tick=75 points=1 dq_max=2.674e-03 du=+9.705788e-05 J
 [poscorr-pt] tick=75 pt=left_heel gap=-4.465565e-05 lam=9.896422e-06 du_pt=-4.419311e-10 J
 [poscorr] tick=75 points=1 dq_max=1.360e-03 du=+4.778583e-05 J
@@ -1253,6 +1329,7 @@ CONFIGURED
 [poscorr-pt] tick=75 pt=left_heel gap=-1.008390e-05 lam=2.228044e-06 du_pt=-2.246738e-11 J
 [poscorr] tick=75 points=1 dq_max=9.882e-04 du=+3.445303e-05 J
 [poscorr-pt] tick=75 pt=left_heel gap=-2.417912e-05 lam=3.512882e-06 du_pt=-8.493839e-11 J
+PT t=76
 [poscorr] tick=76 points=1 dq_max=2.624e-03 du=+9.589599e-05 J
 [poscorr-pt] tick=76 pt=left_heel gap=-4.432929e-05 lam=9.777955e-06 du_pt=-4.334497e-10 J
 [poscorr] tick=76 points=1 dq_max=1.316e-03 du=+4.573751e-05 J
@@ -1269,6 +1346,7 @@ CONFIGURED
 [poscorr-pt] tick=76 pt=left_heel gap=-3.483231e-05 lam=7.652078e-06 du_pt=-2.665396e-10 J
 [poscorr] tick=76 points=1 dq_max=3.991e-04 du=+1.375585e-05 J
 [poscorr-pt] tick=76 pt=left_heel gap=-9.859487e-06 lam=1.402650e-06 du_pt=-1.382941e-11 J
+PT t=77
 [poscorr] tick=77 points=1 dq_max=1.871e-03 du=+6.880006e-05 J
 [poscorr-pt] tick=77 pt=left_heel gap=-3.197214e-05 lam=7.015283e-06 du_pt=-2.242936e-10 J
 [poscorr] tick=77 points=1 dq_max=1.610e-03 du=+5.525490e-05 J
@@ -1289,6 +1367,7 @@ CONFIGURED
 [poscorr-pt] tick=77 pt=left_heel gap=-9.089845e-05 lam=1.987580e-05 du_pt=-1.806679e-09 J
 [poscorr] tick=77 points=1 dq_max=2.578e-03 du=+8.775932e-05 J
 [poscorr-pt] tick=77 pt=left_heel gap=-6.429044e-05 lam=8.946633e-06 du_pt=-5.751830e-10 J
+PT t=78
 [poscorr] tick=78 points=1 dq_max=4.534e-03 du=+1.677195e-04 J
 [poscorr-pt] tick=78 pt=left_heel gap=-7.842930e-05 lam=1.710041e-05 du_pt=-1.341173e-09 J
 [poscorr] tick=78 points=1 dq_max=7.063e-04 du=+2.395287e-05 J
@@ -1303,6 +1382,7 @@ CONFIGURED
 [poscorr-pt] tick=78 pt=left_heel gap=-9.910277e-06 lam=2.154955e-06 du_pt=-2.135620e-11 J
 [poscorr] tick=78 points=1 dq_max=5.629e-04 du=+2.101832e-05 J
 [poscorr-pt] tick=78 pt=left_heel gap=-9.860433e-06 lam=2.143237e-06 du_pt=-2.113325e-11 J
+PT t=79
 [poscorr] tick=79 points=1 dq_max=1.665e-03 du=+5.587705e-05 J
 [poscorr-pt] tick=79 pt=left_heel gap=-4.202283e-05 lam=5.696911e-06 du_pt=-2.394003e-10 J
 [poscorr] tick=79 points=1 dq_max=5.869e-04 du=+2.194357e-05 J
@@ -1325,6 +1405,7 @@ CONFIGURED
 [poscorr-pt] tick=79 pt=left_heel gap=-1.930328e-05 lam=4.176970e-06 du_pt=-8.062923e-11 J
 [poscorr] tick=79 points=1 dq_max=7.467e-04 du=+2.811932e-05 J
 [poscorr-pt] tick=79 pt=left_heel gap=-1.325747e-05 lam=2.867309e-06 du_pt=-3.801326e-11 J
+PT t=80
 [tick] 80
 [poscorr] tick=80 points=1 dq_max=3.778e-04 du=+1.424912e-05 J
 [poscorr-pt] tick=80 pt=left_heel gap=-6.721373e-06 lam=1.452990e-06 du_pt=-9.766086e-12 J
@@ -1343,6 +1424,7 @@ CONFIGURED
 [poscorr-pt] tick=80 pt=left_heel gap=-6.024375e-06 lam=7.891313e-07 du_pt=-4.754023e-12 J
 [poscorr] tick=80 points=1 dq_max=3.954e-04 du=+1.500320e-05 J
 [poscorr-pt] tick=80 pt=left_heel gap=-7.105709e-06 lam=1.529883e-06 du_pt=-1.087090e-11 J
+PT t=81
 [pawcap] leg=1 td=0 paw=(0.185080569,0.040925775) branch=-1 qerr=1.695e-15 rad roundtrip=2.861e-17 m
 [foreclk] td leg=1 tick=81 td_count=1 entry=1 stance=0.000 roundtrip=2.861e-17 m
 [poscorr] tick=81 points=1 dq_max=5.798e-03 du=+2.207094e-04 J
@@ -1369,6 +1451,7 @@ CONFIGURED
 [poscorr-pt] tick=81 pt=left_heel gap=-6.274881e-06 lam=8.030171e-07 du_pt=-5.038837e-12 J
 [poscorr] tick=81 points=1 dq_max=4.655e-04 du=+1.785079e-05 J
 [poscorr-pt] tick=81 pt=left_heel gap=-8.501650e-06 lam=1.820248e-06 du_pt=-1.547511e-11 J
+PT t=82
 [pawcap] leg=0 td=1 paw=(0.185373215,0.041363796) branch=-1 qerr=2.483e-16 rad roundtrip=5.004e-17 m
 [foreclk] td leg=0 tick=82 td_count=2 entry=1 stance=0.000 roundtrip=5.004e-17 m
 [poscorr] tick=82 points=1 dq_max=1.567e-03 du=+5.076704e-05 J
@@ -1415,6 +1498,7 @@ CONFIGURED
 [poscorr-pt] tick=82 pt=left_heel gap=-2.758684e-06 lam=3.452191e-07 du_pt=-9.523506e-13 J
 [poscorr] tick=82 points=1 dq_max=1.356e-04 du=+4.348557e-06 J
 [poscorr-pt] tick=82 pt=left_heel gap=-3.547784e-06 lam=4.434233e-07 du_pt=-1.573170e-12 J
+PT t=83
 [foreclk] deflift leg=1 tick=83 seat_hr=0.102200
 [poscorr] tick=83 points=1 dq_max=2.581e-04 du=+9.976274e-06 J
 [poscorr-pt] tick=83 pt=left_heel gap=-4.780341e-06 lam=1.017289e-06 du_pt=-4.862986e-12 J
@@ -1462,6 +1546,7 @@ CONFIGURED
 [poscorr-pt] tick=83 pt=left_heel gap=-3.210184e-06 lam=3.939071e-07 du_pt=-1.264514e-12 J
 [poscorr] tick=83 points=1 dq_max=1.835e-04 du=+7.138173e-06 J
 [poscorr-pt] tick=83 pt=left_heel gap=-3.437874e-06 lam=7.278868e-07 du_pt=-2.502383e-12 J
+PT t=84
 [foreclk] lift leg=0 tick=84 td=2 entry=1 from=(0.189618,0.041580) to=(0.614734,0.037181) xoff=0.176727 v=0.728875 wall_bound=0
 [pawcap] leg=1 td=1 paw=(0.191265408,0.041275670) branch=-1 qerr=2.589e-15 rad roundtrip=5.004e-17 m
 [foreclk] inplace leg=1 tick=84 paw=(0.191265,0.041276) stance=0.000 entry=1 follow=0
@@ -1499,6 +1584,7 @@ CONFIGURED
 [poscorr-pt] tick=84 pt=left_heel gap=-2.170750e-05 lam=4.575393e-06 du_pt=-9.932032e-11 J
 [poscorr] tick=84 points=1 dq_max=8.994e-04 du=+3.523311e-05 J
 [poscorr-pt] tick=84 pt=left_heel gap=-1.705544e-05 lam=3.592673e-06 du_pt=-6.127463e-11 J
+PT t=85
 [poscorr] tick=85 points=1 dq_max=1.002e-03 du=+3.931542e-05 J
 [poscorr-pt] tick=85 pt=left_heel gap=-1.904347e-05 lam=4.008928e-06 du_pt=-7.634392e-11 J
 [poscorr] tick=85 points=1 dq_max=1.008e-03 du=+3.958971e-05 J
@@ -1517,6 +1603,7 @@ CONFIGURED
 [poscorr-pt] tick=85 pt=left_heel gap=-1.923722e-05 lam=4.033306e-06 du_pt=-7.758959e-11 J
 [poscorr] tick=85 points=1 dq_max=9.018e-04 du=+3.578442e-05 J
 [poscorr-pt] tick=85 pt=left_heel gap=-1.741299e-05 lam=3.648887e-06 du_pt=-6.353802e-11 J
+PT t=86
 [foreclk] inplace leg=1 tick=86 paw=(0.196145,0.041390) stance=0.000 entry=1 follow=1
 [poscorr] tick=86 points=1 dq_max=5.682e-03 du=+2.258454e-04 J
 [poscorr-pt] tick=86 pt=left_heel gap=-1.100344e-04 lam=2.302550e-05 du_pt=-2.533596e-09 J
@@ -1546,6 +1633,7 @@ CONFIGURED
 [poscorr-pt] tick=86 pt=left_heel gap=-2.203619e-06 lam=4.598643e-07 du_pt=-1.013366e-12 J
 [poscorr] tick=86 points=1 dq_max=1.413e-04 du=+5.675903e-06 J
 [poscorr-pt] tick=86 pt=left_heel gap=-2.774212e-06 lam=5.787783e-07 du_pt=-1.605654e-12 J
+PT t=87
 [pawcap] leg=1 td=1 paw=(0.198561764,0.041442163) branch=-1 qerr=1.986e-15 rad roundtrip=2.861e-17 m
 [foreclk] inplace leg=1 tick=87 paw=(0.198562,0.041442) stance=0.000 entry=1 follow=0
 [poscorr] tick=87 points=1 dq_max=3.373e-04 du=+1.033939e-05 J
@@ -1586,6 +1674,7 @@ CONFIGURED
 [poscorr-pt] tick=87 pt=left_heel gap=-1.864595e-06 lam=2.119175e-07 du_pt=-3.951404e-13 J
 [poscorr] tick=87 points=1 dq_max=2.026e-04 du=+8.207239e-06 J
 [poscorr-pt] tick=87 pt=left_heel gap=-4.031614e-06 lam=8.368997e-07 du_pt=-3.374056e-12 J
+PT t=88
 [poscorr] tick=88 points=1 dq_max=2.299e-04 du=+9.318879e-06 J
 [poscorr-pt] tick=88 pt=left_heel gap=-4.578965e-06 lam=9.502537e-07 du_pt=-4.351178e-12 J
 [poscorr] tick=88 points=1 dq_max=9.714e-05 du=+2.948541e-06 J
@@ -1630,6 +1719,7 @@ CONFIGURED
 [poscorr-pt] tick=88 pt=left_heel gap=-4.956800e-06 lam=1.023953e-06 du_pt=-5.075528e-12 J
 [poscorr] tick=88 points=1 dq_max=1.537e-04 du=+6.270508e-06 J
 [poscorr-pt] tick=88 pt=left_heel gap=-3.096247e-06 lam=6.394104e-07 du_pt=-1.979773e-12 J
+PT t=89
 [foreclk] inplace leg=1 tick=89 paw=(0.203384,0.041529) stance=0.000 entry=1 follow=1
 [poscorr] tick=89 points=1 dq_max=2.712e-04 du=+1.106763e-05 J
 [poscorr-pt] tick=89 pt=left_heel gap=-5.466554e-06 lam=1.128573e-06 du_pt=-6.169407e-12 J
@@ -1679,6 +1769,7 @@ CONFIGURED
 [poscorr-pt] tick=89 pt=left_heel gap=-2.981269e-06 lam=3.275828e-07 du_pt=-9.766125e-13 J
 [poscorr] tick=89 points=1 dq_max=1.108e-04 du=+4.549094e-06 J
 [poscorr-pt] tick=89 pt=left_heel gap=-2.257790e-06 lam=4.638767e-07 du_pt=-1.047336e-12 J
+PT t=90
 [tick] 90
 [pawcap] leg=1 td=1 paw=(0.205723878,0.041571627) branch=-1 qerr=1.043e-15 rad roundtrip=3.925e-17 m
 [foreclk] inplace leg=1 tick=90 paw=(0.205724,0.041572) stance=0.000 entry=1 follow=0
@@ -1716,6 +1807,7 @@ CONFIGURED
 [poscorr-pt] tick=90 pt=left_heel gap=-2.827087e-06 lam=5.782385e-07 du_pt=-1.634730e-12 J
 [poscorr] tick=90 points=1 dq_max=5.555e-05 du=+1.643649e-06 J
 [poscorr-pt] tick=90 pt=left_heel gap=-1.549573e-06 lam=1.676046e-07 du_pt=-2.597156e-13 J
+PT t=91
 [poscorr] tick=91 points=1 dq_max=6.269e-04 du=+2.592858e-05 J
 [poscorr-pt] tick=91 pt=left_heel gap=-1.293528e-05 lam=2.643920e-06 du_pt=-3.419984e-11 J
 [poscorr] tick=91 points=1 dq_max=1.123e-04 du=+3.319806e-06 J
@@ -1744,6 +1836,7 @@ CONFIGURED
 [poscorr-pt] tick=91 pt=left_heel gap=-2.838476e-05 lam=5.780497e-06 du_pt=-1.640780e-10 J
 [poscorr] tick=91 points=1 dq_max=5.469e-04 du=+2.275408e-05 J
 [poscorr-pt] tick=91 pt=left_heel gap=-1.139848e-05 lam=2.320225e-06 du_pt=-2.644705e-11 J
+PT t=92
 [foreclk] inplace leg=1 tick=92 paw=(0.210213,0.041641) stance=0.000 entry=1 follow=1
 [poscorr] tick=92 points=1 dq_max=5.692e-04 du=+2.371726e-05 J
 [poscorr-pt] tick=92 pt=left_heel gap=-1.188568e-05 lam=2.418438e-06 du_pt=-2.874478e-11 J
@@ -1775,6 +1868,7 @@ CONFIGURED
 [poscorr-pt] tick=92 pt=left_heel gap=-4.551092e-06 lam=9.224589e-07 du_pt=-4.198195e-12 J
 [poscorr] tick=92 points=1 dq_max=2.446e-04 du=+1.025854e-05 J
 [poscorr-pt] tick=92 pt=left_heel gap=-5.162347e-06 lam=1.046071e-06 du_pt=-5.400180e-12 J
+PT t=93
 [pawcap] leg=0 td=2 paw=(0.211260302,0.041897353) branch=-1 qerr=2.782e-15 rad roundtrip=4.443e-17 m
 [foreclk] td leg=0 tick=93 td_count=3 entry=1 stance=0.000 roundtrip=4.443e-17 m
 [pawcap] leg=1 td=1 paw=(0.212212011,0.041682106) branch=-1 qerr=3.278e-15 rad roundtrip=6.245e-17 m
@@ -1799,6 +1893,7 @@ CONFIGURED
 [poscorr-pt] tick=93 pt=left_heel gap=-5.512054e-05 lam=1.112565e-05 du_pt=-6.132517e-10 J
 [poscorr] tick=93 points=1 dq_max=1.005e-03 du=+2.901981e-05 J
 [poscorr-pt] tick=93 pt=left_heel gap=-2.859586e-05 lam=2.958874e-06 du_pt=-8.461153e-11 J
+PT t=94
 [foreclk] lift leg=0 tick=94 td=3 entry=1 from=(0.212763,0.041997) to=(0.623646,0.037181) xoff=0.160232 v=0.660845 wall_bound=0
 [poscorr] tick=94 points=1 dq_max=7.684e-03 du=+3.240114e-04 J
 [poscorr-pt] tick=94 pt=left_heel gap=-1.640634e-04 lam=3.303043e-05 du_pt=-5.419084e-09 J
@@ -1816,6 +1911,7 @@ CONFIGURED
 [poscorr-pt] tick=94 pt=left_heel gap=-7.777972e-06 lam=7.949659e-07 du_pt=-6.183222e-12 J
 [poscorr] tick=94 points=1 dq_max=4.779e-04 du=+2.041667e-05 J
 [poscorr-pt] tick=94 pt=left_heel gap=-1.035180e-05 lam=2.081883e-06 du_pt=-2.155124e-11 J
+PT t=95
 [foreclk] inplace leg=1 tick=95 paw=(0.216029,0.041742) stance=0.000 entry=1 follow=1
 [poscorr] tick=95 points=1 dq_max=1.517e-04 du=+6.485078e-06 J
 [poscorr-pt] tick=95 pt=left_heel gap=-3.288654e-06 lam=6.612901e-07 du_pt=-2.174754e-12 J
@@ -1831,6 +1927,7 @@ CONFIGURED
 [poscorr-pt] tick=95 pt=left_heel gap=-1.243344e-04 lam=2.492404e-05 du_pt=-3.098916e-09 J
 [poscorr] tick=95 points=1 dq_max=1.748e-03 du=+7.529918e-05 J
 [poscorr-pt] tick=95 pt=left_heel gap=-3.830888e-05 lam=7.677859e-06 du_pt=-2.941302e-10 J
+PT t=96
 [pawcap] leg=1 td=1 paw=(0.217746269,0.041774246) branch=-1 qerr=5.313e-15 rad roundtrip=3.925e-17 m
 [foreclk] inplace leg=1 tick=96 paw=(0.217746,0.041774) stance=0.000 entry=1 follow=0
 [poscorr] tick=96 points=1 dq_max=2.984e-03 du=+1.287801e-04 J
@@ -1841,6 +1938,7 @@ CONFIGURED
 [poscorr-pt] tick=96 pt=left_heel gap=-6.031586e-05 lam=6.037900e-06 du_pt=-3.641811e-10 J
 [poscorr] tick=96 points=1 dq_max=2.749e-03 du=+1.192387e-04 J
 [poscorr-pt] tick=96 pt=left_heel gap=-6.083716e-05 lam=1.215765e-05 du_pt=-7.396369e-10 J
+PT t=97
 [poscorr] tick=97 points=1 dq_max=2.202e-03 du=+9.600320e-05 J
 [poscorr-pt] tick=97 pt=left_heel gap=-4.898493e-05 lam=9.788749e-06 du_pt=-4.795012e-10 J
 [poscorr] tick=97 points=1 dq_max=8.311e-04 du=+2.349138e-05 J
@@ -1859,6 +1957,7 @@ CONFIGURED
 [poscorr-pt] tick=97 pt=left_heel gap=-7.237876e-06 lam=1.443095e-06 du_pt=-1.044495e-11 J
 [poscorr] tick=97 points=1 dq_max=1.210e-04 du=+3.405488e-06 J
 [poscorr-pt] tick=97 pt=left_heel gap=-3.511475e-06 lam=3.472584e-07 du_pt=-1.219389e-12 J
+PT t=98
 [foreclk] inplace leg=1 tick=98 paw=(0.220866,0.041829) stance=0.000 entry=1 follow=1
 [hindstep] fire leg=1 tick=98 phi=0.68310 class=slot from=(0.015276,0.030539) to=(0.361342,0.030539) xoff=0.143669 v=0.592535 qerr=6.661e-16 ap=-0.6786 br=-1 dl=0
 [poscorr] tick=98 points=1 dq_max=6.948e-03 du=+3.041955e-04 J
@@ -1873,6 +1972,7 @@ CONFIGURED
 [poscorr-pt] tick=98 pt=left_heel gap=-1.146786e-05 lam=2.279892e-06 du_pt=-2.614548e-11 J
 [poscorr] tick=98 points=1 dq_max=1.877e-04 du=+5.253889e-06 J
 [poscorr-pt] tick=98 pt=left_heel gap=-5.474641e-06 lam=5.357363e-07 du_pt=-2.932964e-12 J
+PT t=99
 [pawcap] leg=1 td=1 paw=(0.222410362,0.041854401) branch=-1 qerr=5.551e-17 rad roundtrip=1.388e-17 m
 [foreclk] inplace leg=1 tick=99 paw=(0.222410,0.041854) stance=0.000 entry=1 follow=0
 [poscorr] tick=99 points=1 dq_max=3.458e-04 du=+1.533519e-05 J
@@ -1889,6 +1989,7 @@ CONFIGURED
 [poscorr-pt] tick=99 pt=left_heel gap=-1.134047e-05 lam=1.098643e-06 du_pt=-1.245912e-11 J
 [poscorr] tick=99 points=1 dq_max=9.046e-04 du=+4.022997e-05 J
 [poscorr-pt] tick=99 pt=left_heel gap=-2.071665e-05 lam=4.102163e-06 du_pt=-8.498307e-11 J
+PT t=100
 [tick] 100
 [poscorr] tick=100 points=1 dq_max=5.459e-05 du=+6.751601e-07 J
 [poscorr-pt] tick=100 pt=left_heel gap=-1.364357e-06 lam=6.884703e-08 du_pt=-9.393190e-14 J
@@ -1914,6 +2015,7 @@ CONFIGURED
 [poscorr-pt] tick=100 pt=left_heel gap=-4.453531e-06 lam=8.791273e-07 du_pt=-3.915221e-12 J
 [poscorr] tick=100 points=1 dq_max=1.613e-04 du=+7.206533e-06 J
 [poscorr-pt] tick=100 pt=left_heel gap=-3.723447e-06 lam=7.348569e-07 du_pt=-2.736201e-12 J
+PT t=101
 [foreclk] inplace leg=1 tick=101 paw=(0.225281,0.041912) stance=0.000 entry=1 follow=1
 [poscorr] tick=101 points=1 dq_max=9.861e-05 du=+4.405233e-06 J
 [poscorr-pt] tick=101 pt=left_heel gap=-2.276562e-06 lam=4.492069e-07 du_pt=-1.022647e-12 J
@@ -1939,6 +2041,7 @@ CONFIGURED
 [poscorr-pt] tick=101 pt=left_heel gap=-7.038028e-06 lam=1.385949e-06 du_pt=-9.754345e-12 J
 [poscorr] tick=101 points=1 dq_max=1.006e-04 du=+4.494232e-06 J
 [poscorr-pt] tick=101 pt=left_heel gap=-2.328122e-06 lam=4.582822e-07 du_pt=-1.066937e-12 J
+PT t=102
 [pawcap] leg=1 td=1 paw=(0.226277653,0.041954318) branch=-1 qerr=2.220e-16 rad roundtrip=3.103e-17 m
 [foreclk] inplace leg=1 tick=102 paw=(0.226278,0.041954) stance=0.000 entry=1 follow=0
 [poscorr] tick=102 points=1 dq_max=2.024e-03 du=+9.032921e-05 J
@@ -1961,6 +2064,7 @@ CONFIGURED
 [poscorr-pt] tick=102 pt=left_heel gap=-1.929173e-06 lam=9.723075e-08 du_pt=-1.875749e-13 J
 [poscorr] tick=102 points=1 dq_max=8.704e-05 du=+3.889528e-06 J
 [poscorr-pt] tick=102 pt=left_heel gap=-2.021987e-06 lam=3.966200e-07 du_pt=-8.019607e-13 J
+PT t=103
 [pawcap] leg=0 td=3 paw=(0.226775527,0.042156397) branch=-1 qerr=1.578e-15 rad roundtrip=5.004e-17 m
 [foreclk] td leg=0 tick=103 td_count=4 entry=1 stance=0.000 roundtrip=5.004e-17 m
 [poscorr] tick=103 points=1 dq_max=5.725e-04 du=+2.558747e-05 J
@@ -1997,6 +2101,7 @@ CONFIGURED
 [poscorr-pt] tick=103 pt=left_heel gap=-4.071819e-06 lam=7.961083e-07 du_pt=-3.241609e-12 J
 [poscorr] tick=103 points=1 dq_max=3.792e-04 du=+1.691441e-05 J
 [poscorr-pt] tick=103 pt=left_heel gap=-8.823318e-06 lam=1.724762e-06 du_pt=-1.521813e-11 J
+PT t=104
 [foreclk] lift leg=0 tick=104 td=4 entry=1 from=(0.227285,0.042230) to=(0.590229,0.037181) xoff=0.111291 v=0.458999 wall_bound=0
 [poscorr] tick=104 points=1 dq_max=3.139e-04 du=+1.400126e-05 J
 [poscorr-pt] tick=104 pt=left_heel gap=-7.305001e-06 lam=1.427712e-06 du_pt=-1.042944e-11 J
@@ -2028,6 +2133,7 @@ CONFIGURED
 [poscorr-pt] tick=104 pt=left_heel gap=-1.018637e-05 lam=1.986067e-06 du_pt=-2.023082e-11 J
 [poscorr] tick=104 points=1 dq_max=8.045e-05 du=+9.876592e-07 J
 [poscorr-pt] tick=104 pt=left_heel gap=-2.001870e-06 lam=1.007129e-07 du_pt=-2.016142e-13 J
+PT t=105
 [foreclk] inplace leg=1 tick=105 paw=(0.228369,0.042064) stance=0.000 entry=1 follow=1
 [poscorr] tick=105 points=1 dq_max=3.737e-04 du=+1.664784e-05 J
 [poscorr-pt] tick=105 pt=left_heel gap=-8.708983e-06 lam=1.697580e-06 du_pt=-1.478420e-11 J
@@ -2055,6 +2161,7 @@ CONFIGURED
 [poscorr-pt] tick=105 pt=left_heel gap=-4.337315e-06 lam=8.434431e-07 du_pt=-3.658278e-12 J
 [poscorr] tick=105 points=1 dq_max=1.733e-03 du=+7.682138e-05 J
 [poscorr-pt] tick=105 pt=left_heel gap=-4.030156e-05 lam=7.833023e-06 du_pt=-3.156830e-10 J
+PT t=106
 [poscorr] tick=106 points=1 dq_max=3.966e-04 du=+1.759943e-05 J
 [poscorr-pt] tick=106 pt=left_heel gap=-9.234898e-06 lam=1.794612e-06 du_pt=-1.657306e-11 J
 [poscorr] tick=106 points=1 dq_max=1.366e-04 du=+3.725115e-06 J
@@ -2085,6 +2192,7 @@ CONFIGURED
 [poscorr-pt] tick=106 pt=left_heel gap=-3.929385e-06 lam=7.615601e-07 du_pt=-2.992463e-12 J
 [poscorr] tick=106 points=1 dq_max=3.309e-04 du=+1.463552e-05 J
 [poscorr-pt] tick=106 pt=left_heel gap=-7.701560e-06 lam=1.492386e-06 du_pt=-1.149370e-11 J
+PT t=107
 [pawcap] leg=1 td=1 paw=(0.229314988,0.042136562) branch=-1 qerr=9.821e-16 rad roundtrip=3.925e-17 m
 [foreclk] inplace leg=1 tick=107 paw=(0.229315,0.042137) stance=0.000 entry=1 follow=0
 [hindstep] td leg=1 tick=107 tds=1
@@ -2113,6 +2221,7 @@ CONFIGURED
 [poscorr-pt] tick=107 pt=left_heel gap=-3.695217e-06 lam=3.393719e-07 du_pt=-1.254053e-12 J
 [poscorr] tick=107 points=1 dq_max=4.627e-05 du=+2.041153e-06 J
 [poscorr-pt] tick=107 pt=left_heel gap=-1.077185e-06 lam=2.081393e-07 du_pt=-2.242045e-13 J
+PT t=108
 [hindgate] tick=108 leg=0 live=3 tL=-1 sL=-4.0 tR=1 sR=-1.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.493
 [poscorr] tick=108 points=1 dq_max=6.339e-05 du=+7.714406e-07 J
 [poscorr-pt] tick=108 pt=left_heel gap=-1.569295e-06 lam=7.866487e-08 du_pt=-1.234484e-13 J
@@ -2128,6 +2237,7 @@ CONFIGURED
 [poscorr-pt] tick=108 pt=left_heel gap=-1.021978e-05 lam=1.971594e-06 du_pt=-2.014926e-11 J
 [poscorr] tick=108 points=1 dq_max=2.309e-03 du=+1.014824e-04 J
 [poscorr-pt] tick=108 pt=left_heel gap=-5.368035e-05 lam=1.034730e-05 du_pt=-5.554467e-10 J
+PT t=109
 [hindgate] tick=109 leg=0 live=2 tL=-1 sL=-5.0 tR=2 sR=-2.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.526
 [poscorr] tick=109 points=1 dq_max=5.134e-03 du=+2.258120e-04 J
 [poscorr-pt] tick=109 pt=left_heel gap=-1.194856e-04 lam=2.302133e-05 du_pt=-2.750717e-09 J
@@ -2153,6 +2263,7 @@ CONFIGURED
 [poscorr-pt] tick=109 pt=left_heel gap=-1.911468e-06 lam=3.672219e-07 du_pt=-7.019329e-13 J
 [poscorr] tick=109 points=1 dq_max=4.018e-04 du=+1.765087e-05 J
 [poscorr-pt] tick=109 pt=left_heel gap=-9.370590e-06 lam=1.799857e-06 du_pt=-1.686572e-11 J
+PT t=110
 [tick] 110
 [foreclk] inplace leg=1 tick=110 paw=(0.231903,0.042264) stance=0.000 entry=1 follow=1
 [hindgate] tick=110 leg=0 live=2 tL=-1 sL=-6.0 tR=0 sR=0.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.552
@@ -2184,6 +2295,7 @@ CONFIGURED
 [poscorr-pt] tick=110 pt=left_heel gap=-5.984251e-06 lam=1.146461e-06 du_pt=-6.860708e-12 J
 [poscorr] tick=110 points=1 dq_max=1.020e-04 du=+4.467305e-06 J
 [poscorr-pt] tick=110 pt=left_heel gap=-2.378558e-06 lam=4.555363e-07 du_pt=-1.083520e-12 J
+PT t=111
 [pawcap] leg=1 td=1 paw=(0.232969681,0.042391367) branch=-1 qerr=1.352e-15 rad roundtrip=7.376e-17 m
 [foreclk] inplace leg=1 tick=111 paw=(0.232970,0.042391) stance=0.000 entry=1 follow=0
 [hindgate] tick=111 leg=0 live=2 tL=-1 sL=-7.0 tR=0 sR=0.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.572
@@ -2211,6 +2323,7 @@ CONFIGURED
 [poscorr-pt] tick=111 pt=left_heel gap=-8.175520e-06 lam=7.352966e-07 du_pt=-6.011432e-12 J
 [poscorr] tick=111 points=1 dq_max=1.743e-03 du=+7.601722e-05 J
 [poscorr-pt] tick=111 pt=left_heel gap=-4.057667e-05 lam=7.751010e-06 du_pt=-3.145101e-10 J
+PT t=112
 [hindgate] tick=112 leg=0 live=2 tL=-1 sL=-8.0 tR=1 sR=-1.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.584
 [poscorr] tick=112 points=1 dq_max=1.697e-03 du=+7.403668e-05 J
 [poscorr-pt] tick=112 pt=left_heel gap=-3.953262e-05 lam=7.549081e-06 du_pt=-2.984349e-10 J
@@ -2240,6 +2353,7 @@ CONFIGURED
 [poscorr-pt] tick=112 pt=left_heel gap=-2.253921e-06 lam=4.292827e-07 du_pt=-9.675692e-13 J
 [poscorr] tick=112 points=1 dq_max=1.647e-04 du=+7.156737e-06 J
 [poscorr-pt] tick=112 pt=left_heel gap=-3.832340e-06 lam=7.297788e-07 du_pt=-2.796761e-12 J
+PT t=113
 [pawcap] leg=0 td=4 paw=(0.236839543,0.042213594) branch=-1 qerr=7.109e-16 rad roundtrip=1.388e-17 m
 [foreclk] td leg=0 tick=113 td_count=5 entry=1 stance=0.000 roundtrip=1.388e-17 m
 [hindgate] tick=113 leg=0 live=2 tL=0 sL=0.0 tR=2 sR=-2.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.587
@@ -2277,6 +2391,7 @@ CONFIGURED
 [poscorr-pt] tick=113 pt=left_heel gap=-3.221344e-06 lam=2.869815e-07 du_pt=-9.244659e-13 J
 [poscorr] tick=113 points=1 dq_max=2.814e-04 du=+1.214293e-05 J
 [poscorr-pt] tick=113 pt=left_heel gap=-6.521458e-06 lam=1.238219e-06 du_pt=-8.074991e-12 J
+PT t=114
 [foreclk] hold leg=1 tick=114 armed=1 last=9 off=(-0.259309,-0.029448)
 [foreclk] lift leg=1 tick=114 td=1 entry=1 from=(0.236469,0.042734) to=(0.633348,0.036057) xoff=0.146453 v=0.604018 wall_bound=1
 [hindgate] tick=114 leg=0 live=2 tL=1 sL=-1.0 tR=-1 sR=0.0 hL=0 hR=1 gated=0 floor=1 dl=142 v=0.604
@@ -2314,6 +2429,7 @@ CONFIGURED
 [poscorr-pt] tick=114 pt=left_heel gap=-1.937661e-06 lam=3.669931e-07 du_pt=-7.111083e-13 J
 [poscorr] tick=114 points=1 dq_max=4.467e-04 du=+1.916465e-05 J
 [poscorr-pt] tick=114 pt=left_heel gap=-1.031975e-05 lam=1.954213e-06 du_pt=-2.016699e-11 J
+PT t=115
 [foreclk] lift leg=0 tick=115 td=5 entry=1 from=(0.239100,0.042274) to=(0.639935,0.037181) xoff=0.149777 v=0.617727 wall_bound=0
 [hindgate] tick=115 leg=0 live=1 tL=-1 sL=0.0 tR=-1 sR=-1.0 hL=0 hR=1 gated=0 floor=1 dl=142 v=0.618
 [poscorr] tick=115 points=1 dq_max=4.346e-04 du=+1.864164e-05 J
@@ -2343,6 +2459,7 @@ CONFIGURED
 [poscorr-pt] tick=115 pt=left_heel gap=-3.248962e-06 lam=1.611546e-07 du_pt=-5.235852e-13 J
 [poscorr] tick=115 points=1 dq_max=4.139e-04 du=+1.765060e-05 J
 [poscorr-pt] tick=115 pt=left_heel gap=-9.528929e-06 lam=1.799827e-06 du_pt=-1.715042e-11 J
+PT t=116
 [hindgate] tick=116 leg=0 live=1 tL=-1 sL=-1.0 tR=-1 sR=-2.0 hL=0 hR=1 gated=0 floor=1 dl=142 v=0.628
 [poscorr] tick=116 points=1 dq_max=4.962e-04 du=+2.115098e-05 J
 [poscorr-pt] tick=116 pt=left_heel gap=-1.142093e-05 lam=2.156753e-06 du_pt=-2.463211e-11 J
@@ -2377,6 +2494,7 @@ CONFIGURED
 [poscorr-pt] tick=116 pt=left_heel gap=-1.070125e-05 lam=2.016523e-06 du_pt=-2.157932e-11 J
 [poscorr] tick=116 points=1 dq_max=4.542e-04 du=+5.373153e-06 J
 [poscorr-pt] tick=116 pt=left_heel gap=-1.106587e-05 lam=5.479012e-07 du_pt=-6.063001e-12 J
+PT t=117
 [hindgate] tick=117 leg=0 live=2 tL=-1 sL=-2.0 tR=-1 sR=-3.0 hL=0 hR=1 gated=0 floor=1 dl=142 v=0.638
 [poscorr] tick=117 points=1 dq_max=1.683e-04 du=+7.132367e-06 J
 [poscorr-pt] tick=117 pt=left_heel gap=-3.860654e-06 lam=7.272936e-07 du_pt=-2.807829e-12 J
@@ -2407,6 +2525,7 @@ CONFIGURED
 [poscorr-pt] tick=117 pt=left_heel gap=-2.844690e-06 lam=5.347981e-07 du_pt=-1.521335e-12 J
 [poscorr] tick=117 points=1 dq_max=4.192e-05 du=+4.939988e-07 J
 [poscorr-pt] tick=117 pt=left_heel gap=-1.019130e-06 lam=5.037379e-08 du_pt=-5.133745e-14 J
+PT t=118
 [hindgate] tick=118 leg=0 live=2 tL=-1 sL=-3.0 tR=-1 sR=-4.0 hL=0 hR=1 gated=0 floor=1 dl=142 v=0.649
 [poscorr] tick=118 points=1 dq_max=1.218e-04 du=+5.125351e-06 J
 [poscorr-pt] tick=118 pt=left_heel gap=-2.780780e-06 lam=5.226375e-07 du_pt=-1.453340e-12 J
@@ -2435,6 +2554,7 @@ CONFIGURED
 [poscorr-pt] tick=118 pt=left_heel gap=-1.299355e-05 lam=2.437742e-06 du_pt=-3.167492e-11 J
 [poscorr] tick=118 points=1 dq_max=6.632e-04 du=+2.769990e-05 J
 [poscorr-pt] tick=118 pt=left_heel gap=-1.505931e-05 lam=2.824521e-06 du_pt=-4.253534e-11 J
+PT t=119
 [hindgate] tick=119 leg=0 live=2 tL=-1 sL=-4.0 tR=-1 sR=-5.0 hL=0 hR=1 gated=0 floor=1 dl=142 v=0.661
 [poscorr] tick=119 points=1 dq_max=2.228e-04 du=+9.300783e-06 J
 [poscorr-pt] tick=119 pt=left_heel gap=-5.057397e-06 lam=9.484066e-07 du_pt=-4.796468e-12 J
@@ -2461,6 +2581,7 @@ CONFIGURED
 [poscorr-pt] tick=119 pt=left_heel gap=-1.212671e-05 lam=2.271029e-06 du_pt=-2.754010e-11 J
 [poscorr] tick=119 points=1 dq_max=5.347e-04 du=+2.220282e-05 J
 [poscorr-pt] tick=119 pt=left_heel gap=-1.209168e-05 lam=2.264004e-06 du_pt=-2.737562e-11 J
+PT t=120
 [tick] 120
 [hindgate] tick=120 leg=0 live=1 tL=-1 sL=-5.0 tR=-1 sR=-6.0 hL=0 hR=1 gated=0 floor=1 dl=142 v=0.675
 [poscorr] tick=120 points=1 dq_max=6.869e-04 du=+2.850003e-05 J
@@ -2494,6 +2615,7 @@ CONFIGURED
 [poscorr-pt] tick=120 pt=left_heel gap=-4.805333e-06 lam=8.987947e-07 du_pt=-4.319008e-12 J
 [poscorr] tick=120 points=1 dq_max=3.930e-04 du=+1.624981e-05 J
 [poscorr-pt] tick=120 pt=left_heel gap=-8.859398e-06 lam=1.656990e-06 du_pt=-1.467993e-11 J
+PT t=121
 [hindgate] tick=121 leg=0 live=1 tL=-1 sL=-6.0 tR=-1 sR=-7.0 hL=0 hR=1 gated=0 floor=1 dl=142 v=0.687
 [poscorr] tick=121 points=1 dq_max=4.017e-04 du=+4.688275e-06 J
 [poscorr-pt] tick=121 pt=left_heel gap=-9.714614e-06 lam=4.780653e-07 du_pt=-4.644220e-12 J
@@ -2508,176 +2630,266 @@ CONFIGURED
 [poscorr-pt] tick=121 pt=left_heel gap=-1.872665e-05 lam=9.211299e-07 du_pt=-1.724967e-11 J
 [poscorr] tick=121 points=1 dq_max=3.179e-03 du=+3.699332e-05 J
 [poscorr-pt] tick=121 pt=left_heel gap=-7.674343e-05 lam=3.771917e-06 du_pt=-2.894698e-10 J
+PT t=122
 [hindgate] tick=122 leg=0 live=1 tL=-1 sL=-7.0 tR=-1 sR=-8.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.697
 [poscorr] tick=122 points=1 dq_max=3.734e-03 du=+4.339694e-05 J
 [poscorr-pt] tick=122 pt=left_heel gap=-9.008494e-05 lam=4.424775e-06 du_pt=-3.986056e-10 J
 [poscorr] tick=122 points=1 dq_max=3.637e-03 du=+4.222231e-05 J
 [poscorr-pt] tick=122 pt=left_heel gap=-8.769176e-05 lam=4.305024e-06 du_pt=-3.775151e-10 J
+PT t=123
 [pawcap] leg=1 td=1 paw=(0.247017060,0.042312434) branch=-1 qerr=6.497e-16 rad roundtrip=5.551e-17 m
 [foreclk] td leg=1 tick=123 td_count=2 entry=1 stance=0.000 roundtrip=5.551e-17 m
 [hindgate] tick=123 leg=0 live=2 tL=-1 sL=-8.0 tR=0 sR=0.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.684
 [poscorr] tick=123 points=1 dq_max=1.207e-03 du=+1.397280e-05 J
 [poscorr-pt] tick=123 pt=left_heel gap=-2.906108e-05 lam=1.424781e-06 du_pt=-4.140567e-11 J
+PT t=124
 [pawcap] leg=0 td=5 paw=(0.253965198,0.041993942) branch=-1 qerr=1.466e-15 rad roundtrip=8.327e-17 m
 [foreclk] td leg=0 tick=124 td_count=6 entry=1 stance=0.000 roundtrip=8.327e-17 m
 [hindgate] tick=124 leg=0 live=3 tL=0 sL=0.0 tR=1 sR=-1.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.680
+PT t=125
 [foreclk] lift leg=1 tick=125 td=2 entry=1 from=(0.249067,0.042354) to=(0.664703,0.036057) xoff=0.164626 v=0.678966 wall_bound=0
 [hindgate] tick=125 leg=0 live=3 tL=1 sL=-1.0 tR=-1 sR=0.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.679
+PT t=126
 [hindgate] tick=126 leg=0 live=2 tL=2 sL=-2.0 tR=-1 sR=-1.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.672
+PT t=127
 [pawcap] leg=0 td=6 paw=(0.257643842,0.042064012) branch=-1 qerr=2.683e-15 rad roundtrip=5.722e-17 m
 [foreclk] inplace leg=0 tick=127 paw=(0.257644,0.042064) stance=0.000 entry=1 follow=0
 [hindgate] tick=127 leg=0 live=2 tL=0 sL=0.0 tR=-1 sR=-2.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.668
+PT t=128
 [hindgate] tick=128 leg=0 live=1 tL=1 sL=-1.0 tR=-1 sR=-3.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.668
+PT t=129
 [hindgate] tick=129 leg=0 live=1 tL=2 sL=-2.0 tR=-1 sR=-4.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.673
+PT t=130
 [tick] 130
 [pawcap] leg=0 td=6 paw=(0.261482017,0.042947605) branch=-1 qerr=2.633e-15 rad roundtrip=2.776e-17 m
 [foreclk] inplace leg=0 tick=130 paw=(0.261482,0.042948) stance=0.000 entry=1 follow=0
 [hindgate] tick=130 leg=0 live=1 tL=0 sL=0.0 tR=-1 sR=-5.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.683
+PT t=131
 [hindgate] tick=131 leg=0 live=1 tL=1 sL=-1.0 tR=-1 sR=-6.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.696
+PT t=132
 [hindgate] tick=132 leg=0 live=1 tL=2 sL=-2.0 tR=-1 sR=-7.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.709
+PT t=133
 [pawcap] leg=0 td=6 paw=(0.265380450,0.044862315) branch=-1 qerr=3.278e-15 rad roundtrip=6.206e-17 m
 [foreclk] inplace leg=0 tick=133 paw=(0.265380,0.044862) stance=0.000 entry=1 follow=0
 [hindgate] tick=133 leg=0 live=1 tL=0 sL=0.0 tR=-1 sR=-8.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.722
+PT t=134
 [pawcap] leg=1 td=2 paw=(0.260994220,0.041987970) branch=-1 qerr=1.563e-15 rad roundtrip=5.551e-17 m
 [foreclk] td leg=1 tick=134 td_count=3 entry=1 stance=0.000 roundtrip=5.551e-17 m
 [hindgate] tick=134 leg=0 live=2 tL=1 sL=-1.0 tR=0 sR=0.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.744
+PT t=135
 [hindgate] tick=135 leg=0 live=2 tL=2 sL=-2.0 tR=1 sR=-1.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.776
+PT t=136
 [foreclk] lift leg=0 tick=136 td=6 entry=1 from=(0.269952,0.047485) to=(0.712231,0.037181) xoff=0.195560 v=0.806551 wall_bound=0
 [hindgate] tick=136 leg=0 live=2 tL=-1 sL=0.0 tR=2 sR=-2.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.807
+PT t=137
 [pawcap] leg=1 td=3 paw=(0.265329223,0.042105366) branch=-1 qerr=1.563e-15 rad roundtrip=8.327e-17 m
 [foreclk] inplace leg=1 tick=137 paw=(0.265329,0.042105) stance=0.000 entry=1 follow=0
 [hindgate] tick=137 leg=0 live=1 tL=-1 sL=-1.0 tR=0 sR=0.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.836
+PT t=138
 [hindgate] tick=138 leg=0 live=1 tL=-1 sL=-2.0 tR=1 sR=-1.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.864
+PT t=139
 [pawcap] leg=1 td=3 paw=(0.269308597,0.042719673) branch=-1 qerr=2.734e-15 rad roundtrip=6.939e-17 m
 [foreclk] inplace leg=1 tick=139 paw=(0.269309,0.042720) stance=0.000 entry=1 follow=0
 [hindgate] tick=139 leg=0 live=0 tL=-1 sL=-3.0 tR=0 sR=0.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.889
+PT t=140
 [tick] 140
 [hindgate] tick=140 leg=0 live=1 tL=-1 sL=-4.0 tR=1 sR=-1.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.909
+PT t=141
 [pawcap] leg=1 td=3 paw=(0.273636992,0.043782185) branch=-1 qerr=1.299e-15 rad roundtrip=3.469e-17 m
 [foreclk] inplace leg=1 tick=141 paw=(0.273637,0.043782) stance=0.000 entry=1 follow=0
 [hindgate] tick=141 leg=0 live=1 tL=-1 sL=-5.0 tR=0 sR=0.0 hL=0 hR=0 gated=0 floor=1 dl=142 v=0.926
+PT t=142
 [hindgate] tick=142 leg=0 live=1 tL=-1 sL=-6.0 tR=1 sR=-1.0 hL=0 hR=0 gated=0 floor=0 dl=142 v=0.942
 [hindstep] fire leg=0 tick=142 phi=0.38967 class=alt from=(0.201189,0.018064) to=(0.545861,0.018064) xoff=0.228318 v=0.941654 qerr=4.441e-16 ap=-0.1146 br=-1 dl=142
+PT t=143
 [pawcap] leg=1 td=3 paw=(0.277972777,0.045031083) branch=-1 qerr=2.495e-15 rad roundtrip=4.163e-17 m
 [foreclk] inplace leg=1 tick=143 paw=(0.277973,0.045031) stance=0.000 entry=1 follow=0
+PT t=144
+PT t=145
 [pawcap] leg=0 td=6 paw=(0.290591349,0.049511456) branch=-1 qerr=7.550e-16 rad roundtrip=4.163e-17 m
 [foreclk] td leg=0 tick=145 td_count=7 entry=1 stance=0.000 roundtrip=4.163e-17 m
+PT t=146
 [foreclk] lift leg=1 tick=146 td=3 entry=1 from=(0.282206,0.046558) to=(0.709393,0.036057) xoff=0.182444 v=0.752457 wall_bound=0
+PT t=147
+PT t=148
+PT t=149
+PT t=150
 [tick] 150
+PT t=151
 [pawcap] leg=0 td=7 paw=(0.295563043,0.041520227) branch=-1 qerr=8.618e-16 rad roundtrip=2.776e-17 m
 [foreclk] inplace leg=0 tick=151 paw=(0.295563,0.041520) stance=0.000 entry=1 follow=0
 [hindstep] holdreturn leg=0 tick=151 t=9 pairmin=1.3131e-02
+PT t=152
 [hindstep] holdreturn leg=0 tick=152 t=10 pairmin=1.2541e-02
+PT t=153
 [hindstep] holdreturn leg=0 tick=153 t=11 pairmin=1.1384e-02
+PT t=154
 [hindstep] holdreturn leg=0 tick=154 t=12 pairmin=9.8877e-03
+PT t=155
 [pawcap] leg=1 td=3 paw=(0.284039036,0.046225112) branch=-1 qerr=2.582e-15 rad roundtrip=5.551e-17 m
 [foreclk] td leg=1 tick=155 td_count=4 entry=1 stance=0.000 roundtrip=5.551e-17 m
 [hindstep] holdreturn leg=0 tick=155 t=13 pairmin=8.2061e-03
+PT t=156
 [hindstep] holdreturn leg=0 tick=156 t=14 pairmin=6.4463e-03
+PT t=157
 [foreclk] lift leg=0 tick=157 td=7 entry=1 from=(0.294953,0.044040) to=(0.697673,0.037181) xoff=0.162971 v=0.672143 wall_bound=0
 [hindstep] holdreturn leg=0 tick=157 t=15 pairmin=4.6741e-03
+PT t=158
 [hindstep] holdreturn leg=0 tick=158 t=16 pairmin=2.9282e-03
+PT t=159
 [hindstep] holdreturn leg=0 tick=159 t=17 pairmin=1.2383e-03
+PT t=160
 [tick] 160
 [hindstep] td leg=0 tick=160 tds=1
 [hindstep] unloadgate leg=1 tick=160 dl=160 class=unload
 [hindgate] tick=160 leg=1 live=0 tL=-1 sL=-3.0 tR=5 sR=-5.0 hL=0 hR=0 gated=0 floor=0 dl=160 v=0.731
 [hindstep] fire leg=1 tick=160 phi=0.25352 class=alt from=(0.256219,0.021838) to=(0.527343,0.021838) xoff=0.177221 v=0.730912 qerr=2.220e-16 ap=-0.0731 br=-1 dl=160
+PT t=161
 [pawcap] leg=1 td=4 paw=(0.285921246,0.042259769) branch=-1 qerr=3.957e-15 rad roundtrip=1.367e-16 m
 [foreclk] inplace leg=1 tick=161 paw=(0.285921,0.042260) stance=0.000 entry=1 follow=0
 [hindstep] waivefire leg=0 tick=161 dl=107
 [hindgate] tick=161 leg=0 live=0 tL=-1 sL=-4.0 tR=0 sR=0.0 hL=0 hR=0 gated=0 floor=0 dl=107 v=0.769
 [hindstep] fire leg=0 tick=161 phi=0.00469 class=alt from=(0.307825,0.019198) to=(0.549255,0.019198) xoff=0.186533 v=0.769319 qerr=4.441e-16 ap=0.0040 br=-1 dl=107
+PT t=162
+PT t=163
+PT t=164
+PT t=165
+PT t=166
 [pawcap] leg=0 td=7 paw=(0.302109411,0.045434114) branch=-1 qerr=5.901e-16 rad roundtrip=2.776e-17 m
 [foreclk] td leg=0 tick=166 td_count=8 entry=1 stance=0.000 roundtrip=2.776e-17 m
+PT t=167
 [foreclk] lift leg=1 tick=167 td=4 entry=1 from=(0.288513,0.042521) to=(0.695485,0.036057) xoff=0.167773 v=0.691946 wall_bound=0
+PT t=168
+PT t=169
 [hindstep] holdreturn leg=1 tick=169 t=9 pairmin=7.0863e-03
+PT t=170
 [tick] 170
 [hindstep] td leg=0 tick=170 tds=2
 [hindstep] holdreturn leg=1 tick=170 t=10 pairmin=6.1717e-03
+PT t=171
 [hindstep] holdreturn leg=1 tick=171 t=11 pairmin=4.7639e-03
+PT t=172
 [hindstep] holdreturn leg=1 tick=172 t=12 pairmin=2.9989e-03
+PT t=173
 [hindstep] holdreturn leg=1 tick=173 t=13 pairmin=9.7821e-04
 [ik] leg=1 tick=173 SATURATED paw=(0.559827,0.045140) shoulder=(0.524649,0.050616) D=0.035602 reach=[0.011324,0.261324]
+PT t=174
 [hindstep] td leg=1 tick=174 tds=2
 [hindgate] tick=174 leg=0 live=0 tL=8 sL=-8.0 tR=-1 sR=-7.0 hL=0 hR=0 gated=1 floor=0 dl=174 v=0.716
+PT t=175
 [pawcap] leg=0 td=8 paw=(0.303160692,0.042500929) branch=-1 qerr=7.448e-16 rad roundtrip=1.367e-16 m
 [foreclk] inplace leg=0 tick=175 paw=(0.303161,0.042501) stance=0.000 entry=1 follow=0
 [hindgate] tick=175 leg=0 live=2 tL=0 sL=0.0 tR=-1 sR=-8.0 hL=0 hR=0 gated=0 floor=0 dl=174 v=0.763
 [hindstep] fire leg=0 tick=175 phi=0.07042 class=alt from=(0.345783,0.008246) to=(0.582544,0.008246) xoff=0.184927 v=0.762694 qerr=1.332e-15 ap=0.3900 br=-1 dl=174
 [hindgate] tick=175 leg=1 live=0 tL=0 sL=0.0 tR=-1 sR=-8.0 hL=0 hR=0 gated=1 floor=0 dl=170 v=0.763
+PT t=176
 [pawcap] leg=1 td=4 paw=(0.289480790,0.042573931) branch=-1 qerr=4.003e-15 rad roundtrip=1.671e-16 m
 [foreclk] td leg=1 tick=176 td_count=5 entry=1 stance=0.000 roundtrip=1.671e-16 m
 [hindstep] standhold leg=1 tick=176 swing_stall=1
 [hindgate] tick=176 leg=1 live=0 tL=1 sL=-1.0 tR=0 sR=0.0 hL=0 hR=0 gated=1 floor=0 dl=170 v=0.809
+PT t=177
 [hindgate] tick=177 leg=1 live=0 tL=2 sL=-2.0 tR=1 sR=-1.0 hL=0 hR=0 gated=1 floor=0 dl=170 v=0.808
+PT t=178
 [foreclk] lift leg=0 tick=178 td=8 entry=1 from=(0.305121,0.042659) to=(0.733798,0.037181) xoff=0.196519 v=0.810506 wall_bound=0
 [hindgate] tick=178 leg=1 live=0 tL=-1 sL=0.0 tR=2 sR=-2.0 hL=0 hR=0 gated=1 floor=0 dl=170 v=0.811
+PT t=179
 [hindgate] tick=179 leg=1 live=0 tL=-1 sL=-1.0 tR=3 sR=-3.0 hL=0 hR=0 gated=1 floor=0 dl=170 v=0.814
+PT t=180
 [tick] 180
 [hindgate] tick=180 leg=1 live=0 tL=-1 sL=-2.0 tR=4 sR=-4.0 hL=0 hR=0 gated=1 floor=0 dl=170 v=0.818
+PT t=181
 [hindgate] tick=181 leg=1 live=0 tL=-1 sL=-3.0 tR=5 sR=-5.0 hL=0 hR=0 gated=1 floor=0 dl=170 v=0.819
+PT t=182
 [hindgate] tick=182 leg=1 live=0 tL=-1 sL=-4.0 tR=6 sR=-6.0 hL=0 hR=0 gated=1 floor=0 dl=170 v=0.820
+PT t=183
 [hindgate] tick=183 leg=1 live=0 tL=-1 sL=-5.0 tR=7 sR=-7.0 hL=0 hR=0 gated=1 floor=0 dl=170 v=0.819
+PT t=184
 [hindstep] td leg=0 tick=184 tds=3
 [hindstep] unloadgate leg=1 tick=184 dl=184 class=unload
 [hindgate] tick=184 leg=1 live=0 tL=-1 sL=-6.0 tR=8 sR=-8.0 hL=0 hR=0 gated=0 floor=0 dl=184 v=0.813
 [hindstep] fire leg=1 tick=184 phi=0.04695 class=alt from=(0.311303,0.024703) to=(0.605145,0.024703) xoff=0.197132 v=0.813033 qerr=1.332e-15 ap=0.0393 br=-1 dl=184
+PT t=185
 [pawcap] leg=1 td=5 paw=(0.293579589,0.042910732) branch=-1 qerr=3.580e-15 rad roundtrip=8.356e-17 m
 [foreclk] inplace leg=1 tick=185 paw=(0.293580,0.042911) stance=0.542 entry=1 follow=0
 [hindstep] standhold leg=0 tick=185 swing_stall=1
 [hindgate] tick=185 leg=0 live=0 tL=-1 sL=-7.0 tR=0 sR=0.5 hL=0 hR=0 gated=1 floor=0 dl=174 v=0.818
+PT t=186
 [hindgate] tick=186 leg=0 live=0 tL=-1 sL=-8.0 tR=1 sR=-0.5 hL=0 hR=0 gated=1 floor=0 dl=174 v=0.819
+PT t=187
 [pawcap] leg=0 td=8 paw=(0.309263421,0.042924288) branch=-1 qerr=4.003e-16 rad roundtrip=0.000e+00 m
 [foreclk] td leg=0 tick=187 td_count=9 entry=1 stance=0.845 roundtrip=0.000e+00 m
 [hindgate] tick=187 leg=0 live=0 tL=0 sL=0.8 tR=2 sR=-1.5 hL=0 hR=0 gated=1 floor=0 dl=174 v=0.816
+PT t=188
 [foreclk] lift leg=1 tick=188 td=5 entry=1 from=(0.295107,0.042910) to=(0.721965,0.036057) xoff=0.199084 v=0.821082 wall_bound=0
 [hindgate] tick=188 leg=0 live=0 tL=1 sL=-0.2 tR=-1 sR=0.5 hL=0 hR=0 gated=1 floor=0 dl=174 v=0.821
+PT t=189
 [hindgate] tick=189 leg=0 live=0 tL=2 sL=-1.2 tR=-1 sR=-0.5 hL=0 hR=0 gated=1 floor=0 dl=174 v=0.820
+PT t=190
 [tick] 190
 [hindgate] tick=190 leg=0 live=0 tL=3 sL=-2.2 tR=-1 sR=-1.5 hL=0 hR=0 gated=1 floor=0 dl=174 v=0.819
+PT t=191
 [hindgate] tick=191 leg=0 live=0 tL=4 sL=-3.2 tR=-1 sR=-2.5 hL=0 hR=0 gated=1 floor=0 dl=174 v=0.816
+PT t=192
 [hindgate] tick=192 leg=0 live=0 tL=5 sL=-4.2 tR=-1 sR=-3.5 hL=0 hR=0 gated=1 floor=0 dl=174 v=0.814
+PT t=193
 [hindstep] td leg=1 tick=193 tds=3
 [hindstep] unloadgate leg=0 tick=193 dl=193 class=unload
 [hindgate] tick=193 leg=0 live=0 tL=6 sL=-5.2 tR=-1 sR=-4.5 hL=0 hR=0 gated=0 floor=0 dl=193 v=0.813
 [hindstep] fire leg=0 tick=193 phi=0.15493 class=alt from=(0.345292,0.006015) to=(0.645017,0.006015) xoff=0.197031 v=0.812617 qerr=1.554e-15 ap=0.5877 br=-1 dl=193
 [hindgate] tick=193 leg=1 live=0 tL=6 sL=-5.2 tR=-1 sR=-4.5 hL=0 hR=0 gated=1 floor=0 dl=184 v=0.813
+PT t=194
 [hindstep] standhold leg=1 tick=194 swing_stall=1
 [hindgate] tick=194 leg=1 live=0 tL=7 sL=-6.2 tR=-1 sR=-5.5 hL=0 hR=0 gated=1 floor=0 dl=184 v=0.814
+PT t=195
 [hindgate] tick=195 leg=1 live=0 tL=8 sL=-7.2 tR=-1 sR=-6.5 hL=0 hR=0 gated=1 floor=0 dl=184 v=0.804
+PT t=196
 [hindgate] tick=196 leg=1 live=0 tL=9 sL=-8.2 tR=-1 sR=-7.5 hL=0 hR=0 gated=1 floor=0 dl=184 v=0.805
+PT t=197
 [pawcap] leg=0 td=9 paw=(0.315191653,0.042227585) branch=-1 qerr=2.782e-15 rad roundtrip=6.939e-18 m
 [foreclk] inplace leg=0 tick=197 paw=(0.315192,0.042228) stance=4.313 entry=1 follow=0
+PT t=198
 [pawcap] leg=1 td=5 paw=(0.296014949,0.042077525) branch=-1 qerr=2.776e-17 rad roundtrip=5.722e-17 m
 [foreclk] td leg=1 tick=198 td_count=6 entry=1 stance=3.416 roundtrip=5.722e-17 m
 [hindstep] standhold leg=1 tick=198 swing_stall=5
 [hindgate] tick=198 leg=1 live=0 tL=1 sL=3.3 tR=0 sR=3.4 hL=0 hR=0 gated=1 floor=0 dl=184 v=0.809
+PT t=199
 [hindgate] tick=199 leg=1 live=0 tL=2 sL=2.3 tR=1 sR=2.4 hL=0 hR=0 gated=1 floor=0 dl=184 v=0.810
+PT t=200
 [tick] 200
 [hindgate] tick=200 leg=1 live=0 tL=3 sL=1.3 tR=2 sR=1.4 hL=0 hR=0 gated=1 floor=0 dl=184 v=0.810
+PT t=201
 [hindgate] tick=201 leg=1 live=0 tL=4 sL=0.3 tR=3 sR=0.4 hL=0 hR=0 gated=1 floor=0 dl=184 v=0.810
+PT t=202
 [foreclk] lift leg=0 tick=202 td=9 entry=1 from=(0.318199,0.041478) to=(0.728772,0.037181) xoff=0.196571 v=0.810719 wall_bound=0
 [hindstep] td leg=0 tick=202 tds=4
 [hindstep] unloadgate leg=1 tick=202 dl=202 class=unload
 [hindgate] tick=202 leg=1 live=0 tL=-1 sL=4.3 tR=4 sR=-0.6 hL=0 hR=0 gated=0 floor=0 dl=202 v=0.811
 [hindstep] fire leg=1 tick=202 phi=0.01878 class=alt from=(0.313652,0.024046) to=(0.652408,0.024046) xoff=0.196571 v=0.810719 qerr=3.331e-16 ap=0.2133 br=-1 dl=202
+PT t=203
 [hindstep] standhold leg=0 tick=203 swing_stall=1
 [hindgate] tick=203 leg=0 live=0 tL=-1 sL=3.3 tR=5 sR=-1.6 hL=0 hR=0 gated=1 floor=0 dl=193 v=0.822
+PT t=204
 [hindgate] tick=204 leg=0 live=0 tL=-1 sL=2.3 tR=6 sR=-2.6 hL=0 hR=0 gated=1 floor=0 dl=193 v=0.819
+PT t=205
 [hindgate] tick=205 leg=0 live=0 tL=-1 sL=1.3 tR=7 sR=-3.6 hL=0 hR=0 gated=1 floor=0 dl=193 v=0.819
+PT t=206
 [hindstep] guardblock leg=0 tick=206 dl=193 link_td=202 link_fire=193
 [hindgate] tick=206 leg=0 live=0 tL=-1 sL=0.3 tR=8 sR=-4.6 hL=0 hR=0 gated=1 floor=0 dl=193 v=0.820
+PT t=207
 [hindstep] standhold leg=0 tick=207 swing_stall=3
 [hindstep] guardblock leg=0 tick=207 dl=193 link_td=202 link_fire=193
 [hindgate] tick=207 leg=0 live=0 tL=-1 sL=-0.7 tR=9 sR=-5.6 hL=0 hR=0 gated=1 floor=0 dl=193 v=0.784
+PT t=208
 [hindstep] guardblock leg=0 tick=208 dl=193 link_td=202 link_fire=193
 [hindgate] tick=208 leg=0 live=0 tL=-1 sL=-1.7 tR=10 sR=-6.6 hL=0 hR=0 gated=1 floor=0 dl=193 v=0.747
+PT t=209
 [hindstep] guardblock leg=0 tick=209 dl=193 link_td=202 link_fire=193
 [hindgate] tick=209 leg=0 live=0 tL=-1 sL=-2.7 tR=11 sR=-7.6 hL=0 hR=0 gated=1 floor=0 dl=193 v=0.719
+PT t=210
 [tick] 210
 [hindstep] guardblock leg=0 tick=210 dl=193 link_td=202 link_fire=193
 [hindgate] tick=210 leg=0 live=0 tL=-1 sL=-3.7 tR=12 sR=-8.6 hL=0 hR=0 gated=1 floor=0 dl=193 v=0.698
+PT t=211
 [pawcap] leg=1 td=6 paw=(0.297804680,0.039543548) branch=-1 qerr=6.106e-16 rad roundtrip=5.722e-17 m
 [foreclk] inplace leg=1 tick=211 paw=(0.297805,0.039544) stance=13.942 entry=1 follow=0
 [hindstep] td leg=1 tick=211 tds=4
@@ -2685,41 +2897,53 @@ CONFIGURED
 [hindgate] tick=211 leg=0 live=0 tL=-1 sL=-4.7 tR=0 sR=13.9 hL=0 hR=0 gated=0 floor=0 dl=211 v=0.675
 [hindstep] fire leg=0 tick=211 phi=0.07981 class=alt from=(0.344614,0.000356) to=(0.659538,0.000356) xoff=0.163655 v=0.674965 qerr=4.441e-16 ap=0.9127 br=-1 dl=211
 [hindgate] tick=211 leg=1 live=0 tL=-1 sL=-4.7 tR=0 sR=13.9 hL=0 hR=0 gated=1 floor=0 dl=202 v=0.675
+PT t=212
 [hindstep] standhold leg=1 tick=212 swing_stall=1
 [hindgate] tick=212 leg=1 live=0 tL=-1 sL=-5.7 tR=1 sR=12.9 hL=0 hR=0 gated=1 floor=0 dl=202 v=0.723
 [poscorr] tick=212 points=1 dq_max=1.915e-03 du=+8.321989e-05 J
 [poscorr-pt] tick=212 pt=left_heel gap=-5.046450e-05 lam=8.485409e-06 du_pt=-4.282120e-10 J
 [poscorr] tick=212 points=1 dq_max=2.940e-04 du=+7.058566e-06 J
 [poscorr-pt] tick=212 pt=left_heel gap=-1.064076e-05 lam=7.197514e-07 du_pt=-7.658701e-12 J
+PT t=213
 [hindgate] tick=213 leg=1 live=0 tL=-1 sL=-6.7 tR=2 sR=11.9 hL=0 hR=0 gated=1 floor=0 dl=202 v=0.764
 [poscorr] tick=213 points=1 dq_max=1.607e-04 du=+7.014527e-06 J
 [poscorr-pt] tick=213 pt=left_heel gap=-4.262734e-06 lam=7.152781e-07 du_pt=-3.049040e-12 J
 [poscorr] tick=213 points=1 dq_max=2.009e-04 du=+2.294455e-06 J
 [poscorr-pt] tick=213 pt=left_heel gap=-4.620055e-06 lam=2.339685e-07 du_pt=-1.080947e-12 J
+PT t=214
 [hindgate] tick=214 leg=1 live=0 tL=-1 sL=-7.7 tR=3 sR=10.9 hL=0 hR=0 gated=1 floor=0 dl=202 v=0.790
+PT t=215
+PT t=216
 [pawcap] leg=0 td=9 paw=(0.313817812,0.036685189) branch=-1 qerr=4.518e-15 rad roundtrip=6.939e-17 m
 [foreclk] td leg=0 tick=216 td_count=10 entry=1 stance=14.028 roundtrip=6.939e-17 m
 [hindstep] standhold leg=1 tick=216 swing_stall=3
 [hindstep] guardblock leg=1 tick=216 dl=202 link_td=211 link_fire=202
 [hindgate] tick=216 leg=1 live=0 tL=0 sL=14.0 tR=5 sR=8.9 hL=0 hR=0 gated=1 floor=0 dl=202 v=0.795
+PT t=217
 [hindstep] guardblock leg=1 tick=217 dl=202 link_td=211 link_fire=202
 [hindgate] tick=217 leg=1 live=0 tL=1 sL=13.0 tR=6 sR=7.9 hL=0 hR=0 gated=1 floor=0 dl=202 v=0.766
+PT t=218
 [hindstep] guardblock leg=1 tick=218 dl=202 link_td=211 link_fire=202
 [hindgate] tick=218 leg=1 live=0 tL=2 sL=12.0 tR=7 sR=6.9 hL=0 hR=0 gated=1 floor=0 dl=202 v=0.745
+PT t=219
 [hindstep] guardblock leg=1 tick=219 dl=202 link_td=211 link_fire=202
 [hindgate] tick=219 leg=1 live=0 tL=3 sL=11.0 tR=8 sR=5.9 hL=0 hR=0 gated=1 floor=0 dl=202 v=0.729
+PT t=220
 [tick] 220
 [hindstep] td leg=0 tick=220 tds=5
 [hindstep] unloadgate leg=1 tick=220 dl=220 class=unload
 [hindgate] tick=220 leg=1 live=0 tL=4 sL=10.0 tR=9 sR=4.9 hL=0 hR=0 gated=0 floor=0 dl=220 v=0.717
 [hindstep] fire leg=1 tick=220 phi=0.01878 class=alt from=(0.333491,0.026099) to=(0.675821,0.026099) xoff=0.173779 v=0.716718 qerr=2.220e-16 ap=0.3796 br=-1 dl=220
+PT t=221
 [hindstep] standhold leg=0 tick=221 swing_stall=1
 [hindgate] tick=221 leg=0 live=0 tL=5 sL=9.0 tR=10 sR=3.9 hL=0 hR=0 gated=1 floor=0 dl=211 v=0.777
+PT t=222
 [hindgate] tick=222 leg=0 live=0 tL=6 sL=8.0 tR=11 sR=2.9 hL=0 hR=0 gated=1 floor=0 dl=211 v=0.822
 [poscorr] tick=222 points=1 dq_max=2.695e-03 du=+6.339547e-05 J
 [poscorr-pt] tick=222 pt=left_heel gap=-1.007262e-04 lam=6.463500e-06 du_pt=-6.510435e-10 J
 [poscorr] tick=222 points=1 dq_max=1.044e-03 du=+4.828154e-05 J
 [poscorr-pt] tick=222 pt=left_heel gap=-2.959108e-05 lam=4.923198e-06 du_pt=-1.456827e-10 J
+PT t=223
 [hindgate] tick=223 leg=0 live=0 tL=7 sL=7.0 tR=12 sR=1.9 hL=0 hR=0 gated=1 floor=0 dl=211 v=0.853
 [poscorr] tick=223 points=1 dq_max=7.831e-05 du=+9.114865e-07 J
 [poscorr-pt] tick=223 pt=left_heel gap=-1.775761e-06 lam=9.294563e-08 du_pt=-1.650493e-13 J
@@ -2727,155 +2951,230 @@ CONFIGURED
 [poscorr-pt] tick=223 pt=left_heel gap=-2.203540e-06 lam=1.153966e-07 du_pt=-2.542809e-13 J
 [poscorr] tick=223 points=1 dq_max=5.268e-05 du=+6.132808e-07 J
 [poscorr-pt] tick=223 pt=left_heel gap=-1.193947e-06 lam=6.253718e-08 du_pt=-7.466609e-14 J
+PT t=224
 [hindgate] tick=224 leg=0 live=0 tL=8 sL=6.0 tR=13 sR=0.9 hL=0 hR=0 gated=1 floor=0 dl=211 v=0.875
+PT t=225
 [foreclk] lift leg=1 tick=225 td=6 entry=1 from=(0.292235,0.042380) to=(0.685832,0.036057) xoff=0.215703 v=0.889626 wall_bound=0
 [hindgate] tick=225 leg=0 live=0 tL=9 sL=5.0 tR=-1 sR=13.9 hL=0 hR=0 gated=1 floor=0 dl=211 v=0.890
+PT t=226
 [hindgate] tick=226 leg=0 live=0 tL=10 sL=4.0 tR=-1 sR=12.9 hL=0 hR=0 gated=1 floor=0 dl=211 v=0.902
+PT t=227
 [hindgate] tick=227 leg=0 live=0 tL=11 sL=3.0 tR=-1 sR=11.9 hL=0 hR=0 gated=1 floor=0 dl=211 v=0.913
+PT t=228
 [hindgate] tick=228 leg=0 live=0 tL=12 sL=2.0 tR=-1 sR=10.9 hL=0 hR=0 gated=1 floor=0 dl=211 v=0.925
+PT t=229
 [hindstep] td leg=1 tick=229 tds=5
 [hindstep] unloadgate leg=0 tick=229 dl=229 class=unload
 [hindgate] tick=229 leg=0 live=0 tL=13 sL=1.0 tR=-1 sR=9.9 hL=0 hR=0 gated=0 floor=0 dl=229 v=0.938
 [hindstep] fire leg=0 tick=229 phi=0.06103 class=alt from=(0.362785,0.001237) to=(0.770829,0.001237) xoff=0.227316 v=0.937519 qerr=4.441e-16 ap=1.1873 br=-1 dl=229
 [hindgate] tick=229 leg=1 live=0 tL=13 sL=1.0 tR=-1 sR=9.9 hL=0 hR=0 gated=1 floor=0 dl=220 v=0.938
+PT t=230
 [tick] 230
 [hindstep] standhold leg=1 tick=230 swing_stall=1
 [hindgate] tick=230 leg=1 live=0 tL=14 sL=0.0 tR=-1 sR=8.9 hL=0 hR=0 gated=1 floor=0 dl=220 v=0.964
+PT t=231
 [hindgate] tick=231 leg=1 live=0 tL=15 sL=-1.0 tR=-1 sR=7.9 hL=0 hR=0 gated=1 floor=0 dl=220 v=0.969
+PT t=232
 [hindgate] tick=232 leg=1 live=0 tL=16 sL=-2.0 tR=-1 sR=6.9 hL=0 hR=0 gated=1 floor=0 dl=220 v=0.978
+PT t=233
 [hindgate] tick=233 leg=1 live=0 tL=17 sL=-3.0 tR=-1 sR=5.9 hL=0 hR=0 gated=1 floor=0 dl=220 v=0.990
+PT t=234
 [hindgate] tick=234 leg=1 live=0 tL=18 sL=-4.0 tR=-1 sR=4.9 hL=0 hR=0 gated=1 floor=0 dl=220 v=1.002
+PT t=235
 [hindgate] tick=235 leg=1 live=0 tL=19 sL=-5.0 tR=-1 sR=3.9 hL=0 hR=0 gated=1 floor=0 dl=220 v=1.014
+PT t=236
 [hindgate] tick=236 leg=1 live=0 tL=20 sL=-6.0 tR=-1 sR=2.9 hL=0 hR=0 gated=1 floor=0 dl=220 v=1.027
+PT t=237
 [hindgate] tick=237 leg=1 live=0 tL=21 sL=-7.0 tR=-1 sR=1.9 hL=0 hR=0 gated=1 floor=0 dl=220 v=1.039
+PT t=238
 [hindstep] td leg=0 tick=238 tds=6
 [hindstep] unloadgate leg=1 tick=238 dl=238 class=unload
 [hindgate] tick=238 leg=1 live=0 tL=22 sL=-8.0 tR=-1 sR=0.9 hL=0 hR=0 gated=0 floor=0 dl=238 v=1.053
 [hindstep] fire leg=1 tick=238 phi=0.10329 class=alt from=(0.340766,0.033557) to=(0.815058,0.033557) xoff=0.255285 v=1.052875 qerr=4.441e-16 ap=0.3965 br=-1 dl=238
+PT t=239
 [hindstep] standhold leg=0 tick=239 swing_stall=1
 [hindgate] tick=239 leg=0 live=0 tL=23 sL=-9.0 tR=-1 sR=-0.1 hL=0 hR=0 gated=1 floor=0 dl=229 v=1.077
 [ik] leg=0 tick=239 SATURATED paw=(0.313818,0.036685) shoulder=(0.459752,-0.139941) D=0.229115 reach=[0.011324,0.261324]
+PT t=240
 [tick] 240
 [pawcap] leg=0 td=10 paw=(0.321776639,0.039807163) branch=-1 qerr=5.143e-15 rad roundtrip=5.551e-17 m
 [foreclk] inplace leg=0 tick=240 paw=(0.321777,0.039807) stance=23.453 entry=1 follow=0
 [hindgate] tick=240 leg=0 live=0 tL=0 sL=23.5 tR=-1 sR=-1.1 hL=0 hR=0 gated=1 floor=0 dl=229 v=1.084
+PT t=241
 [hindgate] tick=241 leg=0 live=0 tL=1 sL=22.5 tR=-1 sR=-2.1 hL=0 hR=0 gated=1 floor=0 dl=229 v=1.096
+PT t=242
 [hindgate] tick=242 leg=0 live=0 tL=2 sL=21.5 tR=-1 sR=-3.1 hL=0 hR=0 gated=1 floor=0 dl=229 v=1.110
+PT t=243
 [hindgate] tick=243 leg=0 live=0 tL=3 sL=20.5 tR=-1 sR=-4.1 hL=0 hR=0 gated=1 floor=0 dl=229 v=1.123
 [ik] leg=0 tick=243 SATURATED paw=(0.321777,0.039807) shoulder=(0.454301,-0.149753) D=0.231291 reach=[0.011324,0.261324]
+PT t=244
 [hindgate] tick=244 leg=0 live=0 tL=4 sL=19.5 tR=-1 sR=-5.1 hL=0 hR=0 gated=1 floor=0 dl=229 v=1.136
+PT t=245
 [hindgate] tick=245 leg=0 live=0 tL=5 sL=18.5 tR=-1 sR=-6.1 hL=0 hR=0 gated=1 floor=0 dl=229 v=1.155
+PT t=246
 [hindgate] tick=246 leg=0 live=0 tL=6 sL=17.5 tR=-1 sR=-7.1 hL=0 hR=0 gated=1 floor=0 dl=229 v=1.176
 [ik] leg=1 tick=246 SATURATED paw=(0.600906,0.042438) shoulder=(0.440830,-0.141113) D=0.243547 reach=[0.011324,0.261324]
+PT t=247
 [hindstep] td leg=1 tick=247 tds=6
 [hindstep] unloadgate leg=0 tick=247 dl=247 class=unload
 [hindgate] tick=247 leg=0 live=0 tL=7 sL=16.5 tR=-1 sR=-8.1 hL=0 hR=0 gated=0 floor=0 dl=247 v=1.197
 [hindstep] fire leg=0 tick=247 phi=0.14554 class=alt from=(0.377364,0.011649) to=(0.894931,0.011649) xoff=0.290331 v=1.197416 qerr=2.220e-16 ap=1.2708 br=-1 dl=247
 [hindgate] tick=247 leg=1 live=0 tL=7 sL=16.5 tR=-1 sR=-8.1 hL=0 hR=0 gated=1 floor=0 dl=238 v=1.197
+PT t=248
 [pawcap] leg=1 td=6 paw=(0.308123712,0.043468154) branch=-1 qerr=1.326e-15 rad roundtrip=6.245e-17 m
 [foreclk] td leg=1 tick=248 td_count=7 entry=1 stance=20.862 roundtrip=6.245e-17 m
 [hindstep] standhold leg=1 tick=248 swing_stall=1
 [hindgate] tick=248 leg=1 live=0 tL=8 sL=15.5 tR=0 sR=20.9 hL=0 hR=0 gated=1 floor=0 dl=238 v=1.224
+PT t=249
 [hindgate] tick=249 leg=1 live=0 tL=9 sL=14.5 tR=1 sR=19.9 hL=0 hR=0 gated=1 floor=0 dl=238 v=1.237
+PT t=250
 [tick] 250
 [hindgate] tick=250 leg=1 live=0 tL=10 sL=13.5 tR=2 sR=18.9 hL=0 hR=0 gated=1 floor=0 dl=238 v=1.249
 [ik] leg=1 tick=250 SATURATED paw=(0.308124,0.043468) shoulder=(0.438227,-0.151487) D=0.234380 reach=[0.011324,0.261324]
+PT t=251
 [hindgate] tick=251 leg=1 live=0 tL=11 sL=12.5 tR=3 sR=17.9 hL=0 hR=0 gated=1 floor=0 dl=238 v=1.264
+PT t=252
 [hindgate] tick=252 leg=1 live=0 tL=12 sL=11.5 tR=4 sR=16.9 hL=0 hR=0 gated=1 floor=0 dl=238 v=1.279
+PT t=253
 [hindgate] tick=253 leg=1 live=0 tL=13 sL=10.5 tR=5 sR=15.9 hL=0 hR=0 gated=1 floor=0 dl=238 v=1.294
+PT t=254
 [hindgate] tick=254 leg=1 live=0 tL=14 sL=9.5 tR=6 sR=14.9 hL=0 hR=0 gated=1 floor=0 dl=238 v=1.310
+PT t=255
 [hindgate] tick=255 leg=1 live=0 tL=15 sL=8.5 tR=7 sR=13.9 hL=0 hR=0 gated=1 floor=0 dl=238 v=1.328
+PT t=256
 [hindstep] td leg=0 tick=256 tds=7
 [hindstep] unloadgate leg=1 tick=256 dl=256 class=unload
 [hindgate] tick=256 leg=1 live=0 tL=16 sL=7.5 tR=8 sR=12.9 hL=0 hR=0 gated=0 floor=0 dl=256 v=1.345
 [hindstep] fire leg=1 tick=256 phi=0.18779 class=alt from=(0.383326,0.039596) to=(0.960471,0.039596) xoff=0.326071 v=1.344815 qerr=2.220e-16 ap=0.2835 br=-1 dl=256
+PT t=257
 [hindstep] standhold leg=0 tick=257 swing_stall=1
 [hindgate] tick=257 leg=0 live=0 tL=17 sL=6.5 tR=9 sR=11.9 hL=0 hR=0 gated=1 floor=0 dl=247 v=1.366
+PT t=258
 [hindgate] tick=258 leg=0 live=0 tL=18 sL=5.5 tR=10 sR=10.9 hL=0 hR=0 gated=1 floor=0 dl=247 v=1.378
+PT t=259
 [hindgate] tick=259 leg=0 live=0 tL=19 sL=4.5 tR=11 sR=9.9 hL=0 hR=0 gated=1 floor=0 dl=247 v=1.396
+PT t=260
 [tick] 260
 [hindgate] tick=260 leg=0 live=0 tL=20 sL=3.5 tR=12 sR=8.9 hL=0 hR=0 gated=1 floor=0 dl=247 v=1.418
+PT t=261
 [hindgate] tick=261 leg=0 live=0 tL=21 sL=2.5 tR=13 sR=7.9 hL=0 hR=0 gated=1 floor=0 dl=247 v=1.440
+PT t=262
 [hindgate] tick=262 leg=0 live=0 tL=22 sL=1.5 tR=14 sR=6.9 hL=0 hR=0 gated=1 floor=0 dl=247 v=1.463
+PT t=263
 [hindgate] tick=263 leg=0 live=0 tL=23 sL=0.5 tR=15 sR=5.9 hL=0 hR=0 gated=1 floor=0 dl=247 v=1.487
+PT t=264
 [foreclk] lift leg=0 tick=264 td=10 entry=1 from=(0.368468,0.029993) to=(0.709274,0.037181) xoff=0.261324 v=1.511093 wall_bound=0
 [hindgate] tick=264 leg=0 live=0 tL=-1 sL=23.5 tR=16 sR=4.9 hL=0 hR=0 gated=1 floor=0 dl=247 v=1.511
+PT t=265
 [hindstep] td leg=1 tick=265 tds=7
 [hindstep] unloadgate leg=0 tick=265 dl=265 class=unload
 [hindgate] tick=265 leg=0 live=0 tL=-1 sL=22.5 tR=17 sR=3.9 hL=0 hR=0 gated=0 floor=0 dl=265 v=1.535
 [hindstep] fire leg=0 tick=265 phi=0.23005 class=alt from=(0.447931,0.027576) to=(1.037319,0.027576) xoff=0.354522 v=1.535412 qerr=1.110e-15 ap=1.2167 br=-1 dl=265
 [hindgate] tick=265 leg=1 live=0 tL=-1 sL=22.5 tR=17 sR=3.9 hL=0 hR=0 gated=1 floor=0 dl=256 v=1.535
 [ik] leg=0 tick=265 SATURATED paw=(0.368468,0.029993) shoulder=(0.449753,-0.198992) D=0.242984 reach=[0.011324,0.261324]
+PT t=266
+PT t=267
+PT t=268
+PT t=269
 [pawcap] leg=1 td=7 paw=(0.341802918,0.023195196) branch=-1 qerr=3.342e-16 rad roundtrip=1.119e-16 m
 [foreclk] inplace leg=1 tick=269 paw=(0.341803,0.023195) stance=17.244 entry=1 follow=0
+PT t=270
 [tick] 270
 [ik] leg=1 tick=270 SATURATED paw=(0.341803,0.023195) shoulder=(0.455566,-0.196986) D=0.247834 reach=[0.011324,0.261324]
+PT t=271
+PT t=272
+PT t=273
+PT t=274
 [hindstep] td leg=0 tick=274 tds=8
 [hindstep] unloadgate leg=1 tick=274 dl=274 class=unload
 [hindgate] tick=274 leg=1 live=0 tL=-1 sL=13.5 tR=5 sR=12.2 hL=0 hR=0 gated=0 floor=0 dl=274 v=1.689
 [hindstep] fire leg=1 tick=274 phi=0.27230 class=alt from=(0.482360,0.042122) to=(1.103997,0.042122) xoff=0.375372 v=1.689186 qerr=2.220e-16 ap=0.1931 br=-1 dl=274
+PT t=275
 [hindstep] guardblock leg=0 tick=275 dl=265 link_td=274 link_fire=265
 [hindgate] tick=275 leg=0 live=0 tL=-1 sL=12.5 tR=6 sR=11.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=1.720
+PT t=276
 [hindstep] guardblock leg=0 tick=276 dl=265 link_td=274 link_fire=265
 [hindgate] tick=276 leg=0 live=0 tL=-1 sL=11.5 tR=7 sR=10.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=1.757
+PT t=277
 [hindstep] guardblock leg=0 tick=277 dl=265 link_td=274 link_fire=265
 [hindgate] tick=277 leg=0 live=0 tL=-1 sL=10.5 tR=8 sR=9.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=1.791
+PT t=278
 [hindstep] guardblock leg=0 tick=278 dl=265 link_td=274 link_fire=265
 [hindgate] tick=278 leg=0 live=0 tL=-1 sL=9.5 tR=9 sR=8.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=1.817
+PT t=279
 [hindstep] guardblock leg=0 tick=279 dl=265 link_td=274 link_fire=265
 [hindgate] tick=279 leg=0 live=0 tL=-1 sL=8.5 tR=10 sR=7.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=1.826
+PT t=280
 [tick] 280
 [hindstep] guardblock leg=0 tick=280 dl=265 link_td=274 link_fire=265
 [hindgate] tick=280 leg=0 live=0 tL=-1 sL=7.5 tR=11 sR=6.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=1.824
+PT t=281
 [hindstep] guardblock leg=0 tick=281 dl=265 link_td=274 link_fire=265
 [hindgate] tick=281 leg=0 live=0 tL=-1 sL=6.5 tR=12 sR=5.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=1.817
+PT t=282
 [hindstep] guardblock leg=0 tick=282 dl=265 link_td=274 link_fire=265
 [hindgate] tick=282 leg=0 live=0 tL=-1 sL=5.5 tR=13 sR=4.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=1.835
+PT t=283
 [hindstep] holdreturn leg=1 tick=283 t=9 pairmin=9.3240e-03
 [hindstep] guardblock leg=0 tick=283 dl=265 link_td=274 link_fire=265
 [hindgate] tick=283 leg=0 live=0 tL=-1 sL=4.5 tR=14 sR=3.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=1.943
+PT t=284
 [hindstep] holdreturn leg=1 tick=284 t=10 pairmin=1.0918e-02
 [hindstep] guardblock leg=0 tick=284 dl=265 link_td=274 link_fire=265
 [hindgate] tick=284 leg=0 live=0 tL=-1 sL=3.5 tR=15 sR=2.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=2.057
 [poscorr] tick=284 points=1 dq_max=3.852e-05 du=+1.467633e-05 J
 [poscorr-pt] tick=284 pt=left_heel gap=-2.633021e-06 lam=1.496574e-06 du_pt=-3.940510e-12 J
+PT t=285
 [hindstep] holdreturn leg=1 tick=285 t=11 pairmin=1.1336e-02
 [hindstep] guardblock leg=0 tick=285 dl=265 link_td=274 link_fire=265
 [hindgate] tick=285 leg=0 live=0 tL=-1 sL=2.5 tR=16 sR=1.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=2.184
+PT t=286
 [hindstep] holdreturn leg=1 tick=286 t=12 pairmin=1.0459e-02
 [hindstep] guardblock leg=0 tick=286 dl=265 link_td=274 link_fire=265
 [hindgate] tick=286 leg=0 live=0 tL=-1 sL=1.5 tR=17 sR=0.2 hL=0 hR=0 gated=1 floor=0 dl=265 v=2.317
+PT t=287
 [pawcap] leg=1 td=7 paw=(0.450370939,0.017240445) branch=-1 qerr=1.001e-15 rad roundtrip=5.551e-17 m
 [foreclk] inplace leg=1 tick=287 paw=(0.450371,0.017240) stance=14.408 entry=1 follow=0
 [hindstep] holdreturn leg=1 tick=287 t=13 pairmin=7.6923e-03
 [hindstep] guardblock leg=0 tick=287 dl=265 link_td=274 link_fire=265
 [hindgate] tick=287 leg=0 live=0 tL=-1 sL=0.5 tR=0 sR=14.4 hL=0 hR=0 gated=1 floor=0 dl=265 v=2.310
+PT t=288
 [hindstep] holdreturn leg=1 tick=288 t=14 pairmin=4.6544e-03
 [hindstep] guardblock leg=0 tick=288 dl=265 link_td=274 link_fire=265
 [hindgate] tick=288 leg=0 live=0 tL=-1 sL=-0.5 tR=1 sR=13.4 hL=0 hR=0 gated=1 floor=0 dl=265 v=2.285
+PT t=289
 [hindstep] holdreturn leg=1 tick=289 t=15 pairmin=2.1804e-03
 [hindstep] guardblock leg=0 tick=289 dl=265 link_td=274 link_fire=265
 [hindgate] tick=289 leg=0 live=0 tL=-1 sL=-1.5 tR=2 sR=12.4 hL=0 hR=0 gated=1 floor=0 dl=265 v=2.236
 [ik] leg=1 tick=289 SATURATED paw=(0.450371,0.017240) shoulder=(0.531951,-0.229250) D=0.259640 reach=[0.011324,0.261324]
+PT t=290
 [tick] 290
 [hindstep] holdreturn leg=1 tick=290 t=16 pairmin=4.2444e-04
 [hindstep] guardblock leg=0 tick=290 dl=265 link_td=274 link_fire=265
 [hindgate] tick=290 leg=0 live=0 tL=-1 sL=-2.5 tR=3 sR=11.4 hL=0 hR=0 gated=1 floor=0 dl=265 v=2.171
+PT t=291
 [hindstep] td leg=1 tick=291 tds=8
 [hindstep] unloadgate leg=0 tick=291 dl=291 class=unload
 [hindgate] tick=291 leg=0 live=0 tL=-1 sL=-3.5 tR=4 sR=10.4 hL=0 hR=0 gated=0 floor=0 dl=291 v=2.093
 [hindstep] fire leg=0 tick=291 phi=0.35211 class=alt from=(0.715697,0.029860) to=(1.217244,0.029860) xoff=0.374813 v=2.092998 qerr=6.661e-16 ap=0.2661 br=-1 dl=291
 [hindgate] tick=291 leg=1 live=0 tL=-1 sL=-3.5 tR=4 sR=10.4 hL=0 hR=0 gated=1 floor=0 dl=274 v=2.093
+PT t=292
 [hindstep] standhold leg=1 tick=292 swing_stall=1
 [hindgate] tick=292 leg=1 live=0 tL=-1 sL=-4.5 tR=5 sR=9.4 hL=0 hR=0 gated=1 floor=0 dl=274 v=2.121
+PT t=293
 [hindgate] tick=293 leg=1 live=0 tL=-1 sL=-5.5 tR=6 sR=8.4 hL=0 hR=0 gated=1 floor=0 dl=274 v=2.147
+PT t=294
 [hindgate] tick=294 leg=1 live=0 tL=-1 sL=-6.5 tR=7 sR=7.4 hL=0 hR=0 gated=1 floor=0 dl=274 v=2.143
+PT t=295
 [hindgate] tick=295 leg=1 live=0 tL=-1 sL=-7.5 tR=8 sR=6.4 hL=0 hR=0 gated=1 floor=0 dl=274 v=2.121
+PT t=296
 [hindgate] tick=296 leg=1 live=0 tL=-1 sL=-8.5 tR=9 sR=5.4 hL=0 hR=0 gated=1 floor=0 dl=274 v=2.083
+PT t=297
 [pawcap] leg=0 td=10 paw=(0.589730235,0.010998541) branch=-1 qerr=2.998e-15 rad roundtrip=1.309e-16 m
 [foreclk] converge leg=0 tick=297 slot=539.250 k=2 w=1 stance=113.025 env=37.275 conv=0
 [foreclk] td leg=0 tick=297 td_count=11 entry=0 stance=113.025 roundtrip=1.309e-16 m
 [hindgate] tick=297 leg=1 live=0 tL=0 sL=113.0 tR=10 sR=4.4 hL=0 hR=0 gated=1 floor=0 dl=274 v=2.055
+PT t=298
 [hindgate] tick=298 leg=1 live=0 tL=1 sL=112.0 tR=11 sR=3.4 hL=0 hR=0 gated=1 floor=0 dl=274 v=2.023
 [ik] leg=0 tick=298 SATURATED paw=(0.589730,0.010999) shoulder=(0.603517,-0.250758) D=0.262119 reach=[0.011324,0.261324]
 [poscorr] tick=298 points=1 dq_max=3.613e-02 du=+1.176870e-03 J
@@ -2885,6 +3184,7 @@ CONFIGURED
 [poscorr] tick=298 points=2 dq_max=3.189e-04 du=+1.671746e-05 J
 [poscorr-pt] tick=298 pt=left_heel gap=-1.355151e-06 lam=6.641516e-08 du_pt=-9.000254e-14 J
 [poscorr-pt] tick=298 pt=right_heel gap=-5.347049e-06 lam=1.638340e-06 du_pt=-8.760286e-12 J
+PT t=299
 [hindgate] tick=299 leg=1 live=0 tL=2 sL=111.0 tR=12 sR=2.4 hL=0 hR=0 gated=1 floor=0 dl=274 v=1.941
 [poscorr] tick=299 points=1 dq_max=2.291e-03 du=+2.888786e-05 J
 [poscorr-pt] tick=299 pt=right_heel gap=-5.809150e-05 lam=2.945980e-06 du_pt=-1.711364e-10 J
@@ -2945,6 +3245,7 @@ CONFIGURED
 [poscorr-pt] tick=299 pt=left_heel gap=-1.275544e-05 lam=3.208521e-06 du_pt=-4.092612e-11 J
 [poscorr-pt] tick=299 pt=right_heel gap=-1.864903e-05 lam=5.019507e-06 du_pt=-9.360893e-11 J
 [poscorr-pt] tick=299 pt=fore_left_heel gap=-3.243953e-06 lam=1.633884e-06 du_pt=-5.300241e-12 J
+PT t=300
 [tick] 300
 [hindstep] td leg=0 tick=300 tds=9
 [hindstep] unloadgate leg=1 tick=300 dl=300 class=unload
@@ -3038,6 +3339,7 @@ CONFIGURED
 [poscorr] tick=300 points=2 dq_max=4.066e-03 du=+2.043643e-04 J
 [poscorr-pt] tick=300 pt=left_heel gap=-2.954558e-05 lam=7.635582e-06 du_pt=-2.255977e-10 J
 [poscorr-pt] tick=300 pt=right_heel gap=-4.781581e-05 lam=1.320504e-05 du_pt=-6.314094e-10 J
+PT t=301
 [hindstep] standhold leg=0 tick=301 swing_stall=1
 [hindgate] tick=301 leg=0 live=0 tL=4 sL=109.0 tR=14 sR=0.4 hL=0 hR=0 gated=1 floor=0 dl=291 v=1.846
 [poscorr] tick=301 points=2 dq_max=5.726e-03 du=+5.796231e-04 J
@@ -3116,5 +3418,6 @@ CONFIGURED
 [poscorr] tick=301 points=2 dq_max=1.888e-02 du=+1.600722e-03 J
 [poscorr-pt] tick=301 pt=left_heel gap=-8.488996e-06 lam=5.828470e-07 du_pt=-4.947786e-12 J
 [poscorr-pt] tick=301 pt=right_heel gap=-1.673973e-04 lam=1.626800e-04 du_pt=-2.723218e-08 J
+PT t=302
 [foreclk] lift leg=1 tick=302 td=7 entry=1 from=(0.608613,0.003590) to=(0.886487,0.036057) xoff=0.261324 v=1.251377 wall_bound=0
 [hindgate] tick=302 leg=0 live=0 tL=5 sL=108.0 tR=-1 sR=14.4 hL=0 hR=0 gated=1 floor=0 dl=291 v=1.251
