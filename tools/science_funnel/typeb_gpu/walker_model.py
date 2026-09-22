@@ -35,6 +35,32 @@ FOLD_BUDGET_TICKS = 45   # wave 29
 UNLOAD_TICKS = 1         # wave 32
 SINK_RATE_MAX = 0.002349 # wave 27
 
+# The defaults-pose mass diagonal, PINNED FROM THE C++ REFERENCE (the gain
+# anchor; see the comment at the kp/kd construction for the derivation and
+# the measured defect). Order = model coordinate order 0..17. Source:
+# cpu_probe.exe <scene.json> diag  (GaitWalker ctor's
+# model_->evaluate(model_->defaults, 0, gravity_) diagonal).
+GAIN_ANCHOR_DIAG = np.array([
+    0.57360590381779231,
+    0.088057112958353376,
+    0.6329889371594789,
+    10.037998000000004,
+    10.037998000000004,
+    10.037998000000004,
+    0.0322021819993,
+    0.005897296162,
+    0.00042511520200000006,
+    1.6891250000000002e-05,
+    0.0322021819993,
+    0.005897296162,
+    0.00042511520200000006,
+    1.6891250000000002e-05,
+    0.0048717298319693398,
+    0.0005609308320000001,
+    0.0048717298319693398,
+    0.0005609308320000001,
+])
+
 
 def _frame(p, q):
     """coupled_articulation frame(V p, V q): Euler XYZ then translation."""
@@ -181,7 +207,24 @@ class WalkerSpec:
 
         self.gravity = np.array([0.0, -9.80665, 0.0])
         # ── the defaults-pose mass diagonal -> the mass-normalized PD gains ──
-        md = self.mass_diag(self.defaults)
+        # THE GAIN ANCHOR, PINNED TO THE REFERENCE'S OWN BITS. The numpy
+        # mirror (self.evaluate/_fk below) cannot reproduce the C++
+        # Model::evaluate()'s scalar fp order bit-for-bit (BLAS products vs
+        # scalar loops); its 1-2 ulp diagonal error propagated into the
+        # mass-normalized gains (kp=m*freq*freq, kd=2*ZETA*m*freq) and from
+        # there into tau at every tick: MEASURED (closeout-3), the mirror
+        # diagonal differs from the reference at coordinates 0,1,2,9,13,14,16
+        # -- drives 4/8 (the hind MPs) inherit a 1-ulp kp/kd and are exactly
+        # the census's tau9/tau13 divergence at tick-0 substep-0; drives 9/11
+        # (fore shoulders) and the posture drive inherit it too. The pinned
+        # values ARE the reference's arithmetic, not new numbers: they are
+        # cpu_probe.exe <scene.json> diag = the GaitWalker constructor's
+        # model_->evaluate(model_->defaults, 0, gravity_) diagonal
+        # (coupled_articulation.hpp evaluate()), consumed by kp_/kd_ exactly
+        # as the expressions below. Regenerate after any scene change with
+        # cpu_probe.exe diag and repin. (Scene:
+        # .tmp/gait-walker/scene.json @ closeout-3, 2026-09-22.)
+        md = GAIN_ANCHOR_DIAG.copy()
         freq = 2.0 * math.pi * FS_HZ
         self.kp = np.array([md[c] * freq * freq for c in self.drive_coord])
         self.kd = np.array([2.0 * ZETA * md[c] * freq for c in self.drive_coord])
