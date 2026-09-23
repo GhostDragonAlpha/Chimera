@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import os
+import tempfile
 import time
 
 from . import jobobject, registry
@@ -73,21 +74,61 @@ def reservation_path(control_dir: str = DEFAULT_CONTROL_DIR) -> str:
 
 
 def read_reservation(control_dir: str = DEFAULT_CONTROL_DIR) -> dict | None:
-    try:
-        with open(reservation_path(control_dir), "r", encoding="utf-8") as f:
-            text = f.read().strip()
-        return json.loads(text) if text else None
-    except (OSError, json.JSONDecodeError):
-        return None
+    """Tolerant read (phase 2): a concurrent writer can transiently block or
+    tear a read -- retry before concluding the reservation is absent."""
+    for attempt in range(3):
+        try:
+            with open(reservation_path(control_dir), "r", encoding="utf-8") as f:
+                text = f.read().strip()
+            return json.loads(text) if text else None
+        except (OSError, json.JSONDecodeError):
+            if attempt == 2:
+                return None
+            time.sleep(0.01)
+    return None
 
 
 def write_reservation(res: dict | None, control_dir: str = DEFAULT_CONTROL_DIR) -> None:
+    """Atomic write (phase 2: tmp + replace, mirroring the keeper records) --
+    a reader must never observe a half-written reservation and mistake it for
+    an ABSENT one (the ownership mechanism is only as strong as its durability)."""
     os.makedirs(control_dir, exist_ok=True)
-    with open(reservation_path(control_dir), "w", encoding="utf-8") as f:
-        if res is None:
-            f.write("")
-        else:
-            json.dump(res, f, indent=1)
+    fd, tmp = tempfile.mkstemp(dir=control_dir, suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            if res is None:
+                f.write("")
+            else:
+                json.dump(res, f, indent=1)
+        try:
+            os.replace(tmp, reservation_path(control_dir))
+        except OSError:
+            # a concurrent open handle can block replace on Windows; retry once
+            time.sleep(0.01)
+            os.replace(tmp, reservation_path(control_dir))
+    except OSError:
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
+        raise
+
+
+def flag_reservation_uncertain(owner_id: str, reason: str, *,
+                               control_dir: str = DEFAULT_CONTROL_DIR,
+                               now: float | None = None) -> bool:
+    """Phase 2 (gpu_broker2_20260922): the keeper reconcile's uncertainty VERDICT
+    must ACT at admission time, not just sit in a report: a flagged reservation
+    reads as `uncertain` (admissions refused) until a NEWER owner heartbeat
+    proves liveness. Never releases anything; it LOCKS (Astra: "a lost heartbeat
+    means ownership uncertain, not permission to start a competing job")."""
+    res = read_reservation(control_dir) or {}
+    if res.get("owner_id") != owner_id:
+        return False
+    res["ownership_uncertain_ts"] = time.time() if now is None else float(now)
+    res["ownership_uncertain_reason"] = str(reason)
+    write_reservation(res, control_dir)
+    return True
 
 
 def reservation_state(res: dict | None, now: float | None = None) -> str:
@@ -95,7 +136,9 @@ def reservation_state(res: dict | None, now: float | None = None) -> str:
       active          -- owner heartbeat fresh, completion not yet verified
       expired_pending -- expected_end passed but the owner never reported
                          completion: STILL OCCUPIED (Astra's rule)
-      uncertain       -- heartbeat lost: OWNERSHIP UNCERTAIN, never auto-free
+      uncertain       -- heartbeat lost (or an uncertainty flag newer than the
+                         last heartbeat, phase 2): OWNERSHIP UNCERTAIN, never
+                         auto-free
       released        -- the owner itself recorded completion/released
     """
     if not res or not res.get("owner_id"):
@@ -104,13 +147,21 @@ def reservation_state(res: dict | None, now: float | None = None) -> str:
         return "released"
     now = time.time() if now is None else now
     hb = res.get("heartbeat_ts")
-    if not hb:
-        return "uncertain"
     try:
-        hb_age = now - float(hb)
+        hb = float(hb) if hb is not None else None
     except (TypeError, ValueError):
+        hb = None
+    # phase 2: a reconcile's uncertainty flag stands until a newer heartbeat
+    flag = res.get("ownership_uncertain_ts")
+    try:
+        flag = float(flag) if flag is not None else None
+    except (TypeError, ValueError):
+        flag = None
+    if flag is not None and (hb is None or flag > hb):
         return "uncertain"
-    if hb_age > HEARTBEAT_STALE_S:
+    if hb is None:
+        return "uncertain"
+    if now - hb > HEARTBEAT_STALE_S:
         return "uncertain"
     end = res.get("expected_end_ts")
     if end is not None:
@@ -125,15 +176,29 @@ def reservation_state(res: dict | None, now: float | None = None) -> str:
 def touch_reservation(owner_id: str, control_dir: str = DEFAULT_CONTROL_DIR,
                       expected_end_ts: float | None = None, **extra) -> dict:
     """Owner heartbeat. Creating/refreshing a reservation is an OWNER action;
-    the broker only READS it (except the trivial admin write below)."""
+    the broker only READS it (except the trivial admin write below).
+    Phase 2 (gpu_broker2_20260922): a RELEASED reservation may transfer to a
+    NEW owner -- that is the queue's sequential exclusive grant (the previous
+    owner explicitly gave the GPU up; exclusivity is preserved, and the
+    transfer is audited in the file). A held / expired_pending / uncertain
+    reservation still refuses every other owner, exactly as phase 1 measured."""
     res = read_reservation(control_dir) or {}
-    if res.get("owner_id") not in (None, owner_id):
-        raise PermissionError(f"reservation owned by {res.get('owner_id')!r}, not {owner_id!r}")
+    prev_owner = res.get("owner_id")
+    if prev_owner not in (None, owner_id):
+        if str(res.get("status", "")).lower() != "released":
+            raise PermissionError(f"reservation owned by {prev_owner!r}, not {owner_id!r}")
+        res["previous_owner"] = prev_owner
+        res["previous_released_ts"] = res.get("released_ts")
+    hb = time.time()
     res.update({
         "owner_id": owner_id,
-        "heartbeat_ts": time.time(),
+        "heartbeat_ts": hb,
         "status": "held",
     })
+    # a FRESH heartbeat from the owner is the proof of liveness: it clears any
+    # reconcile's uncertainty flag (flag semantics: uncertain while flag_ts > hb)
+    for k in ("ownership_uncertain_ts", "ownership_uncertain_reason"):
+        res.pop(k, None)
     if expected_end_ts is not None:
         res["expected_end_ts"] = expected_end_ts
     res.update(extra)
