@@ -332,6 +332,14 @@ def serve_stream(handler, world, channel: Channel, query: str) -> None:
         handler.end_headers()
         sock = handler.connection
         sock.setsockopt(_socket.SOL_SOCKET, _socket.SO_KEEPALIVE, 1)   # W4
+        # W1 (the wedge deadline math): a stopped reader is detected only
+        # once the send buffer FILLS (fill_s = buf/wire) plus SEND_TIMEOUT_S.
+        # The default ~64-256 KB of OS buffering at the slowest stream's
+        # wire (Z12 ~37 KB/s) puts that past the prereg's 5 s deadline
+        # (measured 6.8 s). Bounding SNDBUF to 64 KB makes fill <= 1.8 s at
+        # ANY state-format wire, so drop <= ~3.8 s. This is per-connection
+        # memory too: a slow client can hold at most one buffer + one frame.
+        sock.setsockopt(_socket.SOL_SOCKET, _socket.SO_SNDBUF, 65536)
         try:
             sock.ioctl(_socket.SIO_KEEPALIVE_VALS, (1, 2000, 1000))
         except (OSError, AttributeError, ValueError):

@@ -71,9 +71,14 @@ def boot_slice(out: Path, tag: str) -> tuple:
     return p, "http://127.0.0.1:%d" % port
 
 
-def twin_gate(baseA: str, baseB: str) -> dict:
+def twin_gate(baseA: str, baseB: str, tries: float = 180.0) -> dict:
     """the pilot's twin bar: cross-boot fixed point differs <= 1e-6 m
-    (byte-identity was falsified at one float ULP; recorded there)."""
+    (byte-identity was falsified at one float ULP; recorded there).
+    THE PILOT'S POLLING PATTERN: convergence stages differ per boot clock
+    (and this box's GPU load makes the settle long) -- poll until identical,
+    waiting the boot's own scene.settled between attempts; abort as an
+    INSTRUMENT failure only if it never converges."""
+    import time as _time
     def max_delta(xa: bytes, xb: bytes) -> float:
         if len(xa) != len(xb) or len(xa) < 4:
             return float("inf")
@@ -85,10 +90,19 @@ def twin_gate(baseA: str, baseB: str) -> dict:
             fb = struct.unpack_from("<3f", xb, o)
             m = max(m, max(abs(x - y) for x, y in zip(fa, fb)))
         return m
-    va, vb = http_get(baseA, "/api/verts"), http_get(baseB, "/api/verts")
+    t0 = _time.time()
+    maxd = float("inf")
+    va = vb = b""
+    while _time.time() - t0 < tries:
+        va, vb = http_get(baseA, "/api/verts"), http_get(baseB, "/api/verts")
+        maxd = max_delta(va, vb)
+        if maxd <= 1e-6:
+            break
+        wait_settled(baseA, timeout=20)
+        wait_settled(baseB, timeout=20)
     return {"sha_A": hashlib.sha256(va).hexdigest()[:16],
             "sha_B": hashlib.sha256(vb).hexdigest()[:16],
-            "max_pos_delta_m": max_delta(va, vb)}
+            "max_pos_delta_m": maxd}
 
 
 def main() -> int:
@@ -118,6 +132,7 @@ def main() -> int:
 
     summary: dict = {"twin": gate, "runs": {}}
     procs: list = []
+    run_gate = {"max_pos_delta_m": gate["max_pos_delta_m"]}
     from playwright.sync_api import sync_playwright
     with sync_playwright() as pw:
         browser = pw.chromium.launch(headless=True, args=BROWSER_ARGS)
@@ -134,6 +149,9 @@ def main() -> int:
                 http_post(baseB, "/api/restart")
                 wait_boot_settled(baseA)
                 wait_boot_settled(baseB)
+                run_gate = twin_gate(baseA, baseB, tries=60.0)
+                print(name, "per-run twin gate:", run_gate["max_pos_delta_m"],
+                      flush=True)
             wait_settled(baseA)
             wait_settled(baseB)
 
@@ -229,6 +247,10 @@ def main() -> int:
                 "scenario": scen, "rate_nominal": rate, "fmt": fmt,
                 "trace": "TRACE-CLEAN", "jhead_ms": 0,
                 "transport": "PUSH",
+                "twin_gate_max_pos_delta_m": (run_gate["max_pos_delta_m"]
+                                              if scen == "FALL" else None),
+                "valid": (run_gate["max_pos_delta_m"] <= 1e-6
+                          if scen == "FALL" else True),
                 "achieved_hz_dump": round(achieved, 2),
                 "median_interval_ms": round(med_iv, 2) if med_iv else None,
                 "max_interval_ms": round(max_iv, 1) if max_iv else None,

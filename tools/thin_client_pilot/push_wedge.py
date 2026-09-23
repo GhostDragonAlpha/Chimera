@@ -49,6 +49,7 @@ def main() -> int:
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--base", default=None)
     ap.add_argument("--window", type=float, default=20.0)
+    ap.add_argument("--fmt", default="Z12")
     ap.add_argument("--wedge-at", type=float, default=5.0)
     ap.add_argument("--kill-at", type=float, default=10.0)
     a = ap.parse_args()
@@ -89,7 +90,7 @@ def main() -> int:
     result: dict = {"window_s": a.window, "wedge_at": a.wedge_at,
                     "kill_at": a.kill_at, "rate": RATE,
                     "rate_bar": RATE_BAR, "gap_bar_ms": GAP_BAR_MS}
-    readers = {n: StreamClient(*hp, "fmt=Z12&rate=%d" % int(RATE))
+    readers = {n: StreamClient(*hp, "fmt=%s&rate=%d" % (a.fmt, int(RATE)))
                for n in ("C1", "C2", "C3")}
     for c in readers.values():
         c.connect()
@@ -158,16 +159,17 @@ def main() -> int:
     ch = json.loads(http_get(base, "/api/channel"))
     drops = ch["drops_tail"]
     # correlate by WALL time: server drop t (time.time) vs local markers.
-    # W: first Z12-profile drop after the wedge attach. K: first drop after
-    # the kill whose open_s <= 2 s (the killed client lived ~0.5 s; W lives
-    # much longer and is excluded by that bar).
-    w_drop = next((d for d in drops if t_wedge_wall and
-                   d["profile"].startswith("state_Z12") and
-                   d["t"] >= t_wedge_wall - 0.5), None)
-    k_drop = next((d for d in drops if t_kill_wall and
-                   d["profile"].startswith("state_Z12") and
-                   d["t"] >= t_kill_wall - 0.5 and
-                   d["open_s"] <= 2.0), None)
+    # W: the first Z12-profile drop after the wedge attach that is NOT the
+    # killed client's (K lived < 2 s; W lived longer). K: first drop after
+    # the kill whose open_s <= 2 s (it lived ~0.5 s).
+    def is_w(d):
+        return (d["profile"].startswith("state_" + a.fmt) and t_wedge_wall and
+                d["t"] >= t_wedge_wall - 0.5 and d["open_s"] > 2.0)
+    def is_k(d):
+        return (d["profile"].startswith("state_" + a.fmt) and t_kill_wall and
+                d["t"] >= t_kill_wall - 0.5 and d["open_s"] <= 2.0)
+    w_drop = next((d for d in drops if is_w(d)), None)
+    k_drop = next((d for d in drops if is_k(d)), None)
     result["wedge_drop"] = {
         "found": w_drop is not None,
         "reason": w_drop["reason"] if w_drop else None,

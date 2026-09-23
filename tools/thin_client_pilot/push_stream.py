@@ -204,6 +204,12 @@ def kill_rst(sock: socket.socket) -> None:
 
 
 # ── slice orchestration helpers (shared by matrix/wedge/browser) ─────────
+def host_port(base: str) -> tuple:
+    rest = base.split("://", 1)[1]
+    h, p = rest.split(":")
+    return h, int(p.split("/")[0])
+
+
 def wait_health(base: str, timeout: float = 90.0) -> None:
     t0 = time.time()
     while time.time() - t0 < timeout:

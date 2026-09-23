@@ -55,7 +55,16 @@ def camera_vp(cam, target, w=W, h=H):
     yaw, pit, dist = cam
     V = look_from(yaw, pit, dist, *target)
     P = persp(0.9, w / h, 0.05, 60)
-    return P @ V
+    # THE TRANSPOSE FIX (lane/push-channel-20260920): look_from and persp
+    # lay the page's COLUMN-major arrays into numpy, i.e. each grid is
+    # M_true^T. raster_frame clips with pos @ vp.T (row-major M @ p), which
+    # needs vp = (V_true @ P_true).T = (V @ P).T. The previous `P @ V`
+    # applied both in the wrong order: the body projected to w ~ 0.02
+    # (degenerate), MAD 0 whenever both sides degenerated identically and
+    # ~13.3 when one side's vertices crossed the w-plane -- the pilot's
+    # banked "13.33 torn frame" signature, now explained as an instrument
+    # artifact class. Verified: body center projects to ndc (0, 0.27, 0.95).
+    return (V @ P).T
 
 
 def raster_frame(f32: np.ndarray, vp: np.ndarray, idx: np.ndarray) -> np.ndarray:

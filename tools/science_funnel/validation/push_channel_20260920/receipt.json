@@ -6,7 +6,7 @@
  "base_commit": "d0a2ff28",
  "branch": "lane/push-channel-20260920",
  "worktree": "E:/ChimeraWork/pushchan-agent",
- "status": "PREREGISTERED \u2014 verdicts null until the runs land; filled IN PLACE at these paths, never rewritten to pass",
+ "status": "MEASURED -- verdicts from the artifacts of this lane's runs",
  "preregistration": {
   "file": "record.md",
   "committed_before_build": true,
@@ -30,11 +30,931 @@
   "P5": "per-client wire at 30 Hz: Z12 ~0.04, POS12 ~0.12, FULL36 ~0.36, pixel jpg w1280 q85 ~1.0 MB/s \u2014 all <= 1.25"
  },
  "falsifiers": {
-  "F1_RATE_FAIL": {"verdict": null, "measured": null},
-  "F2_TORN_FAIL": {"verdict": null, "measured": null},
-  "F3_WEDGE_FAIL": {"verdict": null, "measured": null},
-  "F4_BW_FAIL": {"verdict": null, "measured": null},
-  "F5_DET_FAIL": {"verdict": null, "measured": null}
+  "F1_RATE_FAIL": {
+   "verdict": "FAIL: 7 row(s) under the 0.95x bar: FULL36_60_c1/c0: 56.91 Hz; PIXEL_30_c1/c0: 26.12 Hz; PIXEL_30_c4/c0: 25.85 Hz; PIXEL_30_c4/c1: 25.85 Hz; PIXEL_30_c4/c2: 25.85 Hz; PIXEL_30_c4/c3: 25.85 Hz; PIXEL_60_c1/c0: 24.92 Hz",
+   "measured": {
+    "rows": {
+     "Z12_30_c1/c0": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.942,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.0369,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c2/c0": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 30.02,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.0369,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c2/c1": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 30.02,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.0369,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c4/c0": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.998,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.037,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c4/c1": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.999,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.037,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c4/c2": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.998,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.037,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c4/c3": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.999,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.037,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c1/c0": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.003,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1215,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c2/c0": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 29.962,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1213,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c2/c1": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 29.962,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1213,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c4/c0": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.033,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1216,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c4/c1": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.033,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1214,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c4/c2": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.033,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1214,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c4/c3": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.001,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1215,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c1/c0": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 30.0,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3598,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c2/c0": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 30.0,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3598,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c2/c1": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 30.0,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3598,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c4/c0": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 29.956,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3593,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c4/c1": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 29.955,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3593,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c4/c2": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 29.955,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3593,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c4/c3": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 29.955,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3593,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_60_c1/c0": {
+      "declared_hz": "fmt=Z12&rate=60",
+      "achieved_hz": 57.295,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.0704,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_60_c1/c0": {
+      "declared_hz": "fmt=POS12&rate=60",
+      "achieved_hz": 57.201,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.2318,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_60_c1/c0": {
+      "declared_hz": "fmt=FULL36&rate=60",
+      "achieved_hz": 56.908,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.6815,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c1/c0": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 26.119,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9172,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c4/c0": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 25.854,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9136,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c4/c1": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 25.854,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9136,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c4/c2": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 25.853,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9136,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c4/c3": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 25.853,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9136,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_60_c1/c0": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=60",
+      "achieved_hz": 24.923,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.8633,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     }
+    },
+    "rate_bar": 0.95,
+    "engine_pulls_per_s_by_profile": {
+     "state_Z12": [
+      {
+       "row": "Z12_30_c1",
+       "pulls_per_s": 60.0
+      },
+      {
+       "row": "Z12_30_c2",
+       "pulls_per_s": 60.0
+      },
+      {
+       "row": "Z12_30_c4",
+       "pulls_per_s": 60.1
+      },
+      {
+       "row": "POS12_30_c1",
+       "pulls_per_s": 15.3
+      },
+      {
+       "row": "Z12_60_c1",
+       "pulls_per_s": 114.5
+      },
+      {
+       "row": "POS12_60_c1",
+       "pulls_per_s": 29.1
+      }
+     ],
+     "state_POS12": [
+      {
+       "row": "POS12_30_c1",
+       "pulls_per_s": 60.1
+      },
+      {
+       "row": "POS12_30_c2",
+       "pulls_per_s": 60.1
+      },
+      {
+       "row": "POS12_30_c4",
+       "pulls_per_s": 60.2
+      },
+      {
+       "row": "FULL36_30_c1",
+       "pulls_per_s": 15.2
+      },
+      {
+       "row": "POS12_60_c1",
+       "pulls_per_s": 114.7
+      },
+      {
+       "row": "FULL36_60_c1",
+       "pulls_per_s": 29.1
+      }
+     ],
+     "state_FULL36": [
+      {
+       "row": "FULL36_30_c1",
+       "pulls_per_s": 60.1
+      },
+      {
+       "row": "FULL36_30_c2",
+       "pulls_per_s": 60.1
+      },
+      {
+       "row": "FULL36_30_c4",
+       "pulls_per_s": 60.1
+      },
+      {
+       "row": "Z12_60_c1",
+       "pulls_per_s": 15.3
+      },
+      {
+       "row": "FULL36_60_c1",
+       "pulls_per_s": 113.9
+      },
+      {
+       "row": "PIXEL_30_c1",
+       "pulls_per_s": 16.7
+      }
+     ],
+     "pixel_NONE_0_1280_85_30": [
+      {
+       "row": "PIXEL_30_c1",
+       "pulls_per_s": 52.2
+      },
+      {
+       "row": "PIXEL_30_c4",
+       "pulls_per_s": 52.0
+      },
+      {
+       "row": "PIXEL_60_c1",
+       "pulls_per_s": 8.6
+      }
+     ],
+     "pixel_NONE_0_1280_85_60": [
+      {
+       "row": "PIXEL_60_c1",
+       "pulls_per_s": 49.1
+      }
+     ]
+    },
+    "note": "engine pulls scale with PROFILES: the same profile id's pulls/s is flat across client counts (P1) -- poll arithmetic cannot do this"
+   },
+   "verdict_note": "F1 fires honestly on 4 of 15 row-shapes: FULL36@60 (56.91 < 57.0) and the pixel stream at 30/60 (25.9-26.1 / 24.9 Hz). Mechanism: the pixel profile composes /frame jpg + tick_state per tick (2 engine pulls, the JPEG encode the heavy one) and the engine's tick-lock p95 (~32 ms) bounds composition; ALL state rows at 30 Hz hold at 1/2/4 clients and the per-client wire holds everywhere (F4 NO-FAIL)"
+  },
+  "F2_TORN_FAIL": {
+   "verdict": "NO-FAIL: median AND max MAD <= 2.0 on every valid row with the FIXED camera (max 0.019 / 0.106 / 0.0 across PB1/PB2/PB3); zero all-zero or partial rendered samples across 431 sampled frames; the torn-frame class is GONE",
+   "measured": {
+    "rows": {
+     "PB1_fall_30_full": {
+      "median_mad": 0.0,
+      "p95_mad": 0.008,
+      "max_mad": 0.019,
+      "budget": 2.0,
+      "guard_rejects": 0,
+      "held_samples": 0,
+      "seq_gaps": 0
+     },
+     "PB2_fall_30_z12": {
+      "median_mad": 0.0,
+      "p95_mad": 0.011,
+      "max_mad": 0.106,
+      "budget": 2.0,
+      "guard_rejects": 0,
+      "held_samples": 0,
+      "seq_gaps": 0
+     },
+     "PB3_carry_30_full": {
+      "median_mad": 0.0,
+      "p95_mad": 0.0,
+      "max_mad": 0.0,
+      "budget": 2.0,
+      "guard_rejects": 0,
+      "held_samples": 0,
+      "seq_gaps": 0
+     }
+    },
+    "torn_evidence": []
+   }
+  },
+  "F3_WEDGE_FAIL": {
+   "verdict": "FAIL on one sub-claim, NO-FAIL on the core: a stopped reader and an RST kill moved NOBODY (all live clients 29.98-30.03 Hz post-wedge >= 28.5 bar; max other-client gap 72.1 ms <= 200 ms); the killed client was dropped in 0.024 s (bar 2 s); the stopped reader was dropped in 8.79 s > the 5 s deadline (FAIL) -- mechanism measured: Windows loopback receive autotuning absorbs ~330 KB (8.8 s at Z12's 37 KB/s) before the server's send buffer fills, then the 2 s send timeout fires; a 64 KB SO_SNDBUF bound was applied and did NOT shorten it (peer-side buffer dominates). A FULL36 diagnostic wedge row shows no drop within the whole 15 s post-wedge window (absorbs the entire window at 360 KB/s). The pilot-blocking question -- does a wedged client stall others -- is decisively NO in every shape measured.",
+   "measured": {
+    "window_s": 20.0,
+    "wedge_at": 5.0,
+    "kill_at": 10.0,
+    "rate": 30.0,
+    "rate_bar": 0.95,
+    "gap_bar_ms": 200.0,
+    "wedge_drop": {
+     "found": true,
+     "reason": "send_timeout",
+     "dropped_after_s": 8.792,
+     "skipped_frames": 59,
+     "deadline_s": 5.0,
+     "holds": false
+    },
+    "kill_drop": {
+     "found": true,
+     "reason": "broken",
+     "dropped_after_s": 0.01,
+     "deadline_s": 2.0,
+     "holds": true
+    },
+    "clients": {
+     "C1": {
+      "records": 572,
+      "snapshots": 572,
+      "achieved_hz": 29.999,
+      "snapshot_hz": 29.999,
+      "heartbeats": 0,
+      "median_interval_ms": 33.28,
+      "max_interval_ms": 72.04,
+      "seq_gaps": 0,
+      "framing_errors": 0,
+      "wire_bytes_total": 581710,
+      "wire_payload_Bps": 30553,
+      "wire_MBps": 0.0306,
+      "http_header_bytes": 178,
+      "record_median_B": 966,
+      "ended_early": false,
+      "error": null,
+      "per_second": {
+       "0": 30,
+       "1": 30,
+       "2": 30,
+       "3": 30,
+       "4": 30,
+       "5": 30,
+       "6": 30,
+       "7": 29,
+       "8": 31,
+       "9": 30,
+       "10": 30,
+       "11": 30,
+       "12": 30,
+       "13": 30,
+       "14": 30,
+       "15": 30,
+       "16": 30,
+       "17": 30,
+       "18": 30,
+       "19": 30,
+       "20": 2
+      },
+      "post_wedge_hz": 29.982,
+      "post_wedge_holds_bar": true,
+      "post_wedge_max_gap_ms": 72.04,
+      "post_wedge_gap_ok": true
+     },
+     "C2": {
+      "records": 572,
+      "snapshots": 572,
+      "achieved_hz": 30.0,
+      "snapshot_hz": 30.0,
+      "heartbeats": 0,
+      "median_interval_ms": 33.27,
+      "max_interval_ms": 72.11,
+      "seq_gaps": 0,
+      "framing_errors": 0,
+      "wire_bytes_total": 580744,
+      "wire_payload_Bps": 30502,
+      "wire_MBps": 0.0305,
+      "http_header_bytes": 178,
+      "record_median_B": 966,
+      "ended_early": false,
+      "error": null,
+      "per_second": {
+       "0": 29,
+       "1": 30,
+       "2": 31,
+       "3": 30,
+       "4": 30,
+       "5": 29,
+       "6": 30,
+       "7": 30,
+       "8": 31,
+       "9": 30,
+       "10": 30,
+       "11": 29,
+       "12": 31,
+       "13": 29,
+       "14": 31,
+       "15": 30,
+       "16": 29,
+       "17": 31,
+       "18": 30,
+       "19": 30,
+       "20": 1
+      },
+      "post_wedge_hz": 29.982,
+      "post_wedge_holds_bar": true,
+      "post_wedge_max_gap_ms": 72.11,
+      "post_wedge_gap_ok": true
+     },
+     "C3": {
+      "records": 572,
+      "snapshots": 572,
+      "achieved_hz": 29.999,
+      "snapshot_hz": 29.999,
+      "heartbeats": 0,
+      "median_interval_ms": 33.26,
+      "max_interval_ms": 72.06,
+      "seq_gaps": 0,
+      "framing_errors": 0,
+      "wire_bytes_total": 580744,
+      "wire_payload_Bps": 30502,
+      "wire_MBps": 0.0305,
+      "http_header_bytes": 178,
+      "record_median_B": 966,
+      "ended_early": false,
+      "error": null,
+      "per_second": {
+       "0": 29,
+       "1": 30,
+       "2": 31,
+       "3": 30,
+       "4": 30,
+       "5": 29,
+       "6": 30,
+       "7": 30,
+       "8": 31,
+       "9": 30,
+       "10": 30,
+       "11": 29,
+       "12": 31,
+       "13": 29,
+       "14": 31,
+       "15": 30,
+       "16": 29,
+       "17": 31,
+       "18": 30,
+       "19": 30,
+       "20": 1
+      },
+      "post_wedge_hz": 29.982,
+      "post_wedge_holds_bar": true,
+      "post_wedge_max_gap_ms": 72.06,
+      "post_wedge_gap_ok": true
+     }
+    },
+    "drops_timeline": [
+     {
+      "t": 1790125566.465316,
+      "reason": "broken",
+      "profile": "state_Z12_30_0_0_0",
+      "delivered": 15,
+      "skipped": 0,
+      "open_s": 0.51
+     },
+     {
+      "t": 1790125569.769896,
+      "reason": "send_timeout",
+      "profile": "state_Z12_30_0_0_0",
+      "delivered": 203,
+      "skipped": 59,
+      "open_s": 8.792
+     }
+    ],
+    "F3_verdict": {
+     "rate_holds": true,
+     "gaps_hold": true,
+     "wedge_dropped_in_time": false,
+     "kill_dropped_in_time": true,
+     "no_wedge_fail": false
+    },
+    "full36_diagnostic_row": "wedge_full36/wedge.json: others 30.00-30.03 Hz, gap 74.5 ms; W/K not dropped within window"
+   }
+  },
+  "F4_BW_FAIL": {
+   "verdict": "NO-FAIL: every valid client row is within 1.25 MB/s per client",
+   "measured": {
+    "rows": {
+     "Z12_30_c1/c0": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.942,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.0369,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c2/c0": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 30.02,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.0369,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c2/c1": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 30.02,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.0369,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c4/c0": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.998,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.037,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c4/c1": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.999,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.037,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c4/c2": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.998,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.037,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_30_c4/c3": {
+      "declared_hz": "fmt=Z12&rate=30",
+      "achieved_hz": 29.999,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.037,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c1/c0": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.003,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1215,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c2/c0": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 29.962,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1213,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c2/c1": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 29.962,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1213,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c4/c0": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.033,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1216,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c4/c1": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.033,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1214,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c4/c2": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.033,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1214,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_30_c4/c3": {
+      "declared_hz": "fmt=POS12&rate=30",
+      "achieved_hz": 30.001,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.1215,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c1/c0": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 30.0,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3598,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c2/c0": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 30.0,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3598,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c2/c1": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 30.0,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3598,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c4/c0": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 29.956,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3593,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c4/c1": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 29.955,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3593,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c4/c2": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 29.955,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3593,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_30_c4/c3": {
+      "declared_hz": "fmt=FULL36&rate=30",
+      "achieved_hz": 29.955,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.3593,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "Z12_60_c1/c0": {
+      "declared_hz": "fmt=Z12&rate=60",
+      "achieved_hz": 57.295,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.0704,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "POS12_60_c1/c0": {
+      "declared_hz": "fmt=POS12&rate=60",
+      "achieved_hz": 57.201,
+      "holds_rate_bar": true,
+      "wire_MBps": 0.2318,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "FULL36_60_c1/c0": {
+      "declared_hz": "fmt=FULL36&rate=60",
+      "achieved_hz": 56.908,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.6815,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c1/c0": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 26.119,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9172,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c4/c0": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 25.854,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9136,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c4/c1": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 25.854,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9136,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c4/c2": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 25.853,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9136,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_30_c4/c3": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=30",
+      "achieved_hz": 25.853,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.9136,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     },
+     "PIXEL_60_c1/c0": {
+      "declared_hz": "pixel=1&w=1280&q=85&pixel_rate=60",
+      "achieved_hz": 24.923,
+      "holds_rate_bar": false,
+      "wire_MBps": 0.8633,
+      "holds_budget": true,
+      "seq_gaps": 0,
+      "framing_errors": 0
+     }
+    },
+    "budget_MBps": 1.25,
+    "overhead_note": "wire bytes include record framing (20 B/record); HTTP header bytes counted and reported separately"
+   }
+  },
+  "F5_DET_FAIL": {
+   "verdict": "NO-FAIL: the raster metric double-run on identical bytes is identical, and console/page errors are zero on every browser run",
+   "measured": {
+    "double_run": {
+     "same_buffer_double_run": {
+      "mad": 0.0,
+      "max": 0,
+      "pct_nonzero": 0.0
+     },
+     "different_frames_run1": {
+      "mad": 0.3256,
+      "max": 16,
+      "pct_nonzero": 2.489
+     },
+     "different_frames_run2": {
+      "mad": 0.3256,
+      "max": 16,
+      "pct_nonzero": 2.489
+     },
+     "identical": true,
+     "nontrivial_difference_measured": true,
+     "note": "raster double-run on identical bytes (F5); raster.py camera transpose-fix applied first (see raster.py note)"
+    },
+    "console": {
+     "PB1_fall_30_full": {
+      "console_errors": 0,
+      "page_errors": 0,
+      "stream_errors": 0
+     },
+     "PB2_fall_30_z12": {
+      "console_errors": 0,
+      "page_errors": 0,
+      "stream_errors": 0
+     },
+     "PB3_carry_30_full": {
+      "console_errors": 0,
+      "page_errors": 0,
+      "stream_errors": 0
+     }
+    }
+   }
+  }
  },
  "engine_service_gaps": {
   "E1_no_in_band_timestamp": "RECORDED, unchanged by this lane: engine /verts and /frame carry no ts_us; the push composes ts exactly as /api/snapshot does (verts pull then state pull, gap_us rides every THS1 header). Engine-side fix remains named, out of boundary.",
@@ -46,5 +966,58 @@
   "engine_binary": "pilot's prebuilt chimera_engine.exe reused unchanged (provenance + byte-equivalence recorded in thin_client_pilot_20260920/); rebuild from this worktree's source on any misbehavior",
   "shell_law": "PowerShell only via -File; long runs as background processes with redirected logs; shared desktop never touched"
  },
- "runs": {}
+ "runs": {
+  "matrix": "matrix/matrix.json",
+  "wedge": "wedge/wedge.json",
+  "browser": "browser/",
+  "determinism": "det/double_run.json"
+ },
+ "render_frame_time": {
+  "PB1_fall_30_full": {
+   "n_frames": 1622,
+   "median_ms": 16.6,
+   "p95_ms": 17.7,
+   "p99_ms": 18.2,
+   "max_ms": 18.8,
+   "long_frames_gt25ms": 0,
+   "trace": "TRACE-CLEAN",
+   "rate": 30
+  },
+  "PB2_fall_30_z12": {
+   "n_frames": 1622,
+   "median_ms": 16.6,
+   "p95_ms": 17.7,
+   "p99_ms": 18.1,
+   "max_ms": 18.8,
+   "long_frames_gt25ms": 0,
+   "trace": "TRACE-CLEAN",
+   "rate": 30
+  },
+  "PB3_carry_30_full": {
+   "n_frames": 1070,
+   "median_ms": 16.7,
+   "p95_ms": 17.8,
+   "p99_ms": 18.3,
+   "max_ms": 18.8,
+   "long_frames_gt25ms": 0,
+   "trace": "TRACE-CLEAN",
+   "rate": 30
+  }
+ },
+ "predictions_outcome": {
+  "P1_multiclient_rate": "HOLDS: Z12/POS12/FULL36 at 30 Hz x clients {1,2,4}: 29.94-30.03 Hz per client, engine pulls/s flat (e.g. FULL36@30 profile 612 pulls over 20 s at 4 clients = same 2-per-composed-frame at 1 client); pixel profile 25.85-26.12 Hz at c1 AND c4 (flat)",
+  "P2_sixty_honest": "PREDICTION WRONG, recorded: 60 Hz state family nearly HOLDS -- Z12 57.30 Hz (bar 57.0), POS12 57.20 Hz, FULL36 56.91 Hz (0.09 Hz under bar, F1 fires). Mechanism corrected: server-side composition is 2.6-12.9 ms median (compose_us in matrix.json), NOT the 15 ms client-observed round trip the prediction assumed; the p95 ~32 ms engine tick-lock hiccup is what bounds it",
+  "P3_torn_gone": "HOLDS: max MAD 0.019/0.106/0.0 on valid rows (pilot 13.33); 0 all-zero rendered samples of 431; guard rejected 0 frames in runs (nothing torn arrived) and the unit+runtime tests prove the guard rejects them when they do",
+  "P4_wedge": "SPLIT as recorded under F3: others-hold TRUE with margin; drop deadline 5 s NOT met at Z12 (8.79 s, peer rcvbuf autotuning); killed-client 2 s met (0.024 s)",
+  "P5_bandwidth": "HOLDS: measured per-client wire at 30 Hz: Z12 0.037, POS12 0.121, FULL36 0.360 MB/s; pixel jpg w1280 q85 0.917 MB/s at 26 Hz -- all <= 1.25; wire includes 20 B/record framing"
+ },
+ "budgets_outcome": {
+  "BUDGET_BW": "HOLDS on every row (max 0.917 MB/s pixel, 0.360 FULL36)",
+  "BUDGET_VIS": "HOLDS median AND max on every valid row (fixed camera)",
+  "BUDGET_RT": "60 fps holds (median 16.6 ms = v-paced 60 Hz cadence, max 18.8, zero frames > 25 ms); the page's own render cost measured uncapped: median 0.10 ms, p95 0.30 ms, max 0.90 ms per frame (55x under one 16.7 ms frame) -- the literal p95 17.7 ms on paced rows measures headless BeginFrame cadence, not render cost"
+ },
+ "instrument_finding": {
+  "raster_camera_transpose_bug": "raster.py camera_vp built the projection as P @ V with both grids read from the page's COLUMN-major arrays: the body projected to w ~ 0.02 (degenerate). MAD was 0 whenever both sides degenerated identically and ~13.3 (the CLEAR-vs-black mean) when one side's vertices crossed the w-plane -- the pilot's banked 13.33 'torn zero-frame' signature is this instrument artifact class, not a client tear. FIX: camera_vp returns (V @ P).T (one line, verified: body center ndc (0, 0.27, 0.95)). All this lane's F2 numbers are post-fix. The instrument now measures real screen space: a 6 mm body offset scores MAD 0.106",
+  "torn_frame_guards": "framing layer (partial record never emitted), decode layer (magic/n/len/all-zero rejected, HELD frame visible), render loop cannot die (errors counted, last good GPU frame kept); runtime test: injected zero frame rejected, canned values verbatim"
+ }
 }
