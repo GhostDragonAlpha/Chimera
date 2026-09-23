@@ -9,6 +9,10 @@
 __device__ long long cu_total_q = 1073741824LL;
 #define PI 3.141592653589793
 int fkdbg = 0; // drill-only probe gate (host replay compile); set by the driver
+int fkdbg2 = 0; // CLOSEOUT-3 per-body jv/jw drill gate
+int fkdbg2_fired = 0; // one-shot latch
+int fkdbg3_fired = 0; // one-shot latch (contribution dump)
+int fkdbg4_fired = 0; // one-shot latch (rate checkpoint dump)
 static const int OF_ax_axis = 0;
 static const int OF_ax_slope = 54;
 static const int OF_ax_const = 72;
@@ -750,6 +754,15 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
         for (i = 0; i < (16); ++i) {
             t2[i] = frd[b * 16 + i];
 }
+        if (fkdbg2 && (!fkdbg2_fired) && q[0] == 0.0 && v[0] == 0.0 && v[3] == 0.76362478896964736) {
+            printf("FKDBG2 b=%d m=%.17g", b, body_mass[b]);
+            for (int _cki = 0; _cki < 6; ++_cki) printf(" jv%d=%.17g,%.17g,%.17g", _cki, jv[_cki * 3], jv[_cki * 3 + 1], jv[_cki * 3 + 2]);
+            for (int _cki = 0; _cki < 6; ++_cki) printf(" jw%d=%.17g,%.17g,%.17g", _cki, jw[_cki * 3], jw[_cki * 3 + 1], jw[_cki * 3 + 2]);
+            printf("\n");
+            if (b == 13) {
+                fkdbg2_fired = 1;
+            }
+        }
         transpose_rot(t1, rt);
         mm(t2, rt, mtmp);
         double omega[3];
@@ -799,6 +812,22 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
         mm(t1, t2, mtmp);
         mm(mtmp, rt, t2);
         Iw =  t2;
+        if (fkdbg2 && (!fkdbg3_fired) && q[0] == 0.0 && v[0] == 0.0 && v[3] == 0.76362478896964736) {
+            double c00, c22, w0a, w0b, w0c, w2a, w2b, w2c;
+            w0a = Iw[0] * jw[0] + Iw[1] * jw[1] + Iw[2] * jw[2];
+            w0b = Iw[4] * jw[0] + Iw[5] * jw[1] + Iw[6] * jw[2];
+            w0c = Iw[8] * jw[0] + Iw[9] * jw[1] + Iw[10] * jw[2];
+            w2a = Iw[0] * jw[6] + Iw[1] * jw[7] + Iw[2] * jw[8];
+            w2b = Iw[4] * jw[6] + Iw[5] * jw[7] + Iw[6] * jw[8];
+            w2c = Iw[8] * jw[6] + Iw[9] * jw[7] + Iw[10] * jw[8];
+            c00 = body_mass[b] * (jv[0] * jv[0] + jv[1] * jv[1] + jv[2] * jv[2]) + (jw[0] * w0a + jw[1] * w0b + jw[2] * w0c);
+            c22 = body_mass[b] * (jv[6] * jv[6] + jv[7] * jv[7] + jv[8] * jv[8]) + (jw[6] * w2a + jw[7] * w2b + jw[8] * w2c);
+            printf("FKDBG3 b=%d m=%.17g Iw=%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g c00=%.17g c22=%.17g\n",
+                b, body_mass[b], Iw[0], Iw[1], Iw[2], Iw[4], Iw[5], Iw[6], Iw[8], Iw[9], Iw[10], c00, c22);
+            if (b == 13) {
+                fkdbg3_fired = 1;
+            }
+        }
         double Iwom[3];
         for (_zzero7 = 0; _zzero7 < (3); ++_zzero7) {
             Iwom[_zzero7] = 0.0;
@@ -843,7 +872,7 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
                             jv[6], jv[7], jv[8], jv[15], jv[16], jv[17],
                             jw[6], jw[7], jw[8], jw[15], jw[16], jw[17]);
                     }
-                    M[si * 18 + sj] = M[si * 18 + sj] + m * jvd + jwd;
+                    M[si * 18 + sj] = M[si * 18 + sj] + (m * jvd + jwd);
 }
 }
             for (ii = 0; ii < (nslots); ++ii) {
@@ -853,8 +882,7 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
                     continue;
 }
                 gv[si] = gv[si] + m * (jv[si * 3 + 0] * grav[0] + jv[si * 3 + 1] * grav[1] + jv[si * 3 + 2] * grav[2]);
-                bv[si] = bv[si] + m * (jv[si * 3 + 0] * acc_com[0] + jv[si * 3 + 1] * acc_com[1] + jv[si * 3 + 2] * acc_com[2]);
-                bv[si] = bv[si] + (jw[si * 3 + 0] * moment[0] + jw[si * 3 + 1] * moment[1] + jw[si * 3 + 2] * moment[2]);
+                bv[si] = bv[si] + (m * (jv[si * 3 + 0] * acc_com[0] + jv[si * 3 + 1] * acc_com[1] + jv[si * 3 + 2] * acc_com[2]) + (jw[si * 3 + 0] * moment[0] + jw[si * 3 + 1] * moment[1] + jw[si * 3 + 2] * moment[2]));
 }
             potential =  potential - m * (grav[0] * comw[0] + grav[1] * comw[1] + grav[2] * comw[2]);
 }
@@ -1441,12 +1469,25 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
 }
     for (d = 0; d < (12); ++d) {
         c =  mdi[OI_drive_coord + d];
-        free[c] = free[c] + tau[c] - mdl[OF_drive_damping + d] * v[c];
+        free[c] = free[c] + (tau[c] - mdl[OF_drive_damping + d] * v[c]);
 }
     double free_acc[18];
+    if (fkdbg2 && (!fkdbg4_fired) && q[0] == 0.0 && v[0] == 0.0 && v[3] == 0.76362478896964736) {
+        printf("FKDBG4 FRHS");
+        for (int _cki = 0; _cki < 18; ++_cki) printf(" %.17g", free[_cki]);
+        printf("\n");
+        printf("FKDBG4 RHSIN");
+        for (int _cki = 0; _cki < 18; ++_cki) printf(" gv%d=%.17g bv%d=%.17g tau%d=%.17g v%d=%.17g", _cki, gv[_cki], _cki, bv[_cki], _cki, tau[_cki], _cki, v[_cki]);
+        printf("\n");
+    }
     mat_vec(inv, free, free_acc);
     for (i = 0; i < (18); ++i) {
         free[i] = free_acc[i];
+        if (fkdbg2 && (!fkdbg4_fired) && q[0] == 0.0 && v[0] == 0.0 && v[3] == 0.76362478896964736) {
+            printf("FKDBG4 FMUL");
+            for (int _cki = 0; _cki < 18; ++_cki) printf(" %.17g", free[_cki]);
+            printf("\n");
+        }
 }
     double rows[180];
     for (_zzero27 = 0; _zzero27 < (180); ++_zzero27) {
@@ -1565,7 +1606,7 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
             bz =  ptbias[r * 3 + 2];
             svx =  row_dot(jt1, v);
             svz =  row_dot(jt2, v);
-            planar =  sqrt(svx * svx + svz * svz);
+            planar =  hypot(svx, svz);
             dir_x =  (double)(0.0);
             dir_z =  (double)(0.0);
             slip_sign =  (int)(0);
@@ -1581,7 +1622,7 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
                     d1 =  d1 + jt1[i] * free[i];
                     d2 =  d2 + jt2[i] * free[i];
 }
-                accel =  sqrt(d1 * d1 + d2 * d2);
+                accel =  hypot(d1, d2);
                 if (accel > (double)(1e-9)) {
                     dir_x =  d1 / accel;
                     dir_z =  d2 / accel;
@@ -1633,6 +1674,11 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
         for (_zzero42 = 0; _zzero42 < (10); ++_zzero42) {
             mult[_zzero42] = 0.0;
 }
+        if (fkdbg2 && (!fkdbg4_fired) && q[0] == 0.0 && v[0] == 0.0 && v[3] == 0.76362478896964736) {
+            printf("FKDBG4 FFRIC");
+            for (int _cki = 0; _cki < 18; ++_cki) printf(" %.17g", free[_cki]);
+            printf("\n");
+        }
         if (project_rows(free, inv, rows, floors, R, n_stops, p, mult) == 0) {
             return 5;
 }
@@ -1645,6 +1691,12 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
             free[i] = free[i] + corr[i];
 }
 }
+    if (fkdbg2 && (!fkdbg4_fired) && q[0] == 0.0 && v[0] == 0.0 && v[3] == 0.76362478896964736) {
+        fkdbg4_fired = 1;
+        printf("FKDBG4 FPROJ");
+        for (int _cki = 0; _cki < 18; ++_cki) printf(" %.17g", free[_cki]);
+        printf("\n");
+    }
     for (i = 0; i < (18); ++i) {
         rv[i] = free[i];
         rq[i] = v[i];
@@ -1672,7 +1724,6 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
     int _zzero51;
     int _zzero52;
     int _zzero53;
-    double sixth;
     double pt_radius_g[((OF_pt_radius + 8) - (OF_pt_radius))];
     for (int _si0 = 0; _si0 < ((OF_pt_radius + 8) - (OF_pt_radius)); ++_si0) pt_radius_g[_si0] = mdl[(OF_pt_radius) + _si0];
     double rq[18];
@@ -1759,10 +1810,9 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
     if (rc != 0) {
         return rc;
 }
-    sixth =  h / (double)(6.0);
     for (i = 0; i < (18); ++i) {
-        q1[i] = q0[i] + sixth * (qa[i] + (double)(2.0) * brq[i] + (double)(2.0) * crq[i] + drq[i]);
-        v1[i] = v0[i] + sixth * (va[i] + (double)(2.0) * brv[i] + (double)(2.0) * crv[i] + drv[i]);
+        q1[i] = q0[i] + h * (qa[i] + (double)(2.0) * brq[i] + (double)(2.0) * crq[i] + drq[i]) / (double)(6.0);
+        v1[i] = v0[i] + h * (va[i] + (double)(2.0) * brv[i] + (double)(2.0) * crv[i] + drv[i]) / (double)(6.0);
         w1[i] = w0[i] + tau[i] * (q1[i] - q0[i]);
 }
     return 0;
@@ -1772,6 +1822,10 @@ __device__ inline long long gram_factor4(double* g, int k, double* rhs, double* 
     double scale;
     int i;
     double d;
+    int _zzero54a;
+    int _gi;
+    int _gj;
+    double avg;
     int _zzero54;
     int j;
     double t;
@@ -1793,13 +1847,29 @@ __device__ inline long long gram_factor4(double* g, int k, double* rhs, double* 
     if (! (scale > (double)(0.0))) {
         return 0;
 }
+    double gs[16];
+    for (_zzero54a = 0; _zzero54a < (16); ++_zzero54a) {
+        gs[_zzero54a] = 0.0;
+}
+    for (_gi = 0; _gi < (k); ++_gi) {
+        for (_gj = 0; _gj < (k); ++_gj) {
+            gs[_gi * k + _gj] = g[_gi * k + _gj];
+}
+}
+    for (_gi = 0; _gi < (k); ++_gi) {
+        for (_gj = 0; _gj < (_gi); ++_gj) {
+            avg =  (gs[_gi * k + _gj] + gs[_gj * k + _gi]) / (double)(2.0);
+            gs[_gi * k + _gj] = avg;
+            gs[_gj * k + _gi] = avg;
+}
+}
     double l[16];
     for (_zzero54 = 0; _zzero54 < (16); ++_zzero54) {
         l[_zzero54] = 0.0;
 }
     for (i = 0; i < (k); ++i) {
         for (j = 0; j < (i + 1); ++j) {
-            t =  g[i * k + j];
+            t =  gs[i * k + j];
             for (m = 0; m < (j); ++m) {
                 t =  t - l[i * k + m] * l[j * k + m];
 }
@@ -2001,7 +2071,7 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
 }
             svx =  row_dot(jt1, v);
             svz =  row_dot(jt2, v);
-            planar =  sqrt(svx * svx + svz * svz);
+            planar =  hypot(svx, svz);
             if (planar <= cst[CF_k_slip]) {
                 continue;
 }
@@ -5292,7 +5362,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
             eff[i] = (double)(0.0);
 }
         pot =  fk_eval(q,  v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
-        if (a_ticks[e] <= 1) {
+        if (a_ticks[e] <= 4) {
             printf("SUBPRE t=%d sub=%d", a_ticks[e], sub - 1);
             printf(" batpost=%.17g w2=%.17g", bat_post, w[2]);
             for (i = 0; i < (18); ++i) printf(" q%d=%.17g", i, q[i]);
@@ -5407,7 +5477,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
             tq =  fmin(cap, fmax(-cap, tq));
             tau[2] = tq;
 }
-        if (a_ticks[e] <= 1) {
+        if (a_ticks[e] <= 4) {
             printf("TAUFULL t=%d sub=%d", a_ticks[e], sub - 1);
             printf(" batpost=%.17g w2=%.17g", bat_post, w[2]);
             for (i = 0; i < (18); ++i) printf(" tau%d=%.17g", i, tau[i]);
@@ -5575,13 +5645,13 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
                 bat[d] = store - spent;
 }
             else {
-                if (a_ticks[e] <= 1) {
+                if (a_ticks[e] <= 4) {
                     printf("DRAIN12 sub=%d d=%d c=%d store=%.17g spent=%.17g\n", sub - 1, d, c, store, spent);
 }
                 bat_post =  store - spent;
 }
 }
-        if (a_ticks[e] <= 1) {
+        if (a_ticks[e] <= 4) {
             printf("STOREDBG t=%d sub=%d curw2=%.17g trialw2=%.17g spentw2=%.17g batpost=%.17g\n", sub - 1, cur_w[2], trial_w[2], trial_w[2] - cur_w[2], bat_post);
         }
         for (i = 0; i < (18); ++i) {
@@ -5589,7 +5659,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
             v[i] = trial_v[i];
             w[i] = trial_w[i];
 }
-        if (a_ticks[e] <= 1) {
+        if (a_ticks[e] <= 4) {
             printf("SUBFULL t=%d sub=%d", a_ticks[e], sub);
             printf(" batpost=%.17g w2=%.17g", bat_post, w[2]);
             for (i = 0; i < (18); ++i) printf(" q%d=%.17g", i, q[i]);
