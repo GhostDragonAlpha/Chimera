@@ -141,4 +141,101 @@ lane/render-truth-20260920.
 
 Receipt: `tools/science_funnel/validation/render_truth_20260920/receipt.json`.
 
+## AMENDMENT 3 — F-VERTS-HEADER: the real mechanism the finding was pointing at
+
+The GLB index buffer's own parity check refused the first fixed page BY
+NAME before a single fixed frame was judged: `glb index count != live
+verts: 249743 vs 249743.11111111112`. The cause is a production bug the
+whole lane chain had been rendering through: the slice's `/api/verts`
+payload is `[u32 count][n x 36 B vertex data]`, and the page uploaded the
+WHOLE payload — count header included — as the vertex buffer. Every
+attribute read was shifted by one float: 1/9 of the "vertices" carried the
+count (249743.0) as an X coordinate (giant stretched slivers through the
+scene), colors read normal-z (the green cast in the finding's frames),
+normals read position-z. That — not a deliberate points/lines style — is
+the mechanism behind the blind judge's "amorphous, chaotic tangle of
+lines". The fix (skip the 4-byte header) also fixes the 300 N press
+picker, which had been raycasting shifted coordinates. The refusal path
+stays: any residual count mismatch drops the GLB indices BY NAME and falls
+back to `/api/topology`.
+
+## AMENDMENT 4 — the framing chosen from pixels, and two probe REDs kept
+
+The framing probe (5 candidates rendered through the page's own draw path;
+frames committed) chose the side profile yaw 1.571, dist 0.80 — the whole
+skeleton readable with ground context (skull, spine, ribcage, pelvis, both
+limb pairs, tail). Kept REDs: (1) the first probe run's frames were black
+— the probe drew and read the canvas in TWO JS tasks; without
+`preserveDrawingBuffer` the drawing buffer does not survive between tasks
+(the movie lane's AMENDMENT 2, re-learned); (2) the node Playwright
+evaluate of an arrow-function STRING returns the function (undefined), not
+its call — the values are inlined in an IIFE instead. The vertex-stream
+probe measured before any shading decision: normals all unit-length (the
+engine's own repair), ONE color for every bone (0.80, 0.55, 0.35), the
+authored rest y-span confirming the fall framing's derivation
+(top ~1.04 m).
+
+## AMENDMENT 5 — the eye lane's load budget (four 500s, named, then green)
+
+The judge's first four attempts returned HTTP 500 with NO verdict
+(preserved verbatim as `judgement_500_attempt{1..4}.json`): three on the
+shared ollama (11434) at its own fixed ~5-minute llama-server start budget
+(server log, named: "Load failed … timed out waiting for llama-server to
+start", 5m9s–5m54s — the 17.7 GB qwen3.8 + 61k-KV load needs longer while
+sibling lanes' engines hold the GPU), one on a LANE-PRIVATE server
+(127.0.0.1:11435, OLLAMA_LOAD_TIMEOUT=30m, same model bytes) launched
+during a GPU-saturated window — that one reached the 30-minute budget
+itself. The fifth attempt, same lane server on a machine whose GPU had
+gone quiet (2.3 GB VRAM, 20% util), loaded and answered. The judge
+protocol never changed: model, prompt (verbatim the finding's), frames,
+num_ctx math. Only the serving process's load budget and its locality did
+— the same class of environment fix as a private headless browser, and
+every step is on the record.
+
+## RESULT — ALL FALSIFIERS GREEN (measured 2026-09-22; numbers in receipt.json)
+
+The render fix (GLB index buffer + the F-VERTS-HEADER header skip +
+backface culling, judged through the page's own capture path) changed the
+blind judge's read from the finding's verbatim "SEPARATE FLOATING PARTS …
+amorphous, chaotic tangle of lines" to, verbatim, **"The skeleton reads as
+ONE CONNECTED PHYSICAL ANIMAL being moved and carried by physics."** The
+judge names the parts — "a skull (cranium and jaw area), a long spine, rib
+cage, pelvic bones, and limb bones (forelimbs and hindlimbs)" — and
+explicitly negates the finding's class: "There is no separation between
+the skull, spine, ribs, or limbs at any point … no part detaches." Same
+judge (ollama qwen3.8, think:false), same prompt (the finding's own, byte
+for byte), 12 ordered 384 px frames of 530 captured — no re-roll, no
+prompt tuning. F-CONNECTED: GREEN.
+
+Per-falsifier:
+- **F-PAYLOAD-INVARIANT GREEN**: GLB/OBJ/ghost shas unchanged
+  (`adb6aff2…` / `bc9033bf…` / `d07d976c…`); scene sha == the payload pin
+  in every boot (capture, walkthrough restart, boot measure);
+  `git diff ae1b4599 -- ChimeraEngine/ gait_controller.hpp` EMPTY; no LOD
+  exists anywhere in the lane.
+- **F-STRANGER-REGRESSION GREEN** (1x, after one honest RED): the
+  committed walkthrough ran on channel chrome (its canary passed — the
+  machine's installed Chrome recovered), 13/13 named keys by key path,
+  beacon 0, harness 0, first action 2.62 s, restart clean (pill, boots
+  1->2, world back 1.64 s, scene pin stable, re-settled). The honest RED
+  first: `walkthrough_run_194026.json` caught my refusal path mis-firing
+  on the engine's EMPTY vertex payload during the restart gap
+  ("249743 vs 0") — an edge condition, fixed (empty stream = skip, not a
+  mismatch), artifact kept.
+- **F-BUDGETS GREEN**: boot t_first_verts **2.13 s** vs the 10 s bar —
+  byte-for-byte the stranger lane's own pre-change number: the render fix
+  added ZERO boot cost (the index upload is one 6 MB bufferData at page
+  load, never per frame). Capture **26.37 fps sustained** (530 frames /
+  20.064 s) vs the >= 15 floor — the movie is cut at the measured
+  per-frame dt (ffprobe 20.04 s). ZERO console-class errors, page errors,
+  and failed requests across the capture, the walkthrough, and the boot.
+
+The movie: `real_body_slice_v2.mp4`, 20.04 s true-time, CRF 20, 0.57 MB,
+sha256 `a60a7058571c1ef9ce8f8951e9e04da059b2a61a132074410d602e745b84a7b0`,
+delivered to the repo `CHIMERA_PROOF/REAL_BODY_SLICE/`, this lane dir, and
+the desktop `CHIMERA_PROOF/REAL_BODY_SLICE/` (all three copies sha-equal).
+The engine's own verdict rode the same capture run: fall test done, peak
+0.9201 m, landed 0.1245 — and the settled start sat at the derived
+attractor (root_y 0.124641 in the boot measure's trace).
+
 Agent: rendertruth

@@ -379,9 +379,11 @@ async function pollVerts(){
       gl.bufferData(gl.ARRAY_BUFFER,f32,gl.DYNAMIC_DRAW);
       gl.bindVertexArray(null);
       if(window.__CHIMERA_MESH_SOURCE==='glb'&&glbPosCount&&
-         liveVerts.length/9!==glbPosCount){
+         liveVerts.length&&liveVerts.length/9!==glbPosCount){
         // refuse BY NAME: an index buffer that disagrees with the live
-        // stream would render a lie about the body
+        // stream would render a lie about the body. An EMPTY payload
+        // (0 verts -- the engine's answer while the world boots or
+        // restarts) is not a mismatch: skip it and keep the last frame.
         beacon('glb index count != live verts', glbPosCount+' vs '+(liveVerts.length/9));
         idxCount=0;
         window.__CHIMERA_MESH_SOURCE='topology-fallback';

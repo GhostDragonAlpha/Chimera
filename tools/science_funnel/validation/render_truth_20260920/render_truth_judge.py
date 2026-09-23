@@ -55,7 +55,15 @@ def main() -> int:
     ap.add_argument("--frames", required=True, help="captured frames dir")
     ap.add_argument("--capture-record", required=True)
     ap.add_argument("--n", type=int, default=12)
+    ap.add_argument("--url", default=None,
+                    help="optional ollama base URL (e.g. a lane-private "
+                         "server on another port). The MODEL, prompt, frame "
+                         "count and num_ctx math are unchanged by this -- "
+                         "only which serving process answers. Recorded in "
+                         "judgement.json.")
     a = ap.parse_args()
+    if a.url:
+        os.environ["CHIMERA_VISION_URL"] = a.url
     frames_dir = Path(a.frames)
     cap = json.loads(Path(a.capture_record).read_text(encoding="utf-8"))
     n_total = cap["frames"]
@@ -84,6 +92,8 @@ def main() -> int:
                                 "unchanged (no tuning to flatter)",
            "lane": "ollama (senses.py ollama branch: qwen3.8, think:false, "
                    "num_ctx sized to the frames)",
+           "vision_url": os.environ.get("CHIMERA_VISION_URL",
+                                        "http://localhost:11434"),
            "model": "qwen3.8",
            "protocol": "ONE senses.watch call over %d ordered 384 px resizes "
                        "of evenly spaced captured frames (walk-movie "
