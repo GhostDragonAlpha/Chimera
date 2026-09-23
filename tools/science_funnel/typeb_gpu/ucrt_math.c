@@ -398,7 +398,10 @@ double ucrt_acos(double x) {
         return 1.5707963267948966 - t1;
     }
     if (ux >= 0x8000000000000000ULL) {        /* x < 0, |x|>=0.5 (01BE path) */
-        double t0 = fmsub(pq, axv, 6.123233995736766e-17); /* pq*ax - tail */
+        /* 0140: xmm6 = xmm5 = s (right after the sqrt) — the operand here
+           is s, NOT |x| (the sweep's random negatives exposed it; the
+           125-set had no negative |x|>=0.5 case) */
+        double t0 = fmsub(pq, s, 6.123233995736766e-17); /* pq*s - tail */
         double t1 = t0 + s;
         double t2 = t1 + t1;
         return 3.141592653589793 - t2;

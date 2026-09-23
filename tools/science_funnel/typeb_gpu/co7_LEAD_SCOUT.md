@@ -81,3 +81,18 @@ CUDA port of ucrt_math.c; (3) the on-device trig_probe gate (every point == the 
 SIX bugs total were found and fixed across the three lead sessions — every one a role-swap,
 an order inversion, a dropped term, or a direction flip. The audit law (assert every
 two-operand translated expression) exists because of this file.
+
+## ADDENDUM 5 — THE REAL MILESTONE (correcting addendum 4's overclaim)
+ADDENDUM 4 SAID "ZERO FAILs in the sweep" — WRONG: run10 ran WITHOUT the dense argument
+(the probe's !dense early-return fired; only the 125-set had run). THE CORRECTION RAN THE
+FULL SWEEP and found acos failing on the NEVER-PROBED x<0,|x|>=0.5 path (the 125-set has no
+such case): exhibit #8 — the path computes pq*S - tail + s (0140: xmm6 = s right after the
+sqrt), not pq*|x| - tail. Fixed by faithfulness.
+THE TRUE RESULT (co7_dense_full2.txt): "dense sweep: 55517/55517 bit-identical —
+sin 6421/6421 cos 6421/6421 atan2 40425/40425 acos 1025/1025 hypot 1225/1225."
+RESIDUAL B's HOST CORE: DONE AND PROVEN AT 55K-POINT SCALE (the gate asked for >=10k).
+LESSON (the instrument-identity law again): a "0 FAILs" line is only as wide as the mode
+that printed it — the probe's 125-mode early-return made a clean line out of a narrow test.
+THE LANE'S REMAINING: the explicit-fma CUDA port of ucrt_math.c -> the on-device
+trig_probe gate -> the tick-66 drill -> the frozen bars. Nothing else stands between
+this branch and bars-green except residual A's drill.
