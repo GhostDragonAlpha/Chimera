@@ -495,3 +495,105 @@ needs libdevice-vs-CRT transcendental parity measured — or (b) the forbidden
 preregistered premise change (move the fore sole off the knife edges), which
 this lane did NOT do per mandate. Deferral honesty clause: unchanged — no
 deferred law engages anywhere near ticks 1-55.
+
+---
+
+# CLOSEOUT-3 APPENDIX — the bit-match lane completed to the tie (2026-09-22, agent GLM 5.3)
+
+Branch agent/typeb-gpu-finish-20260922 @ 7a845267+. Mandate: closeout-2's named
+next pairs — tables/phi interpolation, residual Jacobian ulps, the
+libdevice-vs-CRT question, and the host-parity bound. Method: per-body
+contribution drills (CPPFK2/FKDBG2 jv·jw per body, CPPFK3/FKDBG3 Iw + per-body
+M[0][0]/M[2][2] contributions, CPPFK4/FKDBG4 rate checkpoints FRHS/RHSIN/FMUL/
+FPROJ), all committed.
+
+## THE PAIRS, CLOSED
+
+- PAIR 1 (tables/phi interpolation, tau9/tau13): the interpolation was never
+  the defect — at the drill phases phi = 0/0.5 exactly, so f = 0 and every
+  interp is exact. The real source was THE GAIN ANCHOR: walker_model's numpy
+  mass mirror cannot reproduce Model::evaluate()'s scalar fp order, and its
+  defaults-pose diagonal differs from the reference at coordinates
+  0,1,2,9,13,14,16 (cpu_probe.exe diag vs spec.mass_diag) — so the
+  mass-normalized gains kp=m*freq*freq / kd=2*ZETA*m*freq carried 1-ulp errors
+  at drives 4/8 (the hind MPs = exactly the census's tau9/tau13), 9/11, and
+  the posture drive. FIXED: GAIN_ANCHOR_DIAG pinned to the reference's own
+  bits (cpu_probe diag); TAUFULL t=0 sub=0 went BIT-EXACT 20/20.
+- PAIR 2 (M/gv/bv Jacobian ulps, 0.5-3.2 ulp): FIVE stacked defects, each
+  isolated by the drills: (1) BODY ORDER — the C++ Model::Model insertion
+  continues the alphabetical map scan from the erase point; the replica
+  restarted, producing a different bodies_ order and therefore a different
+  M/gv/bv ACCUMULATION order (the drill showed per-body masses misaligned
+  across implementations). walker_model now replicates the exact semantics.
+  (2) M/bv assembly — the C++ adds e.mass[..] += X + Y as ONE add of the
+  pre-summed pair; the port rounded twice ((acc + m*jvd) + jwd). Same class in
+  bias. (3) RK combine — the C++ computes h*(a+2b+2c+d)/6; the port
+  pre-divided h/6 (different rounding). (4) rate rhs — the C++ adds
+  rhs[i] += tau[i] - damping*v as one add of the pair; the port rounded twice.
+  (5) hypot — the C++ uses std::hypot at the planar-slip and friction-accel
+  sites; sqrt(x*x+y*y) differs in final bits. Plus gram_factor4 now
+  symmetrizes ((g_ij+g_ji)/2) like the by-value C++ gram_factor — inner
+  (r_a, inv*r_b) is bitwise asymmetric for a != b, so skipping the average
+  factors a different Cholesky exactly at the cone boundary.
+- RESULT: the substep census (csub_t5 vs ksub_t5, ticks 0..4) shows EVERY
+  SUBPRE and TAUFULL record BIT-EXACT (398/398, 20/20) through tick 3 sub 2;
+  the rate checkpoints FRHS/FMUL/FPROJ are BIT-EXACT at the armed call; the
+  first three aligned walk states are BYTE-IDENTICAL (cp t=0,1,2 ==
+  hl t=1,2,3; closeout-2 had ulp-level everywhere). PAIR 4's hypothesis is
+  CONFIRMED at the new bound: the host parity extends until the tie.
+- THE TIE, RELOCATED AND NAMED: the host replay now fires it inside tick 3's
+  substep-2 -> 3 (SUBPRE t=3 sub=3 is the first diverging census record; was
+  tick-2 substep-2 in closeout-2). With a BIT-EXACT entry state, the divergence
+  is a discrete fore-limb event (v14..v17 injected at O(1e-2), tau14/16 at
+  O(2.6e-3)) inside the advance's event interior — the joint-wall/clamp/
+  projection localization on the fore shoulders/elbows, which sit exactly on
+  their bounds at the fore entry pose. Named for the next lane: the wall/
+  bisection interior at tick-3 substep 2->3, fore rows.
+- PAIR 3 (libdevice-vs-CRT), DISPOSED BY MEASUREMENT (trig_probe.cu /
+  trig_probe_host.cxx, trig_inputs.txt = the 12 live tick-1 rotation angles +
+  a synthetic IK grid): 31 of 125 sampled evaluations differ in the FINAL BIT
+  between libdevice and the MSVC CRT — SIN 5/25, COS 5/25, ATAN2 6/25,
+  ACOS 4/25, HYPOT 11/25, always exactly 1 ulp, INCLUDING on the live tick-1
+  axis angles. Route (a)/(b) therefore cannot reach GPU bit-equality without
+  porting the UCRT sin/cos/atan2/acos/hypot implementations into the kernels
+  (a full UCRT-math port, its own lane). Route (c) is taken for the verdict
+  below: the GPU carries a measured, named, 1-ulp-class transcendental
+  deviation on top of the scene's own tie.
+
+## FROZEN BARS RE-RUN (bars_split_b32.json, walker_env.dll rebuilt 19:56 with
+## all closeout-3 fixes, nvcc -fmad=false, block 32; thresholds untouched)
+
+- F-FULLPORT-PROBE-PARITY freefall: GREEN — measured_g = 9.806650000000689,
+  err = 6.89e-13 <= 0.01 (unchanged; still the only green).
+- stand: RED — max_scaled_diff = 0.1082 (was 0.0699; bar < 1e-2). The tie
+  fires inside the stand window either way; the metric is not monotone in the
+  tie position.
+- C1 nominal: RED — horizon 41, class 3, hind_fires=0, fore_lifts=0
+  (unchanged vs closeout-2).
+- C2 survival: RED — pass_100 = 0/64, median 41.0, classes {3: 53, 5: 11}
+  (same distribution as closeout-2).
+- C3 throughput: 2.3M eps @1024 / 6.2M eps @4096 — STILL INVALID (all envs
+  refused -> dead-env dispatch) AND contention-polluted (the 4090 was shared
+  at 100% during this phase; the clean-machine reference remains closeout-2's
+  58.5M/224.5M eps).
+- C4 memory: no fire — 24.90 GB used (shared GPU, near-full from co-tenants),
+  marginal +0.0026 MB/env.
+- GPU WALK (dll_walk_c3 vs cpu_probe 45): the GPU tracks the reference to
+  ulps through ticks 1-3 (max rel 3.6e-15 at t=0, 8.9e-14 at t=1, 3.3e-15 at
+  t=2 — the pair-3 transcendental ulps, visible but sub-discrete), the SAME
+  discrete tie fires at the same tick as the host (aligned t=3), and the
+  refusal moved 41 -> 42 (rc=3).
+
+## FINAL ATTRIBUTION
+
+The port is now bit-exact against the cl-compiled reference through the first
+three walk states on the host replay, and ulp-level (measured libdevice 1-ulp
+transcendental deviations) through the same window on the GPU. What remains
+red is decided by (i) a SCENE-DESIGN degeneracy — the fore limbs' entry pose
+sits exactly on the joint-wall/localization knife edges, so the discrete event
+inside tick-3 substep-2->3 decides the settle — which reproduces on BOTH
+implementations from bit-identical state, and (ii) on the GPU only, the
+measured 1-ulp libdevice-vs-CRT transcendental deviations. The lawful routes
+to GREEN remain: finish the byte-match inside the event interior (the named
+next pair), or the forbidden preregistered premise change (not done). The
+deferral honesty clause: unchanged — no deferred law engages near ticks 1-55.
