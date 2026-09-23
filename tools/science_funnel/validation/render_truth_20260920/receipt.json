@@ -1,0 +1,69 @@
+{
+ "schema": "chimera.render_truth.v1",
+ "lane": "lane/render-truth-20260920",
+ "base_commit": "ae1b4599",
+ "date": "2026-09-20",
+ "agent_trailer": "Agent: rendertruth",
+ "theory": "rendering the UNCHANGED GLB payload as SHADED TRIANGLES in the page's own WebGL2 draw path -- one connected surface, fixed-light lambert, backface culling on, the body framed by the page's own client camera -- makes the real CT body read as ONE CONNECTED ANIMAL with identifiable head/torso/limbs to the blind judge at 384 px, without moving any physics byte and without breaking the stranger layer",
+ "fixes_finding": "realbody_movie_20260920 F3 RED verbatim (lane realbody-movie-20260920): the blind judge read SEPARATE FLOATING PARTS -- 'an amorphous, chaotic tangle of lines rather than a distinct shape with a head, torso, and limbs' -- because the body does not resolve into surfaces at judge scale",
+ "prereg": "record.md (this directory), committed before any render code (3b78c1d8)",
+ "route": {
+  "chosen": "webgl-glb-index-buffer (the mission's preferred route)",
+  "what_shipped": [
+   "the page parses the committed standing_body.glb (pinned, served verbatim by one additive server route) and uploads its index buffer ONCE at page load -- triangles from the first frame; /api/topology kept as the named fallback",
+   "F-VERTS-HEADER (found by this lane's parity check): the /api/verts payload's 4-byte count header was being uploaded AS VERTEX ZERO -- every attribute read shifted one float, 1/9 of the 'vertices' carried the count (249743.0) as an X coordinate, colors read normal-z (the green cast). The header is now skipped; this is the true mechanism behind the finding's 'chaotic tangle of lines', and the fix also repairs the 300 N press picker",
+   "backface culling ON for the body draw only (the declared ghost overlay stays double-sided); the page's fixed-light lambert unchanged",
+   "framing from the probe's pixels: side profile yaw 1.571 dist 0.80 (fall phase 1.10/0.52, derived from the engine's measured fall peak + the import's own ymax)"
+  ],
+  "not_built": "display-LOD decimation -- its premise ('IF WebGL cannot ride the page's capture path') did not fire: the toDataURL same-task loop carried the fixed 500k-tri path at 26.37 fps",
+  "untouched": ["ChimeraEngine/", "gait_controller.hpp", "gait_* validation", "standing_body.glb bytes", "standing_body.obj bytes", "ghost_standing.obj bytes", "the scene pin", "the physics (root law, gravity, contact)"]
+ },
+ "pins_after": {
+  "standing_body.glb_sha256": "adb6aff2babbf2cd2745004b2f51150d3a3f47e55b2ce3b8e63b3c0d595dbae5",
+  "standing_body.obj_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "ghost_standing.obj_sha256": "d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d",
+  "scene_sha256_in_capture_final_status": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "engine_diff_vs_ae1b4599": "EMPTY (ChimeraEngine/ + gait_controller.hpp)",
+  "scope": "only tools/playable_slice/index.html, tools/playable_slice/slice_server.py (one additive GET route), CHIMERA_PROOF/REAL_BODY_SLICE/, and this lane directory"
+ },
+ "falsifiers": {
+  "F-CONNECTED": "PASS. The movie machinery re-run through the REAL page (530 frames, settle/carry/fall through the slice's own endpoints), the SAME blind judge (ollama qwen3.8, think:false, ONE senses.watch call, 12 ordered 384 px resizes, the finding's own prompt VERBATIM -- no re-roll, no prompt tuning). VERBATIM VERDICT: 'Based on the visual evidence in the provided frames... The creature is a digital skeleton. Key components are clearly visible: a skull (cranium and jaw area), a long spine, rib cage, pelvic bones, and limb bones (forelimbs and hindlimbs)... The skeleton reads as ONE CONNECTED PHYSICAL ANIMAL being moved and carried by physics. This is evidenced by the fact that all the bones move together as a single, rigid unit. There is no separation between the skull, spine, ribs, or limbs at any point.' The verdict names a single connected creature, names 5+ identifiable parts (>= 2 required), and never uses the floating-parts/separate-line class -- it negates it. Full text in judgement.json; the four infrastructure-failed attempts preserved verbatim as judgement_500_attempt{1..4}.json (see findings).",
+  "F-PAYLOAD-INVARIANT": "PASS. GLB/OBJ/ghost shas identical before and after every change; scene sha256 == the payload pin in the capture's final status, across the walkthrough's restart (pin stable), and in the boot measure's trace; engine diff vs ae1b4599 empty; no display-LOD was built or needed.",
+  "F-STRANGER-REGRESSION": "PASS (1x, after one honest RED kept). walkthrough_run_194450.json: channel chrome (the canary passed -- the installed Chrome recovered), 13/13 named keys by key path, on-page beacon 0, harness console 0, t_first_action 2.62 s (bar 60 s), restart clean (pill shown, boot counter 1->2, world back 1.64 s, scene pin stable bc9033bf..., re-settled), carry cleared. The honest RED first (walkthrough_run_194026.json): the refusal path fired on the engine's EMPTY vertex payload during the restart gap ('249743 vs 0') -- an edge condition in this lane's own check; fixed (empty stream = skip, not a mismatch); the page stayed alive on the fallback and every other falsifier passed in that run too.",
+  "F-BUDGETS": "PASS. Boot t_first_verts 2.13 s (< 10 s bar; identical to the stranger lane's pre-change 2.13 s -- the render fix added zero boot cost; the index buffer is uploaded ONCE at page load, never a per-frame serialization; boot_timeline.json). Capture 26.37 fps sustained (530 frames / 20.064 s; >= 15 floor) via the page's own toDataURL same-task loop at 640x360 on ANGLE/D3D11 (RTX 4090). ZERO console-class errors, page errors, and failed page requests across the capture (capture_record.json), the walkthrough (beacon 0, harness 0), and the boot."
+ },
+ "predictions": {
+  "P-JUDGE": "PASS: the judge named 5+ body parts (skull/cranium+jaw, spine, rib cage, pelvis, forelimbs, hindlimbs) and dropped the floating-parts class entirely -- it explicitly negates separation",
+  "P-BOOT": "PASS: 2.13 s, unchanged from pre-change; the +2 s worst-case allowance was never spent",
+  "P-FPS": "PASS with the measured value just above the band: 26.37 fps sustained vs the predicted 15-25 (the fixed render is cheaper than the buggy tangle it replaced; reported as measured)"
+ },
+ "deliverable": {
+  "movie": "real_body_slice_v2.mp4",
+  "cut": "truetime ffconcat at the measured per-frame dt; ffprobe duration 20.04 s (capture span 20.064 s)",
+  "crf": 20,
+  "bytes": 597000,
+  "bytes_note": "0.57 MB -- far under the 25 MB delivery bound; dark scene, small subject",
+  "sha256": "a60a7058571c1ef9ce8f8951e9e04da059b2a61a132074410d602e745b84a7b0",
+  "copies": [
+   "E:/ChimeraWork/rendertruth-agent/CHIMERA_PROOF/REAL_BODY_SLICE/real_body_slice_v2.mp4",
+   "E:/ChimeraWork/rendertruth-agent/tools/science_funnel/validation/render_truth_20260920/real_body_slice_v2.mp4",
+   "C:/Users/allen/OneDrive/Desktop/CHIMERA_PROOF/REAL_BODY_SLICE/real_body_slice_v2.mp4 (the CHIMERA_PROOF folder only; nothing else on the desktop touched)"
+  ],
+  "engine_verdict_same_run": "fall test done: peak 0.9201 m, landed root_y 0.1245; settled start at the derived attractor (root_y 0.124641 in boot_timeline.json's trace); scene sha == payload pin"
+ },
+ "findings": [
+  {"id": "F-VERTS-HEADER", "class": "production bug caught by this lane's parity refusal", "detail": "the slice's /api/verts payload is [u32 count][n x 36 B data]; the page uploaded the header AS VERTEX ZERO -- every attribute read shifted one float, 1/9 of the 'vertices' carried the count (249743.0) as an X coordinate (giant stretched slivers), colors read normal-z (the green cast). This is the true mechanism behind the realbody-movie finding's 'amorphous chaotic tangle of lines' -- the judge bar was pointing at a real render bug, not a style choice. Fixed by skipping the header; also repairs the 300 N press picker (it raycast shifted coordinates). The refusal stays for any non-empty mismatch."},
+  {"id": "F-EMPTY-PAYLOAD-EDGE", "class": "edge in this lane's own refusal path, caught by the walkthrough", "detail": "the engine answers a 0-vertex payload while the world boots/restarts; the refusal read it as a mismatch ('249743 vs 0') and dropped the GLB indices. Fixed: an empty stream is a skip, not a mismatch. Honest RED artifact walkthrough_run_194026.json kept; GREEN re-run walkthrough_run_194450.json"},
+  {"id": "F-EYE-LOAD-TIMEOUT", "class": "environmental, first-class, NOT hidden", "detail": "four judge attempts returned 500 with NO verdict (preserved verbatim, judgement_500_attempt{1..4}.json): three on the shared ollama at its fixed ~5 min llama-server start budget (server log: 'Load failed ... timed out waiting for llama-server to start', 5m9s-5m54s; the 17.7 GB qwen3.8 + 61k-KV load needs longer while sibling lanes' engines hold the GPU), one on a lane-private server (127.0.0.1:11435, OLLAMA_LOAD_TIMEOUT=30m, same model bytes) during a GPU-saturated window. The fifth attempt (same lane server, GPU gone quiet: 2.3 GB VRAM, 20% util) loaded and answered. The judge protocol never changed: model, prompt (verbatim), frames, num_ctx math"},
+  {"id": "F-ENV-CHROME-RECOVERED", "class": "environmental observation", "detail": "the walkthrough's chrome canary PASSED this run (the machine's installed Chrome navigates again -- the stranger lane's F-ENV-CHROME state has lifted); the capture used bundled chromium per the movie lane's measured config regardless"}
+ ],
+ "judge_protocol": {
+  "identical_to": "realbody_movie_20260920/rbmovie_judge.py (ollama qwen3.8, think:false, num_ctx sized by senses.py's ollama-branch math, 12 ordered 384 px LANCZOS resizes of evenly spaced captured frames, frame->movie mapping + shas recorded in judgement.json, verdict VERBATIM)",
+  "prompt": "the realbody-movie lane's prompt UNCHANGED byte for byte (blind: names neither the body's origin, nor 'CT', nor 'macaque', nor the expected verdict)",
+  "attempts": "5 total; attempts 1-4 infrastructure 500s with verdict=None (preserved), attempt 5 the verdict above; no re-roll ever fired -- there was no verdict to re-roll until attempt 5"
+ },
+ "choreography": "the slice's OWN endpoints and constants: settle (the boot's own physics, 5 s), /api/send (MOCK[mock_carry], 1.2 m at 0.4 m/s, 5 s), hold at the marker (1 s), /api/drop_test (THE FALL TEST, real engine law, 9 s); restart excluded per the movie lane's AMENDMENT 1; phases_actual: settle frames 0-238, carry 239-339, hold 340-358, fall 359-529",
+ "tests": "the pattern carried through instruments: this lane re-runs the committed walkthrough unchanged, the committed boot-measure shape re-targeted, and the movie lane's capture/judge/encode instruments ported with only lane-local paths changed (framing + --url opt-in added and recorded)",
+ "pass": true,
+ "notes": "verdicts filled only from measurements recorded beside this file; the judge's verbatim text is the finding either way, and it named the body connected"
+}

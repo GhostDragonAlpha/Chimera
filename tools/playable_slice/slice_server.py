@@ -322,6 +322,12 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, (HERE / "mock_registry.json").read_bytes(), "application/json")
         elif p == "/ghost.obj":
             self._send(200, WORLD.ghost_obj, "text/plain")
+        elif p == "/standing_body.glb":
+            # the committed payload's own pinned bytes, served verbatim;
+            # the page uploads its index buffer ONCE at page load (lane
+            # render-truth-20260920). The bytes are never altered here.
+            self._send(200, (HERE / "standing_body.glb").read_bytes(),
+                       "model/gltf-binary")
         elif p == "/api/verts":
             try:
                 self._send(200, WORLD.verts(), "application/octet-stream")

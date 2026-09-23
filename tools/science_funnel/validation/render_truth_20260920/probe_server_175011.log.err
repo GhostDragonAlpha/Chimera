@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "E:\ChimeraWork\rendertruth-agent\tools\playable_slice\slice_server.py", line 433, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "E:\ChimeraWork\rendertruth-agent\tools\playable_slice\slice_server.py", line 397, in main
+    spec = WORLD.boot()
+  File "E:\ChimeraWork\rendertruth-agent\tools\playable_slice\slice_server.py", line 80, in boot
+    sb.wait_engine(self.url)
+    ~~~~~~~~~~~~~~^^^^^^^^^^
+  File "E:\ChimeraWork\rendertruth-agent\tools\playable_slice\scene_boot.py", line 454, in wait_engine
+    raise RuntimeError("scene_boot: engine not ready")
+RuntimeError: scene_boot: engine not ready
