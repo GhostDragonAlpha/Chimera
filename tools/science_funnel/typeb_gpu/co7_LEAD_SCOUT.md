@@ -111,3 +111,56 @@ ALL cases pass. LESSON: an unannotated static called from __host__ __device__ co
 compile clean and bind wrong — the audit law extends to EVERY helper in device-included files.
 STEP 1 NOW REDUCES TO: residual A (the tick-66 discrete-flip drill) + the frozen bars
 re-run on the rebuilt DLL. Friday's lane payload is minimal.
+
+## ADDENDUM 7 -- CLOSEOUT-8 (2026-09-23, the tick-66 lane)
+RESIDUAL A DRILLED 66 -> 74 ALIGNED WALK STATES in three named defects, all in
+walker_numba_split.py (the C++ reference untouched):
+1. THE ARM-ENTRY UNITS (the tick-66 birth): arm_fore_clock's entry branch
+   computes tau1 in SECONDS in the C++ (max(0,fore_entry_stance_ticks)*dt_,
+   ref hpp:1167) so the shared tail f_st=tau1/dt_ is an identity; the
+   translation left tau1 in ticks and divided anyway -> a 300x stance
+   (fst 343.68681983661702 vs 1.1456227327887234). The leg's consideration
+   never ran; the wave-20 envelope-edge re-plant could not fire; and the
+   servo targets were IDENTICAL until the missed re-plant -- states stayed
+   bit-exact through 65. THE MASKED-CLOCK class: a wrong internal clock that
+   produces identical outputs until its first missed event.
+2. fore_env's height: the reach envelope is measured at the PLANT height
+   (paw_plant_y_) in the C++ fore_amax; the translation read the live
+   paw-TARGET y (which rides the swing arch) -> tau_env +2.6 ticks at the
+   flipping state. Fixed at both fore_env and the fore_converge envc site.
+3. THE SEAT SHADOW (tick-71): the .py's three `seat = cuda.local.array(3)`
+   assignments became three BLOCK-SCOPED C arrays; fore_follow filled the
+   inner shadows and the act==2 dispatch copied the never-written outer
+   (zeros). The Warp original's rebinding semantics do not survive the
+   translator's per-assignment declarations. THE CLASS: a local re-declared
+   across blocks is a DIFFERENT array in the generated C.
+4. THE POCKET-CLEAR HOLD (wave 24) PORTED (tick-73 gate flip): the
+   DEFERRED-W24 deferral turned load-bearing (the no-double-swing gate's
+   clause (a) exempts a held glide; the held glide's target is the
+   body-locked annulus-edge seat). fore_arm_hold + the three hold-state SoA
+   arrays + the clause (a) exemption + the clears -- HOFF/HTGT drill lines
+   BIT-EXACT vs the C++ (co8_ksub74e vs co8_csub77c).
+THE NEXT NAMED DEFECT (cpp 74 / host 75, frozen at the 2-hour budget):
+a 2-ULP fore_ik_at raw-elbow output (d9/c15) at the t=74 plan with q1
+identical and the held paw target bit-identical (HTGT). The held seat sits
+ON the annulus edge by construction (the arm bisection drives fore_D_at to
+dmax) so fore_ik_at's saturation gate D>dmax*(1-1e-12) is a knife edge.
+THE UCRT RECONSTRUCTION SWEPT CLEAN on this hunt (ucrt_sweep.c/2.c: 60M
+sin+cos over [-3.3,0.2], 4M atan2 over the fore neighborhood, 60M acos --
+ZERO mismatches). Next drill: print fore_ik_at's intermediates (D, ca,
+th1, ex, ey) at the call -- the FKIN section prints the inputs (fr row +
+paw); the psi-side paw_t read at the integ SV site printed ZEROS (the
+integ kernel's paw_t local is NOT the loaded target -- an instrument bug
+to fix before the next round: read a_paw_target directly or move the print
+to the plan).
+THE GPU CORNER (frozen, precise attribution): GPU==host BIT-IDENTICAL
+through tick 40 (walk config); the refusal (rc=5 class 5) fires inside the
+FIRST BISECTION ADVANCE (n=207, depth=2, h=5.208e-05) of the khit=0
+hind-left pad crossing at tick 41. The device's n=207 IMPE/IMPF lines are
+BIT-IDENTICAL to the host's (gaps g0=-6.9388939039072284e-18 -- a
+sign-flip knife edge); the host's project_rows enumeration succeeds with
+R=3 (m0=6.64e-4, m2=1.07e-5), the device exhausts the row budget. The
+device drill build is banked (walker_env_d41.cu + probe_kernels_d41.cuh +
+co8_dev41.py; the drill globals must be __device__ and the getenv arms
+removed for device compiles). Next instrument: per-subset floor
+got/floor/tol lines inside project_rows, device side.
