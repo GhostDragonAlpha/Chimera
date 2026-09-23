@@ -861,9 +861,19 @@ class GaitWalker {
   // Reach saturation: the body has walked the shoulder past the plant. Pull
   // D to the reachable annulus boundary (the nearest reachable configuration,
   // which the capped PD then pursues) and COUNT it -- loud, never silent.
-  if(D>dmax*(1.-1e-12)||D<dmin+1e-9){
+  // PREREG REACH BAND v1 (Astra Option A, registered 2026-09-23): the
+  // boundary treatment is a versioned numerical policy. The registered band
+  // is [dmax*(1-1e-9), dmax] (one-sided, closed; D>dmax stays genuinely
+  // infeasible). In-band D snaps to the single canonical boundary value
+  // dcan; outside the band the legacy bytes are EXACT (outside-band drift 0).
+  // The old 1e-12 threshold is subsumed (every D it caught lies in B).
+  const double dcan=dmax*(1.-1e-9);
+  if(D>dmax||D>=dcan||D<dmin+1e-9){
    out.saturated=true;
-   double Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
+   double Dc;
+   if(D>dmax)Dc=dmax*(1.-1e-12);       // genuinely infeasible: the legacy rescale, byte-exact
+   else if(D>=dcan)Dc=dcan;            // the registered band: the canonical snap
+   else Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12)); // the low side: unchanged
    dx*=Dc/D;dy*=Dc/D;D=Dc;}
   double ca=(D*D+fore_L1_*fore_L1_-fore_rho_*fore_rho_)/(2.*D*fore_L1_);
   double th1=std::atan2(dy,dx)+double(ik_branch_[leg])*std::acos((std::max)(-1.,(std::min)(1.,ca)));
@@ -888,9 +898,19 @@ class GaitWalker {
   double dy=T(0,1)*rx+T(1,1)*ry+T(2,1)*rz-m[1];
   double D=std::hypot(dx,dy);
   double dmax=fore_L1_+fore_rho_,dmin=std::abs(fore_L1_-fore_rho_);
-  if(D>dmax*(1.-1e-12)||D<dmin+1e-9){
+  // PREREG REACH BAND v1 (Astra Option A, registered 2026-09-23): the
+  // boundary treatment is a versioned numerical policy. The registered band
+  // is [dmax*(1-1e-9), dmax] (one-sided, closed; D>dmax stays genuinely
+  // infeasible). In-band D snaps to the single canonical boundary value
+  // dcan; outside the band the legacy bytes are EXACT (outside-band drift 0).
+  // The old 1e-12 threshold is subsumed (every D it caught lies in B).
+  const double dcan=dmax*(1.-1e-9);
+  if(D>dmax||D>=dcan||D<dmin+1e-9){
    out.saturated=true;
-   double Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
+   double Dc;
+   if(D>dmax)Dc=dmax*(1.-1e-12);       // genuinely infeasible: the legacy rescale, byte-exact
+   else if(D>=dcan)Dc=dcan;            // the registered band: the canonical snap
+   else Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12)); // the low side: unchanged
    dx*=Dc/D;dy*=Dc/D;D=Dc;}
   double ca=(D*D+fore_L1_*fore_L1_-fore_rho_*fore_rho_)/(2.*D*fore_L1_);
   double th1=std::atan2(dy,dx)+double(ik_branch_[leg])*std::acos((std::max)(-1.,(std::min)(1.,ca)));

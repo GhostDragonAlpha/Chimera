@@ -683,5 +683,16 @@ src = src.replace(anchor, anchor + """
                         paw_t[0], paw_t[1], paw_t[2], cst[CF_fore_beta], cst[CF_fore_L1], cst[CF_fore_rho], ikb[0]);
                 }""", 1)
 
+
+# 16c) CLOSEOUT-8: fore_ik_at intermediates at the held-seat knife edge (the
+# 74-flip). Fires ONLY when the paw is the exact held target (bit test) and
+# the leg is 0 -- zero noise elsewhere.
+anchor = """    q2 =  atan2(ey, ex) - q1 - cst[CF_fore_beta];"""
+assert src.count(anchor) == 1, "fore_ik_at q2 anchor not unique"
+src = src.replace(anchor, """    if (paw[0] == 0.15997345072652458 && paw[1] == 0.03756698733179259 && paw[2] == 0.019687003878167533 && leg == 0) {
+        printf("IKMID leg=%d dx=%.17g dy=%.17g D=%.17g ca=%.17g th1=%.17g ex=%.17g ey=%.17g sat=%d branch=%d\\n", leg, dx, dy, D, ca, th1, ex, ey, sat, branch);
+    }
+""" + anchor, 1)
+
 Path("probe_kernels.cuh").write_text(src, encoding="utf-8")
 print("probe_kernels.cuh rewritten with hold drill:", len(src), "bytes")

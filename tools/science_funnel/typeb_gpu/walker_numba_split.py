@@ -3333,11 +3333,28 @@ def fore_ik_at(mdl, cst, fr, leg, paw, branch, mdi, csti):
 
     sat = int32(0)
 
-    if D > dmax * (float(1.0) - float(1e-12)) or D < dmin + float(1e-9):
+    # PREREG REACH BAND v1 (Astra Option A, registered 2026-09-23): the
+    # boundary treatment is a versioned numerical policy. The registered band
+    # is [dmax*(1-1e-9), dmax] (one-sided, closed; D>dmax stays genuinely
+    # infeasible). In-band D snaps to the single canonical boundary value
+    # dcan; outside the band the legacy bytes are EXACT (outside-band drift 0).
+    dcan = dmax * (float(1.0) - float(1e-9))
+
+    if D > dmax or D >= dcan or D < dmin + float(1e-9):
 
         sat = 1
 
-        Dc = min(max(D, dmin + float(1e-9)), dmax * (float(1.0) - float(1e-12)))
+        if D > dmax:
+
+            Dc = dmax * (float(1.0) - float(1e-12))
+
+        elif D >= dcan:
+
+            Dc = dcan
+
+        else:
+
+            Dc = min(max(D, dmin + float(1e-9)), dmax * (float(1.0) - float(1e-12)))
 
         dx = dx * Dc / D
 

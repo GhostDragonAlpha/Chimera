@@ -19,6 +19,9 @@ static long g_advn = 0;
 static int g_raten = 0; // armed rate() call counter (matches kernels raten)
 static int g_rt_lo = -1, g_rt_hi = -1, g_rt_init = 0; // RTLO/RTHI window
 static int g_fsdbg = 0; // per-point friction drill gate (armed in rate's loop)
+static long long g_band_entries_ = 0; // PREREG REACH BAND v1: in-band census (ANCHOR-DRIFT duty)
+struct BandCensusPrint{~BandCensusPrint(){std::fprintf(stderr,"BAND_ENTRIES %lld\\n",g_band_entries_);}};
+static BandCensusPrint g_band_census_print_;
 static int g_fsk = -1; // the friction point index for RTFS (k/2 == kernels r)
 // RT window gate: true when the armed rate-call counter passes the env window.
 #define RT_FIRE() (g_advdbg&&(g_rt_lo<0||(g_raten>=g_rt_lo&&g_raten<=g_rt_hi)))
@@ -878,15 +881,24 @@ class GaitWalker {
   // Reach saturation: the body has walked the shoulder past the plant. Pull
   // D to the reachable annulus boundary (the nearest reachable configuration,
   // which the capped PD then pursues) and COUNT it -- loud, never silent.
-  if(D>dmax*(1.-1e-12)||D<dmin+1e-9){
+  // PREREG REACH BAND v1 (see gait_controller_ref.hpp for the registration):
+  // in-band [dmax*(1-1e-9), dmax] snaps to dcan; outside the band the legacy
+  // bytes are exact.
+  const double dcan=dmax*(1.-1e-9);
+  if(D>=dcan&&D<=dmax)++g_band_entries_;
+  if(D>dmax||D>=dcan||D<dmin+1e-9){
    out.saturated=true;
-   double Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
+   double Dc;
+   if(D>dmax)Dc=dmax*(1.-1e-12);
+   else if(D>=dcan)Dc=dcan;
+   else Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
    dx*=Dc/D;dy*=Dc/D;D=Dc;}
   double ca=(D*D+fore_L1_*fore_L1_-fore_rho_*fore_rho_)/(2.*D*fore_L1_);
   double th1=std::atan2(dy,dx)+double(ik_branch_[leg])*std::acos((std::max)(-1.,(std::min)(1.,ca)));
   out.q1=th1+pi/2;
   double ex=dx-fore_L1_*std::cos(th1),ey=dy-fore_L1_*std::sin(th1);
   double q2=std::atan2(ey,ex)-out.q1-fore_beta_;
+  if(paw_target_[leg][0]==0.15997345072652458&&paw_target_[leg][1]==0.03756698733179259&&paw_target_[leg][2]==0.019687003878167533&&leg==0)std::fprintf(stderr,"IKMID leg=%d dx=%.17g dy=%.17g D=%.17g ca=%.17g th1=%.17g ex=%.17g ey=%.17g sat=%d branch=%d\n",(int)leg,dx,dy,D,ca,th1,ex,ey,(int)out.saturated,(int)ik_branch_[leg]);
   size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
   out.q1_raw=out.q1;out.q2_raw=q2;
   out.q1=(std::max)(model_->lower[c1],(std::min)(model_->upper[c1],out.q1));
@@ -905,15 +917,24 @@ class GaitWalker {
   double dy=T(0,1)*rx+T(1,1)*ry+T(2,1)*rz-m[1];
   double D=std::hypot(dx,dy);
   double dmax=fore_L1_+fore_rho_,dmin=std::abs(fore_L1_-fore_rho_);
-  if(D>dmax*(1.-1e-12)||D<dmin+1e-9){
+  // PREREG REACH BAND v1 (see gait_controller_ref.hpp for the registration):
+  // in-band [dmax*(1-1e-9), dmax] snaps to dcan; outside the band the legacy
+  // bytes are exact.
+  const double dcan=dmax*(1.-1e-9);
+  if(D>=dcan&&D<=dmax)++g_band_entries_;
+  if(D>dmax||D>=dcan||D<dmin+1e-9){
    out.saturated=true;
-   double Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
+   double Dc;
+   if(D>dmax)Dc=dmax*(1.-1e-12);
+   else if(D>=dcan)Dc=dcan;
+   else Dc=(std::min)((std::max)(D,dmin+1e-9),dmax*(1.-1e-12));
    dx*=Dc/D;dy*=Dc/D;D=Dc;}
   double ca=(D*D+fore_L1_*fore_L1_-fore_rho_*fore_rho_)/(2.*D*fore_L1_);
   double th1=std::atan2(dy,dx)+double(ik_branch_[leg])*std::acos((std::max)(-1.,(std::min)(1.,ca)));
   out.q1=th1+pi/2;
   double ex=dx-fore_L1_*std::cos(th1),ey=dy-fore_L1_*std::sin(th1);
   double q2=std::atan2(ey,ex)-out.q1-fore_beta_;
+  if(paw[0]==0.15997345072652458&&paw[1]==0.03756698733179259&&paw[2]==0.019687003878167533&&leg==0)std::fprintf(stderr,"IKMID leg=%d dx=%.17g dy=%.17g D=%.17g ca=%.17g th1=%.17g ex=%.17g ey=%.17g sat=%d branch=%d\n",(int)leg,dx,dy,D,ca,th1,ex,ey,(int)out.saturated,(int)ik_branch_[leg]);
   size_t c1=fore_coord_[leg][0],c2=fore_coord_[leg][1];
   out.q1_raw=out.q1;out.q2_raw=q2;
   out.q1=(std::max)(model_->lower[c1],(std::min)(model_->upper[c1],out.q1));

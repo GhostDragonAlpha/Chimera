@@ -2547,6 +2547,7 @@ __device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, int leg,
     double dmax;
     double dmin;
     int sat;
+    double dcan;
     double Dc;
     double ca;
     double th1;
@@ -2570,9 +2571,18 @@ __device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, int leg,
     dmax =  cst[CF_fore_L1] + cst[CF_fore_rho];
     dmin =  fabs(cst[CF_fore_L1] - cst[CF_fore_rho]);
     sat =  (int)(0);
-    if (D > dmax * ((double)(1.0) - (double)(1e-12)) || D < dmin + (double)(1e-9)) {
+    dcan =  dmax * ((double)(1.0) - (double)(1e-9));
+    if (D > dmax || D >= dcan || D < dmin + (double)(1e-9)) {
         sat =  1;
-        Dc =  fmin(fmax(D, dmin + (double)(1e-9)), dmax * ((double)(1.0) - (double)(1e-12)));
+        if (D > dmax) {
+            Dc =  dmax * ((double)(1.0) - (double)(1e-12));
+}
+        else if (D >= dcan) {
+            Dc =  dcan;
+}
+        else {
+            Dc =  fmin(fmax(D, dmin + (double)(1e-9)), dmax * ((double)(1.0) - (double)(1e-12)));
+}
         dx =  dx * Dc / D;
         dy =  dy * Dc / D;
         D =  Dc;
