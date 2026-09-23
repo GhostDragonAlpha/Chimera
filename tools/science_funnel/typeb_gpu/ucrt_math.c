@@ -487,11 +487,15 @@ static void u_atan_ratio(double big, double sml, int flip,
         double num = fma(-bh, rh, sml);
         num = fma(-rh, brest, num);
         num = fma(-big, rrest, num);
+        /* the poly chain runs DESCENDING (0540-0563 vfnmadd213: p = c_next
+           - p*x2), NOT ascending Horner — the same constants in the opposite
+           direction are a different polynomial; this was the ~2.5e-11 class
+           (sizes exactly: x3*dp ~ 1.3e-11 for the 1e-3 case) */
         double poly = 0.090029810285449791;
-        poly = fma(poly, x2, 0.11110736283514526);
-        poly = fma(poly, x2, 0.1428571356180717);
-        poly = fma(poly, x2, 0.19999999999393223);
-        poly = fma(poly, x2, 0.33333333333333171);
+        poly = fma(-poly, x2, 0.11110736283514526);
+        poly = fma(-poly, x2, 0.1428571356180717);
+        poly = fma(-poly, x2, 0.19999999999393223);
+        poly = fma(-poly, x2, 0.33333333333333171);
         double x3 = x2 * rq;
         double corr = num / big;
         corr = fma(-x3, poly, corr);

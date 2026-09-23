@@ -66,3 +66,18 @@ correct but not bit-faithful — the true region is between the 0.0625 comisd an
 (locate by the 3f70000000000000 constant); the mask widths there (11-bit vs 32-bit heads) and
 the three-fma order must be read from the disasm, NOT tuned. Then: the 125-point probe + the
 dense sweep at 100% -> the explicit-fma CUDA port -> the on-device gate -> tick-66 -> bars.
+
+## ADDENDUM 4 — THE RECONSTRUCTION IS BIT-CLEAN (lead session 3, final)
+THE LAST BUG: the direct branch's polynomial ran its constants ASCENDING (fma(p,x2,c_next))
+where the disasm runs them DESCENDING (vfnmadd213: p = c_next - p*x2) — the same constants
+in opposite Horner directions are DIFFERENT polynomials; the class sized exactly (x3*dp
+~1.3e-11 for the 1e-3 case; 1 ulp at 1e-4). Fixed by direction, not by tuning.
+RESULT (co7_dense_run10.txt): "125-point probe: sin 25/25 cos 25/25 atan2 25/25 acos 25/25
+hypot 25/25" and ZERO FAILs in the sweep. RESIDUAL B's HOST CORE IS DONE.
+THE LANE'S REMAINING (in order): (1) WIDEN the dense sweep to the >=10k-point domain classes
+per the adoption gate (the current sweep is the probe's built-in set); (2) the explicit-fma
+CUDA port of ucrt_math.c; (3) the on-device trig_probe gate (every point == the CRT bits);
+(4) the tick-66 discrete-flip drill (residual A); (5) the frozen bars re-run.
+SIX bugs total were found and fixed across the three lead sessions — every one a role-swap,
+an order inversion, a dropped term, or a direction flip. The audit law (assert every
+two-operand translated expression) exists because of this file.
