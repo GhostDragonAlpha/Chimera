@@ -1,0 +1,461 @@
+{
+ "base": "http://127.0.0.1:8912",
+ "at": "2026-09-22T23:55:45.874Z",
+ "timeline": {
+  "t_launch": 0,
+  "t_page_load": 0.17,
+  "t_first_gl": 0.46,
+  "t_understood": 0.51,
+  "t_ready": 0.77,
+  "t_fall_triggered": 0.88,
+  "t_landed": 5.88,
+  "t_understood_state": 6.09
+ },
+ "trace": [
+  {
+   "t": 0.17,
+   "stage": "launch"
+  },
+  {
+   "t": 0.34,
+   "stage": "first-gl"
+  },
+  {
+   "t": 0.68,
+   "stage": "understood"
+  },
+  {
+   "t": 0.68,
+   "stage": "ready-wait"
+  },
+  {
+   "t": 0.94,
+   "stage": "fall-trigger"
+  },
+  {
+   "t": 1.05,
+   "stage": "fall-watch"
+  },
+  {
+   "t": 6.05,
+   "stage": "understood-state"
+  },
+  {
+   "t": 6.25,
+   "stage": "every-key"
+  },
+  {
+   "t": 8.25,
+   "stage": "verdicts"
+  },
+  {
+   "t": 8.26,
+   "stage": "artifact"
+  }
+ ],
+ "stage": "artifact",
+ "channel": "chromium-bundled (MACHINE_FINDINGS: installed Chrome cannot navigate on this machine)",
+ "stranger_reading": {
+  "guideVisible": true,
+  "guideText": "LESSON ONE — THE FALL\n\nThis animal is real: a monkey's body built from CT scan data, obeying real physics. Right now it stands still because the floor holds it — the upward hold exactly balances its weight.\n\nPress F and the lesson drops the body. Watch gravity win, watch the floor catch it, and watch the two forces balance again. That balance is where the body rests.\n\nKeys: F drop · R reset · H help · arrows orbit · +/− zoom",
+  "keyRows": [
+   {
+    "key": "F",
+    "text": "F DROP the body — the fall"
+   },
+   {
+    "key": "R",
+    "text": "R reset the lesson (same body)"
+   },
+   {
+    "key": "H",
+    "text": "H show / hide this help"
+   },
+   {
+    "key": "ArrowLeft",
+    "text": "ArrowLeft orbit camera left"
+   },
+   {
+    "key": "ArrowRight",
+    "text": "ArrowRight orbit camera right"
+   },
+   {
+    "key": "ArrowUp",
+    "text": "ArrowUp orbit camera up"
+   },
+   {
+    "key": "ArrowDown",
+    "text": "ArrowDown orbit camera down"
+   },
+   {
+    "key": "+",
+    "text": "+ zoom in"
+   },
+   {
+    "key": "-",
+    "text": "- zoom out"
+   }
+  ]
+ },
+ "page_names_drop_key": true,
+ "boot_ready_phase": "idle",
+ "fall_acked_by_server": true,
+ "settled_state": {
+  "teach": {
+   "t1": true,
+   "t2": true,
+   "t3": true
+  },
+  "understood": true,
+  "displayed": {
+   "height": "0.1246",
+   "speed": "-0.0000",
+   "hold": "135625.0",
+   "weight": "135618.3",
+   "holdFrac": 0.20000981430646422,
+   "phase": "done",
+   "attractor": 0.12464112903214866
+  }
+ },
+ "fall_verdict": {
+  "phase": "done",
+  "max_root_y": 0.97,
+  "max_abs_vy": 3.8544,
+  "landed_root_y": 0.1246,
+  "contact_first_s": 0.012
+ },
+ "surface_airborne": {
+  "t": 1790121347267,
+  "vy": 3.50278,
+  "hold": 0,
+  "phase": "running",
+  "weight": 135618.345
+ },
+ "surface_catch": {
+  "t": 1790121347719,
+  "vy": -0.223362,
+  "hold": 134286,
+  "phase": "running"
+ },
+ "surface_log_n": 32,
+ "surface_log_head": [
+  {
+   "t": 1.04,
+   "h": "0.0000",
+   "sp": "0.0000",
+   "hold": "0.0",
+   "phase": "seated"
+  },
+  {
+   "t": 1.19,
+   "h": "0.0000",
+   "sp": "0.0000",
+   "hold": "0.0",
+   "phase": "seated"
+  },
+  {
+   "t": 1.35,
+   "h": "0.5452",
+   "sp": "2.9751",
+   "hold": "0.0",
+   "phase": "running"
+  },
+  {
+   "t": 1.52,
+   "h": "0.9244",
+   "sp": "1.0387",
+   "hold": "0.0",
+   "phase": "running"
+  },
+  {
+   "t": 1.67,
+   "h": "0.9689",
+   "sp": "-0.0607",
+   "hold": "0.0",
+   "phase": "running"
+  },
+  {
+   "t": 1.83,
+   "h": "0.9264",
+   "sp": "-0.2237",
+   "hold": "135618.0",
+   "phase": "running"
+  }
+ ],
+ "surface_log_tail": [
+  {
+   "t": 5.1,
+   "h": "0.2065",
+   "sp": "-0.2237",
+   "hold": "135618.0",
+   "phase": "running"
+  },
+  {
+   "t": 5.26,
+   "h": "0.1744",
+   "sp": "-0.2237",
+   "hold": "135618.0",
+   "phase": "running"
+  },
+  {
+   "t": 5.42,
+   "h": "0.1405",
+   "sp": "-0.2237",
+   "hold": "135618.0",
+   "phase": "running"
+  },
+  {
+   "t": 5.58,
+   "h": "0.1247",
+   "sp": "-0.0065",
+   "hold": "142419.0",
+   "phase": "settling"
+  },
+  {
+   "t": 5.73,
+   "h": "0.1247",
+   "sp": "-0.0065",
+   "hold": "142419.0",
+   "phase": "settling"
+  },
+  {
+   "t": 5.88,
+   "h": "0.1246",
+   "sp": "-0.0000",
+   "hold": "135625.0",
+   "phase": "done"
+  }
+ ],
+ "understood_state": {
+  "teach": {
+   "t1": true,
+   "t2": true,
+   "t3": true
+  },
+  "understood": true,
+  "doneVisible": true,
+  "beacon": []
+ },
+ "beacon_entries": [],
+ "beacon_empty": true,
+ "key_results": {
+  "F": true,
+  "ArrowLeft": true,
+  "ArrowRight": true,
+  "ArrowUp": true,
+  "ArrowDown": true,
+  "+": true,
+  "-": true,
+  "H": true,
+  "R": true
+ },
+ "keys_on_page": [
+  "F",
+  "R",
+  "H",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "ArrowDown",
+  "+",
+  "-"
+ ],
+ "every_named_key_works": true,
+ "page_series_n": 77,
+ "running_samples_n": 65,
+ "running_median_dt_ms": 65,
+ "page_series_peak_abs_vy": 3.50278,
+ "peak_vy_estimate": {
+  "server_verdict": 3.8544,
+  "page_series": 3.50278,
+  "used": 3.8544
+ },
+ "launch_spike": {
+  "note": "DISCRETIZATION ARTIFACT CLASS, reported in full, NOT barred (Amendment 4: the contact cap integrated over ~1 tick; tick alignment decides the realized magnitude; banked 3.6792 is one draw; realizations span 3.5455-3.9742 across nine runs)",
+  "server_verdict": 3.8544,
+  "page_series": 3.50278,
+  "used": 3.8544,
+  "banked_single_draw": 3.6792
+ },
+ "peak_descent_vy": 0.223719,
+ "fall_shape": {
+  "peak": {
+   "measured": 0.97,
+   "bar": [
+    0.9009,
+    0.06
+   ],
+   "pass": false
+  },
+  "terminal_descent": {
+   "measured": 0.223719,
+   "bar": [
+    0.2237,
+    0.02
+   ],
+   "pass": true
+  },
+  "landed": {
+   "measured": 0.1246,
+   "bar": [
+    0.1246,
+    0.002
+   ],
+   "pass": true
+  },
+  "pass": false
+ },
+ "surface_settled": {
+  "hold": 135618,
+  "weight": 135618.345,
+  "rel_err": 0.0000025439036289755943
+ },
+ "number_trace": {
+  "height": {
+   "displayed": "0.1246",
+   "engine": 0.124641,
+   "match": true
+  },
+  "speed": {
+   "displayed": "0.0000",
+   "engine": 1.38547e-7,
+   "match": true
+  },
+  "hold": {
+   "displayed": "135618.0",
+   "engine": 135618,
+   "match": true
+  },
+  "weight": {
+   "displayed": "135618.3",
+   "engine_constant_n": 135618.345,
+   "match": true
+  }
+ },
+ "falsifiers": {
+  "F-LESSON-60": {
+   "measured": {
+    "t_page_load": 0.17,
+    "t_ready": 0.77,
+    "t_fall_triggered": 0.88,
+    "t_landed": 5.88
+   },
+   "bar_s": 60,
+   "pass": true
+  },
+  "F-NUMBERS-ENGINE": {
+   "note": "displayed values are computed in-page from lastStatusJson (the engine response stored verbatim); verified live below",
+   "number_trace": {
+    "height": {
+     "displayed": "0.1246",
+     "engine": 0.124641,
+     "match": true
+    },
+    "speed": {
+     "displayed": "0.0000",
+     "engine": 1.38547e-7,
+     "match": true
+    },
+    "hold": {
+     "displayed": "135618.0",
+     "engine": 135618,
+     "match": true
+    },
+    "weight": {
+     "displayed": "135618.3",
+     "engine_constant_n": 135618.345,
+     "match": true
+    }
+   },
+   "pass": true
+  },
+  "F-FALL-SHAPE": {
+   "peak": {
+    "measured": 0.97,
+    "bar": [
+     0.9009,
+     0.06
+    ],
+    "pass": false
+   },
+   "terminal_descent": {
+    "measured": 0.223719,
+    "bar": [
+     0.2237,
+     0.02
+    ],
+    "pass": true
+   },
+   "landed": {
+    "measured": 0.1246,
+    "bar": [
+     0.1246,
+     0.002
+    ],
+    "pass": true
+   },
+   "pass": false
+  },
+  "F-SURFACES-LIVE": {
+   "airborne": {
+    "t": 1790121347267,
+    "vy": 3.50278,
+    "hold": 0,
+    "phase": "running",
+    "weight": 135618.345
+   },
+   "catch": {
+    "t": 1790121347719,
+    "vy": -0.223362,
+    "hold": 134286,
+    "phase": "running"
+   },
+   "settled": {
+    "hold": 135618,
+    "weight": 135618.345,
+    "rel_err": 0.0000025439036289755943
+   },
+   "running_samples_n": 65,
+   "running_median_dt_ms": 65,
+   "note": "airborne/catch derived from the page's own ~50 ms surface series (the complete record), not the watcher's coarse sampling",
+   "pass": true
+  },
+  "F-KEYS-NAMED-WORK": {
+   "keys": [
+    "F",
+    "R",
+    "H",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowUp",
+    "ArrowDown",
+    "+",
+    "-"
+   ],
+   "results": {
+    "F": true,
+    "ArrowLeft": true,
+    "ArrowRight": true,
+    "ArrowUp": true,
+    "ArrowDown": true,
+    "+": true,
+    "-": true,
+    "H": true,
+    "R": true
+   },
+   "pass": true
+  },
+  "F-ZERO-ERRORS": {
+   "beacon": 0,
+   "harness": 0,
+   "aborted_polls_by_design": 0,
+   "pass": true
+  },
+  "F-TIMELINE-HONEST": {
+   "recorded": true,
+   "pass": true
+  }
+ },
+ "console_errors": [],
+ "pass": false
+}
