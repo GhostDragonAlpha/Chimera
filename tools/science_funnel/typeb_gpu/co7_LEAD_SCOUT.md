@@ -32,3 +32,21 @@ sense, or the flip semantics; (2) acos 8 fails UNCHANGED by the fix (independent
 transcription slip in acos_fma — the ~5.6e-5 offset class suggests a wrong polynomial
 coefficient or table row); (3) cos 2→4 fails (a sign path; check k_cos's sign selection
 against cos_mt.disasm). Rebuild = build_trig_probe2.ps1; sweep = ./trig_probe2_host.exe.
+
+## ADDENDUM 2 (the lead's second Target-B session): the ACOS MISSING TERM fixed; the rest triaged
+FIXED+MEASURED: the p-chain DROPPED the disasm's 0164 term (0x3FD1A2BEC1B7EF59, a vfmadd213
+between 3FAC28D3 and 3FDC7B29) — inserted by bit pattern; the ~5.6e-5 class is DEAD (acos #1
+x=0.2936 now passes; co7_dense_run3.txt).
+THE REMAINING 8 acos FAILS = THREE structural classes in the RESULT PATHS (each needs a
+register-trace; disasm pointers given):
+  (a) |x|<0.5 NEGATIVE x: the sign is dropped (acos(-0.0524) returns acos(+0.0524)) — the tail
+      combines axv (abs) where the reference uses SIGNED x; trace disasm 0184-01D0 esp. the
+      01CA vfmsub213sd xmm0,xmm6,[3c91a626] (is xmm6 x or |x|?).
+  (b) x<0, |x|>=0.5 (#6 -0.4404): returns the INNER t2 instead of pi - t2 — check the branch
+      order/sense at disasm 05xx vs transcription lines 388-393.
+  (c) |x|>=0.5 positive (#2 +0.7646): the s/pq combine wrong by a large margin — trace
+      disasm 0221-025E (vfnmadd231sd xmm1,xmm4,xmm4; vdivsd; vfmadd231sd xmm3,xmm7,xmm2)
+      against transcription 395-402; suspect the b2/b3 wiring.
+COS (4 fails) and ATAN2 (8; improved but wrong-scale at #2) remain as previously triaged.
+NOTE: dense-run counts are 20 fails across atan2/acos/cos — sin and hypot PASS everywhere
+measured so far.

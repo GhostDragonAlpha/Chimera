@@ -370,6 +370,10 @@ double ucrt_acos(double x) {
     double p = 4.8290192034478698e-05;        /* 0x3F0951665D321061 */
     p = fma(p, r, 0.0010924269723507467);     /* 0x3F51E5F887A62135 */
     p = fmsub(p, r, 0.054998980923568586);    /* 0x3FAC28D390C29690 */
+    p = fma(p, r, d_of(0x3FD1A2BEC1B7EF59ULL)); /* the term the first
+                                                   transcription DROPPED (the
+                                                   disasm's 0164 vfmadd213; the
+                                                   measured ~5.6e-5 acos class) */
     p = fmsub(p, r, 0.44501721686763562);     /* 0x3FDC7B297E269EAC */
     p = fma(p, r, 0.22748583555693502);       /* 0x3FCD1E4180029834 */
     double pnum = p * r;
