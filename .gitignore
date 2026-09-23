@@ -325,3 +325,4 @@ tools/science_funnel/data/morphosource_ct/meshes/*.obj
 # and the MIP projection PNGs (proj_*_875599.png). Regenerate full-res via
 # .tmp/segment_bones_875599.py + .tmp/decimate_meshes_875599.py from the pinned CT.
 tools/science_funnel/data/morphosource_ct/meshes_875599/*.obj
+*.exe
