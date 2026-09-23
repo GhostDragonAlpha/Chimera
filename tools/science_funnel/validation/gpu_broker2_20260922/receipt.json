@@ -4,17 +4,45 @@
  "base_commit": "248704d8",
  "date": "2026-09-22",
  "agent_trailer": "Agent: broker2",
- "stage": "prereg (committed BEFORE any code; final verdicts appended at suite completion)",
+ "stage": "final (prereg committed at cd6e1441 BEFORE any code; build at 4ccce80b; this receipt after the suite)",
  "theory": "Astra round-6 section 3: a single GPU broker owns fleet GPU execution exclusively; requests wait in a BOUNDED broker queue with three distinct timeout states (queue deadline / model-load timeout after admission / inference timeout after readiness) so a deferred request is visibly deferred; captures and judges are scheduled by deadline with aging so neither starves; judge requests batch under a capped batch duration; the judge service preloads one model with one parallel request AFTER taking the reservation, retains it through a bounded batch, and unloads BEFORE release; training runs under a durable keeper whose lifetime is independent of the broker -- a broker restart reconnects, never kills, never duplicates; a passed expected-end keeps the reservation occupied until completion is verified; a lost heartbeat means OWNERSHIP UNCERTAIN, never a second owner.",
- "prereg": "record.md (this directory), committed before any code; falsifiers = Astra's GPU-broker rejection conditions (overlapping exclusives, lost-heartbeat second owner, queue wait mislabeled as model failure, broker restart duplicating/killing the keeper) + this lane's measurements (queue latency percentiles, model-load latency, batch amortization)",
- "operator_context": "WardogsClient-Win64-Shipping.exe on the GPU at prereg time: the operator games; zero fleet GPU work, zero popups, no touching operator processes. All suite scheduling exercised against an injected ollama-API-shaped backend with scripted latencies; the real OllamaBackend ships unexercised on GPU; named-unmeasured with cause.",
+ "instrument": {
+  "queue": "tools/fleet_supervisor/queue.py (bounded depth 64; score = deadline - aging_gain*waited; capped judge batches: size + hard wall-clock; GrantLedger audited for overlaps; JSONL status journal; visible-deferral status_of)",
+  "judge": "tools/fleet_supervisor/judge.py (JudgeService: reservation FIRST -> preload -> members one-at-a-time -> unload -> release, ordering asserted via an event trail; OllamaBackend ships with the real env contract OLLAMA_MAX_LOADED_MODELS=1 / OLLAMA_NUM_PARALLEL=1 / OLLAMA_KEEP_ALIVE, UNEXERCISED on GPU; FakeBackend scripted latencies for the suite; BrokerLoop = ONE exclusive executor with gaming + reservation pre-checks)",
+  "keeper": "tools/fleet_supervisor/keeper.py (durable record pid+creation_time, atomic writes, tolerant reads; heartbeats BOTH record and reservation; reconcile = adopt/uncertain/lost, never kills/launches; start_keeper refuses duplicates; expected-end does not free; admin-release audited; ensure --loop-seconds = the restartable broker with a JSONL decision log)",
+  "suite": "tools/fleet_supervisor/tests_gpu_broker.py (8 checks; results: suite_results.json in this directory; run twice, both 8/8 PASS)"
+ },
+ "falsifiers": {
+  "F1_OVERLAPPING_EXCLUSIVES (Astra)": "PASS: mixed capture/judge workload under contention -- 8 exclusive grants, 0 overlapping pairs in the ledger; judge batch ordering acquire -> load -> unload -> release asserted; a second owner touching a held reservation raises (phase-1 semantics, re-verified by the suite's own collision during development)",
+  "F2_LOST_HEARTBEAT_SECOND_OWNER (Astra)": "PASS: killed keeper mid-run -> reconcile classifies lost, reservation flagged UNCERTAIN, second owner REFUSED ('GPU ownership UNCERTAIN ... never a competing job'), registry alert appended, trainer tree died with its keeper (marker never written), duplicate start refused while locked, and only the AUDITED admin-release freed the GPU. Corrupted heartbeat on a LIVE keeper -> uncertain + refused, then healed by the keeper's own resumed heartbeat (no admin action)",
+  "F3_QUEUE_WAIT_MISLABELED (Astra)": "PASS: a request that timed out waiting behind a busy GPU is terminal QUEUE_DEADLINE_EXCEEDED, label 'deferred: queue wait exceeded its deadline before admission (never admitted; no GPU work was started)', backend load counter 0 at expiry (never sent to the model while waiting); forbidden-word scan (model/inference/load/failed/stall/timeout/error) clean on all never-admitted labels; the three timeout states are pairwise distinct and correctly cross-labeled",
+  "F4_BROKER_RESTART_KEEPER (Astra)": "PASS: real broker killed mid-loop (launch-owned handle) and a fresh broker started: keeper (pid, creation_time) identity UNCHANGED and heartbeating throughout, new broker's decision log shows adopt-only (zero starts), exactly ONE keeper record for the run; the ensure path refuses a duplicate while one is live",
+  "M1_QUEUE_LATENCY_PERCENTILES": "measured (scripted backends): mixed load 14/14 completed -- captures p50 0.115 s / p95 0.304 s / max 0.304 s; judges p50 p95 max 0.53 s (judges deferred behind capture grants by deadline order); aging bound measured on a synthetic 120 s-deadline judge under a continuous 2 s-deadline capture flood: aged wait 59.05 s (analytic bound (120-2)/2 = 59) vs unaged 118.05 s (= deadline - capture slack: the starvable baseline); neither expired",
+  "M2_MODEL_LOAD_LATENCY_AND_AMORTIZATION": "measured (scripted load 0.05 s, labeled SCRIPTED): loads per judge request 1.0 unbatched -> 0.25 batched (8 judges, batch size 4), amortization factor 4.0x; batch wall 0.147/0.148 s against the 0.6 s hard cap; capture arriving mid-run waited 0.328 s (< cap + margin). REAL GPU model-load latency: NAMED-UNMEASURED -- the operator is gaming (Wardogs on the GPU at prereg and suite time); the no-fleet-GPU law outranks lane curiosity"
+ },
+ "predictions": {
+  "P-NOVERLAP": "PASS (F1)",
+  "P-DEFERLABEL": "PASS (F3)",
+  "P-KEEPERRECONNECT": "PASS (F4)",
+  "P-UNCERTAIN": "PASS (F2)",
+  "P-EXPIRED": "PASS: expected_end (1.5 s) passed mid-run with a live fresh-heartbeat keeper -> reservation expired_pending (STILL OCCUPIED), competitor gpu_phase admission refused; on verified completion (job empty + marker) the keeper released -> released; keeper_completed event in the registry",
+  "P-AGING": "PASS: aged judge wait 59.05 s within the [50, 70] bound; unaged baseline 118.05 s of a 120 s deadline (starvation to the deadline's edge measured)",
+  "P-BATCH": "PASS: 4.0x amortization; caps held; capture mid-batch wait bounded",
+  "P-TIMEOUTS": "PASS (F3): model_load_timeout / inference_timeout / queue_deadline_exceeded each fired by a scripted stall in exactly its phase and never cross-labeled",
+  "P-CPUAFFINITY": "PASS: affinity partition enforceable where CPU-rate caps are not (F-CPURATE) -- 8 spinner processes pinned to 2 of 32 LPs drew 1.79 effective cores while unpinned demand drew 9.64 (measured while the operator games; quiet-machine runs 1.9-2.0 pinned); affinity verified by readback before use. Full disposition: CPU_RATE_DISPOSITION.md (this directory)"
+ },
  "ollama_load_timeout": {
   "installed_version": "0.34.2",
   "binary_contains_env_var": "OLLAMA_LOAD_TIMEOUT (plus OLLAMA_NUM_PARALLEL, OLLAMA_MAX_LOADED_MODELS, OLLAMA_KEEP_ALIVE, OLLAMA_MAX_QUEUED)",
   "tagged_source_default": "5m (5 * time.Minute), server-side stall detection for model loads, <=0 = infinite",
-  "distinct_from": "client HTTP deadlines and proxy timeouts (separate layers, labeled separately in judge.py)"
+  "distinct_from": "client HTTP deadlines and proxy timeouts (judge.py hands the load phase its own client budget labeled separately; the server's own 5 m stall timeout is a different layer)"
  },
- "predictions_pre_named": ["P-NOVERLAP", "P-DEFERLABEL", "P-KEEPERRECONNECT", "P-UNCERTAIN", "P-EXPIRED", "P-AGING", "P-BATCH", "P-TIMEOUTS", "P-CPUAFFINITY"],
- "falsifiers": ["F1 overlapping exclusive reservations", "F2 lost heartbeat grants a second owner / auto-free of uncertain", "F3 queue wait mislabeled as model failure", "F4 broker restart duplicates or kills the keeper", "M1 aging/starvation measurement", "M2 batch amortization measurement"],
- "pass": null
+ "honest_deviations": [
+  "All judge-side numbers are SCRIPTED-backend numbers, labeled as such; no model ever loaded on the GPU this lane (operator gaming).",
+  "Two real bugs were found by the suite and fixed before the final verdicts: the spawned keeper command put global argparse args after the subcommand (child died at argparse, silently); the suite's capture stub blocked the pump loop (a blocking capture freezes a supervisor loop -- wrong shape).",
+  "broker.touch_reservation now allows sequential transfer of a RELEASED reservation to a new owner (audited in the file); held/expired_pending/uncertain still refuse every other owner exactly as phase 1 measured. write_reservation is now atomic (tmp+replace) and reads retry -- a reader must never mistake a torn file for an absent reservation.",
+  "One suite run observed the Windows GIL truth first-hand: 8 python THREADS measure ~1 core; the affinity check uses real child processes.",
+  "A healthy keeper was briefly 'invisible' to the suite because the check polled a different control dir than the child wrote -- test bug, not machine truth; kept as a comment at the check site."
+ ],
+ "pass": true
 }

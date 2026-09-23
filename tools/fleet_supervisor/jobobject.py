@@ -55,7 +55,7 @@ JobObjectCpuRateControlInformation = 14        # 16-byte struct here (MinRate/Ma
 # JOBOBJECT basic limit flags -- NOTE: BREAKAWAY_OK and SILENT_BREAKAWAY_OK are
 # deliberately ABSENT: not setting them is exactly how breakaway is prohibited.
 JOB_OBJECT_LIMIT_ACTIVE_PROCESS = 0x00000008
-JOB_OBJECT_LIMIT_AFFINITY = 0x00000001
+JOB_OBJECT_LIMIT_AFFINITY = 0x00000010
 JOB_OBJECT_LIMIT_PRIORITY_CLASS = 0x00000020
 JOB_OBJECT_LIMIT_PROCESS_MEMORY = 0x00000100
 JOB_OBJECT_LIMIT_JOB_MEMORY = 0x00000200
@@ -356,7 +356,9 @@ def create_job(job_name: str, *, mem_gib: float | None, max_procs: int | None,
     affinity_mask is the phase-2 measured ALTERNATIVE (P-CPUAFFINITY): a hard
     partition of logical processors IS enforceable on this build where a
     CPU-rate cap is not -- verified by readback here and by measured effect in
-    tests_gpu_broker.py."""
+    tests_gpu_broker.py. (Constant note: JOB_OBJECT_LIMIT_AFFINITY is 0x10 --
+    an earlier draft used 0x1, which is WORKINGSET, and SetInformationJobObject
+    rejected it with err 87: the API refusing a wrong flag is honest.)"""
     if cpu_pct:
         raise NotImplementedError(
             f"cpu_pct={cpu_pct} refused: the CPU-rate primitive could not be pinned "

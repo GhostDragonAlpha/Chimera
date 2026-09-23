@@ -121,10 +121,57 @@ route) and call complete() with a longer deadline while it drains.
    launcher closes BOTH child handles immediately after resume. The
    supervisor's ownership instrument is the JOB, never a pid handle.
 
+## PHASE 2 -- the GPU queue, the judge service, the training keeper
+
+Astra section 3 ("GPU arbitration: reservations plus a bounded queue"), implemented
+additively by the gpu_broker2_20260922 lane (`Agent: broker2`). Prereg + falsifier
+receipts: `tools/science_funnel/validation/gpu_broker2_20260922/`.
+
+- `queue.py` -- the BOUNDED broker queue. A request waiting for the GPU is
+  VISIBLY DEFERRED (queryable, queue-worded labels) and is NEVER sent to the
+  model while waiting. The three Astra timeout states are distinct terminals:
+  `queue_deadline_exceeded` (never admitted) / `model_load_timeout` (admitted,
+  load stalled) / `inference_timeout` (ready, inference stalled). Scheduling is
+  deadline order with aging (`score = deadline - aging_gain * waited`): measured
+  on a synthetic flood, a 120 s-deadline judge under a continuous tighter-deadline
+  capture flood waits 59 s aged (the analytic bound) vs 118 s unaged. Judge
+  batches amortize model loads under TWO caps (member count + hard wall-clock):
+  measured 4.0x amortization, batch wall 0.15 s against a 0.6 s cap.
+- `judge.py` -- the fleet judge service around a DEDICATED ollama instance
+  (fleet port, never 11434/8127): one loaded model, one parallel request
+  (`OLLAMA_MAX_LOADED_MODELS=1`, `OLLAMA_NUM_PARALLEL=1`). Ordering is asserted:
+  reservation FIRST -> preload AFTER it -> members -> unload BEFORE release.
+  OLLAMA_LOAD_TIMEOUT verified at config level on the installed 0.34.2 binary +
+  the v0.34.2 tagged source: default 5 m, a SERVER-SIDE stall timeout for model
+  loads, distinct from client HTTP deadlines and proxy timeouts. The real
+  `OllamaBackend` ships UNEXERCISED on GPU (the operator games; the no-fleet-GPU
+  law outranks lane curiosity) -- the suite drives an ollama-API-shaped
+  `FakeBackend` with scripted latencies, labeled as scripted everywhere.
+- `keeper.py` -- the DURABLE training keeper: an independent process
+  (deliberately NOT in any kill-on-close job), durable record with
+  pid+creation-time identity, heartbeats BOTH its record and the phase-1
+  reservation file. `reconcile` = reconnect: a restarted broker ADOPTS a live
+  keeper (never kills, never launches a duplicate; `ensure` refuses while one is
+  live). The reservation's expected-end passing leaves it `expired_pending`
+  (STILL OCCUPIED) until completion is verified. A lost heartbeat / dead
+  identity = OWNERSHIP UNCERTAIN: the reconcile FLAGS the reservation (a flag
+  newer than the heartbeat reads as `uncertain`), alerts the registry, and new
+  admissions are refused -- never auto-free; recovery is the keeper's own
+  resumed heartbeat (transient stalls) or an audited `admin-release`.
+- `broker.py` (additive): a RELEASED reservation may transfer to a new owner
+  (the queue's sequential exclusive grant, audited in the file); writes are now
+  atomic and reads retry. `jobobject.py` (additive): `affinity_mask` with
+  readback -- the measured enforceable substitute where CPU-rate caps are not
+  (see F-CPURATE above and the disposition doc in the validation directory).
+
 ## VALIDATION
 
 - `python -m tools.fleet_supervisor.tests_primitives`  (15/15 required)
 - `python -m tools.fleet_supervisor.supervisor gates`  (broker matrix)
+- `python -m tools.fleet_supervisor.tests_gpu_broker`  (phase 2: 8 checks --
+  three timeout states + F3 labels, mixed-load overlaps F1 + latency
+  percentiles, batch amortization, aging bound, gaming defer/abort, keeper
+  reconnect F4 + expired-end, kill/corrupt uncertain F2, measured affinity)
 - `python -m tools.fleet_supervisor.validate_ownership` (100 cycles +
   sentinels + pid-reuse + ambiguous + memlimit + assignment-failure;
   receipt in the lane validation directory)

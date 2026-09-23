@@ -373,8 +373,11 @@ class BrokerLoop:
         self.control_dir = control_dir
         self.q = queue
         self.judge = judge
-        self.capture_run_fn = capture_run_fn or (lambda r: time.sleep(
-            float((r.payload or {}).get("duration_s", 0.05))))
+        # Capture stubs are TIME-BASED and non-blocking: the grant holds
+        # `current` until end_ts (payload duration_s) while the loop keeps
+        # pumping. (A blocking stub would freeze the whole broker for the
+        # capture's duration -- the wrong shape for a supervisor loop.)
+        self.capture_run_fn = capture_run_fn or (lambda r: None)
         self.current: dict | None = None
 
     def pump(self, *, now: float | None = None) -> dict:
@@ -407,6 +410,16 @@ class BrokerLoop:
             return {"pump": "gaming", "note": "no fleet GPU work admitted; "
                     "queued requests stay visibly deferred", "expired": expired}
 
+        # cross-process exclusivity: a training keeper (or any other owner)
+        # holding the reservation keeps every queued request waiting -- the
+        # "do not send requests to Ollama while waiting for the GPU" rule.
+        st = broker.reservation_state(broker.read_reservation(self.control_dir), now=now)
+        if st not in ("none", "released"):
+            return {"pump": "deferred",
+                    "why": f"reservation {st}: GPU owned elsewhere; queued requests "
+                           "keep waiting (visibly deferred)",
+                    "expired": expired}
+
         adm = self.q.admit_pass(now=now, gpu_free=True)
         if adm is None:
             return {"pump": "idle", "expired": expired}
@@ -414,9 +427,16 @@ class BrokerLoop:
         if adm.kind == "capture":
             r = adm.members[0]
             owner = f"capture:{r.request_id}"
-            broker.touch_reservation(owner, control_dir=self.control_dir,
-                                     expected_end_ts=now + float(
-                                         (r.payload or {}).get("duration_s", 0.05)) * 2)
+            try:
+                broker.touch_reservation(owner, control_dir=self.control_dir,
+                                         expected_end_ts=now + float(
+                                             (r.payload or {}).get("duration_s", 0.05)) * 2)
+            except PermissionError:
+                # lost a race against another owner: back off, stay deferred
+                r.state = QUEUED
+                r.admitted_ts = None
+                return {"pump": "deferred", "why": "reservation taken by another owner "
+                        "between check and grant", "expired": expired}
             grant = self.q.ledger.open(owner, "capture", now, [r.request_id])
             self.current = {"kind": "capture", "end_ts": now + float(
                 (r.payload or {}).get("duration_s", 0.05)),

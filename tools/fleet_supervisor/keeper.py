@@ -55,12 +55,19 @@ def record_path(records_dir: str, keeper_id: str) -> str:
 
 
 def read_record(path: str) -> dict | None:
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            text = f.read().strip()
-        return json.loads(text) if text else None
-    except (OSError, json.JSONDecodeError):
-        return None
+    """Tolerant read: a record being concurrently replaced (the writer's
+    os.replace vs our open handle on Windows) can transiently fail -- retry
+    before concluding anything. Persistent failure reads as absent."""
+    for attempt in range(3):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                text = f.read().strip()
+            return json.loads(text) if text else None
+        except (OSError, json.JSONDecodeError):
+            if attempt == 2:
+                return None
+            time.sleep(0.01)
+    return None
 
 
 def write_record(path: str, rec: dict) -> None:
@@ -156,22 +163,45 @@ def run_keeper(*, record_file: str, run_id: str, trainer_cmd: list[str],
                 job_done = True   # job object gone => every member dead (KILL_ON_JOB_CLOSE)
         marker_ok = (completion_marker is None or os.path.exists(completion_marker))
         rec["heartbeat_ts"] = now
+        if now > rec["expected_end_ts"]:
+            rec["state"] = "running"   # keeps heartbeating PAST expected end
+
+        def _beat() -> None:
+            # heartbeats BOTH stores: the durable record AND the phase-1
+            # reservation file (the reservation heartbeat IS the ownership
+            # mechanism; a fresh beat also clears any reconcile's uncertainty
+            # flag). Transient FS contention (a concurrent reader colliding
+            # with os.replace) must never kill a durable keeper.
+            try:
+                broker.touch_reservation(keeper_id, control_dir=control_dir,
+                                         expected_end_ts=rec.get("expected_end_ts"),
+                                         run_id=run_id, kind="training")
+            except PermissionError:
+                # our reservation taken/flagged by someone else: alert loudly
+                registry.append(registry_path, {"event": "keeper_alert",
+                                                "keeper_id": keeper_id, "run_id": run_id,
+                                                "reason": "reservation_not_ours",
+                                                "detail": "heartbeat beat: reservation no longer ours"})
+            except OSError:
+                pass
+            try:
+                write_record(record_file, rec)
+            except OSError:
+                pass
+
+        _beat()
         if job_done and marker_ok and hold_after_completion_s <= 0:
             # completion VERIFIED (job empty + the run's own evidence) -- only
             # now may the reservation be released (Astra's rule)
             rec["state"] = "done"
             rec["completed_ts"] = now
-            write_record(record_file, rec)
+            _beat()
             broker.release_reservation(keeper_id, control_dir=control_dir)
             registry.append(registry_path, {"event": "keeper_completed",
                                             "keeper_id": keeper_id, "run_id": run_id,
                                             "trainer_session_id": result.session_id,
                                             "verified": True})
             stop = True
-        else:
-            if now > rec["expected_end_ts"]:
-                rec["state"] = "running"   # keeps heartbeating PAST expected end
-            write_record(record_file, rec)
     return 0
 
 
@@ -215,13 +245,22 @@ def reconcile_keepers(records_dir: str, *, control_dir: str,
         entry = {"keeper_id": kid, "run_id": rec.get("run_id"),
                  "identity_alive": alive, "heartbeat_age_s": round(hb_age, 2),
                  "trainer_session_id": rec.get("trainer_session_id")}
+        res_now = broker.read_reservation(control_dir) or {}
+        owns_reservation = res_now.get("owner_id") == rec.get("keeper_id")
+
+        def _lock(reason: str) -> None:
+            # lock the GPU for new admissions: the alert must ACT, not just report
+            if owns_reservation:
+                broker.flag_reservation_uncertain(rec.get("keeper_id"), reason,
+                                                  control_dir=control_dir, now=now)
+
         if alive and hb_age <= hb_stale_s:
-            entry["reservation_state"] = broker.reservation_state(
-                broker.read_reservation(control_dir), now=now)
+            entry["reservation_state"] = broker.reservation_state(res_now, now=now)
             report["adopted"].append(entry)
         elif alive or hb_age <= hb_stale_s:
             entry["diagnosis"] = ("identity alive but heartbeat stalled" if alive
                                   else "heartbeat fresh but identity dead (just died)")
+            _lock(f"keeper {kid}: {entry['diagnosis']}")
             entry["reservation_state"] = broker.reservation_state(
                 broker.read_reservation(control_dir), now=now)
             report["uncertain"].append(entry)
@@ -230,6 +269,7 @@ def reconcile_keepers(records_dir: str, *, control_dir: str,
                        entry["diagnosis"])
         else:
             entry["diagnosis"] = "identity dead and heartbeat stale: run lost"
+            _lock(f"keeper {kid}: {entry['diagnosis']}")
             entry["reservation_state"] = broker.reservation_state(
                 broker.read_reservation(control_dir), now=now)
             report["lost"].append(entry)
@@ -282,11 +322,15 @@ def start_keeper(*, records_dir: str, control_dir: str, registry_path: str,
 
     keeper_id = f"pending-{uuid.uuid4().hex[:8]}"
     record_file = record_path(records_dir, keeper_id)
-    cmd = [sys.executable, "-m", "tools.fleet_supervisor.keeper", "run",
+    # NOTE the shape: global args (--control/--registry/--records? records is
+    # not needed by `run`) come BEFORE the subcommand -- argparse in this CLI
+    # requires it, and a malformed child command dies silently at argparse.
+    cmd = [sys.executable, "-m", "tools.fleet_supervisor.keeper",
+           "--control", control_dir, "--registry", registry_path,
+           "run",
            "--record", record_file, "--run-id", run_id,
            "--expected-seconds", str(expected_seconds),
            "--hb-seconds", str(hb_seconds),
-           "--control-dir", control_dir, "--registry", registry_path,
            "--mem-gib", str(mem_gib),
            "--trainer-cmd", json.dumps(trainer_cmd)]
     if completion_marker:
