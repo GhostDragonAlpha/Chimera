@@ -1,0 +1,31 @@
+{
+ "schema": "chimera.fleet_supervisor.v1",
+ "lane": "lane/fleet-supervisor-20260922",
+ "base_commit": "88da85bc",
+ "date": "2026-09-22",
+ "agent_trailer": "Agent: supervisor",
+ "theory": "Astra's round-6 contract, first implementation: a small Windows supervisor using Job Objects makes every execution attempt an OWNED, BOUNDED, RECONCILED session -- root created suspended, assigned to a non-inheritable kill-on-close job with declared limits, then resumed; completion graceful-then-terminate; the registry dedups by pid AND creation time; ambiguous processes are reported and left alone; a mode file + GPU reservation file + memory gates are the broker's phase 1",
+ "prereg": "record.md (this directory), committed before any code; falsifiers = Astra's ownership rejection conditions + the smoke conditions; predictions pre-named",
+ "status": "PREREG -- all verdicts pending until the falsifier suite and smoke run",
+ "falsifiers": {
+  "F1_SENTINELS": "PENDING",
+  "F2_SURVIVORS_30S": "PENDING",
+  "F3_PID_REUSE": "PENDING",
+  "F4_MEMLIMIT_CONSTRAINS": "PENDING",
+  "F5_ASSIGN_FAILURE_NO_SURVIVOR": "PENDING",
+  "F6_LAUNCHER_KILL_CONTAINMENT": "PENDING",
+  "F7_SMOKE_COHERENT": "PENDING",
+  "F8_BROKER_GATES": "PENDING"
+ },
+ "predictions": {
+  "P-CYCLES": "PENDING (100/100 clean)",
+  "P-SENTINELS": "PENDING",
+  "P-MEMLIMIT": "PENDING",
+  "P-PIDREUSE": "PENDING",
+  "P-GATES": "PENDING",
+  "P-SMOKE": "PENDING",
+  "P-AMBIGUOUS": "PENDING"
+ },
+ "results": null,
+ "pass": null
+}
