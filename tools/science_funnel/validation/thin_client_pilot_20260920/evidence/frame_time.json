@@ -1,0 +1,122 @@
+{
+ "R03_fall_10_full": {
+  "trace": "TRACE-CLEAN",
+  "rate": 10,
+  "median_ms": 4.2,
+  "p95_ms": 4.3,
+  "p99_ms": 4.3,
+  "max_ms": 8.6,
+  "long_frames_gt25ms": 0
+ },
+ "R04_fall_60_full": {
+  "trace": "TRACE-CLEAN",
+  "rate": 60,
+  "median_ms": 4.2,
+  "p95_ms": 4.3,
+  "p99_ms": 4.4,
+  "max_ms": 8.8,
+  "long_frames_gt25ms": 0
+ },
+ "R09_fall_30_pos16": {
+  "trace": "TRACE-CLEAN",
+  "rate": 30,
+  "median_ms": 4.2,
+  "p95_ms": 4.3,
+  "p99_ms": 4.4,
+  "max_ms": 8.4,
+  "long_frames_gt25ms": 0
+ },
+ "R10_fall_30_z12": {
+  "trace": "TRACE-CLEAN",
+  "rate": 30,
+  "median_ms": 4.2,
+  "p95_ms": 4.3,
+  "p99_ms": 4.4,
+  "max_ms": 9,
+  "long_frames_gt25ms": 0
+ },
+ "R02_fall_15_full": {
+  "trace": "TRACE-CLEAN",
+  "rate": 15,
+  "median_ms": 124.5,
+  "p95_ms": 130.5,
+  "p99_ms": 135.3,
+  "max_ms": 322.6,
+  "long_frames_gt25ms": 225
+ },
+ "R06_fall_30_tr50j": {
+  "trace": "TRACE-50J",
+  "rate": 30,
+  "median_ms": 127.4,
+  "p95_ms": 302.6,
+  "p99_ms": 302.6,
+  "max_ms": 302.6,
+  "long_frames_gt25ms": 14
+ },
+ "R07_fall_30_tail": {
+  "trace": "TRACE-TAIL",
+  "rate": 30,
+  "median_ms": 125.7,
+  "p95_ms": 305.9,
+  "p99_ms": 305.9,
+  "max_ms": 305.9,
+  "long_frames_gt25ms": 12
+ },
+ "R08_fall_30_pos12": {
+  "trace": "TRACE-CLEAN",
+  "rate": 30,
+  "median_ms": 125.5,
+  "p95_ms": 132.9,
+  "p99_ms": 137.7,
+  "max_ms": 309.0,
+  "long_frames_gt25ms": 223
+ },
+ "R13_press_30_full": {
+  "trace": "TRACE-CLEAN",
+  "rate": 30,
+  "median_ms": 125.7,
+  "p95_ms": 132.8,
+  "p99_ms": 284.7,
+  "max_ms": 284.7,
+  "long_frames_gt25ms": 95,
+  "event_latency": {
+   "event": "carry_start",
+   "age_at_first_render_ms": 470.6,
+   "detection_bound_one_interval_ms": 1031.0,
+   "d_ms": 50.0
+  }
+ },
+ "R12_carry_30_full": {
+  "trace": "TRACE-CLEAN",
+  "rate": 30,
+  "median_ms": 4.2,
+  "p95_ms": 4.3,
+  "p99_ms": 4.4,
+  "max_ms": 8.6,
+  "long_frames_gt25ms": 0,
+  "event_latency": {
+   "event": "carry_start",
+   "age_at_first_render_ms": 20.63,
+   "detection_bound_one_interval_ms": 69.02,
+   "d_ms": 50.0
+  }
+ },
+ "R01_fall_30_full": {
+  "trace": "TRACE-CLEAN",
+  "rate": 30,
+  "median_ms": 4.2,
+  "p95_ms": 4.3,
+  "p99_ms": 4.3,
+  "max_ms": 9.9,
+  "long_frames_gt25ms": 0
+ },
+ "R05_fall_30_tr50": {
+  "trace": "TRACE-50",
+  "rate": 30,
+  "median_ms": 4.2,
+  "p95_ms": 4.3,
+  "p99_ms": 6.2,
+  "max_ms": 6.9,
+  "long_frames_gt25ms": 0
+ }
+}

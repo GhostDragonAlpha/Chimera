@@ -2,6 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+/* THIN-CLIENT PILOT gate (lane/thin-client-pilot-20260920): URL params decide
+   the camera path BEFORE the legacy block runs, so the legacy 10 Hz
+   /api/verts poll never competes with the thin client for the engine's
+   measured ~60 req/s HTTP budget (measured: thin_client_pilot_20260920).
+   Integration pass 7: the gate DEFAULTS OFF -- the plain URL is the stranger
+   page the slice-stranger/render-truth receipts verified (the keys card and
+   the boot bar speak of THAT page); the thin client is the explicit pilot
+   path (?thin=1&rate=..&fmt=..&pilot=1 -- the exact form every thincli
+   instrument already passes, so no measured run changes). */
+(function(){
+  var q = location.search;
+  function qp(k, d){ var m = q.match(new RegExp('[?&]'+k+'=([^&]*)')); return m ? m[1] : d; }
+  window.__THIN_ENABLED__ = qp('thin', '0') === '1';
+  window.__THIN_PARAMS__ = {
+    rate: parseFloat(qp('rate', '30')),
+    fmt: qp('fmt', 'FULL36').toUpperCase(),
+    D_ms: qp('D_ms', '') === '' ? null : parseFloat(qp('D_ms')),
+    pilot: qp('pilot', '0') === '1',
+    mode: qp('mode', 'interp')        // interp | direct
+  };
+})();
+</script>
 <title>CHIMERA — playable slice (the standing start)</title>
 <style>
   :root{--bg:#0b0d10;--panel:#12151acc;--line:#1d232b;--text:#c9d3db;--muted:#7b8792;
@@ -575,6 +598,7 @@ function markActed(){
   if(g.style.display!=='none')toggleGuide();   // the guide steps aside after the first action
 }
 window.addEventListener('keydown',e=>{
+  if(window.__THIN_ENABLED__)return;   // thin mode: the thin HUD names and owns the keys
   const k=KEYLIST.find(k=>k.name===e.key || (k.name===' '&&e.code==='Space'));
   if(!k)return;
   if(e.repeat && k.name!=='ArrowLeft' && k.name!=='ArrowRight' &&
@@ -608,12 +632,18 @@ async function pollStatus(){
       dist==null?'booting the world…':
       (c.arrived?'OBJECTIVE: the creature is at the marker (seated)':
        `objective: carry to the marker · ${(dist||0).toFixed(2)} m to go (mock carry)`);
-    if(st.root_y!==undefined){
-      document.getElementById('status').textContent =
-        `REAL engine numbers — root_y ${(st.root_y??0).toFixed(4)} m · root_vy ${(st.root_vy??0).toFixed(4)} m/s`+
-        (st.gravity_on!==undefined?` · gravity ${st.gravity_on?'ON':'off'}`:'');
-    }else{
-      document.getElementById('status').textContent = 'the world is restarting…';
+    if(!window.__THIN_ENABLED__){        // F3: with the thin client on, the
+      // state line is owned by the snapshot stream; with it off, the
+      // stranger's own rule holds: the engine's numbers, or the honest
+      // restarting text (lane slice-stranger-20260920 + thin-client pilot
+      // union, integration pass 7)
+      if(st.root_y!==undefined){
+        document.getElementById('status').textContent =
+          `REAL engine numbers — root_y ${(st.root_y??0).toFixed(4)} m · root_vy ${(st.root_vy??0).toFixed(4)} m/s`+
+          (st.gravity_on!==undefined?` · gravity ${st.gravity_on?'ON':'off'}`:'');
+      }else{
+        document.getElementById('status').textContent = 'the world is restarting…';
+      }
     }
     const ft=s.fall_test;
     document.getElementById('fall-verdict').textContent = !ft?'the fall test has not run':
@@ -623,7 +653,7 @@ async function pollStatus(){
   finally{statusBusy=false;}
 }
 setInterval(pollStatus,250);
-setInterval(pollVerts,100);
+if(!window.__THIN_ENABLED__)setInterval(pollVerts,100);   // legacy path only when the thin client is off
 
 document.getElementById('btn-send').onclick=doSend;
 document.getElementById('btn-stop').onclick=doStop;
@@ -641,6 +671,9 @@ document.getElementById('btn-save').onclick=doSave;
     if(s.marker)MARKER=s.marker;
   }catch(e){}
   buildWorldDecor();
+  // (thin-client pilot's guarded pre-draw ghost+verts calls are superseded
+  // here by the stranger's hardened boot tail below: the same guarded
+  // loadGhost and a 40-try bounded poll loop — integration pass 7 union)
   draw();
   try{
     await loadGhost();
@@ -653,6 +686,446 @@ document.getElementById('btn-save').onclick=doSave;
     tries++;
   }
   if(!(liveVerts&&liveVerts.length))beacon('boot gave up', 'no verts after 20 s');
+})();
+</script>
+
+<script>
+"use strict";
+/* ══ THE THIN CLIENT — lane/thin-client-pilot-20260920 ════════════════════
+   Astra round-5 Decision 2 camera clause: TIMESTAMPED SNAPSHOTS from the
+   engine contract (via the slice server's /api/snapshot composition) ->
+   INTERPOLATION on the client -> local rendering. No local simulation; the
+   render clock is decoupled from the snapshot clock by design.
+
+   THE SYNC LAW (F3 in tools/science_funnel/validation/
+   thin_client_pilot_20260920/record.md): every overlay VALUE (root_y,
+   root_vy, cell pressures, dimple) is read from the snapshot buffer and is
+   labeled with that snapshot's AUTHORITATIVE engine ts_us. Client clocks
+   (performance.now) drive playout arithmetic and measurement
+   instrumentation ONLY — never a displayed scene value.
+
+   THE PLAYOUT LAW: the render point is
+     r(t) = ts_latest + (t - arrival_latest) - D
+   in the ENGINE's OWN timestamp timeline, with pre-named playout delay
+   D = 1.5 * snapshot interval (+ declared jitter headroom). r is bracketed
+   by the two newest received snapshots; positions lerp in server time;
+   normals+colors come from the newer bracket (snapB). When r runs past the
+   newest ts (stall/tail), the client FREEZES on the older bracket — it
+   never extrapolates a scene it has not seen. Underruns are counted and
+   timed (they are the tail-trace evidence, not an error to hide). */
+(function(){
+const P = window.__THIN_PARAMS__;
+if(!window.__THIN_ENABLED__) return;
+
+const SNAP_HDR = 52, MAGIC = 0x31534854;
+const interval_ms = () => 1000 / P.rate;
+const D_us = () => Math.round((P.D_ms != null ? P.D_ms : 1.5 * interval_ms() + jhead_ms) * 1000);
+let jhead_ms = parseFloat((location.search.match(/[?&]jhead=([^&]*)/)||[])[1] || '0');
+let mode = P.mode;                      // 'interp' | 'direct'
+let snaps = [];                         // newest last, each: {ts,ticks,root_y,root_vy,P_l,P_u,dimple,gap,n,pos,nrm,col,arrival,bytes}
+let pullTimer = 0, nextPull = 0, needKey = (P.fmt === 'DELTA');
+let chain = null, chainSeq = -1;        // the DELTA client's chain state
+let colRef = null;                      // per-vertex colors sampled once (FULL36)
+let topoIdx = null, triCount = 0;
+let underruns = 0, underrun_ms = 0, wasUnderrun = false, underrun_t0 = 0, pullErrs = 0;
+let bytesAcc = 0, bytesWinT0 = performance.now(), bps = 0, achN = 0, achT0 = performance.now(), achR = 0;
+// min-delay-path offset: server_us ~= offset + client_ms*1000. Each snapshot
+// contributes (ts - arrival); the MAX over the window is the least-transit
+// path, so a late burst cannot drag the render point (standard NTP-shaped
+// estimate; the residual error is that least transit, bounded by D).
+let offWin = [];   // {at, off_us}
+function noteOffset(ts_us, arrival_ms){
+  offWin.push({at: arrival_ms, off: ts_us - arrival_ms * 1000});
+  const cutoff = arrival_ms - 5000;
+  while(offWin.length && offWin[0].at < cutoff) offWin.shift();
+}
+function serverNowUs(now_ms){
+  let best = -Infinity;
+  for(const e of offWin) if(e.off > best) best = e.off;
+  if(best === -Infinity) return 0;
+  return best + now_ms * 1000;
+}
+const pilot = {raf: [], snaps: [], samples: [], on: P.pilot};
+let pilotFrameNo = 0;
+function b64(f32){ // base64 of a Float32Array (the sampled-frame transport)
+  const u8 = new Uint8Array(f32.buffer, f32.byteOffset, f32.byteLength);
+  let s = '';
+  for(let i = 0; i < u8.length; i += 0x8000)
+    s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+
+// ── f16 (IEEE 754 half) — manual decode, no browser-version dependence ────
+function f16(u){
+  const s = (u & 0x8000) ? -1 : 1, e = (u & 0x7c00) >> 10, m = u & 0x3ff;
+  if(e === 0) return s * Math.pow(2, -14) * (m / 1024);
+  if(e === 0x1f) return m ? NaN : s * Infinity;
+  return s * Math.pow(2, e - 15) * (1 + m / 1024);
+}
+
+// ── per-vertex normals from the one-time topology (for POS12/Z12/POS16) ───
+function recomputeNormals(pos, n){
+  const nrm = new Float32Array(n * 3);
+  for(let t = 0; t < triCount; t++){
+    const ia = topoIdx[3*t], ib = topoIdx[3*t+1], ic = topoIdx[3*t+2];
+    const ax=pos[3*ia],ay=pos[3*ia+1],az=pos[3*ia+2];
+    const bx=pos[3*ib],by=pos[3*ib+1],bz=pos[3*ib+2];
+    const cx=pos[3*ic],cy=pos[3*ic+1],cz=pos[3*ic+2];
+    const ux=bx-ax,uy=by-ay,uz=bz-az, vx=cx-ax,vy=cy-ay,vz=cz-az;
+    const nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx;
+    nrm[3*ia]+=nx;nrm[3*ia+1]+=ny;nrm[3*ia+2]+=nz;
+    nrm[3*ib]+=nx;nrm[3*ib+1]+=ny;nrm[3*ib+2]+=nz;
+    nrm[3*ic]+=nx;nrm[3*ic+1]+=ny;nrm[3*ic+2]+=nz;
+  }
+  for(let i = 0; i < n; i++){
+    const l = Math.hypot(nrm[3*i], nrm[3*i+1], nrm[3*i+2]) || 1;
+    nrm[3*i]/=l; nrm[3*i+1]/=l; nrm[3*i+2]/=l;
+  }
+  return nrm;
+}
+
+// ── snapshot decode: header + per-fmt payload -> packed arrays ───────────
+function decodeSnapshot(buf, arrival){
+  const dv = new DataView(buf);
+  if(dv.getUint32(0, true) !== MAGIC) return null;
+  const ts = Number(dv.getBigUint64(4, true)), ticks = dv.getUint32(12, true);
+  const root_y = dv.getFloat32(16, true), root_vy = dv.getFloat32(20, true);
+  const P_l = dv.getFloat32(24, true), P_u = dv.getFloat32(28, true);
+  const dimple = dv.getFloat32(32, true), gap = Number(dv.getBigUint64(36, true));
+  const fmtc = dv.getUint32(44, true), n = dv.getUint32(48, true);
+  const p = new Uint8Array(buf, SNAP_HDR);
+  let pos = new Float32Array(n * 3), nrm = null, col = colRef;
+  if(fmtc === 0){                       // FULL36: pos|nrm|col interleaved f32
+    const f = new Float32Array(buf, SNAP_HDR, 9 * n);
+    for(let i = 0; i < n; i++){
+      pos[3*i]=f[9*i]; pos[3*i+1]=f[9*i+1]; pos[3*i+2]=f[9*i+2];
+    }
+    nrm = new Float32Array(n * 3);
+    for(let i = 0; i < n; i++){ nrm[3*i]=f[9*i+3]; nrm[3*i+1]=f[9*i+4]; nrm[3*i+2]=f[9*i+5]; }
+    if(!colRef){ col = new Float32Array(n * 3);
+      for(let i = 0; i < n; i++){ col[3*i]=f[9*i+6]; col[3*i+1]=f[9*i+7]; col[3*i+2]=f[9*i+8]; } }
+  } else if(fmtc === 1){                // POS12
+    pos = new Float32Array(buf, SNAP_HDR, 3 * n).slice();
+  } else if(fmtc === 2){                // POS16: f16 pos|nrm
+    const u = new Uint16Array(buf, SNAP_HDR, 6 * n);
+    for(let i = 0; i < n; i++){
+      pos[3*i]=f16(u[6*i]); pos[3*i+1]=f16(u[6*i+1]); pos[3*i+2]=f16(u[6*i+2]);
+    }
+    nrm = new Float32Array(n * 3);
+    for(let i = 0; i < n; i++){
+      nrm[3*i]=f16(u[6*i+3]); nrm[3*i+1]=f16(u[6*i+4]); nrm[3*i+2]=f16(u[6*i+5]);
+    }
+  } else if(fmtc === 3){                // Z12 -> POS12 after inflate (async)
+    return {inflatable: true, buf, arrival, ts, ticks, root_y, root_vy,
+            P_l, P_u, dimple, gap, n, bytes: buf.byteLength};
+  } else if(fmtc === 4){                // DELTA: C3 chain frame
+    if(p[0] !== 0xD1) return null;
+    const flags = p[1];
+    const fseq = dv.getUint32(SNAP_HDR + 8, true);
+    const runs = dv.getUint32(SNAP_HDR + 12, true);
+    if(!chain){ chain = new Uint8Array(36 * n); chainSeq = fseq - 1; }
+    if(fseq !== chainSeq + 1){ needKey = true; return null; }   // broken chain: resync
+    if(flags === 0){ chain.set(p.subarray(16, 16 + 36 * n), 0); }
+    else {
+      let w = 16;
+      for(let r = 0; r < runs; r++){
+        const s0 = dv.getUint32(SNAP_HDR + w, true), c = dv.getUint32(SNAP_HDR + w + 4, true);
+        chain.set(p.subarray(w + 8, w + 8 + 36 * c), 36 * s0);
+        w += 8 + 36 * c;
+      }
+    }
+    chainSeq = fseq;
+    const f = new Float32Array(chain.buffer, 0, 9 * n);
+    for(let i = 0; i < n; i++){ pos[3*i]=f[9*i]; pos[3*i+1]=f[9*i+1]; pos[3*i+2]=f[9*i+2]; }
+    nrm = new Float32Array(n * 3);
+    for(let i = 0; i < n; i++){ nrm[3*i]=f[9*i+3]; nrm[3*i+1]=f[9*i+4]; nrm[3*i+2]=f[9*i+5]; }
+  }
+  if(!nrm) nrm = recomputeNormals(pos, n);
+  if(!col) col = colRef;
+  return {ts, ticks, root_y, root_vy, P_l, P_u, dimple, gap, n, pos, nrm, col, arrival, bytes: buf.byteLength};
+}
+
+async function inflateZ12(raw){
+  const ds = new DecompressionStream('deflate');
+  const stream = new Blob([new Uint8Array(raw.buf, SNAP_HDR)]).stream().pipeThrough(ds);
+  const posBuf = await new Response(stream).arrayBuffer();
+  const n = raw.n;
+  const pos = new Float32Array(posBuf);
+  return {ts: raw.ts, ticks: raw.ticks, root_y: raw.root_y, root_vy: raw.root_vy,
+          P_l: raw.P_l, P_u: raw.P_u, dimple: raw.dimple, gap: raw.gap, n,
+          pos: new Float32Array(pos.buffer, 0, 3 * n),
+          nrm: recomputeNormals(new Float32Array(posBuf), n), col: colRef,
+          arrival: raw.arrival, bytes: raw.bytes};
+}
+
+// ── the snapshot scheduler (self-correcting, drift-free) ─────────────────
+let pullsPaused = false;
+async function pullSnapshot(){
+  if(pullsPaused) return;
+  try{
+    const url = P.fmt === 'DELTA'
+      ? '/api/snapshot?fmt=DELTA' + (needKey ? '&key=1' : '') : '/api/snapshot?fmt=' + P.fmt;
+    // a hung transport must never kill the stream: abort well past the
+    // playout horizon, count it, and let the next pull proceed
+    const ctrl = new AbortController();
+    const abort_t = setTimeout(() => ctrl.abort(), 5 * interval_ms() + 2000);
+    let resp, buf;
+    try{
+      resp = await fetch(url, {signal: ctrl.signal});
+      buf = await resp.arrayBuffer();
+    } finally { clearTimeout(abort_t); }
+    const arrival = performance.now();
+    if(P.fmt === 'DELTA') needKey = false;
+    let s = decodeSnapshot(buf, arrival);
+    if(s && s.inflatable) s = await inflateZ12(s);
+    if(!s) return;
+    if(pullsPaused) return;      // an in-flight pull must not poison a
+                                 // paused buffer (the F3 injection path)
+    if(!colRef && s.col && P.fmt !== 'FULL36') colRef = s.col;
+    snaps.push(s);
+    noteOffset(s.ts, arrival);
+    if(snaps.length > 10) snaps.shift();
+    bytesAcc += s.bytes;
+    const now = performance.now();
+    if(now - bytesWinT0 >= 1000){ bps = bytesAcc * 1000 / (now - bytesWinT0); bytesAcc = 0; bytesWinT0 = now; }
+    achN++;
+    if(now - achT0 >= 2000){ achR = achN * 1000 / (now - achT0); achN = 0; achT0 = now; }
+    if(pilot.on) pilot.snaps.push({ts: s.ts, arrival, bytes: s.bytes, gap: s.gap,
+                                   fmt: P.fmt, dimple: s.dimple, root_y: s.root_y});
+  }catch(e){ pullErrs++; }
+}
+function schedulePull(){
+  if(!pullsPaused){
+    const now = performance.now(), iv = interval_ms();
+    if(nextPull < now - iv) nextPull = now;         // no burst after a stall
+    const wait = Math.max(0, nextPull - now);
+    nextPull = Math.max(nextPull + iv, now + 1);
+    pullTimer = setTimeout(async () => { await pullSnapshot(); schedulePull(); }, wait);
+  }
+}
+function setRate(r){
+  P.rate = r;
+  clearTimeout(pullTimer);
+  nextPull = performance.now();
+  schedulePull();
+}
+
+// ── the playout frame: interpolate + upload + authoritative overlays ──────
+const work9 = {n: 0, buf: null, f32: null};
+function ensureWork(n){
+  if(work9.n !== n){
+    work9.n = n; work9.f32 = new Float32Array(9 * n); work9.buf = work9.f32.buffer;
+  }
+}
+function uploadWork(n){
+  ensureWork(n);
+  if(!idxCount){
+    // one-time: topology + first VAO (the same program the legacy path uses).
+    // The vertex bytes go up RAW -- the lane render-truth-20260920 fix moved
+    // the [u32 count] header-strip INTO the callers (meshFromTopo uploads
+    // vertBuf verbatim); this lane's old synthetic 4-byte header prepend
+    // would have re-created the header-as-vertex-zero shift in this fallback
+    // path. Convention of the merged page wins: no header (integration
+    // pass 7 semantic-union resolution).
+    meshFromTopo(topoBufGlobal, work9.buf);
+  } else {
+    gl.bindVertexArray(vaoMesh);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboMesh);
+    gl.bufferData(gl.ARRAY_BUFFER, work9.buf, gl.DYNAMIC_DRAW);
+    gl.bindVertexArray(null);
+  }
+  liveVerts = work9.f32;        // the ghost + picker ride the interpolated frame
+}
+let topoBufGlobal = null;
+
+function thinFrame(){
+  if(!snaps.length || mode === 'legacy') return;
+  const now = performance.now();
+  let r_us = 0, A = null, B = null, underrun = false;
+  const latest = snaps[snaps.length - 1];
+  if(mode === 'direct' || snaps.length < 2){
+    A = latest;
+  } else {
+    r_us = serverNowUs(now) - D_us();
+    for(let i = snaps.length - 1; i > 0; i--){
+      if(snaps[i - 1].ts <= r_us && r_us < snaps[i].ts){ A = snaps[i - 1]; B = snaps[i]; break; }
+    }
+    if(!A){ A = latest; underrun = true; }   // r past newest: freeze, never extrapolate
+    else if(B && r_us > B.ts){ A = B; B = null; }
+  }
+  if(underrun && !wasUnderrun){ underruns++; underrun_t0 = now; }
+  if(!underrun && wasUnderrun){ underrun_ms += now - underrun_t0; }
+  wasUnderrun = underrun;
+
+  const n = A.n;
+  ensureWork(n);
+  const w = work9.f32, alpha = B ? Math.min(1, Math.max(0, (r_us - A.ts) / (B.ts - A.ts))) : 0;
+  for(let i = 0; i < n; i++){
+    w[9*i]   = A.pos[3*i]   + (B ? B.pos[3*i]   - A.pos[3*i]   : 0) * alpha;
+    w[9*i+1] = A.pos[3*i+1] + (B ? B.pos[3*i+1] - A.pos[3*i+1] : 0) * alpha;
+    w[9*i+2] = A.pos[3*i+2] + (B ? B.pos[3*i+2] - A.pos[3*i+2] : 0) * alpha;
+    w[9*i+3] = A.nrm[3*i]; w[9*i+4] = A.nrm[3*i+1]; w[9*i+5] = A.nrm[3*i+2];
+    w[9*i+6] = A.col[3*i]; w[9*i+7] = A.col[3*i+1]; w[9*i+8] = A.col[3*i+2];
+  }
+  uploadWork(n);
+
+  // THE OVERLAYS (F3): values from the governing snapshot A, labeled with its
+  // authoritative ts. No client-clock value is displayed here.
+  thinPanelUpdate(A, serverNowUs(now), underrun);
+
+  if(pilot.on){
+    pilot.raf.push({t: now, r: r_us, ur: underrun ? 1 : 0, A: A.ts, B: B ? B.ts : 0,
+                    a: +alpha.toFixed(4), cam: [cam.yaw, cam.pit, cam.dist]});
+    if(pilot.raf.length > 36000) pilot.raf.splice(0, 6000);
+    // sampled RENDERED frames (the offline pixel metric renders THESE through
+    // the page's own shader text against the twin truth at the same r):
+    if((pilotFrameNo++ % 10) === 0){
+      pilot.samples.push({t: now, r: r_us, a: A.ts, b: B ? B.ts : 0,
+        alpha: +alpha.toFixed(4), ur: underrun ? 1 : 0, n,
+        root_y: A.root_y, root_vy: A.root_vy, dimple: A.dimple,
+        frame: b64(work9.f32)});
+      if(pilot.samples.length > 4000) pilot.samples.splice(0, 1000);
+    }
+  }
+}
+
+// ── the thin HUD panel ────────────────────────────────────────────────────
+const panel = document.createElement('div');
+panel.className = 'panel';
+panel.id = 'thinpanel';
+panel.style.cssText = 'left:10px;bottom:12px;width:330px;font-size:11px';
+panel.innerHTML =
+  '<h1 style="font-size:11px;letter-spacing:.2em;color:var(--accent);margin:0 0 4px">THIN CLIENT — timestamps + interpolation</h1>' +
+  '<div id="tp-sync" style="color:var(--muted)"></div>' +
+  '<div id="tp-state" style="margin-top:3px"></div>' +
+  '<div id="tp-transport" style="color:var(--muted);margin-top:3px"></div>' +
+  '<div style="color:var(--muted);margin-top:3px">keys: ← → ↑ ↓ orbit · +/- zoom · SPACE press (reticle) · 1-4 rate · T direct · I interp · F fall · C carry · X stop · R restart · S save</div>';
+document.body.appendChild(panel);
+const reticle = document.createElement('div');
+reticle.style.cssText = 'position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);pointer-events:none;opacity:.55';
+reticle.innerHTML = '<svg width="18" height="18"><line x1="9" y1="2" x2="9" y2="16" stroke="#7fd4c1" stroke-width="1"/><line x1="2" y1="9" x2="16" y2="9" stroke="#7fd4c1" stroke-width="1"/></svg>';
+document.body.appendChild(reticle);
+
+let lastPanelDraw = 0;
+function thinPanelUpdate(A, serverNow, underrun){
+  const now = performance.now();
+  if(now - lastPanelDraw < 100) return;         // panel at 10 Hz, values still from A
+  lastPanelDraw = now;
+  const age_ms = (serverNow - A.ts) / 1000;
+  document.getElementById('tp-sync').innerHTML =
+    `as of engine <b>ts_us=${A.ts}</b> (tick ${A.ticks}) · age <b>${age_ms.toFixed(1)} ms</b> server time` +
+    (underrun ? ' · <span style="color:var(--warn)">FREEZE (waiting for snapshots)</span>' : '');
+  document.getElementById('tp-state').innerHTML =
+    `root_y <b>${A.root_y.toFixed(4)}</b> m · root_vy <b>${A.root_vy.toFixed(4)}</b> m/s · ` +
+    `P <b>${A.P_l.toFixed(2)}</b>/<b>${A.P_u.toFixed(2)}</b> Pa · dimple <b>${A.dimple.toFixed(4)}</b> m`;
+  document.getElementById('tp-transport').innerHTML =
+    `${mode} · ${P.rate.toFixed(0)} Hz nominal · <b>${achR.toFixed(1)}</b> Hz achieved · fmt ${P.fmt} · ` +
+    `<b>${(bps/1024).toFixed(1)}</b> KB/s · D=${(D_us()/1000).toFixed(0)} ms · underruns <b>${underruns}</b> (${underrun_ms.toFixed(0)} ms)` +
+    ` · gap ${A.gap.toFixed(0)} us` + (pullErrs ? ` · <span style="color:var(--bad)">pull errors ${pullErrs}</span>` : '');
+  // mirror the authoritative values into the slice's own state line (F3)
+  const st = document.getElementById('status');
+  if(st) st.textContent =
+    `SNAPSHOT numbers (authoritative) — root_y ${A.root_y.toFixed(4)} m · root_vy ${A.root_vy.toFixed(4)} m/s · as of ts_us ${A.ts}`;
+}
+
+// ── keyboard-first interaction ────────────────────────────────────────────
+async function pressAtCenter(){
+  if(!liveVerts || !liveVerts.length) return;
+  const r = cv.getBoundingClientRect();
+  const asp = cv.width / cv.height;
+  const V = lookFrom(cam.yaw, cam.pit, cam.dist, cam.tx, cam.ty, cam.tz);
+  const PR = persp(0.9, asp, 0.05, 60), VP = mul(PR, V.mat);
+  let best = -1, bd = 56 * 56;                  // the reticle's own radius band
+  const cx = r.width / 2, cy = r.height / 2, nV = liveVerts.length / 9;
+  for(let i = 0; i < nV; i++){
+    const x = liveVerts[i*9], y = liveVerts[i*9+1], z = liveVerts[i*9+2];
+    let a = VP[0]*x + VP[4]*y + VP[8]*z + VP[12], b = VP[1]*x + VP[5]*y + VP[9]*z + VP[13],
+        cw = VP[3]*x + VP[7]*y + VP[11]*z + VP[15];
+    if(cw <= 0) continue;
+    const sx = (a/cw*0.5 + 0.5) * r.width, sy = (-b/cw*0.5 + 0.5) * r.height;
+    const d = (sx-cx)**2 + (sy-cy)**2;
+    if(d < bd){ bd = d; best = i; }
+  }
+  if(best < 0) return;
+  const hit = [liveVerts[best*9], liveVerts[best*9+1], liveVerts[best*9+2]];
+  return fetch('/api/press', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({hit, force_n: 300.0})});
+}
+window.addEventListener('keydown', (e) => {
+  const k = e.key;
+  if(k === 'ArrowLeft') cam.yaw -= 0.08;
+  else if(k === 'ArrowRight') cam.yaw += 0.08;
+  else if(k === 'ArrowUp') cam.pit = Math.min(1.4, cam.pit + 0.06);
+  else if(k === 'ArrowDown') cam.pit = Math.max(-0.15, cam.pit - 0.06);
+  else if(k === '+' || k === '=') cam.dist = Math.max(0.5, cam.dist * 0.9);
+  else if(k === '-' || k === '_') cam.dist = Math.min(9, cam.dist * 1.1);
+  else if(k === ' '){ e.preventDefault(); pressAtCenter(); }
+  else if(k === '1') setRate(60);
+  else if(k === '2') setRate(30);
+  else if(k === '3') setRate(15);
+  else if(k === '4') setRate(10);
+  else if(k === 't' || k === 'T') mode = (mode === 'interp') ? 'direct' : 'interp';
+  else if(k === 'i' || k === 'I') mode = 'interp';
+  else if(k === 'f' || k === 'F') fetch('/api/drop_test', {method: 'POST'});
+  else if(k === 'c' || k === 'C') fetch('/api/send', {method: 'POST'});
+  else if(k === 'x' || k === 'X') fetch('/api/stop', {method: 'POST'});
+  else if(k === 'r' || k === 'R') fetch('/api/restart', {method: 'POST'});
+  else if(k === 's' || k === 'S') fetch('/api/save', {method: 'POST'});
+  else return;
+});
+
+// ── pilot instrumentation hooks (Playwright reads these) ──────────────────
+window.__pilot_dump = function(){
+  return JSON.stringify({params: P, jhead_ms, mode, underruns, underrun_ms,
+    pullErrs, achieved_hz: achR, bps, cam: [cam.yaw, cam.pit, cam.dist],
+    raf: pilot.raf, snaps: pilot.snaps, samples: pilot.samples});
+};
+window.__pilot_samples_only = function(){
+  return JSON.stringify({samples: pilot.samples, underruns, underrun_ms,
+    achieved_hz: achR, mode});
+};
+window.__thin_canned = function(list){
+  pullsPaused = true; clearTimeout(pullTimer);
+  snaps = list.map(c => ({ts: c.ts, ticks: c.ticks || 0, root_y: c.root_y,
+    root_vy: c.root_vy || 0, P_l: c.P_l, P_u: c.P_u, dimple: c.dimple || 0,
+    gap: c.gap || 0, n: c.pos.length / 3, pos: Float32Array.from(c.pos),
+    nrm: null, col: null, arrival: performance.now(), bytes: 0})
+  ).map(s => { if(!s.nrm) s.nrm = recomputeNormals(s.pos, s.n);
+    if(!s.col){ s.col = new Float32Array(s.n * 3).fill(0.55); } return s; });
+};
+window.__thin_pressCenter = function(){ return pressAtCenter(); };
+window.__thin_state = function(){
+  return {mode, rate: P.rate, achieved: achR, snaps_ts: snaps.map(s => s.ts),
+          underruns, panel: {
+            sync: document.getElementById('tp-sync').textContent,
+            state: document.getElementById('tp-state').textContent,
+            transport: document.getElementById('tp-transport').textContent,
+            status: document.getElementById('status').textContent}};
+};
+
+// ── wrap the render loop: thin frame first, then the unchanged renderer ───
+const _sliceDraw = draw;
+draw = function(){
+  try{ thinFrame(); }catch(e){ if(window.__thin_errs) window.__thin_errs.push(String(e)); }
+  _sliceDraw();
+};
+window.__thin_errs = [];
+
+// ── init: topology (+ a color reference when the fmt drops colors) ────────
+(async function thinInit(){
+  const tbuf = await (await fetch('/api/topology')).arrayBuffer();
+  topoBufGlobal = tbuf;
+  triCount = new DataView(tbuf).getUint32(0, true);
+  topoIdx = new Uint32Array(tbuf, 4, triCount * 3);
+  if(P.fmt !== 'FULL36' && P.fmt !== 'DELTA'){
+    const cbuf = await (await fetch('/api/snapshot?fmt=FULL36')).arrayBuffer();
+    const dv = new DataView(cbuf), n = dv.getUint32(48, true);
+    const f = new Float32Array(cbuf, SNAP_HDR, 9 * n);
+    colRef = new Float32Array(n * 3);
+    for(let i = 0; i < n; i++){ colRef[3*i]=f[9*i+6]; colRef[3*i+1]=f[9*i+7]; colRef[3*i+2]=f[9*i+8]; }
+  }
+  schedulePull();
+})();
 })();
 </script>
 </body>

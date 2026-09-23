@@ -1,0 +1,171 @@
+{
+ "base": "http://127.0.0.1:64771",
+ "engine": "http://127.0.0.1:64772",
+ "measured_at_unix": 1790103754.9897897,
+ "api_verts": {
+  "n": 50,
+  "median_B": 11308,
+  "p95_B": 11308,
+  "derived_framing_B": "4 + nverts*36"
+ },
+ "topology": {
+  "bytes": 7492,
+  "triangles": 624
+ },
+ "verts_count": 314,
+ "tick_state_fields_present": [
+  "P_lower",
+  "P_upper",
+  "dimple_m",
+  "root_vy",
+  "root_y",
+  "ticks",
+  "ts_ms",
+  "ts_us"
+ ],
+ "tick_state_snapshot": {
+  "ts_us": 10322866163,
+  "ticks": 64269,
+  "root_y": 0.255293,
+  "root_vy": -1.65596e-07,
+  "dimple_m": 0,
+  "gravity_on": true
+ },
+ "verts_carries_timestamp": false,
+ "c3_delta_at_rest": {
+  "key_pull": {
+   "framing": "C3_delta",
+   "flags": 0,
+   "seq": 6,
+   "runs": 0,
+   "bytes": 11320
+  },
+  "delta_pull_1": {
+   "framing": "C3_delta",
+   "flags": 1,
+   "seq": 7,
+   "runs": 0,
+   "bytes": 16
+  },
+  "delta_pull_2": {
+   "framing": "C3_delta",
+   "flags": 1,
+   "seq": 8,
+   "runs": 0,
+   "bytes": 16
+  }
+ },
+ "ticks_idle": {
+  "window_s": 5.371,
+  "ticks": 1610,
+  "ticks_per_s": 299.8
+ },
+ "ticks_under_10hz_verts_poll": {
+  "window_s": 10.685,
+  "ticks": 3198,
+  "ticks_per_s": 299.3
+ },
+ "poll_roundtrip_s_under_load": {
+  "n": 90,
+  "median_s": 0.0177,
+  "p95_s": 0.03566
+ },
+ "today_path_bandwidth": {
+  "rate_hz": 10.0,
+  "median_payload_B": 11308,
+  "bytes_per_s": 113080,
+  "MB_per_s": 0.113
+ },
+ "pixel_family": {
+  "png_full": {
+   "bytes": 14021062,
+   "pull_s": 0.1576,
+   "fmt": "png",
+   "dims": [
+    2560,
+    1369
+   ]
+  },
+  "png_w960": {
+   "bytes": 3503097,
+   "pull_s": 0.0604,
+   "fmt": "png",
+   "dims": [
+    1280,
+    684
+   ]
+  },
+  "png_w640": {
+   "bytes": 875995,
+   "pull_s": 0.0507,
+   "fmt": "png",
+   "dims": [
+    640,
+    342
+   ]
+  },
+  "jpg_w960_q95": {
+   "bytes": 54027,
+   "pull_s": 0.023,
+   "fmt": "jpeg",
+   "dims": [
+    1280,
+    684
+   ]
+  },
+  "jpg_w960_q85": {
+   "bytes": 33348,
+   "pull_s": 0.0228,
+   "fmt": "jpeg",
+   "dims": [
+    1280,
+    684
+   ]
+  },
+  "jpg_w960_q80": {
+   "bytes": 29426,
+   "pull_s": 0.0225,
+   "fmt": "jpeg",
+   "dims": [
+    1280,
+    684
+   ]
+  },
+  "jpg_w960_q70": {
+   "bytes": 25709,
+   "pull_s": 0.0228,
+   "fmt": "jpeg",
+   "dims": [
+    1280,
+    684
+   ]
+  },
+  "jpg_w960_q50": {
+   "bytes": 21646,
+   "pull_s": 0.0466,
+   "fmt": "jpeg",
+   "dims": [
+    1280,
+    684
+   ]
+  },
+  "jpg_w960_q30": {
+   "bytes": 18239,
+   "pull_s": 0.0223,
+   "fmt": "jpeg",
+   "dims": [
+    1280,
+    684
+   ]
+  },
+  "jpg_full_q80": {
+   "bytes": 100681,
+   "pull_s": 0.0225,
+   "fmt": "jpeg",
+   "dims": [
+    2560,
+    1369
+   ]
+  }
+ }
+}
