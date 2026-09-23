@@ -9,6 +9,19 @@
 #include <cstdio>
 #include <memory>
 namespace chimera::multibody {
+// CLOSEOUT-4 advance-trace drill (tick-3 interior bisection): per-advance-call
+// event-sequence prints (ent/imp/split/live/evt/clamp/cross/wall/end + the
+// free_step plane-mask census), gated to ticks_==3 -- the first diverging
+// substep advance -- so the C++ recursion and the kernels' LIFO loop can be
+// diffed line-by-line. Same line grammar as the kernels ADVTRACE (probe_inject).
+static int g_advdbg = 0;
+static long g_advn = 0;
+static int g_raten = 0; // armed rate() call counter (matches kernels raten)
+static int g_rt_lo = -1, g_rt_hi = -1, g_rt_init = 0; // RTLO/RTHI window
+static int g_fsdbg = 0; // per-point friction drill gate (armed in rate's loop)
+static int g_fsk = -1; // the friction point index for RTFS (k/2 == kernels r)
+// RT window gate: true when the armed rate-call counter passes the env window.
+#define RT_FIRE() (g_advdbg&&(g_rt_lo<0||(g_raten>=g_rt_lo&&g_raten<=g_rt_hi)))
 // Gait controller + walker runtime (docs/research/20260918_gait_controller_derivation.md,
 // Rule-0 admission work.creature.gait_controller). The CONTROL LAW is exactly
 // the derivation's four pieces: (1) a contact-reset hybrid phase clock
@@ -696,7 +709,9 @@ class GaitWalker {
   force=Dense(initial.size(),0.);lambda_n=0;lambda_t=0;mode=0;
   auto in=multiply(inverse,row_n),it=multiply(inverse,row_t);
   double A=inner(row_n,in),B=inner(row_n,it),C=inner(row_t,it),rn=-(inner(row_n,initial)-floor_n),rt=-(inner(row_t,initial)-floor_t),det=A*C-B*B;
+  {if(g_fsdbg)std::fprintf(stderr,"RTFS k=%d A=%.17g B=%.17g C=%.17g rn=%.17g rt=%.17g det=%.17g\n",g_fsk,A,B,C,rn,rt,det);}
   if(det>1e-18){double nn=(rn*C-rt*B)/det,t=(rt*A-rn*B)/det;
+   {if(g_fsdbg)std::fprintf(stderr,"RTFSC k=%d nn=%.17g t=%.17g abt=%.17g muNN=%.17g tss=%.17g\n",g_fsk,nn,t,std::abs(t),mu*nn+1e-12,t*slip_sign);}
    if(nn>=0&&std::abs(t)<=mu*nn+1e-12&&(slip_sign==0.||t*slip_sign<=0.)){for(size_t i=0;i<initial.size();++i)force[i]=row_n[i]*nn+row_t[i]*t;lambda_n=nn;lambda_t=t;mode=1;return;}}
   double s=slip_sign!=0.?slip_sign:(rt>=0.?-1.:1.),den=A-s*mu*B;
   if(den<=1e-12)throw Refusal("gait_friction_slide_singular");
@@ -1643,8 +1658,12 @@ class GaitWalker {
     rhs[i]+=tau[i]-damping_[d]*s.v[i];heat+=damping_[d]*s.v[i]*s.v[i];}}
   {if(cppfk4_fire){std::fprintf(stderr,"CPPFK4 FRHS");for(int ci=0;ci<18;++ci)std::fprintf(stderr," %.17g",rhs[ci]);std::fprintf(stderr,"\n");}}
   {if(cppfk4_fire){std::fprintf(stderr,"CPPFK4 RHSIN");for(int ci=0;ci<18;++ci)std::fprintf(stderr," gv%d=%.17g bv%d=%.17g tau%d=%.17g v%d=%.17g",ci,e.gravity[ci],ci,e.bias[ci],ci,tau[ci],ci,s.v[ci]);std::fprintf(stderr,"\n");}}
+  {if(!g_rt_init){g_rt_init=1;if(const char* lo=std::getenv("RTLO"))g_rt_lo=std::atoi(lo);if(const char* hi=std::getenv("RTHI"))g_rt_hi=std::atoi(hi);}
+   if(RT_FIRE()){std::fprintf(stderr,"RT n=%d FRHS",g_raten);for(int ci=0;ci<18;++ci)std::fprintf(stderr," %.17g",rhs[ci]);std::fprintf(stderr,"\n");}}
   auto free=multiply(inv,rhs);
   {if(cppfk4_fire){std::fprintf(stderr,"CPPFK4 FMUL");for(int ci=0;ci<18;++ci)std::fprintf(stderr," %.17g",free[ci]);std::fprintf(stderr,"\n");}}
+  {if(!g_rt_init){g_rt_init=1;if(const char* lo=std::getenv("RTLO"))g_rt_lo=std::atoi(lo);if(const char* hi=std::getenv("RTHI"))g_rt_hi=std::atoi(hi);}
+   if(RT_FIRE()){std::fprintf(stderr,"RT n=%d FMUL",g_raten);for(int ci=0;ci<18;++ci)std::fprintf(stderr," %.17g",free[ci]);std::fprintf(stderr,"\n");}}
   Rate out(n_,npts_);out.damping=heat;out.q=s.v;out.v=free;
   auto joint=normals(s);bool stop=false;std::vector<NamedRow> rows;
   for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;if(joint[c]&&std::abs(s.v[c])<=1e-9){Dense r(n_,0.);r[c]=joint[c];rows.push_back({r,0.,-1,true});stop=true;}}
@@ -1653,7 +1672,10 @@ class GaitWalker {
   for(size_t k=0;k<npts_;++k){rown[k]=contact_row(e,k);
    touching[k]=plane[k]||(live[k]&&gap_of(e,k)<=kTouch&&inner(rown[k],s.v)<=gate);}
   bool friction=contact_&&mu_>0;
-  if(friction&&!stop){
+  {if(RT_FIRE()){std::fprintf(stderr,"RT n=%d TOUCH stop=%d",g_raten,(int)stop);
+   for(size_t k=0;k<npts_;k+=2)std::fprintf(stderr," t%d=%d g%d=%.17g",(int)(k/2),(int)touching[k],(int)(k/2),gap_of(e,k));
+   std::fprintf(stderr,"\n");}}
+  if(friction&&!stop){g_fsdbg=RT_FIRE()?1:0;
    for(size_t k=0;k<npts_;++k){
     if(!sole_representative(k)||!touching[k])continue;
     auto j_t1=tangent_row(e,k,0),j_t2=tangent_row(e,k,2);
@@ -1667,12 +1689,19 @@ class GaitWalker {
     if(dir_x==0&&dir_z==0)continue;
     for(size_t i=0;i<n_;++i)row_t[i]=dir_x*j_t1[i]+dir_z*j_t2[i];
     try{Dense force;double lambda_n,lambda_t;int mode;
+     if(g_fsdbg)std::fprintf(stderr,"RTFRI n=%d k=%d svx=%.17g svz=%.17g planar=%.17g kslip=%.17g dx=%.17g dz=%.17g ss=%d fx=%.17g fz=%.17g ft=%.17g",
+      g_raten,(int)(k/2),slip_v[0],slip_v[2],planar,kSlip,dir_x,dir_z,(int)slip_sign,-bias[1],-(dir_x*bias[0]+dir_z*bias[2]),inner(row_t,s.v));
+     g_fsk=(int)(k/2);
      friction_solve(free,inv,rown[k],row_t,-bias[1],-(dir_x*bias[0]+dir_z*bias[2]),mu_,slip_sign,force,lambda_n,lambda_t,mode);
+     if(g_fsdbg)std::fprintf(stderr,"RTFRO n=%d k=%d mode=%d ln=%.17g lt=%.17g\n",g_raten,(int)(k/2),mode,lambda_n,lambda_t);
      if(mode){auto correction=multiply(inv,force);
       out.point_force[k].assign(n_,0.);for(size_t i=0;i<n_;++i){free[i]+=correction[i];out.point_force[k][i]=force[i];}
       out.contact_lambda[k]=lambda_n;out.friction_lambda[k]=lambda_t;out.slip[k]=slip_speed;out.mode[k]=mode;
       out.friction_heat[k]=-lambda_t*inner(row_t,s.v);}}
     catch(const Refusal&){}}}
+  {if(RT_FIRE()){std::fprintf(stderr,"RT n=%d FFRIC",g_raten);for(int ci=0;ci<18;++ci)std::fprintf(stderr," %.17g",free[ci]);
+   for(size_t k=0;k<npts_;k+=2)std::fprintf(stderr," m%d=%d",(int)(k/2),(int)out.mode[k]);std::fprintf(stderr,"\n");}}
+  g_fsdbg=0;
   for(size_t k=0;k<npts_;++k){
    if(!sole_representative(k)||!touching[k])continue;
   {if(cppfk4_fire){std::fprintf(stderr,"CPPFK4 FFRIC");for(int ci=0;ci<18;++ci)std::fprintf(stderr," %.17g",free[ci]);std::fprintf(stderr,"\n");}}
@@ -1684,6 +1713,10 @@ class GaitWalker {
    std::vector<double> multipliers;auto p=project_rows(free,inv,plain,plainfloors,&multipliers,n_stops);auto correction=multiply(inv,p);
    for(size_t i=0;i<n_;++i){free[i]+=correction[i];out.reaction[i]=p[i];}
    for(size_t r=0;r<rows.size();++r)if(!rows[r].stop_row)out.contact_lambda[rows[r].point]=(std::max)(out.contact_lambda[rows[r].point],multipliers[r]);}
+  {if(RT_FIRE()){size_t ns=0;for(const auto& rrow:rows)if(rrow.stop_row)++ns;
+   std::fprintf(stderr,"RT n=%d FPROJ R=%d ns=%d",g_raten,(int)rows.size(),(int)ns);
+   for(int ci=0;ci<18;++ci)std::fprintf(stderr," %.17g",free[ci]);std::fprintf(stderr,"\n");}
+   if(g_advdbg)++g_raten;}
   {if(cppfk4_fire){std::fprintf(stderr,"CPPFK4 FPROJ");for(int ci=0;ci<18;++ci)std::fprintf(stderr," %.17g",free[ci]);std::fprintf(stderr,"\n");}}
   out.v=free;
   return out;}
@@ -1691,7 +1724,10 @@ class GaitWalker {
   auto shifted=[&](const Rate& d,double t){State x=start;for(size_t i=0;i<n_;++i){x.q[i]+=d.q[i]*t;x.v[i]+=d.v[i]*t;}return x;};
   std::vector<char> plane(npts_,0);
   if(contact_&&mu_>0){auto e0=evaluate(start);double gate=1e-6+1e-3*joint_speed_scale(start);
-   for(size_t k=0;k<npts_;++k)if(sole_representative(k)&&live[k]&&gap_of(e0,k)<=kTouch&&inner(contact_row(e0,k),start.v)<=gate)plane[k]=1;}
+   for(size_t k=0;k<npts_;++k)if(sole_representative(k)&&live[k]&&gap_of(e0,k)<=kTouch&&inner(contact_row(e0,k),start.v)<=gate)plane[k]=1;
+   if(g_advdbg){std::fprintf(stderr,"FST n=%ld gate=%.17g h=%.17g",g_advn,gate,h);
+    for(size_t k=0;k<npts_;k+=2)std::fprintf(stderr," p%d=%d g%d=%.17g",(int)(k/2),(int)plane[k],(int)(k/2),gap_of(e0,k));
+    std::fprintf(stderr,"\n");++g_advn;}}
   auto a=rate(start,tau,live,plane),b=rate(shifted(a,h/2),tau,live,plane),c=rate(shifted(b,h/2),tau,live,plane),d=rate(shifted(c,h),tau,live,plane);
   State end=start;
   for(size_t i=0;i<n_;++i){end.q[i]+=h*(a.q[i]+2*b.q[i]+2*c.q[i]+d.q[i])/6;end.v[i]+=h*(a.v[i]+2*b.v[i]+2*c.v[i]+d.v[i])/6;
@@ -1709,6 +1745,9 @@ class GaitWalker {
   V push{number(config_["push_N"]),0,0};
   auto p0=vector(evaluate(start).frames[0].t,V{},1),p1=vector(evaluate(end).frames[0].t,V{},1);
   end.external+=push[0]*(p1[0]-p0[0]);
+  if(g_advdbg){std::fprintf(stderr,"FSEND n=%ld",g_advn);
+   for(int i=0;i<18;++i)std::fprintf(stderr," q%d=%.17g v%d=%.17g",i,end.q[i],i,end.v[i]);
+   std::fprintf(stderr,"\n");}
   return end;}
  double impact(State& s)const{
   auto e=evaluate(s);auto inv=inverse_spd(e.mass,n_);
@@ -1718,6 +1757,7 @@ class GaitWalker {
   for(size_t k=0;k<npts_;++k){rown[k]=contact_row(e,k);touching[k]=contact_&&gap_of(e,k)<=kTouch;}
   double caught=0;
   std::vector<char> engaged(npts_,0);
+  if(g_advdbg){std::fprintf(stderr,"IMPE n=%ld ns=%d t0=%d t1=%d t2=%d t3=%d g0=%.17g g1=%.17g g2=%.17g g3=%.17g\n",g_advn,(int)rows.size(),(int)touching[0],(int)touching[2],(int)touching[4],(int)touching[6],gap_of(e,0),gap_of(e,2),gap_of(e,4),gap_of(e,6));}
   if(contact_&&mu_>0&&rows.empty()){
    for(size_t k=0;k<npts_;++k){
     if(!sole_representative(k)||!touching[k])continue;
@@ -1728,6 +1768,7 @@ class GaitWalker {
     Dense row_t(n_,0.);for(size_t i=0;i<n_;++i)row_t[i]=(slip_v[0]*j_t1[i]+slip_v[2]*j_t2[i])/planar;
     try{Dense force;double lambda_n,lambda_t;int mode;
      friction_solve(s.v,inv,rown[k],row_t,0,0,mu_,1,force,lambda_n,lambda_t,mode);
+     if(g_advdbg)std::fprintf(stderr,"IMPF n=%ld r=%d closing=%.17g planar=%.17g mode=%d ln=%.17g lt=%.17g caught=%.17g\n",g_advn,(int)(k/2),closing,planar,mode,lambda_n,lambda_t,caught);
      if(mode){auto change=multiply(inv,force);double before=.5*inner(s.v,multiply(e.mass,s.v));
       Dense mean(n_);for(size_t i=0;i<n_;++i){mean[i]=s.v[i]+change[i]/2;s.v[i]+=change[i];s.impulse[i]+=force[i];}
       double loss=before-.5*inner(s.v,multiply(e.mass,s.v));require(loss>=-1e-11,"gait_impact_created_energy");
@@ -1741,6 +1782,9 @@ class GaitWalker {
   for(size_t k=0;k<npts_;++k)if(sole_representative(k)&&touching[k])rows.push_back({rown[k],0.,int(k),false});
   if(!rows.empty()){std::vector<Dense> plain;Dense plainfloors;size_t n_stops=0;for(auto&r:rows){plain.push_back(r.row);plainfloors.push_back(r.floor);if(r.stop_row)++n_stops;}
    std::vector<double> multipliers;auto p=project_rows(s.v,inv,plain,plainfloors,&multipliers,n_stops);auto change=multiply(inv,p);
+   if(g_advdbg){std::fprintf(stderr,"IMPP n=%ld R=%d ns=%d",g_advn,(int)rows.size(),(int)n_stops);
+    for(size_t r2=0;r2<rows.size();++r2)std::fprintf(stderr," m%d=%.17g",(int)r2,multipliers[r2]);
+    std::fprintf(stderr,"\n");}
    double before=.5*inner(s.v,multiply(e.mass,s.v));Dense mean(n_);
    for(size_t i=0;i<n_;++i){mean[i]=s.v[i]+change[i]/2;s.v[i]+=change[i];s.impulse[i]+=p[i];}
    double loss=before-.5*inner(s.v,multiply(e.mass,s.v));require(loss>=-1e-11,"gait_impact_created_energy");
@@ -1776,8 +1820,9 @@ class GaitWalker {
     std::vector<Dense> arows;for(size_t k:pen)arows.push_back(contact_row(evaluate(s),k));
     size_t R=pen.size();std::vector<double> gram(R*R,0),rhs(R);
     for(size_t a2=0;a2<R;++a2){for(size_t b2=0;b2<R;++b2)gram[a2*R+b2]=inner(arows[a2],multiply(inv,arows[b2]));rhs[a2]=-gaps[a2];}
-    std::vector<double> lam;
-    if(gram_factor(gram,R,rhs,lam)){
+    std::vector<double> lam;const bool gok=gram_factor(gram,R,rhs,lam);
+    if(g_advdbg){std::fprintf(stderr,"IMPC n=%ld npen=%d g00=%.17g g01=%.17g g10=%.17g g11=%.17g r0=%.17g r1=%.17g ok=%d l0=%.17g l1=%.17g\n",g_advn,(int)R,gram[0],R>1?gram[1]:0.,R>1?gram[2]:0.,R>1?gram[3]:0.,rhs[0],R>1?rhs[1]:0.,(int)gok,lam.size()>0?lam[0]:0.,lam.size()>1?lam[1]:0.);}
+    if(gok){
      Dense corr(n_,0.);for(size_t a2=0;a2<R;++a2)for(size_t i=0;i<n_;++i)corr[i]+=lam[a2]*multiply(inv,arows[a2])[i];
      double dq_max=0;for(size_t i=0;i<n_;++i)dq_max=(std::max)(dq_max,std::abs(corr[i]));
      require(dq_max<=0.05,"gait_positional_correction_budget");
@@ -1809,15 +1854,25 @@ class GaitWalker {
   // event-split TREE (each level halves the interval), keeping every tick's
   // work finite.
   require(depth<10+6*(int)npts_,"gait_impact_event_budget");
+  if(g_advdbg){std::fprintf(stderr,"ADV n=%ld ent h=%.17g depth=%d clamps=%d",g_advn,h,depth,clamps);
+   for(int i=0;i<18;++i)std::fprintf(stderr," q%d=%.17g v%d=%.17g",i,start.q[i],i,start.v[i]);
+   std::fprintf(stderr,"\n");++g_advn;}
 #ifdef GAIT_EVENT_TRACE
   if(depth>=10+6*(int)npts_-4){std::fprintf(stderr,"[evt] tick=%llu depth=%d clamps=%d adv=%llu h=%.3e mu=%.2f\n",ticks_,depth,clamps,adv_calls_,h,mu_);
    auto ee=evaluate(start);for(size_t k=0;k<npts_;++k){auto pp=ee.point(points_[k].index,points_[k].local);std::fprintf(stderr,"    %-12s gap=%.3e vy=%+.3e\n",points_[k].name.c_str(),pp.first[1]+points_[k].radius-plane_model_y_,pp.second[0][1]);}
    for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;std::fprintf(stderr,"    drive %-28s q=%+.4f v=%+.4f\n",drives_[d].name.c_str(),start.q[c],start.v[c]);}}
 #endif
   double caught=impact(start);
-  if(mu_>0&&caught>1e-9&&depth<5)return advance(advance(start,h/2,tau,depth+3),h/2,tau,depth+3);
+  if(g_advdbg){std::fprintf(stderr,"ADV n=%ld imp caught=%.17g",g_advn,caught);
+   for(int i=0;i<18;++i)std::fprintf(stderr," q%d=%.17g v%d=%.17g",i,start.q[i],i,start.v[i]);
+   std::fprintf(stderr,"\n");++g_advn;}
+  if(mu_>0&&caught>1e-9&&depth<5){if(g_advdbg){std::fprintf(stderr,"ADV n=%ld split half=%.17g\n",g_advn,h/2);++g_advn;}
+   return advance(advance(start,h/2,tau,depth+3),h/2,tau,depth+3);}
   std::vector<char> live(npts_,0);auto estart=evaluate(start);
   if(contact_)for(size_t k=0;k<npts_;++k)if(sole_representative(k))live[k]=gap_of(estart,k)<=kTouch?1:0;
+  if(g_advdbg){std::fprintf(stderr,"ADV n=%ld live",g_advn);
+   for(size_t k=0;k<npts_;k+=2)std::fprintf(stderr," l%d=%d g%d=%.17g",(int)(k/2),(int)live[k],(int)(k/2),gap_of(estart,k));
+   std::fprintf(stderr,"\n");++g_advn;}
   auto end=free_step(start,h,tau,live);int which=-1,khit=-1;double hit=h,wall=0;
   // Event namespaces: which = 0..nd_-1 a DRIVE joint-stop event (the drive
   // index), which = -2 a CONTACT event (khit = the point), which = -1 none.
@@ -1833,12 +1888,20 @@ class GaitWalker {
    double t=(left+right)/2;if(t<hit||(t==hit&&which>=0&&d<(size_t)which)){hit=t;which=int(d);khit=-1;wall=bound;}}
   if(contact_){auto eend=evaluate(end);
    for(size_t k=0;k<npts_;++k){
-    if(!sole_representative(k)||live[k]||gap_of(eend,k)>=0)continue;
+    if(!sole_representative(k)||live[k])continue;
+    if(g_advdbg){double gh=eend.point(points_[k].index,points_[k].local).first[1]+points_[k].radius-plane_model_y_;
+     double gm=eend.point(points_[k+1].index,points_[k+1].local).first[1]+points_[k+1].radius-plane_model_y_;
+     std::fprintf(stderr,"RTSC n=%ld r=%d g=%.17g gh=%.17g gm=%.17g py=%.17g q14=%.17g q15=%.17g q16=%.17g q17=%.17g live=%d\n",g_advn,(int)(k/2),gap_of(eend,k),gh,gm,plane_model_y_,end.q[14],end.q[15],end.q[16],end.q[17],(int)live[k]);}
+    if(gap_of(eend,k)>=0)continue;
     auto probe=live;probe[k]=0;double left=0,right=h;
     for(int j=0;j<42;++j){double mid=(left+right)/2;if(gap_of(evaluate(free_step(start,mid,tau,probe)),k)<=0)right=mid;else left=mid;}
     double t=(left+right)/2;if(t<hit){hit=t;which=-2;khit=int(k);}}}
-  if(which==-1)return end;
+  if(g_advdbg){std::fprintf(stderr,"ADV n=%ld evt which=%d khit=%d hit=%.17g wall=%.17g",g_advn,which,khit,hit,wall);
+   for(int i=0;i<18;++i)std::fprintf(stderr," q%d=%.17g v%d=%.17g",i,end.q[i],i,end.v[i]);
+   std::fprintf(stderr,"\n");++g_advn;}
+  if(which==-1){if(g_advdbg){std::fprintf(stderr,"ADV n=%ld end\n",g_advn);++g_advn;}return end;}
    if(hit<=1e-12){
+   if(g_advdbg){std::fprintf(stderr,"ADV n=%ld clamp which=%d khit=%d wall=%.17g hit=%.17g\n",g_advn,which,khit,wall,hit);++g_advn;}
    // An fp-level crossing at the substep boundary (the n-coordinate clamp
    // law): pin the violated stop, absorb the impact, integrate the remainder.
 #ifdef GAIT_EVENT_TRACE
@@ -1876,11 +1939,14 @@ class GaitWalker {
 #endif
    impact(pinned);
    return advance(pinned,h,tau,depth,clamps+1);}
-  if(which==-2&&khit>=0){auto probe=live;probe[size_t(khit)]=0;auto crossing=free_step(start,hit,tau,probe);
+  if(which==-2&&khit>=0){if(g_advdbg){std::fprintf(stderr,"ADV n=%ld cross khit=%d hit=%.17g\n",g_advn,khit,hit);++g_advn;}
+   auto probe=live;probe[size_t(khit)]=0;auto crossing=free_step(start,hit,tau,probe);
    require(std::abs(gap_of(evaluate(crossing),size_t(khit)))<1e-9,"gait_contact_localization");impact(crossing);
    if(mu_>0)return advance(advance(crossing,(h-hit)/2,tau,depth+1),(h-hit)/2,tau,depth+2);
    return advance(crossing,h-hit,tau,depth+1);}
-  require(which>=0&&which<(int)nd_,"gait_event_namespace");size_t c=drives_[size_t(which)].coordinate;auto wall_state=free_step(start,hit,tau,live);
+  require(which>=0&&which<(int)nd_,"gait_event_namespace");size_t c=drives_[size_t(which)].coordinate;
+  if(g_advdbg){std::fprintf(stderr,"ADV n=%ld wallev which=%d hit=%.17g\n",g_advn,which,hit);++g_advn;}
+  auto wall_state=free_step(start,hit,tau,live);
   require(std::abs(wall_state.q[c]-wall)<1e-9,"gait_impact_localization");wall_state.q[c]=wall;impact(wall_state);
   return advance(wall_state,h-hit,tau,depth+1);}
  public:
@@ -2561,6 +2627,7 @@ class GaitWalker {
   //    so each drive's positive substep work fits ITS store.
   Dense impulse_torque(n_,0.);
   adv_calls_=0;
+  g_advdbg=(ticks_==41); // CLOSEOUT-4 advance-trace drill window (the diverging tick)
   // Planted-strut saturation census (wave 12): once per tick, on the
   // tick-start state -- did the body walk the shoulder outside the chain's
   // reachable annulus? Counted, reported in status; never hidden.

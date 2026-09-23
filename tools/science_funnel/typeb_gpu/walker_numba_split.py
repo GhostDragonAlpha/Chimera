@@ -2002,6 +2002,28 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
 
                 row_t[i] = dir_x * jt1[i] + dir_z * jt2[i]
 
+            # C++ solves against rown[k] -- the CURRENT point's normal row, kept
+
+            # per-point in its touching loop. The port's rn is one scratch left at
+
+            # the LAST point of the touching loop (here point 3's row), so every
+
+            # solve but the last used a foreign row: measured at the tick-3
+
+            # depth-1 half-step, point 2's solve read B=15.59/rn=8.863 (point-3
+
+            # row) where the reference reads B=0.29/rn=8.863 -- a different
+
+            # friction cone and correction. This path is dead until the first
+
+            # fore-pad touch (the hind gaps ride above kTouch), which is why it
+
+            # survived the tick 0..3 census bit-exactly.
+
+            for i in range(18):
+
+                rn[i] = ptJ[(r * 3 + 1) * 18 + i]
+
             friction_solve(free, inv, rn, row_t, -by, -(dir_x * bx + dir_z * bz), cst[CF_mu], slip_sign,
 
                            force, ln, lt, md)
@@ -2450,6 +2472,20 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
         for _zzero69 in range(1):
             md[_zzero69] = 0
 
+        # CLOSEOUT-4 pair 7: the reference's swallowed-require guards need the
+        # pre/post kinetic energies, the mean state, and M-v scratch.
+        mv_pre = cuda.local.array(18, dtype=float64)
+        for _zzero70b in range(18):
+            mv_pre[_zzero70b] = 0.0
+
+        mv_post = cuda.local.array(18, dtype=float64)
+        for _zzero70c in range(18):
+            mv_post[_zzero70c] = 0.0
+
+        mean_i = cuda.local.array(18, dtype=float64)
+        for _zzero70d in range(18):
+            mean_i[_zzero70d] = 0.0
+
         for r in range(4):
 
             if touching[r] == 0:
@@ -2490,13 +2526,43 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
 
                 mat_vec(inv, force, corr)
 
+                # C++ order: before-energy, mean (from the pre-update v), THEN the
+
+                # v update, post-energy, and the two swallowed requires -- on a
+
+                # require failure the velocity change STAYS but the caught update
+
+                # (and ledger booking) is skipped. Measured at tick 41: r=0's
+
+                # slide catch ln=0.274 failed its gain guard on the reference
+
+                # (caught stayed 0) while the port booked it (caught=0.274) --
+
+                # the Coulomb split then took different intervals.
+
+                mat_vec(M, v, mv_pre)
+
+                before = float(0.5) * row_dot(v, mv_pre)
+
                 for i in range(18):
+
+                    mean_i[i] = v[i] + corr[i] / float(2.0)
 
                     v[i] = v[i] + corr[i]
 
-                if ln[0] > caught:
+                mat_vec(M, v, mv_post)
 
-                    caught = ln[0]
+                loss = before - float(0.5) * row_dot(v, mv_post)
+
+                share_n = ln[0] * row_dot(rn, mean_i)
+
+                share_t = lt[0] * row_dot(row_t, mean_i)
+
+                if loss >= float(-1e-11) and share_n <= float(1e-11) and share_t <= float(1e-11):
+
+                    if ln[0] > caught:
+
+                        caught = ln[0]
 
     for r in range(4):
 
@@ -2592,23 +2658,61 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
         for _zzero79 in range(18):
             ia[_zzero79] = 0.0
 
+        rb = cuda.local.array(18, dtype=float64)
+
+        for _zzero79b in range(18):
+
+            rb[_zzero79b] = 0.0
+
+        wb = cuda.local.array(18, dtype=float64)
+
+        for _zzero79c in range(18):
+
+            wb[_zzero79c] = 0.0
+
         for a in range(npen):
 
             for i in range(18):
 
                 ra[i] = ptJ[(pen[a] * 3 + 1) * 18 + i]
 
-            mat_vec(inv, ra, ia)
+            # C++: gram[a*R+b] = inner(arows[a], multiply(inv, arows[b])) -- the
+
+            # ROW_B vector is the one multiplied by inv, and the row_a term leads
+
+            # each product. The old port formed (inv*row_a) first, so every
+
+            # off-diagonal held the TRANSPOSED entry's bits (row_b*inv*row_a):
+
+            # at the tick-41 impact the port's g01/g10 were exactly swapped and
+
+            # the symmetrized gram sent gram_factor4 down a failed pivot.
 
             for b in range(npen):
+
+                for i in range(18):
+
+                    rb[i] = ptJ[(pen[b] * 3 + 1) * 18 + i]
+
+                mat_vec(inv, rb, wb)
 
                 s = float(0.0)
 
                 for i in range(18):
 
-                    s = s + ia[i] * ptJ[(pen[b] * 3 + 1) * 18 + i]
+                    s = s + ra[i] * wb[i]
 
-                gram[a * 4 + b] = s
+                # C++ lays the gram out as R*R (stride R == npen): gram[a*R+b].
+
+                # The old port's stride-4 write left cells [2..3] unwritten, so
+
+                # gram_factor4 (which reads stride npen) saw g10=g11=0 and failed
+
+                # the 1e-9 pivot test -- the positional correction was skipped
+
+                # while the reference applied it.
+
+                gram[a * npen + b] = s
 
             rhs[a] = -gaps[a]
 
@@ -2795,6 +2899,52 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
             return
 
+        # C++ advance holds `end` AS A VALUE: the drive-stop scan, the contact
+
+        # scan, and every localization bisection inside them free_step into
+
+        # temporaries while `end` stays the main interval's result -- the scan
+
+        # pre-test, the per-point re-test, and the plain-end commit all read
+
+        # that saved state. The port's qe/ve/we ARE the shared scratch those
+
+        # bisections overwrite (measured: tick-3 substep-2, the point-4
+
+        # crossing's 42 free_steps left qe/ve at the last mid, so the point-6
+
+        # pre-test read gap +7.0e-7 from the mid state instead of -2.9e-5 from
+
+        # the end state and skipped a landed fore pad). Save the end state and
+
+        # read the copy everywhere the C++ reads `end`.
+
+        end_q = cuda.local.array(18, dtype=float64)
+
+        for _zzeroeq in range(18):
+
+            end_q[_zzeroeq] = 0.0
+
+        end_v = cuda.local.array(18, dtype=float64)
+
+        for _zzeroev in range(18):
+
+            end_v[_zzeroev] = 0.0
+
+        end_w = cuda.local.array(18, dtype=float64)
+
+        for _zzeroew in range(18):
+
+            end_w[_zzeroew] = 0.0
+
+        for i in range(18):
+
+            end_q[i] = qe[i]
+
+            end_v[i] = ve[i]
+
+            end_w[i] = we[i]
+
         hit = rem
 
         which = int32(-1)
@@ -2885,7 +3035,7 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
         if csti[CI_contact] != 0:
 
-            pot = fk_eval(qe,  ve, mdl, mdi, cst,
+            pot = fk_eval(end_q,  end_v, mdl, mdi, cst,
 
                           M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
@@ -2900,6 +3050,20 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
                 if live[r - 1] != 0:
 
                     continue
+
+                # C++ holds eend=evaluate(end) from BEFORE the scan loop and tests
+
+                # gap_of(eend,k) per point. The port's ptp AND qe/ve scratch are
+
+                # shared with free_step, so an earlier point's bisection leaves
+
+                # them at the last mid -- the per-point tests re-evaluate the
+
+                # SAVED end state (same bits: same inputs, same fk_eval).
+
+                pot = fk_eval(end_q,  end_v, mdl, mdi, cst,
+
+                              M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
 
                 g = gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y])
 
@@ -2937,6 +3101,26 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
                         return
 
+                    # C++: gap_of(evaluate(free_step(start,mid,tau,probe)),k) -- the gap
+
+                    # test runs on the free_step's END state. Without this evaluate the
+
+                    # test read ptp left by the last fk_eval INSIDE free_step -- the
+
+                    # stage-d RK intermediate (qd,vd), not the combine (qe,ve) -- and the
+
+                    # crossing-time bisection took the opposite branch whenever the two
+
+                    # gaps straddled 0 (measured: tick-3 substep-2, fore-pad landing,
+
+                    # one branch flip at bisection iteration 31; the free_step end bits
+
+                    # themselves were identical on both sides).
+
+                    pot = fk_eval(qe,  ve, mdl, mdi, cst,
+
+                                  M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias)
+
                     if gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y]) <= float(0.0):
 
                         right = mid
@@ -2961,11 +3145,11 @@ def advance(q0, v0, w0, tau, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, 
 
             for i in range(18):
 
-                q1[i] = qe[i]
+                q1[i] = end_q[i]
 
-                v1[i] = ve[i]
+                v1[i] = end_v[i]
 
-                w1[i] = we[i]
+                w1[i] = end_w[i]
 
             if sp > 0:
 
@@ -4098,19 +4282,19 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     for _zzero156 in range(18):
         we[_zzero156] = 0.0
 
-    sq = cuda.local.array(576, dtype=float64)
+    sq = cuda.local.array(2304, dtype=float64)
     for _zzero157 in range(576):
         sq[_zzero157] = 0.0
 
-    sh16 = cuda.local.array(16, dtype=float64)
+    sh16 = cuda.local.array(64, dtype=float64)
     for _zzero158 in range(16):
         sh16[_zzero158] = 0.0
 
-    sdep = cuda.local.array(16, dtype=int32)
+    sdep = cuda.local.array(64, dtype=int32)
     for _zzero159 in range(16):
         sdep[_zzero159] = 0
 
-    scl = cuda.local.array(16, dtype=int32)
+    scl = cuda.local.array(64, dtype=int32)
     for _zzero160 in range(16):
         scl[_zzero160] = 0
 
@@ -6292,19 +6476,19 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
     for _zzero297 in range(18):
         we[_zzero297] = 0.0
 
-    sq = cuda.local.array(576, dtype=float64)
+    sq = cuda.local.array(2304, dtype=float64)
     for _zzero298 in range(576):
         sq[_zzero298] = 0.0
 
-    sh16 = cuda.local.array(16, dtype=float64)
+    sh16 = cuda.local.array(64, dtype=float64)
     for _zzero299 in range(16):
         sh16[_zzero299] = 0.0
 
-    sdep = cuda.local.array(16, dtype=int32)
+    sdep = cuda.local.array(64, dtype=int32)
     for _zzero300 in range(16):
         sdep[_zzero300] = 0
 
-    scl = cuda.local.array(16, dtype=int32)
+    scl = cuda.local.array(64, dtype=int32)
     for _zzero301 in range(16):
         scl[_zzero301] = 0
 
@@ -7385,19 +7569,19 @@ def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
     for _zzero386 in range(18):
         we[_zzero386] = 0.0
 
-    sq = cuda.local.array(576, dtype=float64)
+    sq = cuda.local.array(2304, dtype=float64)
     for _zzero387 in range(576):
         sq[_zzero387] = 0.0
 
-    sh16 = cuda.local.array(16, dtype=float64)
+    sh16 = cuda.local.array(64, dtype=float64)
     for _zzero388 in range(16):
         sh16[_zzero388] = 0.0
 
-    sdep = cuda.local.array(16, dtype=int32)
+    sdep = cuda.local.array(64, dtype=int32)
     for _zzero389 in range(16):
         sdep[_zzero389] = 0
 
-    scl = cuda.local.array(16, dtype=int32)
+    scl = cuda.local.array(64, dtype=int32)
     for _zzero390 in range(16):
         scl[_zzero390] = 0
 

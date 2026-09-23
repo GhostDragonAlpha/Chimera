@@ -1586,6 +1586,9 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
             for (i = 0; i < (18); ++i) {
                 row_t[i] = dir_x * jt1[i] + dir_z * jt2[i];
 }
+            for (i = 0; i < (18); ++i) {
+                rn[i] = ptJ[(r * 3 + 1) * 18 + i];
+}
             friction_solve(free, inv, rn, row_t, -by, -(dir_x * bx + dir_z * bz), cst[CF_mu], slip_sign, force, ln, lt, md);
             if (md[0] > 0) {
                 mat_vec(inv, force, corr);
@@ -1883,10 +1886,17 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
     int _zzero67;
     int _zzero68;
     int _zzero69;
+    int _zzero70b;
+    int _zzero70c;
+    int _zzero70d;
     double closing;
     double svx;
     double svz;
     double planar;
+    double before;
+    double loss;
+    double share_n;
+    double share_t;
     int _zzero70;
     int _zzero71;
     int _zzero72;
@@ -1898,6 +1908,8 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
     int _zzero77;
     int _zzero78;
     int _zzero79;
+    int _zzero79b;
+    int _zzero79c;
     int a;
     int b;
     double s;
@@ -1996,6 +2008,18 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
         for (_zzero69 = 0; _zzero69 < (1); ++_zzero69) {
             md[_zzero69] = 0;
 }
+        double mv_pre[18];
+        for (_zzero70b = 0; _zzero70b < (18); ++_zzero70b) {
+            mv_pre[_zzero70b] = 0.0;
+}
+        double mv_post[18];
+        for (_zzero70c = 0; _zzero70c < (18); ++_zzero70c) {
+            mv_post[_zzero70c] = 0.0;
+}
+        double mean_i[18];
+        for (_zzero70d = 0; _zzero70d < (18); ++_zzero70d) {
+            mean_i[_zzero70d] = 0.0;
+}
         for (r = 0; r < (4); ++r) {
             if (touching[r] == 0) {
                 continue;
@@ -2021,11 +2045,20 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
             friction_solve(v, inv, rn, row_t, (double)(0.0), (double)(0.0), cst[CF_mu], 1, force, ln, lt, md);
             if (md[0] > 0) {
                 mat_vec(inv, force, corr);
+                mat_vec(M, v, mv_pre);
+                before =  (double)(0.5) * row_dot(v, mv_pre);
                 for (i = 0; i < (18); ++i) {
+                    mean_i[i] = v[i] + corr[i] / (double)(2.0);
                     v[i] = v[i] + corr[i];
 }
-                if (ln[0] > caught) {
-                    caught =  ln[0];
+                mat_vec(M, v, mv_post);
+                loss =  before - (double)(0.5) * row_dot(v, mv_post);
+                share_n =  ln[0] * row_dot(rn, mean_i);
+                share_t =  lt[0] * row_dot(row_t, mean_i);
+                if (loss >= (double)(-1e-11) && share_n <= (double)(1e-11) && share_t <= (double)(1e-11)) {
+                    if (ln[0] > caught) {
+                        caught =  ln[0];
+}
 }
 }
 }
@@ -2105,17 +2138,28 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
         for (_zzero79 = 0; _zzero79 < (18); ++_zzero79) {
             ia[_zzero79] = 0.0;
 }
+        double rb[18];
+        for (_zzero79b = 0; _zzero79b < (18); ++_zzero79b) {
+            rb[_zzero79b] = 0.0;
+}
+        double wb[18];
+        for (_zzero79c = 0; _zzero79c < (18); ++_zzero79c) {
+            wb[_zzero79c] = 0.0;
+}
         for (a = 0; a < (npen); ++a) {
             for (i = 0; i < (18); ++i) {
                 ra[i] = ptJ[(pen[a] * 3 + 1) * 18 + i];
 }
-            mat_vec(inv, ra, ia);
             for (b = 0; b < (npen); ++b) {
+                for (i = 0; i < (18); ++i) {
+                    rb[i] = ptJ[(pen[b] * 3 + 1) * 18 + i];
+}
+                mat_vec(inv, rb, wb);
                 s =  (double)(0.0);
                 for (i = 0; i < (18); ++i) {
-                    s =  s + ia[i] * ptJ[(pen[b] * 3 + 1) * 18 + i];
+                    s =  s + ra[i] * wb[i];
 }
-                gram[a * 4 + b] = s;
+                gram[a * npen + b] = s;
 }
             rhs[a] = -gaps[a];
 }
@@ -2167,6 +2211,9 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
     int r;
     double g;
     double rcs;
+    int _zzeroeq;
+    int _zzeroev;
+    int _zzeroew;
     double hit;
     int which;
     int khit;
@@ -2267,6 +2314,23 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
             rc[0] = rcs;
             return;
 }
+        double end_q[18];
+        for (_zzeroeq = 0; _zzeroeq < (18); ++_zzeroeq) {
+            end_q[_zzeroeq] = 0.0;
+}
+        double end_v[18];
+        for (_zzeroev = 0; _zzeroev < (18); ++_zzeroev) {
+            end_v[_zzeroev] = 0.0;
+}
+        double end_w[18];
+        for (_zzeroew = 0; _zzeroew < (18); ++_zzeroew) {
+            end_w[_zzeroew] = 0.0;
+}
+        for (i = 0; i < (18); ++i) {
+            end_q[i] = qe[i];
+            end_v[i] = ve[i];
+            end_w[i] = we[i];
+}
         hit =  rem;
         which =  (int)(-1);
         khit =  (int)(-1);
@@ -2322,13 +2386,14 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 }
 }
         if (csti[CI_contact] != 0) {
-            pot =  fk_eval(qe,  ve, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
+            pot =  fk_eval(end_q,  end_v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
             r =  (int)(0);
             while (r < 4) {
                 r =  r + 1;
                 if (live[r - 1] != 0) {
                     continue;
 }
+                pot =  fk_eval(end_q,  end_v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
                 g =  gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y]);
                 if (g >= (double)(0.0)) {
                     continue;
@@ -2348,6 +2413,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
                         rc[0] = rcb;
                         return;
 }
+                    pot =  fk_eval(qe,  ve, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
                     if (gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y]) <= (double)(0.0)) {
                         right =  mid;
 }
@@ -2366,9 +2432,9 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 }
         if (which == -1) {
             for (i = 0; i < (18); ++i) {
-                q1[i] = qe[i];
-                v1[i] = ve[i];
-                w1[i] = we[i];
+                q1[i] = end_q[i];
+                v1[i] = end_v[i];
+                w1[i] = end_w[i];
 }
             if (sp > 0) {
                 sp =  sp - 1;
@@ -3518,19 +3584,19 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     for (_zzero156 = 0; _zzero156 < (18); ++_zzero156) {
         we[_zzero156] = 0.0;
 }
-    double sq[576];
+    double sq[2304];
     for (_zzero157 = 0; _zzero157 < (576); ++_zzero157) {
         sq[_zzero157] = 0.0;
 }
-    double sh16[16];
+    double sh16[64];
     for (_zzero158 = 0; _zzero158 < (16); ++_zzero158) {
         sh16[_zzero158] = 0.0;
 }
-    int sdep[16];
+    int sdep[64];
     for (_zzero159 = 0; _zzero159 < (16); ++_zzero159) {
         sdep[_zzero159] = 0;
 }
-    int scl[16];
+    int scl[64];
     for (_zzero160 = 0; _zzero160 < (16); ++_zzero160) {
         scl[_zzero160] = 0;
 }
@@ -5197,19 +5263,19 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
     for (_zzero297 = 0; _zzero297 < (18); ++_zzero297) {
         we[_zzero297] = 0.0;
 }
-    double sq[576];
+    double sq[2304];
     for (_zzero298 = 0; _zzero298 < (576); ++_zzero298) {
         sq[_zzero298] = 0.0;
 }
-    double sh16[16];
+    double sh16[64];
     for (_zzero299 = 0; _zzero299 < (16); ++_zzero299) {
         sh16[_zzero299] = 0.0;
 }
-    int sdep[16];
+    int sdep[64];
     for (_zzero300 = 0; _zzero300 < (16); ++_zzero300) {
         sdep[_zzero300] = 0;
 }
-    int scl[16];
+    int scl[64];
     for (_zzero301 = 0; _zzero301 < (16); ++_zzero301) {
         scl[_zzero301] = 0;
 }
@@ -6098,19 +6164,19 @@ __global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     for (_zzero386 = 0; _zzero386 < (18); ++_zzero386) {
         we[_zzero386] = 0.0;
 }
-    double sq[576];
+    double sq[2304];
     for (_zzero387 = 0; _zzero387 < (576); ++_zzero387) {
         sq[_zzero387] = 0.0;
 }
-    double sh16[16];
+    double sh16[64];
     for (_zzero388 = 0; _zzero388 < (16); ++_zzero388) {
         sh16[_zzero388] = 0.0;
 }
-    int sdep[16];
+    int sdep[64];
     for (_zzero389 = 0; _zzero389 < (16); ++_zzero389) {
         sdep[_zzero389] = 0;
 }
-    int scl[16];
+    int scl[64];
     for (_zzero390 = 0; _zzero390 < (16); ++_zzero390) {
         scl[_zzero390] = 0;
 }

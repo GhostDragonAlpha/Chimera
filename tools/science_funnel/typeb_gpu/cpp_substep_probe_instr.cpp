@@ -18,7 +18,9 @@ int main(int argc,char**argv){
   GaitWalker d(data,9.80665,V{0,0,0},dt);
   // default config == cpu_probe "walk" (the nominal walk the shim mirrors);
   // SUBFULL per-substep prints fire inside step() while ticks_==0.
-  for (int s = 0; s < 5; ++s) d.step(); // ticks 1..5 (the drill window t=0..4)
+  // CLOSEOUT-4: optional second arg = step count (the tick-41 window needs 43).
+  int steps = (argc > 2) ? std::atoi(argv[2]) : 5;
+  for (int s = 0; s < steps; ++s) d.step();
   return 0;
  }catch(const std::exception&e){std::fprintf(stderr,"ERROR %s\n",e.what());return 1;}
 }

@@ -13,6 +13,12 @@ int fkdbg2 = 0; // CLOSEOUT-3 per-body jv/jw drill gate
 int fkdbg2_fired = 0; // one-shot latch
 int fkdbg3_fired = 0; // one-shot latch (contribution dump)
 int fkdbg4_fired = 0; // one-shot latch (rate checkpoint dump)
+int advdbg = 0; // CLOSEOUT-4 advance-trace gate (armed per substep from tick_integ)
+int advn = 0; // advance-trace sequence counter
+int raten = 0; // armed rate() call counter
+int rt_lo = -1; int rt_hi = -1; int rt_init = 0; // RTLO/RTHI window (set once from env)
+int fsdbg = 0; // per-point friction drill gate (armed inside rate's friction loop)
+int fsk = -1; // the friction point index for RTFS
 static const int OF_ax_axis = 0;
 static const int OF_ax_slope = 54;
 static const int OF_ax_const = 72;
@@ -1365,9 +1371,15 @@ __device__ inline void friction_solve(double* initial, double* inv, double* row_
     rn =  -(row_dot(row_n, initial) - floor_n);
     rt =  -(row_dot(row_t, initial) - floor_t);
     det =  A * C - B * B;
+    if (fsdbg) {
+        printf("RTFS k=%d A=%.17g B=%.17g C=%.17g rn=%.17g rt=%.17g det=%.17g\n", fsk, A, B, C, rn, rt, det);
+    }
     if (det > (double)(1e-18)) {
         nn =  (rn * C - rt * B) / det;
         t =  (rt * A - rn * B) / det;
+        if (fsdbg) {
+            printf("RTFSC k=%d nn=%.17g t=%.17g abt=%.17g muNN=%.17g tss=%.17g\n", fsk, nn, t, fabs(t), mu * nn + (double)(1e-12), t * (double)slip_sign);
+        }
         at =  t;
         if (at < (double)(0.0)) {
             at =  -at;
@@ -1480,6 +1492,16 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
         for (int _cki = 0; _cki < 18; ++_cki) printf(" gv%d=%.17g bv%d=%.17g tau%d=%.17g v%d=%.17g", _cki, gv[_cki], _cki, bv[_cki], _cki, tau[_cki], _cki, v[_cki]);
         printf("\n");
     }
+    if (!rt_init) {
+        rt_init = 1;
+        if (getenv("RTLO")) rt_lo = atoi(getenv("RTLO"));
+        if (getenv("RTHI")) rt_hi = atoi(getenv("RTHI"));
+    }
+    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d FRHS", raten);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" %.17g", free[_cki]);
+        printf("\n");
+    }
     mat_vec(inv, free, free_acc);
     for (i = 0; i < (18); ++i) {
         free[i] = free_acc[i];
@@ -1488,6 +1510,11 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
             for (int _cki = 0; _cki < 18; ++_cki) printf(" %.17g", free[_cki]);
             printf("\n");
         }
+}
+    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d FMUL", raten);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" %.17g", free[_cki]);
+        printf("\n");
 }
     double rows[180];
     for (_zzero27 = 0; _zzero27 < (180); ++_zzero27) {
@@ -1560,6 +1587,11 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
             touching[r] = 1;
 }
 }
+    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d TOUCH stop=%d", raten, stop);
+        for (int _cki = 0; _cki < (4); ++_cki) printf(" t%d=%d g%d=%.17g", _cki, touching[_cki], _cki, gap_of_k(ptp, pt_radius_g, _cki * 2, cst[CF_plane_y]));
+        printf("\n");
+    }
     if (csti[CI_contact] != 0 && cst[CF_mu] > (double)(0.0) && stop == 0) {
         double jt1[18];
         for (_zzero33 = 0; _zzero33 < (18); ++_zzero33) {
@@ -1593,6 +1625,7 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
         for (_zzero40 = 0; _zzero40 < (1); ++_zzero40) {
             md[_zzero40] = 0;
 }
+        fsdbg = (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) ? 1 : 0;
         for (r = 0; r < (4); ++r) {
             if (touching[r] == 0) {
                 continue;
@@ -1635,7 +1668,18 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
             for (i = 0; i < (18); ++i) {
                 row_t[i] = dir_x * jt1[i] + dir_z * jt2[i];
 }
+            for (i = 0; i < (18); ++i) {
+                rn[i] = ptJ[(r * 3 + 1) * 18 + i];
+}
+            if (fsdbg) {
+                printf("RTFRI n=%d k=%d svx=%.17g svz=%.17g planar=%.17g kslip=%.17g dx=%.17g dz=%.17g ss=%d fx=%.17g fz=%.17g ft=%.17g",
+                    raten, r, svx, svz, planar, cst[CF_k_slip], dir_x, dir_z, slip_sign, -by, -(dir_x * bx + dir_z * bz), row_dot(row_t, v));
+            }
+            fsk = r;
             friction_solve(free, inv, rn, row_t, -by, -(dir_x * bx + dir_z * bz), cst[CF_mu], slip_sign, force, ln, lt, md);
+            if (fsdbg) {
+                printf("RTFRO n=%d k=%d mode=%d ln=%.17g lt=%.17g\n", raten, r, md[0], ln[0], lt[0]);
+            }
             if (md[0] > 0) {
                 mat_vec(inv, force, corr);
                 for (i = 0; i < (18); ++i) {
@@ -1645,6 +1689,13 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
 }
 }
 }
+    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d FFRIC", raten);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" %.17g", free[_cki]);
+        for (int _cki = 0; _cki < (4); ++_cki) printf(" m%d=%d", _cki, mode_k[_cki]);
+        printf("\n");
+    }
+    fsdbg = 0;
     for (r = 0; r < (4); ++r) {
         if (touching[r] == 0) {
             continue;
@@ -1697,6 +1748,14 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
         for (int _cki = 0; _cki < 18; ++_cki) printf(" %.17g", free[_cki]);
         printf("\n");
     }
+    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d FPROJ R=%d ns=%d", raten, R, n_stops);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" %.17g", free[_cki]);
+        printf("\n");
+    }
+    if (advdbg) {
+        raten = raten + 1;
+}
     for (i = 0; i < (18); ++i) {
         rv[i] = free[i];
         rq[i] = v[i];
@@ -1757,6 +1816,12 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
             plane[r] = 1;
 }
 }
+    if (advdbg && csti[CI_contact] != 0 && cst[CF_mu] > (double)(0.0)) {
+        printf("FST n=%d gate=%.17g h=%.17g", advn, gate, h);
+        for (int _cki = 0; _cki < (4); ++_cki) printf(" p%d=%d g%d=%.17g", _cki, plane[_cki], _cki, gap_of_k(ptp, pt_radius_g, _cki * 2, cst[CF_plane_y]));
+        printf("\n");
+        advn = advn + 1;
+}
     rc =  rate(q0, v0, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, qa, va, mdi, csti);
     if (rc != 0) {
         return rc;
@@ -1815,6 +1880,11 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
         v1[i] = v0[i] + h * (va[i] + (double)(2.0) * brv[i] + (double)(2.0) * crv[i] + drv[i]) / (double)(6.0);
         w1[i] = w0[i] + tau[i] * (q1[i] - q0[i]);
 }
+    if (advdbg) {
+        printf("FSEND n=%d", advn);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" q%d=%.17g v%d=%.17g", _cki, q1[_cki], _cki, v1[_cki]);
+        printf("\n");
+    }
     return 0;
 }
 
@@ -1943,10 +2013,17 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
     int _zzero67;
     int _zzero68;
     int _zzero69;
+    int _zzero70b;
+    int _zzero70c;
+    int _zzero70d;
     double closing;
     double svx;
     double svz;
     double planar;
+    double before;
+    double loss;
+    double share_n;
+    double share_t;
     int _zzero70;
     int _zzero71;
     int _zzero72;
@@ -1958,6 +2035,8 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
     int _zzero77;
     int _zzero78;
     int _zzero79;
+    int _zzero79b;
+    int _zzero79c;
     int a;
     int b;
     double s;
@@ -2023,6 +2102,11 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
     for (_zzero61 = 0; _zzero61 < (18); ++_zzero61) {
         rn[_zzero61] = 0.0;
 }
+    if (advdbg) {
+        printf("IMPE n=%d ns=%d t0=%d t1=%d t2=%d t3=%d g0=%.17g g1=%.17g g2=%.17g g3=%.17g\n", advn, n_stops, touching[0], touching[1], touching[2], touching[3],
+            gap_of_k(ptp, pt_radius_g, 0, cst[CF_plane_y]), gap_of_k(ptp, pt_radius_g, 2, cst[CF_plane_y]),
+            gap_of_k(ptp, pt_radius_g, 4, cst[CF_plane_y]), gap_of_k(ptp, pt_radius_g, 6, cst[CF_plane_y]));
+    }
     if (cst[CF_mu] > (double)(0.0) && n_stops == 0 && csti[CI_contact] != 0) {
         double jt1[18];
         for (_zzero62 = 0; _zzero62 < (18); ++_zzero62) {
@@ -2056,6 +2140,18 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
         for (_zzero69 = 0; _zzero69 < (1); ++_zzero69) {
             md[_zzero69] = 0;
 }
+        double mv_pre[18];
+        for (_zzero70b = 0; _zzero70b < (18); ++_zzero70b) {
+            mv_pre[_zzero70b] = 0.0;
+}
+        double mv_post[18];
+        for (_zzero70c = 0; _zzero70c < (18); ++_zzero70c) {
+            mv_post[_zzero70c] = 0.0;
+}
+        double mean_i[18];
+        for (_zzero70d = 0; _zzero70d < (18); ++_zzero70d) {
+            mean_i[_zzero70d] = 0.0;
+}
         for (r = 0; r < (4); ++r) {
             if (touching[r] == 0) {
                 continue;
@@ -2079,13 +2175,25 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
                 row_t[i] = (svx * jt1[i] + svz * jt2[i]) / planar;
 }
             friction_solve(v, inv, rn, row_t, (double)(0.0), (double)(0.0), cst[CF_mu], 1, force, ln, lt, md);
+            if (advdbg) {
+                printf("IMPF n=%d r=%d closing=%.17g planar=%.17g mode=%d ln=%.17g lt=%.17g caught=%.17g\n", advn, r, closing, planar, md[0], ln[0], lt[0], caught);
+            }
             if (md[0] > 0) {
                 mat_vec(inv, force, corr);
+                mat_vec(M, v, mv_pre);
+                before =  (double)(0.5) * row_dot(v, mv_pre);
                 for (i = 0; i < (18); ++i) {
+                    mean_i[i] = v[i] + corr[i] / (double)(2.0);
                     v[i] = v[i] + corr[i];
 }
-                if (ln[0] > caught) {
-                    caught =  ln[0];
+                mat_vec(M, v, mv_post);
+                loss =  before - (double)(0.5) * row_dot(v, mv_post);
+                share_n =  ln[0] * row_dot(rn, mean_i);
+                share_t =  lt[0] * row_dot(row_t, mean_i);
+                if (loss >= (double)(-1e-11) && share_n <= (double)(1e-11) && share_t <= (double)(1e-11)) {
+                    if (ln[0] > caught) {
+                        caught =  ln[0];
+}
 }
 }
 }
@@ -2117,6 +2225,11 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
             rc[0] = 5;
             return (double)(0.0);
 }
+        if (advdbg) {
+            printf("IMPP n=%d R=%d ns=%d", advn, R, n_stops);
+            for (int _cki = 0; _cki < (R); ++_cki) printf(" m%d=%.17g", _cki, mult[_cki]);
+            printf("\n");
+        }
         double corr[18];
         for (_zzero72 = 0; _zzero72 < (18); ++_zzero72) {
             corr[_zzero72] = 0.0;
@@ -2165,21 +2278,36 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
         for (_zzero79 = 0; _zzero79 < (18); ++_zzero79) {
             ia[_zzero79] = 0.0;
 }
+        double rb[18];
+        for (_zzero79b = 0; _zzero79b < (18); ++_zzero79b) {
+            rb[_zzero79b] = 0.0;
+}
+        double wb[18];
+        for (_zzero79c = 0; _zzero79c < (18); ++_zzero79c) {
+            wb[_zzero79c] = 0.0;
+}
         for (a = 0; a < (npen); ++a) {
             for (i = 0; i < (18); ++i) {
                 ra[i] = ptJ[(pen[a] * 3 + 1) * 18 + i];
 }
-            mat_vec(inv, ra, ia);
             for (b = 0; b < (npen); ++b) {
+                for (i = 0; i < (18); ++i) {
+                    rb[i] = ptJ[(pen[b] * 3 + 1) * 18 + i];
+}
+                mat_vec(inv, rb, wb);
                 s =  (double)(0.0);
                 for (i = 0; i < (18); ++i) {
-                    s =  s + ia[i] * ptJ[(pen[b] * 3 + 1) * 18 + i];
+                    s =  s + ra[i] * wb[i];
 }
-                gram[a * 4 + b] = s;
+                gram[a * npen + b] = s;
 }
             rhs[a] = -gaps[a];
 }
-        if (gram_factor4(gram, npen, rhs, lam) == 1) {
+        const int gok =  gram_factor4(gram, npen, rhs, lam);
+        if (advdbg) {
+            printf("IMPC n=%d npen=%d g00=%.17g g01=%.17g g10=%.17g g11=%.17g r0=%.17g r1=%.17g ok=%d l0=%.17g l1=%.17g\n", advn, npen, gram[0], gram[1], gram[2], gram[3], rhs[0], rhs[1], gok, lam[0], lam[1]);
+        }
+        if (gok == 1) {
             double corr[18];
             for (_zzero80 = 0; _zzero80 < (18); ++_zzero80) {
                 corr[_zzero80] = 0.0;
@@ -2227,6 +2355,9 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
     int r;
     double g;
     double rcs;
+    int _zzeroeq;
+    int _zzeroev;
+    int _zzeroew;
     double hit;
     int which;
     int khit;
@@ -2302,16 +2433,32 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
             rc[0] = 6;
             return;
 }
+        if (advdbg) {
+            printf("ADV n=%d ent h=%.17g depth=%d clamps=%d", advn, rem, depth, clamps);
+            for (int _cki = 0; _cki < (18); ++_cki) printf(" q%d=%.17g v%d=%.17g", _cki, q1[_cki], _cki, v1[_cki]);
+            printf("\n");
+            advn = advn + 1;
+}
         rcv[0] = 0;
         caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti);
         if (rcv[0] != 0) {
             rc[0] = rcv[0];
             return;
 }
+        if (advdbg) {
+            printf("ADV n=%d imp caught=%.17g", advn, caught);
+            for (int _cki = 0; _cki < (18); ++_cki) printf(" q%d=%.17g v%d=%.17g", _cki, q1[_cki], _cki, v1[_cki]);
+            printf("\n");
+            advn = advn + 1;
+}
         if (cst[CF_mu] > (double)(0.0) && caught > (double)(1e-9) && depth < 5) {
             sh[sp] = rem * (double)(0.5);
             sdep[sp] = depth + 3;
             scl[sp] = clamps;
+            if (advdbg) {
+                printf("ADV n=%d split half=%.17g\n", advn, rem * (double)(0.5));
+                advn = advn + 1;
+            }
             sp =  sp + 1;
             rem =  rem * (double)(0.5);
             depth =  depth + 3;
@@ -2322,10 +2469,33 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
             g =  gap_of_k(ptp, pt_radius_g, r * 2, cst[CF_plane_y]);
             live[r] = ((csti[CI_contact] != 0 && g <= cst[CF_k_touch])) ? ((int)(1)) : ((int)(0));
 }
+        if (advdbg) {
+            printf("ADV n=%d live", advn);
+            for (int _cki = 0; _cki < (4); ++_cki) printf(" l%d=%d g%d=%.17g", _cki, live[_cki], _cki, gap_of_k(ptp, pt_radius_g, _cki * 2, cst[CF_plane_y]));
+            printf("\n");
+            advn = advn + 1;
+}
         rcs =  free_step(q1, v1, w1, tau, live, rem, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti);
         if (rcs != 0) {
             rc[0] = rcs;
             return;
+}
+        double end_q[18];
+        for (_zzeroeq = 0; _zzeroeq < (18); ++_zzeroeq) {
+            end_q[_zzeroeq] = 0.0;
+}
+        double end_v[18];
+        for (_zzeroev = 0; _zzeroev < (18); ++_zzeroev) {
+            end_v[_zzeroev] = 0.0;
+}
+        double end_w[18];
+        for (_zzeroew = 0; _zzeroew < (18); ++_zzeroew) {
+            end_w[_zzeroew] = 0.0;
+}
+        for (i = 0; i < (18); ++i) {
+            end_q[i] = qe[i];
+            end_v[i] = ve[i];
+            end_w[i] = we[i];
 }
         hit =  rem;
         which =  (int)(-1);
@@ -2382,14 +2552,18 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 }
 }
         if (csti[CI_contact] != 0) {
-            pot =  fk_eval(qe,  ve, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
+            pot =  fk_eval(end_q,  end_v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
             r =  (int)(0);
             while (r < 4) {
                 r =  r + 1;
                 if (live[r - 1] != 0) {
                     continue;
 }
+                pot =  fk_eval(end_q,  end_v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
                 g =  gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y]);
+                if (advdbg) {
+                    printf("RTSC n=%d r=%d g=%.17g gh=%.17g gm=%.17g py=%.17g q14=%.17g q15=%.17g q16=%.17g q17=%.17g live=%d\n", advn, r - 1, g, ptp[((r - 1) * 2) * 3 + 1] + pt_radius_g[(r - 1) * 2] - cst[CF_plane_y], ptp[((r - 1) * 2 + 1) * 3 + 1] + pt_radius_g[(r - 1) * 2 + 1] - cst[CF_plane_y], cst[CF_plane_y], end_q[14], end_q[15], end_q[16], end_q[17], live[r - 1]);
+                }
                 if (g >= (double)(0.0)) {
                     continue;
 }
@@ -2408,6 +2582,7 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
                         rc[0] = rcb;
                         return;
 }
+                    pot =  fk_eval(qe,  ve, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
                     if (gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y]) <= (double)(0.0)) {
                         right =  mid;
 }
@@ -2424,11 +2599,21 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
                 r =  r;
 }
 }
+        if (advdbg) {
+            printf("ADV n=%d evt which=%d khit=%d hit=%.17g wall=%.17g", advn, which, khit < 0 ? khit : khit * 2, hit, wall);
+            for (int _cki = 0; _cki < (18); ++_cki) printf(" q%d=%.17g v%d=%.17g", _cki, end_q[_cki], _cki, end_v[_cki]);
+            printf("\n");
+            advn = advn + 1;
+}
         if (which == -1) {
+            if (advdbg) {
+                printf("ADV n=%d end\n", advn);
+                advn = advn + 1;
+            }
             for (i = 0; i < (18); ++i) {
                 q1[i] = qe[i];
-                v1[i] = ve[i];
-                w1[i] = we[i];
+                v1[i] = end_v[i];
+                w1[i] = end_w[i];
 }
             if (sp > 0) {
                 sp =  sp - 1;
@@ -2443,6 +2628,10 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
 }
 }
         if (hit <= (double)(1e-12)) {
+            if (advdbg) {
+                printf("ADV n=%d clamp which=%d khit=%d wall=%.17g hit=%.17g\n", advn, which, khit, wall, hit);
+                advn = advn + 1;
+            }
             if (clamps >= 64) {
                 rc[0] = 6;
                 return;
@@ -2460,6 +2649,10 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
             continue;
 }
         if (which == -2) {
+            if (advdbg) {
+                printf("ADV n=%d cross khit=%d hit=%.17g\n", advn, khit < 0 ? khit : khit * 2, hit);
+                advn = advn + 1;
+            }
             for (rr = 0; rr < (4); ++rr) {
                 probe[rr] = live[rr];
 }
@@ -2493,6 +2686,10 @@ __device__ inline void advance(double* q0, double* v0, double* w0, double* tau, 
                 depth =  depth + 1;
 }
             continue;
+}
+        if (advdbg) {
+            printf("ADV n=%d wallev which=%d hit=%.17g\n", advn, which, hit);
+            advn = advn + 1;
 }
         rcw =  free_step(q1, v1, w1, tau, live, hit, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti);
         if (rcw != 0) {
@@ -3578,19 +3775,19 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     for (_zzero156 = 0; _zzero156 < (18); ++_zzero156) {
         we[_zzero156] = 0.0;
 }
-    double sq[576];
+    double sq[2304];
     for (_zzero157 = 0; _zzero157 < (576); ++_zzero157) {
         sq[_zzero157] = 0.0;
 }
-    double sh16[16];
+    double sh16[64];
     for (_zzero158 = 0; _zzero158 < (16); ++_zzero158) {
         sh16[_zzero158] = 0.0;
 }
-    int sdep[16];
+    int sdep[64];
     for (_zzero159 = 0; _zzero159 < (16); ++_zzero159) {
         sdep[_zzero159] = 0;
 }
-    int scl[16];
+    int scl[64];
     for (_zzero160 = 0; _zzero160 < (16); ++_zzero160) {
         scl[_zzero160] = 0;
 }
@@ -5257,19 +5454,19 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
     for (_zzero297 = 0; _zzero297 < (18); ++_zzero297) {
         we[_zzero297] = 0.0;
 }
-    double sq[576];
+    double sq[2304];
     for (_zzero298 = 0; _zzero298 < (576); ++_zzero298) {
         sq[_zzero298] = 0.0;
 }
-    double sh16[16];
+    double sh16[64];
     for (_zzero299 = 0; _zzero299 < (16); ++_zzero299) {
         sh16[_zzero299] = 0.0;
 }
-    int sdep[16];
+    int sdep[64];
     for (_zzero300 = 0; _zzero300 < (16); ++_zzero300) {
         sdep[_zzero300] = 0;
 }
-    int scl[16];
+    int scl[64];
     for (_zzero301 = 0; _zzero301 < (16); ++_zzero301) {
         scl[_zzero301] = 0;
 }
@@ -5505,6 +5702,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
             eff[mdi[OI_drive_coord + d]] = tau[mdi[OI_drive_coord + d]] * scales[d];
 }
         eff[2] = tau[2] * scales[12];
+        advdbg = ((a_ticks[e] == 41)) ? 1 : 0;
         advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl, adv, rca, o_q, o_v, o_w, mdi, csti);
         for (i = 0; i < (18); ++i) {
             trial_q[i] = o_q[i];
@@ -6188,19 +6386,19 @@ __global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     for (_zzero386 = 0; _zzero386 < (18); ++_zzero386) {
         we[_zzero386] = 0.0;
 }
-    double sq[576];
+    double sq[2304];
     for (_zzero387 = 0; _zzero387 < (576); ++_zzero387) {
         sq[_zzero387] = 0.0;
 }
-    double sh16[16];
+    double sh16[64];
     for (_zzero388 = 0; _zzero388 < (16); ++_zzero388) {
         sh16[_zzero388] = 0.0;
 }
-    int sdep[16];
+    int sdep[64];
     for (_zzero389 = 0; _zzero389 < (16); ++_zzero389) {
         sdep[_zzero389] = 0;
 }
-    int scl[16];
+    int scl[64];
     for (_zzero390 = 0; _zzero390 < (16); ++_zzero390) {
         scl[_zzero390] = 0;
 }

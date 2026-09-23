@@ -254,5 +254,368 @@ inject = """    if (fkdbg2 && (!fkdbg4_fired) && q[0] == 0.0 && v[0] == 0.0 && v
 """ + anchor
 src = src.replace(anchor, inject, 1)
 
+# 9) CLOSEOUT-4 ADVTRACE drill: the tick-3 interior bisection surface. Globals
+# + per-advance-call event-sequence prints (ent/imp/split/live/evt/clamp/cross/
+# wall/end) armed per substep from tick_integ at the diverging tick
+# (a_ticks[e]==3), plus the free_step plane-mask census (FST). Line grammar is
+# IDENTICAL to the C++ ADVTRACE in gait_controller_instr.hpp, so the two
+# streams diff line-by-line and the first differing line names the divergence.
+anchor = """int fkdbg4_fired = 0; // one-shot latch (rate checkpoint dump)"""
+assert anchor in src, "fkdbg4 global anchor not found (section 8 must run first)"
+src = src.replace(anchor, anchor + "\nint advdbg = 0; // CLOSEOUT-4 advance-trace gate (armed per substep from tick_integ)\nint advn = 0; // advance-trace sequence counter", 1)
+
+# arm: before the TOP advance call of the substep loop (first of the three
+# advance( call sites in tick_integ_kernel -- the bisection and round-retry
+# calls inherit the armed value of their substep).
+anchor = """        advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd,"""
+assert src.count(anchor) == 3, "advance call anchor count != 3"
+src = src.replace(anchor, """        advdbg = ((a_ticks[e] == 41)) ? 1 : 0;
+""" + anchor, 1)
+
+# ADV ent: before the MAIN impact call (first of the two 8-space rcv sites; the
+# second is the mu==0 wall branch at the advance tail).
+anchor = """        rcv[0] = 0;
+        caught =  impact(q1, v1, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, rcv, mdi, csti);"""
+assert src.count(anchor) == 2, "S1 rcv anchor count != 2"
+src = src.replace(anchor, """        if (advdbg) {
+            printf("ADV n=%d ent h=%.17g depth=%d clamps=%d", advn, rem, depth, clamps);
+            for (int _cki = 0; _cki < (18); ++_cki) printf(" q%d=%.17g v%d=%.17g", _cki, q1[_cki], _cki, v1[_cki]);
+            printf("\\n");
+            advn = advn + 1;
+}
+""" + anchor, 1)
+
+# ADV imp: after the main impact, before the split test.
+anchor = """        if (cst[CF_mu] > (double)(0.0) && caught > (double)(1e-9) && depth < 5) {"""
+assert src.count(anchor) == 1, "S2 split-test anchor not unique"
+src = src.replace(anchor, """        if (advdbg) {
+            printf("ADV n=%d imp caught=%.17g", advn, caught);
+            for (int _cki = 0; _cki < (18); ++_cki) printf(" q%d=%.17g v%d=%.17g", _cki, q1[_cki], _cki, v1[_cki]);
+            printf("\\n");
+            advn = advn + 1;
+}
+""" + anchor, 1)
+
+# ADV split: inside the Coulomb-catch split branch (rem already halved == C++ h/2).
+anchor = """            sp =  sp + 1;
+            rem =  rem * (double)(0.5);
+            depth =  depth + 3;
+            continue;"""
+assert src.count(anchor) == 1, "S3 push anchor not unique"
+src = src.replace(anchor, """            if (advdbg) {
+                printf("ADV n=%d split half=%.17g\\n", advn, rem * (double)(0.5));
+                advn = advn + 1;
+            }
+            sp =  sp + 1;
+            rem =  rem * (double)(0.5);
+            depth =  depth + 3;
+            continue;""", 1)
+
+# ADV live: before the main free_step (the live mask + pre-step gaps).
+anchor = """        rcs =  free_step(q1, v1, w1, tau, live, rem, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, mdi, csti);"""
+assert src.count(anchor) == 1, "S4 main free_step anchor not unique"
+src = src.replace(anchor, """        if (advdbg) {
+            printf("ADV n=%d live", advn);
+            for (int _cki = 0; _cki < (4); ++_cki) printf(" l%d=%d g%d=%.17g", _cki, live[_cki], _cki, gap_of_k(ptp, pt_radius_g, _cki * 2, cst[CF_plane_y]));
+            printf("\\n");
+            advn = advn + 1;
+}
+""" + anchor, 1)
+
+# ADV evt (before the plain-end branch) + ADV end (first thing inside it).
+anchor = """        if (which == -1) {
+            for (i = 0; i < (18); ++i) {
+                q1[i] = end_q[i];"""
+assert src.count(anchor) == 1, "S5/S9 which==-1 anchor not unique"
+src = src.replace(anchor, """        if (advdbg) {
+            printf("ADV n=%d evt which=%d khit=%d hit=%.17g wall=%.17g", advn, which, khit < 0 ? khit : khit * 2, hit, wall);
+            for (int _cki = 0; _cki < (18); ++_cki) printf(" q%d=%.17g v%d=%.17g", _cki, end_q[_cki], _cki, end_v[_cki]);
+            printf("\\n");
+            advn = advn + 1;
+}
+        if (which == -1) {
+            if (advdbg) {
+                printf("ADV n=%d end\\n", advn);
+                advn = advn + 1;
+            }
+            for (i = 0; i < (18); ++i) {
+                q1[i] = qe[i];""", 1)
+
+# ADV clamp: first thing in the fp-boundary pin branch.
+anchor = """        if (hit <= (double)(1e-12)) {
+            if (clamps >= 64) {"""
+assert src.count(anchor) == 1, "S6 clamp anchor not unique"
+src = src.replace(anchor, """        if (hit <= (double)(1e-12)) {
+            if (advdbg) {
+                printf("ADV n=%d clamp which=%d khit=%d wall=%.17g hit=%.17g\\n", advn, which, khit, wall, hit);
+                advn = advn + 1;
+            }
+            if (clamps >= 64) {""", 1)
+
+# ADV cross: first thing in the contact-crossing branch.
+anchor = """        if (which == -2) {"""
+assert src.count(anchor) == 1, "S7 which==-2 anchor not unique"
+src = src.replace(anchor, """        if (which == -2) {
+            if (advdbg) {
+                printf("ADV n=%d cross khit=%d hit=%.17g\\n", advn, khit < 0 ? khit : khit * 2, hit);
+                advn = advn + 1;
+            }""", 1)
+
+# ADV wallev: before the tail free_step of the drive-stop wall branch.
+anchor = """        rcw =  free_step(q1, v1, w1, tau, live, hit, mdl, cst,"""
+assert src.count(anchor) == 1, "S8 rcw anchor not unique"
+src = src.replace(anchor, """        if (advdbg) {
+            printf("ADV n=%d wallev which=%d hit=%.17g\\n", advn, which, hit);
+            advn = advn + 1;
+}
+""" + anchor, 1)
+
+# FST: the free_step plane-mask census, before the stage-a rate call. Guarded
+# exactly like the C++ print (inside contact_&&mu_>0) so the streams align.
+anchor = """    rc =  rate(q0, v0, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, qa, va, mdi, csti);"""
+assert src.count(anchor) == 1, "FST rate-a anchor not unique"
+src = src.replace(anchor, """    if (advdbg && csti[CI_contact] != 0 && cst[CF_mu] > (double)(0.0)) {
+        printf("FST n=%d gate=%.17g h=%.17g", advn, gate, h);
+        for (int _cki = 0; _cki < (4); ++_cki) printf(" p%d=%d g%d=%.17g", _cki, plane[_cki], _cki, gap_of_k(ptp, pt_radius_g, _cki * 2, cst[CF_plane_y]));
+        printf("\\n");
+        advn = advn + 1;
+}
+""" + anchor, 1)
+
+# 10) CLOSEOUT-4 stage 2: FSEND -- the free_step END state (q1/v1 0..17) right
+# after the RK combine, keyed to the FST n so the first bisection free_step
+# whose end state differs in bits is pinpointed exactly.
+anchor = """        w1[i] = w0[i] + tau[i] * (q1[i] - q0[i]);
+}
+    return 0;
+}"""
+assert src.count(anchor) == 1, "FSEND free_step tail anchor not unique"
+src = src.replace(anchor, """        w1[i] = w0[i] + tau[i] * (q1[i] - q0[i]);
+}
+    if (advdbg) {
+        printf("FSEND n=%d", advn);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" q%d=%.17g v%d=%.17g", _cki, q1[_cki], _cki, v1[_cki]);
+        printf("\\n");
+    }
+    return 0;
+}""", 1)
+
+# 11) CLOSEOUT-4 stage 2: RT -- the rate() interior checkpoints (FRHS/FMUL/
+# RTTOUCH/FFRIC/FPROJ), armed with the ADVTRACE window and narrowed by the
+# RTLO/RTHI env window over the armed-call counter. Matches the C++ RT grammar.
+anchor = """int advdbg = 0; // CLOSEOUT-4 advance-trace gate (armed per substep from tick_integ)
+int advn = 0; // advance-trace sequence counter"""
+assert anchor in src, "advdbg globals anchor not found"
+src = src.replace(anchor, anchor + "\nint raten = 0; // armed rate() call counter\nint rt_lo = -1; int rt_hi = -1; int rt_init = 0; // RTLO/RTHI window (set once from env)", 1)
+
+anchor = """    mat_vec(inv, free, free_acc);"""
+assert src.count(anchor) == 1, "RTFRHS anchor not unique (after section 8)"
+src = src.replace(anchor, """    if (!rt_init) {
+        rt_init = 1;
+        if (getenv("RTLO")) rt_lo = atoi(getenv("RTLO"));
+        if (getenv("RTHI")) rt_hi = atoi(getenv("RTHI"));
+    }
+    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d FRHS", raten);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" %.17g", free[_cki]);
+        printf("\\n");
+    }
+""" + anchor, 1)
+
+# FMUL: section 8 put the FKDBG4 FMUL block between the copy and the loop close;
+# anchor on that block's tail and emit RT FMUL after the for-loop close.
+anchor = """            printf("FKDBG4 FMUL");
+            for (int _cki = 0; _cki < 18; ++_cki) printf(" %.17g", free[_cki]);
+            printf("\\n");
+        }
+}"""
+assert src.count(anchor) == 1, "RTFMUL anchor not unique (after section 8)"
+src = src.replace(anchor, """            printf("FKDBG4 FMUL");
+            for (int _cki = 0; _cki < 18; ++_cki) printf(" %.17g", free[_cki]);
+            printf("\\n");
+        }
+}
+    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d FMUL", raten);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" %.17g", free[_cki]);
+        printf("\\n");
+}""", 1)
+
+anchor = """    if (csti[CI_contact] != 0 && cst[CF_mu] > (double)(0.0) && stop == 0) {"""
+assert src.count(anchor) == 1, "RTTOUCH anchor not unique"
+src = src.replace(anchor, """    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d TOUCH stop=%d", raten, stop);
+        for (int _cki = 0; _cki < (4); ++_cki) printf(" t%d=%d g%d=%.17g", _cki, touching[_cki], _cki, gap_of_k(ptp, pt_radius_g, _cki * 2, cst[CF_plane_y]));
+        printf("\\n");
+    }
+""" + anchor, 1)
+
+anchor = """    for (r = 0; r < (4); ++r) {
+        if (touching[r] == 0) {
+            continue;
+}
+        for (i = 0; i < (18); ++i) {
+            rn[i] = ptJ[(r * 3 + 1) * 18 + i];
+}
+        floor_k =  -ptbias[r * 3 + 1];"""
+assert src.count(anchor) == 1, "RTFFRIC anchor not unique"
+src = src.replace(anchor, """    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d FFRIC", raten);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" %.17g", free[_cki]);
+        for (int _cki = 0; _cki < (4); ++_cki) printf(" m%d=%d", _cki, mode_k[_cki]);
+        printf("\\n");
+    }
+""" + anchor, 1)
+
+anchor = """    for (i = 0; i < (18); ++i) {
+        rv[i] = free[i];
+        rq[i] = v[i];
+}"""
+assert src.count(anchor) == 1, "RTFPROJ anchor not unique"
+src = src.replace(anchor, """    if (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) {
+        printf("RT n=%d FPROJ R=%d ns=%d", raten, R, n_stops);
+        for (int _cki = 0; _cki < (18); ++_cki) printf(" %.17g", free[_cki]);
+        printf("\\n");
+    }
+    if (advdbg) {
+        raten = raten + 1;
+}
+""" + anchor, 1)
+
+# 12) CLOSEOUT-4 stage 3: per-point friction drill. RTFRI (in rate's friction
+# loop, before friction_solve) dumps the direction-selection inputs; RTFS
+# (inside friction_solve) dumps the 2x2 solve internals. Both gated by the
+# same armed+window logic; fsdbg armed per rate() call so impact()'s
+# friction_solve calls never print.
+anchor = """int raten = 0; // armed rate() call counter
+int rt_lo = -1; int rt_hi = -1; int rt_init = 0; // RTLO/RTHI window (set once from env)"""
+assert anchor in src, "RT globals anchor not found"
+src = src.replace(anchor, anchor + "\nint fsdbg = 0; // per-point friction drill gate (armed inside rate's friction loop)\nint fsk = -1; // the friction point index for RTFS", 1)
+
+# RTFRI: at the top of each friction-loop iteration (after the touching skip),
+# dump slip/planar/direction; and after friction_solve, dump mode/ln/lt.
+anchor = """        for (r = 0; r < (4); ++r) {
+            if (touching[r] == 0) {
+                continue;
+}
+            for (i = 0; i < (18); ++i) {
+                jt1[i] = ptJ[(r * 3 + 0) * 18 + i];
+                jt2[i] = ptJ[(r * 3 + 2) * 18 + i];
+}"""
+assert src.count(anchor) == 1, "RTFRI loop head anchor not unique"
+src = src.replace(anchor, """        fsdbg = (advdbg && (rt_lo < 0 || (raten >= rt_lo && raten <= rt_hi))) ? 1 : 0;
+""" + anchor, 1)
+
+anchor = """            friction_solve(free, inv, rn, row_t, -by, -(dir_x * bx + dir_z * bz), cst[CF_mu], slip_sign, force, ln, lt, md);
+            if (md[0] > 0) {"""
+assert src.count(anchor) == 1, "RTFRI solve anchor not unique"
+src = src.replace(anchor, """            if (fsdbg) {
+                printf("RTFRI n=%d k=%d svx=%.17g svz=%.17g planar=%.17g kslip=%.17g dx=%.17g dz=%.17g ss=%d fx=%.17g fz=%.17g ft=%.17g",
+                    raten, r, svx, svz, planar, cst[CF_k_slip], dir_x, dir_z, slip_sign, -by, -(dir_x * bx + dir_z * bz), row_dot(row_t, v));
+            }
+            fsk = r;
+            friction_solve(free, inv, rn, row_t, -by, -(dir_x * bx + dir_z * bz), cst[CF_mu], slip_sign, force, ln, lt, md);
+            if (fsdbg) {
+                printf("RTFRO n=%d k=%d mode=%d ln=%.17g lt=%.17g\\n", raten, r, md[0], ln[0], lt[0]);
+            }
+            if (md[0] > 0) {""", 1)
+
+# disarm fsdbg after the friction block
+anchor = """    for (r = 0; r < (4); ++r) {
+        if (touching[r] == 0) {
+            continue;
+}
+        for (i = 0; i < (18); ++i) {
+            rn[i] = ptJ[(r * 3 + 1) * 18 + i];
+}
+        floor_k =  -ptbias[r * 3 + 1];"""
+assert src.count(anchor) == 1, "fsdbg disarm anchor not unique"
+src = src.replace(anchor, """    fsdbg = 0;
+""" + anchor, 1)
+
+# RTFS: inside friction_solve, after the 2x2 assembly (gated by fsdbg).
+anchor = """    det =  A * C - B * B;"""
+assert src.count(anchor) == 1, "RTFS det anchor not unique"
+src = src.replace(anchor, """    det =  A * C - B * B;
+    if (fsdbg) {
+        printf("RTFS k=%d A=%.17g B=%.17g C=%.17g rn=%.17g rt=%.17g det=%.17g\\n", fsk, A, B, C, rn, rt, det);
+    }""", 1)
+
+anchor = """    if (det > (double)(1e-18)) {
+        nn =  (rn * C - rt * B) / det;
+        t =  (rt * A - rn * B) / det;"""
+assert src.count(anchor) == 1, "RTFS cone anchor not unique"
+src = src.replace(anchor, """    if (det > (double)(1e-18)) {
+        nn =  (rn * C - rt * B) / det;
+        t =  (rt * A - rn * B) / det;
+        if (fsdbg) {
+            printf("RTFSC k=%d nn=%.17g t=%.17g abt=%.17g muNN=%.17g tss=%.17g\\n", fsk, nn, t, fabs(t), mu * nn + (double)(1e-12), t * (double)slip_sign);
+        }""", 1)
+
+# 13) CLOSEOUT-4 stage 4: RTSC -- the contact-scan per-point gap decision (the
+# pair-min gap at the end state, printed before the g>=0 skip). Names which
+# point the two implementations scan differently.
+anchor = """                pot =  fk_eval(end_q,  end_v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
+                g =  gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y]);
+                if (g >= (double)(0.0)) {
+                    continue;"""
+assert src.count(anchor) == 1, "RTSC per-point scan anchor not unique"
+src = src.replace(anchor, """                pot =  fk_eval(end_q,  end_v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias);
+                g =  gap_of_k(ptp, pt_radius_g, (r - 1) * 2, cst[CF_plane_y]);
+                if (advdbg) {
+                    printf("RTSC n=%d r=%d g=%.17g gh=%.17g gm=%.17g py=%.17g q14=%.17g q15=%.17g q16=%.17g q17=%.17g live=%d\\n", advn, r - 1, g, ptp[((r - 1) * 2) * 3 + 1] + pt_radius_g[(r - 1) * 2] - cst[CF_plane_y], ptp[((r - 1) * 2 + 1) * 3 + 1] + pt_radius_g[(r - 1) * 2 + 1] - cst[CF_plane_y], cst[CF_plane_y], end_q[14], end_q[15], end_q[16], end_q[17], live[r - 1]);
+                }
+                if (g >= (double)(0.0)) {
+                    continue;""", 1)
+
+
+# 14) CLOSEOUT-4: impact() interior drill. IMPF per friction-catch point,
+# IMPP after the projection. Gate: advdbg (armed) -- impact runs inside the
+# advance window only.
+anchor = """    if (cst[CF_mu] > (double)(0.0) && n_stops == 0 && csti[CI_contact] != 0) {
+        double jt1[18];"""
+assert src.count(anchor) == 1, "impact friction block anchor not found"
+src = src.replace(anchor, """    if (advdbg) {
+        printf("IMPE n=%d ns=%d t0=%d t1=%d t2=%d t3=%d g0=%.17g g1=%.17g g2=%.17g g3=%.17g\\n", advn, n_stops, touching[0], touching[1], touching[2], touching[3],
+            gap_of_k(ptp, pt_radius_g, 0, cst[CF_plane_y]), gap_of_k(ptp, pt_radius_g, 2, cst[CF_plane_y]),
+            gap_of_k(ptp, pt_radius_g, 4, cst[CF_plane_y]), gap_of_k(ptp, pt_radius_g, 6, cst[CF_plane_y]));
+    }
+""" + anchor, 1)
+
+anchor = """            friction_solve(v, inv, rn, row_t, (double)(0.0), (double)(0.0), cst[CF_mu], 1, force, ln, lt, md);"""
+assert src.count(anchor) == 1, "impact friction_solve anchor not found"
+src = src.replace(anchor, """            friction_solve(v, inv, rn, row_t, (double)(0.0), (double)(0.0), cst[CF_mu], 1, force, ln, lt, md);
+            if (advdbg) {
+                printf("IMPF n=%d r=%d closing=%.17g planar=%.17g mode=%d ln=%.17g lt=%.17g caught=%.17g\\n", advn, r, closing, planar, md[0], ln[0], lt[0], caught);
+            }""", 1)
+
+anchor = """        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult) == 0) {
+            rc[0] = 5;
+            return (double)(0.0);
+}"""
+assert src.count(anchor) == 1, "impact projection anchor not found"
+src = src.replace(anchor, """        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult) == 0) {
+            rc[0] = 5;
+            return (double)(0.0);
+}
+        if (advdbg) {
+            printf("IMPP n=%d R=%d ns=%d", advn, R, n_stops);
+            for (int _cki = 0; _cki < (R); ++_cki) printf(" m%d=%.17g", _cki, mult[_cki]);
+            printf("\\n");
+        }""", 1)
+
+
+
+# 15) CLOSEOUT-4: poscorr gram drill. IMPC dumps the 2x2 gram inputs, rhs, the
+# factor result and the multipliers at the knife-edge pivot.
+anchor = """        if (gram_factor4(gram, npen, rhs, lam) == 1) {"""
+assert src.count(anchor) == 1, "gram_factor4 call anchor not found"
+src = src.replace(anchor, """        const int gok =  gram_factor4(gram, npen, rhs, lam);
+        if (advdbg) {
+            printf("IMPC n=%d npen=%d g00=%.17g g01=%.17g g10=%.17g g11=%.17g r0=%.17g r1=%.17g ok=%d l0=%.17g l1=%.17g\\n", advn, npen, gram[0], gram[1], gram[2], gram[3], rhs[0], rhs[1], gok, lam[0], lam[1]);
+        }
+        if (gok == 1) {""", 1)
+
+
 Path("probe_kernels.cuh").write_text(src, encoding="utf-8")
 print("probe_kernels.cuh written:", len(src), "bytes")
