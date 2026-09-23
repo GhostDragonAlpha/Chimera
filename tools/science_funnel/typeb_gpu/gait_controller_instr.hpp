@@ -1273,6 +1273,7 @@ class GaitWalker {
  void update_fore_clock(const Evaluation& e){
   double Tf=T_CYCLE/dt_;
   double tair=std::ceil((T_CYCLE-DUTY_SAMPLED)/dt_); // the nominal step (wave 20): 9 ticks
+  int seat_b=0; // CLOSEOUT-6 drill: the taken liftoff branch this pass (stale per leg exactly like the kernels' hoisted act)
   for(size_t leg=0;leg<2;++leg){
    fore_t_[leg]+=1.;
    if(fore_mode_[leg]==1){ // glide toward the plant point
@@ -1389,6 +1390,14 @@ class GaitWalker {
     // lift pinned). The wall_bound flag is that clause.
     bool thin_seat=fore_target_headroom_at(leg,e,paw_target_[leg])<2.*kWallMargin;
     bool due=fore_t_[leg]>=fore_stance_[leg]||wall_bound;
+    // CLOSEOUT-6 SEAT drill: the decision-input checkpoint (matches
+    // probe_kernels.cuh's SEATIN grammar; armed at ticks_==60 == a_ticks 60).
+    if((long long)ticks_>=40&&(long long)ticks_<=60){
+     const ForeIK sik=fore_ik_at(leg,e,paw_target_[leg]);
+     double sth1=(std::min)(sik.q1_raw-model_->lower[fore_coord_[leg][0]],model_->upper[fore_coord_[leg][0]]-sik.q1_raw);
+     double sth2=(std::min)(sik.q2_raw-model_->lower[fore_coord_[leg][1]],model_->upper[fore_coord_[leg][1]]-sik.q2_raw);
+     std::fprintf(stderr,"SEATIN t=%d leg=%d ft=%.17g fst=%.17g fcy=%.17g wb=%d whr=%.17g gt=%d th1=%.17g th2=%.17g thin=%d due=%d envt=%.17g p0=%.17g p1=%.17g p2=%.17g\n",
+      (int)ticks_,(int)leg,fore_t_[leg],fore_stance_[leg],fore_cycle_[leg],(int)wall_bound,fore_wall_headroom(leg),(int)gated,sth1,sth2,(int)thin_seat,(int)due,fore_env_ticks(leg,e),paw_target_[leg][0],paw_target_[leg][1],paw_target_[leg][2]);}
     // THE NO-PLANTABLE-RESTORE GUARD (the machinery's own contact band): a
     // seat restore smaller than kTouch (1e-5 m -- the touch quantum, the
     // pad's own position resolution) cannot move the pad and cannot change
@@ -1398,7 +1407,7 @@ class GaitWalker {
     // bar 0.102200 -- a 2.5 um restore; the lift survivable by 7x the
     // transient).
     if(!gated&&due&&(!thin_seat||!wall_bound)){
-     fore_mode_[leg]=1;
+     fore_mode_[leg]=1;seat_b=1;
      if(fore_entry_[leg])fore_t_[leg]=0.; // the entry air time is EXACTLY t_air (the glide runs 0->1)
     auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
     auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
@@ -1414,8 +1423,9 @@ class GaitWalker {
 #endif
     }else if(!gated&&due&&thin_seat&&wall_bound){
      V seat=fore_follow_seat(leg,e);
+     if((long long)ticks_>=40&&(long long)ticks_<=60)std::fprintf(stderr,"SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\n",(int)ticks_,(int)leg,seat[0],seat[1],seat[2]);
      if(std::hypot(seat[0]-paw_target_[leg][0],seat[1]-paw_target_[leg][1])<kTouch){
-      fore_mode_[leg]=1; // the restore is sub-quantum: the seat IS at the bar; lift
+      fore_mode_[leg]=1;seat_b=1; // the restore is sub-quantum: the seat IS at the bar; lift
       if(fore_entry_[leg])fore_t_[leg]=0.;
       auto pw=e.point(points_[fore_paw_point_[leg]].index,paw_ref_local_[leg]).first;
       auto sh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
@@ -1426,7 +1436,7 @@ class GaitWalker {
       swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
       fore_glide_arm_hold(leg,e,wall_bound); // THE POCKET-CLEAR HOLD (wave 24)
      }else{
-      paw_target_[leg]=seat;++fore_wall_follows_[leg];
+      paw_target_[leg]=seat;++fore_wall_follows_[leg];seat_b=2;
       fore_td_plant_[leg]=false;
       ++fore_replants_[leg];fore_t_[leg]=0.;fore_entry_stance_rearm(leg,e);}
 #ifdef GAIT_EVENT_TRACE
@@ -1435,6 +1445,7 @@ class GaitWalker {
 #endif
      }
     else if(gated&&wall_bound&&fore_wall_headroom(leg)<kWaitFloor){
+     seat_b=1;
      // THE WALL-ADJACENT WAIT OVERRIDE (wave 26, receipt_wave26.json): the
      // gate yields to the wall emergency. THE MEASURED DEATH IT OWNS: the
      // wave-25 R's lawful gate-held wait -- the follow restored the TARGET
@@ -1511,6 +1522,8 @@ class GaitWalker {
 #endif
     }
    }
+   if((long long)ticks_>=40&&(long long)ticks_<=60)std::fprintf(stderr,"SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g\n",
+    (int)ticks_,(int)leg,seat_b,paw_target_[leg][0],paw_target_[leg][1],paw_target_[leg][2],ik_branch_[leg],fore_t_[leg]);
    if(fore_t_[leg]>=fore_cycle_[leg]){ // TOUCHDOWN: re-capture the actual paw
     capture_paw(leg,e);++fore_replants_[leg];++fore_td_[leg];
     fore_t_[leg]=0.;fore_mode_[leg]=0;fore_td_plant_[leg]=true; // the TD opened a window
@@ -1626,6 +1639,9 @@ class GaitWalker {
      if(hind_height_hold_latched_&&touching_prev_[hl])
       target+=last_torque_[c]/kp_[d];}}}}
 
+   if((long long)ticks_>=40&&(long long)ticks_<=60&&d>=8){ // CLOSEOUT-6 SV drill (matches probe_kernels.cuh's SV; fore drives only)
+    const double tqr=kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c];
+    std::fprintf(stderr,"SV t=%d d=%d c=%d tgt=%.17g qc=%.17g vc=%.17g tqr=%.17g\n",(int)ticks_,(int)d,(int)c,target,s_.q[c],s_.v[c],tqr);}
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
   // The source model's POSTURE CONTROL (the pinned fulltext: the trunk pitch
   // theta_HAT is a model DOF driven by hip uniarticular muscles -- iliopsoas

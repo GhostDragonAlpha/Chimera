@@ -616,6 +616,50 @@ src = src.replace(anchor, """        const int gok =  gram_factor4(gram, npen, r
         }
         if (gok == 1) {""", 1)
 
+# 16) CLOSEOUT-6 SEAT/SV drill: the plan-phase fore-follow pipeline checkpoint
+# (the tick-61 fore-left tau[14]/[15] ~390-ulp source hunt). Grammar is
+# IDENTICAL to the C++ SEATIN/SEATF/SEATOUT/SV prints in
+# gait_controller_instr.hpp so the two streams diff line-by-line:
+#   SEATIN  -- the liftoff decision inputs (clocks, wall headroom, gate,
+#              target headrooms th1/th2, thin/due/envelope) before the branch;
+#   SEATF   -- the fore_follow result seat at both call sites;
+#   SEATOUT -- post-application target/branch/ikb/clock;
+#   SV      -- the servo's per-drive target/state/raw-PD (fore drives only).
+# Armed exactly like the RT window: a_ticks[e]==60 (host tick 61).
+anchor = """                if (act == 1) {
+                    f_mo[leg] = 1;"""
+assert src.count(anchor) == 1, "SEATIN anchor not unique"
+src = src.replace(anchor, """                if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
+                    printf("SEATIN t=%d leg=%d ft=%.17g fst=%.17g fcy=%.17g wb=%d whr=%.17g gt=%d th1=%.17g th2=%.17g thin=%d due=%d envt=%.17g p0=%.17g p1=%.17g p2=%.17g\\n",
+                        (int)a_ticks[e], leg, f_t[leg], f_st[leg], f_cy[leg], wall_bound, wall_hr, gated, th1, th2, thin_seat, due, env_t, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2]);
+                }
+                if (act == 1) {
+                    f_mo[leg] = 1;""", 1)
+
+anchor = """                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);"""
+assert src.count(anchor) == 2, "SEATF fore_follow call anchor count != 2"
+src = src.replace(anchor, """                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);
+                    if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
+                        printf("SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\\n", (int)a_ticks[e], leg, seat[0], seat[1], seat[2]);
+                    }""", 2)
+
+anchor = """            if (f_t[leg] >= f_cy[leg]) {
+                hpt =  mdi[OI_fore_heel_pt + leg];"""
+assert src.count(anchor) == 1, "SEATOUT anchor not unique"
+src = src.replace(anchor, """                if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
+                    printf("SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g\\n",
+                        (int)a_ticks[e], leg, act, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2], ikb[leg], f_t[leg]);
+                }
+            if (f_t[leg] >= f_cy[leg]) {
+                hpt =  mdi[OI_fore_heel_pt + leg];""", 1)
+
+anchor = """            tq =  mdl[OF_kp + d - 1] * (target - q[c]) - mdl[OF_kd + d - 1] * v[c];"""
+assert src.count(anchor) == 1, "SV tq anchor not unique"
+src = src.replace(anchor, anchor + """
+            if (a_ticks[e] >= 40 && a_ticks[e] <= 60 && d >= 9) {
+                printf("SV t=%d d=%d c=%d tgt=%.17g qc=%.17g vc=%.17g tqr=%.17g\\n", (int)a_ticks[e], d - 1, c, target, q[c], v[c], tq);
+            }""", 1)
+
 
 Path("probe_kernels.cuh").write_text(src, encoding="utf-8")
 print("probe_kernels.cuh written:", len(src), "bytes")

@@ -151,7 +151,7 @@ __device__ inline void axial3(double* m, double* out) {
     out[2] = (m[1 * 4 + 0] - m[0 * 4 + 1]) * (double)(0.5);
 }
 
-__device__ inline void apply_point(double* m, double* p, double* out) {
+__device__ inline void apply_point_legacy(double* m, double* p, double* out) {
     int i;
     for (i = 0; i < (3); ++i) {
         out[i] = m[i * 4 + 0] * p[0] + m[i * 4 + 1] * p[1] + m[i * 4 + 2] * p[2] + m[i * 4 + 3];
@@ -2906,7 +2906,7 @@ __device__ inline double fore_env(double* mdl, double* cst, double* fr, int leg,
     ml[0] = mdl[OF_fore_mount_local + leg * 3];
     ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
-    apply_point(m16, ml, shw);
+    vec_point(m16, ml, shw);
     off =  paw_t[leg * 3] - shw[0];
     hgt =  fmax((double)(0.0), shw[1] - paw_t[leg * 3 + 1]);
     dd =  cst[CF_fore_L1] + cst[CF_fore_rho];
@@ -3715,7 +3715,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             for (_zzero183 = 0; _zzero183 < (3); ++_zzero183) {
                 pw[_zzero183] = 0.0;
 }
-            apply_point(T16, prl, pw);
+            vec_point(T16, prl, pw);
             for (c = 0; c < (3); ++c) {
                 paw_t[leg * 3 + c] = pw[c];
 }
@@ -3751,7 +3751,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             ml[0] = mdl[OF_fore_mount_local + leg * 3];
             ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
             ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
-            apply_point(m16, ml, shw);
+            vec_point(m16, ml, shw);
             off =  paw_t[leg * 3] - shw[0];
             xoff =  v_eff * (cst[CF_duty] * cst[CF_t_cycle]) * (double)(0.5);
             hgt =  fmax((double)(0.0), shw[1] - paw_y[leg]);
@@ -3895,7 +3895,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                             ml0[0] = mdl[OF_fore_mount_local + leg * 3];
                             ml0[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
                             ml0[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
-                            apply_point(m16, ml0, sha);
+                            vec_point(m16, ml0, sha);
                             double sho[3];
                             for (_zzero190 = 0; _zzero190 < (3); ++_zzero190) {
                                 sho[_zzero190] = 0.0;
@@ -3907,7 +3907,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                             ml1[0] = mdl[OF_fore_mount_local + o * 3];
                             ml1[1] = mdl[OF_fore_mount_local + o * 3 + 1];
                             ml1[2] = mdl[OF_fore_mount_local + o * 3 + 2];
-                            apply_point(m16, ml1, sho);
+                            vec_point(m16, ml1, sho);
                             if ((paw_t[o * 3] - sho[0]) < (paw_t[leg * 3] - sha[0])) {
                                 o_prior =  1;
 }
@@ -4000,7 +4000,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     for (_zzero197 = 0; _zzero197 < (3); ++_zzero197) {
                         pw[_zzero197] = 0.0;
 }
-                    apply_point(T16, prl, pw);
+                    vec_point(T16, prl, pw);
                     double m16[16];
                     for (_zzero198 = 0; _zzero198 < (16); ++_zzero198) {
                         m16[_zzero198] = 0.0;
@@ -4019,7 +4019,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     ml[0] = mdl[OF_fore_mount_local + leg * 3];
                     ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
                     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
-                    apply_point(m16, ml, shw);
+                    vec_point(m16, ml, shw);
                     for (c = 0; c < (3); ++c) {
                         swf[leg * 3 + c] = pw[c];
 }
@@ -4068,7 +4068,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     for (_zzero203 = 0; _zzero203 < (3); ++_zzero203) {
                         pw[_zzero203] = 0.0;
 }
-                    apply_point(T16, prl, pw);
+                    vec_point(T16, prl, pw);
                     for (c = 0; c < (3); ++c) {
                         paw_t[leg * 3 + c] = pw[c];
 }
@@ -4111,7 +4111,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 for (_zzero206 = 0; _zzero206 < (3); ++_zzero206) {
                     pw[_zzero206] = 0.0;
 }
-                apply_point(T16, prl, pw);
+                vec_point(T16, prl, pw);
                 for (c = 0; c < (3); ++c) {
                     paw_t[leg * 3 + c] = pw[c];
 }
@@ -4149,7 +4149,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     ml[0] = mdl[OF_fore_mount_local + leg * 3];
                     ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
                     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
-                    apply_point(m16, ml, shw);
+                    vec_point(m16, ml, shw);
                     if (paw_t[leg * 3] - shw[0] >= (double)(0.0)) {
                         f_en[leg] = 0;
 }
@@ -4200,7 +4200,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                         ml[0] = mdl[OF_fore_mount_local + leg * 3];
                         ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
                         ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
-                        apply_point(m16, ml, shw);
+                        vec_point(m16, ml, shw);
                         offc =  paw_t[leg * 3] - shw[0];
                         vv =  fmax((double)(0.0), v[3]);
                         hgt =  fmax((double)(0.0), shw[1] - paw_t[leg * 3 + 1]);
@@ -4263,7 +4263,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         ml0[0] = mdl[OF_fore_mount_local + 0];
         ml0[1] = mdl[OF_fore_mount_local + 1];
         ml0[2] = mdl[OF_fore_mount_local + 2];
-        apply_point(m16, ml0, shl);
+        vec_point(m16, ml0, shl);
         double shr[3];
         for (_zzero216 = 0; _zzero216 < (3); ++_zzero216) {
             shr[_zzero216] = 0.0;
@@ -4275,7 +4275,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         ml1[0] = mdl[OF_fore_mount_local + 3];
         ml1[1] = mdl[OF_fore_mount_local + 4];
         ml1[2] = mdl[OF_fore_mount_local + 5];
-        apply_point(m16, ml1, shr);
+        vec_point(m16, ml1, shr);
         shmin =  fmin(shl[1], shr[1]);
         if (shmin - cst[CF_height_crit] <= cst[CF_height_floor]) {
             h_latched =  1;
@@ -4453,12 +4453,12 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             for (_zzero221 = 0; _zzero221 < (3); ++_zzero221) {
                 w1p[_zzero221] = 0.0;
 }
-            apply_point(T16, p1, w1p);
+            vec_point(T16, p1, w1p);
             double w2p[3];
             for (_zzero222 = 0; _zzero222 < (3); ++_zzero222) {
                 w2p[_zzero222] = 0.0;
 }
-            apply_point(T16, p2, w2p);
+            vec_point(T16, p2, w2p);
             fx =  (w1p[0] + w2p[0]) * (double)(0.5);
             fy =  (w1p[1] + w2p[1]) * (double)(0.5);
             fz =  (w1p[2] + w2p[2]) * (double)(0.5);
@@ -4495,7 +4495,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             mlh[0] = mdl[OF_hind_mount + hl * 3];
             mlh[1] = mdl[OF_hind_mount + hl * 3 + 1];
             mlh[2] = mdl[OF_hind_mount + hl * 3 + 2];
-            apply_point(m16, mlh, hipw);
+            vec_point(m16, mlh, hipw);
             hgt =  fmax((double)(0.0), hipw[1] - h_py[hl]);
             a2m =  cst[CF_hind_L1] + cst[CF_hind_L2];
             dxs =  cst[CF_hind_xm] * cos(h_ap[hl]);
@@ -4558,7 +4558,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             for (i = 0; i < (16); ++i) {
                 T16b[i] = fr[b * 16 + i];
 }
-            apply_point(T16b, cb, cw);
+            vec_point(T16b, cb, cw);
             comx =  comx + mb * cw[0];
             comy =  comy + mb * cw[1];
             comz =  comz + mb * cw[2];

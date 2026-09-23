@@ -172,7 +172,7 @@ def axial3(m, out):
 
 @cuda.jit(device=True)
 
-def apply_point(m, p, out):
+def apply_point_legacy(m, p, out):
 
     for i in range(3):
 
@@ -3806,7 +3806,7 @@ def fore_env(mdl, cst, fr, leg, paw_t, v3, csti):
 
     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2]
 
-    apply_point(m16, ml, shw)
+    vec_point(m16, ml, shw)
 
     off = paw_t[leg * 3] - shw[0]
 
@@ -4443,7 +4443,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
             for _zzero183 in range(3):
                 pw[_zzero183] = 0.0
 
-            apply_point(T16, prl, pw)
+            vec_point(T16, prl, pw)
 
             for c in range(3):
 
@@ -4497,7 +4497,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
             ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2]
 
-            apply_point(m16, ml, shw)
+            vec_point(m16, ml, shw)
 
             off = paw_t[leg * 3] - shw[0]
 
@@ -4726,7 +4726,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                             ml0[2] = mdl[OF_fore_mount_local + leg * 3 + 2]
 
-                            apply_point(m16, ml0, sha)
+                            vec_point(m16, ml0, sha)
 
                             sho = cuda.local.array(3, dtype=float64)
                             for _zzero190 in range(3):
@@ -4742,7 +4742,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                             ml1[2] = mdl[OF_fore_mount_local + o * 3 + 2]
 
-                            apply_point(m16, ml1, sho)
+                            vec_point(m16, ml1, sho)
 
                             if (paw_t[o * 3] - sho[0]) < (paw_t[leg * 3] - sha[0]):
 
@@ -4867,7 +4867,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                     for _zzero197 in range(3):
                         pw[_zzero197] = 0.0
 
-                    apply_point(T16, prl, pw)
+                    vec_point(T16, prl, pw)
 
                     m16 = cuda.local.array(16, dtype=float64)
                     for _zzero198 in range(16):
@@ -4891,7 +4891,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2]
 
-                    apply_point(m16, ml, shw)
+                    vec_point(m16, ml, shw)
 
                     for c in range(3):
 
@@ -4963,7 +4963,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                     for _zzero203 in range(3):
                         pw[_zzero203] = 0.0
 
-                    apply_point(T16, prl, pw)
+                    vec_point(T16, prl, pw)
 
                     for c in range(3):
 
@@ -5027,7 +5027,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                 for _zzero206 in range(3):
                     pw[_zzero206] = 0.0
 
-                apply_point(T16, prl, pw)
+                vec_point(T16, prl, pw)
 
                 for c in range(3):
 
@@ -5085,7 +5085,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2]
 
-                    apply_point(m16, ml, shw)
+                    vec_point(m16, ml, shw)
 
                     if paw_t[leg * 3] - shw[0] >= float(0.0):
 
@@ -5159,7 +5159,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                         ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2]
 
-                        apply_point(m16, ml, shw)
+                        vec_point(m16, ml, shw)
 
                         offc = paw_t[leg * 3] - shw[0]
 
@@ -5249,7 +5249,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
         ml0[2] = mdl[OF_fore_mount_local + 2]
 
-        apply_point(m16, ml0, shl)
+        vec_point(m16, ml0, shl)
 
         shr = cuda.local.array(3, dtype=float64)
         for _zzero216 in range(3):
@@ -5265,7 +5265,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
         ml1[2] = mdl[OF_fore_mount_local + 5]
 
-        apply_point(m16, ml1, shr)
+        vec_point(m16, ml1, shr)
 
         shmin = min(shl[1], shr[1])
 
@@ -5539,13 +5539,13 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
             for _zzero221 in range(3):
                 w1p[_zzero221] = 0.0
 
-            apply_point(T16, p1, w1p)
+            vec_point(T16, p1, w1p)
 
             w2p = cuda.local.array(3, dtype=float64)
             for _zzero222 in range(3):
                 w2p[_zzero222] = 0.0
 
-            apply_point(T16, p2, w2p)
+            vec_point(T16, p2, w2p)
 
             fx = (w1p[0] + w2p[0]) * float(0.5)
 
@@ -5603,7 +5603,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
             mlh[2] = mdl[OF_hind_mount + hl * 3 + 2]
 
-            apply_point(m16, mlh, hipw)
+            vec_point(m16, mlh, hipw)
 
             hgt = max(float(0.0), hipw[1] - h_py[hl])
 
@@ -5699,7 +5699,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                 T16b[i] = fr[b * 16 + i]
 
-            apply_point(T16b, cb, cw)
+            vec_point(T16b, cb, cw)
 
             comx = comx + mb * cw[0]
 
