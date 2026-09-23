@@ -82,18 +82,34 @@ public:
  Evaluation evaluate(const Dense& q,const Dense& v,V gravity)const{
   F9_EVAL_INC();
   size_t n=names.size();require(q.size()==n&&v.size()==n,"coupled_state_shape");for(double x:q)require(std::isfinite(x),"coupled_state_nonfinite");for(double x:v)require(std::isfinite(x),"coupled_state_nonfinite");Evaluation e;e.mass.assign(n*n,0);e.gravity.assign(n,0);e.bias.assign(n,0);
+  // CLOSEOUT-3 per-body drill arming: match the tick-0 substep-0 SUBPRE state.
+  static int cppfk2_done=0;int cppfk2_fire=0;{static const int fkdump2=std::getenv("CPPFK2")?1:0;
+   if(fkdump2&&!cppfk2_done&&q[0]==0.0&&v[0]==0.0&&v[3]==0.76362478896964736)cppfk2_fire=1;}
   for(auto& b:bodies_){Transform f(n);if(b.parent>=0){Transform motion(n);V translation{},velocity{};std::vector<V> dj(n);
     for(auto& a:b.axes){double angle=a.constant+(a.slot<0?0:a.slope*q[a.slot]),rate=a.slot<0?0:a.slope*v[a.slot];if(a.rotational){Transform one(n);one.t=rotation(a.axis,angle);auto dr=skew(a.axis)*one.t;if(a.slot>=0)one.d[a.slot]=dr*a.slope;one.dt=dr*rate;one.ddt=skew(a.axis)*dr*(rate*rate);motion=product(motion,one);}else{translation=add(translation,mul(a.axis,angle));velocity=add(velocity,mul(a.axis,rate));if(a.slot>=0)dj[a.slot]=add(dj[a.slot],mul(a.axis,a.slope));}}
     for(int k=0;k<3;++k){motion.t(k,3)=translation[k];motion.dt(k,3)=velocity[k];for(size_t i=0;i<n;++i)motion.d[i](k,3)=dj[i][k];}f=product(product(product(e.frames[b.parent],fixed(b.fp,n)),motion),fixed(b.fc,n));
    }e.frames.push_back(f);Mat rt;for(int i=0;i<3;++i)for(int j=0;j<3;++j)rt(i,j)=f.t(j,i);Mat iw=f.t*b.inertia*rt;V p=vector(f.t,b.com,1),acc=vector(f.ddt,b.com,1),omega=axial(f.dt*rt),alpha=axial(f.ddt*rt+f.dt*transpose(f.dt));std::vector<V> jv,jw;for(auto& d:f.d){jv.push_back(vector(d,b.com,1));jw.push_back(axial(d*rt));}V moment=add(vector(iw,alpha),cross(omega,vector(iw,omega)));
+   if(cppfk2_fire){static int done3=0;if(!done3){
+    double c00=b.mass*dot(jv[0],jv[0])+dot(jw[0],vector(iw,jw[0]));
+    double c22=b.mass*dot(jv[2],jv[2])+dot(jw[2],vector(iw,jw[2]));
+    std::fprintf(stderr,"CPPFK3 b=%d m=%.17g Iw=%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g c00=%.17g c22=%.17g\n",
+     (int)(&b-bodies_.data()),b.mass,iw(0,0),iw(0,1),iw(0,2),iw(1,0),iw(1,1),iw(1,2),iw(2,0),iw(2,1),iw(2,2),c00,c22);
+    if((int)(&b-bodies_.data())==13)done3=1;}}
    for(size_t i=0;i<n;++i){e.gravity[i]+=b.mass*dot(jv[i],gravity);e.bias[i]+=b.mass*dot(jv[i],acc)+dot(jw[i],moment);for(size_t j=0;j<n;++j)e.mass[n*i+j]+=b.mass*dot(jv[i],jv[j])+dot(jw[i],vector(iw,jw[j]));}e.potential-=b.mass*dot(gravity,p);
    {static const int fkdump=std::getenv("CPPFK")?1:0;
     if(fkdump){static size_t bidx=0;(void)bidx;
      std::fprintf(stderr,"CPPFK b=%d m=%.17g M25=%.17g jv2=%.17g,%.17g,%.17g jv5=%.17g,%.17g,%.17g jw2=%.17g,%.17g,%.17g jw5=%.17g,%.17g,%.17g\n",
       (int)(&b-bodies_.data()),b.mass,b.mass*dot(jv[2],jv[5])+dot(jw[2],vector(iw,jw[5])),
       jv[2][0],jv[2][1],jv[2][2],jv[5][0],jv[5][1],jv[5][2],
-      jw[2][0],jw[2][1],jw[2][2],jw[5][0],jw[5][1],jw[5][2]);}}
-  }return e;
+      jw[2][0],jw[2][1],jw[2][2],jw[5][0],jw[5][1],jw[5][2]);}
+    // CLOSEOUT-3 per-body drill: dump every body of the armed evaluate.
+    if(cppfk2_fire){
+      std::fprintf(stderr,"CPPFK2 b=%d m=%.17g",(int)(&b-bodies_.data()),b.mass);
+      for(int s=0;s<6;++s)std::fprintf(stderr," jv%d=%.17g,%.17g,%.17g",s,jv[s][0],jv[s][1],jv[s][2]);
+      for(int s=0;s<6;++s)std::fprintf(stderr," jw%d=%.17g,%.17g,%.17g",s,jw[s][0],jw[s][1],jw[s][2]);
+      std::fprintf(stderr,"\n");}}
+  }
+  {if(cppfk2_fire)cppfk2_done=1;}return e;
  }
 };
 } // namespace chimera::multibody

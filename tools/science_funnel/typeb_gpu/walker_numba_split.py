@@ -1056,7 +1056,9 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
                         jwd = jwd + jw[si * 3 + c] * Iwj
 
-                    M[si * 18 + sj] = M[si * 18 + sj] + m * jvd + jwd
+                    # C++: e.mass[n*i+j] += X + Y — ONE add of the pre-summed pair
+                    # (the old (acc + m*jvd) + jwd rounded twice, the 1-2 ulp M residual).
+                    M[si * 18 + sj] = M[si * 18 + sj] + (m * jvd + jwd)
 
             for ii in range(nslots):
 
@@ -1070,9 +1072,8 @@ def fk_eval(q, v, mdl, mdi, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, pt
 
                 gv[si] = gv[si] + m * (jv[si * 3 + 0] * grav[0] + jv[si * 3 + 1] * grav[1] + jv[si * 3 + 2] * grav[2])
 
-                bv[si] = bv[si] + m * (jv[si * 3 + 0] * acc_com[0] + jv[si * 3 + 1] * acc_com[1] + jv[si * 3 + 2] * acc_com[2])
-
-                bv[si] = bv[si] + (jw[si * 3 + 0] * moment[0] + jw[si * 3 + 1] * moment[1] + jw[si * 3 + 2] * moment[2])
+                # C++: e.bias[i] += X + Y — ONE add of the pre-summed pair.
+                bv[si] = bv[si] + (m * (jv[si * 3 + 0] * acc_com[0] + jv[si * 3 + 1] * acc_com[1] + jv[si * 3 + 2] * acc_com[2]) + (jw[si * 3 + 0] * moment[0] + jw[si * 3 + 1] * moment[1] + jw[si * 3 + 2] * moment[2]))
 
             potential = potential - m * (grav[0] * comw[0] + grav[1] * comw[1] + grav[2] * comw[2])
 
@@ -1798,7 +1799,7 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
 
         c = mdi[OI_drive_coord + d]
 
-        free[c] = free[c] + tau[c] - mdl[OF_drive_damping + d] * v[c]
+        free[c] = free[c] + (tau[c] - mdl[OF_drive_damping + d] * v[c])
 
     free_acc = cuda.local.array(18, dtype=float64)
     mat_vec(inv, free, free_acc)
@@ -1955,7 +1956,7 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
 
             svz = row_dot(jt2, v)
 
-            planar = math.sqrt(svx * svx + svz * svz)
+            planar = math.hypot(svx, svz)
 
             dir_x = float(0.0)
 
@@ -1983,7 +1984,7 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
 
                     d2 = d2 + jt2[i] * free[i]
 
-                accel = math.sqrt(d1 * d1 + d2 * d2)
+                accel = math.hypot(d1, d2)  # C++ std::hypot(d1, d2)
 
                 if accel > float(1e-9):
 
@@ -2200,13 +2201,14 @@ def free_step(q0, v0, w0, tau, live, h, mdl, cst, M, gv, bv, fr, frd, frdd, axw,
 
         return rc
 
-    sixth = h / float(6.0)
-
+    # C++ free_step: end.x[i] += h*(a + 2*b + 2*c + d)/6 — MULTIPLY by h
+    # first, THEN divide by 6. The old sixth=h/6 pre-division rounded
+    # differently (h/6)*sum != (h*sum)/6 in general.
     for i in range(18):
 
-        q1[i] = q0[i] + sixth * (qa[i] + float(2.0) * brq[i] + float(2.0) * crq[i] + drq[i])
+        q1[i] = q0[i] + h * (qa[i] + float(2.0) * brq[i] + float(2.0) * crq[i] + drq[i]) / float(6.0)
 
-        v1[i] = v0[i] + sixth * (va[i] + float(2.0) * brv[i] + float(2.0) * crv[i] + drv[i])
+        v1[i] = v0[i] + h * (va[i] + float(2.0) * brv[i] + float(2.0) * crv[i] + drv[i]) / float(6.0)
 
         w1[i] = w0[i] + tau[i] * (q1[i] - q0[i])
 
@@ -2238,6 +2240,21 @@ def gram_factor4(g, k, rhs, lam):
 
         return 0
 
+    # BY-VALUE copy + SYMMETRIZATION (C++ gram_factor: g passed by value,
+    # then g[i][j]=g[j][i]=(g[i][j]+g[j][i])/2 for j<i). inner(r_a, inv*r_b)
+    # is bitwise asymmetric for a!=b, so this average changes the factor bits.
+    gs = cuda.local.array(16, dtype=float64)
+    for _zzero54a in range(16):
+        gs[_zzero54a] = 0.0
+    for _gi in range(k):
+        for _gj in range(k):
+            gs[_gi * k + _gj] = g[_gi * k + _gj]
+    for _gi in range(k):
+        for _gj in range(_gi):
+            avg = (gs[_gi * k + _gj] + gs[_gj * k + _gi]) / float(2.0)
+            gs[_gi * k + _gj] = avg
+            gs[_gj * k + _gi] = avg
+
     l = cuda.local.array(16, dtype=float64)
     for _zzero54 in range(16):
         l[_zzero54] = 0.0
@@ -2246,7 +2263,7 @@ def gram_factor4(g, k, rhs, lam):
 
         for j in range(i + 1):
 
-            t = g[i * k + j]
+            t = gs[i * k + j]
 
             for m in range(j):
 
@@ -2457,7 +2474,7 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
 
             svz = row_dot(jt2, v)
 
-            planar = math.sqrt(svx * svx + svz * svz)
+            planar = math.hypot(svx, svz)
 
             if planar <= cst[CF_k_slip]:
 

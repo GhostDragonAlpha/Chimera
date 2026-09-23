@@ -102,26 +102,44 @@ class WalkerSpec:
         slot = {c: i for i, c in enumerate(self.names)}
 
         # ── bodies: alphabetical-remaining topological insertion (the C++ law) ──
+        # THE SCAN-CONTINUE SEMANTICS, EXACT: the C++ (coupled_articulation
+        # Model::Model) scans the std::map alphabetically, places the first
+        # placeable body, ERASES it, and CONTINUES the scan from the next key
+        # WITHOUT restarting; passes repeat until the map is empty. The prior
+        # replica restarted from the alphabet after every insertion, which
+        # MEASURED (closeout-3, the CPPFK2 per-body drill) to be a DIFFERENT
+        # order: the restart cascades depth-first down each leg (thigh_left,
+        # shank_left, foot_left, ...) while the C++ places breadth-first
+        # (thigh_left, thigh_right, upperarm_fore_left, ...). Body order is
+        # the M/gv/bv ACCUMULATION ORDER in evaluate() -- a different order
+        # rounds differently (the 0.5-3.2 ulp M residual) and breaks the
+        # scene's exact-zero cancellations (gv0 = 0.0 exactly in the
+        # reference; 2^-60-scale junk under the restart order).
         remaining = {b["name"]: b for b in model["bodies"]}
         order = []  # (name, body_json)
         ids = {}
         while remaining:
             progress = False
-            for name in sorted(remaining.keys()):
+            i = 0
+            keys = sorted(remaining.keys())
+            while i < len(keys):
+                name = keys[i]
                 b = remaining[name]
                 is_ground = name == "ground"
                 if not is_ground and b["joint"]["parent"] not in ids:
+                    i += 1
                     continue
                 order.append((name, b)); ids[name] = len(order) - 1
                 del remaining[name]
                 progress = True
-                break  # the C++ restarts the scan after each insertion
+                # the C++ erase-continue: the next candidate is the next key
+                # IN THE CURRENT PASS's alphabetical frame; re-derive the key
+                # list since remaining shrank (new keys may also have become
+                # placeable -- they are found on the NEXT pass, exactly like
+                # the C++ whose map iterator was already positioned past
+                # them). Same-pass candidates keep the scan position.
+                keys = [k for k in keys if k in remaining]
             assert progress, "coupled_missing_or_cyclic_parent"
-        # NOTE: the C++ continues the for from where it erased, but std::map
-        # iteration is alphabetical and re-scanning from the start after each
-        # erase yields the same insertion order here (ground first, then the
-        # same alphabetical topological cascade). Verified against the engine's
-        # body() index lookups by construction below.
         assert order[0][0] == "ground"
 
         NBOD = len(order)

@@ -27,9 +27,11 @@ static double a_cmdvx[1]; static long long a_cft[1], a_ticks[1];
 static double rb[6]; static int rbi[6];
 
 extern int fkdbg;
+extern int fkdbg2;
 
 int main() {
     fkdbg = getenv("FKDBG") ? 1 : 0;
+    fkdbg2 = getenv("FKDBG2") ? 1 : 0;
     FILE* f; int E = 1;
     f = fopen("host_shim/mdl.txt", "r"); for (int i = 0; i < 900; ++i) fscanf(f, "%lf", &mdl[i]); fclose(f);
     f = fopen("host_shim/mdi.txt", "r"); for (int i = 0; i < 232; ++i) fscanf(f, "%d", &mdi[i]); fclose(f);

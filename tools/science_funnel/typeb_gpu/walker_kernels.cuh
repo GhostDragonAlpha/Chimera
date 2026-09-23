@@ -836,7 +836,7 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
                         Iwj =  Iw[c * 4 + 0] * jw[sj * 3 + 0] + Iw[c * 4 + 1] * jw[sj * 3 + 1] + Iw[c * 4 + 2] * jw[sj * 3 + 2];
                         jwd =  jwd + jw[si * 3 + c] * Iwj;
 }
-                    M[si * 18 + sj] = M[si * 18 + sj] + m * jvd + jwd;
+                    M[si * 18 + sj] = M[si * 18 + sj] + (m * jvd + jwd);
 }
 }
             for (ii = 0; ii < (nslots); ++ii) {
@@ -846,8 +846,7 @@ __device__ inline double fk_eval(double* q, double* v, double* mdl, int* mdi, do
                     continue;
 }
                 gv[si] = gv[si] + m * (jv[si * 3 + 0] * grav[0] + jv[si * 3 + 1] * grav[1] + jv[si * 3 + 2] * grav[2]);
-                bv[si] = bv[si] + m * (jv[si * 3 + 0] * acc_com[0] + jv[si * 3 + 1] * acc_com[1] + jv[si * 3 + 2] * acc_com[2]);
-                bv[si] = bv[si] + (jw[si * 3 + 0] * moment[0] + jw[si * 3 + 1] * moment[1] + jw[si * 3 + 2] * moment[2]);
+                bv[si] = bv[si] + (m * (jv[si * 3 + 0] * acc_com[0] + jv[si * 3 + 1] * acc_com[1] + jv[si * 3 + 2] * acc_com[2]) + (jw[si * 3 + 0] * moment[0] + jw[si * 3 + 1] * moment[1] + jw[si * 3 + 2] * moment[2]));
 }
             potential =  potential - m * (grav[0] * comw[0] + grav[1] * comw[1] + grav[2] * comw[2]);
 }
@@ -1434,7 +1433,7 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
 }
     for (d = 0; d < (12); ++d) {
         c =  mdi[OI_drive_coord + d];
-        free[c] = free[c] + tau[c] - mdl[OF_drive_damping + d] * v[c];
+        free[c] = free[c] + (tau[c] - mdl[OF_drive_damping + d] * v[c]);
 }
     double free_acc[18];
     mat_vec(inv, free, free_acc);
@@ -1558,7 +1557,7 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
             bz =  ptbias[r * 3 + 2];
             svx =  row_dot(jt1, v);
             svz =  row_dot(jt2, v);
-            planar =  sqrt(svx * svx + svz * svz);
+            planar =  hypot(svx, svz);
             dir_x =  (double)(0.0);
             dir_z =  (double)(0.0);
             slip_sign =  (int)(0);
@@ -1574,7 +1573,7 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
                     d1 =  d1 + jt1[i] * free[i];
                     d2 =  d2 + jt2[i] * free[i];
 }
-                accel =  sqrt(d1 * d1 + d2 * d2);
+                accel =  hypot(d1, d2);
                 if (accel > (double)(1e-9)) {
                     dir_x =  d1 / accel;
                     dir_z =  d2 / accel;
@@ -1665,7 +1664,6 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
     int _zzero51;
     int _zzero52;
     int _zzero53;
-    double sixth;
     double pt_radius_g[((OF_pt_radius + 8) - (OF_pt_radius))];
     for (int _si0 = 0; _si0 < ((OF_pt_radius + 8) - (OF_pt_radius)); ++_si0) pt_radius_g[_si0] = mdl[(OF_pt_radius) + _si0];
     double rq[18];
@@ -1752,10 +1750,9 @@ __device__ inline long long free_step(double* q0, double* v0, double* w0, double
     if (rc != 0) {
         return rc;
 }
-    sixth =  h / (double)(6.0);
     for (i = 0; i < (18); ++i) {
-        q1[i] = q0[i] + sixth * (qa[i] + (double)(2.0) * brq[i] + (double)(2.0) * crq[i] + drq[i]);
-        v1[i] = v0[i] + sixth * (va[i] + (double)(2.0) * brv[i] + (double)(2.0) * crv[i] + drv[i]);
+        q1[i] = q0[i] + h * (qa[i] + (double)(2.0) * brq[i] + (double)(2.0) * crq[i] + drq[i]) / (double)(6.0);
+        v1[i] = v0[i] + h * (va[i] + (double)(2.0) * brv[i] + (double)(2.0) * crv[i] + drv[i]) / (double)(6.0);
         w1[i] = w0[i] + tau[i] * (q1[i] - q0[i]);
 }
     return 0;
@@ -1765,6 +1762,10 @@ __device__ inline long long gram_factor4(double* g, int k, double* rhs, double* 
     double scale;
     int i;
     double d;
+    int _zzero54a;
+    int _gi;
+    int _gj;
+    double avg;
     int _zzero54;
     int j;
     double t;
@@ -1786,13 +1787,29 @@ __device__ inline long long gram_factor4(double* g, int k, double* rhs, double* 
     if (! (scale > (double)(0.0))) {
         return 0;
 }
+    double gs[16];
+    for (_zzero54a = 0; _zzero54a < (16); ++_zzero54a) {
+        gs[_zzero54a] = 0.0;
+}
+    for (_gi = 0; _gi < (k); ++_gi) {
+        for (_gj = 0; _gj < (k); ++_gj) {
+            gs[_gi * k + _gj] = g[_gi * k + _gj];
+}
+}
+    for (_gi = 0; _gi < (k); ++_gi) {
+        for (_gj = 0; _gj < (_gi); ++_gj) {
+            avg =  (gs[_gi * k + _gj] + gs[_gj * k + _gi]) / (double)(2.0);
+            gs[_gi * k + _gj] = avg;
+            gs[_gj * k + _gi] = avg;
+}
+}
     double l[16];
     for (_zzero54 = 0; _zzero54 < (16); ++_zzero54) {
         l[_zzero54] = 0.0;
 }
     for (i = 0; i < (k); ++i) {
         for (j = 0; j < (i + 1); ++j) {
-            t =  g[i * k + j];
+            t =  gs[i * k + j];
             for (m = 0; m < (j); ++m) {
                 t =  t - l[i * k + m] * l[j * k + m];
 }
@@ -1994,7 +2011,7 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
 }
             svx =  row_dot(jt1, v);
             svz =  row_dot(jt2, v);
-            planar =  sqrt(svx * svx + svz * svz);
+            planar =  hypot(svx, svz);
             if (planar <= cst[CF_k_slip]) {
                 continue;
 }
