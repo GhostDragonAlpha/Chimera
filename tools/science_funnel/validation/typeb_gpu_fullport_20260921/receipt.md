@@ -597,3 +597,97 @@ measured 1-ulp libdevice-vs-CRT transcendental deviations. The lawful routes
 to GREEN remain: finish the byte-match inside the event interior (the named
 next pair), or the forbidden preregistered premise change (not done). The
 deferral honesty clause: unchanged — no deferred law engages near ticks 1-55.
+
+# CLOSEOUT-4 APPENDIX — pairs 4-8 fixed; host bit-exact through 41 aligned walk states (2026-09-22, agent GLM 5.3)
+
+## METHOD
+
+The tick-3 interior was drilled with a line-aligned ADVTRACE pair (probe_inject.py
+sections 9-15 mirrored into gait_controller_instr.hpp, the drill surface): per
+advance call ent/imp/split/live/evt/clamp/cross/wallev/end, per free_step the
+plane census (FST) and the RK4 end state (FSEND), per rate() call the FRHS/FMUL/
+TOUCH/FFRIC/FPROJ checkpoints, per contact-scan point the gap decision (RTSC),
+per friction solve the direction inputs and 2x2 internals (RTFRI/RTFS/RTFSC/
+RTFRO), per impact the touching/gap census and friction catches (IMPE/IMPF/
+IMPP) and the poscorr gram (IMPC). The tick window arm was moved 3 -> 41 as the
+extent grew.
+
+## THE FIVE NAMED AND FIXED PAIRS (all in walker_numba_split.py)
+
+- PAIR 4 (crossing-time bisection): the contact-crossing localization tested
+  gap_of_k on the ptp scratch left by the LAST RK STAGE inside free_step
+  (stage-d at (qd,vd)) instead of evaluating the free_step's END state; the C++
+  computes gap_of(evaluate(free_step(...)),k). One branch flipped at bisection
+  iteration 31 (fore-pad landing, tick-3 substep-2), moving the crossing time
+  5e-5 relative. FIXED.
+- PAIR 5 (end-state save): C++ advance holds `end` AS A VALUE through the
+  drive-stop and contact scans; the port's qe/ve/we were clobbered by each
+  bisection's 42 free_steps, so the point-6 pre-test read +7.0e-7 (the mid
+  state) instead of -2.9e-5 (the end state) and skipped a landed fore pad.
+  FIXED: save end_q/end_v/end_w after the main free_step; the scan pre-test,
+  the per-point re-test and the plain-end commit read the copy.
+- PAIR 6 (friction row): rate()'s friction loop solved against the shared rn
+  scratch left at the LAST point of the touching loop (point 3's row) where the
+  C++ keeps per-point rown[k]; measured B=15.59 vs 0.29 on point 2's solve.
+  This path is dead until the first fore-pad touch (the hind gaps ride above
+  kTouch), which is why it survived the tick 0..3 census. FIXED: refresh rn
+  per point.
+- PAIR 7 (swallowed requires): the C++ impact friction-catch applies the
+  velocity change THEN require()s loss/share_n/share_t; a throw keeps the
+  change but skips caught/ledger. The port booked caught unconditionally
+  (measured 0.274 vs 0, r=0 slide at the tick-41 entry). FIXED: the guards are
+  computed in the reference order and gate the caught update.
+- PAIR 8 (poscorr gram): the gram build wrote stride 4 while gram_factor4 reads
+  stride npen (g10/g11 unwritten -> pivot failure -> the correction skipped
+  while the reference applied it), and the operand order was transposed
+  ((inv*row_a).row_b vs the reference's row_a.(inv*row_b)). FIXED both; the
+  tick-41 poscorr now succeeds with bit-identical multipliers.
+
+Also enlarged the LIFO interval stack 16 -> 64 slots (sq 576 -> 2304) against
+the depth-58 budget; this did NOT clear the tick-42 fault (below).
+
+## MEASURED EXTENT (the gate numbers)
+
+- SUBSTEP CENSUS ticks 0..4: SUBPRE 20/20, TAUFULL 20/20 BIT-EXACT; SUBFULL
+  20/20 BIT-EXACT at the correct sub alignment (the diff_census.py sub offset
+  is a known artifact; its t-offset does not apply).
+- TICK-3 INTERIOR: the full ADVTRACE pair through tick 4 is line-identical
+  (was: first divergence inside tick-3 substep-2->3 with a bit-exact entry).
+- TICK-41 INTERIOR: 1008/1010 drill lines identical across the whole tick.
+- WALK (cp_walk45 vs hl_walk45): host replay vs cl reference BIT-EXACT at 41
+  consecutive aligned states (host ticks 1..41 == cpp ticks 0..40; closeout-3:
+  3 aligned states). First divergence: host tick 42 (cpp tick 41) with the
+  entry state bit-exact: v9 -31.77 vs -22.20 (the collapse transient).
+- THE NEXT NAMED DEFECT: at the tick-42 boundary the host replay SEGFAULTS
+  (exit 139, no MSVC symbols) right after the n=112 plain-end evt print, where
+  the reference continues. The interval stack was enlarged 16 -> 64 without
+  clearing it; the fault is the next lane's first object.
+
+## FROZEN BARS RE-RUN (rebuilt DLL, nvcc -fmad=false, block 32; thresholds untouched)
+
+| bar | value | threshold | verdict | closeout-3 |
+|---|---|---|---|---|
+| freefall g | 9.806650000 err 6.89e-13 | <=0.01 | GREEN (still the only green) | same |
+| stand scaled diff | 9.511e-01 | <=1e-2 | RED | 0.1082 |
+| C1 nominal class | horizon 40 class 5 hind=0 fore=0 | fire by 150 | RED | horizon 41 class 3 |
+| C2 survival | 0/64 median 40.0 | >=0.8 pass-100 | RED | 0/64 median 41.0 |
+| C3 throughput | 53.36M eps b1024 / 227.6M eps b4096 | >=968M b1024 | RED (dead-env dispatch, all envs refused) | 30.8M/140.0M at c2; contended numbers not clean-comparable |
+| C4 memory | no fire | ceiling | GREEN | no fire |
+
+The stand/C1/C2 movements (0.108 -> 0.951, median 41 -> 40) are the same
+scene-design knife edges firing at different ticks now that the dynamics are
+bit-exact to tick 41 on the host and ulp-exact on the GPU: the GPU keeps the
+31/125 measured 1-ulp libdevice-vs-CRT transcendental deviations (trig_probe),
+so its discrete ties land one tick either side of the reference's. No threshold
+was touched; nothing was re-tuned.
+
+## TARGET B (transcendental class) STATUS
+
+The 31/125 sampled libdevice-vs-CRT deviations (SIN 5, COS 5, ATAN2 6, ACOS 4,
+HYPOT 11; always exactly 1 ulp) remain OPEN. The lawful port route requires the
+reference's own algorithm; the UCRT math sources are NOT shipped in this
+BuildTools install (Windows Kits 10 Source ucrt/ has no math implementations),
+so the fdlibm fallback is only lawful IF a bit-for-bit probe proves fdlibm ==
+UCRT at all 125 points before committing the port. That proof was NOT completed
+this session; no kernel transcendental was replaced. The GPU walk residual
+therefore remains the measured 1-ulp class, not a new defect.
