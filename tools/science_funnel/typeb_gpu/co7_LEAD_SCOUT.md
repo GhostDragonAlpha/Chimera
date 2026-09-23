@@ -50,3 +50,19 @@ register-trace; disasm pointers given):
 COS (4 fails) and ATAN2 (8; improved but wrong-scale at #2) remain as previously triaged.
 NOTE: dense-run counts are 20 fails across atan2/acos/cos — sin and hypot PASS everywhere
 measured so far.
+
+## ADDENDUM 3 (lead session 3 — the reconstruction debugged 20 -> 2)
+THE UCRT RECONSTRUCTION IS NOW: sin GREEN, cos GREEN, acos GREEN, hypot GREEN, atan2 18/20
+(the 2 fails are 1-ULP on extreme args x=1e-4/1e-3, direct branch). FIVE fixes this session,
+each with its proof: (1) acos small-path t1 = SIGNED x (025F); (2) acos >=0.5 combine
+b3 = b2 + pq*2s (022E operand order); (3) cos sign rule ((n+1)&2)!=0, never x's sign
+(Lcos_exit); (4) atan2 k-branch num = mins2 - rnew*maxs2 with MAX's head split (047E-049B)
+and den = maxs2 + mins2*rnew (04AC); (5) atan2 direct-branch num = sml - rq*big, corr =
+num/big (proven empirically: the tiny-x got values equaled big/sml exactly).
+THE ARGUMENT-ORDER/ROLE-SWAP CLASS: FIVE instances now in one file. The standing audit law
+applies to EVERY translated expression with two operands of comparable role.
+THE LAST 2 ULPS (the lane's): the direct branch's head-split fma ASSOCIATION is algebraically
+correct but not bit-faithful — the true region is between the 0.0625 comisd and the k-branch
+(locate by the 3f70000000000000 constant); the mask widths there (11-bit vs 32-bit heads) and
+the three-fma order must be read from the disasm, NOT tuned. Then: the 125-point probe + the
+dense sweep at 100% -> the explicit-fma CUDA port -> the on-device gate -> tick-66 -> bars.

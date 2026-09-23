@@ -450,11 +450,21 @@ static void u_atan_ratio(double big, double sml, int flip,
         double mins2 = mins1 * s2;            /* xmm4 = min scaled     */
         double maxs1 = big * s1;              /* xmm0 = max*scale1    */
         double maxs2 = maxs1 * s2;            /* xmm3 = max scaled     */
-        double mhead = d_of(b_of(mins2) & 0xFFFFFFFFF8000000ULL);
-        double num = fma(-mhead, rnew, maxs2);
-        double mrest = mins2 - mhead;
+        /* the head-split runs on MAXS2 (047E: rax=bits(maxs2)&~0x7FFFFF) and
+           the residual numerator is mins2 - rnew*maxs2 (0492/049B: min -
+           mhead*rnew - rnew*mrest) — the first transcription had the two
+           roles swapped (num = max - rnew*min), computing O(1) garbage where
+           the true residual is O(1/256^2); numerically verified: for
+           wy=0.1729,wx=0.7646 the correct num/den ~ -4.5e-4 */
+        double mhead = d_of(b_of(maxs2) & 0xFFFFFFFFF8000000ULL);
+        double mrest = maxs2 - mhead;
+        double num = fma(-mhead, rnew, mins2);
         num = fma(-rnew, mrest, num);
-        double den = fma(maxs2, rnew, mins2);
+        double den = fma(mins2, rnew, maxs2);  /* 04AC vfmadd231sd xmm1,xmm3,xmm5:
+                                                  den = maxs2 + mins2*rnew (the
+                                                  transcription had the two roles
+                                                  swapped: maxs2*rnew+mins2 — the
+                                                  measured ~6e-4 class) */
         double frac = num / den;
         val = frac + d_of(u_atan_tail[idx]);
         double x2 = frac * frac;
@@ -467,20 +477,23 @@ static void u_atan_ratio(double big, double sml, int flip,
     } else {                                  /* direct poly on r      */
         base = 0.0;
         double x2 = rq * rq;
+        /* the same role-swap as the k-branch (5th instance of the class,
+           proven empirically by the tiny-x fails: got == big/sml exactly):
+           num = sml - rq*big (big's head split), corr = num / big */
         double rh = d_of(b_of(rq) & 0xFFFFFFFF00000000ULL);
-        double mh = d_of(b_of(sml) & 0xFFFFFFFF00000000ULL);
-        double mrest = sml - mh;
+        double bh = d_of(b_of(big) & 0xFFFFFFFF00000000ULL);
+        double brest = big - bh;
         double rrest = rq - rh;
-        double num = fma(-mh, rh, big);
-        num = fma(-rh, mrest, num);
-        num = fma(-sml, rrest, num);
+        double num = fma(-bh, rh, sml);
+        num = fma(-rh, brest, num);
+        num = fma(-big, rrest, num);
         double poly = 0.090029810285449791;
         poly = fma(poly, x2, 0.11110736283514526);
         poly = fma(poly, x2, 0.1428571356180717);
         poly = fma(poly, x2, 0.19999999999393223);
         poly = fma(poly, x2, 0.33333333333333171);
         double x3 = x2 * rq;
-        double corr = num / sml;
+        double corr = num / big;
         corr = fma(-x3, poly, corr);
         val = corr + rq;
     }
