@@ -13,3 +13,22 @@
    the solo lead attempt stopped here on cost grounds (the specialist tooling re-derivation
    costs more lead budget than the fleet/external paths cost fleet budget — the no-busywork
    law cuts both ways). The full closeout-7 brief is board-ready.
+
+## ADDENDUM (same day, the lead's Target-B session): the inversion FOUND AND FIXED
+CORRECTION to note 2 above: co6_trig_dense.txt was NOT the fdlibm port — it is the
+UCRT RECONSTRUCTION ITSELF (ucrt_math.c, 578 lines transcribed from the disasms —
+closeout-6 authored it further than its receipt said). The first dense-sweep failures
+were its FIRST RUN, not fdlibm's.
+FIX APPLIED: u_atan_ratio's `rq = big/sml` was INVERTED — proven at the instruction
+level (the blend chain at 0393-03C6 puts min in xmm9, max in xmm7; vdivsd xmm5,xmm9,xmm7
+= smaller/larger <= 1). Now `rq = sml/big` with the proof comment inline. THE
+ARGUMENT-ORDER CLASS: THIRD INSTANCE (solver (csti,mdi); fore_follow (mdi,csti); now
+this division).
+MEASURED AFTER THE FIX (co7_dense_run2.txt): the catastrophic 3.16e+233 class is DEAD
+(all atan2 outputs sane-scale); atan2 #1 improved (-2.31 vs -2.41 want). REMAINING
+(the lane's work, in order): (1) atan2 still wrong at 8 points — suspect the
+QUADRANT/FIXUP TAIL of u_atan_ratio (057D..05C6) was transcribed against the OLD rq
+sense, or the flip semantics; (2) acos 8 fails UNCHANGED by the fix (independent
+transcription slip in acos_fma — the ~5.6e-5 offset class suggests a wrong polynomial
+coefficient or table row); (3) cos 2→4 fails (a sign path; check k_cos's sign selection
+against cos_mt.disasm). Rebuild = build_trig_probe2.ps1; sweep = ./trig_probe2_host.exe.
