@@ -23,7 +23,7 @@ from . import broker, jobobject, lifecycle, registry
 SCRATCH = r"E:\ChimeraWork\_supervisor_scratch"
 ENGINE_SRC = r"E:\ChimeraWork\buffy-stranger-20260920\.tmp\slice_build\Release"
 ENGINE_DST = os.path.join(SCRATCH, "smoke_engine")
-LANE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+LANE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
                         "tools", "science_funnel", "validation", "fleet_supervisor_20260922")
 NEVER_PORT = 8127  # the port law
 

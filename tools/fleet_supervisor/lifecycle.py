@@ -176,7 +176,7 @@ class Supervisor:
         return True
 
     # ------------------------------------------------------------- reconcile
-    def reconcile_pass(self, *, reap: bool = True) -> dict:
+    def reconcile_pass(self, *, reap: bool = True, scan_ambiguous: bool = True) -> dict:
         """One pass over the active registry:
           - live jobs verified via their JOB HANDLE (or re-opened by name);
             completed jobs detected and reaped;
@@ -244,28 +244,29 @@ class Supervisor:
 
         # THE AMBIGUOUS SCAN: report-only, always. A lane-looking process that
         # is in none of our live jobs and matches no active registry identity.
-        ours_identities = [(r["pid"], r["creation_time_us"])
-                           for r in registry.active_sessions(self.registry_path).values()]
-        py_cmdlines = None
-        for p in jobobject.enumerate_processes():
-            name = (p["name"] or "").lower()
-            looks_like_lane = False
-            if name in LANE_LOOKING_IMAGE_NAMES:
-                looks_like_lane = True
-            elif name.startswith("python"):
-                if py_cmdlines is None:
-                    py_cmdlines = python_cmdline_map()
-                if cmdline_looks_like_lane(py_cmdlines.get(p["pid"], "")):
+        if scan_ambiguous:
+            ours_identities = [(r["pid"], r["creation_time_us"])
+                               for r in registry.active_sessions(self.registry_path).values()]
+            py_cmdlines = None
+            for p in jobobject.enumerate_processes():
+                name = (p["name"] or "").lower()
+                looks_like_lane = False
+                if name in LANE_LOOKING_IMAGE_NAMES:
                     looks_like_lane = True
-            if not looks_like_lane:
-                continue
-            if self._is_ours(p["pid"], live_job_handles, ours_identities):
-                continue
-            report["ambiguous"].append({
-                "pid": p["pid"], "name": p["name"],
-                "image": jobobject.process_image_name(p["pid"]) or "",
-                "note": "REPORT ONLY: lane-looking but not fleet-owned; never touched",
-            })
+                elif name.startswith("python"):
+                    if py_cmdlines is None:
+                        py_cmdlines = python_cmdline_map()
+                    if cmdline_looks_like_lane(py_cmdlines.get(p["pid"], "")):
+                        looks_like_lane = True
+                if not looks_like_lane:
+                    continue
+                if self._is_ours(p["pid"], live_job_handles, ours_identities):
+                    continue
+                report["ambiguous"].append({
+                    "pid": p["pid"], "name": p["name"],
+                    "image": jobobject.process_image_name(p["pid"]) or "",
+                    "note": "REPORT ONLY: lane-looking but not fleet-owned; never touched",
+                })
         return report
 
     @staticmethod

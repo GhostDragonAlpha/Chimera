@@ -261,12 +261,36 @@ def process_image_name(pid: int) -> str | None:
 
 
 def process_alive_identity(pid: int, creation_time_us: int) -> bool:
-    """True iff a live process has EXACTLY this (pid, creation time)."""
+    """True iff a process OBJECT exists with EXACTLY this (pid, creation time).
+    NOTE: a TERMINATED member whose object lingers (some external handle still
+    holds it) also matches here -- use process_running for the honest
+    'is it still executing' test."""
     h = k32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, False, pid)
     if not h:
         return False
     try:
         return process_creation_time_us(h) == creation_time_us
+    except WinError:
+        return False
+    finally:
+        close_handle(h)
+
+
+def process_running(pid: int, creation_time_us: int) -> bool:
+    """The honest liveness test: identity matches AND the process has not
+    terminated (exit code still STILL_ACTIVE). A terminated zombie object
+    keeps its (pid, creation time) resolvable -- measured this lane -- so an
+    identity check alone over-reports survivors."""
+    h = k32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, False, pid)
+    if not h:
+        return False
+    try:
+        if process_creation_time_us(h) != creation_time_us:
+            return False
+        code = wt.DWORD(0)
+        if not k32.GetExitCodeProcess(h, ctypes.byref(code)):
+            return False
+        return code.value == STILL_ACTIVE
     except WinError:
         return False
     finally:
