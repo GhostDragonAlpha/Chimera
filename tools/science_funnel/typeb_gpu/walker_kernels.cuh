@@ -2887,7 +2887,7 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, int leg
     return;
 }
 
-__device__ inline double fore_env(double* mdl, double* cst, double* fr, int leg, double* paw_t, double v3, int* csti) {
+__device__ inline double fore_env(double* mdl, double* cst, double* fr, int leg, double* paw_t, double v3, int* csti, double paw_plant_y) {
     int _zzero91;
     int i;
     int _zzero92;
@@ -2919,7 +2919,7 @@ __device__ inline double fore_env(double* mdl, double* cst, double* fr, int leg,
     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
     vec_point(m16, ml, shw);
     off =  paw_t[leg * 3] - shw[0];
-    hgt =  fmax((double)(0.0), shw[1] - paw_t[leg * 3 + 1]);
+    hgt =  fmax((double)(0.0), shw[1] - paw_plant_y);
     dd =  cst[CF_fore_L1] + cst[CF_fore_rho];
     a2 =  dd * dd - hgt * hgt;
     amax =  (a2 > (double)(0.0)) ? (sqrt(a2)) : ((double)(0.0));
@@ -3777,7 +3777,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 if (env_s < (double)(0.0)) {
                     env_s =  (double)(0.0);
 }
-                tau1 =  fmax((double)(0.0), env_s / cst[CF_dt] - (tair + (double)(1.0)));
+                tau1 =  fmax((double)(0.0), env_s / cst[CF_dt] - (tair + (double)(1.0))) * cst[CF_dt];
 }
             else if (xoff > (double)(0.0) && vv > (double)(1e-9)) {
                 lift_wait =  fmax((double)(0.0), cst[CF_duty] - phi[leg]) * cst[CF_t_cycle] + (double)(0.25) * cst[CF_t_cycle];
@@ -3939,7 +3939,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 if (f_t[leg] >= f_st[leg] || wall_bound != 0) {
                     due =  1;
 }
-                env_t =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti);
+                env_t =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
                 act =  (int)(0);
                 double seat[3];
                 for (_zzero192 = 0; _zzero192 < (3); ++_zzero192) {
@@ -4054,7 +4054,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     f_dp[leg] = 0;
                     f_rp[leg] = f_rp[leg] + 1;
                     f_t[leg] = (double)(0.0);
-                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti);
+                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
                     f_st[leg] = fmax((double)(0.0), env_t2 - (tair + (double)(1.0)));
                     f_cy[leg] = f_st[leg] + tair;
 }
@@ -4096,7 +4096,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     f_dp[leg] = 0;
                     f_rp[leg] = f_rp[leg] + 1;
                     f_t[leg] = (double)(0.0);
-                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti);
+                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
                     f_st[leg] = fmax((double)(0.0), env_t2 - (tair + (double)(1.0)));
                     f_cy[leg] = f_st[leg] + tair;
 }
@@ -4166,7 +4166,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
 }
                 if (f_en[leg] != 0) {
-                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti);
+                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
                     f_st[leg] = fmax((double)(0.0), env_t2 - (tair + (double)(1.0)));
                     f_cy[leg] = f_st[leg] + tair;
 }
@@ -4214,7 +4214,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                         vec_point(m16, ml, shw);
                         offc =  paw_t[leg * 3] - shw[0];
                         vv =  fmax((double)(0.0), v[3]);
-                        hgt =  fmax((double)(0.0), shw[1] - paw_t[leg * 3 + 1]);
+                        hgt =  fmax((double)(0.0), shw[1] - paw_y[leg]);
                         dd =  cst[CF_fore_L1] + cst[CF_fore_rho];
                         a2 =  dd * dd - hgt * hgt;
                         amax =  (a2 > (double)(0.0)) ? (sqrt(a2)) : ((double)(0.0));

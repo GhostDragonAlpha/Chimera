@@ -3782,7 +3782,19 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
 @cuda.jit(device=True)
 
-def fore_env(mdl, cst, fr, leg, paw_t, v3, csti):
+def fore_env(mdl, cst, fr, leg, paw_t, v3, csti, paw_plant_y):
+    # CLOSEOUT-8 TICK-66 FIX: the reach envelope is measured at the PLANT
+    # HEIGHT (the captured settle reference y -- the C++ paw_plant_y_[leg]
+    # read inside fore_amax, gait_controller_ref.hpp:1096), not at the live
+    # paw-TARGET y. The target's y rides the swing clearance arch (up to
+    # 2*pad-radius above the plant line), which shrank hgt, grew amax, and
+    # grew tau_env by ~2.6 ticks at the tick-66 fore-right state (cpp
+    # envt 5.854 vs host >7): the wave-20 envelope-edge re-plant
+    # (f_t >= env_t) never fired on the translated side, the glide kept its
+    # stale schedule, and the fore-right servo targets split O(0.09) -- the
+    # tick-66 discrete flip. The Warp original has the same paw_t[leg*3+1]
+    # read; the C++ reference is the parity target (the closeout-6
+    # vec_point precedent).
 
     m16 = cuda.local.array(16, dtype=float64)
     for _zzero91 in range(16):
@@ -3810,7 +3822,7 @@ def fore_env(mdl, cst, fr, leg, paw_t, v3, csti):
 
     off = paw_t[leg * 3] - shw[0]
 
-    hgt = max(float(0.0), shw[1] - paw_t[leg * 3 + 1])
+    hgt = max(float(0.0), shw[1] - paw_plant_y)
 
     dd = cst[CF_fore_L1] + cst[CF_fore_rho]
 
@@ -4525,7 +4537,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     env_s = float(0.0)
 
-                tau1 = max(float(0.0), env_s / cst[CF_dt] - (tair + float(1.0)))
+                tau1 = max(float(0.0), env_s / cst[CF_dt] - (tair + float(1.0))) * cst[CF_dt]  # CLOSEOUT-8 ARM-UNITS FIX: back to SECONDS -- the C++ entry branch is tau1 = max(0, fore_entry_stance_ticks)*dt_ (gait_controller_instr.hpp:1167), so the shared tail f_st = tau1/dt_ is the identity the C++ runs; the translation left tau1 in ticks and divided by dt (a 300x stance: measured fst 343.68681983661702 vs cpp 1.1456227327887234 = 300x), the leg-1 clock never reached its consideration (f_t << f_st), the wave-20 envelope-edge re-plant could not fire at tick 66, and the fore-right servo targets split O(0.09) -- the tick-66 discrete flip's birth.
 
             elif xoff > float(0.0) and vv > float(1e-9):
 
@@ -4771,7 +4783,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     due = 1
 
-                env_t = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti)
+                env_t = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg])
 
                 act = int32(0)
 
@@ -4931,7 +4943,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     f_t[leg] = float(0.0)
 
-                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti)
+                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg])
 
                     f_st[leg] = max(float(0.0), env_t2 - (tair + float(1.0)))
 
@@ -4993,7 +5005,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     f_t[leg] = float(0.0)
 
-                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti)
+                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg])
 
                     f_st[leg] = max(float(0.0), env_t2 - (tair + float(1.0)))
 
@@ -5093,7 +5105,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                 if f_en[leg] != 0:
 
-                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti)
+                    env_t2 = fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg])
 
                     f_st[leg] = max(float(0.0), env_t2 - (tair + float(1.0)))
 
@@ -5165,7 +5177,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                         vv = max(float(0.0), v[3])
 
-                        hgt = max(float(0.0), shw[1] - paw_t[leg * 3 + 1])
+                        hgt = max(float(0.0), shw[1] - paw_y[leg])  # CLOSEOUT-8: plant height, not the live target y (the fore_converge env; C++ fore_amax reads paw_plant_y_)
 
                         dd = cst[CF_fore_L1] + cst[CF_fore_rho]
 

@@ -269,7 +269,7 @@ src = src.replace(anchor, anchor + "\nint advdbg = 0; // CLOSEOUT-4 advance-trac
 # calls inherit the armed value of their substep).
 anchor = """        advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd,"""
 assert src.count(anchor) == 3, "advance call anchor count != 3"
-src = src.replace(anchor, """        advdbg = ((a_ticks[e] == 60)) ? 1 : 0;
+src = src.replace(anchor, """        advdbg = ((a_ticks[e] == 66)) ? 1 : 0;
 """ + anchor, 1)
 
 # ADV ent: before the MAIN impact call (first of the two 8-space rcv sites; the
@@ -625,30 +625,34 @@ src = src.replace(anchor, """        const int gok =  gram_factor4(gram, npen, r
 #   SEATF   -- the fore_follow result seat at both call sites;
 #   SEATOUT -- post-application target/branch/ikb/clock;
 #   SV      -- the servo's per-drive target/state/raw-PD (fore drives only).
-# Armed exactly like the RT window: a_ticks[e]==60 (host tick 61).
-anchor = """                if (act == 1) {
-                    f_mo[leg] = 1;"""
-assert src.count(anchor) == 1, "SEATIN anchor not unique"
-src = src.replace(anchor, """                if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
+# Armed exactly like the RT window: a_ticks[e]==66 (host tick 67).
+# CLOSEOUT-8: the SEATIN print moved to mirror the C++ site EXACTLY --
+# gait_controller_instr.hpp prints it at the decision INPUTS (after env_t,
+# before the branch chain); the old placement (inside the act==1 lift branch)
+# only printed when the lift fired, so the sides' SEATIN sets could never
+# pair (cpp 9 lines vs host 2 at the 66-window) and the flipping tick's
+# envt was invisible on the host side.
+anchor = """                env_t =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);"""
+assert src.count(anchor) == 1, "SEATIN env_t anchor not unique"
+src = src.replace(anchor, """                env_t =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
+                if (a_ticks[e] >= 40 && a_ticks[e] <= 67) {
                     printf("SEATIN t=%d leg=%d ft=%.17g fst=%.17g fcy=%.17g wb=%d whr=%.17g gt=%d th1=%.17g th2=%.17g thin=%d due=%d envt=%.17g p0=%.17g p1=%.17g p2=%.17g\\n",
                         (int)a_ticks[e], leg, f_t[leg], f_st[leg], f_cy[leg], wall_bound, wall_hr, gated, th1, th2, thin_seat, due, env_t, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2]);
-                }
-                if (act == 1) {
-                    f_mo[leg] = 1;""", 1)
+                }""", 1)
 
 anchor = """                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);"""
 assert src.count(anchor) == 2, "SEATF fore_follow call anchor count != 2"
 src = src.replace(anchor, """                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);
-                    if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
+                    if (a_ticks[e] >= 40 && a_ticks[e] <= 67) {
                         printf("SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\\n", (int)a_ticks[e], leg, seat[0], seat[1], seat[2]);
                     }""", 2)
 
 anchor = """            if (f_t[leg] >= f_cy[leg]) {
                 hpt =  mdi[OI_fore_heel_pt + leg];"""
 assert src.count(anchor) == 1, "SEATOUT anchor not unique"
-src = src.replace(anchor, """                if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
-                    printf("SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g\\n",
-                        (int)a_ticks[e], leg, act, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2], ikb[leg], f_t[leg]);
+src = src.replace(anchor, """                if (a_ticks[e] >= 40 && a_ticks[e] <= 67) {
+                    printf("SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g fmo=%d fst=%.17g\\n",
+                        (int)a_ticks[e], leg, act, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2], ikb[leg], f_t[leg], f_mo[leg], f_st[leg]);
                 }
             if (f_t[leg] >= f_cy[leg]) {
                 hpt =  mdi[OI_fore_heel_pt + leg];""", 1)
@@ -656,7 +660,7 @@ src = src.replace(anchor, """                if (a_ticks[e] >= 40 && a_ticks[e] 
 anchor = """            tq =  mdl[OF_kp + d - 1] * (target - q[c]) - mdl[OF_kd + d - 1] * v[c];"""
 assert src.count(anchor) == 1, "SV tq anchor not unique"
 src = src.replace(anchor, anchor + """
-            if (a_ticks[e] >= 40 && a_ticks[e] <= 60 && d >= 9) {
+            if (a_ticks[e] >= 40 && a_ticks[e] <= 67 && d >= 9) {
                 printf("SV t=%d d=%d c=%d tgt=%.17g qc=%.17g vc=%.17g tqr=%.17g\\n", (int)a_ticks[e], d - 1, c, target, q[c], v[c], tq);
             }""", 1)
 

@@ -1392,7 +1392,7 @@ class GaitWalker {
     bool due=fore_t_[leg]>=fore_stance_[leg]||wall_bound;
     // CLOSEOUT-6 SEAT drill: the decision-input checkpoint (matches
     // probe_kernels.cuh's SEATIN grammar; armed at ticks_==60 == a_ticks 60).
-    if((long long)ticks_>=40&&(long long)ticks_<=60){
+    if((long long)ticks_>=40&&(long long)ticks_<=67){
      const ForeIK sik=fore_ik_at(leg,e,paw_target_[leg]);
      double sth1=(std::min)(sik.q1_raw-model_->lower[fore_coord_[leg][0]],model_->upper[fore_coord_[leg][0]]-sik.q1_raw);
      double sth2=(std::min)(sik.q2_raw-model_->lower[fore_coord_[leg][1]],model_->upper[fore_coord_[leg][1]]-sik.q2_raw);
@@ -1423,7 +1423,7 @@ class GaitWalker {
 #endif
     }else if(!gated&&due&&thin_seat&&wall_bound){
      V seat=fore_follow_seat(leg,e);
-     if((long long)ticks_>=40&&(long long)ticks_<=60)std::fprintf(stderr,"SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\n",(int)ticks_,(int)leg,seat[0],seat[1],seat[2]);
+     if((long long)ticks_>=40&&(long long)ticks_<=67)std::fprintf(stderr,"SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\n",(int)ticks_,(int)leg,seat[0],seat[1],seat[2]);
      if(std::hypot(seat[0]-paw_target_[leg][0],seat[1]-paw_target_[leg][1])<kTouch){
       fore_mode_[leg]=1;seat_b=1; // the restore is sub-quantum: the seat IS at the bar; lift
       if(fore_entry_[leg])fore_t_[leg]=0.;
@@ -1522,8 +1522,8 @@ class GaitWalker {
 #endif
     }
    }
-   if((long long)ticks_>=40&&(long long)ticks_<=60)std::fprintf(stderr,"SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g\n",
-    (int)ticks_,(int)leg,seat_b,paw_target_[leg][0],paw_target_[leg][1],paw_target_[leg][2],ik_branch_[leg],fore_t_[leg]);
+   if((long long)ticks_>=40&&(long long)ticks_<=67)std::fprintf(stderr,"SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g fmo=%d fst=%.17g\n",
+    (int)ticks_,(int)leg,seat_b,paw_target_[leg][0],paw_target_[leg][1],paw_target_[leg][2],ik_branch_[leg],fore_t_[leg],(int)fore_mode_[leg],fore_stance_[leg]);
    if(fore_t_[leg]>=fore_cycle_[leg]){ // TOUCHDOWN: re-capture the actual paw
     capture_paw(leg,e);++fore_replants_[leg];++fore_td_[leg];
     fore_t_[leg]=0.;fore_mode_[leg]=0;fore_td_plant_[leg]=true; // the TD opened a window
@@ -1639,7 +1639,7 @@ class GaitWalker {
      if(hind_height_hold_latched_&&touching_prev_[hl])
       target+=last_torque_[c]/kp_[d];}}}}
 
-   if((long long)ticks_>=40&&(long long)ticks_<=60&&d>=8){ // CLOSEOUT-6 SV drill (matches probe_kernels.cuh's SV; fore drives only)
+   if((long long)ticks_>=40&&(long long)ticks_<=67&&d>=8){ // CLOSEOUT-6 SV drill (matches probe_kernels.cuh's SV; fore drives only)
     const double tqr=kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c];
     std::fprintf(stderr,"SV t=%d d=%d c=%d tgt=%.17g qc=%.17g vc=%.17g tqr=%.17g\n",(int)ticks_,(int)d,(int)c,target,s_.q[c],s_.v[c],tqr);}
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
@@ -2643,7 +2643,7 @@ class GaitWalker {
   //    so each drive's positive substep work fits ITS store.
   Dense impulse_torque(n_,0.);
   adv_calls_=0;
-  g_advdbg=(ticks_==60); // CLOSEOUT-4 advance-trace drill window (the diverging tick)
+  g_advdbg=(ticks_==66); // CLOSEOUT-8: the drill window moved to the tick-66 discrete flip (was 60)
   // Planted-strut saturation census (wave 12): once per tick, on the
   // tick-start state -- did the body walk the shoulder outside the chain's
   // reachable annulus? Counted, reported in status; never hidden.
