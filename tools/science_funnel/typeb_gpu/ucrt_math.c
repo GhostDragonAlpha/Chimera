@@ -287,7 +287,11 @@ double ucrt_cos(double x) {
         q = fma(q, x4, t2);                   /* vfmadd213sd  xmm5,xmm1,xmm2 */
         result = q + t1;
     }
-    uint64_t sb = ((n & 2) ? 0ULL : U_SIGNBIT) ^ (ux & U_SIGNBIT);
+    /* the disasm's sign rule (Lcos_exit: add eax,1; and eax,2; cmovne
+       L_signbit): flip when ((n+1)&2)!=0 — n==1,2 mod 4 — and NEVER x's
+       own sign (cos is even; the old line XORed ux's signbit, flipping
+       every negative input and missing cos(pi) */
+    uint64_t sb = (((n + 1) & 2) != 0) ? U_SIGNBIT : 0ULL;
     return d_of(b_of(result) ^ sb);
 }
 
