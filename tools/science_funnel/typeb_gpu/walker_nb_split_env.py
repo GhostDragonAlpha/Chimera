@@ -45,6 +45,8 @@ class GaitWalkEnv:
         self.a_fore_entry = zi(E * 2); self.a_fore_conv = zi(E * 2)
         self.a_fore_td_plant = zi(E * 2); self.a_fore_clamped = zi(E * 2)
         self.a_fore_replants = zi(E * 2); self.a_fore_td_count = zi(E * 2)
+        self.a_fore_glide_hold = zi(E * 2); self.a_fore_hold_last = zi(E * 2)
+        self.a_fore_hold_off = z(E * 6)  # CLOSEOUT-8 pocket-clear hold
         self.a_hind_mode = zi(E * 2); self.a_hind_t = z(E * 2)
         self.a_hind_from = z(E * 6); self.a_hind_to = z(E * 6)
         self.a_hind_plant_y = z(E * 2); self.a_hind_ap = z(E * 2)
@@ -120,6 +122,7 @@ class GaitWalkEnv:
                 self.a_fore_t, self.a_fore_stance, self.a_fore_cycle, self.a_fore_mode,
                 self.a_fore_entry, self.a_fore_conv, self.a_fore_td_plant,
                 self.a_fore_clamped, self.a_fore_replants, self.a_fore_td_count,
+                self.a_fore_glide_hold, self.a_fore_hold_last, self.a_fore_hold_off,
                 self.a_hind_mode, self.a_hind_t, self.a_hind_from, self.a_hind_to,
                 self.a_hind_plant_y, self.a_hind_ap, self.a_hind_mp, self.a_hind_branch,
                 self.a_hind_held, self.a_hind_last_fire, self.a_hind_last_td,

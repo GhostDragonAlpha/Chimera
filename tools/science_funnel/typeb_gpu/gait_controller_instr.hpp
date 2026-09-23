@@ -1295,6 +1295,7 @@ class GaitWalker {
     if(fore_glide_held(leg)){
      auto shh=e.point(fore_mount_body_[leg],fore_mount_local_[leg]).first;
      paw_target_[leg]=V{shh[0]+fore_hold_off_[leg][0],shh[1]+fore_hold_off_[leg][1],shh[2]+fore_hold_off_[leg][2]};
+      if((long long)ticks_>=40&&(long long)ticks_<=75)std::fprintf(stderr,"HTGT t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\n",(int)ticks_,(int)leg,paw_target_[leg][0],paw_target_[leg][1],paw_target_[leg][2]);
     }else{
     for(int i=0;i<3;++i)paw_target_[leg][i]=swing_from_[leg][i]+(swing_to_[leg][i]-swing_from_[leg][i])*s;
     paw_target_[leg][1]+=c*std::sin(pi*s);
@@ -1392,7 +1393,7 @@ class GaitWalker {
     bool due=fore_t_[leg]>=fore_stance_[leg]||wall_bound;
     // CLOSEOUT-6 SEAT drill: the decision-input checkpoint (matches
     // probe_kernels.cuh's SEATIN grammar; armed at ticks_==60 == a_ticks 60).
-    if((long long)ticks_>=40&&(long long)ticks_<=67){
+    if((long long)ticks_>=40&&(long long)ticks_<=74){
      const ForeIK sik=fore_ik_at(leg,e,paw_target_[leg]);
      double sth1=(std::min)(sik.q1_raw-model_->lower[fore_coord_[leg][0]],model_->upper[fore_coord_[leg][0]]-sik.q1_raw);
      double sth2=(std::min)(sik.q2_raw-model_->lower[fore_coord_[leg][1]],model_->upper[fore_coord_[leg][1]]-sik.q2_raw);
@@ -1416,14 +1417,15 @@ class GaitWalker {
     double amax=fore_amax(e,leg);
     if(xoff>amax){xoff=amax;++fore_clamped_[leg];}
     swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
-    fore_glide_arm_hold(leg,e,wall_bound); // THE POCKET-CLEAR HOLD (wave 24)
+    fore_glide_arm_hold(leg,e,wall_bound);
+     if((long long)ticks_>=40&&(long long)ticks_<=75)std::fprintf(stderr,"HOFF t=%d leg=%d hold=%d last=%d h0=%.17g h1=%.17g h2=%.17g\n",(int)ticks_,(int)leg,(int)fore_glide_hold_[leg],(int)fore_hold_last_[leg],fore_hold_off_[leg][0],fore_hold_off_[leg][1],fore_hold_off_[leg][2]); // THE POCKET-CLEAR HOLD (wave 24)
 #ifdef GAIT_EVENT_TRACE
     std::fprintf(stderr,"[foreclk] lift leg=%zu tick=%llu td=%d entry=%d from=(%.6f,%.6f) to=(%.6f,%.6f) xoff=%.6f v=%.6f wall_bound=%d\n",
      leg,(unsigned long long)ticks_,fore_td_[leg],fore_entry_[leg],pw[0],pw[1],swing_to_[leg][0],swing_to_[leg][1],xoff,s_.v[3],wall_bound?1:0);
 #endif
     }else if(!gated&&due&&thin_seat&&wall_bound){
      V seat=fore_follow_seat(leg,e);
-     if((long long)ticks_>=40&&(long long)ticks_<=67)std::fprintf(stderr,"SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\n",(int)ticks_,(int)leg,seat[0],seat[1],seat[2]);
+     if((long long)ticks_>=40&&(long long)ticks_<=74)std::fprintf(stderr,"SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\n",(int)ticks_,(int)leg,seat[0],seat[1],seat[2]);
      if(std::hypot(seat[0]-paw_target_[leg][0],seat[1]-paw_target_[leg][1])<kTouch){
       fore_mode_[leg]=1;seat_b=1; // the restore is sub-quantum: the seat IS at the bar; lift
       if(fore_entry_[leg])fore_t_[leg]=0.;
@@ -1434,7 +1436,8 @@ class GaitWalker {
       double amax=fore_amax(e,leg);
       if(xoff>amax){xoff=amax;++fore_clamped_[leg];}
       swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
-      fore_glide_arm_hold(leg,e,wall_bound); // THE POCKET-CLEAR HOLD (wave 24)
+      fore_glide_arm_hold(leg,e,wall_bound);
+     if((long long)ticks_>=40&&(long long)ticks_<=75)std::fprintf(stderr,"HOFF t=%d leg=%d hold=%d last=%d h0=%.17g h1=%.17g h2=%.17g\n",(int)ticks_,(int)leg,(int)fore_glide_hold_[leg],(int)fore_hold_last_[leg],fore_hold_off_[leg][0],fore_hold_off_[leg][1],fore_hold_off_[leg][2]); // THE POCKET-CLEAR HOLD (wave 24)
      }else{
       paw_target_[leg]=seat;++fore_wall_follows_[leg];seat_b=2;
       fore_td_plant_[leg]=false;
@@ -1476,6 +1479,7 @@ class GaitWalker {
      if(xoff>amax){xoff=amax;++fore_clamped_[leg];}
      swing_to_[leg]=V{sh[0]+xoff,paw_plant_y_[leg],pw[2]};
      fore_glide_arm_hold(leg,e,wall_bound);
+     if((long long)ticks_>=40&&(long long)ticks_<=75)std::fprintf(stderr,"HOFF t=%d leg=%d hold=%d last=%d h0=%.17g h1=%.17g h2=%.17g\n",(int)ticks_,(int)leg,(int)fore_glide_hold_[leg],(int)fore_hold_last_[leg],fore_hold_off_[leg][0],fore_hold_off_[leg][1],fore_hold_off_[leg][2]);
      ++fore_wait_fires_[leg];
 #ifdef GAIT_EVENT_TRACE
      std::fprintf(stderr,"[foreclk] waitfire leg=%zu tick=%llu hr=%.6f floor=%.6f hold=%d last=%d\n",
@@ -1522,7 +1526,7 @@ class GaitWalker {
 #endif
     }
    }
-   if((long long)ticks_>=40&&(long long)ticks_<=67)std::fprintf(stderr,"SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g fmo=%d fst=%.17g\n",
+   if((long long)ticks_>=40&&(long long)ticks_<=74)std::fprintf(stderr,"SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g fmo=%d fst=%.17g\n",
     (int)ticks_,(int)leg,seat_b,paw_target_[leg][0],paw_target_[leg][1],paw_target_[leg][2],ik_branch_[leg],fore_t_[leg],(int)fore_mode_[leg],fore_stance_[leg]);
    if(fore_t_[leg]>=fore_cycle_[leg]){ // TOUCHDOWN: re-capture the actual paw
     capture_paw(leg,e);++fore_replants_[leg];++fore_td_[leg];
@@ -1639,7 +1643,7 @@ class GaitWalker {
      if(hind_height_hold_latched_&&touching_prev_[hl])
       target+=last_torque_[c]/kp_[d];}}}}
 
-   if((long long)ticks_>=40&&(long long)ticks_<=67&&d>=8){ // CLOSEOUT-6 SV drill (matches probe_kernels.cuh's SV; fore drives only)
+   if((long long)ticks_>=40&&(long long)ticks_<=74&&d>=8){ // CLOSEOUT-6 SV drill (matches probe_kernels.cuh's SV; fore drives only)
     const double tqr=kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c];
     std::fprintf(stderr,"SV t=%d d=%d c=%d tgt=%.17g qc=%.17g vc=%.17g tqr=%.17g\n",(int)ticks_,(int)d,(int)c,target,s_.q[c],s_.v[c],tqr);}
    tau[c]=(std::max)(-dr.cap,(std::min)(dr.cap,kp_[d]*(target-s_.q[c])-kd_[d]*s_.v[c]));}
@@ -2643,7 +2647,7 @@ class GaitWalker {
   //    so each drive's positive substep work fits ITS store.
   Dense impulse_torque(n_,0.);
   adv_calls_=0;
-  g_advdbg=(ticks_==66); // CLOSEOUT-8: the drill window moved to the tick-66 discrete flip (was 60)
+  g_advdbg=(ticks_==73); // CLOSEOUT-8: the drill window moved to the tick-73 discrete flip (was 71)
   // Planted-strut saturation census (wave 12): once per tick, on the
   // tick-start state -- did the body walk the shoulder outside the chain's
   // reachable annulus? Counted, reported in status; never hidden.

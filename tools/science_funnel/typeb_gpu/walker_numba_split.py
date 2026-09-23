@@ -3506,7 +3506,7 @@ def vault_at(mdl, phi):
 
 @cuda.jit
 
-def reset_kernel(a_q0, a_v0, a_touching0, phi_l0, phi_r0, settle_total, a_store_floor, store_post, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed):
+def reset_kernel(a_q0, a_v0, a_touching0, phi_l0, phi_r0, settle_total, a_store_floor, store_post, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_fore_glide_hold, a_fore_hold_last, a_fore_hold_off, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed):
 
     e = cuda.grid(1)
 
@@ -3545,6 +3545,15 @@ def reset_kernel(a_q0, a_v0, a_touching0, phi_l0, phi_r0, settle_total, a_store_
     for l in range(2):
 
         a_paw_plant_y[e * 2 + l] = float(0.0)
+        a_fore_glide_hold[e * 2 + l] = 0
+
+        a_fore_hold_last[e * 2 + l] = 0
+
+        a_fore_hold_off[e * 6 + l * 3] = 0.0
+
+        a_fore_hold_off[e * 6 + l * 3 + 1] = 0.0
+
+        a_fore_hold_off[e * 6 + l * 3 + 2] = 0.0
 
         a_fore_t[e * 2 + l] = float(0.0)
 
@@ -3782,6 +3791,144 @@ def fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result):
 
 @cuda.jit(device=True)
 
+def fore_arm_hold(mdl, cst, fr, leg, wall_bound, f_t, f_st, f_cy, paw_t, swf, swt, ikb, mdi, csti, f_hgh, f_hhl, f_hoff):
+    # CLOSEOUT-8: THE POCKET-CLEAR HOLD (wave 24) ported -- the DEFERRED-W24
+    # deferral turned load-bearing at tick 73 (the no-double-swing gate's
+    # clause (a) exempts a held glide, and the held glide's target is the
+    # body-locked annulus-edge seat). Mirror of fore_glide_arm_hold
+    # (gait_controller_ref.hpp:1008) -- same 42-step dmax bisection (fore_D_at),
+    # same per-tick line march through fore_ik_at (the branch the leg stored),
+    # same held span [1, last] with last = the final out-of-range march tick.
+    f_hgh[leg] = 0
+
+    f_hhl[leg] = 0
+
+    if wall_bound == 0:
+
+        return
+
+    n = int(f_cy[leg] - f_st[leg])
+
+    if n < 2:
+
+        return
+
+    m16 = cuda.local.array(16, dtype=float64)
+    for _coh1 in range(16):
+        m16[_coh1] = 0.0
+
+    for i in range(16):
+
+        m16[i] = fr[csti[CI_pelvis_row] * 16 + i]
+
+    shw = cuda.local.array(3, dtype=float64)
+    for _coh2 in range(3):
+        shw[_coh2] = 0.0
+
+    ml = cuda.local.array(3, dtype=float64)
+    for _coh3 in range(3):
+        ml[_coh3] = 0.0
+
+    ml[0] = mdl[OF_fore_mount_local + leg * 3]
+
+    ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1]
+
+    ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2]
+
+    vec_point(m16, ml, shw)
+
+    px = cuda.local.array(3, dtype=float64)
+    py = cuda.local.array(3, dtype=float64)
+    t = cuda.local.array(3, dtype=float64)
+    for _coh4 in range(3):
+        px[_coh4] = 0.0
+        py[_coh4] = 0.0
+        t[_coh4] = 0.0
+
+    px[0] = paw_t[leg * 3] + float(1e-3)
+
+    px[1] = paw_t[leg * 3 + 1]
+
+    px[2] = paw_t[leg * 3 + 2]
+
+    py[0] = paw_t[leg * 3] - float(1e-3)
+
+    py[1] = paw_t[leg * 3 + 1]
+
+    py[2] = paw_t[leg * 3 + 2]
+
+    dr = float(-1.0)
+
+    if fore_target_headroom(mdl, cst, fr, leg, px, ikb[leg], mdi, csti) >= fore_target_headroom(mdl, cst, fr, leg, py, ikb[leg], mdi, csti):
+
+        dr = float(1.0)
+
+    dmax = cst[CF_fore_L1] + cst[CF_fore_rho]
+
+    lo = float(0.0)
+
+    hi = float(2.0) * dmax
+
+    for j in range(42):
+
+        mid = (lo + hi) / float(2.0)
+
+        t[0] = paw_t[leg * 3] + dr * mid
+
+        t[1] = paw_t[leg * 3 + 1]
+
+        t[2] = paw_t[leg * 3 + 2]
+
+        if fore_D_at(mdl, cst, fr, leg, t, csti) < dmax:
+
+            lo = mid
+
+        else:
+
+            hi = mid
+
+    f_hoff[leg * 3] = paw_t[leg * 3] + dr * ((lo + hi) / float(2.0)) - shw[0]
+
+    f_hoff[leg * 3 + 1] = paw_t[leg * 3 + 1] - shw[1]
+
+    f_hoff[leg * 3 + 2] = paw_t[leg * 3 + 2] - shw[2]
+
+    c1 = mdi[OI_fore_coord + leg * 2]
+
+    c2 = mdi[OI_fore_coord + leg * 2 + 1]
+
+    last = 0
+
+    for k in range(1, n + 1):
+
+        sg = float(k) / float(n)
+
+        t[0] = swf[leg * 3] + (swt[leg * 3] - swf[leg * 3]) * sg
+
+        t[1] = swf[leg * 3 + 1] + (swt[leg * 3 + 1] - swf[leg * 3 + 1]) * sg
+
+        t[2] = swf[leg * 3 + 2] + (swt[leg * 3 + 2] - swf[leg * 3 + 2]) * sg
+
+        dq1, dq2, q1r, q2r, dsat = fore_ik_at(mdl, cst, fr, leg, t, ikb[leg], mdi, csti)
+
+        if q1r < mdl[OF_lower + c1] or q1r > mdl[OF_upper + c1] or q2r < mdl[OF_lower + c2] or q2r > mdl[OF_upper + c2]:
+
+            last = k
+
+    if last > 0:
+
+        f_hgh[leg] = 1
+
+        f_hhl[leg] = last
+
+    return
+
+
+
+
+
+@cuda.jit(device=True)
+
 def fore_env(mdl, cst, fr, leg, paw_t, v3, csti, paw_plant_y):
     # CLOSEOUT-8 TICK-66 FIX: the reach envelope is measured at the PLANT
     # HEIGHT (the captured settle reference y -- the C++ paw_plant_y_[leg]
@@ -3903,7 +4050,7 @@ def paw_leg(paw_t, leg, out):
 
 @cuda.jit(cache=True)
 
-def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
+def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_fore_glide_hold, a_fore_hold_last, a_fore_hold_off, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
     e = cuda.grid(1)
@@ -3991,6 +4138,16 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
         paw_t[_zzero102] = 0.0
 
     paw_y = cuda.local.array(2, dtype=float64)
+    f_hgh = cuda.local.array(2, dtype=int32)
+    for _coh10 in range(2):
+        f_hgh[_coh10] = 0
+    f_hhl = cuda.local.array(2, dtype=int32)
+    for _coh11 in range(2):
+        f_hhl[_coh11] = 0
+    f_hoff = cuda.local.array(6, dtype=float64)
+    for _coh12 in range(6):
+        f_hoff[_coh12] = 0.0
+
     for _zzero103 in range(2):
         paw_y[_zzero103] = 0.0
 
@@ -4053,6 +4210,15 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
             swt[l * 3 + c] = a_swing_to[e * 6 + l * 3 + c]
 
         paw_y[l] = a_paw_plant_y[e * 2 + l]
+        f_hgh[l] = a_fore_glide_hold[e * 2 + l]
+
+        f_hhl[l] = a_fore_hold_last[e * 2 + l]
+
+        f_hoff[l * 3] = a_fore_hold_off[e * 6 + l * 3]
+
+        f_hoff[l * 3 + 1] = a_fore_hold_off[e * 6 + l * 3 + 1]
+
+        f_hoff[l * 3 + 2] = a_fore_hold_off[e * 6 + l * 3 + 2]
 
         f_t[l] = a_fore_t[e * 2 + l]
 
@@ -4485,6 +4651,10 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
         for leg in range(2):
 
+            f_hgh[leg] = 0
+
+            f_hhl[leg] = 0
+
             paw_y[leg] = paw_t[leg * 3 + 1]
 
             shw = cuda.local.array(3, dtype=float64)
@@ -4668,13 +4838,49 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                 carch = float(2.0) * mdl[OF_pt_radius + mdi[OI_fore_heel_pt + leg]]
 
-                # DEFERRED-W24: the pocket-clear hold; the standard line+arch
+                # CLOSEOUT-8: the pocket-clear hold (wave 24) ported -- the
+                # held glide's target is the BODY-LOCKED annulus-edge seat
+                # (the mount + the arm-time hold offset); the release resumes
+                # the standard line+arch (fore_glide_held, ref hpp:1277).
+                held = f_hgh[leg] != 0 and f_t[leg] < f_hhl[leg] and f_t[leg] + float(1.0) < f_cy[leg]
 
-                for c in range(3):
+                if held != 0:
 
-                    paw_t[leg * 3 + c] = swf[leg * 3 + c] + (swt[leg * 3 + c] - swf[leg * 3 + c]) * sg
+                    m16h = cuda.local.array(16, dtype=float64)
+                    for _coh20 in range(16):
+                        m16h[_coh20] = 0.0
 
-                paw_t[leg * 3 + 1] = paw_t[leg * 3 + 1] + carch * math.sin(PI * sg)
+                    for i in range(16):
+
+                        m16h[i] = fr[csti[CI_pelvis_row] * 16 + i]
+
+                    shh = cuda.local.array(3, dtype=float64)
+                    for _coh21 in range(3):
+                        shh[_coh21] = 0.0
+
+                    mlh = cuda.local.array(3, dtype=float64)
+                    for _coh22 in range(3):
+                        mlh[_coh22] = 0.0
+
+                    mlh[0] = mdl[OF_fore_mount_local + leg * 3]
+
+                    mlh[1] = mdl[OF_fore_mount_local + leg * 3 + 1]
+
+                    mlh[2] = mdl[OF_fore_mount_local + leg * 3 + 2]
+
+                    vec_point(m16h, mlh, shh)
+
+                    for c in range(3):
+
+                        paw_t[leg * 3 + c] = shh[c] + f_hoff[leg * 3 + c]
+
+                if held == 0:
+
+                    for c in range(3):
+
+                        paw_t[leg * 3 + c] = swf[leg * 3 + c] + (swt[leg * 3 + c] - swf[leg * 3 + c]) * sg
+
+                    paw_t[leg * 3 + 1] = paw_t[leg * 3 + 1] + carch * math.sin(PI * sg)
 
             if f_mo[leg] == 0 and f_t[leg] >= f_st[leg]:
 
@@ -4698,7 +4904,12 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                 if f_en[leg] != 0:
 
-                    if f_mo[o] == 1:
+                    # CLOSEOUT-8: clause (a) exempts a HELD glide (the wave-25
+                    # scope: a held glide is not a swing -- its pads stay live,
+                    # ref hpp:1341 `fore_mode_[o]==1&&!fore_glide_held(o)`).
+                    o_held = f_hgh[o] != 0 and f_t[o] < f_hhl[o] and f_t[o] + float(1.0) < f_cy[o]
+
+                    if f_mo[o] == 1 and o_held == 0:
 
                         gated = 1
 
@@ -4797,9 +5008,6 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                 elif gated == 0 and due != 0 and thin_seat != 0 and wall_bound != 0:
 
-                    seat = cuda.local.array(3, dtype=float64)
-                    for _zzero193 in range(3):
-                        seat[_zzero193] = 0.0
                     fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat)
 
                     dsx = seat[0] - paw_t[leg * 3]
@@ -4826,9 +5034,6 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     if wall_bound != 0 and min(th1, th2) < float(0.1022):
 
-                        seat = cuda.local.array(3, dtype=float64)
-                        for _zzero194 in range(3):
-                            seat[_zzero194] = 0.0
                         fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat)
 
                         dsx = seat[0] - paw_t[leg * 3]
@@ -4931,6 +5136,8 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     swt[leg * 3 + 2] = pw[2]
 
+                    fore_arm_hold(mdl, cst, fr, leg, wall_bound, f_t, f_st, f_cy, paw_t, swf, swt, ikb, mdi, csti, f_hgh, f_hhl, f_hoff)
+
                 elif act == 2:
 
                     for c in range(3):
@@ -4981,6 +5188,10 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                         paw_t[leg * 3 + c] = pw[c]
 
+                    f_hgh[leg] = 0
+
+                    f_hhl[leg] = 0
+
                     cc1 = mdi[OI_fore_coord + leg * 2]
 
                     cc2 = mdi[OI_fore_coord + leg * 2 + 1]
@@ -5014,6 +5225,10 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
             if f_t[leg] >= f_cy[leg]:
 
                 # TOUCHDOWN: re-capture the actual paw
+
+                f_hgh[leg] = 0
+
+                f_hhl[leg] = 0
 
                 hpt = mdi[OI_fore_heel_pt + leg]
 
@@ -6002,6 +6217,15 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
             a_hind_to[e * 6 + l * 3 + c] = h_to[l * 3 + c]
 
         a_paw_plant_y[e * 2 + l] = paw_y[l]
+        a_fore_glide_hold[e * 2 + l] = f_hgh[l]
+
+        a_fore_hold_last[e * 2 + l] = f_hhl[l]
+
+        a_fore_hold_off[e * 6 + l * 3] = f_hoff[l * 3]
+
+        a_fore_hold_off[e * 6 + l * 3 + 1] = f_hoff[l * 3 + 1]
+
+        a_fore_hold_off[e * 6 + l * 3 + 2] = f_hoff[l * 3 + 2]
 
         a_fore_t[e * 2 + l] = f_t[l]
 
@@ -6097,7 +6321,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
 @cuda.jit(opt=False, cache=True)
 
-def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
+def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_fore_glide_hold, a_fore_hold_last, a_fore_hold_off, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
     e = cuda.grid(1)
@@ -7190,7 +7414,7 @@ def tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_ba
 
 @cuda.jit(cache=True)
 
-def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
+def tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_battery, a_battery_post, a_phi, a_touching, a_captured, a_settle, a_ik_branch, a_paw_target, a_paw_plant_y, a_swing_from, a_swing_to, a_fore_t, a_fore_stance, a_fore_cycle, a_fore_mode, a_fore_entry, a_fore_conv, a_fore_td_plant, a_fore_clamped, a_fore_replants, a_fore_td_count, a_fore_glide_hold, a_fore_hold_last, a_fore_hold_off, a_hind_mode, a_hind_t, a_hind_from, a_hind_to, a_hind_plant_y, a_hind_ap, a_hind_mp, a_hind_branch, a_hind_held, a_hind_last_fire, a_hind_last_td, a_hind_fires, a_hind_tds, a_hind_xoff, a_height_latched, a_cmd_vx, a_cmd_live, a_cmd_first_tick, a_cmd_fires, a_ticks, a_adv_calls, a_refused, a_refused_class, a_collapsed, rb, rbi, a_rc):
     pt_radius_g = mdl[OF_pt_radius:OF_pt_radius + 8]
 
     e = cuda.grid(1)

@@ -269,7 +269,7 @@ src = src.replace(anchor, anchor + "\nint advdbg = 0; // CLOSEOUT-4 advance-trac
 # calls inherit the armed value of their substep).
 anchor = """        advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd,"""
 assert src.count(anchor) == 3, "advance call anchor count != 3"
-src = src.replace(anchor, """        advdbg = ((a_ticks[e] == 66)) ? 1 : 0;
+src = src.replace(anchor, """        advdbg = ((a_ticks[e] == 74)) ? 1 : 0;
 """ + anchor, 1)
 
 # ADV ent: before the MAIN impact call (first of the two 8-space rcv sites; the
@@ -635,7 +635,7 @@ src = src.replace(anchor, """        const int gok =  gram_factor4(gram, npen, r
 anchor = """                env_t =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);"""
 assert src.count(anchor) == 1, "SEATIN env_t anchor not unique"
 src = src.replace(anchor, """                env_t =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
-                if (a_ticks[e] >= 40 && a_ticks[e] <= 67) {
+                if (a_ticks[e] >= 40 && a_ticks[e] <= 75) {
                     printf("SEATIN t=%d leg=%d ft=%.17g fst=%.17g fcy=%.17g wb=%d whr=%.17g gt=%d th1=%.17g th2=%.17g thin=%d due=%d envt=%.17g p0=%.17g p1=%.17g p2=%.17g\\n",
                         (int)a_ticks[e], leg, f_t[leg], f_st[leg], f_cy[leg], wall_bound, wall_hr, gated, th1, th2, thin_seat, due, env_t, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2]);
                 }""", 1)
@@ -643,14 +643,16 @@ src = src.replace(anchor, """                env_t =  fore_env(mdl, cst, fr, leg
 anchor = """                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);"""
 assert src.count(anchor) == 2, "SEATF fore_follow call anchor count != 2"
 src = src.replace(anchor, """                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);
-                    if (a_ticks[e] >= 40 && a_ticks[e] <= 67) {
+                    if (a_ticks[e] >= 40 && a_ticks[e] <= 75) {
                         printf("SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\\n", (int)a_ticks[e], leg, seat[0], seat[1], seat[2]);
                     }""", 2)
 
 anchor = """            if (f_t[leg] >= f_cy[leg]) {
+                f_hgh[leg] = 0;
+                f_hhl[leg] = 0;
                 hpt =  mdi[OI_fore_heel_pt + leg];"""
 assert src.count(anchor) == 1, "SEATOUT anchor not unique"
-src = src.replace(anchor, """                if (a_ticks[e] >= 40 && a_ticks[e] <= 67) {
+src = src.replace(anchor, """                if (a_ticks[e] >= 40 && a_ticks[e] <= 75) {
                     printf("SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g fmo=%d fst=%.17g\\n",
                         (int)a_ticks[e], leg, act, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2], ikb[leg], f_t[leg], f_mo[leg], f_st[leg]);
                 }
@@ -660,10 +662,26 @@ src = src.replace(anchor, """                if (a_ticks[e] >= 40 && a_ticks[e] 
 anchor = """            tq =  mdl[OF_kp + d - 1] * (target - q[c]) - mdl[OF_kd + d - 1] * v[c];"""
 assert src.count(anchor) == 1, "SV tq anchor not unique"
 src = src.replace(anchor, anchor + """
-            if (a_ticks[e] >= 40 && a_ticks[e] <= 67 && d >= 9) {
+            if (a_ticks[e] >= 40 && a_ticks[e] <= 75 && d >= 9) {
                 printf("SV t=%d d=%d c=%d tgt=%.17g qc=%.17g vc=%.17g tqr=%.17g\\n", (int)a_ticks[e], d - 1, c, target, q[c], v[c], tq);
+                if (d == 9 && a_ticks[e] >= 73 && a_ticks[e] <= 75) {
+                    printf("IKIK t=%d q1f=%.17g q2f=%.17g q1rx=%.17g q2rx=%.17g\\n", (int)a_ticks[e], q1f, q2f, q1rx, q2rx);
+                }
             }""", 1)
 
+# 16b) CLOSEOUT-8 FKIN: the exact fore_ik inputs at the flipping tick (the
+# 2-ulp hunt). Appended inside the generated SV block.
+anchor = """                if (d == 9 && a_ticks[e] >= 73 && a_ticks[e] <= 75) {
+                    printf("IKIK t=%d q1f=%.17g q2f=%.17g q1rx=%.17g q2rx=%.17g\\n", (int)a_ticks[e], q1f, q2f, q1rx, q2rx);
+                }"""
+assert src.count(anchor) == 1, "IKIK anchor not unique"
+src = src.replace(anchor, anchor + """
+                {
+                    const int offk = csti[CI_pelvis_row] * 16;
+                    printf("FKIN m=%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g paw=%.17g,%.17g,%.17g beta=%.17g L1=%.17g rho=%.17g ikb=%d\\n",
+                        fr[offk + 0], fr[offk + 1], fr[offk + 2], fr[offk + 3], fr[offk + 4], fr[offk + 5], fr[offk + 6], fr[offk + 7], fr[offk + 8], fr[offk + 9], fr[offk + 10], fr[offk + 11], fr[offk + 12], fr[offk + 13], fr[offk + 14], fr[offk + 15],
+                        paw_t[0], paw_t[1], paw_t[2], cst[CF_fore_beta], cst[CF_fore_L1], cst[CF_fore_rho], ikb[0]);
+                }""", 1)
 
 Path("probe_kernels.cuh").write_text(src, encoding="utf-8")
-print("probe_kernels.cuh written:", len(src), "bytes")
+print("probe_kernels.cuh rewritten with hold drill:", len(src), "bytes")

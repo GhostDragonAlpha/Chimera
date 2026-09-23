@@ -48,12 +48,17 @@ DST = Path(__file__).parent / "walker_kernels.cuh"
 HOST_INT32_ARGS = ("a_touching", "a_captured", "a_settle", "a_ik_branch",
                    "a_fore_mode", "a_fore_entry", "a_fore_conv", "a_fore_td_plant",
                    "a_fore_clamped", "a_fore_replants", "a_fore_td_count",
+                   "a_fore_glide_hold", "a_fore_hold_last",  # CLOSEOUT-8 pocket-clear hold ints
                    "a_hind_mode", "a_hind_branch", "a_hind_held", "a_hind_fires",
                    "a_hind_tds", "a_height_latched", "a_cmd_live", "a_cmd_fires",
                    "a_adv_calls", "a_refused", "a_refused_class", "a_collapsed",
                    "a_rc", "rbi", "mdi", "csti", "a_touching0")
 HOST_INT64_ARGS = ("a_hind_last_fire", "a_hind_last_td", "a_cmd_first_tick", "a_ticks")
 HOST_INT_SCALARS = ("settle_total",)
+# CLOSEOUT-8: f64 pointer args the per-kernel heuristic cannot see (unused in
+# integ/post, so never subscripted there); without this seed they type as
+# by-value double and every driver call site breaks.
+HOST_F64_PTR_ARGS = ("a_fore_hold_off",)
 # int-valued pointer args beyond the name tables
 INT_ARR_ARGS = set()
 GLOBAL_INTS = {"cu_total_q"}
@@ -766,6 +771,8 @@ def seed_kind(fn, p):
         return "double"
     if p in HOST_INT32_ARGS:
         return "int*"
+    if p in HOST_F64_PTR_ARGS:
+        return "double*"
     if p in HOST_INT64_ARGS:
         return "long long*"
     if p in i["subd"] and p in i["idx"]:

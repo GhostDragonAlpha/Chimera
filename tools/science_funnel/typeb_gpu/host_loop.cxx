@@ -19,6 +19,7 @@ static double a_phi[2]; static int a_touch[2], a_cap[1], a_set[1], a_ikb[2];
 static double a_pawt[6], a_pawy[2], a_swingf[6], a_swingt[6];
 static double a_ft[2], a_fst[2], a_fcy[2];
 static int a_fmo[2], a_fen[2], a_fcv[2], a_fdp[2], a_fcl[2], a_frp[2], a_ftd[2];
+static int a_hgh[2], a_hhl[2]; static double a_hhoff[6]; // CLOSEOUT-8 pocket-clear hold state
 static int a_hmo[2]; static double a_ht[2], a_hfrom[6], a_hto[6], a_hpy[2], a_hap[2], a_hmp[2];
 static int a_hbr[2], a_hheld[2]; static long long a_hlf[2], a_hlt[2];
 static int a_hfi[2], a_htds[2]; static double a_hxo[2];
@@ -44,26 +45,26 @@ int main() {
     reset_kernel(q0a, v0a, t0a, phi_l0, phi_r0, settle_total, store_floor, store_post,
                  a_q, a_v, a_work, a_lt, a_bat, a_batp, a_phi, a_touch, a_cap, a_set, a_ikb,
                  a_pawt, a_pawy, a_swingf, a_swingt, a_ft, a_fst, a_fcy, a_fmo, a_fen, a_fcv,
-                 a_fdp, a_fcl, a_frp, a_ftd, a_hmo, a_ht, a_hfrom, a_hto, a_hpy, a_hap, a_hmp,
+                 a_fdp, a_fcl, a_frp, a_ftd, a_hgh, a_hhl, a_hhoff, a_hmo, a_ht, a_hfrom, a_hto, a_hpy, a_hap, a_hmp,
                  a_hbr, a_hheld, a_hlf, a_hlt, a_hfi, a_htds, a_hxo, a_hl, a_cmdvx, a_cmdlive,
                  a_cft, a_cmdfires, a_ticks, a_advc, a_ref, a_refc, a_col);
     printf("reset: q4=%.9f rc_uninit\n", a_q[4]);
     for (int t = 1; t <= 100; ++t) {
         tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_lt, a_bat, a_batp,
             a_phi, a_touch, a_cap, a_set, a_ikb, a_pawt, a_pawy, a_swingf, a_swingt,
-            a_ft, a_fst, a_fcy, a_fmo, a_fen, a_fcv, a_fdp, a_fcl, a_frp, a_ftd,
+            a_ft, a_fst, a_fcy, a_fmo, a_fen, a_fcv, a_fdp, a_fcl, a_frp, a_ftd, a_hgh, a_hhl, a_hhoff,
             a_hmo, a_ht, a_hfrom, a_hto, a_hpy, a_hap, a_hmp, a_hbr, a_hheld, a_hlf,
             a_hlt, a_hfi, a_htds, a_hxo, a_hl, a_cmdvx, a_cmdlive, a_cft, a_cmdfires,
             a_ticks, a_advc, a_ref, a_refc, a_col, rb, rbi, a_rc);
         tick_integ_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_lt, a_bat, a_batp,
             a_phi, a_touch, a_cap, a_set, a_ikb, a_pawt, a_pawy, a_swingf, a_swingt,
-            a_ft, a_fst, a_fcy, a_fmo, a_fen, a_fcv, a_fdp, a_fcl, a_frp, a_ftd,
+            a_ft, a_fst, a_fcy, a_fmo, a_fen, a_fcv, a_fdp, a_fcl, a_frp, a_ftd, a_hgh, a_hhl, a_hhoff,
             a_hmo, a_ht, a_hfrom, a_hto, a_hpy, a_hap, a_hmp, a_hbr, a_hheld, a_hlf,
             a_hlt, a_hfi, a_htds, a_hxo, a_hl, a_cmdvx, a_cmdlive, a_cft, a_cmdfires,
             a_ticks, a_advc, a_ref, a_refc, a_col, rb, rbi, a_rc);
         tick_post_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_lt, a_bat, a_batp,
             a_phi, a_touch, a_cap, a_set, a_ikb, a_pawt, a_pawy, a_swingf, a_swingt,
-            a_ft, a_fst, a_fcy, a_fmo, a_fen, a_fcv, a_fdp, a_fcl, a_frp, a_ftd,
+            a_ft, a_fst, a_fcy, a_fmo, a_fen, a_fcv, a_fdp, a_fcl, a_frp, a_ftd, a_hgh, a_hhl, a_hhoff,
             a_hmo, a_ht, a_hfrom, a_hto, a_hpy, a_hap, a_hmp, a_hbr, a_hheld, a_hlf,
             a_hlt, a_hfi, a_htds, a_hxo, a_hl, a_cmdvx, a_cmdlive, a_cft, a_cmdfires,
             a_ticks, a_advc, a_ref, a_refc, a_col, rb, rbi, a_rc);

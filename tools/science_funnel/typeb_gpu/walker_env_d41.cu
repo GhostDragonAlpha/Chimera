@@ -6,9 +6,9 @@
 // lines 35-62). Host builds mdl/mdi/cst/csti from the compiled scene via
 // walker_model.py + build_model_arrays and hands the flat arrays to
 // env_create. Trailer: Agent: GLM 5.3.
-#include "walker_kernels.cuh"
 #include <cuda_runtime.h>
 #include <stdio.h>
+#include "probe_kernels_d41.cuh"
 
 struct WalkerEnv {
     int E, block, grid;
@@ -20,7 +20,6 @@ struct WalkerEnv {
     double *a_paw_target, *a_paw_plant_y, *a_swing_from, *a_swing_to;
     double *a_fore_t, *a_fore_stance, *a_fore_cycle;
     int *a_fore_mode, *a_fore_entry, *a_fore_conv, *a_fore_td_plant, *a_fore_clamped, *a_fore_replants, *a_fore_td_count;
-    int *a_fore_glide_hold, *a_fore_hold_last; double *a_fore_hold_off; // CLOSEOUT-8 pocket-clear hold
     int *a_hind_mode; double *a_hind_t, *a_hind_from, *a_hind_to, *a_hind_plant_y, *a_hind_ap, *a_hind_mp;
     int *a_hind_branch, *a_hind_held;
     long long *a_hind_last_fire, *a_hind_last_td;
@@ -104,9 +103,6 @@ ENV_API void* env_create(int E, int block,
     if (!(e->a_fore_clamped = dev_alloc<int>(E2))) return 0;
     if (!(e->a_fore_replants = dev_alloc<int>(E2))) return 0;
     if (!(e->a_fore_td_count = dev_alloc<int>(E2))) return 0;
-    if (!(e->a_fore_glide_hold = dev_alloc<int>(E2))) return 0;
-    if (!(e->a_fore_hold_last = dev_alloc<int>(E2))) return 0;
-    if (!(e->a_fore_hold_off = dev_alloc<double>(E6))) return 0;
     if (!(e->a_hind_mode = dev_alloc<int>(E2))) return 0;
     if (!(e->a_hind_t = dev_alloc<double>(E2))) return 0;
     if (!(e->a_hind_from = dev_alloc<double>(E6))) return 0;
@@ -153,7 +149,6 @@ ENV_API int env_reset(void* handle, const double* q0, const double* v0, const in
                               e->a_fore_t, e->a_fore_stance, e->a_fore_cycle, e->a_fore_mode,
                               e->a_fore_entry, e->a_fore_conv, e->a_fore_td_plant,
                               e->a_fore_clamped, e->a_fore_replants, e->a_fore_td_count,
-                              e->a_fore_glide_hold, e->a_fore_hold_last, e->a_fore_hold_off,
                               e->a_hind_mode, e->a_hind_t, e->a_hind_from, e->a_hind_to,
                               e->a_hind_plant_y, e->a_hind_ap, e->a_hind_mp, e->a_hind_branch,
                               e->a_hind_held, e->a_hind_last_fire, e->a_hind_last_td,
@@ -233,8 +228,7 @@ ENV_API int env_step(void* handle, int n) {
             e->a_paw_target, e->a_paw_plant_y, e->a_swing_from, e->a_swing_to,
             e->a_fore_t, e->a_fore_stance, e->a_fore_cycle, e->a_fore_mode,
             e->a_fore_entry, e->a_fore_conv, e->a_fore_td_plant, e->a_fore_clamped,
-            e->a_fore_replants, e->a_fore_td_count,
-            e->a_fore_glide_hold, e->a_fore_hold_last, e->a_fore_hold_off, e->a_hind_mode, e->a_hind_t,
+            e->a_fore_replants, e->a_fore_td_count, e->a_hind_mode, e->a_hind_t,
             e->a_hind_from, e->a_hind_to, e->a_hind_plant_y, e->a_hind_ap, e->a_hind_mp,
             e->a_hind_branch, e->a_hind_held, e->a_hind_last_fire, e->a_hind_last_td,
             e->a_hind_fires, e->a_hind_tds, e->a_hind_xoff, e->a_height_latched,
@@ -247,8 +241,7 @@ ENV_API int env_step(void* handle, int n) {
             e->a_paw_target, e->a_paw_plant_y, e->a_swing_from, e->a_swing_to,
             e->a_fore_t, e->a_fore_stance, e->a_fore_cycle, e->a_fore_mode,
             e->a_fore_entry, e->a_fore_conv, e->a_fore_td_plant, e->a_fore_clamped,
-            e->a_fore_replants, e->a_fore_td_count,
-            e->a_fore_glide_hold, e->a_fore_hold_last, e->a_fore_hold_off, e->a_hind_mode, e->a_hind_t,
+            e->a_fore_replants, e->a_fore_td_count, e->a_hind_mode, e->a_hind_t,
             e->a_hind_from, e->a_hind_to, e->a_hind_plant_y, e->a_hind_ap, e->a_hind_mp,
             e->a_hind_branch, e->a_hind_held, e->a_hind_last_fire, e->a_hind_last_td,
             e->a_hind_fires, e->a_hind_tds, e->a_hind_xoff, e->a_height_latched,
@@ -261,8 +254,7 @@ ENV_API int env_step(void* handle, int n) {
             e->a_paw_target, e->a_paw_plant_y, e->a_swing_from, e->a_swing_to,
             e->a_fore_t, e->a_fore_stance, e->a_fore_cycle, e->a_fore_mode,
             e->a_fore_entry, e->a_fore_conv, e->a_fore_td_plant, e->a_fore_clamped,
-            e->a_fore_replants, e->a_fore_td_count,
-            e->a_fore_glide_hold, e->a_fore_hold_last, e->a_fore_hold_off, e->a_hind_mode, e->a_hind_t,
+            e->a_fore_replants, e->a_fore_td_count, e->a_hind_mode, e->a_hind_t,
             e->a_hind_from, e->a_hind_to, e->a_hind_plant_y, e->a_hind_ap, e->a_hind_mp,
             e->a_hind_branch, e->a_hind_held, e->a_hind_last_fire, e->a_hind_last_td,
             e->a_hind_fires, e->a_hind_tds, e->a_hind_xoff, e->a_height_latched,
@@ -318,7 +310,6 @@ ENV_API void env_free(void* handle) {
     cudaFree(e->a_fore_stance); cudaFree(e->a_fore_cycle); cudaFree(e->a_fore_mode);
     cudaFree(e->a_fore_entry); cudaFree(e->a_fore_conv); cudaFree(e->a_fore_td_plant);
     cudaFree(e->a_fore_clamped); cudaFree(e->a_fore_replants); cudaFree(e->a_fore_td_count);
-    cudaFree(e->a_fore_glide_hold); cudaFree(e->a_fore_hold_last); cudaFree(e->a_fore_hold_off);
     cudaFree(e->a_hind_mode); cudaFree(e->a_hind_t); cudaFree(e->a_hind_from);
     cudaFree(e->a_hind_to); cudaFree(e->a_hind_plant_y); cudaFree(e->a_hind_ap);
     cudaFree(e->a_hind_mp); cudaFree(e->a_hind_branch); cudaFree(e->a_hind_held);
