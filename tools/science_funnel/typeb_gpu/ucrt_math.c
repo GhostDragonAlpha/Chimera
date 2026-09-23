@@ -384,24 +384,32 @@ double ucrt_acos(double x) {
     q = fmsub(q, r, 3.2843150572095867);      /* 0x400A4646F903CDEA */
     q = fma(q, r, 1.3649150133416104);        /* 0x3FF5D6B12001F228 */
     double pq = pnum / q;                     /* xmm7 */
-    if (xe < 0x3FE) {                         /* |x| < 0.5 result path */
+    /* RESULT PATHS — branch order per the disasm: the |x|<0.5 test (jb 01B3)
+       comes FIRST and its path uses SIGNED x throughout (xmm4=x at 025F:
+       t1 = x - t, NOT |x| - t — classes (a)+(b) of the dense-sweep fails);
+       the sign split below applies only when |x| >= 0.5. */
+    if (xe < 0x3FE) {                         /* |x| < 0.5 (disasm 0246 path) */
         double t = fma(-x, pq, 6.123233995736766e-17);  /* -(x*pq)+tail */
-        double t1 = axv - t;
+        double t1 = x - t;                    /* SIGNED (was axv — class (a)) */
         return 1.5707963267948966 - t1;
     }
-    if (ux >= 0x8000000000000000ULL) {        /* x < 0 */
+    if (ux >= 0x8000000000000000ULL) {        /* x < 0, |x|>=0.5 (01BE path) */
         double t0 = fmsub(pq, axv, 6.123233995736766e-17); /* pq*ax - tail */
         double t1 = t0 + s;
         double t2 = t1 + t1;
         return 3.141592653589793 - t2;
     }
-    /* x >= 0, |x| >= 0.5 */
+    /* x >= 0, |x| >= 0.5 (01F0 path) */
     double sh = d_of(b_of(s) & 0xFFFFFFFF00000000ULL);
     double a = sh + s;
     double bnum = fma(-sh, sh, r);
     double bq = bnum / a;
     double b2 = bq + bq;
-    double b3 = fma(b2, pq, s);
+    double b3 = fma(pq, s + s, b2);           /* 022E vfmadd231sd xmm3,xmm7,xmm2:
+                                                 b3 = b2 + pq*(2s) — was mistranscribed
+                                                 as fma(b2,pq,s)=b2*pq+s (class (c);
+                                                 proven by acos(0.5): got exactly 1.5
+                                                 want pi/3) */
     double res = b3 + (sh + sh);
     return res;
 }
