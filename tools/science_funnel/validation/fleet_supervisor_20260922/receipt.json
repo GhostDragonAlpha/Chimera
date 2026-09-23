@@ -5,27 +5,43 @@
  "date": "2026-09-22",
  "agent_trailer": "Agent: supervisor",
  "theory": "Astra's round-6 contract, first implementation: a small Windows supervisor using Job Objects makes every execution attempt an OWNED, BOUNDED, RECONCILED session -- root created suspended, assigned to a non-inheritable kill-on-close job with declared limits, then resumed; completion graceful-then-terminate; the registry dedups by pid AND creation time; ambiguous processes are reported and left alone; a mode file + GPU reservation file + memory gates are the broker's phase 1",
- "prereg": "record.md (this directory), committed before any code; falsifiers = Astra's ownership rejection conditions + the smoke conditions; predictions pre-named",
- "status": "PREREG -- all verdicts pending until the falsifier suite and smoke run",
+ "prereg": "record.md (this directory), committed BEFORE any code (commit d11508cd); falsifiers = Astra's ownership rejection conditions + the smoke conditions; predictions pre-named",
+ "instrument": {
+  "launcher": "tools/fleet_supervisor/launcher.py (suspended -> AssignProcessToJobObject -> ResumeThread -> durable JSONL record; named jobs Local\\ChimeraFleetJob.<session>; non-inheritable handles; breakaway prohibited; limits verified by readback AND measured effect)",
+  "primitives_gate": "tools/fleet_supervisor/tests_primitives.py -- 15/15 PASS (effects, not API return values)",
+  "broker_gates": "python -m tools.fleet_supervisor.supervisor gates -- all 13 behave as designed (injected inputs)",
+  "ownership_suite": "tools/fleet_supervisor/validate_ownership.py -- 100 cycles + sentinels + pid-reuse + ambiguous + memlimit + assignment-failure; raw results in E:/ChimeraWork/_supervisor_scratch/validate/cycle_results.json",
+  "smoke": "tools/fleet_supervisor/smoke_real_shape.py + smoke_capture.py (this directory): real slice server + real engine child + bundled-chromium capture against the PRODUCTION control dir and registry"
+ },
  "falsifiers": {
-  "F1_SENTINELS": "PENDING",
-  "F2_SURVIVORS_30S": "PENDING",
-  "F3_PID_REUSE": "PENDING",
-  "F4_MEMLIMIT_CONSTRAINS": "PENDING",
-  "F5_ASSIGN_FAILURE_NO_SURVIVOR": "PENDING",
-  "F6_LAUNCHER_KILL_CONTAINMENT": "PENDING",
-  "F7_SMOKE_COHERENT": "PENDING",
-  "F8_BROKER_GATES": "PENDING"
+  "F1_SENTINELS": "PASS: two sentinels (windowless cmd dummy; a python sleeper whose cmdline deliberately matches the legacy sweep pattern 'slice_server', never launched through the supervisor, never in any job) checked at every cycle + instruments + final: 202 touch points, ALL alive, no signal ever sent. GUI-notepad deviation recorded in record.md (zero-popups law)",
+  "F2_SURVIVORS_30S": "PASS: 361 member identities re-checked with >30s elapsed since their own cleanups -- 0 running survivors (honest liveness = identity AND exit code != STILL_ACTIVE; a terminated zombie object keeps its pid+creation-time resolvable, measured and documented)",
+  "F3_PID_REUSE": "PASS: fold never matched a live innocent process claimed by a wrong-creation-time record (fold status orphaned_completed, complete() refused with 'no active session record', innocent still executing); organic churn attempt: 390 spawn-and-exit processes, pid reuse not observed in the window (reported honestly; the deterministic probe carries the falsifier)",
+  "F4_MEMLIMIT_CONSTRAINS": "PASS: job declared 1 GiB; child attempting 3 GiB exits code 3 with its OWN MemoryError verdict; machine free-RAM dip 0.02 GiB (noise floor). Verified twice (primitives gate + suite instrument)",
+  "F5_ASSIGN_FAILURE_NO_SURVIVOR": "PASS: simulated AssignProcessToJobObject refusal on a real suspended root -> launch failed BEFORE resume, root terminated in cleanup, no survivor",
+  "F6_LAUNCHER_KILL_CONTAINMENT": "PASS: 30/30 kill cycles -- the supervisor subprocess TerminateProcess'd mid-cycle; all tracked members (root + conhost + descendants) dead via KILL_ON_JOB_CLOSE within the 10 s judge window; reconcile folds each record to orphaned_completed (restart shape)",
+  "F7_SMOKE_COHERENT": "PASS: real slice server booted its REAL engine child (chimera_engine.exe verified as a job member by identity); bundled-chromium capture of the live page ok (title 'CHIMERA -- playable slice (the standing start)', 36 KB png committed as smoke_slice_capture.png); graceful complete; 4/4 tracked members dead, census engines 0->0, url dead; registry fold coherent (server terminated + pid/creation-time match, browser completed). Deviation honored: bundled chromium per MACHINE_FINDINGS 2026-09-20 (installed Chrome cannot navigate on this host)",
+  "F8_BROKER_GATES": "PASS: 13/13 injected-input gates behave as designed -- gpu_phase refused without reservation / with foreign owner / with lost heartbeat (OWNERSHIP UNCERTAIN) / with expired expected_end (STILL OCCUPIED); gaming mode refuses gpu and build while admitting lightweight server; fleet ceiling refuses 46+8 GiB and admits 46+1; free RAM 30 GiB refused / 40 GiB admitted; live production check: gpu_phase refused with no reservation file"
  },
  "predictions": {
-  "P-CYCLES": "PENDING (100/100 clean)",
-  "P-SENTINELS": "PENDING",
-  "P-MEMLIMIT": "PENDING",
-  "P-PIDREUSE": "PENDING",
-  "P-GATES": "PENDING",
-  "P-SMOKE": "PENDING",
-  "P-AMBIGUOUS": "PENDING"
+  "P-CYCLES": "PASS: 100/100 clean -- 40 normal (root self-exit, remainder completed) / 30 cancelled mid-run / 30 launcher-kill",
+  "P-SENTINELS": "PASS (202/202 checks, final both alive)",
+  "P-MEMLIMIT": "PASS (exit 3 MEMORYERROR, dip 0.02 GiB)",
+  "P-PIDREUSE": "PASS (no false match; innocent never signaled; organic reuse not observed in 390 spawns -- honest note)",
+  "P-GATES": "PASS (13/13 + live production refusal)",
+  "P-SMOKE": "PASS (see F7)",
+  "P-AMBIGUOUS": "PASS (the sweep-attractive sentinel REPORTED by reconcile in the ambiguous list and left running; 7 ambiguous processes reported total, 0 touched)"
  },
- "results": null,
- "pass": null
+ "results": {
+  "commits": ["d11508cd prereg (before any code)", "milestone 1 launcher+broker", "milestone 2 suite results + smoke", "final receipt"],
+  "cycles_by_kind": {"normal": {"n": 40, "clean": 40}, "cancel": {"n": 30, "clean": 30}, "kill": {"n": 30, "clean": 30}},
+  "final_sweep": {"identities_rechecked": 361, "survivors": 0},
+  "sentinel_touch_points": 202,
+  "nested_jobs": "containment tested (children of children verify membership in the parent job; conhost members contained and killed); CPU-rate multiplication documented per Astra's citation and honestly UNMEASURED this lane (see F-CPURATE)",
+  "f_cpu_rate_finding": "first-class environmental finding: CPU hard caps unenforceable via ctypes job classes on this build (Win11 26200) -- SET@7 silent no-op (spinner 0.955 core under '10%' cap), class 14 err 87 on every rate value; launcher REFUSES cpu_pct rather than pretending",
+  "graceful_shutdown_note": "CTRL_BREAK is where-applicable only (detached consoles do not receive it); deadline + TerminateJobObject is the guaranteed path, measured working",
+  "migration": "MIGRATION.md (this directory): orphan_process_sweep degrades to REPORT-ONLY once lanes launch through the supervisor; sweep may kill only registry-identified orphans; janitor cron unchanged (audit/disk-retention)",
+  "phase2_needs": "the bounded GPU queue + judge batching (queue deadline / model-load timeout / inference timeout as separate states), judge model preload/unload under reservation, CPU-rate enforcement investigation (or a documented no-caps fleet policy), nested-CPU multiplication measurement, gaming-mode frame-time lane, recovery-record lane (Astra's Recovery falsifiers), and the fleet-scaling lane (4/6/8/10 agents)"
+ },
+ "pass": true
 }
