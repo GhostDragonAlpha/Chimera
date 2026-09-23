@@ -1,0 +1,239 @@
+{
+ "lane": "TRAINER-BUILD (Agent: trainer)",
+ "run": "smoke_seed20260922",
+ "smoke": true,
+ "seed": 20260922,
+ "manifest_sha256_restated": "c85ba5c43aa7cf12969caf8df732dc77025bb1f50ab23ab87ed42685fe3ef39a",
+ "env_class": "FirstSkillGoalEnv",
+ "obs_dim": 82,
+ "action_map": "(tanh(u)+1)/2 * 0.7636247890 -> commanded_target_velocity_x",
+ "ppo": {
+  "implementation": "from-scratch (rsl_rl absent for py3.14); the manifest's frozen config verbatim",
+  "config": {
+   "num_envs": 4096,
+   "steps_per_env": 24,
+   "iterations": 10,
+   "gamma": 0.99,
+   "gae_lambda": 0.95,
+   "clip_param": 0.2,
+   "value_loss_coef": 1.0,
+   "entropy_coef": 0.01,
+   "num_mini_batches": 4,
+   "num_learning_epochs": 5,
+   "actor_hidden": [
+    128,
+    128
+   ]
+  }
+ },
+ "nonfinite_census": {
+  "obs": 0,
+  "act": 0,
+  "rew": 0,
+  "loss": 0
+ },
+ "loss_curve": [
+  {
+   "iteration": 1,
+   "policy_loss": 0.0003415114483679994,
+   "value_loss": 0.005397777859205878,
+   "entropy": 1.4220990717411042,
+   "approx_kl": 0.002485984820930859
+  },
+  {
+   "iteration": 2,
+   "policy_loss": 0.00013766805174527402,
+   "value_loss": 0.00029601119029530013,
+   "entropy": 1.4319530487060548,
+   "approx_kl": 0.0010372675990558365
+  }
+ ],
+ "throughput": {
+  "decisions_per_s_mean": 39860.87343654971,
+  "env_steps_per_s_mean": 597913.1015482456
+ },
+ "vram": {
+  "nvidia_smi_used_mib_before": 1750,
+  "nvidia_smi_used_mib_after_envs": 2092,
+  "torch_max_alloc_mib": 39.4
+ },
+ "wall_seconds": 130.25875839999935,
+ "train_log": [
+  {
+   "iteration": 1,
+   "decisions": 12288,
+   "valid_transitions": 12183,
+   "policy_loss": 0.0003415114483679994,
+   "value_loss": 0.005397777859205878,
+   "entropy": 1.4220990717411042,
+   "approx_kl": 0.002485984820930859,
+   "lr": 0.0015,
+   "mean_reward_alive": 0.001024981659737155,
+   "seconds": 43.218121999991126,
+   "decisions_per_s": 284.3251726672094,
+   "env_steps_per_s": 4264.877590008142
+  },
+  {
+   "iteration": 2,
+   "decisions": 24576,
+   "valid_transitions": 12168,
+   "policy_loss": 0.00013766805174527402,
+   "value_loss": 0.00029601119029530013,
+   "entropy": 1.4319530487060548,
+   "approx_kl": 0.0010372675990558365,
+   "lr": 0.0022500000000000003,
+   "mean_reward_alive": 0.0,
+   "seconds": 0.1546877999935532,
+   "decisions_per_s": 79437.42170043221,
+   "env_steps_per_s": 1191561.3255064832
+  }
+ ],
+ "eval_log": [
+  {
+   "tag": "0",
+   "decision_count": 0,
+   "mean_return": 2.4974703121155524,
+   "records": [
+    {
+     "seed": 20260922,
+     "env": 0,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 586.8475294497114,
+     "ended_kind": "refused",
+     "ticks": 40
+    },
+    {
+     "seed": 20260923,
+     "env": 1,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 586.8475294497114,
+     "ended_kind": "refused",
+     "ticks": 40
+    },
+    {
+     "seed": 20260924,
+     "env": 2,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 586.8475294497114,
+     "ended_kind": "refused",
+     "ticks": 40
+    },
+    {
+     "seed": 20260925,
+     "env": 3,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 586.8475294497114,
+     "ended_kind": "refused",
+     "ticks": 40
+    },
+    {
+     "seed": 20260926,
+     "env": 4,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 586.8475294497114,
+     "ended_kind": "refused",
+     "ticks": 40
+    }
+   ]
+  },
+  {
+   "tag": "final",
+   "decision_count": 24576,
+   "mean_return": 2.4974703121155524,
+   "records": [
+    {
+     "seed": 20260922,
+     "env": 0,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 0.0,
+     "ended_kind": "refused",
+     "ticks": 40
+    },
+    {
+     "seed": 20260923,
+     "env": 1,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 0.0,
+     "ended_kind": "refused",
+     "ticks": 40
+    },
+    {
+     "seed": 20260924,
+     "env": 2,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 0.0,
+     "ended_kind": "refused",
+     "ticks": 40
+    },
+    {
+     "seed": 20260925,
+     "env": 3,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 0.0,
+     "ended_kind": "refused",
+     "ticks": 40
+    },
+    {
+     "seed": 20260926,
+     "env": 4,
+     "refusal_tick": 40,
+     "collapse_tick": null,
+     "reach_tick": null,
+     "distance_m": 0.09535651200615013,
+     "work_J": 0.0,
+     "ended_kind": "refused",
+     "ticks": 40
+    }
+   ]
+  }
+ ],
+ "selection": {
+  "rule": "best mean eval return among the LAST 10% of evals (decision counts 900000..975000); ties to the EARLIEST (frozen)",
+  "pool_fallback_smoke_only": true,
+  "pool": [
+   {
+    "tag": "0",
+    "decision_count": 0,
+    "mean_return": 2.4974703121155524
+   },
+   {
+    "tag": "final",
+    "decision_count": 24576,
+    "mean_return": 2.4974703121155524
+   }
+  ],
+  "selected": {
+   "tag": "0",
+   "decision_count": 0,
+   "mean_return": 2.4974703121155524
+  },
+  "selection_is_not_acceptance": true
+ }
+}

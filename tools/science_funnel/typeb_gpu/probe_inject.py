@@ -229,7 +229,7 @@ inject = anchor + """
 src = src.replace(anchor, inject, 1)
 
 # FFRIC: before the projection call
-anchor = """        if (project_rows(free, inv, rows, floors, R, n_stops, p, mult) == 0) {"""
+anchor = """        if (project_rows(free, inv, rows, floors, R, n_stops, p, mult, cst[CF_k_touch] / cst[CF_dt]) == 0) {"""
 assert src.count(anchor) == 1, "FFRIC anchor not unique/found"
 inject = """        if (fkdbg2 && (!fkdbg4_fired) && q[0] == 0.0 && v[0] == 0.0 && v[3] == 0.76362478896964736) {
             printf("FKDBG4 FFRIC");
@@ -589,12 +589,12 @@ src = src.replace(anchor, """            friction_solve(v, inv, rn, row_t, (doub
                 printf("IMPF n=%d r=%d closing=%.17g planar=%.17g mode=%d ln=%.17g lt=%.17g caught=%.17g\\n", advn, r, closing, planar, md[0], ln[0], lt[0], caught);
             }""", 1)
 
-anchor = """        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult) == 0) {
+anchor = """        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult, cst[CF_k_touch] / cst[CF_dt]) == 0) {
             rc[0] = 5;
             return (double)(0.0);
 }"""
 assert src.count(anchor) == 1, "impact projection anchor not found"
-src = src.replace(anchor, """        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult) == 0) {
+src = src.replace(anchor, """        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult, cst[CF_k_touch] / cst[CF_dt]) == 0) {
             rc[0] = 5;
             return (double)(0.0);
 }
@@ -696,3 +696,45 @@ src = src.replace(anchor, """    if (paw[0] == 0.15997345072652458 && paw[1] == 
 
 Path("probe_kernels.cuh").write_text(src, encoding="utf-8")
 print("probe_kernels.cuh rewritten with hold drill:", len(src), "bytes")
+# 16d) CLOSEOUT-8 TIE-V2 DRILL: the project_rows per-mask decision trace at
+# the sub-scale projection (the tick-41 row-budget hunt). Self-gated: the
+# enter print and the latch fire only when EVERY floor is below the
+# contact-residual scale (|floors[k]| < 1e-8).
+anchor0 = """__device__ inline long long project_rows(double* initial, double* inv, double* rows, double* floors, int R, int n_stops, double* p_out, double* multipliers, double tol_band) {"""
+assert src.count(anchor0) == 1, "project_rows signature anchor not unique"
+src = src.replace(anchor0, """__device__ int g_allsub_proj = 0; // tie-v2 drill latch
+__device__ inline int allsub_dbg_proj() { return g_allsub_proj; }
+__device__ inline long long project_rows(double* initial, double* inv, double* rows, double* floors, int R, int n_stops, double* p_out, double* multipliers, double tol_band) {
+    {
+        int allsub = 1;
+        for (int fk = 0; fk < R; ++fk) {
+            if (fabs(floors[fk]) >= 1e-8) { allsub = 0; }
+        }
+        g_allsub_proj = allsub;
+        if (allsub) {
+            printf("PROROW enter R=%d f0=%.17g f1=%.17g f2=%.17g f3=%.17g f4=%.17g\\n", R, floors[0], R > 1 ? floors[1] : 0.0, R > 2 ? floors[2] : 0.0, R > 3 ? floors[3] : 0.0, R > 4 ? floors[4] : 0.0);
+        }
+    }""" , 1)
+
+lamanchor = """                                if (lam[k] < (double)(-1e-10)) {"""
+assert src.count(lamanchor) == 1, "project_rows lam anchor not unique"
+src = src.replace(lamanchor, """                                if (lam[k] < (double)(-1e-10)) {
+                                    if (g_allsub_proj) {
+                                        printf("PROROW lamneg tier=%d mask=%d k=%d lam=%.17g\\n", tier, mask, k, lam[k]);
+                                    }""", 1)
+
+chkanchor = """                                    if (got < floors[k] - tol) {"""
+assert src.count(chkanchor) == 1, "project_rows chk anchor not unique"
+src = src.replace(chkanchor, """                                    if (g_allsub_proj) {
+                                        printf("PROROW chk tier=%d mask=%d k=%d got=%.17g floor=%.17g tol=%.17g\\n", tier, mask, k, got, floors[k], tol);
+                                    }""" + chkanchor, 1)
+
+gramanchor = """                        if (gram_factor10(gram, cnt, rhs, lam) == 1) {"""
+assert src.count(gramanchor) == 1, "project_rows gram anchor not unique"
+src = src.replace(gramanchor, """                        if (gram_factor10(gram, cnt, rhs, lam) == 1) {
+                            if (g_allsub_proj && cnt == 1) {
+                                printf("PROROW g1 A=%.17g rhs=%.17g lam=%.17g\\n", gram[0], rhs[0], lam[0]);
+                            }""", 1)
+
+Path("probe_kernels.cuh").write_text(src, encoding="utf-8")
+print("probe_kernels.cuh rewritten with tie-v2 drill:", len(src), "bytes")

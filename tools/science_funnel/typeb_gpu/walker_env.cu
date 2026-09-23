@@ -139,6 +139,12 @@ ENV_API void* env_create(int E, int block,
 
 ENV_API int env_reset(void* handle, const double* q0, const double* v0, const int* touching0) {
     WalkerEnv* e = (WalkerEnv*)handle;
+    /* TRAINER-FOUND DEFECT (receipt 2026-09-23): the advance return buffer
+       rb/rbi keeps the PREVIOUS episode's refusal across env_reset -- the
+       post kernel of the new episode's first tick would read a stale
+       refusal class. One memset per reset; zero cost. */
+    if (cudaMemset(e->rb, 0, (size_t)e->E * 6 * sizeof(double)) != cudaSuccess) return 0;
+    if (cudaMemset(e->rbi, 0, (size_t)e->E * 6 * sizeof(int)) != cudaSuccess) return 0;
     double *d_q0, *d_v0; int* d_t0;
     size_t nq = (size_t)e->E * 18 * sizeof(double), nt = (size_t)e->E * 2 * sizeof(int);
     CU_OK(cudaMalloc(&d_q0, nq)); CU_OK(cudaMemcpy(d_q0, q0, nq, cudaMemcpyHostToDevice));

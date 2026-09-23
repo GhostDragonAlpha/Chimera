@@ -1,0 +1,22 @@
+{
+ "rule": "best mean eval return among the LAST 10% of evals (decision counts 900000..975000); ties to the EARLIEST (frozen)",
+ "pool_fallback_smoke_only": true,
+ "pool": [
+  {
+   "tag": "0",
+   "decision_count": 0,
+   "mean_return": 2.4974703121155524
+  },
+  {
+   "tag": "final",
+   "decision_count": 24576,
+   "mean_return": 2.4974703121155524
+  }
+ ],
+ "selected": {
+  "tag": "0",
+  "decision_count": 0,
+  "mean_return": 2.4974703121155524
+ },
+ "selection_is_not_acceptance": true
+}

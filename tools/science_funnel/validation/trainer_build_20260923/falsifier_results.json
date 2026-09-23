@@ -1,0 +1,54 @@
+{
+ "F-CLOCK": {
+  "fired": true,
+  "numbers": {
+   "tick_deltas": [
+    15,
+    15,
+    10,
+    -25,
+    15,
+    10,
+    -25,
+    15,
+    10,
+    -25,
+    15,
+    10,
+    -25,
+    15,
+    10,
+    -25,
+    15,
+    10,
+    -25,
+    15
+   ],
+   "total_ticks": 30,
+   "command_issues": 2
+  },
+  "note": "decisions every 15 ticks = 20 Hz over 300 Hz"
+ },
+ "F-OBS-FIELD21": {
+  "fired": true,
+  "numbers": {
+   "max_abs_dev_vs_differencing_law_m_s": 0.7812676665575057,
+   "worst_tick": 27,
+   "ticks": 1000,
+   "decision_boundaries_checked": 66,
+   "exact_vs_rb2_failures": null
+  },
+  "note": "field 21 live from the env velocity state (threshold 1e-3, prereg)"
+ },
+ "F-REWARD-FROZEN": {
+  "fired": false,
+  "numbers": {
+   "frozen_bytes_untouched": true,
+   "sentinel_calls": 20,
+   "valid_rewards_matched_sentinel": true,
+   "trainer_uses_frozen_module": true,
+   "trainer_reimplements_terms": false
+  },
+  "note": "reward.py is the ONLY reward source"
+ }
+}

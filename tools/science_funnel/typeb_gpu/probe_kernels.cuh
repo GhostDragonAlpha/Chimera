@@ -6,6 +6,17 @@
 #pragma once
 #include <cuda_runtime.h>
 #include <math.h>
+/* RESIDUAL-B WIRING (closeout-7): the walker's transcendental call sites are
+   redirected to the UCRT reconstruction (bit-identical to the MSVC CRT on
+   host AND device, 55,517/55,517 — ucrt_gate + co7_dense_full2). Define
+   UCRT_MATH_DEVICE in .cu builds for the device path; host replays get the
+   (identical) host path. sqrt stays native (IEEE-exact both sides). */
+#include "ucrt_math.c"
+#define sin ucrt_sin
+#define cos ucrt_cos
+#define atan2 ucrt_atan2
+#define acos ucrt_acos
+#define hypot ucrt_hypot
 __device__ long long cu_total_q = 1073741824LL;
 #define PI 3.141592653589793
 int fkdbg = 0; // drill-only probe gate (host replay compile); set by the driver
@@ -162,14 +173,14 @@ __device__ inline void axial3(double* m, double* out) {
     out[2] = (m[1 * 4 + 0] - m[0 * 4 + 1]) * (double)(0.5);
 }
 
-__device__ inline void vec_point(double* m, double* p, double* out) {
+__device__ inline void apply_point_legacy(double* m, double* p, double* out) {
     int i;
     for (i = 0; i < (3); ++i) {
         out[i] = m[i * 4 + 0] * p[0] + m[i * 4 + 1] * p[1] + m[i * 4 + 2] * p[2] + m[i * 4 + 3];
 }
 }
 
-__device__ inline void apply_point_legacy(double* m, double* p, double* out) {
+__device__ inline void vec_point(double* m, double* p, double* out) {
     int i;
     double acc;
     for (i = 0; i < (3); ++i) {
@@ -1136,7 +1147,19 @@ __device__ inline long long gram_factor10(double* g, int k, double* rhs, double*
     return 1;
 }
 
-__device__ inline long long project_rows(double* initial, double* inv, double* rows, double* floors, int R, int n_stops, double* p_out, double* multipliers) {
+__device__ int g_allsub_proj = 0; // tie-v2 drill latch
+__device__ inline int allsub_dbg_proj() { return g_allsub_proj; }
+__device__ inline long long project_rows(double* initial, double* inv, double* rows, double* floors, int R, int n_stops, double* p_out, double* multipliers, double tol_band) {
+    {
+        int allsub = 1;
+        for (int fk = 0; fk < R; ++fk) {
+            if (fabs(floors[fk]) >= 1e-8) { allsub = 0; }
+        }
+        g_allsub_proj = allsub;
+        if (allsub) {
+            printf("PROROW enter R=%d f0=%.17g f1=%.17g f2=%.17g f3=%.17g f4=%.17g\n", R, floors[0], R > 1 ? floors[1] : 0.0, R > 2 ? floors[2] : 0.0, R > 3 ? floors[3] : 0.0, R > 4 ? floors[4] : 0.0);
+        }
+    }
     int tier;
     int mask;
     int skip;
@@ -1213,7 +1236,7 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
 }
                         for (k = 0; k < (R); ++k) {
                             rows_row(rows, k, rk);
-                            tol =  (double)(1e-9) * ((double)(1.0) + fabs(floors[k]));
+                            tol =  fmax((double)(1e-9) * ((double)(1.0) + fabs(floors[k])), tol_band);
                             if (row_dot(rk, initial) < floors[k] - tol) {
                                 allok =  0;
 }
@@ -1268,9 +1291,15 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
                             lam[_zzero21] = 0.0;
 }
                         if (gram_factor10(gram, cnt, rhs, lam) == 1) {
+                            if (g_allsub_proj && cnt == 1) {
+                                printf("PROROW g1 A=%.17g rhs=%.17g lam=%.17g\n", gram[0], rhs[0], lam[0]);
+                            }
                             valid =  (int)(1);
                             for (k = 0; k < (cnt); ++k) {
                                 if (lam[k] < (double)(-1e-10)) {
+                                    if (g_allsub_proj) {
+                                        printf("PROROW lamneg tier=%d mask=%d k=%d lam=%.17g\n", tier, mask, k, lam[k]);
+                                    }
                                     valid =  0;
 }
 }
@@ -1302,10 +1331,12 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
                                     rk[_zzero24] = 0.0;
 }
                                 for (k = 0; k < (R); ++k) {
-                                    tol =  (double)(1e-9) * ((double)(1.0) + fabs(floors[k]));
+                                    tol =  fmax((double)(1e-9) * ((double)(1.0) + fabs(floors[k])), tol_band);
                                     rows_row(rows, k, rk);
                                     got =  row_dot(rk, initial) + row_dot(rk, chg);
-                                    if (got < floors[k] - tol) {
+                                    if (g_allsub_proj) {
+                                        printf("PROROW chk tier=%d mask=%d k=%d got=%.17g floor=%.17g tol=%.17g\n", tier, mask, k, got, floors[k], tol);
+                                    }                                    if (got < floors[k] - tol) {
                                         valid =  0;
 }
 }
@@ -1730,7 +1761,7 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
             for (int _cki = 0; _cki < 18; ++_cki) printf(" %.17g", free[_cki]);
             printf("\n");
         }
-        if (project_rows(free, inv, rows, floors, R, n_stops, p, mult) == 0) {
+        if (project_rows(free, inv, rows, floors, R, n_stops, p, mult, cst[CF_k_touch] / cst[CF_dt]) == 0) {
             return 5;
 }
         double corr[18];
@@ -2221,7 +2252,7 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
         for (_zzero71 = 0; _zzero71 < (10); ++_zzero71) {
             mult[_zzero71] = 0.0;
 }
-        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult) == 0) {
+        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult, cst[CF_k_touch] / cst[CF_dt]) == 0) {
             rc[0] = 5;
             return (double)(0.0);
 }
@@ -2727,6 +2758,7 @@ __device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, int leg,
     double dmax;
     double dmin;
     int sat;
+    double dcan;
     double Dc;
     double ca;
     double th1;
@@ -2750,9 +2782,18 @@ __device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, int leg,
     dmax =  cst[CF_fore_L1] + cst[CF_fore_rho];
     dmin =  fabs(cst[CF_fore_L1] - cst[CF_fore_rho]);
     sat =  (int)(0);
-    if (D > dmax * ((double)(1.0) - (double)(1e-12)) || D < dmin + (double)(1e-9)) {
+    dcan =  dmax * ((double)(1.0) - (double)(1e-9));
+    if (D > dmax || D >= dcan || D < dmin + (double)(1e-9)) {
         sat =  1;
-        Dc =  fmin(fmax(D, dmin + (double)(1e-9)), dmax * ((double)(1.0) - (double)(1e-12)));
+        if (D > dmax) {
+            Dc =  dmax * ((double)(1.0) - (double)(1e-12));
+}
+        else if (D >= dcan) {
+            Dc =  dcan;
+}
+        else {
+            Dc =  fmin(fmax(D, dmin + (double)(1e-9)), dmax * ((double)(1.0) - (double)(1e-12)));
+}
         dx =  dx * Dc / D;
         dy =  dy * Dc / D;
         D =  Dc;
@@ -2763,6 +2804,9 @@ __device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, int leg,
     q1 =  th1 + PI * (double)(0.5);
     ex =  dx - cst[CF_fore_L1] * cos(th1);
     ey =  dy - cst[CF_fore_L1] * sin(th1);
+    if (paw[0] == 0.15997345072652458 && paw[1] == 0.03756698733179259 && paw[2] == 0.019687003878167533 && leg == 0) {
+        printf("IKMID leg=%d dx=%.17g dy=%.17g D=%.17g ca=%.17g th1=%.17g ex=%.17g ey=%.17g sat=%d branch=%d\n", leg, dx, dy, D, ca, th1, ex, ey, sat, branch);
+    }
     q2 =  atan2(ey, ex) - q1 - cst[CF_fore_beta];
     c1 =  mdi[OI_fore_coord + leg * 2];
     c2 =  mdi[OI_fore_coord + leg * 2 + 1];
@@ -2876,7 +2920,7 @@ __device__ inline double vault_at(double* mdl, double phi) {
     return mdl[OF_vault + k] * ((double)(1.0) - f) + mdl[OF_vault + k + 1] * f;
 }
 
-__global__ void reset_kernel(double* a_q0, double* a_v0, int* a_touching0, double phi_l0, double phi_r0, int settle_total, double* a_store_floor, double store_post, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, int* a_hind_branch, int* a_hind_held, long long* a_hind_last_fire, long long* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, int* a_height_latched, double* a_cmd_vx, int* a_cmd_live, long long* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, int* a_adv_calls, int* a_refused, int* a_refused_class, int* a_collapsed) {
+__global__ void reset_kernel(double* a_q0, double* a_v0, int* a_touching0, double phi_l0, double phi_r0, int settle_total, double* a_store_floor, double store_post, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_fore_glide_hold, int* a_fore_hold_last, double* a_fore_hold_off, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, int* a_hind_branch, int* a_hind_held, long long* a_hind_last_fire, long long* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, int* a_height_latched, double* a_cmd_vx, int* a_cmd_live, long long* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, int* a_adv_calls, int* a_refused, int* a_refused_class, int* a_collapsed) {
     int i;
     int d;
     int l;
@@ -2903,6 +2947,11 @@ __global__ void reset_kernel(double* a_q0, double* a_v0, int* a_touching0, doubl
     a_ik_branch[e * 2 + 1] = 1;
     for (l = 0; l < (2); ++l) {
         a_paw_plant_y[e * 2 + l] = (double)(0.0);
+        a_fore_glide_hold[e * 2 + l] = 0;
+        a_fore_hold_last[e * 2 + l] = 0;
+        a_fore_hold_off[e * 6 + l * 3] = 0.0;
+        a_fore_hold_off[e * 6 + l * 3 + 1] = 0.0;
+        a_fore_hold_off[e * 6 + l * 3 + 2] = 0.0;
         a_fore_t[e * 2 + l] = (double)(0.0);
         a_fore_stance[e * 2 + l] = (double)(0.0);
         a_fore_cycle[e * 2 + l] = (double)(0.0);
@@ -3067,7 +3116,114 @@ __device__ inline void fore_follow(double* mdl, double* cst, double* fr, int leg
     return;
 }
 
-__device__ inline double fore_env(double* mdl, double* cst, double* fr, int leg, double* paw_t, double v3, int* csti) {
+__device__ inline void fore_arm_hold(double* mdl, double* cst, double* fr, int leg, double wall_bound, double* f_t, double* f_st, double* f_cy, double* paw_t, double* swf, double* swt, int* ikb, int* mdi, int* csti, int* f_hgh, int* f_hhl, double* f_hoff) {
+    int n;
+    int _coh1;
+    int i;
+    int _coh2;
+    int _coh3;
+    int _coh4;
+    double dr;
+    double dmax;
+    double lo;
+    double hi;
+    int j;
+    double mid;
+    int c1;
+    int c2;
+    int last;
+    int k;
+    double sg;
+    double dq1;
+    double dq2;
+    double q1r;
+    double q2r;
+    double dsat;
+    f_hgh[leg] = 0;
+    f_hhl[leg] = 0;
+    if (wall_bound == 0) {
+        return;
+}
+    n =  int(f_cy[leg] - f_st[leg]);
+    if (n < 2) {
+        return;
+}
+    double m16[16];
+    for (_coh1 = 0; _coh1 < (16); ++_coh1) {
+        m16[_coh1] = 0.0;
+}
+    for (i = 0; i < (16); ++i) {
+        m16[i] = fr[csti[CI_pelvis_row] * 16 + i];
+}
+    double shw[3];
+    for (_coh2 = 0; _coh2 < (3); ++_coh2) {
+        shw[_coh2] = 0.0;
+}
+    double ml[3];
+    for (_coh3 = 0; _coh3 < (3); ++_coh3) {
+        ml[_coh3] = 0.0;
+}
+    ml[0] = mdl[OF_fore_mount_local + leg * 3];
+    ml[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
+    ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
+    vec_point(m16, ml, shw);
+    double px[3];
+    double py[3];
+    double t[3];
+    for (_coh4 = 0; _coh4 < (3); ++_coh4) {
+        px[_coh4] = 0.0;
+        py[_coh4] = 0.0;
+        t[_coh4] = 0.0;
+}
+    px[0] = paw_t[leg * 3] + (double)(1e-3);
+    px[1] = paw_t[leg * 3 + 1];
+    px[2] = paw_t[leg * 3 + 2];
+    py[0] = paw_t[leg * 3] - (double)(1e-3);
+    py[1] = paw_t[leg * 3 + 1];
+    py[2] = paw_t[leg * 3 + 2];
+    dr =  (double)(-1.0);
+    if (fore_target_headroom(mdl, cst, fr, leg, px, ikb[leg], mdi, csti) >= fore_target_headroom(mdl, cst, fr, leg, py, ikb[leg], mdi, csti)) {
+        dr =  (double)(1.0);
+}
+    dmax =  cst[CF_fore_L1] + cst[CF_fore_rho];
+    lo =  (double)(0.0);
+    hi =  (double)(2.0) * dmax;
+    for (j = 0; j < (42); ++j) {
+        mid =  (lo + hi) / (double)(2.0);
+        t[0] = paw_t[leg * 3] + dr * mid;
+        t[1] = paw_t[leg * 3 + 1];
+        t[2] = paw_t[leg * 3 + 2];
+        if (fore_D_at(mdl, cst, fr, leg, t, csti) < dmax) {
+            lo =  mid;
+}
+        else {
+            hi =  mid;
+}
+}
+    f_hoff[leg * 3] = paw_t[leg * 3] + dr * ((lo + hi) / (double)(2.0)) - shw[0];
+    f_hoff[leg * 3 + 1] = paw_t[leg * 3 + 1] - shw[1];
+    f_hoff[leg * 3 + 2] = paw_t[leg * 3 + 2] - shw[2];
+    c1 =  mdi[OI_fore_coord + leg * 2];
+    c2 =  mdi[OI_fore_coord + leg * 2 + 1];
+    last =  0;
+    for (k = (1); k < (n + 1); ++k) {
+        sg =  (double)(k) / (double)(n);
+        t[0] = swf[leg * 3] + (swt[leg * 3] - swf[leg * 3]) * sg;
+        t[1] = swf[leg * 3 + 1] + (swt[leg * 3 + 1] - swf[leg * 3 + 1]) * sg;
+        t[2] = swf[leg * 3 + 2] + (swt[leg * 3 + 2] - swf[leg * 3 + 2]) * sg;
+        fore_ik_at(mdl, cst, fr, leg, t, ikb[leg], mdi, csti, &dq1, &dq2, &q1r, &q2r, &dsat);
+        if (q1r < mdl[OF_lower + c1] || q1r > mdl[OF_upper + c1] || q2r < mdl[OF_lower + c2] || q2r > mdl[OF_upper + c2]) {
+            last =  k;
+}
+}
+    if (last > 0) {
+        f_hgh[leg] = 1;
+        f_hhl[leg] = last;
+}
+    return;
+}
+
+__device__ inline double fore_env(double* mdl, double* cst, double* fr, int leg, double* paw_t, double v3, int* csti, double paw_plant_y) {
     int _zzero91;
     int i;
     int _zzero92;
@@ -3099,7 +3255,7 @@ __device__ inline double fore_env(double* mdl, double* cst, double* fr, int leg,
     ml[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
     vec_point(m16, ml, shw);
     off =  paw_t[leg * 3] - shw[0];
-    hgt =  fmax((double)(0.0), shw[1] - paw_t[leg * 3 + 1]);
+    hgt =  fmax((double)(0.0), shw[1] - paw_plant_y);
     dd =  cst[CF_fore_L1] + cst[CF_fore_rho];
     a2 =  dd * dd - hgt * hgt;
     amax =  (a2 > (double)(0.0)) ? (sqrt(a2)) : ((double)(0.0));
@@ -3147,7 +3303,7 @@ __device__ inline void paw_leg(double* paw_t, int leg, double* out) {
     return;
 }
 
-__global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, int* a_hind_branch, int* a_hind_held, long long* a_hind_last_fire, long long* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, int* a_height_latched, double* a_cmd_vx, int* a_cmd_live, long long* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, int* a_adv_calls, int* a_refused, int* a_refused_class, int* a_collapsed, double* rb, int* rbi, int* a_rc) {
+__global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_fore_glide_hold, int* a_fore_hold_last, double* a_fore_hold_off, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, int* a_hind_branch, int* a_hind_held, long long* a_hind_last_fire, long long* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, int* a_height_latched, double* a_cmd_vx, int* a_cmd_live, long long* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, int* a_adv_calls, int* a_refused, int* a_refused_class, int* a_collapsed, double* rb, int* rbi, int* a_rc) {
     double ne;
     int rc;
     double tick;
@@ -3165,6 +3321,9 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     double settle_n;
     int _zzero101;
     int _zzero102;
+    int _coh10;
+    int _coh11;
+    int _coh12;
     int _zzero103;
     int _zzero104;
     int _zzero105;
@@ -3297,11 +3456,16 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     int o;
     double sg;
     double carch;
+    double held;
+    int _coh20;
+    int _coh21;
+    int _coh22;
     double h1;
     double h2;
     double wall_hr;
     int wall_bound;
     int gated;
+    double o_held;
     int o_prior;
     int _zzero187;
     int _zzero188;
@@ -3320,10 +3484,8 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     double env_t;
     int act;
     int _zzero192;
-    int _zzero193;
     double dsx;
     double dsy;
-    int _zzero194;
     int _zzero195;
     int _zzero196;
     int _zzero197;
@@ -3512,6 +3674,18 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
         paw_t[_zzero102] = 0.0;
 }
     double paw_y[2];
+    int f_hgh[2];
+    for (_coh10 = 0; _coh10 < (2); ++_coh10) {
+        f_hgh[_coh10] = 0;
+}
+    int f_hhl[2];
+    for (_coh11 = 0; _coh11 < (2); ++_coh11) {
+        f_hhl[_coh11] = 0;
+}
+    double f_hoff[6];
+    for (_coh12 = 0; _coh12 < (6); ++_coh12) {
+        f_hoff[_coh12] = 0.0;
+}
     for (_zzero103 = 0; _zzero103 < (2); ++_zzero103) {
         paw_y[_zzero103] = 0.0;
 }
@@ -3570,6 +3744,11 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             swt[l * 3 + c] = a_swing_to[e * 6 + l * 3 + c];
 }
         paw_y[l] = a_paw_plant_y[e * 2 + l];
+        f_hgh[l] = a_fore_glide_hold[e * 2 + l];
+        f_hhl[l] = a_fore_hold_last[e * 2 + l];
+        f_hoff[l * 3] = a_fore_hold_off[e * 6 + l * 3];
+        f_hoff[l * 3 + 1] = a_fore_hold_off[e * 6 + l * 3 + 1];
+        f_hoff[l * 3 + 2] = a_fore_hold_off[e * 6 + l * 3 + 2];
         f_t[l] = a_fore_t[e * 2 + l];
         f_st[l] = a_fore_stance[e * 2 + l];
         f_cy[l] = a_fore_cycle[e * 2 + l];
@@ -3923,6 +4102,8 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
         capt =  1;
         for (leg = 0; leg < (2); ++leg) {
+            f_hgh[leg] = 0;
+            f_hhl[leg] = 0;
             paw_y[leg] = paw_t[leg * 3 + 1];
             double shw[3];
             for (_zzero184 = 0; _zzero184 < (3); ++_zzero184) {
@@ -3957,7 +4138,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 if (env_s < (double)(0.0)) {
                     env_s =  (double)(0.0);
 }
-                tau1 =  fmax((double)(0.0), env_s / cst[CF_dt] - (tair + (double)(1.0)));
+                tau1 =  fmax((double)(0.0), env_s / cst[CF_dt] - (tair + (double)(1.0))) * cst[CF_dt];
 }
             else if (xoff > (double)(0.0) && vv > (double)(1e-9)) {
                 lift_wait =  fmax((double)(0.0), cst[CF_duty] - phi[leg]) * cst[CF_t_cycle] + (double)(0.25) * cst[CF_t_cycle];
@@ -4039,10 +4220,37 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     sg =  (double)(1.0);
 }
                 carch =  (double)(2.0) * mdl[OF_pt_radius + mdi[OI_fore_heel_pt + leg]];
-                for (c = 0; c < (3); ++c) {
-                    paw_t[leg * 3 + c] = swf[leg * 3 + c] + (swt[leg * 3 + c] - swf[leg * 3 + c]) * sg;
+                held =  f_hgh[leg] != 0 && f_t[leg] < f_hhl[leg] && f_t[leg] + (double)(1.0) < f_cy[leg];
+                if (held != 0) {
+                    double m16h[16];
+                    for (_coh20 = 0; _coh20 < (16); ++_coh20) {
+                        m16h[_coh20] = 0.0;
 }
-                paw_t[leg * 3 + 1] = paw_t[leg * 3 + 1] + carch * sin(PI * sg);
+                    for (i = 0; i < (16); ++i) {
+                        m16h[i] = fr[csti[CI_pelvis_row] * 16 + i];
+}
+                    double shh[3];
+                    for (_coh21 = 0; _coh21 < (3); ++_coh21) {
+                        shh[_coh21] = 0.0;
+}
+                    double mlh[3];
+                    for (_coh22 = 0; _coh22 < (3); ++_coh22) {
+                        mlh[_coh22] = 0.0;
+}
+                    mlh[0] = mdl[OF_fore_mount_local + leg * 3];
+                    mlh[1] = mdl[OF_fore_mount_local + leg * 3 + 1];
+                    mlh[2] = mdl[OF_fore_mount_local + leg * 3 + 2];
+                    vec_point(m16h, mlh, shh);
+                    for (c = 0; c < (3); ++c) {
+                        paw_t[leg * 3 + c] = shh[c] + f_hoff[leg * 3 + c];
+}
+}
+                if (held == 0) {
+                    for (c = 0; c < (3); ++c) {
+                        paw_t[leg * 3 + c] = swf[leg * 3 + c] + (swt[leg * 3 + c] - swf[leg * 3 + c]) * sg;
+}
+                    paw_t[leg * 3 + 1] = paw_t[leg * 3 + 1] + carch * sin(PI * sg);
+}
 }
             if (f_mo[leg] == 0 && f_t[leg] >= f_st[leg]) {
                 c1 =  mdi[OI_fore_coord + leg * 2];
@@ -4056,7 +4264,8 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
                 gated =  (int)(0);
                 if (f_en[leg] != 0) {
-                    if (f_mo[o] == 1) {
+                    o_held =  f_hgh[o] != 0 && f_t[o] < f_hhl[o] && f_t[o] + (double)(1.0) < f_cy[o];
+                    if (f_mo[o] == 1 && o_held == 0) {
                         gated =  1;
 }
                     else if (f_mo[o] == 0 && f_en[o] != 0 && f_dp[o] != 0 && f_t[o] < (double)(1.0)) {
@@ -4119,7 +4328,11 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 if (f_t[leg] >= f_st[leg] || wall_bound != 0) {
                     due =  1;
 }
-                env_t =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti);
+                env_t =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
+                if (a_ticks[e] >= 40 && a_ticks[e] <= 75) {
+                    printf("SEATIN t=%d leg=%d ft=%.17g fst=%.17g fcy=%.17g wb=%d whr=%.17g gt=%d th1=%.17g th2=%.17g thin=%d due=%d envt=%.17g p0=%.17g p1=%.17g p2=%.17g\n",
+                        (int)a_ticks[e], leg, f_t[leg], f_st[leg], f_cy[leg], wall_bound, wall_hr, gated, th1, th2, thin_seat, due, env_t, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2]);
+                }
                 act =  (int)(0);
                 double seat[3];
                 for (_zzero192 = 0; _zzero192 < (3); ++_zzero192) {
@@ -4129,12 +4342,8 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     act =  1;
 }
                 else if (gated == 0 && due != 0 && thin_seat != 0 && wall_bound != 0) {
-                    double seat[3];
-                    for (_zzero193 = 0; _zzero193 < (3); ++_zzero193) {
-                        seat[_zzero193] = 0.0;
-}
                     fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);
-                    if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
+                    if (a_ticks[e] >= 40 && a_ticks[e] <= 75) {
                         printf("SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\n", (int)a_ticks[e], leg, seat[0], seat[1], seat[2]);
                     }
                     dsx =  seat[0] - paw_t[leg * 3];
@@ -4151,12 +4360,8 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
                 else if (f_t[leg] >= f_cy[leg] || f_t[leg] >= env_t) {
                     if (wall_bound != 0 && fmin(th1, th2) < (double)(0.1022)) {
-                        double seat[3];
-                        for (_zzero194 = 0; _zzero194 < (3); ++_zzero194) {
-                            seat[_zzero194] = 0.0;
-}
                         fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);
-                    if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
+                    if (a_ticks[e] >= 40 && a_ticks[e] <= 75) {
                         printf("SEATF t=%d leg=%d s0=%.17g s1=%.17g s2=%.17g\n", (int)a_ticks[e], leg, seat[0], seat[1], seat[2]);
                     }
                         dsx =  seat[0] - paw_t[leg * 3];
@@ -4172,10 +4377,6 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                         act =  3;
 }
 }
-                if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
-                    printf("SEATIN t=%d leg=%d ft=%.17g fst=%.17g fcy=%.17g wb=%d whr=%.17g gt=%d th1=%.17g th2=%.17g thin=%d due=%d envt=%.17g p0=%.17g p1=%.17g p2=%.17g\n",
-                        (int)a_ticks[e], leg, f_t[leg], f_st[leg], f_cy[leg], wall_bound, wall_hr, gated, th1, th2, thin_seat, due, env_t, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2]);
-                }
                 if (act == 1) {
                     f_mo[leg] = 1;
                     if (f_en[leg] != 0) {
@@ -4236,6 +4437,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     swt[leg * 3] = shw[0] + xoff;
                     swt[leg * 3 + 1] = paw_y[leg];
                     swt[leg * 3 + 2] = pw[2];
+                    fore_arm_hold(mdl, cst, fr, leg, wall_bound, f_t, f_st, f_cy, paw_t, swf, swt, ikb, mdi, csti, f_hgh, f_hhl, f_hoff);
 }
                 else if (act == 2) {
                     for (c = 0; c < (3); ++c) {
@@ -4244,7 +4446,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     f_dp[leg] = 0;
                     f_rp[leg] = f_rp[leg] + 1;
                     f_t[leg] = (double)(0.0);
-                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti);
+                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
                     f_st[leg] = fmax((double)(0.0), env_t2 - (tair + (double)(1.0)));
                     f_cy[leg] = f_st[leg] + tair;
 }
@@ -4273,6 +4475,8 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     for (c = 0; c < (3); ++c) {
                         paw_t[leg * 3 + c] = pw[c];
 }
+                    f_hgh[leg] = 0;
+                    f_hhl[leg] = 0;
                     cc1 =  mdi[OI_fore_coord + leg * 2];
                     cc2 =  mdi[OI_fore_coord + leg * 2 + 1];
                     fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti, &qa1, &qa2, &qa1r, &qa2r, &sata);
@@ -4286,14 +4490,14 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     f_dp[leg] = 0;
                     f_rp[leg] = f_rp[leg] + 1;
                     f_t[leg] = (double)(0.0);
-                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti);
+                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
                     f_st[leg] = fmax((double)(0.0), env_t2 - (tair + (double)(1.0)));
                     f_cy[leg] = f_st[leg] + tair;
 }
 }
-                if (a_ticks[e] >= 40 && a_ticks[e] <= 60) {
-                    printf("SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g\n",
-                        (int)a_ticks[e], leg, act, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2], ikb[leg], f_t[leg]);
+                if (a_ticks[e] >= 40 && a_ticks[e] <= 75) {
+                    printf("SEATOUT t=%d leg=%d act=%d p0=%.17g p1=%.17g p2=%.17g ikb=%d ft=%.17g fmo=%d fst=%.17g\n",
+                        (int)a_ticks[e], leg, act, paw_t[leg * 3], paw_t[leg * 3 + 1], paw_t[leg * 3 + 2], ikb[leg], f_t[leg], f_mo[leg], f_st[leg]);
                 }
             if (f_t[leg] >= f_cy[leg]) {
                 hpt =  mdi[OI_fore_heel_pt + leg];
@@ -4360,7 +4564,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
 }
 }
                 if (f_en[leg] != 0) {
-                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti);
+                    env_t2 =  fore_env(mdl, cst, fr, leg, paw_t, v[3], csti, paw_y[leg]);
                     f_st[leg] = fmax((double)(0.0), env_t2 - (tair + (double)(1.0)));
                     f_cy[leg] = f_st[leg] + tair;
 }
@@ -4408,7 +4612,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                         vec_point(m16, ml, shw);
                         offc =  paw_t[leg * 3] - shw[0];
                         vv =  fmax((double)(0.0), v[3]);
-                        hgt =  fmax((double)(0.0), shw[1] - paw_t[leg * 3 + 1]);
+                        hgt =  fmax((double)(0.0), shw[1] - paw_y[leg]);
                         dd =  cst[CF_fore_L1] + cst[CF_fore_rho];
                         a2 =  dd * dd - hgt * hgt;
                         amax =  (a2 > (double)(0.0)) ? (sqrt(a2)) : ((double)(0.0));
@@ -4948,6 +5152,11 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             a_hind_to[e * 6 + l * 3 + c] = h_to[l * 3 + c];
 }
         a_paw_plant_y[e * 2 + l] = paw_y[l];
+        a_fore_glide_hold[e * 2 + l] = f_hgh[l];
+        a_fore_hold_last[e * 2 + l] = f_hhl[l];
+        a_fore_hold_off[e * 6 + l * 3] = f_hoff[l * 3];
+        a_fore_hold_off[e * 6 + l * 3 + 1] = f_hoff[l * 3 + 1];
+        a_fore_hold_off[e * 6 + l * 3 + 2] = f_hoff[l * 3 + 2];
         a_fore_t[e * 2 + l] = f_t[l];
         a_fore_stance[e * 2 + l] = f_st[l];
         a_fore_cycle[e * 2 + l] = f_cy[l];
@@ -4995,7 +5204,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
     rbi[e * 6 + 5] = tch[1];
 }
 
-__global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, int* a_hind_branch, int* a_hind_held, long long* a_hind_last_fire, long long* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, int* a_height_latched, double* a_cmd_vx, int* a_cmd_live, long long* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, int* a_adv_calls, int* a_refused, int* a_refused_class, int* a_collapsed, double* rb, int* rbi, int* a_rc) {
+__global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_fore_glide_hold, int* a_fore_hold_last, double* a_fore_hold_off, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, int* a_hind_branch, int* a_hind_held, long long* a_hind_last_fire, long long* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, int* a_height_latched, double* a_cmd_vx, int* a_cmd_live, long long* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, int* a_adv_calls, int* a_refused, int* a_refused_class, int* a_collapsed, double* rb, int* rbi, int* a_rc) {
     double ne;
     int rc;
     double tick;
@@ -5668,8 +5877,17 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
 }
 }
             tq =  mdl[OF_kp + d - 1] * (target - q[c]) - mdl[OF_kd + d - 1] * v[c];
-            if (a_ticks[e] >= 40 && a_ticks[e] <= 60 && d >= 9) {
+            if (a_ticks[e] >= 40 && a_ticks[e] <= 75 && d >= 9) {
                 printf("SV t=%d d=%d c=%d tgt=%.17g qc=%.17g vc=%.17g tqr=%.17g\n", (int)a_ticks[e], d - 1, c, target, q[c], v[c], tq);
+                if (d == 9 && a_ticks[e] >= 73 && a_ticks[e] <= 75) {
+                    printf("IKIK t=%d q1f=%.17g q2f=%.17g q1rx=%.17g q2rx=%.17g\n", (int)a_ticks[e], q1f, q2f, q1rx, q2rx);
+                }
+                {
+                    const int offk = csti[CI_pelvis_row] * 16;
+                    printf("FKIN m=%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g,%.17g paw=%.17g,%.17g,%.17g beta=%.17g L1=%.17g rho=%.17g ikb=%d\n",
+                        fr[offk + 0], fr[offk + 1], fr[offk + 2], fr[offk + 3], fr[offk + 4], fr[offk + 5], fr[offk + 6], fr[offk + 7], fr[offk + 8], fr[offk + 9], fr[offk + 10], fr[offk + 11], fr[offk + 12], fr[offk + 13], fr[offk + 14], fr[offk + 15],
+                        paw_t[0], paw_t[1], paw_t[2], cst[CF_fore_beta], cst[CF_fore_L1], cst[CF_fore_rho], ikb[0]);
+                }
             }
             cap =  mdl[OF_drive_cap + d - 1];
             tq =  fmin(cap, fmax(-cap, tq));
@@ -5719,7 +5937,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
             eff[mdi[OI_drive_coord + d]] = tau[mdi[OI_drive_coord + d]] * scales[d];
 }
         eff[2] = tau[2] * scales[12];
-        advdbg = ((a_ticks[e] == 60)) ? 1 : 0;
+        advdbg = ((a_ticks[e] == 74)) ? 1 : 0;
         advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ, ptcop, ptbias, inv, free, srq, srv, qa, va, qb, vb, qc, vc, qd, vd, qe, ve, we, sq, sh16, sdep, scl, adv, rca, o_q, o_v, o_w, mdi, csti);
         for (i = 0; i < (18); ++i) {
             trial_q[i] = o_q[i];
@@ -5964,7 +6182,7 @@ __global__ void tick_integ_kernel(double* mdl, int* mdi, double* cst, int* csti,
     rbi[e * 6 + 5] = tch[1];
 }
 
-__global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, int* a_hind_branch, int* a_hind_held, long long* a_hind_last_fire, long long* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, int* a_height_latched, double* a_cmd_vx, int* a_cmd_live, long long* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, int* a_adv_calls, int* a_refused, int* a_refused_class, int* a_collapsed, double* rb, int* rbi, int* a_rc) {
+__global__ void tick_post_kernel(double* mdl, int* mdi, double* cst, int* csti, double* a_q, double* a_v, double* a_work, double* a_last_torque, double* a_battery, double* a_battery_post, double* a_phi, int* a_touching, int* a_captured, int* a_settle, int* a_ik_branch, double* a_paw_target, double* a_paw_plant_y, double* a_swing_from, double* a_swing_to, double* a_fore_t, double* a_fore_stance, double* a_fore_cycle, int* a_fore_mode, int* a_fore_entry, int* a_fore_conv, int* a_fore_td_plant, int* a_fore_clamped, int* a_fore_replants, int* a_fore_td_count, int* a_fore_glide_hold, int* a_fore_hold_last, double* a_fore_hold_off, int* a_hind_mode, double* a_hind_t, double* a_hind_from, double* a_hind_to, double* a_hind_plant_y, double* a_hind_ap, double* a_hind_mp, int* a_hind_branch, int* a_hind_held, long long* a_hind_last_fire, long long* a_hind_last_td, int* a_hind_fires, int* a_hind_tds, double* a_hind_xoff, int* a_height_latched, double* a_cmd_vx, int* a_cmd_live, long long* a_cmd_first_tick, int* a_cmd_fires, long long* a_ticks, int* a_adv_calls, int* a_refused, int* a_refused_class, int* a_collapsed, double* rb, int* rbi, int* a_rc) {
     double ne;
     int rc;
     double tick;

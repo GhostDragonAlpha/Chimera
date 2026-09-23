@@ -61,8 +61,10 @@ executes inside the smoke.
 from __future__ import annotations
 
 import argparse
+import ast
 import ctypes
 import hashlib
+import inspect
 import json
 import math
 import os
@@ -78,8 +80,9 @@ from torch.distributions import Normal
 HERE = os.path.dirname(os.path.abspath(__file__))
 TYPEB_GPU_DIR = os.path.join(HERE, "science_funnel", "typeb_gpu")
 TYPEB_EXPORT_DIR = os.path.join(HERE, "science_funnel", "typeb_export")
+FIRST_SKILL_DIR = os.path.join(HERE, "science_funnel", "first_skill")
 SCIENCE_DIR = os.path.join(HERE, "science_funnel")
-for p in (TYPEB_GPU_DIR, TYPEB_EXPORT_DIR, SCIENCE_DIR):
+for p in (TYPEB_GPU_DIR, TYPEB_EXPORT_DIR, FIRST_SKILL_DIR, SCIENCE_DIR):
     if p not in sys.path:
         sys.path.insert(0, p)
 
@@ -88,15 +91,51 @@ import acceptance as acceptance_mod   # tools/science_funnel/first_skill/accepta
 import observation_schema             # tools/science_funnel/typeb_export (FROZEN 80-field table)
 import walker_env_host                # the batched GPU env host (UNTOUCHED, wrapped only)
 
-# the DLL's per-env flat command API: walker_env_host binds only the scalar
-# route (set_command fills every env); the batched trainer needs per-env
-# commands + live flags. Same DLL path -> same loaded image (Windows loads once
-# per path); walker_env_host.py's bytes are NOT touched.
-_flat_dll = ctypes.CDLL(str(walker_env_host.HERE / "walker_env.dll"))
-_flat_dll.env_set_command_flat.restype = ctypes.c_int
-_flat_dll.env_set_command_flat.argtypes = [ctypes.c_void_p,
-                                           ctypes.POINTER(ctypes.c_double),
-                                           ctypes.POINTER(ctypes.c_int)]
+# The DLL binding: walker_env_host loads ITS OWN walker_env.dll at import; the
+# trainer can rebind that module attribute to a QUALIFIED build (the lane's
+# _dll patch pattern -- walker_env_host.py's bytes untouched) via --dll. All
+# engine calls (create/reset/step/status/sync AND the per-env flat command API)
+# resolve walker_env_host._dll at CALL time, so handle and image always agree.
+def _dll():
+    return walker_env_host._dll
+
+
+def _rebind_dll_image(dll_path: str):
+    """Point walker_env_host._dll at a qualified image and replay the host's OWN
+    restype/argtype configuration statements onto it (parsed with ast from
+    walker_env_host's source so the two can never drift; handles the multi-line
+    argtypes lists). A fresh CDLL carries no configuration -- the MEASURED
+    failure mode (env_create 'argument 13' TypeError) -- so this replay is
+    mandatory on every rebind."""
+    new_dll = ctypes.CDLL(os.path.abspath(dll_path))
+    tree = ast.parse(inspect.getsource(walker_env_host))
+
+    def _root_name(node):
+        while isinstance(node, ast.Attribute):
+            node = node.value
+        return node.id if isinstance(node, ast.Name) else None
+
+    stmts = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and \
+                isinstance(node.targets[0], ast.Attribute) and \
+                _root_name(node.targets[0]) == "_dll":
+            stmts.append(ast.unparse(node).replace("_dll.", "new_dll.", 1))
+    env = {"ctypes": ctypes, "new_dll": new_dll}
+    for stmt in stmts:
+        exec(compile(stmt, "<dll-config-replay>", "exec"), env)
+    walker_env_host._dll = new_dll
+    return new_dll
+
+
+def _bind_flat_api(dll):
+    """One-time argtypes/restype binding for the per-env flat command API on
+    whatever image walker_env_host._dll currently names."""
+    dll.env_set_command_flat.restype = ctypes.c_int
+    dll.env_set_command_flat.argtypes = [ctypes.c_void_p,
+                                         ctypes.POINTER(ctypes.c_double),
+                                         ctypes.POINTER(ctypes.c_int)]
+
 
 MANIFEST_SHA_FROZEN = "c85ba5c43aa7cf12969caf8df732dc77025bb1f50ab23ab87ed42685fe3ef39a"
 
@@ -187,15 +226,21 @@ class FirstSkillGoalEnv:
 
     # ---- episodes ----
     def reset(self):
+        # MEASURED 2026-09-23 (F-OBS-FIELD21 probe): reset_kernel re-initializes
+        # neither the rb readback NOR the a_battery work ledger. The pre-reset
+        # rb[5] IS the ledger carry-in, so capture it BEFORE env.reset; episode
+        # work_J = rb_end[5] - carry_in is then the honest ledger delta.
+        work_carry_in = self.env.status()["rb"][:, 5].copy()
         q, v, _phi = self.spec.reset_state()
         q0 = np.tile(np.asarray(q, np.float64), self.E)
         v0 = np.tile(np.asarray(v, np.float64), self.E)
         self.env.reset(q0=q0, v0=v0, touching0=None)
-        st = self.env.status()
+        st = self._synthetic_reset_status(q0, v0)
+        st["rb"][:, 5] = work_carry_in
         self._st = st
         self._x0 = st["rb"][:, 0].copy()                       # com east at entry
         self._x_wp = self._x0 + D_WP                           # waypoint dead ahead
-        self._work0 = st["rb"][:, 5].copy()                    # work ledger offset
+        self._work0 = work_carry_in                            # ledger carry-in
         self._prev_com = self._x0.copy()
         self._ended = np.zeros(self.E, bool)
         self._ended_kind = np.array([""] * self.E, dtype=object)
@@ -213,8 +258,41 @@ class FirstSkillGoalEnv:
         if self._ended.all():
             self.reset()
 
+    def _synthetic_reset_status(self, q0: np.ndarray, v0: np.ndarray) -> dict:
+        """The t=0 status, synthesized from the reset arrays this wrapper just
+        uploaded. MEASURED 2026-09-23 (the F-OBS-FIELD21 probe): walker_env.dll's
+        reset_kernel rewrites the scalar state (ticks, refused, cmd -- verified
+        zeroed) but NOT the rb/rbi readback arrays, so the first status readback
+        after any reset carries the PREVIOUS episode's last tick (stale com,
+        v3, phi, battery). Reading it would corrupt every episode's t=0
+        observation (previous episode's frozen state) and the episode
+        bookkeeping (phantom first-decision reward, misanchored waypoint).
+        Every field here is the array the wrapper itself wrote -- zero invented
+        numbers; from tick 1 onward the tick kernels rewrite rb every tick."""
+        E = q0.size // 18
+        qf = np.ascontiguousarray(q0, np.float64).reshape(E, 18)
+        vf = np.ascontiguousarray(v0, np.float64).reshape(E, 18)
+        rb = np.zeros((E, 6), np.float64)
+        rb[:, 0] = qf[:, 3]                    # com east (the entry x)
+        rb[:, 1] = qf[:, 4]                    # height
+        rb[:, 2] = vf[:, 3]                    # com vx (the seed entry speed)
+        rb[:, 3] = float(self.spec.start_phase_left)    # the gait clock entry
+        rb[:, 4] = float(self.spec.start_phase_right)
+        rb[:, 5] = 0.0                         # the work ledger, zeroed at reset
+        return {"rb": rb,
+                "rbi": np.zeros((E, 6), np.int32),
+                "refused": np.zeros(E, np.int32),
+                "refused_class": np.zeros(E, np.int32),
+                "collapsed": np.zeros(E, np.int32),
+                "ticks": np.zeros(E, np.int64),
+                "cmd_fires": np.zeros(E, np.int32),
+                "cmd_first_tick": np.zeros(E, np.int64),
+                "hind_tds": np.zeros((E, 2), np.int32),
+                "fore_td_count": np.zeros((E, 2), np.int32)}
+
     # ---- the action-map layer (F-ACTION-MAP) ----
-    def map_action(self, a_norm: np.ndarray) -> np.ndarray:
+    @staticmethod
+    def map_action(a_norm: np.ndarray) -> np.ndarray:
         """a_norm in [-1,1] -> the commanded_target_velocity_x payload.
         (a+1)/2 * V_CEILING: +1 -> exactly V_CEILING; 0 -> exactly half."""
         return (np.asarray(a_norm, np.float64).reshape(-1) + 1.0) * 0.5 * V_CEILING
@@ -222,7 +300,9 @@ class FirstSkillGoalEnv:
     def _apply_actions(self, a_norm):
         self._cmd[:] = self.map_action(a_norm)
         self._live[:] = (~self._ended).astype(np.int32)   # ended envs: command-dead
-        ok = _flat_dll.env_set_command_flat(
+        dll = _dll()
+        _bind_flat_api(dll)
+        ok = dll.env_set_command_flat(
             ctypes.c_void_p(self.env._h),
             self._cmd.ctypes.data_as(ctypes.POINTER(ctypes.c_double)),
             self._live.ctypes.data_as(ctypes.POINTER(ctypes.c_int)))
@@ -249,6 +329,15 @@ class FirstSkillGoalEnv:
         engine_end = (st["refused"] != 0) | (st["collapsed"] != 0)
         cap_end = ticks >= int(TICK_NORM)
         newly_end = (~self._ended) & (engine_end | cap_end)
+        # THE frozen reward, and ONLY the frozen reward (F-REWARD-FROZEN):
+        # shaping(prev_com_x_along, com_x_along, com_vel_x_heading, com_vel_y_heading).
+        # com_vel_y_heading is the declared-unavailable channel (mean-fill 0.0).
+        # Computed for every env ALIVE ENTERING this decision -- the ending
+        # transition included (it earned its shaping; F-REWARD-FROZEN's sentinel
+        # probe caught the dropped-terminal-reward bug at first measurement).
+        rew = np.zeros(self.E, np.float64)
+        for i in np.nonzero(~self._ended)[0]:
+            rew[i] = reward_mod.shaping(self._prev_com[i], com[i], vx[i], 0.0)
         for i in np.nonzero(newly_end)[0]:
             self._ended_kind[i] = ("refused" if engine_end[i] else "cap")
             self._records[i] = self._episode_record(int(i), st)
@@ -259,12 +348,6 @@ class FirstSkillGoalEnv:
                     (ticks <= acceptance_mod.EVAL_WINDOW_TICKS)
         reached = in_window & (com >= self._x_wp - REACH_DISC_R) & (self._reach_tick < 0)
         self._reach_tick[reached] = ticks[reached]
-        # THE frozen reward, and ONLY the frozen reward (F-REWARD-FROZEN):
-        # shaping(prev_com_x_along, com_x_along, com_vel_x_heading, com_vel_y_heading).
-        # com_vel_y_heading is the declared-unavailable channel (mean-fill 0.0).
-        rew = np.zeros(self.E, np.float64)
-        for i in np.nonzero(~self._ended)[0]:
-            rew[i] = reward_mod.shaping(self._prev_com[i], com[i], vx[i], 0.0)
         # intervention census (fields 50/51/54): the engine's own refusal state
         intv_now = newly_end & engine_end
         self._ticks_since_intv = np.where(intv_now, 0.0,
@@ -294,6 +377,8 @@ class FirstSkillGoalEnv:
                            if self._reach_tick[i] >= 0 else None),
             "distance_m": float(st["rb"][i, 0] - self._x0[i]),
             "work_J": float(st["rb"][i, 5] - self._work0[i]),
+            "work_J_absolute": float(st["rb"][i, 5]),
+            "work_carry_in_J": float(self._work0[i]),
             "ended_kind": self._ended_kind[i],
             "ticks": int(st["ticks"][i]),
         }
@@ -430,14 +515,16 @@ def gae(rew, v, v_next, valid, kind, gamma, lam):
     adv = np.zeros((T, E), np.float64)
     lastgaelam = np.zeros(E, np.float64)
     for t in range(T - 1, -1, -1):
-        alive = valid[t]
         seg_end = ~valid[t + 1] if t + 1 < T else np.ones(E, bool)
-        cont = alive & seg_end                      # this transition ends a segment
-        nextv = np.where(alive & ~seg_end, v[t + 1],
-                         np.where(kind[t] == 1, 0.0, v_next[t]))
+        boot = np.where(kind[t] == 1, 0.0, v_next[t])
+        if t + 1 < T:
+            # np.where evaluates both branches eagerly: guard the v[t+1] index
+            nextv = np.where(valid[t] & ~seg_end, v[t + 1], boot)
+        else:
+            nextv = boot
         delta = rew[t] + gamma * nextv - v[t]
-        adv[t] = np.where(alive, delta + gamma * lam * lastgaelam, 0.0)
-        lastgaelam = np.where(alive, adv[t], 0.0)
+        adv[t] = np.where(valid[t], delta + gamma * lam * lastgaelam, 0.0)
+        lastgaelam = np.where(valid[t], adv[t], 0.0)
     return adv
 
 
@@ -458,6 +545,11 @@ def main():
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--out", default=None)
     ap.add_argument("--queue-wait-s", type=float, default=2700.0)
+    ap.add_argument("--dll", default=None,
+                    help="path to the qualified walker_env DLL image to bind "
+                         "(the lane's _dll patch pattern; default: "
+                         "typeb_gpu/walker_env.dll). Its sha256 is recorded in "
+                         "the run log and hash-bound into every checkpoint.")
     args = ap.parse_args()
 
     with open(args.manifest, "rb") as f:
@@ -512,6 +604,14 @@ def main():
     os.makedirs(ckpt_dir, exist_ok=True)
 
     log = print
+    dll_sha = "unbound"
+    if args.dll:
+        with open(args.dll, "rb") as f:
+            dll_bytes = f.read()
+        dll_sha = hashlib.sha256(dll_bytes).hexdigest()
+        _rebind_dll_image(args.dll)
+        log(f"[trainer] DLL BOUND: {os.path.abspath(args.dll)}")
+    log(f"[trainer] DLL sha256 {dll_sha}")
     log(f"[trainer] manifest sha {manifest_sha[:16]}... (frozen prereg verified)")
     log("[trainer] rsl_rl not installed for this Python; PPO implemented from "
         "scratch per the manifest's frozen config -- the config is the law, "
@@ -569,6 +669,7 @@ def main():
                         "iteration": len(train_log),
                         "eval": res,
                         "manifest_sha": manifest_sha,
+                        "dll_sha256": dll_sha,
                         "seed": seed}, ck)
             log(f"[trainer] EVAL {len(eval_log):02d} @dec {decision_counter}: "
                 f"mean_return {res['mean_return']:.6f} -> {os.path.basename(ck)}")
@@ -676,6 +777,17 @@ def main():
             f"lr {lr:.2e} r_mean {tl['mean_reward_alive']:+.4f} "
             f"| {tl['decisions_per_s']:.0f} dec/s {tl['env_steps_per_s']:.0f} steps/s "
             f"{dt:.1f}s")
+        # per-iteration checkpoint (the restart-is-one-command requirement):
+        torch.save({"actor": policy.actor.state_dict(),
+                    "critic": policy.critic.state_dict(),
+                    "log_std": policy.log_std.detach().cpu(),
+                    "decision_count": decision_counter,
+                    "iteration": it + 1,
+                    "manifest_sha": manifest_sha,
+                    "dll_sha256": dll_sha,
+                    "seed": seed,
+                    "train_log_tail": train_log[-1]},
+                   os.path.join(ckpt_dir, f"iter_{it + 1:02d}.pt"))
     maybe_eval(force=smoke)   # the smoke's declared final eval (loop proof)
 
     # ---- the frozen checkpoint-selection rule ----
@@ -714,6 +826,7 @@ def main():
         "smoke": smoke,
         "seed": seed,
         "manifest_sha256_restated": manifest_sha,
+        "dll_sha256": dll_sha,
         "env_class": FirstSkillGoalEnv.NAME,
         "obs_dim": FirstSkillGoalEnv.OBS_DIM,
         "action_map": "(tanh(u)+1)/2 * 0.7636247890 -> commanded_target_velocity_x",

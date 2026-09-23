@@ -1105,7 +1105,7 @@ __device__ inline long long gram_factor10(double* g, int k, double* rhs, double*
     return 1;
 }
 
-__device__ inline long long project_rows(double* initial, double* inv, double* rows, double* floors, int R, int n_stops, double* p_out, double* multipliers) {
+__device__ inline long long project_rows(double* initial, double* inv, double* rows, double* floors, int R, int n_stops, double* p_out, double* multipliers, double tol_band) {
     int tier;
     int mask;
     int skip;
@@ -1182,7 +1182,7 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
 }
                         for (k = 0; k < (R); ++k) {
                             rows_row(rows, k, rk);
-                            tol =  (double)(1e-9) * ((double)(1.0) + fabs(floors[k]));
+                            tol =  fmax((double)(1e-9) * ((double)(1.0) + fabs(floors[k])), tol_band);
                             if (row_dot(rk, initial) < floors[k] - tol) {
                                 allok =  0;
 }
@@ -1271,7 +1271,7 @@ __device__ inline long long project_rows(double* initial, double* inv, double* r
                                     rk[_zzero24] = 0.0;
 }
                                 for (k = 0; k < (R); ++k) {
-                                    tol =  (double)(1e-9) * ((double)(1.0) + fabs(floors[k]));
+                                    tol =  fmax((double)(1e-9) * ((double)(1.0) + fabs(floors[k])), tol_band);
                                     rows_row(rows, k, rk);
                                     got =  row_dot(rk, initial) + row_dot(rk, chg);
                                     if (got < floors[k] - tol) {
@@ -1639,7 +1639,7 @@ __device__ inline long long rate(double* q, double* v, double* tau, int* live, i
         for (_zzero42 = 0; _zzero42 < (10); ++_zzero42) {
             mult[_zzero42] = 0.0;
 }
-        if (project_rows(free, inv, rows, floors, R, n_stops, p, mult) == 0) {
+        if (project_rows(free, inv, rows, floors, R, n_stops, p, mult, cst[CF_k_touch] / cst[CF_dt]) == 0) {
             return 5;
 }
         double corr[18];
@@ -2097,7 +2097,7 @@ __device__ inline double impact(double* q, double* v, double* mdl, double* cst, 
         for (_zzero71 = 0; _zzero71 < (10); ++_zzero71) {
             mult[_zzero71] = 0.0;
 }
-        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult) == 0) {
+        if (project_rows(v, inv, rows, floors, R, n_stops, p, mult, cst[CF_k_touch] / cst[CF_dt]) == 0) {
             rc[0] = 5;
             return (double)(0.0);
 }

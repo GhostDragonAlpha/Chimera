@@ -126,6 +126,40 @@ threshold fixed here before any measurement.
    recorded in the episode record alongside refusal_tick; acceptance.py's fall
    definition (refusal classes before tick 270) is applied downstream, not here.
 
+## MEASURED ENGINE FINDINGS (this lane's measurements on the inherited DLL; for the lead)
+
+Both defects below live in walker_env.dll's `reset_kernel` (walker_env.cu /
+walker_kernels.cuh) on this branch (e3b591e1's rebuild, committed
+UNMEASURED-BY-CLOSEOUT-8). First measured here 2026-09-23; the wrapper
+compensates for both (bytes of the DLL/host untouched):
+
+1. RESET LEAVES THE rb/rbi READBACK STALE: after `env_reset`, ticks/refused/cmd
+   arrays ARE re-zeroed (verified), but `rb`/`rbi` are only rewritten by the
+   tick kernels -- the first status readback after a reset carries the PREVIOUS
+   episode's last com/height/v3/phi/battery (probe: post-reset com 0.09536 =
+   the pre-reset com; first post-reset tick then reads com 0.00250). Cost if
+   uncompensated: every episode's t=0 observation is the previous episode's
+   frozen state, the waypoint anchor is off by the stale com (0.095 m), and the
+   first decision earns a phantom -1 progress reward. Wrapper fix:
+   `_synthetic_reset_status` builds the t=0 status from the reset arrays the
+   wrapper itself uploaded (phi from the spec's declared start phases).
+2. THE WORK LEDGER IS NOT RE-INITIALIZED: `a_battery` persists across resets
+   (probe: fresh-episode tick 1 reads rb[5] = 586.848 J = the previous
+   episode's final ledger; ticks 1..16 flat at ~586.848 during settle). The
+   pre-reset rb[5] IS the carry-in, so the wrapper captures it before
+   env.reset and records work_J = rb_end[5] - carry_in (the honest delta).
+
+3. THE TICK-40 REFUSAL (rc=5) IS CONFIRMED NOT COMMAND-CAUSED: with NO command
+   ever issued, and with commands {0.0, 0.60 once, 0.60 re-issued, 0.7636
+   once}, the trajectory is bit-identical through the tick-40 refusal
+   (rb equal to 4 decimals across all five runs; phi frozen at the entry
+   [0.0, 0.5] throughout -- the refusal lands mid-settle, settle_total=60).
+   This is residual A (the tick-66 class, the drill lane's named open item):
+   the CPU-exact probe (co8_cp_walk120.txt) walks 120 ticks refusal-free while
+   this DLL build refuses at 40.
+
 ## RESULTS (filled after the runs; nothing below this line existed at prereg)
 
-See falsifier_results.json + smoke_receipt.json (written by the runs).
+See falsifier_results.json (the runner's machine-readable output) and
+smoke_seed*/run_receipt.json. Measured under GPU contention with the lead's
+bars run resident (nvidia-smi ~22.7/24.5 GiB at lane start).

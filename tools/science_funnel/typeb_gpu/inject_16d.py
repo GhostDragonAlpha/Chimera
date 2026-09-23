@@ -25,7 +25,7 @@ start = s.find("# 16d) CLOSEOUT-8 TIE-V2 DRILL")
 if start > 0:
     s = s[:start]
 
-sig = '__device__ inline long long project_rows(double* initial, double* inv, double* rows, double* floors, int R, int n_stops, double* p_out, double* multipliers) {'
+sig = '__device__ inline long long project_rows(double* initial, double* inv, double* rows, double* floors, int R, int n_stops, double* p_out, double* multipliers, double tol_band) {'
 
 L = []
 def a(x):

@@ -1421,7 +1421,10 @@ def gram_factor10(g, k, rhs, lam):
 
 @cuda.jit(device=True)
 
-def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers):
+def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers, tol_band):
+    # PREREG RESIDUAL TIE v2 (registered 2026-09-23): tol_band = kTouch/dt --
+    # the pad's own position resolution converted to the row's velocity units.
+    # A floor-check violation within tol_band is an exactly-satisfied tie.
 
     # Mass-metric active-set projection (the free-root D6 law, lifted
 
@@ -1499,7 +1502,7 @@ def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers):
 
                             rows_row(rows, k, rk)
 
-                            tol = float(1e-9) * (float(1.0) + abs(floors[k]))
+                            tol = max(float(1e-9) * (float(1.0) + abs(floors[k])), tol_band)
 
                             if row_dot(rk, initial) < floors[k] - tol:
 
@@ -1611,7 +1614,7 @@ def project_rows(initial, inv, rows, floors, R, n_stops, p_out, multipliers):
 
                                 for k in range(R):
 
-                                    tol = float(1e-9) * (float(1.0) + abs(floors[k]))
+                                    tol = max(float(1e-9) * (float(1.0) + abs(floors[k])), tol_band)
 
                                     rows_row(rows, k, rk)
 
@@ -2076,7 +2079,7 @@ def rate(q, v, tau, live, plane, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv,
         for _zzero42 in range(10):
             mult[_zzero42] = 0.0
 
-        if project_rows(free, inv, rows, floors, R, n_stops, p, mult) == 0:
+        if project_rows(free, inv, rows, floors, R, n_stops, p, mult, cst[CF_k_touch] / cst[CF_dt]) == 0:
 
             return 5
 
@@ -2594,7 +2597,7 @@ def impact(q, v, mdl, cst, M, gv, bv, fr, frd, frdd, axw, axpiv, axdir, ptp, ptJ
         for _zzero71 in range(10):
             mult[_zzero71] = 0.0
 
-        if project_rows(v, inv, rows, floors, R, n_stops, p, mult) == 0:
+        if project_rows(v, inv, rows, floors, R, n_stops, p, mult, cst[CF_k_touch] / cst[CF_dt]) == 0:
 
             rc[0] = 5
 
