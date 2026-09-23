@@ -55,6 +55,7 @@ JobObjectCpuRateControlInformation = 14        # 16-byte struct here (MinRate/Ma
 # JOBOBJECT basic limit flags -- NOTE: BREAKAWAY_OK and SILENT_BREAKAWAY_OK are
 # deliberately ABSENT: not setting them is exactly how breakaway is prohibited.
 JOB_OBJECT_LIMIT_ACTIVE_PROCESS = 0x00000008
+JOB_OBJECT_LIMIT_AFFINITY = 0x00000001
 JOB_OBJECT_LIMIT_PRIORITY_CLASS = 0x00000020
 JOB_OBJECT_LIMIT_PROCESS_MEMORY = 0x00000100
 JOB_OBJECT_LIMIT_JOB_MEMORY = 0x00000200
@@ -344,13 +345,18 @@ def enumerate_processes() -> list[dict]:
 # ---------------------------------------------------------------- job api
 def create_job(job_name: str, *, mem_gib: float | None, max_procs: int | None,
                cpu_pct: int | None = None, priority_class: int = NORMAL_PRIORITY_CLASS,
-               set_priority_limit: bool = False) -> int:
+               set_priority_limit: bool = False,
+               affinity_mask: int | None = None) -> int:
     """Create a NAMED job whose handle is non-inheritable (SECURITY_ATTRIBUTES
     = NULL => the returned handle is not inheritable) with the declared limits:
     KILL_ON_JOB_CLOSE (always), job+process committed-memory, active-process
-    count, optional forced priority class.
+    count, optional forced priority class, optional AFFINITY mask.
     Breakaway is prohibited by NOT setting either breakaway flag.
-    cpu_pct is REFUSED (measured: see F-CPURATE above) -- never silently ignored."""
+    cpu_pct is REFUSED (measured: see F-CPURATE above) -- never silently ignored.
+    affinity_mask is the phase-2 measured ALTERNATIVE (P-CPUAFFINITY): a hard
+    partition of logical processors IS enforceable on this build where a
+    CPU-rate cap is not -- verified by readback here and by measured effect in
+    tests_gpu_broker.py."""
     if cpu_pct:
         raise NotImplementedError(
             f"cpu_pct={cpu_pct} refused: the CPU-rate primitive could not be pinned "
@@ -361,6 +367,9 @@ def create_job(job_name: str, *, mem_gib: float | None, max_procs: int | None,
         raise WinError("CreateJobObjectW")
     ext = JOBOBJECT_EXTENDED_LIMIT_INFORMATION()
     flags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+    if affinity_mask:
+        ext.BasicLimitInformation.Affinity = int(affinity_mask)
+        flags |= JOB_OBJECT_LIMIT_AFFINITY
     if mem_gib:
         b = int(mem_gib * (1 << 30))
         ext.ProcessMemoryLimit = b
@@ -394,6 +403,13 @@ def create_job(job_name: str, *, mem_gib: float | None, max_procs: int | None,
     if mem_gib and rb.JobMemoryLimit != int(mem_gib * (1 << 30)):
         close_handle(h)
         raise WinError(f"limit readback: JobMemoryLimit={rb.JobMemoryLimit} != requested")
+    if affinity_mask and not (rb.BasicLimitInformation.LimitFlags & JOB_OBJECT_LIMIT_AFFINITY):
+        close_handle(h)
+        raise WinError("limit readback: AFFINITY flag not applied")
+    if affinity_mask and rb.BasicLimitInformation.Affinity != int(affinity_mask):
+        close_handle(h)
+        raise WinError(f"limit readback: Affinity={rb.BasicLimitInformation.Affinity:#x} "
+                       f"!= requested {int(affinity_mask):#x}")
     return h
 
 

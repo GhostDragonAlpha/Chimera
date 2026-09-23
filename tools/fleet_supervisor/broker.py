@@ -125,10 +125,19 @@ def reservation_state(res: dict | None, now: float | None = None) -> str:
 def touch_reservation(owner_id: str, control_dir: str = DEFAULT_CONTROL_DIR,
                       expected_end_ts: float | None = None, **extra) -> dict:
     """Owner heartbeat. Creating/refreshing a reservation is an OWNER action;
-    the broker only READS it (except the trivial admin write below)."""
+    the broker only READS it (except the trivial admin write below).
+    Phase 2 (gpu_broker2_20260922): a RELEASED reservation may transfer to a
+    NEW owner -- that is the queue's sequential exclusive grant (the previous
+    owner explicitly gave the GPU up; exclusivity is preserved, and the
+    transfer is audited in the file). A held / expired_pending / uncertain
+    reservation still refuses every other owner, exactly as phase 1 measured."""
     res = read_reservation(control_dir) or {}
-    if res.get("owner_id") not in (None, owner_id):
-        raise PermissionError(f"reservation owned by {res.get('owner_id')!r}, not {owner_id!r}")
+    prev_owner = res.get("owner_id")
+    if prev_owner not in (None, owner_id):
+        if str(res.get("status", "")).lower() != "released":
+            raise PermissionError(f"reservation owned by {prev_owner!r}, not {owner_id!r}")
+        res["previous_owner"] = prev_owner
+        res["previous_released_ts"] = res.get("released_ts")
     res.update({
         "owner_id": owner_id,
         "heartbeat_ts": time.time(),
