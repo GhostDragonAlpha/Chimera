@@ -11,7 +11,7 @@
  "stand": {
   "gpu_ticks": 60,
   "cpu_ticks": 60,
-  "max_scaled_diff": 0.9511245815808175,
+  "max_scaled_diff": 0.9511245759469239,
   "parity_pass": false
  },
  "nominal": {
@@ -39,7 +39,7 @@
    40,
    40,
    40,
-   62,
+   66,
    40,
    40,
    41,
@@ -55,7 +55,7 @@
    40,
    55,
    40,
-   55,
+   70,
    40,
    41,
    40,
@@ -121,7 +121,7 @@
    5,
    5,
    5,
-   5,
+   3,
    5,
    3,
    5,
@@ -158,30 +158,30 @@
   "pass_100": 0,
   "median": 40.0,
   "pass": false,
-  "wall_s": 173.70933819999482
+  "wall_s": 269.3082432999945
  },
  "throughput": [
   {
    "batch": 1024,
-   "median_s": 0.004669199995987583,
-   "env_steps_per_s": 65792855.363657236,
-   "ms_per_tick": 0.015563999986625277,
+   "median_s": 0.007089599996106699,
+   "env_steps_per_s": 43331076.530227505,
+   "ms_per_tick": 0.02363199998702233,
    "refused": 1024,
    "collapsed": 0
   },
   {
    "batch": 4096,
-   "median_s": 0.004767999998875894,
-   "env_steps_per_s": 257718120.8661289,
-   "ms_per_tick": 0.015893333329586312,
+   "median_s": 0.009775799990165979,
+   "env_steps_per_s": 125698152.70730971,
+   "ms_per_tick": 0.03258599996721993,
    "refused": 4096,
    "collapsed": 0
   }
  ],
  "throughput_pass_1024": true,
  "memory": {
-  "free_gb": 1.6252928,
-  "used_gb": 23.686283264,
-  "marginal_mb_per_env": -0.000512
+  "free_gb": 5.682233344,
+  "used_gb": 19.62934272,
+  "marginal_mb_per_env": -0.01152
  }
 }
