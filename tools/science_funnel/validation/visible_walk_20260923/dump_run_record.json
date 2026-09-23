@@ -1,0 +1,28 @@
+{
+ "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+ "scene_anchor_match": true,
+ "exit": 0,
+ "wall_s": 27.9,
+ "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+ "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+ "stdout_anchor_match": true,
+ "stderr_anchor_match": true,
+ "dump1_sha256": "b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93",
+ "dump2_sha256": "b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93",
+ "dumps_bit_identical": true,
+ "n_ticks": 302,
+ "tick_first_last": [
+  0,
+  301
+ ],
+ "base_xy_first": [
+  0.0025025164819299176,
+  0.38603172988685824
+ ],
+ "base_xy_last": [
+  0.915608184878731,
+  -0.3318056802516515
+ ],
+ "base_dx": 0.9131056683968011,
+ "base_dy": -0.7178374101385098
+}

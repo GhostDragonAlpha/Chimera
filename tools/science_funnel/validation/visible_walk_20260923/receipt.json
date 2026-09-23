@@ -1,0 +1,117 @@
+{
+ "schema": "chimera.visible_walk_20260923.receipt.v1",
+ "lane": "lane/visible-walk-20260923 (Agent: viswalk)",
+ "deliverable": {
+  "movie": "real_body_walk.mp4",
+  "sha256": "2e2982f1e98204a3682b71f70bb6be542ae6b3edeceec9f2ad09f96dcd84699a",
+  "bytes": 1570836,
+  "frames": 340,
+  "duration_s": "20.040000",
+  "viewport": [
+   480,
+   270
+  ],
+  "crf": 20,
+  "playback": "one engine tick per frame at the captured true-time cadence (ffconcat measured dt); the engine's own walk spans 302 ticks x dt=1/300 s = 1.0067 s engine time -- declared in the prereg",
+  "copies": [
+   "lane receipt dir (this file's dir)",
+   "Desktop CHIMERA_PROOF/REAL_BODY_SLICE/",
+   "repo CHIMERA_PROOF/REAL_BODY_SLICE/ (untracked, the movie lane's convention)"
+  ]
+ },
+ "source_scene": {
+  "generator": "tools/science_funnel/gait_scene.py --output",
+  "scene_file_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+  "anchor_match": true
+ },
+ "walk_numbers": {
+  "ticks_covered": 302,
+  "refusal_tick": 302,
+  "refusal_class": "gait_positional_correction_budget (the certified walk's own death, included in the movie)",
+  "engine_base_dx_m": 0.9131,
+  "root_scale_declared": 0.24798,
+  "mapped_forward_m": 0.2264,
+  "skinned_pivot_advance_forward_m": 0.1776,
+  "worst_ledger_J": 30.970714
+ },
+ "falsifiers": {
+  "F-NO-WALK": {
+   "verdict": "GREEN",
+   "a_no_freeze": true,
+   "identical_consecutive_frames_walk_phase": 0,
+   "b_forward_progress": true,
+   "skinned_pivot_advance_m": 0.1776,
+   "mapped_engine_advance_m": 0.2264,
+   "advance_ratio": 0.7842,
+   "c_stepping": true,
+   "limbs_oscillating": 4,
+   "per_limb": {
+    "foreL": {
+     "verts": 6113,
+     "zero_crossings": 9,
+     "detrended_y_amplitude_m": 0.1441
+    },
+    "foreR": {
+     "verts": 9759,
+     "zero_crossings": 13,
+     "detrended_y_amplitude_m": 0.0437
+    },
+    "hindL": {
+     "verts": 12095,
+     "zero_crossings": 7,
+     "detrended_y_amplitude_m": 0.0408
+    },
+    "hindR": {
+     "verts": 81393,
+     "zero_crossings": 16,
+     "detrended_y_amplitude_m": 0.0479
+    }
+   }
+  },
+  "F-JUDGE-CONNECTED-WALKER": {
+   "verdict": "RED as first measured; AMENDMENT 1 stride-phase sample PENDING (the shared ollama queue; appends as judgement_stride.json)",
+   "attempt1_fullmovie_verdict": "RED (the judge read the refusal tumble as a spin; verdict preserved verbatim in judgement_attempt1_fullmovie.json)",
+   "attempt1_connected_clause": "the judge read ONE CONNECTED PHYSICAL ANIMAL (its own words), even while reading the motion as a spin",
+   "amendment1_stride_sampling": "PENDING: the amended 12-frame stride-phase sample (frames 24..203) is queued on the shared ollama; it appends to this receipt when it lands",
+   "amendment_note": "AMENDMENT 1 (the walk-movie lane's repaired-instrument precedent): the evenly spaced whole-movie sample spent half its frames inside the refusal collapse (ticks 202..301, the walk's own death), which cannot answer a walking question; the amended sample covers the stride phase (frames 24..203, ticks 0..179) at the same model/prompt/protocol. Attempt 1 preserved verbatim; no re-roll of it."
+  },
+  "F-SOURCE-IS-ENGINE": {
+   "verdict": "GREEN",
+   "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+   "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+   "stdout_anchor_match": true,
+   "stderr_trace_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+   "stderr_anchor_match": true,
+   "q_dumps_bit_identical": true,
+   "dump1_sha256": "b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93",
+   "walk_ticks_dumped": 302,
+   "rest_stream_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "rest_stream_n_verts": 249743,
+   "engine_tree_diff_vs_f89cab4e": "clean (the statedump variant is a lane-private copy preserved in native/; zero tracked engine files changed)"
+  },
+  "F-ZERO-ERRORS": {
+   "verdict": "GREEN",
+   "console_errors": 0,
+   "page_errors": 0,
+   "request_failures": 0
+  },
+  "F-15FPS": {
+   "verdict": "GREEN",
+   "mean_capture_fps": 16.79,
+   "median_dt_ms": 54.9,
+   "p95_dt_ms": 99.2
+  }
+ },
+ "declared_deviations": [
+  "viewport 480x270 (the certified lane's 640x360 dropped for the shared-machine fps floor F-15FPS; framing is angular, the body's frame fraction identical; the judge reads 384 px resizes either way)",
+  "root translation mapped by one uniform scale (body hip height over the walk's entry hip height, 0.24798); joint-angle deltas unscaled",
+  "AMENDMENT 1 judge sampling: stride-phase window (see F-JUDGE-CONNECTED-WALKER); attempt 1 preserved verbatim"
+ ],
+ "machinery_chain": [
+  "gait_scene.py -> scene f6844eea (ANCHOR MATCH)",
+  "lane-private statedump variant (native/gait_unit_viswalk_dump.cpp, stdout/stderr-inert) -> stdout sha 8c537cdb EXACT + trace stderr sha c6f9b6c0 EXACT + q dumps bit-identical -> states_run1.jsonl",
+  "skin.py: declared LBS binding (rig_fit.json) -> per-tick skinned verts of the CT body",
+  "walktick_server.py + run_capture.py: the page's own draw()+toDataURL (bundled chromium, CPU path) -> 340 jpg",
+  "encode_walk.py: ffconcat true-time -> real_body_walk.mp4"
+ ]
+}

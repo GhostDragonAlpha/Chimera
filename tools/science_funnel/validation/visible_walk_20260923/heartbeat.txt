@@ -1,0 +1,1 @@
+heartbeat 2026-09-23 12:20 - movie delivered (3x sha-equal copies, 2e2982f1...); receipt.json written; judge amendment (stride-phase) pending on the shared ollama, appends as judgement_stride.json when it lands

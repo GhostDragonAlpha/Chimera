@@ -1,0 +1,11 @@
+{
+ "port": 8231,
+ "exe": "E:\\ChimeraWork\\viswalk-agent\\.tmp\\slice_build\\Release\\chimera_engine.exe",
+ "t_world_up_s": 2.06,
+ "t_settled_s": 17.11,
+ "root_y": 0.124641,
+ "settled": true,
+ "bytes": 8990752,
+ "sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+ "n_verts": 249743
+}

@@ -1,0 +1,38 @@
+{
+ "schema": "chimera.visible_walk_20260923.encode.v1",
+ "frames": 340,
+ "measured_mean_fps": 16.79,
+ "cut": "truetime (ffconcat per-frame durations = measured dt)",
+ "implied_duration_s": 20.26,
+ "crf_ladder": [
+  {
+   "crf": 20,
+   "mb": 1.5
+  }
+ ],
+ "crf_used": 20,
+ "mp4": {
+  "path": "E:\\ChimeraWork\\viswalk-agent\\tools\\science_funnel\\validation\\visible_walk_20260923\\real_body_walk.mp4",
+  "bytes": 1570836,
+  "sha256": "2e2982f1e98204a3682b71f70bb6be542ae6b3edeceec9f2ad09f96dcd84699a"
+ },
+ "ffprobe": {
+  "programs": [],
+  "stream_groups": [],
+  "streams": [
+   {
+    "width": 480,
+    "height": 270,
+    "avg_frame_rate": "2725/167",
+    "nb_frames": "327",
+    "side_data_list": [
+     {}
+    ]
+   }
+  ],
+  "format": {
+   "duration": "20.040000",
+   "size": "1570836"
+  }
+ }
+}

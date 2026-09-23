@@ -1,0 +1,46 @@
+{
+ "schema": "chimera.visible_walk_20260923.walk_numbers.v1",
+ "walk_ticks": 302,
+ "engine_base_dx_m": 0.9131,
+ "engine_base_dy_m": -0.7178,
+ "root_scale": 0.24798,
+ "mapped_forward_m": -0.2264,
+ "mapped_vertical_m": -0.178,
+ "skinned_pivot_advance_forward_m": 0.1776,
+ "skinned_pivot_advance_vertical_m": -0.23,
+ "advance_ratio_vs_engine": 0.7842,
+ "advance_note": "pivot-neighborhood (500 nearest verts to C) world displacement over the walk",
+ "freeze": {
+  "identical_consecutive_frames": 0,
+  "longest_identical_run": 0,
+  "frames": 300
+ },
+ "stepping": {
+  "foreL": {
+   "verts": 6113,
+   "zero_crossings": 9,
+   "detrended_y_amplitude_m": 0.1441
+  },
+  "foreR": {
+   "verts": 9759,
+   "zero_crossings": 13,
+   "detrended_y_amplitude_m": 0.0437
+  },
+  "hindL": {
+   "verts": 12095,
+   "zero_crossings": 7,
+   "detrended_y_amplitude_m": 0.0408
+  },
+  "hindR": {
+   "verts": 81393,
+   "zero_crossings": 16,
+   "detrended_y_amplitude_m": 0.0479
+  }
+ },
+ "limbs_oscillating_ge5_crossings": 4,
+ "f_no_walk": {
+  "a_no_freeze": true,
+  "b_forward_progress": true,
+  "c_stepping": true
+ }
+}
