@@ -96,3 +96,18 @@ that printed it — the probe's 125-mode early-return made a clean line out of a
 THE LANE'S REMAINING: the explicit-fma CUDA port of ucrt_math.c -> the on-device
 trig_probe gate -> the tick-66 drill -> the frozen bars. Nothing else stands between
 this branch and bars-green except residual A's drill.
+
+## ADDENDUM 6 — RESIDUAL B IS FULLY CLOSED (lead session 4, the CUDA port done solo)
+THE PORT: ucrt_math.c now compiles BOTH sides via a UCRT_API/UCRT_MATH_DEVICE qualifier
+macro (the five publics + the helpers HD-annotated; the tables via UCRT_TBL; the byte table
+guarded; fma()/fmsub() map to CUDA's fused intrinsics; -fmad=false preserved). The gate
+(ucrt_gate.cu + build_ucrt_gate.ps1): the host probe's dumpdense mode writes all 55,517
+cases; the kernel computes the reconstruction on DEVICE; the host CRT is the reference.
+RESULT (co7_gate_out2.txt): "ON-DEVICE GATE: 55517/55517 bit-identical -- PASS"
+(sin 6421, cos 6421, atan2 40425, acos 1025, hypot 1225 — the same 55,517-case set).
+THE LAST DEVICE DEFECT: mul64 lacked __device__ — nvcc compiled it host-side and the device
+call silently returned garbage (the 1e+159-exponent signature at the 2e7 class); annotated,
+ALL cases pass. LESSON: an unannotated static called from __host__ __device__ code can
+compile clean and bind wrong — the audit law extends to EVERY helper in device-included files.
+STEP 1 NOW REDUCES TO: residual A (the tick-66 discrete-flip drill) + the frozen bars
+re-run on the rebuilt DLL. Friday's lane payload is minimal.

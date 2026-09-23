@@ -26,8 +26,17 @@ static int fails[5] = { 0, 0, 0, 0, 0 };
 static long long total[5] = { 0, 0, 0, 0, 0 };
 static const char* fn[5] = { "sin", "cos", "atan2", "acos", "hypot" };
 
+static FILE* g_dump = NULL;
+static void dmp(int kind, double a0, double a1) {
+    if (!g_dump) return;
+    fwrite(&kind, sizeof(int), 1, g_dump);
+    fwrite(&a0, sizeof(double), 1, g_dump);
+    fwrite(&a1, sizeof(double), 1, g_dump);
+}
+
 static void chk(int f, double args[], double got, double want, long long idx) {
     total[f]++;
+    dmp(f, args[0], (f == 2 || f == 4) ? args[1] : 0.0);
     if (B(got) != B(want)) {
         fails[f]++;
         if (fails[f] <= 8) {
@@ -42,6 +51,10 @@ static void chk(int f, double args[], double got, double want, long long idx) {
 int main(int argc, char** argv) {
     setvbuf(stdout, NULL, _IONBF, 0);
     int dense = (argc > 1 && 0 == strcmp(argv[1], "dense"));
+    if (argc > 1 && 0 == strcmp(argv[1], "dumpdense")) {
+        dense = 1;
+        g_dump = fopen("dense_cases.bin", "wb");
+    }
     /* (a) the 125 trig_probe points (25 inputs from trig_inputs.txt) */
     static const double T[25] = {
         0.0, -0.20640000000000000, 0.76460100000000009, -0.55238900000000002,
@@ -74,6 +87,7 @@ int main(int argc, char** argv) {
                total[0]-fails[0], total[0], total[1]-fails[1], total[1],
                total[2]-fails[2], total[2], total[3]-fails[3], total[3],
                total[4]-fails[4], total[4]);
+        if (g_dump) { fclose(g_dump); g_dump = NULL; }
         return 1;
     }
     /* (b) dense sweeps over the walk's domain classes */
@@ -173,4 +187,5 @@ int main(int argc, char** argv) {
         printf("  %-5s %lld/%lld%s\n", fn[f], total[f] - fails[f], total[f],
                fails[f] ? "  FAIL" : "");
     return 1;
+    if (g_dump) { fclose(g_dump); g_dump = NULL; }
 }

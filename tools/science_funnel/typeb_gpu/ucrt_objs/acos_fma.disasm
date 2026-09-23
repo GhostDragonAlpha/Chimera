@@ -1,0 +1,380 @@
+
+Dump of file acos_fma.obj
+
+File Type: COFF OBJECT
+
+acos_fma:
+  0000000000000000: 48 83 EC 78        sub         rsp,78h
+  0000000000000004: 49 B8 FF FF FF FF  mov         r8,7FFFFFFFFFFFFFFFh
+                    FF FF FF 7F
+  000000000000000E: C5 F1 57 C9        vxorpd      xmm1,xmm1,xmm1
+  0000000000000012: C5 F3 10 D8        vmovsd      xmm3,xmm1,xmm0
+  0000000000000016: C4 E1 F9 7E D9     vmovq       rcx,xmm3
+  000000000000001B: 48 8B D1           mov         rdx,rcx
+  000000000000001E: 48 8B C1           mov         rax,rcx
+  0000000000000021: 48 C1 EA 34        shr         rdx,34h
+  0000000000000025: 49 23 C0           and         rax,r8
+  0000000000000028: 81 E2 FF 07 00 00  and         edx,7FFh
+  000000000000002E: 49 B8 00 00 00 00  mov         r8,7FF0000000000000h
+                    00 00 F0 7F
+  0000000000000038: C5 F8 28 E0        vmovaps     xmm4,xmm0
+  000000000000003C: C5 D1 57 ED        vxorpd      xmm5,xmm5,xmm5
+  0000000000000040: C5 F8 28 D0        vmovaps     xmm2,xmm0
+  0000000000000044: 49 3B C0           cmp         rax,r8
+  0000000000000047: 76 09              jbe         0000000000000052
+  0000000000000049: 48 83 C4 78        add         rsp,78h
+  000000000000004D: E9 00 00 00 00     jmp         _handle_nan_fma
+  0000000000000052: 81 FA C7 03 00 00  cmp         edx,3C7h
+  0000000000000058: 73 17              jae         0000000000000071
+  000000000000005A: B9 20 00 00 00     mov         ecx,20h
+  000000000000005F: E8 00 00 00 00     call        _set_statfp
+  0000000000000064: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3ff921fb54442d18]
+                    00 00
+  000000000000006C: 48 83 C4 78        add         rsp,78h
+  0000000000000070: C3                 ret
+  0000000000000071: 81 FA FF 03 00 00  cmp         edx,3FFh
+  0000000000000077: 0F 82 80 00 00 00  jb          00000000000000FD
+  000000000000007D: C5 F9 2E 25 00 00  vucomisd    xmm4,mmword ptr [__real@3ff0000000000000]
+                    00 00
+  0000000000000085: 7A 0B              jp          0000000000000092
+  0000000000000087: 75 09              jne         0000000000000092
+  0000000000000089: C5 F9 57 C0        vxorpd      xmm0,xmm0,xmm0
+  000000000000008D: 48 83 C4 78        add         rsp,78h
+  0000000000000091: C3                 ret
+  0000000000000092: C5 F9 2E 25 00 00  vucomisd    xmm4,mmword ptr [__real@bff0000000000000]
+                    00 00
+  000000000000009A: 7A 19              jp          00000000000000B5
+  000000000000009C: 75 17              jne         00000000000000B5
+  000000000000009E: B9 20 00 00 00     mov         ecx,20h
+  00000000000000A3: E8 00 00 00 00     call        _set_statfp
+  00000000000000A8: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@400921fb54442d18]
+                    00 00
+  00000000000000B0: 48 83 C4 78        add         rsp,78h
+  00000000000000B4: C3                 ret
+  00000000000000B5: C7 44 24 40 01 00  mov         dword ptr [rsp+40h],1
+                    00 00
+  00000000000000BD: 48 8D 0D 00 00 00  lea         rcx,[??_C@_04PDIFKINK@acos@]
+                    00
+  00000000000000C4: C5 FB 11 6C 24 38  vmovsd      qword ptr [rsp+38h],xmm5
+  00000000000000CA: C5 FB 11 64 24 30  vmovsd      qword ptr [rsp+30h],xmm4
+  00000000000000D0: BA 0D 00 00 00     mov         edx,0Dh
+  00000000000000D5: C7 44 24 28 21 00  mov         dword ptr [rsp+28h],21h
+                    00 00
+  00000000000000DD: 49 B8 00 00 00 00  mov         r8,0FFF8000000000000h
+                    00 00 F8 FF
+  00000000000000E7: C7 44 24 20 08 00  mov         dword ptr [rsp+20h],8
+                    00 00
+  00000000000000EF: 44 8D 4A F4        lea         r9d,[rdx-0Ch]
+  00000000000000F3: E8 00 00 00 00     call        _handle_error
+  00000000000000F8: 48 83 C4 78        add         rsp,78h
+  00000000000000FC: C3                 ret
+  00000000000000FD: C5 F8 29 74 24 60  vmovaps     xmmword ptr [rsp+60h],xmm6
+  0000000000000103: C5 F8 29 7C 24 50  vmovaps     xmmword ptr [rsp+50h],xmm7
+  0000000000000109: 48 85 C9           test        rcx,rcx
+  000000000000010C: 79 0A              jns         0000000000000118
+  000000000000010E: C5 D9 57 35 00 00  vxorpd      xmm6,xmm4,xmmword ptr [__xmm@80000000000000008000000000000000]
+                    00 00
+  0000000000000116: EB 04              jmp         000000000000011C
+  0000000000000118: C5 F8 28 F4        vmovaps     xmm6,xmm4
+  000000000000011C: 81 FA FE 03 00 00  cmp         edx,3FEh
+  0000000000000122: 72 22              jb          0000000000000146
+  0000000000000124: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3ff0000000000000]
+                    00 00
+  000000000000012C: C5 FB 5C CE        vsubsd      xmm1,xmm0,xmm6
+  0000000000000130: C5 F3 59 1D 00 00  vmulsd      xmm3,xmm1,mmword ptr [__real@3fe0000000000000]
+                    00 00
+  0000000000000138: C5 F8 28 D3        vmovaps     xmm2,xmm3
+  000000000000013C: C5 EB 51 EB        vsqrtsd     xmm5,xmm2,xmm3
+  0000000000000140: C5 F8 28 F5        vmovaps     xmm6,xmm5
+  0000000000000144: EB 04              jmp         000000000000014A
+  0000000000000146: C5 CB 59 DE        vmulsd      xmm3,xmm6,xmm6
+  000000000000014A: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3f0951665d321061]
+                    00 00
+  0000000000000152: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@3f51e5f887a62135]
+                    00 00 00
+  000000000000015B: C4 E2 E1 AB 05 00  vfmsub213sd xmm0,xmm3,mmword ptr [__real@3fac28d390c29690]
+                    00 00 00
+  0000000000000164: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@3fd1a2bec1b7ef59]
+                    00 00 00
+  000000000000016D: C4 E2 E1 AB 05 00  vfmsub213sd xmm0,xmm3,mmword ptr [__real@3fdc7b297e269eac]
+                    00 00 00
+  0000000000000176: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@3fcd1e4180029834]
+                    00 00 00
+  000000000000017F: C5 FB 59 CB        vmulsd      xmm1,xmm0,xmm3
+  0000000000000183: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3fbb1a422982ce76]
+                    00 00
+  000000000000018B: C4 E2 E1 AB 05 00  vfmsub213sd xmm0,xmm3,mmword ptr [__real@3fee324ab418f78d]
+                    00 00 00
+  0000000000000194: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@40062021571dccfc]
+                    00 00 00
+  000000000000019D: C4 E2 E1 AB 05 00  vfmsub213sd xmm0,xmm3,mmword ptr [__real@400a4646f903cdea]
+                    00 00 00
+  00000000000001A6: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@3ff5d6b12001f228]
+                    00 00 00
+  00000000000001AF: C5 F3 5E F8        vdivsd      xmm7,xmm1,xmm0
+  00000000000001B3: 0F 82 8D 00 00 00  jb          0000000000000246
+  00000000000001B9: 48 85 C9           test        rcx,rcx
+  00000000000001BC: 79 32              jns         00000000000001F0
+  00000000000001BE: C5 FB 10 0D 00 00  vmovsd      xmm1,qword ptr [__real@400921fb54442d18]
+                    00 00
+  00000000000001C6: C5 F8 28 C7        vmovaps     xmm0,xmm7
+  00000000000001CA: C4 E2 C9 AB 05 00  vfmsub213sd xmm0,xmm6,mmword ptr [__real@3c91a62633145c07]
+                    00 00 00
+  00000000000001D3: C5 F8 28 74 24 60  vmovaps     xmm6,xmmword ptr [rsp+60h]
+  00000000000001D9: C5 F8 28 7C 24 50  vmovaps     xmm7,xmmword ptr [rsp+50h]
+  00000000000001DF: C5 FB 58 C5        vaddsd      xmm0,xmm0,xmm5
+  00000000000001E3: C5 FB 58 D0        vaddsd      xmm2,xmm0,xmm0
+  00000000000001E7: C5 F3 5C C2        vsubsd      xmm0,xmm1,xmm2
+  00000000000001EB: 48 83 C4 78        add         rsp,78h
+  00000000000001EF: C3                 ret
+  00000000000001F0: C5 F9 57 C0        vxorpd      xmm0,xmm0,xmm0
+  00000000000001F4: C5 FB 10 D5        vmovsd      xmm2,xmm0,xmm5
+  00000000000001F8: C5 F8 28 CB        vmovaps     xmm1,xmm3
+  00000000000001FC: C4 E1 F9 7E D0     vmovq       rax,xmm2
+  0000000000000201: C5 CB 58 D6        vaddsd      xmm2,xmm6,xmm6
+  0000000000000205: C5 F8 28 74 24 60  vmovaps     xmm6,xmmword ptr [rsp+60h]
+  000000000000020B: 48 B9 00 00 00 00  mov         rcx,0FFFFFFFF00000000h
+                    FF FF FF FF
+  0000000000000215: 48 23 C1           and         rax,rcx
+  0000000000000218: C4 E1 F9 6E E0     vmovq       xmm4,rax
+  000000000000021D: C5 DB 58 C5        vaddsd      xmm0,xmm4,xmm5
+  0000000000000221: C4 E2 D9 BD CC     vfnmadd231sd xmm1,xmm4,xmm4
+  0000000000000226: C5 F3 5E C8        vdivsd      xmm1,xmm1,xmm0
+  000000000000022A: C5 F3 58 D9        vaddsd      xmm3,xmm1,xmm1
+  000000000000022E: C4 E2 C1 B9 DA     vfmadd231sd xmm3,xmm7,xmm2
+  0000000000000233: C5 F8 28 7C 24 50  vmovaps     xmm7,xmmword ptr [rsp+50h]
+  0000000000000239: C5 DB 58 C4        vaddsd      xmm0,xmm4,xmm4
+  000000000000023D: C5 E3 58 C0        vaddsd      xmm0,xmm3,xmm0
+  0000000000000241: 48 83 C4 78        add         rsp,78h
+  0000000000000245: C3                 ret
+  0000000000000246: C5 F8 28 74 24 60  vmovaps     xmm6,xmmword ptr [rsp+60h]
+  000000000000024C: C5 F8 28 C4        vmovaps     xmm0,xmm4
+  0000000000000250: C4 E2 C1 AD 05 00  vfnmadd213sd xmm0,xmm7,mmword ptr [__real@3c91a62633145c07]
+                    00 00 00
+  0000000000000259: C5 F8 28 7C 24 50  vmovaps     xmm7,xmmword ptr [rsp+50h]
+  000000000000025F: C5 DB 5C C8        vsubsd      xmm1,xmm4,xmm0
+  0000000000000263: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3ff921fb54442d18]
+                    00 00
+  000000000000026B: C5 FB 5C C1        vsubsd      xmm0,xmm0,xmm1
+  000000000000026F: 48 83 C4 78        add         rsp,78h
+  0000000000000273: C3                 ret
+
+acos_internal:
+  0000000000000000: 48 83 EC 78        sub         rsp,78h
+  0000000000000004: 49 B8 FF FF FF FF  mov         r8,7FFFFFFFFFFFFFFFh
+                    FF FF FF 7F
+  000000000000000E: C5 F1 57 C9        vxorpd      xmm1,xmm1,xmm1
+  0000000000000012: C5 F3 10 D8        vmovsd      xmm3,xmm1,xmm0
+  0000000000000016: C4 E1 F9 7E D9     vmovq       rcx,xmm3
+  000000000000001B: 48 8B D1           mov         rdx,rcx
+  000000000000001E: 48 8B C1           mov         rax,rcx
+  0000000000000021: 48 C1 EA 34        shr         rdx,34h
+  0000000000000025: 49 23 C0           and         rax,r8
+  0000000000000028: 81 E2 FF 07 00 00  and         edx,7FFh
+  000000000000002E: 49 B8 00 00 00 00  mov         r8,7FF0000000000000h
+                    00 00 F0 7F
+  0000000000000038: C5 F8 28 E0        vmovaps     xmm4,xmm0
+  000000000000003C: C5 D1 57 ED        vxorpd      xmm5,xmm5,xmm5
+  0000000000000040: C5 F8 28 D0        vmovaps     xmm2,xmm0
+  0000000000000044: 49 3B C0           cmp         rax,r8
+  0000000000000047: 76 09              jbe         0000000000000052
+  0000000000000049: 48 83 C4 78        add         rsp,78h
+  000000000000004D: E9 00 00 00 00     jmp         _handle_nan_fma
+  0000000000000052: 81 FA C7 03 00 00  cmp         edx,3C7h
+  0000000000000058: 73 17              jae         0000000000000071
+  000000000000005A: B9 20 00 00 00     mov         ecx,20h
+  000000000000005F: E8 00 00 00 00     call        _set_statfp
+  0000000000000064: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3ff921fb54442d18]
+                    00 00
+  000000000000006C: 48 83 C4 78        add         rsp,78h
+  0000000000000070: C3                 ret
+  0000000000000071: 81 FA FF 03 00 00  cmp         edx,3FFh
+  0000000000000077: 0F 82 80 00 00 00  jb          00000000000000FD
+  000000000000007D: C5 F9 2E 25 00 00  vucomisd    xmm4,mmword ptr [__real@3ff0000000000000]
+                    00 00
+  0000000000000085: 7A 0B              jp          0000000000000092
+  0000000000000087: 75 09              jne         0000000000000092
+  0000000000000089: C5 F9 57 C0        vxorpd      xmm0,xmm0,xmm0
+  000000000000008D: 48 83 C4 78        add         rsp,78h
+  0000000000000091: C3                 ret
+  0000000000000092: C5 F9 2E 25 00 00  vucomisd    xmm4,mmword ptr [__real@bff0000000000000]
+                    00 00
+  000000000000009A: 7A 19              jp          00000000000000B5
+  000000000000009C: 75 17              jne         00000000000000B5
+  000000000000009E: B9 20 00 00 00     mov         ecx,20h
+  00000000000000A3: E8 00 00 00 00     call        _set_statfp
+  00000000000000A8: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@400921fb54442d18]
+                    00 00
+  00000000000000B0: 48 83 C4 78        add         rsp,78h
+  00000000000000B4: C3                 ret
+  00000000000000B5: C7 44 24 40 01 00  mov         dword ptr [rsp+40h],1
+                    00 00
+  00000000000000BD: 48 8D 0D 00 00 00  lea         rcx,[??_C@_04PDIFKINK@acos@]
+                    00
+  00000000000000C4: C5 FB 11 6C 24 38  vmovsd      qword ptr [rsp+38h],xmm5
+  00000000000000CA: C5 FB 11 64 24 30  vmovsd      qword ptr [rsp+30h],xmm4
+  00000000000000D0: BA 0D 00 00 00     mov         edx,0Dh
+  00000000000000D5: C7 44 24 28 21 00  mov         dword ptr [rsp+28h],21h
+                    00 00
+  00000000000000DD: 49 B8 00 00 00 00  mov         r8,0FFF8000000000000h
+                    00 00 F8 FF
+  00000000000000E7: C7 44 24 20 08 00  mov         dword ptr [rsp+20h],8
+                    00 00
+  00000000000000EF: 44 8D 4A F4        lea         r9d,[rdx-0Ch]
+  00000000000000F3: E8 00 00 00 00     call        _handle_error
+  00000000000000F8: 48 83 C4 78        add         rsp,78h
+  00000000000000FC: C3                 ret
+  00000000000000FD: C5 F8 29 74 24 60  vmovaps     xmmword ptr [rsp+60h],xmm6
+  0000000000000103: C5 F8 29 7C 24 50  vmovaps     xmmword ptr [rsp+50h],xmm7
+  0000000000000109: 48 85 C9           test        rcx,rcx
+  000000000000010C: 79 0A              jns         0000000000000118
+  000000000000010E: C5 D9 57 35 00 00  vxorpd      xmm6,xmm4,xmmword ptr [__xmm@80000000000000008000000000000000]
+                    00 00
+  0000000000000116: EB 04              jmp         000000000000011C
+  0000000000000118: C5 F8 28 F4        vmovaps     xmm6,xmm4
+  000000000000011C: 81 FA FE 03 00 00  cmp         edx,3FEh
+  0000000000000122: 72 22              jb          0000000000000146
+  0000000000000124: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3ff0000000000000]
+                    00 00
+  000000000000012C: C5 FB 5C CE        vsubsd      xmm1,xmm0,xmm6
+  0000000000000130: C5 F3 59 1D 00 00  vmulsd      xmm3,xmm1,mmword ptr [__real@3fe0000000000000]
+                    00 00
+  0000000000000138: C5 F8 28 D3        vmovaps     xmm2,xmm3
+  000000000000013C: C5 EB 51 EB        vsqrtsd     xmm5,xmm2,xmm3
+  0000000000000140: C5 F8 28 F5        vmovaps     xmm6,xmm5
+  0000000000000144: EB 04              jmp         000000000000014A
+  0000000000000146: C5 CB 59 DE        vmulsd      xmm3,xmm6,xmm6
+  000000000000014A: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3f0951665d321061]
+                    00 00
+  0000000000000152: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@3f51e5f887a62135]
+                    00 00 00
+  000000000000015B: C4 E2 E1 AB 05 00  vfmsub213sd xmm0,xmm3,mmword ptr [__real@3fac28d390c29690]
+                    00 00 00
+  0000000000000164: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@3fd1a2bec1b7ef59]
+                    00 00 00
+  000000000000016D: C4 E2 E1 AB 05 00  vfmsub213sd xmm0,xmm3,mmword ptr [__real@3fdc7b297e269eac]
+                    00 00 00
+  0000000000000176: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@3fcd1e4180029834]
+                    00 00 00
+  000000000000017F: C5 FB 59 CB        vmulsd      xmm1,xmm0,xmm3
+  0000000000000183: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3fbb1a422982ce76]
+                    00 00
+  000000000000018B: C4 E2 E1 AB 05 00  vfmsub213sd xmm0,xmm3,mmword ptr [__real@3fee324ab418f78d]
+                    00 00 00
+  0000000000000194: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@40062021571dccfc]
+                    00 00 00
+  000000000000019D: C4 E2 E1 AB 05 00  vfmsub213sd xmm0,xmm3,mmword ptr [__real@400a4646f903cdea]
+                    00 00 00
+  00000000000001A6: C4 E2 E1 A9 05 00  vfmadd213sd xmm0,xmm3,mmword ptr [__real@3ff5d6b12001f228]
+                    00 00 00
+  00000000000001AF: C5 F3 5E F8        vdivsd      xmm7,xmm1,xmm0
+  00000000000001B3: 0F 82 8D 00 00 00  jb          0000000000000246
+  00000000000001B9: 48 85 C9           test        rcx,rcx
+  00000000000001BC: 79 32              jns         00000000000001F0
+  00000000000001BE: C5 FB 10 0D 00 00  vmovsd      xmm1,qword ptr [__real@400921fb54442d18]
+                    00 00
+  00000000000001C6: C5 F8 28 C7        vmovaps     xmm0,xmm7
+  00000000000001CA: C4 E2 C9 AB 05 00  vfmsub213sd xmm0,xmm6,mmword ptr [__real@3c91a62633145c07]
+                    00 00 00
+  00000000000001D3: C5 F8 28 74 24 60  vmovaps     xmm6,xmmword ptr [rsp+60h]
+  00000000000001D9: C5 F8 28 7C 24 50  vmovaps     xmm7,xmmword ptr [rsp+50h]
+  00000000000001DF: C5 FB 58 C5        vaddsd      xmm0,xmm0,xmm5
+  00000000000001E3: C5 FB 58 D0        vaddsd      xmm2,xmm0,xmm0
+  00000000000001E7: C5 F3 5C C2        vsubsd      xmm0,xmm1,xmm2
+  00000000000001EB: 48 83 C4 78        add         rsp,78h
+  00000000000001EF: C3                 ret
+  00000000000001F0: C5 F9 57 C0        vxorpd      xmm0,xmm0,xmm0
+  00000000000001F4: C5 FB 10 D5        vmovsd      xmm2,xmm0,xmm5
+  00000000000001F8: C5 F8 28 CB        vmovaps     xmm1,xmm3
+  00000000000001FC: C4 E1 F9 7E D0     vmovq       rax,xmm2
+  0000000000000201: C5 CB 58 D6        vaddsd      xmm2,xmm6,xmm6
+  0000000000000205: C5 F8 28 74 24 60  vmovaps     xmm6,xmmword ptr [rsp+60h]
+  000000000000020B: 48 B9 00 00 00 00  mov         rcx,0FFFFFFFF00000000h
+                    FF FF FF FF
+  0000000000000215: 48 23 C1           and         rax,rcx
+  0000000000000218: C4 E1 F9 6E E0     vmovq       xmm4,rax
+  000000000000021D: C5 DB 58 C5        vaddsd      xmm0,xmm4,xmm5
+  0000000000000221: C4 E2 D9 BD CC     vfnmadd231sd xmm1,xmm4,xmm4
+  0000000000000226: C5 F3 5E C8        vdivsd      xmm1,xmm1,xmm0
+  000000000000022A: C5 F3 58 D9        vaddsd      xmm3,xmm1,xmm1
+  000000000000022E: C4 E2 C1 B9 DA     vfmadd231sd xmm3,xmm7,xmm2
+  0000000000000233: C5 F8 28 7C 24 50  vmovaps     xmm7,xmmword ptr [rsp+50h]
+  0000000000000239: C5 DB 58 C4        vaddsd      xmm0,xmm4,xmm4
+  000000000000023D: C5 E3 58 C0        vaddsd      xmm0,xmm3,xmm0
+  0000000000000241: 48 83 C4 78        add         rsp,78h
+  0000000000000245: C3                 ret
+  0000000000000246: C5 F8 28 74 24 60  vmovaps     xmm6,xmmword ptr [rsp+60h]
+  000000000000024C: C5 F8 28 C4        vmovaps     xmm0,xmm4
+  0000000000000250: C4 E2 C1 AD 05 00  vfnmadd213sd xmm0,xmm7,mmword ptr [__real@3c91a62633145c07]
+                    00 00 00
+  0000000000000259: C5 F8 28 7C 24 50  vmovaps     xmm7,xmmword ptr [rsp+50h]
+  000000000000025F: C5 DB 5C C8        vsubsd      xmm1,xmm4,xmm0
+  0000000000000263: C5 FB 10 05 00 00  vmovsd      xmm0,qword ptr [__real@3ff921fb54442d18]
+                    00 00
+  000000000000026B: C5 FB 5C C1        vsubsd      xmm0,xmm0,xmm1
+  000000000000026F: 48 83 C4 78        add         rsp,78h
+  0000000000000273: C3                 ret
+
+raise_fpsw_flags:
+  0000000000000000: 44 8B C9           mov         r9d,ecx
+  0000000000000003: 8B D1              mov         edx,ecx
+  0000000000000005: 83 E2 01           and         edx,1
+  0000000000000008: C1 E2 03           shl         edx,3
+  000000000000000B: 44 8B C2           mov         r8d,edx
+  000000000000000E: 41 83 C8 10        or          r8d,10h
+  0000000000000012: F6 C1 02           test        cl,2
+  0000000000000015: 44 0F 44 C2        cmove       r8d,edx
+  0000000000000019: 41 8B C8           mov         ecx,r8d
+  000000000000001C: 83 C9 04           or          ecx,4
+  000000000000001F: 41 F6 C1 04        test        r9b,4
+  0000000000000023: 41 0F 44 C8        cmove       ecx,r8d
+  0000000000000027: 8B D1              mov         edx,ecx
+  0000000000000029: 83 CA 01           or          edx,1
+  000000000000002C: 41 F6 C1 08        test        r9b,8
+  0000000000000030: 0F 44 D1           cmove       edx,ecx
+  0000000000000033: 8B CA              mov         ecx,edx
+  0000000000000035: 83 C9 20           or          ecx,20h
+  0000000000000038: 41 F6 C1 10        test        r9b,10h
+  000000000000003C: 0F 44 CA           cmove       ecx,edx
+  000000000000003F: E9 00 00 00 00     jmp         _set_statfp
+
+val_with_flags:
+  0000000000000000: 48 83 EC 38        sub         rsp,38h
+  0000000000000004: 44 8B CA           mov         r9d,edx
+  0000000000000007: C5 F8 29 74 24 20  vmovaps     xmmword ptr [rsp+20h],xmm6
+  000000000000000D: 8B CA              mov         ecx,edx
+  000000000000000F: 83 E1 01           and         ecx,1
+  0000000000000012: C1 E1 03           shl         ecx,3
+  0000000000000015: 44 8B C1           mov         r8d,ecx
+  0000000000000018: 41 83 C8 10        or          r8d,10h
+  000000000000001C: F6 C2 02           test        dl,2
+  000000000000001F: C5 F8 28 F0        vmovaps     xmm6,xmm0
+  0000000000000023: 44 0F 44 C1        cmove       r8d,ecx
+  0000000000000027: 41 8B C8           mov         ecx,r8d
+  000000000000002A: 83 C9 04           or          ecx,4
+  000000000000002D: F6 C2 04           test        dl,4
+  0000000000000030: 41 0F 44 C8        cmove       ecx,r8d
+  0000000000000034: 8B D1              mov         edx,ecx
+  0000000000000036: 83 CA 01           or          edx,1
+  0000000000000039: 41 F6 C1 08        test        r9b,8
+  000000000000003D: 0F 44 D1           cmove       edx,ecx
+  0000000000000040: 8B CA              mov         ecx,edx
+  0000000000000042: 83 C9 20           or          ecx,20h
+  0000000000000045: 41 F6 C1 10        test        r9b,10h
+  0000000000000049: 0F 44 CA           cmove       ecx,edx
+  000000000000004C: E8 00 00 00 00     call        _set_statfp
+  0000000000000051: C5 F8 28 C6        vmovaps     xmm0,xmm6
+  0000000000000055: C5 F8 28 74 24 20  vmovaps     xmm6,xmmword ptr [rsp+20h]
+  000000000000005B: 48 83 C4 38        add         rsp,38h
+  000000000000005F: C3                 ret
+
+  Summary
+
+         1A8 .chks64
+        128C .debug$S
+        2004 .debug$T
+           3 .drectve
+          6C .pdata
+          BD .rdata
+         58C .text$mn
+          AC .xdata

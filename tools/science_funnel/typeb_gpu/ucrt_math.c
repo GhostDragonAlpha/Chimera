@@ -14,9 +14,17 @@
 #include <string.h>
 #include "ucrt_math_tables.h"
 
+/* UCRT_API: host-plain by default; the device gate includes this file with
+   UCRT_MATH_DEVICE defined to compile the same functions for CUDA. */
+#ifdef UCRT_MATH_DEVICE
+#define UCRT_API static __device__
+#else
+#define UCRT_API
+#endif
+
 typedef union { uint64_t u; double d; } ubits;
-static inline uint64_t b_of(double x) { ubits b; b.d = x; return b.u; }
-static inline double d_of(uint64_t u) { ubits b; b.u = u; return b.d; }
+static __host__ __device__ inline uint64_t b_of(double x) { ubits b; b.d = x; return b.u; }
+static __host__ __device__ inline double d_of(uint64_t u) { ubits b; b.u = u; return b.d; }
 
 #define U_PI_4        0x3FE921FB54442D18ULL
 #define U_2NEG13      0x3F20000000000000ULL
@@ -42,10 +50,10 @@ static inline double d_of(uint64_t u) { ubits b; b.u = u; return b.d; }
 #define C_XC3      0x397B839A252049C0ULL
 #define C_SIGMA    0x4338000000000000ULL
 
-static inline double fmsub(double a, double b, double c) { return -fma(-a, b, c); }
+static __host__ __device__ inline double fmsub(double a, double b, double c) { return -fma(-a, b, c); }
 
 /* 64x64 -> 128 multiply (MSVC x64 has no __int128) */
-static void mul64(uint64_t a, uint64_t b, uint64_t *lo, uint64_t *hi) {
+static __host__ __device__ void mul64(uint64_t a, uint64_t b, uint64_t *lo, uint64_t *hi) {
     uint64_t a0 = a & 0xFFFFFFFFULL, a1 = a >> 32;
     uint64_t b0 = b & 0xFFFFFFFFULL, b1 = b >> 32;
     uint64_t p00 = a0 * b0, p01 = a0 * b1, p10 = a1 * b0, p11 = a1 * b1;
@@ -55,7 +63,7 @@ static void mul64(uint64_t a, uint64_t b, uint64_t *lo, uint64_t *hi) {
 }
 
 /* ── __remainder_piby2_fma3_bdl  (2e7 > |x| >= pi/4) ────────────────────── */
-static void u_rem_bdl(double x, double *r_out, double *rt_out, int *n_out) {
+static __host__ __device__ void u_rem_bdl(double x, double *r_out, double *rt_out, int *n_out) {
     const double twobypi = d_of(U_L2BYPY);
     const double sigma = d_of(C_SIGMA);
     const double xc1 = d_of(C_XC1), xc2 = d_of(C_XC2), xc3 = d_of(C_XC3);
@@ -75,7 +83,7 @@ static void u_rem_bdl(double x, double *r_out, double *rt_out, int *n_out) {
 }
 
 /* ── __remainder_piby2_fma3  (|x| >= 2e7) ───────────────────────────────── */
-static void u_rem_gen(double x, double *r_out, double *rt_out, int *n_out) {
+static __host__ __device__ void u_rem_gen(double x, double *r_out, double *rt_out, int *n_out) {
     uint64_t xb = b_of(x);
     int64_t e = (int64_t)(xb >> 52) - 1023;
     uint64_t m = (xb << 12) >> 12;
@@ -162,7 +170,7 @@ static void u_rem_gen(double x, double *r_out, double *rt_out, int *n_out) {
 }
 
 /* ── sin (sin_mt.obj, Lsin_fma3) ────────────────────────────────────────── */
-double ucrt_sin(double x) {
+UCRT_API double ucrt_sin(double x) {
     uint64_t ux = b_of(x);
     uint64_t axb = ux & U_ABS_MASK;
     double ax = d_of(axb);
@@ -226,7 +234,7 @@ double ucrt_sin(double x) {
 }
 
 /* ── cos (cos_mt.obj, L_cos_fma3) ───────────────────────────────────────── */
-double ucrt_cos(double x) {
+UCRT_API double ucrt_cos(double x) {
     uint64_t ux = b_of(x);
     uint64_t axb = ux & U_ABS_MASK;
     double ax = d_of(axb);
@@ -296,7 +304,7 @@ double ucrt_cos(double x) {
 }
 
 /* ── hypot (hypot_mt.obj, _hypot) ───────────────────────────────────────── */
-double ucrt_hypot(double x, double y) {
+UCRT_API double ucrt_hypot(double x, double y) {
     uint64_t xb = b_of(x) & U_ABS_MASK;       /* r8  = |x| bits */
     uint64_t yb = b_of(y) & U_ABS_MASK;       /* rdx = |y| bits */
     uint64_t xe = xb >> 52, ye = yb >> 52;
@@ -351,7 +359,7 @@ double ucrt_hypot(double x, double y) {
 }
 
 /* ── acos (acos_fma.obj) ────────────────────────────────────────────────── */
-double ucrt_acos(double x) {
+UCRT_API double ucrt_acos(double x) {
     uint64_t ux = b_of(x);
     uint64_t axb = ux & 0x7FFFFFFFFFFFFFFFULL;
     uint64_t xe = (ux >> 52) & 0x7FF;
@@ -422,7 +430,7 @@ double ucrt_acos(double x) {
 }
 
 /* ── atan2 (atan2_fma.obj) ──────────────────────────────────────────────── */
-static void u_atan_ratio(double big, double sml, int flip,
+static __host__ __device__ void u_atan_ratio(double big, double sml, int flip,
                          uint64_t xb_raw, uint64_t yb_raw,
                          double *base_out, double *val_out) {
     /* returns (base, val): result = base + val with the sign/quad fixups
@@ -517,7 +525,7 @@ static void u_atan_ratio(double big, double sml, int flip,
     *val_out = val;
 }
 
-double ucrt_atan2(double y, double x) {
+UCRT_API double ucrt_atan2(double y, double x) {
     uint64_t yb_raw = b_of(y), xb_raw = b_of(x);
     uint64_t xabs = xb_raw & U_ABS_MASK, yabs = yb_raw & U_ABS_MASK;
     uint64_t xexp = xabs >> 52, yexp = yabs >> 52;

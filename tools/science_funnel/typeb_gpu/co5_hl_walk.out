@@ -1,0 +1,19 @@
+reset: q4=0.386076555 rc_uninit
+tick   1: y=0.386031730 vx=0.740705 rc=0 adv=1 refused=0 ticks=1
+tick   2: y=0.385892908 vx=0.728124 rc=0 adv=1 refused=0 ticks=2
+tick   3: y=0.385656003 vx=0.719288 rc=0 adv=1 refused=0 ticks=3
+tick   4: y=0.385324230 vx=0.713319 rc=0 adv=1 refused=0 ticks=4
+tick   5: y=0.384907029 vx=0.705764 rc=0 adv=1 refused=0 ticks=5
+tick   6: y=0.384399721 vx=0.699998 rc=0 adv=1 refused=0 ticks=6
+tick   7: y=0.383802662 vx=0.696064 rc=0 adv=1 refused=0 ticks=7
+tick   8: y=0.383117978 vx=0.693893 rc=0 adv=3 refused=0 ticks=8
+tick   9: y=0.382349101 vx=0.688303 rc=0 adv=1 refused=0 ticks=9
+tick  10: y=0.381494574 vx=0.685058 rc=0 adv=1 refused=0 ticks=10
+tick  11: y=0.380556946 vx=0.682009 rc=0 adv=1 refused=0 ticks=11
+tick  12: y=0.379537410 vx=0.677596 rc=0 adv=3 refused=0 ticks=12
+tick  20: y=0.368509773 vx=0.680669 rc=0 adv=5 refused=0 ticks=20
+tick  40: y=0.320852569 vx=0.778293 rc=0 adv=1 refused=0 ticks=40
+tick  60: y=0.283757816 vx=0.607142 rc=0 adv=7 refused=0 ticks=60
+tick  80: y=0.254411595 vx=0.602697 rc=0 adv=7 refused=0 ticks=80
+tick 100: y=0.216305197 vx=0.653647 rc=0 adv=3 refused=0 ticks=100
+EXIT=0

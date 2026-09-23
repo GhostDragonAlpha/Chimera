@@ -1,0 +1,7 @@
+cases: 55517
+  sin   6421/6421
+  cos   6421/6421
+  atan2 40425/40425
+  acos  1025/1025
+  hypot 1225/1225
+ON-DEVICE GATE: 55517/55517 bit-identical -- PASS
