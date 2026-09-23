@@ -2627,7 +2627,7 @@ class GaitWalker {
   //    so each drive's positive substep work fits ITS store.
   Dense impulse_torque(n_,0.);
   adv_calls_=0;
-  g_advdbg=(ticks_==41); // CLOSEOUT-4 advance-trace drill window (the diverging tick)
+  g_advdbg=(ticks_==60); // CLOSEOUT-4 advance-trace drill window (the diverging tick)
   // Planted-strut saturation census (wave 12): once per tick, on the
   // tick-start state -- did the body walk the shoulder outside the chain's
   // reachable annulus? Counted, reported in status; never hidden.

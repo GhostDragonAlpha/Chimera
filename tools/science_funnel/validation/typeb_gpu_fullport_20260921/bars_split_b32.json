@@ -158,30 +158,30 @@
   "pass_100": 0,
   "median": 40.0,
   "pass": false,
-  "wall_s": 198.92373660000158
+  "wall_s": 173.70933819999482
  },
  "throughput": [
   {
    "batch": 1024,
-   "median_s": 0.005757400002039503,
-   "env_steps_per_s": 53357418.26018296,
-   "ms_per_tick": 0.019191333340131678,
+   "median_s": 0.004669199995987583,
+   "env_steps_per_s": 65792855.363657236,
+   "ms_per_tick": 0.015563999986625277,
    "refused": 1024,
    "collapsed": 0
   },
   {
    "batch": 4096,
-   "median_s": 0.0053979000003892,
-   "env_steps_per_s": 227644083.79395708,
-   "ms_per_tick": 0.017993000001297332,
+   "median_s": 0.004767999998875894,
+   "env_steps_per_s": 257718120.8661289,
+   "ms_per_tick": 0.015893333329586312,
    "refused": 4096,
    "collapsed": 0
   }
  ],
  "throughput_pass_1024": true,
  "memory": {
-  "free_gb": 1.512046592,
-  "used_gb": 23.799529472,
-  "marginal_mb_per_env": 0.000512
+  "free_gb": 1.6252928,
+  "used_gb": 23.686283264,
+  "marginal_mb_per_env": -0.000512
  }
 }

@@ -3325,7 +3325,7 @@ def fore_ik_at(mdl, cst, fr, leg, paw, branch, mdi, csti):
 
     dy = fr[off + 1] * rx + fr[off + 5] * ry + fr[off + 9] * rz - ml1
 
-    D = math.sqrt(dx * dx + dy * dy)
+    D = math.hypot(dx, dy)  # C++ std::hypot(dx,dy) (fore_ik_at)
 
     dmax = cst[CF_fore_L1] + cst[CF_fore_rho]
 
@@ -3397,7 +3397,7 @@ def fore_D_at(mdl, cst, fr, leg, paw, csti):
 
     dy = fr[off + 1] * rx + fr[off + 5] * ry + fr[off + 9] * rz - ml1
 
-    return math.sqrt(dx * dx + dy * dy)
+    return math.hypot(dx, dy)  # C++ std::hypot (fore_D_at)
 
 
 
@@ -3423,7 +3423,7 @@ def hind_ik_at(mdl, cst, fr, tgt, ap, branch, csti):
 
     wy = dy - cst[CF_hind_xm] * math.sin(ap)
 
-    D = math.sqrt(wx * wx + wy * wy)
+    D = math.hypot(wx, wy)  # C++ std::hypot (hind_ik_at)
 
     dmax = cst[CF_hind_L1] + cst[CF_hind_L2]
 
@@ -4457,9 +4457,9 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
             qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti)
 
-            e0 = math.sqrt((qa1 - q[c1]) * (qa1 - q[c1]) + (qa2 - q[c2]) * (qa2 - q[c2]))
+            e0 = math.hypot(qa1 - q[c1], qa2 - q[c2])
 
-            e1 = math.sqrt((qb1 - q[c1]) * (qb1 - q[c1]) + (qb2 - q[c2]) * (qb2 - q[c2]))
+            e1 = math.hypot(qb1 - q[c1], qb2 - q[c2])
 
             ikb[leg] = 1
 
@@ -4794,7 +4794,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     dsy = seat[1] - paw_t[leg * 3 + 1]
 
-                    if math.sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]:
+                    if math.hypot(dsx, dsy) < cst[CF_k_touch]:
 
                         act = 1
 
@@ -4823,7 +4823,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                         dsy = seat[1] - paw_t[leg * 3 + 1]
 
-                        if math.sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]:
+                        if math.hypot(dsx, dsy) < cst[CF_k_touch]:
 
                             act = 3
 
@@ -4977,9 +4977,9 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                     qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti)
 
-                    e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]))
+                    e0 = math.hypot(qa1 - q[cc1], qa2 - q[cc2])
 
-                    e1 = math.sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]))
+                    e1 = math.hypot(qb1 - q[cc1], qb2 - q[cc2])
 
                     ikb[leg] = 1
 
@@ -5041,9 +5041,9 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                 qb1, qb2, qb1r, qb2r, satb = fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti)
 
-                e0 = math.sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]))
+                e0 = math.hypot(qa1 - q[cc1], qa2 - q[cc2])
 
-                e1 = math.sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]))
+                e1 = math.hypot(qb1 - q[cc1], qb2 - q[cc2])
 
                 ikb[leg] = 1
 
@@ -5831,7 +5831,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                             svz = svz + ptJ[(r * 3 + 2) * 18 + i] * v[i]
 
-                        sl = math.sqrt(svx * svx + svz * svz)
+                        sl = math.hypot(svx, svz)
 
                         if sl > slip_mx:
 
@@ -5879,7 +5879,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
 
                             ez = chz[j] - chz[i]
 
-                            nl = math.sqrt(ex * ex + ez * ez)
+                            nl = math.hypot(ex, ez)
 
                             if nl >= float(1e-12):
 

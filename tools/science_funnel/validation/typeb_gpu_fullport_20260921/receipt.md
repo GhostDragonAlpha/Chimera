@@ -691,3 +691,117 @@ so the fdlibm fallback is only lawful IF a bit-for-bit probe proves fdlibm ==
 UCRT at all 125 points before committing the port. That proof was NOT completed
 this session; no kernel transcendental was replaced. The GPU walk residual
 therefore remains the measured 1-ulp class, not a new defect.
+
+# CLOSEOUT-5 APPENDIX — the tick-42 segfault root-caused as an mdi/csti swap; host bit-exact through 60 aligned walk states; Target-B routes (1) measured and (2) fully mapped (2026-09-23, agent GLM 5.3)
+
+## TARGET A — the tick-42 segfault: CAUSE NAMED AND FIXED
+
+- ROOT CAUSE (NOT the interval stack): walker_numba_split.py defined
+  `fore_follow(mdl, cst, fr, leg, paw_t, branch, mdi, csti, result)` but BOTH
+  call sites (4791, 4820) passed `(csti, mdi)`. Inside fore_follow the entire
+  fore-follow chain (fore_target_headroom -> fore_ik_at) then read
+  `c1 = mdi[OI_fore_coord + leg*2]` from `csti + 204` — 184 ints past the
+  20-int csti array — and clamped q1/q2 against garbage bounds. cdb (committed
+  co5_crash_cdb.txt): access violation c0000005 at `fore_ik_at+0x274`,
+  `movsd xmm0,[rbp+rbx*8+14E0h]` = `mdl[OF_lower(668)+garbage]`,
+  rbx=0xffffffffedd1b8ae; stack fore_ik_at <- fore_target_headroom+0x83 <-
+  fore_follow+0x148 <- tick_plan_kernel. Same defect, two faces: the
+  instrumented build read a huge garbage int and SEGFAULTED (exit 139 right
+  after the n=112 plain-end evt print); the plain build read a benign garbage
+  int and produced the old v9 -31.77-vs--22.20 tick-42 divergence. The C++
+  reference reads member tables directly (no tables to swap); the Warp
+  original carries them in typed structs — the swap was introduced by the
+  numba translation's table threading. FIXED at both call sites; the
+  walker_kernels.cuh + probe_kernels.cuh regenerated (numba2cu v4 +
+  probe_inject).
+- The prior lane's interval-stack enlargement 16->64 without clearing is
+  CONFIRMED REAL (the four clear loops still clear 16 slots) but measured
+  BENIGN: sq is dead scratch (written, never read), and the sh/sdep/scl pops
+  only touch slots below sp, with sp <= depth <= 58 < 64. Left untouched.
+- MEASURED EXTENT AFTER THE FIX: plain walk runs past tick 100 (old: refused
+  rc=3 at tick 48); drill runs to tick 100 exit 0 (old: exit 139 at the
+  tick-42 boundary); HOST-VS-C++ BIT-EXACT AT 60 CONSECUTIVE ALIGNED WALK
+  STATES (host ticks 1..60 == cpp ticks 0..59; closeout-4: 41) against a
+  fresh 120-tick cl reference walk (cpu_probe CP_FULL, committed
+  cp_walk120.txt / hl_walk60.txt).
+
+## THE NEXT NAMED DEFECT (tick 61, pair 9 class: silent plan-phase fore-left)
+
+The drill window was moved 41 -> 60 (probe_inject.py + gait_controller_instr.hpp).
+At cpp tick 60 the ENTIRE advance interior is again line-identical (604/604
+drill lines through FST n=9 and the first ADV), but the FIRST rate checkpoint
+already differs: `RT n=0 FRHS` components 14/15 (the fore-left shoulder/elbow
+drives) — K -0.035969703327963329 vs C -0.035969703327966049 and
+K 0.8387826210296021 vs C 0.83878262102960255 (~390 ulps at rhs[14]) — i.e.
+tau[14]/tau[15] reach rate() already divergent: a SILENT difference in the
+plan-phase fore-left follow pipeline (capture/seat/PD target), upstream of
+every instrumented site. PAIR 9 (13 sqrt-vs-hypot sites fixed to the
+reference's std::hypot: fore_ik_at, fore_D_at, hind_ik_at, the 6 branch-choice
+err sites, the 2 seat-touch checks, the slip and chain-normalization sites —
+walker_numba_split.py now uses math.hypot everywhere the reference uses
+std::hypot) did NOT move this divergence (measured: same values before/after),
+so the ulp source is elsewhere in the fore-left pipeline — the next drill
+needs a SEAT/PD-target checkpoint section in probe_inject + instr hpp.
+
+## TARGET B — route (1) MEASURED AND FAILED ITS GATE; route (2) FULLY MAPPED
+
+- ROUTE (1), the preregistered fdlibm probe: ported netlib fdlibm
+  (s_sin/s_cos/e_atan2/e_acos/e_hypot/e_rem_pio2/k_rem_pio2/k_sin/k_cos,
+  /D__LITTLE_ENDIAN word order, __ieee754_sqrt -> the correctly-rounded CRT
+  sqrt) into a host probe (trig_fdlibm.cxx; fdlibm_ref/ committed) and
+  bit-compared against trig_host.txt at the trig_probe's 125 points:
+  115/125 IDENTICAL, 10/125 differ ALWAYS EXACTLY 1 ULP (SIN 2, COS 1,
+  ATAN2 4, ACOS 0, HYPOT 3). The 125/125 adoption gate does NOT pass: UCRT
+  is not fdlibm. No kernel transcendental was replaced on this route.
+- ROUTE (2), the UCRT algorithm identification — COMPLETE at the structure
+  and constants level, per the standing order's "the DLL on disk is the
+  ground truth": the reference links the STATIC UCRT (libucrt.lib), and its
+  actual math objects were extracted from disk (extract_ucrt_math*.ps1,
+  ucrt_objs/): sin.obj, cos.obj, atan2.obj, acos.obj, hypot.obj (SSE2 + FMA3
+  variants), lsincos_array.obj (the polynomials), rempiby2_fma3.obj (the
+  reduction). MEASURED ON THIS MACHINE: __isa_available=5 (AVX512),
+  __use_fma3_lib=3 -> THE LIVE PATH IS THE FMA3 VARIANT.
+- IDENTIFIED STRUCTURE (from the committed disasms + .rdata): sin entry
+  dispatches on __use_fma3_lib; |x|<2^-27 returns x*(1-|x|^2/6-ish);
+  2^-27<=|x|<pi/4 runs a degree-13-ish odd polynomial via a 6-step vfmadd
+  Horner chain; |x|>=pi/4 calls __remainder_piby2_fma3(_bdl) (exact pi/2 as
+  lead+3 parts: 0x3ff921fb50000000 / 0x3e5110b460000000 /
+  0x3c91a62633145c06, plus the extended piby2_1/1tail/2/2tail/3/3tail chain
+  and the round-to-nearest sigma 6755399441055744.0), then sin/cos
+  polynomials selected by n parity with sign fixups.
+  THE UCRT POLYNOMIALS (lsincos_array.obj, exactly):
+    sin: -1.6666666666666666e-0/1 = 0xbfc5555555555555, S2 0x3f81111111110bb3,
+    S3 0xbf2a01a019e83e5c, S4 0x3ec71de3796cde01, S5 0xbe5ae600b42fdfa7,
+    S6 0x3de5e0b2f9a43bb8  (fdlibm-ADJACENT but different low bits — that is
+    the measured 1-ulp class);
+    cos: C1 0x3fa5555555555555, C2 0xbf56c16c16c16967, C3 0x3efa01a019f4ec91,
+    C4 0xbe927e4fa17f667b, C5 0x3e21eeb690382eec, C6 0xbda907db47258aa7.
+- WHAT REMAINS FOR THE NEXT LANE (precisely scoped): (a) write the C/fma
+  reconstruction of the FMA3 sin from the committed disasms
+  (ucrt_objs/*.disasm regenerable by the committed scripts), verify
+  bit-exact vs the CRT at the 125 points + dense random sweeps; (b) repeat
+  for cos (same machinery), then atan2/acos/hypot (own objects, same drill);
+  (c) port into the kernels with EXPLICIT fma() in the vfmadd order (CUDA
+  fma() stays a real fused op under -fmad=false); (d) the gate: the
+  on-device trig_probe re-run matches the CRT bits at every point.
+- NO ASSUMED EQUIVALENCE was used anywhere: the fdlibm adoption failed its
+  probe and was not adopted; the UCRT port has not been written yet, so no
+  kernel transcendental changed in this session. The GPU's measured
+  31/125 1-ulp libdevice-vs-CRT class therefore still stands.
+
+## FROZEN BARS RE-RUN (walker_env.dll rebuilt 01:34 from the pair-9-fixed
+## kernels, nvcc -fmad=false, block 32; thresholds untouched)
+
+| bar | value | threshold | verdict | closeout-4 |
+|---|---|---|---|---|
+| freefall g | 9.806650000000689 err 6.89e-13 | <=0.01 | GREEN | GREEN |
+| stand scaled diff | 9.5112e-01 | <=1e-2 | RED | 0.9511 |
+| C1 nominal class | horizon 40 class 5 hind=0 fore=0 | fire by 150 | RED | same |
+| C2 survival | 0/64 median 40.0 classes {5:…,3:…} | >=0.8 pass-100 | RED | 0/64 median 40.0 |
+| C3 throughput | 65.79M eps b1024 / 257.7M eps b4096 (0.016 ms/tick) — dead-env dispatch (all 1024/4096 envs refused), NOT clean-comparable | >=968M b1024 | RED | 53.4M/227.6M |
+| C4 memory | no fire; 23.69 GB used (1.63 GB free), marginal -0.0005 MB/env | ceiling | GREEN | no fire |
+
+The bars are UNCHANGED in verdict and value at three decimals where
+comparable: the discrete knife edges the bars ride fire at ticks 40-41,
+BEFORE the host's new bit-exact frontier (60), and the GPU still carries the
+measured 31/125 transcendental class. No threshold touched; nothing re-tuned.

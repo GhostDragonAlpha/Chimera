@@ -1,0 +1,384 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35228.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file sin_mt.obj
+
+File Type: COFF OBJECT
+
+sin:
+  0000000000000000: 48 83 EC 78        sub         rsp,78h
+  0000000000000004: 83 3D 00 00 00 00  cmp         dword ptr [__use_fma3_lib],0
+                    00
+  000000000000000B: 0F 85 4F 03 00 00  jne         Lsin_fma3
+Lsin_sse2:
+  0000000000000011: 66 48 0F 7E C2     movq        rdx,xmm0
+  0000000000000016: 66 0F 57 D2        xorpd       xmm2,xmm2
+  000000000000001A: 4C 8B D2           mov         r10,rdx
+  000000000000001D: 41 B8 01 00 00 00  mov         r8d,1
+  0000000000000023: 49 0F BA F2 3F     btr         r10,3Fh
+  0000000000000028: 4C 3B 15 00 00 00  cmp         r10,qword ptr [L_piby4]
+                    00
+  000000000000002F: 0F 82 4B 02 00 00  jb          Lsin_sse2_absx_lt_piby4
+Lsin_sse2_absx_nlt_piby4:
+  0000000000000035: 4C 8B DA           mov         r11,rdx
+  0000000000000038: 49 C1 EB 3F        shr         r11,3Fh
+  000000000000003C: 66 49 0F 6E C2     movq        xmm0,r10
+  0000000000000041: 4C 3B 15 00 00 00  cmp         r10,qword ptr [L_small_arg_cw]
+                    00
+  0000000000000048: 0F 83 D2 02 00 00  jae         Lsin_reduce_precise
+  000000000000004E: 66 0F 28 D0        movapd      xmm2,xmm0
+  0000000000000052: F2 0F 59 15 00 00  mulsd       xmm2,mmword ptr [L_2_by_pi]
+                    00 00
+  000000000000005A: 66 0F 28 E0        movapd      xmm4,xmm0
+  000000000000005E: 4D 8B CA           mov         r9,r10
+  0000000000000061: 49 C1 E9 34        shr         r9,34h
+  0000000000000065: F2 0F 58 15 00 00  addsd       xmm2,mmword ptr [L_one_half]
+                    00 00
+  000000000000006D: F2 0F 10 1D 00 00  movsd       xmm3,mmword ptr [L_real_piby2_1]
+                    00 00
+  0000000000000075: 66 0F E6 C2        cvttpd2dq   xmm0,xmm2
+  0000000000000079: F2 0F 10 0D 00 00  movsd       xmm1,mmword ptr [L_real_piby2_1tail]
+                    00 00
+  0000000000000081: F3 0F E6 D0        cvtdq2pd    xmm2,xmm0
+  0000000000000085: F2 0F 59 DA        mulsd       xmm3,xmm2
+  0000000000000089: F2 0F 5C E3        subsd       xmm4,xmm3
+  000000000000008D: F2 0F 59 CA        mulsd       xmm1,xmm2
+  0000000000000091: 66 0F 7E C0        movd        eax,xmm0
+  0000000000000095: 66 0F 28 C4        movapd      xmm0,xmm4
+  0000000000000099: F2 0F 5C C1        subsd       xmm0,xmm1
+  000000000000009D: F2 0F 10 1D 00 00  movsd       xmm3,mmword ptr [L_real_piby2_2]
+                    00 00
+  00000000000000A5: 66 48 0F 7E C1     movq        rcx,xmm0
+  00000000000000AA: F2 0F 10 2D 00 00  movsd       xmm5,mmword ptr [L_real_piby2_2tail]
+                    00 00
+  00000000000000B2: 48 D1 E1           shl         rcx,1
+  00000000000000B5: 48 C1 E9 35        shr         rcx,35h
+  00000000000000B9: 4C 2B C9           sub         r9,rcx
+  00000000000000BC: 49 83 F9 0F        cmp         r9,0Fh
+  00000000000000C0: 7E 28              jle         Lsin_sse2_cw_reduction_done
+  00000000000000C2: 66 0F 28 CC        movapd      xmm1,xmm4
+  00000000000000C6: F2 0F 59 DA        mulsd       xmm3,xmm2
+  00000000000000CA: F2 0F 59 EA        mulsd       xmm5,xmm2
+  00000000000000CE: F2 0F 5C E3        subsd       xmm4,xmm3
+  00000000000000D2: F2 0F 5C CC        subsd       xmm1,xmm4
+  00000000000000D6: F2 0F 5C CB        subsd       xmm1,xmm3
+  00000000000000DA: F2 0F 5C E9        subsd       xmm5,xmm1
+  00000000000000DE: 66 0F 28 C4        movapd      xmm0,xmm4
+  00000000000000E2: 66 0F 28 CD        movapd      xmm1,xmm5
+  00000000000000E6: F2 0F 5C C5        subsd       xmm0,xmm5
+Lsin_sse2_cw_reduction_done:
+  00000000000000EA: F2 0F 5C E0        subsd       xmm4,xmm0
+  00000000000000EE: F2 0F 5C E1        subsd       xmm4,xmm1
+Lsin_piby4:
+  00000000000000F2: 66 0F 28 D8        movapd      xmm3,xmm0
+  00000000000000F6: 66 0F 28 D0        movapd      xmm2,xmm0
+  00000000000000FA: F2 0F 59 D0        mulsd       xmm2,xmm0
+  00000000000000FE: 0F BA E0 00        bt          eax,0
+  0000000000000102: 0F 82 98 00 00 00  jb          Lsin_sse2_calc_cos
+  0000000000000108: F2 0F 10 1D 50 00  movsd       xmm3,mmword ptr [__Lsinarray+50h]
+                    00 00
+  0000000000000110: F2 0F 59 DA        mulsd       xmm3,xmm2
+  0000000000000114: F2 0F 10 2D 20 00  movsd       xmm5,mmword ptr [__Lsinarray+20h]
+                    00 00
+  000000000000011C: F2 0F 11 64 24 30  movsd       mmword ptr [rsp+30h],xmm4
+  0000000000000122: 66 0F 28 CA        movapd      xmm1,xmm2
+  0000000000000126: F2 0F 59 CA        mulsd       xmm1,xmm2
+  000000000000012A: F2 0F 11 44 24 40  movsd       mmword ptr [rsp+40h],xmm0
+  0000000000000130: F2 0F 59 EA        mulsd       xmm5,xmm2
+  0000000000000134: 66 0F 28 E0        movapd      xmm4,xmm0
+  0000000000000138: F2 0F 58 1D 40 00  addsd       xmm3,mmword ptr [__Lsinarray+40h]
+                    00 00
+  0000000000000140: F2 0F 59 CA        mulsd       xmm1,xmm2
+  0000000000000144: F2 0F 59 DA        mulsd       xmm3,xmm2
+  0000000000000148: F2 0F 59 E2        mulsd       xmm4,xmm2
+  000000000000014C: F2 0F 58 2D 10 00  addsd       xmm5,mmword ptr [__Lsinarray+10h]
+                    00 00
+  0000000000000154: F2 0F 59 EA        mulsd       xmm5,xmm2
+  0000000000000158: F2 0F 58 1D 30 00  addsd       xmm3,mmword ptr [__Lsinarray+30h]
+                    00 00
+  0000000000000160: F2 0F 59 15 00 00  mulsd       xmm2,mmword ptr [L_one_half]
+                    00 00
+  0000000000000168: F2 0F 10 44 24 30  movsd       xmm0,mmword ptr [rsp+30h]
+  000000000000016E: F2 0F 59 D9        mulsd       xmm3,xmm1
+  0000000000000172: F2 0F 58 2D 00 00  addsd       xmm5,mmword ptr [__Lsinarray]
+                    00 00
+  000000000000017A: F2 0F 59 D0        mulsd       xmm2,xmm0
+  000000000000017E: F2 0F 58 DD        addsd       xmm3,xmm5
+  0000000000000182: F2 0F 59 E3        mulsd       xmm4,xmm3
+  0000000000000186: F2 0F 5C E2        subsd       xmm4,xmm2
+  000000000000018A: F2 0F 58 C4        addsd       xmm0,xmm4
+  000000000000018E: F2 0F 58 44 24 40  addsd       xmm0,mmword ptr [rsp+40h]
+  0000000000000194: E9 AF 00 00 00     jmp         Lsin_sse2_adjust_region
+  0000000000000199: 0F 1F 80 00 00 00  nop         dword ptr [rax]
+                    00
+Lsin_sse2_calc_cos:
+  00000000000001A0: F2 0F 59 E0        mulsd       xmm4,xmm0
+  00000000000001A4: F2 0F 10 2D 00 00  movsd       xmm5,mmword ptr [L_one_half]
+                    00 00
+  00000000000001AC: F2 0F 10 0D 50 00  movsd       xmm1,mmword ptr [__Lcosarray+50h]
+                    00 00
+  00000000000001B4: F2 0F 10 05 20 00  movsd       xmm0,mmword ptr [__Lcosarray+20h]
+                    00 00
+  00000000000001BC: F2 0F 59 EA        mulsd       xmm5,xmm2
+  00000000000001C0: 66 0F 28 DA        movapd      xmm3,xmm2
+  00000000000001C4: F2 0F 11 64 24 30  movsd       mmword ptr [rsp+30h],xmm4
+  00000000000001CA: F2 0F 59 CA        mulsd       xmm1,xmm2
+  00000000000001CE: F2 0F 59 C2        mulsd       xmm0,xmm2
+  00000000000001D2: F2 0F 5C 2D 00 00  subsd       xmm5,mmword ptr [L_one]
+                    00 00
+  00000000000001DA: F2 0F 59 DA        mulsd       xmm3,xmm2
+  00000000000001DE: F2 0F 58 0D 40 00  addsd       xmm1,mmword ptr [__Lcosarray+40h]
+                    00 00
+  00000000000001E6: F2 0F 58 05 10 00  addsd       xmm0,mmword ptr [__Lcosarray+10h]
+                    00 00
+  00000000000001EE: F2 0F 58 2D 00 00  addsd       xmm5,mmword ptr [L_one]
+                    00 00
+  00000000000001F6: F2 0F 59 DA        mulsd       xmm3,xmm2
+  00000000000001FA: F2 0F 59 CA        mulsd       xmm1,xmm2
+  00000000000001FE: F2 0F 59 C2        mulsd       xmm0,xmm2
+  0000000000000202: 66 0F 28 E2        movapd      xmm4,xmm2
+  0000000000000206: F2 0F 59 25 00 00  mulsd       xmm4,mmword ptr [L_one_half]
+                    00 00
+  000000000000020E: F2 0F 58 0D 30 00  addsd       xmm1,mmword ptr [__Lcosarray+30h]
+                    00 00
+  0000000000000216: F2 0F 58 05 00 00  addsd       xmm0,mmword ptr [__Lcosarray]
+                    00 00
+  000000000000021E: F2 0F 59 D2        mulsd       xmm2,xmm2
+  0000000000000222: F2 0F 5C EC        subsd       xmm5,xmm4
+  0000000000000226: F2 0F 59 CB        mulsd       xmm1,xmm3
+  000000000000022A: F2 0F 58 C1        addsd       xmm0,xmm1
+  000000000000022E: F2 0F 5C 25 00 00  subsd       xmm4,mmword ptr [L_one]
+                    00 00
+  0000000000000236: F2 0F 5C 6C 24 30  subsd       xmm5,mmword ptr [rsp+30h]
+  000000000000023C: F2 0F 59 C2        mulsd       xmm0,xmm2
+  0000000000000240: F2 0F 58 C5        addsd       xmm0,xmm5
+  0000000000000244: F2 0F 5C C4        subsd       xmm0,xmm4
+Lsin_sse2_adjust_region:
+  0000000000000248: D1 E8              shr         eax,1
+  000000000000024A: 8B C8              mov         ecx,eax
+  000000000000024C: 41 23 C3           and         eax,r11d
+  000000000000024F: F7 D1              not         ecx
+  0000000000000251: 41 F7 D3           not         r11d
+  0000000000000254: 41 23 CB           and         ecx,r11d
+  0000000000000257: 0B C1              or          eax,ecx
+  0000000000000259: 83 E0 01           and         eax,1
+  000000000000025C: 75 12              jne         Lsin_sse2_cleanup
+  000000000000025E: 66 0F 28 D0        movapd      xmm2,xmm0
+  0000000000000262: 66 0F 57 C0        xorpd       xmm0,xmm0
+  0000000000000266: F2 0F 5C C2        subsd       xmm0,xmm2
+  000000000000026A: 66 0F 1F 44 00 00  nop         word ptr [rax+rax]
+Lsin_sse2_cleanup:
+  0000000000000270: 48 83 C4 78        add         rsp,78h
+  0000000000000274: C3                 ret
+  0000000000000275: 66 66 66 0F 1F 84  nop         word ptr [rax+rax]
+                    00 00 00 00 00
+Lsin_sse2_absx_lt_piby4:
+  0000000000000280: 4C 3B 15 00 00 00  cmp         r10,qword ptr [L_two_to_neg_27]
+                    00
+  0000000000000287: 7F 19              jg          Lsin_sse2_compute_sine_directly
+  0000000000000289: F2 0F 10 C8        movsd       xmm1,xmm0
+  000000000000028D: F2 0F 59 0D 00 00  mulsd       xmm1,mmword ptr [L_near_one]
+                    00 00
+  0000000000000295: F2 0F 58 0D 00 00  addsd       xmm1,mmword ptr [L_one]
+                    00 00
+  000000000000029D: 48 83 C4 78        add         rsp,78h
+  00000000000002A1: C3                 ret
+Lsin_sse2_compute_sine_directly:
+  00000000000002A2: 66 0F 28 D0        movapd      xmm2,xmm0
+  00000000000002A6: F2 0F 59 D0        mulsd       xmm2,xmm0
+  00000000000002AA: F2 0F 10 1D 50 00  movsd       xmm3,mmword ptr [__Lsinarray+50h]
+                    00 00
+  00000000000002B2: F2 0F 59 DA        mulsd       xmm3,xmm2
+  00000000000002B6: F2 0F 10 2D 20 00  movsd       xmm5,mmword ptr [__Lsinarray+20h]
+                    00 00
+  00000000000002BE: 66 0F 28 CA        movapd      xmm1,xmm2
+  00000000000002C2: F2 0F 59 CA        mulsd       xmm1,xmm2
+  00000000000002C6: F2 0F 59 EA        mulsd       xmm5,xmm2
+  00000000000002CA: 66 0F 28 E0        movapd      xmm4,xmm0
+  00000000000002CE: F2 0F 58 1D 40 00  addsd       xmm3,mmword ptr [__Lsinarray+40h]
+                    00 00
+  00000000000002D6: F2 0F 59 CA        mulsd       xmm1,xmm2
+  00000000000002DA: F2 0F 59 DA        mulsd       xmm3,xmm2
+  00000000000002DE: F2 0F 59 E2        mulsd       xmm4,xmm2
+  00000000000002E2: F2 0F 58 2D 10 00  addsd       xmm5,mmword ptr [__Lsinarray+10h]
+                    00 00
+  00000000000002EA: F2 0F 59 EA        mulsd       xmm5,xmm2
+  00000000000002EE: F2 0F 58 1D 30 00  addsd       xmm3,mmword ptr [__Lsinarray+30h]
+                    00 00
+  00000000000002F6: F2 0F 59 D9        mulsd       xmm3,xmm1
+  00000000000002FA: F2 0F 58 2D 00 00  addsd       xmm5,mmword ptr [__Lsinarray]
+                    00 00
+  0000000000000302: F2 0F 58 DD        addsd       xmm3,xmm5
+  0000000000000306: F2 0F 59 E3        mulsd       xmm4,xmm3
+  000000000000030A: F2 0F 58 C4        addsd       xmm0,xmm4
+  000000000000030E: E9 5D FF FF FF     jmp         Lsin_sse2_cleanup
+  0000000000000313: 66 66 66 66 66 0F  nop         word ptr [rax+rax]
+                    1F 84 00 00 00 00
+                    00
+Lsin_reduce_precise:
+  0000000000000320: 4C 3B 15 00 00 00  cmp         r10,qword ptr [L__inf_mask_64]
+                    00
+  0000000000000327: 73 27              jae         Lsin_x_naninf
+  0000000000000329: 4C 89 5C 24 30     mov         qword ptr [rsp+30h],r11
+  000000000000032E: E8 00 00 00 00     call        __remainder_piby2_forAsm
+  0000000000000333: 4C 8B 5C 24 30     mov         r11,qword ptr [rsp+30h]
+  0000000000000338: 66 0F 28 E1        movapd      xmm4,xmm1
+  000000000000033C: E9 B1 FD FF FF     jmp         Lsin_piby4
+  0000000000000341: 66 66 66 66 66 66  nop         word ptr [rax+rax]
+                    66 0F 1F 84 00 00
+                    00 00 00
+Lsin_x_naninf:
+  0000000000000350: 66 48 0F 6E C2     movq        xmm0,rdx
+  0000000000000355: E8 00 00 00 00     call        _sin_special
+  000000000000035A: 48 83 C4 78        add         rsp,78h
+  000000000000035E: C3                 ret
+  000000000000035F: 90                 nop
+Lsin_fma3:
+  0000000000000360: C4 C1 F9 7E C1     vmovq       r9,xmm0
+  0000000000000365: 4D 8B D1           mov         r10,r9
+  0000000000000368: 49 0F BA F1 3F     btr         r9,3Fh
+  000000000000036D: 4C 3B 0D 00 00 00  cmp         r9,qword ptr [L_piby4]
+                    00
+  0000000000000374: 0F 83 A6 00 00 00  jae         Lsin_fma3_absx_nlt_piby4
+  000000000000037A: 4C 3B 0D 00 00 00  cmp         r9,qword ptr [L_two_to_neg_13]
+                    00
+  0000000000000381: 7D 4D              jge         Lsin_fma3_calc_sin_for_absx_lt_piby4
+  0000000000000383: 4C 3B 0D 00 00 00  cmp         r9,qword ptr [L_two_to_neg_27]
+                    00
+  000000000000038A: 7D 24              jge         Lsin_fma3_compute_x_xxx_0_1666
+  000000000000038C: C5 FB 59 0D 00 00  vmulsd      xmm1,xmm0,mmword ptr [L_near_one]
+                    00 00
+  0000000000000394: C5 FB 58 0D 00 00  vaddsd      xmm1,xmm0,mmword ptr [L_one]
+                    00 00
+  000000000000039C: 48 83 C4 78        add         rsp,78h
+  00000000000003A0: C3                 ret
+  00000000000003A1: 66 66 66 66 66 66  nop         word ptr [rax+rax]
+                    66 0F 1F 84 00 00
+                    00 00 00
+Lsin_fma3_compute_x_xxx_0_1666:
+  00000000000003B0: C5 FB 59 C8        vmulsd      xmm1,xmm0,xmm0
+  00000000000003B4: C5 F3 59 C8        vmulsd      xmm1,xmm1,xmm0
+  00000000000003B8: C4 E2 F1 BD 05 00  vfnmadd231sd xmm0,xmm1,mmword ptr [L_one_sixth]
+                    00 00 00
+  00000000000003C1: 48 83 C4 78        add         rsp,78h
+  00000000000003C5: C3                 ret
+  00000000000003C6: 66 66 0F 1F 84 00  nop         word ptr [rax+rax]
+                    00 00 00 00
+Lsin_fma3_calc_sin_for_absx_lt_piby4:
+  00000000000003D0: C5 FB 10 2D 50 00  vmovsd      xmm5,qword ptr [__Lsinarray+50h]
+                    00 00
+  00000000000003D8: C5 FB 59 D8        vmulsd      xmm3,xmm0,xmm0
+  00000000000003DC: C4 E2 E1 A9 2D 40  vfmadd213sd xmm5,xmm3,mmword ptr [__Lsinarray+40h]
+                    00 00 00
+  00000000000003E5: C4 E2 E1 A9 2D 30  vfmadd213sd xmm5,xmm3,mmword ptr [__Lsinarray+30h]
+                    00 00 00
+  00000000000003EE: C4 E2 E1 A9 2D 20  vfmadd213sd xmm5,xmm3,mmword ptr [__Lsinarray+20h]
+                    00 00 00
+  00000000000003F7: C4 E2 E1 A9 2D 10  vfmadd213sd xmm5,xmm3,mmword ptr [__Lsinarray+10h]
+                    00 00 00
+  0000000000000400: C5 FB 59 E3        vmulsd      xmm4,xmm0,xmm3
+  0000000000000404: C4 E2 E1 A9 2D 00  vfmadd213sd xmm5,xmm3,mmword ptr [__Lsinarray]
+                    00 00 00
+  000000000000040D: C4 E2 D9 B9 C5     vfmadd231sd xmm0,xmm4,xmm5
+  0000000000000412: 48 83 C4 78        add         rsp,78h
+  0000000000000416: C3                 ret
+  0000000000000417: 66 0F 1F 84 00 00  nop         word ptr [rax+rax]
+                    00 00 00
+Lsin_fma3_absx_nlt_piby4:
+  0000000000000420: 4C 3B 0D 00 00 00  cmp         r9,qword ptr [L__inf_mask_64]
+                    00
+  0000000000000427: 0F 83 33 01 00 00  jae         Lsin_fma3_x_naninf
+  000000000000042D: C4 C1 F9 6E C1     vmovq       xmm0,r9
+  0000000000000432: 4C 3B 0D 00 00 00  cmp         r9,qword ptr [L_small_arg_bdl]
+                    00
+  0000000000000439: 0F 83 01 01 00 00  jae         Lsin_fma3_do_general_arg_reduction
+  000000000000043F: E8 00 00 00 00     call        __remainder_piby2_fma3_bdl
+Lsin_fma3_exit_s:
+  0000000000000444: 48 0F BA E0 00     bt          rax,0
+  0000000000000449: C5 FB 59 D8        vmulsd      xmm3,xmm0,xmm0
+  000000000000044D: 72 61              jb          Lsin_fma3_calc_cos
+Lsin_fma3_calc_sin:
+  000000000000044F: C5 FB 10 2D 50 00  vmovsd      xmm5,qword ptr [__Lsinarray+50h]
+                    00 00
+  0000000000000457: C4 E2 E1 A9 2D 40  vfmadd213sd xmm5,xmm3,mmword ptr [__Lsinarray+40h]
+                    00 00 00
+  0000000000000460: C4 E2 E1 A9 2D 30  vfmadd213sd xmm5,xmm3,mmword ptr [__Lsinarray+30h]
+                    00 00 00
+  0000000000000469: C4 E2 E1 A9 2D 20  vfmadd213sd xmm5,xmm3,mmword ptr [__Lsinarray+20h]
+                    00 00 00
+  0000000000000472: C4 E2 E1 A9 2D 10  vfmadd213sd xmm5,xmm3,mmword ptr [__Lsinarray+10h]
+                    00 00 00
+  000000000000047B: C5 FB 59 E3        vmulsd      xmm4,xmm0,xmm3
+  000000000000047F: C5 DB 59 D5        vmulsd      xmm2,xmm4,xmm5
+  0000000000000483: C5 F3 59 2D 00 00  vmulsd      xmm5,xmm1,mmword ptr [L_one_half]
+                    00 00
+  000000000000048B: C5 D3 5C D2        vsubsd      xmm2,xmm5,xmm2
+  000000000000048F: C5 E3 59 D2        vmulsd      xmm2,xmm3,xmm2
+  0000000000000493: C5 EB 5C D1        vsubsd      xmm2,xmm2,xmm1
+  0000000000000497: C4 E2 D9 BD 15 00  vfnmadd231sd xmm2,xmm4,mmword ptr [__Lsinarray]
+                    00 00 00
+  00000000000004A0: C5 FB 5C C2        vsubsd      xmm0,xmm0,xmm2
+  00000000000004A4: EB 6D              jmp         Lsin_fma3_exit_s_1
+  00000000000004A6: 66 66 0F 1F 84 00  nop         word ptr [rax+rax]
+                    00 00 00 00
+Lsin_fma3_calc_cos:
+  00000000000004B0: C5 F9 28 15 00 00  vmovapd     xmm2,xmmword ptr [L_one]
+                    00 00
+  00000000000004B8: C5 E3 59 2D 00 00  vmulsd      xmm5,xmm3,mmword ptr [L_one_half]
+                    00 00
+  00000000000004C0: C5 EB 5C E5        vsubsd      xmm4,xmm2,xmm5
+  00000000000004C4: C5 EB 5C D4        vsubsd      xmm2,xmm2,xmm4
+  00000000000004C8: C5 EB 5C D5        vsubsd      xmm2,xmm2,xmm5
+  00000000000004CC: C5 FB 10 2D 50 00  vmovsd      xmm5,qword ptr [__Lcosarray+50h]
+                    00 00
+  00000000000004D4: C4 E2 F9 BD D1     vfnmadd231sd xmm2,xmm0,xmm1
+  00000000000004D9: C5 E3 59 CB        vmulsd      xmm1,xmm3,xmm3
+  00000000000004DD: C4 E2 E1 A9 2D 40  vfmadd213sd xmm5,xmm3,mmword ptr [__Lcosarray+40h]
+                    00 00 00
+  00000000000004E6: C4 E2 E1 A9 2D 30  vfmadd213sd xmm5,xmm3,mmword ptr [__Lcosarray+30h]
+                    00 00 00
+  00000000000004EF: C4 E2 E1 A9 2D 20  vfmadd213sd xmm5,xmm3,mmword ptr [__Lcosarray+20h]
+                    00 00 00
+  00000000000004F8: C4 E2 E1 A9 2D 10  vfmadd213sd xmm5,xmm3,mmword ptr [__Lcosarray+10h]
+                    00 00 00
+  0000000000000501: C4 E2 E1 A9 2D 00  vfmadd213sd xmm5,xmm3,mmword ptr [__Lcosarray]
+                    00 00 00
+  000000000000050A: C4 E2 F1 A9 EA     vfmadd213sd xmm5,xmm1,xmm2
+  000000000000050F: C5 D3 58 C4        vaddsd      xmm0,xmm5,xmm4
+Lsin_fma3_exit_s_1:
+  0000000000000513: 4D 33 C0           xor         r8,r8
+  0000000000000516: 4C 23 15 00 00 00  and         r10,qword ptr [L_signbit]
+                    00
+  000000000000051D: 0F BA E0 01        bt          eax,1
+  0000000000000521: 4C 0F 42 05 00 00  cmovb       r8,qword ptr [L_signbit]
+                    00 00
+  0000000000000529: 4D 33 C2           xor         r8,r10
+  000000000000052C: C4 C1 F9 6E D8     vmovq       xmm3,r8
+  0000000000000531: C5 F9 57 C3        vxorpd      xmm0,xmm0,xmm3
+  0000000000000535: 48 83 C4 78        add         rsp,78h
+  0000000000000539: C3                 ret
+  000000000000053A: 66 0F 1F 44 00 00  nop         word ptr [rax+rax]
+Lsin_fma3_do_general_arg_reduction:
+  0000000000000540: 4C 89 54 24 50     mov         qword ptr [rsp+50h],r10
+  0000000000000545: E8 00 00 00 00     call        __remainder_piby2_fma3
+  000000000000054A: 4C 8B 54 24 50     mov         r10,qword ptr [rsp+50h]
+  000000000000054F: E9 F0 FE FF FF     jmp         Lsin_fma3_exit_s
+  0000000000000554: 66 66 66 66 0F 1F  nop         word ptr [rax+rax]
+                    84 00 00 00 00 00
+Lsin_fma3_x_naninf:
+  0000000000000560: E8 00 00 00 00     call        _sin_special
+  0000000000000565: 48 83 C4 78        add         rsp,78h
+  0000000000000569: C3                 ret
+
+  Summary
+
+           0 .data
+         D04 .debug$S
+          24 .debug$T
+           0 .gssep$x
+           0 .gsspr$y
+           C .pdata
+          E0 .rdata
+         56A .text$mn
+           8 .xdata

@@ -269,7 +269,7 @@ src = src.replace(anchor, anchor + "\nint advdbg = 0; // CLOSEOUT-4 advance-trac
 # calls inherit the armed value of their substep).
 anchor = """        advance(q, v, w, eff, cst[CF_dt] * (double)(0.25), mdl, cst, M, gv, bv, fr, frd, frdd,"""
 assert src.count(anchor) == 3, "advance call anchor count != 3"
-src = src.replace(anchor, """        advdbg = ((a_ticks[e] == 41)) ? 1 : 0;
+src = src.replace(anchor, """        advdbg = ((a_ticks[e] == 60)) ? 1 : 0;
 """ + anchor, 1)
 
 # ADV ent: before the MAIN impact call (first of the two 8-space rcv sites; the

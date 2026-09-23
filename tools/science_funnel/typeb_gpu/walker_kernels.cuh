@@ -2555,7 +2555,7 @@ __device__ inline void fore_ik_at(double* mdl, double* cst, double* fr, int leg,
     ml1 =  mdl[OF_fore_mount_local + leg * 3 + 1];
     dx =  fr[off + 0] * rx + fr[off + 4] * ry + fr[off + 8] * rz - ml0;
     dy =  fr[off + 1] * rx + fr[off + 5] * ry + fr[off + 9] * rz - ml1;
-    D =  sqrt(dx * dx + dy * dy);
+    D =  hypot(dx, dy);
     dmax =  cst[CF_fore_L1] + cst[CF_fore_rho];
     dmin =  fabs(cst[CF_fore_L1] - cst[CF_fore_rho]);
     sat =  (int)(0);
@@ -2604,7 +2604,7 @@ __device__ inline double fore_D_at(double* mdl, double* cst, double* fr, int leg
     ml1 =  mdl[OF_fore_mount_local + leg * 3 + 1];
     dx =  fr[off + 0] * rx + fr[off + 4] * ry + fr[off + 8] * rz - ml0;
     dy =  fr[off + 1] * rx + fr[off + 5] * ry + fr[off + 9] * rz - ml1;
-    return sqrt(dx * dx + dy * dy);
+    return hypot(dx, dy);
 }
 
 __device__ inline void hind_ik_at(double* mdl, double* cst, double* fr, double* tgt, double ap, double branch, int* csti, double* __o0, double* __o1, double* __o2) {
@@ -2634,7 +2634,7 @@ __device__ inline void hind_ik_at(double* mdl, double* cst, double* fr, double* 
     dy =  fr[off + 1] * rx + fr[off + 5] * ry + fr[off + 9] * rz;
     wx =  dx - cst[CF_hind_xm] * cos(ap);
     wy =  dy - cst[CF_hind_xm] * sin(ap);
-    D =  sqrt(wx * wx + wy * wy);
+    D =  hypot(wx, wy);
     dmax =  cst[CF_hind_L1] + cst[CF_hind_L2];
     dmin =  fabs(cst[CF_hind_L1] - cst[CF_hind_L2]);
     Dc =  fmin(fmax(D, dmin + (double)(1e-9)), dmax * ((double)(1.0) - (double)(1e-12)));
@@ -3723,8 +3723,8 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
             c2 =  mdi[OI_fore_coord + leg * 2 + 1];
             fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti, &qa1, &qa2, &qa1r, &qa2r, &sata);
             fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti, &qb1, &qb2, &qb1r, &qb2r, &satb);
-            e0 =  sqrt((qa1 - q[c1]) * (qa1 - q[c1]) + (qa2 - q[c2]) * (qa2 - q[c2]));
-            e1 =  sqrt((qb1 - q[c1]) * (qb1 - q[c1]) + (qb2 - q[c2]) * (qb2 - q[c2]));
+            e0 =  hypot(qa1 - q[c1], qa2 - q[c2]);
+            e1 =  hypot(qb1 - q[c1], qb2 - q[c2]);
             ikb[leg] = 1;
             if (e1 < e0) {
                 ikb[leg] = -1;
@@ -3945,7 +3945,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);
                     dsx =  seat[0] - paw_t[leg * 3];
                     dsy =  seat[1] - paw_t[leg * 3 + 1];
-                    if (sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]) {
+                    if (hypot(dsx, dsy) < cst[CF_k_touch]) {
                         act =  1;
 }
                     else {
@@ -3964,7 +3964,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                         fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);
                         dsx =  seat[0] - paw_t[leg * 3];
                         dsy =  seat[1] - paw_t[leg * 3 + 1];
-                        if (sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]) {
+                        if (hypot(dsx, dsy) < cst[CF_k_touch]) {
                             act =  3;
 }
                         else {
@@ -4076,8 +4076,8 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     cc2 =  mdi[OI_fore_coord + leg * 2 + 1];
                     fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti, &qa1, &qa2, &qa1r, &qa2r, &sata);
                     fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti, &qb1, &qb2, &qb1r, &qb2r, &satb);
-                    e0 =  sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]));
-                    e1 =  sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]));
+                    e0 =  hypot(qa1 - q[cc1], qa2 - q[cc2]);
+                    e1 =  hypot(qb1 - q[cc1], qb2 - q[cc2]);
                     ikb[leg] = 1;
                     if (e1 < e0) {
                         ikb[leg] = -1;
@@ -4119,8 +4119,8 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                 cc2 =  mdi[OI_fore_coord + leg * 2 + 1];
                 fore_ik_at(mdl, cst, fr, leg, pw, 1, mdi, csti, &qa1, &qa2, &qa1r, &qa2r, &sata);
                 fore_ik_at(mdl, cst, fr, leg, pw, -1, mdi, csti, &qb1, &qb2, &qb1r, &qb2r, &satb);
-                e0 =  sqrt((qa1 - q[cc1]) * (qa1 - q[cc1]) + (qa2 - q[cc2]) * (qa2 - q[cc2]));
-                e1 =  sqrt((qb1 - q[cc1]) * (qb1 - q[cc1]) + (qb2 - q[cc2]) * (qb2 - q[cc2]));
+                e0 =  hypot(qa1 - q[cc1], qa2 - q[cc2]);
+                e1 =  hypot(qb1 - q[cc1], qb2 - q[cc2]);
                 ikb[leg] = 1;
                 if (e1 < e0) {
                     ikb[leg] = -1;
@@ -4649,7 +4649,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                             svx =  svx + ptJ[(r * 3 + 0) * 18 + i] * v[i];
                             svz =  svz + ptJ[(r * 3 + 2) * 18 + i] * v[i];
 }
-                        sl =  sqrt(svx * svx + svz * svz);
+                        sl =  hypot(svx, svz);
                         if (sl > slip_mx) {
                             slip_mx =  sl;
 }
@@ -4677,7 +4677,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                             j =  (viol + 1) % cn;
                             ex =  chx[j] - chx[i];
                             ez =  chz[j] - chz[i];
-                            nl =  sqrt(ex * ex + ez * ez);
+                            nl =  hypot(ex, ez);
                             if (nl >= (double)(1e-12)) {
                                 nx =  ez / nl;
                                 nz =  -ex / nl;

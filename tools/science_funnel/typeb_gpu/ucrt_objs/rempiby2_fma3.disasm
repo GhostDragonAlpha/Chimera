@@ -1,0 +1,191 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35228.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file ucrt_objs\rempiby2_fma3.obj
+
+File Type: COFF OBJECT
+
+__remainder_piby2_fma3:
+  0000000000000000: 48 83 EC 38        sub         rsp,38h
+  0000000000000004: 4C 8D 0D 00 00 00  lea         r9,[__L_2_by_pi_bits]
+                    00
+  000000000000000B: C4 C1 F9 7E C3     vmovq       r11,xmm0
+  0000000000000010: 49 8B CB           mov         rcx,r11
+  0000000000000013: 49 C1 EB 34        shr         r11,34h
+  0000000000000017: 49 81 EB FF 03 00  sub         r11,3FFh
+                    00
+  000000000000001E: 4D 8B D3           mov         r10,r11
+  0000000000000021: 49 C1 EA 03        shr         r10,3
+  0000000000000025: 49 81 EA 86 00 00  sub         r10,86h
+                    00
+  000000000000002C: 49 F7 DA           neg         r10
+  000000000000002F: 4B 8B 04 11        mov         rax,qword ptr [r9+r10]
+  0000000000000033: 48 C1 E1 0C        shl         rcx,0Ch
+  0000000000000037: 48 C1 E9 0C        shr         rcx,0Ch
+  000000000000003B: 48 0F BA E9 34     bts         rcx,34h
+  0000000000000040: 49 83 C2 08        add         r10,8
+  0000000000000044: C4 81 7A 6F 04 11  vmovdqu     xmm0,xmmword ptr [r9+r10]
+  000000000000004A: 48 F7 E1           mul         rax,rcx
+  000000000000004D: 4C 8B C0           mov         r8,rax
+  0000000000000050: 4C 8B D2           mov         r10,rdx
+  0000000000000053: C4 E1 F9 7E C0     vmovq       rax,xmm0
+  0000000000000058: 48 F7 E1           mul         rax,rcx
+  000000000000005B: 49 83 E3 07        and         r11,7
+  000000000000005F: C5 F9 73 D8 08     vpsrldq     xmm0,xmm0,8
+  0000000000000064: 49 03 C2           add         rax,r10
+  0000000000000067: 48 83 D2 00        adc         rdx,0
+  000000000000006B: 4C 8B C8           mov         r9,rax
+  000000000000006E: 4C 8B D2           mov         r10,rdx
+  0000000000000071: C4 E1 F9 7E C0     vmovq       rax,xmm0
+  0000000000000076: 48 F7 E1           mul         rax,rcx
+  0000000000000079: 4C 03 D0           add         r10,rax
+  000000000000007C: 48 C7 C1 36 00 00  mov         rcx,36h
+                    00
+  0000000000000083: 49 8B C2           mov         rax,r10
+  0000000000000086: 49 2B CB           sub         rcx,r11
+  0000000000000089: 48 33 D2           xor         rdx,rdx
+  000000000000008C: 48 D3 E8           shr         rax,cl
+  000000000000008F: 73 1F              jae         L__no_point_five
+  0000000000000091: 49 F7 D2           not         r10
+  0000000000000094: 49 F7 D1           not         r9
+  0000000000000097: 49 F7 D0           not         r8
+  000000000000009A: 48 BA 00 00 00 00  mov         rdx,8000000000000000h
+                    00 00 00 80
+  00000000000000A4: 66 66 66 66 0F 1F  nop         word ptr [rax+rax]
+                    84 00 00 00 00 00
+L__no_point_five:
+  00000000000000B0: 48 83 D0 00        adc         rax,0
+  00000000000000B4: 48 83 E0 03        and         rax,3
+  00000000000000B8: 48 89 44 24 20     mov         qword ptr [rsp+20h],rax
+  00000000000000BD: 49 8B CB           mov         rcx,r11
+  00000000000000C0: 48 83 C1 0A        add         rcx,0Ah
+  00000000000000C4: 49 D3 E2           shl         r10,cl
+  00000000000000C7: 49 D3 EA           shr         r10,cl
+  00000000000000CA: 48 83 E9 40        sub         rcx,40h
+  00000000000000CE: 4C 8B D9           mov         r11,rcx
+  00000000000000D1: 49 0F BD CA        bsr         rcx,r10
+  00000000000000D5: 75 19              jne         L__form_mantissa
+  00000000000000D7: 4D 8B D1           mov         r10,r9
+  00000000000000DA: 4D 8B C8           mov         r9,r8
+  00000000000000DD: 49 C7 C0 00 00 00  mov         r8,0
+                    00
+  00000000000000E4: 49 0F BD CA        bsr         rcx,r10
+  00000000000000E8: 49 83 EB 40        sub         r11,40h
+  00000000000000EC: 0F 1F 40 00        nop         dword ptr [rax]
+L__form_mantissa:
+  00000000000000F0: 4C 03 D9           add         r11,rcx
+  00000000000000F3: 48 83 E9 34        sub         rcx,34h
+  00000000000000F7: 48 83 F9 00        cmp         rcx,0
+  00000000000000FB: 7C 23              jl          L__hsb_below_52
+  00000000000000FD: 74 41              je          L__form_numbers
+  00000000000000FF: 4D 8B C2           mov         r8,r10
+  0000000000000102: 49 D3 EA           shr         r10,cl
+  0000000000000105: 49 D3 E9           shr         r9,cl
+  0000000000000108: 48 83 E9 40        sub         rcx,40h
+  000000000000010C: 48 F7 D9           neg         rcx
+  000000000000010F: 49 D3 E0           shl         r8,cl
+  0000000000000112: 4D 0B C8           or          r9,r8
+  0000000000000115: EB 29              jmp         L__form_numbers
+  0000000000000117: 66 0F 1F 84 00 00  nop         word ptr [rax+rax]
+                    00 00 00
+L__hsb_below_52:
+  0000000000000120: 48 F7 D9           neg         rcx
+  0000000000000123: 49 8B C1           mov         rax,r9
+  0000000000000126: 49 D3 E2           shl         r10,cl
+  0000000000000129: 49 D3 E1           shl         r9,cl
+  000000000000012C: 48 83 E9 40        sub         rcx,40h
+  0000000000000130: 48 F7 D9           neg         rcx
+  0000000000000133: 48 D3 E8           shr         rax,cl
+  0000000000000136: 4C 0B D0           or          r10,rax
+  0000000000000139: 49 D3 E8           shr         r8,cl
+  000000000000013C: 4D 0B C8           or          r9,r8
+  000000000000013F: 90                 nop
+L__form_numbers:
+  0000000000000140: 49 81 C3 FF 03 00  add         r11,3FFh
+                    00
+  0000000000000147: 49 0F BA F2 34     btr         r10,34h
+  000000000000014C: 49 8B CB           mov         rcx,r11
+  000000000000014F: 4C 0B D2           or          r10,rdx
+  0000000000000152: 48 C1 E1 34        shl         rcx,34h
+  0000000000000156: 4C 0B D1           or          r10,rcx
+  0000000000000159: C4 C1 F9 6E D2     vmovq       xmm2,r10
+  000000000000015E: 49 0F BD C9        bsr         rcx,r9
+  0000000000000162: 48 83 E9 40        sub         rcx,40h
+  0000000000000166: 48 F7 D9           neg         rcx
+  0000000000000169: 49 D3 E1           shl         r9,cl
+  000000000000016C: 49 C1 E9 0C        shr         r9,0Ch
+  0000000000000170: 48 83 C1 34        add         rcx,34h
+  0000000000000174: 4C 2B D9           sub         r11,rcx
+  0000000000000177: 49 C1 E3 34        shl         r11,34h
+  000000000000017B: 4C 0B CA           or          r9,rdx
+  000000000000017E: 4D 0B CB           or          r9,r11
+  0000000000000181: C4 C1 F9 6E C9     vmovq       xmm1,r9
+  0000000000000186: C5 E9 54 25 00 00  vandpd      xmm4,xmm2,xmmword ptr [L_fff800]
+                    00 00
+  000000000000018E: C5 EB 5C C4        vsubsd      xmm0,xmm2,xmm4
+  0000000000000192: C5 EB 59 2D 00 00  vmulsd      xmm5,xmm2,mmword ptr [L_piby2_lead]
+                    00 00
+  000000000000019A: C5 DB 59 1D 00 00  vmulsd      xmm3,xmm4,mmword ptr [L_piby2_part1]
+                    00 00
+  00000000000001A2: C5 E3 5C DD        vsubsd      xmm3,xmm3,xmm5
+  00000000000001A6: C4 E2 F9 B9 1D 00  vfmadd231sd xmm3,xmm0,mmword ptr [L_piby2_part1]
+                    00 00 00
+  00000000000001AF: C4 E2 D9 B9 1D 00  vfmadd231sd xmm3,xmm4,mmword ptr [L_piby2_part2]
+                    00 00 00
+  00000000000001B8: C4 E2 F9 B9 1D 00  vfmadd231sd xmm3,xmm0,mmword ptr [L_piby2_part2]
+                    00 00 00
+  00000000000001C1: C5 F3 59 25 00 00  vmulsd      xmm4,xmm1,mmword ptr [L_piby2_lead]
+                    00 00
+  00000000000001C9: C4 E2 E9 B9 25 00  vfmadd231sd xmm4,xmm2,mmword ptr [L_piby2_part3]
+                    00 00 00
+  00000000000001D2: C5 E3 58 DC        vaddsd      xmm3,xmm3,xmm4
+  00000000000001D6: C5 D3 58 C3        vaddsd      xmm0,xmm5,xmm3
+  00000000000001DA: C5 D3 5C C8        vsubsd      xmm1,xmm5,xmm0
+  00000000000001DE: C5 F3 58 CB        vaddsd      xmm1,xmm1,xmm3
+  00000000000001E2: 48 8B 44 24 20     mov         rax,qword ptr [rsp+20h]
+  00000000000001E7: 48 83 C4 38        add         rsp,38h
+  00000000000001EB: C3                 ret
+
+__remainder_piby2_fma3_bdl:
+  0000000000000000: C5 F9 28 C8        vmovapd     xmm1,xmm0
+  0000000000000004: C5 F9 28 25 00 00  vmovapd     xmm4,xmmword ptr [L_xc2]
+                    00 00
+  000000000000000C: C5 F9 28 15 00 00  vmovapd     xmm2,xmmword ptr [L_sigma]
+                    00 00
+  0000000000000014: C4 E2 E9 99 0D 00  vfmadd132sd xmm1,xmm2,mmword ptr [L_r]
+                    00 00 00
+  000000000000001D: C5 F3 5C CA        vsubsd      xmm1,xmm1,xmm2
+  0000000000000021: C5 F9 E6 E9        vcvttpd2dq  xmm5,xmm1
+  0000000000000025: C4 E1 F9 7E E8     vmovq       rax,xmm5
+  000000000000002A: C5 F9 28 D1        vmovapd     xmm2,xmm1
+  000000000000002E: C4 E2 F9 9D 15 00  vfnmadd132sd xmm2,xmm0,mmword ptr [L_xc1]
+                    00 00 00
+  0000000000000037: C5 F3 59 DC        vmulsd      xmm3,xmm1,xmm4
+  000000000000003B: C5 F9 28 C1        vmovapd     xmm0,xmm1
+  000000000000003F: C4 E2 D9 AB C3     vfmsub213sd xmm0,xmm4,xmm3
+  0000000000000044: C5 EB 5C EB        vsubsd      xmm5,xmm2,xmm3
+  0000000000000048: C5 EB 5C E5        vsubsd      xmm4,xmm2,xmm5
+  000000000000004C: C5 DB 5C E3        vsubsd      xmm4,xmm4,xmm3
+  0000000000000050: C4 E2 F1 BD 15 00  vfnmadd231sd xmm2,xmm1,mmword ptr [L_xc2]
+                    00 00 00
+  0000000000000059: C5 D3 5C EA        vsubsd      xmm5,xmm5,xmm2
+  000000000000005D: C5 D3 58 EC        vaddsd      xmm5,xmm5,xmm4
+  0000000000000061: C5 D3 5C E8        vsubsd      xmm5,xmm5,xmm0
+  0000000000000065: C5 F9 28 C2        vmovapd     xmm0,xmm2
+  0000000000000069: C4 E2 D1 9D 0D 00  vfnmadd132sd xmm1,xmm5,mmword ptr [L_xc3]
+                    00 00 00
+  0000000000000072: 48 83 E0 03        and         rax,3
+  0000000000000076: C3                 ret
+
+  Summary
+
+           0 .data
+         8F0 .debug$S
+          3C .debug$T
+           0 .gssep$x
+           0 .gsspr$y
+          18 .pdata
+         160 .rdata
+         263 .text$mn
+           C .xdata
