@@ -1,0 +1,20 @@
+{
+ "schema": "chimera.gpu_broker2.v1",
+ "lane": "lane/gpu-broker2-20260922",
+ "base_commit": "248704d8",
+ "date": "2026-09-22",
+ "agent_trailer": "Agent: broker2",
+ "stage": "prereg (committed BEFORE any code; final verdicts appended at suite completion)",
+ "theory": "Astra round-6 section 3: a single GPU broker owns fleet GPU execution exclusively; requests wait in a BOUNDED broker queue with three distinct timeout states (queue deadline / model-load timeout after admission / inference timeout after readiness) so a deferred request is visibly deferred; captures and judges are scheduled by deadline with aging so neither starves; judge requests batch under a capped batch duration; the judge service preloads one model with one parallel request AFTER taking the reservation, retains it through a bounded batch, and unloads BEFORE release; training runs under a durable keeper whose lifetime is independent of the broker -- a broker restart reconnects, never kills, never duplicates; a passed expected-end keeps the reservation occupied until completion is verified; a lost heartbeat means OWNERSHIP UNCERTAIN, never a second owner.",
+ "prereg": "record.md (this directory), committed before any code; falsifiers = Astra's GPU-broker rejection conditions (overlapping exclusives, lost-heartbeat second owner, queue wait mislabeled as model failure, broker restart duplicating/killing the keeper) + this lane's measurements (queue latency percentiles, model-load latency, batch amortization)",
+ "operator_context": "WardogsClient-Win64-Shipping.exe on the GPU at prereg time: the operator games; zero fleet GPU work, zero popups, no touching operator processes. All suite scheduling exercised against an injected ollama-API-shaped backend with scripted latencies; the real OllamaBackend ships unexercised on GPU; named-unmeasured with cause.",
+ "ollama_load_timeout": {
+  "installed_version": "0.34.2",
+  "binary_contains_env_var": "OLLAMA_LOAD_TIMEOUT (plus OLLAMA_NUM_PARALLEL, OLLAMA_MAX_LOADED_MODELS, OLLAMA_KEEP_ALIVE, OLLAMA_MAX_QUEUED)",
+  "tagged_source_default": "5m (5 * time.Minute), server-side stall detection for model loads, <=0 = infinite",
+  "distinct_from": "client HTTP deadlines and proxy timeouts (separate layers, labeled separately in judge.py)"
+ },
+ "predictions_pre_named": ["P-NOVERLAP", "P-DEFERLABEL", "P-KEEPERRECONNECT", "P-UNCERTAIN", "P-EXPIRED", "P-AGING", "P-BATCH", "P-TIMEOUTS", "P-CPUAFFINITY"],
+ "falsifiers": ["F1 overlapping exclusive reservations", "F2 lost heartbeat grants a second owner / auto-free of uncertain", "F3 queue wait mislabeled as model failure", "F4 broker restart duplicates or kills the keeper", "M1 aging/starvation measurement", "M2 batch amortization measurement"],
+ "pass": null
+}
