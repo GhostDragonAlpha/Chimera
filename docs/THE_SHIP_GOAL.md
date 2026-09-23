@@ -184,7 +184,11 @@ budget 6.7-13.7x, the GPU-production split is named and its measurement lane
 landed in integration pass 6 (`integration_pass6_20260920/receipt.json`; the split
 stands CONFIRMED), and the pinned scene's stand regime still refuses (tick 139, pushed
 AND unpushed — a stand-side red measured in the same receipt). The slice's
-boot bar is red (135.73 s vs 10 s). Raw ankle plantar walk coverage is under
+boot bar: the uncached red stands at its own receipt (135.73 s vs 10 s,
+`slice_real_body_20260920/receipt.json`) — and the merged slice boots through
+the cached admission path at 2.08-2.10 s vs the same bar (pass 6), re-measured
+at 2.13 s boot t_first_verts by both the slice-stranger and render-truth boots
+(`integration_pass7_20260920/receipt.json`). Raw ankle plantar walk coverage is under
 (0.7434x) — explained as demand mass-context by the adjudication, not tuned
 away. The Vanhoof intake admitted zero records.
 
