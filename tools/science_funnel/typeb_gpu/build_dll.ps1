@@ -8,6 +8,6 @@ Copy-Item walker_env.dll walker_env.dll.pre_chainfix -Force
 # -fmad=false: the byte-match lever (closeout-2). The cl-compiled reference
 # (/fp:precise) never contracts a*b+c; nvcc's default fmad=true does, which
 # flips the degenerate cone-mask/lam decisions the walk rides on.
-& $nvcc -shared -arch=sm_89 -lineinfo -fmad=false -ccbin $cl -I. -std=c++17 --expt-relaxed-constexpr walker_env.cu -o walker_env.dll -Xcompiler "/EHsc" 2>&1 | Out-File -Encoding utf8 build_dll_fmad0.log
+& $nvcc -shared -arch=sm_89 -lineinfo -fmad=false -ccbin $cl -I. -std=c++17 -DUCRT_MATH_DEVICE --expt-relaxed-constexpr walker_env.cu -o walker_env.dll -Xcompiler "/EHsc" 2>&1 | Out-File -Encoding utf8 build_dll_fmad0.log
 "NVCC_EXIT=$LASTEXITCODE"
 Get-Content build_dll8.log -Tail 4

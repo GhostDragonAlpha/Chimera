@@ -6,6 +6,17 @@
 #pragma once
 #include <cuda_runtime.h>
 #include <math.h>
+/* RESIDUAL-B WIRING (closeout-7): the walker's transcendental call sites are
+   redirected to the UCRT reconstruction (bit-identical to the MSVC CRT on
+   host AND device, 55,517/55,517 — ucrt_gate + co7_dense_full2). Define
+   UCRT_MATH_DEVICE in .cu builds for the device path; host replays get the
+   (identical) host path. sqrt stays native (IEEE-exact both sides). */
+#include "ucrt_math.c"
+#define sin ucrt_sin
+#define cos ucrt_cos
+#define atan2 ucrt_atan2
+#define acos ucrt_acos
+#define hypot ucrt_hypot
 __device__ long long cu_total_q = 1073741824LL;
 #define PI 3.141592653589793
 static const int OF_ax_axis = 0;
