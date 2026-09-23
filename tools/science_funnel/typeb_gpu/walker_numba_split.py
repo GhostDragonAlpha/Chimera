@@ -4788,7 +4788,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                     seat = cuda.local.array(3, dtype=float64)
                     for _zzero193 in range(3):
                         seat[_zzero193] = 0.0
-                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat)
+                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat)
 
                     dsx = seat[0] - paw_t[leg * 3]
 
@@ -4817,7 +4817,7 @@ def tick_plan_kernel(mdl, mdi, cst, csti, a_q, a_v, a_work, a_last_torque, a_bat
                         seat = cuda.local.array(3, dtype=float64)
                         for _zzero194 in range(3):
                             seat[_zzero194] = 0.0
-                        fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat)
+                        fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat)
 
                         dsx = seat[0] - paw_t[leg * 3]
 

@@ -4133,7 +4133,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                     for (_zzero193 = 0; _zzero193 < (3); ++_zzero193) {
                         seat[_zzero193] = 0.0;
 }
-                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat);
+                    fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);
                     dsx =  seat[0] - paw_t[leg * 3];
                     dsy =  seat[1] - paw_t[leg * 3 + 1];
                     if (sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]) {
@@ -4152,7 +4152,7 @@ __global__ void tick_plan_kernel(double* mdl, int* mdi, double* cst, int* csti, 
                         for (_zzero194 = 0; _zzero194 < (3); ++_zzero194) {
                             seat[_zzero194] = 0.0;
 }
-                        fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], csti, mdi, seat);
+                        fore_follow(mdl, cst, fr, leg, paw_t, ikb[leg], mdi, csti, seat);
                         dsx =  seat[0] - paw_t[leg * 3];
                         dsy =  seat[1] - paw_t[leg * 3 + 1];
                         if (sqrt(dsx * dsx + dsy * dsy) < cst[CF_k_touch]) {

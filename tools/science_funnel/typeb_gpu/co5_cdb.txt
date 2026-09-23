@@ -1,0 +1,13 @@
+.logopen /t co5_cdb2.log
+g
+.lines
+u .
+.frame /r 0
+dv /t
+.frame /r 1
+dv /t
+.frame /r 2
+dv /t
+.frame /r 3
+dv /t
+q

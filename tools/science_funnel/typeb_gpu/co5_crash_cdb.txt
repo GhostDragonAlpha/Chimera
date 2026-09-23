@@ -1,0 +1,48 @@
+Opened log file 'co5_cdb_out.log'
+0:000> g
+(7ff8.b67c): Access violation - code c0000005 (first chance)
+First chance exceptions are reported before any exception handling.
+This exception may be expected and handled.
+*** WARNING: Unable to verify checksum for substep_probe_cdb.exe
+substep_probe_cdb!fore_ik_at+0x274:
+00007ff7`387e7cc4 f20f1084dde0140000 movsd xmm0,mmword ptr [rbp+rbx*8+14E0h] ss:00007ff6`a71a6c90=????????????????
+0:000> .lastevent
+Last event: 7ff8.b67c: Access violation - code c0000005 (first chance)
+  debugger time: Wed Sep 23 00:53:15.665 2026 (UTC - 5:00)
+0:000> .lines
+Line number information will not be loaded
+0:000> k
+Child-SP          RetAddr               Call Site
+0000000a`38cfc010 00007ff7`387e7ed3     substep_probe_cdb!fore_ik_at+0x274
+0000000a`38cfc090 00007ff7`387e7538     substep_probe_cdb!fore_target_headroom+0x83
+0000000a`38cfc140 00007ff7`3880056a     substep_probe_cdb!fore_follow+0x148
+0000000a`38cfc330 00007ff7`388095ea     substep_probe_cdb!tick_plan_kernel+0x230a
+0000000a`38cffc90 00007ff7`3880a528     substep_probe_cdb!main+0x93a
+(Inline Function) --------`--------     substep_probe_cdb!invoke_main+0x22
+0000000a`38cffe80 00007ffa`f9facd87     substep_probe_cdb!__scrt_common_main_seh+0x10c
+0000000a`38cffec0 00007ffa`fba6caec     KERNEL32!BaseThreadInitThunk+0x17
+0000000a`38cffef0 00000000`00000000     ntdll!RtlUserThreadStart+0x2c
+0:000> r
+rax=00000000000000cc rbx=ffffffffedd1b8ae rcx=00000000000000cc
+rdx=00007ff7388cb2f0 rsi=0000000000000000 rdi=ffffffffbff471eb
+rip=00007ff7387e7cc4 rsp=0000000a38cfc010 rbp=00007ff7388c9240
+ r8=00000000fffffe02  r9=00000000000000d2 r10=0000000000000000
+r11=0000000a38cfbfe0 r12=0000000a38cfcf80 r13=0000000a38cfc9e0
+r14=0000000000000000 r15=0000000000000000
+iopl=0         nv up ei ng nz na pe nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010282
+substep_probe_cdb!fore_ik_at+0x274:
+00007ff7`387e7cc4 f20f1084dde0140000 movsd xmm0,mmword ptr [rbp+rbx*8+14E0h] ss:00007ff6`a71a6c90=????????????????
+0:000> q
+quit:
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\atlmfc.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\ObjectiveC.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\concurrency.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\cpp_rest.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\stl.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Data.Json.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\Windows.Media.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\windows.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\Visualizers\winrt.natvis'
