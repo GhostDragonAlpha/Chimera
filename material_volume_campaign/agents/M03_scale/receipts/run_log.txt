@@ -1,0 +1,9 @@
+admission s1p0 exit=0
+export    s1p0 exit=0
+admission s0p5 exit=0
+export    s0p5 exit=0
+admission s2p0 exit=0
+export    s2p0 exit=0
+admission s0p065 exit=0
+export    s0p065 exit=0
+reader    s0p5 exit=0

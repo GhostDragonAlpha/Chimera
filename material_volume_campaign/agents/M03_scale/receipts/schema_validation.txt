@@ -1,0 +1,10 @@
+PASS groups.json
+PASS manifest_s0p065.json
+PASS manifest_s0p5.json
+PASS manifest_s1p0.json
+PASS manifest_s2p0.json
+PASS partition_s0p065.json
+PASS partition_s0p5.json
+PASS partition_s1p0.json
+PASS partition_s2p0.json
+schema validation: ALL PASS
