@@ -1,0 +1,52 @@
+# FOREARM PACKAGE — DURABLE TASK BOARD
+
+**Campaign:** complete the forearm anatomy package needed to qualify the monkey's physical grasp for climbing.
+**Coordinator:** ZCode execution lead (GLM). **Architect:** Astra (external — owns all architectural decisions; this campaign reports evidence, it does not decide).
+**Opened:** 2026-09-24. **Baseline:** Session 5 (frozen). **Input revision:** `baseline_snapshot/MANIFEST.json` (44 files, all crosschecks green).
+
+## FROZEN BOUNDARIES — no agent may cross
+
+- Session-5 baseline unchanged. Candidate C FAILED its declared criteria (~41 µm over the ≤ −1 mm clearance law) — the failure stands.
+- No second fitting candidate. No anatomical-site displacement. No margin relaxation.
+- Preserve verbatim source coordinates, the four containment classes, v5 provenance, endpoint roles, separate XML/fitted-packet hashes.
+- `mechanical_qualification: false` on every site until Astra-approved tests pass.
+- No physics, attachment-semantics, muscle-limit, or architecture changes — those go to Astra with evidence + smallest proposed change.
+- New qualification criteria cannot retroactively rescue Candidate C.
+
+## KNOWN STATE (Session-5 receipts, admission_actual_monkey.json + report 05)
+
+- **Loop authority (baseline), per side:** 6 inside / 1 tight (`PT-P3`, `PT_l-P3`) / 7 outside / 2 ambiguous.
+- **Ambiguous wrist sections:** right `ECRB-P3` + `ECRL-P3`; left `ECRB_l-P3` + `ECRL_l-P3` — wrist-level sections yield multiple ownership-identified loops (section identification, not placement).
+- **Loop outside, right:** BIClong-P9, BICshort-P6, BRD-P2, BRD-P3, ECRB-P2, ECRL-P2, PT-P5 (7). Hull diagnostic (per side): 5 outside / 0 tight / 8 unresolved — loop sharpens hull (BIClong-P9, BICshort-P6 outside at unsampled axials; PT-P3 tight).
+- **Candidate C (evaluated, NOT applied):** db=+6.24 mm, dc=±2.02 mm, mirror-symmetric; loop authority would read 0 outside / 14 inside / 0 tight / 2 ambiguous; FAILED by ~41 µm. Effects recorded: max |Δ path length| 0.90 mm (BRD); max |Δ moment arm| ≈ 0 (straight-tendon zero-arm law); 42/120 tendons with fully-resolved comparable chains.
+- **H-1 RESOLVED at snapshot:** `fitted_packet_sha256` (a4475550…) = sha256 of `actual_monkey_fit.json` (field names the fit packet, not the candidates packet). No byte drift. A9 confirms independently. Residual observation for Astra: the candidates packet carries no self-hash.
+- Site naming: right side unsuffixed (`BRD-P2`), left side `_l` (`BRD_l-P2`). Right body is `radius`, left is `radius_l`. 16 sites/side, 32 total. Roles: first_endpoint/last_endpoint/waypoint (path positions only — packet establishes no anatomical proximal/distal orientation).
+
+## ASSIGNMENTS
+
+| id | assignment | agent dir | status | verdict | receipt |
+|----|------------|-----------|--------|---------|---------|
+| I0 | durable snapshot + manifest + board (coordinator) | `baseline_snapshot/` | DONE | PASS (4/4 crosschecks) | `MANIFEST.json` |
+| A1 | left ambiguous wrist section — independent investigation | `audits/A1_left_wrist` | DISPATCHED | — | `report.md` |
+| A2 | right ambiguous wrist section — independent investigation | `audits/A2_right_wrist` | DISPATCHED | — | `report.md` |
+| A3 | 32-site audit vs source XML (units, identities, endpoint roles) | `audits/A3_site_audit` | DISPATCHED | — | `report.md` |
+| A4 | local-to-world transforms + bilateral correspondence | `audits/A4_transforms` | DISPATCHED | — | `report.md` |
+| A5 | containment authority, signed distances, uncertainty budget, four classes | `audits/A5_containment` | DISPATCHED | — | `report.md` |
+| A6 | anatomical attachment evidence vs geometric containment vs fitted assumption | `audits/A6_evidence` | DISPATCHED | — | `report.md` |
+| A7 | tendon-path and length consequences (existing model, baseline) | `audits/A7_paths` | DISPATCHED | — | `report.md` |
+| A8 | moment arms + force transmission over declared pose range | `audits/A8_arms` | DISPATCHED | — | `report.md` |
+| A9 | independent reproduction of Session 5 + regression receipts + H-1 confirmation | `audits/A9_reproduce` | DISPATCHED | — | `report.md` |
+| A10 | qualification specification v0 (DRAFT — not approved) | `audits/A10_spec` | DISPATCHED | — | `report.md` |
+
+## INTEGRATION QUEUE (coordinator-only)
+
+- **I1:** fold A1+A2 into one wrist-section ambiguity finding (shared integration; the two investigations stay independent until compared).
+- **I2:** qualification-spec pass-2 — fold verified audit findings into the A10 draft.
+- **I3:** consolidated blocker report for Astra: every unresolved item with the specific missing evidence + smallest proposed change. Campaign-terminal deliverable.
+
+## RULES OF THE BOARD
+
+- Audits read ONLY `baseline_snapshot/` (read-only) and write ONLY their own `audits/<id>/` dir.
+- Every report carries: verdict per acceptance criterion, evidence (file+line+numbers), explicit uncertainty, preserved failures, receipts (commands + output).
+- A finding is integrated only after its receipt verifies (numbers reproduce, paths exist).
+- File-ownership conflicts are impossible by construction; anything shared goes through the coordinator.

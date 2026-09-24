@@ -1,0 +1,1741 @@
+{
+  "kind": "attachment_candidates",
+  "source": {
+    "scope": "foreign-forearm muscle attachment sites (radius, radius_l)"
+  },
+  "revision": 5,
+  "revision_safety": "derived from the fitted packet site/tendon order + the fit's own recorded transforms and measurements; nothing re-measured or re-invented.",
+  "port_vs_waypoint_rule": "a site is a FIRST/LAST ENDPOINT of tendon X only when it is the first/last entry of X's ordered site_names; intermediate entries are waypoints and never endpoints for that tendon. Endpoint roles are NOT mechanical qualifications: every site ships mechanical_qualification=false.",
+  "bodies": {
+    "radius": {
+      "units": {
+        "source_positions": "source SI (metres), verbatim XML values",
+        "target_positions": "target metres (mesh units x authored 0.065 applied to TARGET mesh only)"
+      },
+      "local_to_world": {
+        "R_source_local_to_target": [
+          [
+            0.159648184919,
+            0.119831333218,
+            0.096471819074
+          ],
+          [
+            -0.097365891606,
+            0.186348332665,
+            -0.070342627966
+          ],
+          [
+            -0.119106017682,
+            0.008285755034,
+            0.186812756683
+          ]
+        ],
+        "t_fitted_origin_m": [
+          -0.115480984,
+          0.319109077,
+          -0.006076556
+        ],
+        "composition": "R = Bp @ diag(scale) @ B.T (B = source ONB from the fit's landmark resolution; Bp = fitted frame_basis)",
+        "max_world_reconstruction_error_m": 0.0
+      },
+      "n_sites_total": 16,
+      "n_resolved": 16,
+      "n_unresolved": 0,
+      "candidates": [
+        {
+          "site_id": "BIClong-P11",
+          "source_body": "radius",
+          "source_pos_local": [
+            -0.002,
+            -0.0375,
+            -0.002
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.008202326,
+              0.000957034,
+              -0.001149713
+            ],
+            "fitted_pos_global": [
+              -0.120486899,
+              0.312456432,
+              -0.006522686
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BIClong_tendon",
+              "index_in_path": 9,
+              "path_length": 10,
+              "role": "last_endpoint"
+            }
+          ],
+          "endpoint_roles": [
+            "last_endpoint"
+          ],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.001367249,
+              "n_loops": 5,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "BIClong-P9",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.01467,
+            -0.0102,
+            -0.01062
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.002247699,
+              0.003077685,
+              0.00259072
+            ],
+            "fitted_pos_global": [
+              -0.115385755,
+              0.316527006,
+              -0.009892308
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BIClong_tendon",
+              "index_in_path": 8,
+              "path_length": 10,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.001504883,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "BICshort-P6",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.0119375,
+            -0.0102,
+            -0.0114103
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.002195358,
+              0.003136453,
+              0.001965006
+            ],
+            "fitted_pos_global": [
+              -0.115898236,
+              0.31684865,
+              -0.009714489
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BICshort_tendon",
+              "index_in_path": 5,
+              "path_length": 7,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.000877639,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "BICshort-P8",
+          "source_body": "radius",
+          "source_pos_local": [
+            -0.002,
+            -0.0375,
+            -0.002
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.008202326,
+              0.000957034,
+              -0.001149713
+            ],
+            "fitted_pos_global": [
+              -0.120486899,
+              0.312456432,
+              -0.006522686
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BICshort_tendon",
+              "index_in_path": 6,
+              "path_length": 7,
+              "role": "last_endpoint"
+            }
+          ],
+          "endpoint_roles": [
+            "last_endpoint"
+          ],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.001367249,
+              "n_loops": 5,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "BRD-P2",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.03577,
+            -0.12742,
+            0.02315
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.029020457,
+              -0.001494286,
+              0.006547569
+            ],
+            "fitted_pos_global": [
+              -0.122805954,
+              0.290253363,
+              -0.007068034
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BRD_tendon",
+              "index_in_path": 1,
+              "path_length": 3,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.005073827,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.004626046,
+              "section_t": 0.5
+            }
+          }
+        },
+        {
+          "site_id": "BRD-P3",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.0419,
+            -0.221,
+            0.0224
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.049721553,
+              0.000432233,
+              0.006266151
+            ],
+            "fitted_pos_global": [
+              -0.133113481,
+              0.27227079,
+              -0.008713645
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BRD_tendon",
+              "index_in_path": 2,
+              "path_length": 3,
+              "role": "last_endpoint"
+            }
+          ],
+          "endpoint_roles": [
+            "last_endpoint"
+          ],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.003936573,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.003711547,
+              "section_t": 0.65
+            }
+          }
+        },
+        {
+          "site_id": "ECRB-P2",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.02905,
+            -0.13086,
+            0.02385
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.029700327,
+              -0.001868485,
+              0.005056524
+            ],
+            "fitted_pos_global": [
+              -0.124223479,
+              0.290217384,
+              -0.006165376
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECRB_tendon",
+              "index_in_path": 1,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.003751911,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.003348477,
+              "section_t": 0.5
+            }
+          }
+        },
+        {
+          "site_id": "ECRB-P3",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.03549,
+            -0.22805,
+            0.03937
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.051510357,
+              -0.003405126,
+              0.005433715
+            ],
+            "fitted_pos_global": [
+              -0.13334451,
+              0.270387435,
+              -0.004838377
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECRB_tendon",
+              "index_in_path": 2,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "unresolved",
+              "dist_to_loop_m": null,
+              "n_loops": 4,
+              "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "ECRL-P2",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.03195,
+            -0.13463,
+            0.02779
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.030645908,
+              -0.002543677,
+              0.005781121
+            ],
+            "fitted_pos_global": [
+              -0.123832165,
+              0.28895534,
+              -0.005805978
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECRL_tendon",
+              "index_in_path": 1,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.004597407,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.004260535,
+              "section_t": 0.5
+            }
+          }
+        },
+        {
+          "site_id": "ECRL-P3",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.04243,
+            -0.23684,
+            0.0362
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.053482959,
+              -0.002287909,
+              0.006666546
+            ],
+            "fitted_pos_global": [
+              -0.133595684,
+              0.2682967,
+              -0.006330001
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECRL_tendon",
+              "index_in_path": 2,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "unresolved",
+              "dist_to_loop_m": null,
+              "n_loops": 4,
+              "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "ECU-P5",
+          "source_body": "radius",
+          "source_pos_local": [
+            -0.01421,
+            -0.22696,
+            0.03481
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.050504323,
+              -0.004485723,
+              -0.005535117
+            ],
+            "fitted_pos_global": [
+              -0.14158832,
+              0.275750402,
+              0.000238357
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECU_tendon",
+              "index_in_path": 4,
+              "path_length": 6,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.001883829,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "FCR-P2",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.0211,
+            -0.21943,
+            0.00127
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.04869013,
+              0.004137402,
+              0.000923766
+            ],
+            "fitted_pos_global": [
+              -0.138284477,
+              0.276074907,
+              -0.010170584
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "FCR_tendon",
+              "index_in_path": 1,
+              "path_length": 3,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.002054407,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "inside",
+              "dist_to_hull_m": -0.002177575,
+              "section_t": 0.65
+            }
+          }
+        },
+        {
+          "site_id": "FCU-P2",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.0105197,
+            -0.183974,
+            0.00012377
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.040706813,
+              0.00337699,
+              -0.000822137
+            ],
+            "fitted_pos_global": [
+              -0.135835442,
+              0.283792863,
+              -0.008830758
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "FCU_tendon",
+              "index_in_path": 1,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.003797604,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "inside",
+              "dist_to_hull_m": -0.003802735,
+              "section_t": 0.65
+            }
+          }
+        },
+        {
+          "site_id": "FCU-P3",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.01082,
+            -0.22327,
+            0.00969
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.049556063,
+              0.001945595,
+              -0.001038449
+            ],
+            "fitted_pos_global": [
+              -0.13957352,
+              0.275767966,
+              -0.007405028
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "FCU_tendon",
+              "index_in_path": 2,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.003448523,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "inside",
+              "dist_to_hull_m": -0.003675586,
+              "section_t": 0.65
+            }
+          }
+        },
+        {
+          "site_id": "PT-P3",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.01179,
+            -0.053657,
+            -0.022189
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.011569719,
+              0.006173115,
+              0.000765216
+            ],
+            "fitted_pos_global": [
+              -0.122169135,
+              0.309523074,
+              -0.012070593
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "PT_tendon",
+              "index_in_path": 2,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside_insufficient_clearance",
+              "dist_to_loop_m": -0.000780069,
+              "n_loops": 5,
+              "reason": "inside the skin loop but clearance below the required margin"
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "PT-P5",
+          "source_body": "radius",
+          "source_pos_local": [
+            0.0254,
+            -0.1088,
+            0.0198
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.024710016,
+              -0.001495576,
+              0.004474055
+            ],
+            "fitted_pos_global": [
+              -0.122553427,
+              0.294968501,
+              -0.006304447
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "PT_tendon",
+              "index_in_path": 3,
+              "path_length": 4,
+              "role": "last_endpoint"
+            }
+          ],
+          "endpoint_roles": [
+            "last_endpoint"
+          ],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.003462575,
+              "n_loops": 5,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.003294305,
+              "section_t": 0.35
+            }
+          }
+        }
+      ]
+    },
+    "radius_l": {
+      "units": {
+        "source_positions": "source SI (metres), verbatim XML values",
+        "target_positions": "target metres (mesh units x authored 0.065 applied to TARGET mesh only)"
+      },
+      "local_to_world": {
+        "R_source_local_to_target": [
+          [
+            -0.159648206303,
+            -0.119831331664,
+            0.096471785617
+          ],
+          [
+            -0.097365902479,
+            0.18634833347,
+            0.070342610782
+          ],
+          [
+            -0.119105980131,
+            0.008285759406,
+            -0.186812780431
+          ]
+        ],
+        "t_fitted_origin_m": [
+          0.115480984,
+          0.319109077,
+          -0.006076556
+        ],
+        "composition": "R = Bp @ diag(scale) @ B.T (B = source ONB from the fit's landmark resolution; Bp = fitted frame_basis)",
+        "max_world_reconstruction_error_m": 0.0
+      },
+      "n_sites_total": 16,
+      "n_resolved": 16,
+      "n_unresolved": 0,
+      "candidates": [
+        {
+          "site_id": "BIClong_l-P11",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            -0.002,
+            -0.0375,
+            0.002
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.008202326,
+              0.000957034,
+              0.001149713
+            ],
+            "fitted_pos_global": [
+              0.120486899,
+              0.312456432,
+              -0.006522686
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BIClong_l_tendon",
+              "index_in_path": 9,
+              "path_length": 10,
+              "role": "last_endpoint"
+            }
+          ],
+          "endpoint_roles": [
+            "last_endpoint"
+          ],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.00136725,
+              "n_loops": 5,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "BIClong_l-P9",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.01467,
+            -0.0102,
+            0.01062
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.002247699,
+              0.003077685,
+              -0.00259072
+            ],
+            "fitted_pos_global": [
+              0.115385755,
+              0.316527005,
+              -0.009892308
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BIClong_l_tendon",
+              "index_in_path": 8,
+              "path_length": 10,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.001504884,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "BICshort_l-P6",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.0146695,
+            -0.0102,
+            0.0106184
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.002247722,
+              0.003077317,
+              -0.002590675
+            ],
+            "fitted_pos_global": [
+              0.11538568,
+              0.316526941,
+              -0.009891949
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BICshort_l_tendon",
+              "index_in_path": 5,
+              "path_length": 7,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.001504913,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "BICshort_l-P8",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            -0.002,
+            -0.0375,
+            0.002
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.008202326,
+              0.000957034,
+              0.001149713
+            ],
+            "fitted_pos_global": [
+              0.120486899,
+              0.312456432,
+              -0.006522686
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BICshort_l_tendon",
+              "index_in_path": 6,
+              "path_length": 7,
+              "role": "last_endpoint"
+            }
+          ],
+          "endpoint_roles": [
+            "last_endpoint"
+          ],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.00136725,
+              "n_loops": 5,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "BRD_l-P2",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.03577,
+            -0.12742,
+            -0.02315
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.029020457,
+              -0.001494286,
+              -0.006547569
+            ],
+            "fitted_pos_global": [
+              0.122805954,
+              0.290253363,
+              -0.007068033
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BRD_l_tendon",
+              "index_in_path": 1,
+              "path_length": 3,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.005073821,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.004626041,
+              "section_t": 0.5
+            }
+          }
+        },
+        {
+          "site_id": "BRD_l-P3",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.0419,
+            -0.221,
+            -0.0224
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.049721553,
+              0.000432233,
+              -0.006266151
+            ],
+            "fitted_pos_global": [
+              0.13311348,
+              0.27227079,
+              -0.008713643
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "BRD_l_tendon",
+              "index_in_path": 2,
+              "path_length": 3,
+              "role": "last_endpoint"
+            }
+          ],
+          "endpoint_roles": [
+            "last_endpoint"
+          ],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.003936586,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.003711534,
+              "section_t": 0.65
+            }
+          }
+        },
+        {
+          "site_id": "ECRB_l-P2",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.02905,
+            -0.13086,
+            -0.02385
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.029700327,
+              -0.001868485,
+              -0.005056524
+            ],
+            "fitted_pos_global": [
+              0.124223479,
+              0.290217384,
+              -0.006165375
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECRB_l_tendon",
+              "index_in_path": 1,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.003751903,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.003348476,
+              "section_t": 0.5
+            }
+          }
+        },
+        {
+          "site_id": "ECRB_l-P3",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.03549,
+            -0.22805,
+            -0.03937
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.051510357,
+              -0.003405126,
+              -0.005433715
+            ],
+            "fitted_pos_global": [
+              0.13334451,
+              0.270387436,
+              -0.004838376
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECRB_l_tendon",
+              "index_in_path": 2,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "unresolved",
+              "dist_to_loop_m": null,
+              "n_loops": 4,
+              "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "ECRL_l-P2",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.03195,
+            -0.13463,
+            -0.02779
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.030645908,
+              -0.002543677,
+              -0.005781121
+            ],
+            "fitted_pos_global": [
+              0.123832165,
+              0.28895534,
+              -0.005805977
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECRL_l_tendon",
+              "index_in_path": 1,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.004597397,
+              "n_loops": 4,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.004260534,
+              "section_t": 0.5
+            }
+          }
+        },
+        {
+          "site_id": "ECRL_l-P3",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.04243,
+            -0.23684,
+            -0.0362
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.053482959,
+              -0.002287909,
+              -0.006666546
+            ],
+            "fitted_pos_global": [
+              0.133595684,
+              0.2682967,
+              -0.00633
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECRL_l_tendon",
+              "index_in_path": 2,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "unresolved",
+              "dist_to_loop_m": null,
+              "n_loops": 4,
+              "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "ECU_l-P5",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            -0.01421,
+            -0.22696,
+            -0.03481
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.050504323,
+              -0.004485723,
+              0.005535117
+            ],
+            "fitted_pos_global": [
+              0.141588321,
+              0.275750403,
+              0.000238357
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "ECU_l_tendon",
+              "index_in_path": 4,
+              "path_length": 6,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.001883824,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "FCR_l-P2",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.0211,
+            -0.21943,
+            -0.00127
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.04869013,
+              0.004137402,
+              -0.000923766
+            ],
+            "fitted_pos_global": [
+              0.138284477,
+              0.276074907,
+              -0.010170584
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "FCR_l_tendon",
+              "index_in_path": 1,
+              "path_length": 3,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.002054401,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "inside",
+              "dist_to_hull_m": -0.002177577,
+              "section_t": 0.65
+            }
+          }
+        },
+        {
+          "site_id": "FCU_l-P2",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.00949,
+            -0.1841,
+            -0.0005
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.040727662,
+              0.003254751,
+              0.001033035
+            ],
+            "fitted_pos_global": [
+              0.135978635,
+              0.283843176,
+              -0.008638874
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "FCU_l_tendon",
+              "index_in_path": 1,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.003990418,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "inside",
+              "dist_to_hull_m": -0.00399489,
+              "section_t": 0.65
+            }
+          }
+        },
+        {
+          "site_id": "FCU_l-P3",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.01082,
+            -0.22327,
+            -0.00969
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.049556063,
+              0.001945595,
+              0.001038449
+            ],
+            "fitted_pos_global": [
+              0.13957352,
+              0.275767966,
+              -0.007405029
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "FCU_l_tendon",
+              "index_in_path": 2,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside",
+              "dist_to_loop_m": -0.003448516,
+              "n_loops": 3,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "inside",
+              "dist_to_hull_m": -0.003675594,
+              "section_t": 0.65
+            }
+          }
+        },
+        {
+          "site_id": "PT_l-P3",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.01179,
+            -0.053657,
+            0.022189
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.011569719,
+              0.006173115,
+              -0.000765216
+            ],
+            "fitted_pos_global": [
+              0.122169134,
+              0.309523073,
+              -0.012070594
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "PT_l_tendon",
+              "index_in_path": 2,
+              "path_length": 4,
+              "role": "waypoint"
+            }
+          ],
+          "endpoint_roles": [],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "inside_insufficient_clearance",
+              "dist_to_loop_m": -0.00078006,
+              "n_loops": 5,
+              "reason": "inside the skin loop but clearance below the required margin"
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "unresolved",
+              "dist_to_hull_m": null,
+              "section_t": null
+            }
+          }
+        },
+        {
+          "site_id": "PT_l-P5",
+          "source_body": "radius_l",
+          "source_pos_local": [
+            0.0254,
+            -0.1088,
+            -0.0198
+          ],
+          "source_pos_local_units": "source SI (metres), verbatim from the XML \u2014 NOT scaled by the target mesh factor",
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_local": [
+              0.024710016,
+              -0.001495576,
+              -0.004474055
+            ],
+            "fitted_pos_global": [
+              0.122553427,
+              0.294968501,
+              -0.006304446
+            ]
+          },
+          "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local",
+          "tendon_membership": [
+            {
+              "tendon": "PT_l_tendon",
+              "index_in_path": 3,
+              "path_length": 4,
+              "role": "last_endpoint"
+            }
+          ],
+          "endpoint_roles": [
+            "last_endpoint"
+          ],
+          "skin_containment": {
+            "authority": "local_triangle_plane_loop",
+            "loop": {
+              "verdict": "outside",
+              "dist_to_loop_m": 0.003462575,
+              "n_loops": 6,
+              "reason": ""
+            },
+            "hull_sampling_diagnostic": {
+              "verdict": "outside",
+              "dist_to_hull_m": 0.003294305,
+              "section_t": 0.35
+            }
+          }
+        }
+      ]
+    }
+  },
+  "provenance_hashes": {
+    "source_xml_raw_sha256": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1",
+    "source_xml_canonical_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+    "fitted_packet_sha256": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+    "note": "source XML hashes identify the UPSTREAM anatomy file; fitted_packet_sha256 identifies the WRITTEN fitted packet bytes. They are different objects and never interchangeable.",
+    "target_mesh_sha256": "550A5B3EC927EA13614AD250963B23E2948E76A238AC110DA9889F339AABFA3C",
+    "target_pack_sha256": "74B3AB044B7ADAED4A0F9349A81F5D3C87441084B2EC8981F4E0AFABA50C1662"
+  }
+}

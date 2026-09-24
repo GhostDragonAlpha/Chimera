@@ -1,0 +1,259 @@
+{
+  "campaign": "forearm anatomy package - grasp qualification (monkey)",
+  "created_utc": "2026-09-24T14:13:55Z",
+  "crosscheck_against_session5_declarations": {
+    "H-1 fitted_packet_sha256 declared in candidates packet": {
+      "declared_value": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+      "names_candidates_packet": false,
+      "names_fit_packet": true,
+      "names_neither": false,
+      "sha256_of_runs/actual_monkey_fit.json": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+      "sha256_of_runs/attachment_candidates.json": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae"
+    },
+    "chimanoid.xml == admission.meta.source_sha256 (675e00d0..)": {
+      "actual": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1",
+      "expected": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1",
+      "match": true
+    },
+    "monkey_birth.bin == admission.meta.target_mesh_sha256": {
+      "actual": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+      "expected": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+      "match": true
+    },
+    "monkey_joints.bin == admission.meta.target_pack_sha256": {
+      "actual": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+      "expected": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+      "match": true
+    }
+  },
+  "files": {
+    "code/DERIVATION.md": {
+      "bytes": 20256,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "cba8b8a1a35565eb69a696187c96a55b59aa5f753f603004fb24e188ec145d25"
+    },
+    "code/_inspect_packet.py": {
+      "bytes": 824,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "302270cf5c207658ddeb458751ea2414d3e780fedd85a9605faeb7891f905caf"
+    },
+    "code/actual_target_fit.py": {
+      "bytes": 33945,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "5c8604e4808be0faf87e9333211662561aef7056376b4424b1fcb3d22b21c0f6"
+    },
+    "code/aspect_bounds.py": {
+      "bytes": 3207,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "c9a98da2ea01b4431bdbb586faedb8849381d695d7e27fb78840534bcc8a016d"
+    },
+    "code/attachment_candidates.py": {
+      "bytes": 10109,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "fe0abacabd75e727691edbbd260586355a60b02c8bae1622d6f139cd8bf3e288"
+    },
+    "code/compiler.py": {
+      "bytes": 41302,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "8a4ba07c033111730e390764c5401ae3ce0fa41f8504ccbda28bd4bd56edf852"
+    },
+    "code/correspondence.py": {
+      "bytes": 9744,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "21770e6c60f7ecb13cb0428a2fbc8978015bfae5c3f178ab6e21d907850425f0"
+    },
+    "code/example_read_candidates.py": {
+      "bytes": 1796,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "dbb76615353cefd821810bf2d4b5b31731104063a98e2900cd09df4d0a51e145"
+    },
+    "code/example_whole_body.py": {
+      "bytes": 5850,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "123c778b0b6ab65092ca70fde7ee21353b515f4019738ce93efe722f93148c90"
+    },
+    "code/experiment_transverse_fit.py": {
+      "bytes": 22884,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "1c68345eb65f7fcec0c95d0673e604f4cabd351cc04c47e23d1b82abd76b1da1"
+    },
+    "code/figure_fit.py": {
+      "bytes": 5973,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "e8aa36510046a38a6f38f128c9a8698dcda7031efd3c6a0a0836d1de276382d8"
+    },
+    "code/figure_forearm_candidates.py": {
+      "bytes": 6064,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "a849eb995922c94b20a9402491ee37fb8dd1b8edd57a8e78dddeb465ff2cd535"
+    },
+    "code/intake.py": {
+      "bytes": 12198,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "a607af518e4ff86c50c9ea2bb53fa957cd84f03696ea2350e7ab76cae39f8897"
+    },
+    "code/inventory.py": {
+      "bytes": 2954,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "0b86e3b37c6fd8969a40d10932efa79cd443ebdb380e34aa1b913da4adf02aef"
+    },
+    "code/inventory2.py": {
+      "bytes": 3195,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "b10d3babdabba8b77b663408be376e3fb5774ace86fc918bfa9cd08b6285fbab"
+    },
+    "code/mesh_target.py": {
+      "bytes": 9599,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "268f139a9e90e561f4a5f8ab02553f0d87f51633f635139e6cec6f5c9cfa19a0"
+    },
+    "code/probe_target.py": {
+      "bytes": 2242,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "6b46e896fbd35b1db224db5b838be49133f64b86b1b7570f1023d3d454c82c22"
+    },
+    "code/probe_transverse.py": {
+      "bytes": 2343,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "6a953e103e74708c3095e67606bcce276dfb720d87f31e4731c4abc428ae2618"
+    },
+    "code/run_tests.py": {
+      "bytes": 58600,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "f46f1c4a450ba5e2f3a13a47e3e3d3c960d04ddb2601877092c833d93408857b"
+    },
+    "code/schema.py": {
+      "bytes": 19079,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "0cfe5664b9f3cabf6779bc18e85253a360d3bfc8aab7ca2d5de3862eba365ce8"
+    },
+    "code/structure_dump.py": {
+      "bytes": 1127,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "adf16656fa8223fe1cc425eaa484f7437d3a79820fda14656d7f260ae1532aec"
+    },
+    "code/synthetic_fixtures.py": {
+      "bytes": 17281,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "cbefde2747b675907bd27cc0e4af478538c3880f60932477c4cbf101a6a76034"
+    },
+    "code/target_envelope.py": {
+      "bytes": 25586,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "1752c0fd6256117729ee0eacb7eae84bcafe8eeb9bdabe0fb6a4b47ce79f1307"
+    },
+    "code/trace_hand_scale.py": {
+      "bytes": 5845,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "79403973747900e93a8b41ad4f48344873cdb03806c4ba28c7bf7fe48656b4c2"
+    },
+    "inputs/monkey_birth.bin": {
+      "bytes": 661076,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c"
+    },
+    "inputs/monkey_joints.bin": {
+      "bytes": 296589,
+      "mtime": "2026-09-24T09:13:14",
+      "sha256": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662"
+    },
+    "runs/_envelope_probe.json": {
+      "bytes": 54,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "ef4cd6b125086b2907c3a2b700c3c3741bb2be05ba7b8a17eac3bc1e49b9d2b7"
+    },
+    "runs/actual_monkey_fit.json": {
+      "bytes": 1346469,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937"
+    },
+    "runs/actual_monkey_tables.txt": {
+      "bytes": 7405,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "c3f90f2342895eccb9a6ce2ef8dafca32e075bab0ca020c76eb6e4184f55397d"
+    },
+    "runs/admission_actual_monkey.json": {
+      "bytes": 5223,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "833ca65b282eab83180bdbe65bbd8f934924fdd1416c8058d510e5481d86b4ad"
+    },
+    "runs/attachment_candidates.json": {
+      "bytes": 62615,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae"
+    },
+    "runs/experiment_transverse_candidate.json": {
+      "bytes": 35355,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "3c13fca70c2a726ec59379f2c5b1e597db3af5d82bedc39d0a4c08186f58ab3a"
+    },
+    "runs/figure_actual_fit.png": {
+      "bytes": 244739,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "b8e153c3a681e7b7f70d781f6e064d578c88ca942e412ca92e4165505b92fbd0"
+    },
+    "runs/figure_forearm_candidates.png": {
+      "bytes": 224975,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "bb5095474c0b1603b71c9652c6098d24c12070c0015e0bc40d89197ee92aeed9"
+    },
+    "runs/figure_transverse_candidate.png": {
+      "bytes": 249772,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "1f514e9fe2850db418e2c888ab7020ef8ea61c7590eba3bd324300b449006eeb"
+    },
+    "runs/grounded_chimanoid.json": {
+      "bytes": 1322442,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "457496993f7dbd1ea900e2c32f984fbc7c90402ef34d107fd2b3b38fa0ce47c4"
+    },
+    "runs/mirror_read.json": {
+      "bytes": 1330686,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "aa625a929fd18e9a60aa78bf6a6baebbd22dbdc724f3912e36feb234bedb230f"
+    },
+    "runs/synthetic_twin.json": {
+      "bytes": 1330145,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "92d6fecf824366c817904723401489defe4a9bc06fdef7d92b31fd37ca68e22f"
+    },
+    "session_reports/anatomy_compiler_01.md": {
+      "bytes": 7633,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "03b3ef31efba8ad1fa3cd7ef1726f9c5a16b10816a7a57a19e33cd8ceb6b4ed1"
+    },
+    "session_reports/anatomy_compiler_02.md": {
+      "bytes": 9440,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "b3665b20229fdf3d6c1221ff783658ea362faea32ad1ce80ae2fbb80461bde36"
+    },
+    "session_reports/anatomy_compiler_03.md": {
+      "bytes": 11557,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "5702e91283e46e68397a5db889f1ab322c896a9ee2d609a632735dad4e149099"
+    },
+    "session_reports/anatomy_compiler_04.md": {
+      "bytes": 8979,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "2df0c6a324cf3a1b157878cb2aa7f7dfa825c0873a3bc54c36e019f2a4353ebf"
+    },
+    "session_reports/anatomy_compiler_05.md": {
+      "bytes": 8713,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "ed6e333c62990ba2dc03f3d4db5f3948c46cfe19107272a2e483351316c136ce"
+    },
+    "source_xml/chimanoid.xml": {
+      "bytes": 154835,
+      "mtime": "2026-09-24T09:13:13",
+      "sha256": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1"
+    }
+  },
+  "git_head_at_snapshot": "c70b7a6c",
+  "law": "byte-identical copies of frozen originals; originals untouched; this snapshot is the canonical audit input revision",
+  "originals": [
+    ".tmp/anatomy_compiler/ (code + runs, gitignored)",
+    ".tmp/chimanoid.xml (gitignored)",
+    "agent_logs/bigpickle/anatomy_compiler_01..05.md (gitignored)",
+    "Saved/meshes/monkey_birth.bin, Saved/meshes/monkey_joints.bin"
+  ]
+}

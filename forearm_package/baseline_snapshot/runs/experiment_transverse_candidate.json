@@ -1,0 +1,1204 @@
+{
+  "preregistration": {
+    "candidate": "joint-anchored transverse translation (db, dc) per forearm side; all sites of a side share the pair",
+    "fixed": "axial length (pack-measured); segment geometry, joints, masses untouched; other side independent",
+    "bounds_m": {
+      "db": [
+        -0.008,
+        0.008
+      ],
+      "dc": [
+        -0.008,
+        0.008
+      ]
+    },
+    "objective": "sum over sites x fitting sections of max(0, margin - clearance)^2 + 0.01 * (db^2 + dc^2); fitting sections t=(0.35, 0.5, 0.65) nominal hulls",
+    "clearance_requirement": "every site inside every fitting-section hull with d <= -0.001 m",
+    "search": "deterministic 3-stage grid: 1 mm box, then 0.1 mm, then 0.01 mm neighbourhood refinement",
+    "evaluation": {
+      "loop_authority": "triangle-plane loops at each site's exact axial position",
+      "additional_sections": [
+        0.42,
+        0.58
+      ],
+      "tendon_lengths": "sum over consecutive path pairs with both endpoints resolved (same rule both revisions)",
+      "moment_arms": "compiler._analytic_arm recomputed identically for baseline and candidate positions"
+    },
+    "success_criteria": [
+      "(i) clearance requirement holds on fitting sections",
+      "(ii) loop authority: zero `outside` (and zero `tight`/`unresolved`) at exact axial",
+      "(iii) additional-section hulls: zero `outside` among judged sites",
+      "(iv) (db, dc) strictly interior to bounds"
+    ],
+    "interpretation_limit": "a passing candidate is AUTHORED transverse geometry under declared bounds \u2014 not recovered anatomy, not measured attachment, not mechanical qualification"
+  },
+  "step_A_verification": {
+    "reconstruction_max_err_m": 1.1525314521376605e-09,
+    "unit_separation": {
+      "source_coords": "verbatim intake/XML SI values (asserted equal)",
+      "target_mesh_factor": 0.065,
+      "target_coords": "metres (factor applied to TARGET mesh vertices only)"
+    },
+    "mirror": {
+      "sagittal_plane_x_m": 0.0,
+      "n_pairs": 16,
+      "max_pair_error_m": 0.000631,
+      "mean_pair_error_m": 5.5e-05,
+      "worst_pairs": [
+        [
+          "BICshort-P6",
+          0.000631
+        ],
+        [
+          "FCU-P2",
+          0.000245
+        ],
+        [
+          "BRD-P3",
+          0.0
+        ]
+      ],
+      "sanity_bound_m": 0.02
+    }
+  },
+  "step_B_baseline_loop_authority": {
+    "radius": {
+      "ok": false,
+      "n_inside": 6,
+      "n_inside_insufficient_clearance": 1,
+      "n_outside": 7,
+      "n_unresolved": 2,
+      "outside": [
+        "BIClong-P9",
+        "BICshort-P6",
+        "BRD-P2",
+        "BRD-P3",
+        "ECRB-P2",
+        "ECRL-P2",
+        "PT-P5"
+      ],
+      "inside_insufficient_clearance": [
+        "PT-P3"
+      ],
+      "unresolved": [
+        "ECRB-P3",
+        "ECRL-P3"
+      ],
+      "per_site": {
+        "BIClong-P11": {
+          "axial_m": 0.008202326,
+          "n_loops": 5,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 296,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.001367249,
+          "verdict": "inside"
+        },
+        "BIClong-P9": {
+          "axial_m": 0.002247699,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 300,
+          "loop_points": 50,
+          "dist_to_loop_m": 0.001504883,
+          "verdict": "outside"
+        },
+        "BICshort-P6": {
+          "axial_m": 0.002195358,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 300,
+          "loop_points": 50,
+          "dist_to_loop_m": 0.000877639,
+          "verdict": "outside"
+        },
+        "BICshort-P8": {
+          "axial_m": 0.008202326,
+          "n_loops": 5,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 296,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.001367249,
+          "verdict": "inside"
+        },
+        "BRD-P2": {
+          "axial_m": 0.029020457,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 178,
+          "loop_points": 48,
+          "dist_to_loop_m": 0.005073827,
+          "verdict": "outside"
+        },
+        "BRD-P3": {
+          "axial_m": 0.049721553,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 154,
+          "loop_points": 50,
+          "dist_to_loop_m": 0.003936573,
+          "verdict": "outside"
+        },
+        "ECRB-P2": {
+          "axial_m": 0.029700327,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 169,
+          "loop_points": 48,
+          "dist_to_loop_m": 0.003751911,
+          "verdict": "outside"
+        },
+        "ECRB-P3": {
+          "axial_m": 0.051510357,
+          "n_loops": 4,
+          "n_identified_loops": 2,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 155,
+          "verdict": "unresolved",
+          "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+        },
+        "ECRL-P2": {
+          "axial_m": 0.030645908,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 161,
+          "loop_points": 48,
+          "dist_to_loop_m": 0.004597407,
+          "verdict": "outside"
+        },
+        "ECRL-P3": {
+          "axial_m": 0.053482959,
+          "n_loops": 4,
+          "n_identified_loops": 2,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 161,
+          "verdict": "unresolved",
+          "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+        },
+        "ECU-P5": {
+          "axial_m": 0.050504323,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 152,
+          "loop_points": 48,
+          "dist_to_loop_m": -0.001883829,
+          "verdict": "inside"
+        },
+        "FCR-P2": {
+          "axial_m": 0.04869013,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 156,
+          "loop_points": 52,
+          "dist_to_loop_m": -0.002054407,
+          "verdict": "inside"
+        },
+        "FCU-P2": {
+          "axial_m": 0.040706813,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 156,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.003797604,
+          "verdict": "inside"
+        },
+        "FCU-P3": {
+          "axial_m": 0.049556063,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 154,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.003448523,
+          "verdict": "inside"
+        },
+        "PT-P3": {
+          "axial_m": 0.011569719,
+          "n_loops": 5,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 284,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.000780069,
+          "verdict": "inside_insufficient_clearance",
+          "reason": "inside the skin loop but clearance below the required margin"
+        },
+        "PT-P5": {
+          "axial_m": 0.024710016,
+          "n_loops": 5,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 4,
+          "n_cut_segments": 193,
+          "loop_points": 48,
+          "dist_to_loop_m": 0.003462575,
+          "verdict": "outside"
+        }
+      }
+    },
+    "radius_l": {
+      "ok": false,
+      "n_inside": 6,
+      "n_inside_insufficient_clearance": 1,
+      "n_outside": 7,
+      "n_unresolved": 2,
+      "outside": [
+        "BIClong_l-P9",
+        "BICshort_l-P6",
+        "BRD_l-P2",
+        "BRD_l-P3",
+        "ECRB_l-P2",
+        "ECRL_l-P2",
+        "PT_l-P5"
+      ],
+      "inside_insufficient_clearance": [
+        "PT_l-P3"
+      ],
+      "unresolved": [
+        "ECRB_l-P3",
+        "ECRL_l-P3"
+      ],
+      "per_site": {
+        "BIClong_l-P11": {
+          "axial_m": 0.008202326,
+          "n_loops": 5,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 297,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.00136725,
+          "verdict": "inside"
+        },
+        "BIClong_l-P9": {
+          "axial_m": 0.002247699,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 296,
+          "loop_points": 50,
+          "dist_to_loop_m": 0.001504884,
+          "verdict": "outside"
+        },
+        "BICshort_l-P6": {
+          "axial_m": 0.002247722,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 296,
+          "loop_points": 50,
+          "dist_to_loop_m": 0.001504913,
+          "verdict": "outside"
+        },
+        "BICshort_l-P8": {
+          "axial_m": 0.008202326,
+          "n_loops": 5,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 297,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.00136725,
+          "verdict": "inside"
+        },
+        "BRD_l-P2": {
+          "axial_m": 0.029020457,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 177,
+          "loop_points": 48,
+          "dist_to_loop_m": 0.005073821,
+          "verdict": "outside"
+        },
+        "BRD_l-P3": {
+          "axial_m": 0.049721553,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 154,
+          "loop_points": 50,
+          "dist_to_loop_m": 0.003936586,
+          "verdict": "outside"
+        },
+        "ECRB_l-P2": {
+          "axial_m": 0.029700327,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 171,
+          "loop_points": 48,
+          "dist_to_loop_m": 0.003751903,
+          "verdict": "outside"
+        },
+        "ECRB_l-P3": {
+          "axial_m": 0.051510357,
+          "n_loops": 4,
+          "n_identified_loops": 2,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 155,
+          "verdict": "unresolved",
+          "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+        },
+        "ECRL_l-P2": {
+          "axial_m": 0.030645908,
+          "n_loops": 4,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 161,
+          "loop_points": 48,
+          "dist_to_loop_m": 0.004597397,
+          "verdict": "outside"
+        },
+        "ECRL_l-P3": {
+          "axial_m": 0.053482959,
+          "n_loops": 4,
+          "n_identified_loops": 2,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 161,
+          "verdict": "unresolved",
+          "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+        },
+        "ECU_l-P5": {
+          "axial_m": 0.050504323,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 152,
+          "loop_points": 48,
+          "dist_to_loop_m": -0.001883824,
+          "verdict": "inside"
+        },
+        "FCR_l-P2": {
+          "axial_m": 0.04869013,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 156,
+          "loop_points": 52,
+          "dist_to_loop_m": -0.002054401,
+          "verdict": "inside"
+        },
+        "FCU_l-P2": {
+          "axial_m": 0.040727662,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 156,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.003990418,
+          "verdict": "inside"
+        },
+        "FCU_l-P3": {
+          "axial_m": 0.049556063,
+          "n_loops": 3,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 3,
+          "n_cut_segments": 154,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.003448516,
+          "verdict": "inside"
+        },
+        "PT_l-P3": {
+          "axial_m": 0.011569719,
+          "n_loops": 5,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 2,
+          "n_cut_segments": 281,
+          "loop_points": 50,
+          "dist_to_loop_m": -0.00078006,
+          "verdict": "inside_insufficient_clearance",
+          "reason": "inside the skin loop but clearance below the required margin"
+        },
+        "PT_l-P5": {
+          "axial_m": 0.024710016,
+          "n_loops": 6,
+          "n_identified_loops": 1,
+          "n_open_chains": 0,
+          "n_degenerate_chains": 4,
+          "n_cut_segments": 198,
+          "loop_points": 48,
+          "dist_to_loop_m": 0.003462575,
+          "verdict": "outside"
+        }
+      }
+    }
+  },
+  "step_C_candidate": {
+    "radius": {
+      "db_m": 0.00624,
+      "dc_m": 0.00202,
+      "objective_m2": 4.34689e-07,
+      "bounds_ok": true,
+      "fitting_sections_ok": false,
+      "loop_authority_ok": false,
+      "additional_sections_ok": true,
+      "additional_sections_sites_judged": 7,
+      "passed": false,
+      "loop_authority_candidate": {
+        "n_inside": 14,
+        "n_inside_insufficient_clearance": 0,
+        "n_outside": 0,
+        "n_unresolved": 2,
+        "outside": [],
+        "inside_insufficient_clearance": [],
+        "unresolved": [
+          "ECRB-P3",
+          "ECRL-P3"
+        ]
+      },
+      "additional_sections": {
+        "n_identified_loops": {
+          "0.42": 1,
+          "0.58": 1
+        },
+        "per_site_signed_distance_m": {
+          "BRD-P2": {
+            "0.42": -0.001357696
+          },
+          "ECRL-P2": {
+            "0.42": -0.001699027,
+            "0.58": -0.002217936
+          },
+          "ECRB-P2": {
+            "0.42": -0.002632345,
+            "0.58": -0.003182401
+          },
+          "FCU-P2": {
+            "0.58": -0.009004085
+          },
+          "PT-P5": {
+            "0.42": -0.003306963
+          }
+        }
+      },
+      "per_site_displacement_m": {
+        "BIClong-P9": 0.006558811,
+        "BIClong-P11": 0.006558811,
+        "BICshort-P6": 0.006558811,
+        "BICshort-P8": 0.006558811,
+        "BRD-P2": 0.006558811,
+        "BRD-P3": 0.006558811,
+        "ECRL-P2": 0.006558811,
+        "ECRL-P3": 0.006558811,
+        "ECRB-P2": 0.006558811,
+        "ECRB-P3": 0.006558811,
+        "ECU-P5": 0.006558811,
+        "FCR-P2": 0.006558811,
+        "FCU-P2": 0.006558811,
+        "FCU-P3": 0.006558811,
+        "PT-P3": 0.006558811,
+        "PT-P5": 0.006558811
+      },
+      "max_displacement_m": 0.006558811
+    },
+    "radius_l": {
+      "db_m": 0.00624,
+      "dc_m": -0.00202,
+      "objective_m2": 4.34689e-07,
+      "bounds_ok": true,
+      "fitting_sections_ok": false,
+      "loop_authority_ok": false,
+      "additional_sections_ok": true,
+      "additional_sections_sites_judged": 7,
+      "passed": false,
+      "loop_authority_candidate": {
+        "n_inside": 14,
+        "n_inside_insufficient_clearance": 0,
+        "n_outside": 0,
+        "n_unresolved": 2,
+        "outside": [],
+        "inside_insufficient_clearance": [],
+        "unresolved": [
+          "ECRB_l-P3",
+          "ECRL_l-P3"
+        ]
+      },
+      "additional_sections": {
+        "n_identified_loops": {
+          "0.42": 1,
+          "0.58": 1
+        },
+        "per_site_signed_distance_m": {
+          "BRD_l-P2": {
+            "0.42": -0.001357697
+          },
+          "ECRL_l-P2": {
+            "0.42": -0.001699028,
+            "0.58": -0.002217936
+          },
+          "ECRB_l-P2": {
+            "0.42": -0.002632346,
+            "0.58": -0.003182401
+          },
+          "FCU_l-P2": {
+            "0.58": -0.008996789
+          },
+          "PT_l-P5": {
+            "0.42": -0.003306964
+          }
+        }
+      },
+      "per_site_displacement_m": {
+        "BIClong_l-P9": 0.006558811,
+        "BIClong_l-P11": 0.006558811,
+        "BICshort_l-P6": 0.006558811,
+        "BICshort_l-P8": 0.006558811,
+        "BRD_l-P2": 0.006558811,
+        "BRD_l-P3": 0.006558811,
+        "ECRL_l-P2": 0.006558811,
+        "ECRL_l-P3": 0.006558811,
+        "ECRB_l-P2": 0.006558811,
+        "ECRB_l-P3": 0.006558811,
+        "ECU_l-P5": 0.006558811,
+        "FCR_l-P2": 0.006558811,
+        "FCU_l-P2": 0.006558811,
+        "FCU_l-P3": 0.006558811,
+        "PT_l-P3": 0.006558811,
+        "PT_l-P5": 0.006558811
+      },
+      "max_displacement_m": 0.006558811
+    }
+  },
+  "tendon_deltas": {
+    "glut_med1_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_med2_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_med3_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "bifemlh_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "bifemsh_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "sar_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "add_mag2_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "tfl_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "pect_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "grac_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_max1_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_max2_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_max3_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "iliacus_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "psoas_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "quad_fem_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "gem_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "peri_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "rect_fem_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "vas_int_r_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "med_gas_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "soleus_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "tib_post_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "tib_ant_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "per_long_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "flex_dig_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "flex_hal_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ext_dig_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_med1_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_med2_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_med3_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "bifemlh_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "bifemsh_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "sar_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "add_mag2_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "tfl_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "pect_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "grac_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_max1_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_max2_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "glut_max3_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "iliacus_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "psoas_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "quad_fem_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "gem_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "peri_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "rect_fem_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "vas_int_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": 0.0,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "med_gas_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "soleus_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "tib_post_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "tib_ant_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "per_long_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "flex_dig_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "flex_hal_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ext_dig_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ercspn_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ercspn_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "intobl_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "intobl_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "extobl_r_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "extobl_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "DELT1_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "DELT2_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "DELT3_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "SUPSP_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "INFSP_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "SUBSC_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TMIN_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TMAJ_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "PECM1_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "PECM2_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "PECM3_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "LAT1_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "LAT2_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "LAT3_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "CORB_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TRIlong_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TRIlat_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TRImed_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ANC_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "BIClong_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "BICshort_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "BRA_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "BRD_tendon": {
+      "comparable": true,
+      "path_length_delta_m": -0.00090164,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ECRL_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ECRB_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ECU_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "FCR_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "FCU_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "PT_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "DELT1_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "DELT2_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "DELT3_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "SUPSP_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "INFSP_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "SUBSC_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TMIN_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TMAJ_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "PECM1_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "PECM2_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "PECM3_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "LAT1_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "LAT2_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "LAT3_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "CORB_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TRIlong_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TRIlat_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "TRImed_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ANC_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "BIClong_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "BICshort_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "BRA_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "BRD_l_tendon": {
+      "comparable": true,
+      "path_length_delta_m": -0.000901337,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ECRL_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ECRB_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "ECU_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "FCR_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "FCU_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    },
+    "PT_l_tendon": {
+      "comparable": false,
+      "path_length_delta_m": null,
+      "moment_arm_max_abs_delta_m": 0.0
+    }
+  }
+}
