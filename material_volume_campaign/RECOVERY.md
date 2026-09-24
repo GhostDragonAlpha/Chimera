@@ -44,3 +44,9 @@ Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe
 ## CHECKPOINT T5a — 5th [1302] (B5, 5.5 min — same six-agent spawn burst as B3)
 
 **Diagnosis sharpened:** both casualties were spawned in the same simultaneous 6-agent volley; all longer-running agents survive. The burst, not the steady-state count, triggers the limit. **Standing spawn discipline: stagger new/retry spawns 1-2 at a time, never volleys.** Retry queue: B3, B5 (both behind M06-retry, serialized). Fleet drains by completion; refills staggered.
+
+## CHECKPOINT T6 — M02 integrated (the headline outstanding case CLOSED)
+
+**Verified:** M02 PASS 142/142 — coordinator re-ran derivation/derive_oracle.py (all gates pass; expectations regenerate); integrity clean. Multi-cell mixed-density nontrivial-offset case: exact masses, off-diagonal preservation with correct signs, no invented cross terms on isotropic rotation, whole-partition parallel-axis recombination 5.68e-14, determinism, reader acceptance. Independence triple-anchored (exact algebra / quadrature / published literals) with file-timeline-proven prereg freeze. Agent-side defects preserved (the honest pattern again).
+
+**Fleet:** 10 live (M02 done). Serialized retry queue unchanged: B3, B5 wait for M06-retry. Strict protocol held — no spawn this pass.

@@ -1,0 +1,178 @@
+{
+  "schema_version": "chimera.fitting_manifest.v1",
+  "fitting_id": "mc-multicell-coupon-fit-v1",
+  "domain_id": "mc-three-tetrahedron-coupon",
+  "domain_revision": "mc-coupon-fixture-v1",
+  "coordinate_frame": {
+    "frame_id": "mc-domain",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "scale_to_m": 1.0
+  },
+  "vertices": [
+    {
+      "vertex_id": "r0",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "r1",
+      "position": [
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "r2",
+      "position": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "r3",
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "vertex_id": "d0",
+      "position": [
+        5.0,
+        4.0,
+        4.0
+      ]
+    },
+    {
+      "vertex_id": "d1",
+      "position": [
+        5.0,
+        2.0,
+        2.0
+      ]
+    },
+    {
+      "vertex_id": "d2",
+      "position": [
+        3.0,
+        2.0,
+        4.0
+      ]
+    },
+    {
+      "vertex_id": "d3",
+      "position": [
+        3.0,
+        4.0,
+        2.0
+      ]
+    },
+    {
+      "vertex_id": "s0",
+      "position": [
+        -2.0,
+        3.0,
+        1.0
+      ]
+    },
+    {
+      "vertex_id": "s1",
+      "position": [
+        1.0,
+        4.0,
+        1.0
+      ]
+    },
+    {
+      "vertex_id": "s2",
+      "position": [
+        -2.0,
+        4.0,
+        3.0
+      ]
+    },
+    {
+      "vertex_id": "s3",
+      "position": [
+        -1.0,
+        2.0,
+        4.0
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "cell_id": "cell-R",
+      "vertex_ids": [
+        "r0",
+        "r1",
+        "r2",
+        "r3"
+      ],
+      "component_id": "mc-component-R"
+    },
+    {
+      "cell_id": "cell-D",
+      "vertex_ids": [
+        "d0",
+        "d1",
+        "d2",
+        "d3"
+      ],
+      "component_id": "mc-component-D"
+    },
+    {
+      "cell_id": "cell-S",
+      "vertex_ids": [
+        "s0",
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "component_id": "mc-component-S"
+    }
+  ],
+  "regions": [
+    {
+      "region_id": "mc-region-R",
+      "mass_owner_id": "mc-owner-R",
+      "material_id": "mc-tissue-R"
+    },
+    {
+      "region_id": "mc-region-D",
+      "mass_owner_id": "mc-owner-D",
+      "material_id": "mc-tissue-D"
+    },
+    {
+      "region_id": "mc-region-S",
+      "mass_owner_id": "mc-owner-S",
+      "material_id": "mc-tissue-S"
+    }
+  ],
+  "mass_authority": "reconstructed_tissue_mass",
+  "source_effective_segment_ids": [],
+  "matter_ownership": [
+    {
+      "matter_id": "mc-matter-R",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "mc-owner-R"
+    },
+    {
+      "matter_id": "mc-matter-D",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "mc-owner-D"
+    },
+    {
+      "matter_id": "mc-matter-S",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "mc-owner-S"
+    }
+  ]
+}

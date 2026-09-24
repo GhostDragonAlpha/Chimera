@@ -1,0 +1,144 @@
+PASS | root.schema_version | observed='chimera.rigid_body_mass_export.v1' | expected='chimera.rigid_body_mass_export.v1'
+PASS | root.export_status | observed='complete' | expected='complete'
+PASS | root.admission_status | observed='validation_only_admissible' | expected='validation_only_admissible'
+PASS | root.mass_authority | observed='reconstructed_tissue_mass' | expected='reconstructed_tissue_mass'
+PASS | root.validation_only | observed=True | expected=True
+PASS | root.dynamics_readiness_claimed | observed=False | expected=False
+PASS | root.physical_state_mutated | observed=False | expected=False
+PASS | root.production_wired | observed=False | expected=False
+PASS | root.anatomical_completeness_certified | observed=False | expected=False
+PASS | root.admission_anatomical_completeness_certified | observed=False | expected=False
+PASS | root.all_supplied_cells_assigned | observed=True | expected=True
+PASS | root.unassigned_cell_ids | observed=[] | expected=[]
+PASS | root.unassigned_cells | observed=[] | expected=[]
+PASS | root.surface_mass_overlay_generated | observed=False | expected=False
+PASS | root.source_effective_segment_payloads_consumed | observed=False | expected=False
+PASS | root.reason_codes | observed=[] | expected=[]
+PASS | root.input_hashes.algorithm | observed='sha256' | expected='sha256'
+PASS | root.input_hashes.manifest_sha256 | observed='c6b0ab297f7feef98149066e399dd57a13b10727e0126cc36d46e3fdddafb65c' | expected='c6b0ab297f7feef98149066e399dd57a13b10727e0126cc36d46e3fdddafb65c'
+PASS | root.input_hashes.partition_sha256 | observed='a402b1f43738f4f2d47a8b4bb49a594fcdeb7546ce59d66beccf6985e83c758b' | expected='a402b1f43738f4f2d47a8b4bb49a594fcdeb7546ce59d66beccf6985e83c758b'
+PASS | root.input_hashes.body_groups_sha256 | observed='2d8158fcbeadc55c1a261ecd35bb063e82c132af728a5953f88a20d0c795e43f' | expected='2d8158fcbeadc55c1a261ecd35bb063e82c132af728a5953f88a20d0c795e43f'
+PASS | mc-body-1.export_status | observed='exported' | expected='exported'
+PASS | mc-body-1.admission_status | observed='validation_only_admissible' | expected='validation_only_admissible'
+PASS | mc-body-1.owned_cell_ids | observed=['cell-R', 'cell-S'] | expected=['cell-R', 'cell-S']
+PASS | mc-body-1.body_frame.frame_id | observed='mc-frame-1' | expected='mc-frame-1'
+PASS | mc-body-1.body_frame.rotation | observed=[[0.0, 0.0, 1.0], [0.5, 0.8660254037844386, 0.0], [-0.8660254037844386, 0.5, 0.0]] | expected=[[0.0, 0.0, 1.0], [0.5, 0.8660254037844386, 0.0], [-0.8660254037844386, 0.5, 0.0]]
+PASS | mc-body-1.body_frame.origin_m | observed=[2.0, -1.0, 3.0] | expected=[2.0, -1.0, 3.0]
+PASS | mc-body-1.mass.unit | observed='kg' | expected='kg'
+PASS | mc-body-1.mass.coordinate_frame | observed='frame_invariant' | expected='frame_invariant'
+PASS | mc-body-1.mass.frame_invariant | observed=True | expected=True
+PASS | mc-body-1.volume.unit | observed='m^3' | expected='m^3'
+PASS | mc-body-1.volume.frame_invariant | observed=True | expected=True
+PASS | mc-body-1.com.unit | observed='m' | expected='m'
+PASS | mc-body-1.com.coordinate_frame | observed='mc-frame-1' | expected='mc-frame-1'
+PASS | mc-body-1.inertia.unit | observed='kg*m^2' | expected='kg*m^2'
+PASS | mc-body-1.inertia.coordinate_frame | observed='mc-frame-1' | expected='mc-frame-1'
+PASS | mc-body-1.inertia.frame_id | observed='mc-frame-1' | expected='mc-frame-1'
+PASS | mc-body-1.inertia.basis | observed='authored_body_frame' | expected='authored_body_frame'
+PASS | mc-body-1.inertia.full_symmetric_tensor | observed=True | expected=True
+PASS | mc-body-1.inertia.off_diagonal_terms_preserved | observed=True | expected=True
+PASS | mc-body-1.inertia.principal_axis_transform_applied | observed=False | expected=False
+PASS | mc-body-1.mass | observed=27.5 | expected=27.5 | |dev|=0.000e+00 | tol=2.750e-08
+PASS | mc-body-1.volume | observed=3.0 | expected=3.0 | |dev|=0.000e+00 | tol=3.000e-09
+PASS | mc-body-1.com.x | observed=2.7913954752069743 | expected=2.7913954752069747 | |dev|=4.441e-16 | tol=2.791e-09
+PASS | mc-body-1.com.y | observed=3.043929696167259 | expected=3.0439296961672597 | |dev|=8.882e-16 | tol=3.044e-09
+PASS | mc-body-1.com.z | observed=-2.909090909090909 | expected=-2.909090909090909 | |dev|=0.000e+00 | tol=2.909e-09
+PASS | mc-body-1.inertia[0][0] | observed=36.98214438990925 | expected=36.982144389909266 | |dev|=1.421e-14 | tol=3.698e-08
+PASS | mc-body-1.inertia[0][1] | observed=2.309917453013379 | expected=2.309917453013376 | |dev|=2.665e-15 | tol=2.310e-09
+PASS | mc-body-1.inertia[0][2] | observed=-3.3929513777455074 | expected=-3.3929513777455083 | |dev|=8.882e-16 | tol=3.393e-09
+PASS | mc-body-1.inertia[1][0] | observed=2.309917453013379 | expected=2.309917453013376 | |dev|=2.665e-15 | tol=2.310e-09
+PASS | mc-body-1.inertia[1][1] | observed=20.63490106463619 | expected=20.634901064636193 | |dev|=3.553e-15 | tol=2.063e-08
+PASS | mc-body-1.inertia[1][2] | observed=8.545963098861229 | expected=8.545963098861229 | |dev|=0.000e+00 | tol=8.546e-09
+PASS | mc-body-1.inertia[2][0] | observed=-3.3929513777455074 | expected=-3.3929513777455083 | |dev|=8.882e-16 | tol=3.393e-09
+PASS | mc-body-1.inertia[2][1] | observed=8.545963098861229 | expected=8.545963098861229 | |dev|=0.000e+00 | tol=8.546e-09
+PASS | mc-body-1.inertia[2][2] | observed=36.37159090909091 | expected=36.37159090909091 | |dev|=0.000e+00 | tol=3.637e-08
+PASS | mc-body-1.symmetry[0][1] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-1.symmetry[0][2] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-1.symmetry[1][2] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-1.prov.mass_authority | observed='reconstructed_tissue_mass' | expected='reconstructed_tissue_mass'
+PASS | mc-body-1.prov.mass_source_kind | observed='reconstructed_material_volume' | expected='reconstructed_material_volume'
+PASS | mc-body-1.prov.integration_model | observed='piecewise_constant_density_over_owned_tetrahedral_cells' | expected='piecewise_constant_density_over_owned_tetrahedral_cells'
+PASS | mc-body-1.prov.mass_owner_ids | observed=['mc-owner-R', 'mc-owner-S'] | expected=['mc-owner-R', 'mc-owner-S']
+PASS | mc-body-1.prov.overlay_consumed | observed=False | expected=False
+PASS | mc-body-1.prov.overlay_generated | observed=False | expected=False
+PASS | mc-body-1.prov.segments_consumed | observed=False | expected=False
+PASS | mc-body-1.cell_provenance.cell_ids | observed=['cell-R', 'cell-S'] | expected=['cell-R', 'cell-S']
+PASS | mc-body-1.prov.cell-R.density | observed=12.0 | expected=12.0
+PASS | mc-body-1.prov.cell-R.owner | observed='mc-owner-R' | expected='mc-owner-R'
+PASS | mc-body-1.prov.cell-R.region | observed='mc-region-R' | expected='mc-region-R'
+PASS | mc-body-1.prov.cell-R.material | observed='mc-tissue-R' | expected='mc-tissue-R'
+PASS | mc-body-1.prov.cell-R.density_source | observed='mc analytic coupon fixture' | expected='mc analytic coupon fixture'
+PASS | mc-body-1.prov.cell-R.conditions | observed='uniform' | expected='uniform'
+PASS | mc-body-1.prov.cell-S.density | observed=9.0 | expected=9.0
+PASS | mc-body-1.prov.cell-S.owner | observed='mc-owner-S' | expected='mc-owner-S'
+PASS | mc-body-1.prov.cell-S.region | observed='mc-region-S' | expected='mc-region-S'
+PASS | mc-body-1.prov.cell-S.material | observed='mc-tissue-S' | expected='mc-tissue-S'
+PASS | mc-body-1.prov.cell-S.density_source | observed='mc analytic coupon fixture' | expected='mc analytic coupon fixture'
+PASS | mc-body-1.prov.cell-S.conditions | observed='uniform' | expected='uniform'
+PASS | mc-body-2.export_status | observed='exported' | expected='exported'
+PASS | mc-body-2.admission_status | observed='validation_only_admissible' | expected='validation_only_admissible'
+PASS | mc-body-2.owned_cell_ids | observed=['cell-D'] | expected=['cell-D']
+PASS | mc-body-2.body_frame.frame_id | observed='mc-frame-2' | expected='mc-frame-2'
+PASS | mc-body-2.body_frame.rotation | observed=[[0.0, -0.5, 0.8660254037844386], [1.0, 0.0, 0.0], [0.0, 0.8660254037844386, 0.5]] | expected=[[0.0, -0.5, 0.8660254037844386], [1.0, 0.0, 0.0], [0.0, 0.8660254037844386, 0.5]]
+PASS | mc-body-2.body_frame.origin_m | observed=[-1.0, 4.0, -2.0] | expected=[-1.0, 4.0, -2.0]
+PASS | mc-body-2.mass.unit | observed='kg' | expected='kg'
+PASS | mc-body-2.mass.coordinate_frame | observed='frame_invariant' | expected='frame_invariant'
+PASS | mc-body-2.mass.frame_invariant | observed=True | expected=True
+PASS | mc-body-2.volume.unit | observed='m^3' | expected='m^3'
+PASS | mc-body-2.volume.frame_invariant | observed=True | expected=True
+PASS | mc-body-2.com.unit | observed='m' | expected='m'
+PASS | mc-body-2.com.coordinate_frame | observed='mc-frame-2' | expected='mc-frame-2'
+PASS | mc-body-2.inertia.unit | observed='kg*m^2' | expected='kg*m^2'
+PASS | mc-body-2.inertia.coordinate_frame | observed='mc-frame-2' | expected='mc-frame-2'
+PASS | mc-body-2.inertia.frame_id | observed='mc-frame-2' | expected='mc-frame-2'
+PASS | mc-body-2.inertia.basis | observed='authored_body_frame' | expected='authored_body_frame'
+PASS | mc-body-2.inertia.full_symmetric_tensor | observed=True | expected=True
+PASS | mc-body-2.inertia.off_diagonal_terms_preserved | observed=True | expected=True
+PASS | mc-body-2.inertia.principal_axis_transform_applied | observed=False | expected=False
+PASS | mc-body-2.mass | observed=16.0 | expected=16.0 | |dev|=0.000e+00 | tol=1.600e-08
+PASS | mc-body-2.volume | observed=2.6666666666666665 | expected=2.6666666666666665 | |dev|=0.000e+00 | tol=2.667e-09
+PASS | mc-body-2.com.x | observed=-1.0 | expected=-1.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.com.y | observed=1.8301270189221928 | expected=1.8301270189221928 | |dev|=0.000e+00 | tol=1.830e-09
+PASS | mc-body-2.com.z | observed=6.830127018922193 | expected=6.830127018922193 | |dev|=0.000e+00 | tol=6.830e-09
+PASS | mc-body-2.inertia[0][0] | observed=6.400000000000001 | expected=6.4 | |dev|=8.882e-16 | tol=6.400e-09
+PASS | mc-body-2.inertia[0][1] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.inertia[0][2] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.inertia[1][0] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.inertia[1][1] | observed=6.400000000000001 | expected=6.4 | |dev|=8.882e-16 | tol=6.400e-09
+PASS | mc-body-2.inertia[1][2] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.inertia[2][0] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.inertia[2][1] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.inertia[2][2] | observed=6.400000000000001 | expected=6.4 | |dev|=8.882e-16 | tol=6.400e-09
+PASS | mc-body-2.symmetry[0][1] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.symmetry[0][2] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.symmetry[1][2] | observed=0.0 | expected=0.0 | |dev|=0.000e+00 | tol=1.000e-09
+PASS | mc-body-2.prov.mass_authority | observed='reconstructed_tissue_mass' | expected='reconstructed_tissue_mass'
+PASS | mc-body-2.prov.mass_source_kind | observed='reconstructed_material_volume' | expected='reconstructed_material_volume'
+PASS | mc-body-2.prov.integration_model | observed='piecewise_constant_density_over_owned_tetrahedral_cells' | expected='piecewise_constant_density_over_owned_tetrahedral_cells'
+PASS | mc-body-2.prov.mass_owner_ids | observed=['mc-owner-D'] | expected=['mc-owner-D']
+PASS | mc-body-2.prov.overlay_consumed | observed=False | expected=False
+PASS | mc-body-2.prov.overlay_generated | observed=False | expected=False
+PASS | mc-body-2.prov.segments_consumed | observed=False | expected=False
+PASS | mc-body-2.cell_provenance.cell_ids | observed=['cell-D'] | expected=['cell-D']
+PASS | mc-body-2.prov.cell-D.density | observed=6.0 | expected=6.0
+PASS | mc-body-2.prov.cell-D.owner | observed='mc-owner-D' | expected='mc-owner-D'
+PASS | mc-body-2.prov.cell-D.region | observed='mc-region-D' | expected='mc-region-D'
+PASS | mc-body-2.prov.cell-D.material | observed='mc-tissue-D' | expected='mc-tissue-D'
+PASS | mc-body-2.prov.cell-D.density_source | observed='mc analytic coupon fixture' | expected='mc analytic coupon fixture'
+PASS | mc-body-2.prov.cell-D.conditions | observed='uniform' | expected='uniform'
+PASS | whole.mass_from_bodies | observed=43.5 | expected=43.5 | |dev|=0.000e+00 | tol=4.350e-08
+PASS | whole.volume_from_bodies | observed=5.666666666666666 | expected=5.666666666666667 | |dev|=8.882e-16 | tol=5.667e-09
+PASS | whole.com.x_recombined | observed=0.8965517241379307 | expected=0.896551724137931 | |dev|=3.331e-16 | tol=1.000e-09
+PASS | whole.com.y_recombined | observed=3.0201149425287355 | expected=3.0201149425287355 | |dev|=0.000e+00 | tol=3.020e-09
+PASS | whole.com.z_recombined | observed=2.4339080459770113 | expected=2.4339080459770117 | |dev|=4.441e-16 | tol=2.434e-09
+PASS | whole.inertia[0][0]_recombined | observed=50.892385057471245 | expected=50.892385057471266 | |dev|=2.132e-14 | tol=5.089e-08
+PASS | whole.inertia[0][1]_recombined | observed=7.284482758620663 | expected=7.2844827586206895 | |dev|=2.665e-14 | tol=7.284e-09
+PASS | whole.inertia[0][2]_recombined | observed=-37.2525862068965 | expected=-37.25258620689655 | |dev|=4.974e-14 | tol=3.725e-08
+PASS | whole.inertia[1][0]_recombined | observed=7.284482758620663 | expected=7.2844827586206895 | |dev|=2.665e-14 | tol=7.284e-09
+PASS | whole.inertia[1][1]_recombined | observed=284.9944683908045 | expected=284.99446839080457 | |dev|=5.684e-14 | tol=2.850e-07
+PASS | whole.inertia[1][2]_recombined | observed=-7.945330459770121 | expected=-7.945330459770115 | |dev|=6.217e-15 | tol=7.945e-09
+PASS | whole.inertia[2][0]_recombined | observed=-37.2525862068965 | expected=-37.25258620689655 | |dev|=4.974e-14 | tol=3.725e-08
+PASS | whole.inertia[2][1]_recombined | observed=-7.945330459770117 | expected=-7.945330459770115 | |dev|=2.665e-15 | tol=7.945e-09
+PASS | whole.inertia[2][2]_recombined | observed=281.066882183908 | expected=281.06688218390804 | |dev|=5.684e-14 | tol=2.811e-07
+TOTAL: 142 checks, 0 FAIL
+EXIT=0
