@@ -1,0 +1,1049 @@
+{
+ "transform_audit": {
+  "radius": {
+   "orth_max_abs_RtR_minus_I": 0.9508460967558886,
+   "det_R": 0.010897754382722218,
+   "singular_values": [
+    0.22170679566588303,
+    0.22170679566530663,
+    0.22170679566499435
+   ],
+   "sv_spread": 8.886780200612066e-13,
+   "uniform_scale_from_R": 0.22170679566539464,
+   "fit_scale": [
+    0.22170679566544982,
+    0.22170679566544982,
+    0.22170679566544982
+   ],
+   "scaled_rotation_Q": {
+    "orth_max_abs_QtQ_minus_I": 2.6441245026820326e-12,
+    "det_Q": 1.0000000000000004
+   },
+   "t_packet": [
+    -0.115480984,
+    0.319109077,
+    -0.006076556
+   ],
+   "t_fit_fitted_origin": [
+    -0.11548098385334016,
+    0.3191090774536133,
+    -0.0060765563324093825
+   ],
+   "t_packet_minus_fit_max_abs": 4.536132580668095e-10,
+   "R_packet_minus_rebuilt_max_abs": 3.9296343956607416e-13,
+   "det_R_expected_s3": 0.010897754382730346,
+   "landmarks_used": {
+    "prox": [
+     "body_origin:radius",
+     [
+      -0.09110000000000001,
+      0.8230470000000001,
+      0.17769900000000005
+     ]
+    ],
+    "dist": [
+     "body_origin:hand_r",
+     [
+      -0.07310000000000001,
+      0.5326470000000001,
+      0.20269900000000005
+     ]
+    ],
+    "roll": [
+     "site:PT-P2",
+     [
+      -0.08304000000000002,
+      0.8008200000000001,
+      0.14338000000000006
+     ]
+    ]
+   },
+   "packet_recorded_recon_err": 0.0
+  },
+  "radius_l": {
+   "orth_max_abs_RtR_minus_I": 0.9508460967558786,
+   "det_R": 0.010897754382733271,
+   "singular_values": [
+    0.22170679566595447,
+    0.22170679566540524,
+    0.22170679566504925
+   ],
+   "sv_spread": 9.052203431281214e-13,
+   "uniform_scale_from_R": 0.22170679566546966,
+   "fit_scale": [
+    0.22170679566544982,
+    0.22170679566544982,
+    0.22170679566544982
+   ],
+   "scaled_rotation_Q": {
+    "orth_max_abs_QtQ_minus_I": 2.623457007189245e-12,
+    "det_Q": 0.9999999999999998
+   },
+   "t_packet": [
+    0.115480984,
+    0.319109077,
+    -0.006076556
+   ],
+   "t_fit_fitted_origin": [
+    0.11548098385334016,
+    0.3191090774536133,
+    -0.0060765563324093825
+   ],
+   "t_packet_minus_fit_max_abs": 4.536132580668095e-10,
+   "R_packet_minus_rebuilt_max_abs": 4.733297087611277e-13,
+   "det_R_expected_s3": 0.010897754382730346,
+   "landmarks_used": {
+    "prox": [
+     "body_origin:radius_l",
+     [
+      -0.09110000000000001,
+      0.822997,
+      -0.17769899999999994
+     ]
+    ],
+    "dist": [
+     "body_origin:hand_l",
+     [
+      -0.07310000000000001,
+      0.532597,
+      -0.20269899999999993
+     ]
+    ],
+    "roll": [
+     "site:PT_l-P2",
+     [
+      -0.08304000000000002,
+      0.80077,
+      -0.14337999999999995
+     ]
+    ]
+   },
+   "packet_recorded_recon_err": 0.0
+  }
+ },
+ "reconstruction": {
+  "n_sites": 32,
+  "all_resolved": true,
+  "source_local_all_equal_fit": true,
+  "packet_export_recon_max_m": 1.1525314521376605e-09,
+  "packet_export_recon_mean_m": 7.546590927491431e-10,
+  "packet_export_worst_site": "BIClong-P9",
+  "full_precision_recon_max_m": 5.551115123125783e-17,
+  "full_precision_recon_mean_m": 4.092863201132779e-18,
+  "full_precision_worst_site": "BRD-P3",
+  "claim_step_A_max_m": 1.1525314521376605e-09,
+  "rows": [
+   {
+    "site_id": "BIClong-P11",
+    "body": "radius",
+    "recon_err_packet_m": 8.315703248517712e-10,
+    "recon_err_fullprec_m": 8.673617379884035e-19,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BIClong-P9",
+    "body": "radius",
+    "recon_err_packet_m": 1.1525314521376605e-09,
+    "recon_err_fullprec_m": 1.734723475976807e-18,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BICshort-P6",
+    "body": "radius",
+    "recon_err_packet_m": 1.0594414300867158e-09,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BICshort-P8",
+    "body": "radius",
+    "recon_err_packet_m": 8.315703248517712e-10,
+    "recon_err_fullprec_m": 8.673617379884035e-19,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BRD-P2",
+    "body": "radius",
+    "recon_err_packet_m": 4.673639969409291e-10,
+    "recon_err_fullprec_m": 1.734723475976807e-18,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BRD-P3",
+    "body": "radius",
+    "recon_err_packet_m": 7.869567716243467e-10,
+    "recon_err_fullprec_m": 5.551115123125783e-17,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECRB-P2",
+    "body": "radius",
+    "recon_err_packet_m": 1.0298568348209903e-09,
+    "recon_err_fullprec_m": 8.673617379884035e-19,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECRB-P3",
+    "body": "radius",
+    "recon_err_packet_m": 2.360652717049785e-10,
+    "recon_err_fullprec_m": 8.673617379884035e-19,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECRL-P2",
+    "body": "radius",
+    "recon_err_packet_m": 8.962442798448611e-10,
+    "recon_err_fullprec_m": 8.673617379884035e-19,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECRL-P3",
+    "body": "radius",
+    "recon_err_packet_m": 6.675472466448027e-10,
+    "recon_err_fullprec_m": 8.673617379884035e-19,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECU-P5",
+    "body": "radius",
+    "recon_err_packet_m": 6.293236495801605e-10,
+    "recon_err_fullprec_m": 1.734723475976807e-18,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "FCR-P2",
+    "body": "radius",
+    "recon_err_packet_m": 5.430395552931767e-10,
+    "recon_err_fullprec_m": 5.551115123125783e-17,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "FCU-P2",
+    "body": "radius",
+    "recon_err_packet_m": 9.35770562002735e-10,
+    "recon_err_fullprec_m": 1.734723475976807e-18,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "FCU-P3",
+    "body": "radius",
+    "recon_err_packet_m": 5.400371302890846e-10,
+    "recon_err_fullprec_m": 8.673617379884035e-19,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "PT-P3",
+    "body": "radius",
+    "recon_err_packet_m": 7.790566445592213e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "PT-P5",
+    "body": "radius",
+    "recon_err_packet_m": 6.615206076788456e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BIClong_l-P11",
+    "body": "radius_l",
+    "recon_err_packet_m": 6.42708149352597e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BIClong_l-P9",
+    "body": "radius_l",
+    "recon_err_packet_m": 8.736870346132694e-10,
+    "recon_err_fullprec_m": 1.734723475976807e-18,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BICshort_l-P6",
+    "body": "radius_l",
+    "recon_err_packet_m": 3.634687068235393e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BICshort_l-P8",
+    "body": "radius_l",
+    "recon_err_packet_m": 6.42708149352597e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BRD_l-P2",
+    "body": "radius_l",
+    "recon_err_packet_m": 6.581503601995689e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "BRD_l-P3",
+    "body": "radius_l",
+    "recon_err_packet_m": 6.806023866855025e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECRB_l-P2",
+    "body": "radius_l",
+    "recon_err_packet_m": 1.0681904688460361e-09,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECRB_l-P3",
+    "body": "radius_l",
+    "recon_err_packet_m": 1.050330430651342e-09,
+    "recon_err_fullprec_m": 1.734723475976807e-18,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECRL_l-P2",
+    "body": "radius_l",
+    "recon_err_packet_m": 9.30222200433093e-10,
+    "recon_err_fullprec_m": 8.673617379884035e-19,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECRL_l-P3",
+    "body": "radius_l",
+    "recon_err_packet_m": 8.638076938832804e-10,
+    "recon_err_fullprec_m": 8.673617379884035e-19,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "ECU_l-P5",
+    "body": "radius_l",
+    "recon_err_packet_m": 6.085358405206128e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "FCR_l-P2",
+    "body": "radius_l",
+    "recon_err_packet_m": 5.35095052209137e-10,
+    "recon_err_fullprec_m": 1.734723475976807e-18,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "FCU_l-P2",
+    "body": "radius_l",
+    "recon_err_packet_m": 9.930887464374286e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "FCU_l-P3",
+    "body": "radius_l",
+    "recon_err_packet_m": 7.721206771009084e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "PT_l-P3",
+    "body": "radius_l",
+    "recon_err_packet_m": 8.005585843119095e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   },
+   {
+    "site_id": "PT_l-P5",
+    "body": "radius_l",
+    "recon_err_packet_m": 6.179204036397088e-10,
+    "recon_err_fullprec_m": 0.0,
+    "src_local_vs_fit_max_abs": 0.0,
+    "resolved": true
+   }
+  ]
+ },
+ "pairing": {
+  "all_right_matched_left": true,
+  "n_pairs": 16,
+  "all_tendon_family_ok_packet": true,
+  "all_tendon_family_ok_fit": true
+ },
+ "spine_x_joints": {
+  "spine_lower": 0.0,
+  "spine_mid": 0.0,
+  "spine_upper": 0.0
+ },
+ "mirror_tables": {
+  "recorded": {
+   "plane_x_m": 0.0,
+   "n_pairs": 16,
+   "max_m": 0.0006306364922972661,
+   "mean_m": 5.4706457119329816e-05,
+   "worst_pair": "BICshort-P6",
+   "n_over_20mm": 0,
+   "rows": [
+    {
+     "pair": "BIClong-P11",
+     "right": "BIClong-P11",
+     "left": "BIClong_l-P11",
+     "dist_m": 0.0,
+     "dist_mm": 0.0,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BIClong-P9",
+     "right": "BIClong-P9",
+     "left": "BIClong_l-P9",
+     "dist_m": 1.0000000272292198e-09,
+     "dist_mm": 1.0000000272292198e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BICshort-P6",
+     "right": "BICshort-P6",
+     "left": "BICshort_l-P6",
+     "dist_m": 0.0006306364922972661,
+     "dist_mm": 0.630636492297266,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BICshort-P8",
+     "right": "BICshort-P8",
+     "left": "BICshort_l-P8",
+     "dist_m": 0.0,
+     "dist_mm": 0.0,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BRD-P2",
+     "right": "BRD-P2",
+     "left": "BRD_l-P2",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BRD-P3",
+     "right": "BRD-P3",
+     "left": "BRD_l-P3",
+     "dist_m": 2.236067977874406e-09,
+     "dist_mm": 2.2360679778744064e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRB-P2",
+     "right": "ECRB-P2",
+     "left": "ECRB_l-P2",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRB-P3",
+     "right": "ECRB-P3",
+     "left": "ECRB_l-P3",
+     "dist_m": 1.4142135420025599e-09,
+     "dist_mm": 1.4142135420025599e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRL-P2",
+     "right": "ECRL-P2",
+     "left": "ECRL_l-P2",
+     "dist_m": 9.999999994736442e-10,
+     "dist_mm": 9.999999994736442e-07,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRL-P3",
+     "right": "ECRL-P3",
+     "left": "ECRL_l-P3",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECU-P5",
+     "right": "ECU-P5",
+     "left": "ECU_l-P5",
+     "dist_m": 1.4142135420025599e-09,
+     "dist_mm": 1.4142135420025599e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCR-P2",
+     "right": "FCR-P2",
+     "left": "FCR_l-P2",
+     "dist_m": 0.0,
+     "dist_mm": 0.0,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCU-P2",
+     "right": "FCU-P2",
+     "left": "FCU_l-P2",
+     "dist_m": 0.0002446530250660979,
+     "dist_mm": 0.2446530250660979,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCU-P3",
+     "right": "FCU-P3",
+     "left": "FCU_l-P3",
+     "dist_m": 9.999999994736442e-10,
+     "dist_mm": 9.999999994736442e-07,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "PT-P3",
+     "right": "PT-P3",
+     "left": "PT_l-P3",
+     "dist_m": 1.7320508236834346e-09,
+     "dist_mm": 1.7320508236834346e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "PT-P5",
+     "right": "PT-P5",
+     "left": "PT_l-P5",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    }
+   ]
+  },
+  "packet_spine_mean": {
+   "plane_x_m": 0.0,
+   "n_pairs": 16,
+   "max_m": 0.0006306364922972661,
+   "mean_m": 5.4706457119329816e-05,
+   "worst_pair": "BICshort-P6",
+   "n_over_20mm": 0,
+   "rows": [
+    {
+     "pair": "BIClong-P11",
+     "right": "BIClong-P11",
+     "left": "BIClong_l-P11",
+     "dist_m": 0.0,
+     "dist_mm": 0.0,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BIClong-P9",
+     "right": "BIClong-P9",
+     "left": "BIClong_l-P9",
+     "dist_m": 1.0000000272292198e-09,
+     "dist_mm": 1.0000000272292198e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BICshort-P6",
+     "right": "BICshort-P6",
+     "left": "BICshort_l-P6",
+     "dist_m": 0.0006306364922972661,
+     "dist_mm": 0.630636492297266,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BICshort-P8",
+     "right": "BICshort-P8",
+     "left": "BICshort_l-P8",
+     "dist_m": 0.0,
+     "dist_mm": 0.0,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BRD-P2",
+     "right": "BRD-P2",
+     "left": "BRD_l-P2",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BRD-P3",
+     "right": "BRD-P3",
+     "left": "BRD_l-P3",
+     "dist_m": 2.236067977874406e-09,
+     "dist_mm": 2.2360679778744064e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRB-P2",
+     "right": "ECRB-P2",
+     "left": "ECRB_l-P2",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRB-P3",
+     "right": "ECRB-P3",
+     "left": "ECRB_l-P3",
+     "dist_m": 1.4142135420025599e-09,
+     "dist_mm": 1.4142135420025599e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRL-P2",
+     "right": "ECRL-P2",
+     "left": "ECRL_l-P2",
+     "dist_m": 9.999999994736442e-10,
+     "dist_mm": 9.999999994736442e-07,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRL-P3",
+     "right": "ECRL-P3",
+     "left": "ECRL_l-P3",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECU-P5",
+     "right": "ECU-P5",
+     "left": "ECU_l-P5",
+     "dist_m": 1.4142135420025599e-09,
+     "dist_mm": 1.4142135420025599e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCR-P2",
+     "right": "FCR-P2",
+     "left": "FCR_l-P2",
+     "dist_m": 0.0,
+     "dist_mm": 0.0,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCU-P2",
+     "right": "FCU-P2",
+     "left": "FCU_l-P2",
+     "dist_m": 0.0002446530250660979,
+     "dist_mm": 0.2446530250660979,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCU-P3",
+     "right": "FCU-P3",
+     "left": "FCU_l-P3",
+     "dist_m": 9.999999994736442e-10,
+     "dist_mm": 9.999999994736442e-07,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "PT-P3",
+     "right": "PT-P3",
+     "left": "PT_l-P3",
+     "dist_m": 1.7320508236834346e-09,
+     "dist_mm": 1.7320508236834346e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "PT-P5",
+     "right": "PT-P5",
+     "left": "PT_l-P5",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    }
+   ]
+  },
+  "points_midplane": {
+   "plane_x_m": -1.154262500000034e-05,
+   "n_pairs": 16,
+   "max_m": 0.0006120215252640738,
+   "mean_m": 7.462851885104849e-05,
+   "worst_pair": "BICshort-P6",
+   "n_over_20mm": 0,
+   "rows": [
+    {
+     "pair": "BIClong-P11",
+     "right": "BIClong-P11",
+     "left": "BIClong_l-P11",
+     "dist_m": 2.3085249999998947e-05,
+     "dist_mm": 0.023085249999998947,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BIClong-P9",
+     "right": "BIClong-P9",
+     "left": "BIClong_l-P9",
+     "dist_m": 2.30852500216578e-05,
+     "dist_mm": 0.0230852500216578,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BICshort-P6",
+     "right": "BICshort-P6",
+     "left": "BICshort_l-P6",
+     "dist_m": 0.0006120215252640738,
+     "dist_mm": 0.6120215252640738,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BICshort-P8",
+     "right": "BICshort-P8",
+     "left": "BICshort_l-P8",
+     "dist_m": 2.3085249999998947e-05,
+     "dist_mm": 0.023085249999998947,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BRD-P2",
+     "right": "BRD-P2",
+     "left": "BRD_l-P2",
+     "dist_m": 2.30852500216578e-05,
+     "dist_mm": 0.0230852500216578,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BRD-P3",
+     "right": "BRD-P3",
+     "left": "BRD_l-P3",
+     "dist_m": 2.308425008663863e-05,
+     "dist_mm": 0.02308425008663863,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRB-P2",
+     "right": "ECRB-P2",
+     "left": "ECRB_l-P2",
+     "dist_m": 2.30852500216578e-05,
+     "dist_mm": 0.0230852500216578,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRB-P3",
+     "right": "ECRB-P3",
+     "left": "ECRB_l-P3",
+     "dist_m": 2.308525004331665e-05,
+     "dist_mm": 0.02308525004331665,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRL-P2",
+     "right": "ECRL-P2",
+     "left": "ECRL_l-P2",
+     "dist_m": 2.30852500216578e-05,
+     "dist_mm": 0.0230852500216578,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRL-P3",
+     "right": "ECRL-P3",
+     "left": "ECRL_l-P3",
+     "dist_m": 2.30852500216578e-05,
+     "dist_mm": 0.0230852500216578,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECU-P5",
+     "right": "ECU-P5",
+     "left": "ECU_l-P5",
+     "dist_m": 2.308625002165633e-05,
+     "dist_mm": 0.023086250021656332,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCR-P2",
+     "right": "FCR-P2",
+     "left": "FCR_l-P2",
+     "dist_m": 2.3085249999998947e-05,
+     "dist_mm": 0.023085249999998947,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCU-P2",
+     "right": "FCU-P2",
+     "left": "FCU_l-P2",
+     "dist_m": 0.00025884227600616986,
+     "dist_mm": 0.2588422760061699,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCU-P3",
+     "right": "FCU-P3",
+     "left": "FCU_l-P3",
+     "dist_m": 2.30852500216578e-05,
+     "dist_mm": 0.0230852500216578,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "PT-P3",
+     "right": "PT-P3",
+     "left": "PT_l-P3",
+     "dist_m": 2.3084250043319052e-05,
+     "dist_mm": 0.023084250043319054,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "PT-P5",
+     "right": "PT-P5",
+     "left": "PT_l-P5",
+     "dist_m": 2.30852500216578e-05,
+     "dist_mm": 0.0230852500216578,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    }
+   ]
+  },
+  "zero": {
+   "plane_x_m": 0.0,
+   "n_pairs": 16,
+   "max_m": 0.0006306364922972661,
+   "mean_m": 5.4706457119329816e-05,
+   "worst_pair": "BICshort-P6",
+   "n_over_20mm": 0,
+   "rows": [
+    {
+     "pair": "BIClong-P11",
+     "right": "BIClong-P11",
+     "left": "BIClong_l-P11",
+     "dist_m": 0.0,
+     "dist_mm": 0.0,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BIClong-P9",
+     "right": "BIClong-P9",
+     "left": "BIClong_l-P9",
+     "dist_m": 1.0000000272292198e-09,
+     "dist_mm": 1.0000000272292198e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BICshort-P6",
+     "right": "BICshort-P6",
+     "left": "BICshort_l-P6",
+     "dist_m": 0.0006306364922972661,
+     "dist_mm": 0.630636492297266,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BICshort-P8",
+     "right": "BICshort-P8",
+     "left": "BICshort_l-P8",
+     "dist_m": 0.0,
+     "dist_mm": 0.0,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BRD-P2",
+     "right": "BRD-P2",
+     "left": "BRD_l-P2",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "BRD-P3",
+     "right": "BRD-P3",
+     "left": "BRD_l-P3",
+     "dist_m": 2.236067977874406e-09,
+     "dist_mm": 2.2360679778744064e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRB-P2",
+     "right": "ECRB-P2",
+     "left": "ECRB_l-P2",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRB-P3",
+     "right": "ECRB-P3",
+     "left": "ECRB_l-P3",
+     "dist_m": 1.4142135420025599e-09,
+     "dist_mm": 1.4142135420025599e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRL-P2",
+     "right": "ECRL-P2",
+     "left": "ECRL_l-P2",
+     "dist_m": 9.999999994736442e-10,
+     "dist_mm": 9.999999994736442e-07,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECRL-P3",
+     "right": "ECRL-P3",
+     "left": "ECRL_l-P3",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "ECU-P5",
+     "right": "ECU-P5",
+     "left": "ECU_l-P5",
+     "dist_m": 1.4142135420025599e-09,
+     "dist_mm": 1.4142135420025599e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCR-P2",
+     "right": "FCR-P2",
+     "left": "FCR_l-P2",
+     "dist_m": 0.0,
+     "dist_mm": 0.0,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCU-P2",
+     "right": "FCU-P2",
+     "left": "FCU_l-P2",
+     "dist_m": 0.0002446530250660979,
+     "dist_mm": 0.2446530250660979,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "FCU-P3",
+     "right": "FCU-P3",
+     "left": "FCU_l-P3",
+     "dist_m": 9.999999994736442e-10,
+     "dist_mm": 9.999999994736442e-07,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "PT-P3",
+     "right": "PT-P3",
+     "left": "PT_l-P3",
+     "dist_m": 1.7320508236834346e-09,
+     "dist_mm": 1.7320508236834346e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    },
+    {
+     "pair": "PT-P5",
+     "right": "PT-P5",
+     "left": "PT_l-P5",
+     "dist_m": 1.0000000003410059e-09,
+     "dist_mm": 1.0000000003410059e-06,
+     "tendon_family_ok_packet": true,
+     "tendon_family_ok_fit": true
+    }
+   ]
+  }
+ },
+ "meta": {
+  "mirror_read_meta": {
+   "fit_mode": "synthetic",
+   "frame_handedness": "left",
+   "mirror_reflect": "true",
+   "handedness": "preserve",
+   "mirror_plane_normal": [
+    0.0,
+    1.0,
+    0.0
+   ]
+  },
+  "fit_meta": {
+   "fit_mode": "grounded",
+   "frame_handedness": "right",
+   "handedness": "preserve",
+   "mirror_plane_normal": null,
+   "global_scale": 1.0,
+   "chirality_det": 0.9999999999999998,
+   "coordinate_conventions_right": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  }
+ }
+}

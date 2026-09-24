@@ -23,6 +23,8 @@
 - Site naming: right side unsuffixed (`BRD-P2`), left side `_l` (`BRD_l-P2`). Right body is `radius`, left is `radius_l`. 16 sites/side, 32 total. Roles: first_endpoint/last_endpoint/waypoint (path positions only — packet establishes no anatomical proximal/distal orientation).
 - **ERRATUM E-1 (A3, verified 2026-09-24):** report-05 line 29 says "8 last-endpoints **per side**" — measured law is **4 last-endpoints per side** (right 4: BIClong-P11, BICshort-P8, BRD-P3, PT-P5; left mirrored), 0 first-endpoints, 12 waypoints per side. The report's 8/0/24 numbers are correct as TWO-SIDE TOTALS; only the "per side" scoping is wrong. Baseline packet data itself is fully self-consistent (A3: 32/32 exact float identity vs XML, units verbatim, one uniform provenance block, canonical-hash recipe reproduced).
 - Observation (A3, no effect on the 32): XML holds 937 `<site>` elements = 468 named sites + 469 unnamed tendon-path refs; wording that calls 468 "tendon-referenced sites" is loose but not contradictory (469 refs cover the 468 named sites).
+- **Bilateral asymmetry is concentrated (A4, verified):** of 16 pairs, only TWO carry real asymmetry — BICshort-P6 0.6306 mm and FCU-P2 0.2447 mm; the other 14 pairs differ ≤ 2 nm. Plane x=0 confirmed from the pack's own spine joints (all exactly x=0.0). Caveat on record: `runs/mirror_read.json` is the SYNTHETIC-twin read — never cite it as the actual-monkey handedness record.
+- **Transform semantics (A4):** exported `R` is scale×rotation by construction (uniform s≈0.2217; RᵀR = s²·I, zero shear; Q=R/s proper det +1; det(R)=s³) — consistent with `R = Bp @ diag(scale) @ Bᵀ`, not a bug.
 
 ## ASSIGNMENTS
 
@@ -32,13 +34,13 @@
 | A1 | left ambiguous wrist section — independent investigation | `audits/A1_left_wrist` | DISPATCHED | — | `report.md` |
 | A2 | right ambiguous wrist section — independent investigation | `audits/A2_right_wrist` | DISPATCHED | — | `report.md` |
 | A3 | 32-site audit vs source XML (units, identities, endpoint roles) | `audits/A3_site_audit` | DONE | **PASS** (32/32 identity/units/roles/provenance; canonical hash reproduced) + **ERRATUM E-1** on report-05 role-count scoping | `report.md` (receipt re-verified by coordinator) |
-| A4 | local-to-world transforms + bilateral correspondence | `audits/A4_transforms` | DISPATCHED | — | `report.md` |
+| A4 | local-to-world transforms + bilateral correspondence | `audits/A4_transforms` | DONE | **PASS 5/5** (falsifier not triggered) — reconstruction max 1.15e-9 m export / 5.6e-17 m full precision; mirror max 0.6306 mm (BICshort-P6), mean 0.0547 mm; mode `preserve` recorded (`actual_monkey_fit.json:119-120`, chirality_det +1) | `report.md` (receipt re-verified by coordinator) |
 | A5 | containment authority, signed distances, uncertainty budget, four classes | `audits/A5_containment` | DISPATCHED | — | `report.md` |
 | A6 | anatomical attachment evidence vs geometric containment vs fitted assumption | `audits/A6_evidence` | DISPATCHED | — | `report.md` |
 | A7 | tendon-path and length consequences (existing model, baseline) | `audits/A7_paths` | DISPATCHED | — | `report.md` |
 | A8 | moment arms + force transmission over declared pose range | `audits/A8_arms` | DISPATCHED | — | `report.md` |
 | A9 | independent reproduction of Session 5 + regression receipts + H-1 confirmation | `audits/A9_reproduce` | DISPATCHED | — | `report.md` |
-| A10 | qualification specification v0 (DRAFT — not approved) | `audits/A10_spec` | DISPATCHED | — | `report.md` |
+| A10 | qualification specification v0 (DRAFT — not approved) | `audits/A10_spec` | DONE (v0; pass-2 = I2) | **PASS 6/6** — 14 ASTRA-APPROVES placeholders, zero invented criteria; independently re-derived ERRATUM E-1's role-count law from artifacts (0 first / 4 last / 12 waypoint per body) | `qualification_spec_v0.md` + `report.md` |
 
 ## INTEGRATION QUEUE (coordinator-only)
 

@@ -31,3 +31,29 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none.
 
 **Next:** integrate remaining audits as they land; I1 (wrist consolidation) after A1+A2; I2 (spec pass-2) after the pack; commit each integration.
+
+## CHECKPOINT 2026-09-24 (T2) — A10 spec v0 integrated
+
+**Verified:**
+- A10 qualification_spec_v0.md delivered (209 lines, 6 sections): coordinator spot-check green — "APPROVED" appears only in NOT-APPROVED banners; 14 [ASTRA-APPROVES] placeholders; 33 [PENDING A<n>] slots; baseline integrity clean.
+- A10 independently re-derived the role-count law (0 first / 4 last / 12 waypoint per body) from artifacts — independent confirmation of A3's ERRATUM E-1 before reading A3.
+- New baseline facts surfaced by A10 (from fit-packet records, to be owned by I1 after A1/A2 confirm): wrist sections record n_loops=4, n_identified_loops=2, n_open_chains=0 at axials 0.05151 m / 0.05348 m; hull unresolved there too (dist_to_hull null). Candidate C numbers verified from record (db=6.24mm, dc=±2.02mm, max disp 6.559mm, passed=false both sides; only BRD/BRD_l path-length deltas nonzero ≈ −0.90mm; arm deltas 0.0).
+
+**Active:** A1, A2, A4, A5, A6, A7, A8, A9 still running.
+
+**Blocked:** none. (A10's 3 [PENDING A3] slots are fillable now at I2 — A3 done.)
+
+**Next:** integrate A1–A9 as they land → I1 (wrist) → I2 (spec pass-2, incl. filling A3 slots) → I3.
+
+## CHECKPOINT 2026-09-24 (T3) — A10 committed (pointer fixed), A4 integrated
+
+**Verified:**
+- A10 spec v0 committed; doc-lint caught a broken relative pointer to the manifest tool from the spec's dir — fixed to the correct relative path (mechanical coordinator fix, no content change); hook satisfied without bypass.
+- A4 (transforms + bilateral) COMPLETE, receipt re-verified by coordinator fresh re-run: PASS 5/5, falsifier not triggered. Reconstruction max 1.15e-9 m (export precision; 5.6e-17 m full precision — "0.0 at export precision" claim of report 05 §3 confirmed). Bilateral: mirror max 0.6306 mm (BICshort-P6), mean 0.0547 mm; asymmetry concentrated in exactly 2 pairs (BICshort-P6 0.63 mm, FCU-P2 0.24 mm; other 14 ≤ 2 nm). Handedness mode `preserve` recorded at actual_monkey_fit.json:119-120, chirality_det +1. R is scale×rotation by construction (s≈0.2217, det(R)=s³, Q=R/s proper) — semantics, not defect.
+- A4 negative-finding preserved: mirror_read.json is the synthetic-twin read, NOT the actual-monkey policy record.
+
+**Active:** A1, A2, A5, A6, A7, A8, A9 still running.
+
+**Blocked:** none.
+
+**Next:** integrate A1–A9 as they land → I1 (wrist consolidation) → I2 (spec pass-2; A3+A4 slots fillable) → I3.
