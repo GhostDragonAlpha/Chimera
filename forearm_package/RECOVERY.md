@@ -18,3 +18,16 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Git:** branch `forearm-package-20260924` from detached HEAD c70b7a6c; only `forearm_package/` is staged/committed by this campaign. Unrelated dirty files in the worktree are other lanes' — untouched.
 
 **Exact resume point if this session dies:** read TASK_BOARD.md statuses → for each DISPATCHED-but-missing audit, re-dispatch the same brief (briefs live in the dispatch log / audit dir `brief.md` if written) → continue the loop. Never re-run a completed audit without cause.
+
+## CHECKPOINT 2026-09-24 (T1) — first audit integrated
+
+**Verified:**
+- A3 (32-site source audit) COMPLETE and coordinator-receipt-verified (fresh re-run 32/32; canonical + raw hashes independently reproduced; baseline integrity clean).
+- A3 verdict: PASS on identity/units/roles/provenance/canonical-hash. One falsifier fired on DOCUMENTATION: ERRATUM E-1 — report-05 line 29 "8 last-endpoints per side" is wrong; measured 4/side (8/0/24 are two-side totals). Recorded on the board; baseline NOT edited.
+- Side observation: 937 site elements = 468 named + 469 tendon-path refs.
+
+**Active:** A1, A2, A4, A5, A6, A7, A8, A9, A10 still running (background).
+
+**Blocked:** none.
+
+**Next:** integrate remaining audits as they land; I1 (wrist consolidation) after A1+A2; I2 (spec pass-2) after the pack; commit each integration.

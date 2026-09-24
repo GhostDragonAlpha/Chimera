@@ -1,0 +1,1948 @@
+{
+ "summary": {
+  "n_rows": 32,
+  "n_pass": 32,
+  "n_fail": 0,
+  "completeness": {
+   "radius": {
+    "xml_n_sites": 16,
+    "packet_n_candidates": 16,
+    "packet_not_in_xml": [],
+    "xml_not_in_packet": [],
+    "duplicates_in_xml": [],
+    "set_equal": true
+   },
+   "radius_l": {
+    "xml_n_sites": 16,
+    "packet_n_candidates": 16,
+    "packet_not_in_xml": [],
+    "xml_not_in_packet": [],
+    "duplicates_in_xml": [],
+    "set_equal": true
+   }
+  },
+  "sites_without_tendon": [],
+  "role_counts_site_level": {
+   "right": {
+    "first_endpoint": 0,
+    "last_endpoint": 4,
+    "waypoint": 12
+   },
+   "left": {
+    "first_endpoint": 0,
+    "last_endpoint": 4,
+    "waypoint": 12
+   }
+  },
+  "role_counts_membership_level": {
+   "right": {
+    "first_endpoint": 0,
+    "last_endpoint": 4,
+    "waypoint": 12
+   },
+   "left": {
+    "first_endpoint": 0,
+    "last_endpoint": 4,
+    "waypoint": 12
+   }
+  },
+  "spatial_tendon_count": 120,
+  "xml_total_sites": 937,
+  "provenance": {
+   "packet_level_block": {
+    "source_xml_raw_sha256": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1",
+    "source_xml_canonical_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+    "fitted_packet_sha256": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+    "note": "source XML hashes identify the UPSTREAM anatomy file; fitted_packet_sha256 identifies the WRITTEN fitted packet bytes. They are different objects and never interchangeable.",
+    "target_mesh_sha256": "550A5B3EC927EA13614AD250963B23E2948E76A238AC110DA9889F339AABFA3C",
+    "target_pack_sha256": "74B3AB044B7ADAED4A0F9349A81F5D3C87441084B2EC8981F4E0AFABA50C1662"
+   },
+   "per_site_provenance_keys_found": [],
+   "raw_sha_recomputed": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1",
+   "raw_sha_matches_packet": true,
+   "raw_sha_matches_expected": true,
+   "canon_sha_recomputed": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+   "canon_sha_matches_packet": true,
+   "canon_sha_matches_expected": true,
+   "canon_recipe": "sha256(data.replace(b'\\r\\n', b'\\n').rstrip(b'\\n') + b'\\n')  [stdin-dependent CRLF normalization per intake.py:64]",
+   "fitted_packet_sha256_search": {
+    "expected": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+    "files_hashed": {
+     "_envelope_probe.json": "ef4cd6b125086b2907c3a2b700c3c3741bb2be05ba7b8a17eac3bc1e49b9d2b7",
+     "actual_monkey_fit.json": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+     "actual_monkey_tables.txt": "c3f90f2342895eccb9a6ce2ef8dafca32e075bab0ca020c76eb6e4184f55397d",
+     "admission_actual_monkey.json": "833ca65b282eab83180bdbe65bbd8f934924fdd1416c8058d510e5481d86b4ad",
+     "attachment_candidates.json": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae",
+     "experiment_transverse_candidate.json": "3c13fca70c2a726ec59379f2c5b1e597db3af5d82bedc39d0a4c08186f58ab3a",
+     "figure_actual_fit.png": "b8e153c3a681e7b7f70d781f6e064d578c88ca942e412ca92e4165505b92fbd0",
+     "figure_forearm_candidates.png": "bb5095474c0b1603b71c9652c6098d24c12070c0015e0bc40d89197ee92aeed9",
+     "figure_transverse_candidate.png": "1f514e9fe2850db418e2c888ab7020ef8ea61c7590eba3bd324300b449006eeb",
+     "grounded_chimanoid.json": "457496993f7dbd1ea900e2c32f984fbc7c90402ef34d107fd2b3b38fa0ce47c4",
+     "mirror_read.json": "aa625a929fd18e9a60aa78bf6a6baebbd22dbdc724f3912e36feb234bedb230f",
+     "synthetic_twin.json": "92d6fecf824366c817904723401489defe4a9bc06fdef7d92b31fd37ca68e22f"
+    },
+    "matches": [
+     "actual_monkey_fit.json"
+    ]
+   }
+  }
+ },
+ "rows": [
+  {
+   "site_id": "BIClong-P11",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     -0.00013000000000000002,
+     -0.0024375,
+     -0.00013000000000000002
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.035062499999999996,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "packet_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "-0.002 -0.0375 -0.002",
+   "xml_pos_floats": [
+    -0.002,
+    -0.0375,
+    -0.002
+   ],
+   "packet_pos_floats": [
+    -0.002,
+    -0.0375,
+    -0.002
+   ],
+   "xml_tendon_refs": {
+    "BIClong_tendon": {
+     "index": 9,
+     "path_length": 10
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BIClong_tendon",
+     "xml_index_in_path": 9,
+     "xml_path_length": 10,
+     "derived_role": "last_endpoint",
+     "packet_index_in_path": 9,
+     "packet_path_length": 10,
+     "packet_role": "last_endpoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BIClong-P9",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0009535500000000001,
+     -0.0006630000000000001,
+     -0.0006902999999999999
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.013716450000000002,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.01467 -0.0102 -0.01062",
+   "xml_pos_floats": [
+    0.01467,
+    -0.0102,
+    -0.01062
+   ],
+   "packet_pos_floats": [
+    0.01467,
+    -0.0102,
+    -0.01062
+   ],
+   "xml_tendon_refs": {
+    "BIClong_tendon": {
+     "index": 8,
+     "path_length": 10
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BIClong_tendon",
+     "xml_index_in_path": 8,
+     "xml_path_length": 10,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 8,
+     "packet_path_length": 10,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BICshort-P6",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0007759375,
+     -0.0006630000000000001,
+     -0.0007416695
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.0111615625,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.0119375 -0.0102 -0.0114103",
+   "xml_pos_floats": [
+    0.0119375,
+    -0.0102,
+    -0.0114103
+   ],
+   "packet_pos_floats": [
+    0.0119375,
+    -0.0102,
+    -0.0114103
+   ],
+   "xml_tendon_refs": {
+    "BICshort_tendon": {
+     "index": 5,
+     "path_length": 7
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BICshort_tendon",
+     "xml_index_in_path": 5,
+     "xml_path_length": 7,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 5,
+     "packet_path_length": 7,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BICshort-P8",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     -0.00013000000000000002,
+     -0.0024375,
+     -0.00013000000000000002
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.035062499999999996,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "packet_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "-0.002 -0.0375 -0.002",
+   "xml_pos_floats": [
+    -0.002,
+    -0.0375,
+    -0.002
+   ],
+   "packet_pos_floats": [
+    -0.002,
+    -0.0375,
+    -0.002
+   ],
+   "xml_tendon_refs": {
+    "BICshort_tendon": {
+     "index": 6,
+     "path_length": 7
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BICshort_tendon",
+     "xml_index_in_path": 6,
+     "xml_path_length": 7,
+     "derived_role": "last_endpoint",
+     "packet_index_in_path": 6,
+     "packet_path_length": 7,
+     "packet_role": "last_endpoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BRD-P2",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0023250500000000004,
+     -0.008282300000000001,
+     0.00150475
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.1191377,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.03577 -0.12742 0.02315",
+   "xml_pos_floats": [
+    0.03577,
+    -0.12742,
+    0.02315
+   ],
+   "packet_pos_floats": [
+    0.03577,
+    -0.12742,
+    0.02315
+   ],
+   "xml_tendon_refs": {
+    "BRD_tendon": {
+     "index": 1,
+     "path_length": 3
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BRD_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 3,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 3,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BRD-P3",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0027235000000000002,
+     -0.014365000000000001,
+     0.001456
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.206635,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "packet_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.0419 -0.221 0.0224",
+   "xml_pos_floats": [
+    0.0419,
+    -0.221,
+    0.0224
+   ],
+   "packet_pos_floats": [
+    0.0419,
+    -0.221,
+    0.0224
+   ],
+   "xml_tendon_refs": {
+    "BRD_tendon": {
+     "index": 2,
+     "path_length": 3
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BRD_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 3,
+     "derived_role": "last_endpoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 3,
+     "packet_role": "last_endpoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECRB-P2",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.00188825,
+     -0.0085059,
+     0.00155025
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.12235410000000001,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.02905 -0.13086 0.02385",
+   "xml_pos_floats": [
+    0.02905,
+    -0.13086,
+    0.02385
+   ],
+   "packet_pos_floats": [
+    0.02905,
+    -0.13086,
+    0.02385
+   ],
+   "xml_tendon_refs": {
+    "ECRB_tendon": {
+     "index": 1,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECRB_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECRB-P3",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.00230685,
+     -0.014823250000000001,
+     0.00255905
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.21322675,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.03549 -0.22805 0.03937",
+   "xml_pos_floats": [
+    0.03549,
+    -0.22805,
+    0.03937
+   ],
+   "packet_pos_floats": [
+    0.03549,
+    -0.22805,
+    0.03937
+   ],
+   "xml_tendon_refs": {
+    "ECRB_tendon": {
+     "index": 2,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECRB_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECRL-P2",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.00207675,
+     -0.00875095,
+     0.00180635
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.12587905,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.03195 -0.13463 0.02779",
+   "xml_pos_floats": [
+    0.03195,
+    -0.13463,
+    0.02779
+   ],
+   "packet_pos_floats": [
+    0.03195,
+    -0.13463,
+    0.02779
+   ],
+   "xml_tendon_refs": {
+    "ECRL_tendon": {
+     "index": 1,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECRL_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECRL-P3",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0027579500000000003,
+     -0.0153946,
+     0.0023530000000000005
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.2214454,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.04243 -0.23684 0.0362",
+   "xml_pos_floats": [
+    0.04243,
+    -0.23684,
+    0.0362
+   ],
+   "packet_pos_floats": [
+    0.04243,
+    -0.23684,
+    0.0362
+   ],
+   "xml_tendon_refs": {
+    "ECRL_tendon": {
+     "index": 2,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECRL_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECU-P5",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     -0.00092365,
+     -0.0147524,
+     0.00226265
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.2122076,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "-0.01421 -0.22696 0.03481",
+   "xml_pos_floats": [
+    -0.01421,
+    -0.22696,
+    0.03481
+   ],
+   "packet_pos_floats": [
+    -0.01421,
+    -0.22696,
+    0.03481
+   ],
+   "xml_tendon_refs": {
+    "ECU_tendon": {
+     "index": 4,
+     "path_length": 6
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECU_tendon",
+     "xml_index_in_path": 4,
+     "xml_path_length": 6,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 4,
+     "packet_path_length": 6,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "FCR-P2",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0013715,
+     -0.01426295,
+     8.255000000000001e-05
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.20516705,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.0211 -0.21943 0.00127",
+   "xml_pos_floats": [
+    0.0211,
+    -0.21943,
+    0.00127
+   ],
+   "packet_pos_floats": [
+    0.0211,
+    -0.21943,
+    0.00127
+   ],
+   "xml_tendon_refs": {
+    "FCR_tendon": {
+     "index": 1,
+     "path_length": 3
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "FCR_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 3,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 3,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "FCU-P2",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0006837805,
+     -0.01195831,
+     8.04505e-06
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.17201569,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.0105197 -0.183974 0.00012377",
+   "xml_pos_floats": [
+    0.0105197,
+    -0.183974,
+    0.00012377
+   ],
+   "packet_pos_floats": [
+    0.0105197,
+    -0.183974,
+    0.00012377
+   ],
+   "xml_tendon_refs": {
+    "FCU_tendon": {
+     "index": 1,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "FCU_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "FCU-P3",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0007033,
+     -0.01451255,
+     0.00062985
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.20875744999999998,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.01082 -0.22327 0.00969",
+   "xml_pos_floats": [
+    0.01082,
+    -0.22327,
+    0.00969
+   ],
+   "packet_pos_floats": [
+    0.01082,
+    -0.22327,
+    0.00969
+   ],
+   "xml_tendon_refs": {
+    "FCU_tendon": {
+     "index": 2,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "FCU_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "PT-P3",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0007663500000000001,
+     -0.0034877050000000002,
+     -0.0014422850000000002
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.050169295,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.01179 -0.053657 -0.022189",
+   "xml_pos_floats": [
+    0.01179,
+    -0.053657,
+    -0.022189
+   ],
+   "packet_pos_floats": [
+    0.01179,
+    -0.053657,
+    -0.022189
+   ],
+   "xml_tendon_refs": {
+    "PT_tendon": {
+     "index": 2,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "PT_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "PT-P5",
+   "packet_body": "radius",
+   "side": "right",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.001651,
+     -0.007072,
+     0.0012870000000000002
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.101728,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "packet_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius",
+   "xml_pos_raw": "0.0254 -0.1088 0.0198",
+   "xml_pos_floats": [
+    0.0254,
+    -0.1088,
+    0.0198
+   ],
+   "packet_pos_floats": [
+    0.0254,
+    -0.1088,
+    0.0198
+   ],
+   "xml_tendon_refs": {
+    "PT_tendon": {
+     "index": 3,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "PT_tendon",
+     "xml_index_in_path": 3,
+     "xml_path_length": 4,
+     "derived_role": "last_endpoint",
+     "packet_index_in_path": 3,
+     "packet_path_length": 4,
+     "packet_role": "last_endpoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BIClong_l-P11",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     -0.00013000000000000002,
+     -0.0024375,
+     0.00013000000000000002
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.035062499999999996,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "packet_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "-0.002 -0.0375 0.002",
+   "xml_pos_floats": [
+    -0.002,
+    -0.0375,
+    0.002
+   ],
+   "packet_pos_floats": [
+    -0.002,
+    -0.0375,
+    0.002
+   ],
+   "xml_tendon_refs": {
+    "BIClong_l_tendon": {
+     "index": 9,
+     "path_length": 10
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BIClong_l_tendon",
+     "xml_index_in_path": 9,
+     "xml_path_length": 10,
+     "derived_role": "last_endpoint",
+     "packet_index_in_path": 9,
+     "packet_path_length": 10,
+     "packet_role": "last_endpoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BIClong_l-P9",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0009535500000000001,
+     -0.0006630000000000001,
+     0.0006902999999999999
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.013716450000000002,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.01467 -0.0102 0.01062",
+   "xml_pos_floats": [
+    0.01467,
+    -0.0102,
+    0.01062
+   ],
+   "packet_pos_floats": [
+    0.01467,
+    -0.0102,
+    0.01062
+   ],
+   "xml_tendon_refs": {
+    "BIClong_l_tendon": {
+     "index": 8,
+     "path_length": 10
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BIClong_l_tendon",
+     "xml_index_in_path": 8,
+     "xml_path_length": 10,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 8,
+     "packet_path_length": 10,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BICshort_l-P6",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0009535175,
+     -0.0006630000000000001,
+     0.000690196
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.0137159825,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.0146695 -0.0102 0.0106184",
+   "xml_pos_floats": [
+    0.0146695,
+    -0.0102,
+    0.0106184
+   ],
+   "packet_pos_floats": [
+    0.0146695,
+    -0.0102,
+    0.0106184
+   ],
+   "xml_tendon_refs": {
+    "BICshort_l_tendon": {
+     "index": 5,
+     "path_length": 7
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BICshort_l_tendon",
+     "xml_index_in_path": 5,
+     "xml_path_length": 7,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 5,
+     "packet_path_length": 7,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BICshort_l-P8",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     -0.00013000000000000002,
+     -0.0024375,
+     0.00013000000000000002
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.035062499999999996,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "packet_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "-0.002 -0.0375 0.002",
+   "xml_pos_floats": [
+    -0.002,
+    -0.0375,
+    0.002
+   ],
+   "packet_pos_floats": [
+    -0.002,
+    -0.0375,
+    0.002
+   ],
+   "xml_tendon_refs": {
+    "BICshort_l_tendon": {
+     "index": 6,
+     "path_length": 7
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BICshort_l_tendon",
+     "xml_index_in_path": 6,
+     "xml_path_length": 7,
+     "derived_role": "last_endpoint",
+     "packet_index_in_path": 6,
+     "packet_path_length": 7,
+     "packet_role": "last_endpoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BRD_l-P2",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0023250500000000004,
+     -0.008282300000000001,
+     -0.00150475
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.1191377,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.03577 -0.12742 -0.02315",
+   "xml_pos_floats": [
+    0.03577,
+    -0.12742,
+    -0.02315
+   ],
+   "packet_pos_floats": [
+    0.03577,
+    -0.12742,
+    -0.02315
+   ],
+   "xml_tendon_refs": {
+    "BRD_l_tendon": {
+     "index": 1,
+     "path_length": 3
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BRD_l_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 3,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 3,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "BRD_l-P3",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0027235000000000002,
+     -0.014365000000000001,
+     -0.001456
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.206635,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "packet_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.0419 -0.221 -0.0224",
+   "xml_pos_floats": [
+    0.0419,
+    -0.221,
+    -0.0224
+   ],
+   "packet_pos_floats": [
+    0.0419,
+    -0.221,
+    -0.0224
+   ],
+   "xml_tendon_refs": {
+    "BRD_l_tendon": {
+     "index": 2,
+     "path_length": 3
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "BRD_l_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 3,
+     "derived_role": "last_endpoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 3,
+     "packet_role": "last_endpoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECRB_l-P2",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.00188825,
+     -0.0085059,
+     -0.00155025
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.12235410000000001,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.02905 -0.13086 -0.02385",
+   "xml_pos_floats": [
+    0.02905,
+    -0.13086,
+    -0.02385
+   ],
+   "packet_pos_floats": [
+    0.02905,
+    -0.13086,
+    -0.02385
+   ],
+   "xml_tendon_refs": {
+    "ECRB_l_tendon": {
+     "index": 1,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECRB_l_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECRB_l-P3",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.00230685,
+     -0.014823250000000001,
+     -0.00255905
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.21322675,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.03549 -0.22805 -0.03937",
+   "xml_pos_floats": [
+    0.03549,
+    -0.22805,
+    -0.03937
+   ],
+   "packet_pos_floats": [
+    0.03549,
+    -0.22805,
+    -0.03937
+   ],
+   "xml_tendon_refs": {
+    "ECRB_l_tendon": {
+     "index": 2,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECRB_l_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECRL_l-P2",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.00207675,
+     -0.00875095,
+     -0.00180635
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.12587905,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.03195 -0.13463 -0.02779",
+   "xml_pos_floats": [
+    0.03195,
+    -0.13463,
+    -0.02779
+   ],
+   "packet_pos_floats": [
+    0.03195,
+    -0.13463,
+    -0.02779
+   ],
+   "xml_tendon_refs": {
+    "ECRL_l_tendon": {
+     "index": 1,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECRL_l_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECRL_l-P3",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0027579500000000003,
+     -0.0153946,
+     -0.0023530000000000005
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.2214454,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.04243 -0.23684 -0.0362",
+   "xml_pos_floats": [
+    0.04243,
+    -0.23684,
+    -0.0362
+   ],
+   "packet_pos_floats": [
+    0.04243,
+    -0.23684,
+    -0.0362
+   ],
+   "xml_tendon_refs": {
+    "ECRL_l_tendon": {
+     "index": 2,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECRL_l_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "ECU_l-P5",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     -0.00092365,
+     -0.0147524,
+     -0.00226265
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.2122076,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "-0.01421 -0.22696 -0.03481",
+   "xml_pos_floats": [
+    -0.01421,
+    -0.22696,
+    -0.03481
+   ],
+   "packet_pos_floats": [
+    -0.01421,
+    -0.22696,
+    -0.03481
+   ],
+   "xml_tendon_refs": {
+    "ECU_l_tendon": {
+     "index": 4,
+     "path_length": 6
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "ECU_l_tendon",
+     "xml_index_in_path": 4,
+     "xml_path_length": 6,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 4,
+     "packet_path_length": 6,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "FCR_l-P2",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0013715,
+     -0.01426295,
+     -8.255000000000001e-05
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.20516705,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.0211 -0.21943 -0.00127",
+   "xml_pos_floats": [
+    0.0211,
+    -0.21943,
+    -0.00127
+   ],
+   "packet_pos_floats": [
+    0.0211,
+    -0.21943,
+    -0.00127
+   ],
+   "xml_tendon_refs": {
+    "FCR_l_tendon": {
+     "index": 1,
+     "path_length": 3
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "FCR_l_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 3,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 3,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "FCU_l-P2",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0006168500000000001,
+     -0.011966500000000001,
+     -3.2500000000000004e-05
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.17213350000000002,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.00949 -0.1841 -0.0005",
+   "xml_pos_floats": [
+    0.00949,
+    -0.1841,
+    -0.0005
+   ],
+   "packet_pos_floats": [
+    0.00949,
+    -0.1841,
+    -0.0005
+   ],
+   "xml_tendon_refs": {
+    "FCU_l_tendon": {
+     "index": 1,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "FCU_l_tendon",
+     "xml_index_in_path": 1,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 1,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "FCU_l-P3",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0007033,
+     -0.01451255,
+     -0.00062985
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.20875744999999998,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.01082 -0.22327 -0.00969",
+   "xml_pos_floats": [
+    0.01082,
+    -0.22327,
+    -0.00969
+   ],
+   "packet_pos_floats": [
+    0.01082,
+    -0.22327,
+    -0.00969
+   ],
+   "xml_tendon_refs": {
+    "FCU_l_tendon": {
+     "index": 2,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "FCU_l_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "PT_l-P3",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.0007663500000000001,
+     -0.0034877050000000002,
+     0.0014422850000000002
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.050169295,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [],
+    "packet_endpoint_roles": [],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.01179 -0.053657 0.022189",
+   "xml_pos_floats": [
+    0.01179,
+    -0.053657,
+    0.022189
+   ],
+   "packet_pos_floats": [
+    0.01179,
+    -0.053657,
+    0.022189
+   ],
+   "xml_tendon_refs": {
+    "PT_l_tendon": {
+     "index": 2,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "PT_l_tendon",
+     "xml_index_in_path": 2,
+     "xml_path_length": 4,
+     "derived_role": "waypoint",
+     "packet_index_in_path": 2,
+     "packet_path_length": 4,
+     "packet_role": "waypoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  },
+  {
+   "site_id": "PT_l-P5",
+   "packet_body": "radius_l",
+   "side": "left",
+   "in_xml": true,
+   "xml_occurrences": 1,
+   "checks": {
+    "exact_equality": true,
+    "raw_string_roundtrip_identical_repr": true,
+    "packet_equals_xml_not_scaled": true,
+    "would_be_scaled_value": [
+     0.001651,
+     -0.007072,
+     -0.0012870000000000002
+    ],
+    "scaled_would_differ_from_xml": true,
+    "max_abs_packet_vs_scaled_delta": 0.101728,
+    "body_match": true,
+    "tendon_set_match": true,
+    "derived_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "packet_endpoint_roles": [
+     "last_endpoint"
+    ],
+    "endpoint_roles_consistent": true
+   },
+   "xml_body": "radius_l",
+   "xml_pos_raw": "0.0254 -0.1088 -0.0198",
+   "xml_pos_floats": [
+    0.0254,
+    -0.1088,
+    -0.0198
+   ],
+   "packet_pos_floats": [
+    0.0254,
+    -0.1088,
+    -0.0198
+   ],
+   "xml_tendon_refs": {
+    "PT_l_tendon": {
+     "index": 3,
+     "path_length": 4
+    }
+   },
+   "membership_comparison": [
+    {
+     "tendon": "PT_l_tendon",
+     "xml_index_in_path": 3,
+     "xml_path_length": 4,
+     "derived_role": "last_endpoint",
+     "packet_index_in_path": 3,
+     "packet_path_length": 4,
+     "packet_role": "last_endpoint",
+     "index_match": true,
+     "pathlen_match": true,
+     "role_match": true
+    }
+   ],
+   "verdict": "PASS"
+  }
+ ]
+}

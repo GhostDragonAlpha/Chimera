@@ -21,6 +21,8 @@
 - **Candidate C (evaluated, NOT applied):** db=+6.24 mm, dc=±2.02 mm, mirror-symmetric; loop authority would read 0 outside / 14 inside / 0 tight / 2 ambiguous; FAILED by ~41 µm. Effects recorded: max |Δ path length| 0.90 mm (BRD); max |Δ moment arm| ≈ 0 (straight-tendon zero-arm law); 42/120 tendons with fully-resolved comparable chains.
 - **H-1 RESOLVED at snapshot:** `fitted_packet_sha256` (a4475550…) = sha256 of `actual_monkey_fit.json` (field names the fit packet, not the candidates packet). No byte drift. A9 confirms independently. Residual observation for Astra: the candidates packet carries no self-hash.
 - Site naming: right side unsuffixed (`BRD-P2`), left side `_l` (`BRD_l-P2`). Right body is `radius`, left is `radius_l`. 16 sites/side, 32 total. Roles: first_endpoint/last_endpoint/waypoint (path positions only — packet establishes no anatomical proximal/distal orientation).
+- **ERRATUM E-1 (A3, verified 2026-09-24):** report-05 line 29 says "8 last-endpoints **per side**" — measured law is **4 last-endpoints per side** (right 4: BIClong-P11, BICshort-P8, BRD-P3, PT-P5; left mirrored), 0 first-endpoints, 12 waypoints per side. The report's 8/0/24 numbers are correct as TWO-SIDE TOTALS; only the "per side" scoping is wrong. Baseline packet data itself is fully self-consistent (A3: 32/32 exact float identity vs XML, units verbatim, one uniform provenance block, canonical-hash recipe reproduced).
+- Observation (A3, no effect on the 32): XML holds 937 `<site>` elements = 468 named sites + 469 unnamed tendon-path refs; wording that calls 468 "tendon-referenced sites" is loose but not contradictory (469 refs cover the 468 named sites).
 
 ## ASSIGNMENTS
 
@@ -29,7 +31,7 @@
 | I0 | durable snapshot + manifest + board (coordinator) | `baseline_snapshot/` | DONE | PASS (4/4 crosschecks) | `MANIFEST.json` |
 | A1 | left ambiguous wrist section — independent investigation | `audits/A1_left_wrist` | DISPATCHED | — | `report.md` |
 | A2 | right ambiguous wrist section — independent investigation | `audits/A2_right_wrist` | DISPATCHED | — | `report.md` |
-| A3 | 32-site audit vs source XML (units, identities, endpoint roles) | `audits/A3_site_audit` | DISPATCHED | — | `report.md` |
+| A3 | 32-site audit vs source XML (units, identities, endpoint roles) | `audits/A3_site_audit` | DONE | **PASS** (32/32 identity/units/roles/provenance; canonical hash reproduced) + **ERRATUM E-1** on report-05 role-count scoping | `report.md` (receipt re-verified by coordinator) |
 | A4 | local-to-world transforms + bilateral correspondence | `audits/A4_transforms` | DISPATCHED | — | `report.md` |
 | A5 | containment authority, signed distances, uncertainty budget, four classes | `audits/A5_containment` | DISPATCHED | — | `report.md` |
 | A6 | anatomical attachment evidence vs geometric containment vs fitted assumption | `audits/A6_evidence` | DISPATCHED | — | `report.md` |
