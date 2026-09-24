@@ -1,0 +1,42 @@
+{
+  "schema_version": "chimera.rigid_body_cell_groups.v1",
+  "body_groups": [
+    {
+      "body_id": "m04-rigid-body",
+      "cell_ids": [
+        "cell-x",
+        "cell-y",
+        "cell-z"
+      ],
+      "body_frame": {
+        "frame_id": "m04-body-frame-run_A1_translation",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "origin_m": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  ]
+}

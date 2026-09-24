@@ -1,0 +1,23 @@
+{
+  "run_A0_identity_groups.json": "32c614e3498f1d11662922f8395f8cf624cf02730735bda248f556b1ec5df759",
+  "run_A0_identity_manifest.json": "26bc618428a04f7923b20f0741efe24c0cf66e12349dc62319076576da7f1a5f",
+  "run_A0_identity_partition.json": "54724a9b0a21d53e73eb464bf71cb44deb278abb4a85fe36a28460bcb59837fa",
+  "run_A1_translation_groups.json": "5b9e1b7274553c54084fb7283a60a52c0e96b7ac698e430b7671a67dfdbddaee",
+  "run_A1_translation_manifest.json": "270a3ae742e43961f4d969a572ee96c9e8dbdddcfe4d8fd19b416d37238d6715",
+  "run_A1_translation_partition.json": "e1420f665d52f3a4707372257df439667651f349ed97f14e9dd8568f95e71b54",
+  "run_A2_rotation_groups.json": "c47f3c8893dd2038cacb080387067c5ea2a020dd39f210b23eb4ad5a49099eb5",
+  "run_A2_rotation_manifest.json": "f125cdbe1385420469d0e0f8eca9c2505b7eb88c324cfd372d872b7368bc593f",
+  "run_A2_rotation_partition.json": "bf2dc4ae105ee28c50d847e4d95759cee80e6310c4834e5131caf4c4597029d2",
+  "run_A3_rot_then_trans_groups.json": "bd53dc75ba8b830ae125e3f373d1a789b269490e9cf0ba41cc4ebc265f4d0a88",
+  "run_A3_rot_then_trans_manifest.json": "04e40ad70db203e5cbb5c199eac5905b64e0b4d5d00bc7de0d6ac6c99b415a35",
+  "run_A3_rot_then_trans_partition.json": "33f79a57be336cec0c8144b92a83593ba268c865aa6c8caa8f3805bdeb2c023a",
+  "run_B1_translation_comoving_groups.json": "fbef1188bc01f25761e43c4a82861cd2fed6c76ee489ec32b6c602021fd7c10d",
+  "run_B1_translation_comoving_manifest.json": "270a3ae742e43961f4d969a572ee96c9e8dbdddcfe4d8fd19b416d37238d6715",
+  "run_B1_translation_comoving_partition.json": "e1420f665d52f3a4707372257df439667651f349ed97f14e9dd8568f95e71b54",
+  "run_B2_rotation_comoving_groups.json": "76dabfb52b2e0b77a61707bc84f7b087635f52f11c44d3b5dfdfa093cfd47644",
+  "run_B2_rotation_comoving_manifest.json": "f125cdbe1385420469d0e0f8eca9c2505b7eb88c324cfd372d872b7368bc593f",
+  "run_B2_rotation_comoving_partition.json": "bf2dc4ae105ee28c50d847e4d95759cee80e6310c4834e5131caf4c4597029d2",
+  "run_B3_rot_then_trans_comoving_groups.json": "fad3b17ae78b9e1bb70fcc001df2b73d5fc96f708d2af00d18b2cf936afaf1d1",
+  "run_B3_rot_then_trans_comoving_manifest.json": "04e40ad70db203e5cbb5c199eac5905b64e0b4d5d00bc7de0d6ac6c99b415a35",
+  "run_B3_rot_then_trans_comoving_partition.json": "33f79a57be336cec0c8144b92a83593ba268c865aa6c8caa8f3805bdeb2c023a"
+}

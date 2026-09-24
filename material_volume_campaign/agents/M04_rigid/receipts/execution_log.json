@@ -1,0 +1,171 @@
+{
+  "runs": [
+    {
+      "run_id": "run_A0_identity",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\work\\material_volume_body_export.py",
+        "--manifest",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A0_identity_manifest.json",
+        "--partition",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A0_identity_partition.json",
+        "--groups",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A0_identity_groups.json"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "775af4b26f4263f5fa6ced2d02019e75bcbbf8ea690ef0f00ae6a08e691286ff",
+      "stdout_bytes": 4187,
+      "stderr": "",
+      "input_sha256": {
+        "manifest": "26bc618428a04f7923b20f0741efe24c0cf66e12349dc62319076576da7f1a5f",
+        "partition": "54724a9b0a21d53e73eb464bf71cb44deb278abb4a85fe36a28460bcb59837fa",
+        "groups": "32c614e3498f1d11662922f8395f8cf624cf02730735bda248f556b1ec5df759"
+      },
+      "export_status": "complete"
+    },
+    {
+      "run_id": "run_A1_translation",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\work\\material_volume_body_export.py",
+        "--manifest",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A1_translation_manifest.json",
+        "--partition",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A1_translation_partition.json",
+        "--groups",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A1_translation_groups.json"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "6195fceed632e025cc65bd0196124db684285caf677cc01428d57edf78ecae8e",
+      "stdout_bytes": 4197,
+      "stderr": "",
+      "input_sha256": {
+        "manifest": "270a3ae742e43961f4d969a572ee96c9e8dbdddcfe4d8fd19b416d37238d6715",
+        "partition": "e1420f665d52f3a4707372257df439667651f349ed97f14e9dd8568f95e71b54",
+        "groups": "5b9e1b7274553c54084fb7283a60a52c0e96b7ac698e430b7671a67dfdbddaee"
+      },
+      "export_status": "complete"
+    },
+    {
+      "run_id": "run_A2_rotation",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\work\\material_volume_body_export.py",
+        "--manifest",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A2_rotation_manifest.json",
+        "--partition",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A2_rotation_partition.json",
+        "--groups",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A2_rotation_groups.json"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "8ce5260d39b3ccacc6cbe1be06f6fefa8167369dccc90bb5fedca0e4d17d1a87",
+      "stdout_bytes": 4181,
+      "stderr": "",
+      "input_sha256": {
+        "manifest": "f125cdbe1385420469d0e0f8eca9c2505b7eb88c324cfd372d872b7368bc593f",
+        "partition": "bf2dc4ae105ee28c50d847e4d95759cee80e6310c4834e5131caf4c4597029d2",
+        "groups": "c47f3c8893dd2038cacb080387067c5ea2a020dd39f210b23eb4ad5a49099eb5"
+      },
+      "export_status": "complete"
+    },
+    {
+      "run_id": "run_A3_rot_then_trans",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\work\\material_volume_body_export.py",
+        "--manifest",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A3_rot_then_trans_manifest.json",
+        "--partition",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A3_rot_then_trans_partition.json",
+        "--groups",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_A3_rot_then_trans_groups.json"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "79c74b82e35799b9bb8a97ec5c9662a1d1e8f12a5bad778d8b3e9a103c246f50",
+      "stdout_bytes": 4203,
+      "stderr": "",
+      "input_sha256": {
+        "manifest": "04e40ad70db203e5cbb5c199eac5905b64e0b4d5d00bc7de0d6ac6c99b415a35",
+        "partition": "33f79a57be336cec0c8144b92a83593ba268c865aa6c8caa8f3805bdeb2c023a",
+        "groups": "bd53dc75ba8b830ae125e3f373d1a789b269490e9cf0ba41cc4ebc265f4d0a88"
+      },
+      "export_status": "complete"
+    },
+    {
+      "run_id": "run_B1_translation_comoving",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\work\\material_volume_body_export.py",
+        "--manifest",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_B1_translation_comoving_manifest.json",
+        "--partition",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_B1_translation_comoving_partition.json",
+        "--groups",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_B1_translation_comoving_groups.json"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "51a94d48c88074d245df23df11d5bb0cc44f3fb820009968136e541d0b93dd2d",
+      "stdout_bytes": 4236,
+      "stderr": "",
+      "input_sha256": {
+        "manifest": "270a3ae742e43961f4d969a572ee96c9e8dbdddcfe4d8fd19b416d37238d6715",
+        "partition": "e1420f665d52f3a4707372257df439667651f349ed97f14e9dd8568f95e71b54",
+        "groups": "fbef1188bc01f25761e43c4a82861cd2fed6c76ee489ec32b6c602021fd7c10d"
+      },
+      "export_status": "complete"
+    },
+    {
+      "run_id": "run_B2_rotation_comoving",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\work\\material_volume_body_export.py",
+        "--manifest",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_B2_rotation_comoving_manifest.json",
+        "--partition",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_B2_rotation_comoving_partition.json",
+        "--groups",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_B2_rotation_comoving_groups.json"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "9998f1f8089568effcfe73878f6f8f18b7b7649094d8bc9b12a9531bf2fd4b2a",
+      "stdout_bytes": 4359,
+      "stderr": "",
+      "input_sha256": {
+        "manifest": "f125cdbe1385420469d0e0f8eca9c2505b7eb88c324cfd372d872b7368bc593f",
+        "partition": "bf2dc4ae105ee28c50d847e4d95759cee80e6310c4834e5131caf4c4597029d2",
+        "groups": "76dabfb52b2e0b77a61707bc84f7b087635f52f11c44d3b5dfdfa093cfd47644"
+      },
+      "export_status": "complete"
+    },
+    {
+      "run_id": "run_B3_rot_then_trans_comoving",
+      "command": [
+        "C:\\Python314\\python.exe",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\work\\material_volume_body_export.py",
+        "--manifest",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_B3_rot_then_trans_comoving_manifest.json",
+        "--partition",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_B3_rot_then_trans_comoving_partition.json",
+        "--groups",
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M04_rigid\\fixtures\\run_B3_rot_then_trans_comoving_groups.json"
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "c04ca145c880e5ae0a3258765761db6747f7909e4d786bafe65f36ba9ddbd6b7",
+      "stdout_bytes": 4382,
+      "stderr": "",
+      "input_sha256": {
+        "manifest": "04e40ad70db203e5cbb5c199eac5905b64e0b4d5d00bc7de0d6ac6c99b415a35",
+        "partition": "33f79a57be336cec0c8144b92a83593ba268c865aa6c8caa8f3805bdeb2c023a",
+        "groups": "fad3b17ae78b9e1bb70fcc001df2b73d5fc96f708d2af00d18b2cf936afaf1d1"
+      },
+      "export_status": "complete"
+    }
+  ],
+  "module_hashes": {
+    "material_volume.py": "6d2817b7b4ea59213f90134b343a06579d92db998c1db7f27b0e89aff71799cf",
+    "material_volume_admission.py": "d6d4b0e010c0982f5c94dc880a2fec4ac50ea69af605ce80b7186745a5f7750d",
+    "material_volume_body_export.py": "04be88a7c62dc358c06aff29d3ac70244ae575298603712d2352d44853e018e7",
+    "material_volume_body_export_reader.py": "6b9890111a96491073761df688d5390c26611dd09784878bce76c4e3bdcc34ef"
+  }
+}

@@ -100,3 +100,10 @@ NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energ
 
 **Verified:** B6 verify + route-C self-check re-run by coordinator (FAIL reproduces; measured 2.936e-12 <= corrected bound 8.634e-12 True); integrity clean. Cellwise parallel-axis recombination = 0.0 relative vs exporter; symmetry bit-exact; principal moments strictly physical. The single falsifier = agent-side tolerance derivation (L^2 cancellation at 101 m offsets), self-diagnosed with the scaling law; exporter exonerated.
 **Fleet:** 2 live (M04-retry, B3-retry). Queue: B5 -> B8 -> B7x.
+
+## CHECKPOINT T15 — M04 integrated: ALL TEN CORE ASSIGNMENTS COMPLETE
+
+**Verified:** M04 compare re-run by coordinator (ALL_PASS; float crosschecks reproduce); integrity clean. Covariance holds on both transform paths; the fired falsifier was agent-side (trace-term error, exactly diagnosed at -15825 = sum of per-cell traces), exporter confirmed by Monte-Carlo ground truth. Refusal discipline also incidentally verified (non_manifold_vertex_link, duplicate_vertex_position honored on the agent's first invalid fixture).
+
+**CAMPAIGN MILESTONE: M01-M10 ALL DONE.** Core validation complete: reproduction (M01), multi-cell (M02), scaling (M03), covariance (M04), order invariance (M05), malformed inputs (M06), ownership propagation (M07), robustness (M08), diagnostic CLI (M09), static validator (M10) — zero exporter defects found by any of them; every fired falsifier traced to agent-side instrumentation, honestly preserved. Plus B2a/B4/B6/B7/B9 integrated.
+**Fleet:** 1 live (B3-retry). Queue: B5 -> B8 -> B7x.

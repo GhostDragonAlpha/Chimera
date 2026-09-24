@@ -1,0 +1,42 @@
+{
+  "schema_version": "chimera.rigid_body_cell_groups.v1",
+  "body_groups": [
+    {
+      "body_id": "m04-rigid-body",
+      "cell_ids": [
+        "cell-x",
+        "cell-y",
+        "cell-z"
+      ],
+      "body_frame": {
+        "frame_id": "m04-body-frame-run_B2_rotation_comoving",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [
+            [
+              0.832196258372744,
+              -0.45781916042913656,
+              0.3128114510281963
+            ],
+            [
+              0.524940657080039,
+              0.832196258372744,
+              -0.17856845772639146
+            ],
+            [
+              -0.17856845772639146,
+              0.3128114510281963,
+              0.9328785033490976
+            ]
+          ],
+          "origin_m": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  ]
+}

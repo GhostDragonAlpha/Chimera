@@ -1,0 +1,14 @@
+M04 decisive cross-check (iteration 2 diagnosis) — whole-body Monte Carlo
+Integration of the TRUE fixture inertia about COM by uniform barycentric
+sampling (Dirichlet(1,1,1,1)), N = 4e7 samples per cell, seed 20040924,
+per-cell volume factor applied; no per-cell covariance algebra involved.
+
+  MC - got(exporter) : max |dev| ~ 1.2e-2 on entries of scale 1e6 (sampling
+                       noise, ~1e-5 relative)  -> exporter is CORRECT
+  MC - want(frozen)  : -15825 on every off-diagonal   -> frozen want WRONG
+
+Verdict: the deviation was a defect in the EXPECTATION assembly
+(work/compute_expectations.py inertia_from_cov added tr(C) to off-diagonal
+entries instead of tr(C)*delta_ij; sum of per-cell traces = 7125 + 3480 + 5220
+= 15825, exactly the observed constant). The exporter's integrator and frame
+re-expression were validated against ground truth by this MC.

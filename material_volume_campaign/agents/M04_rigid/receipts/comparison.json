@@ -1,0 +1,374 @@
+{
+  "limit": 1e-09,
+  "runs": {
+    "run_A0_identity": {
+      "export_status": "complete",
+      "admission_status": "validation_only_admissible",
+      "group_status": "exported",
+      "unassigned_cell_ids": [],
+      "frame_id": "m04-body-frame-run_A0_identity",
+      "quantities": {
+        "mass_kg": {
+          "dev_max": 1.8189894035458565e-12,
+          "want_scale": 13000.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3992226181121973e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "volume_m3": {
+          "dev_max": 1.7763568394002505e-15,
+          "want_scale": 13.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3664283380001927e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "center_of_mass": {
+          "dev_max": 2.6645352591003757e-15,
+          "want_scale": 7.157692307692308,
+          "entrywise_ok": true,
+          "frobenius_ratio": 3.5824695112555365e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "inertia_tensor": {
+          "dev_max": 2.3283064365386963e-10,
+          "want_scale": 2418279.0384615385,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.210212171701051e-16,
+          "frobenius_ok": true,
+          "pass": true
+        }
+      },
+      "structural_ok": true,
+      "tensor_contract": {
+        "full_symmetric_tensor": true,
+        "off_diagonal_terms_preserved": true,
+        "principal_axis_transform_applied": false,
+        "coordinate_frame": "m04-body-frame-run_A0_identity",
+        "basis": "authored_body_frame"
+      },
+      "run_pass": true
+    },
+    "run_A1_translation": {
+      "export_status": "complete",
+      "admission_status": "validation_only_admissible",
+      "group_status": "exported",
+      "unassigned_cell_ids": [],
+      "frame_id": "m04-body-frame-run_A1_translation",
+      "quantities": {
+        "mass_kg": {
+          "dev_max": 1.8189894035458565e-12,
+          "want_scale": 13000.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3992226181121973e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "volume_m3": {
+          "dev_max": 1.7763568394002505e-15,
+          "want_scale": 13.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3664283380001927e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "center_of_mass": {
+          "dev_max": 3.552713678800501e-15,
+          "want_scale": 14.157692307692308,
+          "entrywise_ok": true,
+          "frobenius_ratio": 2.328159195403644e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "inertia_tensor": {
+          "dev_max": 2.3283064365386963e-10,
+          "want_scale": 2418279.0384615385,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.2101586652281218e-16,
+          "frobenius_ok": true,
+          "pass": true
+        }
+      },
+      "structural_ok": true,
+      "tensor_contract": {
+        "full_symmetric_tensor": true,
+        "off_diagonal_terms_preserved": true,
+        "principal_axis_transform_applied": false,
+        "coordinate_frame": "m04-body-frame-run_A1_translation",
+        "basis": "authored_body_frame"
+      },
+      "run_pass": true
+    },
+    "run_A2_rotation": {
+      "export_status": "complete",
+      "admission_status": "validation_only_admissible",
+      "group_status": "exported",
+      "unassigned_cell_ids": [],
+      "frame_id": "m04-body-frame-run_A2_rotation",
+      "quantities": {
+        "mass_kg": {
+          "dev_max": 5.4569682106375694e-12,
+          "want_scale": 13000.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 4.197667854336592e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "volume_m3": {
+          "dev_max": 5.329070518200751e-15,
+          "want_scale": 13.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 4.099285014000578e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "center_of_mass": {
+          "dev_max": 5.329070518200751e-15,
+          "want_scale": 8.899311882813114,
+          "entrywise_ok": true,
+          "frobenius_ratio": 7.43566793804695e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "inertia_tensor": {
+          "dev_max": 9.313225746154785e-10,
+          "want_scale": 2207833.6826649373,
+          "entrywise_ok": true,
+          "frobenius_ratio": 5.207418045220721e-16,
+          "frobenius_ok": true,
+          "pass": true
+        }
+      },
+      "structural_ok": true,
+      "tensor_contract": {
+        "full_symmetric_tensor": true,
+        "off_diagonal_terms_preserved": true,
+        "principal_axis_transform_applied": false,
+        "coordinate_frame": "m04-body-frame-run_A2_rotation",
+        "basis": "authored_body_frame"
+      },
+      "run_pass": true
+    },
+    "run_A3_rot_then_trans": {
+      "export_status": "complete",
+      "admission_status": "validation_only_admissible",
+      "group_status": "exported",
+      "unassigned_cell_ids": [],
+      "frame_id": "m04-body-frame-run_A3_rot_then_trans",
+      "quantities": {
+        "mass_kg": {
+          "dev_max": 1.8189894035458565e-12,
+          "want_scale": 13000.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3992226181121973e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "volume_m3": {
+          "dev_max": 1.7763568394002505e-15,
+          "want_scale": 13.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3664283380001927e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "center_of_mass": {
+          "dev_max": 3.552713678800501e-15,
+          "want_scale": 15.899311882813114,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.734244693915868e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "inertia_tensor": {
+          "dev_max": 9.313225746154785e-10,
+          "want_scale": 2207833.6826649373,
+          "entrywise_ok": true,
+          "frobenius_ratio": 3.9209739014076915e-16,
+          "frobenius_ok": true,
+          "pass": true
+        }
+      },
+      "structural_ok": true,
+      "tensor_contract": {
+        "full_symmetric_tensor": true,
+        "off_diagonal_terms_preserved": true,
+        "principal_axis_transform_applied": false,
+        "coordinate_frame": "m04-body-frame-run_A3_rot_then_trans",
+        "basis": "authored_body_frame"
+      },
+      "run_pass": true
+    },
+    "run_B1_translation_comoving": {
+      "export_status": "complete",
+      "admission_status": "validation_only_admissible",
+      "group_status": "exported",
+      "unassigned_cell_ids": [],
+      "frame_id": "m04-body-frame-run_B1_translation_comoving",
+      "quantities": {
+        "mass_kg": {
+          "dev_max": 1.8189894035458565e-12,
+          "want_scale": 13000.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3992226181121973e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "volume_m3": {
+          "dev_max": 1.7763568394002505e-15,
+          "want_scale": 13.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3664283380001927e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "center_of_mass": {
+          "dev_max": 3.552713678800501e-15,
+          "want_scale": 7.157692307692308,
+          "entrywise_ok": true,
+          "frobenius_ratio": 4.450444113266e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "inertia_tensor": {
+          "dev_max": 2.3283064365386963e-10,
+          "want_scale": 2418279.0384615385,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.2101586652281218e-16,
+          "frobenius_ok": true,
+          "pass": true
+        }
+      },
+      "structural_ok": true,
+      "tensor_contract": {
+        "full_symmetric_tensor": true,
+        "off_diagonal_terms_preserved": true,
+        "principal_axis_transform_applied": false,
+        "coordinate_frame": "m04-body-frame-run_B1_translation_comoving",
+        "basis": "authored_body_frame"
+      },
+      "run_pass": true
+    },
+    "run_B2_rotation_comoving": {
+      "export_status": "complete",
+      "admission_status": "validation_only_admissible",
+      "group_status": "exported",
+      "unassigned_cell_ids": [],
+      "frame_id": "m04-body-frame-run_B2_rotation_comoving",
+      "quantities": {
+        "mass_kg": {
+          "dev_max": 5.4569682106375694e-12,
+          "want_scale": 13000.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 4.197667854336592e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "volume_m3": {
+          "dev_max": 5.329070518200751e-15,
+          "want_scale": 13.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 4.099285014000578e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "center_of_mass": {
+          "dev_max": 4.440892098500626e-15,
+          "want_scale": 7.157692307692308,
+          "entrywise_ok": true,
+          "frobenius_ratio": 5.350690438361052e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "inertia_tensor": {
+          "dev_max": 9.313225746154785e-10,
+          "want_scale": 2418279.0384615385,
+          "entrywise_ok": true,
+          "frobenius_ratio": 4.76297591536753e-16,
+          "frobenius_ok": true,
+          "pass": true
+        }
+      },
+      "structural_ok": true,
+      "tensor_contract": {
+        "full_symmetric_tensor": true,
+        "off_diagonal_terms_preserved": true,
+        "principal_axis_transform_applied": false,
+        "coordinate_frame": "m04-body-frame-run_B2_rotation_comoving",
+        "basis": "authored_body_frame"
+      },
+      "run_pass": true
+    },
+    "run_B3_rot_then_trans_comoving": {
+      "export_status": "complete",
+      "admission_status": "validation_only_admissible",
+      "group_status": "exported",
+      "unassigned_cell_ids": [],
+      "frame_id": "m04-body-frame-run_B3_rot_then_trans_comoving",
+      "quantities": {
+        "mass_kg": {
+          "dev_max": 1.8189894035458565e-12,
+          "want_scale": 13000.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3992226181121973e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "volume_m3": {
+          "dev_max": 1.7763568394002505e-15,
+          "want_scale": 13.0,
+          "entrywise_ok": true,
+          "frobenius_ratio": 1.3664283380001927e-16,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "center_of_mass": {
+          "dev_max": 4.440892098500626e-16,
+          "want_scale": 7.157692307692308,
+          "entrywise_ok": true,
+          "frobenius_ratio": 4.9679913521608674e-17,
+          "frobenius_ok": true,
+          "pass": true
+        },
+        "inertia_tensor": {
+          "dev_max": 6.984919309616089e-10,
+          "want_scale": 2418279.0384615385,
+          "entrywise_ok": true,
+          "frobenius_ratio": 4.000476556989017e-16,
+          "frobenius_ok": true,
+          "pass": true
+        }
+      },
+      "structural_ok": true,
+      "tensor_contract": {
+        "full_symmetric_tensor": true,
+        "off_diagonal_terms_preserved": true,
+        "principal_axis_transform_applied": false,
+        "coordinate_frame": "m04-body-frame-run_B3_rot_then_trans_comoving",
+        "basis": "authored_body_frame"
+      },
+      "run_pass": true
+    }
+  },
+  "all_pass": true,
+  "float_crosscheck": {
+    "com_R_com0": {
+      "dev_max": 3.552713678800501e-15,
+      "want_scale": 8.899311882813112,
+      "entrywise_ok": true,
+      "frobenius_ratio": 4.212277369557331e-16,
+      "frobenius_ok": true,
+      "pass": true
+    },
+    "inertia_R_I0_RT": {
+      "dev_max": 1.1641532182693481e-09,
+      "want_scale": 2207833.6826649373,
+      "entrywise_ok": true,
+      "frobenius_ratio": 5.554158453013715e-16,
+      "frobenius_ok": true,
+      "pass": true
+    }
+  }
+}

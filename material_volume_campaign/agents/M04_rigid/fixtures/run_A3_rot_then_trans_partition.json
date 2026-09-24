@@ -1,0 +1,183 @@
+{
+  "schema_version": "chimera.material_partition.v1",
+  "coordinate_frame": {
+    "frame_id": "m04-coupon-domain",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "scale_to_m": 1.0
+  },
+  "vertices": [
+    {
+      "vertex_id": "apex-x",
+      "position": [
+        13.0,
+        -7.0,
+        4.5
+      ]
+    },
+    {
+      "vertex_id": "apex-y",
+      "position": [
+        -3.6439251674548814,
+        -17.49881314160078,
+        8.07136915452783
+      ]
+    },
+    {
+      "vertex_id": "apex-z",
+      "position": [
+        22.15638320858273,
+        -23.64392516745488,
+        -1.756229020563926
+      ]
+    },
+    {
+      "vertex_id": "cell-x_v1",
+      "position": [
+        14.664392516745488,
+        -5.9501186858399215,
+        4.142863084547217
+      ]
+    },
+    {
+      "vertex_id": "cell-x_v2",
+      "position": [
+        11.62654251871259,
+        -4.503411224881768,
+        5.438434353084589
+      ]
+    },
+    {
+      "vertex_id": "cell-x_v3",
+      "position": [
+        14.564057255140982,
+        -7.892842288631957,
+        9.164392516745488
+      ]
+    },
+    {
+      "vertex_id": "cell-y_v1",
+      "position": [
+        -6.972710200945855,
+        -19.598575769920934,
+        8.785642985433395
+      ]
+    },
+    {
+      "vertex_id": "cell-y_v2",
+      "position": [
+        -2.705490814370293,
+        -18.034518514779954,
+        10.870004664575122
+      ]
+    },
+    {
+      "vertex_id": "cell-y_v3",
+      "position": [
+        -4.559563488313156,
+        -15.834420624855293,
+        8.696992056584222
+      ]
+    },
+    {
+      "vertex_id": "cell-z_v1",
+      "position": [
+        19.659794433464498,
+        -25.218747138694997,
+        -1.220523647384752
+      ]
+    },
+    {
+      "vertex_id": "cell-z_v2",
+      "position": [
+        23.072021529441002,
+        -25.308317684200368,
+        -2.381851922620319
+      ]
+    },
+    {
+      "vertex_id": "cell-z_v3",
+      "position": [
+        23.407629012695516,
+        -24.358198998360447,
+        1.9752849928324645
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "cell_id": "cell-x",
+      "vertex_ids": [
+        "apex-x",
+        "cell-x_v1",
+        "cell-x_v2",
+        "cell-x_v3"
+      ],
+      "proposals": [
+        "region-x"
+      ]
+    },
+    {
+      "cell_id": "cell-y",
+      "vertex_ids": [
+        "apex-y",
+        "cell-y_v1",
+        "cell-y_v2",
+        "cell-y_v3"
+      ],
+      "proposals": [
+        "region-y"
+      ]
+    },
+    {
+      "cell_id": "cell-z",
+      "vertex_ids": [
+        "apex-z",
+        "cell-z_v1",
+        "cell-z_v2",
+        "cell-z_v3"
+      ],
+      "proposals": [
+        "region-z"
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "material_id": "mat-x",
+      "density_kg_m3": 1000.0,
+      "density_source": "M04 analytic rigid-covariance fixture",
+      "conditions": "uniform"
+    },
+    {
+      "material_id": "mat-y",
+      "density_kg_m3": 800.0,
+      "density_source": "M04 analytic rigid-covariance fixture",
+      "conditions": "uniform"
+    },
+    {
+      "material_id": "mat-z",
+      "density_kg_m3": 1200.0,
+      "density_source": "M04 analytic rigid-covariance fixture",
+      "conditions": "uniform"
+    }
+  ],
+  "regions": [
+    {
+      "region_id": "region-x",
+      "mass_owner_id": "owner-x",
+      "material_id": "mat-x"
+    },
+    {
+      "region_id": "region-y",
+      "mass_owner_id": "owner-y",
+      "material_id": "mat-y"
+    },
+    {
+      "region_id": "region-z",
+      "mass_owner_id": "owner-z",
+      "material_id": "mat-z"
+    }
+  ],
+  "mass_authority": "reconstructed_tissue_mass"
+}
