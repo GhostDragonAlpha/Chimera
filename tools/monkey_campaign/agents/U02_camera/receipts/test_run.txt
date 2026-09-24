@@ -1,0 +1,31 @@
+test_echo_detects_a_failed_apply (tools.monkey_campaign.product.follow_camera_tests.TestApplyEcho.test_echo_detects_a_failed_apply) ... ok
+test_echo_matches_command (tools.monkey_campaign.product.follow_camera_tests.TestApplyEcho.test_echo_matches_command) ... ok
+test_bind_refuses_unloaded_rig (tools.monkey_campaign.product.follow_camera_tests.TestDerivedFraming.test_bind_refuses_unloaded_rig) ... ok
+test_engine_rig_provider_reads_the_contract (tools.monkey_campaign.product.follow_camera_tests.TestDerivedFraming.test_engine_rig_provider_reads_the_contract) ... ok
+test_frozen_constants_match_independent_derivation (tools.monkey_campaign.product.follow_camera_tests.TestDerivedFraming.test_frozen_constants_match_independent_derivation) ... ok
+test_ground_mode_first_command (tools.monkey_campaign.product.follow_camera_tests.TestDerivedFraming.test_ground_mode_first_command) ... ok
+test_low_eye_priority_law_records_hint (tools.monkey_campaign.product.follow_camera_tests.TestDerivedFraming.test_low_eye_priority_law_records_hint)
+Amendment 1.2: when the eye-height bound is unreachable the feet ... ok
+test_strict_intake_rejects_bad_construction (tools.monkey_campaign.product.follow_camera_tests.TestDerivedFraming.test_strict_intake_rejects_bad_construction) ... ok
+test_camera_places_itself_behind_the_heading (tools.monkey_campaign.product.follow_camera_tests.TestHeadingFollow.test_camera_places_itself_behind_the_heading) ... ok
+test_budgets_and_freshness_contract (tools.monkey_campaign.product.follow_camera_tests.TestLatencyBudgets.test_budgets_and_freshness_contract) ... ok
+test_allowlist_and_pan_across_scenarios (tools.monkey_campaign.product.follow_camera_tests.TestNoForceInvariant.test_allowlist_and_pan_across_scenarios) ... ok
+test_body_moving_routes_never_issued (tools.monkey_campaign.product.follow_camera_tests.TestNoForceInvariant.test_body_moving_routes_never_issued) ... ok
+test_no_command_carries_body_shaped_fields (tools.monkey_campaign.product.follow_camera_tests.TestNoForceInvariant.test_no_command_carries_body_shaped_fields) ... ok
+test_OC1_tall_pole_on_sightline_resolved_by_height_law (tools.monkey_campaign.product.follow_camera_tests.TestObstructionCases.test_OC1_tall_pole_on_sightline_resolved_by_height_law) ... ok
+test_OC2_eye_trapped_near_trunk_resolved (tools.monkey_campaign.product.follow_camera_tests.TestObstructionCases.test_OC2_eye_trapped_near_trunk_resolved) ... ok
+test_OC3_trunk_approach_framing_keeps_both_visible (tools.monkey_campaign.product.follow_camera_tests.TestObstructionCases.test_OC3_trunk_approach_framing_keeps_both_visible) ... ok
+test_OC3b_unreachable_geometry_degrades_honestly (tools.monkey_campaign.product.follow_camera_tests.TestObstructionCases.test_OC3b_unreachable_geometry_degrades_honestly) ... ok
+test_OC4_clean_scene_is_bitwise_noop (tools.monkey_campaign.product.follow_camera_tests.TestObstructionCases.test_OC4_clean_scene_is_bitwise_noop) ... ok
+test_OC5_off_line_and_flyover_obstacles_do_not_fire (tools.monkey_campaign.product.follow_camera_tests.TestObstructionCases.test_OC5_off_line_and_flyover_obstacles_do_not_fire) ... ok
+test_OC6_hysteresis_latches_then_releases (tools.monkey_campaign.product.follow_camera_tests.TestObstructionCases.test_OC6_hysteresis_latches_then_releases) ... ok
+test_OC7_pull_in_takes_the_largest_feasible_radius (tools.monkey_campaign.product.follow_camera_tests.TestObstructionCases.test_OC7_pull_in_takes_the_largest_feasible_radius) ... ok
+test_trunk_designation_law (tools.monkey_campaign.product.follow_camera_tests.TestObstructionCases.test_trunk_designation_law)
+Amendment 5: a post-only scene has NO trunk-approach mode. ... ok
+test_camera_speed_bounded_by_twice_animal_speed (tools.monkey_campaign.product.follow_camera_tests.TestSmoothingAndSpeed.test_camera_speed_bounded_by_twice_animal_speed) ... ok
+test_cut_policy_snaps_on_teleport_scale_jump (tools.monkey_campaign.product.follow_camera_tests.TestSmoothingAndSpeed.test_cut_policy_snaps_on_teleport_scale_jump) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.009s
+
+OK
