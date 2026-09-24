@@ -1,0 +1,1031 @@
+----- FIXTURE si_manifest
+{
+  "cells": [
+    {
+      "cell_id": "cell-upper",
+      "component_id": "si-component-0",
+      "vertex_ids": [
+        "v0",
+        "v1",
+        "v2",
+        "v3"
+      ]
+    },
+    {
+      "cell_id": "cell-lower",
+      "component_id": "si-component-0",
+      "vertex_ids": [
+        "v0",
+        "v2",
+        "v1",
+        "v4"
+      ]
+    }
+  ],
+  "coordinate_frame": {
+    "coordinate_unit": "m",
+    "frame_id": "si-domain",
+    "handedness": "right",
+    "scale_to_m": 1.0
+  },
+  "domain_id": "triangular-bipyramid-shared-interface",
+  "domain_revision": "si-fixture-v1",
+  "fitting_id": "shared-interface-fit-v1",
+  "mass_authority": "reconstructed_tissue_mass",
+  "matter_ownership": [
+    {
+      "mass_owner_id": "si-owner-A",
+      "matter_id": "si-matter-A",
+      "representation": "tetrahedral_volume"
+    },
+    {
+      "mass_owner_id": "si-owner-B",
+      "matter_id": "si-matter-B",
+      "representation": "tetrahedral_volume"
+    }
+  ],
+  "regions": [
+    {
+      "mass_owner_id": "si-owner-A",
+      "material_id": "si-tissue-A",
+      "region_id": "si-region-A"
+    },
+    {
+      "mass_owner_id": "si-owner-B",
+      "material_id": "si-tissue-B",
+      "region_id": "si-region-B"
+    }
+  ],
+  "schema_version": "chimera.fitting_manifest.v1",
+  "source_effective_segment_ids": [],
+  "vertices": [
+    {
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "vertex_id": "v0"
+    },
+    {
+      "position": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "vertex_id": "v1"
+    },
+    {
+      "position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vertex_id": "v2"
+    },
+    {
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "vertex_id": "v3"
+    },
+    {
+      "position": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "vertex_id": "v4"
+    }
+  ]
+}
+
+----- FIXTURE si_partition
+{
+  "cells": [
+    {
+      "cell_id": "cell-upper",
+      "proposals": [
+        "si-region-A"
+      ],
+      "vertex_ids": [
+        "v0",
+        "v1",
+        "v2",
+        "v3"
+      ]
+    },
+    {
+      "cell_id": "cell-lower",
+      "proposals": [
+        "si-region-B"
+      ],
+      "vertex_ids": [
+        "v0",
+        "v2",
+        "v1",
+        "v4"
+      ]
+    }
+  ],
+  "coordinate_frame": {
+    "coordinate_unit": "m",
+    "frame_id": "si-domain",
+    "handedness": "right",
+    "scale_to_m": 1.0
+  },
+  "mass_authority": "reconstructed_tissue_mass",
+  "materials": [
+    {
+      "conditions": "uniform",
+      "density_kg_m3": 12.0,
+      "density_source": "preregistered analytic coupon fixture",
+      "material_id": "si-tissue-A"
+    },
+    {
+      "conditions": "uniform",
+      "density_kg_m3": 6.0,
+      "density_source": "preregistered analytic coupon fixture",
+      "material_id": "si-tissue-B"
+    }
+  ],
+  "regions": [
+    {
+      "mass_owner_id": "si-owner-A",
+      "material_id": "si-tissue-A",
+      "region_id": "si-region-A"
+    },
+    {
+      "mass_owner_id": "si-owner-B",
+      "material_id": "si-tissue-B",
+      "region_id": "si-region-B"
+    }
+  ],
+  "schema_version": "chimera.material_partition.v1",
+  "vertices": [
+    {
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "vertex_id": "v0"
+    },
+    {
+      "position": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "vertex_id": "v1"
+    },
+    {
+      "position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vertex_id": "v2"
+    },
+    {
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "vertex_id": "v3"
+    },
+    {
+      "position": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "vertex_id": "v4"
+    }
+  ]
+}
+
+----- FIXTURE si_groups
+{
+  "body_groups": [
+    {
+      "body_frame": {
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "origin_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_id": "si-domain",
+        "handedness": "right"
+      },
+      "body_id": "si-body-A",
+      "cell_ids": [
+        "cell-upper"
+      ]
+    },
+    {
+      "body_frame": {
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "origin_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_id": "si-domain",
+        "handedness": "right"
+      },
+      "body_id": "si-body-B",
+      "cell_ids": [
+        "cell-lower"
+      ]
+    }
+  ],
+  "schema_version": "chimera.rigid_body_cell_groups.v1"
+}
+
+----- FIXTURE fc_manifest
+{
+  "cells": [
+    {
+      "cell_id": "fc-cell-A",
+      "component_id": "fc-component-A",
+      "vertex_ids": [
+        "a0",
+        "a1",
+        "a2",
+        "a3"
+      ]
+    },
+    {
+      "cell_id": "fc-cell-B",
+      "component_id": "fc-component-B",
+      "vertex_ids": [
+        "b0",
+        "b1",
+        "b2",
+        "b3"
+      ]
+    }
+  ],
+  "coordinate_frame": {
+    "coordinate_unit": "m",
+    "frame_id": "fc-domain",
+    "handedness": "right",
+    "scale_to_m": 1.0
+  },
+  "domain_id": "two-tetrahedron-frame-composition",
+  "domain_revision": "fc-fixture-v1",
+  "fitting_id": "frame-composition-fit-v1",
+  "mass_authority": "reconstructed_tissue_mass",
+  "matter_ownership": [
+    {
+      "mass_owner_id": "fc-owner-A",
+      "matter_id": "fc-matter-A",
+      "representation": "tetrahedral_volume"
+    },
+    {
+      "mass_owner_id": "fc-owner-B",
+      "matter_id": "fc-matter-B",
+      "representation": "tetrahedral_volume"
+    }
+  ],
+  "regions": [
+    {
+      "mass_owner_id": "fc-owner-A",
+      "material_id": "fc-tissue-A",
+      "region_id": "fc-region-A"
+    },
+    {
+      "mass_owner_id": "fc-owner-B",
+      "material_id": "fc-tissue-B",
+      "region_id": "fc-region-B"
+    }
+  ],
+  "schema_version": "chimera.fitting_manifest.v1",
+  "source_effective_segment_ids": [],
+  "vertices": [
+    {
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "vertex_id": "a0"
+    },
+    {
+      "position": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "vertex_id": "a1"
+    },
+    {
+      "position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vertex_id": "a2"
+    },
+    {
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "vertex_id": "a3"
+    },
+    {
+      "position": [
+        2.0,
+        -1.0,
+        0.5
+      ],
+      "vertex_id": "b0"
+    },
+    {
+      "position": [
+        2.0,
+        0.0,
+        0.5
+      ],
+      "vertex_id": "b1"
+    },
+    {
+      "position": [
+        2.0,
+        -1.0,
+        1.5
+      ],
+      "vertex_id": "b2"
+    },
+    {
+      "position": [
+        3.0,
+        -1.0,
+        0.5
+      ],
+      "vertex_id": "b3"
+    }
+  ]
+}
+
+----- FIXTURE fc_partition
+{
+  "cells": [
+    {
+      "cell_id": "fc-cell-A",
+      "proposals": [
+        "fc-region-A"
+      ],
+      "vertex_ids": [
+        "a0",
+        "a1",
+        "a2",
+        "a3"
+      ]
+    },
+    {
+      "cell_id": "fc-cell-B",
+      "proposals": [
+        "fc-region-B"
+      ],
+      "vertex_ids": [
+        "b0",
+        "b1",
+        "b2",
+        "b3"
+      ]
+    }
+  ],
+  "coordinate_frame": {
+    "coordinate_unit": "m",
+    "frame_id": "fc-domain",
+    "handedness": "right",
+    "scale_to_m": 1.0
+  },
+  "mass_authority": "reconstructed_tissue_mass",
+  "materials": [
+    {
+      "conditions": "uniform",
+      "density_kg_m3": 12.0,
+      "density_source": "preregistered analytic coupon fixture",
+      "material_id": "fc-tissue-A"
+    },
+    {
+      "conditions": "uniform",
+      "density_kg_m3": 6.0,
+      "density_source": "preregistered analytic coupon fixture",
+      "material_id": "fc-tissue-B"
+    }
+  ],
+  "regions": [
+    {
+      "mass_owner_id": "fc-owner-A",
+      "material_id": "fc-tissue-A",
+      "region_id": "fc-region-A"
+    },
+    {
+      "mass_owner_id": "fc-owner-B",
+      "material_id": "fc-tissue-B",
+      "region_id": "fc-region-B"
+    }
+  ],
+  "schema_version": "chimera.material_partition.v1",
+  "vertices": [
+    {
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "vertex_id": "a0"
+    },
+    {
+      "position": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "vertex_id": "a1"
+    },
+    {
+      "position": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "vertex_id": "a2"
+    },
+    {
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "vertex_id": "a3"
+    },
+    {
+      "position": [
+        2.0,
+        -1.0,
+        0.5
+      ],
+      "vertex_id": "b0"
+    },
+    {
+      "position": [
+        2.0,
+        0.0,
+        0.5
+      ],
+      "vertex_id": "b1"
+    },
+    {
+      "position": [
+        2.0,
+        -1.0,
+        1.5
+      ],
+      "vertex_id": "b2"
+    },
+    {
+      "position": [
+        3.0,
+        -1.0,
+        0.5
+      ],
+      "vertex_id": "b3"
+    }
+  ]
+}
+
+----- FIXTURE fc_groups_shared
+{
+  "body_groups": [
+    {
+      "body_frame": {
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "origin_m": [
+            1.0,
+            -2.0,
+            0.5
+          ],
+          "rotation": [
+            [
+              0.8660254037844386,
+              -0.5,
+              0.0
+            ],
+            [
+              0.5,
+              0.8660254037844386,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_id": "fc-parent-P",
+        "handedness": "right"
+      },
+      "body_id": "fc-body-A",
+      "cell_ids": [
+        "fc-cell-A"
+      ]
+    },
+    {
+      "body_frame": {
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "origin_m": [
+            1.0,
+            -2.0,
+            0.5
+          ],
+          "rotation": [
+            [
+              0.8660254037844386,
+              -0.5,
+              0.0
+            ],
+            [
+              0.5,
+              0.8660254037844386,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_id": "fc-parent-P",
+        "handedness": "right"
+      },
+      "body_id": "fc-body-B",
+      "cell_ids": [
+        "fc-cell-B"
+      ]
+    }
+  ],
+  "schema_version": "chimera.rigid_body_cell_groups.v1"
+}
+
+----- FIXTURE fc_groups_composed
+{
+  "body_groups": [
+    {
+      "body_frame": {
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "origin_m": [
+            1.4330127018922192,
+            -1.75,
+            0.75
+          ],
+          "rotation": [
+            [
+              -0.5,
+              -0.8660254037844386,
+              0.0
+            ],
+            [
+              0.8660254037844386,
+              -0.5,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_id": "fc-body-A-local",
+        "handedness": "right"
+      },
+      "body_id": "fc-body-A",
+      "cell_ids": [
+        "fc-cell-A"
+      ]
+    },
+    {
+      "body_frame": {
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "origin_m": [
+            0.625,
+            -1.350480947161671,
+            0.0
+          ],
+          "rotation": [
+            [
+              0.0,
+              -0.5,
+              0.8660254037844386
+            ],
+            [
+              0.0,
+              0.8660254037844386,
+              0.5
+            ],
+            [
+              -1.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "frame_id": "fc-body-B-local",
+        "handedness": "right"
+      },
+      "body_id": "fc-body-B",
+      "cell_ids": [
+        "fc-cell-B"
+      ]
+    }
+  ],
+  "schema_version": "chimera.rigid_body_cell_groups.v1"
+}
+
+----- FROZEN si_expectations
+{
+  "combined": {
+    "com_m": [
+      0.25,
+      0.25,
+      0.08333333333333333
+    ],
+    "inertia_kg_m2": [
+      [
+        0.39166666666666666,
+        0.0375,
+        0.0125
+      ],
+      [
+        0.0375,
+        0.39166666666666666,
+        0.0125
+      ],
+      [
+        0.0125,
+        0.0125,
+        0.225
+      ]
+    ],
+    "mass_kg": 3.0
+  },
+  "interfaces": [
+    {
+      "area_m2": 0.5,
+      "face": [
+        "v0",
+        "v1",
+        "v2"
+      ]
+    }
+  ],
+  "si-body-A": {
+    "com_m": [
+      0.25,
+      0.25,
+      0.25
+    ],
+    "inertia_kg_m2": [
+      [
+        0.15,
+        0.025,
+        0.025
+      ],
+      [
+        0.025,
+        0.15,
+        0.025
+      ],
+      [
+        0.025,
+        0.025,
+        0.15
+      ]
+    ],
+    "mass_kg": 2.0
+  },
+  "si-body-B": {
+    "com_m": [
+      0.25,
+      0.25,
+      -0.25
+    ],
+    "inertia_kg_m2": [
+      [
+        0.075,
+        0.0125,
+        -0.0125
+      ],
+      [
+        0.0125,
+        0.075,
+        -0.0125
+      ],
+      [
+        -0.0125,
+        -0.0125,
+        0.075
+      ]
+    ],
+    "mass_kg": 1.0
+  }
+}
+
+----- FROZEN fc_domain_expectations
+{
+  "combined": {
+    "com_m": [
+      0.9166666666666666,
+      -0.08333333333333333,
+      0.4166666666666667
+    ],
+    "inertia_kg_m2": [
+      [
+        1.0583333333333333,
+        1.3708333333333333,
+        -0.6291666666666667
+      ],
+      [
+        1.3708333333333333,
+        3.058333333333333,
+        0.37083333333333335
+      ],
+      [
+        -0.6291666666666667,
+        0.37083333333333335,
+        3.558333333333333
+      ]
+    ],
+    "mass_kg": 3.0
+  },
+  "fc-cell-A": {
+    "com_m": [
+      0.25,
+      0.25,
+      0.25
+    ],
+    "inertia_kg_m2": [
+      [
+        0.15,
+        0.025,
+        0.025
+      ],
+      [
+        0.025,
+        0.15,
+        0.025
+      ],
+      [
+        0.025,
+        0.025,
+        0.15
+      ]
+    ],
+    "mass_kg": 2.0
+  },
+  "fc-cell-B": {
+    "com_m": [
+      2.25,
+      -0.75,
+      0.75
+    ],
+    "inertia_kg_m2": [
+      [
+        0.075,
+        0.0125,
+        0.0125
+      ],
+      [
+        0.0125,
+        0.075,
+        0.0125
+      ],
+      [
+        0.0125,
+        0.0125,
+        0.075
+      ]
+    ],
+    "mass_kg": 1.0
+  }
+}
+
+----- FROZEN fc_run_expectations
+{
+  "composed_body_frames": {
+    "fc-body-A": {
+      "com_m": [
+        2.323557158514987,
+        0.02451905283832875,
+        -0.5
+      ],
+      "inertia_kg_m2": [
+        [
+          0.128349364905389,
+          -0.012499999999999997,
+          0.00915063509461067
+        ],
+        [
+          -0.012499999999999997,
+          0.1716506350946101,
+          -0.03415063509461097
+        ],
+        [
+          0.00915063509461067,
+          -0.03415063509461097,
+          0.1499999999999992
+        ]
+      ],
+      "mass_kg": 2.0
+    },
+    "fc-body-B": {
+      "com_m": [
+        -0.75,
+        -0.29246824526945175,
+        1.7075317547305482
+      ],
+      "inertia_kg_m2": [
+        [
+          0.07500000000000019,
+          -0.004575317547305502,
+          -0.017075317547305513
+        ],
+        [
+          -0.004575317547305502,
+          0.06417468245269464,
+          0.006250000000000033
+        ],
+        [
+          -0.017075317547305513,
+          0.006250000000000033,
+          0.0858253175473055
+        ]
+      ],
+      "mass_kg": 1.0
+    }
+  },
+  "shared_parent_frame": {
+    "fc-body-A": {
+      "com_m": [
+        0.4754809471616711,
+        2.323557158514987,
+        -0.25
+      ],
+      "inertia_kg_m2": [
+        [
+          0.17165063509461018,
+          0.012500000000000178,
+          0.03415063509461097
+        ],
+        [
+          0.012500000000000178,
+          0.12834936490538898,
+          0.009150635094610893
+        ],
+        [
+          0.03415063509461097,
+          0.009150635094610893,
+          0.14999999999999908
+        ]
+      ],
+      "mass_kg": 2.0
+    },
+    "fc-body-B": {
+      "com_m": [
+        1.7075317547305482,
+        0.45753175473054825,
+        0.25
+      ],
+      "inertia_kg_m2": [
+        [
+          0.0858253175473055,
+          0.006249999999999978,
+          0.017075317547305402
+        ],
+        [
+          0.006249999999999978,
+          0.06417468245269468,
+          0.004575317547305488
+        ],
+        [
+          0.017075317547305402,
+          0.004575317547305488,
+          0.07500000000000015
+        ]
+      ],
+      "mass_kg": 1.0
+    }
+  }
+}
+
+----- FROZEN fc_composed_matrices
+{
+  "R_DA": [
+    [
+      -0.5,
+      -0.8660254037844386,
+      0.0
+    ],
+    [
+      0.8660254037844386,
+      -0.5,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "R_DB": [
+    [
+      0.0,
+      -0.5,
+      0.8660254037844386
+    ],
+    [
+      0.0,
+      0.8660254037844386,
+      0.5
+    ],
+    [
+      -1.0,
+      0.0,
+      0.0
+    ]
+  ],
+  "t_DA": [
+    1.4330127018922192,
+    -1.75,
+    0.75
+  ],
+  "t_DB": [
+    0.625,
+    -1.350480947161671,
+    0.0
+  ]
+}
+
+----- DESIGN_GATES
+{
+  "smallest_protected_off_diagonal": 0.004575317547305488,
+  "t_protected": 0.002,
+  "tolerance": 1e-12
+}
+
+PREREGISTRATION CROSS-CHECK OK (H == Q == R2 within 1e-12; hand totals exact)

@@ -1,0 +1,29 @@
+{
+  "schema_version": "chimera.material_partition.v1",
+  "coordinate_frame": {
+    "frame_id": "si-domain",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "scale_to_m": 1.0
+  },
+  "vertices": [
+    {"vertex_id": "v0", "position": [0.0, 0.0, 0.0]},
+    {"vertex_id": "v1", "position": [1.0, 0.0, 0.0]},
+    {"vertex_id": "v2", "position": [0.0, 1.0, 0.0]},
+    {"vertex_id": "v3", "position": [0.0, 0.0, 1.0]},
+    {"vertex_id": "v4", "position": [0.0, 0.0, -1.0]}
+  ],
+  "cells": [
+    {"cell_id": "cell-upper", "vertex_ids": ["v0", "v1", "v2", "v3"], "proposals": ["si-region-A"]},
+    {"cell_id": "cell-lower", "vertex_ids": ["v0", "v2", "v1", "v4"], "proposals": ["si-region-B"]}
+  ],
+  "materials": [
+    {"material_id": "si-tissue-A", "density_kg_m3": 12.0, "density_source": "preregistered analytic coupon fixture", "conditions": "uniform"},
+    {"material_id": "si-tissue-B", "density_kg_m3": 6.0, "density_source": "preregistered analytic coupon fixture", "conditions": "uniform"}
+  ],
+  "regions": [
+    {"region_id": "si-region-A", "mass_owner_id": "si-owner-A", "material_id": "si-tissue-A"},
+    {"region_id": "si-region-B", "mass_owner_id": "si-owner-B", "material_id": "si-tissue-B"}
+  ],
+  "mass_authority": "reconstructed_tissue_mass"
+}

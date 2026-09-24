@@ -57,3 +57,9 @@ Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe
 **Findings banked (F1-F6):** reader = only consumption-time validator; no value oracle (wrong-but-symmetric numbers, mass edits, COM shifts, impostor owner ids all flow through at exit 0); dropped provenance invisible; complete->partial with empty unassigned accepted; readiness tamper neutralized-but-invisible (decision request); admission_report_sha256 + input_hashes inert at consumption; M13 ragged tensor escapes as numpy traceback (named-refusal contract gap).
 **Cross-connection:** M10's validator (R0-R16) is the campaign's own static consumer — B7's 9 missed mutations are the perfect adversarial corpus for it. QUEUED as B7x (behind retry queue B3/B5).
 **Fleet:** 9 live. Serialized protocol still holds (M06-retry in flight).
+
+## CHECKPOINT T8 — M01 integrated (the frozen foundation REPRODUCES independently)
+
+**Verified:** M01's extraction re-runs clean (coordinator re-ran the SI proof from its git-show blob extraction: 5/5 OK); integrity clean. Frozen 1af0bbde reproduces: SI 5/5, FC 8/8, verify 7/7 (CRLF-materialized) x2; deltas reproduce the results-doc table to the last digit (worst 9.4e-16 <= 1e-12). All 66 receipt identities reproduced independently; independent-reproduction OPEN item CLOSED by this run; proof audit executed with 6 named weak assertions; C-1 adjudicated by independent diff (json-equal), C-2/C-3 confirmed; U1-U10 all real.
+**New:** M01-F1 (7/7 is materialization-dependent; raw-LF -> 6/7 at one byte) — connects to B4's three-layer matrix. DR-1 (aggregate digest construction unrecorded), DR-2 (U7 parenthetical imprecise) -> decision queue.
+**Fleet:** 8 live (M04-retry, M06-retry, M08, B2a, B4, B6, B9 + O1/O2). Serialized protocol holds.

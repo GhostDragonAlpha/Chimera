@@ -1,0 +1,13 @@
+test_authored_translation_and_rotation_transform_com_and_full_tensor (__main__.MaterialVolumeBodyExportChecks.test_authored_translation_and_rotation_transform_com_and_full_tensor) ... ok
+test_duplicate_cell_ownership_refuses_instead_of_double_counting (__main__.MaterialVolumeBodyExportChecks.test_duplicate_cell_ownership_refuses_instead_of_double_counting) ... ok
+test_missing_density_blocks_export_and_keeps_affected_cell (__main__.MaterialVolumeBodyExportChecks.test_missing_density_blocks_export_and_keeps_affected_cell) ... ok
+test_refuses_untrusted_passed_flag_and_nonrigid_or_reflected_frame (__main__.MaterialVolumeBodyExportChecks.test_refuses_untrusted_passed_flag_and_nonrigid_or_reflected_frame) ... ok
+test_report_hashes_and_cli_output_are_deterministic_and_finite (__main__.MaterialVolumeBodyExportChecks.test_report_hashes_and_cli_output_are_deterministic_and_finite) ... ok
+test_source_effective_authority_returns_explicit_unsupported_without_mass_reads (__main__.MaterialVolumeBodyExportChecks.test_source_effective_authority_returns_explicit_unsupported_without_mass_reads) ... ok
+test_two_explicit_group_masses_recombine_to_partition_total (__main__.MaterialVolumeBodyExportChecks.test_two_explicit_group_masses_recombine_to_partition_total) ... ok
+test_unassigned_cells_are_reported_and_not_silently_included (__main__.MaterialVolumeBodyExportChecks.test_unassigned_cells_are_reported_and_not_silently_included) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.083s
+
+OK
