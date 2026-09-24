@@ -1,0 +1,4 @@
+PREREGISTRATION.md sha256 (frozen 2026-09-24T16:38:02-05:00):
+d6ee7c1a6a10bd411f9142a042b8ca9ae40e992d7e90c0a178b02149918f9fe3 *E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/PREREGISTRATION.md
+staged validator sha256 (pre-edit, == M10 original):
+94c2ee772c4a15db0966fcf963ed13fe2fcb9987f45c5897f8072a62f636f5dd *E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/rigid_body_mass_consumption_validator.py

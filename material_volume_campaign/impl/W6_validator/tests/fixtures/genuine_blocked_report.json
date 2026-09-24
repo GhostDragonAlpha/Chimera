@@ -1,0 +1,148 @@
+{
+  "schema_version": "chimera.rigid_body_mass_export.v1",
+  "validation_only": true,
+  "dynamics_readiness_claimed": false,
+  "physical_state_mutated": false,
+  "production_wired": false,
+  "admission_status": "not_admitted",
+  "admission_reason_codes": [
+    "missing_density"
+  ],
+  "admission_report_sha256": "4d4c43e1e0d1a5ea08d754911102211d0f08658a98874c42bf90a4be0463ecba",
+  "admission_anatomical_completeness_certified": false,
+  "mass_authority": "reconstructed_tissue_mass",
+  "input_hashes": {
+    "algorithm": "sha256",
+    "serialization": "UTF-8 canonical JSON (sorted object keys; array order preserved)",
+    "manifest_sha256": "cab86eb63a9b10f988e93c42bc273bfbb06ef468705a421a6f821c6543630021",
+    "partition_sha256": "9c572403a67e9fbd53ce0737cf04dd52ddfb190ad6fb7f6fe0edbca6eee4aaf2",
+    "body_groups_sha256": "dcb55f1d17526fa12501f405505238c347ccf2c636cce1b78759bbcd76436c73"
+  },
+  "unassigned_cell_ids": [],
+  "unassigned_cells": [],
+  "all_supplied_cells_assigned": true,
+  "surface_mass_overlay_generated": false,
+  "anatomical_completeness_certified": false,
+  "export_status": "blocked",
+  "reason_codes": [
+    "reconstructed_mass_admission_required"
+  ],
+  "source_effective_segment_payloads_consumed": false,
+  "body_groups": [
+    {
+      "body_id": "coupon-body-A",
+      "owned_cell_ids": [
+        "cell-A"
+      ],
+      "body_frame": {
+        "frame_id": "coupon-A-authored",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "origin_m": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "export_status": "not_exported",
+      "admission_status": "not_admitted",
+      "admission_report_sha256": "298c544846f7f6e521db7205472ccf542501d95db7c1b4a11f6ad744cf8dd60f",
+      "input_hashes": {
+        "algorithm": "sha256",
+        "serialization": "UTF-8 canonical JSON (sorted object keys; array order preserved)",
+        "manifest_sha256": "cab86eb63a9b10f988e93c42bc273bfbb06ef468705a421a6f821c6543630021",
+        "partition_sha256": "9c572403a67e9fbd53ce0737cf04dd52ddfb190ad6fb7f6fe0edbca6eee4aaf2",
+        "body_groups_sha256": "dcb55f1d17526fa12501f405505238c347ccf2c636cce1b78759bbcd76436c73"
+      },
+      "admission_reason_codes": [
+        "missing_density"
+      ],
+      "blocking_cell_ids": [],
+      "blocking_assignment_statuses": [],
+      "reason_codes": [
+        "reconstructed_mass_admission_required"
+      ],
+      "mass_properties": null
+    },
+    {
+      "body_id": "coupon-body-B",
+      "owned_cell_ids": [
+        "cell-B"
+      ],
+      "body_frame": {
+        "frame_id": "coupon-B-authored",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [
+            [
+              0.0,
+              -1.0,
+              0.0
+            ],
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "origin_m": [
+            3.0,
+            -2.0,
+            1.0
+          ]
+        }
+      },
+      "export_status": "not_exported",
+      "admission_status": "not_admitted",
+      "admission_report_sha256": "298c544846f7f6e521db7205472ccf542501d95db7c1b4a11f6ad744cf8dd60f",
+      "input_hashes": {
+        "algorithm": "sha256",
+        "serialization": "UTF-8 canonical JSON (sorted object keys; array order preserved)",
+        "manifest_sha256": "cab86eb63a9b10f988e93c42bc273bfbb06ef468705a421a6f821c6543630021",
+        "partition_sha256": "9c572403a67e9fbd53ce0737cf04dd52ddfb190ad6fb7f6fe0edbca6eee4aaf2",
+        "body_groups_sha256": "dcb55f1d17526fa12501f405505238c347ccf2c636cce1b78759bbcd76436c73"
+      },
+      "admission_reason_codes": [
+        "missing_density"
+      ],
+      "blocking_cell_ids": [
+        "cell-B"
+      ],
+      "blocking_assignment_statuses": [
+        {
+          "cell_id": "cell-B",
+          "status": "missing_density"
+        }
+      ],
+      "reason_codes": [
+        "reconstructed_mass_admission_required"
+      ],
+      "mass_properties": null
+    }
+  ]
+}

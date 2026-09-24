@@ -1,0 +1,89 @@
+FFFF.                                                                    [100%]
+================================== FAILURES ===================================
+__________________ test_decision_records_present_and_decided __________________
+
+    def test_decision_records_present_and_decided() -> None:
+        verdict, error = validator.validate_file(ACCEPT)
+        assert error is None
+>       records = _records(verdict)
+                  ^^^^^^^^^^^^^^^^^
+
+tests\test_w6_reconciled_records.py:34: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+verdict = {'admission_hash_scopes': {'bodies': [{'admission_report_sha256': 'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370...le).', ...}, 'admission_status': 'validation_only_admissible', 'all_rule_failures': [], 'assembly_eligible': True, ...}
+
+    def _records(verdict: dict) -> dict:
+        records = verdict.get("decision_records")
+>       assert isinstance(records, list), "verdict carries no decision_records"
+E       AssertionError: verdict carries no decision_records
+E       assert False
+E        +  where False = isinstance(None, list)
+
+tests\test_w6_reconciled_records.py:27: AssertionError
+_____________ test_reconciliation_outcomes_match_the_frozen_table _____________
+
+    def test_reconciliation_outcomes_match_the_frozen_table() -> None:
+        verdict, error = validator.validate_file(ACCEPT)
+        assert error is None
+>       records = _records(verdict)
+                  ^^^^^^^^^^^^^^^^^
+
+tests\test_w6_reconciled_records.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+verdict = {'admission_hash_scopes': {'bodies': [{'admission_report_sha256': 'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370...le).', ...}, 'admission_status': 'validation_only_admissible', 'all_rule_failures': [], 'assembly_eligible': True, ...}
+
+    def _records(verdict: dict) -> dict:
+        records = verdict.get("decision_records")
+>       assert isinstance(records, list), "verdict carries no decision_records"
+E       AssertionError: verdict carries no decision_records
+E       assert False
+E        +  where False = isinstance(None, list)
+
+tests\test_w6_reconciled_records.py:27: AssertionError
+_________________ test_exercised_flags_survive_the_reframing __________________
+
+    def test_exercised_flags_survive_the_reframing() -> None:
+        verdict, error = validator.validate_file(FIXTURES / "reject_partial.json")
+        assert error is None
+>       assert _records(verdict)["D2"]["exercised"] is True
+               ^^^^^^^^^^^^^^^^^
+
+tests\test_w6_reconciled_records.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+verdict = {'admission_hash_scopes': {'bodies': [{'admission_report_sha256': 'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370...t-subset path exists]", 'location': '$', 'reason': 'partial_rejected', 'rule': 'R2'}], 'assembly_eligible': False, ...}
+
+    def _records(verdict: dict) -> dict:
+        records = verdict.get("decision_records")
+>       assert isinstance(records, list), "verdict carries no decision_records"
+E       AssertionError: verdict carries no decision_records
+E       assert False
+E        +  where False = isinstance(None, list)
+
+tests\test_w6_reconciled_records.py:27: AssertionError
+_____ test_partial_rejection_explicitly_displays_gaps_and_omitted_bodies ______
+
+    def test_partial_rejection_explicitly_displays_gaps_and_omitted_bodies() -> None:
+        verdict, error = validator.validate_file(GENUINE_PARTIAL)
+        assert error is None
+        # D2 decided keeps the rejection.
+        assert verdict["verdict"] == "REJECT"
+        assert any(f["reason"] == "partial_rejected"
+                   for f in verdict["all_rule_failures"])
+        # ...and the diagnostic duty: the verdict explicitly displays the unassigned
+        # gaps and the omitted (here: still-exported) bodies, by id, never merged.
+        preserved = verdict["preserved_diagnostics"]
+>       assert preserved.get("unassigned_cell_ids") == ["cell-C"]
+E       AssertionError: assert None == ['cell-C']
+E        +  where None = <built-in method get of dict object at 0x0000019B35DD0680>('unassigned_cell_ids')
+E        +    where <built-in method get of dict object at 0x0000019B35DD0680> = {}.get
+
+tests\test_w6_reconciled_records.py:76: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_w6_reconciled_records.py::test_decision_records_present_and_decided
+FAILED tests/test_w6_reconciled_records.py::test_reconciliation_outcomes_match_the_frozen_table
+FAILED tests/test_w6_reconciled_records.py::test_exercised_flags_survive_the_reframing
+FAILED tests/test_w6_reconciled_records.py::test_partial_rejection_explicitly_displays_gaps_and_omitted_bodies
+4 failed, 1 passed in 0.35s

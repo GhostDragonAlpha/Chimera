@@ -1,0 +1,18 @@
+INCIDENT RECORD (preserved per campaign law) — tools/__pycache__ leak, W6 session 2026-09-24
+
+Observed once: during the first combined run of tests/test_w6_reconciled_records.py
++ tests/test_validator.py, the guard test test_no_bytecode_written_into_tools
+captured E:/ChimeraWork/mvc-20260924/tools/__pycache__/material_volume_body_export.cpython-314.pcy
+(material_volume_body_export.cpython-314.pyc). File no longer present afterwards;
+not reproduced across 4 subsequent full-suite runs.
+
+Attribution (decisive experiment, same session): an UNPROTECTED in-process import
+  python -c "sys.path.insert(0,'<root>/tools'); import material_volume_body_export_reader"
+creates exactly tools/__pycache__/{material_volume, material_volume_admission,
+material_volume_body_export, material_volume_body_export_reader}.cpython-314.pyc.
+The W6 deliverables (validator module, fixture generator, every test module) set
+sys.dont_write_bytecode=True (and PYTHONDONTWRITEBYTECODE=1) BEFORE any tools
+import; test_w6_fullreport_mvb31.py verified clean even when invoked WITHOUT the
+env prefix. Conclusion: a transient unprotected import during interactive
+diagnosis, not a defect in any W6 deliverable; the M10 guard test held and now
+passes. tools/__pycache__ deleted; `git status --porcelain -- tools` empty.
