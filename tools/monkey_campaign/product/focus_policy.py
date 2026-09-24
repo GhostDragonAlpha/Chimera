@@ -221,6 +221,12 @@ class FocusPolicy:
         for focus. (Focus state is independent and untouched.)"""
         return self._device_event("reconnect", now_ms)
 
+    def release_all(self, now_ms):
+        """Stack-composition passthrough (R3 finding B1): SessionFlow drives
+        pause/restart through the mapper-slot's release_all; delegated to the
+        wrapped mapper with physical-release semantics, exactly as blur."""
+        return self._mapper.release_all(now_ms=now_ms)
+
     def _focus_event(self, name, now_ms):
         self.last_trace.setdefault("events", []).append((name, int(now_ms)))
         if name == "blur":
