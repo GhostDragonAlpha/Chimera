@@ -1,0 +1,40 @@
+{
+  "checks": [
+    {
+      "check": "T3 ulna",
+      "ok": true,
+      "source_side": "right",
+      "target_side": "right",
+      "target_prox_joint": "elbow_R",
+      "P_x": -0.11548098385334016,
+      "det_Q_constructed": 0.9999999999999999,
+      "declared_scale": [
+        0.2217067956654491,
+        0.2217067956654491,
+        0.2217067956654491
+      ],
+      "handedness": "preserve",
+      "packet_chirality_det_context": 0.9999999999999998,
+      "mirror_plane_normal": null
+    },
+    {
+      "check": "T3 ulna_l",
+      "ok": true,
+      "source_side": "left",
+      "target_side": "left",
+      "target_prox_joint": "elbow_L",
+      "P_x": 0.11548098385334016,
+      "det_Q_constructed": 0.9999999999999996,
+      "declared_scale": [
+        0.2217067956654491,
+        0.2217067956654491,
+        0.2217067956654491
+      ],
+      "handedness": "preserve",
+      "packet_chirality_det_context": 0.9999999999999998,
+      "mirror_plane_normal": null
+    }
+  ],
+  "adaptation": "chirality gate leg = constructed det(Q) (1e-12); packet chirality_det recorded as context (no recorded fit exists for an anchor-only body)",
+  "ok": true
+}

@@ -1,0 +1,27 @@
+{
+  "checks": [
+    {
+      "check": "T2 ulna",
+      "ok": true,
+      "source_bone_len_m": 0.023074639975522924,
+      "target_pair_len_m": 0.005115804490107064,
+      "roll_t_norm_source_m": 0.02345880821804825,
+      "roll_t_norm_target_m": 0.030953085467249303,
+      "roll_eps": 1e-09,
+      "scale_policy": "uniform",
+      "finite_landmarks": true
+    },
+    {
+      "check": "T2 ulna_l",
+      "ok": true,
+      "source_bone_len_m": 0.023074639975522924,
+      "target_pair_len_m": 0.005115804490107064,
+      "roll_t_norm_source_m": 0.02345880821804825,
+      "roll_t_norm_target_m": 0.030953082931149515,
+      "roll_eps": 1e-09,
+      "scale_policy": "uniform",
+      "finite_landmarks": true
+    }
+  ],
+  "ok": true
+}

@@ -1,0 +1,288 @@
+{
+  "checks": [
+    {
+      "check": "T4 ulna",
+      "ok": true,
+      "subchecks": {
+        "ortho_constructed": true,
+        "det_Q": true,
+        "det_L_is_s3": true,
+        "anchor_gap_0": true,
+        "edge_on_elbow_wrist_line": true,
+        "no_packet_transform_to_contradict": true,
+        "neighbor_band": true,
+        "aspect_policy": true,
+        "c1_independent_10_of_10_reproduced": true,
+        "axial_roll_independent": true
+      },
+      "rebuilt_scale": [
+        0.2217067956654491,
+        0.2217067956654491,
+        0.2217067956654491
+      ],
+      "det_Q": 0.9999999999999999,
+      "det_L": 0.010897754382730232,
+      "s_cubed": 0.010897754382730239,
+      "orthonormality_constructed": 4.0874421902703517e-16,
+      "anchor_gap_m": 0.0,
+      "edge_axis_dev_deg": 0.0,
+      "packet_transform_absent": true,
+      "plausibility": {
+        "neighbor": "humerus",
+        "neighbor_axial": 0.22903047349436892,
+        "band": [
+          0.11451523674718446,
+          0.45806094698873784
+        ],
+        "in_band": true,
+        "aspect_policy": true
+      },
+      "c1_placement": [
+        {
+          "site": "TRIlong-P5",
+          "axial_pct": -2.147082909054372,
+          "expected_c1_pct": -2.15,
+          "delta_pts": 0.002917090945627976,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "olecranon/process"
+        },
+        {
+          "site": "TRIlat-P5",
+          "axial_pct": -2.147082909054372,
+          "expected_c1_pct": -2.15,
+          "delta_pts": 0.002917090945627976,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "olecranon/process"
+        },
+        {
+          "site": "TRImed-P5",
+          "axial_pct": -2.147082909054372,
+          "expected_c1_pct": -2.15,
+          "delta_pts": 0.002917090945627976,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "olecranon/process"
+        },
+        {
+          "site": "ANC-P2",
+          "axial_pct": 1.8421046105538659,
+          "expected_c1_pct": 1.84,
+          "delta_pts": 0.0021046105538657933,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "olecranon/process"
+        },
+        {
+          "site": "BRA-P4",
+          "axial_pct": 4.3279954414271,
+          "expected_c1_pct": 4.33,
+          "delta_pts": 0.0020045585729002724,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "tuberosity/coronoid"
+        },
+        {
+          "site": "BRA-P3",
+          "axial_pct": 2.9068842876185568,
+          "expected_c1_pct": 2.91,
+          "delta_pts": 0.0031157123814433696,
+          "strict_in_band": false,
+          "receipted_band_marginal": true,
+          "in_region_receipted_test": true,
+          "region": "tuberosity/coronoid"
+        },
+        {
+          "site": "ECU-P2",
+          "axial_pct": 14.128090650685762,
+          "expected_c1_pct": 14.13,
+          "delta_pts": 0.0019093493142392504,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "shaft course, proximal-to-mid, interior (not wrist)"
+        },
+        {
+          "site": "ECU-P3",
+          "axial_pct": 17.676618685067595,
+          "expected_c1_pct": 17.68,
+          "delta_pts": 0.0033813149324046776,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "shaft course, proximal-to-mid, interior (not wrist)"
+        },
+        {
+          "site": "ECU-P4",
+          "axial_pct": 25.96400453881552,
+          "expected_c1_pct": 25.96,
+          "delta_pts": 0.0040045388155185435,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "shaft course, proximal-to-mid, interior (not wrist)"
+        },
+        {
+          "site": "PT-P2",
+          "axial_pct": 1.558135077996174,
+          "expected_c1_pct": 1.56,
+          "delta_pts": 0.0018649220038260417,
+          "strict_in_band": false,
+          "receipted_band_marginal": true,
+          "in_region_receipted_test": true,
+          "region": "tuberosity/coronoid"
+        }
+      ],
+      "axial_shift_under_alt_roll_m": 4.5102810375396984e-17
+    },
+    {
+      "check": "T4 ulna_l",
+      "ok": true,
+      "subchecks": {
+        "ortho_constructed": true,
+        "det_Q": true,
+        "det_L_is_s3": true,
+        "anchor_gap_0": true,
+        "edge_on_elbow_wrist_line": true,
+        "no_packet_transform_to_contradict": true,
+        "neighbor_band": true,
+        "aspect_policy": true,
+        "c1_independent_10_of_10_reproduced": true,
+        "axial_roll_independent": true
+      },
+      "rebuilt_scale": [
+        0.2217067956654491,
+        0.2217067956654491,
+        0.2217067956654491
+      ],
+      "det_Q": 0.9999999999999996,
+      "det_L": 0.010897754382730232,
+      "s_cubed": 0.010897754382730239,
+      "orthonormality_constructed": 2.220446049250313e-16,
+      "anchor_gap_m": 0.0,
+      "edge_axis_dev_deg": 0.0,
+      "packet_transform_absent": true,
+      "plausibility": {
+        "neighbor": "humerus_l",
+        "neighbor_axial": 0.22899766495317744,
+        "band": [
+          0.11449883247658872,
+          0.4579953299063549
+        ],
+        "in_band": true,
+        "aspect_policy": true
+      },
+      "c1_placement": [
+        {
+          "site": "TRIlong_l-P5",
+          "axial_pct": -2.147082909054367,
+          "expected_c1_pct": -2.15,
+          "delta_pts": 0.002917090945632861,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "olecranon/process"
+        },
+        {
+          "site": "TRIlat_l-P5",
+          "axial_pct": -2.147082909054367,
+          "expected_c1_pct": -2.15,
+          "delta_pts": 0.002917090945632861,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "olecranon/process"
+        },
+        {
+          "site": "TRImed_l-P5",
+          "axial_pct": -2.147082909054367,
+          "expected_c1_pct": -2.15,
+          "delta_pts": 0.002917090945632861,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "olecranon/process"
+        },
+        {
+          "site": "ANC_l-P2",
+          "axial_pct": 1.8421046105538303,
+          "expected_c1_pct": 1.84,
+          "delta_pts": 0.002104610553830266,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "olecranon/process"
+        },
+        {
+          "site": "BRA_l-P4",
+          "axial_pct": 4.327995441427067,
+          "expected_c1_pct": 4.33,
+          "delta_pts": 0.002004558572933135,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "tuberosity/coronoid"
+        },
+        {
+          "site": "BRA_l-P3",
+          "axial_pct": 2.9068842876186136,
+          "expected_c1_pct": 2.91,
+          "delta_pts": 0.003115712381386526,
+          "strict_in_band": false,
+          "receipted_band_marginal": true,
+          "in_region_receipted_test": true,
+          "region": "tuberosity/coronoid"
+        },
+        {
+          "site": "ECU_l-P2",
+          "axial_pct": 14.12809065068573,
+          "expected_c1_pct": 14.13,
+          "delta_pts": 0.0019093493142712248,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "shaft course, proximal-to-mid, interior (not wrist)"
+        },
+        {
+          "site": "ECU_l-P3",
+          "axial_pct": 17.67661868506763,
+          "expected_c1_pct": 17.68,
+          "delta_pts": 0.0033813149323691505,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "shaft course, proximal-to-mid, interior (not wrist)"
+        },
+        {
+          "site": "ECU_l-P4",
+          "axial_pct": 25.964004538815487,
+          "expected_c1_pct": 25.96,
+          "delta_pts": 0.004004538815486569,
+          "strict_in_band": true,
+          "receipted_band_marginal": false,
+          "in_region_receipted_test": true,
+          "region": "shaft course, proximal-to-mid, interior (not wrist)"
+        },
+        {
+          "site": "PT_l-P2",
+          "axial_pct": 1.5581350779961696,
+          "expected_c1_pct": 1.56,
+          "delta_pts": 0.0018649220038304826,
+          "strict_in_band": false,
+          "receipted_band_marginal": true,
+          "in_region_receipted_test": true,
+          "region": "tuberosity/coronoid"
+        }
+      ],
+      "axial_shift_under_alt_roll_m": 4.85722573273506e-17
+    }
+  ],
+  "adaptation": "packet comparison legs recorded N/A (no recorded fit for an anchor-only body); packet-tier anchor law + C1 independent 10/10 reproduction stand in as the explainability legs",
+  "ok": true
+}

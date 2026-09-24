@@ -1,0 +1,91 @@
+=== 00_declare_candidate ===
+[PASS] roll derivation (O1 law + existing witness -> unique candidate) — TRIlat-P5 residual 0.1535 deg / left 0.1535 deg; alternatives ANC 17.55, ECU 63.61 deg (O1 receipt: 0.1535 / 17.553 / 63.612)
+[PASS] roll derivation (O1 law + existing witness -> unique candidate) — TRIlat-P5 residual 0.1535 deg / left 0.1535 deg; alternatives ANC 17.55, ECU 63.61 deg (O1 receipt: 0.1535 / 17.553 / 63.612)
+declaration frozen: E:\PythonChimera\forearm_package\audits\I7_ustr_diagnostic\receipts\00_candidate_declaration.json
+  P_d(right) = [-0.11781299127866669, 0.3145557153217149, -0.006067056594766505]  (d = 5.1158 mm along axis)
+  s_a = 0.221706795665
+=== 01_t1_provenance ===
+[PASS] T1a parent(ulna) == XML parent — xml=humerus declared=humerus; packet record: unresolved_segments['ulna'] reason='no fitted scale (axis source missing; not silently repaired)'
+[PASS] T1a parent(ulna_l) == XML parent — xml=humerus_l declared=humerus_l; packet record: unresolved_segments['ulna_l'] reason='no fitted scale (axis source missing; not silently repaired)'
+[PASS] T1b claimed site set == XML site set (all 18 bodies) — ulna:10==10; ulna_l:10==10
+[PASS] T1c source resolutions (ulna) — prox=body_origin:ulna dist=body_origin:radius roll=site:TRIlat-P5 (XML owner=ulna, legal=['humerus', 'radius', 'ulna'])
+[PASS] T1c source resolutions (ulna_l) — prox=body_origin:ulna_l dist=body_origin:radius_l roll=site:TRIlat_l-P5 (XML owner=ulna_l, legal=['humerus_l', 'radius_l', 'ulna_l'])
+T1 VERDICT: PASS
+=== 02_t2_landmarks ===
+[PASS] T2 landmark sufficiency (ulna) — |src_D-src_A|=0.023075 m  |P_d-P|=0.005116 m  |t_roll| src=0.023459 m tgt=0.030953 m (> eps 1e-09)  policy=uniform  finite=True
+[PASS] T2 landmark sufficiency (ulna_l) — |src_D-src_A|=0.023075 m  |P_d-P|=0.005116 m  |t_roll| src=0.023459 m tgt=0.030953 m (> eps 1e-09)  policy=uniform  finite=True
+T2 VERDICT: PASS
+=== 03_t3_laterality ===
+[PASS] T3 side(ulna) — source z=+0.1577 -> right; target joint=elbow_R -> right; P.x=-0.115481 m (monkey right=-x: True)
+[PASS] T3 handedness (ulna) — det(Q_constructed)=1.000000000000000  declared scale=[0.221706795665, 0.221706795665, 0.221706795665] handedness=preserve  mirror_normal=None  (packet chirality_det=0.9999999999999998 — context, recorded fit)
+[PASS] T3 side(ulna_l) — source z=-0.1577 -> left; target joint=elbow_L -> left; P.x=+0.115481 m (monkey right=-x: True)
+[PASS] T3 handedness (ulna_l) — det(Q_constructed)=1.000000000000000  declared scale=[0.221706795665, 0.221706795665, 0.221706795665] handedness=preserve  mirror_normal=None  (packet chirality_det=0.9999999999999998 — context, recorded fit)
+T3 VERDICT: PASS
+=== 04_t4_transform ===
+[PASS] T4 transform explainability (ulna) — ortho=4.09e-16 detQ=1.000000000000000 anchor_gap=0.00e+00 m axis_dev=0.00e+00 deg s=0.221706795665 nbr(humerus)=0.229030 band=[0.114515,0.458061] C1 receipted test=True (strict bands 8/10; receipted boundary verdicts: PT-P2 band-marginal, BRA-P3 in @2.91 — C1 §5) worst_delta=ECU-P4:0.0040 pts axial_shift_alt_roll=4.5e-17 m
+[PASS] T4 transform explainability (ulna_l) — ortho=2.22e-16 detQ=1.000000000000000 anchor_gap=0.00e+00 m axis_dev=0.00e+00 deg s=0.221706795665 nbr(humerus_l)=0.228998 band=[0.114499,0.457995] C1 receipted test=True (strict bands 8/10; receipted boundary verdicts: PT-P2 band-marginal, BRA-P3 in @2.91 — C1 §5) worst_delta=ECU_l-P4:0.0040 pts axial_shift_alt_roll=4.9e-17 m
+T4 VERDICT: PASS
+=== 05_t5_uniqueness ===
+[PASS] T5 uniqueness (ulna on its declared edge) — resolution-consistent supporters=['ulna'] (count=1) | nearest scale alternative=ulna_l s=0.221707 (0.00 log2 away) | in-band others (context, not gate)=['hand_l', 'hand_r', 'ulna_l']
+[PASS] T5 uniqueness (ulna_l on its declared edge) — resolution-consistent supporters=['ulna_l'] (count=1) | nearest scale alternative=ulna s=0.221707 (0.00 log2 away) | in-band others (context, not gate)=['hand_l', 'hand_r', 'ulna']
+T5 VERDICT: PASS
+=== 06_t6_utility_ban ===
+[PASS] T6 utility-ban token scan (scripts/) — 12 scripts scanned, 0 banned-evidence occurrences
+[PASS] T6 packet tendon/moment data untouched — scripts reading tendons/muscles/arms: NONE
+T6 VERDICT: PASS
+=== 07_gate_table ===
+====================================================================================================
+ISOLATED U-STR CANDIDATE GATE TABLE (ulna + ulna_l x T1..T6, protocol unchanged)
+====================================================================================================
+test                                         ulna         ulna_l  key numbers
+T1 source-provenance                         PASS           PASS  parent=humerus; sites==XML: True; roll owner=ulna
+T2 landmark-sufficiency                      PASS           PASS  |src|=0.023075 m |P_d-P|=0.005116 m |t|=0.0310 m
+T3 laterality                                PASS           PASS  right->right (elbow_R); detQ=1.00000000000000
+T4 transform-explainability                  PASS           PASS  s=0.221706795665; anchor_gap=0.0e+00 m; C1 10/10=True (worst 0.004 pts)
+T5 uniqueness                                PASS           PASS  supporters=['ulna'] (count=1)
+T6 utility-ban (process)                                      PASS  banned occurrences=0
+baseline snapshot git status: '' (empty = untouched)
+CANDIDATE GATE: ALL PASS
+=== 08_radius_before_after ===
+[PASS] closure mechanism (radius) — |radius.P(packet) - ulna.P_d| = 5.1158 mm >> JOINT_EPS 1e-09 -> shared_joint_separation refusal with ulna declared (compiler.py:399-423); re-anchor is machine-forced
+[PASS] closure mechanism (radius_l) — |radius.P(packet) - ulna.P_d| = 5.1158 mm >> JOINT_EPS 1e-09 -> shared_joint_separation refusal with ulna declared (compiler.py:399-423); re-anchor is machine-forced
+[PASS] fraction drift law (R1 §5.3) — 7.5459% x 1.04713 = 7.9015% vs target 7.9015%
+[PASS] baseline MANIFEST re-hash — 44/44 files match
+[PASS] forearm_package: no tracked modification outside the addendum — tracked modifications under forearm_package: NONE
+[PASS] forearm_package: baseline untouched by untracked writes — untracked under forearm_package: I7_ustr_diagnostic (this diagnostic) + foreign lanes ['forearm_package/audits/HAND_EVIDENCE_REQUEST/'] (concurrent agents'; not this diagnostic's products; untouched by it)
+
+--- BEFORE/AFTER RADIUS (closed form; NOT executed) ---
+radius:
+  BEFORE s=0.22170679566544982 det(L)=0.0108977544 span=64.7449 mm P=[-0.115480984, 0.319109077, -0.006076556]
+  AFTER  s=0.204188680010 det(L)=0.0085132421 span=59.6291 mm P=[-0.117812991, 0.314555715, -0.006067057]  scale_change=-7.9015%  G unchanged: 2.22e-16
+  sites: 16 globals recompute; max displacement 4.9510 mm (BICshort-P6)
+radius_l:
+  BEFORE s=0.22170679566544982 det(L)=0.0108977544 span=64.7449 mm P=[0.115480984, 0.319109077, -0.006076556]
+  AFTER  s=0.204188680010 det(L)=0.0085132421 span=59.6291 mm P=[0.117812991, 0.314555715, -0.006067057]  scale_change=-7.9015%  G unchanged: 6.66e-16
+  sites: 16 globals recompute; max displacement 4.9484 mm (BIClong_l-P9)
+fractions: derived point 5.1158 mm = 7.9015% of 64.7449 mm (source authored 7.5459%; drift x1.04713 — R1 §5.3)
+VERDICT: PASS
+=== 09_c1_replacement ===
+[PASS] C1 10/10 re-placement (ulna) — 10 sites; axial in C1 receipted regions (T4); transverse max 15.38 mm (C1 receipted 15.38) <= envelope median 22.9 mm; 10/10 inside
+[PASS] C1 10/10 re-placement (ulna_l) — 10 sites; axial in C1 receipted regions (T4); transverse max 15.38 mm (C1 receipted 15.38) <= envelope median 22.9 mm; 10/10 inside
+[PASS] L/R mirror consistency under the declared pair — max mirror deviation 0.0000 mm across 10 pairs (bound: source-authored ulna-y asymmetry 0.05 mm, B4-E3)
+
+--- C1's 10/10 set under the declared U-STR frame (right side) ---
+site          axial %EW  transverse mm
+ANC-P2           1.8421          5.651
+BRA-P3           2.9069          2.877
+BRA-P4           4.3280          4.557
+ECU-P2          14.1281          4.347
+ECU-P3          17.6766          8.280
+ECU-P4          25.9640         15.378
+PT-P2            1.5581          8.277
+TRIlat-P5       -2.1471          5.201
+TRIlong-P5      -2.1471          5.201
+TRImed-P5       -2.1471          5.201
+VERDICT: PASS
+=== 10_coverage_topology ===
+[PASS] coverage topology (baseline) — complete chains: ['BRD_l_tendon', 'BRD_tendon']
+[PASS] coverage topology (DIAGNOSTIC: +ulna/+ulna_l) — newly complete vs baseline: PT_tendon, PT_l_tendon (ulna was their ONLY blocker); ECU/ECU_l still double-blocked (hand terminal); 8 hand-blocked; 4 thorax-blocked (BIC x2)
+[PASS] coverage topology (context: +hand = B2's 12/16 + BRD pair) — 12 of the 16 non-comparable become complete with hand too (B2 §7) — context only; A04/A05 own the hand
+[PASS] BRD elbow-arm repair (ownership gate) — BRD/BRD_l chains are complete at baseline; their elbow_flexion(_l) arms are null TODAY solely because the coordinate owner (ulna/ulna_l) is unresolved (compiler gate); the diagnostic's ulna resolution repairs exactly that — no chain change needed
+COVERAGE VERDICT: PASS

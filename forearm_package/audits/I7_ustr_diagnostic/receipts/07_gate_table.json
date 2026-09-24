@@ -1,0 +1,176 @@
+{
+  "ulna": {
+    "T1_source_provenance": {
+      "verdict": "PASS",
+      "parent": "humerus",
+      "site_set_equal": true,
+      "resolutions": {
+        "prox": "body_origin:ulna",
+        "dist": "body_origin:radius",
+        "roll": "site:TRIlat-P5",
+        "roll_xml_owner": "ulna"
+      }
+    },
+    "T2_landmark_sufficiency": {
+      "verdict": "PASS",
+      "source_bone_len_m": 0.023074639975522924,
+      "target_pair_len_m": 0.005115804490107064,
+      "roll_t_norm_source_m": 0.02345880821804825,
+      "roll_t_norm_target_m": 0.030953085467249303,
+      "roll_eps": 1e-09,
+      "scale_policy": "uniform"
+    },
+    "T3_laterality": {
+      "verdict": "PASS",
+      "source_side": "right",
+      "target_side": "right",
+      "target_prox_joint": "elbow_R",
+      "det_Q_constructed": 0.9999999999999999,
+      "handedness": "preserve"
+    },
+    "T4_transform_explainability": {
+      "verdict": "PASS",
+      "subchecks": {
+        "ortho_constructed": true,
+        "det_Q": true,
+        "det_L_is_s3": true,
+        "anchor_gap_0": true,
+        "edge_on_elbow_wrist_line": true,
+        "no_packet_transform_to_contradict": true,
+        "neighbor_band": true,
+        "aspect_policy": true,
+        "c1_independent_10_of_10_reproduced": true,
+        "axial_roll_independent": true
+      },
+      "s_implied": 0.2217067956654491,
+      "anchor_gap_m": 0.0,
+      "c1_10_of_10": true,
+      "worst_c1_delta_pts": 0.0040045388155185435,
+      "plausibility": {
+        "neighbor": "humerus",
+        "neighbor_axial": 0.22903047349436892,
+        "band": [
+          0.11451523674718446,
+          0.45806094698873784
+        ],
+        "in_band": true,
+        "aspect_policy": true
+      }
+    },
+    "T5_uniqueness": {
+      "verdict": "PASS",
+      "resolution_supporters": [
+        "ulna"
+      ],
+      "supporter_count": 1,
+      "declared_roll_xml_owner": "ulna",
+      "nearest_scale_alternative": {
+        "body": "ulna_l",
+        "s": 0.2217067956654491
+      },
+      "in_band_others_context": [
+        "hand_l",
+        "hand_r",
+        "ulna_l"
+      ]
+    }
+  },
+  "ulna_l": {
+    "T1_source_provenance": {
+      "verdict": "PASS",
+      "parent": "humerus_l",
+      "site_set_equal": true,
+      "resolutions": {
+        "prox": "body_origin:ulna_l",
+        "dist": "body_origin:radius_l",
+        "roll": "site:TRIlat_l-P5",
+        "roll_xml_owner": "ulna_l"
+      }
+    },
+    "T2_landmark_sufficiency": {
+      "verdict": "PASS",
+      "source_bone_len_m": 0.023074639975522924,
+      "target_pair_len_m": 0.005115804490107064,
+      "roll_t_norm_source_m": 0.02345880821804825,
+      "roll_t_norm_target_m": 0.030953082931149515,
+      "roll_eps": 1e-09,
+      "scale_policy": "uniform"
+    },
+    "T3_laterality": {
+      "verdict": "PASS",
+      "source_side": "left",
+      "target_side": "left",
+      "target_prox_joint": "elbow_L",
+      "det_Q_constructed": 0.9999999999999996,
+      "handedness": "preserve"
+    },
+    "T4_transform_explainability": {
+      "verdict": "PASS",
+      "subchecks": {
+        "ortho_constructed": true,
+        "det_Q": true,
+        "det_L_is_s3": true,
+        "anchor_gap_0": true,
+        "edge_on_elbow_wrist_line": true,
+        "no_packet_transform_to_contradict": true,
+        "neighbor_band": true,
+        "aspect_policy": true,
+        "c1_independent_10_of_10_reproduced": true,
+        "axial_roll_independent": true
+      },
+      "s_implied": 0.2217067956654491,
+      "anchor_gap_m": 0.0,
+      "c1_10_of_10": true,
+      "worst_c1_delta_pts": 0.004004538815486569,
+      "plausibility": {
+        "neighbor": "humerus_l",
+        "neighbor_axial": 0.22899766495317744,
+        "band": [
+          0.11449883247658872,
+          0.4579953299063549
+        ],
+        "in_band": true,
+        "aspect_policy": true
+      }
+    },
+    "T5_uniqueness": {
+      "verdict": "PASS",
+      "resolution_supporters": [
+        "ulna_l"
+      ],
+      "supporter_count": 1,
+      "declared_roll_xml_owner": "ulna_l",
+      "nearest_scale_alternative": {
+        "body": "ulna",
+        "s": 0.2217067956654491
+      },
+      "in_band_others_context": [
+        "hand_l",
+        "hand_r",
+        "ulna"
+      ]
+    }
+  },
+  "_T6_utility_ban": {
+    "verdict": "PASS",
+    "banned_evidence_occurrences": 0,
+    "packet_tendon_readers": []
+  },
+  "_declaration": {
+    "roll_choice": {
+      "ulna": "TRIlat-P5",
+      "ulna_l": "TRIlat_l-P5"
+    },
+    "residual_deg": {
+      "ulna": 0.15353092426937565,
+      "ulna_l": 0.1535193865940414
+    },
+    "law": "az_target(q) = az_source(s) + 90 deg (mod 360)",
+    "frozen_before_evaluation": true
+  },
+  "_baseline_integrity": {
+    "command": "git -C E:/PythonChimera status --porcelain -- forearm_package/baseline_snapshot",
+    "output": "",
+    "empty": true
+  }
+}
