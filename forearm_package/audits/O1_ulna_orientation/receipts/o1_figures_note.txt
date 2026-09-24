@@ -1,0 +1,3 @@
+Both figures produced with matplotlib Agg backend set BEFORE pyplot import (CPU-only software rasterizer); no GPU/OpenGL/Vulkan/WebGL context anywhere in this audit.
+o1_source_axes_views.png: method-(b) documentation — source bone + sites viewed along each anatomical axis, screen axes labeled per panel.
+o1_target_elbow_sections.png: method-(c) documentation — directed section profiles + the D(t) olecranon test.

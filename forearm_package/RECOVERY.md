@@ -299,3 +299,10 @@ O2 died at ~13:22 with [1302] rate-limit (12 concurrent agents in flight). Probe
 - Macaque literature inapplicable for this quantity — recorded with 5 inapplicability findings, full search trail preserved.
 
 **Active:** O1, O2 (last wave-4 gates) + 14 mv-campaign agents.
+
+## CHECKPOINT 2026-09-24 (T21) — O1 integrated: the ulna roll SIGN IS RESOLVED
+
+**Verified:** O1 all six scripts re-run by coordinator (unanimous no-flip; olecranon D=+3.29+-0.73mm at t=+6mm; vendor bone probe); Agg-only figures; integrity clean.
+- SIGN LAW: source volar +x <-> target volar +z (section azimuth +90 deg). Roll witness law for any future declared pair: az_target(q) = az_source(s) + 90 deg.
+- EVIDENCE UPGRADES: (1) vendor ulna.stl EXISTS in-repo (E:/PythonChimera/vendor/myo_sim/meshes/) — C1's smallest-missing-measurement item resolved; bone spans 297/305.8 mm of the forearm; BRA-P4 volar-face placement on actual bone surface (the all-10 anchor rule fired and is preserved). (2) C3's elbow-band extreme-vertex statistic was paw skin — superseded by exact sections (both receipts kept). (3) C3's camber direction relabeled LATERAL (radius side), not dorsal.
+- WAVE-4 GATE STATUS: O1 resolved; R1 resolved (falsifier fired, kinematic-only basis); O2 still running — I7 (B4-on-U-STR + radius before/after + one receipt) remains gated on O2.

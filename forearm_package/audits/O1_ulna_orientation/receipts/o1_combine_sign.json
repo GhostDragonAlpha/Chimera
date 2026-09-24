@@ -1,0 +1,49 @@
+{
+  "inputs": {
+    "target_volar_azimuth_deg": 90.0,
+    "target_volar_basis": "world +z (ANTERIOR); olecranon test: D=+3.29\u00b10.73 mm at t=+6 mm, D>2mm zone t in [-2,+12] mm (receipt o1_target_sections_directed.json)",
+    "target_dorsal_azimuth_deg": -90.0,
+    "source_volar": "world +x of the source rest frame (dorsovolar split + citations + bone surface)",
+    "witness_b_prime_azimuth_deg": -111.86515772931568,
+    "witness_note": "the only existing target roll machinery (_band_roll extreme vertex); C3-S2 measured it in the same section basis; its top-10 span is [-126.1, -104.8] deg and the vertex sits in the rig's elbow_R band, which extends to t=105.6 mm (see cross-wave note in report)"
+  },
+  "per_candidate": [
+    {
+      "roll_candidate": "ECU-P2",
+      "b_azimuth_source_e_basis_deg": -138.2528597726697,
+      "volar_az_relative_to_b_deg": 138.2528597726697,
+      "phi_no_flip_deg": 26.38770204335401,
+      "phi_flip_deg": -153.612297956646,
+      "error_no_flip_deg": 63.61229795664599,
+      "error_flip_deg": 116.38770204335401,
+      "verdict": "NO-FLIP (sign correct)"
+    },
+    {
+      "roll_candidate": "ANC-P2",
+      "b_azimuth_source_e_basis_deg": 175.68761484808468,
+      "volar_az_relative_to_b_deg": -175.68761484808468,
+      "phi_no_flip_deg": 72.44722742259967,
+      "phi_flip_deg": -107.55277257740033,
+      "error_no_flip_deg": 17.552772577400333,
+      "error_flip_deg": 162.44722742259967,
+      "verdict": "NO-FLIP (sign correct)"
+    },
+    {
+      "roll_candidate": "TRIlat-P5",
+      "b_azimuth_source_e_basis_deg": 158.28837319495372,
+      "volar_az_relative_to_b_deg": -158.28837319495372,
+      "phi_no_flip_deg": 89.84646907573062,
+      "phi_flip_deg": -90.15353092426938,
+      "error_no_flip_deg": 0.15353092426937565,
+      "error_flip_deg": 179.84646907573062,
+      "verdict": "NO-FLIP (sign correct)"
+    }
+  ],
+  "unanimous_verdict": true,
+  "SIGN_VERDICT": {
+    "statement": "The U-STR roll sign that maps SOURCE VOLAR (+x of the source rest frame) to TARGET VOLAR (world +z = ANTERIOR = section azimuth +90 deg in the C3 (e1,e2) frame) is the anatomically correct sign; the surviving 180-degree flip maps source volar onto target DORSAL (world -z = POSTERIOR) and is refuted by directed evidence.",
+    "world_mapping": "source +x (volar) <-> target +z (volar/anterior); source -x (dorsal) <-> target -z (dorsal/posterior); source anatomical frame: volar=+x, dorsal=-x, lateral=+z; target world: volar/anterior=+z, dorsal/posterior=-z, right=-x",
+    "fit_frame_mapping": "in the C3 (e1,e2) section bases (e1 = rej of +x, e2 = a x e1) the correct construction must carry source e-basis azimuth 0 deg (= +x transverse = volar) to target e-basis azimuth +90 deg, i.e. the required witness pairing supplies a +90 deg roll offset; the flip would land it at -90 deg",
+    "unanimous": true
+  }
+}
