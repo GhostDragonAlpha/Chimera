@@ -36,3 +36,7 @@ Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe
 **Verified:** M05 PASS — coordinator re-ran work/compare.py (all 7 runs' input_hashes == canonical hashes of their own fixture triples); integrity clean. Physical layer bit-exact under all 5 permutations; byte layer confined to the licensed input_hashes fields; determinism byte-identical; the receipt's U6 hole (export-report-level order invariance untested) is now tested CLOSED. Decision requests MV-O2 (promise physical invariance explicitly) and MV-O3 (promise output array order) logged; UNPROMISED-OBSERVED: output arrays ID-sorted.
 **M06 retry:** dispatched (resume from partial state; reuse-vs-rebuild to be recorded).
 **Live fleet:** M01-M04, M06-retry, M08 + B2a, B3, B4, B5, B6, B7, B9 + anatomy O1/O2/R1 = 14 + 3.
+
+## CHECKPOINT T5 — 4th [1302] (B3, died at 5 min — survival times shrinking: 17/23/27 -> 5 min)
+
+**Protocol escalation (within the operator's maximum-continuous directive):** the highest SUSTAINING count, not the highest spawning count, is the maximum. Serialized retries hold (M06-retry is THE active retry; B3's retry queued behind it). No new backlog spawns; the fleet drains by completion toward ~10-12, then refills one-per-completion while watching failure spacing. All in-flight work is resumable from briefs + partial dirs; nothing is lost by a [1302].

@@ -25,6 +25,7 @@
 
 | id | assignment | agent dir | status | verdict | receipt |
 |---|---|---|---|---|---|
+| B3 | reader/exporter round-trip (off-diagonals, provenance, explicit frames) | `agents/B3_roundtrip` | RETRY-QUEUED (4th [1302], died at 5 min; waits for M06-retry to finish — serialized-retry protocol) | — | `report.md` |
 | M01 | independent reproduction + audit of frozen `1af0bbde`; reconcile ALL findings vs later evidence (no revision substitution) | `agents/M01_reproduce` | DISPATCHED | — | `report.md` |
 | M02 | preregistered multi-cell coupon (non-overlapping cells, mixed densities, nontrivial offsets, independent full-tensor expectations) | `agents/M02_multicell` | DISPATCHED | — | `report.md` |
 | M03 | non-unit `scale_to_m`: independent derivation of mass/COM/inertia scaling under the existing density/unit contract | `agents/M03_scale` | DONE | **VERIFIED — laws 39/39 (s³/s/s⁵ exact, worst 7.9e-16); corrected anchors 42/42; origin_m provably NOT scaled (affine COM law, 1.2e-16); s=0.065 unremarkable.** Honest falsifier disclosure: frozen prereg fired 7/42 on the agent's OWN hand-derivation slips — corrected in ERRATA.md with independent trace check; PREREG.md never edited; not an exporter defect | `report.md` + `ERRATA.md` + receipts (analyze re-run by coordinator) |
