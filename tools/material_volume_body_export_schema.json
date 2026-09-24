@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chimera.invalid/schemas/rigid_body_mass_export.v1.json",
+  "title": "Explicit rigid-body mass export request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "body_groups"],
+  "properties": {
+    "schema_version": { "const": "chimera.rigid_body_cell_groups.v1" },
+    "body_groups": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/bodyGroup" }
+    }
+  },
+  "$defs": {
+    "identifier": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "vector3": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "rotation3": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": { "type": "number" },
+        "minItems": 3,
+        "maxItems": 3
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "Must be a proper orthonormal rotation (R^T R=I, det R=+1); never normalized or repaired by the exporter."
+    },
+    "bodyFrame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame_id", "handedness", "coordinate_unit", "domain_from_body"],
+      "properties": {
+        "frame_id": { "$ref": "#/$defs/identifier" },
+        "handedness": { "const": "right" },
+        "coordinate_unit": { "const": "m" },
+        "domain_from_body": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["rotation", "origin_m"],
+          "properties": {
+            "rotation": { "$ref": "#/$defs/rotation3" },
+            "origin_m": { "$ref": "#/$defs/vector3" }
+          },
+          "description": "Authored transform x_domain = rotation * x_body + origin_m."
+        }
+      }
+    },
+    "bodyGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["body_id", "cell_ids", "body_frame"],
+      "properties": {
+        "body_id": { "$ref": "#/$defs/identifier" },
+        "cell_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/identifier" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "body_frame": { "$ref": "#/$defs/bodyFrame" }
+      }
+    }
+  }
+}

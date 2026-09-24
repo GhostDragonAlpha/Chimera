@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chimera.invalid/schemas/material_volume_admission.v1.json",
+  "title": "Chimera validation-only material-volume admission inputs",
+  "description": "One input file is either a fitting manifest or a material partition; runtime checks additionally enforce unique IDs, referential integrity, exact domain correspondence, and ownership rules.",
+  "oneOf": [
+    { "$ref": "#/$defs/fittingManifest" },
+    { "$ref": "#/$defs/materialPartition" }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "coordinateFrame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frame_id", "handedness", "coordinate_unit", "scale_to_m"],
+      "properties": {
+        "frame_id": { "$ref": "#/$defs/identifier" },
+        "handedness": { "const": "right" },
+        "coordinate_unit": { "$ref": "#/$defs/identifier" },
+        "scale_to_m": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "vertex": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vertex_id", "position"],
+      "properties": {
+        "vertex_id": { "$ref": "#/$defs/identifier" },
+        "position": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 3,
+          "maxItems": 3
+        }
+      }
+    },
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["region_id", "mass_owner_id", "material_id"],
+      "properties": {
+        "region_id": { "$ref": "#/$defs/identifier" },
+        "mass_owner_id": { "$ref": "#/$defs/identifier" },
+        "material_id": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "expectedCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cell_id", "vertex_ids", "component_id"],
+      "properties": {
+        "cell_id": { "$ref": "#/$defs/identifier" },
+        "vertex_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/identifier" },
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "component_id": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "partitionCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cell_id", "vertex_ids", "proposals"],
+      "properties": {
+        "cell_id": { "$ref": "#/$defs/identifier" },
+        "vertex_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/identifier" },
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "proposals": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/identifier" }
+        }
+      }
+    },
+    "matterClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["matter_id", "representation", "mass_owner_id"],
+      "properties": {
+        "matter_id": { "$ref": "#/$defs/identifier" },
+        "representation": {
+          "enum": ["tetrahedral_volume", "surface_mass_overlay", "source_effective_segment"]
+        },
+        "mass_owner_id": { "$ref": "#/$defs/identifier" }
+      }
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["material_id", "density_kg_m3", "density_source", "conditions"],
+      "properties": {
+        "material_id": { "$ref": "#/$defs/identifier" },
+        "density_kg_m3": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "density_source": { "type": ["string", "null"] },
+        "conditions": { "type": ["string", "null"] }
+      }
+    },
+    "fittingManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "fitting_id", "domain_id", "domain_revision", "coordinate_frame", "vertices", "cells", "regions", "mass_authority", "source_effective_segment_ids", "matter_ownership"],
+      "properties": {
+        "schema_version": { "const": "chimera.fitting_manifest.v1" },
+        "fitting_id": { "$ref": "#/$defs/identifier" },
+        "domain_id": { "$ref": "#/$defs/identifier" },
+        "domain_revision": { "$ref": "#/$defs/identifier" },
+        "coordinate_frame": { "$ref": "#/$defs/coordinateFrame" },
+        "vertices": { "type": "array", "minItems": 4, "items": { "$ref": "#/$defs/vertex" } },
+        "cells": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/expectedCell" } },
+        "regions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/region" } },
+        "mass_authority": { "enum": ["reconstructed_tissue_mass", "source_effective_segment_mass"] },
+        "source_effective_segment_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/identifier" },
+          "uniqueItems": true
+        },
+        "matter_ownership": { "type": "array", "items": { "$ref": "#/$defs/matterClaim" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mass_authority": { "const": "reconstructed_tissue_mass" } } },
+          "then": { "properties": { "source_effective_segment_ids": { "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "mass_authority": { "const": "source_effective_segment_mass" } } },
+          "then": { "properties": { "source_effective_segment_ids": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "materialPartition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "coordinate_frame", "vertices", "cells", "materials", "regions", "mass_authority"],
+      "properties": {
+        "schema_version": { "const": "chimera.material_partition.v1" },
+        "coordinate_frame": { "$ref": "#/$defs/coordinateFrame" },
+        "vertices": { "type": "array", "minItems": 4, "items": { "$ref": "#/$defs/vertex" } },
+        "cells": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/partitionCell" } },
+        "materials": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/material" } },
+        "regions": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/region" } },
+        "mass_authority": { "enum": ["reconstructed_tissue_mass", "source_effective_segment_mass"] }
+      }
+    }
+  }
+}
