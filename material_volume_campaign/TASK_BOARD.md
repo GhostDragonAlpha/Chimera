@@ -21,6 +21,21 @@
 - **U7 RESOLVED + FINDING (M09):** the reader does NOT misbehave on genuine `blocked`/`refused` reports (exit 0, statuses correct, readiness false, rejections intact); but the reader's SUMMARY drops contract-preserved diagnostics — `blocking_cell_ids`/`blocking_assignment_statuses`/`admission_reason_codes` (CON-4), top-level `reason_codes`/`detail` (CON-6), per-cell `unassigned_cells` rows (CON-7). The M09 CLI surfaces them from the raw reader-parsed mapping. Also: with report-global admission failure, `blocking_cell_ids` is per-body (one omitted body carries an empty blocking list).
 - Contract v0.9 (proposal): five decisions reserved to Astra; consumer-side code did not exist; `dynamics_readiness_claimed` always false; parent composition external and pre-composed (flat frames) under v1.
 
+## BOUNDED IMPLEMENTATION PHASE (operator + Astra memo 20260924_campaign_handoffs.md §3, 2026-09-24)
+
+**Scope pinned:** `33a8fb7204e20bf71f563014c57d772dd111a198cd1d6b212fd053653858f863` (verified via helper: 83 tasks / 76 default). The completed campaign and its evidence are PRESERVED — corrections are append-only. No new coupon backlog. No runtime wiring.
+**Six items (operator's numbering → work packages):** 1→W1 source-bound regeneration verifier (MV-VALUE + M01-F1 blob-form battery entry); 2→W6 validator validates FULL raw reports, summary stays display-only (MV-B3-1); 3→W3 reader M13 named-refusal repair, failing-first (B7-M13 — authorized narrow tools/ change); 4→W6 validator reconciled to the ALREADY-APPROVED v1.0 contract (the MAIN checkout's contract doc records v1.0 with D1–D5 decided; strictest-reading spots relax to the decided readings; CON-16 aggregation allowed read-only); 5→W4 append-only erratum (rebuild falsifier count from exact IDs — do not guess; narrow zero-defects to tested scopes; narrow B7x closure; replace "structurally unclosable" with the precise report-alone limit; DR-2 precise correction); 6→W5+W6 promotions of diagnostic and validator through the publisher path (isolated prep, dependency pinning, review, exit classes 0/2/1 for the promoted VALIDATION CLI per M06-H04; the diagnostic keeps its frozen exits).
+**Standing laws:** stagger launches (recorded [1302] mechanism); preregistration before edits; failing-first for fixes; preserve failures; frozen rev 1af0bbde never altered; regeneration comparisons use the exporter's OWN canonical hash definitions (LF-only receipt identity is a different claim); missing source = verification UNAVAILABLE, not accepted.
+
+| id | package | owner dir | status |
+|---|---|---|---|
+| W1 | source-bound regeneration verifier + blob-form battery entry | `impl/W1_source_verify` (+ owns tools/material_volume_export_proof_verify.py) | DISPATCHED |
+| W3 | reader M13 named-refusal repair, failing-first | `impl/W3_reader_m13` (+ owns tools/material_volume_body_export_reader.py) | DISPATCHED |
+| W4 | append-only erratum (falsifier count + 4 corrections + DR-2) | `impl/W4_erratum` (+ owns CAMPAIGN_REPORT.md appends) | QUEUED |
+| W5 | diagnostic CLI promotion prep (deps pinned; ordering/invariance docs MV-O2/O3, MV-B4-1) | `impl/W5_diag_promo` | QUEUED |
+| W6 | validator v1.0 reconciliation + promotion prep (full-report validation; MV-O1 regression; exits 0/2/1) | `impl/W6_validator` | QUEUED |
+| R1-R3 | independent reviews of the above (non-authors) | `impl/R*` | QUEUED |
+
 ## ASSIGNMENTS (ten active; refill from backlog on completion)
 
 | id | assignment | agent dir | status | verdict | receipt |

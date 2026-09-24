@@ -130,3 +130,10 @@ NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energ
 **CAMPAIGN_REPORT.md written** — the 24h directive's five terminal deliverables: integrated revisions + artifact identities; 14-row verified-capability table; 6 fired falsifiers (all agent-side, all preserved) + B8's fixes + honest residuals; the 11-item decision ledger; exact recovery instructions.
 **Worktree audit (standing rule):** 11 registrations, all durably referenced/locked/deliberately-spared; no removals needed; six dirty legacy trees untouched.
 **FINAL STATE:** both campaigns terminal — mv-campaign COMPLETE (this report); anatomy campaign COMPLETE and decision-blocked (USTR_DIAGNOSTIC_RECEIPT). No agents running. No spin.
+
+## CHECKPOINT U0 — BOUNDED IMPLEMENTATION PHASE opened (operator directive + Astra memo §3)
+
+**Scope fingerprint verified** via Invoke-MonkeyCampaign.ps1 -Action validate: 33a8fb72... matches pin; 83/76. Memo read in full; the main checkout's contract doc records v1.0 with D1-D5 DECIDED (the mv worktree's 3db8bc4e copy is the older v0.9 — W6 reads the main checkout's version, read-only).
+**Campaign evidence preserved** — all corrections append-only; no history rewrite.
+**Dispatched (staggered pair 1):** W1 (source-bound regeneration verifier, owns the proof-verify battery for M01-F1's blob-form entry) + W3 (reader M13 repair — the first authorized narrow tools/ change on this branch). Queued: W4, W5, W6 + reviews R1-R3.
+**After this bounded work lands and integrates:** capacity returns to the playable path (walking, controls, forest, grasp on the approved list) per MONKEY_RUN.md.
