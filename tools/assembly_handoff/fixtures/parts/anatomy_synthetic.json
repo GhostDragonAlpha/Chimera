@@ -1,0 +1,65 @@
+{
+  "meta": {
+    "compiler": "anatomy_compiler",
+    "version": "v3-synthetic-fixture",
+    "fit_mode": "synthetic",
+    "units": "SI (m, kg, s)",
+    "frame_handedness": "right",
+    "coordinate_conventions": {
+      "up": [0.0, 1.0, 0.0],
+      "anterior": [0.0, 0.0, 1.0],
+      "right": [1.0, 0.0, 0.0],
+      "handedness": "right",
+      "global_scale_factor": 1.0
+    },
+    "provenance_note": "AUTHORED SYNTHETIC FIXTURE. No source anatomy exists for these bodies; the physiology below is transported-under-assumption in exactly the shape the real anatomy compiler emits, so the adapter's mass-status rules can be tested without a real packet."
+  },
+  "physiology": [
+    {
+      "body": "upper",
+      "mass": 0.42,
+      "mass_src": 0.42,
+      "com_fitted": [0.0, 0.31, 0.0],
+      "inertia_fitted": [
+        [0.0012, 0.0, 0.0],
+        [0.0, 0.0021, 0.0],
+        [0.0, 0.0, 0.0018]
+      ],
+      "inertia_src": [
+        [0.0012, 0.0, 0.0],
+        [0.0, 0.0021, 0.0],
+        [0.0, 0.0, 0.0018]
+      ],
+      "det_scale": 1.0,
+      "status": "requires_density_validation",
+      "mass_kind": "source_effective_x_det_scale",
+      "density_assumption": "uniform_constant_density_scale",
+      "scale_note": "",
+      "admitted": true,
+      "admission_note": "kinematically admitted only; physically_admitted is not claimed"
+    },
+    {
+      "body": "lower",
+      "mass": 0.31,
+      "mass_src": 0.31,
+      "com_fitted": [0.0, 0.11, 0.0],
+      "inertia_fitted": [
+        [0.0009, 0.0, 0.0],
+        [0.0, 0.0014, 0.0],
+        [0.0, 0.0, 0.0012]
+      ],
+      "inertia_src": [
+        [0.0009, 0.0, 0.0],
+        [0.0, 0.0014, 0.0],
+        [0.0, 0.0, 0.0012]
+      ],
+      "det_scale": 1.0,
+      "status": "requires_density_validation",
+      "mass_kind": "source_effective_x_det_scale",
+      "density_assumption": "uniform_constant_density_scale",
+      "scale_note": "",
+      "admitted": true,
+      "admission_note": "kinematically admitted only; physically_admitted is not claimed"
+    }
+  ]
+}

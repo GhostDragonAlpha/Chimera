@@ -1,0 +1,97 @@
+{
+  "kind": "attachment_candidates",
+  "revision": 5,
+  "source": "synthetic fixture (no source XML)",
+  "port_vs_waypoint_rule": "A site is a PORT CANDIDATE only if it is the first or last site of a tendon path. Every other site on a path is a WAYPOINT: it constrains the path geometry and is NOT a membrane attachment patch. Nothing in this packet qualifies an attachment mechanically.",
+  "provenance_hashes": {
+    "note": "synthetic fixture; the bundle records sha256 of these bytes"
+  },
+  "bodies": {
+    "upper": {
+      "units": "target metres",
+      "n_sites_total": 2,
+      "n_resolved": 2,
+      "n_unresolved": 0,
+      "local_to_world": {
+        "t_fitted_origin_m": [0.0, 0.30, 0.0],
+        "R_source_local_to_target": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+      },
+      "candidates": [
+        {
+          "site_id": "s_up_1",
+          "source_body": "upper",
+          "endpoint_roles": ["first_endpoint"],
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "endpoint membership does NOT qualify a membrane attachment port.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_global": [0.02, 0.30, 0.0]
+          },
+          "tendon_membership": [
+            {"tendon": "T1", "index_in_path": 0, "path_length": 4, "role": "first_endpoint"}
+          ]
+        },
+        {
+          "site_id": "s_up_2",
+          "source_body": "upper",
+          "endpoint_roles": [],
+          "mechanical_qualification": false,
+          "mechanical_qualification_note": "waypoint: no port role, no mechanical qualification.",
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_global": [0.03, 0.25, 0.0]
+          },
+          "tendon_membership": [
+            {"tendon": "T1", "index_in_path": 1, "path_length": 4, "role": "waypoint"}
+          ]
+        }
+      ]
+    },
+    "lower": {
+      "units": "target metres",
+      "n_sites_total": 2,
+      "n_resolved": 2,
+      "n_unresolved": 0,
+      "local_to_world": {
+        "t_fitted_origin_m": [0.0, 0.10, 0.0],
+        "R_source_local_to_target": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+      },
+      "candidates": [
+        {
+          "site_id": "s_low_mid",
+          "source_body": "lower",
+          "endpoint_roles": [],
+          "mechanical_qualification": false,
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_global": [0.01, 0.13, 0.0]
+          },
+          "tendon_membership": [
+            {"tendon": "T1", "index_in_path": 2, "path_length": 4, "role": "waypoint"}
+          ]
+        },
+        {
+          "site_id": "s_low_2",
+          "source_body": "lower",
+          "endpoint_roles": ["last_endpoint"],
+          "mechanical_qualification": false,
+          "fitted": {
+            "resolved": true,
+            "reason": "",
+            "units": "target metres",
+            "fitted_pos_global": [0.02, 0.10, 0.0]
+          },
+          "tendon_membership": [
+            {"tendon": "T1", "index_in_path": 3, "path_length": 4, "role": "last_endpoint"}
+          ]
+        }
+      ]
+    }
+  }
+}

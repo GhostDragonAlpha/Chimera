@@ -1,0 +1,60 @@
+{
+  "schema_version": "chimera.assembly_ownership.v1",
+  "_provenance_note": "AUTHORED SYNTHETIC FIXTURE (negative control). body-upper is given TWO mass-bearing representations: the reconstructed tetrahedral region AND the transported anatomy physiology record. That is exactly the membrane-plus-body double count the contract forbids, so the adapter must refuse rather than pick one.",
+  "components": [
+    {
+      "component_id": "body-upper",
+      "kind": "tissue_volume",
+      "local_frame_id": "frame:upper",
+      "mass": null
+    },
+    {
+      "component_id": "body-lower",
+      "kind": "tissue_volume",
+      "local_frame_id": "frame:lower",
+      "mass": null
+    },
+    {
+      "component_id": "skin-patch-upper",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:patch-upper",
+      "mass": {"declared": "none"}
+    },
+    {
+      "component_id": "skin-patch-lower",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:patch-lower",
+      "mass": {"declared": "none"}
+    }
+  ],
+  "mass_claims": [
+    {
+      "claim_ref": "material_volume:materials_synthetic:region:region-upper",
+      "component_id": "body-upper",
+      "counts_toward_component_mass": true,
+      "assert_mass_status": "reconstructed_tissue_volume",
+      "reason": "volume owner"
+    },
+    {
+      "claim_ref": "material_volume:materials_synthetic:region:region-lower",
+      "component_id": "body-lower",
+      "counts_toward_component_mass": true,
+      "assert_mass_status": "reconstructed_tissue_volume",
+      "reason": "volume owner"
+    },
+    {
+      "claim_ref": "anatomy:synthetic_anatomy:physiology:upper",
+      "component_id": "body-upper",
+      "counts_toward_component_mass": true,
+      "assert_mass_status": "transported_source_effective",
+      "reason": "CONFLICT: the same matter is also counted through the transported anatomy record"
+    },
+    {
+      "claim_ref": "anatomy:synthetic_anatomy:physiology:lower",
+      "component_id": "body-lower",
+      "counts_toward_component_mass": false,
+      "assert_mass_status": "transported_source_effective",
+      "reason": "correctly excluded"
+    }
+  ]
+}

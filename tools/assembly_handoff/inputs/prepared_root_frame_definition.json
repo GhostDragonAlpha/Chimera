@@ -1,0 +1,51 @@
+{
+  "consumed_evidence": {
+    "axis_vectors_from_conventions": {
+      "anterior": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "right": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    "coordinate_unit_from_meta_units": "SI (m, kg, s)",
+    "handedness_from_conventions": "right"
+  },
+  "disconnected_component_roots": [
+    "pelvis",
+    "thorax",
+    "ulna",
+    "ulna_l"
+  ],
+  "each_value_needs_astra": {
+    "basis_rows": "the three orthonormal axis vectors have no authored value and cannot be reconstructed from child frames without assuming alignment",
+    "coordinate_unit": "the frame's length unit must be authored \u2014 the adapter reads meta.units as evidence only and will not assume metres",
+    "handedness": "the frame chirality must be authored; handedness in meta is convention, not a pose constraint on the root basis rows",
+    "origin_m": "the root origin has no authored value; deriving it from a child fitted_origin would be an alignment the adapter refuses to invent",
+    "parent_frame_id=null": "the assembly root must declare exactly one null parent; no segment in the packet does, so this is an authored decision rather than a derived one",
+    "scale_to_m": "a non-unity scale rescales every child frame, so it must be explicitly authored rather than inferred from the children's fitted scales"
+  },
+  "frame_definition_requires_astra": {
+    "basis_rows": null,
+    "coordinate_unit": "SI (m, kg, s)",
+    "frame_id": null,
+    "handedness": "right",
+    "origin_m": null,
+    "parent_frame_id": null,
+    "scale_to_m": null
+  },
+  "natural_root_frame_id": null,
+  "producer": "tools/assembly_handoff/produce_inputs.py::produce_root_frame_definition",
+  "required_role": "mechanical_requirements.frames[0]",
+  "verdict": "requires_astra_authorship",
+  "why_not_derivable": "no segment declares parent_frame_id null and the packet's segment tree is a forest of disconnected components; every referenced-but-unsegmented parent is a dangling root, so no authored transform places any frame at an assembly root. The child segments' fitted_origin/frame_basis are relative to their own parents, not to a root. This adapter will not insert an identity transform or infer the root pose from them."
+}

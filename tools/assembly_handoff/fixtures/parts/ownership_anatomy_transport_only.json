@@ -1,0 +1,60 @@
+{
+  "schema_version": "chimera.assembly_ownership.v1",
+  "_provenance_note": "AUTHORED SYNTHETIC FIXTURE (negative control). Here the ONLY mass-bearing representation bound to each body is the transported source-effective anatomy record; the reconstructed tetrahedral regions exist but are explicitly marked as not counting. Nothing is promoted: a transported mass stays transported, so readiness must be blocked with component_mass_not_validated.",
+  "components": [
+    {
+      "component_id": "body-upper",
+      "kind": "tissue_volume",
+      "local_frame_id": "frame:upper",
+      "mass": null
+    },
+    {
+      "component_id": "body-lower",
+      "kind": "tissue_volume",
+      "local_frame_id": "frame:lower",
+      "mass": null
+    },
+    {
+      "component_id": "skin-patch-upper",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:patch-upper",
+      "mass": {"declared": "none"}
+    },
+    {
+      "component_id": "skin-patch-lower",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:patch-lower",
+      "mass": {"declared": "none"}
+    }
+  ],
+  "mass_claims": [
+    {
+      "claim_ref": "anatomy:synthetic_anatomy:physiology:upper",
+      "component_id": "body-upper",
+      "counts_toward_component_mass": true,
+      "assert_mass_status": "transported_source_effective",
+      "reason": "no reconstructed tissue volume has been admitted for this body; the transported source-effective mass is all that exists"
+    },
+    {
+      "claim_ref": "anatomy:synthetic_anatomy:physiology:lower",
+      "component_id": "body-lower",
+      "counts_toward_component_mass": true,
+      "assert_mass_status": "transported_source_effective",
+      "reason": "no reconstructed tissue volume has been admitted for this body"
+    },
+    {
+      "claim_ref": "material_volume:materials_synthetic:region:region-upper",
+      "component_id": "body-upper",
+      "counts_toward_component_mass": false,
+      "assert_mass_status": "reconstructed_tissue_volume",
+      "reason": "placeholder partition that overlaps the transported segment; deliberately not counted"
+    },
+    {
+      "claim_ref": "material_volume:materials_synthetic:region:region-lower",
+      "component_id": "body-lower",
+      "counts_toward_component_mass": false,
+      "assert_mass_status": "reconstructed_tissue_volume",
+      "reason": "placeholder partition that overlaps the transported segment; deliberately not counted"
+    }
+  ]
+}

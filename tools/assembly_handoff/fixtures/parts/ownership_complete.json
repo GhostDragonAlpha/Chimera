@@ -1,0 +1,60 @@
+{
+  "schema_version": "chimera.assembly_ownership.v1",
+  "_provenance_note": "AUTHORED SYNTHETIC FIXTURE. Mass ownership is stated explicitly for every matter representation this bundle knows about: the reconstructed tetrahedral regions COUNT, the transported anatomy physiology records do NOT (they describe the same matter and would double-count it), and the membrane patches declare zero mass because the v1 volume contract admits no thin-sheet mass.",
+  "components": [
+    {
+      "component_id": "body-upper",
+      "kind": "tissue_volume",
+      "local_frame_id": "frame:upper",
+      "mass": null
+    },
+    {
+      "component_id": "body-lower",
+      "kind": "tissue_volume",
+      "local_frame_id": "frame:lower",
+      "mass": null
+    },
+    {
+      "component_id": "skin-patch-upper",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:patch-upper",
+      "mass": {"declared": "none"}
+    },
+    {
+      "component_id": "skin-patch-lower",
+      "kind": "membrane_patch",
+      "local_frame_id": "frame:patch-lower",
+      "mass": {"declared": "none"}
+    }
+  ],
+  "mass_claims": [
+    {
+      "claim_ref": "material_volume:materials_synthetic:region:region-upper",
+      "component_id": "body-upper",
+      "counts_toward_component_mass": true,
+      "assert_mass_status": "reconstructed_tissue_volume",
+      "reason": "the tetrahedral region is the single volume owner of this matter"
+    },
+    {
+      "claim_ref": "material_volume:materials_synthetic:region:region-lower",
+      "component_id": "body-lower",
+      "counts_toward_component_mass": true,
+      "assert_mass_status": "reconstructed_tissue_volume",
+      "reason": "the tetrahedral region is the single volume owner of this matter"
+    },
+    {
+      "claim_ref": "anatomy:synthetic_anatomy:physiology:upper",
+      "component_id": "body-upper",
+      "counts_toward_component_mass": false,
+      "assert_mass_status": "transported_source_effective",
+      "reason": "same matter as region-upper; transported source-effective mass is excluded from the sum so it cannot be counted twice"
+    },
+    {
+      "claim_ref": "anatomy:synthetic_anatomy:physiology:lower",
+      "component_id": "body-lower",
+      "counts_toward_component_mass": false,
+      "assert_mass_status": "transported_source_effective",
+      "reason": "same matter as region-lower; transported source-effective mass is excluded from the sum so it cannot be counted twice"
+    }
+  ]
+}

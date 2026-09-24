@@ -1,0 +1,28 @@
+{
+  "evidence": {
+    "density_source_declared": false,
+    "missing_fields": [
+      "material_volume_document.json:reconstructed_material_volume (a partition whose regions carry a declared density_source)",
+      "material_volume_document.json:*.region.density_source",
+      "material_volume_document.json:*.region.vertices|tetrahedra"
+    ],
+    "segment_bodies_with_scale": [
+      "femur_l",
+      "femur_r",
+      "humerus",
+      "humerus_l",
+      "radius",
+      "radius_l",
+      "thorax_dummy",
+      "tibia_l",
+      "tibia_r"
+    ],
+    "segments_present": 9,
+    "tetrahedral_geometry_declared": false
+  },
+  "producer": "tools/assembly_handoff/produce_inputs.py::produce_material_volume_report",
+  "required_role": "material_volume_document",
+  "verdict": "cannot_produce",
+  "what_astra_must_supply": "a reconstructed material-volume partition (tools/material_volume.py v1) whose regions carry declared tetrahedral geometry AND a declared density_source; the only thing that can turn this packet's geometry into validated tissue mass and inertia.",
+  "why_not_authorable": "the anatomy segments carry only a bounding-box scale, a fitted_origin and a frame_basis; there is no tetrahedral/vertex geometry for tools/material_volume.py to partition and no declared density_source. Producing reconstructed_tissue_volume here would invent densities/volumes and violate the density-source invariant."
+}

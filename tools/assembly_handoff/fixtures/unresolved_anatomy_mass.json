@@ -1,0 +1,17 @@
+{
+  "schema_version": "chimera.assembly_bundle.v1",
+  "assembly_id": "synthetic-two-segment-assembly-unresolved-anatomy-mass",
+  "_intent": "FIXTURE 3 — unresolved anatomy mass. Every attachment/frame input is complete, but the only counted matter per body is transported source-effective anatomy mass. Expected: manifest IS emitted, dynamics_trial_ready = false, blocking code component_mass_not_validated.",
+  "inputs": [
+    {"label": "synthetic_anatomy", "role": "anatomy_packet", "admitted_as": "synthetic",
+     "path": "parts/anatomy_synthetic.json"},
+    {"label": "candidates_synthetic", "role": "attachment_candidates", "admitted_as": "synthetic",
+     "path": "parts/candidates_synthetic.json"},
+    {"label": "materials_synthetic", "role": "material_volume_document", "admitted_as": "synthetic",
+     "path": "parts/material_volume_synthetic.json"},
+    {"label": "ownership_anatomy_transport_only", "role": "ownership_bindings",
+     "admitted_as": "synthetic", "path": "parts/ownership_anatomy_transport_only.json"},
+    {"label": "requirements_complete", "role": "mechanical_requirements", "admitted_as": "synthetic",
+     "path": "parts/requirements_complete.json"}
+  ]
+}

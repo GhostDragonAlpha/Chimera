@@ -1,0 +1,122 @@
+{
+  "schema_version": "chimera.mechanical_requirements.v1",
+  "_provenance_note": "AUTHORED SYNTHETIC FIXTURE. This document is the only authored source of the assembly frame tree and of mechanical attachment parameters. Anchor squares have circumradius 0.02 m (side 0.0283 m); the authored patch area 0.0016 m^2 (side 0.04 m) circumscribes that square, so the anchors lie inside the patch. k = kappa_areal * patch_area = 1e8 * 0.0016 = 1.6e5 N/m; expected weakest couple stiffness is 32 N*m/rad against an authored requirement of 1 N*m/rad.",
+  "units": "SI (m, kg, s); angles in rad",
+  "frames": [
+    {
+      "frame_id": "frame:assembly-root",
+      "parent_frame_id": null,
+      "handedness": "right",
+      "coordinate_unit": "m",
+      "scale_to_m": 1.0,
+      "origin_m": [0.0, 0.0, 0.0],
+      "basis_rows": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+    },
+    {
+      "frame_id": "frame:upper",
+      "parent_frame_id": "frame:assembly-root",
+      "handedness": "right",
+      "coordinate_unit": "m",
+      "scale_to_m": 1.0,
+      "origin_m": [0.0, 0.30, 0.0],
+      "basis_rows": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+    },
+    {
+      "frame_id": "frame:lower",
+      "parent_frame_id": "frame:assembly-root",
+      "handedness": "right",
+      "coordinate_unit": "m",
+      "scale_to_m": 1.0,
+      "origin_m": [0.0, 0.10, 0.0],
+      "basis_rows": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+    },
+    {
+      "frame_id": "frame:patch-upper",
+      "parent_frame_id": "frame:upper",
+      "handedness": "right",
+      "coordinate_unit": "m",
+      "scale_to_m": 1.0,
+      "origin_m": [0.0, 0.02, 0.0],
+      "basis_rows": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+    },
+    {
+      "frame_id": "frame:patch-lower",
+      "parent_frame_id": "frame:lower",
+      "handedness": "right",
+      "coordinate_unit": "m",
+      "scale_to_m": 1.0,
+      "origin_m": [0.0, 0.02, 0.0],
+      "basis_rows": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+    }
+  ],
+  "attachments": [
+    {
+      "attachment_id": "att-patch-upper",
+      "membrane_component_id": "skin-patch-upper",
+      "body_component_id": "body-upper",
+      "anchor_frame_id": "frame:upper",
+      "anchors_local_m": [
+        [0.014142135623730951, 0.014142135623730951, 0.0],
+        [-0.014142135623730951, 0.014142135623730951, 0.0],
+        [-0.014142135623730951, -0.014142135623730951, 0.0],
+        [0.014142135623730951, -0.014142135623730951, 0.0]
+      ],
+      "weights": [0.25, 0.25, 0.25, 0.25],
+      "patch_area_m2": 0.0016,
+      "kappa_areal_n_m3": 100000000.0,
+      "stiffness_kbar": 160000.0,
+      "k_couple_min_n_m_per_rad": 1.0,
+      "endpoints": [
+        {
+          "endpoint_id": "att-patch-upper/body",
+          "component_id": "body-upper",
+          "local_frame_id": "frame:upper",
+          "position_m": [0.0, 0.30, 0.0],
+          "port_candidate_id": "cand:candidates_synthetic:upper:s_up_1",
+          "authored_role": "first_endpoint"
+        },
+        {
+          "endpoint_id": "att-patch-upper/membrane",
+          "component_id": "skin-patch-upper",
+          "local_frame_id": "frame:patch-upper",
+          "position_m": [0.0, 0.32, 0.0],
+          "authored_role": "membrane_side"
+        }
+      ]
+    },
+    {
+      "attachment_id": "att-patch-lower",
+      "membrane_component_id": "skin-patch-lower",
+      "body_component_id": "body-lower",
+      "anchor_frame_id": "frame:lower",
+      "anchors_local_m": [
+        [0.014142135623730951, 0.014142135623730951, 0.0],
+        [-0.014142135623730951, 0.014142135623730951, 0.0],
+        [-0.014142135623730951, -0.014142135623730951, 0.0],
+        [0.014142135623730951, -0.014142135623730951, 0.0]
+      ],
+      "weights": [0.25, 0.25, 0.25, 0.25],
+      "patch_area_m2": 0.0016,
+      "kappa_areal_n_m3": 100000000.0,
+      "stiffness_kbar": 160000.0,
+      "k_couple_min_n_m_per_rad": 1.0,
+      "endpoints": [
+        {
+          "endpoint_id": "att-patch-lower/body",
+          "component_id": "body-lower",
+          "local_frame_id": "frame:lower",
+          "position_m": [0.0, 0.10, 0.0],
+          "port_candidate_id": "cand:candidates_synthetic:lower:s_low_2",
+          "authored_role": "last_endpoint"
+        },
+        {
+          "endpoint_id": "att-patch-lower/membrane",
+          "component_id": "skin-patch-lower",
+          "local_frame_id": "frame:patch-lower",
+          "position_m": [0.0, 0.12, 0.0],
+          "authored_role": "membrane_side"
+        }
+      ]
+    }
+  ]
+}

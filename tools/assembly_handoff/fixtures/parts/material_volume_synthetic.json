@@ -1,0 +1,41 @@
+{
+  "schema_version": "chimera.material_volume.v1",
+  "coordinate_unit": "m",
+  "density_unit": "kg/m^3",
+  "mass_source_kind": "reconstructed_material_volume",
+  "vertices_m": [
+    [0.0, 0.0, 0.0],
+    [1.0, 0.0, 0.0],
+    [0.0, 1.0, 0.0],
+    [0.0, 0.0, 1.0],
+    [0.0, 0.0, -1.0]
+  ],
+  "tetrahedra": [[0, 1, 2, 3], [0, 2, 1, 4]],
+  "materials": [
+    {
+      "material_id": "upper-tissue",
+      "density_kg_m3": 2.0,
+      "density_source": "AUTHORED SYNTHETIC FIXTURE constant (not a measurement)",
+      "conditions": "AUTHORED SYNTHETIC: two-tetrahedron bipyramid of tools/material_volume_example.json with region/owner ids renamed to this fixture's components; uniform density, no temperature/hydration correction"
+    },
+    {
+      "material_id": "lower-tissue",
+      "density_kg_m3": 4.0,
+      "density_source": "AUTHORED SYNTHETIC FIXTURE constant (not a measurement)",
+      "conditions": "AUTHORED SYNTHETIC: two-tetrahedron bipyramid of tools/material_volume_example.json with region/owner ids renamed to this fixture's components; uniform density, no temperature/hydration correction"
+    }
+  ],
+  "regions": [
+    {
+      "region_id": "region-upper",
+      "mass_owner_id": "body-upper",
+      "material_id": "upper-tissue"
+    },
+    {
+      "region_id": "region-lower",
+      "mass_owner_id": "body-lower",
+      "material_id": "lower-tissue"
+    }
+  ],
+  "cell_proposals": [["region-upper"], ["region-lower"]]
+}

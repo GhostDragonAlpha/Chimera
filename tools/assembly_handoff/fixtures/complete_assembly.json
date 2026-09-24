@@ -1,0 +1,38 @@
+{
+  "schema_version": "chimera.assembly_bundle.v1",
+  "assembly_id": "synthetic-two-segment-assembly",
+  "_intent": "FIXTURE 1 — complete synthetic assembly. Every field the adapter needs is authored somewhere in this bundle, so it must reach dynamics_trial_ready = true while still recording the observed (unbound) packet frames as notes.",
+  "inputs": [
+    {
+      "label": "synthetic_anatomy",
+      "role": "anatomy_packet",
+      "admitted_as": "synthetic",
+      "path": "parts/anatomy_synthetic.json",
+      "note": "transported source-effective physiology; never validated tissue mass"
+    },
+    {
+      "label": "candidates_synthetic",
+      "role": "attachment_candidates",
+      "admitted_as": "synthetic",
+      "path": "parts/candidates_synthetic.json"
+    },
+    {
+      "label": "materials_synthetic",
+      "role": "material_volume_document",
+      "admitted_as": "synthetic",
+      "path": "parts/material_volume_synthetic.json"
+    },
+    {
+      "label": "ownership_complete",
+      "role": "ownership_bindings",
+      "admitted_as": "synthetic",
+      "path": "parts/ownership_complete.json"
+    },
+    {
+      "label": "requirements_complete",
+      "role": "mechanical_requirements",
+      "admitted_as": "synthetic",
+      "path": "parts/requirements_complete.json"
+    }
+  ]
+}

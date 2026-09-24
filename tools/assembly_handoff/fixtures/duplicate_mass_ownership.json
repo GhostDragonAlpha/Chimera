@@ -1,0 +1,17 @@
+{
+  "schema_version": "chimera.assembly_bundle.v1",
+  "assembly_id": "synthetic-two-segment-assembly-duplicate-mass",
+  "_intent": "FIXTURE 2 — duplicate mass ownership. Identical to complete_assembly.json except that body-upper counts BOTH the reconstructed tetrahedral region and the transported anatomy record. Expected: hard refusal `duplicate_mass_ownership`, no manifest emitted.",
+  "inputs": [
+    {"label": "synthetic_anatomy", "role": "anatomy_packet", "admitted_as": "synthetic",
+     "path": "parts/anatomy_synthetic.json"},
+    {"label": "candidates_synthetic", "role": "attachment_candidates", "admitted_as": "synthetic",
+     "path": "parts/candidates_synthetic.json"},
+    {"label": "materials_synthetic", "role": "material_volume_document", "admitted_as": "synthetic",
+     "path": "parts/material_volume_synthetic.json"},
+    {"label": "ownership_duplicate", "role": "ownership_bindings", "admitted_as": "synthetic",
+     "path": "parts/ownership_duplicate.json"},
+    {"label": "requirements_complete", "role": "mechanical_requirements", "admitted_as": "synthetic",
+     "path": "parts/requirements_complete.json"}
+  ]
+}
