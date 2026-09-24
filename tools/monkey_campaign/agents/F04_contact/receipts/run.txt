@@ -1,0 +1,103 @@
+M-F04 contact verification - L1 (declared geometric model)
+frozen: r_sole=0.004 m kTouch=1e-05 dt<=1/300 s v_max=1.01 m/s s_tick=0.00336667 m s_tick_vert=0.000168123 m TOL=0.0002 m seed=20260924
+----------------------------------------------------------------------------------------------------
+TUN-01  PASS                   falsifier=not fired
+    - {"probe": "worst-slope triangle centroid (slope 0.042522)", "caught": true, "pen_m": 0.0010000000000004727, "bound_m": 0.003366666666666667, "ok": true}
+    - {"probe": "mound 1 crest", "caught": true, "pen_m": 0.0010000000000000286, "bound_m": 0.003366666666666667, "ok": true}
+    - {"probe": "mound 2 crest", "caught": true, "pen_m": 0.000999999999999987, "bound_m": 0.003366666666666667, "ok": true}
+    - {"probe": "mound 3 crest", "caught": true, "pen_m": 0.0009999999999998899, "bound_m": 0.003366666666666667, "ok": true}
+    - {"probe": "mound 4 crest", "caught": true, "pen_m": 0.0009999999999997788, "bound_m": 0.003366666666666667, "ok": true}
+    - {"probe": "mound 5 crest", "caught": true, "pen_m": 0.0010000000000001813, "bound_m": 0.003366666666666667, "ok": true}
+    ... 2 more rows in run.json
+    worst_pen_over_bound                       0.2970297029706126
+TUN-02  PASS (control fires)   falsifier=not fired
+    control_expected                           miss
+    control_fired                              True
+    step_m                                     4.329635
+    min_sampled_gap_m                          0.03070188454749998
+    note                                       true continuous path grazes gap=0 at the crest; a missed catch proves the harness detects tunnelling (non-vacuity); mound 5 chosen because the step span must stay inside the extent rule
+TUN-03  PASS                   falsifier=not fired
+    a                                          {"caught": true, "pen_m": 0.00010000000029782366, "bound_m": 0.003366666666666667, "ok": true, "step_m": 0.003366666666666667}
+    b_control                                  {"expected": "miss", "fired": true, "step_m": 0.16399999999999998, "min_sdf_m": 0.042999999999998297, "samples": 61, "catch_chord_m": 0.08199999999999999}
+TUN-04  PASS                   falsifier=not fired
+    caught                                     500
+    of                                         500
+    worst_pen_m                                0.0010000000000010651
+    pen_bound_m                                0.003366666666666667
+    worst_twisted_cell                         {"ix": 36, "iz": 28, "diagonal_split_m": 0.007023}
+    edge_continuity_worst_m                    8.188800001661389e-07
+    continuity_worst_ratio_m_per_m             0.086783857877748
+    continuity_ratio_bound_m_per_m             0.2
+    continuity_linear_residual_worst_m         1.8867373026469842e-16
+    continuity_residual_bound_m                1e-09
+    prereg_miss                                the frozen 1e-9 ABSOLUTE continuity bound ignored the linear eps-scaling of the value difference across a crease; corrected to the exact linear prediction (residual <= 1e-9) and the derived 4*0.05 ratio bound. Value continuity HOLDS; the slope kink at creases is real, expected, and bounded by F01's slope law.
+GHO-01  PASS                   falsifier=not fired
+    probes                                     12
+    ok                                         12
+GHO-02  PASS                   falsifier=not fired
+    - {"probe": "spawn cell", "h_m": 0.0, "gap_rest_m": 0.0, "gap_geometric_tangent_m": 0.008, "gap_floating_1e4_m": 9.999999999999983e-05, "ok": true}
+    - {"probe": "mound 1-2 midpoint", "h_m": 0.0, "gap_rest_m": 0.0, "gap_geometric_tangent_m": 0.008, "gap_floating_1e4_m": 9.999999999999983e-05, "ok": true}
+    - {"probe": "mound 2-3 midpoint", "h_m": 0.0, "gap_rest_m": 0.0, "gap_geometric_tangent_m": 0.008, "gap_floating_1e4_m": 9.999999999999983e-05, "ok": true}
+    - {"probe": "mound 3-4 midpoint", "h_m": 0.0, "gap_rest_m": 0.0, "gap_geometric_tangent_m": 0.008, "gap_floating_1e4_m": 9.999999999999983e-05, "ok": true}
+    - {"probe": "mound 4-5 midpoint", "h_m": 0.0, "gap_rest_m": 0.0, "gap_geometric_tangent_m": 0.008, "gap_floating_1e4_m": 9.999999999999983e-05, "ok": true}
+    convention_note                            the engine law's zero-gap rest is point_y = h - r_s (gait_controller.hpp:635-643; gait_scene.py:400 seated_gaps). Naive sphere-centre tangency reads gap = 2*r_s = 8e-3 m under this law - a PREREG PREDICTION MISS (recorded, adjudicated under falsifier F-b), not a ghost: the divergence is one-sided (the law claims contact LATER than naive geometry, never earlier).
+GHO-03  PASS-AS-DECLARED       falsifier=not fired
+    - {"probe": "axis y=0.100", "sdf_analytic_m": -0.037, "mesh_distance_m": 0.03682169289345883}
+    - {"probe": "axis y=0.579", "sdf_analytic_m": -0.037, "mesh_distance_m": 0.03682169289345883}
+    - {"probe": "axis y=1.000", "sdf_analytic_m": -0.037, "mesh_distance_m": 0.03682169289345883}
+    worst_shell_pen_m                          0.00017816511312930203
+    worst_shell_ghost_m                        0.0001783070371289483
+    tol_m                                      0.0002
+    declared                                   collision = the ANALYTIC solid (trunk_declaration collision_route); the mesh is render-only; the <=TOL shell split is the declared representation error
+INT-01  PASS                   falsifier=not fired
+    worst_tangency_err_m                       7.042977312465837e-16
+    tangency_bound_m                           1e-09
+    shell_samples                              4096
+    min_shell_margin_m                         0.00023028204753881495
+    interior_samples                           256
+    max_interior_sdf_m                         -0.023319852507112923
+INT-02  PASS                   falsifier=not fired
+    triangles                                  3200
+    worst_submergence_m                        3.61139347473971e-06
+    triangle_slope_m_per_m                     0.042522289331596436
+    bound_m                                    4.990644488621409e-06
+    bound_rule                                 r*(1-1/sqrt(1+0.05^2)) at F01's legal worst slope; also <= trunk TOL 2e-4
+    tol_ratio                                  0.01805696737369855
+INT-03  PASS                   falsifier=not fired
+    cap_disk_samples                           65
+    worst_abs_terrain_height_m                 0.0
+    footprint_grid_samples                     81
+    worst_abs_footprint_height_m               0.0
+    bound_m                                    1e-09
+    declared                                   site terrain height 0.0 / slope 0.0 (F01 trunk_sites[0], F03 site block); cap plane y=0 coplanar with the terrain
+VIS-01  PASS                   falsifier=not fired
+    ring_samples                               2500
+    boundary_samples                           400
+    worst_height_disagreement_m                6.938893903907228e-18
+    height_bound_m                             1e-09
+    worst_normal_disagreement                  0.0
+    normal_bound                               1e-12
+    classify_at_closed_edge_inside             True
+    ring_max_abs_height_m                      0.0
+    ring_analytic_vs_collision_worst_m         0.0
+    declared_global_discretization_m           0.00646
+    declared_note                              analytic-mound vs collision is F02's DECLARED discretization (<= 9.25 mm derived); render vs collision is the identity measured here
+VIS-02  PASS                   falsifier=not fired
+    recomputed_chord_m                         0.00017830703919281127
+    declared_chord_m                           0.000178307
+    sagitta_m                                  0.00017816511312871363
+    chord_tol_m                                0.0002
+    triangles_outward                          128
+    of                                         128
+    worst_vertex_off_surface_m                 3.671369570856786e-07
+    vertex_bound_m                             1e-06
+VIS-03  PASS-AS-DECLARED       falsifier=not fired
+    post_index                                 30
+    posts_total                                80
+    sole_sphere_center_to_post_mesh_m          0.017320508075689356
+    sole_point_law_rest_to_post_mesh_m         0.017776388834631746
+    body_envelope_overlap_depth_m              0.23267949192431064
+    collision_query_serves                     ground only (terrain triangulation + extent rule); posts appear in NO collision path
+    declared                                   posts are rendered markers for the physical extent edge (F01 boundary.physical note; F02 render-only prisms); the blocking rule is the extent rule itself; post collision is NOT claimed and therefore not demonstrated (item's own observation clause). L2 route survey: no engine prop collision exists to claim.
+----------------------------------------------------------------------------------------------------
+VERDICT: 13/13 cases green; falsifiers fired: none

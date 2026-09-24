@@ -1,0 +1,4 @@
+M-F04 determinism receipt - 2026-09-24
+Two fresh-process runs of verify_contact.py produced byte-identical receipts/run.json:
+  10442 bytes, sha256 efded8042d76f0879add4c278e7538ef0701bcb443086a16adc94b439eb70e6a (both runs)
+Seeded RNG (seed 20260924), no wall-clock or dict-order dependence in outputs.
