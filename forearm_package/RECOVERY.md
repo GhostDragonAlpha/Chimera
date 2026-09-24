@@ -279,3 +279,10 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked (by design, awaiting Astra):** ulna candidate + supersession acceptance + the 3 measurements authorization; hand policy deferred on same-assembly; D1 wrist rule; D3-D5 contracts.
 
 **Next (on Astra):** the 3 smallest measurements (2 visual IDs + 1 citation — CPU-light renders only, gaming-mode safe) -> U-STR verdict finalization if it holds -> authorized revision path (B4 gate -> new fit session -> T6/T7 for 12 tendons).
+
+## CHECKPOINT 2026-09-24 (T19) — wave 4 opened (architect decision 4)
+
+**Recorded:** U-ANA rejected (preserved); U-STR sole provisional candidate; no radius supersession (7.9% change needs anatomical justification; throughput is not justification); gaming-safety rule (existing images / verified CPU-only path / GPU broker); narrow D1 adopted (campaign-scoped, no generalization, no hull extension); hand deferred; 12-tendons = proposed intermediate result to test.
+**Active (dispatched):** O1 ulna orientation · O2 hand orientation · R1 radioulnar primary evidence.
+**Blocked:** none mechanically. I7 (B4 isolated U-STR + radius before/after + one receipt) is GATED on O1+O2+R1 passing.
+**Next:** collect O1/O2/R1 -> gates check -> I7 diagnostic (authorized, production still unauthorized).
