@@ -249,3 +249,20 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none mechanically; D1/D3-D5 pending by design.
 
 **Next:** C1+C3 -> I6 ANATOMICAL_DECISION_TABLE.md (7 columns + supersession proposal + smallest missing measurements).
+
+## CHECKPOINT 2026-09-24 (T17) — C1 integrated (ulna evidence; the anatomical picture flipped)
+
+**Verified:**
+- C1 PASS 7/7; coordinator fresh re-run; integrity clean. Falsifier fired on sub-claims 3-4 — reported with numbers (the honest pattern).
+- AXIS RESOLVED: ulna->radius = +14.3 mm axial / +18.1 mm lateral / +0.3 mm dorsovolar = 51.63 deg off the forearm axis, coronal, perpendicular-dominant. Sites mostly ALONG the forearm (ECU-P4 95.6% axial). The map's old "4.4x extrapolation" framing = kinematic ratio 4.4535; anatomical frame: 4.258x axial / 6.860x vs axis axial extent / 1.304x transverse; coupling gain sin(51.63)=0.784.
+- ENTIRE-VS-FRAGMENT: the 2.31 cm ulna is a KINEMATIC FRAGMENT (elbow hinge piece); forearm length structurally carried by radius->hand (292 mm). NEW SOURCE DEFECT FLAG: ulna inertial CoM byte-identical to radius's (copy-paste) — affects any ulna mass claim.
+- COVERAGE: 10/10 site-region agreements vs external anatomy (TRI olecranon, BRA tuberosity, ANC proximal-posterior, PT coronoid -- the brief's own "mid-distal" PT cell was WRONG, corrected; ECU monotone distal 11.5->32.1%). ECU transverse sign UNCERTAIN (species/pose) -> feeds C3 roll.
+- INDEPENDENT VALIDATION (no candidate chosen by us): U-STR 10/10 PASS (layout reproduced <=8.8 points of forearm length); U-ANA 6/9 FAIL (+7..+42 points out of region; its anchor ECU-P4 = interior waypoint at 32% down the forearm, construction input).
+- Map reconciliation item for I6: the map's 0.1015 m "perp-off-axis" vs C1's 69.4/30.1 mm — different measures (axis-line perpendicular vs anatomical decomposition); reframe, not contradiction; resolve in I6 text.
+- Smallest missing measurement: source ulna mesh asset's distal extent (one external file) to upgrade the fragment verdict to direct bone-surface evidence.
+
+**Active:** C3 (independent challenge) — last wave-3 agent.
+
+**Blocked:** none mechanically; D1/D3-D5 pending by design.
+
+**Next:** C3 -> I6 ANATOMICAL_DECISION_TABLE.md.
