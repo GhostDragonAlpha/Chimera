@@ -1,0 +1,50 @@
+# MATERIAL-VOLUME CAMPAIGN — DURABLE TASK BOARD (24-hour continuous execution)
+
+**Goal:** advance the playable monkey by completing the material-volume exporter's outstanding static validation and building a tested static consumer. Working code, independent verification, reproducible evidence.
+**Coordinator:** ZCode execution lead (GLM). **Opened:** 2026-09-24. **Duration:** 24 hours of permitted execution (quota pauses excluded).
+**Workspace:** this worktree `E:/ChimeraWork/mvc-20260924`, branch `material-volume-campaign-20260924` (base = exporter tip `3db8bc4e`). **Frozen proof revision:** `1af0bbde` (SI 5/5, FC 8/8, verify 7/7).
+**Code (read-only for agents):** `tools/material_volume*.py` (27 files: compiler, admission + checks + schema + examples, body_export + checks + reader + schema + examples, shared-interface and frame-composition proof scripts, export-proof prereg/verify). **Docs:** `Chimera/docs/matter/` (verification receipt 59/66 with OPEN items: independent-reproduction character, proof audit, C-1/C-2/C-3 adjudication, U7 reader-on-blocked/refused, …; contract `rigid_body_mass_export_consumption_contract_v1_proposal.md` = **proposal v0.9 with FIVE open Astra decisions**; admission/body-export/compiler docs; proof preregs + results).
+
+## LAWS (architect, binding every agent)
+
+- READ existing artifacts before writing; REUSE schemas and public interfaces. Exclusive ownership: agents write ONLY under `material_volume_campaign/agents/<id>/`. `tools/` and `docs/` are READ-ONLY for agents — implementation-defect fixes are real but go through the coordinator as exclusive-ownership fix tasks with a logged explanation + new receipt.
+- PREREGISTRATION: fixtures, independent expectations, tolerances, falsifiers, and stop rule frozen BEFORE execution. Preserve failures. Corrections = logged explanation + new receipt.
+- BOUNDARIES: may fix implementation defects within approved contracts. May NOT change schemas, relax acceptance criteria, invent anatomical mappings, supersede radius records, change physics, or wire exports into runtime dynamics. An ambiguous contract is a DECISION REQUEST recorded in the report — never the interpretation that passes.
+- Tests protect meaningful behavior. Test count, commits, and occupied slots are not progress.
+- MACHINE: CPU-only; no GPU; no browsers; never touch operator processes; gaming mode prohibits fleet GPU work. Figures (if any) via matplotlib forced to Agg.
+- HONESTY: real subagents only; no manufactured duplicate reviews or repeated experiments to fill slots; fewer-than-ten is reportable.
+
+## KNOWN STATE (from the exporter branch receipts)
+
+- Frozen proofs at `1af0bbde` pass (SI 5/5, FC 8/8, verify 7/7); corrective actions C-1/C-2/C-3 recorded (C-1 = example-report serialization regenerated as canonical CLI bytes, content unchanged).
+- Tip `3db8bc4e`: verification receipt **59/66 reconciled**; OPEN: independent-reproduction character, independent proof audit (brief exists, NOT executed), C-1/C-2/C-3 acceptance adjudication, U7 (reader behavior on `blocked`/`refused`; legacy covers `unsupported`), plus the receipt's full open list (read it — agent M01 reconciles all).
+- Contract v0.9 (proposal): five decisions reserved to Astra; consumer-side code did not exist; `dynamics_readiness_claimed` always false; parent composition external and pre-composed (flat frames) under v1.
+
+## ASSIGNMENTS (ten active; refill from backlog on completion)
+
+| id | assignment | agent dir | status | verdict | receipt |
+|---|---|---|---|---|---|
+| M01 | independent reproduction + audit of frozen `1af0bbde`; reconcile ALL findings vs later evidence (no revision substitution) | `agents/M01_reproduce` | DISPATCHED | — | `report.md` |
+| M02 | preregistered multi-cell coupon (non-overlapping cells, mixed densities, nontrivial offsets, independent full-tensor expectations) | `agents/M02_multicell` | DISPATCHED | — | `report.md` |
+| M03 | non-unit `scale_to_m`: independent derivation of mass/COM/inertia scaling under the existing density/unit contract | `agents/M03_scale` | DISPATCHED | — | `report.md` |
+| M04 | rigid-transform covariance: translations + proper rotations vs analytically expected COM and full inertia | `agents/M04_rigid` | DISPATCHED | — | `report.md` |
+| M05 | input-order invariance: permuted cells/groups/records; physical invariance vs promised byte-order behavior | `agents/M05_order` | DISPATCHED | — | `report.md` |
+| M06 | malformed/unsupported inputs vs existing schemas (invalid frames, missing fields, non-finite, unauthorized source-effective authority) | `agents/M06_malformed` | DISPATCHED | — | `report.md` |
+| M07 | ownership/status propagation (duplicate ownership, unassigned cells, blocked bodies, mixed complete/incomplete groups) | `agents/M07_ownership` | DISPATCHED | — | `report.md` |
+| M08 | numerical robustness: independent fixtures across declared scales/shapes; conditioning limits vs defects | `agents/M08_robustness` | DISPATCHED | — | `report.md` |
+| M09 | read-only diagnostic CLI on the existing reader (status, omitted bodies + reasons, unassigned cells, frames, units, readiness stays false) | `agents/M09_diagnostic` | DISPATCHED | — | `report.md` + impl |
+| M10 | static consumption validator for contract v1 (reject eligibility for partial/blocked/refused/unsupported; preserve full tensors; prohibit inferred ownership/readiness promotion; NO runtime assembly) | `agents/M10_validator` | DISPATCHED | — | `report.md` + impl |
+
+## AUTHORIZED FOLLOW-ON BACKLOG (assign as slots free)
+
+B1 independent review of each new suite (non-author) · B2 independent review of diagnostic CLI + validator · B3 reader/exporter round-trip (off-diagonals, provenance, explicit frames) · B4 cross-checkout reproducibility (raw bytes vs git blobs vs canonical text) · B5 preregistered subdivision coupon (same material volume/density through explicit regrouping) · B6 analytic tensor checks (symmetry, principal moments + physical inequalities, independent parallel-axis recombination) · B7 fault injection on checks (corrupted outputs detected; mutations confined to fixtures) · B8 regression tests + exclusive-ownership fixes for verified defects · B9 documentation examples vs actual CLI behavior · B10 final independent integrated verification + reproducible handoff.
+
+## INTEGRATION RULES
+
+- Receipts verified before integration; a different agent reviews substantial changes; small batches; checkpoint commit after every integration; worktree audit after integration (removal only for verified-inactive checkouts with exact tips durably preserved).
+- Uncovered cases get recorded first, assigned only if within authorized scope.
+- Campaign end (24h / backlog exhausted / genuinely blocked): integrated revisions + artifact identities, independently verified capabilities, fired falsifiers + defects fixed + unresolved findings, remaining gaps + architectural decisions, exact recovery instructions.
+
+## RECOVERY
+
+See `material_volume_campaign/RECOVERY.md` (append-only checkpoint log).
