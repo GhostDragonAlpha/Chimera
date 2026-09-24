@@ -14,7 +14,7 @@ input gate, not dynamics readiness.
 | Preregistration freeze (before any proof execution) | landing commit `d2c23741` | 2 preregistrations + 7 fixture documents + derivation script, cross-checked H == Q == R2 within 1e-12 |
 | Package 1 — shared-interface coupon | `tools/material_volume_shared_interface_proof.py` | 5/5 OK |
 | Package 2 — frame-composition coupon | `tools/material_volume_frame_composition_proof.py` | 8/8 OK |
-| Package 3 — integrated verification | `tools/material_volume_export_proof_verify.py` | 7/7 OK (66 leaf tests) |
+| Package 3 — integrated verification | `tools/material_volume_export_proof_verify.py` | 7/7 OK (66 unique tests: 59 leaf + 7 verification — see ERRATUM) |
 | Reproduction of reported suites from clean-room extraction of `d2c23741` | receipt R1 | 17 compiler + 21 admission + 8 export = all OK |
 | Single full battery against the integrated revision | clean-room extraction of the integrated commit | recorded at handoff (composition: 17+21+8+5+8+7) |
 
@@ -159,3 +159,15 @@ qualification, assembly integration, dynamics readiness, constitutive law, or
 production wiring is established or claimed. All reports retain
 `dynamics_readiness_claimed: false`, `physical_state_mutated: false`,
 `production_wired: false`, `anatomical_completeness_certified: false`.
+
+## ERRATUM (reporting correction C-6)
+
+An earlier handoff described the same final receipt as "66 leaf tests" while
+this report's receipts section said "59 plus 7 verification tests". The
+actual test inventory (enumerated in
+`material_volume_export_verification_receipt.md`) settles it: **66 = 59 leaf
++ 7 verification** unique test identities; one full-battery invocation
+executes 66 case identities (7 verification + 59 nested leaf), while the
+verification runner reports only `Ran 7 tests`. "66 leaf tests" was a
+mislabel, not a test or count defect. Original text above is preserved as
+written.
