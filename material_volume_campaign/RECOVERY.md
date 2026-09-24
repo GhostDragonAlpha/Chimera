@@ -12,3 +12,6 @@
 **Verified:** M09 suite re-run by coordinator (11/11 PASS, 3.6s); read-only proof reproduced (415 files, 0 changed); integrity clean. Implementation on the reader's public API (read_json_file, summarize_export_report, canonical_json); exit codes {0,2,4}; readiness false in all outputs; exit-4 alarm never fired.
 **Finding banked (U7):** reader correct on blocked/refused; summary drops CON-4/6/7 diagnostics; CLI passes through. Coordinator disposition: candidate reader-improvement (a tools/ change) goes to the defect/change queue with M09's receipts — not executed yet (exclusive-ownership rule).
 **Refill:** B2a dispatched (independent non-author review of the M09 CLI).
+
+## CHECKPOINT T1a — M04 transient [1302] failure; probe passed; retry + B2a live
+Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe: PASSED 1.4 s. M04 re-dispatched from saved brief (typo in its context line noted to the agent: 3db4bc4e -> 3db8bc4e). B2a (independent review of M09 CLI, committed 7701d8db) dispatched. Pattern watch: two [1302]s at 13-agent concurrency, both mid-run — if a third lands, serialize retries one-at-a-time and consider holding the count at ~10.
