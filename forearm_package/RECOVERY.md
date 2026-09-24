@@ -171,3 +171,18 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none.
 
 **Next:** integrate B1/B2/B4 -> I5 BODY_RESOLUTION_MAP.md (preregistered per architect law) -> return for approval.
+
+## CHECKPOINT 2026-09-24 (T12) — B2 integrated
+
+**Verified:**
+- B2 (ownership chains) PASS 6/6; coordinator fresh re-run reproduces the unlock arithmetic: D2-only -> 12/16 comparable; D2+thorax -> 16/16; thorax-only -> 4/16 (blast radius 40 records). Integrity clean.
+- Earliest breakers: ECRB/ECRL/FCU at TERMINAL hand sites; FCR idx2; ECU idx1 (ULNA) + second blocker terminal hand; PT idx1 (ulna, only blocker); BIClong/BICshort idx0 THORAX (no D2 sites in their chains at all).
+- Census 42/120 triple-confirmed (A7 + frozen experiment record + B2).
+- Packet-wide: 122 nonzero finite arms are ALL leg tendons — zero informative forearm arms (E-2 again).
+- Structural negative: no pronation/supination coordinate in the model (radius owns zero joints); post-D2 arms exist only about elbow_flexion(_l) and the wrist triples; D2 also repairs BRD's null elbow arms.
+
+**Active:** B1, B4 still running.
+
+**Blocked:** none.
+
+**Next:** B1+B4 -> I5 BODY_RESOLUTION_MAP.md.

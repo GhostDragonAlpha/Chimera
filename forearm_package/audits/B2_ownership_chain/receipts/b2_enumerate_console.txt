@@ -1,0 +1,87 @@
+wrote E:\PythonChimera\forearm_package\audits\B2_ownership_chain\receipts\b2_ownership_receipt.json
+{
+ "n_bodies_intake": 19,
+ "n_coords_intake": 39,
+ "n_tendons_intake": 120,
+ "n_tendon_referenced_sites_intake": 468,
+ "admission_unresolved": [
+  "hand_l",
+  "hand_r",
+  "talus_l",
+  "talus_r",
+  "thorax",
+  "toes_l",
+  "toes_r",
+  "ulna",
+  "ulna_l"
+ ],
+ "fit_packet_site_unresolved_count": 168,
+ "site_owner_intake_vs_packet_match": true,
+ "unresolved_bodies_admission_vs_packet_match": true,
+ "resolved_bodies_admission_vs_packet_match": true,
+ "packet_site_unresolved_owners": [
+  "hand_l",
+  "hand_r",
+  "talus_l",
+  "talus_r",
+  "thorax",
+  "toes_l",
+  "toes_r",
+  "ulna",
+  "ulna_l"
+ ]
+}
+{
+ "hand_l": 4,
+ "hand_l+ulna_l": 1,
+ "hand_r": 4,
+ "hand_r+ulna": 1,
+ "talus_l": 5,
+ "talus_l+toes_l": 3,
+ "talus_r": 5,
+ "talus_r+toes_r": 3,
+ "thorax": 40,
+ "thorax+ulna": 1,
+ "thorax+ulna_l": 1,
+ "ulna": 5,
+ "ulna_l": 5
+}
+comparable: 42 / 120
+forearm touching (broad): 28 unresolved: 52 sites
+grasp set: 18 ['BIClong_l_tendon', 'BIClong_tendon', 'BICshort_l_tendon', 'BICshort_tendon', 'BRD_l_tendon', 'BRD_tendon', 'ECRB_l_tendon', 'ECRB_tendon', 'ECRL_l_tendon', 'ECRL_tendon', 'ECU_l_tendon', 'ECU_tendon', 'FCR_l_tendon', 'FCR_tendon', 'FCU_l_tendon', 'FCU_tendon', 'PT_l_tendon', 'PT_tendon']
+sixteen: ['BIClong_l_tendon', 'BIClong_tendon', 'BICshort_l_tendon', 'BICshort_tendon', 'ECRB_l_tendon', 'ECRB_tendon', 'ECRL_l_tendon', 'ECRL_tendon', 'ECU_l_tendon', 'ECU_tendon', 'FCR_l_tendon', 'FCR_tendon', 'FCU_l_tendon', 'FCU_tendon', 'PT_l_tendon', 'PT_tendon']
+earliest breakers: {
+ "thorax": [
+  "BIClong_l_tendon",
+  "BIClong_tendon",
+  "BICshort_l_tendon",
+  "BICshort_tendon"
+ ],
+ "hand_l": [
+  "ECRB_l_tendon",
+  "ECRL_l_tendon",
+  "FCR_l_tendon",
+  "FCU_l_tendon"
+ ],
+ "hand_r": [
+  "ECRB_tendon",
+  "ECRL_tendon",
+  "FCR_tendon",
+  "FCU_tendon"
+ ],
+ "ulna_l": [
+  "ECU_l_tendon",
+  "PT_l_tendon"
+ ],
+ "ulna": [
+  "ECU_tendon",
+  "PT_tendon"
+ ]
+}
+D2_only (ulna,ulna_l,hand_r,hand_l) -> 12 comparable; still blocked: ['BIClong_l_tendon', 'BIClong_tendon', 'BICshort_l_tendon', 'BICshort_tendon']
+D2_plus_thorax -> 16 comparable; still blocked: []
+thorax_only -> 4 comparable; still blocked: ['ECRB_l_tendon', 'ECRB_tendon', 'ECRL_l_tendon', 'ECRL_tendon', 'ECU_l_tendon', 'ECU_tendon', 'FCR_l_tendon', 'FCR_tendon', 'FCU_l_tendon', 'FCU_tendon', 'PT_l_tendon', 'PT_tendon']
+hand_only -> 8 comparable; still blocked: ['BIClong_l_tendon', 'BIClong_tendon', 'BICshort_l_tendon', 'BICshort_tendon', 'ECU_l_tendon', 'ECU_tendon', 'PT_l_tendon', 'PT_tendon']
+ulna_only -> 2 comparable; still blocked: ['BIClong_l_tendon', 'BIClong_tendon', 'BICshort_l_tendon', 'BICshort_tendon', 'ECRB_l_tendon', 'ECRB_tendon', 'ECRL_l_tendon', 'ECRL_tendon', 'ECU_l_tendon', 'ECU_tendon', 'FCR_l_tendon', 'FCR_tendon', 'FCU_l_tendon', 'FCU_tendon']
+all_nine_resolved -> 16 comparable; still blocked: []
+finite arms packet-wide: 1392 zero: 1270 nonzero: 122

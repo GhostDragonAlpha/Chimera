@@ -1,0 +1,3 @@
+2f6584ecfec5f123e12f90fde76811d829adb966516ccbde33d33d158006f6e2 *receipts/b2_ownership_receipt.json
+0e39fe1db1c753f8dfbd591621ae5abcad045dee6cc3a9084e63dacac8062320 *scripts/b2_enumerate.py
+54dca92c3f606f2dd9613a5a66dc66ccf5db6e4e272d8b75ab3afe42e8190058 *brief.md

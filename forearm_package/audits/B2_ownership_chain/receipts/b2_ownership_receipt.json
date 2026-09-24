@@ -1,0 +1,6514 @@
+{
+ "inputs": {
+  "xml": "E:\\PythonChimera\\forearm_package\\baseline_snapshot\\source_xml\\chimanoid.xml",
+  "fit": "E:\\PythonChimera\\forearm_package\\baseline_snapshot\\runs\\actual_monkey_fit.json",
+  "admission": "E:\\PythonChimera\\forearm_package\\baseline_snapshot\\runs\\admission_actual_monkey.json"
+ },
+ "identity_checks": {
+  "n_bodies_intake": 19,
+  "n_coords_intake": 39,
+  "n_tendons_intake": 120,
+  "n_tendon_referenced_sites_intake": 468,
+  "admission_unresolved": [
+   "hand_l",
+   "hand_r",
+   "talus_l",
+   "talus_r",
+   "thorax",
+   "toes_l",
+   "toes_r",
+   "ulna",
+   "ulna_l"
+  ],
+  "fit_packet_site_unresolved_count": 168,
+  "site_owner_intake_vs_packet_match": true,
+  "unresolved_bodies_admission_vs_packet_match": true,
+  "resolved_bodies_admission_vs_packet_match": true,
+  "packet_site_unresolved_owners": [
+   "hand_l",
+   "hand_r",
+   "talus_l",
+   "talus_r",
+   "thorax",
+   "toes_l",
+   "toes_r",
+   "ulna",
+   "ulna_l"
+  ]
+ },
+ "census": {
+  "n_tendons": 120,
+  "n_comparable": 42,
+  "n_non_comparable": 78,
+  "non_comparable_breakdown_by_unresolved_multiset": {
+   "hand_l": 4,
+   "hand_l+ulna_l": 1,
+   "hand_r": 4,
+   "hand_r+ulna": 1,
+   "talus_l": 5,
+   "talus_l+toes_l": 3,
+   "talus_r": 5,
+   "talus_r+toes_r": 3,
+   "thorax": 40,
+   "thorax+ulna": 1,
+   "thorax+ulna_l": 1,
+   "ulna": 5,
+   "ulna_l": 5
+  },
+  "comparable_names": [
+   "BRD_l_tendon",
+   "BRD_tendon",
+   "add_mag2_l_tendon",
+   "add_mag2_r_tendon",
+   "bifemlh_l_tendon",
+   "bifemlh_r_tendon",
+   "bifemsh_l_tendon",
+   "bifemsh_r_tendon",
+   "gem_l_tendon",
+   "gem_r_tendon",
+   "glut_max1_l_tendon",
+   "glut_max1_r_tendon",
+   "glut_max2_l_tendon",
+   "glut_max2_r_tendon",
+   "glut_max3_l_tendon",
+   "glut_max3_r_tendon",
+   "glut_med1_l_tendon",
+   "glut_med1_r_tendon",
+   "glut_med2_l_tendon",
+   "glut_med2_r_tendon",
+   "glut_med3_l_tendon",
+   "glut_med3_r_tendon",
+   "grac_l_tendon",
+   "grac_r_tendon",
+   "iliacus_l_tendon",
+   "iliacus_r_tendon",
+   "pect_l_tendon",
+   "pect_r_tendon",
+   "peri_l_tendon",
+   "peri_r_tendon",
+   "psoas_l_tendon",
+   "psoas_r_tendon",
+   "quad_fem_l_tendon",
+   "quad_fem_r_tendon",
+   "rect_fem_l_tendon",
+   "rect_fem_r_tendon",
+   "sar_l_tendon",
+   "sar_r_tendon",
+   "tfl_l_tendon",
+   "tfl_r_tendon",
+   "vas_int_l_tendon",
+   "vas_int_r_tendon"
+  ]
+ },
+ "forearm_site_set": {
+  "definition_broad": "sites owned by radius/ulna/radius_l/ulna_l (referenced by tendons)",
+  "bodies": [
+   "radius",
+   "ulna",
+   "radius_l",
+   "ulna_l"
+  ],
+  "n_sites": 52,
+  "sites_by_body": {
+   "radius": [
+    "BIClong-P11",
+    "BIClong-P9",
+    "BICshort-P6",
+    "BICshort-P8",
+    "BRD-P2",
+    "BRD-P3",
+    "ECRB-P2",
+    "ECRB-P3",
+    "ECRL-P2",
+    "ECRL-P3",
+    "ECU-P5",
+    "FCR-P2",
+    "FCU-P2",
+    "FCU-P3",
+    "PT-P3",
+    "PT-P5"
+   ],
+   "ulna": [
+    "ANC-P2",
+    "BRA-P3",
+    "BRA-P4",
+    "ECU-P2",
+    "ECU-P3",
+    "ECU-P4",
+    "PT-P2",
+    "TRIlat-P5",
+    "TRIlong-P5",
+    "TRImed-P5"
+   ],
+   "radius_l": [
+    "BIClong_l-P11",
+    "BIClong_l-P9",
+    "BICshort_l-P6",
+    "BICshort_l-P8",
+    "BRD_l-P2",
+    "BRD_l-P3",
+    "ECRB_l-P2",
+    "ECRB_l-P3",
+    "ECRL_l-P2",
+    "ECRL_l-P3",
+    "ECU_l-P5",
+    "FCR_l-P2",
+    "FCU_l-P2",
+    "FCU_l-P3",
+    "PT_l-P3",
+    "PT_l-P5"
+   ],
+   "ulna_l": [
+    "ANC_l-P2",
+    "BRA_l-P3",
+    "BRA_l-P4",
+    "ECU_l-P2",
+    "ECU_l-P3",
+    "ECU_l-P4",
+    "PT_l-P2",
+    "TRIlat_l-P5",
+    "TRIlong_l-P5",
+    "TRImed_l-P5"
+   ]
+  },
+  "n_tendons_touching_broad": 28,
+  "touching_tendons_broad": [
+   "ANC_l_tendon",
+   "ANC_tendon",
+   "BIClong_l_tendon",
+   "BIClong_tendon",
+   "BICshort_l_tendon",
+   "BICshort_tendon",
+   "BRA_l_tendon",
+   "BRA_tendon",
+   "BRD_l_tendon",
+   "BRD_tendon",
+   "ECRB_l_tendon",
+   "ECRB_tendon",
+   "ECRL_l_tendon",
+   "ECRL_tendon",
+   "ECU_l_tendon",
+   "ECU_tendon",
+   "FCR_l_tendon",
+   "FCR_tendon",
+   "FCU_l_tendon",
+   "FCU_tendon",
+   "PT_l_tendon",
+   "PT_tendon",
+   "TRIlat_l_tendon",
+   "TRIlat_tendon",
+   "TRIlong_l_tendon",
+   "TRIlong_tendon",
+   "TRImed_l_tendon",
+   "TRImed_tendon"
+  ],
+  "comparable_touching_broad": [
+   "BRD_l_tendon",
+   "BRD_tendon"
+  ],
+  "non_comparable_touching_broad": [
+   "ANC_l_tendon",
+   "ANC_tendon",
+   "BIClong_l_tendon",
+   "BIClong_tendon",
+   "BICshort_l_tendon",
+   "BICshort_tendon",
+   "BRA_l_tendon",
+   "BRA_tendon",
+   "ECRB_l_tendon",
+   "ECRB_tendon",
+   "ECRL_l_tendon",
+   "ECRL_tendon",
+   "ECU_l_tendon",
+   "ECU_tendon",
+   "FCR_l_tendon",
+   "FCR_tendon",
+   "FCU_l_tendon",
+   "FCU_tendon",
+   "PT_l_tendon",
+   "PT_tendon",
+   "TRIlat_l_tendon",
+   "TRIlat_tendon",
+   "TRIlong_l_tendon",
+   "TRIlong_tendon",
+   "TRImed_l_tendon",
+   "TRImed_tendon"
+  ],
+  "attachment_packet_bodies": [
+   "radius",
+   "radius_l"
+  ],
+  "n_packet_radius_sites": 32,
+  "packet_radius_sites": [
+   "BIClong-P11",
+   "BIClong-P9",
+   "BIClong_l-P11",
+   "BIClong_l-P9",
+   "BICshort-P6",
+   "BICshort-P8",
+   "BICshort_l-P6",
+   "BICshort_l-P8",
+   "BRD-P2",
+   "BRD-P3",
+   "BRD_l-P2",
+   "BRD_l-P3",
+   "ECRB-P2",
+   "ECRB-P3",
+   "ECRB_l-P2",
+   "ECRB_l-P3",
+   "ECRL-P2",
+   "ECRL-P3",
+   "ECRL_l-P2",
+   "ECRL_l-P3",
+   "ECU-P5",
+   "ECU_l-P5",
+   "FCR-P2",
+   "FCR_l-P2",
+   "FCU-P2",
+   "FCU-P3",
+   "FCU_l-P2",
+   "FCU_l-P3",
+   "PT-P3",
+   "PT-P5",
+   "PT_l-P3",
+   "PT_l-P5"
+  ],
+  "muscle_families": {
+   "ANC": [
+    "ANC_tendon"
+   ],
+   "ANC_l": [
+    "ANC_l_tendon"
+   ],
+   "BIClong": [
+    "BIClong_tendon"
+   ],
+   "BIClong_l": [
+    "BIClong_l_tendon"
+   ],
+   "BICshort": [
+    "BICshort_tendon"
+   ],
+   "BICshort_l": [
+    "BICshort_l_tendon"
+   ],
+   "BRA": [
+    "BRA_tendon"
+   ],
+   "BRA_l": [
+    "BRA_l_tendon"
+   ],
+   "BRD": [
+    "BRD_tendon"
+   ],
+   "BRD_l": [
+    "BRD_l_tendon"
+   ],
+   "ECRB": [
+    "ECRB_tendon"
+   ],
+   "ECRB_l": [
+    "ECRB_l_tendon"
+   ],
+   "ECRL": [
+    "ECRL_tendon"
+   ],
+   "ECRL_l": [
+    "ECRL_l_tendon"
+   ],
+   "ECU": [
+    "ECU_tendon"
+   ],
+   "ECU_l": [
+    "ECU_l_tendon"
+   ],
+   "FCR": [
+    "FCR_tendon"
+   ],
+   "FCR_l": [
+    "FCR_l_tendon"
+   ],
+   "FCU": [
+    "FCU_tendon"
+   ],
+   "FCU_l": [
+    "FCU_l_tendon"
+   ],
+   "PT": [
+    "PT_tendon"
+   ],
+   "PT_l": [
+    "PT_l_tendon"
+   ],
+   "TRIlat": [
+    "TRIlat_tendon"
+   ],
+   "TRIlat_l": [
+    "TRIlat_l_tendon"
+   ],
+   "TRIlong": [
+    "TRIlong_tendon"
+   ],
+   "TRIlong_l": [
+    "TRIlong_l_tendon"
+   ],
+   "TRImed": [
+    "TRImed_tendon"
+   ],
+   "TRImed_l": [
+    "TRImed_l_tendon"
+   ]
+  }
+ },
+ "grasp_critical_set": {
+  "definition": "tendons with >=1 path site among the 32 radius/radius_l attachment-candidate sites",
+  "n_tendons": 18,
+  "tendons": [
+   "BIClong_l_tendon",
+   "BIClong_tendon",
+   "BICshort_l_tendon",
+   "BICshort_tendon",
+   "BRD_l_tendon",
+   "BRD_tendon",
+   "ECRB_l_tendon",
+   "ECRB_tendon",
+   "ECRL_l_tendon",
+   "ECRL_tendon",
+   "ECU_l_tendon",
+   "ECU_tendon",
+   "FCR_l_tendon",
+   "FCR_tendon",
+   "FCU_l_tendon",
+   "FCU_tendon",
+   "PT_l_tendon",
+   "PT_tendon"
+  ],
+  "comparable": [
+   "BRD_l_tendon",
+   "BRD_tendon"
+  ],
+  "non_comparable": [
+   "BIClong_l_tendon",
+   "BIClong_tendon",
+   "BICshort_l_tendon",
+   "BICshort_tendon",
+   "ECRB_l_tendon",
+   "ECRB_tendon",
+   "ECRL_l_tendon",
+   "ECRL_tendon",
+   "ECU_l_tendon",
+   "ECU_tendon",
+   "FCR_l_tendon",
+   "FCR_tendon",
+   "FCU_l_tendon",
+   "FCU_tendon",
+   "PT_l_tendon",
+   "PT_tendon"
+  ],
+  "sixteen": [
+   "BIClong_l_tendon",
+   "BIClong_tendon",
+   "BICshort_l_tendon",
+   "BICshort_tendon",
+   "ECRB_l_tendon",
+   "ECRB_tendon",
+   "ECRL_l_tendon",
+   "ECRL_tendon",
+   "ECU_l_tendon",
+   "ECU_tendon",
+   "FCR_l_tendon",
+   "FCR_tendon",
+   "FCU_l_tendon",
+   "FCU_tendon",
+   "PT_l_tendon",
+   "PT_tendon"
+  ],
+  "n_sixteen": 16,
+  "families": {
+   "BRD": [
+    "BRD_tendon"
+   ],
+   "ECRB": [
+    "ECRB_tendon"
+   ],
+   "ECRL": [
+    "ECRL_tendon"
+   ],
+   "ECU": [
+    "ECU_tendon"
+   ],
+   "FCR": [
+    "FCR_tendon"
+   ],
+   "FCU": [
+    "FCU_tendon"
+   ],
+   "PT": [
+    "PT_tendon"
+   ],
+   "BIClong": [
+    "BIClong_tendon"
+   ],
+   "BICshort": [
+    "BICshort_tendon"
+   ]
+  }
+ },
+ "per_tendon": {
+  "BIClong_l_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "BIClong_l-P1",
+     "owner_intake": "thorax",
+     "owner_packet": "thorax",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment thorax unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.039235,
+      0.00347,
+      -0.14795
+     ]
+    },
+    {
+     "index": 1,
+     "site": "BIClong_l-P2",
+     "owner_intake": "thorax",
+     "owner_packet": "thorax",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment thorax unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.028945,
+      0.01391,
+      -0.15639
+     ]
+    },
+    {
+     "index": 2,
+     "site": "BIClong_l-P3",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.07539607027078674,
+      0.3918486240317177,
+      0.024488458064013903
+     ],
+     "source_pos_local": [
+      0.02131,
+      0.01793,
+      -0.01028
+     ]
+    },
+    {
+     "index": 3,
+     "site": "BIClong_l-P4",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.08119651157652197,
+      0.38943672758592107,
+      0.02664156851847737
+     ],
+     "source_pos_local": [
+      0.02378,
+      -0.00511,
+      -0.01201
+     ]
+    },
+    {
+     "index": 4,
+     "site": "BIClong_l-P5",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.07413709946218472,
+      0.37845505485674136,
+      0.013547433076243677
+     ],
+     "source_pos_local": [
+      0.01345,
+      -0.02827,
+      -0.00136
+     ]
+    },
+    {
+     "index": 5,
+     "site": "BIClong_l-P6",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.07951007939909219,
+      0.3687818754515186,
+      0.008604498988317753
+     ],
+     "source_pos_local": [
+      0.01068,
+      -0.07736,
+      0.00165
+     ]
+    },
+    {
+     "index": 6,
+     "site": "BIClong_l-P7",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.08914998717210362,
+      0.3629627425665009,
+      0.014565623186157199
+     ],
+     "source_pos_local": [
+      0.01703,
+      -0.12125,
+      -0.00024
+     ]
+    },
+    {
+     "index": 7,
+     "site": "BIClong_l-P8",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.09193387386153433,
+      0.3490730530870507,
+      0.019234238838114214
+     ],
+     "source_pos_local": [
+      0.0228,
+      -0.1754,
+      0.0063
+     ]
+    },
+    {
+     "index": 8,
+     "site": "BIClong_l-P9",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.11538575461309933,
+      0.3165270051893539,
+      -0.009892307535047738
+     ],
+     "source_pos_local": [
+      0.01467,
+      -0.0102,
+      0.01062
+     ]
+    },
+    {
+     "index": 9,
+     "site": "BIClong_l-P11",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.12048689877456328,
+      0.3124564319750099,
+      -0.006522685910740644
+     ],
+     "source_pos_local": [
+      -0.002,
+      -0.0375,
+      0.002
+     ]
+    }
+   ],
+   "n_sites": 10,
+   "unresolved_bodies": [
+    "thorax"
+   ],
+   "first_unresolved_index": 0,
+   "unresolved_indices": [
+    0,
+    1
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.484689274,
+   "packet_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "longest_finite_run": 8,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion_l",
+     "owner": "ulna_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": false
+  },
+  "BIClong_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "BIClong-P1",
+     "owner_intake": "thorax",
+     "owner_packet": "thorax",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment thorax unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.039235,
+      0.00347,
+      0.14795
+     ]
+    },
+    {
+     "index": 1,
+     "site": "BIClong-P2",
+     "owner_intake": "thorax",
+     "owner_packet": "thorax",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment thorax unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.028945,
+      0.01391,
+      0.15639
+     ]
+    },
+    {
+     "index": 2,
+     "site": "BIClong-P3",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.07539562067553301,
+      0.39184901421355506,
+      0.024488545044618695
+     ],
+     "source_pos_local": [
+      0.02131,
+      0.01793,
+      0.01028
+     ]
+    },
+    {
+     "index": 3,
+     "site": "BIClong-P4",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.08119663100830385,
+      0.3894366100414518,
+      0.026641546329351253
+     ],
+     "source_pos_local": [
+      0.02378,
+      -0.00511,
+      0.01201
+     ]
+    },
+    {
+     "index": 4,
+     "site": "BIClong-P5",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.0741378054919769,
+      0.37845442069475543,
+      0.013547297479158293
+     ],
+     "source_pos_local": [
+      0.01345,
+      -0.02827,
+      0.00136
+     ]
+    },
+    {
+     "index": 5,
+     "site": "BIClong-P6",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.07951200503148834,
+      0.3687801571972464,
+      0.008604128946568335
+     ],
+     "source_pos_local": [
+      0.01068,
+      -0.07736,
+      -0.00165
+     ]
+    },
+    {
+     "index": 6,
+     "site": "BIClong-P7",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.08915300034610626,
+      0.3629600534260181,
+      0.014565044372796132
+     ],
+     "source_pos_local": [
+      0.01703,
+      -0.12125,
+      0.00024
+     ]
+    },
+    {
+     "index": 7,
+     "site": "BIClong-P8",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.09193824366870104,
+      0.3490691547752212,
+      0.01923339892045197
+     ],
+     "source_pos_local": [
+      0.0228,
+      -0.1754,
+      -0.0063
+     ]
+    },
+    {
+     "index": 8,
+     "site": "BIClong-P9",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.11538575529796705,
+      0.31652700553957924,
+      -0.009892307789133034
+     ],
+     "source_pos_local": [
+      0.01467,
+      -0.0102,
+      -0.01062
+     ]
+    },
+    {
+     "index": 9,
+     "site": "BIClong-P11",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.1204868988570113,
+      0.3124564320178335,
+      -0.006522685624193082
+     ],
+     "source_pos_local": [
+      -0.002,
+      -0.0375,
+      -0.002
+     ]
+    }
+   ],
+   "n_sites": 10,
+   "unresolved_bodies": [
+    "thorax"
+   ],
+   "first_unresolved_index": 0,
+   "unresolved_indices": [
+    0,
+    1
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.484639283,
+   "packet_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "longest_finite_run": 8,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion",
+     "owner": "ulna",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      8,
+      9
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": false
+  },
+  "BICshort_l_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "BICshort_l-P1",
+     "owner_intake": "thorax",
+     "owner_packet": "thorax",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment thorax unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.004675,
+      -0.01231,
+      -0.13475
+     ]
+    },
+    {
+     "index": 1,
+     "site": "BICshort_l-P2",
+     "owner_intake": "thorax",
+     "owner_packet": "thorax",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment thorax unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.007075,
+      -0.04004,
+      -0.14507
+     ]
+    },
+    {
+     "index": 2,
+     "site": "BICshort_l-P3",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.06966775067670339,
+      0.36173048843283234,
+      0.0089157863269688
+     ],
+     "source_pos_local": [
+      0.01117,
+      -0.07576,
+      0.01101
+     ]
+    },
+    {
+     "index": 3,
+     "site": "BICshort_l-P4",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.07786819519988046,
+      0.35440994647730045,
+      0.0142005600337024
+     ],
+     "source_pos_local": [
+      0.01703,
+      -0.12125,
+      0.01079
+     ]
+    },
+    {
+     "index": 4,
+     "site": "BICshort_l-P5",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.09193387386153433,
+      0.3490730530870507,
+      0.019234238838114214
+     ],
+     "source_pos_local": [
+      0.0228,
+      -0.1754,
+      0.0063
+     ]
+    },
+    {
+     "index": 5,
+     "site": "BICshort_l-P6",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.1153856800823455,
+      0.3165269413241279,
+      -0.009891949081608984
+     ],
+     "source_pos_local": [
+      0.0146695,
+      -0.0102,
+      0.0106184
+     ]
+    },
+    {
+     "index": 6,
+     "site": "BICshort_l-P8",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.12048689877456328,
+      0.3124564319750099,
+      -0.006522685910740644
+     ],
+     "source_pos_local": [
+      -0.002,
+      -0.0375,
+      0.002
+     ]
+    }
+   ],
+   "n_sites": 7,
+   "unresolved_bodies": [
+    "thorax"
+   ],
+   "first_unresolved_index": 0,
+   "unresolved_indices": [
+    0,
+    1
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.405245612,
+   "packet_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "longest_finite_run": 5,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion_l",
+     "owner": "ulna_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": false
+  },
+  "BICshort_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "BICshort-P1",
+     "owner_intake": "thorax",
+     "owner_packet": "thorax",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment thorax unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.004675,
+      -0.01231,
+      0.13475
+     ]
+    },
+    {
+     "index": 1,
+     "site": "BICshort-P2",
+     "owner_intake": "thorax",
+     "owner_packet": "thorax",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment thorax unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.007075,
+      -0.04004,
+      0.14507
+     ]
+    },
+    {
+     "index": 2,
+     "site": "BICshort-P3",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.06966965401088407,
+      0.36172879093385124,
+      0.00891541983483477
+     ],
+     "source_pos_local": [
+      0.01117,
+      -0.07576,
+      -0.01101
+     ]
+    },
+    {
+     "index": 3,
+     "site": "BICshort-P4",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.07787122843846322,
+      0.35440724078428787,
+      0.014199976507706321
+     ],
+     "source_pos_local": [
+      0.01703,
+      -0.12125,
+      -0.01079
+     ]
+    },
+    {
+     "index": 4,
+     "site": "BICshort-P5",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.09193824366870104,
+      0.3490691547752212,
+      0.01923339892045197
+     ],
+     "source_pos_local": [
+      0.0228,
+      -0.1754,
+      -0.0063
+     ]
+    },
+    {
+     "index": 5,
+     "site": "BICshort-P6",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.11589823564187253,
+      0.31684864961727344,
+      -0.009714488717423376
+     ],
+     "source_pos_local": [
+      0.0119375,
+      -0.0102,
+      -0.0114103
+     ]
+    },
+    {
+     "index": 6,
+     "site": "BICshort-P8",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.1204868988570113,
+      0.3124564320178335,
+      -0.006522685624193082
+     ],
+     "source_pos_local": [
+      -0.002,
+      -0.0375,
+      -0.002
+     ]
+    }
+   ],
+   "n_sites": 7,
+   "unresolved_bodies": [
+    "thorax"
+   ],
+   "first_unresolved_index": 0,
+   "unresolved_indices": [
+    0,
+    1
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.404161857,
+   "packet_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "longest_finite_run": 5,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion",
+     "owner": "ulna",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      5,
+      6
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": false
+  },
+  "ECRB_l_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "ECRB_l-P1",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.13551034817348123,
+      0.3501503021394119,
+      0.0053869185652825145
+     ],
+     "source_pos_local": [
+      0.01349,
+      -0.29048,
+      -0.01698
+     ]
+    },
+    {
+     "index": 1,
+     "site": "ECRB_l-P2",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.12422347943475098,
+      0.29021738380156026,
+      -0.006165374717809795
+     ],
+     "source_pos_local": [
+      0.02905,
+      -0.13086,
+      -0.02385
+     ]
+    },
+    {
+     "index": 2,
+     "site": "ECRB_l-P3",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.13334450999775552,
+      0.27038743554030903,
+      -0.004838375834242606
+     ],
+     "source_pos_local": [
+      0.03549,
+      -0.22805,
+      -0.03937
+     ]
+    },
+    {
+     "index": 3,
+     "site": "ECRB_l-P4",
+     "owner_intake": "hand_l",
+     "owner_packet": "hand_l",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_l unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.008989,
+      -0.026413,
+      -0.010824
+     ]
+    }
+   ],
+   "n_sites": 4,
+   "unresolved_bodies": [
+    "hand_l"
+   ],
+   "first_unresolved_index": 3,
+   "unresolved_indices": [
+    3
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.389990855,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "longest_finite_run": 3,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion_l",
+     "owner": "ulna_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "ECRB_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "ECRB-P1",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.13551752012575655,
+      0.3501439106659406,
+      0.0053855423652870524
+     ],
+     "source_pos_local": [
+      0.01349,
+      -0.29048,
+      0.01698
+     ]
+    },
+    {
+     "index": 1,
+     "site": "ECRB-P2",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.12422347946147366,
+      0.29021738381298234,
+      -0.006165375802948763
+     ],
+     "source_pos_local": [
+      0.02905,
+      -0.13086,
+      0.02385
+     ]
+    },
+    {
+     "index": 2,
+     "site": "ECRB-P3",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.1333445097940535,
+      0.270387435433332,
+      -0.004838377104866412
+     ],
+     "source_pos_local": [
+      0.03549,
+      -0.22805,
+      0.03937
+     ]
+    },
+    {
+     "index": 3,
+     "site": "ECRB-P4",
+     "owner_intake": "hand_r",
+     "owner_packet": "hand_r",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_r unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.008989,
+      -0.026413,
+      0.010824
+     ]
+    }
+   ],
+   "n_sites": 4,
+   "unresolved_bodies": [
+    "hand_r"
+   ],
+   "first_unresolved_index": 3,
+   "unresolved_indices": [
+    3
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.389941285,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "longest_finite_run": 3,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion",
+     "owner": "ulna",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "ECRL_l_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "ECRL_l-P1",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.12197521555372542,
+      0.35030180870041616,
+      -0.01798261107016364
+     ],
+     "source_pos_local": [
+      -0.0073,
+      -0.2609,
+      -0.0091
+     ]
+    },
+    {
+     "index": 1,
+     "site": "ECRL_l-P2",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.1238321649215111,
+      0.2889553395807081,
+      -0.00580597701825113
+     ],
+     "source_pos_local": [
+      0.03195,
+      -0.13463,
+      -0.02779
+     ]
+    },
+    {
+     "index": 2,
+     "site": "ECRL_l-P3",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.13359568441174197,
+      0.26829670040208103,
+      -0.006329999675496162
+     ],
+     "source_pos_local": [
+      0.04243,
+      -0.23684,
+      -0.0362
+     ]
+    },
+    {
+     "index": 3,
+     "site": "ECRL_l-P4",
+     "owner_intake": "hand_l",
+     "owner_packet": "hand_l",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_l unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.021167,
+      -0.036274,
+      -0.008159
+     ]
+    }
+   ],
+   "n_sites": 4,
+   "unresolved_bodies": [
+    "hand_l"
+   ],
+   "first_unresolved_index": 3,
+   "unresolved_indices": [
+    3
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.43266002,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "longest_finite_run": 3,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion_l",
+     "owner": "ulna_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "ECRL_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "ECRL-P1",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.12198165634865206,
+      0.3502960775569757,
+      -0.017983847297296487
+     ],
+     "source_pos_local": [
+      -0.0073,
+      -0.2609,
+      0.0091
+     ]
+    },
+    {
+     "index": 1,
+     "site": "ECRL-P2",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.12383216488429039,
+      0.28895533955899355,
+      -0.005805978289373313
+     ],
+     "source_pos_local": [
+      0.03195,
+      -0.13463,
+      0.02779
+     ]
+    },
+    {
+     "index": 2,
+     "site": "ECRL-P3",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.1335956844761675,
+      0.2682967004321192,
+      -0.006330001093017394
+     ],
+     "source_pos_local": [
+      0.04243,
+      -0.23684,
+      0.0362
+     ]
+    },
+    {
+     "index": 3,
+     "site": "ECRL-P4",
+     "owner_intake": "hand_r",
+     "owner_packet": "hand_r",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_r unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.021167,
+      -0.036274,
+      0.008159
+     ]
+    }
+   ],
+   "n_sites": 4,
+   "unresolved_bodies": [
+    "hand_r"
+   ],
+   "first_unresolved_index": 3,
+   "unresolved_indices": [
+    3
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.43261125,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "longest_finite_run": 3,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion",
+     "owner": "ulna",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "ECU_l_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "ECU_l-P1",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.1369952510107929,
+      0.35274174491211613,
+      -0.009193170263464327
+     ],
+     "source_pos_local": [
+      0.00083,
+      -0.28955,
+      -0.0188
+     ]
+    },
+    {
+     "index": 1,
+     "site": "ECU_l-P2",
+     "owner_intake": "ulna_l",
+     "owner_packet": "ulna_l",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment ulna_l unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.01391,
+      -0.03201,
+      -0.02947
+     ]
+    },
+    {
+     "index": 2,
+     "site": "ECU_l-P3",
+     "owner_intake": "ulna_l",
+     "owner_packet": "ulna_l",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment ulna_l unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.01705,
+      -0.05428,
+      -0.02868
+     ]
+    },
+    {
+     "index": 3,
+     "site": "ECU_l-P4",
+     "owner_intake": "ulna_l",
+     "owner_packet": "ulna_l",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment ulna_l unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.01793,
+      -0.09573,
+      -0.03278
+     ]
+    },
+    {
+     "index": 4,
+     "site": "ECU_l-P5",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.14158832104191865,
+      0.27575040288217,
+      0.000238356577238104
+     ],
+     "source_pos_local": [
+      -0.01421,
+      -0.22696,
+      -0.03481
+     ]
+    },
+    {
+     "index": 5,
+     "site": "ECU_l-P6",
+     "owner_intake": "hand_l",
+     "owner_packet": "hand_l",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_l unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.018514,
+      -0.029067,
+      -0.001049
+     ]
+    }
+   ],
+   "n_sites": 6,
+   "unresolved_bodies": [
+    "hand_l",
+    "ulna_l"
+   ],
+   "first_unresolved_index": 1,
+   "unresolved_indices": [
+    1,
+    2,
+    3,
+    5
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.393956245,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l', 'ulna_l']",
+   "longest_finite_run": 1,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion_l",
+     "owner": "ulna_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      5
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "ECU_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "ECU-P1",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.13700238878360566,
+      0.3527353888706669,
+      -0.009194539657787845
+     ],
+     "source_pos_local": [
+      0.00083,
+      -0.28955,
+      0.0188
+     ]
+    },
+    {
+     "index": 1,
+     "site": "ECU-P2",
+     "owner_intake": "ulna",
+     "owner_packet": "ulna",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment ulna unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.01391,
+      -0.03201,
+      0.02947
+     ]
+    },
+    {
+     "index": 2,
+     "site": "ECU-P3",
+     "owner_intake": "ulna",
+     "owner_packet": "ulna",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment ulna unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.01705,
+      -0.05428,
+      0.02868
+     ]
+    },
+    {
+     "index": 3,
+     "site": "ECU-P4",
+     "owner_intake": "ulna",
+     "owner_packet": "ulna",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment ulna unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.01793,
+      -0.09573,
+      0.03278
+     ]
+    },
+    {
+     "index": 4,
+     "site": "ECU-P5",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.14158831992630155,
+      0.2757504023122648,
+      0.00023835727644868406
+     ],
+     "source_pos_local": [
+      -0.01421,
+      -0.22696,
+      0.03481
+     ]
+    },
+    {
+     "index": 5,
+     "site": "ECU-P6",
+     "owner_intake": "hand_r",
+     "owner_packet": "hand_r",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_r unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.018514,
+      -0.029067,
+      0.001049
+     ]
+    }
+   ],
+   "n_sites": 6,
+   "unresolved_bodies": [
+    "hand_r",
+    "ulna"
+   ],
+   "first_unresolved_index": 1,
+   "unresolved_indices": [
+    1,
+    2,
+    3,
+    5
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.393906477,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r', 'ulna']",
+   "longest_finite_run": 1,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion",
+     "owner": "ulna",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      5
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      5
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "FCR_l_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "FCR_l-P1",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.07799603743991261,
+      0.31065305956608086,
+      -0.002837018243346697
+     ],
+     "source_pos_local": [
+      0.00758,
+      -0.27806,
+      0.03705
+     ]
+    },
+    {
+     "index": 1,
+     "site": "FCR_l-P2",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.13828447663953958,
+      0.2760749069822856,
+      -0.010170584468508364
+     ],
+     "source_pos_local": [
+      0.0211,
+      -0.21943,
+      -0.00127
+     ]
+    },
+    {
+     "index": 2,
+     "site": "FCR_l-P3",
+     "owner_intake": "hand_l",
+     "owner_packet": "hand_l",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_l unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.015227,
+      -0.033494,
+      0.001851
+     ]
+    }
+   ],
+   "n_sites": 3,
+   "unresolved_bodies": [
+    "hand_l"
+   ],
+   "first_unresolved_index": 2,
+   "unresolved_indices": [
+    2
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.412940213,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "longest_finite_run": 2,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion_l",
+     "owner": "ulna_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      2
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "FCR_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "FCR-P1",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.07800299640663476,
+      0.31064686651783247,
+      -0.0028383577000436976
+     ],
+     "source_pos_local": [
+      0.00758,
+      -0.27806,
+      -0.03705
+     ]
+    },
+    {
+     "index": 1,
+     "site": "FCR-P2",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.13828447738940958,
+      0.27607490736661755,
+      -0.010170584331662659
+     ],
+     "source_pos_local": [
+      0.0211,
+      -0.21943,
+      0.00127
+     ]
+    },
+    {
+     "index": 2,
+     "site": "FCR-P3",
+     "owner_intake": "hand_r",
+     "owner_packet": "hand_r",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_r unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.015227,
+      -0.033494,
+      -0.001851
+     ]
+    }
+   ],
+   "n_sites": 3,
+   "unresolved_bodies": [
+    "hand_r"
+   ],
+   "first_unresolved_index": 2,
+   "unresolved_indices": [
+    2
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.412890892,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "longest_finite_run": 2,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion",
+     "owner": "ulna",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      2
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "FCU_l_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "FCU_l-P1",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.07600001733382637,
+      0.3098392531128617,
+      -0.009119277905864554
+     ],
+     "source_pos_local": [
+      0.00219,
+      -0.2774,
+      0.0388
+     ]
+    },
+    {
+     "index": 1,
+     "site": "FCU_l-P2",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.13597863464197088,
+      0.283843175541866,
+      -0.008638874000304365
+     ],
+     "source_pos_local": [
+      0.00949,
+      -0.1841,
+      -0.0005
+     ]
+    },
+    {
+     "index": 2,
+     "site": "FCU_l-P3",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.13957352007902427,
+      0.27576796607646276,
+      -0.007405028697654385
+     ],
+     "source_pos_local": [
+      0.01082,
+      -0.22327,
+      -0.00969
+     ]
+    },
+    {
+     "index": 3,
+     "site": "FCU_l-P4",
+     "owner_intake": "hand_l",
+     "owner_packet": "hand_l",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_l unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.016364,
+      -0.032707,
+      0.005191
+     ]
+    }
+   ],
+   "n_sites": 4,
+   "unresolved_bodies": [
+    "hand_l"
+   ],
+   "first_unresolved_index": 3,
+   "unresolved_indices": [
+    3
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.412187347,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "longest_finite_run": 3,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion_l",
+     "owner": "ulna_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_l",
+     "owner": "hand_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "FCU_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "FCU-P1",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.07600695980165367,
+      0.309833077182114,
+      -0.009120614287774198
+     ],
+     "source_pos_local": [
+      0.00219,
+      -0.2774,
+      -0.0388
+     ]
+    },
+    {
+     "index": 1,
+     "site": "FCU-P2",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.13583544222289895,
+      0.2837928630229838,
+      -0.008830757588381713
+     ],
+     "source_pos_local": [
+      0.0105197,
+      -0.183974,
+      0.00012377
+     ]
+    },
+    {
+     "index": 2,
+     "site": "FCU-P3",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.13957352033333476,
+      0.2757679662074168,
+      -0.007405028357946926
+     ],
+     "source_pos_local": [
+      0.01082,
+      -0.22327,
+      0.00969
+     ]
+    },
+    {
+     "index": 3,
+     "site": "FCU-P4",
+     "owner_intake": "hand_r",
+     "owner_packet": "hand_r",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment hand_r unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      -0.016364,
+      -0.032707,
+      -0.005191
+     ]
+    }
+   ],
+   "n_sites": 4,
+   "unresolved_bodies": [
+    "hand_r"
+   ],
+   "first_unresolved_index": 3,
+   "unresolved_indices": [
+    3
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.412192799,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "longest_finite_run": 3,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion",
+     "owner": "ulna",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_dev_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_flex_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "wrist_3_r",
+     "owner": "hand_r",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      3
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "PT_l_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "PT_l-P1",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.07811684514033594,
+      0.3117384111310403,
+      -0.007359244711019919
+     ],
+     "source_pos_local": [
+      0.0036,
+      -0.2759,
+      0.0365
+     ]
+    },
+    {
+     "index": 1,
+     "site": "PT_l-P2",
+     "owner_intake": "ulna_l",
+     "owner_packet": "ulna_l",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment ulna_l unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.00846,
+      -0.03373,
+      0.01432
+     ]
+    },
+    {
+     "index": 2,
+     "site": "PT_l-P3",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.12216913371516167,
+      0.30952307312502325,
+      -0.01207059361559211
+     ],
+     "source_pos_local": [
+      0.01179,
+      -0.053657,
+      0.022189
+     ]
+    },
+    {
+     "index": 3,
+     "site": "PT_l-P5",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.12255342694301014,
+      0.29496850115562423,
+      -0.00630444579857957
+     ],
+     "source_pos_local": [
+      0.0254,
+      -0.1088,
+      -0.0198
+     ]
+    }
+   ],
+   "n_sites": 4,
+   "unresolved_bodies": [
+    "ulna_l"
+   ],
+   "first_unresolved_index": 1,
+   "unresolved_indices": [
+    1
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.211877605,
+   "packet_status": "path_incomplete:unresolved_bodies ['ulna_l']",
+   "longest_finite_run": 2,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion_l",
+     "owner": "ulna_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "PT_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "PT-P1",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.07812374714545696,
+      0.31173227036251305,
+      -0.0073605731537666735
+     ],
+     "source_pos_local": [
+      0.0036,
+      -0.2759,
+      -0.0365
+     ]
+    },
+    {
+     "index": 1,
+     "site": "PT-P2",
+     "owner_intake": "ulna",
+     "owner_packet": "ulna",
+     "packet_unresolved_flag": true,
+     "packet_reason": "owning segment ulna unresolved: no fitted scale (endpoints not declared)",
+     "fitted_pos_global_null": true,
+     "fitted_pos_global": null,
+     "source_pos_local": [
+      0.00846,
+      -0.03373,
+      -0.01432
+     ]
+    },
+    {
+     "index": 2,
+     "site": "PT-P3",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.12216913479306545,
+      0.3095230736777375,
+      -0.01207059329679834
+     ],
+     "source_pos_local": [
+      0.01179,
+      -0.053657,
+      -0.022189
+     ]
+    },
+    {
+     "index": 3,
+     "site": "PT-P5",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.1225534269928821,
+      0.29496850117918766,
+      -0.006304446746922838
+     ],
+     "source_pos_local": [
+      0.0254,
+      -0.1088,
+      0.0198
+     ]
+    }
+   ],
+   "n_sites": 4,
+   "unresolved_bodies": [
+    "ulna"
+   ],
+   "first_unresolved_index": 1,
+   "unresolved_indices": [
+    1
+   ],
+   "comparable": false,
+   "packet_rest_length": null,
+   "source_rest_length_m": 0.211828079,
+   "packet_status": "path_incomplete:unresolved_bodies ['ulna']",
+   "longest_finite_run": 2,
+   "n_finite_arms_in_packet": 6,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_rot",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elv_angle",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "elbow_flexion",
+     "owner": "ulna",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2,
+      3
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "BRD_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "BRD-P1",
+     "owner_intake": "humerus",
+     "owner_packet": "humerus",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.10430316361571965,
+      0.35461839763453273,
+      -0.019069625125596602
+     ],
+     "source_pos_local": [
+      -0.0098,
+      -0.19963,
+      0.00223
+     ]
+    },
+    {
+     "index": 1,
+     "site": "BRD-P2",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.12280595414589807,
+      0.29025336312533473,
+      -0.007068034174133823
+     ],
+     "source_pos_local": [
+      0.03577,
+      -0.12742,
+      0.02315
+     ]
+    },
+    {
+     "index": 2,
+     "site": "BRD-P3",
+     "owner_intake": "radius",
+     "owner_packet": "radius",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      -0.13311348079921553,
+      0.2722707902100108,
+      -0.00871364458613546
+     ],
+     "source_pos_local": [
+      0.0419,
+      -0.221,
+      0.0224
+     ]
+    }
+   ],
+   "n_sites": 3,
+   "unresolved_bodies": [],
+   "first_unresolved_index": null,
+   "unresolved_indices": [],
+   "comparable": true,
+   "packet_rest_length": 0.08883103763879713,
+   "source_rest_length_m": 0.387597047,
+   "packet_status": "derived",
+   "longest_finite_run": 3,
+   "n_finite_arms_in_packet": 22,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": -6.071532165918825e-18
+    },
+    {
+     "coord": "shoulder_rot",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": -3.2526065174565133e-19
+    },
+    {
+     "coord": "elv_angle",
+     "owner": "humerus",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": -3.469446951953614e-18
+    },
+    {
+     "coord": "elbow_flexion",
+     "owner": "ulna",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  },
+  "BRD_l_tendon": {
+   "path": [
+    {
+     "index": 0,
+     "site": "BRD_l-P1",
+     "owner_intake": "humerus_l",
+     "owner_packet": "humerus_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.10429822938154526,
+      0.3546227859130324,
+      -0.019068677727059457
+     ],
+     "source_pos_local": [
+      -0.0098,
+      -0.19963,
+      -0.00223
+     ]
+    },
+    {
+     "index": 1,
+     "site": "BRD_l-P2",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.1228059539574042,
+      0.2902533630315846,
+      -0.007068032838232551
+     ],
+     "source_pos_local": [
+      0.03577,
+      -0.12742,
+      -0.02315
+     ]
+    },
+    {
+     "index": 2,
+     "site": "BRD_l-P3",
+     "owner_intake": "radius_l",
+     "owner_packet": "radius_l",
+     "packet_unresolved_flag": false,
+     "packet_reason": "",
+     "fitted_pos_global_null": false,
+     "fitted_pos_global": [
+      0.13311348030905246,
+      0.2722707899613501,
+      -0.008713643446983565
+     ],
+     "source_pos_local": [
+      0.0419,
+      -0.221,
+      -0.0224
+     ]
+    }
+   ],
+   "n_sites": 3,
+   "unresolved_bodies": [],
+   "first_unresolved_index": null,
+   "unresolved_indices": [],
+   "comparable": true,
+   "packet_rest_length": 0.0888363641039056,
+   "source_rest_length_m": 0.387646014,
+   "packet_status": "derived",
+   "longest_finite_run": 3,
+   "n_finite_arms_in_packet": 22,
+   "meaningful_coordinates": [
+    {
+     "coord": "pelvis_tz",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_ty",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tx",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_tilt",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_list",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "pelvis_rotation",
+     "owner": "pelvis",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 0.0
+    },
+    {
+     "coord": "lumbar_extension",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": -1.3877787807814457e-17
+    },
+    {
+     "coord": "lumbar_bending",
+     "owner": "thorax_dummy",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 1.3877787807814457e-17
+    },
+    {
+     "coord": "lumbar_rotation",
+     "owner": "thorax",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    },
+    {
+     "coord": "shoulder_elv_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 3.0357660829594124e-18
+    },
+    {
+     "coord": "shoulder_rot_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 1.0842021724855044e-18
+    },
+    {
+     "coord": "elv_angle_l",
+     "owner": "humerus_l",
+     "owner_resolved": true,
+     "path_indices_in_subtree": [
+      0,
+      1,
+      2
+     ],
+     "packet_arm_analytic": 1.734723475976807e-18
+    },
+    {
+     "coord": "elbow_flexion_l",
+     "owner": "ulna_l",
+     "owner_resolved": false,
+     "path_indices_in_subtree": [
+      1,
+      2
+     ],
+     "packet_arm_analytic": null
+    }
+   ],
+   "counterfactual_comparable_if_D2_only": true
+  }
+ },
+ "coordinate_ownership": {
+  "pelvis_tz": {
+   "body": "pelvis",
+   "type": "slide",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "pelvis_ty": {
+   "body": "pelvis",
+   "type": "slide",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "pelvis_tx": {
+   "body": "pelvis",
+   "type": "slide",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "pelvis_tilt": {
+   "body": "pelvis",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "pelvis_list": {
+   "body": "pelvis",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "pelvis_rotation": {
+   "body": "pelvis",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "hip_flexion_r": {
+   "body": "femur_r",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "hip_adduction_r": {
+   "body": "femur_r",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "hip_rotation_r": {
+   "body": "femur_r",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "knee_angle_r": {
+   "body": "tibia_r",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "ankle_angle_r": {
+   "body": "talus_r",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "ankle_angle_r2": {
+   "body": "talus_r",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "ankle_angle_r3": {
+   "body": "talus_r",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "mtp_angle_r": {
+   "body": "toes_r",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "hip_flexion_l": {
+   "body": "femur_l",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "hip_adduction_l": {
+   "body": "femur_l",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "hip_rotation_l": {
+   "body": "femur_l",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "knee_angle_l": {
+   "body": "tibia_l",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "ankle_angle_l": {
+   "body": "talus_l",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "ankle_angle_l2": {
+   "body": "talus_l",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "ankle_angle_l3": {
+   "body": "talus_l",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "mtp_angle_l": {
+   "body": "toes_l",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "lumbar_extension": {
+   "body": "thorax_dummy",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "lumbar_bending": {
+   "body": "thorax_dummy",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "lumbar_rotation": {
+   "body": "thorax",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "shoulder_elv": {
+   "body": "humerus",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "shoulder_rot": {
+   "body": "humerus",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "elv_angle": {
+   "body": "humerus",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "elbow_flexion": {
+   "body": "ulna",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "wrist_dev_r": {
+   "body": "hand_r",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "wrist_flex_r": {
+   "body": "hand_r",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "wrist_3_r": {
+   "body": "hand_r",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "shoulder_elv_l": {
+   "body": "humerus_l",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "shoulder_rot_l": {
+   "body": "humerus_l",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "elv_angle_l": {
+   "body": "humerus_l",
+   "type": "hinge",
+   "body_resolved": true,
+   "packet_joint_status": "kinematically_preserved"
+  },
+  "elbow_flexion_l": {
+   "body": "ulna_l",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "wrist_dev_l": {
+   "body": "hand_l",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "wrist_flex_l": {
+   "body": "hand_l",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  },
+  "wrist_3_l": {
+   "body": "hand_l",
+   "type": "hinge",
+   "body_resolved": false,
+   "packet_joint_status": "unresolved_body"
+  }
+ },
+ "counterfactuals": {
+  "D2_only (ulna,ulna_l,hand_r,hand_l)": {
+   "assumed_resolved": [
+    "hand_l",
+    "hand_r",
+    "ulna",
+    "ulna_l"
+   ],
+   "still_unresolved_everywhere": [
+    "talus_l",
+    "talus_r",
+    "thorax",
+    "toes_l",
+    "toes_r"
+   ],
+   "sixteen_become_comparable": [
+    "ECRB_l_tendon",
+    "ECRB_tendon",
+    "ECRL_l_tendon",
+    "ECRL_tendon",
+    "ECU_l_tendon",
+    "ECU_tendon",
+    "FCR_l_tendon",
+    "FCR_tendon",
+    "FCU_l_tendon",
+    "FCU_tendon",
+    "PT_l_tendon",
+    "PT_tendon"
+   ],
+   "n_become_comparable": 12,
+   "sixteen_still_blocked": {
+    "BIClong_l_tendon": [
+     "thorax"
+    ],
+    "BIClong_tendon": [
+     "thorax"
+    ],
+    "BICshort_l_tendon": [
+     "thorax"
+    ],
+    "BICshort_tendon": [
+     "thorax"
+    ]
+   }
+  },
+  "D2_plus_thorax": {
+   "assumed_resolved": [
+    "hand_l",
+    "hand_r",
+    "thorax",
+    "ulna",
+    "ulna_l"
+   ],
+   "still_unresolved_everywhere": [
+    "talus_l",
+    "talus_r",
+    "toes_l",
+    "toes_r"
+   ],
+   "sixteen_become_comparable": [
+    "BIClong_l_tendon",
+    "BIClong_tendon",
+    "BICshort_l_tendon",
+    "BICshort_tendon",
+    "ECRB_l_tendon",
+    "ECRB_tendon",
+    "ECRL_l_tendon",
+    "ECRL_tendon",
+    "ECU_l_tendon",
+    "ECU_tendon",
+    "FCR_l_tendon",
+    "FCR_tendon",
+    "FCU_l_tendon",
+    "FCU_tendon",
+    "PT_l_tendon",
+    "PT_tendon"
+   ],
+   "n_become_comparable": 16,
+   "sixteen_still_blocked": {}
+  },
+  "thorax_only": {
+   "assumed_resolved": [
+    "thorax"
+   ],
+   "still_unresolved_everywhere": [
+    "hand_l",
+    "hand_r",
+    "talus_l",
+    "talus_r",
+    "toes_l",
+    "toes_r",
+    "ulna",
+    "ulna_l"
+   ],
+   "sixteen_become_comparable": [
+    "BIClong_l_tendon",
+    "BIClong_tendon",
+    "BICshort_l_tendon",
+    "BICshort_tendon"
+   ],
+   "n_become_comparable": 4,
+   "sixteen_still_blocked": {
+    "ECRB_l_tendon": [
+     "hand_l"
+    ],
+    "ECRB_tendon": [
+     "hand_r"
+    ],
+    "ECRL_l_tendon": [
+     "hand_l"
+    ],
+    "ECRL_tendon": [
+     "hand_r"
+    ],
+    "ECU_l_tendon": [
+     "hand_l",
+     "ulna_l"
+    ],
+    "ECU_tendon": [
+     "hand_r",
+     "ulna"
+    ],
+    "FCR_l_tendon": [
+     "hand_l"
+    ],
+    "FCR_tendon": [
+     "hand_r"
+    ],
+    "FCU_l_tendon": [
+     "hand_l"
+    ],
+    "FCU_tendon": [
+     "hand_r"
+    ],
+    "PT_l_tendon": [
+     "ulna_l"
+    ],
+    "PT_tendon": [
+     "ulna"
+    ]
+   }
+  },
+  "hand_only": {
+   "assumed_resolved": [
+    "hand_l",
+    "hand_r"
+   ],
+   "still_unresolved_everywhere": [
+    "talus_l",
+    "talus_r",
+    "thorax",
+    "toes_l",
+    "toes_r",
+    "ulna",
+    "ulna_l"
+   ],
+   "sixteen_become_comparable": [
+    "ECRB_l_tendon",
+    "ECRB_tendon",
+    "ECRL_l_tendon",
+    "ECRL_tendon",
+    "FCR_l_tendon",
+    "FCR_tendon",
+    "FCU_l_tendon",
+    "FCU_tendon"
+   ],
+   "n_become_comparable": 8,
+   "sixteen_still_blocked": {
+    "BIClong_l_tendon": [
+     "thorax"
+    ],
+    "BIClong_tendon": [
+     "thorax"
+    ],
+    "BICshort_l_tendon": [
+     "thorax"
+    ],
+    "BICshort_tendon": [
+     "thorax"
+    ],
+    "ECU_l_tendon": [
+     "hand_l",
+     "ulna_l"
+    ],
+    "ECU_tendon": [
+     "hand_r",
+     "ulna"
+    ],
+    "PT_l_tendon": [
+     "ulna_l"
+    ],
+    "PT_tendon": [
+     "ulna"
+    ]
+   }
+  },
+  "ulna_only": {
+   "assumed_resolved": [
+    "ulna",
+    "ulna_l"
+   ],
+   "still_unresolved_everywhere": [
+    "hand_l",
+    "hand_r",
+    "talus_l",
+    "talus_r",
+    "thorax",
+    "toes_l",
+    "toes_r"
+   ],
+   "sixteen_become_comparable": [
+    "PT_l_tendon",
+    "PT_tendon"
+   ],
+   "n_become_comparable": 2,
+   "sixteen_still_blocked": {
+    "BIClong_l_tendon": [
+     "thorax"
+    ],
+    "BIClong_tendon": [
+     "thorax"
+    ],
+    "BICshort_l_tendon": [
+     "thorax"
+    ],
+    "BICshort_tendon": [
+     "thorax"
+    ],
+    "ECRB_l_tendon": [
+     "hand_l"
+    ],
+    "ECRB_tendon": [
+     "hand_r"
+    ],
+    "ECRL_l_tendon": [
+     "hand_l"
+    ],
+    "ECRL_tendon": [
+     "hand_r"
+    ],
+    "ECU_l_tendon": [
+     "hand_l",
+     "ulna_l"
+    ],
+    "ECU_tendon": [
+     "hand_r",
+     "ulna"
+    ],
+    "FCR_l_tendon": [
+     "hand_l"
+    ],
+    "FCR_tendon": [
+     "hand_r"
+    ],
+    "FCU_l_tendon": [
+     "hand_l"
+    ],
+    "FCU_tendon": [
+     "hand_r"
+    ]
+   }
+  },
+  "all_nine_resolved": {
+   "assumed_resolved": [
+    "hand_l",
+    "hand_r",
+    "talus_l",
+    "talus_r",
+    "thorax",
+    "toes_l",
+    "toes_r",
+    "ulna",
+    "ulna_l"
+   ],
+   "still_unresolved_everywhere": [],
+   "sixteen_become_comparable": [
+    "BIClong_l_tendon",
+    "BIClong_tendon",
+    "BICshort_l_tendon",
+    "BICshort_tendon",
+    "ECRB_l_tendon",
+    "ECRB_tendon",
+    "ECRL_l_tendon",
+    "ECRL_tendon",
+    "ECU_l_tendon",
+    "ECU_tendon",
+    "FCR_l_tendon",
+    "FCR_tendon",
+    "FCU_l_tendon",
+    "FCU_tendon",
+    "PT_l_tendon",
+    "PT_tendon"
+   ],
+   "n_become_comparable": 16,
+   "sixteen_still_blocked": {}
+  }
+ },
+ "earliest_breaker_census": {
+  "thorax": [
+   "BIClong_l_tendon",
+   "BIClong_tendon",
+   "BICshort_l_tendon",
+   "BICshort_tendon"
+  ],
+  "hand_l": [
+   "ECRB_l_tendon",
+   "ECRL_l_tendon",
+   "FCR_l_tendon",
+   "FCU_l_tendon"
+  ],
+  "hand_r": [
+   "ECRB_tendon",
+   "ECRL_tendon",
+   "FCR_tendon",
+   "FCU_tendon"
+  ],
+  "ulna_l": [
+   "ECU_l_tendon",
+   "PT_l_tendon"
+  ],
+  "ulna": [
+   "ECU_tendon",
+   "PT_tendon"
+  ]
+ },
+ "packet_arm_context": {
+  "n_tendon_coord_pairs_total": 4680,
+  "n_finite_arms": 1392,
+  "n_zero_finite_arms": 1270,
+  "n_nonzero_finite_arms": 122,
+  "nonzero_examples": [
+   {
+    "tendon": "glut_med1_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": 0.0011592207139454259
+   },
+   {
+    "tendon": "glut_med1_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": -0.0009061644939359395
+   },
+   {
+    "tendon": "glut_med1_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": 0.01772273518125103
+   },
+   {
+    "tendon": "glut_med2_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.009735542696838639
+   },
+   {
+    "tendon": "glut_med2_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": -0.03341769849434637
+   },
+   {
+    "tendon": "glut_med2_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": 0.026291444165476685
+   },
+   {
+    "tendon": "glut_med3_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.017491517374419088
+   },
+   {
+    "tendon": "glut_med3_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": -0.044559731428540486
+   },
+   {
+    "tendon": "glut_med3_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": 0.0023931009116933406
+   },
+   {
+    "tendon": "bifemlh_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.04608170466927754
+   },
+   {
+    "tendon": "bifemlh_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": 0.11479544791370164
+   },
+   {
+    "tendon": "bifemlh_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": 0.018853266377515762
+   },
+   {
+    "tendon": "bifemlh_r_tendon",
+    "coord": "knee_angle_r",
+    "analytic": 0.010735803640566918
+   },
+   {
+    "tendon": "bifemsh_r_tendon",
+    "coord": "knee_angle_r",
+    "analytic": 0.012274443671578624
+   },
+   {
+    "tendon": "sar_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": 0.013316432272994533
+   },
+   {
+    "tendon": "sar_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": 0.06905324491674271
+   },
+   {
+    "tendon": "sar_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.005237958179285119
+   },
+   {
+    "tendon": "sar_r_tendon",
+    "coord": "knee_angle_r",
+    "analytic": -0.008959465620791017
+   },
+   {
+    "tendon": "add_mag2_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.07160657788310465
+   },
+   {
+    "tendon": "add_mag2_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": 0.05831485637545333
+   },
+   {
+    "tendon": "add_mag2_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.016617633875523095
+   },
+   {
+    "tendon": "tfl_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": 0.01591655921327048
+   },
+   {
+    "tendon": "tfl_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": 0.03837709375727667
+   },
+   {
+    "tendon": "tfl_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": 0.04566998295982201
+   },
+   {
+    "tendon": "tfl_r_tendon",
+    "coord": "knee_angle_r",
+    "analytic": 0.011613551036283504
+   },
+   {
+    "tendon": "pect_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.024658023436454624
+   },
+   {
+    "tendon": "pect_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": 0.02089214836278818
+   },
+   {
+    "tendon": "pect_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.0258251087403328
+   },
+   {
+    "tendon": "grac_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.08868659198227702
+   },
+   {
+    "tendon": "grac_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": 0.0603651235738327
+   },
+   {
+    "tendon": "grac_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.03340446967233915
+   },
+   {
+    "tendon": "grac_r_tendon",
+    "coord": "knee_angle_r",
+    "analytic": 0.011595108389621212
+   },
+   {
+    "tendon": "glut_max1_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.02224514302183967
+   },
+   {
+    "tendon": "glut_max1_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": -0.02406367093051867
+   },
+   {
+    "tendon": "glut_max1_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.015664048024798594
+   },
+   {
+    "tendon": "glut_max2_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.02372702486863122
+   },
+   {
+    "tendon": "glut_max2_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": -0.004645829131803406
+   },
+   {
+    "tendon": "glut_max2_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.0285285180790324
+   },
+   {
+    "tendon": "glut_max3_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.03408971190927525
+   },
+   {
+    "tendon": "glut_max3_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": 0.01442931195068866
+   },
+   {
+    "tendon": "glut_max3_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.019184637469909883
+   },
+   {
+    "tendon": "iliacus_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.00971224685711282
+   },
+   {
+    "tendon": "iliacus_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": 0.019183876137140038
+   },
+   {
+    "tendon": "iliacus_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.0016676722929676395
+   },
+   {
+    "tendon": "psoas_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.008948229859957212
+   },
+   {
+    "tendon": "psoas_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": 0.017866155061244025
+   },
+   {
+    "tendon": "psoas_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.0007982121679622738
+   },
+   {
+    "tendon": "quad_fem_r_tendon",
+    "coord": "hip_flexion_r",
+    "analytic": -0.023358127748451776
+   },
+   {
+    "tendon": "quad_fem_r_tendon",
+    "coord": "hip_adduction_r",
+    "analytic": -0.013489380389093211
+   },
+   {
+    "tendon": "quad_fem_r_tendon",
+    "coord": "hip_rotation_r",
+    "analytic": -0.038443952396224626
+   }
+  ]
+ }
+}
