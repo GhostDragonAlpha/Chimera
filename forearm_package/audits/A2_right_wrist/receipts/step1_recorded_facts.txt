@@ -1,0 +1,12 @@
+== top-level keys ==
+['meta', 'audit', 'joints', 'segments', 'sites', 'tendons', 'physiology', 'muscles', 'unsupported', 'refusals', 'residuals', 'fit_mode', 'unresolved_segments', 'assumed_axes_total', 'evidence_axes_total', 'target_inputs', 'measurements', 'admission']
+
+== envelope_containment_loop locations (first 20) ==
+/residuals/envelope_containment_loop.outside.radius
+/residuals/envelope_containment_loop.tight.radius
+/residuals/envelope_containment_loop.ambiguous_section.radius
+/residuals/envelope_containment_loop.outside.radius_l
+/residuals/envelope_containment_loop.tight.radius_l
+/residuals/envelope_containment_loop.ambiguous_section.radius_l
+/residuals/envelope_containment_loop_ok
+/measurements/envelope_containment_loop

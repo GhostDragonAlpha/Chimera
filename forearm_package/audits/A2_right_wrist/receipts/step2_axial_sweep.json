@@ -1,0 +1,1647 @@
+[
+ {
+  "axial_m": 0.04,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04025,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    52,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0405,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    52,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04075,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    52,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.041,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04125,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0415,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04175,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.042,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04225,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0425,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04275,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.043,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04325,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0435,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04375,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.044,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04425,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0445,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04475,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.045,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    52,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04525,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    52,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0455,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04575,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.046,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04625,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0465,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04675,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.047,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04725,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    52,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0475,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    52,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04775,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    52,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.048,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04825,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0485,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    52,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04875,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    52,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.049,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    52,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04925,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0495,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.04975,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.05,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.05025,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.0505,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.05075,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    48,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.051,
+  "n_loops": 3,
+  "n_open": 0,
+  "n_degenerate": 3,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ]
+  ],
+  "n_identified": 1
+ },
+ {
+  "axial_m": 0.05125,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.0515,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05175,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.052,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05225,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.0525,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    52,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05275,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.053,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    48,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05325,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.0535,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05375,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.054,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05425,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.0545,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05475,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.055,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05525,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    54,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.0555,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    52,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05575,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    52,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.056,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05625,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.0565,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05675,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.057,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05725,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.0575,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    54,
+    1.0
+   ],
+   [
+    3,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.05775,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    52,
+    1.0
+   ],
+   [
+    6,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ },
+ {
+  "axial_m": 0.058,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "loops_pt_frac": [
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    0.0
+   ],
+   [
+    50,
+    1.0
+   ],
+   [
+    6,
+    1.0
+   ]
+  ],
+  "n_identified": 2
+ }
+]

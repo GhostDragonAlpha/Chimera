@@ -1,0 +1,185 @@
+== admission.admission ==
+{
+ "counts": {
+  "geometrically_resolved": 9,
+  "flagged": 0,
+  "unresolved": 9,
+  "admitted_kinematic": 9,
+  "transported_under_assumption": 8,
+  "physically_admitted": 0
+ },
+ "bodies": {
+  "geometrically_resolved": [
+   "femur_l",
+   "femur_r",
+   "humerus",
+   "humerus_l",
+   "radius",
+   "radius_l",
+   "thorax_dummy",
+   "tibia_l",
+   "tibia_r"
+  ],
+  "flagged": [],
+  "unresolved": [
+   "hand_l",
+   "hand_r",
+   "talus_l",
+   "talus_r",
+   "thorax",
+   "toes_l",
+   "toes_r",
+   "ulna",
+   "ulna_l"
+  ],
+  "kinematically_admitted": [
+   "femur_l",
+   "femur_r",
+   "humerus",
+   "humerus_l",
+   "radius",
+   "radius_l",
+   "thorax_dummy",
+   "tibia_l",
+   "tibia_r"
+  ],
+  "transported_under_assumption": [
+   "femur_l",
+   "femur_r",
+   "humerus",
+   "humerus_l",
+   "radius",
+   "radius_l",
+   "tibia_l",
+   "tibia_r"
+  ],
+  "physically_admitted": [],
+  "excluded_from_physical": [
+   {
+    "body": "pelvis",
+    "reason": "root reference frame only: identity scale carries the original mass as a reference-frame quantity \u2014 it does not measure or validate pelvis size"
+   }
+  ]
+ },
+ "totals_mass_kg": {
+  "transported_under_assumption": 5.262978509953907,
+  "physically_admitted": 0.0,
+  "flagged_only": 0.0,
+  "root_reference_only": 11.777,
+  "all_transported": 17.039978509953905
+ },
+ "mass_admission": {
+  "assumption": "uniform_constant_density_scale",
+  "kind": "source_effective_x_det_scale",
+  "requires_density_validation": true,
+  "density_validated": false,
+  "note": "a transported mass is the source effective mass scaled by |det D| under a RECORDED constant-density assumption. Geometry resolution alone does NOT discharge requires_density_validation; no body is physically admitted because no validated material/mass source was supplied and none is invented."
+ }
+}
+
+== admission.envelope (keys) ==
+<class 'dict'> ['radius', 'radius_l']
+{
+ "radius": {
+  "per_axis_median_b_m": 0.020227317473856848,
+  "per_axis_median_c_m": 0.02292040712023343,
+  "sections": [
+   0.35,
+   0.5,
+   0.65
+  ],
+  "n_verts": [
+   75,
+   66,
+   56
+  ],
+  "width_screen_ok": true,
+  "containment_ok": false,
+  "containment_outside": [
+   "BRD-P2",
+   "BRD-P3",
+   "ECRB-P2",
+   "ECRL-P2",
+   "PT-P5"
+  ],
+  "containment_tight": [],
+  "containment_unresolved": [
+   "BIClong-P11",
+   "BIClong-P9",
+   "BICshort-P6",
+   "BICshort-P8",
+   "ECRB-P3",
+   "ECRL-P3",
+   "ECU-P5",
+   "PT-P3"
+  ],
+  "loop_authority_ok": false,
+  "loop_outside": [
+   "BIClong-P9",
+   "BICshort-P6",
+   "BRD-P2",
+   "BRD-P3",
+   "ECRB-P2",
+   "ECRL-P2",
+   "PT-P5"
+  ],
+  "loop_tight": [
+   "PT-P3"
+  ],
+  "loop_ambiguous": [
+   "ECRB-P3",
+   "ECRL-P3"
+  ]
+ },
+ "radius_l": {
+  "per_axis_median_b_m": 0.02022731775263424,
+  "per_axis_median_c_m": 0.02292040732251911,
+  "sections": [
+   0.35,
+   0.5,
+   0.65
+  ],
+  "n_verts": [
+   75,
+   66,
+   56
+  ],
+  "width_screen_ok": true,
+  "containment_ok": false,
+  "containment_outside": [
+   "BRD_l-P2",
+   "BRD_l-P3",
+   "ECRB_l-P2",
+   "ECRL_l-P2",
+   "PT_l-P5"
+  ],
+  "containment_tight": [],
+  "containment_unresolved": [
+   "BIClong_l-P11",
+   "BIClong_l-P9",
+   "BICshort_l-P6",
+   "BICshort_l-P8",
+   "ECRB_l-P3",
+   "ECRL_l-P3",
+   "ECU_l-P5",
+   "PT_l-P3"
+  ],
+  "loop_authority_ok": false,
+  "loop_outside": [
+   "BIClong_l-P9",
+   "BICshort_l-P6",
+   "BRD_l-P2",
+   "BRD_l-P3",
+   "ECRB_l-P2",
+   "ECRL_l-P2",
+   "PT_l-P5"
+  ],
+  "loop_tight": [
+   "PT_l-P3"
+  ],
+  "loop_ambiguous": [
+   "ECRB_l-P3",
+   "ECRL_l-P3"
+  ]
+ }
+}

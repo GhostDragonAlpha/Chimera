@@ -113,3 +113,16 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none mechanically.
 
 **Next:** A2 lands -> I1 (bilateral consolidation of the wrist finding) -> A5 -> I2 (spec pass-2) -> I3.
+
+## CHECKPOINT 2026-09-24 (T8) — A2 integrated; I1 wrist finding CONSOLIDATED
+
+**Verified:**
+- A2 (right wrist) PASS 4/4, receipts re-run by coordinator (falsifier not fired reproduces; integrity clean).
+- I1 DELIVERED: findings/I1_wrist_ambiguity.md — bilateral consolidation. All four ambiguous sites OUTSIDE >=4.83mm under BOTH loops; verdict-invariant (Δ<=0.077mm); mechanism = unwelded seam (1,255 duplicated-coordinate vertices mesh-wide) x no-bridging law; A1/A2 numbers mirror-consistent to sub-µm. Projection labeled NOT-a-reclassification: resolution -> 6/1/9/0 per side; Candidate-C projection stays dead.
+- Resolution paths P1/P2/P3/P5 evidence-complete; P4 (hull SECTION_T extension) blocked on Astra — the one baseline change that would add independent confirmation.
+
+**Active:** A5 (containment authority + uncertainty) — the last wave-1 audit.
+
+**Blocked:** none mechanically; Astra queue now holds: wrist resolution rule (I1), hand/ulna body resolution (A7/A8 structural), P4 authorization, S6 self-containment + path relativization (A9), candidates-packet self-hash (H-1 residual).
+
+**Next:** A5 -> I2 (qualification-spec pass-2, fill all landed slots) -> I3 (consolidated Astra blocker report).

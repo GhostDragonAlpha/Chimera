@@ -1,0 +1,11 @@
+== residuals keys ==
+['shared_joint_max_separation_m', 'chirality_det', 'frame_handedness', 'inertia_spectrum', 'closure.femur_r', 'closure.femur_l', 'closure.thorax_dummy', 'closure.tibia_r', 'closure.tibia_l', 'closure.humerus', 'closure.humerus_l', 'closure.radius', 'closure.radius_l', 'roll_twist_deg.femur_r', 'roll_twist_deg.femur_l', 'roll_twist_deg.thorax_dummy', 'roll_twist_deg.tibia_r', 'roll_twist_deg.tibia_l', 'roll_twist_deg.humerus', 'roll_twist_deg.humerus_l', 'roll_twist_deg.radius', 'roll_twist_deg.radius_l', 'envelope_containment.outside.radius', 'envelope_containment.unestablished.radius', 'envelope_containment_loop.outside.radius', 'envelope_containment_loop.tight.radius', 'envelope_containment_loop.ambiguous_section.radius', 'envelope_containment.outside.radius_l', 'envelope_containment.unestablished.radius_l', 'envelope_containment_loop.outside.radius_l', 'envelope_containment_loop.tight.radius_l', 'envelope_containment_loop.ambiguous_section.radius_l', 'envelope_feasibility_ok', 'envelope_containment_ok', 'envelope_containment_loop_ok']
+
+== residuals.envelope_containment_loop.* ==
+envelope_containment_loop.outside.radius -> true
+envelope_containment_loop.tight.radius -> true
+envelope_containment_loop.ambiguous_section.radius -> true
+envelope_containment_loop.outside.radius_l -> true
+envelope_containment_loop.tight.radius_l -> true
+envelope_containment_loop.ambiguous_section.radius_l -> true
+envelope_containment_loop_ok -> false

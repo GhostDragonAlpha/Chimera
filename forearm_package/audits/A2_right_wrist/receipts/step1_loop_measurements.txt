@@ -1,0 +1,65 @@
+== RADIUS (right) loop authority record ==
+authority: local_triangle_plane_loop
+loop_identification: majority pack-owner (mt.assign) of cut-segment triangles >= 0.5; exactly one identified loop required
+ok: False  n_sites: 16
+n_inside: 6  n_tight: 1  n_outside: 7  n_unresolved: 2
+tight list: ['PT-P3']
+outside list: ['BIClong-P9', 'BICshort-P6', 'BRD-P2', 'BRD-P3', 'ECRB-P2', 'ECRL-P2', 'PT-P5']
+unresolved list: ['ECRB-P3', 'ECRL-P3']
+
+-- sections diagnostics (per axial position) --
+axial_m 0.002247699 n_loops: 4 diag: [{"points": 222, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 0.84}, {"points": 12, "owner_fraction": 0.0}, {"points": 12, "owner_fraction": 0.0}]
+axial_m 0.008202326 n_loops: 5 diag: [{"points": 210, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 1.0}, {"points": 12, "owner_fraction": 0.0}, {"points": 12, "owner_fraction": 0.0}, {"points": 8, "owner_fraction": 0.0}]
+axial_m 0.002195358 n_loops: 4 diag: [{"points": 222, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 0.84}, {"points": 12, "owner_fraction": 0.0}, {"points": 12, "owner_fraction": 0.0}]
+axial_m 0.029020457 n_loops: 4 diag: [{"points": 52, "owner_fraction": 0.0}, {"points": 52, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 1.0}, {"points": 20, "owner_fraction": 0.0}]
+axial_m 0.049721553 n_loops: 3 diag: [{"points": 50, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 1.0}]
+axial_m 0.030645908 n_loops: 4 diag: [{"points": 50, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 1.0}, {"points": 7, "owner_fraction": 0.0}]
+axial_m 0.053482959 n_loops: 4 diag: [{"points": 54, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 1.0}, {"points": 3, "owner_fraction": 1.0}]
+axial_m 0.029700327 n_loops: 4 diag: [{"points": 50, "owner_fraction": 0.0}, {"points": 52, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 1.0}, {"points": 13, "owner_fraction": 0.0}]
+axial_m 0.051510357 n_loops: 4 diag: [{"points": 50, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 1.0}, {"points": 3, "owner_fraction": 1.0}]
+axial_m 0.050504323 n_loops: 3 diag: [{"points": 50, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 1.0}]
+axial_m 0.04869013 n_loops: 3 diag: [{"points": 50, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 0.0}, {"points": 52, "owner_fraction": 1.0}]
+axial_m 0.040706813 n_loops: 3 diag: [{"points": 52, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 1.0}]
+axial_m 0.049556063 n_loops: 3 diag: [{"points": 50, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 1.0}]
+axial_m 0.011569719 n_loops: 5 diag: [{"points": 194, "owner_fraction": 0.0}, {"points": 50, "owner_fraction": 1.0}, {"points": 14, "owner_fraction": 0.0}, {"points": 12, "owner_fraction": 0.0}, {"points": 10, "owner_fraction": 0.0}]
+axial_m 0.024710016 n_loops: 5 diag: [{"points": 56, "owner_fraction": 0.0}, {"points": 56, "owner_fraction": 0.0}, {"points": 48, "owner_fraction": 1.0}, {"points": 20, "owner_fraction": 0.0}, {"points": 5, "owner_fraction": 0.0}]
+
+-- per_site: ECRB-P3, ECRL-P3 full records --
+ECRB-P3 {
+ "axial_m": 0.051510357,
+ "n_loops": 4,
+ "n_identified_loops": 2,
+ "n_open_chains": 0,
+ "n_degenerate_chains": 2,
+ "n_cut_segments": 155,
+ "verdict": "unresolved",
+ "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+}
+ECRL-P3 {
+ "axial_m": 0.053482959,
+ "n_loops": 4,
+ "n_identified_loops": 2,
+ "n_open_chains": 0,
+ "n_degenerate_chains": 2,
+ "n_cut_segments": 161,
+ "verdict": "unresolved",
+ "reason": "ambiguous_section: 4 closed loop(s) (2 identified as this limb's skin by pack ownership) + 0 open chain(s) at this axial position; no bridging, no repair, no proximity choice"
+}
+
+-- ALL 16 per_site records (radius) --
+BIClong-P11  axial 0.008202326 verdict inside                             n_loops 5 n_id 1 open 0 segs 296 d -0.001367249
+BIClong-P9   axial 0.002247699 verdict outside                            n_loops 4 n_id 1 open 0 segs 300 d 0.001504883
+BICshort-P6  axial 0.002195358 verdict outside                            n_loops 4 n_id 1 open 0 segs 300 d 0.000877639
+BICshort-P8  axial 0.008202326 verdict inside                             n_loops 5 n_id 1 open 0 segs 296 d -0.001367249
+BRD-P2       axial 0.029020457 verdict outside                            n_loops 4 n_id 1 open 0 segs 178 d 0.005073827
+BRD-P3       axial 0.049721553 verdict outside                            n_loops 3 n_id 1 open 0 segs 154 d 0.003936573
+ECRB-P2      axial 0.029700327 verdict outside                            n_loops 4 n_id 1 open 0 segs 169 d 0.003751911
+ECRB-P3      axial 0.051510357 verdict unresolved                         n_loops 4 n_id 2 open 0 segs 155 d None
+ECRL-P2      axial 0.030645908 verdict outside                            n_loops 4 n_id 1 open 0 segs 161 d 0.004597407
+ECRL-P3      axial 0.053482959 verdict unresolved                         n_loops 4 n_id 2 open 0 segs 161 d None
+ECU-P5       axial 0.050504323 verdict inside                             n_loops 3 n_id 1 open 0 segs 152 d -0.001883829
+FCR-P2       axial 0.04869013 verdict inside                             n_loops 3 n_id 1 open 0 segs 156 d -0.002054407
+FCU-P2       axial 0.040706813 verdict inside                             n_loops 3 n_id 1 open 0 segs 156 d -0.003797604
+FCU-P3       axial 0.049556063 verdict inside                             n_loops 3 n_id 1 open 0 segs 154 d -0.003448523
+PT-P3        axial 0.011569719 verdict inside_insufficient_clearance      n_loops 5 n_id 1 open 0 segs 284 d -0.000780069
+PT-P5        axial 0.024710016 verdict outside                            n_loops 5 n_id 1 open 0 segs 193 d 0.003462575

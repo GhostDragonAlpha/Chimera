@@ -1,0 +1,264 @@
+{
+ "0.051510357": {
+  "site": "ECRB-P3",
+  "n_cut_segments": 155,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "n_identified": 2,
+  "loops": [
+   {
+    "loop": 0,
+    "n_points": 50,
+    "n_tris": 50,
+    "owner_fraction": 0.0,
+    "owner_histogram": {
+     "hip_L": 50
+    },
+    "centroid_m": [
+     0.031571,
+     0.18596,
+     0.011529
+    ],
+    "axial_of_centroid_m": 0.05151,
+    "radial_dist_of_centroid_m": 0.192379,
+    "bbox_min_m": [
+     0.014884,
+     0.176695,
+     -0.002702
+    ],
+    "bbox_max_m": [
+     0.049668,
+     0.194501,
+     0.027813
+    ],
+    "perimeter_m": 0.110497,
+    "polygon_area_m2": 0.000927736,
+    "dist_site_m": 0.167110197,
+    "dist_site_class": "outside"
+   },
+   {
+    "loop": 1,
+    "n_points": 48,
+    "n_tris": 48,
+    "owner_fraction": 0.0,
+    "owner_histogram": {
+     "hip_R": 48
+    },
+    "centroid_m": [
+     -0.030521,
+     0.217755,
+     0.009129
+    ],
+    "axial_of_centroid_m": 0.05151,
+    "radial_dist_of_centroid_m": 0.122755,
+    "bbox_min_m": [
+     -0.049843,
+     0.208865,
+     -0.00995
+    ],
+    "bbox_max_m": [
+     -0.013168,
+     0.227653,
+     0.02984
+    ],
+    "perimeter_m": 0.128044,
+    "polygon_area_m2": 0.001280777,
+    "dist_site_m": 0.094887611,
+    "dist_site_class": "outside"
+   },
+   {
+    "loop": 2,
+    "n_points": 50,
+    "n_tris": 50,
+    "owner_fraction": 1.0,
+    "owner_histogram": {
+     "wrist_R": 38,
+     "elbow_R": 12
+    },
+    "centroid_m": [
+     -0.145888,
+     0.276807,
+     -0.007065
+    ],
+    "axial_of_centroid_m": 0.05151,
+    "radial_dist_of_centroid_m": 0.007856,
+    "bbox_min_m": [
+     -0.155785,
+     0.272489,
+     -0.018128
+    ],
+    "bbox_max_m": [
+     -0.137454,
+     0.281876,
+     0.003892
+    ],
+    "perimeter_m": 0.066928,
+    "polygon_area_m2": 0.000353385,
+    "dist_site_m": 0.004825766,
+    "dist_site_class": "outside"
+   },
+   {
+    "loop": 3,
+    "n_points": 3,
+    "n_tris": 3,
+    "owner_fraction": 1.0,
+    "owner_histogram": {
+     "elbow_R": 3
+    },
+    "centroid_m": [
+     -0.137483,
+     0.272504,
+     -0.006399
+    ],
+    "axial_of_centroid_m": 0.05151,
+    "radial_dist_of_centroid_m": 0.001713,
+    "bbox_min_m": [
+     -0.137518,
+     0.272489,
+     -0.006577
+    ],
+    "bbox_max_m": [
+     -0.137454,
+     0.272522,
+     -0.00622
+    ],
+    "perimeter_m": 0.000734,
+    "polygon_area_m2": 9e-09,
+    "dist_site_m": 0.004872384,
+    "dist_site_class": "outside"
+   }
+  ]
+ },
+ "0.053482959": {
+  "site": "ECRL-P3",
+  "n_cut_segments": 161,
+  "n_loops": 4,
+  "n_open": 0,
+  "n_degenerate": 2,
+  "n_identified": 2,
+  "loops": [
+   {
+    "loop": 0,
+    "n_points": 54,
+    "n_tris": 54,
+    "owner_fraction": 0.0,
+    "owner_histogram": {
+     "hip_L": 54
+    },
+    "centroid_m": [
+     0.032545,
+     0.183246,
+     0.011868
+    ],
+    "axial_of_centroid_m": 0.053483,
+    "radial_dist_of_centroid_m": 0.194505,
+    "bbox_min_m": [
+     0.015142,
+     0.174512,
+     -0.002205
+    ],
+    "bbox_max_m": [
+     0.049602,
+     0.192154,
+     0.02771
+    ],
+    "perimeter_m": 0.10899,
+    "polygon_area_m2": 0.000901106,
+    "dist_site_m": 0.167832619,
+    "dist_site_class": "outside"
+   },
+   {
+    "loop": 1,
+    "n_points": 50,
+    "n_tris": 50,
+    "owner_fraction": 0.0,
+    "owner_histogram": {
+     "hip_R": 50
+    },
+    "centroid_m": [
+     -0.030072,
+     0.215309,
+     0.00913
+    ],
+    "axial_of_centroid_m": 0.053483,
+    "radial_dist_of_centroid_m": 0.124258,
+    "bbox_min_m": [
+     -0.049907,
+     0.206788,
+     -0.009568
+    ],
+    "bbox_max_m": [
+     -0.013438,
+     0.22547,
+     0.029683
+    ],
+    "perimeter_m": 0.126714,
+    "polygon_area_m2": 0.001253367,
+    "dist_site_m": 0.095283918,
+    "dist_site_class": "outside"
+   },
+   {
+    "loop": 2,
+    "n_points": 50,
+    "n_tris": 50,
+    "owner_fraction": 1.0,
+    "owner_histogram": {
+     "wrist_R": 40,
+     "elbow_R": 10
+    },
+    "centroid_m": [
+     -0.147142,
+     0.275233,
+     -0.007088
+    ],
+    "axial_of_centroid_m": 0.053483,
+    "radial_dist_of_centroid_m": 0.008255,
+    "bbox_min_m": [
+     -0.156792,
+     0.270804,
+     -0.018288
+    ],
+    "bbox_max_m": [
+     -0.138494,
+     0.280175,
+     0.003732
+    ],
+    "perimeter_m": 0.066859,
+    "polygon_area_m2": 0.000352621,
+    "dist_site_m": 0.005511301,
+    "dist_site_class": "outside"
+   },
+   {
+    "loop": 3,
+    "n_points": 3,
+    "n_tris": 3,
+    "owner_fraction": 1.0,
+    "owner_histogram": {
+     "elbow_R": 3
+    },
+    "centroid_m": [
+     -0.138671,
+     0.270895,
+     -0.006641
+    ],
+    "axial_of_centroid_m": 0.053483,
+    "radial_dist_of_centroid_m": 0.001493,
+    "bbox_min_m": [
+     -0.138882,
+     0.270804,
+     -0.007728
+    ],
+    "bbox_max_m": [
+     -0.138494,
+     0.271006,
+     -0.005555
+    ],
+    "perimeter_m": 0.004461,
+    "polygon_area_m2": 3.25e-07,
+    "dist_site_m": 0.005511301,
+    "dist_site_class": "outside"
+   }
+  ]
+ }
+}

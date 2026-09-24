@@ -1,0 +1,114 @@
+{
+ "ECRB-P3": {
+  "axial_m": 0.051510357,
+  "degenerate_chains": [
+   {
+    "n_pts": 2,
+    "owner_hist": {
+     "hip_L": 2
+    },
+    "perimeter_m": 0.000149561,
+    "centroid_m": [
+     0.014863,
+     0.194512,
+     0.009174
+    ]
+   },
+   {
+    "n_pts": 2,
+    "owner_hist": {
+     "hip_R": 2
+    },
+    "perimeter_m": 6.3211e-05,
+    "centroid_m": [
+     -0.01316,
+     0.208862,
+     0.007883
+    ]
+   }
+  ],
+  "dist_table": {
+   "ECRB-P3": {
+    "main_loop_m": 0.004825766,
+    "sliver_loop_m": 0.004872384
+   },
+   "ECRL-P3": {
+    "main_loop_m": 0.005345725,
+    "sliver_loop_m": 0.005345725
+   }
+  },
+  "sliver_area_m2": 8.800906916428587e-09,
+  "main_area_m2": 0.0003533847045624768,
+  "min_dist_sliver_main_m": 0.0,
+  "sliver_vertex_owners": [
+   [
+    "wrist_R",
+    "elbow_R",
+    "elbow_R"
+   ],
+   [
+    "elbow_R",
+    "elbow_R",
+    "wrist_R"
+   ]
+  ]
+ },
+ "ECRL-P3": {
+  "axial_m": 0.053482959,
+  "degenerate_chains": [
+   {
+    "n_pts": 2,
+    "owner_hist": {
+     "hip_L": 2
+    },
+    "perimeter_m": 0.000106935,
+    "centroid_m": [
+     0.015127,
+     0.192161,
+     0.009415
+    ]
+   },
+   {
+    "n_pts": 2,
+    "owner_hist": {
+     "hip_R": 2
+    },
+    "perimeter_m": 9.516e-06,
+    "centroid_m": [
+     -0.013437,
+     0.206787,
+     0.007989
+    ]
+   }
+  ],
+  "dist_table": {
+   "ECRB-P3": {
+    "main_loop_m": 0.005026095,
+    "sliver_loop_m": 0.005103421
+   },
+   "ECRL-P3": {
+    "main_loop_m": 0.005511301,
+    "sliver_loop_m": 0.005511301
+   }
+  },
+  "sliver_area_m2": 3.250743091262636e-07,
+  "main_area_m2": 0.00035262135949506963,
+  "min_dist_sliver_main_m": 0.0,
+  "sliver_vertex_owners": [
+   [
+    "wrist_R",
+    "elbow_R",
+    "elbow_R"
+   ],
+   [
+    "elbow_R",
+    "elbow_R",
+    "wrist_R"
+   ]
+  ]
+ },
+ "fold_span_m": [
+  0.05112190996534719,
+  0.08
+ ]
+}
