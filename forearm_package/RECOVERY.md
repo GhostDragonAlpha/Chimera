@@ -289,3 +289,13 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 
 ## NOTE (T19a) — O2 transient failure + probe + re-dispatch
 O2 died at ~13:22 with [1302] rate-limit (12 concurrent agents in flight). Probe spawn per the standing quota law: PASSED in 1.4 s -> claim is transient, not a wall. O2 re-dispatched from its saved brief (partial work/mesh_target_o2.py inspected by the replacement). No waiting protocol built.
+
+## CHECKPOINT 2026-09-24 (T20) — R1 integrated: falsifier FIRED, re-anchoring anatomically refuted
+
+**Verified:** R1 all six criteria verdicted; receipts coordinator-checked; integrity clean.
+- SPECIES: source = FreeMusco Chimanoid, fictional human-based character (arXiv:2511.14205 provenance; byte-match to FreeMusco Data/Muscle/Fullbody). No species-specific primary evidence can exist; human base anatomy is the lane. C1's passing "full-size macaque" mention refuted (56.88 kg).
+- THE 7.5%: kinematic joint-frame offset (rest-pose, not bone-landmark). Primary human data: radial head ON the elbow axes (0% +- 1%) -> outside frozen 4-12% band -> anatomical reading REFUTED, margin >= 3.0 pts.
+- CONSEQUENCE for I7: the radius re-anchoring (s=0.20418) has NO primary-anatomical support; its defensible basis is preservation of the source's kinematic convention. This is exactly the "remaining contradiction" the architect's receipt asks to carry. I7 remains gated on O1+O2 (still running).
+- Macaque literature inapplicable for this quantity — recorded with 5 inapplicability findings, full search trail preserved.
+
+**Active:** O1, O2 (last wave-4 gates) + 14 mv-campaign agents.

@@ -1,0 +1,20 @@
+
+R1 RADIOULNAR EVIDENCE — ARITHMETIC RECEIPT (python 3.14, exact float)
+All source numbers read verbatim from baseline_snapshot/source_xml/chimanoid.xml (sha256 675e00d0...),
+right-arm chain, all quats identity (bodies authored axis-aligned) so offsets compose additively.
+
+|ulna->radius|  = 0.023074640 m = 23.0746 mm
+|radius->hand|  = 0.292029382 m = 292.0294 mm
+chain-sum       = 0.315104022 m = 315.1040 mm   [campaign brief says 315.14 -> transcription slip; C1 receipt says 0.315104]
+|elbow->hand| straight = 0.305792236 m = 305.7922 mm
+THE 7.5%:  L_ur/E2H            = 7.5459 %   (campaign: 7.55%)
+per-edge variant: L_ur/chain   = 7.3229 %
+decomposition: axial 14.324 mm (4.6841 % of forearm) | lateral 18.088 mm (5.9152 %) | posterior 0.301 mm | oblique angle 51.63 deg
+target derived anchor = L_ur*k_rad = 0.005115804 m = 5.1158 mm   [C3: 5.116 mm]
+target fitted span    = t_EW - d   = 0.059629095 m = 59.6291 mm [C3: 59.63 mm]
+target s              = span/L_rh  = 0.20418868   [C3: 0.20418]
+TARGET 7.9%: d/t_EW = 7.9015 %   (campaign: 7.9%)
+preservation drift: target 7.901% vs source 7.546% = +0.356 pts
+  explanation: numerator scales by radius-edge scale k_rad, denominator by forearm ratio 0.211728; k_rad/(forearm ratio) = 1.04713; 7.5459 * 1.04713 = 7.9015 %  = target 7.901% (exact)
+BIC tuberosity site, axial from elbow = 24.524 mm = 8.0197 % of source forearm
+FROZEN BAND 4-12%: primary human axial fraction ~= 0-1%  -> OUTSIDE band (margin >= 3.0 pts below 4%)
