@@ -1,0 +1,79 @@
+{
+ "boundary": "candidate optimum NOT re-run; recorded (db_m, dc_m) used as-is to recompute the recorded quantities",
+ "V1_census": {
+  "n_deltas_record": 120,
+  "n_comparable_record": 42,
+  "non_comparable_with_non_null_delta": [],
+  "comparable_with_null_delta": []
+ },
+ "V2_recorded_max": {
+  "tendon": "BRD_tendon",
+  "path_length_delta_m": -0.00090164,
+  "abs_mm": 0.90164,
+  "claim_report05_4C": "max |delta path length| = 0.90 mm (BRD)"
+ },
+ "V3_top10_recorded": [
+  {
+   "tendon": "BRD_tendon",
+   "delta_m": -0.00090164,
+   "abs_mm": 0.90164
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "delta_m": -0.000901337,
+   "abs_mm": 0.9013369999999999
+  },
+  {
+   "tendon": "glut_med1_r_tendon",
+   "delta_m": 0.0,
+   "abs_mm": 0.0
+  },
+  {
+   "tendon": "glut_med2_r_tendon",
+   "delta_m": 0.0,
+   "abs_mm": 0.0
+  },
+  {
+   "tendon": "glut_med3_r_tendon",
+   "delta_m": 0.0,
+   "abs_mm": 0.0
+  },
+  {
+   "tendon": "bifemlh_r_tendon",
+   "delta_m": 0.0,
+   "abs_mm": 0.0
+  },
+  {
+   "tendon": "bifemsh_r_tendon",
+   "delta_m": 0.0,
+   "abs_mm": 0.0
+  },
+  {
+   "tendon": "sar_r_tendon",
+   "delta_m": 0.0,
+   "abs_mm": 0.0
+  },
+  {
+   "tendon": "add_mag2_r_tendon",
+   "delta_m": 0.0,
+   "abs_mm": 0.0
+  },
+  {
+   "tendon": "tfl_r_tendon",
+   "delta_m": 0.0,
+   "abs_mm": 0.0
+  }
+ ],
+ "V4_untouched_nonzero": [],
+ "V5_recompute": {
+  "n_recomputed": 42,
+  "max_abs_diff_vs_record_m": 0.0,
+  "worst_tendon": null,
+  "my_max_tendon": "BRD_tendon",
+  "my_max_abs_mm": 0.90164
+ },
+ "moment_arm_recorded": {
+  "max_abs_delta_m": 0.0,
+  "n_null": 0
+ }
+}

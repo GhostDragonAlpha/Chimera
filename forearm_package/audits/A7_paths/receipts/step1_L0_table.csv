@@ -1,0 +1,23 @@
+A7 step1 - tendons touching the 32 forearm sites: stored vs recomputed L0
+touching tendons: 18 of 120; derived(rest_length set): 2; null(incomplete path): 16
+max |rel dev| over ALL 120 recomputable: 0.0 (tendon None); exact(bit-identical): 42
+
+tendon, n_pts, status, stored_L0_m, recomputed_L0_m, abs_dev_m, rel_dev
+BIClong_tendon, 10, path_incomplete:unresolved_bodies ['thorax'], None, None, None, None
+BICshort_tendon, 7, path_incomplete:unresolved_bodies ['thorax'], None, None, None, None
+BRD_tendon, 3, derived, 0.08883103763879713, 0.08883103763879713, 0.0, 0.0
+ECRL_tendon, 4, path_incomplete:unresolved_bodies ['hand_r'], None, None, None, None
+ECRB_tendon, 4, path_incomplete:unresolved_bodies ['hand_r'], None, None, None, None
+ECU_tendon, 6, path_incomplete:unresolved_bodies ['hand_r', 'ulna'], None, None, None, None
+FCR_tendon, 3, path_incomplete:unresolved_bodies ['hand_r'], None, None, None, None
+FCU_tendon, 4, path_incomplete:unresolved_bodies ['hand_r'], None, None, None, None
+PT_tendon, 4, path_incomplete:unresolved_bodies ['ulna'], None, None, None, None
+BIClong_l_tendon, 10, path_incomplete:unresolved_bodies ['thorax'], None, None, None, None
+BICshort_l_tendon, 7, path_incomplete:unresolved_bodies ['thorax'], None, None, None, None
+BRD_l_tendon, 3, derived, 0.0888363641039056, 0.0888363641039056, 0.0, 0.0
+ECRL_l_tendon, 4, path_incomplete:unresolved_bodies ['hand_l'], None, None, None, None
+ECRB_l_tendon, 4, path_incomplete:unresolved_bodies ['hand_l'], None, None, None, None
+ECU_l_tendon, 6, path_incomplete:unresolved_bodies ['hand_l', 'ulna_l'], None, None, None, None
+FCR_l_tendon, 3, path_incomplete:unresolved_bodies ['hand_l'], None, None, None, None
+FCU_l_tendon, 4, path_incomplete:unresolved_bodies ['hand_l'], None, None, None, None
+PT_l_tendon, 4, path_incomplete:unresolved_bodies ['ulna_l'], None, None, None, None

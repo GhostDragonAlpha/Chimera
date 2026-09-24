@@ -1,0 +1,1714 @@
+{
+ "checks": {
+  "C1_xml_pos_equal_packet": true,
+  "C2_membership_equal_packet": true,
+  "C3_role_index_consistent": true,
+  "C4_transform_reconstruction_max_err_m": 9.140440626609347e-10,
+  "C4_pass_1e-6": true,
+  "C5_radius": {
+   "tally": {
+    "inside": 6,
+    "inside_insufficient_clearance": 1,
+    "outside": 7,
+    "unresolved": 2
+   },
+   "outside": [
+    "BIClong-P9",
+    "BICshort-P6",
+    "BRD-P2",
+    "BRD-P3",
+    "ECRB-P2",
+    "ECRL-P2",
+    "PT-P5"
+   ],
+   "tight": [
+    "PT-P3"
+   ],
+   "ambiguous": [
+    "ECRB-P3",
+    "ECRL-P3"
+   ],
+   "inside": [
+    "BIClong-P11",
+    "BICshort-P8",
+    "ECU-P5",
+    "FCR-P2",
+    "FCU-P2",
+    "FCU-P3"
+   ],
+   "matches_admission": true,
+   "brief_baseline_6_1_7_2": true
+  },
+  "C5_radius_l": {
+   "tally": {
+    "inside": 6,
+    "inside_insufficient_clearance": 1,
+    "outside": 7,
+    "unresolved": 2
+   },
+   "outside": [
+    "BIClong_l-P9",
+    "BICshort_l-P6",
+    "BRD_l-P2",
+    "BRD_l-P3",
+    "ECRB_l-P2",
+    "ECRL_l-P2",
+    "PT_l-P5"
+   ],
+   "tight": [
+    "PT_l-P3"
+   ],
+   "ambiguous": [
+    "ECRB_l-P3",
+    "ECRL_l-P3"
+   ],
+   "inside": [
+    "BIClong_l-P11",
+    "BICshort_l-P8",
+    "ECU_l-P5",
+    "FCR_l-P2",
+    "FCU_l-P2",
+    "FCU_l-P3"
+   ],
+   "matches_admission": true,
+   "brief_baseline_6_1_7_2": true
+  },
+  "C6_source_mirror": [
+   {
+    "pair": [
+     "BIClong-P11",
+     "BIClong_l-P11"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "BIClong-P9",
+     "BIClong_l-P9"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "BICshort-P6",
+     "BICshort_l-P6"
+    ],
+    "exact_mirror": false,
+    "delta_m": 0.002732
+   },
+   {
+    "pair": [
+     "BICshort-P8",
+     "BICshort_l-P8"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "BRD-P2",
+     "BRD_l-P2"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "BRD-P3",
+     "BRD_l-P3"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "ECRB-P2",
+     "ECRB_l-P2"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "ECRB-P3",
+     "ECRB_l-P3"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "ECRL-P2",
+     "ECRL_l-P2"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "ECRL-P3",
+     "ECRL_l-P3"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "ECU-P5",
+     "ECU_l-P5"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "FCR-P2",
+     "FCR_l-P2"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "FCU-P2",
+     "FCU_l-P2"
+    ],
+    "exact_mirror": false,
+    "delta_m": 0.0010296999999999997
+   },
+   {
+    "pair": [
+     "FCU-P3",
+     "FCU_l-P3"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "PT-P3",
+     "PT_l-P3"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   },
+   {
+    "pair": [
+     "PT-P5",
+     "PT_l-P5"
+    ],
+    "exact_mirror": true,
+    "delta_m": 0.0
+   }
+  ],
+  "C6_all_exact_mirrors": false,
+  "C7_tendon_chains": {
+   "BIClong_tendon": [
+    {
+     "site": "BIClong-P1",
+     "xml_owner": "thorax",
+     "fit_resolved": false
+    },
+    {
+     "site": "BIClong-P2",
+     "xml_owner": "thorax",
+     "fit_resolved": false
+    },
+    {
+     "site": "BIClong-P3",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong-P4",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong-P5",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong-P6",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong-P7",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong-P8",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong-P9",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong-P11",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    }
+   ],
+   "BICshort_tendon": [
+    {
+     "site": "BICshort-P1",
+     "xml_owner": "thorax",
+     "fit_resolved": false
+    },
+    {
+     "site": "BICshort-P2",
+     "xml_owner": "thorax",
+     "fit_resolved": false
+    },
+    {
+     "site": "BICshort-P3",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BICshort-P4",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BICshort-P5",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BICshort-P6",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "BICshort-P8",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    }
+   ],
+   "BRD_tendon": [
+    {
+     "site": "BRD-P1",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "BRD-P2",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "BRD-P3",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    }
+   ],
+   "ECRB_tendon": [
+    {
+     "site": "ECRB-P1",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRB-P2",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRB-P3",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRB-P4",
+     "xml_owner": "hand_r",
+     "fit_resolved": false
+    }
+   ],
+   "ECRL_tendon": [
+    {
+     "site": "ECRL-P1",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRL-P2",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRL-P3",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRL-P4",
+     "xml_owner": "hand_r",
+     "fit_resolved": false
+    }
+   ],
+   "ECU_tendon": [
+    {
+     "site": "ECU-P1",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECU-P2",
+     "xml_owner": "ulna",
+     "fit_resolved": false
+    },
+    {
+     "site": "ECU-P3",
+     "xml_owner": "ulna",
+     "fit_resolved": false
+    },
+    {
+     "site": "ECU-P4",
+     "xml_owner": "ulna",
+     "fit_resolved": false
+    },
+    {
+     "site": "ECU-P5",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECU-P6",
+     "xml_owner": "hand_r",
+     "fit_resolved": false
+    }
+   ],
+   "FCR_tendon": [
+    {
+     "site": "FCR-P1",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCR-P2",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCR-P3",
+     "xml_owner": "hand_r",
+     "fit_resolved": false
+    }
+   ],
+   "FCU_tendon": [
+    {
+     "site": "FCU-P1",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCU-P2",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCU-P3",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCU-P4",
+     "xml_owner": "hand_r",
+     "fit_resolved": false
+    }
+   ],
+   "PT_tendon": [
+    {
+     "site": "PT-P1",
+     "xml_owner": "humerus",
+     "fit_resolved": true
+    },
+    {
+     "site": "PT-P2",
+     "xml_owner": "ulna",
+     "fit_resolved": false
+    },
+    {
+     "site": "PT-P3",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    },
+    {
+     "site": "PT-P5",
+     "xml_owner": "radius",
+     "fit_resolved": true
+    }
+   ],
+   "BIClong_l_tendon": [
+    {
+     "site": "BIClong_l-P1",
+     "xml_owner": "thorax",
+     "fit_resolved": false
+    },
+    {
+     "site": "BIClong_l-P2",
+     "xml_owner": "thorax",
+     "fit_resolved": false
+    },
+    {
+     "site": "BIClong_l-P3",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong_l-P4",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong_l-P5",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong_l-P6",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong_l-P7",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong_l-P8",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong_l-P9",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BIClong_l-P11",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    }
+   ],
+   "BICshort_l_tendon": [
+    {
+     "site": "BICshort_l-P1",
+     "xml_owner": "thorax",
+     "fit_resolved": false
+    },
+    {
+     "site": "BICshort_l-P2",
+     "xml_owner": "thorax",
+     "fit_resolved": false
+    },
+    {
+     "site": "BICshort_l-P3",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BICshort_l-P4",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BICshort_l-P5",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BICshort_l-P6",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BICshort_l-P8",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    }
+   ],
+   "BRD_l_tendon": [
+    {
+     "site": "BRD_l-P1",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BRD_l-P2",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "BRD_l-P3",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    }
+   ],
+   "ECRB_l_tendon": [
+    {
+     "site": "ECRB_l-P1",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRB_l-P2",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRB_l-P3",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRB_l-P4",
+     "xml_owner": "hand_l",
+     "fit_resolved": false
+    }
+   ],
+   "ECRL_l_tendon": [
+    {
+     "site": "ECRL_l-P1",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRL_l-P2",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRL_l-P3",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECRL_l-P4",
+     "xml_owner": "hand_l",
+     "fit_resolved": false
+    }
+   ],
+   "ECU_l_tendon": [
+    {
+     "site": "ECU_l-P1",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECU_l-P2",
+     "xml_owner": "ulna_l",
+     "fit_resolved": false
+    },
+    {
+     "site": "ECU_l-P3",
+     "xml_owner": "ulna_l",
+     "fit_resolved": false
+    },
+    {
+     "site": "ECU_l-P4",
+     "xml_owner": "ulna_l",
+     "fit_resolved": false
+    },
+    {
+     "site": "ECU_l-P5",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "ECU_l-P6",
+     "xml_owner": "hand_l",
+     "fit_resolved": false
+    }
+   ],
+   "FCR_l_tendon": [
+    {
+     "site": "FCR_l-P1",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCR_l-P2",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCR_l-P3",
+     "xml_owner": "hand_l",
+     "fit_resolved": false
+    }
+   ],
+   "FCU_l_tendon": [
+    {
+     "site": "FCU_l-P1",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCU_l-P2",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCU_l-P3",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "FCU_l-P4",
+     "xml_owner": "hand_l",
+     "fit_resolved": false
+    }
+   ],
+   "PT_l_tendon": [
+    {
+     "site": "PT_l-P1",
+     "xml_owner": "humerus_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "PT_l-P2",
+     "xml_owner": "ulna_l",
+     "fit_resolved": false
+    },
+    {
+     "site": "PT_l-P3",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    },
+    {
+     "site": "PT_l-P5",
+     "xml_owner": "radius_l",
+     "fit_resolved": true
+    }
+   ]
+  },
+  "C7_chain_summary": {
+   "BIClong_tendon": {
+    "n_sites": 10,
+    "owners": [
+     "humerus",
+     "radius",
+     "thorax"
+    ],
+    "unresolved_site_count": 2,
+    "unresolved_sites": [
+     "BIClong-P1",
+     "BIClong-P2"
+    ],
+    "terminus_site": "BIClong-P11",
+    "terminus_owner": "radius",
+    "terminus_resolved": true
+   },
+   "BICshort_tendon": {
+    "n_sites": 7,
+    "owners": [
+     "humerus",
+     "radius",
+     "thorax"
+    ],
+    "unresolved_site_count": 2,
+    "unresolved_sites": [
+     "BICshort-P1",
+     "BICshort-P2"
+    ],
+    "terminus_site": "BICshort-P8",
+    "terminus_owner": "radius",
+    "terminus_resolved": true
+   },
+   "BRD_tendon": {
+    "n_sites": 3,
+    "owners": [
+     "humerus",
+     "radius"
+    ],
+    "unresolved_site_count": 0,
+    "unresolved_sites": [],
+    "terminus_site": "BRD-P3",
+    "terminus_owner": "radius",
+    "terminus_resolved": true
+   },
+   "ECRB_tendon": {
+    "n_sites": 4,
+    "owners": [
+     "hand_r",
+     "humerus",
+     "radius"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "ECRB-P4"
+    ],
+    "terminus_site": "ECRB-P4",
+    "terminus_owner": "hand_r",
+    "terminus_resolved": false
+   },
+   "ECRL_tendon": {
+    "n_sites": 4,
+    "owners": [
+     "hand_r",
+     "humerus",
+     "radius"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "ECRL-P4"
+    ],
+    "terminus_site": "ECRL-P4",
+    "terminus_owner": "hand_r",
+    "terminus_resolved": false
+   },
+   "ECU_tendon": {
+    "n_sites": 6,
+    "owners": [
+     "hand_r",
+     "humerus",
+     "radius",
+     "ulna"
+    ],
+    "unresolved_site_count": 4,
+    "unresolved_sites": [
+     "ECU-P2",
+     "ECU-P3",
+     "ECU-P4",
+     "ECU-P6"
+    ],
+    "terminus_site": "ECU-P6",
+    "terminus_owner": "hand_r",
+    "terminus_resolved": false
+   },
+   "FCR_tendon": {
+    "n_sites": 3,
+    "owners": [
+     "hand_r",
+     "humerus",
+     "radius"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "FCR-P3"
+    ],
+    "terminus_site": "FCR-P3",
+    "terminus_owner": "hand_r",
+    "terminus_resolved": false
+   },
+   "FCU_tendon": {
+    "n_sites": 4,
+    "owners": [
+     "hand_r",
+     "humerus",
+     "radius"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "FCU-P4"
+    ],
+    "terminus_site": "FCU-P4",
+    "terminus_owner": "hand_r",
+    "terminus_resolved": false
+   },
+   "PT_tendon": {
+    "n_sites": 4,
+    "owners": [
+     "humerus",
+     "radius",
+     "ulna"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "PT-P2"
+    ],
+    "terminus_site": "PT-P5",
+    "terminus_owner": "radius",
+    "terminus_resolved": true
+   },
+   "BIClong_l_tendon": {
+    "n_sites": 10,
+    "owners": [
+     "humerus_l",
+     "radius_l",
+     "thorax"
+    ],
+    "unresolved_site_count": 2,
+    "unresolved_sites": [
+     "BIClong_l-P1",
+     "BIClong_l-P2"
+    ],
+    "terminus_site": "BIClong_l-P11",
+    "terminus_owner": "radius_l",
+    "terminus_resolved": true
+   },
+   "BICshort_l_tendon": {
+    "n_sites": 7,
+    "owners": [
+     "humerus_l",
+     "radius_l",
+     "thorax"
+    ],
+    "unresolved_site_count": 2,
+    "unresolved_sites": [
+     "BICshort_l-P1",
+     "BICshort_l-P2"
+    ],
+    "terminus_site": "BICshort_l-P8",
+    "terminus_owner": "radius_l",
+    "terminus_resolved": true
+   },
+   "BRD_l_tendon": {
+    "n_sites": 3,
+    "owners": [
+     "humerus_l",
+     "radius_l"
+    ],
+    "unresolved_site_count": 0,
+    "unresolved_sites": [],
+    "terminus_site": "BRD_l-P3",
+    "terminus_owner": "radius_l",
+    "terminus_resolved": true
+   },
+   "ECRB_l_tendon": {
+    "n_sites": 4,
+    "owners": [
+     "hand_l",
+     "humerus_l",
+     "radius_l"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "ECRB_l-P4"
+    ],
+    "terminus_site": "ECRB_l-P4",
+    "terminus_owner": "hand_l",
+    "terminus_resolved": false
+   },
+   "ECRL_l_tendon": {
+    "n_sites": 4,
+    "owners": [
+     "hand_l",
+     "humerus_l",
+     "radius_l"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "ECRL_l-P4"
+    ],
+    "terminus_site": "ECRL_l-P4",
+    "terminus_owner": "hand_l",
+    "terminus_resolved": false
+   },
+   "ECU_l_tendon": {
+    "n_sites": 6,
+    "owners": [
+     "hand_l",
+     "humerus_l",
+     "radius_l",
+     "ulna_l"
+    ],
+    "unresolved_site_count": 4,
+    "unresolved_sites": [
+     "ECU_l-P2",
+     "ECU_l-P3",
+     "ECU_l-P4",
+     "ECU_l-P6"
+    ],
+    "terminus_site": "ECU_l-P6",
+    "terminus_owner": "hand_l",
+    "terminus_resolved": false
+   },
+   "FCR_l_tendon": {
+    "n_sites": 3,
+    "owners": [
+     "hand_l",
+     "humerus_l",
+     "radius_l"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "FCR_l-P3"
+    ],
+    "terminus_site": "FCR_l-P3",
+    "terminus_owner": "hand_l",
+    "terminus_resolved": false
+   },
+   "FCU_l_tendon": {
+    "n_sites": 4,
+    "owners": [
+     "hand_l",
+     "humerus_l",
+     "radius_l"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "FCU_l-P4"
+    ],
+    "terminus_site": "FCU_l-P4",
+    "terminus_owner": "hand_l",
+    "terminus_resolved": false
+   },
+   "PT_l_tendon": {
+    "n_sites": 4,
+    "owners": [
+     "humerus_l",
+     "radius_l",
+     "ulna_l"
+    ],
+    "unresolved_site_count": 1,
+    "unresolved_sites": [
+     "PT_l-P2"
+    ],
+    "terminus_site": "PT_l-P5",
+    "terminus_owner": "radius_l",
+    "terminus_resolved": true
+   }
+  }
+ },
+ "rows": [
+  {
+   "site": "BIClong-P11",
+   "xml_line": 613,
+   "xml_pos": "-0.002 -0.0375 -0.002",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 7.082229993432554e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.001367249,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "BIClong_tendon",
+     "index_in_path": 9,
+     "path_length": 10,
+     "role": "last_endpoint"
+    }
+   ]
+  },
+  {
+   "site": "BIClong-P9",
+   "xml_line": 612,
+   "xml_pos": "0.01467 -0.0102 -0.01062",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 9.140440626609347e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.001504883,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "BIClong_tendon",
+     "index_in_path": 8,
+     "path_length": 10,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "BICshort-P6",
+   "xml_line": 614,
+   "xml_pos": "0.0119375 -0.0102 -0.0114103",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 8.36349156596583e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.000877639,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "BICshort_tendon",
+     "index_in_path": 5,
+     "path_length": 7,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "BICshort-P8",
+   "xml_line": 615,
+   "xml_pos": "-0.002 -0.0375 -0.002",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 7.082229993432554e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.001367249,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "BICshort_tendon",
+     "index_in_path": 6,
+     "path_length": 7,
+     "role": "last_endpoint"
+    }
+   ]
+  },
+  {
+   "site": "BRD-P2",
+   "xml_line": 616,
+   "xml_pos": "0.03577 -0.12742 0.02315",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 3.28333804588965e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.005073827,
+   "hull": "outside",
+   "hull_dist_m": 0.004626046,
+   "membership": [
+    {
+     "tendon": "BRD_tendon",
+     "index_in_path": 1,
+     "path_length": 3,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "BRD-P3",
+   "xml_line": 617,
+   "xml_pos": "0.0419 -0.221 0.0224",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 7.463093996962211e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.003936573,
+   "hull": "outside",
+   "hull_dist_m": 0.003711547,
+   "membership": [
+    {
+     "tendon": "BRD_tendon",
+     "index_in_path": 2,
+     "path_length": 3,
+     "role": "last_endpoint"
+    }
+   ]
+  },
+  {
+   "site": "ECRB-P2",
+   "xml_line": 620,
+   "xml_pos": "0.02905 -0.13086 0.02385",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 6.406852826046361e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.003751911,
+   "hull": "outside",
+   "hull_dist_m": 0.003348477,
+   "membership": [
+    {
+     "tendon": "ECRB_tendon",
+     "index_in_path": 1,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "ECRB-P3",
+   "xml_line": 621,
+   "xml_pos": "0.03549 -0.22805 0.03937",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 2.275718285690842e-10,
+   "loop": "unresolved",
+   "loop_dist_m": null,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "ECRB_tendon",
+     "index_in_path": 2,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "ECRL-P2",
+   "xml_line": 618,
+   "xml_pos": "0.03195 -0.13463 0.02779",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 8.94675777907139e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.004597407,
+   "hull": "outside",
+   "hull_dist_m": 0.004260535,
+   "membership": [
+    {
+     "tendon": "ECRL_tendon",
+     "index_in_path": 1,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "ECRL-P3",
+   "xml_line": 619,
+   "xml_pos": "0.04243 -0.23684 0.0362",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 6.227591498042528e-10,
+   "loop": "unresolved",
+   "loop_dist_m": null,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "ECRL_tendon",
+     "index_in_path": 2,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "ECU-P5",
+   "xml_line": 622,
+   "xml_pos": "-0.01421 -0.22696 0.03481",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 6.08879809229192e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.001883829,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "ECU_tendon",
+     "index_in_path": 4,
+     "path_length": 6,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "FCR-P2",
+   "xml_line": 623,
+   "xml_pos": "0.0211 -0.21943 0.00127",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 5.360108745744441e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.002054407,
+   "hull": "inside",
+   "hull_dist_m": -0.002177575,
+   "membership": [
+    {
+     "tendon": "FCR_tendon",
+     "index_in_path": 1,
+     "path_length": 3,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "FCU-P2",
+   "xml_line": 624,
+   "xml_pos": "0.0105197 -0.183974 0.00012377",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 7.4406020234008e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.003797604,
+   "hull": "inside",
+   "hull_dist_m": -0.003802735,
+   "membership": [
+    {
+     "tendon": "FCU_tendon",
+     "index_in_path": 1,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "FCU-P3",
+   "xml_line": 625,
+   "xml_pos": "0.01082 -0.22327 0.00969",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 4.799322050885735e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.003448523,
+   "hull": "inside",
+   "hull_dist_m": -0.003675586,
+   "membership": [
+    {
+     "tendon": "FCU_tendon",
+     "index_in_path": 2,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "PT-P3",
+   "xml_line": 626,
+   "xml_pos": "0.01179 -0.053657 -0.022189",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 7.759030640208664e-10,
+   "loop": "inside_insufficient_clearance",
+   "loop_dist_m": -0.000780069,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "PT_tendon",
+     "index_in_path": 2,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "PT-P5",
+   "xml_line": 627,
+   "xml_pos": "0.0254 -0.1088 0.0198",
+   "owner": "radius",
+   "body_line": 608,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 5.855013999675474e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.003462575,
+   "hull": "outside",
+   "hull_dist_m": 0.003294305,
+   "membership": [
+    {
+     "tendon": "PT_tendon",
+     "index_in_path": 3,
+     "path_length": 4,
+     "role": "last_endpoint"
+    }
+   ]
+  },
+  {
+   "site": "BIClong_l-P11",
+   "xml_line": 753,
+   "xml_pos": "-0.002 -0.0375 0.002",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 4.78602990572341e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.00136725,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "BIClong_l_tendon",
+     "index_in_path": 9,
+     "path_length": 10,
+     "role": "last_endpoint"
+    }
+   ]
+  },
+  {
+   "site": "BIClong_l-P9",
+   "xml_line": 752,
+   "xml_pos": "0.01467 -0.0102 0.01062",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 7.973598101229662e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.001504884,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "BIClong_l_tendon",
+     "index_in_path": 8,
+     "path_length": 10,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "BICshort_l-P6",
+   "xml_line": 754,
+   "xml_pos": "0.0146695 -0.0102 0.0106184",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 2.5079856594278915e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.001504913,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "BICshort_l_tendon",
+     "index_in_path": 5,
+     "path_length": 7,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "BICshort_l-P8",
+   "xml_line": 755,
+   "xml_pos": "-0.002 -0.0375 0.002",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 4.78602990572341e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.00136725,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "BICshort_l_tendon",
+     "index_in_path": 6,
+     "path_length": 7,
+     "role": "last_endpoint"
+    }
+   ]
+  },
+  {
+   "site": "BRD_l-P2",
+   "xml_line": 756,
+   "xml_pos": "0.03577 -0.12742 -0.02315",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 4.941792591459104e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.005073821,
+   "hull": "outside",
+   "hull_dist_m": 0.004626041,
+   "membership": [
+    {
+     "tendon": "BRD_l_tendon",
+     "index_in_path": 1,
+     "path_length": 3,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "BRD_l-P3",
+   "xml_line": 757,
+   "xml_pos": "0.0419 -0.221 -0.0224",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 4.922568463960886e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.003936586,
+   "hull": "outside",
+   "hull_dist_m": 0.003711534,
+   "membership": [
+    {
+     "tendon": "BRD_l_tendon",
+     "index_in_path": 2,
+     "path_length": 3,
+     "role": "last_endpoint"
+    }
+   ]
+  },
+  {
+   "site": "ECRB_l-P2",
+   "xml_line": 760,
+   "xml_pos": "0.02905 -0.13086 -0.02385",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 6.520498585516066e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.003751903,
+   "hull": "outside",
+   "hull_dist_m": 0.003348476,
+   "membership": [
+    {
+     "tendon": "ECRB_l_tendon",
+     "index_in_path": 1,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "ECRB_l-P3",
+   "xml_line": 761,
+   "xml_pos": "0.03549 -0.22805 -0.03937",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 9.13300490790192e-10,
+   "loop": "unresolved",
+   "loop_dist_m": null,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "ECRB_l_tendon",
+     "index_in_path": 2,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "ECRL_l-P2",
+   "xml_line": 758,
+   "xml_pos": "0.03195 -0.13463 -0.02779",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 8.729019174147368e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.004597397,
+   "hull": "outside",
+   "hull_dist_m": 0.004260534,
+   "membership": [
+    {
+     "tendon": "ECRL_l_tendon",
+     "index_in_path": 1,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "ECRL_l-P3",
+   "xml_line": 759,
+   "xml_pos": "0.04243 -0.23684 -0.0362",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 6.569268297743069e-10,
+   "loop": "unresolved",
+   "loop_dist_m": null,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "ECRL_l_tendon",
+     "index_in_path": 2,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "ECU_l-P5",
+   "xml_line": 762,
+   "xml_pos": "-0.01421 -0.22696 -0.03481",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 5.714460016292833e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.001883824,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "ECU_l_tendon",
+     "index_in_path": 4,
+     "path_length": 6,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "FCR_l-P2",
+   "xml_line": 763,
+   "xml_pos": "0.0211 -0.21943 -0.00127",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 4.71322092465698e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.002054401,
+   "hull": "inside",
+   "hull_dist_m": -0.002177577,
+   "membership": [
+    {
+     "tendon": "FCR_l_tendon",
+     "index_in_path": 1,
+     "path_length": 3,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "FCU_l-P2",
+   "xml_line": 764,
+   "xml_pos": "0.00949 -0.1841 -0.0005",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 9.117436805539114e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.003990418,
+   "hull": "inside",
+   "hull_dist_m": -0.00399489,
+   "membership": [
+    {
+     "tendon": "FCU_l_tendon",
+     "index_in_path": 1,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "FCU_l-P3",
+   "xml_line": 765,
+   "xml_pos": "0.01082 -0.22327 -0.00969",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 6.34781349879987e-10,
+   "loop": "inside",
+   "loop_dist_m": -0.003448516,
+   "hull": "inside",
+   "hull_dist_m": -0.003675594,
+   "membership": [
+    {
+     "tendon": "FCU_l_tendon",
+     "index_in_path": 2,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "PT_l-P3",
+   "xml_line": 766,
+   "xml_pos": "0.01179 -0.053657 0.022189",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 7.168243099792138e-10,
+   "loop": "inside_insufficient_clearance",
+   "loop_dist_m": -0.00078006,
+   "hull": "unresolved",
+   "hull_dist_m": null,
+   "membership": [
+    {
+     "tendon": "PT_l_tendon",
+     "index_in_path": 2,
+     "path_length": 4,
+     "role": "waypoint"
+    }
+   ]
+  },
+  {
+   "site": "PT_l-P5",
+   "xml_line": 767,
+   "xml_pos": "0.0254 -0.1088 -0.0198",
+   "owner": "radius_l",
+   "body_line": 748,
+   "c1": true,
+   "c2": true,
+   "c3": true,
+   "recon_err_m": 5.338335997209787e-10,
+   "loop": "outside",
+   "loop_dist_m": 0.003462575,
+   "hull": "outside",
+   "hull_dist_m": 0.003294305,
+   "membership": [
+    {
+     "tendon": "PT_l_tendon",
+     "index_in_path": 3,
+     "path_length": 4,
+     "role": "last_endpoint"
+    }
+   ]
+  }
+ ],
+ "errors": [],
+ "mismatches": []
+}

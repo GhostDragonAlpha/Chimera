@@ -1,0 +1,85 @@
+{
+ "I1_git_status_porcelain_baseline_snapshot": "",
+ "I1_empty": true,
+ "I2_files_checked": 15,
+ "I2_sha_mismatches": [],
+ "I2_results": {
+  "MANIFEST.json": {
+   "actual": "a753340ec01a27122455854602c0a57b2233dce2f0d4e618f53ef0f1a92f84e5",
+   "pinned": null,
+   "match": null,
+   "note": "not pinned in MANIFEST files map"
+  },
+  "code/DERIVATION.md": {
+   "actual": "cba8b8a1a35565eb69a696187c96a55b59aa5f753f603004fb24e188ec145d25",
+   "pinned": "cba8b8a1a35565eb69a696187c96a55b59aa5f753f603004fb24e188ec145d25",
+   "match": true
+  },
+  "code/compiler.py": {
+   "actual": "8a4ba07c033111730e390764c5401ae3ce0fa41f8504ccbda28bd4bd56edf852",
+   "pinned": "8a4ba07c033111730e390764c5401ae3ce0fa41f8504ccbda28bd4bd56edf852",
+   "match": true
+  },
+  "code/experiment_transverse_fit.py": {
+   "actual": "1c68345eb65f7fcec0c95d0673e604f4cabd351cc04c47e23d1b82abd76b1da1",
+   "pinned": "1c68345eb65f7fcec0c95d0673e604f4cabd351cc04c47e23d1b82abd76b1da1",
+   "match": true
+  },
+  "code/schema.py": {
+   "actual": "0cfe5664b9f3cabf6779bc18e85253a360d3bfc8aab7ca2d5de3862eba365ce8",
+   "pinned": "0cfe5664b9f3cabf6779bc18e85253a360d3bfc8aab7ca2d5de3862eba365ce8",
+   "match": true
+  },
+  "code/mesh_target.py": {
+   "actual": "268f139a9e90e561f4a5f8ab02553f0d87f51633f635139e6cec6f5c9cfa19a0",
+   "pinned": "268f139a9e90e561f4a5f8ab02553f0d87f51633f635139e6cec6f5c9cfa19a0",
+   "match": true
+  },
+  "code/actual_target_fit.py": {
+   "actual": "5c8604e4808be0faf87e9333211662561aef7056376b4424b1fcb3d22b21c0f6",
+   "pinned": "5c8604e4808be0faf87e9333211662561aef7056376b4424b1fcb3d22b21c0f6",
+   "match": true
+  },
+  "inputs/monkey_birth.bin": {
+   "actual": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+   "pinned": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+   "match": true
+  },
+  "inputs/monkey_joints.bin": {
+   "actual": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+   "pinned": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+   "match": true
+  },
+  "runs/actual_monkey_fit.json": {
+   "actual": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+   "pinned": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+   "match": true
+  },
+  "runs/attachment_candidates.json": {
+   "actual": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae",
+   "pinned": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae",
+   "match": true
+  },
+  "runs/experiment_transverse_candidate.json": {
+   "actual": "3c13fca70c2a726ec59379f2c5b1e597db3af5d82bedc39d0a4c08186f58ab3a",
+   "pinned": "3c13fca70c2a726ec59379f2c5b1e597db3af5d82bedc39d0a4c08186f58ab3a",
+   "match": true
+  },
+  "runs/admission_actual_monkey.json": {
+   "actual": "833ca65b282eab83180bdbe65bbd8f934924fdd1416c8058d510e5481d86b4ad",
+   "pinned": "833ca65b282eab83180bdbe65bbd8f934924fdd1416c8058d510e5481d86b4ad",
+   "match": true
+  },
+  "session_reports/anatomy_compiler_05.md": {
+   "actual": "ed6e333c62990ba2dc03f3d4db5f3948c46cfe19107272a2e483351316c136ce",
+   "pinned": "ed6e333c62990ba2dc03f3d4db5f3948c46cfe19107272a2e483351316c136ce",
+   "match": true
+  },
+  "source_xml/chimanoid.xml": {
+   "actual": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1",
+   "pinned": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1",
+   "match": true
+  }
+ },
+ "git_head_at_snapshot_pinned_in_MANIFEST": "c70b7a6c"
+}

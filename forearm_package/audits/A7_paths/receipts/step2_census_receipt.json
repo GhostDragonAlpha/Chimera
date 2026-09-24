@@ -1,0 +1,572 @@
+{
+ "rule_source": "experiment_transverse_fit.py lines 382-408: ok_chain iff every path site finite",
+ "n_comparable_recomputed": 42,
+ "n_non_comparable_recomputed": 78,
+ "claim_in_record": "42/120",
+ "count_verified": true,
+ "flag_mismatch_vs_experiment_record": [],
+ "delta_null_mismatch_vs_experiment_record": [],
+ "admission_unresolved_bodies": [
+  "hand_l",
+  "hand_r",
+  "talus_l",
+  "talus_r",
+  "thorax",
+  "toes_l",
+  "toes_r",
+  "ulna",
+  "ulna_l"
+ ],
+ "per_site_unresolved_flag_vs_admission_disagreements": [],
+ "overlap_42_78": [],
+ "category_counts_by_unresolved_body_set": {
+  "hand_l": 4,
+  "hand_l + ulna_l": 1,
+  "hand_r": 4,
+  "hand_r + ulna": 1,
+  "talus_l": 5,
+  "talus_l + toes_l": 3,
+  "talus_r": 5,
+  "talus_r + toes_r": 3,
+  "thorax": 40,
+  "thorax + ulna": 1,
+  "thorax + ulna_l": 1,
+  "ulna": 5,
+  "ulna_l": 5
+ },
+ "per_unresolved_body_tendon_counts": {
+  "hand_l": 5,
+  "hand_r": 5,
+  "talus_l": 8,
+  "talus_r": 8,
+  "thorax": 42,
+  "toes_l": 3,
+  "toes_r": 3,
+  "ulna": 7,
+  "ulna_l": 7
+ },
+ "comparable_42": [
+  "BRD_l_tendon",
+  "BRD_tendon",
+  "add_mag2_l_tendon",
+  "add_mag2_r_tendon",
+  "bifemlh_l_tendon",
+  "bifemlh_r_tendon",
+  "bifemsh_l_tendon",
+  "bifemsh_r_tendon",
+  "gem_l_tendon",
+  "gem_r_tendon",
+  "glut_max1_l_tendon",
+  "glut_max1_r_tendon",
+  "glut_max2_l_tendon",
+  "glut_max2_r_tendon",
+  "glut_max3_l_tendon",
+  "glut_max3_r_tendon",
+  "glut_med1_l_tendon",
+  "glut_med1_r_tendon",
+  "glut_med2_l_tendon",
+  "glut_med2_r_tendon",
+  "glut_med3_l_tendon",
+  "glut_med3_r_tendon",
+  "grac_l_tendon",
+  "grac_r_tendon",
+  "iliacus_l_tendon",
+  "iliacus_r_tendon",
+  "pect_l_tendon",
+  "pect_r_tendon",
+  "peri_l_tendon",
+  "peri_r_tendon",
+  "psoas_l_tendon",
+  "psoas_r_tendon",
+  "quad_fem_l_tendon",
+  "quad_fem_r_tendon",
+  "rect_fem_l_tendon",
+  "rect_fem_r_tendon",
+  "sar_l_tendon",
+  "sar_r_tendon",
+  "tfl_l_tendon",
+  "tfl_r_tendon",
+  "vas_int_l_tendon",
+  "vas_int_r_tendon"
+ ],
+ "non_comparable_78": [
+  {
+   "tendon": "ANC_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna_l"
+   ]
+  },
+  {
+   "tendon": "ANC_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna"
+   ]
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "BRA_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna_l"
+   ]
+  },
+  {
+   "tendon": "BRA_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna"
+   ]
+  },
+  {
+   "tendon": "CORB_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "CORB_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "DELT1_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "DELT1_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "DELT2_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "DELT2_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "DELT3_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "DELT3_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_l"
+   ]
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_r"
+   ]
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_l"
+   ]
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_r"
+   ]
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_l",
+    "ulna_l"
+   ]
+  },
+  {
+   "tendon": "ECU_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_r",
+    "ulna"
+   ]
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_l"
+   ]
+  },
+  {
+   "tendon": "FCR_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_r"
+   ]
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_l"
+   ]
+  },
+  {
+   "tendon": "FCU_tendon",
+   "unresolved_bodies_in_chain": [
+    "hand_r"
+   ]
+  },
+  {
+   "tendon": "INFSP_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "INFSP_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "LAT1_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "LAT1_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "LAT2_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "LAT2_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "LAT3_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "LAT3_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "PECM1_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "PECM1_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "PECM2_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "PECM2_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "PECM3_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "PECM3_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna_l"
+   ]
+  },
+  {
+   "tendon": "PT_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna"
+   ]
+  },
+  {
+   "tendon": "SUBSC_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "SUBSC_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "SUPSP_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "SUPSP_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "TMAJ_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "TMAJ_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "TMIN_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "TMIN_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "TRIlat_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna_l"
+   ]
+  },
+  {
+   "tendon": "TRIlat_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna"
+   ]
+  },
+  {
+   "tendon": "TRIlong_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax",
+    "ulna_l"
+   ]
+  },
+  {
+   "tendon": "TRIlong_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax",
+    "ulna"
+   ]
+  },
+  {
+   "tendon": "TRImed_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna_l"
+   ]
+  },
+  {
+   "tendon": "TRImed_tendon",
+   "unresolved_bodies_in_chain": [
+    "ulna"
+   ]
+  },
+  {
+   "tendon": "ercspn_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "ercspn_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "ext_dig_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_l",
+    "toes_l"
+   ]
+  },
+  {
+   "tendon": "ext_dig_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_r",
+    "toes_r"
+   ]
+  },
+  {
+   "tendon": "extobl_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "extobl_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "flex_dig_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_l",
+    "toes_l"
+   ]
+  },
+  {
+   "tendon": "flex_dig_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_r",
+    "toes_r"
+   ]
+  },
+  {
+   "tendon": "flex_hal_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_l",
+    "toes_l"
+   ]
+  },
+  {
+   "tendon": "flex_hal_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_r",
+    "toes_r"
+   ]
+  },
+  {
+   "tendon": "intobl_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "intobl_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "thorax"
+   ]
+  },
+  {
+   "tendon": "med_gas_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_l"
+   ]
+  },
+  {
+   "tendon": "med_gas_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_r"
+   ]
+  },
+  {
+   "tendon": "per_long_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_l"
+   ]
+  },
+  {
+   "tendon": "per_long_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_r"
+   ]
+  },
+  {
+   "tendon": "soleus_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_l"
+   ]
+  },
+  {
+   "tendon": "soleus_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_r"
+   ]
+  },
+  {
+   "tendon": "tib_ant_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_l"
+   ]
+  },
+  {
+   "tendon": "tib_ant_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_r"
+   ]
+  },
+  {
+   "tendon": "tib_post_l_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_l"
+   ]
+  },
+  {
+   "tendon": "tib_post_r_tendon",
+   "unresolved_bodies_in_chain": [
+    "talus_r"
+   ]
+  }
+ ]
+}

@@ -57,3 +57,16 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none.
 
 **Next:** integrate A1–A9 as they land → I1 (wrist consolidation) → I2 (spec pass-2; A3+A4 slots fillable) → I3.
+
+## CHECKPOINT 2026-09-24 (T4) — A6 + A7 integrated
+
+**Verified:**
+- A6 (evidence taxonomy) PASS 6/6, receipt re-verified: 32-row evidence table; prediction held (zero rows carry measured-anatomy attachment evidence); probitive-claim scan zero hits. FINDING S-1: the bilateral asymmetry is SOURCE-AUTHORED — in raw XML, 14/16 pairs exact z-mirrors; BICshort-P6 (Δ2.732mm) and FCU-P2 (Δ1.030mm) are not — exactly the two pairs A4 measured as the fit's only asymmetries. Fit inherits, does not create.
+- A7 (tendon paths) PASS 5/5, all five scripts re-verified: 42/42 L0 bit-identical; 42/120 comparability reproduced; candidate deltas recomputed 42/42 exact WITHOUT re-running the dead candidate; only BRD/BRD_l nonzero (−0.90164mm/−0.901337mm).
+- STRUCTURAL FACT for I3: of 18 tendons touching the 32 sites, only BRD/BRD_l have derived lengths/arms; the 16 grasp-critical ones are null on unresolved hand/ulna bodies. Grasp qualification is blocked deeper than the 2 ambiguous wrist sections — hand/ulna body resolution is the load-bearing missing piece.
+
+**Active:** A1, A2, A5, A8, A9 still running.
+
+**Blocked:** none mechanically; substantive blockers accumulating for I3 (hand/ulna resolution; wrist ambiguity; Astra decisions).
+
+**Next:** integrate A1/A2/A5/A8/A9 → I1 → I2 (fill A3/A4/A6/A7 slots) → I3.

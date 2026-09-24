@@ -1,0 +1,4 @@
+== git -C E:/PythonChimera status --porcelain -- forearm_package/baseline_snapshot
+== (end; empty = clean)
+HEAD: d43b6b00150cbee198e727a6e946a4fc893fc164
+snapshot tracked files: 45

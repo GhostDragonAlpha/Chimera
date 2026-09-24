@@ -1,0 +1,710 @@
+{
+ "stepB_recount_per_side": {
+  "radius": {
+   "inside": 6,
+   "outside": 7,
+   "unresolved": 2,
+   "inside_insufficient_clearance": 1
+  },
+  "radius_l": {
+   "inside": 6,
+   "outside": 7,
+   "unresolved": 2,
+   "inside_insufficient_clearance": 1
+  }
+ },
+ "record_stepB_counts_match_recount": true,
+ "candidates_vs_experiment_verdict_mismatches": [],
+ "n_32_sites_resolved_both_packets": 32,
+ "containment_class_counts_32": {
+  "inside": 12,
+  "outside": 14,
+  "unresolved": 4,
+  "inside_insufficient_clearance": 2
+ },
+ "hull_diagnostic_counts_32": {
+  "unresolved": 16,
+  "outside": 10,
+  "inside": 6
+ },
+ "per_site": [
+  {
+   "site": "BIClong-P11",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "BIClong-P9",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "BICshort-P6",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "BICshort-P8",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "BRD-P2",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  },
+  {
+   "site": "BRD-P3",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  },
+  {
+   "site": "ECRB-P2",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  },
+  {
+   "site": "ECRB-P3",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "unresolved",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "ECRL-P2",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  },
+  {
+   "site": "ECRL-P3",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "unresolved",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "ECU-P5",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "FCR-P2",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "inside"
+  },
+  {
+   "site": "FCU-P2",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "inside"
+  },
+  {
+   "site": "FCU-P3",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "inside"
+  },
+  {
+   "site": "PT-P3",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside_insufficient_clearance",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "PT-P5",
+   "owning_body": "radius",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  },
+  {
+   "site": "BIClong_l-P11",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "BIClong_l-P9",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "BICshort_l-P6",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "BICshort_l-P8",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "BRD_l-P2",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  },
+  {
+   "site": "BRD_l-P3",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  },
+  {
+   "site": "ECRB_l-P2",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  },
+  {
+   "site": "ECRB_l-P3",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "unresolved",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "ECRL_l-P2",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  },
+  {
+   "site": "ECRL_l-P3",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "unresolved",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "ECU_l-P5",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "FCR_l-P2",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "inside"
+  },
+  {
+   "site": "FCU_l-P2",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "inside"
+  },
+  {
+   "site": "FCU_l-P3",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside",
+   "hull_diagnostic_verdict": "inside"
+  },
+  {
+   "site": "PT_l-P3",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "inside_insufficient_clearance",
+   "hull_diagnostic_verdict": "unresolved"
+  },
+  {
+   "site": "PT_l-P5",
+   "owning_body": "radius_l",
+   "packet_resolved": true,
+   "candidates_packet_resolved": true,
+   "loop_verdict": "outside",
+   "hull_diagnostic_verdict": "outside"
+  }
+ ],
+ "touching_tendons": [
+  {
+   "tendon": "BIClong_l_tendon",
+   "n_path_sites": 10,
+   "path_sites_bodies": [
+    "thorax",
+    "thorax",
+    "humerus_l",
+    "humerus_l",
+    "humerus_l",
+    "humerus_l",
+    "humerus_l",
+    "humerus_l",
+    "radius_l",
+    "radius_l"
+   ],
+   "forearm_sites_among_32": [
+    "BIClong_l-P9",
+    "BIClong_l-P11"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "crosses_to_unresolved_hand": [],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "n_path_sites": 10,
+   "path_sites_bodies": [
+    "thorax",
+    "thorax",
+    "humerus",
+    "humerus",
+    "humerus",
+    "humerus",
+    "humerus",
+    "humerus",
+    "radius",
+    "radius"
+   ],
+   "forearm_sites_among_32": [
+    "BIClong-P9",
+    "BIClong-P11"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "crosses_to_unresolved_hand": [],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "n_path_sites": 7,
+   "path_sites_bodies": [
+    "thorax",
+    "thorax",
+    "humerus_l",
+    "humerus_l",
+    "humerus_l",
+    "radius_l",
+    "radius_l"
+   ],
+   "forearm_sites_among_32": [
+    "BICshort_l-P6",
+    "BICshort_l-P8"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "crosses_to_unresolved_hand": [],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "n_path_sites": 7,
+   "path_sites_bodies": [
+    "thorax",
+    "thorax",
+    "humerus",
+    "humerus",
+    "humerus",
+    "radius",
+    "radius"
+   ],
+   "forearm_sites_among_32": [
+    "BICshort-P6",
+    "BICshort-P8"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "crosses_to_unresolved_hand": [],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['thorax']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "n_path_sites": 3,
+   "path_sites_bodies": [
+    "humerus_l",
+    "radius_l",
+    "radius_l"
+   ],
+   "forearm_sites_among_32": [
+    "BRD_l-P2",
+    "BRD_l-P3"
+   ],
+   "stored_L0_m": 0.0888363641039056,
+   "packet_status": "derived",
+   "crosses_to_unresolved_hand": [],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path:derived|physiology:requires_physiological_rerun",
+   "muscle_rest_length": 0.0888363641039056,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "BRD_tendon",
+   "n_path_sites": 3,
+   "path_sites_bodies": [
+    "humerus",
+    "radius",
+    "radius"
+   ],
+   "forearm_sites_among_32": [
+    "BRD-P2",
+    "BRD-P3"
+   ],
+   "stored_L0_m": 0.08883103763879713,
+   "packet_status": "derived",
+   "crosses_to_unresolved_hand": [],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path:derived|physiology:requires_physiological_rerun",
+   "muscle_rest_length": 0.08883103763879713,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "n_path_sites": 4,
+   "path_sites_bodies": [
+    "humerus_l",
+    "radius_l",
+    "radius_l",
+    "hand_l"
+   ],
+   "forearm_sites_among_32": [
+    "ECRB_l-P2",
+    "ECRB_l-P3"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "crosses_to_unresolved_hand": [
+    "hand_l"
+   ],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "n_path_sites": 4,
+   "path_sites_bodies": [
+    "humerus",
+    "radius",
+    "radius",
+    "hand_r"
+   ],
+   "forearm_sites_among_32": [
+    "ECRB-P2",
+    "ECRB-P3"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "crosses_to_unresolved_hand": [
+    "hand_r"
+   ],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "n_path_sites": 4,
+   "path_sites_bodies": [
+    "humerus_l",
+    "radius_l",
+    "radius_l",
+    "hand_l"
+   ],
+   "forearm_sites_among_32": [
+    "ECRL_l-P2",
+    "ECRL_l-P3"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "crosses_to_unresolved_hand": [
+    "hand_l"
+   ],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "n_path_sites": 4,
+   "path_sites_bodies": [
+    "humerus",
+    "radius",
+    "radius",
+    "hand_r"
+   ],
+   "forearm_sites_among_32": [
+    "ECRL-P2",
+    "ECRL-P3"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "crosses_to_unresolved_hand": [
+    "hand_r"
+   ],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "n_path_sites": 6,
+   "path_sites_bodies": [
+    "humerus_l",
+    "ulna_l",
+    "ulna_l",
+    "ulna_l",
+    "radius_l",
+    "hand_l"
+   ],
+   "forearm_sites_among_32": [
+    "ECU_l-P5"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l', 'ulna_l']",
+   "crosses_to_unresolved_hand": [
+    "hand_l"
+   ],
+   "touches_unresolved_ulna": [
+    "ulna_l"
+   ],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_l', 'ulna_l']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "ECU_tendon",
+   "n_path_sites": 6,
+   "path_sites_bodies": [
+    "humerus",
+    "ulna",
+    "ulna",
+    "ulna",
+    "radius",
+    "hand_r"
+   ],
+   "forearm_sites_among_32": [
+    "ECU-P5"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r', 'ulna']",
+   "crosses_to_unresolved_hand": [
+    "hand_r"
+   ],
+   "touches_unresolved_ulna": [
+    "ulna"
+   ],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_r', 'ulna']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "n_path_sites": 3,
+   "path_sites_bodies": [
+    "humerus_l",
+    "radius_l",
+    "hand_l"
+   ],
+   "forearm_sites_among_32": [
+    "FCR_l-P2"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "crosses_to_unresolved_hand": [
+    "hand_l"
+   ],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "FCR_tendon",
+   "n_path_sites": 3,
+   "path_sites_bodies": [
+    "humerus",
+    "radius",
+    "hand_r"
+   ],
+   "forearm_sites_among_32": [
+    "FCR-P2"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "crosses_to_unresolved_hand": [
+    "hand_r"
+   ],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "n_path_sites": 4,
+   "path_sites_bodies": [
+    "humerus_l",
+    "radius_l",
+    "radius_l",
+    "hand_l"
+   ],
+   "forearm_sites_among_32": [
+    "FCU_l-P2",
+    "FCU_l-P3"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "crosses_to_unresolved_hand": [
+    "hand_l"
+   ],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "FCU_tendon",
+   "n_path_sites": 4,
+   "path_sites_bodies": [
+    "humerus",
+    "radius",
+    "radius",
+    "hand_r"
+   ],
+   "forearm_sites_among_32": [
+    "FCU-P2",
+    "FCU-P3"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "crosses_to_unresolved_hand": [
+    "hand_r"
+   ],
+   "touches_unresolved_ulna": [],
+   "muscle_status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "n_path_sites": 4,
+   "path_sites_bodies": [
+    "humerus_l",
+    "ulna_l",
+    "radius_l",
+    "radius_l"
+   ],
+   "forearm_sites_among_32": [
+    "PT_l-P3",
+    "PT_l-P5"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['ulna_l']",
+   "crosses_to_unresolved_hand": [],
+   "touches_unresolved_ulna": [
+    "ulna_l"
+   ],
+   "muscle_status": "path_incomplete:unresolved_bodies ['ulna_l']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  },
+  {
+   "tendon": "PT_tendon",
+   "n_path_sites": 4,
+   "path_sites_bodies": [
+    "humerus",
+    "ulna",
+    "radius",
+    "radius"
+   ],
+   "forearm_sites_among_32": [
+    "PT-P3",
+    "PT-P5"
+   ],
+   "stored_L0_m": null,
+   "packet_status": "path_incomplete:unresolved_bodies ['ulna']",
+   "crosses_to_unresolved_hand": [],
+   "touches_unresolved_ulna": [
+    "ulna"
+   ],
+   "muscle_status": "path_incomplete:unresolved_bodies ['ulna']",
+   "muscle_rest_length": null,
+   "n_moment_arms_all_nonfinite": false
+  }
+ ]
+}

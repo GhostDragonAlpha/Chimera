@@ -1,0 +1,6516 @@
+[
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 3,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"compiler\": \"anatomy_compiler\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 45,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"provenance\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 128,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"requires_density_validation\": true,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 135,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"n_axis_evidence\": 21,",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 137,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"root_ref_frame_not_scale_evidence\": true,",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 138,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"geometry_resolution_does_not_discharge_density_validation\": true",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1012,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1013,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1014,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1015,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1018,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1019,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1020,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1023,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1100,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1101,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1102,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1103,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1106,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1107,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1108,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1111,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1188,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1189,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1194,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1202,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1279,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1280,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1281,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1282,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1285,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1286,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1287,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1290,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1367,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1368,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1369,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1370,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1373,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1374,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1375,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1378,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1455,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1456,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1457,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1458,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1461,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1462,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1463,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1466,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1543,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1544,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1545,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1546,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1549,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1550,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1551,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"evidence\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1554,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1631,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1632,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1637,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1642,
+  "terms": [
+   "evidence",
+   "measur",
+   "measured"
+  ],
+  "text": "\"b\": \"uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is measured by the bounded forearm-envelope estimator (target_envelope.py) and is an OUTER-ENVELOPE CONSTRAINT only \\u2014 skin width is NOT evidence for internal (bone/tissue) cross-section scaling\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1643,
+  "terms": [
+   "evidence",
+   "measur",
+   "measured"
+  ],
+  "text": "\"c\": \"uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is measured by the bounded forearm-envelope estimator (target_envelope.py) and is an OUTER-ENVELOPE CONSTRAINT only \\u2014 skin width is NOT evidence for internal (bone/tissue) cross-section scaling\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1645,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1722,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1723,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1728,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1733,
+  "terms": [
+   "evidence",
+   "measur",
+   "measured"
+  ],
+  "text": "\"b\": \"uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is measured by the bounded forearm-envelope estimator (target_envelope.py) and is an OUTER-ENVELOPE CONSTRAINT only \\u2014 skin width is NOT evidence for internal (bone/tissue) cross-section scaling\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1734,
+  "terms": [
+   "evidence",
+   "measur",
+   "measured"
+  ],
+  "text": "\"c\": \"uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is measured by the bounded forearm-envelope estimator (target_envelope.py) and is an OUTER-ENVELOPE CONSTRAINT only \\u2014 skin width is NOT evidence for internal (bone/tissue) cross-section scaling\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 1736,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 46961,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 46966,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"admission_note\": \"root reference frame only: identity scale carries the original mass as a reference-frame quantity \\u2014 it does not measure or validate pelvis size\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 47012,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 47063,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 47114,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 47165,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 47216,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 47267,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 47318,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 47369,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 48829,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'tail' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 48834,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'neck' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 48839,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'head' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 48844,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'finger' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 48998,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence_axes_total\": 21,",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 49031,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"measurements\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 49036,
+  "terms": [
+   "anatom",
+   "evidence",
+   "measur",
+   "measured"
+  ],
+  "text": "\"note\": \"skin (outer) envelope cross-section widths measured on interior sections of the elbow->wrist axis, away from wrist/palm and elbow. An outer-envelope constraint only \\u2014 NOT internal (bone/tissue) anatomy evidence.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 50021,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "\"n_sections_measured\": 3",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 50029,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "\"n_sections_measured\": 3",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 50050,
+  "terms": [
+   "anatom",
+   "evidence",
+   "measur",
+   "measured"
+  ],
+  "text": "\"note\": \"skin (outer) envelope cross-section widths measured on interior sections of the elbow->wrist axis, away from wrist/palm and elbow. An outer-envelope constraint only \\u2014 NOT internal (bone/tissue) anatomy evidence.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 51035,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "\"n_sections_measured\": 3",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 51043,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "\"n_sections_measured\": 3",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 51230,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "\"claim\": \"per-section 2D containment in the measured (b,c) hull of the sampled band -- spatial, not a width screen. Signed-distance classes are DISTINCT: d>0 is OUTSIDE; inside with clearance below the margin is inside_insufficient_clearance (never reported as outside); d<=-margin is INSIDE; a class that flips under band-width variation, or a site with no sampled band near its axial position, is U",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 51355,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "\"claim\": \"per-section 2D containment in the measured (b,c) hull of the sampled band -- spatial, not a width screen. Signed-distance classes are DISTINCT: d>0 is OUTSIDE; inside with clearance below the margin is inside_insufficient_clearance (never reported as outside); d<=-margin is INSIDE; a class that flips under band-width variation, or a site with no sampled band near its axial position, is U",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 52391,
+  "terms": [
+   "anatom",
+   "evidence"
+  ],
+  "text": "\"note\": \"outer (skin) envelope of interior forearm cross-sections \\u2014 an OUTER-ENVELOPE constraint only; never internal (bone/tissue) anatomy evidence. The forearm b/c scale is the AUTHORED axial scale (see radius axis_assumptions); the envelope bounds feasibility via the coarse one-dimensional WIDTH screen (a displaced narrow cluster passes it by construction), the session-4 band-vertex HULL s",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 52451,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"reason\": \"root reference frame only: identity scale carries the original mass as a reference-frame quantity \\u2014 it does not measure or validate pelvis size\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 52465,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"requires_density_validation\": true,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 52466,
+  "terms": [
+   "validated"
+  ],
+  "text": "\"density_validated\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/actual_monkey_fit.json",
+  "line": 52467,
+  "terms": [
+   "validated",
+   "validation"
+  ],
+  "text": "\"note\": \"a transported mass is the source effective mass scaled by |det D| under a RECORDED constant-density assumption. Geometry resolution alone does NOT discharge requires_density_validation; no body is physically admitted because no validated material/mass source was supplied and none is invented.\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/admission_actual_monkey.json",
+  "line": 67,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"reason\": \"root reference frame only: identity scale carries the original mass as a reference-frame quantity \\u2014 it does not measure or validate pelvis size\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/admission_actual_monkey.json",
+  "line": 81,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"requires_density_validation\": true,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/admission_actual_monkey.json",
+  "line": 82,
+  "terms": [
+   "validated"
+  ],
+  "text": "\"density_validated\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/admission_actual_monkey.json",
+  "line": 83,
+  "terms": [
+   "validated",
+   "validation"
+  ],
+  "text": "\"note\": \"a transported mass is the source effective mass scaled by |det D| under a RECORDED constant-density assumption. Geometry resolution alone does NOT discharge requires_density_validation; no body is physically admitted because no validated material/mass source was supplied and none is invented.\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 2,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "\"kind\": \"attachment_candidates\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 4,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "\"scope\": \"foreign-forearm muscle attachment sites (radius, radius_l)\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 7,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "\"revision_safety\": \"derived from the fitted packet site/tendon order + the fit's own recorded transforms and measurements; nothing re-measured or re-invented.\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 8,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"port_vs_waypoint_rule\": \"a site is a FIRST/LAST ENDPOINT of tendon X only when it is the first/last entry of X's ordered site_names; intermediate entries are waypoints and never endpoints for that tendon. Endpoint roles are NOT mechanical qualifications: every site ships mechanical_qualification=false.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 54,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 55,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 107,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 108,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 158,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 159,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 209,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 210,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 262,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 263,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 313,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 314,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 366,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 367,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 417,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 418,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 468,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 469,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 519,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 520,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 570,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 571,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 621,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 622,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 672,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 673,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 723,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 724,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 774,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 775,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 825,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 826,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 915,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 916,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 968,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 969,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1019,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1020,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1070,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1071,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1123,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1124,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1174,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1175,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1227,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1228,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1278,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1279,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1329,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1330,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1380,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1381,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1431,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1432,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1482,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1483,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1533,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1534,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1584,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1585,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1635,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1636,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1686,
+  "terms": [
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification\": false,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1687,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "evidence",
+   "qualification"
+  ],
+  "text": "\"mechanical_qualification_note\": \"resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1733,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"provenance_hashes\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/attachment_candidates.json",
+  "line": 1737,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"note\": \"source XML hashes identify the UPSTREAM anatomy file; fitted_packet_sha256 identifies the WRITTEN fitted packet bytes. They are different objects and never interchangeable.\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/experiment_transverse_candidate.json",
+  "line": 4,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "\"fixed\": \"axial length (pack-measured); segment geometry, joints, masses untouched; other side independent\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/experiment_transverse_candidate.json",
+  "line": 33,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "measur",
+   "measured",
+   "qualification"
+  ],
+  "text": "\"interpretation_limit\": \"a passing candidate is AUTHORED transverse geometry under declared bounds \\u2014 not recovered anatomy, not measured attachment, not mechanical qualification\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 3,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"compiler\": \"anatomy_compiler\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 40,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"provenance\": {}",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 64,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"requires_density_validation\": true,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 71,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"n_axis_evidence\": 18,",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 73,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"root_ref_frame_not_scale_evidence\": true",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1015,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1016,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1021,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1026,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1027,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1029,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1106,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1107,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1112,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1117,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1118,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1120,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1197,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1198,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1203,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1208,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1209,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1211,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1288,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1289,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1294,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1299,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1300,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1302,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1379,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1380,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1385,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1390,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1391,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1393,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1470,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1471,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1476,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1481,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1482,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1484,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1561,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1562,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1567,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1572,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1573,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1575,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1652,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1653,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1658,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1663,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1664,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1666,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1743,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1744,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1749,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1754,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1755,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1757,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1834,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1835,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1840,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1845,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1846,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1848,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1925,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1926,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1931,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1936,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1937,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 1939,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2016,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2017,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2022,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2027,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2028,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2030,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2107,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2108,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2113,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2118,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2119,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2121,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2198,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2199,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2204,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2209,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2210,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2212,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2289,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2290,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2295,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2300,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2301,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2303,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2380,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2381,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2386,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2391,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2392,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2394,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2471,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2472,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2477,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2482,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2483,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2485,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2562,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2563,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2568,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2573,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2574,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 2576,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 49817,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 49822,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"admission_note\": \"root reference frame only: identity scale carries the original mass as a reference-frame quantity \\u2014 it does not measure or validate pelvis size\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 49868,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 49919,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 49970,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50021,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50072,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50123,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50174,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50225,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50276,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50327,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50378,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50429,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50480,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50531,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50582,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50633,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 50684,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 52378,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'tail' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 52383,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'neck' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 52388,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'head' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 52393,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'finger' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 52497,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence_axes_total\": 18,",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 52499,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"measurements\": {},",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/grounded_chimanoid.json",
+  "line": 52553,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"reason\": \"root reference frame only: identity scale carries the original mass as a reference-frame quantity \\u2014 it does not measure or validate pelvis size\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 3,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"compiler\": \"anatomy_compiler\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 33,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"provenance\": {},",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 62,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"requires_density_validation\": true,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 69,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"n_axis_evidence\": 18,",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 71,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"root_ref_frame_not_scale_evidence\": true",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1013,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1014,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1019,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1024,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1025,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1027,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1104,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1105,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1110,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1115,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1116,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1118,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1195,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1196,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1201,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1206,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1207,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1209,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1286,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1287,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1292,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1297,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1298,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1300,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1377,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1378,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1383,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1388,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1389,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1391,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1468,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1469,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1474,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1479,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1480,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1482,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1559,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1560,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1565,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1570,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1571,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1573,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1650,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1651,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1656,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1661,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1662,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1664,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1741,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1742,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1747,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1752,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1753,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1755,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1832,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1833,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1838,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1843,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1844,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1846,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1923,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1924,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1929,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1934,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1935,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 1937,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2014,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2015,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2020,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2025,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2026,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2028,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2105,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2106,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2111,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2116,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2117,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2119,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2196,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2197,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2202,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2207,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2208,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2210,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2287,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2288,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2293,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2298,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2299,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2301,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2378,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2379,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2384,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2389,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2390,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2392,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2469,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2470,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2475,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2480,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2481,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2483,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2560,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2561,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2566,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2571,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2572,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 2574,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 49815,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 49820,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"admission_note\": \"root reference frame only: identity scale carries the original mass as a reference-frame quantity \\u2014 it does not measure or validate pelvis size\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 49866,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 49917,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 49968,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50019,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50070,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50121,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50172,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50223,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50274,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50325,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50376,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50427,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50478,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50529,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50580,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50631,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 50682,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 52376,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'tail' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 52381,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'neck' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 52386,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'head' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 52391,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'finger' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 52500,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence_axes_total\": 18,",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 52502,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"measurements\": {},",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/mirror_read.json",
+  "line": 52556,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"reason\": \"root reference frame only: identity scale carries the original mass as a reference-frame quantity \\u2014 it does not measure or validate pelvis size\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 3,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"compiler\": \"anatomy_compiler\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 33,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"provenance\": {}",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 57,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"requires_density_validation\": true,",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 64,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"n_axis_evidence\": 18,",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 66,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"root_ref_frame_not_scale_evidence\": true",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1008,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1009,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1014,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1019,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1020,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1022,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1099,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1100,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1105,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1110,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1111,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1113,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1190,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1191,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1196,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1201,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1202,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1204,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1281,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1282,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1287,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1292,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1293,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1295,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1372,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1373,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1378,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1383,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1384,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1386,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1463,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1464,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1469,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1474,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1475,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1477,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1554,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1555,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1560,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1565,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1566,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1568,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1645,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1646,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1651,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1656,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1657,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1659,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1736,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1737,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1742,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1747,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1748,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1750,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1827,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1828,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1833,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1838,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1839,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1841,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1918,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1919,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1924,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1929,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1930,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 1932,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2009,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2010,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2015,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2020,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2021,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2023,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2100,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2101,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2106,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2111,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2112,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2114,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2191,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2192,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2197,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2202,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2203,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2205,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2282,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2283,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2288,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2293,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2294,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2296,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2373,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2374,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2379,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2384,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2385,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2387,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2464,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2465,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2470,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2475,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2476,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2478,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2555,
+  "terms": [
+   "proven"
+  ],
+  "text": "\"scale_provenance\": [",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2556,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2561,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"axial\": \"evidence\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2566,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"b\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2567,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"c\": \"uniform_legacy: b/c inherit axial scale (blanket, not evidence)\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 2569,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"axis_measure_kind\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 49810,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 49815,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"admission_note\": \"root reference frame only: identity scale carries the original mass as a reference-frame quantity \\u2014 it does not measure or validate pelvis size\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 49861,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 49912,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 49963,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50014,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50065,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50116,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50167,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50218,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50269,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50320,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50371,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50422,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50473,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50524,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50575,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50626,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 50677,
+  "terms": [
+   "validation"
+  ],
+  "text": "\"status\": \"requires_density_validation\",",
+  "has_negation_marker": true
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 52371,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'tail' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 52376,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'neck' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 52381,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'head' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 52386,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence\": \"no 'finger' token in source taxonomy\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 52490,
+  "terms": [
+   "evidence"
+  ],
+  "text": "\"evidence_axes_total\": 18,",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 52492,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"measurements\": {},",
+  "has_negation_marker": false
+ },
+ {
+  "file": "runs/synthetic_twin.json",
+  "line": 52546,
+  "terms": [
+   "measur"
+  ],
+  "text": "\"reason\": \"root reference frame only: identity scale carries the original mass as a reference-frame quantity \\u2014 it does not measure or validate pelvis size\"",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 1,
+  "terms": [
+   "anatom"
+  ],
+  "text": "# ANATOMY COMPILER 01 \u2014 WHOLE-BODY FIT MEMBRANE EXECUTED",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 3,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment"
+  ],
+  "text": "**Agent:** bigpickle | **Date:** 2026-09-23 | **Scope:** `.tmp/anatomy_compiler/` (build only; no production edits, no commit, no MuJoCo, no training/attachment-force/display-mesh work)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 4,
+  "terms": [
+   "anatom"
+  ],
+  "text": "**Membrane:** `.tmp/anatomy_compiler/DERIVATION.md` (F1\u2013F7 + closed forms + refusal catalog + status ledger)",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 5,
+  "terms": [
+   "verified"
+  ],
+  "text": "**Source of truth:** verified real source XML, revision `e021d5d9d1698dafea93c0dcf34b4bc8ce1530e7`",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 11,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "## 1. Source facts (measured, XML, not assumed)",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 13,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "| Quantity | Measured |",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 39,
+  "terms": [
+   "measur",
+   "measured",
+   "verified"
+  ],
+  "text": "**Numerical honesty notes (why these tolerances):** chirality_det comes out \u00b11 to fp (1.0 vs 0.999999999999999) \u2192 compare with `<1e-9`. Roll twist is a circular angle \u2192 circular compare mod 360, and because the lateral reference plane is only defined up to a 180\u00b0 flip about the bone axis, twist is measured mod 180\u00b0 (a \u00b190 flip is the SAME reference plane, not a geometry change \u2014 verified: `Bp1 == ",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 41,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "## 3. Whole-body example output (measured)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 47,
+  "terms": [
+   "anatom"
+  ],
+  "text": "- **mirror** read of the same anatomy: preserve\u2192refused `handedness_mismatch`; mirror\u2192accepted with `chirality_det=-1.000`, `frame_handedness=left`.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 58,
+  "terms": [
+   "validation"
+  ],
+  "text": "- Physiology per body: `mass`, `mass_src`, `com_fitted`, `inertia_fitted` (about fitted CoM), `inertia_src`, `det_scale`, `status`. Status family: `requires_density_validation` etc.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 66,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "- No training, no attachment-force, no display-mesh, no MuJoCo run: out of scope by contract.",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_01.md",
+  "line": 70,
+  "terms": [
+   "verified"
+  ],
+  "text": "- `intake.py`: the 1 muscle with `tendon=None` also has NO name attribute in the XML (verified: repr `''`); carried honestly, never invented.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 1,
+  "terms": [
+   "anatom"
+  ],
+  "text": "# ANATOMY COMPILER 02 \u2014 ACTUAL-MONKEY FIT (V2 AXES + UNRESOLVED LEDGER)",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 3,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment"
+  ],
+  "text": "**Agent:** bigpickle | **Date:** 2026-09-23 | **Scope:** `.tmp/anatomy_compiler/` (build only; no production edits, no commit, no MuJoCo, no training/attachment-force/display-mesh work)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 4,
+  "terms": [
+   "anatom",
+   "evidence"
+  ],
+  "text": "**Membrane:** `.tmp/anatomy_compiler/DERIVATION.md` (F1\u2013F7) **amended in-session by** v2: one scale per axis, each axis EVIDENCE or an AUTHORED ASSUMPTION; segments whose endpoints the target does not declare stay **UNRESOLVED** (never a silently inherited length); preregistered aspect-bounds policy REFUSE|FLAG (never silent repair); nonuniform affine-image mass/inertia closed forms with `mass_kin",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 25,
+  "terms": [
+   "measur"
+  ],
+  "text": "**Root cause:** the fixture *authored* `hand_r = 0.30 m` and the real XML's hand has a 0.0428 m site span \u2014 a 7\u00d7 fixture coupling. Mass explosions downstream were `mass_src \u00d7 detS`. Not a compiler defect; the v1 compiler had no mechanism to refuse a length it could not measure.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 29,
+  "terms": [
+   "evidence",
+   "proven"
+  ],
+  "text": "- **CorrespondenceSegment v2** (`schema.py`): `axis_evidence` (4 landmark ids per axis: target pair + source pair), `axis_assumptions` (`value/note/provenance`), `transverse_required`, `axial_unresolved`, `axial_pair`, `transverse_pair`.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 30,
+  "terms": [
+   "evidence",
+   "proven"
+  ],
+  "text": "- **FittedSegment v2**: `scale_provenance`, `axis_sources` (`axial/b/c` \u2208 `evidence|assumption|unresolved`), `assumption_notes`, `status` = `SEG_RESOLVED | SEG_UNRESOLVED | SEG_FLAGGED`.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 31,
+  "terms": [
+   "evidence"
+  ],
+  "text": "- **`_Segment`** resolves each axis independently. Legacy semantics preserved exactly (F1\u2013F7, S1 re-run green): `uniform` remains the default and is now *labelled* `uniform_legacy: b/c inherit axial (blanket, not evidence)` \u2192 `AXIS_ASSUMED`, counted in the audit.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 32,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "- **`build_segments`** returns `(ordered, seen, unresolved_bodies)`; missing segments are **reported, not refused**. `fit()` keeps all shared measured joints, orders all sites, and leaves unresolved ones **ordered-but-unplaced** (`NaN`, `FittedSite.unresolved`); unresolved tendons get `path_incomplete:<body>` status with `rest_length = NaN`; a segment is only claimed when **all three axes** are so",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 36,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "## 3. Actual-target correspondence (measured, nothing invented)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 38,
+  "terms": [
+   "measur"
+  ],
+  "text": "Two corrections found by measuring, not assumption:",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 40,
+  "terms": [
+   "attach"
+  ],
+  "text": "1. **The source FOREARM bone is the RADIUS, not the ulna.** Source `ulna\u2192radius` = 0.023 m (a 2.3 cm elbow-head piece); `radius\u2192hand_r` = 0.292 m (the forearm). The pack `elbow\u2192wrist` corresponds to the **radius** (pack elbow_R = its proximal articular, wrist_R = its distal/hand root). First mapping attached it to `ulna` and produced the absurd fitted ulna 2.81\u00d7; the corrected radius fits at **0.2",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 41,
+  "terms": [
+   "verified"
+  ],
+  "text": "2. **The pack spine joints map 1:1 onto the source spine column origins** (verified by height alignment): `spine_lower` \u2194 pelvis origin, `spine_mid` \u2194 thorax_dummy origin, `spine_upper` \u2194 thorax origin (shoulder height). So `thorax_dummy` \u2194 `spine_mid\u2192spine_upper` (0.0844/0.3785 = **0.223**). The `spine_lower\u2192spine_mid` piece (pelvis\u2192waist) has **no source body** carrying it \u2192 pelvis keeps scale 1",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 45,
+  "terms": [
+   "evidence"
+  ],
+  "text": "| segment | pack pair (evidence) | fitted scale [a b c] | sources |",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 54,
+  "terms": [
+   "measur"
+  ],
+  "text": "**Rule-0 falsifier that LOST here (the good kind):** \"the radius transverse scale can be trusted.\" Falsified by the aspect policy \u2014 `b/axial = 2.637/0.222 = 11.9 > 6.0`. Cause: the wrist band's primary-owner vertices include the palm; the transverse \"width\" of the bone is not measurable at that band. The fit **proceeded but flagged** (`SEG_FLAGGED`, `aspect_flag.radius`), and under `policed` it wo",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 56,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "## 4. Numbers that came out fitted (measured, deterministic)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 67,
+  "terms": [
+   "evidence"
+  ],
+  "text": "| S4 | actual-monkey packet invariants: chirality +1/right, closure 0.0, exact 9/9 ledger, axial ratios re-derived from raw pack/source distances (femur 0.3632, tibia 0.3386, humerus 0.2290, radius 0.2217, thorax_dummy 0.2226 to 1e-6), n_axis_evidence 25 / n_axis_assumptions 2 / blanket_uniform False, pelvis detS 1, total 17.402\u00b10.05, inertia spectra positive, 120 tendons (42 derived / 78 NaN), de",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_02.md",
+  "line": 75,
+  "terms": [
+   "measur"
+  ],
+  "text": "- `probe_target.py`, `probe_transverse.py`, `trace_hand_scale.py`, `mesh_target.py`, `aspect_bounds.py`, `actual_target_fit.py`, `figure_fit.py`, `_inspect_packet.py` \u2014 reproducible measurement/build scripts.",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 1,
+  "terms": [
+   "anatom",
+   "proven"
+  ],
+  "text": "# ANATOMY COMPILER 03 \u2014 ADMISSIBLE PACKET: STRICT-JSON NULLS, PROVENANCE, ACTUATOR HYGIENE, FOREARM OUTER-ENVELOPE FIT",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 3,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment"
+  ],
+  "text": "**Agent:** bigpickle | **Date:** 2026-09-23 | **Scope:** `.tmp/anatomy_compiler/` (build only; no production edits, no commit, no MuJoCo, no training/attachment-force/display-mesh work)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 4,
+  "terms": [
+   "anatom",
+   "evidence",
+   "proven",
+   "verified"
+  ],
+  "text": "**Membrane:** `.tmp/anatomy_compiler/DERIVATION.md` (F1\u2013F7) **amended by** v3 contract: unresolved quantities export as `null` with explicit status+reason (never zeros); JSON is strict (`allow_nan=False`, round-trip verified); actuators are parsed from `<actuator>` only (the `<default>` block is resolved, never emitted); provenance records hashes + scale + coordinate conventions + aspect policy an",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 5,
+  "terms": [
+   "verified"
+  ],
+  "text": "**Inputs (read-only):** `Saved/meshes/monkey_birth.bin` (sha256 `550A5B3EC927\u2026AABFA3C`) + `monkey_joints.bin` (sha256 `74B3AB044B7A\u202650C1662`); source `.tmp/chimanoid.xml` (**raw** sha256 `675e00d0\u2026` / **canonical LF** sha256 `7caa32c6\u2026` \u2014 differs by exactly ONE trailing CRLF, 154835 \u2192 154834 bytes, verified).",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 8,
+  "terms": [
+   "evidence"
+  ],
+  "text": "**Verdict: F1\u2013F7 + G0 + S1\u2013S8 all green (`python run_tests.py` \u2192 exit 0). The forearm is now fit cleanly \u2014 radius/radius_l `[0.2217]\u00b3`, resolved (not flagged) under `policed_flag` \u2014 because the transverse axes are explicit envelope-bounded authorships instead of contaminated evidence. The contaminated wrist-band finding is preserved VERBATIM as the S3/S5 regression: fit the legacy `build_correspon",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 14,
+  "terms": [
+   "anatom",
+   "evidence",
+   "measur",
+   "proven"
+  ],
+  "text": "**Lead falsifiers (all now enforced):** strict-JSON failure (a packet with `NaN`/`Infinity` tokens must not be writable); unnamed/default actuator leakage (121 XML muscles = 120 `<actuator>` records + 1 `<default>` \u2014 the default must never become an actuator); missing provenance; flagged records promoted to admitted; root-frame identity used as physical scale evidence; outer-envelope measurements ",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 17,
+  "terms": [
+   "anatom",
+   "measur",
+   "measured"
+  ],
+  "text": "- `schema.py::_jsonable` now maps non-finite scalars to `null`, and an **all-NaN vector collapses to a single `null`** (an unresolved limb exports `null`, not `[null,null,null]`). `write_json` uses `allow_nan=False` **and** re-parses + rejects any non-standard token. New fields: `axis_measure_kind` (what *was* measured vs authored), `reason` on every unresolved site/joint, `admitted`/`admission_no",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 19,
+  "terms": [
+   "evidence",
+   "proven"
+  ],
+  "text": "- `compiler.py` v3: admission ledger (counts: geometrically_resolved / flagged / unresolved / admitted_kinematic / admitted_physical; bodies lists incl. `excluded_from_physical` with reasons; `totals_mass_kg` split admitted / flagged-only / root-reference-only / all-transported); `meta.source_identity` carries raw + canonical hashes with the transformation note; `fit(..., provenance=...)` threads ",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 21,
+  "terms": [
+   "verified"
+  ],
+  "text": "**Verified on the export:** 168 unresolved sites \u2192 `fitted_pos_global: null` + reason; 17 unresolved joints \u2192 `axis: null` + reason; 0 non-standard JSON tokens in a 1.2 MB packet; strict round-trip stable.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 23,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "## 2. Actuator population measured (121 = 120 + 1, and where they live)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 29,
+  "terms": [
+   "proven"
+  ],
+  "text": "## 3. Provenance: upstream identity \u2260 local transform",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 44,
+  "terms": [
+   "evidence",
+   "measur"
+  ],
+  "text": "The wrist-band regression did its job in session 2: under band transverse evidence, radius `[0.2217 2.6372 0.4434]` \u2192 aspect 11.9 > 6 \u2192 FLAGGED (S3 still asserts this on the legacy path, byte-identical). The question the packet now answers honestly: **is the forearm cross-section unmeasurable, or just unmeasurable by THAT band?**",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 46,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "**Measured:** a bounded outer(skin)-envelope estimator (`target_envelope.py`) samples interior sections at t = 0.35/0.5/0.65 of the elbow\u2192wrist axis, each a band \u00b18 mm wide with a **radial cap 50 mm** \u2014 without the cap, torso/upper-arm vertices contaminating the axial projection produced the 0.17 m garbage; with it, the geometry is real forearm skin:",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 53,
+  "terms": [
+   "anatom",
+   "evidence",
+   "measur",
+   "measured"
+  ],
+  "text": "Sensitivity is recorded (section placement \u00b15%, band half-width \u00b125%) and small on this geometry. **Nature: `outer_envelope` \u2014 a SKIN bound, explicitly NOT internal anatomy.** The packet therefore does NOT use skin width as bone/tissue scale evidence: radius b/c are **AUTHORED at the measured axial scale** (`n_axis_evidence 21 / n_axis_assumptions 6`, blanket True \u2014 the assumption notes say so lin",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 64,
+  "terms": [
+   "measur"
+  ],
+  "text": "| pelvis | **root_ref_frame_unscaled**, `admitted: False`, note *\"identity scale carries the original mass as a reference-frame quantity \u2014 it does not measure or validate pelvis size\"* |",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 75,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "| S6 | strict JSON: `write_json` rejects any NaN/Infinity token and round-trips; unresolved sites/joints export `null` + reason; rest_length null where unmeasured | PASS |",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 76,
+  "terms": [
+   "proven"
+  ],
+  "text": "| S7 | provenance: 4 required inputs hashed, source raw-vs-canonical recorded (single trailing CRLF), mesh_units 0.065, coordinate conventions, aspect policy; threaded into packet meta | PASS |",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 82,
+  "terms": [
+   "measur",
+   "proven"
+  ],
+  "text": "- `actual_monkey_fit.json` \u2014 **admissible** packet (strict JSON, null contract, provenance, admission ledger, envelope measurements).",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 83,
+  "terms": [
+   "proven"
+  ],
+  "text": "- `actual_monkey_tables.txt` \u2014 human table (includes envelope + feasibility + provenance sections).",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 86,
+  "terms": [
+   "proven"
+  ],
+  "text": "- `target_envelope.py` (new estimator), `actual_target_fit.py` (envelope correspondence + provenance + admission), `run_tests.py` S4\u2013S8.",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_03.md",
+  "line": 90,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "- The forearm cross-section is **still not measured** \u2014 it is authored at the axial scale under an outer skin bound. The envelope is a constraint, not a scale law.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 1,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment"
+  ],
+  "text": "# ANATOMY COMPILER 04 \u2014 CONTRACT CORRECTIONS: SERIALIZATION GATE, ADMISSION SPLIT, SPATIAL CONTAINMENT (FALSIFIER FIRED), ATTACHMENT CANDIDATES",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 3,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment"
+  ],
+  "text": "**Agent:** bigpickle | **Date:** 2026-09-23 | **Scope:** `.tmp/anatomy_compiler/` (build only; no production edits, no commit, no MuJoCo, no training/attachment-force work)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 4,
+  "terms": [
+   "attach",
+   "attachment",
+   "measur",
+   "measured",
+   "validated"
+  ],
+  "text": "**Membrane:** DERIVATION.md (F1\u2013F7, S1\u2013S8) **amended by** the session-4 contract: (1) a resolved field exports a NUMBER \u2014 NaN/Infinity is unwritable, `null` is reserved for records the machinery explicitly marks unresolved; (2) geometric admission is NOT mass admission \u2014 a transported mass is `source_effective \u00d7 |det D|` under a RECORDED constant-density assumption, and `physically_admitted` stays",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 11,
+  "terms": [
+   "validation"
+  ],
+  "text": "`PacketValidationError` (code `nonfinite_resolved_field`) now guards `write_json`: `validate_finite` walks every dataclass/array/list/dict and refuses a non-finite value in any field whose owning record is NOT explicitly unresolved. Non-finite stays legal only in `_NONFINITE_ALLOWED` fields of records that carry `unresolved+reason`, status `path_incomplete*`/`unresolved_body`, or `matched=False` (",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 24,
+  "terms": [
+   "validated",
+   "validation"
+  ],
+  "text": "requires_density_validation=True, density_validated=False",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 27,
+  "terms": [
+   "validation"
+  ],
+  "text": "`FittedPhysiology.admitted` is re-documented as *transport-eligibility*, never physical admission. The audit gains `geometry_resolution_does_not_discharge_density_validation: True`. Pelvis stays `root_ref_frame_unscaled` and out of every subtotal. Report/caption/admission-summary wording updated everywhere (`ADMITTED` \u2192 `TRANSPORTED-under-assumption (physically admitted 0.000)`); S4 re-locks the n",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 32,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "- `containment()`: each fitted site is projected into the envelope frame (axial along elbow\u2192wrist; b,c = the measured transverse axes; both metres \u2014 `mesh_target` already scales `V`/`J` by 0.065). Per section the sampler now records the **2-D convex hull** of the band vertices (`_convex_hull_2d`, monotone chain \u2014 no scipy) at nominal band AND at `band_half \u00d7 (1 \u00b1 0.25)`. Verdict law: **inside only",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 33,
+  "terms": [
+   "measur"
+  ],
+  "text": "- `main` wiring: only a HARD `outside` sets `envelope_containment.outside.<body>` + `envelope_containment_ok=False`; unresolved sets `envelope_containment.unestablished.<body>`. **Segments are NOT re-flagged post-fit** \u2014 the admission ledger is locked inside `fit()`; mutating `segment.status` afterwards would desync the packet. The envelope is a skin constraint, not a length measurement; the falsi",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 37,
+  "terms": [
+   "evidence",
+   "measur",
+   "measured"
+  ],
+  "text": "**Honest reading (what this finding is and is not):** the radius axial scale `[0.2217]\u00b3` is pack-joint evidence and is untouched; what fails is the **authored transverse placement** (`uniform transverse = axial scale`): the source muscle sites, transported at that authored ratio, land measurably OUTSIDE the measured monkey skin hull at mid-forearm sections for 5 of 16 sites per side. The packet no",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 39,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "## 4. Contract 4 \u2014 attachment candidates (`attachment_candidates.py`, test S12)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 41,
+  "terms": [
+   "attach",
+   "attachment",
+   "measur",
+   "measured",
+   "proven"
+  ],
+  "text": "`runs/attachment_candidates.json` (44,159 bytes, strict JSON, `allow_nan=False`): for radius and radius_l, all 16 sites each with source ids, `source_pos_local_m` (metres, \u00d70.065 recorded), fitted local/global metres, per-record resolved flag + reason, frame/units declarations, packet provenance hashes, and **tendon membership with `index_in_path` / `path_length` / `role`**. Role law: FIRST in a t",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 43,
+  "terms": [
+   "verified"
+  ],
+  "text": "Reader example: `example_read_candidates.py` (by-site and by-tendon views; run verified). Enlarged figure: `figure_forearm_candidates.py` \u2192 `runs/figure_forearm_candidates.png` (per forearm: axial-vs-b path view + true b-vs-c cross-section with hulls, ports, waypoints, containment-verdict coloring).",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 49,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "Regenerated: `runs/actual_monkey_fit.json` (**1,315,062 bytes**, was 1,230,610 \u2014 hulls \u00d73 variants \u00d73 sections \u00d72 forearms + containment records + nulls), `actual_monkey_tables.txt`, `admission_actual_monkey.json`, `attachment_candidates.json`, `figure_actual_fit.png`, `figure_forearm_candidates.png`. Temp probes (`_probe_contain.py`, `runs/_c1_smoke.json`) removed.",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 53,
+  "terms": [
+   "validation"
+  ],
+  "text": "- No mass is physically admitted; no density is invented; `requires_density_validation` stands.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_04.md",
+  "line": 55,
+  "terms": [
+   "evidence"
+  ],
+  "text": "- Containment says nothing about the axial scale; the outside verdict indicts only the authored transverse placement assumption. Fixing that (a transverse evidence source, or a narrower authorship) is a NEW derivation decision and was not made here.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 1,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment"
+  ],
+  "text": "# ANATOMY COMPILER 05 \u2014 CORRECTED ATTACHMENT PACKET + ONE PREREGISTERED PLACEMENT EXPERIMENT (CANDIDATE FAILS THE DECLARED CRITERIA; BASELINE PRESERVED)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 3,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment"
+  ],
+  "text": "**Agent:** bigpickle | **Date:** 2026-09-23 | **Scope:** `.tmp/anatomy_compiler/` (build only; no production edits, no commit, no MuJoCo, no training/attachment-force/material work)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 9,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "## 1. Correction 1 \u2014 source-coordinate units (`attachment_candidates.py`, test S13)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 26,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "## 3. Correction 3 \u2014 candidate handoff (`attachment_candidates.json` v5, tests S12)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 28,
+  "terms": [
+   "qualification"
+  ],
+  "text": "- **`mechanical_qualification: false` on every site**, with the reason spelled out: resolved coordinates + tendon endpoint membership do not qualify a membrane port.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 29,
+  "terms": [
+   "anatom",
+   "measur",
+   "measured"
+  ],
+  "text": "- Roles renamed `proximal_candidate`/`distal_candidate` \u2192 **`first_endpoint`/`last_endpoint`** (the packet does not establish anatomical proximal/distal orientation). Measured law unchanged: 8 last-endpoints per side, 0 first-endpoints (every tendon path enters the radius at an interior index), 24 waypoints.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 30,
+  "terms": [
+   "verified"
+  ],
+  "text": "- **Numeric local-to-world transforms** per body: `R = Bp @ diag(scale) @ B\u1d40` (B rebuilt from the fit's own landmark resolution), `t = fitted_origin`, with `fitted_pos_global = t + R @ source_pos_local`. Reconstruction error recorded per body (0.0 at export precision; verified < 1 \u00b5m in step A).",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 41,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "**B \u2014 baseline under the FINAL loop authority (fired, preserved).** Triangle\u2013plane section loops at each site's exact axial position, the infinite plane cut chained into closed loops, the limb's skin loop IDENTIFIED mechanically by majority pack-vertex ownership (\u2265 50 % of cut-segment triangles owned by the side's proximal/distal joints \u2014 the pack's own `assign` data, no proximity choice, no bridg",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 49,
+  "terms": [
+   "attach",
+   "attachment",
+   "measur"
+  ],
+  "text": "Regenerated: `actual_monkey_fit.json` (loop-authority measurements + residuals `envelope_containment_loop.*`; hull findings retained), `actual_monkey_tables.txt`, `admission_actual_monkey.json` (adds `envelope_containment_loop_ok` + per-side loop/tight/ambiguous lists), `attachment_candidates.json` (v5), both forearm figures, experiment json + figure. Temp probes removed.",
+  "has_negation_marker": false
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 54,
+  "terms": [
+   "anatom",
+   "attach",
+   "attachment",
+   "measur",
+   "measured",
+   "qualification"
+  ],
+  "text": "- Even a passing candidate would have remained authored transverse geometry under declared bounds \u2014 not recovered anatomy, not measured attachment, not mechanical qualification. It did not pass.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 55,
+  "terms": [
+   "qualification"
+  ],
+  "text": "- `mechanical_qualification` is false for every site in the packet; endpoint roles are path positions only.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "session_reports/anatomy_compiler_05.md",
+  "line": 56,
+  "terms": [
+   "measur"
+  ],
+  "text": "- No material inference, no training changes, no production wiring; the packet's fitted geometry is bit-identical to session 4 except the ADDED measurement records.",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 1,
+  "terms": [
+   "anatom"
+  ],
+  "text": "# Anatomical Fitting Compiler \u2014 Derivation (membrane v1)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 11,
+  "terms": [
+   "anatom"
+  ],
+  "text": "A static-creature anatomy (a tree of segments with joint frames, body sites and tendon",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 20,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "### PREDICTION (measured, not yet tested)",
+  "has_negation_marker": true
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 50,
+  "terms": [
+   "anatom"
+  ],
+  "text": "- **F7 \u00b7 anatomy gets invented**: every missing landmark, undefined or axis-parallel",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 56,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "Plus a **counts gate** (the real file, measured): 19 bodies, 39 distinct coordinate",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 64,
+  "terms": [
+   "anatom"
+  ],
+  "text": "- **Input A \u2014 source anatomy**: the FreeMusco `chimanoid.xml` at revision",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 66,
+  "terms": [
+   "anatom"
+  ],
+  "text": "stdlib only into a `SourceAnatomy`.",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 70,
+  "terms": [
+   "anatom"
+  ],
+  "text": "- **Output \u2014 FittedAnatomy**: joints, segments (frame basis + scale + transform + roll",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 81,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "## 2. Source model (measured from the real file)",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 83,
+  "terms": [
+   "measur",
+   "measured"
+  ],
+  "text": "| Quantity | Measured | Meaning |",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 255,
+  "terms": [
+   "validation"
+  ],
+  "text": "**Uniform-density assumption** (explicit flag `requires_density_validation: true`):",
+  "has_negation_marker": true
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 305,
+  "terms": [
+   "attach",
+   "validation"
+  ],
+  "text": "- `requires_density_validation` / `requires_physiological_rerun` \u2014 flags attached to",
+  "has_negation_marker": true
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 309,
+  "terms": [
+   "anatom"
+  ],
+  "text": "anatomy in the source; recorded under `unsupported`, never fabricated.",
+  "has_negation_marker": true
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 335,
+  "terms": [
+   "anatom"
+  ],
+  "text": "| S5 | bounded forearm envelope estimator (interior sections; never internal anatomy) |",
+  "has_negation_marker": true
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 337,
+  "terms": [
+   "proven"
+  ],
+  "text": "| S7 | provenance record (hashes, scale, aspect policy, upstream identity) |",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 340,
+  "terms": [
+   "validated"
+  ],
+  "text": "| S10 | admission split: `transported_under_assumption` vs `physically_admitted` (0 without a validated material/mass source) |",
+  "has_negation_marker": false
+ },
+ {
+  "file": "code/DERIVATION.md",
+  "line": 342,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "| S12 | attachment-candidates derivation: port \u21d4 path end, waypoint \u21d4 interior; per-tendon role unique; bit-identical rebuild |",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 2,
+  "terms": [
+   "anatom",
+   "qualification"
+  ],
+  "text": "\"campaign\": \"forearm anatomy package - grasp qualification (monkey)\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 11,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "\"sha256_of_runs/attachment_candidates.json\": \"854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae\"",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 50,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "\"code/attachment_candidates.py\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 180,
+  "terms": [
+   "attach",
+   "attachment"
+  ],
+  "text": "\"runs/attachment_candidates.json\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 220,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"session_reports/anatomy_compiler_01.md\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 225,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"session_reports/anatomy_compiler_02.md\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 230,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"session_reports/anatomy_compiler_03.md\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 235,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"session_reports/anatomy_compiler_04.md\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 240,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"session_reports/anatomy_compiler_05.md\": {",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 254,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\".tmp/anatomy_compiler/ (code + runs, gitignored)\",",
+  "has_negation_marker": false
+ },
+ {
+  "file": "MANIFEST.json",
+  "line": 256,
+  "terms": [
+   "anatom"
+  ],
+  "text": "\"agent_logs/bigpickle/anatomy_compiler_01..05.md (gitignored)\",",
+  "has_negation_marker": false
+ }
+]

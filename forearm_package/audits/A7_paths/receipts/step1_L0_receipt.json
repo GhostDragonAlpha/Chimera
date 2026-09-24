@@ -1,0 +1,1261 @@
+{
+ "law": "L0 = sum_j |s_{j+1}-s_j| over fitted global points (DERIVATION.md section 7; compiler._pl)",
+ "n_tendons_packet": 120,
+ "n_sites_packet": 468,
+ "sites32": [
+  "BIClong-P11",
+  "BIClong-P9",
+  "BICshort-P6",
+  "BICshort-P8",
+  "BRD-P2",
+  "BRD-P3",
+  "ECRB-P2",
+  "ECRB-P3",
+  "ECRL-P2",
+  "ECRL-P3",
+  "ECU-P5",
+  "FCR-P2",
+  "FCU-P2",
+  "FCU-P3",
+  "PT-P3",
+  "PT-P5",
+  "BIClong_l-P11",
+  "BIClong_l-P9",
+  "BICshort_l-P6",
+  "BICshort_l-P8",
+  "BRD_l-P2",
+  "BRD_l-P3",
+  "ECRB_l-P2",
+  "ECRB_l-P3",
+  "ECRL_l-P2",
+  "ECRL_l-P3",
+  "ECU_l-P5",
+  "FCR_l-P2",
+  "FCU_l-P2",
+  "FCU_l-P3",
+  "PT_l-P3",
+  "PT_l-P5"
+ ],
+ "membership_cross": {
+  "n_tendons_touching_fit_packet_scan": 18,
+  "n_tendons_named_in_candidates_membership": 18,
+  "in_scan_not_in_membership": [],
+  "in_membership_not_in_scan": []
+ },
+ "census_all_120": {
+  "n_status_derived": 42,
+  "n_rest_length_null": 78,
+  "n_exact_bit_identical_recompute": 42,
+  "max_rel_dev": 0.0,
+  "max_rel_dev_tendon": null,
+  "points_match_site_records": true
+ },
+ "census_touching_32": {
+  "n_tendons": 18,
+  "n_status_derived": 2,
+  "n_rest_length_null": 16,
+  "max_rel_dev": 0.0
+ },
+ "rows_all": [
+  {
+   "tendon": "glut_med1_r_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.08397993909402045,
+   "recomputed_L0_m": 0.08397993909402045,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_med2_r_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.08740210289539774,
+   "recomputed_L0_m": 0.08740210289539774,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_med3_r_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.10981529522912573,
+   "recomputed_L0_m": 0.10981529522912573,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "bifemlh_r_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.13185712148637962,
+   "recomputed_L0_m": 0.13185712148637962,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "bifemsh_r_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.055801833935610515,
+   "recomputed_L0_m": 0.055801833935610515,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "sar_r_tendon",
+   "n_points": 5,
+   "status": "derived",
+   "stored_rest_length_m": 0.3210936742171236,
+   "recomputed_L0_m": 0.3210936742171236,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "add_mag2_r_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.11184016669878663,
+   "recomputed_L0_m": 0.11184016669878663,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "tfl_r_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.2737574441730355,
+   "recomputed_L0_m": 0.2737574441730355,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "pect_r_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.08492706150088453,
+   "recomputed_L0_m": 0.08492706150088453,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "grac_r_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.1661922549547475,
+   "recomputed_L0_m": 0.1661922549547475,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_max1_r_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.20231317985833397,
+   "recomputed_L0_m": 0.20231317985833397,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_max2_r_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.24990067473758726,
+   "recomputed_L0_m": 0.24990067473758726,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_max3_r_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.27754403100622305,
+   "recomputed_L0_m": 0.27754403100622305,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "iliacus_r_tendon",
+   "n_points": 5,
+   "status": "derived",
+   "stored_rest_length_m": 0.26324026205821743,
+   "recomputed_L0_m": 0.26324026205821743,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "psoas_r_tendon",
+   "n_points": 5,
+   "status": "derived",
+   "stored_rest_length_m": 0.321088817375259,
+   "recomputed_L0_m": 0.321088817375259,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "quad_fem_r_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.15969571395017418,
+   "recomputed_L0_m": 0.15969571395017418,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "gem_r_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.13664811986440295,
+   "recomputed_L0_m": 0.13664811986440295,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "peri_r_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.17115818472575245,
+   "recomputed_L0_m": 0.17115818472575245,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "rect_fem_r_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.24010023625348703,
+   "recomputed_L0_m": 0.24010023625348703,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "vas_int_r_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.14337089168081746,
+   "recomputed_L0_m": 0.14337089168081746,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "med_gas_r_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['talus_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "soleus_r_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['talus_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "tib_post_r_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['talus_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "tib_ant_r_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['talus_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "per_long_r_tendon",
+   "n_points": 7,
+   "status": "path_incomplete:unresolved_bodies ['talus_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "flex_dig_r_tendon",
+   "n_points": 8,
+   "status": "path_incomplete:unresolved_bodies ['talus_r', 'toes_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "flex_hal_r_tendon",
+   "n_points": 7,
+   "status": "path_incomplete:unresolved_bodies ['talus_r', 'toes_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "ext_dig_r_tendon",
+   "n_points": 6,
+   "status": "path_incomplete:unresolved_bodies ['talus_r', 'toes_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_med1_l_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.08397993899387489,
+   "recomputed_L0_m": 0.08397993899387489,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_med2_l_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.08740210265594446,
+   "recomputed_L0_m": 0.08740210265594446,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_med3_l_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.10981529515795391,
+   "recomputed_L0_m": 0.10981529515795391,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "bifemlh_l_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.13185712135431107,
+   "recomputed_L0_m": 0.13185712135431107,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "bifemsh_l_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.055801833299814266,
+   "recomputed_L0_m": 0.055801833299814266,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "sar_l_tendon",
+   "n_points": 5,
+   "status": "derived",
+   "stored_rest_length_m": 0.3210936730388963,
+   "recomputed_L0_m": 0.3210936730388963,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "add_mag2_l_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.11184016628083965,
+   "recomputed_L0_m": 0.11184016628083965,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "tfl_l_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.27375744477080854,
+   "recomputed_L0_m": 0.27375744477080854,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "pect_l_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.08492706169040855,
+   "recomputed_L0_m": 0.08492706169040855,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "grac_l_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.1661922541623074,
+   "recomputed_L0_m": 0.1661922541623074,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_max1_l_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.2023131804971038,
+   "recomputed_L0_m": 0.2023131804971038,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_max2_l_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.2499006761189902,
+   "recomputed_L0_m": 0.2499006761189902,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "glut_max3_l_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.27754403240260606,
+   "recomputed_L0_m": 0.27754403240260606,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "iliacus_l_tendon",
+   "n_points": 5,
+   "status": "derived",
+   "stored_rest_length_m": 0.26324026247628873,
+   "recomputed_L0_m": 0.26324026247628873,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "psoas_l_tendon",
+   "n_points": 5,
+   "status": "derived",
+   "stored_rest_length_m": 0.32108881780405435,
+   "recomputed_L0_m": 0.32108881780405435,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "quad_fem_l_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.15969571478875652,
+   "recomputed_L0_m": 0.15969571478875652,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "gem_l_tendon",
+   "n_points": 2,
+   "status": "derived",
+   "stored_rest_length_m": 0.13664811991386436,
+   "recomputed_L0_m": 0.13664811991386436,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "peri_l_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.17115818474502076,
+   "recomputed_L0_m": 0.17115818474502076,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "rect_fem_l_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.24010023712507295,
+   "recomputed_L0_m": 0.24010023712507295,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "vas_int_l_tendon",
+   "n_points": 4,
+   "status": "derived",
+   "stored_rest_length_m": 0.14337089266320266,
+   "recomputed_L0_m": 0.14337089266320266,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": false
+  },
+  {
+   "tendon": "med_gas_l_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['talus_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "soleus_l_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['talus_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "tib_post_l_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['talus_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "tib_ant_l_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['talus_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "per_long_l_tendon",
+   "n_points": 7,
+   "status": "path_incomplete:unresolved_bodies ['talus_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "flex_dig_l_tendon",
+   "n_points": 8,
+   "status": "path_incomplete:unresolved_bodies ['talus_l', 'toes_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "flex_hal_l_tendon",
+   "n_points": 7,
+   "status": "path_incomplete:unresolved_bodies ['talus_l', 'toes_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "ext_dig_l_tendon",
+   "n_points": 6,
+   "status": "path_incomplete:unresolved_bodies ['talus_l', 'toes_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "ercspn_r_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "ercspn_l_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "intobl_r_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "intobl_l_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "extobl_r_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "extobl_l_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "DELT1_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "DELT2_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "DELT3_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "SUPSP_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "INFSP_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "SUBSC_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TMIN_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TMAJ_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "PECM1_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "PECM2_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "PECM3_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "LAT1_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "LAT2_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "LAT3_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "CORB_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TRIlong_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax', 'ulna']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TRIlat_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['ulna']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TRImed_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['ulna']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "ANC_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['ulna']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "n_points": 10,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "n_points": 7,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "BRA_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['ulna']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "BRD_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.08883103763879713,
+   "recomputed_L0_m": 0.08883103763879713,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": true
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "ECU_tendon",
+   "n_points": 6,
+   "status": "path_incomplete:unresolved_bodies ['hand_r', 'ulna']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "FCR_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "FCU_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "PT_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['ulna']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "DELT1_l_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "DELT2_l_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "DELT3_l_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "SUPSP_l_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "INFSP_l_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "SUBSC_l_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TMIN_l_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TMAJ_l_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "PECM1_l_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "PECM2_l_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "PECM3_l_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "LAT1_l_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "LAT2_l_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "LAT3_l_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "CORB_l_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TRIlong_l_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['thorax', 'ulna_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TRIlat_l_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['ulna_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "TRImed_l_tendon",
+   "n_points": 5,
+   "status": "path_incomplete:unresolved_bodies ['ulna_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "ANC_l_tendon",
+   "n_points": 2,
+   "status": "path_incomplete:unresolved_bodies ['ulna_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "n_points": 10,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "n_points": 7,
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "BRA_l_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['ulna_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": false
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "n_points": 3,
+   "status": "derived",
+   "stored_rest_length_m": 0.0888363641039056,
+   "recomputed_L0_m": 0.0888363641039056,
+   "abs_dev_m": 0.0,
+   "rel_dev": 0.0,
+   "touches_32": true
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "n_points": 6,
+   "status": "path_incomplete:unresolved_bodies ['hand_l', 'ulna_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "n_points": 3,
+   "status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "n_points": 4,
+   "status": "path_incomplete:unresolved_bodies ['ulna_l']",
+   "stored_rest_length_m": null,
+   "recomputed_L0_m": null,
+   "abs_dev_m": null,
+   "rel_dev": null,
+   "touches_32": true
+  }
+ ]
+}
