@@ -1,0 +1,874 @@
+{
+ "sites_bc_all_radius_l": [
+  {
+   "site": "BIClong_l-P9",
+   "recomputed_axial_m": 0.0022476985118283495,
+   "recorded_axial_m": 0.002247699,
+   "abs_diff_m": 4.881716506727196e-10
+  },
+  {
+   "site": "BIClong_l-P11",
+   "recomputed_axial_m": 0.008202326092261564,
+   "recorded_axial_m": 0.008202326,
+   "abs_diff_m": 9.226156470754088e-11
+  },
+  {
+   "site": "BICshort_l-P6",
+   "recomputed_axial_m": 0.0022477220468254556,
+   "recorded_axial_m": 0.002247722,
+   "abs_diff_m": 4.6825455405491434e-11
+  },
+  {
+   "site": "BICshort_l-P8",
+   "recomputed_axial_m": 0.008202326092261564,
+   "recorded_axial_m": 0.008202326,
+   "abs_diff_m": 9.226156470754088e-11
+  },
+  {
+   "site": "BRD_l-P2",
+   "recomputed_axial_m": 0.02902045680821558,
+   "recorded_axial_m": 0.029020457,
+   "abs_diff_m": 1.9178441820755232e-10
+  },
+  {
+   "site": "BRD_l-P3",
+   "recomputed_axial_m": 0.04972155329785729,
+   "recorded_axial_m": 0.049721553,
+   "abs_diff_m": 2.9785728744569084e-10
+  },
+  {
+   "site": "ECRL_l-P2",
+   "recomputed_axial_m": 0.03064590821689369,
+   "recorded_axial_m": 0.030645908,
+   "abs_diff_m": 2.1689369050781337e-10
+  },
+  {
+   "site": "ECRL_l-P3",
+   "recomputed_axial_m": 0.05348295905204865,
+   "recorded_axial_m": 0.053482959,
+   "abs_diff_m": 5.2048650112102024e-11
+  },
+  {
+   "site": "ECRB_l-P2",
+   "recomputed_axial_m": 0.029700326694631515,
+   "recorded_axial_m": 0.029700327,
+   "abs_diff_m": 3.053684839715576e-10
+  },
+  {
+   "site": "ECRB_l-P3",
+   "recomputed_axial_m": 0.051510357325562375,
+   "recorded_axial_m": 0.051510357,
+   "abs_diff_m": 3.2556237566927493e-10
+  },
+  {
+   "site": "ECU_l-P5",
+   "recomputed_axial_m": 0.050504322746832725,
+   "recorded_axial_m": 0.050504323,
+   "abs_diff_m": 2.531672718686373e-10
+  },
+  {
+   "site": "FCR_l-P2",
+   "recomputed_axial_m": 0.04869012977159178,
+   "recorded_axial_m": 0.04869013,
+   "abs_diff_m": 2.284082159520473e-10
+  },
+  {
+   "site": "FCU_l-P2",
+   "recomputed_axial_m": 0.04072766174124588,
+   "recorded_axial_m": 0.040727662,
+   "abs_diff_m": 2.587541153564743e-10
+  },
+  {
+   "site": "FCU_l-P3",
+   "recomputed_axial_m": 0.04955606279005985,
+   "recorded_axial_m": 0.049556063,
+   "abs_diff_m": 2.09940148598875e-10
+  },
+  {
+   "site": "PT_l-P3",
+   "recomputed_axial_m": 0.011569719401577378,
+   "recorded_axial_m": 0.011569719,
+   "abs_diff_m": 4.0157737898893764e-10
+  },
+  {
+   "site": "PT_l-P5",
+   "recomputed_axial_m": 0.024710016012553113,
+   "recorded_axial_m": 0.024710016,
+   "abs_diff_m": 1.2553111328195143e-11
+  }
+ ],
+ "wrist_sites": [
+  {
+   "name": "ECRL_l-P3",
+   "axial": 0.05348295905204865,
+   "b": -0.006757893108167174,
+   "c": 0.0020020597521735973
+  },
+  {
+   "name": "ECRB_l-P3",
+   "axial": 0.051510357325562375,
+   "b": -0.005573735927210404,
+   "c": 0.003170741867939303
+  }
+ ],
+ "enumerations": {
+  "ECRL_l-P3": {
+   "axial_m": 0.05348295905204865,
+   "n_cut_segments": 161,
+   "n_loops": 4,
+   "n_open_chains": 0,
+   "n_degenerate_chains": 2,
+   "loops": [
+    {
+     "points": 50,
+     "n_cut_triangles": 50,
+     "owner_fraction": 0.0,
+     "owner_histogram": {
+      "hip_L": 50
+     },
+     "identified": false,
+     "centroid_m": [
+      0.030072,
+      0.215309,
+      0.00913
+     ],
+     "signed_dist_m": {
+      "ECRL_l-P3": 0.09528392,
+      "ECRB_l-P3": 0.095824224
+     }
+    },
+    {
+     "points": 50,
+     "n_cut_triangles": 50,
+     "owner_fraction": 1.0,
+     "owner_histogram": {
+      "wrist_L": 40,
+      "elbow_L": 10
+     },
+     "identified": true,
+     "centroid_m": [
+      0.147142,
+      0.275233,
+      -0.007088
+     ],
+     "signed_dist_m": {
+      "ECRL_l-P3": 0.005511301,
+      "ECRB_l-P3": 0.005026095
+     }
+    },
+    {
+     "points": 54,
+     "n_cut_triangles": 54,
+     "owner_fraction": 0.0,
+     "owner_histogram": {
+      "hip_R": 54
+     },
+     "identified": false,
+     "centroid_m": [
+      -0.032545,
+      0.183246,
+      0.011868
+     ],
+     "signed_dist_m": {
+      "ECRL_l-P3": 0.167832619,
+      "ECRB_l-P3": 0.168426005
+     }
+    },
+    {
+     "points": 3,
+     "n_cut_triangles": 3,
+     "owner_fraction": 1.0,
+     "owner_histogram": {
+      "elbow_L": 3
+     },
+     "identified": true,
+     "centroid_m": [
+      0.138671,
+      0.270895,
+      -0.006641
+     ],
+     "signed_dist_m": {
+      "ECRL_l-P3": 0.005511301,
+      "ECRB_l-P3": 0.005103421
+     }
+    }
+   ],
+   "deterministic_repeat_identical": true
+  },
+  "ECRB_l-P3": {
+   "axial_m": 0.051510357325562375,
+   "n_cut_segments": 155,
+   "n_loops": 4,
+   "n_open_chains": 0,
+   "n_degenerate_chains": 2,
+   "loops": [
+    {
+     "points": 48,
+     "n_cut_triangles": 48,
+     "owner_fraction": 0.0,
+     "owner_histogram": {
+      "hip_L": 48
+     },
+     "identified": false,
+     "centroid_m": [
+      0.030521,
+      0.217755,
+      0.009129
+     ],
+     "signed_dist_m": {
+      "ECRL_l-P3": 0.094342906,
+      "ECRB_l-P3": 0.094887612
+     }
+    },
+    {
+     "points": 50,
+     "n_cut_triangles": 50,
+     "owner_fraction": 1.0,
+     "owner_histogram": {
+      "wrist_L": 38,
+      "elbow_L": 12
+     },
+     "identified": true,
+     "centroid_m": [
+      0.145888,
+      0.276807,
+      -0.007065
+     ],
+     "signed_dist_m": {
+      "ECRL_l-P3": 0.005345725,
+      "ECRB_l-P3": 0.004825766
+     }
+    },
+    {
+     "points": 50,
+     "n_cut_triangles": 50,
+     "owner_fraction": 0.0,
+     "owner_histogram": {
+      "hip_R": 50
+     },
+     "identified": false,
+     "centroid_m": [
+      -0.031571,
+      0.18596,
+      0.011529
+     ],
+     "signed_dist_m": {
+      "ECRL_l-P3": 0.166515612,
+      "ECRB_l-P3": 0.167110197
+     }
+    },
+    {
+     "points": 3,
+     "n_cut_triangles": 3,
+     "owner_fraction": 1.0,
+     "owner_histogram": {
+      "elbow_L": 3
+     },
+     "identified": true,
+     "centroid_m": [
+      0.137483,
+      0.272504,
+      -0.006399
+     ],
+     "signed_dist_m": {
+      "ECRL_l-P3": 0.005345725,
+      "ECRB_l-P3": 0.004872384
+     }
+    }
+   ],
+   "deterministic_repeat_identical": true
+  }
+ },
+ "axial_scan": [
+  {
+   "axial_m": 0.046,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     48,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0465,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.047,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0475,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     52,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.048,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0485,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     52,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.049,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     52,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0495,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.05,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     48,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0505,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     48,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.051,
+   "n_loops": 3,
+   "n_identified": 1,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0515,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.052,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0525,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     52,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.053,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     48,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0535,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.054,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0545,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.055,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     54,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0555,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     52,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.056,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0565,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.057,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     50,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  },
+  {
+   "axial_m": 0.0575,
+   "n_loops": 4,
+   "n_identified": 2,
+   "loops_points_frac": [
+    [
+     54,
+     1.0
+    ],
+    [
+     3,
+     1.0
+    ],
+    [
+     50,
+     0.0
+    ],
+    [
+     50,
+     0.0
+    ]
+   ]
+  }
+ ],
+ "tiny_loops": [
+  {
+   "site": "ECRL_l-P3",
+   "axial_m": 0.05348295905204865,
+   "loop_points": 3,
+   "triangles": [
+    34872,
+    34872,
+    34888
+   ],
+   "tri_owner_names": [
+    "elbow_L",
+    "elbow_L",
+    "elbow_L"
+   ],
+   "vertex_ids": [
+    6582,
+    6585,
+    6586,
+    6596,
+    6607
+   ],
+   "vertex_bbox_m": {
+    "min": [
+     0.13725,
+     0.261475,
+     -0.013824
+    ],
+    "max": [
+     0.147457,
+     0.272821,
+     -0.001374
+    ]
+   },
+   "wrist_joint_m": [
+    0.144995,
+    0.261482,
+    -0.005956
+   ],
+   "dist_centroid_to_wrist_joint_m": 0.011361
+  },
+  {
+   "site": "ECRB_l-P3",
+   "axial_m": 0.051510357325562375,
+   "loop_points": 3,
+   "triangles": [
+    34872,
+    34872,
+    34888
+   ],
+   "tri_owner_names": [
+    "elbow_L",
+    "elbow_L",
+    "elbow_L"
+   ],
+   "vertex_ids": [
+    6582,
+    6585,
+    6586,
+    6596,
+    6607
+   ],
+   "vertex_bbox_m": {
+    "min": [
+     0.13725,
+     0.261475,
+     -0.013824
+    ],
+    "max": [
+     0.147457,
+     0.272821,
+     -0.001374
+    ]
+   },
+   "wrist_joint_m": [
+    0.144995,
+    0.261482,
+    -0.005956
+   ],
+   "dist_centroid_to_wrist_joint_m": 0.013345
+  }
+ ]
+}

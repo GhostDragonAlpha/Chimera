@@ -1,0 +1,50 @@
+
+================ ECRL_l-P3 axial 0.053482959052 ================
+mesh vertices with |d|<1e-9 m of the plane: 0
+segments 161, loops 4, open 0, degen 2
+
+TINY loop[3]: 3 pts, tri list [34872, 34872, 34888]
+  pt[0] = [0.138494, 0.270804, -0.006641]
+  pt[1] = [0.138637, 0.270876, -0.007728]
+  pt[2] = [0.138882, 0.271006, -0.005555]
+  tri 34872: verts [6586, 6585, 6582] d=[-0.002361098, 0.004240183, 0.010447157] assign=[9, 9, 11] (['elbow_L', 'elbow_L', 'wrist_L'])
+    tri verts: [[0.13725, 0.272821, -0.006351], [0.140728, 0.267184, -0.007163], [0.144777, 0.26227, -0.013824]]
+  tri 34888: verts [6582, 6607, 6596] d=[0.010447157, 0.012399677, -0.002361098] assign=[11, 9, 9] (['wrist_L', 'elbow_L', 'elbow_L'])
+    tri verts: [[0.144777, 0.26227, -0.013824], [0.147457, 0.261475, -0.001374], [0.13725, 0.272821, -0.006351]]
+  loop-edge -> segment match:
+    edge[0] -> segment 156 tri 34872 len 1.0989 mm
+    edge[1] -> NO EXACT SEGMENT MATCH
+    edge[2] -> NO EXACT SEGMENT MATCH
+  min 2D distance tiny-loop->skin-loop[0]: 879.928651 mm
+  min 2D distance tiny-loop->skin-loop[1]: 100.395358 mm
+
+component walk from the tiny loop's triangles:
+  edge-connected component size: 1046 triangles
+  component bbox min [0.0689, 0.2608, -0.0234] max [0.1686, 0.4144, 0.0149]
+  component vertex owners (top 6): [('wrist_L', 255), ('shoulder_L', 154), ('elbow_L', 116)]
+  component edges total 1569, non-manifold/boundary edges 0
+
+================ ECRB_l-P3 axial 0.051510357326 ================
+mesh vertices with |d|<1e-9 m of the plane: 0
+segments 155, loops 4, open 0, degen 2
+
+TINY loop[3]: 3 pts, tri list [34872, 34872, 34888]
+  pt[0] = [0.137454, 0.272489, -0.006399]
+  pt[1] = [0.137478, 0.272501, -0.006577]
+  pt[2] = [0.137518, 0.272522, -0.00622]
+  tri 34872: verts [6586, 6585, 6582] d=[-0.000388496, 0.006212785, 0.012419758] assign=[9, 9, 11] (['elbow_L', 'elbow_L', 'wrist_L'])
+    tri verts: [[0.13725, 0.272821, -0.006351], [0.140728, 0.267184, -0.007163], [0.144777, 0.26227, -0.013824]]
+  tri 34888: verts [6582, 6607, 6596] d=[0.012419758, 0.014372279, -0.000388496] assign=[11, 9, 9] (['wrist_L', 'elbow_L', 'elbow_L'])
+    tri verts: [[0.144777, 0.26227, -0.013824], [0.147457, 0.261475, -0.001374], [0.13725, 0.272821, -0.006351]]
+  loop-edge -> segment match:
+    edge[0] -> segment 150 tri 34872 len 0.1808 mm
+    edge[1] -> NO EXACT SEGMENT MATCH
+    edge[2] -> NO EXACT SEGMENT MATCH
+  min 2D distance tiny-loop->skin-loop[1]: 100.515411 mm
+  min 2D distance tiny-loop->skin-loop[2]: 1354.384617 mm
+
+component walk from the tiny loop's triangles:
+  edge-connected component size: 1046 triangles
+  component bbox min [0.0689, 0.2608, -0.0234] max [0.1686, 0.4144, 0.0149]
+  component vertex owners (top 6): [('wrist_L', 255), ('shoulder_L', 154), ('elbow_L', 116)]
+  component edges total 1569, non-manifold/boundary edges 0

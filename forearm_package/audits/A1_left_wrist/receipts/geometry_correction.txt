@@ -1,0 +1,29 @@
+site ECRB_l-P3: axial=0.051510357 b=-0.005573736 c=0.003170742
+site ECRL_l-P2: axial=0.030645908 b=-0.005884158 c=0.002295286
+site ECRL_l-P3: axial=0.053482959 b=-0.006757893 c=0.002002060
+
+VALIDATION ECRL_l-P2: recomputed dist 0.004597397 m vs recorded 0.004597397 m (|diff| 3.745e-10)
+
+ECRB_l-P3 axial 0.051510357:
+  skin polygon: 50 vtx, radius min 1.745 mm max 19.000 mm mean 11.979 mm
+  tiny polygon: 3 vtx, radius min 1.640 mm max 1.771 mm centroid radius 1.713 mm
+  tiny centroid (-0.001706,0.000157) inside skin polygon: True, signed dist to skin edge -0.0322 mm
+    verdict-if-site=ECRB_l-P3: d_skin=4.8258 mm d_tiny=4.8724 mm  nearest-skin-vtx (-0.001737,0.000168)  nearest-tiny-vtx (-0.001737,0.000168)
+    verdict-if-site=ECRL_l-P3: d_skin=5.3457 mm d_tiny=5.3457 mm  nearest-skin-vtx (-0.001737,0.000168)  nearest-tiny-vtx (-0.001737,0.000168)
+
+ECRL_l-P3 axial 0.053482959:
+  skin polygon: 50 vtx, radius min 1.622 mm max 19.129 mm mean 12.255 mm
+  tiny polygon: 3 vtx, radius min 1.177 mm max 2.227 mm centroid radius 1.493 mm
+  tiny centroid (-0.001482,-0.000183) inside skin polygon: True, signed dist to skin edge -0.1959 mm
+    verdict-if-site=ECRB_l-P3: d_skin=5.0261 mm d_tiny=5.1034 mm  nearest-skin-vtx (-0.001670,-0.000117)  nearest-tiny-vtx (-0.001670,-0.000117)
+    verdict-if-site=ECRL_l-P3: d_skin=5.5113 mm d_tiny=5.5113 mm  nearest-skin-vtx (-0.001670,-0.000117)  nearest-tiny-vtx (-0.001670,-0.000117)
+
+crevice geometry (3D, at the tip):
+  tip 6586 == 6596: True, radial distance from axis 1.764 mm, axial 51.122 mm
+  vtx 6582 (wrist_L) radial 7.867 mm axial 63.930 mm pos [0.14478, 0.26227, -0.01382]
+  vtx 6585 (elbow_L) radial 1.692 mm axial 57.723 mm pos [0.14073, 0.26718, -0.00716]
+  vtx 6596 (elbow_L) radial 1.764 mm axial 51.122 mm pos [0.13725, 0.27282, -0.00635]
+  vtx 6601 (elbow_L) radial 1.692 mm axial 57.723 mm pos [0.14073, 0.26718, -0.00716]
+  vtx 6607 (elbow_L) radial 5.076 mm axial 65.883 mm pos [0.14746, 0.26147, -0.00137]
+  tri 34872 edge lengths: [6.673, 9.215, 14.961] mm
+  tri 34888 edge lengths: [12.759, 16.053, 14.961] mm

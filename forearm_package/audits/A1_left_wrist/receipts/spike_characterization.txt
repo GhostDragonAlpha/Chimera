@@ -1,0 +1,26 @@
+== triangle ownership (majority-of-3, baseline rule) ==
+  tri 34872: verts [6586, 6585, 6582] assign ['elbow_L', 'elbow_L', 'wrist_L'] -> majority owner elbow_L in owner_set: True
+  tri 34874: verts [6607, 6601, 6596] assign ['elbow_L', 'elbow_L', 'elbow_L'] -> majority owner elbow_L in owner_set: True
+  tri 34888: verts [6582, 6607, 6596] assign ['wrist_L', 'elbow_L', 'elbow_L'] -> majority owner elbow_L in owner_set: True
+
+== true tiny-loop ownership at both axials ==
+  ECRB_l-P3: loop points 3, true segment triangles [34872], owned 1/1 = 1.0000 (baseline reported frac 1.0 from [seed,seed,mid])
+  ECRL_l-P3: loop points 3, true segment triangles [34872], owned 1/1 = 1.0000 (baseline reported frac 1.0 from [seed,seed,mid])
+
+== spike tip fan at vertex 6586 ==
+  triangles incident to vertex 6586: 7 -> [11855, 11864, 34867, 34872, 34889, 34890, 34891]
+  their majority owners: ['elbow_L', 'elbow_L', 'elbow_L', 'elbow_L', 'elbow_L', 'elbow_L', 'elbow_L']
+  tip 6586 pos [0.13725, 0.272821, -0.006351]  axial 0.051122 m (79.0% of elbow->wrist length) b=-0.001750 c=0.000224
+  vert 6596 pos [0.13725, 0.272821, -0.006351]  axial 0.051122 m b=-0.001750 c=0.000224
+
+== 2D geometry at each site's axial ==
+  ECRB_l-P3: tiny centroid (b,c)=(-0.001706,0.000157) inside skin polygon: False, signed dist to skin edge 171.8770 mm
+    site ECRB_l-P3: d_skin=167.1099 mm  d_tiny=4.8728 mm  nearest skin vtx (b,c)=(-0.158033,0.071596)  nearest tiny vtx (b,c)=(-0.001737,0.000168)
+    site ECRL_l-P3: d_skin=166.5155 mm  d_tiny=5.3458 mm  nearest skin vtx (b,c)=(-0.158033,0.071596)  nearest tiny vtx (b,c)=(-0.001737,0.000168)
+  ECRL_l-P3: tiny centroid (b,c)=(-0.001482,-0.000183) inside skin polygon: True, signed dist to skin edge -0.1959 mm
+    site ECRB_l-P3: d_skin=5.0265 mm  d_tiny=5.1038 mm  nearest skin vtx (b,c)=(-0.001670,-0.000117)  nearest tiny vtx (b,c)=(-0.001670,-0.000117)
+    site ECRL_l-P3: d_skin=5.5114 mm  d_tiny=5.5114 mm  nearest skin vtx (b,c)=(-0.001670,-0.000117)  nearest tiny vtx (b,c)=(-0.001670,-0.000117)
+
+== onset of the tiny loop (bisection 0.0505 .. 0.0515) and distal persistence ==
+  tiny loop onset axial (has_tiny flips true): between 0.051121910 and 0.051121910 m -> onset ~ 51.122 mm along axis (79.0% of forearm)
+  tiny loop persists (1 mm steps) until at least 0.0571 m (wrist joint axial = 0.064745 m)

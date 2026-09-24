@@ -98,3 +98,18 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none mechanically.
 
 **Next:** integrate A1/A2/A5 -> I1 (wrist) -> I2 (spec pass-2; A3/A4/A6/A7/A8/A9/A10 slots ready) -> I3.
+
+## CHECKPOINT 2026-09-24 (T7) — A1 integrated (left wrist ambiguity resolved into evidence)
+
+**Verified:**
+- A1 (left wrist) PASS 4/4, receipt re-verified (fresh re-run of recompute_loops.py; integrity clean). Prediction CONFIRMED; falsifier not fired.
+- CORE EVIDENCE: ECRB_l-P3 / ECRL_l-P3 ambiguity = genuine needle-sliver pocket (coincident vertices @0.000mm; window [51.122,57.723)mm). BOTH identified loops agree: OUTSIDE, >=4.83mm vs 1mm margin (ECRB_l-P3 +4.83/+4.87mm; ECRL_l-P3 +5.51/+5.51mm). The unresolved class is mechanically honest; the underlying geometry is unambiguous (outside).
+- Resolution options now evidence-backed for Astra: degenerate-loop exclusion rule / loop-agreement rule / permanent-uncertainty acceptance. NOT ours to choose.
+- Benign quirk recorded: _chain_closed_loops seed-triangle double-count in reported tri lists (harmless here).
+- Board-edit slip #2 during append (transmission bullet briefly overwritten) — caught+restored same pass, verified by grep (3/3 bullets present). Lesson applied: future board appends anchor on the file's tail anchor line, not on a sibling bullet.
+
+**Active:** A2, A5 still running.
+
+**Blocked:** none mechanically.
+
+**Next:** A2 lands -> I1 (bilateral consolidation of the wrist finding) -> A5 -> I2 (spec pass-2) -> I3.

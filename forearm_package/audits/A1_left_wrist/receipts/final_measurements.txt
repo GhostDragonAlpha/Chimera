@@ -1,0 +1,8 @@
+tiny loop present axials: [0.051121910, 0.057723148] m ; absent at 0.057723148 m
+wrist joint axial: 0.064744899 m
+ECRB_l-P3: identified loop pts=50 area=353.385 mm^2
+ECRB_l-P3: identified loop pts=3 area=0.009 mm^2
+ECRL_l-P3: identified loop pts=50 area=352.621 mm^2
+ECRL_l-P3: identified loop pts=3 area=0.325 mm^2
+
+axial cross-check: 16 radius_l sites, max |recomputed-recorded| axial diff = 4.882e-10 m
