@@ -1,0 +1,147 @@
+{
+ "fixtures": {
+  "rotcoupon": {
+   "bodies": [
+    {
+     "body_frame_info_surrogate_in_summary": null,
+     "body_id": "body-R",
+     "body_keys_added_by_summary": [
+      "center_of_mass",
+      "inertia_tensor_about_com",
+      "mass_kg"
+     ],
+     "body_keys_dropped_by_summary": [
+      "body_frame",
+      "cell_provenance",
+      "mass_properties",
+      "material_mass_source_provenance"
+     ],
+     "mass_kg_exact_equals_report_value": true,
+     "material_mass_source_provenance_in_report": true,
+     "material_mass_source_provenance_in_summary": false,
+     "owned_cell_ids_exact": true,
+     "tensor_coordinate_frame_value_in_summary": "rotR-authored",
+     "tensor_frame_id_info_preserved_via_coordinate_frame": true,
+     "tensor_frame_id_value": "rotR-authored",
+     "volume_value_in_report_not_in_summary": 0.3333333333333333
+    },
+    {
+     "body_frame_info_surrogate_in_summary": null,
+     "body_id": "body-S",
+     "body_keys_added_by_summary": [
+      "center_of_mass",
+      "inertia_tensor_about_com",
+      "mass_kg"
+     ],
+     "body_keys_dropped_by_summary": [
+      "body_frame",
+      "cell_provenance",
+      "mass_properties",
+      "material_mass_source_provenance"
+     ],
+     "mass_kg_exact_equals_report_value": true,
+     "material_mass_source_provenance_in_report": true,
+     "material_mass_source_provenance_in_summary": false,
+     "owned_cell_ids_exact": true,
+     "tensor_coordinate_frame_value_in_summary": "identS-authored",
+     "tensor_frame_id_info_preserved_via_coordinate_frame": true,
+     "tensor_frame_id_value": "identS-authored",
+     "volume_value_in_report_not_in_summary": 0.3333333333333333
+    }
+   ],
+   "dynamics_readiness_claimed_summary": false,
+   "input_hashes_exact": true,
+   "top_level_keys_added_by_summary": [
+    "bodies"
+   ],
+   "top_level_keys_dropped_by_summary": [
+    "admission_anatomical_completeness_certified",
+    "admission_reason_codes",
+    "admission_report_sha256",
+    "all_supplied_cells_assigned",
+    "anatomical_completeness_certified",
+    "body_groups",
+    "mass_authority",
+    "production_wired",
+    "reason_codes",
+    "source_effective_segment_payloads_consumed",
+    "surface_mass_overlay_generated",
+    "unassigned_cells",
+    "validation_only"
+   ],
+   "unassigned_cell_ids_exact": true
+  },
+  "shipped_example": {
+   "bodies": [
+    {
+     "body_frame_info_surrogate_in_summary": null,
+     "body_id": "coupon-body-A",
+     "body_keys_added_by_summary": [
+      "center_of_mass",
+      "inertia_tensor_about_com",
+      "mass_kg"
+     ],
+     "body_keys_dropped_by_summary": [
+      "body_frame",
+      "cell_provenance",
+      "mass_properties",
+      "material_mass_source_provenance"
+     ],
+     "mass_kg_exact_equals_report_value": true,
+     "material_mass_source_provenance_in_report": true,
+     "material_mass_source_provenance_in_summary": false,
+     "owned_cell_ids_exact": true,
+     "tensor_coordinate_frame_value_in_summary": "coupon-A-authored",
+     "tensor_frame_id_info_preserved_via_coordinate_frame": true,
+     "tensor_frame_id_value": "coupon-A-authored",
+     "volume_value_in_report_not_in_summary": 0.16666666666666666
+    },
+    {
+     "body_frame_info_surrogate_in_summary": null,
+     "body_id": "coupon-body-B",
+     "body_keys_added_by_summary": [
+      "center_of_mass",
+      "inertia_tensor_about_com",
+      "mass_kg"
+     ],
+     "body_keys_dropped_by_summary": [
+      "body_frame",
+      "cell_provenance",
+      "mass_properties",
+      "material_mass_source_provenance"
+     ],
+     "mass_kg_exact_equals_report_value": true,
+     "material_mass_source_provenance_in_report": true,
+     "material_mass_source_provenance_in_summary": false,
+     "owned_cell_ids_exact": true,
+     "tensor_coordinate_frame_value_in_summary": "coupon-B-authored",
+     "tensor_frame_id_info_preserved_via_coordinate_frame": true,
+     "tensor_frame_id_value": "coupon-B-authored",
+     "volume_value_in_report_not_in_summary": 0.16666666666666666
+    }
+   ],
+   "dynamics_readiness_claimed_summary": false,
+   "input_hashes_exact": true,
+   "top_level_keys_added_by_summary": [
+    "bodies"
+   ],
+   "top_level_keys_dropped_by_summary": [
+    "admission_anatomical_completeness_certified",
+    "admission_reason_codes",
+    "admission_report_sha256",
+    "all_supplied_cells_assigned",
+    "anatomical_completeness_certified",
+    "body_groups",
+    "mass_authority",
+    "production_wired",
+    "reason_codes",
+    "source_effective_segment_payloads_consumed",
+    "surface_mass_overlay_generated",
+    "unassigned_cells",
+    "validation_only"
+   ],
+   "unassigned_cell_ids_exact": true
+  }
+ },
+ "logged_explanation": "CON-12 pair + key-set completeness measured post-run on preserved artifacts; frozen matrix 03 untouched (see module docstring)."
+}

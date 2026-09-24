@@ -1,0 +1,1538 @@
+[
+ {
+  "detail": "'{\"admission_anatomical_completeness_certified\":false,\"admission_reason_codes\":[],\"admission_report_sha256\":\"74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009\",\"admission_status\":\"validation_only_admissible\",\"all_supplied_cells_assigned\":true,\"anatomical_completeness_certified\":false,\"body_groups\":[{\"admission_report_sha256\":\"74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80e",
+  "fixture": "rotcoupon",
+  "invariant": "L-WRITE",
+  "layer": "L-WRITE",
+  "sub_field": "report_canonical_text",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "canonical_json(parsed) == exporter canonical string",
+  "fixture": "rotcoupon",
+  "invariant": "L-PARSE",
+  "layer": "L-PARSE",
+  "sub_field": "canonical_roundtrip",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "rotcoupon",
+  "invariant": "I6_readiness",
+  "layer": "L-PARSE",
+  "sub_field": "exporter.dynamics_readiness_claimed",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009",
+  "fixture": "rotcoupon",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "top.admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "value[3][3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "value[3][3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'kg*m^2'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'kg*m^2'",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.full_symmetric_tensor",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.full_symmetric_tensor",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.off_diagonal_terms_preserved",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.off_diagonal_terms_preserved",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.principal_axis_transform_applied",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.principal_axis_transform_applied",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "value[3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "rotcoupon",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "value[3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "rotcoupon",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'rotR-authored'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'rotR-authored'",
+  "fixture": "rotcoupon",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'rotR-authored'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.frame_id",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.frame_id (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.frame_id",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'right'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.handedness",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.handedness (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.handedness",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.coordinate_unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.coordinate_unit (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.coordinate_unit",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.domain_from_body.rotation",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.domain_from_body.rotation (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.domain_from_body.rotation",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.domain_from_body.origin_m",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.domain_from_body.origin_m (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.domain_from_body.origin_m",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'rotR-authored'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'rotR-authored'",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'rotR-authored'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.frame_id",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "path inertia_tensor_about_com.frame_id absent in this layer's document (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.frame_id",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'authored_body_frame'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.basis",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'authored_body_frame'",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.basis",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'frame_invariant'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "mass.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.mass.coordinate_frame (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "mass.coordinate_frame",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "mass.frame_invariant",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.mass.frame_invariant (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "mass.frame_invariant",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'frame_invariant'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "volume.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.volume.coordinate_frame (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "volume.coordinate_frame",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 1 elements exact",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I4_provenance",
+  "layer": "L-PARSE",
+  "sub_field": "cell_provenance.rows",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for cell_provenance (rotcoupon/body-R)",
+  "fixture": "rotcoupon",
+  "invariant": "I4_provenance",
+  "layer": "L-SUMMARY",
+  "sub_field": "cell_provenance.rows",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "rotcoupon",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009'",
+  "fixture": "rotcoupon/body-R",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009'",
+  "fixture": "rotcoupon",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "value[3][3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "value[3][3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'kg*m^2'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'kg*m^2'",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.full_symmetric_tensor",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.full_symmetric_tensor",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.off_diagonal_terms_preserved",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.off_diagonal_terms_preserved",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.principal_axis_transform_applied",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "rotcoupon",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.principal_axis_transform_applied",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "value[3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "rotcoupon",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "value[3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "rotcoupon",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'identS-authored'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'identS-authored'",
+  "fixture": "rotcoupon",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'identS-authored'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.frame_id",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.frame_id (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.frame_id",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'right'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.handedness",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.handedness (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.handedness",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.coordinate_unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.coordinate_unit (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.coordinate_unit",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.domain_from_body.rotation",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.domain_from_body.rotation (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.domain_from_body.rotation",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.domain_from_body.origin_m",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.domain_from_body.origin_m (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.domain_from_body.origin_m",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'identS-authored'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'identS-authored'",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'identS-authored'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.frame_id",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "path inertia_tensor_about_com.frame_id absent in this layer's document (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.frame_id",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'authored_body_frame'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.basis",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'authored_body_frame'",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.basis",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'frame_invariant'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "mass.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.mass.coordinate_frame (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "mass.coordinate_frame",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "True",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "mass.frame_invariant",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.mass.frame_invariant (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "mass.frame_invariant",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'frame_invariant'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "volume.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.volume.coordinate_frame (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "volume.coordinate_frame",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 1 elements exact",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I4_provenance",
+  "layer": "L-PARSE",
+  "sub_field": "cell_provenance.rows",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for cell_provenance (rotcoupon/body-S)",
+  "fixture": "rotcoupon",
+  "invariant": "I4_provenance",
+  "layer": "L-SUMMARY",
+  "sub_field": "cell_provenance.rows",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "rotcoupon",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009'",
+  "fixture": "rotcoupon/body-S",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009'",
+  "fixture": "rotcoupon",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "rotcoupon",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "top.admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "top-level admission_report_sha256 absent in reader summary",
+  "fixture": "rotcoupon",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "top.admission_report_sha256",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "False",
+  "fixture": "rotcoupon",
+  "invariant": "I6_readiness",
+  "layer": "L-SUMMARY",
+  "sub_field": "summary.dynamics_readiness_claimed",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "canonical_json(read_json_file(summary.json)) == reader canonical",
+  "fixture": "rotcoupon",
+  "invariant": "L-REREAD",
+  "layer": "L-REREAD",
+  "sub_field": "summary_canonical_roundtrip",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'{\"admission_anatomical_completeness_certified\":false,\"admission_reason_codes\":[],\"admission_report_sha256\":\"a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc\",\"admission_status\":\"validation_only_admissible\",\"all_supplied_cells_assigned\":true,\"anatomical_completeness_certified\":false,\"body_groups\":[{\"admission_report_sha256\":\"a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009",
+  "fixture": "shipped_example",
+  "invariant": "L-WRITE",
+  "layer": "L-WRITE",
+  "sub_field": "report_canonical_text",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "canonical_json(parsed) == exporter canonical string",
+  "fixture": "shipped_example",
+  "invariant": "L-PARSE",
+  "layer": "L-PARSE",
+  "sub_field": "canonical_roundtrip",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "shipped_example",
+  "invariant": "I6_readiness",
+  "layer": "L-PARSE",
+  "sub_field": "exporter.dynamics_readiness_claimed",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc",
+  "fixture": "shipped_example",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "top.admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "value[3][3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "value[3][3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'kg*m^2'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'kg*m^2'",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.full_symmetric_tensor",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.full_symmetric_tensor",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.off_diagonal_terms_preserved",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.off_diagonal_terms_preserved",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.principal_axis_transform_applied",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.principal_axis_transform_applied",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "value[3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "shipped_example",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "value[3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "shipped_example",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-A-authored'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-A-authored'",
+  "fixture": "shipped_example",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-A-authored'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.frame_id",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.frame_id (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.frame_id",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'right'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.handedness",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.handedness (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.handedness",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.coordinate_unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.coordinate_unit (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.coordinate_unit",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.domain_from_body.rotation",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.domain_from_body.rotation (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.domain_from_body.rotation",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.domain_from_body.origin_m",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.domain_from_body.origin_m (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.domain_from_body.origin_m",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'coupon-A-authored'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-A-authored'",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-A-authored'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.frame_id",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "path inertia_tensor_about_com.frame_id absent in this layer's document (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.frame_id",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'authored_body_frame'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.basis",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'authored_body_frame'",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.basis",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'frame_invariant'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "mass.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.mass.coordinate_frame (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "mass.coordinate_frame",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "mass.frame_invariant",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.mass.frame_invariant (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "mass.frame_invariant",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'frame_invariant'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "volume.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.volume.coordinate_frame (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "volume.coordinate_frame",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 1 elements exact",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I4_provenance",
+  "layer": "L-PARSE",
+  "sub_field": "cell_provenance.rows",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for cell_provenance (shipped_example/coupon-body-A)",
+  "fixture": "shipped_example",
+  "invariant": "I4_provenance",
+  "layer": "L-SUMMARY",
+  "sub_field": "cell_provenance.rows",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "shipped_example",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc'",
+  "fixture": "shipped_example/coupon-body-A",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc'",
+  "fixture": "shipped_example",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "value[3][3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "value[3][3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'kg*m^2'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'kg*m^2'",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.full_symmetric_tensor",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.full_symmetric_tensor",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.off_diagonal_terms_preserved",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.off_diagonal_terms_preserved",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I1_tensor",
+  "layer": "L-PARSE",
+  "sub_field": "flag.principal_axis_transform_applied",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "False",
+  "fixture": "shipped_example",
+  "invariant": "I1_tensor",
+  "layer": "L-SUMMARY",
+  "sub_field": "flag.principal_axis_transform_applied",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "value[3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "shipped_example",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "value[3]",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "shipped_example",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-B-authored'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I2_com",
+  "layer": "L-PARSE",
+  "sub_field": "coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-B-authored'",
+  "fixture": "shipped_example",
+  "invariant": "I2_com",
+  "layer": "L-SUMMARY",
+  "sub_field": "coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-B-authored'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.frame_id",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.frame_id (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.frame_id",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'right'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.handedness",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.handedness (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.handedness",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'m'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.coordinate_unit",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.coordinate_unit (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.coordinate_unit",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 9 elements exact",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.domain_from_body.rotation",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.domain_from_body.rotation (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.domain_from_body.rotation",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 3 elements exact",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "body_frame.domain_from_body.origin_m",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for body_frame.domain_from_body.origin_m (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "body_frame.domain_from_body.origin_m",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'coupon-B-authored'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-B-authored'",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'coupon-B-authored'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.frame_id",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "path inertia_tensor_about_com.frame_id absent in this layer's document (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.frame_id",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'authored_body_frame'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "tensor.basis",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'authored_body_frame'",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "tensor.basis",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'frame_invariant'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "mass.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.mass.coordinate_frame (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "mass.coordinate_frame",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "True",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "mass.frame_invariant",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.mass.frame_invariant (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "mass.frame_invariant",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'frame_invariant'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I3_frames",
+  "layer": "L-PARSE",
+  "sub_field": "volume.coordinate_frame",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for mass_properties.volume.coordinate_frame (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I3_frames",
+  "layer": "L-SUMMARY",
+  "sub_field": "volume.coordinate_frame",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "all 1 elements exact",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I4_provenance",
+  "layer": "L-PARSE",
+  "sub_field": "cell_provenance.rows",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "summary carries no field for cell_provenance (shipped_example/coupon-body-B)",
+  "fixture": "shipped_example",
+  "invariant": "I4_provenance",
+  "layer": "L-SUMMARY",
+  "sub_field": "cell_provenance.rows",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "shipped_example",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc'",
+  "fixture": "shipped_example/coupon-body-B",
+  "invariant": "I5_admission",
+  "layer": "L-PARSE",
+  "sub_field": "admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc'",
+  "fixture": "shipped_example",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "admission_report_sha256",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "'validation_only_admissible'",
+  "fixture": "shipped_example",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "top.admission_status",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "top-level admission_report_sha256 absent in reader summary",
+  "fixture": "shipped_example",
+  "invariant": "I5_admission",
+  "layer": "L-SUMMARY",
+  "sub_field": "top.admission_report_sha256",
+  "verdict": "DROP"
+ },
+ {
+  "detail": "False",
+  "fixture": "shipped_example",
+  "invariant": "I6_readiness",
+  "layer": "L-SUMMARY",
+  "sub_field": "summary.dynamics_readiness_claimed",
+  "verdict": "PASS_EXACT"
+ },
+ {
+  "detail": "canonical_json(read_json_file(summary.json)) == reader canonical",
+  "fixture": "shipped_example",
+  "invariant": "L-REREAD",
+  "layer": "L-REREAD",
+  "sub_field": "summary_canonical_roundtrip",
+  "verdict": "PASS_EXACT"
+ }
+]

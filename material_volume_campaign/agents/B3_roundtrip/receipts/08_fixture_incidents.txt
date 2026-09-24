@@ -1,0 +1,29 @@
+B3 INCIDENT LOG (agent-side; preserved per campaign law; no tools/ or docs/ impact)
+
+1) make_fixtures.py v1 crash #1: abs() over a generator (missing sum) in the
+   rotation residual expression - TypeError before any fixture was written.
+   Fixed in place; no measurement had run.
+2) make_fixtures.py v1 crash #2: TOOLS resolved via B3.parents[1] (material_volume_campaign/)
+   instead of parents[2] (worktree root) - FileNotFoundError on example copies.
+   Fixed in place.
+3) FIRST EXECUTION of the round-trip produced a genuinely BLOCKED report
+   (export_status=blocked, admission_reason_codes=[bad_schema],
+   reason_codes=[reconstructed_mass_admission_required], both bodies
+   not_exported): the fixture author (B3) had written a manifest-style
+   partition (density/ownership on cells). The real material partition schema
+   carries materials[] + regions[] + cell proposals[]. Diagnosis path:
+   admission.build_admission_report -> detail "partition.cells[0]: unknown
+   fields ['component_id']" -> cells reduced to {cell_id, vertex_ids,
+   proposals}, density moved to materials[]. The blocked report of that first
+   attempt is preserved verbatim as receipts/08_blocked_first_attempt.report.json
+   (sha256 below) - it is itself a genuine exporter output and incidentally
+   demonstrates the reader-side refusal path.
+4) Runner v1 crashed on that blocked report (mass_properties=None subscript
+   before the exported-status guard). Runner rewritten table-driven and
+   non-exported bodies now record N_A rows instead of crashing. The FROZEN
+   prereg (PREREG.md sha256=758f910b0495f716deaab8d329aff92db867f4967ebc7c987bc4e165c562a9ae)
+   was NOT edited; all fixes are harness/fixture-side, and the executed design
+   is the preregistered design.
+
+blocked first attempt report sha256:
+c20e3f9e7c425ff98ef857a5819f6ff8533a8f4bc895e916889947e106e36580  bytes=3141

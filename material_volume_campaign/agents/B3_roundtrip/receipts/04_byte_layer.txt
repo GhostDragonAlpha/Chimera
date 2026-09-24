@@ -1,0 +1,8 @@
+rotcoupon	exporter_cli	crlf_pairs=1	raw_equal_canonical=False	normalized_equal_canonical=True
+rotcoupon	reader_cli	crlf_pairs=1	raw_equal_canonical=False	normalized_equal_canonical=True
+shipped_example	exporter_cli	crlf_pairs=1	raw_equal_canonical=False	normalized_equal_canonical=True
+shipped_example	reader_cli	crlf_pairs=1	raw_equal_canonical=False	normalized_equal_canonical=True
+FINDING: rotcoupon/exporter_cli: raw stdout has 1 CRLF pair(s); newline-normalized bytes == canonical string (B4 smudge layer, EXPECTED; canonical comparison is the scored one)
+FINDING: rotcoupon/reader_cli: raw stdout has 1 CRLF pair(s); newline-normalized bytes == canonical string (B4 smudge layer, EXPECTED; canonical comparison is the scored one)
+FINDING: shipped_example/exporter_cli: raw stdout has 1 CRLF pair(s); newline-normalized bytes == canonical string (B4 smudge layer, EXPECTED; canonical comparison is the scored one)
+FINDING: shipped_example/reader_cli: raw stdout has 1 CRLF pair(s); newline-normalized bytes == canonical string (B4 smudge layer, EXPECTED; canonical comparison is the scored one)

@@ -107,3 +107,8 @@ NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energ
 
 **CAMPAIGN MILESTONE: M01-M10 ALL DONE.** Core validation complete: reproduction (M01), multi-cell (M02), scaling (M03), covariance (M04), order invariance (M05), malformed inputs (M06), ownership propagation (M07), robustness (M08), diagnostic CLI (M09), static validator (M10) — zero exporter defects found by any of them; every fired falsifier traced to agent-side instrumentation, honestly preserved. Plus B2a/B4/B6/B7/B9 integrated.
 **Fleet:** 1 live (B3-retry). Queue: B5 -> B8 -> B7x.
+
+## CHECKPOINT T16 — B3 integrated; B5 retry dispatched
+
+**Verified:** B3 scoring re-run by coordinator (drops reproduce at the summary layer); integrity clean. Round-trip: parse layer BIT-PERFECT; summary layer drops 42 fields incl. CON-12 provenance ("never summarized away") — MV-B3-1 decision request joins the U7/M09 projection-mechanism family (disjoint field sets: complete/exported vs blocked/refused diagnostics). B4's smudge law holds at the CLI boundary.
+**Fleet:** 1 live (B5-retry — the active serialized retry). Queue after B5: B8 -> B7x.

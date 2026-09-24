@@ -1,0 +1,10 @@
+B3 FREEZE RECEIPT — taken before fixtures/, work/, or any run
+frozen_at_utcnow=2026-09-24T19:20:07.320480
+brief.md
+  sha256=1ec8868e573679cbb940803342b6b3a5d228b8a53b76f7290dcb20aac809c5b8
+  bytes=4392
+  mtime=2026-09-24T14:17:47.039897
+PREREG.md
+  sha256=758f910b0495f716deaab8d329aff92db867f4967ebc7c987bc4e165c562a9ae
+  bytes=7767
+  mtime=2026-09-24T14:19:54.029871

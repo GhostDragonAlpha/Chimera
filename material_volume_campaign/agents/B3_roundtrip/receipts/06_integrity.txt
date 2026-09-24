@@ -1,0 +1,12 @@
+B3 INTEGRITY RECEIPT 2026-09-24T14:31:55.928619
+
+$ git -C E:/ChimeraWork/mvc-20260924 status --porcelain -- tools Chimera/docs/matter
+<BEGIN PASTE>
+<END PASTE>
+exit=0 stdout_bytes=0  -> EMPTY as required (tools/ + docs/ READ-ONLY honored)
+
+__pycache__ dirs under tools/ (find tools -name __pycache__ -type d | wc -l): 0; *.pyc files: 0 (verified directly)
+
+Full worktree porcelain (context): other agents' dirs and campaign artifacts only; B3 wrote ONLY under material_volume_campaign/agents/B3_roundtrip/:
+?? material_volume_campaign/agents/B3_roundtrip/
+?? material_volume_campaign/agents/B5_subdivision/

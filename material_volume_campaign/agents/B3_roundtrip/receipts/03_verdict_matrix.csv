@@ -1,0 +1,193 @@
+fixture,invariant,sub_field,layer,verdict,detail
+rotcoupon,L-WRITE,report_canonical_text,L-WRITE,PASS_EXACT,"'{""admission_anatomical_completeness_certified"":false,""admission_reason_codes"":[],""admission_report_sha256"":""74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009"",""admission_status"":""validation_only_admissible"",""all_supplied_cells_assigned"":true,""anatomical_completeness_certified"":false,""body_groups"":[{""admission_report_sha256"":""74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80e"
+rotcoupon,L-PARSE,canonical_roundtrip,L-PARSE,PASS_EXACT,canonical_json(parsed) == exporter canonical string
+rotcoupon,I6_readiness,exporter.dynamics_readiness_claimed,L-PARSE,PASS_EXACT,False
+rotcoupon,I5_admission,top.admission_report_sha256,L-PARSE,PASS_EXACT,74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009
+rotcoupon/body-R,I1_tensor,value[3][3],L-PARSE,PASS_EXACT,all 9 elements exact
+rotcoupon,I1_tensor,value[3][3],L-SUMMARY,PASS_EXACT,all 9 elements exact
+rotcoupon/body-R,I1_tensor,unit,L-PARSE,PASS_EXACT,'kg*m^2'
+rotcoupon,I1_tensor,unit,L-SUMMARY,PASS_EXACT,'kg*m^2'
+rotcoupon/body-R,I1_tensor,flag.full_symmetric_tensor,L-PARSE,PASS_EXACT,True
+rotcoupon,I1_tensor,flag.full_symmetric_tensor,L-SUMMARY,PASS_EXACT,True
+rotcoupon/body-R,I1_tensor,flag.off_diagonal_terms_preserved,L-PARSE,PASS_EXACT,True
+rotcoupon,I1_tensor,flag.off_diagonal_terms_preserved,L-SUMMARY,PASS_EXACT,True
+rotcoupon/body-R,I1_tensor,flag.principal_axis_transform_applied,L-PARSE,PASS_EXACT,False
+rotcoupon,I1_tensor,flag.principal_axis_transform_applied,L-SUMMARY,PASS_EXACT,False
+rotcoupon/body-R,I2_com,value[3],L-PARSE,PASS_EXACT,all 3 elements exact
+rotcoupon,I2_com,value[3],L-SUMMARY,PASS_EXACT,all 3 elements exact
+rotcoupon/body-R,I2_com,unit,L-PARSE,PASS_EXACT,'m'
+rotcoupon,I2_com,unit,L-SUMMARY,PASS_EXACT,'m'
+rotcoupon/body-R,I2_com,coordinate_frame,L-PARSE,PASS_EXACT,'rotR-authored'
+rotcoupon,I2_com,coordinate_frame,L-SUMMARY,PASS_EXACT,'rotR-authored'
+rotcoupon/body-R,I3_frames,body_frame.frame_id,L-PARSE,PASS_EXACT,'rotR-authored'
+rotcoupon,I3_frames,body_frame.frame_id,L-SUMMARY,DROP,summary carries no field for body_frame.frame_id (rotcoupon/body-R)
+rotcoupon/body-R,I3_frames,body_frame.handedness,L-PARSE,PASS_EXACT,'right'
+rotcoupon,I3_frames,body_frame.handedness,L-SUMMARY,DROP,summary carries no field for body_frame.handedness (rotcoupon/body-R)
+rotcoupon/body-R,I3_frames,body_frame.coordinate_unit,L-PARSE,PASS_EXACT,'m'
+rotcoupon,I3_frames,body_frame.coordinate_unit,L-SUMMARY,DROP,summary carries no field for body_frame.coordinate_unit (rotcoupon/body-R)
+rotcoupon/body-R,I3_frames,body_frame.domain_from_body.rotation,L-PARSE,PASS_EXACT,all 9 elements exact
+rotcoupon,I3_frames,body_frame.domain_from_body.rotation,L-SUMMARY,DROP,summary carries no field for body_frame.domain_from_body.rotation (rotcoupon/body-R)
+rotcoupon/body-R,I3_frames,body_frame.domain_from_body.origin_m,L-PARSE,PASS_EXACT,all 3 elements exact
+rotcoupon,I3_frames,body_frame.domain_from_body.origin_m,L-SUMMARY,DROP,summary carries no field for body_frame.domain_from_body.origin_m (rotcoupon/body-R)
+rotcoupon/body-R,I3_frames,tensor.coordinate_frame,L-PARSE,PASS_EXACT,'rotR-authored'
+rotcoupon,I3_frames,tensor.coordinate_frame,L-SUMMARY,PASS_EXACT,'rotR-authored'
+rotcoupon/body-R,I3_frames,tensor.frame_id,L-PARSE,PASS_EXACT,'rotR-authored'
+rotcoupon,I3_frames,tensor.frame_id,L-SUMMARY,DROP,path inertia_tensor_about_com.frame_id absent in this layer's document (rotcoupon/body-R)
+rotcoupon/body-R,I3_frames,tensor.basis,L-PARSE,PASS_EXACT,'authored_body_frame'
+rotcoupon,I3_frames,tensor.basis,L-SUMMARY,PASS_EXACT,'authored_body_frame'
+rotcoupon/body-R,I3_frames,mass.coordinate_frame,L-PARSE,PASS_EXACT,'frame_invariant'
+rotcoupon,I3_frames,mass.coordinate_frame,L-SUMMARY,DROP,summary carries no field for mass_properties.mass.coordinate_frame (rotcoupon/body-R)
+rotcoupon/body-R,I3_frames,mass.frame_invariant,L-PARSE,PASS_EXACT,True
+rotcoupon,I3_frames,mass.frame_invariant,L-SUMMARY,DROP,summary carries no field for mass_properties.mass.frame_invariant (rotcoupon/body-R)
+rotcoupon/body-R,I3_frames,volume.coordinate_frame,L-PARSE,PASS_EXACT,'frame_invariant'
+rotcoupon,I3_frames,volume.coordinate_frame,L-SUMMARY,DROP,summary carries no field for mass_properties.volume.coordinate_frame (rotcoupon/body-R)
+rotcoupon/body-R,I4_provenance,cell_provenance.rows,L-PARSE,PASS_EXACT,all 1 elements exact
+rotcoupon,I4_provenance,cell_provenance.rows,L-SUMMARY,DROP,summary carries no field for cell_provenance (rotcoupon/body-R)
+rotcoupon/body-R,I5_admission,admission_status,L-PARSE,PASS_EXACT,'validation_only_admissible'
+rotcoupon,I5_admission,admission_status,L-SUMMARY,PASS_EXACT,'validation_only_admissible'
+rotcoupon/body-R,I5_admission,admission_report_sha256,L-PARSE,PASS_EXACT,'74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009'
+rotcoupon,I5_admission,admission_report_sha256,L-SUMMARY,PASS_EXACT,'74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009'
+rotcoupon/body-S,I1_tensor,value[3][3],L-PARSE,PASS_EXACT,all 9 elements exact
+rotcoupon,I1_tensor,value[3][3],L-SUMMARY,PASS_EXACT,all 9 elements exact
+rotcoupon/body-S,I1_tensor,unit,L-PARSE,PASS_EXACT,'kg*m^2'
+rotcoupon,I1_tensor,unit,L-SUMMARY,PASS_EXACT,'kg*m^2'
+rotcoupon/body-S,I1_tensor,flag.full_symmetric_tensor,L-PARSE,PASS_EXACT,True
+rotcoupon,I1_tensor,flag.full_symmetric_tensor,L-SUMMARY,PASS_EXACT,True
+rotcoupon/body-S,I1_tensor,flag.off_diagonal_terms_preserved,L-PARSE,PASS_EXACT,True
+rotcoupon,I1_tensor,flag.off_diagonal_terms_preserved,L-SUMMARY,PASS_EXACT,True
+rotcoupon/body-S,I1_tensor,flag.principal_axis_transform_applied,L-PARSE,PASS_EXACT,False
+rotcoupon,I1_tensor,flag.principal_axis_transform_applied,L-SUMMARY,PASS_EXACT,False
+rotcoupon/body-S,I2_com,value[3],L-PARSE,PASS_EXACT,all 3 elements exact
+rotcoupon,I2_com,value[3],L-SUMMARY,PASS_EXACT,all 3 elements exact
+rotcoupon/body-S,I2_com,unit,L-PARSE,PASS_EXACT,'m'
+rotcoupon,I2_com,unit,L-SUMMARY,PASS_EXACT,'m'
+rotcoupon/body-S,I2_com,coordinate_frame,L-PARSE,PASS_EXACT,'identS-authored'
+rotcoupon,I2_com,coordinate_frame,L-SUMMARY,PASS_EXACT,'identS-authored'
+rotcoupon/body-S,I3_frames,body_frame.frame_id,L-PARSE,PASS_EXACT,'identS-authored'
+rotcoupon,I3_frames,body_frame.frame_id,L-SUMMARY,DROP,summary carries no field for body_frame.frame_id (rotcoupon/body-S)
+rotcoupon/body-S,I3_frames,body_frame.handedness,L-PARSE,PASS_EXACT,'right'
+rotcoupon,I3_frames,body_frame.handedness,L-SUMMARY,DROP,summary carries no field for body_frame.handedness (rotcoupon/body-S)
+rotcoupon/body-S,I3_frames,body_frame.coordinate_unit,L-PARSE,PASS_EXACT,'m'
+rotcoupon,I3_frames,body_frame.coordinate_unit,L-SUMMARY,DROP,summary carries no field for body_frame.coordinate_unit (rotcoupon/body-S)
+rotcoupon/body-S,I3_frames,body_frame.domain_from_body.rotation,L-PARSE,PASS_EXACT,all 9 elements exact
+rotcoupon,I3_frames,body_frame.domain_from_body.rotation,L-SUMMARY,DROP,summary carries no field for body_frame.domain_from_body.rotation (rotcoupon/body-S)
+rotcoupon/body-S,I3_frames,body_frame.domain_from_body.origin_m,L-PARSE,PASS_EXACT,all 3 elements exact
+rotcoupon,I3_frames,body_frame.domain_from_body.origin_m,L-SUMMARY,DROP,summary carries no field for body_frame.domain_from_body.origin_m (rotcoupon/body-S)
+rotcoupon/body-S,I3_frames,tensor.coordinate_frame,L-PARSE,PASS_EXACT,'identS-authored'
+rotcoupon,I3_frames,tensor.coordinate_frame,L-SUMMARY,PASS_EXACT,'identS-authored'
+rotcoupon/body-S,I3_frames,tensor.frame_id,L-PARSE,PASS_EXACT,'identS-authored'
+rotcoupon,I3_frames,tensor.frame_id,L-SUMMARY,DROP,path inertia_tensor_about_com.frame_id absent in this layer's document (rotcoupon/body-S)
+rotcoupon/body-S,I3_frames,tensor.basis,L-PARSE,PASS_EXACT,'authored_body_frame'
+rotcoupon,I3_frames,tensor.basis,L-SUMMARY,PASS_EXACT,'authored_body_frame'
+rotcoupon/body-S,I3_frames,mass.coordinate_frame,L-PARSE,PASS_EXACT,'frame_invariant'
+rotcoupon,I3_frames,mass.coordinate_frame,L-SUMMARY,DROP,summary carries no field for mass_properties.mass.coordinate_frame (rotcoupon/body-S)
+rotcoupon/body-S,I3_frames,mass.frame_invariant,L-PARSE,PASS_EXACT,True
+rotcoupon,I3_frames,mass.frame_invariant,L-SUMMARY,DROP,summary carries no field for mass_properties.mass.frame_invariant (rotcoupon/body-S)
+rotcoupon/body-S,I3_frames,volume.coordinate_frame,L-PARSE,PASS_EXACT,'frame_invariant'
+rotcoupon,I3_frames,volume.coordinate_frame,L-SUMMARY,DROP,summary carries no field for mass_properties.volume.coordinate_frame (rotcoupon/body-S)
+rotcoupon/body-S,I4_provenance,cell_provenance.rows,L-PARSE,PASS_EXACT,all 1 elements exact
+rotcoupon,I4_provenance,cell_provenance.rows,L-SUMMARY,DROP,summary carries no field for cell_provenance (rotcoupon/body-S)
+rotcoupon/body-S,I5_admission,admission_status,L-PARSE,PASS_EXACT,'validation_only_admissible'
+rotcoupon,I5_admission,admission_status,L-SUMMARY,PASS_EXACT,'validation_only_admissible'
+rotcoupon/body-S,I5_admission,admission_report_sha256,L-PARSE,PASS_EXACT,'74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009'
+rotcoupon,I5_admission,admission_report_sha256,L-SUMMARY,PASS_EXACT,'74b7fc0db793380a6475dba412f4db9fe515857ac14a76b8bbb36d80ebd44009'
+rotcoupon,I5_admission,top.admission_status,L-SUMMARY,PASS_EXACT,'validation_only_admissible'
+rotcoupon,I5_admission,top.admission_report_sha256,L-SUMMARY,DROP,top-level admission_report_sha256 absent in reader summary
+rotcoupon,I6_readiness,summary.dynamics_readiness_claimed,L-SUMMARY,PASS_EXACT,False
+rotcoupon,L-REREAD,summary_canonical_roundtrip,L-REREAD,PASS_EXACT,canonical_json(read_json_file(summary.json)) == reader canonical
+shipped_example,L-WRITE,report_canonical_text,L-WRITE,PASS_EXACT,"'{""admission_anatomical_completeness_certified"":false,""admission_reason_codes"":[],""admission_report_sha256"":""a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc"",""admission_status"":""validation_only_admissible"",""all_supplied_cells_assigned"":true,""anatomical_completeness_certified"":false,""body_groups"":[{""admission_report_sha256"":""a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009"
+shipped_example,L-PARSE,canonical_roundtrip,L-PARSE,PASS_EXACT,canonical_json(parsed) == exporter canonical string
+shipped_example,I6_readiness,exporter.dynamics_readiness_claimed,L-PARSE,PASS_EXACT,False
+shipped_example,I5_admission,top.admission_report_sha256,L-PARSE,PASS_EXACT,a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc
+shipped_example/coupon-body-A,I1_tensor,value[3][3],L-PARSE,PASS_EXACT,all 9 elements exact
+shipped_example,I1_tensor,value[3][3],L-SUMMARY,PASS_EXACT,all 9 elements exact
+shipped_example/coupon-body-A,I1_tensor,unit,L-PARSE,PASS_EXACT,'kg*m^2'
+shipped_example,I1_tensor,unit,L-SUMMARY,PASS_EXACT,'kg*m^2'
+shipped_example/coupon-body-A,I1_tensor,flag.full_symmetric_tensor,L-PARSE,PASS_EXACT,True
+shipped_example,I1_tensor,flag.full_symmetric_tensor,L-SUMMARY,PASS_EXACT,True
+shipped_example/coupon-body-A,I1_tensor,flag.off_diagonal_terms_preserved,L-PARSE,PASS_EXACT,True
+shipped_example,I1_tensor,flag.off_diagonal_terms_preserved,L-SUMMARY,PASS_EXACT,True
+shipped_example/coupon-body-A,I1_tensor,flag.principal_axis_transform_applied,L-PARSE,PASS_EXACT,False
+shipped_example,I1_tensor,flag.principal_axis_transform_applied,L-SUMMARY,PASS_EXACT,False
+shipped_example/coupon-body-A,I2_com,value[3],L-PARSE,PASS_EXACT,all 3 elements exact
+shipped_example,I2_com,value[3],L-SUMMARY,PASS_EXACT,all 3 elements exact
+shipped_example/coupon-body-A,I2_com,unit,L-PARSE,PASS_EXACT,'m'
+shipped_example,I2_com,unit,L-SUMMARY,PASS_EXACT,'m'
+shipped_example/coupon-body-A,I2_com,coordinate_frame,L-PARSE,PASS_EXACT,'coupon-A-authored'
+shipped_example,I2_com,coordinate_frame,L-SUMMARY,PASS_EXACT,'coupon-A-authored'
+shipped_example/coupon-body-A,I3_frames,body_frame.frame_id,L-PARSE,PASS_EXACT,'coupon-A-authored'
+shipped_example,I3_frames,body_frame.frame_id,L-SUMMARY,DROP,summary carries no field for body_frame.frame_id (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I3_frames,body_frame.handedness,L-PARSE,PASS_EXACT,'right'
+shipped_example,I3_frames,body_frame.handedness,L-SUMMARY,DROP,summary carries no field for body_frame.handedness (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I3_frames,body_frame.coordinate_unit,L-PARSE,PASS_EXACT,'m'
+shipped_example,I3_frames,body_frame.coordinate_unit,L-SUMMARY,DROP,summary carries no field for body_frame.coordinate_unit (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I3_frames,body_frame.domain_from_body.rotation,L-PARSE,PASS_EXACT,all 9 elements exact
+shipped_example,I3_frames,body_frame.domain_from_body.rotation,L-SUMMARY,DROP,summary carries no field for body_frame.domain_from_body.rotation (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I3_frames,body_frame.domain_from_body.origin_m,L-PARSE,PASS_EXACT,all 3 elements exact
+shipped_example,I3_frames,body_frame.domain_from_body.origin_m,L-SUMMARY,DROP,summary carries no field for body_frame.domain_from_body.origin_m (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I3_frames,tensor.coordinate_frame,L-PARSE,PASS_EXACT,'coupon-A-authored'
+shipped_example,I3_frames,tensor.coordinate_frame,L-SUMMARY,PASS_EXACT,'coupon-A-authored'
+shipped_example/coupon-body-A,I3_frames,tensor.frame_id,L-PARSE,PASS_EXACT,'coupon-A-authored'
+shipped_example,I3_frames,tensor.frame_id,L-SUMMARY,DROP,path inertia_tensor_about_com.frame_id absent in this layer's document (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I3_frames,tensor.basis,L-PARSE,PASS_EXACT,'authored_body_frame'
+shipped_example,I3_frames,tensor.basis,L-SUMMARY,PASS_EXACT,'authored_body_frame'
+shipped_example/coupon-body-A,I3_frames,mass.coordinate_frame,L-PARSE,PASS_EXACT,'frame_invariant'
+shipped_example,I3_frames,mass.coordinate_frame,L-SUMMARY,DROP,summary carries no field for mass_properties.mass.coordinate_frame (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I3_frames,mass.frame_invariant,L-PARSE,PASS_EXACT,True
+shipped_example,I3_frames,mass.frame_invariant,L-SUMMARY,DROP,summary carries no field for mass_properties.mass.frame_invariant (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I3_frames,volume.coordinate_frame,L-PARSE,PASS_EXACT,'frame_invariant'
+shipped_example,I3_frames,volume.coordinate_frame,L-SUMMARY,DROP,summary carries no field for mass_properties.volume.coordinate_frame (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I4_provenance,cell_provenance.rows,L-PARSE,PASS_EXACT,all 1 elements exact
+shipped_example,I4_provenance,cell_provenance.rows,L-SUMMARY,DROP,summary carries no field for cell_provenance (shipped_example/coupon-body-A)
+shipped_example/coupon-body-A,I5_admission,admission_status,L-PARSE,PASS_EXACT,'validation_only_admissible'
+shipped_example,I5_admission,admission_status,L-SUMMARY,PASS_EXACT,'validation_only_admissible'
+shipped_example/coupon-body-A,I5_admission,admission_report_sha256,L-PARSE,PASS_EXACT,'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc'
+shipped_example,I5_admission,admission_report_sha256,L-SUMMARY,PASS_EXACT,'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc'
+shipped_example/coupon-body-B,I1_tensor,value[3][3],L-PARSE,PASS_EXACT,all 9 elements exact
+shipped_example,I1_tensor,value[3][3],L-SUMMARY,PASS_EXACT,all 9 elements exact
+shipped_example/coupon-body-B,I1_tensor,unit,L-PARSE,PASS_EXACT,'kg*m^2'
+shipped_example,I1_tensor,unit,L-SUMMARY,PASS_EXACT,'kg*m^2'
+shipped_example/coupon-body-B,I1_tensor,flag.full_symmetric_tensor,L-PARSE,PASS_EXACT,True
+shipped_example,I1_tensor,flag.full_symmetric_tensor,L-SUMMARY,PASS_EXACT,True
+shipped_example/coupon-body-B,I1_tensor,flag.off_diagonal_terms_preserved,L-PARSE,PASS_EXACT,True
+shipped_example,I1_tensor,flag.off_diagonal_terms_preserved,L-SUMMARY,PASS_EXACT,True
+shipped_example/coupon-body-B,I1_tensor,flag.principal_axis_transform_applied,L-PARSE,PASS_EXACT,False
+shipped_example,I1_tensor,flag.principal_axis_transform_applied,L-SUMMARY,PASS_EXACT,False
+shipped_example/coupon-body-B,I2_com,value[3],L-PARSE,PASS_EXACT,all 3 elements exact
+shipped_example,I2_com,value[3],L-SUMMARY,PASS_EXACT,all 3 elements exact
+shipped_example/coupon-body-B,I2_com,unit,L-PARSE,PASS_EXACT,'m'
+shipped_example,I2_com,unit,L-SUMMARY,PASS_EXACT,'m'
+shipped_example/coupon-body-B,I2_com,coordinate_frame,L-PARSE,PASS_EXACT,'coupon-B-authored'
+shipped_example,I2_com,coordinate_frame,L-SUMMARY,PASS_EXACT,'coupon-B-authored'
+shipped_example/coupon-body-B,I3_frames,body_frame.frame_id,L-PARSE,PASS_EXACT,'coupon-B-authored'
+shipped_example,I3_frames,body_frame.frame_id,L-SUMMARY,DROP,summary carries no field for body_frame.frame_id (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I3_frames,body_frame.handedness,L-PARSE,PASS_EXACT,'right'
+shipped_example,I3_frames,body_frame.handedness,L-SUMMARY,DROP,summary carries no field for body_frame.handedness (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I3_frames,body_frame.coordinate_unit,L-PARSE,PASS_EXACT,'m'
+shipped_example,I3_frames,body_frame.coordinate_unit,L-SUMMARY,DROP,summary carries no field for body_frame.coordinate_unit (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I3_frames,body_frame.domain_from_body.rotation,L-PARSE,PASS_EXACT,all 9 elements exact
+shipped_example,I3_frames,body_frame.domain_from_body.rotation,L-SUMMARY,DROP,summary carries no field for body_frame.domain_from_body.rotation (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I3_frames,body_frame.domain_from_body.origin_m,L-PARSE,PASS_EXACT,all 3 elements exact
+shipped_example,I3_frames,body_frame.domain_from_body.origin_m,L-SUMMARY,DROP,summary carries no field for body_frame.domain_from_body.origin_m (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I3_frames,tensor.coordinate_frame,L-PARSE,PASS_EXACT,'coupon-B-authored'
+shipped_example,I3_frames,tensor.coordinate_frame,L-SUMMARY,PASS_EXACT,'coupon-B-authored'
+shipped_example/coupon-body-B,I3_frames,tensor.frame_id,L-PARSE,PASS_EXACT,'coupon-B-authored'
+shipped_example,I3_frames,tensor.frame_id,L-SUMMARY,DROP,path inertia_tensor_about_com.frame_id absent in this layer's document (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I3_frames,tensor.basis,L-PARSE,PASS_EXACT,'authored_body_frame'
+shipped_example,I3_frames,tensor.basis,L-SUMMARY,PASS_EXACT,'authored_body_frame'
+shipped_example/coupon-body-B,I3_frames,mass.coordinate_frame,L-PARSE,PASS_EXACT,'frame_invariant'
+shipped_example,I3_frames,mass.coordinate_frame,L-SUMMARY,DROP,summary carries no field for mass_properties.mass.coordinate_frame (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I3_frames,mass.frame_invariant,L-PARSE,PASS_EXACT,True
+shipped_example,I3_frames,mass.frame_invariant,L-SUMMARY,DROP,summary carries no field for mass_properties.mass.frame_invariant (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I3_frames,volume.coordinate_frame,L-PARSE,PASS_EXACT,'frame_invariant'
+shipped_example,I3_frames,volume.coordinate_frame,L-SUMMARY,DROP,summary carries no field for mass_properties.volume.coordinate_frame (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I4_provenance,cell_provenance.rows,L-PARSE,PASS_EXACT,all 1 elements exact
+shipped_example,I4_provenance,cell_provenance.rows,L-SUMMARY,DROP,summary carries no field for cell_provenance (shipped_example/coupon-body-B)
+shipped_example/coupon-body-B,I5_admission,admission_status,L-PARSE,PASS_EXACT,'validation_only_admissible'
+shipped_example,I5_admission,admission_status,L-SUMMARY,PASS_EXACT,'validation_only_admissible'
+shipped_example/coupon-body-B,I5_admission,admission_report_sha256,L-PARSE,PASS_EXACT,'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc'
+shipped_example,I5_admission,admission_report_sha256,L-SUMMARY,PASS_EXACT,'a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc'
+shipped_example,I5_admission,top.admission_status,L-SUMMARY,PASS_EXACT,'validation_only_admissible'
+shipped_example,I5_admission,top.admission_report_sha256,L-SUMMARY,DROP,top-level admission_report_sha256 absent in reader summary
+shipped_example,I6_readiness,summary.dynamics_readiness_claimed,L-SUMMARY,PASS_EXACT,False
+shipped_example,L-REREAD,summary_canonical_roundtrip,L-REREAD,PASS_EXACT,canonical_json(read_json_file(summary.json)) == reader canonical

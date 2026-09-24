@@ -1,0 +1,23 @@
+{
+ "P1_parse_layer_exact_both_fixtures": {
+  "evidence": "03_verdict_matrix: L-WRITE report_canonical_text PASS_EXACT x2; L-PARSE canonical_roundtrip PASS_EXACT x2; all field-level L-PARSE rows PASS_EXACT (tally 150 PASS_EXACT / 0 DIFF at parse+write layers)",
+  "verdict": "SUPPORTED"
+ },
+ "P2_summary_projection": {
+  "refuted_detail": "PREDICTED tensor.frame_id SURVIVES; MEASURED: DROP at L-SUMMARY (reader rebuilds the tensor dict without frame_id). No information loss: summary coordinate_frame carries the identical string (addendum 09: tensor_frame_id_info_preserved_via_coordinate_frame true, all 4 bodies). Also P2 listed material_mass_source_provenance among drops; the FROZEN I4 sub-field list did not include it \u2014 measured post-run in addendum 09 (dropped; CON-12 pair)",
+  "supported": "predicted DROPs confirmed: cell_provenance, body_frame (5 sub-fields), mass unit/frame_invariant, volume, top-level admission_report_sha256, admission_reason_codes, all_supplied_cells_assigned; predicted survivors confirmed exact: 9 tensor entries, COM value/unit/coordinate_frame, tensor coordinate_frame/basis + 3 flags, admission_status both levels, per-body admission_report_sha256, readiness false pinned",
+  "verdict": "PARTIALLY_REFUTED (in one predicted survivor)"
+ },
+ "P3_rotcoupon_rotated_tensor_all9_nonzero": {
+  "evidence": "07_offdiag_observation: body-R 9/9 nonzero, 6/6 off-diagonals nonzero (xy=0x1.564dfb84708b7p-3, xz=0x1.e629e12e3a230p-9, yz=0x1.9520d86e02b7ap-5 and mirrors); body-S also 9/9 nonzero - CORRECTION: the fixture's right-tet domain tensor already has nonzero off-diagonals about its COM even unrotated (0x1.bbbbbbbbbbbbbp-6/-7); identity rotation preserves them; the ROTATED body-R values differ from body-S's, evidencing the mix",
+  "verdict": "SUPPORTED (body-R); sub-claim about body-S corrected"
+ },
+ "P4_byte_layer_crlf_expected": {
+  "evidence": "04_byte_layer: 4/4 stages crlf_pairs=1, raw_equal=False, normalized_equal=True (single trailing LF translated to CRLF by Windows pipe; JSON body has no internal newlines); canonical comparisons scored, per B4 law",
+  "verdict": "SUPPORTED"
+ },
+ "P5_reader_output_roundtrip": {
+  "evidence": "03_verdict_matrix: L-REREAD summary_canonical_roundtrip PASS_EXACT x2",
+  "verdict": "SUPPORTED"
+ }
+}

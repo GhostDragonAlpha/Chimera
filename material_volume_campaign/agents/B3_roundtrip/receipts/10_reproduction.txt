@@ -1,0 +1,13 @@
+B3 REPRODUCTION RECEIPT (stop rule: second execution must not change verdicts)
+REVISED: the first reproduction attempt used a stripped subprocess env
+(exit=1, harness env defect in the reproduction DRIVER, not in the
+measurement); re-executed with the normal environment, exit=0, tally
+150 PASS_EXACT / 42 DROP / 0 DIFF (matches first pass).
+
+IDENTICAL receipts/03_verdict_matrix.json sha256=e20e765b95d9decec7d4fcde9426258a72f8c3c8f348229be241ff4992cf7504
+IDENTICAL receipts/03_verdict_matrix.csv sha256=4329b3fd69d8032e7e2f70b6078c13e47bcf205ca6a188ea34185cebd47bb939
+IDENTICAL receipts/04_byte_layer.txt sha256=f49fb99a2de30ca922b8809a961454ee72b1d07857e7c9b1793463a898e526fb
+IDENTICAL receipts/07_offdiag_observation.json sha256=9e46aa8b9a1c7310ec0b2e44b45bc393d56541e6beeb673007e4059fb0cecc7f
+IDENTICAL receipts/01_fixture_hashes.txt sha256=4be31fde512475f5553e1fb9c83b1a24be4893d24d13837bbc410734e417f55a
+
+REPRODUCTION VERDICT: ALL IDENTICAL across comparable executions - measurement stable

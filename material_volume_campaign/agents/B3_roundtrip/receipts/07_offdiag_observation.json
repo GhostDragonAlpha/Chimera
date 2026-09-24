@@ -1,0 +1,50 @@
+{
+  "rotcoupon/body-R": {
+    "nonzero_of_9": 9,
+    "nonzero_offdiag_of_6": 6,
+    "off_diagonal_hex": [
+      "0x1.564dfb84708b7p-3",
+      "0x1.e629e12e3a230p-9",
+      "0x1.9520d86e02b7ap-5",
+      "0x1.564dfb84708b7p-3",
+      "0x1.e629e12e3a230p-9",
+      "0x1.9520d86e02b7ap-5"
+    ]
+  },
+  "rotcoupon/body-S": {
+    "nonzero_of_9": 9,
+    "nonzero_offdiag_of_6": 6,
+    "off_diagonal_hex": [
+      "0x1.bbbbbbbbbbbbbp-6",
+      "0x1.bbbbbbbbbbbbbp-6",
+      "0x1.bbbbbbbbbbbbbp-7",
+      "0x1.bbbbbbbbbbbbbp-6",
+      "0x1.bbbbbbbbbbbbbp-6",
+      "0x1.bbbbbbbbbbbbbp-7"
+    ]
+  },
+  "shipped_example/coupon-body-A": {
+    "nonzero_of_9": 9,
+    "nonzero_offdiag_of_6": 6,
+    "off_diagonal_hex": [
+      "0x1.999999999999ap-6",
+      "0x1.999999999999ap-6",
+      "0x1.999999999999ap-6",
+      "0x1.999999999999ap-6",
+      "0x1.999999999999ap-6",
+      "0x1.999999999999ap-6"
+    ]
+  },
+  "shipped_example/coupon-body-B": {
+    "nonzero_of_9": 9,
+    "nonzero_offdiag_of_6": 6,
+    "off_diagonal_hex": [
+      "0x1.999999999999ap-7",
+      "0x1.999999999999ap-7",
+      "0x1.999999999999ap-7",
+      "0x1.999999999999ap-7",
+      "0x1.999999999999ap-7",
+      "0x1.999999999999ap-7"
+    ]
+  }
+}
