@@ -1,0 +1,101 @@
+{
+  "admission_decision_recomputed": "validation_only_admissible",
+  "caveat": "Regeneration proves agreement with the producer, not correctness of the physical inputs or producer.",
+  "checks": [
+    {
+      "detail": "delivered artifact parses under the pinned strict reader (duplicate-key / NaN-literal rejecting)",
+      "name": "delivered_report_parse",
+      "status": "pass"
+    },
+    {
+      "detail": "delivered cab86eb63a9b10f988e93c42bc273bfbb06ef468705a421a6f821c6543630021 vs recomputed from the supplied source cab86eb63a9b10f988e93c42bc273bfbb06ef468705a421a6f821c6543630021",
+      "name": "input_hash_manifest_sha256",
+      "status": "pass"
+    },
+    {
+      "detail": "delivered dd5aa0169b59e0c54d446ab443e8ed200c9eae256c75162781759702ce0f6ad1 vs recomputed from the supplied source dd5aa0169b59e0c54d446ab443e8ed200c9eae256c75162781759702ce0f6ad1",
+      "name": "input_hash_partition_sha256",
+      "status": "pass"
+    },
+    {
+      "detail": "delivered dcb55f1d17526fa12501f405505238c347ccf2c636cce1b78759bbcd76436c73 vs recomputed from the supplied source dcb55f1d17526fa12501f405505238c347ccf2c636cce1b78759bbcd76436c73",
+      "name": "input_hash_body_groups_sha256",
+      "status": "pass"
+    },
+    {
+      "detail": "delivered 'sha256' vs pinned producer declaration 'sha256'",
+      "name": "input_hashes_declaration_algorithm",
+      "status": "pass"
+    },
+    {
+      "detail": "delivered 'UTF-8 canonical JSON (sorted object keys; array order preserved)' vs pinned producer declaration 'UTF-8 canonical JSON (sorted object keys; array order preserved)'",
+      "name": "input_hashes_declaration_serialization",
+      "status": "pass"
+    },
+    {
+      "detail": "delivered a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc vs recomputed from the supplied manifest+partition a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc",
+      "name": "admission_report_sha256_recomputed",
+      "status": "pass"
+    },
+    {
+      "detail": "delivered canonical sha256 d1fdafa374617d4c95f2e8635c02790c9d7dafb5a46d9b4ce5b4e0d4ba1bfadb vs pinned regeneration canonical sha256 5485c8c4fe73d679eb73f16a09e5e50778cb2d53cbe446515c971b36c57dda73 (exporter canonical JSON layer; raw file bytes are not identity)",
+      "name": "report_canonical_identity",
+      "status": "FAIL"
+    }
+  ],
+  "delivered_admission_status": "validation_only_admissible",
+  "delivered_export_status": "complete",
+  "identity": {
+    "input_hash_definition": "exporter._hashes / exporter._canonical_hash: sha256 of UTF-8 canonical JSON (sorted object keys; array order preserved), computed by the pinned revision's own code.",
+    "producer_materialization_layer": "git blob bytes (LF) at the pinned revision via git cat-file, byte-verified with git hash-object against git ls-tree OIDs; disk and git-archive forms are checkout materializations (B4 law).",
+    "report_identity_layer": "exporter canonical JSON: sha256 over json.dumps(report, sort_keys=True, separators=(',',':'), ensure_ascii=True, allow_nan=False) + newline (ASCII). NOT disk bytes, NOT git blob bytes."
+  },
+  "independent_checks_note": "Independent analytic checks are retained: the legacy suites, proof batteries, and admission/compiler refusals remain the correctness layer for the physical inputs and the producer; this verifier adds source-bound producer agreement only.",
+  "mismatches": [
+    "$report",
+    "$body_groups[0].mass_properties.mass.value"
+  ],
+  "mismatches_truncated": false,
+  "pinned_materialization": {
+    "layer": "git blob bytes (LF), hash-object verified",
+    "tools_dir": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W1_source_verify\\work\\pinned\\1af0bbdee68d\\tools"
+  },
+  "producer_revision_pin": "1af0bbdee68d6ddfdd02bf9bd948f7b22f914d56",
+  "producer_revision_resolved": "1af0bbdee68d6ddfdd02bf9bd948f7b22f914d56",
+  "regenerated_admission_status": "validation_only_admissible",
+  "regenerated_export_status": "complete",
+  "sources": {
+    "groups": "E:\\ChimeraWork\\mvc-20260924\\tools\\material_volume_body_export_groups_example.json",
+    "manifest": "E:\\ChimeraWork\\mvc-20260924\\tools\\material_volume_body_export_manifest_example.json",
+    "materialized_receipts": [
+      {
+        "materialized_bytes": 1541,
+        "materialized_bytes_sha256": "c7d4f304fff81ba3f98b85d56a039efaaf101aa1dbaaf3249b490690476d55a5",
+        "note": "checkout/disk materialization receipt (B4 layer 1); NOT a portable identity and NEVER used for a verdict",
+        "path": "E:\\ChimeraWork\\mvc-20260924\\tools\\material_volume_body_export_manifest_example.json"
+      },
+      {
+        "materialized_bytes": 1400,
+        "materialized_bytes_sha256": "c0417923ef8ee7a0088ee98a124cbecc72aee84ef5b0c4036b81ec2d8a5d2f3a",
+        "note": "checkout/disk materialization receipt (B4 layer 1); NOT a portable identity and NEVER used for a verdict",
+        "path": "E:\\ChimeraWork\\mvc-20260924\\tools\\material_volume_body_export_partition_example.json"
+      },
+      {
+        "materialized_bytes": 844,
+        "materialized_bytes_sha256": "ffb1a94808423b695fc3745f4a533bf8f8d84b6e77505c7d7cf8c39c6c621758",
+        "note": "checkout/disk materialization receipt (B4 layer 1); NOT a portable identity and NEVER used for a verdict",
+        "path": "E:\\ChimeraWork\\mvc-20260924\\tools\\material_volume_body_export_groups_example.json"
+      },
+      {
+        "materialized_bytes": 5472,
+        "materialized_bytes_sha256": "d1fdafa374617d4c95f2e8635c02790c9d7dafb5a46d9b4ce5b4e0d4ba1bfadb",
+        "note": "checkout/disk materialization receipt (B4 layer 1); NOT a portable identity and NEVER used for a verdict",
+        "path": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W1_source_verify\\tests\\corpus\\corrupt_M04.json"
+      }
+    ],
+    "partition": "E:\\ChimeraWork\\mvc-20260924\\tools\\material_volume_body_export_partition_example.json",
+    "report": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W1_source_verify\\tests\\corpus\\corrupt_M04.json"
+  },
+  "verdict": "MISMATCH",
+  "verifier": "W1 source-bound regeneration verification (Astra decision MV-VALUE; battery decision M01-F1)"
+}

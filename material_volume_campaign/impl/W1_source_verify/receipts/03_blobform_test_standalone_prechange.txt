@@ -1,0 +1,7 @@
+test_blob_form_reproduction_of_saved_example_report (__main__.BlobFormReproductionPreChange.test_blob_form_reproduction_of_saved_example_report) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.214s
+
+OK
+EXIT=0

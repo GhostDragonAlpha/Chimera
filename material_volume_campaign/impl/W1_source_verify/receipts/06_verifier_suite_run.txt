@@ -1,0 +1,15 @@
+test_all_b7_value_class_report_mutations_are_caught (__main__.W1VerifierSuite.test_all_b7_value_class_report_mutations_are_caught) ... ok
+test_broken_pinned_producer_is_producer_error_not_pass (__main__.W1VerifierSuite.test_broken_pinned_producer_is_producer_error_not_pass) ... ok
+test_happy_path_genuine_example_verifies (__main__.W1VerifierSuite.test_happy_path_genuine_example_verifies) ... ok
+test_input_mutation_controls_verify_with_caveat_surfaced (__main__.W1VerifierSuite.test_input_mutation_controls_verify_with_caveat_surfaced) ... ok
+test_layer_separation_trailing_crlf_and_lf_only_still_verify (__main__.W1VerifierSuite.test_layer_separation_trailing_crlf_and_lf_only_still_verify) ... ok
+test_missing_sources_and_bad_pin_are_unavailable (__main__.W1VerifierSuite.test_missing_sources_and_bad_pin_are_unavailable) ... ok
+test_pinned_materialization_is_blob_bytes_not_worktree_disk (__main__.W1VerifierSuite.test_pinned_materialization_is_blob_bytes_not_worktree_disk) ... ok
+test_single_content_byte_change_is_mismatch (__main__.W1VerifierSuite.test_single_content_byte_change_is_mismatch) ... ok
+test_unusable_sources_duplicate_key_and_nan_literal (__main__.W1VerifierSuite.test_unusable_sources_duplicate_key_and_nan_literal) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 12.974s
+
+OK
+EXIT=0
