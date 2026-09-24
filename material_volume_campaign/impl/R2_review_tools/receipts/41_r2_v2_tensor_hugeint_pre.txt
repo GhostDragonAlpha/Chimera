@@ -1,0 +1,7 @@
+reader_dir=w3/pre
+report=r2_v2_tensor_hugeint.json
+exit=1
+stdout_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (0 bytes)
+stderr_sha256=9e013936768e8f47161a68c74657b31422128b122c68b8d86552b4f5fc36df36
+traceback=True
+stderr[:200]=Traceback (most recent call last): //   File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\R2_review_tools\work\w3\pre\material_volume_body_export_reader.py", line 123, in <module> //  

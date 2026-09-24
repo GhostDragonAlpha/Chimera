@@ -1,0 +1,7 @@
+reader_dir=w3/current
+report=r2_v1_mass_hugeint.json
+exit=1
+stdout_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (0 bytes)
+stderr_sha256=094fd16486e04a8e19098b46e6762ade18e8eba42e360d0eb188a944991d3f7f
+traceback=True
+stderr[:200]=Traceback (most recent call last): //   File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\R2_review_tools\work\w3\current\material_volume_body_export_reader.py", line 159, in <module> 

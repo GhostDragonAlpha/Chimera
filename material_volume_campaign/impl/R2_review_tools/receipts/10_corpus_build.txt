@@ -1,0 +1,5 @@
+M1 inertia[0][0]: 0.07500000000000001 -> 0.07500000000000002
+M2 swapped manifest/partition sha256 fields
+M3 mass: 1.0 -> 1.0000000000000002
+M-TP groups mass_kg fields mutated: 0
+corpus written to E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\R2_review_tools\work\w1

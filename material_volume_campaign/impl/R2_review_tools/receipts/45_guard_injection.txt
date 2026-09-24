@@ -1,0 +1,4 @@
+1. np.asarray RuntimeError: PROPAGATED (correct): R2-injected
+2. __float__ RuntimeError: PROPAGATED (correct): R2-injected-float
+3. __float__ ValueError: CONVERTED (correct): body_groups[1] mass_properties.mass.value is malformed: not a finite JSON number
+4. huge-int mass: PROPAGATED OverflowError (note F-R2-3): int too large to convert to float

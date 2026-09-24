@@ -1,0 +1,6 @@
+k1_wrong_shape_2x2: exit=2 stderr_sha=681654dd4165ef5a... A/B_identical=True line=bad_export_report: body_groups[1] has invalid numeric properties
+k2_center_1x3: exit=2 stderr_sha=681654dd4165ef5a... A/B_identical=True line=bad_export_report: body_groups[1] has invalid numeric properties
+k3_none_entries: exit=2 stderr_sha=681654dd4165ef5a... A/B_identical=True line=bad_export_report: body_groups[1] has invalid numeric properties
+k4_scalar_tensor: exit=2 stderr_sha=681654dd4165ef5a... A/B_identical=True line=bad_export_report: body_groups[1] has invalid numeric properties
+k5_combo_wrongshape_badmass: exit=2 stderr_sha=681654dd4165ef5a... A/B_identical=True line=bad_export_report: body_groups[1] has invalid numeric properties
+OVERALL: PASS

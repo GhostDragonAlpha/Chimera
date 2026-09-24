@@ -1,0 +1,7 @@
+reader_dir=w3/current
+report=r2_v6_mass_1e400_string.json
+exit=2
+stdout_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 (0 bytes)
+stderr_sha256=681654dd4165ef5af13bab43c1f89906248640f781e07d809340d5815e17de9b
+traceback=False
+stderr[:200]=bad_export_report: body_groups[1] has invalid numeric properties

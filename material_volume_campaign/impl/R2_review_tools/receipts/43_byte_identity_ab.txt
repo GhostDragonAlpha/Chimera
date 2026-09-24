@@ -1,0 +1,6 @@
+== VALID OUTPUT byte identity (stdout must match pre/post AND W3 receipt) ==
+shipped_example: exit=0 stdout_sha=d37a34a51dfb89d6... bytes=2707 A/B_identical=True matches_W3_receipt=True
+rotcoupon: exit=0 stdout_sha=8674569abc99a711... bytes=2902 A/B_identical=True matches_W3_receipt=True
+== EXISTING REFUSALS byte identity (stderr+exit must match pre/post) ==
+r2_k6_blocked_with_mass: exit=2 stderr_sha=b463cc2e69cc282b... A/B_identical=True line=blocked_group_has_mass: body_groups[0] is not exported but includes properties
+OVERALL: PASS

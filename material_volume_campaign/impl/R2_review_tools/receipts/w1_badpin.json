@@ -1,0 +1,22 @@
+{
+  "caveat": "Regeneration proves agreement with the producer, not correctness of the physical inputs or producer.",
+  "checks": [],
+  "detail": "pinned revision c25ba960c2c25364e488b7c8fa252cdf104622c0 lacks producer modules: ['tools/material_volume.py', 'tools/material_volume_admission.py', 'tools/material_volume_body_export.py']",
+  "identity": {
+    "input_hash_definition": "exporter._hashes / exporter._canonical_hash: sha256 of UTF-8 canonical JSON (sorted object keys; array order preserved), computed by the pinned revision's own code.",
+    "producer_materialization_layer": "git blob bytes (LF) at the pinned revision via git cat-file, byte-verified with git hash-object against git ls-tree OIDs; disk and git-archive forms are checkout materializations (B4 law).",
+    "report_identity_layer": "exporter canonical JSON: sha256 over json.dumps(report, sort_keys=True, separators=(',',':'), ensure_ascii=True, allow_nan=False) + newline (ASCII). NOT disk bytes, NOT git blob bytes."
+  },
+  "independent_checks_note": "Independent analytic checks are retained: the legacy suites, proof batteries, and admission/compiler refusals remain the correctness layer for the physical inputs and the producer; this verifier adds source-bound producer agreement only.",
+  "mismatches": [],
+  "producer_revision_pin": "c25ba960c2c25364e488b7c8fa252cdf104622c0",
+  "producer_revision_resolved": "c25ba960c2c25364e488b7c8fa252cdf104622c0",
+  "sources": {
+    "groups": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\R2_review_tools\\work\\w1\\genuine_groups.json",
+    "manifest": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\R2_review_tools\\work\\w1\\genuine_manifest.json",
+    "partition": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\R2_review_tools\\work\\w1\\genuine_partition.json",
+    "report": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\R2_review_tools\\work\\w1\\genuine_report.json"
+  },
+  "verdict": "UNAVAILABLE-SOURCE",
+  "verifier": "W1 source-bound regeneration verification (Astra decision MV-VALUE; battery decision M01-F1)"
+}

@@ -1,0 +1,7 @@
+reader_dir=w3/pre
+report=r2_v5_mass_bool.json
+exit=0
+stdout_sha256=d37a34a51dfb89d667c9834ac077b890e4fba81e0c68f88e59692c183101259b (2707 bytes)
+stderr_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+traceback=False
+stderr[:200]=

@@ -1,0 +1,7 @@
+reader_dir=w3/current
+report=r2_v4_mass_numeric_string.json
+exit=0
+stdout_sha256=00326b54f02840828ce96787f9595b837c06bd0bbd6e534634f237dc97f81f60 (2707 bytes)
+stderr_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+traceback=False
+stderr[:200]=
