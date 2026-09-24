@@ -286,3 +286,6 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Active (dispatched):** O1 ulna orientation · O2 hand orientation · R1 radioulnar primary evidence.
 **Blocked:** none mechanically. I7 (B4 isolated U-STR + radius before/after + one receipt) is GATED on O1+O2+R1 passing.
 **Next:** collect O1/O2/R1 -> gates check -> I7 diagnostic (authorized, production still unauthorized).
+
+## NOTE (T19a) — O2 transient failure + probe + re-dispatch
+O2 died at ~13:22 with [1302] rate-limit (12 concurrent agents in flight). Probe spawn per the standing quota law: PASSED in 1.4 s -> claim is transient, not a wall. O2 re-dispatched from its saved brief (partial work/mesh_target_o2.py inspected by the replacement). No waiting protocol built.
