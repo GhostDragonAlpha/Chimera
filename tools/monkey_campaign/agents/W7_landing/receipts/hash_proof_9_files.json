@@ -1,0 +1,82 @@
+{
+  "proof": "W7 hash proof. 8 of 9 files: byte-identical to reviewed sources at W7 baseline AND at close (W7 never wrote them). 1 file moved mid-session by the CONCURRENT source lane, not by W7: tools/material_volume_body_export_reader.py \u2014 mvc commit 28e8233f ('W3b integrated \u2014 OverflowError joins the converted set at the same two sites; refusals exact; goldens unchanged; R2's F-R2-3 closed') changed the reviewed source at 17:55:59; the landed copy was re-synced to the new source at 17:59:34 (mvc file mtime 17:55:59, landed mtime 17:59:34). At close, landed == current reviewed source for ALL 9.",
+  "all_identical_to_current_source": true,
+  "files_changed_since_baseline_by_concurrent_lane": [
+    "material_volume_body_export_reader.py"
+  ],
+  "w7_writes": "tools/tests/material_volume/**, tools/monkey_campaign/agents/W7_landing/**, 4 declared example JSONs in tools/",
+  "files": [
+    {
+      "file": "tools/material_volume.py",
+      "sha256_w7_baseline": "6d2817b7b4ea59213f90134b343a06579d92db998c1db7f27b0e89aff71799cf",
+      "sha256_final": "6d2817b7b4ea59213f90134b343a06579d92db998c1db7f27b0e89aff71799cf",
+      "sha256_mvc_source_now": "6d2817b7b4ea59213f90134b343a06579d92db998c1db7f27b0e89aff71799cf",
+      "identical_to_source_now": true,
+      "changed_since_w7_baseline_by_concurrent_lane": false
+    },
+    {
+      "file": "tools/material_volume_admission.py",
+      "sha256_w7_baseline": "d6d4b0e010c0982f5c94dc880a2fec4ac50ea69af605ce80b7186745a5f7750d",
+      "sha256_final": "d6d4b0e010c0982f5c94dc880a2fec4ac50ea69af605ce80b7186745a5f7750d",
+      "sha256_mvc_source_now": "d6d4b0e010c0982f5c94dc880a2fec4ac50ea69af605ce80b7186745a5f7750d",
+      "identical_to_source_now": true,
+      "changed_since_w7_baseline_by_concurrent_lane": false
+    },
+    {
+      "file": "tools/material_volume_admission_checks.py",
+      "sha256_w7_baseline": "a52dd37b4347c8ce3bce5fa7a33df25cb36e2470696927b5f57f8f297f6b0204",
+      "sha256_final": "a52dd37b4347c8ce3bce5fa7a33df25cb36e2470696927b5f57f8f297f6b0204",
+      "sha256_mvc_source_now": "a52dd37b4347c8ce3bce5fa7a33df25cb36e2470696927b5f57f8f297f6b0204",
+      "identical_to_source_now": true,
+      "changed_since_w7_baseline_by_concurrent_lane": false
+    },
+    {
+      "file": "tools/material_volume_body_export.py",
+      "sha256_w7_baseline": "04be88a7c62dc358c06aff29d3ac70244ae575298603712d2352d44853e018e7",
+      "sha256_final": "04be88a7c62dc358c06aff29d3ac70244ae575298603712d2352d44853e018e7",
+      "sha256_mvc_source_now": "04be88a7c62dc358c06aff29d3ac70244ae575298603712d2352d44853e018e7",
+      "identical_to_source_now": true,
+      "changed_since_w7_baseline_by_concurrent_lane": false
+    },
+    {
+      "file": "tools/material_volume_body_export_checks.py",
+      "sha256_w7_baseline": "e81e0b452e86702d2494851bc3decd04f8e2e3bfef47eef4ea3b1d83138fe9c7",
+      "sha256_final": "e81e0b452e86702d2494851bc3decd04f8e2e3bfef47eef4ea3b1d83138fe9c7",
+      "sha256_mvc_source_now": "e81e0b452e86702d2494851bc3decd04f8e2e3bfef47eef4ea3b1d83138fe9c7",
+      "identical_to_source_now": true,
+      "changed_since_w7_baseline_by_concurrent_lane": false
+    },
+    {
+      "file": "tools/material_volume_body_export_reader.py",
+      "sha256_w7_baseline": "83b057391ab6d8e10352129a29d7903d15b4d59f2c7103e907d1f98069f274df",
+      "sha256_final": "81ce404c8dcac1c18481116cf3bf84cf1232053fdc6d82d5d5cf698bdf37ca24",
+      "sha256_mvc_source_now": "81ce404c8dcac1c18481116cf3bf84cf1232053fdc6d82d5d5cf698bdf37ca24",
+      "identical_to_source_now": true,
+      "changed_since_w7_baseline_by_concurrent_lane": true
+    },
+    {
+      "file": "tools/material_volume_checks.py",
+      "sha256_w7_baseline": "d472556b2922c7ab01431d7a10648a9b6b12194a15f4220ec4b1e8b3906d61c2",
+      "sha256_final": "d472556b2922c7ab01431d7a10648a9b6b12194a15f4220ec4b1e8b3906d61c2",
+      "sha256_mvc_source_now": "d472556b2922c7ab01431d7a10648a9b6b12194a15f4220ec4b1e8b3906d61c2",
+      "identical_to_source_now": true,
+      "changed_since_w7_baseline_by_concurrent_lane": false
+    },
+    {
+      "file": "tools/material_volume_diagnostic.py",
+      "sha256_w7_baseline": "6aa7a080c7cc38556fc85c981dc9782da81f164cd6add622761717ca59bd5895",
+      "sha256_final": "6aa7a080c7cc38556fc85c981dc9782da81f164cd6add622761717ca59bd5895",
+      "sha256_mvc_source_now": "6aa7a080c7cc38556fc85c981dc9782da81f164cd6add622761717ca59bd5895",
+      "identical_to_source_now": true,
+      "changed_since_w7_baseline_by_concurrent_lane": false
+    },
+    {
+      "file": "tools/rigid_body_mass_consumption_validator.py",
+      "sha256_w7_baseline": "5ecce0b5bbae6bf4e5e509a7eb72d45353ae42b6158a94d11ad7245d572c74fe",
+      "sha256_final": "5ecce0b5bbae6bf4e5e509a7eb72d45353ae42b6158a94d11ad7245d572c74fe",
+      "sha256_mvc_source_now": "5ecce0b5bbae6bf4e5e509a7eb72d45353ae42b6158a94d11ad7245d572c74fe",
+      "identical_to_source_now": true,
+      "changed_since_w7_baseline_by_concurrent_lane": false
+    }
+  ]
+}

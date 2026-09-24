@@ -1,0 +1,422 @@
+{
+  "description": "W7 byte-behavior (FINAL, against post-W3b bytes): landed validator vs reviewed source-home validator; identical CLI stdout/stderr/exit on every landed fixture and the two-document/aggregate CLI forms. Input-path occurrences normalized to <FIX> (Windows paths).",
+  "run_after": "2026-09-24T18:00+ (after concurrent W3b reader sync 17:59:34)",
+  "landed_tool_sha256": "5ecce0b5bbae6bf4e5e509a7eb72d45353ae42b6158a94d11ad7245d572c74fe",
+  "home_tool_sha256": "5ecce0b5bbae6bf4e5e509a7eb72d45353ae42b6158a94d11ad7245d572c74fe",
+  "landed_reader_sha256": "81ce404c8dcac1c18481116cf3bf84cf1232053fdc6d82d5d5cf698bdf37ca24",
+  "all_cases_byte_identical": true,
+  "fixture_count": 55,
+  "fixtures": [
+    {
+      "fixture": "accept_complete_report.json",
+      "landed_exit": 0,
+      "home_exit": 0,
+      "verdict": "ACCEPT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "adversarial_case_variant_status.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "adversarial_diagonalized.json",
+      "landed_exit": 0,
+      "home_exit": 0,
+      "verdict": "ACCEPT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "adversarial_readiness_nested.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "genuine_blocked_report.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "genuine_partial_report.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "recompute_admission.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "recompute_admission_mismatched.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "recompute_report.json",
+      "landed_exit": 0,
+      "home_exit": 0,
+      "verdict": "ACCEPT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_admission_case.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_admission_loose.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_all_supplied_false.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_blocked.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_com_frame.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_com_short.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_composite.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_conflicting_owner.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_frame_handedness.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_frame_lefthanded.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_frame_nonorthonormal.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_frame_unit.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_hash_mismatch.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_hash_missing.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_hash_short.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_hash_uppercase.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_lineage.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_mass_authority_source.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_mass_negative.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_mass_not_invariant.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_mass_unit.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_not_exported.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_owned_missing_provenance.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_owner_ids_mismatch.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_partial.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_placeholder_mass.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_production_wired.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_provenance_stripped.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_readiness_body.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_readiness_root.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_refused.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_source_kind.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_source_payloads.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_state_mutated.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_tensor_asymmetric.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_tensor_frame.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_tensor_full_flag.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_tensor_offdiag_flag.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_tensor_pa_true.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_tensor_truncated.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_tensor_unit.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_unassigned_in_complete.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_unknown_status.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_unsupported.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_validation_only_false.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "fixture": "reject_volume_unit.json",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "verdict": "REJECT",
+      "byte_identical_after_path_norm": true
+    }
+  ],
+  "extra_cases": [
+    {
+      "case": "recompute_report --admission-report recompute_admission (match)",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "case": "recompute_report --admission-report recompute_admission_MISMATCHED (tamper)",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "case": "accept --verify-aggregate",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "byte_identical_after_path_norm": true
+    },
+    {
+      "case": "accept --admission-report wrong_document (tamper refusal)",
+      "landed_exit": 2,
+      "home_exit": 2,
+      "byte_identical_after_path_norm": true
+    }
+  ]
+}

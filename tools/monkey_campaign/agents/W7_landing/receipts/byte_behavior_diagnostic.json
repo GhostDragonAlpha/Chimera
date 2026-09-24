@@ -1,0 +1,7 @@
+{
+  "case": "diagnostic --json on shipped example: landed vs W5 home (both self-locate their tools/)",
+  "landed_exit": 0,
+  "home_exit": 0,
+  "semantic_output_identical": true,
+  "note": "run after concurrent W3b reader sync; reader exercised via summarize_export_report"
+}

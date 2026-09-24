@@ -1,0 +1,123 @@
+# W7 test-file path adaptations (diffs vs reviewed sources; every hunk is a path/path-doc change)
+
+## test_validator.py (source: mvc .../W6_validator/tests/test_validator.py)
+
+--- mvc-20260924/material_volume_campaign/impl/W6_validator/tests/test_validator.py	2026-09-24 16:55:53.658323400 -0500
++++ monkey-play-20260924/tools/tests/material_volume/test_validator.py	2026-09-24 17:51:48.646780100 -0500
+@@ -2,8 +2,9 @@
+ staged for W6 promotion (impl/W6_validator) — path adaptation only; assertions are
+ changed only by the preregistered reconciliation deltas (PREREGISTRATION.md).
+ 
+-Run:
+-    PYTHONDONTWRITEBYTECODE=1 python -m pytest tests/ -v
++Run (landed; canonical command in tools/tests/material_volume/README.md):
++    CHIMERA_TOOLS_DIR=<worktree>/tools PYTHONDONTWRITEBYTECODE=1 \
++        python -m pytest tools/tests/material_volume/ -v
+ Every reject fixture lives in tests/fixtures and is a single mutation of the
+ verbatim copy of the tools example report. tools/ is never touched.
+ """
+@@ -17,7 +18,7 @@
+ os.environ.setdefault("PYTHONDONTWRITEBYTECODE", "1")
+ 
+ HERE = Path(__file__).resolve().parent
+-AGENT_DIR = HERE.parent
++AGENT_DIR = HERE.parents[1]  # landed: tools/ (home layout had tests/ beside the tool)
+ FIXTURES = HERE / "fixtures"
+ sys.dont_write_bytecode = True
+ sys.path.insert(0, str(AGENT_DIR))
+@@ -247,7 +248,7 @@
+ 
+ 
+ def test_no_bytecode_written_into_tools() -> None:
+-    tools_pycache = HERE.parents[3] / "tools" / "__pycache__"
++    tools_pycache = HERE.parents[1] / "__pycache__"  # landed: tools/ directly
+     if tools_pycache.exists():
+         leaked = list(tools_pycache.glob("material_volume_body_export*"))
+         assert leaked == [], f"bytecode written into read-only tools/: {leaked}"
+
+## test_material_volume_diagnostic.py (source: mvc .../W5_diag_promo/home/tests/test_material_volume_diagnostic.py)
+
+--- mvc-20260924/material_volume_campaign/impl/W5_diag_promo/home/tests/test_material_volume_diagnostic.py	2026-09-24 16:59:05.771511200 -0500
++++ monkey-play-20260924/tools/tests/material_volume/test_material_volume_diagnostic.py	2026-09-24 17:51:57.549524200 -0500
+@@ -4,7 +4,8 @@
+ fixture is a GENUINE exporter output generated in memory by calling the
+ exporter's public ``build_export_report`` on mutated IN-MEMORY copies of the
+ shipped example manifest/partition/groups, then written only under
+-``agents/M09_diagnostic/work/``. No tools/ or docs/ file is ever written.
++``tools/tests/material_volume/work/``. No landed tools/ or docs/ file is
++ever written.
+ """
+ from __future__ import annotations
+ 
+@@ -22,8 +23,8 @@
+ 
+ sys.dont_write_bytecode = True  # never let __pycache__ appear in tools/
+ 
+-MY_DIR = Path(__file__).resolve().parents[1]
+-WORK_DIR = MY_DIR / "work"
++MY_DIR = Path(__file__).resolve().parents[2]  # landed: tools/ (home: the agent dir)
++WORK_DIR = Path(__file__).resolve().parents[0] / "work"  # landed: inside this tests dir
+ sys.path.insert(0, str(MY_DIR))
+ 
+ import material_volume_diagnostic as diag  # noqa: E402  (sets dont_write_bytecode)
+@@ -110,7 +111,7 @@
+     the hostile field. Protocol matches B2a's: the reader's public
+     ``summarize_export_report`` must ACCEPT each fixture BEFORE any CLI
+     assertion, so every test here exercises the display path on reader-accepted
+-    input. Files are written only under ``agents/M09_diagnostic/work/``.
++    input. Files are written only under ``tools/tests/material_volume/work/``.
+     """
+     generate_fixtures()
+     if "hostile" in _fixture_cache:
+@@ -339,8 +340,12 @@
+                              summary["admission_status"] or "not_reported")
+ 
+     # T9 — F1 falsifier, in-suite portion: no __pycache__ appears in tools/
++    # (landed scope: tools/ TOP LEVEL -- every landed material-volume module's
++    # bytecode would land there; nested pre-existing __pycache__ dirs of OTHER
++    # campaigns are outside the M09/M10 surface. New pycache anywhere under
++    # tools/ mid-suite is still caught by the F1 tree snapshot in tearDown.)
+     def test_t9_no_pycache_in_tools(self):
+-        pycache = list(TOOLS.rglob("__pycache__"))
++        pycache = list(TOOLS.glob("__pycache__"))
+         self.assertEqual(pycache, [],
+                          f"__pycache__ appeared in tools/: {pycache}")
+ 
+
+## test_w6_fullreport_mvb31.py (source: mvc .../W6_validator/tests/test_w6_fullreport_mvb31.py)
+
+--- mvc-20260924/material_volume_campaign/impl/W6_validator/tests/test_w6_fullreport_mvb31.py	2026-09-24 16:39:18.961140200 -0500
++++ monkey-play-20260924/tools/tests/material_volume/test_w6_fullreport_mvb31.py	2026-09-24 17:51:57.560550000 -0500
+@@ -23,7 +23,7 @@
+ from test_validator import AGENT_DIR, FIXTURES, ACCEPT  # noqa: E402
+ 
+ sys.dont_write_bytecode = True
+-TOOLS = AGENT_DIR.parents[2] / "tools"
++TOOLS = AGENT_DIR  # landed: AGENT_DIR already IS tools/ (home: repo root/tools)
+ sys.path.insert(0, str(TOOLS))
+ 
+ import material_volume_body_export_reader as reader  # noqa: E402
+
+## Files landed VERBATIM (no diff): test_w6_con16_aggregate.py, test_w6_exit_classes.py, test_w6_hash_scope_mvo1.py, test_w6_reconciled_records.py
+
+## conftest.py (new landing shim; no source counterpart)
+"""Landing shim for tools/tests/material_volume (W7 publication, 2026-09-24).
+
+Path adaptation only: the reviewed suites were frozen in homes where the two
+tools sat next to tests/ (impl/W5_diag_promo, impl/W6_validator). Landed, they
+sit one level higher, in tools/. This shim puts tools/ on sys.path so
+``import material_volume_diagnostic`` / ``import
+rigid_body_mass_consumption_validator`` resolve to the landed, hash-pinned
+modules without editing a single test import.
+
+Bytecode guard: T9/F1 forbid any __pycache__ under the material-volume surface
+of tools/; arm sys.dont_write_bytecode before any tools/ module is imported.
+The canonical run command also sets PYTHONDONTWRITEBYTECODE=1 in the
+environment (see README.md).
+"""
+import os
+import sys
+
+sys.dont_write_bytecode = True
+os.environ.setdefault("PYTHONDONTWRITEBYTECODE", "1")
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
