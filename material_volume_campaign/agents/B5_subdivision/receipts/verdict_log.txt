@@ -1,0 +1,73 @@
+B5 verdict pass — thresholds read from frozen derived_expectations.json
+
+L0  body=subdiv-body cells=6 export=complete admission=validation_only_admissible all_assigned=True -> PASS
+  quantity                 measured             analytic      |delta|     frozen T        d/T verdict
+  mass                          192                  192    0.000e+00    2.268e-11   0.00e+00 PASS
+  volume         15.999999999999998                   16    1.776e-15    1.890e-12   9.40e-04 PASS
+  com[0]                          2                    2    0.000e+00    5.787e-13   0.00e+00 PASS
+  com[1]                          1                    1    0.000e+00    5.787e-13   0.00e+00 PASS
+  com[2]                          1                    1    0.000e+00    5.787e-13   0.00e+00 PASS
+  Ixx                           128                  128    0.000e+00    1.089e-09   0.00e+00 PASS
+  Iyy                           320                  320    0.000e+00    1.089e-09   0.00e+00 PASS
+  Izz                           320                  320    0.000e+00    1.089e-09   0.00e+00 PASS
+  Ixy                             0                    0    0.000e+00    1.089e-09   0.00e+00 PASS
+  Ixz                             0                    0    0.000e+00    1.089e-09   0.00e+00 PASS
+  Iyz                             0                    0    0.000e+00    1.089e-09   0.00e+00 PASS
+
+L1  body=subdiv-body cells=12 export=complete admission=validation_only_admissible all_assigned=True -> PASS
+  quantity                 measured             analytic      |delta|     frozen T        d/T verdict
+  mass           191.99999999999997                  192    2.842e-14    2.370e-11   1.20e-03 PASS
+  volume         15.999999999999993                   16    7.105e-15    1.975e-12   3.60e-03 PASS
+  com[0]                          2                    2    0.000e+00    6.048e-13   0.00e+00 PASS
+  com[1]                          1                    1    0.000e+00    6.048e-13   0.00e+00 PASS
+  com[2]                          1                    1    0.000e+00    6.048e-13   0.00e+00 PASS
+  Ixx            127.99999999999996                  128    4.263e-14    8.533e-10   5.00e-05 PASS
+  Iyy            319.99999999999994                  320    5.684e-14    8.533e-10   6.66e-05 PASS
+  Izz                           320                  320    0.000e+00    8.533e-10   0.00e+00 PASS
+  Ixy        -3.5527136788005009e-15                    0    3.553e-15    8.533e-10   4.16e-06 PASS
+  Ixz        -1.7763568394002505e-15                    0    1.776e-15    8.533e-10   2.08e-06 PASS
+  Iyz                             0                    0    0.000e+00    8.533e-10   0.00e+00 PASS
+
+L2  body=subdiv-body cells=96 export=complete admission=validation_only_admissible all_assigned=True -> PASS
+  quantity                 measured             analytic      |delta|     frozen T        d/T verdict
+  mass                          192                  192    0.000e+00    3.803e-11   0.00e+00 PASS
+  volume                         16                   16    0.000e+00    3.169e-12   0.00e+00 PASS
+  com[0]                          2                    2    0.000e+00    9.703e-13   0.00e+00 PASS
+  com[1]                          1                    1    0.000e+00    9.703e-13   0.00e+00 PASS
+  com[2]                          1                    1    0.000e+00    9.703e-13   0.00e+00 PASS
+  Ixx            127.99999999999994                  128    5.684e-14    1.027e-09   5.54e-05 PASS
+  Iyy            320.00000000000051                  320    5.116e-13    1.027e-09   4.98e-04 PASS
+  Izz            320.00000000000051                  320    5.116e-13    1.027e-09   4.98e-04 PASS
+  Ixy        -8.8817841970012523e-15                    0    8.882e-15    1.027e-09   8.65e-06 PASS
+  Ixz        2.2204460492503131e-15                    0    2.220e-15    1.027e-09   2.16e-06 PASS
+  Iyz        3.4416913763379853e-15                    0    3.442e-15    1.027e-09   3.35e-06 PASS
+
+L3  body=subdiv-body cells=768 export=complete admission=validation_only_admissible all_assigned=True -> PASS
+  quantity                 measured             analytic      |delta|     frozen T        d/T verdict
+  mass           192.00000000000003                  192    2.842e-14    1.526e-10   1.86e-04 PASS
+  volume         16.000000000000004                   16    3.553e-15    1.272e-11   2.79e-04 PASS
+  com[0]                          2                    2    0.000e+00    3.894e-12   0.00e+00 PASS
+  com[1]                          1                    1    0.000e+00    3.894e-12   0.00e+00 PASS
+  com[2]                          1                    1    0.000e+00    3.894e-12   0.00e+00 PASS
+  Ixx            128.00000000000171                  128    1.705e-12    3.777e-09   4.51e-04 PASS
+  Iyy            319.99999999999915                  320    8.527e-13    3.777e-09   2.26e-04 PASS
+  Izz            319.99999999999909                  320    9.095e-13    3.777e-09   2.41e-04 PASS
+  Ixy        -5.0626169922907138e-14                    0    5.063e-14    3.777e-09   1.34e-05 PASS
+  Ixz        9.8809849191638932e-15                    0    9.881e-15    3.777e-09   2.62e-06 PASS
+  Iyz        3.6914915568786455e-15                    0    3.691e-15    3.777e-09   9.77e-07 PASS
+
+Level-vs-level (V2): |q_L - q_L'| <= T_L + T_L'
+  l0-l1: 10 quantities, 0 outside frozen sum-bound; worst mass |d|=2.842e-14 vs 4.638e-11
+  l0-l2: 10 quantities, 0 outside frozen sum-bound; worst Iyy |d|=5.116e-13 vs 2.115e-09
+  l0-l3: 10 quantities, 0 outside frozen sum-bound; worst Ixx |d|=1.705e-12 vs 4.866e-09
+  l1-l2: 10 quantities, 0 outside frozen sum-bound; worst mass |d|=2.842e-14 vs 6.173e-11
+  l1-l3: 10 quantities, 0 outside frozen sum-bound; worst Ixx |d|=1.748e-12 vs 4.631e-09
+  l2-l3: 10 quantities, 0 outside frozen sum-bound; worst Ixx |d|=1.762e-12 vs 4.804e-09
+
+Growth characterization (V3): measured max |delta| vs N (envelope is worst-case)
+  L0: N=   6 worst volume |d|=1.776e-15  d/T=9.40e-04
+  L1: N=  12 worst volume |d|=7.105e-15  d/T=3.60e-03
+  L2: N=  96 worst Iyy    |d|=5.116e-13  d/T=4.98e-04
+  L3: N= 768 worst Ixx    |d|=1.705e-12  d/T=4.51e-04
+
+OVERALL (frozen falsifier): ALL PASS — falsifier never fired

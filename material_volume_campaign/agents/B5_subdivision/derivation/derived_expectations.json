@@ -1,0 +1,214 @@
+{
+ "constants": {
+  "u": 2.220446049250313e-16,
+  "k_term": 128,
+  "gamma": 4,
+  "box_m": [
+   4.0,
+   2.0,
+   2.0
+  ],
+  "density_kg_m3": 12.0
+ },
+ "analytic": {
+  "mass_kg": 192.0,
+  "volume_m3": 16.0,
+  "com_m": [
+   2.0,
+   1.0,
+   1.0
+  ],
+  "inertia_diag_kg_m2": [
+   128.0,
+   320.0,
+   320.0
+  ],
+  "inertia_offdiag_kg_m2": 0.0
+ },
+ "levels": {
+  "L0": {
+   "n_cells": 6,
+   "exact_rational_check": {
+    "volume_exact": true,
+    "mass_exact": true,
+    "density_uniform": true,
+    "com_exact": true,
+    "inertia_exact": true
+   },
+   "analytic_mass_kg": 192.0,
+   "analytic_volume_m3": 16.0,
+   "analytic_com_m": [
+    2.0,
+    1.0,
+    1.0
+   ],
+   "analytic_inertia_kg_m2": [
+    128.0,
+    320.0,
+    320.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "thresholds": {
+    "n_cells": 6,
+    "subbox_edges_m": [
+     4.0,
+     2.0,
+     2.0
+    ],
+    "k_sum_minus_1": 5,
+    "k_total": 133,
+    "S_mass_kg": 192.0,
+    "S_volume_m3": 16.0,
+    "S_com_m": 4.898979485566356,
+    "S_inertia_kg_m2": 9216.0,
+    "T_mass_kg": 2.2680524125462398e-11,
+    "T_volume_m3": 1.8900436771218665e-12,
+    "T_com_m": 5.787053250652766e-13,
+    "T_inertia_kg_m2": 1.088665158022195e-09,
+    "T_mass_relative_to_analytic": 1.1812772982011666e-13,
+    "T_com_relative_to_Lx": 1.4467633126631914e-13,
+    "T_inertia_relative_to_Imax": 3.4020786188193598e-12
+   }
+  },
+  "L1": {
+   "n_cells": 12,
+   "exact_rational_check": {
+    "volume_exact": true,
+    "mass_exact": true,
+    "density_uniform": true,
+    "com_exact": true,
+    "inertia_exact": true
+   },
+   "analytic_mass_kg": 192.0,
+   "analytic_volume_m3": 16.0,
+   "analytic_com_m": [
+    2.0,
+    1.0,
+    1.0
+   ],
+   "analytic_inertia_kg_m2": [
+    128.0,
+    320.0,
+    320.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "thresholds": {
+    "n_cells": 12,
+    "subbox_edges_m": [
+     2.0,
+     2.0,
+     2.0
+    ],
+    "k_sum_minus_1": 11,
+    "k_total": 139,
+    "S_mass_kg": 192.0,
+    "S_volume_m3": 16.0,
+    "S_com_m": 4.898979485566356,
+    "S_inertia_kg_m2": 6912.0,
+    "T_mass_kg": 2.3703705664956942e-11,
+    "T_volume_m3": 1.9753088054130785e-12,
+    "T_com_m": 6.048123322110785e-13,
+    "T_inertia_kg_m2": 8.533334039384499e-10,
+    "T_mass_relative_to_analytic": 1.234568003383174e-13,
+    "T_com_relative_to_Lx": 1.5120308305276963e-13,
+    "T_inertia_relative_to_Imax": 2.666666887307656e-12
+   }
+  },
+  "L2": {
+   "n_cells": 96,
+   "exact_rational_check": {
+    "volume_exact": true,
+    "mass_exact": true,
+    "density_uniform": true,
+    "com_exact": true,
+    "inertia_exact": true
+   },
+   "analytic_mass_kg": 192.0,
+   "analytic_volume_m3": 16.0,
+   "analytic_com_m": [
+    2.0,
+    1.0,
+    1.0
+   ],
+   "analytic_inertia_kg_m2": [
+    128.0,
+    320.0,
+    320.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "thresholds": {
+    "n_cells": 96,
+    "subbox_edges_m": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "k_sum_minus_1": 95,
+    "k_total": 223,
+    "S_mass_kg": 192.0,
+    "S_volume_m3": 16.0,
+    "S_com_m": 4.898979485566356,
+    "S_inertia_kg_m2": 5184.0,
+    "T_mass_kg": 3.802824721788056e-11,
+    "T_volume_m3": 3.169020601490047e-12,
+    "T_com_m": 9.703104322523058e-13,
+    "T_inertia_kg_m2": 1.0267626748827752e-09,
+    "T_mass_relative_to_analytic": 1.9806378759312793e-13,
+    "T_com_relative_to_Lx": 2.4257760806307645e-13,
+    "T_inertia_relative_to_Imax": 3.2086333590086723e-12
+   }
+  },
+  "L3": {
+   "n_cells": 768,
+   "exact_rational_check": {
+    "volume_exact": true,
+    "mass_exact": true,
+    "density_uniform": true,
+    "com_exact": true,
+    "inertia_exact": true
+   },
+   "analytic_mass_kg": 192.0,
+   "analytic_volume_m3": 16.0,
+   "analytic_com_m": [
+    2.0,
+    1.0,
+    1.0
+   ],
+   "analytic_inertia_kg_m2": [
+    128.0,
+    320.0,
+    320.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "thresholds": {
+    "n_cells": 768,
+    "subbox_edges_m": [
+     0.5,
+     0.5,
+     0.5
+    ],
+    "k_sum_minus_1": 767,
+    "k_total": 895,
+    "S_mass_kg": 192.0,
+    "S_volume_m3": 16.0,
+    "S_com_m": 4.898979485566356,
+    "S_inertia_kg_m2": 4752.0,
+    "T_mass_kg": 1.5262457964126952e-10,
+    "T_volume_m3": 1.2718714970105793e-11,
+    "T_com_m": 3.894295232582124e-12,
+    "T_inertia_kg_m2": 3.777458346121421e-09,
+    "T_mass_relative_to_analytic": 7.949196856316121e-13,
+    "T_com_relative_to_Lx": 9.73573808145531e-13,
+    "T_inertia_relative_to_Imax": 1.180455733162944e-11
+   }
+  }
+ }
+}

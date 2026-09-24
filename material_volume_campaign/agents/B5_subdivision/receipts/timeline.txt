@@ -1,0 +1,9 @@
+PREREGISTRATION.md frozen at 14:57:04.961
+L0: rc=0 status=complete wall=0.2s bytes=4381
+L1: rc=0 status=complete wall=0.2s bytes=5824
+L2: rc=0 status=complete wall=1.6s bytes=24406
+L3: rc=0 status=complete wall=19.8s bytes=172945
+run_l0_report.json  14:57:28.972  status=complete  admission_sha=aff9e60ab8e1…  cells=6
+run_l1_report.json  14:57:29.404  status=complete  admission_sha=34b80a21a431…  cells=12
+run_l2_report.json  14:57:31.189  status=complete  admission_sha=9b7e6e705cc3…  cells=96
+run_l3_report.json  14:57:51.208  status=complete  admission_sha=86367b71a51d…  cells=768

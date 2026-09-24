@@ -1,0 +1,685 @@
+{
+ "levels": {
+  "l0": {
+   "rows": [
+    {
+     "quantity": "mass",
+     "measured": 192.0,
+     "analytic": 192.0,
+     "abs_delta": 0.0,
+     "frozen_T": 2.2680524125462398e-11,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "volume",
+     "measured": 15.999999999999998,
+     "analytic": 16.0,
+     "abs_delta": 1.7763568394002505e-15,
+     "frozen_T": 1.8900436771218665e-12,
+     "delta_over_T": 0.0009398496240601503,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[0]",
+     "measured": 2.0,
+     "analytic": 2.0,
+     "abs_delta": 0.0,
+     "frozen_T": 5.787053250652766e-13,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[1]",
+     "measured": 1.0,
+     "analytic": 1.0,
+     "abs_delta": 0.0,
+     "frozen_T": 5.787053250652766e-13,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[2]",
+     "measured": 1.0,
+     "analytic": 1.0,
+     "abs_delta": 0.0,
+     "frozen_T": 5.787053250652766e-13,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixx",
+     "measured": 128.0,
+     "analytic": 128.0,
+     "abs_delta": 0.0,
+     "frozen_T": 1.088665158022195e-09,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Iyy",
+     "measured": 320.0,
+     "analytic": 320.0,
+     "abs_delta": 0.0,
+     "frozen_T": 1.088665158022195e-09,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Izz",
+     "measured": 320.0,
+     "analytic": 320.0,
+     "abs_delta": 0.0,
+     "frozen_T": 1.088665158022195e-09,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixy",
+     "measured": 0.0,
+     "analytic": 0.0,
+     "abs_delta": 0.0,
+     "frozen_T": 1.088665158022195e-09,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixz",
+     "measured": 0.0,
+     "analytic": 0.0,
+     "abs_delta": 0.0,
+     "frozen_T": 1.088665158022195e-09,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Iyz",
+     "measured": 0.0,
+     "analytic": 0.0,
+     "abs_delta": 0.0,
+     "frozen_T": 1.088665158022195e-09,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    }
+   ],
+   "measured": {
+    "mass": 192.0,
+    "volume": 15.999999999999998,
+    "com": [
+     2.0,
+     1.0,
+     1.0
+    ],
+    "inertia6": [
+     128.0,
+     320.0,
+     320.0,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "full_inertia": [
+     [
+      128.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      320.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      320.0
+     ]
+    ],
+    "com_full": [
+     2.0,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "l1": {
+   "rows": [
+    {
+     "quantity": "mass",
+     "measured": 191.99999999999997,
+     "analytic": 192.0,
+     "abs_delta": 2.842170943040401e-14,
+     "frozen_T": 2.3703705664956942e-11,
+     "delta_over_T": 0.001199040767386091,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "volume",
+     "measured": 15.999999999999993,
+     "analytic": 16.0,
+     "abs_delta": 7.105427357601002e-15,
+     "frozen_T": 1.9753088054130785e-12,
+     "delta_over_T": 0.0035971223021582736,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[0]",
+     "measured": 2.0,
+     "analytic": 2.0,
+     "abs_delta": 0.0,
+     "frozen_T": 6.048123322110785e-13,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[1]",
+     "measured": 1.0,
+     "analytic": 1.0,
+     "abs_delta": 0.0,
+     "frozen_T": 6.048123322110785e-13,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[2]",
+     "measured": 1.0,
+     "analytic": 1.0,
+     "abs_delta": 0.0,
+     "frozen_T": 6.048123322110785e-13,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixx",
+     "measured": 127.99999999999996,
+     "analytic": 128.0,
+     "abs_delta": 4.263256414560601e-14,
+     "frozen_T": 8.533334039384499e-10,
+     "delta_over_T": 4.996003197442046e-05,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Iyy",
+     "measured": 319.99999999999994,
+     "analytic": 320.0,
+     "abs_delta": 5.684341886080802e-14,
+     "frozen_T": 8.533334039384499e-10,
+     "delta_over_T": 6.661337596589395e-05,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Izz",
+     "measured": 320.0,
+     "analytic": 320.0,
+     "abs_delta": 0.0,
+     "frozen_T": 8.533334039384499e-10,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixy",
+     "measured": -3.552713678800501e-15,
+     "analytic": 0.0,
+     "abs_delta": 3.552713678800501e-15,
+     "frozen_T": 8.533334039384499e-10,
+     "delta_over_T": 4.163335997868372e-06,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixz",
+     "measured": -1.7763568394002505e-15,
+     "analytic": 0.0,
+     "abs_delta": 1.7763568394002505e-15,
+     "frozen_T": 8.533334039384499e-10,
+     "delta_over_T": 2.081667998934186e-06,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Iyz",
+     "measured": 0.0,
+     "analytic": 0.0,
+     "abs_delta": 0.0,
+     "frozen_T": 8.533334039384499e-10,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    }
+   ],
+   "measured": {
+    "mass": 191.99999999999997,
+    "volume": 15.999999999999993,
+    "com": [
+     2.0,
+     1.0,
+     1.0
+    ],
+    "inertia6": [
+     127.99999999999996,
+     319.99999999999994,
+     320.0,
+     -3.552713678800501e-15,
+     -1.7763568394002505e-15,
+     0.0
+    ],
+    "full_inertia": [
+     [
+      127.99999999999996,
+      -3.552713678800501e-15,
+      -1.7763568394002505e-15
+     ],
+     [
+      -3.552713678800501e-15,
+      319.99999999999994,
+      0.0
+     ],
+     [
+      -1.7763568394002505e-15,
+      0.0,
+      320.0
+     ]
+    ],
+    "com_full": [
+     2.0,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "l2": {
+   "rows": [
+    {
+     "quantity": "mass",
+     "measured": 192.0,
+     "analytic": 192.0,
+     "abs_delta": 0.0,
+     "frozen_T": 3.802824721788056e-11,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "volume",
+     "measured": 16.0,
+     "analytic": 16.0,
+     "abs_delta": 0.0,
+     "frozen_T": 3.169020601490047e-12,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[0]",
+     "measured": 2.0,
+     "analytic": 2.0,
+     "abs_delta": 0.0,
+     "frozen_T": 9.703104322523058e-13,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[1]",
+     "measured": 1.0,
+     "analytic": 1.0,
+     "abs_delta": 0.0,
+     "frozen_T": 9.703104322523058e-13,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[2]",
+     "measured": 1.0,
+     "analytic": 1.0,
+     "abs_delta": 0.0,
+     "frozen_T": 9.703104322523058e-13,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixx",
+     "measured": 127.99999999999994,
+     "analytic": 128.0,
+     "abs_delta": 5.684341886080802e-14,
+     "frozen_T": 1.0267626748827752e-09,
+     "delta_over_T": 5.536178929302995e-05,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Iyy",
+     "measured": 320.0000000000005,
+     "analytic": 320.0,
+     "abs_delta": 5.115907697472721e-13,
+     "frozen_T": 1.0267626748827752e-09,
+     "delta_over_T": 0.0004982561036372695,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Izz",
+     "measured": 320.0000000000005,
+     "analytic": 320.0,
+     "abs_delta": 5.115907697472721e-13,
+     "frozen_T": 1.0267626748827752e-09,
+     "delta_over_T": 0.0004982561036372695,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixy",
+     "measured": -8.881784197001252e-15,
+     "analytic": 0.0,
+     "abs_delta": 8.881784197001252e-15,
+     "frozen_T": 1.0267626748827752e-09,
+     "delta_over_T": 8.65027957703593e-06,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixz",
+     "measured": 2.220446049250313e-15,
+     "analytic": 0.0,
+     "abs_delta": 2.220446049250313e-15,
+     "frozen_T": 1.0267626748827752e-09,
+     "delta_over_T": 2.1625698942589826e-06,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Iyz",
+     "measured": 3.4416913763379853e-15,
+     "analytic": 0.0,
+     "abs_delta": 3.4416913763379853e-15,
+     "frozen_T": 1.0267626748827752e-09,
+     "delta_over_T": 3.351983336101423e-06,
+     "verdict": "PASS"
+    }
+   ],
+   "measured": {
+    "mass": 192.0,
+    "volume": 16.0,
+    "com": [
+     2.0,
+     1.0,
+     1.0
+    ],
+    "inertia6": [
+     127.99999999999994,
+     320.0000000000005,
+     320.0000000000005,
+     -8.881784197001252e-15,
+     2.220446049250313e-15,
+     3.4416913763379853e-15
+    ],
+    "full_inertia": [
+     [
+      127.99999999999994,
+      -8.881784197001252e-15,
+      2.220446049250313e-15
+     ],
+     [
+      -8.881784197001252e-15,
+      320.0000000000005,
+      3.4416913763379853e-15
+     ],
+     [
+      2.220446049250313e-15,
+      3.4416913763379853e-15,
+      320.0000000000005
+     ]
+    ],
+    "com_full": [
+     2.0,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "l3": {
+   "rows": [
+    {
+     "quantity": "mass",
+     "measured": 192.00000000000003,
+     "analytic": 192.0,
+     "abs_delta": 2.842170943040401e-14,
+     "frozen_T": 1.5262457964126952e-10,
+     "delta_over_T": 0.00018621973929236498,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "volume",
+     "measured": 16.000000000000004,
+     "analytic": 16.0,
+     "abs_delta": 3.552713678800501e-15,
+     "frozen_T": 1.2718714970105793e-11,
+     "delta_over_T": 0.00027932960893854746,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[0]",
+     "measured": 2.0,
+     "analytic": 2.0,
+     "abs_delta": 0.0,
+     "frozen_T": 3.894295232582124e-12,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[1]",
+     "measured": 1.0,
+     "analytic": 1.0,
+     "abs_delta": 0.0,
+     "frozen_T": 3.894295232582124e-12,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "com[2]",
+     "measured": 1.0,
+     "analytic": 1.0,
+     "abs_delta": 0.0,
+     "frozen_T": 3.894295232582124e-12,
+     "delta_over_T": 0.0,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixx",
+     "measured": 128.0000000000017,
+     "analytic": 128.0,
+     "abs_delta": 1.7053025658242404e-12,
+     "frozen_T": 3.777458346121421e-09,
+     "delta_over_T": 0.0004514417922239151,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Iyy",
+     "measured": 319.99999999999915,
+     "analytic": 320.0,
+     "abs_delta": 8.526512829121202e-13,
+     "frozen_T": 3.777458346121421e-09,
+     "delta_over_T": 0.00022572089611195756,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Izz",
+     "measured": 319.9999999999991,
+     "analytic": 320.0,
+     "abs_delta": 9.094947017729282e-13,
+     "frozen_T": 3.777458346121421e-09,
+     "delta_over_T": 0.00024076895585275473,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixy",
+     "measured": -5.062616992290714e-14,
+     "analytic": 0.0,
+     "abs_delta": 5.062616992290714e-14,
+     "frozen_T": 3.777458346121421e-09,
+     "delta_over_T": 1.340217820664748e-05,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Ixz",
+     "measured": 9.880984919163893e-15,
+     "analytic": 0.0,
+     "abs_delta": 9.880984919163893e-15,
+     "frozen_T": 3.777458346121421e-09,
+     "delta_over_T": 2.615776009630758e-06,
+     "verdict": "PASS"
+    },
+    {
+     "quantity": "Iyz",
+     "measured": 3.6914915568786455e-15,
+     "analytic": 0.0,
+     "abs_delta": 3.6914915568786455e-15,
+     "frozen_T": 3.777458346121421e-09,
+     "delta_over_T": 9.772421609013788e-07,
+     "verdict": "PASS"
+    }
+   ],
+   "measured": {
+    "mass": 192.00000000000003,
+    "volume": 16.000000000000004,
+    "com": [
+     2.0,
+     1.0,
+     1.0
+    ],
+    "inertia6": [
+     128.0000000000017,
+     319.99999999999915,
+     319.9999999999991,
+     -5.062616992290714e-14,
+     9.880984919163893e-15,
+     3.6914915568786455e-15
+    ],
+    "full_inertia": [
+     [
+      128.0000000000017,
+      -5.062616992290714e-14,
+      9.880984919163893e-15
+     ],
+     [
+      -5.062616992290714e-14,
+      319.99999999999915,
+      3.6914915568786455e-15
+     ],
+     [
+      9.880984919163893e-15,
+      3.6914915568786455e-15,
+      319.9999999999991
+     ]
+    ],
+    "com_full": [
+     2.0,
+     1.0,
+     1.0
+    ]
+   }
+  }
+ },
+ "gates": {
+  "l0": {
+   "export_status": "complete",
+   "admission_status": "validation_only_admissible",
+   "all_supplied_cells_assigned": true,
+   "reason_codes": [],
+   "n_owned_cells": 6,
+   "body_id": "subdiv-body",
+   "pass": true
+  },
+  "l1": {
+   "export_status": "complete",
+   "admission_status": "validation_only_admissible",
+   "all_supplied_cells_assigned": true,
+   "reason_codes": [],
+   "n_owned_cells": 12,
+   "body_id": "subdiv-body",
+   "pass": true
+  },
+  "l2": {
+   "export_status": "complete",
+   "admission_status": "validation_only_admissible",
+   "all_supplied_cells_assigned": true,
+   "reason_codes": [],
+   "n_owned_cells": 96,
+   "body_id": "subdiv-body",
+   "pass": true
+  },
+  "l3": {
+   "export_status": "complete",
+   "admission_status": "validation_only_admissible",
+   "all_supplied_cells_assigned": true,
+   "reason_codes": [],
+   "n_owned_cells": 768,
+   "body_id": "subdiv-body",
+   "pass": true
+  }
+ },
+ "level_pairs": {
+  "l0-l1": {
+   "n_quantities": 10,
+   "n_fail": 0,
+   "worst_quantity": "mass",
+   "worst_delta": 2.842170943040401e-14,
+   "worst_tol": 4.638422979041934e-11
+  },
+  "l0-l2": {
+   "n_quantities": 10,
+   "n_fail": 0,
+   "worst_quantity": "Iyy",
+   "worst_delta": 5.115907697472721e-13,
+   "worst_tol": 2.1154278329049703e-09
+  },
+  "l0-l3": {
+   "n_quantities": 10,
+   "n_fail": 0,
+   "worst_quantity": "Ixx",
+   "worst_delta": 1.7053025658242404e-12,
+   "worst_tol": 4.866123504143616e-09
+  },
+  "l1-l2": {
+   "n_quantities": 10,
+   "n_fail": 0,
+   "worst_quantity": "mass",
+   "worst_delta": 2.842170943040401e-14,
+   "worst_tol": 6.17319528828375e-11
+  },
+  "l1-l3": {
+   "n_quantities": 10,
+   "n_fail": 0,
+   "worst_quantity": "Ixx",
+   "worst_delta": 1.7479351299698465e-12,
+   "worst_tol": 4.6307917500598705e-09
+  },
+  "l2-l3": {
+   "n_quantities": 10,
+   "n_fail": 0,
+   "worst_quantity": "Ixx",
+   "worst_delta": 1.7621459846850485e-12,
+   "worst_tol": 4.804221021004196e-09
+  }
+ },
+ "growth": [
+  {
+   "level": "L0",
+   "n_cells": 6,
+   "worst_quantity": "volume",
+   "worst_abs_delta": 1.7763568394002505e-15,
+   "worst_delta_over_T": 0.0009398496240601503
+  },
+  {
+   "level": "L1",
+   "n_cells": 12,
+   "worst_quantity": "volume",
+   "worst_abs_delta": 7.105427357601002e-15,
+   "worst_delta_over_T": 0.0035971223021582736
+  },
+  {
+   "level": "L2",
+   "n_cells": 96,
+   "worst_quantity": "Iyy",
+   "worst_abs_delta": 5.115907697472721e-13,
+   "worst_delta_over_T": 0.0004982561036372695
+  },
+  {
+   "level": "L3",
+   "n_cells": 768,
+   "worst_quantity": "Ixx",
+   "worst_abs_delta": 1.7053025658242404e-12,
+   "worst_delta_over_T": 0.0004514417922239151
+  }
+ ],
+ "ALL_PASS": true
+}

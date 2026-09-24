@@ -1,0 +1,12 @@
+G1 — exact rational integration of each fixture vs closed-form box values
+  L0: N=   6 exact checks {'volume_exact': True, 'mass_exact': True, 'density_uniform': True, 'com_exact': True, 'inertia_exact': True}
+  L1: N=  12 exact checks {'volume_exact': True, 'mass_exact': True, 'density_uniform': True, 'com_exact': True, 'inertia_exact': True}
+  L2: N=  96 exact checks {'volume_exact': True, 'mass_exact': True, 'density_uniform': True, 'com_exact': True, 'inertia_exact': True}
+  L3: N= 768 exact checks {'volume_exact': True, 'mass_exact': True, 'density_uniform': True, 'com_exact': True, 'inertia_exact': True}
+  G1 VERDICT: ALL EXACT
+
+G2 — derived float64 envelopes (worst case) and frozen thresholds T = 4*(128+N-1)*U*S
+  L0: N=   6 k= 133 T_mass=2.268e-11 kg (1.18e-13 rel) T_com=5.787e-13 m (1.45e-13 of Lx) T_I=1.089e-09 kg*m^2 (3.40e-12 of Imax)
+  L1: N=  12 k= 139 T_mass=2.370e-11 kg (1.23e-13 rel) T_com=6.048e-13 m (1.51e-13 of Lx) T_I=8.533e-10 kg*m^2 (2.67e-12 of Imax)
+  L2: N=  96 k= 223 T_mass=3.803e-11 kg (1.98e-13 rel) T_com=9.703e-13 m (2.43e-13 of Lx) T_I=1.027e-09 kg*m^2 (3.21e-12 of Imax)
+  L3: N= 768 k= 895 T_mass=1.526e-10 kg (7.95e-13 rel) T_com=3.894e-12 m (9.74e-13 of Lx) T_I=3.777e-09 kg*m^2 (1.18e-11 of Imax)

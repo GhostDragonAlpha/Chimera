@@ -112,3 +112,9 @@ NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energ
 
 **Verified:** B3 scoring re-run by coordinator (drops reproduce at the summary layer); integrity clean. Round-trip: parse layer BIT-PERFECT; summary layer drops 42 fields incl. CON-12 provenance ("never summarized away") — MV-B3-1 decision request joins the U7/M09 projection-mechanism family (disjoint field sets: complete/exported vs blocked/refused diagnostics). B4's smudge law holds at the CLI boundary.
 **Fleet:** 1 live (B5-retry — the active serialized retry). Queue after B5: B8 -> B7x.
+
+## CHECKPOINT T17 — B5 integrated; retry queue EMPTY; B8 + B7x dispatched (2 staggered)
+
+**Verified:** B5 verdict tally re-verified by coordinator (44 PASS); integrity clean. Conservation through subdivision proven at rounding scale across 128x cell growth; derived law matched (characterized conditioning, zero defects).
+**All [1302] casualties recovered:** O2, M04, M06, B3, B5 — every retry landed complete with the honest-resume pattern (brief survival checks, reconstructions marked, post-freeze edits audited).
+**Fleet:** 2 live (B8: M09 CLI defect fixes with exclusive ownership; B7x: B7's missed mutations vs M10's validator). These are the final two tasks before consolidation.
