@@ -306,3 +306,9 @@ O2 died at ~13:22 with [1302] rate-limit (12 concurrent agents in flight). Probe
 - SIGN LAW: source volar +x <-> target volar +z (section azimuth +90 deg). Roll witness law for any future declared pair: az_target(q) = az_source(s) + 90 deg.
 - EVIDENCE UPGRADES: (1) vendor ulna.stl EXISTS in-repo (E:/PythonChimera/vendor/myo_sim/meshes/) — C1's smallest-missing-measurement item resolved; bone spans 297/305.8 mm of the forearm; BRA-P4 volar-face placement on actual bone surface (the all-10 anchor rule fired and is preserved). (2) C3's elbow-band extreme-vertex statistic was paw skin — superseded by exact sections (both receipts kept). (3) C3's camber direction relabeled LATERAL (radius side), not dorsal.
 - WAVE-4 GATE STATUS: O1 resolved; R1 resolved (falsifier fired, kinematic-only basis); O2 still running — I7 (B4-on-U-STR + radius before/after + one receipt) remains gated on O2.
+
+## CHECKPOINT 2026-09-24 (T22) — WAVE 4 COMPLETE: O2 blocker integrated; I7 receipt RETURNED
+
+**Verified:** O2 scripts re-run by coordinator (source-sign + curvature numbers reproduce; integrity clean). O2 = honest double blocker (both prongs failed frozen tests; stop rules honored; diagnostics recorded not forced).
+**I7 DELIVERED:** USTR_DIAGNOSTIC_RECEIPT.md — the architect's one-receipt requirement met: three evidence results; B4 outcome = NOT RUN (gate blocked, strictest reading, reported not forced); exact proposed radius change (s 0.221707 -> 0.204189, full mechanism + superseded records + F1 necessity); contradictions consolidated (kinematic vs anatomical fidelity in direct tension; hand sign blocked both ends). Decision requests DR-A (U-STR B4 despite hand-scoped block), DR-B (re-anchor basis ruling), DR-C (hand policy, standing).
+**ANATOMY CAMPAIGN STATE: all authorized wave-4 work complete; every remaining path requires an architect decision. No spin. Parallel mv-campaign continues.**

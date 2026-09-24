@@ -1,0 +1,339 @@
+{
+  "inputs": {
+    "xml": "E:\\PythonChimera\\forearm_package\\baseline_snapshot\\source_xml\\chimanoid.xml"
+  },
+  "frozen": {
+    "flexors_volar": [
+      "FCR-P3",
+      "FCU-P4"
+    ],
+    "extensors_dorsal": [
+      "ECRB-P4",
+      "ECRL-P4",
+      "ECU-P6"
+    ],
+    "criterion": "clean split: both flexors one side, all three extensors the other",
+    "falsifier": "any extensor on the palm side or vice versa -> report numbers",
+    "stop_rule": "mixed compartment signs -> UNRESOLVED SIGN = BLOCKER; do not force"
+  },
+  "origin_crosscheck": {
+    "hand_r_world": [
+      -0.07310000000000001,
+      0.5326470000000001,
+      0.20269900000000005
+    ],
+    "hand_l_world": [
+      -0.07310000000000001,
+      0.532597,
+      -0.20269899999999993
+    ],
+    "c3_quoted_hand_r": [
+      -0.0731,
+      0.532647,
+      0.202699
+    ]
+  },
+  "hands": {
+    "right": {
+      "centroid_local": [
+        0.004962481481481483,
+        -0.06750488888888888,
+        0.001351111111111111
+      ],
+      "normal_unit_undirected": [
+        -0.13264254256447758,
+        -0.11118458864512204,
+        -0.9849080886812969
+      ],
+      "singular_values": [
+        0.2518269828362036,
+        0.109335218841358,
+        0.055398964851347335
+      ],
+      "geom_resid_rms_m": 0.010661535756583997,
+      "geom_resid_max_m": 0.028611986727906165,
+      "site_offsets_m": {
+        "ECRL-P4": -0.012326946904972273,
+        "ECRB-P4": -0.01443279730658727,
+        "ECU-P6": -0.0008621689933126132,
+        "FCR-P3": -0.001989213390872934,
+        "FCU-P4": 0.005403187916213297
+      },
+      "site_offset_decomposition_m": {
+        "ECRL-P4": {
+          "total_m": -0.012326946904972273,
+          "z_term_m": -0.006705144833510193,
+          "tilt_term_m": -0.00562180207146208
+        },
+        "ECRB-P4": {
+          "total_m": -0.01443279730658727,
+          "z_term_m": -0.00932992488984585,
+          "tilt_term_m": -0.0051028724167414205
+        },
+        "ECU-P6": {
+          "total_m": -0.0008621689933126132,
+          "z_term_m": 0.00029755167701382733,
+          "tilt_term_m": -0.0011597206703264406
+        },
+        "FCR-P3": {
+          "total_m": -0.001989213390872934,
+          "z_term_m": 0.0031537851341895884,
+          "tilt_term_m": -0.005142998525062522
+        },
+        "FCU-P4": {
+          "total_m": 0.005403187916213297,
+          "z_term_m": 0.00644337815038512,
+          "tilt_term_m": -0.0010401902341718224
+        }
+      },
+      "palm13_centroid_local": [
+        0.0031754615384615385,
+        -0.025422384615384614,
+        -0.0005245384615384616
+      ],
+      "palm13_normal_unit_undirected": [
+        -0.042725471059569045,
+        -0.1769424180888977,
+        -0.9832934021967156
+      ],
+      "palm13_site_offsets_m": {
+        "ECRL-P4": -0.007387051966483242,
+        "ECRB-P4": -0.011232047281548679,
+        "ECU-P6": 2.4329533083478853e-05,
+        "FCR-P3": 0.002217604365312586,
+        "FCU-P4": 0.006712291001856498
+      },
+      "angle_n27_n13_deg": 6.386523369677789,
+      "raw_local_z_m": {
+        "ECRL-P4": 0.008159,
+        "ECRB-P4": 0.010824,
+        "ECU-P6": 0.001049,
+        "FCR-P3": -0.001851,
+        "FCU-P4": -0.005191
+      },
+      "split_verdict_frozen": {
+        "flexor_offsets_m": {
+          "FCR-P3": -0.001989213390872934,
+          "FCU-P4": 0.005403187916213297
+        },
+        "extensor_offsets_m": {
+          "ECRB-P4": -0.01443279730658727,
+          "ECRL-P4": -0.012326946904972273,
+          "ECU-P6": -0.0008621689933126132
+        },
+        "clean_split_frozen_criterion": false,
+        "if_palm_is_plus_side_violations_m": {
+          "flexor:FCR-P3": -0.001989213390872934,
+          "extensor:ECRB-P4": -0.01443279730658727,
+          "extensor:ECRL-P4": -0.012326946904972273,
+          "extensor:ECU-P6": -0.0008621689933126132
+        },
+        "if_palm_is_minus_side_violations_m": {
+          "flexor:FCU-P4": 0.005403187916213297
+        }
+      },
+      "jackknife": {
+        "n_refits": 27,
+        "per_site_offset_min_m": {
+          "ECRL-P4": -0.013204041139213921,
+          "ECRB-P4": -0.014947064704592406,
+          "ECU-P6": -0.005288010003645399,
+          "FCR-P3": -0.002628459026655712,
+          "FCU-P4": -0.006433174390884295
+        },
+        "per_site_offset_max_m": {
+          "ECRL-P4": 0.012143907854585353,
+          "ECRB-P4": 0.014276661986291113,
+          "ECU-P6": 0.001065032191392,
+          "FCR-P3": 0.0018154380169921177,
+          "FCU-P4": 0.007140269590088029
+        },
+        "refits_with_clean_split": 1,
+        "omitted_geom_of_worst_flip": null
+      },
+      "geom_names": [
+        "pisiform",
+        "lunate",
+        "scaphoid",
+        "triquetrum",
+        "hamate",
+        "capitate",
+        "trapezoid",
+        "trapezium",
+        "1mc",
+        "2mc",
+        "3mc",
+        "4mc",
+        "5mc",
+        "thumbprox",
+        "thumbdist",
+        "2proxph",
+        "2midph",
+        "2distph",
+        "3proxph",
+        "3midph",
+        "3distph",
+        "4proxph",
+        "4midph",
+        "4distph",
+        "5proxph",
+        "5midph",
+        "5distph"
+      ],
+      "geom_missing_pos_attr": [
+        "lunate"
+      ]
+    },
+    "left": {
+      "centroid_local": [
+        0.004962481481481483,
+        -0.06750488888888888,
+        -0.001351111111111111
+      ],
+      "normal_unit_undirected": [
+        -0.13264254256447758,
+        -0.11118458864512204,
+        0.9849080886812969
+      ],
+      "singular_values": [
+        0.2518269828362036,
+        0.109335218841358,
+        0.055398964851347335
+      ],
+      "geom_resid_rms_m": 0.010661535756583997,
+      "geom_resid_max_m": 0.028611986727906165,
+      "site_offsets_m": {
+        "ECRL-P4": -0.012326946904972273,
+        "ECRB-P4": -0.01443279730658727,
+        "ECU-P6": -0.0008621689933126132,
+        "FCR-P3": -0.001989213390872934,
+        "FCU-P4": 0.005403187916213297
+      },
+      "site_offset_decomposition_m": {
+        "ECRL-P4": {
+          "total_m": -0.012326946904972273,
+          "z_term_m": -0.006705144833510193,
+          "tilt_term_m": -0.00562180207146208
+        },
+        "ECRB-P4": {
+          "total_m": -0.01443279730658727,
+          "z_term_m": -0.00932992488984585,
+          "tilt_term_m": -0.0051028724167414205
+        },
+        "ECU-P6": {
+          "total_m": -0.0008621689933126132,
+          "z_term_m": 0.00029755167701382733,
+          "tilt_term_m": -0.0011597206703264406
+        },
+        "FCR-P3": {
+          "total_m": -0.001989213390872934,
+          "z_term_m": 0.0031537851341895884,
+          "tilt_term_m": -0.005142998525062522
+        },
+        "FCU-P4": {
+          "total_m": 0.005403187916213297,
+          "z_term_m": 0.00644337815038512,
+          "tilt_term_m": -0.0010401902341718224
+        }
+      },
+      "palm13_centroid_local": [
+        0.0031754615384615385,
+        -0.025422384615384614,
+        0.0005245384615384616
+      ],
+      "palm13_normal_unit_undirected": [
+        -0.042725471059569045,
+        -0.1769424180888977,
+        0.9832934021967156
+      ],
+      "palm13_site_offsets_m": {
+        "ECRL-P4": -0.007387051966483242,
+        "ECRB-P4": -0.011232047281548679,
+        "ECU-P6": 2.4329533083478853e-05,
+        "FCR-P3": 0.002217604365312586,
+        "FCU-P4": 0.006712291001856498
+      },
+      "angle_n27_n13_deg": 6.386523369677789,
+      "raw_local_z_m": {
+        "ECRL-P4": -0.008159,
+        "ECRB-P4": -0.010824,
+        "ECU-P6": -0.001049,
+        "FCR-P3": 0.001851,
+        "FCU-P4": 0.005191
+      },
+      "split_verdict_frozen": {
+        "flexor_offsets_m": {
+          "FCR-P3": -0.001989213390872934,
+          "FCU-P4": 0.005403187916213297
+        },
+        "extensor_offsets_m": {
+          "ECRB-P4": -0.01443279730658727,
+          "ECRL-P4": -0.012326946904972273,
+          "ECU-P6": -0.0008621689933126132
+        },
+        "clean_split_frozen_criterion": false,
+        "if_palm_is_plus_side_violations_m": {
+          "flexor:FCR-P3": -0.001989213390872934,
+          "extensor:ECRB-P4": -0.01443279730658727,
+          "extensor:ECRL-P4": -0.012326946904972273,
+          "extensor:ECU-P6": -0.0008621689933126132
+        },
+        "if_palm_is_minus_side_violations_m": {
+          "flexor:FCU-P4": 0.005403187916213297
+        }
+      },
+      "jackknife": {
+        "n_refits": 27,
+        "per_site_offset_min_m": {
+          "ECRL-P4": -0.013204041139213921,
+          "ECRB-P4": -0.014947064704592406,
+          "ECU-P6": -0.005288010003645399,
+          "FCR-P3": -0.002628459026655712,
+          "FCU-P4": -0.006835682977184464
+        },
+        "per_site_offset_max_m": {
+          "ECRL-P4": 0.01275704423797357,
+          "ECRB-P4": 0.014433854322853141,
+          "ECU-P6": 0.001065032191392,
+          "FCR-P3": 0.002224699465737607,
+          "FCU-P4": 0.007140269590088029
+        },
+        "refits_with_clean_split": 1,
+        "omitted_geom_of_worst_flip": null
+      },
+      "geom_names": [
+        "pisiform_l",
+        "lunate_l",
+        "scaphoid_l",
+        "triquetrum_l",
+        "hamate_l",
+        "capitate_l",
+        "trapezoid_l",
+        "trapezium_l",
+        "1mc_l",
+        "2mc_l",
+        "3mc_l",
+        "4mc_l",
+        "5mc_l",
+        "thumbprox_l",
+        "thumbdist_l",
+        "2proxph_l",
+        "2midph_l",
+        "2distph_l",
+        "3proxph_l",
+        "3midph_l",
+        "3distph_l",
+        "4proxph_l",
+        "4midph_l",
+        "4distph_l",
+        "5proxph_l",
+        "5midph_l",
+        "5distph_l"
+      ],
+      "geom_missing_pos_attr": [
+        "lunate_l"
+      ]
+    }
+  },
+  "sign_flip_invariance": "split verdict invariant under n -> -n (asserted)"
+}
