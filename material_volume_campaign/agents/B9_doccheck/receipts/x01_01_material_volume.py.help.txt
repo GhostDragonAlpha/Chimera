@@ -1,0 +1,23 @@
+COMMAND: python tools/material_volume.py --help
+CWD: E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B9_doccheck/work/repo (work copy)
+--- STDOUT ---
+usage: material_volume.py [-h] input_json
+
+Conservative tetrahedral material-volume compiler (NumPy + stdlib only). This
+is a reference compiler, not a fitter, attachment solver, or constitutive
+model. It accepts a finite, conforming, watertight tetrahedral complex in
+meters, resolves one region proposal per cell, integrates piecewise-constant
+density, and emits shared, oriented material interfaces. A cell with no
+proposal or competing region proposals remains explicitly
+unresolved/conflicted. Such a partition has no total mass properties. No
+material, owner, density, or stiffness default is inferred. Input contract and
+numeric/topology scope are documented in
+Chimera/docs/matter/material_volume_compiler.md.
+
+positional arguments:
+  input_json  v1 input document; result JSON is written to stdout
+
+options:
+  -h, --help  show this help message and exit
+--- STDERR ---
+EXIT: 0

@@ -1,0 +1,18 @@
+COMMAND: python tools/material_volume_body_export_reader.py --help
+CWD: E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B9_doccheck/work/repo (work copy)
+--- STDOUT ---
+usage: material_volume_body_export_reader.py [-h] report
+
+Minimal read-only reader for ``chimera.rigid_body_mass_export.v1`` JSON. The
+reader validates the output version and each exported mass tensor, then prints
+a compact summary without discarding off-diagonal entries. It performs no
+physics imports, readiness promotion, or state mutation. Run: python
+tools/material_volume_body_export_reader.py export.json
+
+positional arguments:
+  report      body-mass export report JSON
+
+options:
+  -h, --help  show this help message and exit
+--- STDERR ---
+EXIT: 0

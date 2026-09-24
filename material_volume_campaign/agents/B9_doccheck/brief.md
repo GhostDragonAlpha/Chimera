@@ -1,0 +1,12 @@
+First action: copy this brief verbatim to E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B9_doccheck/brief.md (create dir).
+
+ROLE: B9 — verification of documentation examples against ACTUAL CLI behavior.
+
+CONTEXT: 24h material-volume campaign. Workspace = worktree E:/ChimeraWork/mvc-20260924 (branch material-volume-campaign-20260924, base 3db8bc4e). Docs (READ-ONLY): Chimera/docs/matter/ — material_volume_compiler.md, material_volume_admission.md, material_volume_body_export.md, material_volume_export_proof_prereg_*.md, material_volume_export_proof_results.md, material_volume_export_verification_prereg.md, material_volume_export_verification_receipt.md, rigid_body_mass_export_consumption_contract_v1_proposal.md. CLIs (READ-ONLY): tools/material_volume*.py (each with argparse main — run with --help and the documented invocations; module copies in work/ with PYTHONDONTWRITEBYTECODE=1 where you execute them; never write into tools/).
+LAWS: preregistration BEFORE execution (the extraction method + comparison rules, frozen); docs and tools read-only — drift is REPORTED, never fixed by you; preserve failures; CPU-only; write ONLY inside agents/B9_doccheck/.
+
+OBJECTIVE: every command, flag, file path, and promised output in the matter docs is checked against what the CLIs actually do TODAY at 3db8bc4e.
+
+TASK: (1) PREREGISTER the extraction rule: enumerate every doc passage containing a command line, a flag reference, a file path, a promised output/status, or a numeric claim tied to CLI behavior; freeze the list BEFORE running anything. (2) Execute each documented command from your work/ copies (or plain invocations where they only read); capture actual stdout/stderr/exit. (3) Compare: does each documented example run as written (paths exist, flags accepted, output shape matches, statuses/readiness claims match, numbers match where the doc quotes them)? (4) Verdict per example: MATCHES / DRIFTED (exact diff) / BROKEN (fails to run) / UNVERIFIABLE (say why). (5) FALSIFIER: any documented command that fails or any promised behavior absent = finding (preserve verbatim outputs).
+ACCEPTANCE: (1) frozen example inventory (before runs); (2) receipts (commands + actual outputs); (3) per-example verdict table; (4) drift findings itemized with doc line references; (5) integrity: git -C E:/ChimeraWork/mvc-20260924 status --porcelain -- tools Chimera/docs/matter → empty (paste).
+OUTPUT: report.md (+ work/, receipts/). STOP when inventory exhausted.

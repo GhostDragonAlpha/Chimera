@@ -1,0 +1,21 @@
+COMMAND: python tools/material_volume_admission.py --help
+CWD: E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B9_doccheck/work/repo (work copy)
+--- STDOUT ---
+usage: material_volume_admission.py [-h] --manifest MANIFEST
+                                    --partition PARTITION
+
+Validation-only fitting-manifest adapter for the material-volume compiler. No
+Chimera runtime modules are imported and no physical state is read or mutated.
+The adapter checks stable domain identities before validating the supplied
+tetrahedral partition. It is deliberately not an anatomy-completeness
+certifier, geometric repair tool, constitutive model, or production importer.
+Run: python tools/material_volume_admission.py --manifest manifest.json \
+--partition partition.json
+
+options:
+  -h, --help            show this help message and exit
+  --manifest MANIFEST   fitting manifest JSON
+  --partition PARTITION
+                        material partition JSON
+--- STDERR ---
+EXIT: 0

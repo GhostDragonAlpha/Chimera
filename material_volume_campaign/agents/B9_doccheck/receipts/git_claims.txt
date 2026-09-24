@@ -1,0 +1,14 @@
+=== E-R-01: landing commit d2c23741 ===
+commit
+d2c23741865cc1bbfe9a05e39cf768e0f2bae852 2026-09-24 10:01:27 -0500 material-volume-export: land compiler/export lane + freeze export-proof preregistration before execution
+=== E-VR-01 / E-V-01: 1af0bbdee68d6ddfdd02bf9bd948f7b22f914d56 ===
+commit
+1af0bbdee68d6ddfdd02bf9bd948f7b22f914d56 2026-09-24 10:17:34 -0500 material-volume-export: body-grouping and frame-composition export proofs pass (SI 5/5, FC 8/8, verify 7/7)
+=== E-VR-02: 02da40be ===
+commit
+02da40beea1979e8c1aa4bc544bc0d00cc5afb7d 2026-09-24 10:33:43 -0500 forearm-package: B2 integrated — earliest breakers indexed; D2 alone unlocks 12/16 (+thorax = 16/16); no pronation/supination coordinate exists in the model
+=== E-VR-03: f2bcac88 ===
+commit
+f2bcac888b53bdcecd4c695fc54ef9cd8b320773 2026-09-24 10:37:03 -0500 material-volume-export: preregister verification checks V1-V3 before execution
+=== is 1af0bbde an ancestor of HEAD? is it on this branch? ===
+1af0bbde IS ancestor of HEAD

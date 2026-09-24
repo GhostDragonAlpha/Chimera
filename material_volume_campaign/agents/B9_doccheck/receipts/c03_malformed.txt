@@ -1,0 +1,5 @@
+COMMAND: python tools/material_volume.py variant_malformed.json
+--- STDOUT ---
+--- STDERR (tail) ---
+{"error": "bad_schema", "detail": "bad_schema: unknown fields are refused (prevents ignored mass inputs): ['legacy_segment_masses']"}
+EXIT: 2

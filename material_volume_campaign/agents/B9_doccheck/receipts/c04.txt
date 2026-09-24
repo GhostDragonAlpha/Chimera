@@ -1,0 +1,5 @@
+COMMAND: python -m py_compile tools/material_volume.py tools/material_volume_checks.py
+CWD: E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B9_doccheck/work/repo (work copy)
+--- STDOUT ---
+--- STDERR ---
+EXIT: 0

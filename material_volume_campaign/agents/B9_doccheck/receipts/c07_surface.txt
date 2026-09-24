@@ -1,0 +1,2 @@
+ls: cannot access 'E:/ChimeraWork/mvc-20260924/Chimera/tools/surface_energy_checks.py': No such file or directory
+ls rc=2

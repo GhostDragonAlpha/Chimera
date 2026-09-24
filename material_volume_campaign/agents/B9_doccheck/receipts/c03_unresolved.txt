@@ -1,0 +1,211 @@
+COMMAND: python tools/material_volume.py variant_unresolved.json
+--- STDOUT ---
+{
+  "complete": false,
+  "cell_count": 2,
+  "accounting_row_count": 2,
+  "resolved_mass_cell_count": 1,
+  "unresolved_cell_ids": [
+    0
+  ],
+  "missing_density_cell_ids": [],
+  "conflicting_cell_ids": [],
+  "ownership_complete": false,
+  "geometric_volume_m3": 0.3333333333333333,
+  "geometry_signature": "b6dd4b23e9b955f90643ba175df747ab74bd11cd5b06f4b2396ec2c4f0ad2cc4",
+  "mass_properties": null,
+  "resolved_only_subtotal_not_body_total": {
+    "volume_m3": 0.16666666666666666,
+    "mass_kg": 0.6666666666666666,
+    "center_of_mass_m": [
+      0.25,
+      0.25,
+      -0.25
+    ],
+    "inertia_com_kg_m2": [
+      [
+        0.05000000000000001,
+        0.008333333333333333,
+        -0.008333333333333333
+      ],
+      [
+        0.008333333333333333,
+        0.05000000000000001,
+        -0.008333333333333333
+      ],
+      [
+        -0.008333333333333333,
+        -0.008333333333333333,
+        0.05000000000000001
+      ]
+    ],
+    "cell_count": 1
+  },
+  "resolved_region_subtotals": {
+    "region-B": {
+      "volume_m3": 0.16666666666666666,
+      "mass_kg": 0.6666666666666666,
+      "center_of_mass_m": [
+        0.25,
+        0.25,
+        -0.25
+      ],
+      "inertia_com_kg_m2": [
+        [
+          0.05000000000000001,
+          0.008333333333333333,
+          -0.008333333333333333
+        ],
+        [
+          0.008333333333333333,
+          0.05000000000000001,
+          -0.008333333333333333
+        ],
+        [
+          -0.008333333333333333,
+          -0.008333333333333333,
+          0.05000000000000001
+        ]
+      ],
+      "cell_count": 1
+    }
+  },
+  "cells": [
+    {
+      "cell_id": 0,
+      "status": "unresolved",
+      "candidate_region_ids": [],
+      "candidate_owner_ids": [],
+      "region_id": null,
+      "mass_owner_id": null,
+      "material_id": null,
+      "density_kg_m3": null,
+      "density_source": null,
+      "density_conditions": null
+    },
+    {
+      "cell_id": 1,
+      "status": "resolved",
+      "candidate_region_ids": [
+        "region-B"
+      ],
+      "candidate_owner_ids": [
+        "owner-B"
+      ],
+      "region_id": "region-B",
+      "mass_owner_id": "owner-B",
+      "material_id": "lower-tissue",
+      "density_kg_m3": 4.0,
+      "density_source": "fixture",
+      "density_conditions": "uniform"
+    }
+  ],
+  "interfaces": [],
+  "boundary_faces": [
+    {
+      "face_key": [
+        0,
+        1,
+        3
+      ],
+      "vertices": [
+        0,
+        1,
+        3
+      ],
+      "cell_id": 0,
+      "region_id": null
+    },
+    {
+      "face_key": [
+        0,
+        1,
+        4
+      ],
+      "vertices": [
+        0,
+        4,
+        1
+      ],
+      "cell_id": 1,
+      "region_id": "region-B"
+    },
+    {
+      "face_key": [
+        0,
+        2,
+        3
+      ],
+      "vertices": [
+        0,
+        3,
+        2
+      ],
+      "cell_id": 0,
+      "region_id": null
+    },
+    {
+      "face_key": [
+        0,
+        2,
+        4
+      ],
+      "vertices": [
+        0,
+        2,
+        4
+      ],
+      "cell_id": 1,
+      "region_id": "region-B"
+    },
+    {
+      "face_key": [
+        1,
+        2,
+        3
+      ],
+      "vertices": [
+        1,
+        2,
+        3
+      ],
+      "cell_id": 0,
+      "region_id": null
+    },
+    {
+      "face_key": [
+        1,
+        2,
+        4
+      ],
+      "vertices": [
+        2,
+        1,
+        4
+      ],
+      "cell_id": 1,
+      "region_id": "region-B"
+    }
+  ],
+  "unresolved_adjacencies": [
+    {
+      "face_key": [
+        0,
+        1,
+        2
+      ],
+      "cell_ids": [
+        0,
+        1
+      ],
+      "statuses": [
+        "unresolved",
+        "resolved"
+      ]
+    }
+  ],
+  "connected_components": 1,
+  "mass_source_kind": "reconstructed_material_volume"
+}
+--- STDERR (tail) ---
+EXIT: 1

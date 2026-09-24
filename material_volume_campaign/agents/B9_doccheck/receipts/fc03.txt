@@ -1,0 +1,9 @@
+COMMAND: python tools/material_volume_frame_composition_proof.py
+CWD: E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B9_doccheck/work/repo (work copy)
+--- STDERR ---
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.015s
+
+OK
+EXIT: 0

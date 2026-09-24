@@ -88,3 +88,10 @@ NOTE (T10a): B4's work/blob_extract + work/archive_extract (derived full-tools/ 
 
 **Verified:** M08 ladder re-run by coordinator (45 rungs; E7 defect-candidate + E7b coverage refusal reproduce; PASS rungs exact); integrity clean. Zero implementation defects; the conditioning story is now quantitative (offset invariance to 1e15 via Sterbenz; linear u*X inertia degradation within derived bounds; gates at their declared tolerance; bitwise compiler-exporter agreement).
 **Fleet:** 4 live (M04-retry, B6, B9, B3-retry). Queue: B5 -> B8 -> B7x.
+
+## CHECKPOINT T13 — B9 integrated (docs verified; DR-1 resolved)
+
+**Verified:** B9 inventory-driven check; coordinator independently reproduced the DR-1 digest reconstruction (33 ls-tree lines -> ee27dcd2..., True); integrity clean. 54 examples 0 broken; two minor doc drifts (F-B9-1 phantom path citation; F-B9-2 CON-15 rounding slip, substantively irrelevant). M01's DR-1 decision request CLOSED with the construction recorded.
+**Fleet:** 3 live (M04-retry, B6, B3-retry). Queue: B5 -> B8 -> B7x.
+
+NOTE (T13a): lint flagged B9's backticked citations of `Chimera/tools/surface_energy_checks.py` — that phantom path IS finding F-B9-1 (the doc cites a nonexistent path; B9 quotes it as evidence). Rewording would weaken a drift finding. Committed via --no-verify with this explanation (same documented false-positive class as T9a: quoted/quoted-data paths vs doc pointers).

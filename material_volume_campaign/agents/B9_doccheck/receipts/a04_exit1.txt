@@ -1,0 +1,5 @@
+COMMAND: python tools/material_volume_admission.py --manifest ... --partition variant_admission_missing_cell.json (one cell removed by B9)
+--- STDOUT (head) ---
+{"anatomical_completeness_certified":false,"assignments":{"accounting_row_count":1,"all_assignments_have_known_density":true,"all_assignments_have_unique_owner":true,"all_assignments_resolved":true,"conflicted_cell_ids":[],"invalid_material_reference_cell_ids":[],"invalid_region_reference_cell_ids":[],"missing_density_cell_ids":[],"resolved_cell_ids":["cell-upper"],"supplied_cells_accounted_for":true,"unresolved_cell_ids":[]},"cells":[{"candidate_mass_owner_ids":["owner-A"],"candidate_region_ids":["region-A"],"cell_id":"cell-upper","density_conditions":"uniform","density_kg_m3":2.0,"density_so
+--- STDERR ---
+EXIT: 2

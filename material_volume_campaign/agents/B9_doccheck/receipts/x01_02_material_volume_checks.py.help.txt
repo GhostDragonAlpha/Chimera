@@ -1,0 +1,27 @@
+COMMAND: python tools/material_volume_checks.py --help
+CWD: E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B9_doccheck/work/repo (work copy)
+--- STDOUT ---
+--- STDERR ---
+test_all_unresolved_is_json_safe_and_unknown_region_is_refused (__main__.MaterialVolumeChecks.test_all_unresolved_is_json_safe_and_unknown_region_is_refused) ... ok
+test_degenerate_inverted_open_and_nonmanifold_inputs_are_refused (__main__.MaterialVolumeChecks.test_degenerate_inverted_open_and_nonmanifold_inputs_are_refused) ... ok
+test_duplicate_mass_owner_is_refused_at_region_boundary (__main__.MaterialVolumeChecks.test_duplicate_mass_owner_is_refused_at_region_boundary) ... ok
+test_independent_simplex_oracle_covers_heterogeneous_density_fixture (__main__.MaterialVolumeChecks.test_independent_simplex_oracle_covers_heterogeneous_density_fixture) ... ok
+test_json_schema_requires_volume_source_and_refuses_ignored_fields (__main__.MaterialVolumeChecks.test_json_schema_requires_volume_source_and_refuses_ignored_fields) ... ok
+test_material_density_changes_properties_and_density_is_validated (__main__.MaterialVolumeChecks.test_material_density_changes_properties_and_density_is_validated) ... ok
+test_overlapping_disconnected_cells_are_refused_and_disjoint_are_counted (__main__.MaterialVolumeChecks.test_overlapping_disconnected_cells_are_refused_and_disjoint_are_counted) ... ok
+test_shared_interface_cancels_and_each_material_surface_closes (__main__.MaterialVolumeChecks.test_shared_interface_cancels_and_each_material_surface_closes) ... ok
+test_stiffness_is_not_read_by_mass_properties (__main__.MaterialVolumeChecks.test_stiffness_is_not_read_by_mass_properties) ... ok
+test_stiffness_is_optional_metadata_and_not_a_mass_input (__main__.MaterialVolumeChecks.test_stiffness_is_optional_metadata_and_not_a_mass_input) ... ok
+test_subdivision_preserves_integrated_mass_properties (__main__.MaterialVolumeChecks.test_subdivision_preserves_integrated_mass_properties) ... ok
+test_thin_sheet_and_effective_skeletal_mass_cannot_be_added_to_volume (__main__.MaterialVolumeChecks.test_thin_sheet_and_effective_skeletal_mass_cannot_be_added_to_volume) ... ok
+test_translation_does_not_change_com_relative_tensor_or_mass (__main__.MaterialVolumeChecks.test_translation_does_not_change_com_relative_tensor_or_mass) ... ok
+test_two_material_bipyramid_has_one_oriented_shared_interface (__main__.MaterialVolumeChecks.test_two_material_bipyramid_has_one_oriented_shared_interface) ... ok
+test_uniform_scaling_laws_mass_cubed_inertia_fifth (__main__.MaterialVolumeChecks.test_uniform_scaling_laws_mass_cubed_inertia_fifth) ... ok
+test_unit_simplex_matches_independent_analytic_mass_com_and_inertia (__main__.MaterialVolumeChecks.test_unit_simplex_matches_independent_analytic_mass_com_and_inertia) ... ok
+test_unresolved_and_conflicting_cells_never_get_default_material (__main__.MaterialVolumeChecks.test_unresolved_and_conflicting_cells_never_get_default_material) ... ok
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.082s
+
+OK
+EXIT: 0

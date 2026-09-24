@@ -1,0 +1,25 @@
+COMMAND: python tools/material_volume_body_export.py --help
+CWD: E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B9_doccheck/work/repo (work copy)
+--- STDOUT ---
+usage: material_volume_body_export.py [-h] --manifest MANIFEST
+                                      --partition PARTITION --groups GROUPS
+
+Validation-gated exporter for explicitly authored rigid-body cell groups. This
+module is isolated from Chimera runtime, assembly, and dynamics. It
+revalidates the fitting manifest and material partition through the standalone
+admission adapter, then integrates selected, uniquely owned stable cells and
+expresses mass properties in authored body frames. It never infers rigid
+bodies from labels/stiffness, consumes source effective-segment mass, or
+mutates state. Run: python tools/material_volume_body_export.py \ --manifest
+tools/material_volume_body_export_manifest_example.json \ --partition
+tools/material_volume_body_export_partition_example.json \ --groups
+tools/material_volume_body_export_groups_example.json
+
+options:
+  -h, --help            show this help message and exit
+  --manifest MANIFEST   fitting manifest JSON
+  --partition PARTITION
+                        material partition JSON
+  --groups GROUPS       explicit body-group assignment JSON
+--- STDERR ---
+EXIT: 0

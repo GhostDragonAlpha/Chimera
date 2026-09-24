@@ -1,0 +1,32 @@
+COMMAND: python tools/material_volume_shared_interface_proof.py --help
+CWD: E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B9_doccheck/work/repo (work copy)
+--- STDOUT ---
+usage: material_volume_shared_interface_proof.py [-h] [-v] [-q] [--locals]
+                                                 [--durations N] [-f] [-c]
+                                                 [-b] [-k TESTNAMEPATTERNS]
+                                                 [tests ...]
+
+positional arguments:
+  tests                a list of any number of test modules, classes and test
+                       methods.
+
+options:
+  -h, --help           show this help message and exit
+  -v, --verbose        Verbose output
+  -q, --quiet          Quiet output
+  --locals             Show local variables in tracebacks
+  --durations N        Show the N slowest test cases (N=0 for all)
+  -f, --failfast       Stop on first fail or error
+  -c, --catch          Catch Ctrl-C and display results so far
+  -b, --buffer         Buffer stdout and stderr during tests
+  -k TESTNAMEPATTERNS  Only run tests which match the given substring
+
+Examples:
+  material_volume_shared_interface_proof.py                           - run default set of tests
+  material_volume_shared_interface_proof.py MyTestSuite               - run suite 'MyTestSuite'
+  material_volume_shared_interface_proof.py MyTestCase.testSomething  - run MyTestCase.testSomething
+  material_volume_shared_interface_proof.py MyTestCase                - run all 'test*' test methods
+                                       in MyTestCase
+
+--- STDERR ---
+EXIT: 0
