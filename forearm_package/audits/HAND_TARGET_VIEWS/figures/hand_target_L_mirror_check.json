@@ -1,0 +1,148 @@
+{
+ "artifact": "hand_target_L_mirror_check.json",
+ "band_mm": [
+  55.0,
+  111.4
+ ],
+ "channel": "M-handtgt / HAND_TARGET_VIEWS",
+ "consistency_check_only": true,
+ "face_letters": {
+  "A": "the broad face on the +T_R side (primary pair)",
+  "B": "the broad face on the -T_R side (primary pair)",
+  "note": "check-figure letters are assigned by the declared MIRROR RELATION (PREREG_AMENDMENT_1 §A2.5); record-pair views carry no letters"
+ },
+ "image_size_px": [
+  2048,
+  4096
+ ],
+ "invocation": "PYTHONDONTWRITEBYTECODE=1 python scripts/render_hand_views.py",
+ "joints_sha256": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+ "loader_copy": "work/mesh_target_htv.py (byte-identical to baseline_snapshot/code/mesh_target.py)",
+ "loader_sha256": "268f139a9e90e561f4a5f8ab02553f0d87f51633f635139e6cec6f5c9cfa19a0",
+ "measurements": {
+  "assertions": "all R1.4 derivations OK (see run log)",
+  "look_at_full_precision": [
+   -0.18282957020374185,
+   0.18760756532533623,
+   -0.005802203046052283
+  ],
+  "pixel_mirror_receipt": {
+   "compared": "L check panel 1 raster vs x-flipped R primary view 1 raster",
+   "max_abs_diff_u8": 54,
+   "mean_abs_diff_u8": 7.328065633773804,
+   "note": "mesh x-mirror exactness measured at 90.87% verts / 88.11% tris (geometry_probe receipt) - the check is visual, not exact",
+   "pct_pixels_diff_gt_8": 25.260186195373535
+  },
+  "side": "L (mirror consistency check only)"
+ },
+ "mesh_repair": "none - the rendered surface derives from the pinned file verbatim",
+ "mesh_sha256": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+ "mesh_unit_to_m": 0.065,
+ "prereg": [
+  "PREREG.md",
+  "PREREG_AMENDMENT_1.md"
+ ],
+ "renderer": "matplotlib 3.10.8 Agg (CPU, software) + custom numpy z-buffer orthographic rasterizer, supersample 2x; NO GPU contexts",
+ "reproducibility": {
+  "declared_nondeterminism": "none",
+  "protocol": "two unmodified runs; every output file must hash byte-identical"
+ },
+ "request": "HAND_EVIDENCE_REQUEST §R1.3 (A images, B annotations, C sidecar)",
+ "ticks_mm": [
+  0,
+  48,
+  55,
+  80,
+  111
+ ],
+ "views": {
+  "check_view1": {
+   "depth_slab_m_along_f": [
+    0.24,
+    0.36
+   ],
+   "eye_m": [
+    -0.08418837685062519,
+    0.05085474250418656,
+    -0.005516893883044378
+   ],
+   "face_letter": "A",
+   "light_camera_frame_to_light": [
+    0.25,
+    0.3,
+    -1.0
+   ],
+   "look_at_m": [
+    0.18282957020374185,
+    0.18760756532533623,
+    -0.005802203046052283
+   ],
+   "n_triangles_rasterized": 1885,
+   "ortho_half_width_m": 0.04,
+   "pair": "CHECK (left hand, letters by MIRROR RELATION; consistency check only)",
+   "projection": "orthographic",
+   "right": [
+    -3.2526065174565133e-19,
+    -0.0020863082471820156,
+    -0.9999978236565806
+   ],
+   "shading": "I = 0.25 + 0.75*max(0, n_vis.L); albedo 0.62; bg 0.94",
+   "side_name": "-T_L-side view (mirrors R's +T_R side)",
+   "silhouette_max_run_band_rows_px": 1333,
+   "up": [
+    0.45584373480967805,
+    -0.8900578864387171,
+    0.0018569391502837888
+   ],
+   "view_direction": [
+    0.8900598235145567,
+    0.4558427427371655,
+    -0.0009510305433596832
+   ]
+  },
+  "check_view2": {
+   "depth_slab_m_along_f": [
+    0.24,
+    0.36
+   ],
+   "eye_m": [
+    0.4498475172581089,
+    0.32436038814648593,
+    -0.006087512209060188
+   ],
+   "face_letter": "B",
+   "light_camera_frame_to_light": [
+    0.25,
+    0.3,
+    -1.0
+   ],
+   "look_at_m": [
+    0.18282957020374185,
+    0.18760756532533623,
+    -0.005802203046052283
+   ],
+   "n_triangles_rasterized": 1885,
+   "ortho_half_width_m": 0.04,
+   "pair": "CHECK (left hand, letters by MIRROR RELATION; consistency check only)",
+   "projection": "orthographic",
+   "right": [
+    3.2526065174565133e-19,
+    0.0020863082471820156,
+    0.9999978236565806
+   ],
+   "shading": "I = 0.25 + 0.75*max(0, n_vis.L); albedo 0.62; bg 0.94",
+   "side_name": "+T_L-side view (mirrors R's -T_R side)",
+   "silhouette_max_run_band_rows_px": 1333,
+   "up": [
+    0.45584373480967805,
+    -0.8900578864387171,
+    0.0018569391502837888
+   ],
+   "view_direction": [
+    -0.8900598235145567,
+    -0.4558427427371656,
+    0.0009510305433596832
+   ]
+  }
+ }
+}

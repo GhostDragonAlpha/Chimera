@@ -1,0 +1,28 @@
+a   = [-0.455844, -0.890058, 0.001857]
+T_R = [0.89006, -0.455843, 0.000951]  (fixed +x-rejection rule)
+n_t = [0.0, 0.002086, 0.999998]  (= a x T_R; R1.4 'broad-face normal candidate')
+T . n_t = -1.08e-19
+band verts (t in [55,111.4] mm, r<42 mm): 715
+
+station extents (exact sections, rmax 45 mm about the axis point):
+  t[mm]   n_pts   ext_T[mm]  ext_nt[mm]   PCA major[mm]  PCA minor[mm]  major-dir .n_t
+     60     252      15.70      49.95        49.91        15.55   +0.9990
+     70     216      13.92      48.08        48.07        13.87   +0.9991
+     80     216      13.10      47.23        47.24        12.69   +0.9985
+     90     216      12.64      46.79        46.82        11.82   +0.9980
+    100     220      11.60      46.11        46.14        10.70   -0.9989
+    110      96       5.68      23.05        23.06         4.97   -0.9992
+
+far end (80-111.4 mm, r<42): n=420  PCA extents b1=47.1 mm  c1=31.9 mm  (B1 receipt v3 recorded 47.1 / 18.1)
+  b1 direction . n_t = -0.9989   . T = -0.0328   . a = +0.0330
+  c1 direction . n_t = +0.0208   . T = +0.3189
+  -> the 47.1 mm major extent lies along n_t (~world z): the R1.4 'broad-face
+     normal candidate' is the lens's WIDTH direction; the broad faces (O2's +/-T
+     faces) are normal to T_R.
+
+mesh x-mirror: 16773/18459 verts have an exact mirrored counterpart (90.87 %)
+  triangles: 32275/36630 have an exact mirrored counterpart (88.11 %)
+
+band projected u-span (all band verts, screen-right axis):
+  literal R1.4 camera (+/-n_t): u in [-3.28, +18.87] mm -> span 567.0 px
+  face-on camera (+/-T):        u in [-32.59, +39.88] mm -> span 1855.1 px
