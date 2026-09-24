@@ -1,0 +1,7 @@
+RECEIPT: tools/science_funnel/validation/gait_zero_20260919/receipt_wave47.json @ origin/master 33e7a444
+{
+ "lane": "agent/gait-wave47-tiprate",
+ "date": "2026-09-20",
+ "agent": "GLM 5.3 (wave 47 implementation agent; trailer Agent: GLM 5.3)",
+ "base": "f106fc54 (agent/gait-wave46-splitread, the shipped wave-46 state: THE RECORD -- the min is derived, the un-minned read is degenerate by digitigrade morphology, the deciding DOF is the split delta; the [dvfa] arch (wave-42) + [dvfj] IK-absorption (wave-43) + [dvfk] stance-side (wave-44) + [dvfl] band-view (wave-45) instruments live plumbing this lane inherits free; refusal 302 gait_positional_correction_budget, worst moving ledger 30.970714 J, 49 reds / 173 checks, stdout 8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc (22530 bytes), the scene f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 byte-untouched, the plain stderr b505bb65652c2b796c163899ec51b7e5268342e5d31f28a9603fc2ab6c2d72ab, the ship trace c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481 (65870 lines), reproduced BYTE-EXACT this lane BEFORE this freeze: scene regenerated f6844eea EXACT, plain stdout 8c537cdb EXACT (22530 bytes), plain==trace stdout byte-equal, refusal 302, ledger 30.970714, 49/173, plain stderr b505bb65 EXACT, trace stderr c6f9b6c0 EXACT (6525585 bytes, 65870 lines) -- f47_repro GREEN BEFORE THE FREEZE)"
+}

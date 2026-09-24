@@ -1,0 +1,34 @@
+OBS-ALIASING FIX RECEIPT: tools/science_funnel/validation/obs_populate_20260920/receipt.json @ origin/master 33e7a444
+README.md @ origin/master quote of it:
+- **The brain's eyes are frozen and honest.** The 80-field observation
+  interface is versioned and regenerates byte-identically; its own audit fired
+  a red — 21 state-aliased pairs on the live walk — and the fix landed at the
+  sensor path: delivering com_vel separated all 21 pairs (277 -> 302 distinct
+  observations) while the walk's physics bytes stayed identical
+  (`tools/science_funnel/validation/policy_interface_freeze_20260920`,
+  `tools/science_funnel/validation/obs_populate_20260920/receipt.json`).
+
+MASS-CONTEXT RECEIPTS (walker 10.038 kg vs book context 6.15 kg):
+[derive_k_fill.py L60-75] # Ogihara N (2021) Commun Biol 4:308, Table 1 (parameters from Ogihara et al. 2009).
+[derive_k_fill.py L60-75] OKU_THIGH_KG = 0.557
+[derive_k_fill.py L60-75] OKU_SHANK_KG = 0.269
+[derive_k_fill.py L60-75] OKU_FOOT_KG = 0.080
+[derive_k_fill.py L60-75] OKU_PHALANGES_KG = 0.021
+[derive_k_fill.py L60-75] OKU_MODEL_TOTAL_KG = 10.038
+[derive_k_fill.py L60-75] 
+[derive_k_fill.py L60-75] # Adult female rhesus band 5.4-6.9 kg (Turnquist & Kessler 1989 via the committed
+[derive_k_fill.py L60-75] # k_forensics receipt); the BAND MIDPOINT is the deposit_mass receipt's own banked
+[derive_k_fill.py L60-75] # convention (its derived_context line), reused, not re-chosen.
+[derive_k_fill.py L60-75] AF_BAND_KG = [5.4, 6.9]
+[derive_k_fill.py L60-75] AF_MIDPOINT_KG = 6.15
+[derive_k_fill.py L60-75] 
+[derive_k_fill.py L60-75] # The operator-authored rear-up class (mission C*): numerically (2x, 3x] the live
+[derive_k_fill.py L60-75] # hip cap 11.2125 N.m. Consumed as GIVEN (record.md D4); not re-derived.
+[derive_k_fill.py L60-75] REARUP_CLASS_LO_N_M = 22.4
+[gait_scene.py]     # Oku HAT contains forelimbs; carve out the two measured 0.406001 kg
+[gait_scene.py]     # arm chains before adding their explicit strut bodies (assembly doc §2).
+[gait_scene.py]     pelvis=body('pelvis',None,float(seg['HAT']['mass_kg'])-2*0.406001,
+[gait_scene.py]     # Stage-A forelimb struts: measured total arm mass and documented lengths;
+[gait_scene.py]     # the quad-share lane's admitted hind-thigh:shank split supplies the two
+[gait_scene.py]     # segment masses. These are deliberately only shoulder + elbow DOFs.
+[gait_scene.py]     fore = (("upperarm", 0.2737, 0.125), ("forearm", 0.1323, 0.132))

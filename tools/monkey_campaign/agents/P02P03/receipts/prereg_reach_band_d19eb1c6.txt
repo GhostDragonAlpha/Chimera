@@ -1,0 +1,3 @@
+d19eb1c615e573010fb1c9f25ec48c087dd1c28b 2026-09-23 12:24:05 -0500
+PREREG REACH BAND v1 -- THE ASTRA REGISTRATION (Option A): the 1e-9 relative saturation band frozen BEFORE any patched run; the canonical boundary treatment (snap to dmax*(1-1e-9), one-sided, dmax-exact and above stays outside); the reach/contact residual separation with the v2 duty if the row-0 sign decision survives; the falsifier table verbatim (EDGE-CLASS-SPLIT / FALSE-FEASIBILITY / ANCHOR-DRIFT / OUTSIDE-BAND-DRIFT / REPLAY-DIVERGENCE); the endpoint/neighbor cases; the anchor non-entry verification duty; the launch sequence. Registration event: the coordinator's Astra ruling 2026-09-23 ~15:20. Trailer: Agent: GLM 5.3
+

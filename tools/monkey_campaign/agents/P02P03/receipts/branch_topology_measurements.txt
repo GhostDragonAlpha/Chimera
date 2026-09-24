@@ -1,0 +1,10 @@
+BRANCH TOPOLOGY MEASUREMENTS (git, this worktree @ monkey-play-20260924 8c60bea3), measured 2026-09-24:
+local master            = 32105f18 (2026-09-17) 'Record native coupled-arm proof and continuation handoff'
+origin/master           = 33e7a444 (2026-09-23 08:19) 'T1 reverted to BLOCKED...' -- 467 commits AHEAD of local master; 32105f18 IS its ancestor
+origin/agent/typeb-gpu-finish-20260922 tip = a62b286e (2026-09-23 14:20) SHUTDOWN CHECKPOINT
+origin/lane/visible-walk-20260923 tip      = 40ba648c (lane close); key receipt 17ba94b9 (2026-09-23 12:19)
+origin/agent/first-skill-prestage-20260922 = RUNBOOK.md + run_manifest.json + first_skill/ frozen modules (73f3a860+)
+forearm-package-20260924 tip = b04a3acd (2026-09-24 14:11); 43b599a7 = the map's authoring observation point
+monkey-play-20260924 = 32105f18 + 8c60bea3 (planning import) -- tree contains NO gait engine, NO science_funnel gait/typeb/slice files:
+1
+ChimeraEngine/engine/gait_controller.hpp at 32105f18: ABSENT; at origin/master: PRESENT
