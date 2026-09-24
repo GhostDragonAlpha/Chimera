@@ -8,13 +8,17 @@ shipped example manifest/partition/groups, then written only under
 """
 from __future__ import annotations
 
+import contextlib
 import copy
+import hashlib
+import io
 import json
 import os
 import subprocess
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 sys.dont_write_bytecode = True  # never let __pycache__ appear in tools/
 
@@ -99,6 +103,66 @@ def generate_fixtures() -> dict:
     return _fixture_cache
 
 
+def generate_hostile_fixtures() -> dict:
+    """Reader-ACCEPTED but contract-violating reports (B2a probes P4/P5 class).
+
+    Base is the GENUINE complete exporter report; each mutation touches exactly
+    the hostile field. Protocol matches B2a's: the reader's public
+    ``summarize_export_report`` must ACCEPT each fixture BEFORE any CLI
+    assertion, so every test here exercises the display path on reader-accepted
+    input. Files are written only under ``agents/M09_diagnostic/work/``.
+    """
+    generate_fixtures()
+    if "hostile" in _fixture_cache:
+        return _fixture_cache["hostile"]
+    complete = _fixture_cache["reports"]["complete"]
+
+    docs = {}
+    doc = copy.deepcopy(complete)          # D3: IDs as a bare string
+    doc["unassigned_cell_ids"] = "cell-B"
+    docs["string_ids"] = doc
+    doc = copy.deepcopy(complete)          # D2: rows as bare strings
+    doc["unassigned_cell_ids"] = ["cell-B", "cell-C"]
+    doc["unassigned_cells"] = ["cell-B", "cell-C"]
+    docs["string_rows"] = doc
+    doc = copy.deepcopy(complete)          # G: key absent -> "(not reported)"
+    del doc["unassigned_cells"]
+    docs["no_unassigned_cells"] = doc
+    for name, doc in docs.items():
+        summary = reader.summarize_export_report(doc)
+        assert summary["export_status"] == "complete", (
+            f"hostile fixture {name}: reader did not accept as complete")
+
+    WORK_DIR.mkdir(parents=True, exist_ok=True)
+    paths = {}
+    for name, doc in docs.items():
+        path = WORK_DIR / f"fixture_hostile_{name}.json"
+        path.write_text(exporter.canonical_json(doc), encoding="utf-8")
+        paths[name] = path
+    _fixture_cache["hostile"] = {"docs": docs, "paths": paths}
+    return _fixture_cache["hostile"]
+
+
+def tree_snapshot() -> dict:
+    """SHA-256 + st_mtime_ns of every file under tools/ and Chimera/docs/matter.
+
+    Same roots and same shape as run_suite.snapshot — the in-suite form of the
+    preregistered T9 hash proof (its second half), applied to whatever CLI
+    subprocesses run while a snapshot pair is held.
+    """
+    worktree = TOOLS.parent
+    state = {}
+    for root in (worktree / "tools", worktree / "Chimera" / "docs" / "matter"):
+        for path in sorted(root.rglob("*")):
+            if path.is_file():
+                stat = path.stat()
+                state[str(path.relative_to(worktree))] = {
+                    "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                    "mtime_ns": stat.st_mtime_ns,
+                }
+    return state
+
+
 def run_cli(paths, extra_args=()):
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
     return subprocess.run([sys.executable, str(MY_DIR / "material_volume_diagnostic.py"),
@@ -117,6 +181,23 @@ class AcceptanceTests(unittest.TestCase):
     def setUpClass(cls):
         cls.fx = generate_fixtures()
         cls.paths = cls.fx["paths"]
+        # G-hashproof (preregistered T9 second half, moved in-suite): the
+        # snapshot below straddles EVERY CLI subprocess this class (the whole
+        # suite) spawns; tearDownClass asserts tools/ + Chimera/docs/matter
+        # byte- and mtime-identical across all of them.
+        cls._tree_before = tree_snapshot()
+
+    @classmethod
+    def tearDownClass(cls):
+        after = tree_snapshot()
+        added = sorted(set(after) - set(cls._tree_before))
+        removed = sorted(set(cls._tree_before) - set(after))
+        changed = sorted(path for path in set(cls._tree_before) & set(after)
+                         if cls._tree_before[path] != after[path])
+        if added or removed or changed:
+            raise cls.failureException(
+                "F1: tools/ + Chimera/docs/matter changed during the suite "
+                f"(added={added}, removed={removed}, changed={changed})")
 
     # T1 — happy path on the shipped example report
     def test_t1_happy_path_shipped_example(self):
@@ -286,6 +367,123 @@ class AcceptanceTests(unittest.TestCase):
         self.assertIn("unassigned_cells: 0", out)
         self.assertIn("frames: (none)", out)  # no exported bodies -> no summary frames
         self.assertIn("units: (none)", out)
+
+
+class B8RegressionTests(unittest.TestCase):
+    """B2a-review regressions D1/D2/D3 + coverage gaps (B8 preregistration,
+    frozen in ../B8_fixes/preregistration_fixes.md BEFORE any edit).
+
+    The D-tests FAIL on the pre-fix CLI by construction (demonstrated and
+    preserved in agents/B8_fixes/receipts/tests_before_fix.log); the gap tests
+    pin honest current behavior and must be green both before and after.
+    Hostile fixtures are reader-ACCEPTED reports (gated in
+    generate_hostile_fixtures), so everything below exercises display-path
+    behavior only — never re-validation, never a status invention.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.fx = generate_fixtures()["paths"]
+        cls.hostile = generate_hostile_fixtures()["paths"]
+
+    # D1 — argparse usage errors must NOT collide with frozen exit 2
+    # (reader-rejected); frozen contract: usage = "other nonzero". Decision
+    # recorded in the B8 preregistration: 64 = BSD sysexits EX_USAGE.
+    def test_d1_usage_errors_exit_distinct_from_reader_rejection(self):
+        no_args = run_cli([])
+        self.assertEqual(no_args.returncode, 64)
+        self.assertTrue(no_args.stderr.startswith("usage:"),
+                        f"usage text lost: {no_args.stderr!r}")
+        bogus = run_cli([EXAMPLE_REPORT, "--bogus-flag"])
+        self.assertEqual(bogus.returncode, 64)
+        # the frozen reader-rejection code itself must be untouched by the remap
+        self.assertEqual(run_cli([self.fx["malformed_version"]]).returncode, 2)
+
+    # D2 — reader-accepted string rows in unassigned_cells must render
+    # gracefully in human mode (pre-fix: AttributeError, exit 1 + traceback)
+    def test_d2_string_unassigned_cells_rows_render_gracefully(self):
+        proc = run_cli([self.hostile["string_rows"]])
+        self.assertEqual(proc.returncode, 0)
+        self.assertNotIn("Traceback", proc.stderr)
+        self.assertIn("unassigned_cells: 2", proc.stdout)
+        self.assertIn("<non-object row: 'cell-B'>", proc.stdout)
+        self.assertIn("<non-object row: 'cell-C'>", proc.stdout)
+        self.assertEqual(proc.stdout.splitlines()[-1], "readiness: false")
+        code, payload = run_cli_json([self.hostile["string_rows"]])
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["reports"][0]["unassigned_cells"],
+                         ["cell-B", "cell-C"])  # JSON passthrough unchanged
+
+    # D3 — a string unassigned_cell_ids renders WHOLE (pre-fix: per-character
+    # mangle "c, e, l, l, -, B"; the class M09 locked for a sibling field)
+    def test_d3_string_unassigned_cell_ids_not_mangled(self):
+        proc = run_cli([self.hostile["string_ids"]])
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("unassigned_cell_ids: cell-B", proc.stdout)
+        self.assertNotIn("c, e, l, l", proc.stdout)
+        code, payload = run_cli_json([self.hostile["string_ids"]])
+        self.assertEqual(code, 0)
+        self.assertEqual(payload["reports"][0]["unassigned_cell_ids"], "cell-B")
+
+    # G-exit4 — the readiness-alarm path (unreachable with the real reader, by
+    # its construction): force a lying summary via the reader's public seam.
+    def test_exit4_readiness_alarm_path(self):
+        real = reader.summarize_export_report
+
+        def lying(document):
+            summary = dict(real(document))
+            summary["dynamics_readiness_claimed"] = True
+            return summary
+
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with mock.patch.object(reader, "summarize_export_report", lying):
+            with contextlib.redirect_stdout(stdout), \
+                    contextlib.redirect_stderr(stderr):
+                code = diag.main([str(self.fx["complete"]), "--json"])
+        self.assertEqual(code, 4)
+        self.assertIn("READINESS-VIOLATION", stderr.getvalue())
+        payload = json.loads(stdout.getvalue())
+        self.assertIs(payload["readiness"], False)  # F2 sentinel stays false
+        human_out, human_err = io.StringIO(), io.StringIO()
+        with mock.patch.object(reader, "summarize_export_report", lying):
+            with contextlib.redirect_stdout(human_out), \
+                    contextlib.redirect_stderr(human_err):
+                code = diag.main([str(self.fx["complete"])])
+        self.assertEqual(code, 4)
+        self.assertIn("READINESS-VIOLATION", human_err.getvalue())
+        self.assertEqual(human_out.getvalue().splitlines()[-1], "readiness: false")
+
+    # G-mixed — accepted + rejected in ONE invocation: exit 2, argv order,
+    # rejected entry carries no summary fields
+    def test_mixed_accepted_and_rejected_invocation(self):
+        code, payload = run_cli_json(
+            [self.fx["complete"], self.fx["malformed_version"]])
+        self.assertEqual(code, 2)
+        accepted, rejected = payload["reports"]
+        self.assertEqual(accepted["path"], str(self.fx["complete"]))
+        self.assertTrue(accepted["ok"])
+        self.assertEqual(accepted["export_status"], "complete")
+        self.assertEqual(rejected["path"], str(self.fx["malformed_version"]))
+        self.assertFalse(rejected["ok"])
+        self.assertEqual(rejected["error"]["reason"], "bad_export_report_version")
+        for field in ("export_status", "schema_version", "input_hashes",
+                      "bodies", "readiness_claimed"):
+            self.assertNotIn(field, rejected)  # never invented (frozen contract)
+        human = run_cli([self.fx["complete"], self.fx["malformed_version"]])
+        self.assertEqual(human.returncode, 2)
+        self.assertIn("export_status: complete", human.stdout)
+        self.assertIn("error_reason: bad_export_report_version", human.stdout)
+        self.assertEqual(human.stdout.splitlines()[-1], "readiness: false")
+
+    # G-notreported — the third grammar token, untested per B2a (G1)
+    def test_unassigned_cells_not_reported_token(self):
+        proc = run_cli([self.hostile["no_unassigned_cells"]])
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn("unassigned_cells: (not reported)", proc.stdout)
+        self.assertEqual(proc.stdout.splitlines()[-1], "readiness: false")
+        code, payload = run_cli_json([self.hostile["no_unassigned_cells"]])
+        self.assertEqual(code, 0)
+        self.assertNotIn("unassigned_cells", payload["reports"][0])
 
 
 if __name__ == "__main__":

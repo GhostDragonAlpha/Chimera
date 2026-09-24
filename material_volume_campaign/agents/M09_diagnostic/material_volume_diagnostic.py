@@ -24,7 +24,8 @@ Run:
 
 Exit codes: 0 every report accepted (any status, incl. ``refused``, is a
 successfully diagnosed report) · 2 reader rejected a report · 4 readiness
-violation alarm (falsifier F2; must never fire).
+violation alarm (falsifier F2; must never fire) · 64 usage error (argparse;
+frozen contract requires "other nonzero", distinct from the reader codes).
 """
 from __future__ import annotations
 
@@ -39,10 +40,30 @@ sys.dont_write_bytecode = True  # F1: never write __pycache__ anywhere, esp. too
 TOOL_NAME = "material_volume_diagnostic"
 READER_MODULE = "material_volume_body_export_reader"
 EXPORTER_MODULE = "material_volume_body_export"
+# Frozen exit contract (preregistration.md): 0 accepted · 2 reader-rejected ·
+# 4 readiness alarm · usage errors "other nonzero". argparse's default usage
+# exit IS 2, colliding with reader-rejected (B2a defect D1), so usage errors
+# exit 64 — the BSD sysexits.h EX_USAGE convention, distinct from {0, 2, 4}.
+EXIT_USAGE = 64
 STATUSES = ("complete", "partial", "blocked", "unsupported", "refused")
 OMITTED_PASSTHROUGH_KEYS = ("blocking_cell_ids", "blocking_assignment_statuses",
                             "admission_reason_codes")
 UNASSIGNED_ROW_KEYS = ("cell_id", "assignment_status", "reason")
+
+
+class _UsageErrorParser(argparse.ArgumentParser):
+    """ArgumentParser whose usage errors do not collide with exit code 2.
+
+    Overrides only the exit STATUS of argparse's error(): the stderr text is
+    byte-identical to the default (usage line + "prog: error: message"), but
+    the frozen contract reserves 2 for "reader rejected a report" and requires
+    usage errors to exit "other nonzero" (B2a defect D1; frozen decision:
+    EXIT_USAGE = 64).
+    """
+
+    def error(self, message):
+        self.print_usage(sys.stderr)
+        self.exit(EXIT_USAGE, f"{self.prog}: error: {message}\n")
 
 
 def find_tools_dir(explicit: str | None = None) -> Path:
@@ -160,6 +181,12 @@ def diagnose_report(path: str, report_doc: object, summary: Mapping) -> dict:
 
 
 def _plural_list(values: Sequence, none_text: str = "(none)") -> str:
+    if isinstance(values, str):
+        # D3 (B2a probe P4): a str IS a Sequence — without this guard a bare
+        # string would join per CHARACTER ("c, e, l, l, -, B"). A string value
+        # is ONE value; join whole values. Same defect class M09 locked for
+        # blocking_assignment_statuses.
+        values = [values]
     return ", ".join(str(value) for value in values) if values else none_text
 
 
@@ -203,9 +230,17 @@ def render_human(entries: Sequence[Mapping]) -> str:
         rows = entry.get("unassigned_cells")
         lines.append(f"  unassigned_cells: {len(rows) if rows is not None else '(not reported)'}")
         for index, row in enumerate(rows or []):
-            lines.append(f"    unassigned[{index}] cell_id={row.get('cell_id')} "
-                         f"assignment_status={row.get('assignment_status')} "
-                         f"reason={row.get('reason')}")
+            if isinstance(row, Mapping):
+                lines.append(f"    unassigned[{index}] cell_id={row.get('cell_id')} "
+                             f"assignment_status={row.get('assignment_status')} "
+                             f"reason={row.get('reason')}")
+            else:
+                # D2 (B2a probe P5): a reader-accepted non-object row must not
+                # crash human mode (pre-fix: AttributeError, exit 1). Render
+                # the value verbatim (repr, so type stays unambiguous); it is
+                # never treated as a cell_id/status — display only, exactly
+                # like the JSON passthrough.
+                lines.append(f"    unassigned[{index}] <non-object row: {row!r}>")
         lines.append(f"  frames: {_plural_list(entry['frames'], '(none)')}")
         lines.append(f"  units: {_plural_list(entry['units'], '(none)')}")
         exported = [body for body in entry["bodies"] if not body["omitted"]]
@@ -223,7 +258,7 @@ def render_human(entries: Sequence[Mapping]) -> str:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(
+    parser = _UsageErrorParser(
         prog=TOOL_NAME,
         description="Read-only diagnostic for rigid-body mass export reports "
                     "(rides on tools/material_volume_body_export_reader.py; "

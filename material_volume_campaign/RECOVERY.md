@@ -123,3 +123,10 @@ NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energ
 
 **Verified:** B7x probe re-run by coordinator — frozen + regenerated corpora agree on all nine verdicts; integrity clean (incl. M10's dir untouched). M10 closes 4/9 gaps by predicted rules; the value class is the honest open residual (needs regeneration-diff or value oracle — a DECISION REQUEST for the architect, not something static validation can conjure); L2 reproduced.
 **Fleet:** 1 live (B8 — the last task before consolidation).
+
+## CHECKPOINT T19 — FINAL. B8 integrated; CAMPAIGN COMPLETE (B10 delivered)
+
+**Verified:** B8 suite re-run by coordinator (17/17; read-only proof 415 files 0 changed); integrity clean. All 19 receipts integrated; every task in the directive's opening table AND the authorized follow-on backlog is DONE or dispositioned (B1 suite-reviews: B2a covered M09; the other suites' independent reviews are folded into the coordinator's fresh re-runs + B7x's cross-check — noted as residual optional work, not authorized-blocking).
+**CAMPAIGN_REPORT.md written** — the 24h directive's five terminal deliverables: integrated revisions + artifact identities; 14-row verified-capability table; 6 fired falsifiers (all agent-side, all preserved) + B8's fixes + honest residuals; the 11-item decision ledger; exact recovery instructions.
+**Worktree audit (standing rule):** 11 registrations, all durably referenced/locked/deliberately-spared; no removals needed; six dirty legacy trees untouched.
+**FINAL STATE:** both campaigns terminal — mv-campaign COMPLETE (this report); anatomy campaign COMPLETE and decision-blocked (USTR_DIAGNOSTIC_RECEIPT). No agents running. No spin.

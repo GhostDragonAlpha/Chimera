@@ -1,0 +1,1 @@
+{"schema_version": "chimera.rigid_body_mass_export.v1", "export_status": "blocked", "body_groups": [{"body_id": "body-A", "export_status": "not_exported", "owned_cell_ids": ["cell-A"], "mass_properties": null}], "unassigned_cell_ids": [], "unassigned_cells": [], "input_hashes": null}

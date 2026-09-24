@@ -1,0 +1,15 @@
+First action: copy this brief verbatim to E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/B8_fixes/brief.md (create dir).
+
+ROLE: B8 — fix the verified defects in the M09 diagnostic CLI and add the regression tests the review named. You take EXCLUSIVE OWNERSHIP of agents/M09_diagnostic/ for this task (the prior author is done); nothing else outside your own dir is writable.
+
+CONTEXT: 24h material-volume campaign, worktree E:/ChimeraWork/mvc-20260924. The M09 diagnostic CLI (agents/M09_diagnostic/material_volume_diagnostic.py + tests/) passed its suite (11/11) and independent review (B2a, agents/B2a_review_m09/report.md — READ IT) returned ACCEPT-WITH-NOTES with three hostile-input-only defects and named coverage gaps. Campaign law: fixes within approved contracts are authorized; corrections require a LOGGED EXPLANATION + a new receipt; tools/ and docs/ remain READ-ONLY (the defects are all in the campaign's own CLI); preregister the fix plan BEFORE editing.
+
+DEFECTS TO FIX (from B2a, with its receipts as evidence):
+- D1: argparse usage errors exit 2, colliding with the frozen exit contract (2 = reader-rejected). Fix per the CLI's own preregistration semantics (e.g., remap argparse errors to a distinct exit code or capture usage errors before the reader path — choose the MINIMAL change consistent with the frozen output contract in agents/M09_diagnostic/preregistration.md; if the frozen contract itself is ambiguous, record a decision request instead of choosing).
+- D2: string rows in `unassigned_cells` crash human mode (AttributeError, exit 1 + traceback). Fix: render gracefully (the JSON mode already works).
+- D3: string `unassigned_cell_ids` mangles per-character (the same class M09 had fixed for a sibling field). Fix: join on whole values.
+
+COVERAGE GAPS TO CLOSE (B2a's list): exit-4 readiness-alarm path; mixed accepted+rejected invocations; the `(not reported)` grammar token test; move the hash-proof (T9's second half) into the unittest suite where feasible.
+
+TASK: (1) PREREGISTER: per defect, the minimal fix approach + a regression test that FAILS on the current code and PASSES after (write the failing tests FIRST, demonstrate them failing, then fix); per gap, the test to add. Freeze before editing. (2) Implement; keep the frozen output contract; do not weaken any existing test. (3) Run the full suite (old + new tests); all green required. (4) NEW RECEIPT: fixes.md logging each change with its explanation + before/after evidence; the B2a probe scripts (agents/B2a_review_m09/work/probes.py — READ-ONLY) re-run against the fixed CLI must now pass clean (document their output). (5) Integrity: git -C E:/ChimeraWork/mvc-20260924 status --porcelain -- tools Chimera/docs/matter → empty (paste); no writes outside agents/M09_diagnostic/ and agents/B8_fixes/.
+STOP RULE: all three defects fixed + regressions demonstrated failing-then-passing + gaps covered, or a defect turns out contract-ambiguous → decision request, fix the unambiguous remainder, record. Preserve every intermediate failure.
