@@ -1,0 +1,249 @@
+{
+  "meta": {
+    "export_status": "complete",
+    "admission_status": "validation_only_admissible",
+    "export_report_groups": [
+      "b6-body-asym",
+      "b6-body-rotated",
+      "b6-body-unit-tetra"
+    ],
+    "predictions_sha256_freeze": "9aa4147c00b2e08d3b43e229ffabae0524524a6a26eed934eeded09247dad64b"
+  },
+  "b6-body-asym": {
+    "A_max_abs_asym": 0.0,
+    "A_exact_bit_symmetric": true,
+    "A_bound": 1e-15,
+    "A_pass": true,
+    "B": {
+      "eig_max_abs_imag": 0.0,
+      "eig_imag_bound": 1e-12,
+      "eig_imag_pass": true,
+      "min_eigenvalue": 136.59567632066268,
+      "positivity_pass": true,
+      "triangle_margins": [
+        103.98340478812315,
+        169.2079478532023,
+        1997.641980692008
+      ],
+      "triangle_universal_pass": true,
+      "triangle_fixture_strict_pass": true,
+      "det": 155510995.37036994,
+      "det_positive_pass": true,
+      "det_rel_err": 2.6829775761774208e-15,
+      "det_rel_bound": 1e-12,
+      "det_consistency_pass": true,
+      "trace": 2270.833333333333,
+      "trace_rel_err": 2.002557141518374e-16,
+      "trace_rel_bound": 1e-12,
+      "trace_consistency_pass": true,
+      "eigenvalues": [
+        136.59567632066268,
+        1050.8126927400656,
+        1083.4249642726052
+      ],
+      "eigenvalues_predicted": [
+        136.5956763206627,
+        1050.8126927400651,
+        1083.424964272605
+      ],
+      "eig_pred_max_abs_err": 4.547473508864641e-13,
+      "eig_pred_abs_bound": 1e-09,
+      "eig_pred_pass": true,
+      "mass": 1333.3333333333333,
+      "mass_rel_err": 0.0,
+      "mass_rel_bound": 1e-12,
+      "mass_pass": true,
+      "com_body": [
+        1.375,
+        0.43749999999999994,
+        0.5625
+      ],
+      "com_pred_body": [
+        1.375,
+        0.4375,
+        0.5625
+      ],
+      "com_max_abs_err_m": 5.551115123125783e-17,
+      "com_abs_bound_m": 1e-12,
+      "com_pass": true,
+      "pass": true
+    },
+    "C": {
+      "route_B_cellwise_max_abs_diff": 0.0,
+      "route_B_cellwise_rel": 0.0,
+      "route_B_cellwise_bound": 1e-12,
+      "route_B_cellwise_pass": true,
+      "route_C_origin_max_abs_diff": 1.1368683772161603e-12,
+      "route_C_origin_rel": 1.0752646720468118e-15,
+      "route_C_origin_bound": 1e-12,
+      "route_C_origin_pass": true,
+      "recomputed_mass": 1333.3333333333333,
+      "mass_diff": 0.0,
+      "recomputed_com_body": [
+        1.375,
+        0.43749999999999994,
+        0.5625
+      ],
+      "pass": true
+    },
+    "pass": true
+  },
+  "b6-body-rotated": {
+    "A_max_abs_asym": 0.0,
+    "A_exact_bit_symmetric": true,
+    "A_bound": 1e-15,
+    "A_pass": true,
+    "B": {
+      "eig_max_abs_imag": 0.0,
+      "eig_imag_bound": 1e-12,
+      "eig_imag_pass": true,
+      "min_eigenvalue": 136.5956763206628,
+      "positivity_pass": true,
+      "triangle_margins": [
+        103.98340478812224,
+        169.20794785320322,
+        1997.6419806920076
+      ],
+      "triangle_universal_pass": true,
+      "triangle_fixture_strict_pass": true,
+      "det": 155510995.3703705,
+      "det_positive_pass": true,
+      "det_rel_err": 9.582062772062218e-16,
+      "det_rel_bound": 1e-12,
+      "det_consistency_pass": true,
+      "trace": 2270.833333333333,
+      "trace_rel_err": 2.002557141518374e-16,
+      "trace_rel_bound": 1e-12,
+      "trace_consistency_pass": true,
+      "eigenvalues": [
+        136.5956763206628,
+        1050.812692740065,
+        1083.4249642726054
+      ],
+      "eigenvalues_predicted": [
+        136.59567632066288,
+        1050.8126927400651,
+        1083.4249642726058
+      ],
+      "eig_pred_max_abs_err": 4.547473508864641e-13,
+      "eig_pred_abs_bound": 1e-09,
+      "eig_pred_pass": true,
+      "mass": 1333.3333333333333,
+      "mass_rel_err": 0.0,
+      "mass_rel_bound": 1e-12,
+      "mass_pass": true,
+      "com_body": [
+        0.5625,
+        1.375,
+        0.43749999999999994
+      ],
+      "com_pred_body": [
+        0.5625,
+        1.375,
+        0.4375
+      ],
+      "com_max_abs_err_m": 5.551115123125783e-17,
+      "com_abs_bound_m": 1e-12,
+      "com_pass": true,
+      "pass": true
+    },
+    "C": {
+      "route_B_cellwise_max_abs_diff": 0.0,
+      "route_B_cellwise_rel": 0.0,
+      "route_B_cellwise_bound": 1e-12,
+      "route_B_cellwise_pass": true,
+      "route_C_origin_max_abs_diff": 3.1045601645018905e-09,
+      "route_C_origin_rel": 2.936332766425434e-12,
+      "route_C_origin_bound": 1e-12,
+      "route_C_origin_pass": false,
+      "recomputed_mass": 1333.3333333333333,
+      "mass_diff": 0.0,
+      "recomputed_com_body": [
+        0.5625,
+        1.375,
+        0.43749999999999994
+      ],
+      "pass": false
+    },
+    "pass": false
+  },
+  "b6-body-unit-tetra": {
+    "A_max_abs_asym": 0.0,
+    "A_exact_bit_symmetric": true,
+    "A_bound": 1e-15,
+    "A_pass": true,
+    "B": {
+      "eig_max_abs_imag": 0.0,
+      "eig_imag_bound": 1e-12,
+      "eig_imag_pass": true,
+      "min_eigenvalue": 10.416666666666663,
+      "positivity_pass": true,
+      "triangle_margins": [
+        4.166666666666664,
+        16.666666666666664,
+        16.666666666666664
+      ],
+      "triangle_universal_pass": true,
+      "triangle_fixture_strict_pass": true,
+      "det": 1808.449074074072,
+      "det_positive_pass": true,
+      "det_rel_err": 1.1315569281578064e-15,
+      "det_rel_bound": 1e-12,
+      "det_consistency_pass": true,
+      "trace": 37.499999999999986,
+      "trace_rel_err": 3.789561257387201e-16,
+      "trace_rel_bound": 1e-12,
+      "trace_consistency_pass": true,
+      "eigenvalues": [
+        10.416666666666663,
+        10.416666666666664,
+        16.666666666666664
+      ],
+      "eigenvalues_predicted": [
+        10.416666666666663,
+        10.416666666666666,
+        16.666666666666664
+      ],
+      "eig_pred_max_abs_err": 1.7763568394002505e-15,
+      "eig_pred_abs_bound": 1e-09,
+      "eig_pred_pass": true,
+      "mass": 166.66666666666666,
+      "mass_rel_err": 0.0,
+      "mass_rel_bound": 1e-12,
+      "mass_pass": true,
+      "com_body": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "com_pred_body": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "com_max_abs_err_m": 0.0,
+      "com_abs_bound_m": 1e-12,
+      "com_pass": true,
+      "pass": true
+    },
+    "C": {
+      "route_B_cellwise_max_abs_diff": 0.0,
+      "route_B_cellwise_rel": 0.0,
+      "route_B_cellwise_bound": 1e-12,
+      "route_B_cellwise_pass": true,
+      "route_C_origin_max_abs_diff": 1.815436689867056e-12,
+      "route_C_origin_rel": 1.452349351893645e-13,
+      "route_C_origin_bound": 1e-12,
+      "route_C_origin_pass": true,
+      "recomputed_mass": 166.66666666666666,
+      "mass_diff": 0.0,
+      "recomputed_com_body": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "pass": true
+    },
+    "pass": true
+  }
+}

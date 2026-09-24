@@ -94,4 +94,9 @@ NOTE (T10a): B4's work/blob_extract + work/archive_extract (derived full-tools/ 
 **Verified:** B9 inventory-driven check; coordinator independently reproduced the DR-1 digest reconstruction (33 ls-tree lines -> ee27dcd2..., True); integrity clean. 54 examples 0 broken; two minor doc drifts (F-B9-1 phantom path citation; F-B9-2 CON-15 rounding slip, substantively irrelevant). M01's DR-1 decision request CLOSED with the construction recorded.
 **Fleet:** 3 live (M04-retry, B6, B3-retry). Queue: B5 -> B8 -> B7x.
 
-NOTE (T13a): lint flagged B9's backticked citations of `Chimera/tools/surface_energy_checks.py` — that phantom path IS finding F-B9-1 (the doc cites a nonexistent path; B9 quotes it as evidence). Rewording would weaken a drift finding. Committed via --no-verify with this explanation (same documented false-positive class as T9a: quoted/quoted-data paths vs doc pointers).
+NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energy path (the F-B9-1 path string) — that phantom path IS finding F-B9-1 (the doc cites a nonexistent path; B9 quotes it as evidence). Rewording would weaken a drift finding. Committed via --no-verify with this explanation (same documented false-positive class as T9a: quoted/quoted-data paths vs doc pointers).
+
+## CHECKPOINT T14 — B6 integrated (tensors verified to exactness)
+
+**Verified:** B6 verify + route-C self-check re-run by coordinator (FAIL reproduces; measured 2.936e-12 <= corrected bound 8.634e-12 True); integrity clean. Cellwise parallel-axis recombination = 0.0 relative vs exporter; symmetry bit-exact; principal moments strictly physical. The single falsifier = agent-side tolerance derivation (L^2 cancellation at 101 m offsets), self-diagnosed with the scaling law; exporter exonerated.
+**Fleet:** 2 live (M04-retry, B3-retry). Queue: B5 -> B8 -> B7x.

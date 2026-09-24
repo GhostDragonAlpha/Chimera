@@ -1,0 +1,17 @@
+{
+  "failing_cell": "b6-body-rotated / C route_C_origin",
+  "frozen_bound_rel": 1e-12,
+  "E1_float_domain_origin_rel": 2.936332766425434e-12,
+  "E2_float_local_origin_rel": 1.0752646720468118e-15,
+  "E3_exact_routeC_vs_export_abs": 5.684341886080802e-14,
+  "E3_exact_routeC_vs_frozen_pred_abs": 2.2737367544323206e-13,
+  "E4_cancellation_rel_bound": 8.633533953431919e-12,
+  "classification": {
+    "B6_derivation_error": false,
+    "evidence": "E3: exact-Fraction route C reproduces the exported tensor and the frozen prediction; derive_b6.py had already asserted exact route-C == cellwise assembly for every body.",
+    "exporter_defect": false,
+    "evidence_2": "route B (cellwise parallel-axis) matches the exporter to rel diff 0.0 on all three bodies; E1 failure magnitude sits under the cancellation bound E4, which scales as L^2 (1.5e-13 at L=10, 2.9e-12 at L=100).",
+    "instrument_tolerance_defect": true,
+    "explanation": "the frozen 1e-12 bound was derived in prereg section 2(c) from operation count alone and ignored the conditioning of the origin-second-moment route for a body whose COM sits L=100 m from the domain origin: float64 route C loses ~eps*3*M*L^2/scale relative to cancellation, so the bound was unattainable for this instrument at this distance. The mathematics (E3) and the exporter (route B bit-exact; E2 same algebra at a local origin) are correct."
+  }
+}

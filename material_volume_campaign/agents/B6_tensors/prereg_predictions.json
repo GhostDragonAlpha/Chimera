@@ -1,0 +1,968 @@
+{
+  "prereg": "B6-tensor-checks-20260924",
+  "derivation": "exact Fraction arithmetic; routes A==B per cell; cellwise parallel-axis assembly == origin-second-moment assembly",
+  "input_sha256": {
+    "manifest.json": "0252f68c39f6c762e30a0689a5837f173aec7f14ac6ac3ca75a94c7df6845b3c",
+    "partition.json": "286829c1232ba42e8e0d07e06f2ac17ba660f81eed125eb77d24cf302c5a3108",
+    "groups.json": "ad003c97f7c9f40d6be433ef4ac797ebabadb2134f245e0cd73e2ad46a9ccf40"
+  },
+  "tolerances_frozen": {
+    "A_symmetry_max_abs_asym": 1e-15,
+    "B_eig_max_abs_imag": 1e-12,
+    "B_min_eigenvalue_strict_positive": true,
+    "B_triangle_margin_min_abs": -1e-12,
+    "B_triangle_margin_fixture_strict_positive": true,
+    "B_det_positive": true,
+    "B_det_vs_pred_rel": 1e-12,
+    "B_trace_vs_pred_rel": 1e-12,
+    "B_mass_vs_pred_rel": 1e-12,
+    "B_com_vs_pred_abs_m": 1e-12,
+    "B_eigenvalues_vs_pred_abs": 1e-09,
+    "C_recomb_max_rel_to_tensor_scale": 1e-12
+  },
+  "bodies": {
+    "b6-body-unit-tetra": {
+      "mass_kg": {
+        "fraction": "500/3",
+        "float": 166.66666666666666
+      },
+      "volume_m3": {
+        "fraction": "1/6",
+        "float": 0.16666666666666666
+      },
+      "com_domain_m": [
+        {
+          "fraction": "-39/4",
+          "float": -9.75
+        },
+        {
+          "fraction": "1/4",
+          "float": 0.25
+        },
+        {
+          "fraction": "1/4",
+          "float": 0.25
+        }
+      ],
+      "com_body_m": [
+        {
+          "fraction": "1/4",
+          "float": 0.25
+        },
+        {
+          "fraction": "1/4",
+          "float": 0.25
+        },
+        {
+          "fraction": "1/4",
+          "float": 0.25
+        }
+      ],
+      "inertia_domain_com_kg_m2": [
+        [
+          {
+            "fraction": "25/2",
+            "float": 12.5
+          },
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          },
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          }
+        ],
+        [
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          },
+          {
+            "fraction": "25/2",
+            "float": 12.5
+          },
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          }
+        ],
+        [
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          },
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          },
+          {
+            "fraction": "25/2",
+            "float": 12.5
+          }
+        ]
+      ],
+      "inertia_body_com_kg_m2": [
+        [
+          {
+            "fraction": "25/2",
+            "float": 12.5
+          },
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          },
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          }
+        ],
+        [
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          },
+          {
+            "fraction": "25/2",
+            "float": 12.5
+          },
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          }
+        ],
+        [
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          },
+          {
+            "fraction": "25/12",
+            "float": 2.0833333333333335
+          },
+          {
+            "fraction": "25/2",
+            "float": 12.5
+          }
+        ]
+      ],
+      "per_cell": [
+        {
+          "cell_id": "cell-U1",
+          "rho_kg_m3": {
+            "fraction": "1000/1",
+            "float": 1000.0
+          },
+          "volume_m3": {
+            "fraction": "1/6",
+            "float": 0.16666666666666666
+          },
+          "mass_kg": {
+            "fraction": "500/3",
+            "float": 166.66666666666666
+          },
+          "centroid_m": [
+            {
+              "fraction": "-39/4",
+              "float": -9.75
+            },
+            {
+              "fraction": "1/4",
+              "float": 0.25
+            },
+            {
+              "fraction": "1/4",
+              "float": 0.25
+            }
+          ],
+          "cov_about_centroid": [
+            [
+              {
+                "fraction": "3/80",
+                "float": 0.0375
+              },
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              },
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              }
+            ],
+            [
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              },
+              {
+                "fraction": "3/80",
+                "float": 0.0375
+              },
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              }
+            ],
+            [
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              },
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              },
+              {
+                "fraction": "3/80",
+                "float": 0.0375
+              }
+            ]
+          ]
+        }
+      ],
+      "eigenvalues_body_sorted": [
+        10.416666666666663,
+        10.416666666666666,
+        16.666666666666664
+      ],
+      "triangle_margin_l1_l2_minus_l3": 4.166666666666664,
+      "triangle_margin_l1_l3_minus_l2": 16.666666666666664,
+      "triangle_margin_l2_l3_minus_l1": 16.666666666666664,
+      "det_inertia_exact": {
+        "fraction": "390625/216",
+        "float": 1808.4490740740741
+      },
+      "trace_exact": {
+        "fraction": "75/2",
+        "float": 37.5
+      }
+    },
+    "b6-body-asym": {
+      "mass_kg": {
+        "fraction": "4000/3",
+        "float": 1333.3333333333333
+      },
+      "volume_m3": {
+        "fraction": "4/3",
+        "float": 1.3333333333333333
+      },
+      "com_domain_m": [
+        {
+          "fraction": "11/8",
+          "float": 1.375
+        },
+        {
+          "fraction": "7/16",
+          "float": 0.4375
+        },
+        {
+          "fraction": "9/16",
+          "float": 0.5625
+        }
+      ],
+      "com_body_m": [
+        {
+          "fraction": "11/8",
+          "float": 1.375
+        },
+        {
+          "fraction": "7/16",
+          "float": 0.4375
+        },
+        {
+          "fraction": "9/16",
+          "float": 0.5625
+        }
+      ],
+      "inertia_domain_com_kg_m2": [
+        [
+          {
+            "fraction": "2275/12",
+            "float": 189.58333333333334
+          },
+          {
+            "fraction": "-525/4",
+            "float": -131.25
+          },
+          {
+            "fraction": "-675/4",
+            "float": -168.75
+          }
+        ],
+        [
+          {
+            "fraction": "-525/4",
+            "float": -131.25
+          },
+          {
+            "fraction": "25375/24",
+            "float": 1057.2916666666667
+          },
+          {
+            "fraction": "-925/24",
+            "float": -38.541666666666664
+          }
+        ],
+        [
+          {
+            "fraction": "-675/4",
+            "float": -168.75
+          },
+          {
+            "fraction": "-925/24",
+            "float": -38.541666666666664
+          },
+          {
+            "fraction": "24575/24",
+            "float": 1023.9583333333334
+          }
+        ]
+      ],
+      "inertia_body_com_kg_m2": [
+        [
+          {
+            "fraction": "2275/12",
+            "float": 189.58333333333334
+          },
+          {
+            "fraction": "-525/4",
+            "float": -131.25
+          },
+          {
+            "fraction": "-675/4",
+            "float": -168.75
+          }
+        ],
+        [
+          {
+            "fraction": "-525/4",
+            "float": -131.25
+          },
+          {
+            "fraction": "25375/24",
+            "float": 1057.2916666666667
+          },
+          {
+            "fraction": "-925/24",
+            "float": -38.541666666666664
+          }
+        ],
+        [
+          {
+            "fraction": "-675/4",
+            "float": -168.75
+          },
+          {
+            "fraction": "-925/24",
+            "float": -38.541666666666664
+          },
+          {
+            "fraction": "24575/24",
+            "float": 1023.9583333333334
+          }
+        ]
+      ],
+      "per_cell": [
+        {
+          "cell_id": "cell-A1",
+          "rho_kg_m3": {
+            "fraction": "1000/1",
+            "float": 1000.0
+          },
+          "volume_m3": {
+            "fraction": "1/3",
+            "float": 0.3333333333333333
+          },
+          "mass_kg": {
+            "fraction": "1000/3",
+            "float": 333.3333333333333
+          },
+          "centroid_m": [
+            {
+              "fraction": "1/2",
+              "float": 0.5
+            },
+            {
+              "fraction": "1/4",
+              "float": 0.25
+            },
+            {
+              "fraction": "1/4",
+              "float": 0.25
+            }
+          ],
+          "cov_about_centroid": [
+            [
+              {
+                "fraction": "3/20",
+                "float": 0.15
+              },
+              {
+                "fraction": "-1/40",
+                "float": -0.025
+              },
+              {
+                "fraction": "-1/40",
+                "float": -0.025
+              }
+            ],
+            [
+              {
+                "fraction": "-1/40",
+                "float": -0.025
+              },
+              {
+                "fraction": "3/80",
+                "float": 0.0375
+              },
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              }
+            ],
+            [
+              {
+                "fraction": "-1/40",
+                "float": -0.025
+              },
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              },
+              {
+                "fraction": "3/80",
+                "float": 0.0375
+              }
+            ]
+          ]
+        },
+        {
+          "cell_id": "cell-A2",
+          "rho_kg_m3": {
+            "fraction": "500/1",
+            "float": 500.0
+          },
+          "volume_m3": {
+            "fraction": "2/3",
+            "float": 0.6666666666666666
+          },
+          "mass_kg": {
+            "fraction": "1000/3",
+            "float": 333.3333333333333
+          },
+          "centroid_m": [
+            {
+              "fraction": "1/1",
+              "float": 1.0
+            },
+            {
+              "fraction": "1/2",
+              "float": 0.5
+            },
+            {
+              "fraction": "1/2",
+              "float": 0.5
+            }
+          ],
+          "cov_about_centroid": [
+            [
+              {
+                "fraction": "1/5",
+                "float": 0.2
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              }
+            ],
+            [
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "1/20",
+                "float": 0.05
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              }
+            ],
+            [
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "1/20",
+                "float": 0.05
+              }
+            ]
+          ]
+        },
+        {
+          "cell_id": "cell-A3",
+          "rho_kg_m3": {
+            "fraction": "2000/1",
+            "float": 2000.0
+          },
+          "volume_m3": {
+            "fraction": "1/3",
+            "float": 0.3333333333333333
+          },
+          "mass_kg": {
+            "fraction": "2000/3",
+            "float": 666.6666666666666
+          },
+          "centroid_m": [
+            {
+              "fraction": "2/1",
+              "float": 2.0
+            },
+            {
+              "fraction": "1/2",
+              "float": 0.5
+            },
+            {
+              "fraction": "3/4",
+              "float": 0.75
+            }
+          ],
+          "cov_about_centroid": [
+            [
+              {
+                "fraction": "2/5",
+                "float": 0.4
+              },
+              {
+                "fraction": "1/10",
+                "float": 0.1
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              }
+            ],
+            [
+              {
+                "fraction": "1/10",
+                "float": 0.1
+              },
+              {
+                "fraction": "1/20",
+                "float": 0.05
+              },
+              {
+                "fraction": "1/40",
+                "float": 0.025
+              }
+            ],
+            [
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "1/40",
+                "float": 0.025
+              },
+              {
+                "fraction": "3/80",
+                "float": 0.0375
+              }
+            ]
+          ]
+        }
+      ],
+      "eigenvalues_body_sorted": [
+        136.5956763206627,
+        1050.8126927400651,
+        1083.424964272605
+      ],
+      "triangle_margin_l1_l2_minus_l3": 103.98340478812293,
+      "triangle_margin_l1_l3_minus_l2": 169.20794785320254,
+      "triangle_margin_l2_l3_minus_l1": 1997.641980692007,
+      "det_inertia_exact": {
+        "fraction": "4198796875/27",
+        "float": 155510995.37037036
+      },
+      "trace_exact": {
+        "fraction": "13625/6",
+        "float": 2270.8333333333335
+      }
+    },
+    "b6-body-rotated": {
+      "mass_kg": {
+        "fraction": "4000/3",
+        "float": 1333.3333333333333
+      },
+      "volume_m3": {
+        "fraction": "4/3",
+        "float": 1.3333333333333333
+      },
+      "com_domain_m": [
+        {
+          "fraction": "811/8",
+          "float": 101.375
+        },
+        {
+          "fraction": "7/16",
+          "float": 0.4375
+        },
+        {
+          "fraction": "9/16",
+          "float": 0.5625
+        }
+      ],
+      "com_body_m": [
+        {
+          "fraction": "9/16",
+          "float": 0.5625
+        },
+        {
+          "fraction": "11/8",
+          "float": 1.375
+        },
+        {
+          "fraction": "7/16",
+          "float": 0.4375
+        }
+      ],
+      "inertia_domain_com_kg_m2": [
+        [
+          {
+            "fraction": "2275/12",
+            "float": 189.58333333333334
+          },
+          {
+            "fraction": "-525/4",
+            "float": -131.25
+          },
+          {
+            "fraction": "-675/4",
+            "float": -168.75
+          }
+        ],
+        [
+          {
+            "fraction": "-525/4",
+            "float": -131.25
+          },
+          {
+            "fraction": "25375/24",
+            "float": 1057.2916666666667
+          },
+          {
+            "fraction": "-925/24",
+            "float": -38.541666666666664
+          }
+        ],
+        [
+          {
+            "fraction": "-675/4",
+            "float": -168.75
+          },
+          {
+            "fraction": "-925/24",
+            "float": -38.541666666666664
+          },
+          {
+            "fraction": "24575/24",
+            "float": 1023.9583333333334
+          }
+        ]
+      ],
+      "inertia_body_com_kg_m2": [
+        [
+          {
+            "fraction": "24575/24",
+            "float": 1023.9583333333334
+          },
+          {
+            "fraction": "-675/4",
+            "float": -168.75
+          },
+          {
+            "fraction": "-925/24",
+            "float": -38.541666666666664
+          }
+        ],
+        [
+          {
+            "fraction": "-675/4",
+            "float": -168.75
+          },
+          {
+            "fraction": "2275/12",
+            "float": 189.58333333333334
+          },
+          {
+            "fraction": "-525/4",
+            "float": -131.25
+          }
+        ],
+        [
+          {
+            "fraction": "-925/24",
+            "float": -38.541666666666664
+          },
+          {
+            "fraction": "-525/4",
+            "float": -131.25
+          },
+          {
+            "fraction": "25375/24",
+            "float": 1057.2916666666667
+          }
+        ]
+      ],
+      "per_cell": [
+        {
+          "cell_id": "cell-B1",
+          "rho_kg_m3": {
+            "fraction": "1000/1",
+            "float": 1000.0
+          },
+          "volume_m3": {
+            "fraction": "1/3",
+            "float": 0.3333333333333333
+          },
+          "mass_kg": {
+            "fraction": "1000/3",
+            "float": 333.3333333333333
+          },
+          "centroid_m": [
+            {
+              "fraction": "201/2",
+              "float": 100.5
+            },
+            {
+              "fraction": "1/4",
+              "float": 0.25
+            },
+            {
+              "fraction": "1/4",
+              "float": 0.25
+            }
+          ],
+          "cov_about_centroid": [
+            [
+              {
+                "fraction": "3/20",
+                "float": 0.15
+              },
+              {
+                "fraction": "-1/40",
+                "float": -0.025
+              },
+              {
+                "fraction": "-1/40",
+                "float": -0.025
+              }
+            ],
+            [
+              {
+                "fraction": "-1/40",
+                "float": -0.025
+              },
+              {
+                "fraction": "3/80",
+                "float": 0.0375
+              },
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              }
+            ],
+            [
+              {
+                "fraction": "-1/40",
+                "float": -0.025
+              },
+              {
+                "fraction": "-1/80",
+                "float": -0.0125
+              },
+              {
+                "fraction": "3/80",
+                "float": 0.0375
+              }
+            ]
+          ]
+        },
+        {
+          "cell_id": "cell-B2",
+          "rho_kg_m3": {
+            "fraction": "500/1",
+            "float": 500.0
+          },
+          "volume_m3": {
+            "fraction": "2/3",
+            "float": 0.6666666666666666
+          },
+          "mass_kg": {
+            "fraction": "1000/3",
+            "float": 333.3333333333333
+          },
+          "centroid_m": [
+            {
+              "fraction": "101/1",
+              "float": 101.0
+            },
+            {
+              "fraction": "1/2",
+              "float": 0.5
+            },
+            {
+              "fraction": "1/2",
+              "float": 0.5
+            }
+          ],
+          "cov_about_centroid": [
+            [
+              {
+                "fraction": "1/5",
+                "float": 0.2
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              }
+            ],
+            [
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "1/20",
+                "float": 0.05
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              }
+            ],
+            [
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "1/20",
+                "float": 0.05
+              }
+            ]
+          ]
+        },
+        {
+          "cell_id": "cell-B3",
+          "rho_kg_m3": {
+            "fraction": "2000/1",
+            "float": 2000.0
+          },
+          "volume_m3": {
+            "fraction": "1/3",
+            "float": 0.3333333333333333
+          },
+          "mass_kg": {
+            "fraction": "2000/3",
+            "float": 666.6666666666666
+          },
+          "centroid_m": [
+            {
+              "fraction": "102/1",
+              "float": 102.0
+            },
+            {
+              "fraction": "1/2",
+              "float": 0.5
+            },
+            {
+              "fraction": "3/4",
+              "float": 0.75
+            }
+          ],
+          "cov_about_centroid": [
+            [
+              {
+                "fraction": "2/5",
+                "float": 0.4
+              },
+              {
+                "fraction": "1/10",
+                "float": 0.1
+              },
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              }
+            ],
+            [
+              {
+                "fraction": "1/10",
+                "float": 0.1
+              },
+              {
+                "fraction": "1/20",
+                "float": 0.05
+              },
+              {
+                "fraction": "1/40",
+                "float": 0.025
+              }
+            ],
+            [
+              {
+                "fraction": "0/1",
+                "float": 0.0
+              },
+              {
+                "fraction": "1/40",
+                "float": 0.025
+              },
+              {
+                "fraction": "3/80",
+                "float": 0.0375
+              }
+            ]
+          ]
+        }
+      ],
+      "eigenvalues_body_sorted": [
+        136.59567632066288,
+        1050.8126927400651,
+        1083.4249642726058
+      ],
+      "triangle_margin_l1_l2_minus_l3": 103.98340478812224,
+      "triangle_margin_l1_l3_minus_l2": 169.20794785320368,
+      "triangle_margin_l2_l3_minus_l1": 1997.6419806920078,
+      "det_inertia_exact": {
+        "fraction": "4198796875/27",
+        "float": 155510995.37037036
+      },
+      "trace_exact": {
+        "fraction": "13625/6",
+        "float": 2270.8333333333335
+      }
+    }
+  }
+}

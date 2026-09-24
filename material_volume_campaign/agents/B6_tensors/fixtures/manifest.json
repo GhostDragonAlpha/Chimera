@@ -1,0 +1,290 @@
+{
+  "schema_version": "chimera.fitting_manifest.v1",
+  "fitting_id": "b6-tensor-fixture-fit-v1",
+  "domain_id": "b6-tensor-fixture-domain",
+  "domain_revision": "b6-fixture-v1",
+  "coordinate_frame": {
+    "frame_id": "b6-domain",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "scale_to_m": 1.0
+  },
+  "vertices": [
+    {
+      "vertex_id": "u0",
+      "position": [
+        -10.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "u1",
+      "position": [
+        -9.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "u2",
+      "position": [
+        -10.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "u3",
+      "position": [
+        -10.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "vertex_id": "r0",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "r1",
+      "position": [
+        2.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "r2",
+      "position": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "r3",
+      "position": [
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "vertex_id": "r4",
+      "position": [
+        2.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "vertex_id": "r5",
+      "position": [
+        4.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "vertex_id": "s0",
+      "position": [
+        100.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "s1",
+      "position": [
+        102.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "s2",
+      "position": [
+        100.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "vertex_id": "s3",
+      "position": [
+        100.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "vertex_id": "s4",
+      "position": [
+        102.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "vertex_id": "s5",
+      "position": [
+        104.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "cell_id": "cell-U1",
+      "vertex_ids": [
+        "u0",
+        "u1",
+        "u2",
+        "u3"
+      ],
+      "component_id": "comp-U"
+    },
+    {
+      "cell_id": "cell-A1",
+      "vertex_ids": [
+        "r0",
+        "r1",
+        "r2",
+        "r3"
+      ],
+      "component_id": "comp-A"
+    },
+    {
+      "cell_id": "cell-A2",
+      "vertex_ids": [
+        "r4",
+        "r3",
+        "r2",
+        "r1"
+      ],
+      "component_id": "comp-A"
+    },
+    {
+      "cell_id": "cell-A3",
+      "vertex_ids": [
+        "r1",
+        "r4",
+        "r3",
+        "r5"
+      ],
+      "component_id": "comp-A"
+    },
+    {
+      "cell_id": "cell-B1",
+      "vertex_ids": [
+        "s0",
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "component_id": "comp-B"
+    },
+    {
+      "cell_id": "cell-B2",
+      "vertex_ids": [
+        "s4",
+        "s3",
+        "s2",
+        "s1"
+      ],
+      "component_id": "comp-B"
+    },
+    {
+      "cell_id": "cell-B3",
+      "vertex_ids": [
+        "s1",
+        "s4",
+        "s3",
+        "s5"
+      ],
+      "component_id": "comp-B"
+    }
+  ],
+  "regions": [
+    {
+      "region_id": "region-U",
+      "mass_owner_id": "owner-U",
+      "material_id": "b6-mat-water"
+    },
+    {
+      "region_id": "region-A1",
+      "mass_owner_id": "owner-A1",
+      "material_id": "b6-mat-water"
+    },
+    {
+      "region_id": "region-A2",
+      "mass_owner_id": "owner-A2",
+      "material_id": "b6-mat-light"
+    },
+    {
+      "region_id": "region-A3",
+      "mass_owner_id": "owner-A3",
+      "material_id": "b6-mat-dense"
+    },
+    {
+      "region_id": "region-B1",
+      "mass_owner_id": "owner-B1",
+      "material_id": "b6-mat-water"
+    },
+    {
+      "region_id": "region-B2",
+      "mass_owner_id": "owner-B2",
+      "material_id": "b6-mat-light"
+    },
+    {
+      "region_id": "region-B3",
+      "mass_owner_id": "owner-B3",
+      "material_id": "b6-mat-dense"
+    }
+  ],
+  "mass_authority": "reconstructed_tissue_mass",
+  "source_effective_segment_ids": [],
+  "matter_ownership": [
+    {
+      "matter_id": "b6-matter-U",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "owner-U"
+    },
+    {
+      "matter_id": "b6-matter-A1",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "owner-A1"
+    },
+    {
+      "matter_id": "b6-matter-A2",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "owner-A2"
+    },
+    {
+      "matter_id": "b6-matter-A3",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "owner-A3"
+    },
+    {
+      "matter_id": "b6-matter-B1",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "owner-B1"
+    },
+    {
+      "matter_id": "b6-matter-B2",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "owner-B2"
+    },
+    {
+      "matter_id": "b6-matter-B3",
+      "representation": "tetrahedral_volume",
+      "mass_owner_id": "owner-B3"
+    }
+  ]
+}

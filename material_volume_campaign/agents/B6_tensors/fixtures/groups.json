@@ -1,0 +1,114 @@
+{
+  "schema_version": "chimera.rigid_body_cell_groups.v1",
+  "body_groups": [
+    {
+      "body_id": "b6-body-unit-tetra",
+      "cell_ids": [
+        "cell-U1"
+      ],
+      "body_frame": {
+        "frame_id": "b6-unit-tetra-body",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "origin_m": [
+            -10.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "body_id": "b6-body-asym",
+      "cell_ids": [
+        "cell-A1",
+        "cell-A2",
+        "cell-A3"
+      ],
+      "body_frame": {
+        "frame_id": "b6-asym-body",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "origin_m": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "body_id": "b6-body-rotated",
+      "cell_ids": [
+        "cell-B1",
+        "cell-B2",
+        "cell-B3"
+      ],
+      "body_frame": {
+        "frame_id": "b6-rotated-body",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [
+            [
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              1.0,
+              0.0,
+              0.0
+            ]
+          ],
+          "origin_m": [
+            100.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    }
+  ]
+}
