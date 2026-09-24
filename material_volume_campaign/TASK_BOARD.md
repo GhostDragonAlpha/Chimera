@@ -30,8 +30,8 @@
 | M03 | non-unit `scale_to_m`: independent derivation of mass/COM/inertia scaling under the existing density/unit contract | `agents/M03_scale` | DISPATCHED | — | `report.md` |
 | M04 | rigid-transform covariance: translations + proper rotations vs analytically expected COM and full inertia | `agents/M04_rigid` | DISPATCHED | — | `report.md` |
 | M05 | input-order invariance: permuted cells/groups/records; physical invariance vs promised byte-order behavior | `agents/M05_order` | DISPATCHED | — | `report.md` |
-| M06 | malformed/unsupported inputs vs existing schemas (invalid frames, missing fields, non-finite, unauthorized source-effective authority) | `agents/M06_malformed` | DISPATCHED | — | `report.md` |
-| M07 | ownership/status propagation (duplicate ownership, unassigned cells, blocked bodies, mixed complete/incomplete groups) | `agents/M07_ownership` | DISPATCHED | — | `report.md` |
+| M06 | malformed/unsupported inputs vs existing schemas (invalid frames, missing fields, non-finite, unauthorized source-effective authority) | `agents/M06_malformed` | RETRY-1 (transient [1302] mid-run; serialized-retry protocol active) | — | `report.md` |
+| M07 | ownership/status propagation (duplicate ownership, unassigned cells, blocked bodies, mixed complete/incomplete groups) | `agents/M07_ownership` | DONE | **PASS — 64/64 verifier checks**, all falsifiers clear (duplicate ownership refused by name; unassigned cells listed; zero status leakage; hash binding == independently recomputed SHA-256; determinism byte-identical). **DECISION REQUEST MV-O1:** `_blocked_group` binds body-level `admission_report_sha256` to a REDUCED {decision, reason_codes} doc (298c5448…) while every other path binds the full report (4d4c43e1…) — the contract doc never names this reduction. Harness incident preserved (agent-side copy omission, re-run clean) | `report.md` + `matrix.md` + `receipts/verify-results.json` (re-run by coordinator) |
 | M08 | numerical robustness: independent fixtures across declared scales/shapes; conditioning limits vs defects | `agents/M08_robustness` | DISPATCHED | — | `report.md` |
 | M09 | read-only diagnostic CLI on the existing reader (status, omitted bodies + reasons, unassigned cells, frames, units, readiness stays false) | `agents/M09_diagnostic` | DONE | **PASS** — 11/11 tests; 415-file read-only proof; readiness false everywhere; **U7 resolved + finding: reader behaves correctly on blocked/refused, but its SUMMARY drops contract-preserved diagnostics (CON-4/6/7 fields) — CLI passes them through** | `report.md` + impl (suite re-verified by coordinator) |
 | B2a | independent review of the diagnostic CLI (non-author) | `agents/B2a_review_m09` | DISPATCHED | — | `report.md` |
@@ -39,6 +39,7 @@
 
 ## AUTHORIZED FOLLOW-ON BACKLOG (assign as slots free)
 
+MV-O1 DECISION REQUEST (M07): blocked-group body-level admission hash binds the reduced doc, all other paths bind the full report — doc ambiguity, adjudication requested.
 B1 independent review of each new suite (non-author) · B2 independent review of diagnostic CLI + validator · B3 reader/exporter round-trip (off-diagonals, provenance, explicit frames) · B4 cross-checkout reproducibility (raw bytes vs git blobs vs canonical text) · B5 preregistered subdivision coupon (same material volume/density through explicit regrouping) · B6 analytic tensor checks (symmetry, principal moments + physical inequalities, independent parallel-axis recombination) · B7 fault injection on checks (corrupted outputs detected; mutations confined to fixtures) · B8 regression tests + exclusive-ownership fixes for verified defects · B9 documentation examples vs actual CLI behavior · B10 final independent integrated verification + reproducible handoff.
 
 ## INTEGRATION RULES

@@ -1,0 +1,390 @@
+{
+  "results": [
+    {
+      "case": "F7",
+      "claim": "identical inputs -> byte-identical report",
+      "verdict": "PASS",
+      "evidence": "5473 bytes, rerun IDENTICAL"
+    },
+    {
+      "case": "C1",
+      "claim": "export_status complete (Q-STATUSES)",
+      "verdict": "PASS",
+      "evidence": "status=complete"
+    },
+    {
+      "case": "C1",
+      "claim": "CLI exit 0",
+      "verdict": "PASS",
+      "evidence": "exit=0"
+    },
+    {
+      "case": "C1",
+      "claim": "both bodies exported",
+      "verdict": "PASS",
+      "evidence": "['coupon-body-A', 'coupon-body-B']"
+    },
+    {
+      "case": "C1",
+      "claim": "masses 2 kg / 1 kg (coupon contract)",
+      "verdict": "PASS",
+      "evidence": "masses={'coupon-body-A': 2.0, 'coupon-body-B': 1.0}"
+    },
+    {
+      "case": "C1",
+      "claim": "root admission_status validation_only_admissible (Q-HASH)",
+      "verdict": "PASS",
+      "evidence": "status=validation_only_admissible"
+    },
+    {
+      "case": "C1",
+      "claim": "root admission_report_sha256 binds freshly recomputed report (F6)",
+      "verdict": "PASS",
+      "evidence": "root=a4ea955917b4 fresh=a4ea955917b4"
+    },
+    {
+      "case": "C1",
+      "claim": "each exported body's admission_report_sha256 == root == fresh report (Q-HASH)",
+      "verdict": "PASS",
+      "evidence": "body hashes ['a4ea955917b4', 'a4ea955917b4']"
+    },
+    {
+      "case": "C1",
+      "claim": "no unassigned cells flagged",
+      "verdict": "PASS",
+      "evidence": "unassigned=[]"
+    },
+    {
+      "case": "c1",
+      "claim": "input_hashes bind fixture documents (Q-HASH)",
+      "verdict": "PASS",
+      "evidence": "manifest=cab86eb63a9b partition=dd5aa0169b59 groups=dcb55f1d1752"
+    },
+    {
+      "case": "C2",
+      "claim": "export_status refused (Q-INPUT/Q-REFUSED, F1)",
+      "verdict": "PASS",
+      "evidence": "status=refused"
+    },
+    {
+      "case": "C2",
+      "claim": "reason names duplicate_cell_ownership",
+      "verdict": "PASS",
+      "evidence": "reasons=['duplicate_cell_ownership']"
+    },
+    {
+      "case": "C2",
+      "claim": "detail names the cell and both bodies",
+      "verdict": "PASS",
+      "evidence": "detail=\"cell 'cell-A' is assigned to both body 'body-1' and body 'body-2'\""
+    },
+    {
+      "case": "C2",
+      "claim": "no body records / no mass properties (F1)",
+      "verdict": "PASS",
+      "evidence": "body_groups=[]"
+    },
+    {
+      "case": "C2",
+      "claim": "admission not_evaluated (refusal precedes recomputation)",
+      "verdict": "PASS",
+      "evidence": "status=not_evaluated hash=None"
+    },
+    {
+      "case": "C2",
+      "claim": "CLI exit 1",
+      "verdict": "PASS",
+      "evidence": "exit=1"
+    },
+    {
+      "case": "c2",
+      "claim": "input_hashes bind fixture documents (Q-HASH)",
+      "verdict": "PASS",
+      "evidence": "manifest=cab86eb63a9b partition=dd5aa0169b59 groups=42576956fe5f"
+    },
+    {
+      "case": "C2b",
+      "claim": "export_status refused",
+      "verdict": "PASS",
+      "evidence": "status=refused"
+    },
+    {
+      "case": "C2b",
+      "claim": "reason names duplicate_body_id",
+      "verdict": "PASS",
+      "evidence": "reasons=['duplicate_body_id']"
+    },
+    {
+      "case": "C2b",
+      "claim": "no body records / no mass properties (F1)",
+      "verdict": "PASS",
+      "evidence": "body_groups=[]"
+    },
+    {
+      "case": "C2b",
+      "claim": "admission not_evaluated",
+      "verdict": "PASS",
+      "evidence": "status=not_evaluated hash=None"
+    },
+    {
+      "case": "C2b",
+      "claim": "CLI exit 1",
+      "verdict": "PASS",
+      "evidence": "exit=1"
+    },
+    {
+      "case": "C3",
+      "claim": "export_status partial with unassigned cells (Q-STATUSES/Q-UNASSIGNED)",
+      "verdict": "PASS",
+      "evidence": "status=partial reasons=['unassigned_cells']"
+    },
+    {
+      "case": "C3",
+      "claim": "unassigned_cell_ids == [cell-C] (F2)",
+      "verdict": "PASS",
+      "evidence": "unassigned=['cell-C']"
+    },
+    {
+      "case": "C3",
+      "claim": "unassigned_cells row: resolved + explicit reason, never absorbed (F2)",
+      "verdict": "PASS",
+      "evidence": "rows=[{'assignment_status': 'resolved', 'cell_id': 'cell-C', 'reason': 'not_assigned_to_an_authored_body_group'}]"
+    },
+    {
+      "case": "C3",
+      "claim": "all_supplied_cells_assigned false",
+      "verdict": "PASS",
+      "evidence": "flag=False"
+    },
+    {
+      "case": "C3",
+      "claim": "both groups still exported with correct masses (Q-UNASSIGNED)",
+      "verdict": "PASS",
+      "evidence": "statuses=['exported', 'exported'] masses={'coupon-body-A': 2.0, 'coupon-body-B': 1.0}"
+    },
+    {
+      "case": "C3",
+      "claim": "cell-C appears in NO body record (not silently absorbed, F2)",
+      "verdict": "PASS",
+      "evidence": "cell-C in groups payload: False"
+    },
+    {
+      "case": "C3",
+      "claim": "root admission binds fresh report; stays admissible (F6)",
+      "verdict": "PASS",
+      "evidence": "root=95f330193f0a fresh=95f330193f0a"
+    },
+    {
+      "case": "C3",
+      "claim": "cell-C accounted in fresh admission report (never omitted from accounting)",
+      "verdict": "PASS",
+      "evidence": "resolved=['cell-A', 'cell-B', 'cell-C']"
+    },
+    {
+      "case": "C3",
+      "claim": "CLI exit 0 (partial is admissible output)",
+      "verdict": "PASS",
+      "evidence": "exit=0"
+    },
+    {
+      "case": "c3",
+      "claim": "input_hashes bind fixture documents (Q-HASH)",
+      "verdict": "PASS",
+      "evidence": "manifest=49f2324092d1 partition=cd48e9bf570c groups=dcb55f1d1752"
+    },
+    {
+      "case": "C4",
+      "claim": "fresh admission not_admitted with missing_density (Q-DENSITY)",
+      "verdict": "PASS",
+      "evidence": "decision=not_admitted codes=['missing_density']"
+    },
+    {
+      "case": "C4",
+      "claim": "root export_status blocked (Q-BLOCK/Q-STATUSES)",
+      "verdict": "PASS",
+      "evidence": "status=blocked reasons=['reconstructed_mass_admission_required']"
+    },
+    {
+      "case": "C4",
+      "claim": "root admission_status not_admitted, binds fresh report (F6)",
+      "verdict": "PASS",
+      "evidence": "root=4d4c43e1e0d1 fresh=4d4c43e1e0d1"
+    },
+    {
+      "case": "C4",
+      "claim": "both group records not_exported, mass_properties null (F4)",
+      "verdict": "PASS",
+      "evidence": "A=not_exported B=not_exported"
+    },
+    {
+      "case": "C4",
+      "claim": "BAD body blocking lists name cell-B with status missing_density (F5)",
+      "verdict": "PASS",
+      "evidence": "blocking=['cell-B'] statuses=[{'cell_id': 'cell-B', 'status': 'missing_density'}]"
+    },
+    {
+      "case": "C4",
+      "claim": "GOOD body blocking lists EMPTY - bad cell not attributed to good body (F3)",
+      "verdict": "PASS",
+      "evidence": "blocking=[] statuses=[]"
+    },
+    {
+      "case": "C4",
+      "claim": "no status leak: GOOD record never mentions cell-B; BAD never mentions cell-A (F3)",
+      "verdict": "PASS",
+      "evidence": "cell-B in GOOD: False; cell-A in BAD: False"
+    },
+    {
+      "case": "C4",
+      "claim": "both bodies carry root admission_status",
+      "verdict": "PASS",
+      "evidence": "A=not_admitted B=not_admitted"
+    },
+    {
+      "case": "C4",
+      "claim": "O1 measured: body-level admission_report_sha256 binding (decision request)",
+      "verdict": "PASS",
+      "evidence": "body hash=298c544846f7 binds: reduced {decision,reason_codes}; full=4d4c43e1e0d1 reduced=298c544846f7"
+    },
+    {
+      "case": "C4",
+      "claim": "no default density substituted: BAD provenance absent (mass_properties null)",
+      "verdict": "PASS",
+      "evidence": "mass_properties is null"
+    },
+    {
+      "case": "C4",
+      "claim": "CLI exit 1",
+      "verdict": "PASS",
+      "evidence": "exit=1"
+    },
+    {
+      "case": "c4",
+      "claim": "input_hashes bind fixture documents (Q-HASH)",
+      "verdict": "PASS",
+      "evidence": "manifest=cab86eb63a9b partition=9c572403a67e groups=dcb55f1d1752"
+    },
+    {
+      "case": "C5",
+      "claim": "fresh admission not_admitted: unresolved_assignments + incomplete_cell_ownership",
+      "verdict": "PASS",
+      "evidence": "decision=not_admitted codes=['incomplete_cell_ownership', 'unresolved_assignments']"
+    },
+    {
+      "case": "C5",
+      "claim": "root export_status blocked",
+      "verdict": "PASS",
+      "evidence": "status=blocked adm=not_admitted"
+    },
+    {
+      "case": "C5",
+      "claim": "BAD body blocking names cell-B status unresolved; GOOD body blocking EMPTY (F5/F3)",
+      "verdict": "PASS",
+      "evidence": "B=[{'cell_id': 'cell-B', 'status': 'unresolved'}] A=[]"
+    },
+    {
+      "case": "C5",
+      "claim": "bad cell does not corrupt good body's record: no cell-B in GOOD, no cell-A in BAD (F3)",
+      "verdict": "PASS",
+      "evidence": "cell-B in GOOD: False; cell-A in BAD: False"
+    },
+    {
+      "case": "C5",
+      "claim": "no mass properties anywhere in blocked report (F4)",
+      "verdict": "PASS",
+      "evidence": "[None, None]"
+    },
+    {
+      "case": "C5",
+      "claim": "GOOD body record structure intact: owned_cell_ids preserved (uncorrupted)",
+      "verdict": "PASS",
+      "evidence": "owned=['cell-A'] reasons=['reconstructed_mass_admission_required']"
+    },
+    {
+      "case": "C5",
+      "claim": "both bodies carry root admission_status (no leak)",
+      "verdict": "PASS",
+      "evidence": "A=not_admitted B=not_admitted"
+    },
+    {
+      "case": "C5",
+      "claim": "CLI exit 1",
+      "verdict": "PASS",
+      "evidence": "exit=1"
+    },
+    {
+      "case": "C6",
+      "claim": "export_status refused naming unknown_group_cell_id + cell-Z (Q-REFUSED, F5)",
+      "verdict": "PASS",
+      "evidence": "status=refused reasons=['unknown_group_cell_id'] detail=\"body groups reference cells absent from partition: ['cell-Z']\""
+    },
+    {
+      "case": "C6",
+      "claim": "admission IS recomputed and bound: status admissible, hash == fresh full report (F6)",
+      "verdict": "PASS",
+      "evidence": "root=a4ea955917b4 fresh=a4ea955917b4"
+    },
+    {
+      "case": "C6",
+      "claim": "admission hash equals C1's (same manifest/partition -> same fresh report)",
+      "verdict": "PASS",
+      "evidence": "c6=a4ea955917b4 c1=a4ea955917b4"
+    },
+    {
+      "case": "C6",
+      "claim": "no body records / no mass properties (F1)",
+      "verdict": "PASS",
+      "evidence": "body_groups=[]"
+    },
+    {
+      "case": "C6",
+      "claim": "no exported body despite admissible partition (phantom claim refuses request)",
+      "verdict": "PASS",
+      "evidence": "body_groups empty"
+    },
+    {
+      "case": "C6",
+      "claim": "CLI exit 1",
+      "verdict": "PASS",
+      "evidence": "exit=1"
+    },
+    {
+      "case": "c6",
+      "claim": "input_hashes bind fixture documents (Q-HASH)",
+      "verdict": "PASS",
+      "evidence": "manifest=cab86eb63a9b partition=dd5aa0169b59 groups=b91ec8e98df8"
+    },
+    {
+      "case": "R1",
+      "claim": "reader accepts complete report, surfaces masses/status/hashes",
+      "verdict": "PASS",
+      "evidence": "exit=0 bodies=[('coupon-body-A', 2.0), ('coupon-body-B', 1.0)]"
+    },
+    {
+      "case": "R2",
+      "claim": "reader surfaces unassigned_cell_ids on partial report (U7-adjacent)",
+      "verdict": "PASS",
+      "evidence": "exit=0 unassigned=['cell-C']"
+    },
+    {
+      "case": "R3",
+      "claim": "reader ACCEPTS blocked report: bodies with mass_properties null (U7)",
+      "verdict": "PASS",
+      "evidence": "exit=0 bodies=[('coupon-body-A', 'not_exported'), ('coupon-body-B', 'not_exported')]"
+    },
+    {
+      "case": "R4",
+      "claim": "reader ACCEPTS refused report: empty bodies, admission_status surfaced (U7)",
+      "verdict": "PASS",
+      "evidence": "exit=0 bodies=[] adm=not_evaluated"
+    },
+    {
+      "case": "R5",
+      "claim": "reader REJECTS blocked-with-mass tamper (guard vs F3/F4)",
+      "verdict": "PASS",
+      "evidence": "exit=2 stderr='blocked_group_has_mass: body_groups[0] is not exported but includes properties'"
+    }
+  ],
+  "pass": 64,
+  "fail": 0
+}

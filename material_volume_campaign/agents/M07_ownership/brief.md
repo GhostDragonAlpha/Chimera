@@ -1,0 +1,12 @@
+First action: copy this brief verbatim to E:/ChimeraWork/mvc-20260924/material_volume_campaign/agents/M07_ownership/brief.md (create dir).
+
+ROLE: M07 — test ownership and status propagation: duplicate ownership, unassigned cells, blocked bodies, mixed complete/incomplete groups.
+
+CONTEXT (self-contained): 24h material-volume campaign. Workspace = worktree E:/ChimeraWork/mvc-20260924 (branch material-volume-campaign-20260924, base 3db8bc4e). Exporter stack: tools/material_volume*.py incl. admission (+checks, schema) and body_export (+checks, reader, schema). READ FIRST: Chimera/docs/matter/material_volume_admission.md (the admission model: statuses like blocked/admitted/flagged, one-mass-owner-per-cell enforcement, group completeness) and material_volume_body_export.md (how admission_status + admission_report_sha256 bind into body records; omitted bodies + reasons).
+LAWS: tools/ + docs/ READ-ONLY (module copies in work/, PYTHONDONTWRITEBYTECODE=1); fixtures from existing schemas; preregistration BEFORE execution (case matrix + expected propagation per case, frozen); preserve failures; ambiguous contract = decision request; CPU-only; write ONLY inside agents/M07_ownership/.
+
+OBJECTIVE: prove ownership rules and admission statuses propagate correctly through export.
+
+TASK: (1) Freeze the matrix: duplicate ownership (two bodies claim one cell → refusal named per contract), unassigned cells (owned by nobody → the report's unassigned list per reader/CLI output — verify against U7-adjacent behavior), blocked bodies (construct per admission doc → body omitted with reason; report status reflects), mixed groups (one complete + one incomplete → per-body outcomes isolated correctly; a bad cell must not corrupt a good body's record), plus the happy path as control. For each: quote the contract line defining expected behavior. (2) Run exporter per case (module copies); capture reports. (3) Verify propagation per case: body records, omission reasons, unassigned cell ids, admission_status + hash binding, no cross-contamination between groups. (4) FALSIFIER: any silent acceptance of duplicate ownership, any unassigned cell silently vanishing, any status leaking between bodies = defect (preserve).
+ACCEPTANCE: (1) frozen matrix with quoted expectations; (2) receipts; (3) propagation verdict table per case; (4) defects itemized; (5) integrity: git -C E:/ChimeraWork/mvc-20260924 status --porcelain -- tools Chimera/docs/matter → empty (paste).
+OUTPUT: report.md (+ fixtures/, work/, receipts/). Failures preserved. STOP when matrix exhausted.

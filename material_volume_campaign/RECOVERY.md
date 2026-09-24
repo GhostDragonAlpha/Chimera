@@ -15,3 +15,11 @@
 
 ## CHECKPOINT T1a — M04 transient [1302] failure; probe passed; retry + B2a live
 Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe: PASSED 1.4 s. M04 re-dispatched from saved brief (typo in its context line noted to the agent: 3db4bc4e -> 3db8bc4e). B2a (independent review of M09 CLI, committed 7701d8db) dispatched. Pattern watch: two [1302]s at 13-agent concurrency, both mid-run — if a third lands, serialize retries one-at-a-time and consider holding the count at ~10.
+
+## CHECKPOINT T2 — M07 integrated; M06 third [1302] -> serialized-retry protocol ACTIVE
+
+**Verified:** M07 PASS — coordinator re-ran work/verify_propagation.py: 64/64 checks. Duplicate ownership refused by name; unassigned cells explicit; no status leakage; hash binding == independently recomputed SHA-256 in every evaluated case; C1 twice byte-identical. DECISION REQUEST MV-O1 logged (blocked-group body-level hash binds reduced doc vs full report elsewhere — contract doc silent). Harness incident preserved verbatim (agent-side, fixed, re-run clean).
+
+**Concurrency protocol:** third [1302] (M06, mid-run, at 19 concurrent). SERIALIZED RETRIES now active: one failure-retry in flight at a time; no new backlog spawns until the cluster stops. Fleet at 17 live; M06-retry brings 18.
+
+**Active:** M01-M05, M06-retry(pending), M08, M10, B2a, B3, B4, B5, B6, B7, B9 + anatomy O1/O2/R1.
