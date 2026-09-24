@@ -38,10 +38,24 @@
 - **ERRATA SET (complete):** E-1 role counts (4 last-endpoints/side, not 8 — A3, confirmed by A6+A10); E-2 zero-arm causality (unresolved owners, not straightness — A8); E-3 candidate shortfall (exact 67.147 µm/side single violation at ECRL-P3 @ t=0.35, not "~41 µm" — A5). Documentation-level; artifacts are the record; failure stands under either number.
 - **UNCERTAINTY BUDGET (A5, measured):** hull band variants 6/8/10 mm halves; hull chord sagitta 187–256 µm; loop edge 1.11–1.37 mm median → sagitta 29–45 µm (median) / 92–220 µm (max); float32 ~50 nm; export 1e-9 m. The 67.147 µm breach sits at loop median-edge scale, ~3× below hull chord scale.
 
+## WAVE 2 — D2 AUTHORIZED (architect, 2026-09-24): hand/ulna body-resolution evidence campaign
+
+**Goal:** a decision-ready body-resolution package — one proposed map (evidence + uncertainty per entry), the smallest implementation change it would require, and explicit blockers where no defensible mapping exists. Returned for architectural approval BEFORE any wiring into mechanics.
+**STOP CONDITION (architect):** decision-ready package — NOT another containment audit, NOT a claim that grasp now works.
+**SCOPE LAW (architect):** read-only evidence gathering, diagnostic tooling, isolated candidate reports ONLY. NO baseline anatomy changes, invented bodies, production ownership assignments, fitting searches, or mechanical qualification.
+**PREREGISTRATION LAW (architect):** before ANY candidate mapping is evaluated — the claimed correspondence, supporting landmarks, numerical tolerances, uniqueness criteria, and falsifier. A mapping FAILS if it contradicts source evidence, requires an unexplained transform, or leaves multiple equally supported owners. **Never choose ownership because it produces useful moment arms.**
+**Standing rulings:** wrist finding STANDS (all four sites outside under both evaluated loops); NO hull band extension; D1 general rule pending; D3–D5 undecided until exact proposed contracts are presented; E-3 confirmed by architect (67.147 µm/side); ERRATA.md authorized additive — DONE ([`ERRATA.md`](ERRATA.md)).
+**Useful target facts on record (A2 receipts, verified):** the target pack's joints include `elbow_L/R` and `wrist_L/R` (no digit joints, no ulna-specific joint); pack tri-owner attribution near the forearm already names `wrist_L/R`, `elbow_L/R` as triangle owners.
+
 ## ASSIGNMENTS
 
 | id | assignment | agent dir | status | verdict | receipt |
 |----|------------|-----------|--------|---------|---------|
+| B1 | source anatomy of ulna/ulna_l/hand_r/hand_l — identity, evidence, landmarks; classify missing-geometry vs missing-identifier vs uncertain-anatomy | `audits/B1_source_anatomy` | DISPATCHED | — | `report.md` |
+| B2 | ownership chain of the 16 grasp-critical tendons — earliest unresolved dependency each | `audits/B2_ownership_chain` | DISPATCHED | — | `report.md` |
+| B3 | mechanical requirements — bodies/joints/frames/ownership to make wrist+elbow (+digit) transmission evaluable; existing contracts; architectural flags | `audits/B3_mech_requirements` | DISPATCHED | — | `report.md` |
+| B4 | independent challenge protocol for candidate correspondences + known-good (radius) validation + implicit-evidence inventory | `audits/B4_correspondence_challenge` | DISPATCHED | — | `report.md` |
+| I5 | assemble the proposed body-resolution map (preregistered per the architect's law) from B1–B4 evidence — coordinator | package root | PENDING (after B1–B4) | — | `BODY_RESOLUTION_MAP.md` |
 | I0 | durable snapshot + manifest + board (coordinator) | `baseline_snapshot/` | DONE | PASS (4/4 crosschecks) | `MANIFEST.json` |
 | A1 | left ambiguous wrist section — independent investigation | `audits/A1_left_wrist` | DONE | **PASS 4/4** (prediction CONFIRMED, falsifier not fired) — 2 identified loops/site reproduced; **both loops agree OUTSIDE ≥4.83 mm**; cause = genuine needle-sliver pocket in the mesh (coincident vertices 6586≡6596, 6585≡6601 @0.000 mm; pocket window [51.12, 57.72) mm) | `report.md` + `receipts/recompute_loops.json` (re-verified by coordinator) |
 | A2 | right ambiguous wrist section — independent investigation | `audits/A2_right_wrist` | DONE | **PASS 4/4** (falsifier not fired) — mechanism pinned: UNWELDED SEAM (1,255 duplicated-coordinate vertices mesh-wide; wrist-crease figure-eight section); verdict-invariance Δ ≤ 0.077 mm (every loop → OUTSIDE); bilateral agreement with A1 to sub-µm | `report.md` + `receipts/step2_*` (re-verified by coordinator) |

@@ -141,3 +141,19 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked (by design, pending Astra):** D1 wrist rule; D2 hand/ulna session; D3 T-set approval; D4 self-hash rules; D5 package self-containment; D6 errata sheet.
 
 **Next (on Astra answers):** execute the chosen wrist rule (pure classification-record change or authorized SECTION_T extension); prepare the hand/ulna evidence-session brief (landmarks + falsifiers) for Astra sign-off; P7 mechanical package work on authorization; ERRATA.md on authorization. If the session dies here: resume from this file + TASK_BOARD.md; every audit is re-runnable from its brief.md.
+
+## CHECKPOINT 2026-09-24 (T10) — WAVE 2 OPENED: D2 authorized (hand/ulna body resolution)
+
+**Architect decisions received:**
+- D2 AUTHORIZED as the next campaign goal (body-resolution evidence package for ulna/ulna_l/hand_r/hand_l).
+- E-3 CONFIRMED (67.147 um/side; failure unchanged). ERRATA authorized additively -> ERRATA.md written (E-1/E-2/E-3 + stale-artifact appendix, receipts linked, originals preserved).
+- Wrist finding stands; NO hull extension; D1 pending; D3-D5 undecided pending exact contracts.
+- New standing laws: preregistration-before-candidate-evaluation; fail conditions (source-contradiction / unexplained-transform / multiple-equally-supported-owners); moment-arm utility ban; read-only scope; stop = decision-ready package.
+
+**Verified:** ERRATA.md + board wave-2 section + B1-B4 assignment rows committed.
+
+**Active (dispatched at T10, background):** B1 source anatomy · B2 ownership chain · B3 mechanical requirements · B4 challenge protocol.
+
+**Blocked:** none (four independent evidence tasks all ready).
+
+**Next:** collect B1-B4 -> verify receipts -> I5: assemble BODY_RESOLUTION_MAP.md (one proposed map, preregistered per the architect's law, evidence+uncertainty per entry, smallest implementation change, explicit blockers) -> return for architectural approval. Ten-slot ceiling available if findings expose more independent work.
