@@ -1,0 +1,19 @@
+[scope] 32-site packet bodies: ['radius', 'radius_l']
+[scope] 32 sites; tendons touching them: 18
+[axes] non-unit fitted axes (finite): none
+[census] finite pairs=140 zero pairs=132 NONZERO pairs=8 nan pairs=562
+[fd] finite compared=140 max|a-fd|/(1+|fd|) @eps=5e-7 = 5.551e-11 (tol 1e-9)
+[rec] max |my_analytic - recorded_analytic| = 0.000e+00
+[rec] max |my_fd@1e-5 - recorded_fd(1e-5)| = 0.000e+00
+[alt] max |endpoint-pairing form - per-segment form| = 1.258e-17
+[mesh] birth sha 550A5B3EC927EA13... pack sha 74B3AB044B7ADAED...
+[mesh] input hashes match MANIFEST: True
+[cand] recorded db,dc right=(0.00624,0.00202) left=(0.00624,-0.00202)
+[cand] max |rebuilt displacement - recorded per_site_displacement_m| = 1.322e-10 m (recorded rounding 1e-9)
+[zero-law] pairs=702 finite-both=140 nan base=562 nan cand=562 nan-mismatch=0
+[zero-law] max |arm_cand - arm_base| over finite pairs = 2.776e-17 m (floor: recorded deltas round(,12); max abs arm value = 1.388e-17)
+[zero-law] max nonzero |arm| in baseline finite set = 1.388e-17
+[zero-law] recorded moment_arm_max_abs_delta_m over the 18 scoped tendons: max=0.0
+[pl] BRD_l_tendon: recomputed dL=-0.000901336717 m  recorded=-0.000901337 m  |diff|=2.825e-10
+[pl] BRD_tendon: recomputed dL=-0.000901639694 m  recorded=-0.00090164 m  |diff|=3.062e-10
+[out] receipts/a8_arms_results.json written

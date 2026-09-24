@@ -1,0 +1,15 @@
+FD crosscheck: n pairs = 140  all pass <1e-9: True
+top 8 ratios:
+  5.551e-11  BRD_tendon           lumbar_bending analytic=+0.000e+00 fd=+5.551e-11
+  4.163e-11  BRD_tendon           shoulder_rot   analytic=-3.253e-19 fd=+4.163e-11
+  4.163e-11  BRD_tendon           shoulder_elv   analytic=-6.072e-18 fd=-4.163e-11
+  2.776e-11  BRD_l_tendon         shoulder_elv_l analytic=+3.036e-18 fd=-2.776e-11
+  2.776e-11  BRD_l_tendon         lumbar_bending analytic=+1.388e-17 fd=+2.776e-11
+  1.388e-11  BRD_l_tendon         lumbar_extension analytic=-1.388e-17 fd=+1.388e-11
+  1.388e-11  BRD_l_tendon         elv_angle_l    analytic=+1.735e-18 fd=-1.388e-11
+  1.388e-11  BRD_l_tendon         shoulder_rot_l analytic=+1.084e-18 fd=-1.388e-11
+bottom (all-zero) example: 0.000e+00 BIClong_l_tendon pelvis_list
+
+recorded fd_eps in fit packet: [1e-05]
+recorded matched flags: ['False', 'True']
+matched counts: Counter({False: 3288, True: 1392})

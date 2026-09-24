@@ -1,0 +1,7029 @@
+{
+ "scope": {
+  "n_sites": 32,
+  "n_tendons": 18,
+  "tendons": [
+   "BIClong_l_tendon",
+   "BIClong_tendon",
+   "BICshort_l_tendon",
+   "BICshort_tendon",
+   "BRD_l_tendon",
+   "BRD_tendon",
+   "ECRB_l_tendon",
+   "ECRB_tendon",
+   "ECRL_l_tendon",
+   "ECRL_tendon",
+   "ECU_l_tendon",
+   "ECU_tendon",
+   "FCR_l_tendon",
+   "FCR_tendon",
+   "FCU_l_tendon",
+   "FCU_tendon",
+   "PT_l_tendon",
+   "PT_tendon"
+  ],
+  "site_bodies": [
+   "radius",
+   "radius_l"
+  ]
+ },
+ "mesh_input_hashes_match_manifest": true,
+ "step1_zero_law": {
+  "n_pairs": 702,
+  "n_finite_both": 140,
+  "n_nan_base": 562,
+  "n_nan_cand": 562,
+  "n_finiteness_mismatch": 0,
+  "max_abs_delta": 2.7755575615628914e-17,
+  "max_abs_arm_finite": 1.3877787807814457e-17,
+  "max_nonzero_baseline_arm": 1.3877787807814457e-17,
+  "recorded_scoped_max_delta": 0.0,
+  "db_dc_recorded": {
+   "radius": [
+    0.00624,
+    0.00202
+   ],
+   "radius_l": [
+    0.00624,
+    -0.00202
+   ]
+  },
+  "displacement_rebuild_max_err_m": 1.3216732569487633e-10,
+  "path_length_deltas": {
+   "BRD_l_tendon": -0.0009013367174525028,
+   "BRD_tendon": -0.0009016396938186233
+  }
+ },
+ "step2_census": [
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_l_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": -1.3877787807814457e-17,
+   "recorded_analytic": -1.3877787807814457e-17,
+   "alt_form_diff": 8.267041565201971e-18,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": 1.3877787807814457e-17,
+   "recorded_analytic": 1.3877787807814457e-17,
+   "alt_form_diff": 1.2576745200831851e-17,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": 3.0357660829594124e-18,
+   "recorded_analytic": 3.0357660829594124e-18,
+   "alt_form_diff": 5.963111948670274e-19,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": 1.0842021724855044e-18,
+   "recorded_analytic": 1.0842021724855044e-18,
+   "alt_form_diff": 5.692061405548898e-19,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": 1.734723475976807e-18,
+   "recorded_analytic": 1.734723475976807e-18,
+   "alt_form_diff": 2.168404344971009e-19,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 1.0842021724855044e-19,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 2.168404344971009e-19,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": -6.071532165918825e-18,
+   "recorded_analytic": -6.071532165918825e-18,
+   "alt_form_diff": 8.971772977317549e-18,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": -3.2526065174565133e-19,
+   "recorded_analytic": -3.2526065174565133e-19,
+   "alt_form_diff": 1.6805133673525319e-18,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": -3.469446951953614e-18,
+   "recorded_analytic": -3.469446951953614e-18,
+   "alt_form_diff": 3.2526065174565133e-18,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": 0.0,
+   "reason": "computed"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "ECU_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCR_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "FCU_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "pelvis_tz",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "pelvis_ty",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "pelvis_tx",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "pelvis_tilt",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "pelvis_list",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "pelvis_rotation",
+   "coord_body": "pelvis",
+   "analytic": 0.0,
+   "recorded_analytic": 0.0,
+   "alt_form_diff": null,
+   "reason": "rigid_reference_root"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "hip_flexion_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "hip_adduction_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "hip_rotation_r",
+   "coord_body": "femur_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "knee_angle_r",
+   "coord_body": "tibia_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "ankle_angle_r",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "ankle_angle_r2",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "ankle_angle_r3",
+   "coord_body": "talus_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "mtp_angle_r",
+   "coord_body": "toes_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "hip_flexion_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "hip_adduction_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "hip_rotation_l",
+   "coord_body": "femur_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "knee_angle_l",
+   "coord_body": "tibia_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "ankle_angle_l",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "ankle_angle_l2",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "ankle_angle_l3",
+   "coord_body": "talus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "mtp_angle_l",
+   "coord_body": "toes_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "lumbar_extension",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "lumbar_bending",
+   "coord_body": "thorax_dummy",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "lumbar_rotation",
+   "coord_body": "thorax",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "shoulder_elv",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "shoulder_rot",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "elv_angle",
+   "coord_body": "humerus",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "elbow_flexion",
+   "coord_body": "ulna",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "wrist_dev_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "wrist_flex_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "wrist_3_r",
+   "coord_body": "hand_r",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "shoulder_elv_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "shoulder_rot_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "elv_angle_l",
+   "coord_body": "humerus_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "path_incomplete"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "elbow_flexion_l",
+   "coord_body": "ulna_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "wrist_dev_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "wrist_flex_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  },
+  {
+   "tendon": "PT_tendon",
+   "coord": "wrist_3_l",
+   "coord_body": "hand_l",
+   "analytic": NaN,
+   "recorded_analytic": null,
+   "alt_form_diff": null,
+   "reason": "unresolved_owner"
+  }
+ ],
+ "nonzero_pairs": [
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "lumbar_extension",
+   "value": -1.3877787807814457e-17
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "lumbar_bending",
+   "value": 1.3877787807814457e-17
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "shoulder_elv_l",
+   "value": 3.0357660829594124e-18
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "shoulder_rot_l",
+   "value": 1.0842021724855044e-18
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "coord": "elv_angle_l",
+   "value": 1.734723475976807e-18
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "shoulder_elv",
+   "value": -6.071532165918825e-18
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "shoulder_rot",
+   "value": -3.2526065174565133e-19
+  },
+  {
+   "tendon": "BRD_tendon",
+   "coord": "elv_angle",
+   "value": -3.469446951953614e-18
+  }
+ ],
+ "step3_fd": {
+  "eps_deriv": 5e-07,
+  "tol": 1e-09,
+  "n_compared": 140,
+  "max_ratio": 5.551115122817634e-11,
+  "n_nan_both": 562,
+  "recorded_fd_mismatch_eps1e5": 0.0
+ },
+ "step4_window": [
+  {
+   "tendon": "BIClong_l_tendon",
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "unresolved_in_chain": [
+    "thorax"
+   ],
+   "L0": null,
+   "lengthrange_src": " 0.33015  0.44585",
+   "lengthrange_fitted": null,
+   "force": "624.3",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "BIClong_tendon",
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "unresolved_in_chain": [
+    "thorax"
+   ],
+   "L0": null,
+   "lengthrange_src": " 0.33015  0.44585",
+   "lengthrange_fitted": null,
+   "force": "624.3",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "BICshort_l_tendon",
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "unresolved_in_chain": [
+    "thorax"
+   ],
+   "L0": null,
+   "lengthrange_src": " 0.25835  0.39045",
+   "lengthrange_fitted": null,
+   "force": "435.56",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "BICshort_tendon",
+   "status": "path_incomplete:unresolved_bodies ['thorax']",
+   "unresolved_in_chain": [
+    "thorax"
+   ],
+   "L0": null,
+   "lengthrange_src": " 0.25835  0.39045",
+   "lengthrange_fitted": null,
+   "force": "435.56",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "BRD_l_tendon",
+   "status": "derived",
+   "unresolved_in_chain": [],
+   "L0": 0.0888363641039056,
+   "lengthrange_src": "  0.2193   0.3919",
+   "lengthrange_fitted": [
+    0.0502567134523775,
+    0.08981124487910051
+   ],
+   "force": "261.33",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "requires_physiological_rerun",
+   "L0_inside": true,
+   "margin_lo_m": 0.038579650651528095,
+   "margin_hi_m": 0.0009748807751949196,
+   "excursion_margin_m": 0.0009748807751949196
+  },
+  {
+   "tendon": "BRD_tendon",
+   "status": "derived",
+   "unresolved_in_chain": [],
+   "L0": 0.08883103763879713,
+   "lengthrange_src": "  0.2193   0.3919",
+   "lengthrange_fitted": [
+    0.05026004895985749,
+    0.089817205596754
+   ],
+   "force": "261.33",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "requires_physiological_rerun",
+   "L0_inside": true,
+   "margin_lo_m": 0.03857098867893964,
+   "margin_hi_m": 0.0009861679579568766,
+   "excursion_margin_m": 0.0009861679579568766
+  },
+  {
+   "tendon": "ECRB_l_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "unresolved_in_chain": [
+    "hand_l"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.251198 0.308993",
+   "lengthrange_fitted": null,
+   "force": "100.52",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "ECRB_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "unresolved_in_chain": [
+    "hand_r"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.251198 0.308993",
+   "lengthrange_fitted": null,
+   "force": "100.52",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "ECRL_l_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "unresolved_in_chain": [
+    "hand_l"
+   ],
+   "L0": null,
+   "lengthrange_src": "  0.2645   0.3455",
+   "lengthrange_fitted": null,
+   "force": "304.89",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "ECRL_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "unresolved_in_chain": [
+    "hand_r"
+   ],
+   "L0": null,
+   "lengthrange_src": "  0.2645   0.3455",
+   "lengthrange_fitted": null,
+   "force": "304.89",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "ECU_l_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_l', 'ulna_l']",
+   "unresolved_in_chain": [
+    "hand_l",
+    "ulna_l"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.259542 0.321626",
+   "lengthrange_fitted": null,
+   "force": "93.17",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "ECU_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_r', 'ulna']",
+   "unresolved_in_chain": [
+    "hand_r",
+    "ulna"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.259542 0.321626",
+   "lengthrange_fitted": null,
+   "force": "93.17",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "FCR_l_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "unresolved_in_chain": [
+    "hand_l"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.275354 0.338062",
+   "lengthrange_fitted": null,
+   "force": "73.96",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "FCR_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "unresolved_in_chain": [
+    "hand_r"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.275354 0.338062",
+   "lengthrange_fitted": null,
+   "force": "73.96",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "FCU_l_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_l']",
+   "unresolved_in_chain": [
+    "hand_l"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.289885 0.339654",
+   "lengthrange_fitted": null,
+   "force": "128.93",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "FCU_tendon",
+   "status": "path_incomplete:unresolved_bodies ['hand_r']",
+   "unresolved_in_chain": [
+    "hand_r"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.289885 0.339654",
+   "lengthrange_fitted": null,
+   "force": "128.93",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "PT_l_tendon",
+   "status": "path_incomplete:unresolved_bodies ['ulna_l']",
+   "unresolved_in_chain": [
+    "ulna_l"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.122226 0.170679",
+   "lengthrange_fitted": null,
+   "force": "566.22",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  },
+  {
+   "tendon": "PT_tendon",
+   "status": "path_incomplete:unresolved_bodies ['ulna']",
+   "unresolved_in_chain": [
+    "ulna"
+   ],
+   "L0": null,
+   "lengthrange_src": "0.122226 0.170679",
+   "lengthrange_fitted": null,
+   "force": "566.22",
+   "timeconst": "    0.01     0.04",
+   "phys_flag": "path_incomplete (no lengthrange' computed; force/timeconst ingested_unchanged)",
+   "L0_inside": null,
+   "excursion_margin_m": null
+  }
+ ],
+ "ranges": {
+  "shoulder_elv": {
+   "body": "humerus",
+   "status": "kinematically_preserved",
+   "range_fitted": [
+    0.0,
+    2.00713
+   ],
+   "range_xml": "       0  2.00713",
+   "verbatim_match": true,
+   "axis_finite": true
+  },
+  "shoulder_rot": {
+   "body": "humerus",
+   "status": "kinematically_preserved",
+   "range_fitted": [
+    -0.785398,
+    0.785398
+   ],
+   "range_xml": "-0.785398 0.785398",
+   "verbatim_match": true,
+   "axis_finite": true
+  },
+  "elv_angle": {
+   "body": "humerus",
+   "status": "kinematically_preserved",
+   "range_fitted": [
+    -1.5708,
+    1.5708
+   ],
+   "range_xml": " -1.5708   1.5708",
+   "verbatim_match": true,
+   "axis_finite": true
+  },
+  "elbow_flexion": {
+   "body": "ulna",
+   "status": "unresolved_body",
+   "range_fitted": [
+    0.0,
+    2.26893
+   ],
+   "range_xml": "       0  2.26893",
+   "verbatim_match": true,
+   "axis_finite": false
+  },
+  "wrist_dev_r": {
+   "body": "hand_r",
+   "status": "unresolved_body",
+   "range_fitted": [
+    -0.436332,
+    0.610865
+   ],
+   "range_xml": "-0.436332 0.610865",
+   "verbatim_match": true,
+   "axis_finite": false
+  },
+  "wrist_flex_r": {
+   "body": "hand_r",
+   "status": "unresolved_body",
+   "range_fitted": [
+    -0.610864,
+    0.610864
+   ],
+   "range_xml": "-0.610864 0.610864",
+   "verbatim_match": true,
+   "axis_finite": false
+  },
+  "wrist_3_r": {
+   "body": "hand_r",
+   "status": "unresolved_body",
+   "range_fitted": [
+    -1.22173,
+    1.22173
+   ],
+   "range_xml": "-1.22173  1.22173",
+   "verbatim_match": true,
+   "axis_finite": false
+  },
+  "shoulder_elv_l": {
+   "body": "humerus_l",
+   "status": "kinematically_preserved",
+   "range_fitted": [
+    0.0,
+    2.00713
+   ],
+   "range_xml": "       0  2.00713",
+   "verbatim_match": true,
+   "axis_finite": true
+  },
+  "shoulder_rot_l": {
+   "body": "humerus_l",
+   "status": "kinematically_preserved",
+   "range_fitted": [
+    -0.785398,
+    0.785398
+   ],
+   "range_xml": "-0.785398 0.785398 ",
+   "verbatim_match": true,
+   "axis_finite": true
+  },
+  "elv_angle_l": {
+   "body": "humerus_l",
+   "status": "kinematically_preserved",
+   "range_fitted": [
+    -1.5708,
+    1.5708
+   ],
+   "range_xml": " -1.5708   1.5708",
+   "verbatim_match": true,
+   "axis_finite": true
+  },
+  "elbow_flexion_l": {
+   "body": "ulna_l",
+   "status": "unresolved_body",
+   "range_fitted": [
+    0.0,
+    2.26893
+   ],
+   "range_xml": "       0  2.26893",
+   "verbatim_match": true,
+   "axis_finite": false
+  },
+  "wrist_dev_l": {
+   "body": "hand_l",
+   "status": "unresolved_body",
+   "range_fitted": [
+    -0.436332,
+    0.610865
+   ],
+   "range_xml": "-0.436332 0.610865",
+   "verbatim_match": true,
+   "axis_finite": false
+  },
+  "wrist_flex_l": {
+   "body": "hand_l",
+   "status": "unresolved_body",
+   "range_fitted": [
+    -0.610864,
+    0.610864
+   ],
+   "range_xml": "-0.610864 0.610864",
+   "verbatim_match": true,
+   "axis_finite": false
+  },
+  "wrist_3_l": {
+   "body": "hand_l",
+   "status": "unresolved_body",
+   "range_fitted": [
+    -1.22173,
+    1.22173
+   ],
+   "range_xml": "-1.22173  1.22173",
+   "verbatim_match": true,
+   "axis_finite": false
+  }
+ },
+ "runs": {
+  "BIClong_l_tendon": {
+   "elbow_entry_index": 8,
+   "n_resolved_pts": 8,
+   "max_interior_offline_dev_m": 0.011743718928712177,
+   "resolved_run_endpoints": [
+    "BIClong_l-P3",
+    "BIClong_l-P11"
+   ]
+  },
+  "BIClong_tendon": {
+   "elbow_entry_index": 8,
+   "n_resolved_pts": 8,
+   "max_interior_offline_dev_m": 0.011743434035869789,
+   "resolved_run_endpoints": [
+    "BIClong-P3",
+    "BIClong-P11"
+   ]
+  },
+  "BICshort_l_tendon": {
+   "elbow_entry_index": 5,
+   "n_resolved_pts": 5,
+   "max_interior_offline_dev_m": 0.016649821756104462,
+   "resolved_run_endpoints": [
+    "BICshort_l-P3",
+    "BICshort_l-P8"
+   ]
+  },
+  "BICshort_tendon": {
+   "elbow_entry_index": 5,
+   "n_resolved_pts": 5,
+   "max_interior_offline_dev_m": 0.016650161364993327,
+   "resolved_run_endpoints": [
+    "BICshort-P3",
+    "BICshort-P8"
+   ]
+  },
+  "BRD_l_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.005536458128373822,
+   "resolved_run_endpoints": [
+    "BRD_l-P1",
+    "BRD_l-P3"
+   ]
+  },
+  "BRD_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.005537228495591744,
+   "resolved_run_endpoints": [
+    "BRD-P1",
+    "BRD-P3"
+   ]
+  },
+  "ECRB_l_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.010378362266348591,
+   "resolved_run_endpoints": [
+    "ECRB_l-P1",
+    "ECRB_l-P3"
+   ]
+  },
+  "ECRB_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.010379946177117027,
+   "resolved_run_endpoints": [
+    "ECRB-P1",
+    "ECRB-P3"
+   ]
+  },
+  "ECRL_l_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.007647344023874339,
+   "resolved_run_endpoints": [
+    "ECRL_l-P1",
+    "ECRL_l-P3"
+   ]
+  },
+  "ECRL_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.0076488708538061286,
+   "resolved_run_endpoints": [
+    "ECRL-P1",
+    "ECRL-P3"
+   ]
+  },
+  "ECU_l_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 2,
+   "max_interior_offline_dev_m": null,
+   "resolved_run_endpoints": [
+    "ECU_l-P1",
+    "ECU_l-P5"
+   ]
+  },
+  "ECU_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 2,
+   "max_interior_offline_dev_m": null,
+   "resolved_run_endpoints": [
+    "ECU-P1",
+    "ECU-P5"
+   ]
+  },
+  "FCR_l_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 2,
+   "max_interior_offline_dev_m": null,
+   "resolved_run_endpoints": [
+    "FCR_l-P1",
+    "FCR_l-P2"
+   ]
+  },
+  "FCR_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 2,
+   "max_interior_offline_dev_m": null,
+   "resolved_run_endpoints": [
+    "FCR-P1",
+    "FCR-P2"
+   ]
+  },
+  "FCU_l_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.005523506754030789,
+   "resolved_run_endpoints": [
+    "FCU_l-P1",
+    "FCU_l-P3"
+   ]
+  },
+  "FCU_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.005454358661616652,
+   "resolved_run_endpoints": [
+    "FCU-P1",
+    "FCU-P3"
+   ]
+  },
+  "PT_l_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.01461468606753093,
+   "resolved_run_endpoints": [
+    "PT_l-P1",
+    "PT_l-P5"
+   ]
+  },
+  "PT_tendon": {
+   "elbow_entry_index": 1,
+   "n_resolved_pts": 3,
+   "max_interior_offline_dev_m": 0.014614978336161658,
+   "resolved_run_endpoints": [
+    "PT-P1",
+    "PT-P5"
+   ]
+  }
+ },
+ "census_max_recorded_mismatch": 0.0,
+ "alt_form_max_diff": 1.2576745200831851e-17
+}

@@ -83,3 +83,18 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none mechanically.
 
 **Next:** integrate A1/A2/A5/A8 → I1 → I2 (fill all landed slots) → I3.
+
+## CHECKPOINT 2026-09-24 (T6) — A8 integrated
+
+**Verified:**
+- A8 (moment arms + transmission) PASS 6/6, scripts re-verified by coordinator fresh re-run: zero-arm law holds at 2.776e-17 m; FD crosscheck max 5.551e-11 < 1e-9 (analytic values bit-exact vs packet); BRD/BRD_l L0 inside lengthrange' with ~+1 mm headroom; all 14 arm-chain q-ranges verbatim vs XML.
+- ERRATUM E-2 banked: report-05's straight-tendon zero-arm explanation is imprecise — zero deltas hold because bends sit on UNRESOLVED owners (elbow=ulna, wrists=hand_r/l), not straightness.
+- TRANSMISSION FACT sharpens the I3 blocker: grasp transmission set EMPTY; 562/702 arm pairs NaN = coverage gap at exactly the grasp-relevant joints (undefined, not dead). Hand/ulna body resolution is THE unlock for any wrist/elbow transmission claim.
+- Doc-code drift note: compiler.py FD eps=1e-5 vs DERIVATION 8.3's 5e-7 (passes either way).
+- Board edit slip during integration (A7 bullet briefly overwritten) — caught and restored within the same pass; verified present.
+
+**Active:** A1, A2, A5 still running.
+
+**Blocked:** none mechanically.
+
+**Next:** integrate A1/A2/A5 -> I1 (wrist) -> I2 (spec pass-2; A3/A4/A6/A7/A8/A9/A10 slots ready) -> I3.
