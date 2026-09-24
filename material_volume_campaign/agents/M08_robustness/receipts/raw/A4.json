@@ -1,0 +1,274 @@
+{
+ "complete": true,
+ "cell_count": 2,
+ "accounting_row_count": 2,
+ "resolved_mass_cell_count": 2,
+ "unresolved_cell_ids": [],
+ "missing_density_cell_ids": [],
+ "conflicting_cell_ids": [],
+ "ownership_complete": true,
+ "geometric_volume_m3": 0.3333333333333333,
+ "geometry_signature": "a13daab760f883a8cbb0979756ec09590778c1ab5a4fcac88ccf1ec07534bce2",
+ "mass_properties": {
+  "volume_m3": 0.3333333333333333,
+  "mass_kg": 3.0,
+  "center_of_mass_m": [
+   1000000000001.0834,
+   -0.4166666666666667,
+   0.5833333333333334
+  ],
+  "inertia_com_kg_m2": [
+   [
+    3.558333333333334,
+    3.345833333333333,
+    -1.6541666666666668
+   ],
+   [
+    3.345833333333333,
+    5.058333338300388,
+    1.3708333333333333
+   ],
+   [
+    -1.6541666666666668,
+    1.3708333333333333,
+    7.058333338300388
+   ]
+  ],
+  "cell_count": 2
+ },
+ "resolved_only_subtotal_not_body_total": {
+  "volume_m3": 0.3333333333333333,
+  "mass_kg": 3.0,
+  "center_of_mass_m": [
+   1000000000001.0834,
+   -0.4166666666666667,
+   0.5833333333333334
+  ],
+  "inertia_com_kg_m2": [
+   [
+    3.558333333333334,
+    3.345833333333333,
+    -1.6541666666666668
+   ],
+   [
+    3.345833333333333,
+    5.058333338300388,
+    1.3708333333333333
+   ],
+   [
+    -1.6541666666666668,
+    1.3708333333333333,
+    7.058333338300388
+   ]
+  ],
+  "cell_count": 2
+ },
+ "resolved_region_subtotals": {
+  "region-0": {
+   "volume_m3": 0.16666666666666666,
+   "mass_kg": 2.0,
+   "center_of_mass_m": [
+    1000000000000.25,
+    0.25,
+    0.25
+   ],
+   "inertia_com_kg_m2": [
+    [
+     0.15000000000000002,
+     0.025,
+     0.025
+    ],
+    [
+     0.025,
+     0.15000000000000002,
+     0.025
+    ],
+    [
+     0.025,
+     0.025,
+     0.15000000000000002
+    ]
+   ],
+   "cell_count": 1
+  },
+  "region-1": {
+   "volume_m3": 0.16666666666666666,
+   "mass_kg": 1.0,
+   "center_of_mass_m": [
+    1000000000002.75,
+    -1.75,
+    1.25
+   ],
+   "inertia_com_kg_m2": [
+    [
+     0.07500000000000001,
+     -0.0125,
+     -0.0125
+    ],
+    [
+     -0.0125,
+     0.07500000000000001,
+     0.0125
+    ],
+    [
+     -0.0125,
+     0.0125,
+     0.07500000000000001
+    ]
+   ],
+   "cell_count": 1
+  }
+ },
+ "cells": [
+  {
+   "cell_id": 0,
+   "status": "resolved",
+   "candidate_region_ids": [
+    "region-0"
+   ],
+   "candidate_owner_ids": [
+    "owner-0"
+   ],
+   "region_id": "region-0",
+   "mass_owner_id": "owner-0",
+   "material_id": "mat-0",
+   "density_kg_m3": 12.0,
+   "density_source": "analytic robustness fixture",
+   "density_conditions": "uniform"
+  },
+  {
+   "cell_id": 1,
+   "status": "resolved",
+   "candidate_region_ids": [
+    "region-1"
+   ],
+   "candidate_owner_ids": [
+    "owner-1"
+   ],
+   "region_id": "region-1",
+   "mass_owner_id": "owner-1",
+   "material_id": "mat-1",
+   "density_kg_m3": 6.0,
+   "density_source": "analytic robustness fixture",
+   "density_conditions": "uniform"
+  }
+ ],
+ "interfaces": [],
+ "boundary_faces": [
+  {
+   "face_key": [
+    0,
+    1,
+    2
+   ],
+   "vertices": [
+    0,
+    2,
+    1
+   ],
+   "cell_id": 0,
+   "region_id": "region-0"
+  },
+  {
+   "face_key": [
+    0,
+    1,
+    3
+   ],
+   "vertices": [
+    0,
+    1,
+    3
+   ],
+   "cell_id": 0,
+   "region_id": "region-0"
+  },
+  {
+   "face_key": [
+    0,
+    2,
+    3
+   ],
+   "vertices": [
+    0,
+    3,
+    2
+   ],
+   "cell_id": 0,
+   "region_id": "region-0"
+  },
+  {
+   "face_key": [
+    1,
+    2,
+    3
+   ],
+   "vertices": [
+    1,
+    2,
+    3
+   ],
+   "cell_id": 0,
+   "region_id": "region-0"
+  },
+  {
+   "face_key": [
+    4,
+    5,
+    6
+   ],
+   "vertices": [
+    4,
+    6,
+    5
+   ],
+   "cell_id": 1,
+   "region_id": "region-1"
+  },
+  {
+   "face_key": [
+    4,
+    5,
+    7
+   ],
+   "vertices": [
+    4,
+    5,
+    7
+   ],
+   "cell_id": 1,
+   "region_id": "region-1"
+  },
+  {
+   "face_key": [
+    4,
+    6,
+    7
+   ],
+   "vertices": [
+    4,
+    7,
+    6
+   ],
+   "cell_id": 1,
+   "region_id": "region-1"
+  },
+  {
+   "face_key": [
+    5,
+    6,
+    7
+   ],
+   "vertices": [
+    5,
+    6,
+    7
+   ],
+   "cell_id": 1,
+   "region_id": "region-1"
+  }
+ ],
+ "unresolved_adjacencies": [],
+ "connected_components": 2,
+ "mass_source_kind": "reconstructed_material_volume"
+}

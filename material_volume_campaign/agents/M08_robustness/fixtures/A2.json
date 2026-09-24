@@ -1,0 +1,96 @@
+{
+ "schema_version": "chimera.material_volume.v1",
+ "coordinate_unit": "m",
+ "density_unit": "kg/m^3",
+ "mass_source_kind": "reconstructed_material_volume",
+ "vertices_m": [
+  [
+   1000000.0,
+   0.0,
+   0.0
+  ],
+  [
+   1000001.0,
+   0.0,
+   0.0
+  ],
+  [
+   1000000.0,
+   1.0,
+   0.0
+  ],
+  [
+   1000000.0,
+   0.0,
+   1.0
+  ],
+  [
+   1000003.0,
+   -2.0,
+   1.0
+  ],
+  [
+   1000003.0,
+   -1.0,
+   1.0
+  ],
+  [
+   1000002.0,
+   -2.0,
+   1.0
+  ],
+  [
+   1000003.0,
+   -2.0,
+   2.0
+  ]
+ ],
+ "tetrahedra": [
+  [
+   0,
+   1,
+   2,
+   3
+  ],
+  [
+   4,
+   5,
+   6,
+   7
+  ]
+ ],
+ "materials": [
+  {
+   "material_id": "mat-0",
+   "density_kg_m3": 12.0,
+   "density_source": "analytic robustness fixture",
+   "conditions": "uniform"
+  },
+  {
+   "material_id": "mat-1",
+   "density_kg_m3": 6.0,
+   "density_source": "analytic robustness fixture",
+   "conditions": "uniform"
+  }
+ ],
+ "regions": [
+  {
+   "region_id": "region-0",
+   "mass_owner_id": "owner-0",
+   "material_id": "mat-0"
+  },
+  {
+   "region_id": "region-1",
+   "mass_owner_id": "owner-1",
+   "material_id": "mat-1"
+  }
+ ],
+ "cell_proposals": [
+  [
+   "region-0"
+  ],
+  [
+   "region-1"
+  ]
+ ]
+}

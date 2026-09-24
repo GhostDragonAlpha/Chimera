@@ -1,0 +1,843 @@
+{
+ "environment": {
+  "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "numpy": "2.2.6",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "modules": {
+   "material_volume.py": "6d2817b7b4ea59213f90134b343a06579d92db998c1db7f27b0e89aff71799cf",
+   "material_volume_admission.py": "d6d4b0e010c0982f5c94dc880a2fec4ac50ea69af605ce80b7186745a5f7750d",
+   "material_volume_body_export.py": "04be88a7c62dc358c06aff29d3ac70244ae575298603712d2352d44853e018e7"
+  },
+  "manifest_sha256": "85e1f263d408f8d41d96d6a791e011f5332e831d259340ff8d8f1f11595fd73f",
+  "gate_G": 1.4210854715202004e-14,
+  "u": 1.1102230246251565e-16
+ },
+ "results": [
+  {
+   "id": "A0",
+   "class": "A-offset",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 4.971522095990136e-17,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 1.9984014443252818e-15,
+    "I_rel": 1.3322676295501878e-14
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "A1",
+   "class": "A-offset",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 8.610928861206232e-17,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 6.681322162194192e-13,
+    "I_rel": 3.3439917501709715e-12
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "A2",
+   "class": "A-offset",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 4.0592307933825884e-17,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 6.661358131765382e-10,
+    "I_rel": 3.330682396551765e-09
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "A3",
+   "class": "A-offset",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 6.936416620353817e-16,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 6.661338167734954e-07,
+    "I_rel": 3.330669087198146e-06
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "A4",
+   "class": "A-offset",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 6.420774697197778e-10,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 0.0006661338147770923,
+    "I_rel": 0.0033306690738887923
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "A5",
+   "class": "A-offset",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 0.0006732669446292822,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 0.6661338147750959,
+    "I_rel": 3.330669073875483
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "A7",
+   "class": "A-offset",
+   "path": "compiler",
+   "accepted": false,
+   "refusal_reason": "duplicate_vertex_position",
+   "refusal_detail": "distinct vertex IDs have exactly coincident coordinates; weld them before compilation",
+   "verdict": "REFUSED-BY-CONTRACT"
+  },
+  {
+   "id": "A0x",
+   "class": "A-offset",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 4.971522095990136e-17,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 1.9984014443252818e-15,
+    "I_rel": 1.3322676295501878e-14
+   },
+   "verdict": "PASS",
+   "cross_path": {
+    "vs": "A0",
+    "dV": 0.0,
+    "dI": 0.0,
+    "bounds": {
+     "V": 4.440892098500626e-15,
+     "I": 2.6645352591003757e-14
+    },
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "A4x",
+   "class": "A-offset",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 6.420774697197778e-10,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 0.0006661338147770923,
+    "I_rel": 0.0033306690738887923
+   },
+   "verdict": "PASS",
+   "cross_path": {
+    "vs": "A4",
+    "dV": 0.0,
+    "dI": 0.0,
+    "bounds": {
+     "V": 4.440892098500626e-15,
+     "I": 0.006661338147777585
+    },
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "A5x",
+   "class": "A-offset",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 0.0006732669446292822,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 0.6661338147750959,
+    "I_rel": 3.330669073875483
+   },
+   "verdict": "PASS",
+   "cross_path": {
+    "vs": "A5",
+    "dV": 0.0,
+    "dI": 0.0,
+    "bounds": {
+     "V": 4.440892098500626e-15,
+     "I": 6.661338147750966
+    },
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "B0",
+   "class": "B-small",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 1.8010195682678645e-16,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 9.420554752102651e-16,
+    "I_rel": 6.661338147750939e-15
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "B1",
+   "class": "B-small",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 1.5881867761018131e-16,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 2.1075545542806642e-16,
+   "bounds": {
+    "V_rel": 5.988667950091373e-15,
+    "M_rel": 5.988667950091373e-15,
+    "com_abs": 6.661338147750939e-16,
+    "I_rel": 3.3639757646142244e-15
+   },
+   "verdict": "PASS",
+   "metamorphic": {
+    "V_over_s3_minus_V0": 1.6653345369377348e-16,
+    "I_over_s5_minus_I0": 1.8196834819716613e-16,
+    "exact_geometry_dev": 0.0,
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "B2",
+   "class": "B-small",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 2.4535164170440566e-16,
+   "bounds": {
+    "V_rel": 5.988667950091373e-15,
+    "M_rel": 5.988667950091373e-15,
+    "com_abs": 6.661338147750939e-16,
+    "I_rel": 3.331002140782857e-15
+   },
+   "verdict": "PASS",
+   "metamorphic": {
+    "V_over_s3_minus_V0": 0.0,
+    "I_over_s5_minus_I0": 1.8381578995933006e-17,
+    "exact_geometry_dev": 0.0,
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "B3",
+   "class": "B-small",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 2.8888949165808543e-16,
+   "eM": 1.925929944387236e-16,
+   "com_err": 0.0,
+   "eI": 3.013874208419711e-16,
+   "bounds": {
+    "V_rel": 5.988667950091373e-15,
+    "M_rel": 5.988667950091373e-15,
+    "com_abs": 6.661338147750939e-16,
+    "I_rel": 3.3306724045445434e-15
+   },
+   "verdict": "PASS",
+   "metamorphic": {
+    "V_over_s3_minus_V0": 3.3306690738754696e-16,
+    "I_over_s5_minus_I0": 2.2057894795119604e-16,
+    "exact_geometry_dev": 0.0,
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "B4",
+   "class": "B-small",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 1.3775324423698682e-16,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 3.3464910424010906e-16,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 6.661338147750939e-16,
+    "I_rel": 3.33066910718216e-15
+   },
+   "verdict": "PASS",
+   "metamorphic": {
+    "V_over_s3_minus_V0": 1.6653345369377348e-16,
+    "I_over_s5_minus_I0": 1.8289440175136257e-16,
+    "exact_geometry_dev": 0.0,
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "B5",
+   "class": "B-small",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 1.313717310304516e-16,
+   "eM": 1.7516230804060211e-16,
+   "com_err": 0.0,
+   "eI": 1.7132089356633583e-16,
+   "bounds": {
+    "V_rel": 5.988667950091373e-15,
+    "M_rel": 5.988667950091373e-15,
+    "com_abs": 6.661338147750939e-16,
+    "I_rel": 3.3306690742085366e-15
+   },
+   "verdict": "PASS",
+   "metamorphic": {
+    "V_over_s3_minus_V0": 1.6653345369377348e-16,
+    "I_over_s5_minus_I0": 1.6024689053196363e-16,
+    "exact_geometry_dev": 1.6653345369377348e-16,
+    "verdict": "PASS"
+   }
+  },
+  {
+   "id": "C0",
+   "class": "C-flat",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 1.1746364145669403e-16,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 9.420554752102651e-16,
+    "I_rel": 6.661338147750939e-15
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "C1",
+   "class": "C-flat",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 1.1906993428637218e-16,
+   "bounds": {
+    "V_rel": 3.790426361333564e-13,
+    "M_rel": 3.790426361333564e-13,
+    "com_abs": 9.420554752102651e-16,
+    "I_rel": 6.661338147750939e-15
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "C2",
+   "class": "C-flat",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 1.2094195144727828e-16,
+   "bounds": {
+    "V_rel": 3.768224121287111e-09,
+    "M_rel": 3.768224121287111e-09,
+    "com_abs": 9.420554752102651e-16,
+    "I_rel": 6.661338147750939e-15
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "C3",
+   "class": "C-flat",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 2.025493822996615e-27,
+   "bounds": {
+    "V_rel": 3.768221901063105e-05,
+    "M_rel": 3.768221901063105e-05,
+    "com_abs": 9.420554752102651e-16,
+    "I_rel": 6.661338147750939e-15
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "C4",
+   "class": "C-flat",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 1.8932661725304283e-16,
+   "eM": 1.8932661725304283e-16,
+   "com_err": 3.1554436208840472e-30,
+   "eI": 1.7327563257931863e-16,
+   "bounds": {
+    "V_rel": 0.03768221900841283,
+    "M_rel": 0.03768221900841283,
+    "com_abs": 9.420554752102651e-16,
+    "I_rel": 6.661338147750939e-15
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "C5",
+   "class": "C-flat",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 1.8932661725304283e-16,
+   "eM": 1.8932661725304283e-16,
+   "com_err": 1.5777218104420236e-30,
+   "eI": 1.7327563257931863e-16,
+   "bounds": {
+    "V_rel": 0.07536443801682344,
+    "M_rel": 0.07536443801682344,
+    "com_abs": 9.420554752102651e-16,
+    "I_rel": 6.661338147750939e-15
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "C6",
+   "class": "C-flat",
+   "path": "compiler",
+   "accepted": false,
+   "refusal_reason": "degenerate_tetrahedron",
+   "refusal_detail": "cell 0 has |det|/max_edge^3=1.061e-14 <= 64*float64_epsilon=1.421e-14",
+   "verdict": "REFUSED-BY-CONTRACT"
+  },
+  {
+   "id": "C7",
+   "class": "C-flat",
+   "path": "compiler",
+   "accepted": false,
+   "refusal_reason": "degenerate_tetrahedron",
+   "refusal_detail": "cell 0 has |det|/max_edge^3=3.536e-15 <= 64*float64_epsilon=1.421e-14",
+   "verdict": "REFUSED-BY-CONTRACT"
+  },
+  {
+   "id": "S0",
+   "class": "S-sliver",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.00012449758459374786,
+   "eM": 0.00012449758459374786,
+   "com_err": 0.0,
+   "eI": 0.00012449758459374022,
+   "bounds": {
+    "V_rel": 0.03749734495923713,
+    "M_rel": 0.03749734495923713,
+    "com_abs": 9.992007221626409e-16,
+    "I_rel": 6.661338147750939e-15
+   },
+   "verdict": "DEFECT-CANDIDATE(beyond-bound)",
+   "diagnosis": {
+    "falsifier_analysis": "Measured eV=eM=eI=1.244976e-04 IDENTICALLY: every inertia entry is homogeneous linear in the cell masses, so inertia inherits the mass relative error; the shape-integral error is eI-eM ~ 0. The frozen volume bound B_V=20u+12u/delta=3.75e-2 is NOT exceeded (1.245e-4 = B_V/301). The frozen inertia bound B_I=30u(1+X) omitted the mass-factor propagation term - a derivation omission, not an implementation defect. Corrected bound B_I'=B_I+B_V (mass linearity is exact in the model). No code change; no bound of any other rung affected.",
+    "corrected_bound": "B_I' = B_I + B_V",
+    "corrected_verdict": "PASS (conditioning characterized: near-gate sliver volume error follows the derived kappa*u/delta law, 300x inside the frozen worst-case bound)"
+   }
+  },
+  {
+   "id": "S1",
+   "class": "S-sliver",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 7.844106614685956e-05,
+   "eM": 7.844106614685956e-05,
+   "com_err": 5.551115123125783e-17,
+   "eI": 7.844106614681971e-05,
+   "bounds": {
+    "V_rel": 0.07802318597509371,
+    "M_rel": 0.07802318597509371,
+    "com_abs": 9.992007221626409e-16,
+    "I_rel": 6.661338147750939e-15
+   },
+   "verdict": "DEFECT-CANDIDATE(beyond-bound)",
+   "diagnosis": {
+    "falsifier_analysis": "Same mechanism as S0: eV=eM=eI=7.844e-05 identical; volume error within frozen B_V=7.80e-02 (995x margin); inertia bound omission identical to S0.",
+    "corrected_bound": "B_I' = B_I + B_V",
+    "corrected_verdict": "PASS (conditioning characterized)"
+   }
+  },
+  {
+   "id": "S2",
+   "class": "S-sliver",
+   "path": "compiler",
+   "accepted": false,
+   "refusal_reason": "degenerate_tetrahedron",
+   "refusal_detail": "cell 0 has |det|/max_edge^3=1.236e-14 <= 64*float64_epsilon=1.421e-14",
+   "verdict": "REFUSED-BY-CONTRACT"
+  },
+  {
+   "id": "S3",
+   "class": "S-sliver",
+   "path": "compiler",
+   "accepted": false,
+   "refusal_reason": "degenerate_tetrahedron",
+   "refusal_detail": "cell 0 has |det|/max_edge^3=7.105e-15 <= 64*float64_epsilon=1.421e-14",
+   "verdict": "REFUSED-BY-CONTRACT"
+  },
+  {
+   "id": "D0",
+   "class": "D-needle",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 8.729839453799452e-21,
+   "bounds": {
+    "V_rel": 1.3324896741551129e-11,
+    "M_rel": 1.3324896741551129e-11,
+    "com_abs": 6.661338147750939e-13,
+    "I_rel": 3.333999742949345e-12
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "D1",
+   "class": "D-needle",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 2.664535259100375e-16,
+   "eM": 2.664535259100375e-16,
+   "com_err": 0.0,
+   "eI": 1.7573701315856447e-16,
+   "bounds": {
+    "V_rel": 1.332267651754648e-07,
+    "M_rel": 1.332267651754648e-07,
+    "com_abs": 6.661338147750939e-13,
+    "I_rel": 3.333999742949345e-12
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "D2",
+   "class": "D-needle",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 2.0816681711721685e-16,
+   "eM": 2.0816681711721685e-16,
+   "com_err": 5.684341886080802e-14,
+   "eI": 1.541715096262394e-16,
+   "bounds": {
+    "V_rel": 1.3322676297722325e-05,
+    "M_rel": 1.3322676297722325e-05,
+    "com_abs": 6.661338147750939e-13,
+    "I_rel": 3.333999742949345e-12
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "D3",
+   "class": "D-needle",
+   "path": "compiler",
+   "accepted": true,
+   "eV": 1.129377263005734e-16,
+   "eM": 1.129377263005734e-16,
+   "com_err": 0.0,
+   "eI": 1.1030138948228003e-18,
+   "bounds": {
+    "V_rel": 0.05921189464667725,
+    "M_rel": 0.05921189464667725,
+    "com_abs": 6.661338147750939e-13,
+    "I_rel": 3.333999742949345e-12
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "D4",
+   "class": "D-needle",
+   "path": "compiler",
+   "accepted": false,
+   "refusal_reason": "degenerate_tetrahedron",
+   "refusal_detail": "cell 0 has |det|/max_edge^3=1.210e-14 <= 64*float64_epsilon=1.421e-14",
+   "verdict": "REFUSED-BY-CONTRACT"
+  },
+  {
+   "id": "D5",
+   "class": "D-needle",
+   "path": "compiler",
+   "accepted": false,
+   "refusal_reason": "degenerate_tetrahedron",
+   "refusal_detail": "cell 0 has |det|/max_edge^3=1.000e-14 <= 64*float64_epsilon=1.421e-14",
+   "verdict": "REFUSED-BY-CONTRACT"
+  },
+  {
+   "id": "E1",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 4.971522095990136e-17,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 1.9984014443252818e-15,
+    "I_rel": 1.3322676295501878e-14
+   },
+   "verdict": "PASS",
+   "twin": {
+    "group": "E1+E2+E3",
+    "identical": true,
+    "verdict": "PASS(bitwise)"
+   }
+  },
+  {
+   "id": "E2",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 4.971522095990136e-17,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 1.9984014443252818e-15,
+    "I_rel": 1.3322676295501878e-14
+   },
+   "verdict": "PASS",
+   "twin": {
+    "group": "E1+E2+E3",
+    "identical": true
+   }
+  },
+  {
+   "id": "E3",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 4.971522095990136e-17,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 1.9984014443252818e-15,
+    "I_rel": 1.3322676295501878e-14
+   },
+   "verdict": "PASS",
+   "twin": {
+    "group": "E1+E2+E3",
+    "identical": true
+   }
+  },
+  {
+   "id": "E4a",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 5.495603971894525e-15,
+   "eM": 5.625129991434126e-15,
+   "com_err": 256.0,
+   "eI": 5.473794083299662e-15,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 2304.0,
+    "I_rel": 11520.0
+   },
+   "verdict": "PASS",
+   "twin": {
+    "group": "E4a+E4b",
+    "identical": true,
+    "verdict": "PASS(bitwise)"
+   }
+  },
+  {
+   "id": "E4b",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 5.495603971894525e-15,
+   "eM": 5.625129991434126e-15,
+   "com_err": 256.0,
+   "eI": 5.473794083299662e-15,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 2304.0,
+    "I_rel": 11520.0
+   },
+   "verdict": "PASS",
+   "twin": {
+    "group": "E4a+E4b",
+    "identical": true
+   }
+  },
+  {
+   "id": "E5",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": 0.0,
+   "eI": 4.971522095990136e-17,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": 1.9984014443252818e-15,
+    "I_rel": 1.3322676295501878e-14
+   },
+   "verdict": "PASS",
+   "twin": {
+    "group": "E1+E5",
+    "identical": true,
+    "verdict": "PASS(bitwise)"
+   }
+  },
+  {
+   "id": "E6",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 1.3440000000000001e-15,
+   "eM": 1.3653333333333334e-15,
+   "com_err": 1.1641532182693481e-10,
+   "eI": 1.4595075135182563e-15,
+   "bounds": {
+    "V_rel": 5.988667950091372e-15,
+    "M_rel": 5.988667950091372e-15,
+    "com_abs": 1.9984014443252818e-09,
+    "I_rel": 9.992010552295483e-09
+   },
+   "verdict": "PASS"
+  },
+  {
+   "id": "E7",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": false,
+   "export_status": "blocked",
+   "refusal_reason": "degenerate_tetrahedron",
+   "export_reason_codes": [
+    "reconstructed_mass_admission_required"
+   ],
+   "verdict": "DEFECT-CANDIDATE",
+   "diagnosis": {
+    "falsifier_analysis": "Fixture-construction error, not an implementation defect: the ulp pair (1, nextafter(1)) was placed on one axis TOGETHER WITH a third vertex on that axis, so the frame-coordinate cell already has det=0 exactly (three collinear vertices) independent of scale - the oracle itself records delta=0 before scaling. The gate refusal degenerate_tetrahedron is correct declared behavior (D3) on a genuinely degenerate input. Additionally, a power-of-two scale_to_m multiplies exactly, so it can never collapse distinct positions: this rung could never have produced the predicted refusal. The declared collapse path is exercised by E7b (decimal scale 1e-18, non-degenerate frame cell). This rung is PRESERVED as invalid.",
+    "corrected_verdict": "INVALID RUNG (fixture construction error); implementation refusal correct per D3; coverage moved to E7b"
+   }
+  },
+  {
+   "id": "E7b",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": false,
+   "export_status": "blocked",
+   "refusal_reason": "duplicate_vertex_position",
+   "export_reason_codes": [
+    "reconstructed_mass_admission_required"
+   ],
+   "verdict": "REFUSED-BY-CONTRACT"
+  },
+  {
+   "id": "E8",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": false,
+   "export_status": "blocked",
+   "refusal_reason": "numeric_overflow",
+   "export_reason_codes": [
+    "reconstructed_mass_admission_required"
+   ],
+   "verdict": "REFUSED-BY-CONTRACT"
+  },
+  {
+   "id": "E1f",
+   "class": "E-scale",
+   "path": "export",
+   "accepted": true,
+   "export_status": "complete",
+   "eV": 0.0,
+   "eM": 0.0,
+   "com_err": null,
+   "eI": null,
+   "bounds": {
+    "V_rel": 5.9886679500913745e-15,
+    "M_rel": 5.9886679500913745e-15,
+    "com_abs": null,
+    "I_rel": null
+   },
+   "verdict": "PASS",
+   "frame_checks": {
+    "body-A": {
+     "com_err": 0.0,
+     "eI": 1.8010195682678645e-16,
+     "bounds": {
+      "com_abs": 8.881784197001252e-16,
+      "I_rel": 6.661338147750939e-15
+     },
+     "verdict": "PASS"
+    },
+    "body-B": {
+     "com_err": 0.0,
+     "eI": 1.8010195682678645e-16,
+     "bounds": {
+      "com_abs": 2.4424906541753444e-15,
+      "I_rel": 6.661338147750939e-15
+     },
+     "verdict": "PASS"
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,170 @@
+{
+ "schema_version": "chimera.rigid_body_mass_export.v1",
+ "validation_only": true,
+ "dynamics_readiness_claimed": false,
+ "physical_state_mutated": false,
+ "production_wired": false,
+ "admission_status": "validation_only_admissible",
+ "admission_reason_codes": [],
+ "admission_report_sha256": "95a6f726954f563509d2e66530f3d43cc9cf42096babf668099ff44731fe71b5",
+ "admission_anatomical_completeness_certified": false,
+ "mass_authority": "reconstructed_tissue_mass",
+ "input_hashes": {
+  "algorithm": "sha256",
+  "serialization": "UTF-8 canonical JSON (sorted object keys; array order preserved)",
+  "manifest_sha256": "e2ac84c6d261d421dc2eb15468e13b8512d98351eb2364879c558977dce45ce5",
+  "partition_sha256": "e33b82efebaab036980c688df00951d2000a720fa0810657a906e72205146af4",
+  "body_groups_sha256": "adf6142585c002d4aa30d9c0952ee7bad46b5f86002fd1ea8fecde84b68f8f20"
+ },
+ "unassigned_cell_ids": [],
+ "unassigned_cells": [],
+ "all_supplied_cells_assigned": true,
+ "surface_mass_overlay_generated": false,
+ "anatomical_completeness_certified": false,
+ "export_status": "complete",
+ "reason_codes": [],
+ "source_effective_segment_payloads_consumed": false,
+ "body_groups": [
+  {
+   "body_id": "m08-body-all",
+   "owned_cell_ids": [
+    "cell-A",
+    "cell-B"
+   ],
+   "body_frame": {
+    "frame_id": "m08-authored",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "rotation": [
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ],
+     "origin_m": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "export_status": "exported",
+   "admission_status": "validation_only_admissible",
+   "admission_report_sha256": "95a6f726954f563509d2e66530f3d43cc9cf42096babf668099ff44731fe71b5",
+   "input_hashes": {
+    "algorithm": "sha256",
+    "serialization": "UTF-8 canonical JSON (sorted object keys; array order preserved)",
+    "manifest_sha256": "e2ac84c6d261d421dc2eb15468e13b8512d98351eb2364879c558977dce45ce5",
+    "partition_sha256": "e33b82efebaab036980c688df00951d2000a720fa0810657a906e72205146af4",
+    "body_groups_sha256": "adf6142585c002d4aa30d9c0952ee7bad46b5f86002fd1ea8fecde84b68f8f20"
+   },
+   "material_mass_source_provenance": {
+    "mass_authority": "reconstructed_tissue_mass",
+    "mass_source_kind": "reconstructed_material_volume",
+    "integration_model": "piecewise_constant_density_over_owned_tetrahedral_cells",
+    "material_records": [
+     {
+      "material_id": "tissue-A",
+      "density_kg_m3": 12.0,
+      "density_source": "analytic robustness fixture",
+      "conditions": "uniform"
+     },
+     {
+      "material_id": "tissue-B",
+      "density_kg_m3": 6.0,
+      "density_source": "analytic robustness fixture",
+      "conditions": "uniform"
+     }
+    ],
+    "mass_owner_ids": [
+     "owner-A",
+     "owner-B"
+    ],
+    "source_effective_segment_payloads_consumed": false,
+    "surface_mass_overlay_consumed": false,
+    "surface_mass_overlay_generated": false
+   },
+   "cell_provenance": [
+    {
+     "cell_id": "cell-A",
+     "mass_owner_id": "owner-A",
+     "region_id": "region-A",
+     "material_id": "tissue-A",
+     "density_kg_m3": 12.0,
+     "density_source": "analytic robustness fixture",
+     "density_conditions": "uniform"
+    },
+    {
+     "cell_id": "cell-B",
+     "mass_owner_id": "owner-B",
+     "region_id": "region-B",
+     "material_id": "tissue-B",
+     "density_kg_m3": 6.0,
+     "density_source": "analytic robustness fixture",
+     "density_conditions": "uniform"
+    }
+   ],
+   "mass_properties": {
+    "mass": {
+     "value": 3.0,
+     "unit": "kg",
+     "coordinate_frame": "frame_invariant",
+     "frame_invariant": true
+    },
+    "volume": {
+     "value": 0.3333333333333333,
+     "unit": "m^3",
+     "coordinate_frame": "frame_invariant",
+     "frame_invariant": true
+    },
+    "center_of_mass": {
+     "value": [
+      1.0833333333333333,
+      -0.4166666666666667,
+      0.5833333333333334
+     ],
+     "unit": "m",
+     "coordinate_frame": "m08-authored"
+    },
+    "inertia_tensor_about_com": {
+     "value": [
+      [
+       3.5583333333333336,
+       3.345833333333333,
+       -1.6541666666666668
+      ],
+      [
+       3.345833333333333,
+       5.058333333333334,
+       1.3708333333333333
+      ],
+      [
+       -1.6541666666666668,
+       1.3708333333333333,
+       7.058333333333334
+      ]
+     ],
+     "unit": "kg*m^2",
+     "coordinate_frame": "m08-authored",
+     "frame_id": "m08-authored",
+     "basis": "authored_body_frame",
+     "full_symmetric_tensor": true,
+     "off_diagonal_terms_preserved": true,
+     "principal_axis_transform_applied": false
+    }
+   }
+  }
+ ]
+}

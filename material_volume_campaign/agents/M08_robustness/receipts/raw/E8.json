@@ -1,0 +1,88 @@
+{
+ "schema_version": "chimera.rigid_body_mass_export.v1",
+ "validation_only": true,
+ "dynamics_readiness_claimed": false,
+ "physical_state_mutated": false,
+ "production_wired": false,
+ "admission_status": "refused",
+ "admission_reason_codes": [
+  "compiler_refusal:numeric_overflow"
+ ],
+ "admission_report_sha256": "a21fc68f49c543a5ff349204767eae59ea80a858654a510821e499898aec46f6",
+ "admission_anatomical_completeness_certified": false,
+ "mass_authority": "reconstructed_tissue_mass",
+ "input_hashes": {
+  "algorithm": "sha256",
+  "serialization": "UTF-8 canonical JSON (sorted object keys; array order preserved)",
+  "manifest_sha256": "955f0e05069d93966d8343924ac87ed07086854633ec22319fe443b568dfab1a",
+  "partition_sha256": "30004d2fd14c8c60fbe6e688b5af9f3a594c3e947b3f8baf454a0946d8d3f48c",
+  "body_groups_sha256": "adf6142585c002d4aa30d9c0952ee7bad46b5f86002fd1ea8fecde84b68f8f20"
+ },
+ "unassigned_cell_ids": [],
+ "unassigned_cells": [],
+ "all_supplied_cells_assigned": true,
+ "surface_mass_overlay_generated": false,
+ "anatomical_completeness_certified": false,
+ "export_status": "blocked",
+ "reason_codes": [
+  "reconstructed_mass_admission_required"
+ ],
+ "source_effective_segment_payloads_consumed": false,
+ "body_groups": [
+  {
+   "body_id": "m08-body-all",
+   "owned_cell_ids": [
+    "cell-A",
+    "cell-B"
+   ],
+   "body_frame": {
+    "frame_id": "m08-authored",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "rotation": [
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ],
+     "origin_m": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "export_status": "not_exported",
+   "admission_status": "refused",
+   "admission_report_sha256": "d39e7187d38167cefc34863ba1afe0853eeb094f89aff883a3dd42e9de3bf0f9",
+   "input_hashes": {
+    "algorithm": "sha256",
+    "serialization": "UTF-8 canonical JSON (sorted object keys; array order preserved)",
+    "manifest_sha256": "955f0e05069d93966d8343924ac87ed07086854633ec22319fe443b568dfab1a",
+    "partition_sha256": "30004d2fd14c8c60fbe6e688b5af9f3a594c3e947b3f8baf454a0946d8d3f48c",
+    "body_groups_sha256": "adf6142585c002d4aa30d9c0952ee7bad46b5f86002fd1ea8fecde84b68f8f20"
+   },
+   "admission_reason_codes": [
+    "compiler_refusal:numeric_overflow"
+   ],
+   "blocking_cell_ids": [],
+   "blocking_assignment_statuses": [],
+   "reason_codes": [
+    "reconstructed_mass_admission_required"
+   ],
+   "mass_properties": null
+  }
+ ]
+}

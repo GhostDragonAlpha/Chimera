@@ -1,0 +1,74 @@
+{
+ "schema_version": "chimera.fitting_manifest.v1",
+ "fitting_id": "m08-robustness-fit",
+ "domain_id": "m08-collapse",
+ "domain_revision": "rung-v1",
+ "coordinate_frame": {
+  "frame_id": "m08-domain",
+  "handedness": "right",
+  "coordinate_unit": "m",
+  "scale_to_m": 1e-310
+ },
+ "vertices": [
+  {
+   "vertex_id": "v0",
+   "position": [
+    0.0,
+    1.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "v1",
+   "position": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "v2",
+   "position": [
+    1.0000000000000002,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "v3",
+   "position": [
+    0.0,
+    0.0,
+    1.0
+   ]
+  }
+ ],
+ "cells": [
+  {
+   "cell_id": "cell-A",
+   "vertex_ids": [
+    "v0",
+    "v1",
+    "v2",
+    "v3"
+   ],
+   "component_id": "component-A"
+  }
+ ],
+ "regions": [
+  {
+   "region_id": "region-A",
+   "mass_owner_id": "owner-A",
+   "material_id": "tissue-A"
+  }
+ ],
+ "mass_authority": "reconstructed_tissue_mass",
+ "source_effective_segment_ids": [],
+ "matter_ownership": [
+  {
+   "matter_id": "m08-matter-A",
+   "representation": "tetrahedral_volume",
+   "mass_owner_id": "owner-A"
+  }
+ ]
+}

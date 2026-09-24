@@ -1,0 +1,87 @@
+{
+ "schema_version": "chimera.rigid_body_mass_export.v1",
+ "validation_only": true,
+ "dynamics_readiness_claimed": false,
+ "physical_state_mutated": false,
+ "production_wired": false,
+ "admission_status": "refused",
+ "admission_reason_codes": [
+  "compiler_refusal:duplicate_vertex_position"
+ ],
+ "admission_report_sha256": "3048740ba3a321681fb900a015dee7147b1b43f8efe9276340ea91120ee7a173",
+ "admission_anatomical_completeness_certified": false,
+ "mass_authority": "reconstructed_tissue_mass",
+ "input_hashes": {
+  "algorithm": "sha256",
+  "serialization": "UTF-8 canonical JSON (sorted object keys; array order preserved)",
+  "manifest_sha256": "45dd52b6343f029289418c7abb6fdbb95c426b8bfb4041a8e5456e53fa3f55c3",
+  "partition_sha256": "d3a313a5c5752c3732956b33d914a0f973455fd9057e4ac0178ae56cd78792c8",
+  "body_groups_sha256": "a303d649b2cd5d6d9fadd2c42b1b98e8a9d761fc8b95ccce5c474d288750edf9"
+ },
+ "unassigned_cell_ids": [],
+ "unassigned_cells": [],
+ "all_supplied_cells_assigned": true,
+ "surface_mass_overlay_generated": false,
+ "anatomical_completeness_certified": false,
+ "export_status": "blocked",
+ "reason_codes": [
+  "reconstructed_mass_admission_required"
+ ],
+ "source_effective_segment_payloads_consumed": false,
+ "body_groups": [
+  {
+   "body_id": "m08-body-all",
+   "owned_cell_ids": [
+    "cell-A"
+   ],
+   "body_frame": {
+    "frame_id": "m08-authored",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "rotation": [
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ],
+     "origin_m": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   },
+   "export_status": "not_exported",
+   "admission_status": "refused",
+   "admission_report_sha256": "3ba2b5bd2c67dd7ba50494301c8e8dcb6df52ccb77c46a2faa86f45d4bb1cc5d",
+   "input_hashes": {
+    "algorithm": "sha256",
+    "serialization": "UTF-8 canonical JSON (sorted object keys; array order preserved)",
+    "manifest_sha256": "45dd52b6343f029289418c7abb6fdbb95c426b8bfb4041a8e5456e53fa3f55c3",
+    "partition_sha256": "d3a313a5c5752c3732956b33d914a0f973455fd9057e4ac0178ae56cd78792c8",
+    "body_groups_sha256": "a303d649b2cd5d6d9fadd2c42b1b98e8a9d761fc8b95ccce5c474d288750edf9"
+   },
+   "admission_reason_codes": [
+    "compiler_refusal:duplicate_vertex_position"
+   ],
+   "blocking_cell_ids": [],
+   "blocking_assignment_statuses": [],
+   "reason_codes": [
+    "reconstructed_mass_admission_required"
+   ],
+   "mass_properties": null
+  }
+ ]
+}

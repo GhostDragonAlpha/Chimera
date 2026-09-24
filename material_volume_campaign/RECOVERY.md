@@ -83,3 +83,8 @@ NOTE (T10a): B4's work/blob_extract + work/archive_extract (derived full-tools/ 
 
 **Verified:** M06 full matrix re-run by coordinator — identical tally (95 NAMED-REFUSAL / 2 DOC-CONFIRMED / 2 SILENT-PASS / 1 WRONG-NAME / 1 EXIT-DEVIATION, 0 critical). Findings D-1/D-2/D-3 banked; E03+G10 silent-passes (unsupported-status exit class) added to the B8 fix queue. The resumed session's audit chain (post-freeze edit caught+re-frozen; false critical preserved; harness defects repaired) is the honest-failure discipline working under crash-recovery conditions.
 **Serialized slot freed: B3 retry dispatched (single staggered spawn).**
+
+## CHECKPOINT T12 — M08 integrated (the conditioning map is complete)
+
+**Verified:** M08 ladder re-run by coordinator (45 rungs; E7 defect-candidate + E7b coverage refusal reproduce; PASS rungs exact); integrity clean. Zero implementation defects; the conditioning story is now quantitative (offset invariance to 1e15 via Sterbenz; linear u*X inertia degradation within derived bounds; gates at their declared tolerance; bitwise compiler-exporter agreement).
+**Fleet:** 4 live (M04-retry, B6, B9, B3-retry). Queue: B5 -> B8 -> B7x.
