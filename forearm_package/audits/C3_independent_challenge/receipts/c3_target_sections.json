@@ -1,0 +1,776 @@
+{
+  "inputs": {
+    "birth_sha256": "550A5B3EC927EA13614AD250963B23E2948E76A238AC110DA9889F339AABFA3C",
+    "pack_sha256": "74B3AB044B7ADAED4A0F9349A81F5D3C87441084B2EC8981F4E0AFABA50C1662",
+    "module_copy": "work/mesh_target_c3.py (baseline mesh_target.py verbatim, paths repointed)"
+  },
+  "right": {
+    "elbow": [
+      -0.11548098385334016,
+      0.3191090774536133,
+      -0.0060765563324093825
+    ],
+    "wrist": [
+      -0.1449945402145386,
+      0.26148236989974977,
+      -0.005956328995525837
+    ],
+    "axis_unit": [
+      -0.45584373480967805,
+      -0.8900578864387171,
+      0.0018569391502837888
+    ],
+    "axis_len_m": 0.06474489854186721,
+    "basis_e1": [
+      0.8900598235145568,
+      -0.45584274273716563,
+      0.0009510305433596829
+    ],
+    "basis_e2": [
+      0.0,
+      0.0020863082471820156,
+      0.9999978236565807
+    ],
+    "sections": [
+      {
+        "t_mm": -5.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          0.3648632556780714,
+          17.365534270652013
+        ],
+        "centroid_offset_mm": 6.927041882855506,
+        "centroid_offset_azimuth_deg": -174.55461638696627,
+        "boot_centroid_azimuth_circstd_deg": 4.978761747875005,
+        "eccentricity_ratio_l1_over_l2": 1.1916990517948742,
+        "principal_azimuth_deg_mod180": 59.73687913761074,
+        "boot_principal_azimuth_circstd_deg": 26.718526121330296,
+        "boot_eccentricity_iqr": [
+          1.1764849223132092,
+          1.394889982839561
+        ]
+      },
+      {
+        "t_mm": 4.0,
+        "n_pts": 116,
+        "radial_extent_mm": [
+          0.09248615192712616,
+          17.490822696343788
+        ],
+        "centroid_offset_mm": 7.723347148143345,
+        "centroid_offset_azimuth_deg": -168.5591016884168,
+        "boot_centroid_azimuth_circstd_deg": 4.7496386472957175,
+        "eccentricity_ratio_l1_over_l2": 1.4025646488021213,
+        "principal_azimuth_deg_mod180": 63.62100121268662,
+        "boot_principal_azimuth_circstd_deg": 12.704649924020751,
+        "boot_eccentricity_iqr": [
+          1.3240164548394233,
+          1.5836035570826126
+        ]
+      },
+      {
+        "t_mm": 8.0,
+        "n_pts": 112,
+        "radial_extent_mm": [
+          0.023071877378613503,
+          17.520232992442565
+        ],
+        "centroid_offset_mm": 7.466573319131519,
+        "centroid_offset_azimuth_deg": -171.44756013389767,
+        "boot_centroid_azimuth_circstd_deg": 5.138481582730989,
+        "eccentricity_ratio_l1_over_l2": 1.2989787249840736,
+        "principal_azimuth_deg_mod180": 69.71339214485101,
+        "boot_principal_azimuth_circstd_deg": 17.32577552172357,
+        "boot_eccentricity_iqr": [
+          1.2360126603050414,
+          1.4637443540387747
+        ]
+      },
+      {
+        "t_mm": 12.0,
+        "n_pts": 116,
+        "radial_extent_mm": [
+          0.1761413941752251,
+          17.557877373649326
+        ],
+        "centroid_offset_mm": 7.493356241792603,
+        "centroid_offset_azimuth_deg": -171.05102856882854,
+        "boot_centroid_azimuth_circstd_deg": 5.228199117792389,
+        "eccentricity_ratio_l1_over_l2": 1.2898109482335771,
+        "principal_azimuth_deg_mod180": 74.35349150327474,
+        "boot_principal_azimuth_circstd_deg": 17.60637272209082,
+        "boot_eccentricity_iqr": [
+          1.2504646365038579,
+          1.4691276982183605
+        ]
+      },
+      {
+        "t_mm": 16.0,
+        "n_pts": 112,
+        "radial_extent_mm": [
+          0.5062492460012723,
+          17.618488557324966
+        ],
+        "centroid_offset_mm": 7.167704960527725,
+        "centroid_offset_azimuth_deg": -173.21165910065216,
+        "boot_centroid_azimuth_circstd_deg": 4.892847117165482,
+        "eccentricity_ratio_l1_over_l2": 1.3483175647943522,
+        "principal_azimuth_deg_mod180": 76.25274456661452,
+        "boot_principal_azimuth_circstd_deg": 12.874966839398192,
+        "boot_eccentricity_iqr": [
+          1.281920985295679,
+          1.4932127630060505
+        ]
+      },
+      {
+        "t_mm": 20.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          0.7912505529745102,
+          17.702246524614754
+        ],
+        "centroid_offset_mm": 6.90667847490909,
+        "centroid_offset_azimuth_deg": -176.33587090041735,
+        "boot_centroid_azimuth_circstd_deg": 5.904774822036086,
+        "eccentricity_ratio_l1_over_l2": 1.3016478877168483,
+        "principal_azimuth_deg_mod180": 76.18050319739743,
+        "boot_principal_azimuth_circstd_deg": 18.145297343224914,
+        "boot_eccentricity_iqr": [
+          1.2231920840650887,
+          1.4984306798334281
+        ]
+      },
+      {
+        "t_mm": 24.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          1.064008958450491,
+          17.802839830286658
+        ],
+        "centroid_offset_mm": 6.773022179269182,
+        "centroid_offset_azimuth_deg": -176.81928619929909,
+        "boot_centroid_azimuth_circstd_deg": 6.122427806560652,
+        "eccentricity_ratio_l1_over_l2": 1.2641965025979327,
+        "principal_azimuth_deg_mod180": 75.12738018662495,
+        "boot_principal_azimuth_circstd_deg": 20.690871095233483,
+        "boot_eccentricity_iqr": [
+          1.2020469265649225,
+          1.4731235419508835
+        ]
+      },
+      {
+        "t_mm": 28.0,
+        "n_pts": 112,
+        "radial_extent_mm": [
+          1.3418223368093203,
+          17.917234226025446
+        ],
+        "centroid_offset_mm": 6.93051135502762,
+        "centroid_offset_azimuth_deg": -177.78592607596312,
+        "boot_centroid_azimuth_circstd_deg": 6.314096895010273,
+        "eccentricity_ratio_l1_over_l2": 1.2216956981975522,
+        "principal_azimuth_deg_mod180": 72.41513426866061,
+        "boot_principal_azimuth_circstd_deg": 21.67686743800795,
+        "boot_eccentricity_iqr": [
+          1.180981453513947,
+          1.3713045118657554
+        ]
+      },
+      {
+        "t_mm": 32.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          1.6220954957324492,
+          18.058153724955968
+        ],
+        "centroid_offset_mm": 6.576060158383603,
+        "centroid_offset_azimuth_deg": -176.92754122200608,
+        "boot_centroid_azimuth_circstd_deg": 6.323564672477351,
+        "eccentricity_ratio_l1_over_l2": 1.1815747738357059,
+        "principal_azimuth_deg_mod180": 70.6538707239537,
+        "boot_principal_azimuth_circstd_deg": 28.462871669862103,
+        "boot_eccentricity_iqr": [
+          1.1631975683595557,
+          1.3920281124524574
+        ]
+      },
+      {
+        "t_mm": 40.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          2.0139206758516117,
+          18.38490863697311
+        ],
+        "centroid_offset_mm": 6.988647331107095,
+        "centroid_offset_azimuth_deg": -176.23787900862612,
+        "boot_centroid_azimuth_circstd_deg": 6.500152365706789,
+        "eccentricity_ratio_l1_over_l2": 1.2373858984060644,
+        "principal_azimuth_deg_mod180": 70.81196678028647,
+        "boot_principal_azimuth_circstd_deg": 21.073911595548594,
+        "boot_eccentricity_iqr": [
+          1.1840635100533168,
+          1.4398165425556277
+        ]
+      },
+      {
+        "t_mm": 48.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          1.8182105390835424,
+          18.792904462635494
+        ],
+        "centroid_offset_mm": 7.554707774038191,
+        "centroid_offset_azimuth_deg": -171.89995553341925,
+        "boot_centroid_azimuth_circstd_deg": 5.085930462707658,
+        "eccentricity_ratio_l1_over_l2": 1.1623228858679984,
+        "principal_azimuth_deg_mod180": 50.19404589449044,
+        "boot_principal_azimuth_circstd_deg": 31.851440464342215,
+        "boot_eccentricity_iqr": [
+          1.1508521633096984,
+          1.3446620485688847
+        ]
+      }
+    ],
+    "paddle_sections": [
+      {
+        "t_mm": 75.0,
+        "n_pts": 216,
+        "radial_extent_mm": [
+          6.331237757430454,
+          34.392482992178145
+        ],
+        "centroid_offset_mm": 12.473425021007522,
+        "centroid_offset_azimuth_deg": -138.85923980214747,
+        "boot_centroid_azimuth_circstd_deg": 3.9883896937511625,
+        "eccentricity_ratio_l1_over_l2": 14.08409176934209,
+        "principal_azimuth_deg_mod180": 87.19451653849333,
+        "boot_principal_azimuth_circstd_deg": 1.004334470415965,
+        "boot_eccentricity_iqr": [
+          13.363706001555123,
+          15.049492965495924
+        ]
+      },
+      {
+        "t_mm": 82.0,
+        "n_pts": 216,
+        "radial_extent_mm": [
+          6.117249541758126,
+          33.9551235546394
+        ],
+        "centroid_offset_mm": 11.668904800355223,
+        "centroid_offset_azimuth_deg": -135.4214024107827,
+        "boot_centroid_azimuth_circstd_deg": 4.101864618544637,
+        "eccentricity_ratio_l1_over_l2": 16.303857814258727,
+        "principal_azimuth_deg_mod180": 86.8048195075985,
+        "boot_principal_azimuth_circstd_deg": 0.9214388815716529,
+        "boot_eccentricity_iqr": [
+          15.375392437899777,
+          17.436377267176365
+        ]
+      },
+      {
+        "t_mm": 89.0,
+        "n_pts": 220,
+        "radial_extent_mm": [
+          5.612900000901568,
+          33.31602034058202
+        ],
+        "centroid_offset_mm": 10.211309058534267,
+        "centroid_offset_azimuth_deg": -132.04757186896126,
+        "boot_centroid_azimuth_circstd_deg": 3.9473573991578124,
+        "eccentricity_ratio_l1_over_l2": 17.941717711646973,
+        "principal_azimuth_deg_mod180": 86.52013790887841,
+        "boot_principal_azimuth_circstd_deg": 0.9760555740025251,
+        "boot_eccentricity_iqr": [
+          17.185903826724658,
+          19.119178128488272
+        ]
+      },
+      {
+        "t_mm": 96.0,
+        "n_pts": 216,
+        "radial_extent_mm": [
+          4.9375646236763,
+          32.43289558513542
+        ],
+        "centroid_offset_mm": 9.255133182776982,
+        "centroid_offset_azimuth_deg": -121.25979347057127,
+        "boot_centroid_azimuth_circstd_deg": 3.4029208851958668,
+        "eccentricity_ratio_l1_over_l2": 19.69440713024274,
+        "principal_azimuth_deg_mod180": 86.53229750249767,
+        "boot_principal_azimuth_circstd_deg": 0.8860287457556951,
+        "boot_eccentricity_iqr": [
+          18.578351587008104,
+          21.01550537280059
+        ]
+      },
+      {
+        "t_mm": 103.0,
+        "n_pts": 236,
+        "radial_extent_mm": [
+          4.346592139871789,
+          31.284950610052988
+        ],
+        "centroid_offset_mm": 8.18351381461204,
+        "centroid_offset_azimuth_deg": -105.70751746857492,
+        "boot_centroid_azimuth_circstd_deg": 1.9405234454289997,
+        "eccentricity_ratio_l1_over_l2": 25.86590621794674,
+        "principal_azimuth_deg_mod180": 87.40875753671435,
+        "boot_principal_azimuth_circstd_deg": 0.7569719381805794,
+        "boot_eccentricity_iqr": [
+          24.70323543037847,
+          27.17208550629022
+        ]
+      },
+      {
+        "t_mm": 110.0,
+        "n_pts": 96,
+        "radial_extent_mm": [
+          5.63408787237919,
+          28.662762682590998
+        ],
+        "centroid_offset_mm": 16.94517959212032,
+        "centroid_offset_azimuth_deg": -89.92484820015935,
+        "boot_centroid_azimuth_circstd_deg": 0.6094835700947617,
+        "eccentricity_ratio_l1_over_l2": 30.758458449599342,
+        "principal_azimuth_deg_mod180": 87.66686943192377,
+        "boot_principal_azimuth_circstd_deg": 1.1444818552398908,
+        "boot_eccentricity_iqr": [
+          29.543753347164273,
+          33.067423153544986
+        ]
+      }
+    ],
+    "band_roll": {
+      "n_band": 318,
+      "top": [
+        {
+          "perp_mm": 30.95308546724938,
+          "azimuth_deg": -111.86515772931568
+        },
+        {
+          "perp_mm": 30.922897935838822,
+          "azimuth_deg": -116.17303617845853
+        },
+        {
+          "perp_mm": 30.356999708174172,
+          "azimuth_deg": -108.02030259407651
+        },
+        {
+          "perp_mm": 30.238289595773313,
+          "azimuth_deg": -120.89175710371444
+        },
+        {
+          "perp_mm": 29.137202488112987,
+          "azimuth_deg": -104.77721256276303
+        },
+        {
+          "perp_mm": 29.100779208550673,
+          "azimuth_deg": -126.10287387780672
+        },
+        {
+          "perp_mm": 29.02588132566202,
+          "azimuth_deg": -117.90619027106084
+        },
+        {
+          "perp_mm": 28.878627556249608,
+          "azimuth_deg": -113.2924772469206
+        },
+        {
+          "perp_mm": 28.564227040164553,
+          "azimuth_deg": -122.9446813417047
+        },
+        {
+          "perp_mm": 28.15534388961416,
+          "azimuth_deg": -109.14152177629559
+        }
+      ],
+      "gap_ratio_d1_over_d2": 1.0009762193528302
+    }
+  },
+  "left": {
+    "elbow": [
+      0.11548098385334016,
+      0.3191090774536133,
+      -0.0060765563324093825
+    ],
+    "wrist": [
+      0.1449945402145386,
+      0.26148236989974977,
+      -0.005956328995525837
+    ],
+    "axis_unit": [
+      0.45584373480967805,
+      -0.8900578864387171,
+      0.0018569391502837888
+    ],
+    "axis_len_m": 0.06474489854186721,
+    "basis_e1": [
+      0.8900598235145568,
+      0.45584274273716563,
+      -0.0009510305433596829
+    ],
+    "basis_e2": [
+      0.0,
+      0.0020863082471820156,
+      0.9999978236565807
+    ],
+    "sections": [
+      {
+        "t_mm": -5.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          0.3648632556780714,
+          17.36552487800879
+        ],
+        "centroid_offset_mm": 6.927043262963424,
+        "centroid_offset_azimuth_deg": -5.445382696588401,
+        "boot_centroid_azimuth_circstd_deg": 4.94263370025817,
+        "eccentricity_ratio_l1_over_l2": 1.1916999929052965,
+        "principal_azimuth_deg_mod180": -59.736904289954,
+        "boot_principal_azimuth_circstd_deg": 28.25716659560694,
+        "boot_eccentricity_iqr": [
+          1.1644267723193036,
+          1.3997619587915375
+        ]
+      },
+      {
+        "t_mm": 4.0,
+        "n_pts": 116,
+        "radial_extent_mm": [
+          0.09248615192712616,
+          17.490833632620824
+        ],
+        "centroid_offset_mm": 7.723349930378755,
+        "centroid_offset_azimuth_deg": -11.440895331579316,
+        "boot_centroid_azimuth_circstd_deg": 4.6357306873776025,
+        "eccentricity_ratio_l1_over_l2": 1.4025649775336766,
+        "principal_azimuth_deg_mod180": -63.62092163476635,
+        "boot_principal_azimuth_circstd_deg": 11.467676680124367,
+        "boot_eccentricity_iqr": [
+          1.3268660010500906,
+          1.5832359044741406
+        ]
+      },
+      {
+        "t_mm": 8.0,
+        "n_pts": 112,
+        "radial_extent_mm": [
+          0.023071877378613503,
+          17.520233994236936
+        ],
+        "centroid_offset_mm": 7.466575996279609,
+        "centroid_offset_azimuth_deg": -8.552434703847029,
+        "boot_centroid_azimuth_circstd_deg": 4.878503913687496,
+        "eccentricity_ratio_l1_over_l2": 1.2989773974978134,
+        "principal_azimuth_deg_mod180": -69.71332829822205,
+        "boot_principal_azimuth_circstd_deg": 16.04675678746608,
+        "boot_eccentricity_iqr": [
+          1.224770594408192,
+          1.4588826242821593
+        ]
+      },
+      {
+        "t_mm": 12.0,
+        "n_pts": 116,
+        "radial_extent_mm": [
+          0.17614500452851808,
+          17.557877343043337
+        ],
+        "centroid_offset_mm": 7.493360412182649,
+        "centroid_offset_azimuth_deg": -8.948965393909717,
+        "boot_centroid_azimuth_circstd_deg": 5.36886954899793,
+        "eccentricity_ratio_l1_over_l2": 1.2898100534989456,
+        "principal_azimuth_deg_mod180": -74.35344943996688,
+        "boot_principal_azimuth_circstd_deg": 17.248765596240094,
+        "boot_eccentricity_iqr": [
+          1.23690481805719,
+          1.4401918348347729
+        ]
+      },
+      {
+        "t_mm": 16.0,
+        "n_pts": 112,
+        "radial_extent_mm": [
+          0.5062509067730309,
+          17.618488557324966
+        ],
+        "centroid_offset_mm": 7.16770479683516,
+        "centroid_offset_azimuth_deg": -6.7883405754178545,
+        "boot_centroid_azimuth_circstd_deg": 4.949848078479576,
+        "eccentricity_ratio_l1_over_l2": 1.3483174809248826,
+        "principal_azimuth_deg_mod180": -76.25275171882657,
+        "boot_principal_azimuth_circstd_deg": 13.601984637248352,
+        "boot_eccentricity_iqr": [
+          1.2892350238666441,
+          1.4864138340092565
+        ]
+      },
+      {
+        "t_mm": 20.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          0.7912505529745102,
+          17.70223813816081
+        ],
+        "centroid_offset_mm": 6.906675556154919,
+        "centroid_offset_azimuth_deg": -3.6641256458821196,
+        "boot_centroid_azimuth_circstd_deg": 5.843981646242217,
+        "eccentricity_ratio_l1_over_l2": 1.3016480719866308,
+        "principal_azimuth_deg_mod180": -76.18057096254495,
+        "boot_principal_azimuth_circstd_deg": 17.880106139408507,
+        "boot_eccentricity_iqr": [
+          1.223513898100062,
+          1.505670819424901
+        ]
+      },
+      {
+        "t_mm": 24.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          1.064008958450491,
+          17.802830514931767
+        ],
+        "centroid_offset_mm": 6.773019962080325,
+        "centroid_offset_azimuth_deg": -3.1807113363664703,
+        "boot_centroid_azimuth_circstd_deg": 6.049830096062573,
+        "eccentricity_ratio_l1_over_l2": 1.2641970966277067,
+        "principal_azimuth_deg_mod180": -75.12741894288209,
+        "boot_principal_azimuth_circstd_deg": 20.27169141069032,
+        "boot_eccentricity_iqr": [
+          1.2089536776358627,
+          1.4749861049854893
+        ]
+      },
+      {
+        "t_mm": 28.0,
+        "n_pts": 112,
+        "radial_extent_mm": [
+          1.3418223368093203,
+          17.91723347701606
+        ],
+        "centroid_offset_mm": 6.930510688911072,
+        "centroid_offset_azimuth_deg": -2.2140761694982527,
+        "boot_centroid_azimuth_circstd_deg": 6.2681531778878155,
+        "eccentricity_ratio_l1_over_l2": 1.2216953525533416,
+        "principal_azimuth_deg_mod180": -72.41511794535143,
+        "boot_principal_azimuth_circstd_deg": 24.479427335758057,
+        "boot_eccentricity_iqr": [
+          1.1618135586487273,
+          1.3912768944088554
+        ]
+      },
+      {
+        "t_mm": 32.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          1.6220954957324492,
+          18.058153837932963
+        ],
+        "centroid_offset_mm": 6.576056493077002,
+        "centroid_offset_azimuth_deg": -3.0724585073641864,
+        "boot_centroid_azimuth_circstd_deg": 6.286610244209075,
+        "eccentricity_ratio_l1_over_l2": 1.1815749639237343,
+        "principal_azimuth_deg_mod180": -70.65390383500909,
+        "boot_principal_azimuth_circstd_deg": 25.860614380475027,
+        "boot_eccentricity_iqr": [
+          1.1389699388026395,
+          1.3645886601942607
+        ]
+      },
+      {
+        "t_mm": 40.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          2.0139206758516117,
+          18.38490884603185
+        ],
+        "centroid_offset_mm": 6.988647811824752,
+        "centroid_offset_azimuth_deg": -3.762120261260837,
+        "boot_centroid_azimuth_circstd_deg": 6.454898356777121,
+        "eccentricity_ratio_l1_over_l2": 1.2373870543505041,
+        "principal_azimuth_deg_mod180": -70.8119251546189,
+        "boot_principal_azimuth_circstd_deg": 21.229314115381893,
+        "boot_eccentricity_iqr": [
+          1.1857443395530138,
+          1.4114252231063094
+        ]
+      },
+      {
+        "t_mm": 48.0,
+        "n_pts": 108,
+        "radial_extent_mm": [
+          1.8182105390835424,
+          18.792914117705003
+        ],
+        "centroid_offset_mm": 7.55471155778629,
+        "centroid_offset_azimuth_deg": -8.100047977956828,
+        "boot_centroid_azimuth_circstd_deg": 5.053249788061096,
+        "eccentricity_ratio_l1_over_l2": 1.1623228982305778,
+        "principal_azimuth_deg_mod180": -50.19401611163991,
+        "boot_principal_azimuth_circstd_deg": 29.73022381640819,
+        "boot_eccentricity_iqr": [
+          1.1354833482092366,
+          1.3268722625492375
+        ]
+      }
+    ],
+    "paddle_sections": [
+      {
+        "t_mm": 75.0,
+        "n_pts": 216,
+        "radial_extent_mm": [
+          6.331242329359579,
+          34.39248247694314
+        ],
+        "centroid_offset_mm": 12.473425551338474,
+        "centroid_offset_azimuth_deg": -41.14076022877653,
+        "boot_centroid_azimuth_circstd_deg": 3.985153607384238,
+        "eccentricity_ratio_l1_over_l2": 14.08410548856336,
+        "principal_azimuth_deg_mod180": -87.19451376742029,
+        "boot_principal_azimuth_circstd_deg": 0.9990609162637253,
+        "boot_eccentricity_iqr": [
+          13.372358620404395,
+          15.083916517890092
+        ]
+      },
+      {
+        "t_mm": 82.0,
+        "n_pts": 216,
+        "radial_extent_mm": [
+          6.11726000794999,
+          33.95512207366991
+        ],
+        "centroid_offset_mm": 11.668904403750117,
+        "centroid_offset_azimuth_deg": -44.57859880995324,
+        "boot_centroid_azimuth_circstd_deg": 4.038623019036992,
+        "eccentricity_ratio_l1_over_l2": 16.3038755334989,
+        "principal_azimuth_deg_mod180": -86.80481600131944,
+        "boot_principal_azimuth_circstd_deg": 0.9230073387760835,
+        "boot_eccentricity_iqr": [
+          15.44926626975429,
+          17.29267947440858
+        ]
+      },
+      {
+        "t_mm": 89.0,
+        "n_pts": 220,
+        "radial_extent_mm": [
+          5.6128993915165415,
+          33.31602034058202
+        ],
+        "centroid_offset_mm": 10.211310850262059,
+        "centroid_offset_azimuth_deg": -47.952420923910154,
+        "boot_centroid_azimuth_circstd_deg": 3.9699530121033693,
+        "eccentricity_ratio_l1_over_l2": 17.941728633639897,
+        "principal_azimuth_deg_mod180": -86.52014087454171,
+        "boot_principal_azimuth_circstd_deg": 0.9139302393851433,
+        "boot_eccentricity_iqr": [
+          17.060646614855088,
+          19.07571279023507
+        ]
+      },
+      {
+        "t_mm": 96.0,
+        "n_pts": 216,
+        "radial_extent_mm": [
+          4.937569739856358,
+          32.43289558513542
+        ],
+        "centroid_offset_mm": 9.255133566663917,
+        "centroid_offset_azimuth_deg": -58.740196493698036,
+        "boot_centroid_azimuth_circstd_deg": 3.3607073412387485,
+        "eccentricity_ratio_l1_over_l2": 19.694423035869754,
+        "principal_azimuth_deg_mod180": -86.53229765093539,
+        "boot_principal_azimuth_circstd_deg": 0.8701912913792157,
+        "boot_eccentricity_iqr": [
+          18.66495529098136,
+          20.93181065529364
+        ]
+      },
+      {
+        "t_mm": 103.0,
+        "n_pts": 236,
+        "radial_extent_mm": [
+          4.346593182872084,
+          31.284949556289654
+        ],
+        "centroid_offset_mm": 8.18351447566691,
+        "centroid_offset_azimuth_deg": -74.29246545142045,
+        "boot_centroid_azimuth_circstd_deg": 1.9815455121051453,
+        "eccentricity_ratio_l1_over_l2": 25.86588701964887,
+        "principal_azimuth_deg_mod180": -87.40876037500357,
+        "boot_principal_azimuth_circstd_deg": 0.6939625170830379,
+        "boot_eccentricity_iqr": [
+          24.55717567142086,
+          27.464251964229625
+        ]
+      },
+      {
+        "t_mm": 110.0,
+        "n_pts": 96,
+        "radial_extent_mm": [
+          5.634084425852369,
+          28.662755791157455
+        ],
+        "centroid_offset_mm": 16.945178506518992,
+        "centroid_offset_azimuth_deg": -90.0751545163916,
+        "boot_centroid_azimuth_circstd_deg": 0.6071428635512237,
+        "eccentricity_ratio_l1_over_l2": 30.758327246905775,
+        "principal_azimuth_deg_mod180": -87.66685552135726,
+        "boot_principal_azimuth_circstd_deg": 1.0627964165942527,
+        "boot_eccentricity_iqr": [
+          29.546358935208602,
+          32.8776188619848
+        ]
+      }
+    ],
+    "band_roll": {
+      "n_band": 318,
+      "top": [
+        {
+          "perp_mm": 30.95308293114959,
+          "azimuth_deg": -68.13485380835962
+        },
+        {
+          "perp_mm": 30.922907588363042,
+          "azimuth_deg": -63.826943434792405
+        },
+        {
+          "perp_mm": 30.356999750358316,
+          "azimuth_deg": -71.97969676665772
+        },
+        {
+          "perp_mm": 30.238291259059928,
+          "azimuth_deg": -59.108244777801644
+        },
+        {
+          "perp_mm": 29.137196993414513,
+          "azimuth_deg": -75.22279827948887
+        },
+        {
+          "perp_mm": 29.100780774773956,
+          "azimuth_deg": -53.89712836661117
+        },
+        {
+          "perp_mm": 29.02588132566202,
+          "azimuth_deg": -62.09380972893918
+        },
+        {
+          "perp_mm": 28.87862210198186,
+          "azimuth_deg": -66.70754788913773
+        },
+        {
+          "perp_mm": 28.56422866681231,
+          "azimuth_deg": -57.05532076831852
+        },
+        {
+          "perp_mm": 28.15533712966427,
+          "azimuth_deg": -70.85851765634206
+        }
+      ],
+      "gap_ratio_d1_over_d2": 1.000975824886464
+    }
+  },
+  "method_note": "sections = exact triangle-plane intersection segment endpoints within rmax of the axis line (no slab bias, no bridging); principal azimuths mod 180; bootstrap = 200 point resamples; both ulna-axis DIRECTIONS (+a/-a) leave every reported magnitude and mod-180 line invariant by construction (a sign flip negates both e1,e2 projections and shifts azimuths by 180 deg = identity on mod-180 lines; per-line distances unchanged)"
+}

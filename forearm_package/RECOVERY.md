@@ -266,3 +266,16 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none mechanically; D1/D3-D5 pending by design.
 
 **Next:** C3 -> I6 ANATOMICAL_DECISION_TABLE.md.
+
+## CHECKPOINT 2026-09-24 (T18) — WAVE 3 COMPLETE: C3 integrated; I6 delivered. Decision package returned.
+
+**Verified:**
+- C3 PASS 6/6, receipts re-run by coordinator; integrity clean. Honest falsification of its own symmetric-tube prediction; caught the map's circular ulna falsifier + mislabeled roll numbers; supersession consequence inventory (U-STR re-anchor s=0.20418 vs U-ANA record elimination).
+- I6 DELIVERED: ANATOMICAL_DECISION_TABLE.md — the architect's requested seven-column table for all five candidates + roll rows; corrections-to-I5 recorded honestly (map Addendum 2 appended, nothing edited above); exact radius-supersession proposal (NOT AUTHORIZED); 5 ranked smallest missing measurements (3 close what C3 sees: volar-side visual, palm-face visual, radioulnar-offset citation; 2 upgrade verdicts).
+- Evidence-weighed summary (not decided): U-STR verdict-ready pending roll sign + supersession acceptance; U-ANA rejected on 3 independent grounds, preserved; hand scale blocked on same-assembly; no mass preferred; orientation one visual pass away per body; digits boundary precise.
+
+**Active:** none — wave 3 closed; no spin; standing worktree audit done this pass (no removals needed: registrations stable at 10, all referenced).
+
+**Blocked (by design, awaiting Astra):** ulna candidate + supersession acceptance + the 3 measurements authorization; hand policy deferred on same-assembly; D1 wrist rule; D3-D5 contracts.
+
+**Next (on Astra):** the 3 smallest measurements (2 visual IDs + 1 citation — CPU-light renders only, gaming-mode safe) -> U-STR verdict finalization if it holds -> authorized revision path (B4 gate -> new fit session -> T6/T7 for 12 tendons).

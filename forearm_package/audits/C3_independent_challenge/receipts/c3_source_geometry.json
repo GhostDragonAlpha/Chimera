@@ -1,0 +1,465 @@
+{
+  "inputs": {
+    "xml": "E:\\PythonChimera\\forearm_package\\baseline_snapshot\\source_xml\\chimanoid.xml",
+    "sha256_note": "see MANIFEST.json:248 (675e00d0...)"
+  },
+  "origins": {
+    "humerus": [
+      -0.0976,
+      1.183,
+      0.17000000000000007
+    ],
+    "ulna": [
+      -0.09150000000000001,
+      0.8345500000000001,
+      0.15770000000000006
+    ],
+    "radius": [
+      -0.09110000000000001,
+      0.8230470000000001,
+      0.17769900000000005
+    ],
+    "hand_r": [
+      -0.07310000000000001,
+      0.5326470000000001,
+      0.20269900000000005
+    ]
+  },
+  "chain_vectors": {
+    "ulna_to_radius": [
+      0.0003999999999999976,
+      -0.011503000000000041,
+      0.01999899999999999
+    ],
+    "abs_ulna_to_radius": 0.023074639975522924,
+    "radius_to_hand": [
+      0.018000000000000002,
+      -0.2904,
+      0.024999999999999994
+    ],
+    "abs_radius_to_hand": 0.2920293820833787,
+    "ulna_to_hand": [
+      0.0184,
+      -0.30190300000000003,
+      0.04499899999999998
+    ],
+    "abs_ulna_to_hand": 0.30579223569279845
+  },
+  "ulna_sites": [
+    {
+      "site": "TRIlong-P5",
+      "pos_global": [
+        -0.11340000000000001,
+        0.8450100000000001,
+        0.15692000000000006
+      ],
+      "abs_p_from_ulna_origin": 0.024282298079053403,
+      "perp_to_USTR_axis": 0.02345880821804825,
+      "perp_to_UANA_axis": 0.02348485438817274,
+      "axial_to_USTR_axis": -0.006270112996496359,
+      "axial_to_UANA_axis": -0.006171840435909245
+    },
+    {
+      "site": "TRIlat-P5",
+      "pos_global": [
+        -0.11340000000000001,
+        0.8450100000000001,
+        0.15692000000000006
+      ],
+      "abs_p_from_ulna_origin": 0.024282298079053403,
+      "perp_to_USTR_axis": 0.02345880821804825,
+      "perp_to_UANA_axis": 0.02348485438817274,
+      "axial_to_USTR_axis": -0.006270112996496359,
+      "axial_to_UANA_axis": -0.006171840435909245
+    },
+    {
+      "site": "TRImed-P5",
+      "pos_global": [
+        -0.11340000000000001,
+        0.8450100000000001,
+        0.15692000000000006
+      ],
+      "abs_p_from_ulna_origin": 0.024282298079053403,
+      "perp_to_USTR_axis": 0.02345880821804825,
+      "perp_to_UANA_axis": 0.02348485438817274,
+      "axial_to_USTR_axis": -0.006270112996496359,
+      "axial_to_UANA_axis": -0.006171840435909245
+    },
+    {
+      "site": "ANC-P2",
+      "pos_global": [
+        -0.11682000000000001,
+        0.8333100000000001,
+        0.16370000000000007
+      ],
+      "abs_p_from_ulna_origin": 0.026050719759730247,
+      "perp_to_USTR_axis": 0.025489235420289323,
+      "perp_to_UANA_axis": 0.02495169138406134,
+      "axial_to_USTR_axis": 0.005379486749594988,
+      "axial_to_UANA_axis": 0.00748686163052043
+    },
+    {
+      "site": "BRA-P4",
+      "pos_global": [
+        -0.0947,
+        0.8106500000000001,
+        0.15860000000000007
+      ],
+      "abs_p_from_ulna_origin": 0.024130064235306163,
+      "perp_to_USTR_axis": 0.020555174848061297,
+      "perp_to_UANA_axis": 0.0069426990802759865,
+      "axial_to_USTR_axis": 0.01263901843362964,
+      "axial_to_UANA_axis": 0.02310971504542487
+    },
+    {
+      "site": "BRA-P3",
+      "pos_global": [
+        -0.08652000000000001,
+        0.8199200000000001,
+        0.15898000000000007
+      ],
+      "abs_p_from_ulna_origin": 0.015507278936035197,
+      "perp_to_USTR_axis": 0.01297741581455933,
+      "perp_to_UANA_axis": 0.008190003565863515,
+      "axial_to_USTR_axis": 0.008488956283078993,
+      "axial_to_UANA_axis": 0.01316812597111464
+    },
+    {
+      "site": "ECU-P2",
+      "pos_global": [
+        -0.10541000000000002,
+        0.8025400000000001,
+        0.18717000000000006
+      ],
+      "abs_p_from_ulna_origin": 0.0456794165899697,
+      "perp_to_USTR_axis": 0.019605407501688498,
+      "perp_to_UANA_axis": 0.018765794721589353,
+      "axial_to_USTR_axis": 0.04125817611931888,
+      "axial_to_UANA_axis": 0.04164677716783339
+    },
+    {
+      "site": "ECU-P3",
+      "pos_global": [
+        -0.10855000000000001,
+        0.7802700000000001,
+        0.18638000000000007
+      ],
+      "abs_p_from_ulna_origin": 0.06371470238492839,
+      "perp_to_USTR_axis": 0.03734760832615567,
+      "perp_to_UANA_axis": 0.011389298303849823,
+      "axial_to_USTR_axis": 0.05162092068450608,
+      "axial_to_UANA_axis": 0.06268849323556855
+    },
+    {
+      "site": "ECU-P4",
+      "pos_global": [
+        -0.10943000000000001,
+        0.7388200000000001,
+        0.19048000000000007
+      ],
+      "abs_p_from_ulna_origin": 0.10276305853758926,
+      "perp_to_USTR_axis": 0.06936275133922963,
+      "perp_to_UANA_axis": 0.0,
+      "axial_to_USTR_axis": 0.07582252255532121,
+      "axial_to_UANA_axis": 0.10276305853758926
+    },
+    {
+      "site": "PT-P2",
+      "pos_global": [
+        -0.08304000000000002,
+        0.8008200000000001,
+        0.14338000000000006
+      ],
+      "abs_p_from_ulna_origin": 0.03760780371146396,
+      "perp_to_USTR_axis": 0.03733152110851162,
+      "perp_to_UANA_axis": 0.02775475525448706,
+      "axial_to_USTR_axis": 0.004550212272493866,
+      "axial_to_UANA_axis": 0.025377558211213416
+    }
+  ],
+  "ulna_axes": {
+    "USTR_unit": [
+      0.01733504836583838,
+      -0.49851265338060197,
+      0.866709080671009
+    ],
+    "UANA_unit": [
+      -0.17447904193549732,
+      -0.9315604397370415,
+      0.31898622390661474
+    ]
+  },
+  "axis_direction_note": "||t|| roll witnesses are per-line-perp distances: invariant to the +a/-a direction ambiguity. Flipping the axis direction flips b and c (180-deg roll), never any magnitude.",
+  "roll_witnesses": {
+    "ECU-P2": {
+      "roll_witness_t_norm_USTR": 0.019605407501688498,
+      "roll_witness_t_norm_UANA": 0.018765794721589353
+    },
+    "ANC-P2": {
+      "roll_witness_t_norm_USTR": 0.025489235420289323,
+      "roll_witness_t_norm_UANA": 0.02495169138406134
+    },
+    "TRIlat-P5": {
+      "roll_witness_t_norm_USTR": 0.02345880821804825,
+      "roll_witness_t_norm_UANA": 0.02348485438817274
+    }
+  },
+  "roll_azimuth_separation_USTR": {
+    "ECU-P2": 0.0,
+    "ANC-P2": -46.05952537924558,
+    "TRIlat-P5": -63.45876703237663
+  },
+  "map_roll_table_crosscheck": {
+    "ECU-P2": {
+      "map_perp": 0.0448,
+      "measured_abs_p": 0.0456794165899697,
+      "measured_perp_USTR": 0.019605407501688498,
+      "measured_perp_UANA": 0.018765794721589353
+    },
+    "ANC-P2": {
+      "map_perp": 0.026,
+      "measured_abs_p": 0.026050719759730247,
+      "measured_perp_USTR": 0.025489235420289323,
+      "measured_perp_UANA": 0.02495169138406134
+    },
+    "TRIlat-P5": {
+      "map_perp": 0.0243,
+      "measured_abs_p": 0.024282298079053403,
+      "measured_perp_USTR": 0.02345880821804825,
+      "measured_perp_UANA": 0.02348485438817274
+    },
+    "note": "TRIlat-P5/ANC-P2 map numbers equal measured |p| to 4 decimals; ECU-P2 map 0.0448 matches neither |p| (0.0457) nor any axis perp. See report."
+  },
+  "tri_triplet": {
+    "TRIlong-P5": [
+      -0.0219,
+      0.01046,
+      -0.00078
+    ],
+    "TRIlat-P5": [
+      -0.0219,
+      0.01046,
+      -0.00078
+    ],
+    "TRImed-P5": [
+      -0.0219,
+      0.01046,
+      -0.00078
+    ],
+    "identical": true
+  },
+  "hand_plane_normal_jackknife_deg": {
+    "geoms_27": {
+      "mean": 1.6731160622108034,
+      "max": 13.805642121935085
+    },
+    "carpals_metacarpals_13": {
+      "mean": 2.750904586988918,
+      "max": 8.129888043593198
+    },
+    "sites_5": {
+      "mean": 11.04697258051339,
+      "max": 25.986019031109134
+    },
+    "note": "plane normals are UNDIRECTED: deviations reported as acute angles"
+  },
+  "hand_axis_in_plane_deg": {
+    "angle_normal_to_length_axis_27": 88.78636745701017,
+    "angle_normal_to_length_axis_13": 87.21185913949613,
+    "angle_normal_to_length_axis_5": 24.202581513873117,
+    "length_axis_unit_local": [
+      0.04974076432707356,
+      -0.9907002750959768,
+      0.12664446805492344
+    ],
+    "note": "90 deg means the axis lies IN the plane"
+  },
+  "hand_planes": {
+    "geoms_27": {
+      "set": "27_skeleton_geoms",
+      "n_points": 27,
+      "centroid_local": [
+        0.004962481481481483,
+        -0.06750488888888888,
+        0.001351111111111111
+      ],
+      "normal_unit_undirected": [
+        -0.13264254256447758,
+        -0.11118458864512204,
+        -0.9849080886812969
+      ],
+      "singular_values": [
+        0.2518269828362036,
+        0.109335218841358,
+        0.055398964851347335
+      ],
+      "planarity_margin_sigma2_over_sigma3": 1.973596783527245,
+      "residual_rms_m": 0.010661535756583997,
+      "residual_max_m": 0.028611986727906165,
+      "perp_distances_m": [
+        0.0077915737071274456,
+        -0.005516546879472432,
+        -0.005422616320512738,
+        -0.0019828099438971443,
+        -0.004193121569717232,
+        -0.0066641642342875375,
+        -0.004998469671367354,
+        0.001967768325920277,
+        0.004075409019842943,
+        -0.009385313249261685,
+        -0.009630329623446777,
+        -0.004021245934781537,
+        0.004250734283740742,
+        0.017641729782219093,
+        0.028611986727906165,
+        -0.010274875734702033,
+        -0.01389846485768827,
+        -0.01277498827804706,
+        -0.008490287579857337,
+        -0.009929543318983713,
+        -0.00880553204849262,
+        -0.0009742692621323816,
+        0.0026447278646681395,
+        0.005153712149786391,
+        0.008318783844137041,
+        0.01580861173963485,
+        0.020697541061664798
+      ],
+      "extent_in_plane_m": 0.052834829759205185
+    },
+    "sites_5": {
+      "set": "5_tendon_sites",
+      "n_points": 5,
+      "centroid_local": [
+        0.0021009999999999996,
+        -0.031591,
+        0.0025980000000000005
+      ],
+      "normal_unit_undirected": [
+        0.16986523770762635,
+        0.8700293582210616,
+        -0.4628117509873524
+      ],
+      "singular_values": [
+        0.037687309362678056,
+        0.012150608083410301,
+        0.004758738930133053
+      ],
+      "planarity_margin_sigma2_over_sigma3": 2.5533252111123006,
+      "residual_rms_m": 0.002128172746990427,
+      "residual_max_m": 0.0034093930096562937,
+      "perp_distances_m": [
+        -0.0034093930096562937,
+        0.0018679543105768284,
+        -0.0005889223729133468,
+        0.0026330347215983525,
+        -0.0005026736496055364
+      ],
+      "extent_in_plane_m": 0.017708588672137805,
+      "sites_about_geom_plane": {
+        "perp_distance_of_each_site_to_27geom_plane_m": [
+          -0.012326946904972273,
+          -0.01443279730658727,
+          -0.0008621689933126132,
+          -0.001989213390872934,
+          0.005403187916213297
+        ]
+      }
+    },
+    "carpals_metacarpals_13": {
+      "set": "13_carpals_metacarpals",
+      "n_points": 13,
+      "centroid_local": [
+        0.0031754615384615385,
+        -0.025422384615384614,
+        -0.0005245384615384616
+      ],
+      "normal_unit_undirected": [
+        -0.042725471059569045,
+        -0.1769424180888977,
+        -0.9832934021967156
+      ],
+      "singular_values": [
+        0.07158011037595632,
+        0.04879738552003974,
+        0.017991105316599885
+      ],
+      "planarity_margin_sigma2_over_sigma3": 2.712306145805048,
+      "residual_rms_m": 0.004989834824713359,
+      "residual_max_m": 0.008723543849450559,
+      "perp_distances_m": [
+        0.007858888035443145,
+        -0.004878400325799018,
+        -0.0033829253853258764,
+        -0.0018232924572124144,
+        -0.0030257959144385587,
+        -0.004673392991270308,
+        -0.001922456927878138,
+        0.005617444677907621,
+        0.008723543849450559,
+        -0.0035921751651296204,
+        -0.005004484925580637,
+        -0.00044350185025975476,
+        0.006546549380093003
+      ],
+      "extent_in_plane_m": 0.024027063322949738
+    },
+    "acute_angle_between_normals_deg": 70.33246034316664,
+    "acute_angle_27_vs_13_deg": 6.386523369677789,
+    "geom_names": [
+      "pisiform",
+      "lunate",
+      "scaphoid",
+      "triquetrum",
+      "hamate",
+      "capitate",
+      "trapezoid",
+      "trapezium",
+      "1mc",
+      "2mc",
+      "3mc",
+      "4mc",
+      "5mc",
+      "thumbprox",
+      "thumbdist",
+      "2proxph",
+      "2midph",
+      "2distph",
+      "3proxph",
+      "3midph",
+      "3distph",
+      "4proxph",
+      "4midph",
+      "4distph",
+      "5proxph",
+      "5midph",
+      "5distph"
+    ],
+    "geom_missing_pos_attr": [
+      "lunate"
+    ],
+    "direction_A_geoms_construct_sites_validate": {
+      "site_plane_spread_rms_m": 0.008878671105930318,
+      "site_plane_spread_max_m": 0.01443279730658727,
+      "geom_plane_residual_rms_m": 0.010661535756583997,
+      "margin_ratio_site_spread_over_geom_rms": 0.8327760004413364
+    },
+    "direction_B_sites_construct_geoms_validate": {
+      "geom_plane_spread_rms_m": 0.054130672478098996,
+      "geom_plane_spread_max_m": 0.11330520777674694,
+      "site_plane_residual_rms_m": 0.002128172746990427,
+      "margin_ratio_geom_spread_over_site_rms": 25.435281301599378
+    }
+  },
+  "hand_length_refs": {
+    "3distph_abs_p": 0.1552851087934706,
+    "distallest_geom": [
+      0.1552851087934706,
+      "3distph"
+    ],
+    "metacarpal_x_range_m": [
+      -0.017904,
+      0.026485
+    ]
+  }
+}

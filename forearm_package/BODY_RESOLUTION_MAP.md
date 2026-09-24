@@ -105,3 +105,15 @@ B1 `audits/B1_source_anatomy/` (source dossiers, paddle measurements, correspond
 4. **Deliverable:** one decision table (candidate definition · source evidence · target evidence · scale derivation · roll derivation · independent validation · remaining ambiguity) + the exact proposed radius-record supersession and why it is necessary. If existing evidence cannot distinguish candidates, the SMALLEST MISSING MEASUREMENT is returned. Not a broad audit.
 5. **Digits reclassified:** "permanently unmappable" is downgraded to **"unmappable under the current assets and correspondence contract"** unless stronger evidence supports permanence. Resolving 12 tendons remains partial progress toward grasp.
 6. **Cleanup rule corrected:** every integration ends with a worktree AUDIT, not mandatory deletion; removal requires verified inactivity + preserved needed files + a durable Git reference for the exact tip (detached included). Retrospective audit of the 8 prior removals: 8/8 tips now durably referenced (kilo tip preserved via `preserved/kilo-worktrees-shutdown-33e7a444`); six dirty trees untouched.
+
+---
+
+## ADDENDUM 2 (2026-09-24, after wave 3) — corrections and supersession of judgment
+
+Wave 3 (C1/C2/C3, receipts coordinator-verified) corrected this map and produced the terminal decision document: **`ANATOMICAL_DECISION_TABLE.md` (I6)**. Corrections to THIS map, recorded here rather than by editing above:
+1. §2.1 roll table: "perp" values were |p| relabels (ANC-P2, TRIlat-P5); ECU-P2's 0.0448 matched nothing (real axis perps 0.0196/0.0188); ECU-P4's 0.1015 → 0.0694 (U-STR axis) / 69.4 axial + 30.1 transverse anatomical [C1/C3].
+2. §2.1 entry falsifier was CIRCULAR for U-ANA (ECU-P4 is its construction input) [C3].
+3. §2.1 U-ANA row: C1 measured 6/9 independent validators displaced +7..+42 points out of region; C3: U-ANA forces radius span→0 (record elimination). The map's neutral presentation is superseded by I6's evidence-weighted table.
+4. The 4.4x extrapolation explained: 4.4535 kinematic / 4.258 axial / 1.304 transverse; axis 51.63° oblique [C1].
+5. Digits §4: reclassified per the architect — see I6 §5.
+Nothing above has been edited; I6 is the decision document.
