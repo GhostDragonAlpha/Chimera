@@ -221,3 +221,16 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked (by design, pending Astra):** the map's policy picks (U-STR/U-ANA; H-LEN/H-ASP/H-BODY; roll refs) + D1 wrist rule + D3-D5 contracts.
 
 **Next (on Astra answers):** freeze the chosen preregistration -> B4 T1-T6 gate run -> new fit session (append-only) -> T6/T7 measurement for the 12 unblocked tendons. If session dies: resume from this file; every audit re-runnable from briefs.
+
+## CHECKPOINT 2026-09-24 (T15) — architect decision 3 recorded; cleanup corrected + audited; wave-3 dispatched
+
+**Verified:**
+- Retrospective worktree-tip audit (architect-ordered): 8/8 removals now durably referenced — 4 at their branches' exact tips, review-mutations 7aba0ee7 an ancestor of master, kilo tip 33e7a444 (= origin/master tip, contained by NO local branch) preserved via new branch preserved/kilo-worktrees-shutdown-33e7a444. Six dirty trees untouched. Cleanup rule corrected on board + memory: AUDIT per integration, deletion only under three conditions (verified inactivity, preserved files, durable exact-tip reference).
+- BODY_RESOLUTION_MAP addendum appended (additive): candidates NOT chosen; wave-3 laws (circularity, freeze-before-comparison, no-utility); digits reclassified to unmappable-under-current-assets-contract.
+- No new fit / production mapping / supersession authorized — recorded.
+
+**Active (dispatched, background):** C1 ulna evidence · C2 hand evidence · C3 independent challenge.
+
+**Blocked:** none mechanically; D1/D3-D5 pending by design.
+
+**Next:** C1-C3 -> verify receipts -> I6: the decision table (7 columns) + exact radius-supersession proposal + smallest-missing-measurement if indistinguishable -> return for approval.

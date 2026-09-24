@@ -47,6 +47,15 @@
 **Standing rulings:** wrist finding STANDS (all four sites outside under both evaluated loops); NO hull band extension; D1 general rule pending; D3–D5 undecided until exact proposed contracts are presented; E-3 confirmed by architect (67.147 µm/side); ERRATA.md authorized additive — DONE ([`ERRATA.md`](ERRATA.md)).
 **Useful target facts on record (A2 receipts, verified):** the target pack's joints include `elbow_L/R` and `wrist_L/R` (no digit joints, no ulna-specific joint); pack tri-owner attribution near the forearm already names `wrist_L/R`, `elbow_L/R` as triangle owners.
 
+## WAVE 3 — D2 CONTINUATION (architect, 2026-09-24, third instruction): anatomical-validity determination
+
+**Decision:** NO candidate chosen. Anatomical validity alone may select U-STR/U-ANA and H-LEN/H-ASP/H-BODY — convenient scale, mass, or tendon coverage cannot. The 4.4× extrapolation and the hand-mass spread require explanation first. **No new fit session, production mapping, or radius supersession is authorized.**
+**Circularity law (architect):** an attachment site used to CONSTRUCT a fit cannot validate it (ECU-P2 roll ref; ECU-P4 anchor); a palm-plane reference needs independently identified anatomical points.
+**Freeze law:** evidence, uncertainty, anatomical acceptance criteria, falsifiers — frozen BEFORE comparison; rejected/unresolved alternatives preserved; no moment-arm or utility computation.
+**Digits:** reclassified to "unmappable under the current assets and correspondence contract" (was: permanent). 12-tendon resolution = partial progress that counts.
+**Cleanup rule CORRECTED:** per-integration worktree AUDIT, not mandatory deletion; removal requires verified inactivity + preserved files + durable Git reference for the EXACT tip (detached included). Retrospective: 8/8 prior removals durably referenced (kilo 33e7a444 = origin/master tip, preserved locally via `preserved/kilo-worktrees-shutdown-33e7a444`); six dirty trees untouched.
+**Standing:** D1, D3–D5 pending; walking parity and training retain resource priority.
+
 ## ASSIGNMENTS
 
 | id | assignment | agent dir | status | verdict | receipt |
