@@ -1,0 +1,36 @@
+# B1 receipt: tendon membership of all 30 sites owned by ulna/ulna_l/hand_r/hand_l
+# source: baseline_snapshot/source_xml/chimanoid.xml (sha256 675e00d0..)
+# format: site | tendon | index/len | role
+
+TRIlong-P5     TRIlong_tendon     5/5  LAST(distal-end)
+TRIlat-P5      TRIlat_tendon      5/5  LAST(distal-end)
+TRImed-P5      TRImed_tendon      5/5  LAST(distal-end)
+ANC-P2         ANC_tendon         2/2  LAST(distal-end)
+BRA-P3         BRA_tendon         3/4  interior
+BRA-P4         BRA_tendon         4/4  LAST(distal-end)
+ECRL-P4        ECRL_tendon        4/4  LAST(distal-end)
+ECRB-P4        ECRB_tendon        4/4  LAST(distal-end)
+ECU-P2         ECU_tendon         2/6  interior
+ECU-P3         ECU_tendon         3/6  interior
+ECU-P4         ECU_tendon         4/6  interior
+ECU-P6         ECU_tendon         6/6  LAST(distal-end)
+FCR-P3         FCR_tendon         3/3  LAST(distal-end)
+FCU-P4         FCU_tendon         4/4  LAST(distal-end)
+PT-P2          PT_tendon          2/4  interior
+TRIlong_l-P5   TRIlong_l_tendon   5/5  LAST(distal-end)
+TRIlat_l-P5    TRIlat_l_tendon    5/5  LAST(distal-end)
+TRImed_l-P5    TRImed_l_tendon    5/5  LAST(distal-end)
+ANC_l-P2       ANC_l_tendon       2/2  LAST(distal-end)
+BRA_l-P3       BRA_l_tendon       3/4  interior
+BRA_l-P4       BRA_l_tendon       4/4  LAST(distal-end)
+ECRL_l-P4      ECRL_l_tendon      4/4  LAST(distal-end)
+ECRB_l-P4      ECRB_l_tendon      4/4  LAST(distal-end)
+ECU_l-P2       ECU_l_tendon       2/6  interior
+ECU_l-P3       ECU_l_tendon       3/6  interior
+ECU_l-P4       ECU_l_tendon       4/6  interior
+ECU_l-P6       ECU_l_tendon       6/6  LAST(distal-end)
+FCR_l-P3       FCR_l_tendon       3/3  LAST(distal-end)
+FCU_l-P4       FCU_l_tendon       4/4  LAST(distal-end)
+PT_l-P2        PT_l_tendon        2/4  interior
+
+sites found: 30/30; missing: NONE

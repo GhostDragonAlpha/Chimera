@@ -1,0 +1,174 @@
+source: E:\PythonChimera\forearm_package\baseline_snapshot\source_xml\chimanoid.xml
+bytes=154835
+bodies in tree: 19
+body tree:
+  pelvis         parent=None
+  femur_r        parent=pelvis
+  tibia_r        parent=femur_r
+  talus_r        parent=tibia_r
+  toes_r         parent=talus_r
+  femur_l        parent=pelvis
+  tibia_l        parent=femur_l
+  talus_l        parent=tibia_l
+  toes_l         parent=talus_l
+  thorax_dummy   parent=pelvis
+  thorax         parent=thorax_dummy
+  humerus        parent=thorax
+  ulna           parent=humerus
+  radius         parent=ulna
+  hand_r         parent=radius
+  humerus_l      parent=thorax
+  ulna_l         parent=humerus_l
+  radius_l       parent=ulna_l
+  hand_l         parent=radius_l
+
+### ulna
+  parent=humerus
+  direct children=['radius']
+  siblings (same parent)=['ulna']
+  attrs: pos='  0.0061  -0.34845  -0.0123' quat='1.0 0.0 0.0 0.0' orientation=None euler=None
+  direct <joint> children: 1
+    joint 'elbow_flexion' type='hinge' pos='0 0 0' axis='       0        0        1' range='       0  2.26893' limited='true'
+  ALL descendant joint names (incl. own + descendants): ['elbow_flexion', 'wrist_dev_r', 'wrist_flex_r', 'wrist_3_r']
+  direct <site> children: 10
+    site 'TRIlong-P5' pos='-0.0219 0.01046 -0.00078' type=None tendon_referenced=True
+    site 'TRIlat-P5' pos='-0.0219 0.01046 -0.00078' type=None tendon_referenced=True
+    site 'TRImed-P5' pos='-0.0219 0.01046 -0.00078' type=None tendon_referenced=True
+    site 'ANC-P2' pos='-0.02532 -0.00124 0.006' type=None tendon_referenced=True
+    site 'BRA-P4' pos='-0.0032 -0.0239 0.0009' type=None tendon_referenced=True
+    site 'BRA-P3' pos='0.00498 -0.01463 0.00128' type=None tendon_referenced=True
+    site 'ECU-P2' pos='-0.01391 -0.03201 0.02947' type=None tendon_referenced=True
+    site 'ECU-P3' pos='-0.01705 -0.05428 0.02868' type=None tendon_referenced=True
+    site 'ECU-P4' pos='-0.01793 -0.09573 0.03278' type=None tendon_referenced=True
+    site 'PT-P2' pos='0.00846 -0.03373 -0.01432' type=None tendon_referenced=True
+  of which referenced by spatial tendons: 10
+  <inertial> pos='       0 -0.120525        0' mass='0.729' fullinertia='0.002962 0.000618 0.003213        0        0        0'
+  direct <geom> children: 1 types=['mesh']
+
+### ulna_l
+  parent=humerus_l
+  direct children=['radius_l']
+  siblings (same parent)=['ulna_l']
+  attrs: pos='  0.0061  -0.3485   0.0123' quat='1.0 0.0 0.0 0.0' orientation=None euler=None
+  direct <joint> children: 1
+    joint 'elbow_flexion_l' type='hinge' pos='0 0 0' axis='       0        0        1' range='       0  2.26893' limited='true'
+  ALL descendant joint names (incl. own + descendants): ['elbow_flexion_l', 'wrist_dev_l', 'wrist_flex_l', 'wrist_3_l']
+  direct <site> children: 10
+    site 'TRIlong_l-P5' pos='-0.0219 0.01046 0.00078' type=None tendon_referenced=True
+    site 'TRIlat_l-P5' pos='-0.0219 0.01046 0.00078' type=None tendon_referenced=True
+    site 'TRImed_l-P5' pos='-0.0219 0.01046 0.00078' type=None tendon_referenced=True
+    site 'ANC_l-P2' pos='-0.02532 -0.00124 -0.006' type=None tendon_referenced=True
+    site 'BRA_l-P4' pos='-0.0032 -0.0239 -0.0009' type=None tendon_referenced=True
+    site 'BRA_l-P3' pos='0.00498 -0.01463 -0.00128' type=None tendon_referenced=True
+    site 'ECU_l-P2' pos='-0.01391 -0.03201 -0.02947' type=None tendon_referenced=True
+    site 'ECU_l-P3' pos='-0.01705 -0.05428 -0.02868' type=None tendon_referenced=True
+    site 'ECU_l-P4' pos='-0.01793 -0.09573 -0.03278' type=None tendon_referenced=True
+    site 'PT_l-P2' pos='0.00846 -0.03373 0.01432' type=None tendon_referenced=True
+  of which referenced by spatial tendons: 10
+  <inertial> pos='       0 -0.120525        0' mass='0.729' fullinertia='0.002962 0.000618 0.003213        0        0        0'
+  direct <geom> children: 1 types=['mesh']
+
+### hand_r
+  parent=radius
+  direct children=[]
+  siblings (same parent)=['hand_r']
+  attrs: pos='   0.018   -0.2904    0.025' quat='1.0 0.0 0.0 0.0' orientation=None euler=None
+  direct <joint> children: 3
+    joint 'wrist_dev_r' type='hinge' pos='0 0 0' axis='-0.819064 -0.135611 -0.557444' range='-0.436332 0.610865' limited='true'
+    joint 'wrist_flex_r' type='hinge' pos='0 0 0' axis='0.956427 -0.252207 0.147104' range='-0.610864 0.610864' limited='true'
+    joint 'wrist_3_r' type='hinge' pos='0 0 0' axis='       0        1        0' range='-1.22173  1.22173' limited='true'
+  ALL descendant joint names (incl. own + descendants): ['wrist_dev_r', 'wrist_flex_r', 'wrist_3_r']
+  direct <site> children: 5
+    site 'ECRL-P4' pos='0.021167 -0.036274 0.008159' type=None tendon_referenced=True
+    site 'ECRB-P4' pos='0.008989 -0.026413 0.010824' type=None tendon_referenced=True
+    site 'ECU-P6' pos='-0.018514 -0.029067 0.001049' type=None tendon_referenced=True
+    site 'FCR-P3' pos='0.015227 -0.033494 -0.001851' type=None tendon_referenced=True
+    site 'FCU-P4' pos='-0.016364 -0.032707 -0.005191' type=None tendon_referenced=True
+  of which referenced by spatial tendons: 5
+  <inertial> pos='       0 -0.068095        0' mass='0.4575' fullinertia='0.000892 0.000547  0.00134        0        0        0'
+  direct <geom> children: 30 types=['capsule', 'capsule', 'capsule', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh']
+    geom name='r_hand1' type='capsule' fromto=None size='0.02 0.05' pos='-0 -0.09 0.0' group=None
+    geom name='r_hand2' type='capsule' fromto=None size='0.02 0.05' pos='-0.02 -0.09 0.0' group=None
+    geom name='r_hand3' type='capsule' fromto=None size='0.02 0.05' pos='0.02 -0.09 0.0' group=None
+    geom name='pisiform' type='mesh' fromto=None size=None pos='-0.013388 -0.009886 -0.010593' group=None
+    geom name='lunate' type='mesh' fromto=None size=None pos=None group=None
+    geom name='scaphoid' type='mesh' fromto=None size=None pos='0.012345 -0.004464 -0.001254' group=None
+    geom name='triquetrum' type='mesh' fromto=None size=None pos='-0.010784 -0.007499 -0.001289' group=None
+    geom name='hamate' type='mesh' fromto=None size=None pos='-0.006977 -0.017549 0.001577' group=None
+    geom name='capitate' type='mesh' fromto=None size=None pos='0.003992 -0.015054 0.002327' group=None
+    geom name='trapezoid' type='mesh' fromto=None size=None pos='0.013135 -0.019116 -0.000137' group=None
+    geom name='trapezium' type='mesh' fromto=None size=None pos='0.019285 -0.019623 -0.007981' group=None
+    geom name='1mc' type='mesh' fromto=None size=None pos='0.026485 -0.025023 -0.010481' group=None
+    geom name='2mc' type='mesh' fromto=None size=None pos='0.018677 -0.052674 0.007359' group=None
+    geom name='3mc' type='mesh' fromto=None size=None pos='0.004469 -0.054293 0.009704' group=None
+    geom name='4mc' type='mesh' fromto=None size=None pos='-0.008054 -0.055573 0.00584' group=None
+    geom name='5mc' type='mesh' fromto=None size=None pos='-0.017904 -0.049737 -0.001891' group=None
+    geom name='thumbprox' type='mesh' fromto=None size=None pos='0.042985 -0.054223 -0.023181' group=None
+    geom name='thumbdist' type='mesh' fromto=None size=None pos='0.056985 -0.080123 -0.033281' group=None
+    geom name='2proxph' type='mesh' fromto=None size=None pos='0.022178 -0.080917 0.010979' group=None
+    geom name='2midph' type='mesh' fromto=None size=None pos='0.029695 -0.12219 0.018305' group=None
+    geom name='2distph' type='mesh' fromto=None size=None pos='0.033028 -0.147078 0.019525' group=None
+    geom name='3proxph' type='mesh' fromto=None size=None pos='0.004709 -0.080583 0.011482' group=None
+    geom name='3midph' type='mesh' fromto=None size=None pos='0.006359 -0.124794 0.017712' group=None
+    geom name='3distph' type='mesh' fromto=None size=None pos='0.007724 -0.153841 0.019666' group=None
+    geom name='4proxph' type='mesh' fromto=None size=None pos='-0.009884 -0.079262 0.005667' group=None
+    geom name='4midph' type='mesh' fromto=None size=None pos='-0.013412 -0.119517 0.007012' group=None
+    geom name='4distph' type='mesh' fromto=None size=None pos='-0.015729 -0.144306 0.007575' group=None
+    geom name='5proxph' type='mesh' fromto=None size=None pos='-0.019501 -0.071168 -0.003387' group=None
+    geom name='5midph' type='mesh' fromto=None size=None pos='-0.02478 -0.106731 -0.006266' group=None
+    geom name='5distph' type='mesh' fromto=None size=None pos='-0.027651 -0.127408 -0.008509' group=None
+
+### hand_l
+  parent=radius_l
+  direct children=[]
+  siblings (same parent)=['hand_l']
+  attrs: pos='   0.018   -0.2904   -0.025' quat='1.0 0.0 0.0 0.0' orientation=None euler=None
+  direct <joint> children: 3
+    joint 'wrist_dev_l' type='hinge' pos='0 0 0' axis='-0.819064 -0.135611 -0.557444' range='-0.436332 0.610865' limited='true'
+    joint 'wrist_flex_l' type='hinge' pos='0 0 0' axis='0.956427 -0.252207 0.147104' range='-0.610864 0.610864' limited='true'
+    joint 'wrist_3_l' type='hinge' pos='0 0 0' axis='       0        1        0' range='-1.22173  1.22173' limited='true'
+  ALL descendant joint names (incl. own + descendants): ['wrist_dev_l', 'wrist_flex_l', 'wrist_3_l']
+  direct <site> children: 5
+    site 'ECRL_l-P4' pos='0.021167 -0.036274 -0.008159' type=None tendon_referenced=True
+    site 'ECRB_l-P4' pos='0.008989 -0.026413 -0.010824' type=None tendon_referenced=True
+    site 'ECU_l-P6' pos='-0.018514 -0.029067 -0.001049' type=None tendon_referenced=True
+    site 'FCR_l-P3' pos='0.015227 -0.033494 0.001851' type=None tendon_referenced=True
+    site 'FCU_l-P4' pos='-0.016364 -0.032707 0.005191' type=None tendon_referenced=True
+  of which referenced by spatial tendons: 5
+  <inertial> pos='       0 -0.068095        0' mass='0.4575' fullinertia='0.000892 0.000547  0.00134        0        0        0'
+  direct <geom> children: 30 types=['capsule', 'capsule', 'capsule', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh', 'mesh']
+    geom name='l_hand1' type='capsule' fromto=None size='0.02 0.05' pos='-0 -0.09 0.0' group=None
+    geom name='l_hand2' type='capsule' fromto=None size='0.02 0.05' pos='-0.02 -0.09 0.0' group=None
+    geom name='l_hand3' type='capsule' fromto=None size='0.02 0.05' pos='0.02 -0.09 0.0' group=None
+    geom name='pisiform_l' type='mesh' fromto=None size=None pos='-0.013388 -0.009886 0.010593' group=None
+    geom name='lunate_l' type='mesh' fromto=None size=None pos=None group=None
+    geom name='scaphoid_l' type='mesh' fromto=None size=None pos='0.012345 -0.004464 0.001254' group=None
+    geom name='triquetrum_l' type='mesh' fromto=None size=None pos='-0.010784 -0.007499 0.001289' group=None
+    geom name='hamate_l' type='mesh' fromto=None size=None pos='-0.006977 -0.017549 -0.001577' group=None
+    geom name='capitate_l' type='mesh' fromto=None size=None pos='0.003992 -0.015054 -0.002327' group=None
+    geom name='trapezoid_l' type='mesh' fromto=None size=None pos='0.013135 -0.019116 0.000137' group=None
+    geom name='trapezium_l' type='mesh' fromto=None size=None pos='0.019285 -0.019623 0.007981' group=None
+    geom name='1mc_l' type='mesh' fromto=None size=None pos='0.026485 -0.025023 0.010481' group=None
+    geom name='2mc_l' type='mesh' fromto=None size=None pos='0.018677 -0.052674 -0.007359' group=None
+    geom name='3mc_l' type='mesh' fromto=None size=None pos='0.004469 -0.054293 -0.009704' group=None
+    geom name='4mc_l' type='mesh' fromto=None size=None pos='-0.008054 -0.055573 -0.00584' group=None
+    geom name='5mc_l' type='mesh' fromto=None size=None pos='-0.017904 -0.049737 0.001891' group=None
+    geom name='thumbprox_l' type='mesh' fromto=None size=None pos='0.042985 -0.054223 0.023181' group=None
+    geom name='thumbdist_l' type='mesh' fromto=None size=None pos='0.056985 -0.080123 0.033281' group=None
+    geom name='2proxph_l' type='mesh' fromto=None size=None pos='0.022178 -0.080917 -0.010979' group=None
+    geom name='2midph_l' type='mesh' fromto=None size=None pos='0.029695 -0.12219 -0.018305' group=None
+    geom name='2distph_l' type='mesh' fromto=None size=None pos='0.033028 -0.147078 -0.019525' group=None
+    geom name='3proxph_l' type='mesh' fromto=None size=None pos='0.004709 -0.080583 -0.011482' group=None
+    geom name='3midph_l' type='mesh' fromto=None size=None pos='0.006359 -0.124794 -0.017712' group=None
+    geom name='3distph_l' type='mesh' fromto=None size=None pos='0.007724 -0.153841 -0.019666' group=None
+    geom name='4proxph_l' type='mesh' fromto=None size=None pos='-0.009884 -0.079262 -0.005667' group=None
+    geom name='4midph_l' type='mesh' fromto=None size=None pos='-0.013412 -0.119517 -0.007012' group=None
+    geom name='4distph_l' type='mesh' fromto=None size=None pos='-0.015729 -0.144306 -0.007575' group=None
+    geom name='5proxph_l' type='mesh' fromto=None size=None pos='-0.019501 -0.071168 0.003387' group=None
+    geom name='5midph_l' type='mesh' fromto=None size=None pos='-0.02478 -0.106731 0.006266' group=None
+    geom name='5distph_l' type='mesh' fromto=None size=None pos='-0.027651 -0.127408 0.008509' group=None
+
+global: total <site> elements=937  spatial tendons=120  sites referenced by spatial tendons=468
+global: total <body> elements (descendant search)=19
+digit-like joint names anywhere in source (finger/digit/thumb/mcp/pip/dip/prox/dist): []
+joints anywhere under the four bodies (descendant search): [('ulna', 'elbow_flexion'), ('ulna', 'wrist_dev_r'), ('ulna', 'wrist_flex_r'), ('ulna', 'wrist_3_r'), ('ulna_l', 'elbow_flexion_l'), ('ulna_l', 'wrist_dev_l'), ('ulna_l', 'wrist_flex_l'), ('ulna_l', 'wrist_3_l'), ('hand_r', 'wrist_dev_r'), ('hand_r', 'wrist_flex_r'), ('hand_r', 'wrist_3_r'), ('hand_l', 'wrist_dev_l'), ('hand_l', 'wrist_flex_l'), ('hand_l', 'wrist_3_l')]

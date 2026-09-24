@@ -1,0 +1,264 @@
+{
+ "ulna": {
+  "name": "ulna",
+  "parent": "humerus",
+  "joints": [
+   {
+    "name": "elbow_flexion",
+    "type": "hinge",
+    "pos": "0 0 0",
+    "axis": "       0        0        1",
+    "range": "       0  2.26893"
+   }
+  ],
+  "sites": [
+   {
+    "name": "TRIlong-P5",
+    "pos": "-0.0219 0.01046 -0.00078",
+    "referenced": true
+   },
+   {
+    "name": "TRIlat-P5",
+    "pos": "-0.0219 0.01046 -0.00078",
+    "referenced": true
+   },
+   {
+    "name": "TRImed-P5",
+    "pos": "-0.0219 0.01046 -0.00078",
+    "referenced": true
+   },
+   {
+    "name": "ANC-P2",
+    "pos": "-0.02532 -0.00124 0.006",
+    "referenced": true
+   },
+   {
+    "name": "BRA-P4",
+    "pos": "-0.0032 -0.0239 0.0009",
+    "referenced": true
+   },
+   {
+    "name": "BRA-P3",
+    "pos": "0.00498 -0.01463 0.00128",
+    "referenced": true
+   },
+   {
+    "name": "ECU-P2",
+    "pos": "-0.01391 -0.03201 0.02947",
+    "referenced": true
+   },
+   {
+    "name": "ECU-P3",
+    "pos": "-0.01705 -0.05428 0.02868",
+    "referenced": true
+   },
+   {
+    "name": "ECU-P4",
+    "pos": "-0.01793 -0.09573 0.03278",
+    "referenced": true
+   },
+   {
+    "name": "PT-P2",
+    "pos": "0.00846 -0.03373 -0.01432",
+    "referenced": true
+   }
+  ],
+  "n_sites_referenced": 10,
+  "inertial": {
+   "pos": "       0 -0.120525        0",
+   "mass": "0.729",
+   "fullinertia": "0.002962 0.000618 0.003213        0        0        0"
+  }
+ },
+ "ulna_l": {
+  "name": "ulna_l",
+  "parent": "humerus_l",
+  "joints": [
+   {
+    "name": "elbow_flexion_l",
+    "type": "hinge",
+    "pos": "0 0 0",
+    "axis": "       0        0        1",
+    "range": "       0  2.26893"
+   }
+  ],
+  "sites": [
+   {
+    "name": "TRIlong_l-P5",
+    "pos": "-0.0219 0.01046 0.00078",
+    "referenced": true
+   },
+   {
+    "name": "TRIlat_l-P5",
+    "pos": "-0.0219 0.01046 0.00078",
+    "referenced": true
+   },
+   {
+    "name": "TRImed_l-P5",
+    "pos": "-0.0219 0.01046 0.00078",
+    "referenced": true
+   },
+   {
+    "name": "ANC_l-P2",
+    "pos": "-0.02532 -0.00124 -0.006",
+    "referenced": true
+   },
+   {
+    "name": "BRA_l-P4",
+    "pos": "-0.0032 -0.0239 -0.0009",
+    "referenced": true
+   },
+   {
+    "name": "BRA_l-P3",
+    "pos": "0.00498 -0.01463 -0.00128",
+    "referenced": true
+   },
+   {
+    "name": "ECU_l-P2",
+    "pos": "-0.01391 -0.03201 -0.02947",
+    "referenced": true
+   },
+   {
+    "name": "ECU_l-P3",
+    "pos": "-0.01705 -0.05428 -0.02868",
+    "referenced": true
+   },
+   {
+    "name": "ECU_l-P4",
+    "pos": "-0.01793 -0.09573 -0.03278",
+    "referenced": true
+   },
+   {
+    "name": "PT_l-P2",
+    "pos": "0.00846 -0.03373 0.01432",
+    "referenced": true
+   }
+  ],
+  "n_sites_referenced": 10,
+  "inertial": {
+   "pos": "       0 -0.120525        0",
+   "mass": "0.729",
+   "fullinertia": "0.002962 0.000618 0.003213        0        0        0"
+  }
+ },
+ "hand_r": {
+  "name": "hand_r",
+  "parent": "radius",
+  "joints": [
+   {
+    "name": "wrist_dev_r",
+    "type": "hinge",
+    "pos": "0 0 0",
+    "axis": "-0.819064 -0.135611 -0.557444",
+    "range": "-0.436332 0.610865"
+   },
+   {
+    "name": "wrist_flex_r",
+    "type": "hinge",
+    "pos": "0 0 0",
+    "axis": "0.956427 -0.252207 0.147104",
+    "range": "-0.610864 0.610864"
+   },
+   {
+    "name": "wrist_3_r",
+    "type": "hinge",
+    "pos": "0 0 0",
+    "axis": "       0        1        0",
+    "range": "-1.22173  1.22173"
+   }
+  ],
+  "sites": [
+   {
+    "name": "ECRL-P4",
+    "pos": "0.021167 -0.036274 0.008159",
+    "referenced": true
+   },
+   {
+    "name": "ECRB-P4",
+    "pos": "0.008989 -0.026413 0.010824",
+    "referenced": true
+   },
+   {
+    "name": "ECU-P6",
+    "pos": "-0.018514 -0.029067 0.001049",
+    "referenced": true
+   },
+   {
+    "name": "FCR-P3",
+    "pos": "0.015227 -0.033494 -0.001851",
+    "referenced": true
+   },
+   {
+    "name": "FCU-P4",
+    "pos": "-0.016364 -0.032707 -0.005191",
+    "referenced": true
+   }
+  ],
+  "n_sites_referenced": 5,
+  "inertial": {
+   "pos": "       0 -0.068095        0",
+   "mass": "0.4575",
+   "fullinertia": "0.000892 0.000547  0.00134        0        0        0"
+  }
+ },
+ "hand_l": {
+  "name": "hand_l",
+  "parent": "radius_l",
+  "joints": [
+   {
+    "name": "wrist_dev_l",
+    "type": "hinge",
+    "pos": "0 0 0",
+    "axis": "-0.819064 -0.135611 -0.557444",
+    "range": "-0.436332 0.610865"
+   },
+   {
+    "name": "wrist_flex_l",
+    "type": "hinge",
+    "pos": "0 0 0",
+    "axis": "0.956427 -0.252207 0.147104",
+    "range": "-0.610864 0.610864"
+   },
+   {
+    "name": "wrist_3_l",
+    "type": "hinge",
+    "pos": "0 0 0",
+    "axis": "       0        1        0",
+    "range": "-1.22173  1.22173"
+   }
+  ],
+  "sites": [
+   {
+    "name": "ECRL_l-P4",
+    "pos": "0.021167 -0.036274 -0.008159",
+    "referenced": true
+   },
+   {
+    "name": "ECRB_l-P4",
+    "pos": "0.008989 -0.026413 -0.010824",
+    "referenced": true
+   },
+   {
+    "name": "ECU_l-P6",
+    "pos": "-0.018514 -0.029067 -0.001049",
+    "referenced": true
+   },
+   {
+    "name": "FCR_l-P3",
+    "pos": "0.015227 -0.033494 0.001851",
+    "referenced": true
+   },
+   {
+    "name": "FCU_l-P4",
+    "pos": "-0.016364 -0.032707 0.005191",
+    "referenced": true
+   }
+  ],
+  "n_sites_referenced": 5,
+  "inertial": {
+   "pos": "       0 -0.068095        0",
+   "mass": "0.4575",
+   "fullinertia": "0.000892 0.000547  0.00134        0        0        0"
+  }
+ }
+}

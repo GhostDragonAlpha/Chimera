@@ -186,3 +186,18 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none.
 
 **Next:** B1+B4 -> I5 BODY_RESOLUTION_MAP.md.
+
+## CHECKPOINT 2026-09-24 (T13) — B1 integrated (source anatomy; classification settled)
+
+**Verified:**
+- B1 PASS 5/5; coordinator fresh re-run of all 5 scripts reproduces every headline number; integrity clean.
+- CLASSIFICATION SETTLED: (I) missing identifiers — the four bodies are authored ANCHOR-ONLY in the correspondence (prox==dist, axial_unresolved=True, refusals=0; live rebuild == shipped digest 52c92fe0...) and fail because the PACK declares no distal joint for them. Not (G) missing geometry. Prediction's falsifier prong fired honestly (authoring exists; pack data is the break); spirit held ((I) dominates; digits absent_in_source).
+- Source facts: chain humerus->ulna->radius->hand; ulna segment is a 2.31 cm elbow-head piece (radius carries the 29.2 cm forearm to the hand origin at 0.2920 m); ulna 0.729 kg / hand 0.4575 kg inertials present; 30 tendon sites (10/ulna incl. ECU-P2/3/4 interior; 5/hand, ECRB/ECRL/FCR/FCU-P4 terminal, ECU-P6 terminal); hands have 27 welded hand-skeleton meshes, ZERO digit joints.
+- Target facts: hand skin EXISTS as a 111.4 mm connected paddle distal to each wrist (47.1x18.1 mm far end) but pack-owned by elbow (0-41 mm) and tail_base/spine_lower (41-111 mm) — ownership mis-attribution to be treated as diagnostic, not authority. Wrist band itself = forearm skin (7 distal verts <= 1.8 mm). Rig hand_tip law measures upper-arm skin — unusable.
+- I-map implication: resolution needs AUTHORIZED distal landmarks authored from the mesh evidence (the paddle) + the B3 F-2 anchor-partition ruling — measurement alone cannot close it.
+
+**Active:** B4 (challenge protocol) — last wave-2 agent.
+
+**Blocked:** none.
+
+**Next:** B4 -> I5 BODY_RESOLUTION_MAP.md.

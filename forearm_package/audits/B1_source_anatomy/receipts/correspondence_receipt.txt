@@ -1,0 +1,67 @@
+correspondence note: 'actual monkey target, 0.065 m/unit authored, pack-joint + mesh-band evidence'
+segments total: 18
+landmarks total: 79
+collect_refusals -> 0 refusals (anchor-only authorship ACCEPTED)
+
+### segment ulna
+  parent=humerus
+  proximal_landmark='ulna.prox' -> [-0.1155  0.3191 -0.0061]
+  distal_landmark='ulna.dist' -> [-0.1155  0.3191 -0.0061]
+  |prox - dist| = 0.000000e+00 m  (degenerate: distal anchor == proximal anchor)
+  roll_ref='ulna.roll' -> [-0.0655  0.3191  0.0439]
+  coords=['elbow_flexion']
+  axial_unresolved=True
+  axis_evidence={}
+  axis_assumptions={}
+  scale_policy=uniform
+  source_landmarks: 'body_origin:ulna', 'body_origin:radius', 'site:SUPSP-P1'
+  note field: 'no pack distal joint; coord anchor elbow_R (not a fitted length)'
+  body in atf.UNRESOLVED: True; in SEG_EVIDENCE: False
+
+### segment ulna_l
+  parent=humerus_l
+  proximal_landmark='ulna_l.prox' -> [ 0.1155  0.3191 -0.0061]
+  distal_landmark='ulna_l.dist' -> [ 0.1155  0.3191 -0.0061]
+  |prox - dist| = 0.000000e+00 m  (degenerate: distal anchor == proximal anchor)
+  roll_ref='ulna_l.roll' -> [0.1655 0.3191 0.0439]
+  coords=['elbow_flexion_l']
+  axial_unresolved=True
+  axis_evidence={}
+  axis_assumptions={}
+  scale_policy=uniform
+  source_landmarks: 'body_origin:ulna_l', 'body_origin:radius_l', 'site:SUPSP_l-P1'
+  note field: 'no pack distal joint; coord anchor elbow_L (not a fitted length)'
+  body in atf.UNRESOLVED: True; in SEG_EVIDENCE: False
+
+### segment hand_r
+  parent=radius
+  proximal_landmark='hand_r.prox' -> [-0.145   0.2615 -0.006 ]
+  distal_landmark='hand_r.dist' -> [-0.145   0.2615 -0.006 ]
+  |prox - dist| = 0.000000e+00 m  (degenerate: distal anchor == proximal anchor)
+  roll_ref='hand_r.roll' -> [-0.095   0.2615  0.044 ]
+  coords=['wrist_dev_r', 'wrist_flex_r', 'wrist_3_r']
+  axial_unresolved=True
+  axis_evidence={}
+  axis_assumptions={}
+  scale_policy=uniform
+  source_landmarks: 'body_origin:hand_r', 'site:ECRL-P4', 'site:BIClong-P9'
+  note field: 'no pack distal joint; coord anchor wrist_R (not a fitted length)'
+  body in atf.UNRESOLVED: True; in SEG_EVIDENCE: False
+
+### segment hand_l
+  parent=radius_l
+  proximal_landmark='hand_l.prox' -> [ 0.145   0.2615 -0.006 ]
+  distal_landmark='hand_l.dist' -> [ 0.145   0.2615 -0.006 ]
+  |prox - dist| = 0.000000e+00 m  (degenerate: distal anchor == proximal anchor)
+  roll_ref='hand_l.roll' -> [0.195  0.2615 0.044 ]
+  coords=['wrist_dev_l', 'wrist_flex_l', 'wrist_3_l']
+  axial_unresolved=True
+  axis_evidence={}
+  axis_assumptions={}
+  scale_policy=uniform
+  source_landmarks: 'body_origin:hand_l', 'site:ECRL_l-P4', 'site:BIClong_l-P9'
+  note field: 'no pack distal joint; coord anchor wrist_L (not a fitted length)'
+  body in atf.UNRESOLVED: True; in SEG_EVIDENCE: False
+
+SEG_EVIDENCE keys (bodies with measured pack-pair evidence): ['femur_l', 'femur_r', 'humerus', 'humerus_l', 'radius', 'radius_l', 'thorax_dummy', 'tibia_l', 'tibia_r']
+UNRESOLVED set: ['hand_l', 'hand_r', 'talus_l', 'talus_r', 'thorax', 'toes_l', 'toes_r', 'ulna', 'ulna_l']
