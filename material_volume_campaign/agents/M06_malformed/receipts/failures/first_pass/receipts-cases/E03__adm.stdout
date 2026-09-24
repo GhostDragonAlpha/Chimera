@@ -1,0 +1,1 @@
+{"anatomical_completeness_certified":false,"decision":"refused","detail":"source_effective_segment_mass requires at least one opaque source segment ID","physical_state_mutated":false,"production_wired":false,"reason_codes":["missing_segment_authority"],"schema_version":"chimera.material_volume_admission_report.v1","validation_only":true}

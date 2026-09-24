@@ -1,0 +1,1 @@
+{"anatomical_completeness_certified":false,"decision":"refused","detail":"manifest.coordinate_frame.scale_to_m must be positive","physical_state_mutated":false,"production_wired":false,"reason_codes":["bad_scale"],"schema_version":"chimera.material_volume_admission_report.v1","validation_only":true}

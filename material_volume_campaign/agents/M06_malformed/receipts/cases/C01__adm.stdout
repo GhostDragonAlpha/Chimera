@@ -1,0 +1,1 @@
+{"anatomical_completeness_certified":false,"decision":"refused","detail":"partition.vertices[1].position must be finite","physical_state_mutated":false,"production_wired":false,"reason_codes":["nonfinite_input"],"schema_version":"chimera.material_volume_admission_report.v1","validation_only":true}

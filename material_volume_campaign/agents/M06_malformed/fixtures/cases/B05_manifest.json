@@ -1,0 +1,36 @@
+{
+  "schema_version": "chimera.fitting_manifest.v1",
+  "fitting_id": "two-body-coupon-fit-v1",
+  "domain_id": "two-tetrahedron-coupon",
+  "domain_revision": "coupon-fixture-v1",
+  "coordinate_frame": {
+    "frame_id": "coupon-domain",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "scale_to_m": 1.0
+  },
+  "vertices": [
+    {"vertex_id": "a0", "position": [0.0, 0.0, 0.0]},
+    {"vertex_id": "a1", "position": [1.0, 0.0, 0.0]},
+    {"vertex_id": "a2", "position": [0.0, 1.0, 0.0]},
+    {"vertex_id": "a3", "position": [0.0, 0.0, 1.0]},
+    {"vertex_id": "b0", "position": [3.0, -2.0, 1.0]},
+    {"vertex_id": "b1", "position": [3.0, -1.0, 1.0]},
+    {"vertex_id": "b2", "position": [2.0, -2.0, 1.0]},
+    {"vertex_id": "b3", "position": [3.0, -2.0, 2.0]}
+  ],
+  "cells": [
+    {"cell_id": "cell-A", "vertex_ids": ["a0", "a1", "a2", "a3"], "component_id": "component-A"},
+    {"cell_id": "cell-B", "vertex_ids": ["b0", "b1", "b2", "b3"], "component_id": "component-B"}
+  ],
+  "regions": [
+    {"region_id": "region-A", "mass_owner_id": "owner-A", "material_id": "tissue-A"},
+    {"region_id": "region-B", "mass_owner_id": "owner-B", "material_id": "tissue-B"}
+  ],
+  "mass_authority": "reconstructed_tissue_mass",
+  "source_effective_segment_ids": [],
+  "matter_ownership": [
+    {"matter_id": "coupon-matter-A", "representation": "tetrahedral_volume", "mass_owner_id": "owner-A"},
+    {"matter_id": "coupon-matter-B", "representation": "tetrahedral_volume", "mass_owner_id": "owner-B"}
+  ]
+}

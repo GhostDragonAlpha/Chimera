@@ -1,0 +1,42 @@
+FIRST-PASS FLAGGED RUNS (2026-09-24) — PRESERVED VERBATIM, WITH DIAGNOSIS
+
+F05 exp  CRITICAL-DEFECT  exit=0 export_status=complete, masses 2.0/1.0 kg
+  Root cause: HARNESS ARTIFACT, not a tool defect. Case id F05 is defined in the
+  frozen matrix (cases.py: "groups rotation entry as string \"1.0\"") and the
+  mutation function _rot_str exists, but F05 was never registered in cases.MUT —
+  the only one of 62 case ids lacking registration (verified programmatically:
+  UNREGISTERED = ['F05']). build_case therefore exported the UNMUTATED baseline,
+  which trivially exports mass. The falsifier trip is void; tool is innocent.
+  Fix: runner now registers F05 -> cases._rot_str (EXTRA_MUT). Re-run: F05 refuses
+  bad_number, exit 1 (see final receipts).
+
+C01/C04/C05/C06 (adm+exp / exp)  WRONG-NAME  input_read_error vs expected nonfinite_input
+  Root cause: HARNESS REALIZATION ARTIFACT. The frozen matrix specifies the
+  mutation as the decimal literal 1e400 ("parses to float inf", runtime class
+  nonfinite_input). A Python-level mutation `1e400` evaluates to float('inf') and
+  json.dumps serializes it as the NONSTANDARD Infinity token — which is the
+  C02/C03/C07 reader class (parse_constant -> input_read_error), not the
+  preregistered runtime class. Fix: runner writes the literal bytes `1e400` via
+  TEXT_FIX patches (verified: float("1e400") -> inf; json.loads('1e400') -> inf,
+  so the value reaches the runtime _number check the matrix anchors).
+
+E03 exp / G10 exp  SILENT-PASS  exit=0, export_status=unsupported
+  REAL FINDING, stands. Admission CLI refuses (exit 2, names present); exporter
+  recomputes admission, carries the named refusal in admission_reason_codes
+  (missing_segment_authority / duplicate_identifier), emits NO mass, but classifies
+  the export as "unsupported" (source authority selected) and exits 0. Frozen
+  expectation was named-refusal + nonzero exit. Defect class: exit-signal
+  classification (success-class exit for malformed input), not mass leakage.
+
+H04 adm  EXIT-DEVIATION  exit=2 vs preregistered 1
+  MATRIX ERRATUM, stands. Doc line: "Unknown region references ... cause a named
+  refusal; they are never remapped." -> decision refused -> exit 2 per the exit
+  doc. The tool matches its doc; the matrix's predicted exit class (1) was
+  misderived. Decision request: amend matrix expectation (or accept measured).
+
+G04 exp  WRONG-NAME  unknown_group_cell_id vs expected duplicate_cell_id
+  REAL FINDING, stands. Renaming partition cell-B to cell-A removes cell-B, so the
+  exporter refuses on its own contract name (missing group cell) for the observed
+  state; partition-internal duplicate detection is admission's job (adm exit 2,
+  duplicate_cell_id, correct). Exporter: named refusal, exit 1, no mass. Finding:
+  cross-layer refusal naming differs; no silent pass.

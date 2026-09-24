@@ -1,0 +1,1503 @@
+[
+  {
+    "case": "A01",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "invalid_authored_frame",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "invalid_authored_frame",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "A02",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "invalid_authored_frame",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "invalid_authored_frame",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "A03",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "unsupported_authored_frame",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "unsupported_authored_frame",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "A04",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "unsupported_authored_frame",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "unsupported_authored_frame",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "A05",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "unsupported_coordinate_frame",
+    "expected_exit": "2",
+    "found_names": [
+      "unsupported_coordinate_frame",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "A05",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "unsupported_coordinate_frame",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "unsupported_coordinate_frame",
+      "reconstructed_mass_admission_required",
+      "unsupported_coordinate_frame",
+      "reconstructed_mass_admission_required",
+      "unsupported_coordinate_frame",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "A06",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_scale",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_scale",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "A06",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_scale",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_scale",
+      "reconstructed_mass_admission_required",
+      "bad_scale",
+      "reconstructed_mass_admission_required",
+      "bad_scale",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "A07",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_shape",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "bad_shape",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "A08",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "invalid_authored_frame",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "invalid_authored_frame",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B01",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B02",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B03",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B04",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B05",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "empty_body_group",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "empty_body_group",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B06",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B07",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B08",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_schema",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B08",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B09",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_schema",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B09",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B10",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_schema",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B10",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B11",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_schema",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B11",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B12",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_schema",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B12",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B13",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_schema",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B13",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B14",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_schema",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "B14",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "unknown_group_cell_id",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "unknown_group_cell_id",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "C01",
+    "tool": "adm",
+    "verdict": "WRONG-NAME",
+    "exit": 2,
+    "expected_reason": "nonfinite_input",
+    "expected_exit": "2",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": "refused (exit 2) but expected reason 'nonfinite_input' absent"
+  },
+  {
+    "case": "C01",
+    "tool": "exp",
+    "verdict": "WRONG-NAME",
+    "exit": 1,
+    "expected_reason": "nonfinite_input",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": "refused (exit 1) but expected reason 'nonfinite_input' absent"
+  },
+  {
+    "case": "C02",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "input_read_error",
+    "expected_exit": "2",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "C02",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "input_read_error",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "C03",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "input_read_error",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "C04",
+    "tool": "adm",
+    "verdict": "WRONG-NAME",
+    "exit": 2,
+    "expected_reason": "nonfinite_input",
+    "expected_exit": "2",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": "refused (exit 2) but expected reason 'nonfinite_input' absent"
+  },
+  {
+    "case": "C04",
+    "tool": "exp",
+    "verdict": "WRONG-NAME",
+    "exit": 1,
+    "expected_reason": "nonfinite_input",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": "refused (exit 1) but expected reason 'nonfinite_input' absent"
+  },
+  {
+    "case": "C05",
+    "tool": "exp",
+    "verdict": "WRONG-NAME",
+    "exit": 1,
+    "expected_reason": "nonfinite_input",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": "refused (exit 1) but expected reason 'nonfinite_input' absent"
+  },
+  {
+    "case": "C06",
+    "tool": "exp",
+    "verdict": "WRONG-NAME",
+    "exit": 1,
+    "expected_reason": "nonfinite_input",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": "refused (exit 1) but expected reason 'nonfinite_input' absent"
+  },
+  {
+    "case": "C07",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "input_read_error",
+    "expected_exit": "2",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "C07",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "input_read_error",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "input_read_error",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "D01",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "invalid_density",
+    "expected_exit": "2",
+    "found_names": [
+      "compiler_refusal:invalid_density",
+      "invalid_density",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "D01",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "invalid_density",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:invalid_density",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:invalid_density",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:invalid_density",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "D02",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "invalid_density",
+    "expected_exit": "2",
+    "found_names": [
+      "compiler_refusal:invalid_density",
+      "invalid_density",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "D02",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "invalid_density",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:invalid_density",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:invalid_density",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:invalid_density",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E01",
+    "tool": "adm",
+    "verdict": "DOC-CONFIRMED",
+    "exit": 0,
+    "expected_reason": "documented unsupported/no-mass",
+    "found_names": [
+      "validation_only_admissible"
+    ],
+    "notes": "doc-promised behavior reproduced exactly (no mass exported)"
+  },
+  {
+    "case": "E01",
+    "tool": "exp",
+    "verdict": "DOC-CONFIRMED",
+    "exit": 0,
+    "expected_reason": "documented unsupported/no-mass",
+    "found_names": [
+      "source_effective_segment_mass_unsupported",
+      "source_effective_segment_mass_unsupported",
+      "source_effective_segment_mass_unsupported",
+      "unsupported"
+    ],
+    "notes": "doc-promised behavior reproduced exactly (no mass exported)"
+  },
+  {
+    "case": "E02",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "mixed_mass_authority",
+    "expected_exit": "2",
+    "found_names": [
+      "mixed_mass_authority",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E02",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "mixed_mass_authority",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "mixed_mass_authority",
+      "reconstructed_mass_admission_required",
+      "mixed_mass_authority",
+      "reconstructed_mass_admission_required",
+      "mixed_mass_authority",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E03",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "missing_segment_authority",
+    "expected_exit": "2",
+    "found_names": [
+      "missing_segment_authority",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E03",
+    "tool": "exp",
+    "verdict": "SILENT-PASS",
+    "exit": 0,
+    "expected_reason": "missing_segment_authority",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "source_effective_segment_mass_unsupported",
+      "missing_segment_authority",
+      "source_effective_segment_mass_unsupported",
+      "source_effective_segment_mass_unsupported",
+      "unsupported"
+    ],
+    "notes": "exit 0, no refusal name matched"
+  },
+  {
+    "case": "E04",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "mass_authority_mismatch",
+    "expected_exit": "1",
+    "found_names": [
+      "intended_domain_mismatch",
+      "mass_authority_mismatch",
+      "not_admitted"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E04",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "mass_authority_mismatch",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "intended_domain_mismatch",
+      "mass_authority_mismatch",
+      "reconstructed_mass_admission_required",
+      "intended_domain_mismatch",
+      "mass_authority_mismatch",
+      "reconstructed_mass_admission_required",
+      "intended_domain_mismatch",
+      "mass_authority_mismatch",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E05",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "mass_authority_ownership_mismatch",
+    "expected_exit": "1",
+    "found_names": [
+      "mass_authority_ownership_mismatch",
+      "volume_owner_ledger_mismatch",
+      "not_admitted"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E05",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "mass_authority_ownership_mismatch",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "mass_authority_ownership_mismatch",
+      "volume_owner_ledger_mismatch",
+      "reconstructed_mass_admission_required",
+      "mass_authority_ownership_mismatch",
+      "volume_owner_ledger_mismatch",
+      "reconstructed_mass_admission_required",
+      "mass_authority_ownership_mismatch",
+      "volume_owner_ledger_mismatch",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E06",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_schema",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E06",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "E07",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F01",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_number",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_number",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F01",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_number",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F02",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_number",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_number",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F02",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_number",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F03",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_number",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_number",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F03",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_number",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F04",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_number",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_number",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F04",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_number",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F05",
+    "tool": "exp",
+    "verdict": "CRITICAL-DEFECT",
+    "exit": 0,
+    "expected_reason": "bad_number",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "complete"
+    ],
+    "notes": "FALSIFIER TRIPPED: exit 0 with exported mass"
+  },
+  {
+    "case": "F06",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_number",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_number",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "F06",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_number",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "reconstructed_mass_admission_required",
+      "bad_number",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G01",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "duplicate_body_id",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "duplicate_body_id",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G02",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "duplicate_cell_ownership",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "duplicate_cell_ownership",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G03",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "duplicate_vertex_id",
+    "expected_exit": "2",
+    "found_names": [
+      "duplicate_vertex_id",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G03",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "duplicate_vertex_id",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "duplicate_vertex_id",
+      "reconstructed_mass_admission_required",
+      "duplicate_vertex_id",
+      "reconstructed_mass_admission_required",
+      "duplicate_vertex_id",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G04",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "duplicate_cell_id",
+    "expected_exit": "2",
+    "found_names": [
+      "duplicate_cell_id",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G04",
+    "tool": "exp",
+    "verdict": "WRONG-NAME",
+    "exit": 1,
+    "expected_reason": "duplicate_cell_id",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "unknown_group_cell_id",
+      "refused"
+    ],
+    "notes": "refused (exit 1) but expected reason 'duplicate_cell_id' absent"
+  },
+  {
+    "case": "G05",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "duplicate_region_id",
+    "expected_exit": "2",
+    "found_names": [
+      "duplicate_region_id",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G05",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "duplicate_region_id",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "duplicate_region_id",
+      "reconstructed_mass_admission_required",
+      "duplicate_region_id",
+      "reconstructed_mass_admission_required",
+      "duplicate_region_id",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G06",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "duplicate_material_id",
+    "expected_exit": "2",
+    "found_names": [
+      "duplicate_material_id",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G06",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "duplicate_material_id",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "duplicate_material_id",
+      "reconstructed_mass_admission_required",
+      "duplicate_material_id",
+      "reconstructed_mass_admission_required",
+      "duplicate_material_id",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G07",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "duplicate_mass_owner_id",
+    "expected_exit": "2",
+    "found_names": [
+      "compiler_refusal:duplicate_mass_owner_id",
+      "duplicate_mass_owner_id",
+      "region_catalog_mismatch",
+      "volume_owner_ledger_mismatch",
+      "duplicate_mass_owner_id",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G07",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "duplicate_mass_owner_id",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:duplicate_mass_owner_id",
+      "duplicate_mass_owner_id",
+      "region_catalog_mismatch",
+      "volume_owner_ledger_mismatch",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:duplicate_mass_owner_id",
+      "duplicate_mass_owner_id",
+      "region_catalog_mismatch",
+      "volume_owner_ledger_mismatch",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:duplicate_mass_owner_id",
+      "duplicate_mass_owner_id",
+      "region_catalog_mismatch",
+      "volume_owner_ledger_mismatch",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G08",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "duplicate_json_key",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "duplicate_json_key",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G09",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "duplicate_cell_ownership",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "duplicate_cell_ownership",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G10",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "duplicate_identifier",
+    "expected_exit": "2",
+    "found_names": [
+      "duplicate_identifier",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "G10",
+    "tool": "exp",
+    "verdict": "SILENT-PASS",
+    "exit": 0,
+    "expected_reason": "duplicate_identifier",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "source_effective_segment_mass_unsupported",
+      "duplicate_identifier",
+      "source_effective_segment_mass_unsupported",
+      "source_effective_segment_mass_unsupported",
+      "unsupported"
+    ],
+    "notes": "exit 0, no refusal name matched"
+  },
+  {
+    "case": "G11",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "unknown_group_cell_id",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "unknown_group_cell_id",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "H01",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_mass_authority",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_mass_authority",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "H01",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_mass_authority",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_mass_authority",
+      "reconstructed_mass_admission_required",
+      "bad_mass_authority",
+      "reconstructed_mass_admission_required",
+      "bad_mass_authority",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "H02",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_matter_representation",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_matter_representation",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "H02",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_matter_representation",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_matter_representation",
+      "reconstructed_mass_admission_required",
+      "bad_matter_representation",
+      "reconstructed_mass_admission_required",
+      "bad_matter_representation",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "H03",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_schema",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_schema",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "H03",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_schema",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "reconstructed_mass_admission_required",
+      "bad_schema",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "H04",
+    "tool": "adm",
+    "verdict": "EXIT-DEVIATION",
+    "exit": 2,
+    "expected_reason": "unknown_region_reference",
+    "expected_exit": "1",
+    "found_names": [
+      "compiler_refusal:unknown_region",
+      "incomplete_cell_ownership",
+      "unknown_region_reference",
+      "unknown_region",
+      "refused"
+    ],
+    "notes": "named refusal matched, but exit 2 deviates from preregistered expectation '1'"
+  },
+  {
+    "case": "H04",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "unknown_region_reference",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:unknown_region",
+      "incomplete_cell_ownership",
+      "unknown_region_reference",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:unknown_region",
+      "incomplete_cell_ownership",
+      "unknown_region_reference",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:unknown_region",
+      "incomplete_cell_ownership",
+      "unknown_region_reference",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "H05",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "bad_mass_authority",
+    "expected_exit": "2",
+    "found_names": [
+      "bad_mass_authority",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "H05",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "bad_mass_authority",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "bad_mass_authority",
+      "reconstructed_mass_admission_required",
+      "bad_mass_authority",
+      "reconstructed_mass_admission_required",
+      "bad_mass_authority",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "I01",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "inverted_tetrahedron",
+    "expected_exit": "2",
+    "found_names": [
+      "compiler_refusal:inverted_tetrahedron",
+      "inverted_tetrahedron",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "I01",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "inverted_tetrahedron",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:inverted_tetrahedron",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:inverted_tetrahedron",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:inverted_tetrahedron",
+      "blocked"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "I02",
+    "tool": "adm",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 2,
+    "expected_reason": "duplicate_vertex_position",
+    "expected_exit": "2",
+    "found_names": [
+      "compiler_refusal:duplicate_vertex_position",
+      "duplicate_vertex_position",
+      "refused"
+    ],
+    "notes": ""
+  },
+  {
+    "case": "I02",
+    "tool": "exp",
+    "verdict": "NAMED-REFUSAL",
+    "exit": 1,
+    "expected_reason": "duplicate_vertex_position",
+    "expected_exit": "nonzero",
+    "found_names": [
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:duplicate_vertex_position",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:duplicate_vertex_position",
+      "reconstructed_mass_admission_required",
+      "compiler_refusal:duplicate_vertex_position",
+      "blocked"
+    ],
+    "notes": ""
+  }
+]

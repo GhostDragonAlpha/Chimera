@@ -1,0 +1,1 @@
+{"anatomical_completeness_certified":false,"decision":"refused","detail":"manifest.coordinate_frame.handedness must be 'right'; no implicit reflection is allowed","physical_state_mutated":false,"production_wired":false,"reason_codes":["unsupported_coordinate_frame"],"schema_version":"chimera.material_volume_admission_report.v1","validation_only":true}

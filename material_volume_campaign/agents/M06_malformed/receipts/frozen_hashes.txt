@@ -1,0 +1,28 @@
+28c4a021909e832a355db111365a5eebbed2a2a22dcb307643c47fcc973e7f43 *cases.py
+ffae9c9508289b9d68e45e5730a3e8568fb2853c57b9064582c132f8702ad562 *matrix.md
+03ff8046e2f9aecd8dd2c89b94b48a2da41c4dba6d769ebf34a9439ca4e92638 *run_cases.py
+27688 cases.py
+13477 matrix.md
+ 9665 run_cases.py
+50830 total
+# PROVENANCE (resume after transient provider failure, 2026-09-24):
+# ORIGINAL FREEZE (pre-execution, prior session):
+#   cases.py   28c4a021909e832a355db111365a5eebbed2a2a22dcb307643c47fcc973e7f43  (27688 B) - UNCHANGED, reused
+#   matrix.md  ffae9c9508289b9d68e45e5730a3e8568fb2853c57b9064582c132f8702ad562  (13477 B) - UNCHANGED, reused
+#   run_cases.py 653da48e72ebfbc2d59122c350b3bab1a2008f471853e7b666ceda762dcd9f47 (9131 B)
+# RESUME FINDING: run_cases.py found at 1e984e59782b91286fefdce612122d655fbdd5633ad8c216eacfe34d2df598a3
+#   (9186 B) - modified post-freeze by the crashed session, edit unattributed. Audited line-by-line
+#   by resuming agent; expectations in cases.py/matrix.md were untouched. Repaired by resuming agent:
+#   added _exit_ok() enforcing the preregistered exit mapping (admission exact 2/1 per its doc;
+#   exporter nonzero) with verdict EXIT-DEVIATION. New hash above supersedes; the matrix
+#   (cases.py + matrix.md) preregistration is byte-identical to the original freeze.
+# Baseline re-verified green on resume BEFORE any case execution:
+#   admission CLI -> exit 0, decision validation_only_admissible, reason_codes []
+#   export CLI    -> exit 0, export_status complete, masses 2.0 kg + 1.0 kg
+# FINAL PASS (2026-09-24): run_cases.py further repaired with EXTRA_MUT (F05
+# registration fix) + TEXT_FIX (C01/C04/C05/C06 literal-1e400 realization fix) +
+# mutation-coverage assertion; cases.py + matrix.md STILL byte-identical to the
+# original freeze. Final run: 101 runs / 62 cases ->
+#   95 NAMED-REFUSAL, 2 DOC-CONFIRMED (E01), 2 SILENT-PASS (E03/G10 exp),
+#   1 WRONG-NAME (G04 exp), 1 EXIT-DEVIATION (H04 adm), 0 CRITICAL-DEFECT.
+# First pass preserved verbatim under receipts/failures/first_pass/.

@@ -1,0 +1,31 @@
+{
+  "schema_version": "chimera.rigid_body_cell_groups.v1",
+  "body_groups": [
+    {
+      "body_id": "coupon-body-A",
+      "cell_ids": ["cell-A"],
+      "body_frame": {
+        "frame_id": "coupon-A-authored",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
+          "origin_m": [0.0, 0.0, 0.0]
+        }
+      }
+    },
+    {
+      "body_id": "coupon-body-B",
+      "cell_ids": ["cell-B"],
+      "body_frame": {
+        "frame_id": "coupon-B-authored",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [[0.0, -1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]],
+          "origin_m": [3.0, -2.0, 1.0]
+        }
+      }
+    }
+  ]
+}

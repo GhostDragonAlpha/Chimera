@@ -1,0 +1,1 @@
+{"anatomical_completeness_certified":false,"decision":"refused","detail":"manifest.source_effective_segment_ids contains duplicate identifiers","physical_state_mutated":false,"production_wired":false,"reason_codes":["duplicate_identifier"],"schema_version":"chimera.material_volume_admission_report.v1","validation_only":true}

@@ -78,3 +78,8 @@ NOTE (T9a): B2a's snapshot receipts are DATA (415-file sha256+mtime inventories 
 **Fleet:** 6 live (M04-retry, M06-retry, M08, B6, B9 + O1/O2). Queues: B3, B5 (retries) -> B8 -> B7x.
 
 NOTE (T10a): B4's work/blob_extract + work/archive_extract (derived full-tools/ materializations, regenerable by the committed work/b4_matrix.py scripts; blob OIDs recorded in receipts/04) were REMOVED before commit to keep the campaign tree receipt-only — the evidence (matrix, verdicts, scripts, hashes) is fully preserved.
+
+## CHECKPOINT T11 — M06 integrated (retry #1 resolved); serialized slot freed -> B3 dispatched
+
+**Verified:** M06 full matrix re-run by coordinator — identical tally (95 NAMED-REFUSAL / 2 DOC-CONFIRMED / 2 SILENT-PASS / 1 WRONG-NAME / 1 EXIT-DEVIATION, 0 critical). Findings D-1/D-2/D-3 banked; E03+G10 silent-passes (unsupported-status exit class) added to the B8 fix queue. The resumed session's audit chain (post-freeze edit caught+re-frozen; false critical preserved; harness defects repaired) is the honest-failure discipline working under crash-recovery conditions.
+**Serialized slot freed: B3 retry dispatched (single staggered spawn).**

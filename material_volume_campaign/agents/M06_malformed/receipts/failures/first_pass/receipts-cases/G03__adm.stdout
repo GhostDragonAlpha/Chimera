@@ -1,0 +1,1 @@
+{"anatomical_completeness_certified":false,"decision":"refused","detail":"partition.vertices repeats vertex ID 'a0'","physical_state_mutated":false,"production_wired":false,"reason_codes":["duplicate_vertex_id"],"schema_version":"chimera.material_volume_admission_report.v1","validation_only":true}
