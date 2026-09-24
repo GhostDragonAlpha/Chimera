@@ -71,3 +71,10 @@ Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe
 **Fleet:** 7 live. Queues: retries B3, B5 -> then B8 -> then B7x.
 
 NOTE (T9a): B2a's snapshot receipts are DATA (415-file sha256+mtime inventories of tools/); doc-lint flags two path-shaped strings inside them (probe_core.h, engine.h) as broken pointers — false positive on data, not documentation. Committed via the hook's --no-verify branch WITH this logged explanation; receipt bytes preserved unmodified (extension rename .json->.json.txt attempted first, lint scans text regardless).
+
+## CHECKPOINT T10 — B4 integrated (the three-layer reproducibility law is written)
+
+**Verified:** B4 verdict matrix re-run by coordinator (182 rows, 0 unexpected); integrity clean. KEY LAW: portable identity = blob OID + SHA-256 over LF-canonical bytes; disk bytes and git-archive extracts are BOTH the smudged CRLF layer (0/37 extract==blob) — reproducibility work must materialize blobs via cat-file/git show. M-1a (C-1) reproduced live to the hex digit; M01-F1's mechanism now fully explained. Run behavior byte-identical across materializations. MV-B4-1 decision request: canonize or declare pretty-form for the 16 non-report JSONs.
+**Fleet:** 6 live (M04-retry, M06-retry, M08, B6, B9 + O1/O2). Queues: B3, B5 (retries) -> B8 -> B7x.
+
+NOTE (T10a): B4's work/blob_extract + work/archive_extract (derived full-tools/ materializations, regenerable by the committed work/b4_matrix.py scripts; blob OIDs recorded in receipts/04) were REMOVED before commit to keep the campaign tree receipt-only — the evidence (matrix, verdicts, scripts, hashes) is fully preserved.
