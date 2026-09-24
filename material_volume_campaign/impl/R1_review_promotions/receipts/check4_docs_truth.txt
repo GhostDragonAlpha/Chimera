@@ -1,0 +1,18 @@
+R1 CHECK 4 — docs truth spot-checks (2026-09-24T17:31:40-05:00)
+
+W5 docs/material_volume_diagnostic.md — 3 quotes checked:
+ [1] body_export doc 'identifies the exact serialized inputs, including row ordering' + 'key-sorted canonical JSON with no timestamps, random IDs, or non-finite numbers' -> VERIFIED verbatim at Chimera/docs/matter/material_volume_body_export.md L46 paragraph (doc's 'identif[y]' splice is honest bracket grammar)
+ [2] 'emits deterministic ... JSON to stdout' -> VERIFIED at L14 paragraph
+ [3] M05 receipt numbers: P0a==P0b sha256 8a69419e03d6db59..., size 8927, PASS-EXACT 'float.hex equality' -> VERIFIED in agents/M05_order/receipts/compare_output.txt + receipts_manifest.sha256 (7 runs P0a,P0b,P1-P5 present)
+ [4] B4 portability contract 'blob OID at pinned rev + SHA-256 over LF-canonical bytes - disk hashes and archive-extract hashes are neither' + 0/37 -> VERIFIED verbatim at agents/B4_crosscheckout/report.md L99-100 + L94
+
+W6 report section 1 reconciliation quotes vs MAIN checkout contract (E:/PythonChimera/.../rigid_body_mass_export_consumption_contract_v1_proposal.md, v1.0 D1-D5 decided):
+ D1 'Approve the contract for static inspection and validation only...' -> VERBATIM at section 5 table row D1
+ D2 'Reject partial reports for assembly. ... No subset-binding exception yet.' -> VERBATIM row D2
+ D3 'Allow read-only aggregate calculations for verification ... change runtime grouping.' -> VERBATIM row D3
+ Contract status header confirms v1.0, D1-D5 decided 2026-09-24
+
+M07 ownership receipt reproduction (W6 section 2): reduced 298c544846f7... and root 4d4c43e1e0d1... both present in agents/M07_ownership/report.md L60/L101-102 and receipts/case-c4-export.json; live CLI reproduced 298c5448... exactly
+
+Exit-contract cross-package consistency: W5 doc section 3 + home header: diagnostic 0/2/4/64 with explicit scope note (M06-H04 0/2/1 = validation CLI, not this tool); W6 docstring + --help epilog + --version + USAGE.md exit table: 0=accepted/2=named refusal/1=unexpected internal failure per M06-H04, with compatibility note that original M10 keeps 0/1/2. CONSISTENT and mutually distinguishing.
+ M06-H04 source verified: agents/M06_malformed/report.md L153/L212 (H04 exit-deviation finding, named-refusal decision request).

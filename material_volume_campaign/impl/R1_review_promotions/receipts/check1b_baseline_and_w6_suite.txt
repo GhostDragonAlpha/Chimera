@@ -1,0 +1,16 @@
+R1 CHECK 1b — baseline + W6 suite reproduction (2026-09-24T17:20:51-05:00)
+
+[A] ORIGINAL M10 suite, ORIGINAL bytes, run IN PLACE at agents/M10_validator (depth-correct; -B, no cacheprovider)
+    -> 71 passed in 0.67s
+    before/after file-hash comparison: 0 changed; git porcelain (M10 + tools) EMPTY after run
+
+[B] my first attempt: git-extracted copy at R1 scratch depth -> 1 failed 70 passed
+    cause: M10 _tools_dir() = parents[3]/tools fixed index; graceful degradation to
+    reader_cross_check {ran:False, note:ModuleNotFoundError} — harness artifact, not a tool defect.
+    W6's own baseline_71.txt receipt documents the same trap + designed CHIMERA_TOOLS_DIR override.
+
+[C] W6 baseline_reproduction copy + CHIMERA_TOOLS_DIR override -> 71 passed in 0.71s
+    W6 copy vs M10 original: 0 byte diffs over 56 files
+
+[D] FULL W6 suite from R1 scratch extraction of committed HEAD bytes (override set) -> 101 passed in 2.16s
+[E] FULL W6 suite AT COMMITTED LOCATION without override -> 101 passed in 2.13s; porcelain clean after

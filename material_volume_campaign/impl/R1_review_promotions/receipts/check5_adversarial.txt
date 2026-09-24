@@ -1,0 +1,10 @@
+R1 CHECK 5 — adversarial (2026-09-24T17:34:44-05:00)
+
+[5a] diagnostic hostile input (mine, distinct from all suite fixtures): shipped example report mutated three ways at once:
+    (1) mass value NaN literal (Python-json nonstandard constant), (2) body_groups[0] record duplicated verbatim (same body_id twice), (3) duplicate top-level key export_status appended.
+    RESULT (home copy, human + --json): exit 2, named input_read_error 'unable to read ... ValueError' from the strict loader; final line 'readiness: false' sentinel intact; stderr empty; NO traceback; input file bytes untouched.
+    Verdict: contract held. The comment-header claims ('reader rejects nonstandard constants/duplicate keys; tool validates nothing of its own') are exactly what fired.
+
+[5b] validator hostile input (mine): accept fixture with (1) body-A owned_cell_ids = ['cell-A','cell-A'] (SELF-overlap, distinct from the suite's CROSS-body crafted overlap), (2) admission_report_sha256 uppercased AND whitespace-padded (suite has uppercase only).
+    RESULT: exit 2, verdict REJECT, no traceback, BOTH hostilities named: R11 owned_cell_ids_duplicated + R4 hash_binding_malformed.
+    Verdict: contract held.

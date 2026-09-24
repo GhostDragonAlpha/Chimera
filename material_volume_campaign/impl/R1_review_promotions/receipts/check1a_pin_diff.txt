@@ -1,0 +1,6 @@
+R1 CHECK 1a — W5 pin verification (2026-09-24T17:15:49-05:00)
+blob f9763b4318e6954b9141b8bc954c10a856c39cf2 sha256 055a9be288cd4106e505cc1b6f327e47f4c9f5f0cabe5202b79f31a7f3c436ae
+home sha256 6aa7a080c7cc38556fc85c981dc9782da81f164cd6add622761717ca59bd5895
+home.endswith(blob)=True; header=4717 bytes / 73 lines, all '#' comments or blank
+difflib opcodes: single 'insert' at top; NON-COMMENT changed lines: 0
+header fields present: TOOL IDENTITY/VERSION/RECEIPT TRAIL/EXIT CONTRACT(0/2/4/64 + validation-CLI scope note)/STATIC CLAIMS/DEPENDENCY STATEMENT + RE-PIN RULE

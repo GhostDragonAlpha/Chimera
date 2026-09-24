@@ -1,0 +1,18 @@
+== CLI smoke (receipt 2026-09-24T16:58:51-05:00) ==
+$ python rigid_body_mass_consumption_validator.py --version
+rigid_body_mass_consumption_validator W6-promotion 1.0.0 (M10 lineage, 71-test
+frozen suite; contract v1.0, D1-D5 decided 2026-09-24; exit classes
+0=accepted/2=named refusal/1=unexpected internal failure per M06-H04)
+exit=0
+$ ... tests/fixtures/accept_complete_report.json (expect exit 0, ACCEPT)
+ACCEPT | records: ['D1', 'D2', 'D3', 'D4', 'D5'] | scopes: ['admission_report_document', 'admission_report_document']
+exit=0
+$ ... tests/fixtures/reject_partial.json (expect exit 2, REJECT, gaps displayed)
+REJECT | preserved keys: ['all_supplied_cells_assigned', 'bodies', 'unassigned_cell_ids', 'unassigned_cells']
+exit(pipe)=2
+$ ... missing file (expect exit 2, could_not_evaluate)
+could_not_evaluate: input_read_error: unable to read 'nope.json': FileNotFoundError
+exit=2
+$ ... accept + --verify-aggregate (expect exit 0 + artifact)
+mass_kg = 3.0 | kind = con16_verification_aggregate | disjoint = True
+exit(pipe)=0

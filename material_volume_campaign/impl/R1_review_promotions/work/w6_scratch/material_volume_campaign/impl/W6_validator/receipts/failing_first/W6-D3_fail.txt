@@ -1,0 +1,177 @@
+FFFFFFFFF.F                                                              [100%]
+================================== FAILURES ===================================
+_______________ test_aggregate_shape_is_a_verification_artifact _______________
+
+    def test_aggregate_shape_is_a_verification_artifact() -> None:
+>       artifact = _artifact(ACCEPT)
+                   ^^^^^^^^^^^^^^^^^
+
+tests\test_w6_con16_aggregate.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/tests/fixtures/accept_complete_report.json')
+
+    def _artifact(path) -> dict:
+        report = validator.load_json_file(path)[0]
+>       artifact, refusal = validator.verify_con16_aggregate(report)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rigid_body_mass_consumption_validator' has no attribute 'verify_con16_aggregate'
+
+tests\test_w6_con16_aggregate.py:32: AttributeError
+________________________ test_frames_stated_explicitly ________________________
+
+    def test_frames_stated_explicitly() -> None:
+>       artifact = _artifact(ACCEPT)
+                   ^^^^^^^^^^^^^^^^^
+
+tests\test_w6_con16_aggregate.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/tests/fixtures/accept_complete_report.json')
+
+    def _artifact(path) -> dict:
+        report = validator.load_json_file(path)[0]
+>       artifact, refusal = validator.verify_con16_aggregate(report)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rigid_body_mass_consumption_validator' has no attribute 'verify_con16_aggregate'
+
+tests\test_w6_con16_aggregate.py:32: AttributeError
+___________________ test_disjoint_ownership_taken_verbatim ____________________
+
+    def test_disjoint_ownership_taken_verbatim() -> None:
+>       artifact = _artifact(ACCEPT)
+                   ^^^^^^^^^^^^^^^^^
+
+tests\test_w6_con16_aggregate.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/tests/fixtures/accept_complete_report.json')
+
+    def _artifact(path) -> dict:
+        report = validator.load_json_file(path)[0]
+>       artifact, refusal = validator.verify_con16_aggregate(report)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rigid_body_mass_consumption_validator' has no attribute 'verify_con16_aggregate'
+
+tests\test_w6_con16_aggregate.py:32: AttributeError
+_________ test_aggregate_mass_and_com_match_independent_recomputation _________
+
+    def test_aggregate_mass_and_com_match_independent_recomputation() -> None:
+        report = validator.load_json_file(ACCEPT)[0]
+>       artifact = _artifact(ACCEPT)
+                   ^^^^^^^^^^^^^^^^^
+
+tests\test_w6_con16_aggregate.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/tests/fixtures/accept_complete_report.json')
+
+    def _artifact(path) -> dict:
+        report = validator.load_json_file(path)[0]
+>       artifact, refusal = validator.verify_con16_aggregate(report)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rigid_body_mass_consumption_validator' has no attribute 'verify_con16_aggregate'
+
+tests\test_w6_con16_aggregate.py:32: AttributeError
+_______ test_single_body_aggregate_recovers_rotated_properties_exactly ________
+
+    def test_single_body_aggregate_recovers_rotated_properties_exactly() -> None:
+        # CON-16 self-check: aggregating ONE rotated body must recover exactly
+        # com_domain = R·com + origin and I_domain = R·I·Rᵀ (CON-10, never repaired).
+        report = validator.load_json_file(ACCEPT)[0]
+        single = copy.deepcopy(report)
+        single["body_groups"] = [row for row in single["body_groups"]
+                                 if row["body_id"] == "coupon-body-B"]
+>       artifact, refusal = validator.verify_con16_aggregate(single)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rigid_body_mass_consumption_validator' has no attribute 'verify_con16_aggregate'
+
+tests\test_w6_con16_aggregate.py:104: AttributeError
+________________________ test_error_accounting_present ________________________
+
+    def test_error_accounting_present() -> None:
+>       artifact = _artifact(ACCEPT)
+                   ^^^^^^^^^^^^^^^^^
+
+tests\test_w6_con16_aggregate.py:121: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+path = WindowsPath('E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/tests/fixtures/accept_complete_report.json')
+
+    def _artifact(path) -> dict:
+        report = validator.load_json_file(path)[0]
+>       artifact, refusal = validator.verify_con16_aggregate(report)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rigid_body_mass_consumption_validator' has no attribute 'verify_con16_aggregate'
+
+tests\test_w6_con16_aggregate.py:32: AttributeError
+_____________ test_aggregate_refuses_cross_body_ownership_overlap _____________
+
+    def test_aggregate_refuses_cross_body_ownership_overlap() -> None:
+        # CON-16(b): one mass owner per cell. A report whose two exported bodies
+        # both claim cell-A can still pass per-body validation (R11 is per-body),
+        # but the aggregation MUST refuse it, naming the cell and both owners.
+        report = validator.load_json_file(ACCEPT)[0]
+        body_b = report["body_groups"][1]
+        body_b["owned_cell_ids"] = ["cell-B", "cell-A"]
+        body_b["cell_provenance"].append(
+            {"cell_id": "cell-A", "mass_owner_id": "owner-B", "region_id": "region-B",
+             "material_id": "tissue-B", "density_kg_m3": 6.0,
+             "density_source": "analytic coupon fixture", "density_conditions": "uniform"})
+        verdict = validator.validate_report(report)
+        assert verdict["verdict"] == "ACCEPT"  # per-body rules alone do not see it
+>       artifact, refusal = validator.verify_con16_aggregate(report)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rigid_body_mass_consumption_validator' has no attribute 'verify_con16_aggregate'
+
+tests\test_w6_con16_aggregate.py:143: AttributeError
+_________________ test_aggregate_refuses_non_accepted_report __________________
+
+    def test_aggregate_refuses_non_accepted_report() -> None:
+        report = validator.load_json_file(FIXTURES / "reject_partial.json")[0]
+>       artifact, refusal = validator.verify_con16_aggregate(report)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rigid_body_mass_consumption_validator' has no attribute 'verify_con16_aggregate'
+
+tests\test_w6_con16_aggregate.py:151: AttributeError
+___________________ test_aggregate_never_mutates_the_report ___________________
+
+    def test_aggregate_never_mutates_the_report() -> None:
+        report = validator.load_json_file(ACCEPT)[0]
+        before = json.dumps(report, sort_keys=True)
+>       validator.verify_con16_aggregate(report)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: module 'rigid_body_mass_consumption_validator' has no attribute 'verify_con16_aggregate'
+
+tests\test_w6_con16_aggregate.py:159: AttributeError
+___________________________ test_cli_aggregate_flag ___________________________
+
+tmp_path = WindowsPath('C:/Users/allen/AppData/Local/Temp/pytest-of-allen/pytest-124/test_cli_aggregate_flag0')
+
+    def test_cli_aggregate_flag(tmp_path) -> None:
+        import subprocess
+        import sys
+        tool = tmp_path.parent / ".." / "nonexistent"  # unused; CLI run below
+        from test_validator import AGENT_DIR
+        env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
+        result = subprocess.run(
+            [sys.executable, str(AGENT_DIR / "rigid_body_mass_consumption_validator.py"),
+             str(ACCEPT), "--verify-aggregate"],
+            capture_output=True, env=env)
+>       assert result.returncode == 0
+E       AssertionError: assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W6...(\r\n                         ^^^^^^^^^^^^^^^^^^^^^^\r\nNameError: name \'verify_con16_aggregate\' is not defined\r\n').returncode
+
+tests\test_w6_con16_aggregate.py:181: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_w6_con16_aggregate.py::test_aggregate_shape_is_a_verification_artifact
+FAILED tests/test_w6_con16_aggregate.py::test_frames_stated_explicitly - Attr...
+FAILED tests/test_w6_con16_aggregate.py::test_disjoint_ownership_taken_verbatim
+FAILED tests/test_w6_con16_aggregate.py::test_aggregate_mass_and_com_match_independent_recomputation
+FAILED tests/test_w6_con16_aggregate.py::test_single_body_aggregate_recovers_rotated_properties_exactly
+FAILED tests/test_w6_con16_aggregate.py::test_error_accounting_present - Attr...
+FAILED tests/test_w6_con16_aggregate.py::test_aggregate_refuses_cross_body_ownership_overlap
+FAILED tests/test_w6_con16_aggregate.py::test_aggregate_refuses_non_accepted_report
+FAILED tests/test_w6_con16_aggregate.py::test_aggregate_never_mutates_the_report
+FAILED tests/test_w6_con16_aggregate.py::test_cli_aggregate_flag - AssertionE...
+10 failed, 1 passed in 0.65s

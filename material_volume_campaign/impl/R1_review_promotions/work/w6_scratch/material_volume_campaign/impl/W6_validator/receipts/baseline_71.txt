@@ -1,0 +1,7 @@
+W6 baseline reproduction — EXACT M10 original bytes (validator cmp-identical; original
+test file + original fixtures, unchanged), run 2026-09-24T17:04:00-05:00 at receipts/baseline_reproduction/.
+Environment: CHIMERA_TOOLS_DIR override (the reproduction dir is one level deeper than
+the M10 home, so the module's parents[3]/tools resolution needs the designed override).
+Result: 71/71 passed — the frozen M10 baseline is green on the original bytes.
+.......................................................................  [100%]
+71 passed in 0.68s

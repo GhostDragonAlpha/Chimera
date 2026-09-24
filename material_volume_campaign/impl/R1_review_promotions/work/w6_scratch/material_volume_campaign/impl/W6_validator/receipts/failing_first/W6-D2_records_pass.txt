@@ -1,0 +1,185 @@
+........................................................FFFFFFFFFFF..... [ 94%]
+..F.                                                                     [100%]
+================================== FAILURES ===================================
+_______ test_decision_request_exercised[D1<-reject_readiness_root.json] _______
+
+fixture_name = 'reject_readiness_root.json', decision_id = 'D1'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+_______ test_decision_request_exercised[D1<-reject_readiness_body.json] _______
+
+fixture_name = 'reject_readiness_body.json', decision_id = 'D1'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+___ test_decision_request_exercised[D1<-adversarial_readiness_nested.json] ____
+
+fixture_name = 'adversarial_readiness_nested.json', decision_id = 'D1'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+__________ test_decision_request_exercised[D2<-reject_partial.json] ___________
+
+fixture_name = 'reject_partial.json', decision_id = 'D2'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+___ test_decision_request_exercised[D2<-reject_unassigned_in_complete.json] ___
+
+fixture_name = 'reject_unassigned_in_complete.json', decision_id = 'D2'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+_____ test_decision_request_exercised[D2<-reject_all_supplied_false.json] _____
+
+fixture_name = 'reject_all_supplied_false.json', decision_id = 'D2'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+_________ test_decision_request_exercised[D3<-reject_composite.json] __________
+
+fixture_name = 'reject_composite.json', decision_id = 'D3'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+__________ test_decision_request_exercised[D4<-reject_lineage.json] ___________
+
+fixture_name = 'reject_lineage.json', decision_id = 'D4'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+________ test_decision_request_exercised[D5<-reject_unsupported.json] _________
+
+fixture_name = 'reject_unsupported.json', decision_id = 'D5'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+______ test_decision_request_exercised[D5<-reject_source_payloads.json] _______
+
+fixture_name = 'reject_source_payloads.json', decision_id = 'D5'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+___ test_decision_request_exercised[D5<-reject_mass_authority_source.json] ____
+
+fixture_name = 'reject_mass_authority_source.json', decision_id = 'D5'
+
+    @pytest.mark.parametrize("fixture_name,decision_id", DECISION_EXERCISE,
+                             ids=[f"{row[1]}<-{row[0]}" for row in DECISION_EXERCISE])
+    def test_decision_request_exercised(fixture_name: str, decision_id: str) -> None:
+        verdict = verdict_for(fixture_name)
+        assert verdict["verdict"] == "REJECT"
+>       exercised = {d["id"]: d["exercised"] for d in verdict["decision_requests"]}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'decision_requests'
+
+tests\test_validator.py:170: KeyError
+_____________________ test_no_bytecode_written_into_tools _____________________
+
+    def test_no_bytecode_written_into_tools() -> None:
+        tools_pycache = HERE.parents[3] / "tools" / "__pycache__"
+        if tools_pycache.exists():
+            leaked = list(tools_pycache.glob("material_volume_body_export*"))
+>           assert leaked == [], f"bytecode written into read-only tools/: {leaked}"
+E           AssertionError: bytecode written into read-only tools/: [WindowsPath('E:/ChimeraWork/mvc-20260924/tools/__pycache__/material_volume_body_export.cpython-314.pyc')]
+E           assert [WindowsPath(...hon-314.pyc')] == []
+E             
+E             Left contains one more item: WindowsPath('E:/ChimeraWork/mvc-20260924/tools/__pycache__/material_volume_body_export.cpython-314.pyc')
+E             Use -v to get more diff
+
+tests\test_validator.py:247: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_validator.py::test_decision_request_exercised[D1<-reject_readiness_root.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D1<-reject_readiness_body.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D1<-adversarial_readiness_nested.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D2<-reject_partial.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D2<-reject_unassigned_in_complete.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D2<-reject_all_supplied_false.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D3<-reject_composite.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D4<-reject_lineage.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D5<-reject_unsupported.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D5<-reject_source_payloads.json]
+FAILED tests/test_validator.py::test_decision_request_exercised[D5<-reject_mass_authority_source.json]
+FAILED tests/test_validator.py::test_no_bytecode_written_into_tools - Asserti...
+12 failed, 64 passed in 0.93s

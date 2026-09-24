@@ -1,0 +1,121 @@
+FFFFF                                                                    [100%]
+================================== FAILURES ===================================
+____________ test_blocked_body_hashes_documented_as_reduced_object ____________
+
+    def test_blocked_body_hashes_documented_as_reduced_object() -> None:
+        verdict, error = validator.validate_file(GENUINE_BLOCKED)
+        assert error is None
+        assert verdict["verdict"] == "REJECT"
+>       scopes = _scopes(verdict)
+                 ^^^^^^^^^^^^^^^^
+
+tests\test_w6_hash_scope_mvo1.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+verdict = {'admission_status': 'not_admitted', 'all_rule_failures': [{'detail': "contract §2: 'REJECT for dynamics consumption' ..., {'body_id': 'coupon-body-B', 'eligible_for_assembly': False, 'export_status': 'not_exported', 'index': 1, ...}], ...}
+
+    def _scopes(verdict: dict) -> dict:
+        block = verdict.get("admission_hash_scopes")
+>       assert isinstance(block, dict), "verdict carries no admission_hash_scopes block"
+E       AssertionError: verdict carries no admission_hash_scopes block
+E       assert False
+E        +  where False = isinstance(None, dict)
+
+tests\test_w6_hash_scope_mvo1.py:36: AssertionError
+_______ test_documented_reduced_object_recomputes_to_the_recorded_hash ________
+
+    def test_documented_reduced_object_recomputes_to_the_recorded_hash() -> None:
+        # The precision proof: recomputing the documented object from the fixture's
+        # own fields reproduces each blocked body's recorded hash exactly.
+        report = validator.load_json_file(GENUINE_BLOCKED)[0]
+        verdict, error = validator.validate_file(GENUINE_BLOCKED)
+        assert error is None
+>       by_id = {entry["body_id"]: entry for entry in _scopes(verdict)["bodies"]}
+                                                      ^^^^^^^^^^^^^^^^
+
+tests\test_w6_hash_scope_mvo1.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+verdict = {'admission_status': 'not_admitted', 'all_rule_failures': [{'detail': "contract §2: 'REJECT for dynamics consumption' ..., {'body_id': 'coupon-body-B', 'eligible_for_assembly': False, 'export_status': 'not_exported', 'index': 1, ...}], ...}
+
+    def _scopes(verdict: dict) -> dict:
+        block = verdict.get("admission_hash_scopes")
+>       assert isinstance(block, dict), "verdict carries no admission_hash_scopes block"
+E       AssertionError: verdict carries no admission_hash_scopes block
+E       assert False
+E        +  where False = isinstance(None, dict)
+
+tests\test_w6_hash_scope_mvo1.py:36: AssertionError
+________________ test_full_report_identity_verified_separately ________________
+
+    def test_full_report_identity_verified_separately() -> None:
+        raw_bytes = GENUINE_BLOCKED.read_bytes()
+        canonical_content = raw_bytes.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+        verdict, error = validator.validate_file(GENUINE_BLOCKED)
+        assert error is None
+>       identity = _scopes(verdict)["full_report_identity"]
+                   ^^^^^^^^^^^^^^^^
+
+tests\test_w6_hash_scope_mvo1.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+verdict = {'admission_status': 'not_admitted', 'all_rule_failures': [{'detail': "contract §2: 'REJECT for dynamics consumption' ..., {'body_id': 'coupon-body-B', 'eligible_for_assembly': False, 'export_status': 'not_exported', 'index': 1, ...}], ...}
+
+    def _scopes(verdict: dict) -> dict:
+        block = verdict.get("admission_hash_scopes")
+>       assert isinstance(block, dict), "verdict carries no admission_hash_scopes block"
+E       AssertionError: verdict carries no admission_hash_scopes block
+E       assert False
+E        +  where False = isinstance(None, dict)
+
+tests\test_w6_hash_scope_mvo1.py:36: AssertionError
+_______________ test_complete_report_scopes_are_full_documents ________________
+
+    def test_complete_report_scopes_are_full_documents() -> None:
+        verdict, error = validator.validate_file(ACCEPT)
+        assert error is None
+        assert verdict["verdict"] == "ACCEPT"
+>       scopes = _scopes(verdict)
+                 ^^^^^^^^^^^^^^^^
+
+tests\test_w6_hash_scope_mvo1.py:101: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+verdict = {'admission_status': 'validation_only_admissible', 'all_rule_failures': [], 'assembly_eligible': True, 'bodies': [{'bo... ...}, {'body_id': 'coupon-body-B', 'eligible_for_assembly': True, 'export_status': 'exported', 'index': 1, ...}], ...}
+
+    def _scopes(verdict: dict) -> dict:
+        block = verdict.get("admission_hash_scopes")
+>       assert isinstance(block, dict), "verdict carries no admission_hash_scopes block"
+E       AssertionError: verdict carries no admission_hash_scopes block
+E       assert False
+E        +  where False = isinstance(None, dict)
+
+tests\test_w6_hash_scope_mvo1.py:36: AssertionError
+________________ test_scope_definitions_cite_the_decided_rule _________________
+
+    def test_scope_definitions_cite_the_decided_rule() -> None:
+        verdict, error = validator.validate_file(ACCEPT)
+        assert error is None
+>       scopes = _scopes(verdict)
+                 ^^^^^^^^^^^^^^^^
+
+tests\test_w6_hash_scope_mvo1.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+verdict = {'admission_status': 'validation_only_admissible', 'all_rule_failures': [], 'assembly_eligible': True, 'bodies': [{'bo... ...}, {'body_id': 'coupon-body-B', 'eligible_for_assembly': True, 'export_status': 'exported', 'index': 1, ...}], ...}
+
+    def _scopes(verdict: dict) -> dict:
+        block = verdict.get("admission_hash_scopes")
+>       assert isinstance(block, dict), "verdict carries no admission_hash_scopes block"
+E       AssertionError: verdict carries no admission_hash_scopes block
+E       assert False
+E        +  where False = isinstance(None, dict)
+
+tests\test_w6_hash_scope_mvo1.py:36: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_w6_hash_scope_mvo1.py::test_blocked_body_hashes_documented_as_reduced_object
+FAILED tests/test_w6_hash_scope_mvo1.py::test_documented_reduced_object_recomputes_to_the_recorded_hash
+FAILED tests/test_w6_hash_scope_mvo1.py::test_full_report_identity_verified_separately
+FAILED tests/test_w6_hash_scope_mvo1.py::test_complete_report_scopes_are_full_documents
+FAILED tests/test_w6_hash_scope_mvo1.py::test_scope_definitions_cite_the_decided_rule
+5 failed in 0.39s

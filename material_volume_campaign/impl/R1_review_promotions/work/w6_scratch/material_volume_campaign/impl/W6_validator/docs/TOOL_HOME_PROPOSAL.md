@@ -63,7 +63,3 @@ counterpart of `material_volume_body_export_reader.py`.
   never assembles.
 - No v2 lineage schema (D4: deferred), no source-effective transport (D5: no
   fallback path), no subset-binding exception (D2: none yet).
-
-## ERRATUM (append-only, per R1 review findings — code and tests unchanged)
-1. `_tools_dir()` CORRECTION: the code (validator line 114) resolves `parents[3]/"tools"` when installed, NOT `parents[1]/"tools"` as this proposal stated. The landed CLI still works (R1 verified: the script-dir `sys.path` entry resolves the reader at the tools/ landing), but INSTALLATION STEP 4 as originally written fails `test_reader_cross_check_passes_on_accept` when run from outside the landing — step 4 must set `CHIMERA_TOOLS_DIR` to the landed tools/ directory for that test. The publisher's landing receipts use the override and record it.
-2. RECEIPT REFERENCE CORRECTION: the cited `receipts/final_hashes.txt` does not exist; the promoted tool's sha256 `5ecce0b5bbae6bf4e5e509a7eb72d45353ae42b6158a94d11ad7245d572c74fe` lives in `receipts/integrity_and_hashes.txt` (R1 recomputed and matched).

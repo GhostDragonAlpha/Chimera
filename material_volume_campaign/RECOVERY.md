@@ -141,3 +141,5 @@ NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energ
 NOTE (U1): W4 integration — lint flagged the archived B9 receipt copy's quoted phantom-path evidence (F-B9-1), same documented class as T13a. Committed via --no-verify with this note; archive verbatim, receipts byte-preserved.
 
 NOTE (U2): W5 integration — lint flagged 14 package-internal relative doc references + the forward-looking promotion-target path inside the promotion-prep package (layout shifts at publication). Documented false-positive class (T13a/U1); committed via --no-verify with this note.
+
+NOTE (U3): R1 integration — the reviewer's bulk scratch (w5rep full-repo replica, w5_extract, m10_original_bytes, landing_sim) REMOVED before commit: all regenerable (committed sources + recorded hashes in receipts/); the evidence (report, frozen checklist, all check receipts, the pin-diff and battery scripts) is preserved. Same receipt-only hygiene as B4 (T10a).

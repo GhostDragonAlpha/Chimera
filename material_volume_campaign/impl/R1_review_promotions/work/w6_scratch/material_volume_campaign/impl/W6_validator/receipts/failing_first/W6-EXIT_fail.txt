@@ -1,0 +1,53 @@
+.F.F.F                                                                   [100%]
+================================== FAILURES ===================================
+______________________ test_cli_status_refusal_exits_two ______________________
+
+    def test_cli_status_refusal_exits_two() -> None:
+        # A named status refusal (partial, decided D2) — was exit 1 under M10.
+        result = _run(str(FIXTURES / "reject_partial.json"))
+>       assert result.returncode == 2
+E       assert 1 == 2
+E        +  where 1 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W6..., "static_only": true, "validator": "M10 rigid_body_mass_consumption_validator", "verdict": "REJECT"}\r\n', stderr=b'').returncode
+
+tests\test_w6_exit_classes.py:41: AssertionError
+_______________ test_cli_unexpected_internal_failure_exits_one ________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001747B5455B0>
+
+    def test_cli_unexpected_internal_failure_exits_one(monkeypatch) -> None:
+        def _explode(*_a, **_k):
+            raise RuntimeError("injected internal failure")
+        monkeypatch.setattr(validator, "validate_file", _explode)
+>       code = validator.main([str(ACCEPT)])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_w6_exit_classes.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+rigid_body_mass_consumption_validator.py:1088: in main
+    verdict, error = validate_file(args.report, args.admission_report)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+_a = ('E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\accept_complete_report.json', None)
+_k = {}
+
+    def _explode(*_a, **_k):
+>       raise RuntimeError("injected internal failure")
+E       RuntimeError: injected internal failure
+
+tests\test_w6_exit_classes.py:54: RuntimeError
+_______________________ test_cli_carries_identity_note ________________________
+
+    def test_cli_carries_identity_note() -> None:
+        result = _run("--version")
+        out = result.stdout.decode("utf-8", "replace")
+>       assert result.returncode == 0
+E       AssertionError: assert 2 == 0
+E        +  where 2 = CompletedProcess(args=['C:\\Python314\\python.exe', 'E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W6...          report\r\nrigid_body_mass_consumption_validator.py: error: the following arguments are required: report\r\n').returncode
+
+tests\test_w6_exit_classes.py:69: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_w6_exit_classes.py::test_cli_status_refusal_exits_two - ass...
+FAILED tests/test_w6_exit_classes.py::test_cli_unexpected_internal_failure_exits_one
+FAILED tests/test_w6_exit_classes.py::test_cli_carries_identity_note - Assert...
+3 failed, 3 passed in 1.38s

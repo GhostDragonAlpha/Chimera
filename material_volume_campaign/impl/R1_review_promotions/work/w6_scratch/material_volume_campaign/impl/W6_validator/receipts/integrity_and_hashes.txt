@@ -1,0 +1,21 @@
+== INTEGRITY PASTE (receipt 2026-09-24T16:59:24-05:00) ==
+$ git -C E:/ChimeraWork/mvc-20260924 status --porcelain -- material_volume_campaign/agents/M10_validator
+(empty above = original M10 dir untouched)
+
+$ git -C E:/ChimeraWork/mvc-20260924 status --porcelain | grep -v 'impl/W6_validator'
+?? material_volume_campaign/impl/W5_diag_promo/
+(the only non-W6 entries are the pre-existing untracked impl/ tree and the
+ concurrent sibling-lane modification recorded in worktree_concurrent_activity.txt)
+
+$ git -C E:/ChimeraWork/mvc-20260924 status --porcelain -- material_volume_campaign/impl/W6_validator | head -40
+?? material_volume_campaign/impl/W6_validator/
+
+tools/__pycache__ exists: NO
+
+== FINAL HASHES ==
+5ecce0b5bbae6bf4e5e509a7eb72d45353ae42b6158a94d11ad7245d572c74fe *E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/rigid_body_mass_consumption_validator.py
+d6ee7c1a6a10bd411f9142a042b8ca9ae40e992d7e90c0a178b02149918f9fe3 *E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/PREREGISTRATION.md
+c800c5ecdffc3e62910b2d48cb502a4b5598a8f2c10ca13e21defc6bb3c9190b *E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/tests/test_validator.py
+7cff62df8ea5a0c21eaff005be8c28c36cb40e0a52b89a6bd6407ce2d30a3fc3 *E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/tests/fixtures/genuine_blocked_report.json
+22be04d04930e7494c030bafae6423e83ba9328f6398a607913d9e26e36d64f8 *E:/ChimeraWork/mvc-20260924/material_volume_campaign/impl/W6_validator/tests/fixtures/genuine_partial_report.json
+5ecce0b5bbae6bf4e5e509a7eb72d45353ae42b6158a94d11ad7245d572c74fe *rigid_body_mass_consumption_validator.py

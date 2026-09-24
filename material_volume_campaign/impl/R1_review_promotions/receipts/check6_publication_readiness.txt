@@ -1,0 +1,23 @@
+R1 CHECK 6 — publication readiness (2026-09-24T17:37:42-05:00)
+
+[W5] publisher table (report section 4) vs package contents:
+  home/material_volume_diagnostic.py -> tools/: PRESENT (pin-verified)
+  docs/material_volume_diagnostic.md -> tools/docs/ (publisher's call): PRESENT
+  docs/dependency_manifest.md: PRESENT (+ receipts/dependency_oids.json twin)
+  home/run_suite.py + home/tests/ + home/work/ fixtures: PRESENT in package (kept in campaign tree per the explicit NOT-published note) — reviewer re-run possible
+  All receipt files named in report section 1 exist (home_header_diff.txt, home_run_suite_path_adaptations.diff, cli_battery_equivalence.json, docs_verbatim_check.txt, *_porcelain_*, run_suite_home.log, home_tests_verbose.log, *_test_ids.txt, original_baseline_tests.log, dependency_oids.json, battery/). NO dangling references found.
+
+[W5] LANDING SIMULATION (work/landing_sim/repo_root/tools/): diagnostic + 4 dep modules + example report co-located; CLI ran at tools/<file> with NO flags: JSON verdict emitted, dependencies resolved. PASS.
+
+[W6] proposal (TOOL_HOME_PROPOSAL.md) vs reality:
+  FINDING W6-N1: proposal states _tools_dir() = 'Path(__file__).resolve().parents[1] / "tools"' once installed; ACTUAL code (line 114) is parents[3]/"tools" (unchanged from M10).
+    Empirical: the LANDED CLI still works (landing sim: verdict ACCEPT, reader_cross_check ran=True, reader_verdict=pass) — but via the script-dir sys.path entry, NOT via _tools_dir (whose parents[3] resolves outside the repo at the landing).
+    Installation step 4 as written (run the frozen suite against the installed location, AGENT_DIR repointed) will FAIL test_reader_cross_check_passes_on_accept (and the pycache-guard path HERE.parents[3]) unless CHIMERA_TOOLS_DIR is set — the override exists in code + DEPENDENCY_MANIFEST re-verification steps but step 4 never mentions it. Publisher would have to invent this.
+  FINDING W6-N2: proposal step 2 cites 'receipts/final_hashes.txt' — FILE DOES NOT EXIST. The hash lives in receipts/integrity_and_hashes.txt; the value 5ecce0b5... is correct (recomputed, matches live file).
+  tests/: PRESENT (adapted test_validator + 5 delta files + fixtures/56); USAGE.md flags match live CLI (--verify-aggregate, --version, --indent, --admission-report)
+
+[W6] LANDING SIMULATION: validator + 4 dep modules co-located in tools/: ACCEPT verdict, reader cross-check RAN and passed, --verify-aggregate emits con16_verification_aggregate artifact (not_a_v1_body_record, joints_inferred:false, runtime_grouping_changed:false), refusal on REJECT input. PASS with the step-4 caveat above.
+
+PUBLISHER MUST DECIDE/INVENT (named):
+  W5: doc target 'tools/docs/ vs lineage doc convention' — explicitly left as publisher's call; RE-PIN RULE execution at integration time (already verified satisfied at current HEAD a00146f3: tools/ unchanged since feb01661, all 8 working-tree hashes match); commit of the untracked package dirs.
+  W6: step-4 mechanics at the landing (CHIMERA_TOOLS_DIR or accept in-place suite); USAGE.md landing path ('docs/ or link'); installed-blob-OID promotion receipt; erratum for W6-N1/N2 (append-only).

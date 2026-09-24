@@ -1,0 +1,21 @@
+R1 CHECK 3 — manifests (2026-09-24T17:29:17-05:00)
+
+OID resolution (git cat-file -e): all 13 recorded OIDs OK (4 tools, 4 fixtures, 3 source blobs, d1c99335 reader, v0.9 contract)
+
+git ls-tree cross-check:
+  @feb01661 reader=1ee791e0 exporter=f6fd2af1 admission=41615ec7 material_volume=3d46b030 — ALL MATCH manifests
+  @HEAD(a00146f3) identical four OIDs — RE-PIN RULE satisfied, nothing moved
+  @d1c99335 reader=8a30267f matches W6 provenance column
+  v0.9 worktree contract @feb01661 = 376adfa5 matches W6 'not the reconciled text' row
+
+MAIN checkout E:/PythonChimera:
+  current HEAD 768f3de0; contract blob = ee254224d6bc0cdabd08e6597aa218887b4447f0 (matches W6 record; blob unchanged since b04a3acd)
+  working-file sha256 = c6977868... (matches), canonical LF sha256 = fa845491... (matches)
+
+AST import closures (my own walk):
+  W6 validator -> reader -> {body_export -> admission -> material_volume}; +numpy+stdlib. EXACTLY the manifested 4-module closure.
+  W5 diagnostic: no static local imports (loads reader+exporter via importlib at runtime; located by ancestor walk).
+    Dynamic consumption verified in code: import_module(reader), import_module(exporter), exporter.read_json_file, exporter.ExportInputError.
+    Runtime closure (observed in live runs) = same four modules + numpy. Manifest complete, nothing missed.
+
+dependency_oids.json vs working tree at HEAD: all 8 recorded sha256 values MATCH current bytes.
