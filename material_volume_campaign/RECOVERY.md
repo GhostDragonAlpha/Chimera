@@ -40,3 +40,7 @@ Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe
 ## CHECKPOINT T5 — 4th [1302] (B3, died at 5 min — survival times shrinking: 17/23/27 -> 5 min)
 
 **Protocol escalation (within the operator's maximum-continuous directive):** the highest SUSTAINING count, not the highest spawning count, is the maximum. Serialized retries hold (M06-retry is THE active retry; B3's retry queued behind it). No new backlog spawns; the fleet drains by completion toward ~10-12, then refills one-per-completion while watching failure spacing. All in-flight work is resumable from briefs + partial dirs; nothing is lost by a [1302].
+
+## CHECKPOINT T5a — 5th [1302] (B5, 5.5 min — same six-agent spawn burst as B3)
+
+**Diagnosis sharpened:** both casualties were spawned in the same simultaneous 6-agent volley; all longer-running agents survive. The burst, not the steady-state count, triggers the limit. **Standing spawn discipline: stagger new/retry spawns 1-2 at a time, never volleys.** Retry queue: B3, B5 (both behind M06-retry, serialized). Fleet drains by completion; refills staggered.
