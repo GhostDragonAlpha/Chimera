@@ -1,0 +1,69 @@
+== BYTE LAYER ==
+| run | stdout sha256 | bytes |
+|---|---|---|
+| P0a | `8a69419e03d6db59e8b9e6bbdb779299732a7700eb39d8cc845f2c8cd4648d11` | 8927 |
+| P0b | `8a69419e03d6db59e8b9e6bbdb779299732a7700eb39d8cc845f2c8cd4648d11` | 8927 |
+| P1-cells-reversed | `3157db428ba94c30b8a36a3f57a2480cf919752167a697847e90c6021f275934` | 8927 |
+| P2-cells-shuffled | `39cfb76f7760a2afe423dd6a8831aafcab0c7e424cb08bd8debddcb76d7f5e9b` | 8927 |
+| P3-groups-reordered | `3b047ca95da07e40bb15c1943894cc7d4268ac6f6ea786623dbdba7aa6e23b77` | 8927 |
+| P4-group-cell-records-reversed | `bc0c2ccd4a9d3f49cc58a5d96804881e87b526002581bed07ab8c94770198ee5` | 8927 |
+| P5-manifest-entries-reversed | `c65dbbad9101575883bd97b607b68d3206b624e434e861488638c29fc4599577` | 8927 |
+
+E-BYTE-0 rerun determinism P0a==P0b: True
+
+P1-cells-reversed: diff paths = 4, changed fields = ['partition_sha256'], allowed = ['partition_sha256'] -> PASS-PROMISED
+  $.body_groups[0].input_hashes.partition_sha256: b0b8366eed5795cb5bb8.. -> b276a26960afccedca09..
+  $.body_groups[1].input_hashes.partition_sha256: b0b8366eed5795cb5bb8.. -> b276a26960afccedca09..
+  $.body_groups[2].input_hashes.partition_sha256: b0b8366eed5795cb5bb8.. -> b276a26960afccedca09..
+  $.input_hashes.partition_sha256: b0b8366eed5795cb5bb8.. -> b276a26960afccedca09..
+
+P2-cells-shuffled: diff paths = 4, changed fields = ['partition_sha256'], allowed = ['partition_sha256'] -> PASS-PROMISED
+  $.body_groups[0].input_hashes.partition_sha256: b0b8366eed5795cb5bb8.. -> 35740839bfa5903668fe..
+  $.body_groups[1].input_hashes.partition_sha256: b0b8366eed5795cb5bb8.. -> 35740839bfa5903668fe..
+  $.body_groups[2].input_hashes.partition_sha256: b0b8366eed5795cb5bb8.. -> 35740839bfa5903668fe..
+  $.input_hashes.partition_sha256: b0b8366eed5795cb5bb8.. -> 35740839bfa5903668fe..
+
+P3-groups-reordered: diff paths = 4, changed fields = ['body_groups_sha256'], allowed = ['body_groups_sha256'] -> PASS-PROMISED
+  $.body_groups[0].input_hashes.body_groups_sha256: c1e576984063bc475da1.. -> 9c228df8c4a2c958be76..
+  $.body_groups[1].input_hashes.body_groups_sha256: c1e576984063bc475da1.. -> 9c228df8c4a2c958be76..
+  $.body_groups[2].input_hashes.body_groups_sha256: c1e576984063bc475da1.. -> 9c228df8c4a2c958be76..
+  $.input_hashes.body_groups_sha256: c1e576984063bc475da1.. -> 9c228df8c4a2c958be76..
+
+P4-group-cell-records-reversed: diff paths = 4, changed fields = ['body_groups_sha256'], allowed = ['body_groups_sha256'] -> PASS-PROMISED
+  $.body_groups[0].input_hashes.body_groups_sha256: c1e576984063bc475da1.. -> 743dbdc45f241c668460..
+  $.body_groups[1].input_hashes.body_groups_sha256: c1e576984063bc475da1.. -> 743dbdc45f241c668460..
+  $.body_groups[2].input_hashes.body_groups_sha256: c1e576984063bc475da1.. -> 743dbdc45f241c668460..
+  $.input_hashes.body_groups_sha256: c1e576984063bc475da1.. -> 743dbdc45f241c668460..
+
+P5-manifest-entries-reversed: diff paths = 4, changed fields = ['manifest_sha256'], allowed = ['manifest_sha256'] -> PASS-PROMISED
+  $.body_groups[0].input_hashes.manifest_sha256: ec2da158816f039fa3f3.. -> 6df6cd1ec2aebd80457a..
+  $.body_groups[1].input_hashes.manifest_sha256: ec2da158816f039fa3f3.. -> 6df6cd1ec2aebd80457a..
+  $.body_groups[2].input_hashes.manifest_sha256: ec2da158816f039fa3f3.. -> 6df6cd1ec2aebd80457a..
+  $.input_hashes.manifest_sha256: ec2da158816f039fa3f3.. -> 6df6cd1ec2aebd80457a..
+
+== PHYSICAL LAYER ==
+| run | verdict | note |
+|---|---|---|
+| P0a | PASS-EXACT | all preregistered physical/ownership fields bit-identical to P0a (float.hex equality) |
+| P0b | PASS-EXACT | all preregistered physical/ownership fields bit-identical to P0a (float.hex equality) |
+| P1-cells-reversed | PASS-EXACT | all preregistered physical/ownership fields bit-identical to P0a (float.hex equality) |
+| P2-cells-shuffled | PASS-EXACT | all preregistered physical/ownership fields bit-identical to P0a (float.hex equality) |
+| P3-groups-reordered | PASS-EXACT | all preregistered physical/ownership fields bit-identical to P0a (float.hex equality) |
+| P4-group-cell-records-reversed | PASS-EXACT | all preregistered physical/ownership fields bit-identical to P0a (float.hex equality) |
+| P5-manifest-entries-reversed | PASS-EXACT | all preregistered physical/ownership fields bit-identical to P0a (float.hex equality) |
+
+== ANALYTIC ANCHORS (P0a) ==
+body-alpha: volume=0.5 (expect 0.5, delta +0.000e+00); mass=3.583333333333333 (expect 6.0, delta -2.417e+00)
+body-beta: volume=0.3333333333333333 (expect 0.3333333333333333, delta +0.000e+00); mass=3.0 (expect 2.0, delta +1.000e+00)
+body-gamma: volume=0.16666666666666666 (expect 0.16666666666666666, delta +0.000e+00); mass=0.5833333333333333 (expect 0.5833333333333334, delta -1.110e-16)
+
+E-PHYS-3 admission_report_sha256 invariant: True (distinct values: 1)
+
+== INPUT-HASH IDENTITY CHECK (hash value == canonical hash of permuted doc) ==
+P0a: input_hashes == canonical hashes of its own fixture triple: True
+P0b: input_hashes == canonical hashes of its own fixture triple: True
+P1-cells-reversed: input_hashes == canonical hashes of its own fixture triple: True
+P2-cells-shuffled: input_hashes == canonical hashes of its own fixture triple: True
+P3-groups-reordered: input_hashes == canonical hashes of its own fixture triple: True
+P4-group-cell-records-reversed: input_hashes == canonical hashes of its own fixture triple: True
+P5-manifest-entries-reversed: input_hashes == canonical hashes of its own fixture triple: True

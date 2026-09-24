@@ -30,3 +30,9 @@ Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe
 **Static limit declared (L2):** a silently-diagonalized tensor with flags intact ACCEPTs static validation — pre-declared in the frozen prereg; mitigation: --admission-report recomputation refuses any non-matching supplied doc.
 **Decision requests for Astra (strictest reading):** D1 readiness-claim=reject; D2 partial/unassigned=reject-always; D3 any recombination=reject; D4 any lineage field=reject; D5 source-effective masses terminal.
 **M06 retry:** dispatched (resume from partial state: brief/cases.py/fixtures/matrix.md exist).
+
+## CHECKPOINT T4 — M05 integrated
+
+**Verified:** M05 PASS — coordinator re-ran work/compare.py (all 7 runs' input_hashes == canonical hashes of their own fixture triples); integrity clean. Physical layer bit-exact under all 5 permutations; byte layer confined to the licensed input_hashes fields; determinism byte-identical; the receipt's U6 hole (export-report-level order invariance untested) is now tested CLOSED. Decision requests MV-O2 (promise physical invariance explicitly) and MV-O3 (promise output array order) logged; UNPROMISED-OBSERVED: output arrays ID-sorted.
+**M06 retry:** dispatched (resume from partial state; reuse-vs-rebuild to be recorded).
+**Live fleet:** M01-M04, M06-retry, M08 + B2a, B3, B4, B5, B6, B7, B9 + anatomy O1/O2/R1 = 14 + 3.

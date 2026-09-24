@@ -1,0 +1,149 @@
+{
+ "P0a": {
+  "cmd": [
+   "C:\\Python314\\python.exe",
+   "material_volume_body_export.py",
+   "--manifest",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\base\\manifest.json",
+   "--partition",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\base\\partition.json",
+   "--groups",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\base\\groups.json"
+  ],
+  "env": {
+   "bytecode": "PYTHONDONTWRITEBYTECODE=1",
+   "python": "3.14.3"
+  },
+  "exit_code": 0,
+  "fixture": "base",
+  "stderr": null,
+  "stdout_bytes": 8927,
+  "stdout_sha256": "8a69419e03d6db59e8b9e6bbdb779299732a7700eb39d8cc845f2c8cd4648d11"
+ },
+ "P0b": {
+  "cmd": [
+   "C:\\Python314\\python.exe",
+   "material_volume_body_export.py",
+   "--manifest",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\base\\manifest.json",
+   "--partition",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\base\\partition.json",
+   "--groups",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\base\\groups.json"
+  ],
+  "env": {
+   "bytecode": "PYTHONDONTWRITEBYTECODE=1",
+   "python": "3.14.3"
+  },
+  "exit_code": 0,
+  "fixture": "base",
+  "stderr": null,
+  "stdout_bytes": 8927,
+  "stdout_sha256": "8a69419e03d6db59e8b9e6bbdb779299732a7700eb39d8cc845f2c8cd4648d11"
+ },
+ "P1-cells-reversed": {
+  "cmd": [
+   "C:\\Python314\\python.exe",
+   "material_volume_body_export.py",
+   "--manifest",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P1-cells-reversed\\manifest.json",
+   "--partition",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P1-cells-reversed\\partition.json",
+   "--groups",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P1-cells-reversed\\groups.json"
+  ],
+  "env": {
+   "bytecode": "PYTHONDONTWRITEBYTECODE=1",
+   "python": "3.14.3"
+  },
+  "exit_code": 0,
+  "fixture": "P1-cells-reversed",
+  "stderr": null,
+  "stdout_bytes": 8927,
+  "stdout_sha256": "3157db428ba94c30b8a36a3f57a2480cf919752167a697847e90c6021f275934"
+ },
+ "P2-cells-shuffled": {
+  "cmd": [
+   "C:\\Python314\\python.exe",
+   "material_volume_body_export.py",
+   "--manifest",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P2-cells-shuffled\\manifest.json",
+   "--partition",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P2-cells-shuffled\\partition.json",
+   "--groups",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P2-cells-shuffled\\groups.json"
+  ],
+  "env": {
+   "bytecode": "PYTHONDONTWRITEBYTECODE=1",
+   "python": "3.14.3"
+  },
+  "exit_code": 0,
+  "fixture": "P2-cells-shuffled",
+  "stderr": null,
+  "stdout_bytes": 8927,
+  "stdout_sha256": "39cfb76f7760a2afe423dd6a8831aafcab0c7e424cb08bd8debddcb76d7f5e9b"
+ },
+ "P3-groups-reordered": {
+  "cmd": [
+   "C:\\Python314\\python.exe",
+   "material_volume_body_export.py",
+   "--manifest",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P3-groups-reordered\\manifest.json",
+   "--partition",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P3-groups-reordered\\partition.json",
+   "--groups",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P3-groups-reordered\\groups.json"
+  ],
+  "env": {
+   "bytecode": "PYTHONDONTWRITEBYTECODE=1",
+   "python": "3.14.3"
+  },
+  "exit_code": 0,
+  "fixture": "P3-groups-reordered",
+  "stderr": null,
+  "stdout_bytes": 8927,
+  "stdout_sha256": "3b047ca95da07e40bb15c1943894cc7d4268ac6f6ea786623dbdba7aa6e23b77"
+ },
+ "P4-group-cell-records-reversed": {
+  "cmd": [
+   "C:\\Python314\\python.exe",
+   "material_volume_body_export.py",
+   "--manifest",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P4-group-cell-records-reversed\\manifest.json",
+   "--partition",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P4-group-cell-records-reversed\\partition.json",
+   "--groups",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P4-group-cell-records-reversed\\groups.json"
+  ],
+  "env": {
+   "bytecode": "PYTHONDONTWRITEBYTECODE=1",
+   "python": "3.14.3"
+  },
+  "exit_code": 0,
+  "fixture": "P4-group-cell-records-reversed",
+  "stderr": null,
+  "stdout_bytes": 8927,
+  "stdout_sha256": "bc0c2ccd4a9d3f49cc58a5d96804881e87b526002581bed07ab8c94770198ee5"
+ },
+ "P5-manifest-entries-reversed": {
+  "cmd": [
+   "C:\\Python314\\python.exe",
+   "material_volume_body_export.py",
+   "--manifest",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P5-manifest-entries-reversed\\manifest.json",
+   "--partition",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P5-manifest-entries-reversed\\partition.json",
+   "--groups",
+   "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M05_order\\fixtures\\P5-manifest-entries-reversed\\groups.json"
+  ],
+  "env": {
+   "bytecode": "PYTHONDONTWRITEBYTECODE=1",
+   "python": "3.14.3"
+  },
+  "exit_code": 0,
+  "fixture": "P5-manifest-entries-reversed",
+  "stderr": null,
+  "stdout_bytes": 8927,
+  "stdout_sha256": "c65dbbad9101575883bd97b607b68d3206b624e434e861488638c29fc4599577"
+ }
+}

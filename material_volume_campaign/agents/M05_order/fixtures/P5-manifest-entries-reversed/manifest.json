@@ -1,0 +1,176 @@
+{
+ "schema_version": "chimera.fitting_manifest.v1",
+ "fitting_id": "mvc-m05-order-cube-fit-v1",
+ "domain_id": "mvc-m05-kuhn-cube",
+ "domain_revision": "mvc-m05-cube-v1",
+ "coordinate_frame": {
+  "frame_id": "m05-domain",
+  "handedness": "right",
+  "coordinate_unit": "m",
+  "scale_to_m": 1.0
+ },
+ "vertices": [
+  {
+   "vertex_id": "n7",
+   "position": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "vertex_id": "n6",
+   "position": [
+    0.0,
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "vertex_id": "n5",
+   "position": [
+    1.0,
+    0.0,
+    1.0
+   ]
+  },
+  {
+   "vertex_id": "n4",
+   "position": [
+    1.0,
+    1.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "n3",
+   "position": [
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  {
+   "vertex_id": "n2",
+   "position": [
+    0.0,
+    1.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "n1",
+   "position": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "n0",
+   "position": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ],
+ "cells": [
+  {
+   "cell_id": "cell-t5",
+   "vertex_ids": [
+    "n0",
+    "n3",
+    "n7",
+    "n6"
+   ],
+   "component_id": "cube-core"
+  },
+  {
+   "cell_id": "cell-t4",
+   "vertex_ids": [
+    "n0",
+    "n3",
+    "n5",
+    "n7"
+   ],
+   "component_id": "cube-core"
+  },
+  {
+   "cell_id": "cell-t3",
+   "vertex_ids": [
+    "n0",
+    "n2",
+    "n6",
+    "n7"
+   ],
+   "component_id": "cube-core"
+  },
+  {
+   "cell_id": "cell-t2",
+   "vertex_ids": [
+    "n0",
+    "n2",
+    "n7",
+    "n4"
+   ],
+   "component_id": "cube-core"
+  },
+  {
+   "cell_id": "cell-t1",
+   "vertex_ids": [
+    "n0",
+    "n1",
+    "n7",
+    "n5"
+   ],
+   "component_id": "cube-core"
+  },
+  {
+   "cell_id": "cell-t0",
+   "vertex_ids": [
+    "n0",
+    "n1",
+    "n4",
+    "n7"
+   ],
+   "component_id": "cube-core"
+  }
+ ],
+ "regions": [
+  {
+   "region_id": "region-d35",
+   "mass_owner_id": "owner-d35",
+   "material_id": "mat-d35"
+  },
+  {
+   "region_id": "region-d6",
+   "mass_owner_id": "owner-d6",
+   "material_id": "mat-d6"
+  },
+  {
+   "region_id": "region-d12",
+   "mass_owner_id": "owner-d12",
+   "material_id": "mat-d12"
+  }
+ ],
+ "mass_authority": "reconstructed_tissue_mass",
+ "source_effective_segment_ids": [],
+ "matter_ownership": [
+  {
+   "matter_id": "matter-d35",
+   "representation": "tetrahedral_volume",
+   "mass_owner_id": "owner-d35"
+  },
+  {
+   "matter_id": "matter-d6",
+   "representation": "tetrahedral_volume",
+   "mass_owner_id": "owner-d6"
+  },
+  {
+   "matter_id": "matter-d12",
+   "representation": "tetrahedral_volume",
+   "mass_owner_id": "owner-d12"
+  }
+ ]
+}

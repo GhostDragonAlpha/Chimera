@@ -1,0 +1,187 @@
+{
+ "schema_version": "chimera.material_partition.v1",
+ "coordinate_frame": {
+  "frame_id": "m05-domain",
+  "handedness": "right",
+  "coordinate_unit": "m",
+  "scale_to_m": 1.0
+ },
+ "vertices": [
+  {
+   "vertex_id": "n0",
+   "position": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "n1",
+   "position": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "n2",
+   "position": [
+    0.0,
+    1.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "n3",
+   "position": [
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  {
+   "vertex_id": "n4",
+   "position": [
+    1.0,
+    1.0,
+    0.0
+   ]
+  },
+  {
+   "vertex_id": "n5",
+   "position": [
+    1.0,
+    0.0,
+    1.0
+   ]
+  },
+  {
+   "vertex_id": "n6",
+   "position": [
+    0.0,
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "vertex_id": "n7",
+   "position": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  }
+ ],
+ "cells": [
+  {
+   "cell_id": "cell-t0",
+   "vertex_ids": [
+    "n0",
+    "n1",
+    "n4",
+    "n7"
+   ],
+   "proposals": [
+    "region-d12"
+   ]
+  },
+  {
+   "cell_id": "cell-t1",
+   "vertex_ids": [
+    "n0",
+    "n1",
+    "n7",
+    "n5"
+   ],
+   "proposals": [
+    "region-d6"
+   ]
+  },
+  {
+   "cell_id": "cell-t2",
+   "vertex_ids": [
+    "n0",
+    "n2",
+    "n7",
+    "n4"
+   ],
+   "proposals": [
+    "region-d35"
+   ]
+  },
+  {
+   "cell_id": "cell-t3",
+   "vertex_ids": [
+    "n0",
+    "n2",
+    "n6",
+    "n7"
+   ],
+   "proposals": [
+    "region-d12"
+   ]
+  },
+  {
+   "cell_id": "cell-t4",
+   "vertex_ids": [
+    "n0",
+    "n3",
+    "n5",
+    "n7"
+   ],
+   "proposals": [
+    "region-d6"
+   ]
+  },
+  {
+   "cell_id": "cell-t5",
+   "vertex_ids": [
+    "n0",
+    "n3",
+    "n7",
+    "n6"
+   ],
+   "proposals": [
+    "region-d35"
+   ]
+  }
+ ],
+ "materials": [
+  {
+   "material_id": "mat-d12",
+   "density_kg_m3": 12.0,
+   "density_source": "mvc-m05 analytic fixture",
+   "conditions": "uniform"
+  },
+  {
+   "material_id": "mat-d6",
+   "density_kg_m3": 6.0,
+   "density_source": "mvc-m05 analytic fixture",
+   "conditions": "uniform"
+  },
+  {
+   "material_id": "mat-d35",
+   "density_kg_m3": 3.5,
+   "density_source": "mvc-m05 analytic fixture",
+   "conditions": "uniform"
+  }
+ ],
+ "regions": [
+  {
+   "region_id": "region-d12",
+   "mass_owner_id": "owner-d12",
+   "material_id": "mat-d12"
+  },
+  {
+   "region_id": "region-d6",
+   "mass_owner_id": "owner-d6",
+   "material_id": "mat-d6"
+  },
+  {
+   "region_id": "region-d35",
+   "mass_owner_id": "owner-d35",
+   "material_id": "mat-d35"
+  }
+ ],
+ "mass_authority": "reconstructed_tissue_mass"
+}

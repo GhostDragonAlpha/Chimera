@@ -1,0 +1,113 @@
+{
+ "schema_version": "chimera.rigid_body_cell_groups.v1",
+ "body_groups": [
+  {
+   "body_id": "body-alpha",
+   "cell_ids": [
+    "cell-t2",
+    "cell-t1",
+    "cell-t0"
+   ],
+   "body_frame": {
+    "frame_id": "alpha-frame",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "rotation": [
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ],
+     "origin_m": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
+  },
+  {
+   "body_id": "body-beta",
+   "cell_ids": [
+    "cell-t4",
+    "cell-t3"
+   ],
+   "body_frame": {
+    "frame_id": "beta-frame",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "rotation": [
+      [
+       0.0,
+       -1.0,
+       0.0
+      ],
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ],
+     "origin_m": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    }
+   }
+  },
+  {
+   "body_id": "body-gamma",
+   "cell_ids": [
+    "cell-t5"
+   ],
+   "body_frame": {
+    "frame_id": "gamma-frame",
+    "handedness": "right",
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "rotation": [
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ],
+     "origin_m": [
+      0.0,
+      0.0,
+      0.0
+     ]
+    }
+   }
+  }
+ ]
+}
