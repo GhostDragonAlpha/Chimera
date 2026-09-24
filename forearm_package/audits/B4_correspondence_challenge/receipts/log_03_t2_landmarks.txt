@@ -1,0 +1,3 @@
+[PASS] T2 landmark sufficiency (radius) — |src_D-src_A|=0.292029 m  |P_d-P|=0.064745 m  |t_roll|=0.030953 m (> 1e-09)  policy=uniform
+[PASS] T2 landmark sufficiency (radius_l) — |src_D-src_A|=0.292029 m  |P_d-P|=0.064745 m  |t_roll|=0.030953 m (> 1e-09)  policy=uniform
+T2 VERDICT: PASS

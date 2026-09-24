@@ -201,3 +201,23 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none.
 
 **Next:** B4 -> I5 BODY_RESOLUTION_MAP.md.
+
+## CHECKPOINT 2026-09-24 (T14) — WAVE 2 COMPLETE: B4 integrated; I5 map delivered; worktree cleanup executed
+
+**Verified:**
+- B4 (challenge protocol) PASS 5/5; coordinator re-ran the full gate (00-09): ALL PASS, integrity clean. Two protocol test defects were found and fixed PRE-candidate (amendments A1-A5, validation log) — the gate was hardened before any candidate exists, as designed.
+- WAVE 2 COMPLETE: B1 (I-classification, paddle evidence) + B2 (breakers, 12/16 unlock) + B3 (requirements, F-1..F-4) + B4 (gate) all integrated and receipt-verified.
+- I5 DELIVERED: BODY_RESOLUTION_MAP.md — the decision-ready package per the architect's stop condition. Preregistered candidates with measured numbers: ulna U-STR (s=0.2217, sites 4.4x extrapolation) vs U-ANA (s=0.630, forearm-strip); hand H-LEN (0.716 uniform) / H-ASP (0.72-0.90 local) / H-BODY (0.2217); mass implications tabulated; roll candidates measured (ECU-P2 etc.; palm-plane/paddle-flat homolog); smallest change = authoring deltas + one new fit session + F-4 supersession; digits permanently blocked; T6 attestation (zero utility numbers) holds.
+- Coordinator measurement pass (read-only, snapshot XML): ulna site offsets (perp up to 0.1015m), hand site locals (|p| 0.030-0.043m), hand skeleton geom table (distalmost 3distph 0.1554m) — logged here and in the map.
+
+**Worktree cleanup (operator directive "remove completed worktrees as you're working" — STANDING):**
+- git worktree prune cleared ~40 stale registrations; 8 completed checkouts removed (5 clean pre-shutdown + 3 detached-clean kilo trees, verified untouched since the 2026-09-23 shutdown): zenflow/hello-833b, buffy-lesson-agent, buffy-stranger-20260920, gpu-demo-recovery-01, review-mutations-01 (isolated checkouts), kilo amenable-notebook/heather-hound/separate-region. All branches preserved (worktrees only).
+- KEPT with reasons: main tree; locked (buffy-id3, ChimeraWork/slot-05); preservations/slot-02; _wt_export_verification (today's material-volume lane, possibly active). LEFT DIRTY (not removed, operator may order case-by-case): Temp/final-tip-95f2 (5573), buffy-quadwin (1), rendertruth-agent (4), opencode-skeleton-movie (4), robustness-01 (2), state-integrity-01 (2).
+- Disk: E: 661.6 -> 722.6 GB free (+61 GB); C: 454 -> 455.5 GB. Registrations ~60 -> 10.
+- STANDING RULE added to board: every integration pass ends with worktree prune + removal of clean completed checkouts (never: main, locked, preservations, dirty, or same-day lanes).
+
+**Active:** none — wave 2 closed; no spin.
+
+**Blocked (by design, pending Astra):** the map's policy picks (U-STR/U-ANA; H-LEN/H-ASP/H-BODY; roll refs) + D1 wrist rule + D3-D5 contracts.
+
+**Next (on Astra answers):** freeze the chosen preregistration -> B4 T1-T6 gate run -> new fit session (append-only) -> T6/T7 measurement for the 12 unblocked tendons. If session dies: resume from this file; every audit re-runnable from briefs.

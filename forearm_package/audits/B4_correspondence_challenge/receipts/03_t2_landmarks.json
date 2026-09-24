@@ -1,0 +1,33 @@
+{
+  "checks": [
+    {
+      "check": "T2 radius",
+      "ok": true,
+      "source_bone_len_m": 0.2920293820833787,
+      "target_pair_len_m": 0.06474489854186721,
+      "roll_t_norm_m": 0.03095308546724938,
+      "roll_eps": 1e-09,
+      "scale_policy": "uniform",
+      "packet_scale": [
+        0.22170679566544982,
+        0.22170679566544982,
+        0.22170679566544982
+      ]
+    },
+    {
+      "check": "T2 radius_l",
+      "ok": true,
+      "source_bone_len_m": 0.2920293820833787,
+      "target_pair_len_m": 0.06474489854186721,
+      "roll_t_norm_m": 0.03095308293114959,
+      "roll_eps": 1e-09,
+      "scale_policy": "uniform",
+      "packet_scale": [
+        0.22170679566544982,
+        0.22170679566544982,
+        0.22170679566544982
+      ]
+    }
+  ],
+  "ok": true
+}

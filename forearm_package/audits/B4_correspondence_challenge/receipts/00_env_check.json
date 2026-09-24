@@ -1,0 +1,20 @@
+{
+  "snapshot_files_checked": 44,
+  "mismatches": [],
+  "constants": {
+    "FD_EPS": {
+      "value": 1e-05,
+      "line": 46
+    },
+    "JOINT_EPS": {
+      "value": 1e-09,
+      "line": 47
+    },
+    "ROLL_EPS": {
+      "value": 1e-09,
+      "line": 48
+    },
+    "frame_orthogonality_1e-6_in_correspondence": true
+  },
+  "xml_path": "E:\\PythonChimera\\forearm_package\\baseline_snapshot\\source_xml\\chimanoid.xml"
+}

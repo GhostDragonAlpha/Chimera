@@ -1,0 +1,6 @@
+[PASS] T1a parent(radius) == XML parent — xml=ulna packet=ulna declared=ulna
+[PASS] T1a parent(radius_l) == XML parent — xml=ulna_l packet=ulna_l declared=ulna_l
+[PASS] T1b claimed site set == XML site set (all 18 bodies) — radius:16==16; radius_l:16==16
+[PASS] T1c source resolutions (radius) — prox=body_origin:radius dist=body_origin:hand_r roll=site:PT-P2 (XML owner=ulna, legal=['hand_r', 'radius', 'ulna'])
+[PASS] T1c source resolutions (radius_l) — prox=body_origin:radius_l dist=body_origin:hand_l roll=site:PT_l-P2 (XML owner=ulna_l, legal=['hand_l', 'radius_l', 'ulna_l'])
+T1 VERDICT: PASS

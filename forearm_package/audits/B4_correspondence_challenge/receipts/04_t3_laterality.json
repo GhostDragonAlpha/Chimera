@@ -1,0 +1,39 @@
+{
+  "checks": [
+    {
+      "check": "T3 radius",
+      "ok": true,
+      "source_side": "right",
+      "target_side": "right",
+      "target_prox_joint": "elbow_R",
+      "P_x": -0.11548098385334016,
+      "det_Q_constructed": 1.0000000000000002,
+      "scale": [
+        0.22170679566544982,
+        0.22170679566544982,
+        0.22170679566544982
+      ],
+      "handedness": "preserve",
+      "packet_chirality_det": 0.9999999999999998,
+      "mirror_plane_normal": null
+    },
+    {
+      "check": "T3 radius_l",
+      "ok": true,
+      "source_side": "left",
+      "target_side": "left",
+      "target_prox_joint": "elbow_L",
+      "P_x": 0.11548098385334016,
+      "det_Q_constructed": 1.0000000000000002,
+      "scale": [
+        0.22170679566544982,
+        0.22170679566544982,
+        0.22170679566544982
+      ],
+      "handedness": "preserve",
+      "packet_chirality_det": 0.9999999999999998,
+      "mirror_plane_normal": null
+    }
+  ],
+  "ok": true
+}

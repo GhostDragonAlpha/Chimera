@@ -1,0 +1,103 @@
+{
+  "checks": [
+    {
+      "check": "T4 radius",
+      "ok": true,
+      "subchecks": {
+        "frame_basis": true,
+        "scale": true,
+        "rigid_rotation_G": true,
+        "ortho_constructed": true,
+        "det_Q": true,
+        "det_L_is_s3": true,
+        "reconstruction_1e-6m": true,
+        "neighbor_band": true,
+        "aspect_policy": true
+      },
+      "rebuilt_scale": [
+        0.22170679566544982,
+        0.22170679566544982,
+        0.22170679566544982
+      ],
+      "packet_scale": [
+        0.22170679566544982,
+        0.22170679566544982,
+        0.22170679566544982
+      ],
+      "max_abs_diff": {
+        "frame_basis": 0.0,
+        "scale": 0.0,
+        "rigid_G_vs_packet_rotation": 0.0
+      },
+      "orthonormality_constructed": 5.225854471380131e-16,
+      "det_Q": 1.0000000000000002,
+      "det_L": 0.010897754382730348,
+      "s_cubed": 0.010897754382730345,
+      "reconstruction_worst": {
+        "site": "BRD-P3",
+        "err_m": 5.551115123125783e-17,
+        "n_sites": 16
+      },
+      "plausibility": {
+        "neighbor": "humerus",
+        "neighbor_axial": 0.22903047349436892,
+        "band": [
+          0.11451523674718446,
+          0.45806094698873784
+        ],
+        "in_band": true,
+        "aspect_policy": true
+      }
+    },
+    {
+      "check": "T4 radius_l",
+      "ok": true,
+      "subchecks": {
+        "frame_basis": true,
+        "scale": true,
+        "rigid_rotation_G": true,
+        "ortho_constructed": true,
+        "det_Q": true,
+        "det_L_is_s3": true,
+        "reconstruction_1e-6m": true,
+        "neighbor_band": true,
+        "aspect_policy": true
+      },
+      "rebuilt_scale": [
+        0.22170679566544982,
+        0.22170679566544982,
+        0.22170679566544982
+      ],
+      "packet_scale": [
+        0.22170679566544982,
+        0.22170679566544982,
+        0.22170679566544982
+      ],
+      "max_abs_diff": {
+        "frame_basis": 0.0,
+        "scale": 0.0,
+        "rigid_G_vs_packet_rotation": 0.0
+      },
+      "orthonormality_constructed": 5.960943544325303e-16,
+      "det_Q": 1.0000000000000002,
+      "det_L": 0.010897754382730348,
+      "s_cubed": 0.010897754382730345,
+      "reconstruction_worst": {
+        "site": "BIClong_l-P9",
+        "err_m": 1.734723475976807e-18,
+        "n_sites": 16
+      },
+      "plausibility": {
+        "neighbor": "humerus_l",
+        "neighbor_axial": 0.22899766495317744,
+        "band": [
+          0.11449883247658872,
+          0.4579953299063549
+        ],
+        "in_band": true,
+        "aspect_policy": true
+      }
+    }
+  ],
+  "ok": true
+}

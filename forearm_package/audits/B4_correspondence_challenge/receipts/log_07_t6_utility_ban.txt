@@ -1,0 +1,3 @@
+[PASS] T6 utility-ban token scan (scripts/) — 11 scripts scanned, 0 banned-evidence occurrences
+[PASS] T6 packet tendon/moment data untouched — scripts reading tendons/muscles/arms: NONE
+T6 VERDICT: PASS

@@ -1,0 +1,4 @@
+[PASS] known-good correspondence digest == packet provenance — rebuilt 52c92fe0d207a599… vs recorded 52c92fe0d207a599…
+radius: parent=ulna policy=uniform prox_res=body_origin:radius dist_res=body_origin:hand_r roll_res=site:PT-P2 s_axial=0.221706795665
+radius_l: parent=ulna_l policy=uniform prox_res=body_origin:radius_l dist_res=body_origin:hand_l roll_res=site:PT_l-P2 s_axial=0.221706795665
+[PASS] known-good records extracted — radius + radius_l declared landmarks recorded

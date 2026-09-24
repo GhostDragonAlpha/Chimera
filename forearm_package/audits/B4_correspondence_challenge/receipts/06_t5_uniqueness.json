@@ -1,0 +1,253 @@
+{
+  "edges": {
+    "radius": {
+      "declared": "radius",
+      "declared_resolutions": {
+        "prox": "body_origin:radius",
+        "dist": "body_origin:hand_r",
+        "roll": "site:PT-P2"
+      },
+      "declared_roll_xml_owner": "ulna",
+      "target_edge_len_m": 0.06474489854186721,
+      "s_declared": 0.22170679566544982,
+      "resolution_supporters": [
+        "radius"
+      ],
+      "supporter_count": 1,
+      "primary_ok": true,
+      "in_band_others_context": [
+        "femur_l",
+        "femur_r",
+        "humerus",
+        "humerus_l",
+        "radius_l",
+        "thorax",
+        "thorax_dummy",
+        "tibia_l",
+        "tibia_r"
+      ],
+      "nearest_scale_alternative": {
+        "body": "radius_l",
+        "s": 0.22170679566544982
+      },
+      "scale_table_context": {
+        "femur_r": {
+          "s": 0.23356745505724102,
+          "own_dist": "body_origin:tibia_r",
+          "in_band": true
+        },
+        "tibia_r": {
+          "s": 0.2150993307038778,
+          "own_dist": "body_origin:talus_r",
+          "in_band": true
+        },
+        "talus_r": {
+          "s": 0.4706958386476311,
+          "own_dist": "body_origin:toes_r",
+          "in_band": false
+        },
+        "toes_r": {
+          "s": 1.0805699517918992,
+          "own_dist": "site:flex_hal_r-P7",
+          "in_band": false
+        },
+        "femur_l": {
+          "s": 0.23356745505724102,
+          "own_dist": "body_origin:tibia_l",
+          "in_band": true
+        },
+        "tibia_l": {
+          "s": 0.2150993307038778,
+          "own_dist": "body_origin:talus_l",
+          "in_band": true
+        },
+        "talus_l": {
+          "s": 0.4706958386476311,
+          "own_dist": "body_origin:toes_l",
+          "in_band": false
+        },
+        "toes_l": {
+          "s": 1.0805699517918992,
+          "own_dist": "site:flex_hal_l-P7",
+          "in_band": false
+        },
+        "thorax_dummy": {
+          "s": 0.1708012968914501,
+          "own_dist": "body_origin:thorax",
+          "in_band": true
+        },
+        "thorax": {
+          "s": 0.3785102079348655,
+          "own_dist": "body_origin:humerus",
+          "in_band": true
+        },
+        "humerus": {
+          "s": 0.18566422412344702,
+          "own_dist": "body_origin:ulna",
+          "in_band": true
+        },
+        "ulna": {
+          "s": 2.805889869161434,
+          "own_dist": "body_origin:radius",
+          "in_band": false
+        },
+        "radius": {
+          "s": 0.22170679566544982,
+          "own_dist": "body_origin:hand_r",
+          "in_band": true
+        },
+        "hand_r": {
+          "s": 1.5133203111798323,
+          "own_dist": "site:ECRL-P4",
+          "in_band": false
+        },
+        "humerus_l": {
+          "s": 0.18563762778344037,
+          "own_dist": "body_origin:ulna_l",
+          "in_band": true
+        },
+        "ulna_l": {
+          "s": 2.805889869161434,
+          "own_dist": "body_origin:radius_l",
+          "in_band": false
+        },
+        "radius_l": {
+          "s": 0.22170679566544982,
+          "own_dist": "body_origin:hand_l",
+          "in_band": true
+        },
+        "hand_l": {
+          "s": 1.5133203111798323,
+          "own_dist": "site:ECRL_l-P4",
+          "in_band": false
+        }
+      },
+      "ok": true
+    },
+    "radius_l": {
+      "declared": "radius_l",
+      "declared_resolutions": {
+        "prox": "body_origin:radius_l",
+        "dist": "body_origin:hand_l",
+        "roll": "site:PT_l-P2"
+      },
+      "declared_roll_xml_owner": "ulna_l",
+      "target_edge_len_m": 0.06474489854186721,
+      "s_declared": 0.22170679566544982,
+      "resolution_supporters": [
+        "radius_l"
+      ],
+      "supporter_count": 1,
+      "primary_ok": true,
+      "in_band_others_context": [
+        "femur_l",
+        "femur_r",
+        "humerus",
+        "humerus_l",
+        "radius",
+        "thorax",
+        "thorax_dummy",
+        "tibia_l",
+        "tibia_r"
+      ],
+      "nearest_scale_alternative": {
+        "body": "radius",
+        "s": 0.22170679566544982
+      },
+      "scale_table_context": {
+        "femur_r": {
+          "s": 0.23356745505724102,
+          "own_dist": "body_origin:tibia_r",
+          "in_band": true
+        },
+        "tibia_r": {
+          "s": 0.2150993307038778,
+          "own_dist": "body_origin:talus_r",
+          "in_band": true
+        },
+        "talus_r": {
+          "s": 0.4706958386476311,
+          "own_dist": "body_origin:toes_r",
+          "in_band": false
+        },
+        "toes_r": {
+          "s": 1.0805699517918992,
+          "own_dist": "site:flex_hal_r-P7",
+          "in_band": false
+        },
+        "femur_l": {
+          "s": 0.23356745505724102,
+          "own_dist": "body_origin:tibia_l",
+          "in_band": true
+        },
+        "tibia_l": {
+          "s": 0.2150993307038778,
+          "own_dist": "body_origin:talus_l",
+          "in_band": true
+        },
+        "talus_l": {
+          "s": 0.4706958386476311,
+          "own_dist": "body_origin:toes_l",
+          "in_band": false
+        },
+        "toes_l": {
+          "s": 1.0805699517918992,
+          "own_dist": "site:flex_hal_l-P7",
+          "in_band": false
+        },
+        "thorax_dummy": {
+          "s": 0.1708012968914501,
+          "own_dist": "body_origin:thorax",
+          "in_band": true
+        },
+        "thorax": {
+          "s": 0.3785102079348655,
+          "own_dist": "body_origin:humerus",
+          "in_band": true
+        },
+        "humerus": {
+          "s": 0.18566422412344702,
+          "own_dist": "body_origin:ulna",
+          "in_band": true
+        },
+        "ulna": {
+          "s": 2.805889869161434,
+          "own_dist": "body_origin:radius",
+          "in_band": false
+        },
+        "radius": {
+          "s": 0.22170679566544982,
+          "own_dist": "body_origin:hand_r",
+          "in_band": true
+        },
+        "hand_r": {
+          "s": 1.5133203111798323,
+          "own_dist": "site:ECRL-P4",
+          "in_band": false
+        },
+        "humerus_l": {
+          "s": 0.18563762778344037,
+          "own_dist": "body_origin:ulna_l",
+          "in_band": true
+        },
+        "ulna_l": {
+          "s": 2.805889869161434,
+          "own_dist": "body_origin:radius_l",
+          "in_band": false
+        },
+        "radius_l": {
+          "s": 0.22170679566544982,
+          "own_dist": "body_origin:hand_l",
+          "in_band": true
+        },
+        "hand_l": {
+          "s": 1.5133203111798323,
+          "own_dist": "site:ECRL_l-P4",
+          "in_band": false
+        }
+      },
+      "ok": true
+    }
+  },
+  "ok": true
+}

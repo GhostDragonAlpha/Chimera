@@ -1,0 +1,5 @@
+[PASS] T3 side(radius) — source z=+0.1777 -> right; target joint=elbow_R -> right; P.x=-0.115481 m (monkey right=-x: True)
+[PASS] T3 handedness (radius) — det(Q_constructed)=1.000000000000000  scale=[0.22170679566544982, 0.22170679566544982, 0.22170679566544982]  handedness=preserve  packet chirality_det=0.9999999999999998  mirror_normal=None
+[PASS] T3 side(radius_l) — source z=-0.1777 -> left; target joint=elbow_L -> left; P.x=+0.115481 m (monkey right=-x: True)
+[PASS] T3 handedness (radius_l) — det(Q_constructed)=1.000000000000000  scale=[0.22170679566544982, 0.22170679566544982, 0.22170679566544982]  handedness=preserve  packet chirality_det=0.9999999999999998  mirror_normal=None
+T3 VERDICT: PASS

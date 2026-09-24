@@ -1,0 +1,155 @@
+{
+  "radius": {
+    "T1_source_provenance": {
+      "verdict": "PASS",
+      "parent": "ulna",
+      "site_set_equal": true,
+      "resolutions": {
+        "prox": "body_origin:radius",
+        "dist": "body_origin:hand_r",
+        "roll": "site:PT-P2",
+        "roll_xml_owner": "ulna"
+      }
+    },
+    "T2_landmark_sufficiency": {
+      "verdict": "PASS",
+      "source_bone_len_m": 0.2920293820833787,
+      "target_pair_len_m": 0.06474489854186721,
+      "roll_t_norm_m": 0.03095308546724938,
+      "roll_eps": 1e-09,
+      "scale_policy": "uniform"
+    },
+    "T3_laterality": {
+      "verdict": "PASS",
+      "source_side": "right",
+      "target_side": "right",
+      "target_prox_joint": "elbow_R",
+      "det_Q_constructed": 1.0000000000000002,
+      "handedness": "preserve",
+      "packet_chirality_det": 0.9999999999999998
+    },
+    "T4_transform_explainability": {
+      "verdict": "PASS",
+      "max_abs_diff": {
+        "frame_basis": 0.0,
+        "scale": 0.0,
+        "rigid_G_vs_packet_rotation": 0.0
+      },
+      "orthonormality_constructed": 5.225854471380131e-16,
+      "det_Q": 1.0000000000000002,
+      "reconstruction_worst_m": 5.551115123125783e-17,
+      "reconstruction_sites": 16,
+      "s_implied": 0.22170679566544982,
+      "plausibility_neighbor": "humerus",
+      "plausibility_in_band": true,
+      "aspect_policy_ok": true
+    },
+    "T5_uniqueness": {
+      "verdict": "PASS",
+      "resolution_supporters": [
+        "radius"
+      ],
+      "supporter_count": 1,
+      "declared_roll_xml_owner": "ulna",
+      "nearest_scale_alternative": {
+        "body": "radius_l",
+        "s": 0.22170679566544982
+      },
+      "in_band_others_context": [
+        "femur_l",
+        "femur_r",
+        "humerus",
+        "humerus_l",
+        "radius_l",
+        "thorax",
+        "thorax_dummy",
+        "tibia_l",
+        "tibia_r"
+      ]
+    }
+  },
+  "radius_l": {
+    "T1_source_provenance": {
+      "verdict": "PASS",
+      "parent": "ulna_l",
+      "site_set_equal": true,
+      "resolutions": {
+        "prox": "body_origin:radius_l",
+        "dist": "body_origin:hand_l",
+        "roll": "site:PT_l-P2",
+        "roll_xml_owner": "ulna_l"
+      }
+    },
+    "T2_landmark_sufficiency": {
+      "verdict": "PASS",
+      "source_bone_len_m": 0.2920293820833787,
+      "target_pair_len_m": 0.06474489854186721,
+      "roll_t_norm_m": 0.03095308293114959,
+      "roll_eps": 1e-09,
+      "scale_policy": "uniform"
+    },
+    "T3_laterality": {
+      "verdict": "PASS",
+      "source_side": "left",
+      "target_side": "left",
+      "target_prox_joint": "elbow_L",
+      "det_Q_constructed": 1.0000000000000002,
+      "handedness": "preserve",
+      "packet_chirality_det": 0.9999999999999998
+    },
+    "T4_transform_explainability": {
+      "verdict": "PASS",
+      "max_abs_diff": {
+        "frame_basis": 0.0,
+        "scale": 0.0,
+        "rigid_G_vs_packet_rotation": 0.0
+      },
+      "orthonormality_constructed": 5.960943544325303e-16,
+      "det_Q": 1.0000000000000002,
+      "reconstruction_worst_m": 1.734723475976807e-18,
+      "reconstruction_sites": 16,
+      "s_implied": 0.22170679566544982,
+      "plausibility_neighbor": "humerus_l",
+      "plausibility_in_band": true,
+      "aspect_policy_ok": true
+    },
+    "T5_uniqueness": {
+      "verdict": "PASS",
+      "resolution_supporters": [
+        "radius_l"
+      ],
+      "supporter_count": 1,
+      "declared_roll_xml_owner": "ulna_l",
+      "nearest_scale_alternative": {
+        "body": "radius",
+        "s": 0.22170679566544982
+      },
+      "in_band_others_context": [
+        "femur_l",
+        "femur_r",
+        "humerus",
+        "humerus_l",
+        "radius",
+        "thorax",
+        "thorax_dummy",
+        "tibia_l",
+        "tibia_r"
+      ]
+    }
+  },
+  "_T6_utility_ban": {
+    "verdict": "PASS",
+    "banned_evidence_occurrences": 0,
+    "packet_tendon_readers": []
+  },
+  "_correspondence_digest": {
+    "rebuilt": "52c92fe0d207a59971d9765d10009fc4f1d94e0f0e38e2eea59a1d64be4a7df8",
+    "recorded": "52c92fe0d207a59971d9765d10009fc4f1d94e0f0e38e2eea59a1d64be4a7df8",
+    "match": true
+  },
+  "_baseline_integrity": {
+    "command": "git -C E:/PythonChimera status --porcelain -- forearm_package/baseline_snapshot",
+    "output": "",
+    "empty": true
+  }
+}

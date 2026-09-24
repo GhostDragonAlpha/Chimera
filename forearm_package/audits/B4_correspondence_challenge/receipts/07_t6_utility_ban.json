@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "banned_tokens": [
+    "_analytic_arm",
+    "_fd_arm",
+    "\\b_pl\\s*\\(",
+    "rest_length",
+    "moment_arm",
+    "compiler\\.fit\\(",
+    "\\bfit\\s*\\(",
+    "moment_arms",
+    "finite_difference"
+  ],
+  "hits": [
+    {
+      "file": "07_t6_utility_ban.py",
+      "line": 45,
+      "token": "\\bfit\\s*\\(",
+      "line_text": "# allow-list: the token \"fit(\" appearing in comments/docstrings only"
+    }
+  ],
+  "clean_hits": [],
+  "packet_tendon_readers": []
+}

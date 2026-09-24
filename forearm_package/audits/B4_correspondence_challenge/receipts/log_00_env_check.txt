@@ -1,0 +1,2 @@
+[PASS] snapshot integrity vs MANIFEST — 44 files checked, 0 mismatched
+[PASS] constants present — {'FD_EPS': {'value': 1e-05, 'line': 46}, 'JOINT_EPS': {'value': 1e-09, 'line': 47}, 'ROLL_EPS': {'value': 1e-09, 'line': 48}, 'frame_orthogonality_1e-6_in_correspondence': True}

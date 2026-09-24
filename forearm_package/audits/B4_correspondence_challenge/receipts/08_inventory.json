@@ -1,0 +1,715 @@
+{
+  "meta": {
+    "mesh_units_to_m": 0.065,
+    "hand_perp_cap_factor": 1.0
+  },
+  "A_tri_ownership": {
+    "n_triangles": 36630,
+    "n_no_majority": 26,
+    "owner_joint_counts": {
+      "NO_MAJORITY": 26,
+      "ankle_L": 240,
+      "ankle_R": 240,
+      "brow_L": 684,
+      "brow_R": 674,
+      "ear_L": 958,
+      "ear_R": 958,
+      "elbow_L": 634,
+      "elbow_R": 634,
+      "hip_L": 596,
+      "hip_R": 596,
+      "jaw": 90,
+      "knee_L": 1156,
+      "knee_R": 1156,
+      "lid_L": 82,
+      "lid_R": 82,
+      "mouth_L": 282,
+      "mouth_R": 282,
+      "neck": 12674,
+      "shoulder_L": 572,
+      "shoulder_R": 572,
+      "spine_lower": 6792,
+      "spine_mid": 638,
+      "spine_upper": 1936,
+      "tail_base": 2172,
+      "tail_mid": 838,
+      "tail_tip": 26,
+      "wrist_L": 520,
+      "wrist_R": 520
+    },
+    "arm_regions": {
+      "right": {
+        "elbow_wrist_len_m": 0.06474489854186721,
+        "hand_perp_cap_m": 0.06474489854186721,
+        "owners": {
+          "elbow_R": {
+            "triangles_total": 634,
+            "forearm_region_t_in_0..L": 205,
+            "hand_region_capped": 428,
+            "hand_region_projection_only": 428,
+            "lateral_consistent": 634,
+            "lateral_inconsistent": 0,
+            "hand_cluster_median_perp_m": 0.019445740790341372,
+            "hand_cluster_centroid_m": [
+              -0.1642972661708002,
+              0.24751614303603717,
+              -0.009537926803305298
+            ],
+            "hand_cluster_distal_extent_m": 0.04285204893694575
+          },
+          "wrist_R": {
+            "triangles_total": 520,
+            "forearm_region_t_in_0..L": 405,
+            "hand_region_capped": 17,
+            "hand_region_projection_only": 17,
+            "lateral_consistent": 520,
+            "lateral_inconsistent": 0,
+            "hand_cluster_median_perp_m": 0.01667871050941627,
+            "hand_cluster_centroid_m": [
+              -0.15465913795957384,
+              0.2641618753882016,
+              -0.013646708874251038
+            ],
+            "hand_cluster_distal_extent_m": 0.004820531081899546
+          }
+        }
+      },
+      "left": {
+        "elbow_wrist_len_m": 0.06474489854186721,
+        "hand_perp_cap_m": 0.06474489854186721,
+        "owners": {
+          "elbow_L": {
+            "triangles_total": 634,
+            "forearm_region_t_in_0..L": 205,
+            "hand_region_capped": 428,
+            "hand_region_projection_only": 428,
+            "lateral_consistent": 634,
+            "lateral_inconsistent": 0,
+            "hand_cluster_median_perp_m": 0.01944573805109545,
+            "hand_cluster_centroid_m": [
+              0.16429726722084462,
+              0.24751614368778888,
+              -0.009537926757761871
+            ],
+            "hand_cluster_distal_extent_m": 0.04285205129156418
+          },
+          "wrist_L": {
+            "triangles_total": 520,
+            "forearm_region_t_in_0..L": 405,
+            "hand_region_capped": 17,
+            "hand_region_projection_only": 17,
+            "lateral_consistent": 520,
+            "lateral_inconsistent": 0,
+            "hand_cluster_median_perp_m": 0.016678713558113924,
+            "hand_cluster_centroid_m": [
+              0.15465913583250607,
+              0.264161882984872,
+              -0.013646708741309304
+            ],
+            "hand_cluster_distal_extent_m": 0.004820526372362882
+          }
+        }
+      }
+    },
+    "beyond_wrist_all_owners": {
+      "right": {
+        "n_triangles_capped": 2489,
+        "owner_counts": {
+          "elbow_R": 428,
+          "wrist_R": 17,
+          "spine_lower": 1282,
+          "tail_base": 758,
+          "NO_MAJORITY": 4
+        }
+      },
+      "left": {
+        "n_triangles_capped": 2489,
+        "owner_counts": {
+          "wrist_L": 17,
+          "elbow_L": 428,
+          "spine_lower": 1282,
+          "tail_base": 758,
+          "NO_MAJORITY": 4
+        }
+      }
+    }
+  },
+  "B_pack_joints": {
+    "neck": {
+      "fk_parent": "spine_upper",
+      "band_vertices": 6418,
+      "pos_m": [
+        0.0,
+        0.4849000024795532,
+        0.00026000001234933735
+      ]
+    },
+    "jaw": {
+      "fk_parent": "neck",
+      "band_vertices": 47,
+      "pos_m": [
+        0.0,
+        0.5369000148773193,
+        0.0637650004029274
+      ]
+    },
+    "spine_upper": {
+      "fk_parent": "spine_mid",
+      "band_vertices": 968,
+      "pos_m": [
+        0.0,
+        0.3828499913215637,
+        -0.010919999852776528
+      ]
+    },
+    "spine_mid": {
+      "fk_parent": "spine_lower",
+      "band_vertices": 319,
+      "pos_m": [
+        0.0,
+        0.30289999008178714,
+        0.016119999736547472
+      ]
+    },
+    "spine_lower": {
+      "fk_parent": null,
+      "band_vertices": 3415,
+      "pos_m": [
+        0.0,
+        0.22230000495910646,
+        0.007539999783039093
+      ]
+    },
+    "tail_base": {
+      "fk_parent": "spine_lower",
+      "band_vertices": 1085,
+      "pos_m": [
+        0.0,
+        0.25890597462654114,
+        -0.04401639342308045
+      ]
+    },
+    "tail_mid": {
+      "fk_parent": "tail_base",
+      "band_vertices": 406,
+      "pos_m": [
+        -0.0,
+        0.25090304613113407,
+        -0.1168208646774292
+      ]
+    },
+    "shoulder_L": {
+      "fk_parent": "spine_upper",
+      "band_vertices": 288,
+      "pos_m": [
+        0.06762262344360352,
+        0.38285919666290286,
+        -0.001143796229735017
+      ]
+    },
+    "shoulder_R": {
+      "fk_parent": "spine_upper",
+      "band_vertices": 288,
+      "pos_m": [
+        -0.06762262344360352,
+        0.38285919666290286,
+        -0.001143796229735017
+      ]
+    },
+    "elbow_L": {
+      "fk_parent": "shoulder_L",
+      "band_vertices": 318,
+      "pos_m": [
+        0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ]
+    },
+    "elbow_R": {
+      "fk_parent": "shoulder_R",
+      "band_vertices": 318,
+      "pos_m": [
+        -0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ]
+    },
+    "wrist_L": {
+      "fk_parent": "elbow_L",
+      "band_vertices": 263,
+      "pos_m": [
+        0.1449945402145386,
+        0.26148236989974977,
+        -0.005956328995525837
+      ]
+    },
+    "wrist_R": {
+      "fk_parent": "elbow_R",
+      "band_vertices": 263,
+      "pos_m": [
+        -0.1449945402145386,
+        0.26148236989974977,
+        -0.005956328995525837
+      ]
+    },
+    "hip_L": {
+      "fk_parent": "spine_lower",
+      "band_vertices": 300,
+      "pos_m": [
+        0.011271609216928482,
+        0.22199319124221803,
+        0.007508317194879055
+      ]
+    },
+    "hip_R": {
+      "fk_parent": "spine_lower",
+      "band_vertices": 300,
+      "pos_m": [
+        -0.011271609216928482,
+        0.22199319124221803,
+        0.007508317194879055
+      ]
+    },
+    "knee_L": {
+      "fk_parent": "hip_L",
+      "band_vertices": 579,
+      "pos_m": [
+        0.031416146606206896,
+        0.12371430158615113,
+        -0.0010048373090103268
+      ]
+    },
+    "knee_R": {
+      "fk_parent": "hip_R",
+      "band_vertices": 579,
+      "pos_m": [
+        -0.031416146606206896,
+        0.12371430158615113,
+        -0.0010048373090103268
+      ]
+    },
+    "ankle_L": {
+      "fk_parent": "knee_L",
+      "band_vertices": 121,
+      "pos_m": [
+        0.029960488080978395,
+        0.021954779773950578,
+        0.004404639601707458
+      ]
+    },
+    "ankle_R": {
+      "fk_parent": "knee_R",
+      "band_vertices": 121,
+      "pos_m": [
+        -0.029960488080978395,
+        0.021954779773950578,
+        0.004404639601707458
+      ]
+    },
+    "tail_tip": {
+      "fk_parent": "tail_mid",
+      "band_vertices": 28,
+      "pos_m": [
+        0.0,
+        0.3267259240150452,
+        -0.2733397173881531
+      ]
+    },
+    "ear_L": {
+      "fk_parent": "neck",
+      "band_vertices": 480,
+      "pos_m": [
+        0.07287003993988038,
+        0.5765783214569092,
+        0.026196297705173493
+      ]
+    },
+    "ear_R": {
+      "fk_parent": "neck",
+      "band_vertices": 480,
+      "pos_m": [
+        -0.07287003993988038,
+        0.5765783214569092,
+        0.026196297705173493
+      ]
+    },
+    "lid_L": {
+      "fk_parent": "neck",
+      "band_vertices": 42,
+      "pos_m": [
+        0.03575000077486038,
+        0.5706999826431275,
+        0.08969999969005585
+      ]
+    },
+    "lid_R": {
+      "fk_parent": "neck",
+      "band_vertices": 42,
+      "pos_m": [
+        -0.03575000077486038,
+        0.5706999826431275,
+        0.08969999969005585
+      ]
+    },
+    "brow_L": {
+      "fk_parent": "neck",
+      "band_vertices": 355,
+      "pos_m": [
+        0.03575000077486038,
+        0.5901999950408936,
+        0.07474999845027924
+      ]
+    },
+    "brow_R": {
+      "fk_parent": "neck",
+      "band_vertices": 350,
+      "pos_m": [
+        -0.03575000077486038,
+        0.5901999950408936,
+        0.07474999845027924
+      ]
+    },
+    "mouth_L": {
+      "fk_parent": "jaw",
+      "band_vertices": 143,
+      "pos_m": [
+        0.03093312576413155,
+        0.5256756353378296,
+        0.08327698826789856
+      ]
+    },
+    "mouth_R": {
+      "fk_parent": "jaw",
+      "band_vertices": 143,
+      "pos_m": [
+        -0.03093312576413155,
+        0.5256756353378296,
+        0.08327698826789856
+      ]
+    },
+    "_n_joints": 28,
+    "_hand_or_digit_joints": []
+  },
+  "C_mesh": {
+    "n_vertices": 18459,
+    "n_triangles": 36630,
+    "extents_m": {
+      "x": [
+        -0.19933047771453857,
+        0.19933047771453857
+      ],
+      "y": [
+        -0.0012679547723382712,
+        0.6481264495849609
+      ],
+      "z": [
+        -0.278704354763031,
+        0.1204164183139801
+      ]
+    },
+    "hand_tip_right_m": [
+      -0.07080430426200232,
+      0.3742880506515503,
+      -0.0005945582711137828
+    ],
+    "hand_tip_left_m": [
+      0.07080430180827776,
+      0.37428806304931656,
+      -0.0005945586020437377
+    ],
+    "wrist_to_handtip_right_m": 0.13512239379862728,
+    "wrist_to_handtip_left_m": 0.1351224054828971
+  },
+  "D_source_parentage": {
+    "hand_r_rootward_chain": [
+      "hand_r",
+      "radius",
+      "ulna",
+      "humerus",
+      "thorax",
+      "thorax_dummy",
+      "pelvis"
+    ],
+    "hand_l_rootward_chain": [
+      "hand_l",
+      "radius_l",
+      "ulna_l",
+      "humerus_l",
+      "thorax",
+      "thorax_dummy",
+      "pelvis"
+    ],
+    "site_counts_arm_chain": {
+      "humerus": 50,
+      "ulna": 10,
+      "radius": 16,
+      "hand_r": 5,
+      "humerus_l": 50,
+      "ulna_l": 10,
+      "radius_l": 16,
+      "hand_l": 5
+    }
+  },
+  "E_mirror_audit": {
+    "bodies_paired": 8,
+    "body_pos_exact_z_mirror": 7,
+    "body_pairs_with_exact_site_z_mirror": 7,
+    "pairs": {
+      "femur_r|femur_l": {
+        "body_pos_mirror_offset_m": 0.0,
+        "body_pos_exact": true,
+        "sites_right": 28,
+        "sites_left": 28,
+        "sites_paired_by_name_law": 28,
+        "exact_z_mirror_site_pairs": 28,
+        "sites_unmatched_right": [],
+        "worst_site_offset_m": 0.0,
+        "off_examples": [],
+        "site_sets_exact_z_mirror": true
+      },
+      "tibia_r|tibia_l": {
+        "body_pos_mirror_offset_m": 0.0,
+        "body_pos_exact": true,
+        "sites_right": 27,
+        "sites_left": 27,
+        "sites_paired_by_name_law": 27,
+        "exact_z_mirror_site_pairs": 27,
+        "sites_unmatched_right": [],
+        "worst_site_offset_m": 0.0,
+        "off_examples": [],
+        "site_sets_exact_z_mirror": true
+      },
+      "talus_r|talus_l": {
+        "body_pos_mirror_offset_m": 0.0,
+        "body_pos_exact": true,
+        "sites_right": 17,
+        "sites_left": 17,
+        "sites_paired_by_name_law": 17,
+        "exact_z_mirror_site_pairs": 17,
+        "sites_unmatched_right": [],
+        "worst_site_offset_m": 0.0,
+        "off_examples": [],
+        "site_sets_exact_z_mirror": true
+      },
+      "toes_r|toes_l": {
+        "body_pos_mirror_offset_m": 0.0,
+        "body_pos_exact": true,
+        "sites_right": 7,
+        "sites_left": 7,
+        "sites_paired_by_name_law": 7,
+        "exact_z_mirror_site_pairs": 7,
+        "sites_unmatched_right": [],
+        "worst_site_offset_m": 0.0,
+        "off_examples": [],
+        "site_sets_exact_z_mirror": true
+      },
+      "humerus|humerus_l": {
+        "body_pos_mirror_offset_m": 0.0,
+        "body_pos_exact": true,
+        "sites_right": 50,
+        "sites_left": 50,
+        "sites_paired_by_name_law": 50,
+        "exact_z_mirror_site_pairs": 50,
+        "sites_unmatched_right": [],
+        "worst_site_offset_m": 0.0,
+        "off_examples": [],
+        "site_sets_exact_z_mirror": true
+      },
+      "ulna|ulna_l": {
+        "body_pos_mirror_offset_m": 4.999999999999449e-05,
+        "body_pos_exact": false,
+        "sites_right": 10,
+        "sites_left": 10,
+        "sites_paired_by_name_law": 10,
+        "exact_z_mirror_site_pairs": 10,
+        "sites_unmatched_right": [],
+        "worst_site_offset_m": 0.0,
+        "off_examples": [],
+        "site_sets_exact_z_mirror": true
+      },
+      "radius|radius_l": {
+        "body_pos_mirror_offset_m": 0.0,
+        "body_pos_exact": true,
+        "sites_right": 16,
+        "sites_left": 16,
+        "sites_paired_by_name_law": 16,
+        "exact_z_mirror_site_pairs": 14,
+        "sites_unmatched_right": [],
+        "worst_site_offset_m": 0.002732,
+        "off_examples": [
+          [
+            "BICshort-P6",
+            0.002732
+          ],
+          [
+            "FCU-P2",
+            0.0010296999999999997
+          ]
+        ],
+        "site_sets_exact_z_mirror": false
+      },
+      "hand_r|hand_l": {
+        "body_pos_mirror_offset_m": 0.0,
+        "body_pos_exact": true,
+        "sites_right": 5,
+        "sites_left": 5,
+        "sites_paired_by_name_law": 5,
+        "exact_z_mirror_site_pairs": 5,
+        "sites_unmatched_right": [],
+        "worst_site_offset_m": 0.0,
+        "off_examples": [],
+        "site_sets_exact_z_mirror": true
+      }
+    }
+  },
+  "F_packet_partial_records": {
+    "unresolved_segments": [
+      {
+        "body": "hand_l",
+        "reason": "no fitted scale (axis source missing; not silently repaired)",
+        "axes": {
+          "axial": "declared_unresolved",
+          "b": "none",
+          "c": "none"
+        }
+      },
+      {
+        "body": "hand_r",
+        "reason": "no fitted scale (axis source missing; not silently repaired)",
+        "axes": {
+          "axial": "declared_unresolved",
+          "b": "none",
+          "c": "none"
+        }
+      },
+      {
+        "body": "ulna",
+        "reason": "no fitted scale (axis source missing; not silently repaired)",
+        "axes": {
+          "axial": "declared_unresolved",
+          "b": "none",
+          "c": "none"
+        }
+      },
+      {
+        "body": "ulna_l",
+        "reason": "no fitted scale (axis source missing; not silently repaired)",
+        "axes": {
+          "axial": "declared_unresolved",
+          "b": "none",
+          "c": "none"
+        }
+      }
+    ],
+    "joints_with_measured_anchor": [
+      {
+        "joint": "elbow_flexion",
+        "body": "ulna",
+        "origin_m": [
+          -0.11548098385334016,
+          0.3191090774536133,
+          -0.0060765563324093825
+        ],
+        "nearest_pack_joint": "elbow_R",
+        "gap_m": 0.0,
+        "status": "unresolved_body"
+      },
+      {
+        "joint": "wrist_dev_r",
+        "body": "hand_r",
+        "origin_m": [
+          -0.1449945402145386,
+          0.26148236989974977,
+          -0.005956328995525837
+        ],
+        "nearest_pack_joint": "wrist_R",
+        "gap_m": 0.0,
+        "status": "unresolved_body"
+      },
+      {
+        "joint": "wrist_flex_r",
+        "body": "hand_r",
+        "origin_m": [
+          -0.1449945402145386,
+          0.26148236989974977,
+          -0.005956328995525837
+        ],
+        "nearest_pack_joint": "wrist_R",
+        "gap_m": 0.0,
+        "status": "unresolved_body"
+      },
+      {
+        "joint": "wrist_3_r",
+        "body": "hand_r",
+        "origin_m": [
+          -0.1449945402145386,
+          0.26148236989974977,
+          -0.005956328995525837
+        ],
+        "nearest_pack_joint": "wrist_R",
+        "gap_m": 0.0,
+        "status": "unresolved_body"
+      },
+      {
+        "joint": "elbow_flexion_l",
+        "body": "ulna_l",
+        "origin_m": [
+          0.11548098385334016,
+          0.3191090774536133,
+          -0.0060765563324093825
+        ],
+        "nearest_pack_joint": "elbow_L",
+        "gap_m": 0.0,
+        "status": "unresolved_body"
+      },
+      {
+        "joint": "wrist_dev_l",
+        "body": "hand_l",
+        "origin_m": [
+          0.1449945402145386,
+          0.26148236989974977,
+          -0.005956328995525837
+        ],
+        "nearest_pack_joint": "wrist_L",
+        "gap_m": 0.0,
+        "status": "unresolved_body"
+      },
+      {
+        "joint": "wrist_flex_l",
+        "body": "hand_l",
+        "origin_m": [
+          0.1449945402145386,
+          0.26148236989974977,
+          -0.005956328995525837
+        ],
+        "nearest_pack_joint": "wrist_L",
+        "gap_m": 0.0,
+        "status": "unresolved_body"
+      },
+      {
+        "joint": "wrist_3_l",
+        "body": "hand_l",
+        "origin_m": [
+          0.1449945402145386,
+          0.26148236989974977,
+          -0.005956328995525837
+        ],
+        "nearest_pack_joint": "wrist_L",
+        "gap_m": 0.0,
+        "status": "unresolved_body"
+      }
+    ],
+    "unplaced_sites": {
+      "talus_r": 17,
+      "toes_r": 7,
+      "talus_l": 17,
+      "toes_l": 7,
+      "thorax": 90,
+      "ulna": 10,
+      "hand_r": 5,
+      "ulna_l": 10,
+      "hand_l": 5
+    },
+    "unplaced_total": 168
+  }
+}

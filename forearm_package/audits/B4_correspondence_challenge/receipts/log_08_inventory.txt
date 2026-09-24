@@ -1,0 +1,16 @@
+A. tri ownership (arm owners; hand region = distal of wrist AND perp < 1.0x|EW|):
+   elbow_R   total=  634 forearm=  205 hand_capped= 428 (proj_only= 428) lateral_ok=  634/634 med_perp=0.0194
+   wrist_R   total=  520 forearm=  405 hand_capped=  17 (proj_only=  17) lateral_ok=  520/520 med_perp=0.0167
+   elbow_L   total=  634 forearm=  205 hand_capped= 428 (proj_only= 428) lateral_ok=  634/634 med_perp=0.0194
+   wrist_L   total=  520 forearm=  405 hand_capped=  17 (proj_only=  17) lateral_ok=  520/520 med_perp=0.0167
+   capped beyond-wrist (right): 2489 tris, owners={'elbow_R': 428, 'wrist_R': 17, 'spine_lower': 1282, 'tail_base': 758, 'NO_MAJORITY': 4}
+   capped beyond-wrist (left): 2489 tris, owners={'wrist_L': 17, 'elbow_L': 428, 'spine_lower': 1282, 'tail_base': 758, 'NO_MAJORITY': 4}
+D. hand_r chain: hand_r -> radius -> ulna -> humerus -> thorax -> thorax_dummy -> pelvis
+   hand_l chain: hand_l -> radius_l -> ulna_l -> humerus_l -> thorax -> thorax_dummy -> pelvis
+   arm site counts: {'humerus': 50, 'ulna': 10, 'radius': 16, 'hand_r': 5, 'humerus_l': 50, 'ulna_l': 10, 'radius_l': 16, 'hand_l': 5}
+E. body pos exact mirrors: 7/8; site sets exact: 7/8
+   NOT exact: ulna|ulna_l: body_off=5.00e-05 sites_exact=10/10 unmatched_r=[] worst=0.00e+00 []
+   NOT exact: radius|radius_l: body_off=0.00e+00 sites_exact=14/16 unmatched_r=[] worst=2.73e-03 [('BICshort-P6', 0.002732), ('FCU-P2', 0.0010296999999999997)]
+F. anchors: [('elbow_flexion', 'elbow_R', 0.0), ('wrist_dev_r', 'wrist_R', 0.0), ('wrist_flex_r', 'wrist_R', 0.0), ('wrist_3_r', 'wrist_R', 0.0), ('elbow_flexion_l', 'elbow_L', 0.0), ('wrist_dev_l', 'wrist_L', 0.0), ('wrist_flex_l', 'wrist_L', 0.0), ('wrist_3_l', 'wrist_L', 0.0)]
+   unplaced sites: {'talus_r': 17, 'toes_r': 7, 'talus_l': 17, 'toes_l': 7, 'thorax': 90, 'ulna': 10, 'hand_r': 5, 'ulna_l': 10, 'hand_l': 5}
+B. hand/digit joints in pack: []

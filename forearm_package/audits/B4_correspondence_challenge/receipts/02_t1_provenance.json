@@ -1,0 +1,190 @@
+{
+  "checks": [
+    {
+      "check": "T1a parent radius",
+      "ok": true,
+      "xml": "ulna",
+      "packet": "ulna",
+      "declared": "ulna"
+    },
+    {
+      "check": "T1a parent radius_l",
+      "ok": true,
+      "xml": "ulna_l",
+      "packet": "ulna_l",
+      "declared": "ulna_l"
+    },
+    {
+      "check": "T1b site ownership (all bodies)",
+      "ok": true,
+      "table": {
+        "pelvis": {
+          "n_xml": 58,
+          "n_packet": 58,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "femur_r": {
+          "n_xml": 28,
+          "n_packet": 28,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "tibia_r": {
+          "n_xml": 27,
+          "n_packet": 27,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "talus_r": {
+          "n_xml": 17,
+          "n_packet": 17,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "toes_r": {
+          "n_xml": 7,
+          "n_packet": 7,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "femur_l": {
+          "n_xml": 28,
+          "n_packet": 28,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "tibia_l": {
+          "n_xml": 27,
+          "n_packet": 27,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "talus_l": {
+          "n_xml": 17,
+          "n_packet": 17,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "toes_l": {
+          "n_xml": 7,
+          "n_packet": 7,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "thorax_dummy": {
+          "n_xml": 0,
+          "n_packet": 0,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "thorax": {
+          "n_xml": 90,
+          "n_packet": 90,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "humerus": {
+          "n_xml": 50,
+          "n_packet": 50,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "ulna": {
+          "n_xml": 10,
+          "n_packet": 10,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "radius": {
+          "n_xml": 16,
+          "n_packet": 16,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "hand_r": {
+          "n_xml": 5,
+          "n_packet": 5,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "humerus_l": {
+          "n_xml": 50,
+          "n_packet": 50,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "ulna_l": {
+          "n_xml": 10,
+          "n_packet": 10,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "radius_l": {
+          "n_xml": 16,
+          "n_packet": 16,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        },
+        "hand_l": {
+          "n_xml": 5,
+          "n_packet": 5,
+          "equal": true,
+          "xml_only": [],
+          "packet_only": []
+        }
+      }
+    },
+    {
+      "check": "T1c resolutions radius",
+      "ok": true,
+      "prox": "body_origin:radius",
+      "dist": "body_origin:hand_r",
+      "roll": "site:PT-P2",
+      "roll_xml_owner": "ulna",
+      "legal_owners": [
+        "hand_r",
+        "radius",
+        "ulna"
+      ]
+    },
+    {
+      "check": "T1c resolutions radius_l",
+      "ok": true,
+      "prox": "body_origin:radius_l",
+      "dist": "body_origin:hand_l",
+      "roll": "site:PT_l-P2",
+      "roll_xml_owner": "ulna_l",
+      "legal_owners": [
+        "hand_l",
+        "radius_l",
+        "ulna_l"
+      ]
+    }
+  ],
+  "lines": [
+    "[PASS] T1a parent(radius) == XML parent \u2014 xml=ulna packet=ulna declared=ulna",
+    "[PASS] T1a parent(radius_l) == XML parent \u2014 xml=ulna_l packet=ulna_l declared=ulna_l",
+    "[PASS] T1b claimed site set == XML site set (all 18 bodies) \u2014 radius:16==16; radius_l:16==16",
+    "[PASS] T1c source resolutions (radius) \u2014 prox=body_origin:radius dist=body_origin:hand_r roll=site:PT-P2 (XML owner=ulna, legal=['hand_r', 'radius', 'ulna'])",
+    "[PASS] T1c source resolutions (radius_l) \u2014 prox=body_origin:radius_l dist=body_origin:hand_l roll=site:PT_l-P2 (XML owner=ulna_l, legal=['hand_l', 'radius_l', 'ulna_l'])"
+  ]
+}

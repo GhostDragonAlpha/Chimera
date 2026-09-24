@@ -1,0 +1,13 @@
+====================================================================================================
+KNOWN-GOOD GATE VALIDATION TABLE (radius + radius_l x T1..T6)
+====================================================================================================
+test                                       radius       radius_l  key numbers
+T1 source-provenance                         PASS           PASS  parent=ulna; sites==XML: True; roll owner=ulna
+T2 landmark-sufficiency                      PASS           PASS  |t_roll|=0.0310 m >> eps 1e-09
+T3 laterality                                PASS           PASS  right->right; detQ=1.00000000000000
+T4 transform-explainability                  PASS           PASS  recon 5.6e-17 m; s=0.221706795665; band True
+T5 uniqueness                                PASS           PASS  supporters=['radius'] (count=1)
+T6 utility-ban (process)                                      PASS  banned occurrences=0
+correspondence digest match: True
+baseline snapshot git status: '' (empty = untouched)
+GATE VALIDATION: ALL PASS

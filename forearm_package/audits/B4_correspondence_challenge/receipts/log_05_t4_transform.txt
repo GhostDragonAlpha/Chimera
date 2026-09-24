@@ -1,0 +1,3 @@
+[PASS] T4 transform explainability (radius) — dBp=0.00e+00 dScale=0.00e+00 dG=0.00e+00 ortho=5.23e-16 detQ=1.000000000000000 recon_worst=BRD-P3:5.55e-17 m (16 sites) s=0.221706795665 vs nbr(humerus)=0.229030 band=[0.114515,0.458061]
+[PASS] T4 transform explainability (radius_l) — dBp=0.00e+00 dScale=0.00e+00 dG=0.00e+00 ortho=5.96e-16 detQ=1.000000000000000 recon_worst=BIClong_l-P9:1.73e-18 m (16 sites) s=0.221706795665 vs nbr(humerus_l)=0.228998 band=[0.114499,0.457995]
+T4 VERDICT: PASS
