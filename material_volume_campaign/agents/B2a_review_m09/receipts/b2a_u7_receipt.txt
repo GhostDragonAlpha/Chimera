@@ -1,0 +1,20 @@
+### P3b: reader ACCEPTED status=partial body statuses=['exported', 'exploded']
+  json: exit=0
+  CLI body-B as displayed: export_status='exploded' omitted=True
+  note: CLI displays out-of-vocabulary per-body status verbatim (no flag); reader summary carried it unchanged
+### U7 blocked: RAW report top-level keys with diagnostics: reason_codes=['reconstructed_mass_admission_required'] detail='None'
+  reader summary top-level keys=['admission_status', 'bodies', 'dynamics_readiness_claimed', 'export_status', 'input_hashes', 'physical_state_mutated', 'schema_version', 'unassigned_cell_ids']
+  summary has reason_codes: False; detail: False; unassigned_cells rows: False; unassigned_cell_ids=[]
+  summary body[0] coupon-body-A status=not_exported blocking-diagnostics present: NONE
+  summary body[1] coupon-body-B status=not_exported blocking-diagnostics present: NONE
+  RAW row coupon-body-A: blocking diagnostics present: ['blocking_cell_ids', 'blocking_assignment_statuses', 'admission_reason_codes'] blocking_cell_ids=[]
+  RAW row coupon-body-B: blocking diagnostics present: ['blocking_cell_ids', 'blocking_assignment_statuses', 'admission_reason_codes'] blocking_cell_ids=['cell-B']
+  reader CLI: exit=0 stderr=(none) status=blocked readiness=False
+  M09 CLI: exit=0 surfaced top_level_reason_codes=['reconstructed_mass_admission_required'] detail='None' unassigned_cells rows=[]
+    omitted coupon-body-A: blocking_cell_ids=[] blocking_assignment_statuses=[] admission_reason_codes="['compiler_refusal:missing_material', 'incomplete_cell_owner"
+    omitted coupon-body-B: blocking_cell_ids=['cell-B'] blocking_assignment_statuses=[{'cell_id': 'cell-B', 'status': 'invalid_material_reference'}] admission_reason_codes="['compiler_refusal:missing_material', 'incomplete_cell_owner"
+### U7 refused: RAW report top-level keys with diagnostics: reason_codes=['bad_identifier'] detail='body_groups[0].body_id must be a non-empty string'
+  reader summary top-level keys=['admission_status', 'bodies', 'dynamics_readiness_claimed', 'export_status', 'input_hashes', 'physical_state_mutated', 'schema_version', 'unassigned_cell_ids']
+  summary has reason_codes: False; detail: False; unassigned_cells rows: False; unassigned_cell_ids=[]
+  reader CLI: exit=0 stderr=(none) status=refused readiness=False
+  M09 CLI: exit=0 surfaced top_level_reason_codes=['bad_identifier'] detail='body_groups[0].body_id must be a non-empty string' unassigned_cells rows=[]

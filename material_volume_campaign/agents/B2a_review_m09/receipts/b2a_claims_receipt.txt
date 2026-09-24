@@ -1,0 +1,21 @@
+C1.5 build_export_report(examples) canonical == shipped example bytes: True
+=== complete human: exit=0 ===
+  final line: readiness: false
+=== complete json: exit=0 ===
+=== partial human: exit=0 ===
+  final line: readiness: false
+=== partial json: exit=0 ===
+=== blocked human: exit=0 ===
+  final line: readiness: false
+=== blocked json: exit=0 ===
+=== unsupported human: exit=0 ===
+  final line: readiness: false
+=== unsupported json: exit=0 ===
+=== refused human: exit=0 ===
+  final line: readiness: false
+=== refused json: exit=0 ===
+=== malformed_version human: exit=2 ===
+  final line: readiness: false
+=== malformed_version json: exit=2 ===
+C1.6 exit codes observed: {"complete": [0], "partial": [0], "blocked": [0], "unsupported": [0], "refused": [0], "malformed_version": [2]}
+C1.7 readiness violations found: NONE
