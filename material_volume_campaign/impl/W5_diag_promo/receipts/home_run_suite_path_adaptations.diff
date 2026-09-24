@@ -1,0 +1,14 @@
+--- material_volume_campaign/agents/M09_diagnostic/run_suite.py	2026-09-24 13:31:39.980801400 -0500
++++ material_volume_campaign/impl/W5_diag_promo/home/run_suite.py	2026-09-24 17:06:34.707044600 -0500
+@@ -17,9 +17,9 @@
+ sys.dont_write_bytecode = True
+ 
+ MY_DIR = Path(__file__).resolve().parent
+-RECEIPTS = MY_DIR / "receipts"
++RECEIPTS = MY_DIR.parent / "receipts"  # W5 path adaptation: receipts live in the promotion dir, not home/
+ WORK_DIR = MY_DIR / "work"
+-WORKTREE = MY_DIR.parents[2]
++WORKTREE = MY_DIR.parents[3]  # W5 path adaptation: home/ is one level deeper than agents/M09_diagnostic/
+ SNAPSHOT_ROOTS = [WORKTREE / "tools", WORKTREE / "Chimera" / "docs" / "matter"]
+ INPUT_FILES = [
+     WORKTREE / "tools" / "material_volume_body_export_reader.py",

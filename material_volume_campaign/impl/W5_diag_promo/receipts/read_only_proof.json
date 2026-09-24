@@ -1,0 +1,17 @@
+{
+  "added": [],
+  "before_after_identical": true,
+  "changed": [],
+  "files_snapshotted": 415,
+  "input_files_sha256": {
+    "Chimera\\docs\\matter\\rigid_body_mass_export_consumption_contract_v1_proposal.md": "1782d1f51270cb2bae74521da0c792780083e9788a0bebbd5c6e10d73d363f84",
+    "tools\\material_volume_admission.py": "d6d4b0e010c0982f5c94dc880a2fec4ac50ea69af605ce80b7186745a5f7750d",
+    "tools\\material_volume_body_export.py": "04be88a7c62dc358c06aff29d3ac70244ae575298603712d2352d44853e018e7",
+    "tools\\material_volume_body_export_example_report.json": "d71f7621ba00701c1eaabd2cdf34ac25bbe837b7dede0f7096029ca3ad0c9de5",
+    "tools\\material_volume_body_export_groups_example.json": "ffb1a94808423b695fc3745f4a533bf8f8d84b6e77505c7d7cf8c39c6c621758",
+    "tools\\material_volume_body_export_manifest_example.json": "c7d4f304fff81ba3f98b85d56a039efaaf101aa1dbaaf3249b490690476d55a5",
+    "tools\\material_volume_body_export_partition_example.json": "c0417923ef8ee7a0088ee98a124cbecc72aee84ef5b0c4036b81ec2d8a5d2f3a",
+    "tools\\material_volume_body_export_reader.py": "83b057391ab6d8e10352129a29d7903d15b4d59f2c7103e907d1f98069f274df"
+  },
+  "removed": []
+}

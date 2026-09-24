@@ -1,0 +1,99 @@
+{
+  "pinned_revision": "feb01661bedb81063d88937d4c284ee9b4fa3ebd",
+  "pin_verified": "git cat-file -e PIN -> OK; git diff PIN -- tools/ EMPTY at freeze",
+  "dependencies": [
+    {
+      "path": "tools/material_volume_body_export_reader.py",
+      "role": "direct",
+      "interface": "summarize_export_report, canonical_json; ALL validation + statuses + readiness; the ONLY dependency the CLI locates/imports by name",
+      "mode": "100644",
+      "blob_oid": "1ee791e0580ca0e30bf0b73321cfd981cd79b486",
+      "resolves_at_pin": true,
+      "working_tree_sha256_at_freeze": "83b057391ab6d8e10352129a29d7903d15b4d59f2c7103e907d1f98069f274df",
+      "working_tree_matches_pin": true
+    },
+    {
+      "path": "tools/material_volume_body_export.py",
+      "role": "direct+transitive",
+      "interface": "read_json_file (all parsing), ExportInputError, EXPORT_SCHEMA; imported directly by the CLI AND by the reader at module load",
+      "mode": "100644",
+      "blob_oid": "f6fd2af161705371cb9a59df941460ca2b8e2b84",
+      "resolves_at_pin": true,
+      "working_tree_sha256_at_freeze": "04be88a7c62dc358c06aff29d3ac70244ae575298603712d2352d44853e018e7",
+      "working_tree_matches_pin": true
+    },
+    {
+      "path": "tools/material_volume_admission.py",
+      "role": "transitive",
+      "interface": "imported by material_volume_body_export at module load",
+      "mode": "100644",
+      "blob_oid": "41615ec7d3f1488007fcd30e3d887702c6b51290",
+      "resolves_at_pin": true,
+      "working_tree_sha256_at_freeze": "d6d4b0e010c0982f5c94dc880a2fec4ac50ea69af605ce80b7186745a5f7750d",
+      "working_tree_matches_pin": true
+    },
+    {
+      "path": "tools/material_volume.py",
+      "role": "transitive",
+      "interface": "imported by material_volume_admission at module load",
+      "mode": "100644",
+      "blob_oid": "3d46b030e75d6200a1764aadf72d81be9942bcdc",
+      "resolves_at_pin": true,
+      "working_tree_sha256_at_freeze": "6d2817b7b4ea59213f90134b343a06579d92db998c1db7f27b0e89aff71799cf",
+      "working_tree_matches_pin": true
+    },
+    {
+      "path": "tools/material_volume_body_export_example_report.json",
+      "role": "test fixture",
+      "interface": "T1/T7 happy-path input; read as-is",
+      "mode": "100644",
+      "blob_oid": "2091bee63193f029b4adf7a9e4bc88a2ce1f277b",
+      "resolves_at_pin": true,
+      "working_tree_sha256_at_freeze": "d71f7621ba00701c1eaabd2cdf34ac25bbe837b7dede0f7096029ca3ad0c9de5",
+      "working_tree_matches_pin": true
+    },
+    {
+      "path": "tools/material_volume_body_export_manifest_example.json",
+      "role": "test fixture",
+      "interface": "fixture generator input (in-memory mutations)",
+      "mode": "100644",
+      "blob_oid": "c6acf49f221ec87a8b5d055ed30316fdc2e630c1",
+      "resolves_at_pin": true,
+      "working_tree_sha256_at_freeze": "c7d4f304fff81ba3f98b85d56a039efaaf101aa1dbaaf3249b490690476d55a5",
+      "working_tree_matches_pin": true
+    },
+    {
+      "path": "tools/material_volume_body_export_partition_example.json",
+      "role": "test fixture",
+      "interface": "fixture generator input (in-memory mutations)",
+      "mode": "100644",
+      "blob_oid": "3b6e4f5265b486fb4f4d357e9e7dc905d9959c5b",
+      "resolves_at_pin": true,
+      "working_tree_sha256_at_freeze": "c0417923ef8ee7a0088ee98a124cbecc72aee84ef5b0c4036b81ec2d8a5d2f3a",
+      "working_tree_matches_pin": true
+    },
+    {
+      "path": "tools/material_volume_body_export_groups_example.json",
+      "role": "test fixture",
+      "interface": "fixture generator input (in-memory mutations)",
+      "mode": "100644",
+      "blob_oid": "cb8514ee1c9816c03f5d10b6fd325bf986762eb0",
+      "resolves_at_pin": true,
+      "working_tree_sha256_at_freeze": "ffb1a94808423b695fc3745f4a533bf8f8d84b6e77505c7d7cf8c39c6c621758",
+      "working_tree_matches_pin": true
+    }
+  ],
+  "external": [
+    {
+      "name": "numpy",
+      "version_at_freeze": "2.2.6",
+      "role": "transitive (imported by all four local modules)"
+    },
+    {
+      "name": "python",
+      "version_at_freeze": "3.14.3",
+      "role": "runtime"
+    }
+  ],
+  "w3_note": "W3's M13 reader repair was IN FLIGHT (uncommitted, HEAD df5ac8c6) when W5 was dispatched; it LANDED at af735b7f before this pin was taken (reader blob 1ee791e0580ca0e30bf0b73321cfd981cd79b486 includes it; 14/14 crash shapes -> named located refusals, valid output + existing refusals byte-identical). RE-PIN RULE: final integration re-pins this manifest against the then-current landed revision (git ls-tree <rev> -- tools/) and re-runs the home suite."
+}

@@ -1,0 +1,406 @@
+{
+  "battery_fixture_sha256": {
+    "fixture_blocked.json": "697f5cecac190639932cc4d17f03c065be400d06f0e9e9739b58f28a4efaa4cf",
+    "fixture_complete.json": "d71f7621ba00701c1eaabd2cdf34ac25bbe837b7dede0f7096029ca3ad0c9de5",
+    "fixture_hostile_no_unassigned_cells.json": "b5d2c99b26c5ea40ffdcec26284f231e6a05295adafd9a64887d02f6dc483384",
+    "fixture_hostile_string_ids.json": "ab806b1178afee89ab334a7fd5c6a87800c0767c490750be0346fd84c71dc264",
+    "fixture_hostile_string_rows.json": "7703d578ed6059a73aa8fa2238476601e5c26d444c63c60185611fc3ba616559",
+    "fixture_malformed_duplicate_key.json": "6dc7875dc7d7f57e3893de9f67efed4c157c813db781c496afef277314bc42ab",
+    "fixture_malformed_version.json": "b3d34be69cf810cd596d11f987ddc657eaaa1571f42788100e2b805a352836bf",
+    "fixture_partial.json": "859b9a11ec12bbbd1b44acaabea643649fa16a08ee2c5773701b734b657e2465",
+    "fixture_refused.json": "215807201918637f05dc1aa49a7b4c14fcc8aca08278c9fb674afe563e2c63a5",
+    "fixture_unsupported.json": "a85a0ab480b8732ec01e9ab4b87a86221664ebb0062fb2ac49fc31b4cd87aa6e"
+  },
+  "case_count": 22,
+  "cases": [
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_complete.json"
+      ],
+      "case": "fixture_complete.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "69828bfb4880bd551e6010817661a996d7f67dcc0734cfd0cc89a771229680d5",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "69828bfb4880bd551e6010817661a996d7f67dcc0734cfd0cc89a771229680d5",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_complete.json",
+        "--json"
+      ],
+      "case": "fixture_complete.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "8ed671cb129e1e32171d5806ee9d57bbace8bf4eec463a317f5ffcb73af31ef5",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "8ed671cb129e1e32171d5806ee9d57bbace8bf4eec463a317f5ffcb73af31ef5",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_partial.json"
+      ],
+      "case": "fixture_partial.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "648ec287930bb73cadef8e40db471582a08806e356bbc69af6d8f83fb7d85ad7",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "648ec287930bb73cadef8e40db471582a08806e356bbc69af6d8f83fb7d85ad7",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_partial.json",
+        "--json"
+      ],
+      "case": "fixture_partial.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "89c140f227f02954e6f757716ae3561827103de874b632e1cefef7ec21f168de",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "89c140f227f02954e6f757716ae3561827103de874b632e1cefef7ec21f168de",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_blocked.json"
+      ],
+      "case": "fixture_blocked.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "dd14b161430978fe11763e48e8334cba8e0a82899a0a4a5be83f7310b40c4252",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "dd14b161430978fe11763e48e8334cba8e0a82899a0a4a5be83f7310b40c4252",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_blocked.json",
+        "--json"
+      ],
+      "case": "fixture_blocked.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "719c75e03ea540af70809b6e6153d4f30af9408075094a86c1f5cce7bd863692",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "719c75e03ea540af70809b6e6153d4f30af9408075094a86c1f5cce7bd863692",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_unsupported.json"
+      ],
+      "case": "fixture_unsupported.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "94f4ef7a17690a9259f02e249ed42c2304e9b67fb52559cfd8f308597164d106",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "94f4ef7a17690a9259f02e249ed42c2304e9b67fb52559cfd8f308597164d106",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_unsupported.json",
+        "--json"
+      ],
+      "case": "fixture_unsupported.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "3927e29769e86775dbc53ab665f8bedb9c47f4a76378e2e39a70f84b0ea5de83",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "3927e29769e86775dbc53ab665f8bedb9c47f4a76378e2e39a70f84b0ea5de83",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_refused.json"
+      ],
+      "case": "fixture_refused.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "0f505f05844dee17ab73033a607ce8b15c4852014a6c22e0c01383cbe35438bd",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "0f505f05844dee17ab73033a607ce8b15c4852014a6c22e0c01383cbe35438bd",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_refused.json",
+        "--json"
+      ],
+      "case": "fixture_refused.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "8cfab9f07ba93b3a1f508ba7f0ebad5166705db68630a0a77591daf1d613f00f",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "8cfab9f07ba93b3a1f508ba7f0ebad5166705db68630a0a77591daf1d613f00f",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_malformed_version.json"
+      ],
+      "case": "fixture_malformed_version.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "48d221b2b1de21c462b214309b0c56dc953683ef13c644d44b6976ecb4fe6112",
+        "rc": 2
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "48d221b2b1de21c462b214309b0c56dc953683ef13c644d44b6976ecb4fe6112",
+        "rc": 2
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_malformed_version.json",
+        "--json"
+      ],
+      "case": "fixture_malformed_version.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "a66dd9c138854a3c2a148a22d3b74d1a6e54aabd39b67186277ab676a57860f9",
+        "rc": 2
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "a66dd9c138854a3c2a148a22d3b74d1a6e54aabd39b67186277ab676a57860f9",
+        "rc": 2
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_malformed_duplicate_key.json"
+      ],
+      "case": "fixture_malformed_duplicate_key.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "709d96ebd554985368991b4124a72cda00888afd118a525c846f7d3a5dfb7348",
+        "rc": 2
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "709d96ebd554985368991b4124a72cda00888afd118a525c846f7d3a5dfb7348",
+        "rc": 2
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_malformed_duplicate_key.json",
+        "--json"
+      ],
+      "case": "fixture_malformed_duplicate_key.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "935f0328934f8d82e87b747bf3c8c1f94799af3c93d9a1adf61ea95125578f86",
+        "rc": 2
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "935f0328934f8d82e87b747bf3c8c1f94799af3c93d9a1adf61ea95125578f86",
+        "rc": 2
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_hostile_string_ids.json"
+      ],
+      "case": "fixture_hostile_string_ids.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "b0ae6142a1fa2435405e970668f229e6c3d0566c33bbd0667980cda7701aad7a",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "b0ae6142a1fa2435405e970668f229e6c3d0566c33bbd0667980cda7701aad7a",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_hostile_string_ids.json",
+        "--json"
+      ],
+      "case": "fixture_hostile_string_ids.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "818b6606f814972def647a99fd0864b8871d19ae6e278363c40eb779cbe64dd2",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "818b6606f814972def647a99fd0864b8871d19ae6e278363c40eb779cbe64dd2",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_hostile_string_rows.json"
+      ],
+      "case": "fixture_hostile_string_rows.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "59113730c118c58c3e4adb5916bac1a8951a7058b70b5515cb8597616d4f9301",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "59113730c118c58c3e4adb5916bac1a8951a7058b70b5515cb8597616d4f9301",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_hostile_string_rows.json",
+        "--json"
+      ],
+      "case": "fixture_hostile_string_rows.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "d6c239e083a23964a4507c4a352e60cd9ec2c69a6d58496295c36c085397d3b6",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "d6c239e083a23964a4507c4a352e60cd9ec2c69a6d58496295c36c085397d3b6",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_hostile_no_unassigned_cells.json"
+      ],
+      "case": "fixture_hostile_no_unassigned_cells.json human",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "84db6f22a7b81b55f8e3cad48848fbada79b5e9edb9fd5b64fc15bdde084124e",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "84db6f22a7b81b55f8e3cad48848fbada79b5e9edb9fd5b64fc15bdde084124e",
+        "rc": 0
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_hostile_no_unassigned_cells.json",
+        "--json"
+      ],
+      "case": "fixture_hostile_no_unassigned_cells.json json",
+      "home": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "44ac1e05a96426ce94378b1e457a38c83371547de12e3ddc557f377df6a7a643",
+        "rc": 0
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "out_sha": "44ac1e05a96426ce94378b1e457a38c83371547de12e3ddc557f377df6a7a643",
+        "rc": 0
+      }
+    },
+    {
+      "args": [],
+      "case": "usage no-args",
+      "home": {
+        "err_sha": "b871a3e732313f7df264d22599f8c7e143e952968666b7f7fb4e80b91b5c606f",
+        "out_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "rc": 64
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "b871a3e732313f7df264d22599f8c7e143e952968666b7f7fb4e80b91b5c606f",
+        "out_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "rc": 64
+      }
+    },
+    {
+      "args": [
+        "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\receipts\\battery\\fixture_complete.json",
+        "--bogus-flag"
+      ],
+      "case": "usage bogus-flag",
+      "home": {
+        "err_sha": "d87d4a651e4e5e6219e1bbee1d53fc3f0a48fc09f3b5b440754d881056c3afcd",
+        "out_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "rc": 64
+      },
+      "identical": true,
+      "orig": {
+        "err_sha": "d87d4a651e4e5e6219e1bbee1d53fc3f0a48fc09f3b5b440754d881056c3afcd",
+        "out_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "rc": 64
+      }
+    }
+  ],
+  "default_tools_dir_resolution": {
+    "home": "E:\\ChimeraWork\\mvc-20260924\\tools",
+    "orig": "E:\\ChimeraWork\\mvc-20260924\\tools"
+  },
+  "mismatch_count": 0,
+  "same_resolution": true
+}

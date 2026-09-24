@@ -1,0 +1,8 @@
+reader CLI on fixture_blocked.json: exit=0 stderr=(none)
+  export_status='blocked' bodies=2 dynamics_readiness_claimed=False
+  summary keys=['admission_status', 'bodies', 'dynamics_readiness_claimed', 'export_status', 'input_hashes', 'physical_state_mutated', 'schema_version', 'unassigned_cell_ids']
+  body[0] keys=['admission_report_sha256', 'admission_status', 'body_id', 'export_status', 'input_hashes', 'mass_properties', 'owned_cell_ids', 'reason_codes']
+  body[1] keys=['admission_report_sha256', 'admission_status', 'body_id', 'export_status', 'input_hashes', 'mass_properties', 'owned_cell_ids', 'reason_codes']
+reader CLI on fixture_refused.json: exit=0 stderr=(none)
+  export_status='refused' bodies=0 dynamics_readiness_claimed=False
+  summary keys=['admission_status', 'bodies', 'dynamics_readiness_claimed', 'export_status', 'input_hashes', 'physical_state_mutated', 'schema_version', 'unassigned_cell_ids']

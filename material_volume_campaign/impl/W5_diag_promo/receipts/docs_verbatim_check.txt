@@ -1,0 +1,5 @@
+W5 docs verbatim check (whitespace/blockquote-normalized containment)
+  MV-O2/O3 (docs/material_volume_diagnostic.md section 4): in-brief=True verbatim-in-docs=True
+  MV-B4-1 (docs/material_volume_diagnostic.md section 5): in-brief=True verbatim-in-docs=True
+RESULT: ALL VERBATIM
+NOTE: the third decision ('Promotions') is anchored verbatim in report.md (publication section), checked there.

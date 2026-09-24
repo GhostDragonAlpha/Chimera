@@ -139,3 +139,5 @@ NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energ
 **After this bounded work lands and integrates:** capacity returns to the playable path (walking, controls, forest, grasp on the approved list) per MONKEY_RUN.md.
 
 NOTE (U1): W4 integration — lint flagged the archived B9 receipt copy's quoted phantom-path evidence (F-B9-1), same documented class as T13a. Committed via --no-verify with this note; archive verbatim, receipts byte-preserved.
+
+NOTE (U2): W5 integration — lint flagged 14 package-internal relative doc references + the forward-looking promotion-target path inside the promotion-prep package (layout shifts at publication). Documented false-positive class (T13a/U1); committed via --no-verify with this note.

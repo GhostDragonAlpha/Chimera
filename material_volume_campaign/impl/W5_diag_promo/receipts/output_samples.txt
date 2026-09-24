@@ -1,0 +1,116 @@
+=== complete-shipped (exit 0) ===
+report: E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_example_report.json
+  ok: true
+  schema_version: chimera.rigid_body_mass_export.v1
+  export_status: complete
+  admission_status: validation_only_admissible
+  readiness_claimed: false
+  physical_state_mutated: false
+  top_level_reason_codes: (none)
+  detail: (none)
+  bodies: 2
+  omitted_bodies: 0
+  unassigned_cell_ids: (none)
+  unassigned_cells: 0
+  frames: coupon-A-authored, coupon-B-authored
+  units: kg, kg*m^2, m
+  exported_masses: 2
+    mass[0] body_id=coupon-body-A mass=2.0 kg com_frame=coupon-A-authored com_unit=m inertia_frame=coupon-A-authored inertia_unit=kg*m^2 inertia_basis=authored_body_frame
+    mass[1] body_id=coupon-body-B mass=1.0 kg com_frame=coupon-B-authored com_unit=m inertia_frame=coupon-B-authored inertia_unit=kg*m^2 inertia_basis=authored_body_frame
+readiness: false
+=== complete-shipped --json (exit 0) ===
+{"readiness":false,"reports":[{"admission_status":"validation_only_admissible","bodies":[{"body_id":"coupon-body-A","com":{"coordinate_frame":"coupon-A-authored","unit":"m","value":[0.25,0.25,0.25]},"export_status":"exported","inertia":{"basis":"authored_body_frame","coordinate_frame":"coupon-A-authored","unit":"kg*m^2"},"mass_kg":2.0,"omitted":false,"owned_cell_ids":["cell-A"]},{"body_id":"coupon-body-B","com":{"coordinate_frame":"coupon-B-authored","unit":"m","value":[0.25,0.25,0.25]},"export_status":"exported","inertia":{"basis":"authored_body_frame","coordinate_frame":"coupon-B-authored","unit":"kg*m^2"},"mass_kg":1.0,"omitted":false,"owned_cell_ids":["cell-B"]}],"export_status":"complete","frames":["coupon-A-authored","coupon-B-authored"],"input_hashes":{"algorithm":"sha256","body_groups_sha256":"dcb55f1d17526fa12501f405505238c347ccf2c636cce1b78759bbcd76436c73","manifest_sha256":"cab86eb63a9b10f988e93c42bc273bfbb06ef468705a421a6f821c6543630021","partition_sha256":"dd5aa0169b59e0c54d446ab443e8ed200c9eae256c75162781759702ce0f6ad1","serialization":"UTF-8 canonical JSON (sorted object keys; array order preserved)"},"ok":true,"omitted_bodies":[],"path":"E:\\ChimeraWork\\mvc-20260924\\tools\\material_volume_body_export_example_report.json","physical_state_mutated":false,"readiness_claimed":false,"schema_version":"chimera.rigid_body_mass_export.v1","top_level_reason_codes":[],"unassigned_cell_ids":[],"unassigned_cells":[],"units":["kg","kg*m^2","m"]}],"tool":"material_volume_diagnostic"}
+=== partial (exit 0) ===
+report: E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W5_diag_promo\home\work\fixture_partial.json
+  ok: true
+  schema_version: chimera.rigid_body_mass_export.v1
+  export_status: partial
+  admission_status: validation_only_admissible
+  readiness_claimed: false
+  physical_state_mutated: false
+  top_level_reason_codes: unassigned_cells
+  detail: (none)
+  bodies: 1
+  omitted_bodies: 0
+  unassigned_cell_ids: cell-B
+  unassigned_cells: 1
+    unassigned[0] cell_id=cell-B assignment_status=resolved reason=not_assigned_to_an_authored_body_group
+  frames: coupon-A-authored
+  units: kg, kg*m^2, m
+  exported_masses: 1
+    mass[0] body_id=coupon-body-A mass=2.0 kg com_frame=coupon-A-authored com_unit=m inertia_frame=coupon-A-authored inertia_unit=kg*m^2 inertia_basis=authored_body_frame
+readiness: false
+=== partial --json (exit 0) ===
+{"readiness":false,"reports":[{"admission_status":"validation_only_admissible","bodies":[{"body_id":"coupon-body-A","com":{"coordinate_frame":"coupon-A-authored","unit":"m","value":[0.25,0.25,0.25]},"export_status":"exported","inertia":{"basis":"authored_body_frame","coordinate_frame":"coupon-A-authored","unit":"kg*m^2"},"mass_kg":2.0,"omitted":false,"owned_cell_ids":["cell-A"]}],"export_status":"partial","frames":["coupon-A-authored"],"input_hashes":{"algorithm":"sha256","body_groups_sha256":"dc9d5a2b1bd95a99bfb71a12e8b9e6a4dd7ce7b4736af5eb8eb48b494cafd309","manifest_sha256":"cab86eb63a9b10f988e93c42bc273bfbb06ef468705a421a6f821c6543630021","partition_sha256":"dd5aa0169b59e0c54d446ab443e8ed200c9eae256c75162781759702ce0f6ad1","serialization":"UTF-8 canonical JSON (sorted object keys; array order preserved)"},"ok":true,"omitted_bodies":[],"path":"E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\home\\work\\fixture_partial.json","physical_state_mutated":false,"readiness_claimed":false,"schema_version":"chimera.rigid_body_mass_export.v1","top_level_reason_codes":["unassigned_cells"],"unassigned_cell_ids":["cell-B"],"unassigned_cells":[{"assignment_status":"resolved","cell_id":"cell-B","reason":"not_assigned_to_an_authored_body_group"}],"units":["kg","kg*m^2","m"]}],"tool":"material_volume_diagnostic"}
+=== blocked (exit 0) ===
+report: E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W5_diag_promo\home\work\fixture_blocked.json
+  ok: true
+  schema_version: chimera.rigid_body_mass_export.v1
+  export_status: blocked
+  admission_status: refused
+  readiness_claimed: false
+  physical_state_mutated: false
+  top_level_reason_codes: reconstructed_mass_admission_required
+  detail: (none)
+  bodies: 2
+  omitted_bodies: 2
+    omitted[0] body_id=coupon-body-A export_status=not_exported reason_codes=reconstructed_mass_admission_required blocking_cell_ids=(none) blocking_assignment_statuses=(none) admission_reason_codes=compiler_refusal:missing_material, incomplete_cell_ownership, region_catalog_mismatch, unknown_material_reference
+    omitted[1] body_id=coupon-body-B export_status=not_exported reason_codes=reconstructed_mass_admission_required blocking_cell_ids=cell-B blocking_assignment_statuses=cell-B:invalid_material_reference admission_reason_codes=compiler_refusal:missing_material, incomplete_cell_ownership, region_catalog_mismatch, unknown_material_reference
+  unassigned_cell_ids: (none)
+  unassigned_cells: 0
+  frames: (none)
+  units: (none)
+  exported_masses: (none)
+readiness: false
+=== blocked --json (exit 0) ===
+{"readiness":false,"reports":[{"admission_status":"refused","bodies":[{"admission_reason_codes":["compiler_refusal:missing_material","incomplete_cell_ownership","region_catalog_mismatch","unknown_material_reference"],"blocking_assignment_statuses":[],"blocking_cell_ids":[],"body_id":"coupon-body-A","export_status":"not_exported","omitted":true,"owned_cell_ids":["cell-A"],"reason_codes":["reconstructed_mass_admission_required"]},{"admission_reason_codes":["compiler_refusal:missing_material","incomplete_cell_ownership","region_catalog_mismatch","unknown_material_reference"],"blocking_assignment_statuses":[{"cell_id":"cell-B","status":"invalid_material_reference"}],"blocking_cell_ids":["cell-B"],"body_id":"coupon-body-B","export_status":"not_exported","omitted":true,"owned_cell_ids":["cell-B"],"reason_codes":["reconstructed_mass_admission_required"]}],"export_status":"blocked","frames":[],"input_hashes":{"algorithm":"sha256","body_groups_sha256":"dcb55f1d17526fa12501f405505238c347ccf2c636cce1b78759bbcd76436c73","manifest_sha256":"cab86eb63a9b10f988e93c42bc273bfbb06ef468705a421a6f821c6543630021","partition_sha256":"50a549dbfdc9ad61cd3ceb1537524001295b805554913da9df9f03f233528f7a","serialization":"UTF-8 canonical JSON (sorted object keys; array order preserved)"},"ok":true,"omitted_bodies":[{"admission_reason_codes":["compiler_refusal:missing_material","incomplete_cell_ownership","region_catalog_mismatch","unknown_material_reference"],"blocking_assignment_statuses":[],"blocking_cell_ids":[],"body_id":"coupon-body-A","export_status":"not_exported","omitted":true,"owned_cell_ids":["cell-A"],"reason_codes":["reconstructed_mass_admission_required"]},{"admission_reason_codes":["compiler_refusal:missing_material","incomplete_cell_ownership","region_catalog_mismatch","unknown_material_reference"],"blocking_assignment_statuses":[{"cell_id":"cell-B","status":"invalid_material_reference"}],"blocking_cell_ids":["cell-B"],"body_id":"coupon-body-B","export_status":"not_exported","omitted":true,"owned_cell_ids":["cell-B"],"reason_codes":["reconstructed_mass_admission_required"]}],"path":"E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\home\\work\\fixture_blocked.json","physical_state_mutated":false,"readiness_claimed":false,"schema_version":"chimera.rigid_body_mass_export.v1","top_level_reason_codes":["reconstructed_mass_admission_required"],"unassigned_cell_ids":[],"unassigned_cells":[],"units":[]}],"tool":"material_volume_diagnostic"}
+=== unsupported (exit 0) ===
+report: E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W5_diag_promo\home\work\fixture_unsupported.json
+  ok: true
+  schema_version: chimera.rigid_body_mass_export.v1
+  export_status: unsupported
+  admission_status: refused
+  readiness_claimed: false
+  physical_state_mutated: false
+  top_level_reason_codes: source_effective_segment_mass_unsupported
+  detail: (none)
+  bodies: 2
+  omitted_bodies: 2
+    omitted[0] body_id=coupon-body-A export_status=not_exported reason_codes=source_effective_segment_mass_unsupported blocking_cell_ids=(none) blocking_assignment_statuses=(none) admission_reason_codes=(none)
+    omitted[1] body_id=coupon-body-B export_status=not_exported reason_codes=source_effective_segment_mass_unsupported blocking_cell_ids=(none) blocking_assignment_statuses=(none) admission_reason_codes=(none)
+  unassigned_cell_ids: (none)
+  unassigned_cells: 0
+  frames: (none)
+  units: (none)
+  exported_masses: (none)
+readiness: false
+=== unsupported --json (exit 0) ===
+{"readiness":false,"reports":[{"admission_status":"refused","bodies":[{"body_id":"coupon-body-A","export_status":"not_exported","omitted":true,"owned_cell_ids":["cell-A"],"reason_codes":["source_effective_segment_mass_unsupported"]},{"body_id":"coupon-body-B","export_status":"not_exported","omitted":true,"owned_cell_ids":["cell-B"],"reason_codes":["source_effective_segment_mass_unsupported"]}],"export_status":"unsupported","frames":[],"input_hashes":{"algorithm":"sha256","body_groups_sha256":"dcb55f1d17526fa12501f405505238c347ccf2c636cce1b78759bbcd76436c73","manifest_sha256":"47317e02cfa92e62b425f555c1f43f0782abdaf0273b5e3cd4db511f3eff935b","partition_sha256":"dd5aa0169b59e0c54d446ab443e8ed200c9eae256c75162781759702ce0f6ad1","serialization":"UTF-8 canonical JSON (sorted object keys; array order preserved)"},"ok":true,"omitted_bodies":[{"body_id":"coupon-body-A","export_status":"not_exported","omitted":true,"owned_cell_ids":["cell-A"],"reason_codes":["source_effective_segment_mass_unsupported"]},{"body_id":"coupon-body-B","export_status":"not_exported","omitted":true,"owned_cell_ids":["cell-B"],"reason_codes":["source_effective_segment_mass_unsupported"]}],"path":"E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\home\\work\\fixture_unsupported.json","physical_state_mutated":false,"readiness_claimed":false,"schema_version":"chimera.rigid_body_mass_export.v1","top_level_reason_codes":["source_effective_segment_mass_unsupported"],"unassigned_cell_ids":[],"unassigned_cells":[],"units":[]}],"tool":"material_volume_diagnostic"}
+=== refused (exit 0) ===
+report: E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W5_diag_promo\home\work\fixture_refused.json
+  ok: true
+  schema_version: chimera.rigid_body_mass_export.v1
+  export_status: refused
+  admission_status: not_evaluated
+  readiness_claimed: false
+  physical_state_mutated: false
+  top_level_reason_codes: bad_identifier
+  detail: body_groups[0].body_id must be a non-empty string
+  bodies: 0
+  omitted_bodies: 0
+  unassigned_cell_ids: (none)
+  unassigned_cells: 0
+  frames: (none)
+  units: (none)
+  exported_masses: (none)
+readiness: false
+=== refused --json (exit 0) ===
+{"readiness":false,"reports":[{"admission_status":"not_evaluated","bodies":[],"detail":"body_groups[0].body_id must be a non-empty string","export_status":"refused","frames":[],"input_hashes":{"algorithm":"sha256","body_groups_sha256":"b13ef10a782198fb20e19b762f902126f0492519578ac16d2771b741a7a410c2","manifest_sha256":"cab86eb63a9b10f988e93c42bc273bfbb06ef468705a421a6f821c6543630021","partition_sha256":"dd5aa0169b59e0c54d446ab443e8ed200c9eae256c75162781759702ce0f6ad1","serialization":"UTF-8 canonical JSON (sorted object keys; array order preserved)"},"ok":true,"omitted_bodies":[],"path":"E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\home\\work\\fixture_refused.json","physical_state_mutated":false,"readiness_claimed":false,"schema_version":"chimera.rigid_body_mass_export.v1","top_level_reason_codes":["bad_identifier"],"unassigned_cell_ids":[],"unassigned_cells":[],"units":[]}],"tool":"material_volume_diagnostic"}
+=== malformed (exit 2) ===
+report: E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W5_diag_promo\home\work\fixture_malformed_version.json
+  ok: false
+  error_reason: bad_export_report_version
+  error_detail: schema_version must be 'chimera.rigid_body_mass_export.v1'
+readiness: false
+=== malformed --json (exit 2) ===
+{"readiness":false,"reports":[{"error":{"detail":"schema_version must be 'chimera.rigid_body_mass_export.v1'","reason":"bad_export_report_version"},"ok":false,"path":"E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\impl\\W5_diag_promo\\home\\work\\fixture_malformed_version.json"}],"tool":"material_volume_diagnostic"}
