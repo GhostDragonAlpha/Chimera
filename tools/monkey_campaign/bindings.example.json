@@ -1,0 +1,21 @@
+{
+  "schema": "chimera-monkey-controller-bindings-v1",
+  "purpose": "Coordinator-maintained ID crosswalk and disk forecasts only; controller owns status and claims. Replace this example in a coordinator-owned path, not in the approved catalogue.",
+  "bindings": {},
+  "active_growth_forecasts": {},
+  "binding_entry_format": {
+    "planning_id_example": "W01",
+    "entry": {
+      "controller_tasks": ["actual-existing-controller-task-id"],
+      "mapping_receipt": "Evidence that the controller task implements this planning requirement",
+      "additional_peak_bytes": null
+    }
+  },
+  "active_growth_entry_format": {
+    "controller_task_id": {
+      "generation": null,
+      "remaining_bytes": null,
+      "evidence": "Measurement/forecast bound tied to the live claim generation; include every active host task before admitting more disk growth"
+    }
+  }
+}
