@@ -1,0 +1,30 @@
+=== C2 PADDLE CONTROLS (side R; same loader/axes as c2_target_paddle.py) ===
+
+--- (a) CONTROL: proximal half 15-50 mm (certainly single-bodied), 6 mm gap, 4 mm slabs ---
+  proximal 15-50 mm @6mm gap: 4/9 slabs split; first [35mm ncomp=2]
+
+--- (b) distal half 55-111 mm at gap thresholds 6 / 10 / 14 mm ---
+  distal 55-111 mm @6mm gap: 9/14 slabs split; first [55mm ncomp=2]
+  distal 55-111 mm @10mm gap: 1/14 slabs split; first [55mm ncomp=2]
+  distal 55-111 mm @14mm gap: 0/14 slabs split
+
+--- (c) fine 2 mm slabs, 74-96 mm: width/thickness/n per slab ---
+  slab(mm)   n   width_mm  thick_mm
+      74     7       8.8       4.1
+      76    27      47.1      12.3
+      78    27      27.5      12.3
+      80     0   (sparse)
+      82    45      47.1      13.0
+      84     9       7.8       5.8
+      86     7       7.5       1.3
+      88    47      46.9      12.7
+      90     0   (sparse)
+      92    29      45.6       9.6
+      94    25      45.4       8.9
+      96     0   (sparse)
+
+--- (d) median nearest-neighbour vertex spacing inside 4 mm slabs (sampling density) ---
+  slab @40mm: n=38, median nn gap = 24.2 mm, p90 = 58.0 mm (pairwise sample)
+  slab @60mm: n=50, median nn gap = 18.1 mm, p90 = 38.0 mm (pairwise sample)
+  slab @84mm: n=16, median nn gap = 11.8 mm, p90 = 23.4 mm (pairwise sample)
+  slab @100mm: n=52, median nn gap = 18.3 mm, p90 = 38.1 mm (pairwise sample)

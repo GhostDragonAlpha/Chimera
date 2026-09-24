@@ -1,0 +1,137 @@
+=== C2 TARGET PADDLE MEASURES (baseline inputs; MESH_UNIT_TO_M authored 0.065) ===
+verts 18459, joints 28
+
+########## SIDE R: elbow [-0.1155  0.3191 -0.0061] -> wrist [-0.145   0.2615 -0.006 ]  |forearm| = 64.745 mm
+axis a = [-0.4558 -0.8901  0.0019]; ONB b1 = [-0.      0.0021  1.    ], c1 = [-0.8901  0.4558 -0.001 ]
+distal skin (axial>0, r<25 mm): n=802, max axial = 111.3 mm
+distal skin (axial>0, r<40 mm): n=1103, max axial = 111.4 mm
+paddle region (axial>-5..120 mm, r<45 mm): n=1151
+
+--- per-4mm-slab profile (width=b1 extent, thick=c1 extent, centroid offsets) ---
+  slab(mm)   n   width_mm  thick_mm  cen_b_mm  cen_c_mm
+      -4     21      22.8      18.4      -4.7       5.6
+       0     25      23.7      19.9      -1.4       8.7
+       4     23      25.9      19.2      -4.0       9.5
+       8     18      27.8      18.6      -2.6      11.4
+      12     16      27.5      19.1      -6.9       9.4
+      16     25      35.1      18.6      -7.0      11.5
+      20     21      35.1      18.4      -0.8      14.0
+      24     26      39.7      17.8     -11.2      12.2
+      28     28      46.4      16.9      -5.4      11.3
+      32     26      51.9      17.3       3.2      12.0
+      36     27      61.4      15.6      -2.6       9.0
+      40     38      70.5      17.5      12.9      10.0
+      44     46      73.8      17.6      12.5       9.5
+      48     47      76.4      16.0      12.1       7.9
+      52     61      76.0      17.0      15.9       8.4
+      56     56      74.1      16.1      -1.3       9.9
+      60     50      49.1      14.3      -8.4       9.5
+      64     45      48.4      14.9      -9.0      10.5
+      68     35      47.8      11.6     -11.2      11.1
+      72     41      44.6      13.5      -2.1       9.8
+      76     54      47.4      13.3      -8.2       9.0
+      80     45      47.1      13.0      -8.1       7.5
+      84     16      26.2       9.0     -16.3       8.3
+      88     47      46.9      12.7      -5.3       7.1
+      92     54      46.6      12.2      -8.0       5.4
+      96     53      46.3      11.5      -8.2       3.7
+     100     52      45.5      10.5      -8.5       2.2
+     104     76      44.1       9.0      -5.2       1.1
+     108     77      41.9       6.9     -13.7       0.7
+
+--- lobation (i): width-profile local minima ---
+  width(b1): minima 3: @14mm (w=27.5) span<20mm; @74mm (w=44.6) span<52mm; @86mm (w=26.2) span<8mm
+  thick(c1): minima 7: @10mm (w=18.6) span<108mm; @30mm (w=16.9) span<84mm; @38mm (w=15.6) span<8mm; @50mm (w=16.0) span<8mm; @62mm (w=14.3) span<52mm; @70mm (w=11.6) span<8mm; @86mm (w=9.0) span<8mm
+  (persistence >=20 mm required for a 'groove' under the preregistration)
+
+--- lobation (ii): angular r(theta) minima persistent >=20 mm ---
+  slabs analysed: 12 from 55 to 115 mm; angular bins 24
+  persistent angular minimum (>=20 mm span): NONE
+
+--- lobation (iii): 2D cross-section splits (gap threshold 6 mm), distal half ---
+  slabs with >1 component at 6 mm gap: 9 / 15
+  split axial range: [55, 111] mm
+
+paddle PCA axis = [-0.3741 -0.9143 -0.1553], angle vs elbow->wrist axis = 10.3 deg (map falsifier (a) threshold 15 deg)
+paddle extent along a / b1 / c1 (region bbox): 115.9 / 76.9 / 24.4 mm
+far end (80-115 mm, r<40 mm): n=420; bbox x [-199.3, -184.6] y [162.0, 194.0] z [-37.9, 9.2] mm
+  transverse extents: b1 47.1 mm, c1 18.1 mm
+
+--- connected components (26-neigh voxel BFS), region axial>30 mm r<35 mm ---
+  verts in region: 907
+   8 mm voxels: 165 occupied, components [165]
+   4 mm voxels: 490 occupied, components [490]
+   2 mm voxels: 729 occupied, components [61, 53, 43, 34, 26, 16, 16, 16]
+
+--- proportions ---
+forearm elbow->wrist = 64.745 mm
+paddle:forearm (max axial r<25mm) = 1.7184   (r<40mm: 1.7198)
+
+########## SIDE L: elbow [ 0.1155  0.3191 -0.0061] -> wrist [ 0.145   0.2615 -0.006 ]  |forearm| = 64.745 mm
+axis a = [ 0.4558 -0.8901  0.0019]; ONB b1 = [-0.      0.0021  1.    ], c1 = [-0.8901 -0.4558  0.001 ]
+distal skin (axial>0, r<25 mm): n=802, max axial = 111.3 mm
+distal skin (axial>0, r<40 mm): n=1103, max axial = 111.4 mm
+paddle region (axial>-5..120 mm, r<45 mm): n=1151
+
+--- per-4mm-slab profile (width=b1 extent, thick=c1 extent, centroid offsets) ---
+  slab(mm)   n   width_mm  thick_mm  cen_b_mm  cen_c_mm
+      -4     21      22.8      18.4      -4.7      -5.6
+       0     25      23.7      19.9      -1.4      -8.7
+       4     23      25.9      19.2      -4.0      -9.5
+       8     18      27.8      18.6      -2.6     -11.4
+      12     16      27.5      19.1      -6.9      -9.4
+      16     25      35.1      18.6      -7.0     -11.5
+      20     21      35.1      18.4      -0.8     -14.0
+      24     26      39.7      17.8     -11.2     -12.2
+      28     28      46.4      16.9      -5.4     -11.3
+      32     26      51.9      17.3       3.2     -12.0
+      36     27      61.4      15.6      -2.6      -9.0
+      40     38      70.5      17.5      12.9     -10.0
+      44     46      73.8      17.6      12.5      -9.5
+      48     47      76.4      16.0      12.1      -7.9
+      52     61      76.0      17.0      15.9      -8.4
+      56     56      74.1      16.1      -1.3      -9.9
+      60     50      49.1      14.3      -8.4      -9.5
+      64     45      48.4      14.9      -9.0     -10.5
+      68     35      47.8      11.6     -11.2     -11.1
+      72     41      44.6      13.5      -2.1      -9.8
+      76     54      47.4      13.3      -8.2      -9.0
+      80     45      47.1      13.0      -8.1      -7.5
+      84     16      26.2       9.0     -16.3      -8.3
+      88     47      46.9      12.7      -5.3      -7.1
+      92     54      46.6      12.2      -8.0      -5.4
+      96     53      46.3      11.5      -8.2      -3.7
+     100     52      45.5      10.5      -8.5      -2.2
+     104     76      44.1       9.0      -5.2      -1.1
+     108     77      41.9       6.9     -13.7      -0.7
+
+--- lobation (i): width-profile local minima ---
+  width(b1): minima 3: @14mm (w=27.5) span<20mm; @74mm (w=44.6) span<52mm; @86mm (w=26.2) span<8mm
+  thick(c1): minima 7: @10mm (w=18.6) span<108mm; @30mm (w=16.9) span<84mm; @38mm (w=15.6) span<8mm; @50mm (w=16.0) span<8mm; @62mm (w=14.3) span<52mm; @70mm (w=11.6) span<8mm; @86mm (w=9.0) span<8mm
+  (persistence >=20 mm required for a 'groove' under the preregistration)
+
+--- lobation (ii): angular r(theta) minima persistent >=20 mm ---
+  slabs analysed: 12 from 55 to 115 mm; angular bins 24
+  persistent angular minimum (>=20 mm span): NONE
+
+--- lobation (iii): 2D cross-section splits (gap threshold 6 mm), distal half ---
+  slabs with >1 component at 6 mm gap: 9 / 15
+  split axial range: [55, 111] mm
+
+paddle PCA axis = [ 0.3741 -0.9143 -0.1553], angle vs elbow->wrist axis = 10.3 deg (map falsifier (a) threshold 15 deg)
+paddle extent along a / b1 / c1 (region bbox): 115.9 / 76.9 / 24.4 mm
+far end (80-115 mm, r<40 mm): n=420; bbox x [184.6, 199.3] y [162.0, 194.0] z [-37.9, 9.2] mm
+  transverse extents: b1 47.1 mm, c1 18.1 mm
+
+--- connected components (26-neigh voxel BFS), region axial>30 mm r<35 mm ---
+  verts in region: 907
+   8 mm voxels: 165 occupied, components [165]
+   4 mm voxels: 490 occupied, components [490]
+   2 mm voxels: 729 occupied, components [61, 53, 43, 34, 26, 16, 16, 16]
+
+--- proportions ---
+forearm elbow->wrist = 64.745 mm
+paddle:forearm (max axial r<25mm) = 1.7184   (r<40mm: 1.7198)
+
+=== MIRROR CHECK ===
+wrist_L [ 0.145   0.2615 -0.006 ]  wrist_R [-0.145   0.2615 -0.006 ]  (x-mirrors: True)

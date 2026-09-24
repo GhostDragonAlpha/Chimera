@@ -1,0 +1,47 @@
+=== C2 MASS-SPREAD ARITHMETIC (uniform-constant-density closed form, DERIVATION §9) ===
+closed form (DERIVATION §9 verbatim): m' = m · |det L| = m · det S   (proper rotations det +1)
+authored hand mass m = 0.4575 kg (chimanoid.xml hand_r <inertial>)
+
+--- H-LEN: uniform s from paddle/phalanx length match ---
+  s = 0.1113/0.15529 = 0.716724   [paddle 0.1113 / hand 0.15529 (this audit)]
+      det S = s^3 = 0.368176   m' = 0.4575 x 0.368176 = 0.168440 kg  -> 0.168 kg
+  s = 0.1114/0.1554 = 0.716860   [paddle 0.1114 / hand 0.1554 (B1 v3 / map)]
+      det S = s^3 = 0.368386   m' = 0.4575 x 0.368386 = 0.168536 kg  -> 0.169 kg
+  map's rounded s=0.716:  m' = 0.4575 x 0.716^3 = 0.167931 kg -> 0.168 kg
+  s / body scale = 3.23x (map: '3.2x body scale - flagged')
+
+--- H-ASP: length + aspect (diagonal S = diag(s_a, s_b, s_c)) ---
+  s_a = 0.1113/0.15529 = 0.716724
+  s_b = 0.0471/0.06089 = 0.773526   (map: 0.0471/0.061 = 0.7721)
+  s_c = 0.0181/0.02019 = 0.896483   (map: 0.0181/0.020 = 0.9050)
+  det S = s_a.s_b.s_c = 0.497014   m' = 0.4575 x 0.497014 = 0.227384 kg -> 0.227 kg
+  map's rounded s = 0.716x0.77x0.90: det = 0.496188, m' = 0.227006 kg -> 0.227 kg
+
+--- H-BODY: uniform body scale ---
+  s = 0.221707 [A4 exact 0.221707]: det S = s^3 = 0.01089778  m' = 0.004986 kg -> 0.0050 kg
+  s = 0.2217 [map rounded 0.2217]: det S = s^3 = 0.01089675  m' = 0.004985 kg -> 0.0050 kg
+  fingertip image under body scale: 0.03443 m = 34.4 mm (map: '0.0344 m distal')
+
+--- spread structure ---
+  candidates' masses: H-BODY 0.0050 / H-LEN 0.1685 / H-ASP 0.2270 kg
+  spread max/min = 45.5x ; det ratio = 45.5x  (identical: pure det(S))
+  H-ASP/H-LEN = 1.347 = s_b.s_c/s^2 = 1.352
+
+--- site-placement row cross-check (map §2.2) ---
+  source sites |p| 0.0299..0.0428 m (frozen evidence)
+  H-LEN  axial x s = x 0.717 -> 0.0214..0.0307 m (map: '2.1-3.1 cm')
+  H-BODY axial x s = x 0.2217 -> 0.0066..0.0095 m (map: '0.7-0.9 cm')
+
+--- the shipped packet's own hand record ---
+  hand_r not in 'segments' (expected: it is UNRESOLVED)
+  top-level packet keys: ['meta', 'audit', 'joints', 'segments', 'sites', 'tendons', 'physiology', 'muscles', 'unsupported', 'refusals', 'residuals', 'fit_mode', 'unresolved_segments', 'assumed_axes_total', 'evidence_axes_total', 'target_inputs', 'measurements', 'admission']
+
+--- admission (shipped) ---
+  assumption: "uniform_constant_density_scale"
+  kind: "source_effective_x_det_scale"
+  requires_density_validation: true
+  density_validated: false
+  note: "a transported mass is the source effective mass scaled by |det D| under a RECORDED constant-density assumption. Geometry resolution alone does NOT discharge requires_density_validation; no body is physically admitted because no validated material/mass source was supplied and none is invented."
+  counts: {'geometrically_resolved': 9, 'flagged': 0, 'unresolved': 9, 'admitted_kinematic': 9, 'transported_under_assumption': 8, 'physically_admitted': 0}
+  hand in unresolved: True
+  physically_admitted mass total: 0.0 kg

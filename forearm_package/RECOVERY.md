@@ -234,3 +234,18 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none mechanically; D1/D3-D5 pending by design.
 
 **Next:** C1-C3 -> verify receipts -> I6: the decision table (7 columns) + exact radius-supersession proposal + smallest-missing-measurement if indistinguishable -> return for approval.
+
+## CHECKPOINT 2026-09-24 (T16) — C2 integrated (hand evidence)
+
+**Verified:**
+- C2 PASS 6/6, all four preregistered predictions CONFIRMED, neither falsifier fired; coordinator fresh re-run of all 4 scripts; integrity clean.
+- Same-assembly: UNDECIDABLE-WITH-CURRENT-ASSETS (source hand:forearm 0.4928/0.5078 vs paddle:forearm 1.7184 — 3.4-3.5x mismatch; zero resolvable digit structure; both apparent grooves proven sampling artifacts via slab controls; PCA axis 10.3 deg, map's 15-deg falsifier passes).
+- Mass spread closed: 0.004986 / 0.16844(0.16854 w/ 0.1114) / 0.22738 kg = exact m*det(S) per policy; 45.5x spread = det ratio; NO preferred mass; rejected 4th alternative (0.312 kg, 5mc-only reading) preserved.
+- Digits: no structure in current assets (conditional on better assets); ARTICULATION is closed under ANY asset (zero digit joints source+target) — the precise permanence boundary for the reclassification.
+- Smallest missing measurement (same-assembly): one render/visual inspection of the existing distal blob; then source mesh assets; then higher-res target region.
+
+**Active:** C1 (ulna), C3 (challenge) still running.
+
+**Blocked:** none mechanically; D1/D3-D5 pending by design.
+
+**Next:** C1+C3 -> I6 ANATOMICAL_DECISION_TABLE.md (7 columns + supersession proposal + smallest missing measurements).

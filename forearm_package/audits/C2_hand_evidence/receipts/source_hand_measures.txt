@@ -1,0 +1,84 @@
+=== C2 SOURCE HAND MEASURES (hand_r, body frame; geom pos anchors, identity quat) ===
+mesh geoms parsed: 27 (capsules skipped: 3)
+
+--- per-geom |p| from wrist origin (mm) ---
+  3distph    |p| =  155.29 mm   pos = [ 0.007724 -0.153841  0.019666]
+  2distph    |p| =  152.00 mm   pos = [ 0.033028 -0.147078  0.019525]
+  4distph    |p| =  145.36 mm   pos = [-0.015729 -0.144306  0.007575]
+  5distph    |p| =  130.65 mm   pos = [-0.027651 -0.127408 -0.008509]
+  2midph     |p| =  127.07 mm   pos = [ 0.029695 -0.12219   0.018305]
+  3midph     |p| =  126.20 mm   pos = [ 0.006359 -0.124794  0.017712]
+  4midph     |p| =  120.47 mm   pos = [-0.013412 -0.119517  0.007012]
+  5midph     |p| =  109.75 mm   pos = [-0.02478  -0.106731 -0.006266]
+  thumbdist  |p| =  103.80 mm   pos = [ 0.056985 -0.080123 -0.033281]
+  2proxph    |p| =   84.62 mm   pos = [ 0.022178 -0.080917  0.010979]
+  3proxph    |p| =   81.53 mm   pos = [ 0.004709 -0.080583  0.011482]
+  4proxph    |p| =   80.08 mm   pos = [-0.009884 -0.079262  0.005667]
+  5proxph    |p| =   73.87 mm   pos = [-0.019501 -0.071168 -0.003387]
+  thumbprox  |p| =   72.97 mm   pos = [ 0.042985 -0.054223 -0.023181]
+  4mc        |p| =   56.46 mm   pos = [-0.008054 -0.055573  0.00584 ]
+  2mc        |p| =   56.37 mm   pos = [ 0.018677 -0.052674  0.007359]
+  3mc        |p| =   55.33 mm   pos = [ 0.004469 -0.054293  0.009704]
+  5mc        |p| =   52.90 mm   pos = [-0.017904 -0.049737 -0.001891]
+  1mc        |p| =   37.91 mm   pos = [ 0.026485 -0.025023 -0.010481]
+  trapezium  |p| =   28.65 mm   pos = [ 0.019285 -0.019623 -0.007981]
+  trapezoid  |p| =   23.19 mm   pos = [ 0.013135 -0.019116 -0.000137]
+  pisiform   |p| =   19.73 mm   pos = [-0.013388 -0.009886 -0.010593]
+  hamate     |p| =   18.95 mm   pos = [-0.006977 -0.017549  0.001577]
+  capitate   |p| =   15.75 mm   pos = [ 0.003992 -0.015054  0.002327]
+  triquetrum |p| =   13.20 mm   pos = [-0.010784 -0.007499 -0.001289]
+  scaphoid   |p| =   13.19 mm   pos = [ 0.012345 -0.004464 -0.001254]
+  lunate     |p| =    0.00 mm   pos = [0. 0. 0.]
+
+hand length (wrist -> distalmost geom anchor) = 155.29 mm  (3distph)
+max -y extent = 153.84 mm (['3distph'])
+
+--- palm width/thickness candidates (the H-ASP denominators) ---
+5mc x-range: [-17.90, 26.49] mm  extent 44.39 mm
+5mc z-range: [-17.90, 9.70] mm  extent 20.19 mm
+5mc y-range: [-55.57, -25.02] mm
+max pairwise distance within mc row: 51.53 mm (1mc-5mc)
+mc+thumb-column x-range: [-17.90, 42.98] mm  extent 60.89 mm
+ALL-27 x-range: [-27.65, 56.98] mm  extent 84.64 mm
+ALL-27 z-range: [-33.28, 19.67] mm  extent 52.95 mm
+ALL-27 y-range: [-153.84, 0.00] mm
+
+--- thumb vs finger axis divergence ---
+direction wrist->thumbdist  : [ 0.549  -0.7719 -0.3206]
+mean direction wrist->2-5distph: [-0.0046 -0.9978  0.0667]
+angle between = 41.7 deg
+per-ray prox->dist direction and angle vs 3rd ray:
+  ray thumb: axis [ 0.4498 -0.8321 -0.3245]  angle vs ray3 = 36.0 deg  (prox->dist anchor span 31.1 mm)
+  ray 2: axis [ 0.1605 -0.9789  0.1264]  angle vs ray3 = 7.0 deg  (prox->dist anchor span 67.6 mm)
+  ray 4: axis [-0.0895 -0.9956  0.0292]  angle vs ray3 = 8.8 deg  (prox->dist anchor span 65.3 mm)
+  ray 5: axis [-0.1428 -0.9857 -0.0898]  angle vs ray3 = 15.6 deg  (prox->dist anchor span 57.1 mm)
+
+--- palm-plane fit of the 27 points (SVD) ---
+best-fit plane normal = [-0.1326 -0.1112 -0.9849]
+RMS residual = 10.66 mm   max |res| = 28.61 mm
+residual percentiles |r| mm: 50% 7.79, 90% 16.54, 100% 28.61
+carpals+mc (13 pts) plane: RMS 4.99 mm, max 8.72 mm
+14 phalanges plane: RMS 11.95 mm, max 23.40 mm
+5 sites: plane RMS 2.13 mm, max 3.41 mm; |p| mm: ECRB-P4=29.9, ECU-P6=34.5, FCR-P3=36.8, FCU-P4=36.9, ECRL-P4=42.8
+
+--- per-digit ray lengths (sum of consecutive anchor distances) ---
+  ray thumb: segments mm [np.float64(35.9), np.float64(31.1)]  total 67.0 mm
+  ray 2: segments mm [np.float64(28.7), np.float64(42.6), np.float64(25.1)]  total 96.4 mm
+  ray 3: segments mm [np.float64(26.4), np.float64(44.7), np.float64(29.1)]  total 100.2 mm
+  ray 4: segments mm [np.float64(23.8), np.float64(40.4), np.float64(24.9)]  total 89.1 mm
+  ray 5: segments mm [np.float64(21.5), np.float64(36.1), np.float64(21.0)]  total 78.6 mm
+
+--- source forearm / chain (right) ---
+ulna pos rel humerus  = [ 0.0061  -0.34845 -0.0123 ]  |.| = 0.34872 m (shoulder->elbow)
+radius pos rel ulna   = [ 0.0004   -0.011503  0.019999]  |.| = 0.02307 m (ulna->radius)
+hand pos rel radius   = [ 0.018  -0.2904  0.025 ]  |.| = 0.29203 m (radius->hand)
+elbow->hand origin straight-line |radius_pos + hand_pos| = 0.30579 m
+chain-sum ulna->radius + radius->hand = 0.31510 m
+
+--- ratios ---
+source hand:forearm (hand_len/elbow->hand straight) = 0.5078
+source hand:forearm (hand_len/chain-sum)            = 0.4928
+source hand:forearm (hand_len/radius->hand only)    = 0.5317
+
+--- inertial (authored) ---
+hand_r inertial: pos        0 -0.068095        0 mass 0.4575 kg fullinertia 0.000892 0.000547  0.00134        0        0        0
