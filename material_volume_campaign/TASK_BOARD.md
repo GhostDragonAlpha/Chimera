@@ -18,6 +18,7 @@
 
 - Frozen proofs at `1af0bbde` pass (SI 5/5, FC 8/8, verify 7/7); corrective actions C-1/C-2/C-3 recorded (C-1 = example-report serialization regenerated as canonical CLI bytes, content unchanged).
 - Tip `3db8bc4e`: verification receipt **59/66 reconciled**; OPEN: independent-reproduction character, independent proof audit (brief exists, NOT executed), C-1/C-2/C-3 acceptance adjudication, U7 (reader behavior on `blocked`/`refused`; legacy covers `unsupported`), plus the receipt's full open list (read it — agent M01 reconciles all).
+- **U7 RESOLVED + FINDING (M09):** the reader does NOT misbehave on genuine `blocked`/`refused` reports (exit 0, statuses correct, readiness false, rejections intact); but the reader's SUMMARY drops contract-preserved diagnostics — `blocking_cell_ids`/`blocking_assignment_statuses`/`admission_reason_codes` (CON-4), top-level `reason_codes`/`detail` (CON-6), per-cell `unassigned_cells` rows (CON-7). The M09 CLI surfaces them from the raw reader-parsed mapping. Also: with report-global admission failure, `blocking_cell_ids` is per-body (one omitted body carries an empty blocking list).
 - Contract v0.9 (proposal): five decisions reserved to Astra; consumer-side code did not exist; `dynamics_readiness_claimed` always false; parent composition external and pre-composed (flat frames) under v1.
 
 ## ASSIGNMENTS (ten active; refill from backlog on completion)
@@ -32,7 +33,8 @@
 | M06 | malformed/unsupported inputs vs existing schemas (invalid frames, missing fields, non-finite, unauthorized source-effective authority) | `agents/M06_malformed` | DISPATCHED | — | `report.md` |
 | M07 | ownership/status propagation (duplicate ownership, unassigned cells, blocked bodies, mixed complete/incomplete groups) | `agents/M07_ownership` | DISPATCHED | — | `report.md` |
 | M08 | numerical robustness: independent fixtures across declared scales/shapes; conditioning limits vs defects | `agents/M08_robustness` | DISPATCHED | — | `report.md` |
-| M09 | read-only diagnostic CLI on the existing reader (status, omitted bodies + reasons, unassigned cells, frames, units, readiness stays false) | `agents/M09_diagnostic` | DISPATCHED | — | `report.md` + impl |
+| M09 | read-only diagnostic CLI on the existing reader (status, omitted bodies + reasons, unassigned cells, frames, units, readiness stays false) | `agents/M09_diagnostic` | DONE | **PASS** — 11/11 tests; 415-file read-only proof; readiness false everywhere; **U7 resolved + finding: reader behaves correctly on blocked/refused, but its SUMMARY drops contract-preserved diagnostics (CON-4/6/7 fields) — CLI passes them through** | `report.md` + impl (suite re-verified by coordinator) |
+| B2a | independent review of the diagnostic CLI (non-author) | `agents/B2a_review_m09` | DISPATCHED | — | `report.md` |
 | M10 | static consumption validator for contract v1 (reject eligibility for partial/blocked/refused/unsupported; preserve full tensors; prohibit inferred ownership/readiness promotion; NO runtime assembly) | `agents/M10_validator` | DISPATCHED | — | `report.md` + impl |
 
 ## AUTHORIZED FOLLOW-ON BACKLOG (assign as slots free)
