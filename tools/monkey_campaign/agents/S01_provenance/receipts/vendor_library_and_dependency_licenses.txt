@@ -1,0 +1,64 @@
+M-S01 RECEIPT — vendor library + runtime dependency terms (what was checked, where)
+Audited 2026-09-24. READ-ONLY audit; every term below cites the file it was read from.
+
+== 1. MyoSim (vendored musculoskeletal model library) ==
+Vendored copy: E:/PythonChimera/vendor/myo_sim  (VERSION file = "0.1.0")
+  LICENSE: Apache License 2.0, full text, head read 2026-09-24
+    sha256 1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6
+  README.md: "MyoSim is the library of MuJoCo Musculoskeletal Models of MyoSuite
+    (https://github.com/facebookresearch/myoSuite)"
+Upstream check (WebSearch 2026-09-24, permitted because a license identifier exists on disk
+to check against): github.com/MyoHub/myo_sim — MyoHub/MyoSuite repositories are Apache-2.0.
+CONSISTENT with the vendored file. Recorded brief's prior guess "typically BSD" — REFUTED by
+both the vendored LICENSE and the upstream check; recorded terms = Apache-2.0.
+Location drift: research_references/human/SOURCES.md pins the path "external/myo_sim"; the
+on-disk vendored copy lives at E:/PythonChimera/vendor/myo_sim. Neither the monkey-play
+worktree nor E:/PythonChimera has external/ (gitignored absent). Correction action flagged.
+Chain note: myo_sim is NOT in the playable-slice consumption chain (no import in
+slice_server.py, scene_boot.py, push_channel.py, standing_pose_core.py, ct_skeleton_*.py,
+hip_pivot_proof.py). It serves the grab/foot science lanes (docs/THE_GRAB.md L45,
+docs/THE_FOOT_TISSUE.md L112). If a future package vendors it: Apache-2.0 requires
+preserving LICENSE (+ any NOTICE) with the distribution.
+
+== 2. Python runtime + packages (installed metadata, machine 2026-09-24) ==
+  CPython 3.14.3 — C:\Python314\LICENSE.txt (exists; "A. HISTORY OF THE SOFTWARE" — the
+  PSF license history). Redistribution in a self-contained package rides the PSF terms.
+  numpy 2.2.6  — importlib.metadata: License field "Copyright (c) 2005-2024, NumPy
+                 Developers..." + classifier "License :: OSI Approved :: BSD License" (BSD-3)
+  scipy 1.17.0 — importlib.metadata: License field "Copyright (c) 2001-2002 Enthought,
+                 Inc. 2003, SciPy Developers..." + classifier BSD (BSD-3)
+  Both enter the runtime chain via tools/playable_slice/scene_boot.py -> standing_pose_core.py
+  (numpy, scipy.spatial.cKDTree) and slice_server.py/verts() (lazy numpy). Package action:
+  ship the BSD-3 attribution blocks + PSF license text with the package.
+
+== 3. Engine binary toolchain/libraries (from build inputs; binary not yet built in worktree) ==
+  DEFAULT_EXE .tmp/slice_build/Release/chimera_engine.exe — ABSENT in this worktree
+  (.tmp/ gitignored, no Release dir). The shipped artifact must be built; identity
+  (sha256) is pending that build. Source provenance is in-repo (ChimeraEngine/engine,
+  repo terms AGPL-3; no vendored third-party code — include scan found only
+  Vulkan + Win32/WinSDK headers; importer/GLB parsing is engine-authored).
+  Recorded toolchain: ChimeraEngine/engine/README.md L78 "MSVC 19.44 (Visual Studio 2022
+  Build Tools)", Vulkan 1.2 noted L268 (drift: installed SDK on disk is 1.4.328.1).
+  CMakeLists.txt: find_package(Vulkan REQUIRED); target_link_libraries: vulkan-1.lib
+  (${VULKAN_SDK}/Lib), ws2_32, winmm, secur32, crypt32, ncrypt, bcrypt, gdi32, user32
+  (Windows OS libs — OS components, not shipped); shaders GLSL+SPIR-V copied at build
+  (in-repo sources).
+  Vulkan SDK: C:/VulkanSDK/1.4.328.1/Licenses/LICENSE.txt (read 2026-09-24):
+    "Copyright 2016-2025 LunarG Inc. The Vulkan SDK is comprised of 100% open-source
+    components. The majority of the materials are MIT or Apache 2.0 licenses. The Vulkan
+    SDK licensing registry (vulkan.lunarg.com) discloses all components ... The SDK itself
+    is not licensed..."  GAP: per-component disclosure + exact loader DLL version not yet
+    banked — package-time action.
+  MSVC/UCRT redistributable: distributable-code terms of the Visual Studio license;
+    exact redist version not yet banked — package-time action.
+
+== 4. Oku 2021 walker numbers ==
+tools/science_funnel/data/oku_bipedal/download_receipt.json (read 2026-09-24):
+  source: Oku, Ide & Ogihara 2021, Communications Biology 4:1831,
+          DOI 10.1038/s42003-021-01831-w, supplementary xlsx via EuropePMC (PMC7940622)
+  license: "CC BY 4.0 (article full text permissions block ...; (c) The Author(s) 2021)"
+  xlsx sha256 0dd92e443bfc895eebb0e25c1304820adac67679b5989dfb7159f84407433185
+  (verified on disk, matches)
+The shipped walker numbers are DERIVED NUMBERS (facts) authored into gait_scene.py /
+derived_numbers.json (10.038 kg assembly etc.) — cite the paper; the xlsx itself need not
+ship. CC BY 4.0 attribution rides any product documentation that presents the derivation.
