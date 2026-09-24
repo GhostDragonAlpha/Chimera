@@ -1,0 +1,26 @@
+== baseline battery (READ-ONLY, PYTHONDONTWRITEBYTECODE=1), 2026-09-24T18:52:49Z ==
+git core.autocrlf: true
+---- material_volume_body_export_checks.py ----
+----------------------------------------------------------------------
+Ran 8 tests in 0.071s
+
+OK
+exit=0
+---- material_volume_checks.py ----
+----------------------------------------------------------------------
+Ran 17 tests in 0.076s
+
+OK
+exit=0
+---- material_volume_admission_checks.py ----
+----------------------------------------------------------------------
+Ran 21 tests in 0.117s
+
+OK
+exit=0
+---- material_volume_export_proof_verify.py ----
+----------------------------------------------------------------------
+Ran 7 tests in 2.558s
+
+OK
+exit=0

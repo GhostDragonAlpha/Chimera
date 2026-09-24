@@ -1,0 +1,11 @@
+--- valid
++++ M11
+@@ -255,7 +255,7 @@
+    ]
+   }
+  ],
+- "dynamics_readiness_claimed": false,
++ "dynamics_readiness_claimed": true,
+  "export_status": "complete",
+  "input_hashes": {
+   "algorithm": "sha256",

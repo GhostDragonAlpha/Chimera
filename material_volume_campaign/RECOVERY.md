@@ -50,3 +50,10 @@ Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe
 **Verified:** M02 PASS 142/142 — coordinator re-ran derivation/derive_oracle.py (all gates pass; expectations regenerate); integrity clean. Multi-cell mixed-density nontrivial-offset case: exact masses, off-diagonal preservation with correct signs, no invented cross terms on isotropic rotation, whole-partition parallel-axis recombination 5.68e-14, determinism, reader acceptance. Independence triple-anchored (exact algebra / quadrature / published literals) with file-timeline-proven prereg freeze. Agent-side defects preserved (the honest pattern again).
 
 **Fleet:** 10 live (M02 done). Serialized retry queue unchanged: B3, B5 wait for M06-retry. Strict protocol held — no spawn this pass.
+
+## CHECKPOINT T7 — B7 integrated (the consumption-time gap is MEASURED)
+
+**Verified:** B7 frozen matrix structure confirmed (17 rows + preregistration + predicted_tally, frozen before runs); integrity clean; falsifier HELD (nothing predicted-detectable passed silently).
+**Findings banked (F1-F6):** reader = only consumption-time validator; no value oracle (wrong-but-symmetric numbers, mass edits, COM shifts, impostor owner ids all flow through at exit 0); dropped provenance invisible; complete->partial with empty unassigned accepted; readiness tamper neutralized-but-invisible (decision request); admission_report_sha256 + input_hashes inert at consumption; M13 ragged tensor escapes as numpy traceback (named-refusal contract gap).
+**Cross-connection:** M10's validator (R0-R16) is the campaign's own static consumer — B7's 9 missed mutations are the perfect adversarial corpus for it. QUEUED as B7x (behind retry queue B3/B5).
+**Fleet:** 9 live. Serialized protocol still holds (M06-retry in flight).

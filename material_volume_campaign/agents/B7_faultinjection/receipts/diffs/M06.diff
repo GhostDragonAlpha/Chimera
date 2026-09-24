@@ -1,0 +1,11 @@
+--- valid
++++ M06
+@@ -63,7 +63,7 @@
+      "coordinate_frame": "coupon-A-authored",
+      "unit": "m",
+      "value": [
+-      0.25,
++      0.75,
+       0.25,
+       0.25
+      ]

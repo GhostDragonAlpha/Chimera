@@ -25,6 +25,7 @@
 
 | id | assignment | agent dir | status | verdict | receipt |
 |---|---|---|---|---|---|
+| B7 | fault injection on checks (corrupted outputs detected; mutations confined to fixtures) | `agents/B7_faultinjection` | DONE | **17 mutations: 8 DETECTED / 9 MISSED / falsifier HELD (no predicted-detectable silent pass)**. Structural: the reader is the ONLY consumption-time validator. Findings F1–F6 preserved: no value oracle (wrong-but-symmetric numbers flow through); dropped provenance invisible; `complete→partial` accepted w/ empty unassigned list; readiness-tamper neutralized-but-invisible; hashes INERT at consumption; M13 ragged tensor = numpy traceback not named refusal | `report.md` + frozen matrix (structure verified by coordinator) |
 | B3 | reader/exporter round-trip (off-diagonals, provenance, explicit frames) | `agents/B3_roundtrip` | RETRY-QUEUED (4th [1302], died at 5 min; waits for M06-retry to finish — serialized-retry protocol) | — | `report.md` |
 | B5 | subdivision coupon (same material volume/density through explicit regrouping) | `agents/B5_subdivision` | RETRY-QUEUED (5th [1302], 5.5 min, same spawn burst as B3) | — | `report.md` |
 | M01 | independent reproduction + audit of frozen `1af0bbde`; reconcile ALL findings vs later evidence (no revision substitution) | `agents/M01_reproduce` | DISPATCHED | — | `report.md` |
@@ -41,6 +42,7 @@
 
 ## AUTHORIZED FOLLOW-ON BACKLOG (assign as slots free)
 
+QUEUE (behind B3/B5 retries): B7x = run B7's 9 missed mutations through M10's validator (agents/M10_validator) — does the campaign's own static consumer close the consumption-time gaps B7 found? Within authorized scope (fault-injection + independent verification).
 MV-O1 DECISION REQUEST (M07): blocked-group body-level admission hash binds the reduced doc, all other paths bind the full report — doc ambiguity, adjudication requested.
 B1 independent review of each new suite (non-author) · B2 independent review of diagnostic CLI + validator · B3 reader/exporter round-trip (off-diagonals, provenance, explicit frames) · B4 cross-checkout reproducibility (raw bytes vs git blobs vs canonical text) · B5 preregistered subdivision coupon (same material volume/density through explicit regrouping) · B6 analytic tensor checks (symmetry, principal moments + physical inequalities, independent parallel-axis recombination) · B7 fault injection on checks (corrupted outputs detected; mutations confined to fixtures) · B8 regression tests + exclusive-ownership fixes for verified defects · B9 documentation examples vs actual CLI behavior · B10 final independent integrated verification + reproducible handoff.
 

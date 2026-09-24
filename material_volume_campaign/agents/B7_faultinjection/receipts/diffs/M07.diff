@@ -1,0 +1,20 @@
+--- valid
++++ M07
+@@ -43,7 +43,7 @@
+     {
+      "cell_id": "cell-A",
+      "density_conditions": "uniform",
+-     "density_kg_m3": 12.0,
++     "density_kg_m3": 13.0,
+      "density_source": "analytic coupon fixture",
+      "mass_owner_id": "owner-A",
+      "material_id": "tissue-A",
+@@ -117,7 +117,7 @@
+     "material_records": [
+      {
+       "conditions": "uniform",
+-      "density_kg_m3": 12.0,
++      "density_kg_m3": 13.0,
+       "density_source": "analytic coupon fixture",
+       "material_id": "tissue-A"
+      }

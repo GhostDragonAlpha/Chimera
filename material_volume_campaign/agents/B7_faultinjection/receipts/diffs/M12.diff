@@ -1,0 +1,11 @@
+--- valid
++++ M12
+@@ -7,7 +7,7 @@
+  "anatomical_completeness_certified": false,
+  "body_groups": [
+   {
+-   "admission_report_sha256": "a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc",
++   "admission_report_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "admission_status": "validation_only_admissible",
+    "body_frame": {
+     "coordinate_unit": "m",

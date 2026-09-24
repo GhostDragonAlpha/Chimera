@@ -1,0 +1,35 @@
+== M11 verbatim: file claims readiness true, reader CLI accepts and DOWNGRADES silently ==
+"dynamics_readiness_claimed": true
+--- reader CLI stdout on corrupt_M11.json (exit 0):
+{"admission_status":"validation_only_admissible","bodies":[{"admission_report_sha256":"a4ea955917b41eae562f2cbd161f079125e26a6800fffc23370924009ff5d0bc","admission_status":"validation_only_admissible","body_id":"coupon-body-A","center_of_mass":{"coordinate_frame":"coupon-A-authored","unit":"m","valu
+== M13 verbatim: ragged tensor -> uncaught traceback, exit 1 (not a named refusal) ==
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\agents\B7_faultinjection\work\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\agents\B7_faultinjection\work\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\agents\B7_faultinjection\work\material_volume_body_export_reader.py", line 52, in summarize_export_report
+    tensor = np.asarray(inertia.get("value"), dtype=np.float64)
+ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (3,) + inhomogeneous part.
+exit=1
+== M04 verbatim: mass 2.0 -> 2.5 flows through to consumers ==
+[('coupon-body-A', 2.5), ('coupon-body-B', 1.0)]
+== M12 verbatim: tampered admission_report_sha256 copied verbatim into summary ==
+0000000000
+reader summary dynamics_readiness_claimed = False
+
+== integrity: git -C E:/ChimeraWork/mvc-20260924 status --porcelain -- tools Chimera/docs/matter ==
+(empty above = clean; exit 0)
+
+== full porcelain (to prove writes confined to agents/B7_faultinjection) ==
+?? material_volume_campaign/agents/B2a_review_m09/
+?? material_volume_campaign/agents/B4_crosscheckout/
+?? material_volume_campaign/agents/B5_subdivision/
+?? material_volume_campaign/agents/B6_tensors/
+?? material_volume_campaign/agents/B7_faultinjection/
+?? material_volume_campaign/agents/B9_doccheck/
+?? material_volume_campaign/agents/M01_reproduce/
+?? material_volume_campaign/agents/M04_rigid/
+?? material_volume_campaign/agents/M06_malformed/
+?? material_volume_campaign/agents/M08_robustness/

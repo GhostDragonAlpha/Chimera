@@ -1,0 +1,179 @@
+{
+  "preregistration": {
+    "agent": "B7_faultinjection",
+    "frozen_utc": "2026-09-24 (written BEFORE any mutation was applied or any check was run against a corrupted copy)",
+    "baseline_fixture": "fixtures/valid_report.json (exporter.build_export_report on tools example inputs; export_status=complete, deterministic, 5472 bytes canonical)",
+    "prediction_sources": [
+      "tools/material_volume_body_export_reader.py:24-100 summarize_export_report (the ONLY consumption-time validator of a report artifact: version, export_status enum, group status, mass_properties presence/type, tensor shape, finiteness, mass>0, symmetry atol=1e-12, contract flags true/true/false)",
+      "tools/material_volume_body_export.py:341-504 build_export_report (regenerates admission from manifest+partition; refuses bad_schema/invalid_authored_frame/duplicate ownership; blocks on missing_density)",
+      "tools/material_volume_admission.py via tools/material_volume_admission_checks.py (duplicate_mass_owner_id, missing_density, scale_mismatch reason codes)",
+      "tools/material_volume_export_proof_verify.py (suite reproducer + coupon audits; NOT parameterizable by an arbitrary report file)"
+    ],
+    "falsifier": "Any row with predicted_verdict DETECTED whose observed result is a silent pass (reader exit 0 / no ExportInputError) is the HEADLINE FINDING, preserved verbatim with its receipt. A predicted-MISSED row that is detected is recorded as SURPRISE-DETECTED (honest reclassification, not hidden)."
+  },
+  "matrix": [
+    {
+      "id": "M01",
+      "canonical_mutation": "flip one inertia entry",
+      "variant": "off-diagonal sign flip (symmetry-breaking)",
+      "target": "body_groups[coupon-body-B].mass_properties.inertia_tensor_about_com.value[0][1]: 0.0125 -> -0.0125",
+      "predicted_detector": "reader.summarize_export_report",
+      "predicted_message": "ExportInputError reason=nonsymmetric_inertia (CLI exit 2)",
+      "predicted_verdict": "DETECTED"
+    },
+    {
+      "id": "M02",
+      "canonical_mutation": "flip one inertia entry",
+      "variant": "diagonal perturbation (symmetry-preserving)",
+      "target": "body_groups[coupon-body-B].mass_properties.inertia_tensor_about_com.value[0][0]: 0.07500000000000001 -> 0.076",
+      "predicted_detector": "none (reader checks shape/finite/symmetry/flags only; no consumption-time value oracle exists)",
+      "predicted_message": "n/a",
+      "predicted_verdict": "MISSED",
+      "should_have_caught": "A consumption-time oracle (re-integration from input_hashes, or an independent recomputation) would catch it; per the code read, no check module performs one on an arbitrary report. Finding, not acceptable gap, unless the campaign accepts 'reports are only trusted at generation time'."
+    },
+    {
+      "id": "M03",
+      "canonical_mutation": "break tensor symmetry",
+      "variant": "single-sided off-diagonal edit",
+      "target": "body_groups[coupon-body-A].mass_properties.inertia_tensor_about_com.value[0][1]: 0.025 -> 0.0251 (value[1][0] left at 0.025)",
+      "predicted_detector": "reader.summarize_export_report",
+      "predicted_message": "ExportInputError reason=nonsymmetric_inertia 'body_groups[0] inertia is not symmetric' (CLI exit 2)",
+      "predicted_verdict": "DETECTED"
+    },
+    {
+      "id": "M04",
+      "canonical_mutation": "change a mass",
+      "variant": "positive wrong value",
+      "target": "body_groups[coupon-body-A].mass_properties.mass.value: 2.0 -> 2.5",
+      "predicted_detector": "none (reader only requires finite and > 0)",
+      "predicted_message": "n/a",
+      "predicted_verdict": "MISSED",
+      "should_have_caught": "admission_report_sha256 / input_hashes bind inputs, but no consumer recomputes mass from them; a regeneration-diff or value oracle would catch."
+    },
+    {
+      "id": "M05",
+      "canonical_mutation": "change a mass",
+      "variant": "negative value (physical sign corruption)",
+      "target": "body_groups[coupon-body-A].mass_properties.mass.value: 2.0 -> -2.0",
+      "predicted_detector": "reader.summarize_export_report",
+      "predicted_message": "ExportInputError reason=bad_export_report 'has invalid numeric properties' (mass_value <= 0.0 branch) (CLI exit 2)",
+      "predicted_verdict": "DETECTED"
+    },
+    {
+      "id": "M06",
+      "canonical_mutation": "shift a COM",
+      "variant": "x-component shift",
+      "target": "body_groups[coupon-body-A].mass_properties.center_of_mass.value[0]: 0.25 -> 0.75",
+      "predicted_detector": "none (reader only checks 3-vector shape and finiteness)",
+      "predicted_message": "n/a",
+      "predicted_verdict": "MISSED",
+      "should_have_caught": "value oracle / regeneration diff; none exists at consumption."
+    },
+    {
+      "id": "M07",
+      "canonical_mutation": "alter a density",
+      "variant": "inside the exported report (provenance numbers only)",
+      "target": "body_groups[coupon-body-A].cell_provenance[*].density_kg_m3 and material_mass_source_provenance.material_records[0].density_kg_m3: 12.0 -> 13.0 (mass left inconsistent at 2.0)",
+      "predicted_detector": "none (reader never reads provenance records)",
+      "predicted_message": "n/a",
+      "predicted_verdict": "MISSED",
+      "should_have_caught": "cross-check density*volume == mass, or regeneration diff; none exists at consumption."
+    },
+    {
+      "id": "M07b",
+      "canonical_mutation": "alter a density",
+      "variant": "CONTROL: in the partition INPUT (density nulled), report regenerated via exporter public API",
+      "target": "fixtures/inputs partition materials[tissue-A].density_kg_m3/density_source/conditions -> null",
+      "predicted_detector": "exporter.build_export_report revalidation through material_volume_admission",
+      "predicted_message": "report.export_status=blocked, admission_status=not_admitted, admission_reason_codes contain 'missing_density', exported group mass_properties=None",
+      "predicted_verdict": "DETECTED"
+    },
+    {
+      "id": "M08",
+      "canonical_mutation": "drop a provenance field",
+      "variant": "delete whole provenance object from an exported group",
+      "target": "del body_groups[coupon-body-A].material_mass_source_provenance",
+      "predicted_detector": "none (reader validates only version/status/mass fields/flags; presence of provenance is not required at consumption)",
+      "predicted_message": "n/a",
+      "predicted_verdict": "MISSED",
+      "should_have_caught": "schema validation of the report artifact (the exporter validates INPUTS with _strict_object but the READER validates OUTPUTS loosely, by design 'minimal read-only')."
+    },
+    {
+      "id": "M09",
+      "canonical_mutation": "change a mass_owner_id (ownership corruption)",
+      "variant": "inside the exported report",
+      "target": "body_groups[coupon-body-A].cell_provenance[*].mass_owner_id: 'owner-A' -> 'owner-IMPOSTOR', and material_mass_source_provenance.mass_owner_ids[0] likewise",
+      "predicted_detector": "none (reader passes ownership strings through without any check)",
+      "predicted_message": "n/a",
+      "predicted_verdict": "MISSED",
+      "should_have_caught": "consumption-time ownership binding (hash of cell_provenance, or regeneration diff); none exists."
+    },
+    {
+      "id": "M09b",
+      "canonical_mutation": "change a mass_owner_id (ownership corruption)",
+      "variant": "CONTROL: duplicate mass_owner_id in the INPUTS, report regenerated via exporter public API",
+      "target": "fixtures/inputs manifest+partition regions: owner-B mass_owner_id := owner-A; manifest matter_ownership[1].mass_owner_id := 'owner-A'",
+      "predicted_detector": "exporter.build_export_report revalidation through material_volume_admission",
+      "predicted_message": "report.export_status=blocked, admission_reason_codes contain 'duplicate_mass_owner_id'",
+      "predicted_verdict": "DETECTED"
+    },
+    {
+      "id": "M10",
+      "canonical_mutation": "flip a status",
+      "variant": "top-level export_status complete -> partial",
+      "target": "report.export_status: 'complete' -> 'partial' (body groups untouched)",
+      "predicted_detector": "none (reader accepts any of complete/partial/blocked/unsupported/refused and never cross-checks unassigned_cell_ids vs body_groups)",
+      "predicted_message": "n/a",
+      "predicted_verdict": "MISSED",
+      "should_have_caught": "consistency check: partial implies non-empty unassigned_cell_ids; reader does not enforce."
+    },
+    {
+      "id": "M10b",
+      "canonical_mutation": "flip a status",
+      "variant": "group status exported -> not_exported while keeping mass_properties",
+      "target": "body_groups[coupon-body-A].export_status: 'exported' -> 'not_exported' (mass_properties left populated)",
+      "predicted_detector": "reader.summarize_export_report",
+      "predicted_message": "ExportInputError reason=blocked_group_has_mass 'body_groups[0] is not exported but includes properties' (CLI exit 2)",
+      "predicted_verdict": "DETECTED"
+    },
+    {
+      "id": "M11",
+      "canonical_mutation": "set readiness true",
+      "variant": "top-level readiness claim flag",
+      "target": "report.dynamics_readiness_claimed: false -> true",
+      "predicted_detector": "none detects the tamper; reader.summarize_export_report HARDCODES summary dynamics_readiness_claimed=False (line ~96), so the tampered claim is silently dropped, not flagged; CLI exits 0",
+      "predicted_message": "n/a (silent; summary shows False regardless)",
+      "predicted_verdict": "MISSED",
+      "should_have_caught": "The reader is safe-by-construction (it cannot promote readiness), but the corruption is invisible: no error, no warning code. Decision request: acceptable because the reader never propagates the flag, or should a true flag be refused as bad_export_report?"
+    },
+    {
+      "id": "M12",
+      "canonical_mutation": "tamper admission_report_sha256",
+      "variant": "wrong digest on an exported group",
+      "target": "body_groups[coupon-body-A].admission_report_sha256 -> '0'*64",
+      "predicted_detector": "none (no module recomputes or compares this digest at consumption; the reader copies it into the summary verbatim)",
+      "predicted_message": "n/a",
+      "predicted_verdict": "MISSED",
+      "should_have_caught": "the exporter recomputes admission and its hash at GENERATION time (no caller flag can bypass), but at CONSUMPTION time the digest is inert. A reader-side recompute (needs manifest+partition) or a signed manifest would catch."
+    },
+    {
+      "id": "M13",
+      "canonical_mutation": "truncate a tensor row",
+      "variant": "row 0 of inertia tensor shortened to 2 elements",
+      "target": "body_groups[coupon-body-B].mass_properties.inertia_tensor_about_com.value[0] -> [0.075, 0.0125]",
+      "predicted_detector": "reader.summarize_export_report",
+      "predicted_message": "ExportInputError reason=bad_export_report 'has invalid numeric properties' (tensor.shape != (3,3) branch) (CLI exit 2)",
+      "predicted_verdict": "DETECTED"
+    },
+    {
+      "id": "M14",
+      "canonical_mutation": "introduce a NaN",
+      "variant": "NaN inside the inertia tensor (two consumption paths)",
+      "target": "body_groups[coupon-body-A].mass_properties.inertia_tensor_about_com.value[2][2] -> NaN",
+      "predicted_detector": "in-process: reader.summarize_export_report isfinite check -> bad_export_report. File path: exporter.read_json_file parse_constant rejects the literal NaN -> input_read_error, CLI exit 2. (Second-order: reader canonical_json uses allow_nan=False.)",
+      "predicted_message": "in-process: 'bad_export_report: body_groups[0] has invalid numeric properties'; CLI: 'input_read_error: unable to read ...'",
+      "predicted_verdict": "DETECTED"
+    }
+  ],
+  "predicted_tally": {"DETECTED": 8, "MISSED": 9, "rows": 17}
+}

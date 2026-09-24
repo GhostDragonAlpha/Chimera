@@ -1,0 +1,11 @@
+--- valid
++++ M05
+@@ -98,7 +98,7 @@
+      "coordinate_frame": "frame_invariant",
+      "frame_invariant": true,
+      "unit": "kg",
+-     "value": 2.0
++     "value": -2.0
+     },
+     "volume": {
+      "coordinate_frame": "frame_invariant",
