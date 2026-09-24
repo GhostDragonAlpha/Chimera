@@ -35,6 +35,9 @@
 - **TRANSMISSION FACT (A8, sharpens A7's structural fact):** grasp-relevant transmission set is EMPTY. 140/702 arm pairs finite (all exactly 0.0 or ≤1.4e-17 noise); 562/702 NaN — a COVERAGE GAP at exactly the grasp-relevant joints (elbow_flexion owned by unresolved ulna; wrist triples by unresolved hand_r/l). Elbow + wrist transmission is UNDEFINED, not dead. BRD L₀ sits inside lengthrange′ with ~+1 mm headroom. Doc-code note: compiler.py L46/L528 FD ε=1e-5 vs DERIVATION §8.3's 5e-7 (passes either way; recorded as drift).
 - **I1 — WRIST-AMBIGUITY FINDING CONSOLIDATED (A1 ⊕ A2, bilateral, verified):** see [`findings/I1_wrist_ambiguity.md`](findings/I1_wrist_ambiguity.md). Short form: all four "ambiguous" sites are OUTSIDE by ≥4.83 mm under BOTH identified loops (verdict-invariant, Δ ≤ 0.077 mm); mechanism = unwelded seam (exactly-duplicated vertices at the wrist crease; 1,255 mesh-wide) × the no-bridging law → two 100%-owned loops. `unresolved` is mechanically honest; the geometry underneath is one-sided. Projection (NOT a reclassification): resolution per any loop-agreement/degenerate-exclusion rule → 6/1/9/0 per side; Candidate-C's 0/14/0/2 stays dead. Resolution rule = Astra's call; paths P1/P2/P3/P5 evidence-complete, P4 (hull band extension) blocked on Astra authorization.
 
+- **ERRATA SET (complete):** E-1 role counts (4 last-endpoints/side, not 8 — A3, confirmed by A6+A10); E-2 zero-arm causality (unresolved owners, not straightness — A8); E-3 candidate shortfall (exact 67.147 µm/side single violation at ECRL-P3 @ t=0.35, not "~41 µm" — A5). Documentation-level; artifacts are the record; failure stands under either number.
+- **UNCERTAINTY BUDGET (A5, measured):** hull band variants 6/8/10 mm halves; hull chord sagitta 187–256 µm; loop edge 1.11–1.37 mm median → sagitta 29–45 µm (median) / 92–220 µm (max); float32 ~50 nm; export 1e-9 m. The 67.147 µm breach sits at loop median-edge scale, ~3× below hull chord scale.
+
 ## ASSIGNMENTS
 
 | id | assignment | agent dir | status | verdict | receipt |
@@ -44,7 +47,7 @@
 | A2 | right ambiguous wrist section — independent investigation | `audits/A2_right_wrist` | DONE | **PASS 4/4** (falsifier not fired) — mechanism pinned: UNWELDED SEAM (1,255 duplicated-coordinate vertices mesh-wide; wrist-crease figure-eight section); verdict-invariance Δ ≤ 0.077 mm (every loop → OUTSIDE); bilateral agreement with A1 to sub-µm | `report.md` + `receipts/step2_*` (re-verified by coordinator) |
 | A3 | 32-site audit vs source XML (units, identities, endpoint roles) | `audits/A3_site_audit` | DONE | **PASS** (32/32 identity/units/roles/provenance; canonical hash reproduced) + **ERRATUM E-1** on report-05 role-count scoping | `report.md` (receipt re-verified by coordinator) |
 | A4 | local-to-world transforms + bilateral correspondence | `audits/A4_transforms` | DONE | **PASS 5/5** (falsifier not triggered) — reconstruction max 1.15e-9 m export / 5.6e-17 m full precision; mirror max 0.6306 mm (BICshort-P6), mean 0.0547 mm; mode `preserve` recorded (`actual_monkey_fit.json:119-120`, chirality_det +1) | `report.md` (receipt re-verified by coordinator) |
-| A5 | containment authority, signed distances, uncertainty budget, four classes | `audits/A5_containment` | DISPATCHED | — | `report.md` |
+| A5 | containment authority, signed distances, uncertainty budget, four classes | `audits/A5_containment` | DONE | **PASS 6/6** — class law verified law-for-law + 49/49 synthetic matrix + full recompute reproduces every verdict; uncertainty budget measured; **ERRATUM E-3: the "~41 µm" prose is unsupported — exact single violation 67.147 µm/side at ECRL-P3 @ t=0.35** (objective decomposition exact to 2–3e-13 m²) | `report.md` + `receipts/` (re-verified by coordinator) |
 | A6 | anatomical attachment evidence vs geometric containment vs fitted assumption | `audits/A6_evidence` | DONE | **PASS 6/6, zero falsifier hits** — 32-row evidence table; prediction held (no row carries measured-anatomy attachment evidence); probative-claim scan clean (all "qualification" negated) | `report.md` + `table.md/csv` (receipt re-verified by coordinator) |
 | A7 | tendon-path and length consequences (existing model, baseline) | `audits/A7_paths` | DONE | **PASS 5/5** (falsifier not fired) — 42/42 L₀ bit-identical; 42/120 comparability reproduced + 78 enumerated in 13 categories; candidate Δ recomputed 42/42 exact vs record without re-running | `report.md` (all 5 scripts re-verified by coordinator) |
 | A8 | moment arms + force transmission over declared pose range | `audits/A8_arms` | DONE | **PASS 6/6** — zero-arm law 2.776e-17 m; FD crosscheck 5.551e-11 < 1e-9 (analytic matches packet bit-exactly); BRD margins +0.986/+0.975 mm; **transmission set EMPTY — wrist/elbow arms are NaN (undefined) on unresolved owners, not zero** | `report.md` (scripts re-verified by coordinator) |
@@ -54,8 +57,8 @@
 ## INTEGRATION QUEUE (coordinator-only)
 
 - **I1: fold A1+A2 into one wrist-section ambiguity finding (shared integration; the two investigations stay independent until compared). — DONE: [`findings/I1_wrist_ambiguity.md`](findings/I1_wrist_ambiguity.md)**
-- **I2:** qualification-spec pass-2 — fold verified audit findings into the A10 draft.
-- **I3:** consolidated blocker report for Astra: every unresolved item with the specific missing evidence + smallest proposed change. Campaign-terminal deliverable.
+- **I2: qualification-spec pass-2 — DONE: [`QUALIFICATION_SPEC.md`](QUALIFICATION_SPEC.md) (v1; all PENDING slots resolved; statuses: T3/T4/T5 satisfied, T1 decision-ready, T2 evidence-complete, T6/T7 blocked on §4-f, T8 nearly).**
+- **I3: consolidated blocker report for Astra — DONE: [`BLOCKER_REPORT.md`](BLOCKER_REPORT.md). Decision queue: D1 wrist rule · D2 hand/ulna resolution (HEAD) · D3 T-set approval · D4 integrity rules · D5 self-containment · D6 errata sheet.**
 
 ## RULES OF THE BOARD
 

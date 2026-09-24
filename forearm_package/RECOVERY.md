@@ -126,3 +126,18 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none mechanically; Astra queue now holds: wrist resolution rule (I1), hand/ulna body resolution (A7/A8 structural), P4 authorization, S6 self-containment + path relativization (A9), candidates-packet self-hash (H-1 residual).
 
 **Next:** A5 -> I2 (qualification-spec pass-2, fill all landed slots) -> I3 (consolidated Astra blocker report).
+
+## CHECKPOINT 2026-09-24 (T9, FINAL for wave 1) — A5 integrated; I2 + I3 DELIVERED. Campaign goal state reached.
+
+**Verified:**
+- A5 (containment authority) PASS 6/6, all scripts re-run by coordinator (49/49 synthetic matrix; full recompute reproduces every verdict; candidate41 decomposition exact). ERRATUM E-3: "~41um" unsupported; exact = 67.147um single violation/side (ECRL-P3 @ t=0.35).
+- I2: QUALIFICATION_SPEC.md v1 (pass-2) — all PENDING slots resolved; T3/T4/T5 SATISFIED; T1 decision-ready; T2 evidence-complete; T6/T7 structurally blocked on hand/ulna; T8 nearly.
+- I3: BLOCKER_REPORT.md — decision queue D1..D6, head blocker = hand/ulna body resolution (D2); explicitly-not-requested list faithful to frozen boundaries.
+- WAVE 1 COMPLETE: 10/10 audits PASS, every receipt independently re-verified by the coordinator, every integration committed (commit chain 0ad24b02 -> d43b6b00 -> 8ecc099b -> 833df5d4 -> 810ae171 -> f69d7035 -> 9da311d3 -> 0d2c73be -> this commit).
+- Baseline integrity clean throughout; live .tmp tree verified intact (36/36 hashes) after A9's quarantine.
+
+**Active:** none — all subagents complete; no spin.
+
+**Blocked (by design, pending Astra):** D1 wrist rule; D2 hand/ulna session; D3 T-set approval; D4 self-hash rules; D5 package self-containment; D6 errata sheet.
+
+**Next (on Astra answers):** execute the chosen wrist rule (pure classification-record change or authorized SECTION_T extension); prepare the hand/ulna evidence-session brief (landmarks + falsifiers) for Astra sign-off; P7 mechanical package work on authorization; ERRATA.md on authorization. If the session dies here: resume from this file + TASK_BOARD.md; every audit is re-runnable from its brief.md.

@@ -1,0 +1,475 @@
+[
+ {
+  "probe": "square d=0 exactly (on edge)",
+  "expected": [
+   "inside_insufficient_clearance",
+   -0.0
+  ],
+  "observed": [
+   "inside_insufficient_clearance",
+   -0.0
+  ],
+  "match": true,
+  "note": "d_mod=-0.0"
+ },
+ {
+  "probe": "square d=+1e-12 (just outside)",
+  "expected": [
+   "outside",
+   1e-12
+  ],
+  "observed": [
+   "outside",
+   1e-12
+  ],
+  "match": true,
+  "note": "d_mod=1e-12"
+ },
+ {
+  "probe": "square d=-1e-12 (just inside)",
+  "expected": [
+   "inside_insufficient_clearance",
+   -1e-12
+  ],
+  "observed": [
+   "inside_insufficient_clearance",
+   -1e-12
+  ],
+  "match": true,
+  "note": "d_mod=-1e-12"
+ },
+ {
+  "probe": "square d=-1mm exactly (AT margin, inclusive <=)",
+  "expected": [
+   "inside",
+   -0.001
+  ],
+  "observed": [
+   "inside",
+   -0.001
+  ],
+  "match": true,
+  "note": "d_mod=-0.001"
+ },
+ {
+  "probe": "square d=-1mm-1e-15 (past margin)",
+  "expected": [
+   "inside",
+   -0.001000000000001
+  ],
+  "observed": [
+   "inside",
+   -0.001000000000001
+  ],
+  "match": true,
+  "note": "d_mod=-0.001000000000001"
+ },
+ {
+  "probe": "square d=-1mm+1e-15 (shy of margin)",
+  "expected": [
+   "inside_insufficient_clearance",
+   -0.000999999999999
+  ],
+  "observed": [
+   "inside_insufficient_clearance",
+   -0.000999999999999
+  ],
+  "match": true,
+  "note": "d_mod=-0.000999999999999"
+ },
+ {
+  "probe": "square d=-0.5mm (tight zone)",
+  "expected": [
+   "inside_insufficient_clearance",
+   -0.0005
+  ],
+  "observed": [
+   "inside_insufficient_clearance",
+   -0.0005
+  ],
+  "match": true,
+  "note": "d_mod=-0.0005"
+ },
+ {
+  "probe": "square center (deep inside)",
+  "expected": [
+   "inside",
+   -0.02
+  ],
+  "observed": [
+   "inside",
+   -0.02
+  ],
+  "match": true,
+  "note": "d_mod=-0.02"
+ },
+ {
+  "probe": "square d=+4.6mm outside (report-05 magnitude)",
+  "expected": [
+   "outside",
+   0.0046
+  ],
+  "observed": [
+   "outside",
+   0.0046
+  ],
+  "match": true,
+  "note": "d_mod=0.0046"
+ },
+ {
+  "probe": "hull tight (d in (-1mm,0] at EVERY variant)",
+  "expected": "inside_insufficient_clearance",
+  "observed": "inside_insufficient_clearance",
+  "match": true,
+  "note": "ref classes=['inside_insufficient_clearance', 'inside_insufficient_clearance', 'inside_insufficient_clearance'] dists -0.000199893/-0.000599679/-0.000999465"
+ },
+ {
+  "probe": "hull outside (d>0 at every variant)",
+  "expected": "outside",
+  "observed": "outside",
+  "match": true,
+  "note": "ref classes=['outside', 'outside', 'outside']"
+ },
+ {
+  "probe": "hull inside (d<=-1mm at every variant)",
+  "expected": "inside",
+  "observed": "inside",
+  "match": true,
+  "note": "ref classes=['inside', 'inside', 'inside']"
+ },
+ {
+  "probe": "hull flip inside/tight/outside -> unresolved",
+  "expected": "unresolved",
+  "observed": "unresolved",
+  "match": true,
+  "note": "ref classes=['inside', 'inside_insufficient_clearance', 'outside']"
+ },
+ {
+  "probe": "hull flip inside/inside_tight -> unresolved",
+  "expected": "unresolved",
+  "observed": "unresolved",
+  "match": true,
+  "note": "ref classes=['inside', 'inside_insufficient_clearance', 'inside_insufficient_clearance'] reason=radial_cap_sensitivity: class flips between inside..."
+ },
+ {
+  "probe": "hull no-band (axial 50mm, half 8mm) -> unresolved",
+  "expected": "unresolved",
+  "observed": "unresolved",
+  "match": true,
+  "note": "reason=local_narrowing: no sampled section band near this axia..."
+ },
+ {
+  "probe": "hull missing-variant -> unresolved",
+  "expected": "unresolved",
+  "observed": "unresolved",
+  "match": true,
+  "note": "reason=no_vertices: section band geometry unusable for all ban..."
+ },
+ {
+  "probe": "hull square d=-1mm exactly -> inside",
+  "expected": "inside",
+  "observed": "inside",
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "hull square d=0 exactly -> inside_insufficient_clearance",
+  "expected": "inside_insufficient_clearance",
+  "observed": "inside_insufficient_clearance",
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "tube cut yields 128 loop points (64 unique, adjacent duplicates)",
+  "expected": 128,
+  "observed": 128,
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "tube cut identified exactly 1 loop",
+  "expected": 1,
+  "observed": 1,
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "loop center (nominal d=-20mm)",
+  "expected": "inside",
+  "observed": "inside",
+  "match": true,
+  "note": "d_ref=-1.997591e-02 d_mod=-1.997591e-02"
+ },
+ {
+  "probe": "loop dist agreement@1e-9 center (nominal d=-20mm)",
+  "expected": 0.019975909,
+  "observed": 0.019975909,
+  "match": true,
+  "note": "module records distances rounded to 1e-9 m"
+ },
+ {
+  "probe": "loop d=-0.5mm nominal",
+  "expected": "inside_insufficient_clearance",
+  "observed": "inside_insufficient_clearance",
+  "match": true,
+  "note": "d_ref=-4.993977e-04 d_mod=-4.993980e-04"
+ },
+ {
+  "probe": "loop dist agreement@1e-9 d=-0.5mm nominal",
+  "expected": 0.000499398,
+  "observed": 0.000499398,
+  "match": true,
+  "note": "module records distances rounded to 1e-9 m"
+ },
+ {
+  "probe": "loop d=+0.5mm nominal",
+  "expected": "outside",
+  "observed": "outside",
+  "match": true,
+  "note": "d_ref=5.000000e-04 d_mod=5.000000e-04"
+ },
+ {
+  "probe": "loop dist agreement@1e-9 d=+0.5mm nominal",
+  "expected": 0.0005,
+  "observed": 0.0005,
+  "match": true,
+  "note": "module records distances rounded to 1e-9 m"
+ },
+ {
+  "probe": "loop d=+5mm nominal",
+  "expected": "outside",
+  "observed": "outside",
+  "match": true,
+  "note": "d_ref=5.000000e-03 d_mod=5.000000e-03"
+ },
+ {
+  "probe": "loop dist agreement@1e-9 d=+5mm nominal",
+  "expected": 0.005,
+  "observed": 0.005,
+  "match": true,
+  "note": "module records distances rounded to 1e-9 m"
+ },
+ {
+  "probe": "loop d=-1mm nominal (chord -0.9988mm)",
+  "expected": "inside_insufficient_clearance",
+  "observed": "inside_insufficient_clearance",
+  "match": true,
+  "note": "d_ref=-9.987955e-04 d_mod=-9.987950e-04"
+ },
+ {
+  "probe": "loop dist agreement@1e-9 d=-1mm nominal (chord -0.9988mm)",
+  "expected": 0.000998795,
+  "observed": 0.000998795,
+  "match": true,
+  "note": "module records distances rounded to 1e-9 m"
+ },
+ {
+  "probe": "loop sq d=0 exactly (on flat edge)",
+  "expected": "inside_insufficient_clearance",
+  "observed": "inside_insufficient_clearance",
+  "match": true,
+  "note": "d_ref=0.000000e+00 d_mod=0.000000e+00"
+ },
+ {
+  "probe": "loop sq d=-2mm (robust inside)",
+  "expected": "inside",
+  "observed": "inside",
+  "match": true,
+  "note": "d_ref=-2.000000e-03 d_mod=-2.000000e-03"
+ },
+ {
+  "probe": "loop sq d=-0.5mm (robust tight)",
+  "expected": "inside_insufficient_clearance",
+  "observed": "inside_insufficient_clearance",
+  "match": true,
+  "note": "d_ref=-5.000000e-04 d_mod=-5.000000e-04"
+ },
+ {
+  "probe": "loop sq d=+1mm (robust outside)",
+  "expected": "outside",
+  "observed": "outside",
+  "match": true,
+  "note": "d_ref=1.000000e-03 d_mod=1.000000e-03"
+ },
+ {
+  "probe": "loop two owned loops -> unresolved",
+  "expected": "unresolved",
+  "observed": "unresolved",
+  "match": true,
+  "note": "n_identified=2"
+ },
+ {
+  "probe": "loop foreign-owned second loop ignored -> inside",
+  "expected": "inside",
+  "observed": "inside",
+  "match": true,
+  "note": "n_identified=1"
+ },
+ {
+  "probe": "loop axial beyond mesh -> unresolved",
+  "expected": "unresolved",
+  "observed": "unresolved",
+  "match": true,
+  "note": "n_loops=0 n_identified=0"
+ },
+ {
+  "probe": "chain two stray segments",
+  "expected": [
+   0,
+   2,
+   0
+  ],
+  "observed": [
+   0,
+   2,
+   0
+  ],
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "chain open V",
+  "expected": [
+   0,
+   1,
+   0
+  ],
+  "observed": [
+   0,
+   1,
+   0
+  ],
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "chain closed quad",
+  "expected": [
+   1,
+   0,
+   0
+  ],
+  "observed": [
+   1,
+   0,
+   0
+  ],
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "closed quad point count (closing point dropped)",
+  "expected": 4,
+  "observed": 4,
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "chain 10nm gap (below 100nm tol) closes",
+  "expected": [
+   1,
+   0,
+   0
+  ],
+  "observed": [
+   1,
+   0,
+   0
+  ],
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "chain 1um gap (above tol) never bridges",
+  "expected": [
+   0,
+   2,
+   0
+  ],
+  "observed": [
+   0,
+   2,
+   0
+  ],
+  "match": true,
+  "note": ""
+ },
+ {
+  "probe": "concave deep in thick arm",
+  "expected": [
+   -0.5,
+   "inside"
+  ],
+  "observed": [
+   -0.5,
+   "inside"
+  ],
+  "match": true,
+  "note": " d_ref=-5.000000e-01 d_mod=-5.000000e-01"
+ },
+ {
+  "probe": "concave deep in thin arm",
+  "expected": [
+   -0.5,
+   "inside"
+  ],
+  "observed": [
+   -0.5,
+   "inside"
+  ],
+  "match": true,
+  "note": " d_ref=-5.000000e-01 d_mod=-5.000000e-01"
+ },
+ {
+  "probe": "concave inside notch mouth",
+  "expected": [
+   0.2,
+   "outside"
+  ],
+  "observed": [
+   0.2,
+   "outside"
+  ],
+  "match": true,
+  "note": " d_ref=2.000000e-01 d_mod=2.000000e-01"
+ },
+ {
+  "probe": "concave outside right",
+  "expected": [
+   0.5,
+   "outside"
+  ],
+  "observed": [
+   0.5,
+   "outside"
+  ],
+  "match": true,
+  "note": " d_ref=5.000000e-01 d_mod=5.000000e-01"
+ },
+ {
+  "probe": "concave exactly at reflex vertex",
+  "expected": [
+   0.0,
+   "inside_insufficient_clearance"
+  ],
+  "observed": [
+   0.0,
+   "inside_insufficient_clearance"
+  ],
+  "match": true,
+  "note": " d_ref=0.000000e+00 d_mod=0.000000e+00"
+ },
+ {
+  "probe": "concave outside diagonal of notch",
+  "expected": [
+   0.3,
+   "outside"
+  ],
+  "observed": [
+   0.3,
+   "outside"
+  ],
+  "match": true,
+  "note": " d_ref=3.000000e-01 d_mod=3.000000e-01"
+ }
+]
