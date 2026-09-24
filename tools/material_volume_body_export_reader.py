@@ -2,7 +2,9 @@
 
 The reader validates the output version and each exported mass tensor, then
 prints a compact summary without discarding off-diagonal entries. It performs
-no physics imports, readiness promotion, or state mutation.
+no physics imports, readiness promotion, or state mutation. Expected malformed
+numeric/tensor coercion failures are refused as named, located
+``ExportInputError``s (exit 2); unexpected exceptions are never caught.
 
 Run:
     python tools/material_volume_body_export_reader.py export.json
@@ -19,6 +21,28 @@ from typing import Mapping, Sequence
 import numpy as np
 
 import material_volume_body_export as exporter
+
+
+def _as_float_array(value, refusal: str):
+    """Coerce a report tensor; refuse expected coercion failures by name.
+
+    Catches exactly the coercion-failure types of ``np.asarray(..., dtype=...)``
+    (TypeError/ValueError) and converts them into the reader's named, located
+    input refusal (B7-M13: a ragged tensor row used to escape as an uncaught
+    numpy ValueError). No other exception type is converted.
+    """
+    try:
+        return np.asarray(value, dtype=np.float64)
+    except (TypeError, ValueError) as error:
+        raise exporter.ExportInputError("bad_export_report", refusal) from error
+
+
+def _as_number(value, refusal: str):
+    """Coerce a report scalar; refuse expected coercion failures by name."""
+    try:
+        return float(value)
+    except (TypeError, ValueError) as error:
+        raise exporter.ExportInputError("bad_export_report", refusal) from error
 
 
 def summarize_export_report(report: Mapping) -> dict:
@@ -49,12 +73,24 @@ def summarize_export_report(report: Mapping) -> dict:
                 props.get("inertia_tensor_about_com")
             if not all(isinstance(value, Mapping) for value in (mass, center, inertia)):
                 raise exporter.ExportInputError("bad_export_report", f"{label} has malformed mass fields")
-            tensor = np.asarray(inertia.get("value"), dtype=np.float64)
-            center_value = np.asarray(center.get("value"), dtype=np.float64)
+            tensor = _as_float_array(
+                inertia.get("value"),
+                f"{label} mass_properties.inertia_tensor_about_com.value "
+                f"is malformed: not a rectangular numeric array")
+            center_value = _as_float_array(
+                center.get("value"),
+                f"{label} mass_properties.center_of_mass.value "
+                f"is malformed: not a numeric array of length 3")
             mass_value = mass.get("value")
             if tensor.shape != (3, 3) or center_value.shape != (3,) \
                     or not np.all(np.isfinite(tensor)) or not np.all(np.isfinite(center_value)) \
-                    or not math.isfinite(float(mass_value)) or float(mass_value) <= 0.0:
+                    or not math.isfinite(_as_number(
+                        mass_value,
+                        f"{label} mass_properties.mass.value is malformed: "
+                        "not a finite JSON number")) \
+                    or _as_number(mass_value,
+                                  f"{label} mass_properties.mass.value is malformed: "
+                                  "not a finite JSON number") <= 0.0:
                 raise exporter.ExportInputError("bad_export_report", f"{label} has invalid numeric properties")
             if not np.allclose(tensor, tensor.T, rtol=0.0, atol=1e-12):
                 raise exporter.ExportInputError("nonsymmetric_inertia", f"{label} inertia is not symmetric")

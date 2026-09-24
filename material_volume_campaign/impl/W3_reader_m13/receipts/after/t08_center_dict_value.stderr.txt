@@ -1,0 +1,1 @@
+bad_export_report: body_groups[1] mass_properties.center_of_mass.value is malformed: not a numeric array of length 3

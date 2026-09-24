@@ -1,0 +1,16 @@
+test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) ... ok
+test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) ... ok
+test_each_control_refusal_is_unchanged_from_before_capture (__main__.TestKeptNamedRefusals.test_each_control_refusal_is_unchanged_from_before_capture) ... ok
+test_k6_m07_r5_blocked_group_refusal_unchanged (__main__.TestKeptNamedRefusals.test_k6_m07_r5_blocked_group_refusal_unchanged) ... ok
+test_injected_runtime_error_at_finite_check_propagates (__main__.TestUnexpectedStillUnexpected.test_injected_runtime_error_at_finite_check_propagates) ... ok
+test_injected_runtime_error_at_tensor_coercion_propagates (__main__.TestUnexpectedStillUnexpected.test_injected_runtime_error_at_tensor_coercion_propagates) ... ok
+test_injected_runtime_error_is_not_masked_into_a_refusal_type (__main__.TestUnexpectedStillUnexpected.test_injected_runtime_error_is_not_masked_into_a_refusal_type) ... ok
+test_reader_source_has_no_blanket_catch (__main__.TestUnexpectedStillUnexpected.test_reader_source_has_no_blanket_catch) ... ok
+test_m07_probe_receipts_reproduce_byte_for_byte (__main__.TestValidOutputGolden.test_m07_probe_receipts_reproduce_byte_for_byte) ... ok
+test_rotated_fixture_matches_b3_historical_summary_bytes (__main__.TestValidOutputGolden.test_rotated_fixture_matches_b3_historical_summary_bytes) ... ok
+test_valid_stdout_identical_to_pre_edit_capture (__main__.TestValidOutputGolden.test_valid_stdout_identical_to_pre_edit_capture) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 4.971s
+
+OK

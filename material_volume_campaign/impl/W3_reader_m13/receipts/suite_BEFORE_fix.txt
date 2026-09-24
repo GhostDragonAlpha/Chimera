@@ -1,0 +1,450 @@
+test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) ... 
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='b7_corrupt_m13') ... FAIL
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t01_ragged_truncated_row') ... FAIL
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t02_deep_ragged') ... FAIL
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t03_rect_string_entry') ... FAIL
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t04_dict_value') ... ERROR
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t05_string_scalar') ... FAIL
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t06_center_ragged') ... FAIL
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t07_center_string_entry') ... FAIL
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t08_center_dict_value') ... ERROR
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t09_center_string_scalar') ... FAIL
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t10_mass_null') ... ERROR
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t11_mass_string_bad') ... FAIL
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t12_mass_list') ... ERROR
+  test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t13_mass_dict') ... ERROR
+test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) ... 
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='b7_corrupt_m13') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t01_ragged_truncated_row') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t02_deep_ragged') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t03_rect_string_entry') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t04_dict_value') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t05_string_scalar') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t06_center_ragged') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t07_center_string_entry') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t08_center_dict_value') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t09_center_string_scalar') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t10_mass_null') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t11_mass_string_bad') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t12_mass_list') ... FAIL
+  test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t13_mass_dict') ... FAIL
+test_each_control_refusal_is_unchanged_from_before_capture (__main__.TestKeptNamedRefusals.test_each_control_refusal_is_unchanged_from_before_capture) ... ok
+test_k6_m07_r5_blocked_group_refusal_unchanged (__main__.TestKeptNamedRefusals.test_k6_m07_r5_blocked_group_refusal_unchanged) ... ok
+test_injected_runtime_error_at_finite_check_propagates (__main__.TestUnexpectedStillUnexpected.test_injected_runtime_error_at_finite_check_propagates) ... ok
+test_injected_runtime_error_at_tensor_coercion_propagates (__main__.TestUnexpectedStillUnexpected.test_injected_runtime_error_at_tensor_coercion_propagates) ... ok
+test_injected_runtime_error_is_not_masked_into_a_refusal_type (__main__.TestUnexpectedStillUnexpected.test_injected_runtime_error_is_not_masked_into_a_refusal_type) ... ok
+test_reader_source_has_no_blanket_catch (__main__.TestUnexpectedStillUnexpected.test_reader_source_has_no_blanket_catch) ... FAIL
+test_m07_probe_receipts_reproduce_byte_for_byte (__main__.TestValidOutputGolden.test_m07_probe_receipts_reproduce_byte_for_byte) ... ok
+test_rotated_fixture_matches_b3_historical_summary_bytes (__main__.TestValidOutputGolden.test_rotated_fixture_matches_b3_historical_summary_bytes) ... ok
+test_valid_stdout_identical_to_pre_edit_capture (__main__.TestValidOutputGolden.test_valid_stdout_identical_to_pre_edit_capture) ... ok
+
+======================================================================
+ERROR: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t04_dict_value')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 126, in test_conversions_raise_reader_refusal_type_in_process
+    reader.summarize_export_report(report)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 52, in summarize_export_report
+    tensor = np.asarray(inertia.get("value"), dtype=np.float64)
+TypeError: float() argument must be a string or a real number, not 'dict'
+
+======================================================================
+ERROR: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t08_center_dict_value')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 126, in test_conversions_raise_reader_refusal_type_in_process
+    reader.summarize_export_report(report)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 53, in summarize_export_report
+    center_value = np.asarray(center.get("value"), dtype=np.float64)
+TypeError: float() argument must be a string or a real number, not 'dict'
+
+======================================================================
+ERROR: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t10_mass_null')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 126, in test_conversions_raise_reader_refusal_type_in_process
+    reader.summarize_export_report(report)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 57, in summarize_export_report
+    or not math.isfinite(float(mass_value)) or float(mass_value) <= 0.0:
+                         ~~~~~^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'NoneType'
+
+======================================================================
+ERROR: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t12_mass_list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 126, in test_conversions_raise_reader_refusal_type_in_process
+    reader.summarize_export_report(report)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 57, in summarize_export_report
+    or not math.isfinite(float(mass_value)) or float(mass_value) <= 0.0:
+                         ~~~~~^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'list'
+
+======================================================================
+ERROR: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t13_mass_dict')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 126, in test_conversions_raise_reader_refusal_type_in_process
+    reader.summarize_export_report(report)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 57, in summarize_export_report
+    or not math.isfinite(float(mass_value)) or float(mass_value) <= 0.0:
+                         ~~~~~^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'dict'
+
+======================================================================
+FAIL: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='b7_corrupt_m13')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 127, in test_conversions_raise_reader_refusal_type_in_process
+    self.assertIsInstance(caught.exception, reader.exporter.ExportInputError)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError('setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (3,) + inhomogeneous part.') is not an instance of <class 'material_volume_body_export.ExportInputError'>
+
+======================================================================
+FAIL: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t01_ragged_truncated_row')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 127, in test_conversions_raise_reader_refusal_type_in_process
+    self.assertIsInstance(caught.exception, reader.exporter.ExportInputError)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError('setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (3,) + inhomogeneous part.') is not an instance of <class 'material_volume_body_export.ExportInputError'>
+
+======================================================================
+FAIL: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t02_deep_ragged')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 127, in test_conversions_raise_reader_refusal_type_in_process
+    self.assertIsInstance(caught.exception, reader.exporter.ExportInputError)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError('setting an array element with a sequence. The requested array has an inhomogeneous shape after 2 dimensions. The detected shape was (3, 3) + inhomogeneous part.') is not an instance of <class 'material_volume_body_export.ExportInputError'>
+
+======================================================================
+FAIL: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t03_rect_string_entry')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 127, in test_conversions_raise_reader_refusal_type_in_process
+    self.assertIsInstance(caught.exception, reader.exporter.ExportInputError)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError("could not convert string to float: 'x'") is not an instance of <class 'material_volume_body_export.ExportInputError'>
+
+======================================================================
+FAIL: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t05_string_scalar')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 127, in test_conversions_raise_reader_refusal_type_in_process
+    self.assertIsInstance(caught.exception, reader.exporter.ExportInputError)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError("could not convert string to float: 'abc'") is not an instance of <class 'material_volume_body_export.ExportInputError'>
+
+======================================================================
+FAIL: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t06_center_ragged')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 127, in test_conversions_raise_reader_refusal_type_in_process
+    self.assertIsInstance(caught.exception, reader.exporter.ExportInputError)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError('setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (3,) + inhomogeneous part.') is not an instance of <class 'material_volume_body_export.ExportInputError'>
+
+======================================================================
+FAIL: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t07_center_string_entry')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 127, in test_conversions_raise_reader_refusal_type_in_process
+    self.assertIsInstance(caught.exception, reader.exporter.ExportInputError)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError("could not convert string to float: 'x'") is not an instance of <class 'material_volume_body_export.ExportInputError'>
+
+======================================================================
+FAIL: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t09_center_string_scalar')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 127, in test_conversions_raise_reader_refusal_type_in_process
+    self.assertIsInstance(caught.exception, reader.exporter.ExportInputError)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError("could not convert string to float: 'abc'") is not an instance of <class 'material_volume_body_export.ExportInputError'>
+
+======================================================================
+FAIL: test_conversions_raise_reader_refusal_type_in_process (__main__.TestFrozenConversions.test_conversions_raise_reader_refusal_type_in_process) (case='t11_mass_string_bad')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 127, in test_conversions_raise_reader_refusal_type_in_process
+    self.assertIsInstance(caught.exception, reader.exporter.ExportInputError)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError("could not convert string to float: 'abc'") is not an instance of <class 'material_volume_body_export.ExportInputError'>
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='b7_corrupt_m13')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 52, in summarize_export_report
+    tensor = np.asarray(inertia.get("value"), dtype=np.float64)
+ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (3,) + inhomogeneous part.
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t01_ragged_truncated_row')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 52, in summarize_export_report
+    tensor = np.asarray(inertia.get("value"), dtype=np.float64)
+ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (3,) + inhomogeneous part.
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t02_deep_ragged')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 52, in summarize_export_report
+    tensor = np.asarray(inertia.get("value"), dtype=np.float64)
+ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 2 dimensions. The detected shape was (3, 3) + inhomogeneous part.
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t03_rect_string_entry')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 52, in summarize_export_report
+    tensor = np.asarray(inertia.get("value"), dtype=np.float64)
+ValueError: could not convert string to float: 'x'
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t04_dict_value')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 52, in summarize_export_report
+    tensor = np.asarray(inertia.get("value"), dtype=np.float64)
+TypeError: float() argument must be a string or a real number, not 'dict'
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t05_string_scalar')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 52, in summarize_export_report
+    tensor = np.asarray(inertia.get("value"), dtype=np.float64)
+ValueError: could not convert string to float: 'abc'
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t06_center_ragged')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 53, in summarize_export_report
+    center_value = np.asarray(center.get("value"), dtype=np.float64)
+ValueError: setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (3,) + inhomogeneous part.
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t07_center_string_entry')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 53, in summarize_export_report
+    center_value = np.asarray(center.get("value"), dtype=np.float64)
+ValueError: could not convert string to float: 'x'
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t08_center_dict_value')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 53, in summarize_export_report
+    center_value = np.asarray(center.get("value"), dtype=np.float64)
+TypeError: float() argument must be a string or a real number, not 'dict'
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t09_center_string_scalar')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 53, in summarize_export_report
+    center_value = np.asarray(center.get("value"), dtype=np.float64)
+ValueError: could not convert string to float: 'abc'
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t10_mass_null')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 57, in summarize_export_report
+    or not math.isfinite(float(mass_value)) or float(mass_value) <= 0.0:
+                         ~~~~~^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'NoneType'
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t11_mass_string_bad')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 57, in summarize_export_report
+    or not math.isfinite(float(mass_value)) or float(mass_value) <= 0.0:
+                         ~~~~~^^^^^^^^^^^^
+ValueError: could not convert string to float: 'abc'
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t12_mass_list')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 57, in summarize_export_report
+    or not math.isfinite(float(mass_value)) or float(mass_value) <= 0.0:
+                         ~~~~~^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'list'
+
+
+======================================================================
+FAIL: test_each_crash_shape_now_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenConversions.test_each_crash_shape_now_refused_with_frozen_line_and_exit_2) (case='t13_mass_dict')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 117, in test_each_crash_shape_now_refused_with_frozen_line_and_exit_2
+    self.assertEqual(proc.returncode, 2, stderr_text(proc))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 57, in summarize_export_report
+    or not math.isfinite(float(mass_value)) or float(mass_value) <= 0.0:
+                         ~~~~~^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'dict'
+
+
+======================================================================
+FAIL: test_reader_source_has_no_blanket_catch (__main__.TestUnexpectedStillUnexpected.test_reader_source_has_no_blanket_catch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\material_volume_campaign\impl\W3_reader_m13\tests\test_w3_reader_m13.py", line 199, in test_reader_source_has_no_blanket_catch
+    self.assertEqual(source.count("except (TypeError, ValueError)"), 3,
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     "the repair must add exactly three narrow coercion catches")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 3 : the repair must add exactly three narrow coercion catches
+
+----------------------------------------------------------------------
+Ran 11 tests in 5.396s
+
+FAILED (failures=24, errors=5)

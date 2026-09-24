@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 123, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 114, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 57, in summarize_export_report
+    or not math.isfinite(float(mass_value)) or float(mass_value) <= 0.0:
+                         ~~~~~^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'list'

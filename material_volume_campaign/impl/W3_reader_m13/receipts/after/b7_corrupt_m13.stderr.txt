@@ -1,0 +1,1 @@
+bad_export_report: body_groups[1] mass_properties.inertia_tensor_about_com.value is malformed: not a rectangular numeric array

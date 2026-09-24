@@ -30,7 +30,7 @@
 | id | package | owner dir | status |
 |---|---|---|---|
 | W1 | source-bound regeneration verifier + blob-form battery entry | `impl/W1_source_verify` (+ owns tools/material_volume_export_proof_verify.py) | DISPATCHED |
-| W3 | reader M13 named-refusal repair, failing-first | `impl/W3_reader_m13` (+ owns tools/material_volume_body_export_reader.py) | DISPATCHED |
+| W3 | reader M13 named-refusal repair, failing-first | `impl/W3_reader_m13` | DONE — 14/14 crashes→named located refusals (exit 1→2, exact frozen lines); 8/8 valid reports byte-identical; 8/8 existing refusals byte-identical; unexpected-exception guard held both ways; reader battery 8/8 green (incl. parallel M01-F1 append); 2 out-of-scope coercion observations → decision requests |
 | W4 | append-only erratum (falsifier count + 4 corrections + DR-2) | `impl/W4_erratum` | DONE — count rebuilt: 4 fired (M03/M04/B6 agent-side; B3 genuine reader defect-class); B7 HELD + M06 not-trip were never firings; 87 quotes verified; diff 81+/0- |
 | W5 | diagnostic CLI promotion prep (deps pinned; ordering/invariance docs MV-O2/O3, MV-B4-1) | `impl/W5_diag_promo` | QUEUED |
 | W6 | validator v1.0 reconciliation + promotion prep (full-report validation; MV-O1 regression; exits 0/2/1) | `impl/W6_validator` | QUEUED |
