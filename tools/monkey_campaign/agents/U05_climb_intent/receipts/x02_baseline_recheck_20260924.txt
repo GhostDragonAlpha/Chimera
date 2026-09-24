@@ -1,0 +1,83 @@
+session_flow_tests -- X02 falsifiers (seed 20260924, 4000 fuzz events)
+F1 NO CODE-ONLY STATE: all four states reachable by keys alone; bindings and table cover each other; off-table actions are named no-ops
+  [PASS] F1 attract is the initial state
+  [PASS] F1 attract->playing via Return
+  [PASS] F1 playing->paused via Escape
+  [PASS] F1 paused->playing via R (declared boot)
+  [PASS] F1 paused->playing via Return (resume)
+  [PASS] F1 paused->exited via Q
+  [PASS] F1 attract->exited via Q (owned processes die from anywhere)
+  [PASS] F1 every table action is a bindings value  -- table=['confirm', 'exit', 'pause', 'restart'] bindings=['confirm', 'exit', 'pause', 'restart']
+  [PASS] F1 every state appears as a transition source
+  [PASS] F1 all off-table (state, action) pairs are named no-ops  -- []
+  [PASS] F1 unbound keys never transition (no developer commands)  -- []
+F2 PAUSE LEAKS ZERO: no record while paused; mapper untouched while suspended; bounded decay tail on resume, exact 0.0, then silence
+  [PASS] F2 the demand is live before the pause  -- v0=0.763625
+  [PASS] F2 the quiesce emptied held keys (U03 clause 4 floor)
+  [PASS] F2 zero records while paused (dense 1 ms probe, 380 ms)  -- []
+  [PASS] F2 resume tail is bounded (<= 2 records)  -- vals=[0.0]
+  [PASS] F2 every tail record <= the pre-pause speed  -- v0=0.763625 vals=[0.0]
+  [PASS] F2 the tail lands on EXACTLY 0.0  -- vals=[0.0]
+  [PASS] F2 the tail is monotone nonincreasing  -- vals=[0.0]
+  [PASS] F2 then TOTAL silence until a fresh press
+  [PASS] F2 short-pause tail bounded and exact-zero landing  -- v0=0.763625 vals=[0.458175, 0.0]
+  [PASS] F2 setup: the only pre-pause mapper calls are the declared ones  -- [('press', 'W', 10), ('tick', 10), ('release_all', 20)]
+  [PASS] F2 the mapper is untouched while suspended (event fuzz, 4 kinds)  -- []
+  [PASS] F2 the drops are NAMED, never silent
+  [PASS] F2 fuzz (4000 events, seed 20260924): zero records attributed to non-playing ticks (572 such ticks; 288 records while playing)  -- []
+  [PASS] F2 fuzz exercised every non-playing state's tick path  -- 572
+  [PASS] F2 fuzz produced records and transitions at all (not vacuous)
+F3 RESTART EQUALS THE DECLARED PATH: [release_all, boot x1] exactly; a StrictWorld sees zero undeclared attempts; a raising boot transitions nowhere; restart is unreachable outside paused
+  [PASS] F3 restart world contact is EXACTLY one boot  -- [('boot',)]
+  [PASS] F3 the restart is NAMED as the declared world_boot path
+  [PASS] F3 restart quiesced the held keys across the boot
+  [PASS] F3 restart lands in playing
+  [PASS] F3 StrictWorld: zero undeclared contact attempts  -- []
+  [PASS] F3 StrictWorld: boot called exactly once per fired restart  -- boots=23 restarts=23
+  [PASS] F3 failed boot: state stays paused (no half-restart claim)
+  [PASS] F3 failed boot: the failure is NAMED
+  [PASS] F3 failed boot: no transition recorded for it
+  [PASS] F3 after a refused restart, resume still works
+  [PASS] F3 restart in attract is a named no-op (no boot)
+  [PASS] F3 restart in playing is a named no-op (no boot)
+  [PASS] F3 restart in exited is a named no-op (no boot)
+F4 EXIT LEAVES NOTHING ALIVE: teardown exactly once per session, terminate->wait->kill; terminal afterwards; mapper never called again
+  [PASS] F4 exit from attract: declared ordering terminate->wait->kill, once  -- ['terminate', 'wait', 'kill']
+  [PASS] F4 exit from attract: state is terminal exited
+  [PASS] F4 exit from attract: 500 post-exit events, zero mapper calls, state still exited  -- grew by 0
+  [PASS] F4 exit from attract: second Q never re-tears-down
+  [PASS] F4 exit from playing: declared ordering terminate->wait->kill, once  -- ['terminate', 'wait', 'kill']
+  [PASS] F4 exit from playing: state is terminal exited
+  [PASS] F4 exit from playing: 500 post-exit events, zero mapper calls, state still exited  -- grew by 0
+  [PASS] F4 exit from playing: second Q never re-tears-down
+  [PASS] F4 exit from paused: declared ordering terminate->wait->kill, once  -- ['terminate', 'wait', 'kill']
+  [PASS] F4 exit from paused: state is terminal exited
+  [PASS] F4 exit from paused: 500 post-exit events, zero mapper calls, state still exited  -- grew by 0
+  [PASS] F4 exit from paused: second Q never re-tears-down
+  [PASS] F4 failed teardown: state stays playing (no false exit claim)
+F5 NO HIDDEN TRANSITIONS / NO DEVELOPER COMMANDS: clock alone moves nothing; the only mutators are key/mouse/tick; imports are clean; frozen numbers are U01's own objects
+  [PASS] F5 clock alone never transitions attract
+  [PASS] F5 clock alone never transitions playing
+  [PASS] F5 clock alone never transitions paused
+  [PASS] F5 clock alone never transitions exited
+  [PASS] F5 SessionFlow public methods are exactly key/mouse/tick  -- ['key', 'mouse', 'tick']
+  [PASS] F5 import adds no time/thread/transport/desktop module  -- []
+  [PASS] F5 no forbidden surface in code: 'import time'
+  [PASS] F5 no forbidden surface in code: 'import datetime'
+  [PASS] F5 no forbidden surface in code: 'import threading'
+  [PASS] F5 no forbidden surface in code: 'import socket'
+  [PASS] F5 no forbidden surface in code: 'import subprocess'
+  [PASS] F5 no forbidden surface in code: 'import urllib'
+  [PASS] F5 no forbidden surface in code: 'import ctypes'
+  [PASS] F5 no forbidden surface in code: 'keybd_event'
+  [PASS] F5 no forbidden surface in code: 'SendInput'
+  [PASS] F5 no forbidden surface in code: 'SetCursorPos'
+  [PASS] F5 no forbidden surface in code: 'perf_counter'
+  [PASS] F5 no forbidden surface in code: 'time.time'
+  [PASS] F5 INTERVAL_MS is U01's object
+  [PASS] F5 RELEASE_DECAY_MS is U01's object
+  [PASS] F5 VALID_MS is U01's object
+  [PASS] F5 no frozen number redeclared anywhere in the module  -- []
+
+RESULT: ALL CHECKS PASS
+receipt: E:\ChimeraWork\monkey-play-20260924\tools\monkey_campaign\agents\X02_flow\receipts\session_flow_tests_receipt.json
