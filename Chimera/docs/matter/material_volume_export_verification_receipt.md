@@ -173,3 +173,14 @@ For a reviewer with independent provenance (different author/tooling):
 Until that review exists, the correct claim remains: **export arithmetic
 verified on the tested coupons by author-executed checks; independent
 verification OPEN.**
+
+## Dispatch handoff (supersedes the brief above as the operative brief)
+
+The bounded dispatch package for the two remaining assignments — independent
+reviewer (audit of `1af0bbde`) and multi-cell coupon author (targets U1), plus
+the reviewer re-check of the coupon and the completion-receipt skeleton — is
+`material_volume_export_independent_review_handoff.md`. **Subagent deployment
+unavailable** in the authoring session; the delegation-enabled GLM coordinator
+owns dispatch. No author-side review is substituted for it. The consumption
+decisions D1–D5 and the artifact hash-labeling rule are recorded in
+`rigid_body_mass_export_consumption_contract_v1_proposal.md` (§5, §6).
