@@ -1,0 +1,22 @@
+# PRE-EDIT raw CLI run (reader unedited, HEAD 1afb552a)
+# fixture: w3b_v1_mass_hugeint.json
+# ---- stderr (verbatim) ----
+Traceback (most recent call last):
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 159, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 150, in main
+    summary = summarize_export_report(report)
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 87, in summarize_export_report
+    or not math.isfinite(_as_number(
+                         ~~~~~~~~~~^
+        mass_value,
+        ^^^^^^^^^^^
+        f"{label} mass_properties.mass.value is malformed: "
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "not a finite JSON number")) \
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\ChimeraWork\mvc-20260924\tools\material_volume_body_export_reader.py", line 43, in _as_number
+    return float(value)
+OverflowError: int too large to convert to float
+# ---- exit code: 1 ----

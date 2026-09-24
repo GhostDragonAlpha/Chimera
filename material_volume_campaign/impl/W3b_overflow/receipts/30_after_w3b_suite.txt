@@ -1,0 +1,13 @@
+test_each_hugeint_fixture_differs_from_control_in_exactly_one_scalar (__main__.TestControlScaffold.test_each_hugeint_fixture_differs_from_control_in_exactly_one_scalar) ... ok
+test_valid_control_exits_zero_with_pre_edit_bytes (__main__.TestControlScaffold.test_valid_control_exits_zero_with_pre_edit_bytes) ... ok
+test_each_hugeint_shape_raises_named_refusal_in_process (__main__.TestFrozenOverflowRefusals.test_each_hugeint_shape_raises_named_refusal_in_process) ... ok
+test_each_hugeint_shape_refused_with_frozen_line_and_exit_2 (__main__.TestFrozenOverflowRefusals.test_each_hugeint_shape_refused_with_frozen_line_and_exit_2) ... ok
+test_injected_key_error_at_tensor_coercion_propagates (__main__.TestUnexpectedStillUnexpected.test_injected_key_error_at_tensor_coercion_propagates) ... ok
+test_injected_runtime_error_at_mass_finite_check_propagates (__main__.TestUnexpectedStillUnexpected.test_injected_runtime_error_at_mass_finite_check_propagates) ... ok
+test_injected_runtime_error_at_tensor_coercion_propagates (__main__.TestUnexpectedStillUnexpected.test_injected_runtime_error_at_tensor_coercion_propagates) ... ok
+test_source_pins_the_frozen_conversion_set (__main__.TestUnexpectedStillUnexpected.test_source_pins_the_frozen_conversion_set) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.440s
+
+OK

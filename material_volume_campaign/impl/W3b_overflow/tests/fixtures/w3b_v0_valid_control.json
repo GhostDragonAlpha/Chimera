@@ -1,0 +1,118 @@
+{
+ "admission_status": "validation_only_admissible",
+ "body_groups": [
+  {
+   "admission_report_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+   "admission_status": "validation_only_admissible",
+   "body_id": "coupon-body-A",
+   "export_status": "exported",
+   "input_hashes": {
+    "coupon": "w3b-fixture",
+    "purpose": "F-R2-3 W3b"
+   },
+   "mass_properties": {
+    "center_of_mass": {
+     "coordinate_frame": "coupon-authored",
+     "unit": "m",
+     "value": [
+      0.25,
+      0.25,
+      0.25
+     ]
+    },
+    "inertia_tensor_about_com": {
+     "basis": "body_frame",
+     "coordinate_frame": "coupon-authored",
+     "full_symmetric_tensor": true,
+     "off_diagonal_terms_preserved": true,
+     "principal_axis_transform_applied": false,
+     "unit": "kg*m^2",
+     "value": [
+      [
+       0.15,
+       0.025,
+       0.025
+      ],
+      [
+       0.025,
+       0.15,
+       0.025
+      ],
+      [
+       0.025,
+       0.025,
+       0.15
+      ]
+     ]
+    },
+    "mass": {
+     "unit": "kg",
+     "value": 2.0
+    }
+   },
+   "owned_cell_ids": [
+    "cell-A"
+   ]
+  },
+  {
+   "admission_report_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+   "admission_status": "validation_only_admissible",
+   "body_id": "coupon-body-B",
+   "export_status": "exported",
+   "input_hashes": {
+    "coupon": "w3b-fixture",
+    "purpose": "F-R2-3 W3b"
+   },
+   "mass_properties": {
+    "center_of_mass": {
+     "coordinate_frame": "coupon-authored",
+     "unit": "m",
+     "value": [
+      0.25,
+      0.25,
+      0.25
+     ]
+    },
+    "inertia_tensor_about_com": {
+     "basis": "body_frame",
+     "coordinate_frame": "coupon-authored",
+     "full_symmetric_tensor": true,
+     "off_diagonal_terms_preserved": true,
+     "principal_axis_transform_applied": false,
+     "unit": "kg*m^2",
+     "value": [
+      [
+       0.075,
+       0.0125,
+       0.0125
+      ],
+      [
+       0.0125,
+       0.075,
+       0.0125
+      ],
+      [
+       0.0125,
+       0.0125,
+       0.075
+      ]
+     ]
+    },
+    "mass": {
+     "unit": "kg",
+     "value": 1.0
+    }
+   },
+   "owned_cell_ids": [
+    "cell-B"
+   ]
+  }
+ ],
+ "export_status": "complete",
+ "input_hashes": {
+  "coupon": "w3b-fixture",
+  "purpose": "F-R2-3 W3b"
+ },
+ "schema_version": "chimera.rigid_body_mass_export.v1",
+ "unassigned_cell_ids": []
+}

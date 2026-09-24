@@ -1,0 +1,14 @@
+=== w3b_v1_mass_hugeint
+exit=2 (expected 2)
+stdout_bytes=0 stdout_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+stderr='bad_export_report: body_groups[1] mass_properties.mass.value is malformed: not a finite JSON number\r\n'
+=== w3b_v2_tensor_hugeint
+exit=2 (expected 2)
+stdout_bytes=0 stdout_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+stderr='bad_export_report: body_groups[1] mass_properties.inertia_tensor_about_com.value is malformed: not a rectangular numeric array\r\n'
+=== w3b_v0_valid_control
+exit=0 (expected 0)
+stdout_bytes=1643 stdout_sha256=3a18ed3335df7f6a01aaa8b71161d6a9567efa629cea415ef90e23bc5777fe97
+stderr=''
+
+pre-edit control golden: stdout_bytes=1643 stdout_sha256=3a18ed3335df7f6a01aaa8b71161d6a9567efa629cea415ef90e23bc5777fe97

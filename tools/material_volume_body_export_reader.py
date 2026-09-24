@@ -29,19 +29,30 @@ def _as_float_array(value, refusal: str):
     Catches exactly the coercion-failure types of ``np.asarray(..., dtype=...)``
     (TypeError/ValueError) and converts them into the reader's named, located
     input refusal (B7-M13: a ragged tensor row used to escape as an uncaught
-    numpy ValueError). No other exception type is converted.
+    numpy ValueError), plus the out-of-range-integer OverflowError
+    (W3b/F-R2-3: a 10**400 JSON int literal used to escape as an uncaught
+    OverflowError). No other exception type is converted.
     """
     try:
         return np.asarray(value, dtype=np.float64)
     except (TypeError, ValueError) as error:
         raise exporter.ExportInputError("bad_export_report", refusal) from error
+    except OverflowError as error:
+        raise exporter.ExportInputError("bad_export_report", refusal) from error
 
 
 def _as_number(value, refusal: str):
-    """Coerce a report scalar; refuse expected coercion failures by name."""
+    """Coerce a report scalar; refuse expected coercion failures by name.
+
+    Includes the out-of-range-integer OverflowError (W3b/F-R2-3: a 10**400
+    JSON int literal used to escape ``float(value)`` uncaught). No other
+    exception type is converted.
+    """
     try:
         return float(value)
     except (TypeError, ValueError) as error:
+        raise exporter.ExportInputError("bad_export_report", refusal) from error
+    except OverflowError as error:
         raise exporter.ExportInputError("bad_export_report", refusal) from error
 
 
