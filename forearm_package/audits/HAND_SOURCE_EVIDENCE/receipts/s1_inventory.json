@@ -1,0 +1,1343 @@
+{
+  "xml": "E:\\PythonChimera\\forearm_package\\baseline_snapshot\\source_xml\\chimanoid.xml",
+  "hand_r_world_origin_m": [
+    -0.07310000000000001,
+    0.5326470000000001,
+    0.20269900000000005
+  ],
+  "hand_r_world_origin_pin_A4": [
+    -0.0731,
+    0.532647,
+    0.202699
+  ],
+  "chain_bodies_m": {
+    "humerus": [
+      -0.0976,
+      1.183,
+      0.17000000000000007
+    ],
+    "ulna": [
+      -0.09150000000000001,
+      0.8345500000000001,
+      0.15770000000000006
+    ],
+    "radius": [
+      -0.09110000000000001,
+      0.8230470000000001,
+      0.17769900000000005
+    ],
+    "hand_r": [
+      -0.07310000000000001,
+      0.5326470000000001,
+      0.20269900000000005
+    ]
+  },
+  "n_right_geoms_found": 27,
+  "n_left_geoms_found": 27,
+  "sites_found": {
+    "ECRL-P4": [
+      0.021167,
+      -0.036274,
+      0.008159
+    ],
+    "ECRB-P4": [
+      0.008989,
+      -0.026413,
+      0.010824
+    ],
+    "ECU-P6": [
+      -0.018514,
+      -0.029067,
+      0.001049
+    ],
+    "FCR-P3": [
+      0.015227,
+      -0.033494,
+      -0.001851
+    ],
+    "FCU-P4": [
+      -0.016364,
+      -0.032707,
+      -0.005191
+    ]
+  },
+  "bones": {
+    "pisiform": {
+      "anchor_hand_r_local_m": [
+        -0.013388,
+        -0.009886,
+        -0.010593
+      ],
+      "mesh_asset": {
+        "file": "Geometry/pisiform.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/pisiform.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\pisiform.stl",
+      "sha256": "a8cfa7c74c1f551d83cd9229105cc705b40a17ba6ebf7aea5956c02c0ba7617f",
+      "bytes": 352884,
+      "format": "binary",
+      "n_tri": 7056,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.0026279999874532223,
+          0.005963999778032303
+        ],
+        "y": [
+          -0.007226999849081039,
+          0.005504000000655651
+        ],
+        "z": [
+          -0.004705999977886677,
+          0.004846999887377024
+        ]
+      },
+      "extent_m": [
+        0.008591999765485525,
+        0.01273099984973669,
+        0.0095529998652637
+      ]
+    },
+    "lunate": {
+      "anchor_hand_r_local_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "mesh_asset": {
+        "file": "Geometry/lunate.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/lunate.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\lunate.stl",
+      "sha256": "225cbfc34bc7e24690f5596301bc020748aec5e8d3b87fa352ab1cd8848bb137",
+      "bytes": 186084,
+      "format": "binary",
+      "n_tri": 3720,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.007116000168025494,
+          0.006587000098079443
+        ],
+        "y": [
+          -0.0074880002066493034,
+          0.0061039999127388
+        ],
+        "z": [
+          -0.007431000005453825,
+          0.008756999857723713
+        ]
+      },
+      "extent_m": [
+        0.013703000266104937,
+        0.013592000119388103,
+        0.016187999863177538
+      ]
+    },
+    "scaphoid": {
+      "anchor_hand_r_local_m": [
+        0.012345,
+        -0.004464,
+        -0.001254
+      ],
+      "mesh_asset": {
+        "file": "Geometry/scaphoid.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/scaphoid.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\scaphoid.stl",
+      "sha256": "0a016dd1497f6719c65d721c091d411465c059c60b2b22c0e6ddf12cde4ddd2c",
+      "bytes": 182784,
+      "format": "binary",
+      "n_tri": 3654,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.007075000088661909,
+          0.007067999802529812
+        ],
+        "y": [
+          -0.009083000011742115,
+          0.00875800009816885
+        ],
+        "z": [
+          -0.010848999954760075,
+          0.0103169996291399
+        ]
+      },
+      "extent_m": [
+        0.014142999891191721,
+        0.017841000109910965,
+        0.021165999583899975
+      ]
+    },
+    "triquetrum": {
+      "anchor_hand_r_local_m": [
+        -0.010784,
+        -0.007499,
+        -0.001289
+      ],
+      "mesh_asset": {
+        "file": "Geometry/triquetrum.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/triquetrum.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\triquetrum.stl",
+      "sha256": "8828f38da02f8a9fa86793a4989441e4d077ae45af8935f500c2ffa8558d7c58",
+      "bytes": 158684,
+      "format": "binary",
+      "n_tri": 3172,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.006370999850332737,
+          0.0061969999223947525
+        ],
+        "y": [
+          -0.00877899955958128,
+          0.008085000328719616
+        ],
+        "z": [
+          -0.004819999914616346,
+          0.0068339998833835125
+        ]
+      },
+      "extent_m": [
+        0.01256799977272749,
+        0.016863999888300896,
+        0.011653999797999859
+      ]
+    },
+    "hamate": {
+      "anchor_hand_r_local_m": [
+        -0.006977,
+        -0.017549,
+        0.001577
+      ],
+      "mesh_asset": {
+        "file": "Geometry/hamate.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/hamate.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\hamate.stl",
+      "sha256": "d880faf00df1cc473626cc9141d68d6a7eca26f1f46eedde423649263c54e134",
+      "bytes": 258384,
+      "format": "binary",
+      "n_tri": 5166,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.008488999679684639,
+          0.006022999994456768
+        ],
+        "y": [
+          -0.0077309999614953995,
+          0.009747999720275402
+        ],
+        "z": [
+          -0.009397000074386597,
+          0.006690999958664179
+        ]
+      },
+      "extent_m": [
+        0.014511999674141407,
+        0.0174789996817708,
+        0.016088000033050776
+      ]
+    },
+    "capitate": {
+      "anchor_hand_r_local_m": [
+        0.003992,
+        -0.015054,
+        0.002327
+      ],
+      "mesh_asset": {
+        "file": "Geometry/capitate.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/capitate.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\capitate.stl",
+      "sha256": "51c4ff14860a267fcf22d63f27cdedf17cdbb0cf4240fdf8c641ae4bcfaa1a8c",
+      "bytes": 237384,
+      "format": "binary",
+      "n_tri": 4746,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.007350999861955643,
+          0.0064199999906122684
+        ],
+        "y": [
+          -0.010195000097155571,
+          0.011370000429451466
+        ],
+        "z": [
+          -0.007199000101536512,
+          0.008375000208616257
+        ]
+      },
+      "extent_m": [
+        0.013770999852567911,
+        0.021565000526607037,
+        0.015574000310152769
+      ]
+    },
+    "trapezoid": {
+      "anchor_hand_r_local_m": [
+        0.013135,
+        -0.019116,
+        -0.000137
+      ],
+      "mesh_asset": {
+        "file": "Geometry/trapezoid.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/trapezoid.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\trapezoid.stl",
+      "sha256": "3a68fabd59a87208030c5b3c5c66e1400f46274163265378668fcc3ee58f1b45",
+      "bytes": 141684,
+      "format": "binary",
+      "n_tri": 2832,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.006463999859988689,
+          0.006128999870270491
+        ],
+        "y": [
+          -0.005123000126332045,
+          0.005752000026404858
+        ],
+        "z": [
+          -0.007385000120848417,
+          0.007656999863684177
+        ]
+      },
+      "extent_m": [
+        0.01259299973025918,
+        0.010875000152736902,
+        0.015041999984532595
+      ]
+    },
+    "trapezium": {
+      "anchor_hand_r_local_m": [
+        0.019285,
+        -0.019623,
+        -0.007981
+      ],
+      "mesh_asset": {
+        "file": "Geometry/trapezium.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/trapezium.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\trapezium.stl",
+      "sha256": "f130696c1dfec4d05214c6f779573043fc42206d7628ea269ccf8b536712b103",
+      "bytes": 224684,
+      "format": "binary",
+      "n_tri": 4492,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.007230000104755163,
+          0.0062350002117455006
+        ],
+        "y": [
+          -0.010169999673962593,
+          0.0071829999797046185
+        ],
+        "z": [
+          -0.007298000156879425,
+          0.008705000393092632
+        ]
+      },
+      "extent_m": [
+        0.013465000316500664,
+        0.01735299965366721,
+        0.016003000549972057
+      ]
+    },
+    "1mc": {
+      "anchor_hand_r_local_m": [
+        0.026485,
+        -0.025023,
+        -0.010481
+      ],
+      "mesh_asset": {
+        "file": "Geometry/1mc.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/1mc.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\1mc.stl",
+      "sha256": "b75e58243a2005af787bc731c5d1aa6b7da4669f36e9bcd7409a430c1cc311b6",
+      "bytes": 287284,
+      "format": "binary",
+      "n_tri": 5744,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.006527000106871128,
+          0.022022999823093414
+        ],
+        "y": [
+          -0.034960001707077026,
+          0.004997000098228455
+        ],
+        "z": [
+          -0.018650999292731285,
+          0.0066280001774430275
+        ]
+      },
+      "extent_m": [
+        0.028549999929964542,
+        0.03995700180530548,
+        0.025278999470174313
+      ]
+    },
+    "2mc": {
+      "anchor_hand_r_local_m": [
+        0.018677,
+        -0.052674,
+        0.007359
+      ],
+      "mesh_asset": {
+        "file": "Geometry/2mc.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/2mc.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\2mc.stl",
+      "sha256": "ac3286bfb7281a7d2dc3ff2ac32fcb8f0424764aa97ad526992a10b739334fe2",
+      "bytes": 418084,
+      "format": "binary",
+      "n_tri": 8360,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.01092899963259697,
+          0.009486000053584576
+        ],
+        "y": [
+          -0.0338670015335083,
+          0.03102700039744377
+        ],
+        "z": [
+          -0.010577999986708164,
+          0.009685000404715538
+        ]
+      },
+      "extent_m": [
+        0.020414999686181545,
+        0.06489400193095207,
+        0.020263000391423702
+      ]
+    },
+    "3mc": {
+      "anchor_hand_r_local_m": [
+        0.004469,
+        -0.054293,
+        0.009704
+      ],
+      "mesh_asset": {
+        "file": "Geometry/3mc.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/3mc.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\3mc.stl",
+      "sha256": "eaa77802c8afe5a3187293880d0f95b5b2f0367adcb3639c8038993d39ff8f5c",
+      "bytes": 404384,
+      "format": "binary",
+      "n_tri": 8086,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.005663000047206879,
+          0.006403000093996525
+        ],
+        "y": [
+          -0.03158000111579895,
+          0.03301199898123741
+        ],
+        "z": [
+          -0.011389999650418758,
+          0.007335999980568886
+        ]
+      },
+      "extent_m": [
+        0.012066000141203403,
+        0.06459200009703636,
+        0.018725999630987644
+      ]
+    },
+    "4mc": {
+      "anchor_hand_r_local_m": [
+        -0.008054,
+        -0.055573,
+        0.00584
+      ],
+      "mesh_asset": {
+        "file": "Geometry/4mc.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/4mc.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\4mc.stl",
+      "sha256": "ad2fe21562879512367cf2b7ab7016b07d9eda780c72add59cd125d2a232cf42",
+      "bytes": 324384,
+      "format": "binary",
+      "n_tri": 6486,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.007187999784946442,
+          0.007127000018954277
+        ],
+        "y": [
+          -0.029198000207543373,
+          0.030973000451922417
+        ],
+        "z": [
+          -0.00747800013050437,
+          0.005915000103414059
+        ]
+      },
+      "extent_m": [
+        0.014314999803900719,
+        0.06017100065946579,
+        0.013393000233918428
+      ]
+    },
+    "5mc": {
+      "anchor_hand_r_local_m": [
+        -0.017904,
+        -0.049737,
+        -0.001891
+      ],
+      "mesh_asset": {
+        "file": "Geometry/5mc.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/5mc.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\5mc.stl",
+      "sha256": "46c75922ddc94f982a539f0345c32456d4ba75d1367df0c6aecc82467c775d3d",
+      "bytes": 250884,
+      "format": "binary",
+      "n_tri": 5016,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.007393999956548214,
+          0.009740999899804592
+        ],
+        "y": [
+          -0.026839999482035637,
+          0.027590999379754066
+        ],
+        "z": [
+          -0.007348000071942806,
+          0.00583299994468689
+        ]
+      },
+      "extent_m": [
+        0.017134999856352806,
+        0.0544309988617897,
+        0.013181000016629696
+      ]
+    },
+    "thumbprox": {
+      "anchor_hand_r_local_m": [
+        0.042985,
+        -0.054223,
+        -0.023181
+      ],
+      "mesh_asset": {
+        "file": "Geometry/thumbprox.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/thumbprox.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\thumbprox.stl",
+      "sha256": "d55ea0de846c5acf5c89198cb4f4b74e7739f4316120ece0d6fe1c8e7cbb646c",
+      "bytes": 197484,
+      "format": "binary",
+      "n_tri": 3948,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.0005440000095404685,
+          0.017503999173641205
+        ],
+        "y": [
+          -0.031038999557495117,
+          -0.0017890000017359853
+        ],
+        "z": [
+          -0.015898000448942184,
+          0.0032500000670552254
+        ]
+      },
+      "extent_m": [
+        0.018047999183181673,
+        0.029249999555759132,
+        0.01914800051599741
+      ]
+    },
+    "thumbdist": {
+      "anchor_hand_r_local_m": [
+        0.056985,
+        -0.080123,
+        -0.033281
+      ],
+      "mesh_asset": {
+        "file": "Geometry/thumbdist.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/thumbdist.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\thumbdist.stl",
+      "sha256": "95b059723be971e770609000d682a4d41989332d22978fc05cbffd2754c5f93b",
+      "bytes": 174284,
+      "format": "binary",
+      "n_tri": 3484,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.0006489999941550195,
+          0.011140000075101852
+        ],
+        "y": [
+          -0.018391000106930733,
+          -0.0019779999274760485
+        ],
+        "z": [
+          -0.009015999734401703,
+          0.0022040000185370445
+        ]
+      },
+      "extent_m": [
+        0.011789000069256872,
+        0.016413000179454684,
+        0.011219999752938747
+      ]
+    },
+    "2proxph": {
+      "anchor_hand_r_local_m": [
+        0.022178,
+        -0.080917,
+        0.010979
+      ],
+      "mesh_asset": {
+        "file": "Geometry/2proxph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/2proxph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\2proxph.stl",
+      "sha256": "041bf5a60e9376c0c47a3981c312698caa8d28f6d8ca08f59c3222da4244fb9d",
+      "bytes": 256184,
+      "format": "binary",
+      "n_tri": 5122,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.004687000066041946,
+          0.011904999613761902
+        ],
+        "y": [
+          -0.045485999435186386,
+          -0.004619999788701534
+        ],
+        "z": [
+          -0.003573999973013997,
+          0.010467000305652618
+        ]
+      },
+      "extent_m": [
+        0.01659199967980385,
+        0.04086599964648485,
+        0.014041000278666615
+      ]
+    },
+    "2midph": {
+      "anchor_hand_r_local_m": [
+        0.029695,
+        -0.12219,
+        0.018305
+      ],
+      "mesh_asset": {
+        "file": "Geometry/2midph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/2midph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\2midph.stl",
+      "sha256": "074318c92e652ba05d26cbe0ad8e781891e2970e6b7415bc63585536e8beda72",
+      "bytes": 100084,
+      "format": "binary",
+      "n_tri": 2000,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.004486000165343285,
+          0.007139999885112047
+        ],
+        "y": [
+          -0.027079999446868896,
+          -0.0033420000690966845
+        ],
+        "z": [
+          -0.0041669998317956924,
+          0.0034119999036192894
+        ]
+      },
+      "extent_m": [
+        0.011626000050455332,
+        0.023737999377772212,
+        0.007578999735414982
+      ]
+    },
+    "2distph": {
+      "anchor_hand_r_local_m": [
+        0.033028,
+        -0.147078,
+        0.019525
+      ],
+      "mesh_asset": {
+        "file": "Geometry/2distph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/2distph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\2distph.stl",
+      "sha256": "39fca9372434520835703ffd34b5cc37a3f15f86ec9841b5fd841acac51adb88",
+      "bytes": 110384,
+      "format": "binary",
+      "n_tri": 2206,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.003280000062659383,
+          0.004323999863117933
+        ],
+        "y": [
+          -0.0177449993789196,
+          -0.002104999963194132
+        ],
+        "z": [
+          -0.0022529999259859324,
+          0.002474999986588955
+        ]
+      },
+      "extent_m": [
+        0.007603999925777316,
+        0.01563999941572547,
+        0.004727999912574887
+      ]
+    },
+    "3proxph": {
+      "anchor_hand_r_local_m": [
+        0.004709,
+        -0.080583,
+        0.011482
+      ],
+      "mesh_asset": {
+        "file": "Geometry/3proxph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/3proxph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\3proxph.stl",
+      "sha256": "48094bce62d115aee9f2527b22061ff1f5656936e647879d83672b2c62c20728",
+      "bytes": 280284,
+      "format": "binary",
+      "n_tri": 5604,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.005934000015258789,
+          0.007691999897360802
+        ],
+        "y": [
+          -0.04760799929499626,
+          -0.005187999922782183
+        ],
+        "z": [
+          -0.002561999950557947,
+          0.009460000321269035
+        ]
+      },
+      "extent_m": [
+        0.01362599991261959,
+        0.04241999937221408,
+        0.012022000271826982
+      ]
+    },
+    "3midph": {
+      "anchor_hand_r_local_m": [
+        0.006359,
+        -0.124794,
+        0.017712
+      ],
+      "mesh_asset": {
+        "file": "Geometry/3midph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/3midph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\3midph.stl",
+      "sha256": "5e0ef3d76f2f99f950e9aefac28131009fa7fad7129f1421f50b5e7086655c88",
+      "bytes": 111784,
+      "format": "binary",
+      "n_tri": 2234,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.004871999844908714,
+          0.005470000207424164
+        ],
+        "y": [
+          -0.031215999275445938,
+          -0.0027600000612437725
+        ],
+        "z": [
+          -0.0026970000471919775,
+          0.004774000030010939
+        ]
+      },
+      "extent_m": [
+        0.010342000052332878,
+        0.028455999214202166,
+        0.007471000077202916
+      ]
+    },
+    "3distph": {
+      "anchor_hand_r_local_m": [
+        0.007724,
+        -0.153841,
+        0.019666
+      ],
+      "mesh_asset": {
+        "file": "Geometry/3distph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/3distph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\3distph.stl",
+      "sha256": "d5ecddeac9b4572091a32d386a117ba475a0c784e42d06016ba963432396b612",
+      "bytes": 127384,
+      "format": "binary",
+      "n_tri": 2546,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.003880999982357025,
+          0.004658999852836132
+        ],
+        "y": [
+          -0.018543999642133713,
+          -0.0017180000431835651
+        ],
+        "z": [
+          -0.0026859999634325504,
+          0.002365000080317259
+        ]
+      },
+      "extent_m": [
+        0.008539999835193157,
+        0.016825999598950148,
+        0.005051000043749809
+      ]
+    },
+    "4proxph": {
+      "anchor_hand_r_local_m": [
+        -0.009884,
+        -0.079262,
+        0.005667
+      ],
+      "mesh_asset": {
+        "file": "Geometry/4proxph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/4proxph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\4proxph.stl",
+      "sha256": "eea82e95eb50e93471d32be3c15dc123b88a44bba06647c3003217eafa9cc44d",
+      "bytes": 263284,
+      "format": "binary",
+      "n_tri": 5264,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.007639000192284584,
+          0.005656000226736069
+        ],
+        "y": [
+          -0.04304099828004837,
+          -0.00483699981123209
+        ],
+        "z": [
+          -0.005150000099092722,
+          0.0053530000150203705
+        ]
+      },
+      "extent_m": [
+        0.013295000419020653,
+        0.03820399846881628,
+        0.010503000114113092
+      ]
+    },
+    "4midph": {
+      "anchor_hand_r_local_m": [
+        -0.013412,
+        -0.119517,
+        0.007012
+      ],
+      "mesh_asset": {
+        "file": "Geometry/4midph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/4midph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\4midph.stl",
+      "sha256": "98ecb5ad76749abd6c32862770f6502aa2cc41a4d919ca73735b052bcb39c79c",
+      "bytes": 110284,
+      "format": "binary",
+      "n_tri": 2204,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.005696000065654516,
+          0.0037950000260025263
+        ],
+        "y": [
+          -0.026820000261068344,
+          -0.0027179999742656946
+        ],
+        "z": [
+          -0.0034149999264627695,
+          0.003994999919086695
+        ]
+      },
+      "extent_m": [
+        0.009491000091657043,
+        0.02410200028680265,
+        0.007409999845549464
+      ]
+    },
+    "4distph": {
+      "anchor_hand_r_local_m": [
+        -0.015729,
+        -0.144306,
+        0.007575
+      ],
+      "mesh_asset": {
+        "file": "Geometry/4distph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/4distph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\4distph.stl",
+      "sha256": "02f01c191dfc86ab5f04d5b092238f6d6c134cbc39977a79542e6fe8b37c3691",
+      "bytes": 130484,
+      "format": "binary",
+      "n_tri": 2608,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.003855000017210841,
+          0.0036410000175237656
+        ],
+        "y": [
+          -0.0185139998793602,
+          -0.0015610000118613243
+        ],
+        "z": [
+          -0.0026549999602138996,
+          0.004031000193208456
+        ]
+      },
+      "extent_m": [
+        0.007496000034734607,
+        0.016952999867498875,
+        0.006686000153422356
+      ]
+    },
+    "5proxph": {
+      "anchor_hand_r_local_m": [
+        -0.019501,
+        -0.071168,
+        -0.003387
+      ],
+      "mesh_asset": {
+        "file": "Geometry/5proxph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/5proxph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\5proxph.stl",
+      "sha256": "b04672ea67df7403705ff58aa89cef984fe9c679177608a934034413b1e339cb",
+      "bytes": 187184,
+      "format": "binary",
+      "n_tri": 3742,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.008666000328958035,
+          0.004178999923169613
+        ],
+        "y": [
+          -0.03956900164484978,
+          -0.004834999796003103
+        ],
+        "z": [
+          -0.006767000071704388,
+          0.0041970000602304935
+        ]
+      },
+      "extent_m": [
+        0.012845000252127647,
+        0.034734001848846674,
+        0.010964000131934881
+      ]
+    },
+    "5midph": {
+      "anchor_hand_r_local_m": [
+        -0.02478,
+        -0.106731,
+        -0.006266
+      ],
+      "mesh_asset": {
+        "file": "Geometry/5midph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/5midph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\5midph.stl",
+      "sha256": "d383a1f058224f71fc5333c2849673cd2a106652dcd84f13518a4f88e5866324",
+      "bytes": 78384,
+      "format": "binary",
+      "n_tri": 1566,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.005737000145018101,
+          0.0034729999024420977
+        ],
+        "y": [
+          -0.023161999881267548,
+          -0.0029239999130368233
+        ],
+        "z": [
+          -0.005251999944448471,
+          0.0026489999145269394
+        ]
+      },
+      "extent_m": [
+        0.009210000047460198,
+        0.020237999968230724,
+        0.00790099985897541
+      ]
+    },
+    "5distph": {
+      "anchor_hand_r_local_m": [
+        -0.027651,
+        -0.127408,
+        -0.008509
+      ],
+      "mesh_asset": {
+        "file": "Geometry/5distph.stl",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "scale_xml": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "file_attr": "Geometry/5distph.stl",
+      "vendor_file": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\5distph.stl",
+      "sha256": "a2ca70efdb0a5e59913922676e597ec24b963ace4d41c5fd0d5a3bc7cafdb3f4",
+      "bytes": 149034,
+      "format": "binary",
+      "n_tri": 2979,
+      "bbox_stl_local_m": {
+        "x": [
+          -0.00417400011792779,
+          0.0027260000351816416
+        ],
+        "y": [
+          -0.01681699976325035,
+          -0.002007999923080206
+        ],
+        "z": [
+          -0.003722999943420291,
+          0.0024059999268501997
+        ]
+      },
+      "extent_m": [
+        0.006900000153109431,
+        0.014808999840170145,
+        0.006128999870270491
+      ]
+    }
+  },
+  "left_stl_present_in_vendor": {
+    "pisiform": false,
+    "lunate": false,
+    "scaphoid": false,
+    "triquetrum": false,
+    "hamate": false,
+    "capitate": false,
+    "trapezoid": false,
+    "trapezium": false,
+    "1mc": false,
+    "2mc": false,
+    "3mc": false,
+    "4mc": false,
+    "5mc": false,
+    "thumbprox": false,
+    "thumbdist": false,
+    "2proxph": false,
+    "2midph": false,
+    "2distph": false,
+    "3proxph": false,
+    "3midph": false,
+    "3distph": false,
+    "4proxph": false,
+    "4midph": false,
+    "4distph": false,
+    "5proxph": false,
+    "5midph": false,
+    "5distph": false
+  },
+  "other_family_spotcheck_md5": {
+    "1mc_vs_arm_r_1mc": {
+      "same_md5": false,
+      "bytes": [
+        287284,
+        287284
+      ]
+    },
+    "ulna_vs_arm_r_ulna": {
+      "same_md5": false,
+      "bytes": [
+        19884,
+        19884
+      ]
+    },
+    "capitate_vs_capitate_lvs": {
+      "same_md5": false,
+      "bytes": [
+        237384,
+        8884
+      ]
+    },
+    "capitate_vs_capitate_rvs": {
+      "same_md5": false,
+      "bytes": [
+        237384,
+        8884
+      ]
+    }
+  },
+  "missing_geom": [],
+  "missing_asset_decl": [],
+  "name_match_complete": true
+}
