@@ -1,0 +1,27 @@
+== TIE2 boundary probe (frozen walker_kernels.cuh; frozen cst) ==
+FROZEN cst[2]=dt=0.0033333333333333335 cst[4]=kTouch=1.0000000000000001e-05
+tb = kTouch/dt = 0.0030000000000000001
+tb-1ulp = 0.0029999999999999996  tb+1ulp = 0.0030000000000000005
+FEASIBILITY IDENTITY: (kTouch/dt)*dt = 1.0000000000000001e-05  <= kTouch = 1.0000000000000001e-05 ? YES
+rel-only tol (floor=0) = 1.0000000000000001e-09
+CASE A1 tb-exact        viol=0.0030000000000000001
+  leg=[v2 (tol_band=cst[kTouch]/cst[dt])] rc=1 p0=0 mult0=0 got_after=-0.0030000000000000001 tol_eff=0.0030000000000000001 decision=ACCEPT-norepair(tie) repair=no feas: viol*dt=1.0000000000000001e-05 <= kTouch(1.0000000000000001e-05)? YES
+  leg=[prev2 (tol_band=0.0)] rc=1 p0=0.0030000000000000001 mult0=0.0030000000000000001 got_after=0 tol_eff=1.0000000000000001e-09 decision=ACCEPT-repair repair=yes feas: viol*dt=1.0000000000000001e-05 <= kTouch(1.0000000000000001e-05)? YES
+CASE A2 tb-minus-1ulp   viol=0.0029999999999999996
+  leg=[v2 (tol_band=cst[kTouch]/cst[dt])] rc=1 p0=0 mult0=0 got_after=-0.0029999999999999996 tol_eff=0.0030000000000000001 decision=ACCEPT-norepair(tie) repair=no feas: viol*dt=9.9999999999999991e-06 <= kTouch(1.0000000000000001e-05)? YES
+  leg=[prev2 (tol_band=0.0)] rc=1 p0=0.0029999999999999996 mult0=0.0029999999999999996 got_after=0 tol_eff=1.0000000000000001e-09 decision=ACCEPT-repair repair=yes feas: viol*dt=9.9999999999999991e-06 <= kTouch(1.0000000000000001e-05)? YES
+CASE A3 tb-plus-1ulp    viol=0.0030000000000000005
+  leg=[v2 (tol_band=cst[kTouch]/cst[dt])] rc=1 p0=0.0030000000000000005 mult0=0.0030000000000000005 got_after=0 tol_eff=0.0030000000000000001 decision=ACCEPT-repair repair=yes feas: viol*dt=1.0000000000000003e-05 <= kTouch(1.0000000000000001e-05)? NO
+  leg=[prev2 (tol_band=0.0)] rc=1 p0=0.0030000000000000005 mult0=0.0030000000000000005 got_after=0 tol_eff=1.0000000000000001e-09 decision=ACCEPT-repair repair=yes feas: viol*dt=1.0000000000000003e-05 <= kTouch(1.0000000000000001e-05)? NO
+CASE A4 above 1e-2      viol=0.01
+  leg=[v2 (tol_band=cst[kTouch]/cst[dt])] rc=1 p0=0.01 mult0=0.01 got_after=0 tol_eff=0.0030000000000000001 decision=ACCEPT-repair repair=yes feas: viol*dt=3.3333333333333335e-05 <= kTouch(1.0000000000000001e-05)? NO
+  leg=[prev2 (tol_band=0.0)] rc=1 p0=0.01 mult0=0.01 got_after=0 tol_eff=1.0000000000000001e-09 decision=ACCEPT-repair repair=yes feas: viol*dt=3.3333333333333335e-05 <= kTouch(1.0000000000000001e-05)? NO
+CASE A5 above 1.0       viol=1
+  leg=[v2 (tol_band=cst[kTouch]/cst[dt])] rc=1 p0=1 mult0=1 got_after=0 tol_eff=0.0030000000000000001 decision=ACCEPT-repair repair=yes feas: viol*dt=0.0033333333333333335 <= kTouch(1.0000000000000001e-05)? NO
+  leg=[prev2 (tol_band=0.0)] rc=1 p0=1 mult0=1 got_after=0 tol_eff=1.0000000000000001e-09 decision=ACCEPT-repair repair=yes feas: viol*dt=0.0033333333333333335 <= kTouch(1.0000000000000001e-05)? NO
+CASE A6 zero violation  viol=0
+  leg=[v2 (tol_band=cst[kTouch]/cst[dt])] rc=1 p0=0 mult0=0 got_after=0 tol_eff=0.0030000000000000001 decision=ACCEPT-norepair(tie) repair=no feas: viol*dt=0 <= kTouch(1.0000000000000001e-05)? YES
+  leg=[prev2 (tol_band=0.0)] rc=1 p0=0 mult0=0 got_after=0 tol_eff=1.0000000000000001e-09 decision=ACCEPT-norepair(tie) repair=no feas: viol*dt=0 <= kTouch(1.0000000000000001e-05)? YES
+CASE A7 t41 g0 residual viol=6.9388939039072284e-18
+  leg=[v2 (tol_band=cst[kTouch]/cst[dt])] rc=1 p0=0 mult0=0 got_after=-6.9388939039072284e-18 tol_eff=0.0030000000000000001 decision=ACCEPT-norepair(tie) repair=no feas: viol*dt=2.3129646346357429e-20 <= kTouch(1.0000000000000001e-05)? YES
+  leg=[prev2 (tol_band=0.0)] rc=1 p0=0 mult0=0 got_after=-6.9388939039072284e-18 tol_eff=1.0000000000000001e-09 decision=ACCEPT-norepair(tie) repair=no feas: viol*dt=2.3129646346357429e-20 <= kTouch(1.0000000000000001e-05)? YES

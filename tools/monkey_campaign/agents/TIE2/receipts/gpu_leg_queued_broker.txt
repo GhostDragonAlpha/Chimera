@@ -1,0 +1,51 @@
+TIE2 GPU-LEG STATUS: QUEUED-BEHIND-BROKER (recorded 2026-09-24 18:40 local)
+
+RESOURCE EVIDENCE (measured, never touched):
+- nvidia-smi 18:33: RTX 4090, util 20%, 23092/24564 MiB used (94%); compute
+  list shows desktop clients + steam/Battle.net/Bigscreen/LM Studio
+  llama-server attached.
+- nvidia-smi 18:40: util 0%, 23067/24564 MiB used, steam.exe (pid 17472) live.
+- Reading: operator session signs present (94% memory held; ~1.5 GiB free --
+  a CUDA context + the walk kernels may not even fit). Per the campaign law
+  ("no fleet GPU during gaming") and the brief, NO GPU work was launched, no
+  process touched, nothing killed.
+
+PRESEDERVED GPU EVIDENCE ALREADY ON RECORD (frozen a62b286e shutdown state;
+recorded here, not re-run):
+- co8_dll_v2b_120.txt (v2 build walker_env_v2.dll, 14:18 2026-09-23): the GPU
+  walk has NO REFUSED line; t=41 shows the resolved impact; the capture
+  reaches t=43. Bit-identical to the host v2 walk (this battery's case5 run)
+  on every FULL state t=1..43 (0 differing ticks after stripping the file's
+  \r\r\n capture artifact on line-final tokens).
+- co8_dll_v2_120.txt (the FIRST v2 build, 14:06, pre-rebuild): REFUSED at
+  tick 41 rc=5 refused=1 adv=2 ticks=40 -- the signature persisted on that
+  build; the DLL was rebuilt 14:10 and v2b (14:18) walked past. Recorded as
+  frozen history; the live qualification run supersedes both.
+
+QUEUED COMMANDS (exact; run only with broker clearance, in this order):
+
+  REM -- Q1: the replay GPU leg, PAST tick 41, from reset on the walk config
+  REM     (the frozen co8_v2walk.py -> walker_env_v2.dll, t=1..44, FULL states,
+  REM     refusal detection; expected: no rc=5 class-5 refusal at 41; parity
+  REM     vs receipts/case5_replay_host_v2.out FULL lines t=1..44)
+  cd /d E:\ChimeraWork\finish-agent\tools\science_funnel\typeb_gpu
+  python co8_v2walk.py > co8_dll_v2c_44.txt 2> co8_dll_v2c_44.err
+
+  REM -- Q2: the EDGE-CLASS-SPLIT GPU leg (the boundary +-1 ulp cases on the
+  REM     device; harness authored CPU-side at
+  REM     agents/TIE2/run/tie_boundary_probe_gpu.cu -- zero physics, the frozen
+  REM     walker_kernels.cuh under the DLL's own nvcc flags)
+  agents\TIE2\run\build_gpu_probe.cmd
+  cd /d E:\ChimeraWork\finish-agent\tools\science_funnel\typeb_gpu
+  E:\ChimeraWork\monkey-play-20260924\tools\monkey_campaign\agents\TIE2\run\tie_boundary_probe_gpu.exe
+
+  REM -- Q3 (W03's own C3 duty, listed for the broker's convenience): the
+  REM     clean-window C3 bars re-measure on walker_env_v2.dll
+  REM     (closeout-8's C3 was 3-way-contention-depressed, ef3f3554)
+  cd /d E:\ChimeraWork\finish-agent\tools\science_funnel\typeb_gpu
+  python co8_bars_v2.py
+
+ACCEPTANCE RULE WHEN RUN: Q1's decision line must show the continue outcome
+past 41 (no "REFUSED at tick 41 rc=5 ... adv=2 ticks=40"), and Q2's GPU
+decisions must match receipts/case123_tie_boundary_host.out's v2 leg line by
+line (host/GPU agreement = the registered EDGE-CLASS-SPLIT PASS).
