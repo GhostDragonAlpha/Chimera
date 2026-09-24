@@ -157,3 +157,17 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none (four independent evidence tasks all ready).
 
 **Next:** collect B1-B4 -> verify receipts -> I5: assemble BODY_RESOLUTION_MAP.md (one proposed map, preregistered per the architect's law, evidence+uncertainty per entry, smallest implementation change, explicit blockers) -> return for architectural approval. Ten-slot ceiling available if findings expose more independent work.
+
+## CHECKPOINT 2026-09-24 (T11) — B3 integrated
+
+**Verified:**
+- B3 (mechanical requirements) PASS 5/5, coordinator spot-verified against the fit packet's own reason strings ("body ulna: no fitted scale (endpoints not declared)" etc. — the unresolved cause is UNDECLARED LANDMARKS, not missing geometry/contracts).
+- Key structure: source tree humerus -> ulna -> radius -> hand; ulna owns elbow_flexion(_l); hands own the wrist triples; radius owns ZERO coordinates. Target FK terminates at wrist (no digits); fitted elbow/wrist origins already equal the target joints exactly; 30 sites unplaced (10 ulna + 5 hand per side).
+- Classification: all GEOMETRY gaps = NEEDS-NEW-EVIDENCE within existing contracts. ONE structural tension: ulna resolution re-anchors radius.P (first-child closure JOINT_EPS=1e-9) -> supersedes the A4-verified radius record (flag F-2/F-4 for Astra).
+- Architectural flags: F-1 digits out of scope; F-2 ulna/radius anchor partition ruling; F-3 hand-region landmark evidence pending B1; F-4 baseline supersession discipline.
+
+**Active:** B1, B2, B4 still running.
+
+**Blocked:** none.
+
+**Next:** integrate B1/B2/B4 -> I5 BODY_RESOLUTION_MAP.md (preregistered per architect law) -> return for approval.

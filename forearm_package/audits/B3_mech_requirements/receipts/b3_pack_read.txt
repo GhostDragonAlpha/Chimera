@@ -1,0 +1,45 @@
+birth sha256 550A5B3EC927EA13614AD250963B23E2948E76A238AC110DA9889F339AABFA3C
+pack  sha256 74B3AB044B7ADAED4A0F9349A81F5D3C87441084B2EC8981F4E0AFABA50C1662
+mesh verts 18459 tris 36630
+bbox x [-0.1993,0.1993] y [-0.0013,0.6481] z [-0.2787,0.1204] m
+joints nj=28
+  [ 0] neck         pos=(+0.0000,+0.4849,+0.0003) m  axis=(+1.000,+0.000,+0.000)  ROM=[-35.84,+130.23]  parent=spine_upper
+  [ 1] jaw          pos=(+0.0000,+0.5369,+0.0638) m  axis=(+1.000,+0.000,+0.000)  ROM=[-30.00,+60.00]  parent=neck
+  [ 2] spine_upper  pos=(+0.0000,+0.3828,-0.0109) m  axis=(+1.000,+0.000,+0.000)  ROM=[-169.73,+119.16]  parent=spine_mid
+  [ 3] spine_mid    pos=(+0.0000,+0.3029,+0.0161) m  axis=(+1.000,+0.000,+0.000)  ROM=[-124.51,+126.17]  parent=spine_lower
+  [ 4] spine_lower  pos=(+0.0000,+0.2223,+0.0075) m  axis=(+1.000,+0.000,+0.000)  ROM=[-117.87,+152.51]  parent=(root)
+  [ 5] tail_base    pos=(+0.0000,+0.2589,-0.0440) m  axis=(+1.000,+0.000,+0.000)  ROM=[-30.00,+87.14]  parent=spine_lower
+  [ 6] tail_mid     pos=(-0.0000,+0.2509,-0.1168) m  axis=(+1.000,+0.000,+0.000)  ROM=[-139.06,+138.73]  parent=tail_base
+  [ 7] shoulder_L   pos=(+0.0676,+0.3829,-0.0011) m  axis=(+1.000,+0.000,+0.000)  ROM=[-149.00,+60.00]  parent=spine_upper
+  [ 8] shoulder_R   pos=(-0.0676,+0.3829,-0.0011) m  axis=(+1.000,-0.000,-0.000)  ROM=[-149.00,+60.00]  parent=spine_upper
+  [ 9] elbow_L      pos=(+0.1155,+0.3191,-0.0061) m  axis=(+1.000,+0.000,+0.000)  ROM=[-145.00,+125.00]  parent=shoulder_L
+  [10] elbow_R      pos=(-0.1155,+0.3191,-0.0061) m  axis=(+1.000,-0.000,-0.000)  ROM=[-145.00,+125.00]  parent=shoulder_R
+  [11] wrist_L      pos=(+0.1450,+0.2615,-0.0060) m  axis=(-1.000,+0.000,+0.000)  ROM=[-30.00,+60.00]  parent=elbow_L
+  [12] wrist_R      pos=(-0.1450,+0.2615,-0.0060) m  axis=(-1.000,-0.000,-0.000)  ROM=[-30.00,+60.00]  parent=elbow_R
+  [13] hip_L        pos=(+0.0113,+0.2220,+0.0075) m  axis=(+1.000,+0.000,+0.000)  ROM=[-159.00,+119.00]  parent=spine_lower
+  [14] hip_R        pos=(-0.0113,+0.2220,+0.0075) m  axis=(+1.000,-0.000,-0.000)  ROM=[-159.00,+119.00]  parent=spine_lower
+  [15] knee_L       pos=(+0.0314,+0.1237,-0.0010) m  axis=(+1.000,+0.000,+0.000)  ROM=[-131.00,+147.00]  parent=hip_L
+  [16] knee_R       pos=(-0.0314,+0.1237,-0.0010) m  axis=(+1.000,-0.000,-0.000)  ROM=[-131.00,+147.00]  parent=hip_R
+  [17] ankle_L      pos=(+0.0300,+0.0220,+0.0044) m  axis=(-1.000,+0.000,+0.000)  ROM=[-159.21,+131.44]  parent=knee_L
+  [18] ankle_R      pos=(-0.0300,+0.0220,+0.0044) m  axis=(-1.000,-0.000,-0.000)  ROM=[-159.21,+131.44]  parent=knee_R
+  [19] tail_tip     pos=(+0.0000,+0.3267,-0.2733) m  axis=(+1.000,+0.000,+0.000)  ROM=[-45.00,+45.00]  parent=tail_mid
+  [20] ear_L        pos=(+0.0729,+0.5766,+0.0262) m  axis=(+0.000,+0.000,+1.000)  ROM=[-35.00,+40.00]  parent=neck
+  [21] ear_R        pos=(-0.0729,+0.5766,+0.0262) m  axis=(+0.000,-0.000,-1.000)  ROM=[-35.00,+40.00]  parent=neck
+  [22] lid_L        pos=(+0.0358,+0.5707,+0.0897) m  axis=(+1.000,+0.000,+0.000)  ROM=[-20.00,+50.00]  parent=neck
+  [23] lid_R        pos=(-0.0358,+0.5707,+0.0897) m  axis=(+1.000,-0.000,-0.000)  ROM=[-20.00,+50.00]  parent=neck
+  [24] brow_L       pos=(+0.0358,+0.5902,+0.0747) m  axis=(+1.000,+0.000,+0.000)  ROM=[-30.00,+10.00]  parent=neck
+  [25] brow_R       pos=(-0.0358,+0.5902,+0.0747) m  axis=(+1.000,-0.000,-0.000)  ROM=[-30.00,+10.00]  parent=neck
+  [26] mouth_L      pos=(+0.0309,+0.5257,+0.0833) m  axis=(+0.000,+0.000,+1.000)  ROM=[-25.00,+35.00]  parent=jaw
+  [27] mouth_R      pos=(-0.0309,+0.5257,+0.0833) m  axis=(+0.000,-0.000,-1.000)  ROM=[-25.00,+35.00]  parent=jaw
+digit-like joint names: NONE
+|elbow_R - shoulder_R| = 79.868 mm
+|wrist_R - elbow_R| = 64.745 mm
+|elbow_L - shoulder_L| = 79.868 mm
+|wrist_L - elbow_L| = 64.745 mm
+band elbow_R: primary-owner verts 318, secondary-owner verts 926
+band wrist_R: primary-owner verts 263, secondary-owner verts 310
+band elbow_L: primary-owner verts 318, secondary-owner verts 926
+band wrist_L: primary-owner verts 263, secondary-owner verts 310
+band wrist_R: primary-owner verts 263, secondary-owner verts 310
+FK children of wrist_R: NONE
+FK children of wrist_L: NONE

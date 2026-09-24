@@ -1,0 +1,32 @@
+=== fit joints: elbow/wrist coords ===
+{"axis": null, "body": "ulna", "name": "elbow_flexion", "origin": [-0.11548098385334016, 0.3191090774536133, -0.0060765563324093825], "owner_edge": "ulna", "reason": "body ulna: no fitted scale (endpoints not declared); axis not claimed", "status": "unresolved_body"}
+{"axis": null, "body": "hand_r", "name": "wrist_dev_r", "origin": [-0.1449945402145386, 0.26148236989974977, -0.005956328995525837], "owner_edge": "hand_r", "reason": "body hand_r: no fitted scale (endpoints not declared); axis not claimed", "status": "unresolved_body"}
+{"axis": null, "body": "hand_r", "name": "wrist_flex_r", "origin": [-0.1449945402145386, 0.26148236989974977, -0.005956328995525837], "owner_edge": "hand_r", "reason": "body hand_r: no fitted scale (endpoints not declared); axis not claimed", "status": "unresolved_body"}
+{"axis": null, "body": "hand_r", "name": "wrist_3_r", "origin": [-0.1449945402145386, 0.26148236989974977, -0.005956328995525837], "owner_edge": "hand_r", "reason": "body hand_r: no fitted scale (endpoints not declared); axis not claimed", "status": "unresolved_body"}
+{"axis": null, "body": "ulna_l", "name": "elbow_flexion_l", "origin": [0.11548098385334016, 0.3191090774536133, -0.0060765563324093825], "owner_edge": "ulna_l", "reason": "body ulna_l: no fitted scale (endpoints not declared); axis not claimed", "status": "unresolved_body"}
+{"axis": null, "body": "hand_l", "name": "wrist_dev_l", "origin": [0.1449945402145386, 0.26148236989974977, -0.005956328995525837], "owner_edge": "hand_l", "reason": "body hand_l: no fitted scale (endpoints not declared); axis not claimed", "status": "unresolved_body"}
+{"axis": null, "body": "hand_l", "name": "wrist_flex_l", "origin": [0.1449945402145386, 0.26148236989974977, -0.005956328995525837], "owner_edge": "hand_l", "reason": "body hand_l: no fitted scale (endpoints not declared); axis not claimed", "status": "unresolved_body"}
+{"axis": null, "body": "hand_l", "name": "wrist_3_l", "origin": [0.1449945402145386, 0.26148236989974977, -0.005956328995525837], "owner_edge": "hand_l", "reason": "body hand_l: no fitted scale (endpoints not declared); axis not claimed", "status": "unresolved_body"}
+
+=== unresolved_segments ledger: ulna/ulna_l/hand_r/hand_l ===
+{"axes": {"axial": "declared_unresolved", "b": "none", "c": "none"}, "body": "hand_l", "reason": "no fitted scale (axis source missing; not silently repaired)"}
+{"axes": {"axial": "declared_unresolved", "b": "none", "c": "none"}, "body": "hand_r", "reason": "no fitted scale (axis source missing; not silently repaired)"}
+{"axes": {"axial": "declared_unresolved", "b": "none", "c": "none"}, "body": "ulna", "reason": "no fitted scale (axis source missing; not silently repaired)"}
+{"axes": {"axial": "declared_unresolved", "b": "none", "c": "none"}, "body": "ulna_l", "reason": "no fitted scale (axis source missing; not silently repaired)"}
+
+=== correspondence audit segments (ulna/hand) ===
+
+=== placed/unplaced counts for the four bodies' sites ===
+ulna: 10 sites, 10 unplaced (NaN)  e.g. [('TRIlong-P5', True), ('TRIlat-P5', True), ('TRImed-P5', True)]
+ulna_l: 10 sites, 10 unplaced (NaN)  e.g. [('TRIlong_l-P5', True), ('TRIlat_l-P5', True), ('TRImed_l-P5', True)]
+hand_r: 5 sites, 5 unplaced (NaN)  e.g. [('ECRL-P4', True), ('ECRB-P4', True), ('ECU-P6', True)]
+hand_l: 5 sites, 5 unplaced (NaN)  e.g. [('ECRL_l-P4', True), ('ECRB_l-P4', True), ('ECU_l-P6', True)]
+
+=== tendon completion for wrist motors (right) ===
+BRD_tendon status: derived rest_length: 0.08883103763879713
+ECRL_tendon status: path_incomplete:unresolved_bodies ['hand_r'] rest_length: None
+ECRB_tendon status: path_incomplete:unresolved_bodies ['hand_r'] rest_length: None
+ECU_tendon status: path_incomplete:unresolved_bodies ['hand_r', 'ulna'] rest_length: None
+FCR_tendon status: path_incomplete:unresolved_bodies ['hand_r'] rest_length: None
+FCU_tendon status: path_incomplete:unresolved_bodies ['hand_r'] rest_length: None
+PT_tendon status: path_incomplete:unresolved_bodies ['ulna'] rest_length: None
