@@ -1,0 +1,9 @@
+falsifier (a) determinism receipt, M-F01, 2026-09-24
+committed file bytes:         13112 sha256(file) = 18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1
+in-process compile #1 bytes:  13112 sha256(file) = 18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1
+in-process compile #2 bytes:  13112 sha256(file) = 18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1
+fresh subprocess bytes:       13112 sha256(file) = 18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1
+byte-identical (all four):    True
+pinned declaration_sha256 (body without pin field): aa2607df97e0d6ec6a132b1e1ed0686da2ae920de7d659a8bb5ced013a358474
+note: sha256(file) covers the full bytes INCLUDING the pinned declaration_sha256
+field; declaration_sha256 covers the canonical body WITHOUT it. Both are stable.
