@@ -1,0 +1,11 @@
+baseline valid_report -> exit 0 ACCEPT
+M02 frozen -> exit 0 ACCEPT rules=[] | regen -> exit 0 ACCEPT rules=[]
+M04 frozen -> exit 0 ACCEPT rules=[] | regen -> exit 0 ACCEPT rules=[]
+M06 frozen -> exit 0 ACCEPT rules=[] | regen -> exit 0 ACCEPT rules=[]
+M07 frozen -> exit 0 ACCEPT rules=[] | regen -> exit 0 ACCEPT rules=[]
+M08 frozen -> exit 1 REJECT rules=['R11'] | regen -> exit 1 REJECT rules=['R11']
+M09 frozen -> exit 0 ACCEPT rules=[] | regen -> exit 0 ACCEPT rules=[]
+M10 frozen -> exit 1 REJECT rules=['R2'] | regen -> exit 1 REJECT rules=['R2']
+M11 frozen -> exit 1 REJECT rules=['R12', 'R13'] | regen -> exit 1 REJECT rules=['R12', 'R13']
+M12 frozen -> exit 1 REJECT rules=['R4'] | regen -> exit 1 REJECT rules=['R4']
+L2 diagonalized probe -> exit 0 ACCEPT rules=[]

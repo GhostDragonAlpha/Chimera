@@ -1,0 +1,28 @@
+{
+  "exit_code": 1,
+  "failure_reasons": [
+    {
+      "reason": "root_readiness_flag_not_false",
+      "rule": "R12"
+    },
+    {
+      "reason": "readiness_claim_found",
+      "rule": "R12"
+    },
+    {
+      "reason": "safety_flag_not_false",
+      "rule": "R13"
+    }
+  ],
+  "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M11.json",
+  "reader_cross_check": {
+    "ran": true,
+    "reader_verdict": "pass"
+  },
+  "rules_violated": [
+    "R12",
+    "R13"
+  ],
+  "stderr": "",
+  "verdict": "REJECT"
+}

@@ -1,0 +1,370 @@
+{
+  "agent": "B7x_validator_probe",
+  "preregistration_sha256": "d22900dda4f318a997734f1e209b1707f27740debb67581e3332544201a25ed8",
+  "validator": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\M10_validator\\rigid_body_mass_consumption_validator.py",
+  "validator_sha256": "94c2ee772c4a15db0966fcf963ed13fe2fcb9987f45c5897f8072a62f636f5dd",
+  "b7_matrix_sha256": "e1df46850cb018e3d3e6d25a7f0ec260515912ae9350774238ca454386dd3ffb",
+  "rows": [
+    {
+      "id": "M02",
+      "frozen": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M02.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regenerated": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\corrupt_M02.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regeneration_matches_b7_frozen": true
+    },
+    {
+      "id": "M04",
+      "frozen": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M04.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regenerated": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\corrupt_M04.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regeneration_matches_b7_frozen": true
+    },
+    {
+      "id": "M06",
+      "frozen": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M06.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regenerated": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\corrupt_M06.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regeneration_matches_b7_frozen": true
+    },
+    {
+      "id": "M07",
+      "frozen": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M07.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regenerated": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\corrupt_M07.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regeneration_matches_b7_frozen": true
+    },
+    {
+      "id": "M08",
+      "frozen": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M08.json",
+        "exit_code": 1,
+        "stderr": "",
+        "verdict": "REJECT",
+        "rules_violated": [
+          "R11"
+        ],
+        "failure_reasons": [
+          {
+            "rule": "R11",
+            "reason": "source_provenance_missing"
+          }
+        ],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regenerated": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\corrupt_M08.json",
+        "exit_code": 1,
+        "stderr": "",
+        "verdict": "REJECT",
+        "rules_violated": [
+          "R11"
+        ],
+        "failure_reasons": [
+          {
+            "rule": "R11",
+            "reason": "source_provenance_missing"
+          }
+        ],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regeneration_matches_b7_frozen": true
+    },
+    {
+      "id": "M09",
+      "frozen": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M09.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regenerated": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\corrupt_M09.json",
+        "exit_code": 0,
+        "stderr": "",
+        "verdict": "ACCEPT",
+        "rules_violated": [],
+        "failure_reasons": [],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regeneration_matches_b7_frozen": true
+    },
+    {
+      "id": "M10",
+      "frozen": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M10.json",
+        "exit_code": 1,
+        "stderr": "",
+        "verdict": "REJECT",
+        "rules_violated": [
+          "R2"
+        ],
+        "failure_reasons": [
+          {
+            "rule": "R2",
+            "reason": "partial_rejected"
+          }
+        ],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regenerated": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\corrupt_M10.json",
+        "exit_code": 1,
+        "stderr": "",
+        "verdict": "REJECT",
+        "rules_violated": [
+          "R2"
+        ],
+        "failure_reasons": [
+          {
+            "rule": "R2",
+            "reason": "partial_rejected"
+          }
+        ],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regeneration_matches_b7_frozen": true
+    },
+    {
+      "id": "M11",
+      "frozen": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M11.json",
+        "exit_code": 1,
+        "stderr": "",
+        "verdict": "REJECT",
+        "rules_violated": [
+          "R12",
+          "R13"
+        ],
+        "failure_reasons": [
+          {
+            "rule": "R12",
+            "reason": "root_readiness_flag_not_false"
+          },
+          {
+            "rule": "R12",
+            "reason": "readiness_claim_found"
+          },
+          {
+            "rule": "R13",
+            "reason": "safety_flag_not_false"
+          }
+        ],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regenerated": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\corrupt_M11.json",
+        "exit_code": 1,
+        "stderr": "",
+        "verdict": "REJECT",
+        "rules_violated": [
+          "R12",
+          "R13"
+        ],
+        "failure_reasons": [
+          {
+            "rule": "R12",
+            "reason": "root_readiness_flag_not_false"
+          },
+          {
+            "rule": "R12",
+            "reason": "readiness_claim_found"
+          },
+          {
+            "rule": "R13",
+            "reason": "safety_flag_not_false"
+          }
+        ],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regeneration_matches_b7_frozen": true
+    },
+    {
+      "id": "M12",
+      "frozen": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M12.json",
+        "exit_code": 1,
+        "stderr": "",
+        "verdict": "REJECT",
+        "rules_violated": [
+          "R4"
+        ],
+        "failure_reasons": [
+          {
+            "rule": "R4",
+            "reason": "hash_binding_mismatch"
+          }
+        ],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regenerated": {
+        "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\corrupt_M12.json",
+        "exit_code": 1,
+        "stderr": "",
+        "verdict": "REJECT",
+        "rules_violated": [
+          "R4"
+        ],
+        "failure_reasons": [
+          {
+            "rule": "R4",
+            "reason": "hash_binding_mismatch"
+          }
+        ],
+        "reader_cross_check": {
+          "ran": true,
+          "reader_verdict": "pass"
+        }
+      },
+      "regeneration_matches_b7_frozen": true
+    }
+  ],
+  "regeneration_matches_b7_frozen": {
+    "M02": true,
+    "M04": true,
+    "M06": true,
+    "M07": true,
+    "M08": true,
+    "M09": true,
+    "M10": true,
+    "M11": true,
+    "M12": true
+  },
+  "baseline": {
+    "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\valid_report.json",
+    "exit_code": 0,
+    "stderr": "",
+    "verdict": "ACCEPT",
+    "rules_violated": [],
+    "failure_reasons": [],
+    "reader_cross_check": {
+      "ran": true,
+      "reader_verdict": "pass"
+    }
+  },
+  "l2_probe": {
+    "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\regenerated\\L2_diagonalized.json",
+    "exit_code": 0,
+    "stderr": "",
+    "verdict": "ACCEPT",
+    "rules_violated": [],
+    "failure_reasons": [],
+    "reader_cross_check": {
+      "ran": true,
+      "reader_verdict": "pass"
+    }
+  }
+}

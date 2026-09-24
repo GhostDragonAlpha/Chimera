@@ -1,0 +1,12 @@
+{
+  "exit_code": 0,
+  "failure_reasons": [],
+  "fixture": "E:\\ChimeraWork\\mvc-20260924\\material_volume_campaign\\agents\\B7x_validator_probe\\fixtures\\b7_frozen\\corrupt_M09.json",
+  "reader_cross_check": {
+    "ran": true,
+    "reader_verdict": "pass"
+  },
+  "rules_violated": [],
+  "stderr": "",
+  "verdict": "ACCEPT"
+}

@@ -118,3 +118,8 @@ NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energ
 **Verified:** B5 verdict tally re-verified by coordinator (44 PASS); integrity clean. Conservation through subdivision proven at rounding scale across 128x cell growth; derived law matched (characterized conditioning, zero defects).
 **All [1302] casualties recovered:** O2, M04, M06, B3, B5 — every retry landed complete with the honest-resume pattern (brief survival checks, reconstructions marked, post-freeze edits audited).
 **Fleet:** 2 live (B8: M09 CLI defect fixes with exclusive ownership; B7x: B7's missed mutations vs M10's validator). These are the final two tasks before consolidation.
+
+## CHECKPOINT T18 — B7x integrated (the cross-check question answered)
+
+**Verified:** B7x probe re-run by coordinator — frozen + regenerated corpora agree on all nine verdicts; integrity clean (incl. M10's dir untouched). M10 closes 4/9 gaps by predicted rules; the value class is the honest open residual (needs regeneration-diff or value oracle — a DECISION REQUEST for the architect, not something static validation can conjure); L2 reproduced.
+**Fleet:** 1 live (B8 — the last task before consolidation).
