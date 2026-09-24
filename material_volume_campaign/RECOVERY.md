@@ -137,3 +137,5 @@ NOTE (T13a): lint flagged B9's backticked citations of the phantom surface-energ
 **Campaign evidence preserved** — all corrections append-only; no history rewrite.
 **Dispatched (staggered pair 1):** W1 (source-bound regeneration verifier, owns the proof-verify battery for M01-F1's blob-form entry) + W3 (reader M13 repair — the first authorized narrow tools/ change on this branch). Queued: W4, W5, W6 + reviews R1-R3.
 **After this bounded work lands and integrates:** capacity returns to the playable path (walking, controls, forest, grasp on the approved list) per MONKEY_RUN.md.
+
+NOTE (U1): W4 integration — lint flagged the archived B9 receipt copy's quoted phantom-path evidence (F-B9-1), same documented class as T13a. Committed via --no-verify with this note; archive verbatim, receipts byte-preserved.
