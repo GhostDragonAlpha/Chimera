@@ -1,0 +1,110 @@
+[
+ {
+  "file": "_envelope_probe.json",
+  "baseline_sha256": "ef4cd6b125086b2907c3a2b700c3c3741bb2be05ba7b8a17eac3bc1e49b9d2b7",
+  "gen1_sha256": "ef4cd6b125086b2907c3a2b700c3c3741bb2be05ba7b8a17eac3bc1e49b9d2b7",
+  "gen2_sha256": "ef4cd6b125086b2907c3a2b700c3c3741bb2be05ba7b8a17eac3bc1e49b9d2b7",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "IDENTICAL",
+  "first_diff_offset": ""
+ },
+ {
+  "file": "actual_monkey_fit.json",
+  "baseline_sha256": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+  "gen1_sha256": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+  "gen2_sha256": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "IDENTICAL",
+  "first_diff_offset": ""
+ },
+ {
+  "file": "actual_monkey_tables.txt",
+  "baseline_sha256": "c3f90f2342895eccb9a6ce2ef8dafca32e075bab0ca020c76eb6e4184f55397d",
+  "gen1_sha256": "c3f90f2342895eccb9a6ce2ef8dafca32e075bab0ca020c76eb6e4184f55397d",
+  "gen2_sha256": "c3f90f2342895eccb9a6ce2ef8dafca32e075bab0ca020c76eb6e4184f55397d",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "IDENTICAL",
+  "first_diff_offset": ""
+ },
+ {
+  "file": "admission_actual_monkey.json",
+  "baseline_sha256": "833ca65b282eab83180bdbe65bbd8f934924fdd1416c8058d510e5481d86b4ad",
+  "gen1_sha256": "833ca65b282eab83180bdbe65bbd8f934924fdd1416c8058d510e5481d86b4ad",
+  "gen2_sha256": "833ca65b282eab83180bdbe65bbd8f934924fdd1416c8058d510e5481d86b4ad",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "IDENTICAL",
+  "first_diff_offset": ""
+ },
+ {
+  "file": "attachment_candidates.json",
+  "baseline_sha256": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae",
+  "gen1_sha256": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae",
+  "gen2_sha256": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "IDENTICAL",
+  "first_diff_offset": ""
+ },
+ {
+  "file": "experiment_transverse_candidate.json",
+  "baseline_sha256": "3c13fca70c2a726ec59379f2c5b1e597db3af5d82bedc39d0a4c08186f58ab3a",
+  "gen1_sha256": "3c13fca70c2a726ec59379f2c5b1e597db3af5d82bedc39d0a4c08186f58ab3a",
+  "gen2_sha256": "3c13fca70c2a726ec59379f2c5b1e597db3af5d82bedc39d0a4c08186f58ab3a",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "IDENTICAL",
+  "first_diff_offset": ""
+ },
+ {
+  "file": "figure_actual_fit.png",
+  "baseline_sha256": "b8e153c3a681e7b7f70d781f6e064d578c88ca942e412ca92e4165505b92fbd0",
+  "gen1_sha256": "b8e153c3a681e7b7f70d781f6e064d578c88ca942e412ca92e4165505b92fbd0",
+  "gen2_sha256": "b8e153c3a681e7b7f70d781f6e064d578c88ca942e412ca92e4165505b92fbd0",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "IDENTICAL",
+  "first_diff_offset": ""
+ },
+ {
+  "file": "figure_forearm_candidates.png",
+  "baseline_sha256": "bb5095474c0b1603b71c9652c6098d24c12070c0015e0bc40d89197ee92aeed9",
+  "gen1_sha256": "bb5095474c0b1603b71c9652c6098d24c12070c0015e0bc40d89197ee92aeed9",
+  "gen2_sha256": "bb5095474c0b1603b71c9652c6098d24c12070c0015e0bc40d89197ee92aeed9",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "IDENTICAL",
+  "first_diff_offset": ""
+ },
+ {
+  "file": "figure_transverse_candidate.png",
+  "baseline_sha256": "1f514e9fe2850db418e2c888ab7020ef8ea61c7590eba3bd324300b449006eeb",
+  "gen1_sha256": "1f514e9fe2850db418e2c888ab7020ef8ea61c7590eba3bd324300b449006eeb",
+  "gen2_sha256": "1f514e9fe2850db418e2c888ab7020ef8ea61c7590eba3bd324300b449006eeb",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "IDENTICAL",
+  "first_diff_offset": ""
+ },
+ {
+  "file": "grounded_chimanoid.json",
+  "baseline_sha256": "457496993f7dbd1ea900e2c32f984fbc7c90402ef34d107fd2b3b38fa0ce47c4",
+  "gen1_sha256": "8fdb3224bf4f671a673c0188e2e44136fc9a845b44fbd49f2c53b87872c1380f",
+  "gen2_sha256": "8fdb3224bf4f671a673c0188e2e44136fc9a845b44fbd49f2c53b87872c1380f",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "DIFFER",
+  "first_diff_offset": 2308
+ },
+ {
+  "file": "mirror_read.json",
+  "baseline_sha256": "aa625a929fd18e9a60aa78bf6a6baebbd22dbdc724f3912e36feb234bedb230f",
+  "gen1_sha256": "97020cbda50d1e9bbb9a0f069435eb78fda4174066fa37504637e5666b6a6b44",
+  "gen2_sha256": "97020cbda50d1e9bbb9a0f069435eb78fda4174066fa37504637e5666b6a6b44",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "DIFFER",
+  "first_diff_offset": 1741
+ },
+ {
+  "file": "synthetic_twin.json",
+  "baseline_sha256": "92d6fecf824366c817904723401489defe4a9bc06fdef7d92b31fd37ca68e22f",
+  "gen1_sha256": "59883cb60c735deaa4d498ce99f1e9f0d845b90dc696e9571fde069461bc3da5",
+  "gen2_sha256": "59883cb60c735deaa4d498ce99f1e9f0d845b90dc696e9571fde069461bc3da5",
+  "gen1_vs_gen2": "IDENTICAL",
+  "gen2_vs_baseline": "DIFFER",
+  "first_diff_offset": 1664
+ }
+]

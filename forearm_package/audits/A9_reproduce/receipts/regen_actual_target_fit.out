@@ -1,0 +1,88 @@
+ACTUAL-TARGET FIT (chimanoid.xml -> monkey_birth.bin + monkey_joints.bin)
+authored scale 0.065 m/unit
+chirality det +1.000 (right)
+shared-joint max separation 0.000e+00 m
+geometrically resolved 9 / flagged 0 / unresolved 9 / transported under assumption 8 / physically admitted 0
+
+SEGMENTS (resolved)
+  femur_r       scale [0.3632 0.9939 0.6108]  src[EEE]  resolved  b:skin_envelope_vs_interna c:skin_envelope_vs_interna
+  femur_l       scale [0.3632 0.9939 0.6108]  src[EEE]  resolved  b:skin_envelope_vs_interna c:skin_envelope_vs_interna
+  thorax_dummy  scale [0.2226 1.     1.    ]  src[EAA]  resolved  b:authored c:authored
+      b-assumption: thorax_dummy has no source sites; transverse assumed identity
+      c-assumption: thorax_dummy has no source sites; transverse assumed identity
+  tibia_r       scale [0.3386 0.4884 0.8252]  src[EEE]  resolved  b:skin_envelope_vs_interna c:skin_envelope_vs_interna
+  tibia_l       scale [0.3386 0.4884 0.8252]  src[EEE]  resolved  b:skin_envelope_vs_interna c:skin_envelope_vs_interna
+  humerus       scale [0.229  1.2848 1.1619]  src[EEE]  resolved  b:skin_envelope_vs_interna c:skin_envelope_vs_interna
+  humerus_l     scale [0.229  1.2848 1.1619]  src[EEE]  resolved  b:skin_envelope_vs_interna c:skin_envelope_vs_interna
+  radius        scale [0.2217 0.2217 0.2217]  src[EAA]  resolved  b:authored c:authored
+      b-assumption: uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is me
+      c-assumption: uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is me
+  radius_l      scale [0.2217 0.2217 0.2217]  src[EAA]  resolved  b:authored c:authored
+      b-assumption: uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is me
+      c-assumption: uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is me
+
+SEGMENTS (unresolved - no endpoints declared by the pack; not invented)
+  hand_l        no fitted scale (axis source missing; not silently repaired)  axes={'axial': 'declared_unresolved', 'b': 'none', 'c': 'none'}
+  hand_r        no fitted scale (axis source missing; not silently repaired)  axes={'axial': 'declared_unresolved', 'b': 'none', 'c': 'none'}
+  talus_l       no fitted scale (axis source missing; not silently repaired)  axes={'axial': 'declared_unresolved', 'b': 'none', 'c': 'none'}
+  talus_r       no fitted scale (axis source missing; not silently repaired)  axes={'axial': 'declared_unresolved', 'b': 'none', 'c': 'none'}
+  thorax        no fitted scale (axis source missing; not silently repaired)  axes={'axial': 'declared_unresolved', 'b': 'none', 'c': 'none'}
+  toes_l        no fitted scale (axis source missing; not silently repaired)  axes={'axial': 'declared_unresolved', 'b': 'none', 'c': 'none'}
+  toes_r        no fitted scale (axis source missing; not silently repaired)  axes={'axial': 'declared_unresolved', 'b': 'none', 'c': 'none'}
+  ulna          no fitted scale (axis source missing; not silently repaired)  axes={'axial': 'declared_unresolved', 'b': 'none', 'c': 'none'}
+  ulna_l        no fitted scale (axis source missing; not silently repaired)  axes={'axial': 'declared_unresolved', 'b': 'none', 'c': 'none'}
+
+sites: 300 placed / 168 ordered-unplaced
+
+tendons: 42 derived / 78 path_incomplete
+
+FOREARM OUTER-ENVELOPE (target_envelope.py; SKIN envelope, NOT internal anatomy)
+  radius    sections t=[0.35, 0.5, 0.65] verts=[75, 66, 56] b=20.2mm (u=0.5) c=22.9mm (u=0.1)
+  radius_l  sections t=[0.35, 0.5, 0.65] verts=[75, 66, 56] b=20.2mm (u=0.5) c=22.9mm (u=0.1)
+  WIDTH SCREEN (coarse 1-D median screen, NOT a spatial claim): ok=True
+      [radius b] fitted spread 5.7 mm vs envelope median 20.2 mm (clearance 14.5 mm)
+      [radius c] fitted spread 5.9 mm vs envelope median 22.9 mm (clearance 17.0 mm)
+      [radius_l b] fitted spread 5.7 mm vs envelope median 20.2 mm (clearance 14.5 mm)
+      [radius_l c] fitted spread 5.9 mm vs envelope median 22.9 mm (clearance 17.0 mm)
+  HULL SAMPLING (session-4 diagnostic, retained verbatim): ok=False inside=3 tight=0 outside=5 unresolved=8
+      OUTSIDE: BRD-P2, BRD-P3, ECRB-P2, ECRL-P2, PT-P5
+      UNRESOLVED: BIClong-P11, BIClong-P9, BICshort-P6, BICshort-P8, ECRB-P3, ECRL-P3, ECU-P5, PT-P3
+  HULL SAMPLING (session-4 diagnostic, retained verbatim): ok=False inside=3 tight=0 outside=5 unresolved=8
+      OUTSIDE: BRD_l-P2, BRD_l-P3, ECRB_l-P2, ECRL_l-P2, PT_l-P5
+      UNRESOLVED: BIClong_l-P11, BIClong_l-P9, BICshort_l-P6, BICshort_l-P8, ECRB_l-P3, ECRL_l-P3, ECU_l-P5, PT_l-P3
+  LOOP AUTHORITY (session-5 final; triangle-plane at exact axial): ok=False inside=6 tight=1 outside=7 ambiguous=2
+      OUTSIDE: BIClong-P9, BICshort-P6, BRD-P2, BRD-P3, ECRB-P2, ECRL-P2, PT-P5
+      TIGHT: PT-P3
+      AMBIGUOUS: ECRB-P3, ECRL-P3
+  LOOP AUTHORITY (session-5 final; triangle-plane at exact axial): ok=False inside=6 tight=1 outside=7 ambiguous=2
+      OUTSIDE: BIClong_l-P9, BICshort_l-P6, BRD_l-P2, BRD_l-P3, ECRB_l-P2, ECRL_l-P2, PT_l-P5
+      TIGHT: PT_l-P3
+      AMBIGUOUS: ECRB_l-P3, ECRL_l-P3
+
+PHYSIOLOGY (uniform-density affine transport; admission-aware)
+  pelvis        ROOT-REF mass    11.777 kg  src  11.777  detS    1.000  root_ref_frame_unscaled 
+        root reference frame only: identity scale carries the original mass as a reference-frame quantity — it does not measure 
+  femur_r       TRANSPORT mass     1.435 kg  src   6.511  detS    0.220  source_effective_x_det_scale nonuniform_scale_axes
+  tibia_r       TRANSPORT mass     0.354 kg  src   2.595  detS    0.136  source_effective_x_det_scale nonuniform_scale_axes
+  femur_l       TRANSPORT mass     1.435 kg  src   6.511  detS    0.220  source_effective_x_det_scale nonuniform_scale_axes
+  tibia_l       TRANSPORT mass     0.354 kg  src   2.595  detS    0.136  source_effective_x_det_scale nonuniform_scale_axes
+  humerus       TRANSPORT mass     0.834 kg  src   2.439  detS    0.342  source_effective_x_det_scale nonuniform_scale_axes
+  radius        TRANSPORT mass     0.008 kg  src   0.729  detS    0.011  source_effective_x_det_scale 
+  humerus_l     TRANSPORT mass     0.834 kg  src   2.439  detS    0.342  source_effective_x_det_scale nonuniform_scale_axes
+  radius_l      TRANSPORT mass     0.008 kg  src   0.729  detS    0.011  source_effective_x_det_scale 
+  TRANSPORTED-under-assumption total     5.263 kg  (physically admitted 0.000)  | flagged    0.000 | root-ref   11.777
+  (fitted mass = source effective mass ~ volume ratio at constant density; NOT a tissue reconstruction)
+
+PROVENANCE
+  target_mesh          E:\PythonChimera\Saved\meshes\monkey_birth.bin sha256 550A5B3EC927EA13…
+  target_binding_pack  E:\PythonChimera\Saved\meshes\monkey_joints.bin sha256 74B3AB044B7ADAED…
+  source_xml           E:\PythonChimera\.tmp\chimanoid.xml sha256 675e00d0898cf7a1…
+  correspondence        sha256 52c92fe0d207a599…
+  source raw 675e00d0898cf7a1… vs canonical(LF) 7caa32c6e31e3198… (difference: trailing CRLF only)
+  aspect policy: {"profile": "policed_flag", "max_magnitude": 5.0, "min_magnitude": 0.2, "max_aspect": 6.0, "on_violation": "flag (never silent repair)"}
+Admission summary -> E:\PythonChimera\.tmp\anatomy_compiler\runs\admission_actual_monkey.json
+
+attachment candidates -> E:\PythonChimera\.tmp\anatomy_compiler\runs\attachment_candidates.json
+packet -> E:\PythonChimera\.tmp\anatomy_compiler\runs\actual_monkey_fit.json
+tables -> E:\PythonChimera\.tmp\anatomy_compiler\runs\actual_monkey_tables.txt
+admission -> E:\PythonChimera\.tmp\anatomy_compiler\runs\admission_actual_monkey.json

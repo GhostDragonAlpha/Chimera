@@ -1,0 +1,119 @@
+step_C keys: ['radius', 'radius_l']
+{
+ "radius": {
+  "db_m": 0.00624,
+  "dc_m": 0.00202,
+  "objective_m2": 4.34689e-07,
+  "bounds_ok": true,
+  "fitting_sections_ok": false,
+  "loop_authority_ok": false,
+  "additional_sections_ok": true,
+  "additional_sections_sites_judged": 7,
+  "passed": false,
+  "loop_authority_candidate": {
+   "n_inside": 14,
+   "n_inside_insufficient_clearance": 0,
+   "n_outside": 0,
+   "n_unresolved": 2,
+   "outside": [],
+   "inside_insufficient_clearance": [],
+   "unresolved": [
+    "ECRB-P3",
+    "ECRL-P3"
+   ]
+  },
+  "additional_sections": {
+   "n_identified_loops": {
+    "0.42": 1,
+    "0.58": 1
+   },
+   "per_site_signed_distance_m": {
+    "BRD-P2": {
+     "0.42": -0.001357696
+    },
+    "ECRL-P2": {
+     "0.42": -0.001699027,
+     "0.58": -0.002217936
+    },
+    "ECRB-P2": {
+     "0.42": -0.002632345,
+     "0.58": -0.003182401
+    },
+    "FCU-P2": {
+     "0.58": -0.009004085
+    },
+    "PT-P5": {
+     "0.42": -0.003306963
+    }
+   }
+  },
+  "per_site_displacement_m": {
+   "BIClong-P9": 0.006558811,
+   "BIClong-P11": 0.006558811,
+   "BICshort-P6": 0.006558811,
+   "BICshort-P8": 0.006558811,
+   "BRD-P2": 0.006558811,
+   "BRD-P3": 0.006558811,
+   "ECRL-P2": 0.006558811,
+   "ECRL-P3": 0.006558811,
+   "ECRB-P2": 0.006558811,
+   "ECRB-P3": 0.006558811,
+   "ECU-P5": 0.006558811,
+   "FCR-P2": 0.006558811,
+   "FCU-P2": 0.006558811,
+   "FCU-P3": 0.006558811,
+   "PT-P3": 0.006558811,
+   "PT-P5": 0.006558811
+  },
+  "max_displacement_m": 0.006558811
+ },
+ "radius_l": {
+  "db_m": 0.00624,
+  "dc_m": -0.00202,
+  "objective_m2": 4.34689e-07,
+  "bounds_ok": true,
+  "fitting_sections_ok": false,
+  "loop_authority_ok": false,
+  "additional_sections_ok": true,
+  "additional_sections_sites_judged": 7,
+  "passed": false,
+  "loop_authority_candidate": {
+   "n_inside": 14,
+   "n_inside_insufficient_clearance": 0,
+   "n_outside": 0,
+   "n_unresolved": 2,
+   "outside": [],
+   "inside_insufficient_clearance": [],
+   "unresolved": [
+    "ECRB_l-P3",
+    "ECRL_l-P3"
+   ]
+  },
+  "additional_sections": {
+   "n_identified_loops": {
+    "0.42": 1,
+    "0.58": 1
+   },
+   "per_site_signed_distance_m": {
+    "BRD_l-P2": {
+     "0.42": -0.001357697
+    },
+    "ECRL_l-P2": {
+     "0.42": -0.001699028,
+     "0.58": -0.002217936
+    },
+    "ECRB_l-P2": {
+     "0.42": -0.002632346,
+     "0.58": -0.003182401
+    },
+    "FCU_l-P2": {
+     "0.58": -0.008996789
+    },
+    "PT_l-P5": {
+     "0.42": -0.003306964
+    }
+   }
+  },
+  "per_site_displacement_m": {
+   "BIClong_l-P9": 0.006558811,
+   "BIClong_l-P11": 0.00

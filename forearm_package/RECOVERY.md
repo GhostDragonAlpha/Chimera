@@ -70,3 +70,16 @@ A1 left wrist ambiguity · A2 right wrist ambiguity · A3 32-site source audit �
 **Blocked:** none mechanically; substantive blockers accumulating for I3 (hand/ulna resolution; wrist ambiguity; Astra decisions).
 
 **Next:** integrate A1/A2/A5/A8/A9 → I1 → I2 (fill A3/A4/A6/A7 slots) → I3.
+
+## CHECKPOINT 2026-09-24 (T5) — A9 integrated (reproduction secured)
+
+**Verified:**
+- A9 (Session-5 reproduction) PASS 6/6: 49/49 falsifiers green (8.2 s); 9/9 session-5 artifacts byte-identical; determinism 2x regen 12/12; H-1 CONFIRMED at producer level; candidate record byte-identical (failure stands; dc mirror-signs recorded: +2.02 right / -2.02 left).
+- A9 quarantine used a temporary .tmp swap + junction (hardcoded paths); coordinator INDEPENDENTLY verified the restore: live .tmp/anatomy_compiler is a real dir (no junction), 36/36 code+runs files hash-match the snapshot MANIFEST.
+- Findings banked: S6 runs/-mkdir environment gap; 3 STALE session-4 side artifacts labeled (grounded_chimanoid / mirror_read / synthetic_twin — never cite as session-5 outputs); absolute-path hardcoding as reproducibility gap (Astra proposals).
+
+**Active:** A1, A2, A5, A8 still running.
+
+**Blocked:** none mechanically.
+
+**Next:** integrate A1/A2/A5/A8 → I1 → I2 (fill all landed slots) → I3.

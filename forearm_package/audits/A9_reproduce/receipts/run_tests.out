@@ -1,0 +1,74 @@
+anatomy_compiler_run_tests: counts gate + membrane falsifiers F1-F7
+G0 counts gate (real XML + synthetic twin)
+  PASS  g0_real_counts
+  PASS  g0_synth_twin_counts
+F1 shared joints are one point
+  PASS  f1_synth_closure
+  PASS  f1_real_closure
+  PASS  f1_rig_closure
+F2 proper-rotation invariance
+  PASS  f2_rotation_invariance
+F3 mirror policy
+  PASS  F3a preserve-mode reflection refused  (handedness_mismatch)
+  PASS  f3_mirror_mode_exact
+F4 site-subtree coupling
+  PASS  f4_site_subtree_coupling
+F5 analytic vs finite-difference moment arms
+  PASS  f5_analytic_vs_finite_difference
+F6 uniform-scale closed forms
+  PASS  f6_uniform_scale_closed_forms
+F7 named-refusal catalog
+  PASS  F7 bad_global_scale  (bad_global_scale)
+  PASS  F7 bad_handedness  (bad_handedness)
+  PASS  F7 missing_mirror_normal  (missing_mirror_normal)
+  PASS  F7 bad_mirror_normal  (bad_mirror_normal)
+  PASS  F7 non_proper_target_frame  (non_proper_target_frame)
+  PASS  F7 unknown_source_body  (unknown_source_body)
+  PASS  F7 chain_conflict  (chain_conflict)
+  PASS  F7 duplicate_segment  (duplicate_segment)
+  PASS  F7 missing_landmark  (missing_landmark)
+  PASS  F7 bad_landmark  (bad_landmark)
+  PASS  F7 unknown_source_joint  (unknown_source_joint)
+  PASS  F7 duplicate_coord  (duplicate_coord)
+  PASS  F7 unassigned_coords  (unassigned_coords)
+  PASS  F7 bad_scale_policy  (bad_scale_policy)
+  PASS  F7 aspect_without_widths  (bad_scale_policy)
+  PASS  F7 missing_root_landmark  (missing_landmark)
+  PASS  F7 unknown_site  (unknown_site)
+  PASS  F7 bad_source_landmark  (bad_source_landmark)
+  PASS  F7 unknown_source_body(src)  (unknown_source_body)
+  PASS  F7 unknown_source_joint(src)  (unknown_source_joint)
+  PASS  F7 degenerate_bone  (degenerate_bone)
+  PASS  F7 axis_parallel_roll  (axis_parallel_roll)
+  PASS  F7 shared_joint_separation  (shared_joint_separation)
+  PASS  F7 handedness_mismatch  (handedness_mismatch)
+S1 aspect scale-policy closed form
+  PASS  s1_aspect_radial_closed_form
+S2 NONUNIFORM affine-image mass/inertia closed forms (independent re-derivation)
+  PASS  s2_nonuniform_mass_inertia_closed_form
+S3 aspect bounds refuse|flag|unbounded (never silent repair)
+  PASS  s3_aspect_bounds_policy
+S4 actual-monkey-target packet invariants (deterministic)
+  PASS  s4_actual_target_packet
+S5 bounded forearm envelope estimator (interior; never internal anatomy)
+  PASS  s5_forearm_envelope_estimator
+S6 strict JSON export (unresolved -> null, no NaN Infinity tokens)
+  FAIL  s6_strict_json_export  -> FileNotFoundError: [Errno 2] No such file or directory: 'E:\\PythonChimera\\.tmp\\anatomy_compiler\\runs\\actual_monkey_fit.json.s6.json'
+S7 provenance record (hashes, scale, aspect policy, upstream identity)
+  PASS  s7_provenance_recorded
+S8 actuator hygiene (120 <actuator> records; default not an actuator)
+  PASS  s8_actuator_hygiene
+S9 strict serialization gate (unresolved->null; resolved NaN refused)
+  PASS  s9_serialization_validation
+S10 admission split (transported-under-assumption vs physically-admitted)
+  PASS  s10_admission_split
+S11 envelope width screen (coarse) vs containment (spatial + unresolved-honest)
+  PASS  s11_envelope_screen_vs_containment
+S12 attachment-candidates derivation (endpoint roles, mech-qual=false, transforms, hashes)
+  PASS  s12_attachment_candidates
+S13 raw-XML-to-export unit identity (mesh factor never enters source coords)
+  PASS  s13_source_units_raw_xml
+S14 local triangle-plane section loops (final skin-containment authority)
+  PASS  s14_section_loop_containment
+
+1 FAILED: ['s6_strict_json_export']

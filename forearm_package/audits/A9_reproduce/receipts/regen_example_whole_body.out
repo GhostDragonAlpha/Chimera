@@ -1,0 +1,71 @@
+panAnatomy compiler v1 — whole-body example
+  source file   chimanoid.xml
+  revision      e021d5d9d1698dafea93c0dcf34b4bc8ce1530e7  sha256 675e00d0898cf7a1...
+  source counts bodies=19 coords=39 sites=468 tendons=120 muscles=120
+  target        55 landmarks, 18 segments, origin (0.0, 0.85, 0.0)
+  mirror/preserve   refused [handedness_mismatch]
+  mirror/mirror     accepted  chirality_det=-1.000 frame_handedness=left
+
+segments (rank body parent axial-scale diag(scale) roll-twist)
+     1 femur_r      pelvis       1.020   1.020,1.020,1.020  +90.0deg
+     1 femur_l      pelvis       1.020   1.020,1.020,1.020  -90.0deg
+     1 thorax_dummy pelvis       0.844   0.844,0.844,0.844  +90.0deg
+     2 tibia_r      femur_r      1.076   1.076,1.076,1.076  -90.0deg
+     2 tibia_l      femur_l      1.076   1.076,1.076,1.076  -90.0deg
+     2 thorax       thorax_dummy 1.594   1.594,1.594,1.594  +90.0deg
+     3 talus_r      tibia_r      1.292   1.292,1.292,1.292  -90.0deg
+     3 talus_l      tibia_l      1.292   1.292,1.292,1.292  -90.0deg
+     3 humerus      thorax       0.956   0.956,0.956,0.956  +90.0deg
+     3 humerus_l    thorax       0.956   0.956,0.956,0.956  +90.0deg
+     4 toes_r       talus_r      2.967   2.967,2.967,2.967  -90.0deg
+     4 toes_l       talus_l      2.967   2.967,2.967,2.967  -90.0deg
+     4 ulna         humerus      2.600   2.600,2.600,2.600  -90.0deg
+     4 ulna_l       humerus_l    2.600   2.600,2.600,2.600  +90.0deg
+     5 radius       ulna         1.048   1.048,1.048,1.048  +90.0deg
+     5 radius_l     ulna_l       1.048   1.048,1.048,1.048  +90.0deg
+     6 hand_r       radius       7.155   7.155,7.155,7.155  -90.0deg
+     6 hand_l       radius_l     7.155   7.155,7.155,7.155  -90.0deg
+
+shared-joint closure        max 0.00e+00 m
+
+physiology (body mass kg detS inertia eigenvalues)
+  hand_r              157.74   344.778  9.27e+00 1.51e+01 2.27e+01
+  hand_l              157.74   344.778  9.27e+00 1.51e+01 2.27e+01
+  thorax              143.65     5.395  1.25e+01 2.38e+01 2.45e+01
+  ulna                 12.82    17.581  7.35e-02 3.52e-01 3.82e-01
+  ulna_l               12.82    17.581  7.35e-02 3.52e-01 3.82e-01
+  pelvis               11.78     1.000  5.79e-02 8.71e-02 1.03e-01
+  femur_r               5.37     0.825  2.55e-02 9.72e-02 1.03e-01
+  femur_l               5.37     0.825  2.55e-02 9.72e-02 1.03e-01
+  toes_r                4.12    19.042  1.36e-02 1.36e-02 2.72e-02
+  toes_l                4.12    19.042  1.36e-02 1.36e-02 2.72e-02
+  tibia_r               3.74     1.441  9.38e-03 9.27e-02 9.40e-02
+  tibia_l               3.74     1.441  9.38e-03 9.27e-02 9.40e-02
+  humerus               2.47     1.011  4.20e-03 1.22e-02 1.37e-02
+  humerus_l             2.46     1.011  4.19e-03 1.22e-02 1.36e-02
+  talus_r               2.12     1.574  4.95e-03 1.80e-02 2.01e-02
+  talus_l               2.12     1.574  4.95e-03 1.80e-02 2.01e-02
+  radius                0.79     1.084  7.07e-04 3.39e-03 3.68e-03
+  radius_l              0.79     1.084  7.07e-04 3.39e-03 3.68e-03
+
+total fitted mass (grounded) 533.8 kg  vs source total 68.5 kg
+
+specimen muscles (fitted path rest length, force/timeconst ingested unchanged)
+  glut_med1_r          tendon=glut_med1_r_tendon       l0=0.5137 status=path:derived|physiology:requires_physiological_rerun
+  glut_med2_r          tendon=glut_med2_r_tendon       l0=0.4592 status=path:derived|physiology:requires_physiological_rerun
+  glut_med3_r          tendon=glut_med3_r_tendon       l0=0.4152 status=path:derived|physiology:requires_physiological_rerun
+  bifemlh_r            tendon=bifemlh_r_tendon         l0=0.6828 status=path:derived|physiology:requires_physiological_rerun
+  bifemsh_r            tendon=bifemsh_r_tendon         l0=0.1117 status=path:derived|physiology:requires_physiological_rerun
+  sar_r                tendon=sar_r_tendon             l0=0.9357 status=path:derived|physiology:requires_physiological_rerun
+  no-path muscles: 0  (...)
+
+unsupported features (ledger, never invented)
+  tail                   absent_in_source  no 'tail' token in source taxonomy
+  neck/head              absent_in_source  no 'neck' token in source taxonomy
+  neck/head              absent_in_source  no 'head' token in source taxonomy
+  articulated_fingers    absent_in_source  no 'finger' token in source taxonomy
+
+analytic vs FD moment arms (whole body, 120 tendons): all matched=True worst rel dev=2.78e-11
+
+JSON written: E:\PythonChimera\forearm_package\audits\A9_reproduce\work\runs\grounded_chimanoid.json
+rules: example_whole_body.py exit 0

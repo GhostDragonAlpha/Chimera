@@ -1,0 +1,13 @@
+E:\PythonChimera\forearm_package\audits\A9_reproduce\work\target_envelope.py:158: DeprecationWarning: Arrays of 2-dimensional vectors are deprecated. Use arrays of 3-dimensional vectors instead. (deprecated in NumPy 2.0)
+  while len(lower) >= 2 and np.cross(p[lower[-1]] - p[lower[-2]], p[i] - p[lower[-2]]) <= 0:
+E:\PythonChimera\forearm_package\audits\A9_reproduce\work\target_envelope.py:163: DeprecationWarning: Arrays of 2-dimensional vectors are deprecated. Use arrays of 3-dimensional vectors instead. (deprecated in NumPy 2.0)
+  while len(upper) >= 2 and np.cross(p[upper[-1]] - p[upper[-2]], p[i] - p[upper[-2]]) <= 0:
+elbow_R -> wrist_R
+  sections: [(0.35, 75, 0.0219, 0.0204), (0.5, 66, 0.0221, 0.0209), (0.65, 56, 0.0224, 0.0211)]
+  per-axis: {'b': {'median': 0.0221, 'min': 0.0219, 'max': 0.0224, 'std': 0.0002, 'uncertainty': 0.0002, 'n_sections_measured': 3}, 'c': {'median': 0.0209, 'min': 0.0204, 'max': 0.0211, 'std': 0.0003, 'uncertainty': 0.0003, 'n_sections_measured': 3}}
+  sensitivity: {'b': {'median_range_min': 0.0219, 'median_range_max': 0.0226, 'n_variants': 9, 'mean': 0.0223}, 'c': {'median_range_min': 0.0204, 'median_range_max': 0.0211, 'n_variants': 9, 'mean': 0.0209}}
+elbow_L -> wrist_L
+  sections: [(0.35, 75, 0.0209, 0.0215), (0.5, 66, 0.0213, 0.0218), (0.65, 56, 0.0214, 0.0222)]
+  per-axis: {'b': {'median': 0.0213, 'min': 0.0209, 'max': 0.0214, 'std': 0.0002, 'uncertainty': 0.0003, 'n_sections_measured': 3}, 'c': {'median': 0.0218, 'min': 0.0215, 'max': 0.0222, 'std': 0.0003, 'uncertainty': 0.0003, 'n_sections_measured': 3}}
+  sensitivity: {'b': {'median_range_min': 0.0209, 'median_range_max': 0.0214, 'n_variants': 9, 'mean': 0.0212}, 'c': {'median_range_min': 0.0215, 'median_range_max': 0.0223, 'n_variants': 9, 'mean': 0.0219}}
+probe written

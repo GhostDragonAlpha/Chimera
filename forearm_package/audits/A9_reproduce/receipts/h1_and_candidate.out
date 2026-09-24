@@ -1,0 +1,16 @@
+== H-1: hash semantics ==
+baseline fit packet       a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937
+regen    fit packet       a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937
+baseline candidates pack  854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae
+regen    candidates pack  854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae
+declared fitted_packet_sha256 (baseline packet): a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937
+declared fitted_packet_sha256 (regen packet):    a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937
+declared == sha256(fit packet bytes) baseline: True
+declared == sha256(fit packet bytes) regen:   True
+declared == sha256(candidates packet itself)? baseline: False (must be False per H-1)
+note field: source XML hashes identify the UPSTREAM anatomy file; fitted_packet_sha256 identifies the WRITTEN fitted packet bytes. They are different objects and never interchangeable.
+
+== Candidate record ==
+-- baseline: top-level keys ['preregistration', 'step_A_verification', 'step_B_baseline_loop_authority', 'step_C_candidate', 'tendon_deltas']
+-- regen: top-level keys ['preregistration', 'step_A_verification', 'step_B_baseline_loop_authority', 'step_C_candidate', 'tendon_deltas']
+baseline==regen full JSON object: True

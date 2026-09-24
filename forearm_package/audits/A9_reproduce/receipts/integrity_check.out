@@ -1,0 +1,16 @@
+MANIFEST verification: 44 files checked, 0 mismatches
+
+-- live absolute-path inputs vs snapshot copies --
+  E:\PythonChimera\.tmp\chimanoid.xml
+    live 675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1
+    snap 675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1  MATCH
+  E:\PythonChimera\Saved\meshes\monkey_birth.bin
+    live 550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c
+    snap 550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c  MATCH
+  E:\PythonChimera\Saved\meshes\monkey_joints.bin
+    live 74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662
+    snap 74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662  MATCH
+
+-- live .tmp/anatomy_compiler vs snapshot (code + runs) --
+  code: live=0 snap=24 identical=0 only_live=[] only_snap=['DERIVATION.md', '_inspect_packet.py', 'actual_target_fit.py', 'aspect_bounds.py', 'attachment_candidates.py', 'compiler.py', 'correspondence.py', 'example_read_candidates.py', 'example_whole_body.py', 'experiment_transverse_fit.py', 'figure_fit.py', 'figure_forearm_candidates.py', 'intake.py', 'inventory.py', 'inventory2.py', 'mesh_target.py', 'probe_target.py', 'probe_transverse.py', 'run_tests.py', 'schema.py', 'structure_dump.py', 'synthetic_fixtures.py', 'target_envelope.py', 'trace_hand_scale.py'] differing=[]
+  runs: live=12 snap=12 identical=12 only_live=[] only_snap=[] differing=[]

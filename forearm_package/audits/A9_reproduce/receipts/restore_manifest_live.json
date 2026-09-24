@@ -1,0 +1,192 @@
+{
+ "live": {
+  "__pycache__/actual_target_fit.cpython-314.pyc": [
+   49360,
+   "aaebf58c50619294e5d4cf53649d9aeda68c725478e0a71146297fa7894e1b25"
+  ],
+  "__pycache__/aspect_bounds.cpython-314.pyc": [
+   4145,
+   "c095743db5a6a8398be5332049d7bf8f8d23d341b9e887245ca72e652218d9a4"
+  ],
+  "__pycache__/attachment_candidates.cpython-314.pyc": [
+   12637,
+   "9f8c029b13c49f591d802039b91059ec2819938005ca51998f0a591c076ae0c6"
+  ],
+  "__pycache__/compiler.cpython-314.pyc": [
+   59698,
+   "86a2479445f02686689430bfb01869f3d2cf7f6cec4fc47e961188c35d557fc9"
+  ],
+  "__pycache__/correspondence.cpython-314.pyc": [
+   15763,
+   "f1d457584a6ce913a2fe8774f1228cd99325489f992fc7b60c1b0547d9e06a18"
+  ],
+  "__pycache__/intake.cpython-314.pyc": [
+   19042,
+   "d65d43573728f253e074d12da5e9078f1e0ccc55caf1296d3a2db811502f7032"
+  ],
+  "__pycache__/mesh_target.cpython-314.pyc": [
+   19683,
+   "d5f2b853416d53ab0b74decd37625cc145b042ca65249354544e56677e7c3a00"
+  ],
+  "__pycache__/run_tests.cpython-314.pyc": [
+   93208,
+   "29b6b64c654c2980a012831f196ce7b70349342a43b16641fad40de068a7f708"
+  ],
+  "__pycache__/schema.cpython-314.pyc": [
+   25085,
+   "a60778e1e0975ecf1eb62bc3850d9d7b15ac042a09de1290e48dbc1ba50cce6e"
+  ],
+  "__pycache__/synthetic_fixtures.cpython-314.pyc": [
+   28382,
+   "0d7f1abe24d06e7c6ec1357bc6dfa24f486d86020761e5aa7efa047fcd48ef1c"
+  ],
+  "__pycache__/target_envelope.cpython-314.pyc": [
+   37496,
+   "d5c34f0b7ac69984647849ce6b6b979de7f7819c8cfeba591e6dad260447a4f3"
+  ],
+  "_inspect_packet.py": [
+   824,
+   "302270cf5c207658ddeb458751ea2414d3e780fedd85a9605faeb7891f905caf"
+  ],
+  "actual_target_fit.py": [
+   33945,
+   "5c8604e4808be0faf87e9333211662561aef7056376b4424b1fcb3d22b21c0f6"
+  ],
+  "aspect_bounds.py": [
+   3207,
+   "c9a98da2ea01b4431bdbb586faedb8849381d695d7e27fb78840534bcc8a016d"
+  ],
+  "attachment_candidates.py": [
+   10109,
+   "fe0abacabd75e727691edbbd260586355a60b02c8bae1622d6f139cd8bf3e288"
+  ],
+  "compiler.py": [
+   41302,
+   "8a4ba07c033111730e390764c5401ae3ce0fa41f8504ccbda28bd4bd56edf852"
+  ],
+  "correspondence.py": [
+   9744,
+   "21770e6c60f7ecb13cb0428a2fbc8978015bfae5c3f178ab6e21d907850425f0"
+  ],
+  "DERIVATION.md": [
+   20256,
+   "cba8b8a1a35565eb69a696187c96a55b59aa5f753f603004fb24e188ec145d25"
+  ],
+  "example_read_candidates.py": [
+   1796,
+   "dbb76615353cefd821810bf2d4b5b31731104063a98e2900cd09df4d0a51e145"
+  ],
+  "example_whole_body.py": [
+   5850,
+   "123c778b0b6ab65092ca70fde7ee21353b515f4019738ce93efe722f93148c90"
+  ],
+  "experiment_transverse_fit.py": [
+   22884,
+   "1c68345eb65f7fcec0c95d0673e604f4cabd351cc04c47e23d1b82abd76b1da1"
+  ],
+  "figure_fit.py": [
+   5973,
+   "e8aa36510046a38a6f38f128c9a8698dcda7031efd3c6a0a0836d1de276382d8"
+  ],
+  "figure_forearm_candidates.py": [
+   6064,
+   "a849eb995922c94b20a9402491ee37fb8dd1b8edd57a8e78dddeb465ff2cd535"
+  ],
+  "intake.py": [
+   12198,
+   "a607af518e4ff86c50c9ea2bb53fa957cd84f03696ea2350e7ab76cae39f8897"
+  ],
+  "inventory.py": [
+   2954,
+   "0b86e3b37c6fd8969a40d10932efa79cd443ebdb380e34aa1b913da4adf02aef"
+  ],
+  "inventory2.py": [
+   3195,
+   "b10d3babdabba8b77b663408be376e3fb5774ace86fc918bfa9cd08b6285fbab"
+  ],
+  "mesh_target.py": [
+   9599,
+   "268f139a9e90e561f4a5f8ab02553f0d87f51633f635139e6cec6f5c9cfa19a0"
+  ],
+  "probe_target.py": [
+   2242,
+   "6b46e896fbd35b1db224db5b838be49133f64b86b1b7570f1023d3d454c82c22"
+  ],
+  "probe_transverse.py": [
+   2343,
+   "6a953e103e74708c3095e67606bcce276dfb720d87f31e4731c4abc428ae2618"
+  ],
+  "run_tests.py": [
+   58600,
+   "f46f1c4a450ba5e2f3a13a47e3e3d3c960d04ddb2601877092c833d93408857b"
+  ],
+  "runs/_envelope_probe.json": [
+   54,
+   "ef4cd6b125086b2907c3a2b700c3c3741bb2be05ba7b8a17eac3bc1e49b9d2b7"
+  ],
+  "runs/actual_monkey_fit.json": [
+   1346469,
+   "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937"
+  ],
+  "runs/actual_monkey_tables.txt": [
+   7405,
+   "c3f90f2342895eccb9a6ce2ef8dafca32e075bab0ca020c76eb6e4184f55397d"
+  ],
+  "runs/admission_actual_monkey.json": [
+   5223,
+   "833ca65b282eab83180bdbe65bbd8f934924fdd1416c8058d510e5481d86b4ad"
+  ],
+  "runs/attachment_candidates.json": [
+   62615,
+   "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae"
+  ],
+  "runs/experiment_transverse_candidate.json": [
+   35355,
+   "3c13fca70c2a726ec59379f2c5b1e597db3af5d82bedc39d0a4c08186f58ab3a"
+  ],
+  "runs/figure_actual_fit.png": [
+   244739,
+   "b8e153c3a681e7b7f70d781f6e064d578c88ca942e412ca92e4165505b92fbd0"
+  ],
+  "runs/figure_forearm_candidates.png": [
+   224975,
+   "bb5095474c0b1603b71c9652c6098d24c12070c0015e0bc40d89197ee92aeed9"
+  ],
+  "runs/figure_transverse_candidate.png": [
+   249772,
+   "1f514e9fe2850db418e2c888ab7020ef8ea61c7590eba3bd324300b449006eeb"
+  ],
+  "runs/grounded_chimanoid.json": [
+   1322442,
+   "457496993f7dbd1ea900e2c32f984fbc7c90402ef34d107fd2b3b38fa0ce47c4"
+  ],
+  "runs/mirror_read.json": [
+   1330686,
+   "aa625a929fd18e9a60aa78bf6a6baebbd22dbdc724f3912e36feb234bedb230f"
+  ],
+  "runs/synthetic_twin.json": [
+   1330145,
+   "92d6fecf824366c817904723401489defe4a9bc06fdef7d92b31fd37ca68e22f"
+  ],
+  "schema.py": [
+   19079,
+   "0cfe5664b9f3cabf6779bc18e85253a360d3bfc8aab7ca2d5de3862eba365ce8"
+  ],
+  "structure_dump.py": [
+   1127,
+   "adf16656fa8223fe1cc425eaa484f7437d3a79820fda14656d7f260ae1532aec"
+  ],
+  "synthetic_fixtures.py": [
+   17281,
+   "cbefde2747b675907bd27cc0e4af478538c3880f60932477c4cbf101a6a76034"
+  ],
+  "target_envelope.py": [
+   25586,
+   "1752c0fd6256117729ee0eacb7eae84bcafe8eeb9bdabe0fb6a4b47ce79f1307"
+  ],
+  "trace_hand_scale.py": [
+   5845,
+   "79403973747900e93a8b41ad4f48344873cdb03806c4ba28c7bf7fe48656b4c2"
+  ]
+ }
+}

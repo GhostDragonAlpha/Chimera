@@ -1,0 +1,7 @@
+A: frame/unit/mirror verification OK: {"sagittal_plane_x_m": 0.0, "n_pairs": 16, "max_pair_error_m": 0.000631, "mean_pair_error_m": 5.5e-05, "worst_pairs": [["BICshort-P6", 0.000631], ["FCU-P2", 0.000245], ["BRD-P3", 0.0]], "sanity_bound_m": 0.02}
+B[radius]: loop authority baseline -> outside=7 tight=1 ambiguous=2
+B[radius_l]: loop authority baseline -> outside=7 tight=1 ambiguous=2
+C[radius]: db=+6.24mm dc=+2.02mm passed=False (fitting=False loop=False additional=True bounds=True)
+C[radius_l]: db=+6.24mm dc=-2.02mm passed=False (fitting=False loop=False additional=True bounds=True)
+experiment -> E:\PythonChimera\.tmp\anatomy_compiler\runs\experiment_transverse_candidate.json
+figure -> E:\PythonChimera\.tmp\anatomy_compiler\runs\figure_transverse_candidate.png
