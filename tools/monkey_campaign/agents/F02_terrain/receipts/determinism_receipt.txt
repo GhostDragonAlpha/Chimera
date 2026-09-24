@@ -1,0 +1,8 @@
+F02 determinism receipt (2026-09-24)
+committed bundle bytes: 877752 sha256: 446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52
+in-process compile #1 : 877752 sha256: 446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52
+in-process compile #2 : 877752 sha256: 446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52
+subprocess compile    : 877752 sha256: 446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52
+byte-identical (committed == #1 == #2 == subprocess): True
+bundle_sha256 pin     : 8c7d60c88a75234a4ea94bc5ec83b666d620502b47cac8667e83b8713cb04fe0
+source declaration file sha256: 18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1
