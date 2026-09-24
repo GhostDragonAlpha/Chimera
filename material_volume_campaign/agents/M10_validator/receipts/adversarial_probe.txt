@@ -1,0 +1,5 @@
+adversarial_case_variant_status -> REJECT | rules_violated: ['R0', 'R2', 'R5'] | exit_would_be 1
+reject_tensor_truncated -> REJECT | rules_violated: ['R0', 'R9'] | exit_would_be 1
+reject_tensor_asymmetric -> REJECT | rules_violated: ['R0', 'R9'] | exit_would_be 1
+adversarial_readiness_nested -> REJECT | rules_violated: ['R12'] | exit_would_be 1
+adversarial_diagonalized -> ACCEPT | rules_violated: [] | exit_would_be 0

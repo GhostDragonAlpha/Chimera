@@ -1,0 +1,31 @@
+== implementation receipt ==
+94c2ee772c4a15db0966fcf963ed13fe2fcb9987f45c5897f8072a62f636f5dd *rigid_body_mass_consumption_validator.py
+0d967cf2f96392375bc9f0a4c28bcda8bc308b90494a7ebcb068b6213183f259 *tests/test_validator.py
+29e80e233fa01df485e0a2e1d4f1fcfbaf566defdec9ce12311488fea628c03d *fixtures/make_fixtures.py
+d71f7621ba00701c1eaabd2cdf34ac25bbe837b7dede0f7096029ca3ad0c9de5 *fixtures/accept_complete_report.json
+a5eb73e9ad18bb9832ee0ea978788d597ed7afcc28f064c515bfc2d973204025 *PREREGISTRATION.md
+
+  950 rigid_body_mass_consumption_validator.py
+  249 tests/test_validator.py
+ 1199 total
+
+fixture count: 53
+
+== CLI --help ==
+usage: rigid_body_mass_consumption_validator.py [-h]
+                                                [--admission-report ADMISSION_REPORT]
+                                                [--indent INDENT]
+                                                report
+
+M10 static consumption validator for chimera.rigid_body_mass_export.v1
+(assembly ELIGIBILITY only; no runtime assembly, no dynamics, no mutation)
+
+positional arguments:
+  report                body-mass export report JSON
+
+options:
+  -h, --help            show this help message and exit
+  --admission-report ADMISSION_REPORT
+                        optional admission report document; enables CON-13
+                        hash recomputation against the delivered document
+  --indent INDENT       pretty-print the verdict JSON with this indent

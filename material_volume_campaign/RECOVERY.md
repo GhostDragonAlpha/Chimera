@@ -23,3 +23,10 @@ Second transient [1302] (mid-run, M04, ~23 min in; only brief.md written). Probe
 **Concurrency protocol:** third [1302] (M06, mid-run, at 19 concurrent). SERIALIZED RETRIES now active: one failure-retry in flight at a time; no new backlog spawns until the cluster stops. Fleet at 17 live; M06-retry brings 18.
 
 **Active:** M01-M05, M06-retry(pending), M08, M10, B2a, B3, B4, B5, B6, B7, B9 + anatomy O1/O2/R1.
+
+## CHECKPOINT T3 — M10 integrated (the campaign's static consumer EXISTS)
+
+**Verified:** M10 MET — coordinator re-ran tests/test_validator.py: 71/71 in 0.72s; integrity clean. Rules R0-R16 each cite a contract line; reader used as independent R0 cross-check (readiness hard-false pinned); CLI exits 0/1/2; preservation duty (echo blocking_cell_ids / reason_codes) verified.
+**Static limit declared (L2):** a silently-diagonalized tensor with flags intact ACCEPTs static validation — pre-declared in the frozen prereg; mitigation: --admission-report recomputation refuses any non-matching supplied doc.
+**Decision requests for Astra (strictest reading):** D1 readiness-claim=reject; D2 partial/unassigned=reject-always; D3 any recombination=reject; D4 any lineage field=reject; D5 source-effective masses terminal.
+**M06 retry:** dispatched (resume from partial state: brief/cases.py/fixtures/matrix.md exist).

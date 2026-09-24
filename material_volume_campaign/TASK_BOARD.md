@@ -35,7 +35,7 @@
 | M08 | numerical robustness: independent fixtures across declared scales/shapes; conditioning limits vs defects | `agents/M08_robustness` | DISPATCHED | — | `report.md` |
 | M09 | read-only diagnostic CLI on the existing reader (status, omitted bodies + reasons, unassigned cells, frames, units, readiness stays false) | `agents/M09_diagnostic` | DONE | **PASS** — 11/11 tests; 415-file read-only proof; readiness false everywhere; **U7 resolved + finding: reader behaves correctly on blocked/refused, but its SUMMARY drops contract-preserved diagnostics (CON-4/6/7 fields) — CLI passes them through** | `report.md` + impl (suite re-verified by coordinator) |
 | B2a | independent review of the diagnostic CLI (non-author) | `agents/B2a_review_m09` | DISPATCHED | — | `report.md` |
-| M10 | static consumption validator for contract v1 (reject eligibility for partial/blocked/refused/unsupported; preserve full tensors; prohibit inferred ownership/readiness promotion; NO runtime assembly) | `agents/M10_validator` | DISPATCHED | — | `report.md` + impl |
+| M10 | static consumption validator for contract v1 (reject eligibility for partial/blocked/refused/unsupported; preserve full tensors; prohibit inferred ownership/readiness promotion; NO runtime assembly) | `agents/M10_validator` | DONE | **MET — 71/71 tests, rules R0–R16 (each quoting its contract line), 53 fixtures**; adversarial self-probe: 4/5 caught, A5 (silently diagonalized tensor) ACCEPTs = pre-declared static limit L2 (mitigated by --admission-report recomputation); preservation duty verified; **5 decision requests (strictest reading) logged for Astra** | `report.md` + impl (tests re-run by coordinator: 71/71, 0.72 s) |
 
 ## AUTHORIZED FOLLOW-ON BACKLOG (assign as slots free)
 
