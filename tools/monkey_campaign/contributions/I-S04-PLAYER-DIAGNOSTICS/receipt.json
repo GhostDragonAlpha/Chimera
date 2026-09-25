@@ -1,0 +1,52 @@
+{
+  "card": "I-S04-PLAYER-DIAGNOSTICS",
+  "attempt": "d24bd30d38234a4cae33288048cce14f",
+  "branch": "branch-9",
+  "pinned_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+  "rule0": "PREREGISTRATION.md written BEFORE any implementation edit; statement + prediction + falsifier all present",
+  "checks_performed": [
+    "git grep at pinned revision for existing user-message/translation helpers: only state_feedback.py (U06 prompts) is player-facing; no equivalent refusal translator existed (recorded in report.md section 1)",
+    "read-only extraction of 6 pinned sources via git show; sha256 ledger in reference/EXTRACTION_LEDGER.json; source repo never edited",
+    "machine inventory: ast scan of pinned bytes -> 20 input_settings Refusal codes (18 literal + sensitivity_type/invert_type computed at lines 299/364) and 7 session_flow identities (5 drop kinds + flow_action + restart_failed/exit_failed)",
+    "22 stdlib unittest cases: inventory equality both directions against pinned bytes; every offered (state, action) pair is a pinned TRANSITIONS row and every key token matches pinned DEFAULT_FLOW_BINDINGS; FORBIDDEN_CLAIM_TOKENS absent from all player text; path/ENV scrub sweep over all 39 identities; unknown fallback honesty; byte-identical determinism sweep; correlation id shape",
+    "final run: timeout 120 python -B test_player_diagnostics.py -> Ran 22 tests in 0.032s, OK (0.34 s wall)"
+  ],
+  "artifact_sha256": {
+    "PREREGISTRATION.md": "c94460e1a19632275a768f452bcaf3aa8c03e1fc9c8cd09ce68cef2ad1d75e70",
+    "player_diagnostics.py": "53e34c62850ff222e2ecd92d20498baf88e9f8f0189b8c215d0cc79b06a7a339",
+    "test_player_diagnostics.py": "3af93b94ff3e3f5ea877312853bf03c468634881a774cc7c8d067b87bb7ac247",
+    "report.md": "4e39d49292f6baf0ea063d6fbb38f4848e39b009924b9b8b46c3313d5a961ad2",
+    "reference/EXTRACTION_LEDGER.json": "e2f46980df299a776bcb50edc6d3ba00c01443bda9c79b48fc9aaa6690d557bf",
+    "reference/input_settings.py": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
+    "reference/state_feedback.py": "74c0aad033eeafef971888809702a0d0f4f387c55ac9690ee5380edc02a189d1",
+    "reference/session_flow.py": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+    "reference/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+    "reference/focus_policy.py": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+    "reference/climb_intent.py": "586cb1c541afdc391ac14ce989cf2d2561a9ee79e25e874f7fbfc2312fd3c5a2",
+    "receipt.json": "self-referential; hashed in the final report message, not here"
+  },
+  "failures": [
+    "RUN 1 (honest, first invocation): FAILED, 4 failures + 25 errors. Real module bugs: (a) value_out_of_range message contained 'supported range' whose substring 'support' collides with U06 FORBIDDEN_CLAIM_TOKENS -> reworded to 'allowed range'; (b) actions carried raw (state, action) tuples instead of player-readable sentences -> rewritten as grounded imperatives with grounding pairs in the developer field. Test bugs: pinned TRANSITIONS keys are name tuples so ast.literal_eval failed -> name-aware evaluation; scrub assertion double-prefixed ENOENT; repr-escaped backslashes broke a raw-detail assertion.",
+    "RUN 2: FAILED, 1 failure + 19 errors: state/action argument order swapped in _action_sentence (KeyError 'attract'); key-order assertion ignored json sort_keys.",
+    "RUN 3: 22/22 OK in 0.032s. No known failures remaining."
+  ],
+  "falsifier_self_check": {
+    "F1_player_receives_raw_paths": "not observed: banned-shape sweep across all 39 identities found 0 matches in player text; card example ENOENT E:\\repo\\secret\\forest.bin stays out of player text, diagnostic field retains it",
+    "F2_message_claims_unsupported_action": "not observed: every offered pair is a pinned TRANSITIONS row; key tokens equal pinned DEFAULT_FLOW_BINDINGS keys for the offered actions; settings messages promise no keys and no settings menu; impossible identities (key_press@playing) fall to unknown",
+    "F3_unknown_errors_report_success": "not observed: 8 unknown identities + arbitrary ValueError all return status=unknown, ok=false, actions=[] with deterministic correlation id"
+  },
+  "remaining_gates": [
+    "human readability / playthrough acceptance: PENDING (operator's call; messages are minimal player language by construction only)",
+    "parent gates stay open: preparatory card only; no engine port tested (S-1 port_test not applicable to a standalone stdlib module); connection proposal in report.md section 4 is text only and would need its own preregistration"
+  ],
+  "constraints_honored": {
+    "stdlib_only_python_311_plus": true,
+    "deterministic_headless_no_wall_clock": true,
+    "no_network_no_installs_no_gui_no_native_no_gpu_no_training_no_process_control": true,
+    "each_test_invocation_bounded_120s_actual_under_1s": true,
+    "total_new_output_under_16MiB_actual_approx_55KB": true,
+    "source_repo_read_only_git_show_only": true,
+    "no_push_no_new_branches": true
+  },
+  "writes_stopped": true
+}
