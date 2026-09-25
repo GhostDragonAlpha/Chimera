@@ -1,0 +1,1526 @@
+{
+  "schema": "r5.correction.evidence.v2",
+  "play_worktree": "E:\\ChimeraWork\\monkey-play-20260924",
+  "pinned_revision": {
+    "argument": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+    "full_sha": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+    "subject": "monkey-play: R5 forest-front review integrated — FRONT APPROVE-WITH-NOTES, W10 SCENE-READY (70/70 re-run from scratch; one world; trunk base flush proven; N1 fixed: R0 note corrected via recipe amendment + declaration regenerated 8495->8630B + F08 frozen-table Amendment 3; re-verified 66/66 + routes 9/9)\n",
+    "is_head_of_worktree": true,
+    "head_sha": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399"
+  },
+  "line_ending_policy": "work_bytes == committed_bytes is proven when sha256 matches under >=1 of three declared conventions applied to BOTH sides: raw (no change), lf_normalized (CRLF->LF, lone CR->LF), crlf_normalized (canonicalize to LF, then LF->CRLF). If no convention matches, the document is flagged modified_cited_source (check source_identity_<rel> FAILS); it is never a pass. CAVEAT recorded per document: `git hash-object` WITHOUT --no-filters applies the attributes/core.autocrlf clean filter, so its equality with the blob id proves filtered-content equality, NOT raw-byte equality; raw-byte equality is only ever claimed via the 'raw' convention or the recorded `git hash-object --no-filters` comparison.",
+  "worktree": {
+    "clean_at_cited_paths": true,
+    "status_porcelain_cited_paths": [],
+    "status_porcelain_all_paths_count": 7,
+    "status_porcelain_all_paths_first_200": [
+      " M tools/monkey_campaign/agents/F07_obstacles/receipts/determinism.txt",
+      " M tools/monkey_campaign/agents/F07_obstacles/receipts/run.json",
+      " M tools/monkey_campaign/agents/F07_obstacles/receipts/run.txt",
+      " M tools/monkey_campaign/agents/U02_camera/receipts/latency_run.json",
+      "?? tools/monkey_campaign/agents/GPUA/",
+      "?? tools/monkey_campaign/agents/TIE2/receipts/independent_rerun_themeaning_20260924191321.out",
+      "?? tools/monkey_campaign/contributions/"
+    ],
+    "cited_paths_status_argv": [
+      "git",
+      "-C",
+      "<play>",
+      "status",
+      "--porcelain",
+      "--",
+      "tools/monkey_campaign/agents/R5_forest_review/report.md",
+      "tools/monkey_campaign/agents/R5_forest_review/brief.md",
+      "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json",
+      "tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json",
+      "tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json",
+      "tools/monkey_campaign/PLAY_BOARD.md",
+      "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md",
+      "tools/monkey_campaign/agents/F02_terrain/report.md",
+      "tools/monkey_campaign/agents/F04_contact/report.md",
+      "ChimeraEngine/engine/gait_controller.hpp",
+      "ChimeraEngine/engine/earth_environment.hpp"
+    ],
+    "ls_files_inventory": {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-files",
+        "--",
+        "tools/monkey_campaign"
+      ],
+      "exit": 0,
+      "path_count": 214,
+      "empty_result": false,
+      "empty_accepted_only_because_sanity_ok": false,
+      "sanity_query": "git rev-parse --verify HEAD",
+      "sanity_ok": true
+    }
+  },
+  "claims": {
+    "front_complete_claim": {
+      "commit": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "subject": "monkey-play: F08 integrated — repeatable forest loading (66/66; recompile-not-copy proven across fresh processes; named refusal matrices; deterministic initial state; teardown on the existing machinery). FOREST FRONT F01-F08 COMPLETE; W10 scene-ready"
+    },
+    "r5_w10_scene_ready_claim": {
+      "commit": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+      "subject": "monkey-play: R5 forest-front review integrated — FRONT APPROVE-WITH-NOTES, W10 SCENE-READY (70/70 re-run from scratch; one world; trunk base flush proven; N1 fixed: R0 note corrected via recipe amendment + declaration regenerated 8495->8630B + F08 frozen-table Amendment 3; re-verified 66/66 + routes 9/9)"
+    }
+  },
+  "documents": {
+    "tools/monkey_campaign/agents/R5_forest_review/report.md": {
+      "bytes": 14176,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "665ed6c84936be9c1add9ec1732644fc5d126ad01d924a2dcc8f42d030476e98",
+        "lf_normalized": "665ed6c84936be9c1add9ec1732644fc5d126ad01d924a2dcc8f42d030476e98",
+        "crlf_normalized": "c2c5b8d5c96fb37c72b80fa961f117e7ae85d12753f8d38096c7a420af95e70b"
+      },
+      "blob_at_pin": {
+        "blob_id": "f18eea1baeb469e737169c3006811601cf495dba",
+        "bytes": 14176,
+        "sha256": {
+          "raw": "665ed6c84936be9c1add9ec1732644fc5d126ad01d924a2dcc8f42d030476e98",
+          "lf_normalized": "665ed6c84936be9c1add9ec1732644fc5d126ad01d924a2dcc8f42d030476e98",
+          "crlf_normalized": "c2c5b8d5c96fb37c72b80fa961f117e7ae85d12753f8d38096c7a420af95e70b"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": null,
+        "present_at_claim_commit": false,
+        "reason": "absent_at_claim_commit (git ls-tree empty, exit 0)"
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "f18eea1baeb469e737169c3006811601cf495dba",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "f18eea1baeb469e737169c3006811601cf495dba",
+        "raw_disk_bytes_equal_blob_at_pin": true,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized",
+        "raw"
+      ],
+      "identity_ok": true
+    },
+    "tools/monkey_campaign/agents/R5_forest_review/brief.md": {
+      "bytes": 2591,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "c6d00207113764d1987cd945be8977d0160e9a0bd3e9184c5512575336d02ec7",
+        "lf_normalized": "c6d00207113764d1987cd945be8977d0160e9a0bd3e9184c5512575336d02ec7",
+        "crlf_normalized": "a8647522ef6e1c12b46cd028d9d3844f5ebf6df3d3838c843c08b04f39ca0779"
+      },
+      "blob_at_pin": {
+        "blob_id": "68430c5db851ed4902c388cf7fdc3ceb2661907c",
+        "bytes": 2591,
+        "sha256": {
+          "raw": "c6d00207113764d1987cd945be8977d0160e9a0bd3e9184c5512575336d02ec7",
+          "lf_normalized": "c6d00207113764d1987cd945be8977d0160e9a0bd3e9184c5512575336d02ec7",
+          "crlf_normalized": "a8647522ef6e1c12b46cd028d9d3844f5ebf6df3d3838c843c08b04f39ca0779"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": null,
+        "present_at_claim_commit": false,
+        "reason": "absent_at_claim_commit (git ls-tree empty, exit 0)"
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "68430c5db851ed4902c388cf7fdc3ceb2661907c",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "68430c5db851ed4902c388cf7fdc3ceb2661907c",
+        "raw_disk_bytes_equal_blob_at_pin": true,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized",
+        "raw"
+      ],
+      "identity_ok": true
+    },
+    "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json": {
+      "bytes": 2781,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "5e22eac9dcc1dccd5423b3b46203b66642c49ed730b7d8a3067915d18b253cba",
+        "lf_normalized": "61b1fd33df0d09115780a0aafee234fd41aa0d40ddf949f95edee970b10b8d25",
+        "crlf_normalized": "5e22eac9dcc1dccd5423b3b46203b66642c49ed730b7d8a3067915d18b253cba"
+      },
+      "blob_at_pin": {
+        "blob_id": "1f6fd85293fb25bd4f131a7e7d85595f48655835",
+        "bytes": 2701,
+        "sha256": {
+          "raw": "61b1fd33df0d09115780a0aafee234fd41aa0d40ddf949f95edee970b10b8d25",
+          "lf_normalized": "61b1fd33df0d09115780a0aafee234fd41aa0d40ddf949f95edee970b10b8d25",
+          "crlf_normalized": "5e22eac9dcc1dccd5423b3b46203b66642c49ed730b7d8a3067915d18b253cba"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": null,
+        "present_at_claim_commit": false,
+        "reason": "absent_at_claim_commit (git ls-tree empty, exit 0)"
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "1f6fd85293fb25bd4f131a7e7d85595f48655835",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "bc47080fcbeff4d0ddd7f68045d827bad3f45e8e",
+        "raw_disk_bytes_equal_blob_at_pin": false,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized"
+      ],
+      "identity_ok": true
+    },
+    "tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json": {
+      "bytes": 5965,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "9535e292ca803296c3d1d05f5069ce43dd42d9eff5dcee0694fc39b16b05949a",
+        "lf_normalized": "f8932b460a44df6d0842a1cd69fbe9c530111c21813f593a7a48a4d92979fc75",
+        "crlf_normalized": "9535e292ca803296c3d1d05f5069ce43dd42d9eff5dcee0694fc39b16b05949a"
+      },
+      "blob_at_pin": {
+        "blob_id": "d5672e1c2417ea5b7318a764f4bac2702081b5a9",
+        "bytes": 5773,
+        "sha256": {
+          "raw": "f8932b460a44df6d0842a1cd69fbe9c530111c21813f593a7a48a4d92979fc75",
+          "lf_normalized": "f8932b460a44df6d0842a1cd69fbe9c530111c21813f593a7a48a4d92979fc75",
+          "crlf_normalized": "9535e292ca803296c3d1d05f5069ce43dd42d9eff5dcee0694fc39b16b05949a"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": null,
+        "present_at_claim_commit": false,
+        "reason": "absent_at_claim_commit (git ls-tree empty, exit 0)"
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "d5672e1c2417ea5b7318a764f4bac2702081b5a9",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "dbe7b8d20dd1f0bd0339bed8355be56d7e474878",
+        "raw_disk_bytes_equal_blob_at_pin": false,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized"
+      ],
+      "identity_ok": true
+    },
+    "tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json": {
+      "bytes": 3507,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "b4492907f9091d28e42687df8979ce6d01439aeac2b442836bf73195b2cedf7f",
+        "lf_normalized": "0c9085fca7fbd8af22664d0a48f202d2a9da813f77bba66a4df61f6b9049c394",
+        "crlf_normalized": "b4492907f9091d28e42687df8979ce6d01439aeac2b442836bf73195b2cedf7f"
+      },
+      "blob_at_pin": {
+        "blob_id": "ce9b7e5147b8d6c9e2a3181878bfdadae8e78df6",
+        "bytes": 3389,
+        "sha256": {
+          "raw": "0c9085fca7fbd8af22664d0a48f202d2a9da813f77bba66a4df61f6b9049c394",
+          "lf_normalized": "0c9085fca7fbd8af22664d0a48f202d2a9da813f77bba66a4df61f6b9049c394",
+          "crlf_normalized": "b4492907f9091d28e42687df8979ce6d01439aeac2b442836bf73195b2cedf7f"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": null,
+        "present_at_claim_commit": false,
+        "reason": "absent_at_claim_commit (git ls-tree empty, exit 0)"
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "ce9b7e5147b8d6c9e2a3181878bfdadae8e78df6",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "5d50398bff59d323a687c5b3bab00a5314bd51bb",
+        "raw_disk_bytes_equal_blob_at_pin": false,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized"
+      ],
+      "identity_ok": true
+    },
+    "tools/monkey_campaign/PLAY_BOARD.md": {
+      "bytes": 5524,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "78f1d5bb6baacf929e326bd5019de516672bd886f1ae5bdc1655261e21346e0f",
+        "lf_normalized": "e5db558cd9f5b72168603150b0913b461cd2db8a78bce76f1bb1a03e0dfecf5e",
+        "crlf_normalized": "78f1d5bb6baacf929e326bd5019de516672bd886f1ae5bdc1655261e21346e0f"
+      },
+      "blob_at_pin": {
+        "blob_id": "26e6d47a8baee1c64c61a86528627cc3e942d3aa",
+        "bytes": 5501,
+        "sha256": {
+          "raw": "e5db558cd9f5b72168603150b0913b461cd2db8a78bce76f1bb1a03e0dfecf5e",
+          "lf_normalized": "e5db558cd9f5b72168603150b0913b461cd2db8a78bce76f1bb1a03e0dfecf5e",
+          "crlf_normalized": "78f1d5bb6baacf929e326bd5019de516672bd886f1ae5bdc1655261e21346e0f"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": "26e6d47a8baee1c64c61a86528627cc3e942d3aa",
+        "present_at_claim_commit": true
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "26e6d47a8baee1c64c61a86528627cc3e942d3aa",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "9cc6364817181b20804c9ab5c8ff217931d4ee26",
+        "raw_disk_bytes_equal_blob_at_pin": false,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized"
+      ],
+      "identity_ok": true
+    },
+    "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md": {
+      "bytes": 44172,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "ff1eecb594b38e19297bc2c37998678a8fb108fa35a27f87f3adbc24182c45ce",
+        "lf_normalized": "cb01fb3524726517ab42f829591e5ac8f30b0a631dfe53bb294cf6885b2136a6",
+        "crlf_normalized": "ff1eecb594b38e19297bc2c37998678a8fb108fa35a27f87f3adbc24182c45ce"
+      },
+      "blob_at_pin": {
+        "blob_id": "95a3e36ac9951b14f140b12387a14680d975da0c",
+        "bytes": 43857,
+        "sha256": {
+          "raw": "cb01fb3524726517ab42f829591e5ac8f30b0a631dfe53bb294cf6885b2136a6",
+          "lf_normalized": "cb01fb3524726517ab42f829591e5ac8f30b0a631dfe53bb294cf6885b2136a6",
+          "crlf_normalized": "ff1eecb594b38e19297bc2c37998678a8fb108fa35a27f87f3adbc24182c45ce"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": "95a3e36ac9951b14f140b12387a14680d975da0c",
+        "present_at_claim_commit": true
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "95a3e36ac9951b14f140b12387a14680d975da0c",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "4da18baab3504dcadff5be7814f7265bc2300799",
+        "raw_disk_bytes_equal_blob_at_pin": false,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized"
+      ],
+      "identity_ok": true
+    },
+    "tools/monkey_campaign/agents/F02_terrain/report.md": {
+      "bytes": 11999,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "1dd5299ec2e63addaccf33fd8121cc55d2b4fa0eab562279eae9e63d907497fd",
+        "lf_normalized": "1dd5299ec2e63addaccf33fd8121cc55d2b4fa0eab562279eae9e63d907497fd",
+        "crlf_normalized": "0e2c64b5e31c00a5004410fa0813e70857f298609ec333001fc528a2e7afc315"
+      },
+      "blob_at_pin": {
+        "blob_id": "f6b094988b568c9b5e0e52e3e45d11b76d541d29",
+        "bytes": 11999,
+        "sha256": {
+          "raw": "1dd5299ec2e63addaccf33fd8121cc55d2b4fa0eab562279eae9e63d907497fd",
+          "lf_normalized": "1dd5299ec2e63addaccf33fd8121cc55d2b4fa0eab562279eae9e63d907497fd",
+          "crlf_normalized": "0e2c64b5e31c00a5004410fa0813e70857f298609ec333001fc528a2e7afc315"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": "f6b094988b568c9b5e0e52e3e45d11b76d541d29",
+        "present_at_claim_commit": true
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "f6b094988b568c9b5e0e52e3e45d11b76d541d29",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "f6b094988b568c9b5e0e52e3e45d11b76d541d29",
+        "raw_disk_bytes_equal_blob_at_pin": true,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized",
+        "raw"
+      ],
+      "identity_ok": true
+    },
+    "tools/monkey_campaign/agents/F04_contact/report.md": {
+      "bytes": 13701,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "14ab9ded69635facc916b9e60d2d2b3b1b4eaf07daa25f9007d5a23ab6a339d3",
+        "lf_normalized": "14ab9ded69635facc916b9e60d2d2b3b1b4eaf07daa25f9007d5a23ab6a339d3",
+        "crlf_normalized": "ecd71bc288cb1b4a83205845c0c7a47773103e8f280de63c193a49680dc6aa47"
+      },
+      "blob_at_pin": {
+        "blob_id": "af679533dfb732c5c0a4ee4bedcabe22e697c845",
+        "bytes": 13701,
+        "sha256": {
+          "raw": "14ab9ded69635facc916b9e60d2d2b3b1b4eaf07daa25f9007d5a23ab6a339d3",
+          "lf_normalized": "14ab9ded69635facc916b9e60d2d2b3b1b4eaf07daa25f9007d5a23ab6a339d3",
+          "crlf_normalized": "ecd71bc288cb1b4a83205845c0c7a47773103e8f280de63c193a49680dc6aa47"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": "af679533dfb732c5c0a4ee4bedcabe22e697c845",
+        "present_at_claim_commit": true
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "af679533dfb732c5c0a4ee4bedcabe22e697c845",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "af679533dfb732c5c0a4ee4bedcabe22e697c845",
+        "raw_disk_bytes_equal_blob_at_pin": true,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized",
+        "raw"
+      ],
+      "identity_ok": true
+    },
+    "ChimeraEngine/engine/gait_controller.hpp": {
+      "bytes": 207569,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "7b2ee097f19d777e0972b00393e7761d676d0ddf457c8061d2160e474640a191",
+        "lf_normalized": "f0ffea12795bd47f7c48f5ed9b8aa98869725467d94a1081b1d942f6fba129bd",
+        "crlf_normalized": "7b2ee097f19d777e0972b00393e7761d676d0ddf457c8061d2160e474640a191"
+      },
+      "blob_at_pin": {
+        "blob_id": "5863348f2deef1f01e3cf761d0c4151a10035a6d",
+        "bytes": 204652,
+        "sha256": {
+          "raw": "f0ffea12795bd47f7c48f5ed9b8aa98869725467d94a1081b1d942f6fba129bd",
+          "lf_normalized": "f0ffea12795bd47f7c48f5ed9b8aa98869725467d94a1081b1d942f6fba129bd",
+          "crlf_normalized": "7b2ee097f19d777e0972b00393e7761d676d0ddf457c8061d2160e474640a191"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": "5863348f2deef1f01e3cf761d0c4151a10035a6d",
+        "present_at_claim_commit": true
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "5863348f2deef1f01e3cf761d0c4151a10035a6d",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "e3433c87977bbd01b0dc55428638b9b84374a766",
+        "raw_disk_bytes_equal_blob_at_pin": false,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized"
+      ],
+      "identity_ok": true
+    },
+    "ChimeraEngine/engine/earth_environment.hpp": {
+      "bytes": 10719,
+      "override_source": null,
+      "work_sha256": {
+        "raw": "af98f59a3f1ea772720728b98d970aaf10d38f3891717282352b599490d07063",
+        "lf_normalized": "b4747d349ce201ebadb74227b33725466d16edd860ed421ac590ad789178469a",
+        "crlf_normalized": "af98f59a3f1ea772720728b98d970aaf10d38f3891717282352b599490d07063"
+      },
+      "blob_at_pin": {
+        "blob_id": "38edb9807b61539094c05464d303723a16dfbec7",
+        "bytes": 10589,
+        "sha256": {
+          "raw": "b4747d349ce201ebadb74227b33725466d16edd860ed421ac590ad789178469a",
+          "lf_normalized": "b4747d349ce201ebadb74227b33725466d16edd860ed421ac590ad789178469a",
+          "crlf_normalized": "af98f59a3f1ea772720728b98d970aaf10d38f3891717282352b599490d07063"
+        }
+      },
+      "blob_at_claim_commit": {
+        "blob_id": "38edb9807b61539094c05464d303723a16dfbec7",
+        "present_at_claim_commit": true
+      },
+      "git_hash_object": {
+        "filtered_blob_id": "38edb9807b61539094c05464d303723a16dfbec7",
+        "filtered_equals_blob_at_pin": true,
+        "raw_disk_blob_id_no_filters": "948624c2602218d6035a1bbe920f48b62c5462f7",
+        "raw_disk_bytes_equal_blob_at_pin": false,
+        "method": "git hash-object [--no-filters] -- <worktree path>",
+        "note": "filtered hash applies attributes/core.autocrlf clean filter; raw_disk_bytes_equal_blob_at_pin is the raw-byte claim"
+      },
+      "identity_conventions_matching": [
+        "crlf_normalized",
+        "lf_normalized"
+      ],
+      "identity_ok": true
+    }
+  },
+  "r5_receipts": {
+    "identity_receipt.json": {
+      "total": 15,
+      "pass_flagged": 15
+    },
+    "integrated_receipt.json": {
+      "total": 36,
+      "pass_flagged": 36
+    },
+    "citations_receipt.json": {
+      "total": 19,
+      "pass_flagged": 19
+    }
+  },
+  "f05_f06_absence": {
+    "agent_dirs_present": [
+      "F01_clearing",
+      "F02_terrain",
+      "F03_trunk",
+      "F04_contact",
+      "F07_obstacles",
+      "F08_loading",
+      "GPUA",
+      "P02P03",
+      "R3_product_review",
+      "R4_intent_review",
+      "R5_forest_review",
+      "S01_provenance",
+      "TIE2",
+      "U01_input",
+      "U02_camera",
+      "U03_focus",
+      "U04_settings",
+      "U05_climb_intent",
+      "U05b_amendments_U06",
+      "W7_landing",
+      "X02_flow"
+    ],
+    "f05_f06_dirs": [],
+    "f05_f06_tracked_files": [],
+    "f05_f06_tracked_source": "git ls-files exit 0 inventory (214 paths)",
+    "forest_row": "| Forest | F01→F08 | **F01 DONE**; **F03 DONE** (trunk: h=1.158m Oku-derived, r=0.037m grip-span rule, sagitta-derived mesh N=32, error 1.78e-4≤2e-4, friction UNEVIDENCED-PLACEHOLDER→G04, rigid-only structural, 49/49 + F01-joint 79/79; ENGINE-SERVICE GAP named: no rigid-prop collision in lineage); **F02 DONE** (one surface two projections: render==query to 2.8e-17m over 20,177 pts; engine normal gate 0/0 of 13,920; slope law held; 42/42; native heightfield gap named as decided engine task); **F04 DONE** (13/13 + 2 firing controls: tunnelling caught w/ 24.4x margin; ghost support refused 12/12; trunk tangency 7e-16; render==collision re-verified; the gap law's zero-gap rest measured; L2 statement: engine = point-spheres-vs-one-plane ONLY, G04's rigid-prop contact = separately-gated engine task, no C++ touched); **F07 DONE** (routes: 641,494/641,494 free cells reachable, 0 unreachable; corridor 1.076m >= 1.0m derived; blocking-causes table = B1 extent + B2 trunk ONLY, zero unexplained; slope law held 0.0425<=0.05; 9/9 + honest RED preserved (frozen construction overshot near boundary mounds, Amendment 1 re-derived, falsifiers unchanged); F01-F03 regression 121/121); **F08 DONE** (66/66: all four declarations recompile byte-identical incl. fresh processes; missing 4/4 + corruption 13/13 named refusals incl. the coherent re-forge; initial-state digest deterministic; teardown 7/7 named + leak caught; **FOREST FRONT F01-F08 COMPLETE** — W10 scene-ready) |",
+    "forest_row_names_f05_or_f06": false
+  },
+  "engine_citations": {
+    "ChimeraEngine/engine/gait_controller.hpp:94": {
+      "work_line": "V shift_,gravity_;double dt_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,mtot_=0,store_total_=0;",
+      "work_contains": true,
+      "blob_at_pin_line": "V shift_,gravity_;double dt_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,mtot_=0,store_total_=0;",
+      "blob_contains": true,
+      "work_line_equals_blob_line": true
+    },
+    "ChimeraEngine/engine/gait_controller.hpp:2005": {
+      "work_line": "require(config_.contains(\"contact_friction\")&&config_[\"contact_friction\"].is_number()&&number(config_[\"contact_friction\"])>=0&&number(config_[\"contact_friction\"])<=1,\"gait_friction_flag_invalid\");mu_=number(config_[\"contact_friction\"]);",
+      "work_contains": true,
+      "blob_at_pin_line": "require(config_.contains(\"contact_friction\")&&config_[\"contact_friction\"].is_number()&&number(config_[\"contact_friction\"])>=0&&number(config_[\"contact_friction\"])<=1,\"gait_friction_flag_invalid\");mu_=number(config_[\"contact_friction\"]);",
+      "blob_contains": true,
+      "work_line_equals_blob_line": true
+    },
+    "ChimeraEngine/engine/earth_environment.hpp:67": {
+      "work_line": "double d=dot(x,n_)-r_,vn=dot(v,n_);normal_impulse_=0;",
+      "work_contains": true,
+      "blob_at_pin_line": "double d=dot(x,n_)-r_,vn=dot(v,n_);normal_impulse_=0;",
+      "blob_contains": true,
+      "work_line_equals_blob_line": true
+    },
+    "ChimeraEngine/engine/earth_environment.hpp:118": {
+      "work_line": "++ticks;time=ticks*dt;outside=std::abs(x[0])>number(scene_.at(\"patch_half_width_m\"))||std::abs(x[2])>number(scene_.at(\"patch_half_width_m\"));",
+      "work_contains": true,
+      "blob_at_pin_line": "++ticks;time=ticks*dt;outside=std::abs(x[0])>number(scene_.at(\"patch_half_width_m\"))||std::abs(x[2])>number(scene_.at(\"patch_half_width_m\"));",
+      "blob_contains": true,
+      "work_line_equals_blob_line": true
+    }
+  },
+  "map_rows": {
+    "F05": "| F05 | Specify the terrain range for walking | F02, W06 | C14 | Slope, obstacle size and surface-friction envelope is declared from evidence | Do not assume flat-ground training transfers to arbitrary terrain |",
+    "F06": "| F06 | Implement and qualify terrain-aware walking | F05, W07 | C11, C14 | Player walks the declared uneven-ground cases with certified runtime/training agreement | Any expanded training objective gets a new approved runbook |",
+    "W05": "| W05 | Execute unchanged authorized walking runbook | W04, P04 | C10 | All three prescribed seeds execute under the frozen approximately 1M-decision runbook with failures retained | Training authorized conditionally; no reported completed run |",
+    "W10": "| W10 | Accept walking in the actual game scene | W08, W09, F04, U02 | — | Player can walk, turn and stop in the scene on a supported surface; numerical and visual receipts match | Walking demo is a product milestone before climbing |"
+  },
+  "notes": [
+    "tools/monkey_campaign/contributions/ shows as untracked (??) in the play worktree: expected -- it is a worker contribution directory, not part of the reviewed tree."
+  ],
+  "checks": [
+    {
+      "check": "pinned_revision_resolved",
+      "ok": true,
+      "detail": "pin 'dc7ea81111d98f32a4d88252c59f2fb8cf3c7399' resolved to dc7ea81111d98f32a4d88252c59f2fb8cf3c7399 (monkey-play: R5 forest-front review integrated — FRONT APPROVE-WITH-NOTE...); is_head=True"
+    },
+    {
+      "check": "sanity_query_head_ok",
+      "ok": true,
+      "detail": "git rev-parse --verify HEAD exit 0 -> dc7ea81111d9"
+    },
+    {
+      "check": "cited_paths_clean",
+      "ok": true,
+      "detail": "git status --porcelain over the 11 cited paths: empty (clean)"
+    },
+    {
+      "check": "ls_files_inventory_sanitized",
+      "ok": true,
+      "detail": "ls-files exit 0, 214 tracked paths, sanity query ok; empty-on-failure impossible"
+    },
+    {
+      "check": "claim_front_complete_claim",
+      "ok": true,
+      "detail": "subject contains 'FOREST FRONT F01-F08 COMPLETE; W10 scene-ready': True"
+    },
+    {
+      "check": "claim_r5_w10_scene_ready_claim",
+      "ok": true,
+      "detail": "subject contains 'W10 SCENE-READY': True"
+    },
+    {
+      "check": "source_identity_tools/monkey_campaign/agents/R5_forest_review/report.md",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized', 'raw'] (raw disk bytes == blob: True)"
+    },
+    {
+      "check": "source_identity_tools/monkey_campaign/agents/R5_forest_review/brief.md",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized', 'raw'] (raw disk bytes == blob: True)"
+    },
+    {
+      "check": "source_identity_tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)"
+    },
+    {
+      "check": "source_identity_tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)"
+    },
+    {
+      "check": "source_identity_tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)"
+    },
+    {
+      "check": "source_identity_tools/monkey_campaign/PLAY_BOARD.md",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)"
+    },
+    {
+      "check": "source_identity_tools/monkey_campaign/MONKEY_COMPLETION_MAP.md",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)"
+    },
+    {
+      "check": "source_identity_tools/monkey_campaign/agents/F02_terrain/report.md",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized', 'raw'] (raw disk bytes == blob: True)"
+    },
+    {
+      "check": "source_identity_tools/monkey_campaign/agents/F04_contact/report.md",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized', 'raw'] (raw disk bytes == blob: True)"
+    },
+    {
+      "check": "source_identity_ChimeraEngine/engine/gait_controller.hpp",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)"
+    },
+    {
+      "check": "source_identity_ChimeraEngine/engine/earth_environment.hpp",
+      "ok": true,
+      "detail": "identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)"
+    },
+    {
+      "check": "blob_ids_valid_at_pin",
+      "ok": true,
+      "detail": "all 11 rev-parse <pin>:<path> ids are 40 hex"
+    },
+    {
+      "check": "claim_blob_ids_valid",
+      "ok": true,
+      "detail": "every blob resolved at claim commit 9afbddcd9016 is 40 hex"
+    },
+    {
+      "check": "doc_identities_measured",
+      "ok": true,
+      "detail": "11/11 documents hashed"
+    },
+    {
+      "check": "receipt_identity_receipt.json",
+      "ok": true,
+      "detail": "15/15 pass-flagged (report claims 15)"
+    },
+    {
+      "check": "receipt_integrated_receipt.json",
+      "ok": true,
+      "detail": "36/36 pass-flagged (report claims 36)"
+    },
+    {
+      "check": "receipt_citations_receipt.json",
+      "ok": true,
+      "detail": "19/19 pass-flagged (report claims 19)"
+    },
+    {
+      "check": "f05_f06_no_agent_dirs",
+      "ok": true,
+      "detail": "agent dirs matching F05/F06: []"
+    },
+    {
+      "check": "f05_f06_no_tracked_files",
+      "ok": true,
+      "detail": "tracked files matching (verified-exit ls-files): []"
+    },
+    {
+      "check": "f05_f06_not_on_board",
+      "ok": true,
+      "detail": "Forest front row of PLAY_BOARD.md names no F05/F06 state"
+    },
+    {
+      "check": "engine_gait_controller.hpp:94",
+      "ok": true,
+      "detail": "expected 'plane_model_y_' in line 94"
+    },
+    {
+      "check": "engine_gait_controller.hpp:2005",
+      "ok": true,
+      "detail": "expected 'contact_friction' in line 2005"
+    },
+    {
+      "check": "engine_earth_environment.hpp:67",
+      "ok": true,
+      "detail": "expected 'dot(x,n_)-r_' in line 67"
+    },
+    {
+      "check": "engine_earth_environment.hpp:118",
+      "ok": true,
+      "detail": "expected 'patch_half_width_m' in line 118"
+    }
+  ],
+  "git_command_log": [
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "--verify",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399^{commit}"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "log",
+        "--format=%H%x00%s",
+        "-1",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "--verify",
+        "HEAD"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "status",
+        "--porcelain",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/report.md",
+        "tools/monkey_campaign/agents/R5_forest_review/brief.md",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json",
+        "tools/monkey_campaign/PLAY_BOARD.md",
+        "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md",
+        "tools/monkey_campaign/agents/F02_terrain/report.md",
+        "tools/monkey_campaign/agents/F04_contact/report.md",
+        "ChimeraEngine/engine/gait_controller.hpp",
+        "ChimeraEngine/engine/earth_environment.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "status",
+        "--porcelain"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-files",
+        "--",
+        "tools/monkey_campaign"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "log",
+        "--format=%s",
+        "-1",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "log",
+        "--format=%s",
+        "-1",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:tools/monkey_campaign/agents/R5_forest_review/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "f18eea1baeb469e737169c3006811601cf495dba"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:tools/monkey_campaign/agents/R5_forest_review/brief.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/brief.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/brief.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/brief.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "68430c5db851ed4902c388cf7fdc3ceb2661907c"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "1f6fd85293fb25bd4f131a7e7d85595f48655835"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "d5672e1c2417ea5b7318a764f4bac2702081b5a9"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "ce9b7e5147b8d6c9e2a3181878bfdadae8e78df6"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:tools/monkey_campaign/PLAY_BOARD.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "tools/monkey_campaign/PLAY_BOARD.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3:tools/monkey_campaign/PLAY_BOARD.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "tools/monkey_campaign/PLAY_BOARD.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "tools/monkey_campaign/PLAY_BOARD.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "26e6d47a8baee1c64c61a86528627cc3e942d3aa"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:tools/monkey_campaign/MONKEY_COMPLETION_MAP.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3:tools/monkey_campaign/MONKEY_COMPLETION_MAP.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "95a3e36ac9951b14f140b12387a14680d975da0c"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:tools/monkey_campaign/agents/F02_terrain/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "tools/monkey_campaign/agents/F02_terrain/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3:tools/monkey_campaign/agents/F02_terrain/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "tools/monkey_campaign/agents/F02_terrain/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "tools/monkey_campaign/agents/F02_terrain/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "f6b094988b568c9b5e0e52e3e45d11b76d541d29"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:tools/monkey_campaign/agents/F04_contact/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "tools/monkey_campaign/agents/F04_contact/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3:tools/monkey_campaign/agents/F04_contact/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "tools/monkey_campaign/agents/F04_contact/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "tools/monkey_campaign/agents/F04_contact/report.md"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "af679533dfb732c5c0a4ee4bedcabe22e697c845"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:ChimeraEngine/engine/gait_controller.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "ChimeraEngine/engine/gait_controller.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3:ChimeraEngine/engine/gait_controller.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "ChimeraEngine/engine/gait_controller.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "ChimeraEngine/engine/gait_controller.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "5863348f2deef1f01e3cf761d0c4151a10035a6d"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399:ChimeraEngine/engine/earth_environment.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "ls-tree",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+        "--",
+        "ChimeraEngine/engine/earth_environment.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "rev-parse",
+        "9afbddcd90164b5544a16fd0bc72278d985eb6e3:ChimeraEngine/engine/earth_environment.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--",
+        "ChimeraEngine/engine/earth_environment.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "hash-object",
+        "--no-filters",
+        "--",
+        "ChimeraEngine/engine/earth_environment.hpp"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "38edb9807b61539094c05464d303723a16dfbec7"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "5863348f2deef1f01e3cf761d0c4151a10035a6d"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "5863348f2deef1f01e3cf761d0c4151a10035a6d"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "38edb9807b61539094c05464d303723a16dfbec7"
+      ],
+      "exit": 0
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "<play>",
+        "cat-file",
+        "blob",
+        "38edb9807b61539094c05464d303723a16dfbec7"
+      ],
+      "exit": 0
+    }
+  ],
+  "summary": "30/30 evidence checks green"
+}

@@ -1,0 +1,217 @@
+{
+  "schema": "r5.correction.evidence.v1",
+  "play_worktree": "E:\\ChimeraWork\\monkey-play-20260924",
+  "claims": {
+    "front_complete_claim": {
+      "commit": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "subject": "monkey-play: F08 integrated — repeatable forest loading (66/66; recompile-not-copy proven across fresh processes; named refusal matrices; deterministic initial state; teardown on the existing machinery). FOREST FRONT F01-F08 COMPLETE; W10 scene-ready"
+    },
+    "r5_w10_scene_ready_claim": {
+      "commit": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+      "subject": "monkey-play: R5 forest-front review integrated — FRONT APPROVE-WITH-NOTES, W10 SCENE-READY (70/70 re-run from scratch; one world; trunk base flush proven; N1 fixed: R0 note corrected via recipe amendment + declaration regenerated 8495->8630B + F08 frozen-table Amendment 3; re-verified 66/66 + routes 9/9)"
+    }
+  },
+  "documents": {
+    "tools/monkey_campaign/agents/R5_forest_review/report.md": {
+      "sha256": "665ed6c84936be9c1add9ec1732644fc5d126ad01d924a2dcc8f42d030476e98",
+      "blob_head": "f18eea1baeb469e737169c3006811601cf495dba",
+      "blob_at_claim_commit": "",
+      "bytes": 14176
+    },
+    "tools/monkey_campaign/agents/R5_forest_review/brief.md": {
+      "sha256": "c6d00207113764d1987cd945be8977d0160e9a0bd3e9184c5512575336d02ec7",
+      "blob_head": "68430c5db851ed4902c388cf7fdc3ceb2661907c",
+      "blob_at_claim_commit": "",
+      "bytes": 2591
+    },
+    "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json": {
+      "sha256": "5e22eac9dcc1dccd5423b3b46203b66642c49ed730b7d8a3067915d18b253cba",
+      "blob_head": "1f6fd85293fb25bd4f131a7e7d85595f48655835",
+      "blob_at_claim_commit": "",
+      "bytes": 2781
+    },
+    "tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json": {
+      "sha256": "9535e292ca803296c3d1d05f5069ce43dd42d9eff5dcee0694fc39b16b05949a",
+      "blob_head": "d5672e1c2417ea5b7318a764f4bac2702081b5a9",
+      "blob_at_claim_commit": "",
+      "bytes": 5965
+    },
+    "tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json": {
+      "sha256": "b4492907f9091d28e42687df8979ce6d01439aeac2b442836bf73195b2cedf7f",
+      "blob_head": "ce9b7e5147b8d6c9e2a3181878bfdadae8e78df6",
+      "blob_at_claim_commit": "",
+      "bytes": 3507
+    },
+    "tools/monkey_campaign/PLAY_BOARD.md": {
+      "sha256": "78f1d5bb6baacf929e326bd5019de516672bd886f1ae5bdc1655261e21346e0f",
+      "blob_head": "26e6d47a8baee1c64c61a86528627cc3e942d3aa",
+      "blob_at_claim_commit": "26e6d47a8baee1c64c61a86528627cc3e942d3aa",
+      "bytes": 5524
+    },
+    "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md": {
+      "sha256": "ff1eecb594b38e19297bc2c37998678a8fb108fa35a27f87f3adbc24182c45ce",
+      "blob_head": "95a3e36ac9951b14f140b12387a14680d975da0c",
+      "blob_at_claim_commit": "95a3e36ac9951b14f140b12387a14680d975da0c",
+      "bytes": 44172
+    },
+    "tools/monkey_campaign/agents/F02_terrain/report.md": {
+      "sha256": "1dd5299ec2e63addaccf33fd8121cc55d2b4fa0eab562279eae9e63d907497fd",
+      "blob_head": "f6b094988b568c9b5e0e52e3e45d11b76d541d29",
+      "blob_at_claim_commit": "f6b094988b568c9b5e0e52e3e45d11b76d541d29",
+      "bytes": 11999
+    },
+    "tools/monkey_campaign/agents/F04_contact/report.md": {
+      "sha256": "14ab9ded69635facc916b9e60d2d2b3b1b4eaf07daa25f9007d5a23ab6a339d3",
+      "blob_head": "af679533dfb732c5c0a4ee4bedcabe22e697c845",
+      "blob_at_claim_commit": "af679533dfb732c5c0a4ee4bedcabe22e697c845",
+      "bytes": 13701
+    },
+    "ChimeraEngine/engine/gait_controller.hpp": {
+      "sha256": "7b2ee097f19d777e0972b00393e7761d676d0ddf457c8061d2160e474640a191",
+      "blob_head": "5863348f2deef1f01e3cf761d0c4151a10035a6d",
+      "blob_at_claim_commit": "5863348f2deef1f01e3cf761d0c4151a10035a6d",
+      "bytes": 207569
+    },
+    "ChimeraEngine/engine/earth_environment.hpp": {
+      "sha256": "af98f59a3f1ea772720728b98d970aaf10d38f3891717282352b599490d07063",
+      "blob_head": "38edb9807b61539094c05464d303723a16dfbec7",
+      "blob_at_claim_commit": "38edb9807b61539094c05464d303723a16dfbec7",
+      "bytes": 10719
+    }
+  },
+  "r5_receipts": {
+    "identity_receipt.json": {
+      "total": 15,
+      "pass_flagged": 15
+    },
+    "integrated_receipt.json": {
+      "total": 36,
+      "pass_flagged": 36
+    },
+    "citations_receipt.json": {
+      "total": 19,
+      "pass_flagged": 19
+    }
+  },
+  "f05_f06_absence": {
+    "agent_dirs_present": [
+      "F01_clearing",
+      "F02_terrain",
+      "F03_trunk",
+      "F04_contact",
+      "F07_obstacles",
+      "F08_loading",
+      "GPUA",
+      "P02P03",
+      "R3_product_review",
+      "R4_intent_review",
+      "R5_forest_review",
+      "S01_provenance",
+      "TIE2",
+      "U01_input",
+      "U02_camera",
+      "U03_focus",
+      "U04_settings",
+      "U05_climb_intent",
+      "U05b_amendments_U06",
+      "W7_landing",
+      "X02_flow"
+    ],
+    "f05_f06_dirs": [],
+    "f05_f06_tracked_files": [],
+    "forest_row": "| Forest | F01→F08 | **F01 DONE**; **F03 DONE** (trunk: h=1.158m Oku-derived, r=0.037m grip-span rule, sagitta-derived mesh N=32, error 1.78e-4≤2e-4, friction UNEVIDENCED-PLACEHOLDER→G04, rigid-only structural, 49/49 + F01-joint 79/79; ENGINE-SERVICE GAP named: no rigid-prop collision in lineage); **F02 DONE** (one surface two projections: render==query to 2.8e-17m over 20,177 pts; engine normal gate 0/0 of 13,920; slope law held; 42/42; native heightfield gap named as decided engine task); **F04 DONE** (13/13 + 2 firing controls: tunnelling caught w/ 24.4x margin; ghost support refused 12/12; trunk tangency 7e-16; render==collision re-verified; the gap law's zero-gap rest measured; L2 statement: engine = point-spheres-vs-one-plane ONLY, G04's rigid-prop contact = separately-gated engine task, no C++ touched); **F07 DONE** (routes: 641,494/641,494 free cells reachable, 0 unreachable; corridor 1.076m >= 1.0m derived; blocking-causes table = B1 extent + B2 trunk ONLY, zero unexplained; slope law held 0.0425<=0.05; 9/9 + honest RED preserved (frozen construction overshot near boundary mounds, Amendment 1 re-derived, falsifiers unchanged); F01-F03 regression 121/121); **F08 DONE** (66/66: all four declarations recompile byte-identical incl. fresh processes; missing 4/4 + corruption 13/13 named refusals incl. the coherent re-forge; initial-state digest deterministic; teardown 7/7 named + leak caught; **FOREST FRONT F01-F08 COMPLETE** — W10 scene-ready) |",
+    "forest_row_names_f05_or_f06": false
+  },
+  "engine_citations": {
+    "ChimeraEngine/engine/gait_controller.hpp:94": {
+      "line": "V shift_,gravity_;double dt_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,mtot_=0,store_total_=0;",
+      "contains": true
+    },
+    "ChimeraEngine/engine/gait_controller.hpp:2005": {
+      "line": "require(config_.contains(\"contact_friction\")&&config_[\"contact_friction\"].is_number()&&number(config_[\"contact_friction\"])>=0&&number(config_[\"contact_friction\"])<=1,\"gait_friction_flag_invalid\");mu_=number(config_[\"contact_friction\"]);",
+      "contains": true
+    },
+    "ChimeraEngine/engine/earth_environment.hpp:67": {
+      "line": "double d=dot(x,n_)-r_,vn=dot(v,n_);normal_impulse_=0;",
+      "contains": true
+    },
+    "ChimeraEngine/engine/earth_environment.hpp:118": {
+      "line": "++ticks;time=ticks*dt;outside=std::abs(x[0])>number(scene_.at(\"patch_half_width_m\"))||std::abs(x[2])>number(scene_.at(\"patch_half_width_m\"));",
+      "contains": true
+    }
+  },
+  "map_rows": {
+    "F05": "| F05 | Specify the terrain range for walking | F02, W06 | C14 | Slope, obstacle size and surface-friction envelope is declared from evidence | Do not assume flat-ground training transfers to arbitrary terrain |",
+    "F06": "| F06 | Implement and qualify terrain-aware walking | F05, W07 | C11, C14 | Player walks the declared uneven-ground cases with certified runtime/training agreement | Any expanded training objective gets a new approved runbook |",
+    "W05": "| W05 | Execute unchanged authorized walking runbook | W04, P04 | C10 | All three prescribed seeds execute under the frozen approximately 1M-decision runbook with failures retained | Training authorized conditionally; no reported completed run |",
+    "W10": "| W10 | Accept walking in the actual game scene | W08, W09, F04, U02 | — | Player can walk, turn and stop in the scene on a supported surface; numerical and visual receipts match | Walking demo is a product milestone before climbing |"
+  },
+  "checks": [
+    {
+      "check": "claim_front_complete_claim",
+      "ok": true,
+      "detail": "subject contains 'FOREST FRONT F01-F08 COMPLETE; W10 scene-ready': True"
+    },
+    {
+      "check": "claim_r5_w10_scene_ready_claim",
+      "ok": true,
+      "detail": "subject contains 'W10 SCENE-READY': True"
+    },
+    {
+      "check": "doc_identities_measured",
+      "ok": true,
+      "detail": "11/11 documents hashed"
+    },
+    {
+      "check": "receipt_identity_receipt.json",
+      "ok": true,
+      "detail": "15/15 pass-flagged (report claims 15)"
+    },
+    {
+      "check": "receipt_integrated_receipt.json",
+      "ok": true,
+      "detail": "36/36 pass-flagged (report claims 36)"
+    },
+    {
+      "check": "receipt_citations_receipt.json",
+      "ok": true,
+      "detail": "19/19 pass-flagged (report claims 19)"
+    },
+    {
+      "check": "f05_f06_no_agent_dirs",
+      "ok": true,
+      "detail": "agent dirs matching F05/F06: []"
+    },
+    {
+      "check": "f05_f06_no_tracked_files",
+      "ok": true,
+      "detail": "tracked files matching: []"
+    },
+    {
+      "check": "f05_f06_not_on_board",
+      "ok": true,
+      "detail": "Forest front row of PLAY_BOARD.md names no F05/F06 state"
+    },
+    {
+      "check": "engine_gait_controller.hpp:94",
+      "ok": true,
+      "detail": "expected 'plane_model_y_' in line 94"
+    },
+    {
+      "check": "engine_gait_controller.hpp:2005",
+      "ok": true,
+      "detail": "expected 'contact_friction' in line 2005"
+    },
+    {
+      "check": "engine_earth_environment.hpp:67",
+      "ok": true,
+      "detail": "expected 'dot(x,n_)-r_' in line 67"
+    },
+    {
+      "check": "engine_earth_environment.hpp:118",
+      "ok": true,
+      "detail": "expected 'patch_half_width_m' in line 118"
+    }
+  ],
+  "summary": "13/13 evidence checks green"
+}

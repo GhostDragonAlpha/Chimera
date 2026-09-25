@@ -1,0 +1,21 @@
+{
+  "schema": "r5.attempt.receipt.v1",
+  "task_id": "R5-forest-review",
+  "attempt_id": "9d1066c32ba143beac5cde244e003244",
+  "criteria": "6198e40ba1cfe37059275bc908e55e1e4fa804d58d418bcc21ea8520e4753ae6",
+  "branch": "branch-10",
+  "base_head": "d6ad8f098b9d892ba5d9c3a69290a13580897c86",
+  "commit_sha": null,
+  "commit_sha_note": "a committed file cannot contain its own commit's sha; the sha is recorded in the attempt-workspace copies (WS root) and in the coordinator's ledger",
+  "findings_addressed": [
+    "msg-b935f0d9554d4924aa68f6f4f3872abd",
+    "msg-da228e217fe645d792ae98dba350eaf1"
+  ],
+  "correction_receipt": "evidence/correction_receipt.json",
+  "static_native_verdict": "UNCHANGED — F02/F03/F04 static-only; F05/F06 never started; W10 NOT ready",
+  "remaining_gates": [
+    "lead review of this attempt",
+    "merge of the eventual branch-10 PR",
+    "F05/F06/W10 verdicts unchanged pending native walking-chain work"
+  ]
+}

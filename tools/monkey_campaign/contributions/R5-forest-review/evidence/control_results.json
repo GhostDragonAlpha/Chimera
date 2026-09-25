@@ -1,0 +1,180 @@
+{
+  "schema": "r5.correction.controls.v1",
+  "generated_by": "run_controls.py",
+  "v2_tool": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\R5-forest-review\\9d1066c32ba143beac5cde244e003244\\checkout\\tools\\monkey_campaign\\contributions\\R5-forest-review\\tools\\measure_evidence_v2.py",
+  "original_tool_unchanged": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\R5-forest-review\\9d1066c32ba143beac5cde244e003244\\checkout\\tools\\monkey_campaign\\contributions\\R5-forest-review\\tools\\measure_evidence.py",
+  "play_worktree": "E:\\ChimeraWork\\monkey-play-20260924",
+  "pinned_revision_argument": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+  "controls": {
+    "a_git_failure_not_a_repo": {
+      "environment": {
+        "GIT_CEILING_DIRECTORIES": "C:\\Users\\allen\\AppData\\Local\\Temp",
+        "note": "isolates the control temp dir from upward repo discovery (a repo is discoverable at this machine's drive root); applies ONLY to this control's scratch dir, never to the real worktree runs"
+      },
+      "precondition": {
+        "temp_dir": "C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_a_notarepo_q46xfmbf",
+        "command": "git -C <temp_dir> rev-parse --is-inside-work-tree",
+        "exit_code": 128,
+        "stderr": "fatal: not a git repository (or any of the parent directories): .git"
+      },
+      "v2": {
+        "command": [
+          "C:\\Python314\\python.exe",
+          "-B",
+          "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\R5-forest-review\\9d1066c32ba143beac5cde244e003244\\checkout\\tools\\monkey_campaign\\contributions\\R5-forest-review\\tools\\measure_evidence_v2.py",
+          "C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_a_notarepo_q46xfmbf",
+          "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+          "C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_a_notarepo_q46xfmbf\\out"
+        ],
+        "exit_code": 3,
+        "stdout_lines": [],
+        "stderr_lines": [
+          "REFUSAL GIT_COMMAND_FAILED command='git -C C:\\\\Users\\\\allen\\\\AppData\\\\Local\\\\Temp\\\\r5ctrl_a_notarepo_q46xfmbf rev-parse --verify dc7ea81111d98f32a4d88252c59f2fb8cf3c7399^{commit}' exit=128 stderr='fatal: not a git repository (or any of the parent directories): .git'"
+        ],
+        "output_file_created": false
+      },
+      "verdict": "PASS — v2 refused: exit 3, first stderr line \"REFUSAL GIT_COMMAND_FAILED command='git -C C:\\\\\\\\Users\\\\\\\\allen\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\r5ctrl_a_notarepo_q46xfmbf rev-parse --verify dc7ea81111d98f32a4d88252c59f2fb8cf3c7399^{commit}' exit=128 stderr='fatal: not a git repository (or any of the parent directories): .git'\", no output file written",
+      "original_measure_evidence_py_same_control": {
+        "command": [
+          "C:\\Python314\\python.exe",
+          "-B",
+          "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\R5-forest-review\\9d1066c32ba143beac5cde244e003244\\checkout\\tools\\monkey_campaign\\contributions\\R5-forest-review\\tools\\measure_evidence.py",
+          "C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_a_notarepo_q46xfmbf",
+          "C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_a_notarepo_q46xfmbf\\out_v1"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr_tail_lines": [
+          "  File \"C:\\Python314\\Lib\\pathlib\\__init__.py\", line 771, in open",
+          "    return io.open(self, mode, buffering, encoding, errors, newline)",
+          "           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+          "FileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\Users\\\\allen\\\\AppData\\\\Local\\\\Temp\\\\r5ctrl_a_notarepo_q46xfmbf\\\\tools\\\\monkey_campaign\\\\agents\\\\R5_forest_review\\\\report.md'"
+        ],
+        "output_file_created": false,
+        "observed": "v1 crashed with an unhandled exception (traceback) after silently treating every failed git command as empty data; no named refusal, no output file, no returncode checks anywhere in its git() helper.",
+        "code_inspection": "tools/measure_evidence.py lines 59-63: git() returns subprocess.run(...).stdout.strip() with no returncode check, so a failed `git ls-files` would yield '' -> splitlines() == [] and check f05_f06_no_tracked_files would PASS on an empty inventory — the silent-empty defect named by finding msg-b935f0d9554d4924aa68f6f4f3872abd. In this control the run crashed earlier (first document read), so the defect is shown by inspection plus the crash itself. The original file is preserved unmodified."
+      },
+      "original_verdict": "CONFIRMED DEFECT (original left byte-identical)",
+      "temp_dir_removed": true
+    },
+    "b_modified_cited_source": {
+      "setup": {
+        "document": "tools/monkey_campaign/PLAY_BOARD.md",
+        "tamper": "append 72 bytes (b'\\n<!-- tampered by run_controls.py contro'...) to a TEMP COPY; the real worktree is untouched",
+        "temp_copy": "C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_b_tampered_226y0js1\\PLAY_BOARD.tampered.md",
+        "orig_work_sha256": "78f1d5bb6baacf929e326bd5019de516672bd886f1ae5bdc1655261e21346e0f",
+        "tampered_sha256": "668394aa6aa15b28209ef87598ed13c4054cb0964c911224569fb21a8926b9f4"
+      },
+      "v2": {
+        "command": [
+          "C:\\Python314\\python.exe",
+          "-B",
+          "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\R5-forest-review\\9d1066c32ba143beac5cde244e003244\\checkout\\tools\\monkey_campaign\\contributions\\R5-forest-review\\tools\\measure_evidence_v2.py",
+          "E:\\ChimeraWork\\monkey-play-20260924",
+          "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+          "C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_b_tampered_226y0js1\\out",
+          "--override-file",
+          "tools/monkey_campaign/PLAY_BOARD.md=C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_b_tampered_226y0js1\\PLAY_BOARD.tampered.md"
+        ],
+        "exit_code": 1,
+        "stdout_lines": [
+          "29/30 evidence checks green",
+          "PASS pinned_revision_resolved - pin 'dc7ea81111d98f32a4d88252c59f2fb8cf3c7399' resolved to dc7ea81111d98f32a4d88252c59f2fb8cf3c7399 (monkey-pl",
+          "PASS sanity_query_head_ok - git rev-parse --verify HEAD exit 0 -> dc7ea81111d9",
+          "PASS cited_paths_clean - git status --porcelain over the 11 cited paths: empty (clean)",
+          "PASS ls_files_inventory_sanitized - ls-files exit 0, 214 tracked paths, sanity query ok; empty-on-failure impossible",
+          "PASS claim_front_complete_claim - subject contains 'FOREST FRONT F01-F08 COMPLETE; W10 scene-ready': True",
+          "PASS claim_r5_w10_scene_ready_claim - subject contains 'W10 SCENE-READY': True",
+          "PASS source_identity_tools/monkey_campaign/agents/R5_forest_review/report.md - identity OK under convention(s) ['crlf_normalized', 'lf_normalized', 'raw'] (raw disk bytes == blob: True)",
+          "PASS source_identity_tools/monkey_campaign/agents/R5_forest_review/brief.md - identity OK under convention(s) ['crlf_normalized', 'lf_normalized', 'raw'] (raw disk bytes == blob: True)",
+          "PASS source_identity_tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json - identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)",
+          "PASS source_identity_tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json - identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)",
+          "PASS source_identity_tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json - identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)",
+          "FAIL source_identity_tools/monkey_campaign/PLAY_BOARD.md - MODIFIED_CITED_SOURCE: work bytes match committed blob 26e6d47a8bae under NO declared line-ending convention",
+          "PASS source_identity_tools/monkey_campaign/MONKEY_COMPLETION_MAP.md - identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)",
+          "PASS source_identity_tools/monkey_campaign/agents/F02_terrain/report.md - identity OK under convention(s) ['crlf_normalized', 'lf_normalized', 'raw'] (raw disk bytes == blob: True)",
+          "PASS source_identity_tools/monkey_campaign/agents/F04_contact/report.md - identity OK under convention(s) ['crlf_normalized', 'lf_normalized', 'raw'] (raw disk bytes == blob: True)",
+          "PASS source_identity_ChimeraEngine/engine/gait_controller.hpp - identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)",
+          "PASS source_identity_ChimeraEngine/engine/earth_environment.hpp - identity OK under convention(s) ['crlf_normalized', 'lf_normalized'] (raw disk bytes == blob: False)",
+          "PASS blob_ids_valid_at_pin - all 11 rev-parse <pin>:<path> ids are 40 hex",
+          "PASS claim_blob_ids_valid - every blob resolved at claim commit 9afbddcd9016 is 40 hex",
+          "PASS doc_identities_measured - 11/11 documents hashed",
+          "PASS receipt_identity_receipt.json - 15/15 pass-flagged (report claims 15)",
+          "PASS receipt_integrated_receipt.json - 36/36 pass-flagged (report claims 36)",
+          "PASS receipt_citations_receipt.json - 19/19 pass-flagged (report claims 19)",
+          "PASS f05_f06_no_agent_dirs - agent dirs matching F05/F06: []",
+          "PASS f05_f06_no_tracked_files - tracked files matching (verified-exit ls-files): []",
+          "PASS f05_f06_not_on_board - Forest front row of PLAY_BOARD.md names no F05/F06 state",
+          "PASS engine_gait_controller.hpp:94 - expected 'plane_model_y_' in line 94",
+          "PASS engine_gait_controller.hpp:2005 - expected 'contact_friction' in line 2005",
+          "PASS engine_earth_environment.hpp:67 - expected 'dot(x,n_)-r_' in line 67",
+          "PASS engine_earth_environment.hpp:118 - expected 'patch_half_width_m' in line 118"
+        ],
+        "stderr_lines": []
+      },
+      "output_file_created": true,
+      "failing_check": {
+        "check": "source_identity_tools/monkey_campaign/PLAY_BOARD.md",
+        "ok": false,
+        "detail": "MODIFIED_CITED_SOURCE: work bytes match committed blob 26e6d47a8bae under NO declared line-ending convention"
+      },
+      "document_record_identity": {
+        "identity_ok": false,
+        "identity_conventions_matching": [],
+        "override_source": "C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_b_tampered_226y0js1\\PLAY_BOARD.tampered.md",
+        "work_sha256": {
+          "raw": "668394aa6aa15b28209ef87598ed13c4054cb0964c911224569fb21a8926b9f4",
+          "lf_normalized": "b5ab5124ad535ed78c0fca2a1e1a9d7517229d5c2fa4aaf7514bd06c2d8cdf87",
+          "crlf_normalized": "4ecbf98ec6da7a103deb211e26a032312f653d9f26ac382289e4855443a74457"
+        }
+      },
+      "summary": "29/30 evidence checks green",
+      "verdict": "PASS — v2 failed exactly the tampered document's identity check (source_identity_tools/monkey_campaign/PLAY_BOARD.md ok=false, named MODIFIED_CITED_SOURCE), run exit 1",
+      "temp_dir_removed": true
+    },
+    "c_line_ending_rescue_positive": {
+      "setup": {
+        "document": "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json",
+        "work_bytes_contain_crlf": true,
+        "blob_id_committed": "1f6fd85293fb25bd4f131a7e7d85595f48655835",
+        "work_raw_disk_hash_object": "bc47080fcbeff4d0ddd7f68045d827bad3f45e8e",
+        "raw_disk_bytes_equal_blob": false,
+        "flipped_copy_sha256": "61b1fd33df0d09115780a0aafee234fd41aa0d40ddf949f95edee970b10b8d25"
+      },
+      "v2": {
+        "command": [
+          "C:\\Python314\\python.exe",
+          "-B",
+          "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\R5-forest-review\\9d1066c32ba143beac5cde244e003244\\checkout\\tools\\monkey_campaign\\contributions\\R5-forest-review\\tools\\measure_evidence_v2.py",
+          "E:\\ChimeraWork\\monkey-play-20260924",
+          "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+          "C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_c_eolflip_l2pc4k08\\out",
+          "--override-file",
+          "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json=C:\\Users\\allen\\AppData\\Local\\Temp\\r5ctrl_c_eolflip_l2pc4k08\\identity_receipt.lfflipped.json"
+        ],
+        "exit_code": 0,
+        "stdout_lines": [
+          "30/30 evidence checks green",
+          "PASS pinned_revision_resolved - pin 'dc7ea81111d98f32a4d88252c59f2fb8cf3c7399' resolved to dc7ea81111d98f32a4d88252c59f2fb8cf3c7399 (monkey-pl",
+          "PASS sanity_query_head_ok - git rev-parse --verify HEAD exit 0 -> dc7ea81111d9",
+          "PASS cited_paths_clean - git status --porcelain over the 11 cited paths: empty (clean)"
+        ],
+        "stderr_lines": []
+      },
+      "output_file_created": true,
+      "document_record_identity": {
+        "identity_ok": true,
+        "identity_conventions_matching": [
+          "crlf_normalized",
+          "lf_normalized",
+          "raw"
+        ],
+        "raw_disk_bytes_equal_blob_at_pin": true
+      },
+      "summary": "30/30 evidence checks green",
+      "verdict": "PASS — EOL-flipped copy still proves identity (conventions ['crlf_normalized', 'lf_normalized', 'raw']): the policy distinguishes pure line-ending differences from content modification",
+      "temp_dir_removed": true
+    }
+  },
+  "pinned_revision_full_sha": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399"
+}
