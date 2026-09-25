@@ -1,0 +1,226 @@
+/* Read-only projection. The fetched snapshot remains the only data authority. */
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const state = { snapshot: null, bytes: null, nodes: new Map(), sources: new Map(), selected: null, tab: 'definition', search: '', expanded: new Set(), unknown: null, loading: false };
+  const element = (tag, className, text) => { const item = document.createElement(tag); if (className) item.className = className; if (text !== undefined) item.textContent = String(text); return item; };
+  const append = (parent, ...children) => { children.filter(Boolean).forEach(child => parent.appendChild(child)); return parent; };
+  const button = (text, className, handler) => { const item = element('button', className, text); item.type = 'button'; item.addEventListener('click', handler); return item; };
+  const pretty = value => String(value ?? 'Not declared').replaceAll('_', ' ');
+  const compactHash = value => typeof value === 'string' ? value.slice(0, 12) + '…' + value.slice(-8) : 'Not available';
+  const nodeLabel = id => state.nodes.get(id)?.name || id;
+  const list = value => Array.isArray(value) ? value : [];
+  const badge = (value, extra = '') => element('span', 'badge ' + extra, pretty(value));
+  const section = title => { const item = element('section', 'detail-section'); item.appendChild(element('h3', 'detail-title', title)); return item; };
+  const empty = text => element('p', 'empty-detail', text);
+  const announce = text => { $('announcement').textContent = text; };
+  function hashNode() { return new URLSearchParams(location.hash.slice(1)).get('node'); }
+  function navigate(id, updateHistory = true) {
+    if (!state.snapshot) return;
+    state.unknown = id && !state.nodes.has(id) ? id : null;
+    state.selected = state.nodes.has(id) ? id : state.snapshot.root;
+    const node = state.nodes.get(state.selected);
+    list(node.path).forEach(parent => state.expanded.add(parent));
+    if (updateHistory) history.pushState(null, '', '#node=' + encodeURIComponent(state.selected));
+    renderTree(); renderSelected();
+    announce('Selected ' + node.name);
+  }
+  function setTab(tab, focus = false) {
+    state.tab = tab;
+    document.querySelectorAll('[data-tab]').forEach(item => { const active = item.dataset.tab === tab; item.classList.toggle('active', active); item.setAttribute('aria-selected', String(active)); item.tabIndex = active ? 0 : -1; if (active && focus) item.focus(); });
+    $('detail-content').setAttribute('aria-labelledby', 'tab-' + tab);
+    renderDetails();
+  }
+  function portChip(node, port) {
+    const item = button('', 'port-chip', () => { if (state.selected !== node.id) navigate(node.id); setTab('ports'); $('detail-content').scrollIntoView({ block: 'nearest' }); });
+    item.setAttribute('aria-label', 'Inspect ' + node.name + ' port ' + port.id);
+    append(item, element('span', 'port-dot'), element('span', '', port.id));
+    item.title = port.protocol + ' · ' + port.unit;
+    return item;
+  }
+  function matchingIds() {
+    if (!state.search) return null;
+    const found = new Set(); let matchCount = 0;
+    for (const node of state.nodes.values()) {
+      if ([node.id, node.name, node.description].join(' ').toLocaleLowerCase().includes(state.search)) {
+        found.add(node.id); list(node.path).forEach(id => found.add(id)); matchCount++;
+      }
+    }
+    $('search-summary').textContent = matchCount + (matchCount === 1 ? ' match' : ' matches');
+    return found;
+  }
+  function renderTree() {
+    const tree = $('tree'); tree.replaceChildren();
+    if (!state.snapshot) return;
+    const matches = matchingIds();
+    if (!matches) $('search-summary').textContent = 'Containment';
+    if (matches && !matches.size) { tree.appendChild(element('p', 'no-results', 'No membranes match “' + $('search').value + '”. Try a name, ID or description.')); return; }
+    const build = (id, depth) => {
+      const node = state.nodes.get(id); if (!node || (matches && !matches.has(id))) return null;
+      const branch = element('li'); const row = element('div', 'tree-row' + (state.selected === id ? ' selected' : ''));
+      row.style.paddingLeft = (depth * 13) + 'px';
+      const children = list(node.children), isOpen = !!matches || state.expanded.has(id);
+      const toggle = button(children.length ? (isOpen ? '−' : '+') : '', 'tree-toggle' + (!children.length ? ' empty' : ''), () => { if (state.expanded.has(id)) state.expanded.delete(id); else state.expanded.add(id); renderTree(); });
+      toggle.setAttribute('aria-label', (isOpen ? 'Collapse ' : 'Expand ') + node.name);
+      if (children.length) toggle.setAttribute('aria-expanded', String(isOpen)); else toggle.tabIndex = -1;
+      if (matches) { toggle.disabled = true; toggle.title = 'Search keeps matching ancestors expanded'; }
+      const select = button('', 'tree-select', () => navigate(id));
+      if (state.selected === id) select.setAttribute('aria-current', 'true');
+      select.title = node.name + ' · ' + node.id;
+      append(select, element('span', 'tree-symbol' + (node.kind === 'connection' ? ' connection' : '')), element('span', '', node.name));
+      append(row, toggle, select);
+      if (list(node.gaps).length) { const gaps = element('span', 'tree-gaps', '·'); gaps.title = list(node.gaps).length + ' declared gaps'; row.appendChild(gaps); }
+      branch.appendChild(row);
+      if (children.length && isOpen) { const nested = element('ul', 'tree-list'); children.forEach(child => { const next = build(child, depth + 1); if (next) nested.appendChild(next); }); branch.appendChild(nested); }
+      return branch;
+    };
+    const rootList = element('ul', 'tree-list'); rootList.appendChild(build(state.snapshot.root, 0)); tree.appendChild(rootList);
+  }
+  function compartment(node) {
+    const item = element('div', 'compartment');
+    const heading = element('div', 'compartment-head');
+    append(heading, element('span', node.kind === 'connection' ? 'diamond' : 'tree-symbol'), button(node.name, 'node-link', () => navigate(node.id)), element('span', 'compartment-kind', pretty(node.kind)));
+    append(item, heading, element('p', 'compartment-description', node.description));
+    if (list(node.children).length) {
+      const children = element('div', 'nested-contents');
+      node.children.forEach(id => { const child = state.nodes.get(id); const link = button('', 'nested-child', () => navigate(id)); append(link, element('span', child.kind === 'connection' ? 'diamond' : 'tree-symbol'), document.createTextNode(child.name)); if (list(child.children).length) link.appendChild(element('span', '', String(child.children.length))); children.appendChild(link); });
+      item.appendChild(children);
+    }
+    if (list(node.ports).length) { const ports = element('div', 'compartment-ports'); node.ports.forEach(port => ports.appendChild(portChip(node, port))); item.appendChild(ports); }
+    return item;
+  }
+  function connectionRows(ids) {
+    const rows = element('div', 'connection-list');
+    ids.forEach(id => { const node = state.nodes.get(id); if (!node) return; const row = element('div', 'connection-row'); append(row, element('span', 'diamond'), button(node.name, 'node-link', () => { navigate(id); setTab('ports'); }), element('span', 'planned', node.connection_status || 'status undeclared')); rows.appendChild(row); });
+    return rows;
+  }
+  function endpointPath(node) {
+    const path = element('div', 'endpoint-path');
+    list(node.endpoints).forEach((endpoint, index) => {
+      const target = state.nodes.get(endpoint.node); const port = list(target?.ports).find(item => item.id === endpoint.port);
+      if (index) path.appendChild(element('div', 'endpoint-join', 'port connection · ' + (node.connection_status || 'status undeclared')));
+      const targetButton = button('', 'endpoint-button', () => { navigate(endpoint.node); setTab('ports'); });
+      targetButton.setAttribute('aria-label', 'Open ' + nodeLabel(endpoint.node) + ', port ' + endpoint.port);
+      append(targetButton, element('span', 'endpoint-label', 'Endpoint ' + (index + 1)), element('strong', '', nodeLabel(endpoint.node) + ' ↗'), element('code', '', endpoint.node + '.' + endpoint.port), element('small', '', (port?.protocol || 'Protocol not declared') + ' · ' + (port?.unit || 'Unit not declared')));
+      path.appendChild(targetButton);
+    });
+    return path;
+  }
+  function renderSelected() {
+    const node = state.nodes.get(state.selected); if (!node) return;
+    const content = $('main-content'); content.replaceChildren();
+    if (state.unknown) content.appendChild(element('p', 'unknown-warning', 'Unknown membrane ID “' + state.unknown + '”. Showing the root definition.'));
+    const crumbs = element('nav', 'breadcrumbs'); crumbs.setAttribute('aria-label', 'Containment path');
+    list(node.path).forEach((id, index) => { if (index) crumbs.appendChild(element('span', '', '/')); const item = button(nodeLabel(id), '', () => navigate(id)); if (id === node.id) item.setAttribute('aria-current', 'page'); crumbs.appendChild(item); });
+    const eyebrow = element('div', 'node-eyebrow'); append(eyebrow, element('span', '', pretty(node.kind)), element('code', '', node.id));
+    const title = element('h2', 'selected-heading', node.name); title.id = 'selected-title';
+    append(content, crumbs, eyebrow, title, element('p', 'node-description', node.description));
+    const toolbar = element('div', 'composition-toolbar'); append(toolbar, element('strong', '', node.kind === 'connection' ? 'Port relationship' : 'Inside this membrane'), element('span', '', list(node.children).length + ' contained · ' + list(node.ports).length + ' ports')); content.appendChild(toolbar);
+    const shell = element('div', 'boundary-shell');
+    const head = element('div', 'boundary-head'); append(head, element('span', 'boundary-name', node.name), element('span', 'boundary-tag', 'Boundary · ' + pretty(node.boundary?.binding)));
+    append(shell, head, element('p', 'boundary-description', node.boundary?.description || 'No boundary description declared.'));
+    if (list(node.ports).length) { const ports = element('div', 'boundary-ports'); node.ports.forEach(port => ports.appendChild(portChip(node, port))); shell.appendChild(ports); }
+    if (node.kind === 'connection') shell.appendChild(endpointPath(node));
+    if (list(node.children).length) { const children = element('div', 'compartments'); node.children.forEach(id => children.appendChild(compartment(state.nodes.get(id)))); shell.appendChild(children); }
+    else if (node.kind !== 'connection') { const noChildren = element('div', 'no-children'); append(noChildren, element('strong', '', 'No contained membranes declared'), element('p', '', 'This definition has no authored children. Missing physical instances are recorded under Sources & gaps.')); shell.appendChild(noChildren); }
+    content.appendChild(shell);
+    const note = element('p', 'composition-note'); append(note, element('span', '', '↳'), element('span', '', node.kind === 'connection' ? 'A connection is a membrane with explicit endpoints. It does not change containment or qualify its physical binding.' : 'Containment describes composition. Matter ownership, physical parameters and validation stay explicit.')); content.appendChild(note);
+    const connected = list(node.connections);
+    if (connected.length) { const area = element('section', 'connection-section'); append(area, element('h3', 'section-label', 'Connected through ports'), connectionRows(connected)); content.appendChild(area); }
+    if (list(node.gaps).length) { const link = button(list(node.gaps).length + (node.gaps.length === 1 ? ' declared gap' : ' declared gaps') + ' · inspect sources & gaps ↗', 'inline-link', () => { setTab('sources'); $('detail-content').scrollIntoView({ block: 'nearest' }); }); const area = element('div', 'connection-section'); area.appendChild(link); content.appendChild(area); }
+    $('inspector-kind').textContent = pretty(node.kind); renderDetails();
+  }
+  function fields(object, exclude = []) {
+    const dl = element('dl', 'field-list');
+    for (const [key, value] of Object.entries(object || {})) {
+      if (exclude.includes(key)) continue;
+      append(dl, element('dt', '', pretty(key)), element('dd', typeof value === 'object' ? 'code-value' : '', typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value ?? 'Not declared')));
+    }
+    return dl;
+  }
+  function renderDefinition(node, content) {
+    const identity = section('Identity'); append(identity, fields({ id: node.id, kind: node.kind, parent: node.parent || 'Root membrane' })); content.appendChild(identity);
+    const boundary = section('Boundary'); boundary.firstChild.appendChild(badge(node.boundary?.binding)); append(boundary, element('p', 'detail-copy', node.boundary?.description || 'Not declared'), fields(node.boundary, ['binding', 'description'])); content.appendChild(boundary);
+    const physics = section('Physics'); physics.firstChild.appendChild(badge(node.physics?.status)); append(physics, element('p', 'detail-copy', node.physics?.description || 'Not declared'), fields(node.physics, ['status', 'description'])); content.appendChild(physics);
+    const validation = section('Validation'); validation.firstChild.appendChild(badge(node.validation?.status)); const claims = element('div', 'validation-block'); claims.appendChild(fields(node.validation, ['status'])); validation.appendChild(claims); content.appendChild(validation);
+  }
+  function renderPorts(node, content) {
+    if (node.kind === 'connection') { const endpoints = section('Connection endpoints'); endpoints.firstChild.appendChild(badge(node.connection_status)); append(endpoints, element('p', 'detail-copy', 'Navigate to either membrane to inspect its exposed interface.'), endpointPath(node)); content.appendChild(endpoints); }
+    const ports = section('Exposed ports'); ports.firstChild.appendChild(element('span', 'source-count', String(list(node.ports).length)));
+    if (!list(node.ports).length) ports.appendChild(empty('No ports declared on this membrane.'));
+    list(node.ports).forEach(port => {
+      const item = element('article', 'port-definition'); const title = element('h4', 'port-title'); append(title, element('span', 'port-dot'), element('span', '', port.id));
+      const meta = element('div', 'port-meta'); append(meta, element('span', '', port.protocol), element('span', '', port.unit));
+      append(item, title, meta, element('p', 'detail-copy', port.description));
+      if (port.delegates_to) { const link = button('Exposes ' + nodeLabel(port.delegates_to.node) + '.' + port.delegates_to.port + ' ↗', 'inline-link', () => { navigate(port.delegates_to.node); setTab('ports'); }); const wrapper = element('div', 'port-links'); wrapper.appendChild(link); item.appendChild(wrapper); }
+      const links = list(node.connections).map(id => state.nodes.get(id)).filter(connection => list(connection?.endpoints).some(endpoint => endpoint.node === node.id && endpoint.port === port.id));
+      if (links.length) { const wrapper = element('div', 'port-links'); links.forEach(connection => wrapper.appendChild(button(connection.name + ' ↗', 'inline-link', () => { navigate(connection.id); setTab('ports'); }))); item.appendChild(wrapper); } else item.appendChild(element('p', 'source-note', 'Open port · no authored connection.'));
+      ports.appendChild(item);
+    }); content.appendChild(ports);
+    const connected = section('Connection membranes'); connected.appendChild(list(node.connections).length ? connectionRows(node.connections) : empty('No connection membranes reference this membrane’s ports.')); content.appendChild(connected);
+    content.appendChild(element('p', 'detail-copy', 'Protocol and unit compatibility is a structural check. It does not prove force transfer, stiffness, frame correctness or runtime readiness.'));
+  }
+  function renderSources(node, content) {
+    const gaps = section('Declared gaps'); gaps.firstChild.appendChild(element('span', 'source-count', String(list(node.gaps).length)));
+    if (list(node.gaps).length) { const entries = element('ul', 'gap-list'); node.gaps.forEach(gap => entries.appendChild(element('li', '', gap))); gaps.appendChild(entries); } else gaps.appendChild(empty('No gap text declared. This does not establish physical qualification.')); content.appendChild(gaps);
+    const sources = section('Source files'); sources.appendChild(element('p', 'detail-copy', '“Present” means the file was inspected. Its hash identifies bytes, not proof.'));
+    if (!list(node.sources).length) sources.appendChild(empty('No source references authored for this membrane.'));
+    list(node.sources).forEach(path => {
+      const source = state.sources.get(path); const status = source?.status || 'not inspected'; const entry = element('article', 'source-entry'); const head = element('div', 'source-header'); append(head, element('code', 'source-path', path), badge(status, status)); entry.appendChild(head);
+      if (source?.raw_sha256) { const hash = element('p', 'source-hash', 'raw SHA-256 ' + source.raw_sha256); entry.appendChild(hash); }
+      if (Number.isInteger(source?.bytes)) entry.appendChild(element('p', 'source-note', source.bytes.toLocaleString() + ' bytes inspected'));
+      if (status !== 'present') entry.appendChild(element('p', 'source-note', 'Source bytes are unavailable in the inspected checkout. No substitute has been used.'));
+      sources.appendChild(entry);
+    }); content.appendChild(sources);
+    const warnings = list(state.snapshot.warnings).filter(warning => warning.node === node.id || (!warning.node && node.id === state.snapshot.root));
+    if (warnings.length) { const area = section('Snapshot warnings'); const entries = element('ul', 'gap-list'); warnings.forEach(warning => entries.appendChild(element('li', '', warning.code + ': ' + warning.detail))); area.appendChild(entries); content.appendChild(area); }
+    const snapshot = section('Snapshot provenance'); snapshot.classList.add('snapshot-details'); snapshot.appendChild(fields({ authority: state.snapshot.authority, definition_raw_sha256: state.snapshot.definition_raw_sha256, snapshot_sha256: state.snapshot.snapshot_sha256 })); content.appendChild(snapshot);
+    if (list(state.snapshot.limits).length) { const limits = section('Scope limits'); const entries = element('ul', 'limits-list'); state.snapshot.limits.forEach(limit => entries.appendChild(element('li', '', limit))); limits.appendChild(entries); content.appendChild(limits); }
+  }
+  function renderDetails() {
+    const node = state.nodes.get(state.selected); if (!node) return;
+    const content = $('detail-content'); content.replaceChildren();
+    if (state.tab === 'ports') renderPorts(node, content); else if (state.tab === 'sources') renderSources(node, content); else renderDefinition(node, content);
+  }
+  function renderError(error) {
+    state.snapshot = null; state.bytes = null; state.nodes.clear(); state.sources.clear();
+    document.body.classList.add('error-state');
+    $('tree').replaceChildren(element('p', 'loading-copy muted', 'Hierarchy unavailable. Refresh after the source error is resolved.'));
+    $('detail-content').replaceChildren(empty('No snapshot available. Details are never synthesized.'));
+    $('revision').textContent = 'Snapshot unavailable'; $('definition-hash').textContent = '—'; $('definition-hash').removeAttribute('title'); $('node-count').textContent = '—'; $('inspector-kind').textContent = '—'; $('structure-status').textContent = 'Read refused'; $('snapshot-hash').textContent = 'No snapshot loaded';
+    const message = element('div', 'state-message'); const title = element('h2', '', 'Definition unavailable'); title.id = 'selected-title';
+    append(message, title, element('p', '', 'The inspector could not load a valid snapshot. Check the local inspector server and resolve the refusal below, then refresh.'), element('div', 'error-code', error.message || 'Unknown read error'), button('Retry loading', 'button', load));
+    $('main-content').replaceChildren(message); announce('Snapshot unavailable. ' + error.message);
+  }
+  async function load() {
+    if (state.loading) return;
+    state.loading = true; const previous = state.selected || hashNode();
+    $('refresh').disabled = true; $('refresh').setAttribute('aria-busy', 'true'); $('download').disabled = true;
+    announce('Reading the ontology snapshot.');
+    const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 20000);
+    try {
+      const response = await fetch('/api/ontology', { cache: 'no-store', signal: controller.signal });
+      const bytes = await response.arrayBuffer(); const text = new TextDecoder().decode(bytes); let snapshot;
+      try { snapshot = JSON.parse(text); } catch { throw new Error('invalid_response: expected a JSON snapshot'); }
+      if (!response.ok) throw new Error((snapshot.refused || 'read_failed') + ' · HTTP ' + response.status);
+      if (snapshot.schema !== 'chimera.membrane_ontology.snapshot.v1' || !Array.isArray(snapshot.nodes) || !snapshot.nodes.some(node => node.id === snapshot.root) || snapshot.checks?.structural_valid !== true) throw new Error('invalid_snapshot: the API did not return a structurally valid ontology');
+      state.snapshot = snapshot; state.bytes = bytes; state.nodes = new Map(snapshot.nodes.map(node => [node.id, node])); state.sources = new Map(list(snapshot.sources).map(source => [source.path, source]));
+      if (!state.expanded.size) { state.expanded.add(snapshot.root); list(state.nodes.get(snapshot.root).children).forEach(id => state.expanded.add(id)); }
+      document.body.classList.remove('error-state');
+      $('revision').textContent = 'Authored definition · revision ' + snapshot.revision; $('definition-hash').textContent = 'SHA ' + compactHash(snapshot.definition_raw_sha256); $('definition-hash').title = 'Definition raw SHA-256: ' + snapshot.definition_raw_sha256;
+      $('node-count').textContent = snapshot.nodes.length; $('structure-status').textContent = 'Structure valid · ' + snapshot.checks.membranes + ' membranes · ' + snapshot.checks.ports + ' ports · ' + snapshot.checks.connections + ' connections';
+      $('snapshot-hash').textContent = 'Snapshot ' + compactHash(snapshot.snapshot_sha256); $('snapshot-hash').title = snapshot.snapshot_sha256;
+      navigate(previous || hashNode() || snapshot.root, false); announce('Snapshot loaded. ' + snapshot.nodes.length + ' membranes. ' + snapshot.checks.missing_sources + ' missing source files.');
+    } catch (error) { renderError(error.name === 'AbortError' ? new Error('read_timeout: no snapshot received within 20 seconds') : error); }
+    finally { clearTimeout(timeout); state.loading = false; $('refresh').disabled = false; $('refresh').removeAttribute('aria-busy'); ['download', 'search', 'expand-all', 'collapse-all'].forEach(id => { $(id).disabled = !state.snapshot; }); }
+  }
+  $('refresh').addEventListener('click', load);
+  $('search').addEventListener('input', () => { state.search = $('search').value.trim().toLocaleLowerCase(); renderTree(); });
+  $('expand-all').addEventListener('click', () => { state.nodes.forEach(node => state.expanded.add(node.id)); renderTree(); });
+  $('collapse-all').addEventListener('click', () => { state.expanded.clear(); renderTree(); });
+  $('download').addEventListener('click', () => { if (!state.bytes) return; const url = URL.createObjectURL(new Blob([state.bytes], { type: 'application/json' })); const link = element('a'); link.href = url; link.download = 'chimera-ontology-' + state.snapshot.snapshot_sha256.slice(0, 12) + '.json'; document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); });
+  document.querySelectorAll('[data-tab]').forEach(item => { item.addEventListener('click', () => setTab(item.dataset.tab)); item.addEventListener('keydown', event => { const tabs = ['definition', 'ports', 'sources']; let index = tabs.indexOf(state.tab); if (event.key === 'ArrowRight') index = (index + 1) % tabs.length; else if (event.key === 'ArrowLeft') index = (index + tabs.length - 1) % tabs.length; else if (event.key === 'Home') index = 0; else if (event.key === 'End') index = tabs.length - 1; else return; event.preventDefault(); setTab(tabs[index], true); }); });
+  window.addEventListener('popstate', () => navigate(hashNode(), false));
+  window.addEventListener('hashchange', () => navigate(hashNode(), false));
+  load();
+})();

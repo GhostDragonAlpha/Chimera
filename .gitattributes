@@ -24,3 +24,5 @@ ChimeraEngine/ONBOARDING.md -text
 docs/KILO_START_HERE.md -text
 docs/THE_MASTER_LIST.md -text
 docs/THE_OPERATING_MANUAL.md -text
+docs/MEMBRANE_ONTOLOGY.md -text
+tools/membrane_ontology/ontology.json -text

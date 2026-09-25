@@ -1,6 +1,6 @@
 # Work continuously toward the playable monkey
 
-## Current workflow: ten task cards and PR feedback â€” astra-0012
+## Current workflow: ten task cards and PR feedback (astra-0014)
 
 Follow [KANBAN.md](../tools/monkey_campaign/KANBAN.md). This replaces the prior exclusive
 worker-slot queue, timer expiry and report-only completion rules below. The ten slots
@@ -13,6 +13,26 @@ submit a PR, and move to another card. Review corrections stay on the task ID so
 original worker or another worker can fix them. The lead reviews/merges, leaves messages,
 refills eligible work and steers the plan when the operator engages the lead. There is
 no unattended lead loop, no 20-minute takeover, and no top-of-hour task expiry.
+
+## Membrane ontology — operator clarification, astra-0014
+
+Read [MEMBRANE_ONTOLOGY.md](MEMBRANE_ONTOLOGY.md) and its linked machine-readable
+definition. Each membrane encompasses its definition, boundary, physics,
+validation and contained membranes. Membranes connect through explicit ports;
+connections can themselves be membranes. Creature → skeletal structure → bones
+and joint connections is containment; musculature and skin are sibling systems.
+The chosen skin/mesh encloses the creature. Referencing it as an envelope never
+creates duplicate matter. Matter ownership and runtime qualification remain
+explicit, independently checked contracts.
+
+The read-only [browser inspector](../tools/membrane_ontology/README.md) exposes the
+same definition to people and agents. Its current skeleton/muscle/skin ports are
+architectural declarations, not qualified physical bindings. Missing source
+imports and anatomy remain named gaps. Historical teddy story/engine statuses
+are not current monkey acceptance. Do not rewrite them or infer anatomy to make
+the new hierarchy look complete. Propose source-bound mappings through scoped
+task PRs and the task inbox. This revision starts no workers or GPU processes
+and does not alter the sealed game scope, active cards or task acceptance bar.
 
 ## Prior rollout notes: astra-0011
 
@@ -118,8 +138,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 13,
-  "revision_id": "astra-0013",
+  "revision": 14,
+  "revision_id": "astra-0014",
   "scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -149,12 +169,14 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/kanban.py",
     "tools/monkey_campaign/kanban_cli.py",
     "tools/monkey_campaign/KANBAN.md",
-    "tools/monkey_campaign/KANBAN_BACKLOG.json"
+    "tools/monkey_campaign/KANBAN_BACKLOG.json",
+    "docs/MEMBRANE_ONTOLOGY.md",
+    "tools/membrane_ontology/ontology.json"
   ]
 }
 CHIMERA_LEAD_CONTROL -->
 
-## Current lead instructions: astra-0013
+## Current lead instructions: astra-0014
 
 The operator designates **Astra/Codex as lead developer**. The lead publishes overall
 instructions here; workers report progress and propose changes separately. Only the
