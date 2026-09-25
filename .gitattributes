@@ -30,3 +30,6 @@ tools/membrane_ontology/ontology.json -text
 docs/ONTOLOGY_WORK_PLAN.md -text
 
 tools/membrane_ontology/model.py -text
+
+# Preserve the historical license text exactly as published.
+LICENSES/AGPL-3.0-historical.txt -text

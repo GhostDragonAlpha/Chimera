@@ -1,5 +1,12 @@
 # CHIMERA — the membrane game
 
+> **Current development and licensing:** the playable-monkey campaign is defined
+> by [MONKEY_RUN.md](docs/MONKEY_RUN.md) and the [membrane work plan](docs/ONTOLOGY_WORK_PLAN.md).
+> The ontology/workflow cutoff is not a claim that the engine or game is complete.
+> The public repository now uses [source-visible restricted terms](LICENSE) for
+> the prospective licensing offer. Earlier AGPL rights and third-party licenses
+> remain intact; see the [transition record](docs/LICENSING_TRANSITION.md).
+
 **A world built from membranes — cosmic down to molecular — where the physics cannot lie.**
 
 Chimera is a real-time physics teaching game built on one idea: every
@@ -82,5 +89,4 @@ Tier 0 (the body) frozen and proven; Tier 1 (locomotion — the creature
 learns to walk) in flight; 25 features queued, one at a time, ~1 visible
 feature per day (measured: PR #97 to #109 in under 12 hours). Multiplayer is native: the engine is already a server.
 
-License: [LICENSE](LICENSE). Built in the open, one verified membrane at
-a time.
+License: [Chimera Source-Visible Terms](LICENSE), with [historical and third-party exceptions](docs/LICENSING_TRANSITION.md). Publicly inspectable source is not the same as an open-source license.
