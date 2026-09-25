@@ -18,3 +18,6 @@ Workspace: this worktree (branch monkey-play-20260924, base = game lineage maste
 - Item acceptance = the completion map's "done when" with receipts at pinned revisions; no proxy signals.
 - Writers own disjoint paths; integration serialized by the coordinator on this branch.
 - Every landing: verify receipt → review (non-author, for substantial changes) → integrate → checkpoint → refill the slot without waiting for the batch.
+
+## CHECKPOINT 2026-09-24 (session end-state)
+**27 map items done/closed this session.** Controls stack COMPLETE (U01-U06 + X02, all reviewed/fixed). Forest F01-F04 done, F07 in flight, F08 next. Walking: W01/W02 closed; tie-v2 CPU legs GREEN (host walks past 41); GPU legs + C3 + anchor A/B + C++ gap = W03 remainder. Grasp chain: source prong closed; palm letter card READY for operator; assembly evidence request specified. Release: S01 done (CT-asset decision filed); S02 blocked on it. Material-volume: COMPLETE incl. publication. Buffy 03 + Astra decisions: pending owners.
