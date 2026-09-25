@@ -233,3 +233,62 @@ playing, the harness calls `on_pause` once (idempotent); `on_resume` on return t
 Approval of this spec is approval of interface semantics v1; the implementation is
 measured against sections 2-10 by `product/climb_intent_tests.py` (falsifiers I1-I7 in
 `PREREGISTRATION.md`), with receipts under `agents/U05_climb_intent/receipts/`.
+
+---
+
+## 12. R4 REVIEW AMENDMENTS (BINDING — landed inside v1, NO version bump)
+
+Appended 2026-09-24 by M-U05b per the R4 review verdict (APPROVED-WITH-AMENDMENTS;
+`agents/R4_intent_review/report.md`). The six interface rulings (section 11 items 1-6)
+all APPROVE, so these four implementation-level amendments land **inside v1 without a
+version bump**: none touches the wire format, the delivered event set, or any ruling.
+Landed with the 73-check suite green plus 4 new amendment checks (77/77;
+`product/climb_intent_amr_tests.py`, failing-first receipt in
+`agents/U05b_amendments_U06/receipts/`) and R4's adversarial probe battery re-run
+(27/27 expectations reproduce post-fix; the four former FINDING probes now flip to the
+fixed refusal).
+
+- **AMR-1 (BINDING, validator):** `intent_version` must be `int` and never `bool` —
+  `True == 1` would otherwise be ACCEPTED and JSON-encode as `"intent_version": true`
+  on the wire (R4 probes A1.g, A1.g'). The version check now applies the same
+  non-bool int test the stamps always had. Measured post-fix: `True`, `"1"`, `1.0`,
+  `2` all REFUSED; `1` constructs unchanged.
+- **AMR-2 (BINDING, validator):** `source` is now VALIDATED: anything other than
+  `SOURCE_ID` is REFUSED at construction. Provenance a constructor could forge is not
+  provenance (R4 probe A5.e). Wire format unchanged — the delivered field set and
+  values are identical; consumers were already promised the fixed id.
+- **AMR-3 (BINDING, ordering):** VALIDATE-THEN-ARM. The `IntentEvent` is now
+  built/validated BEFORE the edge arms (`press()` calls `_stamp()` first, then arms,
+  then delivers synchronously). Measured gap (R4 A5.b-d): a press with a negative
+  `now_ms` or a raising `tick_source` used to ARM first and raise second, so the next
+  valid press was a named no-op — the physical press silently consumed. Post-fix the
+  bad press raises WITHOUT arming and the next valid press DELIVERS. Behavior-identical
+  on every valid path; the 73-check suite stayed green.
+- **AMR-4 (BINDING, docstring):** `press()`'s docstring previously claimed "returns the
+  intent name if ONE event was emitted, else None", but the repeat (held) branch
+  returns the bound action with NO event (R4 A5.f) — the return value cannot
+  distinguish delivery from no-op. The docstring now states the measured two-case
+  contract (fresh press: name + one event; repeat: name + zero events, named
+  `repeat_press` in the trace). Code behavior unchanged; the declared consumer
+  interface (section 7, `emit` only) is unaffected.
+
+## 13. SPEC-NOTES FOR v2 (recorded, NOT defects, NO binding on v1 — do NOT implement as v1 semantics)
+
+Recorded verbatim from the R4 review (section 5); each is a declared v2 candidate, not
+a v1 gap:
+
+- **N1:** declare one-channel-per-sink exclusivity (two channels on one sink
+  double-deliver — A4.a; a guard or a declared rule, either).
+- **N2:** surface times are `int()`-truncated silently (`press`/`release`/policy) — the
+  house convention, but a named refusal would match the event validator's strictness.
+- **N3:** binding KEYS are not type-checked (an int key works if pressed with an int);
+  the surface contract says strings — cheap to enforce at construction.
+- **N4:** state explicitly in §5 that same-`now_ms` events resolve in CALL order
+  (measured deterministic; A3).
+- **N5:** declare sink-exception semantics (currently: exception propagates, edge stays
+  armed, event lost — the operator re-presses; §5.2's no-replay law arguably already
+  implies this, but say it). AMR-3's reorder shrank the armed-without-delivery window
+  to the emit call itself.
+- **N6:** two presses inside the same millisecond share stamps; if K06's arbitration
+  logs need total ordering beyond delivery order, v2 should say what the (ms, tick) pair
+  does and does not promise.

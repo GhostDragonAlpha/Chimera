@@ -1,0 +1,27 @@
+ M tools/monkey_campaign/agents/U02_camera/receipts/latency_run.json
+ M tools/monkey_campaign/agents/U05_climb_intent/INTENT_SEAM_SPEC.md
+ M tools/monkey_campaign/product/climb_intent.py
+?? tools/monkey_campaign/agents/F07_obstacles/
+?? tools/monkey_campaign/agents/U05b_amendments_U06/
+?? tools/monkey_campaign/data/monkey_routes/
+?? tools/monkey_campaign/product/climb_intent_amr_tests.py
+?? tools/monkey_campaign/product/state_feedback.py
+?? tools/monkey_campaign/product/state_feedback_tests.py
+
+ATTRIBUTION (M-U05b): entries attributable to THIS session are exactly the
+declared write set (prereg section 3):
+  M tools/monkey_campaign/agents/U05_climb_intent/INTENT_SEAM_SPEC.md   (append-only: 59 insertions, 0 deletions)
+  M tools/monkey_campaign/product/climb_intent.py                        (the 4 R4 amendment edits only)
+  ?? tools/monkey_campaign/agents/U05b_amendments_U06/                   (this dir)
+  ?? tools/monkey_campaign/product/climb_intent_amr_tests.py             (new)
+  ?? tools/monkey_campaign/product/state_feedback.py                     (new)
+  ?? tools/monkey_campaign/product/state_feedback_tests.py               (new)
+NOT attributable to this session (parallel agents sharing the worktree;
+never touched here): M U02_camera/receipts/latency_run.json (present at
+session start), ?? F07_obstacles/ (present at session start),
+?? agents/TIE2/ (present at session start, since resolved elsewhere),
+?? data/monkey_routes/ (appeared mid-session, not mine). The frozen walk
+contract stayed byte-identical all session:
+  tools/science_funnel/typeb_export/command_record.py
+  sha256 061a2b55f2f5fd145e0fae918e8a9223b1d58be3bce78f1298cd45aa47aa8781
+(I6 re-verified green in the final climb_intent_tests run above.)

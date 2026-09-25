@@ -1,0 +1,11 @@
+climb_intent_amr_tests -- M-U05b: R4's four BINDING amendments (prereg: agents/U05b_amendments_U06/PREREGISTRATION.md)
+AMR-1: the validator refuses intent_version=True (R4 A1.g/A1.g')
+  [PASS] AMR-1 intent_version=True / '1' / 1.0 / 2 REFUSED; plain 1 still constructs (bool is not a version: True == 1 smuggled a wire value)  -- True->True, '1'->True, 1.0->True, 2->True
+AMR-2: the validator refuses a forged source (R4 A5.e)
+  [PASS] AMR-2 a forged/empty source REFUSED; the default still stamps the fixed SOURCE_ID (provenance a constructor can forge is not provenance; wire format unchanged)  -- forged->True, empty->True, default='u05_climb_intent'
+AMR-3: validate-then-arm -- a bad stamp NEVER arms the edge (R4 A5.b-d)
+  [PASS] AMR-3 a bad-stamp press (negative now_ms OR a raising tick_source) RAISES without arming the edge; the NEXT valid press DELIVERS (no silent consumption of a physical press)  -- neg: raised=True, held=['Space'], events=1, redeliver=True; tick_src: raised=True, held=[], events=0
+AMR-4: press()'s docstring states the measured return contract (R4 A5.f)
+  [PASS] AMR-4 the docstring no longer claims 'returns ... if ONE event was emitted, else None' (the repeat press returns the bound action with ZERO events -- R4 A5.f) and names the repeat case  -- measured=True, false_claim_gone=True, repeat_named=True
+
+RESULT: GREEN -- all 4 amendment checks passed

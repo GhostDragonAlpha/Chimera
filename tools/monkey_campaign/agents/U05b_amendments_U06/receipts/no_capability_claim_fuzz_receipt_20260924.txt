@@ -1,0 +1,16 @@
+  [PASS] V2.a ZERO forbidden claim tokens in 30099 rendered strings (722376 token scans)  -- hits=[]
+  [PASS] V2.b the ladder is MODEL-CHECKED: state_key and prompt match the independent model on all 20000 combos  -- misses=[]
+  [PASS] V2.c every rendered key is in the FROZEN table, and the full table is reachable (no dead row, no invented row)  -- n_keys=11 of 11
+
+no-capability-claim fuzz (prereg §2.4-2.5, V2):
+  combos=20000 (seed 20260924, frozen; adversarial: all gate subsets incl.
+  cross-source mis-wiring, stale flashes, empty/full held sets, all session x
+  focus combinations, randomized binding names)
+  forbidden token list = 24 tokens (prereg §2.4, frozen before implementation)
+  rendered strings scanned = 30099 (prompts + optional diagnostics)
+  token-level scans = 722376
+  capability-claim HITS = 0
+  ladder model-checked = 20000/20000 (independent model, state_key + prompt)
+  vocabulary rows reachable = 11/11 from real module objects
+  invalid-input classes raising UnknownStateError = 10 (never render)
+Source suite: tools/monkey_campaign/product/state_feedback_tests.py (V2).

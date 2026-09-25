@@ -146,10 +146,16 @@ class IntentEvent:
     source: str = SOURCE_ID
 
     def __post_init__(self):
-        if self.intent_version != INTENT_VERSION:
+        v = self.intent_version
+        if (not isinstance(v, int) or isinstance(v, bool)
+                or v != INTENT_VERSION):
+            # AMR-1 (R4, binding): bools and other non-ints are refused BEFORE
+            # the equality test -- True == 1 would otherwise smuggle a wire
+            # value that JSON-encodes as "intent_version": true.
             raise IntentEventError(
-                f"intent_version {self.intent_version} != {INTENT_VERSION} "
-                "(a new version is a NEW declared wire format, not a free field)")
+                f"intent_version {v!r} != {INTENT_VERSION} "
+                "(a new version is a NEW declared wire format, not a free "
+                "field; a bool is never a version)")
         if self.intent not in INTENTS:
             raise IntentEventError(
                 f"intent {self.intent!r} is outside the frozen vocabulary "
@@ -159,6 +165,12 @@ class IntentEvent:
             if not isinstance(v, int) or isinstance(v, bool) or v < 0:
                 raise IntentEventError(
                     f"{name} must be a non-negative int (a stamp), got {v!r}")
+        if self.source != SOURCE_ID:
+            # AMR-2 (R4, binding): source is FIXED provenance -- a constructor
+            # that could forge it would prove nothing. Wire format unchanged.
+            raise IntentEventError(
+                f"source {self.source!r} != {SOURCE_ID!r} (source is FIXED "
+                "provenance, not a free field)")
 
     # ---- the wire format (canonical fields; the JSON form is json.dumps of it)
     def canonical_fields(self) -> dict:
@@ -275,8 +287,13 @@ class ClimbIntentChannel:
 
     # ── input events (the SAME kinds U01's surface consumes; spec section 10) ─
     def press(self, name, now_ms):
-        """A key went down. Returns the intent name if ONE event was emitted,
-        else None -- every swallow is NAMED in the trace, never silent."""
+        """A key went down. Returns the bound intent name on a FRESH accepted
+        press (ONE event emitted) and ALSO on a repeat press of a still-held
+        key (ZERO events -- a NAMED no-op, "repeat_press" in the trace); None
+        when the press delivered nothing (an unbound key, or dropped by a
+        gate -- every swallow is NAMED in the trace, never silent). The return
+        value alone cannot distinguish delivery from a repeat no-op (AMR-4,
+        R4 probe A5.f): the sink/trace carries that truth."""
         now_ms = int(now_ms)
         action = self.bindings.get(name)
         self.last_trace.setdefault("pressed", []).append((name, now_ms))
@@ -290,8 +307,9 @@ class ClimbIntentChannel:
             # law says a press is ONE event -- a NAMED no-op, never a second.
             self.last_trace.setdefault("repeat_press", []).append((name, now_ms))
             return action
+        event = self._stamp(action, now_ms)   # AMR-3: built+VALIDATED before
         self._held.add(name)            # the edge arms exactly here
-        self._emit(action, now_ms)      # ONE event, synchronously, stamped
+        self._sink.emit(event)          # ONE event, synchronously, stamped
         return action
 
     def release(self, name, now_ms):
@@ -350,13 +368,17 @@ class ClimbIntentChannel:
             {"what": what, "at_ms": now_ms, "reason": reason,
              "gates": sorted(self.gates_active)})
 
-    # ── the ONE delivery path ────────────────────────────────────────────────
-    def _emit(self, action, now_ms):
-        """ONE IntentEvent, synchronously, stamped with the session's clocks
-        (spec section 5): the sink receives nothing else, ever."""
+    # ── the ONE stamp/delivery path ──────────────────────────────────────────
+    def _stamp(self, action, now_ms):
+        """Build THE ONE IntentEvent for an accepted press, stamped with the
+        session's clocks (spec section 5). Construction VALIDATES, so a bad
+        stamp (or a raising tick_source) is refused HERE, BEFORE the caller
+        arms the edge (AMR-3, R4 binding): a physical press is never silently
+        consumed by a validator that fires after the arm. Delivery
+        (sink.emit) happens in press(), right after the arm -- so a raising
+        SINK still finds the edge armed (SPEC-NOTE N5, declared), and the
+        only armed-without-delivery window left is the emit call itself."""
         issued_tick = (int(self._tick_source()) if self._tick_source
                        else (now_ms * PHYSICS_HZ) // 1000)
-        event = IntentEvent(intent=action, issued_tick=int(issued_tick),
-                            now_ms=now_ms)
-        self._sink.emit(event)
-        return event
+        return IntentEvent(intent=action, issued_tick=int(issued_tick),
+                           now_ms=now_ms)
