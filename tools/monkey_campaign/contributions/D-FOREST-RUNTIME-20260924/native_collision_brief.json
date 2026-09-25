@@ -1,0 +1,257 @@
+{
+  "schema": "chimera.d-forest-runtime.native_collision_brief.v1",
+  "card": {
+    "task_id": "D-FOREST-RUNTIME-20260924",
+    "attempt_id": "6691766eea124942984e4b6e8e24bc82",
+    "arrival": "arrival-ec97e63be318447499de475cc02077cd",
+    "branch": "branch-3",
+    "checkout_head": "c525b82c7c3ce0128565424764293a3c85811ab3",
+    "criteria": "dc47ff858da36a02a6e2354ea25aa480e929e098e0ad89742a0c7d09bf815cb8",
+    "objective_verbatim": "Specify the smallest missing native terrain/trunk collision integration needed for the first playable clearing.",
+    "deliverable_class": "specification_only_no_implementation_edits",
+    "planning_ids": ["F02", "F03", "F04"]
+  },
+  "scope_verdict": {
+    "decision": "TERRAIN_FIRST",
+    "one_line": "Smallest integration = per-point terrain surface service replacing the walker's single plane_model_y_ scalar (gait lane) + a collision query route; trunk scoped in Stage 1 to rendered mesh + F07 B2 blocking disk; full trunk/rigid-prop contact is the separately-gated Stage 2.",
+    "reasons": [
+      "Trunk contact needs a subsystem that does not exist (no prop machinery, no non-(0,1,0) solver rows, no SDF route, no measured bark friction); terrain contact is a delta onto machinery that already projects cones, solves Coulomb friction, bisects contact events and gates touch.",
+      "F07 proved the clearing walkable-around the trunk with the B2 blocking disk (0.287 m, 107 cells, zero unexplained), so a first playable clearing needs terrain contact + existing blocking data, not prop contact.",
+      "The plane path is the frozen control (co8 walk byte anchors); a heightfield service whose one-height degeneracy IS the plane keeps the plane path byte-identical by construction, and that byte-identity is itself a falsifier for smallest-delta."
+    ]
+  },
+  "pinned_revisions": {
+    "game_lineage_master": {
+      "sha": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "role": "pinned runtime revision for ALL engine citations in this brief"
+    },
+    "typeb_gpu_finish_tip": {"sha": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c", "role": "python walking drivers; derived_numbers.json v_max 1.01/0.97 m/s"},
+    "first_skill_prestage": {"sha": "73f3a86082e0f5ab6de88e17831e4d10cb9e8b00", "role": "frozen first_skill modules + RUNBOOK"},
+    "wave46_47_ship_state": {"sha": "f106fc54448aece034886c65e4bc5ccf4ebd6c7f", "role": "byte-anchored walk state; ancestor of 33e7a444; gait_controller.hpp DRIFTED between these two"},
+    "monkey_play_head": {"sha": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399", "role": "forest artifacts F01-F08 (data + agent dirs)"}
+  },
+  "blobs": {
+    "gait_controller.hpp@33e7a444": "5863348f2deef1f01e3cf761d0c4151a10035a6d",
+    "gait_controller.hpp@f106fc54": "02335aa982e26b2a196aad88ba12aacfe30a17a0",
+    "earth_environment.hpp@33e7a444": "38edb9807b61539094c05464d303723a16dfbec7",
+    "graph_earth.hpp@33e7a444": "accfecbe03415654a68f354157d9ce51572f467d",
+    "engine.hpp@33e7a444": "58a2f3650b1f211d6a8f972a5362a7eef3133955",
+    "engine.cpp@33e7a444": "3abc8e37b046d03e7f84ed734a13c5a513a7989e",
+    "main.cpp@33e7a444": "beca3cf844069e032f71f6a39d37dbc64218f1ca",
+    "membrane_tick.hpp@33e7a444": "5a15b1097ab007e69df3d9e295fbc1cb6f13482f",
+    "membrane_tick.cpp@33e7a444": "ae11ac7696d8324a9e8d15e5bea0a75e678e2763",
+    "gait_scene.py@33e7a444": "5c8792aef60f9eb2eb2e10549546ff12a2efe21b",
+    "slice_server.py@dc7ea811": "721b643d6e35ec30d6f48868e1cdb44233a0c1f2",
+    "clearing_declaration.json@dc7ea811": "e0f9f8ed3c01277086f844db22bf2125a7be472b",
+    "terrain_bundle.json@dc7ea811": "f4be30e37da4f25ef5d577e8b30c3726891cbfde",
+    "terrain_query.py@dc7ea811": "0f68f951b39fb4c2c99b5930ddbc1ee9cfad17a1",
+    "trunk_declaration.json@dc7ea811": "c7b37531a98a6e213107ecdb9e61bad1074fc973",
+    "trunk_recipe.py@dc7ea811": "698acf7c04827114a61998f989d4a544f5d9ea6f"
+  },
+  "native_collision_path_inventory": [
+    {
+      "path": "A_gait_walker_contact",
+      "role": "THE creature contact machinery; the path the playable walk obeys; NOT wired into main.cpp (instantiated only in science_funnel/typeb*, tests_coupled_arm/gait_unit.cpp, constraint_ledger/trace_harness.cpp)",
+      "file": "ChimeraEngine/engine/gait_controller.hpp",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "blob": "5863348f2deef1f01e3cf761d0c4151a10035a6d",
+      "symbols": [
+        {"line": 36, "text": "static constexpr double kTouch=1e-5,kSlip=1e-9;"},
+        {"line": 52, "text": "static constexpr double kReleaseBand=1e-6;"},
+        {"line": 56, "text": "struct ContactPoint {std::string name,body;size_t index;V local;double radius;}"},
+        {"line": 94, "text": "double dt_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,... -- ONE plane scalar pair for ALL contact points"},
+        {"line": 635, "symbol": "gap_of(const Evaluation& e,size_t k)const", "text": "vertical gap law, heel/MP pair-min"},
+        {"line": 642, "text": "double gh=e.point(points_[h].index,points_[h].local).first[1]+points_[h].radius-plane_model_y_;"},
+        {"line": 644, "text": "return (std::min)(gh,gm);"},
+        {"line": 645, "symbol": "contact_row(const Evaluation& e,size_t k)const", "text": "r[i]=j[i][1] -- y-row only; every contact normal is (0,1,0)"},
+        {"line": 646, "symbol": "tangent_row(const Evaluation& e,size_t k,int axis)const", "text": "friction tangent rows are WORLD x/z axes (0 or 2), not surface tangents"},
+        {"line": 683, "symbol": "static Dense project_rows(const Dense& initial,const Dense& inverse,const std::vector<Dense>& rows,const Dense& floors,std::vector<double>* multipliers,size_t n_stops=0)", "text": "mass-metric active-set cone projection; require(R>=1&&R<=10,\"gait_row_budget\") at :685"},
+        {"line": 716, "symbol": "static void friction_solve(const Dense& initial,const Dense& inverse,const Dense& row_n,const Dense& row_t,double floor_n,double floor_t,double mu,double slip_sign,Dense& force,double& lambda_n,double& lambda_t,int& mode)", "text": "discrete-cone Coulomb; accepts ARBITRARY row_n/row_t but is only ever fed plane rows; refusal gait_friction_slide_singular at :723"},
+        {"line": 1724, "text": "double gate=1e-6+1e-3*joint_speed_scale(s);"},
+        {"line": 1727, "text": "touching[k]=plane[k]||(live[k]&&gap_of(e,k)<=kTouch&&inner(rown[k],s.v)<=gate); -- the ONLY anti-tunnelling machinery: tick-sample band, plane-only"},
+        {"line": 1950, "text": "contact-event bisection; require(std::abs(gap_of(evaluate(crossing),size_t(khit)))<1e-9,\"gait_contact_localization\") at :1951"},
+        {"line": 1958, "symbol": "GaitWalker(const J& data,double gravity,V shift,double dt=1/300.)"},
+        {"line": 1961, "text": "require(dt>0&&dt<=1/300.,\"gait_timestep\");require(recipe_.at(\"substeps\")==4,\"gait_substeps\");"},
+        {"line": 2003, "text": "plane_world_y_=number(recipe_.at(\"contact_plane_height_m\"));...plane_model_y_=plane_world_y_-shift_[1]; -- THE model-frame transform"},
+        {"line": 2005, "text": "contact_friction in [0,1] gate; mu_=number(config_[\"contact_friction\"]) -- ONE scalar mu (scene 0.6, uncited design constant, UNEVIDENCED-PLACEHOLDER, G04 debt)"},
+        {"line": 2009, "text": "out.radius=number(p.at(\"radius_m\"));require(out.radius>0,\"gait_contact_radius_invalid\");"},
+        {"line": 2010, "text": "npts_=points_.size();require(npts_>=1&&npts_<=8,\"gait_contact_capacity\");"},
+        {"line": 2239, "text": "require(gap_of(e,k)>0,\"gait_initial_penetration\"); -- reset seating"},
+        {"line": 2243, "symbol": "void configure(const J& input)"},
+        {"line": 2262, "symbol": "void step()"}
+      ]
+    },
+    {
+      "path": "B_playable_slice_membrane_floor",
+      "role": "the live playable process's floor law; ONE rigid Y DOF vs the fixed plane y=0; membrane standing body m=13824.5 kg (deliberately separate from the 10.038 kg gait walker)",
+      "file": "ChimeraEngine/engine/membrane_tick.cpp",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "blob": "ae11ac7696d8324a9e8d15e5bea0a75e678e2763",
+      "symbols": [
+        {"line": 856, "text": "const float depth = std::max(0.f, -lo); // lo = world lowest vertex y"},
+        {"line": 857, "text": "float F = k_ground_ * depth + c_ground_ * std::max(0.f, -root_vy_);"},
+        {"line": 858, "text": "const float F_cap = 50.f * mass_kg_ * G_EARTH;"},
+        {"line": 865, "text": "root_vy_ += (g_contact_n_ / mass_kg_ - G_EARTH) * dts;"},
+        {"line_hpp": true, "file": "ChimeraEngine/engine/membrane_tick.hpp", "line": 424, "text": "float k_ground_ = 1.3562e7f; // N/m (= m g / 0.01); c_ground_=6.062e5f N s/m; mass_kg_=13824.5f (:423)"}
+      ],
+      "route": {"file": "ChimeraEngine/engine/main.cpp", "line": 1597, "text": "POST /tick_gravity"},
+      "front_door": {"file": "tools/playable_slice/slice_server.py", "commit": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399", "facts": "SETTLE_VY=0.05 bar; SETTLE_SINK_M = 13824.5*9.81/1.3562e7 = 0.010000 m"}
+    },
+    {
+      "path": "C_earth_patch_demo",
+      "role": "single sphere vs ONE tilted plane; demo lane (native_earth_patch), not the playable clearing",
+      "file": "ChimeraEngine/engine/earth_environment.hpp",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "blob": "38edb9807b61539094c05464d303723a16dfbec7",
+      "symbols": [
+        {"line": 67, "text": "double d=dot(x,n_)-r_,vn=dot(v,n_); -- sphere-vs-plane signed distance"},
+        {"line": 91, "text": "require(scene.at(\"schema\")==\"chimera.earth_patch.v1\"&&number(scene.at(\"tick_hz\"))==300,\"earth_scene_contract\");"},
+        {"line": 107, "text": "n_={-std::sin(s),std::cos(s),0};tangent_={std::cos(s),std::sin(s),0}; -- plane from slope_deg, X-Y tilt only, NO height field"},
+        {"line": 118, "text": "outside=std::abs(x[0])>number(scene_.at(\"patch_half_width_m\"))||std::abs(x[2])>number(scene_.at(\"patch_half_width_m\")); -- strict-> extent rule (out_of_patch)"},
+        {"line": 119, "text": "require(dot(x,n_)>=r_-1e-10,\"earth_ground_penetration\");"}
+      ],
+      "render_identity": {"file": "ChimeraEngine/engine/graph_earth.hpp", "lines": "102-105", "text": "auto ground=[&](double x,double z){return V{x,std::tan(slope)*x,z};}; -- render IS the physics plane"}
+    },
+    {
+      "path": "render_only_mesh_machinery",
+      "role": "meshes are RENDER-ONLY; negative evidence: no collision query route exists",
+      "symbols": [
+        {"file": "ChimeraEngine/engine/engine.hpp", "line": "140-141", "text": "bool load_mesh(const std::vector<float>& verts, const std::vector<uint32_t>& indices, uint32_t vcount, uint32_t icount); -- 'triangle mesh rendering (depth-tested opaque Lambert)' (:138)"},
+        {"file": "ChimeraEngine/engine/engine.cpp", "line": "1854-1937", "text": "THE NORMAL-HYGIENE GATE: non-finite/non-unit stored normals re-derived as area-weighted adjacent-face sums at upload"},
+        {"file": "ChimeraEngine/engine/main.cpp", "line": 736, "text": "--science-surface upload"},
+        {"file": "ChimeraEngine/engine/main.cpp", "line": 751, "text": "--thermal-salvage upload"},
+        {"file": "ChimeraEngine/engine/main.cpp", "line": 764, "text": "--earth-patch upload: engine.load_mesh(view.mesh,view.indices,...)"},
+        {"file": "ChimeraEngine/engine/main.cpp", "line": 1096, "text": "POST /mesh_bin"},
+        {"file": "ChimeraEngine/engine/main.cpp", "line": 4266, "text": "thread-landing of g_mesh_req"},
+        {"file": "ChimeraEngine/engine/main.cpp", "line": 1954, "text": "POST /gait_bin -- CPG display constants for the render-side gait display, NOT the GaitWalker solver"}
+      ],
+      "negative_evidence": "git grep at 33e7a444: zero hits for heightfield|height_field|terrain in gait_controller.hpp and earth_environment.hpp; zero collision/sdf/height-query routes in main.cpp (only URL query-param helpers)"
+    }
+  ],
+  "revision_drift_note": "The wave-47 receipt's hpp line numbers (:255 tau_settle, :301 arch, :1997 PD gains, :2066 kHeightFloor) match blob 02335aa9... at f106fc54, NOT master's blob 5863348f... at 33e7a444 (verified directly). All citations in this brief are verified directly at 33e7a444's blob. Any implementation task must re-pin its own diff target the same way.",
+  "static_vs_native_comparison": [
+    {"capability": "rendered_ground_vs_query_surface", "static_proof_L1": "F02: one surface two projections; worst height disagreement 2.776e-17 m over 20,177 pts (bound 1e-9); normals 0.0; gradient 6.939e-18; both sides PYTHON declarations", "native_reality_L2": "engine never loaded the mesh, answers no query; floors are constants: y=0 (membrane), one contact_plane_height_m (gait), tan(slope)*x (earth)"},
+    {"capability": "terrain_heightfield_contact", "static_proof_L1": "none claimed; F02 named it an ENGINE change, not an agent-file edit", "native_reality_L2": "DOES NOT EXIST; walker plane is ONE height; even the terrain is beyond the walker contact model"},
+    {"capability": "trunk_collision_representation", "static_proof_L1": "F03: analytic capped cylinder (11.976783,2.471766) R=0.037 H=1.158 axis +Y, closed-form normals, N=32 chord error 1.78307e-4 <= TOL 2e-4, surface IDs + material record", "native_reality_L2": "DOES NOT EXIST; no rigid-prop/mesh collision machinery of any kind"},
+    {"capability": "tunnelling", "static_proof_L1": "F04: TUN-01 7/7 caught at dt=1/300 v=1.01 m/s, worst pen 1.0000e-3 <= 3.3667e-3 per-tick bound; TUN-02/TUN-03b controls FIRE; trunk catch chord 0.082 m = 24.4x margin", "native_reality_L2": "only the kTouch tick band against ONE plane (:1727); no CCD; nothing to tunnel through but the plane"},
+    {"capability": "ghost_support", "static_proof_L1": "F04: GHO-01 12/12 strict-> extent refusals; GHO-02 floating +1e-4 claims no support; law-rest gap exactly 0; convention: engine rest = point_y = surface - r_sole", "native_reality_L2": ":1727 gate arms only at gap <= kTouch at a tick sample, plane-only; no off-plane surface exists to ghost against"},
+    {"capability": "interpenetration_slope_law", "static_proof_L1": "F04: INT-01 tangency worst 7.043e-16; INT-02 slope submergence 3.6114e-6 <= 4.9906e-6; INT-03 trunk base coplanar 0.0", "native_reality_L2": "earth lane earth_ground_penetration require; gait lane gait_initial_penetration (:2239) -- plane-only"},
+    {"capability": "friction", "static_proof_L1": "F04 consumed NO friction number; F03 pinned mat.bark.trunk_01 friction 0.6 UNEVIDENCED-PLACEHOLDER, acquisition G04", "native_reality_L2": "ONE scalar contact_friction in [0,1] (:2005), scene 0.6, uncited design constant (admit_gait_walker_20260919.py:60)"},
+    {"capability": "blocking_routes", "static_proof_L1": "F07: 641,494/641,494 free cells reachable; 107 blocked ALL B2 (trunk disk dist<0.287 m); B1 = strict-> extent; zero unexplained", "native_reality_L2": "B1 native analogue ONLY in earth demo lane (:118); gait/membrane lanes have no extent rule; B2 is Python-only"}
+  ],
+  "static_receipts_are_not_native_readiness": "Every proof in static_proof_L1 is STATIC (F04 report 'Honest boundaries': L1 only, not one case ran inside an engine). They are ORACLE + REFERENCE ONLY in this brief (the card's own falsifier).",
+  "missing_interfaces": [
+    {"id": "M1", "name": "native_terrain_surface_service", "detail": "no h(x,z) exists in C++; need per-contact-point gap + world normal + tangent frame from terrain_bundle.json (13,920 verts / 3,200 ground triangles, frozen 00-11 diagonal, 1 m grid over [-20,20]^2)", "consumers": ["gait_controller.hpp:642-643 gap_of", "gait_controller.hpp:645 contact_row", "gait_controller.hpp:646 tangent_row", "gait_controller.hpp:2239 reset seating"]},
+    {"id": "M2", "name": "native_rigid_prop_service_trunk", "detail": "no prop collision machinery at all; need analytic capped-cylinder contract from trunk_declaration.collision_representation (containment, sdf m, radial/cap normals), surface IDs trunk_01.lateral/base_cap/top_cap"},
+    {"id": "M3", "name": "multi_normal_solver_rows", "detail": "contact_row (:645) carries only the y-row; need J^T n rows with n = normalize(-gx,1,-gz) and surface tangent frames for friction; friction_solve (:716) already accepts arbitrary rows -- NAMED VERIFICATION DUTY: verify no other solver site assumes (0,1,0) (project_rows :683, gate/plane flags :1724-1727, contact_bias :647, reset scan :2237)"},
+    {"id": "M4", "name": "collision_query_route", "detail": "no HTTP/in-process route serves height/normal/classify/SDF (negative evidence verified); needed so the playable layer and oracle harness can interrogate served answers"},
+    {"id": "M5", "name": "extent_rule_in_walker_lane", "detail": "out_of_patch strict-> exists only in earth demo lane (earth_environment.hpp:118); gait lane has no extent refusal; semantics oracle terrain_query.py:72 classify"},
+    {"id": "M6", "name": "friction_provenance", "detail": "plane-lane mu=0.6 stays (frozen walk's own constant); trunk lateral friction has NO measured value; Stage 1 must NOT claim grip; acquisition = G04"}
+  ],
+  "units_and_transforms": [
+    {"item": "lengths", "law": "meters everywhere; NO unit conversion needed or permitted", "citation": "F02/F03 declarations; gait_controller.hpp:56 ContactPoint"},
+    {"item": "model_frame_shift", "law": "plane_model_y_ = plane_world_y_ - shift_[1]; a surface service must apply the SAME shift for gap-law answers while answering queries in world frame", "citation": "gait_controller.hpp:2003"},
+    {"item": "grid_to_world", "law": "41x41 nodes at 1 m spacing, node (i,j) at (-20+i,-20+j); cell-local (tx,tz) in [0,1]^2; frozen diagonal: triangle A (00,01,11) covers tz>=tx, triangle B (00,11,10) covers tz<=tx", "citation": "terrain_query.py:84-121 @ dc7ea811; F02 prereg"},
+    {"item": "normal_gradient", "law": "n = normalize(-gx,1,-gz) => gx = -nx/ny, gz = -nz/ny", "citation": "F02 prereg; graph_earth.hpp:100 cross(b-a,c-a) normal law"},
+    {"item": "placement_transform", "law": "clearing world frame <-> walker reset frame: identity by default (spawn [0,0,0], scene arm_translation_m [0,0,0], world_id gait_walker_plane); nonzero placement must be a DECLARED constant, never inferred", "citation": "clearing_declaration.json spawn; gait_scene.py:467"},
+    {"item": "time", "law": "ticks 1/300 s, substeps 4 (gait and earth lanes)", "citation": "gait_controller.hpp:1961; earth_environment.hpp:91"},
+    {"item": "speeds", "law": "v_max 1.01 m/s (derived_numbers.json timing_paper.simulated_before @ a62b286e); s_tick = 3.366667e-3 m; terrain-following vertical 1.681230e-4 m (slope law 0.05)", "citation": "F04 frozen inputs"},
+    {"item": "contact_scales", "law": "r_sole 0.004 m; kTouch 1e-5; release edge 1.1e-5; tangency tol 1e-9; trunk TOL 2e-4; F02 family 1e-9 m / 1e-12", "citation": "gait_scene.py:28; gait_controller.hpp:36,:52; F02/F03/F04"},
+    {"item": "law_rest_convention", "law": "zero-gap rest = point_y = h(x,z) - r_sole (sole center 4 mm BELOW surface); naive tangency = 2*r_sole = 8e-3; every render-vs-physics and envelope comparison must pick and LABEL one convention", "citation": "F04 GHO-02 adjudication; gait_controller.hpp:642-643"}
+  ],
+  "brief": {
+    "stage_1_terrain_heightfield": {
+      "goal": "native terrain-heightfield contact in the gait lane + live render/query binding",
+      "changes": [
+        {"id": "S1-1", "change": "per-point surface service: surface_query(x_m, z_m) -> {h_m, gx, gz, inside} fed from terrain_bundle.json; strict-> extent refusal mapped to gait refusal vocabulary", "anchors": [
+          {"file": "ChimeraEngine/engine/gait_controller.hpp", "symbol": "plane_world_y_/plane_model_y_ members", "line": 94, "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"},
+          {"file": "ChimeraEngine/engine/gait_controller.hpp", "symbol": "plane recipe load", "line": 2003, "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"},
+          {"file": "ChimeraEngine/engine/gait_controller.hpp", "symbol": "gap_of pair-min", "line": "642-644", "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"},
+          {"file": "ChimeraEngine/engine/gait_controller.hpp", "symbol": "gait_initial_penetration seating", "line": 2239, "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"}
+        ], "io_contract": "surface_query(x_m: double, z_m: double) -> {h_m: double, gx: double, gz: double, inside: bool}; world frame; h_m = containing triangle's plane value; (gx,gz) exact plane gradient m/m; inside=false iff |x|>20.0 or |z|>20.0 (strict); service REFUSES off-patch (never extrapolates); modified gap law = min_over_pair(point_y + radius - h(point_x_world, point_z_world)) with point world = model + shift_; plane case h == contact_plane_height_m must reproduce current bytes EXACTLY"},
+        {"id": "S1-2", "change": "normal row from surface: contact_row returns J^T n, n = normalize(-gx,1,-gz); contact_row/tangent_row generalize from y-row/world-axes; friction_solve UNCHANGED", "anchors": [
+          {"file": "ChimeraEngine/engine/gait_controller.hpp", "symbol": "contact_row", "line": 645, "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"},
+          {"file": "ChimeraEngine/engine/gait_controller.hpp", "symbol": "tangent_row", "line": 646, "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"},
+          {"file": "ChimeraEngine/engine/gait_controller.hpp", "symbol": "friction_solve (unchanged)", "line": 716, "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"}
+        ], "verification_duty": "enumerate and verify no other solver site assumes (0,1,0): project_rows :683, engagement gate + plane[k] flag :1724-1727, contact_bias :647, reset touching scan :2237"},
+        {"id": "S1-3", "change": "collision query route (new POST route in the route chain beside /gait_bin); response {h_m, gx, gz, inside, surface_rev}; NO render changes", "anchors": [
+          {"file": "ChimeraEngine/engine/main.cpp", "symbol": "route chain /gait_bin pattern", "line": 1954, "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"}
+        ], "io_contract": "request {x_m, z_m} or batch array; refusal code for out-of-patch; surface_rev = bundle sha prefix for stale-surface detection"},
+        {"id": "S1-4", "change": "render binding: upload terrain_bundle.json render.vertices/render.indices verbatim; capture one frame", "anchors": [
+          {"file": "ChimeraEngine/engine/engine.hpp", "symbol": "load_mesh", "line": "140-141", "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"},
+          {"file": "ChimeraEngine/engine/main.cpp", "symbol": "--earth-patch upload pattern", "line": 764, "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"},
+          {"file": "ChimeraEngine/engine/engine.cpp", "symbol": "normal-hygiene gate (expect ZERO repairs)", "line": "1854-1937", "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"}
+        ], "expected": "13,920 v / 4,640 tris accepted; no '[load_mesh] normal hygiene: repaired' lines (F02 measured 0 broken / 0 deviant)"},
+        {"id": "S1-5", "change": "extent rule live in the walker lane, strict->", "anchors": [
+          {"file": "ChimeraEngine/engine/earth_environment.hpp", "symbol": "outside strict-> rule (semantics donor)", "line": 118, "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4"}
+        ], "oracle": {"file": "tools/monkey_campaign/data/monkey_clearing/terrain_query.py", "symbol": "TerrainSurface.classify", "line": 72, "commit": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399"}},
+        {"id": "S1-6", "change": "trunk in Stage 1 (NOT contact): render mesh uploaded (130 v / 384 idx house layout, consumes unchanged) + B2 blocking disk dist-to-axis < 0.287 m enforced on the native path plan; SDF verification route only", "anchors": [
+          {"file": "tools/monkey_campaign/data/monkey_trunk/trunk_declaration.json", "symbol": "render mesh 9-float layout", "commit": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399"},
+          {"file": "tools/monkey_campaign/agents/F07_obstacles/report.md", "symbol": "blocking-causes table B2", "detail": "dist < 0.287 m = R 0.037 + body envelope 0.25; 107 cells, zero unexplained"}
+        ]}
+      ],
+      "excluded_from_stage_1": ["trunk contact rows", "grip/climb modes", "non-(0,1,0) support claims", "post collision", "bark friction", "any change to friction_solve's algebra", "any second runtime"]
+    },
+    "stage_2_trunk_followup": {
+      "honest_sizing": "a SUBSYSTEM, not a patch",
+      "contents": [
+        "analytic SDF service from trunk_declaration.collision_representation (M2)",
+        "mixed-surface contact rows: per-point row switches between ground n and radial/cap n by SDF argmin (M3); per-point mode bookkeeping extended (touching/plane flags :1727, Rate::mode :89)",
+        "tangential frames on the cylinder (radial normal; tangent plane spanned by axis y-hat and azimuthal t-hat)",
+        "the climb/contact-mode layer (U05 intent vocabulary exists; CLIMB solver rows do not)",
+        "measured bark-on-appendage friction replacing the 0.6 placeholder (G04 prerequisite, gates any grip claim)",
+        "multi-surface support solve verification (cone projection re-proven for mixed-normal active sets)"
+      ],
+      "gate": "separate preregistered engine task (frozen-core law) with its own Rule-0 falsifiers, AFTER Stage 1 acceptance"
+    },
+    "independent_oracle": [
+      {"target": "terrain height/gradient/normal/classify", "file": "tools/monkey_campaign/data/monkey_clearing/terrain_query.py", "commit": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399", "blob": "0f68f951b39fb4c2c99b5930ddbc1ee9cfad17a1", "symbols": {"height_at": 115, "gradient_at": 122, "normal_at": 130, "classify": 72, "load": 182}, "proven_by": "F02: 42/42; render==query 2.776e-17 m over 20,177 pts", "agreement_bar": "<= 1e-9 m height, <= 1e-12 normal component over the FROZEN ~21,700-point sample set"},
+      {"target": "trunk analytic SDF", "file": "tools/monkey_campaign/agents/F04_contact/verify_contact.py", "commit": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399", "symbols": {"sdf_capped_cylinder": 82, "point_triangle_distance": 92, "Model.gap_law": 157}, "proven_by": "F04: INT-01 tangency worst 7.043e-16; run.json sha efded804...b70e6a, two fresh-process runs byte-identical", "agreement_bar": "<= 1e-9 m over INT-01's 320 lateral + 66 cap + 32 rim tangency probes"},
+      {"target": "the gap law itself", "file": "tools/science_funnel/gait_scene.py", "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4", "blob": "5c8792aef60f9eb2eb2e10549546ff12a2efe21b", "symbols": {"SOLE_RADIUS": 28, "gap_law_mirror": 178, "seat_validation": 400}, "agreement_bar": "modified native gap_of reproduces plane-lane bytes on the plane scene (A1) and matches this mirror on the heightfield (A4)"},
+      {"target": "harness sensitivity controls", "cases": "F04 TUN-02 ridge-skip 4.329635 m step; TUN-03b 0.083 m spacing > 0.082 m chord", "proven_by": "F04 measured both FIRING", "agreement_bar": "must FIRE again in-vivo; a control that stops firing refutes the harness"}
+    ],
+    "oracle_discipline": "engine-served answers are compared against these Python derivations; the engine never grades itself",
+    "falsifiers": [
+      {"id": "F-TUN-1", "name": "through_face_in_vivo", "statement": "sole point swept at dt=1/300 s, v=1.01 m/s across any frozen terrain case (worst-slope centroid (17,7); five mound crests; 45-deg approach through (19.5,5.5); trunk-site cell) MUST be caught (min sampled gap <= kTouch) with first-catch penetration <= its derived per-tick bound (3.366667e-3 m vertical; 1.681230e-4 m terrain-following)", "fires_when": "a miss at declared tick/speed"},
+      {"id": "F-TUN-2", "name": "boundary_crossing", "statement": "a fast body crossing a shared triangle edge (or worst twisted cell (36,28)) between ticks MUST be caught within the same bounds; edge-continuity |dh| across 1,000 seeded crossings obeys the corrected linear-ratio bound (<= 0.2 of 4x0.05 slope, F04's adjudicated form)", "fires_when": "a miss, or a catch requiring sub-tick steps beyond dt/4 (existing 42-step bisection budget, gait_controller.hpp:30)"},
+      {"id": "F-TUN-3", "name": "controls_must_fire", "statement": "ridge-skip control (4.329635 m step) and chord-jump control (0.083 m spacing across 0.082 m chord) MUST report NOT caught", "fires_when": "a control stops firing (refutes the harness)"},
+      {"id": "F-GHO-1", "name": "no_surface_from_nowhere", "statement": "any served height/normal/SDF outside the closed extent (strict >), any support row armed with oracle-gap > kTouch, any query answered past f02_outside_extent", "fires_when": "any occurrence"},
+      {"id": "F-GHO-2", "name": "rest_gains_no_support", "statement": "body seated at law-rest on ANY surface point reports gap 0 (<= 1e-15); raised by 1e-4 m it claims NO support (gap 1e-4 > kTouch); the :1727 gate never arms while the ORACLE's gap > kTouch", "fires_when": "a body at rest acquires a contact row the oracle denies"},
+      {"id": "F-GHO-3", "name": "no_ghost_through_trunk", "statement": "trunk void closed by the analytic contract: axis probes return sdf = -0.037 (inside), never a mesh-only positive reading; declared analytic/mesh split <= TOL 2e-4", "fires_when": "a mesh-only positive reading on an interior probe"}
+    ],
+    "acceptance_evidence": [
+      {"id": "A1", "evidence": "plane-lane byte-anchor regression: rebuild + re-run the co8 walk with the heightfield service present but fed the plane scene", "bars": {"refusal": "302 gait_positional_correction_budget", "ledger_J": "exactly 30.970714", "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc", "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342", "trace_sha256_lines": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481 (65,870 lines)"}, "meaning": "byte-identical, ZERO plane-path diffs (smallest-delta falsifier)"},
+      {"id": "A2", "evidence": "terrain render binding via engine.hpp:140 load_mesh (main.cpp:764 pattern), one frame captured", "bars": {"mesh": "13,920 v / 4,640 tris accepted", "hygiene_repairs": 0, "visual_keys": "80 post hexagons + two-tone checker"}},
+      {"id": "A3", "evidence": "engine-side query agreement vs the Python oracle over the frozen sample set via the S1-3 route", "bars": {"height_m": "<= 1e-9", "normal_component": "<= 1e-12", "trunk_sdf_m": "<= 1e-9 over the 418-probe tangency family"}},
+      {"id": "A4", "evidence": "in-vivo terrain walk: co8 walker seated at h(0,0)=0.0 law-rest, stepped on the heightfield at dt=1/300 for >= 41 ticks (target 213-tick cycle)", "bars": {"tunnelling": "every F-TUN case caught within bounds", "ledger_bar_J": "<= 32.861605 (wave-47 receipt's frozen dual-gate bar)", "contact_localization": "located crossings |gap| < 1e-9 vs the ORACLE", "slope_submergence_m": "<= 4.990644e-6 worst over 3,200 centroids"}},
+      {"id": "A5", "evidence": "out_of_patch live: walker driven to |x| = 20+eps (eps = 1e-9, 1e-6, 0.5)", "bars": {"rule": "strict > refusal/hold each time; inside at exactly 20.0; stopped AT the post ring, never inside"}},
+      {"id": "A6", "evidence": "trunk blocking live: native path plan consumes B2", "bars": {"blocked_cells": "exactly 107 (F07's number)", "unexplained_blocks": 0, "spawn_clearance_m": "12.192185 >= 1.5 unchanged"}},
+      {"id": "A7", "evidence": "friction honesty", "bars": {"plane_mu": "0.6 unchanged and byte-anchored (A1)", "grip_claims": "NONE anywhere in Stage 1 acceptance text", "trunk_friction": "UNEVIDENCED-PLACEHOLDER (G04) recorded"}},
+      {"id": "A8", "evidence": "determinism: two fresh-process in-vivo runs", "bars": {"bytes": "byte-identical", "receipts": "at pinned revisions with blob shas"}}
+    ],
+    "stage_1_done_when": "A1-A8 green with receipts, and every F-TUN/F-GHO falsifier un-fired (controls fired)"
+  },
+  "non_goals": [
+    "no second runtime / no new engine: every change lands in the existing files at the cited anchors",
+    "no kinematic locomotion substitute: the walk remains the GaitWalker's dynamics (touch law :36/:52, cone projection :683, Coulomb solve :716, event bisection :1950); a scripted body gliding over the surface is NOT contact and fails F-TUN/F-GHO by construction",
+    "no trunk contact, grip or climb claim in Stage 1 (Stage 2 + G04 own it)",
+    "no post collision (render-only markers; F04 VIS-03 NO-CLAIM; 0.2327 m envelope overlap measured and declared, not enforced)",
+    "no deformable branches or bark damage (F03 rigid-only closed vocabulary)",
+    "no friction evidence invention (G04 measured acquisition)",
+    "no C++ edits inside this diagnostic card; no GPU; no engine starts; the Stage-1 engine task must be coordinator-gated and preregistered before implementation"
+  ],
+  "falsifier_self_check": [
+    {"card_falsifier": "a Python-only/static test counted as native playable collision", "status": "avoided", "how": "every acceptance row A1-A8 requires an engine-process run or a byte-anchor; F02/F03/F04 receipts labeled static/L1 throughout and used only as oracle/reference; this card started no engine and claims no native readiness"},
+    {"card_falsifier": "an implementation brief without a real source interface", "status": "avoided", "how": "every proposed change names an exact existing file + symbol + line at the pinned blob (5863348f... etc.); no invented files; all signatures quoted from git show output"},
+    {"card_falsifier": "citation drift", "status": "recorded", "how": "f106fc54<->33e7a444 gait_controller.hpp blob drift found and documented; brief standardizes on 33e7a444"},
+    {"card_falsifier": "smallest-integration honesty", "status": "held", "how": "trunk explicitly declared a Stage-2 SUBSYSTEM; terrain-first justified by three derived reasons, not preference"}
+  ],
+  "remaining_gates": [
+    "coordinator registration of the Stage-1 engine task (frozen-core law: this card specifies, does not implement)",
+    "Rule-0 preregistration for the Stage-1 task with section 5.4 falsifiers as its starting set and 5.5 bars as acceptance; S-1 validate (port_test refuses a test with no falsifier)",
+    "G04: measured bark-on-appendage friction (prerequisite for any Stage-2 grip claim) + the multi-normal solver verification duty",
+    "W10: the playable scene exercise (A2/A5 are its first slices)",
+    "W03's named residuals (GPU legs, tick-40/41 contact-residual knife, Astra anchor A/B, clean-window C3) remain owned there; A1's byte-anchors depend on them staying put",
+    "anchor-drift decision (reach-band v1 patch d19eb1c6->b643a850 changes constructed band-entry bytes): Stage 1 must pin its diff target blob and re-verify A1 against whichever anchor the operator selects"
+  ]
+}
