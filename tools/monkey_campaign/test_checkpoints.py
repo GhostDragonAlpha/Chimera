@@ -62,6 +62,33 @@ class CheckpointTests(unittest.TestCase):
         self.assertEqual(self.receipt, before)
         self.assertIn('No pixels', result['limits'])
 
+    def test_catalog_camera_manifest_required_and_checked(self):
+        from test_visual_capture import fixture
+        manifest, _, profile = fixture(motion=True)
+        self.ctx['verification_profile_id'] = profile['id']
+        self.pin_context()
+        self.receipt['context_sha256'] = self.pin
+        with self.assertRaisesRegex(ValueError, 'camera_manifest_required'):
+            c.check(self.receipt, self.ctx, self.pin, SCOPE, self.root, profile)
+        visual = self.receipt['gates']['visual']
+        visual['tick_interval'] = self.receipt['gates']['runtime']['tick_interval'] = [10,20]
+        manifest.update(task_id=self.ctx['task_id'], run_id=self.ctx['run_id'],
+                        subject_sha256=self.ctx['subject_sha256'],
+                        capture_sha256=visual['evidence']['capture']['sha256'])
+        visual['evidence']['camera_manifest'] = self.artifact('camera.json', json.dumps(manifest).encode())
+        result = c.check(self.receipt, self.ctx, self.pin, SCOPE, self.root, profile)
+        self.assertTrue(result['ready_for_controller_review'])
+        self.assertFalse(result['goal_complete'])
+        manifest['views'][0]['camera']['samples'][0]['distance_to_target'] = 50
+        visual['evidence']['camera_manifest'] = self.artifact('camera.json', json.dumps(manifest).encode())
+        with self.assertRaisesRegex(ValueError, 'camera_target_distance_mismatch'):
+            c.check(self.receipt, self.ctx, self.pin, SCOPE, self.root, profile)
+
+    def test_catalog_visual_kind_cannot_be_downgraded(self):
+        profile = {'id':'camera-check', 'kind':'final_playthrough'}
+        with self.assertRaisesRegex(ValueError, 'catalog_checkpoint_kind_mismatch'):
+            c.check(self.receipt, self.ctx, self.pin, SCOPE, self.root, profile)
+
     def test_first_missing_gate_is_next_action(self):
         for gate in self.ctx['required_gates']:
             with self.subTest(gate=gate):

@@ -26,3 +26,7 @@ docs/THE_MASTER_LIST.md -text
 docs/THE_OPERATING_MANUAL.md -text
 docs/MEMBRANE_ONTOLOGY.md -text
 tools/membrane_ontology/ontology.json -text
+
+docs/ONTOLOGY_WORK_PLAN.md -text
+
+tools/membrane_ontology/model.py -text

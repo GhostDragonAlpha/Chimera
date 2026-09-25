@@ -314,20 +314,32 @@ def main(argv=None):
     a=p.parse_args(argv)
     try:
         catalog,integrity=verify_catalog(a.catalog,a.lock,a.approved_sha256,a.action in {'plan','packet','checkpoint'})
+        ontology = None
+        if 'ontology_contract' in catalog:
+            from ontology_plan import project
+            ontology = project(catalog)
         if a.action=='validate':
             by=validate_catalog(catalog); result={'tasks':len(by),'required_default':len(selected_tasks(by)),
                 'validation':'IDs and dependency graph valid; physical gates not run; deployment not performed'}
         elif a.action=='packet':result=packet(catalog,a.task_id)
         elif a.action=='storage':result=scan_storage(a.path,a.max_entries)
         elif a.action=='checkpoint':
-            from checkpoints import check_files
-            result=check_files(a.receipt,a.context,a.context_sha256,integrity['scope_sha256'],a.evidence_root)
+            from checkpoints import check_files, load_document
+            profile = None
+            if ontology:
+                task_id = load_document(a.context).get('task_id')
+                matching = [t for t in ontology['tasks'] if t['id'] == task_id]
+                require(len(matching) == 1, 'unknown_checkpoint_task')
+                profile = matching[0]['verification_profile']
+            result=check_files(a.receipt,a.context,a.context_sha256,integrity['scope_sha256'],a.evidence_root,profile)
             require(result['task_id'] in validate_catalog(catalog),'unknown_checkpoint_task')
         else:
             envelope=fetch_snapshot(a.session) if a.session else read_json(a.snapshot)
             result=plan(catalog,envelope,read_json(a.bindings),a.harness_limit,a.active_subagents,
                         shutil.disk_usage(a.volume_path).free,a.include_conditional)
         result['scope_integrity']=integrity
+        if ontology and a.action == 'validate':
+            result['ontology'] = {k:ontology[k] for k in ('task_count','selected_count','definition_raw_sha256','checkpoint_policy')}
         print(json.dumps(result,indent=2));return 0
     except (Refusal,OSError,ValueError,KeyError,TypeError) as exc:
         print(json.dumps({'refused':str(exc)}),file=sys.stderr);return 2

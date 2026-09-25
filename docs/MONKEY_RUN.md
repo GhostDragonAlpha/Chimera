@@ -1,6 +1,6 @@
 # Work continuously toward the playable monkey
 
-## Current workflow: ten task cards and PR feedback (astra-0014)
+## Current workflow: ten task cards and PR feedback (astra-0015)
 
 Follow [KANBAN.md](../tools/monkey_campaign/KANBAN.md). This replaces the prior exclusive
 worker-slot queue, timer expiry and report-only completion rules below. The ten slots
@@ -14,7 +14,28 @@ original worker or another worker can fix them. The lead reviews/merges, leaves 
 refills eligible work and steers the plan when the operator engages the lead. There is
 no unattended lead loop, no 20-minute takeover, and no top-of-hour task expiry.
 
-## Membrane ontology — operator clarification, astra-0014
+## Ontology-driven task plan — astra-0015
+
+Read [ONTOLOGY_WORK_PLAN.md](ONTOLOGY_WORK_PLAN.md). The operator authorized this
+scope amendment: all 83 task IDs and their original acceptance/calculation clauses
+remain; membrane/port bindings, interface dependencies and visual checkpoints now
+drive the order of acceptance. The amended scope fingerprint below supersedes the
+prior pin; the amendment receipt reconstructs the exact previous catalog.
+
+Worker packets and the browser derive their work views from the same catalog.
+Use each task's profile and exact acceptance clause. Record actual camera position,
+angle/orientation, target distance, FOV/projection, clipping planes, resolution and
+motion samples, plus diagnostic/clean view bindings and stable 3D tag IDs. Reuse
+the engine's existing tag/inspection paths. The camera manifest validator checks
+structure and identity; independent visual inspection is still required.
+
+Integration checkpoints collect contributor evidence; they never block their own
+constituent tasks or independent scaffolding. New plan context does not silently
+rewrite an active Kanban card's criteria hash. Reconcile its scope through the
+task inbox before acceptance. Existing evidence stays preserved, seven conditional
+tasks stay inactive, and no workers/training/gaming processes are started here.
+
+## Prior ontology rollout — astra-0014
 
 Read [MEMBRANE_ONTOLOGY.md](MEMBRANE_ONTOLOGY.md) and its linked machine-readable
 definition. Each membrane encompasses its definition, boundary, physics,
@@ -138,9 +159,9 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 14,
-  "revision_id": "astra-0014",
-  "scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
+  "revision": 15,
+  "revision_id": "astra-0015",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
   "files": [
     "docs/MONKEY_RUN.md",
     "tools/monkey_campaign/COORDINATION.md",
@@ -171,12 +192,17 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/KANBAN.md",
     "tools/monkey_campaign/KANBAN_BACKLOG.json",
     "docs/MEMBRANE_ONTOLOGY.md",
-    "tools/membrane_ontology/ontology.json"
+    "tools/membrane_ontology/ontology.json",
+    "docs/ONTOLOGY_WORK_PLAN.md",
+    "tools/monkey_campaign/ontology_plan.py",
+    "tools/monkey_campaign/visual_capture.py",
+    "tools/monkey_campaign/SCOPE_AMENDMENT_ONTOLOGY_20260924.json",
+    "tools/membrane_ontology/model.py"
   ]
 }
 CHIMERA_LEAD_CONTROL -->
 
-## Current lead instructions: astra-0014
+## Current lead instructions: astra-0015
 
 The operator designates **Astra/Codex as lead developer**. The lead publishes overall
 instructions here; workers report progress and propose changes separately. Only the
@@ -260,7 +286,7 @@ that cannot be derived or recovered from existing instructions.
 
 **Scope fingerprint (`sha256-chimera-json-v1`):**
 
-`5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00`
+`01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6`
 
 The operator's copy of this fingerprint in the commissioning conversation is the
 trust anchor. Record it with the trusted coordinator/controller outside worker write

@@ -15,7 +15,7 @@
     <div class="header-meta"><span id="revision">Loading definition</span><code id="definition-hash" title="Definition raw SHA-256">—</code></div>
     <div class="header-actions"><button id="refresh" class="button">↻ <span>Refresh</span></button><button id="download" class="button quiet" disabled>↓ <span>JSON</span></button></div>
   </header>
-  <div class="authority-bar"><span class="authority-dot" aria-hidden="true"></span><span>Composition definition <span class="bar-divider">·</span> runtime bindings unqualified</span><span class="read-only">READ ONLY</span></div>
+  <div class="authority-bar"><span class="authority-dot" aria-hidden="true"></span><span>Composition definition <span class="bar-divider">·</span> runtime bindings unqualified</span><span id="plan-summary" class="plan-summary" hidden></span><span class="read-only">READ ONLY</span></div>
   <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
   <main class="workspace">
     <aside class="hierarchy panel" aria-labelledby="hierarchy-title">
@@ -30,7 +30,7 @@
     </section>
     <aside class="inspector panel" aria-labelledby="inspector-title">
       <div class="panel-heading inspector-heading"><h2 id="inspector-title">Inspector</h2><span id="inspector-kind" class="mono muted">—</span></div>
-      <div class="tabs" role="tablist" aria-label="Membrane details"><button id="tab-definition" class="tab active" role="tab" aria-selected="true" aria-controls="detail-content" data-tab="definition">Definition</button><button id="tab-ports" class="tab" role="tab" aria-selected="false" aria-controls="detail-content" tabindex="-1" data-tab="ports">Ports</button><button id="tab-sources" class="tab" role="tab" aria-selected="false" aria-controls="detail-content" tabindex="-1" data-tab="sources">Sources & gaps</button></div>
+      <div class="tabs" role="tablist" aria-label="Membrane details"><button id="tab-definition" class="tab active" role="tab" aria-selected="true" aria-controls="detail-content" data-tab="definition">Definition</button><button id="tab-ports" class="tab" role="tab" aria-selected="false" aria-controls="detail-content" tabindex="-1" data-tab="ports">Ports</button><button id="tab-sources" class="tab" role="tab" aria-selected="false" aria-controls="detail-content" tabindex="-1" data-tab="sources">Sources & gaps</button><button id="tab-work" class="tab" role="tab" aria-selected="false" aria-controls="detail-content" tabindex="-1" data-tab="work">Work & verification</button></div>
       <div id="detail-content" class="detail-content" role="tabpanel" aria-labelledby="tab-definition"><p class="muted">Select a membrane to inspect its definition.</p></div>
     </aside>
   </main>

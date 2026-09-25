@@ -41,6 +41,16 @@ class InstructionStateTests(unittest.TestCase):
         self.meta.update(revision=2,revision_id='astra-0002'); self.write_entry()
         self.assertEqual(c.inspect(self.root,a)['state'],'UPDATED_READ_AND_ACK_REQUIRED')
 
+    def test_approved_prior_scope_requires_reread_not_silent_ack(self):
+        self.meta.update(revision=15, revision_id='astra-0015'); self.write_entry()
+        a = self.ack()
+        a.update(revision=14, revision_id='astra-0014',
+                 scope_sha256='5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00')
+        self.assertEqual(c.inspect(self.root,a)['state'], 'UPDATED_READ_AND_ACK_REQUIRED')
+        a.update(revision=15, revision_id='astra-0015')
+        with self.assertRaisesRegex(ValueError, 'ack_scope_mismatch'):
+            c.inspect(self.root,a)
+
     def test_entry_or_linked_policy_changed_without_revision_refused(self):
         a = self.ack()
         self.write_entry('unversioned edit')

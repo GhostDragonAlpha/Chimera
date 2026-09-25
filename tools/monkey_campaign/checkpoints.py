@@ -126,11 +126,14 @@ def evidence_hash(root, record, budget):
     return path
 
 
-def check(receipt, ctx, context_sha256, scope_sha256, evidence_root):
+def check(receipt, ctx, context_sha256, scope_sha256, evidence_root, visual_profile=None):
     finite_tree(receipt)
     finite_tree(ctx)
     require(digest(context_sha256), 'invalid_context_pin')
     gates = validate_context(ctx, scope_sha256)
+    if visual_profile is not None:
+        require(ctx.get('kind') == visual_profile['kind'], 'catalog_checkpoint_kind_mismatch')
+        require(ctx.get('verification_profile_id') == visual_profile['id'], 'catalog_profile_binding_missing')
     require(receipt.get('schema') == 'chimera.checkpoint_receipt.v1', 'invalid_receipt_schema')
     require(receipt.get('context_sha256') == context_sha256, 'context_pin_mismatch')
     for key in ('scope_sha256', 'task_id', 'controller_task', 'generation', 'subject_sha256',
@@ -186,6 +189,16 @@ def check(receipt, ctx, context_sha256, scope_sha256, evidence_root):
                     and interval == runtime.get('tick_interval'), 'capture_runtime_interval_mismatch')
             if ctx['kind'] in {'motion', 'final_playthrough'}:
                 require(interval[0] < interval[1], 'motion_interval_empty')
+            if visual_profile is not None:
+                require('camera_manifest' in evidence, 'camera_manifest_required')
+                manifest_path = Path(evidence_root) / evidence['camera_manifest']['path']
+                raw = document_bytes(manifest_path)
+                require(hashlib.sha256(raw).hexdigest() == evidence['camera_manifest']['sha256'],
+                        'camera_manifest_changed_during_read')
+                from visual_capture import validate_manifest
+                manifest_result = validate_manifest(decode_document(raw),
+                    dict(ctx, tick_interval=interval, capture_sha256=capture['sha256']), visual_profile)
+                require(manifest_result['capture_kind'] == capture['kind'], 'camera_capture_kind_mismatch')
         if name == 'human':
             require(row.get('source_kind') == 'operator_message' and row.get('source_reference'),
                     'human_source_reference_required')
@@ -198,9 +211,9 @@ def check(receipt, ctx, context_sha256, scope_sha256, evidence_root):
     return out
 
 
-def check_files(receipt_path, context_path, context_sha256, scope_sha256, evidence_root):
+def check_files(receipt_path, context_path, context_sha256, scope_sha256, evidence_root, visual_profile=None):
     require(digest(context_sha256), 'invalid_context_pin')
     raw = document_bytes(context_path)
     require(hashlib.sha256(raw).hexdigest() == context_sha256, 'context_file_changed')
     return check(load_document(receipt_path), decode_document(raw), context_sha256,
-                 scope_sha256, evidence_root)
+                 scope_sha256, evidence_root, visual_profile)

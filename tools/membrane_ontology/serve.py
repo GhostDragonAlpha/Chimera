@@ -7,7 +7,7 @@ from urllib.parse import urlsplit
 from model import canonical, snapshot
 
 
-def handler_for(root, definition, web):
+def handler_for(root, definition, web, catalog=None):
     class Handler(BaseHTTPRequestHandler):
         def setup(self):
             self.request.settimeout(5)
@@ -31,7 +31,7 @@ def handler_for(root, definition, web):
             path = urlsplit(self.path).path
             if path == '/api/ontology':
                 try:
-                    raw = canonical(snapshot(definition, root))
+                    raw = canonical(snapshot(definition, root, catalog))
                     self.send(200, raw, 'application/json; charset=utf-8')
                 except (OSError, ValueError, TypeError, RecursionError) as exc:
                     self.send(422, canonical({'refused': str(exc)}), 'application/json; charset=utf-8')
@@ -59,12 +59,13 @@ def main():
     p.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[2])
     p.add_argument('--definition', type=Path, default=Path(__file__).with_name('ontology.json'))
     p.add_argument('--port', type=int, default=8029)
+    p.add_argument('--catalog', type=Path, default=Path(__file__).resolve().parents[1] / 'monkey_campaign/monkey_completion_map.json')
     p.add_argument('--idle-seconds', type=int, default=1800)
     args = p.parse_args()
     if not 1 <= args.idle_seconds <= 86400:
         p.error('idle-seconds must be 1..86400')
     web = Path(__file__).resolve().parents[2] / 'web/ontology'
-    with HTTPServer(('127.0.0.1', args.port), handler_for(args.root.resolve(), args.definition.resolve(), web)) as server:
+    with HTTPServer(('127.0.0.1', args.port), handler_for(args.root.resolve(), args.definition.resolve(), web, args.catalog)) as server:
         server.timeout = 1
         server.last_request = time.monotonic()
         print(f'http://127.0.0.1:{server.server_port}/ (read-only; idle exit {args.idle_seconds}s)', flush=True)

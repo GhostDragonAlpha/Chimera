@@ -202,7 +202,7 @@ def inspect_source(root, relative):
     return result
 
 
-def snapshot(definition_path, source_root):
+def snapshot(definition_path, source_root, catalog_path=None):
     path = Path(definition_path)
     with path.open('rb') as stream:
         raw = stream.read(MAX_DEFINITION + 1)
@@ -226,5 +226,19 @@ def snapshot(definition_path, source_root):
                            'Source files are read individually, not as an atomic repository snapshot.',
                            'Hashes detect content changes; they do not authenticate an author.',
                            'No engine, model, training, task registry or material compiler is executed.'])
+    if catalog_path is not None:
+        # One catalog drives both workers and this read-only browser projection.
+        import sys
+        campaign_dir = str(Path(__file__).resolve().parents[1] / 'monkey_campaign')
+        if campaign_dir not in sys.path:
+            sys.path.insert(0, campaign_dir)
+        from ontology_plan import load_catalog, project
+        plan = project(load_catalog(catalog_path), nodes, digest(raw))
+        for node in payload['nodes']:
+            node['tasks'] = [t for t in plan['tasks'] if node['id'] in
+                             [t['ontology']['primary_membrane'], *t['ontology']['related_membranes'],
+                              *t['ontology']['connection_ids']]]
+            node['checkpoints'] = [c for c in plan['checkpoints'] if node['id'] in c['membrane_ids']]
+        payload['plan'] = {k: v for k, v in plan.items() if k != 'tasks'}
     payload['snapshot_sha256'] = digest(canonical(payload))
     return payload

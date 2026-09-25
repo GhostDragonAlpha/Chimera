@@ -16,12 +16,26 @@ loopback and exits after 30 minutes without a request. Stop the command with
 Ctrl+C. It starts no engine, GPU work, model or fleet workers. To serve a separate
 source checkout, use `--root E:/PythonChimera`. `--port 0` chooses a free port.
 
+The **Work & verification** tab projects the approved 83-task plan onto each
+membrane: primary/related tasks, dependencies, zero-based logical layers, original
+acceptance clauses and integration checkpoints. Camera angle/orientation,
+distance, projection/FOV, clipping, resolution and motion requirements accompany
+the diagnostic/clean views. These are planned requirements, not earned passes.
+The seven conditional tasks remain inactive. See
+[ONTOLOGY_WORK_PLAN.md](../../docs/ONTOLOGY_WORK_PLAN.md).
+
 Agents consume the same JSON through the CLI or `GET /api/ontology`. CLI
 `--definition <file>` selects an explicit definition; `--output <file>` saves a
 snapshot. Exit 0 means structural inspection succeeded; exit 2 is a named
 refusal. HTTP 422 carries the same refusal. Missing referenced files are visible
 source warnings and do not silently become accepted evidence. Physics and
 validation labels are authored claims, not independent measurements.
+
+`--catalog <file>` selects the catalog paired with the definition. A mismatched
+definition hash, invalid task binding, missing camera requirement or cyclic
+checkpoint graph refuses the snapshot. `--root` changes source inspection only;
+the definition/catalog default to this tool's checkout. No source plan is guessed
+from a different checkout and no mutable acceptance store is read or written.
 
 `ontology.json` is the single authored composition definition. `model.py` is its
 executable v1 structural contract: exact top-level/node/port keys, one acyclic

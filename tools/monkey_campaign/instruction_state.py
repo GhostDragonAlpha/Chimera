@@ -13,7 +13,11 @@ from integrity import unique_object, reject_constant
 BEGIN = '<!-- CHIMERA_LEAD_CONTROL\n'
 END = '\nCHIMERA_LEAD_CONTROL -->'
 MAX_BYTES = 1024 * 1024
-SCOPE = '5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00'
+SCOPE = '01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6'
+PREVIOUS_SCOPES = {
+    '33a8fb7204e20bf71f563014c57d772dd111a198cd1d6b212fd053653858f863': (1, 6),
+    '5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00': (7, 14),
+}
 
 
 def require(value, reason):
@@ -50,7 +54,7 @@ def inspect(root, acknowledgement=None):
     require(meta.get('revision_id') == f'astra-{rev:04d}', 'invalid_instruction_revision_id')
     require(meta.get('scope_sha256') == SCOPE, 'scope_change_requires_separate_approval')
     names = meta.get('files')
-    require(isinstance(names,list) and 1 <= len(names) <= 32 and all(isinstance(x,str) for x in names),
+    require(isinstance(names,list) and 1 <= len(names) <= 48 and all(isinstance(x,str) for x in names),
             'invalid_instruction_file_list')
     require(len(set(names)) == len(names) and 'docs/MONKEY_RUN.md' in names, 'duplicate_or_missing_entry')
     files = []
@@ -75,7 +79,10 @@ def inspect(root, acknowledgement=None):
         a = acknowledgement
         require(isinstance(a,dict) and a.get('schema') == 'chimera.instruction_ack.v1','invalid_ack_schema')
         require(type(a.get('revision')) is int and a['revision'] > 0, 'invalid_ack_revision')
-        require(a.get('scope_sha256') == SCOPE, 'ack_scope_mismatch')
+        prior = PREVIOUS_SCOPES.get(a.get('scope_sha256'))
+        require(a.get('scope_sha256') == SCOPE or
+                (prior is not None and prior[0] <= a['revision'] <= prior[1]
+                 and a['revision'] < rev), 'ack_scope_mismatch')
         require(a.get('lead_id') == meta['lead_id'], 'ack_lead_mismatch')
         require(a.get('revision_id') == f"astra-{a['revision']:04d}", 'invalid_ack_revision_id')
         require(isinstance(a.get('bundle_sha256'),str) and re.fullmatch('[0-9a-f]{64}',a['bundle_sha256']),

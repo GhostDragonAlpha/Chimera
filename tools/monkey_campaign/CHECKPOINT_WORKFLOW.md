@@ -4,6 +4,11 @@ This operationalizes the existing playable-monkey requirements. It changes no re
 physical threshold, approved scope hash, training rule or publication authority.
 Read it through `docs/MONKEY_RUN.md`; the operator still supplies one entry file.
 
+**astra-0015 amendment:** the current catalog adds ontology/profile bindings and
+camera manifests under the operator-approved scope amendment. Earlier receipts
+retain their historical scope; they are not silently promoted to the amended bar.
+See [ONTOLOGY_WORK_PLAN.md](../../docs/ONTOLOGY_WORK_PLAN.md).
+
 ## The persistent goal
 
 Complete every selected requirement and demonstrate the complete physically controlled
@@ -36,6 +41,22 @@ Pure offline work can have a predeclared nonvisual policy with a specific ration
 as input parsing with no changed player-visible behavior. It still requires appropriate
 tests and review. A worker cannot invent N/A after failing or lacking visual access.
 All player-visible behavior needs runtime and visual checks; motion needs motion evidence.
+
+For current catalog checkpoints, the context must name `verification_profile_id`
+and its `kind` must match the task's derived profile. A passing visual row includes
+hashed `camera_manifest` evidence beside `capture` and `inspection`. The manifest
+uses `chimera.visual_capture_manifest.v1`; its exact field checks are in
+`visual_capture.py`, and `test_visual_capture.fixture()` is a **synthetic schema
+example**, not a capture receipt. Record camera-local axes, frame/units, numeric
+position/orientation/target/distance, FOV or orthographic span, clipping planes,
+resolution/aspect, sampled motion and a locator for each view in the capture.
+Each diagnostic/clean pair binds to the same simulated state/trace and camera.
+
+`campaign.py checkpoint` derives this profile from the pinned catalog; a worker
+cannot downgrade a motion task to offline or waive a camera field in a receipt.
+The standalone low-level checker retains legacy compatibility when no profile
+is supplied; that is not current campaign acceptance. Structural checks still
+return `goal_complete=false` and require external review of pixels and provenance.
 Source/component evidence can be preserved across unrelated commits. Revalidation must
 cover affected integration behavior on the actual final candidate, not erase history or
 require every old receipt to equal the latest repository HEAD.

@@ -30,6 +30,11 @@ def build_plan(catalog):
                     'missing_calculation_' + field + ':' + cid)
         calc_by[cid] = calculation
     selected = selected_tasks(by)
+    ontology = None
+    if 'ontology_contract' in catalog:
+        from ontology_plan import project
+        ontology = project(catalog)
+    ontology_tasks = {t['id']: t for t in ontology['tasks']} if ontology else {}
     packets = []
     for tid in sorted(by):
         source = by[tid]
@@ -58,7 +63,7 @@ def build_plan(catalog):
             },
             'commissioning_requirements': [
                 'Reconcile current code, existing owner and receipts before creating work; reuse valid evidence.',
-                'Coordinator supplies pinned revision, exact non-overlapping write paths, resource admission and slot lease.',
+                'Use an active Kanban card, pinned revision, isolated attempt write paths and resource admission; no timer or exclusive task lease.',
                 'Freeze statement, prediction and falsifier before implementation or experiment; derive before training.',
                 'Commission only the first unmet phase. If a decision is missing, submit alternatives with evidence to the lead and continue another eligible task.',
             ],
@@ -86,6 +91,14 @@ def build_plan(catalog):
                  'deliverable': 'Integrated revision, clause-complete receipt, preserved recovery reference and confirmed slot handoff; unfinished clauses stay open.'},
             ],
         })
+        if ontology:
+            binding = ontology_tasks[tid]
+            packet['dependency_layer'] = binding['dependency_layer']
+            packet['verification_profile'] = binding['verification_profile']
+            packet['visual_context_required'] = binding['verification_profile']['kind'] != 'offline'
+            packet['integration_checkpoints'] = [c for c in ontology['checkpoints'] if tid in c['task_ids']]
+            packet['phases'][5]['profile'] = binding['verification_profile']
+            packet['phases'][5]['action'] += ' Follow this task profile; record numeric camera values, required views and matched debug/clean state in the camera manifest. Integration checkpoints are downstream milestones, not prerequisites for their constituent tasks.'
         packets.append(packet)
     return {
         'schema': 'chimera.execution_plan.v1',
@@ -99,6 +112,7 @@ def build_plan(catalog):
         'assignment_authorized': False,
         'goal_complete': False,
         'tasks': packets,
+        'ontology_plan': {k: v for k, v in ontology.items() if k != 'tasks'} if ontology else None,
     }
 
 

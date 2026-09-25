@@ -68,7 +68,9 @@ def main():
     plan=build_plan(catalog)
     out['plan']['selected_count']=plan['selected_count']
     out['plan']['coverage']=[{'id':t['id'],'selected':t['selected'],'title':t['title'],
-        'depends_on':t['depends_on']} for t in plan['tasks']]
+        'depends_on':t['depends_on'], 'ontology':t.get('ontology'),
+        'dependency_layer':t.get('dependency_layer')} for t in plan['tasks']]
+    out['plan']['ontology_plan']=plan.get('ontology_plan')
     out['orientation_identity_note'] = 'Engine current/next terms are scene hierarchy entries, never agent or authenticated session identities.'
     if not args.check:
         identity=args.arrival_id or os.environ.get('CHIMERA_WORKER_ID')
@@ -98,6 +100,9 @@ def main():
                 next_action=allocation['next_action'],board=kanban.read(registry),
                 continuation='Read task inbox before edits and each PR update. Submit a PR with --submit-pr, then take another card. No timer or exclusive task lease. Lead closes the card only after review and verified merge.')
             if 'attempt' in allocation:
+                planning_ids = allocation.get('brief', {}).get('planning_ids', [])
+                out['ontology_task_packets'] = [t for t in plan['tasks'] if t['id'] in planning_ids]
+                out['ontology_context_note'] = 'Reconcile amended plan requirements before new acceptance. Existing card criteria hashes and historical receipts are preserved; propose any missing card scope through its inbox.'
                 out['pr_submission_template']={'agent_id':identity,'task_id':allocation['task_id'],
                     'attempt_id':allocation['attempt']['id'],'criteria_sha256':allocation['attempt']['criteria_sha256'],
                     'pr_url':'https://github.com/GhostDragonAlpha/Chimera/pull/NUMBER','head_sha':'<full 40-character PR head SHA>'}

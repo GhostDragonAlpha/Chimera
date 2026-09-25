@@ -10,14 +10,15 @@ def main():
     p.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[2])
     p.add_argument('--definition', type=Path, default=Path(__file__).with_name('ontology.json'))
     p.add_argument('--output', type=Path)
+    p.add_argument('--catalog', type=Path, default=Path(__file__).resolve().parents[1] / 'monkey_campaign/monkey_completion_map.json')
     args = p.parse_args()
     try:
-        result = canonical(snapshot(args.definition, args.root)) + b'\n'
+        result = canonical(snapshot(args.definition, args.root, args.catalog)) + b'\n'
         if args.output:
             # Never let an export overwrite the definition or any referenced source.
             import json
             data = json.loads(result)
-            protected = {args.definition.resolve()} | {(args.root / s['path']).resolve() for s in data['sources']}
+            protected = {args.definition.resolve(), args.catalog.resolve()} | {(args.root / s['path']).resolve() for s in data['sources']}
             if args.output.resolve() in protected:
                 raise ValueError('output_overwrites_source')
             args.output.write_bytes(result)

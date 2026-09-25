@@ -168,7 +168,16 @@
         "GOV-04",
         "GOV-05",
         "SYS-03"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "governance",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "P02",
@@ -193,7 +202,24 @@
         "GOV-04",
         "GOV-05",
         "SYS-03"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "inspection",
+        "related_membranes": [
+          "creature",
+          "skeleton",
+          "musculature",
+          "skin",
+          "camera"
+        ],
+        "connection_ids": [],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [
+          "V01"
+        ],
+        "scenario_scope": "CT monkey, source musculoskeletal model, older forearm/paddle assets, training body, and runtime body are related explicitly or kept separate"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "P03",
@@ -216,7 +242,16 @@
         "GOV-04",
         "GOV-05",
         "SYS-03"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "governance",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Every active task has one owner, source revision, scoped verdict, and receipt; prior completed work is reused"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "P04",
@@ -241,7 +276,16 @@
         "GOV-04",
         "GOV-05",
         "SYS-03"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Every launched job uses existing ownership/broker rules; admitted training may interrupt gaming and local inference through a verified supervisor handoff, while already-running protected training retains ownership until confirmed release"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "P05",
@@ -264,7 +308,16 @@
         "GOV-04",
         "GOV-05",
         "SYS-03"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "governance",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Recoverable commits, run manifests, training checkpoints, raw/blob/canonical hash labels, and retry rules exist"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "P06",
@@ -290,7 +343,16 @@
         "GOV-04",
         "GOV-05",
         "SYS-03"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "governance",
+        "related_membranes": [],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Supported hardware, controls, terrain/trunk envelope, session duration, latency, frame-time and stability limits are frozen before acceptance trials"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "W01",
@@ -317,7 +379,23 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [
+          "walking",
+          "skeleton",
+          "musculature"
+        ],
+        "connection_ids": [
+          "policy-actuation",
+          "state-feedback"
+        ],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Frozen entry-state and event traces satisfy the existing CPU/GPU acceptance bar"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "W02",
@@ -344,7 +422,23 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [
+          "walking",
+          "skeleton",
+          "musculature"
+        ],
+        "connection_ids": [
+          "policy-actuation",
+          "state-feedback"
+        ],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Reference-math equivalence is demonstrated at the frozen sites without tolerance relaxation"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "W03",
@@ -371,7 +465,24 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "walking",
+        "related_membranes": [
+          "runtime",
+          "creature",
+          "skeleton",
+          "musculature"
+        ],
+        "connection_ids": [
+          "policy-actuation",
+          "state-feedback"
+        ],
+        "verification_profile": "parity-replay",
+        "checkpoint_ids": [],
+        "scenario_scope": "Freefall/stand/C1/C2 and scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J reproduce on the training revision"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "W04",
@@ -401,7 +512,26 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "walking",
+        "related_membranes": [
+          "runtime",
+          "creature",
+          "skeleton",
+          "musculature"
+        ],
+        "connection_ids": [
+          "policy-actuation",
+          "state-feedback"
+        ],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [
+          "V01"
+        ],
+        "scenario_scope": "Exact dynamics, observations/actions, model revision, seeds and runbook identity are frozen and checked"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "W05",
@@ -428,7 +558,20 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "walking",
+        "related_membranes": [
+          "runtime"
+        ],
+        "connection_ids": [
+          "policy-actuation"
+        ],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "All three prescribed seeds execute under the frozen approximately 1M-decision runbook with failures retained"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "W06",
@@ -455,7 +598,26 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "walking",
+        "related_membranes": [
+          "creature",
+          "terrain",
+          "player",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive",
+          "policy-actuation",
+          "state-feedback",
+          "contact"
+        ],
+        "verification_profile": "walking",
+        "checkpoint_ids": [],
+        "scenario_scope": "Frozen walking success/failure metrics reported per seed without cherry-picking or additional tuned runs"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "W07",
@@ -482,7 +644,26 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "walking",
+        "related_membranes": [
+          "creature",
+          "terrain",
+          "player",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive",
+          "policy-actuation",
+          "state-feedback",
+          "contact"
+        ],
+        "verification_profile": "walking",
+        "checkpoint_ids": [],
+        "scenario_scope": "Runtime consumes the certified observation/action contract and drives physical actuators"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "W08",
@@ -491,7 +672,9 @@
       "group": "Walking foundation",
       "scope": "core",
       "depends_on": [
-        "W07"
+        "W07",
+        "U01",
+        "P06"
       ],
       "calculation_ids": [
         "C11",
@@ -509,7 +692,31 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "walking",
+        "related_membranes": [
+          "creature",
+          "terrain",
+          "player",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive",
+          "policy-actuation",
+          "state-feedback",
+          "contact"
+        ],
+        "verification_profile": "walking",
+        "checkpoint_ids": [
+          "V03"
+        ],
+        "scenario_scope": "Frozen command sequence satisfies tracking and physical-stability limits"
+      },
+      "dependency_reasons": {
+        "U01": "The walking command consumer must use the actual player command port.",
+        "P06": "Command tracking and stability acceptance consumes frozen release limits."
+      }
     },
     {
       "id": "W09",
@@ -535,7 +742,28 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "walking",
+        "related_membranes": [
+          "creature",
+          "terrain",
+          "player",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive",
+          "policy-actuation",
+          "state-feedback",
+          "contact"
+        ],
+        "verification_profile": "walking",
+        "checkpoint_ids": [
+          "V03"
+        ],
+        "scenario_scope": "Unsupported states and falls have a declared controller response; no concealed resets or forces"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "W10",
@@ -562,7 +790,28 @@
         "CTRL-02",
         "CTRL-06",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "walking",
+        "related_membranes": [
+          "creature",
+          "terrain",
+          "player",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive",
+          "policy-actuation",
+          "state-feedback",
+          "contact"
+        ],
+        "verification_profile": "walking",
+        "checkpoint_ids": [
+          "V03"
+        ],
+        "scenario_scope": "Player can walk, turn and stop in the scene on a supported surface; numerical and visual receipts match"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "U01",
@@ -587,7 +836,22 @@
         "AUTH-04",
         "AUTH-06",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "player",
+        "related_membranes": [
+          "locomotion",
+          "session",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive"
+        ],
+        "verification_profile": "controls",
+        "checkpoint_ids": [],
+        "scenario_scope": "Input emits bounded speed/heading commands at the existing 20 Hz boundary, without state teleportation"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "U02",
@@ -612,7 +876,22 @@
         "AUTH-04",
         "AUTH-06",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "camera",
+        "related_membranes": [
+          "player",
+          "creature",
+          "forest"
+        ],
+        "connection_ids": [],
+        "verification_profile": "controls",
+        "checkpoint_ids": [
+          "V03"
+        ],
+        "scenario_scope": "Player can see motion on ground and at trunk; camera avoids tested obstruction cases and never moves the animal"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "U03",
@@ -636,7 +915,22 @@
         "AUTH-04",
         "AUTH-06",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "player",
+        "related_membranes": [
+          "locomotion",
+          "session",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive"
+        ],
+        "verification_profile": "controls",
+        "checkpoint_ids": [],
+        "scenario_scope": "Alt-tab, disconnect and key release clear or age commands under a declared policy; no stuck movement"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "U04",
@@ -658,7 +952,22 @@
         "AUTH-04",
         "AUTH-06",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "player",
+        "related_membranes": [
+          "locomotion",
+          "session",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive"
+        ],
+        "verification_profile": "controls",
+        "checkpoint_ids": [],
+        "scenario_scope": "Sensitivity, inversion and bindings needed for the selected controls work and persist"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "U05",
@@ -682,7 +991,22 @@
         "AUTH-04",
         "AUTH-06",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "player",
+        "related_membranes": [
+          "locomotion",
+          "session",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive"
+        ],
+        "verification_profile": "controls",
+        "checkpoint_ids": [],
+        "scenario_scope": "One explicit climb/let-go intent reaches the skill selector with versioned semantics; frozen walk contract remains unchanged"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "U06",
@@ -691,7 +1015,9 @@
       "group": "Player controls and camera",
       "scope": "core",
       "depends_on": [
-        "U05"
+        "U05",
+        "G05",
+        "K06"
       ],
       "calculation_ids": [],
       "done_when": "Prompts distinguish available climb, unavailable support, holding, falling and recovery without claiming nonexistent capabilities",
@@ -704,7 +1030,25 @@
         "AUTH-04",
         "AUTH-06",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "player",
+        "related_membranes": [
+          "locomotion",
+          "session",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive"
+        ],
+        "verification_profile": "controls",
+        "checkpoint_ids": [],
+        "scenario_scope": "Prompts distinguish available climb, unavailable support, holding, falling and recovery without claiming nonexistent capabilities"
+      },
+      "dependency_reasons": {
+        "G05": "Final support feedback consumes actual grip/support observations.",
+        "K06": "Final skill feedback consumes actual walk/climb arbitration; UI scaffolding can proceed earlier."
+      }
     },
     {
       "id": "U07",
@@ -715,7 +1059,8 @@
       "depends_on": [
         "W10",
         "U03",
-        "U04"
+        "U04",
+        "P06"
       ],
       "calculation_ids": [
         "C12",
@@ -731,7 +1076,26 @@
         "AUTH-04",
         "AUTH-06",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "player",
+        "related_membranes": [
+          "locomotion",
+          "session",
+          "camera"
+        ],
+        "connection_ids": [
+          "drive"
+        ],
+        "verification_profile": "controls",
+        "checkpoint_ids": [
+          "V03"
+        ],
+        "scenario_scope": "End-to-end input response and camera behavior meet P06 limits under repeatable scenes"
+      },
+      "dependency_reasons": {
+        "P06": "Control latency/camera acceptance requires frozen release limits."
+      }
     },
     {
       "id": "F01",
@@ -757,7 +1121,19 @@
         "PROC-01",
         "SYS-03",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "forest",
+        "related_membranes": [
+          "terrain",
+          "trees"
+        ],
+        "connection_ids": [],
+        "verification_profile": "forest",
+        "checkpoint_ids": [],
+        "scenario_scope": "Deterministic terrain/tree recipe, explicit extent and coordinate convention, safe spawn and visible boundary"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "F02",
@@ -783,7 +1159,23 @@
         "PROC-01",
         "SYS-03",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "terrain",
+        "related_membranes": [
+          "forest",
+          "creature"
+        ],
+        "connection_ids": [
+          "contact"
+        ],
+        "verification_profile": "forest",
+        "checkpoint_ids": [
+          "V02"
+        ],
+        "scenario_scope": "Rendered ground and physical query surfaces agree within frozen geometric tolerance"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "F03",
@@ -809,7 +1201,23 @@
         "PROC-01",
         "SYS-03",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "trees",
+        "related_membranes": [
+          "forest",
+          "grasp"
+        ],
+        "connection_ids": [
+          "contact"
+        ],
+        "verification_profile": "forest",
+        "checkpoint_ids": [
+          "V02"
+        ],
+        "scenario_scope": "Trunk geometry, surface IDs, material provenance and collision representation are explicit"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "F04",
@@ -819,7 +1227,9 @@
       "scope": "core",
       "depends_on": [
         "F02",
-        "F03"
+        "F03",
+        "P02",
+        "P06"
       ],
       "calculation_ids": [
         "C08",
@@ -838,7 +1248,27 @@
         "PROC-01",
         "SYS-03",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "contact",
+        "related_membranes": [
+          "creature",
+          "terrain",
+          "trees"
+        ],
+        "connection_ids": [
+          "contact"
+        ],
+        "verification_profile": "contact-motion",
+        "checkpoint_ids": [
+          "V02"
+        ],
+        "scenario_scope": "No unacceptable tunnelling, ghost support, interpenetration or visual/collision disagreement in frozen cases"
+      },
+      "dependency_reasons": {
+        "P02": "Native contact verification must identify the actual creature/scene lineage.",
+        "P06": "Contact geometry acceptance consumes declared geometric and stability limits."
+      }
     },
     {
       "id": "F05",
@@ -865,7 +1295,23 @@
         "PROC-01",
         "SYS-03",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "terrain",
+        "related_membranes": [
+          "forest",
+          "creature"
+        ],
+        "connection_ids": [
+          "contact"
+        ],
+        "verification_profile": "forest",
+        "checkpoint_ids": [
+          "V04"
+        ],
+        "scenario_scope": "Slope, obstacle size and surface-friction envelope is declared from evidence"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "F06",
@@ -875,7 +1321,8 @@
       "scope": "core",
       "depends_on": [
         "F05",
-        "W07"
+        "W07",
+        "F04"
       ],
       "calculation_ids": [
         "C11",
@@ -893,7 +1340,26 @@
         "PROC-01",
         "SYS-03",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "walking",
+        "related_membranes": [
+          "terrain",
+          "forest"
+        ],
+        "connection_ids": [
+          "contact",
+          "drive"
+        ],
+        "verification_profile": "walking",
+        "checkpoint_ids": [
+          "V04"
+        ],
+        "scenario_scope": "Player walks the declared uneven-ground cases with certified runtime/training agreement"
+      },
+      "dependency_reasons": {
+        "F04": "Terrain locomotion consumes qualified native render/collision contact."
+      }
     },
     {
       "id": "F07",
@@ -920,7 +1386,21 @@
         "PROC-01",
         "SYS-03",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "forest",
+        "related_membranes": [
+          "terrain",
+          "trees"
+        ],
+        "connection_ids": [],
+        "verification_profile": "forest",
+        "checkpoint_ids": [
+          "V04"
+        ],
+        "scenario_scope": "The clearing offers traversable routes; no invisible walls masquerade as physical obstacles"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "F08",
@@ -944,7 +1424,21 @@
         "PROC-01",
         "SYS-03",
         "LGT-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "forest",
+        "related_membranes": [
+          "terrain",
+          "trees"
+        ],
+        "connection_ids": [],
+        "verification_profile": "forest",
+        "checkpoint_ids": [
+          "V04"
+        ],
+        "scenario_scope": "Scene seed/configuration reproduces assets, collision and initial state with clear failures for missing assets"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "A01",
@@ -969,7 +1463,20 @@
         "BIO-02",
         "MAT-03",
         "PROC-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "bones",
+        "related_membranes": [
+          "skeleton",
+          "skin",
+          "inspection"
+        ],
+        "connection_ids": [],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [],
+        "scenario_scope": "Independent anatomical evidence determines roll sign or records ambiguity"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "A02",
@@ -994,7 +1501,20 @@
         "BIO-02",
         "MAT-03",
         "PROC-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "bones",
+        "related_membranes": [
+          "skeleton",
+          "skin",
+          "inspection"
+        ],
+        "connection_ids": [],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [],
+        "scenario_scope": "Radioulnar definition, independent evidence, B4 result and before/after radius mapping are presented"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "A03",
@@ -1019,7 +1539,20 @@
         "BIO-02",
         "MAT-03",
         "PROC-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "bones",
+        "related_membranes": [
+          "skeleton",
+          "skin",
+          "inspection"
+        ],
+        "connection_ids": [],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [],
+        "scenario_scope": "Architect approves mapping/supersession, historical radius preserved, new transforms and regressions qualified"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "A04",
@@ -1044,7 +1577,20 @@
         "BIO-02",
         "MAT-03",
         "PROC-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "bones",
+        "related_membranes": [
+          "skeleton",
+          "skin",
+          "inspection"
+        ],
+        "connection_ids": [],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [],
+        "scenario_scope": "Source and target assembly correspondence is evidenced, including palm sign and geometry coverage"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "A05",
@@ -1068,7 +1614,20 @@
         "BIO-02",
         "MAT-03",
         "PROC-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "bones",
+        "related_membranes": [
+          "skeleton",
+          "skin",
+          "inspection"
+        ],
+        "connection_ids": [],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [],
+        "scenario_scope": "The modeled grasp has sufficient explicit bodies, joints and geometry; sources and adaptations approved"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "A06",
@@ -1093,7 +1652,22 @@
         "BIO-02",
         "MAT-03",
         "PROC-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "tendons",
+        "related_membranes": [
+          "bones",
+          "joints",
+          "muscles"
+        ],
+        "connection_ids": [
+          "muscle-bone"
+        ],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [],
+        "scenario_scope": "Every grasp-relevant endpoint and waypoint has an explicit approved body and role"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "A07",
@@ -1117,7 +1691,22 @@
         "BIO-02",
         "MAT-03",
         "PROC-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "tendons",
+        "related_membranes": [
+          "bones",
+          "joints",
+          "muscles"
+        ],
+        "connection_ids": [
+          "muscle-bone"
+        ],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [],
+        "scenario_scope": "Attachment validity is supported or explicitly unresolved; any new fitting experiment is separately authorized"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "A08",
@@ -1142,7 +1731,21 @@
         "BIO-02",
         "MAT-03",
         "PROC-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "muscles",
+        "related_membranes": [
+          "tendons",
+          "joints"
+        ],
+        "connection_ids": [
+          "muscle-bone"
+        ],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Strength, force-length/velocity, compliance, limits and applicability are defined for the selected animal"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "A09",
@@ -1171,7 +1774,24 @@
         "BIO-02",
         "MAT-03",
         "PROC-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "skeleton",
+        "related_membranes": [
+          "musculature",
+          "tendons",
+          "grasp"
+        ],
+        "connection_ids": [
+          "muscle-bone"
+        ],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [
+          "V05"
+        ],
+        "scenario_scope": "One versioned package carries supported mappings, parameters, provenance and explicit gaps"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "G01",
@@ -1181,7 +1801,8 @@
       "scope": "core",
       "depends_on": [
         "A09",
-        "F03"
+        "F03",
+        "W04"
       ],
       "calculation_ids": [
         "C19",
@@ -1199,7 +1820,24 @@
         "CON-03",
         "CON-04",
         "DYN-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "grasp",
+        "related_membranes": [
+          "creature",
+          "trees",
+          "ownership"
+        ],
+        "connection_ids": [
+          "contact"
+        ],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Required force/moment support lies within reachable contacts and actuator bounds for the declared trunk"
+      },
+      "dependency_reasons": {
+        "W04": "Grip load feasibility must bind to the actual certified body or an explicitly reconciled source model."
+      }
     },
     {
       "id": "G02",
@@ -1225,7 +1863,23 @@
         "CON-03",
         "CON-04",
         "DYN-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "muscle-bone",
+        "related_membranes": [
+          "tendons",
+          "bones"
+        ],
+        "connection_ids": [
+          "muscle-bone"
+        ],
+        "verification_profile": "attachment-fixture",
+        "checkpoint_ids": [
+          "V05"
+        ],
+        "scenario_scope": "Actual patch geometry, stiffness and rotational resistance meet declared physical requirements"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "G03",
@@ -1251,7 +1905,23 @@
         "CON-03",
         "CON-04",
         "DYN-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "tendons",
+        "related_membranes": [
+          "muscles",
+          "joints"
+        ],
+        "connection_ids": [
+          "muscle-bone"
+        ],
+        "verification_profile": "tendon-pose-sweep",
+        "checkpoint_ids": [
+          "V05"
+        ],
+        "scenario_scope": "Relevant pose-range outputs are finite and independently checked; unresolved bodies cannot appear as zero arms"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "G04",
@@ -1281,7 +1951,25 @@
         "CON-03",
         "CON-04",
         "DYN-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "grasp",
+        "related_membranes": [
+          "creature",
+          "trees",
+          "climbing"
+        ],
+        "connection_ids": [
+          "contact",
+          "muscle-bone"
+        ],
+        "verification_profile": "grasp",
+        "checkpoint_ids": [
+          "V06"
+        ],
+        "scenario_scope": "Attachment, friction, reaction loads and release operate through the physical solver without invisible anchors"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "G05",
@@ -1307,7 +1995,24 @@
         "CON-03",
         "CON-04",
         "DYN-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "state-feedback",
+        "related_membranes": [
+          "grasp",
+          "locomotion"
+        ],
+        "connection_ids": [
+          "state-feedback",
+          "contact"
+        ],
+        "verification_profile": "grasp",
+        "checkpoint_ids": [
+          "V06"
+        ],
+        "scenario_scope": "Controller receives only declared measurable contact/pose signals with explicit timing"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "G06",
@@ -1335,7 +2040,25 @@
         "CON-03",
         "CON-04",
         "DYN-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "grasp",
+        "related_membranes": [
+          "creature",
+          "trees",
+          "climbing"
+        ],
+        "connection_ids": [
+          "contact",
+          "muscle-bone"
+        ],
+        "verification_profile": "grasp",
+        "checkpoint_ids": [
+          "V06"
+        ],
+        "scenario_scope": "At least one reachable transfer retains admissible support throughout its tested envelope"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "G07",
@@ -1362,7 +2085,25 @@
         "CON-03",
         "CON-04",
         "DYN-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "grasp",
+        "related_membranes": [
+          "creature",
+          "trees",
+          "climbing"
+        ],
+        "connection_ids": [
+          "contact",
+          "muscle-bone"
+        ],
+        "verification_profile": "grasp",
+        "checkpoint_ids": [
+          "V06"
+        ],
+        "scenario_scope": "Loss/release of support removes its forces and yields accounted motion and energy"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "G08",
@@ -1392,7 +2133,24 @@
         "CON-03",
         "CON-04",
         "DYN-02"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [
+          "grasp",
+          "climbing"
+        ],
+        "connection_ids": [
+          "policy-actuation",
+          "contact"
+        ],
+        "verification_profile": "grasp",
+        "checkpoint_ids": [
+          "V06"
+        ],
+        "scenario_scope": "Accepted mechanics pass CPU/GPU and runtime identity gates relevant to climbing"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "K01",
@@ -1418,7 +2176,22 @@
         "CTRL-06",
         "VERIFY-01",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "climbing",
+        "related_membranes": [
+          "grasp",
+          "runtime"
+        ],
+        "connection_ids": [
+          "drive",
+          "policy-actuation"
+        ],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Observations, actions, reward, termination, success metrics, seeds, envelope and falsifiers approved before training"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "K02",
@@ -1443,7 +2216,24 @@
         "CTRL-06",
         "VERIFY-01",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "climbing",
+        "related_membranes": [
+          "grasp",
+          "trees",
+          "player"
+        ],
+        "connection_ids": [
+          "contact",
+          "drive",
+          "state-feedback"
+        ],
+        "verification_profile": "climb-reset",
+        "checkpoint_ids": [],
+        "scenario_scope": "Initial states are valid and attributable; setup/reset never becomes a hidden in-episode assist"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "K03",
@@ -1453,7 +2243,8 @@
       "scope": "core",
       "depends_on": [
         "K02",
-        "P04"
+        "P04",
+        "W07"
       ],
       "calculation_ids": [
         "C10",
@@ -1469,7 +2260,24 @@
         "CTRL-06",
         "VERIFY-01",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "climbing",
+        "related_membranes": [
+          "grasp",
+          "runtime"
+        ],
+        "connection_ids": [
+          "drive",
+          "policy-actuation"
+        ],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Approved runs finish or fail with checkpoints and unchanged acceptance criteria"
+      },
+      "dependency_reasons": {
+        "W07": "Climbing follows the accepted walking foundation; the existing walking run remains unchanged."
+      }
     },
     {
       "id": "K04",
@@ -1494,7 +2302,26 @@
         "CTRL-06",
         "VERIFY-01",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "climbing",
+        "related_membranes": [
+          "grasp",
+          "trees",
+          "player"
+        ],
+        "connection_ids": [
+          "contact",
+          "drive",
+          "state-feedback"
+        ],
+        "verification_profile": "climbing",
+        "checkpoint_ids": [
+          "V07"
+        ],
+        "scenario_scope": "Each claimed behavior meets frozen metrics; failures and unsupported cases are visible"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "K05",
@@ -1519,7 +2346,26 @@
         "CTRL-06",
         "VERIFY-01",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "climbing",
+        "related_membranes": [
+          "grasp",
+          "trees",
+          "player"
+        ],
+        "connection_ids": [
+          "contact",
+          "drive",
+          "state-feedback"
+        ],
+        "verification_profile": "climbing",
+        "checkpoint_ids": [
+          "V07"
+        ],
+        "scenario_scope": "Native policy consumes certified dynamics and commands only available actuators"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "K06",
@@ -1545,7 +2391,26 @@
         "CTRL-06",
         "VERIFY-01",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "locomotion",
+        "related_membranes": [
+          "walking",
+          "climbing",
+          "player"
+        ],
+        "connection_ids": [
+          "drive",
+          "policy-actuation",
+          "state-feedback"
+        ],
+        "verification_profile": "climbing",
+        "checkpoint_ids": [
+          "V07"
+        ],
+        "scenario_scope": "Transition preconditions, cancellation, ownership and command handling are explicit"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "K07",
@@ -1570,7 +2435,26 @@
         "CTRL-06",
         "VERIFY-01",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "climbing",
+        "related_membranes": [
+          "grasp",
+          "trees",
+          "player"
+        ],
+        "connection_ids": [
+          "contact",
+          "drive",
+          "state-feedback"
+        ],
+        "verification_profile": "climbing",
+        "checkpoint_ids": [
+          "V07"
+        ],
+        "scenario_scope": "Out-of-reach, rejected grip, excessive load and lost contact terminate/transition according to the specification"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "K08",
@@ -1596,7 +2480,26 @@
         "CTRL-06",
         "VERIFY-01",
         "VERIFY-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "climbing",
+        "related_membranes": [
+          "grasp",
+          "trees",
+          "player"
+        ],
+        "connection_ids": [
+          "contact",
+          "drive",
+          "state-feedback"
+        ],
+        "verification_profile": "climbing",
+        "checkpoint_ids": [
+          "V07"
+        ],
+        "scenario_scope": "Player approaches, attaches, ascends, holds, descends, releases and resumes all-fours walking in one session"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "X01",
@@ -1619,7 +2522,18 @@
         "LGT-01",
         "SND-05",
         "SOC-05"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "session",
+        "related_membranes": [
+          "monkey-game"
+        ],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "A finite purpose/lesson/free-play completion definition is selected without inventing a campaign"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "X02",
@@ -1642,7 +2556,22 @@
         "LGT-01",
         "SND-05",
         "SOC-05"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "session",
+        "related_membranes": [
+          "player",
+          "walking",
+          "climbing"
+        ],
+        "connection_ids": [],
+        "verification_profile": "recovery",
+        "checkpoint_ids": [
+          "V08"
+        ],
+        "scenario_scope": "Player reaches play and can pause/restart/exit without developer commands; reset is an explicit user action"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "X03",
@@ -1652,7 +2581,8 @@
       "scope": "recommended_product",
       "depends_on": [
         "W09",
-        "X02"
+        "X02",
+        "K07"
       ],
       "calculation_ids": [
         "C13"
@@ -1668,7 +2598,24 @@
         "LGT-01",
         "SND-05",
         "SOC-05"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "session",
+        "related_membranes": [
+          "player",
+          "walking",
+          "climbing"
+        ],
+        "connection_ids": [],
+        "verification_profile": "recovery",
+        "checkpoint_ids": [
+          "V08"
+        ],
+        "scenario_scope": "The player can continue after failure by the approved recovery action or visible restart"
+      },
+      "dependency_reasons": {
+        "K07": "The accepted recovery experience includes climbing boundary/failure behavior."
+      }
     },
     {
       "id": "X04",
@@ -1692,7 +2639,24 @@
         "LGT-01",
         "SND-05",
         "SOC-05"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "skin",
+        "related_membranes": [
+          "creature",
+          "forest",
+          "camera"
+        ],
+        "connection_ids": [
+          "skin-bone"
+        ],
+        "verification_profile": "presentation",
+        "checkpoint_ids": [
+          "V09"
+        ],
+        "scenario_scope": "Connected animal, contact and climbing states are readable in actual captures with no second locomotion pose"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "X05",
@@ -1718,7 +2682,24 @@
         "LGT-01",
         "SND-05",
         "SOC-05"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "session",
+        "related_membranes": [
+          "walking",
+          "grasp",
+          "forest"
+        ],
+        "connection_ids": [
+          "contact"
+        ],
+        "verification_profile": "presentation",
+        "checkpoint_ids": [
+          "V09"
+        ],
+        "scenario_scope": "Contact/release/impact cues follow actual events, have volume controls and honest material scope"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "X06",
@@ -1744,7 +2725,23 @@
         "LGT-01",
         "SND-05",
         "SOC-05"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "inspection",
+        "related_membranes": [
+          "camera",
+          "creature",
+          "forest",
+          "runtime"
+        ],
+        "connection_ids": [],
+        "verification_profile": "presentation",
+        "checkpoint_ids": [
+          "V09"
+        ],
+        "scenario_scope": "Selected lesson or inspector uses runtime quantities with units and explains declared limitations"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "X07",
@@ -1758,7 +2755,9 @@
         "X02",
         "X03",
         "X04",
-        "U06"
+        "U06",
+        "X05",
+        "X06"
       ],
       "calculation_ids": [
         "C12",
@@ -1775,7 +2774,24 @@
         "LGT-01",
         "SND-05",
         "SOC-05"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "session",
+        "related_membranes": [
+          "monkey-game",
+          "delivery"
+        ],
+        "connection_ids": [],
+        "verification_profile": "release",
+        "checkpoint_ids": [
+          "V09"
+        ],
+        "scenario_scope": "A player can discover controls, complete the loop and understand failure without operator coaching"
+      },
+      "dependency_reasons": {
+        "X05": "The stranger playthrough covers selected audio feedback.",
+        "X06": "The stranger playthrough covers selected inspection features."
+      }
     },
     {
       "id": "R01",
@@ -1801,7 +2817,22 @@
         "SHIP-02",
         "SHIP-03",
         "SHIP-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "persistence",
+        "related_membranes": [
+          "session",
+          "player",
+          "locomotion"
+        ],
+        "connection_ids": [],
+        "verification_profile": "recovery",
+        "checkpoint_ids": [
+          "V08"
+        ],
+        "scenario_scope": "Pose, velocity, policy/actuator/contact state, scene, RNG and clocks resume under the existing continuation contract"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "R02",
@@ -1827,7 +2858,22 @@
         "SHIP-02",
         "SHIP-03",
         "SHIP-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "persistence",
+        "related_membranes": [
+          "session",
+          "player",
+          "locomotion"
+        ],
+        "connection_ids": [],
+        "verification_profile": "recovery",
+        "checkpoint_ids": [
+          "V08"
+        ],
+        "scenario_scope": "Save selection/version refusal and interrupted-write behavior are explicit; settings persist"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "R03",
@@ -1837,7 +2883,8 @@
       "scope": "core",
       "depends_on": [
         "K08",
-        "P06"
+        "P06",
+        "P05"
       ],
       "calculation_ids": [
         "C27"
@@ -1854,7 +2901,22 @@
         "SHIP-02",
         "SHIP-03",
         "SHIP-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [
+          "persistence",
+          "session",
+          "creature"
+        ],
+        "connection_ids": [],
+        "verification_profile": "recovery",
+        "checkpoint_ids": [],
+        "scenario_scope": "Frame-time distribution, simulation-step time, memory, VRAM and stalls measured in reserved windows"
+      },
+      "dependency_reasons": {
+        "P05": "Profiling must identify recoverable run/candidate artifacts."
+      }
     },
     {
       "id": "R04",
@@ -1880,7 +2942,20 @@
         "SHIP-02",
         "SHIP-03",
         "SHIP-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [
+          "persistence",
+          "session",
+          "creature"
+        ],
+        "connection_ids": [],
+        "verification_profile": "recovery",
+        "checkpoint_ids": [],
+        "scenario_scope": "Target acceptance budgets met with unchanged physical/behavioral gates"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "R05",
@@ -1907,7 +2982,22 @@
         "SHIP-02",
         "SHIP-03",
         "SHIP-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [
+          "persistence",
+          "session",
+          "creature"
+        ],
+        "connection_ids": [],
+        "verification_profile": "recovery",
+        "checkpoint_ids": [
+          "V08"
+        ],
+        "scenario_scope": "Repeated scene/restart/save cycles stay inside limits and all owned children/resources close"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "R06",
@@ -1932,7 +3022,22 @@
         "SHIP-02",
         "SHIP-03",
         "SHIP-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [
+          "persistence",
+          "session",
+          "creature"
+        ],
+        "connection_ids": [],
+        "verification_profile": "recovery",
+        "checkpoint_ids": [
+          "V08"
+        ],
+        "scenario_scope": "Focus changes and claimed device-loss/suspend behaviors fail or recover clearly without corrupting saves"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "R07",
@@ -1941,7 +3046,10 @@
       "group": "Persistence, performance, and reliability",
       "scope": "core",
       "depends_on": [
-        "R06"
+        "R06",
+        "X04",
+        "X05",
+        "X06"
       ],
       "calculation_ids": [
         "C09",
@@ -1960,7 +3068,26 @@
         "SHIP-02",
         "SHIP-03",
         "SHIP-04"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "runtime",
+        "related_membranes": [
+          "persistence",
+          "session",
+          "creature"
+        ],
+        "connection_ids": [],
+        "verification_profile": "recovery",
+        "checkpoint_ids": [
+          "V08"
+        ],
+        "scenario_scope": "Code/data/policy/configuration identity matches the accepted complete game and independent receipts"
+      },
+      "dependency_reasons": {
+        "X04": "Release identity includes accepted visual state.",
+        "X05": "Release identity includes accepted interaction audio.",
+        "X06": "Release identity includes accepted live inspection."
+      }
     },
     {
       "id": "S01",
@@ -1982,7 +3109,18 @@
         "TRUST-05",
         "SHIP-01",
         "SHIP-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "delivery",
+        "related_membranes": [
+          "governance"
+        ],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Every shipped asset/model/library has a recorded source and applicable distribution terms"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "S02",
@@ -2006,7 +3144,19 @@
         "TRUST-05",
         "SHIP-01",
         "SHIP-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "delivery",
+        "related_membranes": [
+          "runtime",
+          "session"
+        ],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Clean machine/user can launch without repo paths, development Python or operator-installed tools beyond declared dependencies"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "S03",
@@ -2028,7 +3178,22 @@
         "TRUST-05",
         "SHIP-01",
         "SHIP-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "delivery",
+        "related_membranes": [
+          "session",
+          "persistence",
+          "player"
+        ],
+        "connection_ids": [],
+        "verification_profile": "presentation",
+        "checkpoint_ids": [
+          "V10"
+        ],
+        "scenario_scope": "Package passes the declared supported Windows/hardware smoke and lifecycle cases"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "S04",
@@ -2051,7 +3216,22 @@
         "TRUST-05",
         "SHIP-01",
         "SHIP-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "delivery",
+        "related_membranes": [
+          "session",
+          "persistence",
+          "player"
+        ],
+        "connection_ids": [],
+        "verification_profile": "presentation",
+        "checkpoint_ids": [
+          "V10"
+        ],
+        "scenario_scope": "Controls, supported limits, crash/report path and recoverable errors are understandable"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "S05",
@@ -2077,7 +3257,20 @@
         "TRUST-05",
         "SHIP-01",
         "SHIP-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "delivery",
+        "related_membranes": [
+          "monkey-game"
+        ],
+        "connection_ids": [],
+        "verification_profile": "release",
+        "checkpoint_ids": [
+          "V10"
+        ],
+        "scenario_scope": "All selected core/product behaviors pass; remaining issues are triaged explicitly; operator accepts actual play"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "S06",
@@ -2099,7 +3292,22 @@
         "TRUST-05",
         "SHIP-01",
         "SHIP-06"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "delivery",
+        "related_membranes": [
+          "skin",
+          "forest",
+          "camera"
+        ],
+        "connection_ids": [],
+        "verification_profile": "presentation",
+        "checkpoint_ids": [
+          "V10"
+        ],
+        "scenario_scope": "Approved build, concise controls, captures and release notes are packaged; publication follows operator authorization"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "B01",
@@ -2126,7 +3334,20 @@
         "PROC-06",
         "MAT-03",
         "VERIFY-01"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "body-export",
+        "related_membranes": [
+          "tissue",
+          "partition",
+          "ownership"
+        ],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Actual independent review targets 1af0bbde; U1 has frozen analytic evidence; hash claims remain distinct"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "B02",
@@ -2153,7 +3374,20 @@
         "PROC-06",
         "MAT-03",
         "VERIFY-01"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "body-export",
+        "related_membranes": [
+          "tissue",
+          "partition",
+          "ownership"
+        ],
+        "connection_ids": [],
+        "verification_profile": "records",
+        "checkpoint_ids": [],
+        "scenario_scope": "Authorized scale/transform/status/numerical tests and static diagnostics ship with distinct evidence classes"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "B03",
@@ -2179,7 +3413,22 @@
         "PROC-06",
         "MAT-03",
         "VERIFY-01"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "partition",
+        "related_membranes": [
+          "tissue",
+          "skin",
+          "ownership"
+        ],
+        "connection_ids": [],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [
+          "V11"
+        ],
+        "scenario_scope": "Actual geometry, material ownership and density source support a complete input for the selected body"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "B04",
@@ -2204,7 +3453,22 @@
         "PROC-06",
         "MAT-03",
         "VERIFY-01"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "skeleton",
+        "related_membranes": [
+          "creature",
+          "bones",
+          "joints"
+        ],
+        "connection_ids": [],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [
+          "V11"
+        ],
+        "scenario_scope": "pelvis/thorax/ulna roots and transforms are authored with evidence; no guessed alignment"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "B05",
@@ -2229,7 +3493,23 @@
         "PROC-06",
         "MAT-03",
         "VERIFY-01"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "muscle-bone",
+        "related_membranes": [
+          "tendons",
+          "skeleton"
+        ],
+        "connection_ids": [
+          "muscle-bone"
+        ],
+        "verification_profile": "grasp",
+        "checkpoint_ids": [
+          "V11"
+        ],
+        "scenario_scope": "Actual port patch/stiffness/couple/weight/frame inputs qualify or remain blocked"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "B06",
@@ -2258,7 +3538,26 @@
         "PROC-06",
         "MAT-03",
         "VERIFY-01"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "creature",
+        "related_membranes": [
+          "tissue",
+          "skeleton",
+          "musculature",
+          "skin"
+        ],
+        "connection_ids": [
+          "muscle-bone",
+          "skin-bone"
+        ],
+        "verification_profile": "anatomy",
+        "checkpoint_ids": [
+          "V11"
+        ],
+        "scenario_scope": "All mass/ownership/frame/port requirements evaluated, with remaining gaps explicit"
+      },
+      "dependency_reasons": {}
     },
     {
       "id": "B07",
@@ -2284,7 +3583,25 @@
         "PROC-06",
         "MAT-03",
         "VERIFY-01"
-      ]
+      ],
+      "ontology": {
+        "primary_membrane": "locomotion",
+        "related_membranes": [
+          "walking",
+          "climbing",
+          "creature"
+        ],
+        "connection_ids": [
+          "policy-actuation",
+          "state-feedback"
+        ],
+        "verification_profile": "climbing",
+        "checkpoint_ids": [
+          "V11"
+        ],
+        "scenario_scope": "Architect names why this assembly replaces the current body, then requalifies affected dynamics/policies before use"
+      },
+      "dependency_reasons": {}
     }
   ],
   "calculations": [
@@ -2754,5 +4071,815 @@
         "FRONT-05"
       ]
     }
-  ]
+  ],
+  "ontology_contract": {
+    "schema": "chimera.ontology_work_plan.v1",
+    "definition_path": "tools/membrane_ontology/ontology.json",
+    "definition_raw_sha256": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+    "authority": "Operator-authorized 2026-09-24: align all 83 tasks to membrane ontology, port dependencies and repeatable tagged visual verification with camera angle and distance.",
+    "order_policy": "Explicit interface prerequisites form the DAG; containment identifies integration subjects. Independent children remain parallel.",
+    "status_policy": "Planned requirements only; reconcile actual receipts and do not infer implementation or acceptance.",
+    "visual_profiles": [
+      {
+        "id": "records",
+        "kind": "offline",
+        "subject": "Pinned definitions, ledgers and numerical evidence",
+        "scenario": "Inspect actual records and their independent oracle.",
+        "diagnostic_layers": [],
+        "views": [],
+        "clean_view_required": false,
+        "camera_required_fields": [],
+        "falsifier": "Missing identities or a claimed pass unsupported by records fails; a screenshot is not a substitute.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": "A source/contract/measurement task whose truth requires records or numerical oracles, not a 3D image."
+      },
+      {
+        "id": "anatomy",
+        "kind": "visible_static",
+        "subject": "Creature structure, bone/muscle/skin correspondence and attachment ownership",
+        "scenario": "Inspect the pinned source and fitted geometry separately; label stable source, membrane and port IDs. Reconcile frames and owner mappings.",
+        "diagnostic_layers": [
+          "outer envelope",
+          "selected bones/joints",
+          "muscle/tendon paths",
+          "attachment sites",
+          "frame axes",
+          "stable 3D labels"
+        ],
+        "views": [
+          "whole-creature overview",
+          "local attachment close-up",
+          "orthogonal side and oblique views"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "Wrong owner/frame, hidden outside placement, clipped/occluded subject or label ambiguity fails. View toggles must preserve the physical state hash.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "walking",
+        "kind": "motion",
+        "subject": "Walking actuator chain and body-ground contact",
+        "scenario": "Replay the frozen start/stop/turn/speed/fall sequence; inspect stance and swing over the full declared interval.",
+        "diagnostic_layers": [
+          "skeleton",
+          "foot contacts and normals",
+          "support/COM markers",
+          "command and tick overlay",
+          "stable 3D labels"
+        ],
+        "views": [
+          "full-body ground overview",
+          "side view of stance/swing",
+          "close-up of foot-ground contact"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "Sliding/penetration, unsupported propulsion, hidden reset, wrong command response or diagnostic/clean state divergence fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "controls",
+        "kind": "motion",
+        "subject": "Player command, camera and feedback interfaces",
+        "scenario": "Exercise controls, focus loss, camera obstruction and release while logging the exact input and body state.",
+        "diagnostic_layers": [
+          "input/state/tick display",
+          "camera target and frustum diagnostics",
+          "selected creature labels"
+        ],
+        "views": [
+          "normal follow-camera distance",
+          "obstructed and close-target views",
+          "repeatable inspection side view"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "A stuck command, camera-induced body movement, unreadable required target, concealed obstruction or unbound timing evidence fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "forest",
+        "kind": "visible_static",
+        "subject": "Terrain/trunk geometry and actual contact surfaces",
+        "scenario": "Inspect world frames and render/collision correspondence at representative ground/trunk probes, including silhouettes and depth.",
+        "diagnostic_layers": [
+          "render mesh",
+          "collision surfaces",
+          "normals/contact markers",
+          "scene bounds",
+          "stable 3D labels"
+        ],
+        "views": [
+          "clearing overview",
+          "terrain/trunk seam close-up",
+          "side and oblique depth checks"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "Rendered/collision mismatch, ghost support, missing boundaries or off-frame probe subject fails; tags alone do not establish contact.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "grasp",
+        "kind": "motion",
+        "subject": "Grasp ports, tendon transmission and supported transfer",
+        "scenario": "Replay approach, attach, load, hold, transfer and release with attachment and force telemetry.",
+        "diagnostic_layers": [
+          "attachment patches and endpoint IDs",
+          "tendon paths",
+          "joint/frame axes",
+          "contact normals and forces",
+          "support state"
+        ],
+        "views": [
+          "whole-body/trunk relationship",
+          "wrist/digit attachment close-up",
+          "orthogonal view of each loaded interface"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "Unresolved owner, nonphysical attachment, unsupported transfer, concealment behind the trunk or force/pose inconsistency fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "climbing",
+        "kind": "motion",
+        "subject": "Climb/hold/descend/release and walk-climb transitions",
+        "scenario": "Replay the preregistered ground-tree-ground and boundary/failure sequences, preserving state across skill changes.",
+        "diagnostic_layers": [
+          "skill and command IDs",
+          "grip/support contacts",
+          "body/trunk labels",
+          "height and tick readouts"
+        ],
+        "views": [
+          "full vertical route overview",
+          "side and alternate-trunk view",
+          "close-up of skill transition and release"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "Teleportation, hidden support/reset, invalid transfer, dropped identity or missing fall/release sequence fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "presentation",
+        "kind": "motion",
+        "subject": "Readable creature/environment state, session flow and feedback",
+        "scenario": "Exercise the actual game flow while correlating visible/audible events to live values.",
+        "diagnostic_layers": [
+          "selected state labels",
+          "event/tick trace",
+          "debug isolation of the affected layer"
+        ],
+        "views": [
+          "normal player camera",
+          "detail of affected display/asset",
+          "alternate-angle visibility"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "Placeholder values, misleading state cues, missing playback evidence or a clean-view regression fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "recovery",
+        "kind": "motion",
+        "subject": "Save/restore, restart and resource/failure transitions",
+        "scenario": "Compare before/after pinned state through reload, pause/resume, reconnect/focus loss and safe teardown.",
+        "diagnostic_layers": [
+          "state and tick IDs",
+          "active skill/contact labels",
+          "resource/session diagnostics"
+        ],
+        "views": [
+          "matched before/after camera bookmark",
+          "normal follow view during recovery"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "Changed pose/contact/ownership or stale commands after restore, leaked owned resources or mismatched camera/state evidence fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "release",
+        "kind": "final_playthrough",
+        "subject": "Complete playable monkey experience",
+        "scenario": "A fresh user launches, walks, climbs, holds, descends/releases, recovers, saves and exits under the selected product contract.",
+        "diagnostic_layers": [
+          "separate diagnostic replay with IDs and state trace"
+        ],
+        "views": [
+          "normal player-controlled camera",
+          "recorded problematic-angle replay",
+          "installation/launch and exit evidence"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "Missing selected feature, hidden operator intervention, unsupported completion claim or absent explicit human acceptance fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "attachment-fixture",
+        "kind": "motion",
+        "subject": "Qualify finite-area anatomical attachments",
+        "scenario": "Finite-area attachment geometry and controlled fixture loading; no complete grip, transfer or climbing required.",
+        "diagnostic_layers": [
+          "attachment patch geometry",
+          "authored frames and port IDs",
+          "fixture load and displacement traces"
+        ],
+        "views": [
+          "patch overview",
+          "loaded interface close-up",
+          "orthogonal and oblique patch views"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "A violated task acceptance clause, hidden/clipped required geometry, inconsistent numeric evidence or mismatched clean/diagnostic state fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "tendon-pose-sweep",
+        "kind": "motion",
+        "subject": "Evaluate tendon lengths and moment arms",
+        "scenario": "Pinned pose sweep; compare actual tendon paths, length and moment arms with independent numerical traces. No complete grip or limb transfer required.",
+        "diagnostic_layers": [
+          "resolved tendon endpoints and paths",
+          "joint axes and stable IDs",
+          "length and moment-arm traces"
+        ],
+        "views": [
+          "chain overview",
+          "endpoint close-up",
+          "alternate pose/axis view"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "A violated task acceptance clause, hidden/clipped required geometry, inconsistent numeric evidence or mismatched clean/diagnostic state fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "contact-motion",
+        "kind": "motion",
+        "subject": "Verify ground and trunk contact geometry",
+        "scenario": "Replay crossing and impact trajectories at ground, trunk and seams; inspect full tick intervals for tunnelling and render/collision disagreement.",
+        "diagnostic_layers": [
+          "render and collision surfaces",
+          "probe trajectories",
+          "contact normals and tick IDs"
+        ],
+        "views": [
+          "clearing contact overview",
+          "terrain/trunk seam impact close-up",
+          "opposite-trunk and oblique depth checks"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "A violated task acceptance clause, hidden/clipped required geometry, inconsistent numeric evidence or mismatched clean/diagnostic state fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "parity-replay",
+        "kind": "motion",
+        "subject": "Integrate frozen parity and walk anchors",
+        "scenario": "Replay the pinned freefall/stand anchors on the specified backends; compare exact state traces across the complete interval. No trained walking skill required.",
+        "diagnostic_layers": [
+          "source body and joint IDs",
+          "backend and tick IDs",
+          "parity/state difference trace"
+        ],
+        "views": [
+          "whole-body anchor overview",
+          "side replay view",
+          "local failing contact or joint close-up"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "A violated task acceptance clause, hidden/clipped required geometry, inconsistent numeric evidence or mismatched clean/diagnostic state fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      },
+      {
+        "id": "climb-reset",
+        "kind": "visible_static",
+        "subject": "Build reproducible climbing reset scenarios",
+        "scenario": "Inspect reset poses, frames and grip/contact initialization in the frozen climbing scenarios. No trained climbing behavior required.",
+        "diagnostic_layers": [
+          "reset pose and frame IDs",
+          "trunk contacts",
+          "scenario identity"
+        ],
+        "views": [
+          "reset overview",
+          "contact close-up",
+          "opposite-trunk view"
+        ],
+        "clean_view_required": true,
+        "camera_required_fields": [
+          "frame_id",
+          "coordinate_unit",
+          "position",
+          "orientation_convention_and_values",
+          "target",
+          "distance_to_target",
+          "projection",
+          "vertical_fov_or_orthographic_span",
+          "near_far_planes",
+          "aspect_ratio",
+          "viewport_resolution",
+          "camera_motion_or_bookmark_sequence",
+          "visibility_layers",
+          "label_ids",
+          "occlusion_or_xray_mode",
+          "state_or_tick_interval"
+        ],
+        "falsifier": "A violated task acceptance clause, hidden/clipped required geometry, inconsistent numeric evidence or mismatched clean/diagnostic state fails.",
+        "numerical_evidence_required": true,
+        "nonvisual_reason": null
+      }
+    ],
+    "checkpoints": [
+      {
+        "id": "V01",
+        "name": "Identify the actual creature and inspect its structure",
+        "task_ids": [
+          "P02",
+          "W04"
+        ],
+        "membrane_ids": [
+          "creature",
+          "skeleton",
+          "musculature",
+          "skin",
+          "inspection"
+        ],
+        "profile_id": "anatomy",
+        "requires": [],
+        "acceptance": "Qualified lineage/frame mappings and a tagged camera-pinned diagnostic capture; unresolved anatomy remains named."
+      },
+      {
+        "id": "V02",
+        "name": "Verify the forest contact boundary",
+        "task_ids": [
+          "F02",
+          "F03",
+          "F04"
+        ],
+        "membrane_ids": [
+          "forest",
+          "terrain",
+          "trees",
+          "contact"
+        ],
+        "profile_id": "forest",
+        "requires": [],
+        "acceptance": "Native contact probes agree with rendered surfaces, tagged at repeatable overview/detail/oblique views."
+      },
+      {
+        "id": "V03",
+        "name": "Walk and steer in the clearing",
+        "task_ids": [
+          "W08",
+          "W09",
+          "W10",
+          "U02",
+          "U07"
+        ],
+        "membrane_ids": [
+          "walking",
+          "player",
+          "camera",
+          "creature"
+        ],
+        "profile_id": "walking",
+        "requires": [
+          "V01",
+          "V02"
+        ],
+        "acceptance": "Actual command replay, physical actuation, camera visibility and paired debug/clean footage meet the frozen limits."
+      },
+      {
+        "id": "V04",
+        "name": "Walk the declared terrain envelope",
+        "task_ids": [
+          "F05",
+          "F06",
+          "F07",
+          "F08"
+        ],
+        "membrane_ids": [
+          "walking",
+          "forest",
+          "terrain"
+        ],
+        "profile_id": "walking",
+        "requires": [
+          "V03"
+        ],
+        "acceptance": "Terrain-boundary motion and failure behavior are inspected over full recorded intervals."
+      },
+      {
+        "id": "V05",
+        "name": "Resolve the grasp anatomy and force path",
+        "task_ids": [
+          "A09",
+          "G02",
+          "G03"
+        ],
+        "membrane_ids": [
+          "skeleton",
+          "musculature",
+          "tendons",
+          "muscle-bone"
+        ],
+        "profile_id": "anatomy",
+        "requires": [],
+        "acceptance": "Independent anatomical owner and mechanical port evidence, tagged close-ups and alternate views; no waypoint-only qualification."
+      },
+      {
+        "id": "V06",
+        "name": "Grip, transfer load and release",
+        "task_ids": [
+          "G04",
+          "G05",
+          "G06",
+          "G07",
+          "G08"
+        ],
+        "membrane_ids": [
+          "grasp",
+          "trees",
+          "contact",
+          "state-feedback"
+        ],
+        "profile_id": "grasp",
+        "requires": [
+          "V02",
+          "V05"
+        ],
+        "acceptance": "Loaded interfaces, support transitions and unsupported falls are visible and consistent with numerical traces."
+      },
+      {
+        "id": "V07",
+        "name": "Complete the ground-tree-ground loop",
+        "task_ids": [
+          "K04",
+          "K05",
+          "K06",
+          "K07",
+          "K08"
+        ],
+        "membrane_ids": [
+          "climbing",
+          "locomotion",
+          "creature",
+          "trees"
+        ],
+        "profile_id": "climbing",
+        "requires": [
+          "V04",
+          "V06"
+        ],
+        "acceptance": "Climb, hold, descend, release and skill transitions preserve physical state across the full declared loop."
+      },
+      {
+        "id": "V08",
+        "name": "Recover and persist the playable state",
+        "task_ids": [
+          "R01",
+          "R02",
+          "R05",
+          "R06",
+          "R07",
+          "X02",
+          "X03"
+        ],
+        "membrane_ids": [
+          "persistence",
+          "session",
+          "runtime"
+        ],
+        "profile_id": "recovery",
+        "requires": [
+          "V07"
+        ],
+        "acceptance": "Matched camera/state captures show correct restore/recovery; resource and command traces show clean lifecycle behavior."
+      },
+      {
+        "id": "V09",
+        "name": "Inspect the clean player experience",
+        "task_ids": [
+          "X04",
+          "X05",
+          "X06",
+          "X07"
+        ],
+        "membrane_ids": [
+          "skin",
+          "camera",
+          "inspection",
+          "session"
+        ],
+        "profile_id": "release",
+        "requires": [
+          "V07"
+        ],
+        "acceptance": "Debug labels match real values and can be hidden; a separate clean playthrough earns explicit operator acceptance."
+      },
+      {
+        "id": "V10",
+        "name": "Accept the packaged game",
+        "task_ids": [
+          "S03",
+          "S04",
+          "S05",
+          "S06"
+        ],
+        "membrane_ids": [
+          "delivery",
+          "monkey-game"
+        ],
+        "profile_id": "release",
+        "requires": [
+          "V08",
+          "V09"
+        ],
+        "acceptance": "Selected requirements, actual install/play/save/exit evidence and explicit human acceptance cover the shipped candidate; promotional assets do not replace proof."
+      },
+      {
+        "id": "V11",
+        "name": "Conditionally adopt reconstructed matter",
+        "task_ids": [
+          "B03",
+          "B04",
+          "B05",
+          "B06",
+          "B07"
+        ],
+        "membrane_ids": [
+          "partition",
+          "ownership",
+          "skeleton",
+          "muscle-bone",
+          "locomotion"
+        ],
+        "profile_id": "anatomy",
+        "requires": [],
+        "acceptance": "Only if this path is selected: real matter/frame/attachment and runtime bindings qualify, with tagged visual/numerical evidence and no substituted mass."
+      }
+    ],
+    "visual_instrumentation": {
+      "source_references": [
+        "ChimeraEngine/engine/engine.cpp::Engine::push_joint_tags",
+        "ChimeraEngine/engine/ui.hpp::StudioUI::JointTag",
+        "ChimeraEngine/engine/main.cpp::/inspect"
+      ],
+      "required_work_owner": "P02 for identity/tag/capture binding; X06 for live physics-value inspection",
+      "depth_semantics": "Existing joint labels are not depth-tested. Include normal-depth geometry views and mark x-ray modes explicitly.",
+      "capture_contract": "docs/ONTOLOGY_WORK_PLAN.md",
+      "qualification_cases": [
+        "Stable tag IDs resolve uniquely to source/membrane/port identities; leader-line de-crowding preserves target.",
+        "Near/far, dense labels, resized viewport, off-screen, behind-camera and occluded trunk-side cases are explicit.",
+        "X-ray labels are distinguished from depth-visible geometry; they never establish contact.",
+        "Camera motion uses actual numeric samples or a reproducible numeric trajectory tied to the capture interval.",
+        "Clean/diagnostic toggles preserve state, contacts, forces and RNG; compare paired state or replay trace identities."
+      ]
+    },
+    "checkpoint_semantics": "task_ids are contributors to an integration milestone; no contributor task depends on its own milestone. requires orders milestone acceptance only, never independent implementation. S05 is feature acceptance; selected-list completion also requires downstream S06."
+  }
 }

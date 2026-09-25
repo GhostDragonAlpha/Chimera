@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const state = { snapshot: null, bytes: null, nodes: new Map(), sources: new Map(), selected: null, tab: 'definition', search: '', expanded: new Set(), unknown: null, loading: false };
+  const state = { snapshot: null, bytes: null, nodes: new Map(), sources: new Map(), tasks: new Map(), checkpoints: new Map(), selected: null, tab: 'definition', search: '', expanded: new Set(), unknown: null, loading: false, focusedTask: null, focusedCheckpoint: null };
   const element = (tag, className, text) => { const item = document.createElement(tag); if (className) item.className = className; if (text !== undefined) item.textContent = String(text); return item; };
   const append = (parent, ...children) => { children.filter(Boolean).forEach(child => parent.appendChild(child)); return parent; };
   const button = (text, className, handler) => { const item = element('button', className, text); item.type = 'button'; item.addEventListener('click', handler); return item; };
@@ -128,6 +128,11 @@
     const connected = list(node.connections);
     if (connected.length) { const area = element('section', 'connection-section'); append(area, element('h3', 'section-label', 'Connected through ports'), connectionRows(connected)); content.appendChild(area); }
     if (list(node.gaps).length) { const link = button(list(node.gaps).length + (node.gaps.length === 1 ? ' declared gap' : ' declared gaps') + ' · inspect sources & gaps ↗', 'inline-link', () => { setTab('sources'); $('detail-content').scrollIntoView({ block: 'nearest' }); }); const area = element('div', 'connection-section'); area.appendChild(link); content.appendChild(area); }
+    if (state.snapshot.plan) {
+      const area = element('section', 'work-preview'); const primary = list(node.tasks).filter(task => task.ontology?.primary_membrane === node.id).length;
+      append(area, element('h3', 'section-label', 'Work attached to this membrane'), element('p', 'detail-copy', primary + ' primary tasks · ' + (list(node.tasks).length - primary) + ' related tasks · ' + list(node.checkpoints).length + ' checkpoints'), button('Inspect work & verification ↗', 'inline-link', () => { setTab('work'); $('detail-content').scrollIntoView({ block: 'nearest' }); }), element('p', 'source-note', 'Planned requirements. Accepted evidence must be reconciled.'));
+      content.appendChild(area);
+    }
     $('inspector-kind').textContent = pretty(node.kind); renderDetails();
   }
   function fields(object, exclude = []) {
@@ -177,13 +182,114 @@
     const snapshot = section('Snapshot provenance'); snapshot.classList.add('snapshot-details'); snapshot.appendChild(fields({ authority: state.snapshot.authority, definition_raw_sha256: state.snapshot.definition_raw_sha256, snapshot_sha256: state.snapshot.snapshot_sha256 })); content.appendChild(snapshot);
     if (list(state.snapshot.limits).length) { const limits = section('Scope limits'); const entries = element('ul', 'limits-list'); state.snapshot.limits.forEach(limit => entries.appendChild(element('li', '', limit))); limits.appendChild(entries); content.appendChild(limits); }
   }
+  function requirementList(values, className = 'requirements-list') {
+    const entries = element('ul', className);
+    list(values).forEach(value => entries.appendChild(element('li', '', typeof value === 'string' ? value : JSON.stringify(value))));
+    return entries;
+  }
+  function revealWorkEntry(kind, id) {
+    const target = Array.from($('detail-content').querySelectorAll('[data-work-id]')).find(item => item.dataset.workId === kind + ':' + id);
+    if (target) { target.open = true; target.scrollIntoView({ block: 'nearest' }); const summary = target.querySelector('summary'); if (summary) summary.focus({ preventScroll: true }); }
+  }
+  function navigateTask(id) {
+    const task = state.tasks.get(id); if (!task) return;
+    state.focusedTask = id; state.focusedCheckpoint = null;
+    if (state.nodes.has(task.ontology?.primary_membrane)) navigate(task.ontology.primary_membrane);
+    setTab('work'); revealWorkEntry('task', id);
+  }
+  function navigateCheckpoint(id) {
+    const checkpoint = state.checkpoints.get(id); if (!checkpoint) return;
+    state.focusedCheckpoint = id; state.focusedTask = null;
+    const target = list(checkpoint.membrane_ids).find(nodeId => state.nodes.has(nodeId) && list(state.nodes.get(nodeId).checkpoints).some(item => item.id === id));
+    if (target) navigate(target);
+    setTab('work'); revealWorkEntry('checkpoint', id);
+  }
+  function taskLink(id) {
+    if (!state.tasks.has(id)) return element('code', 'reference-chip unavailable', id);
+    const link = button(id, 'reference-chip', () => navigateTask(id)); link.title = state.tasks.get(id).title; link.setAttribute('aria-label', 'Open task ' + id + ': ' + state.tasks.get(id).title); return link;
+  }
+  function membraneLinks(ids) {
+    const links = element('div', 'reference-links');
+    list(ids).forEach(id => { if (state.nodes.has(id)) links.appendChild(button(nodeLabel(id) + ' ↗', 'reference-chip membrane-reference', () => { navigate(id); setTab('work'); })); else links.appendChild(element('code', 'reference-chip unavailable', id)); });
+    return links;
+  }
+  function verificationProfile(profile) {
+    const container = element('details', 'verification-profile');
+    const summary = element('summary', '', 'Verification profile'); container.appendChild(summary);
+    if (!profile || typeof profile !== 'object') { container.appendChild(empty('No verification profile attached to this snapshot.')); return container; }
+    const body = element('div', 'verification-body');
+    append(body, element('p', 'profile-id mono', profile.id || 'Profile ID not declared'), fields({ kind: profile.kind, subject: profile.subject, scenario: profile.scenario }));
+    const diagnostics = element('section', 'profile-section'); append(diagnostics, element('h5', '', 'Diagnostic layers / 3D labels'), list(profile.diagnostic_layers).length ? requirementList(profile.diagnostic_layers) : element('p', 'source-note', 'No diagnostic layers listed in this profile.')); body.appendChild(diagnostics);
+    const views = element('section', 'profile-section'); append(views, element('h5', '', 'Required views / angles'), list(profile.views).length ? requirementList(profile.views) : element('p', 'source-note', 'No visual views listed in this profile.')); body.appendChild(views);
+    const clean = profile.clean_view_required === true ? 'Required · pair with the same state or reproducible command trace.' : profile.clean_view_required === false ? 'Not required by this profile.' : 'Not declared.';
+    const cleanSection = element('section', 'profile-section'); append(cleanSection, element('h5', '', 'Clean view'), element('p', 'detail-copy', clean)); body.appendChild(cleanSection);
+    const camera = element('section', 'profile-section'); append(camera, element('h5', '', 'Camera / distance receipt'));
+    if (list(profile.camera_required_fields).length) {
+      append(camera, element('p', 'source-note', 'Record actual numeric camera settings for each required view, including orientation and target distance. A view name alone is not enough.'), requirementList(profile.camera_required_fields, 'requirements-list camera-fields'));
+      camera.appendChild(element('p', 'source-note', 'Derive framing from the subject bounds or reuse an approved bookmark. This profile supplies requirements, not an invented angle or distance.'));
+    } else camera.appendChild(element('p', 'source-note', 'No camera fields listed in this profile.'));
+    body.appendChild(camera);
+    const falsifier = element('section', 'profile-section'); append(falsifier, element('h5', '', 'Falsifier'), element('p', 'detail-copy', typeof profile.falsifier === 'string' ? profile.falsifier : JSON.stringify(profile.falsifier ?? 'Not declared'))); body.appendChild(falsifier);
+    body.appendChild(fields(profile, ['id', 'kind', 'subject', 'scenario', 'diagnostic_layers', 'views', 'clean_view_required', 'camera_required_fields', 'falsifier']));
+    container.appendChild(body); return container;
+  }
+  function taskEntry(task, nodeId, initiallyOpen = false) {
+    const entry = element('details', 'task-entry'); entry.dataset.workId = 'task:' + task.id; entry.open = state.focusedTask === task.id || initiallyOpen;
+    const summary = element('summary', 'task-summary'); const top = element('span', 'task-line');
+    append(top, element('code', 'task-id', task.id), element('span', 'task-relation', task.ontology?.primary_membrane === nodeId ? 'PRIMARY' : 'RELATED'));
+    if (task.scope === 'conditional') top.appendChild(element('span', 'conditional-label', 'CONDITIONAL'));
+    append(summary, top, element('span', 'task-title', task.title)); entry.appendChild(summary);
+    const body = element('div', 'task-body');
+    const layer = Number.isInteger(task.dependency_layer) ? 'Dependency layer ' + task.dependency_layer : 'Dependency layer not provided';
+    append(body, element('p', 'dependency-label', layer + ' · logical order, not a time estimate'), element('p', 'task-scope', 'Scope: ' + pretty(task.scope)));
+    if (task.scope === 'conditional') body.appendChild(element('p', 'conditional-note', 'Conditional work is not selected merely because this membrane is visible. Activation requires its existing gate.'));
+    const dependencies = element('section', 'task-section'); dependencies.appendChild(element('h5', '', 'Required before this task'));
+    if (list(task.depends_on).length) { const links = element('div', 'reference-links'); task.depends_on.forEach(id => links.appendChild(taskLink(id))); dependencies.appendChild(links); } else dependencies.appendChild(element('p', 'source-note', 'No explicit task dependencies.')); body.appendChild(dependencies);
+    const acceptance = element('section', 'task-section'); append(acceptance, element('h5', '', 'Acceptance · done when'), element('p', 'task-acceptance', typeof task.done_when === 'string' ? task.done_when : JSON.stringify(task.done_when))); body.appendChild(acceptance);
+    if (list(task.calculation_ids).length) { const calculations = element('section', 'task-section'); append(calculations, element('h5', '', 'Calculation contract IDs'), element('p', 'mono detail-copy', task.calculation_ids.join(', '))); body.appendChild(calculations); }
+    if (task.ontology) {
+      const mapping = element('section', 'task-section'); append(mapping, element('h5', '', 'Membrane / interface bindings'), membraneLinks([task.ontology.primary_membrane, ...list(task.ontology.related_membranes), ...list(task.ontology.connection_ids)].filter((id, index, all) => id && all.indexOf(id) === index))); body.appendChild(mapping);
+      if (list(task.ontology.checkpoint_ids).length) { const checkpointArea = element('section', 'task-section'); checkpointArea.appendChild(element('h5', '', 'Integration checkpoints')); const links = element('div', 'reference-links'); task.ontology.checkpoint_ids.forEach(id => links.appendChild(state.checkpoints.has(id) ? button(id, 'reference-chip', () => navigateCheckpoint(id)) : element('code', 'reference-chip unavailable', id))); checkpointArea.appendChild(links); body.appendChild(checkpointArea); }
+    }
+    body.appendChild(verificationProfile(task.verification_profile)); entry.appendChild(body); return entry;
+  }
+  function checkpointEntry(checkpoint) {
+    const entry = element('details', 'checkpoint-entry'); entry.dataset.workId = 'checkpoint:' + checkpoint.id; entry.open = state.focusedCheckpoint === checkpoint.id;
+    const summary = element('summary', 'task-summary'); const top = element('span', 'task-line'); append(top, element('code', 'task-id', checkpoint.id), element('span', 'planned', 'PLANNED CHECKPOINT')); append(summary, top, element('span', 'task-title', checkpoint.name)); entry.appendChild(summary);
+    const body = element('div', 'task-body');
+    const tasks = element('section', 'task-section'); tasks.appendChild(element('h5', '', 'Required task IDs')); const links = element('div', 'reference-links'); list(checkpoint.task_ids).forEach(id => links.appendChild(taskLink(id))); tasks.appendChild(links); body.appendChild(tasks);
+    if (list(checkpoint.requires).length) { const dependencies = element('section', 'task-section'); append(dependencies, element('h5', '', 'Prerequisite checkpoints')); const items = element('div', 'reference-links'); checkpoint.requires.forEach(id => items.appendChild(state.checkpoints.has(id) ? button(id, 'reference-chip', () => navigateCheckpoint(id)) : element('code', 'reference-chip unavailable', id))); dependencies.appendChild(items); body.appendChild(dependencies); }
+    append(body, membraneLinks(checkpoint.membrane_ids));
+    const acceptance = element('section', 'task-section'); append(acceptance, element('h5', '', 'Checkpoint acceptance'), element('p', 'task-acceptance', typeof checkpoint.acceptance === 'string' ? checkpoint.acceptance : JSON.stringify(checkpoint.acceptance))); body.appendChild(acceptance);
+    body.appendChild(verificationProfile(checkpoint.verification_profile)); entry.appendChild(body); return entry;
+  }
+  function renderWork(node, content) {
+    const plan = state.snapshot.plan;
+    if (!plan) { append(content, empty('No work plan is attached to this snapshot. Refresh after the ontology API has the amended catalog.'), element('p', 'source-note', 'The membrane definition remains available. No tasks or acceptance results are synthesized.')); return; }
+    const overview = section('Attached work plan');
+    append(overview, element('p', 'plan-counts', plan.task_count + ' authored tasks · ' + plan.selected_count + ' selected'), element('p', 'plan-policy', plan.task_status_policy || 'Planned requirements; reconcile accepted evidence.'), element('p', 'source-note', 'Selection is scope, not completion. Dependency layers express logical readiness; independent membranes may progress in parallel.'));
+    const hash = element('code', 'source-hash plan-hash', 'Scope SHA-256 ' + plan.scope_sha256); overview.appendChild(hash); content.appendChild(overview);
+    const order = element('details', 'dependency-order'); const orderTitle = element('summary', '', 'Dependency order · ' + list(plan.dependency_layers).length + ' layers'); order.appendChild(orderTitle);
+    const orderBody = element('div', 'dependency-order-body'); orderBody.appendChild(element('p', 'source-note', 'Layer numbers are not dates or durations. Existing receipts and ownership still govern dispatch.'));
+    list(plan.dependency_layers).forEach((ids, index) => { const row = element('div', 'dependency-layer'); append(row, element('span', 'layer-number', 'Layer ' + index)); const links = element('div', 'reference-links'); list(ids).forEach(id => links.appendChild(taskLink(id))); row.appendChild(links); orderBody.appendChild(row); }); order.appendChild(orderBody); content.appendChild(order);
+    const primary = list(node.tasks).filter(task => task.ontology?.primary_membrane === node.id), related = list(node.tasks).filter(task => task.ontology?.primary_membrane !== node.id);
+    for (const [title, tasks, role] of [['Primary work', primary, 'primary'], ['Related / interface work', related, 'related']]) {
+      const area = section(title); area.firstChild.appendChild(element('span', 'source-count', String(tasks.length)));
+      if (!tasks.length) area.appendChild(empty(role === 'primary' ? 'No task in this snapshot names this membrane as its primary subject.' : 'No related task bindings declared for this membrane.'));
+      [...tasks].sort((a, b) => (a.dependency_layer ?? Infinity) - (b.dependency_layer ?? Infinity) || a.id.localeCompare(b.id)).forEach((task, index) => area.appendChild(taskEntry(task, node.id, role === 'primary' && index === 0 && !state.focusedTask && !state.focusedCheckpoint))); content.appendChild(area);
+    }
+    const checkpoints = section('Integration checkpoints'); checkpoints.firstChild.appendChild(element('span', 'source-count', String(list(node.checkpoints).length)));
+    if (!list(node.checkpoints).length) checkpoints.appendChild(empty('No integration checkpoint attached to this membrane.'));
+    list(node.checkpoints).forEach(checkpoint => checkpoints.appendChild(checkpointEntry(checkpoint))); content.appendChild(checkpoints);
+    content.appendChild(element('p', 'work-honesty', 'These are planned evidence requirements. A hierarchy, source hash or diagnostic label does not establish visual acceptance or a playable result.'));
+  }
   function renderDetails() {
     const node = state.nodes.get(state.selected); if (!node) return;
     const content = $('detail-content'); content.replaceChildren();
-    if (state.tab === 'ports') renderPorts(node, content); else if (state.tab === 'sources') renderSources(node, content); else renderDefinition(node, content);
+    if (state.tab === 'ports') renderPorts(node, content); else if (state.tab === 'sources') renderSources(node, content); else if (state.tab === 'work') renderWork(node, content); else renderDefinition(node, content);
   }
   function renderError(error) {
-    state.snapshot = null; state.bytes = null; state.nodes.clear(); state.sources.clear();
+    state.snapshot = null; state.bytes = null; state.nodes.clear(); state.sources.clear(); state.tasks.clear(); state.checkpoints.clear(); $('plan-summary').hidden = true;
     document.body.classList.add('error-state');
     $('tree').replaceChildren(element('p', 'loading-copy muted', 'Hierarchy unavailable. Refresh after the source error is resolved.'));
     $('detail-content').replaceChildren(empty('No snapshot available. Details are never synthesized.'));
@@ -205,10 +311,15 @@
       if (!response.ok) throw new Error((snapshot.refused || 'read_failed') + ' · HTTP ' + response.status);
       if (snapshot.schema !== 'chimera.membrane_ontology.snapshot.v1' || !Array.isArray(snapshot.nodes) || !snapshot.nodes.some(node => node.id === snapshot.root) || snapshot.checks?.structural_valid !== true) throw new Error('invalid_snapshot: the API did not return a structurally valid ontology');
       state.snapshot = snapshot; state.bytes = bytes; state.nodes = new Map(snapshot.nodes.map(node => [node.id, node])); state.sources = new Map(list(snapshot.sources).map(source => [source.path, source]));
+      state.tasks.clear(); state.checkpoints.clear();
+      list(snapshot.plan?.checkpoints).forEach(checkpoint => state.checkpoints.set(checkpoint.id, checkpoint));
+      snapshot.nodes.forEach(node => { list(node.tasks).forEach(task => state.tasks.set(task.id, task)); list(node.checkpoints).forEach(checkpoint => state.checkpoints.set(checkpoint.id, checkpoint)); });
       if (!state.expanded.size) { state.expanded.add(snapshot.root); list(state.nodes.get(snapshot.root).children).forEach(id => state.expanded.add(id)); }
       document.body.classList.remove('error-state');
       $('revision').textContent = 'Authored definition · revision ' + snapshot.revision; $('definition-hash').textContent = 'SHA ' + compactHash(snapshot.definition_raw_sha256); $('definition-hash').title = 'Definition raw SHA-256: ' + snapshot.definition_raw_sha256;
       $('node-count').textContent = snapshot.nodes.length; $('structure-status').textContent = 'Structure valid · ' + snapshot.checks.membranes + ' membranes · ' + snapshot.checks.ports + ' ports · ' + snapshot.checks.connections + ' connections';
+      $('plan-summary').hidden = !snapshot.plan;
+      if (snapshot.plan) { $('plan-summary').textContent = snapshot.plan.task_count + ' tasks · ' + snapshot.plan.selected_count + ' selected'; $('plan-summary').title = 'Authored scope, not completion. Scope SHA-256: ' + snapshot.plan.scope_sha256; }
       $('snapshot-hash').textContent = 'Snapshot ' + compactHash(snapshot.snapshot_sha256); $('snapshot-hash').title = snapshot.snapshot_sha256;
       navigate(previous || hashNode() || snapshot.root, false); announce('Snapshot loaded. ' + snapshot.nodes.length + ' membranes. ' + snapshot.checks.missing_sources + ' missing source files.');
     } catch (error) { renderError(error.name === 'AbortError' ? new Error('read_timeout: no snapshot received within 20 seconds') : error); }
@@ -219,7 +330,7 @@
   $('expand-all').addEventListener('click', () => { state.nodes.forEach(node => state.expanded.add(node.id)); renderTree(); });
   $('collapse-all').addEventListener('click', () => { state.expanded.clear(); renderTree(); });
   $('download').addEventListener('click', () => { if (!state.bytes) return; const url = URL.createObjectURL(new Blob([state.bytes], { type: 'application/json' })); const link = element('a'); link.href = url; link.download = 'chimera-ontology-' + state.snapshot.snapshot_sha256.slice(0, 12) + '.json'; document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000); });
-  document.querySelectorAll('[data-tab]').forEach(item => { item.addEventListener('click', () => setTab(item.dataset.tab)); item.addEventListener('keydown', event => { const tabs = ['definition', 'ports', 'sources']; let index = tabs.indexOf(state.tab); if (event.key === 'ArrowRight') index = (index + 1) % tabs.length; else if (event.key === 'ArrowLeft') index = (index + tabs.length - 1) % tabs.length; else if (event.key === 'Home') index = 0; else if (event.key === 'End') index = tabs.length - 1; else return; event.preventDefault(); setTab(tabs[index], true); }); });
+  document.querySelectorAll('[data-tab]').forEach(item => { item.addEventListener('click', () => setTab(item.dataset.tab)); item.addEventListener('keydown', event => { const tabs = ['definition', 'ports', 'sources', 'work']; let index = tabs.indexOf(state.tab); if (event.key === 'ArrowRight') index = (index + 1) % tabs.length; else if (event.key === 'ArrowLeft') index = (index + tabs.length - 1) % tabs.length; else if (event.key === 'Home') index = 0; else if (event.key === 'End') index = tabs.length - 1; else return; event.preventDefault(); setTab(tabs[index], true); }); });
   window.addEventListener('popstate', () => navigate(hashNode(), false));
   window.addEventListener('hashchange', () => navigate(hashNode(), false));
   load();

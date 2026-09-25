@@ -1,6 +1,6 @@
 {
   "schema": "chimera.membrane_ontology.v1",
-  "revision": 1,
+  "revision": 2,
   "root": "monkey-game",
   "authority": "Operator clarification 2026-09-24; lead-authored composition, runtime bindings unqualified.",
   "nodes": [
@@ -57,13 +57,23 @@
           "id": "command",
           "protocol": "speed-heading",
           "unit": "m/s,rad",
-          "description": "20 Hz speed and heading command"
+          "description": "20 Hz speed and heading command",
+          "delegates_to": {
+            "node": "locomotion",
+            "port": "command"
+          }
         },
         {
           "id": "contact",
           "protocol": "mechanical-contact",
           "unit": "SI",
           "description": "Contact with terrain and trees"
+        },
+        {
+          "id": "feedback",
+          "protocol": "observation-contract",
+          "unit": "declared by runtime contract",
+          "description": "Physical state and contact observations."
         }
       ],
       "sources": [
@@ -201,6 +211,12 @@
           "protocol": "mechanical-attachment",
           "unit": "SI",
           "description": "Force transmission to authored skeletal attachments"
+        },
+        {
+          "id": "activation",
+          "protocol": "actuator-contract",
+          "unit": "declared by runtime contract",
+          "description": "Input is admitted only under the pinned actuator contract."
         }
       ],
       "sources": [
@@ -697,6 +713,393 @@
         {
           "node": "skin",
           "port": "surface"
+        }
+      ],
+      "connection_status": "planned"
+    },
+    {
+      "id": "governance",
+      "name": "Project contract and provenance",
+      "parent": "monkey-game",
+      "kind": "governance",
+      "description": "Own scope, source identities, recovery and acceptance limits.",
+      "boundary": {
+        "description": "The declared project contract and provenance responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Own scope, source identities, recovery and acceptance limits.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "locomotion",
+      "name": "Locomotion and skill selection",
+      "parent": "creature",
+      "kind": "controller",
+      "description": "Select physical walking and climbing skills through declared command, observation and actuator ports.",
+      "boundary": {
+        "description": "The declared locomotion and skill selection responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Select physical walking and climbing skills through declared command, observation and actuator ports.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [
+        {
+          "id": "command",
+          "protocol": "speed-heading",
+          "unit": "m/s,rad",
+          "description": "Existing command seam and explicit skill selection."
+        },
+        {
+          "id": "actuation",
+          "protocol": "actuator-contract",
+          "unit": "declared by runtime contract",
+          "description": "Certified observation/action contract supplies actual actuator units and bounds."
+        },
+        {
+          "id": "observation",
+          "protocol": "observation-contract",
+          "unit": "declared by runtime contract",
+          "description": "Policy observation schema and frame/units must match."
+        }
+      ],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "walking",
+      "name": "Walking",
+      "parent": "locomotion",
+      "kind": "skill",
+      "description": "All-fours movement from the certified walking policy and its physical actuators.",
+      "boundary": {
+        "description": "The declared walking responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "All-fours movement from the certified walking policy and its physical actuators.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "climbing",
+      "name": "Climbing",
+      "parent": "locomotion",
+      "kind": "skill",
+      "description": "Climb, hold, descend, release and transition through the qualified grasp/contact system.",
+      "boundary": {
+        "description": "The declared climbing responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Climb, hold, descend, release and transition through the qualified grasp/contact system.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "grasp",
+      "name": "Grasp and support",
+      "parent": "creature",
+      "kind": "mechanism",
+      "description": "Qualified attachments, tendon transmission, contact support and limb transfers.",
+      "boundary": {
+        "description": "The declared grasp and support responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Qualified attachments, tendon transmission, contact support and limb transfers.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "camera",
+      "name": "Camera",
+      "parent": "player",
+      "kind": "camera",
+      "description": "Observe the character and world with usable gameplay and explicit diagnostic camera contracts.",
+      "boundary": {
+        "description": "The declared camera responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Observe the character and world with usable gameplay and explicit diagnostic camera contracts.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [
+        "ChimeraEngine/engine/engine.cpp",
+        "tools/monkey_campaign/monkey_completion_map.json"
+      ],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "session",
+      "name": "Player session",
+      "parent": "monkey-game",
+      "kind": "session",
+      "description": "Objective, start, pause, restart, failure/recovery and readable player feedback.",
+      "boundary": {
+        "description": "The declared player session responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Objective, start, pause, restart, failure/recovery and readable player feedback.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "persistence",
+      "name": "Persistence",
+      "parent": "monkey-game",
+      "kind": "storage",
+      "description": "Save and restore declared playable state and player settings.",
+      "boundary": {
+        "description": "The declared persistence responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Save and restore declared playable state and player settings.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "runtime",
+      "name": "Runtime and resources",
+      "parent": "monkey-game",
+      "kind": "runtime",
+      "description": "Pinned numerical execution, resource ownership, profiling and failure recovery.",
+      "boundary": {
+        "description": "The declared runtime and resources responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Pinned numerical execution, resource ownership, profiling and failure recovery.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "delivery",
+      "name": "Delivery and acceptance",
+      "parent": "monkey-game",
+      "kind": "delivery",
+      "description": "Distributable build, provenance, player help, human acceptance and release evidence.",
+      "boundary": {
+        "description": "The declared delivery and acceptance responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Distributable build, provenance, player help, human acceptance and release evidence.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "inspection",
+      "name": "Visual inspection",
+      "parent": "monkey-game",
+      "kind": "instrument",
+      "description": "Stable 3D item labels, visibility layers, camera presets and paired diagnostic/clean evidence.",
+      "boundary": {
+        "description": "The declared visual inspection responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Stable 3D item labels, visibility layers, camera presets and paired diagnostic/clean evidence.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [
+        "ChimeraEngine/engine/engine.cpp",
+        "ChimeraEngine/engine/ui.hpp",
+        "ChimeraEngine/engine/ui.cpp",
+        "ChimeraEngine/engine/main.cpp"
+      ],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "policy-actuation",
+      "name": "Skills ↔ actuators",
+      "parent": "connections",
+      "kind": "connection",
+      "description": "Bind the certified action interface to actual physical actuators.",
+      "boundary": {
+        "description": "The declared skills ↔ actuators responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Bind the certified action interface to actual physical actuators.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ],
+      "endpoints": [
+        {
+          "node": "locomotion",
+          "port": "actuation"
+        },
+        {
+          "node": "musculature",
+          "port": "activation"
+        }
+      ],
+      "connection_status": "planned"
+    },
+    {
+      "id": "state-feedback",
+      "name": "State ↔ skills",
+      "parent": "connections",
+      "kind": "connection",
+      "description": "Deliver qualified body/contact observations to skill selection.",
+      "boundary": {
+        "description": "The declared state ↔ skills responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Deliver qualified body/contact observations to skill selection.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ],
+      "endpoints": [
+        {
+          "node": "creature",
+          "port": "feedback"
+        },
+        {
+          "node": "locomotion",
+          "port": "observation"
         }
       ],
       "connection_status": "planned"
