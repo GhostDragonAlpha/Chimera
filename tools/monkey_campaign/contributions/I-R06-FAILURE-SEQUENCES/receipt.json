@@ -1,0 +1,51 @@
+{
+  "card": "I-R06-FAILURE-SEQUENCES",
+  "planning_id": "R06",
+  "attempt": "c57fd6bb125142ee9d593f800eb32dd4",
+  "branch": "branch-7",
+  "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+  "date": "2026-09-25",
+  "objective": "Deterministic failure-sequence regression runner against the existing input/focus/session APIs.",
+  "checks_performed": [
+    "Rule-0 preregistration frozen before any implementation edit (PREREGISTRATION.md: statement, prediction, falsifiers FS-1..FS-3)",
+    "Equivalent-code check at the pinned revision: git grep found no existing input/focus/session sequence runner; tools/thin_client_pilot/replay_runner.py is a different domain (engine-frame replay over HTTP), recorded not extended",
+    "Extraction of 7 pinned sources byte-identical (git hash-object == pinned blob id for every file), ledgered in reference/EXTRACTION_LEDGER.json with sha256 + git blob",
+    "Import binding at runner init: 4 pinned modules hash-verified (sha256 + re-derived git blob sha1 + under-reference-root), frozen-constant object identity asserted, fail-closed on any mismatch",
+    "Guard tests: corrupted extraction refused (IMPORT BINDING FAILED), foreign named root refused (exact, no fallback), controls never used in sequences under test",
+    "8 cross-component sequences run against the REAL pinned components: 8/8 PASS",
+    "2 deliberately-broken controls replayed through identical scripts: both FAIL with expected violation classes (zombie latch; quiesce holds ['W'])",
+    "Determinism: two full run_all() passes identical (verdicts + violation lists)",
+    "Budgets: suite 17/17 OK in 0.085-0.090 s (< 120 s limit, < 5 s prereg prediction); total new output ~218 KB (< 16 MiB); stdlib only; no network/install/GUI/native/GPU/training/process-control"
+  ],
+  "first_run_failures": [
+    "NameError 'im' in bind_components identity block (fixed: alias defined)",
+    "Wrong identity check 'focus_policy._im is package input_mapper' - flat vs package are legitimately two module objects over one pinned file; replaced by __file__ equality",
+    "1/8 on first functional run: sequences never left 'attract' (no session-start key); added Return@995 confirm to SEQ-01..07",
+    "SEQ-05/06 held-set checks read end-of-sequence state after a legitimate recovery press; replaced with mid-sequence probes at the blur/disconnect instant",
+    "test file called component_identity (attribute) as a method - 9 errors",
+    "explicit invalid extraction root silently fell through to relative search; now refused (fail-closed)"
+  ],
+  "artifact_sha256": {
+    "failure_sequences.py": "d3e11285627259f5989e6085051df22051343e657e1ebda7ad97c63f8a459e69",
+    "test_failure_sequences.py": "283efad2ec8140e47fc82587b1342ac9bc43b9afe90113b100bb496d81fb247c",
+    "PREREGISTRATION.md": "5435dd88bfa3bb4f479110c51d75a41d187b25986e5c0ac25a7f0a643d28514d",
+    "report.md": "b512b76e2ab8aa6caf9140bcb5bbf610ef579d2910fe314b11b540ecfb8748ce",
+    "reference/EXTRACTION_LEDGER.json": "see reference/EXTRACTION_LEDGER.json (self-consistent; lists sha256 + git blob per extracted file); receipt.json excludes its own hash by construction"
+  },
+  "failures": [],
+  "remaining_gates": [
+    "parent R06 gates open (this card is one bounded implementation, not the row's completion)",
+    "no device-loss certification claimed or implied: all boundaries mocked (injected clock, recording sink, pinned RecordingRestart/TeardownDouble doubles); real Windows alt-tab / device disconnect / process teardown remain with the integration lanes that own those surfaces"
+  ],
+  "constraints_honored": {
+    "code_only_in_WS": true,
+    "no_push_no_branches": true,
+    "no_worker_start": true,
+    "monkey_play_read_only": true,
+    "stdlib_only_python_311": true,
+    "per_invocation_under_120s": true,
+    "total_new_output_under_16MiB": true,
+    "no_network_install_gui_native_gpu_training_process_control_unbounded_fuzzing": true
+  },
+  "writes_stopped": true
+}
