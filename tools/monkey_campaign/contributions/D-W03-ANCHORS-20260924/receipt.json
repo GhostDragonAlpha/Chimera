@@ -1,0 +1,89 @@
+{
+  "card": "D-W03-ANCHORS-20260924",
+  "planning_ids": ["W03"],
+  "kind": "bounded_diagnostic",
+  "attempt_id": "f7fd439796784e7e980a33cd90978c0d",
+  "agent_id": "arrival-ec97e63be318447499de475cc02077cd",
+  "criteria_sha256": "841796bb2d8c072af8d571e3d4222c93126c44bfff6e406b43bd6faa0fb3c886",
+  "checkout_head": "c525b82c7c3ce0128565424764293a3c85811ab3",
+  "branch": "branch-2",
+  "source_repository": "E:/ChimeraWork/monkey-play-20260924 (read-only; git show/ls-tree/cat-file -e only)",
+  "constraints_honored": {
+    "source_edit_allowed": false,
+    "gpu_allowed": false,
+    "max_new_output_bytes": 16777216,
+    "engine_starts": 0,
+    "model_loads": 0,
+    "git_mutations": 0
+  },
+  "checks_performed": [
+    {
+      "name": "ruling-document existence",
+      "command_class": "filesystem stat + git status + cat-file -e",
+      "result": "E:/PythonChimera/tools/monkey_campaign/DOC_AUDIT.md EXISTS (6,572 bytes, sha256 46f7df841858d5d49ec7b727136918135993a2f8cf8cdb432fd98e11291a1ff2) as an UNTRACKED working file at 57beb8b2; absent from origin/master and monkey-play-20260924. Ruling content: W03 chooses Option B (versioned re-baseline) with adoption gates.",
+      "corrects": "prior attempt cc6f1126 claimed no DOC_AUDIT.md exists and left Option A/B open"
+    },
+    {
+      "name": "a62b286e reachability",
+      "command_class": "git log -1; git branch -a --contains; git merge-base --is-ancestor",
+      "result": "commit a62b286effa27ee2db7bbcb65507a2ac45ad0d0c 'SHUTDOWN CHECKPOINT (operator order 2026-09-23)' dated 2026-09-23 14:20:54 -0500; contained by NO local or remote branch; NOT an ancestor of origin/master. ORPHAN confirmed (prior report's finding re-verified)."
+    },
+    {
+      "name": "anchor identity re-verification (two-convention)",
+      "command_class": "git show a62b286e:<path> | sha256 (raw) and after LF->CRLF",
+      "result": "22 registry entries checked: 18 text anchors ALL reproduce from a62b286e blobs (15 exact under LF->CRLF convention = the on-disk bytes the registry hashed; 3 exact raw: scene_sha256.txt, README.md, empty co8_csub310.out). 4 binaries NOT_IN_GIT (gitignored *.dll/*.exe by design). ZERO content mismatches.",
+      "corrects": "prior attempt's 5-row MISMATCH table compared registry(CRLF) vs blob(LF) and concluded anchors 'not reproducible from the repository'"
+    },
+    {
+      "name": "fixture tracking",
+      "command_class": "git ls-tree -r --name-only a62b286e -- tools/science_funnel/typeb_gpu/co8_t41_fixture",
+      "result": "all 7 fixture files tracked; all 7 hashes verify (5 CRLF + 2 raw).",
+      "corrects": "prior attempt's note '(fixture dir not tracked in git)'"
+    },
+    {
+      "name": "v2 binaries git-presence",
+      "command_class": "git show + git ls-tree -r a62b286e | grep walker_env/host_loop + .gitignore read",
+      "result": "walker_env_v2.dll, host_loop.exe, walker_env_co8.dll, walker_env_d41.dll absent from every ref; typeb_gpu/.gitignore excludes *.dll and *.exe ('source is the truth', banked 2026-09-22). walker_env.dll.pre_hold IS tracked (suffix evades the pattern). On-disk binaries no longer exist; registry binary hashes are historical-only. Re-anchor: source + build script + rebuild hash."
+    },
+    {
+      "name": "TIE2 battery on-disk verification",
+      "command_class": "sha256sum on working tree",
+      "result": "5/5 RAW matches at tools/monkey_campaign/agents/TIE2 (run/tie_boundary_probe.cxx 7b93dd59..., run/tie_boundary_probe.exe 5c05f1f0..., run/build_tie_probe.cmd 68594bbf..., receipts/case123_tie_boundary_host.out 2d147fe7..., receipts/case5_replay_host_v2.out 6ba8123b...). TIE2 commit ebc00096 is on branch monkey-play-20260924."
+    },
+    {
+      "name": "prior-attempt reconciliation",
+      "command_class": "file read",
+      "result": "prior report task-results/D-W03-ANCHORS-20260924/report.md (attempt cc6f1126): inventory structure adopted; three corrections recorded (ruling exists/Option B decided; hash-mismatch table was a line-ending convention artifact; fixture tracked); orphan-commit + gitignored-binaries + CPU-legs-only-TIE2 findings confirmed."
+    },
+    {
+      "name": "W03 acceptance clause extraction",
+      "command_class": "json read of monkey_completion_map.json",
+      "result": "W03 done_when: 'Freefall/stand/C1/C2 and scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J reproduce on the training revision'; profile parity-replay; implementation_state UNRECONCILED (unchanged by this card)."
+    }
+  ],
+  "corrections_to_prior_attempt": [
+    "DOC_AUDIT.md exists (untracked) at E:/PythonChimera and the W03 ruling DECIDES Option B; prior report called it missing and left the choice open",
+    "all 18 text anchors reproduce from a62b286e under a declared LF->CRLF or raw convention; the prior MISMATCH table was a convention artifact, not lost bytes",
+    "co8_t41_fixture IS tracked (7 files, verified); prior report said untracked"
+  ],
+  "remaining_gates": [
+    "G1-reachable-ref: bring a62b286e onto a reachable ref (lead/publisher), re-verify 22 manifest entries",
+    "G2-binary-rebuild: rebuild v2 binaries from pinned sources, record fresh hashes or retire binary hashes",
+    "G3-fresh-gpu-device: fresh uncontended device tie-v2 replay (broker window); reproduce t=1..43 parity now",
+    "G4-c3-bars: uncontended re-measure of frozen W03 bar (scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J)",
+    "G5-tick41-sign-knife: register row-0 sign decision (g0=-6.9e-18) as own v2 item with kTouch scale",
+    "G6-review-certificate: non-author review + coordinator publishes versioned compatibility certificate"
+  ],
+  "failures": [],
+  "artifacts": [
+    {"path": "report.md", "role": "scoped report"},
+    {"path": "anchor_manifest_v2.proposal.json", "role": "proposed versioned anchor manifest (Option B)"},
+    {"path": "receipt.json", "role": "this receipt"}
+  ],
+  "falsifier_self_check": {
+    "changed_old_anchors": false,
+    "unexplained_out_of_band_change": false,
+    "cpu_result_labeled_new_device_qualification": false
+  },
+  "writes_stopped": true
+}

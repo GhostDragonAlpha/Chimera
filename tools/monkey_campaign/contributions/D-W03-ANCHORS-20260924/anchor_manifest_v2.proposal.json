@@ -1,0 +1,339 @@
+{
+ "schema": "chimera.anchor_manifest.v2.proposal",
+ "ruling": {
+  "decision": "OPTION_B_versioned_rebaseline",
+  "source": "E:/PythonChimera/tools/monkey_campaign/DOC_AUDIT.md (astra-0008 W03 ruling)",
+  "source_sha256": "46f7df841858d5d49ec7b727136918135993a2f8cf8cdb432fd98e11291a1ff2",
+  "source_git_state": "untracked working file in E:/PythonChimera at 57beb8b2; absent from origin/master and monkey-play-20260924; commit it to make the ruling itself reproducible",
+  "requirements": "retain v1 input/anchor hashes and failure receipts byte-for-byte; explain changed v2 sites against the derived tie/band rule; demonstrate independent boundary oracles, outside-band preservation, C++/host/device parity across every changed path; keep GPU and C3 gates open until measured under reservation; non-author review then coordinator publishes the versioned compatibility certificate; no seed substitutions or success-driven re-runs"
+ },
+ "provenance_commit": {
+  "sha": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+  "subject": "SHUTDOWN CHECKPOINT (operator order 2026-09-23)",
+  "reachability": "ORPHAN: no local/remote branch contains it; not ancestor of origin/master; bring onto a reachable ref before others can re-verify"
+ },
+ "extraction_conventions": {
+  "raw": "sha256(git show <rev>:<path>) byte-for-byte blob",
+  "crlf": "sha256(git show <rev>:<path> with LF converted to CRLF) - matches the on-disk working-tree bytes the registry hashed at shutdown"
+ },
+ "tie2_battery_on_disk": {
+  "base": "tools/monkey_campaign/agents/TIE2",
+  "commit": "ebc00096 (on branch monkey-play-20260924)",
+  "files": {
+   "run/tie_boundary_probe.cxx": "7b93dd59275547768e5c55146d9ac6eee8d89b18a130fe9da43880f4e57a8cff",
+   "run/tie_boundary_probe.exe": "5c05f1f0f45ae11d616a0aea1b767488f63270376885b729c7769e29b99e1e68",
+   "run/build_tie_probe.cmd": "68594bbf12905f490992aabf1dcc5e8561a3910d7d71c3c9218388da68440cc4",
+   "receipts/case123_tie_boundary_host.out": "2d147fe7be4fa5b436b72eb3ade641f5df8678cb80a1e3802b23e74dbecd7581",
+   "receipts/case5_replay_host_v2.out": "6ba8123b80c3b8132e69165ea015ddc83861432b4b06502f797059bb42fd5128"
+  },
+  "status": "ALL 5 VERIFIED on disk RAW by this card"
+ },
+ "adoption_gates": [
+  {
+   "id": "G1-reachable-ref",
+   "requirement": "bring a62b286e onto a reachable branch (lead/publisher git action); then re-verify every entry with its declared convention",
+   "owner": "lead/publisher",
+   "status": "OPEN"
+  },
+  {
+   "id": "G2-binary-rebuild",
+   "requirement": "rebuild v2 binaries from pinned sources via build_dll_v2.ps1/build_host_loop.ps1 and record fresh hashes OR re-anchor binaries to source+script only",
+   "owner": "walking-authorized worker",
+   "status": "OPEN"
+  },
+  {
+   "id": "G3-fresh-gpu-device",
+   "requirement": "fresh uncontended GPU device leg (tie-v2) in a broker-scheduled window; reproduce host-vs-device parity t=1..43 now, not from shutdown memory",
+   "owner": "walking-authorized worker via broker",
+   "status": "OPEN"
+  },
+  {
+   "id": "G4-c3-bars",
+   "requirement": "re-measure W03 C3 bars uncontended: scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J on the training revision",
+   "owner": "walking-authorized worker via broker",
+   "status": "OPEN"
+  },
+  {
+   "id": "G5-tick41-sign-knife",
+   "requirement": "register the row-0 sign decision (g0=-6.9e-18) as its own v2 item with its own scale (kTouch 1e-5 pad resolution quantum); NOT resolved by the band",
+   "owner": "walking-authorized worker",
+   "status": "OPEN"
+  },
+  {
+   "id": "G6-review-certificate",
+   "requirement": "non-author review of this manifest + coordinator publishes the versioned compatibility certificate; no seed substitutions or success-driven re-runs",
+   "owner": "coordinator+reviewer",
+   "status": "OPEN"
+  }
+ ],
+ "w03_acceptance_bar": {
+  "done_when": "Freefall/stand/C1/C2 and scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J reproduce on the training revision",
+  "profile": "parity-replay"
+ },
+ "entries": [
+  {
+   "anchor_id": "W03-v1-fixture-state-t40-host",
+   "klass": "v1_preserved_fixture",
+   "leg": "host+device",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/state_t40_host.txt",
+   "registry_sha256": "e1636853616f3f7ea3328c37236e3e3c41ca895d3e953b0aa06e27c1130184e8",
+   "raw_blob_sha256": "e4c994f156cbf837e4ac3f21334c40a40197f9710dc85b3750d7545be0e0e6fc",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "pre-v1 anchor retained; bit-identical host==gpu t=40"
+  },
+  {
+   "anchor_id": "W03-v1-fixture-state-t40-gpu",
+   "klass": "v1_preserved_fixture",
+   "leg": "host+device",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/state_t40_gpu.txt",
+   "registry_sha256": "e1636853616f3f7ea3328c37236e3e3c41ca895d3e953b0aa06e27c1130184e8",
+   "raw_blob_sha256": "e4c994f156cbf837e4ac3f21334c40a40197f9710dc85b3750d7545be0e0e6fc",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "bit-identical to host t=40"
+  },
+  {
+   "anchor_id": "W03-v1-fixture-state-t39-cpp",
+   "klass": "v1_preserved_fixture",
+   "leg": "cpp",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/state_t39_cpp.txt",
+   "registry_sha256": "226899222e46beca67f950711b59cca9e3a869883031fc5f8d833f94ff1f2c1a",
+   "raw_blob_sha256": "dc81ec7f53edc29aad1ef5324c1b702ab445a3dd2f8a748102b0a8a2477d63d4",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "cpp aligned t=39"
+  },
+  {
+   "anchor_id": "W03-v1-fixture-scene",
+   "klass": "v1_preserved_fixture",
+   "leg": "scene",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/scene_sha256.txt",
+   "registry_sha256": "d62e89dc8409a0fc7bfbec3ef7d00fe0b8c1c43c9f52bb24e94de118b005588a",
+   "raw_blob_sha256": "d62e89dc8409a0fc7bfbec3ef7d00fe0b8c1c43c9f52bb24e94de118b005588a",
+   "extraction_convention": "raw",
+   "status": "VERIFIED_RAW",
+   "note": "content f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342"
+  },
+  {
+   "anchor_id": "W03-v1-fixture-host-drill",
+   "klass": "v1_preserved_fixture",
+   "leg": "host",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/host_drill_t41.out",
+   "registry_sha256": "9d50c43ff4068605537240db4c810eda754919cd6d22fa31a06a85b4b30c82db",
+   "raw_blob_sha256": "290dd5ed0b7a67ae81de80ba6fb2164ca9690771a0bcfefa65f3798322742a98",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "82 ADV lines; host walks on"
+  },
+  {
+   "anchor_id": "W03-v1-fixture-device-drill",
+   "klass": "v1_preserved_fixture",
+   "leg": "device",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/device_drill_t41.out",
+   "registry_sha256": "af1829f6b6507e55f4f8213a6a45f4902dc37219546059df449cac578c336274",
+   "raw_blob_sha256": "0e7ed038298873b4930dd4205ccf05d243af1d90237ccec3602ee55b7b5b2cd0",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "30 ADV lines pre-refusal rc=5"
+  },
+  {
+   "anchor_id": "W03-v1-fixture-readme",
+   "klass": "v1_preserved_fixture",
+   "leg": "doc",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_t41_fixture/README.md",
+   "registry_sha256": "38e5ea75c6a1d53b4b8b7a810dabf9e859c280e89be7824e3146c6360588b271",
+   "raw_blob_sha256": "38e5ea75c6a1d53b4b8b7a810dabf9e859c280e89be7824e3146c6360588b271",
+   "extraction_convention": "raw",
+   "status": "VERIFIED_RAW",
+   "note": "frozen attribution"
+  },
+  {
+   "anchor_id": "W03-v1-band-err",
+   "klass": "v1_band",
+   "leg": "device",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_csub310.err",
+   "registry_sha256": "ffeeaa621db4e67f37f082d9875bff4fc1eef9d6ca62b1289f5bb26ea1f365ea",
+   "raw_blob_sha256": "84e90f9357b3b3aea0bf0adaabffc62c67cb03d81a1e839c945589e74a95b281",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "line 6626 BAND_ENTRIES 6; 310 steps to 302 refusal"
+  },
+  {
+   "anchor_id": "W03-v1-band-out",
+   "klass": "v1_band",
+   "leg": "device",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_csub310.out",
+   "registry_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "raw_blob_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "extraction_convention": "raw",
+   "status": "VERIFIED_RAW",
+   "note": "empty"
+  },
+  {
+   "anchor_id": "W03-prev2-co8_ksub_prorow3_out",
+   "klass": "pre_v2_tolerance",
+   "leg": "host+device",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_ksub_prorow3.out",
+   "registry_sha256": "327efbca45e44561c5141d2613832db2684b9658c1f7453d770f857ef7334144",
+   "raw_blob_sha256": "116b354c0d0f338d840b7be54fd491c686165c8247076292e8b3c2f49e01f3aa",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "tol=1e-9 decision lines pre-v2"
+  },
+  {
+   "anchor_id": "W03-prev2-co8_ksub_prorow_out",
+   "klass": "pre_v2_tolerance",
+   "leg": "host+device",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_ksub_prorow.out",
+   "registry_sha256": "041b7c384fe1e1126d4372bd750b057a336a709e1dfe2c1404d9af0c0a92c11f",
+   "raw_blob_sha256": "579a6fd96f740443b27ccdb14ae242da8a997b2f528e5d8fd88cb92a2834cdd9",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": ""
+  },
+  {
+   "anchor_id": "W03-prev2-co8_ksub_prorow2_out",
+   "klass": "pre_v2_tolerance",
+   "leg": "host+device",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_ksub_prorow2.out",
+   "registry_sha256": "041b7c384fe1e1126d4372bd750b057a336a709e1dfe2c1404d9af0c0a92c11f",
+   "raw_blob_sha256": "579a6fd96f740443b27ccdb14ae242da8a997b2f528e5d8fd88cb92a2834cdd9",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "identical to prorow.out"
+  },
+  {
+   "anchor_id": "W03-v2-co8_hl_v2_out",
+   "klass": "v2_recorded",
+   "leg": "host/cpp/device per file",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_hl_v2.out",
+   "registry_sha256": "6ba8123b80c3b8132e69165ea015ddc83861432b4b06502f797059bb42fd5128",
+   "raw_blob_sha256": "fc6c6074bff55e2dd38a326303552ff0f4daf3a9da3d3999d8c9a881acbee04e",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "host v2 first run"
+  },
+  {
+   "anchor_id": "W03-v2-co8_dll_v2_120_txt",
+   "klass": "v2_recorded",
+   "leg": "host/cpp/device per file",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_dll_v2_120.txt",
+   "registry_sha256": "9df764f3042cb1d7b6d639f255a0a116b0d78c187bc3934de52baa2e6e103ff2",
+   "raw_blob_sha256": "90d6392f0407e553e54e5e80c7fa890c5d652a3278d61ab60837ccc63da84fb0",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "device v2 120"
+  },
+  {
+   "anchor_id": "W03-v2-co8_dll_v2b_120_txt",
+   "klass": "v2_recorded",
+   "leg": "host/cpp/device per file",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_dll_v2b_120.txt",
+   "registry_sha256": "83bd5316da44487cb18b7911a069d488295102e4bdf7ce8c7ba99e64d1ef8bed",
+   "raw_blob_sha256": "4c75cb24804eea154abaaa33396e480fcf396326bfd6a18ec81e383e19beb771",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "device v2b 120; parity source"
+  },
+  {
+   "anchor_id": "W03-v2-co8_cp_v2_120_txt",
+   "klass": "v2_recorded",
+   "leg": "host/cpp/device per file",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_cp_v2_120.txt",
+   "registry_sha256": "b2bcf934a1b17cd031b7ca8f7b1e066e1c10d117e4a05dd482ca8640c449ec4c",
+   "raw_blob_sha256": "5ab978f039882a40dba9edafc7a68305134e32a2c1054155eaffdbb973541e41",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "cpp v2 120"
+  },
+  {
+   "anchor_id": "W03-v2-co8_dll50_out",
+   "klass": "v2_recorded",
+   "leg": "host/cpp/device per file",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_dll50.out",
+   "registry_sha256": "9df764f3042cb1d7b6d639f255a0a116b0d78c187bc3934de52baa2e6e103ff2",
+   "raw_blob_sha256": "90d6392f0407e553e54e5e80c7fa890c5d652a3278d61ab60837ccc63da84fb0",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "device 50; same content as dll_v2_120"
+  },
+  {
+   "anchor_id": "W03-v2-co8_host50_out",
+   "klass": "v2_recorded",
+   "leg": "host/cpp/device per file",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/co8_host50.out",
+   "registry_sha256": "5cf0dad06ea5b561b46c6541784cda57ec3bf4561e585a175ae18e729d5050fb",
+   "raw_blob_sha256": "39057c503986b6adf020d47bdaa7ae5fd691282016ccba7d901e5c3bb57e7868",
+   "extraction_convention": "lf-to-crlf",
+   "status": "VERIFIED_CRLF",
+   "note": "host 50"
+  },
+  {
+   "anchor_id": "W03-v2-bin-walker_env_v2_dll",
+   "klass": "v2_binaries",
+   "leg": "device/host exe",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/walker_env_v2.dll",
+   "registry_sha256": "51259178d0ddbd8ca2482a5d8a92f93213e05e44d4e4548adb9afa93e818cf45",
+   "raw_blob_sha256": null,
+   "extraction_convention": null,
+   "status": "NOT_IN_GIT",
+   "note": "gitignored by design (*.dll/*.exe; .gitignore banked 2026-09-22: source is the truth); anchor via source+build script+rebuild hash"
+  },
+  {
+   "anchor_id": "W03-v2-bin-host_loop_exe",
+   "klass": "v2_binaries",
+   "leg": "device/host exe",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/host_loop.exe",
+   "registry_sha256": "a0509caf0e471b789fa689a6935fd2d096c0e64ed4b2ca846e52705e4a09f721",
+   "raw_blob_sha256": null,
+   "extraction_convention": null,
+   "status": "NOT_IN_GIT",
+   "note": "gitignored by design (*.dll/*.exe; .gitignore banked 2026-09-22: source is the truth); anchor via source+build script+rebuild hash"
+  },
+  {
+   "anchor_id": "W03-v2-bin-walker_env_co8_dll",
+   "klass": "v2_binaries",
+   "leg": "device/host exe",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/walker_env_co8.dll",
+   "registry_sha256": "799ba5ff9c306b30134c45ceadb6f41effbee2062a728a9278d2f113d2bede33",
+   "raw_blob_sha256": null,
+   "extraction_convention": null,
+   "status": "NOT_IN_GIT",
+   "note": "gitignored by design (*.dll/*.exe; .gitignore banked 2026-09-22: source is the truth); anchor via source+build script+rebuild hash"
+  },
+  {
+   "anchor_id": "W03-v2-bin-walker_env_d41_dll",
+   "klass": "v2_binaries",
+   "leg": "device/host exe",
+   "commit": "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c",
+   "repo_path": "tools/science_funnel/typeb_gpu/walker_env_d41.dll",
+   "registry_sha256": "9489dcad779bef468f4a74aa21d6b0afcbeb730344906df9e1a4ba41401c7584",
+   "raw_blob_sha256": null,
+   "extraction_convention": null,
+   "status": "NOT_IN_GIT",
+   "note": "gitignored by design (*.dll/*.exe; .gitignore banked 2026-09-22: source is the truth); anchor via source+build script+rebuild hash"
+  }
+ ]
+}
