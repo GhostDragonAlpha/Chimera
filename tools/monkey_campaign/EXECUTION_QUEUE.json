@@ -1,0 +1,98 @@
+{
+  "schema": "chimera.bounded_execution_queue.v1",
+  "goal": "Physically controlled playable monkey in a finite forest; first integrated checkpoint is walking with camera in one clearing.",
+  "authority": "Astra lead-issued bounded diagnostic tasks, executed under the existing shared slot registry. This queue does not accept game requirements or replace active coordinator claims.",
+  "tasks": [
+    {
+      "id": "D-W04-MASS-20260924",
+      "planning_ids": [
+        "W04",
+        "P02"
+      ],
+      "kind": "bounded_diagnostic",
+      "objective": "Determine whether the frozen walking acceptance denominator is bound to the actual training body before W05.",
+      "source_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/D-W04-MASS-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/bindings.json",
+        "E:/PythonChimera/tools/monkey_campaign/monkey_completion_map.json"
+      ],
+      "steps": [
+        "Read W04/P02 mapping receipts and locate the exact pinned runbook, acceptance.py and trainer-body sources using read-only git show.",
+        "Trace the 13824.5 kg, 10.038 kg, 6.15 kg and transported 17.04 kg references to their distinct lineages; derive which mass the current CoT definition actually consumes.",
+        "Produce an exact source/consumer matrix and the smallest correction proposal. Do not change training seeds, thresholds or source files. Escalate if the actual frozen expression is ambiguous."
+      ],
+      "falsifier": "Any conclusion using masses from different lineages as interchangeable, or claiming W04 ready while its denominator/body binding is unresolved, fails.",
+      "deliverables": [
+        "report.md with exact source revisions/hashes, findings and next implementation step",
+        "receipt.json recording checks actually performed, failures and remaining gates"
+      ],
+      "completion": "Write the scoped evidence, report finished through agent_slots.py with your exact slot/generation, and hand off for independent coordinator review. Do not mark a planning task accepted.",
+      "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision."
+    },
+    {
+      "id": "D-W03-ANCHORS-20260924",
+      "planning_ids": [
+        "W03"
+      ],
+      "kind": "bounded_diagnostic",
+      "objective": "Prepare the versioned anchor adoption evidence and isolate the remaining C++/host/device gap.",
+      "source_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/D-W03-ANCHORS-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/decisions/W03_DECISION_REQUEST.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/TIE2/receipts/case4_anchor_registry.txt",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/P02P03/receipts/reach_band_v1_anchor_drift_b643a850.txt"
+      ],
+      "steps": [
+        "Read the lead W03 ruling in DOC_AUDIT.md. Inventory the existing v1-preserved/v2-recorded receipts and exact binary/source identities.",
+        "Map which C++, host and device paths each existing receipt actually covers; distinguish a historical GPU comparison from a fresh uncontended GPU qualification.",
+        "Prepare a proposed versioned manifest and a precise remaining-check checklist. Do not overwrite frozen anchors or run GPU workloads."
+      ],
+      "falsifier": "Changed old anchors, an unexplained out-of-band change, or a CPU result labeled as new device qualification fails.",
+      "deliverables": [
+        "report.md with exact source revisions/hashes, findings and next implementation step",
+        "receipt.json recording checks actually performed, failures and remaining gates"
+      ],
+      "completion": "Write the scoped evidence, report finished through agent_slots.py with your exact slot/generation, and hand off for independent coordinator review. Do not mark a planning task accepted.",
+      "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision."
+    },
+    {
+      "id": "D-FOREST-RUNTIME-20260924",
+      "planning_ids": [
+        "F02",
+        "F03",
+        "F04"
+      ],
+      "kind": "bounded_diagnostic",
+      "objective": "Specify the smallest missing native terrain/trunk collision integration needed for the first playable clearing.",
+      "source_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/D-FOREST-RUNTIME-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/PLAY_BOARD.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/F02_terrain/PREREGISTRATION.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/F03_trunk/PREREGISTRATION.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/F04_contact/PREREGISTRATION.md",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/bindings.json"
+      ],
+      "steps": [
+        "Locate the current pinned playable runtime and its actual collision query/contact path from the source/receipts; record exact revision and symbols.",
+        "Compare that native path with the F02-F04 static terrain/trunk results. Enumerate missing interfaces, units, transforms and collision data without designing a second runtime.",
+        "Write the bounded native implementation brief: exact candidate files, input/output contract, independent contact oracle, tunnelling/ghost-support falsifiers, and real runtime acceptance evidence required. Do not edit implementation files."
+      ],
+      "falsifier": "A Python-only/static test counted as native playable collision, or an implementation brief without a real source interface, fails.",
+      "deliverables": [
+        "report.md with exact source revisions/hashes, findings and next implementation step",
+        "receipt.json recording checks actually performed, failures and remaining gates"
+      ],
+      "completion": "Write the scoped evidence, report finished through agent_slots.py with your exact slot/generation, and hand off for independent coordinator review. Do not mark a planning task accepted.",
+      "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision."
+    }
+  ]
+}

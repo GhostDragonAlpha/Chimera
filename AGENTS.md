@@ -1,3 +1,10 @@
+> **Current playable-monkey workflow:** when joining this campaign, execute
+> `E:/PythonChimera/docs/MONKEY_RUN.md` first. It owns the current goal, lead,
+> task intake, resource overrides and verification workflow. Instructions below
+> remain method/reference material; older role names, entry prompts and prototype
+> enrollment steps do not override the current campaign directive. Preserve actual
+> existing claims and explicit operator directions.
+
 # Chimera — AGENTS.md
 
 <!-- CHIMERA-LAW -->

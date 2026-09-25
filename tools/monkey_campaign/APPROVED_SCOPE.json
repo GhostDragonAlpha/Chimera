@@ -1,0 +1,9 @@
+{
+  "algorithm": "sha256-chimera-json-v1",
+  "scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
+  "raw_file_sha256": "6bb8435128ccad18809ad0cd6e4946195054d381d7e9be4603afcab72c013c00",
+  "date": "2026-09-24",
+  "task_count": 83,
+  "authority": "Operator-authorized P04 policy amendment; SCOPE_AMENDMENT_20260924.json records the exact prior/new scope identities and single changed field.",
+  "changes": "Submit separate proposal and obtain human scope approval; never overwrite the trust anchor automatically."
+}

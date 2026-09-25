@@ -1,0 +1,83 @@
+{
+  "tracked_markdown_paths": 681,
+  "files_scanned_for_known_conflict_patterns": 681,
+  "skipped": [],
+  "candidate_matches": [
+    {
+      "file": "DEV_LOG.md",
+      "line": 186,
+      "pattern": "single onboarding"
+    },
+    {
+      "file": "docs/THE_MASTER_LIST.md",
+      "line": 62,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_MASTER_LIST.md",
+      "line": 476,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_MASTER_LIST.md",
+      "line": 482,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_MASTER_LIST.md",
+      "line": 488,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_MASTER_LIST.md",
+      "line": 489,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_MASTER_LIST.md",
+      "line": 2271,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_OPERATING_MANUAL.md",
+      "line": 18,
+      "pattern": "main agent (kimi)"
+    },
+    {
+      "file": "docs/THE_WORKFLOW_BOOTSTRAP_AUDIT.md",
+      "line": 51,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_WORKFLOW_BOOTSTRAP_AUDIT.md",
+      "line": 58,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_WORKFLOW_BOOTSTRAP_AUDIT.md",
+      "line": 75,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_WORKFLOW_BOOTSTRAP_AUDIT.md",
+      "line": 81,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_WORKFLOW_BOOTSTRAP_AUDIT.md",
+      "line": 140,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/THE_WORKFLOW_BOOTSTRAP_AUDIT.md",
+      "line": 156,
+      "pattern": "universal prompt"
+    },
+    {
+      "file": "docs/evidence/agent_fleet/DOCUMENTATION_REVIEW.md",
+      "line": 29,
+      "pattern": "universal prompt"
+    }
+  ],
+  "limits": "Pattern inventory is not semantic review of every document. Active front doors, campaign contracts, and current decision/receipt packages received targeted semantic review; archives are preserved."
+}

@@ -1,0 +1,2758 @@
+{
+  "schema": "chimera-monkey-completion-planning-handoff-v1",
+  "date": "2026-09-24",
+  "purpose": "Reviewable completion map and calculation inventory; not a new live task store",
+  "finish_line": "Playable monkey game first; broader Chimera vision later",
+  "inspected_working_checkout": "E:/PythonChimera",
+  "observed_head": "43b599a7c1f11e789cd414b40d7305b9be05066d",
+  "inspection_limits": "Working files were read during active work, not captured as an atomic checkout. No runtime or physical tests rerun. Live DNA SQLite could not be opened read-only. No graph imports, claims, deployments or project modifications performed.",
+  "operational_owner": "Existing GLM/controller and docs/THE_MASTER_LIST.md; reconcile newer operator instructions",
+  "canonical_existing_catalog": "E:/PythonChimera/docs/roadmap/holodeck_tasks.json",
+  "source_classes": {
+    "operator": "This conversation through 2026-09-24",
+    "disk_reports": [
+      "agent_logs/local_buffy_qwen/assembly_handoff_02.md",
+      "forearm_package/ANATOMICAL_DECISION_TABLE.md"
+    ],
+    "planning": [
+      "docs/THE_MASTER_LIST.md",
+      "docs/THE_HOLODECK_BLUEPRINT.md",
+      "docs/roadmap/holodeck_tasks.json",
+      "docs/architecture/CREATURE_ARCHITECTURE_REBASE_2026-09-15.md"
+    ],
+    "graph_inspection": "planning_inventory.json"
+  },
+  "status_policy": "Task presence is not evidence of missing implementation. Every item must be reconciled to current receipts before dispatch. UNRECONCILED does not mean not built.",
+  "dependency_policy": "Edges are prerequisites for final acceptance of the task; design/scaffolding can proceed earlier with controlled fixtures. No fixtures may be represented as real-packet acceptance.",
+  "feature_complete_policy": "Core plus selected recommended_product tasks; conditional modernization only if the chosen playable build consumes it. No percent-complete or calendar forecast from task counts.",
+  "groups": [
+    {
+      "name": "Scope, identity, and fleet",
+      "scope": "core",
+      "catalog_refs": [
+        "GOV-01",
+        "GOV-02",
+        "GOV-04",
+        "GOV-05",
+        "SYS-03"
+      ]
+    },
+    {
+      "name": "Walking foundation",
+      "scope": "core",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "name": "Player controls and camera",
+      "scope": "core",
+      "catalog_refs": [
+        "PLAT-01",
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-04"
+      ]
+    },
+    {
+      "name": "Small forest environment",
+      "scope": "core",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CON-02",
+        "PROC-01",
+        "SYS-03",
+        "LGT-04"
+      ]
+    },
+    {
+      "name": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "name": "Grasp and climbing mechanics",
+      "scope": "core",
+      "catalog_refs": [
+        "CTRL-03",
+        "CTRL-04",
+        "BIO-02",
+        "CON-03",
+        "CON-04",
+        "DYN-02"
+      ]
+    },
+    {
+      "name": "Climbing skills",
+      "scope": "core",
+      "catalog_refs": [
+        "CTRL-04",
+        "CTRL-06",
+        "VERIFY-01",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "name": "Player experience and complete game loop",
+      "scope": "recommended_product",
+      "catalog_refs": [
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-01",
+        "SND-05",
+        "SOC-05"
+      ]
+    },
+    {
+      "name": "Persistence, performance, and reliability",
+      "scope": "core",
+      "catalog_refs": [
+        "SYS-02",
+        "SYS-05",
+        "GPU-06",
+        "SHIP-02",
+        "SHIP-03",
+        "SHIP-04"
+      ]
+    },
+    {
+      "name": "Release and feature-complete acceptance",
+      "scope": "recommended_product",
+      "catalog_refs": [
+        "PLAT-05",
+        "TRUST-05",
+        "SHIP-01",
+        "SHIP-06"
+      ]
+    },
+    {
+      "name": "Material-volume and assembly modernization",
+      "scope": "conditional",
+      "catalog_refs": [
+        "DYN-01",
+        "PROC-04",
+        "PROC-06",
+        "MAT-03",
+        "VERIFY-01"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "P01",
+      "title": "Freeze the playable-monkey completion contract",
+      "kind": "decision",
+      "group": "Scope, identity, and fleet",
+      "scope": "core",
+      "depends_on": [],
+      "calculation_ids": [],
+      "done_when": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded",
+      "observation": "Operator selected playable monkey first on 2026-09-24",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GOV-01",
+        "GOV-02",
+        "GOV-04",
+        "GOV-05",
+        "SYS-03"
+      ]
+    },
+    {
+      "id": "P02",
+      "title": "Pin the active monkey and scene lineage",
+      "kind": "reconcile",
+      "group": "Scope, identity, and fleet",
+      "scope": "core",
+      "depends_on": [
+        "P01"
+      ],
+      "calculation_ids": [
+        "C01"
+      ],
+      "done_when": "CT monkey, source musculoskeletal model, older forearm/paddle assets, training body, and runtime body are related explicitly or kept separate",
+      "observation": "Reports involve different assets and mass claims; compatibility is not established by their shared name",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GOV-01",
+        "GOV-02",
+        "GOV-04",
+        "GOV-05",
+        "SYS-03"
+      ]
+    },
+    {
+      "id": "P03",
+      "title": "Reconcile current work and receipts into existing ledger",
+      "kind": "reconcile",
+      "group": "Scope, identity, and fleet",
+      "scope": "core",
+      "depends_on": [
+        "P01"
+      ],
+      "calculation_ids": [],
+      "done_when": "Every active task has one owner, source revision, scoped verdict, and receipt; prior completed work is reused",
+      "observation": "Conversation receipts are newer than the broad catalogue",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GOV-01",
+        "GOV-02",
+        "GOV-04",
+        "GOV-05",
+        "SYS-03"
+      ]
+    },
+    {
+      "id": "P04",
+      "title": "Apply fleet resource and gaming contract",
+      "kind": "integration",
+      "group": "Scope, identity, and fleet",
+      "scope": "core",
+      "depends_on": [
+        "P03"
+      ],
+      "calculation_ids": [
+        "C27"
+      ],
+      "done_when": "Every launched job uses existing ownership/broker rules; admitted training may interrupt gaming and local inference through a verified supervisor handoff, while already-running protected training retains ownership until confirmed release",
+      "observation": "Supervisor reported 8/8 passing; broker completion needs current receipt",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GOV-01",
+        "GOV-02",
+        "GOV-04",
+        "GOV-05",
+        "SYS-03"
+      ]
+    },
+    {
+      "id": "P05",
+      "title": "Retain milestone recovery and artifact identity",
+      "kind": "integration",
+      "group": "Scope, identity, and fleet",
+      "scope": "core",
+      "depends_on": [
+        "P03"
+      ],
+      "calculation_ids": [],
+      "done_when": "Recoverable commits, run manifests, training checkpoints, raw/blob/canonical hash labels, and retry rules exist",
+      "observation": "Commit recovery and runtime certificates reported; reuse them",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GOV-01",
+        "GOV-02",
+        "GOV-04",
+        "GOV-05",
+        "SYS-03"
+      ]
+    },
+    {
+      "id": "P06",
+      "title": "Choose release acceptance limits",
+      "kind": "decision",
+      "group": "Scope, identity, and fleet",
+      "scope": "core",
+      "depends_on": [
+        "P01"
+      ],
+      "calculation_ids": [
+        "C27",
+        "C28"
+      ],
+      "done_when": "Supported hardware, controls, terrain/trunk envelope, session duration, latency, frame-time and stability limits are frozen before acceptance trials",
+      "observation": "No numeric product-wide limits supplied; do not fabricate them",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GOV-01",
+        "GOV-02",
+        "GOV-04",
+        "GOV-05",
+        "SYS-03"
+      ]
+    },
+    {
+      "id": "W01",
+      "title": "Close tick-3 discrete forelimb parity defect",
+      "kind": "implementation",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "P02",
+        "P03"
+      ],
+      "calculation_ids": [
+        "C09"
+      ],
+      "done_when": "Frozen entry-state and event traces satisfy the existing CPU/GPU acceptance bar",
+      "observation": "Last user status: residual open; reconcile newer receipts",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "W02",
+      "title": "Close transcendental parity defects",
+      "kind": "implementation",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "P02",
+        "P03"
+      ],
+      "calculation_ids": [
+        "C09"
+      ],
+      "done_when": "Reference-math equivalence is demonstrated at the frozen sites without tolerance relaxation",
+      "observation": "31/125 sites reported; fdlibm equivalence must not be assumed",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "W03",
+      "title": "Integrate frozen parity and walk anchors",
+      "kind": "verification",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "W01",
+        "W02"
+      ],
+      "calculation_ids": [
+        "C09"
+      ],
+      "done_when": "Freefall/stand/C1/C2 and scene f6844ee, stdout 8c537cdb, 302 ticks, 30.970714 J reproduce on the training revision",
+      "observation": "Frozen acceptance anchors supplied by operator",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "W04",
+      "title": "Bind training manifest and compatibility certificate",
+      "kind": "integration",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "W03"
+      ],
+      "calculation_ids": [
+        "C10",
+        "C05",
+        "C06",
+        "C07",
+        "C08"
+      ],
+      "done_when": "Exact dynamics, observations/actions, model revision, seeds and runbook identity are frozen and checked",
+      "observation": "Certificate system and observation-aliasing fix reported complete",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "W05",
+      "title": "Execute unchanged authorized walking runbook",
+      "kind": "training",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "W04",
+        "P04"
+      ],
+      "calculation_ids": [
+        "C10"
+      ],
+      "done_when": "All three prescribed seeds execute under the frozen approximately 1M-decision runbook with failures retained",
+      "observation": "Training authorized conditionally; no reported completed run",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "W06",
+      "title": "Evaluate trained walking outcomes",
+      "kind": "verification",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "W05"
+      ],
+      "calculation_ids": [
+        "C10",
+        "C11"
+      ],
+      "done_when": "Frozen walking success/failure metrics reported per seed without cherry-picking or additional tuned runs",
+      "observation": "Use existing runbook; a failed result is not an implementation success",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "W07",
+      "title": "Load accepted walking policy in native runtime",
+      "kind": "implementation",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "W06"
+      ],
+      "calculation_ids": [
+        "C10",
+        "C11"
+      ],
+      "done_when": "Runtime consumes the certified observation/action contract and drives physical actuators",
+      "observation": "No pose-writing locomotion substitute",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "W08",
+      "title": "Verify commanded start, stop, speed, and heading",
+      "kind": "verification",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "W07"
+      ],
+      "calculation_ids": [
+        "C11",
+        "C12"
+      ],
+      "done_when": "Frozen command sequence satisfies tracking and physical-stability limits",
+      "observation": "Existing 20 Hz speed/heading seam is retained",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "W09",
+      "title": "Implement explicit out-of-envelope behavior",
+      "kind": "implementation",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "W07"
+      ],
+      "calculation_ids": [
+        "C13"
+      ],
+      "done_when": "Unsupported states and falls have a declared controller response; no concealed resets or forces",
+      "observation": "Recovery skill is optional unless required by the chosen product contract",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "W10",
+      "title": "Accept walking in the actual game scene",
+      "kind": "integration",
+      "group": "Walking foundation",
+      "scope": "core",
+      "depends_on": [
+        "W08",
+        "W09",
+        "F04",
+        "U02"
+      ],
+      "calculation_ids": [],
+      "done_when": "Player can walk, turn and stop in the scene on a supported surface; numerical and visual receipts match",
+      "observation": "Walking demo is a product milestone before climbing",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "GPU-03",
+        "GPU-05",
+        "CTRL-01",
+        "CTRL-02",
+        "CTRL-06",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "U01",
+      "title": "Map gameplay input to the existing command seam",
+      "kind": "implementation",
+      "group": "Player controls and camera",
+      "scope": "core",
+      "depends_on": [
+        "P01",
+        "P03"
+      ],
+      "calculation_ids": [
+        "C12"
+      ],
+      "done_when": "Input emits bounded speed/heading commands at the existing 20 Hz boundary, without state teleportation",
+      "observation": "Do not require retraining for a UI remapping",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-01",
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "U02",
+      "title": "Deliver a usable follow camera",
+      "kind": "implementation",
+      "group": "Player controls and camera",
+      "scope": "core",
+      "depends_on": [
+        "P01",
+        "P03"
+      ],
+      "calculation_ids": [
+        "C23"
+      ],
+      "done_when": "Player can see motion on ground and at trunk; camera avoids tested obstruction cases and never moves the animal",
+      "observation": "Independent of unfinished walking training; may test with existing scene",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-01",
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "U03",
+      "title": "Handle focus loss and input release",
+      "kind": "implementation",
+      "group": "Player controls and camera",
+      "scope": "core",
+      "depends_on": [
+        "U01"
+      ],
+      "calculation_ids": [
+        "C12"
+      ],
+      "done_when": "Alt-tab, disconnect and key release clear or age commands under a declared policy; no stuck movement",
+      "observation": "Keep operator desktop focus and processes untouched",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-01",
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "U04",
+      "title": "Expose supported input settings",
+      "kind": "implementation",
+      "group": "Player controls and camera",
+      "scope": "core",
+      "depends_on": [
+        "U01"
+      ],
+      "calculation_ids": [],
+      "done_when": "Sensitivity, inversion and bindings needed for the selected controls work and persist",
+      "observation": "Keyboard/mouse baseline; controller support is an explicit product decision",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-01",
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "U05",
+      "title": "Define and implement climb intent seam",
+      "kind": "decision+implementation",
+      "group": "Player controls and camera",
+      "scope": "core",
+      "depends_on": [
+        "U01"
+      ],
+      "calculation_ids": [
+        "C12"
+      ],
+      "done_when": "One explicit climb/let-go intent reaches the skill selector with versioned semantics; frozen walk contract remains unchanged",
+      "observation": "Requires a reviewed interface decision, not an invented API",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-01",
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "U06",
+      "title": "Add readable control and state feedback",
+      "kind": "implementation",
+      "group": "Player controls and camera",
+      "scope": "core",
+      "depends_on": [
+        "U05"
+      ],
+      "calculation_ids": [],
+      "done_when": "Prompts distinguish available climb, unavailable support, holding, falling and recovery without claiming nonexistent capabilities",
+      "observation": "Minimal player language; engineering diagnostics stay optional",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-01",
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "U07",
+      "title": "Measure controls during actual play",
+      "kind": "verification",
+      "group": "Player controls and camera",
+      "scope": "core",
+      "depends_on": [
+        "W10",
+        "U03",
+        "U04"
+      ],
+      "calculation_ids": [
+        "C12",
+        "C23"
+      ],
+      "done_when": "End-to-end input response and camera behavior meet P06 limits under repeatable scenes",
+      "observation": "Human feel and measured latency are distinct acceptance fields",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-01",
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "F01",
+      "title": "Author the finite clearing and its spatial units",
+      "kind": "implementation",
+      "group": "Small forest environment",
+      "scope": "core",
+      "depends_on": [
+        "P01"
+      ],
+      "calculation_ids": [
+        "C01"
+      ],
+      "done_when": "Deterministic terrain/tree recipe, explicit extent and coordinate convention, safe spawn and visible boundary",
+      "observation": "One clearing is sufficient; no planet or infinite-world requirement",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CON-02",
+        "PROC-01",
+        "SYS-03",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "F02",
+      "title": "Build matching terrain rendering and collision",
+      "kind": "implementation",
+      "group": "Small forest environment",
+      "scope": "core",
+      "depends_on": [
+        "F01"
+      ],
+      "calculation_ids": [
+        "C14"
+      ],
+      "done_when": "Rendered ground and physical query surfaces agree within frozen geometric tolerance",
+      "observation": "Reuse engine geometry/collision paths",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CON-02",
+        "PROC-01",
+        "SYS-03",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "F03",
+      "title": "Implement one rigid climbable trunk asset",
+      "kind": "implementation",
+      "group": "Small forest environment",
+      "scope": "core",
+      "depends_on": [
+        "F01"
+      ],
+      "calculation_ids": [
+        "C15"
+      ],
+      "done_when": "Trunk geometry, surface IDs, material provenance and collision representation are explicit",
+      "observation": "Deformable branches and bark damage deferred",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CON-02",
+        "PROC-01",
+        "SYS-03",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "F04",
+      "title": "Verify ground and trunk contact geometry",
+      "kind": "verification",
+      "group": "Small forest environment",
+      "scope": "core",
+      "depends_on": [
+        "F02",
+        "F03"
+      ],
+      "calculation_ids": [
+        "C08",
+        "C14",
+        "C15"
+      ],
+      "done_when": "No unacceptable tunnelling, ghost support, interpenetration or visual/collision disagreement in frozen cases",
+      "observation": "Only claimed collision capabilities must be demonstrated",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CON-02",
+        "PROC-01",
+        "SYS-03",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "F05",
+      "title": "Specify the terrain range for walking",
+      "kind": "derivation",
+      "group": "Small forest environment",
+      "scope": "core",
+      "depends_on": [
+        "F02",
+        "W06"
+      ],
+      "calculation_ids": [
+        "C14"
+      ],
+      "done_when": "Slope, obstacle size and surface-friction envelope is declared from evidence",
+      "observation": "Do not assume flat-ground training transfers to arbitrary terrain",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CON-02",
+        "PROC-01",
+        "SYS-03",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "F06",
+      "title": "Implement and qualify terrain-aware walking",
+      "kind": "implementation+training",
+      "group": "Small forest environment",
+      "scope": "core",
+      "depends_on": [
+        "F05",
+        "W07"
+      ],
+      "calculation_ids": [
+        "C11",
+        "C14"
+      ],
+      "done_when": "Player walks the declared uneven-ground cases with certified runtime/training agreement",
+      "observation": "Any expanded training objective gets a new approved runbook",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CON-02",
+        "PROC-01",
+        "SYS-03",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "F07",
+      "title": "Place forest obstacles and scene boundaries",
+      "kind": "implementation",
+      "group": "Small forest environment",
+      "scope": "core",
+      "depends_on": [
+        "F04"
+      ],
+      "calculation_ids": [
+        "C14",
+        "C23"
+      ],
+      "done_when": "The clearing offers traversable routes; no invisible walls masquerade as physical obstacles",
+      "observation": "Player steering needs no general autonomous pathfinding",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CON-02",
+        "PROC-01",
+        "SYS-03",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "F08",
+      "title": "Verify repeatable forest loading",
+      "kind": "verification",
+      "group": "Small forest environment",
+      "scope": "core",
+      "depends_on": [
+        "F07"
+      ],
+      "calculation_ids": [],
+      "done_when": "Scene seed/configuration reproduces assets, collision and initial state with clear failures for missing assets",
+      "observation": "Resource cleanup uses existing lifecycle machinery",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CON-02",
+        "PROC-01",
+        "SYS-03",
+        "LGT-04"
+      ]
+    },
+    {
+      "id": "A01",
+      "title": "Resolve ulna volar-side orientation evidence",
+      "kind": "measurement",
+      "group": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "depends_on": [
+        "P02"
+      ],
+      "calculation_ids": [
+        "C01",
+        "C16"
+      ],
+      "done_when": "Independent anatomical evidence determines roll sign or records ambiguity",
+      "observation": "Authorized diagnostic measurement; not a production mapping",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "id": "A02",
+      "title": "Validate U-STR and proposed radius consequence",
+      "kind": "measurement",
+      "group": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "depends_on": [
+        "A01"
+      ],
+      "calculation_ids": [
+        "C01",
+        "C16"
+      ],
+      "done_when": "Radioulnar definition, independent evidence, B4 result and before/after radius mapping are presented",
+      "observation": "U-ANA rejected; U-STR provisional; radius supersession not authorized",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "id": "A03",
+      "title": "Approve and implement supported ulna correspondence",
+      "kind": "decision+implementation",
+      "group": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "depends_on": [
+        "A02"
+      ],
+      "calculation_ids": [
+        "C01",
+        "C16"
+      ],
+      "done_when": "Architect approves mapping/supersession, historical radius preserved, new transforms and regressions qualified",
+      "observation": "Do not select mapping for favorable moment arms",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "id": "A04",
+      "title": "Determine hand assembly identity and palm orientation",
+      "kind": "measurement",
+      "group": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "depends_on": [
+        "P02"
+      ],
+      "calculation_ids": [
+        "C01",
+        "C16"
+      ],
+      "done_when": "Source and target assembly correspondence is evidenced, including palm sign and geometry coverage",
+      "observation": "H-LEN/H-ASP unresolved; H-BODY circular; orientation alone does not set scale",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "id": "A05",
+      "title": "Acquire or author evidenced hand/digit structure",
+      "kind": "decision+implementation",
+      "group": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "depends_on": [
+        "A04"
+      ],
+      "calculation_ids": [
+        "C16"
+      ],
+      "done_when": "The modeled grasp has sufficient explicit bodies, joints and geometry; sources and adaptations approved",
+      "observation": "Existing asset/contract cannot map digits; no arbitrary deformation or hidden grip",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "id": "A06",
+      "title": "Resolve attachment and waypoint ownership",
+      "kind": "implementation",
+      "group": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "depends_on": [
+        "A03",
+        "A05"
+      ],
+      "calculation_ids": [
+        "C17"
+      ],
+      "done_when": "Every grasp-relevant endpoint and waypoint has an explicit approved body and role",
+      "observation": "Do not reinterpret waypoints as attachment ports",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "id": "A07",
+      "title": "Resolve failed/outside attachment placements lawfully",
+      "kind": "decision+measurement",
+      "group": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "depends_on": [
+        "A06"
+      ],
+      "calculation_ids": [
+        "C17"
+      ],
+      "done_when": "Attachment validity is supported or explicitly unresolved; any new fitting experiment is separately authorized",
+      "observation": "Candidate C remains failed at 67.147 micrometres per side; four wrist sites outside under both loops",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "id": "A08",
+      "title": "Define evidenced muscle/tendon parameter envelope",
+      "kind": "derivation",
+      "group": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "depends_on": [
+        "A06"
+      ],
+      "calculation_ids": [
+        "C07",
+        "C18"
+      ],
+      "done_when": "Strength, force-length/velocity, compliance, limits and applicability are defined for the selected animal",
+      "observation": "Do not inherit unrelated human or differently scaled masses/strengths",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "id": "A09",
+      "title": "Issue the grasp anatomy input package",
+      "kind": "integration",
+      "group": "Anatomy and grasp prerequisites",
+      "scope": "core",
+      "depends_on": [
+        "A07",
+        "A08"
+      ],
+      "calculation_ids": [
+        "C01",
+        "C17",
+        "C18",
+        "C05",
+        "C06"
+      ],
+      "done_when": "One versioned package carries supported mappings, parameters, provenance and explicit gaps",
+      "observation": "Anatomy completion does not itself prove climbing",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-01",
+        "BIO-02",
+        "MAT-03",
+        "PROC-02"
+      ]
+    },
+    {
+      "id": "G01",
+      "title": "Derive support and grip feasibility",
+      "kind": "derivation",
+      "group": "Grasp and climbing mechanics",
+      "scope": "core",
+      "depends_on": [
+        "A09",
+        "F03"
+      ],
+      "calculation_ids": [
+        "C19",
+        "C20"
+      ],
+      "done_when": "Required force/moment support lies within reachable contacts and actuator bounds for the declared trunk",
+      "observation": "Static support is necessary, not proof of climbing",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-03",
+        "CTRL-04",
+        "BIO-02",
+        "CON-03",
+        "CON-04",
+        "DYN-02"
+      ]
+    },
+    {
+      "id": "G02",
+      "title": "Qualify finite-area anatomical attachments",
+      "kind": "measurement",
+      "group": "Grasp and climbing mechanics",
+      "scope": "core",
+      "depends_on": [
+        "A09"
+      ],
+      "calculation_ids": [
+        "C17"
+      ],
+      "done_when": "Actual patch geometry, stiffness and rotational resistance meet declared physical requirements",
+      "observation": "Synthetic lambda_min=32 result cannot qualify real ports",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-03",
+        "CTRL-04",
+        "BIO-02",
+        "CON-03",
+        "CON-04",
+        "DYN-02"
+      ]
+    },
+    {
+      "id": "G03",
+      "title": "Evaluate tendon lengths and moment arms",
+      "kind": "implementation+verification",
+      "group": "Grasp and climbing mechanics",
+      "scope": "core",
+      "depends_on": [
+        "A09"
+      ],
+      "calculation_ids": [
+        "C18"
+      ],
+      "done_when": "Relevant pose-range outputs are finite and independently checked; unresolved bodies cannot appear as zero arms",
+      "observation": "Only BRD paths functional in last forearm report; reconcile new evidence",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-03",
+        "CTRL-04",
+        "BIO-02",
+        "CON-03",
+        "CON-04",
+        "DYN-02"
+      ]
+    },
+    {
+      "id": "G04",
+      "title": "Implement and verify physical grip contact",
+      "kind": "implementation",
+      "group": "Grasp and climbing mechanics",
+      "scope": "core",
+      "depends_on": [
+        "G01",
+        "G02",
+        "G03",
+        "F04"
+      ],
+      "calculation_ids": [
+        "C08",
+        "C19"
+      ],
+      "done_when": "Attachment, friction, reaction loads and release operate through the physical solver without invisible anchors",
+      "observation": "Model choice stays inside approved architecture",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-03",
+        "CTRL-04",
+        "BIO-02",
+        "CON-03",
+        "CON-04",
+        "DYN-02"
+      ]
+    },
+    {
+      "id": "G05",
+      "title": "Implement contact/support observations",
+      "kind": "implementation",
+      "group": "Grasp and climbing mechanics",
+      "scope": "core",
+      "depends_on": [
+        "G04"
+      ],
+      "calculation_ids": [
+        "C21"
+      ],
+      "done_when": "Controller receives only declared measurable contact/pose signals with explicit timing",
+      "observation": "No hidden simulator information represented as sensed information",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-03",
+        "CTRL-04",
+        "BIO-02",
+        "CON-03",
+        "CON-04",
+        "DYN-02"
+      ]
+    },
+    {
+      "id": "G06",
+      "title": "Prove a supported limb-transfer sequence",
+      "kind": "derivation+verification",
+      "group": "Grasp and climbing mechanics",
+      "scope": "core",
+      "depends_on": [
+        "G04",
+        "G05"
+      ],
+      "calculation_ids": [
+        "C16",
+        "C20"
+      ],
+      "done_when": "At least one reachable transfer retains admissible support throughout its tested envelope",
+      "observation": "Static whole-body equilibrium alone is insufficient",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-03",
+        "CTRL-04",
+        "BIO-02",
+        "CON-03",
+        "CON-04",
+        "DYN-02"
+      ]
+    },
+    {
+      "id": "G07",
+      "title": "Measure unsupported release and falls",
+      "kind": "verification",
+      "group": "Grasp and climbing mechanics",
+      "scope": "core",
+      "depends_on": [
+        "G04"
+      ],
+      "calculation_ids": [
+        "C13",
+        "C20"
+      ],
+      "done_when": "Loss/release of support removes its forces and yields accounted motion and energy",
+      "observation": "Preserve failures; no reset or leftover constraint concealing loss of support",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-03",
+        "CTRL-04",
+        "BIO-02",
+        "CON-03",
+        "CON-04",
+        "DYN-02"
+      ]
+    },
+    {
+      "id": "G08",
+      "title": "Qualify climbing dynamics and numerical budget",
+      "kind": "integration",
+      "group": "Grasp and climbing mechanics",
+      "scope": "core",
+      "depends_on": [
+        "G06",
+        "G07"
+      ],
+      "calculation_ids": [
+        "C09",
+        "C20",
+        "C05",
+        "C06"
+      ],
+      "done_when": "Accepted mechanics pass CPU/GPU and runtime identity gates relevant to climbing",
+      "observation": "Do not inherit walking certification for changed hand/contact dynamics",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-03",
+        "CTRL-04",
+        "BIO-02",
+        "CON-03",
+        "CON-04",
+        "DYN-02"
+      ]
+    },
+    {
+      "id": "K01",
+      "title": "Freeze the climbing skill specification",
+      "kind": "decision+derivation",
+      "group": "Climbing skills",
+      "scope": "core",
+      "depends_on": [
+        "G08",
+        "U05"
+      ],
+      "calculation_ids": [
+        "C10",
+        "C21"
+      ],
+      "done_when": "Observations, actions, reward, termination, success metrics, seeds, envelope and falsifiers approved before training",
+      "observation": "First skill family: attach, ascend, hold, descend, release",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-04",
+        "CTRL-06",
+        "VERIFY-01",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "K02",
+      "title": "Build reproducible climbing reset scenarios",
+      "kind": "implementation",
+      "group": "Climbing skills",
+      "scope": "core",
+      "depends_on": [
+        "K01"
+      ],
+      "calculation_ids": [
+        "C10",
+        "C21"
+      ],
+      "done_when": "Initial states are valid and attributable; setup/reset never becomes a hidden in-episode assist",
+      "observation": "Use one rigid trunk first",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-04",
+        "CTRL-06",
+        "VERIFY-01",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "K03",
+      "title": "Train climbing under approved reservations",
+      "kind": "training",
+      "group": "Climbing skills",
+      "scope": "core",
+      "depends_on": [
+        "K02",
+        "P04"
+      ],
+      "calculation_ids": [
+        "C10",
+        "C21"
+      ],
+      "done_when": "Approved runs finish or fail with checkpoints and unchanged acceptance criteria",
+      "observation": "No seed substitutions or success-driven reruns",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-04",
+        "CTRL-06",
+        "VERIFY-01",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "K04",
+      "title": "Evaluate climb, hold and descend separately",
+      "kind": "verification",
+      "group": "Climbing skills",
+      "scope": "core",
+      "depends_on": [
+        "K03"
+      ],
+      "calculation_ids": [
+        "C20",
+        "C21"
+      ],
+      "done_when": "Each claimed behavior meets frozen metrics; failures and unsupported cases are visible",
+      "observation": "An ascent success cannot stand in for controlled descent",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-04",
+        "CTRL-06",
+        "VERIFY-01",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "K05",
+      "title": "Integrate the accepted climbing policy",
+      "kind": "implementation",
+      "group": "Climbing skills",
+      "scope": "core",
+      "depends_on": [
+        "K04"
+      ],
+      "calculation_ids": [
+        "C10",
+        "C21"
+      ],
+      "done_when": "Native policy consumes certified dynamics and commands only available actuators",
+      "observation": "Keep trained and shipped dynamics identical within the defined certificate",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-04",
+        "CTRL-06",
+        "VERIFY-01",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "K06",
+      "title": "Implement walk/climb skill arbitration",
+      "kind": "implementation",
+      "group": "Climbing skills",
+      "scope": "core",
+      "depends_on": [
+        "K05",
+        "W07",
+        "U05"
+      ],
+      "calculation_ids": [
+        "C22"
+      ],
+      "done_when": "Transition preconditions, cancellation, ownership and command handling are explicit",
+      "observation": "No automatic snap-to-tree",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-04",
+        "CTRL-06",
+        "VERIFY-01",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "K07",
+      "title": "Verify boundary and failure behavior",
+      "kind": "verification",
+      "group": "Climbing skills",
+      "scope": "core",
+      "depends_on": [
+        "K06"
+      ],
+      "calculation_ids": [
+        "C13",
+        "C22"
+      ],
+      "done_when": "Out-of-reach, rejected grip, excessive load and lost contact terminate/transition according to the specification",
+      "observation": "Do not expand the declared skill envelope to hide failures",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-04",
+        "CTRL-06",
+        "VERIFY-01",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "K08",
+      "title": "Accept the complete ground-tree-ground loop",
+      "kind": "integration",
+      "group": "Climbing skills",
+      "scope": "core",
+      "depends_on": [
+        "K07",
+        "F06",
+        "U07"
+      ],
+      "calculation_ids": [
+        "C22"
+      ],
+      "done_when": "Player approaches, attaches, ascends, holds, descends, releases and resumes all-fours walking in one session",
+      "observation": "This is the core playable-monkey milestone",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "CTRL-04",
+        "CTRL-06",
+        "VERIFY-01",
+        "VERIFY-06"
+      ]
+    },
+    {
+      "id": "X01",
+      "title": "Define the small game's repeatable objective",
+      "kind": "decision",
+      "group": "Player experience and complete game loop",
+      "scope": "recommended_product",
+      "depends_on": [
+        "P01"
+      ],
+      "calculation_ids": [],
+      "done_when": "A finite purpose/lesson/free-play completion definition is selected without inventing a campaign",
+      "observation": "Movement demo versus complete game needs this explicit product choice",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-01",
+        "SND-05",
+        "SOC-05"
+      ]
+    },
+    {
+      "id": "X02",
+      "title": "Implement start, pause and session restart flow",
+      "kind": "implementation",
+      "group": "Player experience and complete game loop",
+      "scope": "recommended_product",
+      "depends_on": [
+        "P01"
+      ],
+      "calculation_ids": [],
+      "done_when": "Player reaches play and can pause/restart/exit without developer commands; reset is an explicit user action",
+      "observation": "Proposed minimal product requirement",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-01",
+        "SND-05",
+        "SOC-05"
+      ]
+    },
+    {
+      "id": "X03",
+      "title": "Implement the chosen fall/recovery experience",
+      "kind": "implementation",
+      "group": "Player experience and complete game loop",
+      "scope": "recommended_product",
+      "depends_on": [
+        "W09",
+        "X02"
+      ],
+      "calculation_ids": [
+        "C13"
+      ],
+      "done_when": "The player can continue after failure by the approved recovery action or visible restart",
+      "observation": "Do not require a new get-up skill unless explicitly selected",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-01",
+        "SND-05",
+        "SOC-05"
+      ]
+    },
+    {
+      "id": "X04",
+      "title": "Render readable animal and environment state",
+      "kind": "implementation",
+      "group": "Player experience and complete game loop",
+      "scope": "recommended_product",
+      "depends_on": [
+        "W10",
+        "F08"
+      ],
+      "calculation_ids": [],
+      "done_when": "Connected animal, contact and climbing states are readable in actual captures with no second locomotion pose",
+      "observation": "Connected CT rendering reported; reuse and check affected paths",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-01",
+        "SND-05",
+        "SOC-05"
+      ]
+    },
+    {
+      "id": "X05",
+      "title": "Add grounded interaction audio",
+      "kind": "implementation",
+      "group": "Player experience and complete game loop",
+      "scope": "recommended_product",
+      "depends_on": [
+        "G04",
+        "W10"
+      ],
+      "calculation_ids": [
+        "C24"
+      ],
+      "done_when": "Contact/release/impact cues follow actual events, have volume controls and honest material scope",
+      "observation": "Procedural acoustic simulation is not automatically required",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-01",
+        "SND-05",
+        "SOC-05"
+      ]
+    },
+    {
+      "id": "X06",
+      "title": "Wire physics teaching/inspection to live values",
+      "kind": "implementation",
+      "group": "Player experience and complete game loop",
+      "scope": "recommended_product",
+      "depends_on": [
+        "X01",
+        "K08"
+      ],
+      "calculation_ids": [
+        "C25"
+      ],
+      "done_when": "Selected lesson or inspector uses runtime quantities with units and explains declared limitations",
+      "observation": "Commercial teaching-game intent retained; Lesson One previously reported",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-01",
+        "SND-05",
+        "SOC-05"
+      ]
+    },
+    {
+      "id": "X07",
+      "title": "Run the stranger playthrough and human acceptance",
+      "kind": "verification",
+      "group": "Player experience and complete game loop",
+      "scope": "recommended_product",
+      "depends_on": [
+        "K08",
+        "X01",
+        "X02",
+        "X03",
+        "X04",
+        "U06"
+      ],
+      "calculation_ids": [
+        "C12",
+        "C28"
+      ],
+      "done_when": "A player can discover controls, complete the loop and understand failure without operator coaching",
+      "observation": "Prior scripted action at 0.91 s is evidence for that old slice only",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "AUTH-04",
+        "AUTH-06",
+        "LGT-01",
+        "SND-05",
+        "SOC-05"
+      ]
+    },
+    {
+      "id": "R01",
+      "title": "Extend save/restore to the complete playable state",
+      "kind": "implementation",
+      "group": "Persistence, performance, and reliability",
+      "scope": "core",
+      "depends_on": [
+        "K06"
+      ],
+      "calculation_ids": [
+        "C26"
+      ],
+      "done_when": "Pose, velocity, policy/actuator/contact state, scene, RNG and clocks resume under the existing continuation contract",
+      "observation": "Fresh-process bit-identical restoration reported for prior state; additions need coverage",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "SYS-02",
+        "SYS-05",
+        "GPU-06",
+        "SHIP-02",
+        "SHIP-03",
+        "SHIP-04"
+      ]
+    },
+    {
+      "id": "R02",
+      "title": "Implement player settings and save lifecycle",
+      "kind": "implementation",
+      "group": "Persistence, performance, and reliability",
+      "scope": "core",
+      "depends_on": [
+        "R01",
+        "U04",
+        "X02"
+      ],
+      "calculation_ids": [],
+      "done_when": "Save selection/version refusal and interrupted-write behavior are explicit; settings persist",
+      "observation": "Schema migration only when an actual supported prior save requires it",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "SYS-02",
+        "SYS-05",
+        "GPU-06",
+        "SHIP-02",
+        "SHIP-03",
+        "SHIP-04"
+      ]
+    },
+    {
+      "id": "R03",
+      "title": "Profile representative ground/climb scenes",
+      "kind": "measurement",
+      "group": "Persistence, performance, and reliability",
+      "scope": "core",
+      "depends_on": [
+        "K08",
+        "P06"
+      ],
+      "calculation_ids": [
+        "C27"
+      ],
+      "done_when": "Frame-time distribution, simulation-step time, memory, VRAM and stalls measured in reserved windows",
+      "observation": "Contended timing measurements are invalid",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "SYS-02",
+        "SYS-05",
+        "GPU-06",
+        "SHIP-02",
+        "SHIP-03",
+        "SHIP-04"
+      ]
+    },
+    {
+      "id": "R04",
+      "title": "Fix measured runtime bottlenecks",
+      "kind": "implementation",
+      "group": "Persistence, performance, and reliability",
+      "scope": "core",
+      "depends_on": [
+        "R03"
+      ],
+      "calculation_ids": [
+        "C27"
+      ],
+      "done_when": "Target acceptance budgets met with unchanged physical/behavioral gates",
+      "observation": "FK previously reported 87.9% CPU tick; reprofile current workload before optimizing",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "SYS-02",
+        "SYS-05",
+        "GPU-06",
+        "SHIP-02",
+        "SHIP-03",
+        "SHIP-04"
+      ]
+    },
+    {
+      "id": "R05",
+      "title": "Verify long sessions and resource teardown",
+      "kind": "verification",
+      "group": "Persistence, performance, and reliability",
+      "scope": "core",
+      "depends_on": [
+        "R04",
+        "X02"
+      ],
+      "calculation_ids": [
+        "C27"
+      ],
+      "done_when": "Repeated scene/restart/save cycles stay inside limits and all owned children/resources close",
+      "observation": "No leaks accepted merely because RAM is plentiful",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "SYS-02",
+        "SYS-05",
+        "GPU-06",
+        "SHIP-02",
+        "SHIP-03",
+        "SHIP-04"
+      ]
+    },
+    {
+      "id": "R06",
+      "title": "Exercise input/device/failure recovery",
+      "kind": "verification",
+      "group": "Persistence, performance, and reliability",
+      "scope": "core",
+      "depends_on": [
+        "R02",
+        "R05"
+      ],
+      "calculation_ids": [],
+      "done_when": "Focus changes and claimed device-loss/suspend behaviors fail or recover clearly without corrupting saves",
+      "observation": "Only certify supported platforms and cases actually exercised",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "SYS-02",
+        "SYS-05",
+        "GPU-06",
+        "SHIP-02",
+        "SHIP-03",
+        "SHIP-04"
+      ]
+    },
+    {
+      "id": "R07",
+      "title": "Bind full release compatibility evidence",
+      "kind": "integration",
+      "group": "Persistence, performance, and reliability",
+      "scope": "core",
+      "depends_on": [
+        "R06"
+      ],
+      "calculation_ids": [
+        "C09",
+        "C10",
+        "C26"
+      ],
+      "done_when": "Code/data/policy/configuration identity matches the accepted complete game and independent receipts",
+      "observation": "No stale certificate inherits through an untracked dynamics change",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "SYS-02",
+        "SYS-05",
+        "GPU-06",
+        "SHIP-02",
+        "SHIP-03",
+        "SHIP-04"
+      ]
+    },
+    {
+      "id": "S01",
+      "title": "Audit distribution provenance and dependencies",
+      "kind": "verification",
+      "group": "Release and feature-complete acceptance",
+      "scope": "recommended_product",
+      "depends_on": [
+        "P02"
+      ],
+      "calculation_ids": [],
+      "done_when": "Every shipped asset/model/library has a recorded source and applicable distribution terms",
+      "observation": "Existing license receipts are inputs, not blanket clearance for future assets",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-05",
+        "TRUST-05",
+        "SHIP-01",
+        "SHIP-06"
+      ]
+    },
+    {
+      "id": "S02",
+      "title": "Build a self-contained Windows package",
+      "kind": "implementation",
+      "group": "Release and feature-complete acceptance",
+      "scope": "recommended_product",
+      "depends_on": [
+        "R07",
+        "S01",
+        "X02"
+      ],
+      "calculation_ids": [],
+      "done_when": "Clean machine/user can launch without repo paths, development Python or operator-installed tools beyond declared dependencies",
+      "observation": "Existing demo packager reported in integration queue; reconcile it",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-05",
+        "TRUST-05",
+        "SHIP-01",
+        "SHIP-06"
+      ]
+    },
+    {
+      "id": "S03",
+      "title": "Verify install, launch, save and clean exit",
+      "kind": "verification",
+      "group": "Release and feature-complete acceptance",
+      "scope": "recommended_product",
+      "depends_on": [
+        "S02"
+      ],
+      "calculation_ids": [],
+      "done_when": "Package passes the declared supported Windows/hardware smoke and lifecycle cases",
+      "observation": "Developer machine success alone is insufficient",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-05",
+        "TRUST-05",
+        "SHIP-01",
+        "SHIP-06"
+      ]
+    },
+    {
+      "id": "S04",
+      "title": "Complete player help and failure diagnostics",
+      "kind": "implementation",
+      "group": "Release and feature-complete acceptance",
+      "scope": "recommended_product",
+      "depends_on": [
+        "S02",
+        "X07"
+      ],
+      "calculation_ids": [],
+      "done_when": "Controls, supported limits, crash/report path and recoverable errors are understandable",
+      "observation": "Do not surface implementation trivia in the player flow",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-05",
+        "TRUST-05",
+        "SHIP-01",
+        "SHIP-06"
+      ]
+    },
+    {
+      "id": "S05",
+      "title": "Accept playable-monkey feature completion",
+      "kind": "acceptance",
+      "group": "Release and feature-complete acceptance",
+      "scope": "recommended_product",
+      "depends_on": [
+        "S03",
+        "S04",
+        "X05",
+        "X06",
+        "R07"
+      ],
+      "calculation_ids": [],
+      "done_when": "All selected core/product behaviors pass; remaining issues are triaged explicitly; operator accepts actual play",
+      "observation": "Not a claim that all 240 Chimera capabilities are complete",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-05",
+        "TRUST-05",
+        "SHIP-01",
+        "SHIP-06"
+      ]
+    },
+    {
+      "id": "S06",
+      "title": "Prepare public/demo release assets",
+      "kind": "implementation",
+      "group": "Release and feature-complete acceptance",
+      "scope": "recommended_product",
+      "depends_on": [
+        "S05"
+      ],
+      "calculation_ids": [],
+      "done_when": "Approved build, concise controls, captures and release notes are packaged; publication follows operator authorization",
+      "observation": "Website and marketing remain after playability",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "PLAT-05",
+        "TRUST-05",
+        "SHIP-01",
+        "SHIP-06"
+      ]
+    },
+    {
+      "id": "B01",
+      "title": "Close independent exporter review and multi-cell coupon",
+      "kind": "verification",
+      "group": "Material-volume and assembly modernization",
+      "scope": "conditional",
+      "depends_on": [
+        "P03"
+      ],
+      "calculation_ids": [
+        "C02",
+        "C03",
+        "C04"
+      ],
+      "done_when": "Actual independent review targets 1af0bbde; U1 has frozen analytic evidence; hash claims remain distinct",
+      "observation": "Author-side proofs reported; independent review still open in last pasted receipt",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "DYN-01",
+        "PROC-04",
+        "PROC-06",
+        "MAT-03",
+        "VERIFY-01"
+      ]
+    },
+    {
+      "id": "B02",
+      "title": "Complete supported static exporter coverage",
+      "kind": "implementation+verification",
+      "group": "Material-volume and assembly modernization",
+      "scope": "conditional",
+      "depends_on": [
+        "B01"
+      ],
+      "calculation_ids": [
+        "C02",
+        "C03",
+        "C04"
+      ],
+      "done_when": "Authorized scale/transform/status/numerical tests and static diagnostics ship with distinct evidence classes",
+      "observation": "Do not make every possible coupon a release gate",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "DYN-01",
+        "PROC-04",
+        "PROC-06",
+        "MAT-03",
+        "VERIFY-01"
+      ]
+    },
+    {
+      "id": "B03",
+      "title": "Produce real validated material-volume input",
+      "kind": "derivation+implementation",
+      "group": "Material-volume and assembly modernization",
+      "scope": "conditional",
+      "depends_on": [
+        "P02"
+      ],
+      "calculation_ids": [
+        "C02",
+        "C03"
+      ],
+      "done_when": "Actual geometry, material ownership and density source support a complete input for the selected body",
+      "observation": "Buffy 02: bbox scale/origin/basis do not supply volume or density",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "DYN-01",
+        "PROC-04",
+        "PROC-06",
+        "MAT-03",
+        "VERIFY-01"
+      ]
+    },
+    {
+      "id": "B04",
+      "title": "Author the real assembly frame forest explicitly",
+      "kind": "decision+implementation",
+      "group": "Material-volume and assembly modernization",
+      "scope": "conditional",
+      "depends_on": [
+        "P02"
+      ],
+      "calculation_ids": [
+        "C01"
+      ],
+      "done_when": "pelvis/thorax/ulna roots and transforms are authored with evidence; no guessed alignment",
+      "observation": "Buffy 02 reports four disconnected referenced roots; prepared definition is not authorization",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "DYN-01",
+        "PROC-04",
+        "PROC-06",
+        "MAT-03",
+        "VERIFY-01"
+      ]
+    },
+    {
+      "id": "B05",
+      "title": "Provide real mechanical port requirements",
+      "kind": "derivation+implementation",
+      "group": "Material-volume and assembly modernization",
+      "scope": "conditional",
+      "depends_on": [
+        "B04"
+      ],
+      "calculation_ids": [
+        "C17"
+      ],
+      "done_when": "Actual port patch/stiffness/couple/weight/frame inputs qualify or remain blocked",
+      "observation": "Eight ports missing parameters; source tendon points are insufficient",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "DYN-01",
+        "PROC-04",
+        "PROC-06",
+        "MAT-03",
+        "VERIFY-01"
+      ]
+    },
+    {
+      "id": "B06",
+      "title": "Re-run real assembly readiness without substitutions",
+      "kind": "integration",
+      "group": "Material-volume and assembly modernization",
+      "scope": "conditional",
+      "depends_on": [
+        "B03",
+        "B04",
+        "B05",
+        "B02"
+      ],
+      "calculation_ids": [
+        "C02",
+        "C17"
+      ],
+      "done_when": "All mass/ownership/frame/port requirements evaluated, with remaining gaps explicit",
+      "observation": "Buffy 02 binds 9 claims but 17.039978509953905 kg stays transported/not counted; readiness false",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "DYN-01",
+        "PROC-04",
+        "PROC-06",
+        "MAT-03",
+        "VERIFY-01"
+      ]
+    },
+    {
+      "id": "B07",
+      "title": "Decide and qualify adoption by walking/climbing runtime",
+      "kind": "decision+integration",
+      "group": "Material-volume and assembly modernization",
+      "scope": "conditional",
+      "depends_on": [
+        "B06"
+      ],
+      "calculation_ids": [
+        "C09",
+        "C10"
+      ],
+      "done_when": "Architect names why this assembly replaces the current body, then requalifies affected dynamics/policies before use",
+      "observation": "Conditional branch: do not block existing certified walking merely because a separate compiler packet is incomplete",
+      "implementation_state": "UNRECONCILED",
+      "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+      "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+      "catalog_refs": [
+        "DYN-01",
+        "PROC-04",
+        "PROC-06",
+        "MAT-03",
+        "VERIFY-01"
+      ]
+    }
+  ],
+  "calculations": [
+    {
+      "id": "C01",
+      "title": "Frames, units and source correspondence",
+      "required_inputs": "Source/target axes, landmarks, units, scale, transform conventions",
+      "calculation_or_contract": "x_world=R x_local+t for rigid frames; distinguish scaling from rotations; compose/invert explicitly",
+      "output": "One unambiguous frame chain and independently checked transforms",
+      "verification": "Round-trip, handedness, landmark and independent-orientation checks",
+      "catalog_refs": [
+        "MATH-01",
+        "MATH-03",
+        "CTRL-01"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C02",
+      "title": "Mass inventory",
+      "required_inputs": "Disjoint occupied material volumes, density with conditions, ownership",
+      "calculation_or_contract": "m=integral rho dV; surface mass only if explicitly represented and not already volume-owned",
+      "output": "Mass per body and counted total with excluded claims",
+      "verification": "Analytic cells, disjoint ownership, shared-interface and recombination controls",
+      "catalog_refs": [
+        "DYN-01",
+        "MAT-01"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C03",
+      "title": "Centre of mass and inertia",
+      "required_inputs": "Geometry, rho, mass, authored frame",
+      "calculation_or_contract": "c=(integral rho x dV)/m; I_c=integral rho[(r dot r)Id-r r^T]dV",
+      "output": "Full symmetric inertia about COM including off-diagonals",
+      "verification": "Independent quadrature, rotation covariance and parallel-axis recombination",
+      "catalog_refs": [
+        "DYN-01",
+        "MATH-02"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C04",
+      "title": "Scaling and numerical conditioning",
+      "required_inputs": "Geometric scale, density policy, dimensions, precision",
+      "calculation_or_contract": "Uniform length scaling s gives m proportional to s^3 and inertia to s^5 only at unchanged density; handle anisotropic scaling by integration",
+      "output": "Correct units/scales and justified numeric error budget",
+      "verification": "Non-unit fixtures, adverse scales and independent transformed integrals",
+      "catalog_refs": [
+        "NUM-01",
+        "DYN-01"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C05",
+      "title": "Joint kinematics and feasible motion",
+      "required_inputs": "Joint axes, attachment frames, limits, chain topology",
+      "calculation_or_contract": "Forward kinematics and body/contact Jacobians with explicit conventions",
+      "output": "Reachable poses and correctly placed joints",
+      "verification": "Independent landmark/closure and finite-difference checks",
+      "catalog_refs": [
+        "CTRL-01",
+        "DYN-02"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C06",
+      "title": "Articulated dynamics and force accounting",
+      "required_inputs": "Mass/inertia, joints, external/contact/actuator loads",
+      "calculation_or_contract": "M(q) qddot + h(q,qdot)=tau+J^T f under the chosen model",
+      "output": "Accelerations and equal/opposite reactions",
+      "verification": "Known-answer dynamics, momentum/work ledgers and interventions",
+      "catalog_refs": [
+        "DYN-02",
+        "MULTI-02"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C07",
+      "title": "Actuator limits and passive response",
+      "required_inputs": "Selected animal parameters, ROM, force-length/velocity, compliance, damping",
+      "calculation_or_contract": "Evaluate the approved muscle/passive model inside its applicability range",
+      "output": "Physical action limits; no human-norm torque substituted for this animal",
+      "verification": "Independent parameter provenance and saturated/obstructed-motion controls",
+      "catalog_refs": [
+        "BIO-02",
+        "DYN-04"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C08",
+      "title": "Contact and collision",
+      "required_inputs": "Shapes, timestep, friction data, contact solver",
+      "calculation_or_contract": "Nonpenetration and unilateral normal contact; friction tangential bound under the chosen contact law",
+      "output": "Stable support, slip, release and collision events",
+      "verification": "Impact/sliding/resting controls, reaction accounting and tunnelling cases",
+      "catalog_refs": [
+        "CON-01",
+        "CON-02",
+        "CON-03",
+        "CON-04"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C09",
+      "title": "CPU/GPU parity and time stepping",
+      "required_inputs": "Frozen entry states, operation order, precision, event rules",
+      "calculation_or_contract": "Match the declared reference and frozen bars; derive numerical budgets per operation where applicable",
+      "output": "Certified dynamics/event behavior for each claimed backend",
+      "verification": "Frozen freefall/stand/C1/C2, event localization, reference-math checks and mutation controls",
+      "catalog_refs": [
+        "GPU-03",
+        "NUM-01",
+        "DYN-06"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C10",
+      "title": "Training/runtime identity and learned-skill evaluation",
+      "required_inputs": "Dynamics/policy manifests, observation/action contract, seeds, approved metrics",
+      "calculation_or_contract": "Use the frozen runbook; separate train/evaluation cases and bind all dynamics-relevant state",
+      "output": "Reproducible policies and scoped success/failure outcomes",
+      "verification": "Per-seed receipts, certificate mismatch rejection and held-out checks required by runbook",
+      "catalog_refs": [
+        "CTRL-06",
+        "VERIFY-06"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C11",
+      "title": "Walking tracking and stability",
+      "required_inputs": "20 Hz commands, root motion, contact/support state",
+      "calculation_or_contract": "Measure commanded versus achieved speed/heading and declared physical stability metrics",
+      "output": "Walking envelope, stopping/turning behavior and failures",
+      "verification": "Frozen command sequences in actual runtime without pose bypass",
+      "catalog_refs": [
+        "CTRL-02",
+        "CTRL-03"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C12",
+      "title": "Input timing and control mapping",
+      "required_inputs": "Input timestamps, sampling, command expiry and scene events",
+      "calculation_or_contract": "20 Hz implies a 50 ms command interval, not an end-to-end latency guarantee",
+      "output": "Measured response latency and consistent command semantics",
+      "verification": "Timestamp chain, release/focus/disconnect and actual-play checks",
+      "catalog_refs": [
+        "PLAT-01",
+        "AUTH-04"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C13",
+      "title": "Falls, energy and recovery",
+      "required_inputs": "Potential/kinetic energy, actuator work, contacts and dissipation",
+      "calculation_or_contract": "Account delta stored energy against work, losses and external support under the declared model",
+      "output": "Lawful falls and explicit post-failure behavior",
+      "verification": "Release/impact traces; no residual support, teleport or hidden reset",
+      "catalog_refs": [
+        "DYN-03",
+        "DYN-04"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C14",
+      "title": "Terrain and traversability",
+      "required_inputs": "Height/mesh field, normals, slope, obstacles, friction, reachable foot placement",
+      "calculation_or_contract": "Compute geometry and gradient/normal consistently with physical collision representation",
+      "output": "Supported terrain envelope and routes",
+      "verification": "Render/query agreement and frozen slope/obstacle cases",
+      "catalog_refs": [
+        "ENV-01",
+        "CON-01",
+        "CTRL-02"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C15",
+      "title": "Trunk geometry and surface contract",
+      "required_inputs": "Radius/profile, collision mesh, material/friction source, surface identity",
+      "calculation_or_contract": "Evaluate explicit rigid geometry and contact normals; quantify representation error",
+      "output": "A repeatable supported trunk configuration",
+      "verification": "Contact versus render checks, reachable approach and geometry bounds",
+      "catalog_refs": [
+        "PROC-01",
+        "CON-01"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C16",
+      "title": "Grasp reach and anatomical correspondence",
+      "required_inputs": "Joint topology, ROM, hand geometry, independent landmarks",
+      "calculation_or_contract": "FK/Jacobians plus independent anatomical correspondence; geometry feasibility precedes skill training",
+      "output": "Reachable grasp placements with valid identities",
+      "verification": "Independent landmarks; held-out correspondence checks; no utility-based selection",
+      "catalog_refs": [
+        "CTRL-01",
+        "CTRL-04"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C17",
+      "title": "Finite attachment mechanics",
+      "required_inputs": "Patch area/shape, areal stiffness, couple resistance, weights, frame",
+      "calculation_or_contract": "Derive attachment stiffness and rotational resistance using the approved finite-area formulation",
+      "output": "Actual anatomical port qualification",
+      "verification": "Analytic/independent checks and real-parameter bounds; synthetic lambda_min does not transfer",
+      "catalog_refs": [
+        "BIO-02",
+        "MECH-03"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C18",
+      "title": "Tendon routing and moment arms",
+      "required_inputs": "Owned endpoints/waypoints, joint positions, wrapping model if supported",
+      "calculation_or_contract": "Length l(q), signed moment arm r_j=-partial l/partial q_j under declared convention; torque contribution r_j F",
+      "output": "Finite, physically attributed tendon forces and joint torques",
+      "verification": "Finite differences/virtual work and unresolved-owner rejection",
+      "catalog_refs": [
+        "BIO-02",
+        "CTRL-01"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C19",
+      "title": "Grip contact wrench capacity",
+      "required_inputs": "Friction coefficient, contact locations/normals, reachable normal forces",
+      "calculation_or_contract": "sum f + mg = 0 and sum r cross f + external moments = 0 for static support; tangential force limited by contact law",
+      "output": "Whether the animal can hold the selected trunk at all",
+      "verification": "Independent feasible/infeasible support cases within actuator bounds",
+      "catalog_refs": [
+        "CON-04",
+        "CTRL-03",
+        "CTRL-04"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C20",
+      "title": "Vertical transfer and climbing load",
+      "required_inputs": "Support sequence, body inertia, forces, transfer trajectory, work",
+      "calculation_or_contract": "Dynamic force/moment balance during each transfer; ascent needs potential-energy change plus losses",
+      "output": "Feasible ascent/hold/descent envelope and load limits",
+      "verification": "Static versus dynamic tests separated; release and missed-grasp controls",
+      "catalog_refs": [
+        "CTRL-03",
+        "DYN-02"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C21",
+      "title": "Climbing policy observations and task definition",
+      "required_inputs": "Reach/contact measurements, commands, timing, skill objective",
+      "calculation_or_contract": "Define observable state and action limits; test aliasing and hidden-state dependence before training",
+      "output": "An approved learnable skill contract",
+      "verification": "Frozen train/eval specification and independent failure cases",
+      "catalog_refs": [
+        "CTRL-06",
+        "SENSE-01"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C22",
+      "title": "Skill transitions and state continuity",
+      "required_inputs": "Walking/climbing states, contacts, commands, policy memory",
+      "calculation_or_contract": "Guarded state machine preserves pose, velocity, physical ownership and force continuity within declared allowances",
+      "output": "Continuous ground-tree-ground movement",
+      "verification": "No snap/teleport, unaccounted impulse, stale grip or lost command at transitions",
+      "catalog_refs": [
+        "AUTH-04",
+        "CTRL-02"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C23",
+      "title": "Camera geometry and presentation latency",
+      "required_inputs": "Camera target, obstacle geometry, input, projection",
+      "calculation_or_contract": "Visibility/occlusion geometry and response timing; camera may move without applying body forces",
+      "output": "Usable ground/trunk view",
+      "verification": "Occlusion/camera collision cases and human acceptance; no body repositioning",
+      "catalog_refs": [
+        "LGT-04",
+        "AUTH-06"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C24",
+      "title": "Interaction sound timing",
+      "required_inputs": "Actual contact/impact/release events and listener pose",
+      "calculation_or_contract": "Use event timing and declared material/impact mapping; detailed acoustics only if claimed",
+      "output": "Consistent audible state feedback",
+      "verification": "Missing/duplicate event and synchronization checks",
+      "catalog_refs": [
+        "SND-05"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C25",
+      "title": "Physics teaching and displayed quantities",
+      "required_inputs": "Accepted runtime states, units, sample timing, lesson objective",
+      "calculation_or_contract": "Display measured/derived values from the same simulation state and label model limits",
+      "output": "An understandable lesson/inspector without fabricated telemetry",
+      "verification": "Known-answer lesson cases and player comprehension",
+      "catalog_refs": [
+        "SOC-05",
+        "AUTH-01"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C26",
+      "title": "Continuation and save state",
+      "required_inputs": "Full dynamics, policy, contact, RNG, clock and scene state",
+      "calculation_or_contract": "Serialize the state needed by the existing continuation contract and explicit version identity",
+      "output": "Reproducible continuation after fresh-process restore",
+      "verification": "Checkpoint boundary comparisons and corruption/version refusal",
+      "catalog_refs": [
+        "SYS-05"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C27",
+      "title": "Compute, memory and frame budgets",
+      "required_inputs": "Actual workload, device, timestep, memory/VRAM, queue and frame timing",
+      "calculation_or_contract": "Measure distributions in reserved windows; relate work to simulation/render budgets",
+      "output": "Admitted workload and supported hardware/performance envelope",
+      "verification": "Preregistered game frame-time and soak limits; contention invalidates benchmark claims",
+      "catalog_refs": [
+        "SCALE-01",
+        "SHIP-03",
+        "SYS-02"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    },
+    {
+      "id": "C28",
+      "title": "Player acceptance and feature coverage",
+      "required_inputs": "Frozen product scope, supported inputs, success/failure behavior",
+      "calculation_or_contract": "Measure task completion and intervention/latency criteria; taste remains human acceptance",
+      "output": "A finite feature-complete verdict distinct from broad Chimera ambition",
+      "verification": "Stranger playthrough, retained failures and explicit operator acceptance",
+      "catalog_refs": [
+        "TRUST-06",
+        "AUTH-06"
+      ],
+      "result_status": "Inventory of required calculations/contracts; no new numerical result claimed"
+    }
+  ],
+  "later_backlog": [
+    {
+      "title": "Multiple climbable tree forms and branch traversal",
+      "note": "Expand only after the single-trunk loop; requires additional geometry, reach, loads and skill coverage.",
+      "catalog_refs": [
+        "CTRL-04",
+        "BIO-05"
+      ]
+    },
+    {
+      "title": "Jumping, swinging, brachiation, get-up and carrying",
+      "note": "Separate skills and physical envelopes; not silently required for first walking/climbing slice.",
+      "catalog_refs": [
+        "CTRL-02",
+        "CTRL-06",
+        "BIO-02"
+      ]
+    },
+    {
+      "title": "More species and creature construction",
+      "note": "Additional anatomy, parameter applicability, adaptation and authoring contracts.",
+      "catalog_refs": [
+        "BIO-01",
+        "PROC-02",
+        "PROC-04"
+      ]
+    },
+    {
+      "title": "Multiplayer and networked persistence",
+      "note": "Preserve existing server-authoritative work; no requirement to ship multiplayer in the first local game.",
+      "catalog_refs": [
+        "NET-01",
+        "NET-02",
+        "NET-04",
+        "NET-05"
+      ]
+    },
+    {
+      "title": "Large streamed worlds and ecosystems",
+      "note": "Forest expansion, streaming, broader physical LOD and population behaviors.",
+      "catalog_refs": [
+        "ENV-01",
+        "BIO-06",
+        "SCALE-03",
+        "SYS-03"
+      ]
+    },
+    {
+      "title": "Water, weather, thermal and chemical interactions",
+      "note": "Activate only for selected player features; no general multiphysics completion prerequisite.",
+      "catalog_refs": [
+        "FLU-01",
+        "THM-01",
+        "CHM-01",
+        "ENV-02"
+      ]
+    },
+    {
+      "title": "Deformable trees, damage, tissue surgery and repair",
+      "note": "Additional model/asset/coupling work; rigid trunk is the first supported environment.",
+      "catalog_refs": [
+        "BIO-05",
+        "SOL-05",
+        "SHE-06",
+        "MULTI-01"
+      ]
+    },
+    {
+      "title": "Creator tools, UGC and collaborative authoring",
+      "note": "Broader editors and interchange beyond the small game authoring needs.",
+      "catalog_refs": [
+        "AUTH-02",
+        "PROC-03",
+        "NET-06"
+      ]
+    },
+    {
+      "title": "Space, vehicles, economies and social systems",
+      "note": "Historical broad vision retained without competing with monkey completion.",
+      "catalog_refs": [
+        "ENV-05",
+        "MECH-05",
+        "SOC-01",
+        "SOC-02"
+      ]
+    },
+    {
+      "title": "XR, haptics and advanced cognition/quantum research",
+      "note": "Later product decisions or research; not part of this finite milestone.",
+      "catalog_refs": [
+        "XR-01",
+        "XR-04",
+        "HUM-06",
+        "FRONT-05"
+      ]
+    }
+  ]
+}
