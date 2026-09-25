@@ -1,0 +1,90 @@
+{
+  "schema": "chimera.monkey_save_store_receipt.v1",
+  "task_id": "I-R02-SAVE-STORE",
+  "planning_id": "R02",
+  "kind": "bounded_implementation",
+  "attempt_id": "ee0799d3f9d445928350c932be0c6805",
+  "arrival_id": "arrival-cba7b89cb6734050a3c4fe5fff7e98f4",
+  "branch": "codex/monkey-i-r02-save-store-ee0799d3f9",
+  "pr_destination": "tools/monkey_campaign/contributions/I-R02-SAVE-STORE/",
+  "pin": {
+    "criteria_sha256": "0f60830b82c0ed0fe52a693384d5b73c976a8fea2cb671390eed49529b7b087d",
+    "criteria_source": "live kanban registry STATUS.json card I-R02-SAVE-STORE.criteria_sha256 (OPEN, slot 4, inbox empty)",
+    "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "scope_source": "MONKEY_RUN.md approved-list fingerprint (sha256-chimera-json-v1)"
+  },
+  "deliverables": {
+    "save_store.py": {
+      "sha256": "cf175ea73508927697905cb9faa96737bb454ce7e946caa1ccc247338e4f9347",
+      "size_bytes": 23147
+    },
+    "test_save_store.py": {
+      "sha256": "c61fe4173270ac98ebcad3abc269970c250956b6341e51fb804a312666df3261",
+      "size_bytes": 15598
+    },
+    "report.md": {
+      "sha256": "d5ec260642f35dadfebabbb0b278ef951b04cf20d15ac8b1bf2954ab88a46b6e",
+      "size_bytes": 8452
+    },
+    "PREREGISTRATION.md": {
+      "sha256": "458032fd3ff3e3e37d99d24b88e2e7071482dc3ebd35bef269ebccb62c7308fd",
+      "size_bytes": 4148
+    }
+  },
+  "reference_extraction": {
+    "reference/tools/monkey_campaign/product/input_mapper.py": {
+      "sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+      "size_bytes": 18349
+    },
+    "reference/tools/monkey_campaign/product/input_settings.py": {
+      "sha256": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
+      "size_bytes": 22608
+    },
+    "reference/tools/monkey_campaign/product/session_flow.py": {
+      "sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+      "size_bytes": 16981
+    }
+  },
+  "verification": {
+    "tests": {
+      "command": "python -B test_save_store.py",
+      "result": "OK",
+      "passed": 26,
+      "failed": 0,
+      "total": 26,
+      "wall_seconds": 0.144,
+      "reproduced_by": "continuation worker (independent re-run at submission)"
+    },
+    "falsifiers_covered": [
+      "F1 interrupted write preserves prior save (os.replace raises after temp exists; earlier slot byte-exact, stray .tmp cleaned and excluded by list())",
+      "F2 traversal refuses / \\ .. absolute drive-letter slot names; realpath containment defense-in-depth",
+      "F3 mismatched/missing identities refuse by named code; tampered/truncated payload fails recomputed sha256"
+    ],
+    "bounded_execution": {
+      "stdlib_only_imports": [
+        "base64",
+        "hashlib",
+        "json",
+        "os",
+        "pathlib",
+        "dataclasses"
+      ],
+      "no_pickle_or_eval_exec": true,
+      "engine_imported": false,
+      "test_wall_seconds_max": 0.144,
+      "max_new_output_bytes_limit": 16777216
+    }
+  },
+  "remaining_gates": {
+    "pr_entry": {
+      "status": "BLOCKED_ON_LEAD",
+      "reason": "GitHub REST API auth unavailable on host (deploy key works; branch + head commit pushed). PR page /pull/N opened/merged by lead/publisher from the pushed head.",
+      "smallest_unblock": "repo-scoped PAT on one line at E:/ChimeraWork/control/.github_token, then open PR from codex/monkey-i-r02-save-store-ee0799d3f9"
+    },
+    "merge_and_acceptance": {
+      "status": "PENDING_LEAD",
+      "note": "card completion = first lead-approved PR merged to astra/gait-capture pinned to criteria_sha256; report/test success alone does not close the card"
+    }
+  },
+  "generated_at_utc": "2026-09-25T03:09:23.384006+00:00"
+}
