@@ -1,0 +1,6 @@
+route_declaration determinism (F07)
+in-process compile #1 vs #2: byte-identical = True
+fresh subprocess compile vs committed: byte-identical = True
+bytes = 8495
+sha256 = 28dff2b33e74fcc4103ac3699899b0937f6975323758d1fa142092704bf4496c
+validator: True
