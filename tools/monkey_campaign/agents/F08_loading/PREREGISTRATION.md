@@ -212,3 +212,7 @@ site `(11.976783, 2.471766)` equals `(0.0, 0.0)` (both on flat base ground);
 height query at `(20.05, 0)` refuses with `f02_outside_extent`. All measured
 once in a probe BEFORE this amendment was appended; the suite freezes them as
 assertions. No other prediction changes.
+
+
+## AMENDMENT 3 (2026-09-24, coordinator, per R5 review N1)
+The routes recipe's R0 note was corrected (STOP t=11.942185 vs length_m=12.229185 = spawn-to-AXIS distance, not walkable length). The declaration regenerated (8495->8630 bytes; new sha256 dab19459863ad3c0e58f048c81bb56fd8ecf39d9722681252d1f82c1c3c15849); the frozen byte table and committed-sha table updated accordingly. No falsifier changed; re-run below.

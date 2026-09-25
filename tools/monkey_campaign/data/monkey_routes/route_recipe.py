@@ -203,9 +203,11 @@ def straight_route(spawn, site):
             "length_m": _grid6(length),
             "contact_dist_from_axis_m": _grid6(R_BLOCK_M),
             "sample_step_m": STRAIGHT_SAMPLE_STEP_M,
-            "note": "ends at the contact ring: dist_to_axis = r_block (envelope "
-                    "touches the solid); the no-pathfinding claim is that this "
-                    "single heading needs no waypoint search"}
+            "note": "STOP at t=11.942185 m (the contact ring: dist_to_axis = "
+                    "r_block, envelope touches the solid). length_m=12.229185 is "
+                    "the SPAWN-to-AXIS distance, NOT the walkable length -- walking "
+                    "length_m enters B2 (R5 review N1). The no-pathfinding claim is "
+                    "that this single heading needs no waypoint search"}
 
 
 def tangent_route(spawn, mound, side):

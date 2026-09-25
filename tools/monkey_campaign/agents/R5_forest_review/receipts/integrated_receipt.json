@@ -1,0 +1,193 @@
+{
+ "checks": [
+  {
+   "check": "B1_load_forest",
+   "detail": "four artifacts recompiled-identical; file shas 18dd2ff6, 446ed3fb, 94ff906e, 28dff2b3",
+   "ok": true
+  },
+  {
+   "check": "A6_initial_state_sha",
+   "detail": "c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627",
+   "ok": true
+  },
+  {
+   "check": "B1_cli_determinism",
+   "detail": "exit=0 raw stdout sha=facca270dcd4fd9e == F08's claimed facca270... (byte-exact)",
+   "ok": true
+  },
+  {
+   "check": "B1_cli_initial_state",
+   "detail": "c3286e14a787f6bb",
+   "ok": true
+  },
+  {
+   "check": "B1_cli_trunk_site",
+   "detail": "{\"axis_dir\": [0.0, 1.0, 0.0], \"base_centre_m\": [11.976783, 0.0, 2.471766], \"base_elevation_m\": 0.0, \"climbable_surface_id\": \"trunk_01.lateral\", \"collision_kind\": \"analytic_cylinder_solid\", \"height_m\": 1.158, \"id\": \"trunk_01\", \"radius_m\": 0.037}",
+   "ok": true
+  },
+  {
+   "check": "B2_site_surface",
+   "detail": "h=0.0 grad=(0.0, 0.0) n=(0.0, 1.0, 0.0)",
+   "ok": true
+  },
+  {
+   "check": "B2_spawn_surface",
+   "detail": "h=0.0 grad=(0.0, 0.0)",
+   "ok": true
+  },
+  {
+   "check": "B2_worst_triangle_slope",
+   "detail": "worst=0.042522289331596436 at (17.0, 7.0)",
+   "ok": true
+  },
+  {
+   "check": "B2_extent_strict_gt",
+   "detail": "20.0 inside, 20.05 outside",
+   "ok": true
+  },
+  {
+   "check": "B2_outside_refusal",
+   "detail": "f02_outside_extent past edge",
+   "ok": true
+  },
+  {
+   "check": "B3_axis_sdf",
+   "detail": "on-axis sdf=-0.037 (F04 GHO-03 claimed -0.037)",
+   "ok": true
+  },
+  {
+   "check": "B3_tangency",
+   "detail": "worst |sdf-r_sole| over 320 lateral points = 8.431e-16 (F04 INT-01 7.0e-16)",
+   "ok": true
+  },
+  {
+   "check": "B3_flush_terrain_footprint",
+   "detail": "worst |terrain h| over 0.5 m footprint = 0.0, worst |grad| = 0.0 (F04 INT-03)",
+   "ok": true
+  },
+  {
+   "check": "B3_base_ring_y0",
+   "detail": "65 vertices at y=0.0 (base rings)",
+   "ok": true
+  },
+  {
+   "check": "B3_chord_error",
+   "detail": "recomputed chord error = 1.783070e-04 m (declared 1.78307e-4, TOL 2e-4)",
+   "ok": true
+  },
+  {
+   "check": "B4_blocked_count_B2",
+   "detail": "blocked cells = 107 (F07 claimed 107, all B2)",
+   "ok": true
+  },
+  {
+   "check": "B4_slope_never_blocks",
+   "detail": "worst grid gradient = 0.042522 at (17.050000000000004, 7.0) (claimed 0.042522 at (17.0,7.0))",
+   "ok": true
+  },
+  {
+   "check": "B4_reachability",
+   "detail": "reachable 641494 of free 641494 (claimed 641,494/641,494)",
+   "ok": true
+  },
+  {
+   "check": "B4_corridor_envelope",
+   "detail": "1.0 m-wide corridor connects spawn to the approach zone; tightest corridor cell on the route c=0.5000 at (-19.5, -19.5)",
+   "ok": true
+  },
+  {
+   "check": "B4_gate_number",
+   "detail": "clearance at (11.3, 2.0) = 0.537984 (F07 claimed 0.538 -> width 1.076; R5's precomputed 0.538247 was R5's own arithmetic slip, honest row)",
+   "ok": true
+  },
+  {
+   "check": "D1_R0_note_vs_numbers",
+   "detail": "at t=length_m the walker centre is ON the axis (dist_to_axis=0.0000); contact ring is at t=11.942185; walking the full declared length puts ~29 samples inside B2 (envelope 0.287 m into the blocker). Suites stop at t_contact; the committed note/fields can mislead a naive W10 consumer",
+   "ok": true
+  },
+  {
+   "check": "B5_closed_corners_finite",
+   "detail": "all four closed corners + -0.0 answer finite",
+   "ok": true
+  },
+  {
+   "check": "B5_negative_refusals",
+   "detail": "6/6 past-edge (incl. negative) queries refused",
+   "ok": true
+  },
+  {
+   "check": "B5_diagonal_identity",
+   "detail": "max |A-B| on cell diagonals = 2.7756e-17 m (R5 predicted exactly 0.0; measured ~1 ulp = 2.8e-17, the SAME misprediction F02 recorded in its honesty row; within the frozen 1e-9 family)",
+   "ok": true
+  },
+  {
+   "check": "B6_site_clear_of_mounds",
+   "detail": "site margin outside each mound radius: [29.9779, 20.1922, 5.0602, 24.9186, 26.8502]",
+   "ok": true
+  },
+  {
+   "check": "B6_analytic_site_height",
+   "detail": "analytic h(site) = 0.0",
+   "ok": true
+  },
+  {
+   "check": "D5_mound2_edge_clip",
+   "detail": "mound 2 analytic reach x=23.595 m; h_analytic(21,6)=0.0683 m exists but query refuses; GROUND mesh max x=20.000000 (clipped at the edge); all-vertex max x=20.050000 = posts straddling the edge by their 0.05 m radius (F02's declared amendment)",
+   "ok": true
+  },
+  {
+   "check": "D7_initial_state_copies_f07",
+   "detail": "spawn/axis/straight/tangents/grid/blockers copied verbatim",
+   "ok": true
+  },
+  {
+   "check": "B4_posts_80",
+   "detail": "recovered 80 posts from the mesh",
+   "ok": true
+  },
+  {
+   "check": "B1_teardown_clean",
+   "detail": "teardown: zero live resources",
+   "ok": true
+  },
+  {
+   "check": "receipt_hash_receipts/run",
+   "detail": "receipts/run.json: 10442 B sha efded804... (claimed efded804..., 10442 B)",
+   "ok": true
+  },
+  {
+   "check": "receipt_hash_receipts/run",
+   "detail": "receipts/run.json: 13047 B sha 7baaf018... (claimed 7baaf018...)",
+   "ok": true
+  },
+  {
+   "check": "receipt_hash_receipts/run",
+   "detail": "receipts/run.json: 9095 B sha 4ebd3a6c... (claimed 4ebd3a6c...)",
+   "ok": true
+  },
+  {
+   "check": "receipt_hash_receipts/run",
+   "detail": "receipts/run.txt: 6334 B sha 235938d7... (claimed 235938d7...)",
+   "ok": true
+  },
+  {
+   "check": "receipt_hash_forest_loader",
+   "detail": "monkey_forest/forest_loader.py: 23946 B sha 53d7fdde... (claimed 53d7fdde...)",
+   "ok": true
+  },
+  {
+   "check": "receipt_hash_verify_loading",
+   "detail": "F08_loading/verify_loading.py: 22257 B sha fc4d34ab... (claimed fc4d34ab...)",
+   "ok": true
+  }
+ ],
+ "numbers": {
+  "R0": {
+   "dist_at_length_m": 0.0,
+   "hazard_samples": 29,
+   "length_m": 12.229185,
+   "t_contact_m": 11.942184999999998
+  }
+ },
+ "schema": "r5.integrated.v1"
+}

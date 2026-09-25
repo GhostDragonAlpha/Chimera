@@ -1,0 +1,81 @@
+{
+ "checks": [
+  {
+   "check": "A1_recompile_clearing",
+   "detail": "recompiled 13112 B sha 18dd2ff65410cd1c pin aa2607df97e0d6ec | committed 13112 B sha 18dd2ff65410cd1c | claimed 13112 B sha 18dd2ff65410cd1c pin aa2607df97e0d6ec",
+   "ok": true
+  },
+  {
+   "check": "A1_recompile_terrain",
+   "detail": "recompiled 877752 B sha 446ed3fbd0f50205 pin 8c7d60c88a75234a | committed 877752 B sha 446ed3fbd0f50205 | claimed 877752 B sha 446ed3fbd0f50205 pin 8c7d60c88a75234a",
+   "ok": true
+  },
+  {
+   "check": "A1_recompile_trunk",
+   "detail": "recompiled 16634 B sha 94ff906ec5e8b838 pin b7089e7826a221a5 | committed 16634 B sha 94ff906ec5e8b838 | claimed 16634 B sha 94ff906ec5e8b838 pin b7089e7826a221a5",
+   "ok": true
+  },
+  {
+   "check": "A1_recompile_routes",
+   "detail": "recompiled 8495 B sha 28dff2b33e74fcc4 pin 7c3ad6e86039b633 | committed 8495 B sha 28dff2b33e74fcc4 | claimed 8495 B sha 28dff2b33e74fcc4 pin 7c3ad6e86039b633",
+   "ok": true
+  },
+  {
+   "check": "A2_trunk_pins_clearing",
+   "detail": "trunk.site.provenance=aa2607df97e0d6ec clearing=aa2607df97e0d6ec",
+   "ok": true
+  },
+  {
+   "check": "A2_routes_pins_upstream",
+   "detail": "{\"clearing\": {\"declaration_sha256\": \"aa2607df97e0\", \"file_sha256\": \"18dd2ff65410\"}, \"terrain\": {\"bundle_sha256\": \"8c7d60c88a75\", \"file_sha256\": \"446ed3fbd0f5\"}, \"trunk\": {\"declaration_sha256\": \"b7089e7826a2\", \"file_sha256\": \"94ff906ec5e8\"}}",
+   "ok": true
+  },
+  {
+   "check": "A3_site_identity",
+   "detail": "F01=[11.976783, 0.0, 2.471766] F03site=[11.976783, 0.0, 2.471766] F03solid=[11.976783, 0.0, 2.471766] F07axis=[11.976783, 2.471766] F07B2=[11.976783, 2.471766]",
+   "ok": true
+  },
+  {
+   "check": "A3_site_id_and_footprint",
+   "detail": "ids: trunk_01 / trunk_01",
+   "ok": true
+  },
+  {
+   "check": "A4_spawn_identity",
+   "detail": "F01=[0.0, 0.0, 0.0] F03=[0.0, 0.0, 0.0] F07=[0.0, 0.0, 0.0]",
+   "ok": true
+  },
+  {
+   "check": "A5_r_block_derivation",
+   "detail": "r_block=0.287 r_trunk=0.037 r_body=0.25",
+   "ok": true
+  },
+  {
+   "check": "A5_R0_length_is_axis_distance",
+   "detail": "length_m=12.229185 axis_dist=12.229185 to_m=[11.976783, 2.471766] contact=0.287",
+   "ok": true
+  },
+  {
+   "check": "A5_clearances_consistent",
+   "detail": "F01 required=1.500000 F03 clearance=12.192185 axis-r_trunk=12.192185",
+   "ok": true
+  },
+  {
+   "check": "A5_site_terrain_claims",
+   "detail": "F01 slope=0.0 F03 h=0.0 slope=0.0 base=0.0",
+   "ok": true
+  },
+  {
+   "check": "A5_seed_identity",
+   "detail": "seed=4598321",
+   "ok": true
+  },
+  {
+   "check": "A5_extent_identity",
+   "detail": "half_width F01=20.0 F07B1=20.0",
+   "ok": true
+  }
+ ],
+ "fired": [],
+ "schema": "r5.identity.v1"
+}

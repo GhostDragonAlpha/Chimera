@@ -57,10 +57,10 @@ EXPECTED_FILE_SHA = {
     "clearing": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
     "terrain": "446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52",
     "trunk": "94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1",
-    "routes": "28dff2b33e74fcc4103ac3699899b0937f6975323758d1fa142092704bf4496c",
+    "routes": "dab19459863ad3c0e58f048c81bb56fd8ecf39d9722681252d1f82c1c3c15849",
 }
 EXPECTED_BYTES = {"clearing": 13112, "terrain": 877752,
-                  "trunk": 16634, "routes": 8495}
+                  "trunk": 16634, "routes": 8630}
 DIGEST_CODE = {"clearing": "f01_digest_mismatch", "terrain": "f02_digest_mismatch",
                "trunk": "f03_digest_mismatch", "routes": "f07_digest_mismatch"}
 JSON_CODE = {"clearing": "f01_invalid_json", "terrain": "f02_invalid_json",

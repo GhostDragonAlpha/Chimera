@@ -1,14 +1,14 @@
 M-F08 verify_loading -- verdict GREEN (66/66 checks pass)
 
-PASS  integrity: committed files match prereg table BEFORE the suite  {'clearing': '18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1', 'terrain': '446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52', 'trunk': '94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1', 'routes': '28dff2b33e74fcc4103ac3699899b0937f6975323758d1fa142092704bf4496c'}
+PASS  integrity: committed files match prereg table BEFORE the suite  {'clearing': '18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1', 'terrain': '446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52', 'trunk': '94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1', 'routes': 'dab19459863ad3c0e58f048c81bb56fd8ecf39d9722681252d1f82c1c3c15849'}
 PASS  T1 in-process recompile x2 byte-identical  4/4 pairs equal
-PASS  T1 recompiled bytes == committed bytes (all four)  {'clearing': 13112, 'terrain': 877752, 'trunk': 16634, 'routes': 8495}
+PASS  T1 recompiled bytes == committed bytes (all four)  {'clearing': 13112, 'terrain': 877752, 'trunk': 16634, 'routes': 8630}
 PASS  T1 recompiled self-pins verify (4/4)  house digest law
-PASS  T1 byte counts == prereg frozen table  {'clearing': 13112, 'terrain': 877752, 'trunk': 16634, 'routes': 8495}
-PASS  T1 fresh-process run 1 matches committed digests  initial_state_sha256=c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
-PASS  T1 fresh-process run 2 matches committed digests  initial_state_sha256=c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
-PASS  T1 fresh-process run 3 matches committed digests  initial_state_sha256=c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
-PASS  T1 three fresh-process receipts byte-identical  stdout sha facca270dcd4fd9e7cce5cea913c56baf7816c9aea747bf91aaecd77f7cc01f5
+PASS  T1 byte counts == prereg frozen table  {'clearing': 13112, 'terrain': 877752, 'trunk': 16634, 'routes': 8630}
+PASS  T1 fresh-process run 1 matches committed digests  initial_state_sha256=0c9406bb30ef140b8efe46320f65f6f64f10edccf813a0e4eb9c36de14a4c5f0
+PASS  T1 fresh-process run 2 matches committed digests  initial_state_sha256=0c9406bb30ef140b8efe46320f65f6f64f10edccf813a0e4eb9c36de14a4c5f0
+PASS  T1 fresh-process run 3 matches committed digests  initial_state_sha256=0c9406bb30ef140b8efe46320f65f6f64f10edccf813a0e4eb9c36de14a4c5f0
+PASS  T1 three fresh-process receipts byte-identical  stdout sha ede395a7d2191458232f4e387cb7b9b01744e417017445ee4a83bf4576836eef
 PASS  T2 sandbox happy-path control loads green  faithful 4-file copy
 PASS  T2 omit clearing -> f08_missing_artifact  code=f08_missing_artifact artifact=clearing cause=None
 PASS  T2 omit terrain -> f08_missing_artifact  code=f08_missing_artifact artifact=terrain cause=None
@@ -27,8 +27,8 @@ PASS  T3 body-edit(routes) refuses by name  code=f08_invalid_artifact artifact=r
 PASS  T3 pin-edit(routes) refuses by name  code=f08_invalid_artifact artifact=routes cause=f07_digest_mismatch
 PASS  T3 re-forge(routes) refuses by name  code=f08_recompile_drift artifact=routes cause=None
 PASS  T3 truncated-json(clearing) refuses by name  code=f08_invalid_artifact artifact=clearing cause=f01_invalid_json
-PASS  T4 initial_state_sha256 identical in-process x2  c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
-PASS  T4 initial_state_sha256 matches fresh processes  c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
+PASS  T4 initial_state_sha256 identical in-process x2  0c9406bb30ef140b8efe46320f65f6f64f10edccf813a0e4eb9c36de14a4c5f0
+PASS  T4 initial_state_sha256 matches fresh processes  0c9406bb30ef140b8efe46320f65f6f64f10edccf813a0e4eb9c36de14a4c5f0
 PASS  T4 scene_seed == declared  4598321
 PASS  T4 spawn position == declared  [0.0, 0.0, 0.0]
 PASS  T4 spawn terrain height == declared  0.0
@@ -65,4 +65,4 @@ PASS  T6 worst_triangle_slope == F02 receipt 0.042522289331596436  0.04252228933
 PASS  T6 extent law strict > (20.0 in, 20.05 out)  inside/outside
 PASS  T6 query past the extent refuses f02_outside_extent  f02_outside_extent
 PASS  T6 W10 context-manager consumption works and cleans up  h=0.0 live=[]
-PASS  integrity: committed files unchanged AFTER the suite  {'clearing': '18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1', 'terrain': '446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52', 'trunk': '94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1', 'routes': '28dff2b33e74fcc4103ac3699899b0937f6975323758d1fa142092704bf4496c'}
+PASS  integrity: committed files unchanged AFTER the suite  {'clearing': '18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1', 'terrain': '446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52', 'trunk': '94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1', 'routes': 'dab19459863ad3c0e58f048c81bb56fd8ecf39d9722681252d1f82c1c3c15849'}
