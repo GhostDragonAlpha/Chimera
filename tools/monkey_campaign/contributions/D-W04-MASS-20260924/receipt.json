@@ -1,0 +1,67 @@
+{
+  "card": "D-W04-MASS-20260924",
+  "planning_ids": ["W04", "P02"],
+  "attempt": "26382263eb094eaf98a8354a2fe8592c",
+  "arrival": "arrival-9e17bf8ab0f340619eb21c1b83976fa2",
+  "branch": "branch-1",
+  "criteria": "ee0cc5fb27850b82c9b24decf50d06c306ba82fae8c8aa4e9148d66032ff55b1",
+  "date": "2026-09-25",
+  "verdict": "NO",
+  "verdict_one_line": "The frozen acceptance CoT denominator is bound to the playable-slice membrane inventory 13824.5 kg, not the 10.038 kg Oku gait walker the trainer env simulates (ratio 1377.2166x); determinate mismatch, not ambiguity.",
+  "cot_consumes": {
+    "mass_kg": 13824.5,
+    "expression": "cot = work / (M_BODY_KG * dist) if dist > 0.0 else INF",
+    "citations": [
+      "tools/science_funnel/first_skill/acceptance.py:18 @ 8294053b (blob 3df32b59b09411721913229c8df4eb3efa04379e, M_BODY_KG = 13824.5)",
+      "tools/science_funnel/first_skill/acceptance.py:43 @ 8294053b (same blob, cot expression)",
+      "tools/science_funnel/validation/first_skill_prestage_20260922/RUNBOOK.md:76 @ 8294053b (blob 73a41120fce27a6bf85073712ccc7a68382ff46b)",
+      "tools/science_funnel/validation/first_skill_prestage_20260922/run_manifest.json:54 @ 8294053b (blob 3188e72f949149a335ea6aa1863db90b51e402f6)"
+    ],
+    "blob_stability": "blob 3df32b59 identical at 8294053b, 82ebea49, eab5de13, a62b286e; absent at 43b599a7 and 33e7a444"
+  },
+  "checks": [
+    {"id": 1, "class": "git rev-parse --verify", "target": "pins 33e7a444 73f3a860 43b599a7 a62b286e", "result": "all resolve to commits (33e7a444fe7b..., 73f3a86082e0..., 43b599a7c1f1..., a62b286effa2...)"},
+    {"id": 2, "class": "read working file (coordination artifact)", "target": "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/bindings.json", "result": "P02/W04 mapping receipts read; four masses + UNRECONCILED flag extracted"},
+    {"id": 3, "class": "read planning record", "target": "E:/PythonChimera/tools/monkey_campaign/monkey_completion_map.json", "result": "W04 = 'Bind training manifest and compatibility certificate', calcs C10/C05/C06/C07/C08, done_when quoted; G01 dependency_reasons[W04] = grip-load binding note"},
+    {"id": 4, "class": "git ls-tree -r", "target": "first_skill files at 8294053b and 73f3a860", "result": "first_skill/ first exists at 8294053b (direct child of 73f3a860, verified via rev-list --parents); NO first_skill files at 73f3a860 (pin-nuance recorded)"},
+    {"id": 5, "class": "git show + blob hash", "target": "acceptance.py, RUNBOOK.md, run_manifest.json at 4 revs", "result": "acceptance blob 3df32b59 identical 8294053b/82ebea49/eab5de13/a62b286e; ABSENT at 43b599a7 and 33e7a444"},
+    {"id": 6, "class": "git log --all -G pickaxe (607 refs, 3864 commits)", "target": "literals 13824.5, \\b10.038\\b, \\b6.15\\b, 17.039978509953905|\\b17.04\\b", "result": "file-level census completed for each; report.md section 2 carries the deduplicated map; false-positive classes identified and excluded (genome pos arrays, isotope half-lives, camera radians, stand_survival parameter linspace)"},
+    {"id": 7, "class": "git grep -n at pinned revs", "target": "13824.5 @ 8294053b and a62b286e; 10.038/6.15 @ 33e7a444; 17.04 @ 43b599a7", "result": "all line-level occurrences enumerated; 13824.5 has 30+ sites at a62b286e with 6 semantic clusters (engine membrane default, slice movement law, creature_graph param, XPBD target, first_skill acceptance cluster, matter-kernel docs)"},
+    {"id": 8, "class": "git show (source reads)", "target": "gait_scene.py, derived_numbers.json, derive_k_fill.py, derive_adjudication.py, walker_env_host.py, walker_model.py, walker_nb_env.py, walker_kernels.cuh, walker_env.cu, build_dll.ps1, train_first_skill.py", "result": "training-body execution chain proven: scene.json -> walker_model.py:149-155 body_mass -> walker_nb_env.py:35-36 mdl[OF_body_mass=90] -> walker_kernels.cuh:401-402,826 dynamics; work: bat[12] -> bat_sum -> rb[e*6+5] (kernels 4963-4972) -> train_first_skill.py:379 work_J -> acceptance.py:42; walker_env.cu includes ONLY walker_kernels.cuh (membrane header NOT compiled into walker_env.dll)"},
+    {"id": 9, "class": "recompute derived numbers (python)", "target": "ratio, volume derivations, assembly arithmetic, weight, midpoint, k-fill target, scene carve", "result": "13824.5/10.038=1377.2166; 13.824536e3=13824.536; band compartments sum 13.824598; 8.184+2*0.927=10.038; 10.038*9.80665=98.4391527 N (matches receipt_wave8_trunk_vault.json:26 verbatim); (5.4+6.9)/2=6.15; (2*0.927/10.038)*6.15=1.135894 (matches k_fill receipt.json:232); scene carve total 10.037998"},
+    {"id": 10, "class": "git log --all -- pathspec + ref scan", "target": "agent_logs/local_buffy_qwen/assembly_handoff_02.md", "result": "FAILURE HONEST: file exists in NO commit tree (untracked working file); receipt extract located at 8feea42a tools/monkey_campaign/agents/P02P03/receipts/buffy02_mass_lines.txt; verbatim lines 83/184/210 verified byte-identical against E:/PythonChimera working file today; 43b599a7 pin refers to the forearm-package lane carrying the producing package (actual_monkey_fit.json:52460 all_transported @ 43b599a7)"},
+    {"id": 11, "class": "git show prior receipt reconciliation", "target": "tools/monkey_campaign/agents/P02P03/report.md @ 8feea42a (branch monkey-play-20260924)", "result": "prior UNRECONCILED flag CONFIRMED and sharpened (full execution path + ratio + selection-invariance proof added); 10.038/6.15/17.04 lineages CONFIRMED at cited sites"},
+    {"id": 12, "class": "context disambiguation", "target": "agent_logs/stand_survival*.json '17.04' hits", "result": "parameter-sweep linspace member (16.94,16.96,...,17.04,17.06...), NOT a body mass; excluded from lineage"}
+  ],
+  "blob_hashes_cited": {
+    "acceptance.py@8294053b": "3df32b59b09411721913229c8df4eb3efa04379e",
+    "RUNBOOK.md@8294053b": "73a41120fce27a6bf85073712ccc7a68382ff46b",
+    "run_manifest.json@8294053b": "3188e72f949149a335ea6aa1863db90b51e402f6",
+    "derived_numbers.json@33e7a444": "8b6d75fbd408a8e1e2db31cdf15fc4a104b9a36a",
+    "gait_scene.py@33e7a444": "5c8792aef60f9eb2eb2e10549546ff12a2efe21b",
+    "derive_k_fill.py@33e7a444": "bfce9681049b7d9354bd498fbf011a633f0ed26f",
+    "derive_adjudication.py@33e7a444": "53c324f354576f32d99bbc67b70fce2dc7744f6a"
+  },
+  "failures": [
+    {"what": "assembly_handoff_02.md not tree-reachable at pinned 43b599a7 (untracked in E:/PythonChimera)", "resolution": "verbatim lines recovered from 8feea42a receipt extract + verified against live working file; no evidence lost"},
+    {"what": "combined -S/-G pickaxe flags rejected by git", "resolution": "reran as pure -G regex pickaxe per literal"},
+    {"what": "binds.json pin 'first-skill-prestage-20260922 73f3a860' names the lane base, not the file-bearing commit", "resolution": "resolved: modules first exist at 8294053b (lane tip, direct child of 73f3a860); RUNBOOK's own text pins the base"}
+  ],
+  "escalations": [
+    "Lead authorization required for the section-7 NEW registration (frozen-field law forbids amendment by this card); recommend scene-derived denominator binding over literal 10.038"
+  ],
+  "remaining_gates": [
+    "W04 owner: register denominator correction before any first-skill training run consumes the frozen runbook (trainer sha-asserts the manifest)",
+    "G01: re-point dependency note to reconciled denominator after registration",
+    "W03 named items (anchor-drift v1/v2, tick-40/41 knife, clean-window C3 bars): out of scope, untouched"
+  ],
+  "constraints_honored": {
+    "read_only_source_repo": true,
+    "no_push_no_branch_no_worker_start": true,
+    "no_source_or_seed_or_threshold_edits": true,
+    "no_model_loads_or_engine_starts": true,
+    "bounded_cpu_and_output": true,
+    "writes_confined_to_WS_and_checkout_contribution_path": true
+  },
+  "writes_stopped": true
+}
