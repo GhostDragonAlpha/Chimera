@@ -1,5 +1,13 @@
 # Chimera
 
+> **Licensing update:** this public repository now uses [source-visible restricted
+> terms](LICENSE) as its prospective first-party offer. Existing AGPL grants and
+> third-party licenses remain intact; see the [transition record](docs/LICENSING_TRANSITION.md).
+> The final AGPL ontology/workflow contribution is [PR #112](https://github.com/GhostDragonAlpha/Chimera/pull/112)
+> on the development branch. Its [playable-monkey entry point](https://github.com/GhostDragonAlpha/Chimera/blob/c525b82c7c3ce0128565424764293a3c85811ab3/docs/MONKEY_RUN.md)
+> is available there; this licensing change does not merge engine/graph lineages or
+> claim completion of the game.
+
 A physics-teaching engine and creature game built from a versioned scientific graph.
 
 **Start here. This is the only onboarding file an operator needs to give an agent.**
