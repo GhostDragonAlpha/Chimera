@@ -48,6 +48,7 @@ class Registry:
         self.clock = clock
 
     def expire(self, state):
+        if 'kanban' in state:return
         stamp = self.clock()
         for slot in state['slots']:
             if slot['agent_id'] is not None and slot.get('lease_state') == 'ACTIVE' and stamp >= slot['deadline_unix']:
@@ -70,6 +71,14 @@ class Registry:
         except BaseException:
             connection.rollback()
             raise
+        finally:
+            connection.close()
+
+    def readonly(self):
+        require(self.path.is_file(),'registry_not_initialized')
+        connection=sqlite3.connect(self.path.absolute().as_uri()+'?mode=ro',uri=True,timeout=10)
+        try:
+            return json.loads(connection.execute('SELECT payload FROM state WHERE id=1').fetchone()[0])
         finally:
             connection.close()
 
@@ -108,6 +117,8 @@ class Registry:
         require(isinstance(a.get('memory',{}),dict) and len(json.dumps(a.get('memory',{}))) <= 16000,
                 'invalid_slot_memory')
         with self.transaction() as state:
+            require('kanban' not in state or a.get('adopt_existing') is True,
+                    'KANBAN_ACTIVE: use worker_start.py for a task card and isolated attempt, not an exclusive worker lease')
             require(state['mode']=='ACTIVE' or a.get('adopt_existing') is True,
                     'reconcile_existing_agents_before_new_dispatch')
             require(not any(s['agent_id']==a['agent_id'] for s in state['slots']), 'agent_already_registered')

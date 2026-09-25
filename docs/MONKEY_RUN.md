@@ -1,6 +1,20 @@
 # Work continuously toward the playable monkey
 
-## Ready implementation work: astra-0011
+## Current workflow: ten task cards and PR feedback â€” astra-0012
+
+Follow [KANBAN.md](../tools/monkey_campaign/KANBAN.md). This replaces the prior exclusive
+worker-slot queue, timer expiry and report-only completion rules below. The ten slots
+hold active TASK CARDS. Agents may compete in isolated attempts. A card completes only
+after lead acceptance and a verified merge of that exact PR head; completion and refill
+are atomic. A report, elapsed time, stale worker or first PR submission is not a winner.
+
+Workers run startup, read the task-ID inbox, implement in their own attempt workspace,
+submit a PR, and move to another card. Review corrections stay on the task ID so the
+original worker or another worker can fix them. The lead reviews/merges, leaves messages,
+refills eligible work and steers the plan when the operator engages the lead. There is
+no unattended lead loop, no 20-minute takeover, and no top-of-hour task expiry.
+
+## Prior rollout notes: astra-0011
 
 The queue now includes six independent bounded IMPLEMENTATION briefs, not just the
 three existing diagnostics. A worker may claim these directly; no coordinator identity
@@ -76,7 +90,7 @@ execute the permitted startup steps, record the exact failure and preserve the r
 Explicit later operator requests to review only, pause or stop override this default.
 
 
-## START HERE — the only onboarding entry
+## START HERE â€” the only onboarding entry
 
 You have been assigned to advance the approved playable monkey in the forest. Start
 now; do not ask the operator for another goal or a choice of startup activities.
@@ -104,8 +118,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 11,
-  "revision_id": "astra-0011",
+  "revision": 13,
+  "revision_id": "astra-0013",
   "scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -131,12 +145,16 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/DOC_AUDIT.md",
     "tools/monkey_campaign/execution_plan.py",
     "tools/monkey_campaign/queue_control.py",
-    "tools/monkey_campaign/CONTINUOUS_EXECUTION.md"
+    "tools/monkey_campaign/CONTINUOUS_EXECUTION.md",
+    "tools/monkey_campaign/kanban.py",
+    "tools/monkey_campaign/kanban_cli.py",
+    "tools/monkey_campaign/KANBAN.md",
+    "tools/monkey_campaign/KANBAN_BACKLOG.json"
   ]
 }
 CHIMERA_LEAD_CONTROL -->
 
-## Current lead instructions: astra-0011
+## Current lead instructions: astra-0013
 
 The operator designates **Astra/Codex as lead developer**. The lead publishes overall
 instructions here; workers report progress and propose changes separately. Only the
@@ -167,11 +185,9 @@ activity. Follow the onboarding's mandatory commands and concrete bootstrap-fail
   This specification is published; automatic game/model handoff is not yet deployed.
   Existing training stays protected. Do not substitute forced termination for a failed
   graceful release, or assume an unloaded model cannot reload on the next request.
-- **Worker deadlines:** next top of the hour on **Windows system Central Time**, with
-  daylight saving handled by Windows. A :40 registration expires at the next :00;
-  reports do not extend it. Preserve work and confirm cessation before reassigning.
+- **Task slots:** ten active cards; no timer or exclusive worker lease. Read task inboxes before edits and PR updates. Existing source/resource ownership survives migration.
 
-Before dispatch, after completion, before publication and at the hour boundary, read
+Before dispatch, after completion, before publication, read
 `instruction_state.py` and the current policy bundle. A new revision requires the
 coordinator's own acknowledgement; the lead never fabricates a read receipt for GLM.
 The bundle fingerprint detects drift relative to a saved acknowledgement. Lead-only

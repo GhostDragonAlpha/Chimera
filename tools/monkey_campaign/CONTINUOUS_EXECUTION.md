@@ -1,3 +1,5 @@
+> astra-0012: use KANBAN.md. PR submission and task-ID inboxes replace the old exclusive queue and hourly handoff below. Reports do not close cards.
+
 > astra-0011: bounded_implementation briefs explicitly grant code/test writes in their
 > unique task output directory, including pinned dependency extraction and test fixtures.
 > Required source/test artifacts are hash-bound at submission and rechecked by review.

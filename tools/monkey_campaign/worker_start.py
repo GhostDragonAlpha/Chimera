@@ -14,6 +14,7 @@ from agent_slots import Registry
 from task_queue import claim_next, finish, checkpoint
 from instruction_state import decode
 from execution_plan import build_plan
+import kanban
 
 
 def intake(box, instructions, identity, workspace, orientation):
@@ -31,11 +32,14 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--arrival-id',help='Reuse the arrival identity printed on the first run.')
     parser.add_argument('--check',action='store_true',help='Verify startup without registering an arrival.')
+    parser.add_argument('--task',help='Choose an active Kanban task ID, including one needing corrections.')
     action=parser.add_mutually_exclusive_group()
     action.add_argument('--finish',type=Path,help='Completion arguments JSON; submit evidence and take next work.')
     action.add_argument('--checkpoint',type=Path,help='Cessation/checkpoint arguments JSON; recover next window.')
+    action.add_argument('--submit-pr',type=Path,help='Record PR arguments JSON, then take next card.')
+    action.add_argument('--park',type=Path,help='Preserve attempt and cease writes, then take another card.')
     args=parser.parse_args()
-    if args.check and (args.finish or args.checkpoint):
+    if args.check and (args.finish or args.checkpoint or args.submit_pr or args.park):
         raise ValueError('check_cannot_submit_handoff')
     project=Path(__file__).resolve().parents[2]
     instructions=inspect(project)
@@ -68,10 +72,11 @@ def main():
     out['orientation_identity_note'] = 'Engine current/next terms are scene hierarchy entries, never agent or authenticated session identities.'
     if not args.check:
         identity=args.arrival_id or os.environ.get('CHIMERA_WORKER_ID')
-        if (args.finish or args.checkpoint) and not identity:
+        if (args.finish or args.checkpoint or args.submit_pr or args.park) and not identity:
             raise ValueError('existing_arrival_id_required_for_handoff')
         identity=identity or 'arrival-'+uuid.uuid4().hex
         registry=Registry(DEFAULT_ROOT)
+        kanban_enabled='kanban' in registry.readonly()
         if args.finish or args.checkpoint:
             path=args.finish or args.checkpoint
             with path.open('rb') as stream: raw=stream.read(65537)
@@ -80,6 +85,24 @@ def main():
             if data.get('agent_id')!=identity: raise ValueError('handoff_identity_mismatch')
             out['handoff']=(finish if args.finish else checkpoint)(registry,data)
         out['arrival_id']=identity
+        if kanban_enabled:
+            if args.submit_pr or args.park:
+                with (args.submit_pr or args.park).open('rb') as stream:raw=stream.read(65537)
+                if len(raw)>65536:raise ValueError('handoff_arguments_size_limit')
+                data=decode(raw)
+                if data.get('agent_id')!=identity:raise ValueError('handoff_identity_mismatch')
+                out['handoff']=(kanban.submit if args.submit_pr else kanban.park)(registry,data)
+            target=args.task or (out.get('handoff',{}).get('task') if args.finish else None)
+            allocation=kanban.join(registry,identity,target)
+            out.update(assignment=allocation,task_claimed=allocation['state']=='ASSIGNED',
+                next_action=allocation['next_action'],board=kanban.read(registry),
+                continuation='Read task inbox before edits and each PR update. Submit a PR with --submit-pr, then take another card. No timer or exclusive task lease. Lead closes the card only after review and verified merge.')
+            if 'attempt' in allocation:
+                out['pr_submission_template']={'agent_id':identity,'task_id':allocation['task_id'],
+                    'attempt_id':allocation['attempt']['id'],'criteria_sha256':allocation['attempt']['criteria_sha256'],
+                    'pr_url':'https://github.com/GhostDragonAlpha/Chimera/pull/NUMBER','head_sha':'<full 40-character PR head SHA>'}
+            print(json.dumps(out,indent=2));return
+        if args.submit_pr or args.park:raise ValueError('kanban_not_initialized')
         allocation = claim_next(registry,queue['tasks'],identity,instructions['revision_id'],instructions['bundle_sha256'])
         out['assignment'] = allocation
         out['task_claimed'] = allocation['state'] == 'ASSIGNED'

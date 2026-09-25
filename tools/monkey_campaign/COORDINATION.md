@@ -1,3 +1,5 @@
+> astra-0012: KANBAN.md governs ten TASK cards, PR feedback, competing attempts and merge/refill. Older worker-slot commands below serve legacy handoff only. No timer or exclusive new task lease.
+
 > astra-0009: use CONTINUOUS_EXECUTION.md for submit -> independent review -> next
 > assignment, explicit hourly checkpoint recovery, bounded follow-up publication and
 > correction. execution_plan.py covers every sealed task; commission each first unmet
@@ -89,48 +91,10 @@ The coordinator first adopts the ACTUAL existing agents using `adopt_existing: t
 then reconciles the registered count against a real inventory reference. After that,
 new agents can register normally. Do not respawn current W/R agents to populate slots.
 
-## Heartbeat: top of each hour, Windows system Central Time
+## No task timer
 
-The operator chose the system clock and aligned hourly boundaries. Windows was checked
-as `Central Standard Time` / Central Time (US & Canada), with daylight saving enabled
-by the system's normal zone rules. Display local time with its UTC offset; retain UTC
-for unique window identity, including the repeated autumn hour. Do not hard-code CST
-as UTC-6 year-round.
-
-Every assignment expires at the NEXT top of the hour. An agent registering at 14:40
-Central gets a 15:00 deadline. Registration exactly at 15:00 gets a 16:00 deadline.
-This is not a rolling 60 minutes and not a promise of a full hour for a late join.
-Progress reports do not move the deadline.
-
-At :00 the coordinator checks all ten slots and its lead-instruction revision. Save
-checkpoints BEFORE that boundary. The registry marks expired assignments
-EXPIRED_RECOVERY_REQUIRED and rejects their normal progress updates. It preserves
-the last checkpoint/memory and keeps the slot occupied. Time expiry is not proof the
-agent, build or child process actually stopped.
-
-For each expired slot:
-
-1. Request that the owned worker stop/checkpoint through the existing execution mechanism.
-   Fence its native claim/publication path through the existing authority where available.
-2. Confirm actual worker completion/cessation and preserve unique work/evidence. Never
-   infer cessation from silence, kill by process name, or terminate an unrelated/protected
-   training job. Long training is a separately owned job, not a disposable agent lease.
-3. Release using the exact old slot/generation and preservation reference with a truthful
-   `worker_finished_confirmed: true`. That stores a last_handoff and frees the model slot;
-   it does NOT release native worktree/GPU ownership or delete files.
-4. Register the same agent for an authorized new bounded assignment or assign a replacement,
-   which receives a new generation and the next hour deadline. Stale generations refuse.
-
-If cessation cannot be established, retain the recovery hold and use other eligible
-slots. A hard time boundary revokes this reporting assignment; it cannot by itself revoke
-filesystem writes by a process sharing the operator's Windows account.
-
-Deadline checks run whenever this helper is invoked. No background watcher or automatic
-GLM wakeup is installed by these files. The continuously running coordinator must use its
-supported timed wait/completion mechanism, wake at the next hour even if no child completed,
-and run `status`. A STATUS snapshot can be old; always inspect its timestamp or refresh it.
-The lead must not claim automatic pickup or hourly execution until real acknowledgement
-and hour-boundary records demonstrate it. User stops and quota/platform limits still apply.
+The operator replaced timed worker slots with ten Kanban task cards. See KANBAN.md.
+No elapsed-time event completes, evicts or reassigns a card.
 
 ## Commands and field contracts
 

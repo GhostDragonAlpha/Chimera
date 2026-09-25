@@ -1,3 +1,5 @@
+> astra-0012: use KANBAN.md. PR submission and task-ID inboxes replace the old exclusive queue and hourly handoff below. Reports do not close cards.
+
 > astra-0011: startup offers ready implementation as well as diagnostic/review briefs.
 > Execute code/tests where the brief explicitly grants its unique output workspace;
 > no coordinator impersonation or new permission is required. --finish hashes required

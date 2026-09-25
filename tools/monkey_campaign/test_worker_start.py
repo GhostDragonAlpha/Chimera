@@ -12,6 +12,17 @@ from suggestion_box import SuggestionBox
 
 
 class StartupTests(unittest.TestCase):
+    def test_kanban_start_returns_card_and_inbox_without_worker_lease(self):
+        import kanban
+        kanban.initialize(self.registry,[dict(id='TASK',objective='Implement task',falsifier='wrong result',
+            steps=['implement'],completion='Reviewed merged PR')],kanban.LEAD)
+        kanban.post(self.registry,dict(task_id='TASK',author=kanban.LEAD,body='Fix the exact input case'))
+        result=self.run_start('--arrival-id','kanban-worker')
+        self.assertEqual(result['assignment']['task_id'],'TASK')
+        self.assertEqual(result['assignment']['task_inbox'][0]['body'],'Fix the exact input case')
+        self.assertEqual(self.registry.snapshot()['registered_agents'],0)
+        self.assertIn('pr_submission_template',result)
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
