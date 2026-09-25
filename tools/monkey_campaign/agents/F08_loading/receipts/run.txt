@@ -1,0 +1,68 @@
+M-F08 verify_loading -- verdict GREEN (66/66 checks pass)
+
+PASS  integrity: committed files match prereg table BEFORE the suite  {'clearing': '18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1', 'terrain': '446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52', 'trunk': '94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1', 'routes': '28dff2b33e74fcc4103ac3699899b0937f6975323758d1fa142092704bf4496c'}
+PASS  T1 in-process recompile x2 byte-identical  4/4 pairs equal
+PASS  T1 recompiled bytes == committed bytes (all four)  {'clearing': 13112, 'terrain': 877752, 'trunk': 16634, 'routes': 8495}
+PASS  T1 recompiled self-pins verify (4/4)  house digest law
+PASS  T1 byte counts == prereg frozen table  {'clearing': 13112, 'terrain': 877752, 'trunk': 16634, 'routes': 8495}
+PASS  T1 fresh-process run 1 matches committed digests  initial_state_sha256=c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
+PASS  T1 fresh-process run 2 matches committed digests  initial_state_sha256=c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
+PASS  T1 fresh-process run 3 matches committed digests  initial_state_sha256=c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
+PASS  T1 three fresh-process receipts byte-identical  stdout sha facca270dcd4fd9e7cce5cea913c56baf7816c9aea747bf91aaecd77f7cc01f5
+PASS  T2 sandbox happy-path control loads green  faithful 4-file copy
+PASS  T2 omit clearing -> f08_missing_artifact  code=f08_missing_artifact artifact=clearing cause=None
+PASS  T2 omit terrain -> f08_missing_artifact  code=f08_missing_artifact artifact=terrain cause=None
+PASS  T2 omit trunk -> f08_missing_artifact  code=f08_missing_artifact artifact=trunk cause=None
+PASS  T2 omit routes -> f08_missing_artifact  code=f08_missing_artifact artifact=routes cause=None
+PASS  T3 body-edit(clearing) refuses by name  code=f08_invalid_artifact artifact=clearing cause=f01_digest_mismatch
+PASS  T3 pin-edit(clearing) refuses by name  code=f08_invalid_artifact artifact=clearing cause=f01_digest_mismatch
+PASS  T3 re-forge(clearing) refuses by name  code=f08_recompile_drift artifact=clearing cause=None
+PASS  T3 body-edit(terrain) refuses by name  code=f08_invalid_artifact artifact=terrain cause=f02_digest_mismatch
+PASS  T3 pin-edit(terrain) refuses by name  code=f08_invalid_artifact artifact=terrain cause=f02_digest_mismatch
+PASS  T3 re-forge(terrain) refuses by name  code=f08_recompile_drift artifact=terrain cause=None
+PASS  T3 body-edit(trunk) refuses by name  code=f08_invalid_artifact artifact=trunk cause=f03_digest_mismatch
+PASS  T3 pin-edit(trunk) refuses by name  code=f08_invalid_artifact artifact=trunk cause=f03_digest_mismatch
+PASS  T3 re-forge(trunk) refuses by name  code=f08_recompile_drift artifact=trunk cause=None
+PASS  T3 body-edit(routes) refuses by name  code=f08_invalid_artifact artifact=routes cause=f07_digest_mismatch
+PASS  T3 pin-edit(routes) refuses by name  code=f08_invalid_artifact artifact=routes cause=f07_digest_mismatch
+PASS  T3 re-forge(routes) refuses by name  code=f08_recompile_drift artifact=routes cause=None
+PASS  T3 truncated-json(clearing) refuses by name  code=f08_invalid_artifact artifact=clearing cause=f01_invalid_json
+PASS  T4 initial_state_sha256 identical in-process x2  c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
+PASS  T4 initial_state_sha256 matches fresh processes  c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
+PASS  T4 scene_seed == declared  4598321
+PASS  T4 spawn position == declared  [0.0, 0.0, 0.0]
+PASS  T4 spawn terrain height == declared  0.0
+PASS  T4 spawn gradient == declared  [0.0, 0.0]
+PASS  T4 spawn envelope == declared  0.25
+PASS  T4 trunk site == declared  [11.976783, 0.0, 2.471766]
+PASS  T4 trunk radius == declared  0.037
+PASS  T4 trunk height == declared  1.158
+PASS  T4 route spawn == declared  [0.0, 0.0, 0.0]
+PASS  T4 route axis == declared  [11.976783, 2.471766]
+PASS  T4 straight length == declared  12.229185
+PASS  T4 tangent count == declared  10
+PASS  T4 tangent ids == declared  ['R1L', 'R1R', 'R2L', 'R2R', 'R3L', 'R3R', 'R4L', 'R4R', 'R5L', 'R5R']
+PASS  T4 grid step == declared  0.05
+PASS  T4 grid shape == declared  (801, 801)
+PASS  T4 blockers == declared  ['B1', 'B2']
+PASS  T4 extent half width == declared  20.0
+PASS  T4 surfaces == declared  ['trunk_01.lateral', 'trunk_01.base_cap', 'trunk_01.top_cap']
+PASS  T4 record carries the four proven digests  derived_from
+PASS  T5 teardown releases 7/7 by name, engine slot FIRST  ['engine_shutdown', 'initial_state', 'terrain_surface', 'routes', 'trunk', 'terrain', 'clearing']
+PASS  T5 post-teardown audit names zero live resources  []
+PASS  T5 engine double released exactly once  releases=1
+PASS  T5 direct handles dropped  all None
+PASS  T5 second teardown is a named no-op (never a second teardown)  engine releases still 1
+PASS  T5 failing release fires f08_teardown_leak  code=f08_teardown_leak artifact=engine_shutdown
+PASS  T5 scene stays auditable after a leak  ['clearing', 'terrain', 'trunk', 'routes', 'terrain_surface', 'initial_state', 'engine_shutdown']
+PASS  T5 retry teardown completes clean  engine releases=2
+PASS  T5 double proof: every release issued exactly once, engine first  ['engine_shutdown', 'initial_state', 'terrain_surface', 'routes', 'trunk', 'terrain', 'clearing']
+PASS  T5 double proof: no resource survives  []
+PASS  T6 height_at(0,0) == 0.0 (spawn on flat base ground)  0.0
+PASS  T6 gradient at spawn == (0,0)  (0.0, 0.0)
+PASS  T6 gradient at trunk site == (0,0)  (0.0, 0.0)
+PASS  T6 worst_triangle_slope == F02 receipt 0.042522289331596436  0.042522289331596436 at (17.0, 7.0)
+PASS  T6 extent law strict > (20.0 in, 20.05 out)  inside/outside
+PASS  T6 query past the extent refuses f02_outside_extent  f02_outside_extent
+PASS  T6 W10 context-manager consumption works and cleans up  h=0.0 live=[]
+PASS  integrity: committed files unchanged AFTER the suite  {'clearing': '18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1', 'terrain': '446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52', 'trunk': '94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1', 'routes': '28dff2b33e74fcc4103ac3699899b0937f6975323758d1fa142092704bf4496c'}
