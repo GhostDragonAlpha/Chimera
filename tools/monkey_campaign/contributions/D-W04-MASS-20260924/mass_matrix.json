@@ -1,0 +1,136 @@
+{
+  "schema": "chimera-monkey-mass-lineage-matrix-v1",
+  "card": "D-W04-MASS-20260924",
+  "attempt": "26382263eb094eaf98a8354a2fe8592c",
+  "date": "2026-09-25",
+  "source_repo": "E:/ChimeraWork/monkey-play-20260924 (READ-ONLY; all citations file:line@commit)",
+  "verdict": "NO",
+  "verdict_statement": "The frozen walking acceptance denominator is NOT bound to the actual training body: acceptance consumes 13824.5 kg (playable-slice membrane inventory) while the trainer env simulates the 10.038 kg Oku gait walker; mismatch ratio 1377.2166 (recomputed 13824.5/10.038).",
+  "cot_expression": {
+    "text": "cot = work / (M_BODY_KG * dist) if dist > 0.0 else INF  [with M_BODY_KG = 13824.5]",
+    "code_citation": "tools/science_funnel/first_skill/acceptance.py:43 @ 8294053b",
+    "constant_citation": "tools/science_funnel/first_skill/acceptance.py:18 @ 8294053b",
+    "blob": "3df32b59b09411721913229c8df4eb3efa04379e",
+    "corroborating": [
+      "tools/science_funnel/validation/first_skill_prestage_20260922/RUNBOOK.md:76 @ 8294053b (CoT = E_ledger/(13824.5 kg x d_reached))",
+      "tools/science_funnel/validation/first_skill_prestage_20260922/run_manifest.json:54 @ 8294053b (m_body = 13824.5 kg)"
+    ],
+    "blob_stable_through": ["8294053b", "82ebea49", "eab5de13", "a62b286e"],
+    "absent_at": ["43b599a7", "33e7a444"]
+  },
+  "masses": [
+    {
+      "literal": "13824.5",
+      "kg": 13824.5,
+      "semantic_identity": "Playable-slice membrane creature material inventory: 13.824536 m^3 sealed matter-kernel cells at water density (1000 kg/m^3); also the slice engine membrane body-mass default",
+      "derivation_recomputed": "13.824536 * 1000 = 13824.536 -> frozen literal 13824.5 (0.036 kg below sealed sum); creature-graph band-compartment variant sums 13.824598 -> 13824.598",
+      "definitions": [
+        {"file": "docs/evidence/agent_fleet/MATTER_KERNEL/SEAL_PREREGISTRATION.md", "line": 127, "commit": "0a1a7c5f", "role": "origin: sealed cells 13.824536 m^3"},
+        {"file": "ChimeraEngine/engine/membrane_tick.hpp", "line": 188, "commit": "0a1a7c5f", "role": "first code: float mass_kg_ = 13824.5f"},
+        {"file": "ChimeraEngine/engine/membrane_tick.hpp", "line": 423, "commit": "a62b286e", "role": "membrane default mass in current engine"},
+        {"file": "ChimeraEngine/engine/membrane_tick.cpp", "line": 1684, "commit": "a62b286e", "role": "constexpr LIMB_MASS_TARGET_KG = 13824.5f"},
+        {"file": "tools/science_funnel/first_skill/acceptance.py", "line": 18, "commit": "8294053b", "role": "THE CoT DENOMINATOR (M_BODY_KG)", "blob": "3df32b59b09411721913229c8df4eb3efa04379e"},
+        {"file": "tools/gait_verify.py", "line": 110, "commit": "a62b286e", "role": "slice movement-law root-DOF mass (MASS_KG)"},
+        {"file": "tools/report_first_skill_checkpoint.py", "line": 120, "commit": "a62b286e", "role": "reported-CoT label constant"},
+        {"file": "tools/creature_graph/seed/build_seed.py", "line": 691, "commit": "a62b286e", "role": "creature_graph param.mass_inventory"}
+      ],
+      "consumers": [
+        "first_skill acceptance/ranking (via M_BODY_KG)",
+        "RUNBOOK step 5 + run_manifest hard_conditions (documentation of the same denominator)",
+        "report_first_skill_checkpoint.py (external CoT report label)",
+        "slice engine membrane tick dynamics (mass_kg_ / LIMB_MASS_TARGET_KG)",
+        "tools/gait_verify.py slice movement law",
+        "tools/xpbd_diagnostic.py:308 (XPBD lumped-mass target)",
+        "creature_graph param.mass_inventory"
+      ],
+      "non_consumers": [
+        "trainer env dynamics: walker_env.cu includes ONLY walker_kernels.cuh; build_dll.ps1 compiles walker_env.cu alone; the pinned copy tools/science_funnel/typeb_gpu/engine_inc/membrane_tick.hpp:423 carries the literal but is NOT a walker_env.dll build input"
+      ],
+      "is_training_body": false,
+      "is_cot_denominator": true
+    },
+    {
+      "literal": "10.038",
+      "kg": 10.038,
+      "semantic_identity": "THE TRAINING BODY: gait walker rigid assembly (ground + pelvis + 2x thigh/shank/foot/toe + 2x forelimb struts) authored from Oku 2021 (Commun Biol 4:308) Table 1 segment masses",
+      "derivation_recomputed": "HAT 8.184 + 2 x (0.557 + 0.269 + 0.080 + 0.021) = 8.184 + 1.854 = 10.038 kg; weight 10.038 x 9.80665 = 98.4391527 N (matches receipt_wave8_trunk_vault.json:26 verbatim); scene carve cancels: (8.184 - 2x0.406001) + 1.854 + 2x(0.2737+0.1323) = 10.037998",
+      "definitions": [
+        {"file": "tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json", "line": 11, "commit": "33e7a444", "role": "body_model.mass_kg = 10.038", "blob": "8b6d75fbd408a8e1e2db31cdf15fc4a104b9a36a"},
+        {"file": "docs/research/20260918_monkey_assembly_derivation.md", "line": 112, "commit": "33e7a444", "role": "assembly arithmetic 8.184 + 2x0.927 = 10.038"},
+        {"file": "tools/science_funnel/gait_scene.py", "line": 72, "commit": "33e7a444", "role": "scene builder: pelvis = HAT - 2x0.406001; struts 0.2737/0.1323", "blob": "5c8792aef60f9eb2eb2e10549546ff12a2efe21b"},
+        {"file": "tools/science_funnel/validation/k_fill_20260920/derive_k_fill.py", "line": 65, "commit": "33e7a444", "role": "OKU_MODEL_TOTAL_KG = 10.038 (demand anchor)", "blob": "bfce9681049b7d9354bd498fbf011a633f0ed26f"}
+      ],
+      "consumers": [
+        "trainer env dynamics chain (all @ a62b286e): .tmp/gait-walker/scene.json -> typeb_gpu/walker_model.py:149-155 (self.body_mass[i] = float(b['mass_kg'])) -> typeb_gpu/walker_nb_env.py:35-36 (build_model_arrays, mdl[OF_body_mass=90]) -> typeb_gpu/walker_kernels.cuh:401-402,826 (m = body_mass[b]) -> work battery bat[12] -> bat_sum -> rb[e*6+5] (kernels 4963-4972) -> tools/train_first_skill.py:379 (work_J = rb[:,5] - work0) -> acceptance.py:42 (work)",
+        "k_fill_book D3 demand anchor; ankle_adjudication demand_source_animal_kg (adjudication_table.json:62,104)"
+      ],
+      "non_consumers": [
+        "acceptance.py CoT denominator (consumes work_J measured on this body but divides by 13824.5)",
+        "report_first_skill_checkpoint.py label"
+      ],
+      "excluded_false_positive": "typeb_gpu/walker_numba_split.py:511 '-10.038' is a freefall acceleration comment (m/s^2), not a mass",
+      "is_training_body": true,
+      "is_cot_denominator": false
+    },
+    {
+      "literal": "6.15",
+      "kg": 6.15,
+      "semantic_identity": "Turnquist & Kessler 1989 adult-female rhesus band midpoint (band 5.4-6.9 kg): the muscle/deposit BOOK mass context ('the game's 6.15 kg animal'); NOT the walker's rigid mass",
+      "derivation_recomputed": "(5.4 + 6.9) / 2 = 6.15 exactly; k-fill D3 target (2x0.927/10.038) x 6.15 = 1.135894 kg (matches k_fill_20260920/receipt.json:232)",
+      "definitions": [
+        {"file": "tools/science_funnel/validation/k_fill_20260920/derive_k_fill.py", "line": 71, "commit": "33e7a444", "role": "AF_MIDPOINT_KG = 6.15", "blob": "bfce9681049b7d9354bd498fbf011a633f0ed26f"},
+        {"file": "tools/science_funnel/validation/ankle_adjudication_20260920/derive_adjudication.py", "line": 74, "commit": "33e7a444", "role": "BAND_MIDPOINT_KG = 6.15 (Turnquist & Kessler 1989 band)", "blob": "53c324f354576f32d99bbc67b70fce2dc7744f6a"},
+        {"file": "tools/science_funnel/validation/deposit_mass_20260921/deposit_mass_book.json", "line": 16, "commit": "33e7a444", "role": "derived_context_note: midpoint of pinned adult-female band"}
+      ],
+      "consumers": [
+        "k_fill_book D3 mass set (deposit segment masses scaled to the 6.15 kg context)",
+        "deposit_mass_book expectation envelope",
+        "ankle adjudication verdict-B demand-mass context (game_band_midpoint_kg)",
+        "README.md:391, docs/THE_SHIP_GOAL.md:167 (narrative citations)"
+      ],
+      "non_consumers": [
+        "trainer env dynamics",
+        "acceptance.py CoT denominator",
+        "gait walker rigid bodies"
+      ],
+      "is_training_body": false,
+      "is_cot_denominator": false
+    },
+    {
+      "literal": "17.039978509953905",
+      "kg": 17.039978509953905,
+      "semantic_identity": "Buffy transported assembly, class transported_source_effective: declared owned, counted_mass_kg=0.0, dynamics_trial_readiness false - explicitly NOT counted into any certified body",
+      "derivation_recomputed": "producer output all_transported (forearm/assembly packet); counted mass recomputed by readiness as 0.0 by law, not by arithmetic",
+      "definitions": [
+        {"file": "agent_logs/local_buffy_qwen/assembly_handoff_02.md", "line": 83, "commit": "UNTRACKED in E:/PythonChimera; verbatim extract @ 8feea42a tools/monkey_campaign/agents/P02P03/receipts/buffy02_mass_lines.txt", "role": "transported_source_effective declaration"},
+        {"file": "agent_logs/local_buffy_qwen/assembly_handoff_02.md", "line": 184, "commit": "same", "role": "counted_mass_kg=0.0, uncounted_mass_kg=17.039978509953905"},
+        {"file": "agent_logs/local_buffy_qwen/assembly_handoff_02.md", "line": 210, "commit": "same", "role": "components_with_validated_tissue_mass = 0"},
+        {"file": "forearm_package/baseline_snapshot/runs/actual_monkey_fit.json", "line": 52460, "commit": "43b599a7", "role": "producer output all_transported = 17.039978509953905"},
+        {"file": "tools/assembly_handoff/produce_inputs.py", "line": 109, "commit": "43b599a7", "role": "producer: reported 17.04 kg of transported + root-reference"}
+      ],
+      "consumers": [
+        "assembly-handoff readiness accounting only (mass ownership refused -> no manifest emitted; readiness false)"
+      ],
+      "non_consumers": [
+        "trainer env, acceptance math, walker body, k-fill/deposit books, slice engine - all deliberately separate (map B06; decisions memo 20260924 section 2)"
+      ],
+      "excluded_false_positive": "agent_logs/stand_survival*.json '17.04' entries are a parameter-sweep linspace member (16.94..17.06 step 0.02), not a body mass",
+      "is_training_body": false,
+      "is_cot_denominator": false
+    }
+  ],
+  "cross_checks": {
+    "mismatch_ratio": {"value": 1377.2166, "derivation": "13824.5 / 10.038", "meaning": "reported absolute CoT understated by this factor vs work/(10.038 x d) of the simulated body"},
+    "selection_invariance": "cot_band_ok and first_skill_ranking compare policy vs baseline CoTs carrying the SAME 1/13824.5 factor -> all pass/fail decisions invariant to the constant; correction changes no decision and requires no retraining",
+    "numerators_body": "work_J is the walker engine's own mechanical-work ledger: bat_sum = sum(bat[0..11]) over 12 drives (walker_kernels.cuh:4963-4972 @ a62b286e) -> rb[e*6+5] -> train_first_skill.py:379",
+    "work_J_citation": "tools/train_first_skill.py:379 @ a62b286e ('work_J': float(st['rb'][i,5] - self._work0[i]))"
+  },
+  "prior_receipt_reconciliation": {
+    "source": "tools/monkey_campaign/agents/P02P03/report.md @ 8feea42a (branch monkey-play-20260924)",
+    "finding": "CONFIRMED: prior UNRECONCILED flag on M_BODY_KG is correct; this card adds the full execution-path proof, the 1377.2166x ratio, the walker_env.dll non-compilation of the membrane header, and selection-invariance; 10.038/6.15/17.04 lineages confirmed at cited sites; two pin nuances recorded (8294053b vs 73f3a860; untracked buffy file)"
+  },
+  "smallest_correction": {
+    "form": "ONE new registration (RUNBOOK law: frozen-field change is never an amendment): M_BODY_KG -> 10.038 kg in acceptance.py:18, run_manifest.json:54 definition, RUNBOOK.md step 5, test_first_skill_prestage.py:70 assertion, report_first_skill_checkpoint.py:120 label; recommended stronger form binds the denominator to the compiled scene's assembly_mass_kg instead of any literal",
+    "effect_on_decisions": "none (scale-invariant band); reported CoT values rescale x1377.2166"
+  }
+}
