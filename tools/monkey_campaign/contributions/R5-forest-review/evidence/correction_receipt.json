@@ -1,0 +1,188 @@
+{
+  "schema": "r5.correction.receipt.v2",
+  "attempt": {
+    "id": "9d1066c32ba143beac5cde244e003244",
+    "kanban_card": "R5-forest-review",
+    "criteria": "6198e40ba1cfe37059275bc908e55e1e4fa804d58d418bcc21ea8520e4753ae6",
+    "branch": "branch-10",
+    "base_head": "d6ad8f098b9d892ba5d9c3a69290a13580897c86",
+    "base_head_subject": "R5-forest-review correction: forest front verified STATIC only — F05/F06 never started, W10 NOT ready",
+    "workspace_root": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\R5-forest-review\\9d1066c32ba143beac5cde244e003244"
+  },
+  "findings_addressed": {
+    "msg-b935f0d9554d4924aa68f6f4f3872abd": {
+      "resolution": "measure_evidence_v2.py: returncode-checked git everywhere (refusal exit 3), empty-inventory guard (ls-files accepted empty only with exit 0 + rev-parse --verify HEAD sanity), 40-hex blob-id validation + hash-object comparison, pinned revision as required CLI argument with per-path status --porcelain, explicit three-convention line-ending policy with named modified_cited_source failure; failing controls (a) git-failure and (b) modified-cited-source recorded in evidence/control_results.json; original four files preserved byte-for-byte; this receipt is the new correction record.",
+      "probe_availability": "E:/PythonChimera/pr-review-20260925/ (probe.py, REVIEW.md) does NOT exist on disk as of 2026-09-25 (ls: No such file or directory, exit 2). The finding text itself was used as the requirement source; recorded honestly rather than silently skipped."
+    },
+    "msg-da228e217fe645d792ae98dba350eaf1": {
+      "resolution": "all new outputs were authored directly inside this attempt workspace (checkout contribution dir) and copied to the attempt workspace root; full source revisions, checked git commands and blob/file hashes are recorded here; committed vs dirty worktree bytes distinguished by the v2 pinned-revision run (cited paths clean; 7 unrelated dirty/untracked lines recorded)"
+    }
+  },
+  "source_revisions": {
+    "pinned_measure_revision": {
+      "sha": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+      "subject": "monkey-play: R5 forest-front review integrated — FRONT APPROVE-WITH-NOTES, W10 SCENE-READY (70/70 re-run from scratch; one world; trunk base flush proven; N1 fixed: R0 note corrected via recipe amendment + declaration regenerated 8495->8630B + F08 frozen-table Amendment 3; re-verified 66/66 + routes 9/9)\n",
+      "argument": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+      "is_head_of_play_worktree": true,
+      "role": "revision v2 measured against (play worktree HEAD at run time)"
+    },
+    "claim_commit_front_complete": {
+      "sha": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "subject": "monkey-play: F08 integrated — repeatable forest loading (66/66; recompile-not-copy proven across fresh processes; named refusal matrices; deterministic initial state; teardown on the existing machinery). FOREST FRONT F01-F08 COMPLETE; W10 scene-ready",
+      "role": "F08 integration / FOREST FRONT F01-F08 COMPLETE claim"
+    },
+    "claim_commit_r5_w10": {
+      "sha": "dc7ea81111d98f32a4d88252c59f2fb8cf3c7399",
+      "subject": "monkey-play: R5 forest-front review integrated — FRONT APPROVE-WITH-NOTES, W10 SCENE-READY (70/70 re-run from scratch; one world; trunk base flush proven; N1 fixed: R0 note corrected via recipe amendment + declaration regenerated 8495->8630B + F08 frozen-table Amendment 3; re-verified 66/66 + routes 9/9)",
+      "role": "R5 review integration / W10 SCENE-READY claim"
+    },
+    "original_deliverable_bytes_source": {
+      "repo": "Chimera (branch-10, PR #115 head)",
+      "sha": "d6ad8f098b9d892ba5d9c3a69290a13580897c86",
+      "role": "the four ORIGINAL files (README.md, corrected_review.md, evidence/identities.json, tools/measure_evidence.py) are tracked at this sha and untouched by this correction",
+      "original_blobs": {
+        "README.md": "b718a68cb1544392d851fecf418cead1509dbbdc",
+        "corrected_review.md": "03dc4a761de0db7bd98239a5911e428438f37a6d",
+        "evidence/identities.json": "16b935865ce30cc3512e85e0a7eea2ce16c107d8",
+        "tools/measure_evidence.py": "80a775f75808dcd279fa35a9c294937d58a4f51d"
+      }
+    },
+    "note": "9afbddcd is the FRONT-COMPLETE claim; dc7ea811 is the later R5-integration head AND the measure pin — both are recorded so the reviewed_head cannot be misread as 9afbddcd alone (finding msg-da228...)."
+  },
+  "static_native_verdict": {
+    "changed": false,
+    "statement": "F02/F03/F04 verified STATIC only (native heightfield/trunk contact NOT established); F05/F06 never started; W10 NOT ready. This correction fixes evidence verification only; the forest verdict is not re-adjudicated."
+  },
+  "v2_run": {
+    "command": "python -B tools/monkey_campaign/contributions/R5-forest-review/tools/measure_evidence_v2.py E:/ChimeraWork/monkey-play-20260924 dc7ea81111d98f32a4d88252c59f2fb8cf3c7399 evidence/",
+    "exit_code": 0,
+    "summary": "30/30 evidence checks green",
+    "checks_total": 30,
+    "original_13_check_parity": "all 13 v1 check names present and green",
+    "cited_paths_clean": true,
+    "play_worktree_dirty_elsewhere": [
+      " M tools/monkey_campaign/agents/F07_obstacles/receipts/determinism.txt",
+      " M tools/monkey_campaign/agents/F07_obstacles/receipts/run.json",
+      " M tools/monkey_campaign/agents/F07_obstacles/receipts/run.txt",
+      " M tools/monkey_campaign/agents/U02_camera/receipts/latency_run.json",
+      "?? tools/monkey_campaign/agents/GPUA/",
+      "?? tools/monkey_campaign/agents/TIE2/receipts/independent_rerun_themeaning_20260924191321.out",
+      "?? tools/monkey_campaign/contributions/"
+    ],
+    "untracked_contributions_note": "tools/monkey_campaign/contributions/ shows as untracked (??) in the play worktree: expected -- it is a worker contribution directory, not part of the reviewed tree.",
+    "line_ending_findings": {
+      "raw_identical_documents": [
+        "tools/monkey_campaign/agents/F02_terrain/report.md",
+        "tools/monkey_campaign/agents/F04_contact/report.md",
+        "tools/monkey_campaign/agents/R5_forest_review/brief.md",
+        "tools/monkey_campaign/agents/R5_forest_review/report.md"
+      ],
+      "crlf_on_disk_vs_lf_blob_documents": [
+        "ChimeraEngine/engine/earth_environment.hpp",
+        "ChimeraEngine/engine/gait_controller.hpp",
+        "tools/monkey_campaign/MONKEY_COMPLETION_MAP.md",
+        "tools/monkey_campaign/PLAY_BOARD.md",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/citations_receipt.json",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/identity_receipt.json",
+        "tools/monkey_campaign/agents/R5_forest_review/receipts/integrated_receipt.json"
+      ],
+      "all_identity_ok": true
+    },
+    "git_commands": {
+      "all_returncodes_checked_by_v2": true,
+      "total_invocations": 73,
+      "per_subcommand": {
+        "rev-parse": 19,
+        "log": 3,
+        "status": 2,
+        "ls-files": 1,
+        "ls-tree": 11,
+        "hash-object": 22,
+        "cat-file": 15
+      },
+      "all_exits_zero": true
+    }
+  },
+  "controls": {
+    "results_file": "evidence/control_results.json",
+    "harness": "tools/run_controls.py",
+    "a_git_failure_not_a_repo": {
+      "v2_exit_code": 3,
+      "v2_stderr_line": [
+        "REFUSAL GIT_COMMAND_FAILED command='git -C C:\\\\Users\\\\allen\\\\AppData\\\\Local\\\\Temp\\\\r5ctrl_a_notarepo_q46xfmbf rev-parse --verify dc7ea81111d98f32a4d88252c59f2fb8cf3c7399^{commit}' exit=128 stderr='fatal: not a git repository (or any of the parent directories): .git'"
+      ],
+      "v2_output_file_created": false,
+      "original_exit_code": 1,
+      "original_observed": "v1 crashed with an unhandled exception (traceback) after silently treating every failed git command as empty data; no named refusal, no output file, no returncode checks anywhere in its git() helper.",
+      "original_preserved_unmodified": true,
+      "verdict": "PASS — v2 refused: exit 3, first stderr line \"REFUSAL GIT_COMMAND_FAILED command='git -C C:\\\\\\\\Users\\\\\\\\allen\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\r5ctrl_a_notarepo_q46xfmbf rev-parse --verify dc7ea81111d98f32a4d88252c59f2fb8cf3c7399^{commit}' exit=128 stderr='fatal: not a git repository (or any of the parent directories): .git'\", no output file written"
+    },
+    "b_modified_cited_source": {
+      "v2_exit_code": 1,
+      "failing_check": {
+        "check": "source_identity_tools/monkey_campaign/PLAY_BOARD.md",
+        "ok": false,
+        "detail": "MODIFIED_CITED_SOURCE: work bytes match committed blob 26e6d47a8bae under NO declared line-ending convention"
+      },
+      "tampered_document": "tools/monkey_campaign/PLAY_BOARD.md",
+      "real_worktree_touched": false,
+      "verdict": "PASS — v2 failed exactly the tampered document's identity check (source_identity_tools/monkey_campaign/PLAY_BOARD.md ok=false, named MODIFIED_CITED_SOURCE), run exit 1"
+    },
+    "c_line_ending_rescue_positive": {
+      "v2_exit_code": 0,
+      "summary": "30/30 evidence checks green",
+      "document_identity": {
+        "identity_ok": true,
+        "identity_conventions_matching": [
+          "crlf_normalized",
+          "lf_normalized",
+          "raw"
+        ],
+        "raw_disk_bytes_equal_blob_at_pin": true
+      },
+      "verdict": "PASS — EOL-flipped copy still proves identity (conventions ['crlf_normalized', 'lf_normalized', 'raw']): the policy distinguishes pure line-ending differences from content modification"
+    }
+  },
+  "artifacts": {
+    "tools/measure_evidence_v2.py": {
+      "sha256": "bc4103775cf05add55f5d466b7dcfb3c0d75a759f37118a8f01632942a052ba0",
+      "bytes": 20331
+    },
+    "tools/run_controls.py": {
+      "sha256": "2cade89e0ab2a20ac3a9bdc0efe77a517327f8f17ba91a62851a56397a32c977",
+      "bytes": 15446
+    },
+    "evidence/identities_v2.json": {
+      "sha256": "c0e1853c4c41e81b79d7928ecade388a25f3559f240d7f5d3a052f22b217027a",
+      "bytes": 49636
+    },
+    "evidence/control_results.json": {
+      "sha256": "99a1dff7785808b01e938b35e66b2f3c36138635bd42a77685608077173cec1b",
+      "bytes": 13539
+    },
+    "report.md": {
+      "sha256": "3fe02441542f4f8c22a07561b62dc127a2e939fe99bd1b582fc608bfff7af643",
+      "bytes": 5388
+    },
+    "receipt.json": {
+      "sha256": "33c4f129b69abca8ee33223d989ea11d4e96c60935722ae93b9e59f54fb0cdd5",
+      "bytes": 945
+    }
+  },
+  "self_note": "evidence/correction_receipt.json cannot record its own hash; every other new artifact's real sha256 is recorded above",
+  "originals_untouched": {
+    "method": "git -C <checkout> status --porcelain before git add shows ONLY new untracked files; the 4 originals are tracked at base head d6ad8f098b9d892ba5d9c3a69290a13580897c86 and show NO modification",
+    "verification_command": "git -c safe.directory=<CK> -C <CK> status --porcelain"
+  },
+  "constraints_honored": {
+    "stdlib_only": true,
+    "per_invocation_seconds": {
+      "measure_evidence_v2": 3.3,
+      "run_controls": 7.1
+    },
+    "new_output_total_bytes": 105285,
+    "no_network_gui_gpu_engine": true,
+    "no_writes_inside_play_worktree": true,
+    "original_evidence_preserved": true
+  }
+}
