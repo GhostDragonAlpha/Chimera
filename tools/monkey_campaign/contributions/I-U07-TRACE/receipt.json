@@ -1,0 +1,109 @@
+{
+ "card": "I-U07-TRACE",
+ "planning_ids": [
+  "U07"
+ ],
+ "kind": "bounded_implementation",
+ "attempt_id": "9b94126614af41238eefc4c64682acbd",
+ "agent_id": "arrival-ec97e63be318447499de475cc02077cd",
+ "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+ "source_repository": "E:/ChimeraWork/monkey-play-20260924 (read-only git show only)",
+ "branch": "branch-5",
+ "constraints_honored": {
+  "owned_files_only": true,
+  "production_edits": 0,
+  "network": 0,
+  "package_installs": 0,
+  "gui_or_engine_starts": 0,
+  "gpu": 0,
+  "test_bound_seconds": 120,
+  "max_new_output_bytes": 16777216
+ },
+ "checks_performed": [
+  {
+   "name": "prior-attempt recovery",
+   "result": "attempt dirs 0444b44c/98468c4b/d3f1d76c + task-results contain no I-U07 artifacts; implemented from pinned brief instead of duplicating"
+  },
+  {
+   "name": "existing-equivalent-code search",
+   "command_class": "git grep at 9afbddcd over tools/monkey_campaign/product/*.py",
+   "result": "no existing trace/latency module (hits are incidental words in climb_intent/focus_policy tests etc.); input_mapper/follow_camera/command_record read for API derivation and extracted to reference/ with hashes"
+  },
+  {
+   "name": "PREREGISTRATION frozen before edits",
+   "result": "statement/prediction/falsifier F1-F5 written to PREREGISTRATION.md before input_trace.py existed"
+  },
+  {
+   "name": "test suite",
+   "command": "python -B test_input_trace.py",
+   "result": "20 tests / 4 suites: OK in 0.51s (analytic exactness incl. hand-computed nearest-rank percentiles + ms/s conversion; 13 named refusals; unqualified-without-limits + strict caller-data pass/fail + unknown-limit refusal; CLI round-trip + refusal-contains-no-numbers; headless-law banned-token scan + determinism)",
+   "first_run": "2 fixture bugs found and fixed in the TEST file (equality is not reversal; planted max was 66 not 64); module unchanged by both"
+  },
+  {
+   "name": "unit preservation",
+   "result": "per-event unit ms/s converted canonically to ms before comparison; original value+unit preserved on the parsed event; mixed units within one trace legal, mixed clock/run/build refused"
+  },
+  {
+   "name": "limits discipline",
+   "result": "P06 unresolved decision card => no limits anywhere in module; absent limits => qualification unqualified/p06_limits_absent; limits only via --limits file or explicit argument; unknown/bad limit keys refused"
+  }
+ ],
+ "reference_extractions": [
+  {
+   "pinned_path": "tools/monkey_campaign/product/input_mapper.py",
+   "sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "bytes": 18349
+  },
+  {
+   "pinned_path": "tools/monkey_campaign/product/follow_camera.py",
+   "sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+   "bytes": 33410
+  },
+  {
+   "pinned_path": "tools/science_funnel/typeb_export/command_record.py",
+   "sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+   "bytes": 12095
+  }
+ ],
+ "failures": [
+  "test run 1: 2 failures, both TEST-fixture bugs (documented above); fixed; final run 20/20 OK"
+ ],
+ "remaining_gates": [
+  "P06 decision: freeze release acceptance limits (operator/lead decision card)",
+  "native integration of the 4 recorder seams (seam 3 simulation_consumed is C++/engine-side)",
+  "actual-play capture on repeatable scenes; qualification only against P06 numbers",
+  "U07 native/visual gates (profile controls, checkpoint V03) remain with the parent card"
+ ],
+ "artifacts": [
+  {
+   "path": "input_trace.py",
+   "role": "module (required)"
+  },
+  {
+   "path": "test_input_trace.py",
+   "role": "falsifier suite (required)"
+  },
+  {
+   "path": "PREREGISTRATION.md",
+   "role": "Rule-0 prereg frozen before edits"
+  },
+  {
+   "path": "report.md",
+   "role": "scoped report + insertion-point patch proposal"
+  },
+  {
+   "path": "reference/EXTRACTION_LEDGER.json",
+   "role": "pinned extraction ledger"
+  },
+  {
+   "path": "receipt.json",
+   "role": "this receipt"
+  }
+ ],
+ "falsifier_self_check": {
+  "unmatched_timestamps_yield_invented_latency": false,
+  "clock_domains_silently_mixed": false,
+  "fixture_traces_labeled_actual_play_acceptance": false
+ },
+ "writes_stopped": true
+}
