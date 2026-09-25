@@ -54,3 +54,6 @@ tools/science_funnel/data/visible_monkey/** -text -whitespace
 # lesson; lane slice-real-body-20260920).
 tools/playable_slice/*.obj -text -whitespace
 tools/playable_slice/*.glb -text -whitespace
+
+# Preserve the historical AGPL license bytes.
+LICENSES/AGPL-3.0-historical.txt -text
