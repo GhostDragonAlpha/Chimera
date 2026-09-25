@@ -14,3 +14,19 @@
 # capture sidecars, MANIFEST_sha256.txt manifests, DYAD request specs/responses,
 # unblinding maps, raw consoles recording payload hashes, run records.
 docs/evidence/** -text
+
+# Preserve raw-byte identities of the sealed workflow instruction bundle.
+docs/MONKEY_RUN.md -text
+tools/monkey_campaign/** -text
+AGENTS.md -text
+docs/AGENT_START.md -text
+ChimeraEngine/ONBOARDING.md -text
+docs/KILO_START_HERE.md -text
+docs/THE_MASTER_LIST.md -text
+docs/THE_OPERATING_MANUAL.md -text
+docs/MEMBRANE_ONTOLOGY.md -text
+tools/membrane_ontology/ontology.json -text
+
+docs/ONTOLOGY_WORK_PLAN.md -text
+
+tools/membrane_ontology/model.py -text

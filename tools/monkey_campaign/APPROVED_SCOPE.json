@@ -1,0 +1,9 @@
+{
+  "algorithm": "sha256-chimera-json-v1",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "raw_file_sha256": "010311bb0a4fc5eec6c7f361db3a2631c2821e4b7d6cc56d751c02f6712fe161",
+  "date": "2026-09-24",
+  "task_count": 83,
+  "authority": "Operator-authorized ontology amendment; SCOPE_AMENDMENT_ONTOLOGY_20260924.json preserves exact prior/new scope and reconstruction.",
+  "changes": "Lead/operator approved scope changes only; workers never replace this anchor automatically."
+}

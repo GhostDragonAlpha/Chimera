@@ -1,0 +1,14 @@
+{
+  "schema": "chimera.checkpoint_context.v1",
+  "template_only": true,
+  "scope_sha256": "33a8fb7204e20bf71f563014c57d772dd111a198cd1d6b212fd053653858f863",
+  "task_id": "W10",
+  "controller_task": null,
+  "generation": null,
+  "subject_sha256": null,
+  "criteria_sha256": null,
+  "run_id": null,
+  "worker_id": null,
+  "kind": "motion",
+  "required_gates": ["implementation", "numerical", "runtime", "visual", "review"]
+}

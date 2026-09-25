@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Membrane ontology · Chimera</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <script defer src="assets/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#composition">Skip to selected membrane</a>
+  <header class="app-header">
+    <div class="identity"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><div><span class="brand">CHIMERA</span><h1>Membrane ontology</h1></div></div>
+    <div class="header-meta"><span id="revision">Loading definition</span><code id="definition-hash" title="Definition raw SHA-256">—</code></div>
+    <div class="header-actions"><button id="refresh" class="button">↻ <span>Refresh</span></button><button id="download" class="button quiet" disabled>↓ <span>JSON</span></button></div>
+  </header>
+  <div class="authority-bar"><span class="authority-dot" aria-hidden="true"></span><span>Composition definition <span class="bar-divider">·</span> runtime bindings unqualified</span><span id="plan-summary" class="plan-summary" hidden></span><span class="read-only">READ ONLY</span></div>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+  <main class="workspace">
+    <aside class="hierarchy panel" aria-labelledby="hierarchy-title">
+      <div class="panel-heading"><h2 id="hierarchy-title">Hierarchy</h2><span id="node-count" class="count">—</span></div>
+      <div class="search-wrap"><label class="sr-only" for="search">Search membranes by name, ID or description</label><input id="search" type="search" placeholder="Find a membrane…" autocomplete="off" disabled><span class="search-symbol" aria-hidden="true">⌕</span></div>
+      <div class="tree-tools"><span id="search-summary">Containment</span><button id="expand-all" class="text-button" disabled>Expand all</button><button id="collapse-all" class="text-button" disabled>Collapse</button></div>
+      <nav id="tree" class="tree" aria-label="Membrane hierarchy"><p class="muted loading-copy">Reading the composition definition…</p></nav>
+      <div class="hierarchy-key"><span><i class="membrane-key" aria-hidden="true"></i> Membrane</span><span><i class="connection-key" aria-hidden="true"></i> Connection membrane</span><p>Nested boundaries show containment.<br>Ports connect across those boundaries.</p></div>
+    </aside>
+    <section id="composition" class="composition panel" aria-labelledby="selected-title" tabindex="-1">
+      <div id="main-content"><div class="state-message"><div class="loading-line"></div><h2 id="selected-title">Reading ontology</h2><p>Loading the authored hierarchy and source identities.</p></div></div>
+    </section>
+    <aside class="inspector panel" aria-labelledby="inspector-title">
+      <div class="panel-heading inspector-heading"><h2 id="inspector-title">Inspector</h2><span id="inspector-kind" class="mono muted">—</span></div>
+      <div class="tabs" role="tablist" aria-label="Membrane details"><button id="tab-definition" class="tab active" role="tab" aria-selected="true" aria-controls="detail-content" data-tab="definition">Definition</button><button id="tab-ports" class="tab" role="tab" aria-selected="false" aria-controls="detail-content" tabindex="-1" data-tab="ports">Ports</button><button id="tab-sources" class="tab" role="tab" aria-selected="false" aria-controls="detail-content" tabindex="-1" data-tab="sources">Sources & gaps</button><button id="tab-work" class="tab" role="tab" aria-selected="false" aria-controls="detail-content" tabindex="-1" data-tab="work">Work & verification</button></div>
+      <div id="detail-content" class="detail-content" role="tabpanel" aria-labelledby="tab-definition"><p class="muted">Select a membrane to inspect its definition.</p></div>
+    </aside>
+  </main>
+  <footer class="statusbar"><span id="structure-status">Waiting for snapshot</span><span id="snapshot-hash" class="mono">No snapshot loaded</span><span>No background polling</span></footer>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "schema": "chimera.checkpoint_receipt.v1",
+  "template_only": true,
+  "context_sha256": null,
+  "scope_sha256": "33a8fb7204e20bf71f563014c57d772dd111a198cd1d6b212fd053653858f863",
+  "task_id": "W10",
+  "controller_task": null,
+  "generation": null,
+  "subject_sha256": null,
+  "criteria_sha256": null,
+  "run_id": null,
+  "subject_manifest": {"path": null, "sha256": null},
+  "criteria_manifest": {"path": null, "sha256": null},
+  "gates": {
+    "implementation": {"status": "pending"},
+    "numerical": {"status": "pending"},
+    "runtime": {"status": "pending"},
+    "visual": {"status": "pending"},
+    "review": {"status": "pending"}
+  }
+}
