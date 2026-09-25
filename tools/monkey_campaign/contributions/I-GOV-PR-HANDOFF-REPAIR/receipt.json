@@ -1,0 +1,77 @@
+{
+  "schema": "chimera.task_receipt.v1",
+  "task_id": "I-GOV-PR-HANDOFF-REPAIR",
+  "planning_ids": ["P01"],
+  "attempt_id": "ad0b478dfafe4b7f8fc471edb5571ea0",
+  "agent_id": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+  "criteria_sha256": "71c0089538a563ea19173cd7e60604c150c51603e8538b3d1dad724fc92ecf9c",
+  "pinned_target": {
+    "pr": 116,
+    "head_sha": "8730d3841c00cc7c6732d7e4ec702044c4f7f586",
+    "review": "E:/Chimera/pr-review-20260925/REVIEW.md"
+  },
+  "date": "2026-09-25",
+  "checks_performed": [
+    {"check": "defect_reproduction_pinned", "command": "python -B probe_defects.py reference",
+     "result": "PASS", "observed": {"defects_reproduced": 2, "exit_code": 2,
+     "d1": "explicit request for T1 returned T0; two WORKING attempts",
+     "d2": "request message leaves attempt WORKING; poll returns same card"}},
+    {"check": "defect_resolution_patched", "command": "python -B probe_defects.py patched",
+     "result": "PASS", "observed": {"defects_reproduced": 0, "exit_code": 0,
+     "d1": "explicit T1 returns T1; single WORKING attempt",
+     "d2": "request_publication -> PUBLICATION_REQUESTED; worker ASSIGNED T1"}},
+    {"check": "repair_test_suite", "command": "python -B -m unittest test_repair -v",
+     "result": "PASS", "observed": {"tests": 14, "failures": 0, "errors": 0,
+                                    "duration_seconds": 0.358, "stores": "isolated temp registries"}},
+    {"check": "compile", "command": "python -m py_compile patched/kanban.py patched/worker_start.py",
+     "result": "PASS", "observed": {}},
+    {"check": "patch_round_trip", "command": "git -c core.autocrlf=false apply --check + apply on pinned extracts",
+     "result": "PASS", "observed": {"applied_output_byte_identical_to_patched": true,
+                                    "files": ["kanban.py", "worker_start.py", "KANBAN.md"]}}
+  ],
+  "source_identities": {
+    "pinned_kanban_py_sha256": "dec407d469284936ae4c595fc7f5d9eb2deb23e8453b49a40e4da83677bc118f",
+    "pinned_worker_start_py_sha256": "ce109eb77b74fd0396dbdf8376044b2477f8d835ade523b0e9e6404d94305743",
+    "pinned_kanban_md_sha256": "484830b67b55c1f92b0693abaa83b574fff62c4467f59df040ceba8840e10271",
+    "pinned_agent_slots_py_sha256": "8fbac8d92c2e3d160677696bf806348720ae277ef59376c3cacee543ba6fb38f",
+    "pinned_integrity_py_sha256": "c3ff77401c1abb5ca657afeee59fb95bac739ebef2cfd688f174b4f97caf82b2"
+  },
+  "artifacts": [
+    {"path": "proposed.patch", "sha256": "669b80eda5ca856b0ad2c5ba790ea23fb34321245d7d688579e6500820030f52", "bytes": 18509},
+    {"path": "patched/kanban.py", "sha256": "57a4116473ed39e431c5dfe70bfbc0b553d0600397c423aef9b0480e3d61b691", "bytes": 21334},
+    {"path": "patched/worker_start.py", "sha256": "66ba62599732996e7d08579b5478cb3ab512e4de86a7a0ce49e7fa5ab3cb5528", "bytes": 9452},
+    {"path": "patched/KANBAN.md", "sha256": "d2dffc619c12f25d5f2a9d7699aaf2659a654bcf1c9014e266b79c93c3520139", "bytes": 7313},
+    {"path": "test_repair.py", "sha256": "a44250d9b0b610f9c656632f3c5cdb9235a42011ef913c4eae40896cd81427f8", "bytes": 16048},
+    {"path": "probe_defects.py", "sha256": "a305770be2d6aec94613daa68e36f7506660c00a9cfb37d14818ffedc728027f", "bytes": 5779},
+    {"path": "PREREGISTRATION.md", "sha256": "b3b6800cc6aa046dcfb29589ba28b0ff8d498edb68f138d5dac219f3ab3e8e07", "bytes": 4353},
+    {"path": "reference/kanban.py", "sha256": "dec407d469284936ae4c595fc7f5d9eb2deb23e8453b49a40e4da83677bc118f", "bytes": 15145},
+    {"path": "reference/worker_start.py", "sha256": "ce109eb77b74fd0396dbdf8376044b2477f8d835ade523b0e9e6404d94305743", "bytes": 9102},
+    {"path": "reference/KANBAN.md", "sha256": "484830b67b55c1f92b0693abaa83b574fff62c4467f59df040ceba8840e10271", "bytes": 6555},
+    {"path": "reference/agent_slots.py", "sha256": "8fbac8d92c2e3d160677696bf806348720ae277ef59376c3cacee543ba6fb38f", "bytes": 15003},
+    {"path": "reference/integrity.py", "sha256": "c3ff77401c1abb5ca657afeee59fb95bac739ebef2cfd688f174b4f97caf82b2", "bytes": 1888}
+  ],
+  "failures": [],
+  "development_incidents": [
+    "probe D2 initially polluted by D1 leftover state - fixed with per-defect registries",
+    "first join() restructure left explicit new-card selection in the generic resume loop (2 test failures) - restructured; found by the suite"
+  ],
+  "remaining_gates": [
+    "independent review of this contribution",
+    "lead applies the reviewed patch to live workflow code",
+    "deployment verification (separate from this card)"
+  ],
+  "bounds": {
+    "production_edits": false,
+    "network_or_credentials_used": false,
+    "gpu_used": false,
+    "isolated_stores_only": true,
+    "test_duration_seconds": 0.358,
+    "new_output_bytes_approx": 130000,
+    "max_new_output_bytes": 16777216
+  },
+  "claims_not_made": [
+    "patch is proposed only; the lead applies it",
+    "no card completed; no review/merge authority changed",
+    "no criteria, capacity or scope change"
+  ]
+}

@@ -1,0 +1,275 @@
+diff --git a/tools/monkey_campaign/kanban.py b/tools/monkey_campaign/kanban.py
+index 009d3e6..114f0a4 100644
+--- a/tools/monkey_campaign/kanban.py
++++ b/tools/monkey_campaign/kanban.py
+@@ -93,34 +93,56 @@ def read(registry,task_id=None):
+     b=board(registry.readonly())
+     return deepcopy(b['cards'][task_id]) if task_id else summary(b)
+ 
++def displace_working(b,agent_id,keep_task):
++    """Checkpoint-park the SAME worker's other WORKING attempts when they
++    explicitly select another task. Only own attempts transition; another
++    worker's attempts are never touched."""
++    for card in b['cards'].values():
++        for attempt in card['attempts'].values():
++            if (attempt['agent_id']==agent_id and attempt['state']=='WORKING'
++                    and card['id']!=keep_task):
++                attempt['state']='PAUSED'
++                attempt['checkpoint']=('auto_displaced_by_explicit_task_selection:'
++                                       +keep_task+'; workspace preserved')
++
+ def join(registry,agent_id,task_id=None):
+     require(isinstance(agent_id,str) and 0<len(agent_id)<=200,'agent_id_required')
+     with registry.transaction() as state:
+         b=board(state)
+-        # An explicit task is an intentional correction/review revisit. Resolve it
+-        # before the general "resume any active work" rule.
++        # An explicit task is an intentional selection: revisit an own attempt or
++        # switch cards. It must resolve to the requested card, never another one.
+         if task_id and task_id in b['cards']:
+             c=b['cards'][task_id]
+             for attempt in c['attempts'].values():
+-                if c['state']!='DONE' and attempt['agent_id']==agent_id and attempt['state'] in ('PAUSED','PR_SUBMITTED'):
++                if (c['state']!='DONE' and attempt['agent_id']==agent_id
++                        and attempt['state'] in ('WORKING','PAUSED','PR_SUBMITTED',
++                                                 'PUBLICATION_REQUESTED')):
++                    # Resuming this card parks the worker's other WORKING attempts.
+                     attempt['state']='WORKING'
++                    displace_working(b,agent_id,task_id)
+                     return packet(c,attempt,'RESUME_ATTEMPT')
+-        for c in b['cards'].values():
+-            for a in c['attempts'].values():
+-                if a['agent_id']==agent_id and a['state']=='WORKING':
+-                    return packet(c,a,'RESUME_ATTEMPT' if c['state']!='DONE' else 'TASK_ALREADY_WON')
+-        # Submitted workers move to another card. Lead feedback only prioritizes a
+-        # card; it cannot override the submitted-PR exclusion and spawn duplicates.
++        elif task_id is None:
++            # Generic poll resumes the worker's single WORKING attempt, if any.
++            for c in b['cards'].values():
++                for a in c['attempts'].values():
++                    if a['agent_id']==agent_id and a['state']=='WORKING':
++                        return packet(c,a,'RESUME_ATTEMPT' if c['state']!='DONE' else 'TASK_ALREADY_WON')
++        # Submitted and publication-requesting workers move to another card. Lead
++        # feedback only prioritizes a card; it cannot override the submitted/requested
++        # exclusion and spawn duplicates.
+         candidates=[c for c in b['cards'].values() if c['state']!='DONE'
+             and (task_id is None or c['id']==task_id)
+             and (task_id is not None or not any(
+-                a['agent_id']==agent_id and a['state']=='PR_SUBMITTED'
++                a['agent_id']==agent_id and a['state'] in ('PR_SUBMITTED','PUBLICATION_REQUESTED')
+                 for a in c['attempts'].values()))]
+         if not candidates:return {'state':'NO_ELIGIBLE_CARD','next_action':'Read board and task inboxes; lead refills eligible cards after merge. Do not invent completion.'}
+         candidates.sort(key=lambda c:(sum(a['state']=='WORKING' for a in c['attempts'].values()),
+                                      -sum(m['status']=='OPEN' and m['author']==LEAD for m in c['messages']),c['slot']))
+         c=candidates[0]
+         require(len(c['attempts'])<200,'attempt_history_capacity_requires_preservation')
++        # Assigning a new attempt checkpoint-parks the worker's own remaining WORKING
++        # attempt (explicit card switch); a no-op when none exists.
++        displace_working(b,agent_id,c['id'])
+         attempt=uuid.uuid4().hex
+         a={'id':attempt,'agent_id':agent_id,'state':'WORKING','criteria_sha256':c['criteria_sha256'],
+            'workspace':str(registry.root/'kanban-attempts'/c['id']/attempt),
+@@ -146,27 +168,105 @@ def pr_identity(url,head):
+     require(re.fullmatch(r'https://github\.com/GhostDragonAlpha/Chimera/pull/[1-9][0-9]*',url or '') is not None,'invalid_project_pr')
+     require(re.fullmatch('[0-9a-f]{40}',head or '') is not None,'full_pr_head_required')
+ 
++def _record_pr(b,c,attempt,pr_url,head_sha,source):
++    """Shared PR recording core for worker submission and lead fulfilment."""
++    for other in b['cards'].values():
++        if pr_url in other['prs']:
++            require(other['id']==c['id'] and other['prs'][pr_url]['attempt_id']==attempt['id'],'pr_already_bound')
++    previous=c['prs'].get(pr_url)
++    if previous and previous['head_sha']==head_sha and previous.get('source')==source:
++        return False
++    require(len(c['prs'])<200 or previous,'pr_history_capacity')
++    history=c.setdefault('submission_history',[]);require(len(history)<500,'submission_history_capacity')
++    history.append({'pr_url':pr_url,'head_sha':head_sha,'attempt_id':attempt['id'],
++                    'source':source,'supersedes_head':previous['head_sha'] if previous else None})
++    c['prs'][pr_url]={'attempt_id':attempt['id'],'head_sha':head_sha,
++        'criteria_sha256':c['criteria_sha256'],'review':None,'source':source}
++    attempt['state']='PR_SUBMITTED';c['state']='REVIEW'
++    return True
++
+ def submit(registry,a):
+     pr_identity(a['pr_url'],a['head_sha'])
+     with registry.transaction() as state:
+         b=board(state);c,attempt=owned_attempt(b,a)
+         require(a['criteria_sha256']==c['criteria_sha256'],'criteria_changed')
+         # One PR belongs to one card/attempt; updates invalidate approval automatically.
+-        for other in b['cards'].values():
+-            if a['pr_url'] in other['prs']:
+-                require(other['id']==c['id'] and other['prs'][a['pr_url']]['attempt_id']==attempt['id'],'pr_already_bound')
+-        previous=c['prs'].get(a['pr_url'])
+-        if previous and previous['head_sha']==a['head_sha']:return {'state':'PR_ALREADY_RECORDED'}
+-        require(len(c['prs'])<200 or previous,'pr_history_capacity')
+-        history=c.setdefault('submission_history',[]);require(len(history)<500,'submission_history_capacity')
+-        history.append({'pr_url':a['pr_url'],'head_sha':a['head_sha'],'attempt_id':attempt['id'],
+-                        'supersedes_head':previous['head_sha'] if previous else None})
+-        c['prs'][a['pr_url']]={'attempt_id':attempt['id'],'head_sha':a['head_sha'],
+-            'criteria_sha256':c['criteria_sha256'],'review':None}
+-        attempt['state']='PR_SUBMITTED';c['state']='REVIEW'
++        if not _record_pr(b,c,attempt,a['pr_url'],a['head_sha'],'worker_submit'):
++            return {'state':'PR_ALREADY_RECORDED'}
+         registry.event(state,'kanban_pr',{'task':c['id'],'pr':a['pr_url'],'head':a['head_sha']})
+         return {'state':'PR_RECORDED','next_action':'Take another card or address task inbox feedback; this card remains open until lead-approved merge.'}
+ 
++def request_publication(registry,a):
++    """Durable PR-request handoff: the worker asks the lead to publish a preserved
++    candidate. A request is evidence-preserving handoff only - never a PR submission,
++    never a review, never a merge. Requires no GitHub/REST credentials."""
++    require(re.fullmatch('[0-9a-f]{40}',a.get('head_sha') or '') is not None,'full_request_head_required')
++    require(a.get('checkpoint') and a.get('writes_stopped') is True,
++            'request_checkpoint_and_stopped_writes_required')
++    require(isinstance(a.get('artifacts'),list) and len(a['artifacts'])<=200,
++            'request_artifacts_required')
++    with registry.transaction() as state:
++        b=board(state);c,attempt=owned_attempt(b,a)
++        require(a['criteria_sha256']==c['criteria_sha256'],'criteria_changed')
++        require(attempt['state'] in ('WORKING','PAUSED','PUBLICATION_REQUESTED'),
++                'attempt_state_cannot_request')
++        requests=c.setdefault('publication_requests',{})
++        require(len(requests)<200,'request_history_capacity')
++        identity=digest({'task_id':c['id'],'attempt_id':attempt['id'],
++                         'agent_id':a['agent_id'],'head_sha':a['head_sha'],
++                         'branch':a.get('branch')})
++        request_id='pub-'+identity[:16]
++        existing=requests.get(request_id)
++        if existing and existing['status']=='OPEN':
++            return {'state':'REQUEST_ALREADY_RECORDED','request_id':request_id,
++                'next_action':'Lead publication pending; poll the next card now.'}
++        # A new head supersedes this attempt's earlier open requests (preserved, not erased).
++        for other in requests.values():
++            if other['attempt_id']==attempt['id'] and other['status']=='OPEN':
++                other['status']='SUPERSEDED'
++                other['superseded_by']=request_id
++        requests[request_id]={'request_id':request_id,'task_id':c['id'],
++            'attempt_id':attempt['id'],'agent_id':a['agent_id'],'head_sha':a['head_sha'],
++            'branch':a.get('branch'),'criteria_sha256':c['criteria_sha256'],
++            'checkpoint':a['checkpoint'],'artifacts':deepcopy(a['artifacts']),
++            'status':'OPEN','requested_at':__import__('datetime').datetime.now(
++                __import__('datetime').timezone.utc).isoformat()}
++        attempt['state']='PUBLICATION_REQUESTED'
++        attempt['publication_request_id']=request_id
++        registry.event(state,'kanban_publication_request',
++                       {'task':c['id'],'attempt':attempt['id'],'request':request_id,
++                        'head':a['head_sha']})
++        return {'state':'PUBLICATION_REQUESTED','request_id':request_id,
++            'next_action':'Lead publishes this preserved candidate; poll the next card now. A request is never a submission or completion.'}
++
++def fulfil_publication(registry,a):
++    """Lead-only: record that a requested candidate was published as a real PR.
++    Idempotent per request; the PR is recorded exactly like a worker submission."""
++    lead(a);pr_identity(a['pr_url'],a['head_sha'])
++    with registry.transaction() as state:
++        b=board(state);c=b['cards'][a['task_id']]
++        require(c['state']!='DONE','task_already_completed')
++        attempt=c['attempts'][a['attempt_id']]
++        require(attempt['agent_id']==a.get('agent_id'),'wrong_attempt_owner')
++        request=c.get('publication_requests',{}).get(a['request_id'])
++        require(request is not None,'unknown_publication_request')
++        require(request['head_sha']==a['head_sha'],'request_head_changed')
++        require(request['criteria_sha256']==c['criteria_sha256'],'criteria_changed')
++        pr=c['prs'].get(a['pr_url'])
++        if pr and pr.get('fulfilled_request')==a['request_id']:
++            return {'state':'ALREADY_FULFILLED','request_id':a['request_id'],
++                    'pr_url':a['pr_url']}
++        require(_record_pr(b,c,attempt,a['pr_url'],a['head_sha'],'lead_fulfilment')
++                or pr is not None,'pr_record_failed')
++        c['prs'][a['pr_url']]['fulfilled_request']=a['request_id']
++        request['status']='FULFILLED';request['pr_url']=a['pr_url']
++        request['fulfilled_at']=__import__('datetime').datetime.now(
++            __import__('datetime').timezone.utc).isoformat()
++        registry.event(state,'kanban_publication_fulfilled',
++                       {'task':c['id'],'request':a['request_id'],'pr':a['pr_url']})
++        return {'state':'FULFILLED','request_id':a['request_id'],'pr_url':a['pr_url'],
++                'next_action':'Review the exact head; this PR now follows the normal review/merge path.'}
++
+ def park(registry,a):
+     require(a.get('checkpoint') and a.get('writes_stopped') is True,'checkpoint_and_stopped_writes_required')
+     with registry.transaction() as state:
+diff --git a/tools/monkey_campaign/worker_start.py b/tools/monkey_campaign/worker_start.py
+index 130d063..96d93af 100644
+--- a/tools/monkey_campaign/worker_start.py
++++ b/tools/monkey_campaign/worker_start.py
+@@ -37,9 +37,10 @@ def main():
+     action.add_argument('--finish',type=Path,help='Completion arguments JSON; submit evidence and take next work.')
+     action.add_argument('--checkpoint',type=Path,help='Cessation/checkpoint arguments JSON; recover next window.')
+     action.add_argument('--submit-pr',type=Path,help='Record PR arguments JSON, then take next card.')
++    action.add_argument('--request-pr',type=Path,help='Publication request arguments JSON; durable lead handoff (not a PR), then take next card.')
+     action.add_argument('--park',type=Path,help='Preserve attempt and cease writes, then take another card.')
+     args=parser.parse_args()
+-    if args.check and (args.finish or args.checkpoint or args.submit_pr or args.park):
++    if args.check and (args.finish or args.checkpoint or args.submit_pr or args.request_pr or args.park):
+         raise ValueError('check_cannot_submit_handoff')
+     project=Path(__file__).resolve().parents[2]
+     instructions=inspect(project)
+@@ -74,7 +75,7 @@ def main():
+     out['orientation_identity_note'] = 'Engine current/next terms are scene hierarchy entries, never agent or authenticated session identities.'
+     if not args.check:
+         identity=args.arrival_id or os.environ.get('CHIMERA_WORKER_ID')
+-        if (args.finish or args.checkpoint or args.submit_pr or args.park) and not identity:
++        if (args.finish or args.checkpoint or args.submit_pr or args.request_pr or args.park) and not identity:
+             raise ValueError('existing_arrival_id_required_for_handoff')
+         identity=identity or 'arrival-'+uuid.uuid4().hex
+         registry=Registry(DEFAULT_ROOT)
+@@ -88,12 +89,14 @@ def main():
+             out['handoff']=(finish if args.finish else checkpoint)(registry,data)
+         out['arrival_id']=identity
+         if kanban_enabled:
+-            if args.submit_pr or args.park:
+-                with (args.submit_pr or args.park).open('rb') as stream:raw=stream.read(65537)
++            if args.submit_pr or args.park or args.request_pr:
++                with (args.submit_pr or args.park or args.request_pr).open('rb') as stream:raw=stream.read(65537)
+                 if len(raw)>65536:raise ValueError('handoff_arguments_size_limit')
+                 data=decode(raw)
+                 if data.get('agent_id')!=identity:raise ValueError('handoff_identity_mismatch')
+-                out['handoff']=(kanban.submit if args.submit_pr else kanban.park)(registry,data)
++                handler=(kanban.submit if args.submit_pr else
++                         kanban.request_publication if args.request_pr else kanban.park)
++                out['handoff']=handler(registry,data)
+             target=args.task or (out.get('handoff',{}).get('task') if args.finish else None)
+             allocation=kanban.join(registry,identity,target)
+             out.update(assignment=allocation,task_claimed=allocation['state']=='ASSIGNED',
+@@ -107,7 +110,7 @@ def main():
+                     'attempt_id':allocation['attempt']['id'],'criteria_sha256':allocation['attempt']['criteria_sha256'],
+                     'pr_url':'https://github.com/GhostDragonAlpha/Chimera/pull/NUMBER','head_sha':'<full 40-character PR head SHA>'}
+             print(json.dumps(out,indent=2));return
+-        if args.submit_pr or args.park:raise ValueError('kanban_not_initialized')
++        if args.submit_pr or args.request_pr or args.park:raise ValueError('kanban_not_initialized')
+         allocation = claim_next(registry,queue['tasks'],identity,instructions['revision_id'],instructions['bundle_sha256'])
+         out['assignment'] = allocation
+         out['task_claimed'] = allocation['state'] == 'ASSIGNED'
+diff --git a/tools/monkey_campaign/KANBAN.md b/tools/monkey_campaign/KANBAN.md
+index ecda663..dc41515 100644
+--- a/tools/monkey_campaign/KANBAN.md
++++ b/tools/monkey_campaign/KANBAN.md
+@@ -31,11 +31,24 @@ python -B E:/PythonChimera/tools/monkey_campaign/worker_start.py --arrival-id YO
+ 
+ This immediately returns another card and its inbox. It does not mark the submitted
+ card complete. If GitHub REST access is unavailable, do not wait for a token: push the
+-branch if SSH allows it, then post a **PR request** to the task inbox with the exact
+-branch name, full head SHA, proposed title/body, task ID, attempt ID, criteria hash, and
+-evidence paths. Do not assert that a PR exists. When Astra next checks the inbox, Astra
+-creates the PR through the lead integration connection, records it with --submit-pr, and
+-then reviews the exact head. A request is evidence-preserving handoff, never acceptance.
++branch if SSH allows it, then submit a durable **publication request**:
++
++```powershell
++python -B E:/PythonChimera/tools/monkey_campaign/worker_start.py --arrival-id YOUR_ID --request-pr E:/PATH/request.json
++```
++
++The request JSON carries agent_id, task_id, attempt_id, criteria_sha256, the exact
++branch name, the full 40-character head SHA, a checkpoint description,
++writes_stopped=true, and artifact paths with raw SHA-256 hashes. The handoff records
++the request durably on the card (idempotent per exact request identity; a new head
++supersedes the worker's earlier open request while preserving it), moves the attempt
++to PUBLICATION_REQUESTED, and immediately returns the next card — the worker is never
++trapped waiting for the lead. When the lead acts on it, the lead creates the PR and
++records it against the verified request identity (same task/attempt/agent/head/
++criteria), which records the PR exactly like a worker submission. A request is
++evidence-preserving handoff, never acceptance: it never sets REVIEW/DONE, never
++creates a PR record, never resolves inbox messages, and never counts as a reviewed
++merge. Workers can still revisit a requested card explicitly to address corrections.
+ 
+ ## Task-ID inbox
+ 
