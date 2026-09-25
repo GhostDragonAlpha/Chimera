@@ -3,8 +3,9 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
-from agent_slots import Registry
+from agent_slots import Registry, check_instruction_revision
 
 
 def registration(i,adopt=True):
@@ -16,6 +17,26 @@ def registration(i,adopt=True):
 
 
 class AgentSlotTests(unittest.TestCase):
+    def test_live_registration_rejects_stale_policy_without_claiming_slot(self):
+        self.r.reconcile({'expected_registered_agents':0,'live_inventory_reference':'fixture'})
+        current={'revision_id':'astra-0010','bundle_sha256':'b'*64}
+        with patch('agent_slots.DEFAULT_ROOT',Path(self.temp.name)), patch('instruction_state.inspect',return_value=current):
+            with self.assertRaisesRegex(ValueError,'LEAD_UPDATE_REQUIRED'):
+                self.r.register(registration(1,False))
+            self.assertEqual(self.r.snapshot()['registered_agents'],0)
+            a=registration(1,False)
+            a.update(instruction_revision=current['revision_id'],instruction_bundle_sha256=current['bundle_sha256'])
+            self.assertEqual(self.r.register(a)['agent_id'],'agent-1')
+            self.assertEqual(self.r.instruction_notice()['revision_id'],'astra-0010')
+
+    def test_live_stale_existing_worker_can_still_finish_and_release(self):
+        slot=self.r.register(registration(1))
+        with patch('agent_slots.DEFAULT_ROOT',Path(self.temp.name)), patch('instruction_state.inspect',return_value={'revision_id':'astra-0010','bundle_sha256':'b'*64}):
+            a={**registration(1),'slot':slot['slot'],'generation':slot['generation'],'phase':'finished','last_action':'completed'}
+            self.r.report(a)
+            self.r.release({**a,'worker_finished_confirmed':True,'preservation_reference':'durable fixture report'})
+            self.assertEqual(self.r.snapshot()['registered_agents'],0)
+
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
         self.r=Registry(self.temp.name);self.r.initialize()

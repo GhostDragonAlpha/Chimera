@@ -102,6 +102,29 @@ class QueueLifecycleTests(unittest.TestCase):
         claimed=self.claim('another')
         self.assertEqual(claimed['brief']['id'],'C')
 
+    def test_implementation_source_is_owned_and_hash_bound_for_review(self):
+        b=self.brief('CODE')
+        b.update(kind='bounded_implementation',source_edit_allowed=True,production_edit_allowed=False,
+            owned_files=['module.py','test_module.py','report.md'],required_artifacts=['module.py','test_module.py'])
+        assigned=claim_next(self.registry,[b],'implementer','fixture','a'*64)
+        args=self.arguments(assigned)
+        directory=Path(b['output_directory'])
+        for name in b['required_artifacts']:(directory/name).write_text('# original source\n')
+        finish(self.registry,args)
+        reviewed=claim_next(self.registry,[b],'independent','fixture','a'*64)
+        self.assertEqual(reviewed['brief']['kind'],'bounded_diagnostic')
+        review_args=self.arguments(reviewed)
+        review_args.update(verdict='PASS',reviewed_sha256=reviewed['brief']['submission']['raw_sha256'])
+        (directory/'module.py').write_text('# changed after submission\n')
+        with self.assertRaisesRegex(ValueError,'implementation_artifact_changed'):finish(self.registry,review_args)
+
+    def test_implementation_cannot_claim_production_checkout(self):
+        b=self.brief('CODE')
+        b.update(kind='bounded_implementation',source_edit_allowed=True,production_edit_allowed=False,
+            output_directory=str(self.root/'production'),owned_files=['module.py'],required_artifacts=['module.py'])
+        with self.assertRaisesRegex(ValueError,'workspace_mismatch'):
+            claim_next(self.registry,[b],'implementer','fixture','a'*64)
+
     def test_outside_evidence_refused_without_releasing_claim(self):
         assigned = self.claim('author')
         args = self.arguments(assigned)

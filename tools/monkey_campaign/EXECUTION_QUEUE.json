@@ -1,7 +1,7 @@
 {
   "schema": "chimera.bounded_execution_queue.v1",
   "goal": "Physically controlled playable monkey in a finite forest; first integrated checkpoint is walking with camera in one clearing.",
-  "authority": "Astra lead-issued bounded diagnostic tasks, executed under the existing shared slot registry. This queue does not accept game requirements or replace active coordinator claims.",
+  "authority": "Lead-issued bounded diagnostics and preparatory implementations with exclusive output workspaces, through the existing shared registry. Production integration and GPU authority remain with their existing owners.",
   "tasks": [
     {
       "id": "D-W04-MASS-20260924",
@@ -93,6 +93,296 @@
       ],
       "completion": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted.",
       "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision."
+    },
+    {
+      "id": "I-R02-SAVE-STORE",
+      "planning_ids": [
+        "R02"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement an atomic user-save envelope store around opaque existing engine snapshot bytes, without inventing physics serialization.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-R02-SAVE-STORE",
+      "owned_files": [
+        "save_store.py",
+        "test_save_store.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "save_store.py",
+        "test_save_store.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/input_settings.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Derive the envelope from explicit caller-supplied format version, build/scene/policy identities and opaque payload bytes. Missing expected identities must refuse; do not default them or infer compatibility.",
+        "Implement save/load/list in save_store.py using an explicitly supplied user directory, relative slot names, atomic replace, payload hash, bounded file reads and named corruption/version/identity refusals. No pickle or execution of stored content.",
+        "Exercise interrupted write before replace, truncated payload, tampered hash, wrong version/identity, path traversal and successful byte-exact payload restoration in temporary directories. Reuse existing atomic-write conventions where correct; provide an exact adapter proposal for SessionFlow without editing it."
+      ],
+      "falsifier": "Interrupted write destroys the previous valid save, traversal escapes the caller directory, or mismatched identities are accepted.",
+      "deliverables": [
+        "save_store.py",
+        "test_save_store.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it."
+    },
+    {
+      "id": "I-U07-TRACE",
+      "planning_ids": [
+        "U07"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement the trace ingestion and latency analysis needed for eventual real input/camera play measurements.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-U07-TRACE",
+      "owned_files": [
+        "input_trace.py",
+        "test_input_trace.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "input_trace.py",
+        "test_input_trace.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/input_mapper.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/follow_camera.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Inspect actual command/camera APIs at the pinned revision. Define an explicit event record carrying sequence, monotonic timestamp, clock identity, run/build identity and stage (input, command emitted, simulation consumed, presented). Preserve units.",
+        "Implement strict trace parsing and matched-stage latency calculations. Refuse missing stages, duplicate IDs, mixed clocks/builds, non-finite times and reversed stage order. Accept acceptance limits only as explicit caller data; report unqualified when P06 limits are absent.",
+        "Test analytic traces with exact expected intervals, deliberate missing/mixed-clock traces and empty data. Provide CLI JSON output and an insertion-point patch proposal, not fabricated live measurements."
+      ],
+      "falsifier": "Unmatched timestamps yield invented latency, clock domains are silently mixed, or fixture traces are labeled actual-play acceptance.",
+      "deliverables": [
+        "input_trace.py",
+        "test_input_trace.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it."
+    },
+    {
+      "id": "I-R05-RESOURCE-LEDGER",
+      "planning_ids": [
+        "R05"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement an ownership-scoped resource accounting checker for repeated session/restart teardown.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-R05-RESOURCE-LEDGER",
+      "owned_files": [
+        "resource_ledger.py",
+        "test_resource_ledger.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "resource_ledger.py",
+        "test_resource_ledger.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/data/monkey_forest/forest_loader.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Inspect existing teardown ownership APIs. Define acquire/release records with session generation, explicit owner and unique resource ID; do not discover or terminate OS processes.",
+        "Implement a bounded event ledger with named duplicate-acquire, unknown-release, wrong-generation, wrong-owner and live-at-close failures. Generate per-cycle summaries with explicit caller-provided resource ceilings; never treat high free RAM as success.",
+        "Test repeated clean cycles, leaking cycles, reused IDs in distinct generations and unrelated operator-owned IDs. Provide a concrete hook-up proposal to current teardown code. No process enumeration, process kills, engine launches or soak-time claims."
+      ],
+      "falsifier": "An unrelated owner can be released, stale generations close current resources, or a leaked resource passes a cycle.",
+      "deliverables": [
+        "resource_ledger.py",
+        "test_resource_ledger.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it."
+    },
+    {
+      "id": "I-R06-FAILURE-SEQUENCES",
+      "planning_ids": [
+        "R06"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement a deterministic failure-sequence regression runner against the existing input/focus/session APIs.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-R06-FAILURE-SEQUENCES",
+      "owned_files": [
+        "failure_sequences.py",
+        "test_failure_sequences.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "failure_sequences.py",
+        "test_failure_sequences.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/focus_policy.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/input_mapper.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/focus_policy_tests.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Read the current APIs and existing tests first. Select missing cross-component sequences involving focus loss, held input, pause/resume/restart and repeated close; do not duplicate existing unit assertions.",
+        "Implement a bounded replay runner with injected clock and side-effect-recording adapters. Import the existing components from read-only pinned modules rather than rewriting their logic; record exact imported source hashes.",
+        "Test invariants: released input cannot remain latched, paused flow cannot emit locomotion commands, and owned teardown occurs exactly once. For a failure, preserve the minimal event sequence and source identity. Report mocked platform boundaries separately from actual Windows/device testing."
+      ],
+      "falsifier": "The runner tests a rewritten stand-in instead of existing product code, or credits simulated events as real device-loss certification.",
+      "deliverables": [
+        "failure_sequences.py",
+        "test_failure_sequences.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it."
+    },
+    {
+      "id": "I-S02-PACKAGE-PREFLIGHT",
+      "planning_ids": [
+        "S02"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement a read-only self-contained-package preflight checker, without distributing restricted assets.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-S02-PACKAGE-PREFLIGHT",
+      "owned_files": [
+        "package_preflight.py",
+        "test_package_preflight.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "package_preflight.py",
+        "test_package_preflight.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Locate the existing packaging entry point by read-only tracked-file search at the pinned revision and record what exists. Work only on preflight support while S01 distribution and R07 compatibility gates remain open.",
+        "Implement a caller-supplied package manifest checker for relative file paths, bounded hashes, missing files, unsafe traversal/junctions, undeclared external dependencies and development-root leakage in declared text configs. Never scan arbitrary user directories or infer asset rights.",
+        "Test a relocated synthetic package, a missing dependency, absolute E:/PythonChimera references, wrong hashes and traversal. Emit named findings and an integration proposal. Do not build/publish a game package or copy meshes/models."
+      ],
+      "falsifier": "Relocation changes valid-manifest results, an undeclared development dependency passes, or preflight claims distribution permission.",
+      "deliverables": [
+        "package_preflight.py",
+        "test_package_preflight.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it."
+    },
+    {
+      "id": "I-S04-PLAYER-DIAGNOSTICS",
+      "planning_ids": [
+        "S04"
+      ],
+      "kind": "bounded_implementation",
+      "objective": "Implement a tested player-facing diagnostic translation module for existing named product refusals.",
+      "source_edit_allowed": true,
+      "production_edit_allowed": false,
+      "gpu_allowed": false,
+      "max_new_output_bytes": 16777216,
+      "output_directory": "E:/ChimeraWork/monkey-coordination/task-results/I-S04-PLAYER-DIAGNOSTICS",
+      "owned_files": [
+        "player_diagnostics.py",
+        "test_player_diagnostics.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "required_artifacts": [
+        "player_diagnostics.py",
+        "test_player_diagnostics.py"
+      ],
+      "depends_on": [],
+      "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+      "read_first": [
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/input_settings.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/state_feedback.py",
+        "E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/product/session_flow.py"
+      ],
+      "steps": [
+        "Recover existing claims first. Read the full parent execution packet and current board. This is an explicitly authorized preparatory implementation; final parent dependencies remain open. Freeze statement, prediction and falsifier in PREREGISTRATION.md before edits.",
+        "Read exact source bytes with git -c safe.directory=E:/ChimeraWork/monkey-play-20260924 -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd90164b5544a16fd0bc72278d985eb6e3:<path>. You may extract the named Python sources and their necessary Python imports identified from that pinned source (record every extracted path/hash) to your owned workspace for CPU tests, preserving source hashes. No checkout, branch switch, new clone/worktree or edits in the source repository. Add extracted dependencies under a local reference/ directory; keep it read-only after extraction.",
+        "Inventory real named failures from these current modules with exact source references. Map only supported states; do not invent climbing capability or new physical behavior.",
+        "Implement deterministic user-message/action records for real supported failures and an honest unknown-error fallback with a correlation ID. Keep developer traces in a separate diagnostic field and do not expose local paths or secrets in player text.",
+        "Test known failures, unexpected errors, path-bearing exception strings and action availability. Produce a real mapping module and focused tests, with a proposal for connecting it to existing feedback. Human readability/playthrough acceptance stays pending."
+      ],
+      "falsifier": "The player receives raw local paths, a message claims an unsupported action, or unknown errors silently report success.",
+      "deliverables": [
+        "player_diagnostics.py",
+        "test_player_diagnostics.py",
+        "report.md",
+        "receipt.json",
+        "PREREGISTRATION.md"
+      ],
+      "completion": "Implement the module and tests; run relevant bounded CPU checks; preserve source/artifact hashes and failures in report.md. Cease writes then use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON. Source and test artifacts are hash-bound for independent review. Continue next assigned task; only the existing publisher may integrate into the game.",
+      "limits": "This lead-issued claim authorizes code ONLY in this task output directory, including reference/ extraction and temporary test fixtures. No production checkout changes, network, package installation, GUI, native build, GPU, training, process control or unbounded fuzzing. Each test invocation must be bounded to 120 seconds and output growth to 16 MiB. Parent gameplay/runtime/human gates are NOT satisfied by these preparatory modules. Check existing equivalent code before implementing; reuse it and add the missing integration/tests instead of duplicating it."
     }
   ]
 }

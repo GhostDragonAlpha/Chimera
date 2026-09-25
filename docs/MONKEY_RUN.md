@@ -1,5 +1,31 @@
 # Work continuously toward the playable monkey
 
+## Ready implementation work: astra-0011
+
+The queue now includes six independent bounded IMPLEMENTATION briefs, not just the
+three existing diagnostics. A worker may claim these directly; no coordinator identity
+or additional operator permission is needed. Their explicit authority is code/tests
+inside their unique task-results directory, plus pinned read-only dependency extraction.
+No production checkout, hardware or feature-acceptance authority is implied.
+Execute the returned brief, submit its report plus required source/test artifacts for
+independent review, and take next work. The existing publisher owns eventual integration.
+
+Free reporting slots do not mean active model workers exist. The coordinator must use
+actual harness dispatch for available useful capacity and collect real completion events.
+Do not block independent implementation merely because walking/collision is owned;
+their final feature dependencies remain open until the real native runtime passes.
+Forest static tests do not establish W10 scene readiness. Native contact and actual
+walking/camera behavior still require the integrated runtime and visual checks.
+
+## Dispatch enforcement: astra-0010
+
+The live registration helper refuses new assignments carrying a stale instruction
+revision or bundle hash and returns the exact current values and read/retry action.
+Read and apply the current instructions; do not merely copy new identifiers. Existing
+workers may still report, preserve and release their work. Every helper response carries
+a current lead-instruction notice. Adoption of genuinely existing claims remains possible;
+do not mislabel new dispatch as adoption to evade the revision gate.
+
 ## Continuous execution: astra-0009
 
 Read [CONTINUOUS_EXECUTION.md](../tools/monkey_campaign/CONTINUOUS_EXECUTION.md).
@@ -78,8 +104,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 9,
-  "revision_id": "astra-0009",
+  "revision": 11,
+  "revision_id": "astra-0011",
   "scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -110,7 +136,7 @@ If startup fails, report its exact error and preserve existing work; do not ask
 }
 CHIMERA_LEAD_CONTROL -->
 
-## Current lead instructions: astra-0009
+## Current lead instructions: astra-0011
 
 The operator designates **Astra/Codex as lead developer**. The lead publishes overall
 instructions here; workers report progress and propose changes separately. Only the

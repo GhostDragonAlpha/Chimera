@@ -1,3 +1,8 @@
+> astra-0011: startup offers ready implementation as well as diagnostic/review briefs.
+> Execute code/tests where the brief explicitly grants its unique output workspace;
+> no coordinator impersonation or new permission is required. --finish hashes required
+> source/test artifacts as well as the report. Preserve existing claims and continue.
+
 # Worker procedure â€” internal reference, not another onboarding prompt
 
 The sole user-facing entry is `E:/PythonChimera/docs/MONKEY_RUN.md`.

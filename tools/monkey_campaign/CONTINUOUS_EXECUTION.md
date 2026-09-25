@@ -1,3 +1,11 @@
+> astra-0011: bounded_implementation briefs explicitly grant code/test writes in their
+> unique task output directory, including pinned dependency extraction and test fixtures.
+> Required source/test artifacts are hash-bound at submission and rechecked by review.
+> New workers can claim these directly. Existing coordinator publication also supports
+> this kind with production_edit_allowed=false, owned_files and required_artifacts.
+> Other production-source/hardware authority remains unchanged. This supersedes the
+> diagnostic-only queue description below; no conditional requirement is activated.
+
 # Continuous execution — astra-0009
 
 ## Whole-plan coverage

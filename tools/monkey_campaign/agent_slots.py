@@ -32,6 +32,15 @@ def text(value, name):
     return value
 
 
+def check_instruction_revision(arguments, current):
+    require(arguments.get('instruction_revision')==current['revision_id'] and
+            arguments.get('instruction_bundle_sha256')==current['bundle_sha256'],
+            'LEAD_UPDATE_REQUIRED: Read E:/PythonChimera/docs/MONKEY_RUN.md and its current bundle; '
+            'apply the instructions and record your own acknowledgement, then retry this same assignment '
+            'with instruction_revision='+current['revision_id']+' and instruction_bundle_sha256='+current['bundle_sha256']+
+            '. Existing claims remain intact; do not ask the operator for a new task.')
+
+
 class Registry:
     def __init__(self, root, clock=time.time):
         self.root = Path(root)
@@ -88,6 +97,11 @@ class Registry:
         state['recent_events'] = state['recent_events'][-100:]
 
     def register(self, a):
+        # Enforce at the shared deployment, not merely in prose. Isolated test/recovery
+        # stores are not the production instruction authority.
+        if self.root.absolute()==DEFAULT_ROOT.absolute() and not a.get('adopt_existing'):
+            from instruction_state import inspect
+            check_instruction_revision(a,inspect(Path(__file__).resolve().parents[2]))
         for key in ('agent_id','task_id','ownership_reference','workspace','checkpoint','next_action','instruction_revision','instruction_bundle_sha256'):
             text(a.get(key),key)
         require(a.get('phase') in PHASES, 'invalid_phase')
@@ -207,6 +221,18 @@ class Registry:
             temporary.replace(target)
         return result
 
+    def instruction_notice(self):
+        if self.root.absolute()!=DEFAULT_ROOT.absolute():return None
+        from instruction_state import inspect
+        try:
+            current=inspect(Path(__file__).resolve().parents[2])
+            return {'revision_id':current['revision_id'],'bundle_sha256':current['bundle_sha256'],
+                    'entry':'E:/PythonChimera/docs/MONKEY_RUN.md',
+                    'required_action':'Read this revision before new dispatch. Preserve/report/release existing work normally; acknowledge only your own actual read.'}
+        except (OSError,ValueError,KeyError) as exc:
+            return {'state':'POLICY_READ_FAILED','reason':str(exc),
+                    'required_action':'Preserve existing work. Resolve policy integrity before new dispatch.'}
+
 
 def main(argv=None):
     p=argparse.ArgumentParser(description=__doc__)
@@ -225,6 +251,8 @@ def main(argv=None):
             data=json.loads(raw,object_pairs_hook=unique_object,parse_constant=reject_constant)
             require(isinstance(data,dict),'arguments_must_be_object')
             result=getattr(registry,a.action)(data)
+        notice=registry.instruction_notice()
+        if notice is not None:result['lead_instruction_notice']=notice
         print(json.dumps(result,indent=2));return 0
     except (OSError,ValueError,TypeError,KeyError,sqlite3.Error) as exc:
         print(json.dumps({'refused':str(exc)}),file=sys.stderr);return 2

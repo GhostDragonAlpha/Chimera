@@ -9,6 +9,24 @@ import stat
 from agent_slots import Registry, PHASES, local_time, require
 
 
+def validate_brief_authority(brief,registry):
+    require(brief.get('gpu_allowed') is False,'gpu_authority_not_granted')
+    if brief.get('kind')=='bounded_diagnostic':
+        require(brief.get('source_edit_allowed') is False,'diagnostic_authority_violation')
+    else:
+        require(brief.get('kind')=='bounded_implementation','unsupported_queue_task_kind')
+        require(brief.get('source_edit_allowed') is True and brief.get('production_edit_allowed') is False,
+                'implementation_authority_violation')
+        require(Path(brief['output_directory']).absolute()==(registry.root/'task-results'/brief['id']).absolute(),
+                'implementation_workspace_mismatch')
+        scopes=brief.get('owned_files')
+        require(isinstance(scopes,list) and scopes and all(isinstance(x,str) and x and
+                not Path(x).is_absolute() and '..' not in Path(x).parts and ':' not in x for x in scopes),
+                'implementation_owned_files_required')
+        require(brief.get('required_artifacts') and set(brief['required_artifacts'])<=set(scopes),
+                'implementation_artifacts_required')
+
+
 def assigned_brief(state,slot):
     tid=slot['task_id']; review=tid.endswith('::review');key=tid[:-8] if review else tid
     record=state.get('diagnostic_claims',{}).get(key)
@@ -18,6 +36,7 @@ def assigned_brief(state,slot):
         require(record.get('reviewer')==slot['agent_id'],'wrong_review_owner')
         b.update(id=tid,review_of=key,output_directory=str(Path(b['output_directory'])/'review'),
             submission=record['submission'],objective='Independently review '+key,
+            kind='bounded_diagnostic',source_edit_allowed=False,
             steps=['Read the submitted evidence and reproduce its substantive checks independently. Record PASS or CHANGES_REQUIRED with reasons.'])
     else:
         require(record['agent_id']==slot['agent_id'] and record['generation']==slot['generation'],'wrong_task_owner')
@@ -44,6 +63,7 @@ def claim_next(registry, briefs, agent_id, revision, bundle):
             if record['state']=='REVIEW' and record['agent_id']!=agent_id:
                 b=deepcopy(record['brief'])
                 b.update(id=tid+'::review',review_of=tid,
+                    kind='bounded_diagnostic',
                     output_directory=str(Path(b['output_directory'])/'review'),
                     objective='Independently review '+tid,
                     steps=['Read the submitted evidence and reproduce its substantive checks independently. Record PASS or CHANGES_REQUIRED with reasons.'],
@@ -52,17 +72,16 @@ def claim_next(registry, briefs, agent_id, revision, bundle):
         ready=reviews+[deepcopy(queue[b['id']]['brief']) if b['id'] in queue else b for b in candidates if (b['id'] not in queue or queue[b['id']]['state']=='READY')
             and all(queue.get(dep,{}).get('state')=='ACCEPTED' for dep in b.get('depends_on',[]))]
         free=[s for s in state['slots'] if s['agent_id'] is None]
+        if not free: return {'state':'CAPACITY_FULL','next_action':'Wait for a confirmed slot release; preserve this arrival.'}
         if not ready: return {'state':'NO_UNCLAIMED_AUTHORIZED_TASK',
             'waiting':{tid:r['state'] for tid,r in queue.items()},
             'next_action':'Read queue_control.py status. Coordinator: review results, commission the first unmet production phase from execution_plan.py through existing claims, or publish a bounded follow-up. Worker: wait for real review/completion events or continue another existing owned task. This is not goal completion.'}
-        if not free: return {'state':'CAPACITY_FULL','next_action':'Wait for a confirmed slot release; preserve this arrival.'}
         brief=ready[0]
-        require(brief['kind']=='bounded_diagnostic','unsupported_queue_task_kind')
-        require(brief['source_edit_allowed'] is False and brief['gpu_allowed'] is False,'diagnostic_authority_violation')
+        validate_brief_authority(brief,registry)
         slot=free[0]; generation=slot['generation']+1; stamp=registry.clock()
         deadline=int(stamp//3600)*3600+3600
         slot.update(agent_id=agent_id,task_id=brief['id'],generation=generation,phase='derive',
-                    ownership_reference='Lead-authored EXECUTION_QUEUE.json; transactional diagnostic claim',
+                    ownership_reference='Lead-authorized bounded queue; exclusive named task output workspace',
                     workspace=brief['output_directory'],checkpoint='Read the complete assigned brief before action',
                     next_action=brief['steps'][0],last_action='Atomic task+slot claim',memory={'brief':deepcopy(brief)},
                     instruction_revision=revision,instruction_bundle_sha256=bundle,last_report_utc=datetime.now(timezone.utc).isoformat(),
@@ -84,7 +103,7 @@ def claim_next(registry, briefs, agent_id, revision, bundle):
         registry.event(state,'diagnostic_task_claim',{'task':brief['id'],'agent_id':agent_id,'slot':slot['slot'],'generation':generation})
         result={'state':'ASSIGNED','slot':deepcopy(slot),'brief':deepcopy(brief),
                 'native_enrollment_claimed':False,
-                'next_action':'Execute the brief now. Read-only sources; write only assigned report outputs. No GPU or production source edits.'}
+                'next_action':'Execute the brief now, including code and tests when explicitly authorized. Write only the assigned workspace/owned files. No GPU or production checkout edits; submit for independent review, then take next work.'}
     registry.snapshot()
     return result
 
@@ -125,12 +144,18 @@ def finish(registry, a):
             require(record['state']=='REVIEW_CLAIMED' and record['reviewer']==a['agent_id'], 'wrong_review_owner')
             require(a.get('reviewed_sha256')==record['submission']['raw_sha256'],'stale_review')
             source=record['submission']
-            require(evidence(source['path'],record['brief']['output_directory'])==source,'submission_changed')
+            require(evidence(source['path'],record['brief']['output_directory'])==
+                    {k:source[k] for k in ('path','raw_sha256','bytes')},'submission_changed')
+            for artifact in source.get('artifacts',[]):
+                require(evidence(artifact['path'],record['brief']['output_directory'])==artifact,'implementation_artifact_changed')
             require(a.get('verdict') in ('PASS','CHANGES_REQUIRED'),'review_verdict_required')
             record['review']={'report':report,'reviewer':a['agent_id'],'verdict':a['verdict']}
             record['state']='ACCEPTED' if a['verdict']=='PASS' else 'CHANGES_REQUIRED'
         else:
             require(record['state']=='CLAIMED' and record['agent_id']==a['agent_id'],'wrong_task_owner')
+            if brief['kind']=='bounded_implementation':
+                report['artifacts']=[evidence(Path(brief['output_directory'])/name,brief['output_directory'])
+                    for name in brief['required_artifacts']]
             record.update(state='REVIEW',submission=report)
         clear_slot(slot,report)
         registry.event(state,'queue_finish',{'task':key,'state':record['state'],'agent_id':a['agent_id']})
@@ -159,8 +184,7 @@ def publish(registry,a,catalog,builtin_ids=()):
     """Coordinator adds a bounded follow-up; never edits the sealed feature plan."""
     brief=a['brief']
     require(brief.get('id') not in builtin_ids,'builtin_task_id_reserved')
-    require(brief.get('kind')=='bounded_diagnostic' and brief.get('source_edit_allowed') is False
-            and brief.get('gpu_allowed') is False,'diagnostic_authority_violation')
+    validate_brief_authority(brief,registry)
     require(brief.get('planning_ids') and set(brief['planning_ids'])<=set(catalog),'unknown_planning_id')
     require(all(catalog[t]['scope']!='conditional' for t in brief['planning_ids']), 'conditional_requires_separate_authority')
     for key in ('id','objective','falsifier','completion'):
