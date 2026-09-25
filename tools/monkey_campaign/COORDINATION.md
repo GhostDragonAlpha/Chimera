@@ -1,3 +1,9 @@
+> astra-0009: use CONTINUOUS_EXECUTION.md for submit -> independent review -> next
+> assignment, explicit hourly checkpoint recovery, bounded follow-up publication and
+> correction. execution_plan.py covers every sealed task; commission each first unmet
+> production phase through existing native authority. No new operator prompt is needed.
+> Preserve current claims and inspect actual child outcomes; no automatic lead wakeup.
+
 > astra-0008: the lead-authored bounded diagnostic queue uses transactional task-plus-slot
 > claims in worker_start.py. Those briefs require no enrollment in the separate HTTP
 > prototype. All other existing source, coordinator and resource claims remain intact.

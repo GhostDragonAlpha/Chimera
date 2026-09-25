@@ -1,19 +1,20 @@
-# Worker procedure — internal reference, not another onboarding prompt
+# Worker procedure â€” internal reference, not another onboarding prompt
 
 The sole user-facing entry is `E:/PythonChimera/docs/MONKEY_RUN.md`.
 Its first action runs `worker_start.py`: instruction verification, real orientation,
-shared-status inspection, and automatic arrival submission to the existing mailbox.
+shared-status inspection, and transactional task/slot assignment. Successful arrivals
+are registry events; only genuine unresolved questions go to the mailbox.
 No hand-authored arrival JSON or separate goal prompt is needed.
 
 Retain the returned arrival ID and use it on retries. Check for an existing native
 claim before taking another. Arrival IDs are explicitly unauthenticated intake IDs;
 they do not grant filesystem ownership or certify harness capacity.
 
-The existing coordinator reads pending UNASSIGNED:BOOTSTRAP requests at its normal
-coordination events. It recovers actual assignments, arranges trusted enrollment,
-issues claims, adopts real workers into report slots, and acknowledges the lead revision.
-If its provisioning adapter is absent, it files COORDINATOR_BOOTSTRAP_REQUIRED with
-actual inventory and task-brief references. It does not invent credentials or enrollments.
+For completion, review, corrections and hourly recovery, follow CONTINUOUS_EXECUTION.md.
+Use the returned handoff_template with --finish to submit and receive next work in
+one invocation. Use --checkpoint after ceasing writes at the hour boundary.
+The existing coordinator commissions every selected task through its first unmet phase
+using execution_plan.py; it must not wait for another operator goal prompt.
 
 Workers continue their owned tasks through preregistration, derivation, implementation,
 appropriate numerical/runtime/visual verification, independent review and integration.

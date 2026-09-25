@@ -49,6 +49,19 @@ class StartupTests(unittest.TestCase):
         self.assertEqual(self.registry.snapshot()['registered_agents'], 0)
         self.assertEqual(SuggestionBox(self.root).listing()['questions'], [])
 
+    def test_successful_assignment_does_not_file_blocking_question(self):
+        self.run_start('--arrival-id','ordinary-worker')
+        self.assertEqual(SuggestionBox(self.root).listing()['questions'], [])
+
+    def test_orientation_failure_cannot_claim(self):
+        with patch.object(worker_start,'DEFAULT_ROOT',self.root), \
+             patch('sys.argv',['worker_start.py','--arrival-id','failed-orient']), \
+             patch.object(worker_start.subprocess,'run',return_value=SimpleNamespace(
+                 returncode=1,stdout='',stderr='fixture orient failure')):
+            with self.assertRaisesRegex(ValueError,'orientation_failed'):
+                worker_start.main()
+        self.assertEqual(self.registry.snapshot()['registered_agents'],0)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,25 @@
 # Work continuously toward the playable monkey
 
+## Continuous execution: astra-0009
+
+Read [CONTINUOUS_EXECUTION.md](../tools/monkey_campaign/CONTINUOUS_EXECUTION.md).
+Every approved requirement now has a complete phase/calculation packet from
+execution_plan.py. Reconcile existing receipts and execute the first unmet phase;
+do not wait for the operator to write another task prompt. The existing coordinator
+commissions production work using its actual source/resource claims and real harness.
+
+Bounded workers use startup's handoff_template with --finish to submit evidence,
+release their slot and receive next work in one invocation. Independent reviews are
+automatically offered to other workers. Use --checkpoint after ceasing writes at the
+hour boundary to preserve and recover unfinished work. The coordinator can publish
+bounded follow-ups and explicitly request corrections through queue_control.py.
+Successful arrivals no longer fill the suggestion box. Missing orientation refuses
+new assignment. No status response or exhausted bounded queue completes the game.
+
+These commands supersede older arrival-only and manual bounded-handoff wording below.
+Existing production claims and protected jobs remain intact. A process does not execute
+merely because a task was claimed; use real dispatch/wait and inspect actual outcomes.
+
 ## Current task authority and written plan
 
 Execute worker_start.py below. It now reads the approved plan and EXECUTION_QUEUE,
@@ -58,8 +78,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 8,
-  "revision_id": "astra-0008",
+  "revision": 9,
+  "revision_id": "astra-0009",
   "scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -82,12 +102,15 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/SCOPE_AMENDMENT_20260924.json",
     "tools/monkey_campaign/EXECUTION_QUEUE.json",
     "tools/monkey_campaign/task_queue.py",
-    "tools/monkey_campaign/DOC_AUDIT.md"
+    "tools/monkey_campaign/DOC_AUDIT.md",
+    "tools/monkey_campaign/execution_plan.py",
+    "tools/monkey_campaign/queue_control.py",
+    "tools/monkey_campaign/CONTINUOUS_EXECUTION.md"
   ]
 }
 CHIMERA_LEAD_CONTROL -->
 
-## Current lead instructions: astra-0008
+## Current lead instructions: astra-0009
 
 The operator designates **Astra/Codex as lead developer**. The lead publishes overall
 instructions here; workers report progress and propose changes separately. Only the
@@ -143,7 +166,7 @@ Read this supplement when reconciling the completed campaigns. The approved-list
 
 ## Current execution priorities
 
-Follow the execution-plan refinement in [COORDINATION.md](../tools/monkey_campaign/COORDINATION.md#execution-plan-refinement-astra-0008).
+Follow the execution-plan refinement in [COORDINATION.md](../tools/monkey_campaign/COORDINATION.md#execution-plan-refinement-astra-0007).
 The immediate playable checkpoint is controlled walking with a camera in one clearing;
 the final goal still includes the full ground-tree-ground loop and all selected requirements.
 Preserve active assignments and protected training; apply sequencing changes at checkpoints.

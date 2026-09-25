@@ -29,7 +29,7 @@
         "report.md with exact source revisions/hashes, findings and next implementation step",
         "receipt.json recording checks actually performed, failures and remaining gates"
       ],
-      "completion": "Write the scoped evidence, report finished through agent_slots.py with your exact slot/generation, and hand off for independent coordinator review. Do not mark a planning task accepted.",
+      "completion": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted.",
       "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision."
     },
     {
@@ -58,7 +58,7 @@
         "report.md with exact source revisions/hashes, findings and next implementation step",
         "receipt.json recording checks actually performed, failures and remaining gates"
       ],
-      "completion": "Write the scoped evidence, report finished through agent_slots.py with your exact slot/generation, and hand off for independent coordinator review. Do not mark a planning task accepted.",
+      "completion": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted.",
       "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision."
     },
     {
@@ -91,7 +91,7 @@
         "report.md with exact source revisions/hashes, findings and next implementation step",
         "receipt.json recording checks actually performed, failures and remaining gates"
       ],
-      "completion": "Write the scoped evidence, report finished through agent_slots.py with your exact slot/generation, and hand off for independent coordinator review. Do not mark a planning task accepted.",
+      "completion": "Preserve the scoped report, cease task writes, and use worker_start.py --arrival-id YOUR_ID --finish HANDOFF_JSON with the returned handoff_template. Independent review is queued automatically; execute next assigned work. Do not mark a planning task accepted.",
       "limits": "Read referenced sources and existing receipts. No production edits, model loads, engine starts, Git operations that change source checkouts, or broad new test/build runs. Request clarification in the mailbox only for a concrete remaining decision."
     }
   ]
