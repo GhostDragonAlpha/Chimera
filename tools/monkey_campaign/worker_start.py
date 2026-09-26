@@ -6,6 +6,8 @@ import subprocess
 import sys
 import uuid
 import os
+import hashlib
+import tempfile
 
 from instruction_state import inspect
 from suggestion_box import SuggestionBox, DEFAULT_ROOT
@@ -15,6 +17,29 @@ from task_queue import claim_next, finish, checkpoint
 from instruction_state import decode
 from execution_plan import build_plan
 import kanban
+import continuous_cycle
+from worker_checkout import prepare as prepare_checkout
+
+
+def save_recovery(root, identity, allocation, revision):
+    """Durable identity only; no role tokens, task completion or liveness claim."""
+    folder=Path(root)/'startup-receipts';folder.mkdir(parents=True,exist_ok=True)
+    path=folder/(hashlib.sha256(identity.encode('utf-8')).hexdigest()+'.json')
+    assignment=allocation.get('attempt') or allocation.get('review') or {}
+    receipt={'schema':'chimera.startup_recovery.v1','arrival_id':identity,
+        'instruction_revision':revision,'assignment_state':allocation['state'],
+        'task_id':allocation.get('task_id'),'assignment_id':assignment.get('id'),
+        'criteria_sha256':assignment.get('criteria_sha256'),'workspace':assignment.get('workspace'),
+        'resume_command':'python -B E:/PythonChimera/tools/monkey_campaign/worker_start.py --arrival-id '+identity,
+        'note':'Identity recovery only. Read live registry; do not infer work completion or worker cessation.'}
+    fd,tmp=tempfile.mkstemp(prefix='.startup-',suffix='.tmp',dir=folder)
+    try:
+        with os.fdopen(fd,'w',encoding='utf-8') as stream:
+            json.dump(receipt,stream,indent=2);stream.flush();os.fsync(stream.fileno())
+        os.replace(tmp,path)
+    finally:
+        if os.path.exists(tmp):os.unlink(tmp)
+    return str(path)
 
 
 def intake(box, instructions, identity, workspace, orientation):
@@ -38,8 +63,10 @@ def main():
     action.add_argument('--checkpoint',type=Path,help='Cessation/checkpoint arguments JSON; recover next window.')
     action.add_argument('--submit-pr',type=Path,help='Record PR arguments JSON, then take next card.')
     action.add_argument('--park',type=Path,help='Preserve attempt and cease writes, then take another card.')
+    action.add_argument('--request-pr',type=Path,help='Hand off hash-bound candidate artifacts and take next slot.')
+    action.add_argument('--review-result',type=Path,help='Submit independent review evidence and take next slot.')
     args=parser.parse_args()
-    if args.check and (args.finish or args.checkpoint or args.submit_pr or args.park):
+    if args.check and (args.finish or args.checkpoint or args.submit_pr or args.park or args.request_pr or args.review_result):
         raise ValueError('check_cannot_submit_handoff')
     project=Path(__file__).resolve().parents[2]
     instructions=inspect(project)
@@ -53,13 +80,13 @@ def main():
     box=SuggestionBox(DEFAULT_ROOT)
     # Require the installed store; never silently initialize a replacement authority.
     mailbox=box.listing(pending=True)
-    state_path=DEFAULT_ROOT/'STATUS.json'
-    slots=json.loads(state_path.read_text(encoding='utf-8'))
+    slots=Registry(DEFAULT_ROOT).readonly()
     out={'instruction_revision':instructions['revision_id'],
          'bundle_sha256':instructions['bundle_sha256'],
          'orientation_exit':run.returncode,'orientation':run.stdout[:12000],
          'orientation_error':run.stderr[:2000],
-         'registry_snapshot_mode':slots['mode'],'registry_snapshot_time':slots.get('snapshot_at_utc'),
+         'registry_snapshot_mode':slots['mode'],'registry_snapshot_time':None,'registry_source':'sqlite-readonly',
+         'registry_revision':slots['revision'],
          'pending_questions':len(mailbox['questions']),
          'native_enrollment_claimed':False,'task_claimed':False}
     out['plan'] = {'goal':queue['goal'], 'approved_task_count':len(catalog['tasks']),
@@ -74,7 +101,7 @@ def main():
     out['orientation_identity_note'] = 'Engine current/next terms are scene hierarchy entries, never agent or authenticated session identities.'
     if not args.check:
         identity=args.arrival_id or os.environ.get('CHIMERA_WORKER_ID')
-        if (args.finish or args.checkpoint or args.submit_pr or args.park) and not identity:
+        if (args.finish or args.checkpoint or args.submit_pr or args.park or args.request_pr or args.review_result) and not identity:
             raise ValueError('existing_arrival_id_required_for_handoff')
         identity=identity or 'arrival-'+uuid.uuid4().hex
         registry=Registry(DEFAULT_ROOT)
@@ -88,26 +115,51 @@ def main():
             out['handoff']=(finish if args.finish else checkpoint)(registry,data)
         out['arrival_id']=identity
         if kanban_enabled:
+            cycle_path=args.request_pr or args.review_result
+            if cycle_path:
+                raw=cycle_path.read_bytes()
+                if len(raw)>65536:raise ValueError('handoff_arguments_size_limit')
+                data=decode(raw)
+                if data.get('agent_id')!=identity:raise ValueError('handoff_identity_mismatch')
+                out['handoff']=(continuous_cycle.request_publication if args.request_pr else continuous_cycle.submit_review)(registry,data)
             if args.submit_pr or args.park:
                 with (args.submit_pr or args.park).open('rb') as stream:raw=stream.read(65537)
                 if len(raw)>65536:raise ValueError('handoff_arguments_size_limit')
                 data=decode(raw)
                 if data.get('agent_id')!=identity:raise ValueError('handoff_identity_mismatch')
-                out['handoff']=(kanban.submit if args.submit_pr else kanban.park)(registry,data)
+                out['handoff']=(__import__('verified_submission').submit if args.submit_pr else kanban.park)(registry,data)
             target=args.task or (out.get('handoff',{}).get('task') if args.finish else None)
             allocation=kanban.join(registry,identity,target)
-            out.update(assignment=allocation,task_claimed=allocation['state']=='ASSIGNED',
+            recovery=save_recovery(DEFAULT_ROOT,identity,allocation,instructions['revision_id'])
+            out={'arrival_id':identity,'startup_recovery_file':recovery,**out}
+            print('CHIMERA_STARTUP_RECOVERY='+recovery+' arrival_id='+identity,file=sys.stderr,flush=True)
+            try:
+                checkout=None if allocation['state']=='CHECKPOINT_FOR_COORDINATION' else prepare_checkout(project,allocation)
+            except (OSError,ValueError,subprocess.TimeoutExpired) as exc:
+                out.update(assignment=allocation,checkout_ready=False,checkout_error=str(exc),next_action='Preserve assignment and existing files. Retry startup with --arrival-id '+identity+' after resolving the named checkout failure; do not implement in the shared source checkout.')
+                print(json.dumps(out,indent=2));return
+            if checkout:
+                out['checkout']=checkout
+                out['working_directory']=checkout['working_directory']
+                out['required_next_action']='Use '+checkout['working_directory']+' as cwd/workdir for all implementation commands. The checkout is already on '+checkout['branch']+'. Do not run implementation commands in the onboarding/source checkout. Do not ask the operator to switch branches.'
+                allocation['next_action']=out['required_next_action']+' '+allocation['next_action']
+            out.update(assignment=allocation,task_claimed=allocation['state'] in ('ASSIGNED','RESUME_ATTEMPT','REVIEW_ASSIGNED','OPERATIONAL_LEAD_ASSIGNED','CHECKPOINT_FOR_COORDINATION'),
                 next_action=allocation['next_action'],board=kanban.read(registry),
-                continuation='Read task inbox before edits and each PR update. Submit a PR with --submit-pr, then take another card. No timer or exclusive task lease. Lead closes the card only after review and verified merge.')
-            if 'attempt' in allocation:
+                continuation='Read REVIEW_LANE.md. Development has ten slots; submitted candidates move to a separate Review queue and publish on review/<task-id>. Continue eligible work. Preserve existing PRs; only verified merge closes the task and unlocks dependencies.')
+            if 'attempt' in allocation or 'review' in allocation:
                 planning_ids = allocation.get('brief', {}).get('planning_ids', [])
                 out['ontology_task_packets'] = [t for t in plan['tasks'] if t['id'] in planning_ids]
                 out['ontology_context_note'] = 'Reconcile amended plan requirements before new acceptance. Existing card criteria hashes and historical receipts are preserved; propose any missing card scope through its inbox.'
+            if 'review' in allocation:
+                review=allocation['review']
+                out['review_result_template']={'agent_id':identity,'task_id':allocation['task_id'],'review_id':review['id'],'head_sha':review['head_sha'],'criteria_sha256':review['criteria_sha256'],'verdict':'PASS or CHANGES_REQUIRED','body':'Actual checks, findings and limitations','writes_stopped':True,'artifacts':[{'path':'<absolute report in review workspace>','sha256':'<raw SHA-256>'}]}
+            if 'attempt' in allocation:
+                out['publication_request_template']={'agent_id':identity,'task_id':allocation['task_id'],'attempt_id':allocation['attempt']['id'],'criteria_sha256':allocation['attempt']['criteria_sha256'],'checkpoint':'Candidate location, base revision, actual verification, failures and remaining gates','writes_stopped':True,'artifacts':[{'path':'<absolute candidate file in attempt workspace>','sha256':'<raw SHA-256>'}]}
                 out['pr_submission_template']={'agent_id':identity,'task_id':allocation['task_id'],
                     'attempt_id':allocation['attempt']['id'],'criteria_sha256':allocation['attempt']['criteria_sha256'],
                     'pr_url':'https://github.com/GhostDragonAlpha/Chimera/pull/NUMBER','head_sha':'<full 40-character PR head SHA>'}
             print(json.dumps(out,indent=2));return
-        if args.submit_pr or args.park:raise ValueError('kanban_not_initialized')
+        if args.submit_pr or args.park or args.request_pr or args.review_result:raise ValueError('kanban_not_initialized')
         allocation = claim_next(registry,queue['tasks'],identity,instructions['revision_id'],instructions['bundle_sha256'])
         out['assignment'] = allocation
         out['task_claimed'] = allocation['state'] == 'ASSIGNED'
@@ -130,6 +182,9 @@ def main():
 
 if __name__=='__main__':
     try: main()
+    except BrokenPipeError:
+        print('Output interrupted. Assignment may already be committed; recover identity from startup-receipts and retry the SAME arrival ID.',file=sys.stderr)
+        sys.exit(2)
     except (OSError,ValueError,KeyError,subprocess.TimeoutExpired) as exc:
-        print(json.dumps({'bootstrap_failed':str(exc),'task_claimed':False}),file=sys.stderr)
+        print(json.dumps({'bootstrap_failed':str(exc),'task_claimed':None,'recovery':'Do not infer unclaimed state. Read live registry/startup-receipts and retry your existing identity.'}),file=sys.stderr)
         sys.exit(2)
