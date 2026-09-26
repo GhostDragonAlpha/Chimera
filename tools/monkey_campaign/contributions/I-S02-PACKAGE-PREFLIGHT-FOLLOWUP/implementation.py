@@ -18,7 +18,9 @@ module is that producer, as an ADAPTER over the packager's ACTUAL declared input
   * ``produce_manifest`` turns an EXTERNAL admission record (every row carries a
     ``role`` and an ``admission_ref`` pointing at an external license/admission
     decision) into a canonical, relocation-invariant manifest: package-relative
-    forward-slash paths, actual byte sizes, sha256 of bounded reads;
+    CANONICAL forward-slash paths, sha256 over the COMPLETE bounded content
+    actually read -- a read that contradicts the declared limit or the stat
+    identity refuses by name, so a truncated-content hash is never produced;
   * ``audit_staging`` names undeclared leftovers (``STAGE-UNDECLARED``) and missing
     declared assets (``STAGE-MISSING``) in a staged tree before publication;
   * ``run_preflight`` routes ALL checking through the PINNED module (no verdict of
@@ -144,14 +146,21 @@ SCHEMA = load_pinned_preflight().SCHEMA
 PRODUCED = "MANIFEST-PRODUCED"
 REFUSED = "MANIFEST-REFUSED"
 
-#: Refusal codes (machine ids, frozen in PREREGISTRATION.md section 3):
+#: Refusal codes (machine ids, frozen in PREREGISTRATION.md section 3 + the
+#: correction addendum):
 #:   ADMISSION-MALFORMED   admission record lacks source/entries
 #:   ADMISSION-INCOMPLETE  admission row missing path/role/decision_ref
-#:   PRODUCER-DUP          same path admitted twice
-#:   PRODUCER-PATH         absolute / drive-anchored / UNC / '..' segment
+#:   PRODUCER-DUP          same canonical path admitted twice (incl. case aliases)
+#:   PRODUCER-PATH         absolute / drive-anchored / UNC / '..' / non-canonical
+#:                         posix form ('./' prefix, '.' segments, redundant or
+#:                         trailing separators)
 #:   SOURCE-MISSING        admitted file absent at package_root
 #:   SOURCE-NOT-FILE       admitted path is not a regular file
-#:   PRODUCER-OVERSIZE     admitted file exceeds max_file_bytes (bounded-read law)
+#:   PRODUCER-OVERSIZE     stat size or actual read exceeds max_file_bytes
+#:                         (bounded COMPLETE-content law: a truncated-content
+#:                         hash is never emitted)
+#:   SOURCE-DRIFT          source changed between stat and read; the drifted
+#:                         bytes are refused, never hashed as an entry
 #:   PRODUCER-TEXT         text_config row does not decode as UTF-8
 #:   PRODUCER-DEPS         declared_dependencies not a dict of lists of str
 #:   PIN-MISMATCH          vendored checker bytes drift from the frozen pin
@@ -195,8 +204,10 @@ def _path_defect(rel) -> str | None:
         return "UNC path"
     if ".." in posix.parts:
         return "traversal segment '..'"
-    if "." in posix.parts or posix.parts and posix.parts[0] == "":
-        return "empty path segment"
+    if PurePosixPath(rel).as_posix() != rel:
+        return ("non-canonical posix path (a declared path must equal its own "
+                "posix normalization: no './' prefix, no '.' segments, no "
+                "redundant or trailing separators)")
     return None
 
 
@@ -262,7 +273,7 @@ def produce_manifest(package_root, admission, *, package_name: str,
 
     root = Path(package_root)
     entries = []
-    seen = set()
+    seen = {}  # case-insensitive canonical identity -> first declared spelling
     bytes_hashed = 0
     for idx, row in enumerate(admission["entries"]):
         where = f"<admission[{idx}]>"
@@ -287,10 +298,14 @@ def produce_manifest(package_root, admission, *, package_name: str,
         if defect:
             refusals.append(("PRODUCER-PATH", rel, defect))
             continue
-        if rel in seen:
-            refusals.append(("PRODUCER-DUP", rel, "admitted twice"))
+        identity = rel.casefold()  # explicit Windows case handling on this lineage
+        if identity in seen:
+            refusals.append(("PRODUCER-DUP", rel,
+                             f"canonical duplicate of {seen[identity]!r} already "
+                             f"admitted; a conflict between declared entries is "
+                             f"refused, never silently deduped"))
             continue
-        seen.add(rel)
+        seen[identity] = rel
 
         literal = root / Path(*PurePosixPath(rel).parts)
         if not literal.exists():
@@ -305,7 +320,24 @@ def produce_manifest(package_root, admission, *, package_name: str,
             refusals.append(("PRODUCER-OVERSIZE", rel,
                              f"{size} B exceeds max_file_bytes {max_file_bytes} B"))
             continue
-        data = literal.read_bytes()[:max_file_bytes]  # bounded read (mirrors checker)
+        # Bounded COMPLETE-content read: the stat gate above bounds the routine
+        # read to <= max_file_bytes. The bytes hashed are the bytes read, and an
+        # entry records them only if the read is consistent with the declared
+        # limit AND the observed source identity -- truncated or drifted bytes
+        # are refused by name, never hashed as a manifest entry.
+        data = literal.read_bytes()
+        if len(data) > max_file_bytes:
+            refusals.append(("PRODUCER-OVERSIZE", rel,
+                             f"read {len(data)} B exceeds max_file_bytes "
+                             f"{max_file_bytes} B (stat said {size} B); no "
+                             f"truncated-content hash is produced"))
+            continue
+        if len(data) != size:
+            refusals.append(("SOURCE-DRIFT", rel,
+                             f"source changed between stat and read: stat "
+                             f"{size} B, read {len(data)} B; the drifted bytes "
+                             f"are refused, never hashed as an entry"))
+            continue
         digest = hashlib.sha256(data).hexdigest()
         text_config = bool(row.get("text_config", False))
         if text_config:
@@ -317,13 +349,13 @@ def produce_manifest(package_root, admission, *, package_name: str,
                 continue
         entries.append({
             "path": rel,
-            "bytes": size,
+            "bytes": len(data),
             "sha256": digest,
             "text_config": text_config,
             "role": role,
             "admission_ref": decision_ref,
         })
-        bytes_hashed += size
+        bytes_hashed += len(data)
 
     if refusals:
         return ManifestProduction(REFUSED, None, tuple(refusals),

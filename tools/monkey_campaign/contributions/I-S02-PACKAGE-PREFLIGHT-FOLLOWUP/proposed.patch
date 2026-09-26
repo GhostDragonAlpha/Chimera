@@ -1,9 +1,9 @@
 diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/PREREGISTRATION.md b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/PREREGISTRATION.md
 new file mode 100644
-index 00000000..27b48224
+index 00000000..01321dac
 --- /dev/null
 +++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/PREREGISTRATION.md
-@@ -0,0 +1,189 @@
+@@ -0,0 +1,298 @@
 +# I-S02-PACKAGE-PREFLIGHT-FOLLOWUP — PREREGISTRATION (frozen before implementation)
 +
 +Card `I-S02-PACKAGE-PREFLIGHT-FOLLOWUP` (development slot 3), attempt
@@ -193,12 +193,121 @@ index 00000000..27b48224
 +commercial or distribution rights (S01's BLOCKED-FOR-SHIP MorphoSource rows stand
 +untouched and cannot be blessed by anything here); no change to any physics/threshold
 +source; no edit outside this contribution directory.
++
++---
++
++# CORRECTION ADDENDUM (CHANGES_REQUIRED on PR #167 head `a5124959`)
++
++Frozen **before any correction edit to `implementation.py`/`test_implementation.py`
++and before the post-fix run of the reviewing lead's reproducer**: 2026-09-26T23:13:25Z.
++Correction attempt `a9ab83c83d7e4eb595d08440c54237c2`, agent
++`arrival-4519bbf2c5944487965ca96ac718c5ff`; the card's criteria hash is UNCHANGED
++(`b19c2b9e09610d10f9dd7e770e8735216aaa65c8c8e6001242cff396a03e8afc`). Sections 0-6
++above stay frozen and in force; this addendum only narrows the producer's contract.
++
++## C1. The two reproduced falsifiers (lead evidence at
++`E:/Chimera/queue-check-20260926/pr167`, reproduced independently pre-fix)
++
++- **F-GROWTH** (stat/read growth -> truncated success): the producer recorded the
++  stat size, read the whole file, then hashed a slice. With an injected deterministic
++  growth (4 -> 16 bytes) between stat and read at `max_file_bytes=8` it returned
++  `MANIFEST-PRODUCED` with `bytes=4` and a sha256 of the FIRST 8 bytes
++  (`924592b9…`) while actually reading 16 bytes — a truncated-content hash presented
++  as the file's complete-content identity, and `bytes` inconsistent with the hash.
++- **F-ALIAS** (lexical aliases admitted twice): `a.txt` and `./a.txt` were both
++  admitted as two manifest entries for one file (same digest `88d4266f…` twice),
++  because duplicate detection compared raw declared spellings and dot-segment rows
++  were not canonicalized.
++
++Pre-fix reproduction method (recorded): the lead's `reproduce.py` (sha256
++`3403354eb6a8d0a4ba8bca65505405e977ee13f0a6b282f87fa168f99498bcea`), copied
++read-only into a TEMP directory with only its one `src=` line re-pointed at this
++attempt's checkout (which holds the returned head's byte-identical
++`implementation.py`, `7cc592f9…`), run with `python -B` on synthetic TEMP inputs.
++Observed output matched the lead's `results.json` byte-for-byte in substance:
++`growth.verdict = MANIFEST-PRODUCED`, `bytes_actually_read = [16]`,
++`entries[0].bytes = 4`, `entries[0].sha256 = 924592b9…`; `alias.verdict =
++MANIFEST-PRODUCED` with both `a.txt` and `./a.txt` entries.
++
++## C2. Correction contract (frozen before implementation)
++
++1. **Bounded complete-content hashing / source-drift refusal** — the producer never
++   presents read bytes as a file identity unless they are the COMPLETE content it
++   hashed, and refuses by name whenever the read contradicts the declared limit or
++   the observed source identity:
++   - stat size > `max_file_bytes` -> `PRODUCER-OVERSIZE` BEFORE any read (existing
++     law, unchanged);
++   - read length > `max_file_bytes` -> `PRODUCER-OVERSIZE` (NEW): bytes actually
++     read beyond the limit are refused, never sliced and hashed;
++   - read length != stat size -> `SOURCE-DRIFT` (NEW named refusal): the source
++     changed between stat and read; those bytes are never hashed into any entry;
++   - an entry's `bytes` records the exact number of bytes hashed — the complete
++     content actually read; `bytes` and `sha256` always describe the same bytes;
++   - ALL-OR-NOTHING is unchanged: any refusal -> `MANIFEST-REFUSED`,
++     `manifest is None`, no partial manifest.
++   Documented boundary: the stat gate bounds routine reads to <= `max_file_bytes`;
++   detecting a drift event requires observing the changed bytes once (they are then
++   refused, not hashed); same-size concurrent rewrites are outside producer
++   detection and are re-verified by the pinned checker's own re-read at preflight.
++2. **Canonical duplicate handling** — declared package-relative paths are
++   canonicalized before duplicate detection:
++   - a declared path must BE its own canonical posix form:
++     `PurePosixPath(rel).as_posix() == rel`; a `./` prefix, embedded `.` segments,
++     redundant separators or a trailing slash refuse `PRODUCER-PATH` ("non-canonical
++     path …"); this replaces the previous dead `.`-segment branch with a round-trip
++     law (absolute/drive/UNC/`..`/backslash refusals are unchanged);
++   - duplicate detection compares canonical identities CASE-INSENSITIVELY (explicit
++     Windows case handling on this win32 lineage): a second declared row whose
++     canonical identity equals an admitted one refuses `PRODUCER-DUP`, naming both
++     declared spellings; this covers exact duplicates and case aliases (`A.txt` vs
++     `a.txt`);
++   - a genuine conflict (same canonical path, different declared entries, e.g.
++     different `role`/`decision_ref`) is REFUSED, never silently deduped — dropping
++     an admission row would misrepresent the external decision record;
++   - no admission-vocabulary change: rows still carry `path`/`role`/`decision_ref`
++     verbatim; declared canonical paths appear in entries verbatim.
++
++## C3. Frozen predictions for the post-fix reproducer run (her probe, logic unchanged)
++
++- growth probe: `verdict = MANIFEST-REFUSED`; `manifest = null`; exactly a
++  `PRODUCER-OVERSIZE` refusal naming `a.txt` with the 16 B read against the 8 B
++  limit in its detail; `bytes_actually_read == [16]`.
++- alias probe: `verdict = MANIFEST-REFUSED`; `manifest = null`; `./a.txt` refused
++  with code `PRODUCER-PATH` (non-canonical posix form).
++If either probe still produces a manifest, this correction FAILS its own falsifier.
++
++## C4. Regressions (frozen names, added to `test_implementation.py`)
++
++- `test_correction_growth_read_over_limit_refuses_oversize` (mirrors the lead's
++  growth probe: 4 -> 16 at limit 8; asserts `MANIFEST-REFUSED`, `manifest is None`,
++  code `PRODUCER-OVERSIZE` naming `a.txt`, observed read length 16)
++- `test_correction_growth_within_limit_refuses_source_drift` (4 -> 8 at limit 8:
++  read fits the limit but contradicts the stat -> `SOURCE-DRIFT`, no manifest)
++- `test_correction_shrink_refuses_source_drift` (stat 8 -> read 4 -> `SOURCE-DRIFT`)
++- `test_correction_complete_content_hash_at_exact_limit_boundary` (8-byte file at
++  limit 8 still PRODUCES; `bytes` == 8; `sha256` == sha256 of the complete bytes —
++  guards against over-refusal and against any truncation)
++- `test_correction_noncanonical_dot_alias_refused` (`['a.txt', './a.txt']` and a
++  lone `'./a.txt'` -> `MANIFEST-REFUSED`, `PRODUCER-PATH` non-canonical)
++- `test_correction_noncanonical_separator_forms_refused` (`'sub//x.txt'`,
++  `'dir/'`, `'a/./b.txt'` -> `PRODUCER-PATH` non-canonical)
++- `test_correction_case_alias_refused_as_canonical_duplicate` (`['a.txt', 'A.txt']`
++  -> `PRODUCER-DUP` naming both spellings, no manifest)
++- `test_correction_conflicting_duplicate_rows_refused` (same canonical path twice
++  with different `role`/`decision_ref` -> `PRODUCER-DUP`, no manifest)
++
++Existing tests: all 24 prior tests remain. The ONLY prior-test edit is the F4
++frozen-vocabulary set gaining `SOURCE-DRIFT` (the vocabulary guard must know the new
++named refusal; the guard's equality law itself is unchanged). The upstream pinned
++reference `reference/package_preflight__e0a0abc8.py` stays BYTE-IDENTICAL
++(11458 B, `1f81f62e…`) and is not edited; corrections live only in the
++producer/adapter layer (`implementation.py`), its tests, and this documentation.
 diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/implementation.py b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/implementation.py
 new file mode 100644
-index 00000000..a76a78e3
+index 00000000..ed4d894a
 --- /dev/null
 +++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/implementation.py
-@@ -0,0 +1,424 @@
+@@ -0,0 +1,456 @@
 +"""implementation.py -- I-S02-PACKAGE-PREFLIGHT-FOLLOWUP: manifest producer/adapter.
 +
 +Connects the CURRENT packager entry point (the R1 double-click launch lane
@@ -219,7 +328,9 @@ index 00000000..a76a78e3
 +  * ``produce_manifest`` turns an EXTERNAL admission record (every row carries a
 +    ``role`` and an ``admission_ref`` pointing at an external license/admission
 +    decision) into a canonical, relocation-invariant manifest: package-relative
-+    forward-slash paths, actual byte sizes, sha256 of bounded reads;
++    CANONICAL forward-slash paths, sha256 over the COMPLETE bounded content
++    actually read -- a read that contradicts the declared limit or the stat
++    identity refuses by name, so a truncated-content hash is never produced;
 +  * ``audit_staging`` names undeclared leftovers (``STAGE-UNDECLARED``) and missing
 +    declared assets (``STAGE-MISSING``) in a staged tree before publication;
 +  * ``run_preflight`` routes ALL checking through the PINNED module (no verdict of
@@ -345,14 +456,21 @@ index 00000000..a76a78e3
 +PRODUCED = "MANIFEST-PRODUCED"
 +REFUSED = "MANIFEST-REFUSED"
 +
-+#: Refusal codes (machine ids, frozen in PREREGISTRATION.md section 3):
++#: Refusal codes (machine ids, frozen in PREREGISTRATION.md section 3 + the
++#: correction addendum):
 +#:   ADMISSION-MALFORMED   admission record lacks source/entries
 +#:   ADMISSION-INCOMPLETE  admission row missing path/role/decision_ref
-+#:   PRODUCER-DUP          same path admitted twice
-+#:   PRODUCER-PATH         absolute / drive-anchored / UNC / '..' segment
++#:   PRODUCER-DUP          same canonical path admitted twice (incl. case aliases)
++#:   PRODUCER-PATH         absolute / drive-anchored / UNC / '..' / non-canonical
++#:                         posix form ('./' prefix, '.' segments, redundant or
++#:                         trailing separators)
 +#:   SOURCE-MISSING        admitted file absent at package_root
 +#:   SOURCE-NOT-FILE       admitted path is not a regular file
-+#:   PRODUCER-OVERSIZE     admitted file exceeds max_file_bytes (bounded-read law)
++#:   PRODUCER-OVERSIZE     stat size or actual read exceeds max_file_bytes
++#:                         (bounded COMPLETE-content law: a truncated-content
++#:                         hash is never emitted)
++#:   SOURCE-DRIFT          source changed between stat and read; the drifted
++#:                         bytes are refused, never hashed as an entry
 +#:   PRODUCER-TEXT         text_config row does not decode as UTF-8
 +#:   PRODUCER-DEPS         declared_dependencies not a dict of lists of str
 +#:   PIN-MISMATCH          vendored checker bytes drift from the frozen pin
@@ -396,8 +514,10 @@ index 00000000..a76a78e3
 +        return "UNC path"
 +    if ".." in posix.parts:
 +        return "traversal segment '..'"
-+    if "." in posix.parts or posix.parts and posix.parts[0] == "":
-+        return "empty path segment"
++    if PurePosixPath(rel).as_posix() != rel:
++        return ("non-canonical posix path (a declared path must equal its own "
++                "posix normalization: no './' prefix, no '.' segments, no "
++                "redundant or trailing separators)")
 +    return None
 +
 +
@@ -463,7 +583,7 @@ index 00000000..a76a78e3
 +
 +    root = Path(package_root)
 +    entries = []
-+    seen = set()
++    seen = {}  # case-insensitive canonical identity -> first declared spelling
 +    bytes_hashed = 0
 +    for idx, row in enumerate(admission["entries"]):
 +        where = f"<admission[{idx}]>"
@@ -488,10 +608,14 @@ index 00000000..a76a78e3
 +        if defect:
 +            refusals.append(("PRODUCER-PATH", rel, defect))
 +            continue
-+        if rel in seen:
-+            refusals.append(("PRODUCER-DUP", rel, "admitted twice"))
++        identity = rel.casefold()  # explicit Windows case handling on this lineage
++        if identity in seen:
++            refusals.append(("PRODUCER-DUP", rel,
++                             f"canonical duplicate of {seen[identity]!r} already "
++                             f"admitted; a conflict between declared entries is "
++                             f"refused, never silently deduped"))
 +            continue
-+        seen.add(rel)
++        seen[identity] = rel
 +
 +        literal = root / Path(*PurePosixPath(rel).parts)
 +        if not literal.exists():
@@ -506,7 +630,24 @@ index 00000000..a76a78e3
 +            refusals.append(("PRODUCER-OVERSIZE", rel,
 +                             f"{size} B exceeds max_file_bytes {max_file_bytes} B"))
 +            continue
-+        data = literal.read_bytes()[:max_file_bytes]  # bounded read (mirrors checker)
++        # Bounded COMPLETE-content read: the stat gate above bounds the routine
++        # read to <= max_file_bytes. The bytes hashed are the bytes read, and an
++        # entry records them only if the read is consistent with the declared
++        # limit AND the observed source identity -- truncated or drifted bytes
++        # are refused by name, never hashed as a manifest entry.
++        data = literal.read_bytes()
++        if len(data) > max_file_bytes:
++            refusals.append(("PRODUCER-OVERSIZE", rel,
++                             f"read {len(data)} B exceeds max_file_bytes "
++                             f"{max_file_bytes} B (stat said {size} B); no "
++                             f"truncated-content hash is produced"))
++            continue
++        if len(data) != size:
++            refusals.append(("SOURCE-DRIFT", rel,
++                             f"source changed between stat and read: stat "
++                             f"{size} B, read {len(data)} B; the drifted bytes "
++                             f"are refused, never hashed as an entry"))
++            continue
 +        digest = hashlib.sha256(data).hexdigest()
 +        text_config = bool(row.get("text_config", False))
 +        if text_config:
@@ -518,13 +659,13 @@ index 00000000..a76a78e3
 +                continue
 +        entries.append({
 +            "path": rel,
-+            "bytes": size,
++            "bytes": len(data),
 +            "sha256": digest,
 +            "text_config": text_config,
 +            "role": role,
 +            "admission_ref": decision_ref,
 +        })
-+        bytes_hashed += size
++        bytes_hashed += len(data)
 +
 +    if refusals:
 +        return ManifestProduction(REFUSED, None, tuple(refusals),
@@ -879,10 +1020,10 @@ index 00000000..98b413bd
 +                           {"paths_opened": paths_opened, "bytes_read": bytes_read})
 diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/report.md b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/report.md
 new file mode 100644
-index 00000000..dd5e14c8
+index 00000000..5d47015d
 --- /dev/null
 +++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/report.md
-@@ -0,0 +1,180 @@
+@@ -0,0 +1,292 @@
 +# I-S02-PACKAGE-PREFLIGHT-FOLLOWUP — report
 +
 +Card `I-S02-PACKAGE-PREFLIGHT-FOLLOWUP` (development slot 3), attempt
@@ -1063,12 +1204,124 @@ index 00000000..dd5e14c8
 +Remaining gates (NOT claimed here): real admission decision over the demo-lane
 +inputs (S01/R07 lineage), the actual staged package, clean-machine launch evidence
 +(S03), runtime/visual verification. No package published; no rights claimed.
++
++---
++
++# CORRECTION REPORT (CHANGES_REQUIRED on PR #167 head `a5124959` resolved)
++
++Correction attempt `a9ab83c83d7e4eb595d08440c54237c2`, agent
++`arrival-4519bbf2c5944487965ca96ac718c5ff`; criteria hash unchanged
++(`b19c2b9e…`). The correction prereg addendum (bottom of PREREGISTRATION.md,
++frozen 2026-09-26T23:13:25Z) was written BEFORE any correction edit and BEFORE
++the post-fix reproducer run. The lead's evidence
++(`E:/Chimera/queue-check-20260926/pr167/REVIEW.md` + `reproduce.py` +
++`results.json`, reproduced sha256 `3403354e…`) named two falsifiers; both are
++fixed in the producer/adapter layer only. The upstream pinned reference is
++UNTOUCHED (11458 B, `1f81f62e…` re-verified post-fix).
++
++## C1. What changed (implementation.py, `7cc592f9…` -> `062f4ed9…`)
++
++- Bounded COMPLETE-content hashing / source-drift refusal: the read is no longer
++  sliced. A stat size above `max_file_bytes` still refuses `PRODUCER-OVERSIZE`
++  before any read; a read longer than the limit now refuses `PRODUCER-OVERSIZE`
++  ("read 16 B exceeds max_file_bytes 8 B (stat said 4 B); no truncated-content
++  hash is produced"); a read whose length contradicts the stat now refuses the
++  NEW named code `SOURCE-DRIFT`. An entry's `bytes` is the exact byte count
++  hashed — `bytes` and `sha256` always describe the same complete bytes.
++  Documented boundary (prereg addendum C2.1): the stat gate bounds routine reads
++  to <= max_file_bytes; detecting a drift requires observing the changed bytes
++  once (they are refused, not hashed); same-size concurrent rewrites remain
++  outside producer detection and are re-verified by the pinned checker's own
++  re-read at preflight.
++- Canonical duplicate handling: a declared path must now equal its own posix
++  normalization (`PurePosixPath(rel).as_posix() == rel`); `./` prefixes, `.`
++  segments, redundant or trailing separators refuse `PRODUCER-PATH`
++  ("non-canonical posix path …"), replacing the previous dead `.`-segment branch.
++  Duplicate detection compares canonical identities case-insensitively (explicit
++  Windows case handling on this win32 lineage): `a.txt` + `./a.txt` refuses
++  (non-canonical), `A.txt` + `a.txt` and exact duplicates refuse `PRODUCER-DUP`
++  naming both spellings, and a genuine conflict (same canonical path, different
++  role/decision_ref) is refused, never silently deduped. ALL-OR-NOTHING
++  (`manifest is None` on any refusal) is unchanged.
++
++## C2. Reproducer, before and after (her probe logic unchanged; single documented
++`src=` line re-pointed from the returned attempt to this attempt's checkout)
++
++BEFORE (against returned head `a5124959`, implementation `7cc592f9…`): the
++defect fires byte-identically to the lead's `results.json` —
++
++- `growth.verdict = "MANIFEST-PRODUCED"`, `bytes_actually_read = [16]`,
++  `entries[0] = {"path": "a.txt", "bytes": 4, "sha256": "924592b9…"}` (hash of
++  the FIRST 8 of 16 actually-read bytes at limit 8);
++- `alias.verdict = "MANIFEST-PRODUCED"` with BOTH `"a.txt"` and `"./a.txt"`
++  entries (sha256 `88d4266f…` twice).
++
++AFTER (corrected implementation `062f4ed9…`), her reproduce.py output verbatim:
++
++```json
++{
++  "growth": {
++    "verdict": "MANIFEST-REFUSED",
++    "bytes_actually_read": [16],
++    "manifest": null
++  },
++  "alias": {
++    "verdict": "MANIFEST-REFUSED",
++    "manifest": null
++  }
++}
++```
++
++Refusal details (supplementary probe printing `refusals_json()`):
++
++- growth: `[{"code": "PRODUCER-OVERSIZE", "detail": "read 16 B exceeds
++  max_file_bytes 8 B (stat said 4 B); no truncated-content hash is produced",
++  "path": "a.txt"}]`
++- alias: `[{"code": "PRODUCER-PATH", "detail": "non-canonical posix path (a
++  declared path must equal its own posix normalization: no './' prefix, no '.'
++  segments, no redundant or trailing separators)", "path": "./a.txt"}]`
++
++Both match the prereg addendum's frozen predictions (section C3) exactly.
++
++## C3. Regressions and suite state
++
++8 new tests (`CorrectionRegressionTests`): growth-over-limit PRODUCER-OVERSIZE
++(observed read 16), growth-within-limit SOURCE-DRIFT, shrink SOURCE-DRIFT,
++complete-content boundary (8/8 still produces, hash == complete bytes),
++non-canonical dot alias, non-canonical separator forms, case alias PRODUCER-DUP,
++conflicting duplicate rows PRODUCER-DUP. The ONLY prior-test edit is the F4
++frozen-vocabulary set gaining `SOURCE-DRIFT`.
++
++`python -B -m unittest test_implementation` -> **Ran 32 tests (24 prior + 8 new),
++OK**, three consecutive runs (0.203 s / 0.183 s / 0.194 s), deterministic,
++CPU-only, synthetic TemporaryDirectory packages; no repo source opened by tests;
++no GPU; no engine; no package built or published.
++
++## C4. Correction artifact identities (supersede section 7 for the changed files)
++
++- `reference/package_preflight__e0a0abc8.py` — UNCHANGED, 11458 B,
++  `1f81f62e3ad1b7030fd2d1de7d6d932bbdf323b8533c89c36e462bf29e246ba2`
++- `implementation.py` — 21648 B,
++  `062f4ed92616a92aaa32976c3e7bf7b349838f77dbada5236446954e5f80f1da`
++- `test_implementation.py` — 31253 B,
++  `1eaea0bd6055b9c7566eb65639715f673f6d277d0fa5b6c64b9142609e6c8874`
++- `PREREGISTRATION.md` — 19771 B (frozen sections 0-6 preserved verbatim;
++  correction addendum appended),
++  `1d550690030957a189d3c1abd8163b3fc92d513f4ac5dc043544d4850afea6a9`
++- `report.md` — this file (hash bound in the publication request)
++- `proposed.patch` — regenerated new-file patch (git format) adding the five
++  content files against base `astra/gait-capture` @ `8567f629`; excludes itself.
++
++Remaining gates unchanged and NOT claimed: real admission decision over the
++demo-lane inputs (S01/R07 lineage), the actual staged package, clean-machine
++launch evidence (S03), runtime/visual verification. No package published; no
++rights claimed.
 diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/test_implementation.py b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/test_implementation.py
 new file mode 100644
-index 00000000..4a9a16cc
+index 00000000..19a9f6c5
 --- /dev/null
 +++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/test_implementation.py
-@@ -0,0 +1,424 @@
+@@ -0,0 +1,608 @@
 +"""test_implementation.py -- I-S02-PACKAGE-PREFLIGHT-FOLLOWUP (CPU-only, synthetic).
 +
 +Every test builds a synthetic minimal package under TemporaryDirectory. No
@@ -1085,6 +1338,15 @@ index 00000000..4a9a16cc
 +  F4 externality     -> test_f4_*  (admission refs required; no permission verdict)
 +  F5 byte-pin        -> test_f5_*  (vendored bytes == frozen #153 pin)
 +  F6 exact admission -> test_f6_*  (manifest declares exactly the admitted set)
++
++Correction regressions (PREREGISTRATION.md correction addendum, frozen before the
++fix; the two CHANGES_REQUIRED falsifiers reproduced on PR #167 head a5124959):
++  F-GROWTH bounded complete-content hashing / source-drift refusal
++           -> test_correction_growth_*, test_correction_shrink_*,
++              test_correction_complete_content_*
++  F-ALIAS  canonical duplicate handling
++           -> test_correction_noncanonical_*, test_correction_case_*,
++              test_correction_conflicting_*
 +"""
 +from __future__ import annotations
 +
@@ -1095,6 +1357,7 @@ index 00000000..4a9a16cc
 +import tempfile
 +import unittest
 +from pathlib import Path
++from unittest.mock import patch
 +
 +_HERE = Path(__file__).resolve().parent
 +sys.path.insert(0, str(_HERE))
@@ -1298,8 +1561,8 @@ index 00000000..4a9a16cc
 +        vocab = {PRODUCED, REFUSED,
 +                 "ADMISSION-MALFORMED", "ADMISSION-INCOMPLETE", "PRODUCER-DUP",
 +                 "PRODUCER-PATH", "SOURCE-MISSING", "SOURCE-NOT-FILE",
-+                 "PRODUCER-OVERSIZE", "PRODUCER-TEXT", "PRODUCER-DEPS",
-+                 "PIN-MISMATCH",
++                 "PRODUCER-OVERSIZE", "SOURCE-DRIFT", "PRODUCER-TEXT",
++                 "PRODUCER-DEPS", "PIN-MISMATCH",
 +                 "STAGE-UNDECLARED", "STAGE-MISSING", "STAGE-NOT-FILE"}
 +        source = (_HERE / "implementation.py").read_text(encoding="utf-8")
 +        literals = set(re.findall(r'"([A-Z][A-Z-]{2,})"', source))
@@ -1489,6 +1752,180 @@ index 00000000..4a9a16cc
 +        dev = [f for f in result.findings if f.check == "P-DEVROOT"]
 +        self.assertEqual(len(dev), 1, result.findings_json())
 +        self.assertIn("z:/build", dev[0].detail)
++
++
++class CorrectionRegressionTests(unittest.TestCase):
++    """Correction regressions for the two CHANGES_REQUIRED falsifiers returned on
++    PR #167 head ``a5124959`` (PREREGISTRATION.md correction addendum, frozen
++    before these edits were written; evidence:
++    ``E:/Chimera/queue-check-20260926/pr167/REVIEW.md`` + ``reproduce.py``).
++
++    F-GROWTH: a stat/read growth must refuse by name -- a truncated-content hash
++    is never presented as a complete entry.
++    F-ALIAS: lexical aliases of one canonical path must never be admitted twice.
++    """
++
++    def setUp(self):
++        self._tmp = tempfile.TemporaryDirectory(prefix="s02_followup_correction_")
++        self.base = Path(self._tmp.name)
++
++    def tearDown(self):
++        self._tmp.cleanup()
++
++    @staticmethod
++    def _one_row(path):
++        return [{"path": path, "role": "data",
++                 "decision_ref": "fixture-admission#one"}]
++
++    # ---- F-GROWTH: bounded complete-content hashing / source-drift refusal ----
++
++    def test_correction_growth_read_over_limit_refuses_oversize(self):
++        """4 -> 16 byte growth between stat and read at limit 8 (the lead's exact
++        probe): refuse PRODUCER-OVERSIZE with no manifest -- never emit bytes=4
++        plus a hash of the first 8 of 16 actually-read bytes."""
++        root = self.base / "growth"
++        target = root / "a.txt"
++        target.parent.mkdir(parents=True)
++        target.write_bytes(b"abcd")
++        read_lengths = []
++        original_read_bytes = Path.read_bytes
++
++        def growing_read(p):
++            if p == target:
++                p.write_bytes(b"0123456789abcdef")
++            data = original_read_bytes(p)
++            if p == target:
++                read_lengths.append(len(data))
++            return data
++
++        with patch.object(Path, "read_bytes", growing_read):
++            prod = produce_manifest(root, admission(*self._one_row("a.txt")),
++                                    package_name="probe", max_file_bytes=8)
++        self.assertEqual(read_lengths, [16],
++                         "the injected growth must actually have been read")
++        self.assertEqual(prod.verdict, REFUSED)
++        self.assertIsNone(prod.manifest,
++                          "ALL-OR-NOTHING: no manifest may survive a read that "
++                          "contradicts the declared limit")
++        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-OVERSIZE"])
++        self.assertEqual([p for c, p, _ in prod.refusals], ["a.txt"])
++        self.assertIn("16 B", prod.refusals[0][2])
++        self.assertIn("8 B", prod.refusals[0][2])
++
++    def test_correction_growth_within_limit_refuses_source_drift(self):
++        """4 -> 8 byte growth at limit 8: the read fits the limit but contradicts
++        the stat identity, so the drifted bytes are refused, never hashed."""
++        root = self.base / "drift"
++        target = root / "a.txt"
++        target.parent.mkdir(parents=True)
++        target.write_bytes(b"abcd")
++        original_read_bytes = Path.read_bytes
++
++        def growing_read(p):
++            if p == target:
++                p.write_bytes(b"01234567")
++            return original_read_bytes(p)
++
++        with patch.object(Path, "read_bytes", growing_read):
++            prod = produce_manifest(root, admission(*self._one_row("a.txt")),
++                                    package_name="probe", max_file_bytes=8)
++        self.assertEqual(prod.verdict, REFUSED)
++        self.assertIsNone(prod.manifest)
++        self.assertEqual([c for c, _, _ in prod.refusals], ["SOURCE-DRIFT"])
++        self.assertIn("stat 4 B", prod.refusals[0][2])
++        self.assertIn("read 8 B", prod.refusals[0][2])
++
++    def test_correction_shrink_refuses_source_drift(self):
++        """stat 8 -> read 4 (source shrank mid-production) must refuse too."""
++        root = self.base / "shrink"
++        target = root / "a.txt"
++        target.parent.mkdir(parents=True)
++        target.write_bytes(b"01234567")
++        original_read_bytes = Path.read_bytes
++
++        def shrinking_read(p):
++            if p == target:
++                p.write_bytes(b"abcd")
++            return original_read_bytes(p)
++
++        with patch.object(Path, "read_bytes", shrinking_read):
++            prod = produce_manifest(root, admission(*self._one_row("a.txt")),
++                                    package_name="probe", max_file_bytes=8)
++        self.assertEqual(prod.verdict, REFUSED)
++        self.assertIsNone(prod.manifest)
++        self.assertEqual([c for c, _, _ in prod.refusals], ["SOURCE-DRIFT"])
++
++    def test_correction_complete_content_hash_at_exact_limit_boundary(self):
++        """An undisturbed file exactly at the limit still PRODUCES, and the entry
++        records the COMPLETE bytes and their hash (guards against both
++        truncation and over-refusal)."""
++        root = stage(self.base / "boundary", {"a.txt": b"01234567"})
++        prod = produce_manifest(root, admission(*self._one_row("a.txt")),
++                                package_name="probe", max_file_bytes=8)
++        self.assertEqual(prod.verdict, PRODUCED, prod.refusals_json())
++        entry = prod.manifest["entries"][0]
++        self.assertEqual(entry["bytes"], 8)
++        self.assertEqual(entry["sha256"], sha(b"01234567"))
++        self.assertEqual(entry["sha256"], sha((root / "a.txt").read_bytes()),
++                         "entry hash must be the complete file content")
++
++    # ---- F-ALIAS: canonical duplicate handling --------------------------------
++
++    def test_correction_noncanonical_dot_alias_refused(self):
++        root = stage(self.base / "alias", {"a.txt": b"abcd"})
++        rows = [{"path": "a.txt", "role": "data", "decision_ref": "r1"},
++                {"path": "./a.txt", "role": "data", "decision_ref": "r2"}]
++        prod = produce_manifest(root, admission(*rows), package_name="probe",
++                                max_file_bytes=8)
++        self.assertEqual(prod.verdict, REFUSED)
++        self.assertIsNone(prod.manifest)
++        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-PATH"])
++        self.assertEqual([p for c, p, _ in prod.refusals], ["./a.txt"])
++        self.assertIn("non-canonical", prod.refusals[0][2])
++        lone = produce_manifest(root, admission(*self._one_row("./a.txt")),
++                                package_name="probe", max_file_bytes=8)
++        self.assertEqual(lone.verdict, REFUSED)
++        self.assertIsNone(lone.manifest)
++        self.assertEqual([c for c, _, _ in lone.refusals], ["PRODUCER-PATH"])
++
++    def test_correction_noncanonical_separator_forms_refused(self):
++        root = stage(self.base / "seps", {"sub/x.txt": b"data"})
++        for bad in ("sub//x.txt", "sub/", "sub/./x.txt", "./sub/x.txt"):
++            prod = produce_manifest(root, admission(*self._one_row(bad)),
++                                    package_name="probe", max_file_bytes=8)
++            self.assertEqual(prod.verdict, REFUSED, bad)
++            self.assertIsNone(prod.manifest, bad)
++            self.assertEqual([c for c, _, _ in prod.refusals],
++                             ["PRODUCER-PATH"], bad)
++            self.assertIn("non-canonical", prod.refusals[0][2], bad)
++
++    def test_correction_case_alias_refused_as_canonical_duplicate(self):
++        """Explicit Windows case handling: two declared spellings that differ only
++        by case name one canonical file on this lineage and refuse as a
++        duplicate, naming both spellings."""
++        root = stage(self.base / "case", {"a.txt": b"abcd"})
++        rows = [{"path": "a.txt", "role": "data", "decision_ref": "r1"},
++                {"path": "A.txt", "role": "data", "decision_ref": "r2"}]
++        prod = produce_manifest(root, admission(*rows), package_name="probe",
++                                max_file_bytes=8)
++        self.assertEqual(prod.verdict, REFUSED)
++        self.assertIsNone(prod.manifest)
++        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-DUP"])
++        self.assertEqual([p for c, p, _ in prod.refusals], ["A.txt"])
++        self.assertIn("'a.txt'", prod.refusals[0][2])
++
++    def test_correction_conflicting_duplicate_rows_refused(self):
++        """A genuine conflict -- same canonical path, different declared entries
++        (role and decision_ref) -- is refused, never silently deduped (dropping
++        an admission row would misrepresent the external decision)."""
++        root = stage(self.base / "conflict", {"a.txt": b"abcd"})
++        rows = [{"path": "a.txt", "role": "data", "decision_ref": "r1"},
++                {"path": "a.txt", "role": "runtime", "decision_ref": "r2"}]
++        prod = produce_manifest(root, admission(*rows), package_name="probe",
++                                max_file_bytes=8)
++        self.assertEqual(prod.verdict, REFUSED)
++        self.assertIsNone(prod.manifest)
++        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-DUP"])
 +
 +
 +if __name__ == "__main__":

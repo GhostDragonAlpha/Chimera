@@ -14,6 +14,15 @@ Falsifiers (PREREGISTRATION.md section 4, frozen before implementation):
   F4 externality     -> test_f4_*  (admission refs required; no permission verdict)
   F5 byte-pin        -> test_f5_*  (vendored bytes == frozen #153 pin)
   F6 exact admission -> test_f6_*  (manifest declares exactly the admitted set)
+
+Correction regressions (PREREGISTRATION.md correction addendum, frozen before the
+fix; the two CHANGES_REQUIRED falsifiers reproduced on PR #167 head a5124959):
+  F-GROWTH bounded complete-content hashing / source-drift refusal
+           -> test_correction_growth_*, test_correction_shrink_*,
+              test_correction_complete_content_*
+  F-ALIAS  canonical duplicate handling
+           -> test_correction_noncanonical_*, test_correction_case_*,
+              test_correction_conflicting_*
 """
 from __future__ import annotations
 
@@ -24,6 +33,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 _HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(_HERE))
@@ -227,8 +237,8 @@ class FalsifierTests(unittest.TestCase):
         vocab = {PRODUCED, REFUSED,
                  "ADMISSION-MALFORMED", "ADMISSION-INCOMPLETE", "PRODUCER-DUP",
                  "PRODUCER-PATH", "SOURCE-MISSING", "SOURCE-NOT-FILE",
-                 "PRODUCER-OVERSIZE", "PRODUCER-TEXT", "PRODUCER-DEPS",
-                 "PIN-MISMATCH",
+                 "PRODUCER-OVERSIZE", "SOURCE-DRIFT", "PRODUCER-TEXT",
+                 "PRODUCER-DEPS", "PIN-MISMATCH",
                  "STAGE-UNDECLARED", "STAGE-MISSING", "STAGE-NOT-FILE"}
         source = (_HERE / "implementation.py").read_text(encoding="utf-8")
         literals = set(re.findall(r'"([A-Z][A-Z-]{2,})"', source))
@@ -418,6 +428,180 @@ class AdapterContractTests(unittest.TestCase):
         dev = [f for f in result.findings if f.check == "P-DEVROOT"]
         self.assertEqual(len(dev), 1, result.findings_json())
         self.assertIn("z:/build", dev[0].detail)
+
+
+class CorrectionRegressionTests(unittest.TestCase):
+    """Correction regressions for the two CHANGES_REQUIRED falsifiers returned on
+    PR #167 head ``a5124959`` (PREREGISTRATION.md correction addendum, frozen
+    before these edits were written; evidence:
+    ``E:/Chimera/queue-check-20260926/pr167/REVIEW.md`` + ``reproduce.py``).
+
+    F-GROWTH: a stat/read growth must refuse by name -- a truncated-content hash
+    is never presented as a complete entry.
+    F-ALIAS: lexical aliases of one canonical path must never be admitted twice.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory(prefix="s02_followup_correction_")
+        self.base = Path(self._tmp.name)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    @staticmethod
+    def _one_row(path):
+        return [{"path": path, "role": "data",
+                 "decision_ref": "fixture-admission#one"}]
+
+    # ---- F-GROWTH: bounded complete-content hashing / source-drift refusal ----
+
+    def test_correction_growth_read_over_limit_refuses_oversize(self):
+        """4 -> 16 byte growth between stat and read at limit 8 (the lead's exact
+        probe): refuse PRODUCER-OVERSIZE with no manifest -- never emit bytes=4
+        plus a hash of the first 8 of 16 actually-read bytes."""
+        root = self.base / "growth"
+        target = root / "a.txt"
+        target.parent.mkdir(parents=True)
+        target.write_bytes(b"abcd")
+        read_lengths = []
+        original_read_bytes = Path.read_bytes
+
+        def growing_read(p):
+            if p == target:
+                p.write_bytes(b"0123456789abcdef")
+            data = original_read_bytes(p)
+            if p == target:
+                read_lengths.append(len(data))
+            return data
+
+        with patch.object(Path, "read_bytes", growing_read):
+            prod = produce_manifest(root, admission(*self._one_row("a.txt")),
+                                    package_name="probe", max_file_bytes=8)
+        self.assertEqual(read_lengths, [16],
+                         "the injected growth must actually have been read")
+        self.assertEqual(prod.verdict, REFUSED)
+        self.assertIsNone(prod.manifest,
+                          "ALL-OR-NOTHING: no manifest may survive a read that "
+                          "contradicts the declared limit")
+        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-OVERSIZE"])
+        self.assertEqual([p for c, p, _ in prod.refusals], ["a.txt"])
+        self.assertIn("16 B", prod.refusals[0][2])
+        self.assertIn("8 B", prod.refusals[0][2])
+
+    def test_correction_growth_within_limit_refuses_source_drift(self):
+        """4 -> 8 byte growth at limit 8: the read fits the limit but contradicts
+        the stat identity, so the drifted bytes are refused, never hashed."""
+        root = self.base / "drift"
+        target = root / "a.txt"
+        target.parent.mkdir(parents=True)
+        target.write_bytes(b"abcd")
+        original_read_bytes = Path.read_bytes
+
+        def growing_read(p):
+            if p == target:
+                p.write_bytes(b"01234567")
+            return original_read_bytes(p)
+
+        with patch.object(Path, "read_bytes", growing_read):
+            prod = produce_manifest(root, admission(*self._one_row("a.txt")),
+                                    package_name="probe", max_file_bytes=8)
+        self.assertEqual(prod.verdict, REFUSED)
+        self.assertIsNone(prod.manifest)
+        self.assertEqual([c for c, _, _ in prod.refusals], ["SOURCE-DRIFT"])
+        self.assertIn("stat 4 B", prod.refusals[0][2])
+        self.assertIn("read 8 B", prod.refusals[0][2])
+
+    def test_correction_shrink_refuses_source_drift(self):
+        """stat 8 -> read 4 (source shrank mid-production) must refuse too."""
+        root = self.base / "shrink"
+        target = root / "a.txt"
+        target.parent.mkdir(parents=True)
+        target.write_bytes(b"01234567")
+        original_read_bytes = Path.read_bytes
+
+        def shrinking_read(p):
+            if p == target:
+                p.write_bytes(b"abcd")
+            return original_read_bytes(p)
+
+        with patch.object(Path, "read_bytes", shrinking_read):
+            prod = produce_manifest(root, admission(*self._one_row("a.txt")),
+                                    package_name="probe", max_file_bytes=8)
+        self.assertEqual(prod.verdict, REFUSED)
+        self.assertIsNone(prod.manifest)
+        self.assertEqual([c for c, _, _ in prod.refusals], ["SOURCE-DRIFT"])
+
+    def test_correction_complete_content_hash_at_exact_limit_boundary(self):
+        """An undisturbed file exactly at the limit still PRODUCES, and the entry
+        records the COMPLETE bytes and their hash (guards against both
+        truncation and over-refusal)."""
+        root = stage(self.base / "boundary", {"a.txt": b"01234567"})
+        prod = produce_manifest(root, admission(*self._one_row("a.txt")),
+                                package_name="probe", max_file_bytes=8)
+        self.assertEqual(prod.verdict, PRODUCED, prod.refusals_json())
+        entry = prod.manifest["entries"][0]
+        self.assertEqual(entry["bytes"], 8)
+        self.assertEqual(entry["sha256"], sha(b"01234567"))
+        self.assertEqual(entry["sha256"], sha((root / "a.txt").read_bytes()),
+                         "entry hash must be the complete file content")
+
+    # ---- F-ALIAS: canonical duplicate handling --------------------------------
+
+    def test_correction_noncanonical_dot_alias_refused(self):
+        root = stage(self.base / "alias", {"a.txt": b"abcd"})
+        rows = [{"path": "a.txt", "role": "data", "decision_ref": "r1"},
+                {"path": "./a.txt", "role": "data", "decision_ref": "r2"}]
+        prod = produce_manifest(root, admission(*rows), package_name="probe",
+                                max_file_bytes=8)
+        self.assertEqual(prod.verdict, REFUSED)
+        self.assertIsNone(prod.manifest)
+        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-PATH"])
+        self.assertEqual([p for c, p, _ in prod.refusals], ["./a.txt"])
+        self.assertIn("non-canonical", prod.refusals[0][2])
+        lone = produce_manifest(root, admission(*self._one_row("./a.txt")),
+                                package_name="probe", max_file_bytes=8)
+        self.assertEqual(lone.verdict, REFUSED)
+        self.assertIsNone(lone.manifest)
+        self.assertEqual([c for c, _, _ in lone.refusals], ["PRODUCER-PATH"])
+
+    def test_correction_noncanonical_separator_forms_refused(self):
+        root = stage(self.base / "seps", {"sub/x.txt": b"data"})
+        for bad in ("sub//x.txt", "sub/", "sub/./x.txt", "./sub/x.txt"):
+            prod = produce_manifest(root, admission(*self._one_row(bad)),
+                                    package_name="probe", max_file_bytes=8)
+            self.assertEqual(prod.verdict, REFUSED, bad)
+            self.assertIsNone(prod.manifest, bad)
+            self.assertEqual([c for c, _, _ in prod.refusals],
+                             ["PRODUCER-PATH"], bad)
+            self.assertIn("non-canonical", prod.refusals[0][2], bad)
+
+    def test_correction_case_alias_refused_as_canonical_duplicate(self):
+        """Explicit Windows case handling: two declared spellings that differ only
+        by case name one canonical file on this lineage and refuse as a
+        duplicate, naming both spellings."""
+        root = stage(self.base / "case", {"a.txt": b"abcd"})
+        rows = [{"path": "a.txt", "role": "data", "decision_ref": "r1"},
+                {"path": "A.txt", "role": "data", "decision_ref": "r2"}]
+        prod = produce_manifest(root, admission(*rows), package_name="probe",
+                                max_file_bytes=8)
+        self.assertEqual(prod.verdict, REFUSED)
+        self.assertIsNone(prod.manifest)
+        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-DUP"])
+        self.assertEqual([p for c, p, _ in prod.refusals], ["A.txt"])
+        self.assertIn("'a.txt'", prod.refusals[0][2])
+
+    def test_correction_conflicting_duplicate_rows_refused(self):
+        """A genuine conflict -- same canonical path, different declared entries
+        (role and decision_ref) -- is refused, never silently deduped (dropping
+        an admission row would misrepresent the external decision)."""
+        root = stage(self.base / "conflict", {"a.txt": b"abcd"})
+        rows = [{"path": "a.txt", "role": "data", "decision_ref": "r1"},
+                {"path": "a.txt", "role": "runtime", "decision_ref": "r2"}]
+        prod = produce_manifest(root, admission(*rows), package_name="probe",
+                                max_file_bytes=8)
+        self.assertEqual(prod.verdict, REFUSED)
+        self.assertIsNone(prod.manifest)
+        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-DUP"])
 
 
 if __name__ == "__main__":

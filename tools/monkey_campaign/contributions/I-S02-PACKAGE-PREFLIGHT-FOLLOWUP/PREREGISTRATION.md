@@ -187,3 +187,112 @@ No installer step; no publishing; no game package artifact committed; no claim o
 commercial or distribution rights (S01's BLOCKED-FOR-SHIP MorphoSource rows stand
 untouched and cannot be blessed by anything here); no change to any physics/threshold
 source; no edit outside this contribution directory.
+
+---
+
+# CORRECTION ADDENDUM (CHANGES_REQUIRED on PR #167 head `a5124959`)
+
+Frozen **before any correction edit to `implementation.py`/`test_implementation.py`
+and before the post-fix run of the reviewing lead's reproducer**: 2026-09-26T23:13:25Z.
+Correction attempt `a9ab83c83d7e4eb595d08440c54237c2`, agent
+`arrival-4519bbf2c5944487965ca96ac718c5ff`; the card's criteria hash is UNCHANGED
+(`b19c2b9e09610d10f9dd7e770e8735216aaa65c8c8e6001242cff396a03e8afc`). Sections 0-6
+above stay frozen and in force; this addendum only narrows the producer's contract.
+
+## C1. The two reproduced falsifiers (lead evidence at
+`E:/Chimera/queue-check-20260926/pr167`, reproduced independently pre-fix)
+
+- **F-GROWTH** (stat/read growth -> truncated success): the producer recorded the
+  stat size, read the whole file, then hashed a slice. With an injected deterministic
+  growth (4 -> 16 bytes) between stat and read at `max_file_bytes=8` it returned
+  `MANIFEST-PRODUCED` with `bytes=4` and a sha256 of the FIRST 8 bytes
+  (`924592b9…`) while actually reading 16 bytes — a truncated-content hash presented
+  as the file's complete-content identity, and `bytes` inconsistent with the hash.
+- **F-ALIAS** (lexical aliases admitted twice): `a.txt` and `./a.txt` were both
+  admitted as two manifest entries for one file (same digest `88d4266f…` twice),
+  because duplicate detection compared raw declared spellings and dot-segment rows
+  were not canonicalized.
+
+Pre-fix reproduction method (recorded): the lead's `reproduce.py` (sha256
+`3403354eb6a8d0a4ba8bca65505405e977ee13f0a6b282f87fa168f99498bcea`), copied
+read-only into a TEMP directory with only its one `src=` line re-pointed at this
+attempt's checkout (which holds the returned head's byte-identical
+`implementation.py`, `7cc592f9…`), run with `python -B` on synthetic TEMP inputs.
+Observed output matched the lead's `results.json` byte-for-byte in substance:
+`growth.verdict = MANIFEST-PRODUCED`, `bytes_actually_read = [16]`,
+`entries[0].bytes = 4`, `entries[0].sha256 = 924592b9…`; `alias.verdict =
+MANIFEST-PRODUCED` with both `a.txt` and `./a.txt` entries.
+
+## C2. Correction contract (frozen before implementation)
+
+1. **Bounded complete-content hashing / source-drift refusal** — the producer never
+   presents read bytes as a file identity unless they are the COMPLETE content it
+   hashed, and refuses by name whenever the read contradicts the declared limit or
+   the observed source identity:
+   - stat size > `max_file_bytes` -> `PRODUCER-OVERSIZE` BEFORE any read (existing
+     law, unchanged);
+   - read length > `max_file_bytes` -> `PRODUCER-OVERSIZE` (NEW): bytes actually
+     read beyond the limit are refused, never sliced and hashed;
+   - read length != stat size -> `SOURCE-DRIFT` (NEW named refusal): the source
+     changed between stat and read; those bytes are never hashed into any entry;
+   - an entry's `bytes` records the exact number of bytes hashed — the complete
+     content actually read; `bytes` and `sha256` always describe the same bytes;
+   - ALL-OR-NOTHING is unchanged: any refusal -> `MANIFEST-REFUSED`,
+     `manifest is None`, no partial manifest.
+   Documented boundary: the stat gate bounds routine reads to <= `max_file_bytes`;
+   detecting a drift event requires observing the changed bytes once (they are then
+   refused, not hashed); same-size concurrent rewrites are outside producer
+   detection and are re-verified by the pinned checker's own re-read at preflight.
+2. **Canonical duplicate handling** — declared package-relative paths are
+   canonicalized before duplicate detection:
+   - a declared path must BE its own canonical posix form:
+     `PurePosixPath(rel).as_posix() == rel`; a `./` prefix, embedded `.` segments,
+     redundant separators or a trailing slash refuse `PRODUCER-PATH` ("non-canonical
+     path …"); this replaces the previous dead `.`-segment branch with a round-trip
+     law (absolute/drive/UNC/`..`/backslash refusals are unchanged);
+   - duplicate detection compares canonical identities CASE-INSENSITIVELY (explicit
+     Windows case handling on this win32 lineage): a second declared row whose
+     canonical identity equals an admitted one refuses `PRODUCER-DUP`, naming both
+     declared spellings; this covers exact duplicates and case aliases (`A.txt` vs
+     `a.txt`);
+   - a genuine conflict (same canonical path, different declared entries, e.g.
+     different `role`/`decision_ref`) is REFUSED, never silently deduped — dropping
+     an admission row would misrepresent the external decision record;
+   - no admission-vocabulary change: rows still carry `path`/`role`/`decision_ref`
+     verbatim; declared canonical paths appear in entries verbatim.
+
+## C3. Frozen predictions for the post-fix reproducer run (her probe, logic unchanged)
+
+- growth probe: `verdict = MANIFEST-REFUSED`; `manifest = null`; exactly a
+  `PRODUCER-OVERSIZE` refusal naming `a.txt` with the 16 B read against the 8 B
+  limit in its detail; `bytes_actually_read == [16]`.
+- alias probe: `verdict = MANIFEST-REFUSED`; `manifest = null`; `./a.txt` refused
+  with code `PRODUCER-PATH` (non-canonical posix form).
+If either probe still produces a manifest, this correction FAILS its own falsifier.
+
+## C4. Regressions (frozen names, added to `test_implementation.py`)
+
+- `test_correction_growth_read_over_limit_refuses_oversize` (mirrors the lead's
+  growth probe: 4 -> 16 at limit 8; asserts `MANIFEST-REFUSED`, `manifest is None`,
+  code `PRODUCER-OVERSIZE` naming `a.txt`, observed read length 16)
+- `test_correction_growth_within_limit_refuses_source_drift` (4 -> 8 at limit 8:
+  read fits the limit but contradicts the stat -> `SOURCE-DRIFT`, no manifest)
+- `test_correction_shrink_refuses_source_drift` (stat 8 -> read 4 -> `SOURCE-DRIFT`)
+- `test_correction_complete_content_hash_at_exact_limit_boundary` (8-byte file at
+  limit 8 still PRODUCES; `bytes` == 8; `sha256` == sha256 of the complete bytes —
+  guards against over-refusal and against any truncation)
+- `test_correction_noncanonical_dot_alias_refused` (`['a.txt', './a.txt']` and a
+  lone `'./a.txt'` -> `MANIFEST-REFUSED`, `PRODUCER-PATH` non-canonical)
+- `test_correction_noncanonical_separator_forms_refused` (`'sub//x.txt'`,
+  `'dir/'`, `'a/./b.txt'` -> `PRODUCER-PATH` non-canonical)
+- `test_correction_case_alias_refused_as_canonical_duplicate` (`['a.txt', 'A.txt']`
+  -> `PRODUCER-DUP` naming both spellings, no manifest)
+- `test_correction_conflicting_duplicate_rows_refused` (same canonical path twice
+  with different `role`/`decision_ref` -> `PRODUCER-DUP`, no manifest)
+
+Existing tests: all 24 prior tests remain. The ONLY prior-test edit is the F4
+frozen-vocabulary set gaining `SOURCE-DRIFT` (the vocabulary guard must know the new
+named refusal; the guard's equality law itself is unchanged). The upstream pinned
+reference `reference/package_preflight__e0a0abc8.py` stays BYTE-IDENTICAL
+(11458 B, `1f81f62e…`) and is not edited; corrections live only in the
+producer/adapter layer (`implementation.py`), its tests, and this documentation.

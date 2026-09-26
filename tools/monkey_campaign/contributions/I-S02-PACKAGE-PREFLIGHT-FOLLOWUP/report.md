@@ -178,3 +178,115 @@ hash-bound in the publication request):
 Remaining gates (NOT claimed here): real admission decision over the demo-lane
 inputs (S01/R07 lineage), the actual staged package, clean-machine launch evidence
 (S03), runtime/visual verification. No package published; no rights claimed.
+
+---
+
+# CORRECTION REPORT (CHANGES_REQUIRED on PR #167 head `a5124959` resolved)
+
+Correction attempt `a9ab83c83d7e4eb595d08440c54237c2`, agent
+`arrival-4519bbf2c5944487965ca96ac718c5ff`; criteria hash unchanged
+(`b19c2b9e…`). The correction prereg addendum (bottom of PREREGISTRATION.md,
+frozen 2026-09-26T23:13:25Z) was written BEFORE any correction edit and BEFORE
+the post-fix reproducer run. The lead's evidence
+(`E:/Chimera/queue-check-20260926/pr167/REVIEW.md` + `reproduce.py` +
+`results.json`, reproduced sha256 `3403354e…`) named two falsifiers; both are
+fixed in the producer/adapter layer only. The upstream pinned reference is
+UNTOUCHED (11458 B, `1f81f62e…` re-verified post-fix).
+
+## C1. What changed (implementation.py, `7cc592f9…` -> `062f4ed9…`)
+
+- Bounded COMPLETE-content hashing / source-drift refusal: the read is no longer
+  sliced. A stat size above `max_file_bytes` still refuses `PRODUCER-OVERSIZE`
+  before any read; a read longer than the limit now refuses `PRODUCER-OVERSIZE`
+  ("read 16 B exceeds max_file_bytes 8 B (stat said 4 B); no truncated-content
+  hash is produced"); a read whose length contradicts the stat now refuses the
+  NEW named code `SOURCE-DRIFT`. An entry's `bytes` is the exact byte count
+  hashed — `bytes` and `sha256` always describe the same complete bytes.
+  Documented boundary (prereg addendum C2.1): the stat gate bounds routine reads
+  to <= max_file_bytes; detecting a drift requires observing the changed bytes
+  once (they are refused, not hashed); same-size concurrent rewrites remain
+  outside producer detection and are re-verified by the pinned checker's own
+  re-read at preflight.
+- Canonical duplicate handling: a declared path must now equal its own posix
+  normalization (`PurePosixPath(rel).as_posix() == rel`); `./` prefixes, `.`
+  segments, redundant or trailing separators refuse `PRODUCER-PATH`
+  ("non-canonical posix path …"), replacing the previous dead `.`-segment branch.
+  Duplicate detection compares canonical identities case-insensitively (explicit
+  Windows case handling on this win32 lineage): `a.txt` + `./a.txt` refuses
+  (non-canonical), `A.txt` + `a.txt` and exact duplicates refuse `PRODUCER-DUP`
+  naming both spellings, and a genuine conflict (same canonical path, different
+  role/decision_ref) is refused, never silently deduped. ALL-OR-NOTHING
+  (`manifest is None` on any refusal) is unchanged.
+
+## C2. Reproducer, before and after (her probe logic unchanged; single documented
+`src=` line re-pointed from the returned attempt to this attempt's checkout)
+
+BEFORE (against returned head `a5124959`, implementation `7cc592f9…`): the
+defect fires byte-identically to the lead's `results.json` —
+
+- `growth.verdict = "MANIFEST-PRODUCED"`, `bytes_actually_read = [16]`,
+  `entries[0] = {"path": "a.txt", "bytes": 4, "sha256": "924592b9…"}` (hash of
+  the FIRST 8 of 16 actually-read bytes at limit 8);
+- `alias.verdict = "MANIFEST-PRODUCED"` with BOTH `"a.txt"` and `"./a.txt"`
+  entries (sha256 `88d4266f…` twice).
+
+AFTER (corrected implementation `062f4ed9…`), her reproduce.py output verbatim:
+
+```json
+{
+  "growth": {
+    "verdict": "MANIFEST-REFUSED",
+    "bytes_actually_read": [16],
+    "manifest": null
+  },
+  "alias": {
+    "verdict": "MANIFEST-REFUSED",
+    "manifest": null
+  }
+}
+```
+
+Refusal details (supplementary probe printing `refusals_json()`):
+
+- growth: `[{"code": "PRODUCER-OVERSIZE", "detail": "read 16 B exceeds
+  max_file_bytes 8 B (stat said 4 B); no truncated-content hash is produced",
+  "path": "a.txt"}]`
+- alias: `[{"code": "PRODUCER-PATH", "detail": "non-canonical posix path (a
+  declared path must equal its own posix normalization: no './' prefix, no '.'
+  segments, no redundant or trailing separators)", "path": "./a.txt"}]`
+
+Both match the prereg addendum's frozen predictions (section C3) exactly.
+
+## C3. Regressions and suite state
+
+8 new tests (`CorrectionRegressionTests`): growth-over-limit PRODUCER-OVERSIZE
+(observed read 16), growth-within-limit SOURCE-DRIFT, shrink SOURCE-DRIFT,
+complete-content boundary (8/8 still produces, hash == complete bytes),
+non-canonical dot alias, non-canonical separator forms, case alias PRODUCER-DUP,
+conflicting duplicate rows PRODUCER-DUP. The ONLY prior-test edit is the F4
+frozen-vocabulary set gaining `SOURCE-DRIFT`.
+
+`python -B -m unittest test_implementation` -> **Ran 32 tests (24 prior + 8 new),
+OK**, three consecutive runs (0.203 s / 0.183 s / 0.194 s), deterministic,
+CPU-only, synthetic TemporaryDirectory packages; no repo source opened by tests;
+no GPU; no engine; no package built or published.
+
+## C4. Correction artifact identities (supersede section 7 for the changed files)
+
+- `reference/package_preflight__e0a0abc8.py` — UNCHANGED, 11458 B,
+  `1f81f62e3ad1b7030fd2d1de7d6d932bbdf323b8533c89c36e462bf29e246ba2`
+- `implementation.py` — 21648 B,
+  `062f4ed92616a92aaa32976c3e7bf7b349838f77dbada5236446954e5f80f1da`
+- `test_implementation.py` — 31253 B,
+  `1eaea0bd6055b9c7566eb65639715f673f6d277d0fa5b6c64b9142609e6c8874`
+- `PREREGISTRATION.md` — 19771 B (frozen sections 0-6 preserved verbatim;
+  correction addendum appended),
+  `1d550690030957a189d3c1abd8163b3fc92d513f4ac5dc043544d4850afea6a9`
+- `report.md` — this file (hash bound in the publication request)
+- `proposed.patch` — regenerated new-file patch (git format) adding the five
+  content files against base `astra/gait-capture` @ `8567f629`; excludes itself.
+
+Remaining gates unchanged and NOT claimed: real admission decision over the
+demo-lane inputs (S01/R07 lineage), the actual staged package, clean-machine
+launch evidence (S03), runtime/visual verification. No package published; no
+rights claimed.
