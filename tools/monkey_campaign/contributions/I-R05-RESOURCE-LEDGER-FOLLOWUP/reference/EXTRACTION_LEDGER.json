@@ -1,0 +1,57 @@
+{
+  "accepted_ledger_revision": "47c00f05169fa49ea770c274cfe7f280e6710e82",
+  "files": [
+    {
+      "bytes": 16981,
+      "extraction": "git show <revision>:<path> (read-only)",
+      "git_blob_sha1_at_pinned_base": "3ff34527d5d1b07da98b88a00c0af92c6191afac",
+      "origin_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "path": "tools/monkey_campaign/product/session_flow.py",
+      "sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf"
+    },
+    {
+      "bytes": 18349,
+      "extraction": "git show <revision>:<path> (read-only)",
+      "git_blob_sha1_at_pinned_base": "b872859dfc80942125d75552983e81675dd93d64",
+      "origin_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "path": "tools/monkey_campaign/product/input_mapper.py",
+      "sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44"
+    },
+    {
+      "bytes": 12095,
+      "extraction": "git show <revision>:<path> (read-only)",
+      "git_blob_sha1_at_pinned_base": "a9e0444fb495be213faf2023378fca11c43c5611",
+      "origin_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "path": "tools/science_funnel/typeb_export/command_record.py",
+      "sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+    },
+    {
+      "bytes": 23946,
+      "extraction": "git show <revision>:<path> (read-only)",
+      "git_blob_sha1_at_pinned_base": "32f52c9f82175e27be97eeb89dc4bbc45df31c56",
+      "origin_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "path": "tools/monkey_campaign/data/monkey_forest/forest_loader.py",
+      "sha256": "53d7fdde7deb6223f6760f4d9d6d8f378f3c4bf3cc5513381bf83e68d8cfbb95"
+    },
+    {
+      "bytes": 23224,
+      "extraction": "git show <revision>:<path> (read-only)",
+      "git_blob_sha1_at_pinned_base": "4a13f4ce659e6185b846682b673de467ec318999",
+      "origin_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "path": "tools/monkey_campaign/product/session_flow_tests.py",
+      "sha256": "b6ce2bba598fcb8119de82f9a06639ee6d2744c1605ac82c8d699b8df75ef49a"
+    },
+    {
+      "bytes": 24445,
+      "extraction": "git show <revision>:<path> (read-only)",
+      "git_blob_note": "accepted module at PR #139 head (merge becdcb2716ee441cfb2832287a349c8f4b6c7090)",
+      "origin_path": "tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/resource_ledger.py",
+      "origin_revision": "47c00f05169fa49ea770c274cfe7f280e6710e82",
+      "path": "resource_ledger.py",
+      "sha256": "05cf62184931d6443188cd9b72aa9e88821cc8a9063a351a7e4d658d6690da6c"
+    }
+  ],
+  "note": "Read-only extraction of the pinned teardown hooks the card names. reference/ is frozen after extraction; adapter.py imports these exact bytes and re-verifies every sha256 at import time, refusing by name on any drift.",
+  "pinned_base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+  "schema": "chimera.monkey_campaign.extraction_ledger.v1"
+}

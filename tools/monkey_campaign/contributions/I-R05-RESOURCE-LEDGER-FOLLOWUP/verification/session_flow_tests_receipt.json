@@ -1,0 +1,19 @@
+{
+ "schema": "chimera.monkey.x02_flow_tests.v1",
+ "date": "2026-09-24",
+ "seed": 20260924,
+ "fuzz_events": 4000,
+ "result": "PASS",
+ "checks_total": 74,
+ "failed": [],
+ "modules": {
+  "session_flow.py": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+  "input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+  "session_flow_tests.py": "b6ce2bba598fcb8119de82f9a06639ee6d2744c1605ac82c8d699b8df75ef49a"
+ },
+ "declared_referents": {
+  "restart": "tools/playable_slice/slice_server.py:94-135 World.boot()",
+  "teardown": "tools/playable_slice/slice_server.py:174-181 World.shutdown_engine()",
+  "quiesce_hook": "tools/monkey_campaign/product/input_mapper.py:225-228 release_all"
+ }
+}

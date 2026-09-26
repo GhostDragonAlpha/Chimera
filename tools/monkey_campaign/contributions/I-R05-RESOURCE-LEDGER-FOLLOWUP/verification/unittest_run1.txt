@@ -1,0 +1,35 @@
+test_adapter_source_has_no_governor_tokens (test_adapter.TestAcceptedSourceIdentity.test_adapter_source_has_no_governor_tokens) ... ok
+test_drift_guard_refuses_by_name (test_adapter.TestAcceptedSourceIdentity.test_drift_guard_refuses_by_name) ... ok
+test_extraction_ledger_agrees_with_disk (test_adapter.TestAcceptedSourceIdentity.test_extraction_ledger_agrees_with_disk) ... ok
+test_imported_ledger_is_the_accepted_module (test_adapter.TestAcceptedSourceIdentity.test_imported_ledger_is_the_accepted_module) ... ok
+test_pinned_hooks_are_the_extracted_bytes (test_adapter.TestAcceptedSourceIdentity.test_pinned_hooks_are_the_extracted_bytes) ... ok
+test_identical_histories_byte_identical_summaries (test_adapter.TestDeterminism.test_identical_histories_byte_identical_summaries) ... ok
+test_raising_release_stays_live_and_close_names_exact_id (test_adapter.TestForestSceneMirror.test_raising_release_stays_live_and_close_names_exact_id) ... ok
+test_registration_mirrors_and_clean_teardown_agrees (test_adapter.TestForestSceneMirror.test_registration_mirrors_and_clean_teardown_agrees) ... ok
+test_second_teardown_is_a_noop_and_reaccounts_nothing (test_adapter.TestForestSceneMirror.test_second_teardown_is_a_noop_and_reaccounts_nothing) ... ok
+test_session_owner_scoping (test_adapter.TestForestSceneMirror.test_session_owner_scoping) ... ok
+test_ceilings_flow_through_adapter_closes (test_adapter.TestRestartClose.test_ceilings_flow_through_adapter_closes) ... ok
+test_clean_two_generation_session_with_restart_close (test_adapter.TestRestartClose.test_clean_two_generation_session_with_restart_close) ... ok
+test_exit_deliberate_unreleased_operator_resource_fails_cycle (test_adapter.TestRestartClose.test_exit_deliberate_unreleased_operator_resource_fails_cycle) ... ok
+test_exit_releases_session_owned_and_closes_clean (test_adapter.TestRestartClose.test_exit_releases_session_owned_and_closes_clean) ... ok
+test_generation_mirrors_boot_count (test_adapter.TestRestartClose.test_generation_mirrors_boot_count) ... ok
+test_leak_not_launderable_by_ceiling (test_adapter.TestRestartClose.test_leak_not_launderable_by_ceiling) ... ok
+test_raising_restart_closes_nothing (test_adapter.TestRestartClose.test_raising_restart_closes_nothing) ... ok
+test_raising_teardown_records_nothing_and_closes_nothing (test_adapter.TestRestartClose.test_raising_teardown_records_nothing_and_closes_nothing) ... ok
+test_restart_leak_named_when_session_resource_unreleased (test_adapter.TestRestartClose.test_restart_leak_named_when_session_resource_unreleased) ... ok
+test_second_exit_is_a_named_drop_and_reaccounts_nothing (test_adapter.TestRestartClose.test_second_exit_is_a_named_drop_and_reaccounts_nothing) ... ok
+test_wrong_owner_keeps_record_live_until_close (test_adapter.TestRestartClose.test_wrong_owner_keeps_record_live_until_close) ... ok
+test_bad_ceilings_refused (test_adapter.TestStandInRefusal.test_bad_ceilings_refused) ... ok
+test_forest_scene_refuses_fake_ledger (test_adapter.TestStandInRefusal.test_forest_scene_refuses_fake_ledger) ... ok
+test_session_flow_refuses_fake_ledger (test_adapter.TestStandInRefusal.test_session_flow_refuses_fake_ledger) ... ok
+test_stale_claim_leaves_a_named_failure_not_a_close (test_adapter.TestWrongGenerationRelease.test_stale_claim_leaves_a_named_failure_not_a_close) ... ok
+test_stale_claim_refused_and_current_record_untouched (test_adapter.TestWrongGenerationRelease.test_stale_claim_refused_and_current_record_untouched) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.006s
+
+OK
+
+real	0m0.186s
+user	0m0.015s
+sys	0m0.015s
