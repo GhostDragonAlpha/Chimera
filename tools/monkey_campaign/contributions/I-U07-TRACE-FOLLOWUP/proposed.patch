@@ -1,0 +1,3659 @@
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/PREREGISTRATION.md b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/PREREGISTRATION.md
+new file mode 100644
+index 00000000..fe650ff0
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/PREREGISTRATION.md
+@@ -0,0 +1,107 @@
++# PREREGISTRATION — I-U07-TRACE-FOLLOWUP (connect the accepted trace format to the existing input/camera test seam)
++
++Card `I-U07-TRACE-FOLLOWUP` (planning id **U07**, depends on I-U07-TRACE merged
++as PR #138, head `4d2ececc`), attempt
++`8703cf9f00bf4e11add0060bcc85da03`, arrival
++`arrival-f742dfbb88244565a6d973717bc05f26`, branch `branch-2`, working base for
++runtime pins: seam sources pinned at `9afbddcd` (the same revision the parent
++card's report cites: `input_mapper.py` 7a36a45e…, `follow_camera.py`
++d61347f0…, `command_record.py` 67711759…). Frozen BEFORE any implementation
++edit (Rule 0: statement, prediction, falsifier F1–F6).
++
++## STATEMENT (a theory someone could disagree with)
++
++The accepted four-stage trace module (`I-U07-TRACE/input_trace.py`, sha256
++`c8f4e444…`, byte-identical to the PR #138 merge) can be CONNECTED — without
++rewriting it and without editing production — to the EXISTING input/camera test
++seam so that: (a) the real U01 `InputMapper` (pinned bytes, injected sink,
++injected integer-millisecond monotonic clock) emits ACTUAL `input` and
++`command_emitted` events in the accepted event format, one chain per emitted
++CommandRecord whose `input` stage is the causal antecedent key-state
++transition; (b) the two native stages (`simulation_consumed` — the ZOH tick
++boundary in `gait_controller.hpp` — and `presented` — the engine's frame offer)
++are structurally ABSENT from this Python seam, so the adapter itself can never
++produce a four-stage chain: analysis through the accepted module REFUSES the
++trace by name (`missing_stage`) and no latency number of any kind is produced;
++(c) the existing camera test seam (pinned `MockEngine` freshness harness,
++`GET /frame` returning `{"armed_after": <ack count>}`) supplies an ORDERING
++fact and NO presentation timestamp, so no native `presented` time exists to
++record from it; and (d) a caller who explicitly attaches real native-stage
++observations on the same clock gets the accepted module's exact matched-stage
++arithmetic — format-compatible end to end.
++
++## PREDICTION (measurable, not yet measured)
++
++1. Driving the pinned `InputMapper` through the adapter produces, for every
++   CommandRecord the mapper actually emits, exactly one chain (a fresh `seq`)
++   carrying an `input` event (the latest observed key-state transition at or
++   before the emission, copied, never invented) and a `command_emitted` event
++   whose payload is the actual record (`v_forward`, `yaw_rate`, `issued_tick`,
++   `source == "u01_input_mapper"`), with `t(input) <= t(command)` on ONE
++   injected monotonic integer-ms clock, and `issued_tick ==
++   (t_command_ms * 300) // 1000` for every chain (the mapper's own documented
++   derivation with no injected tick source).
++2. Feeding the adapter's Python-only event stream to the ACCEPTED module's
++   `parse_trace` raises `TraceRefused` with reason `missing_stage` and
++   `missing == ["presented", "simulation_consumed"]`; the adapter's `analyze()`
++   surfaces that refusal with `latency_output: None` — no segment or
++   end-to-end latency is produced from the 2-stage trace.
++3. With FIXTURE-LABELED caller-attached `simulation_consumed`/`presented`
++   observations (planted integers, explicitly declared fixtures — NOT native
++   claims), the accepted module's `chain_latencies`/`summarize` return exactly
++   the planted segment and end-to-end values (bit-equal), and with no limits
++   the verdict is `unqualified`, reason `p06_limits_absent` — the accepted
++   module's own P06 law, unchanged.
++4. An event on the camera harness' host wall clock (`time.perf_counter`, a
++   different clock identity) merged into the seam trace makes the accepted
++   `parse_trace` refuse `mixed_clock`; and the pinned existing camera harness
++   proves its freshness CONTRACT (`armed_after >= ack_count` after a camera
++   write) while carrying NO timestamp field — the camera test seam cannot
++   supply a native presentation timestamp.
++5. Determinism and headlessness: two identical adapter runs produce
++   byte-identical event streams; `adapter.py` performs no wall-clock reads, no
++   network, no window; its only I/O beyond caller data is reading its own
++   pinned `reference/` bytes and materializing them, unmodified, into an OS
++   temp directory in the canonical repo layout for import (documented).
++6. Regression: the pinned EXISTING seam suites pass byte-unmodified in the
++   materialized layout — `input_mapper_tests.py` (U01 falsifiers, verdict
++   GREEN) and `follow_camera_tests.py` (U02, all unittest cases) — plus the
++   accepted module's own 26 tests — proving the connection disturbs neither
++   the seam nor the accepted module.
++
++## FALSIFIER (named before the run)
++
++Any of these fails the build:
++
++- **F1** the adapter imports anything but the sibling accepted
++  `../I-U07-TRACE/input_trace.py` (no vendored copy, no rewritten stand-in),
++  and the module file it loads must match the accepted sha256 pin
++  `c8f4e4442a3ceedecd9c636857eda92642d26ec535d45f2c91a3ce9fd4550a57`;
++- **F2** the `input`/`command_emitted` events originate from anything but the
++  pinned real sources (`input_mapper.py` 7a36a45e…,
++  `command_record.py` 67711759… — byte-identical `reference/` extractions,
++  hash-asserted by tests), or any reimplementation of the mapper/record logic
++  appears in the owned files;
++- **F3** any `simulation_consumed`/`presented` event originates from the
++  adapter itself rather than explicit caller attachment, or a native
++  timestamp is invented from the camera mock's DECLARED deadlines
++  (1/60 s apply, 1/30 s frame period) or from `armed_after`;
++- **F4** any latency number is produced from the Python-only 2-stage trace
++  (the `missing_stage` refusal fails to fire), or an end-to-end latency pass
++  is claimed from fixtures;
++- **F5** any P06 limit is hardcoded, defaulted, or inferred anywhere in the
++  owned files; qualification derives only from the accepted module's
++  caller-data law;
++- **F6** any pinned existing seam test or accepted-module test breaks, or the
++  adapter silently tolerates a non-monotonic / non-integer injected clock
++  (must refuse by name).
++
++## SCOPE
++
++Owned files only (`adapter.py`, `test_adapter.py`, `report.md`, `receipt.json`,
++`PREREGISTRATION.md`, plus `reference/` pinned extractions with
++`EXTRACTION_LEDGER.json` and a `proposed.patch`). stdlib only, Python 3.11+.
++No production edits, no network, no GUI, no engine starts, no GPU; CPU tests
++bounded well under 120 s and 16 MiB. No live measurements are claimed; every
++fixture is labeled a fixture; the native gates of U07 (P06 limits, repeatable
++scenes, actual play) remain OPEN.
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/adapter.py b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/adapter.py
+new file mode 100644
+index 00000000..de1fff33
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/adapter.py
+@@ -0,0 +1,391 @@
++"""adapter.py -- I-U07-TRACE-FOLLOWUP: connect the ACCEPTED trace format to the
++EXISTING input/camera test seam.
++
++The card: drive the REAL U01 input seam (pinned ``input_mapper.py`` bytes,
++injected sink, injected integer-millisecond monotonic clock) so that the two
++Python-observable stages of the accepted four-stage format emit as actual seam
++events, while the two native stages stay structurally missing:
++
++    input -> command_emitted            <- emitted HERE, from real seam events
++    simulation_consumed -> presented    <- native (engine ZOH tick boundary and
++                                           engine frame offer); NO Python source
++                                           exists, so the adapter NEVER emits
++                                           them -- only an explicit caller may
++                                           attach real native observations.
++
++The trace FORMAT and its whole law are owned by the accepted module, imported
++from the sibling merged contribution (``../I-U07-TRACE/input_trace.py``, PR
++#138 head ``4d2ececc``). This adapter holds no latency arithmetic, no limits
++and no clocks of its own: a latency remains EXACTLY the accepted module's
++matched-stage difference, and the seam's 2-stage trace therefore REFUSES
++(``missing_stage``) instead of producing one.
++
++WHAT IS PINNED, WHAT IS NOT:
++  * the accepted module is IMPORTED, never copied; tests assert its sha256
++    (``c8f4e444…``, PR #138 bytes);
++  * ``input_mapper.py`` (7a36a45e…), ``command_record.py`` (67711759…),
++    ``follow_camera.py`` (d61347f0…) and the two existing seam test modules
++    are pinned byte-identically under ``reference/`` (see
++    ``reference/EXTRACTION_LEDGER.json``, revision ``9afbddcd`` -- the same
++    revision the accepted I-U07-TRACE report cites) and materialized
++    UNMODIFIED into an OS temp directory in the canonical repo layout so the
++    unmodified files' own imports resolve; nothing is rewritten.
++
++THE CHAIN LAW of this adapter (one causal fact, no interpretation): every
++CommandRecord the mapper actually emits opens exactly one fresh chain
++(``seq``); that chain's ``input`` stage is the adapter's latest observed
++key-state transition at or before the emission on the one injected clock --
++copied with its payload (``transition_index`` records the sharing; several
++re-issued commands lawfully share one press). A command without any observed
++input antecedent is refused by name (``command_without_input_antecedent``);
++a non-monotonic or non-integer injected clock is refused by name
++(``clock_regression`` / ``non_integer_clock``) -- causal matching needs an
++ordered clock, and a silent reorder would be invention.
++
++Headless and deterministic: no wall clock, no window, no network; the only
++I/O beyond caller data is reading the pinned ``reference/`` bytes and
++materializing them to the temp directory documented above.
++
++stdlib only, Python 3.11+.
++"""
++from __future__ import annotations
++
++import importlib
++import importlib.util
++import shutil
++import sys
++import tempfile
++from pathlib import Path
++from typing import Any, Callable, Optional
++
++__all__ = [
++    "SeamTraceRefused", "TraceSink", "SeamTracer", "load_accepted_trace_module",
++    "PINNED_SHA256", "ACCEPTED_SHA256", "PYTHON_STAGES", "NATIVE_STAGES",
++]
++
++HERE = Path(__file__).resolve().parent
++
++# ── identity pins (asserted here once, loudly; details in the ledger) ──────────
++ACCEPTED_SHA256 = "c8f4e4442a3ceedecd9c636857eda92642d26ec535d45f2c91a3ce9fd4550a57"
++PINNED_SHA256 = {
++    "tools/monkey_campaign/product/input_mapper.py":
++        "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
++    "tools/monkey_campaign/product/follow_camera.py":
++        "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
++    "tools/monkey_campaign/product/follow_camera_tests.py":
++        "4d75164ff6a16bf0d817332b7c5229513750782727ad1a23911025dc93d31b27",
++    "tools/monkey_campaign/product/input_mapper_tests.py":
++        "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
++    "tools/science_funnel/typeb_export/command_record.py":
++        "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
++}
++
++# The accepted format's four stages; the two this Python seam can observe and
++# the two that only the native engine can supply. Declared, not discovered.
++PYTHON_STAGES = ("input", "command_emitted")
++NATIVE_STAGES = ("simulation_consumed", "presented")
++
++
++class SeamTraceRefused(Exception):
++    """The adapter refuses an operation by name; nothing is invented.
++
++    Distinct from the accepted module's ``TraceRefused`` (which owns the trace
++    law); this names the SEAM connection's own refusals.
++    """
++
++    def __init__(self, reason: str, details: dict[str, Any] | None = None):
++        super().__init__(f"{reason}: {details or {}}")
++        self.reason = reason
++        self.details = details or {}
++
++
++# ── the accepted module: imported from the sibling merged contribution ────────
++def load_accepted_trace_module():
++    """Import the ACCEPTED ``input_trace`` module -- never a local copy.
++
++    Refuses by name if the sibling merged contribution is absent, and lets the
++    caller's hash assertion (tests pin ``ACCEPTED_SHA256``) catch any bytes
++    that are not the PR #138 merge. No fallback path exists: a vendored or
++    rewritten stand-in is the card's falsifier.
++    """
++    path = HERE.parent / "I-U07-TRACE" / "input_trace.py"
++    if not path.is_file():
++        raise SeamTraceRefused(
++            "accepted_module_missing",
++            {"expected": str(path),
++             "note": "the adapter imports the accepted I-U07-TRACE module "
++                     "(merged PR #138); it is never vendored or rewritten"})
++    name = "input_trace"
++    existing = sys.modules.get(name)
++    if existing is not None and getattr(existing, "__file__", None) == str(path):
++        return existing
++    spec = importlib.util.spec_from_file_location(name, path)
++    if spec is None or spec.loader is None:  # pragma: no cover
++        raise SeamTraceRefused("accepted_module_unloadable", {"path": str(path)})
++    module = importlib.util.module_from_spec(spec)
++    sys.modules[name] = module
++    spec.loader.exec_module(module)
++    return module
++
++
++_IT = load_accepted_trace_module()
++
++
++# ── the pinned seam sources: byte-identical reference/ materialization ─────────
++def _sha256_file(path: Path) -> str:
++    import hashlib
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def materialize_pinned_seam() -> Path:
++    """Copy the pinned ``reference/`` bytes into a fresh OS temp directory in
++    the canonical repo layout, asserting every pin hash, so the UNMODIFIED
++    files import exactly as they do in the seam's own repo (their internal
++    ``from tools.science_funnel...`` resolves against the same layout).
++
++    The only I/O this adapter performs beyond caller data; the directory is
++    OS-disposable and nothing outside it is written.
++    """
++    root = Path(tempfile.mkdtemp(prefix="i_u07_trace_followup_seam_"))
++    for repo_path, want in PINNED_SHA256.items():
++        src = HERE / "reference" / repo_path
++        if not src.is_file():
++            shutil.rmtree(root, ignore_errors=True)
++            raise SeamTraceRefused("pinned_source_missing",
++                                   {"expected": str(src)})
++        got = _sha256_file(src)
++        if got != want:
++            shutil.rmtree(root, ignore_errors=True)
++            raise SeamTraceRefused("pinned_source_hash_mismatch",
++                                   {"path": repo_path, "sha256": got,
++                                    "expected": want})
++        dst = root / repo_path
++        dst.parent.mkdir(parents=True, exist_ok=True)
++        shutil.copyfile(src, dst)
++    return root
++
++
++def load_pinned_input_mapper():
++    """Import the pinned REAL ``input_mapper`` module (never a stand-in)."""
++    root = materialize_pinned_seam()
++    if str(root) not in sys.path:
++        sys.path.insert(0, str(root))
++    try:
++        return importlib.import_module("tools.monkey_campaign.product.input_mapper")
++    except Exception:  # pragma: no cover - surface with layout context
++        shutil.rmtree(root, ignore_errors=True)
++        raise
++
++
++# ── the seam connection ────────────────────────────────────────────────────────
++class TraceSink:
++    """Wraps ANY existing seam sink: forwards every ``emit`` untouched and
++    hands the actual CommandRecord to the tracer as the ``command_emitted``
++    stage, stamped with the EXACT boundary time the mapper was driven at (the
++    tracer's ``boundary_t`` -- one clock read per boundary, never re-read).
++    Adds zero authority -- the mapper's no-teleport law is unchanged (every
++    call it sees is still exactly ``emit(CommandRecord)``)."""
++
++    def __init__(self, inner: Any, tracer: "SeamTracer"):
++        if not hasattr(inner, "emit"):
++            raise SeamTraceRefused("bad_sink", {"type": type(inner).__name__})
++        self._inner = inner
++        self._tracer = tracer
++        self.calls: list[tuple[str, Any]] = []   # audit: ("emit", record) only
++
++    def emit(self, record):
++        self.calls.append(("emit", record))
++        self._tracer._record_command(record)     # reads tracer.boundary_t
++        return self._inner.emit(record)
++
++    def __len__(self):
++        return len(self.calls)
++
++
++class SeamTracer:
++    """The adapter: drives the pinned REAL ``InputMapper`` on ONE injected
++    integer-millisecond monotonic clock and emits accepted-format events for
++    the stages this seam actually observes.
++
++    Identity (`clock_name`, `run`, `build`) is CALLER DATA, like the accepted
++    module's limits -- nothing is defaulted. ``clock()`` must return integers
++    (the mapper's own contract) and may not go backwards; violations refuse by
++    name instead of being silently ordered.
++
++    Stage coverage -- declared, not discovered:
++      input, command_emitted      emitted here, from actual seam events;
++      simulation_consumed         NATIVE (engine ZOH tick boundary) -- absent;
++      presented                   NATIVE (engine frame offer) -- absent; the
++                                  existing camera harness yields an ordering
++                                  fact (``armed_after``), never a timestamp.
++    """
++
++    def __init__(self, *, clock: Callable[[], int], clock_name: str, run: str,
++                 build: str, sink: Optional[Any] = None):
++        for field in ("clock_name", "run", "build"):
++            value = locals()[field]
++            if not isinstance(value, str) or not value:
++                raise SeamTraceRefused("bad_identity", {"field": field})
++        if not callable(clock):
++            raise SeamTraceRefused("bad_clock", {"type": type(clock).__name__})
++        self._clock = clock
++        self._clock_name = clock_name
++        self._run = run
++        self._build = build
++        self._last_t: Optional[int] = None
++        self.boundary_t: Optional[int] = None    # set by tick(); the mapper's
++                                                 # exact boundary time
++        self._transitions: list[dict[str, Any]] = []   # observed input events
++        self._chains: list[dict[str, Any]] = []        # one per emitted record
++        self._events: list[dict[str, Any]] = []        # accepted-format records
++        im = load_pinned_input_mapper()
++        inner = sink if sink is not None else im.MockSink()
++        self.mapper = im.InputMapper(TraceSink(inner, self))
++        self.inner_sink = inner
++
++    # -- the injected clock: one read per seam event, ordered, integral ──────
++    def now_ms(self) -> int:
++        t = self._clock()
++        if isinstance(t, bool) or not isinstance(t, int):
++            raise SeamTraceRefused("non_integer_clock",
++                                   {"type": type(t).__name__,
++                                    "note": "the mapper's contract is "
++                                            "integer milliseconds"})
++        if self._last_t is not None and t < self._last_t:
++            raise SeamTraceRefused("clock_regression",
++                                   {"t": t, "previous": self._last_t,
++                                    "note": "causal matching needs a "
++                                            "monotonic clock"})
++        self._last_t = t
++        return t
++
++    # -- input events: the mapper is driven AT the clock's own reading ───────
++    def press(self, key: str) -> Any:
++        t = self.now_ms()
++        action = self.mapper.press(key, t)
++        self._record_input("press", key, action, t)
++        return action
++
++    def release(self, key: str) -> Any:
++        t = self.now_ms()
++        action = self.mapper.release(key, t)
++        self._record_input("release", key, action, t)
++        return action
++
++    def release_all(self) -> None:
++        t = self.now_ms()
++        self.mapper.release_all(t)
++        self._record_input("release_all", "*", None, t)
++
++    def mouse(self, dx_counts: float) -> None:
++        # accumulated by the mapper; consumed at boundaries (never an event of
++        # its own -- counts alone emit nothing on this seam)
++        self.mapper.mouse(dx_counts)
++
++    def tick(self) -> list[Any]:
++        """One mapper boundary at the clock's own reading; any CommandRecords
++        the mapper emits become chains via the TraceSink hook, stamped with
++        THIS boundary time (the mapper's actual ``now_ms``)."""
++        t = self.now_ms()
++        self.boundary_t = t
++        return self.mapper.tick(t)
++
++    # -- event recording (the ONLY writers of self._events) ─────────────────
++    def _record_input(self, kind: str, key: str, action: Any, t: int) -> None:
++        transition = {"transition_index": len(self._transitions),
++                      "kind": kind, "key": key, "action": action, "t_ms": t}
++        self._transitions.append(transition)
++
++    def _record_command(self, record: Any) -> None:
++        if self.boundary_t is None:
++            raise SeamTraceRefused("command_outside_boundary",
++                                   {"note": "emissions are stamped with the "
++                                            "boundary time they were driven "
++                                            "at"})
++        t = self.boundary_t
++        if not self._transitions:
++            raise SeamTraceRefused("command_without_input_antecedent",
++                                   {"record": repr(record)})
++        antecedent = self._transitions[-1]
++        seq = len(self._chains)
++        record_payload = {"v_forward": record.v_forward,
++                          "yaw_rate": record.yaw_rate,
++                          "issued_tick": record.issued_tick,
++                          "source": record.source}
++        self._chains.append({"seq": seq, "antecedent": antecedent, "t_ms": t,
++                             "record": record_payload})
++        for stage, t_stage, payload in (
++            ("input", antecedent["t_ms"],
++             {k: antecedent[k] for k in
++              ("transition_index", "kind", "key", "action")}),
++            ("command_emitted", t, record_payload),
++        ):
++            self._events.append({"seq": seq, "stage": stage, "t": t_stage,
++                                 "unit": "ms", "clock": self._clock_name,
++                                 "run": self._run, "build": self._build,
++                                 "payload": payload})
++
++    # -- explicit caller attachment of NATIVE observations (never internal) ──
++    def attach_native_stage(self, seq: int, stage: str, t: int,
++                            payload: Any = None) -> None:
++        """Attach a REAL native-stage observation supplied by the caller.
++
++        The adapter itself has no native source (declared above); this entry
++        point exists so a live integrator can attach engine-side observations
++        on the SAME clock. Tests use it only with fixture-labeled values.
++        """
++        if stage not in NATIVE_STAGES:
++            raise SeamTraceRefused("not_a_native_stage",
++                                   {"stage": stage, "native": list(NATIVE_STAGES),
++                                    "note": "the two Python-observable stages "
++                                            "are emitted by driving the seam"})
++        if not (0 <= seq < len(self._chains)):
++            raise SeamTraceRefused("unknown_seq",
++                                   {"seq": seq, "chains": len(self._chains)})
++        if isinstance(t, bool) or not isinstance(t, int):
++            raise SeamTraceRefused("non_integer_clock",
++                                   {"t": repr(t),
++                                    "note": "native observations arrive on "
++                                            "the same integer-ms clock, as "
++                                            "caller data"})
++        self._events.append({"seq": seq, "stage": stage, "t": t,
++                             "unit": "ms", "clock": self._clock_name,
++                             "run": self._run, "build": self._build,
++                             "payload": payload})
++
++    # -- output: accepted-format events + analysis THROUGH the accepted law ───
++    def events(self) -> list[dict[str, Any]]:
++        """The event records in the accepted module's input format (JSON-safe;
++        deterministic order: input precedes its command per chain)."""
++        return [dict(e) for e in self._events]
++
++    def analyze(self, limits: Optional[dict[str, float]] = None) -> dict[str, Any]:
++        """Hand the trace to the ACCEPTED module and report its verdict, whatever
++        it is. With only the Python-observable stages present the accepted law
++        refuses (``missing_stage``); that refusal IS the honest result and is
++        surfaced with ``latency_output: None`` -- never softened, never worked
++        around. Limits pass through as caller data or stay absent (the
++        accepted module then answers ``unqualified`` / ``p06_limits_absent``).
++        """
++        try:
++            parsed = _IT.parse_trace(self.events())
++            summary = _IT.summarize(parsed, limits)
++        except _IT.TraceRefused as ref:
++            return {"schema": "chimera.i_u07_followup.analysis.v1",
++                    "complete": False,
++                    "refused": ref.reason, "details": ref.details,
++                    "latency_output": None,
++                    "python_stages_present": list(PYTHON_STAGES),
++                    "native_stages_missing": list(NATIVE_STAGES)}
++        return {"schema": "chimera.i_u07_followup.analysis.v1",
++                "complete": True, "summary": summary,
++                "python_stages_present": list(PYTHON_STAGES),
++                "native_stages_missing": []}
++
++    def causal_pairs(self) -> list[dict[str, Any]]:
++        """The raw causal facts for matching tests: per chain, the antecedent
++        transition and the emitted record's boundary time. NO latency here --
++        arithmetic belongs to the accepted module on complete chains only."""
++        return [{"seq": c["seq"], "antecedent": dict(c["antecedent"]),
++                 "command_t_ms": c["t_ms"],
++                 "record": dict(c["record"])} for c in self._chains]
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/receipt.json b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/receipt.json
+new file mode 100644
+index 00000000..444d2355
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/receipt.json
+@@ -0,0 +1,62 @@
++{
++  "schema": "chimera.i-u07-followup.receipt.v1",
++  "task_id": "I-U07-TRACE-FOLLOWUP",
++  "attempt_id": "8703cf9f00bf4e11add0060bcc85da03",
++  "arrival_id": "arrival-f742dfbb88244565a6d973717bc05f26",
++  "criteria_sha256": "eda6af92ccbe16496e7cf6ac7d5d3e9805f9bc0a50f42e21078b63484e32e8dc",
++  "depends_on": {
++    "task_id": "I-U07-TRACE",
++    "merged_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/138",
++    "head_sha": "4d2ececcfbae1bff13d9108599df735e1b585025",
++    "accepted_module_sha256": "c8f4e4442a3ceedecd9c636857eda92642d26ec535d45f2c91a3ce9fd4550a57"
++  },
++  "base": {
++    "attempt_checkout_branch": "branch-2",
++    "attempt_checkout_head": "c525b82c7c3ce0128565424764293a3c85811ab3",
++    "seam_pins_revision": "9afbddcd",
++    "pr_base": "astra/gait-capture",
++    "patch_nature": "purely additive: new directory tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/ only"
++  },
++  "preregistration_frozen_before_implementation": true,
++  "deliverables": {
++    "adapter.py": "8522cbefb176fbd512f7191dfc79e8ff6dd45d9ed51fe4d34b23c307829df723",
++    "test_adapter.py": "668ba733e92225503d1a051ba650192d7dad0ecb7f75486fc8e1ed54e928fb17",
++    "PREREGISTRATION.md": "4187261ea8c7aca8b46b959bb6cd6cef710e1ecb208feee9e8ed6a9a678f1b0c",
++    "report.md": "recorded in report.md section 7; file hash captured at submission in artifacts",
++    "reference/EXTRACTION_LEDGER.json": "af152032c4c57e445569ecab0d05706a93106dfdd98fafe911a1c407aac4e46a",
++    "reference/tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
++    "reference/tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
++    "reference/tools/monkey_campaign/product/input_mapper_tests.py": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
++    "reference/tools/monkey_campaign/product/follow_camera_tests.py": "4d75164ff6a16bf0d817332b7c5229513750782727ad1a23911025dc93d31b27",
++    "reference/tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
++    "test_run_evidence.txt": "32aa12ff6b280563d4ebbb3dd282ab7c97257ad6f13cd27a642e7b3d626f569b",
++    "proposed.patch": "49418addb1e5aa26d12e95d3923e25aafc75871a9299dbc3b4912b6cbda37f4d"
++  },
++  "verification": {
++    "commands": [
++      "python -B -m unittest test_adapter -v  (attempt contribution dir as cwd)",
++      "python -B -m unittest test_adapter",
++      "python -B test_adapter.py"
++    ],
++    "results": {
++      "adapter_suite": "30/30 OK three times (0.900 s / 0.972 s / 0.978 s; bound 120 s), exit 0",
++      "pinned_input_mapper_tests": "VERDICT: GREEN, exit 0 (byte-unmodified, subprocess)",
++      "pinned_follow_camera_tests": "unittest OK, exit 0 (byte-unmodified, subprocess)",
++      "accepted_module_tests": "test_input_trace + test_correction OK (26 tests), exit 0"
++    },
++    "key_laws_shown": [
++      "adapter events are the REAL mapper's emissions (source u01_input_mapper; issued_tick == (t_ms*300)//1000 per chain)",
++      "Python-only 2-stage trace REFUSED missing_stage by the ACCEPTED module, latency_output null",
++      "fixture-labeled completed chains give bit-equal planted segments; absent/empty limits stay unqualified",
++      "camera harness yields armed_after ordering, no timestamp; a perf_counter-domain event refuses mixed_clock",
++      "byte-identical repeat runs; adapter import allowlist is headless"
++    ]
++  },
++  "claims_not_made": [
++    "no native qualification from any fixture",
++    "no end-to-end latency pass (simulation_consumed and presented are declared missing native stages)",
++    "no P06 limit inferred, defaulted, or hardcoded"
++  ],
++  "writes_scope": "own attempt workspace only; zero writes to E:/PythonChimera or other attempts; no GPU; no network; stdlib only",
++  "at_utc": "2026-09-26T17:54:40Z"
++}
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/EXTRACTION_LEDGER.json b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/EXTRACTION_LEDGER.json
+new file mode 100644
+index 00000000..539278d8
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/EXTRACTION_LEDGER.json
+@@ -0,0 +1,64 @@
++{
++  "schema": "chimera.i-u07-followup.extraction_ledger.v1",
++  "extracted_by": {
++    "task_id": "I-U07-TRACE-FOLLOWUP",
++    "attempt_id": "8703cf9f00bf4e11add0060bcc85da03",
++    "arrival_id": "arrival-f742dfbb88244565a6d973717bc05f26"
++  },
++  "provenance": {
++    "seam_revision": "9afbddcd",
++    "seam_source": "git objects of this campaign repo (branch lineage monkey-play-20260924); the SAME revision and the SAME hashes the accepted I-U07-TRACE report cites for its pinned extractions",
++    "accepted_module": {
++      "path": "tools/monkey_campaign/contributions/I-U07-TRACE/input_trace.py",
++      "revision": "4d2ececc",
++      "merged_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/138",
++      "note": "NOT copied here; the adapter imports the sibling accepted module in the review tree. sha256 below is the pin tests assert."
++    }
++  },
++  "files": [
++    {
++      "repo_path": "tools/monkey_campaign/product/input_mapper.py",
++      "reference_path": "reference/tools/monkey_campaign/product/input_mapper.py",
++      "revision": "9afbddcd",
++      "sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
++      "size_bytes": 18349
++    },
++    {
++      "repo_path": "tools/monkey_campaign/product/follow_camera.py",
++      "reference_path": "reference/tools/monkey_campaign/product/follow_camera.py",
++      "revision": "9afbddcd",
++      "sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
++      "size_bytes": 33410
++    },
++    {
++      "repo_path": "tools/monkey_campaign/product/follow_camera_tests.py",
++      "reference_path": "reference/tools/monkey_campaign/product/follow_camera_tests.py",
++      "revision": "9afbddcd",
++      "sha256": "4d75164ff6a16bf0d817332b7c5229513750782727ad1a23911025dc93d31b27",
++      "size_bytes": 27743
++    },
++    {
++      "repo_path": "tools/monkey_campaign/product/input_mapper_tests.py",
++      "reference_path": "reference/tools/monkey_campaign/product/input_mapper_tests.py",
++      "revision": "9afbddcd",
++      "sha256": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
++      "size_bytes": 15154
++    },
++    {
++      "repo_path": "tools/science_funnel/typeb_export/command_record.py",
++      "reference_path": "reference/tools/science_funnel/typeb_export/command_record.py",
++      "revision": "9afbddcd",
++      "sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
++      "size_bytes": 12095
++    }
++  ],
++  "pins_for_import_only": [
++    {
++      "path": "tools/monkey_campaign/contributions/I-U07-TRACE/input_trace.py",
++      "revision": "4d2ececc",
++      "sha256": "c8f4e4442a3ceedecd9c636857eda92642d26ec535d45f2c91a3ce9fd4550a57",
++      "size_bytes": 17265
++    }
++  ],
++  "read_only_after_extraction": true
++}
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/follow_camera.py b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/follow_camera.py
+new file mode 100644
+index 00000000..72d7adbe
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/follow_camera.py
+@@ -0,0 +1,786 @@
++"""The U02 follow camera: a Python-side camera controller over the engine's
++frozen HTTP contract.
++
++Architecture law (AGENTS.md, this worktree): the C++ Vulkan engine is a FROZEN
++SERVICE consumed only through its HTTP routes; this module writes ZERO C++ and
++issues ZERO body-touching commands. Frozen preregistration:
++`tools/monkey_campaign/agents/U02_camera/PREREGISTRATION.md` (Amendments 1-2
++included); contract discovery with citations:
++`tools/monkey_campaign/agents/U02_camera/discovery_note.md`.
++
++Contract surface (verified at base 33e7a444, HEAD 8feea42a):
++- Write: exactly ONE route -- `POST /camera` with ALL 8 fields
++  (cam_radius, cam_theta, cam_phi, pan_x, pan_y, target_x, target_y, target_z).
++  Omitted fields DEFAULT engine-side (12/0/0.3/0/0/0/0/0), so a partial POST
++  resets the rest -- this module always sends all 8. Pan is frozen at 0.
++- Reads: `GET /joints` (rig rest centers J + parents + live thetas),
++  `GET /scene` (body-row mesh extent `r=`), `POST /project` (apply echo),
++  `GET /frame` (freshness harness only -- the module itself never pulls frames).
++- Never: /membrane, /mesh_bin, /joints_bin, /joints POST, /hinge_bin, /gait*,
++  /stride*, /pose_apply, /tick_*, /matter, /skin_bin, /volp_bin, /scene POST,
++  /cameras POST, /ui_click, /water_vis, /eye_bin, or anything else that could
++  move, re-pose, or re-load the animal. THE CAMERA NEVER MOVES THE ANIMAL.
++
++Engine laws replicated here (citations in the discovery note):
++  eye = target + R*[cos(phi)*sin(theta), sin(phi), -cos(phi)*cos(theta)] + pan
++  up  = [-sin(phi)*sin(theta), cos(phi), sin(phi)*cos(theta)]
++  vertical FOV 45 deg (tan_half = 0.41421356); engine radius floor
++  max(1.0, 1.02*mesh_sphere); right-handed Y-up metres, ground plane y=0.
++
++stdlib only. Python 3.11+.
++"""
++from __future__ import annotations
++
++import math
++import time
++from dataclasses import dataclass, field
++
++# ---------------------------------------------------------------------------
++# Frozen constants (PREREGISTRATION.md; each cites its law there)
++# ---------------------------------------------------------------------------
++
++TAN_HALF_FOV = 0.41421356          # tan(45 deg / 2) -- engine.cpp:3280
++HALF_FOV = math.atan(TAN_HALF_FOV)  # 22.5 deg, rad
++SAFE_K = 0.8                        # feet-in-frame safe fraction of the half-FOV
++FIT_MARGIN = 1.05                   # the engine's own fit margin (engine.cpp:3246)
++R_MAX = 40.0                        # scene bound: F01 clearing full extent 2 x 20 m
++PHI_MAX_GROUND = SAFE_K * (math.pi / 8.0)   # 0.8 x 22.5 deg -- feet stay framed
++PHI_CAP = math.pi / 2.0 - HALF_FOV  # 67.5 deg: last elevation with ground in frame
++H_EYE_MIN = 0.5                     # m = 2 x F01 body envelope (0.25 m)
++MARGIN_CAM = 0.25                   # m = one F01 body envelope clearance (EYE)
++MARGIN_RAY = 0.02                   # m = optical clearance (LOOK-RAY only,
++                                    # Amendment 4.1)
++HEIGHT_STEPS = 64                   # height-law scan resolution (Amendment 4.3)
++V_CAM_FLOOR = 0.05                  # m/s settling floor = 2 envelopes / s
++TAU_DEFAULT = 0.30                  # s = 6 x the 20 Hz command interval (C12 seam)
++TICK_PERIOD = 0.05                  # s = the existing 20 Hz seam
++DEADBAND_R = 0.0025                 # fraction of R (~0.3% screen height)
++DEADBAND_ANG = 0.005                # rad (~0.5% of R target shift)
++DEADBAND_T = 0.01                   # m (2% of the body-envelope diameter)
++CUT_FACTOR = 2.0                    # snap when |anchor - smoothed| > 2 x shot radius
++TRUNK_EXIT_HYST = 0.5               # m = 2 x F01 body envelope
++AVOID_EXIT_HYST = 0.25              # m = one F01 body envelope
++ORBIT_STEP = HALF_FOV               # 22.5 deg -- each step is a genuinely new sight-line
++ORBIT_SWEEP_MAX = math.pi / 2.0     # +-90 deg total; beyond that follow semantics die
++STEPPEN_STEP = HALF_FOV / 2.0       # 11.25 deg elevation sweep step
++TRUNK_MIN_R = 0.25                  # m = half F01's trunk footprint bound (0.5):
++                                    # posts (r ~ 0.12) are never "the trunk"
++                                    # (Amendment 5 designation law)
++
++DEFAULT_BOOKMARK = "u02_follow"     # retained for report naming only (no bookmarks)
++
++# The command stream the invariant is proven on. TICK allowlist = exactly what
++# the module issues; verify_apply()/tests may add POST /project + GET /frame.
++ALLOWED_ROUTES = frozenset({
++    ("GET", "/joints"), ("GET", "/scene"), ("GET", "/state"),
++    ("GET", "/cameras"), ("GET", "/frame"),
++    ("POST", "/project"), ("POST", "/camera"),
++})
++FORBIDDEN_PATHS = frozenset({
++    "/membrane", "/mesh_bin", "/joints_bin", "/hinge_bin", "/gait", "/gait_bin",
++    "/stride", "/stride_bin", "/pose_apply", "/matter", "/skin_bin",
++    "/volp_bin", "/ui_click", "/water_vis", "/eye_bin",
++})
++
++
++class CameraConfigError(ValueError):
++    """Strict intake: a frozen-law violation at construction or bind time."""
++
++
++# ---------------------------------------------------------------------------
++# Small vector helpers (3-tuples of float; no third-party deps)
++# ---------------------------------------------------------------------------
++
++
++def _sub(a, b):
++    return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
++
++
++def _add(a, b):
++    return (a[0] + b[0], a[1] + b[1], a[2] + b[2])
++
++
++def _scale(a, s):
++    return (a[0] * s, a[1] * s, a[2] * s)
++
++
++def _dot(a, b):
++    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
++
++
++def _norm(a):
++    return math.sqrt(_dot(a, a))
++
++
++def _dist(a, b):
++    return _norm(_sub(a, b))
++
++
++def _dist2(a, b):
++    return math.hypot(a[0] - b[0], a[2] - b[2])
++
++
++# ---------------------------------------------------------------------------
++# Engine laws, replicated (the ONLY place in this module allowed to know them)
++# ---------------------------------------------------------------------------
++
++
++def engine_eye(v):
++    """Eye position for camera state v = [R, th, ph, tx, ty, tz, px, py].
++    Law: engine.cpp:6730-6736 (verified at 33e7a444)."""
++    r, th, ph = v[0], v[1], v[2]
++    c, s = math.cos(ph), math.sin(ph)
++    cx, sx = math.cos(th), math.sin(th)
++    return (v[3] + r * c * sx + v[6],
++            v[4] + r * s + v[7],
++            v[5] - r * c * cx)
++
++
++def subtend_deg_from_axis(eye, target, point):
++    """Angle between the view axis (eye->target) and eye->point, radians.
++    The anchor is IN the frame iff this is < HALF_FOV (prereg falsifier FE)."""
++    axis = _sub(target, eye)
++    to_pt = _sub(point, eye)
++    na, np_ = _norm(axis), _norm(to_pt)
++    if na <= 0.0 or np_ <= 0.0:
++        return 0.0
++    c = max(-1.0, min(1.0, _dot(axis, to_pt) / (na * np_)))
++    return math.acos(c)
++
++
++# ---------------------------------------------------------------------------
++# The declared obstacle model (vertical cylinders; the engine exposes NO
++# obstacle geometry over HTTP -- discovery note section 3/6 -- so obstacles are
++# INJECTED, never discovered; an unmodeled obstacle can still occlude)
++# ---------------------------------------------------------------------------
++
++
++@dataclass(frozen=True)
++class Cylinder:
++    """Vertical cylinder, base on the ground plane y=0 (declared model)."""
++    cx: float
++    cz: float
++    r: float
++    top: float
++
++    def __post_init__(self):
++        if not all(map(math.isfinite, (self.cx, self.cz, self.r, self.top))):
++            raise CameraConfigError("non-finite cylinder")
++        if self.r <= 0.0 or self.top <= 0.0:
++            raise CameraConfigError("cylinder r/top must be positive")
++
++
++def _segment_hits_disk_2d(p0, p1, cyl, margin):
++    """2D (xz) intersection of segment p0->p1 with the margin-expanded disk.
++    Returns (t0, t1) parameters or None."""
++    dx, dz = p1[0] - p0[0], p1[2] - p0[2]
++    fx, fz = p0[0] - cyl.cx, p0[2] - cyl.cz
++    a = dx * dx + dz * dz
++    b = 2.0 * (fx * dx + fz * dz)
++    c = fx * fx + fz * fz - (cyl.r + margin) ** 2
++    if a <= 1e-12:                       # degenerate segment: a point
++        if c <= 0.0:
++            return (0.0, 0.0)
++        return None
++    disc = b * b - 4.0 * a * c
++    if disc <= 0.0:
++        return None
++    sq = math.sqrt(disc)
++    t0 = (-b - sq) / (2.0 * a)
++    t1 = (-b + sq) / (2.0 * a)
++    lo, hi = max(0.0, t0), min(1.0, t1)
++    if lo > hi:
++        return None
++    return (lo, hi)
++
++
++def point_clear(eye, cyl, margin=MARGIN_CAM):
++    """The EYE is clear of the cylinder (outside, with margin, height-aware)."""
++    if eye[1] >= cyl.top + margin:
++        return True
++    return _dist2(eye, (cyl.cx, eye[1], cyl.cz)) >= cyl.r + margin
++
++
++def ray_clear(eye, target, cyl, margin=MARGIN_RAY):
++    """The LOOK-RAY (eye->target) is clear of the height-aware cylinder.
++    The ray carries the OPTICAL margin only; the camera-body margin applies to
++    the eye (Amendment 4.1)."""
++    hit = _segment_hits_disk_2d(eye, target, cyl, margin)
++    if hit is None:
++        return True
++    t0, t1 = hit
++    # y is linear in t; the ray is blocked iff it passes below top+margin
++    # anywhere inside the 2D hit interval -> check the interval's y minimum.
++    y0, y1 = eye[1], target[1]
++    y_lo = min(y0 + t0 * (y1 - y0), y0 + t1 * (y1 - y0))
++    return y_lo >= cyl.top + margin
++
++
++def pose_clear(eye, target, obstacles):
++    """Full pose check: eye at the camera-body margin, ray at the optical
++    margin (Amendment 4.1)."""
++    return (all(point_clear(eye, o, MARGIN_CAM) for o in obstacles)
++            and all(ray_clear(eye, target, o, MARGIN_RAY) for o in obstacles))
++
++
++# ---------------------------------------------------------------------------
++# Anchor providers (the animal state source is injected; the engine exposes no
++# root-motion route today -- discovery note section 3 -- so the rig envelope
++# center is the default anchor and any future root source slots in here)
++# ---------------------------------------------------------------------------
++
++
++@dataclass
++class AnchorReading:
++    point: tuple            # (x, y, z) world anchor
++    heading: tuple | None   # unit (hx, hz) horizontal heading, or None
++    ts: float               # provider timestamp (monotonic)
++
++
++class StaticAnchorProvider:
++    """A fixed anchor (in-place stride demos; deterministic tests). `extent`
++    carries the rig envelope radius when known (the tests pin it to the same
++    joints the mock engine serves)."""
++
++    def __init__(self, point, extent=0.0):
++        self.point = tuple(float(c) for c in point)
++        self.extent = float(extent)
++        if not all(map(math.isfinite, self.point)):
++            raise CameraConfigError("non-finite anchor")
++        if not math.isfinite(self.extent) or self.extent < 0.0:
++            raise CameraConfigError("bad extent")
++
++    def read(self):
++        return AnchorReading(self.point, None, time.monotonic())
++
++
++class CallableAnchorProvider:
++    """Adapts `f(now) -> (point, heading|None)` -- e.g. a walker-state reader."""
++
++    def __init__(self, fn):
++        self.fn = fn
++
++    def read(self):
++        p, h = self.fn(time.monotonic())
++        return AnchorReading(tuple(float(c) for c in p), h, time.monotonic())
++
++
++class EngineRigProvider:
++    """Reads the animal state through the contract: GET /joints for the rig
++    (envelope center = anchor), GET /scene once for the mesh extent `r=`.
++    `client` is any object with get(path) -> (status, bytes, content_type),
++    matching tools/product_viewer/server.py::EngineClient."""
++
++    def __init__(self, client):
++        self.client = client
++        self.mesh_r = 1.0       # engine absolute floor if /scene says nothing
++        self._extent = None     # envelope radius (recomputed per read)
++
++    def _get_json(self, path):
++        import json
++        st, body, _ = self.client.get(path)
++        if st != 200:
++            raise CameraConfigError(f"{path} http {st}")
++        return json.loads(body.decode("utf-8", "replace"))
++
++    def bind(self):
++        scene = self._get_json("/scene")
++        for row in scene.get("rows", []):
++            if row.get("id") == "body":
++                detail = str(row.get("detail", ""))
++                if "r=" in detail:
++                    try:
++                        self.mesh_r = float(detail.split("r=")[-1].rstrip(", "))
++                    except ValueError:
++                        pass
++        doc = self._get_json("/joints")
++        if not doc.get("loaded") or not doc.get("joints"):
++            raise CameraConfigError("no joints pack loaded (GET /joints)")
++        return doc
++
++    def read(self):
++        import json
++        doc = self._get_json("/joints")
++        joints = doc.get("joints") or []
++        if not joints:
++            raise CameraConfigError("GET /joints returned no joints")
++        pts = [(float(j["J"][0]), float(j["J"][1]), float(j["J"][2]))
++               for j in joints]
++        c = tuple(sum(p[k] for p in pts) / len(pts) for k in range(3))
++        self._extent = max(_dist(p, c) for p in pts)
++        return AnchorReading(c, None, time.monotonic())
++
++    @property
++    def extent(self):
++        return self._extent if self._extent is not None else 0.0
++
++
++# ---------------------------------------------------------------------------
++# RecordingClient: wraps any engine client (e.g.
++# tools/product_viewer/server.py::EngineClient) and records the command
++# stream -- the object the NEVER-moves-the-animal invariant is PROVEN on.
++# ---------------------------------------------------------------------------
++
++
++class RecordingClient:
++    """Delegates get()/post_json()/post_raw() verbatim and records every
++    (method, path, payload_or_None). Provides the invariant queries."""
++
++    def __init__(self, inner):
++        self.inner = inner
++        self.log = []                      # list of (method, path, payload)
++
++    def _record(self, method, path, payload=None):
++        self.log.append((method, path.split("?")[0], payload))
++
++    def get(self, path):
++        self._record("GET", path)
++        return self.inner.get(path)
++
++    def post_json(self, path, payload, timeout=None):
++        self._record("POST", path, payload)
++        return self.inner.post_json(path, payload, timeout=timeout)
++
++    def post_raw(self, path, body, ctype="application/octet-stream",
++                 timeout=None):
++        self._record("POST", path, f"<{len(body)} raw bytes>")
++        return self.inner.post_raw(path, body, ctype=ctype, timeout=timeout)
++
++    # -- invariant queries ----------------------------------------------------
++
++    def allowlist_violations(self):
++        return [e for e in self.log if (e[0], e[1]) not in ALLOWED_ROUTES]
++
++    def forbidden_hits(self):
++        hits = []
++        for method, path, _payload in self.log:
++            if path in FORBIDDEN_PATHS or path.startswith("/tick"):
++                hits.append((method, path))
++        return hits
++
++    def camera_writes(self):
++        return [payload for m, p, payload in self.log
++                if (m, p) == ("POST", "/camera")]
++
++
++# ---------------------------------------------------------------------------
++# The follow-camera controller
++# ---------------------------------------------------------------------------
++
++
++@dataclass
++class TickReport:
++    t_state: float = 0.0        # t0 monotonic: state read start
++    t_anchor: float = 0.0       # t1: anchor computed
++    t_solution: float = 0.0     # t2: camera solution computed
++    t_acked: float = 0.0        # t3: POST /camera acked
++    mode: str = "ground"        # ground | trunk
++    commanded_v: tuple = ()     # the 8 floats sent
++    wrote: bool = False         # False = deadband suppressed the write
++    cut: bool = False           # a declared snap (teleport-scale anchor jump)
++    degraded: bool = False
++    degrade_reason: str = ""
++    hint: str = ""              # e.g. "low_eye" (Amendment 1 priority law)
++    anchor: tuple = ()
++    v_animal: float = 0.0       # measured animal speed this tick, m/s
++    avoidance: dict = field(default_factory=dict)
++
++
++class FollowCamera:
++    """Smooth follow camera: ground mode + trunk-approach mode + declared
++    obstruction avoidance. NEVER issues a body-touching command."""
++
++    def __init__(self, client, anchor_provider, obstacles=(),
++                 tick_period=TICK_PERIOD, tau=TAU_DEFAULT,
++                 mesh_r=None, heading_enabled=True):
++        self.client = client
++        self.provider = anchor_provider
++        obs = tuple(obstacles)
++        for o in obs:
++            if not isinstance(o, Cylinder):
++                raise CameraConfigError("obstacles must be Cylinder instances")
++        self.obstacles = obs
++        if tick_period <= 0.0 or tau <= 0.0:
++            raise CameraConfigError("tick_period/tau must be positive")
++        self.tick_period = float(tick_period)
++        self.tau = float(tau)
++        self.heading_enabled = bool(heading_enabled)
++
++        # subject size: injected, or taken from an EngineRigProvider
++        if mesh_r is not None:
++            self.mesh_r = float(mesh_r)
++        elif isinstance(anchor_provider, EngineRigProvider):
++            self.mesh_r = anchor_provider.mesh_r
++        else:
++            self.mesh_r = 1.0
++        if self.mesh_r <= 0.0 or not math.isfinite(self.mesh_r):
++            raise CameraConfigError("mesh_r must be positive finite")
++
++        self._trunk = self._select_trunk()   # the largest cylinder, or None
++        self._smoothed = None                # smoothed anchor
++        self._theta = 0.0                    # smoothed orbit azimuth
++        self._theta_des = None               # desired theta from a heading, if any
++        self._smoothed_anchor_ref = None     # framing check reference (FE)
++        self._radius = None                  # current commanded radius
++        self._phi = None                     # current commanded elevation
++        self._last_anchor = None             # raw anchor for speed measurement
++        self._last_t = None
++        self._avoid_active = set()           # hysteresis latch (Amendment 4.4)
++        self._last_solution = None           # (r, theta, phi) last clear pose
++        self._last_cmd_v = None
++        self._trunk_mode = False
++
++    # -- setup --------------------------------------------------------------
++
++    def _select_trunk(self):
++        """The designated trunk: the largest TRUNK-SCALE cylinder (r >=
++        TRUNK_MIN_R, Amendment 5); posts and small rocks never qualify, and a
++        scene without trunk-scale geometry has no trunk-approach mode."""
++        candidates = [o for o in self.obstacles if o.r >= TRUNK_MIN_R]
++        if not candidates:
++            return None
++        return max(candidates, key=lambda o: o.r * o.top)
++
++    def bind(self):
++        """Read the rig/scene once through the contract; derive the frozen
++        ground-mode framing. Strict: refuses non-finite geometry."""
++        doc = None
++        if isinstance(self.provider, EngineRigProvider):
++            doc = self.provider.bind()
++            self.mesh_r = self.provider.mesh_r
++        reading = self.provider.read()
++        extent = getattr(self.provider, "extent", 0.0) or 0.0
++        if extent <= 0.0:
++            # no measured envelope: fall back to the mesh extent only
++            extent = 0.0
++        self.r_subject = extent + self.mesh_r
++        self.r_floor = max(1.0, 1.02 * self.mesh_r)   # engine.cpp:56 law
++        self.r_ground = max(self.r_floor,
++                            min(R_MAX, self.r_subject / TAN_HALF_FOV * FIT_MARGIN))
++        # Amendment 1 priority law: the feet criterion dominates; when the
++        # eye-height bound is unreachable the hint is recorded, never hidden.
++        phi_min = math.asin(min(1.0, H_EYE_MIN / self.r_ground))
++        if phi_min > PHI_MAX_GROUND:
++            self.phi_ground = PHI_MAX_GROUND
++            self._low_eye_hint = "low_eye"
++        else:
++            self.phi_ground = 0.5 * (phi_min + PHI_MAX_GROUND)
++            self._low_eye_hint = ""
++        self._smoothed = reading.point
++        self._last_anchor = reading.point
++        self._last_t = reading.ts
++        self._theta = 0.0
++        self._smoothed_anchor_ref = reading.point
++        self._phi = self.phi_ground
++        self._radius = self.r_ground
++        return self
++
++    # -- framing laws -------------------------------------------------------
++
++    def _mode_for(self, anchor):
++        if self._trunk is None:
++            return False
++        d = _dist2(anchor, (self._trunk.cx, 0.0, self._trunk.cz))
++        enter = (self.r_ground * math.cos(self.phi_ground) + self._trunk.r)
++        if self._trunk_mode:
++            return d <= enter + TRUNK_EXIT_HYST
++        return d <= enter
++
++    def _framing(self, anchor, mode):
++        """(target, radius, theta_base, phi) for the mode -- prereg 'Derived
++        constants'; trunk contact on the SURFACE nearest the anchor
++        (Amendment 4.2); trunk theta DERIVED (Amendment 1.4)."""
++        if not mode or self._trunk is None:
++            theta_base = (self._theta_des if self._theta_des is not None
++                          else self._theta)
++            return anchor, self.r_ground, theta_base, self.phi_ground
++        t = self._trunk
++        dx, dz = anchor[0] - t.cx, anchor[2] - t.cz
++        n = math.hypot(dx, dz)
++        if n > 1e-9:
++            contact_y = min(max(anchor[1], 0.0), t.top)
++            trunk_pt = (t.cx + t.r * dx / n, contact_y, t.cz + t.r * dz / n)
++            theta = math.atan2(dx / n, -dz / n)       # eye on the anchor's side
++        else:                                          # degenerate: atop the axis
++            contact_y = min(max(anchor[1], 0.0), t.top)
++            trunk_pt = (t.cx, contact_y, t.cz)
++            theta = self._theta
++        target = _scale(_add(anchor, trunk_pt), 0.5)
++        d = _dist(anchor, trunk_pt)
++        clear_needed = 0.5 * d + MARGIN_CAM + t.r     # envelope + trunk bound
++        r_trunk = max(self.r_floor,
++                      min(R_MAX, clear_needed / TAN_HALF_FOV * FIT_MARGIN))
++        return target, r_trunk, theta, self.phi_ground
++
++    # -- obstruction avoidance (frozen order; Amendment 1) -------------------
++
++    def _avoid(self, target, radius, theta, phi):
++        """Returns (radius, theta, phi, avoidance_info). Frozen order:
++        latch (Amendment 4.4) -> pull-in (Amendment 3.1) -> steepen sweep ->
++        height-law numeric scan (Amendment 4.3) -> orbit sweep; else degraded.
++        Every candidate re-verifies eye clearance, ray clearance, and framing."""
++        info = {"order": []}
++        obstacles = self.obstacles
++        if not obstacles:
++            self._avoid_active = set()
++            self._last_solution = (radius, theta, phi)
++            return radius, theta, phi, info
++
++        def eye_of(r, th, ph):
++            return engine_eye((r, th, ph,
++                               target[0], target[1], target[2], 0.0, 0.0))
++
++        def try_pose(r, th, ph):
++            e = eye_of(r, th, ph)
++            if not pose_clear(e, target, obstacles):
++                return False
++            if subtend_deg_from_axis(e, target,
++                                     self._smoothed_anchor_ref) >= HALF_FOV:
++                return False
++            return True
++
++        base_eye = eye_of(radius, theta, phi)
++        eye_bad = [i for i, o in enumerate(obstacles)
++                   if not point_clear(base_eye, o)]
++        ray_bad = [i for i, o in enumerate(obstacles)
++                   if not ray_clear(base_eye, target, o)]
++
++        # (0) hysteresis latch: keep the previous solution while the base eye
++        # remains within r + m + hysteresis of any latched cylinder's axis
++        latch = False
++        for i in list(self._avoid_active):
++            if i >= len(obstacles):
++                self._avoid_active.discard(i)
++                continue
++            o = obstacles[i]
++            if _dist2(base_eye, (o.cx, base_eye[1], o.cz)) < \
++                    o.r + MARGIN_CAM + AVOID_EXIT_HYST:
++                latch = True
++            else:
++                self._avoid_active.discard(i)
++        if latch and not eye_bad and not ray_bad and self._last_solution:
++            r0, th0, ph0 = self._last_solution
++            if try_pose(r0, th0, ph0):
++                info["order"].append("latch")
++                return r0, th0, ph0, info
++
++        if not eye_bad and not ray_bad:
++            self._last_solution = (radius, theta, phi)
++            return radius, theta, phi, info
++
++        # (1) pull-in: eye violations and near-eye ray crossings (Amend. 3.1);
++        # scan downward, keep the LARGEST feasible radius (prereg OC7)
++        if eye_bad:
++            info["order"].append("pull_in")
++            r_floor_mode = self._pull_floor(radius)
++            if radius > r_floor_mode:
++                step = max(1e-3, (radius - r_floor_mode) / 64.0)
++                r_try = radius - step
++                while r_try >= r_floor_mode - 1e-9:
++                    if try_pose(r_try, theta, phi):
++                        self._update_latch(eye_of(r_try, theta, phi))
++                        self._last_solution = (r_try, theta, phi)
++                        return r_try, theta, phi, info
++                    r_try -= step
++
++        # (2) steepen sweep at the current radius
++        info["order"].append("steepen")
++        ph = phi
++        while ph < PHI_CAP - 1e-9:
++            ph = min(PHI_CAP, ph + STEPPEN_STEP)
++            if try_pose(radius, theta, ph):
++                self._update_latch(eye_of(radius, theta, ph))
++                self._last_solution = (radius, theta, ph)
++                return radius, theta, ph, info
++
++        # (3) height-law radius: numeric upward scan at the cap (Amendment 4.3)
++        top_max = max(o.top for o in obstacles)
++        q = 0.0
++        for o in obstacles:
++            q = max(q, max(0.0, _dist2(target, (o.cx, 0.0, o.cz))
++                           - (o.r + MARGIN_RAY)))
++        tan_cap = math.tan(PHI_CAP)
++        bound = math.inf
++        if tan_cap > 1e-9:
++            bound = (q + (top_max + MARGIN_CAM - target[1]) / tan_cap) \
++                / math.cos(PHI_CAP)
++        if bound > radius:
++            info["order"].append("height_radius")
++            r_hi = min(R_MAX, radius * ((R_MAX / radius) ** (1.0 / HEIGHT_STEPS)))
++            while r_hi <= min(R_MAX, bound) + 1e-9:
++                if try_pose(r_hi, theta, PHI_CAP):
++                    self._update_latch(eye_of(r_hi, theta, PHI_CAP))
++                    self._last_solution = (r_hi, theta, PHI_CAP)
++                    return r_hi, theta, PHI_CAP, info
++                r_hi = min(R_MAX, r_hi * ((R_MAX / radius) ** (1.0 / HEIGHT_STEPS)))
++                if r_hi >= R_MAX - 1e-9:
++                    if try_pose(R_MAX, theta, PHI_CAP):
++                        self._update_latch(eye_of(R_MAX, theta, PHI_CAP))
++                        self._last_solution = (R_MAX, theta, PHI_CAP)
++                        return R_MAX, theta, PHI_CAP, info
++                    break
++
++        # (4) orbit sweep at the current radius/phi
++        info["order"].append("orbit")
++        for sgn in self._orbit_sides():
++            sw = ORBIT_STEP
++            while sw <= ORBIT_SWEEP_MAX + 1e-9:
++                for th in self._orbit_candidates(theta, sgn, sw):
++                    if try_pose(radius, th, phi):
++                        self._update_latch(eye_of(radius, th, phi))
++                        self._last_solution = (radius, th, phi)
++                        return radius, th, phi, info
++                sw += ORBIT_STEP
++
++        info["degraded"] = "occluded: no clear pose within declared bounds"
++        return radius, theta, phi, info
++
++    def _update_latch(self, solution_eye):
++        """Latch the cylinders the SOLUTION eye is still near (Amendment 4.4)."""
++        self._avoid_active = set()
++        for i, o in enumerate(self.obstacles):
++            if _dist2(solution_eye, (o.cx, solution_eye[1], o.cz)) < \
++                    o.r + MARGIN_CAM + AVOID_EXIT_HYST:
++                self._avoid_active.add(i)
++
++    def _pull_floor(self, radius):
++        return max(self.r_ground, self.r_floor)
++
++    def _orbit_sides(self):
++        return (1, -1)      # deterministic tie order: + first (prereg)
++
++    def _orbit_candidates(self, theta, sgn, sweep):
++        th = theta + sgn * sweep
++        while th > math.pi:
++            th -= 2.0 * math.pi
++        while th < -math.pi:
++            th += 2.0 * math.pi
++        return (th,)
++
++    # -- smoothing / speed laws ----------------------------------------------
++
++    @staticmethod
++    def _wrap_pi(a):
++        while a > math.pi:
++            a -= 2.0 * math.pi
++        while a < -math.pi:
++            a += 2.0 * math.pi
++        return a
++
++    def _smooth_anchor(self, raw, now):
++        dt = max(1e-6, now - self._last_t)
++        jump = _dist(raw, self._smoothed)
++        cut = jump > CUT_FACTOR * self.r_ground
++        if cut:
++            self._smoothed = raw                      # declared snap
++            return self._smoothed, True, 0.0
++        a = 1.0 - math.exp(-dt / self.tau)
++        tgt = _add(self._smoothed, _scale(_sub(raw, self._smoothed), a))
++        v_animal = _dist(raw, self._last_anchor) / dt
++        v_cam = max(V_CAM_FLOOR, 2.0 * v_animal)      # never outrun the animal
++        step = _sub(tgt, self._smoothed)
++        step_len = _norm(step)
++        max_step = v_cam * dt
++        if step_len > max_step:
++            tgt = _add(self._smoothed, _scale(step, max_step / step_len))
++        self._smoothed = tgt
++        return self._smoothed, False, v_animal
++
++    # -- the command (the ONLY write) ----------------------------------------
++
++    def _post_camera(self, v, now):
++        payload = {"cam_radius": v[0], "cam_theta": v[1], "cam_phi": v[2],
++                   "pan_x": v[6], "pan_y": v[7],
++                   "target_x": v[3], "target_y": v[4], "target_z": v[5]}
++        st, body = self.client.post_json("/camera", payload)
++        import json
++        ok = st == 200 and b'"ok":true' in body
++        if not ok:
++            raise CameraConfigError(f"POST /camera rejected: http {st} {body[:80]!r}")
++        self._last_cmd_v = tuple(v)
++        return time.perf_counter()
++
++    def _deadbanded(self, v):
++        if self._last_cmd_v is None:
++            return False
++        p = self._last_cmd_v
++        return (abs(v[0] - p[0]) < DEADBAND_R * max(v[0], 1e-6)
++                and abs(self._wrap_pi(v[1] - p[1])) < DEADBAND_ANG
++                and abs(v[2] - p[2]) < DEADBAND_ANG
++                and _dist(v[3:6], p[3:6]) < DEADBAND_T)
++
++    # -- the tick -------------------------------------------------------------
++
++    def tick(self, now=None):
++        report = TickReport()
++        report.t_state = time.perf_counter()
++        reading = self.provider.read()
++        report.t_anchor = time.perf_counter()
++        report.anchor = reading.point
++        if reading.heading is not None and self.heading_enabled:
++            hx, hz = reading.heading
++            n = math.hypot(hx, hz)
++            if n > 1e-9:
++                self._theta_des = math.atan2(-hx / n, hz / n)
++            # no heading this tick -> keep the last desired theta
++
++        anchor, cut, v_animal = self._smooth_anchor(reading.point,
++                                                    reading.ts)
++        self._last_anchor = reading.point
++        self._last_t = reading.ts
++        report.cut = cut
++        report.v_animal = v_animal
++
++        self._trunk_mode = self._mode_for(anchor)
++        report.mode = "trunk" if self._trunk_mode else "ground"
++        target, radius, theta_base, phi = self._framing(anchor, self._trunk_mode)
++
++        # smooth theta toward the framing base (shortest arc), then avoid
++        self._theta += self._wrap_pi(theta_base - self._theta)
++        self._smoothed_anchor_ref = anchor
++        radius, theta, phi, avoid = self._avoid(target, radius,
++                                                self._theta, phi)
++        self._theta = theta
++        report.avoidance = avoid
++        report.degraded = bool(avoid.get("degraded"))
++        report.degrade_reason = str(avoid.get("degraded", ""))
++        report.hint = self._low_eye_hint
++
++        v = (radius, self._theta, phi,
++             target[0], target[1], target[2], 0.0, 0.0)
++        report.t_solution = time.perf_counter()
++        report.commanded_v = v
++        if self._deadbanded(v):
++            report.wrote = False
++        else:
++            t_ack = self._post_camera(v, now)
++            report.wrote = True
++            report.t_acked = t_ack
++        self._radius, self._phi = radius, phi
++        return report
++
++    def verify_apply(self):
++        """Explicit (off-tick) check that the engine APPLIED the last command:
++        POST /project's cam echo must equal the last commanded v within 1e-3
++        (prereg falsifier FG)."""
++        if self._last_cmd_v is None:
++            return {"ok": False, "error": "no command issued yet"}
++        st, body = self.client.post_json("/project",
++                                         {"x": 0.0, "y": 0.0, "z": 0.0})
++        import json
++        doc = json.loads(body.decode("utf-8", "replace"))
++        cam = doc.get("cam")
++        if not cam or len(cam) != 8:
++            return {"ok": False, "error": f"bad cam echo: {cam!r}"}
++        err = max(abs(float(a) - float(b))
++                  for a, b in zip(cam, self._last_cmd_v))
++        return {"ok": err <= 1e-3, "max_err": err, "echo": cam}
++
++    def state(self):
++        return {"mode": "trunk" if self._trunk_mode else "ground",
++                "r_subject": getattr(self, "r_subject", None),
++                "r_ground": getattr(self, "r_ground", None),
++                "phi_ground": getattr(self, "phi_ground", None),
++                "theta": self._theta, "radius": self._radius, "phi": self._phi,
++                "hint": self._low_eye_hint,
++                "degraded_last": bool(self._last_cmd_v is None)}
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/follow_camera_tests.py b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/follow_camera_tests.py
+new file mode 100644
+index 00000000..483dc7b2
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/follow_camera_tests.py
+@@ -0,0 +1,596 @@
++"""U02 follow-camera tests — headless, stdlib-only, deterministic.
++
++Proves the frozen prereg (tools/monkey_campaign/agents/U02_camera/
++PREREGISTRATION.md, Amendments 1-4): the NEVER-moves-the-animal invariant on
++the recorded command stream, the frozen obstruction cases against mocked
++vertical cylinders, and the Python-side latency budgets (C12-compliant: the
++20 Hz tick interval and the measured latencies are reported SEPARATELY).
++The engine is MOCKED with declared deadlines; real-engine frame cost is a
++recorded follow-up need (U07), not a claim made here.
++
++Run from the repo root:
++  python -m unittest tools.monkey_campaign.product.follow_camera_tests -v
++"""
++from __future__ import annotations
++
++import json
++import math
++import unittest
++
++from tools.monkey_campaign.product import follow_camera as fc
++from tools.monkey_campaign.product.follow_camera import (
++    Cylinder, FollowCamera, StaticAnchorProvider, RecordingClient,
++    engine_eye, point_clear, ray_clear, subtend_deg_from_axis,
++    TAN_HALF_FOV, HALF_FOV, PHI_MAX_GROUND, H_EYE_MIN,
++    R_MAX, CameraConfigError,
++)
++
++# ---------------------------------------------------------------------------
++# Frozen test constants (prereg "Frozen obstruction cases"; F01 bounds cited)
++# ---------------------------------------------------------------------------
++
++ANCHOR0 = (0.0, 0.0, 0.0)
++MESH_R = 0.5                       # the /scene body-row mesh sphere mock
++                                   # (the engine prints r with %.1f -- 0.5 is
++                                   # exact under that display law)
++JOINTS = [                         # rig mock: 6 joints, centroid = origin,
++                                   # extent = 0.5 by construction; sized so
++                                   # R_ground exceeds the frozen low-eye bound
++    (0.5, 0.0, 0.0), (-0.5, 0.0, 0.0),
++    (0.0, 0.5, 0.0), (0.0, -0.5, 0.0),
++    (0.0, 0.0, 0.5), (0.0, 0.0, -0.5),
++]
++EXTENT = max(math.dist(j, ANCHOR0) for j in JOINTS)      # 0.5 by construction
++R_SUBJECT = EXTENT + MESH_R
++R_GROUND = R_SUBJECT / TAN_HALF_FOV * 1.05
++PHI_MIN = math.asin(min(1.0, H_EYE_MIN / R_GROUND))
++PHI_GROUND = 0.5 * (PHI_MIN + PHI_MAX_GROUND)
++
++TRUNK = Cylinder(0.0, 0.0, 0.5, 3.0)   # F01 trunk footprint bound 0.5 m;
++                                       # declared test height 3.0 m (F03 owns
++                                       # the real geometry)
++POST = Cylinder(-1.5, 1.0, 0.12, 0.9)  # F01 boundary post: h 0.9 m
++
++
++def _framed(fcam, v):
++    """FE: the anchor stays inside the frame for the commanded v."""
++    eye = engine_eye(v)
++    return subtend_deg_from_axis(eye, (v[3], v[4], v[5]),
++                                 fcam._smoothed_anchor_ref) < HALF_FOV
++
++
++def _base_v():
++    """Base ground framing with no obstacles and no heading:
++    [R_ground, 0, phi_ground, anchor, 0, 0]."""
++    return (R_GROUND, 0.0, PHI_GROUND, 0.0, 0.0, 0.0, 0.0, 0.0)
++
++
++# ---------------------------------------------------------------------------
++# The mock engine (contract-level: same route shapes, engine laws clamped)
++# ---------------------------------------------------------------------------
++
++
++class MockEngine:
++    """In-process fake of the engine's HTTP surface for the routes the module
++    uses. Declared simulated deadlines: render-thread apply <= 1 frame at
++    60 fps (1/60 s), /frame period 1/30 s. Real engine costs are NOT claimed.
++    GET /frame answers JSON {"armed_after": <ack count>} so the harness can
++    prove the freshness CONTRACT (the frame postdates the last camera ack)."""
++
++    APPLY_DEADLINE_S = 1.0 / 60.0
++    FRAME_PERIOD_S = 1.0 / 30.0
++
++    def __init__(self, mesh_r=MESH_R, loaded=True):
++        self.mesh_r = mesh_r
++        self.loaded = loaded
++        self.cam_v = (12.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0)
++        self.log = []                       # (method, path, payload|None)
++        self.ack_count = 0
++
++    def get(self, path):
++        path = path.split("?")[0]
++        self.log.append(("GET", path, None))
++        if path == "/joints":
++            if not self.loaded:
++                return 200, json.dumps({"loaded": False}).encode(), "application/json"
++            doc = {"loaded": True, "n_joints": len(JOINTS),
++                   "joints": [{"name": f"j{k}", "theta": 0.0,
++                               "J": [j[0], j[1], j[2]], "axis": [0, 1, 0]}
++                              for k, j in enumerate(JOINTS)],
++                   "parents": [-1] * len(JOINTS)}
++            return 200, json.dumps(doc).encode(), "application/json"
++        if path == "/scene":
++            # the REAL body-row format (engine.cpp scene_rows: "%u tris,
++            # %u verts, r=%.1f") -- the r= value comes LAST
++            scene = {"rows": [{"id": "body", "label": "body",
++                               "detail": f"12 tris, 8 verts, r={self.mesh_r:.1f}",
++                               "state": 1, "toggleable": False}]}
++            return 200, json.dumps(scene).encode(), "application/json"
++        if path == "/frame":
++            return 200, json.dumps(
++                {"armed_after": self.ack_count}).encode(), "application/json"
++        return 404, b'{"ok":false,"error":"unknown route"}', "application/json"
++
++    def post_json(self, path, payload, timeout=None):
++        path = path.split("?")[0]
++        self.log.append(("POST", path, dict(payload)))
++        if path == "/camera":
++            for k in ("cam_radius", "cam_theta", "cam_phi", "pan_x", "pan_y",
++                      "target_x", "target_y", "target_z"):
++                if k not in payload:        # the always-send-all-8 law
++                    return 400, b'{"ok":false,"error":"missing field"}'
++            r = max(max(1.0, 1.02 * self.mesh_r), float(payload["cam_radius"]))
++            self.cam_v = (r, float(payload["cam_theta"]),
++                          float(payload["cam_phi"]),
++                          float(payload["target_x"]), float(payload["target_y"]),
++                          float(payload["target_z"]),
++                          float(payload["pan_x"]), float(payload["pan_y"]))
++            self.ack_count += 1
++            return 200, b'{"ok":true}'
++        if path == "/project":
++            cam = [round(float(x), 5) for x in self.cam_v]  # engine %.5f echo
++            return 200, json.dumps({"ok": True, "sx": 0.0, "sy": 0.0,
++                                    "cam": cam}).encode()
++        return 404, b'{"ok":false,"error":"unknown route"}'
++
++
++def make_camera(obstacles=(), provider=None, mock=None, **kw):
++    mock = mock if mock is not None else MockEngine()
++    rec = RecordingClient(mock)
++    prov = provider if provider is not None else \
++        StaticAnchorProvider(ANCHOR0, extent=EXTENT)
++    fcam = FollowCamera(rec, prov, obstacles=obstacles,
++                        mesh_r=mock.mesh_r, **kw)
++    fcam.bind()
++    return mock, rec, fcam
++
++
++# ---------------------------------------------------------------------------
++# Derived framing + strict intake
++# ---------------------------------------------------------------------------
++
++
++class TestDerivedFraming(unittest.TestCase):
++
++    def test_frozen_constants_match_independent_derivation(self):
++        _m, _r, fcam = make_camera()
++        self.assertAlmostEqual(fcam.r_subject, R_SUBJECT, places=9)
++        self.assertAlmostEqual(fcam.r_ground, R_GROUND, places=9)
++        self.assertAlmostEqual(fcam.phi_ground, PHI_GROUND, places=9)
++        self.assertAlmostEqual(fcam.r_floor, max(1.0, 1.02 * MESH_R), places=9)
++
++    def test_engine_rig_provider_reads_the_contract(self):
++        mock = MockEngine()
++        rec = RecordingClient(mock)
++        prov = fc.EngineRigProvider(rec)
++        fcam = FollowCamera(rec, prov, obstacles=(), mesh_r=None)
++        fcam.bind()
++        self.assertAlmostEqual(fcam.r_subject, R_SUBJECT, places=6)
++        issued = {(m, p) for m, p, _ in rec.log}
++        self.assertEqual(issued, {("GET", "/scene"), ("GET", "/joints")})
++
++    def test_bind_refuses_unloaded_rig(self):
++        with self.assertRaises(CameraConfigError):
++            make_camera(mock=MockEngine(loaded=False),
++                        provider=fc.EngineRigProvider(
++                            RecordingClient(MockEngine(loaded=False))))
++
++    def test_strict_intake_rejects_bad_construction(self):
++        with self.assertRaises(CameraConfigError):
++            Cylinder(0, 0, -1.0, 3.0)
++        with self.assertRaises(CameraConfigError):
++            FollowCamera(RecordingClient(MockEngine()),
++                         StaticAnchorProvider(ANCHOR0), tau=0.0)
++        with self.assertRaises(CameraConfigError):
++            StaticAnchorProvider((0.0, float("nan"), 0.0))
++
++    def test_low_eye_priority_law_records_hint(self):
++        """Amendment 1.2: when the eye-height bound is unreachable the feet
++        criterion wins, phi = PHI_MAX_GROUND, and the hint is recorded."""
++        _m, _r, fcam = make_camera(provider=StaticAnchorProvider(ANCHOR0,
++                                                                 extent=0.10))
++        self.assertAlmostEqual(fcam.phi_ground, PHI_MAX_GROUND, places=9)
++        self.assertEqual(fcam._low_eye_hint, "low_eye")
++        rep = fcam.tick()                      # and it still works
++        self.assertFalse(rep.degraded)
++        self.assertAlmostEqual(rep.commanded_v[2], PHI_MAX_GROUND, places=9)
++
++    def test_ground_mode_first_command(self):
++        mock, rec, fcam = make_camera()
++        rep = fcam.tick()
++        self.assertEqual(rep.mode, "ground")
++        self.assertTrue(rep.wrote)
++        issued = {(m, p) for m, p, _ in rec.log}
++        self.assertEqual(issued, {("POST", "/camera")},
++                         "the tick path must issue exactly one write")
++        v = rep.commanded_v
++        self.assertAlmostEqual(v[0], R_GROUND, places=9)
++        self.assertAlmostEqual(v[2], PHI_GROUND, places=9)
++        self.assertEqual(v[3:6], ANCHOR0)
++        self.assertEqual(v[6], 0.0)
++        self.assertEqual(v[7], 0.0)
++        self.assertTrue(_framed(fcam, v))
++
++
++# ---------------------------------------------------------------------------
++# FA: the never-moves-the-animal invariant, on the recorded command stream
++# ---------------------------------------------------------------------------
++
++
++class TestNoForceInvariant(unittest.TestCase):
++
++    SCENARIOS = {"clean": (), "trunk": (TRUNK,), "post": (POST,),
++                 "both": (TRUNK, POST)}
++
++    def test_allowlist_and_pan_across_scenarios(self):
++        for name, obstacles in self.SCENARIOS.items():
++            with self.subTest(scenario=name):
++                _m, rec, fcam = make_camera(obstacles)
++                for _ in range(12):
++                    rep = fcam.tick()
++                    self.assertFalse(rep.cut)
++                self.assertEqual(rec.allowlist_violations(), [],
++                                 f"allowlist violated in {name}")
++                self.assertEqual(rec.forbidden_hits(), [],
++                                 f"forbidden route touched in {name}")
++                for payload in rec.camera_writes():
++                    for k in ("cam_radius", "cam_theta", "cam_phi", "pan_x",
++                              "pan_y", "target_x", "target_y", "target_z"):
++                        self.assertIn(k, payload, f"{k} missing in {name}")
++                    self.assertEqual(payload["pan_x"], 0.0)
++                    self.assertEqual(payload["pan_y"], 0.0)
++
++    def test_body_moving_routes_never_issued(self):
++        _m, rec, fcam = make_camera((TRUNK,))
++        for _ in range(5):
++            fcam.tick()
++            fcam.verify_apply()
++        issued = {(m, p) for m, p, _ in rec.log}
++        for forbidden in ("/membrane", "/mesh_bin", "/joints_bin", "/hinge_bin",
++                          "/gait", "/stride", "/pose_apply", "/cameras"):
++            self.assertNotIn(("POST", forbidden), issued)
++
++    def test_no_command_carries_body_shaped_fields(self):
++        _m, rec, fcam = make_camera((TRUNK,))
++        for _ in range(3):
++            fcam.tick()
++        body_shaped = ("force", "torque", "teleport", "pos", "qpos", "theta",
++                       "hinge", "stride", "gait", "term", "count")
++        for _m, _p, payload in rec.log:
++            if isinstance(payload, dict):
++                for k in body_shaped:
++                    self.assertNotIn(k, payload)
++
++
++# ---------------------------------------------------------------------------
++# The frozen obstruction cases (geometries derived from the frozen camera law)
++# ---------------------------------------------------------------------------
++
++
++class TestObstructionCases(unittest.TestCase):
++
++    def test_OC4_clean_scene_is_bitwise_noop(self):
++        _m, _r, fcam = make_camera(())
++        rep1 = fcam.tick()
++        rep2 = fcam.tick()
++        self.assertTrue(rep1.wrote)
++        self.assertFalse(rep2.wrote, "idle tick must be deadband-silent")
++        for got, want in zip(rep1.commanded_v, _base_v()):
++            self.assertAlmostEqual(got, want, delta=1e-9)
++        self.assertEqual(rep1.avoidance.get("order"), [])
++
++    def test_OC1_tall_pole_on_sightline_resolved_by_height_law(self):
++        # a tall THIN pole (r=0.15 < the 0.25 trunk designation bound) never
++        # becomes "the trunk" (Amendment 5): ground mode keeps, and the
++        # height law must lift the camera over it
++        eye = engine_eye(_base_v())
++        cx = eye[0] + 0.6 * (ANCHOR0[0] - eye[0])
++        cz = eye[2] + 0.6 * (ANCHOR0[2] - eye[2])
++        obst = (Cylinder(cx, cz, 0.15, 3.0),)    # 60% along the sight line
++        _m, _r, fcam = make_camera(obst)
++        rep = fcam.tick()
++        self.assertEqual(rep.mode, "ground")
++        self.assertFalse(rep.degraded, rep.degrade_reason)
++        self.assertNotIn("pull_in", rep.avoidance.get("order", []),
++                         "eye was clear: pull-in must be skipped (Amend 3.1)")
++        self.assertIn("height_radius", rep.avoidance.get("order", []),
++                      "a tall mid-line pole must be looked over")
++        v = rep.commanded_v
++        self.assertLessEqual(v[0], R_MAX)
++        f_eye, f_target = engine_eye(v), (v[3], v[4], v[5])
++        for o in obst:
++            self.assertTrue(point_clear(f_eye, o), "eye not clear")
++            self.assertTrue(ray_clear(f_eye, f_target, o), "look-ray not clear")
++        self.assertLess(subtend_deg_from_axis(f_eye, f_target, ANCHOR0),
++                        HALF_FOV, "anchor left the frame")
++        self.assertGreaterEqual(v[0], fcam.r_ground - 1e-9)
++
++    def test_trunk_designation_law(self):
++        """Amendment 5: a post-only scene has NO trunk-approach mode."""
++        _m, _r, fcam = make_camera((POST,))
++        self.assertIsNone(fcam._trunk)
++        rep = fcam.tick()
++        self.assertEqual(rep.mode, "ground")
++        # a trunk-scale cylinder designates fine
++        _m2, _r2, fcam2 = make_camera((POST, TRUNK))
++        self.assertIsNotNone(fcam2._trunk)
++        self.assertEqual(fcam2._trunk.r, TRUNK.r)
++
++    def test_OC2_eye_trapped_near_trunk_resolved(self):
++        eye = engine_eye(_base_v())
++        cz = eye[2] + 0.60          # eye->anchor line, 0.60 m from the eye
++        self.assertLess(abs(eye[2] - cz), 0.75,
++                        "setup: eye must start inside the margin disk")
++        self.assertGreater(abs(ANCHOR0[2] - cz), 0.75,
++                           "setup: anchor must be outside the margin disk")
++        obst = (Cylinder(0.0, cz, 0.5, 3.0),)
++        _m, _r, fcam = make_camera(obst)
++        rep = fcam.tick()
++        self.assertFalse(rep.degraded, rep.degrade_reason)
++        v = rep.commanded_v
++        f_eye, f_target = engine_eye(v), (v[3], v[4], v[5])
++        for o in obst:
++            self.assertTrue(point_clear(f_eye, o), "eye not clear")
++            self.assertTrue(ray_clear(f_eye, f_target, o), "look-ray not clear")
++        self.assertLess(subtend_deg_from_axis(f_eye, f_target, ANCHOR0),
++                        HALF_FOV)
++
++    def test_OC3_trunk_approach_framing_keeps_both_visible(self):
++        anchor = (1.0, 0.0, 0.0)      # 1.0 m from the trunk axis: approach
++        _m, _r, fcam = make_camera((TRUNK,),
++                                   provider=StaticAnchorProvider(anchor,
++                                                                 extent=EXTENT))
++        rep = fcam.tick()
++        self.assertEqual(rep.mode, "trunk")
++        self.assertFalse(rep.degraded, rep.degrade_reason)
++        v = rep.commanded_v
++        f_eye, f_target = engine_eye(v), (v[3], v[4], v[5])
++        self.assertTrue(point_clear(f_eye, TRUNK))
++        self.assertTrue(ray_clear(f_eye, f_target, TRUNK))
++        self.assertLess(subtend_deg_from_axis(f_eye, f_target, anchor), HALF_FOV)
++        contact = (TRUNK.cx + TRUNK.r, 0.0, TRUNK.cz)   # surface, anchor side
++        self.assertLess(subtend_deg_from_axis(f_eye, f_target, contact),
++                        HALF_FOV)
++
++    def test_OC3b_unreachable_geometry_degrades_honestly(self):
++        anchor = (0.5, 0.0, 0.0)      # pressed against the trunk surface
++        tall = Cylinder(0.0, 0.0, 0.5, 50.0)   # 50 m: unoverlookable at 40 m
++        _m, _r, fcam = make_camera((tall,),
++                                   provider=StaticAnchorProvider(anchor,
++                                                                 extent=EXTENT))
++        rep = fcam.tick()
++        self.assertTrue(rep.degraded,
++                        "impossible geometry MUST report degraded, not fake it")
++        self.assertTrue(rep.degrade_reason)
++        self.assertEqual(rep.commanded_v[6], 0.0)   # even degraded: pan 0
++        self.assertEqual(rep.commanded_v[7], 0.0)
++
++    def test_OC5_off_line_and_flyover_obstacles_do_not_fire(self):
++        eye = engine_eye(_base_v())
++        off_line = Cylinder(1.0, 0.5, 0.12, 0.9)
++        on_line_below = Cylinder(eye[0], eye[2] * 0.4945, 0.12, 0.01)
++        for name, obst in (("off_line", (off_line,)),
++                           ("flyover", (on_line_below,))):
++            with self.subTest(case=name):
++                _m, _r, fcam = make_camera(obst)
++                rep = fcam.tick()
++                self.assertEqual(rep.avoidance.get("order"), [],
++                                 "must not fire on flyovers/off-line posts")
++                for got, want in zip(rep.commanded_v, _base_v()):
++                    self.assertAlmostEqual(got, want, delta=1e-9)
++
++    def test_OC6_hysteresis_latches_then_releases(self):
++        eye = engine_eye(_base_v())
++        z0 = eye[2]
++        _m, _r, fcam = make_camera((Cylinder(0.30, z0, 0.12, 0.9),))
++        rep1 = fcam.tick()
++        self.assertFalse(rep1.degraded, rep1.degrade_reason)
++        self.assertGreater(rep1.commanded_v[2], PHI_GROUND + 0.1,
++                           "setup: tick1 must have engaged avoidance")
++        # clears by LESS than the latch: the solution persists
++        fcam.obstacles = (Cylinder(0.45, z0, 0.12, 0.9),)
++        rep2 = fcam.tick()
++        self.assertEqual(rep2.avoidance.get("order"), ["latch"],
++                         "an engaged avoidance must persist within hysteresis")
++        self.assertAlmostEqual(rep2.commanded_v[2], rep1.commanded_v[2],
++                               places=6)
++        # clears by MORE than the latch: back to the base framing
++        fcam.obstacles = (Cylinder(0.70, z0, 0.12, 0.9),)
++        rep3 = fcam.tick()
++        self.assertEqual(rep3.avoidance.get("order"), [])
++        self.assertAlmostEqual(rep3.commanded_v[0], R_GROUND, places=6)
++        self.assertAlmostEqual(rep3.commanded_v[2], PHI_GROUND, places=6)
++
++    def test_OC7_pull_in_takes_the_largest_feasible_radius(self):
++        # derived per Amendment 3.1: cylinder near the EYE of a WIDE base pose
++        # (R = 4.0 > R_ground): the eye exits the margin disk near R' ~= 2.8
++        anchor = ANCHOR0
++        base_r = 4.0
++        theta = math.pi
++        phi = PHI_GROUND
++        eye_z = base_r * math.cos(phi)
++        obst = (Cylinder(0.0, eye_z - 0.366, 0.5, 2.0),)  # eye inside margin
++        _m, _r, fcam = make_camera(obst)
++        fcam._smoothed_anchor_ref = anchor
++        r_out, th_out, ph_out, info = fcam._avoid(anchor, base_r, theta, phi)
++        self.assertIn("pull_in", info["order"])
++        self.assertGreaterEqual(r_out, fcam.r_ground - 1e-9)
++        e = engine_eye((r_out, th_out, ph_out, 0.0, 0.0, 0.0, 0.0, 0.0))
++        for o in obst:
++            self.assertTrue(point_clear(e, o))
++            self.assertTrue(ray_clear(e, anchor, o))
++        # maximality: nothing in (r_out, base_r] may be a clear EYE
++        step = max(1e-3, (base_r - r_out) / 8.0)
++        r_probe = r_out + step
++        while r_probe <= base_r:
++            e_probe = engine_eye((r_probe, theta, phi,
++                                  0.0, 0.0, 0.0, 0.0, 0.0))
++            self.assertFalse(point_clear(e_probe, obst[0]),
++                             "a larger clear radius existed: scan not maximal")
++            r_probe += step
++
++
++# ---------------------------------------------------------------------------
++# FF: smoothing, speed bound, cut policy
++# ---------------------------------------------------------------------------
++
++
++class TestSmoothingAndSpeed(unittest.TestCase):
++
++    def test_camera_speed_bounded_by_twice_animal_speed(self):
++        class Walker:
++            def __init__(self):
++                self.t = 0.0
++                self.p = (3.0, 0.0, 0.0)     # starts outside the trunk ring
++
++            def read(self):
++                self.t += 0.05
++                x, _y, z = self.p
++                self.p = (x + 0.02, 0.0, z + 0.01)
++                return fc.AnchorReading(self.p, (0.02, 0.01), self.t)
++
++        _m, _r, fcam = make_camera((TRUNK,), provider=Walker())
++        prev_target = None
++        for _ in range(30):
++            rep = fcam.tick()
++            if prev_target is not None and rep.wrote and not rep.cut:
++                step = math.dist(rep.commanded_v[3:6], prev_target)
++                bound = max(0.05, 2.0 * rep.v_animal) * 0.05
++                self.assertLessEqual(step, bound + 1e-6,
++                                     "camera outran the animal (FF hit)")
++            prev_target = rep.commanded_v[3:6]
++
++    def test_cut_policy_snaps_on_teleport_scale_jump(self):
++        pts = [(0.0, 0.0, 0.0), (0.001, 0.0, 0.0), (30.0, 0.0, 30.0)]
++
++        class Teleporter:
++            def __init__(self):
++                self.i = 0
++                self.t = 0.0
++
++            def read(self):
++                self.t += 0.05
++                p = pts[min(self.i, len(pts) - 1)]
++                self.i += 1
++                return fc.AnchorReading(p, None, self.t)
++
++        _m, _r, fcam = make_camera((), provider=Teleporter())
++        rep1 = fcam.tick()
++        rep2 = fcam.tick()          # the teleport lands on tick 2
++        self.assertFalse(rep1.cut)
++        self.assertTrue(rep2.cut, "teleport-scale jump must be a declared cut")
++        self.assertAlmostEqual(rep2.commanded_v[3], 30.0, places=6)
++        self.assertAlmostEqual(rep2.commanded_v[5], 30.0, places=6)
++
++
++# ---------------------------------------------------------------------------
++# FD: latency budgets (C12-compliant) + the /frame freshness contract
++# ---------------------------------------------------------------------------
++
++
++class TestLatencyBudgets(unittest.TestCase):
++
++    def test_budgets_and_freshness_contract(self):
++        _m, _r, fcam = make_camera((TRUNK,))
++        rows = []
++        compute_max = roundtrip_max = chain_max = pres_max = 0.0
++        for i in range(50):
++            rep = fcam.tick()
++            compute = (rep.t_solution - rep.t_anchor) * 1e3
++            if rep.wrote:
++                roundtrip = (rep.t_acked - rep.t_solution) * 1e3
++                chain = (rep.t_acked - rep.t_state) * 1e3
++                # presentation: chain + the mock's DECLARED deadlines
++                pres = chain + (MockEngine.APPLY_DEADLINE_S
++                                + MockEngine.FRAME_PERIOD_S) * 1e3
++            else:
++                roundtrip = chain = pres = 0.0
++            compute_max = max(compute_max, compute)
++            roundtrip_max = max(roundtrip_max, roundtrip)
++            chain_max = max(chain_max, chain)
++            pres_max = max(pres_max, pres)
++            rows.append({"i": i, "mode": rep.mode, "wrote": rep.wrote,
++                         "compute_ms": round(compute, 4),
++                         "roundtrip_ms": round(roundtrip, 4),
++                         "presentation_est_ms": round(pres, 3),
++                         "degraded": rep.degraded})
++        # (a) the module must never be the bottleneck of its own 20 Hz tick
++        self.assertLessEqual(chain_max, 50.0,
++                             "state->ack chain exceeded one command interval")
++        # (b) presentation with the declared mock deadlines vs the F2 law
++        self.assertLessEqual(pres_max, 200.0, "presentation budget exceeded")
++        # freshness CONTRACT: a /frame requested now must arm at/after the
++        # last camera ack (the mock encodes the ack count)
++        acks_before = _m.ack_count
++        _st, body, _ct = _m.get("/frame")
++        armed = json.loads(body.decode())["armed_after"]
++        self.assertGreaterEqual(armed, acks_before,
++                                "/frame did not postdate the last camera ack")
++        import pathlib
++        out = (pathlib.Path(__file__).resolve().parents[1]
++               / "agents" / "U02_camera" / "receipts")
++        out.mkdir(parents=True, exist_ok=True)
++        (out / "latency_run.json").write_text(json.dumps({
++            "clock": "time.perf_counter (host wall)",
++            "tick_setpoint_ms": 50.0,
++            "NOTE": "the 20 Hz tick setpoint is NOT a latency claim (C12); "
++                    "presentation adds the mock's DECLARED deadlines; the "
++                    "real engine frame cost is U07's follow-up need",
++            "max_compute_ms": round(compute_max, 4),
++            "max_roundtrip_ms": round(roundtrip_max, 4),
++            "max_state_to_ack_chain_ms": round(chain_max, 4),
++            "max_presentation_est_ms": round(pres_max, 3),
++            "budgets_ms": {"python_state_to_ack": 50.0,
++                           "presentation_mock_deadlines": 200.0},
++            "ticks": rows}, indent=1))
++
++
++# ---------------------------------------------------------------------------
++# FG: the apply echo (the engine must have APPLIED our camera)
++# ---------------------------------------------------------------------------
++
++
++class TestApplyEcho(unittest.TestCase):
++
++    def test_echo_matches_command(self):
++        mock, _r, fcam = make_camera((TRUNK,))
++        rep = fcam.tick()
++        self.assertTrue(rep.wrote)
++        verdict = fcam.verify_apply()
++        self.assertTrue(verdict["ok"], f"echo mismatch: {verdict}")
++
++    def test_echo_detects_a_failed_apply(self):
++        mock, _r, fcam = make_camera(())
++        fcam.tick()
++        mock.cam_v = (12.0, 0.0, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0)  # sim. no-apply
++        verdict = fcam.verify_apply()
++        self.assertFalse(verdict["ok"], "echo check must not be vacuous")
++
++
++# ---------------------------------------------------------------------------
++# Heading follow (the derived theta law)
++# ---------------------------------------------------------------------------
++
++
++class TestHeadingFollow(unittest.TestCase):
++
++    def test_camera_places_itself_behind_the_heading(self):
++        class East:
++            def __init__(self):
++                self.t = 0.0
++
++            def read(self):
++                self.t += 0.05
++                return fc.AnchorReading((0.0, 0.0, 0.0), (1.0, 0.0), self.t)
++
++        _m, _r, fcam = make_camera((), provider=East())
++        rep = fcam.tick()
++        theta = rep.commanded_v[1]
++        self.assertAlmostEqual(math.sin(theta), -1.0, places=6,
++                               msg="theta_des = atan2(-hx, hz)")
++        eye = engine_eye(rep.commanded_v)
++        self.assertLess(eye[0], 0.0, "camera must sit behind a +x heading")
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/input_mapper.py b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/input_mapper.py
+new file mode 100644
+index 00000000..b872859d
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/input_mapper.py
+@@ -0,0 +1,347 @@
++"""input_mapper.py -- M-U01: gameplay input -> the existing 20 Hz command seam.
++
++U01, verbatim: "Input emits bounded speed/heading commands at the existing 20 Hz
++boundary, without state teleportation." C12: "20 Hz implies a 50 ms command
++interval, not an end-to-end latency guarantee."
++
++THE SEAM THIS EMITS INTO (agents/U01_input/discovery_note.md; every number
++cited, none invented here):
++  * The versioned CommandRecord v1 (tools/science_funnel/typeb_export/
++    command_record.py, frozen at e028d6fb): `v_forward` (m/s, >= 0 -- the plant
++    law's own domain), `yaw_rate` (rad/s, CARRIED, no machinery authority at
++    v1), `issued_tick`, `source`. The V1FamilyAdapter routes EXACTLY
++    `commanded_target_velocity_x = float64(v_forward)` to
++    GaitWalker::configure() (ChimeraEngine/engine/gait_controller.hpp:2252-2255)
++    between ticks; zero-order hold at the tick boundary; the decision clock is
++    20 Hz over 300 Hz physics (HOLD_TICKS = 15 -> one command per 50 ms).
++  * The seam has TWO states a naive mapper would collapse: NO record at all
++    (the machinery is INERT and reads its legacy measured-v,
++    gait_controller.hpp:121-123,1117) vs a record with v_forward = 0.0 (a live
++    zero-advance target, command_record.py:81-83 -- legal, NOT a stop bar).
++    This module preserves both: idle emits NOTHING; a held `S` emits zeros.
++
++THE FROZEN CONTRACT (agents/U01_input/PREREGISTRATION.md, stated before this
++build): the mapping table, the 50 ms emission rule, the release-decay and
++expiry policies, the no-teleport invariant, and falsifiers F1-F5. The frozen
++walk contract is UNCHANGED by this file: it only PRODUCES records into an
++injected sink. A UI remap edits the bindings dict -- the parser's own
++"bindings are DATA" law (tools/parser.py:39-69, parser_tests.py falsifier 2) --
++and can never touch the record type, the bounds, or the clock.
++
++THE NO-TELEPORT INVARIANT: the ONLY thing this module can do is hand
++CommandRecord instances to `sink.emit(...)`. It imports no engine module,
++performs no HTTP, reads no state, holds no pose. Positions are OUTPUTS
++(docs/CONTROLLER_MAP.md), never inputs.
++
++Headless by construction: the clock is INJECTED (integer milliseconds; the
++tests use a deterministic counter). This module never reads a wall clock,
++never opens a window, never injects operator input anywhere.
++"""
++from __future__ import annotations
++
++import sys
++from pathlib import Path
++
++_ROOT = Path(__file__).resolve().parents[3]
++if str(_ROOT) not in sys.path:
++    sys.path.insert(0, str(_ROOT))
++
++# THE SEAM'S OWN TYPES AND NUMBERS -- imported, never redeclared: a second copy
++# of a frozen constant is exactly where a silent divergence lives.
++from tools.science_funnel.typeb_export.command_record import (  # noqa: E402
++    CommandRecord,
++    HOLD_TICKS,
++    PHYSICS_HZ,
++    POLICY_HZ,
++    V_MAX_IN_BAND_M_S,
++)
++
++__all__ = [
++    "InputMapper", "MockSink", "CommandRecord",
++    "INTERVAL_MS", "RELEASE_DECAY_MS", "VALID_MS", "EXPIRY_TICKS",
++    "V_MAX_IN_BAND_M_S", "OMEGA_MAX_RAD_S", "SENS_RAD_PER_COUNT",
++    "DEFAULT_BINDINGS", "ACTIONS", "REFUSALS", "SOURCE_ID",
++    "PHYSICS_HZ", "POLICY_HZ", "HOLD_TICKS",
++]
++
++SOURCE_ID = "u01_input_mapper"
++
++# ── THE FROZEN NUMBERS (prereg; citations inline) ────────────────────────────────
++INTERVAL_MS = 50          # 20 Hz decisions over 300 Hz physics (HOLD_TICKS=15);
++                          # command_record.py:68-70, infer_numpy.py:29-44,
++                          # gait_controller.hpp:108-111. Declared tolerance under
++                          # the tests' injected clock: EXACT.
++RELEASE_DECAY_MS = 100    # key release -> the demand decays to exactly 0.0 within
++                          # 2 intervals, sampled at the seam's own boundaries, then
++                          # emission stops (the inert path resumes).
++VALID_MS = 100            # consumer-side expiry: a record older than 2 intervals
++                          # is EXPIRED (U03 builds focus-loss on this floor).
++V_MAX_IN_BAND_M_S = V_MAX_IN_BAND_M_S     # 0.763625 m/s -- the seam's own measured
++                                          # in-band ceiling (command_record.py:66,
++                                          # R1-R4 veto-free). U01 never demands
++                                          # out-of-band; the machinery's clamp is
++                                          # not input's to lean on.
++OMEGA_MAX_RAD_S = 1.6     # INPUT-side steering bound, declared from the existing
++                          # steer constant (ChimeraEngine/controller.py:45
++                          # TURN_RATE = 1.6 rad/s). yaw_rate is CARRIED ONLY at
++                          # v1 (the adapter routes it nowhere,
++                          # command_record.py:180-181); this bound claims no
++                          # machinery authority.
++SENS_RAD_PER_COUNT = 0.002  # baseline mouse sensitivity (a declared input-side
++                            # preference -- "how far a hand should push a view
++                            # is a preference, not a physics",
++                            # ChimeraEngine/walker.py `look()`; U04 owns it).
++EXPIRY_TICKS = 2 * HOLD_TICKS  # VALID_MS expressed in physics ticks (30 @ 300 Hz).
++
++# ── THE FROZEN MAPPING TABLE (bindings are DATA; parser.py:39-69 precedent) ─────
++# Physical input name -> action. Remapping edits THIS dict (or the instance's),
++# never the demand logic below, never the seam.
++DEFAULT_BINDINGS = {
++    "W": "forward", "Up": "forward",
++    "S": "backward", "Down": "backward",
++    "A": "turn_left", "Left": "turn_left",
++    "D": "turn_right", "Right": "turn_right",
++    "Shift": "sprint",          # a REGISTERED REFUSAL, never a silent clamp
++    "Space": "jump",            # a REGISTERED REFUSAL (parser.py:96-102 rule)
++}
++ACTIONS = ("forward", "backward", "turn_left", "turn_right")  # precedence order:
++# speed-key conflicts resolve by this order and are NAMED in the trace -- the
++# parser's own rule ("registration order wins AND the conflict is named",
++# parser.py:19-20).
++REFUSALS = {
++    "sprint": "sprint: no seam authority at v1 -- the in-band ceiling IS the "
++              "measured band (V_MAX_IN_BAND_M_S); refusing by name, not clamping",
++    "jump": "jump: no walk-seam channel exists at v1 (commanded_heading itself "
++            "is reserved for a later lane)",
++}
++_SPEED_ACTIONS = ("forward", "backward")
++
++
++class MockSink:
++    """The clean test double for the seam: records EVERY call it receives.
++
++    The no-teleport falsifier reads this log: every entry must be
++    ("emit", <CommandRecord>). Anything else is F1 and the build is dead.
++    """
++
++    def __init__(self):
++        self.calls = []            # every (method_name, args) tuple, in order
++        self.records = []          # convenience: the CommandRecords emitted
++
++    def emit(self, record):
++        self.calls.append(("emit", record))
++        self.records.append(record)
++        return len(self.records)
++
++    def __len__(self):
++        return len(self.records)
++
++
++class InputMapper:
++    """Keyboard/mouse -> bounded CommandRecords at the 20 Hz boundary.
++
++    Usage (all times are INJECTED integer milliseconds -- never a wall clock):
++
++        sink = MockSink()         # or the live harness' real seam adapter
++        m = InputMapper(sink)
++        m.press("W", now_ms=1000)
++        m.tick(1000)              # -> CommandRecord(v_forward=0.763625)
++        m.tick(1050)              # -> re-issues (held keys refresh: the R4 rule)
++        m.release("W", now_ms=1070)
++        m.tick(1100)              # -> decay sample  v = v0*(1 - 30/100)
++        m.tick(1150)              # -> exactly 0.0, and emission now stops
++        m.release_all(now_ms=...) # U03's focus-loss/disconnect hook (this floor)
++
++    Semantic commitments (each pinned by a falsifier in input_mapper_tests.py):
++      * one record per 50 ms interval at most, current state only, NO replay
++        after a stall (F3);
++      * a held key RE-ISSUES every interval -- the R4 discipline (a held command
++        must track, command_record.py:84-87);
++      * idle emits NOTHING so the seam's inert path stays reachable; `S` held
++        emits LIVE ZEROS (a zero-advance target) -- the two seam states of
++        gait_controller.hpp:121-123 are distinct and both reachable (F6);
++      * release decays the LAST EMITTED speed -- you can only decay what you
++        commanded -- sampled at boundaries: the first boundary after release
++        carries the linear sample v0*(1 - elapsed/RELEASE_DECAY_MS), the second
++        carries EXACTLY 0.0 (the deadline clause), then emission stops (F4);
++      * steering is carried only alongside a speed demand: yaw_rate has no
++        machinery route at v1, so steering alone emits nothing and its mouse
++        counts are consumed into the trace, named, never resent (declared
++        limit; recorded for the later heading lane);
++      * `press` of a refusal action records a named refusal; nothing silent.
++    """
++
++    def __init__(self, sink, bindings=None, *, sensitivity=SENS_RAD_PER_COUNT,
++                 tick_source=None):
++        if not hasattr(sink, "emit"):
++            raise TypeError("sink must provide emit(record) -- the mapper can "
++                            "only produce commands, never touch state")
++        self._sink = sink
++        self.bindings = dict(DEFAULT_BINDINGS if bindings is None else bindings)
++        self.sensitivity = float(sensitivity)
++        self._tick_source = tick_source   # callable() -> int physics tick, or None
++        self._held = set()                # physical names currently held
++        self._mouse_counts = 0.0          # accumulated, consumed per boundary
++        self._next_due_ms = None          # the 50 ms grid (None = no grid)
++        self._last_v = 0.0                # the LAST EMITTED speed (the decay base)
++        self._tail = None                 # [v0, released_ms, boundaries_seen]
++        self.last_trace = {}              # the parse trace, refreshed per tick
++
++    # ── input events (times are injected) ────────────────────────────────────
++    def press(self, name, now_ms):
++        """A key went down. Refusals are recorded by name; nothing is silent."""
++        action = self.bindings.get(name)
++        self.last_trace.setdefault("pressed", []).append((name, int(now_ms)))
++        if action in REFUSALS:
++            self.last_trace.setdefault("refused", []).append((action, REFUSALS[action]))
++            return action
++        if action is None:
++            return None                     # an unbound input is not an error
++        if action in _SPEED_ACTIONS:
++            self._tail = None               # a fresh press overrides any decay
++        self._held.add(name)
++        return action
++
++    def release(self, name, now_ms):
++        """A key went up. Releasing the speed key starts the decay tail from
++        the LAST EMITTED speed -- you can only decay what you commanded."""
++        action = self.bindings.get(name)
++        self.last_trace.setdefault("released", []).append((name, int(now_ms)))
++        if action not in _SPEED_ACTIONS or name not in self._held:
++            self._held.discard(name)
++            return action
++        self._held.discard(name)
++        other_speed = any(self.bindings.get(n) in _SPEED_ACTIONS
++                          for n in self._held)
++        if not other_speed and self._last_v > 0.0 and self._tail is None:
++            self._tail = [self._last_v, int(now_ms), 0]
++        return action
++
++    def mouse(self, dx_counts):
++        """Accumulate mouse X counts (deltas consumed, never resent --
++        live_viewer.py:1978-1980). Applied at boundaries, clamped to OMEGA."""
++        self._mouse_counts += float(dx_counts)
++
++    def release_all(self, now_ms):
++        """Everything off (U03's focus-loss/disconnect hook builds on this)."""
++        for name in sorted(self._held):
++            self.release(name, now_ms)
++
++    @property
++    def held(self):
++        return frozenset(self._held)
++
++    # ── the 20 Hz boundary ───────────────────────────────────────────────────
++    def tick(self, now_ms):
++        """Advance to `now_ms`; emit at most ONE record if the interval elapsed.
++
++        Returns the list of CommandRecords emitted this call (also handed to
++        the sink). A tick before the due time emits nothing -- the interval is
++        the boundary, and C12's warning is honored: this is a command cadence,
++        not a latency guarantee.
++        """
++        now_ms = int(now_ms)
++        speed = self._speed_demand()                   # key demand only
++        pending = (speed is not None or self._tail is not None
++                   or self._mouse_counts != 0.0)
++        if self._next_due_ms is None:
++            if not pending:
++                self.last_trace["state"] = "inert"
++                self.last_trace["emitted"] = 0
++                return []
++            self._next_due_ms = now_ms                 # a fresh grid starts here
++        if now_ms < self._next_due_ms:
++            return []
++        # ── a boundary: ONE decision, whatever the gap since the last tick ──
++        self._next_due_ms = now_ms + INTERVAL_MS       # stall -> one record, no burst
++        speed = self._apply_tail(speed, now_ms)        # the decay samples HERE
++        if speed is None:
++            # no walk demand (mouse-only, or the tail just finished): no
++            # record. The machinery stays INERT; pending mouse counts had no
++            # carrier -- consumed into the trace, named, never resent.
++            if self._mouse_counts:
++                self.last_trace.setdefault("steer_without_speed", []) \
++                    .append(self._mouse_counts)
++                self._mouse_counts = 0.0
++            if self._tail is None and not self._held:
++                self._next_due_ms = None               # idle: the grid dissolves
++            self.last_trace["state"] = "inert" if self._tail is None else "decay"
++            self.last_trace["emitted"] = 0
++            return []
++        yaw = self._yaw_demand()
++        record = self._emit(speed, yaw, now_ms)
++        self.last_trace["state"] = "commanded"
++        self.last_trace["emitted"] = 1
++        return [record]
++
++    # ── demand computation ───────────────────────────────────────────────────
++    def _speed_demand(self):
++        """The walk demand: a live zero (S), the band ceiling (W), or None.
++        Speed-key conflicts resolve by ACTIONS order and are named (the
++        parser's registration-order rule). The decay tail is applied AT the
++        boundary by `_apply_tail`, because commands only change at boundaries."""
++        held_actions = [self.bindings[n] for n in self._held
++                        if self.bindings.get(n) in _SPEED_ACTIONS]
++        if len(held_actions) > 1:
++            self.last_trace.setdefault("conflicts", []).append(tuple(sorted(held_actions)))
++        if "forward" in held_actions:
++            return V_MAX_IN_BAND_M_S
++        if "backward" in held_actions:
++            return 0.0                                 # a LIVE zero-advance target
++        return None                                    # the tail decides at the boundary
++
++    def _apply_tail(self, speed, now_ms):
++        """Sample the release-decay tail at this boundary (frozen policy):
++        first boundary after release -> the linear sample
++            v0 * (1 - (now - released_ms) / RELEASE_DECAY_MS)   (floored at 0),
++        unless the gap already exceeded the deadline, in which case exactly
++        0.0 once; second boundary after release -> EXACTLY 0.0 in any case
++        (the deadline clause: the demand lands on zero at or before the
++        100 ms boundary). The tail then ENDS: the next boundary is inert and
++        emits nothing."""
++        if self._tail is None or speed is not None:
++            return speed
++        v0, released_ms, seen = self._tail
++        if seen == 0:
++            elapsed = max(0, now_ms - released_ms)
++            self._tail[2] = 1
++            if elapsed >= RELEASE_DECAY_MS:
++                self._tail = None                      # deadline passed in the gap
++                return 0.0
++            return v0 * (1.0 - elapsed / RELEASE_DECAY_MS)
++        self._tail = None                              # deadline: exact zero
++        return 0.0
++
++    def _yaw_demand(self):
++        """Carried yaw at this boundary: keys + clamped mouse counts. Counts
++        are consumed here (never resent); L+R keys cancel (+OMEGA + -OMEGA)."""
++        key_yaw = (OMEGA_MAX_RAD_S if any(self.bindings.get(n) == "turn_left"
++                                          for n in self._held) else 0.0) \
++                + (-OMEGA_MAX_RAD_S if any(self.bindings.get(n) == "turn_right"
++                                           for n in self._held) else 0.0)
++        mouse_yaw = 0.0
++        if self._mouse_counts:
++            interval_s = INTERVAL_MS / 1000.0
++            raw = self._mouse_counts * self.sensitivity / interval_s
++            mouse_yaw = max(-OMEGA_MAX_RAD_S, min(OMEGA_MAX_RAD_S, raw))
++            self._mouse_counts = 0.0
++        yaw = key_yaw + mouse_yaw
++        return max(-OMEGA_MAX_RAD_S, min(OMEGA_MAX_RAD_S, yaw))
++
++    def _emit(self, v_forward, yaw_rate, now_ms):
++        issued_tick = (int(self._tick_source()) if self._tick_source
++                       else (now_ms * PHYSICS_HZ) // 1000)
++        record = CommandRecord(v_forward=float(v_forward), yaw_rate=float(yaw_rate),
++                               issued_tick=int(issued_tick), source=SOURCE_ID)
++        self._last_v = float(v_forward)                 # the next decay starts here
++        self._sink.emit(record)
++        return record
++
++    # ── the consumer-side expiry contract (declared for U03/U07/W08) ─────────
++    @staticmethod
++    def is_expired(record, now_ms):
++        """A record older than VALID_MS (2 intervals) is EXPIRED: the consumer
++        reverts to the seam's inert path (commands nothing) until a fresh
++        record arrives. `record.issued_tick` is a 300 Hz physics tick."""
++        age_ms = (int(now_ms) * PHYSICS_HZ // 1000) - int(record.issued_tick)
++        return age_ms > EXPIRY_TICKS
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/input_mapper_tests.py b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/input_mapper_tests.py
+new file mode 100644
+index 00000000..dee55cfe
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/monkey_campaign/product/input_mapper_tests.py
+@@ -0,0 +1,326 @@
++"""input_mapper_tests.py -- U01's falsifiers, measured (PREREGISTRATION.md).
++
++Headless: an injected millisecond clock, a MockSink seam double, no window,
++no desktop input, no engine process. The mapper cannot touch state -- the
++tests measure that, plus the bounds, the 50 ms discipline, the release decay,
++and the remap law:
++
++  F1  NO-TELEPORT   every sink call is emit(CommandRecord); the module's
++                    imports are exactly the declared set; no pose-route /
++                    state-writing / desktop-injection strings exist in it.
++  F2  OUT-OF-BOUNDS 5000-event fuzz: every emitted record has
++                    0 <= v_forward <= 0.763625 (the seam's measured in-band
++                    ceiling) and |yaw_rate| <= 1.6 (the declared input-side
++                    steer bound); nothing non-finite; never a negative speed.
++  F3  CLOCK         injected 1 ms ticks: held-key records EXACTLY 50 ms apart;
++                    early ticks emit nothing; a stall yields exactly ONE
++                    record (current state), never a replay burst.
++  F4  RELEASE       the decay tail is monotone, lands on EXACTLY 0.0 at or
++                    before release+100 ms, and emission then STOPS (the seam's
++                    inert path resumes).
++  F5  REMAP         a bindings remap changes emitted VALUES only: same record
++                    type/version, same bounds, same clock, same adapter
++                    projection (routed_yaw_rate False; velocity passthrough).
++  F6  SEAM STATES   the two seam states stay distinct and reachable: idle
++                    emits NOTHING (inert), S held emits LIVE ZEROS; steering
++                    alone emits nothing; sprint/jump refuse BY NAME; the
++                    expiry contract expires at 2 intervals.
++
++    python tools/monkey_campaign/product/input_mapper_tests.py
++"""
++from __future__ import annotations
++
++import random
++import sys
++from pathlib import Path
++
++_ROOT = Path(__file__).resolve().parents[3]
++sys.path.insert(0, str(_ROOT))
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++
++import input_mapper as M                                    # noqa: E402
++from tools.science_funnel.typeb_export.command_record import (  # noqa: E402
++    CommandRecord, V1FamilyAdapter, V_MAX_IN_BAND_M_S as V_MAX,
++)
++
++OMEGA = M.OMEGA_MAX_RAD_S
++FAILURES = []
++
++
++def check(name, ok, detail=""):
++    tag = "PASS" if ok else "FAIL"
++    print(f"  [{tag}] {name}" + (f"  -- {detail}" if detail else ""))
++    if not ok:
++        FAILURES.append(name)
++
++
++# ── shared harness ───────────────────────────────────────────────────────────────
++def dense_ticks(m, t0, t1, step=1):
++    """Tick every `step` ms; return (records, timestamps-of-records)."""
++    recs, ts = [], []
++    for t in range(t0, t1 + 1, step):
++        for r in m.tick(t):
++            recs.append(r)
++            ts.append(t)
++    return recs, ts
++
++
++# ── F1 NO-TELEPORT ───────────────────────────────────────────────────────────────
++def falsifier_1():
++    print("F1 NO-TELEPORT: the only output is emit(CommandRecord); no state writes")
++    sink = M.MockSink()
++    m = M.InputMapper(sink)
++    m.press("W", 1000)
++    m.mouse(300)
++    m.press("A", 1001)
++    dense_ticks(m, 1000, 1300)
++    m.release("W", 1310)
++    m.press("Shift", 1311)
++    dense_ticks(m, 1310, 1450)
++    m.release_all(1451)
++    dense_ticks(m, 1451, 1700)
++
++    ok_calls = all(name == "emit" and isinstance(rec, CommandRecord)
++                   for name, rec in sink.calls)
++    check("F1a every sink call is emit(CommandRecord)", ok_calls,
++          f"{len(sink.calls)} calls, {len(sink.records)} records")
++    check("F1b calls == records (nothing else was handed to the seam)",
++          len(sink.calls) == len(sink.records))
++
++    source = Path(M.__file__).read_text(encoding="utf-8")
++    forbidden = ["pose_apply", "hinge_bin", "joints_bin", "stride_bin", "gait_bin",
++                 "urllib", "socket", "requests", "ctypes", "subprocess",
++                 "qpos", "keybd_event", "SetCursorPos", "SendInput"]
++    hits = [s for s in forbidden if s in source]
++    check("F1c no pose-route / transport / desktop-injection strings in the module",
++          not hits, f"hits: {hits}" if hits else "none of 14 markers present")
++    import_lines = [ln for ln in source.splitlines()
++                    if ln.startswith(("import ", "from "))]
++    mods = set()
++    for ln in import_lines:
++        mods.add(ln.split()[1] if ln.startswith("from ") else ln.split()[1].split(".")[0])
++    allowed = {"__future__", "sys", "pathlib",
++               "tools.science_funnel.typeb_export.command_record"}
++    check("F1d imports are exactly the declared set (stdlib + the seam's record)",
++          mods <= allowed, f"imports: {sorted(mods)}")
++
++
++# ── F2 OUT-OF-BOUNDS (the 5000-event fuzz) ───────────────────────────────────────
++def falsifier_2():
++    print("F2 OUT-OF-BOUNDS: 5000 random input events never leave the band")
++    rng = random.Random(20260924)               # frozen seed: the run reproduces
++    sink = M.MockSink()
++    m = M.InputMapper(sink)
++    keys = ["W", "A", "S", "D", "Up", "Down", "Left", "Right", "Shift",
++            "Space", "X"]                      # X unbound on purpose
++    now = 10_000
++    bad = []
++    for i in range(5000):
++        r = rng.random()
++        if r < 0.30:
++            m.press(rng.choice(keys), now)
++        elif r < 0.55:
++            m.release(rng.choice(keys), now)
++        elif r < 0.70:
++            m.mouse(rng.uniform(-5000.0, 5000.0))
++        else:
++            now += rng.randint(1, 250)         # dense stretches AND stalls
++        for rec in m.tick(now):
++            if (not isinstance(rec, CommandRecord)
++                    or rec.v_forward != rec.v_forward or rec.v_forward in (float("inf"), float("-inf"))
++                    or not (0.0 <= rec.v_forward <= V_MAX)
++                    or rec.yaw_rate != rec.yaw_rate or abs(rec.yaw_rate) > OMEGA
++                    or rec.v_forward < 0.0):
++                bad.append((i, rec))
++    check("F2a every one of the fuzz records is finite and inside the bounds",
++          not bad, f"{len(sink.records)} records checked, "
++                   f"{len(bad)} violations" + (f", first: {bad[0]}" if bad else ""))
++    check("F2b the fuzz actually exercised emission (not vacuously green)",
++          len(sink.records) >= 500, f"{len(sink.records)} records emitted")
++
++
++# ── F3 CLOCK (interval discipline, no burst) ─────────────────────────────────────
++def falsifier_3():
++    print("F3 CLOCK: held-key records exactly 50 ms apart; stall -> one record")
++    sink = M.MockSink()
++    m = M.InputMapper(sink)
++    m.press("W", 1000)
++    recs, ts = dense_ticks(m, 1000, 1300)      # dense 1 ms ticks
++    diffs = {b - a for a, b in zip(ts, ts[1:])}
++    check("F3a held-key records are EXACTLY 50 ms apart under the injected clock",
++          bool(ts) and diffs == {50}, f"{len(ts)} records at {ts[0]}..{ts[-1]}, "
++          f"diffs {sorted(diffs)}")
++    check("F3b the interval grid starts AT the press (first boundary emits)",
++          ts[0] == 1000)
++
++    # early ticks emit nothing (the interval is the boundary, not a target rate)
++    n_before = len(sink.records)
++    m.tick(1301); m.tick(1320); m.tick(1349)
++    check("F3c ticks inside the interval emit nothing", len(sink.records) == n_before)
++
++    # a stall: no replay burst -- exactly ONE current-state record
++    m2 = M.MockSink()
++    m3 = M.InputMapper(m2)
++    m3.press("W", 1000)
++    dense_ticks(m3, 1000, 1250)
++    before = len(m2.records)
++    m3.tick(1700)                              # the first tick after a 450 ms gap
++    burst = len(m2.records) - before
++    dense_ticks(m3, 1701, 1750)
++    resumed = len(m2.records) - before - burst
++    check("F3d a 450 ms stall yields exactly ONE record (current state), no burst",
++          burst == 1 and resumed == 1, f"stall emitted {burst}, next interval {resumed}")
++    ts2 = [r.issued_tick for r in m2.records[-2:]]
++    check("F3e the grid re-anchors after the stall (50 ms cadence resumes)",
++          ts2[-1] - ts2[-2] == M.PHYSICS_HZ * M.INTERVAL_MS // 1000,
++          f"last issued ticks {ts2} (physics ticks; 15 = 50 ms at 300 Hz)")
++
++
++# ── F4 RELEASE (decay to exactly zero, then stop) ────────────────────────────────
++def falsifier_4():
++    print("F4 RELEASE: monotone decay, exact 0.0 within 100 ms, then silence")
++    sink = M.MockSink()
++    m = M.InputMapper(sink)
++    m.press("W", 1000)
++    dense_ticks(m, 1000, 1070)
++    m.release("W", 1070)
++    recs, ts = dense_ticks(m, 1071, 1400)
++    vs = [(r.v_forward, t) for r, t in zip(recs, ts)]
++    tail = [(v, t) for v, t in vs if t >= 1070]
++    check("F4a the tail is monotone non-increasing",
++          all(a[0] >= b[0] for a, b in zip(tail, tail[1:])), f"tail {tail}")
++    check("F4a' the whole record stream is monotone while decaying",
++          all(a[0] >= b[0] for a, b in zip(vs, vs[1:])))
++    zero = [(v, t) for v, t in tail if v == 0.0]
++    check("F4b a record with EXACTLY 0.0 exists at or before release+100 ms",
++          bool(zero) and zero[0][1] <= 1070 + M.RELEASE_DECAY_MS,
++          f"zero at {zero[0] if zero else None}")
++    later = [(v, t) for v, t in vs if t > zero[0][1]] if zero else [("?", "?")]
++    check("F4c emission STOPS after the zero (the inert path resumed)",
++          not later, f"{len(later)} records after the zero")
++    check("F4d no record with v>0 later than release+100 ms",
++          all(v <= 0.0 for v, t in vs if t > 1070 + M.RELEASE_DECAY_MS))
++
++
++# ── F5 REMAP (values change; the contract does not) ──────────────────────────────
++def falsifier_5():
++    print("F5 REMAP: a binding swap changes emitted values, nothing else")
++    sink_def, sink_rem = M.MockSink(), M.MockSink()
++    md = M.InputMapper(sink_def)
++    mr = M.InputMapper(sink_rem, bindings={"W": "backward"})   # the remap: W -> S
++    md.press("W", 1000); md.tick(1000)
++    mr.press("W", 1000); mr.tick(1000)
++    rd, rr = sink_def.records[0], sink_rem.records[0]
++    check("F5a the remap changed the emitted value (default W -> band ceiling)",
++          rd.v_forward == V_MAX and rr.v_forward == 0.0,
++          f"default {rd.v_forward}, remapped {rr.v_forward}")
++    check("F5b same record type and version on both sides",
++          isinstance(rr, CommandRecord) and rr.record_version == rd.record_version)
++    check("F5c same bounds and clock after the remap",
++          M.V_MAX_IN_BAND_M_S == V_MAX and M.INTERVAL_MS == 50
++          and M.EXPIRY_TICKS == 30)
++    adapter = V1FamilyAdapter()
++    pd, pr = adapter.project(rd), adapter.project(rr)
++    check("F5d the adapter projection is untouched by the remap "
++          "(velocity passthrough, yaw routed nowhere)",
++          pd["commanded_target_velocity_x"] == rd.v_forward
++          and pr["commanded_target_velocity_x"] == rr.v_forward
++          and pd["routed_yaw_rate"] is False and pr["routed_yaw_rate"] is False)
++
++
++# ── F6 SEAM STATES (inert vs live-zero; refusals; steering; expiry) ─────────────
++def falsifier_6():
++    print("F6 SEAM STATES: idle emits nothing; S emits live zeros; refusals named")
++    sink = M.MockSink()
++    m = M.InputMapper(sink)
++    idle = m.tick(500)
++    check("F6a idle emits NOTHING (the machinery's inert path stays reachable)",
++          idle == [] and len(sink.records) == 0)
++
++    m.press("S", 1000)
++    recs, _ = dense_ticks(m, 1000, 1150)
++    check("F6b S held emits LIVE ZERO-advance records (a distinct seam state)",
++          len(recs) == 4 and all(r.v_forward == 0.0 for r in recs),
++          f"{len(recs)} records, values {[r.v_forward for r in recs]}")
++
++    sink3 = M.MockSink()
++    m3 = M.InputMapper(sink3)
++    m3.press("A", 1000)                       # steering alone
++    dense_ticks(m3, 1000, 1200)
++    m3.mouse(400)                             # mouse alone, idle
++    m3.tick(1300)
++    m3.tick(1400)
++    check("F6c steering alone emits nothing (yaw is carried, no route at v1)",
++          len(sink3.records) == 0)
++    check("F6d idle mouse counts are consumed into the trace, named, not resent",
++          any("steer_without_speed" in k for k in
++              [k for k in m3.last_trace]) or "steer_without_speed" in m3.last_trace,
++          f"trace keys {sorted(m3.last_trace)}")
++
++    sink4 = M.MockSink()
++    m4 = M.InputMapper(sink4)
++    m4.press("Shift", 1000)
++    m4.press("Space", 1000)
++    m4.tick(1000)
++    refused = dict(m4.last_trace.get("refused", []))
++    check("F6e sprint/jump refuse BY NAME (registered refusals, never silent)",
++          "sprint" in refused and "jump" in refused
++          and len(sink4.records) == 0,
++          f"refused: {sorted(refused)}")
++
++    sink5 = M.MockSink()
++    m5 = M.InputMapper(sink5)
++    m5.press("W", 1000); m5.press("A", 1000)
++    r1 = m5.tick(1000)
++    m5.mouse(10_000)                          # a violent flick: 400 rad/s raw
++    r2 = m5.tick(1050)
++    check("F6f yaw is clamped to the declared steer bound (keys) and mouse",
++          r1[0].yaw_rate == OMEGA and r2[0].yaw_rate == OMEGA,
++          f"{r1[0].yaw_rate}, {r2[0].yaw_rate}")
++    r3 = m5.tick(1100)
++    check("F6g a held key RE-ISSUES its record every interval (the R4 rule)",
++          r3 and r3[0].v_forward == V_MAX and len(sink5.records) == 3)
++
++    rec = sink5.records[0]
++    check("F6h the expiry contract: valid at 95 ms, expired at 105 ms",
++          not M.InputMapper.is_expired(rec, 1000 + 95)
++          and M.InputMapper.is_expired(rec, 1000 + 105))
++
++    sink6 = M.MockSink()
++    m6 = M.InputMapper(sink6, tick_source=lambda: 777)
++    m6.press("W", 1000)
++    rec6 = m6.tick(1000)[0]
++    check("F6i the tick source is injectable (the live harness pins issued_tick)",
++          rec6.issued_tick == 777, f"issued_tick {rec6.issued_tick}")
++
++    # speed-key conflict is resolved by the frozen precedence and NAMED
++    sink7 = M.MockSink()
++    m7 = M.InputMapper(sink7)
++    m7.press("S", 1000); m7.press("W", 1000)
++    r7 = m7.tick(1000)
++    check("F6j W+S resolves to forward (precedence) and is named in the trace",
++          r7[0].v_forward == V_MAX
++          and any("forward" in c and "backward" in c
++                  for c in m7.last_trace.get("conflicts", [])),
++          f"conflicts {m7.last_trace.get('conflicts')}")
++
++
++def main():
++    print("input_mapper_tests -- U01 falsifiers "
++          "(prereg: agents/U01_input/PREREGISTRATION.md)")
++    falsifier_1()
++    falsifier_2()
++    falsifier_3()
++    falsifier_4()
++    falsifier_5()
++    falsifier_6()
++    print()
++    if FAILURES:
++        print(f"VERDICT: FAIL -- {len(FAILURES)} falsifier check(s) fired: {FAILURES}")
++        return 1
++    print("VERDICT: GREEN -- all falsifier checks passed; the frozen numbers held.")
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/science_funnel/typeb_export/command_record.py b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/science_funnel/typeb_export/command_record.py
+new file mode 100644
+index 00000000..a9e0444f
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/reference/tools/science_funnel/typeb_export/command_record.py
+@@ -0,0 +1,250 @@
++"""THE VERSIONED COMMAND RECORD v1 + THE FAMILY-ADAPTER PROJECTION LAW
++(lane/policy-interface-freeze-20260920; preregistered BEFORE this build).
++
++Astra round 5 (settled): hierarchical control -- derived reflexes fixed below,
++command-conditioned policies WITHIN behavior families at 20 Hz over 300 Hz
++physics (15-tick holds), certified option-transitions between families, a
++planner on top. The PLANNER's only downward currency is a COMMAND RECORD. This
++module freezes that currency's v1 shape and its PROJECTION LAW:
++
++    versioned command record -> family adapter (versioned) -> fixed actor input
++
++THE LAW (what makes the freeze irreversible-safe):
++  1. A record carries its `record_version`. An adapter carries its
++     `adapter_version`. An adapter of version N reads ONLY the fields declared
++     by version N -- a later record version may ADD fields, and they can never
++     leak into an older adapter's projection (the v2-record-through-v1-adapter
++     bit-identity test).
++  2. The v1 deployment's actor is UNCONDITIONED: the old actor's fixed input is
++     its old projection (the frozen 80-field observation; the actor's own
++     8-channel walk-interface output path untouched). The v1 adapter's actor
++     conditioning is therefore the EMPTY vector -- the old actor gets exactly
++     its old projection, byte for byte.
++  3. The v1 adapter's machinery projection routes EXACTLY ONE field to the
++     walk's command channel: `commanded_target_velocity_x = v_forward` (the
++     typea-command-adapter receipt's channel: GaitWalker::configure() between
++     ticks, zero-order hold at the tick boundary, 20 Hz re-issue legal -- F-ZOH-
++     CLOCK GREEN). `yaw_rate` is CARRIED but routed NOWHERE: the typea receipt
++     reserved commanded_heading for a later lane and this lane does not invent
++     authority it has not measured.
++
++THE NUMBERS (all measured, none tuned; the typea receipt is the source):
++  - domain: v_forward >= 0 (the plant law's own max(0, .) domain).
++  - supported range: [0.0, 0.763625] m/s -- the scene seed's band, measured
++    veto-free horizons 137-222 ticks (R1-R4 GREEN clause (b)).
++  - out-of-band: LEGAL up to the declared envelope; the MACHINERY absorbs the
++    excess through its own reach annulus (R5: 1.30 m/s demanded, clamped to
++    xoff 0.258747 m by the existing fore clamp; refused by the existing budget
++    at the M2 class -- F_COMMAND_ENVELOPE GREEN). The adapter never pre-clamps.
++  - rate limits: DECLARED UNLIMITED at v1 (rate_limit_v_per_s = None,
++    rate_limit_yaw_per_s = None). Step changes are measured-legal: R1-R3 step
++    commands onset latency 7 ticks <= the 15-tick hold. No rate number is
++    invented; the schema fields exist so a v2 record can fill them from a
++    derivation.
++  - zero-speed semantics: v_forward = 0.0 is the plant law's own
++    x_off = 0*(DUTY_SAMPLED*T_CYCLE)/2 = 0 -- a legal command that targets the
++    walk's own zero advance. It is NOT a stop bar: stopping bars are a
++    DIFFERENT lane's job (declared; this module only carries the note).
++  - the R4 lesson (carried as a SEMANTIC constraint, enforced by the planner,
++    not by this module): never feed a constant seed pinned from entry -- a held
++    command must TRACK the measured relation (R4 refused at 282 of
++    gait_impact_event_budget, a class flip, when the law's v was frozen while
++    measured v dipped).
++"""
++from __future__ import annotations
++
++import hashlib
++import json
++import struct
++from dataclasses import dataclass, field
++from typing import Optional
++
++COMMAND_RECORD_VERSION = 1
++ADAPTER_VERSION = 1
++
++# the measured envelope (the typea receipt's authority table; nothing tuned)
++V_MAX_IN_BAND_M_S = 0.763625   # the scene seed: measured veto-free 137-222 ticks
++V_ENVELOPE_DEMO_M_S = 1.30     # R5: legal out-of-band demand, machinery-absorbed
++HOLD_TICKS = 15                # the 20 Hz decision clock over 300 Hz physics
++POLICY_HZ = 20
++PHYSICS_HZ = 300
++
++
++class CommandRecordError(ValueError):
++    """A record violates the v1 law (validator message says which)."""
++
++
++@dataclass(frozen=True)
++class CommandRecord:
++    """The planner's downward currency, version 1.
++
++    Fields (v1 -- the ONLY fields a v1 adapter may read):
++      v_forward : float, m/s, >= 0. The walk-interface forward-speed demand.
++      yaw_rate  : float, rad/s. CARRIED, NO AUTHORITY (commanded_heading is
++                  reserved for a later lane per the typea receipt); present so
++                  the wire format never changes when the authority is derived.
++      issued_tick : int, the physics tick at which the planner issued (the ZOH
++                  applies it at the next step() and holds >= HOLD_TICKS).
++    Semantic (planner-owned, carried for provenance):
++      source : the issuing planner's id (a string; the R4 discipline lives here).
++    """
++    v_forward: float
++    yaw_rate: float = 0.0
++    issued_tick: int = 0
++    source: str = "planner"
++    record_version: int = COMMAND_RECORD_VERSION
++
++    def __post_init__(self):
++        if self.record_version != COMMAND_RECORD_VERSION:
++            raise CommandRecordError(
++                f"record_version {self.record_version} != {COMMAND_RECORD_VERSION} "
++                "(a new version is a NEW declared wire format, not a free field)")
++        vf = float(self.v_forward)
++        if vf != vf or vf in (float("inf"), float("-inf")):
++            raise CommandRecordError("v_forward must be finite")
++        if vf < 0.0:
++            raise CommandRecordError(
++                "v_forward < 0 is outside the plant law's own max(0, .) domain")
++        yr = float(self.yaw_rate)
++        if yr != yr or yr in (float("inf"), float("-inf")):
++            raise CommandRecordError("yaw_rate must be finite")
++        object.__setattr__(self, "v_forward", vf)
++        object.__setattr__(self, "yaw_rate", yr)
++
++    # ---- the wire format (canonical bytes; the F2 pin) ----------------------
++    def canonical_fields(self) -> dict:
++        return {
++            "record_version": self.record_version,
++            "v_forward": self.v_forward,
++            "yaw_rate": self.yaw_rate,
++            "issued_tick": int(self.issued_tick),
++            "source": self.source,
++        }
++
++    def canonical_bytes(self) -> bytes:
++        return json.dumps(self.canonical_fields(), sort_keys=True,
++                          separators=(",", ":")).encode("utf-8")
++
++    def canonical_sha256(self) -> str:
++        return hashlib.sha256(self.canonical_bytes()).hexdigest()
++
++    # ---- the float-bit identity (the projection law's test surface) ---------
++    def v1_field_bits(self) -> bytes:
++        """The exact float64 bits of the v1-readable fields, in declared order
++        (v_forward, yaw_rate). The bit-identity test compares THESE: a v2
++        record carrying the same v1 values must produce these exact bits."""
++        return (struct.pack("<d", float(self.v_forward))
++                + struct.pack("<d", float(self.yaw_rate)))
++
++
++# ---- the family adapter (versioned) ----------------------------------------
++
++@dataclass(frozen=True)
++class V1FamilyAdapter:
++    """The v1 walk-family adapter: the fixed projection law.
++
++    project_to_machinery : routes v_forward to the typea command channel
++        (commanded_target_velocity_x) EXACTLY, as a float64 pass-through -- the
++        machinery owns every clamp (the reach annulus) and every budget; the
++        adapter pre-clamps nothing (R5/F_COMMAND_ENVELOPE measured).
++    project_to_actor_conditioning : the EMPTY vector. The v1 actor is
++        unconditioned -- its fixed input is its old projection (the frozen
++        80-field observation); this adapter adds no bits to it.
++    """
++    adapter_version: int = ADAPTER_VERSION
++
++    def project(self, rec: CommandRecord) -> dict:
++        """The machinery projection (validate + route). Reads ONLY the v1
++        field set: v_forward, yaw_rate(carry-only). A record with ANY extra
++        fields (a v2 wire format) produces bit-identical output here."""
++        if not isinstance(rec, CommandRecord):
++            raise CommandRecordError("adapter v1 consumes CommandRecord instances")
++        return {
++            "adapter_version": self.adapter_version,
++            "commanded_target_velocity_x": float(rec.v_forward),  # float64 passthrough
++            # yaw_rate: carried, NO ROUTE (authority not derived; declared above)
++            "routed_yaw_rate": False,
++        }
++
++    def project_to_actor_conditioning(self, rec: CommandRecord) -> bytes:
++        """The actor-conditioning projection: EMPTY at v1 (the law's clause 2).
++        Bit-for-bit identical for every record, of any version the caller
++        claims: the old actor gets exactly its old projection."""
++        return b""
++
++    def projection_bytes(self, rec: CommandRecord) -> bytes:
++        """Canonical byte serialization of the full projection (the F2 pin and
++        the bit-identity test's surface)."""
++        p = self.project(rec)
++        return json.dumps(p, sort_keys=True, separators=(",", ":"),
++                          allow_nan=False).encode("utf-8") + b"|cond=" \
++            + self.project_to_actor_conditioning(rec)
++
++
++def project_v1(rec: CommandRecord, adapter: Optional[V1FamilyAdapter] = None) -> dict:
++    """The v1 projection law, functional form (the unittest's stable entry)."""
++    return (adapter or V1FamilyAdapter()).project(rec)
++
++
++# ---- the declared v1 WIRE decoder -------------------------------------------
++
++def decode_v1(wire: dict) -> CommandRecord:
++    """The DECLARED v1 decoder: reads ONLY the v1 field set from a wire dict.
++
++    THIS is the law's enforcement point for forward compatibility: a v2 (or
++    any later) wire carries extra keys and a possibly-bumped record_version;
++    decode_v1 ignores every key it does not know. A v2 wire with the same v1
++    values therefore decodes to a record whose projection is BIT-IDENTICAL to
++    the v1 wire's (the unittest pins this with float64 bits)."""
++    return CommandRecord(
++        v_forward=float(wire["v_forward"]),
++        yaw_rate=float(wire.get("yaw_rate", 0.0)),
++        issued_tick=int(wire.get("issued_tick", 0)),
++        source=str(wire.get("source", "planner")),
++        record_version=COMMAND_RECORD_VERSION,   # the DECODER's version, not the wire's
++    )
++
++
++def wire_version(wire: dict) -> int:
++    """The wire's DECLARED record version (the runtime dispatches decoders on
++    this; an unversioned wire is v1)."""
++    return int(wire.get("record_version", 1))
++
++
++# ---- declared semantics (read-only tables for the certificate lane) ---------
++
++ZERO_SPEED_SEMANTICS = (
++    "v_forward = 0.0 is the plant law's own x_off = 0 (a legal command, the "
++    "walk's own zero-advance target). It is NOT a stop bar: the stopping "
++    "criterion is a DIFFERENT lane's job and is not declared here.")
++
++R4_SEMANTIC_CONSTRAINT = (
++    "never feed a constant seed pinned from entry (R4: refusal 282, "
++    "gait_impact_event_budget, a class flip -- the frozen v removed the walk's "
++    "own speed feedback). A held command must TRACK the measured relation. "
++    "Enforced by the planner; this module carries the note on every record's "
++    "consumer path.")
++
++RANGES = {
++    "v_forward": {
++        "domain_lo": 0.0,
++        "domain_hi": None,             # the plant law's own domain is [0, inf)
++        "in_band_hi": V_MAX_IN_BAND_M_S,   # measured veto-free band
++        "envelope_demo": V_ENVELOPE_DEMO_M_S,  # measured machinery-absorbed demand
++        "out_of_band_semantics": "legal; the machinery's own reach annulus "
++                                 "absorbs the excess (R5 measured), the "
++                                 "existing budgets own the refusal",
++    },
++    "yaw_rate": {
++        "authority": "NONE (reserved: commanded_heading is a later lane's)",
++        "carried": True,
++    },
++}
++
++RATE_LIMITS = {
++    "v_forward_per_s": None,   # DECLARED UNLIMITED at v1: step changes measured
++                               # legal (R1-R3: onset 7 ticks <= hold 15)
++    "yaw_rate_per_s": None,    # no authority to rate-limit
++    "derivation_status": "no rate number is invented; the fields exist so a v2 "
++                         "record can fill them from a derivation",
++}
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/report.md b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/report.md
+new file mode 100644
+index 00000000..4799cba1
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/report.md
+@@ -0,0 +1,186 @@
++# I-U07-TRACE-FOLLOWUP — report (accepted trace format connected to the existing input/camera test seam)
++
++Card `I-U07-TRACE-FOLLOWUP` (planning id **U07**; depends on **I-U07-TRACE**,
++merged as PR #138, head `4d2ececc`), attempt
++`8703cf9f00bf4e11add0060bcc85da03`, arrival
++`arrival-f742dfbb88244565a6d973717bc05f26`, branch `branch-2`
++(`c525b82c7c3ce0128565424764293a3c85811ab3`), isolated attempt checkout only —
++zero writes to the shared onboarding checkout or any other attempt.
++`PREREGISTRATION.md` frozen BEFORE any implementation edit (statement,
++predictions 1–6, falsifier F1–F6).
++
++## 1. What was built
++
++- **`adapter.py`** — the seam connection. It owns NO trace law of its own:
++  - imports the ACCEPTED module from the sibling merged contribution
++    (`../I-U07-TRACE/input_trace.py`) via `load_accepted_trace_module()` —
++    never a vendored copy (a local `input_trace.py` is absent, asserted by
++    test); the loaded bytes are pinned to the PR #138 merge
++    (`c8f4e4442a3ceedecd9c636857eda92642d26ec535d45f2c91a3ce9fd4550a57`).
++  - imports the REAL U01 mapper from `reference/` pins (see below),
++    materialized byte-identically into an OS temp directory in the canonical
++    repo layout so the unmodified files' own `from tools.science_funnel…`
++    import resolves. Every pin hash is asserted at materialization;
++    a mismatch refuses by name (`pinned_source_hash_mismatch`).
++  - `TraceSink` wraps ANY existing sink: forwards `emit(record)` untouched
++    (the mapper's no-teleport law is unchanged) and stamps the actual
++    CommandRecord as the `command_emitted` stage at the EXACT boundary time
++    the mapper was driven at.
++  - `SeamTracer` drives the real `InputMapper` on ONE injected
++    integer-millisecond monotonic clock (the mapper's own contract), one
++    clock read per seam event. Chain law: every emitted CommandRecord opens
++    one fresh `seq`; its `input` stage is the latest observed key-state
++    transition (copied, `transition_index` records lawful sharing by
++    re-issued commands). Refusals: `command_without_input_antecedent`,
++    `non_integer_clock`, `clock_regression`, `bad_identity`, `bad_clock`,
++    `not_a_native_stage`, `unknown_seq`, `pinned_source_missing`,
++    `pinned_source_hash_mismatch`, `accepted_module_missing`.
++  - `analyze()` hands the trace to the accepted `parse_trace`/`summarize` and
++    surfaces the verdict WHATEVER it is: the Python-seam trace refuses
++    (`missing_stage`) and is reported with `latency_output: null`. Limits are
++    caller data only; they pass through unmodified (absent → the accepted
++    module's own `unqualified`/`p06_limits_absent`).
++  - `attach_native_stage(seq, stage, t)` exists ONLY for explicit caller
++    attachment of native observations; the adapter itself never calls it.
++- **`test_adapter.py`** — 30 tests / 6 suites (F1–F6 below). **Result:
++  30/30 OK, run three times (0.90 s, 0.97 s, 0.98 s; bound 120 s),
++  `python -B -m unittest test_adapter` and `python -B test_adapter.py`,
++  exit 0, byte-identical verdicts.**
++- **`reference/`** — pinned byte-identical extractions + `EXTRACTION_LEDGER.json`.
++  Revision `9afbddcd` — the SAME revision the accepted I-U07-TRACE report cites
++  for its own pinned extractions; all five hashes match that report's ledger
++  citations exactly (`input_mapper.py` 7a36a45e… 18,349 B; `follow_camera.py`
++  d61347f0… 33,410 B; `command_record.py` 67711759… 12,095 B; plus the two
++  EXISTING seam test modules `input_mapper_tests.py` 95f44e90… 15,154 B and
++  `follow_camera_tests.py` 4d7516… 27,743 B, pinned so they run unmodified as
++  regression).
++
++## 2. The seam as found (all citations from the pinned sources)
++
++- `tools/monkey_campaign/product/input_mapper.py` — THE input seam: versioned
++  CommandRecords (`v_forward` m/s ≥ 0, `yaw_rate` rad/s carried,
++  `issued_tick`, `source="u01_input_mapper"`) into an injected sink at 20 Hz
++  (`INTERVAL_MS = 50`, HOLD_TICKS 15 over 300 Hz physics); the clock is
++  INJECTED integer milliseconds; idle emits NOTHING, held `S` emits LIVE
++  ZEROS — both traced here (`test_f2_both_seam_states…`).
++- `tools/monkey_campaign/product/input_mapper_tests.py` — the existing input
++  test seam: injected ms clock + `MockSink`, falsifiers F1–F6.
++- `tools/monkey_campaign/product/follow_camera.py` + `follow_camera_tests.py`
++  — the existing camera test seam: `GET /frame` freshness harness; the mock
++  answers `{"armed_after": <ack count>}` so tests can prove the frame
++  postdates the last camera ack. **That answer is an ordering fact and carries
++  NO timestamp field** (asserted: `set(doc.keys()) == {"armed_after"}`); its
++  apply/frame deadlines (1/60 s, 1/30 s) are the mock's DECLARED constants —
++  using them as a `presented` time would be fabrication, and none is.
++
++## 3. The connection (explicit missing native stages)
++
++Trace shape emitted by driving the real mapper (fixture scenario, real
++records, one clock `injected_ms`, caller-set `run`/`build`):
++
++    seq  stage            t      payload (abridged)
++    0    input            1000   {press W, action forward, transition_index 0}
++    0    command_emitted  1050   {v_forward 0.763625, yaw_rate 0.0, issued_tick 315, source u01_input_mapper}
++    1    input            1100   {press A, transition_index 1}
++    1    command_emitted  1150   {v_forward 0.763625, yaw_rate 1.6, …}
++    …    (decay sample, deadline zero, live zero — 7 chains in the scenario)
++
++- **`simulation_consumed`** — native only: the ZOH tick boundary in
++  `gait_controller.hpp` (engine-side; the parent card's insertion-point
++  proposal §3). NO Python source exists; the adapter never emits it.
++- **`presented`** — native only: the engine's frame offer. The existing camera
++  harness yields `armed_after` (ordering), never a timestamp; the adapter
++  never emits it.
++- Consequence, enforced by the ACCEPTED module itself: the seam's 2-stage
++  trace is REFUSED `missing_stage` (missing `["presented",
++  "simulation_consumed"]`) with `latency_output: null` — no segment or
++  end-to-end latency exists on this seam, and none is manufactured.
++
++## 4. Verification (exact commands, this attempt workspace)
++
++```
++cd <attempt>/checkout/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP
++python -B -m unittest test_adapter -v     # 30/30 OK (0.900 s) — run 1
++python -B -m unittest test_adapter        # 30/30 OK (0.972 s) — run 2, identical
++python -B test_adapter.py                 # 30/30 OK (0.978 s), exit 0
++```
++Evidence transcript: `test_run_evidence.txt`
++(sha256 `32aa12ff6b280563d4ebbb3dd282ab7c97257ad6f13cd27a642e7b3d626f569b`).
++Highlights (each pinned by a named test):
++
++1. Payloads of all chains equal the mapper's ACTUAL emissions
++   (`inner_sink.records`), `source == "u01_input_mapper"`, and
++   `issued_tick == (t_command_ms * 300) // 1000` for every chain.
++2. Causal matching: `t(input) ≤ t(command)` per chain, integer ms, one
++   clock/run/build; two identical runs are byte-identical.
++3. The accepted module refuses the 2-stage trace `missing_stage`; the
++   refusal text carries no latency field names or numbers.
++4. FIXTURE-labeled attached native stages (planted +5 ms/+37 ms, payloads
++   marked "NOT native evidence") flow through the accepted module to
++   bit-equal segment values; verdict with no limits is `unqualified`
++   (`p06_limits_absent`), with `{}` it is `p06_limits_empty`, with caller
++   limits it is `pass`/`fail` against exactly those numbers; unknown limit
++   keys refuse (`unknown_limit_key`, surfaced with `latency_output: null`).
++5. A REAL `perf_counter` reading from the camera harness' clock domain,
++   merged into the seam trace, refuses `mixed_clock` — the naive "one trace
++   from both harnesses" is exactly what the law forbids.
++6. Camera seam facts: freshness contract holds (`armed_after ≥ ack_count`
++   after a write) AND the frame answer has no timestamp-like field; the
++   mock's deadlines are the declared constants and stay constants.
++7. Regression (byte-unmodified pinned suites, subprocess-isolated):
++   `input_mapper_tests.py` → `VERDICT: GREEN`, exit 0;
++   `follow_camera_tests.py` → unittest OK, exit 0; the accepted module's own
++   `test_input_trace` + `test_correction` → OK (26 tests), exit 0.
++8. Headless law: `adapter.py`'s full import set is exactly
++   {__future__, importlib, shutil, sys, tempfile, pathlib, typing, hashlib}
++   (AST-checked); no wall clock, network, or window anywhere in it.
++
++## 5. Falsifier self-check (F1–F6)
++
++- **F1 stand-in instead of accepted module:** impossible by construction —
++  the sibling path is the only import target; a vendored copy is asserted
++  absent; bytes are pinned to PR #138 (`test_f1_*`).
++- **F2 rewritten seam:** all events derive from the pinned byte-exact real
++  sources (`test_f2_pinned_sources_are_byte_exact`, hash-pinned payloads).
++- **F3 native qualification from a fixture / invented native stage:** the
++  adapter structurally cannot emit native stages (`not_a_native_stage`);
++  fixtures are labeled in-payload; the camera harness is pinned to an
++  ordering-only contract (`test_f3_*`, `test_f4_camera_clock…`).
++- **F4 fabricated latency pass:** the 2-stage trace refuses with
++  `latency_output: null` (`test_f4_two_stage_trace_is_refused_missing_stage`,
++  `test_f4_refusal_output_carries_no_latency_numbers`).
++- **F5 fabricated P06:** no limit literal exists in the owned files; verdicts
++  come only from the accepted module's caller-data law (`test_f5_*`).
++- **F6 regression/silent misuse:** all three existing suites stay green;
++  non-integer/regressed clocks refuse by name (`test_f6_*`).
++
++## 6. Remaining gates (this card closes none of them)
++
++1. P06 (unresolved decision card): release acceptance limits — still open.
++2. Native recorder seams in the engine (`simulation_consumed` at the ZOH
++   boundary; `presented` at the frame offer) — still proposal-only (parent
++   card §3); until they exist, end-to-end latency is UNMEASURABLE, not just
++   unmeasured.
++3. One-clock threading through all four seams in a live run + repeatable
++   scenes + actual play (U07's native gates).
++
++## 7. Artifacts (sha256, bytes)
++
++| file | sha256 |
++|---|---|
++| `adapter.py` | `8522cbefb176fbd512f7191dfc79e8ff6dd45d9ed51fe4d34b23c307829df723` |
++| `test_adapter.py` | `668ba733e92225503d1a051ba650192d7dad0ecb7f75486fc8e1ed54e928fb17` |
++| `PREREGISTRATION.md` | `4187261ea8c7aca8b46b959bb6cd6cef710e1ecb208feee9e8ed6a9a678f1b0c` |
++| `report.md` | (this file; sha256 travels in the submission artifacts — a file cannot contain its own hash) |
++| `reference/EXTRACTION_LEDGER.json` | `af152032c4c57e445569ecab0d05706a93106dfdd98fafe911a1c407aac4e46a` |
++| `reference/…/input_mapper.py` | `7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44` |
++| `reference/…/follow_camera.py` | `d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7` |
++| `reference/…/input_mapper_tests.py` | `95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e` |
++| `reference/…/follow_camera_tests.py` | `4d75164ff6a16bf0d817332b7c5229513750782727ad1a23911025dc93d31b27` |
++| `reference/…/command_record.py` | `6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e` |
++| `test_run_evidence.txt` | `32aa12ff6b280563d4ebbb3dd282ab7c97257ad6f13cd27a642e7b3d626f569b` |
++| `proposed.patch` | `49418addb1e5aa26d12e95d3923e25aafc75871a9299dbc3b4912b6cbda37f4d` |
++| `receipt.json` | `5624b53a3125b756862db053e28707bdcf35539f4fb85bacb3a080dfe628a7fb` |
++
++No live measurement, no native qualification, and no P06 limit is claimed
++anywhere above; every fixture is labeled a fixture.
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/test_adapter.py b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/test_adapter.py
+new file mode 100644
+index 00000000..ef207ab9
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/test_adapter.py
+@@ -0,0 +1,437 @@
++"""test_adapter.py -- I-U07-TRACE-FOLLOWUP falsifiers, measured.
++
++Card falsifier (brief): "The adapter uses a rewritten stand-in instead of the
++accepted module, or claims native qualification from a fixture."  Operationalized
++below (PREREGISTRATION.md frozen before implementation):
++
++  F1  ACCEPTED MODULE   the adapter imports the sibling accepted input_trace.py
++                        (merged PR #138); its bytes match the accepted sha256
++                        pin; no vendored copy exists in this directory.
++  F2  REAL SEAM         every input/command event derives from the pinned REAL
++                        InputMapper/CommandRecord sources (reference/ pins
++                        hash-asserted); payloads are the actual emitted records
++                        (source "u01_input_mapper"); issued_tick matches the
++                        mapper's own derivation (t_ms*300)//1000 exactly.
++  F3  NO INVENTED       the adapter itself never emits a native stage; the
++      NATIVE STAGE      camera harness yields an ordering fact (armed_after),
++                        never a presentation timestamp; the mock's DECLARED
++                        deadlines are never turned into timestamps.
++  F4  NO FABRICATED     the Python-only 2-stage trace is REFUSED by the
++      LATENCY           accepted module (missing_stage) with latency_output
++                        null; fixture-completed chains are labeled fixtures and
++                        claim nothing native.
++  F5  P06 LAW           limits are caller data only; absent/empty limits give
++                        unqualified through the adapter, never pass.
++  F6  NO REGRESSION     the pinned existing seam suites (input_mapper_tests,
++                        follow_camera_tests) and the accepted module's own 26
++                        tests all pass unmodified; adapter runs are
++                        deterministic and headless (import allowlist).
++
++Run:  python -B test_adapter.py          (from this directory)
++"""
++from __future__ import annotations
++
++import ast
++import json
++import os
++import subprocess
++import sys
++import time
++import unittest
++from pathlib import Path
++
++HERE = Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++
++import adapter as A                                          # noqa: E402
++
++IT = A.load_accepted_trace_module()
++
++# The accepted module's own pin (PR #138 head 4d2ececc bytes) -- the falsifier
++# F1 reads this file's bytes, not its name.
++SIBLING = HERE.parent / "I-U07-TRACE" / "input_trace.py"
++
++
++class _Clock:
++    """The injected monotonic integer-ms clock (the mapper's own contract),
++    stepped at the seam's 50 ms decision interval so the mapper's boundaries
++    actually fire (a held key RE-ISSUES every interval -- the R4 rule)."""
++
++    def __init__(self, start=1000, step=50):
++        self.t = start
++        self.step = step
++
++    def __call__(self):
++        t = self.t
++        self.t += self.step
++        return t
++
++
++def make_tracer(clock=None, **kw):
++    return A.SeamTracer(clock=clock or _Clock(), clock_name="injected_ms",
++                        run="run-fixture", build="build-fixture", **kw)
++
++
++def run_walking_scenario(tr):
++    """A scripted actual-play-shaped scenario ON THE SEAM (fixture driving,
++    real mapper): press W, hold with steering, release with the decay tail,
++    then S's live zero-advance target, then idle."""
++    tr.press("W")                      # t=1000 input transition
++    tr.tick()                          # t=1050 grid starts -> first record
++    tr.press("A")                      # steering held alongside speed
++    tr.tick()                          # yaw-carrying re-issue
++    tr.tick()                          # held key re-issues (the R4 rule)
++    tr.release("W")                    # the decay tail starts
++    tr.tick()                          # decay sample v0*(1 - 50/100)
++    tr.tick()                          # the deadline: EXACTLY 0.0
++    tr.release("A")
++    tr.press("S")                      # the LIVE ZERO-advance target
++    tr.tick()
++    tr.tick()
++    tr.release_all()                   # everything off
++    before = len(tr.causal_pairs())
++    tr.tick()                          # idle: the grid dissolves, no record
++    tr.tick()
++    assert len(tr.causal_pairs()) == before, "idle emitted a record"
++    return tr
++
++
++# ── F1 the accepted module is imported, never vendored ────────────────────────
++class TestAcceptedModuleIdentity(unittest.TestCase):
++
++    def test_f1_imports_the_sibling_accepted_module(self):
++        mod = A.load_accepted_trace_module()
++        self.assertEqual(Path(mod.__file__).resolve(), SIBLING.resolve(),
++                         "the adapter must import ../I-U07-TRACE/input_trace.py")
++        self.assertIs(mod, IT)
++
++    def test_f1_no_vendored_copy_in_this_contribution(self):
++        self.assertFalse((HERE / "input_trace.py").exists(),
++                         "a local copy of the accepted module is the falsifier")
++
++    def test_f1_accepted_bytes_match_the_pr138_pin(self):
++        import hashlib
++        got = hashlib.sha256(SIBLING.read_bytes()).hexdigest()
++        self.assertEqual(got, A.ACCEPTED_SHA256,
++                         "the loaded module's bytes are not the accepted "
++                         "PR #138 merge (4d2ececc)")
++
++    def test_f1_stage_law_is_declared_from_the_accepted_module(self):
++        self.assertEqual(tuple(IT.STAGES),
++                         A.PYTHON_STAGES + A.NATIVE_STAGES)
++        self.assertEqual(A.PYTHON_STAGES, ("input", "command_emitted"))
++        self.assertEqual(A.NATIVE_STAGES, ("simulation_consumed", "presented"))
++
++
++# ── F2 the events are the REAL seam's events ──────────────────────────────────
++class TestRealSeamEvents(unittest.TestCase):
++
++    def setUp(self):
++        self.tr = run_walking_scenario(make_tracer())
++        self.chains = self.tr.causal_pairs()
++        self.events = self.tr.events()
++        self.records = self.tr.inner_sink.records   # the ACTUAL emissions
++
++    def test_f2_payloads_are_the_actual_emitted_records(self):
++        self.assertEqual(len(self.chains), len(self.records))
++        self.assertGreater(len(self.chains), 0)
++        for chain, record in zip(self.chains, self.records):
++            self.assertEqual(chain["record"], {
++                "v_forward": record.v_forward,
++                "yaw_rate": record.yaw_rate,
++                "issued_tick": record.issued_tick,
++                "source": record.source,
++            })
++
++    def test_f2_seam_identity_and_bounds_hold_on_every_chain(self):
++        im = sys.modules["tools.monkey_campaign.product.input_mapper"]
++        for chain in self.chains:
++            rec = chain["record"]
++            self.assertEqual(rec["source"], "u01_input_mapper")
++            self.assertEqual(rec["source"], im.SOURCE_ID)
++            self.assertGreaterEqual(rec["v_forward"], 0.0)
++            self.assertLessEqual(rec["v_forward"], im.V_MAX_IN_BAND_M_S)
++            self.assertLessEqual(abs(rec["yaw_rate"]), im.OMEGA_MAX_RAD_S)
++
++    def test_f2_issued_tick_is_the_mappers_own_derivation(self):
++        for chain in self.chains:
++            self.assertEqual(chain["record"]["issued_tick"],
++                             (chain["command_t_ms"] * 300) // 1000,
++                             f"seq={chain['seq']}")
++
++    def test_f2_causal_matching_on_one_injected_clock(self):
++        for chain in self.chains:
++            self.assertLessEqual(chain["antecedent"]["t_ms"],
++                                 chain["command_t_ms"],
++                                 f"seq={chain['seq']}: input after command")
++            self.assertIn(chain["antecedent"]["kind"],
++                          ("press", "release", "release_all"))
++        for e in self.events:
++            self.assertIsInstance(e["t"], int)
++            self.assertEqual(e["unit"], "ms")
++            self.assertEqual(e["clock"], "injected_ms")
++            self.assertEqual(e["run"], "run-fixture")
++            self.assertEqual(e["build"], "build-fixture")
++
++    def test_f2_both_seam_states_and_bounds_are_traced(self):
++        records = [c["record"] for c in self.chains]
++        self.assertTrue(any(r["v_forward"] > 0.0 for r in records),
++                        "the forward demand never reached the seam")
++        self.assertTrue(any(r["v_forward"] == 0.0 for r in records),
++                        "the live zero-advance state never reached the seam")
++        self.assertTrue(any(abs(r["yaw_rate"]) > 0.0 for r in records),
++                        "the carried yaw never reached the seam")
++
++    def test_f2_decay_and_reissue_share_the_press_antecedent(self):
++        # the re-issued commands lawfully share one press transition
++        ante = [c["antecedent"]["transition_index"] for c in self.chains]
++        self.assertEqual(ante[0], 0)
++        self.assertGreaterEqual(len(set(ante)), 2,
++                                "expected press- and release-antecedent chains")
++
++    def test_f2_adapter_refuses_command_without_antecedent(self):
++        tr = make_tracer()
++        tr.boundary_t = 1000
++        class _Fake:                      # never emitted by the real mapper here
++            v_forward = 0.0; yaw_rate = 0.0; issued_tick = 300; source = "x"
++        with self.assertRaises(A.SeamTraceRefused) as ctx:
++            tr._record_command(_Fake())
++        self.assertEqual(ctx.exception.reason, "command_without_input_antecedent")
++
++    def test_f2_pinned_sources_are_byte_exact(self):
++        for repo_path, want in A.PINNED_SHA256.items():
++            import hashlib
++            got = hashlib.sha256(
++                (HERE / "reference" / repo_path).read_bytes()).hexdigest()
++            self.assertEqual(got, want, repo_path)
++
++
++# ── the adapter's own refusal laws (F6 clause) ─────────────────────────────────
++class TestAdapterRefusals(unittest.TestCase):
++
++    def test_f6_non_integer_clock_refused(self):
++        with self.assertRaises(A.SeamTraceRefused) as ctx:
++            tr = make_tracer(clock=lambda: 1000.5)
++            tr.press("W")                  # the first clock read refuses
++        self.assertEqual(ctx.exception.reason, "non_integer_clock")
++
++    def test_f6_clock_regression_refused(self):
++        vals = iter([1000, 1001, 999])
++        with self.assertRaises(A.SeamTraceRefused) as ctx:
++            tr = make_tracer(clock=lambda: next(vals))
++            tr.press("W"); tr.release("W"); tr.press("S")
++        self.assertEqual(ctx.exception.reason, "clock_regression")
++
++    def test_f6_bad_identity_and_clock_refused(self):
++        with self.assertRaises(A.SeamTraceRefused) as ctx:
++            A.SeamTracer(clock=_Clock(), clock_name="", run="r", build="b")
++        self.assertEqual(ctx.exception.reason, "bad_identity")
++        with self.assertRaises(A.SeamTraceRefused) as ctx:
++            A.SeamTracer(clock=5, clock_name="c", run="r", build="b")
++        self.assertEqual(ctx.exception.reason, "bad_clock")
++
++    def test_f6_python_stages_cannot_be_attached(self):
++        tr = make_tracer()
++        with self.assertRaises(A.SeamTraceRefused) as ctx:
++            tr.attach_native_stage(0, "input", 1000)
++        self.assertEqual(ctx.exception.reason, "not_a_native_stage")
++        with self.assertRaises(A.SeamTraceRefused) as ctx:
++            tr.attach_native_stage(99, "presented", 1000)
++        self.assertEqual(ctx.exception.reason, "unknown_seq")
++
++
++# ── F4/F5 the accepted law applied to the seam trace ───────────────────────────
++class TestAcceptedLawOnSeamTrace(unittest.TestCase):
++
++    def setUp(self):
++        self.tr = run_walking_scenario(make_tracer())
++
++    def test_f4_two_stage_trace_is_refused_missing_stage(self):
++        result = self.tr.analyze()
++        self.assertFalse(result["complete"])
++        self.assertEqual(result["refused"], "missing_stage")
++        self.assertEqual(sorted(result["details"]["missing"]),
++                         ["presented", "simulation_consumed"])
++        self.assertIsNone(result["latency_output"])
++        self.assertNotIn("summary", result)
++
++    def test_f4_refusal_output_carries_no_latency_numbers(self):
++        text = json.dumps(self.tr.analyze())
++        for banned in ("end_to_end_ms", "seg_", "p50_ms", "p95_ms", "mean_ms"):
++            self.assertNotIn(banned, text)
++
++    def test_f3_fixture_completed_chains_are_exact_and_labeled(self):
++        FIXTURE = "fixture-planted-native (NOT native evidence)"
++        chains = self.tr.causal_pairs()
++        for c in chains:
++            cmd_t = c["command_t_ms"]
++            self.tr.attach_native_stage(c["seq"], "simulation_consumed",
++                                        cmd_t + 5, {"note": FIXTURE})
++            self.tr.attach_native_stage(c["seq"], "presented",
++                                        cmd_t + 37, {"note": FIXTURE})
++        result = self.tr.analyze()
++        self.assertTrue(result["complete"])
++        summary = result["summary"]
++        self.assertEqual(summary["schema"], "chimera.input_trace.summary.v1")
++        for chain_out, c in zip(summary["chains"], chains):
++            seg_ic = c["command_t_ms"] - c["antecedent"]["t_ms"]
++            self.assertEqual(chain_out["seg_input_to_command_ms"], seg_ic)
++            self.assertEqual(chain_out["seg_command_to_consumed_ms"], 5.0)
++            self.assertEqual(chain_out["seg_consumed_to_presented_ms"], 32.0)
++            self.assertEqual(chain_out["end_to_end_ms"], seg_ic + 37.0)
++
++    def test_f5_no_p06_limits_means_unqualified_through_the_adapter(self):
++        for c in self.tr.causal_pairs():
++            self.tr.attach_native_stage(c["seq"], "simulation_consumed",
++                                        c["command_t_ms"] + 5)
++            self.tr.attach_native_stage(c["seq"], "presented",
++                                        c["command_t_ms"] + 37)
++        q = self.tr.analyze()["summary"]["qualification"]
++        self.assertEqual(q["status"], "unqualified")
++        self.assertEqual(q["reason"], "p06_limits_absent")
++
++    def test_f5_empty_limits_are_unqualified_too(self):
++        for c in self.tr.causal_pairs():
++            self.tr.attach_native_stage(c["seq"], "simulation_consumed",
++                                        c["command_t_ms"] + 5)
++            self.tr.attach_native_stage(c["seq"], "presented",
++                                        c["command_t_ms"] + 37)
++        q = self.tr.analyze(limits={})["summary"]["qualification"]
++        self.assertEqual((q["status"], q["reason"]),
++                         ("unqualified", "p06_limits_empty"))
++
++    def test_f5_limits_are_caller_data_and_nothing_else(self):
++        for c in self.tr.causal_pairs():
++            self.tr.attach_native_stage(c["seq"], "simulation_consumed",
++                                        c["command_t_ms"] + 5)
++            self.tr.attach_native_stage(c["seq"], "presented",
++                                        c["command_t_ms"] + 37)
++        e2e = [c["end_to_end_ms"] for c in
++               self.tr.analyze()["summary"]["chains"]]
++        caller_cap = max(e2e)
++        q_pass = self.tr.analyze(limits={"end_to_end_ms": caller_cap})
++        q_fail = self.tr.analyze(limits={"end_to_end_ms": caller_cap - 1.0})
++        self.assertEqual(q_pass["summary"]["qualification"]["status"], "pass")
++        self.assertEqual(q_fail["summary"]["qualification"]["status"], "fail")
++        # unknown limit keys refuse (the accepted module's own law, unchanged)
++        result = self.tr.analyze(limits={"made_up_ms": 10.0})
++        self.assertFalse(result["complete"])
++        self.assertEqual(result["refused"], "unknown_limit_key")
++        self.assertIsNone(result["latency_output"])
++
++
++# ── F3 the camera test seam: ordering, never a timestamp ───────────────────────
++class TestCameraSeamFacts(unittest.TestCase):
++
++    @classmethod
++    def setUpClass(cls):
++        root = A.materialize_pinned_seam()
++        cls.root = root
++        cls.saved_cwd = os.getcwd()
++        os.chdir(root)
++        if str(root) not in sys.path:
++            sys.path.insert(0, str(root))
++        import tools.monkey_campaign.product.follow_camera_tests as fct
++        cls.fct = fct
++
++    @classmethod
++    def tearDownClass(cls):
++        os.chdir(cls.saved_cwd)
++
++    def test_f3_freshness_contract_is_an_ordering_fact_without_a_timestamp(self):
++        mock, _rec, fcam = self.fct.make_camera((self.fct.TRUNK,))
++        wrote = False
++        for _ in range(5):
++            rep = fcam.tick()
++            wrote = wrote or rep.wrote
++        self.assertTrue(wrote, "scenario produced no camera write to arm /frame")
++        acks_before = mock.ack_count
++        status, body, _ct = mock.get("/frame")
++        self.assertEqual(status, 200)
++        doc = json.loads(body.decode())
++        self.assertIn("armed_after", doc)
++        self.assertGreaterEqual(doc["armed_after"], acks_before,
++                                "the freshness contract broke")
++        self.assertEqual(set(doc.keys()), {"armed_after"},
++                         "the camera harness exposed a timestamp-like field")
++
++    def test_f3_mock_deadlines_are_declared_not_measured(self):
++        # They are the mock's DECLARED constants; this test pins that the
++        # adapter never converts them into a `presented` timestamp.
++        self.assertEqual(self.fct.MockEngine.APPLY_DEADLINE_S, 1.0 / 60.0)
++        self.assertEqual(self.fct.MockEngine.FRAME_PERIOD_S, 1.0 / 30.0)
++        tr = run_walking_scenario(make_tracer())
++        stages = {e["stage"] for e in tr.events()}
++        self.assertEqual(stages, set(A.PYTHON_STAGES),
++                         "the adapter emitted a stage the seam cannot observe")
++
++    def test_f4_camera_clock_domain_mixed_into_the_trace_refuses(self):
++        # A REAL host-wall-clock reading from the camera harness' clock domain
++        # (perf_counter), honestly measured but on a DIFFERENT clock identity:
++        # merged into a seam trace it must refuse as mixed_clock -- the naive
++        # "one trace from both harnesses" is exactly what the law forbids.
++        camera_domain_t = time.perf_counter()      # the camera harness' clock
++        events = run_walking_scenario(make_tracer()).events()
++        merged = events + [{"seq": len(events) // 2, "stage": "presented",
++                            "t": camera_domain_t, "unit": "s",
++                            "clock": "perf_counter_host",
++                            "run": "run-fixture", "build": "build-fixture",
++                            "payload": {"note": "camera-harness clock domain "
++                                                "(fixture merge probe)"}}]
++        with self.assertRaises(IT.TraceRefused) as ctx:
++            IT.parse_trace(merged)
++        self.assertEqual(ctx.exception.reason, "mixed_clock")
++
++
++# ── F6 determinism, headlessness, and no regression of the existing suites ─────
++class TestDeterminismHeadlessRegression(unittest.TestCase):
++
++    def test_f6_identical_runs_are_byte_identical(self):
++        a = json.dumps(run_walking_scenario(make_tracer()).events(),
++                       sort_keys=True).encode()
++        b = json.dumps(run_walking_scenario(make_tracer()).events(),
++                       sort_keys=True).encode()
++        self.assertEqual(a, b)
++
++    def test_f6_adapter_import_allowlist_is_headless(self):
++        tree = ast.parse((HERE / "adapter.py").read_text(encoding="utf-8"))
++        imported = set()
++        for node in ast.walk(tree):
++            if isinstance(node, ast.Import):
++                imported.update(a.name.split(".")[0] for a in node.names)
++            elif isinstance(node, ast.ImportFrom) and node.level == 0:
++                imported.add((node.module or "").split(".")[0])
++        allowed = {"__future__", "importlib", "shutil", "sys", "tempfile",
++                   "pathlib", "typing", "hashlib"}
++        self.assertEqual(imported, allowed,
++                         "adapter.py imports outside the declared headless set")
++
++    def test_f6_pinned_input_mapper_tests_still_green(self):
++        root = A.materialize_pinned_seam()
++        script = root / "tools/monkey_campaign/product/input_mapper_tests.py"
++        proc = subprocess.run([sys.executable, "-B", str(script)],
++                              capture_output=True, text=True, timeout=110)
++        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
++        self.assertIn("VERDICT: GREEN", proc.stdout)
++
++    def test_f6_pinned_follow_camera_tests_still_green(self):
++        root = A.materialize_pinned_seam()
++        env = dict(os.environ, PYTHONPATH=str(root))
++        proc = subprocess.run(
++            [sys.executable, "-B", "-m", "unittest", "-q",
++             "tools.monkey_campaign.product.follow_camera_tests"],
++            capture_output=True, text=True, timeout=110, env=env, cwd=root)
++        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
++        self.assertIn("OK", proc.stderr)
++
++    def test_f6_accepted_module_suite_still_green(self):
++        proc = subprocess.run(
++            [sys.executable, "-B", "-m", "unittest", "-q",
++             "test_input_trace", "test_correction"],
++            capture_output=True, text=True, timeout=110, cwd=str(SIBLING.parent))
++        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
++        self.assertIn("OK", proc.stderr)
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/test_run_evidence.txt b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/test_run_evidence.txt
+new file mode 100644
+index 00000000..fbe3f1e3
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE-FOLLOWUP/test_run_evidence.txt
+@@ -0,0 +1,35 @@
++test_f3_fixture_completed_chains_are_exact_and_labeled (__main__.TestAcceptedLawOnSeamTrace.test_f3_fixture_completed_chains_are_exact_and_labeled) ... ok
++test_f4_refusal_output_carries_no_latency_numbers (__main__.TestAcceptedLawOnSeamTrace.test_f4_refusal_output_carries_no_latency_numbers) ... ok
++test_f4_two_stage_trace_is_refused_missing_stage (__main__.TestAcceptedLawOnSeamTrace.test_f4_two_stage_trace_is_refused_missing_stage) ... ok
++test_f5_empty_limits_are_unqualified_too (__main__.TestAcceptedLawOnSeamTrace.test_f5_empty_limits_are_unqualified_too) ... ok
++test_f5_limits_are_caller_data_and_nothing_else (__main__.TestAcceptedLawOnSeamTrace.test_f5_limits_are_caller_data_and_nothing_else) ... ok
++test_f5_no_p06_limits_means_unqualified_through_the_adapter (__main__.TestAcceptedLawOnSeamTrace.test_f5_no_p06_limits_means_unqualified_through_the_adapter) ... ok
++test_f1_accepted_bytes_match_the_pr138_pin (__main__.TestAcceptedModuleIdentity.test_f1_accepted_bytes_match_the_pr138_pin) ... ok
++test_f1_imports_the_sibling_accepted_module (__main__.TestAcceptedModuleIdentity.test_f1_imports_the_sibling_accepted_module) ... ok
++test_f1_no_vendored_copy_in_this_contribution (__main__.TestAcceptedModuleIdentity.test_f1_no_vendored_copy_in_this_contribution) ... ok
++test_f1_stage_law_is_declared_from_the_accepted_module (__main__.TestAcceptedModuleIdentity.test_f1_stage_law_is_declared_from_the_accepted_module) ... ok
++test_f6_bad_identity_and_clock_refused (__main__.TestAdapterRefusals.test_f6_bad_identity_and_clock_refused) ... ok
++test_f6_clock_regression_refused (__main__.TestAdapterRefusals.test_f6_clock_regression_refused) ... ok
++test_f6_non_integer_clock_refused (__main__.TestAdapterRefusals.test_f6_non_integer_clock_refused) ... ok
++test_f6_python_stages_cannot_be_attached (__main__.TestAdapterRefusals.test_f6_python_stages_cannot_be_attached) ... ok
++test_f3_freshness_contract_is_an_ordering_fact_without_a_timestamp (__main__.TestCameraSeamFacts.test_f3_freshness_contract_is_an_ordering_fact_without_a_timestamp) ... ok
++test_f3_mock_deadlines_are_declared_not_measured (__main__.TestCameraSeamFacts.test_f3_mock_deadlines_are_declared_not_measured) ... ok
++test_f4_camera_clock_domain_mixed_into_the_trace_refuses (__main__.TestCameraSeamFacts.test_f4_camera_clock_domain_mixed_into_the_trace_refuses) ... ok
++test_f6_accepted_module_suite_still_green (__main__.TestDeterminismHeadlessRegression.test_f6_accepted_module_suite_still_green) ... ok
++test_f6_adapter_import_allowlist_is_headless (__main__.TestDeterminismHeadlessRegression.test_f6_adapter_import_allowlist_is_headless) ... ok
++test_f6_identical_runs_are_byte_identical (__main__.TestDeterminismHeadlessRegression.test_f6_identical_runs_are_byte_identical) ... ok
++test_f6_pinned_follow_camera_tests_still_green (__main__.TestDeterminismHeadlessRegression.test_f6_pinned_follow_camera_tests_still_green) ... ok
++test_f6_pinned_input_mapper_tests_still_green (__main__.TestDeterminismHeadlessRegression.test_f6_pinned_input_mapper_tests_still_green) ... ok
++test_f2_adapter_refuses_command_without_antecedent (__main__.TestRealSeamEvents.test_f2_adapter_refuses_command_without_antecedent) ... ok
++test_f2_both_seam_states_and_bounds_are_traced (__main__.TestRealSeamEvents.test_f2_both_seam_states_and_bounds_are_traced) ... ok
++test_f2_causal_matching_on_one_injected_clock (__main__.TestRealSeamEvents.test_f2_causal_matching_on_one_injected_clock) ... ok
++test_f2_decay_and_reissue_share_the_press_antecedent (__main__.TestRealSeamEvents.test_f2_decay_and_reissue_share_the_press_antecedent) ... ok
++test_f2_issued_tick_is_the_mappers_own_derivation (__main__.TestRealSeamEvents.test_f2_issued_tick_is_the_mappers_own_derivation) ... ok
++test_f2_payloads_are_the_actual_emitted_records (__main__.TestRealSeamEvents.test_f2_payloads_are_the_actual_emitted_records) ... ok
++test_f2_pinned_sources_are_byte_exact (__main__.TestRealSeamEvents.test_f2_pinned_sources_are_byte_exact) ... ok
++test_f2_seam_identity_and_bounds_hold_on_every_chain (__main__.TestRealSeamEvents.test_f2_seam_identity_and_bounds_hold_on_every_chain) ... ok
++
++----------------------------------------------------------------------
++Ran 30 tests in 0.978s
++
++OK

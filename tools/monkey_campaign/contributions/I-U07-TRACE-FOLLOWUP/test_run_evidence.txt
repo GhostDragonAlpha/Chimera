@@ -1,0 +1,35 @@
+test_f3_fixture_completed_chains_are_exact_and_labeled (__main__.TestAcceptedLawOnSeamTrace.test_f3_fixture_completed_chains_are_exact_and_labeled) ... ok
+test_f4_refusal_output_carries_no_latency_numbers (__main__.TestAcceptedLawOnSeamTrace.test_f4_refusal_output_carries_no_latency_numbers) ... ok
+test_f4_two_stage_trace_is_refused_missing_stage (__main__.TestAcceptedLawOnSeamTrace.test_f4_two_stage_trace_is_refused_missing_stage) ... ok
+test_f5_empty_limits_are_unqualified_too (__main__.TestAcceptedLawOnSeamTrace.test_f5_empty_limits_are_unqualified_too) ... ok
+test_f5_limits_are_caller_data_and_nothing_else (__main__.TestAcceptedLawOnSeamTrace.test_f5_limits_are_caller_data_and_nothing_else) ... ok
+test_f5_no_p06_limits_means_unqualified_through_the_adapter (__main__.TestAcceptedLawOnSeamTrace.test_f5_no_p06_limits_means_unqualified_through_the_adapter) ... ok
+test_f1_accepted_bytes_match_the_pr138_pin (__main__.TestAcceptedModuleIdentity.test_f1_accepted_bytes_match_the_pr138_pin) ... ok
+test_f1_imports_the_sibling_accepted_module (__main__.TestAcceptedModuleIdentity.test_f1_imports_the_sibling_accepted_module) ... ok
+test_f1_no_vendored_copy_in_this_contribution (__main__.TestAcceptedModuleIdentity.test_f1_no_vendored_copy_in_this_contribution) ... ok
+test_f1_stage_law_is_declared_from_the_accepted_module (__main__.TestAcceptedModuleIdentity.test_f1_stage_law_is_declared_from_the_accepted_module) ... ok
+test_f6_bad_identity_and_clock_refused (__main__.TestAdapterRefusals.test_f6_bad_identity_and_clock_refused) ... ok
+test_f6_clock_regression_refused (__main__.TestAdapterRefusals.test_f6_clock_regression_refused) ... ok
+test_f6_non_integer_clock_refused (__main__.TestAdapterRefusals.test_f6_non_integer_clock_refused) ... ok
+test_f6_python_stages_cannot_be_attached (__main__.TestAdapterRefusals.test_f6_python_stages_cannot_be_attached) ... ok
+test_f3_freshness_contract_is_an_ordering_fact_without_a_timestamp (__main__.TestCameraSeamFacts.test_f3_freshness_contract_is_an_ordering_fact_without_a_timestamp) ... ok
+test_f3_mock_deadlines_are_declared_not_measured (__main__.TestCameraSeamFacts.test_f3_mock_deadlines_are_declared_not_measured) ... ok
+test_f4_camera_clock_domain_mixed_into_the_trace_refuses (__main__.TestCameraSeamFacts.test_f4_camera_clock_domain_mixed_into_the_trace_refuses) ... ok
+test_f6_accepted_module_suite_still_green (__main__.TestDeterminismHeadlessRegression.test_f6_accepted_module_suite_still_green) ... ok
+test_f6_adapter_import_allowlist_is_headless (__main__.TestDeterminismHeadlessRegression.test_f6_adapter_import_allowlist_is_headless) ... ok
+test_f6_identical_runs_are_byte_identical (__main__.TestDeterminismHeadlessRegression.test_f6_identical_runs_are_byte_identical) ... ok
+test_f6_pinned_follow_camera_tests_still_green (__main__.TestDeterminismHeadlessRegression.test_f6_pinned_follow_camera_tests_still_green) ... ok
+test_f6_pinned_input_mapper_tests_still_green (__main__.TestDeterminismHeadlessRegression.test_f6_pinned_input_mapper_tests_still_green) ... ok
+test_f2_adapter_refuses_command_without_antecedent (__main__.TestRealSeamEvents.test_f2_adapter_refuses_command_without_antecedent) ... ok
+test_f2_both_seam_states_and_bounds_are_traced (__main__.TestRealSeamEvents.test_f2_both_seam_states_and_bounds_are_traced) ... ok
+test_f2_causal_matching_on_one_injected_clock (__main__.TestRealSeamEvents.test_f2_causal_matching_on_one_injected_clock) ... ok
+test_f2_decay_and_reissue_share_the_press_antecedent (__main__.TestRealSeamEvents.test_f2_decay_and_reissue_share_the_press_antecedent) ... ok
+test_f2_issued_tick_is_the_mappers_own_derivation (__main__.TestRealSeamEvents.test_f2_issued_tick_is_the_mappers_own_derivation) ... ok
+test_f2_payloads_are_the_actual_emitted_records (__main__.TestRealSeamEvents.test_f2_payloads_are_the_actual_emitted_records) ... ok
+test_f2_pinned_sources_are_byte_exact (__main__.TestRealSeamEvents.test_f2_pinned_sources_are_byte_exact) ... ok
+test_f2_seam_identity_and_bounds_hold_on_every_chain (__main__.TestRealSeamEvents.test_f2_seam_identity_and_bounds_hold_on_every_chain) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.978s
+
+OK

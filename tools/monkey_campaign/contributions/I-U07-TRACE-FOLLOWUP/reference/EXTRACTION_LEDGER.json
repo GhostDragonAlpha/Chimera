@@ -1,0 +1,64 @@
+{
+  "schema": "chimera.i-u07-followup.extraction_ledger.v1",
+  "extracted_by": {
+    "task_id": "I-U07-TRACE-FOLLOWUP",
+    "attempt_id": "8703cf9f00bf4e11add0060bcc85da03",
+    "arrival_id": "arrival-f742dfbb88244565a6d973717bc05f26"
+  },
+  "provenance": {
+    "seam_revision": "9afbddcd",
+    "seam_source": "git objects of this campaign repo (branch lineage monkey-play-20260924); the SAME revision and the SAME hashes the accepted I-U07-TRACE report cites for its pinned extractions",
+    "accepted_module": {
+      "path": "tools/monkey_campaign/contributions/I-U07-TRACE/input_trace.py",
+      "revision": "4d2ececc",
+      "merged_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/138",
+      "note": "NOT copied here; the adapter imports the sibling accepted module in the review tree. sha256 below is the pin tests assert."
+    }
+  },
+  "files": [
+    {
+      "repo_path": "tools/monkey_campaign/product/input_mapper.py",
+      "reference_path": "reference/tools/monkey_campaign/product/input_mapper.py",
+      "revision": "9afbddcd",
+      "sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+      "size_bytes": 18349
+    },
+    {
+      "repo_path": "tools/monkey_campaign/product/follow_camera.py",
+      "reference_path": "reference/tools/monkey_campaign/product/follow_camera.py",
+      "revision": "9afbddcd",
+      "sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+      "size_bytes": 33410
+    },
+    {
+      "repo_path": "tools/monkey_campaign/product/follow_camera_tests.py",
+      "reference_path": "reference/tools/monkey_campaign/product/follow_camera_tests.py",
+      "revision": "9afbddcd",
+      "sha256": "4d75164ff6a16bf0d817332b7c5229513750782727ad1a23911025dc93d31b27",
+      "size_bytes": 27743
+    },
+    {
+      "repo_path": "tools/monkey_campaign/product/input_mapper_tests.py",
+      "reference_path": "reference/tools/monkey_campaign/product/input_mapper_tests.py",
+      "revision": "9afbddcd",
+      "sha256": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
+      "size_bytes": 15154
+    },
+    {
+      "repo_path": "tools/science_funnel/typeb_export/command_record.py",
+      "reference_path": "reference/tools/science_funnel/typeb_export/command_record.py",
+      "revision": "9afbddcd",
+      "sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+      "size_bytes": 12095
+    }
+  ],
+  "pins_for_import_only": [
+    {
+      "path": "tools/monkey_campaign/contributions/I-U07-TRACE/input_trace.py",
+      "revision": "4d2ececc",
+      "sha256": "c8f4e4442a3ceedecd9c636857eda92642d26ec535d45f2c91a3ce9fd4550a57",
+      "size_bytes": 17265
+    }
+  ],
+  "read_only_after_extraction": true
+}
