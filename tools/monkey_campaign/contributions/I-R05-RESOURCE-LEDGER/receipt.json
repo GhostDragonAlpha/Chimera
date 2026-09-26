@@ -1,0 +1,65 @@
+{
+  "card": "I-R05-RESOURCE-LEDGER",
+  "planning_id": "R05",
+  "attempt": "080ba14585ce405e9b7d0ae87632a8af",
+  "branch": "branch-6",
+  "pinned_base": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+  "date": "2026-09-25",
+  "preregistration": {
+    "frozen_before_implementation": true,
+    "statement": "Ownership-scoped resource accounting can be a small deterministic stdlib-only event ledger keyed on (generation, owner, resource_id) with five named failure classes, judging cycles only against caller-provided ceilings; the pinned teardown code lacks such accounting.",
+    "prediction_held": "prediction 1 held: no existing equivalent found at the pinned revision (git grep ledger/acquire/generation-owner over tools/monkey_campaign returns only unrelated prose hits)",
+    "falsifiers": ["F1 unrelated owner releasable", "F2 stale generation closes current resources", "F3 leaked resource passes a cycle", "F4 not green in 120s / non-stdlib"],
+    "falsifier_result": "ALL GREEN: F1 wrong-owner refusal proven, resource stays live; F2 wrong-generation refusal proven, current record untouched; F3 live_at_close forces passed=false at all scopes and under max_failures=99; F4 suite green in 0.002s, stdlib only"
+  },
+  "checks_performed": [
+    {"command_class": "git ls-tree -r --name-only 9afbddcd | grep session_flow|forest_loader", "result": "both named sources found at pinned revision"},
+    {"command_class": "git show 9afbddcd:tools/monkey_campaign/product/session_flow.py (read-only)", "result": "read; SessionFlow._transition :310-360, restart :327-340, exit :343-350"},
+    {"command_class": "git show 9afbddcd:tools/monkey_campaign/data/monkey_forest/forest_loader.py (read-only)", "result": "read; ForestScene _resources :358-362, attach_engine_shutdown :367-374, teardown :380-405, f08_teardown_leak :395"},
+    {"command_class": "git show 9afbddcd:tools/playable_slice/slice_server.py (read-only)", "result": "read; boot :94-135 (boot_count :128), shutdown_engine :174-181"},
+    {"command_class": "git grep -iE 'resource_ledger|acquire|generation.*owner' 9afbddcd -- tools/monkey_campaign + git grep -il ledger (py)", "result": "NO existing equivalent ledger code; only unrelated prose hits — built new rather than duplicating, reusing house shapes (Refusal, reverse-order release, named drops, injected now_ms, canonical json)"},
+    {"command_class": "extraction of 4 sources to reference/ via git show > file + sha256 of actual bytes", "result": "reference/EXTRACTION_LEDGER.json written with real hashes; reference/ read-only after extraction"},
+    {"command_class": "timeout 120 python -B test_resource_ledger.py (FIRST run)", "result": "Ran 35 tests: 33 ok, 1 failure, 1 error, exit 1 (recorded honestly below)"},
+    {"command_class": "timeout 120 python -B test_resource_ledger.py (after fixes)", "result": "Ran 35 tests — OK, runtime_seconds=0.002, exit 0"},
+    {"command_class": "timeout 60 python -B resource_ledger.py selftest", "result": "{\"schema\":\"chimera.monkey_campaign.resource_ledger.v1\",\"selftest\":\"pass\"}, exit 0"}
+  ],
+  "first_run_failures": [
+    {
+      "test": "test_leak_cannot_be_laundered_by_a_failure_budget",
+      "class": "ERROR (TypeError)",
+      "cause": "real API gap: close_generation()/close() had no ceilings parameter although close IS the cycle end and must judge against caller-provided ceilings",
+      "resolution": "added ceilings=None pass-through to ResourceLedger.close_generation and ResourceLedger.close"
+    },
+    {
+      "test": "test_reused_resource_ids_across_generations_are_legal",
+      "class": "FAIL (AssertionError)",
+      "cause": "bug in the TEST, not the module: the fixture acquired engine:9347 in generation 1 and never released it before close_generation(1); the ledger correctly named the leak (ledger_live_at_close) — falsifier F3 detection firing on my own fixture",
+      "resolution": "fixed the fixture to release the resource before closing generation 1; module unchanged"
+    }
+  ],
+  "final_test_result": "Ran 35 tests — OK (runtime_seconds=0.002; bound 120s per invocation)",
+  "artifacts": [
+    {"path": "PREREGISTRATION.md", "sha256": "751c82fc9de5c9ed9271fa30e27dce8df4260b5e3b8efffc20bbd418e045134c"},
+    {"path": "resource_ledger.py", "sha256": "ef313c2790921b61f89a34501105116e3dbbc0e80d60ea09739a16493b429199"},
+    {"path": "test_resource_ledger.py", "sha256": "462b2ddeffeb3ebe25155189eb2aefd4acae0558946a0d02bea55098b6a25ca9"},
+    {"path": "report.md", "sha256": "1df3552aa95e4f29eac44eb1158a8b20dbacc882582d2888fac24b7c6f988d40"},
+    {"path": "receipt.json", "sha256": "SELF-REFERENTIAL: a file cannot contain its own digest; the final receipt.json sha256 is reported in the attempt's coordinator report and matches the committed bytes"}
+  ],
+  "remaining_gates": [
+    "parent R05 gates remain OPEN — this card is preparatory only",
+    "hook-up is a PROPOSAL (report.md); session_flow.py/forest_loader.py/slice_server.py at the pinned revision are UNEDITED",
+    "no runtime session has run against the ledger; operator-side owner='operator' acquire flow does not exist yet"
+  ],
+  "constraints_honored": {
+    "code_only_in_ws": true,
+    "no_network_installs_gui_native_gpu_training": true,
+    "no_process_control_or_discovery_or_memory_probing": true,
+    "test_invocations_bounded_120s": true,
+    "source_repo_read_only": true,
+    "never_pushed_never_branched_no_worker_start": true,
+    "reference_read_only_after_extraction": true,
+    "stdlib_only_python_311": true,
+    "output_under_16_mib": true
+  },
+  "writes_stopped": true
+}
