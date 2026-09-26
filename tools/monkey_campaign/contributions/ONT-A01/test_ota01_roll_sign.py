@@ -231,6 +231,53 @@ class TestCaptureManifest(unittest.TestCase):
         self.assertFalse(render["gpu_used"])
 
 
+class TestAllBookmarkSubjectBounds(unittest.TestCase):
+    """Bounds regression (review 21f80a5b CHANGES_REQUIRED): every declared
+    subject point of EVERY view and EVERY camera bookmark must project INSIDE
+    its panel with the frame margin - the anatomy profile's own falsifier
+    ('clipped/occluded subject fails') must never fire again. This test FAILED
+    first on the uncorrected head: V3 anterior/posterior clipped 21/211 ulna
+    vertices each (max py = 371.908 px on 360 px panels), oblique 2/211
+    (max py = 361.144), and V2's declared ECU tendon course waypoint ECU-P4
+    exited its panel at py = 372.7. Cameras are now framed from the projected
+    subject bounds + margin (ota01_render_views.fit_camera), and this test
+    asserts the committed manifest cameras honor that for all bookmarks.
+    """
+
+    def test_every_declared_subject_inside_every_bookmark_panel(self):
+        import ota01_render_views as rv
+        manifest = json.loads((EVIDENCE / "capture_manifest.json").read_text())
+        checked = 0
+        for row in manifest["views"]:
+            cam_meta = row["camera"]
+            W, H = cam_meta["viewport_resolution"]
+            span = cam_meta["orthographic_span"]
+            pts = rv.declared_subject_points(row["pair_id"])
+            inx, iny = rv.panel_inset(W, H)
+            for s in cam_meta["samples"]:
+                p = rv.project(pts, s, span, W, H)
+                inside = (p[:, 0].min() >= inx - 1e-6 and p[:, 0].max() <= W - inx + 1e-6
+                          and p[:, 1].min() >= iny - 1e-6 and p[:, 1].max() <= H - iny + 1e-6)
+                self.assertTrue(inside, (
+                    f"{row['pair_id']} [{row['mode']}] tick {s['tick']}: declared subject "
+                    f"px[{p[:, 0].min():.3f}, {p[:, 0].max():.3f}] "
+                    f"py[{p[:, 1].min():.3f}, {p[:, 1].max():.3f}] outside "
+                    f"{W}x{H} panel with margin inset ({inx:.3f}, {iny:.3f})"))
+                checked += len(pts)
+        # V3 whole-bone views must frame ALL 211 pinned ulna vertices + 4 axis
+        # tips, per bookmark (4 bookmarks, diagnostic+clean rows share cameras)
+        v3 = next(r for r in manifest["views"] if r["pair_id"] == "V3")
+        self.assertEqual(len(v3["camera"]["samples"]), 4)
+        # 2 V1 rows x 2 samples x 18469 + 2 V2 rows x 2 samples x 11
+        # + 2 V3 rows x 4 samples x 215
+        self.assertEqual(checked, 2 * 2 * 18469 + 2 * 2 * 11 + 2 * 4 * 215)
+
+    def test_v3_whole_bone_subject_is_the_full_pinned_mesh(self):
+        import ota01_render_views as rv
+        pts = rv.declared_subject_points("V3")
+        self.assertEqual(len(pts), 215)  # 211 unique mesh vertices + 4 axis tips
+
+
 class TestQualificationReceipt(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

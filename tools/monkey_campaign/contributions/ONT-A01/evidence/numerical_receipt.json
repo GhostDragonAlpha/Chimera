@@ -369,7 +369,7 @@
     "verdict": true,
     "witness_b_prime_azimuth_deg": -111.86515772931568
   },
-  "attempt_id": "fb552e4136ef4bfdaaa93686fb063e78",
+  "attempt_id": "d7edda352388470092b17a35e17391ba",
   "card_id": "ONT-A01",
   "criteria_sha256": "2bcf59fa0b786b009b30711334e38fe374d9a2a2bdefdba9566a4018c4a9c775",
   "done_when": "Records ambiguity (see fired falsifiers; both readings preserved)",

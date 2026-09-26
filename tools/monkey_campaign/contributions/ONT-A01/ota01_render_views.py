@@ -24,6 +24,12 @@ labels intentionally unoccluded = xray semantics). Clean rows: 'depth_tested'
 Writes: evidence/capture_sheet.png, evidence/capture_manifest.json,
 evidence/visual_provenance.json. Validates the manifest structurally with the
 canonical campaign validator before writing the receipt.
+
+Correction (review 21f80a5b CHANGES_REQUIRED): every camera is framed
+deterministically from the PROJECTED BOUNDS of its declared subject point set
+plus a uniform FRAME_MARGIN (fit_camera/declared_subject_points below) - no
+hand-tuned spans - and every bookmark is guarded by assert_in_bounds, so no
+declared subject vertex can be clipped (the anatomy profile's own falsifier).
 """
 from __future__ import annotations
 
@@ -118,6 +124,101 @@ def cam_sample(position, target, up_hint):
     }
 
 
+# ---- bounds-derived framing (correction for review 21f80a5b CHANGES_REQUIRED) --
+# The uncorrected head clipped its declared subject (V3 whole-bone views clipped
+# 21/21/2 of the 211 ulna vertices; V2's declared ECU course waypoint ECU-P4
+# exited at py=372.7), firing the anatomy profile's own falsifier
+# "clipped/occluded subject fails". Framing is therefore never hand-picked:
+# every camera is computed by fit_camera() from the PROJECTED BOUNDS of its
+# declared subject point set, re-centered, with FRAME_MARGIN kept clear on
+# every panel edge. FRAME_MARGIN is the only framing constant and it is a
+# uniform policy, not a per-view tuned value.
+FRAME_MARGIN = 0.08  # fraction of the fitted subject extent kept clear per edge
+
+
+def declared_subject_points(pair_id):
+    """The declared subject point set each panel must contain, derived ONLY from
+    the same pinned geometry the views draw (no constants beyond the drawn arrow
+    lengths). Used by fit_camera() for framing and by the bounds regression
+    (test_ota01_roll_sign.py) for assertion.
+
+    V1 whole-creature overview: every vertex of the target creature mesh plus
+      the declared joints and the forearm region box (all 8 corners).
+    V2 local attachment close-up: the declared attachment subjects - the six
+      labeled sites, the ECU tendon course waypoints and the volar/dorsal arrow
+      tips. The bone mesh is the backdrop of a close-up; partial mesh framing is
+      the declared semantics (prereg: 'V2 local attachment close-up'), so the
+      mesh is NOT required to fit - but every declared site/waypoint/axis is.
+    V3 orthogonal side and oblique views: whole-bone views - every vertex of the
+      source ulna mesh plus the four frame-axis arrow tips from the ulna origin.
+    """
+    if pair_id == "V1":
+        mt = core.load_birth_pack()
+        V = mt.V
+        elbow, wrist = mt.joint_pos("elbow_R"), mt.joint_pos("wrist_R")
+        box_lo = np.minimum(elbow, wrist) - np.array([0.045, 0.03, 0.045])
+        box_hi = np.maximum(elbow, wrist) + np.array([0.045, 0.03, 0.045])
+        corners = np.array([box_lo + np.array([bool((a >> s) & 1) for s in range(3)],
+                                              float) * (box_hi - box_lo)
+                            for a in range(8)])
+        return np.vstack([V, elbow[None, :], wrist[None, :], corners])
+    if pair_id == "V2":
+        src = json.loads((core.RECEIPTS / "o1_source_split.json").read_text())
+        site_mm = {s["site"]: np.array(s["pos_local_m"]) * 1000.0
+                   for s in src["site_table"]}
+        tips = np.array([[46.0, 0.0, 0.0], [-46.0, 0.0, 0.0]])
+        return np.vstack([np.array([site_mm[s] for s in
+                                    core.RENDER_SITES + core.ECU_COURSE]), tips])
+    if pair_id == "V3":
+        Vmm = core.ulna_mesh_scaled()[0] * 1000.0
+        assert len(Vmm) == 211, len(Vmm)  # pinned ulna.stl: 396 tris -> 211 verts
+        tips = np.array([[60.0, 0.0, 0.0], [-60.0, 0.0, 0.0],
+                         [0.0, 60.0, 0.0], [0.0, 0.0, 60.0]])
+        return np.vstack([Vmm, tips])
+    raise KeyError(pair_id)
+
+
+def fit_camera(points, anchor_target, direction, dist, aspect, margin=FRAME_MARGIN):
+    """Deterministic framing from projected bounds (same pinned geometry, no
+    hand-tuned spans): project the declared subject points on the view basis of
+    (anchor_target + direction*dist -> anchor_target), re-center the target on
+    the projected-bounds midpoint and set the orthographic span so every point
+    is inside the panel with `margin` clear on every edge. The view direction
+    (hence the orientation quaternion) and the distance are preserved.
+    Returns (position, target, span)."""
+    direction = core.unit(np.asarray(direction, float))
+    anchor_target = np.asarray(anchor_target, float)
+    pos0 = anchor_target + direction * dist
+    Xc, Yc, Zc, fwd = camera_basis(pos0, anchor_target, [0, 1, 0])
+    rel = np.asarray(points, float) - anchor_target
+    xc, yc = rel @ Xc, rel @ Yc
+    target = anchor_target + Xc * ((xc.max() + xc.min()) / 2.0) \
+        + Yc * ((yc.max() + yc.min()) / 2.0)
+    position = target + direction * dist
+    span = max(float(yc.max() - yc.min()),
+               float((xc.max() - xc.min()) / aspect)) * (1.0 + margin)
+    return position, target, float(span)
+
+
+def panel_inset(W, H, margin=FRAME_MARGIN):
+    """Per-edge pixel inset guaranteed by fit_camera for the fitted dimension."""
+    return W * margin / (2.0 * (1.0 + margin)), H * margin / (2.0 * (1.0 + margin))
+
+
+def assert_in_bounds(points, cam, span, W, H, margin=FRAME_MARGIN):
+    """Generation-time falsifier guard: every declared subject point must
+    project strictly inside the panel with the frame margin clear
+    ('clipped/occluded subject fails' - review 21f80a5b)."""
+    p = project(np.asarray(points, float), cam, span, W, H)
+    inx, iny = panel_inset(W, H, margin)
+    eps = 1e-6
+    ok = (p[:, 0].min() >= inx - eps and p[:, 0].max() <= W - inx + eps
+          and p[:, 1].min() >= iny - eps and p[:, 1].max() <= H - iny + eps)
+    assert ok, (f"declared subject exceeds framed panel: px[{p[:, 0].min():.3f},"
+                f"{p[:, 0].max():.3f}] py[{p[:, 1].min():.3f},{p[:, 1].max():.3f}]"
+                f" on {W}x{H} (margin {margin})")
+
+
 # ---------------------------------------------------------- z-buffer pass ----
 def render_mesh(rgb, zbuf, V, F, cam, span, color, W, H, x0, y0):
     """Orthographic z-buffer raster into the sheet region (x0,y0) panel offset.
@@ -196,6 +297,19 @@ def draw_arrow_2d(fig, p0, p1, color, label=None, lpos=None):
                  ha=lpos[2], va="center")
 
 
+def label_offset_inside(anchor_xy, dx, dy, W, H, pad=6.0, pad_top=22.0):
+    """Deterministically mirror a screen-space label offset so the text anchor
+    stays inside its panel (reframing must not push declared labels off-panel;
+    'stable 3D labels' is a declared diagnostic layer). pad_top keeps anchors
+    below the panel title band."""
+    x, y = anchor_xy[0] + dx, anchor_xy[1] + dy
+    if not (pad <= x <= W - pad):
+        dx = -dx
+    if not (pad <= y <= H - pad_top):
+        dy = -dy
+    return dx, dy
+
+
 def axis_triad_panel(fig, origin_w, cam, span, W, H, axes, tick_labels,
                      color=(0.08, 0.08, 0.08), anchor_px=(46, 46), arm_px=24):
     """Screen-anchored world-axis triad: each world direction is projected to its
@@ -267,8 +381,11 @@ def build_everything():
     V, F = mt.V, mt.F
     center = (V.min(0) + V.max(0)) / 2.0
     diag = float(np.linalg.norm(V.max(0) - V.min(0)))
-    span1 = diag * 1.02
-    cam1 = cam_sample(center + core.unit([0.30, 0.35, 1.0]) * diag * 1.15, center, [0, 1, 0])
+    subj1 = declared_subject_points("V1")
+    pos1, tgt1, span1 = fit_camera(subj1, center, core.unit([0.30, 0.35, 1.0]),
+                                   diag * 1.15, PANEL_W / PANEL_H)
+    cam1 = cam_sample(pos1, tgt1, [0, 1, 0])
+    assert_in_bounds(subj1, cam1, span1, PANEL_W, PANEL_H)
     elbow, wrist = mt.joint_pos("elbow_R"), mt.joint_pos("wrist_R")
     origin1 = np.array([V[:, 0].min(), V[:, 1].min(), V[:, 2].max()]) + np.array([0.02, 0.02, -0.02])
 
@@ -312,7 +429,8 @@ def build_everything():
     for subj, text, anchor, (dx, dy) in labels1:
         p = project(np.array([anchor]), cam1, span1, PANEL_W, PANEL_H)[0]
         ax.plot([p[0]], [PANEL_H - p[1]], "+", ms=3, color="black", zorder=7)
-        ax.text(p[0] + dx, PANEL_H - p[1] + dy, text, fontsize=6.4, color="black",
+        ldx, ldy = label_offset_inside((p[0], PANEL_H - p[1]), dx, dy, PANEL_W, PANEL_H)
+        ax.text(p[0] + ldx, PANEL_H - p[1] + ldy, text, fontsize=6.4, color="black",
                 zorder=8, ha="left",
                 bbox=dict(fc="white", ec="none", alpha=0.7, pad=0.8))
     compose_panel(ax, rgb, zbuf, "V1 whole-creature overview (target frame, m)", "diagnostic")
@@ -396,9 +514,12 @@ def build_everything():
     Vmm, Fmm = Vu * 1000.0, Fu
     src = json.loads((core.RECEIPTS / "o1_source_split.json").read_text())
     site_local = {s["site"]: np.array(s["pos_local_m"]) * 1000.0 for s in src["site_table"]}
-    target2 = np.mean([site_local[s] for s in ("ANC-P2", "BRA-P4", "BRA-P3", "PT-P2")], axis=0)
-    span2 = 130.0
-    cam2 = cam_sample(target2 + core.unit([1.0, 0.45, 0.30]) * 180.0, target2, [0, 1, 0])
+    target0 = np.mean([site_local[s] for s in ("ANC-P2", "BRA-P4", "BRA-P3", "PT-P2")], axis=0)
+    subj2 = declared_subject_points("V2")
+    pos2, target2, span2 = fit_camera(subj2, target0, core.unit([1.0, 0.45, 0.30]),
+                                      180.0, PANEL_W / PANEL_H)
+    cam2 = cam_sample(pos2, target2, [0, 1, 0])
+    assert_in_bounds(subj2, cam2, span2, PANEL_W, PANEL_H)
     near2, far2 = 1.0, 1000.0
 
     def render_v2(mode):
@@ -418,7 +539,8 @@ def build_everything():
     ax.plot(course[:, 0], PANEL_H - course[:, 1], color=tuple(c / 255 for c in COURSE_COLOR),
             lw=1.6, ls="--", zorder=6)
     cpt = project(np.array([site_local["ECU-P3"]]), cam2, span2, PANEL_W, PANEL_H)[0]
-    ax.text(cpt[0] + 4, PANEL_H - cpt[1], "ECU tendon course (measured waypoints)",
+    cdx, cdy = label_offset_inside((cpt[0], PANEL_H - cpt[1]), 4, 0, PANEL_W, PANEL_H)
+    ax.text(cpt[0] + cdx, PANEL_H - cpt[1] + cdy, "ECU tendon course (measured waypoints)",
             fontsize=6, color=tuple(c / 255 for c in COURSE_COLOR), zorder=8,
             bbox=dict(fc="white", ec="none", alpha=0.7, pad=0.8))
     # sites (unoccluded xray markers)
@@ -429,7 +551,8 @@ def build_everything():
         col = FLEXOR_COLOR if s in core.FLEXORS else EXTENSOR_COLOR
         ax.plot([p[0]], [PANEL_H - p[1]], "o", ms=4.5, color=tuple(c / 255 for c in col),
                 zorder=7, markeredgecolor="black", markeredgewidth=0.4)
-        dx, dy = site_offsets[s]
+        dx, dy = label_offset_inside((p[0], PANEL_H - p[1]), *site_offsets[s],
+                                     PANEL_W, PANEL_H)
         ax.plot([p[0], p[0] + dx * 0.85], [PANEL_H - p[1], PANEL_H - p[1] + dy * 0.85],
                 lw=0.6, color="gray", zorder=7)
         ax.text(p[0] + dx, PANEL_H - p[1] + dy, s, fontsize=6, color="black", zorder=8,
@@ -439,8 +562,12 @@ def build_everything():
     for d, lab, col in ((np.array([46.0, 0, 0]), "volar +x", VOLAR_COLOR),
                         (np.array([-46.0, 0, 0]), "dorsal -x", DORSAL_COLOR)):
         tip = project(np.array([d]), cam2, span2, PANEL_W, PANEL_H)[0]
-        draw_arrow_2d(ax, o2[:2], tip[:2], tuple(c / 255 for c in col))
-        ax.text(tip[0] + 3, PANEL_H - tip[1] + 8, lab, fontsize=7,
+        # arrows drawn in the same bottom-up axes as the labels (py -> H - py),
+        # matching the V1 triad convention (previously drawn mirrored)
+        draw_arrow_2d(ax, (o2[0], PANEL_H - o2[1]),
+                      (tip[0], PANEL_H - tip[1]), tuple(c / 255 for c in col))
+        tdx, tdy = label_offset_inside((tip[0], PANEL_H - tip[1]), 3, 8, PANEL_W, PANEL_H)
+        ax.text(tip[0] + tdx, PANEL_H - tip[1] + tdy, lab, fontsize=7,
                 color=tuple(c / 255 for c in col), zorder=8)
     compose_panel(ax, rgb2, zbuf2, "V2 ulna attachment close-up (source rest frame, mm)",
                   "diagnostic")
@@ -507,8 +634,7 @@ def build_everything():
                            "camera": cam2_meta, "visibility": v2_visibility("clean")})
 
     # ------------- V3: orthogonal side and oblique views (trajectory) --------
-    target3 = Vmm.mean(0)
-    span3 = 360.0
+    target0_3 = Vmm.mean(0)
     dirs = [  # (direction from target, up hint, name)
         (core.unit([1.0, 0.0, 0.0]), "anterior (+x view)"),
         (core.unit([-1.0, 0.0, 0.0]), "posterior (-x view)"),
@@ -516,7 +642,17 @@ def build_everything():
         (core.unit([0.35, 1.0, 0.0]), "superior (+y view)"),
     ]
     dist3 = 320.0
-    cams3 = [cam_sample(target3 + d * dist3, target3, [0, 1, 0]) for d, _ in dirs]
+    # bounds-derived framing: each bookmark re-centered on ITS projected subject
+    # bounds, one common span = the largest fitted span (+ margin), so the
+    # trajectory keeps a shared zoom while every bookmark contains the whole
+    # declared subject (review 21f80a5b: uncorrected cameras clipped the bone).
+    subj3 = declared_subject_points("V3")
+    fits3 = [fit_camera(subj3, target0_3, d, dist3, PANEL_W / PANEL_H)
+             for d, _ in dirs]
+    span3 = max(s for _, _, s in fits3)
+    cams3 = [cam_sample(p, t, [0, 1, 0]) for p, t, _ in fits3]
+    for cam3 in cams3:
+        assert_in_bounds(subj3, cam3, span3, PANEL_W, PANEL_H)
     near3, far3 = 1.0, 2000.0
 
     for row, mode in ((1, "diagnostic"), (2, "clean")):
@@ -537,8 +673,12 @@ def build_everything():
                                      (np.array([0, 60.0, 0]), "+y", (0, 0, 0)),
                                      (np.array([0, 0, 60.0]), "+z right", (0, 120, 0))):
                     tip = project(np.array([d3]), cam3, span3, PANEL_W, PANEL_H)[0]
-                    draw_arrow_2d(ax, o3[:2], tip[:2], tuple(c / 255 for c in col))
-                    ax.text(tip[0] + 2, PANEL_H - tip[1] + 2, lab, fontsize=5.6,
+                    # bottom-up axes (py -> H - py), matching V1 triad + labels
+                    draw_arrow_2d(ax, (o3[0], PANEL_H - o3[1]),
+                                  (tip[0], PANEL_H - tip[1]), tuple(c / 255 for c in col))
+                    adx, ady = label_offset_inside((tip[0], PANEL_H - tip[1]), 2, 2,
+                                                   PANEL_W, PANEL_H)
+                    ax.text(tip[0] + adx, PANEL_H - tip[1] + ady, lab, fontsize=5.6,
                             color=tuple(c / 255 for c in col), zorder=8)
                 compose_panel(ax, rgb, zbuf, f"V3 {name}", "diagnostic")
             else:
@@ -605,7 +745,7 @@ def build_everything():
     manifest = {
         "schema": "chimera.visual_capture_manifest.v1",
         "task_id": "A01", "card_id": "ONT-A01",
-        "attempt_id": "fb552e4136ef4bfdaaa93686fb063e78",
+        "attempt_id": "d7edda352388470092b17a35e17391ba",
         "run_id": RUN_ID,
         "subject_sha256": subject_sha,
         "capture_sha256": capture_sha,
@@ -639,6 +779,10 @@ def build_everything():
         "schema": "chimera.ota01_visual_provenance.v1",
         "honest_label": "deterministic CPU offline render (numpy z-buffer + Agg text); "
                         "not native engine frames; subject is anatomy evidence records",
+        "framing": "cameras framed from the PROJECTED BOUNDS of each view's declared "
+                   "subject point set (declared_subject_points) + uniform 8% frame "
+                   "margin (fit_camera); generation-time guard assert_in_bounds; "
+                   "bounds regression in test_ota01_roll_sign.py (review 21f80a5b)",
         "panels": {
             "V1": "target pack mesh (monkey_birth.bin, sha 550a5b3e...) whole body, "
                   "frame triad (+z anterior/+y up/-x right), boxed right forearm region, "

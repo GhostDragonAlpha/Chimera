@@ -1,4 +1,5 @@
 {
+  "framing": "cameras framed from the PROJECTED BOUNDS of each view's declared subject point set (declared_subject_points) + uniform 8% frame margin (fit_camera); generation-time guard assert_in_bounds; bounds regression in test_ota01_roll_sign.py (review 21f80a5b)",
   "honest_label": "deterministic CPU offline render (numpy z-buffer + Agg text); not native engine frames; subject is anatomy evidence records",
   "outcome_bound": "captures the AMBIGUITY_RECORDED state of numerical_receipt.json",
   "panels": {

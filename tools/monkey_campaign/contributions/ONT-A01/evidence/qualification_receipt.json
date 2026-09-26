@@ -1,9 +1,9 @@
 {
-  "attempt_id": "fb552e4136ef4bfdaaa93686fb063e78",
+  "attempt_id": "d7edda352388470092b17a35e17391ba",
   "capture_context": {
-    "capture_sha256": "19fffeee37f2e7c96d52b17ab217f37ee92bbfeedef4ab9de635f723860cdeff",
+    "capture_sha256": "1639c68e66d69640451aa7fa4f08a902c81c16f4e89f998fac6ac06aa2a931a5",
     "run_id": "ONT-A01-ota01-deterministic-cpu-20260926",
-    "subject_sha256": "5300c09f0591413e7e1607e2cdd667268d57f2c38f40ce4daaf56b8fdebbba61",
+    "subject_sha256": "f91ed1bbd7f6cfeb48ea1734aa2b3c305bd153533edb38a569947c51dbc8fdc9",
     "task_id": "A01",
     "tick_interval": [
       0,
@@ -16,28 +16,28 @@
   "done_when_verified": true,
   "evidence": {
     "camera": {
-      "raw_sha256": "692af6e50ffcbaedfad6def810a27a78ae089867b2a66f7e5263924b806203c4",
-      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\capture_manifest.json"
+      "raw_sha256": "6bce77ee4b32c4e0df29c715443993ebc6da6eae8a3f3365e60193bacd5b69c7",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\d7edda352388470092b17a35e17391ba\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\capture_manifest.json"
     },
     "independent_review": {
-      "raw_sha256": "91c02dfb6435a971169c74cf70577ccfc7d07164dcd5405adcee4c15eb58fd7a",
-      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\independent_review_receipt.json"
+      "raw_sha256": "a67fbb46c67786ac443f8836ebfc823a8a36d31643cccaf7edcc2c2112db2444",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\d7edda352388470092b17a35e17391ba\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\independent_review_receipt.json"
     },
     "numerical": {
-      "raw_sha256": "93ea84b50a28543c5965461cb1823f0f5f9850ebfce77272027523a790156ce5",
-      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\numerical_receipt.json"
+      "raw_sha256": "a6c9b86e6b82e12afae030e79eec3b4dd7f9142f60262f5e3559b34a8d8a694a",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\d7edda352388470092b17a35e17391ba\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\numerical_receipt.json"
     },
     "source": {
       "raw_sha256": "a48a5c91fea632bc19c982ed3dbb5add502c188c83aa98b8814d00db7a47083c",
-      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\reference\\EXTRACTION.json"
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\d7edda352388470092b17a35e17391ba\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\reference\\EXTRACTION.json"
     },
     "visual": {
-      "raw_sha256": "19fffeee37f2e7c96d52b17ab217f37ee92bbfeedef4ab9de635f723860cdeff",
-      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\capture_sheet.png"
+      "raw_sha256": "1639c68e66d69640451aa7fa4f08a902c81c16f4e89f998fac6ac06aa2a931a5",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\d7edda352388470092b17a35e17391ba\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\capture_sheet.png"
     }
   },
   "head_sha": null,
-  "head_sha_binding_note": "bound to the attempt commit carrying tools/monkey_campaign/contributions/ONT-A01 on branch-1 of the attempt checkout; the independent reviewer pins head_sha to the reviewed PR head - a changed PR head invalidates this receipt and its review (visual gate recomputes all hashes)",
+  "head_sha_binding_note": "bound to the attempt work commit carrying tools/monkey_campaign/contributions/ONT-A01 in the attempt checkout (published by the lead to review/ONT-A01); the independent reviewer pins head_sha to the reviewed PR head - a changed PR head invalidates this receipt and its review (visual gate recomputes all hashes)",
   "honesty": {
     "behavior_claim_about_real_application": false,
     "capture_kind": "component/records evidence for an anatomy evidence subject",
