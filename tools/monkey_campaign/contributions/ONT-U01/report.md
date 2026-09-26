@@ -178,3 +178,126 @@ head (the in-tree copy ships null + binding note); (3) the native integrated
 playable-runtime/visual checkpoint stays with the integration lane (this
 capture is a declared CPU visualization, not native frames). writes_stopped:
 task tree untouched after the candidate commit.
+
+## 8. CORRECTION (lead CHANGES_REQUIRED msg-6764166d): the bounded REAL
+command-boundary/receiver run
+
+The lead's exact-head review of #147 at `9ad277d7` overruled the ACCEPT with
+a circularity finding: the component probe's body referent is the integral
+of the emitted records, so it cannot witness no-teleportation. This section
+supplies the demanded bounded real run; the component evidence above stays,
+and the original captures stay EXPLICITLY SYNTHETIC (nothing relabeled).
+
+Frozen first: `PREREGISTRATION_REAL_RUN.md` (sha256
+`da5dba00b0cbe24713408e1cf3e4ead834f3edf5fcadbaf14bf7d478e8421b48`,
+commit `5751ae10`) was written and committed BEFORE any `evidence/real/`
+artifact existed; the driver implements exactly the frozen phases R1-R7.
+Established pattern reused read-only: the accepted ONT-X02 integrated-session
+work (attempt `35676f7dcb9f4ceea1c2fc41fbe45aa2`).
+
+WHAT RAN (all real; `evidence/real/runtime_receipt_real.json`):
+- 252-file raw-blob reconstruction of the pinned playable slice at play
+  `8550b634ebd7034bb8873eed41d8bdce4d3843d0` (`pinned_blob_manifest.json`,
+  0 failed) and a native `chimera_engine.exe` BUILT for this run from the
+  pinned engine source of the same commit (184 source files; cmake 4.2.1 +
+  MSVC 14.44.35207 + Vulkan SDK 1.4.328.1; exe sha256 `4bbf2a98d8b2bff6...`
+  in `engine_build_receipt.json`; same recipe as the X02 lane's `a9964009`
+  build — non-deterministic link explains the byte difference).
+- `slice_server.py` (the R1 automated mode) booted and owned the real
+  engine: server PID 89148, engine child PID 9532 on 127.0.0.1:62944
+  (discovered from the engine PID's own TCP listeners), boot 2.38 s, scene
+  `bc9033bf...`, settled standing start `start_state_sha256 8c040418...`
+  (byte-equal to the X02 lane's reload state), settled root_y 0.124510.
+- The served page in headless Chrome channel `chrome` (no deviation), real
+  key events through the page's real handlers; an ADDITIVE in-page hook
+  (page.evaluate; pinned page file untouched) mirrored received events to
+  the driver.
+- The REAL pinned seam imported byte-exact with hash assertion:
+  input_mapper `7a36a45e`, command_record `67711759`.
+
+R2 OBSERVER VALIDATION: the page's own SPACE press (300 N, real handler →
+/api/press → engine /tick_touch) produced only a sub-resolution transient —
+the frozen magnitude guess (max|vy|>0.01, max|dy|>1e-3) FIRED and is
+recorded in `numerical_receipt_real.json.prediction_deviations`. The
+observer-validation purpose is carried by the measured transient itself and
+by the AUXILIARY fall test (the page's own [3], the engine's root-law demo):
+observed max |root_vy| 3.896 m/s, peak root_y +0.9103 m, landing back at
+root_y 0.1245 — the independent /tick_state channel demonstrably reports
+real body motion, and the body returns to the attractor.
+
+R3 THE REAL COMMAND STREAM (139 -> this run 138 records,
+`command_stream.jsonl`): real key events (W/A/D — unbound on the pinned
+page, so no page action collides) drove the REAL pinned InputMapper on the
+real monotonic clock; every record left only through `sink.emit`
+(sink log pure), every |v_forward| <= 0.763625, every |yaw_rate| <= 1.6,
+held-W boundary gaps 50 ms (one gap of 67 ms — 2 ms outside the frozen
++/-15 ms band — FIRED and recorded: one late boundary, no burst, no lost
+record), all three releases decay to EXACTLY 0.0 at the second boundary and
+stay silent until the next press (blur → release_all included); every
+record's V1FamilyAdapter projection passes `commanded_target_velocity_x`
+through bit-exactly and decode_v1 round-trips canonically. issued_tick is
+anchored to the ENGINE's own tick counter (4934 → 9459 observed across the
+stream).
+
+R4 INDEPENDENT OBSERVATION (non-circular) — `trace_real.jsonl`: the body
+state was read ONLY from the engine's own state/frame path: /tick_state at
+25 Hz (the engine's own ts_us + ticks + root_y/root_vy) and engine-composed
+/api/snapshot FULL36 pulls (~1 s; 249,743-vertex real body), plus the
+engine's own /frame PNGs. RESULT: the horizontal centroid of the real body
+is BIT-IDENTICAL across the entire command stream (cx -0.0482328534,
+cz 0.0783496797, first to last), every root_y step is 0.0, ticks monotonic
+— NO TELEPORTATION OBSERVED, under a law bound of v_max*dt+1e-4 per
+window. This is the engine's own answer about its own body, never a
+reconstruction from the commands.
+
+R5 RECEIVER CAPABILITY (measured, not asserted): the running engine's real
+answers — `POST /tick_gait {"on":true}` (compact body; the boolean is parsed
+by literal substring) → `{"ok":false,"error":"refused: needs gravity,
+stance, classification, pins 13-18, and a sealed feet cell"}` — the engine's
+own named refusal; `POST /tick_stance {"on":true}` refused likewise; command-
+shaped POSTs to `/command`, `/api/command`, `/tick_command` → the engine's
+"Not found" (200-text fallback; no such route); and the page's own
+declarations recorded verbatim: "pending: real locomotion (the gait machine)
+· physics target 426" and the MOCK mock_carry panel. THE INPUT→BODY-
+EXECUTION LEG IS THEREFORE INCOMPLETE and is recorded as exactly that, per
+the finding's own alternative ("retain this as component evidence with
+qualification incomplete").
+
+R6 CAMERA-PINNED CAPTURE: real headless-Chrome video of the live application
+through the whole session (`real_session.webm` → `real_capture.mp4`,
+44.2 s, h264 yuv420p 1280x720@25, sha256 `846f0b3281c15abc...`), three
+declared views driven by the page's OWN camera keys (+ zoom to dist<=1.2 m;
+ArrowLeft side orbit to a recorded yaw), diagnostic stills (full page) +
+clean stills (the canvas's OWN toDataURL) + the engine's own /frame PNGs;
+manifest `real_capture_manifest.json` per chimera.visual_capture_manifest.v1
+(profile controls, kind motion, trace binding = trace_real.jsonl, camera
+from the live __CHIMERA_VIEW + the page's pinned persp(0.9,a,0.05,60)),
+validated GREEN by visual_capture.validate_manifest AND visual_gate.verify
+against card_task.json (structurally_valid true, 6 views, visual_acceptance
+false by law — independent visual review remains the reviewer's gate).
+Honest view note frozen in advance: the real scene has NO obstruction
+object, so the "obstructed" half of view 2 stays component-level (FollowCamera
+declared obstacle model, C7); no synthetic pillar is drawn into real pixels.
+
+CORROBORATION: this run's engine /frame PNGs (all three views:
+`1ae0b509...`) and the default-camera canvas clean still (`7fe200a4...`) are
+BYTE-IDENTICAL to the accepted X02 lane's engine frames and clean still —
+the deterministic pinned engine at the same scene/start-state answers with
+the same bytes through two independent runs.
+
+R7 BOUNDED SESSION: ~2 min wall; server and engine terminated by PID
+(processes this driver started); zero leftover engine processes (verified
+globally); logs/artifacts only inside this attempt workspace + checkout.
+
+PRESERVED: `evidence/capture.mp4` (`a51fcbc8...`) and all original probe
+artifacts are untouched and remain labeled SYNTHETIC (a deterministic CPU
+visualization of the headless command-seam trace, NOT native engine frames);
+`PREREGISTRATION.md`, `controls_profile_probe.py`, `evidence/trace.jsonl`
+byte-unchanged.
+
+REMAINING GATES (unchanged in kind): independent worker review of this
+correction; lead ACCEPTED review with head_sha bound to the exact reviewed
+head; the locomotion execution leg (a real consumer of V1 speed/heading
+records in the engine) remains with the integration lane.
+
+writes_stopped: the task tree is untouched after the correction commit.
