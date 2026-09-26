@@ -27,6 +27,17 @@ in fixtures, so nothing here launches, kills or unloads a real process.
 
 Every refusal is by name (`control.Refusal`). The exact state/transition/
 refusal matrix is frozen in this attempt's PREREGISTRATION.md.
+
+Second correction delta (lead CHANGES_REQUIRED 2026-09-26, PR #158): the
+drain/teardown evidence mutators (gate close/open, checkpoint_preserved,
+model_unload, game_release) are fenced by `_fence_mutation` - only the live
+request's owner at the live claim generation, or explicit supervisor
+authority, may write them (`handoff_mutation_not_authorized` for foreign
+identities; `stale_or_foreign_claim` for non-live generations); and
+`handoff_model_unload` only accepts the REGISTERED restoration configuration
+of the named instance (`restoration_config_mismatch` otherwise), retaining
+the registered configuration exactly. Frozen in
+PREREGISTRATION-CORRECTION-ADDENDUM.md before the post-fix probes.
 """
 import secrets
 
@@ -75,6 +86,26 @@ class HandoffControl(Control):
 
     def _corruption_gate(self, req):
         require(not req.get('corrupted'), 'unknown_state_stays_recovery_hold')
+
+    def _fence_mutation(self, s, actor, req, p):
+        """Evidence fence (lead CHANGES_REQUIRED 2026-09-26, PR #158): a
+        state/evidence mutation of a live handoff request is authorized
+        EITHER by explicit supervisor authority OR by the live request owner
+        whose own task claim is live at the validated generation. A foreign
+        enrolled identity is refused by name before any field is touched; a
+        generation pin that is not the live claim generation (and a request
+        whose recorded generation is no longer live) is refused by the pinned
+        controller's claim law. Legal owner flows and supervisor recovery are
+        unchanged. Applies to gate close/open, checkpoint_preserved,
+        model_unload and game_release; request/admit/ready/launch/cessation/
+        restore already authorize through Control._task, and hold/recover/
+        register carry their own frozen authority checks."""
+        if actor == 'SUPERVISOR':
+            return
+        require(actor == req['owner'], 'handoff_mutation_not_authorized')
+        self._task(s, actor, req['task'],
+                   p.get('generation', req['generation']),
+                   instance=p.get('_resolved_instance'))
 
     def _next_action(self, phase):
         return {
@@ -167,6 +198,7 @@ class HandoffControl(Control):
     def _h_gate_close(self, s, plane, actor, p):
         req = self._active_request(s, plane, p.get('task'))
         self._corruption_gate(req)
+        self._fence_mutation(s, actor, req, p)
         require(req['phase'] == 'DRAINING', 'handoff_not_draining')
         if plane['gate'] and plane['gate'].get('closed'):
             return {'gate': 'CLOSED', 'note': 'already_closed'}
@@ -199,6 +231,7 @@ class HandoffControl(Control):
     def _h_gate_open(self, s, plane, actor, p):
         req = self._active_request(s, plane, p.get('task'))
         self._corruption_gate(req)
+        self._fence_mutation(s, actor, req, p)
         require(req['phase'] == 'RESTORING', 'inference_gate_open_not_allowed')
         require(plane['gate'] and plane['gate'].get('closed'),
                 'gate_already_open')
@@ -231,6 +264,7 @@ class HandoffControl(Control):
     def _h_checkpoint_preserved(self, s, plane, actor, p):
         req = self._active_request(s, plane, p.get('task'))
         self._corruption_gate(req)
+        self._fence_mutation(s, actor, req, p)
         require(req['phase'] == 'DRAINING', 'handoff_not_draining')
         workers = p.get('workers')
         if not (_filled(p.get('evidence')) and isinstance(workers, list)
@@ -256,6 +290,7 @@ class HandoffControl(Control):
     def _h_model_unload(self, s, plane, actor, p):
         req = self._active_request(s, plane, p.get('task'))
         self._corruption_gate(req)
+        self._fence_mutation(s, actor, req, p)
         require(req['phase'] == 'DRAINING', 'handoff_not_draining')
         iid = p.get('instance')
         require(isinstance(iid, str) and iid.strip() and iid != '--all',
@@ -265,6 +300,12 @@ class HandoffControl(Control):
         require(isinstance(cfg, dict) and cfg.get('artifact')
                 and cfg.get('context') is not None,
                 'restoration_config_required')
+        # RESTORE-CONFIG REGISTRATION (lead CHANGES_REQUIRED 2026-09-26,
+        # PR #158): only the REGISTERED restoration configuration of the
+        # named instance may be recorded; a different/unregistered config is
+        # refused by name and the registered configuration is retained
+        # exactly, so no tampered config can propagate into handoff_restore.
+        require(cfg == plane['instances'][iid], 'restoration_config_mismatch')
         unloaded = req['drain'].setdefault('unloaded', {})
         require(iid not in unloaded, 'instance_already_unloaded')
         unloaded[iid] = dict(cfg)
@@ -285,6 +326,7 @@ class HandoffControl(Control):
     def _h_game_release(self, s, plane, actor, p):
         req = self._active_request(s, plane, p.get('task'))
         self._corruption_gate(req)
+        self._fence_mutation(s, actor, req, p)
         require(req['phase'] == 'DRAINING', 'handoff_not_draining')
         name = text(p.get('name'), 'game_name')
         game = plane['games'].get(name)

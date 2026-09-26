@@ -24,6 +24,7 @@ SUITES = [
     ('probe:test_p04_records', WS, None, 'test_p04_records.py'),
     ('probe:test_gpu_handoff', WS, None, 'test_gpu_handoff.py'),
     ('probe:test_correction_records', WS, None, 'test_correction_records.py'),
+    ('probe:test_correction_fencing', WS, None, 'test_correction_fencing.py'),
 ]
 
 CARRIED_FROM_PRIOR = {
@@ -77,14 +78,23 @@ for r in results:
     total += r['tests']
 
 out = {
-    'schema': 'chimera.monkey.p04.correction.probe_run.v1',
+    'schema': 'chimera.monkey.p04.correction.probe_run.v2',
     'task_id': 'ONT-P04',
-    'attempt_id': '4f4df57ef3d54c0996cf969e8a599d1b',
-    'corrects_publication_request': 'publication-3a6a3e498a0740efad08936e19c831df',
-    'prior_attempt_id': 'fccb0a3f4fc74a29a7189453b6f91ced',
+    'attempt_id': '06792d79c3704ac29df519055aabbc57',
+    'corrects_publication_request': 'publication-a6c5aa2fbd4446dfa94852038d3fea1b',
+    'prior_attempt_id': '4f4df57ef3d54c0996cf969e8a599d1b',
+    'prior_head': '68290bec4ab84238e00e9190748402177fd55937',
     'pinned_attempt_head': 'c525b82c7c3ce0128565424764293a3c85811ab3',
     'criteria_sha256': '6191e11ce3098cf90190c88a658267676e01163106dadaf883b0c48b7dc072db',
-    'scope_sha256': '01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6',
+    'lead_ruling': 'CHANGES_REQUIRED msg-5feabcb2d57f49e9a70d8e366b62095e: '
+                   'foreign enrolled gamer could mutate training drain '
+                   'evidence and unload accepted a different restoration '
+                   'config; fence mutations by live request '
+                   'owner/generation/instance or supervisor authority, '
+                   'require registered restore configuration, add '
+                   'foreign/stale/config regressions',
+    'preregistration_addendum_sha256': sha256_file(
+        WS / 'PREREGISTRATION-CORRECTION-ADDENDUM.md'),
     'profile': 'records (offline); CPU-only fixtures; no GPU; no live registry; '
                'no live handoff; no process launches beyond python -B tests; '
                'loopback-only servers inside pinned fixtures',
@@ -99,9 +109,12 @@ out = {
     },
     'deliverable_hashes': {
         'PREREGISTRATION.md': sha256_file(WS / 'PREREGISTRATION.md'),
+        'PREREGISTRATION-CORRECTION-ADDENDUM.md': sha256_file(
+            WS / 'PREREGISTRATION-CORRECTION-ADDENDUM.md'),
         'gpu_handoff.py': sha256_file(WS / 'gpu_handoff.py'),
         'test_gpu_handoff.py': sha256_file(WS / 'test_gpu_handoff.py'),
         'test_correction_records.py': sha256_file(WS / 'test_correction_records.py'),
+        'test_correction_fencing.py': sha256_file(WS / 'test_correction_fencing.py'),
         'pinned_file_hashes.json': sha256_file(WS / 'pinned_file_hashes.json'),
     },
 }

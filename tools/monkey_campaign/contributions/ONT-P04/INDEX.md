@@ -67,3 +67,24 @@ the operational lead). Files:
 Every failure above was a probe-fixture, expectation or harness defect; none
 required changing the frozen semantics or the implementation's decision logic.
 Nothing suppressed.
+
+---
+
+# Second correction (attempt 06792d79c3704ac29df519055aabbc57, 2026-09-26)
+
+The section above enumerates the FIRST correction's failing-run sequence
+(attempt 4f4df57ef3d54c0996cf969e8a599d1b); its logs live in that attempt's
+`first_run_failures/`. This attempt's failing-first evidence:
+
+- `test_correction_fencing_first_run.log` - FIRST recorded run of the frozen
+  evidence-fencing regression suite against the UNFIXED PR #158 head source:
+  11 tests, exactly the 8 refusal regressions FAIL with "Refusal not raised"
+  (foreign gamer/lead mutations of checkpoint_preserved, model_unload,
+  game_release, gate_close all ACCEPTED; stale-generation pins ACCEPTED;
+  wrong-config unload ACCEPTED), the 3 legal-path guards PASS - matching the
+  frozen prediction P1 in PREREGISTRATION-CORRECTION-ADDENDUM.md (frozen
+  sha256 b0dfadde7299c292369f82c0fe371029b6c520940172ca29ada3ca64dabd30cc
+  BEFORE the post-fix probes). After the fix: 11/11 OK; full battery
+  10 suites 129/129 OK twice; the lead's falsifier flips from both-mutations-
+  accepted (reprobe/before_run.json) to both-refused-by-name with an empty
+  drain record (reprobe/after_run.json).

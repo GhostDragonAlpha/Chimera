@@ -179,3 +179,110 @@ Publish the correction artifacts to `review/ONT-P04`, run the non-author
 review, pin the replacement qualification receipt (numerical + source +
 independent_review) with head_sha re-bound to the published PR head. The
 verified clauses-1/3 records work carries forward unchanged.
+
+---
+
+# SECOND CORRECTION (this attempt) - evidence fencing + restore-config law
+
+Attempt `06792d79c3704ac29df519055aabbc57`, arrival
+`arrival-c03016e9e0c74d67b03761e5d74ac7e1`. Corrects publication
+`publication-a6c5aa2fbd4446dfa94852038d3fea1b` (PR #158 head `68290bec`)
+against the operational-lead CHANGES_REQUIRED
+`msg-5feabcb2d57f49e9a70d8e366b62095e` (evidence
+`E:/Chimera/queue-check-20260926/current/REVIEW.md` + `reprobe.py`). The
+first correction's report above is preserved verbatim; its sections describe
+the prior attempt.
+
+## The finding, reproduced before the fix
+
+The lead's falsifier, re-executed on hash-pinned exact source (gpu_handoff.py
+sha256 `100154452bcc...f3e7030` = the PR #158 head source, asserted at import;
+reviewer Rig; temporary registry): with the training request live in DRAINING,
+the enrolled `gamer` identity - owner of the game task, NOT the request owner
+- successfully recorded `checkpoint_preserved = "foreign assertion"` and an
+unload of `qwen-local` with restoration_config `{artifact: DIFFERENT,
+context: 1}`. Both drain-evidence mutations landed in the request record
+(`reprobe/before_run.json`). The lead's own reprobe.py was also run verbatim;
+its #158 half runs silently and its #160 half crashes on a harness bug in the
+quick script (`p.stat().st_size()` is an int, not callable) before printing -
+unrelated to the #158 finding; the faithful preserved reproduction is
+`reprobe/pr158_falsifier.py` (+ `before_run_stdout.txt`).
+
+## The fix (frozen in PREREGISTRATION-CORRECTION-ADDENDUM.md, sha256
+`b0dfadde7299c292369f82c0fe371029b6c520940172ca29ada3ca64dabd30cc`, frozen
+BEFORE the post-fix probes)
+
+1. EVIDENCE FENCING - new `_fence_mutation` guard on `handoff_gate_close`,
+   `handoff_gate_open`, `handoff_checkpoint_preserved`,
+   `handoff_model_unload`, `handoff_game_release`: after request resolution
+   and the corruption gate, and before any other check, require EITHER
+   explicit supervisor authority OR the live request owner at the validated
+   generation (`handoff_mutation_not_authorized` for foreign identities, then
+   the pinned controller's `Control._task` claim law for generations -
+   `stale_or_foreign_claim` for a non-live generation pin or a request whose
+   recorded generation is no longer live).
+2. RESTORE-CONFIG REGISTRATION - `handoff_model_unload` now requires the
+   presented restoration_config to EQUAL the registered configuration of the
+   named instance (`restoration_config_mismatch` otherwise, the same frozen
+   name the restore path already enforces); the registered configuration is
+   retained exactly and a tampered unload can no longer propagate into
+   `handoff_restore`.
+3. Scoping honesty: `handoff_gate_check` (status probe, writes no request
+   evidence) and `handoff_infer_wait` (caller's own waiter record) stay
+   unfenced; request/admit/ready/launch/cessation/restore already authorize
+   through `Control._task`; hold/recover/register keep their frozen authority
+   checks. The pinned controller is untouched (`39ff01dc...` verified by
+   probe); `HandoffControl` remains a pure additive subclass.
+
+## Falsifier after the fix
+
+Same falsifier lines against the FIXED source (sha256
+`fd664b5f8182ea3466b37f9cdfe217950bcc6e91a4bb72c23c9ac6c33ad78dc0`, asserted
+at import): `foreign_checkpoint` -> refused `handoff_mutation_not_authorized`;
+`foreign_unload_wrong_config` -> refused `handoff_mutation_not_authorized`;
+the task drain record after both attempts is `{}` - nothing lands
+(`reprobe/after_run.json`, `after_run_stdout.txt`).
+
+## Regressions (failing-first, preserved)
+
+New `test_correction_fencing.py`, 11 tests in three frozen groups:
+F1 foreign-mutation refusal (gamer/lead refused by name on checkpoint,
+model_unload, game_release, gate_close; drain record proven untouched; the
+lead's exact falsifier calls; supervisor authority stays legal), F2
+stale-generation refusal (owner-pinned stale generation; a request made stale
+by a real claim advance via supervisor `claim_abandon` + re-claim to live
+generation 3 vs request generation 1; honest re-request at the live
+generation), F3 restore-config law (different artifact / mutated context /
+mutated offload refused `restoration_config_mismatch`; unregistered instance
+and missing config still refused by their existing names; registered config
+retained exactly through a full chain into restore).
+
+First-run output preserved: `first_run_failures/
+test_correction_fencing_first_run.log` - exactly the 8 refusal regressions
+FAIL with "Refusal not raised" on the unfixed head; the 3 legal-path guards
+pass, matching the frozen prediction P1. Two probe post-condition details
+were then corrected in the tests themselves (an `unloaded`-key absence
+assertion and a missing fresh `resource_request` before the honest re-request
+after `claim_abandon`); neither changes what defect the tests detect, and
+both defects the tests detect are the implementation's, fixed in
+gpu_handoff.py.
+
+## Verification
+
+- Full frozen battery `run_all_probes.py`: 10 suites, **129/129 OK, exit 0**,
+  twice (pinned 12+12+13+12+8; carried 17+6 byte-identical, hash-checked;
+  prior new 28+10; new 11), CPU-only `python -B`, isolated temporary
+  registries, no GPU, no live process. The 118 prior tests pass unchanged
+  against the fixed source.
+- Pinned controller `control.py` at `c525b82c`: sha256
+  `39ff01dc8a4192e04606ee9d87386780739e89c8a1774da48501a9545792f6b3`
+  (probe-enforced); the additive-subclass property is preserved.
+- E:/PythonChimera and E:/Chimera received zero writes; review evidence was
+  read read-only; all writes stayed inside this attempt workspace plus its
+  scoped checkout sparse path `tools/monkey_campaign/contributions/ONT-P04/`.
+
+## Remaining gates
+
+Unchanged and not claimed: GPU-B/C/D adapters, live handoff qualification
+(owning records), lead publication and independent review of THIS correction;
+head_sha re-binding to the published PR head.
