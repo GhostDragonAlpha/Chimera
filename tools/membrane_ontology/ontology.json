@@ -1,0 +1,1108 @@
+{
+  "schema": "chimera.membrane_ontology.v1",
+  "revision": 2,
+  "root": "monkey-game",
+  "authority": "Operator clarification 2026-09-24; lead-authored composition, runtime bindings unqualified.",
+  "nodes": [
+    {
+      "id": "monkey-game",
+      "name": "Playable monkey",
+      "parent": null,
+      "kind": "game",
+      "description": "One physically controlled monkey in a forest: walk, steer, climb, hold, descend and release.",
+      "boundary": {
+        "description": "The playable experience and its world.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "One physically controlled monkey in a forest: walk, steer, climb, hold, descend and release.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [
+        "tools/monkey_campaign/monkey_completion_map.json"
+      ],
+      "gaps": [
+        "This view describes composition, not feature completion."
+      ]
+    },
+    {
+      "id": "creature",
+      "name": "Creature",
+      "parent": "monkey-game",
+      "kind": "creature",
+      "description": "The creature contains its skeleton, musculature and skin, connected through ports.",
+      "boundary": {
+        "description": "Chosen outer skin/mesh: the geometric envelope enclosing the creature.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "The creature contains its skeleton, musculature and skin, connected through ports.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [
+        {
+          "id": "command",
+          "protocol": "speed-heading",
+          "unit": "m/s,rad",
+          "description": "20 Hz speed and heading command",
+          "delegates_to": {
+            "node": "locomotion",
+            "port": "command"
+          }
+        },
+        {
+          "id": "contact",
+          "protocol": "mechanical-contact",
+          "unit": "SI",
+          "description": "Contact with terrain and trees"
+        },
+        {
+          "id": "feedback",
+          "protocol": "observation-contract",
+          "unit": "declared by runtime contract",
+          "description": "Physical state and contact observations."
+        }
+      ],
+      "sources": [
+        "docs/architecture/CREATURE_ARCHITECTURE_REBASE_2026-09-15.md"
+      ],
+      "gaps": [
+        "Envelope asset and physical assembly binding need explicit source selection."
+      ]
+    },
+    {
+      "id": "skeleton",
+      "name": "Skeletal structure",
+      "parent": "creature",
+      "kind": "skeletal_system",
+      "description": "Contains the individual bones and their joint-connection membranes.",
+      "boundary": {
+        "description": "Authored skeletal structure; geometric and frame boundaries come from qualified anatomy.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Contains the individual bones and their joint-connection membranes.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [
+        {
+          "id": "attachment",
+          "protocol": "mechanical-attachment",
+          "unit": "SI",
+          "description": "Muscle/tendon attachment interface"
+        },
+        {
+          "id": "surface",
+          "protocol": "surface-binding",
+          "unit": "m",
+          "description": "Skeleton-to-skin deformation binding"
+        }
+      ],
+      "sources": [
+        "tools/assembly_handoff/assembly_handoff.py",
+        "forearm_package/ANATOMICAL_DECISION_TABLE.md",
+        "forearm_package/baseline_snapshot/source_xml/chimanoid.xml",
+        "forearm_package/baseline_snapshot/runs/actual_monkey_fit.json"
+      ],
+      "gaps": [
+        "Individual bone membership must be imported from a pinned source and anatomically resolved.",
+        "MuJoCo bodies are source model entities; do not automatically equate each one to a bone.",
+        "Source XML nesting and the fitted packet's disconnected ownership tree are different representations; no automatic replacement is authorized."
+      ]
+    },
+    {
+      "id": "bones",
+      "name": "Individual bones",
+      "parent": "skeleton",
+      "kind": "collection",
+      "description": "Each resolved bone is a child membrane with its own geometry, frame, matter and ports.",
+      "boundary": {
+        "description": "Collection membership, not an additional solid or mass owner.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Each resolved bone is a child membrane with its own geometry, frame, matter and ports.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [
+        "tools/assembly_handoff/inputs/ownership_bindings.json"
+      ],
+      "gaps": [
+        "No individual bone is fabricated by this initial composition definition."
+      ]
+    },
+    {
+      "id": "joints",
+      "name": "Joint connections",
+      "parent": "skeleton",
+      "kind": "collection",
+      "description": "Each joint is a connection membrane whose ports reference the participating bones.",
+      "boundary": {
+        "description": "Authored joint interfaces and their physical constraints.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Each joint is a connection membrane whose ports reference the participating bones.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [
+        "tools/assembly_handoff/inputs/mechanical_requirements.cannot_produce.json"
+      ],
+      "gaps": [
+        "Joint parameters, endpoints and frames require qualified source bindings."
+      ]
+    },
+    {
+      "id": "musculature",
+      "name": "Musculature",
+      "parent": "creature",
+      "kind": "muscle_system",
+      "description": "Contains muscles and tendon/attachment connections to the skeletal structure.",
+      "boundary": {
+        "description": "The creature's active and passive musculotendon structure.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Contains muscles and tendon/attachment connections to the skeletal structure.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [
+        {
+          "id": "force",
+          "protocol": "mechanical-attachment",
+          "unit": "SI",
+          "description": "Force transmission to authored skeletal attachments"
+        },
+        {
+          "id": "activation",
+          "protocol": "actuator-contract",
+          "unit": "declared by runtime contract",
+          "description": "Input is admitted only under the pinned actuator contract."
+        }
+      ],
+      "sources": [
+        "forearm_package/QUALIFICATION_SPEC.md"
+      ],
+      "gaps": [
+        "Grasp-critical unresolved owners and mechanical qualification remain explicit gates."
+      ]
+    },
+    {
+      "id": "muscles",
+      "name": "Individual muscles",
+      "parent": "musculature",
+      "kind": "collection",
+      "description": "Each muscle is a membrane with its own material, actuation law and attachment ports.",
+      "boundary": {
+        "description": "Authored muscle volume and attachment interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Each muscle is a membrane with its own material, actuation law and attachment ports.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Source-bound muscle instances not yet imported."
+      ]
+    },
+    {
+      "id": "tendons",
+      "name": "Tendons and attachments",
+      "parent": "musculature",
+      "kind": "collection",
+      "description": "Connection membranes carry the declared paths and attachment contracts.",
+      "boundary": {
+        "description": "Path and attachment interfaces; geometric proximity does not establish attachment.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Connection membranes carry the declared paths and attachment contracts.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [
+        "forearm_package/QUALIFICATION_SPEC.md"
+      ],
+      "gaps": [
+        "Do not qualify an attachment from a waypoint alone."
+      ]
+    },
+    {
+      "id": "skin",
+      "name": "Skin",
+      "parent": "creature",
+      "kind": "skin",
+      "description": "Surface and material structure around the creature; also supplies the chosen outer envelope.",
+      "boundary": {
+        "description": "Chosen surface asset; sharing its reference with the creature adds no second mass.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Surface and material structure around the creature; also supplies the chosen outer envelope.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [
+        {
+          "id": "surface",
+          "protocol": "surface-binding",
+          "unit": "m",
+          "description": "Deformation interface to the underlying structure"
+        }
+      ],
+      "sources": [
+        "forearm_package/baseline_snapshot/inputs/monkey_birth.bin",
+        "forearm_package/baseline_snapshot/inputs/monkey_joints.bin",
+        "forearm_package/baseline_snapshot/runs/actual_monkey_fit.json"
+      ],
+      "gaps": [
+        "These are the frozen monkey fit's surface/binding inputs. Selecting them for the current playable assembly and qualifying their tissue/mass binding remain explicit steps."
+      ]
+    },
+    {
+      "id": "tissue",
+      "name": "Matter definitions",
+      "parent": "creature",
+      "kind": "matter",
+      "description": "Explicit material, cell and ownership definitions used by the creature's constituent membranes.",
+      "boundary": {
+        "description": "A definition namespace; it does not add matter to the creature by containment.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Explicit material, cell and ownership definitions used by the creature's constituent membranes.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [
+        "Chimera/docs/matter/material_volume_compiler.md",
+        "Chimera/docs/matter/material_volume_body_export.md",
+        "Chimera/docs/matter/matter_library.json"
+      ],
+      "gaps": [
+        "Actual creature partition/densities must be supplied and admitted."
+      ]
+    },
+    {
+      "id": "partition",
+      "name": "Material partition",
+      "parent": "tissue",
+      "kind": "contract",
+      "description": "Stable cells, regions, materials and density sources describe the matter being integrated.",
+      "boundary": {
+        "description": "Explicit domain and cell boundaries with their declared units and frame.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Stable cells, regions, materials and density sources describe the matter being integrated.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [
+        "tools/material_volume.py",
+        "tools/material_volume_admission.py"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "ownership",
+      "name": "Matter ownership",
+      "parent": "tissue",
+      "kind": "contract",
+      "description": "Each matter claim has an explicit owner; references and port connections never duplicate it.",
+      "boundary": {
+        "description": "Ownership ledger, separate from display hierarchy.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Each matter claim has an explicit owner; references and port connections never duplicate it.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [
+        "tools/assembly_handoff/inputs/ownership_bindings.json"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "body-export",
+      "name": "Body mass properties",
+      "parent": "tissue",
+      "kind": "contract",
+      "description": "Authored cell groups export mass, COM and full inertia under declared frames.",
+      "boundary": {
+        "description": "Static export/admission contract; no dynamics readiness implied.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Authored cell groups export mass, COM and full inertia under declared frames.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [
+        "tools/material_volume_body_export.py",
+        "tools/material_volume_body_export_reader.py"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "parent": "monkey-game",
+      "kind": "world",
+      "description": "Terrain and trees supply the creature's environment and contact opportunities.",
+      "boundary": {
+        "description": "Finite playable forest.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Terrain and trees supply the creature's environment and contact opportunities.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [
+        {
+          "id": "contact",
+          "protocol": "mechanical-contact",
+          "unit": "SI",
+          "description": "Terrain/tree contact interface"
+        }
+      ],
+      "sources": [
+        "tools/monkey_campaign/monkey_completion_map.json"
+      ],
+      "gaps": [
+        "Native terrain and trunk contacts require their own runtime verification."
+      ]
+    },
+    {
+      "id": "terrain",
+      "name": "Terrain",
+      "parent": "forest",
+      "kind": "terrain",
+      "description": "Ground shape, material and collision.",
+      "boundary": {
+        "description": "Authored terrain surface and collision domain.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Ground shape, material and collision.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": []
+    },
+    {
+      "id": "trees",
+      "name": "Trees",
+      "parent": "forest",
+      "kind": "collection",
+      "description": "Tree instances with trunks, branches and grasp/contact ports.",
+      "boundary": {
+        "description": "Each tree's geometry and contact interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Tree instances with trunks, branches and grasp/contact ports.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Climbable instances and grasp ports require authored physical bindings."
+      ]
+    },
+    {
+      "id": "player",
+      "name": "Player control",
+      "parent": "monkey-game",
+      "kind": "controller",
+      "description": "Game controls and camera operate the physical character through the existing command interface.",
+      "boundary": {
+        "description": "Player input, camera and command interface.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Game controls and camera operate the physical character through the existing command interface.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [
+        {
+          "id": "command",
+          "protocol": "speed-heading",
+          "unit": "m/s,rad",
+          "description": "20 Hz speed and heading command"
+        }
+      ],
+      "sources": [
+        "tools/monkey_campaign/monkey_completion_map.json"
+      ],
+      "gaps": []
+    },
+    {
+      "id": "connections",
+      "name": "Connections",
+      "parent": "monkey-game",
+      "kind": "collection",
+      "description": "Explicit port-to-port relationships; each relationship is also a membrane.",
+      "boundary": {
+        "description": "Relationship ownership within the game definition.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Explicit port-to-port relationships; each relationship is also a membrane.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": []
+    },
+    {
+      "id": "drive",
+      "name": "Control → creature",
+      "parent": "connections",
+      "kind": "connection",
+      "description": "Send speed and heading to the creature.",
+      "boundary": {
+        "description": "The named endpoint interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Send speed and heading to the creature.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Declared composition relationship; physical/runtime binding not qualified."
+      ],
+      "endpoints": [
+        {
+          "node": "player",
+          "port": "command"
+        },
+        {
+          "node": "creature",
+          "port": "command"
+        }
+      ],
+      "connection_status": "planned"
+    },
+    {
+      "id": "contact",
+      "name": "Creature ↔ forest",
+      "parent": "connections",
+      "kind": "connection",
+      "description": "Exchange contact through the physical world interface.",
+      "boundary": {
+        "description": "The named endpoint interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Exchange contact through the physical world interface.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Declared composition relationship; physical/runtime binding not qualified."
+      ],
+      "endpoints": [
+        {
+          "node": "creature",
+          "port": "contact"
+        },
+        {
+          "node": "forest",
+          "port": "contact"
+        }
+      ],
+      "connection_status": "planned"
+    },
+    {
+      "id": "muscle-bone",
+      "name": "Muscle ↔ skeleton",
+      "parent": "connections",
+      "kind": "connection",
+      "description": "Transmit forces through authored tendon/attachment contracts.",
+      "boundary": {
+        "description": "The named endpoint interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Transmit forces through authored tendon/attachment contracts.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Declared composition relationship; physical/runtime binding not qualified."
+      ],
+      "endpoints": [
+        {
+          "node": "musculature",
+          "port": "force"
+        },
+        {
+          "node": "skeleton",
+          "port": "attachment"
+        }
+      ],
+      "connection_status": "planned"
+    },
+    {
+      "id": "skin-bone",
+      "name": "Skeleton ↔ skin",
+      "parent": "connections",
+      "kind": "connection",
+      "description": "Bind the surface to the skeletal structure with an explicit deformation contract.",
+      "boundary": {
+        "description": "The named endpoint interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Read linked source contracts; no parameters are supplied by this ontology."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Bind the surface to the skeletal structure with an explicit deformation contract.",
+        "prediction": "The authored structure and its source bindings can be inspected without promoting runtime readiness.",
+        "falsifier": "A missing, contradictory or unqualified binding must remain visible."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Declared composition relationship; physical/runtime binding not qualified."
+      ],
+      "endpoints": [
+        {
+          "node": "skeleton",
+          "port": "surface"
+        },
+        {
+          "node": "skin",
+          "port": "surface"
+        }
+      ],
+      "connection_status": "planned"
+    },
+    {
+      "id": "governance",
+      "name": "Project contract and provenance",
+      "parent": "monkey-game",
+      "kind": "governance",
+      "description": "Own scope, source identities, recovery and acceptance limits.",
+      "boundary": {
+        "description": "The declared project contract and provenance responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Own scope, source identities, recovery and acceptance limits.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "locomotion",
+      "name": "Locomotion and skill selection",
+      "parent": "creature",
+      "kind": "controller",
+      "description": "Select physical walking and climbing skills through declared command, observation and actuator ports.",
+      "boundary": {
+        "description": "The declared locomotion and skill selection responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Select physical walking and climbing skills through declared command, observation and actuator ports.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [
+        {
+          "id": "command",
+          "protocol": "speed-heading",
+          "unit": "m/s,rad",
+          "description": "Existing command seam and explicit skill selection."
+        },
+        {
+          "id": "actuation",
+          "protocol": "actuator-contract",
+          "unit": "declared by runtime contract",
+          "description": "Certified observation/action contract supplies actual actuator units and bounds."
+        },
+        {
+          "id": "observation",
+          "protocol": "observation-contract",
+          "unit": "declared by runtime contract",
+          "description": "Policy observation schema and frame/units must match."
+        }
+      ],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "walking",
+      "name": "Walking",
+      "parent": "locomotion",
+      "kind": "skill",
+      "description": "All-fours movement from the certified walking policy and its physical actuators.",
+      "boundary": {
+        "description": "The declared walking responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "All-fours movement from the certified walking policy and its physical actuators.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "climbing",
+      "name": "Climbing",
+      "parent": "locomotion",
+      "kind": "skill",
+      "description": "Climb, hold, descend, release and transition through the qualified grasp/contact system.",
+      "boundary": {
+        "description": "The declared climbing responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Climb, hold, descend, release and transition through the qualified grasp/contact system.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "grasp",
+      "name": "Grasp and support",
+      "parent": "creature",
+      "kind": "mechanism",
+      "description": "Qualified attachments, tendon transmission, contact support and limb transfers.",
+      "boundary": {
+        "description": "The declared grasp and support responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Qualified attachments, tendon transmission, contact support and limb transfers.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "camera",
+      "name": "Camera",
+      "parent": "player",
+      "kind": "camera",
+      "description": "Observe the character and world with usable gameplay and explicit diagnostic camera contracts.",
+      "boundary": {
+        "description": "The declared camera responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Observe the character and world with usable gameplay and explicit diagnostic camera contracts.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [
+        "ChimeraEngine/engine/engine.cpp",
+        "tools/monkey_campaign/monkey_completion_map.json"
+      ],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "session",
+      "name": "Player session",
+      "parent": "monkey-game",
+      "kind": "session",
+      "description": "Objective, start, pause, restart, failure/recovery and readable player feedback.",
+      "boundary": {
+        "description": "The declared player session responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Objective, start, pause, restart, failure/recovery and readable player feedback.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "persistence",
+      "name": "Persistence",
+      "parent": "monkey-game",
+      "kind": "storage",
+      "description": "Save and restore declared playable state and player settings.",
+      "boundary": {
+        "description": "The declared persistence responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Save and restore declared playable state and player settings.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "runtime",
+      "name": "Runtime and resources",
+      "parent": "monkey-game",
+      "kind": "runtime",
+      "description": "Pinned numerical execution, resource ownership, profiling and failure recovery.",
+      "boundary": {
+        "description": "The declared runtime and resources responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Pinned numerical execution, resource ownership, profiling and failure recovery.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "delivery",
+      "name": "Delivery and acceptance",
+      "parent": "monkey-game",
+      "kind": "delivery",
+      "description": "Distributable build, provenance, player help, human acceptance and release evidence.",
+      "boundary": {
+        "description": "The declared delivery and acceptance responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Distributable build, provenance, player help, human acceptance and release evidence.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "inspection",
+      "name": "Visual inspection",
+      "parent": "monkey-game",
+      "kind": "instrument",
+      "description": "Stable 3D item labels, visibility layers, camera presets and paired diagnostic/clean evidence.",
+      "boundary": {
+        "description": "The declared visual inspection responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Stable 3D item labels, visibility layers, camera presets and paired diagnostic/clean evidence.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [
+        "ChimeraEngine/engine/engine.cpp",
+        "ChimeraEngine/engine/ui.hpp",
+        "ChimeraEngine/engine/ui.cpp",
+        "ChimeraEngine/engine/main.cpp"
+      ],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ]
+    },
+    {
+      "id": "policy-actuation",
+      "name": "Skills ↔ actuators",
+      "parent": "connections",
+      "kind": "connection",
+      "description": "Bind the certified action interface to actual physical actuators.",
+      "boundary": {
+        "description": "The declared skills ↔ actuators responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Bind the certified action interface to actual physical actuators.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ],
+      "endpoints": [
+        {
+          "node": "locomotion",
+          "port": "actuation"
+        },
+        {
+          "node": "musculature",
+          "port": "activation"
+        }
+      ],
+      "connection_status": "planned"
+    },
+    {
+      "id": "state-feedback",
+      "name": "State ↔ skills",
+      "parent": "connections",
+      "kind": "connection",
+      "description": "Deliver qualified body/contact observations to skill selection.",
+      "boundary": {
+        "description": "The declared state ↔ skills responsibility and its interfaces.",
+        "binding": "unresolved"
+      },
+      "physics": {
+        "status": "not_qualified",
+        "description": "Use pinned runtime/source contracts; this definition supplies no new parameters."
+      },
+      "validation": {
+        "status": "unqualified",
+        "statement": "Deliver qualified body/contact observations to skill selection.",
+        "prediction": "Mapped task evidence can establish this membrane's declared contract.",
+        "falsifier": "Missing or contradictory interface evidence prevents acceptance."
+      },
+      "ports": [],
+      "sources": [],
+      "gaps": [
+        "Task mappings locate required work; existing receipts must be reconciled before claiming implementation or acceptance."
+      ],
+      "endpoints": [
+        {
+          "node": "creature",
+          "port": "feedback"
+        },
+        {
+          "node": "locomotion",
+          "port": "observation"
+        }
+      ],
+      "connection_status": "planned"
+    }
+  ]
+}

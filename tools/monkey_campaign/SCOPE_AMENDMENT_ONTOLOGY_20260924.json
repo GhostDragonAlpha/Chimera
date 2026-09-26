@@ -1,0 +1,195 @@
+{
+  "schema": "chimera.scope_amendment.v1",
+  "date": "2026-09-24",
+  "instruction_revision": "astra-0015",
+  "operator_authorization": "Adjust the 83-task plan to match the membrane ontology, its order and visual verification points; use existing 3D tags and include camera angle and distance.",
+  "previous_scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "dependency_changes": [
+    {
+      "task_id": "W08",
+      "before": [
+        "W07"
+      ],
+      "after": [
+        "W07",
+        "U01",
+        "P06"
+      ],
+      "reasons": {
+        "U01": "The walking command consumer must use the actual player command port.",
+        "P06": "Command tracking and stability acceptance consumes frozen release limits."
+      }
+    },
+    {
+      "task_id": "U06",
+      "before": [
+        "U05"
+      ],
+      "after": [
+        "U05",
+        "G05",
+        "K06"
+      ],
+      "reasons": {
+        "G05": "Final support feedback consumes actual grip/support observations.",
+        "K06": "Final skill feedback consumes actual walk/climb arbitration; UI scaffolding can proceed earlier."
+      }
+    },
+    {
+      "task_id": "U07",
+      "before": [
+        "W10",
+        "U03",
+        "U04"
+      ],
+      "after": [
+        "W10",
+        "U03",
+        "U04",
+        "P06"
+      ],
+      "reasons": {
+        "P06": "Control latency/camera acceptance requires frozen release limits."
+      }
+    },
+    {
+      "task_id": "F04",
+      "before": [
+        "F02",
+        "F03"
+      ],
+      "after": [
+        "F02",
+        "F03",
+        "P02",
+        "P06"
+      ],
+      "reasons": {
+        "P02": "Native contact verification must identify the actual creature/scene lineage.",
+        "P06": "Contact geometry acceptance consumes declared geometric and stability limits."
+      }
+    },
+    {
+      "task_id": "F06",
+      "before": [
+        "F05",
+        "W07"
+      ],
+      "after": [
+        "F05",
+        "W07",
+        "F04"
+      ],
+      "reasons": {
+        "F04": "Terrain locomotion consumes qualified native render/collision contact."
+      }
+    },
+    {
+      "task_id": "G01",
+      "before": [
+        "A09",
+        "F03"
+      ],
+      "after": [
+        "A09",
+        "F03",
+        "W04"
+      ],
+      "reasons": {
+        "W04": "Grip load feasibility must bind to the actual certified body or an explicitly reconciled source model."
+      }
+    },
+    {
+      "task_id": "K03",
+      "before": [
+        "K02",
+        "P04"
+      ],
+      "after": [
+        "K02",
+        "P04",
+        "W07"
+      ],
+      "reasons": {
+        "W07": "Climbing follows the accepted walking foundation; the existing walking run remains unchanged."
+      }
+    },
+    {
+      "task_id": "X03",
+      "before": [
+        "W09",
+        "X02"
+      ],
+      "after": [
+        "W09",
+        "X02",
+        "K07"
+      ],
+      "reasons": {
+        "K07": "The accepted recovery experience includes climbing boundary/failure behavior."
+      }
+    },
+    {
+      "task_id": "X07",
+      "before": [
+        "K08",
+        "X01",
+        "X02",
+        "X03",
+        "X04",
+        "U06"
+      ],
+      "after": [
+        "K08",
+        "X01",
+        "X02",
+        "X03",
+        "X04",
+        "U06",
+        "X05",
+        "X06"
+      ],
+      "reasons": {
+        "X05": "The stranger playthrough covers selected audio feedback.",
+        "X06": "The stranger playthrough covers selected inspection features."
+      }
+    },
+    {
+      "task_id": "R03",
+      "before": [
+        "K08",
+        "P06"
+      ],
+      "after": [
+        "K08",
+        "P06",
+        "P05"
+      ],
+      "reasons": {
+        "P05": "Profiling must identify recoverable run/candidate artifacts."
+      }
+    },
+    {
+      "task_id": "R07",
+      "before": [
+        "R06"
+      ],
+      "after": [
+        "R06",
+        "X04",
+        "X05",
+        "X06"
+      ],
+      "reasons": {
+        "X04": "Release identity includes accepted visual state.",
+        "X05": "Release identity includes accepted interaction audio.",
+        "X06": "Release identity includes accepted live inspection."
+      }
+    }
+  ],
+  "preserved": "All 83 IDs, titles, scopes, kinds, original acceptance and calculation contracts, and catalog references. Default 76 / conditional 7 unchanged.",
+  "added": "Per-task ontology bindings/scenarios; top ontology_contract with definition pin, profiles, 11 integration checkpoints and tag/camera requirements.",
+  "reconstruction": "Remove top ontology_contract and each task ontology/dependency_reasons; restore listed before dependencies. Canonical hash equals previous_scope_sha256.",
+  "historical_evidence": "No existing card criteria or accepted receipt is overwritten. Reconcile affected claims before current-scope acceptance."
+}

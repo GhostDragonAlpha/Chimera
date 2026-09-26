@@ -432,3 +432,12 @@ Plain words, each with its receipt:
 The ship-goal status these moves touch is kept in
 [docs/THE_SHIP_GOAL.md](docs/THE_SHIP_GOAL.md) — its dated 2026-09-20 section
 holds the lane-by-lane verdicts, and the open reds are stated there.
+
+## Development workflow and replacement-PC setup
+
+Start with [system setup and directory layout](docs/SYSTEM_SETUP.md),
+[recovery checklist](docs/DISASTER_RECOVERY.md) and the
+[workflow keyword index](docs/WORKFLOW_INDEX.md).
+The separately scoped playable-monkey campaign uses [MONKEY_RUN.md](docs/MONKEY_RUN.md)
+and its verified instruction bundle. These documents do not replace the graph
+authority for other work or claim that the campaign engine lineage is merged here.
