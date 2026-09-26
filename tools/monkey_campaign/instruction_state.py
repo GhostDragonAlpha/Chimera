@@ -54,7 +54,7 @@ def inspect(root, acknowledgement=None):
     require(meta.get('revision_id') == f'astra-{rev:04d}', 'invalid_instruction_revision_id')
     require(meta.get('scope_sha256') == SCOPE, 'scope_change_requires_separate_approval')
     names = meta.get('files')
-    require(isinstance(names,list) and 1 <= len(names) <= 48 and all(isinstance(x,str) for x in names),
+    require(isinstance(names,list) and 1 <= len(names) <= 64 and all(isinstance(x,str) for x in names),
             'invalid_instruction_file_list')
     require(len(set(names)) == len(names) and 'docs/MONKEY_RUN.md' in names, 'duplicate_or_missing_entry')
     files = []

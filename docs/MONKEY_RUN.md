@@ -1,3 +1,122 @@
+# Candidate correction routing — astra-0029
+
+The lead can return an exact unpublished candidate with kanban_cli reject-publication.
+It requires task, request, criteria and artifact-manifest identities plus a finding.
+The original request and files remain preserved. The same card re-enters Development
+when no other pending candidate or non-rejected PR remains. Workers resume canonical
+startup with their existing arrival IDs; no new goal or duplicate task is needed.
+A publication request is not a GitHub PR. Unpublished good candidates still await
+the connected publisher; this fix does not claim automatic authenticated publishing.
+
+# Startup identity recovery — astra-0028
+
+Read [STARTUP_RECOVERY.md](../tools/monkey_campaign/STARTUP_RECOVERY.md).
+Use arrival_id, never attempt_id, for --arrival-id. Startup saves identity before
+checkout/output and prints its receipt path to stderr. Recover from that receipt
+and live SQLite if output is cut; do not invent a new identity or infer no claim.
+Startup metadata now comes from SQLite instead of stale STATUS.json.
+Current scope lives at the canonical root; old worktree snapshots stay historical.
+
+# Merge reconciliation dependency fix — astra-0027
+
+A verified ontology merge checks its declared qualified dependencies, not the
+sibling-work commissioning guard. Existing diagnostics still prevent duplicate
+new commissioning; they cannot retroactively block an already reviewed contract.
+Exact-head acceptance, evidence, scope and dependency gates remain unchanged.
+Review findings and receipts: E:/Chimera/queue-review-20260925/REVIEW.md.
+
+# Connected-lead merge execution — astra-0026
+
+The operator selected the connected-lead service in
+[MERGE_SERVICE.md](../tools/monkey_campaign/MERGE_SERVICE.md).
+Astra or the appointed connected replacement lead executes draft-ready and merges
+when the operator starts/resumes a lead session; it checks the accepted queue at
+session start and before ending. No unattended timer is running. Workers on ZCode
+must not rediscover the known missing API credential or treat it as a coding defect.
+They continue publication/review/authorized acceptance, release coordination, and
+take other eligible work. ACCEPTED-only work is no longer assigned to those workers
+as a merge task. Read the service's exact trigger and failure policy.
+This supersedes prior instructions implying all operational agents can merge.
+No PAT was installed or copied. Actual merge proof still comes from accept-merge.
+
+# Replacement PR routing — astra-0025
+
+An old rejected PR does not reopen implementation when the same task has another
+non-rejected candidate awaiting review. Review the replacement exact head first.
+Historical findings and PRs remain preserved; a replacement is not automatically
+approved or merged. If every candidate is rejected, corrections re-enter Development.
+Do not apply historical repair PR #128 over the newer installed workflow without
+reconciliation. Existing saved review evidence may be reused after verifying its
+head, criteria and hashes, but it must still be submitted through --review-result
+under the actual assigned review ID/workspace. Never invent that identity or path.
+
+# GitHub handoff recovery — astra-0024
+
+Read the current GitHub capability/continuation section of OPERATIONAL_LEAD.md. The published batch has real PRs now; run canonical startup using your existing arrival ID and continue exact-head review. Worker-facing PR submission verifies GitHub before recording. A documented external blocker can be deferred without reacquiring the unchanged queue.
+
+# Separate Review queue — astra-0023
+
+Read [REVIEW_LANE.md](../tools/monkey_campaign/REVIEW_LANE.md). Ten slots hold
+development work. A durable candidate handoff moves the task to Review and frees
+its slot; its publication branch is review/<task-id>. Fresh workers take eligible
+development work first. Corrections re-enter through the next free slot. Only a
+verified merge completes the task or unlocks dependent tasks. Historical slot IDs
+are provenance, not current ownership. Existing PRs and worker files are preserved.
+This supersedes older merge-to-release-slot and numbered-branch publication rules.
+Startup command is unchanged. Do not combine pending tasks on one review branch.
+
+# Coordination recovery — astra-0022
+
+Always run the canonical absolute startup E:/PythonChimera/tools/monkey_campaign/worker_start.py with your existing --arrival-id. Read its returned instruction_revision; an older checkout/runbook is not current authority. If CHECKPOINT_FOR_COORDINATION is returned, preserve work, cease writes, complete its park_template and immediately run startup with --park. Then execute OPERATIONAL_LEAD_ASSIGNED. Do not infer that pending publication means waiting for Astra. No automatic parking or other worker takeover is permitted.
+
+# Automatic execution leadership — astra-0021
+
+When startup returns OPERATIONAL_LEAD_ASSIGNED, become the operational lead and
+execute [OPERATIONAL_LEAD.md](../tools/monkey_campaign/OPERATIONAL_LEAD.md).
+Publish queued candidates, obtain independent exact-head reviews, merge verified
+PRs and refill slots. Do not stop merely because the remaining work says "lead".
+Use your actual arrival identity and returned role token; never impersonate Astra.
+The single shared coordination claim serializes publication. Release it with a
+checkpoint before stopping. Architectural/scientific rulings remain with Astra;
+they do not prevent unrelated approved work. This explicitly supersedes older
+Astra-only publication/merge and AWAITING_LEAD_ACTION stopping instructions.
+Taking leadership never turns your own implementation into independent review.
+
+# Enforced visual evidence — astra-0020
+
+Ontology acceptance now checks actual capture/manifest hashes and runs the existing camera validator. Follow the visual-file gate in [ONTOLOGY_QUEUE.md](../tools/monkey_campaign/ONTOLOGY_QUEUE.md). Numerical and independent media review remain required. Active task criteria and assignments are unchanged.
+
+# Ontology-derived backlog — astra-0019
+
+Read [ONTOLOGY_QUEUE.md](../tools/monkey_campaign/ONTOLOGY_QUEUE.md). Free slots now refill from the sealed ontology task graph. Reconcile existing evidence before implementing missing work. Generated cards include membrane/port bindings and verification profiles. A merged diagnostic never qualifies its parent task; exact-head qualified acceptance unlocks downstream work. Existing assignments and criteria stay intact. Startup remains the same.
+
+# Automatic slot checkout — astra-0018
+
+Run the canonical worker_start.py as usual. Startup now prepares an isolated, sparse,
+shared-object checkout under your attempt directory and verifies its local branch-N.
+Immediately use the returned working_directory for every implementation tool call
+(shell cwd/workdir, or Set-Location). Do this yourself; never ask the operator to
+switch branches. The source/orientation branch is informational only.
+
+Multiple workers may each have their own local branch-N checkout; the one remote
+branch-N remains lead-published. Do not push directly. Read pinned source dependencies
+from the original specified sources; the sparse contribution checkout does not pretend
+to contain the entire game. Your existing attempt directory remains the artifact and
+handoff root. Source edits, GPU and acceptance constraints still apply.
+
+This supersedes older instructions requiring detached-only scratch work. Existing
+files and shared checkouts are preserved. If checkout_ready is false, do not implement
+in the source checkout; use the named failure and preserved arrival ID to recover.
+No shell child process can change its parent's cwd: the agent must obey working_directory.
+
+# Continuous slot execution — astra-0017
+
+Read [CONTINUOUS_CYCLE.md](../tools/monkey_campaign/CONTINUOUS_CYCLE.md). Submit candidates with --request-pr and review evidence with --review-result, then execute the returned next assignment. Filled PR slots route workers into independent review; reviewed, verified merges clear and refill slots. Do not stop merely because one card produced a report. Prior branch-10 and other numbered-branch ownership rules remain.
+
+# Current slot-branch policy — astra-0016
+
+Read [SLOT_BRANCHES.md](../tools/monkey_campaign/SLOT_BRANCHES.md). Ten task slots publish through branch-1 to branch-10. New worker attempts use isolated scratch/detached work and submit candidate patches through the inbox; the lead alone serializes numbered-branch publication. Preserve existing PRs and active worktrees during migration. This supersedes older per-attempt branch instructions.
+
 # Work continuously toward the playable monkey
 
 ## Current workflow: ten task cards and PR feedback (astra-0015)
@@ -159,8 +278,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 15,
-  "revision_id": "astra-0015",
+  "revision": 29,
+  "revision_id": "astra-0029",
   "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -197,7 +316,22 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/ontology_plan.py",
     "tools/monkey_campaign/visual_capture.py",
     "tools/monkey_campaign/SCOPE_AMENDMENT_ONTOLOGY_20260924.json",
-    "tools/membrane_ontology/model.py"
+    "tools/membrane_ontology/model.py",
+    "tools/monkey_campaign/SLOT_BRANCHES.md",
+    "tools/monkey_campaign/continuous_cycle.py",
+    "tools/monkey_campaign/CONTINUOUS_CYCLE.md",
+    "tools/monkey_campaign/worker_checkout.py",
+    "tools/monkey_campaign/ontology_queue.py",
+    "tools/monkey_campaign/ONTOLOGY_QUEUE.md",
+    "tools/monkey_campaign/visual_gate.py",
+    "tools/monkey_campaign/operational_lead.py",
+    "tools/monkey_campaign/OPERATIONAL_LEAD.md",
+    "tools/monkey_campaign/review_lane.py",
+    "tools/monkey_campaign/REVIEW_LANE.md",
+    "tools/monkey_campaign/verified_submission.py",
+    "tools/monkey_campaign/merge_service.py",
+    "tools/monkey_campaign/MERGE_SERVICE.md",
+    "tools/monkey_campaign/STARTUP_RECOVERY.md"
   ]
 }
 CHIMERA_LEAD_CONTROL -->
