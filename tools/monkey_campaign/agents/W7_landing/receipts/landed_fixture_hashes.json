@@ -1,0 +1,373 @@
+{
+  "landed_by": "W7",
+  "date": "2026-09-24",
+  "byte_identical_to_source": true,
+  "files": [
+    {
+      "file": "tools/tests/material_volume/fixtures/accept_complete_report.json",
+      "sha256": "d71f7621ba00701c1eaabd2cdf34ac25bbe837b7dede0f7096029ca3ad0c9de5",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\accept_complete_report.json",
+      "source_sha256": "d71f7621ba00701c1eaabd2cdf34ac25bbe837b7dede0f7096029ca3ad0c9de5"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/adversarial_case_variant_status.json",
+      "sha256": "c269585f9f0535b8ef21cb2ea3f5b6b76863d661f62215af066e9bfd67201d03",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\adversarial_case_variant_status.json",
+      "source_sha256": "c269585f9f0535b8ef21cb2ea3f5b6b76863d661f62215af066e9bfd67201d03"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/adversarial_diagonalized.json",
+      "sha256": "65e6d629c7b175d13e7697b9161a319844c153e585b4806659a4adee592c6c7c",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\adversarial_diagonalized.json",
+      "source_sha256": "65e6d629c7b175d13e7697b9161a319844c153e585b4806659a4adee592c6c7c"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/adversarial_readiness_nested.json",
+      "sha256": "d48d68c7d09fdf2a650c9f08b5e278e20ae140e5a8ff8cc8c2a2e7be7a3bbf64",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\adversarial_readiness_nested.json",
+      "source_sha256": "d48d68c7d09fdf2a650c9f08b5e278e20ae140e5a8ff8cc8c2a2e7be7a3bbf64"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/genuine_blocked_report.json",
+      "sha256": "7cff62df8ea5a0c21eaff005be8c28c36cb40e0a52b89a6bd6407ce2d30a3fc3",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\genuine_blocked_report.json",
+      "source_sha256": "7cff62df8ea5a0c21eaff005be8c28c36cb40e0a52b89a6bd6407ce2d30a3fc3"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/genuine_partial_report.json",
+      "sha256": "22be04d04930e7494c030bafae6423e83ba9328f6398a607913d9e26e36d64f8",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\genuine_partial_report.json",
+      "source_sha256": "22be04d04930e7494c030bafae6423e83ba9328f6398a607913d9e26e36d64f8"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/make_fixtures.py",
+      "sha256": "29e80e233fa01df485e0a2e1d4f1fcfbaf566defdec9ce12311488fea628c03d",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\make_fixtures.py",
+      "source_sha256": "29e80e233fa01df485e0a2e1d4f1fcfbaf566defdec9ce12311488fea628c03d"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/make_genuine_blocked_fixture.py",
+      "sha256": "c37d18e64249744a8b82333f05e723e9337134e51696edd5fb1facf63153b88f",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\make_genuine_blocked_fixture.py",
+      "source_sha256": "c37d18e64249744a8b82333f05e723e9337134e51696edd5fb1facf63153b88f"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/recompute_admission.json",
+      "sha256": "1d5da411affb274226c79a304bbfff7e0b4432a225f0d5c3711b1a7c9c684278",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\recompute_admission.json",
+      "source_sha256": "1d5da411affb274226c79a304bbfff7e0b4432a225f0d5c3711b1a7c9c684278"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/recompute_admission_mismatched.json",
+      "sha256": "e0423a19b30717bedf2cecedda59546c904098e5924c130ccf749d88529d1645",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\recompute_admission_mismatched.json",
+      "source_sha256": "e0423a19b30717bedf2cecedda59546c904098e5924c130ccf749d88529d1645"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/recompute_report.json",
+      "sha256": "b1acbefbea175cc3fda1c29a894cd64e9ad8474f915bb3e455e507ab005a1e5f",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\recompute_report.json",
+      "source_sha256": "b1acbefbea175cc3fda1c29a894cd64e9ad8474f915bb3e455e507ab005a1e5f"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_admission_case.json",
+      "sha256": "ac791f3ed5a083391d67e36e9cff54e6e2086f1cd34bf97d14b9d91910fdc0ee",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_admission_case.json",
+      "source_sha256": "ac791f3ed5a083391d67e36e9cff54e6e2086f1cd34bf97d14b9d91910fdc0ee"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_admission_loose.json",
+      "sha256": "793aa91103e3d1cffa0631a913b7dac71ecfd2182c157015dd97968d3dc5986e",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_admission_loose.json",
+      "source_sha256": "793aa91103e3d1cffa0631a913b7dac71ecfd2182c157015dd97968d3dc5986e"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_all_supplied_false.json",
+      "sha256": "9d7ee280b658a3443fc56964c97b6fcabb34aa9c433e95c4fe8a202392ae7bd8",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_all_supplied_false.json",
+      "source_sha256": "9d7ee280b658a3443fc56964c97b6fcabb34aa9c433e95c4fe8a202392ae7bd8"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_blocked.json",
+      "sha256": "f03785532726bc2342928707fa21fd499c92cc501d87cd43cfd4a9e275a2f36f",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_blocked.json",
+      "source_sha256": "f03785532726bc2342928707fa21fd499c92cc501d87cd43cfd4a9e275a2f36f"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_com_frame.json",
+      "sha256": "822e1d80ebd865884bdb1c19893676efcff48246d327e6fe4de86adc69cb8e11",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_com_frame.json",
+      "source_sha256": "822e1d80ebd865884bdb1c19893676efcff48246d327e6fe4de86adc69cb8e11"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_com_short.json",
+      "sha256": "edb9eeadfab7ce0294a4f7307dd10a50f5db53f3b42219f8a4e0a6984f49ff08",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_com_short.json",
+      "source_sha256": "edb9eeadfab7ce0294a4f7307dd10a50f5db53f3b42219f8a4e0a6984f49ff08"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_composite.json",
+      "sha256": "99a42121f2be39ba95ce5380a6aadf0bd6c1e8926588f85771a79fd534259681",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_composite.json",
+      "source_sha256": "99a42121f2be39ba95ce5380a6aadf0bd6c1e8926588f85771a79fd534259681"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_conflicting_owner.json",
+      "sha256": "3930a03cafed76f2fa2ac527c4e7b1add0cd9cad57deb69bb4d9f1f87b29c0f4",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_conflicting_owner.json",
+      "source_sha256": "3930a03cafed76f2fa2ac527c4e7b1add0cd9cad57deb69bb4d9f1f87b29c0f4"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_frame_handedness.json",
+      "sha256": "0569f2c2b18fabc197ef034041f59928cfc653071a9e62c2d1fe709cf5ea061d",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_frame_handedness.json",
+      "source_sha256": "0569f2c2b18fabc197ef034041f59928cfc653071a9e62c2d1fe709cf5ea061d"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_frame_lefthanded.json",
+      "sha256": "42d59a80757bc0333a330057716a407cf8487b03be85c677ce00ed5eac8060c8",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_frame_lefthanded.json",
+      "source_sha256": "42d59a80757bc0333a330057716a407cf8487b03be85c677ce00ed5eac8060c8"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_frame_nonorthonormal.json",
+      "sha256": "63da87f917f922475511e622565b1958c5704b2908d28039ccda502b0079e5a1",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_frame_nonorthonormal.json",
+      "source_sha256": "63da87f917f922475511e622565b1958c5704b2908d28039ccda502b0079e5a1"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_frame_unit.json",
+      "sha256": "03a097c837fbefbb273085c05e24cfdb0faddb04f26ff1f91f0eeed3af93ab1f",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_frame_unit.json",
+      "source_sha256": "03a097c837fbefbb273085c05e24cfdb0faddb04f26ff1f91f0eeed3af93ab1f"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_hash_mismatch.json",
+      "sha256": "0e3eb1703342e3b09a20eb0bcc73fa984c30a65e1f163f490d409814808e3d11",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_hash_mismatch.json",
+      "source_sha256": "0e3eb1703342e3b09a20eb0bcc73fa984c30a65e1f163f490d409814808e3d11"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_hash_missing.json",
+      "sha256": "6d20bdaa8fefb348c28c9e931b2596a6dac5999fb251f2f2eedb5b3424c6a1f1",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_hash_missing.json",
+      "source_sha256": "6d20bdaa8fefb348c28c9e931b2596a6dac5999fb251f2f2eedb5b3424c6a1f1"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_hash_short.json",
+      "sha256": "8dd8bc2bfeb39d56e8817b7881f136492041b70a0024bd1fd0813b2db2bfc09c",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_hash_short.json",
+      "source_sha256": "8dd8bc2bfeb39d56e8817b7881f136492041b70a0024bd1fd0813b2db2bfc09c"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_hash_uppercase.json",
+      "sha256": "d1db0739e12cb82355b9aaa3534cec74b99ea8bec86a2370d8be8bc3501d4238",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_hash_uppercase.json",
+      "source_sha256": "d1db0739e12cb82355b9aaa3534cec74b99ea8bec86a2370d8be8bc3501d4238"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_lineage.json",
+      "sha256": "50cf684a0749ac83af750a9d24e542ebb7a38cb6ff5661ebdd9c8b4529ee3ffe",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_lineage.json",
+      "source_sha256": "50cf684a0749ac83af750a9d24e542ebb7a38cb6ff5661ebdd9c8b4529ee3ffe"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_mass_authority_source.json",
+      "sha256": "9868c9d4a61a0131a9c2082440fdbb99addbb4e9b2ba725510d456024a205c50",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_mass_authority_source.json",
+      "source_sha256": "9868c9d4a61a0131a9c2082440fdbb99addbb4e9b2ba725510d456024a205c50"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_mass_negative.json",
+      "sha256": "a80e697a1d76aedcc63dc03b963132fe941c2069907257ec6f7c7826cdfd9e82",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_mass_negative.json",
+      "source_sha256": "a80e697a1d76aedcc63dc03b963132fe941c2069907257ec6f7c7826cdfd9e82"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_mass_not_invariant.json",
+      "sha256": "525ba2d58320196a38ab453043fe2945c779288d12f7472c2f9f9d9fa2877cf8",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_mass_not_invariant.json",
+      "source_sha256": "525ba2d58320196a38ab453043fe2945c779288d12f7472c2f9f9d9fa2877cf8"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_mass_unit.json",
+      "sha256": "ed01342ff905888d72e2b597474446df345fe07ab954893b9f8b4ad639fa8e09",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_mass_unit.json",
+      "source_sha256": "ed01342ff905888d72e2b597474446df345fe07ab954893b9f8b4ad639fa8e09"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_not_exported.json",
+      "sha256": "a20503217ded8dd87603f775eea09909e533fe6036336cf90debbc38b809e8e4",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_not_exported.json",
+      "source_sha256": "a20503217ded8dd87603f775eea09909e533fe6036336cf90debbc38b809e8e4"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_owned_missing_provenance.json",
+      "sha256": "1ab856368d3e75c4ad7352a3f76c2322c18044363d120b0e979a67c7342a9a13",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_owned_missing_provenance.json",
+      "source_sha256": "1ab856368d3e75c4ad7352a3f76c2322c18044363d120b0e979a67c7342a9a13"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_owner_ids_mismatch.json",
+      "sha256": "83b41611075140bef5fc6ec62ffe58bf2f0d7bbb97c5c72d4df2199dda86052a",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_owner_ids_mismatch.json",
+      "source_sha256": "83b41611075140bef5fc6ec62ffe58bf2f0d7bbb97c5c72d4df2199dda86052a"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_partial.json",
+      "sha256": "3be8e6852b06ff722a23f828179fb3b02b9a937f85a33f20a4e23048e9ea9f25",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_partial.json",
+      "source_sha256": "3be8e6852b06ff722a23f828179fb3b02b9a937f85a33f20a4e23048e9ea9f25"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_placeholder_mass.json",
+      "sha256": "113ab4ecf7a4b45aff7fcbb56ad179afc09b222323a39c0a1fbcb41e2eee426d",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_placeholder_mass.json",
+      "source_sha256": "113ab4ecf7a4b45aff7fcbb56ad179afc09b222323a39c0a1fbcb41e2eee426d"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_production_wired.json",
+      "sha256": "d6bab03918795086b793092288fc45d5aebec48a3989f1826a9114715b0b2165",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_production_wired.json",
+      "source_sha256": "d6bab03918795086b793092288fc45d5aebec48a3989f1826a9114715b0b2165"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_provenance_stripped.json",
+      "sha256": "39eafe5685199b78a3d2894d572cbf6ada6b72879860c8e01113d5db54870135",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_provenance_stripped.json",
+      "source_sha256": "39eafe5685199b78a3d2894d572cbf6ada6b72879860c8e01113d5db54870135"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_readiness_body.json",
+      "sha256": "366d96cf2234e054d9b26061d86ef00f4ebb0051093348a69d6f245fa5b62e30",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_readiness_body.json",
+      "source_sha256": "366d96cf2234e054d9b26061d86ef00f4ebb0051093348a69d6f245fa5b62e30"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_readiness_root.json",
+      "sha256": "dee0f4bfb93e1319dc7ffd29b9c15b2a5aec1a87181c0dd137d99de01fbf17fc",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_readiness_root.json",
+      "source_sha256": "dee0f4bfb93e1319dc7ffd29b9c15b2a5aec1a87181c0dd137d99de01fbf17fc"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_refused.json",
+      "sha256": "edad4125b195b41f52783d4bd4456a861b049e2bc31e8dbeec65e92ad0b3d613",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_refused.json",
+      "source_sha256": "edad4125b195b41f52783d4bd4456a861b049e2bc31e8dbeec65e92ad0b3d613"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_source_kind.json",
+      "sha256": "701bd8dd686427f75ed302b69e828e307933e815cb4901ac74b71b637305b8fe",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_source_kind.json",
+      "source_sha256": "701bd8dd686427f75ed302b69e828e307933e815cb4901ac74b71b637305b8fe"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_source_payloads.json",
+      "sha256": "f76e9ec7d6f67aef10d3d87e0cac6beab199abe5b5dd255ffb3805a8bc8eb67b",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_source_payloads.json",
+      "source_sha256": "f76e9ec7d6f67aef10d3d87e0cac6beab199abe5b5dd255ffb3805a8bc8eb67b"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_state_mutated.json",
+      "sha256": "b7d63f4411c839843acff86a7d075e76c497dd8ad95c89e3ca174c6579de5ab4",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_state_mutated.json",
+      "source_sha256": "b7d63f4411c839843acff86a7d075e76c497dd8ad95c89e3ca174c6579de5ab4"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_tensor_asymmetric.json",
+      "sha256": "d39c62e20ee2ed025ca799f11f468baf45ef78afc945106cf78ea90d8797bbbd",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_tensor_asymmetric.json",
+      "source_sha256": "d39c62e20ee2ed025ca799f11f468baf45ef78afc945106cf78ea90d8797bbbd"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_tensor_frame.json",
+      "sha256": "e3e45dac5642f6c256464be64ec7eb7dbecaa86aefea0e729a29d16f1ea3f55f",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_tensor_frame.json",
+      "source_sha256": "e3e45dac5642f6c256464be64ec7eb7dbecaa86aefea0e729a29d16f1ea3f55f"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_tensor_full_flag.json",
+      "sha256": "3885b6a9da2d6fcebaeb314c79bf532b5d4b7adad9b857c4f088d7c1492b7a28",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_tensor_full_flag.json",
+      "source_sha256": "3885b6a9da2d6fcebaeb314c79bf532b5d4b7adad9b857c4f088d7c1492b7a28"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_tensor_offdiag_flag.json",
+      "sha256": "09d1373082648dfa8a80099f1aaa8794bfea09a5b10f1676393fc97b748de5f5",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_tensor_offdiag_flag.json",
+      "source_sha256": "09d1373082648dfa8a80099f1aaa8794bfea09a5b10f1676393fc97b748de5f5"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_tensor_pa_true.json",
+      "sha256": "250bda17cdd32a16670e544d1c1d4f5d3c8f7633c1fc158232c91eec83a938bc",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_tensor_pa_true.json",
+      "source_sha256": "250bda17cdd32a16670e544d1c1d4f5d3c8f7633c1fc158232c91eec83a938bc"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_tensor_truncated.json",
+      "sha256": "24116eeffb8e9d1c1ad8df7cb5f53bb3a5a611f4a225f4c6edb0e67ca10445e7",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_tensor_truncated.json",
+      "source_sha256": "24116eeffb8e9d1c1ad8df7cb5f53bb3a5a611f4a225f4c6edb0e67ca10445e7"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_tensor_unit.json",
+      "sha256": "22520c0a4673b63b6000200eba04404652de6f0723af62ad681327a85f037836",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_tensor_unit.json",
+      "source_sha256": "22520c0a4673b63b6000200eba04404652de6f0723af62ad681327a85f037836"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_unassigned_in_complete.json",
+      "sha256": "feda708e6eb831c6fd282b338d478f0d703924c0f68b1effde54070b5171d2f6",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_unassigned_in_complete.json",
+      "source_sha256": "feda708e6eb831c6fd282b338d478f0d703924c0f68b1effde54070b5171d2f6"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_unknown_status.json",
+      "sha256": "8668f0095bc771eeae090108e1854f6057ec481c1f17cdf575b5582c18edd624",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_unknown_status.json",
+      "source_sha256": "8668f0095bc771eeae090108e1854f6057ec481c1f17cdf575b5582c18edd624"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_unsupported.json",
+      "sha256": "f3c80efb417d411cb7de5b9f5d02f86c327b9b2cab4917f339ffb49d1c6de299",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_unsupported.json",
+      "source_sha256": "f3c80efb417d411cb7de5b9f5d02f86c327b9b2cab4917f339ffb49d1c6de299"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_validation_only_false.json",
+      "sha256": "1d9c1f0d320c886bdce0bb19dd4fd91f3e5da8aa2c50f1489ca83aabb44e1479",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_validation_only_false.json",
+      "source_sha256": "1d9c1f0d320c886bdce0bb19dd4fd91f3e5da8aa2c50f1489ca83aabb44e1479"
+    },
+    {
+      "file": "tools/tests/material_volume/fixtures/reject_volume_unit.json",
+      "sha256": "1db3a4e3ec60b44dd20dbd8e3510345d2c3026317eb22635f96673e27437bb23",
+      "source": "mvc-20260924\\material_volume_campaign\\impl\\W6_validator\\tests\\fixtures\\reject_volume_unit.json",
+      "source_sha256": "1db3a4e3ec60b44dd20dbd8e3510345d2c3026317eb22635f96673e27437bb23"
+    },
+    {
+      "file": "tools/material_volume_body_export_example_report.json",
+      "sha256": "d71f7621ba00701c1eaabd2cdf34ac25bbe837b7dede0f7096029ca3ad0c9de5",
+      "source": "mvc-20260924\\tools\\material_volume_body_export_example_report.json",
+      "source_sha256": "d71f7621ba00701c1eaabd2cdf34ac25bbe837b7dede0f7096029ca3ad0c9de5"
+    },
+    {
+      "file": "tools/material_volume_body_export_manifest_example.json",
+      "sha256": "c7d4f304fff81ba3f98b85d56a039efaaf101aa1dbaaf3249b490690476d55a5",
+      "source": "mvc-20260924\\tools\\material_volume_body_export_manifest_example.json",
+      "source_sha256": "c7d4f304fff81ba3f98b85d56a039efaaf101aa1dbaaf3249b490690476d55a5"
+    },
+    {
+      "file": "tools/material_volume_body_export_partition_example.json",
+      "sha256": "c0417923ef8ee7a0088ee98a124cbecc72aee84ef5b0c4036b81ec2d8a5d2f3a",
+      "source": "mvc-20260924\\tools\\material_volume_body_export_partition_example.json",
+      "source_sha256": "c0417923ef8ee7a0088ee98a124cbecc72aee84ef5b0c4036b81ec2d8a5d2f3a"
+    },
+    {
+      "file": "tools/material_volume_body_export_groups_example.json",
+      "sha256": "ffb1a94808423b695fc3745f4a533bf8f8d84b6e77505c7d7cf8c39c6c621758",
+      "source": "mvc-20260924\\tools\\material_volume_body_export_groups_example.json",
+      "source_sha256": "ffb1a94808423b695fc3745f4a533bf8f8d84b6e77505c7d7cf8c39c6c621758"
+    }
+  ]
+}

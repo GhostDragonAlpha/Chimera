@@ -1,0 +1,48 @@
+== TIE2 ANCHOR REGISTRY RECORD (case 4; v1-preserved / v2-recorded; NO A/B choice made — both versions recorded where touched; the A/B decision stays Astra's, PENDING) ==
+
+-- v1-PRESERVED: the tick-41 fixture (pre-v1 anchor retained; git a62b286e) --
+e1636853616f3f7ea3328c37236e3e3c41ca895d3e953b0aa06e27c1130184e8 *co8_t41_fixture/state_t40_host.txt
+e1636853616f3f7ea3328c37236e3e3c41ca895d3e953b0aa06e27c1130184e8 *co8_t41_fixture/state_t40_gpu.txt
+226899222e46beca67f950711b59cca9e3a869883031fc5f8d833f94ff1f2c1a *co8_t41_fixture/state_t39_cpp.txt
+d62e89dc8409a0fc7bfbec3ef7d00fe0b8c1c43c9f52bb24e94de118b005588a *co8_t41_fixture/scene_sha256.txt
+9d50c43ff4068605537240db4c810eda754919cd6d22fa31a06a85b4b30c82db *co8_t41_fixture/host_drill_t41.out
+af1829f6b6507e55f4f8213a6a45f4902dc37219546059df449cac578c336274 *co8_t41_fixture/device_drill_t41.out
+38e5ea75c6a1d53b4b8b7a810dabf9e859c280e89be7824e3146c6360588b271 *co8_t41_fixture/README.md
+
+fixture scene hash (recorded content): f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342
+
+-- v1-band anchor (the 6-entry walk; reach-band v1 anchor-drift evidence) --
+ffeeaa621db4e67f37f082d9875bff4fc1eef9d6ca62b1289f5bb26ea1f365ea *co8_csub310.err
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 *co8_csub310.out
+co8_csub310.err line 6626 content: BAND_ENTRIES 6\n
+
+-- pre-v2 tolerance behavior record (the drill lines that carried tol=1e-9) --
+327efbca45e44561c5141d2613832db2684b9658c1f7453d770f857ef7334144 *co8_ksub_prorow3.out
+041b7c384fe1e1126d4372bd750b057a336a709e1dfe2c1404d9af0c0a92c11f *co8_ksub_prorow.out
+041b7c384fe1e1126d4372bd750b057a336a709e1dfe2c1404d9af0c0a92c11f *co8_ksub_prorow2.out
+sample pre-v2 decision line: PROROW chk tier=0 mask=1 k=0 got=0 floor=0 tol=1.0000000000000001e-09
+
+-- v2-RECORDED: the v2 build's own first runs (preserved at shutdown a62b286e) --
+6ba8123b80c3b8132e69165ea015ddc83861432b4b06502f797059bb42fd5128 *co8_hl_v2.out
+9df764f3042cb1d7b6d639f255a0a116b0d78c187bc3934de52baa2e6e103ff2 *co8_dll_v2_120.txt
+83bd5316da44487cb18b7911a069d488295102e4bdf7ce8c7ba99e64d1ef8bed *co8_dll_v2b_120.txt
+b2bcf934a1b17cd031b7ca8f7b1e066e1c10d117e4a05dd482ca8640c449ec4c *co8_cp_v2_120.txt
+9df764f3042cb1d7b6d639f255a0a116b0d78c187bc3934de52baa2e6e103ff2 *co8_dll50.out
+5cf0dad06ea5b561b46c6541784cda57ec3bf4561e585a175ae18e729d5050fb *co8_host50.out
+
+-- v2 binaries (the frozen build state) --
+51259178d0ddbd8ca2482a5d8a92f93213e05e44d4e4548adb9afa93e818cf45 *walker_env_v2.dll
+a0509caf0e471b789fa689a6935fd2d096c0e64ed4b2ca846e52705e4a09f721 *host_loop.exe
+799ba5ff9c306b30134c45ceadb6f41effbee2062a728a9278d2f113d2bede33 *walker_env_co8.dll
+9489dcad779bef468f4a74aa21d6b0afcbeb730344906df9e1a4ba41401c7584 *walker_env_d41.dll
+
+-- this battery's artifacts (TIE2 run dir) --
+7b93dd59275547768e5c55146d9ac6eee8d89b18a130fe9da43880f4e57a8cff *run/tie_boundary_probe.cxx
+5c05f1f0f45ae11d616a0aea1b767488f63270376885b729c7769e29b99e1e68 *run/tie_boundary_probe.exe
+68594bbf12905f490992aabf1dcc5e8561a3910d7d71c3c9218388da68440cc4 *run/build_tie_probe.cmd
+2d147fe7be4fa5b436b72eb3ade641f5df8678cb80a1e3802b23e74dbecd7581 *receipts/case123_tie_boundary_host.out
+6ba8123b80c3b8132e69165ea015ddc83861432b4b06502f797059bb42fd5128 *receipts/case5_replay_host_v2.out
+
+-- parity + divergence measurements backing this record --
+host(v2 CPU-compiled walker_kernels.cuh) vs GPU(walker_env_v2.dll, v2b run co8_dll_v2b_120.txt): FULL states BIT-IDENTICAL t=1..43 (0 differing ticks; capture end 43)
+host pre-v2 (co8_hl_full6.out) vs host v2 (case5_replay_host_v2.out): bit-identical t=1..40, first divergence at t=41 (the tie's engagement tick; 60 FULL lines differ, t=41..100)

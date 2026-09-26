@@ -1,0 +1,21 @@
+M-F08 determinism receipt -- fresh-process loading
+============================================================
+command: python tools/monkey_campaign/data/monkey_forest/forest_loader.py receipt
+(repo root cwd; three independent processes)
+
+run 1: stdout sha256 facca270dcd4fd9e7cce5cea913c56baf7816c9aea747bf91aaecd77f7cc01f5
+        initial_state_sha256 c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
+        artifacts: clearing 13112B 18dd2ff65410, routes 8495B 28dff2b33e74, terrain 877752B 446ed3fbd0f5, trunk 16634B 94ff906ec5e8
+run 2: stdout sha256 facca270dcd4fd9e7cce5cea913c56baf7816c9aea747bf91aaecd77f7cc01f5
+        initial_state_sha256 c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
+        artifacts: clearing 13112B 18dd2ff65410, routes 8495B 28dff2b33e74, terrain 877752B 446ed3fbd0f5, trunk 16634B 94ff906ec5e8
+run 3: stdout sha256 facca270dcd4fd9e7cce5cea913c56baf7816c9aea747bf91aaecd77f7cc01f5
+        initial_state_sha256 c3286e14a787f6bb65ccc93dc3e80b0412d777048d109d404ca49328fe1bf627
+        artifacts: clearing 13112B 18dd2ff65410, routes 8495B 28dff2b33e74, terrain 877752B 446ed3fbd0f5, trunk 16634B 94ff906ec5e8
+
+identical_across_processes: True
+
+suite receipts (agents/F08_loading/receipts/), two consecutive
+verify_loading.py runs, byte-identical both times:
+  run.json sha256 4ebd3a6c5403663999102b2d6fd49aafcf1f157948a8cb91f95e8f9ca048c37c
+  run.txt  sha256 235938d718939493ba78337ade5602f0f7c03cd906c98b859d07404dba6dcfa9

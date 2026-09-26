@@ -1,0 +1,5 @@
+F03 determinism receipt -- b7089e7826a221a570b261b8c69666a4017a6ab62d20a2223d061654d0f63fe3
+committed bytes: 16634 sha256: 94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1
+subprocess compile 0: 16634 bytes, identical_to_committed=True
+subprocess compile 1: 16634 bytes, identical_to_committed=True
+pinned body digest matches: True

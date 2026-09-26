@@ -1,0 +1,119 @@
+{
+ "checks": [
+  {
+   "check": "worst_grid_slope_0.034606",
+   "detail": "max-norm (F01's declared convention) worst = 0.034606 at (x=17, z=6); R5 hypot variant = 0.034616 at (17, 6) (also <= 0.05)",
+   "item": "F01",
+   "ok": true
+  },
+  {
+   "check": "spawn_clearance_11.729184690233646",
+   "detail": "axis dist 12.229184690233646 - 0.5 = 11.729184690233646",
+   "item": "F01",
+   "ok": true
+  },
+  {
+   "check": "posts_80_offedge0_spacing2",
+   "detail": "80 declared posts; worst off-edge = 0.0; perimeter line spacing 2.0 m",
+   "item": "F01",
+   "ok": true
+  },
+  {
+   "check": "mesh_counts_13920_4640",
+   "detail": "v=13920 i=13920 tri=4640 (ground 3200 + post 1440)",
+   "item": "F02",
+   "ok": true
+  },
+  {
+   "check": "mesh_analytic_6.460mm_at_19.5_5.5",
+   "detail": "|mesh plane - analytic| at (19.5,5.5) = 0.006460 m (claimed 6.460 mm worst)",
+   "item": "F02",
+   "ok": true
+  },
+  {
+   "check": "worst_triangle_slope_bitexact",
+   "detail": "0.042522289331596436 at (17.0, 7.0)",
+   "item": "F02",
+   "ok": true
+  },
+  {
+   "check": "H_R_derivation",
+   "detail": "H = (0.419+0.482)+(0.125+0.132) = 1.158; R = 0.074/2 = 0.037",
+   "item": "F03",
+   "ok": true
+  },
+  {
+   "check": "energies_113.992539_25.298862",
+   "detail": "m*g*H = 113.992539 J; m*g*(H-0.901) = 25.298862 J",
+   "item": "F03",
+   "ok": true
+  },
+  {
+   "check": "sagitta_1.78165e-4",
+   "detail": "R*(1-cos(pi/32)) = 1.781651e-04 (declared 1.78165e-4; measured chord 1.78307e-4)",
+   "item": "F03",
+   "ok": true
+  },
+  {
+   "check": "run_json_13_cases_green",
+   "detail": "13 cases, 13 PASS* verdicts: ['PASS', 'PASS (control fires)', 'PASS', 'PASS', 'PASS', 'PASS', 'PASS-AS-DECLARED', 'PASS', 'PASS', 'PASS', 'PASS', 'PASS', 'PASS-AS-DECLARED']",
+   "item": "F04",
+   "ok": true
+  },
+  {
+   "check": "INT01_tangency_7.043e-16",
+   "detail": "INT-01 recorded worst |sdf-r_sole| = 7.042977312465837e-16 (R5 independent: 8.4e-16)",
+   "item": "F04",
+   "ok": true
+  },
+  {
+   "check": "INT03_flush_0.0",
+   "detail": "INT-03 recorded worst |terrain h| = 0.0 (R5 independent over footprint: 0.0)",
+   "item": "F04",
+   "ok": true
+  },
+  {
+   "check": "VIS03_overlap_0.2327_no_claim",
+   "detail": "VIS-03 recorded envelope overlap = 0.23267949192431064 m, PASS-AS-DECLARED NO-CLAIM",
+   "item": "F04",
+   "ok": true
+  },
+  {
+   "check": "R0_min_clearance_outside_0.502",
+   "detail": "min clearance outside approach zone = 0.502185 (claimed 0.502)",
+   "item": "F07",
+   "ok": true
+  },
+  {
+   "check": "analytic_slope_0.037956",
+   "detail": "A2*pi/(2*R2) = 0.037956 (claimed 0.037956; F01 worst-case bound 0.0471)",
+   "item": "F07",
+   "ok": true
+  },
+  {
+   "check": "ten_tangents_extent_legal",
+   "detail": "10 tangents; all endpoints inside the closed extent: True",
+   "item": "F07",
+   "ok": true
+  },
+  {
+   "check": "run_json_66_green",
+   "detail": "verdict=GREEN; run.json checks=66; run.txt PASS lines=66",
+   "item": "F08",
+   "ok": true
+  },
+  {
+   "check": "T6_slope_via_surface",
+   "detail": "worst_triangle_slope bit-exact re-verified through the LOADED surface in r5_integrated.py (0.042522289331596436 at (17.0,7.0))",
+   "item": "F08",
+   "ok": true
+  },
+  {
+   "check": "cli_receipt_byte_exact",
+   "detail": "fresh-process receipt raw stdout sha256 facca270... reproduced byte-exact in r5_integrated.py",
+   "item": "F08",
+   "ok": true
+  }
+ ],
+ "schema": "r5.citations.v1"
+}

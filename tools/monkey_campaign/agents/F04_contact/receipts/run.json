@@ -1,0 +1,338 @@
+{
+ "agent": "M-F04",
+ "date": "2026-09-24",
+ "item": "F04",
+ "frozen_inputs": {
+  "r_sole_m": 0.004,
+  "k_touch": 1e-05,
+  "dt_max_s": 0.0033333333333333335,
+  "v_max_m_s": 1.01,
+  "s_tick_m": 0.003366666666666667,
+  "s_tick_vertical_m": 0.00016812331037777055,
+  "trunk_tol_m": 0.0002,
+  "seed": 20260924,
+  "slope_law_m_per_m": 0.05
+ },
+ "artifacts": {
+  "terrain_bundle": "E:\\ChimeraWork\\monkey-play-20260924\\tools\\monkey_campaign\\data\\monkey_clearing\\terrain_bundle.json",
+  "trunk_declaration": "E:\\ChimeraWork\\monkey-play-20260924\\tools\\monkey_campaign\\data\\monkey_trunk\\trunk_declaration.json",
+  "trunk_validator_receipt": {
+   "schema": "chimera.trunk_asset.v1",
+   "object_id": "trunk_01",
+   "declaration_sha256": "b7089e7826a221a570b261b8c69666a4017a6ab62d20a2223d061654d0f63fe3",
+   "site_m": [
+    11.976783,
+    0.0,
+    2.471766
+   ],
+   "radius_m": 0.037,
+   "height_m": 1.158,
+   "ring_segments": 32,
+   "vertices": 130,
+   "triangles": 128,
+   "worst_vertex_on_surface_error_m": 3.671369570856786e-07,
+   "representation_error_m": 0.000178307,
+   "representation_tolerance_m": 0.0002,
+   "footprint_bound_m": 0.5,
+   "spawn_clearance_m": 12.192185,
+   "friction_provenance": "UNEVIDENCED-PLACEHOLDER",
+   "validated": true
+  }
+ },
+ "results": [
+  {
+   "id": "TUN-01",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "cases": [
+    {
+     "probe": "worst-slope triangle centroid (slope 0.042522)",
+     "caught": true,
+     "pen_m": 0.0010000000000004727,
+     "bound_m": 0.003366666666666667,
+     "ok": true
+    },
+    {
+     "probe": "mound 1 crest",
+     "caught": true,
+     "pen_m": 0.0010000000000000286,
+     "bound_m": 0.003366666666666667,
+     "ok": true
+    },
+    {
+     "probe": "mound 2 crest",
+     "caught": true,
+     "pen_m": 0.000999999999999987,
+     "bound_m": 0.003366666666666667,
+     "ok": true
+    },
+    {
+     "probe": "mound 3 crest",
+     "caught": true,
+     "pen_m": 0.0009999999999998899,
+     "bound_m": 0.003366666666666667,
+     "ok": true
+    },
+    {
+     "probe": "mound 4 crest",
+     "caught": true,
+     "pen_m": 0.0009999999999997788,
+     "bound_m": 0.003366666666666667,
+     "ok": true
+    },
+    {
+     "probe": "mound 5 crest",
+     "caught": true,
+     "pen_m": 0.0010000000000001813,
+     "bound_m": 0.003366666666666667,
+     "ok": true
+    },
+    {
+     "probe": "45-deg terrain-following onto (19.5, 5.5)",
+     "caught": true,
+     "pen_m": 0.00014701144704448808,
+     "bound_m": 0.00016812331037777055,
+     "ok": true
+    },
+    {
+     "probe": "trunk-site cell centre",
+     "caught": true,
+     "pen_m": 0.0010000000000010625,
+     "bound_m": 0.003366666666666667,
+     "ok": true
+    }
+   ],
+   "worst_pen_over_bound": 0.2970297029706126
+  },
+  {
+   "id": "TUN-02",
+   "verdict": "PASS (control fires)",
+   "falsifier_fired": false,
+   "control_expected": "miss",
+   "control_fired": true,
+   "step_m": 4.329635,
+   "crest_m": [
+    -9.268795,
+    -11.77237
+   ],
+   "min_sampled_gap_m": 0.03070188454749998,
+   "gaps_m": [
+    0.07939182081,
+    0.03090767477750002,
+    0.03070188454749998,
+    0.07939182081
+   ],
+   "note": "true continuous path grazes gap=0 at the crest; a missed catch proves the harness detects tunnelling (non-vacuity); mound 5 chosen because the step span must stay inside the extent rule"
+  },
+  {
+   "id": "TUN-03",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "a": {
+    "caught": true,
+    "pen_m": 0.00010000000029782366,
+    "bound_m": 0.003366666666666667,
+    "ok": true,
+    "step_m": 0.003366666666666667
+   },
+   "b_control": {
+    "expected": "miss",
+    "fired": true,
+    "step_m": 0.16399999999999998,
+    "min_sdf_m": 0.042999999999998297,
+    "samples": 61,
+    "catch_chord_m": 0.08199999999999999
+   }
+  },
+  {
+   "id": "TUN-04",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "caught": 500,
+   "of": 500,
+   "worst_pen_m": 0.0010000000000010651,
+   "pen_bound_m": 0.003366666666666667,
+   "worst_twisted_cell": {
+    "ix": 36,
+    "iz": 28,
+    "diagonal_split_m": 0.007023
+   },
+   "edge_continuity_worst_m": 8.188800001661389e-07,
+   "continuity_worst_ratio_m_per_m": 0.086783857877748,
+   "continuity_ratio_bound_m_per_m": 0.2,
+   "continuity_linear_residual_worst_m": 1.8867373026469842e-16,
+   "continuity_residual_bound_m": 1e-09,
+   "prereg_miss": "the frozen 1e-9 ABSOLUTE continuity bound ignored the linear eps-scaling of the value difference across a crease; corrected to the exact linear prediction (residual <= 1e-9) and the derived 4*0.05 ratio bound. Value continuity HOLDS; the slope kink at creases is real, expected, and bounded by F01's slope law."
+  },
+  {
+   "id": "GHO-01",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "probes": 12,
+   "ok": 12
+  },
+  {
+   "id": "GHO-02",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "rows": [
+    {
+     "probe": "spawn cell",
+     "h_m": 0.0,
+     "gap_rest_m": 0.0,
+     "gap_geometric_tangent_m": 0.008,
+     "gap_floating_1e4_m": 9.999999999999983e-05,
+     "ok": true
+    },
+    {
+     "probe": "mound 1-2 midpoint",
+     "h_m": 0.0,
+     "gap_rest_m": 0.0,
+     "gap_geometric_tangent_m": 0.008,
+     "gap_floating_1e4_m": 9.999999999999983e-05,
+     "ok": true
+    },
+    {
+     "probe": "mound 2-3 midpoint",
+     "h_m": 0.0,
+     "gap_rest_m": 0.0,
+     "gap_geometric_tangent_m": 0.008,
+     "gap_floating_1e4_m": 9.999999999999983e-05,
+     "ok": true
+    },
+    {
+     "probe": "mound 3-4 midpoint",
+     "h_m": 0.0,
+     "gap_rest_m": 0.0,
+     "gap_geometric_tangent_m": 0.008,
+     "gap_floating_1e4_m": 9.999999999999983e-05,
+     "ok": true
+    },
+    {
+     "probe": "mound 4-5 midpoint",
+     "h_m": 0.0,
+     "gap_rest_m": 0.0,
+     "gap_geometric_tangent_m": 0.008,
+     "gap_floating_1e4_m": 9.999999999999983e-05,
+     "ok": true
+    }
+   ],
+   "convention_note": "the engine law's zero-gap rest is point_y = h - r_s (gait_controller.hpp:635-643; gait_scene.py:400 seated_gaps). Naive sphere-centre tangency reads gap = 2*r_s = 8e-3 m under this law - a PREREG PREDICTION MISS (recorded, adjudicated under falsifier F-b), not a ghost: the divergence is one-sided (the law claims contact LATER than naive geometry, never earlier)."
+  },
+  {
+   "id": "GHO-03",
+   "verdict": "PASS-AS-DECLARED",
+   "falsifier_fired": false,
+   "axis_rows": [
+    {
+     "probe": "axis y=0.100",
+     "sdf_analytic_m": -0.037,
+     "mesh_distance_m": 0.03682169289345883
+    },
+    {
+     "probe": "axis y=0.579",
+     "sdf_analytic_m": -0.037,
+     "mesh_distance_m": 0.03682169289345883
+    },
+    {
+     "probe": "axis y=1.000",
+     "sdf_analytic_m": -0.037,
+     "mesh_distance_m": 0.03682169289345883
+    }
+   ],
+   "worst_shell_pen_m": 0.00017816511312930203,
+   "worst_shell_ghost_m": 0.0001783070371289483,
+   "tol_m": 0.0002,
+   "declared": "collision = the ANALYTIC solid (trunk_declaration collision_route); the mesh is render-only; the <=TOL shell split is the declared representation error"
+  },
+  {
+   "id": "INT-01",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "worst_tangency_err_m": 7.042977312465837e-16,
+   "tangency_bound_m": 1e-09,
+   "shell_samples": 4096,
+   "min_shell_margin_m": 0.00023028204753881495,
+   "interior_samples": 256,
+   "max_interior_sdf_m": -0.023319852507112923
+  },
+  {
+   "id": "INT-02",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "triangles": 3200,
+   "worst_submergence_m": 3.61139347473971e-06,
+   "at": [
+    17.666666666666668,
+    7.333333333333333
+   ],
+   "triangle_slope_m_per_m": 0.042522289331596436,
+   "bound_m": 4.990644488621409e-06,
+   "bound_rule": "r*(1-1/sqrt(1+0.05^2)) at F01's legal worst slope; also <= trunk TOL 2e-4",
+   "tol_ratio": 0.01805696737369855
+  },
+  {
+   "id": "INT-03",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "cap_disk_samples": 65,
+   "worst_abs_terrain_height_m": 0.0,
+   "footprint_grid_samples": 81,
+   "worst_abs_footprint_height_m": 0.0,
+   "gradient_at_site": [
+    0.0,
+    0.0
+   ],
+   "bound_m": 1e-09,
+   "declared": "site terrain height 0.0 / slope 0.0 (F01 trunk_sites[0], F03 site block); cap plane y=0 coplanar with the terrain"
+  },
+  {
+   "id": "VIS-01",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "ring_samples": 2500,
+   "boundary_samples": 400,
+   "worst_height_disagreement_m": 6.938893903907228e-18,
+   "height_bound_m": 1e-09,
+   "worst_normal_disagreement": 0.0,
+   "normal_bound": 1e-12,
+   "classify_at_closed_edge_inside": true,
+   "ring_max_abs_height_m": 0.0,
+   "ring_analytic_vs_collision_worst_m": 0.0,
+   "declared_global_discretization_m": 0.00646,
+   "declared_note": "analytic-mound vs collision is F02's DECLARED discretization (<= 9.25 mm derived); render vs collision is the identity measured here"
+  },
+  {
+   "id": "VIS-02",
+   "verdict": "PASS",
+   "falsifier_fired": false,
+   "recomputed_chord_m": 0.00017830703919281127,
+   "declared_chord_m": 0.000178307,
+   "sagitta_m": 0.00017816511312871363,
+   "chord_tol_m": 0.0002,
+   "triangles_outward": 128,
+   "of": 128,
+   "worst_vertex_off_surface_m": 3.671369570856786e-07,
+   "vertex_bound_m": 1e-06
+  },
+  {
+   "id": "VIS-03",
+   "verdict": "PASS-AS-DECLARED",
+   "falsifier_fired": false,
+   "post_index": 30,
+   "post_declared_m": [
+    20.0,
+    0.0,
+    0.0
+   ],
+   "posts_total": 80,
+   "sole_sphere_center_to_post_mesh_m": 0.017320508075689356,
+   "sole_point_law_rest_to_post_mesh_m": 0.017776388834631746,
+   "body_envelope_overlap_depth_m": 0.23267949192431064,
+   "collision_query_serves": "ground only (terrain triangulation + extent rule); posts appear in NO collision path",
+   "declared": "posts are rendered markers for the physical extent edge (F01 boundary.physical note; F02 render-only prisms); the blocking rule is the extent rule itself; post collision is NOT claimed and therefore not demonstrated (item's own observation clause). L2 route survey: no engine prop collision exists to claim."
+  }
+ ],
+ "n_fail": 0,
+ "layer_note": "L1 only (declared geometric model). L2 engine-service gap statement is in report.md/HANDOFFS.md - the frozen engine exercises NONE of these cases in-vivo (point spheres vs ONE plane only)."
+}

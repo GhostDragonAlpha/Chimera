@@ -1,0 +1,21 @@
+M-S01 RECEIPT — shipped-surface identities (measured 2026-09-24, HEAD 42f7cdc4ba421cf83ecd2fa0be69e94fb772cd37)
+All sha256 measured on disk in E:/ChimeraWork/monkey-play-20260924.
+
+runtime sources (git-tracked):
+  tools/playable_slice/slice_server.py   ee40d6be145fab5075ace5ffe96e9d76fd4fc48d3c89247e38b3b16bc999ae7c
+  tools/playable_slice/scene_boot.py     4019d74ebe59a39d3b5a1f35289309aba205c3301dbdba99d000871943e20bdb
+  tools/playable_slice/push_channel.py   bac826cbd3d31fbe571790d1140d727fb55e5d5081278183db571a9a396278e6
+  tools/playable_slice/index.html        d76701f85a8fea63f21cfd83d56dced1329c89b26cfe22ae4e9fa28642179040  (no external/CDN refs — self-contained)
+  tools/playable_slice/mock_registry.json f076cf51da97a9e9d1da7a99510be472d1ba1a8eef36662be069900185bcd731
+campaign scene data (git-tracked):
+  tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json 18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1 (internal declaration_sha256 field aa2607df... is the content hash, distinct from the file hash)
+  tools/monkey_campaign/data/monkey_clearing/terrain_bundle.json      446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52
+  tools/monkey_campaign/data/monkey_trunk/trunk_declaration.json      94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1
+CT-derived assets (MorphoSource 000875604 derivatives):
+  tools/playable_slice/standing_body.obj  bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111  == P02P03 report pin
+  tools/playable_slice/standing_body.glb  adb6aff2babbf2cd2745004b2f51150d3a3f47e55b2ce3b8e63b3c0d595dbae5  == boot_cache_manifest pin
+  tools/playable_slice/ghost_standing.obj d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d == boot_cache_manifest pin
+engine binary: .tmp/slice_build/Release/chimera_engine.exe  ABSENT (not built in this worktree; .tmp/ gitignored)
+excluded-by-absence: chimanoid.xml / FreeMusco forearm packet — 0 hits in this worktree
+  (present only at E:/PythonChimera/.tmp/chimanoid.xml + E:/PythonChimera/forearm_package/ — the main repo, analysis-only per bindings.json pin citing forearm_package/USTR_DIAGNOSTIC_RECEIPT.md @ b04a3acd "Nothing here executes anything"; R1 falsifier fired there)
+W7 coordination: tools/material_volume*.py + tools/tests/ listed only (8 + 1 paths), untracked, landing in flight — untouched.

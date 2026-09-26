@@ -1,0 +1,85 @@
+== R3 INTEGRATED SCENARIO (stack: X02 flow -> U03 policy -> U01 mapper -> gate -> sink) ==
+-- B1 first: the composition AS COMMITTED --
+  [PASS] B1 FocusPolicy surface: missing pieces  -- missing=['release_all']
+  [PASS] B1 SessionFlow(FocusPolicy) REJECTED at construction (the documented composition does not exist)  -- FlowError("mapper must provide the declared U01 surface (press/release/mouse/tick/release_all/held); missing 'release_all' -- the flow can only gate, never replace")
+S1 SPINE: play -> hold W -> blur -> refocus -> pause -> resume -> restart -> exit
+  [PASS] S1 attract: zero records before play
+  [PASS] S1 attract: gameplay key dropped (named)
+  [PASS] S1 attract: the policy slot received NOTHING
+  [PASS] S1 Return starts play
+  [PASS] S1 holding W emits bounded records at the 50 ms grid  -- 6 records
+  [PASS] S1 all records inside U01's frozen bounds
+  [PASS] S1 steer nudge carried (|yaw|>0 once)
+  [PASS] S1 blur: decay runs to EXACT 0.0 then silence  -- [(620, 0.6872625), (670, 0.0)]
+  [PASS] S1 blur: no v>0 later than blur+100 ms  -- [(620, 0.6872625), (670, 0.0)]
+  [PASS] S1 blur: press while blurred DROPPED by name (policy layer)  -- [('W', 700)]
+  [PASS] S1 blur: no press reached the MAPPER (the policy held the gate)
+  [PASS] S1 blur: the mapper is key-free
+  [PASS] S1 refocus: clean re-arm (held empty)
+  [PASS] S1 refocus: still silent with no key (no tail resurrection)
+  [PASS] S1 pre-pause demand live  -- 0.763625
+  [PASS] S1 pause transition fired
+  [PASS] S1 quiesce: the flow's world contact is release_all-then-nothing  -- [('release_all', 920)]
+  [PASS] S1 pause: ZERO records while paused (38 ticks)
+  [PASS] S1 pause: the policy slot received NOTHING while suspended  -- [('release_all', 920)]
+  [PASS] S1 pause: menu mashing named-dropped by the FLOW (40+ drops)
+  [PASS] S1 resume -> playing
+  [PASS] S1 resume tail bounded <= 2 records  -- [0.0]
+  [PASS] S1 resume tail: every record <= pre-pause speed  -- [0.0]
+  [PASS] S1 resume tail lands EXACTLY 0.0 then silence  -- [0.0]
+  [PASS] S1 after the tail: total silence, grid dissolved
+  [PASS] S1 faithful consumer: demand inert again 200 ms after resume
+  [PASS] S1 second pause
+  [PASS] S1 restart via pause: state playing again
+  [PASS] S1 restart: exactly ONE boot call  -- ['boot']
+  [PASS] S1 post-restart, no key: only the stale tail's exact-0.0 landing  -- [0.0]
+  [PASS] S1 no positive speed after pause_at+100 ms across the restart
+  [PASS] S1 the post-restart mapper holds NO stale key
+  [PASS] S1 exit -> terminal
+  [PASS] S1 teardown exactly once  -- ['boot', 'teardown']
+  [PASS] S1 after exit: zero mapper/policy contacts, zero records
+  [PASS] S1 second Q is a named drop, no second teardown
+  [PASS] S1 whole run inside U01's bounds
+S2a blur DURING the resume tail
+  [PASS] S2a tail <= 2 records despite the blur  -- [0.458175, 0.0]
+  [PASS] S2a blur did not RESTART the tail (idempotent release_all)  -- [0.458175, 0.0]
+  [PASS] S2a positive sample <= pre-pause V_MAX  -- [0.458175, 0.0]
+  [PASS] S2a press while blurred (tail era) dropped
+  [PASS] S2a after focus a fresh press arms a FRESH grid  -- [CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=126, source='u01_input_mapper', record_version=1)]
+  [PASS] S2a no stuck movement: all bounded
+S2b restart DURING the decay window (does a stale tail cross the boot?)
+  [PASS] S2b restart inside the decay window boots once  -- ['boot']
+  [PASS] S2b THE STALE TAIL CROSSES THE BOOT: a positive record reaches the FRESH scene  -- [0.458175, 0.0]
+  [PASS] S2b but it is bounded: <= 2 records, lands exact 0.0  -- [0.458175, 0.0]
+  [PASS] S2b no positive record past 120+100 ms (the frozen deadline holds across the boot)  -- [0.458175, 0.0]
+  [PASS] S2b bounds held
+S2c disconnect + pause race, both orders
+  [PASS] S2c/disconnect-first disconnect releases and names the state
+  [PASS] S2c/disconnect-first pause during disconnect is legal
+  [PASS] S2c/disconnect-first resume while disconnected -> playing (flow) + dropped intent (policy)
+  [PASS] S2c/disconnect-first tail bounded on resume (silence if the decay already completed pre-pause; else <= 2 records landing exact 0.0)
+  [PASS] S2c/disconnect-first no NEW walk demand while disconnected (press dropped)
+  [PASS] S2c/disconnect-first after reconnect a fresh press walks again  -- [CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=186, source='u01_input_mapper', record_version=1)]
+  [PASS] S2c/disconnect-first bounds held
+  [PASS] S2c/pause-first disconnect while paused names itself
+  [PASS] S2c/pause-first resume while disconnected -> playing (flow) + dropped intent (policy)
+  [PASS] S2c/pause-first tail bounded on resume (silence if the decay already completed pre-pause; else <= 2 records landing exact 0.0)  -- [0.0]
+  [PASS] S2c/pause-first no NEW walk demand while disconnected (press dropped)  -- [0.0]
+  [PASS] S2c/pause-first after reconnect a fresh press walks again  -- [CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=186, source='u01_input_mapper', record_version=1)]
+  [PASS] S2c/pause-first bounds held
+S2d a key held across the ENTIRE restart (stale held key?)
+  [PASS] S2d no new keydown is synthesized after the restart
+  [PASS] S2d the post-restart mapper sees NO stale held key: only the tail's exact-0.0 landing, zero movement, no fresh press  -- (0, [0.0])
+  [PASS] S2d a fresh press walks again after the restart  -- [CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=183, source='u01_input_mapper', record_version=1)]
+  [PASS] S2d-corroborates-B2 restart inside the decay window imports the stale positive sample [~0.1*V_MAX, 0.0] into the fresh scene  -- [0.07636249999999999, 0.0]
+S2e R pressed DURING PLAY must never boot (the deliberate absence)
+  [PASS] S2e mid-play R is a named no-op, zero boots
+S2f the expiry floor INSIDE the composition (stalled physics clock)
+  [PASS] S2f the belt: fresh-at-delivery records pass (9), stale ones are dropped and named (3), and NOTHING expired-at-delivery is in the sink  -- ({'passed': 9, 'expired_at_gate': 3}, 9, 0)
+  [PASS] S2f drops are named in the policy trace
+S3 falsifier mining: the pause leans on a consumer OUTSIDE the stack
+  [PASS] S3 a naive ZOH consumer sees FULL-SPEED demand for the WHOLE pause (the stack alone cannot stop the animal)  -- [0.763625, 0.763625, 0.763625]
+  [PASS] S3 the DECLARED consumer (is_expired honored) coasts <= 100 ms then goes inert  -- [0.763625, None, None, None]
+S4 note-probe: exit does NOT quiesce the mapper (terminal object keeps its held set)
+  [PASS] S4 exit keeps W in the mapper's held set (harmless while terminal; a hazard only if the object were resurrected)  -- ('exited', ['W'])
+== RESULT: 73 checks, 0 FAILED ==

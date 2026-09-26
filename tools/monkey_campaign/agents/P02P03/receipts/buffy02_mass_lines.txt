@@ -1,0 +1,5 @@
+RECEIPT: E:/PythonChimera/agent_logs/local_buffy_qwen/assembly_handoff_02.md @ forearm-package-20260924 43b599a7 (file present at b04a3acd checkout)
+--- lines 83, 184, 210 verbatim ---
+  eight → `transported_source_effective`. The reported **17.039978509953905 kg** is declared owned
+`validated_tissue_volume=0`, `counted_mass_kg=0.0`, `uncounted_mass_kg=17.039978509953905`,
+  `components_with_validated_tissue_mass = 0`. Invariant intact — the 17.04 kg stays transported.

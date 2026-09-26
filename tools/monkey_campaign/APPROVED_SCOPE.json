@@ -1,0 +1,9 @@
+{
+  "algorithm": "sha256-chimera-json-v1",
+  "scope_sha256": "33a8fb7204e20bf71f563014c57d772dd111a198cd1d6b212fd053653858f863",
+  "raw_file_sha256": "001eb42dc0a043bdb803c4645e1fcfcb07aad11e854b643dc812a6753ad34c38",
+  "date": "2026-09-24",
+  "task_count": 83,
+  "authority": "Issued baseline fingerprint; human commissioning conversation is the independent pin. No signature or secret.",
+  "changes": "Submit separate proposal and obtain human scope approval; never overwrite the trust anchor automatically."
+}

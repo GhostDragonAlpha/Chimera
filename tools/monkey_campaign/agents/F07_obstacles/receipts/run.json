@@ -1,0 +1,495 @@
+{
+ "all_pass": true,
+ "declaration": {
+  "bytes": 8495,
+  "path": "tools/monkey_campaign/data/monkey_routes/route_declaration.json",
+  "self_pin": "7c3ad6e86039b63324e4695abe5e5525e2693a98f9a0ef91355b804da8b8e211",
+  "sha256": "28dff2b33e74fcc4103ac3699899b0937f6975323758d1fa142092704bf4496c"
+ },
+ "falsifiers": {
+  "(a)": "V3 + V6",
+  "(b)": "V4 + V5",
+  "(c)": "V2"
+ },
+ "schema": "chimera.f07_verify_receipt.v1",
+ "suite": "verify_routes",
+ "verdicts": [
+  {
+   "falsifier": "(supporting)",
+   "id": "V1-declaration-determinism",
+   "numbers": {
+    "bytes": 8495,
+    "in_process_byte_identical": true,
+    "sha256": "28dff2b33e74fcc4103ac3699899b0937f6975323758d1fa142092704bf4496c",
+    "subprocess_byte_identical": true,
+    "tangent_routes": 10,
+    "validated": true
+   },
+   "verdict": "PASS"
+  },
+  {
+   "falsifier": "(c)",
+   "id": "V2-mound-slope-law",
+   "numbers": {
+    "analytic_max_A_pi_over_2R_m_per_m": 0.03795552514626025,
+    "bound": 0.05,
+    "f01_grid_central_difference_m_per_m": 0.034606,
+    "f02_mesh_triangle_worst_m_per_m": 0.042522289331596436,
+    "f02_physical_gradient_route_grid_m_per_m": 0.042522289331596436,
+    "mesh_where": [
+     17.0,
+     7.0
+    ],
+    "n1_slope_blocked_cells": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "falsifier": "(a)",
+   "id": "V3-reachability-no-invisible-wall",
+   "numbers": {
+    "blocked_B1": 0,
+    "blocked_B2": 107,
+    "blocked_N1": 0,
+    "explained_blocked_total": 107,
+    "free_cells": 641494,
+    "grid_cells": 641601,
+    "reachable_free_cells": 641494,
+    "unexplained_causes": 0,
+    "unreachable_free_cells": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "falsifier": "(b)",
+   "id": "V4-corridor-envelope",
+   "numbers": {
+    "approach_zone_r_m": 0.7869999999999999,
+    "bfs_corridor_width_m": 1.0759677425271055,
+    "bfs_min_clearance_m": 0.5379838712635527,
+    "bfs_min_clearance_where": [
+     11.3,
+     2.0
+    ],
+    "bfs_path_cells": 234,
+    "bfs_path_found": true,
+    "bound_width_m": 1.0,
+    "note": "bottleneck is the approach-gate by derivation (width = W_env exactly there); the proof content is that no other point of the route narrows it",
+    "straight_R0_blocked_samples": 0,
+    "straight_R0_min_clearance_outside_approach_m": 0.5021841780699858
+   },
+   "verdict": "PASS"
+  },
+  {
+   "falsifier": "(b)",
+   "id": "V5-tangent-routes-around-mounds",
+   "numbers": {
+    "amendment": "prereg Amendment 1: endpoints end at min(enlarged-disk exit, extent exit); a B1-terminated endpoint on the visible edge is a declared cause, not a miss",
+    "direction_round_tolerance_m": 2e-05,
+    "fail": 0,
+    "mound_summary": [
+     {
+      "mound_index": 0,
+      "sides": {
+       "L": "PASS",
+       "R": "PASS-AS-DECLARED"
+      },
+      "verdict": "PASS"
+     },
+     {
+      "mound_index": 1,
+      "sides": {
+       "L": "PASS",
+       "R": "PASS-AS-DECLARED"
+      },
+      "verdict": "PASS"
+     },
+     {
+      "mound_index": 2,
+      "sides": {
+       "L": "PASS",
+       "R": "PASS-AS-DECLARED"
+      },
+      "verdict": "PASS"
+     },
+     {
+      "mound_index": 3,
+      "sides": {
+       "L": "PASS",
+       "R": "PASS-AS-DECLARED"
+      },
+      "verdict": "PASS"
+     },
+     {
+      "mound_index": 4,
+      "sides": {
+       "L": "PASS",
+       "R": "PASS"
+      },
+      "verdict": "PASS"
+     }
+    ],
+    "pass": 6,
+    "pass_as_declared_b1_terminated": 4,
+    "routes": [
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "passed_mound",
+      "endpoint_clearance_b1_m": 3.710332000000001,
+      "endpoint_m": [
+       -16.289668,
+       -12.029514
+      ],
+      "endpoint_on_extent_edge": false,
+      "id": "R1L",
+      "length_m": 20.255187,
+      "min_trunk_clearance_m": 11.942184690233645,
+      "min_wall_clearance_m": 3.710332000000001,
+      "mound_envelope_m": 5.712244,
+      "mound_index": 0,
+      "own_margin_m": 5.712239398193671,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "L",
+      "verdict": "PASS"
+     },
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "extent_edge",
+      "endpoint_clearance_b1_m": 0.004860000000000753,
+      "endpoint_m": [
+       -19.99514,
+       -0.771026
+      ],
+      "endpoint_on_extent_edge": true,
+      "id": "R1R",
+      "length_m": 20.014864,
+      "min_trunk_clearance_m": 11.942184690233645,
+      "min_wall_clearance_m": 0.004860000000000753,
+      "mound_envelope_m": 5.712244,
+      "mound_index": 0,
+      "own_margin_m": 5.71223651061027,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "R",
+      "verdict": "PASS-AS-DECLARED"
+     },
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "passed_mound",
+      "endpoint_clearance_b1_m": 2.3900229999999993,
+      "endpoint_m": [
+       -17.609977,
+       13.746429
+      ],
+      "endpoint_on_extent_edge": false,
+      "id": "R2L",
+      "length_m": 22.342621,
+      "min_trunk_clearance_m": 11.942184690233645,
+      "min_wall_clearance_m": 2.3900229999999993,
+      "mound_envelope_m": 5.470007,
+      "mound_index": 1,
+      "own_margin_m": 5.470005408044493,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "L",
+      "verdict": "PASS"
+     },
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "extent_edge",
+      "endpoint_clearance_b1_m": 0.008283999999999736,
+      "endpoint_m": [
+       -8.231384,
+       19.991716
+      ],
+      "endpoint_on_extent_edge": true,
+      "id": "R2R",
+      "length_m": 21.628959,
+      "min_trunk_clearance_m": 11.942184690233645,
+      "min_wall_clearance_m": 0.008283999999999736,
+      "mound_envelope_m": 5.470007,
+      "mound_index": 1,
+      "own_margin_m": 5.470015427244973,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "R",
+      "verdict": "PASS-AS-DECLARED"
+     },
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "passed_mound",
+      "endpoint_clearance_b1_m": 1.7447130000000008,
+      "endpoint_m": [
+       18.255287,
+       10.778891
+      ],
+      "endpoint_on_extent_edge": false,
+      "id": "R3L",
+      "length_m": 21.202913,
+      "min_trunk_clearance_m": 3.6740211481511933,
+      "min_wall_clearance_m": 1.7447130000000008,
+      "mound_envelope_m": 4.579635,
+      "mound_index": 2,
+      "own_margin_m": 4.579632269099017,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "L",
+      "verdict": "PASS"
+     },
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "extent_edge",
+      "endpoint_clearance_b1_m": 0.0076569999999982485,
+      "endpoint_m": [
+       19.992343,
+       1.51945
+      ],
+      "endpoint_on_extent_edge": true,
+      "id": "R3R",
+      "length_m": 20.057679,
+      "min_trunk_clearance_m": 1.2700212948283658,
+      "min_wall_clearance_m": 0.0076569999999982485,
+      "mound_envelope_m": 4.579635,
+      "mound_index": 2,
+      "own_margin_m": 4.579641860194746,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "R",
+      "verdict": "PASS-AS-DECLARED"
+     },
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "passed_mound",
+      "endpoint_clearance_b1_m": 1.3293500000000016,
+      "endpoint_m": [
+       18.67065,
+       -14.936362
+      ],
+      "endpoint_on_extent_edge": false,
+      "id": "R4L",
+      "length_m": 23.91862,
+      "min_trunk_clearance_m": 9.124921723282284,
+      "min_wall_clearance_m": 1.3293500000000016,
+      "mound_envelope_m": 5.667989,
+      "mound_index": 3,
+      "own_margin_m": 5.667974672002688,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "L",
+      "verdict": "PASS"
+     },
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "extent_edge",
+      "endpoint_clearance_b1_m": 0.0017420000000001323,
+      "endpoint_m": [
+       8.3721,
+       -19.998258
+      ],
+      "endpoint_on_extent_edge": true,
+      "id": "R4R",
+      "length_m": 21.681888,
+      "min_trunk_clearance_m": 11.71524605136905,
+      "min_wall_clearance_m": 0.0017420000000001323,
+      "mound_envelope_m": 5.667989,
+      "mound_index": 3,
+      "own_margin_m": 5.6933432140527955,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "R",
+      "verdict": "PASS-AS-DECLARED"
+     },
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "passed_mound",
+      "endpoint_clearance_b1_m": 5.076487,
+      "endpoint_m": [
+       -4.745983,
+       -14.923513
+      ],
+      "endpoint_on_extent_edge": false,
+      "id": "R5L",
+      "length_m": 15.669413,
+      "min_trunk_clearance_m": 11.942184690233645,
+      "min_wall_clearance_m": 5.076487,
+      "mound_envelope_m": 5.26511,
+      "mound_index": 4,
+      "own_margin_m": 5.265103386719011,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "L",
+      "verdict": "PASS"
+     },
+     {
+      "b1_shallow_contiguous_suffix": true,
+      "centre_plane_passed": true,
+      "end_cause_declared": "passed_mound",
+      "endpoint_clearance_b1_m": 6.606769,
+      "endpoint_m": [
+       -13.393231,
+       -8.115231
+      ],
+      "endpoint_on_extent_edge": false,
+      "id": "R5R",
+      "length_m": 15.669415,
+      "min_trunk_clearance_m": 11.942184690233645,
+      "min_wall_clearance_m": 6.606769,
+      "mound_envelope_m": 5.26511,
+      "mound_index": 4,
+      "own_margin_m": 5.265112905124923,
+      "own_margin_ok": true,
+      "refusals": [],
+      "side": "R",
+      "verdict": "PASS"
+     }
+    ],
+    "total": 10
+   },
+   "verdict": "PASS"
+  },
+  {
+   "falsifier": "(a)",
+   "id": "V6-edge-rays-visible-boundary",
+   "numbers": {
+    "max_gap_to_post_m": 1.0,
+    "post_line_half_width_m": 20.0,
+    "rays": [
+     {
+      "beyond_query_refusal": "f02_outside_extent",
+      "edge": "east",
+      "first_refusal": {
+       "cause": "B1",
+       "t_m": 20.01,
+       "x": 20.01,
+       "z": 0.0
+      },
+      "last_traversable_m": [
+       20.0,
+       0.0
+      ],
+      "nearest_post_base_m": 0.0,
+      "stop_short_of_post_line_m": 0.0,
+      "verdict": "PASS"
+     },
+     {
+      "beyond_query_refusal": "f02_outside_extent",
+      "edge": "west",
+      "first_refusal": {
+       "cause": "B1",
+       "t_m": 20.01,
+       "x": -20.01,
+       "z": 0.0
+      },
+      "last_traversable_m": [
+       -20.0,
+       0.0
+      ],
+      "nearest_post_base_m": 0.0,
+      "stop_short_of_post_line_m": 0.0,
+      "verdict": "PASS"
+     },
+     {
+      "beyond_query_refusal": "f02_outside_extent",
+      "edge": "north",
+      "first_refusal": {
+       "cause": "B1",
+       "t_m": 20.01,
+       "x": 0.0,
+       "z": 20.01
+      },
+      "last_traversable_m": [
+       0.0,
+       20.0
+      ],
+      "nearest_post_base_m": 0.0,
+      "stop_short_of_post_line_m": 0.0,
+      "verdict": "PASS"
+     },
+     {
+      "beyond_query_refusal": "f02_outside_extent",
+      "edge": "south",
+      "first_refusal": {
+       "cause": "B1",
+       "t_m": 20.01,
+       "x": 0.0,
+       "z": -20.01
+      },
+      "last_traversable_m": [
+       0.0,
+       -20.0
+      ],
+      "nearest_post_base_m": 0.0,
+      "stop_short_of_post_line_m": 0.0,
+      "verdict": "PASS"
+     }
+    ]
+   },
+   "verdict": "PASS"
+  },
+  {
+   "falsifier": "(supporting)",
+   "id": "V7-posts-render-only",
+   "numbers": {
+    "citation": "F04 VIS-03 PASS-AS-DECLARED (NO-CLAIM); the predicate has no post term; all 80 inward probes are free",
+    "inward_probes_refused": 0,
+    "posts": 80,
+    "probes": [],
+    "ring_extent_m": 20.0,
+    "worst_off_edge_m": 0.0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "falsifier": "(supporting)",
+   "id": "V8-blocking-causes-table",
+   "numbers": {
+    "table": {
+     "B1": {
+      "blocks": true,
+      "declared": "extent rule (F01 boundary.physical; earth_environment.hpp:118)",
+      "grid_cells": 0,
+      "visible": "80 posts, worst off-edge 0.0e+00 m, ring extent 20.0"
+     },
+     "B2": {
+      "blocks": true,
+      "declared": "trunk analytic solid r=0.037 + body envelope r=0.25 (F03 collision_representation)",
+      "grid_cells": 107,
+      "visible": "render mesh 130v/128tri, rep err 1.783070e-04 <= 2e-4"
+     },
+     "N1": {
+      "blocks": false,
+      "declared": "walk law <= 0.05 (F01 terrain.max_slope_bound)",
+      "grid_cells": 0,
+      "visible": "worst measured 0.042522"
+     },
+     "N2": {
+      "blocks": false,
+      "declared": "render-only NO-CLAIM (F04 VIS-03)",
+      "grid_cells": "n/a",
+      "visible": "80 posts, none in the predicate"
+     }
+    },
+    "unexplained_causes": 0
+   },
+   "verdict": "PASS"
+  },
+  {
+   "falsifier": "(supporting)",
+   "id": "V9-route-map",
+   "numbers": {
+    "path": "agents/F07_obstacles/receipts/route_map.png"
+   },
+   "verdict": "PASS"
+  }
+ ]
+}

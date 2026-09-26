@@ -1,0 +1,104 @@
+test_no_ground_outside_the_closed_extent (__main__.TestBoundary.test_no_ground_outside_the_closed_extent) ... ok
+test_no_invisible_wall_between_ring_and_physical_edge (__main__.TestBoundary.test_no_invisible_wall_between_ring_and_physical_edge) ... ok
+test_nonfinite_query_refused (__main__.TestBoundary.test_nonfinite_query_refused) ... ok
+test_outside_beyond_tiny_epsilons (__main__.TestBoundary.test_outside_beyond_tiny_epsilons) ... ok
+test_physical_rule_matches_declaration (__main__.TestBoundary.test_physical_rule_matches_declaration) ... ok
+test_queries_refused_outside_and_served_inside (__main__.TestBoundary.test_queries_refused_outside_and_served_inside) ... ok
+test_strict_inequality_on_all_four_edges (__main__.TestBoundary.test_strict_inequality_on_all_four_edges) ... ok
+test_committed_file_equals_fresh_compile (__main__.TestDeterminism.test_committed_file_equals_fresh_compile) ... ok
+test_inprocess_compile_bytes_identical (__main__.TestDeterminism.test_inprocess_compile_bytes_identical) ... ok
+test_subprocess_compile_bytes_identical (__main__.TestDeterminism.test_subprocess_compile_bytes_identical) ... ok
+test_boundary_edge_heights_served_on_mound_flank (__main__.TestFrozenSlopeCases.test_boundary_edge_heights_served_on_mound_flank) ... ok
+test_f01_central_difference_law_holds_on_bundle_grid (__main__.TestFrozenSlopeCases.test_f01_central_difference_law_holds_on_bundle_grid) ... ok
+test_mesh_analytic_deviation_within_derived_bound (__main__.TestFrozenSlopeCases.test_mesh_analytic_deviation_within_derived_bound) ... ok
+test_mesh_triangle_slopes_within_f01_law (__main__.TestFrozenSlopeCases.test_mesh_triangle_slopes_within_f01_law) ... ok
+test_mound_crest_cases (__main__.TestFrozenSlopeCases.test_mound_crest_cases) ... ok
+test_spawn_cell_exact (__main__.TestFrozenSlopeCases.test_spawn_cell_exact) ... ok
+test_surface_maximum_is_the_tallest_crest_flank (__main__.TestFrozenSlopeCases.test_surface_maximum_is_the_tallest_crest_flank) ... ok
+test_validator_slope_and_discretization_receipts (__main__.TestFrozenSlopeCases.test_validator_slope_and_discretization_receipts) ... ok
+test_worst_slope_point_case_agrees (__main__.TestFrozenSlopeCases.test_worst_slope_point_case_agrees) ... ok
+test_degenerate_triangle_refused_even_when_repinned (__main__.TestIntakeStrictness.test_degenerate_triangle_refused_even_when_repinned) ... ok
+test_digest_mismatch_refused (__main__.TestIntakeStrictness.test_digest_mismatch_refused) ... ok
+test_drifted_grid_refused_even_when_repinned (__main__.TestIntakeStrictness.test_drifted_grid_refused_even_when_repinned) ... ok
+test_drifted_mound_refused_even_when_repinned (__main__.TestIntakeStrictness.test_drifted_mound_refused_even_when_repinned) ... ok
+test_duplicate_json_key_refused (__main__.TestIntakeStrictness.test_duplicate_json_key_refused) ... ok
+test_ground_vertex_past_extent_refused_even_when_repinned (__main__.TestIntakeStrictness.test_ground_vertex_past_extent_refused_even_when_repinned) ... ok
+test_nonfinite_json_refused (__main__.TestIntakeStrictness.test_nonfinite_json_refused) ... ok
+test_tampered_post_base_refused_even_when_repinned (__main__.TestIntakeStrictness.test_tampered_post_base_refused_even_when_repinned) ... ok
+test_wrong_schema_refused (__main__.TestIntakeStrictness.test_wrong_schema_refused) ... ok
+test_wrong_slope_bound_refused (__main__.TestIntakeStrictness.test_wrong_slope_bound_refused) ... ok
+test_every_ground_vertex_is_a_grid_node (__main__.TestMeshShape.test_every_ground_vertex_is_a_grid_node) ... ok
+test_frozen_counts (__main__.TestMeshShape.test_frozen_counts) ... ok
+test_ground_normals_up_and_stored_equal_face_normals (__main__.TestMeshShape.test_ground_normals_up_and_stored_equal_face_normals) ... ok
+test_receipt_numbers (__main__.TestMeshShape.test_receipt_numbers) ... ok
+test_source_pins_match_committed_declaration (__main__.TestMeshShape.test_source_pins_match_committed_declaration) ... ok
+test_upload_layout_is_engine_native (__main__.TestMeshShape.test_upload_layout_is_engine_native) ... ok
+test_every_post_base_on_physical_edge_and_on_mesh_surface (__main__.TestPosts.test_every_post_base_on_physical_edge_and_on_mesh_surface) ... ok
+test_post_cap_normals_up_sides_outward (__main__.TestPosts.test_post_cap_normals_up_sides_outward) ... ok
+test_post_count_and_identity_against_declaration (__main__.TestPosts.test_post_count_and_identity_against_declaration) ... ok
+test_post_style_frozen_from_declaration (__main__.TestPosts.test_post_style_frozen_from_declaration) ... ok
+test_agreement_over_frozen_sample_set (__main__.TestRenderQueryAgreement.test_agreement_over_frozen_sample_set) ... ok
+test_diagonal_drift_would_be_caught (__main__.TestRenderQueryAgreement.test_diagonal_drift_would_be_caught)
+If the query used the OTHER diagonal the twisted cells would disagree -- ... ok
+test_query_matches_declaration_grid_at_nodes (__main__.TestRenderQueryAgreement.test_query_matches_declaration_grid_at_nodes) ... ok
+
+----------------------------------------------------------------------
+Ran 42 tests in 5.870s
+
+OK
+[discretization] worst mesh-vs-analytic 6.460 mm at (x=19.5, z=5.5) <= derived 9.25 mm
+[slope] worst mesh triangle slope 0.042522 m/m at (x=17.0, z=7.0) <= 0.05
+[agreement] 20177 points: worst height 2.776e-17 m, worst normal 0.000e+00, worst gradient 6.939e-18 m/m
+[nodes] worst query-vs-grid at 1,681 nodes: 8.674e-19 m <= 1e-9
+test_no_ground_outside_the_closed_extent (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestBoundary.test_no_ground_outside_the_closed_extent) ... ok
+test_no_invisible_wall_between_ring_and_physical_edge (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestBoundary.test_no_invisible_wall_between_ring_and_physical_edge) ... ok
+test_nonfinite_query_refused (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestBoundary.test_nonfinite_query_refused) ... ok
+test_outside_beyond_tiny_epsilons (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestBoundary.test_outside_beyond_tiny_epsilons) ... ok
+test_physical_rule_matches_declaration (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestBoundary.test_physical_rule_matches_declaration) ... ok
+test_queries_refused_outside_and_served_inside (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestBoundary.test_queries_refused_outside_and_served_inside) ... ok
+test_strict_inequality_on_all_four_edges (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestBoundary.test_strict_inequality_on_all_four_edges) ... ok
+test_committed_file_equals_fresh_compile (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestDeterminism.test_committed_file_equals_fresh_compile) ... ok
+test_inprocess_compile_bytes_identical (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestDeterminism.test_inprocess_compile_bytes_identical) ... ok
+test_subprocess_compile_bytes_identical (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestDeterminism.test_subprocess_compile_bytes_identical) ... ok
+test_boundary_edge_heights_served_on_mound_flank (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestFrozenSlopeCases.test_boundary_edge_heights_served_on_mound_flank) ... ok
+test_f01_central_difference_law_holds_on_bundle_grid (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestFrozenSlopeCases.test_f01_central_difference_law_holds_on_bundle_grid) ... ok
+test_mesh_analytic_deviation_within_derived_bound (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestFrozenSlopeCases.test_mesh_analytic_deviation_within_derived_bound) ... ok
+test_mesh_triangle_slopes_within_f01_law (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestFrozenSlopeCases.test_mesh_triangle_slopes_within_f01_law) ... ok
+test_mound_crest_cases (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestFrozenSlopeCases.test_mound_crest_cases) ... ok
+test_spawn_cell_exact (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestFrozenSlopeCases.test_spawn_cell_exact) ... ok
+test_surface_maximum_is_the_tallest_crest_flank (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestFrozenSlopeCases.test_surface_maximum_is_the_tallest_crest_flank) ... ok
+test_validator_slope_and_discretization_receipts (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestFrozenSlopeCases.test_validator_slope_and_discretization_receipts) ... ok
+test_worst_slope_point_case_agrees (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestFrozenSlopeCases.test_worst_slope_point_case_agrees) ... ok
+test_degenerate_triangle_refused_even_when_repinned (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_degenerate_triangle_refused_even_when_repinned) ... ok
+test_digest_mismatch_refused (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_digest_mismatch_refused) ... ok
+test_drifted_grid_refused_even_when_repinned (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_drifted_grid_refused_even_when_repinned) ... ok
+test_drifted_mound_refused_even_when_repinned (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_drifted_mound_refused_even_when_repinned) ... ok
+test_duplicate_json_key_refused (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_duplicate_json_key_refused) ... ok
+test_ground_vertex_past_extent_refused_even_when_repinned (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_ground_vertex_past_extent_refused_even_when_repinned) ... ok
+test_nonfinite_json_refused (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_nonfinite_json_refused) ... ok
+test_tampered_post_base_refused_even_when_repinned (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_tampered_post_base_refused_even_when_repinned) ... ok
+test_wrong_schema_refused (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_wrong_schema_refused) ... ok
+test_wrong_slope_bound_refused (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestIntakeStrictness.test_wrong_slope_bound_refused) ... ok
+test_every_ground_vertex_is_a_grid_node (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestMeshShape.test_every_ground_vertex_is_a_grid_node) ... ok
+test_frozen_counts (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestMeshShape.test_frozen_counts) ... ok
+test_ground_normals_up_and_stored_equal_face_normals (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestMeshShape.test_ground_normals_up_and_stored_equal_face_normals) ... ok
+test_receipt_numbers (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestMeshShape.test_receipt_numbers) ... ok
+test_source_pins_match_committed_declaration (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestMeshShape.test_source_pins_match_committed_declaration) ... ok
+test_upload_layout_is_engine_native (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestMeshShape.test_upload_layout_is_engine_native) ... ok
+test_every_post_base_on_physical_edge_and_on_mesh_surface (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestPosts.test_every_post_base_on_physical_edge_and_on_mesh_surface) ... ok
+test_post_cap_normals_up_sides_outward (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestPosts.test_post_cap_normals_up_sides_outward) ... ok
+test_post_count_and_identity_against_declaration (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestPosts.test_post_count_and_identity_against_declaration) ... ok
+test_post_style_frozen_from_declaration (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestPosts.test_post_style_frozen_from_declaration) ... ok
+test_agreement_over_frozen_sample_set (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestRenderQueryAgreement.test_agreement_over_frozen_sample_set) ... ok
+test_diagonal_drift_would_be_caught (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestRenderQueryAgreement.test_diagonal_drift_would_be_caught)
+If the query used the OTHER diagonal the twisted cells would disagree -- ... ok
+test_query_matches_declaration_grid_at_nodes (tools.monkey_campaign.agents.F02_terrain.tests.test_terrain.TestRenderQueryAgreement.test_query_matches_declaration_grid_at_nodes) ... ok
+
+----------------------------------------------------------------------
+Ran 42 tests in 5.863s
+
+OK
+[discretization] worst mesh-vs-analytic 6.460 mm at (x=19.5, z=5.5) <= derived 9.25 mm
+[slope] worst mesh triangle slope 0.042522 m/m at (x=17.0, z=7.0) <= 0.05
+[agreement] 20177 points: worst height 2.776e-17 m, worst normal 0.000e+00, worst gradient 6.939e-18 m/m
+[nodes] worst query-vs-grid at 1,681 nodes: 8.674e-19 m <= 1e-9

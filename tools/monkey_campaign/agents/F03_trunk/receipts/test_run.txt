@@ -1,0 +1,58 @@
+test_committed_file_matches_compile_and_pin (__main__.Determinism.test_committed_file_matches_compile_and_pin) ... ok
+test_compile_in_fresh_subprocess_byte_identical (__main__.Determinism.test_compile_in_fresh_subprocess_byte_identical) ... ok
+test_compile_twice_inprocess_byte_identical (__main__.Determinism.test_compile_twice_inprocess_byte_identical) ... ok
+test_validate_receipt_on_committed_file (__main__.Determinism.test_validate_receipt_on_committed_file) ... ok
+test_every_vertex_inside_bound (__main__.FootprintBound.test_every_vertex_inside_bound) ... ok
+test_giant_radius_refused (__main__.FootprintBound.test_giant_radius_refused) ... ok
+test_radius_inside_bound_and_extent (__main__.FootprintBound.test_radius_inside_bound_and_extent) ... ok
+test_energy_scales_rederive (__main__.GeometryDerivation.test_energy_scales_rederive) ... ok
+test_height_equals_pinned_sum (__main__.GeometryDerivation.test_height_equals_pinned_sum) ... ok
+test_height_tamper_refused (__main__.GeometryDerivation.test_height_tamper_refused) ... ok
+test_pinned_input_tamper_refused (__main__.GeometryDerivation.test_pinned_input_tamper_refused) ... ok
+test_radius_equals_half_pinned_foot (__main__.GeometryDerivation.test_radius_equals_half_pinned_foot) ... ok
+test_digest_tamper_refused (__main__.LoaderStrictness.test_digest_tamper_refused)
+Without re-pinning, any content change must hit the digest pin. ... ok
+test_duplicate_key_refused (__main__.LoaderStrictness.test_duplicate_key_refused) ... ok
+test_malformed_json_refused (__main__.LoaderStrictness.test_malformed_json_refused) ... ok
+test_nonfinite_refused (__main__.LoaderStrictness.test_nonfinite_refused) ... ok
+test_clearance_holds_with_actual_radius (__main__.ReachableApproach.test_clearance_holds_with_actual_radius) ... ok
+test_solid_inside_extent (__main__.ReachableApproach.test_solid_inside_extent) ... ok
+test_trunk_height_supports_a_genuine_climb (__main__.ReachableApproach.test_trunk_height_supports_a_genuine_climb)
+The top must exceed the walker's standing-height bound -- a hold at the ... ok
+test_compile_refuses_segments_below_tolerance (__main__.RepresentationError.test_compile_refuses_segments_below_tolerance) ... ok
+test_declaration_with_shrunk_segments_refused (__main__.RepresentationError.test_declaration_with_shrunk_segments_refused) ... ok
+test_displaced_vertex_refused (__main__.RepresentationError.test_displaced_vertex_refused) ... ok
+test_every_declared_vertex_on_analytic_surface (__main__.RepresentationError.test_every_declared_vertex_on_analytic_surface) ... ok
+test_false_measured_error_refused (__main__.RepresentationError.test_false_measured_error_refused)
+Zeroing the measured error breaks BOTH the formula identity and the ... ok
+test_inward_winding_refused (__main__.RepresentationError.test_inward_winding_refused) ... ok
+test_measured_error_recomputes_from_stored_vertices (__main__.RepresentationError.test_measured_error_recomputes_from_stored_vertices) ... ok
+test_measured_error_within_frozen_tolerance (__main__.RepresentationError.test_measured_error_within_frozen_tolerance) ... ok
+test_measured_matches_sagitta_formula (__main__.RepresentationError.test_measured_matches_sagitta_formula) ... ok
+test_ring_count_is_derived_not_chosen (__main__.RepresentationError.test_ring_count_is_derived_not_chosen) ... ok
+test_widened_tolerance_refused (__main__.RepresentationError.test_widened_tolerance_refused) ... ok
+test_damage_value_injection_refused (__main__.RigidOnly.test_damage_value_injection_refused) ... ok
+test_deformable_flip_refused (__main__.RigidOnly.test_deformable_flip_refused) ... ok
+test_extra_geometry_field_refused (__main__.RigidOnly.test_extra_geometry_field_refused) ... ok
+test_extra_material_field_refused (__main__.RigidOnly.test_extra_material_field_refused) ... ok
+test_extra_physics_field_refused (__main__.RigidOnly.test_extra_physics_field_refused) ... ok
+test_extra_top_level_field_refused (__main__.RigidOnly.test_extra_top_level_field_refused) ... ok
+test_rigid_flags_frozen (__main__.RigidOnly.test_rigid_flags_frozen) ... ok
+test_drifted_f01_pin_refused_in_recipe (__main__.SiteContract.test_drifted_f01_pin_refused_in_recipe) ... ok
+test_moved_site_refused (__main__.SiteContract.test_moved_site_refused) ... ok
+test_site_equals_f01_live_trunk_site (__main__.SiteContract.test_site_equals_f01_live_trunk_site) ... ok
+test_site_terrain_height_is_zero (__main__.SiteContract.test_site_terrain_height_is_zero) ... ok
+test_contact_normals_explicit (__main__.SurfaceAndMaterialIdentity.test_contact_normals_explicit) ... ok
+test_deleted_surface_refused (__main__.SurfaceAndMaterialIdentity.test_deleted_surface_refused) ... ok
+test_duplicate_surface_refused (__main__.SurfaceAndMaterialIdentity.test_duplicate_surface_refused) ... ok
+test_false_evidence_claim_refused (__main__.SurfaceAndMaterialIdentity.test_false_evidence_claim_refused)
+The honest-provenance law: relabelling the placeholder as 'researched' ... ok
+test_friction_provenance_is_explicitly_unevidenced (__main__.SurfaceAndMaterialIdentity.test_friction_provenance_is_explicitly_unevidenced) ... ok
+test_renamed_material_ref_refused (__main__.SurfaceAndMaterialIdentity.test_renamed_material_ref_refused) ... ok
+test_surface_ids_explicit_unique_resolvable (__main__.SurfaceAndMaterialIdentity.test_surface_ids_explicit_unique_resolvable) ... ok
+test_unresolvable_material_id_refused (__main__.SurfaceAndMaterialIdentity.test_unresolvable_material_id_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 49 tests in 0.541s
+
+OK

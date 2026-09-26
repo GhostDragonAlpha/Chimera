@@ -1,0 +1,12 @@
+RECEIPT: tools/science_funnel/validation/slice_real_body_20260920/receipt.json @ origin/master 33e7a444
+--- what_changed.tick_body + swap_flag verbatim ---
+{
+ "tick_body": "MOCK[mock_physics_body] (bbox stand-in capsule) RETIRED -> reality.physics_body: THE REAL CT SKELETON (meshes_body_20260922: 25 committed previews repaired to the importer's own closure rule and decimated under its kMaxTris by the cap-derived ratio r = 0.7020263287954351; 499,976 tris, 249,743 verts), posed by the SAME standing compose as the ghost, committed as standing_body.obj sha-pinned bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111 in meshes_body_20260922/body_manifest.json",
+ "swap_flag": "NONE -- the inherited receipts retire the stand-in outright (registry 'retired', zero code sites); no flag was invented",
+ "base_commit": "bd4bf630 (Merge agent/playable-slice-20260921 @ 2909bb4e; verified by ls-remote origin master == bd4bf6300d1633a67d2dae5a8a06bdf278f67f97 before fetch)",
+ "branch": "lane/slice-real-body-20260920"
+}
+
+RECEIPT: tools/science_funnel/data/morphosource_ct/meshes/manifest.json @ origin/master 33e7a444 (source line):
+{
+ "source": "MorphoSource CT 000875604 (Macaca mulatta USNM 497136-3, infant, 160 \u03bcm)",

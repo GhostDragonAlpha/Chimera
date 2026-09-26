@@ -1,0 +1,57 @@
+FINDING: concurrent source-lane movement of tools/material_volume_body_export_reader.py during W7
+==================================================================================
+Discovered: 2026-09-24 ~18:01 (W7's closing hash proof).
+
+What happened
+-------------
+W7's baseline (session start, ~17:45) hashed all 9 landed tool/closure files and
+proved them byte-identical to the reviewed mvc sources. At close, ONE file no
+longer matched its W7 baseline:
+
+  tools/material_volume_body_export_reader.py
+    W7 baseline sha256: 83b057391ab6d8e10352129a29d7903d15b4d59f2c7103e907d1f98069f274df
+    final sha256:       81ce404c8dcac1c18481116cf3bf84cf1232053fdc6d82d5d5cf698bdf37ca24
+
+W7 never wrote this file (W7's writes are only tools/tests/material_volume/**,
+tools/monkey_campaign/agents/W7_landing/**, and the 4 declared example JSONs).
+Evidence chain:
+
+- mvc-20260924 git log (tools/material_volume_body_export_reader.py):
+    28e8233f "mvcampaign: W3b integrated - OverflowError joins the converted set
+              at the same two sites (failing-first 5-red->8/8; refusals exact;
+              goldens unchanged; preregistered disjoint-clause deviation
+              documented). R2's F-R2-3 closed"
+  (a NEW reviewed commit on top of af735b7f, the W3 repair the landing pinned)
+- mtimes: mvc source 2026-09-24T17:55:59; landed copy re-synced 2026-09-24T17:59:34
+  (both DURING W7's session, by the concurrent source/publishing lane).
+- At close: landed == mvc source == mvc committed HEAD (byte-identical) for this
+  file, and for ALL 9 files (receipt: hash_proof_9_files.json).
+
+Impact on W7's receipts
+-----------------------
+- Full landed suite re-run AFTER the sync: 118 passed, exit 0
+  (receipts/suite_green_landed.log). W3b's declared scope ("goldens unchanged;
+  refusals exact") is consistent with the frozen suites staying green.
+- Byte-behavior battery re-run AFTER the sync: 55 fixtures + 4 CLI cases, all
+  byte-identical landed-vs-source-home (receipts/byte_behavior_validator.json).
+- The W7 baseline vs final delta for this file is the W3a(W3)->W3b repair
+  delta; it moved beneath the landing, not because of it.
+
+Action required by the PUBLISHER (W7 cannot: zero byte edits to the tools)
+--------------------------------------------------------------------------
+The diagnostic's dependency header (tools/material_volume_diagnostic.py) pins
+the reader at "blob 1ee791e0580ca0e30bf0b73321cfd981cd79b486 at rev feb01661...
+(includes W3's landed M13 repair, integrated af735b7f)". That pin is now STALE:
+the reader is at the W3b state (81ce404c..., mvc commit 28e8233f). The manifest's
+own RE-PIN RULE ("final integration re-pins docs/dependency_manifest.md against
+the then-current landed revision -- verify nothing moved again at integration
+time") has FIRED. The publisher must either re-pin (tool header +
+docs/dependency_manifest.md + landed_fixture_hashes.json) or reset the landed
+reader to the pinned revision -- either is a byte edit outside W7's mandate.
+
+Related concurrent activity observed during W7's window (not W7's writes):
+- tools/monkey_campaign/PLAY_BOARD.md modified 17:52 (tripped one F1 snapshot)
+- tools/monkey_campaign/agents/U05_climb_intent/brief.md landed mid-run
+  (tripped one F1 snapshot; exogenous)
+- tools/monkey_campaign/agents/{F04_contact,S01_provenance,U04_settings}/
+  + product/input_settings.py + U02_camera receipt modified (other lanes)

@@ -1,0 +1,37 @@
+== A1: float/bool/NaN/Inf smuggling into IntentEvent ==
+  [REPRO] A1.a float issued_tick refused
+  [REPRO] A1.b float now_ms refused
+  [REPRO] A1.c NaN stamp refused
+  [REPRO] A1.d Inf stamp refused
+  [REPRO] A1.e bool stamp refused
+  [REPRO] A1.f huge (unbounded) int accepted -- spec has no upper bound
+  [FINDING] A1.g FINDING-CHECK: intent_version=True (bool) ACCEPTED by the validator (True == 1)  -- canonical=refused
+  [REPRO] A1.h string version '1' refused (1 != '1')
+  [REPRO] A1.i extra kwargs refused (dataclass: no field smuggling)
+  [REPRO] A1.j frozen event cannot be mutated
+== A2: version confusion (v1 presented as v2 / foreign shapes) ==
+  [REPRO] A2.a a v2 wire dict refused by the v1 constructor
+  [REPRO] A2.b a v3 dict refused too
+  [REPRO] A2.c an unknown intent name at version 1 refused
+  [REPRO] A2.d INTENT_VERSION is the module constant the validator compares to
+== A3: press on the exact gate-transition tick (same now_ms) ==
+  [REPRO] A3.a press-then-pause AT THE SAME ms: DELIVERED (call order decides), deterministic 100/100  -- delivery_counts=[1]
+  [REPRO] A3.b pause-then-press AT THE SAME ms: DROPPED_BY_NAME, deterministic 100/100  -- delivery_counts=[0]
+== A4: second listener / two sinks ==
+  [REPRO] A4.a FINDING-CHECK: two channels wired to one sink DOUBLE-deliver (no exclusivity guard; the seam has no add_listener API)  -- events=2
+  [REPRO] A4.b the channel exposes no add_listener/attach -- second-listener race cannot occur through the declared surface
+  [REPRO] A4.c chan.bindings is a COPY: the module default is untouched
+== A5: boundary values and failure ordering ==
+  [REPRO] A5.a negative now_ms press RAISES (validator fires)  -- IntentEventError
+  [FINDING] A5.b FINDING-CHECK: but the edge was ARMED BEFORE the validation raised -- held={'Space'}, zero events (held-but-never-delivered)  -- held=[], events=0
+  [FINDING] A5.c ...and the NEXT VALID press is then a silent-delivery no-op (the physical press was consumed)  -- events=1, ret='climb_request'
+  [FINDING] A5.d a raising tick_source hits the same arm-before-validate path  -- held=[], events=0
+Traceback (most recent call last):
+  File "E:\ChimeraWork\monkey-play-20260924\tools\monkey_campaign\agents\R4_intent_review\receipts\adversarial_probes_source.py", line 155, in <module>
+    forged = CI.IntentEvent("let_go", 1, 1, source="not_the_channel")
+  File "<string>", line 8, in __init__
+  File "E:\ChimeraWork\monkey-play-20260924\tools\monkey_campaign\product\climb_intent.py", line 171, in __post_init__
+    raise IntentEventError(
+        f"source {self.source!r} != {SOURCE_ID!r} (source is FIXED "
+        "provenance, not a free field)")
+climb_intent.IntentEventError: source 'not_the_channel' != 'u05_climb_intent' (source is FIXED provenance, not a free field)

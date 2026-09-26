@@ -1,0 +1,465 @@
+{
+ "clock": "time.perf_counter (host wall)",
+ "tick_setpoint_ms": 50.0,
+ "NOTE": "the 20 Hz tick setpoint is NOT a latency claim (C12); presentation adds the mock's DECLARED deadlines; the real engine frame cost is U07's follow-up need",
+ "max_compute_ms": 0.0578,
+ "max_roundtrip_ms": 0.0027,
+ "max_state_to_ack_chain_ms": 0.0608,
+ "max_presentation_est_ms": 50.061,
+ "budgets_ms": {
+  "python_state_to_ack": 50.0,
+  "presentation_mock_deadlines": 200.0
+ },
+ "ticks": [
+  {
+   "i": 0,
+   "mode": "trunk",
+   "wrote": true,
+   "compute_ms": 0.0578,
+   "roundtrip_ms": 0.0027,
+   "presentation_est_ms": 50.061,
+   "degraded": true
+  },
+  {
+   "i": 1,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0476,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 2,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0465,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 3,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0456,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 4,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0452,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 5,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0446,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 6,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.046,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 7,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0451,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 8,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0448,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 9,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.044,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 10,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.044,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 11,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0432,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 12,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0438,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 13,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0433,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 14,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0464,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 15,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0435,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 16,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0432,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 17,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0437,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 18,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.044,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 19,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0439,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 20,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0446,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 21,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0454,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 22,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0441,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 23,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0437,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 24,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.044,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 25,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0521,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 26,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0445,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 27,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.045,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 28,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0439,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 29,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0436,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 30,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0438,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 31,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.043,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 32,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0436,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 33,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0454,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 34,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0434,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 35,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0432,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 36,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0462,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 37,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0436,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 38,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0436,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 39,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.044,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 40,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.044,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 41,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0441,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 42,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0441,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 43,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0438,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 44,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0445,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 45,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0437,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 46,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0433,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 47,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.044,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 48,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0437,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  },
+  {
+   "i": 49,
+   "mode": "trunk",
+   "wrote": false,
+   "compute_ms": 0.0445,
+   "roundtrip_ms": 0.0,
+   "presentation_est_ms": 0.0,
+   "degraded": true
+  }
+ ]
+}

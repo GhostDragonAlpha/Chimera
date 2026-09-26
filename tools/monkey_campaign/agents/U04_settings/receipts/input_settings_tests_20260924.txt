@@ -1,0 +1,42 @@
+input_settings_tests -- U04 falsifiers (prereg: agents/U04_settings/PREREGISTRATION.md)
+F1 SILENT ACCEPT: every adversarial file refuses BY NAME + defaults
+  [PASS] F1a all 36 adversarial files refuse BY NAME and fall back to the EXACT defaults (never a partial accept)  -- 36 cases
+  [PASS] F1b each refusal carries a machine code AND a human detail naming the offense  -- probe refusal: key_missing: required key 'bindings' is missing | key_missing: required key 'invert' is missing | key_missing: required key 'sensitivity' is missing | schema_type: 'schema' must be the string 'chimera.monkey_input.v1', found float | bindings_type: 'bindings' must be a JSON object of physical-name -> action, found NoneType | sensitivity_type: 'sensitivity' must be a per-axis JSON object keyed by axis (['yaw']), found NoneType | invert_type: 'invert' must be a per-axis JSON object keyed by axis (['yaw']), found NoneType
+  [PASS] F1c one file with several offenses reports EVERY offense  -- 3 refusals: ['key_unknown', 'schema_unknown', 'value_out_of_range']
+  [PASS] F1d the corpus exercises every declared refusal code  -- 19 distinct codes: ['action_unbound', 'action_unknown', 'axis_missing', 'axis_unknown', 'binding_name_invalid', 'binding_type', 'bindings_type', 'invert_type', 'json_corrupt', 'key_duplicate', 'key_missing', 'key_unknown', 'not_finite_json', 'root_not_object', 'schema_type', 'schema_unknown', 'sensitivity_type', 'value_not_finite', 'value_out_of_range']
+F2 SEAM POISON: no settings vector alters the seam's constants
+  [PASS] F2a all 171 named poison payloads (seam-constant key names x poisoned values) leave the seam untouched  -- 18 seam constants bit-identical
+  [PASS] F2b the 2000-payload fuzz: 685 loaded / 1315 refused, every emitted record inside U01's bounds  -- 13909 records checked, 0 violations
+  [PASS] F2c the fuzz was not vacuous (it actually loaded some files and emitted records)  -- 685 loaded, 13909 records
+  [PASS] F2d apply() copies the bindings table: mutating the mapper's dict never writes DEFAULT_BINDINGS  -- DEFAULT_BINDINGS['W'] == 'forward'
+  [PASS] F2e direct-vector probe: even extreme (and 100x) sensitivities cannot push an emitted record past the seam's bounds  -- 6 records, 0 violations
+F3 ROUND-TRIP: exact reproduction, byte-identical resave, atomic write, load never writes
+  [PASS] F3a first_run returns defaults and creates NOTHING on disk
+  [PASS] F3b save -> load reproduces the settings EXACTLY (bindings, sensitivity bit-exact, inversion)  -- sensitivity 0.006 vs 0.006, invert True
+  [PASS] F3c save -> load -> save is BYTE-IDENTICAL (canonical form)  -- 194 bytes
+  [PASS] F3d the write is atomic: same-directory temp -> os.replace, no temp residue  -- replace [('.monkey_input_settings.json.tmp-49052', 'monkey_input_settings.json')]
+  [PASS] F3e a stale interrupted-write temp is ignored by load (the real file wins; the temp is not silently accepted)
+  [PASS] F3f corrupted (bit-flipped at 3 positions) real files refuse BY NAME and fall back to defaults -- never half-parsed  -- flips at head/middle/tail -> codes [['json_corrupt'], ['action_unknown', 'action_unbound'], ['json_corrupt']]
+F4 SENSITIVITY: deltas scale linearly to the clamp; bounds never exceeded anywhere in the declared range
+  [PASS] F4a yaw == clamp(counts * s / interval, +-OMEGA) EXACTLY at every sweep sensitivity (incl. the derived ceiling), every count load, both inversion signs; bounds never exceeded  -- 98 (sensitivity, invert, counts) triples
+  [PASS] F4b doubling the sensitivity doubles the unclamped yaw (deltas scale; the seam ceiling is not a sensitivity target)  -- yaw(0.002)=0.39999999999999997, yaw(0.004)=0.7999999999999999
+  [PASS] F4c 100x baseline + a 100k-count flick: |yaw_rate| == the seam's own steer bound, never beyond it (100x scales INPUT deltas, never the ceiling)  -- yaw 1.6 == OMEGA 1.6
+  [PASS] F4d the 100x vector is UNREACHABLE through a settings file (out-of-range refuses by name before any mapper sees it)
+  [PASS] F4e invert.yaw negates the mouse-driven yaw exactly (same magnitude, flipped sign, unclamped)  -- +0.7999999999999999 / -0.7999999999999999
+  [PASS] F4f under yaw inversion the A-key's yaw contribution stays +OMEGA (inversion is the continuous axis, not a key swap)  -- 7 records; A-key yaw stays >= 0 under inversion
+F5 BINDINGS: collisions named, unknown actions refused, coverage enforced, remap values-only
+  [PASS] F5a a duplicate binding key refuses BY NAME (never a silent last-wins to 'backward')  -- refusal: duplicate JSON key 'W' -- JSON would silently last-win; the file is refused whole
+  [PASS] F5b alias bindings (two physicals, one action) stay legal and both drive (W and Up -> the band ceiling)
+  [PASS] F5c sprint/jump bindings load fine and refuse BY NAME at runtime (the settings path preserves U01's refusals)  -- refused ['jump', 'sprint']
+  [PASS] F5d a settings-driven remap changes emitted VALUES only: same record type/version, same bounds, same adapter projection
+  [PASS] F5e a remap-created backward-vs-forward collision resolves by U01's precedence AND is named in the trace  -- conflicts [('backward', 'forward')]
+  [PASS] F5f a file leaving a selected control unbound refuses BY NAME
+  [PASS] F5g an unknown action name in a file refuses BY NAME (the grammar refuses what it cannot name)
+F6 FIRST RUN: absent file -> exact U01 defaults, nothing created
+  [PASS] F6a absent file -> status 'first_run' with the DEFAULTS and no refusals
+  [PASS] F6b the defaults ARE U01's baseline: his bindings table, his baseline sensitivity, no inversion  -- sensitivity 0.002 == SENS_RAD_PER_COUNT 0.002
+  [PASS] F6c defaults reproduce a plain U01 mapper's emission record-for-record (same schedule)  -- 7 records identical
+  [PASS] F6d after one explicit save the same path loads as 'loaded' with identical settings
+  [PASS] F6e the declared default path was never created by import or by these tests (nothing writes outside an explicit save)  -- declared: E:\ChimeraWork\monkey-play-20260924\tools\monkey_campaign\data\settings\monkey_input_settings.json
+
+VERDICT: GREEN -- all falsifier checks passed; the frozen contract held.

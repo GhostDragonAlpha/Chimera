@@ -1,0 +1,30 @@
+== W7 CLI smokes from the LANDED location (2026-09-24) ==
+env: CHIMERA_TOOLS_DIR=E:/ChimeraWork/monkey-play-20260924/tools PYTHONDONTWRITEBYTECODE=1
+
+$ python tools/material_volume_diagnostic.py tools/material_volume_body_export_example_report.json
+  ok: true / export_status: complete / bodies: 2 / readiness_claimed: false / readiness: false
+  exit=0
+$ python tools/material_volume_diagnostic.py tools/material_volume_body_export_example_report.json --json
+  {"readiness":false,"reports":[{...,"ok":true,"export_status":"complete",...}],"tool":"material_volume_diagnostic"}
+  exit=0
+$ python tools/rigid_body_mass_consumption_validator.py tools/tests/material_volume/fixtures/accept_complete_report.json
+  ACCEPT | assembly_eligible=True | reader_cross_check={'ran': True, 'reader_verdict': 'pass'} | 2 bodies
+  exit=0
+$ python tools/rigid_body_mass_consumption_validator.py tools/tests/material_volume/fixtures/reject_partial.json
+  REJECT | rules_violated=['R2'] | preserved_diagnostics keys: all_supplied_cells_assigned, bodies, unassigned_cell_ids, unassigned_cells
+  exit=2
+$ python tools/rigid_body_mass_consumption_validator.py nope.json
+  could_not_evaluate: input_read_error: unable to read 'nope.json': FileNotFoundError
+  exit=2
+$ python tools/rigid_body_mass_consumption_validator.py --version
+  rigid_body_mass_consumption_validator W6-promotion 1.0.0 (M10 lineage, 71-test
+  frozen suite; contract v1.0, D1-D5 decided 2026-09-24; exit classes
+  0=accepted/2=named refusal/1=unexpected internal failure per M06-H04)
+  exit=0
+
+Byte-behavior (receipt: byte_behavior_validator.json): the landed validator's
+stdout/stderr/exit on ALL 55 landed fixtures + 4 two-document/aggregate CLI
+cases are byte-identical to the reviewed source-home validator
+(mvc-20260924/.../W6_validator), input-path occurrences normalized to <FIX>.
+Diagnostic cross-check: landed CLI JSON output is semantically identical to the
+W5 home diagnostic's on the shipped example (both self-locate their tools/).

@@ -1,0 +1,40 @@
+test_all_posts_removed_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.BoundaryTests.test_all_posts_removed_refused) ... ok
+test_one_post_removed_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.BoundaryTests.test_one_post_removed_refused) ... ok
+test_perimeter_coverage (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.BoundaryTests.test_perimeter_coverage) ... ok
+test_physical_bound_inside_ring_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.BoundaryTests.test_physical_bound_inside_ring_refused) ... ok
+test_post_visibility_shrunk_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.BoundaryTests.test_post_visibility_shrunk_refused) ... ok
+test_posts_moved_inward_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.BoundaryTests.test_posts_moved_inward_refused)
+The invisible-wall form: visible ring inside the blocking edge. Posts are ... ok
+test_posts_on_extent_edge_and_visible (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.BoundaryTests.test_posts_on_extent_edge_and_visible) ... ok
+test_different_seed_different_bytes (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.DeterminismTests.test_different_seed_different_bytes) ... ok
+test_pinned_digest_detects_tamper (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.DeterminismTests.test_pinned_digest_detects_tamper) ... ok
+test_same_seed_byte_identical_fresh_subprocess (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.DeterminismTests.test_same_seed_byte_identical_fresh_subprocess) ... ok
+test_same_seed_byte_identical_in_process (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.DeterminismTests.test_same_seed_byte_identical_in_process) ... ok
+test_declared_file_exists_and_is_canonical (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.LoaderTests.test_declared_file_exists_and_is_canonical) ... ok
+test_duplicate_key_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.LoaderTests.test_duplicate_key_refused) ... ok
+test_invalid_json_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.LoaderTests.test_invalid_json_refused) ... ok
+test_nonfinite_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.LoaderTests.test_nonfinite_refused) ... ok
+test_authored_declaration_validates (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SchemaAndTerrainTests.test_authored_declaration_validates) ... ok
+test_grid_equals_function (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SchemaAndTerrainTests.test_grid_equals_function) ... ok
+test_grid_tamper_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SchemaAndTerrainTests.test_grid_tamper_refused) ... ok
+test_overlapping_mounds_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SchemaAndTerrainTests.test_overlapping_mounds_refused) ... ok
+test_slope_bound_law (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SchemaAndTerrainTests.test_slope_bound_law)
+Continuous gentleness law: max slope <= max A_i*pi/(2R_i) <= 0.05. ... ok
+test_wrong_schema_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SchemaAndTerrainTests.test_wrong_schema_refused) ... ok
+test_clearance_guard_inequality_holds (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SpawnSafetyTests.test_clearance_guard_inequality_holds)
+Direct check of the defense-in-depth inequality the validator enforces: ... ok
+test_clearance_proof_from_stored_numbers (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SpawnSafetyTests.test_clearance_proof_from_stored_numbers) ... ok
+test_mound_over_spawn_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SpawnSafetyTests.test_mound_over_spawn_refused) ... ok
+test_spawn_flat_on_base_ground_by_construction (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SpawnSafetyTests.test_spawn_flat_on_base_ground_by_construction) ... ok
+test_spawn_inside_trunk_footprint_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SpawnSafetyTests.test_spawn_inside_trunk_footprint_refused) ... ok
+test_spawn_lifted_off_ground_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SpawnSafetyTests.test_spawn_lifted_off_ground_refused) ... ok
+test_spawn_off_centre_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SpawnSafetyTests.test_spawn_off_centre_refused)
+The by-construction law: the spawn IS the extent centre; moving it toward ... ok
+test_trunk_f03_marker_required (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SpawnSafetyTests.test_trunk_f03_marker_required) ... ok
+test_trunk_site_outside_annulus_refused (tools.monkey_campaign.agents.F01_clearing.tests.test_clearing.SpawnSafetyTests.test_trunk_site_outside_annulus_refused)
+Move the site onto flat ground at x=16.9 (inside the inset bound, beyond ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.225s
+
+OK

@@ -1,0 +1,88 @@
+climb_intent_tests -- U05 falsifiers (prereg: agents/U05_climb_intent/PREREGISTRATION.md)
+seam sha256 at start: 061a2b55f2f5fd145e0fae918e8a9223b1d58be3bce78f1298cd45aa47aa8781
+mapper sha256 at start: 7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44
+I1 EDGE/HOLD: a press is ONE event; a hold is silence; release re-arms
+  [PASS] I1.a one accepted press -> exactly ONE event  -- ret=climb_request, events=1
+  [PASS] I1.b a HELD key emits ZERO further events across repeat presses  -- events=1
+  [PASS] I1.c repeat presses are NAMED no-ops, never silent  -- repeat_press=[('Space', 1001), ('Space', 1011), ('Space', 1021), ('Space', 1031), ('Space', 1041), ('Space', 1051), ('Space', 1061), ('Space', 1071), ('Space', 1081), ('Space', 1091)]
+  [PASS] I1.d unbound presses are ignored (recorded, no event)  -- pressed=21
+  [PASS] I1.e a release emits NOTHING  -- events=1
+  [PASS] I1.f the edge RE-ARMED: a fresh press after release fires ONCE  -- events=2
+  [PASS] I1.g the held key still emits nothing more  -- events=2
+  [PASS] I1.h a release without a press is a harmless no-op (no event)  -- events=2
+  [PASS] I1.i the two bindings are INDEPENDENT edges (C held does not eat Space)  -- events=4
+  [PASS] I1.j C held emits nothing further  -- events=4
+I2 VERSION/SCHEMA: every event is versioned, named, stamped; no floats
+  [PASS] I2.a every event carries intent_version == 1 (the SAME object)  -- versions=[1, 1, 1]
+  [PASS] I2.b every intent is one of the frozen two  -- names=['climb_request', 'let_go', 'climb_request']
+  [PASS] I2.c source is stamped on every event
+  [PASS] I2.d both stamps ride every event (ms + tick, the seam's convention)  -- stamps=[(1000, 300), (1100, 330), (1200, 360)]
+  [PASS] I2.e the canonical field set is EXACTLY five, on every event  -- {'source', 'now_ms', 'intent_version', 'intent', 'issued_tick'}
+  [PASS] I2.f NO float field exists in the wire format (pure signal: the only numbers are stamps)
+  [PASS] I2.g the canonical form is JSON-serializable and round-trips
+  [PASS] I2.h a wrong intent_version is REFUSED
+  [PASS] I2.i an unknown intent name is REFUSED
+  [PASS] I2.j a float stamp is REFUSED (stamps are ints)
+  [PASS] I2.k a negative stamp is REFUSED
+  [PASS] I2.l a bool stamp is REFUSED
+  [PASS] I2.m a binding outside the vocabulary is REFUSED AT CONSTRUCTION
+I3 GATES: blurred/disconnected/paused drop BY NAME; clean recovery
+  [PASS] I3.a state names the pause
+  [PASS] I3.b press while paused: ZERO events, dropped BY NAME  -- [('Space', 1300)]
+  [PASS] I3.c the drop entry records the reason AND the active gate set  -- [{'what': 'Space', 'at_ms': 1300, 'reason': 'dropped_paused', 'gates': ['paused']}]
+  [PASS] I3.d resume opens the gate and the press FIRES (a gated press did NOT arm a phantom edge)  -- events=2
+  [PASS] I3.e blur names the state
+  [PASS] I3.f press while blurred: dropped_blurred, ZERO events  -- [('Space', 1100)]
+  [PASS] I3.g after focus the surface is clean: the press fires ONCE  -- events=1
+  [PASS] I3.h disconnect names the state
+  [PASS] I3.i disconnected DOMINATES blurred (U03's law)
+  [PASS] I3.j disconnected dominates paused too
+  [PASS] I3.k the drop is named by the STRONGEST active gate, full set recorded  -- [{'what': 'C', 'at_ms': 1100, 'reason': 'dropped_disconnected', 'gates': ['blurred', 'disconnected', 'paused']}]
+  [PASS] I3.l a gated release PASSES (only un-arms) and emits NOTHING
+  [PASS] I3.m redundant policy events are recorded as named no-ops (12 events, 6 no-ops)  -- no_ops=[('pause', 2), ('resume', 4), ('blur', 6), ('focus', 8), ('disconnect', 10), ('reconnect', 12)]
+  [PASS] I3.n one physical hold = one consumed edge across ALL gate cycles (no re-fire, no phantom)  -- events=1
+  [PASS] I3.o the trace shows every gated repeat NAMED under its own gate, none silent  -- keys=['dropped_blurred', 'dropped_disconnected', 'dropped_paused', 'drops', 'events', 'pressed', 'repeat_press']
+I4 NO FABRICATED RETRACT: only explicit let_go presses produce LET_GO
+  [PASS] I4.a NO gate event, drop, or release ever fabricated an intent  -- events=1
+  [PASS] I4.b no LET_GO exists anywhere in the stream
+  [PASS] I4.c the ONLY LET_GO is the explicit one (1 press == 1 event)  -- events=2, let_gos=1
+  [PASS] I4.d every release call returned cleanly (releases always pass: a release reports its binding, never an event)
+  [PASS] I4.e the channel never arbitrates: climb_request then let_go both delivered as facts
+I5 PURE SIGNAL: no commands, no poses, no forces, no desktop
+  [PASS] I5.a every sink call is exactly emit(IntentEvent)  -- calls=['emit', 'emit']
+  [PASS] I5.b the channel's namespace holds NO CommandRecord
+  [PASS] I5.c no command/pose/transport/desktop/wall-clock surface in the module source  -- hits=[]
+  [PASS] I5.d the import set is EXACTLY the declared one (the walk seam contributes a CONSTANT, never a type)  -- imports=['__future__', 'dataclasses', 'pathlib', 'sys', 'tools.science_funnel.typeb_export.command_record']
+  [PASS] I5.e PHYSICS_HZ is the SAME OBJECT as the seam's (imported, never redeclared)
+  [PASS] I5.f no frozen number is redeclared as a literal  -- hits=[]
+I6 WALK BYTES: the frozen walk contract is hashed at run start
+  [PASS] I6.a seam hash captured at start (compared at end)  -- sha256=061a2b55f2f5fd14...
+I7 INTEGRATION: U01 mapper + U03 policy + the channel, one clock
+  [PASS] I7.a the walk side is U01's own stream (band ceiling re-issued per 50 ms)  -- [(1000, 0.763625), (1050, 0.763625), (1100, 0.763625)]
+  [PASS] I7.b walking emits ZERO intents (separate, sparser channel)  -- events=0
+  [PASS] I7.c the walk side keeps its NAMED refusal and emits ZERO records for Space  -- refusal=jump
+  [PASS] I7.d the intent side delivers ONE climb_request for the same press  -- {'intent_version': 1, 'intent': 'climb_request', 'issued_tick': 339, 'now_ms': 1130, 'source': 'u05_climb_intent'}
+  [PASS] I7.e held Space + walking: walk stream continues, ZERO further intents  -- walk=2, intents=1
+  [PASS] I7.f the walk side decays EXACTLY per U01/U03: monotone tail, exact 0.0 at or before +100 ms, then silence  -- zero at 1300, tail=[0.6872625, 0.0]
+  [PASS] I7.g the intent side dropped the press BY NAME under the same blur  -- [('C', 1300)]
+  [PASS] I7.g' the blurred RELEASE passed (the edge is un-armed, nothing emitted)  -- held=[]
+  [PASS] I7.h after recovery the walk mapper is key-free (U03's re-arm law)  -- held=[]
+  [PASS] I7.i the recovered Space press delivers ONE climb_request (no phantom, no re-fire)
+  [PASS] I7.j the walk sink holds ONLY CommandRecords  -- n=7
+  [PASS] I7.k the intent sink holds ONLY IntentEvents  -- n=2
+  [PASS] I7.l the flow paused; gameplay keys are named drops on BOTH sides  -- flow_drop={'kind': 'key_press', 'detail': 'Space', 'state': 'paused'}, chan_drop=[('Space', 2200)]
+  [PASS] I7.m ZERO walk records while paused (X02's own falsifier, still green under the composition) and zero intents  -- walk=1 (pre-pause 1), intents=0
+  [PASS] I7.n resume re-opens BOTH gates; the intent edge is clean  -- events=1
+I8 FUZZ: 6000 seeded events, checked against a reference model (edge law, gates, naming, no fabrication)
+  [PASS] I8.f events == accepted presses (one press, one event; nothing else)  -- events=354, accepted=354
+  [PASS] I8.g LET_GO events == accepted let_go presses (no fabricated retract)  -- let_go=185
+  [PASS] I8.h the fuzz is not vacuous (>= the delivery floor)  -- accepted=354
+  [PASS] I8.i every gated press was dropped AND NAMED (never silent)  -- named_drops=1089
+  [PASS] I8.j every sink call is emit(IntentEvent) (pure signal, whole fuzz)  -- calls=354
+  [PASS] I8.k repeat presses while held were NAMED no-ops (the edge law held)  -- repeat=416, no_op=744
+I6 WALK BYTES (end of run): byte-identity of the frozen contract
+  [PASS] I6.b command_record.py is BYTE-IDENTICAL before/after the full run (the pinned falsifier)  -- 061a2b55f2f5fd145e0fae918e8a9223b1d58be3bce78f1298cd45aa47aa8781 == 061a2b55f2f5fd145e0fae918e8a9223b1d58be3bce78f1298cd45aa47aa8781
+  [PASS] I6.c input_mapper.py is BYTE-IDENTICAL before/after (U01 frozen, context)  -- 7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44 == 7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44
+
+RESULT: GREEN -- all falsifier checks passed
+seam sha256 at end:   061a2b55f2f5fd145e0fae918e8a9223b1d58be3bce78f1298cd45aa47aa8781

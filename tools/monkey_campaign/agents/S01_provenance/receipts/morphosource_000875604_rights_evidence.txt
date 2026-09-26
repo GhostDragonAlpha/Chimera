@@ -1,0 +1,65 @@
+M-S01 RECEIPT — MorphoSource 000875604 rights evidence (the CT Macaca render asset)
+Audited 2026-09-24 @ worktree E:/ChimeraWork/monkey-play-20260924 (HEAD 42f7cdc4). READ-ONLY audit; this receipt records on-disk evidence.
+
+== THE ASSET CHAIN (all paths relative to the worktree) ==
+MorphoSource media 000875604, "Full Body [Image] [CT]", Macaca_mulatta-USNM497136-3-160um.tif
+  -> tools/science_funnel/data/morphosource_ct/download_receipt.json   (sha256 67438dd2e44a7554bc87e1274259e60265b1a70259f0daceeb3bc687aa36baf9)
+  -> 25 segmented bone meshes, pinned by sha256 in mesh_receipt.json (full-res gitignored)
+  -> committed previews tools/science_funnel/data/morphosource_ct/meshes_preview/*.obj (manifest meshes/manifest.json, sha256 5bf8aed9b226a7be96c6877c6bfafd4de3e8f46808c42312045cd66739473ad8)
+  -> tools/playable_slice/standing_body.obj  sha256 bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111  (pinned in meshes_body_20260922/body_manifest.json, sha256 6d0328ce9aa5babfb25a98518b69477b879b3a7d902593fc0842c127bcc7f78a; matches P02P03 report.md "standing_body.obj sha bc9033bf...")
+  -> tools/playable_slice/standing_body.glb  sha256 adb6aff2babbf2cd2745004b2f51150d3a3f47e55b2ce3b8e63b3c0d595dbae5  (boot cache derived byte-identically, pinned in tools/playable_slice/boot_cache_manifest.json)
+  -> tools/playable_slice/ghost_standing.obj sha256 d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d  (composed from meshes_preview at standing_pose_20260921/pose.json; compose_record in boot_cache_manifest.json)
+
+== THE RECORDED RIGHTS (machine-readable fields, banked CSV) ==
+File: tools/science_funnel/data/morphosource_ct/000875604_media-manifest-b6f8e54e-72fa-4493-938d-184c6b6d1501.csv
+      sha256 ff7cdc46cb6b2487b16b32c531ddbca31d7810d054ef5331b1910a76919c2a15
+  ip_holder                                = Smithsonian Institution, National Museum of Natural History
+  copyright_statement                      = http://rightsstatements.org/vocab/UND/1.0/   (UND = Copyright Undetermined)
+  license                                  = (empty)
+  morphosource_use_agreement_type          = Standard
+  permits_commercial_use                   = CommercialUseNotPermitted
+  permits_3d_use                           = 3DPrintingPermitted
+  required_archival_of_published_derivatives = OnMorphoSource
+  physical_object                          = USNM:MAMM:USNM 497136  (Darwin Core triplet)
+  creator                                  = Mormile, Isabel
+  funding                                  = NSF 2341137
+  ark                                      = ark:/87602/m4/875604
+  data_manager                             = National Museum of Natural History, Smithsonian Institution - NMNH - Division of Mammals
+
+== THE SIGNED AGREEMENT (banked PDF, read in full 2026-09-24) ==
+File: tools/science_funnel/data/morphosource_ct/000875604_ms_usage_std_comm_no_rearc_ms_3d_yes.pdf
+      sha256 d68ede8f6abdc65051a070b60b628c5d8b785d77165d83ed55ef4c83e7ab9387
+      (identical bytes pinned for 000875599: same sha)
+Title page: "MorphoSource Standard Usage Agreement — Commercial Use Prohibited – Derivatives Re-archived On MorphoSource – 3D Printing Permitted"
+Clauses material to shipping (quoted from the PDF text):
+  (d) "You will not share, re-archive, or deposit any Content downloaded or accessed from
+       MorphoSource in a different publicly accessible digital repository without prior
+       written permission from the Content owner or collection organization, as applicable."
+  (e) "Content and derivatives thereof may not be resold or used for commercial purposes
+       without explicit approval from the Content provider."
+  (f) "If a digital derivative is created from Content ... and that derivative is used in a
+       public-facing or otherwise-distributed product ..., that digital derivative must be
+       archived (but not necessarily openly shared) on MorphoSource within one year of the
+       release of the product in which the derivative is used. Any usage of the derivative
+       must adhere to the standards for (a) Acknowledgment of Source and (b) Citation."
+  (a)+(b) any public communication referencing Content/derivatives must identify MorphoSource,
+       the collection organization and institution, and cite the institutional catalog number
+       (Darwin Core triplet) plus the MorphoSource media identifier / DOI / ARK.
+
+== FALSIFIER FIRED — receipt paraphrase contradicts the pinned agreement ==
+tools/science_funnel/data/morphosource_ct/download_receipt.json field:
+    "license": "MorphoSource standard commercial use, no rearchive, 3D yes (…pdf pinned)"
+The banked evidence says the OPPOSITE on commercial use: the agreement's own title is
+"Commercial Use Prohibited" and the CSV field is CommercialUseNotPermitted. The filename
+token "comm" denotes the agreement variant (comm-use clause present, prohibited), not a grant.
+Terms asserted without evidence are the named falsifier; here the evidence exists and refutes
+the paraphrase. CORRECTION NEEDED in download_receipt.json (flagged, not edited — read-only audit).
+
+== SMALLEST ACQUISITION ACTIONS ==
+1. Operator decision + paper: explicit written approval from the Content provider
+   (NMNH Division of Mammals / depositor Isabel Mormile) for the intended distribution, OR
+   a recorded non-commercial distribution decision that ships (i) the acknowledgment +
+   citation block (MorphoSource; Smithsonian NMNH — Division of Mammals; USNM:MAMM:USNM 497136;
+   MorphoSource media 000875604; ark:/87602/m4/875604) and (ii) the clause-(f) plan to archive
+   the derivative on MorphoSource within one year of product release.
+2. Correct the download_receipt.json "license" paraphrase to quote the agreement title + CSV fields.

@@ -1,0 +1,3 @@
+9e2e5c41c676735a0cf556d5879d0bf68aca91f4 2026-09-23 09:02:12 -0500
+closeout-7 RESIDUAL B FULLY CLOSED: THE ON-DEVICE GATE 55,517/55,517 bit-identical -- PASS. The CUDA port done solo (the UCRT_API/UCRT_MATH_DEVICE dual-compile of ucrt_math.c; the dump-mode gate kernel vs the host CRT); the last defect was mul64 missing __device__ (silently host-bound -> garbage exponents at the 2e7 class; annotated -> all pass). Step 1 now reduces to residual A (tick-66) + the bars. Trailer: Agent: lead
+

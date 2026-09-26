@@ -1,0 +1,8 @@
+RECEIPT: E:/PythonChimera/forearm_package/USTR_DIAGNOSTIC_RECEIPT.md @ forearm-package-20260924 b04a3acd (I7 consolidated receipt)
+--- header lines 1-5 + R1 species line verbatim ---
+# I7 — THE CONSOLIDATED RECEIPT (wave 4, returned for architectural decision)
+
+**Per the architect's instruction (2026-09-24, fifth decision):** "Return one receipt: the three evidence results, B4 outcome, exact proposed radius change, and any remaining contradiction. Preserve the old radius record and all failed alternatives."
+**Nothing here executes anything.** The frozen baseline is untouched; no fit session, production mapping, or radius supersession has been run. All failed alternatives are preserved in the audits and on the board.
+
+- Species: the source model is FreeMusco **Chimanoid — a fictional 120-muscle human-based character** (arms ×1.2, legs ×0.7, "chimpanzee-like proportions" as a look; 56.88 kg). No species-specific primary evidence can exist; the applicable lane is HUMAN base anatomy. (C1's passing "full-size macaque" mention is corrected.)
