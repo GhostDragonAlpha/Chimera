@@ -1,0 +1,275 @@
+{
+ "all_green": true,
+ "attempt_id": "c3f7e9025d5645248f7a7a21f3b47f8a",
+ "card_id": "ONT-X02",
+ "checks": [
+  {
+   "measured": {
+    "public_mutators": [
+     "key",
+     "mouse",
+     "tick"
+    ],
+    "state_after_Return_at_200": "playing"
+   },
+   "name": "P1_reaches_play_key_only",
+   "ok": true,
+   "prediction": 1
+  },
+  {
+   "measured": {
+    "paused_mapper_events_1550_1850": 0,
+    "paused_record_count": 0,
+    "quiesced": [
+     {
+      "at_ms": 1500,
+      "held": []
+     }
+    ],
+    "transition": [
+     [
+      "playing",
+      "pause",
+      "paused",
+      1500
+     ]
+    ]
+   },
+   "name": "P2_pause_key_only_quiesces",
+   "ok": true,
+   "prediction": 2
+  },
+  {
+   "measured": {
+    "silent_900_1000": true,
+    "tail_records_ms_speed": [
+     [
+      800,
+      0.763625
+     ],
+     [
+      850,
+      0.0
+     ]
+    ]
+   },
+   "name": "P3_focus_loss_tail_law",
+   "ok": true,
+   "prediction": 3
+  },
+  {
+   "measured": {
+    "held_at_1050": [
+     "W"
+    ],
+    "markers": [
+     {
+      "held_after": [
+       "W"
+      ],
+      "kind": "reconnect_press",
+      "t_ms": 1000,
+      "tick": 20
+     }
+    ],
+    "record_at_1050": [
+     {
+      "v_forward": 0.763625,
+      "yaw_rate": 0.0
+     }
+    ]
+   },
+   "name": "P4_reconnect_fresh_grid",
+   "ok": true,
+   "prediction": 4
+  },
+  {
+   "measured": {
+    "R_while_playing_drop_present": true,
+    "boot_calls_total_at_2600": 1,
+    "boot_delta_at_1900": 1,
+    "restart_events": [
+     {
+      "at_ms": 1900,
+      "declared": "world_boot"
+     }
+    ],
+    "zero_event_ticks_without_transition": 6
+   },
+   "name": "P5_reset_explicit_user_action",
+   "ok": true,
+   "prediction": 5
+  },
+  {
+   "measured": {
+    "boot_delta_at_1900": 1,
+    "fresh_record_at_1950": [
+     {
+      "v_forward": 0.763625,
+      "yaw_rate": 0.0
+     }
+    ],
+    "pinned_boot_state_t200": {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "bookmark": {
+      "distance_to_target": 12.0,
+      "orientation": [
+       0.9887710779360424,
+       -0.1494381324735992,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.0,
+       3.5462424799360743,
+       -11.464037869507273
+      ],
+      "target": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "held": []
+    },
+    "post_reload_state_t1900": {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "bookmark": {
+      "distance_to_target": 12.0,
+      "orientation": [
+       0.9887710779360424,
+       -0.1494381324735992,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.0,
+       3.5462424799360743,
+       -11.464037869507273
+      ],
+      "target": [
+       0.0,
+       0.0,
+       0.0
+      ]
+     },
+     "held": [],
+     "scene_epoch": 1
+    },
+    "pre_reload_state_t1850": {
+     "anchor": [
+      0.048819886545767625,
+      0.0,
+      0.7998524123802705
+     ],
+     "held": []
+    },
+    "resume_tail_speeds": [
+     0.0
+    ],
+    "stale_records_1900_1950": 0
+   },
+   "name": "P6_reload_before_after_pinned_state",
+   "ok": true,
+   "prediction": 6
+  },
+  {
+   "measured": {
+    "exit_transition": [
+     [
+      "playing",
+      "exit",
+      "exited",
+      3200
+     ]
+    ],
+    "post_exit_mapper_calls": 0,
+    "second_Q_named_drop": [
+     {
+      "detail": "exit@exited",
+      "kind": "flow_action",
+      "state": "exited"
+     },
+     {
+      "detail": 3250,
+      "kind": "decision_tick",
+      "state": "exited"
+     }
+    ],
+    "teardown_calls": [
+     "terminate",
+     "wait",
+     "kill"
+    ]
+   },
+   "name": "P7_safe_teardown_once_terminal",
+   "ok": true,
+   "prediction": 7
+  },
+  {
+   "measured": {
+    "records_while_not_playing": 0,
+    "sink_only_emits": true,
+    "total_records": 47,
+    "undeclared_world_attempts": [],
+    "world_boot_calls": [
+     [
+      "boot"
+     ]
+    ],
+    "world_teardown_calls": [
+     "terminate",
+     "wait",
+     "kill"
+    ]
+   },
+   "name": "P8_resource_containment",
+   "ok": true,
+   "prediction": 8
+  },
+  {
+   "measured": {
+    "bookmark_constant_all_ticks": true,
+    "follow_quats_unit_and_covered": true,
+    "tick_rows": 67
+   },
+   "name": "P9_camera_state_binding",
+   "ok": true,
+   "prediction": 5
+  }
+ ],
+ "checks_green": 9,
+ "checks_total": 9,
+ "criteria_sha256": "a266d16164e64af20505d4ed5d76a532ebb74f3bd0975cfd548546eaa92c71bf",
+ "prediction_deviations": [
+  {
+   "fired": true,
+   "law_check": "P3_focus_loss_tail_law",
+   "measured": "release_all(800) coincides with the 800 boundary, so U01's own decay law samples the first tail record AT 800 (elapsed=0 -> full v0=0.763625) and exactly 0.0 at 850; silence from 900. The frozen LAW (at most 2 records, each <= pre-loss speed, landing exactly 0.0, then silence) holds; the named boundary prediction was wrong.",
+   "sub_clause": "P3: 'the focus-loss tail at t=850/900 shows the same two-sample law mid-play' (frozen PREREGISTRATION, PREDICTION 3)"
+  },
+  {
+   "fired": true,
+   "law_check": "P6_reload_before_after_pinned_state",
+   "measured": "the pre-reload paused session had walked (anchor [0.049, 0.0, 0.8] at t=1850) -- continuity, not the pin. The pinned BOOT state (attract t=200: origin, held empty, fresh scene) is restored EXACTLY by the reload (t=1950, scene_epoch 1, boot delta 1, identical bookmark pose, no stale records).",
+   "sub_clause": "P6: 'anchor at the boot origin both sides' (frozen PREREGISTRATION, PREDICTION 6)"
+  }
+ ],
+ "profile_id": "recovery",
+ "profile_kind": "motion",
+ "run_id": "ont-x02-motion-20260926-c3f7e902",
+ "runtime_evidence_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\c3f7e9025d5645248f7a7a21f3b47f8a\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\runtime_receipt.json",
+ "schema": "ont-x02.motion.numerical.v1",
+ "subject_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+ "task_id": "X02",
+ "trace_raw_sha256": "5e15d57d71a8f1b638584e2af9e6680d735da3fc77fcce45b56da99471f998e0",
+ "trace_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\c3f7e9025d5645248f7a7a21f3b47f8a\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\trace.jsonl"
+}

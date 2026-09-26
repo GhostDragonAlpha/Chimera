@@ -1,0 +1,72 @@
+{
+ "schema": "ont-x02.motion.qualification.v1",
+ "task_id": "X02",
+ "card_id": "ONT-X02",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; the in-tree copy cannot know its own commit hash).",
+ "criteria_sha256": "a266d16164e64af20505d4ed5d76a532ebb74f3bd0975cfd548546eaa92c71bf",
+ "attempt_id": "c3f7e9025d5645248f7a7a21f3b47f8a",
+ "agent_id": "arrival-2350ac01b46a42cc8c3b3aae3d545862",
+ "done_when": "Player reaches play and can pause/restart/exit without developer commands; reset is an explicit user action",
+ "done_when_verified": true,
+ "profile_verified": true,
+ "profile_id": "recovery",
+ "profile_kind": "motion",
+ "subject_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+ "pinned_lineage": {
+  "play_head": "f30f2224663324e9374b076938c56672febf4082",
+  "sources": {
+   "tools/monkey_campaign/product/session_flow.py": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+   "tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7"
+  }
+ },
+ "evidence": {
+  "source": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-reviews/ONT-X02/769540e4a2954868b37de6ce230a504c/evidence/reconciliation_receipt.json",
+   "raw_sha256": "cf0475d80f4653e2063ed08ffbf699db2e361201500c3c6d604c2dfa4458f188",
+   "provenance": "The preserved reconciliation records leg (publication-3d8c97cffe20430394ef238a62e7cff5, PR #135 head 441582bf16e0520e8f13235826f5ad94b6e603de); byte-identical copy verified by independent worker review 769540e4a2954868b37de6ce230a504c (verdict PASS)."
+  },
+  "numerical": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-X02/c3f7e9025d5645248f7a7a21f3b47f8a/checkout/tools/monkey_campaign/contributions/ONT-X02/evidence/numerical_receipt.json",
+   "raw_sha256": "173984f792a6994f2de98bb448539f034ef10361ffbcf5f574744d48a52b0ae8",
+   "provenance": "9/9 frozen checks green over evidence/trace.jsonl (5e15d57d71a8f1b638584e2af9e6680d735da3fc77fcce45b56da99471f998e0); two frozen sub-clause mispredictions honestly recorded FIRED in prediction_deviations."
+  },
+  "independent_review": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-reviews/ONT-X02/769540e4a2954868b37de6ce230a504c/evidence/review_result.json",
+   "raw_sha256": "8dfef590aa8e5041270819f97996beb997b64de6a1b5038f0936dfedd479a760",
+   "provenance": "Non-author independent worker review of the reconciliation leg at exact head 441582bf (verdict PASS, writes_stopped true), preserved by the review lane; the lead CHANGES_REQUIRED names exactly this missing motion evidence as the correction."
+  },
+  "runtime": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-X02/c3f7e9025d5645248f7a7a21f3b47f8a/checkout/tools/monkey_campaign/contributions/ONT-X02/evidence/runtime_receipt.json",
+   "raw_sha256": "7ba107595c7a1917a6e87dd7cfd70b130cef5700902b910d6ef7f02dd5a8a0b3",
+   "provenance": "The deterministic headless run record: real pinned SessionFlow + InputMapper + FollowCamera over injected milliseconds; world contacts exactly boot x1 + terminate/wait/kill x1; byte-identical on rerun."
+  },
+  "visual": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-X02/c3f7e9025d5645248f7a7a21f3b47f8a/checkout/tools/monkey_campaign/contributions/ONT-X02/evidence/capture.mp4",
+   "raw_sha256": "593c3438b6e186a742d48c7b3495c9f5bec33a6e1dfb9ff2db226fd61111b23e",
+   "provenance": "640x360 h264 134 frames @20fps (6.7 s), rendered deterministically from trace.jsonl (two views x 67 ticks); bitexact rebuild reproduces the identical file."
+  },
+  "camera": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-X02/c3f7e9025d5645248f7a7a21f3b47f8a/checkout/tools/monkey_campaign/contributions/ONT-X02/evidence/capture_manifest.json",
+   "raw_sha256": "791d1e6edc91be555e9a68b240ebb7c3885428acc685942e9cd5f99550d6e207",
+   "provenance": "chimera.visual_capture_manifest.v1, profile recovery, 2 views x diagnostic+clean, trace-bound (state_binding sha = trace.jsonl), validated in-process with the campaign's visual_capture.validate_manifest and visual_gate.verify against card_task.json."
+  }
+ },
+ "capture_context": {
+  "task_id": "X02",
+  "subject_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+  "run_id": "ont-x02-motion-20260926-c3f7e902",
+  "capture_sha256": "593c3438b6e186a742d48c7b3495c9f5bec33a6e1dfb9ff2db226fd61111b23e",
+  "tick_interval": [0, 66]
+ },
+ "honest_boundary": "The capture pixels are a deterministic CPU visualization of the recorded headless session trace of the qualified subject (the M-X02 flow is headless by construction); they are NOT native engine frames. The integrated native playable-runtime checkpoint V08 remains with the integration lane, exactly as the preserved reconciliation recorded.",
+ "candidate_suite": {
+  "probe": "tools/monkey_campaign/contributions/ONT-X02/motion_profile_probe.py",
+  "capture": "tools/monkey_campaign/contributions/ONT-X02/capture_build.py",
+  "tests": "python -B -m unittest test_motion_profile_probe -v -> 5/5 OK",
+  "preregistration": "tools/monkey_campaign/contributions/ONT-X02/PREREGISTRATION.md (0633a3d951b5253a1ba5d58fc39bbfc56f09a32af6726042ca10b56a194444a1, frozen before the probe ran)"
+ }
+}
