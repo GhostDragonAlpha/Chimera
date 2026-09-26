@@ -1,0 +1,38 @@
+{
+ "schema": "ont-x01.objective.v1",
+ "card": "ONT-X01",
+ "repeatable_objective": {
+  "definition": "ONE complete ground -> trunk -> climb -> hold -> descend -> ground loop, in one session, repeated as free play",
+  "success_clause_k08_verbatim": "Player approaches, attaches, ascends, holds, descends, releases and resumes all-fours walking in one session",
+  "failure_semantics": "physical and visible (falls, rejected grips, lost contact); no silent teleport or hidden support; explicit in-game way to continue",
+  "repetition": "free-play, no scripted progression; envelope = the frozen clearing (half-width 20.0 m, one trunk at (11.976783, 0, 2.471766))",
+  "source": "completion_contract v1.0.0 (K08 terminal clause, SC-FAILURE-BEHAVIOR) + sealed goal line"
+ },
+ "framing": {
+  "choice": "complete game (not movement demo)",
+  "recovered_from": "walk on all fours, steer, stop, approach a rigid trunk, attach, climb, hold, descend, release and walk again, with a usable camera and complete player flow",
+  "recovered_source": "docs/MONKEY_RUN.md sealed goal statement"
+ },
+ "no_campaign_law": {
+  "exclusions_verbatim_available": true,
+  "source": "completion_contract exclusions (conditional B01-B07 never auto-activated; deferred families listed by name; forbidden substitutes listed by name)"
+ },
+ "operator_decision_requests": [
+  {
+   "id": "objective-presentation-surface",
+   "question": "How is the repeatable loop surfaced to the player?",
+   "options": [
+    "silent free-play (no counter)",
+    "attempt counter (loops completed this session)",
+    "timer + counter"
+   ],
+   "recommendation": "attempt counter (loops completed this session) -- the page's existing state feedback carries it without a new HUD surface; no thresholds, no scores"
+  }
+ ],
+ "records": {
+  "contract_sha256": "80b2e2f2736ce6fd594633f85fa22bda702991c3ed4d415a0d9c4eadd377163b",
+  "contract_version": "1.0.0",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "goal_line_verified_in_monkey_run": true
+ }
+}
