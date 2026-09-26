@@ -97,19 +97,25 @@ def join(registry,agent_id,task_id=None):
     require(isinstance(agent_id,str) and 0<len(agent_id)<=200,'agent_id_required')
     with registry.transaction() as state:
         b=board(state)
-        for c in b['cards'].values():
-            for a in c['attempts'].values():
-                if a['agent_id']==agent_id and a['state']=='WORKING':
-                    return packet(c,a,'RESUME_ATTEMPT' if c['state']!='DONE' else 'TASK_ALREADY_WON')
+        # An explicit task is an intentional correction/review revisit. Resolve it
+        # before the general "resume any active work" rule.
         if task_id and task_id in b['cards']:
             c=b['cards'][task_id]
             for attempt in c['attempts'].values():
                 if c['state']!='DONE' and attempt['agent_id']==agent_id and attempt['state'] in ('PAUSED','PR_SUBMITTED'):
                     attempt['state']='WORKING'
                     return packet(c,attempt,'RESUME_ATTEMPT')
-        candidates=[c for c in b['cards'].values() if c['state']!='DONE' and (task_id is None or c['id']==task_id)
-            and (task_id is not None or not any(a['agent_id']==agent_id and a['state']=='PR_SUBMITTED' for a in c['attempts'].values())
-                 or any(m['author']==LEAD and m['status']=='OPEN' for m in c['messages']))]
+        for c in b['cards'].values():
+            for a in c['attempts'].values():
+                if a['agent_id']==agent_id and a['state']=='WORKING':
+                    return packet(c,a,'RESUME_ATTEMPT' if c['state']!='DONE' else 'TASK_ALREADY_WON')
+        # Submitted workers move to another card. Lead feedback only prioritizes a
+        # card; it cannot override the submitted-PR exclusion and spawn duplicates.
+        candidates=[c for c in b['cards'].values() if c['state']!='DONE'
+            and (task_id is None or c['id']==task_id)
+            and (task_id is not None or not any(
+                a['agent_id']==agent_id and a['state']=='PR_SUBMITTED'
+                for a in c['attempts'].values()))]
         if not candidates:return {'state':'NO_ELIGIBLE_CARD','next_action':'Read board and task inboxes; lead refills eligible cards after merge. Do not invent completion.'}
         candidates.sort(key=lambda c:(sum(a['state']=='WORKING' for a in c['attempts'].values()),
                                      -sum(m['status']=='OPEN' and m['author']==LEAD for m in c['messages']),c['slot']))

@@ -30,8 +30,12 @@ python -B E:/PythonChimera/tools/monkey_campaign/worker_start.py --arrival-id YO
 ```
 
 This immediately returns another card and its inbox. It does not mark the submitted
-card complete. If GitHub access is unavailable, preserve the exact commit/artifacts and
-post that precise blocker to the task inbox; do not assert a PR exists.
+card complete. If GitHub REST access is unavailable, do not wait for a token: push the
+branch if SSH allows it, then post a **PR request** to the task inbox with the exact
+branch name, full head SHA, proposed title/body, task ID, attempt ID, criteria hash, and
+evidence paths. Do not assert that a PR exists. When Astra next checks the inbox, Astra
+creates the PR through the lead integration connection, records it with --submit-pr, and
+then reviews the exact head. A request is evidence-preserving handoff, never acceptance.
 
 ## Task-ID inbox
 

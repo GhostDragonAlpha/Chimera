@@ -33,6 +33,15 @@ class KanbanTests(unittest.TestCase):
         revisit=k.join(self.registry,'worker','T0')
         self.assertEqual(revisit['attempt']['id'],submitted['attempt_id'])
 
+    def test_open_lead_message_does_not_reassign_submitted_worker_to_same_card(self):
+        self.init()
+        submitted=self.submission()
+        k.post(self.registry,dict(task_id='T0',author=k.LEAD,body='Review still pending'))
+        other=k.join(self.registry,'worker')
+        self.assertNotEqual(other['task_id'],submitted['task_id'])
+        revisit=k.join(self.registry,'worker','T0')
+        self.assertEqual(revisit['attempt']['id'],submitted['attempt_id'])
+
     def test_operator_stop_preserves_legacy_work_and_no_clock_expiry(self):
         self.registry.clock=lambda:100
         self.registry.register(dict(agent_id='legacy',task_id='T0',ownership_reference='existing ownership',
