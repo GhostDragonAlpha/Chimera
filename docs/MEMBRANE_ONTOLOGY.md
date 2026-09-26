@@ -80,6 +80,12 @@ Physics, boundaries and falsifiers stay attached to the membrane they describe.
 
 ## Next implementation steps
 
+Optional standard interchange: the [semantic validation pilot](../tools/membrane_ontology/SEMANTIC_PILOT.md)
+exports this JSON to RDF and checks selected structural constraints with SHACL.
+It separates types, containment, port connections and matter ownership. The JSON
+and existing validators remain authoritative; SHACL conformance never qualifies
+physics or gameplay. See the pilot's pinned dependencies, tests and explicit limits.
+
 1. Source-bound anatomy import: preserve MuJoCo includes/defaults and distinguish
    model bodies from anatomical bones; reconcile the existing forearm decisions.
 2. Bind the chosen envelope and skin without creating duplicate matter ownership.
