@@ -1,5 +1,5 @@
 diff --git a/ChimeraEngine/engine/gait_controller.hpp b/ChimeraEngine/engine/gait_controller.hpp
-index 5863348..15ea952 100644
+index 5863348..5100772 100644
 --- a/ChimeraEngine/engine/gait_controller.hpp
 +++ b/ChimeraEngine/engine/gait_controller.hpp
 @@ -6,6 +6,7 @@
@@ -10,18 +10,41 @@ index 5863348..15ea952 100644
  namespace chimera::multibody {
  // Gait controller + walker runtime (docs/research/20260918_gait_controller_derivation.md,
  // Rule-0 admission work.creature.gait_controller). The CONTROL LAW is exactly
-@@ -92,6 +93,10 @@ class GaitWalker {
+@@ -92,6 +93,17 @@ class GaitWalker {
   struct BodyRef {double mass;V com;Mat inertia;};
   std::shared_ptr<const Model> model_;J recipe_,config_,model_data_;std::vector<ContactPoint> points_;std::vector<Drive> drives_;size_t n_=0,npts_=0,nd_=0;
   V shift_,gravity_;double dt_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,mtot_=0,store_total_=0;
 + TerrainSurface terrain_;bool terrain_active_=false;
 +public:
 + using TSurface=chimera::TerrainSurface;
++ // D-FOREST correction 2 regression seam (read-only forwarders, no law
++ // change): lets the compiled contact-consistency regression drive the
++ // patched gap/row members directly.
++ double probe_gap_of(const Evaluation&e,size_t k)const{return gap_of(e,k);}
++ Dense probe_contact_row(const Evaluation&e,size_t k)const{return contact_row(e,k);}
++ Dense probe_tangent_row(const Evaluation&e,size_t k,int axis)const{return tangent_row(e,k,axis);}
++ chimera::TerrainNormal probe_contact_normal(const Evaluation&e,const ContactPoint&p)const{return contact_normal(e,p);}
 +private:
   Tables tables_{};double phi_[2]={0.,0.5};bool touching_prev_[2]={false,false};uint64_t ticks_=0;uint64_t capture_events_=0;
   Dense kp_,kd_,damping_,last_torque_,battery_,brake_;std::vector<uint64_t> empty_events_;
   double kp_post_=0,kd_post_=0,battery_post_=0,brake_post_=0,store_post_=0;uint64_t empty_post_=0;
-@@ -632,6 +637,8 @@ class GaitWalker {
+@@ -623,15 +635,21 @@ class GaitWalker {
+   size_t h=k-(k%2),m=h+1;
+   auto ph=e.point(points_[h].index,points_[h].local).first;
+   auto pm=e.point(points_[m].index,points_[m].local).first;
+-  double gh=ph[1]+points_[h].radius-plane_model_y_;
+-  double gm=pm[1]+points_[m].radius-plane_model_y_;
+-  double dy=pm[1]-ph[1];
++  double gh=(terrain_active_?
++    ph[1]+points_[h].radius-terrain_model_y(e,points_[h])
++    :ph[1]+points_[h].radius-plane_model_y_);
++  double gm=(terrain_active_?
++    pm[1]+points_[m].radius-terrain_model_y(e,points_[m])
++    :pm[1]+points_[m].radius-plane_model_y_);
++  double dy=(terrain_active_?gm-gh:pm[1]-ph[1]);
+   // Near a flat loaded window the segment's closest set is degenerate; keep
+   // the CoP in its interior rather than letting endpoint roundoff select the
+   // MP lever. Outside that band the lower endpoint is the migrating CoP.
    double a=(gh<=2e-6&&gm<=2e-6)||std::abs(dy)<1e-8?0.5:(dy<0.?1.:0.);
    V local=points_[h].local;for(int i=0;i<3;++i)local[i]+=(points_[m].local[i]-points_[h].local[i])*a;return local;}
   V sole_position(const Evaluation& e,size_t k)const{return e.point(points_[k-(k%2)].index,sole_local(e,k)).first;}
@@ -30,7 +53,7 @@ index 5863348..15ea952 100644
   double gap_of(const Evaluation& e,size_t k)const{
  #ifdef GAIT_EVENT_TRACE
    if(k>=points_.size()||points_[k].index>=e.frames.size())
-@@ -639,11 +646,15 @@ class GaitWalker {
+@@ -639,11 +657,15 @@ class GaitWalker {
      k,points_.size(),e.frames.size(),(unsigned long long)ticks_);
  #endif
    size_t h=k-(k%2),m=h+1;
@@ -50,7 +73,24 @@ index 5863348..15ea952 100644
   V contact_bias(const Evaluation& e,size_t k)const{return vector(e.frames[points_[k-(k%2)].index].ddt,sole_local(e,k),1);}
   double joint_speed_scale(const State& s)const{double a=0;for(size_t d=0;d<nd_;++d)a+=std::abs(s.v[drives_[d].coordinate]);return a;}
   Dense normals(const State& s)const{Dense row(n_,0.);for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;if(std::abs(s.q[c]-model_->lower[c])<1e-10)row[c]=1;else if(std::abs(s.q[c]-model_->upper[c])<1e-10)row[c]=-1;}return row;}
-@@ -2001,6 +2012,7 @@ class GaitWalker {
+@@ -1844,7 +1866,15 @@ class GaitWalker {
+     for(size_t k=0;k<npts_;++k){if(!sole_representative(k))continue;double g=gap_of(ec,k);if(g<-1e-6){pen.push_back(k);gaps.push_back(g);}}}
+    if(!pen.empty()){
+     double u_before=evaluate(s).potential;
+-    std::vector<Dense> arows;for(size_t k:pen)arows.push_back(contact_row(evaluate(s),k));
++    // D-FOREST correction 2 (gap/row convention consistency): contact_row
++    // is the unit surface-frame row; the rhs law below (-gaps) is the
++    // VERTICAL gap of gap_of. Scale each projection-local row to the
++    // exact gap Jacobian (-hx,1,-hz)*J = contact_row/n_y (n_y =
++    // 1/||(-hx,1,-hz)||) so "the contact rows ARE d gap/d q" holds on
++    // terrain; n_y==1 on the plane/inactive path divides bitwise away.
++    std::vector<Dense> arows;for(size_t k:pen){auto es=evaluate(s);Dense r=contact_row(es,k);
++     const double ny=contact_normal(es,points_[k]).y;require(ny>0.0,"gait_gap_row_normal_y_invalid");
++     for(size_t i=0;i<n_;++i)r[i]/=ny;arows.push_back(r);}
+     size_t R=pen.size();std::vector<double> gram(R*R,0),rhs(R);
+     for(size_t a2=0;a2<R;++a2){for(size_t b2=0;b2<R;++b2)gram[a2*R+b2]=inner(arows[a2],multiply(inv,arows[b2]));rhs[a2]=-gaps[a2];}
+     std::vector<double> lam;
+@@ -2001,6 +2031,7 @@ class GaitWalker {
   // theta*(phi): the derived posture target table (wave 8)
   if(config_.contains("settle_ticks")){require(config_["settle_ticks"].is_number(),"gait_settle_shape");settle_ticks_=(int)number(config_["settle_ticks"]);require(settle_ticks_>=0&&settle_ticks_<=600,"gait_settle_range");settle_total_=settle_ticks_;}
    plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];

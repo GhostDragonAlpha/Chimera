@@ -1,141 +1,163 @@
-# D-FOREST-RUNTIME-20260924-FOLLOWUP — correction: insertion site + compile evidence
+# D-FOREST-RUNTIME-20260924-FOLLOWUP — correction 2: gap/row/projection convention consistency
 
-**Verdict: the reviewed patch's ill-formed C++ (helper member-function
-definitions inside `gap_of`'s body) is corrected — helpers now sit at proper
-class scope immediately before `double gap_of(`; the surface include moved to
-file scope; the MODIFIED `gait_controller.hpp` is now compiled as evidence
-(`g++ -std=c++17 -fsyntax-only`, exit 0) with a negative control proving the
-check bites (exit 1, "not allowed here"). The compile evidence surfaced ONE
-further masked defect — the surface header's private default constructor made
-the `TerrainSurface terrain_;` member un-constructible — fixed minimally by
-moving that constructor to public access (no law change, oracle parity
-reproduced bit-exactly). Surface-law oracle agreement reproduced EXACTLY as
-reviewed: worst height 0.0 m over 2081 points, worst normal 3.469e-18. No
-engine run, no trunk contact; W10 readiness and all runtime/visual gates
-remain PENDING.**
+**Verdict: the lead's correctness finding (msg-0cca72cf79d34124bcc7f60e5e76a730,
+PR #155 @ be058d58) is corrected and regressively pinned. The defect: the
+patched `gap_of` uses the VERTICAL gap (`y + radius - h(x,z)`, exact q-derivative
+`(-hx,1,-hz)·J`) while the patched `contact_row` returns the NORMALIZED
+`(-hx,1,-hz)/||·||·J`, and the pinned positional-correction block consumes
+`arows=contact_row, rhs=-gaps` under the pinned invariant "the contact rows ARE
+d gap/d q". On h=x+z, J=I, unit mass, gap=-0.01 the projection overshoots to
+gap=+0.007320508... (the lead's reproducer, re-derived and confirmed), inside
+the pinned 0.05 correction budget. The consumer audit (PREREGISTRATION.md)
+found no pinned consumer requires a UNIT row, but the unit surface frame IS
+what the velocity/force consumers (friction_solve's mu cone, project_rows'
+velocity floors) now see on slopes — so the shared rows are NOT unnormalized
+(that would silently rescale the slope friction cone by 1/||·||). Instead the
+projection-local rows are rescaled to the exact gap Jacobian
+(`row /= contact_normal(...).y`), the pinned `rhs=-gaps` line untouched, the
+flat/inactive path bitwise identical (IEEE x/1.0==x). A second, audit-missed
+inconsistency of the same class was found by the new compiled regression and
+fixed in the same stroke: `sole_local` (the rows' anchor-point selector) kept a
+stale PLANE gap law in the terrain arm. All prior evidence (compile placement,
+public ctor, oracle parity 0.0 m / 3.469e-18) preserved bit-exactly. No engine
+run, no `step()` call, no trunk contact; runtime/visual gates remain PENDING.**
 
-- card: `D-FOREST-RUNTIME-20260924-FOLLOWUP` (planning ids F02/F03/F04; parent
-  D-FOREST-RUNTIME-20260924 = merged PR #120 head `86d0d8d461ea50420c053681f7e297343e3fbb97`)
-- correction attempt: `0f29ec07434840939d0b53c4bc5a30b4`, arrival
-  `arrival-5fa3f57a83574a62b674a3f9d8fdd873`; criteria
+- card: `D-FOREST-RUNTIME-20260924-FOLLOWUP`; correction attempt
+  `9b1d9ec7c1ae4c969db51c317b99f44f`, arrival
+  `arrival-93d3ca26b5b640a6983176e771421e30`; criteria
   `be7394fa3f7f02f43e67a271926342fb994c1a2042d58791c8cac75fe505a7c3`
-- corrects the verified finding on attempt `95df22c9a08e492d97df79ce838d6f63`
-  (lead-verify-20260926; inbox msg-90831766cb2645538f322ab949ea1c49) — that
-  attempt and its artifacts are untouched.
-- PREREGISTRATION.md for this correction was frozen BEFORE any probe; one of
-  its predictions honestly LOST (see "Prediction that lost" below).
+- corrects the reviewed candidate at attempt
+  `0f29ec07434840939d0b53c4bc5a30b4` (PR #155 head `be058d58`), which itself
+  corrected the verified ill-formed-insertion finding on `95df22c9...` — both
+  prior attempts and artifacts untouched.
+- PREREGISTRATION frozen BEFORE candidate code changes, with the convention
+  derivation + full consumer audit; Amendments A1–A5 (disclosed, dated, before
+  the first full-suite run, citing the temp smoke-run measurements that
+  motivated them) in PREREGISTRATION.md.
 
-## What changed vs the reviewed candidate (and why)
+## The convention derivation (audit outcome)
 
-1. **Helpers to class scope (THE reviewed fix).** `terrain_model_y` and
-   `contact_normal` were inserted inside `gap_of`'s function body
-   (ill-formed). They are now two member-function definitions at class scope,
-   inserted immediately BEFORE `double gap_of(` (patch hunk `@@ -632,6
-   +637,8`). Token content unchanged; only the insertion site moved.
-2. **Include seam to file scope.** `#include "terrain_surface.hpp"` was placed
-   inside `namespace chimera::multibody` (legal but brittle nesting — lead
-   anomaly); it now sits at file scope after the std includes, before the
-   namespace opens (hunk `@@ -6,6 +6,7`).
-3. **NEW compile evidence (the reviewed gap):** `header_compile_check`
-   materializes the pinned engine subtree (`git archive` of commit
-   `33e7a444`, LF-forced via `-c core.autocrlf=false -c core.eol=lf` — the
-   repo's `.gitattributes` `* text=auto` otherwise smudges CRLF), applies
-   `proposed.patch`, and runs
-   `g++ -std=c++17 -fsyntax-only -I <engine-dir> <engine-dir>/gait_controller.hpp`
-   — the same include-path law the engine's CMake uses
-   (`target_include_directories = the engine dir`). Required: exit 0.
-   `compile_check_bites` feeds the compiler the reviewed defect shape (a
-   member-function definition nested in a member-function body) and requires
-   exit != 0 with the named error.
-4. **Masked defect found by the new evidence, fixed minimally:** with helpers
-   at class scope the header STILL failed to compile —
-   `TerrainSurface::TerrainSurface()` is private in the reviewed
-   `terrain_surface.hpp`, and `GaitWalker`'s new member `TerrainSurface
-   terrain_;` could never be constructed (g++ 15.2: "TerrainSurface() is
-   private within this context"). The ill-formed helper placement had masked
-   this because no check ever compiled the modified header. Fix: the default
-   constructor moves to public access in `terrain_surface.hpp`. This is the
-   ONLY byte change to the reviewed surface header (verified by diff: the
-   constructor line + an explanatory comment; every law token — grid,
-   diagonal, interpolation, gradient, normal, extent, spacing refusal —
-   byte-identical). Safety: an empty surface (nx_=0, half_=0) refuses every
-   height query by name (`terrain_query_below_grid`) and is only queried once
-   `from_arrays` succeeded (`terrain_active_`).
-5. **Prior minor anomalies also addressed:** the tautological Python-side
-   "gap law |delta|=0" self-comparison now measures the constant-grid gap
-   delta FROM compiled h values (`gap_law_constant_grid_delta` = 0.0, bitwise
-   vs the plane arm); the unittest suite is order-independent on a fresh
-   directory (every class materializes the artifacts it needs; fresh-run
-   verified: OK, 1 honest skip for not-yet-existing evidence).
+Every `contact_row`/`tangent_row`/`gap_of` call site in the pinned tree (blob
+`5863348f...` @ `33e7a444`) was read: touch gates (sign tests), friction_solve
+(force rows: mu cone couples row_n to the unit tangent rows), project_rows
+velocity floors, the positional correction (`rhs=-gaps` — THE pinned contract
+"the contact rows ARE d gap/d q"), the energy ledger (scale-cancelling), and
+gap-scalar-only consumers (convention-free). Conclusion: no pinned consumer
+needs a unit row, but the candidate's terrain arm established the unit
+surface-frame FORCE convention; blindly unnormalizing the shared row would
+rescale the physical friction cone on slopes by 1/||n||. CHOSEN (the lead's
+"row must match the gap derivative" branch, applied at the projection
+consumer): keep `contact_row`/`tangent_row` exactly as reviewed; in the
+positional-correction block only, rescale each projection-local row by
+`1/n_y` (`n_y = contact_normal(...).y = 1/||(-hx,1,-hz)||`), making
+`row = (-hx,1,-hz)·J = d gap/dq` exactly; `rhs[a2]=-gaps[a2];` byte-identical
+to pinned. The rejected alternative (`rhs *= n_y` with unit rows) is
+algebraically equivalent and recorded in the prereg for the reviewer.
 
-Unchanged, per the verified finding ("preserve them"): the gap/contact/tangent
-ternary edits with the ORIGINAL plane expressions verbatim in the inactive
-arms, the recipe-gated `terrain_grid` activation, the tangent degenerate-axis
-named refusal, the member seam, the loader seam, and the physics-symbol guard.
+## What changed vs the reviewed PR #155 bytes (all inside gait_controller.hpp)
 
-## Independent checks (exact commands, CPU-only)
+1. **Projection-local row rescale (THE fix).** In `impact()`'s positional
+   correction: `arows` are built as `contact_row(es,k)` rescaled by
+   `1/contact_normal(es,points_[k]).y`, guarded by a named refusal
+   `gait_gap_row_normal_y_invalid`. The pinned comment at the site ("the
+   contact rows ARE d gap/d q") is TRUE again on terrain. Flat/inactive:
+   n_y=1 → `x/1.0 == x` bitwise.
+2. **`sole_local` anchor consistency (found by the new regression, A1).** Its
+   stale plane-law comparison (`gh/gm/dy` vs `plane_model_y_`,
+   `dy=pm[1]-ph[1]`) could anchor the rows at a pair point that is NOT the
+   active terrain gap branch (measured worst mismatch 8.886e-2 before this
+   edit). Its selection now consumes the terrain gap law in the active arm;
+   original plane expressions verbatim behind; `dy` uses `gm-gh` only on
+   terrain (identical values on flat/inactive: pair radii are equal).
+3. **Read-only probe seam (regression enabler).** Four one-line forwarders
+   (`probe_gap_of`, `probe_contact_row`, `probe_tangent_row`,
+   `probe_contact_normal`) inside the patch's existing public seam. No law
+   change; exercised by the compiled regression only.
+4. **Unchanged:** the gap/contact/tangent ternary edits, member seam, loader
+   seam (original plane expressions verbatim in inactive arms), the recipe-
+   gated `terrain_grid` activation, the tangent degenerate-axis named refusal,
+   the public `TerrainSurface` default ctor, and the whole of
+   `terrain_surface.hpp` (bytes identical to the reviewed candidate).
 
-```
-python -B implementation.py all                  # exit 0, all_ok true
-python -B -m unittest test_implementation -v     # Ran 15 tests, OK (4.0 s)
-```
+## NEW compiled regression (exercises the patched C++ path; no step() call)
 
-- patch applies to the pinned blob `5863348f2deef1f01e3cf761d0c4151a10035a6d`
-  @ `33e7a444` (git apply --check, re-hashed this attempt); scope exactly the
-  two declared files; new-file `terrain_surface.hpp` blob `d24b4eb`;
-  `proposed.patch` sha256
-  `e4dee59272e531d297e974a079c8dcfe401123713d7c421b52266f53bfebfce9`.
-- **Compile evidence:** `g++ -std=c++17 -fsyntax-only -I <tree>/ChimeraEngine/engine
-  <tree>/ChimeraEngine/engine/gait_controller.hpp` (tree = pinned subtree @
-  33e7a444 + proposed.patch, in a temp scratch dir) → **exit 0** (g++ 15.2.0,
-  MinGW-Builds x86_64-posix-seh; sole output a benign `-Wpragma-once-outside-header`
-  warning). Recorded in full (command, compiler, stderr tail) in
-  `evidence/checks.json` under `header_compile_check`.
-- **Negative control:** same invocation shape on
-  `build/ill_formed_negative_control.cpp` (the reviewed defect shape) → exit 1,
-  "a function-definition is not allowed here" present; recorded under
-  `compile_check_bites`.
-- **Oracle parity (reproduced bit-exactly vs the reviewed numbers):** the
-  shipped surface header compiled (one TU) and compared against the frozen F02
-  oracle over 2081 points (1681 grid nodes + 400 deterministic interior):
-  worst height error **0.0 m**, worst gradient **0.0**, nodes exactly equal,
-  worst normal component **3.469446951953614e-18** (bars 1e-9 / 1e-12). The
-  oracle itself is now COMMIT-PINNED: `terrain_query.py` + siblings
-  materialized read-only from play-repo commit
-  `a2895755d009f8afc78078f57dc5c3c3819ef74a` (the worktree no longer carries
-  the files); sha256s recorded in `evidence/checks.json` →
-  `oracle_provenance` (`terrain_query.py`
-  `b1e244b8843671afc29af530c4725bf812ffd5f8967130f0202792aeb7a8cce1`).
-- plane degeneracy (constant grid): h=0, gradient=(0,0), normal=(0,1,0)
-  EXACTLY at 5 sampled points; gap-law constant-grid delta 0.0 (measured from
-  compiled h); tangent identity exact for axes 0/2; axis-1 refused by name.
-- extent law: closed boundary serves (±20 edges + corner), ±20+1e-7 flags
-  outside, height query just outside refuses `gait_outside_extent`.
-- physics-symbol guard green (no changed line touches mu_/kTouch/
-  kReleaseBand/friction_solve/substeps/dt); no trunk machinery (token scan) —
-  Stage 1 law preserved.
+`contact_consistency.cpp` compiles against the PATCHED `gait_controller.hpp`
+(pinned subtree @ 33e7a444 + proposed.patch, engine-dir include path, g++
+`-std=c++17 -O0`, g++ 15.2.0) and drives construction + public
+`model().evaluate()` + the probe forwarders over a real compiled 18-coordinate
+walker scene (fixture `inputs/gait_scene.json`, sha256
+`f6844eea...`, deterministic product of the pinned-tree scene compiler
+`tools/science_funnel/gait_scene.py` @ 33e7a444 — provenance + measured sole
+geometry in the prereg). Laws (all in evidence/checks.json):
 
-## Prediction that lost (preregistration FC1, honestly recorded)
+- **R1 flat-path identity (bitwise):** constant-grid terrain-active walker vs
+  no-terrain walker — gaps, contact rows, tangent rows (axes 0/2) bitwise
+  equal over all 8 contact points; axis-1 tangent refuses by name
+  (`gait_tangent_degenerate`). Also green on the pre-fix law (bitwise_equal
+  true) — the regression detects only the reviewed defect class.
+- **R2 sloped-plane finite-difference gap/Jacobian:** central FD (h=1e-6) of
+  the COMPILED `gap_of` vs the COMPILED projection row over all 18
+  coordinates, 16 (state, sole-representative) probes (pair-branch margin
+  > 1e-4): worst |row − FD| = **1.038e-10** (bar 1e-7). Pre-fix law: worst
+  **1.271e-1** — the predicted `1 − n_y = 0.1271` to four digits.
+- **R3 penetration-correction exactness:** the pinned projection algorithm
+  (arrows / rhs=-gaps / mass-metric gram / Cholesky / least-norm, budget 0.05)
+  on the compiled values. Single row (fore-left pair at −0.003 m): residual
+  **8.298e-6 m** (0.28% of |gap|, second-order — the mass metric legitimately
+  couples rotations), dq_max 0.0184. Two rows (both fore pairs at −0.0005 m,
+  roll-equalized): residuals **1.573e-7 / 1.571e-7 m**, dq_max 0.0031.
+  Unilateral law: previously-positive pairs stay positive.
+- **R4 BITE (negative control):** the reviewed projection law (raw rows) on
+  the same compiled values over-shoots exactly as predicted — single row:
+  gap_after **+4.478e-4 m** (predicted +4.369e-4, the lead's reproducer at
+  scene scale; band [3e-4, 6e-4]), and R2 mismatch 0.1271 >= 0.05. The
+  reviewed BYTES' identity is hash-proven: reverting the three correction
+  edits from this correction's modified header reproduces git blob
+  `15ea952820d8a84440a2da2831988efbbd08a8c7` / sha256 `476b5905...` — the
+  prior attempt's pinned reference materialization of PR #155's header.
+- **Prior evidence preserved, this run:** header `-fsyntax-only` exit 0;
+  ill-formed stub control exit 1 ("not allowed here"); oracle parity 2081
+  points worst height 0.0 m EXACT / worst gradient 0.0 / nodes exact / worst
+  normal 3.469446951953614e-18; plane degeneracy exact; gap-law
+  constant-grid delta 0.0; extent law exact; physics-symbol guard green;
+  patch applies to the pinned blob, scope exactly the two engine files.
+- `python -B implementation.py all` → exit 0, `all_ok: true`;
+  `python -B -m unittest test_implementation` → **Ran 25 tests, OK**;
+  fresh-directory re-run: exit 0, OK, `proposed.patch` byte-identical
+  (sha256 `b02fc9e65da5459120249d8fd2ec3068818dcd0c43385ffe4331815ac431acb8`).
 
-The frozen preregistration predicted the new-file `terrain_surface.hpp` bytes
-would be IDENTICAL to the reviewed candidate. They are not: the compile
-evidence this correction adds proved the reviewed header could not be used as
-a `GaitWalker` member at all (private default constructor). The prediction
-lost for a real, named reason; the minimal public-ctor fix above was applied
-and the law re-proven against the oracle bit-exactly (0.0 m / 3.469e-18 — the
-same numbers the lead independently reproduced), which is precisely the
-preservation the card demands. No other prediction was falsified.
+## Predictions lost / refined (honest)
+
+- **R3 "|gap_after| <= 1e-8" REFINED-LOST (A3):** the frozen exactness bar
+  assumed a pure-translation correction; the pinned mass-metric least-norm
+  legitimately couples rotations, so the residual is second-order (measured
+  8.298e-6 at 3 mm). The shipped law is the second-order bar
+  (<= 2% of |gap_before|) + pinned budget + unilateral preservation, frozen in
+  Amendment A3 BEFORE the first full-suite run.
+- **Two-row scenario re-authored (A4):** the frozen pure-vertical drop to
+  −0.003/−0.001 measures dq_max 7.94e-2 — beyond the engine's own 0.05 budget;
+  translations cannot change the pairs' relative height on a constant-gradient
+  plane (probe-verified), so the scenario roll-equalizes then drops both pairs
+  to −0.0005.
+- All other prereg predictions measured as predicted (R1 bitwise; R2 bar and
+  bite within their bands; R4 overshoot +4.478e-4 vs predicted +4.369e-4; the
+  lead's reproducer algebra confirmed; prior frozen numbers bit-reproduced).
 
 ## Honest boundary (preserved gates)
 
-The compile check proves TU well-formedness of the modified header under the
-engine's include path — NOT engine integration. NOT done here, all still
-PENDING: full engine TU-set build, the recipe actually carrying `terrain_grid`
-(grid data feeding is an integration step), the collision query route (parent
-S1-3), render binding + zero normal-hygiene lines (S1-4), any engine walk
-replay (A1 byte-identity of the frozen plane walk), W10 scene readiness, all
-runtime and visual gates. Trunk contact remains Stage 2.
+The regression exercises the COMPILED patched gap/row members and the pinned
+projection algorithm on those compiled values, plus TU well-formedness of the
+in-class edit (`-fsyntax-only` exit 0). The in-class positional-correction
+statement itself runs inside `impact()` during engine walks and is NOT
+executed headless: no `step()` call exists anywhere in this attempt —
+construction (`reset()` state seeding), public `evaluate()`, and probe
+forwarders only. NOT done, all still PENDING: full engine build, the recipe
+integration carrying `terrain_grid`, the collision query route (S1-3), render
+binding + normal hygiene (S1-4), any engine walk replay (A1 byte-identity),
+W10 readiness, all runtime and visual gates. Trunk contact remains Stage 2.
 
-Environment: Windows x64, CPython 3.14 + g++ (MinGW 15.2.0). Read-only against
-E:/ChimeraWork/monkey-play-20260924; scratch trees in temp dirs and `build/`;
-prior attempt workspace untouched; zero writes in E:/PythonChimera.
+Environment: Windows x64, CPython 3.14.3, g++ 15.2.0 (MinGW), numpy 2.2.6 (only
+for the one-off scene-fixture provenance run). Read-only against
+E:/ChimeraWork/monkey-play-20260924 and E:/PythonChimera; all scratch trees in
+temp dirs; prior attempt workspaces untouched; zero writes in E:/PythonChimera
+and E:/Chimera.

@@ -1,14 +1,17 @@
 """test_implementation.py -- D-FOREST-RUNTIME-20260924-FOLLOWUP targeted tests
-(CORRECTION attempt: placement + compile evidence).
+(CORRECTION 2: gap/row/projection convention consistency).
 
 Wraps the implementation's patch generation + independent checks as unittest,
-plus structural assertions on the generated artifacts. The compile+oracle check
-compiles the SHIPPED terrain_surface.hpp with g++ (bounded, CPU-only) and
-compares against the frozen F02 oracle. NEW vs the reviewed suite: the MODIFIED
-gait_controller.hpp is syntax-checked (g++ -std=c++17 -fsyntax-only, exit 0
-required) with a negative control proving the check bites on the reviewed
-defect class (member-function definitions nested inside a function body);
-helper placement and include scope are asserted structurally. The suite is
+plus structural assertions on the generated artifacts. PRESERVED from the
+prior suite: compiled-vs-oracle parity against the frozen F02 oracle, the
+-fsyntax-only evidence for the MODIFIED gait header with its ill-formed
+negative control, helper placement / include scope / verbatim plane arms.
+NEW vs the reviewed suite (lead finding msg-0cca72cf...): the compiled
+contact-consistency regression -- R1 flat-path identity (bitwise, constant
+grid vs no terrain), R2 sloped-plane finite-difference gap/Jacobian on the
+COMPILED patched members, R3 penetration-correction exactness, and R4 the
+bite control proving the same driver FAILS on the reconstructed pre-fix
+(PR #155) bytes while passing on the corrected bytes. The suite is
 ORDER-INDEPENDENT: every test class materializes the artifacts it needs.
 
 Run:  python -B -m unittest test_implementation -v   (from this directory)
@@ -149,6 +152,57 @@ class PatchStructureTests(unittest.TestCase):
             self.assertNotIn(token, self.patch.lower(),
                              "Stage 1 must not contain %r machinery" % token)
 
+    def test_probe_seam_and_rescale_present(self):
+        """CORRECTION 2 structure: read-only probe forwarders in the existing
+        public seam, and the projection-local row rescale with the pinned rhs
+        line untouched."""
+        modified = (HERE / "reference" /
+                    "gait_controller.hpp.modified").read_text(encoding="utf-8")
+        self.assertIn("probe_gap_of(const Evaluation&e,size_t k)const"
+                      "{return gap_of(e,k);}", modified)
+        self.assertIn("probe_contact_row", modified)
+        self.assertIn("probe_tangent_row", modified)
+        self.assertIn("probe_contact_normal", modified)
+        self.assertIn("gait_gap_row_normal_y_invalid", modified)
+        self.assertIn("r[i]/=ny;arows.push_back(r);}", modified)
+        # the pinned rhs law byte-identical
+        self.assertIn("rhs[a2]=-gaps[a2];", modified)
+        # correction 2b: sole_local's anchor selection consumes the terrain
+        # gap law; original plane expressions verbatim in its inactive arm
+        self.assertEqual(modified.count(impl.SOLE_REPLACEMENT), 1)
+        self.assertNotIn(impl.SOLE_ANCHOR, modified)
+        self.assertIn("double dy=(terrain_active_?gm-gh:pm[1]-ph[1]);",
+                      modified)
+
+    def test_prefix_reconstruction_is_reviewed_pr155_bytes(self):
+        """Reverting the THREE correction-2 edits (probe seam, sole_local
+        anchor fix, projection rescale) from the fixed header reproduces the
+        reviewed PR #155 candidate bytes exactly."""
+        import hashlib
+        pinned = (HERE / "reference" /
+                  "gait_controller.hpp.pinned").read_text(encoding="utf-8")
+        fixed = impl.build_modified_hpp(pinned, include_correction=True)
+        prefix = impl.replace_once(fixed, impl.POSCORR_REPLACEMENT,
+                                   impl.POSCORR_ANCHOR, "rv1")
+        prefix = impl.replace_once(prefix, impl.SOLE_REPLACEMENT,
+                                   impl.SOLE_ANCHOR, "rv2")
+        prefix = impl.replace_once(
+            prefix, impl.MEMBER_REPLACEMENT,
+            impl.MEMBER_ANCHOR +
+            " TerrainSurface terrain_;bool terrain_active_=false;\n"
+            "public:\n"
+            " using TSurface=chimera::TerrainSurface;\n"
+            "private:\n", "rv3")
+        self.assertEqual(hashlib.sha256(prefix.encode()).hexdigest(),
+                         impl.PRIOR_MODIFIED_SHA256)
+
+    def test_scene_fixture_pinned(self):
+        import hashlib
+        scene = HERE / "inputs" / "gait_scene.json"
+        self.assertTrue(scene.is_file(), "scene fixture missing")
+        self.assertEqual(hashlib.sha256(scene.read_bytes()).hexdigest(),
+                         impl.SCENE_SHA256)
+
 
 class CompiledOracleTests(unittest.TestCase):
     """The compiled shipped header vs the frozen Python oracle; and the
@@ -200,6 +254,59 @@ class CompiledOracleTests(unittest.TestCase):
         self.assertTrue(e["closed_boundary_serves"])
         self.assertTrue(e["outside_flags_all_zero"])
         self.assertTrue(e["outside_height_refuses_named"])
+
+
+class ContactConsistencyTests(unittest.TestCase):
+    """CORRECTION 2: the compiled contact-consistency regression (R1-R4)."""
+
+    @classmethod
+    def setUpClass(cls):
+        if not REPO.is_dir():
+            raise unittest.SkipTest("play repo absent")
+        if not gpp_available():
+            raise unittest.SkipTest("g++ not available")
+        ensure_artifacts()
+        cls.results = impl.run_checks(REPO, HERE)["contact_consistency"]
+
+    def test_consistency_all_passed(self):
+        self.assertTrue(self.results["available"],
+                        "g++ unavailable: compiled regression ABSENT")
+        self.assertTrue(self.results["passed"],
+                        json.dumps(self.results, indent=1)[:1200])
+
+    def test_r1_flat_identity_bitwise(self):
+        r1 = self.results["r1_flat_identity_fixed"]
+        self.assertTrue(r1["bitwise_equal"])
+        self.assertTrue(r1["axis1_refused"])
+        self.assertTrue(r1["axis1_named"])
+        self.assertTrue(self.results["r1_flat_identity_prefix"]
+                        ["bitwise_equal"])
+
+    def test_r2_fd_gap_jacobian_fixed_within_bar(self):
+        r2 = self.results["r2_fd_gap_jacobian_fixed"]
+        self.assertGreaterEqual(r2["probed"], impl.FD_PROBE_MIN)
+        self.assertLessEqual(r2["worst_abs"], impl.FD_BAR,
+                             "compiled contact_row != d gap_of/dq on slope")
+
+    def test_r2_prefix_bytes_bite(self):
+        b = self.results["r2_fd_gap_jacobian_prefix_bite"]
+        self.assertTrue(b["bites"])
+        self.assertGreaterEqual(b["worst_abs"], impl.BITE_REL_MIN)
+
+    def test_r3_correction_exact_and_in_budget(self):
+        r3 = self.results["r3_penetration_correction_fixed"]
+        self.assertTrue(r3["scenario_single"]["passed"])
+        self.assertTrue(r3["scenario_two_rows"]["passed"])
+
+    def test_r3_prefix_bytes_overshoot(self):
+        b = self.results["r3_penetration_correction_prefix_bite"]
+        self.assertTrue(b["bites"])
+        self.assertGreater(b["gap_after_penetrated"], 0.0,
+                           "pre-fix projection must OVERSHOOT the gap")
+
+    def test_r4_prefix_reconstruction_proven(self):
+        self.assertTrue(self.results["prefix_reconstruction"]
+                        ["matches_reviewed_pr155_bytes"])
 
 
 class HonestBoundaryTests(unittest.TestCase):
