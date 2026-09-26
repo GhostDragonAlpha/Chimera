@@ -1,0 +1,169 @@
+diff --git a/ChimeraEngine/engine/gait_controller.hpp b/ChimeraEngine/engine/gait_controller.hpp
+index 5863348..15ea952 100644
+--- a/ChimeraEngine/engine/gait_controller.hpp
++++ b/ChimeraEngine/engine/gait_controller.hpp
+@@ -6,6 +6,7 @@
+ #include <cstdint>
+ #include <cstdio>
+ #include <memory>
++#include "terrain_surface.hpp"
+ namespace chimera::multibody {
+ // Gait controller + walker runtime (docs/research/20260918_gait_controller_derivation.md,
+ // Rule-0 admission work.creature.gait_controller). The CONTROL LAW is exactly
+@@ -92,6 +93,10 @@ class GaitWalker {
+  struct BodyRef {double mass;V com;Mat inertia;};
+  std::shared_ptr<const Model> model_;J recipe_,config_,model_data_;std::vector<ContactPoint> points_;std::vector<Drive> drives_;size_t n_=0,npts_=0,nd_=0;
+  V shift_,gravity_;double dt_=0,plane_world_y_=0,plane_model_y_=0,mu_=0,mtot_=0,store_total_=0;
++ TerrainSurface terrain_;bool terrain_active_=false;
++public:
++ using TSurface=chimera::TerrainSurface;
++private:
+  Tables tables_{};double phi_[2]={0.,0.5};bool touching_prev_[2]={false,false};uint64_t ticks_=0;uint64_t capture_events_=0;
+  Dense kp_,kd_,damping_,last_torque_,battery_,brake_;std::vector<uint64_t> empty_events_;
+  double kp_post_=0,kd_post_=0,battery_post_=0,brake_post_=0,store_post_=0;uint64_t empty_post_=0;
+@@ -632,6 +637,8 @@ class GaitWalker {
+   double a=(gh<=2e-6&&gm<=2e-6)||std::abs(dy)<1e-8?0.5:(dy<0.?1.:0.);
+   V local=points_[h].local;for(int i=0;i<3;++i)local[i]+=(points_[m].local[i]-points_[h].local[i])*a;return local;}
+  V sole_position(const Evaluation& e,size_t k)const{return e.point(points_[k-(k%2)].index,sole_local(e,k)).first;}
++ double terrain_model_y(const Evaluation&e,const ContactPoint&p)const{const double wx=e.point(p.index,p.local).first[0]+shift_[0];const double wz=e.point(p.index,p.local).first[2]+shift_[2];return terrain_.height(wx,wz)-shift_[1];}
++ chimera::TerrainNormal contact_normal(const Evaluation&e,const ContactPoint&p)const{if(!terrain_active_)return chimera::TerrainNormal{0.0,1.0,0.0};const double wx=e.point(p.index,p.local).first[0]+shift_[0];const double wz=e.point(p.index,p.local).first[2]+shift_[2];return terrain_.normal(wx,wz);}
+  double gap_of(const Evaluation& e,size_t k)const{
+ #ifdef GAIT_EVENT_TRACE
+   if(k>=points_.size()||points_[k].index>=e.frames.size())
+@@ -639,11 +646,15 @@ class GaitWalker {
+     k,points_.size(),e.frames.size(),(unsigned long long)ticks_);
+ #endif
+   size_t h=k-(k%2),m=h+1;
+-  double gh=e.point(points_[h].index,points_[h].local).first[1]+points_[h].radius-plane_model_y_;
+-  double gm=e.point(points_[m].index,points_[m].local).first[1]+points_[m].radius-plane_model_y_;
++  double gh=(terrain_active_?
++    e.point(points_[h].index,points_[h].local).first[1]+points_[h].radius-terrain_model_y(e,points_[h])
++    :e.point(points_[h].index,points_[h].local).first[1]+points_[h].radius-plane_model_y_);
++  double gm=(terrain_active_?
++    e.point(points_[m].index,points_[m].local).first[1]+points_[m].radius-terrain_model_y(e,points_[m])
++    :e.point(points_[m].index,points_[m].local).first[1]+points_[m].radius-plane_model_y_);
+   return (std::min)(gh,gm);}
+- Dense contact_row(const Evaluation& e,size_t k)const{auto j=e.point(points_[k-(k%2)].index,sole_local(e,k)).second;Dense r(n_,0.);for(size_t i=0;i<n_;++i)r[i]=j[i][1];return r;}
+- Dense tangent_row(const Evaluation& e,size_t k,int axis)const{auto j=e.point(points_[k-(k%2)].index,sole_local(e,k)).second;Dense r(n_,0.);for(size_t i=0;i<n_;++i)r[i]=j[i][axis];return r;}
++ Dense contact_row(const Evaluation& e,size_t k)const{auto j=e.point(points_[k-(k%2)].index,sole_local(e,k)).second;Dense r(n_,0.);if(!terrain_active_){for(size_t i=0;i<n_;++i)r[i]=j[i][1];return r;}const chimera::TerrainNormal n=contact_normal(e,points_[k-(k%2)]);for(size_t i=0;i<n_;++i)r[i]=j[i][0]*n.x+j[i][1]*n.y+j[i][2]*n.z;return r;}
++ Dense tangent_row(const Evaluation& e,size_t k,int axis)const{auto j=e.point(points_[k-(k%2)].index,sole_local(e,k)).second;Dense r(n_,0.);if(!terrain_active_){for(size_t i=0;i<n_;++i)r[i]=j[i][axis];return r;}const chimera::TerrainNormal n=contact_normal(e,points_[k-(k%2)]);double ea[3]={0.0,0.0,0.0};ea[axis]=1.0;const double d=ea[0]*n.x+ea[1]*n.y+ea[2]*n.z;double tx=ea[0]-d*n.x,ty=ea[1]-d*n.y,tz=ea[2]-d*n.z;const double tn=std::sqrt(tx*tx+ty*ty+tz*tz);if(!(tn>0.0))throw std::runtime_error("gait_tangent_degenerate: axis "+std::to_string(axis)+" parallel to surface normal");const double inv=1.0/tn;tx*=inv;ty*=inv;tz*=inv;for(size_t i=0;i<n_;++i)r[i]=j[i][0]*tx+j[i][1]*ty+j[i][2]*tz;return r;}
+  V contact_bias(const Evaluation& e,size_t k)const{return vector(e.frames[points_[k-(k%2)].index].ddt,sole_local(e,k),1);}
+  double joint_speed_scale(const State& s)const{double a=0;for(size_t d=0;d<nd_;++d)a+=std::abs(s.v[drives_[d].coordinate]);return a;}
+  Dense normals(const State& s)const{Dense row(n_,0.);for(size_t d=0;d<nd_;++d){size_t c=drives_[d].coordinate;if(std::abs(s.q[c]-model_->lower[c])<1e-10)row[c]=1;else if(std::abs(s.q[c]-model_->upper[c])<1e-10)row[c]=-1;}return row;}
+@@ -2001,6 +2012,7 @@ class GaitWalker {
+  // theta*(phi): the derived posture target table (wave 8)
+  if(config_.contains("settle_ticks")){require(config_["settle_ticks"].is_number(),"gait_settle_shape");settle_ticks_=(int)number(config_["settle_ticks"]);require(settle_ticks_>=0&&settle_ticks_<=600,"gait_settle_range");settle_total_=settle_ticks_;}
+   plane_world_y_=number(recipe_.at("contact_plane_height_m"));require(std::isfinite(plane_world_y_),"gait_contact_plane_invalid");plane_model_y_=plane_world_y_-shift_[1];
++  if(recipe_.contains("terrain_grid")){const J&tg=recipe_.at("terrain_grid");std::vector<double> th;for(const auto&v:tg.at("heights_m"))th.push_back(number(v));terrain_=chimera::TerrainSurface::from_arrays((int)number(tg.at("nx")),(int)number(tg.at("nz")),number(tg.at("x0_m")),number(tg.at("z0_m")),number(tg.at("dx_m")),number(tg.at("dz_m")),number(tg.at("half_width_m")),th);terrain_active_=true;}
+   require(config_.contains("contact_enabled")&&config_["contact_enabled"].is_boolean(),"gait_contact_flag_invalid");contact_=config_["contact_enabled"].get<bool>();
+   require(config_.contains("contact_friction")&&config_["contact_friction"].is_number()&&number(config_["contact_friction"])>=0&&number(config_["contact_friction"])<=1,"gait_friction_flag_invalid");mu_=number(config_["contact_friction"]);
+   require(recipe_.contains("contact_points")&&recipe_.at("contact_points").is_array()&&!recipe_.at("contact_points").empty(),"gait_contact_points");
+diff --git a/ChimeraEngine/engine/terrain_surface.hpp b/ChimeraEngine/engine/terrain_surface.hpp
+new file mode 100644
+index 0000000..d24b4eb
+--- /dev/null
++++ b/ChimeraEngine/engine/terrain_surface.hpp
+@@ -0,0 +1,103 @@
++// terrain_surface.hpp -- D-FOREST-RUNTIME-20260924-FOLLOWUP (Stage 1 seam)
++// The frozen clearing surface law as a per-point service, mirroring the F02
++// oracle (tools/monkey_campaign/data/monkey_clearing/terrain_query.py):
++// node grid (row = z, col = x), frozen diagonal (triangle A=(00,01,11) covers
++// tz >= tx; B=(00,11,10) covers tz < tx), per-triangle plane interpolation and
++// exact gradient, unit normal normalize(-gx,1,-gz), STRICT extent refusal.
++// Self-contained C++17: no engine types, no JSON dependency. The gait lane
++// feeds it primitive arrays; units are meters throughout; dx==dz==1 m is the
++// frozen family (anything else refuses, never silently generalizes).
++#pragma once
++#include <cmath>
++#include <cstddef>
++#include <stdexcept>
++#include <string>
++#include <vector>
++
++namespace chimera {
++
++inline void terrain_require(bool ok, const char* code, const char* detail) {
++    if (!ok) throw std::runtime_error(std::string(code) + ": " + detail);
++}
++
++struct TerrainNormal { double x, y, z; };
++
++class TerrainSurface {
++public:
++    // CORRECTION: the default constructor is PUBLIC. The reviewed candidate
++    // declared it private, which made `TerrainSurface terrain_;` a member of
++    // GaitWalker un-constructible (g++ 15.2: 'TerrainSurface() is private
++    // within this context') -- a defect the ill-formed helper placement
++    // masked, exposed by the new -fsyntax-only check. No law change: an
++    // empty surface (nx_=0, half_=0) refuses every height query by name
++    // ('terrain_query_below_grid') and is only queried once from_arrays
++    // succeeded (terrain_active_).
++    TerrainSurface() = default;
++    static TerrainSurface from_arrays(int nx, int nz, double x0, double z0,
++                                      double dx, double dz, double half,
++                                      const std::vector<double>& heights_row_major_iz_ix) {
++        terrain_require(nx >= 2 && nz >= 2, "terrain_grid_shape", "nx,nz >= 2 required");
++        terrain_require(dx == 1.0 && dz == 1.0, "terrain_grid_spacing_law",
++                        "the frozen clearing family is dx==dz==1 m");
++        terrain_require(half > 0.0, "terrain_grid_half_width", "half_width_m > 0 required");
++        terrain_require((std::size_t)(nx * nz) == heights_row_major_iz_ix.size(),
++                        "terrain_grid_heights_size", "heights must be nx*nz row-major (iz, ix)");
++        TerrainSurface s;
++        s.nx_ = nx; s.nz_ = nz; s.x0_ = x0; s.z0_ = z0;
++        s.dx_ = dx; s.dz_ = dz; s.half_ = half;
++        s.h_ = heights_row_major_iz_ix;
++        return s;
++    }
++
++    bool inside(double x, double z) const {
++        // strict '>': the closed boundary serves (oracle classify; earth lane :118)
++        return !(x > half_ || x < -half_ || z > half_ || z < -half_);
++    }
++
++    double height(double x, double z) const {
++        double tx, tz; int ix, iz;
++        locate(x, z, ix, iz, tx, tz);
++        const double h00 = at(ix, iz), h10 = at(ix + 1, iz);
++        const double h01 = at(ix, iz + 1), h11 = at(ix + 1, iz + 1);
++        if (tz >= tx) return h00 + (h11 - h01) * tx + (h01 - h00) * tz;  // A (00,01,11)
++        return h00 + (h10 - h00) * tx + (h11 - h10) * tz;                // B (00,11,10)
++    }
++
++    void gradient(double x, double z, double& gx, double& gz) const {
++        double tx, tz; int ix, iz;
++        locate(x, z, ix, iz, tx, tz);
++        const double h00 = at(ix, iz), h10 = at(ix + 1, iz);
++        const double h01 = at(ix, iz + 1), h11 = at(ix + 1, iz + 1);
++        if (tz >= tx) { gx = h11 - h01; gz = h01 - h00; }
++        else          { gx = h10 - h00; gz = h11 - h10; }
++    }
++
++    TerrainNormal normal(double x, double z) const {
++        double gx, gz;
++        gradient(x, z, gx, gz);
++        const double inv = 1.0 / std::sqrt(gx * gx + 1.0 + gz * gz);
++        return TerrainNormal{-gx * inv, inv, -gz * inv};
++    }
++
++private:
++    double at(int ix, int iz) const { return h_[(std::size_t)(iz) * nx_ + ix]; }
++    void locate(double x, double z, int& ix, int& iz, double& tx, double& tz) const {
++        terrain_require(std::isfinite(x) && std::isfinite(z), "gait_nonfinite_query",
++                        "surface query requires finite x,z");
++        terrain_require(inside(x, z), "gait_outside_extent",
++                        "surface serves no height past the patch (strict > half; "
++                        "ghost-support law)");
++        double fx = (x - x0_) / dx_, fz = (z - z0_) / dz_;
++        ix = (int)fx; iz = (int)fz;
++        if (ix > nx_ - 2) ix = nx_ - 2;   // max-edge clamp (oracle cell_of)
++        if (iz > nz_ - 2) iz = nz_ - 2;
++        terrain_require(ix >= 0 && iz >= 0, "terrain_query_below_grid", "ix,iz >= 0");
++        tx = x - (x0_ + ix * dx_);
++        tz = z - (z0_ + iz * dz_);
++    }
++    int nx_ = 0, nz_ = 0;
++    double x0_ = 0, z0_ = 0, dx_ = 1, dz_ = 1, half_ = 0;
++    std::vector<double> h_;
++};
++
++}  // namespace chimera
