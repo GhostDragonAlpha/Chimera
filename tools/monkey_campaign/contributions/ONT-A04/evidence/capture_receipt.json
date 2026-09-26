@@ -1,0 +1,41 @@
+{
+ "capture": {
+  "pixel_size": [
+   700,
+   3628
+  ],
+  "raw_sha256": "dd21432d6565d4ad80e228c3452250ad5b84e2e6cd0f774cdbdd38bc7c61ce81",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A04\\86b87bfe23b14059ac8ed516104340bf\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A04\\evidence\\capture_a04.png"
+ },
+ "gate_validation": {
+  "capture_kind": "image",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "anatomy",
+  "structurally_valid": true,
+  "view_count": 6,
+  "visual_acceptance": false
+ },
+ "honest_boundary": "Static pinned-geometry inspection only. The capture shows the pinned SOURCE hand assembly and the pinned TARGET fitted band separately, side by side per view; it is NOT a native engine frame and makes no runtime/native claim. A/B face letters label faces, not anatomy; the human palm verdict is NOT recorded, so the target palm sign stays UNRESOLVED (named in the numerical receipt).",
+ "manifest": {
+  "raw_sha256": "40c40fff71763cde005602ecf0845f30938c2623724d64de82d7af0231c504a0",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A04\\86b87bfe23b14059ac8ed516104340bf\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A04\\evidence\\capture_manifest.json"
+ },
+ "render_referents": {
+  "cell_layout": "each view cell = SOURCE | TARGET panels; PRIMARY camera = source camera (schema-validated); target/side/oblique cameras fully declared in camera.secondary_cameras (same 16 fields)",
+  "clean_segments": "own panels, geometry only, depth-tested, zero diagnostic pixels",
+  "frames": {
+   "source": "chimanoid_world_m (right-handed, metres; hand_r chain quats identity, R2-A4 origin pin)",
+   "target": "monkey_birth_world_m (right-handed, metres; anterior +z, up +y, creature right at -x per O1; MESH_UNIT_TO_M 0.065 authored)"
+  },
+  "renderer": "matplotlib 3.10.8 Agg (CPU, software) + custom numpy z-buffer orthographic rasterizer; NO GPU contexts"
+ },
+ "run_id": "ont-a04-anatomy-20260926-86b87bfe",
+ "schema": "ont-a04.anatomy.capture.v1",
+ "state_binding": {
+  "kind": "state",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A04\\86b87bfe23b14059ac8ed516104340bf\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A04\\evidence\\state_snapshot.json",
+  "sha256": "33d3219cc66071a7a5957b24f40f172accbada2ac8ec69c9de5e060de74b1164"
+ },
+ "task_id": "A04"
+}
