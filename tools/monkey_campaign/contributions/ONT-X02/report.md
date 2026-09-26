@@ -63,12 +63,16 @@ preserved unchanged below; nothing was weakened or relabeled.**
 - **M2 — no graceful exit path**: the server installs no console/signal
   handler; its only graceful shutdown is KeyboardInterrupt (its shipped
   `finally: WORLD.shutdown_engine()`). CTRL_C was measured undeliverable
-  three ways in this environment; CTRL_BREAK hard-kills the interpreter as
-  `0xC000013A` WITHOUT the finally, ORPHANING the engine — measured, and the
-  frozen A4 prediction recorded FIRED (`integrated_runtime_receipt.json`).
-  A4 therefore measures the operator-class hard kill: the orphan is real,
-  then terminated by the driver by PID. The app's own teardown is proven on
-  the real engine in A3 (restart) and B7 (Q).
+  three ways in this environment (the delivery attempts are documented in
+  the driver's comments), and the app ships no CTRL_BREAK path at all — the
+  frozen A4 prediction recorded FIRED on that exit method
+  (`integrated_runtime_receipt.json`). A4 therefore measures the
+  operator-class hard kill (`proc.kill()`, the TerminateProcess class):
+  server exit code 1, the engine child (91368) still alive at the kill
+  moment, ZERO surviving engines measured 3 s after the kill, the server
+  port closed, and the driver terminated nothing — the engine did not
+  outlive the killed server. The app's own teardown is proven on the real
+  engine in A3 (restart) and B7 (Q).
 - **M3 — the worktree ships no runtime**: play HEAD `8d16d3c1` has neither
   `tools/playable_slice/` nor a built engine on disk; reconstructed from the
   pinned blobs (252-file raw-blob manifest in the runtime receipt; the

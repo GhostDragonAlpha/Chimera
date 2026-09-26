@@ -121,9 +121,9 @@
     "provenance": "validator results + every shipped artifact hash (video, webm original, 4 stills, 2 engine /frame images) + the honest clean-view caveat (the shipped page has no HUD-free mode; [H] dismisses the guide, verified display:'none')."
    },
    "integrated_runtime": {
-    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\integrated\\integrated_runtime_receipt.json",
-    "raw_sha256": "0113aa583cf3baab43fc9d5de32cd71e2285792cc95e6500453f603a46067b18",
-    "provenance": "the run-environment record: engine build from pinned source (exe sha in receipt), 252-file raw-blob extraction manifest of the pinned tree, per-session verdicts, the missing-integration list M1-M4, and the FIRED A4 deviation recorded against the frozen preregistration."
+    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\46c8c88d9c3a49a48e3383a26e9b1cbb\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\integrated\\integrated_runtime_receipt.json",
+    "raw_sha256": "30d4286f7159dd854c54fd06b176de13fb2be89e2617f24a61a5531796777d3c",
+    "provenance": "the run-environment record: engine build from pinned source (exe sha in receipt), 252-file raw-blob extraction manifest of the pinned tree, per-session verdicts, the missing-integration list M1-M4, and the FIRED A4 deviation recorded against the frozen preregistration. Narrative-layer correction (review 5afad702): the A4 outcome/M2 text now states exactly what A4 measured (hard server kill, exit 1, engine alive at the kill moment, zero surviving engines 3 s after, port closed, driver terminated nothing); the run bytes and every other field are unchanged from the preserved 0113aa58 record."
    }
   },
   "capture_context": {
