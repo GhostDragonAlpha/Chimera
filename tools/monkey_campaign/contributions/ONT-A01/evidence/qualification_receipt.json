@@ -1,0 +1,56 @@
+{
+  "attempt_id": "fb552e4136ef4bfdaaa93686fb063e78",
+  "capture_context": {
+    "capture_sha256": "19fffeee37f2e7c96d52b17ab217f37ee92bbfeedef4ab9de635f723860cdeff",
+    "run_id": "ONT-A01-ota01-deterministic-cpu-20260926",
+    "subject_sha256": "5300c09f0591413e7e1607e2cdd667268d57f2c38f40ce4daaf56b8fdebbba61",
+    "task_id": "A01",
+    "tick_interval": [
+      0,
+      3
+    ]
+  },
+  "card_id": "ONT-A01",
+  "criteria_sha256": "2bcf59fa0b786b009b30711334e38fe374d9a2a2bdefdba9566a4018c4a9c775",
+  "done_when_how_satisfied": "done_when is disjunctive: 'determines roll sign OR records ambiguity'. This attempt records the ambiguity per its own frozen rules (F2/F4: the strict zone claim 'D > 2 mm for every station t in [-2,+12]' fails at t=+8 with D=+1.81 mm, byte-identical to the pinned receipt's own table where +8 is unmarked) while the sign itself reproduces exactly under the record's preregistered best-station criterion (D(+6)=+3.29 mm, unanimous NO-FLIP law). Both readings are preserved in numerical_receipt.json; nothing was tuned or dropped.",
+  "done_when_verified": true,
+  "evidence": {
+    "camera": {
+      "raw_sha256": "692af6e50ffcbaedfad6def810a27a78ae089867b2a66f7e5263924b806203c4",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\capture_manifest.json"
+    },
+    "independent_review": {
+      "raw_sha256": "91c02dfb6435a971169c74cf70577ccfc7d07164dcd5405adcee4c15eb58fd7a",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\independent_review_receipt.json"
+    },
+    "numerical": {
+      "raw_sha256": "93ea84b50a28543c5965461cb1823f0f5f9850ebfce77272027523a790156ce5",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\numerical_receipt.json"
+    },
+    "source": {
+      "raw_sha256": "a48a5c91fea632bc19c982ed3dbb5add502c188c83aa98b8814d00db7a47083c",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\reference\\EXTRACTION.json"
+    },
+    "visual": {
+      "raw_sha256": "19fffeee37f2e7c96d52b17ab217f37ee92bbfeedef4ab9de635f723860cdeff",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A01\\fb552e4136ef4bfdaaa93686fb063e78\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A01\\evidence\\capture_sheet.png"
+    }
+  },
+  "head_sha": null,
+  "head_sha_binding_note": "bound to the attempt commit carrying tools/monkey_campaign/contributions/ONT-A01 on branch-1 of the attempt checkout; the independent reviewer pins head_sha to the reviewed PR head - a changed PR head invalidates this receipt and its review (visual gate recomputes all hashes)",
+  "honesty": {
+    "behavior_claim_about_real_application": false,
+    "capture_kind": "component/records evidence for an anatomy evidence subject",
+    "cpu_only": true,
+    "deterministic": true,
+    "gpu_used": false,
+    "native_engine_frames": false,
+    "network_used": false,
+    "render_backend": "numpy-zbuffer-software-raster-cpu + matplotlib Agg compose"
+  },
+  "outcome": "AMBIGUITY_RECORDED",
+  "profile_verified": true,
+  "schema": "chimera.ontology_qualification_receipt.v1",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "task_id": "A01"
+}
