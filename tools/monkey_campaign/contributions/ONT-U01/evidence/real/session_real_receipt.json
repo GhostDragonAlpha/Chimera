@@ -1,0 +1,324 @@
+{
+ "schema": "chimera.ont_u01.real_seam_session.v1",
+ "started_utc": "2026-09-26T21:31:02Z",
+ "engine_exe": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\scratch\\run\\build\\Release\\chimera_engine.exe",
+ "engine_exe_sha256": "4bbf2a98d8b2bff66e7a512c6dfa292a6adb5d80ee88a5e4ffab60c07ad83c5a",
+ "play_root": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\scratch\\run\\play",
+ "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\reference",
+ "viewport": "1280x720",
+ "steps": {
+  "seam_pins": {
+   "pins": {
+    "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+    "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+   },
+   "PHYSICS_HZ": 300,
+   "POLICY_HZ": 20,
+   "HOLD_TICKS": 15,
+   "INTERVAL_MS": 50,
+   "V_MAX_IN_BAND_M_S": 0.763625
+  },
+  "R1_boot": {
+   "ok": true,
+   "url": "http://127.0.0.1:62950/",
+   "server_pid": 89148,
+   "engine_pid": 9532,
+   "engine_port": 62944,
+   "boot_seconds": 2.38,
+   "health": {
+    "ok": true,
+    "world_booted": true
+   },
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "boot_count": 1
+  },
+  "R1_settled": {
+   "ok": true,
+   "settled_root_y": 0.12451,
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "wait_seconds": 17.5
+  },
+  "R6_browser_channel": {
+   "channel": "chrome",
+   "deviations": []
+  },
+  "R2_page_live": {
+   "ok": true,
+   "status_line": "REAL engine numbers \u2014 root_y 0.1246 m \u00b7 root_vy -0.0000 m/s \u00b7 gravity ON",
+   "ticks_advanced": true,
+   "camera_handle": "{\"yaw\":0.7,\"pit\":0.42,\"dist\":2.2,\"tx\":0,\"ty\":0.25,\"tz\":0}",
+   "marks": {
+    "page_load": 1.016,
+    "play_live": 5.898,
+    "view1_start": 37.284,
+    "view1_end": 38.185,
+    "view2_start": 39.608,
+    "view2_end": 40.447,
+    "view3_start": 43.399,
+    "view3_end": 44.238
+   },
+   "console_errors": [],
+   "page_errors": []
+  },
+  "R2_control_press": {
+   "ok": false,
+   "rest_root_y": 0.124641,
+   "max_abs_root_vy": 0.0,
+   "max_abs_root_y_delta": 0.0,
+   "frozen_prediction": "max|vy|>0.01 and max|dy|>1e-3",
+   "observed_transient": true
+  },
+  "AUX_observer_validation": {
+   "ok": true,
+   "max_abs_root_vy": 3.161,
+   "engine_verdict": {
+    "phase": "done",
+    "max_root_y": 0.9103,
+    "max_abs_vy": 3.896,
+    "landed_root_y": 0.1245,
+    "law": "engine root law: y'' = F_contact/m - g; terminal descent vy = m*g/c = 0.2237 m/s (banked constants)",
+    "mock": null
+   },
+   "note": "auxiliary (not a frozen clause): the page's own [3] fall test is the engine's root law demo; it shows the observation channel sees LARGE real body motion"
+  },
+  "R3_stream": {
+   "ok": true,
+   "records_emitted": 138,
+   "sink_calls": 138,
+   "sink_emit_only": true,
+   "max_abs_v_forward": 0.763625,
+   "max_abs_yaw_rate": 1.6,
+   "boundary_gap_ms_min": 50,
+   "boundary_gap_ms_max": 2943,
+   "held_50ms_gaps": 134,
+   "driver_key_log": [
+    {
+     "kind": "key_down",
+     "code": "KeyW",
+     "at_s": 0.0,
+     "fired_s": 0.0028
+    },
+    {
+     "kind": "key_down",
+     "code": "KeyA",
+     "at_s": 1.0,
+     "fired_s": 1.0047
+    },
+    {
+     "kind": "key_up",
+     "code": "KeyA",
+     "at_s": 2.0,
+     "fired_s": 2.0088
+    },
+    {
+     "kind": "key_down",
+     "code": "KeyD",
+     "at_s": 3.0,
+     "fired_s": 3.0043
+    },
+    {
+     "kind": "key_up",
+     "code": "KeyD",
+     "at_s": 3.5,
+     "fired_s": 3.507
+    },
+    {
+     "kind": "key_up",
+     "code": "KeyW",
+     "at_s": 4.0,
+     "fired_s": 4.0044
+    },
+    {
+     "kind": "key_down",
+     "code": "KeyW",
+     "at_s": 6.0,
+     "fired_s": 6.0072
+    },
+    {
+     "kind": "blur",
+     "code": null,
+     "at_s": 7.0,
+     "fired_s": 7.0031
+    },
+    {
+     "kind": "key_down",
+     "code": "KeyW",
+     "at_s": 10.0,
+     "fired_s": 10.0135
+    },
+    {
+     "kind": "key_up",
+     "code": "KeyW",
+     "at_s": 12.0,
+     "fired_s": 12.0058
+    }
+   ],
+   "page_events_total": 10
+  },
+  "R5_receiver_capability": {
+   "engine_url": "http://127.0.0.1:62944",
+   "engine_pid": 9532,
+   "probes": {
+    "POST_/tick_gait_on": {
+     "status": 200,
+     "body": "{\"ok\":false,\"error\":\"refused: needs gravity, stance, classification, pins 13-18, and a sealed feet cell\"}"
+    },
+    "gait_enable_block_in_state": "stance_off",
+    "POST_/tick_stance_on": {
+     "status": 200,
+     "body": "{\"ok\":false,\"error\":\"refused: the body must be classified and a support band must exist\"}"
+    },
+    "POST_/command": {
+     "status": 200,
+     "body": "Not found"
+    },
+    "POST_/api/command": {
+     "status": 200,
+     "body": "Not found"
+    },
+    "POST_/tick_command": {
+     "status": 200,
+     "body": "Not found"
+    },
+    "page_own_declarations": [
+     "MOCKmock_carry \u2014 the creature SLIDES toward the marker (XY offset applied server-side to the /verts stream; the Y stream is never touched)",
+     "pending: real locomotion (the gait machine) \u00b7 physics target 426"
+    ]
+   },
+   "note": "R5 RECORDS the real answers; the frozen prediction is that no route consumes V1 speed/heading records and the gait machine refuses enablement for this body"
+  },
+  "R6_capture": {
+   "ok": true,
+   "views": {
+    "V1_normal_follow_camera_distance": {
+     "diagnostic": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\real\\view_v1_diagnostic.png",
+      "sha256": "4a94d2b86facabe240ffb759f930c7de7b22fb427ec0cc666f72ee3cade83f1f"
+     },
+     "clean": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\real\\view_v1_clean.png",
+      "sha256": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e"
+     },
+     "camera": {
+      "cam": {
+       "yaw": 0.7,
+       "pit": 0.42,
+       "dist": 2.2,
+       "tx": 0,
+       "ty": 0.25,
+       "tz": 0
+      },
+      "cw": 1280,
+      "ch": 720
+     },
+     "engine_frame": {
+      "sha256": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+      "bytes": 875995
+     }
+    },
+    "V2_obstructed_and_close_target_views": {
+     "diagnostic": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\real\\view_v2_diagnostic.png",
+      "sha256": "9ce97265675cd3d6ae63947f4f0741d50f385c3f43b231066226cb2f8a768b88"
+     },
+     "clean": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\real\\view_v2_clean.png",
+      "sha256": "a68ac83ce1c9f15897c41bfd3b9a8e1d88af1178a7d5a03912cc1b0c62d53af6"
+     },
+     "camera": {
+      "cam": {
+       "yaw": 0.7,
+       "pit": 0.42,
+       "dist": 1.6038000000000003,
+       "tx": 0,
+       "ty": 0.25,
+       "tz": 0
+      },
+      "cw": 1280,
+      "ch": 720
+     },
+     "engine_frame": {
+      "sha256": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+      "bytes": 875995
+     }
+    },
+    "V3_repeatable_inspection_side_view": {
+     "diagnostic": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\real\\view_v3_diagnostic.png",
+      "sha256": "ba7d6910cf9b6668d75c999cbbb4342201e1d57fde174ee741e6a3ec5d6bf1fc"
+     },
+     "clean": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\real\\view_v3_clean.png",
+      "sha256": "046b6094b646953cf987881c032547106ecb758f72fe5a0383acfb7f0e5120da"
+     },
+     "camera": {
+      "cam": {
+       "yaw": -0.86,
+       "pit": 0.42,
+       "dist": 1.6038000000000003,
+       "tx": 0,
+       "ty": 0.25,
+       "tz": 0
+      },
+      "cw": 1280,
+      "ch": 720
+     },
+     "engine_frame": {
+      "sha256": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+      "bytes": 875995
+     }
+    }
+   },
+   "marks": {
+    "page_load": 1.016,
+    "play_live": 5.898,
+    "view1_start": 37.284,
+    "view1_end": 38.185,
+    "view2_start": 39.608,
+    "view2_end": 40.447,
+    "view3_start": 43.399,
+    "view3_end": 44.238
+   },
+   "camera_v2_close": {
+    "yaw": 0.7,
+    "pit": 0.42,
+    "dist": 1.6038000000000003,
+    "tx": 0,
+    "ty": 0.25,
+    "tz": 0
+   },
+   "camera_v3_side": {
+    "yaw": -0.86,
+    "pit": 0.42,
+    "dist": 1.6038000000000003,
+    "tx": 0,
+    "ty": 0.25,
+    "tz": 0
+   }
+  },
+  "R7_teardown": {
+   "ok": true,
+   "server_exit_code": 1,
+   "engine_children": [
+    9532
+   ],
+   "terminated_by_driver": [
+    9532
+   ],
+   "still_alive": [],
+   "engines_global_remaining": [],
+   "note": "global count is shown for honesty; any nonzero remainder is NOT this lane's process (this lane's cwd-scoped preflight and child set are empty)"
+  }
+ },
+ "preflight_terminated_leftover_engines": [],
+ "video": {
+  "mp4": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\real\\real_capture.mp4",
+  "mp4_sha256": "846f0b3281c15abcad7930a1a9fa105d9bb50d2b33a5ed70eede2d9682fcd0cf",
+  "webm_sha256": "efa27d5eac11e1bc31366820abebb4ddfcf69cb0880bae67a536a545d5d9257f",
+  "video_seconds": 44.2
+ },
+ "verdict": "CHECK_STEPS",
+ "R4_note": "the R4 no-teleportation law on OBSERVED body state is evaluated by real_numerical.py into numerical_receipt_real.json from trace_real.jsonl",
+ "finished_utc": "2026-09-26T21:32:10Z"
+}

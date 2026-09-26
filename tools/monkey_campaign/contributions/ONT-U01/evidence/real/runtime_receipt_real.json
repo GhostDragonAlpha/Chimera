@@ -1,0 +1,90 @@
+{
+ "schema": "chimera.ont_u01.real_runtime.v1",
+ "generated_utc": "2026-09-26T21:35:47Z",
+ "what_ran": "THE REAL integrated run for the U01 correction: the pinned playable-slice slice_server owning a real native chimera_engine.exe built for this run from the pinned engine source (play 8550b634, raw-blob reconstruction), the served page in headless Chrome, real key events through the page's real handlers into the REAL pinned InputMapper/CommandRecord seam in this driver process, the engine's real ingestion answers measured (R5), and the body state observed ONLY through the engine's own state/frame path.",
+ "source_pins": {
+  "application_commit": "8550b634ebd7034bb8873eed41d8bdce4d3843d0",
+  "extraction": "git cat-file blob (raw bytes, no EOL smudge) into THIS attempt's scratch/run/play_clean; manifest pinned_blob_manifest.json",
+  "seam_import": "reference/ byte-exact, hash-asserted at import (input_mapper 7a36a45e, command_record 67711759)"
+ },
+ "engine_build": {
+  "source": "pinned 8550b634ebd7034bb8873eed41d8bdce4d3843d0 ChimeraEngine/engine + ChimeraEngine/native/viewer3rd/json.hpp",
+  "recipe": "cmake -S . -B build -G \"Visual Studio 17 2022\" -A x64; cmake --build build --config Release",
+  "engine_exe_sha256": "4bbf2a98d8b2bff66e7a512c6dfa292a6adb5d80ee88a5e4ffab60c07ad83c5a",
+  "note": "exe bytes differ from the X02 lane's a9964009 build (non-deterministic link); same pinned source + recipe"
+ },
+ "process_evidence": {
+  "server_pid": 89148,
+  "engine_pid": 9532,
+  "engine_port": 62944,
+  "url": "http://127.0.0.1:62950/",
+  "boot_seconds": 2.38,
+  "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+  "teardown": {
+   "ok": true,
+   "server_exit_code": 1,
+   "engine_children": [
+    9532
+   ],
+   "terminated_by_driver": [
+    9532
+   ],
+   "still_alive": [],
+   "engines_global_remaining": [],
+   "note": "global count is shown for honesty; any nonzero remainder is NOT this lane's process (this lane's cwd-scoped preflight and child set are empty)"
+  }
+ },
+ "receiver_capability_measured": {
+  "engine_url": "http://127.0.0.1:62944",
+  "engine_pid": 9532,
+  "probes": {
+   "POST_/tick_gait_on": {
+    "status": 200,
+    "body": "{\"ok\":false,\"error\":\"refused: needs gravity, stance, classification, pins 13-18, and a sealed feet cell\"}"
+   },
+   "gait_enable_block_in_state": "stance_off",
+   "POST_/tick_stance_on": {
+    "status": 200,
+    "body": "{\"ok\":false,\"error\":\"refused: the body must be classified and a support band must exist\"}"
+   },
+   "POST_/command": {
+    "status": 200,
+    "body": "Not found"
+   },
+   "POST_/api/command": {
+    "status": 200,
+    "body": "Not found"
+   },
+   "POST_/tick_command": {
+    "status": 200,
+    "body": "Not found"
+   },
+   "page_own_declarations": [
+    "MOCKmock_carry \u2014 the creature SLIDES toward the marker (XY offset applied server-side to the /verts stream; the Y stream is never touched)",
+    "pending: real locomotion (the gait machine) \u00b7 physics target 426"
+   ]
+  },
+  "note": "R5 RECORDS the real answers; the frozen prediction is that no route consumes V1 speed/heading records and the gait machine refuses enablement for this body"
+ },
+ "environment": {
+  "python": "3.14.3",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "gpu_compute": false,
+  "note": "the engine's own render path only (operator-sanctioned real-app run class of the accepted X02 lane); no GPU compute or training"
+ },
+ "artifacts": {
+  "trace": {
+   "reference": "evidence\\real\\trace_real.jsonl",
+   "raw_sha256": "0d52b79d182f9666cee8ae34129d4f744df04b8e4921e280253cba124c8e1248"
+  },
+  "commands": {
+   "reference": "evidence\\real\\command_stream.jsonl",
+   "raw_sha256": "3afdc2a24f8d3d28628bca3bdf5458d1c2c76e387566e87c54affdd1d8cbad73"
+  },
+  "capture": {
+   "reference": "evidence\\real\\real_capture.mp4",
+   "raw_sha256": "846f0b3281c15abcad7930a1a9fa105d9bb50d2b33a5ed70eede2d9682fcd0cf"
+  }
+ }
+}

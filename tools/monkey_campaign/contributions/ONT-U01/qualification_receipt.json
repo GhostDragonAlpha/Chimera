@@ -1,0 +1,131 @@
+{
+ "schema": "ont-u01.controls.qualification.v1",
+ "task_id": "U01",
+ "card_id": "ONT-U01",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; the in-tree copy cannot know its own commit hash).",
+ "criteria_sha256": "7c54e8356f287c08e694fc7455d64b31e1d0d295a1835d921f8163fa39b2fa62",
+ "attempt_id": "243e4030e63d47059cb2b8eb3fe98082",
+ "agent_id": "arrival-def19617206b427aa7b8a40d66b59f72",
+ "done_when": "Input emits bounded speed/heading commands at the existing 20 Hz boundary, without state teleportation",
+ "done_when_verified": true,
+ "profile_verified": true,
+ "profile_id": "controls",
+ "profile_kind": "motion",
+ "subject_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+ "pinned_lineage": {
+  "play_head": "f30f2224663324e9374b076938c56672febf4082",
+  "integration_commit": "8550b634 (U01 integrated; ancestor of the pinned head)",
+  "sources": {
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+   "tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+   "tools/monkey_campaign/product/input_mapper_tests.py": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
+   "tools/monkey_campaign/agents/U01_input/PREREGISTRATION.md": "0aadc3cd5fec7e7bd0a7aba0bcfa2a5d05edf8fcb6805eda2ecae92d4d3d1b5f",
+   "tools/monkey_campaign/agents/U01_input/discovery_note.md": "38efdf393bd03b7b1260896e917231f2968963a501a180f4fc01491a02b30849",
+   "tools/monkey_campaign/agents/U01_input/receipts/input_mapper_tests_20260924.txt": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c"
+  }
+ },
+ "evidence": {
+  "source": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U01/243e4030e63d47059cb2b8eb3fe98082/checkout/tools/monkey_campaign/contributions/ONT-U01/reference/tools/monkey_campaign/agents/U01_input/receipts/input_mapper_tests_20260924.txt",
+   "raw_sha256": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c",
+   "provenance": "The PRESERVED records leg: the original U01 frozen preregistration (0aadc3cd), discovery note (38efdf39), falsifier test module (95f44e90) and its GREEN 26/26 receipt, integrated at play commit 8550b634 and pinned at f30f2224; recovered read-only into reference/ with hashes asserted at probe import."
+  },
+  "numerical": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U01/243e4030e63d47059cb2b8eb3fe98082/checkout/tools/monkey_campaign/contributions/ONT-U01/evidence/numerical_receipt.json",
+   "raw_sha256": "6a10de37b60cce7558f5f92265d67667c7450ea0b9ebe03bea641bd8fae6e0cd",
+   "provenance": "9/9 frozen controls checks green over evidence/trace.jsonl (1624fded79cde3f0def7caf29b409d025cc869aa4468da99b055c93fcc2fa3aa, byte-identical on rerun): 5000-schedule seeded fuzz (117,142 records, zero violations, zero non-emit sink calls), exact 50 ms boundary law, release-decay-to-silence, focus-loss no-stuck-command, v1 seam projection, no-camera-induced body movement (record-integral residual 0.0), declared obstruction with readable target, remap-as-data, bound timing chain; 3 frozen sub-clause mispredictions honestly recorded FIRED in prediction_deviations."
+  },
+  "independent_review": null,
+  "independent_review_binding": "No independent worker review of the U01 lineage exists yet (the original integration was lead-authored; this qualification candidate is new work). Independent review of THIS candidate is a REMAINING GATE; at ACCEPTED the lead sets this entry to the named review receipt + raw hash.",
+  "runtime": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U01/243e4030e63d47059cb2b8eb3fe98082/checkout/tools/monkey_campaign/contributions/ONT-U01/evidence/runtime_receipt.json",
+   "raw_sha256": "c4fbfc8e6cce287237689c0bbbaabc1393c26c7eb913b83322280b8bece7e58b",
+   "provenance": "The deterministic headless run record: REAL pinned InputMapper + CommandRecord seam + FollowCamera over injected integer milliseconds; CPU-only, no GPU, no engine process, no network; trace byte-identical on rerun."
+  },
+  "visual": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U01/243e4030e63d47059cb2b8eb3fe98082/checkout/tools/monkey_campaign/contributions/ONT-U01/evidence/capture.mp4",
+   "raw_sha256": "a51fcbc84390047c0eff7253c86577a132c0a1cad0e58fda4230d444a065ba16",
+   "provenance": "640x360 h264 366 frames @20fps (18.4 s), rendered deterministically from trace.jsonl (three profile views x diagnostic+clean segments x 61 ticks; clean segments are their OWN frames with no diagnostic pixels); bitexact rebuild reproduces the identical file."
+  },
+  "camera": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U01/243e4030e63d47059cb2b8eb3fe98082/checkout/tools/monkey_campaign/contributions/ONT-U01/evidence/capture_manifest.json",
+   "raw_sha256": "513d65488527b047b83ec92911f88cbbf645c43be5e7b9df7e0c819e133cacc9",
+   "provenance": "chimera.visual_capture_manifest.v1, profile controls, 3 views x diagnostic+clean pairs, trace-bound (state_binding sha = trace.jsonl), all 16 profile camera fields; validated in-process with the campaign's visual_capture.validate_manifest and visual_gate.verify against card_task.json (structurally_valid true) INCLUDING this receipt's camera/visual entries."
+  }
+ },
+ "capture_context": {
+  "task_id": "U01",
+  "subject_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+  "run_id": "ont-u01-controls-20260926-243e4030",
+  "capture_sha256": "a51fcbc84390047c0eff7253c86577a132c0a1cad0e58fda4230d444a065ba16",
+  "tick_interval": [
+   0,
+   60
+  ]
+ },
+ "honest_boundary": "TWO legs, honestly separated. (1) COMPONENT: the capture pixels of evidence/capture.mp4 are a deterministic CPU visualization of the recorded headless command-seam trace of the qualified subject (the U01 mapper and the CommandRecord v1 seam are headless by construction); they are NOT native engine frames and that capture's body referent is probe-owned (positions are outputs of emitted records -- the circularity the lead named). (2) REAL RUN (evidence/real/): the pixels are the real application's own output (headless-Chrome video of the live page + the engine's own /frame PNGs) and the body state is the engine's own independently observed answer; the REAL run's input->body-EXECUTION leg is INCOMPLETE -- the pinned engine refuses gait enablement and has no route consuming V1 speed/heading records (measured), so the observed body correctly never moved; no trained gait, climbing, new model or full-game completion is claimed; the integrated playable-runtime checkpoint stays with the integration lane.",
+ "candidate_suite": {
+  "probe": "tools/monkey_campaign/contributions/ONT-U01/controls_profile_probe.py",
+  "capture": "tools/monkey_campaign/contributions/ONT-U01/capture_build.py",
+  "tests": "python -B -m unittest test_controls_profile_probe -v -> 11/11 OK; probe 9/9 checks PASS",
+  "preregistration": "tools/monkey_campaign/contributions/ONT-U01/PREREGISTRATION.md (frozen before the first probe run 2026-09-26T13:00:35; committed before any evidence artifact)",
+  "card_contract": "tools/monkey_campaign/contributions/ONT-U01/card_task.json"
+ },
+ "real_run_correction": {
+  "schema": "chimera.ont_u01.real_run_leg.v1",
+  "finding": "lead CHANGES_REQUIRED msg-6764166dfb7b4a40b59fab6120243ed9 (circularity: the component probe's body referent is the integral of the emitted records)",
+  "prereg": {
+   "file": "PREREGISTRATION_REAL_RUN.md",
+   "sha256": "da5dba00b0cbe24713408e1cf3e4ead834f3edf5fcadbaf14bf7d478e8421b48",
+   "frozen_commit": "5751ae10 (BEFORE any evidence/real artifact)"
+  },
+  "what_ran": "the REAL integrated run: pinned playable slice 8550b634 (252-file raw-blob reconstruction) + native chimera_engine.exe built from the pinned engine source (exe 4bbf2a98d8b2bff666e7a512c6dfa292a6adb5d80ee88a5e4ffab60c07ad83c5a; recipe in evidence/real/engine_build_receipt.json) owned by the real slice_server (server PID 89148, engine PID 9532, engine port 62944), the served page in headless Chrome channel chrome, real key events through the page's real handlers into the REAL pinned InputMapper/CommandRecord seam (hash-asserted 7a36a45e / 67711759) in the driver process",
+  "independent_observation": "the body state was read ONLY from the engine's own state/frame path: /tick_state at 25 Hz (the engine's own ts_us/ticks/root_y/root_vy) + engine-composed /api/snapshot FULL36 geometry (249743-vertex real body) + the engine's own /frame PNGs -- never reconstructed from commands; during the entire command stream the observed horizontal centroid is BIT-IDENTICAL (cx -0.0482328534, cz 0.0783496797), every root_y step 0.0, ticks monotonic: NO TELEPORTATION OBSERVED under v_max*dt+1e-4 per window",
+  "observer_validation": "SPACE press transient sub-resolution (frozen magnitude FIRED, recorded); the page's own [3] fall test observed max |root_vy| 3.896 m/s, peak +0.9103 m, landing back at 0.1245 -- the observation channel demonstrably reports real body motion",
+  "emission_leg": "REAL and bounded: 138 records, sink emit-only, |v_forward| <= 0.763625, |yaw_rate| <= 1.6, 50 ms boundary cadence (one 67 ms gap FIRED and recorded: late boundary, no burst), all three releases decay to EXACTLY 0.0 then silence, blur->release_all included, projections bit-exact, issued_tick anchored to the engine's own tick counter",
+  "receiver_capability_measured": "the running engine REFUSED gait enablement by name ('refused: needs gravity, stance, classification, pins 13-18, and a sealed feet cell'), refused stance likewise, and has NO route consuming V1 speed/heading records (/command, /api/command, /tick_command -> Not found); the page itself declares 'pending: real locomotion (the gait machine)'",
+  "execution_leg": "INCOMPLETE",
+  "execution_leg_note": "per the finding's own alternative: retained as component evidence with qualification incomplete on exactly the input->body-execution leg; a real consumer of V1 records stays with the integration lane",
+  "capture": {
+   "video": "evidence/real/real_capture.mp4",
+   "sha256": "846f0b3281c15abcad7930a1a9fa105d9bb50d2b33a5ed70eede2d9682fcd0cf",
+   "seconds": 44.2,
+   "webm_sha256": "efa27d5eac11e1bc31366820abebb4ddfcf69cb0880bae67a536a545d5d9257f",
+   "manifest": "evidence/real/real_capture_manifest.json",
+   "manifest_sha256": "87b884cb15b97bc6d83e629691727357a3dd6024157c6863287f5b68b31e7781",
+   "validate_manifest": "structurally_valid true (profile controls, 6 views)",
+   "visual_gate_verify": "structurally_valid true (visual_acceptance false by law)"
+  },
+  "synthetic_preserved": "evidence/capture.mp4 (a51fcbc8...) and all original probe artifacts untouched and still labeled SYNTHETIC (deterministic CPU visualization, NOT native engine frames); nothing relabeled",
+  "evidence_sha256": {
+   "command_stream.jsonl": "3afdc2a24f8d3d28628bca3bdf5458d1c2c76e387566e87c54affdd1d8cbad73",
+   "engine_build_receipt.json": "629379dab5d6d19754c08ed5062aa6bf953c66be3e57cd342c70afd295e53365",
+   "engine_frame_v1.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+   "engine_frame_v2.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+   "engine_frame_v3.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+   "numerical_receipt_real.json": "4d3c01f5359f1c9bd9971fd3a98ea459f770aaef89dffa5beb050dc01de60fdc",
+   "pinned_blob_manifest.json": "2253fcefeba9df3fcde56fc00041a898362184f0e9fad52b6a8cda86c2e8aa99",
+   "real_capture.mp4": "846f0b3281c15abcad7930a1a9fa105d9bb50d2b33a5ed70eede2d9682fcd0cf",
+   "real_capture_manifest.json": "87b884cb15b97bc6d83e629691727357a3dd6024157c6863287f5b68b31e7781",
+   "real_capture_receipt.json": "c3b5e0b38bfdebfd8fa8310ce98399c30fb871f02536f062f8ee71fa8cff5796",
+   "real_session.webm": "efa27d5eac11e1bc31366820abebb4ddfcf69cb0880bae67a536a545d5d9257f",
+   "runtime_receipt_real.json": "bde4683cfdeb90d59ca3289b1efc982f57be16e4bdef51476dcb6851f40b1806",
+   "session_real_receipt.json": "c497a5edfba7c5685d5a537e4192232dbd0474006e175d5b46f26151718dff46",
+   "slice_server_stderr.log": "d3ca7e9976ecd46397e319a6257737e64ad29c28b047385c980b307c469b3584",
+   "slice_server_stdout.log": "f06205b60e0b89255bb6c683aaf10efe4f7782fe185db4fa10cc5da1080cd9f1",
+   "trace_real.jsonl": "0d52b79d182f9666cee8ae34129d4f744df04b8e4921e280253cba124c8e1248",
+   "view_v1_clean.png": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e",
+   "view_v1_diagnostic.png": "4a94d2b86facabe240ffb759f930c7de7b22fb427ec0cc666f72ee3cade83f1f",
+   "view_v2_clean.png": "a68ac83ce1c9f15897c41bfd3b9a8e1d88af1178a7d5a03912cc1b0c62d53af6",
+   "view_v2_diagnostic.png": "9ce97265675cd3d6ae63947f4f0741d50f385c3f43b231066226cb2f8a768b88",
+   "view_v3_clean.png": "046b6094b646953cf987881c032547106ecb758f72fe5a0383acfb7f0e5120da",
+   "view_v3_diagnostic.png": "ba7d6910cf9b6668d75c999cbbb4342201e1d57fde174ee741e6a3ec5d6bf1fc"
+  },
+  "correction_agent": "arrival-b35169cde2d04886afbeefeef25bd8cf",
+  "correction_attempt": "29bb1ccc4ea449d7ba2524a441d0cc49",
+  "built_utc": "2026-09-26T21:39:52Z"
+ }
+}
