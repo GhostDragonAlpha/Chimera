@@ -238,13 +238,151 @@ class RetryRuleTests(TempCase):
         self.assertTrue(any("battery_not_green" in f for f in row["findings"]))
 
     def test_sparse_merge_receipts_are_a_finding(self):
-        for name, tokens in impl.RETRY_MARKERS.items():
-            write(self.root / name, "|".join(tokens))
-        write(self.root / "accept-0-result.json", b"{}")
+        self.plant_rules()
+        (self.root / "accept-2-result.json").unlink()
         row = impl.audit_retry_rules(self.root, self.root,
                                      battery_runner=self.fake_battery())
         self.assertFalse(row["satisfied"])
         self.assertTrue(any("merge_service_retry_receipts_sparse" in f
+                            for f in row["findings"]))
+
+
+class CheckpointStoreTests(TempCase):
+    """Correction fixtures: actual recoverable training-state checkpoints.
+
+    Each test drives one falsifier arm of correction-addendum C1: an
+    identification the audit must verify (path + recomputed hash + header
+    load + run identity) and a gap it must NAME, never silently pass.
+    """
+
+    def npy_bytes(self, shape=(8,), descr="<f8"):
+        header = repr({"descr": descr, "fortran_order": False,
+                       "shape": shape}).encode("utf-8")
+        # numpy writes a python literal header; v1 pads to 64-byte alignment
+        pad = 64 - (10 + len(header)) % 64
+        header = header + b" " * (pad - 1) + b"\n"
+        body = b"\x00" * 8 * (shape[0] if shape else 1)
+        return b"\x93NUMPY" + b"\x01\x00" + len(header).to_bytes(2, "little") \
+            + header + body
+
+    def plant_store(self, root, entrained_shape=(8,), omit=None,
+                    forge=None):
+        store = {}
+        for name, role in impl.CHECKPOINT_STORE:
+            if name == omit:
+                continue
+            shape = entrained_shape if name.startswith("walk_theta_entrained") \
+                else ((6,) if name.startswith("walk_theta") else (4,))
+            data = forge if (forge and name == "walk_theta_mult.npy") \
+                else self.npy_bytes(shape)
+            store[name] = write(root / "ports" / name, data)
+        return store
+
+    def plant_laws(self, root):
+        write(root / "train_walk.py",
+              b"np.save(OUTDIR / out_name, best_ever[1])")
+        write(root / "walk_port.py",
+              b'OSC_JOINTS = ("hip_flexion", "knee_angle", "ankle_angle")\n'
+              b"N_FREE = 2 * len(OSC_JOINTS)\n")
+        write(root / "f4_walk.py", b"python tools/f4_walk.py --theta <path>")
+
+    def plant_records(self, root, verdict=False, name="walk_theta_entrained.npy",
+                      tamper_site=None):
+        """Plant the run record at preserved SITE ROOTS (production joins
+        agent_logs/<record>.json onto each site root)."""
+        sites = []
+        doc = {"theta": name, "verdict": verdict, "speed_median": 0.46,
+               "seed_ids": [0]}
+        raw = json.dumps(doc).encode("utf-8")
+        for i in range(2):
+            payload = raw + str(i).encode() if i == tamper_site else raw
+            write(root / f"site{i}" / "agent_logs"
+                  / "f4_walk_walk_theta_entrained.json", payload)
+            sites.append(str(root / f"site{i}"))
+        return sites
+
+    def clause(self, verdict=False, tamper_site=None, record_kw=None):
+        record_kw = record_kw or {}
+        return impl.audit_training_checkpoints(
+            self.root / "absent_curriculum.json",
+            [str(self.root / "none.log")],
+            [(str(self.root / "law.py"), "token")],
+            checkpoint_store=self.root / "ports",
+            run_record_sites=self.plant_records(self.root, verdict=verdict,
+                                                tamper_site=tamper_site,
+                                                **record_kw),
+            trainer_law_sources=[
+                (str(self.root / "train_walk.py"),
+                 "np.save(OUTDIR / out_name, best_ever[1])"),
+                (str(self.root / "walk_port.py"),
+                 "N_FREE = 2 * len(OSC_JOINTS)"),
+                (str(self.root / "f4_walk.py"), "--theta <path>"),
+            ])
+
+    def test_identified_checkpoints_verify_without_rollout(self):
+        self.plant_laws(self.root)
+        self.plant_store(self.root)
+        row = self.clause()
+        self.assertEqual([], [f for f in row["findings"]
+                              if not f.startswith(("curriculum_", "training_", "checkpoint_law_"))])
+        self.assertEqual(4, len(row["checkpoint_artifacts"]))
+        entrained = next(r for r in row["checkpoint_artifacts"]
+                         if r["checkpoint"] == "walk_theta_entrained.npy")
+        self.assertEqual(64, len(entrained["raw_sha256"]))
+        self.assertEqual(8, entrained["load_evidence"]["shape"][0])
+        self.assertEqual(6, entrained["width_law"]["n_free"])
+        self.assertEqual(8, entrained["width_law"]["expected_width"])
+        self.assertEqual(0, row["certified_policy_checkpoints"])
+        self.assertIn("NOT executed", entrained["restore_consumer"])
+        # the run identity is hash-stable across preserved sites
+        self.assertEqual(1, len({r["raw_sha256"] for r in row["run_identity_records"]
+                                 if r.get("raw_sha256")}))
+        self.assertEqual(False, row["run_identity_records"][0]["verdict_verbatim"])
+
+    def test_missing_store_file_is_named(self):
+        self.plant_laws(self.root)
+        self.plant_store(self.root, omit="step_theta.npy")
+        row = self.clause()
+        self.assertTrue(any("checkpoint_store_file_absent:step_theta.npy" in f
+                            for f in row["findings"]))
+
+    def test_forged_checkpoint_fails_structural_load(self):
+        self.plant_laws(self.root)
+        self.plant_store(self.root, forge=b"not an npy checkpoint at all")
+        row = self.clause()
+        self.assertTrue(any("checkpoint_load_refused:walk_theta_mult.npy" in f
+                            for f in row["findings"]))
+
+    def test_width_mismatch_is_named(self):
+        self.plant_laws(self.root)
+        self.plant_store(self.root, entrained_shape=(7,))
+        row = self.clause()
+        self.assertTrue(any("checkpoint_width_mismatch:walk_theta_entrained.npy" in f
+                            for f in row["findings"]))
+
+    def test_disagreeing_run_record_sites_are_named(self):
+        self.plant_laws(self.root)
+        self.plant_store(self.root)
+        row = self.clause(tamper_site=1)
+        self.assertTrue(any("run_record_sites_disagree" in f
+                            for f in row["findings"]))
+
+    def test_record_naming_another_checkpoint_is_named(self):
+        self.plant_laws(self.root)
+        self.plant_store(self.root)
+        row = self.clause(record_kw={"name": "stand_theta.npy"})
+        self.assertTrue(any("run_record_names_other_checkpoint" in f
+                            for f in row["findings"]))
+
+    def test_trainer_law_token_absent_is_named(self):
+        write(self.root / "train_walk.py", b"np.save(OUTDIR / 'other.npy', x)")
+        write(self.root / "walk_port.py",
+              b'OSC_JOINTS = ("hip_flexion", "knee_angle", "ankle_angle")\n'
+              b"N_FREE = 2 * len(OSC_JOINTS)\n")
+        write(self.root / "f4_walk.py", b"python tools/f4_walk.py --theta <path>")
+        self.plant_store(self.root)
+        row = self.clause()
+        self.assertTrue(any("trainer_law_token_absent:train_walk.py" in f
                             for f in row["findings"]))
 
 

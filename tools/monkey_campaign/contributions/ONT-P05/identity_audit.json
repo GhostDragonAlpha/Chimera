@@ -1,8 +1,8 @@
 {
  "schema": "ont-p05.identity_audit.v1",
  "task_id": "ONT-P05",
- "attempt_id": "1ea58bee28c04768b15253c2f1ba7888",
- "agent_id": "arrival-9de32a8d32144d1fb62ffc7308cd11d7",
+ "attempt_id": "d7e4d5e96bb741c7b434f94d4bc3c560",
+ "agent_id": "arrival-0aa44ef399f64a029e1a268ffcaac2af",
  "criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
  "mode": "READ_ONLY_RECORDS_AUDIT",
@@ -11,13 +11,38 @@
    "clause": "recoverable_commits",
    "records": [
     {
+     "file": "0227a03e2a756a66c3dd5f6c837093c0a30f63896fa5761501042f07f9399227.json",
+     "arrival_id": "arrival-c59287b07e0c438e9b8866aa7086e1b1",
+     "task_id": "ONT-P04"
+    },
+    {
+     "file": "04cbab68b6ad773c03862d6d58a24bb1f2ec71dc6de70d439215184ff2548300.json",
+     "arrival_id": "arrival-a80f813e8c52450ab2e913f10439ebd5",
+     "task_id": "R5-forest-review-FOLLOWUP"
+    },
+    {
      "file": "0505990ab03addfdf75e72cab39104f06d5aa4011ae52447e96f684809c79203.json",
      "arrival_id": "arrival-286909b6a5744dd79beb1a4a52c75b78",
-     "task_id": "ONT-U02"
+     "task_id": "ONT-P06"
+    },
+    {
+     "file": "08b7f6c50b2a9b1d4eee0b93739555bb21f1ea8e9a7920a0ad4315dce942e461.json",
+     "arrival_id": "arrival-35d4164c7018464fb998bf34886fcd6e",
+     "task_id": "ONT-X02"
     },
     {
      "file": "0e50d4ea68b8041d14007e078103725c8c771dd2a0187b7c58a0a954e27ce2b1.json",
      "arrival_id": "arrival-f742dfbb88244565a6d973717bc05f26",
+     "task_id": "ONT-P02"
+    },
+    {
+     "file": "1019194b0e607a3d08bc1391dc0a09cade141b19756d0dd682546e0d0ac7a878.json",
+     "arrival_id": "arrival-df8547ff0f8c4a64a6d28afaba1331c4",
+     "task_id": "ONT-X02"
+    },
+    {
+     "file": "12e916c73945e0c16949008c0194ac3df71c9ce592b031218f76b4e6c1f9305d.json",
+     "arrival_id": "arrival-2d3b7dbcf3c247feaebf16f6197fcff4",
      "task_id": "ONT-P02"
     },
     {
@@ -26,14 +51,24 @@
      "task_id": "I-U07-TRACE"
     },
     {
+     "file": "1e39142713f91cf649ae6743f6a0a413ffb6f03370cd9f60125dfadefec261a6.json",
+     "arrival_id": "arrival-cf4d4f8e72d94ad9b73185eb402ff1bd",
+     "task_id": "ONT-X02"
+    },
+    {
      "file": "23091d0b37940201a162ab1491a95b2c2b605795cd2d69c54e52dec51ce1e873.json",
      "arrival_id": "arrival-d96c4ed14b3541f89fb80acf90a759b2",
-     "task_id": "I-R05-RESOURCE-LEDGER-FOLLOWUP"
+     "task_id": "ONT-U01"
     },
     {
      "file": "23efc2955eb1b691f8d8cee231e2baa8d965b7d0c422697a65f482474a34e817.json",
      "arrival_id": "arrival-55cf419ab9844e8db8b50761b0c7a04e",
-     "task_id": "ONT-P04"
+     "task_id": "ONT-P05"
+    },
+    {
+     "file": "28397801e90fd365351309a51098528112d47ea30497e34da56a09ed05befcc4.json",
+     "arrival_id": "arrival-a12bbee092ce4cf9bb1806e68ac852c4",
+     "task_id": "ONT-U01"
     },
     {
      "file": "2bc72c6b8d39bd7a2f837889bd9c8f70c2ea7865d6e5bf9e919b53479a902c51.json",
@@ -41,9 +76,24 @@
      "task_id": null
     },
     {
+     "file": "43f59c0cbb95b7d8780cb9101515508fb12beb2ab7039e535ede033b3ef69851.json",
+     "arrival_id": "arrival-0074d33c896e4039a01dc67fc628a8bf",
+     "task_id": "I-S02-PACKAGE-PREFLIGHT-FOLLOWUP"
+    },
+    {
+     "file": "499334f6ee2a8312b33ae1926da0bd8ea2e2c8daa276c6f83190e6ba20c59bb6.json",
+     "arrival_id": "arrival-b5e043fee98048ecb2714d07778769c6",
+     "task_id": "I-S02-PACKAGE-PREFLIGHT-FOLLOWUP"
+    },
+    {
      "file": "4a132e87a4e744d1610f013e4b6bcf1b82834e991aad83a742746b8d13456abc.json",
      "arrival_id": "arrival-170a63f5cc254183acd37bdd42fe75eb",
      "task_id": null
+    },
+    {
+     "file": "4f8116263a112f11aeffb963bf7c1fcc506b3b355c0b26a797c97399adf540e8.json",
+     "arrival_id": "arrival-c077fc4dd7284df7a4aad08605ed24f6",
+     "task_id": "I-S02-PACKAGE-PREFLIGHT"
     },
     {
      "file": "5549f64791f7444019bd81824963044a7fd5760fd4544ca2b7573a35eaf461f3.json",
@@ -61,6 +111,26 @@
      "task_id": "D-W03-ANCHORS-20260924-FOLLOWUP"
     },
     {
+     "file": "6161bddba70d305e4808dd78dab9aa084d8f27756a28eac85c8f4106023e5d42.json",
+     "arrival_id": "arrival-b3261b6b7bc0458183dece20eb0786b2",
+     "task_id": "I-S02-PACKAGE-PREFLIGHT-FOLLOWUP"
+    },
+    {
+     "file": "66b6c415cd87fb1a6eff5d40815e60eb65d9dfb1d19374d6176f35bf2353180a.json",
+     "arrival_id": "arrival-5fa3f57a83574a62b674a3f9d8fdd873",
+     "task_id": "ONT-P02"
+    },
+    {
+     "file": "67d996f55455bc8373652a969532ec0c0ccc473ad629eb58c04d8d965434b53b.json",
+     "arrival_id": "arrival-7b36ccb2cb3540fd95ed62ec3a57f237",
+     "task_id": "ONT-X02"
+    },
+    {
+     "file": "67e06f40989691d210c9a5142920a22bdb0a6346a717ac164bd8ed36cc2c3ef5.json",
+     "arrival_id": "arrival-1c2c36d0c1cb44498a61af152f18ad61",
+     "task_id": "D-FOREST-RUNTIME-20260924-FOLLOWUP"
+    },
+    {
      "file": "69d8424fbe8ef5347c43042631e8acc9d9a74331056e6cd885c3055d4334489b.json",
      "arrival_id": "arrival-2350ac01b46a42cc8c3b3aae3d545862",
      "task_id": "I-U07-TRACE-FOLLOWUP"
@@ -71,9 +141,34 @@
      "task_id": null
     },
     {
+     "file": "733183cf8ddc94bfadccbef337858f41c517f0aafb63f8c9a85d977727ab252c.json",
+     "arrival_id": "arrival-0aa44ef399f64a029e1a268ffcaac2af",
+     "task_id": "ONT-P05"
+    },
+    {
+     "file": "73f84ba72b4d03d543cef4df49e90c808a18f54ad5769090aa821da87b229b94.json",
+     "arrival_id": "arrival-62263f6aaed44244891c04ef5ebf4884",
+     "task_id": "ONT-P02"
+    },
+    {
      "file": "7baef3274053b12f0b1993b5c90e0345ab64582bac720da5285adabedd6bb0ba.json",
      "arrival_id": "arrival-fa11c6b3bf744572a0baa9baa33483fc",
      "task_id": "D-W03-ANCHORS-20260924-FOLLOWUP"
+    },
+    {
+     "file": "831346efcba19104d68d9c1e00ab2722bd93af880c336933caa2cb739010005a.json",
+     "arrival_id": "arrival-773e9bcac941425c9a55d02b447db9a1",
+     "task_id": "ONT-P05"
+    },
+    {
+     "file": "84a9540e6483544f46ef717fb57c54b4317f2e55a4cdb0dfa27848e220dbfc8c.json",
+     "arrival_id": "arrival-36aef27ac9414a8fbb863aeeef431bb6",
+     "task_id": "ONT-P06"
+    },
+    {
+     "file": "8652527b82155d72a362e8481606b16fdd3585337715efa13f7ce4bf2b605643.json",
+     "arrival_id": "arrival-8a5b33b4f1e64b0dacebe9cf9e92079e",
+     "task_id": "ONT-U02"
     },
     {
      "file": "9193edb13610a3fbb213227a54491f45c0ab2d4f45f45d21a2f05b898c05fa34.json",
@@ -86,24 +181,49 @@
      "task_id": null
     },
     {
+     "file": "96c804cf65028bebf356c4c8c071388720f5317f5384cae422f16099fd4d6375.json",
+     "arrival_id": "arrival-b3306179a8204335a73031a8eae9f97a",
+     "task_id": "ONT-P05"
+    },
+    {
      "file": "ac96bd5b0f7035103ac3c5e92bd456d7b0dc912c3385d39ca17d6d0260d809b4.json",
      "arrival_id": "arrival-077bc6f26e414df985b181f495a344f4",
      "task_id": null
     },
     {
+     "file": "ae0a72580a19776ecba3b804c8a1d62fe0f84253b7c448b33b3f24e36f3b7c31.json",
+     "arrival_id": "arrival-948d21e6b1584144a9e5f26f66143ed0",
+     "task_id": "ONT-P02"
+    },
+    {
      "file": "bc1bd58e2c03f6ca3543bdde87b3fdd60602c3b8d4548160623a502dcf19f13c.json",
      "arrival_id": "arrival-5cf58e7a984c496aac82d1e6c98a7f19",
-     "task_id": "ONT-X02"
+     "task_id": "ONT-U02"
     },
     {
      "file": "c66cc316b2d0ea1ec511a66b37f1e18758542497d2dece45c84908d5c25b6128.json",
      "arrival_id": "arrival-07233adcf3f64d0db9e1e8fa95c607b8",
+     "task_id": "ONT-U01"
+    },
+    {
+     "file": "c6f39e54e8a647806ff270d10101575a89e230495bf28c72a9a32628a1547089.json",
+     "arrival_id": "arrival-80e0bab1f0364ec2868d5969ba32a3f2",
+     "task_id": "ONT-U01"
+    },
+    {
+     "file": "c7598059e38fe7359066d4b9f8a3e13f866f2d99eb1265052c8bd04627ace910.json",
+     "arrival_id": "arrival-fc45c2b5445647a8a4469b6cf403d5ac",
      "task_id": "ONT-P02"
     },
     {
      "file": "da590b736cc9f7c4c99f91e142a7347895c4fb682488176d08257db2d11efb42.json",
      "arrival_id": "arrival-2e61bf1398b3425890bc7ccef5d0d45d",
      "task_id": "I-R05-RESOURCE-LEDGER-FOLLOWUP"
+    },
+    {
+     "file": "e81459228e4244423fde98f1f8f4e3728dca62e016f9f99521558147cdb80ee7.json",
+     "arrival_id": "arrival-1d8999095f7a4a149f5dd27ccf3badef",
+     "task_id": "ONT-P05"
     },
     {
      "file": "e92144377774dbb26265c7511537b7c9d92831e4a3e823782cd0377529e4ef88.json",
@@ -118,12 +238,17 @@
     {
      "file": "edbb3770b01289e53640c52e9d431b63fd9ff5ba9df946ac1b443bf0ad94e193.json",
      "arrival_id": "arrival-9de32a8d32144d1fb62ffc7308cd11d7",
-     "task_id": "ONT-P05"
+     "task_id": "I-R05-RESOURCE-LEDGER-FOLLOWUP"
     },
     {
      "file": "ee258e0db84606e74871ee2f464c2747ce8017e5a4e35d70127bf6afeed8dce8.json",
      "arrival_id": "arrival-372aee4cc27f43db9a5d17ad3a5eaca6",
      "task_id": null
+    },
+    {
+     "file": "f26eab7b14e2615b79b54d194a88edf9adde3348a9ccc2be10b9284942d59f68.json",
+     "arrival_id": "arrival-547c550c1d2c49edb0b0557e464143b8",
+     "task_id": "ONT-P04"
     },
     {
      "file": "f9ebf79133a45f53e154d4f9731aadfde21e083e0f232dffd8e6fcd40e419d20.json",
@@ -133,26 +258,26 @@
     {
      "file": "fbc7d260eb7fe80e6c903027180f39c69dd31bf4d1d6a68a05093788c9ef7b97.json",
      "arrival_id": "arrival-def19617206b427aa7b8a40d66b59f72",
-     "task_id": "ONT-U01"
+     "task_id": "ONT-U02"
     }
    ],
    "receipt_dir": {
     "path": "E:/ChimeraWork/monkey-coordination/startup-receipts",
     "note": "startup recovery receipt store; per-receipt raw labels in records"
    },
-   "receipt_count": 25,
+   "receipt_count": 50,
    "own_receipt": true,
    "findings": [],
    "satisfied": true,
    "checkout_identity": {
     "record": {
-     "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P05\\1ea58bee28c04768b15253c2f1ba7888\\checkout_identity.json",
+     "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P05\\d7e4d5e96bb741c7b434f94d4bc3c560\\checkout_identity.json",
      "note": "per-attempt checkout manifest",
-     "raw_sha256": "5b6c8da33a1980485efbf58328c17d260fd8fd3cf79ee006415a1b5549335722"
+     "raw_sha256": "e30f899d475290ec37cab0e7da5143eb6e62b966ab0f2214220de0bde02efa14"
     },
     "head_sha": "c525b82c7c3ce0128565424764293a3c85811ab3",
     "head_resolvable": true,
-    "branch": "branch-6"
+    "branch": "branch-1"
    },
    "winner_merges": [
     {
@@ -477,6 +602,153 @@
      "present": true
     }
    ],
+   "trainer_law_records": [
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\train_walk.py",
+      "note": "trainer/judge law source",
+      "raw_sha256": "aea4aa22de7aa8d750fb7369317ae1ec9ebcdc3039c56259b07ceeeafd3549d7"
+     },
+     "token": "np.save(OUTDIR / out_name, best_ever[1])",
+     "present": true,
+     "kind": "writer/width-law/restore-consumer record"
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\walk_port.py",
+      "note": "trainer/judge law source",
+      "raw_sha256": "8c73d690fecd77ff9c4ff1522b9ed104900f1a11d41b6256be8d916bc8678627"
+     },
+     "token": "N_FREE = 2 * len(OSC_JOINTS)",
+     "present": true,
+     "kind": "writer/width-law/restore-consumer record"
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\f4_walk.py",
+      "note": "trainer/judge law source",
+      "raw_sha256": "d197a193e8046f7185392049e2328f51b42e2f3272bce2176eac8a956ec98829"
+     },
+     "token": "--theta <path>",
+     "present": true,
+     "kind": "writer/width-law/restore-consumer record"
+    }
+   ],
+   "checkpoint_artifacts": [
+    {
+     "checkpoint": "walk_theta_entrained.npy",
+     "role": "walk policy checkpoint (entrained width)",
+     "path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\walk_theta_entrained.npy",
+     "raw_sha256": "8f5dd3a68ec4d430a9883f267112b6f7b043ec1432dba6a59d131e87d2a9af92",
+     "size_bytes": 192,
+     "load_evidence": {
+      "format": "npy",
+      "descr": "<f8",
+      "shape": [
+       8
+      ],
+      "read_only_header_parse": "ok"
+     },
+     "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)",
+     "width_law": {
+      "n_free": 6,
+      "expected_width": 8,
+      "measured_width": 8
+     }
+    },
+    {
+     "checkpoint": "walk_theta_mult.npy",
+     "role": "walk policy checkpoint (plain width)",
+     "path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\walk_theta_mult.npy",
+     "raw_sha256": "ad8ed9a9451f1c943bf535a98f2a7cf2fb38b5e36388b636177c3087854d8e90",
+     "size_bytes": 176,
+     "load_evidence": {
+      "format": "npy",
+      "descr": "<f8",
+      "shape": [
+       6
+      ],
+      "read_only_header_parse": "ok"
+     },
+     "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)",
+     "width_law": {
+      "n_free": 6,
+      "expected_width": 6,
+      "measured_width": 6
+     }
+    },
+    {
+     "checkpoint": "stand_theta.npy",
+     "role": "stand substrate policy checkpoint",
+     "path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\stand_theta.npy",
+     "raw_sha256": "684f1eaab29f683ef7c803180c32e9d4f1e5ddd64656d103ac5391fc79e851b7",
+     "size_bytes": 9408,
+     "load_evidence": {
+      "format": "npy",
+      "descr": "<f8",
+      "shape": [
+       1160
+      ],
+      "read_only_header_parse": "ok"
+     },
+     "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)"
+    },
+    {
+     "checkpoint": "step_theta.npy",
+     "role": "step policy checkpoint",
+     "path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\step_theta.npy",
+     "raw_sha256": "db943f46b29422dc45053c0d9541a0be537cfc93149660a0d8a7cc9cac6e2a3c",
+     "size_bytes": 184,
+     "load_evidence": {
+      "format": "npy",
+      "descr": "<f8",
+      "shape": [
+       7
+      ],
+      "read_only_header_parse": "ok"
+     },
+     "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)"
+    }
+   ],
+   "run_identity_records": [
+    {
+     "site": "E:/ChimeraWork/l0-baseline-repro",
+     "raw_sha256": "9cd272ea65bd30305d122b9c8b1e5b64b7265d3e60278d74db9b01b5746873aa",
+     "names_checkpoint": "walk_theta_entrained.npy",
+     "verdict_verbatim": false,
+     "speed_median": 0.46006499408775303,
+     "seed_ids": [
+      0
+     ]
+    },
+    {
+     "site": "E:/ChimeraWork/lane-archive/w47-agent",
+     "raw_sha256": "9cd272ea65bd30305d122b9c8b1e5b64b7265d3e60278d74db9b01b5746873aa",
+     "names_checkpoint": "walk_theta_entrained.npy",
+     "verdict_verbatim": false,
+     "speed_median": 0.46006499408775303,
+     "seed_ids": [
+      0
+     ]
+    },
+    {
+     "site": "E:/ChimeraWork/pass3-integ/repo",
+     "raw_sha256": "9cd272ea65bd30305d122b9c8b1e5b64b7265d3e60278d74db9b01b5746873aa",
+     "names_checkpoint": "walk_theta_entrained.npy",
+     "verdict_verbatim": false,
+     "speed_median": 0.46006499408775303,
+     "seed_ids": [
+      0
+     ]
+    }
+   ],
+   "certified_policy_checkpoints": 0,
+   "honest_scope_note": "identified checkpoints are recoverable training-state artifacts; no certified-walk checkpoint exists (run verdicts reported verbatim) and the store is live single-site data preserved by the campaign checkout",
+   "prior_probe_preserved": {
+    "path": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json @ review/ONT-P05 f1b18a55c58bef45bb25dacadde162f0ff09f9c1",
+    "raw_sha256": "516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88",
+    "prior_attempt_id": "1ea58bee28c04768b15253c2f1ba7888"
+   },
    "findings": [],
    "satisfied": true
   },
@@ -587,13 +859,13 @@
      "module": "test_kanban",
      "ok": true,
      "returncode": 0,
-     "summary": "---------------------------------------------------------------------- | Ran 11 tests in 0.501s | OK"
+     "summary": "---------------------------------------------------------------------- | Ran 11 tests in 0.484s | OK"
     },
     {
      "module": "test_suggestion_box",
      "ok": true,
      "returncode": 0,
-     "summary": "---------------------------------------------------------------------- | Ran 5 tests in 0.263s | OK"
+     "summary": "---------------------------------------------------------------------- | Ran 5 tests in 0.237s | OK"
     },
     {
      "module": "test_merge_service",
@@ -605,7 +877,7 @@
      "module": "test_checkpoints",
      "ok": true,
      "returncode": 0,
-     "summary": "---------------------------------------------------------------------- | Ran 19 tests in 0.362s | OK"
+     "summary": "---------------------------------------------------------------------- | Ran 19 tests in 0.560s | OK"
     }
    ],
    "findings": [],

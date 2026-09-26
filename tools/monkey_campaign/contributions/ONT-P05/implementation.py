@@ -9,6 +9,18 @@ Git blob identity, re-executed rule batteries). Every absent, stale or
 mismatched component is named explicitly as a finding; nothing is repaired,
 fabricated or silently passed.
 
+CORRECTION (lead CHANGES_REQUIRED on PR #146 head f1b18a55; correction
+addendum frozen in PREREGISTRATION.md before this probe): the
+training-checkpoints clause now also IDENTIFIES actual recoverable
+training-state artifacts -- the gait trainer's saved policy-parameter
+checkpoints (`ports` store) with recomputed hashes, their preserved run
+records (hash-identical across preserved worktrees) as run/source identity,
+and load/restore evidence appropriate to the `.npy` format: a stdlib-only
+read-only header parse validated against the trainer's own width law
+(`N_FREE = 2 * len(OSC_JOINTS)`). No rollout is executed; the documented
+judge command is cited as the restore consumer, never run here. Checkpoint
+verdicts are reported verbatim from the records (none is a certified walk).
+
 Exit 0 = audit tabled (findings, if any, are the work product). Exit 2 =
 structural failure to read a named record root. All probes are read-only;
 the only write this tool performs is its own --out report path.
@@ -35,13 +47,21 @@ HEX64 = re.compile(r"[0-9a-f]{64}")
 HEX40 = re.compile(r"[0-9a-f]{40}")
 
 EXPECTED = {
-    "arrival_id": "arrival-9de32a8d32144d1fb62ffc7308cd11d7",
-    "attempt_id": "1ea58bee28c04768b15253c2f1ba7888",
+    "arrival_id": "arrival-0aa44ef399f64a029e1a268ffcaac2af",
+    "attempt_id": "d7e4d5e96bb741c7b434f94d4bc3c560",
     "task_id": "ONT-P05",
     "criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
-    "receipt_stem": "edbb3770b01289e53640c52e9d431b63fd9ff5ba9df946ac1b443bf0ad94e193",
+    "receipt_stem": "733183cf8ddc94bfadccbef337858f41c517f0aafb63f8c9a85d977727ab252c",
 }
 SCOPE_ANCHOR = "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6"
+# Prior attempt's official probe artifact, preserved unmodified as historical
+# evidence (lead: "Preserve the useful audit and historical F1/F2 evidence").
+PRIOR_PROBE = {
+    "path": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json @ "
+            "review/ONT-P05 f1b18a55c58bef45bb25dacadde162f0ff09f9c1",
+    "raw_sha256": "516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88",
+    "prior_attempt_id": "1ea58bee28c04768b15253c2f1ba7888",
+}
 WINNER_MERGES = {
     "ONT-P03": "736d12cca04964c333410a41ac31ced4bd004344",
     "ONT-P01": "391f0ede0ebc2f4072c62c3386827b1b4eefc88e",
@@ -58,6 +78,38 @@ BATTERIES = {
     "training_checkpoints": ["test_checkpoints"],
     "retry_rules": ["test_kanban", "test_suggestion_box", "test_merge_service"],
 }
+# --- correction: actual recoverable training-state artifacts (clause 3) ----
+# The gait trainers save the session-best policy parameters with
+# np.save(..., best_ever[1]) into the `ports` store; the f4_walk.py judge
+# re-consumes them via np.load. These ARE the campaign's training
+# checkpoints: a policy-parameter vector is the complete trained state of
+# the memoryless/fixed-window policy classes (tools/policy_classes.py).
+# The store is live working data (git-ignored, single site); the preserved
+# multi-site part of the identity is the run-record JSON set.
+CHECKPOINT_STORE_DIR = "E:/PythonChimera/ChimeraEngine/output/ports"
+CHECKPOINT_STORE = [
+    # (store file name, role)
+    ("walk_theta_entrained.npy", "walk policy checkpoint (entrained width)"),
+    ("walk_theta_mult.npy", "walk policy checkpoint (plain width)"),
+    ("stand_theta.npy", "stand substrate policy checkpoint"),
+    ("step_theta.npy", "step policy checkpoint"),
+]
+# Preserved run records that NAME the walk checkpoint and carry its trained
+# metrics + verdict. All three sites must be byte-identical; verdict is
+# reported verbatim (no certified-walk claim is made or inherited).
+RUN_RECORD_REL = "agent_logs/f4_walk_walk_theta_entrained.json"
+RUN_RECORD_SITES = [
+    "E:/ChimeraWork/l0-baseline-repro",
+    "E:/ChimeraWork/lane-archive/w47-agent",
+    "E:/ChimeraWork/pass3-integ/repo",
+]
+# Trainer/judge law sources: the writer of record, the width law, and the
+# documented restore (re-judgment) consumer.
+TRAINER_LAW_SOURCES = [
+    ("E:/PythonChimera/tools/train_walk.py", "np.save(OUTDIR / out_name, best_ever[1])"),
+    ("E:/PythonChimera/tools/walk_port.py", "N_FREE = 2 * len(OSC_JOINTS)"),
+    ("E:/PythonChimera/tools/f4_walk.py", "--theta <path>"),
+]
 
 
 def raw_sha256(path) -> str:
@@ -265,7 +317,52 @@ def audit_run_manifests(fleet_manifest, walk_manifest, schema_sources, sample=8,
 
 
 # ---------------------------------------------------------------- clause 3
-def audit_training_checkpoints(curriculum_path, receipts, schema_sources):
+def parse_npy_header(path):
+    """Stdlib-only, read-only structural load of a .npy checkpoint.
+
+    Parses the npy magic and the header fields (descr/shape) per the
+    format's own grammar -- the same fields numpy's loader reads -- without
+    importing numpy. The header is a Python literal (numpy writes
+    ``{'descr': '<f8', 'fortran_order': False, 'shape': (8,)}``), so the
+    fields are extracted by pattern, not JSON. This is the load evidence
+    appropriate to the format; it is NOT a rollout and starts no model.
+    """
+    raw = pathlib.Path(path).read_bytes()
+    if raw[:6] != b"\x93NUMPY":
+        raise ValueError("npy_magic_missing")
+    major = raw[6]
+    if major == 1:
+        hlen = int.from_bytes(raw[8:10], "little")
+        body = raw[10:10 + hlen]
+    elif major in (2, 3):
+        hlen = int.from_bytes(raw[8:12], "little")
+        body = raw[12:12 + hlen]
+    else:
+        raise ValueError("npy_version_unsupported")
+    text = body.decode("utf-8", "replace")
+    m_descr = re.search(r"'descr'\s*:\s*'([^']+)'", text)
+    m_shape = re.search(r"'shape'\s*:\s*\(([^)]*)\)", text)
+    if not m_descr or not m_shape:
+        raise ValueError("npy_header_fields_missing")
+    shape = [int(p) for p in m_shape.group(1).replace(" ", "").split(",") if p.strip()]
+    m_fort = re.search(r"'fortran_order'\s*:\s*(\w+)", text)
+    return {"descr": m_descr.group(1), "shape": shape,
+            "fortran_order": bool(m_fort and m_fort.group(1) == "True")}
+
+
+def n_free_from_law(walk_port_text):
+    """N_FREE = 2 * len(OSC_JOINTS), read from the law text, not hardcoded."""
+    match = re.search(r"OSC_JOINTS\s*=\s*\(([^)]*)\)", walk_port_text)
+    if not match:
+        return None
+    names = re.findall(r'"([^"]+)"', match.group(1)) or \
+        re.findall(r"'([^']+)'", match.group(1))
+    return 2 * len(names) if names else None
+
+
+def audit_training_checkpoints(curriculum_path, receipts, schema_sources,
+                               checkpoint_store=None, run_record_sites=None,
+                               trainer_law_sources=None):
     findings = []
     statuses = []
     if pathlib.Path(curriculum_path).is_file():
@@ -292,11 +389,104 @@ def audit_training_checkpoints(curriculum_path, receipts, schema_sources):
             findings.append(f"checkpoint_law_record_absent:{token}")
         schema_records.append({"record": labeled(path, "checkpoint law/workflow record") if path.is_file() else {"path": str(source), "note": "absent"},
                                "schema_token": token, "present": present})
+
+    # --- correction: identify ACTUAL recoverable training-state artifacts ---
+    # (i) trainer/judge law: the writer of record, the width law, the
+    # documented restore (re-judgment) consumer -- cited, never executed.
+    law_tokens = []
+    for source, token in (trainer_law_sources or []):
+        path = pathlib.Path(source)
+        text = path.read_text(encoding="utf-8-sig") if path.is_file() else ""
+        present = token in text
+        if not present:
+            findings.append(f"trainer_law_token_absent:{path.name}:{token[:40]}")
+        law_tokens.append({"record": labeled(path, "trainer/judge law source") if path.is_file() else {"path": str(source), "note": "absent"},
+                           "token": token, "present": present,
+                           "kind": "writer/width-law/restore-consumer record"})
+    # (ii) the checkpoint store: path + recomputed SHA-256 + header load.
+    n_free = None
+    for source, token in (trainer_law_sources or []):
+        if source.endswith("walk_port.py") and pathlib.Path(source).is_file():
+            n_free = n_free_from_law(pathlib.Path(source).read_text(encoding="utf-8-sig"))
+    store_rows = []
+    store_dir = pathlib.Path(checkpoint_store) if checkpoint_store else None
+    for name, role in CHECKPOINT_STORE:
+        path = store_dir / name if store_dir else pathlib.Path(name)
+        if not path.is_file():
+            findings.append(f"checkpoint_store_file_absent:{name}")
+            store_rows.append({"checkpoint": name, "role": role,
+                               "path": str(path), "note": "absent"})
+            continue
+        try:
+            head = parse_npy_header(path)
+        except (OSError, ValueError) as exc:
+            findings.append(f"checkpoint_load_refused:{name}:{exc}")
+            store_rows.append({"checkpoint": name, "role": role,
+                               "path": str(path), "raw_sha256": raw_sha256(path),
+                               "note": f"load_refused:{exc}"})
+            continue
+        width = head["shape"][0] if head["shape"] else None
+        row = {"checkpoint": name, "role": role,
+               "path": str(path),
+               "raw_sha256": raw_sha256(path),
+               "size_bytes": path.stat().st_size,
+               "load_evidence": {"format": "npy", "descr": head["descr"],
+                                 "shape": head["shape"],
+                                 "read_only_header_parse": "ok"},
+               "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)"}
+        # width law: plain walk width == N_FREE; entrained width == N_FREE + 2
+        if name.startswith("walk_theta"):
+            if n_free is None:
+                findings.append(f"checkpoint_width_law_unreadable:{name}")
+            else:
+                expect = n_free + 2 if "entrained" in name else n_free
+                row["width_law"] = {"n_free": n_free, "expected_width": expect,
+                                    "measured_width": width}
+                if width != expect:
+                    findings.append(f"checkpoint_width_mismatch:{name}")
+        store_rows.append(row)
+    # (iii) run/source identity: preserved run records naming the checkpoint.
+    record_rows, record_hashes = [], []
+    for site in (run_record_sites or []):
+        path = pathlib.Path(site) / RUN_RECORD_REL if site else pathlib.Path(RUN_RECORD_REL)
+        if not path.is_file():
+            findings.append(f"run_record_site_absent:{site}")
+            record_rows.append({"site": str(site), "note": "absent"})
+            continue
+        digest = raw_sha256(path)
+        record_hashes.append(digest)
+        try:
+            doc = json.loads(path.read_text(encoding="utf-8-sig"))
+        except (OSError, ValueError) as exc:
+            findings.append(f"run_record_unreadable:{site}:{exc}")
+            continue
+        named = doc.get("theta")
+        record_rows.append({"site": str(site), "raw_sha256": digest,
+                            "names_checkpoint": named,
+                            "verdict_verbatim": doc.get("verdict"),
+                            "speed_median": doc.get("speed_median"),
+                            "seed_ids": doc.get("seed_ids")})
+        if named != "walk_theta_entrained.npy":
+            findings.append(f"run_record_names_other_checkpoint:{site}:{named}")
+    if record_hashes and len(set(record_hashes)) != 1:
+        findings.append("run_record_sites_disagree")
+    if not record_hashes:
+        findings.append("run_record_absent_everywhere")
+    certified = [r for r in record_rows if r.get("verdict_verbatim") is True]
     return {"clause": "training_checkpoints",
             "curriculum_record": labeled(curriculum_path, "engine curriculum training checkpoints") if pathlib.Path(curriculum_path).is_file() else {"path": str(curriculum_path), "note": "absent"},
             "curriculum_entries": len(statuses), "curriculum_statuses": statuses,
             "training_receipts": receipt_records,
             "checkpoint_law_records": schema_records,
+            "trainer_law_records": law_tokens,
+            "checkpoint_artifacts": store_rows,
+            "run_identity_records": record_rows,
+            "certified_policy_checkpoints": len(certified),
+            "honest_scope_note": ("identified checkpoints are recoverable training-state "
+                                  "artifacts; no certified-walk checkpoint exists (run "
+                                  "verdicts reported verbatim) and the store is live "
+                                  "single-site data preserved by the campaign checkout"),
+            "prior_probe_preserved": PRIOR_PROBE,
             "findings": findings, "satisfied": not findings}
 
 
@@ -406,7 +596,10 @@ def audit(paths, battery_runner=None):
                             paths["manifest_schema_sources"],
                             generation_repo=paths.get("generation_repo")),
         audit_training_checkpoints(paths["curriculum"], paths["training_receipts"],
-                                   paths["checkpoint_law_sources"]),
+                                   paths["checkpoint_law_sources"],
+                                   checkpoint_store=paths.get("checkpoint_store"),
+                                   run_record_sites=paths.get("run_record_sites"),
+                                   trainer_law_sources=paths.get("trainer_law_sources")),
         audit_hash_labels(paths["map"], paths["scope_lock"], paths["checkout"]),
         audit_retry_rules(paths["campaign_dir"], paths["merge_receipts_dir"],
                           battery_runner=battery_runner),
@@ -427,7 +620,7 @@ def audit(paths, battery_runner=None):
 
 
 DEFAULT_PATHS = {
-    "checkout": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-P05/1ea58bee28c04768b15253c2f1ba7888/checkout",
+    "checkout": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-P05/d7e4d5e96bb741c7b434f94d4bc3c560/checkout",
     "receipts_dir": "E:/ChimeraWork/monkey-coordination/startup-receipts",
     "fleet_manifest": "E:/ChimeraWork/monkey-play-20260924/docs/evidence/agent_fleet/MANIFEST.json",
     "walk_manifest": "E:/ChimeraWork/monkey-play-20260924/docs/evidence/agent_fleet/FEATURE_WALK/MANIFEST_sha256.txt",
@@ -448,6 +641,9 @@ DEFAULT_PATHS = {
         (str(CAMPAIGN / "CHECKPOINT_WORKFLOW.md"), "## Checkpoints for each affected feature"),
         (str(CAMPAIGN / "CHECKPOINT_VERIFICATION.md"), "first-unmet-gate"),
     ],
+    "checkpoint_store": CHECKPOINT_STORE_DIR,
+    "run_record_sites": RUN_RECORD_SITES,
+    "trainer_law_sources": TRAINER_LAW_SOURCES,
     "map": str(CAMPAIGN / "monkey_completion_map.json"),
     "scope_lock": str(CAMPAIGN / "APPROVED_SCOPE.json"),
     "campaign_dir": str(CAMPAIGN),

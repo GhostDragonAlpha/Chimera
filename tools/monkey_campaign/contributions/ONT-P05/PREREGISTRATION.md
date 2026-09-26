@@ -168,3 +168,53 @@ outputs land in this attempt workspace; ≤16 MiB total artifacts. No GPU, no
 model/engine start, no source-tree edits, no pushes/merges. Example
 checkpoint/visual manifests are cited as schema records, never as run
 evidence; a screenshot substitutes for nothing (records profile).
+
+## CORRECTION ADDENDUM (2026-09-26, FROZEN BEFORE THE CORRECTION PROBE RUN; lead CHANGES_REQUIRED on PR #146 head f1b18a55)
+
+The lead's finding: the original probe's training-checkpoints PASS rested on
+checkpoint schema/law records, 18 `status: pending` curriculum entries and
+test-suite receipts — NOT on an identified recoverable training-state
+artifact. Two corrections are frozen here BEFORE the correction probe runs;
+no new training run is authorized or performed.
+
+C1. Training-checkpoint clause (branching prereg, honesty decides): the
+    correction audit must either
+    (a) IDENTIFY an actual recoverable training-state artifact — exact path,
+        raw SHA-256, the run/source identity it belongs to, and load/restore
+        evidence appropriate to its format (a structural loader re-run
+        read-only, or a verified restore receipt) — or
+    (b) mark the clause UNAVAILABLE and leave qualification honestly
+        incomplete on it.
+    Search space declared in advance (read-only): the gait trainer's saved
+    policy-parameter checkpoints under
+    E:/PythonChimera/ChimeraEngine/output/ports/ (the `ports` store written
+    by tools/train_walk.py `np.save(... best_ever[1])` and consumed by the
+    f4_walk.py judge); the preserved gait run records under
+    */agent_logs/*theta*.json in E:/ChimeraWork/l0-baseline-repro,
+    E:/ChimeraWork/lane-archive/w47-agent and E:/ChimeraWork/pass3-integ/repo;
+    certified-walk runbook checkpoints (E:/ChimeraWork/*integ*/ cert lanes);
+    tie-v2 trainer states; wave-47 materials; engine_state stores; the
+    curriculum's run manifests. Falsifier for (a): any relabeled
+    non-checkpoint file, any checkpoint hash not recomputed, any run record
+    tampered or hand-written now, any claimed certified policy not supported
+    by a verdict in a preserved record, any rollout executed (a MuJoCo
+    re-judgment is NOT run; the documented judge command is cited as the
+    restore consumer, not executed).
+C2. Preregistration-history honesty: amendment 2 above followed probe run 1
+    (it CORRECTED that probe's instrument; the run was voided). Amendment 2
+    must never be described as "pre-measurement"; only amendment 1 was.
+    The correction deliverables (report.md, receipt.json) carry the fixed
+    wording; this addendum is the frozen statement of that fix.
+
+Also frozen for the correction probe: the audit's own-identity binding moves
+to THIS attempt (`arrival-0aa44ef399f64a029e1a268ffcaac2af`, assignment
+`d7e4d5e96bb741c7b434f94d4bc3c560`, branch `branch-1`, receipt stem
+`733183cf8ddc94bfadccbef337858f41c517f0aafb63f8c9a85d977727ab252c`); the
+prior attempt's official probe artifact `identity_audit.json`
+(`516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88`) and the
+F1/F2 findings are preserved unmodified as historical evidence; the
+correction probe (run 3, the official correction run) re-executes the
+extended audit after this freeze. All bounds above still apply: read-only
+records oracles, stdlib-only (the `.npy` header is parsed without numpy),
+CPU-only, no GPU, no engine or model start, no MuJoCo rollout, writes only
+inside this attempt workspace.
