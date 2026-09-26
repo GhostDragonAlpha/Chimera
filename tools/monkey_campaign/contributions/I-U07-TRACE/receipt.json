@@ -1,0 +1,26 @@
+{
+ "schema": "chimera.i-u07.second_correction.receipt.v1",
+ "attempt": "2321d1811a92415db7863826702e2d5c",
+ "agent": "c95e1722350849bca846b237c1f60997",
+ "criteria_sha256": "e47daf0abc17512f639a00909da06e8b6c907c76acc5778c0b4bfc60843cdc22",
+ "returns_candidate": {
+  "source_sha256_reviewed": "0a84cd77fc71986154df3bae289838adb2a73b8c8e207ab30779bd7652ae75dd",
+  "tests_sha256_reviewed": "b77fe5966a5fb56128b7509303f0e843a4585f78be2755c30eaab0c4fd1767a0a",
+  "review_message": "msg-a3856ac4ab9b4258a38c58d52785c90a"
+ },
+ "reviewer_corrections_applied": [
+  "source comment: sum() not claimed more stable than fsum; approach is detect-and-refuse",
+  "refusal details relabeled operation=sum (stale fsum_overflow reason removed)",
+  "prereg scope separated: statistics-accumulation overflow distinct from fixed unit-conversion overflow (appended chronologically)"
+ ],
+ "checks": {
+  "tests_26_26": "OK (21 candidate suite + 5 preserved test_correction.py)",
+  "cli_two_chain_overflow": "exit 2, refused=statistics_overflow, latency_output=null, details.operation=sum",
+  "lead_probe_conversion": "time_overflow (named refusal)",
+  "lead_probe_statistics": "statistics_overflow (named refusal)",
+  "empty_limits": "unqualified",
+  "prior_corrections_intact": "time_overflow + latency_overflow + empty-limits laws all still tested"
+ },
+ "excludes": "PR #130 head 93e850f2 NOT used (671 commits, dirty); handoff carries only trace deliverables + prior correction tests",
+ "at_utc": "2026-09-26T04:53:12Z"
+}
