@@ -23,7 +23,9 @@ Record the last successful restore drill, backup location, custodian and timesta
 in a private recovery receipt. This document does not establish that such copies exist.
 
 Captain's selection (2026-09-26): use BOTH an external drive, disconnected between
-backups, and private cloud storage. Exact drive path, cloud destination, access
+backups, and private cloud storage. External root: `F:/ChimeraRecovery/` (Captain
+selected F:). See [system setup](SYSTEM_SETUP.md) for directory layout and install
+commands. The cloud destination, access
 configuration and retention remain to be supplied and verified before backup jobs
 can be configured. Keep decryption/recovery access separately from this PC.
 

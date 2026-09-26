@@ -13,6 +13,7 @@ evidence of their recorded revision, not instructions for the current queue.
 | STARTUP, autonomous entry, next assignment | [MONKEY_RUN.md](MONKEY_RUN.md) |
 | WORKFLOW, overall sequence | [Fleet workflow](FLEET_WORKFLOW.md) |
 | DISASTER RECOVERY, new PC, backup, install, dependencies | [Replacement-PC checklist](DISASTER_RECOVERY.md) |
+| SETUP, directory structure, clean copy | [System setup](SYSTEM_SETUP.md) |
 | CAPTAIN, LIEUTENANT, architectural lead | [Lieutenant onboarding](../tools/monkey_campaign/LIEUTENANT_ONBOARDING.md) |
 | SERGEANT, OPERATIONAL_LEAD, coordinator claim | [Sergeant onboarding](../tools/monkey_campaign/EXECUTION_SERGEANT.md), [operational coordination](../tools/monkey_campaign/OPERATIONAL_LEAD.md) |
 | CONTINUE, next task, handoff | [Continuous cycle](../tools/monkey_campaign/CONTINUOUS_CYCLE.md) |
