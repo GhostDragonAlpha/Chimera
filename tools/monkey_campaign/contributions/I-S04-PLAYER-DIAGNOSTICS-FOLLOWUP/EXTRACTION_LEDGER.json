@@ -1,0 +1,64 @@
+{
+  "schema": "chimera.i-s04-followup.extraction_ledger.v1",
+  "extracted_by": {
+    "task_id": "I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP",
+    "attempt_id": "e8b61636f59d45ca835e1d1fbe9e08a5",
+    "arrival_id": "arrival-c59287b07e0c438e9b8866aa7086e1b1"
+  },
+  "provenance": {
+    "seam_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+    "seam_source": "git objects of this campaign repo (lineage of E:/ChimeraWork/monkey-play-20260924), read via `git -c safe.directory=... -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd...:<repo_path>` only; nothing in that repository was checked out, branched or edited",
+    "correction": "Lead verification of publication-e7eeb8677a2b400aaded97c27d66e95d showed the prior attempt resolved this seam from the LIVE play worktree, whose HEAD 8d16d3c1 reorg deleted tools/science_funnel/ (as-specified run: 4/9 ModuleNotFoundError). This attempt vendors the seam byte-identically at the SAME pinned revision the accepted parent ledger cites, so the tests are self-contained at ANY checkout; the adapter materializes these bytes hash-asserted into a fresh temp directory in canonical repo layout and refuses by name on any mismatch (the accepted I-U07-TRACE-FOLLOWUP / I-R05 reference/ pattern).",
+    "accepted_module": {
+      "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/I-S04-PLAYER-DIAGNOSTICS/d24bd30d38234a4cae33288048cce14f/player_diagnostics.py",
+      "origin_task": "I-S04-PLAYER-DIAGNOSTICS",
+      "merged_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/125",
+      "note": "NOT copied here; the adapter imports the accepted module and asserts its sha256 at bind (tamper refused). sha256 below is the pin the tests assert.",
+      "sha256": "53e34c62850ff222e2ecd92d20498baf88e9f8f0189b8c215d0cc79b06a7a339",
+      "size_bytes": 28801
+    }
+  },
+  "files": [
+    {
+      "repo_path": "tools/monkey_campaign/product/input_settings.py",
+      "reference_path": "reference/tools/monkey_campaign/product/input_settings.py",
+      "revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "sha256": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
+      "size_bytes": 22608,
+      "role": "named seam: REAL refusing settings load (Refusal codes json_corrupt/action_unknown) driven by the tests"
+    },
+    {
+      "repo_path": "tools/monkey_campaign/product/session_flow.py",
+      "reference_path": "reference/tools/monkey_campaign/product/session_flow.py",
+      "revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+      "size_bytes": 16981,
+      "role": "named seam: REAL four-state flow, last_trace dropped entries driven by the tests"
+    },
+    {
+      "repo_path": "tools/monkey_campaign/product/input_mapper.py",
+      "reference_path": "reference/tools/monkey_campaign/product/input_mapper.py",
+      "revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+      "size_bytes": 18349,
+      "role": "necessary import of input_settings.py and session_flow.py (DEFAULT_BINDINGS/ACTIONS/REFUSALS, frozen constants)"
+    },
+    {
+      "repo_path": "tools/science_funnel/typeb_export/command_record.py",
+      "reference_path": "reference/tools/science_funnel/typeb_export/command_record.py",
+      "revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+      "sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+      "size_bytes": 12095,
+      "role": "necessary import of input_mapper.py (CommandRecord + the frozen seam constants); the module whose unpinned live-worktree resolution broke the prior request"
+    }
+  ],
+  "pins_for_import_only": [
+    {
+      "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/I-S04-PLAYER-DIAGNOSTICS/d24bd30d38234a4cae33288048cce14f/player_diagnostics.py",
+      "origin": "I-S04-PLAYER-DIAGNOSTICS (merged PR #125), attempt d24bd30d38234a4cae33288048cce14f",
+      "sha256": "53e34c62850ff222e2ecd92d20498baf88e9f8f0189b8c215d0cc79b06a7a339",
+      "size_bytes": 28801
+    }
+  ],
+  "read_only_after_extraction": true
+}

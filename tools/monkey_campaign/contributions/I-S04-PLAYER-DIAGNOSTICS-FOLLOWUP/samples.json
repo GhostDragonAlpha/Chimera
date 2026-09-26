@@ -1,0 +1,84 @@
+{
+ "schema": "i-s04-followup.feedback_adapter.v1",
+ "samples": [
+  {
+   "case": "settings: corrupt json (real refusal)",
+   "record": {
+    "name": "json_corrupt",
+    "status": "refused",
+    "ok": false,
+    "message": "The settings file is damaged. Default controls are active.",
+    "actions": [
+     "Fix the settings file, then load it again.",
+     "Default controls are active -- you can keep playing."
+    ],
+    "correlation_id": "d5555aa1df056507",
+    "diagnostic": {
+     "origin": "tools/monkey_campaign/product/input_settings.py:409-413,429-433 (pinned 9afbddcd90164b5544a16fd0bc72278d985eb6e3)",
+     "raw_name": "json_corrupt",
+     "raw_detail": "settings file is not valid JSON: Expecting value: line 1 column 15 (char 14)",
+     "scrub_token": ""
+    }
+   },
+   "player_line": "The settings file is damaged. Default controls are active. — try: Fix the settings file, then load it again. / Default controls are active -- you can keep playing. [ref d5555aa1df056507]"
+  },
+  {
+   "case": "settings: unknown action 'teleport' (real)",
+   "record": {
+    "name": "action_unknown",
+    "status": "refused",
+    "ok": false,
+    "message": "The settings file names an action this game does not have ('P9'). Default controls are active.",
+    "actions": [
+     "Fix the settings file, then load it again.",
+     "Default controls are active -- you can keep playing."
+    ],
+    "correlation_id": "493bfaed9aa9c941",
+    "diagnostic": {
+     "origin": "tools/monkey_campaign/product/input_settings.py:275-280 (pinned 9afbddcd90164b5544a16fd0bc72278d985eb6e3)",
+     "raw_name": "action_unknown",
+     "raw_detail": "binding 'P9' -> unknown action 'teleport'; the known actions are ['backward', 'forward', 'jump', 'sprint', 'turn_left', 'turn_right'] (the grammar refuses what it cannot name, parser.py:130-132 precedent)",
+     "scrub_token": "P9"
+    }
+   },
+   "player_line": "The settings file names an action this game does not have ('P9'). Default controls are active. — try: Fix the settings file, then load it again. / Default controls are active -- you can keep playing. [ref 493bfaed9aa9c941]"
+  },
+  {
+   "case": "future code (fabricated, must be unknown)",
+   "record": {
+    "name": "unknown_error",
+    "status": "unknown",
+    "ok": false,
+    "message": "Something went wrong on our side. Nothing was changed. Reference: 1a31cb329d452380.",
+    "actions": [],
+    "correlation_id": "1a31cb329d452380",
+    "diagnostic": {
+     "origin": "explain",
+     "raw_name": "future_code_2030",
+     "raw_detail": "at C:/Users/x/save.json",
+     "note": "name is outside the pinned failure inventory"
+    }
+   },
+   "player_line": "Something went wrong on our side. Nothing was changed. Reference: 1a31cb329d452380. [ref 1a31cb329d452380]"
+  },
+  {
+   "case": "path-bearing exception (must scrub message)",
+   "record": {
+    "name": "unknown_error",
+    "status": "unknown",
+    "ok": false,
+    "message": "Something went wrong on our side. Nothing was changed. Reference: 2cfc2b8edd6b1160.",
+    "actions": [],
+    "correlation_id": "2cfc2b8edd6b1160",
+    "diagnostic": {
+     "origin": "exception",
+     "raw_name": "OSError",
+     "raw_detail": "OSError('cannot read E:/saves/slot1.save.json')",
+     "note": "not a pinned refusal shape",
+     "exception_type": "OSError"
+    }
+   },
+   "player_line": "Something went wrong on our side. Nothing was changed. Reference: 2cfc2b8edd6b1160. [ref 2cfc2b8edd6b1160]"
+  }
+ ]
+}
