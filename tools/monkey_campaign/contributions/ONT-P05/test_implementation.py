@@ -255,15 +255,24 @@ class CheckpointStoreTests(TempCase):
     load + run identity) and a gap it must NAME, never silently pass.
     """
 
-    def npy_bytes(self, shape=(8,), descr="<f8"):
-        header = repr({"descr": descr, "fortran_order": False,
-                       "shape": shape}).encode("utf-8")
-        # numpy writes a python literal header; v1 pads to 64-byte alignment
-        pad = 64 - (10 + len(header)) % 64
-        header = header + b" " * (pad - 1) + b"\n"
-        body = b"\x00" * 8 * (shape[0] if shape else 1)
+    def npy_bytes(self, shape=(8,), descr="<f8", payload=None, header=None):
+        """Build a v1 .npy fixture the way numpy writes it: a Python-literal
+        header padded to 64-byte alignment, then count(shape)*itemsize payload
+        bytes (zeros = finite parameters) unless an explicit payload/header is
+        supplied for falsifier fixtures."""
+        itemsize = 8 if descr.endswith("8") else 4
+        count = 1
+        for dim in shape:
+            count *= dim
+        if header is None:
+            doc = {"descr": descr, "fortran_order": False, "shape": shape}
+            header = repr(doc).encode("utf-8")
+            pad = 64 - (10 + len(header)) % 64
+            header = header + b" " * (pad - 1) + b"\n"
+        if payload is None:
+            payload = b"\x00" * itemsize * count
         return b"\x93NUMPY" + b"\x01\x00" + len(header).to_bytes(2, "little") \
-            + header + body
+            + header + payload
 
     def plant_store(self, root, entrained_shape=(8,), omit=None,
                     forge=None):
@@ -360,6 +369,35 @@ class CheckpointStoreTests(TempCase):
         self.assertTrue(any("checkpoint_width_mismatch:walk_theta_entrained.npy" in f
                             for f in row["findings"]))
 
+    def test_truncated_checkpoint_is_refused_not_load_evidence(self):
+        """Lead falsifier (PR #160): the real 192-byte checkpoint cut to its
+        128-byte header must be a NAMED refusal, never a plausible <f8 (8,)."""
+        self.plant_laws(self.root)
+        full = self.npy_bytes((8,))
+        header_end = 10 + int.from_bytes(full[8:10], "little")
+        self.assertEqual(128, header_end)
+        write(self.root / "ports" / "walk_theta_entrained.npy", full[:header_end])
+        row = self.clause()
+        self.assertTrue(any(
+            "checkpoint_load_refused:walk_theta_entrained.npy:npy_payload_truncated" in f
+            for f in row["findings"]))
+        entrained = next(r for r in row["checkpoint_artifacts"]
+                         if r["checkpoint"] == "walk_theta_entrained.npy")
+        self.assertIn("load_refused", entrained["note"])
+        self.assertNotIn("load_evidence", entrained)
+
+    def test_nonfinite_checkpoint_parameters_are_refused(self):
+        import struct as _struct
+        self.plant_laws(self.root)
+        bad = _struct.pack("<8d", 0.5, float("nan"), 0.2, -1.0,
+                           0.1, 0.6, 0.4, float("inf"))
+        write(self.root / "ports" / "walk_theta_mult.npy",
+              self.npy_bytes((6,), payload=bad[:48]))
+        row = self.clause()
+        self.assertTrue(any(
+            "checkpoint_load_refused:walk_theta_mult.npy:npy_parameter_nonfinite" in f
+            for f in row["findings"]))
+
     def test_disagreeing_run_record_sites_are_named(self):
         self.plant_laws(self.root)
         self.plant_store(self.root)
@@ -384,6 +422,142 @@ class CheckpointStoreTests(TempCase):
         row = self.clause()
         self.assertTrue(any("trainer_law_token_absent:train_walk.py" in f
                             for f in row["findings"]))
+
+
+class NpyLoadEvidenceTests(TempCase):
+    """Load-evidence completeness regressions (correction addendum 2, C3;
+    derived from the lead's reproduced falsifier on PR #160 head 167ac282:
+    a valid header with ALL parameter payload removed still yielded
+    <f8 shape (8)). Every incomplete/unloadable input must refuse by a
+    NAMED error; the complete finite fixtures must load."""
+
+    def build(self, shape=(8,), descr="<f8", payload=None, header=None,
+              version=b"\x01\x00", magic=b"\x93NUMPY", hlen=None):
+        itemsize = 8 if descr.endswith("8") else 4
+        count = 1
+        for dim in shape:
+            count *= dim
+        if header is None:
+            doc = {"descr": descr, "fortran_order": False, "shape": shape}
+            header = repr(doc).encode("utf-8")
+            pad = 64 - (10 + len(header)) % 64
+            header = header + b" " * (pad - 1) + b"\n"
+        if payload is None:
+            payload = b"\x00" * itemsize * count
+        if hlen is None:
+            hlen = len(header)
+        return (magic + version + hlen.to_bytes(2, "little") + header + payload)
+
+    def write(self, data, name="checkpoint.npy"):
+        return write(self.root / name, data)
+
+    def refuses(self, data, code):
+        path = self.write(data)
+        with self.assertRaises(ValueError) as ctx:
+            impl.parse_npy_header(path)
+        self.assertTrue(str(ctx.exception).startswith(code),
+                        f"{ctx.exception!r} does not start with {code!r}")
+
+    def test_complete_fixture_loads_with_exact_payload_and_finite_parameters(self):
+        import struct
+        values = [0.292, 0.078, 0.002, -1.275, 0.193, 0.612, 0.495, 4.584]
+        data = self.build((8,), payload=struct.pack("<8d", *values))
+        head = impl.parse_npy_header(self.write(data))
+        self.assertEqual("<f8", head["descr"])
+        self.assertEqual([8], head["shape"])
+        self.assertIs(head["fortran_order"], False)
+        self.assertEqual(64, head["payload_bytes"])
+        self.assertEqual(64, head["expected_payload_bytes"])
+        self.assertTrue(head["parameters_finite"])
+
+    def test_header_without_payload_is_refused(self):
+        """THE lead falsifier: full checkpoint cut to its header only."""
+        full = self.build((8,))
+        header_end = 10 + int.from_bytes(full[8:10], "little")
+        self.refuses(full[:header_end], "npy_payload_truncated")
+
+    def test_lead_truncation_shape_192_to_128_is_refused(self):
+        """Byte-exact analog of the real 192-byte walk_theta_entrained.npy
+        (118-byte padded header, literal with trailing ', ') cut to its
+        first 128 bytes -- the lead's exact falsifier."""
+        header = b"{'descr': '<f8', 'fortran_order': False, 'shape': (8,), }"
+        pad = 64 - (10 + len(header)) % 64
+        header = header + b" " * (pad - 1) + b"\n"
+        data = self.build((8,), header=header)
+        header_end = 10 + int.from_bytes(data[8:10], "little")
+        self.assertEqual(128, header_end)
+        self.assertEqual(192, len(data))
+        self.refuses(data[:128], "npy_payload_truncated")
+
+    def test_partially_truncated_payload_is_refused(self):
+        full = self.build((8,))
+        self.refuses(full[:-30], "npy_payload_truncated")
+
+    def test_overlong_payload_is_refused(self):
+        self.refuses(self.build((8,)) + b"\x00" * 8, "npy_payload_overlong")
+
+    def test_short_inputs_refuse_by_name(self):
+        self.refuses(b"", "npy_input_too_short")
+        self.refuses(b"\x93NUM", "npy_input_too_short")
+        self.refuses(b"\x93NUMPY", "npy_input_too_short")
+
+    def test_truncated_header_section_is_refused(self):
+        full = self.build((8,))
+        self.refuses(full[:20], "npy_header_truncated")  # cut inside header
+        self.refuses(b"\x93NUMPY\x01\x00\x76", "npy_header_truncated")
+        self.refuses(self.build((8,), hlen=9999), "npy_header_truncated")
+
+    def test_missing_magic_and_unsupported_version_refuse(self):
+        self.refuses(self.build((8,), magic=b"\x93NUMP "), "npy_magic_missing")
+        self.refuses(self.build((8,), version=b"\x09\x00"), "npy_version_unsupported")
+
+    def test_missing_header_fields_refuse(self):
+        doc = {"descr": "<f8", "shape": (8,)}  # fortran_order absent
+        header = repr(doc).encode("utf-8")
+        pad = 64 - (10 + len(header)) % 64
+        header = header + b" " * (pad - 1) + b"\n"
+        self.refuses(self.build((8,), header=header), "npy_header_fields_missing")
+
+    def test_unparseable_header_refuses(self):
+        header = b"this is not a python literal of the header at all......."
+        pad = 64 - (10 + len(header)) % 64
+        header = header + b" " * (pad - 1) + b"\n"
+        self.refuses(self.build((8,), header=header), "npy_header_unparseable")
+
+    def test_unsupported_dtypes_refuse(self):
+        self.refuses(self.build((8,), descr="<i4"), "npy_dtype_unsupported")
+        self.refuses(self.build((8,), descr="O"), "npy_dtype_unsupported")
+        self.refuses(self.build((8,), descr=">f8"), "npy_dtype_unsupported")
+        self.refuses(self.build((8,), descr="[<f8"), "npy_dtype_unsupported")
+
+    def test_nonfinite_parameters_refuse(self):
+        import struct
+        self.refuses(self.build((8,), payload=struct.pack(
+            "<8d", 1.0, float("nan"), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+            "npy_parameter_nonfinite")
+        self.refuses(self.build((8,), payload=struct.pack(
+            "<8d", 1.0, float("inf"), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+            "npy_parameter_nonfinite")
+
+    def test_malformed_shape_and_fortran_order_refuse(self):
+        header = repr({"descr": "<f8", "fortran_order": "False",
+                       "shape": (8,)}).encode()
+        pad = 64 - (10 + len(header)) % 64
+        header = header + b" " * (pad - 1) + b"\n"
+        self.refuses(self.build((8,), header=header), "npy_fortran_order_invalid")
+        header = repr({"descr": "<f8", "fortran_order": False,
+                       "shape": [-8]}).encode()
+        pad = 64 - (10 + len(header)) % 64
+        header = header + b" " * (pad - 1) + b"\n"
+        self.refuses(self.build((8,), header=header), "npy_shape_invalid")
+
+    def test_header_terminator_missing_refuses(self):
+        header = repr({"descr": "<f8", "fortran_order": False,
+                       "shape": (8,)}).encode()
+        pad = 64 - (10 + len(header)) % 64
+        header = header + b" " * (pad - 1) + b"x"  # spec requires a final b"\n"
+        self.refuses(self.build((8,), header=header),
+                     "npy_header_terminator_missing")
 
 
 class AuditDriverTests(TempCase):

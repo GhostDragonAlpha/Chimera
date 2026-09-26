@@ -1,30 +1,48 @@
 # ONT-P05 — milestone recovery and artifact identity audit report
 
-**Verdict (correction 2, 2026-09-26): the done_when record classes EXIST and
-verify — recoverable commits, training checkpoints, raw/blob/canonical hash
-labels and retry rules pass their independent oracles outright (4/5 clauses
-green, all batteries OK); run manifests exist as schemas and modern
-verifiable records, and the standing audit names TWO real historical-record
-defects (the agent_fleet MANIFEST.json does not reproduce against its own
-pinned `source_base`; the FEATURE_WALK raw-hash manifest's capture frames
-are preserved nowhere reachable). Zero silent gaps; nothing repaired or
-fabricated.**
+**Verdict (correction 3 — load evidence, 2026-09-26): the done_when record
+classes EXIST and verify — recoverable commits, training checkpoints,
+raw/blob/canonical hash labels and retry rules pass their independent
+oracles outright (4/5 clauses green, all batteries OK); run manifests exist
+as schemas and modern verifiable records, and the standing audit names TWO
+real historical-record defects (the agent_fleet MANIFEST.json does not
+reproduce against its own pinned `source_base`; the FEATURE_WALK raw-hash
+manifest's capture frames are preserved nowhere reachable). Zero silent
+gaps; nothing repaired or fabricated.**
 
-CORRECTION: this revision answers the lead's CHANGES_REQUIRED on PR #146
-head `f1b18a55…` — the training-checkpoints clause is now supported by an
-IDENTIFIED recoverable training-state artifact (path, recomputed SHA-256,
-run identity, format-appropriate load evidence), not only by checkpoint
-schema/law, curriculum records and test receipts. No new training run was
-performed or needed; the historical F1/F2 findings and the prior attempt's
-official probe are preserved unmodified. The preregistration description is
-also corrected: amendment 2 FOLLOWED probe run 1 (it voided and repaired
-that probe's instrument) and is never "pre-measurement"; only amendment 1
-was.
+CORRECTION 2 (this revision): answers the lead's CHANGES_REQUIRED on PR
+#160 head `167ac282…` — the reproduced falsifier showed `parse_npy_header`
+accepted a checkpoint file with ALL parameter payload removed (the real
+192-byte `walk_theta_entrained.npy` truncated to its 128-byte header still
+parsed as `<f8` shape `(8,)`), which is not recoverable-load evidence. The
+load evidence is now a COMPLETE-structure read-only parse — version magic,
+full header dictionary (descr/fortran_order/shape), supported dtype against
+the named writer/consumer law, payload length EXACTLY
+count(shape)*itemsize, and finite parameter values — with named refusals
+for short inputs, truncated headers, absent/truncated/overlong payloads,
+incompatible dtypes and nonfinite parameters. The falsifier input now
+refuses `npy_payload_truncated:expected=64,present=0`; the four real
+checkpoints still load complete and finite. Failing-first regressions
+(15 new, all failing against the superseded implementation) are in
+`test_implementation.py`; before/after outputs are recorded in
+`npy-load-correction-evidence.json`. No new training run, no GPU, no
+rollout; F1/F2/F3 and the prior official probes are preserved unmodified.
+
+CORRECTION 1 (prior revision, preserved): answered the lead's
+CHANGES_REQUIRED on PR #146 head `f1b18a55…` — the training-checkpoints
+clause is supported by an IDENTIFIED recoverable training-state artifact
+(path, recomputed SHA-256, run identity, format-appropriate load evidence),
+not only by checkpoint schema/law, curriculum records and test receipts.
+The preregistration description was also corrected: amendment 2 FOLLOWED
+probe run 1 (it voided and repaired that probe's instrument) and is never
+"pre-measurement"; only amendment 1 was.
 
 - Card `ONT-P05`, planning `P05`, kind integration, profile `records`
-  (offline). Correction attempt `d7e4d5e96bb741c7b434f94d4bc3c560`, agent
-  `arrival-0aa44ef399f64a029e1a268ffcaac2af`, branch `branch-1`
-  (prior attempt `1ea58bee28c04768b15253c2f1ba7888`, agent
+  (offline). Correction attempt `2cce3c17ff664ef38581bd9669a12ec8`, agent
+  `arrival-9887482e6c724936826aae1c7c7c8373`, branch `branch-3`
+  (prior correction attempt `d7e4d5e96bb741c7b434f94d4bc3c560`, agent
+  `arrival-0aa44ef399f64a029e1a268ffcaac2af`, branch `branch-1`; original
+  attempt `1ea58bee28c04768b15253c2f1ba7888`, agent
   `arrival-9de32a8d32144d1fb62ffc7308cd11d7`, branch `branch-6`),
   criteria `53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4`,
   scope `01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6`.
@@ -49,12 +67,17 @@ carries its raw-file SHA-256 label. Output: `identity_audit.json`
 (schema `ont-p05.identity_audit.v1`), rerunnable with two named live-store
 drifts: the shared startup-receipt store GROWS as other workers arrive
 (25 receipts at the prior probe, 40 at the review rerun, 50 at the
-correction probe), and battery summaries embed wall-clock times; the
+correction probe, 110 at this probe), and battery summaries embed
+wall-clock times; the
 verdicts, findings, labels and recomputed hashes are stable, and each
 published probe artifact is pinned by its own raw SHA-256.
-Correction: the training-checkpoints clause additionally identifies the
+Correction 1: the training-checkpoints clause additionally identifies the
 trainer's saved policy-parameter checkpoints and binds them to their
 preserved run records (below); the `.npy` header is parsed without numpy.
+Correction 2: the `.npy` load evidence is a COMPLETE-structure parse
+(magic, version, full header dict, supported dtype, payload length exactly
+count(shape)*itemsize, finite parameters) with named refusals — a
+header-only truncation can no longer yield a plausible `<f8 (8,)`.
 
 ## The identified training-state checkpoints (correction deliverable)
 
@@ -68,16 +91,18 @@ incumbent classes are memoryless/fixed-window and can be warm-started from
 the saved vector), and the campaign's own shape law calls these files
 checkpoints (`parser.check_theta_shape`: "a trainer that saves a short
 theta is minting a checkpoint"; "lets an old checkpoint be re-judged").
-Identified at correction probe time (hashes recomputed; header load is a
-read-only structural parse; NO rollout was executed — the judge is cited
-as the restore consumer, not run, per the frozen addendum):
+Identified at correction probe time (hashes recomputed; load evidence is a
+read-only COMPLETE-structure parse — version, full header dictionary,
+supported dtype, payload length exactly count(shape)*itemsize, finite
+parameters — per correction addendum 2 C3; NO rollout was executed — the
+judge is cited as the restore consumer, not run, per the frozen addendum):
 
-| Checkpoint (E:/PythonChimera/ChimeraEngine/output/ports/) | raw SHA-256 | format (stdlib header load) | width law |
+| Checkpoint (E:/PythonChimera/ChimeraEngine/output/ports/) | raw SHA-256 | format (stdlib complete-structure load) | width law |
 |---|---|---|---|
-| `walk_theta_entrained.npy` | `8f5dd3a68ec4d430a9883f267112b6f7b043ec1432dba6a59d131e87d2a9af92` | npy v1, `<f8`, shape (8,) | entrained width N_FREE+2 = 8 ✓ |
-| `walk_theta_mult.npy` | `ad8ed9a9451f1c943bf535a98f2a7cf2fb38b5e36388b636177c3087854d8e90` | npy v1, `<f8`, shape (6,) | plain width N_FREE = 6 ✓ |
-| `stand_theta.npy` | `684f1eaab29f683ef7c803180c32e9d4f1e5ddd64656d103ac5391fc79e851b7` | npy v1, `<f8`, shape (1160,) | 4-block stand checkpoint (p_only a0\|kh\|kp\|kr) |
-| `step_theta.npy` | `db943f46b29422dc45053c0d9541a0be537cfc93149660a0d8a7cc9cac6e2a3c` | npy v1, `<f8`, shape (7,) | step checkpoint |
+| `walk_theta_entrained.npy` | `8f5dd3a68ec4d430a9883f267112b6f7b043ec1432dba6a59d131e87d2a9af92` | npy v1.0, `<f8`, shape (8,), payload 64/64 bytes, parameters finite | entrained width N_FREE+2 = 8 ✓ |
+| `walk_theta_mult.npy` | `ad8ed9a9451f1c943bf535a98f2a7cf2fb38b5e36388b636177c3087854d8e90` | npy v1.0, `<f8`, shape (6,), payload 48/48 bytes, parameters finite | plain width N_FREE = 6 ✓ |
+| `stand_theta.npy` | `684f1eaab29f683ef7c803180c32e9d4f1e5ddd64656d103ac5391fc79e851b7` | npy v1.0, `<f8`, shape (1160,), payload 9280/9280 bytes, parameters finite | 4-block stand checkpoint (p_only a0\|kh\|kp\|kr) |
+| `step_theta.npy` | `db943f46b29422dc45053c0d9541a0be537cfc93149660a0d8a7cc9cac6e2a3c` | npy v1.0, `<f8`, shape (7,), payload 56/56 bytes, parameters finite | step checkpoint |
 
 N_FREE is read from the law text, not hardcoded: `walk_port.py`
 `OSC_JOINTS = ("hip_flexion", "knee_angle", "ankle_angle")`,
@@ -102,23 +127,46 @@ site; 108 `.npy` trainer states total), and `certified_policy_checkpoints:
 `f4_walk_walk_theta_entrained.png` (raw `4b1bf56ede348a8e47733de2e3223e8b0c6b11296c807ea95b7d1da269cda6d0`)
 sits beside the checkpoint in the same store.
 
-## Measured against the live records (official correction probe = probe 3, 2026-09-26)
+## Measured against the live records (official load-evidence correction probe = probe 4, 2026-09-26)
 
 | Clause | Records inspected | Oracle result |
 |---|---|---|
-| Recoverable commits | 40 `chimera.startup_recovery.v1` receipts (25 at the prior probe); own receipt `733183cf…` (task ONT-P05, correction attempt, criteria — all bound); `checkout_identity.json` (head `c525b82c…`, branch-1); winner merges of ONT-P01/P03/X01 | PASS — every receipt filename == SHA-256(arrival_id); all 3 winner merge SHAs resolve as commits; attempt head resolves |
+| Recoverable commits | 110 `chimera.startup_recovery.v1` receipts (25 at the prior probe); own receipt `e253f0cc…` (task ONT-P05, this correction attempt, criteria — all bound); `checkout_identity.json` (head `c525b82c…`, branch-3); winner merges of ONT-P01/P03/X01 | PASS — every receipt filename == SHA-256(arrival_id); all 3 winner merge SHAs resolve as commits; attempt head resolves |
 | Run manifests | `chimera.checkpoint_context.v1` + `chimera.visual_capture_manifest.v1` schema records + CHECKPOINT_WORKFLOW candidate-manifest law; fleet `MANIFEST.json` (21 entries, `source_base bf0a6216…`); `FEATURE_WALK/MANIFEST_sha256.txt`; per-attempt `checkout_identity.json` | PARTIAL — schema/law records present; fleet manifest DOES NOT reproduce against its declared generation (finding F1); FEATURE_WALK frames absent everywhere reachable (finding F2) |
-| Training checkpoints | the IDENTIFIED checkpoint store + run identity records (table above); trainer/judge law tokens (`train_walk.py` save line, `walk_port.py` width law, `f4_walk.py --theta` restore consumer); `chimera.checkpoint_receipt.v1` law (checkpoints.py); CHECKPOINT_WORKFLOW 7-checkpoint table; CHECKPOINT_VERIFICATION; engine curriculum `pending_checkpoints.json` (18 entries, all `status: pending` — none fabricates a pass); 3 W5/W6/W7 training-suite receipts; `test_checkpoints` battery | PASS — checkpoints exist as recoverable artifacts with recomputed hashes, bound run identity, format-appropriate load evidence and the width law verified; battery 19 tests OK; certified-walk checkpoint count 0, reported honestly |
+| Training checkpoints | the IDENTIFIED checkpoint store + run identity records (table above; complete-payload + finite-parameter load evidence per C3); trainer/judge law tokens (`train_walk.py` save line, `walk_port.py` width law, `f4_walk.py --theta` restore consumer); `chimera.checkpoint_receipt.v1` law (checkpoints.py); CHECKPOINT_WORKFLOW 7-checkpoint table; CHECKPOINT_VERIFICATION; engine curriculum `pending_checkpoints.json` (18 entries, all `status: pending` — none fabricates a pass); 3 W5/W6/W7 training-suite receipts; `test_checkpoints` battery | PASS — checkpoints exist as recoverable artifacts with recomputed hashes, bound run identity, COMPLETE-structure load evidence (exact payload, finite parameters) and the width law verified; battery 19 tests OK; certified-walk checkpoint count 0, reported honestly |
 | Raw/blob/canonical hash labels | `integrity.py` (`sha256-chimera-json-v1`); dual-labeled `APPROVED_SCOPE.json`; map file | PASS — for `monkey_completion_map.json`: raw `010311bb…`, Git blob `466ba011f9df369e706497a7b21b516f36643385`, canonical `01ea5cdd…` — three DISTINCT labeled identities; `verify_catalog` passes with the human-pinned external anchor; lock's own bytes `92d0c33f…` recorded |
 | Retry rules | `kanban.py` `ALREADY_COMPLETED`; `continuous_cycle.py` `PUBLICATION_ALREADY_REQUESTED`; `suggestion_box.py` `exact_retry`; MERGE_SERVICE.md retry-accept-merge; STARTUP_RECOVERY.md retry-same-arrival; 4 `accept-*-result.json` receipts | PASS — all markers present; batteries green: test_kanban 11 OK, test_suggestion_box 5 OK, test_merge_service 2 OK, test_checkpoints 19 OK (0 failures, 0 skips) |
 
-Preserved prior evidence (unmodified, by hash): the prior attempt's
-official probe `identity_audit.json` @ review/ONT-P05
-`f1b18a55c58bef45bb25dacadde162f0ff09f9c1`, raw SHA-256
-`516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88`, whose
-5-clause audit and F1/F2 inventory this correction re-derives live with
-the same named outcomes; the prior probe's tool, report, receipt and
-preregistration remain reviewable at that head.
+Preserved prior evidence (unmodified, by hash): the immediately superseded
+correction probe `identity_audit.json` @ review/ONT-P05
+`167ac282896f639a8115a9a778d1cf3c4b116ea5`, raw SHA-256
+`408135fd46a83966f27495f641c2dc66a67fb3f777aebdc1e483a5d5530de9e6`, and the
+original audit probe @ `f1b18a55c58bef45bb25dacadde162f0ff09f9c1`, raw
+SHA-256 `516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88`
+— whose 5-clause audits and F1/F2 inventories this correction re-derives
+live with the same named outcomes (16 findings, identical composition);
+the prior probes' tools, reports, receipts and preregistrations remain
+reviewable at those heads. The superseded head's header-only load evidence
+is corrected by this attempt, not erased.
+
+## The reproduced falsifier, before and after (correction 2)
+
+Lead falsifier (REVIEW.md + `reprobe.py`, run in TEMP fixture dirs; see
+`npy-load-correction-evidence.json` for full outputs):
+
+- BEFORE (superseded implementation `7d88d3a3…`): the real 192-byte
+  `walk_theta_entrained.npy` truncated to its 128-byte header parses as
+  `{"descr": "<f8", "shape": [8], "fortran_order": false}` — a plausible
+  load result for a file with NO parameters to recover.
+- AFTER (this implementation): the identical input refuses with
+  `ValueError: npy_payload_truncated:expected=64,present=0`; a half-payload
+  cut refuses `npy_payload_truncated:expected=64,present=32`; the audit
+  reports `checkpoint_load_refused:<name>:<refusal>` and no
+  `load_evidence` row for such a file. Unsupported dtypes refuse
+  `npy_dtype_unsupported`, NaN/inf parameters refuse
+  `npy_parameter_nonfinite`, short/truncated headers refuse
+  `npy_input_too_short`/`npy_header_truncated`, overlong payloads refuse
+  `npy_payload_overlong`.
 
 ## Findings (work product for the lead — named, never silent)
 
@@ -173,9 +221,9 @@ attempt was probe 2. Its prediction scorecard: P1 PASS, P2 PASS,
 the failure IS finding F1 and is reported as the work product, not tuned
 away), P4 PASS, P5 PASS, P6 PASS.
 
-CORRECTION ADDENDUM (this attempt, frozen BEFORE the correction probe =
-probe 3): C1 — identify an actual recoverable training-state artifact
-(path + recomputed hash + run/source identity + format-appropriate
+CORRECTION ADDENDUM (prior correction attempt, frozen BEFORE the correction
+probe = probe 3): C1 — identify an actual recoverable training-state
+artifact (path + recomputed hash + run/source identity + format-appropriate
 load/restore evidence) or honestly mark the clause UNAVAILABLE; the
 search space and falsifiers were declared in advance (see
 PREREGISTRATION.md). C1(a) was satisfied: the checkpoint store and run
@@ -183,12 +231,34 @@ identity records above. C2 — amendment 2 must never be described as
 pre-measurement; enforced in this report and the receipt. No new training
 run, no GPU, no rollout; the judge restore path was cited, never executed.
 
+CORRECTION ADDENDUM 2 (this attempt, frozen BEFORE the load-evidence
+correction probe = probe 4): C3 — the `.npy` load evidence must validate
+the COMPLETE npy structure with named refusals: (a) short inputs
+(`npy_input_too_short`, `npy_header_truncated`); (b) magic/version with
+the version's header-length width (`npy_magic_missing`,
+`npy_version_unsupported`); (c) the full header dictionary
+descr/fortran_order/shape, strictly parsed from the newline-terminated
+literal (`npy_header_unparseable`, `npy_header_fields_missing`,
+`npy_fortran_order_invalid`, `npy_shape_invalid`); (d) dtype supported
+against the named consumer law — `<f8`/`<f4` only
+(`npy_dtype_unsupported`); (e) payload length EXACTLY
+count(shape)*itemsize (`npy_payload_truncated` / `npy_payload_overlong`);
+(f) every stored parameter finite (`npy_parameter_nonfinite`). The lead's
+falsifier cases are failing-first regressions (15 new tests; all failed
+against the superseded implementation, first-run output preserved in
+`npy-load-correction-evidence.json`). The four real checkpoints must still
+load complete and finite — they do; run identity, verdict:false verbatim,
+`certified_policy_checkpoints: 0`, the no-rollout boundary and F1/F2/F3
+are preserved. Also frozen: the audit's own-identity binding moved to THIS
+attempt (`arrival-9887482e6c724936826aae1c7c7c8373`, assignment
+`2cce3c17ff664ef38581bd9669a12ec8`, branch-3, receipt stem `e253f0cc…`).
+
 ## Tests and commands
 
 ```
 cd <attempt>/checkout/tools/monkey_campaign/contributions/ONT-P05
-python -B -m unittest test_implementation          # 23 tests, OK (fixtures, temp dirs)
-python -B implementation.py --out identity_audit.json   # official correction probe (exit 0)
+python -B -m unittest test_implementation          # 39 tests, OK (fixtures, temp dirs)
+python -B implementation.py --out identity_audit.json   # official load-evidence correction probe (exit 0)
 # batteries re-executed by the probe via: python -B -m unittest <module>
 #   in E:/PythonChimera/tools/monkey_campaign: test_kanban, test_suggestion_box,
 #   test_merge_service, test_checkpoints — all OK
@@ -201,11 +271,21 @@ lines, dual-label verification, tampered subject failing both oracles,
 missing algorithm label, missing retry markers, sparse merge receipts,
 failing battery, driver gap-naming. HashLabelTests run against a real
 temporary git repository so the blob-identity path is exercised.
-Correction fixtures (CheckpointStoreTests): a fully identified checkpoint
+Correction-1 fixtures (CheckpointStoreTests): a fully identified checkpoint
 set verifies with hash + header load + width law + hash-stable run records
 and NO rollout; missing store file, forged (non-npy) checkpoint, width
 mismatch, disagreeing run-record sites, a record naming another
 checkpoint, and an absent trainer-law token are each NAMED as findings.
+Correction-2 fixtures (NpyLoadEvidenceTests + two audit-level regressions,
+failing-first): complete fixture loads with exact payload and finite
+parameters; the lead's header-only and byte-exact 192→128 truncations,
+partial payload cuts, overlong payloads, short inputs, truncated header
+sections, bad magic/version, missing header fields, unparseable headers,
+unsupported dtypes (integer/object/big-endian/structured), nonfinite
+parameters (NaN/inf), malformed shape/fortran_order, missing header
+terminator — every one refuses BY NAME; at the audit level a truncated
+store checkpoint and a nonfinite checkpoint are named
+`checkpoint_load_refused`, never presented as load evidence.
 
 ## Limits
 
@@ -214,9 +294,11 @@ claim is made or needed (profile `records`, `nonvisual_reason`: a
 records/numerical-oracle task). Battery runs exercise fixture registries,
 not live state. The audit is read-only over the live registry and record
 trees; the only write is its `--out` report inside this attempt workspace.
-Checkpoint load evidence is a read-only structural parse of the `.npy`
-header against the trainer's width law; no MuJoCo rollout or engine/model
-start is performed, and the documented judge (`python tools/f4_walk.py
---theta <path>`) remains the restore consumer. Historical-record repair
-(F1/F2/F3) is OUT of scope: this card reconciles and qualifies the
-existing machinery; it does not rewrite preserved evidence.
+Checkpoint load evidence is a read-only COMPLETE-structure parse of the
+`.npy` file (header, payload length, finite parameter values) against the
+trainer's width and dtype laws; no MuJoCo rollout or engine/model start is
+performed, and the documented judge (`python tools/f4_walk.py --theta
+<path>`) remains the restore consumer — a numerical array load is kept
+distinct from a runtime restore. Historical-record repair (F1/F2/F3) is
+OUT of scope: this card reconciles and qualifies the existing machinery;
+it does not rewrite preserved evidence.

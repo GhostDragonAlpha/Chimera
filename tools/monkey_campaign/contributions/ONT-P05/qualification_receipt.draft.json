@@ -1,12 +1,12 @@
 {
  "schema": "ontology_qualification.draft.v1",
- "note": "DRAFT assembled by the CORRECTING worker per ONTOLOGY_QUEUE.md qualification schema (profile records, offline kind), answering the lead's CHANGES_REQUIRED on PR #146 head f1b18a55. evidence.source and evidence.numerical are final and hash-bound to THIS correction attempt; evidence.independent_review is intentionally PENDING — it must be pinned by the independent reviewer to the actual reviewed head in the review lane before ACCEPTED. The lead verifies all artifacts and raw hashes. The prior attempt's official probe (516e9edb...) and its F1/F2 findings are preserved unmodified.",
+ "note": "DRAFT assembled by the CORRECTING worker per ONTOLOGY_QUEUE.md qualification schema (profile records, offline kind), answering the lead's CHANGES_REQUIRED on PR #160 head 167ac282 (load-evidence completeness), which itself answered the lead's CHANGES_REQUIRED on PR #146 head f1b18a55. evidence.source and evidence.numerical are final and hash-bound to THIS correction attempt; evidence.independent_review is intentionally PENDING — it must be pinned by the independent reviewer to the actual reviewed head in the review lane before ACCEPTED. The lead verifies all artifacts and raw hashes. The superseded official probes (408135fd... at 167ac282, 516e9edb... at f1b18a55) and their F1/F2 findings are preserved unmodified.",
  "task_id": "P05",
  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
  "criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
  "head_sha": "FILL_AT_PUBLICATION: exact published review/ONT-P05 head",
  "done_when_verified": true,
- "done_when_note": "All five record classes EXIST and are machine-verified (recoverable commits, run-manifest schemas + modern records, training checkpoints, raw/blob/canonical labels, retry rules). CORRECTION: the training-checkpoints clause is now supported by an IDENTIFIED recoverable training-state artifact — walk_theta_entrained.npy (8f5dd3a68ec4d430a9883f267112b6f7b043ec1432dba6a59d131e87d2a9af92, npy <f8 shape (8,), width law N_FREE+2) and companions under E:/PythonChimera/ChimeraEngine/output/ports/, with run identity agent_logs/f4_walk_walk_theta_entrained.json (9cd272ea65bd30305d122b9c8b1e5b64b7265d3e60278d74db9b01b5746873aa) byte-identical at 3 preserved sites, stdlib read-only header-load evidence against the trainer width law, and the documented restore consumer cited but not executed; certified_policy_checkpoints = 0 is reported verbatim (no certified-walk checkpoint claimed; run verdict false). The standing audit preserves the TWO prior named historical-record findings (F1 agent_fleet MANIFEST.json unreproducible vs pinned source_base; F2 FEATURE_WALK raw-hash manifest frames unpreserved) re-confirmed 8/8, plus F3: the checkpoint store is single-site live data. No record was repaired or fabricated; no training run, GPU or rollout was used.",
+ "done_when_note": "All five record classes EXIST and are machine-verified (recoverable commits, run-manifest schemas + modern records, training checkpoints, raw/blob/canonical labels, retry rules). CORRECTION 1: the training-checkpoints clause is supported by an IDENTIFIED recoverable training-state artifact — walk_theta_entrained.npy (8f5dd3a68ec4d430a9883f267112b6f7b043ec1432dba6a59d131e87d2a9af92, npy <f8 shape (8,), width law N_FREE+2) and companions under E:/PythonChimera/ChimeraEngine/output/ports/, with run identity agent_logs/f4_walk_walk_theta_entrained.json (9cd272ea65bd30305d122b9c8b1e5b64b7265d3e60278d74db9b01b5746873aa) byte-identical at 3 preserved sites and the documented restore consumer cited but not executed; certified_policy_checkpoints = 0 is reported verbatim (no certified-walk checkpoint claimed; run verdict false). CORRECTION 2 (load evidence, addendum 2 C3): the .npy load evidence is now a COMPLETE-structure read-only parse — version magic, full header dictionary (descr/fortran_order/shape), supported dtype (<f8/<f4 per the named writer/consumer law), payload length EXACTLY count(shape)*itemsize, and finite parameter values — with named refusals for short inputs, truncated headers, absent/truncated/overlong payloads, incompatible dtypes and nonfinite parameters; the lead's reproduced falsifier (192-byte real checkpoint truncated to its 128-byte header) now refuses npy_payload_truncated:expected=64,present=0 instead of yielding a plausible <f8 (8,), and all four real checkpoints still load complete and finite (before/after outputs hash-recorded in npy-load-correction-evidence.json). The standing audit preserves the TWO prior named historical-record findings (F1 agent_fleet MANIFEST.json unreproducible vs pinned source_base; F2 FEATURE_WALK raw-hash manifest frames unpreserved) re-confirmed 8/8+8/8, plus F3: the checkpoint store is single-site live data. No record was repaired or fabricated; no training run, GPU or rollout was used.",
  "profile_verified": true,
  "profile": {
   "id": "records",
@@ -18,11 +18,11 @@
  "evidence": {
   "source": {
    "reference": "tools/monkey_campaign/contributions/ONT-P05/implementation.py @ published correction head",
-   "raw_sha256": "7d88d3a3b4624ef7ced90567230538f14669b04cff7a55b1f5954b5e855aa138"
+   "raw_sha256": "e45d837d8a32de28449e851b8ec3452141c861f729406177c0987782db6b3cd2"
   },
   "numerical": {
-   "reference": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json (official correction probe; rerunnable: python -B implementation.py --out identity_audit.json); prior attempt's official probe 516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88 preserved unmodified",
-   "raw_sha256": "408135fd46a83966f27495f641c2dc66a67fb3f777aebdc1e483a5d5530de9e6"
+   "reference": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json (official load-evidence correction probe, run 4; rerunnable: python -B implementation.py --out identity_audit.json); superseded official probes 408135fd46a83966f27495f641c2dc66a67fb3f777aebdc1e483a5d5530de9e6 (@ 167ac282) and 516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88 (@ f1b18a55) preserved unmodified; lead falsifier before/after in npy-load-correction-evidence.json (626fe5b3031f8f9e5523922093389ac91deedd3188dacafd6fa0c13022018e62)",
+   "raw_sha256": "30f339244dd683cd2ea9bebf0223ffccee860ad9ee3891e489cf846459489d9e"
   },
   "independent_review": {
    "reference": "PENDING: independent review receipt (review lane, exact published head)",
@@ -31,11 +31,12 @@
  },
  "falsifier_scorecard": {
   "missing_identity_unnamed": "NOT FIRED (all gaps named in identity_audit.json findings: F1, F2)",
-  "claimed_pass_unsupported_by_records": "NOT FIRED (run-manifests clause reports PARTIAL; prediction P3 failure reported, not tuned away; training-checkpoints clause now rests on an identified artifact with recomputed hash, not on schema/law alone)",
+  "claimed_pass_unsupported_by_records": "NOT FIRED (run-manifests clause reports PARTIAL; prediction P3 failure reported, not tuned away; training-checkpoints clause rests on an identified artifact whose load evidence now proves the complete stored structure, not just its header)",
   "fabricated_identity": "NOT FIRED (every field read from live records with recomputed hashes)",
-  "record_write_or_repair": "NOT FIRED (audit is read-only; fixtures in temp dirs only)",
+  "record_write_or_repair": "NOT FIRED (audit is read-only; fixtures and reprobe falsifier inputs in temp dirs only)",
   "hash_label_conflation": "NOT FIRED (raw/blob/canonical reported as three distinct labeled identities)",
-  "checkpoint_relabeling": "NOT FIRED (only genuine trainer-written .npy policy-parameter checkpoints are identified; no non-checkpoint file relabeled; certified_policy_checkpoints = 0 reported verbatim; no rollout executed)"
+  "checkpoint_relabeling": "NOT FIRED (only genuine trainer-written .npy policy-parameter checkpoints are identified; no non-checkpoint file relabeled; certified_policy_checkpoints = 0 reported verbatim; no rollout executed)",
+  "header_only_load_evidence": "FIRED BY THE LEAD, NOW CLOSED: the superseded parse accepted a 128-byte header-only truncation of the real 192-byte checkpoint as <f8 (8,); the corrected parser refuses npy_payload_truncated (and npy_payload_overlong / npy_dtype_unsupported / npy_parameter_nonfinite / npy_input_too_short / npy_header_truncated) by name, with failing-first regressions and preserved first-run outputs"
  },
- "attempt_id": "d7e4d5e96bb741c7b434f94d4bc3c560"
+ "attempt_id": "2cce3c17ff664ef38581bd9669a12ec8"
 }

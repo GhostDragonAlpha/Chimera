@@ -15,11 +15,21 @@ training-checkpoints clause now also IDENTIFIES actual recoverable
 training-state artifacts -- the gait trainer's saved policy-parameter
 checkpoints (`ports` store) with recomputed hashes, their preserved run
 records (hash-identical across preserved worktrees) as run/source identity,
-and load/restore evidence appropriate to the `.npy` format: a stdlib-only
-read-only header parse validated against the trainer's own width law
-(`N_FREE = 2 * len(OSC_JOINTS)`). No rollout is executed; the documented
-judge command is cited as the restore consumer, never run here. Checkpoint
-verdicts are reported verbatim from the records (none is a certified walk).
+and load/restore evidence appropriate to the `.npy` format. No rollout is
+executed; the documented judge command is cited as the restore consumer,
+never run here. Checkpoint verdicts are reported verbatim from the records
+(none is a certified walk).
+
+CORRECTION 2 (lead CHANGES_REQUIRED on PR #160 head 167ac282; addendum 2 C3
+frozen before this probe): the `.npy` load evidence is a COMPLETE-structure
+read-only parse -- magic, version, full header dictionary
+(descr/fortran_order/shape), supported dtype against the named
+writer/consumer law, payload length exactly count(shape)*itemsize, and
+finite parameter values -- with named refusals for short inputs, truncated
+headers, absent/truncated/overlong payloads, incompatible dtypes and
+nonfinite parameters. A 192-byte real checkpoint truncated to its 128-byte
+header now refuses (`npy_payload_truncated`) instead of yielding a
+plausible `<f8 (8,)`.
 
 Exit 0 = audit tabled (findings, if any, are the work product). Exit 2 =
 structural failure to read a named record root. All probes are read-only;
@@ -28,10 +38,13 @@ the only write this tool performs is its own --out report path.
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import json
+import math
 import pathlib
 import re
+import struct
 import subprocess
 import sys
 
@@ -47,21 +60,32 @@ HEX64 = re.compile(r"[0-9a-f]{64}")
 HEX40 = re.compile(r"[0-9a-f]{40}")
 
 EXPECTED = {
-    "arrival_id": "arrival-0aa44ef399f64a029e1a268ffcaac2af",
-    "attempt_id": "d7e4d5e96bb741c7b434f94d4bc3c560",
+    "arrival_id": "arrival-9887482e6c724936826aae1c7c7c8373",
+    "attempt_id": "2cce3c17ff664ef38581bd9669a12ec8",
     "task_id": "ONT-P05",
     "criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
-    "receipt_stem": "733183cf8ddc94bfadccbef337858f41c517f0aafb63f8c9a85d977727ab252c",
+    "receipt_stem": "e253f0ccd00b0e8bb0c48d6cacb5d62d1feaeb282ec0a9b447bc751e2e810ab1",
 }
 SCOPE_ANCHOR = "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6"
-# Prior attempt's official probe artifact, preserved unmodified as historical
+# Superseded official probe artifacts, preserved unmodified as historical
 # evidence (lead: "Preserve the useful audit and historical F1/F2 evidence").
-PRIOR_PROBE = {
-    "path": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json @ "
-            "review/ONT-P05 f1b18a55c58bef45bb25dacadde162f0ff09f9c1",
-    "raw_sha256": "516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88",
-    "prior_attempt_id": "1ea58bee28c04768b15253c2f1ba7888",
-}
+# The immediately superseded head 167ac282 (correction leg, attempt
+# d7e4d5e96bb741c7b434f94d4bc3c560) published 408135fd...; the first audit
+# head f1b18a55 (attempt 1ea58bee28c04768b15253c2f1ba7888) published
+# 516e9edb...; both carried the F1/F2 findings verbatim.
+PRIOR_PROBES = [
+    {"path": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json @ "
+             "review/ONT-P05 167ac282896f639a8115a9a778d1cf3c4b116ea5",
+     "raw_sha256": "408135fd46a83966f27495f641c2dc66a67fb3f777aebdc1e483a5d5530de9e6",
+     "prior_attempt_id": "d7e4d5e96bb741c7b434f94d4bc3c560",
+     "note": "immediately superseded correction probe (run 3); its "
+             "header-only load evidence is superseded by addendum 2 C3"},
+    {"path": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json @ "
+             "review/ONT-P05 f1b18a55c58bef45bb25dacadde162f0ff09f9c1",
+     "raw_sha256": "516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88",
+     "prior_attempt_id": "1ea58bee28c04768b15253c2f1ba7888",
+     "note": "original audit probe (run 2)"},
+]
 WINNER_MERGES = {
     "ONT-P03": "736d12cca04964c333410a41ac31ced4bd004344",
     "ONT-P01": "391f0ede0ebc2f4072c62c3386827b1b4eefc88e",
@@ -94,6 +118,11 @@ CHECKPOINT_STORE = [
     ("stand_theta.npy", "stand substrate policy checkpoint"),
     ("step_theta.npy", "step policy checkpoint"),
 ]
+# Load-evidence dtype law (correction addendum 2, C3(d)): the writer of
+# record (train_walk.py np.save) and the restore consumer (f4_walk.py
+# np.load --theta) exchange little-endian IEEE float vectors; any other
+# dtype (object/structured/big-endian/integer) refuses by name.
+SUPPORTED_NPY_DTYPES = {"<f4": 4, "<f8": 8}
 # Preserved run records that NAME the walk checkpoint and carry its trained
 # metrics + verdict. All three sites must be byte-identical; verdict is
 # reported verbatim (no certified-walk claim is made or inherited).
@@ -318,36 +347,107 @@ def audit_run_manifests(fleet_manifest, walk_manifest, schema_sources, sample=8,
 
 # ---------------------------------------------------------------- clause 3
 def parse_npy_header(path):
-    """Stdlib-only, read-only structural load of a .npy checkpoint.
+    """Stdlib-only, read-only COMPLETE-structure load of a .npy checkpoint.
 
-    Parses the npy magic and the header fields (descr/shape) per the
-    format's own grammar -- the same fields numpy's loader reads -- without
-    importing numpy. The header is a Python literal (numpy writes
-    ``{'descr': '<f8', 'fortran_order': False, 'shape': (8,)}``), so the
-    fields are extracted by pattern, not JSON. This is the load evidence
-    appropriate to the format; it is NOT a rollout and starts no model.
+    Correction (lead CHANGES_REQUIRED on PR #160 head 167ac282; addendum 2
+    C3 frozen in PREREGISTRATION.md before the correction probe): a
+    complete-looking header over a missing payload is NOT load evidence.
+    This parser therefore validates the whole npy structure and refuses
+    everything else by a NAMED ValueError, never returning a plausible
+    dtype/shape for an unloadable file:
+
+    (a) short inputs refuse by name (``npy_input_too_short`` /
+        ``npy_header_truncated``) -- no blind indexing after the magic;
+    (b) ``\\x93NUMPY`` magic with a supported version major (1/2/3) and the
+        header-length width that version prescribes (``npy_magic_missing``,
+        ``npy_version_unsupported``);
+    (c) the full header dictionary -- descr, fortran_order and shape ALL
+        present and well-formed, parsed strictly (ast.literal_eval) from the
+        newline-terminated header literal (``npy_header_unparseable``,
+        ``npy_header_fields_missing``, ``npy_fortran_order_invalid``,
+        ``npy_shape_invalid``);
+    (d) dtype supported against the named consumer law (train_walk.py
+        np.save writer / f4_walk.py np.load --theta consumer exchange
+        little-endian IEEE floats): only ``<f8``/``<f4``
+        (``npy_dtype_unsupported``);
+    (e) payload completeness: EXACTLY count(shape) * itemsize bytes must
+        follow the header -- fewer refuses ``npy_payload_truncated``, more
+        refuses ``npy_payload_overlong`` (the lead's falsifier: the real
+        192-byte checkpoint cut to its 128-byte header now refuses);
+    (f) finite parameter validation: every stored value is struct-unpacked
+        and must be finite (``npy_parameter_nonfinite``).
+
+    The header dict is a Python literal (numpy writes
+    ``{'descr': '<f8', 'fortran_order': False, 'shape': (8,)}``). This is a
+    read-only structural load of the actual stored parameters; it is NOT a
+    rollout and starts no model.
     """
     raw = pathlib.Path(path).read_bytes()
+    if len(raw) < 8:
+        raise ValueError(f"npy_input_too_short:{len(raw)}bytes")
     if raw[:6] != b"\x93NUMPY":
         raise ValueError("npy_magic_missing")
     major = raw[6]
     if major == 1:
-        hlen = int.from_bytes(raw[8:10], "little")
-        body = raw[10:10 + hlen]
+        hlen_off, hlen_size = 10, 2
     elif major in (2, 3):
-        hlen = int.from_bytes(raw[8:12], "little")
-        body = raw[12:12 + hlen]
+        hlen_off, hlen_size = 12, 4
     else:
-        raise ValueError("npy_version_unsupported")
-    text = body.decode("utf-8", "replace")
-    m_descr = re.search(r"'descr'\s*:\s*'([^']+)'", text)
-    m_shape = re.search(r"'shape'\s*:\s*\(([^)]*)\)", text)
-    if not m_descr or not m_shape:
-        raise ValueError("npy_header_fields_missing")
-    shape = [int(p) for p in m_shape.group(1).replace(" ", "").split(",") if p.strip()]
-    m_fort = re.search(r"'fortran_order'\s*:\s*(\w+)", text)
-    return {"descr": m_descr.group(1), "shape": shape,
-            "fortran_order": bool(m_fort and m_fort.group(1) == "True")}
+        raise ValueError(f"npy_version_unsupported:{major}")
+    if len(raw) < hlen_off:
+        raise ValueError("npy_header_truncated")
+    hlen = int.from_bytes(raw[8:8 + hlen_size], "little")
+    if len(raw) < hlen_off + hlen:
+        raise ValueError(
+            f"npy_header_truncated:declared={hlen},present={len(raw) - hlen_off}")
+    body = raw[hlen_off:hlen_off + hlen]
+    if not body.endswith(b"\n"):
+        raise ValueError("npy_header_terminator_missing")
+    try:
+        text = body.decode("utf-8")
+    except UnicodeDecodeError:
+        raise ValueError("npy_header_not_decodable")
+    try:
+        head = ast.literal_eval(text.strip())
+    except (ValueError, SyntaxError, MemoryError, RecursionError):
+        raise ValueError("npy_header_unparseable")
+    if not isinstance(head, dict):
+        raise ValueError("npy_header_not_a_dict")
+    missing = [key for key in ("descr", "fortran_order", "shape")
+               if key not in head]
+    if missing:
+        raise ValueError("npy_header_fields_missing:" + ",".join(missing))
+    descr = head["descr"]
+    if not isinstance(descr, str) or descr not in SUPPORTED_NPY_DTYPES:
+        raise ValueError(f"npy_dtype_unsupported:{descr!r}")
+    itemsize = SUPPORTED_NPY_DTYPES[descr]
+    fortran = head["fortran_order"]
+    if not isinstance(fortran, bool):
+        raise ValueError(f"npy_fortran_order_invalid:{fortran!r}")
+    shape = head["shape"]
+    if not isinstance(shape, tuple) or not all(
+            isinstance(dim, int) and not isinstance(dim, bool) and dim >= 0
+            for dim in shape):
+        raise ValueError(f"npy_shape_invalid:{shape!r}")
+    count = 1
+    for dim in shape:
+        count *= dim
+    needed = count * itemsize
+    payload = raw[hlen_off + hlen:]
+    if len(payload) < needed:
+        raise ValueError(
+            f"npy_payload_truncated:expected={needed},present={len(payload)}")
+    if len(payload) > needed:
+        raise ValueError(
+            f"npy_payload_overlong:expected={needed},present={len(payload)}")
+    values = struct.unpack({4: "<%df", 8: "<%dd"}[itemsize] % count, payload)
+    for index, value in enumerate(values):
+        if not math.isfinite(value):
+            raise ValueError(f"npy_parameter_nonfinite:index={index}")
+    return {"descr": descr, "shape": list(shape), "fortran_order": fortran,
+            "version": [major, raw[7]], "itemsize": itemsize,
+            "payload_bytes": len(payload), "expected_payload_bytes": needed,
+            "parameters_finite": True}
 
 
 def n_free_from_law(walk_port_text):
@@ -432,7 +532,11 @@ def audit_training_checkpoints(curriculum_path, receipts, schema_sources,
                "size_bytes": path.stat().st_size,
                "load_evidence": {"format": "npy", "descr": head["descr"],
                                  "shape": head["shape"],
-                                 "read_only_header_parse": "ok"},
+                                 "version": head["version"],
+                                 "payload_bytes": head["payload_bytes"],
+                                 "expected_payload_bytes": head["expected_payload_bytes"],
+                                 "parameters_finite": head["parameters_finite"],
+                                 "read_only_complete_load_parse": "ok"},
                "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)"}
         # width law: plain walk width == N_FREE; entrained width == N_FREE + 2
         if name.startswith("walk_theta"):
@@ -486,7 +590,7 @@ def audit_training_checkpoints(curriculum_path, receipts, schema_sources,
                                   "artifacts; no certified-walk checkpoint exists (run "
                                   "verdicts reported verbatim) and the store is live "
                                   "single-site data preserved by the campaign checkout"),
-            "prior_probe_preserved": PRIOR_PROBE,
+            "prior_probes_preserved": PRIOR_PROBES,
             "findings": findings, "satisfied": not findings}
 
 
@@ -620,7 +724,7 @@ def audit(paths, battery_runner=None):
 
 
 DEFAULT_PATHS = {
-    "checkout": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-P05/d7e4d5e96bb741c7b434f94d4bc3c560/checkout",
+    "checkout": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-P05/2cce3c17ff664ef38581bd9669a12ec8/checkout",
     "receipts_dir": "E:/ChimeraWork/monkey-coordination/startup-receipts",
     "fleet_manifest": "E:/ChimeraWork/monkey-play-20260924/docs/evidence/agent_fleet/MANIFEST.json",
     "walk_manifest": "E:/ChimeraWork/monkey-play-20260924/docs/evidence/agent_fleet/FEATURE_WALK/MANIFEST_sha256.txt",

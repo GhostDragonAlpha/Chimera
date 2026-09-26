@@ -218,3 +218,70 @@ extended audit after this freeze. All bounds above still apply: read-only
 records oracles, stdlib-only (the `.npy` header is parsed without numpy),
 CPU-only, no GPU, no engine or model start, no MuJoCo rollout, writes only
 inside this attempt workspace.
+
+## CORRECTION ADDENDUM 2 (2026-09-26, FROZEN BEFORE THE LOAD-EVIDENCE CORRECTION PROBE RUN; lead CHANGES_REQUIRED on PR #160 head 167ac282896f639a8115a9a778d1cf3c4b116ea5)
+
+The lead's reproduced falsifier: `parse_npy_header` labeled header
+inspection as format-appropriate load evidence, but it accepts a checkpoint
+file with ALL parameter payload removed — the real 192-byte
+`walk_theta_entrained.npy` truncated to its 128-byte header still parses as
+descr `<f8`, shape `(8,)`, fortran_order False. There are no eight float64
+values to recover; a complete-looking header over a missing payload is NOT
+recoverable-load evidence. The parser also indexes byte 6 without a length
+guard after the magic. This addendum is frozen BEFORE the correction probe
+(run 4, the official load-evidence correction run) and before any post-fix
+probe; no new training run, no GPU, no rollout is authorized or performed.
+
+C3. Load-evidence completeness (frozen before the correction probe). The
+    read-only stdlib parser behind the training-checkpoint clause must
+    validate the COMPLETE `.npy` structure and refuse everything else by a
+    NAMED error; it must never return a plausible dtype/shape for an
+    unloadable file:
+    (a) short-input named refusals: a file shorter than the fixed npy
+        prefix, or a header section shorter than its declared length, is
+        refused (`npy_input_too_short`, `npy_header_truncated`) — no blind
+        indexing of bytes 6/8;
+    (b) version/magic: `\x93NUMPY` magic with a supported format major
+        (1/2/3) and the header-length field width that version prescribes
+        (`npy_magic_missing`, `npy_version_unsupported`);
+    (c) full header dictionary: `descr`, `fortran_order` and `shape` ALL
+        present and well-formed, parsed strictly from the newline-terminated
+        header literal (`npy_header_unparseable`,
+        `npy_header_fields_missing`, `npy_fortran_order_invalid`,
+        `npy_shape_invalid`);
+    (d) supported dtype against the named consumer law — the writer
+        (train_walk.py `np.save`) and restore consumer (f4_walk.py
+        `np.load --theta`) exchange little-endian IEEE float vectors —
+        limited to `<f8`/`<f4`; object/structured/big-endian/integer dtypes
+        refuse (`npy_dtype_unsupported`);
+    (e) payload completeness: EXACTLY count(shape) * itemsize payload bytes
+        must follow the header — fewer refuses `npy_payload_truncated`,
+        more refuses `npy_payload_overlong` (the lead's 192→128 truncation
+        case must yield `npy_payload_truncated`, never `<f8 (8,)`);
+    (f) finite parameter validation: every stored parameter value is
+        struct-unpacked and must be finite; any NaN/inf refuses
+        (`npy_parameter_nonfinite`).
+    Failing-first regressions derived from the lead's reprobe cases
+    (truncated header, absent/truncated/overlong payload, incompatible
+    dtype, nonfinite parameters, short input) are added to
+    test_implementation.py and must FAIL against the superseded
+    implementation before the fix; first-run (failing) output is preserved.
+    The four real checkpoints under
+    E:/PythonChimera/ChimeraEngine/output/ports/ (read-only evidence, never
+    modified) must still load with COMPLETE payloads and finite parameters
+    under the stricter parser; run identity (`f4_walk_walk_theta_entrained.json`,
+    hash-identical at three preserved sites), verdict FALSE verbatim,
+    `certified_policy_checkpoints: 0`, the no-rollout boundary (restore
+    consumer cited, never executed) and prior findings F1/F2/F3 are
+    preserved. Also frozen: the audit's own-identity binding moves to THIS
+    attempt (`arrival-9887482e6c724936826aae1c7c7c8373`, assignment
+    `2cce3c17ff664ef38581bd9669a12ec8`, branch `branch-3`, receipt stem
+    `e253f0ccd00b0e8bb0c48d6cacb5d62d1feaeb282ec0a9b447bc751e2e810ab1`);
+    the superseded heads' official probes `identity_audit.json`
+    (`408135fd46a83966f27495f641c2dc66a67fb3f777aebdc1e483a5d5530de9e6` and
+    `516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88`) and
+    the F1/F2 findings are preserved unmodified as historical evidence.
+    All bounds above still apply: read-only records oracles, stdlib-only
+    (the `.npy` structure is parsed without numpy), CPU-only, no GPU, no
+    engine or model start, no MuJoCo rollout, writes only inside this
+    attempt workspace.
