@@ -1,0 +1,1495 @@
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/PREREGISTRATION.md b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/PREREGISTRATION.md
+new file mode 100644
+index 00000000..27b48224
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/PREREGISTRATION.md
+@@ -0,0 +1,189 @@
++# I-S02-PACKAGE-PREFLIGHT-FOLLOWUP — PREREGISTRATION (frozen before implementation)
++
++Card `I-S02-PACKAGE-PREFLIGHT-FOLLOWUP` (development slot 3), attempt
++`c469c25457294a6daf5cbc8aba8a40bd`, agent `arrival-cfc4a71bdf25473585dd24f1fd8aacae`,
++criteria `b19c2b9e09610d10f9dd7e770e8735216aaa65c8c8e6001242cff396a03e8afc`.
++Bounded implementation; CPU-only; no GPU; no engine start; no training; **no game
++package is built, published or distributed by this card**; no mesh/model copied;
++no production checkout edited. Every statement below was frozen BEFORE
++`implementation.py` / `test_implementation.py` were written. All reads of the source
++repository were read-only `git show` from the attempt checkout (branch-3, head
++`c525b82c7c3ce0128565424764293a3c85811ab3`); zero working-tree files outside this
++contribution directory are touched.
++
++## 0. Physical quantities
++
++This card consumes **no physical quantity**. Every number it freezes or measures is a
++byte identity (file size in bytes, SHA-256 of exact bytes) or a test count. Nothing
++here derives from, or alters, a physics constant, threshold, seed or training artifact.
++S02's "clean machine launches" clause is not claimed by this card; the card only
++connects two existing artifacts (packager lane inputs -> preflight manifest).
++
++## 1. Pinned dependency lineage (byte-pin discipline)
++
++Dependency: card `I-S02-PACKAGE-PREFLIGHT`, winning PR #153
++(head `e0a0abc83c714dac7ae399da872ec9bdb376186f`, merge `e449405f3cfdad7ab69536c474c9bf6f4fbfc68c`,
++merged 2026-09-26T19:39:36Z, per the frozen board record).
++
++The winning checker is vendored BYTE-PINNED into this contribution:
++
++- upstream path: `tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/package_preflight.py`
++  at head `e0a0abc8`
++- vendored path: `reference/package_preflight__e0a0abc8.py`
++- frozen identity: **11458 bytes, sha256
++  `1f81f62e3ad1b7030fd2d1de7d6d932bbdf323b8533c89c36e462bf29e246ba2`**
++- the adapter loads it BY PATH and re-verifies that sha256 before first use; any byte
++  drift is a named `PIN-MISMATCH` refusal (falsifier F5). The checker's code is never
++  copied, edited or re-implemented here.
++
++## 2. The packager's actual entry point (identified, read-only, before any edit)
++
++Searched the PR base `astra/gait-capture` @ `5e54c0b7` (the base of BOTH the winning
++PR #153 and this followup) via `git ls-tree`/`git grep`/`git show`. The current
++packaging lane is the **R1 double-click launch pair**:
++
++| lane file @ 5e54c0b7 | bytes | sha256 | role (read from its own bytes) |
++|---|---|---|---|
++| `DEMO.bat` | 250 | `92cbcceca31a80a52e189659a3c613c03dece695ed2fd8bf7654a6b41f4df690` | "Double-click this" -> `powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\run_demo.ps1" %*` |
++| `tools/run_demo.ps1` | 3605 | `6b12c3f7dbc6ec5d9f42b927f42f002eb5eb58169f661db3ee4333fc000eb089` | finds installed python, frees port 8765, starts `ChimeraEngine\gallery.py`, waits for `/live` |
++| `ChimeraEngine/gallery.py` | 7353 | `8a326949b81175274109492e2200edd6bdab2f6cffba1dc45a723fe7103fd12a` | serves `gallery.html`; imports `splat_appearance` and (try/except) `live_viewer` |
++| `ChimeraEngine/gallery.html` | 3187 | `5640c54f4539a548c56a1befaa31e0be504353e2c6eb75b2c406c480d730c6e2` | gallery page served by gallery.py |
++| `ChimeraEngine/splat_appearance.py` | 33275 | `3fa559e46d6d93584892c694400683286a22f43c7a1343a8016bd996ed67869e` | imported by gallery.py |
++| `ChimeraEngine/live_viewer.py` | 122566 | `4a223b7d4dd3bf1c154ccdee2f0ce9bbda33e0953eab7ef25b8e6a0494f61adb` | the live engine viewer (optional at gallery import time) |
++
++All six are byte-identical at this attempt's head `c525b82c` and at the PR base.
++
++Explicitly ruled OUT as the current packager entry point (recorded with their actual
++identities at `5e54c0b7`):
++
++- `Chimera/core/uat_packager.py` (9283 B, `8ba24dfea4a8453ac38fe5190ed1b028135a2586beb5b01d6fbaf1be55642ed2`)
++  — RETIRED Unreal-era packager; detects Unreal Engine, not this game.
++- `ChimeraEngine/demo.py` + `ChimeraEngine/demo_output/demo_manifest.json`
++  (14217 B / `4aad0ca1…`, 253 B / `52112118…`) — a scripted camera-flight VIDEO tour;
++  its "manifest" is render-output metadata, not a distribution manifest.
++- `ChimeraEngine/bake_splats.py` + `ChimeraEngine/baked/bake_manifest.json`
++  (6395 B / `7eb8bcea…`, 7554 B / `a5ce8b0c…`) — engine-internal splat-bake CACHE
++  manifest (per-membrane `.npz`, truncated hashes), not a package manifest.
++- `tools/playable_slice/` (the other double-click lane, `PlayableSlice.bat`) — exists
++  only on the `monkey-play-20260924` branch lineage, NOT on this PR's base
++  `astra/gait-capture`; out of this PR's lineage.
++
++Honest boundary: there is STILL no self-contained-package BUILDER on this lineage (the
++winning report's finding stands at the current base). `gallery.py`'s optional
++`live_viewer` import closure reaches the whole engine (`ParticleEngine`, `matter`,
++`theHuman`, `walker`, `one`, `lod`, `perf_guard`, `controller`, `touchables`,
++`human_messenger` + third-party `numpy`/`PIL`) — the complete closure is future S02
++builder work. This card therefore delivers the missing **manifest producer/adapter**
++that (a) names the lane's actual declared inputs, (b) turns an EXTERNAL admission
++decision over those inputs into a byte-pinned `chimera.package.manifest.v1` the
++winning checker consumes, and (c) audits a staged tree for undeclared leftovers.
++
++## 3. Expected behavior (the adapter's contract, frozen)
++
++`implementation.py` (in this directory) provides, importing the pinned checker from
++`reference/package_preflight__e0a0abc8.py` (path-loaded, sha-verified):
++
++1. `load_pinned_preflight()` -> the pinned module; refuses `PIN-MISMATCH` unless the
++   vendored bytes hash to the frozen `1f81f62e…` digest.
++2. `produce_manifest(package_root, admission, *, package_name, max_file_bytes=1048576,
++   declared_dependencies=None, extra_dev_root_patterns=())` ->
++   `ManifestProduction` with verdict exactly `MANIFEST-PRODUCED` or `MANIFEST-REFUSED`:
++   - the manifest declares ONLY files the admission record lists (the producer never
++     enumerates directories for declaration — the admission list is the source of
++     truth); an unapproved asset structurally cannot enter the manifest;
++   - per admitted path it records: `path` (package-relative, forward slashes),
++     `bytes` (actual size), `sha256` (hex digest of a bounded read of at most
++     `max_file_bytes`), `text_config` (verbatim from the admission row),
++     `role` and `admission_ref` (verbatim from the admission row — license/admission
++     decisions stay EXPLICIT and EXTERNAL; the producer expresses no permission
++     semantics of its own);
++   - the manifest carries `schema = "chimera.package.manifest.v1"` (the pinned
++     checker's constant, used verbatim), a positive integer `max_file_bytes`,
++     `declared_dependencies` (caller-supplied `{"modules": [...], "system": [...]}`),
++     and records `dev_root_patterns` (caller extension) for the runbook to pass back
++     to `preflight(..., dev_root_patterns=...)`;
++   - canonical output: `canonical_json()` is `json.dumps(..., sort_keys=True,
++     indent=2, ensure_ascii=True)` + one trailing `\n`, with NO absolute path, NO
++     source-root reference and NO timestamp — byte-identical for identical content
++     regardless of the package's location on disk;
++   - ALL-OR-NOTHING: any refusal yields `MANIFEST-REFUSED` with a list of named
++     refusals and `manifest is None` (fail closed, no partial manifest):
++     `ADMISSION-MALFORMED` (missing `source`/`entries`), `ADMISSION-INCOMPLETE`
++     (row missing `path`/`role`/`decision_ref`), `PRODUCER-DUP` (same path admitted
++     twice), `PRODUCER-PATH` (absolute / drive-anchored / UNC / `..` segment),
++     `SOURCE-MISSING` (admitted file absent at `package_root`), `SOURCE-NOT-FILE`
++     (admitted path is a directory), `PRODUCER-OVERSIZE` (file larger than the cap —
++     mirroring the checker's bounded-read law), `PRODUCER-TEXT` (`text_config` row
++     that does not decode as UTF-8), `PRODUCER-DEPS` (declared_dependencies not a
++     dict of lists of str).
++3. `audit_staging(package_root, manifest)` -> `StagingAudit` with named findings:
++   `STAGE-UNDECLARED` (a regular file present in the staged tree that no manifest
++   entry declares), `STAGE-MISSING` (a declared entry absent on disk), `STAGE-NOT-FILE`
++   (a declared path that is not a regular file). Findings are sorted by
++   (check, path); stats record `files_seen`. This is the one enumerating step, and it
++   runs in the BUILDER's workspace before publication — the pinned checker itself is
++   never asked to enumerate.
++4. `run_preflight(package_root, manifest)` -> convenience connective tissue: calls the
++   PINNED module's `preflight(manifest, package_root,
++   dev_root_patterns=manifest.get("dev_root_patterns", ()))` and returns its result
++   unchanged. The adapter adds no verdict of its own.
++
++## 4. Falsifiers (frozen before implementation; each maps to named tests)
++
++- **F1 relocation**: identical synthetic content staged at two different roots must
++  give byte-identical `canonical_json()`, and the PINNED checker must return
++  `PREFLIGHT-PASS` with identical `findings_json()` at both roots; a corrupted staged
++  file must fail IDENTICALLY at both roots (same verdict, same findings bytes).
++  Test names: `test_f1_manifest_bytes_identical_across_roots`,
++  `test_f1_preflight_pass_identical_at_both_roots`,
++  `test_f1_corruption_fails_identically_at_both_roots`.
++- **F2 missing asset**: an admitted file absent at `package_root` must yield
++  `MANIFEST-REFUSED` with `SOURCE-MISSING` and `manifest is None`; a file deleted
++  AFTER a manifest was produced must be caught by the pinned checker as `P-MISSING`.
++  Tests: `test_f2_missing_admitted_file_refuses_production`,
++  `test_f2_deleted_after_production_fires_p_missing`.
++- **F3 undeclared development paths**:
++  (a) a `text_config` whose content embeds a development root string
++  (`E:/PythonChimera`) must be declared faithfully (hash correct) but the pinned
++  checker must fire `P-DEVROOT` naming the pattern and return `PREFLIGHT-FAIL`;
++  (b) a staged file absent from the admission record must be named `STAGE-UNDECLARED`
++  by `audit_staging` and must NOT appear in manifest entries.
++  Tests: `test_f3_devroot_string_fires_p_devroot`,
++  `test_f3_undeclared_staged_file_named_and_excluded`.
++- **F4 admission externality**: an admission row without `decision_ref` must refuse
++  `ADMISSION-INCOMPLETE`; an admission record without an external `source` line must
++  refuse `ADMISSION-MALFORMED`; every produced entry carries `role` +
++  `admission_ref`; and the producer's verdict vocabulary
++  (`MANIFEST-PRODUCED`/`MANIFEST-REFUSED` + refusal codes) contains no
++  distribution-permission claim (the only PASS/FAIL words in the system belong to the
++  pinned checker's structural verdicts). Tests:
++  `test_f4_missing_decision_ref_refuses`, `test_f4_missing_source_refuses`,
++  `test_f4_entries_carry_external_admission_refs`,
++  `test_f4_no_permission_verdict_in_producer_vocabulary`.
++- **F5 byte-pin**: the vendored reference module must hash to
++  `1f81f62e3ad1b7030fd2d1de7d6d932bbdf323b8533c89c36e462bf29e246ba2` and the adapter
++  must route ALL checking through it (its `SCHEMA`/`VERDICTS` objects are used
++  verbatim); a tampered copy in a scratch directory must be refused `PIN-MISMATCH`.
++  Tests: `test_f5_vendored_bytes_match_pin`, `test_f5_tampered_copy_refused`,
++  `test_f5_schema_verdicts_come_from_pinned_module`.
++- **F6 unapproved asset exclusion (structural)**: staging MORE files than admitted
++  must still produce a manifest declaring exactly the admitted set — the extra files
++  appear only as `STAGE-UNDECLARED` audit findings, never as entries. Tests:
++  `test_f6_manifest_declares_exactly_admitted_set`.
++
++## 5. Test constraints
++
++`python -B -m unittest test_implementation` from this directory; CPU-only; every test
++builds its synthetic minimal package under `TemporaryDirectory`; no repository source
++file is opened by any test (the only repo-owned bytes read are this contribution's own
++vendored `reference/` copy, for the F5 pin check); no network; no junction/symlink
++creation required by any test (the pinned checker's junction coverage is inherited, not
++re-tested); fixtures are labeled fixtures — nothing here is native-acceptance evidence,
++and no runtime/visual gate of S02 is claimed exercised.
++
++## 6. Out of scope, by construction
++
++No installer step; no publishing; no game package artifact committed; no claim of
++commercial or distribution rights (S01's BLOCKED-FOR-SHIP MorphoSource rows stand
++untouched and cannot be blessed by anything here); no change to any physics/threshold
++source; no edit outside this contribution directory.
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/implementation.py b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/implementation.py
+new file mode 100644
+index 00000000..a76a78e3
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/implementation.py
+@@ -0,0 +1,424 @@
++"""implementation.py -- I-S02-PACKAGE-PREFLIGHT-FOLLOWUP: manifest producer/adapter.
++
++Connects the CURRENT packager entry point (the R1 double-click launch lane
++``DEMO.bat`` -> ``tools/run_demo.ps1`` -> ``ChimeraEngine/gallery.py`` at PR base
++``astra/gait-capture`` @ ``5e54c0b7``) to the WINNING package preflight checker
++(card ``I-S02-PACKAGE-PREFLIGHT``, PR #153 head ``e0a0abc8``), which is vendored
++here BYTE-PINNED at ``reference/package_preflight__e0a0abc8.py``:
++
++    11458 bytes, sha256 1f81f62e3ad1b7030fd2d1de7d6d932bbdf323b8533c89c36e462bf29e246ba2
++
++The pinned checker consumes a ``chimera.package.manifest.v1`` manifest that nobody
++produced on this lineage -- the winning report's integration proposal names "the
++builder emits chimera.package.manifest.v1 next to the package" as future work. This
++module is that producer, as an ADAPTER over the packager's ACTUAL declared inputs:
++
++  * ``DEMO_LANE_INPUTS`` names the launcher lane's real files with their frozen
++    byte identities at the pinned base (packager FACTS, not admission decisions);
++  * ``produce_manifest`` turns an EXTERNAL admission record (every row carries a
++    ``role`` and an ``admission_ref`` pointing at an external license/admission
++    decision) into a canonical, relocation-invariant manifest: package-relative
++    forward-slash paths, actual byte sizes, sha256 of bounded reads;
++  * ``audit_staging`` names undeclared leftovers (``STAGE-UNDECLARED``) and missing
++    declared assets (``STAGE-MISSING``) in a staged tree before publication;
++  * ``run_preflight`` routes ALL checking through the PINNED module (no verdict of
++    this module's own is ever issued).
++
++LAWS (PREREGISTRATION.md, frozen before this file was written):
++  * license/admission decisions are EXPLICIT and EXTERNAL -- a row without an
++    ``admission_ref`` refuses ``ADMISSION-INCOMPLETE``; an unapproved asset
++    structurally cannot enter the manifest because declaration is admission-driven
++    and the producer never enumerates to declare;
++  * ALL-OR-NOTHING: any refusal -> ``MANIFEST-REFUSED`` with ``manifest is None``;
++  * manifests carry no absolute path, no source-root reference, no timestamp;
++  * the only PASS/FAIL vocabulary in the system belongs to the pinned checker
++    (``PREFLIGHT-PASS``/``PREFLIGHT-FAIL``, structural coherence only). This
++    producer emits ``MANIFEST-PRODUCED``/``MANIFEST-REFUSED`` + refusal codes and
++    can never express a distribution-permission decision.
++"""
++from __future__ import annotations
++
++import hashlib
++import importlib.util
++import json
++import re
++import sys
++from dataclasses import dataclass, field
++from pathlib import Path, PurePosixPath
++
++# --- pinned dependency (byte-pin discipline) ---------------------------------
++
++#: Contribution-local directory of THIS file (the checkout contribution dir).
++_HERE = Path(__file__).resolve().parent
++
++#: The vendored winning checker (byte-pinned to PR #153 head e0a0abc8).
++REFERENCE_REL = "reference/package_preflight__e0a0abc8.py"
++
++#: Frozen identity of the vendored bytes (see PREREGISTRATION.md section 1).
++REFERENCE_SHA256 = "1f81f62e3ad1b7030fd2d1de7d6d932bbdf323b8533c89c36e462bf29e246ba2"
++REFERENCE_BYTES = 11458
++
++_pinned = None  # cached pinned module after successful verification
++
++
++class AdapterRefusal(ValueError):
++    """A named, deterministic refusal. ``code`` is a stable machine id."""
++
++    def __init__(self, code: str, detail: str = "") -> None:
++        self.code = code
++        super().__init__(detail or code)
++
++
++def load_pinned_preflight(reference_path=None):
++    """Return the PINNED ``package_preflight`` module, byte-verified.
++
++    Every load re-hashes the vendored file and refuses ``PIN-MISMATCH`` unless the
++    bytes are exactly the frozen #153-head bytes. The module is loaded under a
++    private name so it can never be shadowed by an import on ``sys.path``.
++    """
++    global _pinned
++    if _pinned is not None and reference_path is None:
++        return _pinned
++    path = Path(reference_path) if reference_path is not None else _HERE / REFERENCE_REL
++    data = path.read_bytes()  # noqa: PinVerification reads only contribution-owned bytes
++    digest = hashlib.sha256(data).hexdigest()
++    if digest != REFERENCE_SHA256 or len(data) != REFERENCE_BYTES:
++        raise AdapterRefusal(
++            "PIN-MISMATCH",
++            f"{path.name}: sha256 {digest} / {len(data)} B does not match the frozen "
++            f"#153 pin {REFERENCE_SHA256} / {REFERENCE_BYTES} B",
++        )
++    spec = importlib.util.spec_from_file_location(
++        "chimera_i_s02_pinned_package_preflight_e0a0abc8", path)
++    module = importlib.util.module_from_spec(spec)
++    sys.modules[spec.name] = module
++    spec.loader.exec_module(module)
++    if reference_path is None:
++        _pinned = module
++    return module
++
++
++# --- the packager lane's actual declared inputs (frozen packager FACTS) ------
++
++#: PR base of this lineage: ``astra/gait-capture`` @ 5e54c0b7 (also the base of the
++#: winning PR #153). Every identity below was read with read-only ``git show``.
++PACKAGER_BASE_REF = "astra/gait-capture@5e54c0b7"
++
++#: The R1 double-click launch chain, as its own bytes declare it:
++#: DEMO.bat -> tools/run_demo.ps1 -> ChimeraEngine/gallery.py (gallery.html served;
++#: splat_appearance imported; live_viewer imported opportunistically).
++DEMO_LANE_INPUTS = (
++    {"path": "DEMO.bat", "role": "launcher", "bytes": 250,
++     "sha256": "92cbcceca31a80a52e189659a3c613c03dece695ed2fd8bf7654a6b41f4df690"},
++    {"path": "tools/run_demo.ps1", "role": "launcher", "bytes": 3605,
++     "sha256": "6b12c3f7dbc6ec5d9f42b927f42f002eb5eb58169f661db3ee4333fc000eb089"},
++    {"path": "ChimeraEngine/gallery.py", "role": "runtime", "bytes": 7353,
++     "sha256": "8a326949b81175274109492e2200edd6bdab2f6cffba1dc45a723fe7103fd12a"},
++    {"path": "ChimeraEngine/gallery.html", "role": "runtime", "bytes": 3187,
++     "sha256": "5640c54f4539a548c56a1befaa31e0be504353e2c6eb75b2c406c480d730c6e2"},
++    {"path": "ChimeraEngine/splat_appearance.py", "role": "runtime", "bytes": 33275,
++     "sha256": "3fa559e46d6d93584892c694400683286a22f43c7a1343a8016bd996ed67869e"},
++    {"path": "ChimeraEngine/live_viewer.py", "role": "runtime", "bytes": 122566,
++     "sha256": "4a223b7d4dd3bf1c154ccdee2f0ce9bbda33e0953eab7ef25b8e6a0494f61adb"},
++)
++
++#: Text files a caller would typically mark ``text_config`` (the launcher lane's
++#: scripts). DATA, not policy: the caller decides per admission row.
++DEMO_LANE_TEXT_CONFIGS = ("DEMO.bat", "tools/run_demo.ps1",
++                          "ChimeraEngine/gallery.py", "ChimeraEngine/splat_appearance.py",
++                          "ChimeraEngine/live_viewer.py")
++
++#: Honest boundary (PREREGISTRATION.md section 2): the OPTIONAL live_viewer import
++#: closure reaches the whole engine. Recorded so no caller mistakes the demo-lane
++#: list above for the complete runtime closure; the full closure is future S02
++#: builder work.
++KNOWN_OPEN_CLOSURE_MODULES = ("ParticleEngine", "matter", "theHuman", "walker", "one",
++                              "lod", "perf_guard", "controller", "touchables",
++                              "human_messenger", "numpy", "PIL")
++
++#: Manifest schema -- used verbatim from the pinned checker, never redefined here.
++SCHEMA = load_pinned_preflight().SCHEMA
++
++# --- producer verdict vocabulary (NO permission semantics) -------------------
++
++PRODUCED = "MANIFEST-PRODUCED"
++REFUSED = "MANIFEST-REFUSED"
++
++#: Refusal codes (machine ids, frozen in PREREGISTRATION.md section 3):
++#:   ADMISSION-MALFORMED   admission record lacks source/entries
++#:   ADMISSION-INCOMPLETE  admission row missing path/role/decision_ref
++#:   PRODUCER-DUP          same path admitted twice
++#:   PRODUCER-PATH         absolute / drive-anchored / UNC / '..' segment
++#:   SOURCE-MISSING        admitted file absent at package_root
++#:   SOURCE-NOT-FILE       admitted path is not a regular file
++#:   PRODUCER-OVERSIZE     admitted file exceeds max_file_bytes (bounded-read law)
++#:   PRODUCER-TEXT         text_config row does not decode as UTF-8
++#:   PRODUCER-DEPS         declared_dependencies not a dict of lists of str
++#:   PIN-MISMATCH          vendored checker bytes drift from the frozen pin
++
++
++@dataclass(frozen=True)
++class ManifestProduction:
++    """Outcome of ``produce_manifest``. Exactly one of manifest/refusals is set."""
++
++    verdict: str                       # MANIFEST-PRODUCED | MANIFEST-REFUSED
++    manifest: dict | None
++    refusals: tuple = ()
++    stats: dict = field(default_factory=dict)
++
++    def canonical_json(self) -> bytes:
++        """Canonical manifest bytes (sort_keys, indent=2, ASCII, LF-terminated)."""
++        return _canonical_bytes(self.manifest)
++
++    def refusals_json(self) -> str:
++        return json.dumps([{"code": c, "path": p, "detail": d}
++                           for c, p, d in self.refusals], sort_keys=True)
++
++
++def _canonical_bytes(manifest: dict) -> bytes:
++    return (json.dumps(manifest, sort_keys=True, indent=2, ensure_ascii=True)
++            + "\n").encode("ascii")
++
++
++def _path_defect(rel) -> str | None:
++    """Literal-path defects a manifest entry must never carry (relative-only law)."""
++    if not isinstance(rel, str) or not rel:
++        return "entry path must be a non-empty string"
++    if "\\" in rel:
++        return "path must use forward slashes (package-relative posix form)"
++    posix = PurePosixPath(rel)
++    if posix.is_absolute() or rel.startswith("/"):
++        return "absolute path"
++    if re.match(r"^[A-Za-z]:", rel):
++        return "drive-anchored path"
++    if rel.startswith("//"):
++        return "UNC path"
++    if ".." in posix.parts:
++        return "traversal segment '..'"
++    if "." in posix.parts or posix.parts and posix.parts[0] == "":
++        return "empty path segment"
++    return None
++
++
++def _deps_errors(declared_dependencies) -> str | None:
++    if declared_dependencies is None:
++        return None
++    if not isinstance(declared_dependencies, dict):
++        return "declared_dependencies must be a dict"
++    for key in ("modules", "system"):
++        val = declared_dependencies.get(key, [])
++        if not isinstance(val, list) or any(not isinstance(m, str) for m in val):
++            return f"declared_dependencies.{key} must be a list of strings"
++    extra = set(declared_dependencies) - {"modules", "system", "python"}
++    if extra:
++        return f"undeclared declared_dependencies keys: {sorted(extra)}"
++    return None
++
++
++def produce_manifest(package_root, admission, *, package_name: str,
++                     max_file_bytes: int = 1048576,
++                     declared_dependencies=None,
++                     extra_dev_root_patterns=()) -> ManifestProduction:
++    """Produce a ``chimera.package.manifest.v1`` from an EXTERNAL admission record.
++
++    ``package_root`` is the staged tree the manifest describes (the only root this
++    function touches). ``admission`` is the external decision record::
++
++        {"source": "<external decision id, e.g. s01-matrix@<rev>+operator-2026-09-24>",
++         "entries": [{"path": "DEMO.bat", "role": "launcher", "text_config": true,
++                      "decision_ref": "<external row/decision id>"}, ...]}
++
++    Declaration is admission-driven: the producer NEVER enumerates the tree to
++    decide content, so an unapproved asset structurally cannot enter the manifest.
++    Any refusal fails the whole production (ALL-OR-NOTHING). No absolute path,
++    source-root reference or timestamp ever enters the manifest.
++    """
++    refusals: list[tuple[str, str, str]] = []
++
++    if not isinstance(admission, dict) or "source" not in admission or \
++            not isinstance(admission.get("entries"), list):
++        return ManifestProduction(REFUSED, None,
++                                  (("ADMISSION-MALFORMED", "<admission>",
++                                    "admission record needs a 'source' string and an "
++                                    "'entries' list"),),
++                                  {"entries_declared": 0})
++    source = admission.get("source")
++    if not isinstance(source, str) or not source.strip():
++        return ManifestProduction(REFUSED, None,
++                                  (("ADMISSION-MALFORMED", "<admission>",
++                                    "admission 'source' must name the external "
++                                    "decision record"),),
++                                  {"entries_declared": 0})
++    dep_err = _deps_errors(declared_dependencies)
++    if dep_err:
++        return ManifestProduction(REFUSED, None,
++                                  (("PRODUCER-DEPS", "<manifest>", dep_err),),
++                                  {"entries_declared": 0})
++    if not isinstance(max_file_bytes, int) or max_file_bytes <= 0:
++        return ManifestProduction(REFUSED, None,
++                                  (("PRODUCER-OVERSIZE", "<manifest>",
++                                    "max_file_bytes must be a positive integer"),),
++                                  {"entries_declared": 0})
++
++    root = Path(package_root)
++    entries = []
++    seen = set()
++    bytes_hashed = 0
++    for idx, row in enumerate(admission["entries"]):
++        where = f"<admission[{idx}]>"
++        if not isinstance(row, dict):
++            refusals.append(("ADMISSION-INCOMPLETE", where, "row must be an object"))
++            continue
++        rel = row.get("path")
++        role = row.get("role")
++        decision_ref = row.get("decision_ref")
++        if not isinstance(rel, str) or not rel:
++            refusals.append(("ADMISSION-INCOMPLETE", where, "missing 'path'"))
++            continue
++        if not isinstance(role, str) or not role:
++            refusals.append(("ADMISSION-INCOMPLETE", rel, "missing 'role'"))
++            continue
++        if not isinstance(decision_ref, str) or not decision_ref:
++            refusals.append(("ADMISSION-INCOMPLETE", rel,
++                             "missing 'decision_ref' (external license/admission "
++                             "decision is REQUIRED and EXTERNAL)"))
++            continue
++        defect = _path_defect(rel)
++        if defect:
++            refusals.append(("PRODUCER-PATH", rel, defect))
++            continue
++        if rel in seen:
++            refusals.append(("PRODUCER-DUP", rel, "admitted twice"))
++            continue
++        seen.add(rel)
++
++        literal = root / Path(*PurePosixPath(rel).parts)
++        if not literal.exists():
++            refusals.append(("SOURCE-MISSING", rel,
++                             "admitted file not found at package_root"))
++            continue
++        if not literal.is_file():
++            refusals.append(("SOURCE-NOT-FILE", rel, "not a regular file"))
++            continue
++        size = literal.stat().st_size
++        if size > max_file_bytes:
++            refusals.append(("PRODUCER-OVERSIZE", rel,
++                             f"{size} B exceeds max_file_bytes {max_file_bytes} B"))
++            continue
++        data = literal.read_bytes()[:max_file_bytes]  # bounded read (mirrors checker)
++        digest = hashlib.sha256(data).hexdigest()
++        text_config = bool(row.get("text_config", False))
++        if text_config:
++            try:
++                data.decode("utf-8")
++            except UnicodeDecodeError:
++                refusals.append(("PRODUCER-TEXT", rel,
++                                 "text_config row does not decode as UTF-8"))
++                continue
++        entries.append({
++            "path": rel,
++            "bytes": size,
++            "sha256": digest,
++            "text_config": text_config,
++            "role": role,
++            "admission_ref": decision_ref,
++        })
++        bytes_hashed += size
++
++    if refusals:
++        return ManifestProduction(REFUSED, None, tuple(refusals),
++                                  {"entries_declared": len(entries),
++                                   "bytes_hashed": bytes_hashed})
++
++    pinned = load_pinned_preflight()
++    manifest = {
++        "schema": pinned.SCHEMA,
++        "package_name": str(package_name),
++        "max_file_bytes": max_file_bytes,
++        "declared_dependencies": dict(declared_dependencies or {"modules": [], "system": []}),
++        "dev_root_patterns": list(extra_dev_root_patterns),
++        "admission": {
++            "source": source,
++            "decision_policy": "external; this manifest records refs, never verdicts",
++        },
++        "entries": entries,
++    }
++    return ManifestProduction(PRODUCED, manifest, (),
++                              {"entries_declared": len(entries),
++                               "bytes_hashed": bytes_hashed,
++                               "canonical_bytes": len(_canonical_bytes(manifest))})
++
++
++# --- staging audit (the one enumerating step; builder-side, pre-publication) --
++
++@dataclass(frozen=True)
++class StageFinding:
++    check: str   # STAGE-UNDECLARED | STAGE-MISSING | STAGE-NOT-FILE
++    path: str    # package-relative posix path
++    detail: str
++
++
++@dataclass
++class StagingAudit:
++    findings: list = field(default_factory=list)
++    stats: dict = field(default_factory=dict)
++
++    def findings_json(self) -> str:
++        return json.dumps([f.__dict__ for f in self.findings], sort_keys=True)
++
++
++def audit_staging(package_root, manifest: dict) -> StagingAudit:
++    """Name every staged file no manifest entry declares, and vice versa.
++
++    This is the PRODUCER-side completeness audit for the builder's workspace: the
++    pinned checker never enumerates, so leftover development artifacts (logs,
++    ``__pycache__``, editor droppings, unapproved assets) would otherwise ship
++    silently. Findings are deterministic (sorted by check, then path).
++    """
++    root = Path(package_root)
++    audit = StagingAudit()
++    declared = {}
++    for entry in manifest.get("entries", []):
++        rel = entry.get("path", "")
++        declared[rel] = entry
++
++    files_on_disk = set()
++    if root.is_dir():
++        for path in sorted(root.rglob("*")):
++            if path.is_file():
++                files_on_disk.add(path.relative_to(root).as_posix())
++        audit.stats["files_seen"] = len(files_on_disk)
++    else:
++        audit.stats["files_seen"] = 0
++        audit.findings.append(StageFinding(
++            "STAGE-MISSING", "<package_root>", "package root is not a directory"))
++
++    for rel in sorted(files_on_disk - set(declared)):
++        audit.findings.append(StageFinding(
++            "STAGE-UNDECLARED", rel,
++            "staged file no manifest entry declares (undeclared development path "
++            "or unapproved asset -- it must not ship)"))
++    for rel in sorted(declared):
++        literal = root / Path(*PurePosixPath(rel).parts)
++        if not literal.exists():
++            audit.findings.append(StageFinding(
++                "STAGE-MISSING", rel, "declared entry absent from the staged tree"))
++        elif not literal.is_file():
++            audit.findings.append(StageFinding(
++                "STAGE-NOT-FILE", rel, "declared path is not a regular file"))
++    audit.findings.sort(key=lambda f: (f.check, f.path))
++    return audit
++
++
++# --- connective tissue to the PINNED checker ---------------------------------
++
++def run_preflight(package_root, manifest: dict):
++    """Run the PINNED checker on this manifest, passing back its result unchanged.
++
++    ``dev_root_patterns`` recorded by ``produce_manifest`` are handed to the
++    checker's own argument (the manifest key is documentation; the checker reads
++    the function argument). The adapter adds NO verdict of its own.
++    """
++    pinned = load_pinned_preflight()
++    return pinned.preflight(manifest, package_root,
++                            dev_root_patterns=tuple(manifest.get("dev_root_patterns", ())))
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/reference/package_preflight__e0a0abc8.py b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/reference/package_preflight__e0a0abc8.py
+new file mode 100644
+index 00000000..98b413bd
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/reference/package_preflight__e0a0abc8.py
+@@ -0,0 +1,248 @@
++"""package_preflight.py -- I-S02: read-only structural preflight for a self-contained package.
++
++Card I-S02-PACKAGE-PREFLIGHT, planning row S02: "Clean machine/user can launch without
++repo paths, development Python or operator-installed tools beyond declared dependencies."
++This module checks the STRUCTURAL half of that sentence from a caller-supplied manifest:
++
++  * every declared file exists under the caller-supplied package root (P-MISSING);
++  * every declared path is relative, drive/UNC-free and free of `..` (P-PATH);
++  * no reparse point (junction/symlink) redirects an entry outside the root (P-JUNCTION);
++  * declared size matches and no file exceeds the manifest's cap; hashing reads at most
++    that cap (P-SIZE);
++  * sha256 matches the declared digest (P-HASH);
++  * declared text configs import only declared modules (P-DEP);
++  * declared text configs reference only declared system executables (P-EXT-TOOL);
++  * declared text configs contain no development-root paths (P-DEVROOT);
++  * the manifest declares no duplicate entry (P-DUP) and text configs decode (P-TEXT).
++
++OUT OF SCOPE, BY CONSTRUCTION (S01 is BLOCKED-FOR-SHIP on MorphoSource assets; nothing
++here may bless around that): this checker makes NO distribution-rights decision of any
++kind. Its entire verdict vocabulary is PREFLIGHT-PASS / PREFLIGHT-FAIL about structural
++coherence. File roles are manifest facts, never graded. Asset licensing stays with S01's
++recorded matrix; permission to distribute is a human decision this tool cannot express.
++
++SCOPE LAWS (agents' PREREGISTRATION.md, frozen before this file was written): the package
++root arrives only as a call argument; manifests carry no absolute paths; only entries
++marked text_config are opened for content; hashing is byte-capped; no directory is ever
++enumerated — only manifest-named paths are touched (stats["paths_opened"] proves it).
++"""
++from __future__ import annotations
++
++import ast
++import hashlib
++import os
++import re
++import sys
++from dataclasses import dataclass, field
++from pathlib import Path, PurePosixPath
++
++SCHEMA = "chimera.package.manifest.v1"
++VERDICTS = ("PREFLIGHT-PASS", "PREFLIGHT-FAIL")
++
++# Development roots a clean package must not name. DATA, not policy: the caller extends
++# this list via manifest["dev_root_patterns"] (e.g. the build checkout that produced the
++# package); defaults cover this fleet's known development locations, both slash styles.
++DEFAULT_DEV_ROOT_PATTERNS = (
++    "e:/pythonchimera",
++    "e:\\pythonchimera",
++    "e:/chimerawork",
++    "e:\\chimerawork",
++    "c:/vulkansdk",
++    "c:\\vulkansdk",
++    "c:\\python3",
++    "c:/python3",
++)
++
++# Executables whose invocation inside a text config counts as depending on an
++# operator-installed or OS tool; each must be declared in declared_dependencies.system.
++SYSTEM_TOOL_WATCHLIST = ("powershell", "pwsh", "cmd", "wscript", "cscript", "mshta",
++                         "python", "pythonw", "py", "pip", "bash", "sh")
++
++
++@dataclass(frozen=True)
++class Finding:
++    check: str          # P-MISSING | P-PATH | P-JUNCTION | P-SIZE | P-HASH | P-DEP
++                        # | P-EXT-TOOL | P-DEVROOT | P-DUP | P-TEXT
++    path: str           # relative manifest path (or "<manifest>") — never an absolute path
++    detail: str
++
++
++@dataclass
++class PreflightResult:
++    verdict: str
++    findings: list = field(default_factory=list)
++    stats: dict = field(default_factory=dict)
++
++    def findings_json(self) -> str:
++        import json
++        return json.dumps([f.__dict__ for f in self.findings], sort_keys=True)
++
++
++def _path_errors(rel: str) -> str | None:
++    """Literal-path defects: absolute, drive-anchored, UNC, or `..` traversal."""
++    if not isinstance(rel, str) or not rel:
++        return "entry path must be a non-empty string"
++    p = PurePosixPath(rel.replace("\\", "/"))
++    if PurePosixPath(rel.replace("\\", "/")).is_absolute() or rel.startswith(("/", "\\")):
++        return "absolute path"
++    if re.match(r"^[A-Za-z]:", rel):
++        return "drive-anchored path"
++    if rel.replace("\\", "/").startswith("//"):
++        return "UNC path"
++    if ".." in p.parts:
++        return "traversal segment '..'"
++    return None
++
++
++def _contained(resolved: Path, root_resolved: Path) -> bool:
++    """True iff resolved sits inside root_resolved (both already resolved)."""
++    try:
++        resolved.relative_to(root_resolved)
++        return True
++    except ValueError:
++        return False
++
++
++def _iter_imports(text: str, where: str, findings: list):
++    """STRUCTURAL (AST) Python import extraction (lead correction 2026-09-25).
++
++    Handles multi-name statements (`import os, sys` -- EVERY alias), aliases
++    (`import numpy as np` -> numpy), from-imports (`from foo import bar [as
++    baz]` -> foo), and skips relative imports (level>0: package-internal).
++    A file that does not parse is a NAMED P-TEXT refusal -- never a silent
++    skip (the old first-name regex passed `import os, missing_dependency`)."""
++    try:
++        tree = ast.parse(text)
++    except SyntaxError as exc:
++        findings.append(Finding("P-TEXT", where,
++                                f"text_config .py does not parse: {exc.msg} "
++                                f"(line {exc.lineno})"))
++        return
++    for node in ast.walk(tree):
++        if isinstance(node, ast.Import):
++            for alias in node.names:
++                yield alias.name.split(".")[0]
++        elif isinstance(node, ast.ImportFrom):
++            if node.level and node.level > 0:
++                continue                      # relative: package-internal
++            if node.module:
++                yield node.module.split(".")[0]
++
++
++def preflight(manifest: dict, package_root, dev_root_patterns=()) -> PreflightResult:
++    """Run the structural preflight of `manifest` against the tree at `package_root`.
++
++    `package_root` is the ONLY root this function ever touches; every other path comes
++    from the manifest. Findings report relative paths so the result is invariant under
++    relocation of the same package to a different root.
++    """
++    root = Path(package_root)
++    root_resolved = root.resolve()
++    findings: list[Finding] = []
++    paths_opened: list[str] = []
++    bytes_read: dict[str, int] = {}
++    stdlib = set(getattr(sys, "stdlib_module_names", ()))
++
++    if not isinstance(manifest, dict):
++        return PreflightResult(VERDICTS[1], [Finding("P-MANIFEST", "<manifest>",
++                                                     "manifest must be a JSON object")])
++    if manifest.get("schema") != SCHEMA:
++        findings.append(Finding("P-MANIFEST", "<manifest>",
++                                f"expected schema {SCHEMA!r}, got {manifest.get('schema')!r}"))
++    cap = manifest.get("max_file_bytes")
++    if not isinstance(cap, int) or cap <= 0:
++        # Validate BEFORE any file I/O (lead correction): an invalid cap means
++        # no bounded-read guarantee exists, so nothing is opened at all.
++        findings.append(Finding("P-MANIFEST", "<manifest>",
++                                "max_file_bytes must be a positive integer"))
++        return PreflightResult(
++            VERDICTS[1], findings,
++            {"paths_opened": [], "bytes_read": {}})
++    deps = manifest.get("declared_dependencies") or {}
++    declared_modules = {m.split(".")[0] for m in (deps.get("modules") or [])}
++    declared_system = {s.lower() for s in (deps.get("system") or [])}
++    dev_patterns = tuple(dev_root_patterns) + tuple(DEFAULT_DEV_ROOT_PATTERNS)
++
++    seen: dict[str, int] = {}
++    for idx, entry in enumerate(manifest.get("entries") or []):
++        rel = entry.get("path", "")
++        where = rel or f"<entry[{idx}]>"
++        seen[rel] = seen.get(rel, 0) + 1
++
++        err = _path_errors(rel)
++        if err:
++            findings.append(Finding("P-PATH", where, err))
++            continue
++        if seen[rel] > 1:
++            findings.append(Finding("P-DUP", where, f"declared {seen[rel]} times"))
++            continue
++
++        literal = root / Path(*PurePosixPath(rel.replace("\\", "/")).parts)
++        resolved = literal.resolve()
++        paths_opened.append(rel)
++        if not _contained(resolved, root_resolved):
++            # The literal path was clean, so something it traverses (a junction or
++            # symlink) redirected it outside the root.
++            findings.append(Finding(
++                "P-JUNCTION", where,
++                "reparse point redirects entry outside the package root"))
++            continue
++        if not resolved.exists():
++            findings.append(Finding("P-MISSING", where, "declared file not found"))
++            continue
++
++        actual_size = resolved.stat().st_size
++        declared_size = entry.get("bytes")
++        if declared_size is not None and declared_size != actual_size:
++            findings.append(Finding("P-SIZE", where,
++                                    f"declared {declared_size} B, actual {actual_size} B"))
++
++        # READ-TIME CAP ENFORCEMENT (lead correction): one bounded read of at
++        # most cap+1 bytes decides everything -- hashing, oversize and the
++        # text_config decode all consume THESE bytes and no others.
++        with resolved.open("rb") as fh:
++            data = fh.read(cap + 1)
++        # the +1 sentinel byte only DETECTS oversize; bytes_read reports the
++        # content bytes within the cap (the module's bounded-read contract)
++        bytes_read[rel] = min(len(data), cap)
++        if len(data) > cap:
++            # Oversize: a finding, never a digest of an uncapped file, never
++            # a text decode beyond the cap.
++            findings.append(Finding("P-SIZE", where,
++                                    f"{actual_size} B exceeds max_file_bytes {cap} B"))
++            continue
++        digest = hashlib.sha256(data)
++        declared_sha = entry.get("sha256", "")
++        if declared_sha and digest.hexdigest() != declared_sha:
++            findings.append(Finding("P-HASH", where, "sha256 mismatch"))
++
++        if entry.get("text_config"):
++            try:
++                text = data.decode("utf-8")
++            except UnicodeDecodeError:
++                findings.append(Finding("P-TEXT", where, "text_config not valid UTF-8"))
++                continue
++            for lineno, line in enumerate(text.splitlines(), 1):
++                low = line.lower()
++                for pat in dev_patterns:
++                    if pat.lower() in low:
++                        findings.append(Finding(
++                            "P-DEVROOT", where,
++                            f"line {lineno}: development-root reference {pat!r}"))
++                        break
++                for tool in SYSTEM_TOOL_WATCHLIST:
++                    if re.search(rf"(?<![\w.]){re.escape(tool)}(\.exe)?(?![\w.])", low):
++                        if tool not in declared_system:
++                            findings.append(Finding(
++                                "P-EXT-TOOL", where,
++                                f"line {lineno}: system tool {tool!r} not declared"))
++                        break
++            if resolved.suffix == ".py":
++                for mod in _iter_imports(text, where, findings):
++                    if mod not in declared_modules and mod not in stdlib:
++                        findings.append(Finding("P-DEP", where,
++                                                f"undeclared module import {mod!r}"))
++
++    verdict = VERDICTS[0] if not findings else VERDICTS[1]
++    return PreflightResult(verdict, findings,
++                           {"paths_opened": paths_opened, "bytes_read": bytes_read})
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/report.md b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/report.md
+new file mode 100644
+index 00000000..dd5e14c8
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/report.md
+@@ -0,0 +1,180 @@
++# I-S02-PACKAGE-PREFLIGHT-FOLLOWUP — report
++
++Card `I-S02-PACKAGE-PREFLIGHT-FOLLOWUP` (development slot 3), attempt
++`c469c25457294a6daf5cbc8aba8a40bd`, agent `arrival-cfc4a71bdf25473585dd24f1fd8aacae`,
++criteria `b19c2b9e09610d10f9dd7e770e8735216aaa65c8c8e6001242cff396a03e8afc`.
++Bounded implementation; CPU-only (`python -B` throughout); no GPU; no engine start;
++no training; **no game package was built, published or distributed**; no mesh/model
++copied; no commercial or distribution right claimed; zero writes outside this
++contribution directory (in the isolated attempt checkout
++`E:/ChimeraWork/monkey-coordination/kanban-attempts/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/c469c25457294a6daf5cbc8aba8a40bd/checkout`,
++branch-3). All source reads were read-only `git show`/`git ls-tree`/`git grep`.
++
++## 1. What was connected
++
++The winning card `I-S02-PACKAGE-PREFLIGHT` (PR #153, head `e0a0abc8`, merge
++`e449405f3cfdad7ab69536c474c9bf6f4fbfc68c`) delivered a structural preflight that
++consumes a `chimera.package.manifest.v1` manifest **which nothing on this lineage
++produced** — its own report names "the builder emits chimera.package.manifest.v1
++next to the package" as future integration work. This card delivers that missing
++producer, as an adapter over the packager's actual declared inputs, and pins the
++winning checker byte-for-byte.
++
++## 2. Frozen lineage and identities (steps 1-2, before any edit)
++
++`PREREGISTRATION.md` (sha256
++`a39ef0088e8cb8cc74076bb833ad938911fdcb9daddbb0fee44da55ec12ee517`, measured again in
++section 7) was frozen BEFORE `implementation.py`/`test_implementation.py`
++were written (mtime order preserved: prereg 16:05:37, reference copy 16:05:52,
++implementation 16:08:03, tests 16:15:08). This card consumes **no physical
++quantity**; every number below is a byte identity or a test count — nothing derives
++from or alters physics, thresholds or training artifacts.
++
++Pinned dependency (byte-pin discipline, `reference/` pattern):
++
++- upstream: `tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/package_preflight.py`
++  @ `e0a0abc8` — **11458 bytes, sha256
++  `1f81f62e3ad1b7030fd2d1de7d6d932bbdf323b8533c89c36e462bf29e246ba2`**
++- vendored here: `reference/package_preflight__e0a0abc8.py`, byte-identical;
++  `load_pinned_preflight()` re-verifies the digest on every load and refuses
++  `PIN-MISMATCH` on any drift. The checker's code is never copied or modified.
++
++## 3. The current packager entry point (identified, read-only)
++
++Searched the PR base `astra/gait-capture` @ `5e54c0b7` (the base of both the winning
++PR #153 and this followup; all six files byte-identical at this attempt's head
++`c525b82c`). The current packaging lane is the **R1 double-click launch pair**:
++
++| lane file @ 5e54c0b7 | bytes | sha256 | role |
++|---|---|---|---|
++| `DEMO.bat` | 250 | `92cbcceca31a80a52e189659a3c613c03dece695ed2fd8bf7654a6b41f4df690` | "Double-click this" -> `powershell … "%~dp0tools\run_demo.ps1" %*` |
++| `tools/run_demo.ps1` | 3605 | `6b12c3f7dbc6ec5d9f42b927f42f002eb5eb58169f661db3ee4333fc000eb089` | finds installed python, frees port 8765, starts `ChimeraEngine\gallery.py`, waits for `/live` |
++| `ChimeraEngine/gallery.py` | 7353 | `8a326949b81175274109492e2200edd6bdab2f6cffba1dc45a723fe7103fd12a` | serves `gallery.html`; imports `splat_appearance`; imports `live_viewer` opportunistically (try/except) |
++| `ChimeraEngine/gallery.html` | 3187 | `5640c54f4539a548c56a1befaa31e0be504353e2c6eb75b2c406c480d730c6e2` | gallery page |
++| `ChimeraEngine/splat_appearance.py` | 33275 | `3fa559e46d6d93584892c694400683286a22f43c7a1343a8016bd996ed67869e` | imported by gallery.py |
++| `ChimeraEngine/live_viewer.py` | 122566 | `4a223b7d4dd3bf1c154ccdee2f0ce9bbda33e0953eab7ef25b8e6a0494f61adb` | live engine viewer |
++
++Explicitly ruled OUT, with their actual identities at `5e54c0b7`:
++
++- `Chimera/core/uat_packager.py` (9283 B, `8ba24dfea4a8453ac38fe5190ed1b028135a2586beb5b01d6fbaf1be55642ed2`)
++  — RETIRED Unreal-era packager (detects Unreal Engine, not this game).
++- `ChimeraEngine/demo.py` + `ChimeraEngine/demo_output/demo_manifest.json`
++  (14217 B / 253 B) — scripted camera-flight VIDEO tour; render-output metadata,
++  not a distribution manifest.
++- `ChimeraEngine/bake_splats.py` + `ChimeraEngine/baked/bake_manifest.json`
++  (6395 B / 7554 B) — engine-internal splat-bake CACHE manifest (truncated hashes,
++  cache status), not a package manifest.
++- `tools/playable_slice/` (`PlayableSlice.bat` R1 lane) — exists on the
++  `monkey-play-20260924` branch lineage only; absent from this PR's base.
++
++Honest boundary: there is STILL no self-contained-package builder on this lineage.
++`live_viewer`'s import closure reaches the whole engine (`ParticleEngine`, `matter`,
++`theHuman`, `walker`, `one`, `lod`, `perf_guard`, `controller`, `touchables`,
++`human_messenger`, plus `numpy`/`PIL`). The complete closure is future S02 builder
++work; the adapter is closure-agnostic and records this boundary in
++`KNOWN_OPEN_CLOSURE_MODULES`.
++
++## 4. What was built (adapter design)
++
++`implementation.py` — the manifest producer/adapter, all checking routed through the
++pinned module:
++
++1. **`DEMO_LANE_INPUTS`** — the launcher lane's actual declared inputs with frozen
++   byte identities (packager FACTS a caller may admit; the producer decides nothing).
++2. **`produce_manifest(package_root, admission, *, package_name,
++   max_file_bytes=1048576, declared_dependencies=None, extra_dev_root_patterns=())`**
++   — turns an EXTERNAL admission record (every row: `path`, `role`,
++   `decision_ref`; optional `text_config`) into a canonical manifest:
++   - package-relative forward-slash paths (absolute/drive/UNC/`..`/backslash rows
++     refuse `PRODUCER-PATH`), actual byte sizes, sha256 of bounded reads
++     (oversize refuses `PRODUCER-OVERSIZE`, mirroring the checker's bounded-read law);
++   - each entry embeds `role` + `admission_ref` — license/admission decisions stay
++     EXPLICIT and EXTERNAL (missing `decision_ref`/`source` refuses
++     `ADMISSION-INCOMPLETE`/`ADMISSION-MALFORMED`); declaration is admission-driven
++     and the producer never enumerates to declare, so **an unapproved asset
++     structurally cannot enter the manifest**;
++   - `schema` is used verbatim from the pinned checker; `declared_dependencies`
++     (modules/system) and `dev_root_patterns` are caller-supplied and recorded;
++   - canonical bytes: `json.dumps(sort_keys=True, indent=2, ensure_ascii=True)` +
++     `\n` — no absolute path, no root reference, no timestamp;
++   - ALL-OR-NOTHING: any refusal -> `MANIFEST-REFUSED`, `manifest is None`.
++     Verdict vocabulary is exactly `MANIFEST-PRODUCED`/`MANIFEST-REFUSED` + named
++     refusal codes; the only PASS/FAIL words in the system remain the pinned
++     checker's structural verdicts.
++3. **`audit_staging(package_root, manifest)`** — the one enumerating step,
++   builder-side before publication: `STAGE-UNDECLARED` (staged file no entry
++   declares — undeclared development path or unapproved asset),
++   `STAGE-MISSING` (declared entry absent), `STAGE-NOT-FILE` (declared path that is
++   not a regular file); deterministic sort by (check, path).
++4. **`run_preflight(package_root, manifest)`** — calls the PINNED
++   `preflight(manifest, package_root, dev_root_patterns=manifest["dev_root_patterns"])`
++   and returns its result unchanged. The adapter issues no verdict of its own.
++
++## 5. Verification (frozen prereg vs measured)
++
++Command: `python -B -m unittest test_implementation` from this directory.
++**First final run: `Ran 24 tests` -> `OK` (0.186 s); second run `OK` (0.191 s);
++deterministic.** 15 prereg-named falsifier tests + 9 contract tests, all on
++synthetic minimal packages under `TemporaryDirectory`; no repository source file is
++opened by any test (only this contribution's own vendored bytes and its own module
++text); no network; no junction creation (the checker's junction coverage is
++inherited, not re-tested). Fixtures are labeled fixtures — nothing here is
++native-acceptance evidence, and no S02 runtime/visual gate is claimed exercised.
++
++| Frozen prediction (PREREGISTRATION.md section 4) | Measured |
++|---|---|
++| F1 relocation: identical content at two roots -> byte-identical manifest; pinned checker PASS with identical `findings_json()` at both roots; corruption fails identically at both roots | `test_f1_manifest_bytes_identical_across_roots` / `test_f1_preflight_pass_identical_at_both_roots` / `test_f1_corruption_fails_identically_at_both_roots` — all PASS; canonical bytes equal across roots; corrupted staged file fires P-HASH+P-SIZE identically at both roots |
++| F2 missing assets: admitted-but-absent file -> `MANIFEST-REFUSED` + `SOURCE-MISSING`, `manifest is None`; file deleted after production -> pinned `P-MISSING` naming the path | `test_f2_missing_admitted_file_refuses_production` / `test_f2_deleted_after_production_fires_p_missing` — PASS (`ChimeraEngine/gallery.py` named) |
++| F3 undeclared development paths: (a) dev-root string declared faithfully but pinned checker fires `P-DEVROOT` naming the pattern -> `PREFLIGHT-FAIL`; (b) staged undeclared file named `STAGE-UNDECLARED` and absent from entries | `test_f3_devroot_string_fires_p_devroot` (`e:/pythonchimera` named, hash still exact) / `test_f3_undeclared_staged_file_named_and_excluded` (`gallery_out.log`) — PASS |
++| F4 admission externality: missing `decision_ref` -> `ADMISSION-INCOMPLETE`; missing `source` -> `ADMISSION-MALFORMED`; entries carry `role`+`admission_ref`; vocabulary frozen, no permission verdict | `test_f4_*` (4 tests) — PASS; producer literals scan equals the frozen vocabulary; `PREFLIGHT-*`/`APPROVED`/`LICENSED`/`PERMISSION` absent |
++| F5 byte-pin: vendored bytes == 11458 B / `1f81f62e…`; tampered scratch copy refused `PIN-MISMATCH`; SCHEMA/verdicts verbatim from pinned module | `test_f5_*` (3 tests) — PASS |
++| F6 exact admission: manifest declares exactly the admitted set; extra staged asset appears only as `STAGE-UNDECLARED` | `test_f6_manifest_declares_exactly_admitted_set` — PASS (`assets/unapproved_model.bin` excluded, audit-named) |
++| Contract: path/dup/oversize/text/deps refusals; entries carry relative paths + sizes + hashes; stats; canonical form; dev-root patterns passed through to the checker | `AdapterContractTests` (9 tests) — PASS; produced clean manifest verifies `PREFLIGHT-PASS` through the pinned module |
++
++## 6. Honest deviations / notes
++
++- **Three TEST-harness defects fired during the first run and were fixed the same
++  session (21/24 -> 24/24). The implementation matched the frozen prereg in all
++  three cases; only the tests were wrong:** (1) `test_f6` expected an unsorted path
++  list (`sorted()` orders `ChimeraEngine/…` before `DEMO.bat`); (2) the
++  `STAGE-NOT-FILE` fixture staged an undeclared directory, but that check by
++  preregistration fires for a *declared* path that exists and is not a regular file —
++  the fixture now declares the directory; (3) the deps-passthrough test asserted the
++  default `declared_dependencies` against a production that deliberately passed
++  `system=["powershell"]`. Reported loudly per prereg discipline; no defect was
++  hidden and no implementation behavior was tuned to a test.
++- `STAGE-NOT-FILE` covers declared paths only; an undeclared EMPTY directory is
++  invisible to the audit (it contains no file to ship). Recorded as a known audit
++  boundary, consistent with the prereg's wording.
++- The admission record's `decision_ref`/`source` values are pointer STRINGS; the
++  producer cannot validate the external decision's existence or content — that is
++  the point (decisions stay external). S01's BLOCKED-FOR-SHIP MorphoSource rows and
++  the Vulkan/MSVC license questions are untouched and cannot be blessed by any of
++  this.
++- Integration runbook for the eventual S02 builder (matching the winning report's
++  proposal): stage -> `produce_manifest` (admission-gated) -> write
++  `canonical_json()` beside the package -> `audit_staging` (must be empty) ->
++  `run_preflight`; `PREFLIGHT-FAIL` blocks packaging.
++
++## 7. Artifact identities
++
++sha256 of the exact bytes in this directory (proposed.patch excludes itself and is
++hash-bound in the publication request):
++
++- `reference/package_preflight__e0a0abc8.py` — 11458 B,
++  `1f81f62e3ad1b7030fd2d1de7d6d932bbdf323b8533c89c36e462bf29e246ba2` (the #153 pin)
++- `implementation.py` — 19495 B,
++  `7cc592f942554c465c20fbdebfd6cb43a4fe148571b9c313c4c34013b6bd493e`
++- `test_implementation.py` — 21906 B,
++  `a3f97220b4fe387344cd9746ea9fa247befa8a05fa9256d947b184f8f825f575`
++- `PREREGISTRATION.md` — 12711 B,
++  `a39ef0088e8cb8cc74076bb833ad938911fdcb9daddbb0fee44da55ec12ee517`
++- `report.md` — this file (hash bound in the publication request)
++- `proposed.patch` — new-file patch (git format) adding PREREGISTRATION.md,
++  implementation.py, test_implementation.py, report.md and reference/ against base
++  `astra/gait-capture` @ `5e54c0b7`; excludes itself (self-reference); verified with
++  `git apply --stat` / `git apply --check` on a pristine base tree.
++
++Remaining gates (NOT claimed here): real admission decision over the demo-lane
++inputs (S01/R07 lineage), the actual staged package, clean-machine launch evidence
++(S03), runtime/visual verification. No package published; no rights claimed.
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/test_implementation.py b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/test_implementation.py
+new file mode 100644
+index 00000000..4a9a16cc
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT-FOLLOWUP/test_implementation.py
+@@ -0,0 +1,424 @@
++"""test_implementation.py -- I-S02-PACKAGE-PREFLIGHT-FOLLOWUP (CPU-only, synthetic).
++
++Every test builds a synthetic minimal package under TemporaryDirectory. No
++repository source file is opened; the only contribution-owned bytes any test reads
++are THIS contribution's own vendored ``reference/`` copy (F5 pin check) and this
++contribution's own ``implementation.py`` (F4 vocabulary scan). No network, no GPU,
++no junction/symlink creation (the pinned checker's junction coverage is inherited,
++not re-tested). Fixtures are fixtures -- nothing here is native-acceptance evidence.
++
++Falsifiers (PREREGISTRATION.md section 4, frozen before implementation):
++  F1 relocation      -> test_f1_*  (byte-identical manifests, identical verdicts)
++  F2 missing assets  -> test_f2_*  (refuse production / P-MISSING)
++  F3 undeclared dev  -> test_f3_*  (P-DEVROOT / STAGE-UNDECLARED)
++  F4 externality     -> test_f4_*  (admission refs required; no permission verdict)
++  F5 byte-pin        -> test_f5_*  (vendored bytes == frozen #153 pin)
++  F6 exact admission -> test_f6_*  (manifest declares exactly the admitted set)
++"""
++from __future__ import annotations
++
++import hashlib
++import json
++import re
++import sys
++import tempfile
++import unittest
++from pathlib import Path
++
++_HERE = Path(__file__).resolve().parent
++sys.path.insert(0, str(_HERE))
++
++import implementation as impl
++from implementation import (PRODUCED, REFUSED, AdapterRefusal, REFERENCE_SHA256,
++                            audit_staging, load_pinned_preflight,
++                            produce_manifest, run_preflight)
++
++PINNED = load_pinned_preflight()
++PASS, FAIL = PINNED.VERDICTS
++
++# --- synthetic minimal package (a stand-in for the demo-lane shape) ----------
++
++DEMO_BAT = ("@echo off\r\ntitle DEMO\r\n"
++            "powershell -NoProfile -ExecutionPolicy Bypass -File "
++            "\"%~dp0tools\\run_demo.ps1\" %*\r\n").encode("ascii")
++RUN_DEMO = ("$ErrorActionPreference = 'Stop'\n"
++            "$Root = Split-Path -Parent $PSScriptRoot\n"
++            "$gallery = Join-Path $Root 'ChimeraEngine\\gallery.py'\n"
++            "if (-not (Test-Path $gallery)) { exit 1 }\n").encode("ascii")
++GALLERY = ("import json\nimport pathlib\n"
++           "print('gallery')\n").encode("ascii")
++
++DEVROOT_CONFIG = ("# fixture config\n"
++                  "log_to = 'E:/PythonChimera/dev_out'\n").encode("ascii")
++
++#: The synthetic launcher names powershell, so a PASSING preflight needs it
++#: declared (the pinned checker's P-EXT-TOOL law, exercised honestly).
++DEPS = {"modules": [], "system": ["powershell"]}
++
++ADMISSION_SOURCE = ("fixture: synthetic admission record (s01-matrix shape), "
++                    "no real asset admitted")
++
++
++def sha(data: bytes) -> str:
++    return hashlib.sha256(data).hexdigest()
++
++
++def admission(*rows) -> dict:
++    return {"source": ADMISSION_SOURCE, "entries": list(rows)}
++
++
++def demo_rows(text_configs=True):
++    launcher = {"path": "DEMO.bat", "role": "launcher",
++                "decision_ref": "fixture-admission#demo-bat"}
++    ps1 = {"path": "tools/run_demo.ps1", "role": "launcher",
++           "decision_ref": "fixture-admission#run-demo"}
++    if text_configs:
++        launcher["text_config"] = True
++        ps1["text_config"] = True
++    return [launcher, ps1,
++            {"path": "ChimeraEngine/gallery.py", "role": "runtime",
++             "decision_ref": "fixture-admission#gallery"}]
++
++
++def stage(root: Path, files: dict):
++    for rel, data in files.items():
++        target = root.joinpath(*rel.split("/"))
++        target.parent.mkdir(parents=True, exist_ok=True)
++        target.write_bytes(data)
++    return root
++
++
++def build_demo(root: Path, gallery: bytes = GALLERY) -> Path:
++    return stage(root, {"DEMO.bat": DEMO_BAT,
++                        "tools/run_demo.ps1": RUN_DEMO,
++                        "ChimeraEngine/gallery.py": gallery})
++
++
++def produce_deps(root: Path, rows=None):
++    return produce_manifest(root, admission(*(rows or demo_rows())),
++                            package_name="fixture", declared_dependencies=DEPS)
++
++
++class FalsifierTests(unittest.TestCase):
++    def setUp(self):
++        self._tmp = tempfile.TemporaryDirectory(prefix="s02_followup_")
++        self.base = Path(self._tmp.name)
++
++    def tearDown(self):
++        self._tmp.cleanup()
++
++    # ---- F1: relocation -----------------------------------------------------
++    def test_f1_manifest_bytes_identical_across_roots(self):
++        a = build_demo(self.base / "a" / "deep" / "nest")
++        b = build_demo(self.base / "b")
++        prod_a = produce_deps(a)
++        prod_b = produce_deps(b)
++        self.assertEqual(prod_a.verdict, PRODUCED, prod_a.refusals_json())
++        self.assertEqual(prod_b.verdict, PRODUCED, prod_b.refusals_json())
++        self.assertEqual(prod_a.canonical_json(), prod_b.canonical_json(),
++                         "identical content at two roots must give identical manifest")
++
++    def test_f1_preflight_pass_identical_at_both_roots(self):
++        manifest = produce_deps(build_demo(self.base / "x")).manifest
++        self.assertIsNotNone(manifest)
++        at_a = run_preflight(build_demo(self.base / "p1" / "one"), manifest)
++        at_b = run_preflight(build_demo(self.base / "p2"), manifest)
++        self.assertEqual(at_a.verdict, PASS, at_a.findings_json())
++        self.assertEqual(at_b.verdict, PASS)
++        self.assertEqual(at_a.findings_json(), at_b.findings_json())
++
++    def test_f1_corruption_fails_identically_at_both_roots(self):
++        manifest = produce_deps(build_demo(self.base / "src")).manifest
++        ra = run_preflight(build_demo(self.base / "c1", gallery=GALLERY + b"# t\n"),
++                           manifest)
++        rb = run_preflight(build_demo(self.base / "c2" / "deep",
++                                      gallery=GALLERY + b"# t\n"), manifest)
++        self.assertEqual(ra.verdict, FAIL)
++        self.assertEqual(rb.verdict, FAIL)
++        self.assertEqual(ra.findings_json(), rb.findings_json(),
++                         "corruption must break identically at both roots")
++
++    # ---- F2: missing assets -------------------------------------------------
++    def test_f2_missing_admitted_file_refuses_production(self):
++        root = build_demo(self.base / "partial")
++        rows = demo_rows() + [{"path": "ChimeraEngine/missing.bin", "role": "runtime",
++                               "decision_ref": "fixture-admission#missing"}]
++        prod = produce_manifest(root, admission(*rows), package_name="fixture")
++        self.assertEqual(prod.verdict, REFUSED)
++        self.assertIsNone(prod.manifest,
++                          "ALL-OR-NOTHING: no partial manifest may exist")
++        codes = {c for c, _, _ in prod.refusals}
++        self.assertIn("SOURCE-MISSING", codes)
++        self.assertEqual([p for c, p, _ in prod.refusals if c == "SOURCE-MISSING"],
++                         ["ChimeraEngine/missing.bin"])
++
++    def test_f2_deleted_after_production_fires_p_missing(self):
++        root = build_demo(self.base / "vanish")
++        manifest = produce_deps(root).manifest
++        (root / "ChimeraEngine" / "gallery.py").unlink()
++        result = run_preflight(root, manifest)
++        self.assertEqual(result.verdict, FAIL)
++        self.assertEqual([f.check for f in result.findings], ["P-MISSING"])
++        self.assertEqual(result.findings[0].path, "ChimeraEngine/gallery.py")
++
++    # ---- F3: undeclared development paths -----------------------------------
++    def test_f3_devroot_string_fires_p_devroot(self):
++        root = stage(self.base / "leaky", {"config/settings.txt": DEVROOT_CONFIG,
++                                           "DEMO.bat": DEMO_BAT})
++        rows = [{"path": "config/settings.txt", "role": "config", "text_config": True,
++                 "decision_ref": "fixture-admission#settings"},
++                {"path": "DEMO.bat", "role": "launcher", "text_config": True,
++                 "decision_ref": "fixture-admission#demo-bat"}]
++        prod = produce_manifest(root, admission(*rows), package_name="fixture",
++                                declared_dependencies=DEPS)
++        self.assertEqual(prod.verdict, PRODUCED, prod.refusals_json())
++        entry = [e for e in prod.manifest["entries"]
++                 if e["path"] == "config/settings.txt"][0]
++        self.assertEqual(entry["sha256"], sha(DEVROOT_CONFIG),
++                         "producer declares faithfully; content gating is the "
++                         "checker's job, not the producer's")
++        result = run_preflight(root, prod.manifest)
++        self.assertEqual(result.verdict, FAIL)
++        dev = [f for f in result.findings if f.check == "P-DEVROOT"]
++        self.assertTrue(dev, result.findings_json())
++        self.assertIn("e:/pythonchimera", dev[0].detail.lower())
++
++    def test_f3_undeclared_staged_file_named_and_excluded(self):
++        root = build_demo(self.base / "stray")
++        (root / "gallery_out.log").write_bytes(b"dev run leftover\n")
++        prod = produce_deps(root)
++        self.assertEqual(prod.verdict, PRODUCED, prod.refusals_json())
++        declared = {e["path"] for e in prod.manifest["entries"]}
++        self.assertNotIn("gallery_out.log", declared)
++        audit = audit_staging(root, prod.manifest)
++        undeclared = [f.path for f in audit.findings if f.check == "STAGE-UNDECLARED"]
++        self.assertEqual(undeclared, ["gallery_out.log"])
++
++    # ---- F4: admission decisions explicit and external ----------------------
++    def test_f4_missing_decision_ref_refuses(self):
++        root = build_demo(self.base / "norefs")
++        rows = demo_rows()
++        rows[0] = {"path": "DEMO.bat", "role": "launcher", "text_config": True}
++        prod = produce_manifest(root, admission(*rows), package_name="fixture")
++        self.assertEqual(prod.verdict, REFUSED)
++        self.assertIsNone(prod.manifest)
++        self.assertEqual([c for c, _, _ in prod.refusals], ["ADMISSION-INCOMPLETE"])
++        self.assertIn("decision_ref", prod.refusals[0][2])
++
++    def test_f4_missing_source_refuses(self):
++        root = build_demo(self.base / "nosrc")
++        prod = produce_manifest(root, {"entries": demo_rows()},
++                                package_name="fixture")
++        self.assertEqual(prod.verdict, REFUSED)
++        self.assertEqual([c for c, _, _ in prod.refusals], ["ADMISSION-MALFORMED"])
++
++    def test_f4_entries_carry_external_admission_refs(self):
++        manifest = produce_deps(build_demo(self.base / "refs")).manifest
++        self.assertEqual(manifest["admission"]["source"], ADMISSION_SOURCE)
++        for entry in manifest["entries"]:
++            self.assertIn("role", entry)
++            self.assertIn("admission_ref", entry)
++            self.assertTrue(entry["admission_ref"].startswith("fixture-admission#"))
++
++    def test_f4_no_permission_verdict_in_producer_vocabulary(self):
++        """The producer may declare facts and refuse; it may never grade a
++        distribution permission -- the only PASS/FAIL vocabulary in the system is
++        the pinned checker's structural verdict."""
++        vocab = {PRODUCED, REFUSED,
++                 "ADMISSION-MALFORMED", "ADMISSION-INCOMPLETE", "PRODUCER-DUP",
++                 "PRODUCER-PATH", "SOURCE-MISSING", "SOURCE-NOT-FILE",
++                 "PRODUCER-OVERSIZE", "PRODUCER-TEXT", "PRODUCER-DEPS",
++                 "PIN-MISMATCH",
++                 "STAGE-UNDECLARED", "STAGE-MISSING", "STAGE-NOT-FILE"}
++        source = (_HERE / "implementation.py").read_text(encoding="utf-8")
++        literals = set(re.findall(r'"([A-Z][A-Z-]{2,})"', source))
++        literals = {s for s in literals
++                    if s in vocab or any(t in s for t in
++                                         ("PREFLIGHT", "APPROVE", "LICENSE",
++                                          "PERMIT", "PERMISSION", "RIGHT"))}
++        self.assertEqual(literals, vocab,
++                         "producer vocabulary drifted from the frozen set")
++        for word in ("PREFLIGHT-PASS", "PREFLIGHT-FAIL", "APPROVED",
++                     "LICENSED", "PERMISSION"):
++            self.assertNotIn(word, vocab)
++        self.assertEqual(set(PINNED.VERDICTS), {PASS, FAIL})
++
++    # ---- F5: byte-pin discipline --------------------------------------------
++    def test_f5_vendored_bytes_match_pin(self):
++        data = (_HERE / "reference" / "package_preflight__e0a0abc8.py").read_bytes()
++        self.assertEqual(len(data), 11458)
++        self.assertEqual(hashlib.sha256(data).hexdigest(), REFERENCE_SHA256,
++                         "vendored checker must stay byte-pinned to #153 e0a0abc8")
++
++    def test_f5_tampered_copy_refused(self):
++        good = (_HERE / "reference" / "package_preflight__e0a0abc8.py").read_bytes()
++        scratch = self.base / "tampered.py"
++        scratch.write_bytes(good.replace(b"P-MISSING", b"P-MISSINGX", 1))
++        with self.assertRaises(AdapterRefusal) as ctx:
++            load_pinned_preflight(scratch)
++        self.assertEqual(ctx.exception.code, "PIN-MISMATCH")
++
++    def test_f5_schema_verdicts_come_from_pinned_module(self):
++        self.assertEqual(impl.SCHEMA, PINNED.SCHEMA)
++        self.assertEqual(impl.SCHEMA, "chimera.package.manifest.v1")
++        result = run_preflight(build_demo(self.base / "smoke"),
++                               produce_deps(build_demo(self.base / "smoke2")).manifest)
++        self.assertEqual(result.verdict, PASS, result.findings_json())
++        self.assertIn(result.verdict, PINNED.VERDICTS)
++
++    # ---- F6: exact admission --------------------------------------------------
++    def test_f6_manifest_declares_exactly_admitted_set(self):
++        root = stage(self.base / "extra", {
++            "DEMO.bat": DEMO_BAT,
++            "tools/run_demo.ps1": RUN_DEMO,
++            "ChimeraEngine/gallery.py": GALLERY,
++            "assets/unapproved_model.bin": b"unapproved asset bytes",
++        })
++        prod = produce_deps(root)
++        self.assertEqual(prod.verdict, PRODUCED, prod.refusals_json())
++        declared = sorted(e["path"] for e in prod.manifest["entries"])
++        self.assertEqual(declared, sorted(["DEMO.bat", "ChimeraEngine/gallery.py",
++                                           "tools/run_demo.ps1"]))
++        audit = audit_staging(root, prod.manifest)
++        self.assertEqual([f.path for f in audit.findings if f.check == "STAGE-UNDECLARED"],
++                         ["assets/unapproved_model.bin"])
++        self.assertEqual(audit.stats["files_seen"], 4)
++
++
++class AdapterContractTests(unittest.TestCase):
++    """Named refusal paths and the manifest contract (PREREGISTRATION.md section 3)."""
++
++    def setUp(self):
++        self._tmp = tempfile.TemporaryDirectory(prefix="s02_followup_contract_")
++        self.base = Path(self._tmp.name)
++
++    def tearDown(self):
++        self._tmp.cleanup()
++
++    def produce_ok(self, name="pkg"):
++        root = build_demo(self.base / name)
++        prod = produce_deps(root)
++        self.assertEqual(prod.verdict, PRODUCED, prod.refusals_json())
++        return root, prod
++
++    def test_producer_path_refusals(self):
++        root = build_demo(self.base / "paths")
++        for bad in ("E:/abs/x.txt", "../back.txt", "/abs/x.txt",
++                    "//server/share/x", "safe/../escape.txt"):
++            rows = demo_rows() + [{"path": bad, "role": "runtime",
++                                   "decision_ref": "fixture-admission#bad"}]
++            prod = produce_manifest(root, admission(*rows), package_name="fixture")
++            self.assertEqual(prod.verdict, REFUSED, bad)
++            self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-PATH"], bad)
++            self.assertIsNone(prod.manifest)
++
++    def test_producer_dup_refusal(self):
++        root = build_demo(self.base / "dup")
++        rows = demo_rows()
++        rows.append(dict(rows[2]))
++        prod = produce_manifest(root, admission(*rows), package_name="fixture")
++        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-DUP"])
++        self.assertIsNone(prod.manifest)
++
++    def test_producer_oversize_refusal(self):
++        root = build_demo(self.base / "big")
++        (root / "big.bin").write_bytes(b"\0" * 2048)
++        rows = demo_rows() + [{"path": "big.bin", "role": "data",
++                               "decision_ref": "fixture-admission#big"}]
++        prod = produce_manifest(root, admission(*rows), package_name="fixture",
++                                max_file_bytes=1024)
++        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-OVERSIZE"])
++        self.assertIn("1024 B", prod.refusals[0][2])
++
++    def test_producer_text_refusal(self):
++        root = stage(self.base / "bin", {"DEMO.bat": DEMO_BAT,
++                                         "config/blob.txt": b"\xff\xfe\x00"})
++        rows = [{"path": "DEMO.bat", "role": "launcher", "text_config": True,
++                 "decision_ref": "fixture-admission#demo-bat"},
++                {"path": "config/blob.txt", "role": "config", "text_config": True,
++                 "decision_ref": "fixture-admission#blob"}]
++        prod = produce_manifest(root, admission(*rows), package_name="fixture")
++        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-TEXT"])
++
++    def test_producer_deps_refusal_and_passthrough(self):
++        root = build_demo(self.base / "deps")
++        prod = produce_manifest(root, admission(*demo_rows()), package_name="fixture",
++                                declared_dependencies={"modules": "numpy"})
++        self.assertEqual([c for c, _, _ in prod.refusals], ["PRODUCER-DEPS"])
++        root_default = build_demo(self.base / "deps_default")
++        default = produce_manifest(root_default, admission(*demo_rows()),
++                                   package_name="fixture")
++        self.assertEqual(default.manifest["declared_dependencies"],
++                         {"modules": [], "system": []})
++        custom = produce_manifest(build_demo(self.base / "deps2"),
++                                  admission(*demo_rows()), package_name="fixture",
++                                  declared_dependencies={"modules": ["numpy"],
++                                                         "system": ["powershell"]})
++        self.assertEqual(custom.manifest["declared_dependencies"]["system"],
++                         ["powershell"])
++
++    def test_manifest_entries_carry_relative_paths_hashes_and_sizes(self):
++        _, prod = self.produce_ok("contract")
++        by_path = {e["path"]: e for e in prod.manifest["entries"]}
++        self.assertEqual(by_path["DEMO.bat"]["sha256"], sha(DEMO_BAT))
++        self.assertEqual(by_path["DEMO.bat"]["bytes"], len(DEMO_BAT))
++        self.assertEqual(by_path["tools/run_demo.ps1"]["bytes"], len(RUN_DEMO))
++        self.assertEqual(by_path["ChimeraEngine/gallery.py"]["sha256"], sha(GALLERY))
++        for entry in prod.manifest["entries"]:
++            self.assertNotIn("\\", entry["path"])
++            self.assertNotIn(":", entry["path"])
++            self.assertFalse(entry["path"].startswith("/"))
++        raw = prod.canonical_json().decode("ascii")
++        self.assertNotIn("\\", raw, "no backslash anywhere in canonical manifest")
++        self.assertNotIn(self.base.name, raw,
++                         "the package root's own name must not leak into the manifest")
++
++    def test_audit_staging_missing_and_not_file(self):
++        _, prod = self.produce_ok("audit")
++        manifest = json.loads(json.dumps(prod.manifest))
++        # a DECLARED entry absent from disk -> STAGE-MISSING;
++        # a DECLARED path that exists but is a directory -> STAGE-NOT-FILE.
++        manifest["entries"].append({"path": "ghost/missing.txt", "role": "data",
++                                    "sha256": "0" * 64, "bytes": 1,
++                                    "text_config": False,
++                                    "admission_ref": "fixture-admission#ghost"})
++        manifest["entries"].append({"path": "ghost", "role": "data",
++                                    "sha256": "0" * 64, "bytes": 1,
++                                    "text_config": False,
++                                    "admission_ref": "fixture-admission#ghost-dir"})
++        (self.base / "audit" / "ghost").mkdir()
++        audit = audit_staging(self.base / "audit", manifest)
++        checks = sorted((f.check, f.path) for f in audit.findings)
++        self.assertEqual(checks, [("STAGE-MISSING", "ghost/missing.txt"),
++                                  ("STAGE-NOT-FILE", "ghost")])
++
++    def test_stats_and_canonical_form(self):
++        _, prod = self.produce_ok("stats")
++        self.assertEqual(prod.stats["entries_declared"], 3)
++        self.assertEqual(prod.stats["bytes_hashed"],
++                         len(DEMO_BAT) + len(RUN_DEMO) + len(GALLERY))
++        self.assertTrue(prod.canonical_json().endswith(b"\n"))
++        self.assertEqual(json.loads(prod.canonical_json()), prod.manifest)
++        self.assertEqual(prod.manifest["schema"], PINNED.SCHEMA)
++        self.assertIsInstance(prod.manifest["max_file_bytes"], int)
++
++    def test_run_preflight_passes_dev_root_patterns_through(self):
++        root = stage(self.base / "patterns", {"config/dev.txt": b"out = 'Z:/build'\n",
++                                              "DEMO.bat": DEMO_BAT})
++        rows = [{"path": "config/dev.txt", "role": "config", "text_config": True,
++                 "decision_ref": "fixture-admission#dev"},
++                {"path": "DEMO.bat", "role": "launcher", "text_config": True,
++                 "decision_ref": "fixture-admission#demo-bat"}]
++        prod = produce_manifest(root, admission(*rows), package_name="fixture",
++                                declared_dependencies=DEPS,
++                                extra_dev_root_patterns=("z:/build",))
++        self.assertEqual(prod.manifest["dev_root_patterns"], ["z:/build"])
++        result = run_preflight(root, prod.manifest)
++        self.assertEqual(result.verdict, FAIL)
++        dev = [f for f in result.findings if f.check == "P-DEVROOT"]
++        self.assertEqual(len(dev), 1, result.findings_json())
++        self.assertIn("z:/build", dev[0].detail)
++
++
++if __name__ == "__main__":
++    unittest.main()
