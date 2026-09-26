@@ -1,0 +1,75 @@
+{
+ "schema": "ont-u02.camera.qualification.v1",
+ "task_id": "U02",
+ "card_id": "ONT-U02",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; the in-tree copy cannot know its own commit hash).",
+ "criteria_sha256": "5fb0dee8d086f9fd638507058063dd7b7c138958ab7433e5f086da2bbc120b83",
+ "attempt_id": "2c724944121f4feb893f671504bbac00",
+ "agent_id": "arrival-286909b6a5744dd79beb1a4a52c75b78",
+ "done_when": "Player can see motion on ground and at trunk; camera avoids tested obstruction cases and never moves the animal",
+ "done_when_verified": true,
+ "profile_verified": true,
+ "profile_id": "controls",
+ "profile_kind": "motion",
+ "subject_sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+ "pinned_lineage": {
+  "play_head": "f30f2224663324e9374b076938c56672febf4082",
+  "sources": {
+   "tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+   "tools/monkey_campaign/product/focus_policy.py": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+   "tools/monkey_campaign/product/state_feedback.py": "74c0aad033eeafef971888809702a0d0f4f387c55ac9690ee5380edc02a189d1",
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/monkey_campaign/product/follow_camera_tests.py": "4d75164ff6a16bf0d817332b7c5229513750782727ad1a23911025dc93d31b27",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+  },
+  "recovery": "read-only git show from E:/ChimeraWork/monkey-play-20260924 into this attempt's reference/ subtree (play worktree untouched at HEAD 8d16d3c1); hashes asserted at import in both the probe and the test suite"
+ },
+ "evidence": {
+  "source": {
+   "reference": "git show f30f2224663324e9374b076938c56672febf4082:tools/monkey_campaign/agents/U02_camera/PREREGISTRATION.md (also in-tree at reference-adjacent citations in report.md)",
+   "raw_sha256": "f4ea7b90295a850b874c7f9bf9de1be592d4df1e4bb358601945b9ff4ca629c3",
+   "provenance": "The pinned M-U02 frozen preregistration WITH the tested obstruction cases OC1-OC8 and falsifiers FA-FG (Amendments 1-5), the card's declared tested cases. Reconciled read-only; no pinned byte edited."
+  },
+  "numerical": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U02/2c724944121f4feb893f671504bbac00/checkout/tools/monkey_campaign/contributions/ONT-U02/evidence/numerical_receipt.json",
+   "raw_sha256": "c9611b3fca216a2724d1b606d524145896ec9d575e760c0cbf6d30a064bb184b",
+   "provenance": "15/15 frozen checks green over evidence/trace.jsonl (97f9fbfcfafcfbeaa02ced70636231bd3935ee446b8a9b9c114d2f05ad8a3c8a, byte-identical on rerun): ground/trunk visibility laws, controls + focus loss + no-stuck, settle law, pole avoidance biconditional + latch/release, trunk close-target framing, OC2/OC3b/OC4/OC5/OC7 case matrices, never-moves-the-animal stream audit, FF speed clamp, FG apply echo, FD latency, FE framing, pinned suite 24/24. Three frozen sub-clause mispredictions honestly recorded FIRED in prediction_deviations (never smoothed)."
+  },
+  "independent_review": {
+   "reference": "git show f30f2224663324e9374b076938c56672febf4082:tools/monkey_campaign/agents/U02_camera/VERDICT.md (with receipts/test_run.txt 3e6733066f27f4d5bf61502ab89f38b31855b1525a42a90ede145008a103c4e9 and receipts/latency_run.json 7413e1d90ae0ee2fbdca384c0bc5813f3424611857f4eadc7d43f2ebc2a7954f)",
+   "raw_sha256": "63de66cdfcddcc519f0eb1652c1fb4dc196d78b922206772ee79f015628401ac",
+   "provenance": "The pinned M-U02 acceptance record (DONE - all six acceptance items green, 24/24 tests, latency receipts) of the SAME subject bytes this candidate re-measures. This candidate's own independent worker review is queued automatically on publication request."
+  },
+  "runtime": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U02/2c724944121f4feb893f671504bbac00/checkout/tools/monkey_campaign/contributions/ONT-U02/evidence/runtime_receipt.json",
+   "raw_sha256": "a43cec4cfaed00206098e6f3d57dbcf55e8e59aa2fe3ba9ee43923063242eeef",
+   "provenance": "Deterministic headless run record: REAL pinned FollowCamera (subject + baseline) + FocusPolicy + InputMapper over injected milliseconds; strict engine doubles expose ONLY POST /camera + POST /project echo; zero allowlist violations, zero forbidden routes, pan 0.0 on every write; trace byte-identical on rerun; wall-clock latency reported separately (max 0.552 ms vs the 50 ms test budget)."
+  },
+  "visual": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U02/2c724944121f4feb893f671504bbac00/checkout/tools/monkey_campaign/contributions/ONT-U02/evidence/capture.mp4",
+   "raw_sha256": "e31290998b65b12886381523842c3d6c132421baefab3cdcf4ebe333d37c373e",
+   "provenance": "640x360 h264, 2346 frames @20 fps (117.3 s), rendered deterministically from trace.jsonl (three declared views x diagnostic+clean); bitexact rebuild reproduces the identical file."
+  },
+  "camera": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-U02/2c724944121f4feb893f671504bbac00/checkout/tools/monkey_campaign/contributions/ONT-U02/evidence/capture_manifest.json",
+   "raw_sha256": "103b93ed6d02964c42f7cabb76346618e1d02c2519d54249c868d1a5eae0f5dd",
+   "provenance": "chimera.visual_capture_manifest.v1, profile controls, 3 views x diagnostic+clean, trace-bound (state_binding sha = trace.jsonl), orientation quaternions numerically verified axis-mapped (camera +Z -> forward), validated in-process with the campaign's visual_capture.validate_manifest and visual_gate.verify against card_task.json."
+  }
+ },
+ "capture_context": {
+  "task_id": "U02",
+  "subject_sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+  "run_id": "ont-u02-camera-20260926-2c724944",
+  "capture_sha256": "e31290998b65b12886381523842c3d6c132421baefab3cdcf4ebe333d37c373e",
+  "tick_interval": [0, 390]
+ },
+ "honest_boundary": "The capture pixels are a deterministic CPU visualization of the recorded headless trace of the pinned camera subject (the module is headless by construction and consumes the engine only through its frozen HTTP contract, which strict doubles stand in for); they are NOT native engine frames and make no V03/V08 native-rendering claim - the integrated native checkpoints remain with the integration lane. An unmodeled obstacle can still occlude (the declared cylinder model is INJECTED, never discovered) - stated in the pinned C23 coverage boundary, unchanged.",
+ "candidate_suite": {
+  "probe": "tools/monkey_campaign/contributions/ONT-U02/camera_profile_probe.py (20f37ae2c621c86c0f79d4a1e3e441f053f1a5eac3a55622d0c574118733134d)",
+  "capture": "tools/monkey_campaign/contributions/ONT-U02/capture_build_camera.py (0c3a1bb0c5efde62751a1b79a8c93faa6ae9e75a758eda258faa6dfaab9a7edc)",
+  "tests": "python -B -m unittest test_camera_profile_probe -v -> 8/8 OK",
+  "preregistration": "tools/monkey_campaign/contributions/ONT-U02/PREREGISTRATION.md (18f1ffcaad155e35c4831c861483f53468fdca1b6806f2b29cd5402c823d379d, commit cbea7790, frozen BEFORE any probe ran)"
+ }
+}
