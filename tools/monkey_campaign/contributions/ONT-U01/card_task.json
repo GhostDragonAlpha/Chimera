@@ -1,0 +1,85 @@
+{
+ "definition_raw_sha256": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "task": {
+  "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+  "calculation_ids": [
+   "C12"
+  ],
+  "catalog_refs": [
+   "PLAT-01",
+   "AUTH-04",
+   "AUTH-06",
+   "LGT-04"
+  ],
+  "dependency_layer": 2,
+  "dependency_reasons": {},
+  "depends_on": [
+   "P01",
+   "P03"
+  ],
+  "done_when": "Input emits bounded speed/heading commands at the existing 20 Hz boundary, without state teleportation",
+  "group": "Player controls and camera",
+  "id": "U01",
+  "implementation_state": "UNRECONCILED",
+  "kind": "implementation",
+  "observation": "Do not require retraining for a UI remapping",
+  "ontology": {
+   "checkpoint_ids": [],
+   "connection_ids": [
+    "drive"
+   ],
+   "primary_membrane": "player",
+   "related_membranes": [
+    "locomotion",
+    "session",
+    "camera"
+   ],
+   "scenario_scope": "Input emits bounded speed/heading commands at the existing 20 Hz boundary, without state teleportation",
+   "verification_profile": "controls"
+  },
+  "scope": "core",
+  "selected": true,
+  "title": "Map gameplay input to the existing command seam",
+  "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+  "verification_profile": {
+   "camera_required_fields": [
+    "frame_id",
+    "coordinate_unit",
+    "position",
+    "orientation_convention_and_values",
+    "target",
+    "distance_to_target",
+    "projection",
+    "vertical_fov_or_orthographic_span",
+    "near_far_planes",
+    "aspect_ratio",
+    "viewport_resolution",
+    "camera_motion_or_bookmark_sequence",
+    "visibility_layers",
+    "label_ids",
+    "occlusion_or_xray_mode",
+    "state_or_tick_interval"
+   ],
+   "clean_view_required": true,
+   "diagnostic_layers": [
+    "input/state/tick display",
+    "camera target and frustum diagnostics",
+    "selected creature labels"
+   ],
+   "falsifier": "A stuck command, camera-induced body movement, unreadable required target, concealed obstruction or unbound timing evidence fails.",
+   "id": "controls",
+   "kind": "motion",
+   "nonvisual_reason": null,
+   "numerical_evidence_required": true,
+   "scenario": "Qualify only this task: Input emits bounded speed/heading commands at the existing 20 Hz boundary, without state teleportation Profile procedure: Exercise controls, focus loss, camera obstruction and release while logging the exact input and body state. Use the task-owned subset of layers/behaviors. Inventory absent or unresolved components explicitly; do not require downstream skills to accept an upstream interface. Freeze exact applicable probes and views before execution.",
+   "subject": "Player command, camera and feedback interfaces",
+   "views": [
+    "normal follow-camera distance",
+    "obstructed and close-target views",
+    "repeatable inspection side view"
+   ]
+  }
+ },
+ "task_id": "U01"
+}

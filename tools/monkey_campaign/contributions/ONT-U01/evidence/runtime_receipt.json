@@ -1,0 +1,83 @@
+{
+ "all_green": true,
+ "artifacts": {
+  "trace": {
+   "raw_sha256": "1624fded79cde3f0def7caf29b409d025cc869aa4468da99b055c93fcc2fa3aa",
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\243e4030e63d47059cb2b8eb3fe98082\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\trace.jsonl",
+   "rows": 61
+  }
+ },
+ "attempt_id": "243e4030e63d47059cb2b8eb3fe98082",
+ "card_id": "ONT-U01",
+ "environment": {
+  "engine_process": false,
+  "gpu": false,
+  "headless": true,
+  "network": false,
+  "platform": "win32",
+  "python": "3.14.3"
+ },
+ "first_probe_run_utc": "2026-09-26T13:00:35",
+ "pinned_lineage": {
+  "integration_commit": "8550b634 (U01 integrated; ancestor of the pinned head)",
+  "play_head": "f30f2224663324e9374b076938c56672febf4082",
+  "recovery": "git -C E:/ChimeraWork/monkey-play-20260924 show f30f2224...:<path> into reference/ (read-only)",
+  "sources": {
+   "tools/monkey_campaign/agents/U01_input/PREREGISTRATION.md": "0aadc3cd5fec7e7bd0a7aba0bcfa2a5d05edf8fcb6805eda2ecae92d4d3d1b5f",
+   "tools/monkey_campaign/agents/U01_input/discovery_note.md": "38efdf393bd03b7b1260896e917231f2968963a501a180f4fc01491a02b30849",
+   "tools/monkey_campaign/agents/U01_input/receipts/input_mapper_tests_20260924.txt": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c",
+   "tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/monkey_campaign/product/input_mapper_tests.py": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+  }
+ },
+ "run_id": "ont-u01-controls-20260926-243e4030",
+ "schema": "ont-u01.controls.runtime.v1",
+ "subject": "tools/monkey_campaign/product/input_mapper.py",
+ "subject_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+ "task_id": "U01",
+ "timeline": {
+  "camera_only_window": [
+   1500,
+   1800
+  ],
+  "events_ms": [
+   100,
+   300,
+   400,
+   500,
+   600,
+   700,
+   900,
+   1050,
+   1200,
+   1400,
+   1975,
+   2100,
+   2400,
+   2600,
+   2650,
+   2700,
+   2750,
+   2800,
+   2950
+  ],
+  "focus_loss_ms": 1050,
+  "fuzz": {
+   "schedules": 5000,
+   "seed": 20260926
+  },
+  "reconnect_ms": 1200,
+  "release_tails_ms": [
+   700,
+   1050,
+   1400,
+   2400,
+   2950
+  ],
+  "t_end_ms": 3000,
+  "tick_ms": 50,
+  "ticks": 61
+ }
+}

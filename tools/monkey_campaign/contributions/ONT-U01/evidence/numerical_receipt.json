@@ -1,0 +1,375 @@
+{
+ "all_green": true,
+ "attempt_id": "243e4030e63d47059cb2b8eb3fe98082",
+ "card_id": "ONT-U01",
+ "checks": [
+  {
+   "deviations": [],
+   "measured": {
+    "forbidden_marker_hits": [],
+    "fuzz_non_emit_sink_calls": 0,
+    "fuzz_records_checked": 117142,
+    "fuzz_schedules": 5000,
+    "fuzz_seed": 20260926,
+    "fuzz_violations": 0,
+    "scripted_in_bounds": true,
+    "scripted_records": 40,
+    "sink_only_emit_calls": true
+   },
+   "name": "C1_bounded_no_teleport_fuzz",
+   "ok": true,
+   "prediction": 1
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "commanded_span_diffs_ms": [
+     50
+    ],
+    "dense_1ms_held_diffs_ms": [
+     50
+    ],
+    "dense_interval_ticks_checked": 49,
+    "dense_records": 13,
+    "max_records_per_tick": 1,
+    "reanchor_records": 1,
+    "stall_500ms_records_at_next_tick": 1,
+    "stall_records_at_press": 1
+   },
+   "name": "C2_boundary_50ms_exact",
+   "ok": true,
+   "prediction": 2
+  },
+  {
+   "deviations": [
+    {
+     "fired": true,
+     "measured": "the zero lands at t=750 and the frozen timeline schedules a FRESH input event at t=900, so the next record arrives after 150 ms; the resumed records come from that new press (a new grid), not from the tail -- zero tail-driven records.",
+     "sub_clause": "C3: 'then >= 300 ms of zero emission' for the release at t=700"
+    },
+    {
+     "fired": true,
+     "measured": "the zero lands at t=1100 and the frozen timeline schedules a FRESH input event at t=1200, so the next record arrives after 100 ms; the resumed records come from that new press (a new grid), not from the tail -- zero tail-driven records.",
+     "sub_clause": "C3: 'then >= 300 ms of zero emission' for the release at t=1050"
+    }
+   ],
+   "measured": {
+    "tails": [
+     {
+      "emission_silence_ms": 150,
+      "ok": true,
+      "pre_v": 0.763625,
+      "release_ms": 700,
+      "tail": [
+       [
+        700,
+        0.763625
+       ],
+       [
+        750,
+        0.0
+       ]
+      ],
+      "tail_driven_after_zero": [],
+      "zero_ms": 750
+     },
+     {
+      "emission_silence_ms": 100,
+      "ok": true,
+      "pre_v": 0.763625,
+      "release_ms": 1050,
+      "tail": [
+       [
+        1050,
+        0.763625
+       ],
+       [
+        1100,
+        0.0
+       ]
+      ],
+      "tail_driven_after_zero": [],
+      "zero_ms": 1100
+     },
+     {
+      "emission_silence_ms": 550,
+      "ok": true,
+      "pre_v": 0.763625,
+      "release_ms": 1400,
+      "tail": [
+       [
+        1400,
+        0.763625
+       ],
+       [
+        1450,
+        0.0
+       ]
+      ],
+      "tail_driven_after_zero": [],
+      "zero_ms": 1450
+     },
+     {
+      "emission_silence_ms": 350,
+      "ok": true,
+      "pre_v": 0.763625,
+      "release_ms": 2400,
+      "tail": [
+       [
+        2400,
+        0.763625
+       ],
+       [
+        2450,
+        0.0
+       ]
+      ],
+      "tail_driven_after_zero": [],
+      "zero_ms": 2450
+     },
+     {
+      "emission_silence_ms": null,
+      "ok": true,
+      "pre_v": 0.763625,
+      "release_ms": 2950,
+      "tail": [
+       [
+        2950,
+        0.763625
+       ],
+       [
+        3000,
+        0.0
+       ]
+      ],
+      "tail_driven_after_zero": [],
+      "zero_ms": 3000
+     }
+    ]
+   },
+   "name": "C3_release_decay_to_silence",
+   "ok": true,
+   "prediction": 3
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "EXPIRY_TICKS": 30,
+    "expiry_expired_at_plus105": true,
+    "expiry_not_expired_at_plus95": true,
+    "held_at_focus_loss": [],
+    "reconnect_record_at_1200": [
+     0.763625
+    ],
+    "records_at_1150": 0,
+    "tail_ms_values": [
+     [
+      1050,
+      [
+       0.763625
+      ]
+     ],
+     [
+      1100,
+      [
+       0.0
+      ]
+     ],
+     [
+      1150,
+      []
+     ]
+    ],
+    "tail_value_sequence": [
+     [
+      0.763625
+     ],
+     [
+      0.0
+     ]
+    ]
+   },
+   "name": "C4_focus_loss_no_stuck_command",
+   "ok": true,
+   "prediction": 4
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "actor_conditioning_empty": true,
+    "decode_v1_bitidentity_sampled": true,
+    "issued_tick_chain_300hz": true,
+    "records_projected": 40,
+    "velocity_passthrough": true,
+    "yaw_routed_nowhere": true
+   },
+   "name": "C5_projection_seam_v1",
+   "ok": true,
+   "prediction": 5
+  },
+  {
+   "deviations": [
+    {
+     "fired": true,
+     "measured": "the deadband-honest camera issued 0 writes inside the window (the solution had already settled at the last pre-window write); camera pipeline ticks still ran every window tick and every write on the run carries exactly the 8 camera fields, so the camera surface cannot carry a body command. The body-stillness and record-silence laws are green.",
+     "sub_clause": "C6a: '... while camera writes are observed' in the camera-only window"
+    }
+   ],
+   "measured": {
+    "body_vs_record_integral_residual": 0.0,
+    "camera_write_fields_exact": true,
+    "camera_writes_total": 36,
+    "max_body_step_m": 0.038181250000000055,
+    "step_bound_m": 0.038181250001,
+    "window": [
+     1500,
+     1800
+    ],
+    "window_body_position_end": [
+     0.1733646780175532,
+     0.0,
+     0.816098115168557
+    ],
+    "window_body_position_start": [
+     0.1733646780175532,
+     0.0,
+     0.816098115168557
+    ],
+    "window_body_still_exact": true,
+    "window_camera_writes": 0,
+    "window_input_events": 0,
+    "window_records": 0
+   },
+   "name": "C6_no_camera_induced_body_movement",
+   "ok": true,
+   "prediction": 6
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "close_target_distances": [
+     2.2010266725184073,
+     2.6406069120338214
+    ],
+    "distance_band_met": true,
+    "occlusion_ray_blocked_all_ticks": true,
+    "pillar_declared": {
+     "cx": 0.9,
+     "cz": 0.75,
+     "r": 0.3,
+     "top": 2.0
+    },
+    "target_center_in_frustum_all_ticks": true
+   },
+   "name": "C7_obstruction_declared_target_readable",
+   "ok": true,
+   "prediction": 7
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "declared_imports": [
+     "__future__",
+     "pathlib",
+     "sys",
+     "tools.science_funnel.typeb_export.command_record"
+    ],
+    "imports_only_seam": true,
+    "projection_bits_equal": true,
+    "records_compared": 9,
+    "same_constants": true,
+    "same_type_version": true,
+    "same_values": true
+   },
+   "name": "C8_remap_is_data_no_retraining",
+   "ok": true,
+   "prediction": 8
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "cadence_statement": "50 ms is the command interval (C12), not an end-to-end latency guarantee; measured gaps are in [0, 50] ms by construction of the boundary grid",
+    "issued_tick_chain_300hz": true,
+    "press_to_first_record_gaps": [
+     {
+      "first_record_ms": 100,
+      "gap_ms": 0,
+      "press_ms": 100
+     },
+     {
+      "first_record_ms": 700,
+      "gap_ms": 0,
+      "press_ms": 700
+     },
+     {
+      "first_record_ms": 900,
+      "gap_ms": 0,
+      "press_ms": 900
+     },
+     {
+      "first_record_ms": 1200,
+      "gap_ms": 0,
+      "press_ms": 1200
+     },
+     {
+      "first_record_ms": 1400,
+      "gap_ms": 0,
+      "press_ms": 1400
+     },
+     {
+      "first_record_ms": 2000,
+      "gap_ms": 25,
+      "press_ms": 1975
+     },
+     {
+      "first_record_ms": 2400,
+      "gap_ms": 0,
+      "press_ms": 2400
+     },
+     {
+      "first_record_ms": 2800,
+      "gap_ms": 0,
+      "press_ms": 2800
+     },
+     {
+      "first_record_ms": 2950,
+      "gap_ms": 0,
+      "press_ms": 2950
+     }
+    ]
+   },
+   "name": "C9_timing_chain_bound",
+   "ok": true,
+   "prediction": 9
+  }
+ ],
+ "checks_green": 9,
+ "checks_total": 9,
+ "criteria_sha256": "7c54e8356f287c08e694fc7455d64b31e1d0d295a1835d921f8163fa39b2fa62",
+ "prediction_deviations": [
+  {
+   "fired": true,
+   "measured": "the zero lands at t=750 and the frozen timeline schedules a FRESH input event at t=900, so the next record arrives after 150 ms; the resumed records come from that new press (a new grid), not from the tail -- zero tail-driven records.",
+   "sub_clause": "C3: 'then >= 300 ms of zero emission' for the release at t=700"
+  },
+  {
+   "fired": true,
+   "measured": "the zero lands at t=1100 and the frozen timeline schedules a FRESH input event at t=1200, so the next record arrives after 100 ms; the resumed records come from that new press (a new grid), not from the tail -- zero tail-driven records.",
+   "sub_clause": "C3: 'then >= 300 ms of zero emission' for the release at t=1050"
+  },
+  {
+   "fired": true,
+   "measured": "the deadband-honest camera issued 0 writes inside the window (the solution had already settled at the last pre-window write); camera pipeline ticks still ran every window tick and every write on the run carries exactly the 8 camera fields, so the camera surface cannot carry a body command. The body-stillness and record-silence laws are green.",
+   "sub_clause": "C6a: '... while camera writes are observed' in the camera-only window"
+  }
+ ],
+ "profile_id": "controls",
+ "profile_kind": "motion",
+ "run_id": "ont-u01-controls-20260926-243e4030",
+ "runtime_evidence_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\243e4030e63d47059cb2b8eb3fe98082\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\runtime_receipt.json",
+ "schema": "ont-u01.controls.numerical.v1",
+ "subject_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+ "task_id": "U01",
+ "trace_raw_sha256": "1624fded79cde3f0def7caf29b409d025cc869aa4468da99b055c93fcc2fa3aa",
+ "trace_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\243e4030e63d47059cb2b8eb3fe98082\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\trace.jsonl"
+}
