@@ -1,0 +1,1063 @@
+diff --git a/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/PREREGISTRATION.md b/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/PREREGISTRATION.md
+new file mode 100644
+index 0000000..70cfaae
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/PREREGISTRATION.md
+@@ -0,0 +1,92 @@
++# PREREGISTRATION — D-W03-ANCHORS-20260924-FOLLOWUP
++
++Card: `D-W03-ANCHORS-20260924-FOLLOWUP` (planning ID W03, verification profile:
++anchor-certificate verification).
++Attempt `32070971d03443cebb213bf285835871`, agent `c95e1722350849bca846b237c1f60997`,
++criteria sha256 `6c301b40e033f40ff1c97148f11bdf8e44000134ab3214c8f3582991ea62730f`.
++Written BEFORE any implementation edit (Rule 0).
++
++## SUBJECT (predecessor facts, all cited — none fabricated)
++
++Parent card D-W03-ANCHORS-20260924 (winning PR
++https://github.com/GhostDragonAlpha/Chimera/pull/119, head
++`37fd8679aee97674eca34cd83031ba020ff99c04`, criteria `841796bb…`) delivered
++`anchor_manifest_v2.proposal.json` (schema `chimera.anchor_manifest.v2.proposal`,
++22 entries) under the astra-0008 W03 ruling (Option B: versioned re-baselining),
++verified locally at
++`E:/ChimeraWork/monkey-coordination/kanban-attempts/D-W03-ANCHORS-20260924/f7fd439796784e7e980a33cd90978c0d/anchor_manifest_v2.proposal.json`.
++Key predecessor facts this card BUILDS ON (each re-measurable by the verifier):
++
++- 18 git-text anchors verify at orphan commit `a62b286e` (5 CRLF + 2 raw fixture,
++  2 v1-band, 3 pre-v2, 6 v2-recorded), with per-entry declared extraction
++  convention (raw = blob bytes; lf-to-crlf = blob with LF→CRLF, equal to the
++  registry's on-disk working-tree hash).
++- `a62b286e` is an ORPHAN: object exists in `E:/ChimeraWork/monkey-play-20260924`,
++  no ref contains it (G1 blocker, lead-owned).
++- 4 v2 binaries are NOT_IN_GIT by design (gitignored; re-anchor to
++  source+build-script+rebuild hash; G2 open).
++- TIE2 battery: 5 files on disk under `tools/monkey_campaign/agents/TIE2` at
++  branch commit `ebc00096`, verifying RAW (host legs only; GPU legs never executed).
++- Gates G1–G6 all OPEN; the sole host-vs-device parity on record is HISTORICAL;
++  fresh device proof (G3) and C3 bars (G4) unmeasured.
++
++## STATEMENT (a theory that can lose)
++
++A deterministic certificate verifier can bind the W03 walking-anchor chain —
++source identities (commits, paths, extraction conventions), binary identities
++(source+build-script anchoring), input anchors and output receipts — and decide,
++from pinned evidence ALONE, whether the versioned certificate is complete; in
++particular it can make "CPU/host evidence presented as device qualification"
++structurally impossible (an output's leg+nature must both satisfy the comparison's
++requirement, and a missing receipt stays missing) such that the REAL tree today
++yields INCOMPLETE with exactly the open gates named — no verifier-side pass is
++reachable while G1–G6 stand.
++
++## PREDICTION (not yet measured)
++
++1. Converting the parent manifest to a `chimera.walking_anchor_certificate.v1`
++   and verifying against `E:/ChimeraWork/monkey-play-20260924` reproduces the
++   parent's anchor facts through independent code: 18/18 git anchors verify under
++   their declared conventions; 4 binaries report source-anchored/absent; the 5
++   TIE2 on-disk outputs verify RAW; `a62b286e` is reported unreachable-from-refs
++   (finding, not refusal).
++2. The real-tree verdict is INCOMPLETE (exit 1) with named findings including:
++   provenance-commit-unreachable (G1), fresh device proof MISSING for the
++   host-vs-device parity comparison and the C3 bars comparison (CPU evidence on
++   record classifies as historical/host-only and is explicitly rejected as device
++   proof), binaries not rebuilt (G2). QUALIFIED is unreachable on this tree.
++3. Mutating one anchor's expected hash in the certificate → exactly that anchor
++   reported `anchor_hash_mismatch` (named), verdict not qualified.
++4. Pointing an anchor at a real commit that lacks its path → `anchor_path_missing`
++   finding; naming a nonexistent commit → named refusal exit 3 (PIN_UNRESOLVABLE),
++   no verdict written.
++5. A synthetic COMPLETE certificate (fixture git repo, all anchors verifying,
++   on-disk receipts present, a leg=device nature=fresh receipt, all gates CLOSED
++   with verified evidence) → QUALIFIED exit 0; deleting that device receipt, or
++   swapping it for a host/historical one, flips the verdict to INCOMPLETE with
++   `output_missing` / `cpu_evidence_not_device_proof` named — CPU evidence can
++   never close a device-required comparison.
++
++## FALSIFIER (named before the run)
++
++Any of the following fails this card:
++
++- F1: the verifier reports QUALIFIED (or omits a missing-comparison finding) on
++  the real tree while any gate G1–G6 is open or any device-required comparison
++  lacks a fresh device receipt;
++- F2: a host/historical (CPU) output satisfies a device-required comparison;
++- F3: an anchor whose bytes were mutated (or whose path/commit does not resolve)
++  verifies, or fails without a named finding/refusal;
++- F4: a predecessor fact is fabricated (any manifest/parent claim cited above
++  that the verifier cannot reproduce from the named sources when measured), a
++  fixture is labeled native acceptance (fixtures stay labeled "fixture"; the
++  real-tree run is the only non-fixture verdict), or the patch touches
++  physics/thresholds/production sources (it adds only this contribution
++  directory's files).
++
++## BOUNDS
++
++CPU-only, stdlib-only, read-only against the source repo (git cat-file/ls-tree/
++rev-parse/branch --contains only); temporary directories for fixtures; each
++verifier/child invocation bounded ≤110 s; no GPU, no training, no live-checkout
++edits, ≤16 MiB new output.
+diff --git a/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/implementation.py b/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/implementation.py
+new file mode 100644
+index 0000000..66f7a9c
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/implementation.py
+@@ -0,0 +1,449 @@
++"""implementation.py -- D-W03-ANCHORS-20260924-FOLLOWUP: versioned walking-anchor
++certificate verifier.
++
++Binds the W03 anchor chain identities from pinned evidence ALONE and decides
++certificate completeness:
++
++  source identities   commit + repo path + extraction convention (raw blob bytes,
++                      or lf-to-crlf = the on-disk working-tree bytes the shutdown
++                      registry hashed) per anchor;
++  binary identities   v2 binaries are NOT_IN_GIT by design -> anchored to
++                      source commit + build script (hash-verified); on-disk
++                      binary hashes, when supplied, are verified and are the only
++                      G2-closing evidence;
++  input anchors       the 18 git-text anchors of anchor_manifest_v2.proposal;
++  output receipts     git blobs or on-disk files, each with a LEG (host/device/cpp)
++                      and a NATURE (historical/fresh).
++
++THE DEVICE-PROOF LAW (the card's core): a comparison that requires
++"device_leg_fresh" is satisfied ONLY by an output that exists, hash-verifies, has
++leg == "device" AND nature == "fresh". A host or historical output is recorded as
++an explicit `cpu_evidence_not_device_proof` rejection; a missing receipt stays
++`output_missing`. CPU evidence can never close a device-required comparison, and
++a real missing qualification is preserved as missing (OPEN gates are legal,
++reported, and non-closing).
++
++Verdicts: QUALIFIED (exit 0) — zero findings, every comparison satisfied, every
++gate CLOSED with verified evidence, provenance commit reachable when required.
++INCOMPLETE (exit 1) — a real verdict naming every finding. Refusals (exit 3):
++structural problems (unknown schema, missing repo, unresolvable pin, unparseable
++certificate); no verdict file is written on refusal.
++
++Subcommands:
++  from-manifest  convert anchor_manifest_v2.proposal.json (parent card D-W03,
++                 PR #119) into a chimera.walking_anchor_certificate.v1 JSON.
++  verify         verify a certificate against a repo; write verdict JSON.
++
++Read-only against the repo: git rev-parse / cat-file / ls-tree / branch
++--contains only. CPU-only, stdlib-only. Fixtures used by the test suite are
++synthetic and labeled "fixture"; no output of this tool is native acceptance —
++it is a source-identity statement (no engine, GPU or training is involved).
++"""
++from __future__ import annotations
++
++import argparse
++import hashlib
++import json
++import pathlib
++import subprocess
++import sys
++
++CERT_SCHEMA = "chimera.walking_anchor_certificate.v1"
++MANIFEST_SCHEMA = "chimera.anchor_manifest.v2.proposal"
++EXIT_QUALIFIED, EXIT_INCOMPLETE, EXIT_REFUSAL = 0, 1, 3
++HEX40 = "0123456789abcdef"
++
++
++class Refusal(RuntimeError):
++    """Structural problem: exit 3, no verdict file."""
++
++
++def sha256_bytes(data: bytes) -> str:
++    return hashlib.sha256(data).hexdigest()
++
++
++def to_crlf(data: bytes) -> bytes:
++    return data.replace(b"\n", b"\r\n")
++
++
++def run_git(repo: pathlib.Path, argv, what: str) -> subprocess.CompletedProcess:
++    proc = subprocess.run(["git", "-C", str(repo), *argv], capture_output=True)
++    if proc.returncode != 0:
++        raise Refusal("GIT_FAILED what=%s exit=%d stderr=%r" % (
++            what, proc.returncode,
++            proc.stderr.decode("utf-8", "replace").strip()[:300]))
++    return proc
++
++
++def require(condition: bool, code: str, detail: str):
++    if not condition:
++        raise Refusal("%s %s" % (code, detail))
++
++
++def is_hex40(s) -> bool:
++    return isinstance(s, str) and len(s) == 40 and all(c in HEX40 for c in s.lower())
++
++
++# ── git object access (read-only) ────────────────────────────────────────────
++def commit_resolves(repo: pathlib.Path, commit: str) -> bool:
++    proc = subprocess.run(["git", "-C", str(repo), "rev-parse", "--verify",
++                           "--quiet", commit + "^{commit}"], capture_output=True)
++    return proc.returncode == 0
++
++
++def commit_reachable(repo: pathlib.Path, commit: str) -> bool:
++    """True iff some local or remote branch contains the commit (the parent's
++    orphan test). A commit object may exist yet be unreachable (a62b286e)."""
++    proc = subprocess.run(["git", "-C", str(repo), "branch", "-a",
++                           "--contains", commit], capture_output=True)
++    if proc.returncode != 0:
++        return False
++    return bool(proc.stdout.decode("utf-8", "replace").strip())
++
++
++def blob_at(repo: pathlib.Path, commit: str, path: str):
++    """(blob_id, bytes) at commit:path, or None when the path is absent."""
++    probe = subprocess.run(["git", "-C", str(repo), "rev-parse", "--verify",
++                            "--quiet", "%s:%s" % (commit, path)], capture_output=True)
++    if probe.returncode != 0:
++        return None
++    blob = probe.stdout.decode().strip()
++    data = run_git(repo, ["cat-file", "blob", blob], "cat-file %s" % blob).stdout
++    return blob, data
++
++
++def anchor_hash(data: bytes, convention: str) -> str:
++    if convention == "raw":
++        return sha256_bytes(data)
++    if convention == "lf-to-crlf":
++        return sha256_bytes(to_crlf(data))
++    raise Refusal("CONVENTION_UNKNOWN convention=%r (expected raw|lf-to-crlf)"
++                  % convention)
++
++
++# ── from-manifest: parent proposal -> certificate ────────────────────────────
++def build_certificate_from_manifest(manifest: dict, tie2_disk_root: str) -> dict:
++    require(manifest.get("schema") == MANIFEST_SCHEMA,
++            "MANIFEST_SCHEMA_UNKNOWN", "expected %s" % MANIFEST_SCHEMA)
++    entries = manifest["entries"]
++    anchors, binaries = [], []
++    for e in entries:
++        if e.get("status") == "NOT_IN_GIT":
++            binaries.append({
++                "binary_id": e["anchor_id"],
++                "anchoring": "source_build",
++                "source_commit": e["commit"],
++                "historical_sha256": e.get("registry_sha256"),
++                "note": e.get("note", ""),
++            })
++        else:
++            convention = "raw" if e["extraction_convention"] == "raw" else "lf-to-crlf"
++            expected = (e["raw_blob_sha256"] if convention == "raw"
++                        else e["registry_sha256"])
++            anchors.append({
++                "anchor_id": e["anchor_id"], "klass": e.get("klass"),
++                "commit": e["commit"], "repo_path": e["repo_path"],
++                "convention": convention, "expected_sha256": expected,
++            })
++    tie2 = manifest.get("tie2_battery_on_disk", {})
++    outputs = []
++    for rel, expected in sorted(tie2.get("files", {}).items()):
++        outputs.append({
++            "output_id": "tie2-" + rel,
++            "leg": "host",                       # GPU legs never executed (parent)
++            "nature": "historical",
++            "location": {"type": "on_disk",
++                         "path": str(pathlib.Path(tie2_disk_root) / rel),
++                         "expected_sha256": expected},
++        })
++    certificate = {
++        "schema": CERT_SCHEMA,
++        "subject": {
++            "card": "W03", "planning_gate": "versioned anchor adoption",
++            "manifest_schema": MANIFEST_SCHEMA,
++            "ruling": manifest.get("ruling", {}).get("decision"),
++        },
++        "source": {
++            "repo_note": "read-only verification target",
++            "provenance_commit": manifest["provenance_commit"]["sha"],
++            "required_reachable": True,
++        },
++        "anchors": anchors,
++        "binaries": binaries,
++        "outputs": outputs,
++        "comparisons": [
++            {"comparison_id": "host_device_parity_t1_t43",
++             "kind": "host_device_parity",
++             "requires": ["device_leg_fresh"],
++             "evidence": [o["output_id"] for o in outputs],
++             "note": "parent: sole parity on record is HISTORICAL (shutdown "
++                     "capture); fresh device replay is gate G3"},
++            {"comparison_id": "c3_bars_remeasure",
++             "kind": "c3_bars",
++             "requires": ["device_leg_fresh"],
++             "evidence": [],
++             "note": "parent: C3 bars re-measure is gate G4 (unmeasured)"},
++        ],
++        "gates": [
++            {"gate_id": g["id"], "status": g.get("status", "OPEN"),
++             "evidence": []}
++            for g in manifest.get("adoption_gates", [])
++        ],
++        "device_proof_required": True,
++    }
++    return certificate
++
++
++# ── verify ───────────────────────────────────────────────────────────────────
++def verify_certificate(cert: dict, repo: pathlib.Path) -> dict:
++    require(isinstance(cert, dict), "CERT_NOT_OBJECT", "certificate must be an object")
++    require(cert.get("schema") == CERT_SCHEMA, "CERT_SCHEMA_UNKNOWN",
++            "expected %s, found %r" % (CERT_SCHEMA, cert.get("schema")))
++    for section in ("anchors", "binaries", "outputs", "comparisons", "gates"):
++        require(isinstance(cert.get(section), list), "CERT_SECTION_MISSING",
++                "section %r missing or not a list" % section)
++    src = cert.get("source") or {}
++    prov = src.get("provenance_commit")
++    require(is_hex40(prov), "PROVENANCE_PIN_INVALID", "found %r" % (prov,))
++    require(repo.is_dir(), "REPO_MISSING", "%s is not a directory" % repo)
++    require(commit_resolves(repo, prov), "PIN_UNRESOLVABLE",
++            "provenance commit %s does not resolve in %s" % (prov, repo))
++
++    findings = []
++    checked = {"anchors": 0, "binaries": 0, "outputs": 0}
++    reachable_commits = {}
++
++    def note(code, subject, detail):
++        findings.append({"code": code, "subject": subject, "detail": detail})
++
++    def commit_reachable_cached(commit):
++        if commit not in reachable_commits:
++            reachable_commits[commit] = commit_reachable(repo, commit)
++        return reachable_commits[commit]
++
++    # provenance reachability (G1 law)
++    if src.get("required_reachable", True) and not commit_reachable_cached(prov):
++        note("provenance_commit_unreachable", prov[:12],
++             "commit object resolves but NO local/remote branch contains it "
++             "(parent G1: bring onto a reachable ref before adoption)")
++
++    # anchors
++    for a in cert["anchors"]:
++        aid = a.get("anchor_id", "<unnamed>")
++        commit, path = a.get("commit"), a.get("repo_path")
++        require(is_hex40(commit), "ANCHOR_PIN_INVALID", "%s commit %r" % (aid, commit))
++        require(commit_resolves(repo, commit), "PIN_UNRESOLVABLE",
++                "anchor %s commit %s does not resolve" % (aid, commit))
++        got = blob_at(repo, commit, path)
++        if got is None:
++            note("anchor_path_missing", aid,
++                 "%s absent at %s" % (path, commit[:12]))
++            continue
++        actual = anchor_hash(got[1], a.get("convention", "raw"))
++        checked["anchors"] += 1
++        if actual != a.get("expected_sha256"):
++            note("anchor_hash_mismatch", aid,
++                 "expected %s, measured %s (%s at %s:%s)"
++                 % (a.get("expected_sha256"), actual, a.get("convention"),
++                    commit[:12], path))
++        if not commit_reachable_cached(commit):
++            note("anchor_commit_unreachable", aid,
++                 "commit %s is on no branch (orphan evidence)" % commit[:12])
++
++    # binaries (source+build-script anchoring; on-disk hash = only G2 closer)
++    for b in cert["binaries"]:
++        bid = b.get("binary_id", "<unnamed>")
++        require(b.get("anchoring") == "source_build", "BINARY_ANCHORING_UNKNOWN",
++                "%s anchoring %r" % (bid, b.get("anchoring")))
++        commit = b.get("source_commit")
++        require(is_hex40(commit), "BINARY_PIN_INVALID", "%s commit %r" % (bid, commit))
++        require(commit_resolves(repo, commit), "PIN_UNRESOLVABLE",
++                "binary %s source commit %s does not resolve" % (bid, commit))
++        script = b.get("build_script")
++        if script:
++            got = blob_at(repo, commit, script["repo_path"])
++            if got is None:
++                note("binary_build_script_missing", bid,
++                     "%s absent at %s" % (script["repo_path"], commit[:12]))
++            else:
++                checked["binaries"] += 1
++                actual = anchor_hash(got[1], script.get("convention", "raw"))
++                if actual != script.get("expected_sha256"):
++                    note("binary_build_script_mismatch", bid,
++                         "expected %s, measured %s" % (script.get("expected_sha256"),
++                                                       actual))
++        disk = b.get("on_disk")
++        if disk:
++            p = pathlib.Path(disk["path"])
++            if not p.is_file():
++                note("binary_on_disk_missing", bid, "%s absent" % p)
++            else:
++                actual = sha256_bytes(p.read_bytes())
++                if actual != disk.get("expected_sha256"):
++                    note("binary_on_disk_mismatch", bid,
++                         "expected %s, measured %s" % (disk.get("expected_sha256"),
++                                                       actual))
++                else:
++                    checked["binaries"] += 1
++        else:
++            note("binary_not_rebuilt", bid,
++                 "anchored to source only; no rebuilt on-disk hash supplied "
++                 "(parent G2: rebuild or retire binary hashes)")
++
++    # outputs (receipts)
++    verified_outputs = {}
++    for o in cert["outputs"]:
++        oid = o.get("output_id", "<unnamed>")
++        loc = o.get("location") or {}
++        if loc.get("type") == "on_disk":
++            p = pathlib.Path(loc["path"])
++            if not p.is_file():
++                note("output_missing", oid, "on-disk receipt %s absent" % p)
++                continue
++            actual = sha256_bytes(p.read_bytes())
++        elif loc.get("type") == "git_blob":
++            require(is_hex40(loc.get("commit")), "OUTPUT_PIN_INVALID",
++                    "%s commit %r" % (oid, loc.get("commit")))
++            require(commit_resolves(repo, loc["commit"]), "PIN_UNRESOLVABLE",
++                    "output %s commit %s does not resolve" % (oid, loc["commit"]))
++            got = blob_at(repo, loc["commit"], loc["path"])
++            if got is None:
++                note("output_path_missing", oid,
++                     "%s absent at %s" % (loc["path"], loc["commit"][:12]))
++                continue
++            actual = anchor_hash(got[1], loc.get("convention", "raw"))
++        else:
++            raise Refusal("OUTPUT_LOCATION_UNKNOWN %s location type %r"
++                          % (oid, loc.get("type")))
++        checked["outputs"] += 1
++        if actual != loc.get("expected_sha256"):
++            note("output_hash_mismatch", oid,
++                 "expected %s, measured %s" % (loc.get("expected_sha256"), actual))
++            continue
++        verified_outputs[oid] = o
++
++    # comparisons (the device-proof law)
++    comparisons_ok = {}
++    for c in cert["comparisons"]:
++        cid = c.get("comparison_id", "<unnamed>")
++        needs_device = "device_leg_fresh" in c.get("requires", [])
++        evidence = [verified_outputs.get(e) for e in c.get("evidence", [])]
++        resolved = [e for e in evidence if e is not None]
++        fresh_device = [e for e in resolved if e.get("leg") == "device"
++                        and e.get("nature") == "fresh"]
++        satisfied = not any(e is None for e in evidence)
++        if needs_device and not fresh_device:
++            satisfied = False
++            if resolved:
++                # CPU substitution: host/historical output offered where only a
++                # fresh device receipt can close the comparison. Supporting host
++                # evidence NEXT TO a verified fresh device receipt is fine.
++                note("cpu_evidence_not_device_proof", cid,
++                     "evidence offers %d verified output(s), all host/historical "
++                     "(CPU); a device-required comparison accepts ONLY "
++                     "leg=device nature=fresh" % len(resolved))
++            else:
++                note("output_missing", cid,
++                     "comparison has no verifiable evidence (fresh device "
++                     "receipt absent)")
++        comparisons_ok[cid] = satisfied
++
++    # gates: CLOSED requires all referenced evidence verified + its comparisons ok
++    gates_report = []
++    for g in cert["gates"]:
++        gid = g.get("gate_id", "<unnamed>")
++        status = g.get("status", "OPEN")
++        ev_refs = g.get("evidence", [])
++        if status == "CLOSED":
++            ok = bool(ev_refs)
++            for ref in ev_refs:
++                if ref not in verified_outputs:
++                    note("gate_evidence_missing", gid,
++                         "CLOSED gate references unverified evidence %r" % ref)
++                    ok = False
++            for c in cert["comparisons"]:
++                if ref in c.get("evidence", []) and not comparisons_ok[c["comparison_id"]]:
++                    ok = False
++        else:
++            ok = False
++        gates_report.append({"gate_id": gid, "declared": status,
++                             "effective": "CLOSED" if (status == "CLOSED" and ok)
++                                          else "OPEN"})
++
++    device_required = cert.get("device_proof_required", False)
++    all_comparisons = all(comparisons_ok.values())
++    all_gates_closed = all(gr["effective"] == "CLOSED" for gr in gates_report)
++    qualified = (not findings and all_comparisons and all_gates_closed
++                 and (all_gates_closed or not device_required))
++    verdict = "QUALIFIED" if qualified else "INCOMPLETE"
++    return {
++        "schema": CERT_SCHEMA + ".verdict",
++        "certificate_subject": cert.get("subject"),
++        "repo": str(repo),
++        "checked": checked,
++        "findings": findings,
++        "comparisons": [{"comparison_id": c["comparison_id"],
++                         "satisfied": comparisons_ok[c["comparison_id"]]}
++                        for c in cert["comparisons"]],
++        "gates": gates_report,
++        "verdict": verdict,
++        "notes": [
++            "Source-identity verification only: no engine, GPU or training "
++            "process is involved; nothing here is native acceptance.",
++            "CPU/host evidence can never satisfy a device-required comparison "
++            "(device-proof law); missing qualifications are preserved as "
++            "findings, never smoothed over.",
++        ],
++    }
++
++
++# ── CLI ──────────────────────────────────────────────────────────────────────
++def main(argv=None) -> int:
++    ap = argparse.ArgumentParser(prog="implementation.py")
++    sub = ap.add_subparsers(dest="command", required=True)
++    fm = sub.add_parser("from-manifest")
++    fm.add_argument("--manifest", required=True)
++    fm.add_argument("--tie2-disk-root", required=True)
++    fm.add_argument("--out", required=True)
++    vf = sub.add_parser("verify")
++    vf.add_argument("--certificate", required=True)
++    vf.add_argument("--repo", required=True)
++    vf.add_argument("--out", required=True)
++    args = ap.parse_args(argv)
++
++    if args.command == "from-manifest":
++        manifest = json.loads(pathlib.Path(args.manifest).read_text(encoding="utf-8"))
++        cert = build_certificate_from_manifest(manifest, args.tie2_disk_root)
++        out = pathlib.Path(args.out)
++        out.parent.mkdir(parents=True, exist_ok=True)
++        out.write_text(json.dumps(cert, indent=2, ensure_ascii=False) + "\n",
++                       encoding="utf-8", newline="\n")
++        print("certificate written: %s (%d anchors, %d binaries, %d outputs)"
++              % (out, len(cert["anchors"]), len(cert["binaries"]),
++                 len(cert["outputs"])))
++        return 0
++
++    cert = json.loads(pathlib.Path(args.certificate).read_text(encoding="utf-8"))
++    verdict = verify_certificate(cert, pathlib.Path(args.repo))
++    out = pathlib.Path(args.out)
++    out.mkdir(parents=True, exist_ok=True)
++    (out / "verdict.json").write_text(
++        json.dumps(verdict, indent=2, ensure_ascii=False) + "\n",
++        encoding="utf-8", newline="\n")
++    print("VERDICT:", verdict["verdict"])
++    print("checked:", verdict["checked"])
++    for f in verdict["findings"]:
++        print("FINDING", f["code"], "-", f["subject"], "-", f["detail"][:100])
++    for gr in verdict["gates"]:
++        if gr["effective"] != gr["declared"]:
++            print("GATE", gr["gate_id"], "declared", gr["declared"],
++                  "-> effective", gr["effective"])
++    return EXIT_QUALIFIED if verdict["verdict"] == "QUALIFIED" else EXIT_INCOMPLETE
++
++
++if __name__ == "__main__":
++    try:
++        sys.exit(main())
++    except Refusal as r:
++        print("REFUSAL %s" % r, file=sys.stderr)
++        sys.exit(EXIT_REFUSAL)
+diff --git a/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/report.md b/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/report.md
+new file mode 100644
+index 0000000..ea2871c
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/report.md
+@@ -0,0 +1,150 @@
++# D-W03-ANCHORS-20260924-FOLLOWUP — versioned walking-anchor certificate verifier
++
++**Verdict: implemented and verified; the REAL tree correctly measures INCOMPLETE —
++QUALIFIED is unreachable while gates G1–G6 stand, and CPU evidence is structurally
++rejected as device proof. Every preregistered prediction held; no falsifier fired.**
++
++- card: `D-W03-ANCHORS-20260924-FOLLOWUP` (planning id W03; depends on
++  D-W03-ANCHORS-20260924 = merged PR #119 head `37fd8679aee97674eca34cd83031ba020ff99c04`)
++- attempt: `32070971d03443cebb213bf285835871`, agent `c95e1722350849bca846b237c1f60997`
++- branch-2 checkout base `c525b82c7c3ce0128565424764293a3c85811ab3`; criteria
++  `6c301b40e033f40ff1c97148f11bdf8e44000134ab3214c8f3582991ea62730f`
++- preregistration: `PREREGISTRATION.md` (written before any implementation edit)
++- prior attempt `d04bc55e81a0485388755822900674a7` left only a checkout skeleton —
++  no candidate work existed to recover; this attempt implemented from scratch.
++
++## What was implemented
++
++`implementation.py` — a deterministic, read-only, CPU-only, stdlib-only verifier for
++`chimera.walking_anchor_certificate.v1` certificates that bind the W03 anchor chain:
++
++- **source identities**: per anchor — commit + repo path + extraction convention
++  (`raw` blob bytes, or `lf-to-crlf` = the on-disk working-tree bytes the shutdown
++  registry hashed) + expected sha256, resolved via `git rev-parse`/`cat-file`.
++- **binary identities**: v2 binaries anchored to `source_build` (source commit +
++  build script hash-verified); an on-disk rebuilt binary hash is the ONLY G2-closing
++  evidence; historical hashes stay historical.
++- **output receipts**: git-blob or on-disk locations with a LEG (host/device/cpp)
++  and NATURE (historical/fresh), each hash-verified.
++- **the device-proof law**: a comparison requiring `device_leg_fresh` is satisfied
++  ONLY by verified evidence with leg=device AND nature=fresh. CPU/host evidence
++  offered in its place produces the named rejection
++  `cpu_evidence_not_device_proof`; a missing receipt stays `output_missing`;
++  supporting host evidence next to a valid fresh device receipt is allowed.
++- **reachability law**: a provenance commit that resolves as an object but sits on
++  NO branch (the `a62b286e` orphan) is a named finding
++  `provenance_commit_unreachable` (G1), never a silent pass.
++- **gate law**: a CLOSED gate needs verified evidence; unverified references
++  downgrade it to effective OPEN (`gate_evidence_missing`).
++- verdicts: `QUALIFIED` (exit 0) / `INCOMPLETE` (exit 1, named findings) /
++  refusals (exit 3: unknown schema, missing repo, unresolvable pin — no verdict
++  written).
++- `from-manifest` subcommand converts the parent's
++  `anchor_manifest_v2.proposal.json` (22 entries) into the v1 certificate,
++  preserving per-entry conventions and expected hashes.
++
++## Exact reproduction commands (from this attempt workspace)
++
++```
++python -B -m unittest test_implementation -v
++python -B implementation.py from-manifest --manifest E:/ChimeraWork/monkey-coordination/kanban-attempts/D-W03-ANCHORS-20260924/f7fd439796784e7e980a33cd90978c0d/anchor_manifest_v2.proposal.json --tie2-disk-root E:/ChimeraWork/monkey-play-20260924/tools/monkey_campaign/agents/TIE2 --out evidence/certificate.json
++python -B implementation.py verify --certificate evidence/certificate.json --repo E:/ChimeraWork/monkey-play-20260924 --out evidence/verify_out
++```
++
++Measured: suite **15/15 OK in 3.643 s**; real-tree verify **exit 1 — INCOMPLETE**
++(evidence preserved in `evidence/certificate.json`, `evidence/verify_out/verdict.json`).
++Environment: Windows 10.0.26200 x64, CPython 3.14.3. All runs CPU-only, read-only
++against the repo (rev-parse / cat-file / branch --contains only).
++
++## Real-tree result (prediction 1-2 exact)
++
++- checked: **18/18 git anchors verify** under their declared conventions
++  (zero `anchor_hash_mismatch`, zero `anchor_path_missing`); 5/5 TIE2 on-disk
++  outputs verify RAW; 4 binaries report `binary_not_rebuilt` (source-anchored).
++- findings, by name: `provenance_commit_unreachable` (a62b286e orphan — G1);
++  18 x `anchor_commit_unreachable` (orphan evidence per anchor); 4 x
++  `binary_not_rebuilt` (G2); `cpu_evidence_not_device_proof` for
++  `host_device_parity_t1_t43` (5 verified host/historical outputs, all CPU);
++  `output_missing` for `c3_bars_remeasure` (no evidence at all — G4).
++- comparisons: parity t1–43 UNSATISFIED (fresh device receipt absent — G3),
++  c3 bars UNSATISFIED; gates G1–G6 all effective OPEN → verdict INCOMPLETE.
++- This replicates the parent card's anchor table and gap isolation through
++  independently written code — the certificate machinery cannot manufacture a
++  pass on the real tree.
++
++## Test coverage (15 tests, all green)
++
++- fixture QUALIFIED control (complete synthetic certificate, labeled fixture);
++- old-anchor mutation → exactly that anchor reported `anchor_hash_mismatch`;
++- missing device receipt file → `output_missing`, comparison unsatisfied;
++- CPU-only or historical-natured evidence → `cpu_evidence_not_device_proof`,
++  never QUALIFIED;
++- gate evidence downgrade CLOSED→effective OPEN;
++- unresolvable commit → refusal `PIN_UNRESOLVABLE` exit 3, no verdict file;
++- wrong schema → refusal `CERT_SCHEMA_UNKNOWN` exit 3;
++- real-tree conversion structure (18 anchors raw+crlf conventions, 4 binaries),
++  18/18 verification, orphan G1, 4x G2, device proofs missing, mutated real
++  anchor fails named.
++
++## Falsifier scorecard (from PREREGISTRATION.md)
++
++- **F1** (QUALIFIED/missing-finding omission while gates open): NOT FIRED —
++  real tree INCOMPLETE with every open gate named.
++- **F2** (CPU output satisfying a device comparison): NOT FIRED — named
++  rejection tested both real (TIE2 host legs) and synthetic.
++- **F3** (mutated/unresolvable anchor passing, or failing unnamed): NOT FIRED.
++- **F4** (fabricated predecessor fact / fixture labeled native acceptance /
++  out-of-scope edits): NOT FIRED — every parent fact cited was re-measured
++  through the verifier itself; fixtures labeled "fixture"; the patch adds only
++  this contribution directory; no physics/threshold/production change.
++
++## Remaining gates (preserved as missing — not closed by this card)
++
++G1 reachable-ref for `a62b286e` (lead), G2 binary rebuild, G3 fresh device
++tie-v2 replay, G4 C3 bars re-measure, G5 tick-41 sign-knife registration, G6
++non-author review + certificate publication. When G1–G5 close, rerunning
++`verify` on an updated certificate (with the fresh device receipts and rebuilt
++binary hashes) is the adoption check G6 review can rely on.
++
++---
++
++# RECONCILIATION — attempt 588079e4fea6488393055523be11dd6d (2026-09-25, later)
++
++Responds to the lead's hash/provenance reconciliation directive (and
++E:/Chimera/attempt-identity-audit/AUDIT.md). Chronology, honestly:
++
++1. **Original request** `publication-da5f190d…` (attempt `32070971`) recorded:
++   implementation `1ba7ba87`, tests `be5c2c48`, patch `ecf66f5a`, report
++   `0f8d5b14`, prereg `e4e1cd0c`. It remains PENDING — preserved, not blessed.
++2. **Post-submission changes in the 32070971 workspace by another party**:
++   `PREREGISTRATION.md` was replaced (now `71dd118f` — its content describes
++   the GENERIC source→binary→device verifier that became PR #129, attempt
++   `fedb0b8b`, and PR #129 shipped that exact file); `proposed.patch` was
++   overwritten (now `5f0567cf`); `candidate.diff` was added. The three files
++   implementation/tests/report were NEVER modified (hashes still match the
++   original request). The tampered files are left in place as evidence; this
++   attempt did not touch them. (Context: this reviewer's CHANGES_REQUIRED
++   review of PR #129, recorded separately, documents the scope disconnect.)
++3. **This handoff recovers the original candidate byte-exactly**:
++   - `PREREGISTRATION.md` reconstructed from the author's frozen source text
++     and **verified against the recorded hash `e4e1cd0c`** (exact match);
++   - `proposed.patch` regenerated from the four verified files and **verified
++     against the recorded hash `ecf66f5a`** (exact match);
++   - `implementation.py`/`test_implementation.py`/`report.md` copied
++     byte-identical (hashes `1ba7ba87`/`be5c2c48`/`0f8d5b14` all match).
++4. **One justified test change** (documented, not silent): the real-tree TIE2
++   test now guards against the MUTABLE live worktree. Since the original run,
++   the play worktree advanced (HEAD `391f0ede`) and the five TIE2 battery
++   files were REMOVED from disk; the verifier honestly reports them as named
++   `output_missing` findings (outputs checked 0) while the device-proof law
++   is unchanged — no comparison is satisfied, verdict still INCOMPLETE. With
++   the files present (the parent card's recorded state), the same test
++   asserts 5/5 verified + the CPU-substitution rejection. No other test logic
++   changed.
++5. **Re-verification in this attempt's workspace**: `python -B -m unittest
++   test_implementation` → **15/15 OK**; real-tree run → exit 1 **INCOMPLETE**
++   (18/18 git anchors verify; 30 named findings: orphan provenance G1, 4×
++   binaries-not-rebuilt G2, parity + C3 device proofs missing).
++6. Fresh hashes for this handoff are on the request; the patch in THIS
++   request is regenerated from the recovered set plus the guarded test, so
++   its hash differs from `ecf66f5a` by exactly that documented change.
+diff --git a/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/test_implementation.py b/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/test_implementation.py
+new file mode 100644
+index 0000000..6dadb71
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/test_implementation.py
+@@ -0,0 +1,348 @@
++"""test_implementation.py -- D-W03-ANCHORS-20260924-FOLLOWUP targeted tests.
++
++Covers the preregistered predictions: real-tree conversion + verification
++(the honest INCOMPLETE), anchor-hash mutation, mismatched/missing source,
++missing device receipt, CPU-evidence rejection, complete synthetic fixture
++(QUALIFIED), and structural refusals. Fixtures are SYNTHETIC and labeled
++"fixture"; no output of this suite is native acceptance.
++
++Run:  python -B -m unittest test_implementation -v   (from this directory)
++"""
++import hashlib
++import json
++import pathlib
++import shutil
++import subprocess
++import sys
++import tempfile
++import unittest
++
++HERE = pathlib.Path(__file__).resolve().parent
++IMPL = HERE / "implementation.py"
++
++PLAY_REPO = pathlib.Path("E:/ChimeraWork/monkey-play-20260924")
++PARENT_DIR = pathlib.Path("E:/ChimeraWork/monkey-coordination/kanban-attempts/"
++                          "D-W03-ANCHORS-20260924/f7fd439796784e7e980a33cd90978c0d")
++MANIFEST = PARENT_DIR / "anchor_manifest_v2.proposal.json"
++TIE2_ROOT = PLAY_REPO / "tools/monkey_campaign/agents/TIE2"
++
++PROV = "a62b286effa27ee2db7bbcb65507a2ac45ad0d0c"
++
++
++def run_impl(argv, timeout=110):
++    proc = subprocess.run([sys.executable, "-B", str(IMPL), *argv],
++                          capture_output=True, timeout=timeout)
++    return {"exit": proc.returncode,
++            "stdout": proc.stdout.decode("utf-8", "replace"),
++            "stderr": proc.stderr.decode("utf-8", "replace")}
++
++
++def git(repo, *argv):
++    proc = subprocess.run(["git", "-C", str(repo), *argv], capture_output=True)
++    assert proc.returncode == 0, proc.stderr.decode("utf-8", "replace")
++    return proc.stdout.decode("utf-8", "replace").strip()
++
++
++def sha(data: bytes) -> str:
++    return hashlib.sha256(data).hexdigest()
++
++
++def to_crlf(data: bytes) -> bytes:
++    return data.replace(b"\n", b"\r\n")
++
++
++def make_fixture_repo():
++    """Throwaway git repo + on-disk receipts; everything labeled fixture."""
++    root = pathlib.Path(tempfile.mkdtemp(prefix="d_w03_fixture_"))
++    (root / "anchors").mkdir()
++    (root / "scripts").mkdir()
++    files = {
++        "anchors/state_host.txt": b"fixture host state line1\nline2\n",
++        "anchors/state_device.txt": b"fixture device state line1\nline2\n",
++        "scripts/build_v2.ps1": b"# fixture build script\nwrite-output fixture\n",
++    }
++    for rel, data in files.items():
++        (root / rel).write_bytes(data)
++    git(root, "init", "-q")
++    git(root, "config", "core.autocrlf", "false")
++    git(root, "config", "user.email", "fixture@example.invalid")
++    git(root, "config", "user.name", "fixture")
++    git(root, "add", "-A")
++    git(root, "commit", "-q", "-m", "fixture anchor sources")
++    commit = git(root, "rev-parse", "HEAD")
++
++    receipts = pathlib.Path(tempfile.mkdtemp(prefix="d_w03_receipts_"))
++    (receipts / "device_replay_fresh.out").write_bytes(
++        b"fixture FRESH device replay t=1..43 bit-identical\n")
++    (receipts / "host_leg_historical.out").write_bytes(
++        b"fixture HISTORICAL host parity capture\n")
++
++    def certificate(with_device_receipt=True, device_nature="fresh",
++                    close_gates=True, mutate_anchor=None, anchor_commit=None,
++                    break_device_path=False):
++        anchors = [{
++            "anchor_id": "fx-state-host", "klass": "fixture",
++            "commit": anchor_commit or commit, "repo_path": "anchors/state_host.txt",
++            "convention": "raw", "expected_sha256": sha(files["anchors/state_host.txt"]),
++        }, {
++            "anchor_id": "fx-state-device-crlf", "klass": "fixture",
++            "commit": commit, "repo_path": "anchors/state_device.txt",
++            "convention": "lf-to-crlf",
++            "expected_sha256": sha(to_crlf(files["anchors/state_device.txt"])),
++        }]
++        if mutate_anchor:
++            anchors[0]["expected_sha256"] = "0" * 64
++        outputs = [{
++            "output_id": "fx-host-historical",
++            "leg": "host", "nature": "historical",
++            "location": {"type": "on_disk",
++                         "path": str(receipts / "host_leg_historical.out"),
++                         "expected_sha256": sha(b"fixture HISTORICAL host parity capture\n")},
++        }]
++        if with_device_receipt:
++            dev_path = ((receipts / "deleted_device_replay_fresh.out")
++                        if break_device_path
++                        else (receipts / "device_replay_fresh.out"))
++            outputs.append({
++                "output_id": "fx-device-fresh",
++                "leg": "device", "nature": device_nature,
++                "location": {"type": "on_disk",
++                             "path": str(dev_path),
++                             "expected_sha256": sha(b"fixture FRESH device replay t=1..43 bit-identical\n")},
++            })
++        comparisons = [{
++            "comparison_id": "fx-parity",
++            "kind": "host_device_parity",
++            "requires": ["device_leg_fresh"],
++            "evidence": (["fx-device-fresh", "fx-host-historical"]
++                         if with_device_receipt else ["fx-host-historical"]),
++        }]
++        ev = (["fx-device-fresh"] if (with_device_receipt and close_gates) else [])
++        gates = [{"gate_id": "G1-fixture", "status": "CLOSED" if close_gates else "OPEN",
++                  "evidence": ev},
++                 {"gate_id": "G2-fixture", "status": "CLOSED" if close_gates else "OPEN",
++                  "evidence": ev}]
++        return {
++            "schema": "chimera.walking_anchor_certificate.v1",
++            "subject": {"card": "W03-fixture", "note": "synthetic fixture"},
++            "source": {"provenance_commit": commit, "required_reachable": True},
++            "anchors": anchors,
++            "binaries": [{
++                "binary_id": "fx-walker-dll", "anchoring": "source_build",
++                "source_commit": commit,
++                "build_script": {"repo_path": "scripts/build_v2.ps1",
++                                 "convention": "raw",
++                                 "expected_sha256": sha(files["scripts/build_v2.ps1"])},
++                "on_disk": None if not close_gates else {
++                    "path": str(receipts / "device_replay_fresh.out"),
++                    "expected_sha256": sha(b"fixture FRESH device replay t=1..43 bit-identical\n")},
++            }],
++            "outputs": outputs,
++            "comparisons": comparisons,
++            "gates": gates,
++            "device_proof_required": True,
++        }
++
++    return root, commit, receipts, certificate
++
++
++class FixtureCertificateTests(unittest.TestCase):
++    """Predictions 5 + controls (mutation/mismatch/missing/CPU-substitution)."""
++
++    @classmethod
++    def setUpClass(cls):
++        cls.root, cls.commit, cls.receipts, make = make_fixture_repo()
++        cls.make_certificate = staticmethod(make)   # avoid method binding
++        cls.tmp = pathlib.Path(tempfile.mkdtemp(prefix="d_w03_out_"))
++
++    @classmethod
++    def tearDownClass(cls):
++        shutil.rmtree(cls.root, ignore_errors=True)
++        shutil.rmtree(cls.receipts, ignore_errors=True)
++        shutil.rmtree(cls.tmp, ignore_errors=True)
++
++    def _verify(self, cert, name):
++        path = self.tmp / (name + ".json")
++        path.write_text(json.dumps(cert), encoding="utf-8")
++        out = self.tmp / (name + "_out")
++        res = run_impl(["verify", "--certificate", str(path),
++                        "--repo", str(self.root), "--out", str(out)])
++        verdict = None
++        if (out / "verdict.json").is_file():
++            verdict = json.loads((out / "verdict.json").read_text(encoding="utf-8"))
++        return res, verdict
++
++    def test_complete_synthetic_certificate_qualifies(self):
++        res, verdict = self._verify(self.make_certificate(), "complete")
++        self.assertEqual(res["exit"], 0, res)
++        self.assertEqual(verdict["verdict"], "QUALIFIED")
++        self.assertEqual(verdict["findings"], [])
++        self.assertTrue(all(c["satisfied"] for c in verdict["comparisons"]))
++
++    def test_mutated_anchor_hash_fails_named(self):
++        res, verdict = self._verify(self.make_certificate(mutate_anchor=True), "mutated")
++        self.assertEqual(res["exit"], 1)
++        self.assertEqual(verdict["verdict"], "INCOMPLETE")
++        codes = [f["code"] for f in verdict["findings"]]
++        self.assertIn("anchor_hash_mismatch", codes)
++        subject = next(f for f in verdict["findings"]
++                       if f["code"] == "anchor_hash_mismatch")["subject"]
++        self.assertEqual(subject, "fx-state-host")
++
++    def test_missing_device_receipt_reported_missing(self):
++        """Device receipt listed (nature=fresh) but its file is gone."""
++        res, verdict = self._verify(self.make_certificate(break_device_path=True,
++                                                          close_gates=False),
++                                    "nodevice")
++        self.assertEqual(res["exit"], 1)
++        self.assertEqual(verdict["verdict"], "INCOMPLETE")
++        self.assertFalse(verdict["comparisons"][0]["satisfied"])
++        self.assertIn("output_missing",
++                      [f["code"] for f in verdict["findings"]])
++
++    def test_cpu_only_evidence_rejected_named(self):
++        """Only host/historical evidence offered -> named CPU rejection."""
++        res, verdict = self._verify(self.make_certificate(with_device_receipt=False,
++                                                          close_gates=False),
++                                    "cpuonly")
++        self.assertEqual(res["exit"], 1)
++        self.assertFalse(verdict["comparisons"][0]["satisfied"])
++        self.assertIn("cpu_evidence_not_device_proof",
++                      [f["code"] for f in verdict["findings"]])
++
++    def test_cpu_evidence_never_closes_device_comparison(self):
++        """Historical host evidence present, device receipt historical-natured:
++        comparison stays unsatisfied with the named CPU rejection."""
++        res, verdict = self._verify(self.make_certificate(device_nature="historical",
++                                                     close_gates=False),
++                                    "cpu_subst")
++        self.assertEqual(res["exit"], 1)
++        self.assertFalse(verdict["comparisons"][0]["satisfied"])
++        self.assertIn("cpu_evidence_not_device_proof",
++                      [f["code"] for f in verdict["findings"]])
++
++    def test_gate_evidence_downgrade(self):
++        """CLOSED gate whose evidence vanished is reported effective OPEN."""
++        cert = self.make_certificate()
++        cert["gates"][0]["evidence"] = ["fx-nonexistent"]
++        res, verdict = self._verify(cert, "gateev")
++        self.assertEqual(res["exit"], 1)
++        self.assertIn("gate_evidence_missing",
++                      [f["code"] for f in verdict["findings"]])
++        g = next(g for g in verdict["gates"] if g["gate_id"] == "G1-fixture")
++        self.assertEqual((g["declared"], g["effective"]), ("CLOSED", "OPEN"))
++
++    def test_unresolvable_commit_refuses(self):
++        cert = self.make_certificate()
++        cert["anchors"][0]["commit"] = "1" * 40
++        path = self.tmp / "badpin.json"
++        path.write_text(json.dumps(cert), encoding="utf-8")
++        res = run_impl(["verify", "--certificate", str(path),
++                        "--repo", str(self.root), "--out", str(self.tmp / "badpin_out")])
++        self.assertEqual(res["exit"], 3)
++        self.assertIn("PIN_UNRESOLVABLE", res["stderr"])
++        self.assertFalse((self.tmp / "badpin_out" / "verdict.json").is_file())
++
++    def test_wrong_schema_refuses(self):
++        path = self.tmp / "badschema.json"
++        path.write_text(json.dumps({"schema": "nope"}), encoding="utf-8")
++        res = run_impl(["verify", "--certificate", str(path),
++                        "--repo", str(self.root), "--out", str(self.tmp / "bs_out")])
++        self.assertEqual(res["exit"], 3)
++        self.assertIn("CERT_SCHEMA_UNKNOWN", res["stderr"])
++
++
++class RealTreeTests(unittest.TestCase):
++    """Predictions 1-2: convert the parent manifest; verify the real tree."""
++
++    @classmethod
++    def setUpClass(cls):
++        if not (PLAY_REPO.is_dir() and MANIFEST.is_file()):
++            raise unittest.SkipTest("play repo or parent manifest absent")
++        cls.tmp = pathlib.Path(tempfile.mkdtemp(prefix="d_w03_real_"))
++        cls.cert_path = cls.tmp / "certificate.json"
++        res = run_impl(["from-manifest", "--manifest", str(MANIFEST),
++                        "--tie2-disk-root", str(TIE2_ROOT),
++                        "--out", str(cls.cert_path)])
++        assert res["exit"] == 0, res
++        cls.cert = json.loads(cls.cert_path.read_text(encoding="utf-8"))
++        cls.out = cls.tmp / "out"
++        cls.res = run_impl(["verify", "--certificate", str(cls.cert_path),
++                            "--repo", str(PLAY_REPO), "--out", str(cls.out)])
++        cls.verdict = json.loads((cls.out / "verdict.json").read_text(encoding="utf-8"))
++
++    @classmethod
++    def tearDownClass(cls):
++        shutil.rmtree(cls.tmp, ignore_errors=True)
++
++    def test_real_tree_incomplete_exit_1(self):
++        self.assertEqual(self.res["exit"], 1)
++        self.assertEqual(self.verdict["verdict"], "INCOMPLETE")
++
++    def test_all_18_git_anchors_verify(self):
++        self.assertEqual(self.verdict["checked"]["anchors"], 18)
++        self.assertNotIn("anchor_hash_mismatch",
++                         [f["code"] for f in self.verdict["findings"]])
++        self.assertNotIn("anchor_path_missing",
++                         [f["code"] for f in self.verdict["findings"]])
++
++    def test_provenance_orphan_reported_g1(self):
++        codes = [f["code"] for f in self.verdict["findings"]]
++        self.assertIn("provenance_commit_unreachable", codes)
++        self.assertEqual(self.verdict["findings"][0]["subject"], PROV[:12])
++
++    def test_binaries_not_rebuilt_g2(self):
++        codes = [f["code"] for f in self.verdict["findings"]]
++        self.assertEqual(codes.count("binary_not_rebuilt"), 4)
++
++    def test_tie2_outputs_verify_but_device_proofs_missing(self):
++        # The live worktree is MUTABLE (it advanced past the parent card's
++        # evidence day): assert the honest outcome for whichever state the
++        # TIE2 battery files are in -- 5/5 verified when present (the
++        # parent card's recorded state), or named output_missing findings
++        # when the worktree has moved on. Either way the device-proof law
++        # holds: no comparison is satisfied by CPU evidence.
++        tie2_files = ("run/tie_boundary_probe.cxx", "run/tie_boundary_probe.exe",
++                      "run/build_tie_probe.cmd",
++                      "receipts/case123_tie_boundary_host.out",
++                      "receipts/case5_replay_host_v2.out")
++        present = all((TIE2_ROOT / rel).is_file() for rel in tie2_files)
++        if present:
++            self.assertEqual(self.verdict["checked"]["outputs"], 5)
++        else:
++            self.assertEqual(self.verdict["checked"]["outputs"], 0)
++            missing = [f for f in self.verdict["findings"]
++                       if f["code"] == "output_missing"]
++            self.assertTrue(missing, "absent receipts must be named, not silent")
++        codes_all = [f["code"] for f in self.verdict["findings"]]
++        if present:
++            self.assertIn("cpu_evidence_not_device_proof", codes_all)
++        satisfied = {c["comparison_id"]: c["satisfied"]
++                     for c in self.verdict["comparisons"]}
++        self.assertFalse(satisfied["host_device_parity_t1_t43"])
++        self.assertFalse(satisfied["c3_bars_remeasure"])
++        codes = [f["code"] for f in self.verdict["findings"]]
++        self.assertIn("output_missing", codes)
++
++    def test_certificate_structure_from_manifest(self):
++        self.assertEqual(len(self.cert["anchors"]), 18)
++        self.assertEqual(len(self.cert["binaries"]), 4)
++        convs = {a["convention"] for a in self.cert["anchors"]}
++        self.assertEqual(convs, {"raw", "lf-to-crlf"})
++
++    def test_mutated_real_anchor_fails_named(self):
++        cert = dict(self.cert)
++        cert = json.loads(json.dumps(self.cert))
++        cert["anchors"][0]["expected_sha256"] = "0" * 64
++        path = self.tmp / "cert_mut.json"
++        path.write_text(json.dumps(cert), encoding="utf-8")
++        res = run_impl(["verify", "--certificate", str(path),
++                        "--repo", str(PLAY_REPO), "--out", str(self.tmp / "out_mut")])
++        self.assertEqual(res["exit"], 1)
++        v = json.loads((self.tmp / "out_mut" / "verdict.json").read_text(encoding="utf-8"))
++        f = next(f for f in v["findings"] if f["code"] == "anchor_hash_mismatch")
++        self.assertEqual(f["subject"], self.cert["anchors"][0]["anchor_id"])
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
