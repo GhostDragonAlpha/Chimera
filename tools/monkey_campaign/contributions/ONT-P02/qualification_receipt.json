@@ -1,0 +1,77 @@
+{
+ "schema": "chimera.ontology_qualification.draft.v1",
+ "note": "SOURCE-BOUND DRAFT for independent review (ONT-P02 visible_static CORRECTION, attempt b248ac961ccb44b3b4b141c5878e9bd5). The final ontology_qualification object is attached by the reviewer at ACCEPTED per ontology_queue.qualification; the reviewer verifies these references against the candidate head and supplies the independent_review evidence with the hash of their own review artifact. This draft fabricates nothing: every hash below is recomputable from the named file. Correction scope per the lead's CHANGES_REQUIRED on PR #144: the verified records legs are REUSED by reference (no re-derivation); the visual+camera legs are NEW evidence.",
+ "task_id": "P02",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; the in-tree copy cannot know its own commit hash). Candidate base is the PRESERVED records leg: PR #144 head 8c7ed8c27d9e27d1210a7754cb17831bd4ec1532 (reviewer PASS); this candidate adds contributions/ONT-P02/** files only on top of it.",
+ "criteria_sha256": "5c0720b4451b8b9ea22360575461968667496000220c8cba645e1d3e28f252ef",
+ "attempt_id": "b248ac961ccb44b3b4b141c5878e9bd5",
+ "agent_id": "arrival-cf4d4f8e72d94ad9b73185eb402ff1bd",
+ "done_when": "CT monkey, source musculoskeletal model, older forearm/paddle assets, training body, and runtime body are related explicitly or kept separate",
+ "done_when_verified": true,
+ "done_when_evidence": "Unchanged from the verified records leg: monkey_lineage_map.json at the candidate base carries all five card items and the six distinct mass lineages; the in-tree verifier re-run at this candidate tree reports outcome PASS, 152 checks, 23 pins resolved (--expected-criteria bound), and test_verify_monkey_lineage re-ran 23/23 OK. The correction adds visual qualification; it changes no records claim.",
+ "profile_verified": true,
+ "profile_id": "anatomy",
+ "profile_kind": "visible_static",
+ "subject_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+ "pinned_subject": {
+  "path": "tools/playable_slice/standing_body.obj",
+  "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+  "blob": "ef6f35302e1c00287b4c13c8cfbf276c7f3879d0",
+  "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "bytes": 18469042,
+  "verts": 249743,
+  "faces": 499976,
+  "lineage": "runtime_body render leg of monkey_lineage_map.json (pin ev_standing_body); CT-monkey-derived via body_manifest.json chimera.real_body.v1 (25 repaired/decimated preview bones)"
+ },
+ "evidence": {
+  "source": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-P02/b248ac961ccb44b3b4b141c5878e9bd5/checkout/tools/monkey_campaign/contributions/ONT-P02/monkey_lineage_map.json",
+   "raw_sha256": "6a9d4ac83c2f99339c9a3fa72f0ecb4d018e0239cc2d26a1e8876a08d43a27b9",
+   "provenance": "The PRESERVED records leg REUSED: byte-identical to the reviewer-verified PR #144 artifact (worker review PASS 101b464373ec4f119790f64d9753d1d0, head 8c7ed8c2 - the candidate commit is a child of that head, so the in-tree file IS the verified bytes; hash matches the prior publication request record)."
+  },
+  "numerical": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-P02/b248ac961ccb44b3b4b141c5878e9bd5/checkout/tools/monkey_campaign/contributions/ONT-P02/evidence/numerical_receipt.json",
+   "raw_sha256": "56087a767f60033f710ea5dea6d22bc6a42d2912b00560fbfeed641fe73fde7d",
+   "provenance": "NEW measured numericals for the visual leg (subject element counts, bbox, scene contact band 230 verts owners {b02:169, b06:61}, contiguous 25-bone segmentation sums 249743/499976, chain-a centroids, joint proxy) + REUSED verified records numericals by reference: lineage_verification_receipt.json of attempt ab7b304e0a0446e99f324557addb21fb (raw_sha256 d3a71783930c4d9d0a3625ce7f86c15c622c39c7c0eb4f7fec8cd4a97acd839c, verifier PASS 152 checks / 23 pins, recomputed 10.038 kg / 98.4391527 N / 6.15 / 13824.5 / 1377.2166x recorded not forced). All frozen predictions asserted at build and in test_capture_build."
+  },
+  "independent_review": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-reviews/ONT-P02/101b464373ec4f119790f64d9753d1d0/review_evidence/ONT-P02_review_evidence.json",
+   "raw_sha256": "d50b0c1d525072bf9cc7136a039770bcfeb929e3b83949b669bd5bb860ac7d59",
+   "provenance": "Independent WORKER REVIEW PASS of the records leg (PR #144 head 8c7ed8c2, review_id 101b464373ec4f119790f64d9753d1d0): all 9 publication artifacts hash-verified, verifier re-run PASS 152/23, falsifier 23/23, three adversarial probes non-falsifying. REVIEWER ACTION at ACCEPTED: replace this entry's raw_sha256 with the hash of the reviewer's own review artifact covering THIS correction candidate (the visual/camera legs are new and auto-queued for independent review).",
+   "reviewer_action": "replace this entry's raw_sha256 with the hash of the reviewer's own review artifact when attaching the final receipt"
+  },
+  "visual": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-P02/b248ac961ccb44b3b4b141c5878e9bd5/checkout/tools/monkey_campaign/contributions/ONT-P02/evidence/capture.png",
+   "raw_sha256": "127e18fce08e55ea2a4c767da3c7f9e733a02d8e72a051160b7193bbde52c31b",
+   "provenance": "NEW evidence (this correction): 2120x840 deterministic CPU contact sheet holding the three anatomy-profile views as diagnostic+clean pixel_rectangle pairs (whole-creature overview, local attachment close-up, orthogonal side and oblique views as a two-bookmark tick-0/tick-1 contact pair). Diagnostic panels: xray envelope ghost + per-bone blocks (hind chain 'a' highlighted and stably labeled), frame-axes triad, anchored callout labels, owner-mapping/absent-inventory panel. Clean panels: depth-tested envelope only, zero annotations. Captured over the pinned subject bytes; frozen falsifier probes (all-vertex in-frustum for full views, anchor in-frame for close-up, constant state hash) asserted at build."
+  },
+  "camera": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-P02/b248ac961ccb44b3b4b141c5878e9bd5/checkout/tools/monkey_campaign/contributions/ONT-P02/evidence/capture_manifest.json",
+   "raw_sha256": "116fe870e8411333f546b050b5a47a7244b3d7ba08d30d7592f09e6a70ec4efc",
+   "provenance": "chimera.visual_capture_manifest.v1, profile anatomy (visible_static), 6 rows = 3 views x diagnostic+clean pairs, state-bound to the pinned subject sha256, all declared camera fields (frame_id, coordinate_unit, handedness, orientation convention quaternion_wxyz_camera_to_frame + unit quaternions, forward/up axes, position, target, distance_to_target, projection perspective 40 deg / orthographic span 0.80 m, near_far_planes, aspect_ratio, viewport_resolution, sample_mode + bookmark samples, visibility layers/label_ids/occlusion_mode, tick_interval). Validated in-process with the campaign's visual_capture.validate_manifest and visual_gate.verify against card_task.json (structurally_valid true; visual_acceptance false by design - structural gate only)."
+  }
+ },
+ "capture_context": {
+  "task_id": "P02",
+  "subject_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "run_id": "ont-p02-visible-static-20260926-b248ac96",
+  "capture_sha256": "127e18fce08e55ea2a4c767da3c7f9e733a02d8e72a051160b7193bbde52c31b",
+  "tick_interval": [0, 1]
+ },
+ "honest_boundary": "The capture pixels are a deterministic CPU software render (numpy + PIL painter's algorithm) of the pinned standing_body.obj bytes - NOT native engine frames; no GPU, no engine process, python -B CPU-only. The pinned body is the CT bone-surface composite, so the rendered 'outer envelope' is that pinned surface; muscle/tendon paths are ABSENT (no muscle lineage is pinned for the runtime body; the FreeMusco Chimanoid MSK stays KEPT_SEPARATE) and are inventoried explicitly rather than invented. Attachment sites are the measured scene contact band plus a DECLARED centroid-midpoint joint proxy (never presented as resolved joint anatomy). Sides are never assigned to chain labels (identification v3 rule). Preregistration froze probes/views BEFORE the first build and was amended v1->v3 only per its deviation rule (framing/legibility; all other freezes unchanged) - see PREREGISTRATION.md section 11 and report.md.",
+ "candidate_suite": {
+  "preregistration": "tools/monkey_campaign/contributions/ONT-P02/PREREGISTRATION.md (v1 frozen sha256 f6f241444808733f41c107d2549497bff6adc7891c0b5e6ec9e6db52b5929b0a before the first build; v3 in-tree b2b38be739b7cd9c2648211a35a670e4c83a04c109c94d99a1350a95049cd156)",
+  "capture": "tools/monkey_campaign/contributions/ONT-P02/capture_build.py",
+  "tests": "python -B -m unittest test_capture_build -v -> 11/11 OK; records-leg: test_verify_monkey_lineage 23/23 OK; verifier PASS 152 checks / 23 pins at this tree",
+  "card_contract": "tools/monkey_campaign/contributions/ONT-P02/card_task.json",
+  "gate": "visual_capture.validate_manifest + visual_gate.verify in-process: structurally_valid true, 6 views, image kind"
+ },
+ "remaining_gates": [
+  "independent review of THIS correction candidate (auto-queued on publication request) - reviewer replaces the independent_review entry per the draft contract",
+  "lead publication to review/ONT-P02 on top of the preserved PR #144 head 8c7ed8c2",
+  "operator MorphoSource ship-asset decision (distribution gate, unchanged by this correction)",
+  "W04 owner new registration for the CoT denominator (D-W04 section 7, unchanged)"
+ ]
+}

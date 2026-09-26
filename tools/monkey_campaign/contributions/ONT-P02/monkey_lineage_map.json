@@ -1,0 +1,675 @@
+{
+  "schema": "chimera.monkey_lineage_map.v1",
+  "task_id": "P02",
+  "card_id": "ONT-P02",
+  "attempt_id": "ab7b304e0a0446e99f324557addb21fb",
+  "agent_id": "arrival-07233adcf3f64d0db9e1e8fa95c607b8",
+  "criteria_sha256": "5c0720b4451b8b9ea22360575461968667496000220c8cba645e1d3e28f252ef",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "date": "2026-09-26",
+  "done_when": "CT monkey, source musculoskeletal model, older forearm/paddle assets, training body, and runtime body are related explicitly or kept separate",
+  "method": "Reconcile-first: every pin below was transcribed from already-verified prior receipts (P02P03 lineage pin @ 8feea42a, S01 provenance audit @ 762eb589, D-W04 mass diagnostic attempt 26382263eb094eaf98a8354a2fe8592c, decisions memo 20260924_campaign_handoffs.md) and is re-verifiable read-only from the git object store: git rev-parse <commit>:<path> must equal the recorded blob, git cat-file blob <blob> must hash to the recorded raw sha256, and every marker string must occur in those bytes.",
+  "evidence_repo": {
+    "primary_object_store": "E:/PythonChimera",
+    "attempt_checkout_clone": "attempt workspace checkout (same object store; all pinned commits present)",
+    "access": "read-only git plumbing only; no checkout, branch switch or edit of any source repository"
+  },
+  "pins": [
+    {
+      "id": "ev_mesh_manifest",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/science_funnel/data/morphosource_ct/meshes/manifest.json",
+      "blob": "6061312a919e3f02992a33787e42e86881a0b383",
+      "sha256": "5bf8aed9b226a7be96c6877c6bfafd4de3e8f46808c42312045cd66739473ad8",
+      "bytes": 16436,
+      "markers": [
+        "Macaca mulatta USNM 497136-3"
+      ],
+      "cites": "CT scan source declaration (segmentation of MorphoSource media 000875604)"
+    },
+    {
+      "id": "ev_body_manifest",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/science_funnel/data/morphosource_ct/meshes_body_20260922/body_manifest.json",
+      "blob": "2cb2233baa79ad97ecc81b67e0f04cf52cc6a3e9",
+      "sha256": "6d0328ce9aa5babfb25a98518b69477b879b3a7d902593fc0842c127bcc7f78a",
+      "bytes": 44923,
+      "markers": [
+        "chimera.real_body.v1",
+        "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+        "tools/playable_slice/standing_body.obj"
+      ],
+      "cites": "CT-preview -> standing_body.obj repair/decimation manifest (25 bones, ratio r=0.7020263287954351, 499976 tris)"
+    },
+    {
+      "id": "ev_download_receipt",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/science_funnel/data/morphosource_ct/download_receipt.json",
+      "blob": "f32e4cf3f9d2af2d722d4db67934ad8a7bda7c73",
+      "sha256": "67438dd2e44a7554bc87e1274259e60265b1a70259f0daceeb3bc687aa36baf9",
+      "bytes": 3484,
+      "markers": [
+        "000875604"
+      ],
+      "cites": "MorphoSource download receipt (S01 falsifier: its license paraphrase is refuted by its own pinned agreement PDF)"
+    },
+    {
+      "id": "ev_mesh_receipt",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/science_funnel/data/morphosource_ct/mesh_receipt.json",
+      "blob": "c8704ffefd108ccae5ee1480f2dd027075633fa5",
+      "sha256": "a48a608c0fd8321bf575ec243b8331419e61fba72eee2b800d38bbba6ba891a7",
+      "bytes": 7432,
+      "markers": [
+        "000875604"
+      ],
+      "cites": "CT segmentation receipt (25 closed bones)"
+    },
+    {
+      "id": "ev_standing_body",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/playable_slice/standing_body.obj",
+      "blob": "ef6f35302e1c00287b4c13c8cfbf276c7f3879d0",
+      "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+      "bytes": 18469042,
+      "markers": [],
+      "cites": "THE runtime render body: the playable slice's tick body (499,976 tris / 249,743 verts); marker check not applicable to size, sha256 + blob equality are the identity"
+    },
+    {
+      "id": "ev_boot_cache",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/playable_slice/boot_cache_manifest.json",
+      "blob": "71722008de80c46eaf6b2bae8ad972612736a0d6",
+      "sha256": "15104f5d43dfa7f9259cab8bed915a4a2147165ea0eb458fc8152ab3718a4025",
+      "bytes": 6149,
+      "markers": [
+        "byte_identical",
+        "ghost_standing.obj",
+        "standing_body.glb"
+      ],
+      "cites": "Runtime boot cache: standing_body.glb derived byte-identical from standing_body.obj; ghost_standing.obj overlay composed from the committed CT previews"
+    },
+    {
+      "id": "ev_derived_numbers",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json",
+      "blob": "8b6d75fbd408a8e1e2db31cdf15fc4a104b9a36a",
+      "sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+      "bytes": 15381,
+      "markers": [
+        "\"mass_kg\": 10.038",
+        "segments_Table1",
+        "coupled_arm_assembly_7p006kg",
+        "42003_2021_1831_MOESM2_ESM.xlsx"
+      ],
+      "cites": "Training body derived numbers: body_model.mass_kg = 10.038 (Oku 2021 Table 1 segments); also carries the separate 7.006001 kg coupled-arm assembly context and the Oku xlsx source pin"
+    },
+    {
+      "id": "ev_gait_scene",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/science_funnel/gait_scene.py",
+      "blob": "5c8792aef60f9eb2eb2e10549546ff12a2efe21b",
+      "sha256": "92d3011f7f728c6f6f2dcb40c39497737c4e5af67033c92da6a3b46dd2d42f9d",
+      "bytes": 36536,
+      "markers": [
+        "0.406001",
+        "0.2737",
+        "0.1323",
+        "segments_Table1"
+      ],
+      "cites": "Training scene builder: pelvis = HAT - 2x0.406001 kg arm carve; upperarm 0.2737 / forearm 0.1323 kg struts; regenerates scene f6844eea byte-identically"
+    },
+    {
+      "id": "ev_wave47",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave47.json",
+      "blob": "fc05dbc6f10d73594ed43b4e44067f746629f73d",
+      "sha256": "4480d18b8709d93457784ad23f3662768036498e318c1387c1f6d2ec5b05163d",
+      "bytes": 27796,
+      "markers": [
+        "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+        "30.970714",
+        "8c537cdb"
+      ],
+      "cites": "Training scene + walk anchors: scene sha f6844eea..., stdout 8c537cdb..., worst moving ledger 30.970714 J (byte-exact reproduction recorded)"
+    },
+    {
+      "id": "ev_k_fill",
+      "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "path": "tools/science_funnel/validation/k_fill_20260920/derive_k_fill.py",
+      "blob": "bfce9681049b7d9354bd498fbf011a633f0ed26f",
+      "sha256": "5150792591a63252abc6a150148b6519b4704abf020e563db5a4a1c20f392bea",
+      "bytes": 43888,
+      "markers": [
+        "AF_MIDPOINT_KG = 6.15",
+        "OKU_MODEL_TOTAL_KG = 10.038"
+      ],
+      "cites": "The two book masses side by side: 6.15 kg Turnquist & Kessler 1989 adult-female band midpoint (book context) vs OKU_MODEL_TOTAL_KG = 10.038 (the walker)"
+    },
+    {
+      "id": "ev_acceptance",
+      "commit": "8294053be688cb9cae5251b16ee927f6338b0b92",
+      "path": "tools/science_funnel/first_skill/acceptance.py",
+      "blob": "3df32b59b09411721913229c8df4eb3efa04379e",
+      "sha256": "1065ab2f23b70ccfa2a34f1ec0f9d04f7591939085d17984cac401935f977fe6",
+      "bytes": 5580,
+      "markers": [
+        "M_BODY_KG = 13824.5",
+        "work_J"
+      ],
+      "cites": "Frozen first-skill CoT denominator M_BODY_KG = 13824.5 (membrane inventory) consuming work_J measured on the 10.038 kg walker - the D-W04 resolved-as-wrong binding"
+    },
+    {
+      "id": "ev_runbook",
+      "commit": "8294053be688cb9cae5251b16ee927f6338b0b92",
+      "path": "tools/science_funnel/validation/first_skill_prestage_20260922/RUNBOOK.md",
+      "blob": "73a41120fce27a6bf85073712ccc7a68382ff46b",
+      "sha256": "eb8d19a2fceb661b9f84eb3d18e246ee6616a0933e3166cdda7ebde147f9c821",
+      "bytes": 4661,
+      "markers": [
+        "13824.5"
+      ],
+      "cites": "Frozen runbook step 5: CoT = E_ledger/(13824.5 kg x d_reached) - the same membrane-inventory denominator, frozen"
+    },
+    {
+      "id": "ev_membrane_hpp",
+      "commit": "0a1a7c5fec1fcba5cec5b9007d6029356e1ddd06",
+      "path": "ChimeraEngine/engine/membrane_tick.hpp",
+      "blob": "c55d0f71242b387b9f8b22be086f9d70525c9e1a",
+      "sha256": "a4afb7f535664cca610cba9fb31226f032859295aa2c525e32cf23a0f655288c",
+      "bytes": 11253,
+      "markers": [
+        "13824.5f"
+      ],
+      "cites": "Runtime slice membrane physics default mass_kg_ = 13824.5f (the playable-slice creature material inventory; 13.824536 m^3 at water density per the seal preregistration)"
+    },
+    {
+      "id": "ev_rig_fit",
+      "commit": "17ba94b948ca217c1bbf8f7dee5b51b995b387bb",
+      "path": "tools/science_funnel/validation/visible_walk_20260923/rig_fit.json",
+      "blob": "be7a106bca22937bf702fcc38a025510ded104b2",
+      "sha256": "6b7bf64206cd8ddef7d982c7a1c999fcf17ba99bf08cda1ee1471c398e5226e4",
+      "bytes": 1655,
+      "markers": [
+        "declared geometric fit v3",
+        "249743"
+      ],
+      "cites": "Walker-to-CT render binding: declared geometric fit v3 (crouch pose), 249,743 verts mapped - a RENDERING coupling, not a physics identity"
+    },
+    {
+      "id": "ev_ustr_receipt",
+      "commit": "b04a3acd07cff18e2f86f5f89a39eaa46b2eb5ae",
+      "path": "forearm_package/USTR_DIAGNOSTIC_RECEIPT.md",
+      "blob": "b46effefdacc8f42218b0ad0b9eed7a69a93e45f",
+      "sha256": "d969f7608b68e5562b511064d0e063002fa01530e9f7a5b04f61cc88d59e16ff",
+      "bytes": 8341,
+      "markers": [
+        "Nothing here executes anything",
+        "Chimanoid",
+        "56.88 kg",
+        "vendor/myo_sim/meshes/ulna.stl"
+      ],
+      "cites": "I7 consolidated forearm/paddle receipt: analysis-only; O1 resolved; O2 hand blocker (bowed paddle + palm-plane proxy both failed); R1 falsifier fired - source model is FreeMusco Chimanoid, a fictional 120-muscle human-based character (56.88 kg); B4 not run"
+    },
+    {
+      "id": "ev_monkey_fit",
+      "commit": "43b599a7c1f11e789cd414b40d7305b9be05066d",
+      "path": "forearm_package/baseline_snapshot/runs/actual_monkey_fit.json",
+      "blob": "b76546c2ffbd022639ebeba3fd7dc26d2d5b50bf",
+      "sha256": "7b5d6345f6d56ec77c072aecefde2ae592e3bc3fc96b439e5eff164425834268",
+      "bytes": 1294000,
+      "markers": [
+        "17.039978509953905"
+      ],
+      "cites": "Buffy transported assembly: all_transported = 17.039978509953905 kg, class transported_source_effective, counted 0.0, readiness false"
+    },
+    {
+      "id": "ev_produce_inputs",
+      "commit": "43b599a7c1f11e789cd414b40d7305b9be05066d",
+      "path": "tools/assembly_handoff/produce_inputs.py",
+      "blob": "7365aa043d158e6fc73225dd3bec87e37781848f",
+      "sha256": "9ac51d2607616d8a14915865bd2dfa27d504546495cb237d04cfbb2529700774",
+      "bytes": 23655,
+      "markers": [
+        "transported mass stays uncounted",
+        "17.04 kg"
+      ],
+      "cites": "Producer enforcing the separation: every transported claim counts_toward_component_mass=false - the 17.04 kg lineage is declared owned, never counted"
+    },
+    {
+      "id": "ev_s01_report",
+      "commit": "762eb589218901ab39b434c826f0ca119c7fd369",
+      "path": "tools/monkey_campaign/agents/S01_provenance/report.md",
+      "blob": "dc6771e506888379620e3848eaa81edf9ef61afb",
+      "sha256": "7dde4dcb170c02fe0f408a75567c1edbd9e032758458d0a028deb5f1867c76e5",
+      "bytes": 15533,
+      "markers": [
+        "CommercialUseNotPermitted",
+        "myo_sim",
+        "standing_body.obj",
+        "chimanoid"
+      ],
+      "cites": "S01 provenance audit (18-row matrix): CT chain = MorphoSource 000875604, Commercial Use Prohibited, copyright UND, re-archival duty (BLOCKED FOR SHIP); myo_sim v0.1.0 vendored Apache-2.0, not in shipping chain; chimanoid exclusion structural; Oku numbers CC BY 4.0 facts"
+    },
+    {
+      "id": "ev_clearing",
+      "commit": "762eb589218901ab39b434c826f0ca119c7fd369",
+      "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+      "blob": "e0f9f8ed3c01277086f844db22bf2125a7be472b",
+      "sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+      "bytes": 13112,
+      "markers": [
+        "chimera.monkey_clearing.v1"
+      ],
+      "cites": "Playable scene declaration (F01): the finite forest clearing (cosine mounds, seed 4598321) - campaign-authored, AGPL-3.0"
+    },
+    {
+      "id": "ev_trunk",
+      "commit": "762eb589218901ab39b434c826f0ca119c7fd369",
+      "path": "tools/monkey_campaign/data/monkey_trunk/trunk_declaration.json",
+      "blob": "c7b37531a98a6e213107ecdb9e61bad1074fc973",
+      "sha256": "94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1",
+      "bytes": 16634,
+      "markers": [
+        "chimera.trunk_asset.v1",
+        "1.158",
+        "10.038"
+      ],
+      "cites": "Climbable trunk asset (F03): height 1.158 m DERIVED from the training body's Oku numbers (standing_height_bound 0.901 + forelimb chain 0.257; cites derived_numbers.json body_model.mass_kg=10.038 and the P02P03 10.038 kg pin) - the scene's explicit relation to the training body"
+    },
+    {
+      "id": "ev_ship_request",
+      "commit": "066485ae05be4fa96bdecf5fc43f85afcbceb970",
+      "path": "tools/monkey_campaign/decisions/SHIP_ASSET_DECISION_REQUEST.md",
+      "blob": "29344b1300e6e9095719a3396050223b617de32f",
+      "sha256": "9921679b2ce51f0974674c0ae81d797624d00d578aa1cb26adeffdf1ea7b3100",
+      "bytes": 1630,
+      "markers": [
+        "MorphoSource"
+      ],
+      "cites": "Filed ship-asset decision request on the CT macaque's MorphoSource terms (operator paper pending; a distribution gate, not a lineage fact)"
+    },
+    {
+      "id": "ev_p02p03_report",
+      "commit": "8feea42a392befa8113997ecfb814dac480ef531",
+      "path": "tools/monkey_campaign/agents/P02P03/report.md",
+      "blob": "f03330ee1a5e888ced77a76bbb57a731903ae3c2",
+      "sha256": "8ce629b889e93b37a1e47dc2d744f439c483b560296c56276015cf47299dcbf1",
+      "bytes": 21778,
+      "markers": [
+        "10.038",
+        "USNM 497136-3",
+        "bc9033bf",
+        "ANALYSIS-ONLY"
+      ],
+      "cites": "P02P03 lineage pin report (prior campaign): full lineage table - play lineage origin/master 33e7a444; training body 10.038; rendered creature CT USNM 497136-3; forearm/paddle ANALYSIS-ONLY; render binding not a physics identity"
+    },
+    {
+      "id": "ev_buffy_extract",
+      "commit": "8feea42a392befa8113997ecfb814dac480ef531",
+      "path": "tools/monkey_campaign/agents/P02P03/receipts/buffy02_mass_lines.txt",
+      "blob": "1b90064deb71abf60c21db07bee3956423d30ede",
+      "sha256": "b5f49216b4c0b2b27367f8174811ed5e601b69a5570d0a2368d62f2a96ae83d6",
+      "bytes": 478,
+      "markers": [
+        "17.039978509953905"
+      ],
+      "cites": "Verbatim extract of the untracked working file agent_logs/local_buffy_qwen/assembly_handoff_02.md lines 83/184/210 (counted_mass_kg=0.0, uncounted 17.039978509953905)"
+    }
+  ],
+  "entities": [
+    {
+      "id": "ct_monkey",
+      "card_item": true,
+      "label": "CT monkey (CT macaque source scan)",
+      "identity": "MorphoSource media 000875604, Macaca mulatta USNM 497136-3 (Smithsonian NMNH), infant, 160 um CT; segmented to 25 closed bones",
+      "evidence": [
+        "ev_mesh_manifest",
+        "ev_mesh_receipt",
+        "ev_download_receipt",
+        "ev_s01_report",
+        "ev_p02p03_report"
+      ],
+      "status": "SOURCE_ASSET (player-visible animal's origin); distribution BLOCKED FOR SHIP pending operator decision (ev_ship_request)"
+    },
+    {
+      "id": "source_msk_model",
+      "card_item": true,
+      "label": "Source musculoskeletal model (of the forearm/paddle packet)",
+      "identity": "FreeMusco Chimanoid - a fictional 120-muscle human-based character (arms x1.2, legs x0.7, 56.88 kg), arXiv:2511.14205; NOT a macaque model",
+      "evidence": [
+        "ev_ustr_receipt",
+        "ev_s01_report"
+      ],
+      "status": "ANALYSIS-ONLY source of the anatomy packet; excluded from the shipped tree (structural exclusion, S01 R18)"
+    },
+    {
+      "id": "forearm_paddle_assets",
+      "card_item": true,
+      "label": "Older forearm/paddle assets (assembly packet)",
+      "identity": "forearm_package @ forearm-package-20260924 (b04a3acd I7 receipt; 43b599a7 Buffy 02 package): U-STR ulna candidate, bowed paddle target, palm-plane proxy; plus the Buffy transported assembly (17.039978509953905 kg, counted 0.0, readiness false); later handsrc 70c9ff41 / handtgt 57beb8b2 labeling lanes",
+      "evidence": [
+        "ev_ustr_receipt",
+        "ev_monkey_fit",
+        "ev_produce_inputs",
+        "ev_buffy_extract",
+        "ev_p02p03_report"
+      ],
+      "status": "ANALYSIS-ONLY / KEPT SEPARATE; never the play or training body (decisions memo 2026-09-24 section 2: do not change the training body to consume a new assembly)"
+    },
+    {
+      "id": "training_body",
+      "card_item": true,
+      "label": "Training body (the gait walker)",
+      "identity": "Rigid assembly authored from Oku, Ide & Ogihara 2021 (Commun Biol 4:1831) Table 1 segment masses: HAT 8.184 + 2x(thigh 0.557 + shank 0.269 + foot 0.080 + phalanges 0.021) = 10.038 kg; weight 98.4391527 N; scene f6844eea...",
+      "evidence": [
+        "ev_derived_numbers",
+        "ev_gait_scene",
+        "ev_wave47",
+        "ev_k_fill",
+        "ev_p02p03_report",
+        "ev_trunk"
+      ],
+      "status": "THE body the walk trains and runs on (gait chain); distinct from the runtime render body; scene carve (8.184 - 2x0.406001) + 2x(0.2737+0.1323) + 2x0.927 = 10.037998 kg"
+    },
+    {
+      "id": "runtime_body",
+      "card_item": true,
+      "label": "Runtime body (the playable slice's creature)",
+      "identity": "RENDER: standing_body.obj sha256 bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111 (18,469,042 bytes, 499,976 tris / 249,743 verts), a repaired+decimated derivative of the 25 CT preview bones (body_manifest chimera.real_body.v1); boot cache standing_body.glb byte-identical; ghost_standing.obj overlay composed from the same CT previews. PHYSICS: the slice engine's membrane creature, default mass_kg_ = 13824.5 (13.824536 m^3 sealed cells at water density)",
+      "evidence": [
+        "ev_standing_body",
+        "ev_body_manifest",
+        "ev_boot_cache",
+        "ev_membrane_hpp",
+        "ev_mesh_manifest",
+        "ev_s01_report"
+      ],
+      "status": "ACTIVE in the playable slice: visual = CT derivative; physics mass = the separate 13824.5 kg membrane inventory lineage"
+    }
+  ],
+  "relations": [
+    {
+      "a": "ct_monkey",
+      "b": "runtime_body",
+      "kind": "DERIVED",
+      "evidence": [
+        "ev_mesh_manifest",
+        "ev_body_manifest",
+        "ev_standing_body",
+        "ev_boot_cache"
+      ],
+      "statement": "The runtime render body is a deterministic derivative of the CT monkey scan: segmented (25 bones) -> repaired+decimated (ratio 0.7020263287954351, <= 500,000-tri cap, 499,976 tris) -> standing_body.obj; standing_body.glb is a byte-identical boot conversion; ghost_standing.obj is composed from the same committed CT previews. This is a RENDER derivation only; it confers no mass or physics identity."
+    },
+    {
+      "a": "training_body",
+      "b": "runtime_body",
+      "kind": "RENDER_BINDING",
+      "evidence": [
+        "ev_rig_fit",
+        "ev_p02p03_report",
+        "ev_membrane_hpp",
+        "ev_derived_numbers"
+      ],
+      "statement": "The training body is bound to the CT render body ONLY by the declared geometric fit v3 (LBS, 13 groups, 249,743 verts mapped) used to render the 302-tick walk on the real CT body. A rendering coupling, NOT a physics identity: the walker's rigid mass is 10.038 kg while the rendered creature's membrane physics default is 13824.5 kg; the two numbers are distinct lineages and are never interchanged (D-W04)."
+    },
+    {
+      "a": "source_msk_model",
+      "b": "forearm_paddle_assets",
+      "kind": "SOURCE_OF",
+      "evidence": [
+        "ev_ustr_receipt",
+        "ev_s01_report"
+      ],
+      "statement": "The forearm/paddle packet's source model is the FreeMusco Chimanoid (fictional human-based character, 56.88 kg). All packet geometry/fitting (U-STR, paddle, palm proxies, Buffy transported assembly) derives from that fictional model; the packet's R1 falsifier fired on exactly the attempt to read macaque anatomy out of it."
+    },
+    {
+      "a": "forearm_paddle_assets",
+      "b": "runtime_body",
+      "kind": "KEPT_SEPARATE",
+      "evidence": [
+        "ev_ustr_receipt",
+        "ev_monkey_fit",
+        "ev_produce_inputs",
+        "ev_p02p03_report"
+      ],
+      "statement": "The forearm/paddle packet is ANALYSIS-ONLY ('Nothing here executes anything'); its transported assembly mass (17.039978509953905 kg) is declared owned and counted 0.0 with readiness false. It is not the play body in any way, and its source is not even a macaque. Decisions memo: the material/assembly branch stays conditional and must not change the walking runbook, training body, seeds, numerical bars or certificate."
+    },
+    {
+      "a": "forearm_paddle_assets",
+      "b": "training_body",
+      "kind": "KEPT_SEPARATE",
+      "evidence": [
+        "ev_produce_inputs",
+        "ev_monkey_fit",
+        "ev_derived_numbers"
+      ],
+      "statement": "The Buffy transported assembly (17.04 kg lineage) never feeds the 10.038 kg walker or any acceptance math; produce_inputs enforces counts_toward_component_mass=false on every transported claim."
+    },
+    {
+      "a": "source_msk_model",
+      "b": "ct_monkey",
+      "kind": "KEPT_SEPARATE",
+      "evidence": [
+        "ev_ustr_receipt",
+        "ev_mesh_manifest",
+        "ev_p02p03_report"
+      ],
+      "statement": "Same name ('macaque'-like), not the same body: the Chimanoid is a fictional human-based character; the CT monkey is a real Macaca mulatta (USNM 497136-3). No species-specific macaque claim can be transferred between them (USTR R1 correction)."
+    },
+    {
+      "a": "training_body",
+      "b": "scene_monkey_trunk",
+      "kind": "SOURCE_OF",
+      "evidence": [
+        "ev_trunk",
+        "ev_derived_numbers"
+      ],
+      "statement": "The playable trunk asset's geometry is derived from the training body's Oku numbers: height 1.158 m = standing_height_bound 0.901 (leg 0.419 + HAT 0.482) + forelimb chain 0.257 (upperarm 0.125 + forearm 0.132); radius 0.037 m = Oku foot length 0.074 / 2; weight_N 98.439153 cited in the derivation. The scene explicitly cites the 10.038 kg pin - an explicit, declared relation."
+    },
+    {
+      "a": "runtime_body",
+      "b": "scene_monkey_clearing",
+      "kind": "PLACED_IN",
+      "evidence": [
+        "ev_clearing",
+        "ev_trunk",
+        "ev_boot_cache"
+      ],
+      "statement": "The runtime body (CT-derived render + membrane physics) is the creature placed in the campaign-authored clearing (F01 declaration, seed 4598321) with the F03 trunk; scene data is AGPL-3.0 campaign-authored, separate from the training gait scene."
+    },
+    {
+      "a": "training_body",
+      "b": "scene_gait_walker",
+      "kind": "SIMULATED_IN",
+      "evidence": [
+        "ev_gait_scene",
+        "ev_wave47"
+      ],
+      "statement": "The training body is the body simulated in the pinned gait scene f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342 (regenerated byte-identically by gait_scene.py; walk anchors stdout 8c537cdb..., 302 ticks, ledger 30.970714 J). The gait scene and the playable clearing are DIFFERENT scenes with different pinned identities."
+    },
+    {
+      "a": "myo_sim_reference",
+      "b": "runtime_body",
+      "kind": "KEPT_SEPARATE",
+      "evidence": [
+        "ev_s01_report",
+        "ev_ustr_receipt"
+      ],
+      "statement": "myo_sim v0.1.0 (MyoSuite/MyoHub, Apache-2.0, vendored at vendor/myo_sim, LICENSE sha256 1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6) serves the grab/foot science lanes and supplied a witness ulna mesh in USTR O1; it is NOT in the shipping chain and is not the play or training body (S01 R17)."
+    }
+  ],
+  "supporting_entities": [
+    {
+      "id": "scene_gait_walker",
+      "label": "Training scene (gait walker)",
+      "identity": "scene sha256 f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+      "evidence": [
+        "ev_gait_scene",
+        "ev_wave47"
+      ]
+    },
+    {
+      "id": "scene_monkey_clearing",
+      "label": "Playable scene (forest clearing)",
+      "identity": "chimera.monkey_clearing.v1 declaration @ 762eb589 (F01)",
+      "evidence": [
+        "ev_clearing"
+      ]
+    },
+    {
+      "id": "scene_monkey_trunk",
+      "label": "Climbable trunk asset",
+      "identity": "chimera.trunk_asset.v1, height 1.158 m, radius 0.037 m @ 762eb589 (F03)",
+      "evidence": [
+        "ev_trunk"
+      ]
+    },
+    {
+      "id": "myo_sim_reference",
+      "label": "Vendored myo_sim reference model library",
+      "identity": "v0.1.0, Apache-2.0, E:/PythonChimera/vendor/myo_sim (not in shipping chain)",
+      "evidence": [
+        "ev_s01_report",
+        "ev_ustr_receipt"
+      ]
+    }
+  ],
+  "mass_lineages": {
+    "rule": "DISTINCT lineages, NEVER interchanged: compatibility is not established by a shared name; no relation, label or consumer may treat any two of these masses as the same body or convert between them (D-W04-MASS-20260924 ruling context).",
+    "entries": [
+      {
+        "value_kg": 13824.5,
+        "id": "membrane_inventory",
+        "label": "Playable-slice membrane creature material inventory (13.824536 m^3 sealed cells at water density); slice engine membrane default; frozen first-skill CoT denominator",
+        "evidence": [
+          "ev_membrane_hpp",
+          "ev_acceptance",
+          "ev_runbook"
+        ]
+      },
+      {
+        "value_kg": 10.038,
+        "id": "training_body_oku_walker",
+        "label": "THE TRAINING BODY - gait walker rigid assembly from Oku 2021 Table 1 (weight 98.4391527 N)",
+        "evidence": [
+          "ev_derived_numbers",
+          "ev_gait_scene",
+          "ev_wave47",
+          "ev_k_fill"
+        ]
+      },
+      {
+        "value_kg": 6.15,
+        "id": "book_midpoint_tk1989",
+        "label": "Turnquist & Kessler 1989 adult-female rhesus band midpoint (5.4-6.9 kg) - muscle/deposit BOOK mass context only; NOT the walker's rigid mass, NOT the acceptance math",
+        "evidence": [
+          "ev_k_fill"
+        ]
+      },
+      {
+        "value_kg": 17.039978509953905,
+        "id": "buffy_transported",
+        "label": "Buffy transported assembly, class transported_source_effective - declared owned, counted 0.0, readiness false; deliberately separate",
+        "evidence": [
+          "ev_monkey_fit",
+          "ev_produce_inputs",
+          "ev_buffy_extract"
+        ]
+      },
+      {
+        "value_kg": 7.006001,
+        "id": "coupled_arm_assembly",
+        "label": "Coupled-arm assembly context in derived_numbers.json engine_scaling - the anatomy-side coupled-arm lane (local 32105f18 lineage); distinct from the walker",
+        "evidence": [
+          "ev_derived_numbers"
+        ]
+      },
+      {
+        "value_kg": 56.88,
+        "id": "chimanoid_total",
+        "label": "FreeMusco Chimanoid fictional character total mass - the source MSK model's own body, unrelated to any play/train mass",
+        "evidence": [
+          "ev_ustr_receipt"
+        ]
+      }
+    ],
+    "known_mismatch": {
+      "ratio_13824_5_over_10_038": 1377.2166,
+      "note": "D-W04 recomputed 13824.5/10.038 = 1377.2166x; the frozen first-skill CoT denominator (13824.5) vs the simulated body (10.038) is RESOLVED-AS-WRONG and needs a lead-authorized NEW registration; selection-invariant, so no pass/fail decision changes. Recorded here as a named mismatch, never reconciled by force."
+    }
+  },
+  "lane_map": {
+    "game_lineage": {
+      "ref": "origin/master 33e7a444fe7b4c35aa99afe7ef898046877025b4",
+      "carries": "gait engine, walk receipts, CT body + playable slice, morphosource_ct data",
+      "evidence": [
+        "ev_p02p03_report"
+      ]
+    },
+    "campaign_lanes": [
+      {
+        "ref": "monkey-play-20260924 @ 762eb589218901ab39b434c826f0ca119c7fd369",
+        "carries": "S01 provenance audit; ship-asset decision request @ 066485ae; playable scene data; P02P03 pin @ 8feea42a"
+      },
+      {
+        "ref": "forearm-package-20260924 (b04a3acd..., 43b599a7c1f11e789cd414b40d7305b9be05066d; later 70c9ff41, 57beb8b2)",
+        "carries": "forearm/paddle analysis-only packet + Buffy handoff"
+      },
+      {
+        "ref": "lane/visible-walk-20260923 @ 17ba94b948ca217c1bbf8f7dee5b51b995b387bb",
+        "carries": "walker-to-CT declared render fit v3"
+      },
+      {
+        "ref": "agent/typeb-gpu-finish-20260922 @ a62b286e...",
+        "carries": "GPU training port (walker_env)"
+      },
+      {
+        "ref": "agent/first-skill-prestage-20260922 @ 8294053be688cb9cae5251b16ee927f6338b0b92",
+        "carries": "frozen first-skill contract (RUNBOOK, acceptance.py)"
+      }
+    ],
+    "current_campaign_workflow_lane": {
+      "ref": "branch-4 @ 9ba1be77228e181f55ed2e4d2eb3e73e2f09685f (base astra/gait-capture 5e54c0b7fdfae50e41738d1488b9a3a1418489a6)",
+      "carries": "monkey_campaign workflow + ontology; the playable_slice/science_funnel trees are NOT in this lane's tip - they remain on the game lineage lanes above until integration",
+      "note": "All pinned commits are present in this lane's git object store and re-verify by plumbing."
+    }
+  },
+  "distribution_terms": {
+    "ct_chain": "MorphoSource Standard Usage Agreement: Commercial Use Prohibited; copyright UND (Smithsonian NMNH); derivatives re-archived on MorphoSource within 1 year of release - BLOCKED FOR SHIP; operator decision request filed (ev_ship_request). S01 falsifier FIRED: the download receipt's license paraphrase contradicts its own pinned agreement PDF.",
+    "oku_numbers": "Derived facts with CC BY 4.0 attribution (Oku, Ide & Ogihara 2021, Commun Biol 4:1831) - clear as cited facts (S01 R16).",
+    "myo_sim": "Apache-2.0, vendored, not shipped today (S01 R17).",
+    "chimanoid": "Excluded from the shipped tree structurally (S01 R18); analysis-only pin retained.",
+    "repo": "AGPL-3.0 (own terms) for campaign-authored scene/product code."
+  },
+  "prior_receipts_reused": [
+    {
+      "id": "p02p03_lineage_pin",
+      "location": "commit 8feea42a392befa8113997ecfb814dac480ef531 (report.md + 21 receipt extracts)",
+      "sha256": "8ce629b889e93b37a1e47dc2d744f439c483b560296c56276015cf47299dcbf1",
+      "role": "P02 PINNED verdict + lineage table (reused, re-verified)"
+    },
+    {
+      "id": "s01_provenance_audit",
+      "location": "commit 762eb589218901ab39b434c826f0ca119c7fd369",
+      "sha256": "7dde4dcb170c02fe0f408a75567c1edbd9e032758458d0a028deb5f1867c76e5",
+      "role": "18-row shipped-surface provenance matrix (reused, re-verified)"
+    },
+    {
+      "id": "d_w04_mass_diagnostic",
+      "location": "coordination record kanban-attempts/D-W04-MASS-20260924/26382263eb094eaf98a8354a2fe8592c (report.md sha256 055c090fea7846d934a9ddba824bc953b2b0700fcd5b5f8f329d88628e5e7d5f; mass_matrix.json sha256 6a32229438f59158a0995b6b90043639e8b103eedf2d09243502faaa9a68ff39)",
+      "role": "Four-mass lineage ruling + 1377.2166x mismatch (reused; its verdict NO on the CoT binding is preserved, not re-litigated)"
+    },
+    {
+      "id": "decisions_memo",
+      "location": "tools/monkey_campaign/decisions/20260924_campaign_handoffs.md (E:/PythonChimera)",
+      "role": "Lead dispositions: assembly branch conditional; forearm/paddle analysis-only; do not force mass numbers to agree"
+    }
+  ],
+  "remaining_gates": [
+    "Camera-pinned anatomy diagnostic capture (checkpoint V01, shared with W04): profile views/layers with all declared camera fields - cannot be produced offline; not claimed by this card",
+    "Operator decision on the MorphoSource ship-asset request (distribution gate, does not change lineage)",
+    "W04 owner: lead-authorized NEW registration binding the CoT denominator to the training body (D-W04 section 7)",
+    "Independent review of this contribution (auto-queued on publication request); lead publication to review/ONT-P02"
+  ]
+}
