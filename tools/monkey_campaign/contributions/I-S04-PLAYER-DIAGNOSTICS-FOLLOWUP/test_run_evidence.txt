@@ -1,0 +1,15 @@
+test_future_code_lands_unknown_with_correlation (__main__.AdapterTests.test_future_code_lands_unknown_with_correlation) ... ok
+test_identity_pin_and_tamper_refusal (__main__.AdapterTests.test_identity_pin_and_tamper_refusal) ... ok
+test_loaded_and_first_run_produce_nothing (__main__.AdapterTests.test_loaded_and_first_run_produce_nothing) ... ok
+test_path_bearing_exception_scrubbed (__main__.AdapterTests.test_path_bearing_exception_scrubbed) ... ok
+test_path_scrubbed_from_message_kept_in_diagnostic (__main__.AdapterTests.test_path_scrubbed_from_message_kept_in_diagnostic) ... ok
+test_real_corrupt_json_known_translation (__main__.AdapterTests.test_real_corrupt_json_known_translation) ... ok
+test_real_flow_drop_known_translation (__main__.AdapterTests.test_real_flow_drop_known_translation) ... ok
+test_real_unsupported_action_known_translation (__main__.AdapterTests.test_real_unsupported_action_known_translation) ... ok
+test_samples_table_written (__main__.AdapterTests.test_samples_table_written) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.079s
+
+OK
+EXIT=0

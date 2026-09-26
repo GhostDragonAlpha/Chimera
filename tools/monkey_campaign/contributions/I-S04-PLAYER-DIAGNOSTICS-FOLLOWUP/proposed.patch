@@ -1,0 +1,2222 @@
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/PREREGISTRATION.md b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/PREREGISTRATION.md
+new file mode 100644
+index 00000000..da923a94
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/PREREGISTRATION.md
+@@ -0,0 +1,66 @@
++# PREREGISTRATION — I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP (correction: seam vendored, tests self-contained)
++
++Card `I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP` (planning S04; parent
++I-S04-PLAYER-DIAGNOSTICS = merged PR #125; accepted module
++`player_diagnostics.py` sha256 `53e34c62…` pinned at bind, tamper refused).
++Attempt `e8b61636f59d45ca835e1d1fbe9e08a5`, arrival
++`arrival-c59287b07e0c438e9b8866aa7086e1b1`, criteria
++`9fa0a82d860fcf38f0a1809fab638ac1187962a257127a4d26de86c721bbe4f3`.
++Written BEFORE any probe ran in this attempt. This attempt supersedes the
++drift finding on prior request `publication-e7eeb8677a2b400aaded97c27d66e95d`
++(lead verification: as-specified run failed 4/9 ModuleNotFoundError because the
++unpinned seam was resolved from the live play worktree, whose HEAD `8d16d3c1`
++reorg deleted `tools/science_funnel/`).
++
++## STATEMENT (correction)
++
++The SAME narrow adapter — zero new vocabulary, every message/action from the
++accepted module's `explain*` functions — becomes self-contained at ANY checkout
++when the seam sources it drives are VENDORED byte-identically from the pinned
++revision `9afbddcd90164b5544a16fd0bc72278d985eb6e3` (the same revision the
++accepted parent ledger cites) under a local `reference/` directory with an
++`EXTRACTION_LEDGER.json`, and are materialized hash-asserted at import (the
++campaign's established I-U07-TRACE-FOLLOWUP / I-R05 pattern): each pinned file
++is copied to a fresh OS temp directory in canonical repo layout, its sha256 is
++checked against the pin, and ANY mismatch refuses by name before import.
++Vendored seam: `input_settings.py`, `session_flow.py`, `input_mapper.py`,
++`command_record.py`. The accepted `player_diagnostics` module is still
++IMPORTED, never copied (sha pin stays; recorded ledger-wise as
++import-only pin). No live play-worktree path and no parent-reference directory
++remains on the seam import path.
++
++## PREDICTION (not yet measured)
++
++1. `python -B test_implementation.py` runs the SAME nine tests and reports
++   9/9 OK in this workspace, WITHOUT the play worktree contributing any
++   import (the previously failing seam chain
++   `input_settings -> input_mapper -> tools.science_funnel.typeb_export.command_record`
++   resolves entirely from hash-asserted `reference/` materialization).
++2. Tampering with any vendored reference byte produces a named refusal
++   (`pinned_source_hash_mismatch`), not a silently different module.
++3. The adapter behavior is unchanged from the verified control run: REAL
++   corrupt-json load -> refused -> KNOWN damaged-file message; REAL unknown
++   action `teleport` -> KNOWN no-such-action message; REAL `session_flow`
++   key_press drop outside `playing` -> KNOWN flow message; fabricated future
++   code and path-bearing exception -> UNKNOWN with correlation id, path only
++   in the developer `diagnostic`, scrubbed from `message`; `loaded`/
++   `first_run` -> None (module law).
++4. `implementation.py` re-renders the same deterministic `samples.json`
++   schema (`i-s04-followup.feedback_adapter.v1`, 4 samples) for later HUMAN
++   review.
++
++## FALSIFIER
++
++Any of the nine tests failing; a pinned reference hash mismatch NOT refused;
++any successful import that silently depended on
++`E:/ChimeraWork/monkey-play-20260924` HEAD (or any unpinned path); a message/
++action not produced by the accepted module; a path leaking into a
++player-facing `message`; `loaded`/`first_run` producing a diagnostic; accepted
++module sha256 drift not refusing at bind.
++
++## BOUNDS
++
++CPU-only, stdlib; extraction from the play repository is READ-ONLY git
++(`git show 9afbddcd…:<path>`), no checkout/branch/worktree mutation; all
++writes confined to this attempt workspace; output budget ≤ 16 MiB; samples
++are rendered for HUMAN review — no player-validation is claimed.
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/implementation.py b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/implementation.py
+new file mode 100644
+index 00000000..bee6edea
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/implementation.py
+@@ -0,0 +1,244 @@
++"""implementation.py -- I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP: the narrow adapter
++from ACTUAL product error paths to the accepted player diagnostics
++(parent I-S04-PLAYER-DIAGNOSTICS, merged PR #125; module identity pinned).
++
++CORRECTION (lead finding on publication-e7eeb8677a2b400aaded97c27d66e95d):
++the prior request resolved the seam's CommandRecord import from the LIVE play
++worktree, whose HEAD 8d16d3c1 reorg deleted the sources (as-specified tests:
++4/9 ModuleNotFoundError). The seam is now VENDORED byte-identically from the
++pinned revision 9afbddcd (the same revision the accepted parent ledger cites)
++under ``reference/`` with ``EXTRACTION_LEDGER.json``, and is materialized
++HASH-ASSERTED at bind into a fresh OS temp directory in canonical repo layout
++-- the campaign's established I-U07-TRACE-FOLLOWUP / I-R05 ``reference/``
++pattern. Any byte drift refuses by name BEFORE import. No live worktree path
++and no parent-reference directory remains on the seam import path.
++
++The adapter adds NO vocabulary: every message/action comes from the accepted
++module's explain* functions. It only routes real shapes to them:
++
++  input_settings.Refusal           -> explain_settings_refusal(code, detail)
++  session_flow.last_trace drops    -> explain_flow_drop(kind, detail, state)
++  arbitrary exceptions             -> explain_exception(exc)
++  LoadResult loaded/first_run      -> None (the module's own law: not failures)
++  anything else / future codes     -> explain()'s honest unknown fallback
++
++render() produces the one-line player-facing string for the samples table
++(for later HUMAN review -- no player-validation is claimed here).
++"""
++from __future__ import annotations
++
++import hashlib
++import importlib
++import json
++import pathlib
++import shutil
++import sys
++import tempfile
++
++HERE = pathlib.Path(__file__).resolve().parent
++ACCEPTED_DIR = pathlib.Path(
++    "E:/ChimeraWork/monkey-coordination/kanban-attempts/"
++    "I-S04-PLAYER-DIAGNOSTICS/d24bd30d38234a4cae33288048cce14f")
++ACCEPTED_SHA256 = \
++    "53e34c62850ff222e2ecd92d20498baf88e9f8f0189b8c215d0cc79b06a7a339"
++SEAM_REVISION = "9afbddcd90164b5544a16fd0bc72278d985eb6e3"
++SCHEMA = "i-s04-followup.feedback_adapter.v1"
++
++# ── the vendored seam pins (asserted at bind, loudly; details in the ledger) ──
++SEAM_PINS = {
++    "tools/monkey_campaign/product/input_settings.py":
++        "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
++    "tools/monkey_campaign/product/session_flow.py":
++        "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
++    "tools/monkey_campaign/product/input_mapper.py":
++        "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
++    "tools/science_funnel/typeb_export/command_record.py":
++        "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
++}
++
++_bound = {}
++
++
++class AdapterIdentityFailure(RuntimeError):
++    pass
++
++
++def _sha256_file(path: pathlib.Path) -> str:
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def materialize_pinned_seam(pins: dict | None = None,
++                            root: pathlib.Path | None = None) -> pathlib.Path:
++    """Copy the vendored ``reference/`` bytes into a fresh OS temp directory in
++    the canonical repo layout, asserting every pin hash, so the UNMODIFIED
++    files import exactly as they do at the pinned revision (their internal
++    ``from tools.science_funnel...`` / flat ``import input_mapper`` resolve
++    against the same layout).
++
++    The only seam I/O this adapter performs; the directory is OS-disposable
++    and nothing outside it is written. Fails closed by name.
++    """
++    pins = SEAM_PINS if pins is None else pins
++    owns_root = root is None
++    root = pathlib.Path(tempfile.mkdtemp(prefix="i_s04_followup_seam_")) \
++        if root is None else pathlib.Path(root)
++    try:
++        for repo_path, want in pins.items():
++            src = HERE / "reference" / repo_path
++            if not src.is_file():
++                raise AdapterIdentityFailure(
++                    f"pinned_source_missing: {{'expected': '{src}'}}")
++            got = _sha256_file(src)
++            if got != want:
++                raise AdapterIdentityFailure(
++                    f"pinned_source_hash_mismatch: {{'path': '{repo_path}', "
++                    f"'sha256': '{got}', 'expected': '{want}'}}")
++            dst = root / repo_path
++            dst.parent.mkdir(parents=True, exist_ok=True)
++            shutil.copyfile(src, dst)
++    except Exception:
++        if owns_root:
++            shutil.rmtree(root, ignore_errors=True)
++        raise
++    return root
++
++
++def bind():
++    """Import the accepted module + the VENDORED pinned seam (identity
++    checked at every layer). Cached; fails closed on mismatch."""
++    if _bound:
++        return _bound
++    # 1) the ACCEPTED diagnostics module: imported, never copied; tamper refused
++    module_path = ACCEPTED_DIR / "player_diagnostics.py"
++    if not module_path.is_file():
++        raise AdapterIdentityFailure("accepted module missing")
++    actual = hashlib.sha256(module_path.read_bytes()).hexdigest()
++    if actual != ACCEPTED_SHA256:
++        raise AdapterIdentityFailure(f"accepted module drifted: {actual}")
++    sys.path.insert(0, str(ACCEPTED_DIR))
++    import player_diagnostics as pd  # noqa: PLC0415
++    # 2) the vendored seam: cross-check the ledger against the code pins, then
++    #    materialize hash-asserted and import from the canonical layout
++    ref = HERE / "reference"
++    ledger = json.loads((ref / "EXTRACTION_LEDGER.json").read_text("utf-8"))
++    ledger_pins = {f["repo_path"]: f["sha256"] for f in ledger["files"]}
++    if ledger_pins != SEAM_PINS:
++        raise AdapterIdentityFailure("ledger/pin divergence")
++    if ledger["provenance"]["seam_revision"] != SEAM_REVISION:
++        raise AdapterIdentityFailure("seam revision drift")
++    root = materialize_pinned_seam()
++    if str(root) not in sys.path:
++        sys.path.insert(0, str(root))
++    iset = importlib.import_module("tools.monkey_campaign.product.input_settings")
++    sf = importlib.import_module("tools.monkey_campaign.product.session_flow")
++    # NOTE: input_settings additionally flat-imports input_mapper from its own
++    # directory; both module instances come from the SAME hash-asserted bytes
++    # with frozen constants, so no divergence is possible (nothing in the
++    # adapter or tests compares identities across the two names).
++    _bound.update(pd=pd, iset=iset, sf=sf, ref=ref, ledger=ledger,
++                  seam_root=root)
++    return _bound
++
++
++# ── the adapter surface (narrow; no vocabulary of its own) ──────────────────
++def translate_refusal(refusal) -> dict:
++    """input_settings.Refusal -> accepted settings translation."""
++    pd = bind()["pd"]
++    diag = pd.explain_settings_refusal(refusal.code, refusal.detail)
++    return diag.to_record()
++
++
++def translate_flow_drop(kind: str, detail: str, state: str | None = None) -> dict:
++    """session_flow.last_trace['dropped'] entry -> accepted flow translation."""
++    pd = bind()["pd"]
++    return pd.explain_flow_drop(kind, detail, state=state).to_record()
++
++
++def translate_exception(exc: BaseException) -> dict:
++    pd = bind()["pd"]
++    return pd.explain_exception(exc).to_record()
++
++
++def translate_load_result(result) -> dict | None:
++    """input_settings.LoadResult -> diagnostic or None.
++
++    'refused' translates its named refusals (first one, the player-facing
++    law: one message, correlation preserved); 'loaded'/'first_run' are NOT
++    failures and produce NOTHING (the accepted module's own law)."""
++    status = getattr(result, "status", None)
++    if status in ("loaded", "first_run"):
++        return None
++    if status == "refused":
++        refusals = getattr(result, "refusals", ()) or ()
++        if refusals:
++            return translate_refusal(refusals[0])
++    return None
++
++
++def translate_unknown_name(name: str, detail: str = "") -> dict:
++    """Anything not a pinned shape -> the accepted honest unknown fallback."""
++    pd = bind()["pd"]
++    return pd.explain(name, detail).to_record()
++
++
++def render(record: dict) -> str:
++    """One-line player-facing rendering of a diagnostic record (samples)."""
++    actions = " / ".join(record.get("actions") or ())
++    crid = record.get("correlation_id") or ""
++    suffix = f" [ref {crid}]" if crid else ""
++    if actions:
++        return f"{record['message']} — try: {actions}{suffix}"
++    return f"{record['message']}{suffix}"
++
++
++def sample_table() -> list[dict]:
++    """Deterministic user-visible samples for later HUMAN review."""
++    bound = bind()
++    iset = bound["iset"]
++    samples = []
++    with tempfile.TemporaryDirectory() as tmp:
++        corrupt = pathlib.Path(tmp) / "corrupt.json"
++        corrupt.write_bytes(b'{"bindings": [not json')
++        result = iset.load_settings(str(corrupt))
++        diag = translate_load_result(result)
++        samples.append({"case": "settings: corrupt json (real refusal)",
++                        "record": diag, "player_line": render(diag)})
++        bad = pathlib.Path(tmp) / "bad_action.json"
++        defaults = iset.default_settings()
++        bad.write_text(json.dumps({
++            "schema": iset.SCHEMA_ID,
++            "bindings": {**defaults.bindings, "P9": "teleport"},
++            "sensitivity": {"yaw": defaults.sensitivity},
++            "invert": {"yaw": defaults.invert_yaw}}), encoding="utf-8")
++        result2 = iset.load_settings(str(bad))
++        diag2 = translate_load_result(result2)
++        samples.append({"case": "settings: unknown action 'teleport' (real)",
++                        "record": diag2, "player_line": render(diag2)})
++    samples.append({
++        "case": "future code (fabricated, must be unknown)",
++        "record": translate_unknown_name("future_code_2030",
++                                         "at C:/Users/x/save.json"),
++        "player_line": render(translate_unknown_name("future_code_2030",
++                                                     "at C:/Users/x/save.json"))})
++    try:
++        raise OSError("cannot read E:/saves/slot1.save.json")
++    except OSError as exc:
++        rec = translate_exception(exc)
++        samples.append({"case": "path-bearing exception (must scrub message)",
++                        "record": rec, "player_line": render(rec)})
++    return samples
++
++
++def main() -> int:
++    samples = sample_table()
++    out = HERE / "samples.json"
++    out.write_text(json.dumps({"schema": SCHEMA, "samples": samples},
++                              indent=1, ensure_ascii=False) + "\n",
++                   encoding="utf-8", newline="\n")
++    for s in samples:
++        print(s["case"], "->", s["player_line"])
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/EXTRACTION_LEDGER.json b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/EXTRACTION_LEDGER.json
+new file mode 100644
+index 00000000..9eb9fddd
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/EXTRACTION_LEDGER.json
+@@ -0,0 +1,64 @@
++{
++  "schema": "chimera.i-s04-followup.extraction_ledger.v1",
++  "extracted_by": {
++    "task_id": "I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP",
++    "attempt_id": "e8b61636f59d45ca835e1d1fbe9e08a5",
++    "arrival_id": "arrival-c59287b07e0c438e9b8866aa7086e1b1"
++  },
++  "provenance": {
++    "seam_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
++    "seam_source": "git objects of this campaign repo (lineage of E:/ChimeraWork/monkey-play-20260924), read via `git -c safe.directory=... -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd...:<repo_path>` only; nothing in that repository was checked out, branched or edited",
++    "correction": "Lead verification of publication-e7eeb8677a2b400aaded97c27d66e95d showed the prior attempt resolved this seam from the LIVE play worktree, whose HEAD 8d16d3c1 reorg deleted tools/science_funnel/ (as-specified run: 4/9 ModuleNotFoundError). This attempt vendors the seam byte-identically at the SAME pinned revision the accepted parent ledger cites, so the tests are self-contained at ANY checkout; the adapter materializes these bytes hash-asserted into a fresh temp directory in canonical repo layout and refuses by name on any mismatch (the accepted I-U07-TRACE-FOLLOWUP / I-R05 reference/ pattern).",
++    "accepted_module": {
++      "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/I-S04-PLAYER-DIAGNOSTICS/d24bd30d38234a4cae33288048cce14f/player_diagnostics.py",
++      "origin_task": "I-S04-PLAYER-DIAGNOSTICS",
++      "merged_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/125",
++      "note": "NOT copied here; the adapter imports the accepted module and asserts its sha256 at bind (tamper refused). sha256 below is the pin the tests assert.",
++      "sha256": "53e34c62850ff222e2ecd92d20498baf88e9f8f0189b8c215d0cc79b06a7a339",
++      "size_bytes": 28801
++    }
++  },
++  "files": [
++    {
++      "repo_path": "tools/monkey_campaign/product/input_settings.py",
++      "reference_path": "reference/tools/monkey_campaign/product/input_settings.py",
++      "revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
++      "sha256": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
++      "size_bytes": 22608,
++      "role": "named seam: REAL refusing settings load (Refusal codes json_corrupt/action_unknown) driven by the tests"
++    },
++    {
++      "repo_path": "tools/monkey_campaign/product/session_flow.py",
++      "reference_path": "reference/tools/monkey_campaign/product/session_flow.py",
++      "revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
++      "sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
++      "size_bytes": 16981,
++      "role": "named seam: REAL four-state flow, last_trace dropped entries driven by the tests"
++    },
++    {
++      "repo_path": "tools/monkey_campaign/product/input_mapper.py",
++      "reference_path": "reference/tools/monkey_campaign/product/input_mapper.py",
++      "revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
++      "sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
++      "size_bytes": 18349,
++      "role": "necessary import of input_settings.py and session_flow.py (DEFAULT_BINDINGS/ACTIONS/REFUSALS, frozen constants)"
++    },
++    {
++      "repo_path": "tools/science_funnel/typeb_export/command_record.py",
++      "reference_path": "reference/tools/science_funnel/typeb_export/command_record.py",
++      "revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
++      "sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
++      "size_bytes": 12095,
++      "role": "necessary import of input_mapper.py (CommandRecord + the frozen seam constants); the module whose unpinned live-worktree resolution broke the prior request"
++    }
++  ],
++  "pins_for_import_only": [
++    {
++      "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/I-S04-PLAYER-DIAGNOSTICS/d24bd30d38234a4cae33288048cce14f/player_diagnostics.py",
++      "origin": "I-S04-PLAYER-DIAGNOSTICS (merged PR #125), attempt d24bd30d38234a4cae33288048cce14f",
++      "sha256": "53e34c62850ff222e2ecd92d20498baf88e9f8f0189b8c215d0cc79b06a7a339",
++      "size_bytes": 28801
++    }
++  ],
++  "read_only_after_extraction": true
++}
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/monkey_campaign/product/input_mapper.py b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/monkey_campaign/product/input_mapper.py
+new file mode 100644
+index 00000000..b872859d
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/monkey_campaign/product/input_mapper.py
+@@ -0,0 +1,347 @@
++"""input_mapper.py -- M-U01: gameplay input -> the existing 20 Hz command seam.
++
++U01, verbatim: "Input emits bounded speed/heading commands at the existing 20 Hz
++boundary, without state teleportation." C12: "20 Hz implies a 50 ms command
++interval, not an end-to-end latency guarantee."
++
++THE SEAM THIS EMITS INTO (agents/U01_input/discovery_note.md; every number
++cited, none invented here):
++  * The versioned CommandRecord v1 (tools/science_funnel/typeb_export/
++    command_record.py, frozen at e028d6fb): `v_forward` (m/s, >= 0 -- the plant
++    law's own domain), `yaw_rate` (rad/s, CARRIED, no machinery authority at
++    v1), `issued_tick`, `source`. The V1FamilyAdapter routes EXACTLY
++    `commanded_target_velocity_x = float64(v_forward)` to
++    GaitWalker::configure() (ChimeraEngine/engine/gait_controller.hpp:2252-2255)
++    between ticks; zero-order hold at the tick boundary; the decision clock is
++    20 Hz over 300 Hz physics (HOLD_TICKS = 15 -> one command per 50 ms).
++  * The seam has TWO states a naive mapper would collapse: NO record at all
++    (the machinery is INERT and reads its legacy measured-v,
++    gait_controller.hpp:121-123,1117) vs a record with v_forward = 0.0 (a live
++    zero-advance target, command_record.py:81-83 -- legal, NOT a stop bar).
++    This module preserves both: idle emits NOTHING; a held `S` emits zeros.
++
++THE FROZEN CONTRACT (agents/U01_input/PREREGISTRATION.md, stated before this
++build): the mapping table, the 50 ms emission rule, the release-decay and
++expiry policies, the no-teleport invariant, and falsifiers F1-F5. The frozen
++walk contract is UNCHANGED by this file: it only PRODUCES records into an
++injected sink. A UI remap edits the bindings dict -- the parser's own
++"bindings are DATA" law (tools/parser.py:39-69, parser_tests.py falsifier 2) --
++and can never touch the record type, the bounds, or the clock.
++
++THE NO-TELEPORT INVARIANT: the ONLY thing this module can do is hand
++CommandRecord instances to `sink.emit(...)`. It imports no engine module,
++performs no HTTP, reads no state, holds no pose. Positions are OUTPUTS
++(docs/CONTROLLER_MAP.md), never inputs.
++
++Headless by construction: the clock is INJECTED (integer milliseconds; the
++tests use a deterministic counter). This module never reads a wall clock,
++never opens a window, never injects operator input anywhere.
++"""
++from __future__ import annotations
++
++import sys
++from pathlib import Path
++
++_ROOT = Path(__file__).resolve().parents[3]
++if str(_ROOT) not in sys.path:
++    sys.path.insert(0, str(_ROOT))
++
++# THE SEAM'S OWN TYPES AND NUMBERS -- imported, never redeclared: a second copy
++# of a frozen constant is exactly where a silent divergence lives.
++from tools.science_funnel.typeb_export.command_record import (  # noqa: E402
++    CommandRecord,
++    HOLD_TICKS,
++    PHYSICS_HZ,
++    POLICY_HZ,
++    V_MAX_IN_BAND_M_S,
++)
++
++__all__ = [
++    "InputMapper", "MockSink", "CommandRecord",
++    "INTERVAL_MS", "RELEASE_DECAY_MS", "VALID_MS", "EXPIRY_TICKS",
++    "V_MAX_IN_BAND_M_S", "OMEGA_MAX_RAD_S", "SENS_RAD_PER_COUNT",
++    "DEFAULT_BINDINGS", "ACTIONS", "REFUSALS", "SOURCE_ID",
++    "PHYSICS_HZ", "POLICY_HZ", "HOLD_TICKS",
++]
++
++SOURCE_ID = "u01_input_mapper"
++
++# ── THE FROZEN NUMBERS (prereg; citations inline) ────────────────────────────────
++INTERVAL_MS = 50          # 20 Hz decisions over 300 Hz physics (HOLD_TICKS=15);
++                          # command_record.py:68-70, infer_numpy.py:29-44,
++                          # gait_controller.hpp:108-111. Declared tolerance under
++                          # the tests' injected clock: EXACT.
++RELEASE_DECAY_MS = 100    # key release -> the demand decays to exactly 0.0 within
++                          # 2 intervals, sampled at the seam's own boundaries, then
++                          # emission stops (the inert path resumes).
++VALID_MS = 100            # consumer-side expiry: a record older than 2 intervals
++                          # is EXPIRED (U03 builds focus-loss on this floor).
++V_MAX_IN_BAND_M_S = V_MAX_IN_BAND_M_S     # 0.763625 m/s -- the seam's own measured
++                                          # in-band ceiling (command_record.py:66,
++                                          # R1-R4 veto-free). U01 never demands
++                                          # out-of-band; the machinery's clamp is
++                                          # not input's to lean on.
++OMEGA_MAX_RAD_S = 1.6     # INPUT-side steering bound, declared from the existing
++                          # steer constant (ChimeraEngine/controller.py:45
++                          # TURN_RATE = 1.6 rad/s). yaw_rate is CARRIED ONLY at
++                          # v1 (the adapter routes it nowhere,
++                          # command_record.py:180-181); this bound claims no
++                          # machinery authority.
++SENS_RAD_PER_COUNT = 0.002  # baseline mouse sensitivity (a declared input-side
++                            # preference -- "how far a hand should push a view
++                            # is a preference, not a physics",
++                            # ChimeraEngine/walker.py `look()`; U04 owns it).
++EXPIRY_TICKS = 2 * HOLD_TICKS  # VALID_MS expressed in physics ticks (30 @ 300 Hz).
++
++# ── THE FROZEN MAPPING TABLE (bindings are DATA; parser.py:39-69 precedent) ─────
++# Physical input name -> action. Remapping edits THIS dict (or the instance's),
++# never the demand logic below, never the seam.
++DEFAULT_BINDINGS = {
++    "W": "forward", "Up": "forward",
++    "S": "backward", "Down": "backward",
++    "A": "turn_left", "Left": "turn_left",
++    "D": "turn_right", "Right": "turn_right",
++    "Shift": "sprint",          # a REGISTERED REFUSAL, never a silent clamp
++    "Space": "jump",            # a REGISTERED REFUSAL (parser.py:96-102 rule)
++}
++ACTIONS = ("forward", "backward", "turn_left", "turn_right")  # precedence order:
++# speed-key conflicts resolve by this order and are NAMED in the trace -- the
++# parser's own rule ("registration order wins AND the conflict is named",
++# parser.py:19-20).
++REFUSALS = {
++    "sprint": "sprint: no seam authority at v1 -- the in-band ceiling IS the "
++              "measured band (V_MAX_IN_BAND_M_S); refusing by name, not clamping",
++    "jump": "jump: no walk-seam channel exists at v1 (commanded_heading itself "
++            "is reserved for a later lane)",
++}
++_SPEED_ACTIONS = ("forward", "backward")
++
++
++class MockSink:
++    """The clean test double for the seam: records EVERY call it receives.
++
++    The no-teleport falsifier reads this log: every entry must be
++    ("emit", <CommandRecord>). Anything else is F1 and the build is dead.
++    """
++
++    def __init__(self):
++        self.calls = []            # every (method_name, args) tuple, in order
++        self.records = []          # convenience: the CommandRecords emitted
++
++    def emit(self, record):
++        self.calls.append(("emit", record))
++        self.records.append(record)
++        return len(self.records)
++
++    def __len__(self):
++        return len(self.records)
++
++
++class InputMapper:
++    """Keyboard/mouse -> bounded CommandRecords at the 20 Hz boundary.
++
++    Usage (all times are INJECTED integer milliseconds -- never a wall clock):
++
++        sink = MockSink()         # or the live harness' real seam adapter
++        m = InputMapper(sink)
++        m.press("W", now_ms=1000)
++        m.tick(1000)              # -> CommandRecord(v_forward=0.763625)
++        m.tick(1050)              # -> re-issues (held keys refresh: the R4 rule)
++        m.release("W", now_ms=1070)
++        m.tick(1100)              # -> decay sample  v = v0*(1 - 30/100)
++        m.tick(1150)              # -> exactly 0.0, and emission now stops
++        m.release_all(now_ms=...) # U03's focus-loss/disconnect hook (this floor)
++
++    Semantic commitments (each pinned by a falsifier in input_mapper_tests.py):
++      * one record per 50 ms interval at most, current state only, NO replay
++        after a stall (F3);
++      * a held key RE-ISSUES every interval -- the R4 discipline (a held command
++        must track, command_record.py:84-87);
++      * idle emits NOTHING so the seam's inert path stays reachable; `S` held
++        emits LIVE ZEROS (a zero-advance target) -- the two seam states of
++        gait_controller.hpp:121-123 are distinct and both reachable (F6);
++      * release decays the LAST EMITTED speed -- you can only decay what you
++        commanded -- sampled at boundaries: the first boundary after release
++        carries the linear sample v0*(1 - elapsed/RELEASE_DECAY_MS), the second
++        carries EXACTLY 0.0 (the deadline clause), then emission stops (F4);
++      * steering is carried only alongside a speed demand: yaw_rate has no
++        machinery route at v1, so steering alone emits nothing and its mouse
++        counts are consumed into the trace, named, never resent (declared
++        limit; recorded for the later heading lane);
++      * `press` of a refusal action records a named refusal; nothing silent.
++    """
++
++    def __init__(self, sink, bindings=None, *, sensitivity=SENS_RAD_PER_COUNT,
++                 tick_source=None):
++        if not hasattr(sink, "emit"):
++            raise TypeError("sink must provide emit(record) -- the mapper can "
++                            "only produce commands, never touch state")
++        self._sink = sink
++        self.bindings = dict(DEFAULT_BINDINGS if bindings is None else bindings)
++        self.sensitivity = float(sensitivity)
++        self._tick_source = tick_source   # callable() -> int physics tick, or None
++        self._held = set()                # physical names currently held
++        self._mouse_counts = 0.0          # accumulated, consumed per boundary
++        self._next_due_ms = None          # the 50 ms grid (None = no grid)
++        self._last_v = 0.0                # the LAST EMITTED speed (the decay base)
++        self._tail = None                 # [v0, released_ms, boundaries_seen]
++        self.last_trace = {}              # the parse trace, refreshed per tick
++
++    # ── input events (times are injected) ────────────────────────────────────
++    def press(self, name, now_ms):
++        """A key went down. Refusals are recorded by name; nothing is silent."""
++        action = self.bindings.get(name)
++        self.last_trace.setdefault("pressed", []).append((name, int(now_ms)))
++        if action in REFUSALS:
++            self.last_trace.setdefault("refused", []).append((action, REFUSALS[action]))
++            return action
++        if action is None:
++            return None                     # an unbound input is not an error
++        if action in _SPEED_ACTIONS:
++            self._tail = None               # a fresh press overrides any decay
++        self._held.add(name)
++        return action
++
++    def release(self, name, now_ms):
++        """A key went up. Releasing the speed key starts the decay tail from
++        the LAST EMITTED speed -- you can only decay what you commanded."""
++        action = self.bindings.get(name)
++        self.last_trace.setdefault("released", []).append((name, int(now_ms)))
++        if action not in _SPEED_ACTIONS or name not in self._held:
++            self._held.discard(name)
++            return action
++        self._held.discard(name)
++        other_speed = any(self.bindings.get(n) in _SPEED_ACTIONS
++                          for n in self._held)
++        if not other_speed and self._last_v > 0.0 and self._tail is None:
++            self._tail = [self._last_v, int(now_ms), 0]
++        return action
++
++    def mouse(self, dx_counts):
++        """Accumulate mouse X counts (deltas consumed, never resent --
++        live_viewer.py:1978-1980). Applied at boundaries, clamped to OMEGA."""
++        self._mouse_counts += float(dx_counts)
++
++    def release_all(self, now_ms):
++        """Everything off (U03's focus-loss/disconnect hook builds on this)."""
++        for name in sorted(self._held):
++            self.release(name, now_ms)
++
++    @property
++    def held(self):
++        return frozenset(self._held)
++
++    # ── the 20 Hz boundary ───────────────────────────────────────────────────
++    def tick(self, now_ms):
++        """Advance to `now_ms`; emit at most ONE record if the interval elapsed.
++
++        Returns the list of CommandRecords emitted this call (also handed to
++        the sink). A tick before the due time emits nothing -- the interval is
++        the boundary, and C12's warning is honored: this is a command cadence,
++        not a latency guarantee.
++        """
++        now_ms = int(now_ms)
++        speed = self._speed_demand()                   # key demand only
++        pending = (speed is not None or self._tail is not None
++                   or self._mouse_counts != 0.0)
++        if self._next_due_ms is None:
++            if not pending:
++                self.last_trace["state"] = "inert"
++                self.last_trace["emitted"] = 0
++                return []
++            self._next_due_ms = now_ms                 # a fresh grid starts here
++        if now_ms < self._next_due_ms:
++            return []
++        # ── a boundary: ONE decision, whatever the gap since the last tick ──
++        self._next_due_ms = now_ms + INTERVAL_MS       # stall -> one record, no burst
++        speed = self._apply_tail(speed, now_ms)        # the decay samples HERE
++        if speed is None:
++            # no walk demand (mouse-only, or the tail just finished): no
++            # record. The machinery stays INERT; pending mouse counts had no
++            # carrier -- consumed into the trace, named, never resent.
++            if self._mouse_counts:
++                self.last_trace.setdefault("steer_without_speed", []) \
++                    .append(self._mouse_counts)
++                self._mouse_counts = 0.0
++            if self._tail is None and not self._held:
++                self._next_due_ms = None               # idle: the grid dissolves
++            self.last_trace["state"] = "inert" if self._tail is None else "decay"
++            self.last_trace["emitted"] = 0
++            return []
++        yaw = self._yaw_demand()
++        record = self._emit(speed, yaw, now_ms)
++        self.last_trace["state"] = "commanded"
++        self.last_trace["emitted"] = 1
++        return [record]
++
++    # ── demand computation ───────────────────────────────────────────────────
++    def _speed_demand(self):
++        """The walk demand: a live zero (S), the band ceiling (W), or None.
++        Speed-key conflicts resolve by ACTIONS order and are named (the
++        parser's registration-order rule). The decay tail is applied AT the
++        boundary by `_apply_tail`, because commands only change at boundaries."""
++        held_actions = [self.bindings[n] for n in self._held
++                        if self.bindings.get(n) in _SPEED_ACTIONS]
++        if len(held_actions) > 1:
++            self.last_trace.setdefault("conflicts", []).append(tuple(sorted(held_actions)))
++        if "forward" in held_actions:
++            return V_MAX_IN_BAND_M_S
++        if "backward" in held_actions:
++            return 0.0                                 # a LIVE zero-advance target
++        return None                                    # the tail decides at the boundary
++
++    def _apply_tail(self, speed, now_ms):
++        """Sample the release-decay tail at this boundary (frozen policy):
++        first boundary after release -> the linear sample
++            v0 * (1 - (now - released_ms) / RELEASE_DECAY_MS)   (floored at 0),
++        unless the gap already exceeded the deadline, in which case exactly
++        0.0 once; second boundary after release -> EXACTLY 0.0 in any case
++        (the deadline clause: the demand lands on zero at or before the
++        100 ms boundary). The tail then ENDS: the next boundary is inert and
++        emits nothing."""
++        if self._tail is None or speed is not None:
++            return speed
++        v0, released_ms, seen = self._tail
++        if seen == 0:
++            elapsed = max(0, now_ms - released_ms)
++            self._tail[2] = 1
++            if elapsed >= RELEASE_DECAY_MS:
++                self._tail = None                      # deadline passed in the gap
++                return 0.0
++            return v0 * (1.0 - elapsed / RELEASE_DECAY_MS)
++        self._tail = None                              # deadline: exact zero
++        return 0.0
++
++    def _yaw_demand(self):
++        """Carried yaw at this boundary: keys + clamped mouse counts. Counts
++        are consumed here (never resent); L+R keys cancel (+OMEGA + -OMEGA)."""
++        key_yaw = (OMEGA_MAX_RAD_S if any(self.bindings.get(n) == "turn_left"
++                                          for n in self._held) else 0.0) \
++                + (-OMEGA_MAX_RAD_S if any(self.bindings.get(n) == "turn_right"
++                                           for n in self._held) else 0.0)
++        mouse_yaw = 0.0
++        if self._mouse_counts:
++            interval_s = INTERVAL_MS / 1000.0
++            raw = self._mouse_counts * self.sensitivity / interval_s
++            mouse_yaw = max(-OMEGA_MAX_RAD_S, min(OMEGA_MAX_RAD_S, raw))
++            self._mouse_counts = 0.0
++        yaw = key_yaw + mouse_yaw
++        return max(-OMEGA_MAX_RAD_S, min(OMEGA_MAX_RAD_S, yaw))
++
++    def _emit(self, v_forward, yaw_rate, now_ms):
++        issued_tick = (int(self._tick_source()) if self._tick_source
++                       else (now_ms * PHYSICS_HZ) // 1000)
++        record = CommandRecord(v_forward=float(v_forward), yaw_rate=float(yaw_rate),
++                               issued_tick=int(issued_tick), source=SOURCE_ID)
++        self._last_v = float(v_forward)                 # the next decay starts here
++        self._sink.emit(record)
++        return record
++
++    # ── the consumer-side expiry contract (declared for U03/U07/W08) ─────────
++    @staticmethod
++    def is_expired(record, now_ms):
++        """A record older than VALID_MS (2 intervals) is EXPIRED: the consumer
++        reverts to the seam's inert path (commands nothing) until a fresh
++        record arrives. `record.issued_tick` is a 300 Hz physics tick."""
++        age_ms = (int(now_ms) * PHYSICS_HZ // 1000) - int(record.issued_tick)
++        return age_ms > EXPIRY_TICKS
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/monkey_campaign/product/input_settings.py b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/monkey_campaign/product/input_settings.py
+new file mode 100644
+index 00000000..904de480
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/monkey_campaign/product/input_settings.py
+@@ -0,0 +1,504 @@
++"""input_settings.py -- M-U04: supported input settings, persisted and refusing.
++
++U04, verbatim (completion map line 106): "Sensitivity, inversion and bindings
++needed for the selected controls work and persist." Constraint, verbatim:
++"Keyboard/mouse baseline; controller support is an explicit product decision"
++-- no controller support lives here.
++
++THE SETTINGS MODEL (frozen in agents/U04_settings/PREREGISTRATION.md before
++this build; the mapper file is READ-ONLY -- U01's, consumed, never edited):
++  * bindings  -- physical input name -> action, exactly the mapper's own
++    table shape (input_mapper.DEFAULT_BINDINGS / its constructor's
++    `bindings=` parameter). Legal actions: the four selected controls
++    (ACTIONS) plus U01's registered-refusal actions (sprint/jump), which stay
++    legal to bind and refuse BY NAME at runtime.
++  * sensitivity -- per axis over AXES = ("yaw",): rad/s of yaw demand per
++    mouse count per 50 ms interval -- the mapper's own conversion
++    (`_yaw_demand`: counts * sensitivity / INTERVAL_S). Range (0.0,
++    SENS_YAW_MAX], with SENS_YAW_MAX = OMEGA_MAX_RAD_S * INTERVAL_MS / 1000
++    = 0.08 DERIVED: one count in one interval exactly saturating the declared
++    steer bound. Default = U01's frozen SENS_RAD_PER_COUNT = 0.002
++    (imported, never redeclared). Movement has NO sensitivity: the walk
++    demand is binary at the seam's frozen band ceiling -- a declared limit.
++  * inversion -- per axis, booleans. invert.yaw negates the yaw DELTA scale
++    (the applied mapper sensitivity becomes -sensitivity, per U01's
++    integration note); it does NOT swap turn_left/turn_right keys -- a key
++    swap is a REMAP, an ordinary data edit of the bindings table (values-only,
++    measured by U01's F5).
++
++THE PERSISTENCE CONTRACT (frozen): a versioned JSON file,
++schema id "chimera.monkey_input.v1" (F01's chimera.<thing>.v<N> naming,
++U01's integration-note suggestion), at a declared path. Atomic save: canonical
++UTF-8 bytes -> temp file in the DESTINATION directory -> flush + fsync ->
++os.replace (atomic rename); temp cleaned up on failure. Load is TOTAL and
++refusing: every possible file content resolves to either (the declared
++settings, status "loaded") or (U01's default settings + a NAMED refusal list)
++-- never a partial accept, never a silent default, never a write from load.
++Absent file = "first_run" defaults, nothing created. Corrupt JSON, duplicate
++JSON keys anywhere (Python's json otherwise silently last-wins),
++NaN/Infinity literals, unknown schema/version, unknown or missing keys, wrong
++types (booleans are NOT numbers), unknown actions/axes, out-of-coverage or
++out-of-range values: EACH refuses by machine code + human detail.
++
++THE SEAM PROTECTION RULE (U01's note, structural here): settings values can
++NEVER write the seam's own numbers. (1) The schema's key set is fixed -- a
++file carrying "v_max_in_band_m_s", "omega_max_rad_s", "interval_ms",
++"hold_ticks", ... arrives as an unknown key and refuses by name; (2) the
++apply surface is only `mapper.bindings = dict(...)` and
++`mapper.sensitivity = +-sensitivity` -- the mapper's own declared data
++inputs (constructor parameters, input_mapper.py:174-182); no module attribute
++of input_mapper or command_record is ever assigned; (3) the sensitivity
++ceiling is DERIVED from the seam's numbers, so the setting exists only inside
++the space the seam already bounds. A sensitivity of 100x scales INPUT deltas;
++the band ceiling and steer bound are the mapper's own clamp, reused, never
++bypassed.
++
++Headless, CPU-only: no clock, no window, no engine import, no desktop input.
++The mapper integration finding (for the coordinator, recorded in the
++handoff notes): the mapper ALREADY exposes both hooks this module needs --
++bindings-as-data and the delta-scale (`InputMapper.sensitivity`, consumed at
++each boundary in `_yaw_demand`, input_mapper.py:325) -- so NO mapper addition
++is required; the "delta-scaling hook" named in the brief IS
++`InputMapper.sensitivity` itself.
++"""
++from __future__ import annotations
++
++import json
++import math
++import os
++import sys
++from dataclasses import dataclass
++from pathlib import Path
++
++_HERE = Path(__file__).resolve().parent
++_ROOT = _HERE.parents[2]                    # the repo/worktree root
++for _p in (str(_ROOT), str(_HERE)):
++    if _p not in sys.path:
++        sys.path.insert(0, _p)
++
++# THE MAPPER'S OWN NUMBERS -- imported, never redeclared: a second copy of a
++# frozen constant is exactly where a silent divergence lives (U01's own law,
++# input_mapper.py:49-57; the seam's constants come via the mapper's re-exports).
++import input_mapper as IM                   # noqa: E402
++
++__all__ = [
++    "InputSettings", "Refusal", "LoadResult", "SaveResult",
++    "SCHEMA_ID", "AXES", "YAW", "SENS_YAW_MAX_RAD_PER_COUNT",
++    "KNOWN_ACTIONS", "SELECTED_ACTIONS", "DEFAULT_SETTINGS_PATH",
++    "default_settings", "load_settings", "save_settings",
++    "apply_settings", "configured_mapper", "canonical_bytes",
++]
++
++SCHEMA_ID = "chimera.monkey_input.v1"       # F01's chimera.<thing>.v<N> naming
++
++YAW = "yaw"
++AXES = (YAW,)                # the ONLY continuous input axis in the keyboard/
++                             # mouse baseline (mouse X). Movement is a binary
++                             # demand at the seam's frozen band ceiling -- no
++                             # movement sensitivity exists to expose (prereg).
++
++# DERIVED, not tuned: the sensitivity at which ONE mouse count in ONE 50 ms
++# interval exactly saturates the declared input-side steer bound. Above it the
++# scale is degenerate (every count saturates); the mapper's clamp is the bound.
++SENS_YAW_MAX_RAD_PER_COUNT = IM.OMEGA_MAX_RAD_S * IM.INTERVAL_MS / 1000.0
++
++SELECTED_ACTIONS = tuple(IM.ACTIONS)          # forward/backward/turn_left/turn_right
++KNOWN_ACTIONS = SELECTED_ACTIONS + tuple(IM.REFUSALS)  # + sprint/jump (refuse BY NAME)
++
++DEFAULT_SETTINGS_PATH = (_HERE.parent / "data" / "settings"
++                         / "monkey_input_settings.json")
++
++_REQUIRED_KEYS = frozenset({"schema", "bindings", "sensitivity", "invert"})
++
++
++# ── the settings object ──────────────────────────────────────────────────────
++@dataclass(frozen=True)
++class InputSettings:
++    """One frozen settings vector: bindings + per-axis sensitivity + inversion.
++
++    Equality is structural (dataclass): round-trip save->load must reproduce
++    EXACTLY this object's values (F4). `bindings` is copied on construction
++    so no caller can mutate a settings vector after the fact.
++    """
++
++    bindings: dict
++    sensitivity: float
++    invert_yaw: bool = False
++
++    def __post_init__(self):
++        object.__setattr__(self, "bindings", dict(self.bindings))
++
++    def signed_sensitivity(self) -> float:
++        """The yaw delta-scale the mapper actually consumes (the inversion)."""
++        return -self.sensitivity if self.invert_yaw else self.sensitivity
++
++    def to_document(self) -> dict:
++        """The exact v1 document this settings vector saves as."""
++        return {
++            "schema": SCHEMA_ID,
++            "bindings": dict(self.bindings),
++            "sensitivity": {YAW: self.sensitivity},
++            "invert": {YAW: bool(self.invert_yaw)},
++        }
++
++
++def default_settings() -> InputSettings:
++    """U01's exact baseline: his bindings table (deep copy), his baseline
++    sensitivity, no inversion. This is what first run gets and what every
++    refusal falls back to -- NEVER a partial blend."""
++    return InputSettings(bindings=dict(IM.DEFAULT_BINDINGS),
++                         sensitivity=IM.SENS_RAD_PER_COUNT,
++                         invert_yaw=False)
++
++
++# ── named refusals (the parser's law: refuse BY NAME, never a silent zero) ───
++@dataclass(frozen=True)
++class Refusal:
++    code: str        # machine-readable, one per offense class (see codes below)
++    detail: str      # human-readable, names the offense
++
++
++class _DuplicateKeyRefused(ValueError):
++    """Raised inside json parsing: a duplicate object key would silently
++    last-win (campaign prereg law: duplicate JSON keys are refused)."""
++
++    def __init__(self, key: str):
++        super().__init__(key)
++        self.key = key
++
++
++class _NonFiniteRefused(ValueError):
++    """Raised inside json parsing: a NaN/Infinity JSON extension literal.
++    Non-finite numbers never parse (campaign prereg law)."""
++
++    def __init__(self, token: str):
++        super().__init__(token)
++        self.token = token
++
++
++def _pairs_refusing_duplicates(pairs):
++    seen = {}
++    for key, value in pairs:
++        if key in seen:
++            raise _DuplicateKeyRefused(key)
++        seen[key] = value
++    return seen
++
++
++def _refuse_constant(token):
++    raise _NonFiniteRefused(token)
++
++
++# ── the refusing validator (total: any document -> settings or refusals) ─────
++def _validate(document):
++    """Validate an already-parsed JSON document against the frozen v1 schema.
++
++    Returns (settings, refusals): refusals non-empty => settings is the
++    DEFAULTS (never a partial accept). Every refusal names its offense.
++    """
++    refusals: list[Refusal] = []
++
++    if not isinstance(document, dict):
++        return default_settings(), [Refusal(
++            "root_not_object",
++            f"the settings document must be a JSON object, found "
++            f"{type(document).__name__}")]
++
++    # exact key set: missing AND unknown keys refuse by name. A file carrying
++    # a seam constant's name ("v_max_in_band_m_s", "interval_ms", ...) is an
++    # unknown key HERE -- this is layer (1) of the seam-protection rule.
++    for key in sorted(_REQUIRED_KEYS - set(document)):
++        refusals.append(Refusal("key_missing", f"required key {key!r} is missing"))
++    for key in sorted(set(document) - _REQUIRED_KEYS):
++        refusals.append(Refusal(
++            "key_unknown",
++            f"unknown key {key!r} -- the v1 schema refuses what it cannot "
++            f"name (seam constants like 'v_max_in_band_m_s' or 'interval_ms' "
++            f"are NOT settings and can never enter through this file)"))
++
++    # schema id: exact string match, else named refusal (no silent migration;
++    # R02 owns migration when an actual supported prior save requires it).
++    schema = document.get("schema")
++    if not isinstance(schema, str):
++        refusals.append(Refusal(
++            "schema_type",
++            f"'schema' must be the string {SCHEMA_ID!r}, found "
++            f"{type(schema).__name__}"))
++    elif schema != SCHEMA_ID:
++        refusals.append(Refusal(
++            "schema_unknown",
++            f"unknown schema {schema!r}; this loader opens exactly "
++            f"{SCHEMA_ID!r} -- a newer/older schema refuses by name rather "
++            f"than being silently accepted"))
++
++    bindings, b_refusals = _validate_bindings(document.get("bindings"))
++    refusals.extend(b_refusals)
++    sensitivity, s_refusals = _validate_axis_number(
++        document.get("sensitivity"), "sensitivity",
++        low_exclusive=0.0, high_inclusive=SENS_YAW_MAX_RAD_PER_COUNT,
++        range_detail=(f"0 < sensitivity.yaw <= {SENS_YAW_MAX_RAD_PER_COUNT!r} "
++                      f"rad per count (derived: one count in one "
++                      f"{IM.INTERVAL_MS} ms interval exactly saturating the "
++                      f"{IM.OMEGA_MAX_RAD_S!r} rad/s steer bound); the default "
++                      f"is U01's baseline {IM.SENS_RAD_PER_COUNT!r}"))
++    refusals.extend(s_refusals)
++    invert, i_refusals = _validate_axis_bool(document.get("invert"), "invert")
++    refusals.extend(i_refusals)
++
++    if refusals:
++        return default_settings(), refusals
++    return InputSettings(bindings=bindings, sensitivity=sensitivity,
++                         invert_yaw=invert), []
++
++
++def _validate_bindings(value):
++    if not isinstance(value, dict):
++        return None, [Refusal(
++            "bindings_type",
++            f"'bindings' must be a JSON object of physical-name -> action, "
++            f"found {type(value).__name__}")]
++    refusals = []
++    clean: dict[str, str] = {}
++    for name, action in value.items():
++        if not isinstance(name, str) or not name:
++            refusals.append(Refusal(
++                "binding_name_invalid",
++                f"binding physical names must be non-empty strings, found "
++                f"{name!r}"))
++            continue
++        if not isinstance(action, str) or not action:
++            refusals.append(Refusal(
++                "binding_type",
++                f"binding {name!r} must map to a non-empty action string, "
++                f"found {action!r}"))
++            continue
++        if action not in KNOWN_ACTIONS:
++            refusals.append(Refusal(
++                "action_unknown",
++                f"binding {name!r} -> unknown action {action!r}; the known "
++                f"actions are {sorted(KNOWN_ACTIONS)} (the grammar refuses "
++                f"what it cannot name, parser.py:130-132 precedent)"))
++            continue
++        clean[name] = action
++    # COVERAGE (U04's own words): the four selected controls must WORK after
++    # loading settings -- a file that leaves one with NO binding refuses.
++    for action in SELECTED_ACTIONS:
++        if not any(a == action for a in clean.values()):
++            refusals.append(Refusal(
++                "action_unbound",
++                f"no physical input is bound to selected action {action!r} -- "
++                f"the selected controls must work after settings load "
++                f"(alias bindings are legal; a total absence is not)"))
++    return (clean, refusals) if not refusals else (None, refusals)
++
++
++def _validate_axis_number(value, key, *, low_exclusive, high_inclusive,
++                          range_detail):
++    if not isinstance(value, dict):
++        return None, [Refusal(
++            f"{key}_type",
++            f"{key!r} must be a per-axis JSON object keyed by axis "
++            f"({sorted(AXES)}), found {type(value).__name__}")]
++    refusals = []
++    for axis in sorted(set(value) - set(AXES)):
++        refusals.append(Refusal(
++            "axis_unknown",
++            f"{key!r} names unknown axis {axis!r}; the keyboard/mouse "
++            f"baseline declares exactly the axes {sorted(AXES)} -- a newer "
++            f"schema adds axes by a new prereg, never silently"))
++    if YAW not in value:
++        refusals.append(Refusal(
++            "axis_missing",
++            f"{key!r} must declare the {YAW!r} axis (the only continuous "
++            f"input axis in the keyboard/mouse baseline)"))
++        return None, refusals
++    raw = value[YAW]
++    if isinstance(raw, bool):                 # bool IS an int in Python --
++        refusals.append(Refusal(              # refuse it explicitly
++            f"{key}_type",
++            f"{key}.yaw must be a JSON number, found boolean {raw!r} "
++            f"(booleans are not numbers)"))
++    elif not isinstance(raw, (int, float)):
++        refusals.append(Refusal(
++            f"{key}_type",
++            f"{key}.yaw must be a JSON number, found "
++            f"{type(raw).__name__} {raw!r}"))
++    else:
++        x = float(raw)
++        if not math.isfinite(x):              # e.g. JSON "1e400" -> inf
++            refusals.append(Refusal(
++                "value_not_finite",
++                f"{key}.yaw must be finite, found {raw!r} (NaN/Infinity are "
++                f"refused at the lexer and by magnitude)"))
++        elif not (low_exclusive < x <= high_inclusive):
++            refusals.append(Refusal(
++                "value_out_of_range",
++                f"{key}.yaw = {raw!r} is outside the declared range "
++                f"[{range_detail}]"))
++            return None, refusals
++        elif not refusals:
++            return x, []
++    return None, refusals
++
++
++def _validate_axis_bool(value, key):
++    if not isinstance(value, dict):
++        return None, [Refusal(
++            f"{key}_type",
++            f"{key!r} must be a per-axis JSON object keyed by axis "
++            f"({sorted(AXES)}), found {type(value).__name__}")]
++    refusals = []
++    for axis in sorted(set(value) - set(AXES)):
++        refusals.append(Refusal(
++            "axis_unknown",
++            f"{key!r} names unknown axis {axis!r}; the keyboard/mouse "
++            f"baseline declares exactly the axes {sorted(AXES)}"))
++    if YAW not in value:
++        refusals.append(Refusal(
++            "axis_missing",
++            f"{key!r} must declare the {YAW!r} axis"))
++        return None, refusals
++    raw = value[YAW]
++    if not isinstance(raw, bool):
++        refusals.append(Refusal(
++            f"{key}_type",
++            f"{key}.yaw must be a JSON boolean, found "
++            f"{type(raw).__name__} {raw!r}"))
++        return None, refusals
++    return raw, []
++
++
++# ── load: total, refusing, never writing ─────────────────────────────────────
++@dataclass(frozen=True)
++class LoadResult:
++    settings: InputSettings
++    status: str                 # "loaded" | "first_run" | "refused"
++    refusals: tuple = ()
++    path: Path = None
++
++    @property
++    def ok(self) -> bool:
++        return self.status == "loaded"
++
++
++def load_settings(path) -> LoadResult:
++    """Load settings from `path` under the frozen persistence contract.
++
++    Absent file -> (defaults, "first_run", no refusals) and NOTHING is
++    created (load never writes). Any content problem -> (defaults, "refused",
++    named refusals). Never a partial accept, never a silent default.
++    """
++    path = Path(path)
++    try:
++        raw = path.read_bytes()
++    except FileNotFoundError:
++        return LoadResult(default_settings(), "first_run", (), path)
++    except IsADirectoryError as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("io_error",
++                                   f"settings path is a directory, not a "
++                                   f"file: {path} ({exc})"),), path)
++    except OSError as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("io_error",
++                                   f"settings file could not be read: {path} "
++                                   f"({exc})"),), path)
++
++    try:
++        text = raw.decode("utf-8")
++    except UnicodeDecodeError as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("json_corrupt",
++                                   f"settings file is not valid UTF-8: "
++                                   f"{exc}"),), path)
++    try:
++        document = json.loads(text, object_pairs_hook=_pairs_refusing_duplicates,
++                              parse_constant=_refuse_constant)
++    except _DuplicateKeyRefused as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("key_duplicate",
++                                   f"duplicate JSON key {exc.key!r} -- JSON "
++                                   f"would silently last-win; the file is "
++                                   f"refused whole"),), path)
++    except _NonFiniteRefused as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("not_finite_json",
++                                   f"non-finite JSON literal {exc.token!r} "
++                                   f"(NaN/Infinity are not numbers this "
++                                   f"schema accepts)"),), path)
++    except json.JSONDecodeError as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("json_corrupt",
++                                   f"settings file is not valid JSON: "
++                                   f"{exc}"),), path)
++
++    settings, refusals = _validate(document)
++    status = "loaded" if not refusals else "refused"
++    return LoadResult(settings, status, tuple(refusals), path)
++
++
++# ── save: canonical bytes, atomic temp+rename ────────────────────────────────
++def canonical_bytes(settings: InputSettings) -> bytes:
++    """The deterministic v1 document bytes (sorted keys, fixed separators,
++    one trailing newline). Two saves of equal settings are byte-identical."""
++    return (json.dumps(settings.to_document(), sort_keys=True,
++                       ensure_ascii=False, separators=(",", ":"),
++                       allow_nan=False) + "\n").encode("utf-8")
++
++
++@dataclass(frozen=True)
++class SaveResult:
++    path: Path
++    bytes_written: int
++    atomic: bool
++
++
++def save_settings(settings: InputSettings, path) -> SaveResult:
++    """Atomically write `settings` to `path` (temp file in the SAME directory,
++    flush + fsync, os.replace). The temp file is removed on any failure so no
++    partial settings file is ever observable under the real name."""
++    path = Path(path)
++    payload = canonical_bytes(settings)
++    directory = path.parent
++    directory.mkdir(parents=True, exist_ok=True)   # explicit save: creating
++    #                                              # the declared dir is the
++    #                                              # caller's named action.
++    tmp = directory / f".{path.name}.tmp-{os.getpid()}"
++    try:
++        with open(tmp, "wb") as handle:
++            handle.write(payload)
++            handle.flush()
++            os.fsync(handle.fileno())
++        os.replace(tmp, path)                      # atomic on POSIX and Windows
++    except BaseException:
++        try:
++            tmp.unlink()
++        except OSError:
++            pass
++        raise
++    return SaveResult(path, len(payload), atomic=True)
++
++
++# ── the mapper integration surface (the mapper file stays READ-ONLY) ─────────
++def apply_settings(settings: InputSettings, mapper):
++    """Feed a settings vector to a live InputMapper through its OWN declared
++    data inputs -- and nothing else:
++
++      mapper.bindings     = a fresh dict of physical-name -> action
++      mapper.sensitivity  = the signed yaw delta-scale (+-sensitivity)
++
++    These are exactly U01's constructor parameters (input_mapper.py:174-182);
++    F5 measured that such data edits change emitted VALUES only. No module
++    attribute of input_mapper or command_record is ever assigned here -- the
++    seam's numbers are not input's to write (the seam-protection rule).
++    Returns the mapper for chaining.
++    """
++    mapper.bindings = dict(settings.bindings)
++    mapper.sensitivity = settings.signed_sensitivity()
++    return mapper
++
++
++def configured_mapper(sink, settings: InputSettings, **kwargs):
++    """Build a settings-configured InputMapper in one call (headless: any
++    injected tick_source passes straight through)."""
++    return apply_settings(settings, IM.InputMapper(sink, **kwargs))
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/monkey_campaign/product/session_flow.py b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/monkey_campaign/product/session_flow.py
+new file mode 100644
+index 00000000..3ff34527
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/monkey_campaign/product/session_flow.py
+@@ -0,0 +1,357 @@
++"""session_flow.py -- M-X02: the start / pause / restart / exit session flow.
++
++X02, verbatim (MONKEY_COMPLETION_MAP.md:179): "Player reaches play and can
++pause/restart/exit without developer commands; reset is an explicit user action."
++
++THE SHAPE (agents/X02_flow/PREREGISTRATION.md, frozen before this build): a
++FOUR-STATE MACHINE -- attract -> playing <=> paused -> exited (terminal) -- that is
++a pure FILTER in front of U01's UNTOUCHED mapper (tools/monkey_campaign/product/
++input_mapper.py) and touches the world ONLY through two injected calls whose
++declared referents are the slice's own lifecycle paths:
++
++  * restart_scene  -> World.boot()  (tools/playable_slice/slice_server.py:94-135:
++    shutdown_engine -> free port -> fresh `chimera_engine.exe ... --no-restore`
++    process -> sb.wait_engine -> sb.boot_standing_start [POST /mesh_import + the
++    real settle] -> per-boot state resets). A FULL SCENE RELOAD through the
++    existing load path -- NEVER a state teleport, never a gravity-off re-seat
++    (the drop test's trick, slice_server.py:313-339, EDITS physics), never a
++    /scene term swap (that is the membrane deck's lineage, live_viewer.py:979).
++  * teardown       -> World.shutdown_engine() (slice_server.py:174-181:
++    terminate -> wait(10 s) -> kill). Exit's declared teardown, exactly the
++    ordering R05 verifies owned-children closure against.
++
++THE NO-DEVELOPER-COMMANDS RULE: every transition is triggered by `key(name,
++down=1, now_ms)` through DEFAULT_FLOW_BINDINGS -- keyboard bindings as DATA (the
++parser's law via input_mapper.py:26-29). There is no start()/pause()/restart()
++method to call: the module's only public mutators are key/mouse/tick. No timer,
++no thread, no wall clock, no transport can move the state (falsifier F5).
++
++THE INPUT-GATING RULE (frozen prereg rule 1): press/release/mouse/tick reach the
++mapper ONLY in `playing`. The one declared exception is the quiesce
++`mapper.release_all(now_ms)` INSIDE the pause and restart transitions -- U01's own
++declared focus-loss hook (input_mapper.py:153, 225-228). While not playing there
++are NO mapper boundaries at all: `flow.tick` drives nothing, so zero records are
++emitted -- the decision clock is SUSPENDED with the session, not suppressed
++(falsifier F2 reads the sink: any record while not playing kills the build).
++
++THE RESUME TAIL (frozen prereg rule 3): a pause that interrupted an emission
++leaves U01's OWN decay tail pending; the first `playing` boundaries sample it --
++at most 2 records, each at or below the pre-pause speed, landing on EXACTLY 0.0,
++then silence and the grid dissolves (input_mapper.py:293-313, 262-267). This
++module adds NO clearing primitive: a hard final-zero would flip the seam to its
++LIVE-ZERO state (the two-state seam law, input_mapper.py:10-21,
++gait_controller.hpp:121-123) -- the exact mistake U03's clause 1 refuses. Resume
++re-arms per U03's DECLARED clause 4 (agents/U03_focus/PREREGISTRATION.md): the
++pause quiesce left the mapper held-empty, so the next accepted press arms a
++FRESH 50 ms grid -- no phantom keys, no replayed tail. When U03's focus_policy
++lands it wraps the mapper behind the same surface and this module is unchanged.
++
++Headless by construction: every time is an INJECTED integer millisecond; the
++world calls are INJECTED callables; the tests drive doubles. No window, no
++process, no HTTP lives in this module.
++"""
++from __future__ import annotations
++
++import sys
++from pathlib import Path
++
++_ROOT = Path(__file__).resolve().parents[3]
++if str(_ROOT) not in sys.path:
++    sys.path.insert(0, str(_ROOT))
++
++# U01's frozen numbers and doubles are IMPORTED, never redeclared: a second copy
++# of a frozen constant is exactly where a silent divergence lives (U03's P2 law).
++from tools.monkey_campaign.product.input_mapper import (  # noqa: E402
++    InputMapper,
++    MockSink,
++    INTERVAL_MS,
++    RELEASE_DECAY_MS,
++    VALID_MS,
++)
++
++__all__ = [
++    "SessionFlow", "FlowError",
++    "RecordingRestart", "TeardownDouble", "StrictWorld", "CountingMapper",
++    "ATTRACT", "PLAYING", "PAUSED", "EXITED", "STATES",
++    "FLOW_ACTIONS", "DEFAULT_FLOW_BINDINGS", "TRANSITIONS", "FLOW_SCHEMA",
++    "INTERVAL_MS", "RELEASE_DECAY_MS", "VALID_MS",
++]
++
++FLOW_SCHEMA = "chimera-monkey-session-flow-v1"
++
++# ── THE FROZEN STATES ────────────────────────────────────────────────────────────
++ATTRACT = "attract"        # before play: only confirm (start) or exit live here
++PLAYING = "playing"        # the only state where the mapper is driven at all
++PAUSED = "paused"          # quiesced: no mapper events, no decision boundaries
++EXITED = "exited"          # terminal: teardown done, everything dropped by name
++STATES = (ATTRACT, PLAYING, PAUSED, EXITED)
++
++# ── THE FROZEN TABLE (agents/X02_flow/PREREGISTRATION.md; the ONLY transitions) ──
++# (state, action) -> dest. Every action here is a bindings value and every
++# bindings value is an action here -- F1 checks both directions and that all
++# four states are reachable by keys alone.
++FLOW_ACTIONS = ("confirm", "pause", "restart", "exit")
++DEFAULT_FLOW_BINDINGS = {
++    "Return": "confirm",   # attract: START the session; paused: RESUME
++    "Escape": "pause",     # playing -> paused (the quiesce transition)
++    "R": "restart",        # paused -> playing via World.boot (the page's own
++                           # restart-key precedent, index.html:1072)
++    "Q": "exit",           # any non-exited state -> exited (owned processes
++                           # must die from anywhere)
++}
++TRANSITIONS = {
++    (ATTRACT, "confirm"): PLAYING,   # 1 start: the gate opens
++    (PLAYING, "pause"): PAUSED,      # 2 quiesce FIRST, then the gate closes
++    (PAUSED, "confirm"): PLAYING,    # 3 resume: gate reopens, fresh grid
++    (PAUSED, "restart"): PLAYING,    # 4 release_all + World.boot, then reopen
++    (ATTRACT, "exit"): EXITED,       # 5-7 teardown exactly once, from anywhere
++    (PLAYING, "exit"): EXITED,
++    (PAUSED, "exit"): EXITED,
++}
++# Deliberately ABSENT from the table (each is a named no-op, falsifier F1/F5):
++#   (playing, restart)  -- an accidental R mid-play must never wipe the session;
++#                          restart is reached through pause, deliberately;
++#   (playing, confirm)  -- play is already playing;
++#   (attract, pause) / (attract, restart) -- nothing is running yet;
++#   (paused, pause)     -- no double-pause;
++#   (exited, *)         -- terminal: teardown never runs twice.
++
++
++class FlowError(TypeError):
++    """A constructed flow is missing the declared surface it gates."""
++
++
++# ── headless doubles (the tests' world; the flow never builds a real one) ────────
++class RecordingRestart:
++    """The declared restart referent, recorded: World.boot()
++    (slice_server.py:94-135). Falsifier F3 asserts the flow's world contact is
++    EXACTLY one boot call -- never anything else."""
++
++    def __init__(self, error: Exception | None = None):
++        self.calls = []
++        self._error = error
++
++    def boot(self):
++        self.calls.append(("boot",))
++        if self._error is not None:
++            raise self._error
++        return {"booted": True}
++
++
++class TeardownDouble:
++    """The declared teardown referent, recorded: World.shutdown_engine()
++    (slice_server.py:174-181) -- terminate -> wait -> kill, in that order.
++    Falsifier F4 asserts EXACTLY this sequence, exactly once per session: the
++    headless proof that the owned engine process dies through the declared
++    path (R05's owned-children contract)."""
++
++    def __init__(self):
++        self.calls = []
++
++    def shutdown_engine(self):
++        self.calls.append("terminate")
++        self.calls.append("wait")
++        self.calls.append("kill")
++        return True
++
++
++class StrictWorld:
++    """A world that offers ONLY the declared surface. Any other attribute the
++    flow ever tries to touch is recorded and raised -- an undeclared contact
++    (a teleport, a pose write, a gravity toggle) cannot happen silently."""
++
++    def __init__(self):
++        self.boot_calls = 0
++        self.attempts = []
++
++    def boot(self):
++        self.boot_calls += 1
++        return {"booted": True}
++
++    def __getattr__(self, name):
++        if name.startswith("_"):
++            raise AttributeError(name)
++        self.attempts.append(name)      # recorded BEFORE the raise: evidence
++        raise AttributeError(
++            "StrictWorld: %r is not a declared flow surface (only boot)" % name)
++
++
++class CountingMapper:
++    """A mapper-shaped double that records EVERY call it receives. Falsifier
++    F2/F4 read this log: while not playing the log must not grow; after exit
++    it must never grow again."""
++
++    def __init__(self):
++        self.calls = []
++        self._held = frozenset()
++
++    @property
++    def held(self):
++        return self._held
++
++    def press(self, name, now_ms):
++        self.calls.append(("press", name, int(now_ms)))
++        return None
++
++    def release(self, name, now_ms):
++        self.calls.append(("release", name, int(now_ms)))
++        return None
++
++    def mouse(self, dx_counts):
++        self.calls.append(("mouse", float(dx_counts)))
++
++    def tick(self, now_ms):
++        self.calls.append(("tick", int(now_ms)))
++        return []
++
++    def release_all(self, now_ms):
++        self.calls.append(("release_all", int(now_ms)))
++
++
++class SessionFlow:
++    """The four-state session flow, a filter in front of an U01 mapper.
++
++    Usage (all times INJECTED integer milliseconds -- never a wall clock):
++
++        mapper = InputMapper(MockSink())
++        flow = SessionFlow(mapper, restart_scene=World(...).boot,
++                           teardown=World(...).shutdown_engine)
++        flow.key("Return", down=1, now_ms=0)      # attract -> playing (start)
++        flow.key("W", down=1, now_ms=1000)        # reaches the mapper
++        flow.tick(1000)                           # -> CommandRecord (playing)
++        flow.key("Escape", down=1, now_ms=2000)   # playing -> paused (quiesce)
++        flow.tick(3000)                           # -> [] and the mapper is
++                                                  #    untouched (suspended)
++        flow.key("R", down=1, now_ms=4000)        # paused -> World.boot -> playing
++        flow.key("Q", down=1, now_ms=5000)        # -> teardown once, terminal
++
++    The public mutators are exactly key/mouse/tick (frozen prereg rule 6):
++    nothing else can move the state, so there is no developer command and no
++    hidden transition.
++    """
++
++    def __init__(self, mapper, restart_scene, teardown, bindings=None):
++        for surface in ("press", "release", "mouse", "tick", "release_all",
++                        "held"):
++            if not hasattr(mapper, surface):
++                raise FlowError("mapper must provide the declared U01 surface "
++                                "(press/release/mouse/tick/release_all/held); "
++                                "missing %r -- the flow can only gate, never "
++                                "replace" % surface)
++        if not callable(restart_scene):
++            raise FlowError("restart_scene must be callable -- the declared "
++                            "referent is World.boot() (slice_server.py:94-135)")
++        if not callable(teardown):
++            raise FlowError("teardown must be callable -- the declared referent "
++                            "is World.shutdown_engine() (slice_server.py:174-181)")
++        self._mapper = mapper
++        self._restart_scene = restart_scene
++        self._teardown = teardown
++        self.bindings = dict(DEFAULT_FLOW_BINDINGS if bindings is None
++                             else bindings)
++        self._state = ATTRACT
++        self.last_trace = {}
++
++    # ── reads ────────────────────────────────────────────────────────────────
++    @property
++    def state(self):
++        return self._state
++
++    @property
++    def is_playing(self):
++        return self._state == PLAYING
++
++    def _drop(self, kind, detail):
++        """Every swallowed input is NAMED, never silent (U03's clause-2 law)."""
++        self.last_trace.setdefault("dropped", []).append(
++            {"kind": kind, "detail": detail, "state": self._state})
++
++    # ── the only public mutators (frozen prereg rule 6) ──────────────────────
++    def key(self, name, down, now_ms):
++        """One key event. Flow-bound keys are CONSUMED by the flow in every
++        state (they never reach the mapper); unbound keys forward to the mapper
++        only in `playing` and are named-drops otherwise."""
++        now_ms = int(now_ms)
++        if down:
++            action = self.bindings.get(name)
++            if action is not None:
++                return self._transition(action, name, now_ms)
++            if self._state != PLAYING:
++                self._drop("key_press", name)
++                return None
++            return self._mapper.press(name, now_ms)
++        # a key release: only ever a gameplay event (releases can only reduce
++        # demand), so it follows the same gate
++        if self._state != PLAYING:
++            self._drop("key_release", name)
++            return None
++        return self._mapper.release(name, now_ms)
++
++    def mouse(self, dx_counts):
++        """Mouse counts reach the mapper only in `playing`; otherwise a named
++        drop (a paused surface cannot honestly produce intent -- U03 clause 2)."""
++        if self._state != PLAYING:
++            self._drop("mouse", float(dx_counts))
++            return
++        self._mapper.mouse(dx_counts)
++
++    def tick(self, now_ms):
++        """The 20 Hz decision boundary. In `playing` this passes through to the
++        mapper (0 or 1 records). In any other state it is a named drop and
++        emits NOTHING: while paused there are no boundaries at all -- the
++        decision clock is suspended with the session (frozen prereg rule 2)."""
++        now_ms = int(now_ms)
++        if self._state != PLAYING:
++            self._drop("decision_tick", now_ms)
++            return []
++        return self._mapper.tick(now_ms)
++
++    # ── the frozen table, applied ────────────────────────────────────────────
++    def _transition(self, action, key_name, now_ms):
++        dest = TRANSITIONS.get((self._state, action))
++        if dest is None:
++            # THE EXPLICIT-USER-ACTION-ONLY law: an action the current state
++            # does not accept is a NAMED no-op -- never a fallback, never a
++            # "nearest legal" rewrite of the player's request.
++            self._drop("flow_action", "%s@%s" % (action, self._state))
++            return None
++        src = self._state
++        if action == "pause":
++            # THE QUIESCE, in this order (frozen table row 2): release every
++            # held key EXACTLY as a physical release (U01's declared hook) --
++            # the mapper is then held-empty, which is U03's declared re-arm
++            # guarantee -- and only then does the gate close.
++            self._mapper.release_all(now_ms)
++            self.last_trace.setdefault("quiesced", []).append(
++                {"at_ms": now_ms, "held": sorted(self._mapper.held)})
++        elif action == "restart":
++            # THE RESTART RULE (frozen table row 4): quiesce, then the DECLARED
++            # path -- World.boot(), the full scene reload (DISCOVERY.md section
++            # 2). No other world contact exists in this module to make: no pose
++            # write, no gravity toggle, no scene-term call.
++            self._mapper.release_all(now_ms)
++            self.last_trace.setdefault("restart_path", []).append(
++                {"at_ms": now_ms, "declared": "world_boot"})
++            try:
++                self._restart_scene()
++            except Exception as exc:                     # noqa: BLE001
++                # A failed boot is NAMED and transitions NOWHERE: the old
++                # scene is still the scene; a half-restart is never claimed.
++                self.last_trace.setdefault("restart_failed", []).append(
++                    {"at_ms": now_ms, "error": repr(exc)})
++                return None
++        elif action == "exit":
++            # THE TEARDOWN (frozen table rows 5-7): the DECLARED shutdown --
++            # terminate -> wait -> kill (slice_server.py:174-181) -- exactly
++            # once; the table makes (exited, exit) impossible, so a second Q
++            # is a named drop, never a second teardown.
++            try:
++                self._teardown()
++            except Exception as exc:                     # noqa: BLE001
++                self.last_trace.setdefault("exit_failed", []).append(
++                    {"at_ms": now_ms, "error": repr(exc)})
++                return None
++        self._state = dest
++        self.last_trace.setdefault("transitions", []).append(
++            (src, action, dest, now_ms))
++        return dest
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/science_funnel/typeb_export/command_record.py b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/science_funnel/typeb_export/command_record.py
+new file mode 100644
+index 00000000..a9e0444f
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/reference/tools/science_funnel/typeb_export/command_record.py
+@@ -0,0 +1,250 @@
++"""THE VERSIONED COMMAND RECORD v1 + THE FAMILY-ADAPTER PROJECTION LAW
++(lane/policy-interface-freeze-20260920; preregistered BEFORE this build).
++
++Astra round 5 (settled): hierarchical control -- derived reflexes fixed below,
++command-conditioned policies WITHIN behavior families at 20 Hz over 300 Hz
++physics (15-tick holds), certified option-transitions between families, a
++planner on top. The PLANNER's only downward currency is a COMMAND RECORD. This
++module freezes that currency's v1 shape and its PROJECTION LAW:
++
++    versioned command record -> family adapter (versioned) -> fixed actor input
++
++THE LAW (what makes the freeze irreversible-safe):
++  1. A record carries its `record_version`. An adapter carries its
++     `adapter_version`. An adapter of version N reads ONLY the fields declared
++     by version N -- a later record version may ADD fields, and they can never
++     leak into an older adapter's projection (the v2-record-through-v1-adapter
++     bit-identity test).
++  2. The v1 deployment's actor is UNCONDITIONED: the old actor's fixed input is
++     its old projection (the frozen 80-field observation; the actor's own
++     8-channel walk-interface output path untouched). The v1 adapter's actor
++     conditioning is therefore the EMPTY vector -- the old actor gets exactly
++     its old projection, byte for byte.
++  3. The v1 adapter's machinery projection routes EXACTLY ONE field to the
++     walk's command channel: `commanded_target_velocity_x = v_forward` (the
++     typea-command-adapter receipt's channel: GaitWalker::configure() between
++     ticks, zero-order hold at the tick boundary, 20 Hz re-issue legal -- F-ZOH-
++     CLOCK GREEN). `yaw_rate` is CARRIED but routed NOWHERE: the typea receipt
++     reserved commanded_heading for a later lane and this lane does not invent
++     authority it has not measured.
++
++THE NUMBERS (all measured, none tuned; the typea receipt is the source):
++  - domain: v_forward >= 0 (the plant law's own max(0, .) domain).
++  - supported range: [0.0, 0.763625] m/s -- the scene seed's band, measured
++    veto-free horizons 137-222 ticks (R1-R4 GREEN clause (b)).
++  - out-of-band: LEGAL up to the declared envelope; the MACHINERY absorbs the
++    excess through its own reach annulus (R5: 1.30 m/s demanded, clamped to
++    xoff 0.258747 m by the existing fore clamp; refused by the existing budget
++    at the M2 class -- F_COMMAND_ENVELOPE GREEN). The adapter never pre-clamps.
++  - rate limits: DECLARED UNLIMITED at v1 (rate_limit_v_per_s = None,
++    rate_limit_yaw_per_s = None). Step changes are measured-legal: R1-R3 step
++    commands onset latency 7 ticks <= the 15-tick hold. No rate number is
++    invented; the schema fields exist so a v2 record can fill them from a
++    derivation.
++  - zero-speed semantics: v_forward = 0.0 is the plant law's own
++    x_off = 0*(DUTY_SAMPLED*T_CYCLE)/2 = 0 -- a legal command that targets the
++    walk's own zero advance. It is NOT a stop bar: stopping bars are a
++    DIFFERENT lane's job (declared; this module only carries the note).
++  - the R4 lesson (carried as a SEMANTIC constraint, enforced by the planner,
++    not by this module): never feed a constant seed pinned from entry -- a held
++    command must TRACK the measured relation (R4 refused at 282 of
++    gait_impact_event_budget, a class flip, when the law's v was frozen while
++    measured v dipped).
++"""
++from __future__ import annotations
++
++import hashlib
++import json
++import struct
++from dataclasses import dataclass, field
++from typing import Optional
++
++COMMAND_RECORD_VERSION = 1
++ADAPTER_VERSION = 1
++
++# the measured envelope (the typea receipt's authority table; nothing tuned)
++V_MAX_IN_BAND_M_S = 0.763625   # the scene seed: measured veto-free 137-222 ticks
++V_ENVELOPE_DEMO_M_S = 1.30     # R5: legal out-of-band demand, machinery-absorbed
++HOLD_TICKS = 15                # the 20 Hz decision clock over 300 Hz physics
++POLICY_HZ = 20
++PHYSICS_HZ = 300
++
++
++class CommandRecordError(ValueError):
++    """A record violates the v1 law (validator message says which)."""
++
++
++@dataclass(frozen=True)
++class CommandRecord:
++    """The planner's downward currency, version 1.
++
++    Fields (v1 -- the ONLY fields a v1 adapter may read):
++      v_forward : float, m/s, >= 0. The walk-interface forward-speed demand.
++      yaw_rate  : float, rad/s. CARRIED, NO AUTHORITY (commanded_heading is
++                  reserved for a later lane per the typea receipt); present so
++                  the wire format never changes when the authority is derived.
++      issued_tick : int, the physics tick at which the planner issued (the ZOH
++                  applies it at the next step() and holds >= HOLD_TICKS).
++    Semantic (planner-owned, carried for provenance):
++      source : the issuing planner's id (a string; the R4 discipline lives here).
++    """
++    v_forward: float
++    yaw_rate: float = 0.0
++    issued_tick: int = 0
++    source: str = "planner"
++    record_version: int = COMMAND_RECORD_VERSION
++
++    def __post_init__(self):
++        if self.record_version != COMMAND_RECORD_VERSION:
++            raise CommandRecordError(
++                f"record_version {self.record_version} != {COMMAND_RECORD_VERSION} "
++                "(a new version is a NEW declared wire format, not a free field)")
++        vf = float(self.v_forward)
++        if vf != vf or vf in (float("inf"), float("-inf")):
++            raise CommandRecordError("v_forward must be finite")
++        if vf < 0.0:
++            raise CommandRecordError(
++                "v_forward < 0 is outside the plant law's own max(0, .) domain")
++        yr = float(self.yaw_rate)
++        if yr != yr or yr in (float("inf"), float("-inf")):
++            raise CommandRecordError("yaw_rate must be finite")
++        object.__setattr__(self, "v_forward", vf)
++        object.__setattr__(self, "yaw_rate", yr)
++
++    # ---- the wire format (canonical bytes; the F2 pin) ----------------------
++    def canonical_fields(self) -> dict:
++        return {
++            "record_version": self.record_version,
++            "v_forward": self.v_forward,
++            "yaw_rate": self.yaw_rate,
++            "issued_tick": int(self.issued_tick),
++            "source": self.source,
++        }
++
++    def canonical_bytes(self) -> bytes:
++        return json.dumps(self.canonical_fields(), sort_keys=True,
++                          separators=(",", ":")).encode("utf-8")
++
++    def canonical_sha256(self) -> str:
++        return hashlib.sha256(self.canonical_bytes()).hexdigest()
++
++    # ---- the float-bit identity (the projection law's test surface) ---------
++    def v1_field_bits(self) -> bytes:
++        """The exact float64 bits of the v1-readable fields, in declared order
++        (v_forward, yaw_rate). The bit-identity test compares THESE: a v2
++        record carrying the same v1 values must produce these exact bits."""
++        return (struct.pack("<d", float(self.v_forward))
++                + struct.pack("<d", float(self.yaw_rate)))
++
++
++# ---- the family adapter (versioned) ----------------------------------------
++
++@dataclass(frozen=True)
++class V1FamilyAdapter:
++    """The v1 walk-family adapter: the fixed projection law.
++
++    project_to_machinery : routes v_forward to the typea command channel
++        (commanded_target_velocity_x) EXACTLY, as a float64 pass-through -- the
++        machinery owns every clamp (the reach annulus) and every budget; the
++        adapter pre-clamps nothing (R5/F_COMMAND_ENVELOPE measured).
++    project_to_actor_conditioning : the EMPTY vector. The v1 actor is
++        unconditioned -- its fixed input is its old projection (the frozen
++        80-field observation); this adapter adds no bits to it.
++    """
++    adapter_version: int = ADAPTER_VERSION
++
++    def project(self, rec: CommandRecord) -> dict:
++        """The machinery projection (validate + route). Reads ONLY the v1
++        field set: v_forward, yaw_rate(carry-only). A record with ANY extra
++        fields (a v2 wire format) produces bit-identical output here."""
++        if not isinstance(rec, CommandRecord):
++            raise CommandRecordError("adapter v1 consumes CommandRecord instances")
++        return {
++            "adapter_version": self.adapter_version,
++            "commanded_target_velocity_x": float(rec.v_forward),  # float64 passthrough
++            # yaw_rate: carried, NO ROUTE (authority not derived; declared above)
++            "routed_yaw_rate": False,
++        }
++
++    def project_to_actor_conditioning(self, rec: CommandRecord) -> bytes:
++        """The actor-conditioning projection: EMPTY at v1 (the law's clause 2).
++        Bit-for-bit identical for every record, of any version the caller
++        claims: the old actor gets exactly its old projection."""
++        return b""
++
++    def projection_bytes(self, rec: CommandRecord) -> bytes:
++        """Canonical byte serialization of the full projection (the F2 pin and
++        the bit-identity test's surface)."""
++        p = self.project(rec)
++        return json.dumps(p, sort_keys=True, separators=(",", ":"),
++                          allow_nan=False).encode("utf-8") + b"|cond=" \
++            + self.project_to_actor_conditioning(rec)
++
++
++def project_v1(rec: CommandRecord, adapter: Optional[V1FamilyAdapter] = None) -> dict:
++    """The v1 projection law, functional form (the unittest's stable entry)."""
++    return (adapter or V1FamilyAdapter()).project(rec)
++
++
++# ---- the declared v1 WIRE decoder -------------------------------------------
++
++def decode_v1(wire: dict) -> CommandRecord:
++    """The DECLARED v1 decoder: reads ONLY the v1 field set from a wire dict.
++
++    THIS is the law's enforcement point for forward compatibility: a v2 (or
++    any later) wire carries extra keys and a possibly-bumped record_version;
++    decode_v1 ignores every key it does not know. A v2 wire with the same v1
++    values therefore decodes to a record whose projection is BIT-IDENTICAL to
++    the v1 wire's (the unittest pins this with float64 bits)."""
++    return CommandRecord(
++        v_forward=float(wire["v_forward"]),
++        yaw_rate=float(wire.get("yaw_rate", 0.0)),
++        issued_tick=int(wire.get("issued_tick", 0)),
++        source=str(wire.get("source", "planner")),
++        record_version=COMMAND_RECORD_VERSION,   # the DECODER's version, not the wire's
++    )
++
++
++def wire_version(wire: dict) -> int:
++    """The wire's DECLARED record version (the runtime dispatches decoders on
++    this; an unversioned wire is v1)."""
++    return int(wire.get("record_version", 1))
++
++
++# ---- declared semantics (read-only tables for the certificate lane) ---------
++
++ZERO_SPEED_SEMANTICS = (
++    "v_forward = 0.0 is the plant law's own x_off = 0 (a legal command, the "
++    "walk's own zero-advance target). It is NOT a stop bar: the stopping "
++    "criterion is a DIFFERENT lane's job and is not declared here.")
++
++R4_SEMANTIC_CONSTRAINT = (
++    "never feed a constant seed pinned from entry (R4: refusal 282, "
++    "gait_impact_event_budget, a class flip -- the frozen v removed the walk's "
++    "own speed feedback). A held command must TRACK the measured relation. "
++    "Enforced by the planner; this module carries the note on every record's "
++    "consumer path.")
++
++RANGES = {
++    "v_forward": {
++        "domain_lo": 0.0,
++        "domain_hi": None,             # the plant law's own domain is [0, inf)
++        "in_band_hi": V_MAX_IN_BAND_M_S,   # measured veto-free band
++        "envelope_demo": V_ENVELOPE_DEMO_M_S,  # measured machinery-absorbed demand
++        "out_of_band_semantics": "legal; the machinery's own reach annulus "
++                                 "absorbs the excess (R5 measured), the "
++                                 "existing budgets own the refusal",
++    },
++    "yaw_rate": {
++        "authority": "NONE (reserved: commanded_heading is a later lane's)",
++        "carried": True,
++    },
++}
++
++RATE_LIMITS = {
++    "v_forward_per_s": None,   # DECLARED UNLIMITED at v1: step changes measured
++                               # legal (R1-R3: onset 7 ticks <= hold 15)
++    "yaw_rate_per_s": None,    # no authority to rate-limit
++    "derivation_status": "no rate number is invented; the fields exist so a v2 "
++                         "record can fill them from a derivation",
++}
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/report.md b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/report.md
+new file mode 100644
+index 00000000..9f9f77a1
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/report.md
+@@ -0,0 +1,92 @@
++# REPORT — I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP (correction: seam vendored, 9/9 self-contained)
++
++Attempt `e8b61636f59d45ca835e1d1fbe9e08a5`, arrival
++`arrival-c59287b07e0c438e9b8866aa7086e1b1`, task
++`I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP`, criteria
++`9fa0a82d860fcf38f0a1809fab638ac1187962a257127a4d26de86c721bbe4f3`.
++PREREGISTRATION frozen before probes:
++sha256 `eaeb01282549012c6e05e3a05a4a248f018fccd925fbedbac0600b78d7c99806`.
++
++## What was corrected
++
++Lead pre-publication verification of request
++`publication-e7eeb8677a2b400aaded97c27d66e95d`
++(`E:/ChimeraWork/monkey-coordination/lead-verify-20260926/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP.json`)
++showed the adapter itself is sound but the as-specified run failed 4/9
++ModuleNotFoundError: the seam (`input_settings -> input_mapper ->
++tools.science_funnel.typeb_export.command_record`) was resolved from the LIVE
++play worktree, and HEAD `8d16d3c1` there deleted `tools/science_funnel/`.
++Control rerun serving the seam from pinned rev `9afbddcd` blobs: 9/9. This
++attempt lands the fix the lead specified.
++
++## Seam-pinning approach (the campaign's established reference/ pattern,
++as accepted on I-U07-TRACE-FOLLOWUP and I-R05-FOLLOWUP)
++
++1. VENDOR: the four seam files were extracted READ-ONLY from the pinned
++   revision `9afbddcd90164b5544a16fd0bc72278d985eb6e3` (the same revision the
++   accepted parent ledger cites) via
++   `git -c safe.directory=... -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd...:<path>`
++   into `reference/` at canonical repo-relative paths. Extracted bytes hashes
++   match the accepted ledgers EXACTLY (parent I-S04 ledger for the three
++   product files; I-U07-TRACE-FOLLOWUP ledger for `command_record.py`):
++   - `tools/monkey_campaign/product/input_settings.py`
++     `8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1` (22608 B)
++   - `tools/monkey_campaign/product/session_flow.py`
++     `30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf` (16981 B)
++   - `tools/monkey_campaign/product/input_mapper.py`
++     `7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44` (18349 B)
++   - `tools/science_funnel/typeb_export/command_record.py`
++     `6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e` (12095 B)
++2. LEDGER: `reference/EXTRACTION_LEDGER.json` records extracted_by (task /
++   attempt / arrival), provenance (seam revision, read-only extraction, the
++   correction being made), per-file `repo_path / reference_path / revision /
++   sha256 / size_bytes / role`, the accepted module under
++   `pins_for_import_only` (IMPORTED, never copied:
++   `player_diagnostics.py` `53e34c62850ff222e2ecd92d20498baf88e9f8f0189b8c215d0cc79b06a7a339`,
++   merged PR #125), and `read_only_after_extraction: true`.
++3. ASSERT AT IMPORT: `implementation.materialize_pinned_seam()` copies the
++   vendored bytes into a fresh OS temp directory in canonical repo layout,
++   asserting every pin hash first; any missing file or drifted byte raises
++   `AdapterIdentityFailure("pinned_source_hash_mismatch" /
++   "pinned_source_missing")` BEFORE any import. `bind()` additionally
++   cross-checks the ledger's `files[]` hashes and `seam_revision` against the
++   code pins and refuses divergence. The accepted module bind keeps its
++   sha256 tamper refusal. The prior live-worktree `sys.path.append(play_root)`
++   is GONE — no unpinned path remains on the seam import path.
++
++## Evidence (9/9, as-specified command, this workspace)
++
++`python -B test_implementation.py` (run twice: from the workspace and from an
++unrelated cwd `C:/` to demonstrate checkout-independence):
++
++    Ran 9 tests in 0.148s / OK  (EXIT=0)
++    Ran 9 tests in 0.097s / OK  (from C:/)
++
++Full transcript: `test_run_evidence.txt` (sha256
++`f470703a1356005dc61b3901db556d53a9b19489a83e7d3f528b1b7d2a75d305`).
++Test 1 now also proves the pin law mechanically: hash-asserted
++materialization of all four vendored files plus a drifted-pin refusal
++(`pinned_source_hash_mismatch`) — without touching the real reference bytes.
++`python -B implementation.py` regenerated `samples.json` (schema
++`i-s04-followup.feedback_adapter.v1`, 4 deterministic samples for later HUMAN
++review; correlation ids are the accepted module's per-call identifiers).
++Behavior is unchanged from the lead-verified control run: REAL corrupt-json
++refusal -> KNOWN damaged-file message; REAL unknown action `teleport` ->
++KNOWN no-such-action message; REAL session_flow key_press drop outside
++`playing` -> KNOWN flow message; fabricated future code and path-bearing
++exception -> UNKNOWN with correlation id and paths confined to the developer
++`diagnostic`; `loaded`/`first_run` -> None.
++
++## Bounds / hygiene
++
++CPU-only stdlib; play repository touched ONLY via read-only `git show` at the
++pinned rev (no checkout/branch/worktree mutation); zero writes outside this
++attempt workspace; artifacts ≤ 16 MiB. The rogue dir that formerly occupied
++the patch path was lead-quarantined; nothing was restored from it — every
++file here is freshly written in THIS attempt, and the preregistration names
++THIS attempt `e8b61636f59d45ca835e1d1fbe9e08a5`.
++
++## Artifact hashes (sha256, at submission time)
++
++See `publication_request.json` `artifacts[]` — generated after all files were
++final; the submit tool re-asserts every hash.
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/samples.json b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/samples.json
+new file mode 100644
+index 00000000..c411208e
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/samples.json
+@@ -0,0 +1,84 @@
++{
++ "schema": "i-s04-followup.feedback_adapter.v1",
++ "samples": [
++  {
++   "case": "settings: corrupt json (real refusal)",
++   "record": {
++    "name": "json_corrupt",
++    "status": "refused",
++    "ok": false,
++    "message": "The settings file is damaged. Default controls are active.",
++    "actions": [
++     "Fix the settings file, then load it again.",
++     "Default controls are active -- you can keep playing."
++    ],
++    "correlation_id": "d5555aa1df056507",
++    "diagnostic": {
++     "origin": "tools/monkey_campaign/product/input_settings.py:409-413,429-433 (pinned 9afbddcd90164b5544a16fd0bc72278d985eb6e3)",
++     "raw_name": "json_corrupt",
++     "raw_detail": "settings file is not valid JSON: Expecting value: line 1 column 15 (char 14)",
++     "scrub_token": ""
++    }
++   },
++   "player_line": "The settings file is damaged. Default controls are active. — try: Fix the settings file, then load it again. / Default controls are active -- you can keep playing. [ref d5555aa1df056507]"
++  },
++  {
++   "case": "settings: unknown action 'teleport' (real)",
++   "record": {
++    "name": "action_unknown",
++    "status": "refused",
++    "ok": false,
++    "message": "The settings file names an action this game does not have ('P9'). Default controls are active.",
++    "actions": [
++     "Fix the settings file, then load it again.",
++     "Default controls are active -- you can keep playing."
++    ],
++    "correlation_id": "493bfaed9aa9c941",
++    "diagnostic": {
++     "origin": "tools/monkey_campaign/product/input_settings.py:275-280 (pinned 9afbddcd90164b5544a16fd0bc72278d985eb6e3)",
++     "raw_name": "action_unknown",
++     "raw_detail": "binding 'P9' -> unknown action 'teleport'; the known actions are ['backward', 'forward', 'jump', 'sprint', 'turn_left', 'turn_right'] (the grammar refuses what it cannot name, parser.py:130-132 precedent)",
++     "scrub_token": "P9"
++    }
++   },
++   "player_line": "The settings file names an action this game does not have ('P9'). Default controls are active. — try: Fix the settings file, then load it again. / Default controls are active -- you can keep playing. [ref 493bfaed9aa9c941]"
++  },
++  {
++   "case": "future code (fabricated, must be unknown)",
++   "record": {
++    "name": "unknown_error",
++    "status": "unknown",
++    "ok": false,
++    "message": "Something went wrong on our side. Nothing was changed. Reference: 1a31cb329d452380.",
++    "actions": [],
++    "correlation_id": "1a31cb329d452380",
++    "diagnostic": {
++     "origin": "explain",
++     "raw_name": "future_code_2030",
++     "raw_detail": "at C:/Users/x/save.json",
++     "note": "name is outside the pinned failure inventory"
++    }
++   },
++   "player_line": "Something went wrong on our side. Nothing was changed. Reference: 1a31cb329d452380. [ref 1a31cb329d452380]"
++  },
++  {
++   "case": "path-bearing exception (must scrub message)",
++   "record": {
++    "name": "unknown_error",
++    "status": "unknown",
++    "ok": false,
++    "message": "Something went wrong on our side. Nothing was changed. Reference: 2cfc2b8edd6b1160.",
++    "actions": [],
++    "correlation_id": "2cfc2b8edd6b1160",
++    "diagnostic": {
++     "origin": "exception",
++     "raw_name": "OSError",
++     "raw_detail": "OSError('cannot read E:/saves/slot1.save.json')",
++     "note": "not a pinned refusal shape",
++     "exception_type": "OSError"
++    }
++   },
++   "player_line": "Something went wrong on our side. Nothing was changed. Reference: 2cfc2b8edd6b1160. [ref 2cfc2b8edd6b1160]"
++  }
++ ]
++}
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/test_implementation.py b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/test_implementation.py
+new file mode 100644
+index 00000000..3624ef2a
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/test_implementation.py
+@@ -0,0 +1,132 @@
++"""test_implementation.py -- I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP adapter tests.
++
++Self-contained at ANY checkout: the seam modules are imported ONLY through
++impl.bind(), which materializes the vendored reference/ bytes hash-asserted
++(pinned revision 9afbddcd, see reference/EXTRACTION_LEDGER.json) -- no live
++play-worktree or parent-reference path is touched. Real pinned product errors
++flow through the accepted diagnostics; unknowns keep correlation + scrubbed
++paths; loaded/first_run produce nothing; identity tamper refuses.
++"""
++import json
++import pathlib
++import tempfile
++import unittest
++
++HERE = pathlib.Path(__file__).resolve().parent
++import implementation as impl  # noqa: E402
++
++
++class AdapterTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.bound = impl.bind()
++        cls.pd = cls.bound["pd"]
++
++    def test_identity_pin_and_tamper_refusal(self):
++        # accepted module bytes still pinned at bind
++        real = impl.ACCEPTED_DIR / "player_diagnostics.py"
++        self.assertEqual(impl.hashlib.sha256(real.read_bytes()).hexdigest(),
++                         impl.ACCEPTED_SHA256)
++        # vendored seam materializes with every pin hash asserted
++        with tempfile.TemporaryDirectory() as tmp:
++            root = impl.materialize_pinned_seam(root=pathlib.Path(tmp) / "m")
++            for repo_path, want in impl.SEAM_PINS.items():
++                got = impl.hashlib.sha256(
++                    (root / repo_path).read_bytes()).hexdigest()
++                self.assertEqual(got, want)
++        # a drifted pin refuses BY NAME, before any import
++        bad_pins = dict(impl.SEAM_PINS)
++        first = next(iter(bad_pins))
++        bad_pins[first] = "0" * 64
++        with self.assertRaises(impl.AdapterIdentityFailure) as ctx:
++            impl.materialize_pinned_seam(pins=bad_pins)
++        self.assertIn("pinned_source_hash_mismatch", str(ctx.exception))
++
++    def test_real_corrupt_json_known_translation(self):
++        iset = self.bound["iset"]  # vendored pinned copy (hash-asserted bind)
++        with tempfile.TemporaryDirectory() as tmp:
++            p = pathlib.Path(tmp) / "corrupt.json"
++            p.write_bytes(b'{"bindings": [not json')
++            result = iset.load_settings(str(p))
++        self.assertEqual(result.status, "refused")
++        record = impl.translate_load_result(result)
++        self.assertIsNotNone(record)
++        self.assertEqual(record["status"], "refused")
++        self.assertNotEqual(record["status"], "unknown")
++        self.assertTrue(record["message"])
++        self.assertFalse(record["ok"])
++
++    def test_real_unsupported_action_known_translation(self):
++        iset = self.bound["iset"]
++        with tempfile.TemporaryDirectory() as tmp:
++            p = pathlib.Path(tmp) / "bad.json"
++            defaults = iset.default_settings()
++            doc = {"schema": iset.SCHEMA_ID,
++                   "bindings": {**defaults.bindings, "P9": "teleport"},
++                   "sensitivity": {"yaw": defaults.sensitivity},
++                   "invert": {"yaw": defaults.invert_yaw}}
++            p.write_text(json.dumps(doc), encoding="utf-8")
++            result = iset.load_settings(str(p))
++        record = impl.translate_load_result(result)
++        self.assertIsNotNone(record)
++        self.assertNotEqual(record["status"], "unknown")
++        self.assertIn("teleport", json.dumps(record["diagnostic"]))
++
++    def test_real_flow_drop_known_translation(self):
++        sf = self.bound["sf"]
++        class Mapper:
++            def press(self, *a): pass
++            def release(self, *a): pass
++            def release_all(self, *a): pass
++            def mouse(self, *a): pass
++            def tick(self, *a): pass
++            def held(self): return {}
++        flow = sf.SessionFlow(Mapper(), lambda: None, lambda: None)
++        flow.key("Up", 1, 100)            # ATTRACT: Up is a no-op -> dropped
++        drops = flow.last_trace.get("dropped", [])
++        self.assertTrue(drops)
++        record = impl.translate_flow_drop(drops[0]["kind"], drops[0]["detail"],
++                                          state="attract")
++        self.assertNotEqual(record["status"], "unknown")
++        self.assertTrue(record["message"])
++
++    def test_future_code_lands_unknown_with_correlation(self):
++        record = impl.translate_unknown_name("future_code_2030",
++                                             "at C:/Users/x/save.json")
++        self.assertEqual(record["status"], "unknown")
++        self.assertTrue(record["correlation_id"])
++
++    def test_path_scrubbed_from_message_kept_in_diagnostic(self):
++        record = impl.translate_unknown_name("future_code_2030",
++                                             "at C:/Users/x/save.json")
++        self.assertNotIn("C:/Users", record["message"])
++        self.assertIn("save.json", json.dumps(record["diagnostic"]))
++
++    def test_path_bearing_exception_scrubbed(self):
++        try:
++            raise OSError("cannot read E:/saves/slot1.save.json")
++        except OSError as exc:
++            record = impl.translate_exception(exc)
++        self.assertFalse(record["ok"])
++        self.assertNotIn("E:/saves", record["message"])
++        self.assertIn("slot1.save.json", json.dumps(record["diagnostic"]))
++
++    def test_loaded_and_first_run_produce_nothing(self):
++        self.assertIsNone(impl.translate_load_result(
++            type("R", (), {"status": "loaded"})()))
++        self.assertIsNone(impl.translate_load_result(
++            type("R", (), {"status": "first_run"})()))
++
++    def test_samples_table_written(self):
++        samples = impl.sample_table()
++        self.assertEqual(len(samples), 4)
++        out = HERE / "samples.json"
++        if out.is_file():
++            loaded = json.loads(out.read_text("utf-8"))
++            self.assertEqual(loaded["schema"], impl.SCHEMA)
++        for s in samples:
++            self.assertTrue(s["player_line"])
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
+diff --git a/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/test_run_evidence.txt b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/test_run_evidence.txt
+new file mode 100644
+index 00000000..cff74174
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP/test_run_evidence.txt
+@@ -0,0 +1,15 @@
++test_future_code_lands_unknown_with_correlation (__main__.AdapterTests.test_future_code_lands_unknown_with_correlation) ... ok
++test_identity_pin_and_tamper_refusal (__main__.AdapterTests.test_identity_pin_and_tamper_refusal) ... ok
++test_loaded_and_first_run_produce_nothing (__main__.AdapterTests.test_loaded_and_first_run_produce_nothing) ... ok
++test_path_bearing_exception_scrubbed (__main__.AdapterTests.test_path_bearing_exception_scrubbed) ... ok
++test_path_scrubbed_from_message_kept_in_diagnostic (__main__.AdapterTests.test_path_scrubbed_from_message_kept_in_diagnostic) ... ok
++test_real_corrupt_json_known_translation (__main__.AdapterTests.test_real_corrupt_json_known_translation) ... ok
++test_real_flow_drop_known_translation (__main__.AdapterTests.test_real_flow_drop_known_translation) ... ok
++test_real_unsupported_action_known_translation (__main__.AdapterTests.test_real_unsupported_action_known_translation) ... ok
++test_samples_table_written (__main__.AdapterTests.test_samples_table_written) ... ok
++
++----------------------------------------------------------------------
++Ran 9 tests in 0.079s
++
++OK
++EXIT=0
+\ No newline at end of file
