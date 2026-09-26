@@ -203,3 +203,29 @@ Code only inside WS · no network, installs, GUI, native builds, GPU, training,
 process control, unbounded fuzzing · test invocations bounded (timeout 120 s)
 · source repo touched read-only (`git show`/`ls-tree`/`grep` only) ·
 `reference/` frozen after extraction · total new output well under 16 MiB.
+
+---
+
+# CORRECTION — attempt 6487d23753e143ed941a4f4a60e55e33 (2026-09-25)
+
+Responds to the lead's CHANGES REQUIRED on PR #122. Base adopted
+byte-identical (resource_ledger.py sha256 `ef313c27…`; prior 35/35 green
+pre-fix). Failing-first proof: both correction tests FAILED on base
+(`failing_first_base.txt`) — the lead's exact sequence returned
+`passed=true, live_now=1`, zero leak failures.
+
+## Fixes
+
+1. `acquire` refuses acquisitions into a CLOSED generation by name
+   (`acquire_generation_closed`) — the impossible state cannot be created.
+2. `close()` sweeps any still-live record in an already-closed generation
+   (named `ledger_live_at_close` leak, abandoned) before sealing — the
+   final close can NEVER pass with live resources (defense in depth,
+   white-box regression-guarded for pre-fix ledger states).
+
+## Verification
+
+`python -B -m unittest test_resource_ledger test_correction` → **37/37 OK
+(35 prior + 2 correction), run twice, deterministic**. The reproducer now:
+late acquire REFUSES; final close with a closed-generation live record
+FAILS (passed=false, live_now=0, named leak). No prior test broken.

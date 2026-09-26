@@ -1,0 +1,1322 @@
+diff --git a/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/PREREGISTRATION.md b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/PREREGISTRATION.md
+new file mode 100644
+index 0000000..c76ef23
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/PREREGISTRATION.md
+@@ -0,0 +1,85 @@
++# PREREGISTRATION — I-R05-RESOURCE-LEDGER (planning id R05)
++
++Attempt: 080ba14585ce405e9b7d0ae87632a8af · branch-6 · pinned base `9afbddcd90164b5544a16fd0bc72278d985eb6e3`
++Written BEFORE any implementation edit (Rule 0: statement / prediction / falsifier).
++
++## RULE 0 — STATEMENT
++
++An ownership-scoped resource ledger for repeated session/restart teardown can be a small,
++deterministic, stdlib-only event ledger keyed on (SESSION GENERATION, OWNER, RESOURCE ID),
++which classifies exactly five named failure modes — duplicate-acquire, unknown-release,
++wrong-generation, wrong-owner, live-at-close — and judges every cycle strictly against
++caller-provided ceilings, never against probed memory or OS process state. The pinned
++teardown code (`tools/monkey_campaign/product/session_flow.py`,
++`tools/monkey_campaign/data/monkey_forest/forest_loader.py` at 9afbddcd) currently tears
++down by imperative cleanup without such a per-resource ownership record, which is why a
++leak or an owner collision can pass silently today.
++
++## PREDICTION (not yet measured)
++
++1. `git grep` at the pinned revision will find NO existing equivalent ownership-scoped
++   accounting checker (no acquire/release ledger with generation+owner+resource-id and
++   named failure classes); the new module is not duplicating live code.
++2. The implemented ledger will reject an unrelated owner's release attempt, reject a
++   stale-generation release, and mark a leaking cycle as FAILED — all demonstrated by the
++   unittest suite (≈ 14–22 tests) which runs green in well under 120 s (predicted < 5 s,
++   pure CPU, no I/O beyond the test file itself).
++3. Cycle summaries will judge only against ceilings the caller passes in; no code path
++   probes RAM, processes, or system state.
++
++## FALSIFIER (named before the run — ANY ONE fails the build)
++
++- F1: an unrelated (operator) owner's resource can be released through the session owner.
++- F2: a release recorded against a stale generation is accepted against a
++  current-generation resource (stale generations close current resources).
++- F3: a resource left live at close is reported as a clean/passing cycle (a leak passes).
++- F4: the suite cannot reach green inside the 120-second per-invocation bound, or needs
++  anything outside the stdlib.
++
++If F1–F3 occur the design is wrong (ownership key is broken); if F4 occurs the
++implementation is wrong. Neither may be tuned away — the result gets recorded and the
++card reports honestly.
++
++## BOUNDS
++
++std lib only · Python 3.11+ · headless · deterministic · no psutil / process enumeration /
++kills / engine launches / memory probing · tests < 120 s · total new output < 16 MiB ·
++code only inside WS.
++
++---
++
++# CORRECTION ADDENDUM — attempt 6487d23753e143ed941a4f4a60e55e33 (2026-09-25)
++
++Responds to the lead's CHANGES REQUIRED on PR #122 (base adopted
++byte-identical, resource_ledger.py sha256 `ef313c27…`; prior 35/35 suite
++green pre-fix). Written BEFORE the fix; failing-first run recorded.
++
++## The defect (lead reproducer)
++
++`close_generation(0)` → `acquire("late","owner",0)` was ACCEPTED (acquire
++never checked closed generations) → final `close()` skipped re-closing
++generation 0 (already in `_closed_generations`), so the live "late" record
++was never abandoned → summary `passed=true` with `live_now=1` and zero leak
++failures.
++
++## The fixes
++
++1. `acquire` refuses acquisitions to a closed generation by name
++   (`acquire_generation_closed`) — the impossible state cannot be created.
++2. `close()` abandons ANY still-live record whose generation is already
++   closed (named `live_at_close`) before sealing — the final close can never
++   pass with live resources, even for ledger states created before fix 1
++   (defense in depth; regression-guarded white-box).
++
++## Failing-first prediction (against BASE)
++
++The lead's exact sequence: BASE returns `passed=true`, `live_now=1`, zero
++live_at_close failures (defect). FIXED: the late acquire REFUSES
++(`acquire_generation_closed`); the white-box closed-generation live record
++makes final close FAIL with a named live_at_close. All 35 prior tests still
++pass.
++
++## Falsifier
++
++The reproducer passing on the fixed code; any prior test broken; a refusal
++without a name; live_now > 0 at a passed final close.
+diff --git a/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/report.md b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/report.md
+new file mode 100644
+index 0000000..9fbc4a3
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/report.md
+@@ -0,0 +1,231 @@
++# report.md — I-R05-RESOURCE-LEDGER
++
++- **Card:** I-R05-RESOURCE-LEDGER (planning id R05)
++- **Attempt:** 080ba14585ce405e9b7d0ae87632a8af
++- **Branch:** branch-6 · **Pinned base:** `9afbddcd90164b5544a16fd0bc72278d985eb6e3`
++- **Preregistration:** `PREREGISTRATION.md` (frozen BEFORE implementation, Rule 0)
++- **This is preparatory work for R05** — parent R05 gates stay OPEN; nothing here closes them.
++
++## What was built
++
++`resource_ledger.py` — an ownership-scoped, generation-aware resource accounting
++CHECKER for repeated session/restart teardown. Stdlib only, Python 3.11+,
++headless, deterministic, bounded (`max_events`, default 10000, overflow is a loud
++`ledger_full` refusal). It records `acquire`/`release` claims against a
++**(SESSION GENERATION, OWNER, RESOURCE ID)** key and judges cycles; it never
++touches the world.
++
++- **Five named failure classes** (the card's vocabulary, recorded as evidence,
++  never raised — a checker must keep observing):
++  `ledger_duplicate_acquire`, `ledger_unknown_release`, `ledger_wrong_generation`,
++  `ledger_wrong_owner`, `ledger_live_at_close`.
++- **Fixed refusal precedence** for release claims: unknown-release →
++  wrong-generation → wrong-owner. A refused release leaves the live record
++  UNTOUCHED — a failed probe cannot half-close a resource.
++- **Loud `LedgerRefusal`** (house `Refusal` shape, `code`/`detail`/identity) for
++  programmer errors only: bad ids/generations/times, use-after-close, full
++  ledger, bad ceilings, double generation-close.
++- **Cycle summaries** with EXPLICIT CALLER-PROVIDED ceilings
++  (`max_live`, `max_acquires`, `max_releases`, `max_failures`; unknown ceiling
++  keys are REFUSED, never ignored — a typo must not silently disable a limit).
++  Law: `passed` = no ceiling violation AND zero live_at_close in scope AND
++  non-leak failures within the caller's failure budget (zero when no budget).
++  **live_at_close is never launderable by any budget** — that is falsifier F3.
++  **No memory probing exists anywhere** — there is no RAM input in the module at
++  all, so "high free RAM" cannot be a success criterion by construction.
++- **Generations:** reusing a resource id in a distinct generation is legal once
++  the old record is no longer live; a still-live id re-acquired anywhere is a
++  duplicate (two live things on one id is exactly what this ledger exists to
++  catch). `close_generation(g)` names and ABANDONS g's leaks so later
++  generations can reuse ids honestly; `close()` does this for every open
++  generation and seals the ledger.
++- All times are INJECTED integer milliseconds (`now_ms`) or None — never a wall
++  clock (session_flow's injected-time law). Identical histories produce
++  byte-identical canonical JSON (`to_json`/`canonical_json`).
++- `python resource_ledger.py selftest` → `{"schema":"chimera.monkey_campaign.resource_ledger.v1","selftest":"pass"}`.
++
++## API derivation from the pinned sources (read-only, `git show 9afbddcd:<path>`)
++
++Existing teardown ownership APIs inspected (extracted bytes pinned in
++`reference/EXTRACTION_LEDGER.json`; `reference/` is read-only after extraction):
++
++1. `tools/monkey_campaign/product/session_flow.py` (`30e06c04d…`):
++   `SessionFlow._transition` (:310-360) — `elif action == "restart":` (:327)
++   calls `self._restart_scene()` (:336, declared referent `World.boot()`,
++   slice_server.py:94-135) and `elif action == "exit":` (:343) calls
++   `self._teardown()` (:349, declared referent `World.shutdown_engine()`,
++   slice_server.py:174-181). One callable, fired exactly once (TRANSITIONS
++   rows 5-7, :106-110; second exit is a named drop). **No per-resource
++   ownership record exists** — the flow cannot see what its teardown should
++   have closed, only that the one callable returned.
++2. `tools/monkey_campaign/data/monkey_forest/forest_loader.py` (`53d7fdde…`):
++   `ForestScene` is the closest existing ownership API — a NAME-keyed registry
++   `self._resources` (:358-362), `attach_engine_shutdown` (:367-374),
++   `live_resources()` (:376-378), and `teardown()` (:380-405) releasing in
++   reverse-load order (:386) with `f08_teardown_leak` raised only when a
++   release RAISES (:395). **It has no owner axis and no session generation**:
++   one scene, one teardown scope; a resource nobody releases is invisible to
++   `live_resources()` only until teardown nulls it; and across RESTARTS
++   (new scene, new boot) there is nothing connecting generation N's leak to
++   generation N+1.
++3. `tools/playable_slice/slice_server.py` (`5accc730…`, reference only):
++   `World.boot()` (:94-135) already shuts the old engine down first (:96) and
++   counts boots (`self.boot_count += 1`, :128) — a natural generation counter
++   to mirror; `World.shutdown_engine()` (:174-181) is terminate → wait(10 s) →
++   kill.
++
++**Existing-equivalent check (recorded per card):** `git grep -iE "resource_ledger|acquire|generation.*owner" 9afbddcd -- tools/monkey_campaign`
++returns only unrelated prose hits (completion-map rows, G04 material-coefficient
++"acquisition", HANDOFFS); `git grep -il "ledger"` over monkey_campaign `*.py`
++returns NOTHING. No existing module does ownership-scoped acquire/release
++accounting, so this card builds the smallest new checker instead of
++duplicating — and deliberately reuses the house shapes: `Refusal(code, detail)`
++(forest_loader.py:108-121), reverse-order release, the named-drop/failure-event
++idiom (session_flow `_drop`), injected `now_ms`, and canonical JSON.
++
++## Hook-up proposal (TEXT ONLY — no source edits were made)
++
++Everything below names exact functions/lines in the pinned revision
++`9afbddcd90164b5544a16fd0bc72278d985eb6e3`.
++
++**A. `session_flow.py` — the flow owns the generation.**
++`SessionFlow.__init__` (:233-258) gains one optional injected surface,
++`ledger=None` (duck-typed to `ResourceLedger.acquire/release/close_generation`),
++matching the module's law that the flow only gates, never builds the world.
++- **Start** (`confirm` in ATTRACT, table row :104): after the state lands in
++  PLAYING, the session owner calls `ledger.acquire(...)` for each resource the
++  session acquired this generation, all tagged with the SAME generation
++  integer. Generation source: mirror `World.boot_count` (slice_server.py:128) —
++  the flow already records `restart_path` events in `last_trace` (:335), so the
++  generation integer rides there.
++- **Restart** (`elif action == "restart":` :327-340): after
++  `self._restart_scene()` succeeds (:336) and BEFORE the state moves to PLAYING
++  (:357), call `ledger.close_generation(old_gen, now_ms=now_ms)`. Its summary's
++  `failure_details` (any `ledger_live_at_close`) go to
++  `last_trace["restart_leaks"]` — a named receipt in the exact style of the
++  existing `restart_failed` record (:338-340). Then bump the generation and
++  re-acquire the new session's resources under the new generation.
++- **Exit** (`elif action == "exit":` :343-350): BEFORE `self._teardown()`
++  (:349) the flow releases everything it owns by name; AFTER it returns, call
++  `ledger.close_generation(current_gen)` and record a nonzero
++  `failures_by_code["ledger_live_at_close"]` in `last_trace["exit_leaks"]`.
++  The terminal-state law is preserved: the close is idempotent-guarded, a
++  second Q remains a named drop (:112-117, table :110).
++
++**B. `forest_loader.py` — the scene publishes its names to the ledger.**
++`ForestScene.__init__` (:349-365) takes an optional `ledger` + `generation`;
++every entry it registers in `self._resources` (:358-362, plus
++`attach_engine_shutdown` :367-374) is mirrored by
++`ledger.acquire(f"forest:{name}", owner="session", generation=generation)`.
++Inside `teardown()`'s reverse-load loop (:386-398), after each successful
++`release()` (:390-392) the scene mirrors
++`ledger.release(f"forest:{name}", "session", generation)`; on the
++`f08_teardown_leak` path (:395) the ledger record simply stays live, so the
++next `close_generation` names the scene's leak by resource id. The
++zero-live audit (:404, `live_after`) and the ledger's `live_ids` must agree —
++two independent counts of one truth, each able to catch the other's drift.
++
++**C. `slice_server.py` — reference only, zero edits required.** `World.boot()`
++(:94-135) and `shutdown_engine()` (:174-181) keep their exact bodies; the
++ledger's generation mirrors `boot_count` (:128) and the engine-process slot is
++just another `(generation, owner="session", "engine:<port>")` record acquired
++at :99-103 and released at :174-181 — bookkeeping around the existing
++machinery, never a replacement for it.
++
++Net effect at the falsifier level: F1 — the operator's own ids
++(`owner="operator"`) are unreachable by the session owner's release claims
++(`ledger_wrong_owner`, resource stays live); F2 — a stale generation's claim
++against a re-acquired id is refused (`ledger_wrong_generation`, current
++resource untouched); F3 — a resource nobody released is named
++`ledger_live_at_close` at the generation's close and FAILS that cycle's
++summary, which `last_trace` now carries by name.
++
++## Test evidence (fixtures, not runtime proof)
++
++`python -B test_resource_ledger.py` (first invocation):
++**Ran 35 tests, 1 failure + 1 error** — recorded honestly:
++1. ERROR `test_leak_cannot_be_laundered_by_a_failure_budget` — real API gap:
++   `close_generation`/`close` did not accept `ceilings`, though close IS the
++   cycle end and must judge against caller ceilings. Fixed by adding the
++   parameter (pass-through to `summary`).
++2. FAIL `test_reused_resource_ids_across_generations_are_legal` — a bug in the
++   TEST, not the module: the test acquired `engine:9347` in generation 1 and
++   never released it before `close_generation(1)`; the ledger correctly named
++   that leak (`ledger_live_at_close`) — falsifier F3's detection firing on my
++   own fixture. Fixed the test to release before closing.
++
++Second invocation: **Ran 35 tests — OK**, `runtime_seconds=0.002` (bound: 120 s).
++Module selftest verb: `{"selftest":"pass"}`.
++
++Coverage: repeated clean cycles (3 generations) · leaking cycles at
++generation-close, whole-ledger scope, final close, and NOT launderable by a
++failure budget · reused ids across generations legal · stale claim cannot close
++a re-acquired current resource · old record releasable by its TRUE generation ·
++operator-owned id NOT releasable by session owner (and still releasable by the
++operator) · duplicate-acquire (same and different owner) · unknown-release
++(never-acquired, after abandon, empty ledger) · wrong-generation refusal +
++statelessness · wrong-owner refusal + precedence · double generation-close
++refused · ceilings max_live/max_acquires/max_releases/max_failures incl.
++generation-scoped summaries, unknown-key refusal, bad-value refusal · empty
++ledger summary/close · use-after-close · event bound · bad ledger bound ·
++determinism (identical histories → identical canonical bytes) · structural
++no-probe check (no psutil/subprocess/terminate/time.time in the module source).
++
++## Falsifier self-check (Rule 0, PREREGISTRATION.md)
++
++- **F1 unrelated owner releasable?** NO — `OwnerTests` proves the session's
++  release claim on `operator:notebook` is refused (`ledger_wrong_owner`), the
++  record stays live and owned; GREEN.
++- **F2 stale generation closes current resources?** NO —
++  `test_stale_claim_cannot_close_a_reacquired_current_resource` proves a
++  generation-0 claim against a live generation-1 record is refused and the
++  current record survives; GREEN.
++- **F3 a leaked resource passes a cycle?** NO — a `ledger_live_at_close`
++  failure forces `passed=False` at generation scope, whole-ledger scope, and
++  even under `max_failures=99`; GREEN.
++- **F4 suite not green in bound / non-stdlib?** Green in 0.002 s of 120 s,
++  stdlib only; GREEN. (Prediction 1 of the prereg also held: no existing
++  equivalent found at the pinned revision.)
++
++## Remaining gates (open, deliberately)
++
++This card is PREPARATORY for parent R05: the checker exists and is proven on
++fixtures, but it is NOT yet wired into `session_flow.py` / `forest_loader.py`
++(section "Hook-up proposal" is a proposal, not an edit), no runtime session has
++run against it, and the parent R05 gate (verifying owned-children closure of
++the REAL teardown path) remains exactly where it was. Also open: operator-side
++adoption (the `owner="operator"` axis is ledger-level only; no operator flow
++emits those acquires yet).
++
++## Constraints honored
++
++Code only inside WS · no network, installs, GUI, native builds, GPU, training,
++process control, unbounded fuzzing · test invocations bounded (timeout 120 s)
++· source repo touched read-only (`git show`/`ls-tree`/`grep` only) ·
++`reference/` frozen after extraction · total new output well under 16 MiB.
++
++---
++
++# CORRECTION — attempt 6487d23753e143ed941a4f4a60e55e33 (2026-09-25)
++
++Responds to the lead's CHANGES REQUIRED on PR #122. Base adopted
++byte-identical (resource_ledger.py sha256 `ef313c27…`; prior 35/35 green
++pre-fix). Failing-first proof: both correction tests FAILED on base
++(`failing_first_base.txt`) — the lead's exact sequence returned
++`passed=true, live_now=1`, zero leak failures.
++
++## Fixes
++
++1. `acquire` refuses acquisitions into a CLOSED generation by name
++   (`acquire_generation_closed`) — the impossible state cannot be created.
++2. `close()` sweeps any still-live record in an already-closed generation
++   (named `ledger_live_at_close` leak, abandoned) before sealing — the
++   final close can NEVER pass with live resources (defense in depth,
++   white-box regression-guarded for pre-fix ledger states).
++
++## Verification
++
++`python -B -m unittest test_resource_ledger test_correction` → **37/37 OK
++(35 prior + 2 correction), run twice, deterministic**. The reproducer now:
++late acquire REFUSES; final close with a closed-generation live record
++FAILS (passed=false, live_now=0, named leak). No prior test broken.
+diff --git a/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/resource_ledger.py b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/resource_ledger.py
+new file mode 100644
+index 0000000..87c4354
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/resource_ledger.py
+@@ -0,0 +1,504 @@
++"""resource_ledger.py -- I-R05: ownership-scoped resource accounting for
++repeated session / restart teardown.
++
++Card I-R05-RESOURCE-LEDGER (planning id R05), attempt
++080ba14585ce405e9b7d0ae87632a8af, branch-6, pinned base
++9afbddcd90164b5544a16fd0bc72278d985eb6e3.  PREREGISTRATION.md (Rule 0:
++statement / prediction / falsifier) was frozen BEFORE this file was written.
++
++THE GAP THIS FILLS (derived from the pinned sources, read-only):
++
++  * session_flow.py (_transition, :310-360) fires ONE teardown callable on
++    exit (:343-349) and restarts through World.boot() (:327-340) -- neither
++    transition carries any per-resource ownership record, so a leak or an
++    owner collision can pass silently.
++  * forest_loader.py ForestScene (the existing teardown ownership API) keeps
++    a NAME-keyed registry ``self._resources`` (:358-362) with no owner and no
++    session generation; teardown() (:380-405) releases in reverse-load order
++    and refuses f08_teardown_leak only when a release RAISES -- a resource
++    nobody releases is invisible.
++
++This module adds the missing accounting as a CHECKER, not a rewriter:
++acquire/release events are recorded against a (SESSION GENERATION, OWNER,
++RESOURCE ID) key and every violation is a NAMED failure.  It discovers no OS
++processes, ends nothing, launches nothing and probes no memory: the
++only success criterion for a cycle is zero accounting failures plus the
++EXPLICIT ceilings the caller passes in.  High free RAM is not consulted --
++it does not exist as an input.
++
++THE LAW (each falsifier from PREREGISTRATION.md enforced by construction):
++
++  F1  an unrelated owner cannot release another owner's resource
++      (ledger_wrong_owner: the claim's owner must equal the live record's
++      owner; the resource STAYS LIVE after a refused release).
++  F2  a stale generation cannot close a current resource
++      (ledger_wrong_generation: the claim's generation must equal the live
++      record's generation; a stale claim never touches the live record).
++  F3  a leaked resource can never pass a cycle
++      (ledger_live_at_close is recorded at generation close for every still
++      live record of that generation; a summary containing a
++      live_at_close failure can NEVER pass, regardless of ceilings).
++
++Named failure classes (the five of the card, plus loud refusals):
++
++  ledger_duplicate_acquire  an id acquired while already live
++  ledger_unknown_release    a release claim for an id that is not live
++  ledger_wrong_generation   a release claim whose generation is not the
++                            live record's generation
++  ledger_wrong_owner        a release claim whose owner is not the live
++                            record's owner
++  ledger_live_at_close      a record of a closed generation still live
++
++Release-claim refusal precedence is FIXED (checked in this order):
++unknown-release, then wrong-generation, then wrong-owner -- so every refusal
++is deterministic even when a claim is wrong in several ways at once.  A
++refused release changes NO state except the failure event itself.
++
++Identity and generations: a resource_id is UNIQUE among LIVE records.  The
++same id may be re-acquired in a later generation once it is no longer live
++(the repeated session/restart case).  A still-live id re-acquired in any
++generation is a duplicate-acquire -- two live things answering to one id is
++exactly what this ledger exists to catch.  close_generation(g) ABANDONS the
++generation's leaks (named live_at_close each) so a later generation may
++reuse the ids honestly; the failures remain in the ledger permanently.
++close() closes ALL generations at once.  Releasing a genuinely old record
++by its TRUE generation is legal; only mismatched claims are failures.
++
++Ceilings (caller data ONLY -- never probed, never defaulted from the
++machine): a dict with any subset of
++
++  max_live        max simultaneously-live records in scope
++  max_acquires    max successful acquires recorded in scope
++  max_releases    max successful releases recorded in scope
++  max_failures    max NON-leak accounting failures tolerated in scope
++                  (live_at_close is never tolerable and sits outside this
++                  budget; unknown keys are refused, not ignored)
++
++A cycle summary passes iff: zero ceiling violations AND zero live_at_close
++failures in scope AND non-leak failures within the failure budget (zero when
++no budget is given).  Every count is computed from the ledger's own events.
++
++Determinism: all times are INJECTED integer milliseconds (now_ms) or None --
++never a wall clock, matching session_flow's injected-time law.  Iteration
++orders are fixed (events by sequence, live and failures sorted), so two
++ledgers fed the same sequence produce byte-identical canonical JSON.
++
++Bounded: the event log holds at most max_events events (default 10000);
++overflow raises ledger_full rather than growing without bound.  Stdlib only,
++headless, CPU-only, Python 3.11+.
++
++Selftest:  python resource_ledger.py selftest
++"""
++from __future__ import annotations
++
++import json
++import sys
++from dataclasses import dataclass
++
++__all__ = [
++    "SCHEMA",
++    "DUPLICATE_ACQUIRE", "UNKNOWN_RELEASE", "WRONG_GENERATION",
++    "WRONG_OWNER", "LIVE_AT_CLOSE", "FAILURE_CODES",
++    "CEILING_KEYS", "LedgerRefusal", "AcquireRecord", "ResourceLedger",
++    "canonical_json",
++]
++
++SCHEMA = "chimera.monkey_campaign.resource_ledger.v1"
++
++# ── the five named failure classes (the card's vocabulary) ──────────────────────
++DUPLICATE_ACQUIRE = "ledger_duplicate_acquire"
++UNKNOWN_RELEASE = "ledger_unknown_release"
++WRONG_GENERATION = "ledger_wrong_generation"
++WRONG_OWNER = "ledger_wrong_owner"
++LIVE_AT_CLOSE = "ledger_live_at_close"
++FAILURE_CODES = (DUPLICATE_ACQUIRE, UNKNOWN_RELEASE, WRONG_GENERATION,
++                 WRONG_OWNER, LIVE_AT_CLOSE)
++
++# caller-provided ceiling vocabulary (ANY other key is refused, not ignored)
++CEILING_KEYS = ("max_live", "max_acquires", "max_releases", "max_failures")
++
++DEFAULT_MAX_EVENTS = 10000
++
++
++class LedgerRefusal(ValueError):
++    """A loud, named refusal (house style, forest_loader.Refusal shape).
++
++    ``code`` names the refusal, ``detail`` carries the specifics, ``identity``
++    holds the exact offending inputs.  Refusals are PROGRAMMER errors (bad
++    argument shapes, full ledger, use after close); the five accounting
++    failure classes above are not refusals -- they are recorded evidence.
++    """
++
++    def __init__(self, code, detail="", **identity):
++        self.code, self.detail = code, str(detail)
++        self.identity = dict(identity)
++        super().__init__(code + (": " + self.detail if detail else ""))
++
++
++@dataclass(frozen=True)
++class AcquireRecord:
++    """The live identity of one acquired resource."""
++    resource_id: str
++    owner: str
++    generation: int
++    seq: int                 # ledger sequence of the acquiring event
++    now_ms: int | None       # INJECTED time, never a wall clock
++
++
++def _check_name(kind, value):
++    if not isinstance(value, str) or not value:
++        raise LedgerRefusal("ledger_bad_id", "%s must be a non-empty str"
++                            % kind, field=kind, got=repr(value))
++    return value
++
++
++def _check_generation(value):
++    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
++        raise LedgerRefusal("ledger_bad_generation",
++                            "generation must be an int >= 0",
++                            got=repr(value))
++    return value
++
++
++def _check_now_ms(value):
++    if value is None:
++        return None
++    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
++        raise LedgerRefusal("ledger_bad_time",
++                            "now_ms must be None or an injected int >= 0 "
++                            "(never a wall clock)", got=repr(value))
++    return value
++
++
++class ResourceLedger:
++    """A bounded event ledger for repeated session/restart teardown.
++
++    Usage (the repeated-cycle shape the card demands -- all times injected):
++
++        led = ResourceLedger()
++        led.acquire("engine:9347", owner="session", generation=0, now_ms=0)
++        led.release("engine:9347", owner="session", generation=0, now_ms=10)
++        led.close_generation(0, now_ms=11)          # clean: zero live
++        led.acquire("engine:9348", owner="session", generation=1, now_ms=12)
++        doc = led.close_generation(1, ceilings={"max_live": 4}, now_ms=20)
++        assert doc["passed"]
++
++    The public mutators are exactly acquire/release/close_generation/close;
++    reads are live()/events()/failures()/summary().  The ledger never
++    touches the world: it records and judges claims, nothing else.
++    """
++
++    def __init__(self, max_events=DEFAULT_MAX_EVENTS):
++        if (isinstance(max_events, bool) or not isinstance(max_events, int)
++                or max_events < 1):
++            raise LedgerRefusal("ledger_bad_bound",
++                                "max_events must be an int >= 1",
++                                got=repr(max_events))
++        self._max_events = max_events
++        self._events = []            # bounded event log, seq order
++        self._live = {}              # resource_id -> AcquireRecord
++        self._failures = []          # subset of events, seq order
++        self._closed_generations = set()
++        self._closed = False
++
++    # ── shape checks ─────────────────────────────────────────────────────────
++    def _check_open(self):
++        if self._closed:
++            raise LedgerRefusal("ledger_closed",
++                                "the ledger is finally closed; open a new one")
++
++    def _record(self, event):
++        if len(self._events) >= self._max_events:
++            raise LedgerRefusal("ledger_full",
++                                "event bound reached (%d); a full ledger is "
++                                "a loud stop, never a silent roll"
++                                % self._max_events)
++        event["seq"] = len(self._events)
++        self._events.append(event)
++        if event.get("is_failure"):
++            self._failures.append(event)
++        return event
++
++    @staticmethod
++    def _failure(kind, resource_id, owner, generation, now_ms, detail):
++        return {"kind": "failure", "code": kind, "resource_id": resource_id,
++                "owner": owner, "generation": generation, "now_ms": now_ms,
++                "detail": detail, "is_failure": True}
++
++    # ── the mutators ─────────────────────────────────────────────────────────
++    def acquire(self, resource_id, owner, generation, now_ms=None):
++        """Record an acquire claim.  Refused (named) when the id is already
++        live -- the FIRST record keeps the slot; the duplicate attempt is
++        evidence only."""
++        self._check_open()
++        resource_id = _check_name("resource_id", resource_id)
++        owner = _check_name("owner", owner)
++        generation = _check_generation(generation)
++        # lead correction: a closed session generation accepts no new claims
++        if generation in self._closed_generations:
++            raise LedgerRefusal(
++                "acquire_generation_closed",
++                "generation %d is already closed; acquiring into it would "
++                "hide a leak from the final close" % generation,
++                generation=generation)
++        now_ms = _check_now_ms(now_ms)
++        live = self._live.get(resource_id)
++        if live is not None:
++            event = self._failure(
++                DUPLICATE_ACQUIRE, resource_id, owner, generation, now_ms,
++                "already live as gen %d owner %r (seq %d)"
++                % (live.generation, live.owner, live.seq))
++            return self._record(event)
++        record = AcquireRecord(resource_id, owner, generation,
++                               len(self._events), now_ms)
++        self._record({"kind": "acquire", "resource_id": resource_id,
++                      "owner": owner, "generation": generation,
++                      "now_ms": now_ms, "is_failure": False})
++        self._live[resource_id] = record
++        return dict(self._events[-1])
++
++    def release(self, resource_id, owner, generation, now_ms=None):
++        """Record a release claim.  Refusal precedence (fixed, documented in
++        the module docstring): unknown-release, wrong-generation,
++        wrong-owner.  A refused release leaves the live record UNTOUCHED."""
++        self._check_open()
++        resource_id = _check_name("resource_id", resource_id)
++        owner = _check_name("owner", owner)
++        generation = _check_generation(generation)
++        now_ms = _check_now_ms(now_ms)
++        live = self._live.get(resource_id)
++        if live is None:
++            return self._record(self._failure(
++                UNKNOWN_RELEASE, resource_id, owner, generation, now_ms,
++                "no live record for this id"))
++        if live.generation != generation:
++            return self._record(self._failure(
++                WRONG_GENERATION, resource_id, owner, generation, now_ms,
++                "live record is generation %d (owner %r); a stale "
++                "generation never closes a current resource"
++                % (live.generation, live.owner)))
++        if live.owner != owner:
++            return self._record(self._failure(
++                WRONG_OWNER, resource_id, owner, generation, now_ms,
++                "owned by %r; an unrelated owner cannot release it"
++                % (live.owner,)))
++        self._record({"kind": "release", "resource_id": resource_id,
++                      "owner": owner, "generation": generation,
++                      "now_ms": now_ms, "is_failure": False})
++        del self._live[resource_id]
++        return dict(self._events[-1])
++
++    def close_generation(self, generation, ceilings=None, now_ms=None):
++        """Close one session generation: every still-live record OF THAT
++        generation is a named live_at_close leak and is ABANDONED (the
++        session that owned it has ended; the failure is permanent).  Other
++        generations' live records are untouched.  Returns the generation's
++        cycle summary, judged against the caller-provided ``ceilings``."""
++        self._check_open()
++        generation = _check_generation(generation)
++        now_ms = _check_now_ms(now_ms)
++        if generation in self._closed_generations:
++            raise LedgerRefusal("ledger_generation_closed",
++                                "generation %d already closed" % generation,
++                                generation=generation)
++        self._closed_generations.add(generation)
++        leaked = sorted((rec for rec in self._live.values()
++                         if rec.generation == generation),
++                        key=lambda r: (r.resource_id,))
++        for rec in leaked:
++            self._record(self._failure(
++                LIVE_AT_CLOSE, rec.resource_id, rec.owner, generation,
++                now_ms, "still live at generation close (acquired seq %d)"
++                % rec.seq))
++            del self._live[rec.resource_id]
++        self._record({"kind": "generation_close", "resource_id": None,
++                      "owner": None, "generation": generation,
++                      "now_ms": now_ms, "is_failure": False,
++                      "leaked": [r.resource_id for r in leaked]})
++        return self.summary(ceilings=ceilings, generation=generation)
++
++    def close(self, ceilings=None, now_ms=None):
++        """Final close: abandons every still-live record of EVERY open
++        generation (each a named live_at_close) and seals the ledger.
++        Further acquire/release raise ledger_closed.  Returns the
++        whole-ledger summary, judged against ``ceilings``."""
++        self._check_open()
++        now_ms = _check_now_ms(now_ms)
++        for generation in sorted(self._closed_generations
++                                 | {r.generation for r in
++                                    self._live.values()}):
++            if generation not in self._closed_generations:
++                self.close_generation(generation, now_ms=now_ms)
++        # lead correction (defense in depth): any live record still sitting in
++        # an ALREADY-closed generation is a named leak and is abandoned here
++        # -- the final close can never pass with live resources
++        for rec in sorted((r for r in self._live.values()
++                           if r.generation in self._closed_generations),
++                          key=lambda r: (r.resource_id,)):
++            self._record(self._failure(
++                LIVE_AT_CLOSE, rec.resource_id, rec.owner, rec.generation,
++                now_ms, "still live at final close in already-closed "
++                "generation (acquired seq %d)" % rec.seq))
++            del self._live[rec.resource_id]
++        self._closed = True
++        self._record({"kind": "close", "resource_id": None, "owner": None,
++                      "generation": None, "now_ms": now_ms,
++                      "is_failure": False})
++        return self.summary(ceilings=ceilings)
++
++    # ── reads ────────────────────────────────────────────────────────────────
++    def live(self, generation=None):
++        """The live records, sorted (deterministic); optionally scoped to
++        one generation."""
++        recs = sorted(self._live.values(),
++                      key=lambda r: (r.generation, r.resource_id))
++        if generation is None:
++            return list(recs)
++        return [r for r in recs if r.generation == generation]
++
++    def events(self):
++        return tuple(self._events)
++
++    def failures(self):
++        return tuple(self._failures)
++
++    @property
++    def closed(self):
++        return self._closed
++
++    # ── the judge ────────────────────────────────────────────────────────────
++    def summary(self, ceilings=None, generation=None):
++        """Judge a cycle against EXPLICIT caller-provided ceilings.
++
++        Scope: generation=None judges the whole ledger; an int judges only
++        that generation's events.  ``ceilings`` (caller data ONLY) may carry
++        any subset of CEILING_KEYS; an unknown key is refused (a typo must
++        never silently disable a limit).  passed = no ceiling violation AND
++        no live_at_close in scope AND non-leak failures within the failure
++        budget (zero when no budget given).  No field of this document is
++        derived from the machine: there is no memory probe anywhere.
++        """
++        if ceilings is None:
++            ceilings = {}
++        if not isinstance(ceilings, dict):
++            raise LedgerRefusal("ledger_bad_ceiling",
++                                "ceilings must be a dict keyed from "
++                                "CEILING_KEYS", got=repr(ceilings))
++        limits = {}
++        for key, value in ceilings.items():
++            if key not in CEILING_KEYS:
++                raise LedgerRefusal("ledger_bad_ceiling",
++                                    "%r is not a ceiling key (known: %s)"
++                                    % (key, ", ".join(CEILING_KEYS)),
++                                    key=key)
++            if isinstance(value, bool) or not isinstance(value, int) \
++                    or value < 0:
++                raise LedgerRefusal("ledger_bad_ceiling",
++                                    "ceiling %r must be an int >= 0" % key,
++                                    key=key, got=repr(value))
++            limits[key] = value
++
++        evs = [e for e in self._events
++               if generation is None or e["generation"] == generation]
++        scope_failures = [e for e in evs if e["is_failure"]]
++        leak_failures = [e for e in scope_failures
++                         if e["code"] == LIVE_AT_CLOSE]
++        other_failures = [e for e in scope_failures
++                          if e["code"] != LIVE_AT_CLOSE]
++        acquires = sum(1 for e in evs if e["kind"] == "acquire")
++        releases = sum(1 for e in evs if e["kind"] == "release")
++        live_now = len(self.live(generation=generation))
++
++        violations = []
++        for key, measured in (("max_live", live_now),
++                              ("max_acquires", acquires),
++                              ("max_releases", releases),
++                              ("max_failures", len(other_failures))):
++            if key in limits and measured > limits[key]:
++                violations.append({"ceiling": key, "measured": measured,
++                                   "limit": limits[key]})
++
++        failure_budget = limits.get("max_failures", 0)
++        passed = (not violations
++                  and not leak_failures
++                  and len(other_failures) <= failure_budget)
++        return {
++            "schema": SCHEMA,
++            "scope_generation": generation,
++            "ledger_closed": self._closed,
++            "acquires": acquires,
++            "releases": releases,
++            "live_now": live_now,
++            "live_ids": [r.resource_id for r in self.live(generation)],
++            "failures_total": len(scope_failures),
++            "failures_by_code": {code: sum(1 for e in scope_failures
++                                           if e["code"] == code)
++                                 for code in FAILURE_CODES},
++            "failure_details": [{k: e[k] for k in
++                                 ("seq", "code", "resource_id", "owner",
++                                  "generation", "detail")} for e in
++                                scope_failures],
++            "ceilings": dict(limits),
++            "ceiling_violations": violations,
++            "passed": passed,
++        }
++
++    def to_json(self, ceilings=None, generation=None):
++        """The canonical JSON bytes of a summary (house canonical form:
++        sorted keys, tight separators) -- byte-identical for identical
++        histories."""
++        return canonical_json(self.summary(ceilings=ceilings,
++                                           generation=generation))
++
++
++def canonical_json(value):
++    """House canonical bytes (forest_loader.canonical shape, stdlib only)."""
++    return json.dumps(value, sort_keys=True, ensure_ascii=False,
++                      separators=(",", ":"), allow_nan=False).encode("utf-8")
++
++
++# ── the built-in selftest (deterministic, bounded, no I/O beyond stdout) ────────
++def _selftest():
++    led = ResourceLedger()
++    ok = True
++    # clean cycle 0
++    led.acquire("engine:9347", "session", 0, now_ms=0)
++    led.acquire("scene:forest", "session", 0, now_ms=1)
++    led.release("scene:forest", "session", 0, now_ms=2)
++    led.release("engine:9347", "session", 0, now_ms=3)
++    ok &= led.close_generation(0, now_ms=4)["passed"]
++    # clean cycle 1: same ids, new generation -- reuse is legal
++    led.acquire("engine:9350", "session", 1, now_ms=5)
++    led.release("engine:9350", "session", 1, now_ms=6)
++    ok &= led.close_generation(1, now_ms=7)["passed"]
++    # leak cycle 2: F3 -- a leak must fail the cycle
++    led.acquire("engine:9351", "session", 2, now_ms=8)
++    leak_doc = led.close_generation(2, now_ms=9)
++    ok &= not leak_doc["passed"]
++    ok &= leak_doc["failures_by_code"][LIVE_AT_CLOSE] == 1
++    # owner isolation: F1 -- the session cannot release the operator's id
++    led.acquire("operator:notebook", "operator", 3, now_ms=10)
++    bad = led.release("operator:notebook", "session", 3, now_ms=11)
++    ok &= bad["code"] == WRONG_OWNER
++    ok &= len(led.live(3)) == 1
++    # stale generation: F2 -- gen 2's claim cannot close gen 3's resource
++    led.acquire("engine:9352", "session", 3, now_ms=12)
++    stale = led.release("engine:9352", "session", 2, now_ms=13)
++    ok &= stale["code"] == WRONG_GENERATION
++    ok &= len(led.live(3)) == 2
++    final = led.close(now_ms=14)
++    ok &= not final["passed"]          # the gen-3 resources die live_at_close
++    print(canonical_json({"schema": SCHEMA, "selftest": "pass" if ok
++                          else "FAIL"}).decode("ascii"))
++    return 0 if ok else 1
++
++
++def main(argv=None):
++    argv = list(sys.argv[1:] if argv is None else argv)
++    if not argv or argv[0] == "selftest":
++        return _selftest()
++    raise LedgerRefusal("ledger_cli_verb", argv)
++
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/test_correction.py b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/test_correction.py
+new file mode 100644
+index 0000000..8b35731
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/test_correction.py
+@@ -0,0 +1,49 @@
++"""test_correction.py -- I-R05-RESOURCE-LEDGER correction (failing-first).
++
++The lead's reproducer must FAIL on BASE (recorded) and PASS after the fix.
++"""
++import sys
++import unittest
++from pathlib import Path
++
++HERE = Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++
++from resource_ledger import ResourceLedger, LedgerRefusal  # noqa: E402
++
++
++class LeadReproducer(unittest.TestCase):
++    def test_late_acquire_to_closed_generation(self):
++        ledger = ResourceLedger()
++        ledger.acquire("res", "owner", 0)
++        ledger.release("res", "owner", 0)
++        ledger.close_generation(0)
++        with self.assertRaises(LedgerRefusal) as ctx:
++            ledger.acquire("late", "owner", 0)
++        self.assertIn("acquire_generation_closed", str(ctx.exception)
++                      or getattr(ctx.exception, "reason", ""))
++        result = ledger.close()
++        self.assertEqual(result["live_now"], 0)
++        self.assertTrue(result["passed"])
++
++
++class FinalCloseNeverPassesWithLive(unittest.TestCase):
++    def test_live_record_in_closed_generation_fails_close(self):
++        # white-box regression guard for the defense-in-depth path: a live
++        # record in an already-closed generation (creatable only pre-fix)
++        # must make the final close FAIL, never pass
++        ledger = ResourceLedger()
++        ledger.acquire("res", "owner", 0)
++        ledger.release("res", "owner", 0)
++        ledger.close_generation(0)
++        from resource_ledger import AcquireRecord
++        ledger._live["late"] = AcquireRecord("late", "owner", 0, 99, 1000)
++        result = ledger.close()
++        self.assertFalse(result["passed"])
++        self.assertEqual(result["live_now"], 0)
++        kinds = [f["code"] for f in ledger.failures()]
++        self.assertIn("ledger_live_at_close", kinds)
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
+diff --git a/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/test_resource_ledger.py b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/test_resource_ledger.py
+new file mode 100644
+index 0000000..17bd56a
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-R05-RESOURCE-LEDGER/test_resource_ledger.py
+@@ -0,0 +1,423 @@
++"""test_resource_ledger.py -- I-R05 tests (stdlib unittest, bounded).
++
++Card I-R05-RESOURCE-LEDGER, attempt 080ba14585ce405e9b7d0ae87632a8af,
++branch-6, pinned base 9afbddcd90164b5544a16fd0bc72278d985eb6e3.
++
++Every scenario here drives the ResourceLedger with INJECTED integer times
++and caller-provided data only: no OS processes, no memory probing, no wall
++clock, no I/O beyond stdout.  These traces are TEST FIXTURES -- evidence of
++what the module does, never runtime proof about a live session.
++
++Run:  python -B test_resource_ledger.py        (well under 120 s; measured
++runtime is printed by main and recorded in receipt.json)
++"""
++from __future__ import annotations
++
++import time
++import unittest
++
++from resource_ledger import (
++    SCHEMA,
++    DUPLICATE_ACQUIRE, UNKNOWN_RELEASE, WRONG_GENERATION, WRONG_OWNER,
++    LIVE_AT_CLOSE, FAILURE_CODES,
++    CEILING_KEYS,
++    LedgerRefusal,
++    ResourceLedger,
++    canonical_json,
++)
++
++
++class ResourceLedgerTestBase(unittest.TestCase):
++    """A fresh ledger per test; injected times only."""
++
++    def setUp(self):
++        self.led = ResourceLedger()
++
++
++class CleanCyclesTests(ResourceLedgerTestBase):
++    """The repeated session/restart shape: clean cycles must pass."""
++
++    def test_repeated_clean_cycles_pass(self):
++        """Three full generations, every acquire released by name: each
++        close_generation passes and the ledger carries zero failures."""
++        for gen in range(3):
++            self.led.acquire("engine:port", "session", gen, now_ms=gen * 10)
++            self.led.acquire("scene:forest", "session", gen, now_ms=gen * 10 + 1)
++            self.led.release("scene:forest", "session", gen,
++                             now_ms=gen * 10 + 2)
++            self.led.release("engine:port", "session", gen,
++                             now_ms=gen * 10 + 3)
++            doc = self.led.close_generation(gen, now_ms=gen * 10 + 4)
++            self.assertTrue(doc["passed"], doc)
++            self.assertEqual(doc["live_now"], 0)
++            self.assertEqual(doc["failures_total"], 0)
++            self.assertEqual(doc["acquires"], 2)
++            self.assertEqual(doc["releases"], 2)
++        self.assertEqual(self.led.failures(), ())
++
++    def test_empty_ledger_summary_and_close(self):
++        """An empty ledger is a valid clean cycle: zero counts, passing."""
++        doc = self.led.summary()
++        self.assertTrue(doc["passed"])
++        self.assertEqual(doc["acquires"], 0)
++        self.assertEqual(doc["releases"], 0)
++        self.assertEqual(doc["live_now"], 0)
++        self.assertEqual(doc["failures_total"], 0)
++        self.assertEqual(doc["schema"], SCHEMA)
++        closed = self.led.close(now_ms=0)
++        self.assertTrue(closed["passed"])
++        self.assertTrue(self.led.closed)
++
++    def test_reused_resource_ids_across_generations_are_legal(self):
++        """The SAME id released in gen 0 may be re-acquired in gen 1 -- the
++        repeated-restart case.  No duplicate, no failure."""
++        self.led.acquire("engine:9347", "session", 0, now_ms=0)
++        self.led.release("engine:9347", "session", 0, now_ms=1)
++        self.led.close_generation(0, now_ms=2)
++        self.led.acquire("engine:9347", "session", 1, now_ms=3)
++        self.assertEqual(len(self.led.live(1)), 1)
++        self.led.release("engine:9347", "session", 1, now_ms=4)
++        doc = self.led.close_generation(1, now_ms=5)
++        self.assertTrue(doc["passed"], doc)
++        self.assertEqual(doc["failures_by_code"][DUPLICATE_ACQUIRE], 0)
++
++
++class LeakTests(ResourceLedgerTestBase):
++    """F3: a leaked resource can never pass a cycle."""
++
++    def test_leak_fails_generation_close(self):
++        self.led.acquire("engine:9347", "session", 0, now_ms=0)
++        self.led.acquire("scene:forest", "session", 0, now_ms=1)
++        self.led.release("scene:forest", "session", 0, now_ms=2)
++        doc = self.led.close_generation(0, now_ms=3)
++        self.assertFalse(doc["passed"])
++        self.assertEqual(doc["failures_by_code"][LIVE_AT_CLOSE], 1)
++        self.assertEqual(doc["live_ids"], [])
++        self.assertEqual(doc["failure_details"][0]["resource_id"],
++                         "engine:9347")
++        # the leak stays in the ledger permanently, even though abandoned
++        self.assertEqual(self.led.failures()[0]["code"], LIVE_AT_CLOSE)
++
++    def test_leak_fails_whole_ledger_summary_too(self):
++        """The leak is visible from the whole-ledger scope, not just its
++        generation scope."""
++        self.led.acquire("engine:1", "session", 0, now_ms=0)
++        self.led.close_generation(0, now_ms=1)
++        whole = self.led.summary()
++        self.assertFalse(whole["passed"])
++        self.assertEqual(whole["failures_by_code"][LIVE_AT_CLOSE], 1)
++
++    def test_leak_cannot_be_laundered_by_a_failure_budget(self):
++        """A caller-provided max_failures budget may admit accounting
++        failures, but live_at_close is NEVER tolerable: a leaking cycle
++        still fails with a generous budget."""
++        self.led.acquire("engine:1", "session", 0, now_ms=0)
++        doc = self.led.close_generation(0, ceilings={"max_failures": 99},
++                                        now_ms=1)
++        self.assertFalse(doc["passed"])
++        self.assertEqual(doc["failures_by_code"][LIVE_AT_CLOSE], 1)
++
++    def test_final_close_reports_every_open_generation_leak(self):
++        self.led.acquire("engine:1", "session", 0, now_ms=0)
++        self.led.acquire("engine:2", "session", 1, now_ms=1)
++        self.led.acquire("engine:3", "session", 2, now_ms=2)
++        self.led.release("engine:2", "session", 1, now_ms=3)
++        doc = self.led.close(now_ms=4)
++        self.assertFalse(doc["passed"])
++        self.assertEqual(doc["failures_by_code"][LIVE_AT_CLOSE], 2)
++        leaked = sorted(e["resource_id"]
++                        for e in doc["failure_details"])
++        self.assertEqual(leaked, ["engine:1", "engine:3"])
++        self.assertTrue(self.led.closed)
++
++    def test_generation_close_is_idempotent_guarded(self):
++        """Closing the same generation twice is a loud refusal (a second
++        teardown is never claimed twice -- session_flow's terminal law)."""
++        self.led.close_generation(0, now_ms=0)
++        with self.assertRaises(LedgerRefusal) as ctx:
++            self.led.close_generation(0, now_ms=1)
++        self.assertEqual(ctx.exception.code, "ledger_generation_closed")
++
++
++class DuplicateAcquireTests(ResourceLedgerTestBase):
++    def test_duplicate_acquire_refused_and_named(self):
++        self.led.acquire("engine:9347", "session", 0, now_ms=0)
++        event = self.led.acquire("engine:9347", "session", 0, now_ms=1)
++        self.assertEqual(event["kind"], "failure")
++        self.assertEqual(event["code"], DUPLICATE_ACQUIRE)
++        # exactly ONE live record survives -- the first owner keeps the slot
++        self.assertEqual(len(self.led.live(0)), 1)
++        self.assertEqual(self.led.live(0)[0].owner, "session")
++        doc = self.led.summary()
++        self.assertFalse(doc["passed"])
++        # one release closes the slot; the duplicate attempt created nothing
++        self.led.release("engine:9347", "session", 0, now_ms=2)
++        self.assertEqual(self.led.live(0), [])
++
++    def test_duplicate_by_a_different_owner_is_still_duplicate(self):
++        """The uniqueness law does not depend on who attempts the second
++        acquire: one id, one live record."""
++        self.led.acquire("gpu:solo", "session", 0, now_ms=0)
++        event = self.led.acquire("gpu:solo", "operator", 0, now_ms=1)
++        self.assertEqual(event["code"], DUPLICATE_ACQUIRE)
++        self.assertEqual(self.led.live(0)[0].owner, "session")
++
++
++class UnknownReleaseTests(ResourceLedgerTestBase):
++    def test_unknown_release_named_and_stateless(self):
++        event = self.led.release("engine:never", "session", 0, now_ms=0)
++        self.assertEqual(event["code"], UNKNOWN_RELEASE)
++        self.assertEqual(self.led.live(0), [])
++
++    def test_release_after_abandon_is_unknown(self):
++        """A leak abandoned at generation close is gone: a later release
++        claim on it is unknown-release, not a resurrection."""
++        self.led.acquire("engine:1", "session", 0, now_ms=0)
++        self.led.close_generation(0, now_ms=1)
++        event = self.led.release("engine:1", "session", 0, now_ms=2)
++        self.assertEqual(event["code"], UNKNOWN_RELEASE)
++
++    def test_release_on_empty_ledger_is_unknown(self):
++        event = self.led.release("anything", "session", 0, now_ms=0)
++        self.assertEqual(event["code"], UNKNOWN_RELEASE)
++
++
++class GenerationTests(ResourceLedgerTestBase):
++    """F2: stale generations must not close current resources."""
++
++    def test_wrong_generation_release_refused(self):
++        self.led.acquire("engine:9347", "session", 2, now_ms=0)
++        event = self.led.release("engine:9347", "session", 1, now_ms=1)
++        self.assertEqual(event["code"], WRONG_GENERATION)
++        # THE RESOURCE STAYS LIVE -- the stale claim touched nothing
++        self.assertEqual(len(self.led.live(2)), 1)
++        doc = self.led.summary()
++        self.assertFalse(doc["passed"])
++        self.assertEqual(doc["failures_by_code"][WRONG_GENERATION], 1)
++
++    def test_stale_claim_cannot_close_a_reacquired_current_resource(self):
++        """The exact falsifier shape: 'engine' lived in gen 0, was re-acquired
++        in gen 1, and a gen-0 claim arrives -- gen 1's record must survive."""
++        self.led.acquire("engine", "session", 0, now_ms=0)
++        self.led.release("engine", "session", 0, now_ms=1)
++        self.led.close_generation(0, now_ms=2)
++        self.led.acquire("engine", "session", 1, now_ms=3)
++        stale = self.led.release("engine", "session", 0, now_ms=4)
++        self.assertEqual(stale["code"], WRONG_GENERATION)
++        self.assertEqual(len(self.led.live(1)), 1)
++        # and the honest claim still works
++        ok = self.led.release("engine", "session", 1, now_ms=5)
++        self.assertEqual(ok["kind"], "release")
++        self.assertEqual(self.led.live(1), [])
++
++    def test_old_record_released_by_its_true_generation_is_legal(self):
++        """A genuinely old record (its generation never closed) released by
++        its TRUE generation is a legal late release, not an offense."""
++        self.led.acquire("engine:old", "session", 0, now_ms=0)
++        self.led.acquire("engine:new", "session", 1, now_ms=1)
++        event = self.led.release("engine:old", "session", 0, now_ms=2)
++        self.assertEqual(event["kind"], "release")
++        self.assertEqual(len(self.led.live()), 1)
++
++
++class OwnerTests(ResourceLedgerTestBase):
++    """F1: an unrelated owner cannot release another owner's resource."""
++
++    def test_operator_resource_not_releasable_by_session(self):
++        self.led.acquire("operator:notebook", "operator", 0, now_ms=0)
++        event = self.led.release("operator:notebook", "session", 0,
++                                 now_ms=1)
++        self.assertEqual(event["code"], WRONG_OWNER)
++        # the operator's resource STAYS LIVE and OWNED
++        live = self.led.live(0)
++        self.assertEqual(len(live), 1)
++        self.assertEqual(live[0].owner, "operator")
++        doc = self.led.summary()
++        self.assertFalse(doc["passed"])
++        self.assertEqual(doc["failures_by_code"][WRONG_OWNER], 1)
++
++    def test_owner_still_releases_their_own_resource(self):
++        self.led.acquire("operator:notebook", "operator", 0, now_ms=0)
++        ok = self.led.release("operator:notebook", "operator", 0, now_ms=1)
++        self.assertEqual(ok["kind"], "release")
++        self.assertEqual(self.led.live(0), [])
++
++    def test_wrong_owner_and_wrong_generation_precedence(self):
++        """Precedence is fixed and documented: wrong-generation is reported
++        when BOTH the generation and the owner of the claim are wrong."""
++        self.led.acquire("engine:1", "session", 1, now_ms=0)
++        event = self.led.release("engine:1", "operator", 0, now_ms=1)
++        self.assertEqual(event["code"], WRONG_GENERATION)
++
++
++class CeilingTests(ResourceLedgerTestBase):
++    """Ceilings are caller data ONLY; the ledger probes nothing."""
++
++    def test_max_live_ceiling_from_caller_data(self):
++        self.led.acquire("engine:1", "session", 0, now_ms=0)
++        within = self.led.summary(ceilings={"max_live": 1})
++        self.assertTrue(within["passed"])
++        self.led.acquire("engine:2", "session", 0, now_ms=1)
++        over = self.led.summary(ceilings={"max_live": 1})
++        self.assertFalse(over["passed"])
++        self.assertEqual(over["ceiling_violations"],
++                         [{"ceiling": "max_live", "measured": 2, "limit": 1}])
++        # zero accounting failures -- the failure is PURELY the ceiling
++        self.assertEqual(over["failures_total"], 0)
++
++    def test_max_acquires_and_max_releases_ceilings(self):
++        self.led.acquire("a", "session", 0, now_ms=0)
++        self.led.acquire("b", "session", 0, now_ms=1)
++        self.led.release("b", "session", 0, now_ms=2)
++        doc = self.led.summary(ceilings={"max_acquires": 1,
++                                         "max_releases": 5})
++        self.assertFalse(doc["passed"])
++        codes = [v["ceiling"] for v in doc["ceiling_violations"]]
++        self.assertEqual(codes, ["max_acquires"])
++        doc = self.led.summary(ceilings={"max_acquires": 9,
++                                         "max_releases": 0})
++        self.assertFalse(doc["passed"])
++        self.assertEqual([v["ceiling"] for v in doc["ceiling_violations"]],
++                         ["max_releases"])
++
++    def test_max_failures_budget_admits_only_non_leak_failures(self):
++        self.led.acquire("x", "session", 0, now_ms=0)
++        self.led.release("ghost", "session", 0, now_ms=1)   # one unknown
++        doc = self.led.summary(ceilings={"max_failures": 1})
++        self.assertTrue(doc["passed"], doc)
++        tight = self.led.summary(ceilings={"max_failures": 0})
++        self.assertFalse(tight["passed"])
++
++    def test_generation_scoped_summary_ignores_other_generations(self):
++        self.led.acquire("engine:1", "session", 0, now_ms=0)
++        self.led.release("engine:1", "session", 0, now_ms=1)
++        self.led.close_generation(0, now_ms=2)
++        self.led.acquire("engine:2", "session", 1, now_ms=3)
++        gen0 = self.led.summary(ceilings={"max_live": 0}, generation=0)
++        self.assertTrue(gen0["passed"], gen0)
++        gen1 = self.led.summary(ceilings={"max_live": 0}, generation=1)
++        self.assertFalse(gen1["passed"])
++        self.assertEqual(gen1["ceiling_violations"][0]["measured"], 1)
++
++    def test_unknown_ceiling_key_is_refused_not_ignored(self):
++        with self.assertRaises(LedgerRefusal) as ctx:
++            self.led.summary(ceilings={"max_liv": 1})   # a typo must be loud
++        self.assertEqual(ctx.exception.code, "ledger_bad_ceiling")
++
++    def test_bad_ceiling_values_are_refused(self):
++        for bad in (-1, True, 1.5, "3"):
++            with self.assertRaises(LedgerRefusal) as ctx:
++                self.led.summary(ceilings={"max_live": bad})
++            self.assertEqual(ctx.exception.code, "ledger_bad_ceiling")
++
++    def test_ceilings_none_judges_failures_only(self):
++        """With NO ceilings the zero-failure law still holds: ceilings add
++        resource limits; they are never required to catch a failure."""
++        self.led.acquire("engine:1", "session", 0, now_ms=0)
++        self.led.release("engine:1", "session", 0, now_ms=1)
++        self.led.release("engine:1", "session", 0, now_ms=2)  # unknown
++        self.assertTrue(self.led.summary(ceilings=None)["passed"] is False)
++
++
++class RefusalTests(ResourceLedgerTestBase):
++    """Loud refusals for programmer errors (never silent acceptance)."""
++
++    def test_bad_identifiers(self):
++        for kwargs in ({"resource_id": "", "owner": "s", "generation": 0},
++                       {"resource_id": "e", "owner": "", "generation": 0},
++                       {"resource_id": 7, "owner": "s", "generation": 0},
++                       {"resource_id": "e", "owner": None, "generation": 0}):
++            with self.assertRaises(LedgerRefusal) as ctx:
++                self.led.acquire(now_ms=0, **kwargs)
++            self.assertEqual(ctx.exception.code, "ledger_bad_id")
++
++    def test_bad_generation(self):
++        for bad in (-1, True, 0.0, "0", None):
++            with self.assertRaises(LedgerRefusal) as ctx:
++                self.led.acquire("e", "s", bad, now_ms=0)
++            self.assertEqual(ctx.exception.code, "ledger_bad_generation")
++
++    def test_bad_injected_time(self):
++        """now_ms is INJECTED data: a wall clock, float or bool is refused."""
++        for bad in (-1, 1.5, True, "0"):
++            with self.assertRaises(LedgerRefusal) as ctx:
++                self.led.acquire("e", "s", 0, now_ms=bad)
++            self.assertEqual(ctx.exception.code, "ledger_bad_time")
++
++    def test_use_after_close_raises(self):
++        self.led.close(now_ms=0)
++        with self.assertRaises(LedgerRefusal) as ctx:
++            self.led.acquire("e", "s", 0, now_ms=1)
++        self.assertEqual(ctx.exception.code, "ledger_closed")
++        with self.assertRaises(LedgerRefusal):
++            self.led.release("e", "s", 0, now_ms=1)
++
++    def test_event_bound_is_loud(self):
++        led = ResourceLedger(max_events=2)
++        led.acquire("a", "s", 0, now_ms=0)
++        led.acquire("b", "s", 0, now_ms=1)
++        with self.assertRaises(LedgerRefusal) as ctx:
++            led.acquire("c", "s", 0, now_ms=2)
++        self.assertEqual(ctx.exception.code, "ledger_full")
++
++    def test_bad_ledger_bound(self):
++        for bad in (0, -1, True, 2.0, "2", None):
++            with self.assertRaises(LedgerRefusal):
++                ResourceLedger(max_events=bad)
++
++
++class DeterminismTests(ResourceLedgerTestBase):
++    def test_identical_histories_produce_identical_canonical_bytes(self):
++        def build():
++            led = ResourceLedger()
++            led.acquire("engine:1", "session", 0, now_ms=0)
++            led.release("engine:1", "session", 0, now_ms=1)
++            led.acquire("engine:1", "session", 1, now_ms=2)
++            led.release("engine:2", "session", 1, now_ms=3)  # unknown
++            led.close_generation(1, now_ms=4)
++            return led
++        a, b = build(), build()
++        ceilings = {"max_live": 4, "max_acquires": 8, "max_releases": 8,
++                    "max_failures": 1}
++        self.assertEqual(a.to_json(ceilings=ceilings),
++                         b.to_json(ceilings=ceilings))
++        self.assertEqual(a.events(), b.events())
++        # and the ceiling arguments are echoed verbatim in the document
++        doc = a.summary(ceilings=ceilings)
++        self.assertEqual(doc["ceilings"], ceilings)
++
++    def test_all_five_codes_form_the_named_vocabulary(self):
++        self.assertEqual(len(FAILURE_CODES), 5)
++        self.assertIn(LIVE_AT_CLOSE, FAILURE_CODES)
++        self.assertEqual(set(CEILING_KEYS),
++                         {"max_live", "max_acquires", "max_releases",
++                          "max_failures"})
++
++    def test_no_memory_or_process_surface_exists(self):
++        """The ledger's public surface contains no memory probe, no process
++        discovery, no kill: the only success inputs are events + caller
++        ceilings.  (A structural check that the card's 'no psutil' law
++        cannot regress silently.)"""
++        import resource_ledger as mod
++        import inspect
++        source = inspect.getsource(mod)
++        for forbidden in ("psutil", "popen", "Popen", "terminate", "kill(",
++                          "virtual_memory", "time.time", "os.listdir",
++                          "subprocess"):
++            self.assertNotIn(forbidden, source)
++
++
++def main():
++    suite = unittest.defaultTestLoader.loadTestsFromModule(
++        __import__("test_resource_ledger"))
++    runner = unittest.TextTestRunner(verbosity=2)
++    started = time.perf_counter()
++    result = runner.run(suite)
++    elapsed = time.perf_counter() - started
++    print("runtime_seconds=%.3f" % elapsed)
++    return 0 if result.wasSuccessful() else 1
++
++
++if __name__ == "__main__":
++    import sys
++    sys.exit(main())

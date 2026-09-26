@@ -234,6 +234,13 @@ class ResourceLedger:
         resource_id = _check_name("resource_id", resource_id)
         owner = _check_name("owner", owner)
         generation = _check_generation(generation)
+        # lead correction: a closed session generation accepts no new claims
+        if generation in self._closed_generations:
+            raise LedgerRefusal(
+                "acquire_generation_closed",
+                "generation %d is already closed; acquiring into it would "
+                "hide a leak from the final close" % generation,
+                generation=generation)
         now_ms = _check_now_ms(now_ms)
         live = self._live.get(resource_id)
         if live is not None:
@@ -322,6 +329,17 @@ class ResourceLedger:
                                     self._live.values()}):
             if generation not in self._closed_generations:
                 self.close_generation(generation, now_ms=now_ms)
+        # lead correction (defense in depth): any live record still sitting in
+        # an ALREADY-closed generation is a named leak and is abandoned here
+        # -- the final close can never pass with live resources
+        for rec in sorted((r for r in self._live.values()
+                           if r.generation in self._closed_generations),
+                          key=lambda r: (r.resource_id,)):
+            self._record(self._failure(
+                LIVE_AT_CLOSE, rec.resource_id, rec.owner, rec.generation,
+                now_ms, "still live at final close in already-closed "
+                "generation (acquired seq %d)" % rec.seq))
+            del self._live[rec.resource_id]
         self._closed = True
         self._record({"kind": "close", "resource_id": None, "owner": None,
                       "generation": None, "now_ms": now_ms,

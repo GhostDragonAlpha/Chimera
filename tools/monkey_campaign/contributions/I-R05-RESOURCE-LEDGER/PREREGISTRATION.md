@@ -45,3 +45,41 @@ card reports honestly.
 std lib only · Python 3.11+ · headless · deterministic · no psutil / process enumeration /
 kills / engine launches / memory probing · tests < 120 s · total new output < 16 MiB ·
 code only inside WS.
+
+---
+
+# CORRECTION ADDENDUM — attempt 6487d23753e143ed941a4f4a60e55e33 (2026-09-25)
+
+Responds to the lead's CHANGES REQUIRED on PR #122 (base adopted
+byte-identical, resource_ledger.py sha256 `ef313c27…`; prior 35/35 suite
+green pre-fix). Written BEFORE the fix; failing-first run recorded.
+
+## The defect (lead reproducer)
+
+`close_generation(0)` → `acquire("late","owner",0)` was ACCEPTED (acquire
+never checked closed generations) → final `close()` skipped re-closing
+generation 0 (already in `_closed_generations`), so the live "late" record
+was never abandoned → summary `passed=true` with `live_now=1` and zero leak
+failures.
+
+## The fixes
+
+1. `acquire` refuses acquisitions to a closed generation by name
+   (`acquire_generation_closed`) — the impossible state cannot be created.
+2. `close()` abandons ANY still-live record whose generation is already
+   closed (named `live_at_close`) before sealing — the final close can never
+   pass with live resources, even for ledger states created before fix 1
+   (defense in depth; regression-guarded white-box).
+
+## Failing-first prediction (against BASE)
+
+The lead's exact sequence: BASE returns `passed=true`, `live_now=1`, zero
+live_at_close failures (defect). FIXED: the late acquire REFUSES
+(`acquire_generation_closed`); the white-box closed-generation live record
+makes final close FAIL with a named live_at_close. All 35 prior tests still
+pass.
+
+## Falsifier
+
+The reproducer passing on the fixed code; any prior test broken; a refusal
+without a name; live_now > 0 at a passed final close.
