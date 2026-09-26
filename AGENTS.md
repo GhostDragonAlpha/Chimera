@@ -48,8 +48,10 @@
 
 ## READ THESE, IN THIS ORDER
 
-**New agent? Paste `ChimeraEngine/ONBOARDING.md` into your session.** It is the single
-onboarding: you are the PHYSICS (you own rendering + the workflow), the HUMAN side is the
+**Joining the playable-monkey campaign? Execute `docs/MONKEY_RUN.md`.** Use
+`docs/WORKFLOW_INDEX.md` to find current role, recovery and queue procedures.
+`ChimeraEngine/ONBOARDING.md` is engine-specific reference material: you are the
+PHYSICS (you own rendering + the workflow), the HUMAN side is the
 operator + LM Studio's vision, and a proof is a dyadAnalysis (a number and a term, aligned).
 You build THROUGH the engine.
 

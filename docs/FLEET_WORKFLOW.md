@@ -2,6 +2,9 @@
 
 This is the maintained overview of the playable-monkey campaign workflow.
 [MONKEY_RUN.md](MONKEY_RUN.md) remains the campaign execution entry point.
+Use the [workflow index and glossary](WORKFLOW_INDEX.md) to locate procedures by
+role, state, identity or failure symptom. The index points to authoritative
+contracts rather than granting additional permissions.
 The published implementation includes the locally deployed astra-0029 recovery
 and separate-review-queue mechanisms. No live registry, credential, model process,
 or worker checkpoint is distributed with this documentation.
@@ -74,6 +77,8 @@ Use the returned templates for `--request-pr`, `--submit-pr`, `--review-result`,
 checkpointing and coordination release. Do not fabricate a handoff template or token.
 The entry point is host-specific; a fresh clone requires deliberate installation,
 registry initialization and path configuration. It is not an unattended installer.
+See the [replacement-PC recovery checklist](DISASTER_RECOVERY.md) for software,
+private backups, restore order and the required recovery drill.
 
 The [mailbox](../tools/monkey_campaign/SUGGESTION_BOX.md) carries architectural
 questions and answers; task inboxes carry actionable review findings. Workers read

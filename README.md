@@ -1,4 +1,5 @@
 > **Fleet methodology:** [Captain, Lieutenant, Sergeants, ten-slot Kanban and verification](docs/FLEET_WORKFLOW.md). Campaign workers start with [MONKEY_RUN.md](docs/MONKEY_RUN.md).
+> **New machine or lost drive:** [System setup and directory layout](docs/SYSTEM_SETUP.md) · [Recovery checklist](docs/DISASTER_RECOVERY.md) · [Workflow keyword index](docs/WORKFLOW_INDEX.md).
 
 # CHIMERA — the membrane game
 

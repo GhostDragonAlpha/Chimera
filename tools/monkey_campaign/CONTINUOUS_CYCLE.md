@@ -12,10 +12,12 @@ the host agent must execute it. These helpers do not launch an AI model themselv
    `worker_start.py --arrival-id YOUR_ID --request-pr candidate.json`
    This records PUBLICATION_REQUESTED, preserves the candidate and assigns next work.
    A candidate request is not a GitHub PR. Lead publication is still required.
-3. For an actual PR, use the existing --submit-pr handoff. Only verified merged PRs
-   close/refill cards. A submitted PR occupies its slot while workers move onward.
+3. For an actual PR, use the existing --submit-pr handoff. Submitted candidates
+   live in the separate Review queue and free Development capacity. Submission
+   does not complete the task or unlock its dependencies. See REVIEW_LANE.md.
 4. Once no eligible implementation remains, startup assigns an independent PR review
-   at a pinned head. When all ten cards have PRs, review is the remaining work cycle.
+   at a pinned head. Review can proceed regardless of the number of occupied
+   Development slots; ten is not a limit on the separate Review queue.
    Rerun appropriate checks, inspect actual visual evidence where required, and retain
    failures. Missing native/visual evidence is a gap, never a synthetic PASS.
 5. Fill review_result_template and invoke:
@@ -23,8 +25,10 @@ the host agent must execute it. These helpers do not launch an AI model themselv
    This returns the next assignment. CHANGES_REQUIRED reopens correction work. PASS
    records a recommendation; it never fabricates lead approval or a GitHub merge.
 6. The lead reviews verification receipts, publishes/merges acceptable exact heads,
-   and records the verified merge to refill each slot. The next task keeps that
-   slot's numbered branch and receives its own ontology binding and criteria hash.
+   and records verified task completion to unlock dependent work. Development
+   refills whenever eligible work exists, including after submission. The next task
+   receives its assigned numbered branch, ontology binding and criteria hash;
+   publication uses the card's review/<task-id> branch.
 
 An explicit switch away from active work requires a saved checkpoint and --park.
 No other worker is stopped, expired or impersonated. Do not review your own PR as
