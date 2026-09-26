@@ -1,0 +1,93 @@
+# PROPOSED PATCH — D-W03-ANCHORS-20260924-FOLLOWUP
+
+> **This document is a prose proposal, not an executable patch.** It describes the change
+> set so a reviewer can evaluate it without PR tooling. Publication does **not** run `git
+> apply` on this file; it uses (a) the actual changed files — `implementation.py` and
+> `test_implementation.py`, both new-file additions already present in `pr_destination` —
+> and (b) the usable unified diff `candidate.diff`. Do not attempt to apply this document.
+
+Scope: add a deterministic, versioned walking-anchor certificate verifier and its test
+suite to the attempt workspace. Both files are **new additions**; no existing production
+source is modified, and no physics recomputation, threshold, or anchor constant is
+changed. The artifacts already live in `pr_destination`.
+
+## Files added
+
+1. `implementation.py` — SHA-256 `F21180BCC7D1167F8F5A9157481670D8A429F90161C86CFA177C1B090847DBB8`, 309 lines. Pure stdlib (`hashlib`, `json`, `dataclasses`, `typing`).
+2. `test_implementation.py` — SHA-256 `5A605ED36BEC82B73E71F89763F2017BA972147D3BCA3F08AC7BD8A3A99164DA`, 274 lines. Dual runner (plain `assert`; runs under both `python test_implementation.py` and `pytest`).
+
+## implementation.py — what it adds
+
+Walking-anchor model: a certificate whose binding must hold across ordered hops
+source -> binary -> device; the anchor walks only if every hop verifies against the
+identity it declares. The module never infers acceptance, rejects unsupported versions
+rather than guessing, and returns the same verdict + canonical digest for the same inputs.
+
+Constants / schema:
+- `SUPPORTED_VERSIONS = frozenset({1, 2})` — closed set; anything else is rejected.
+- `ALGORITHM = "sha256-chimera-walking-anchor-v1"`.
+- `_REQUIRED_FIELDS`: v1 = (version, source_sha256, binary_sha256, qualified_by_device);
+  v2 extends v1 with an ordered `binding_scope` and reads a device revocation horizon.
+
+Errors & records:
+- `AnchorError(ValueError)` — stable machine `code`; raised for structural problems only.
+- `DeviceRecord` (frozen) — trusted device entry; `id` + optional ISO-8601 UTC `revoked_at`; `is_revoked`.
+- `BindingResult` — per-hop (hop, ok, reason).
+- `AnchorVerdict` — version, status (`VERIFIED`/`REJECTED`), ordered `bindings`, `reason`;
+  `.verified`; `.canonical_json()` (sorted keys, compact separators, bindings sorted by hop);
+  `.digest()` = sha256 of the canonical JSON bytes.
+
+`verify_certificate(cert, source_bytes, binary_bytes, devices)`:
+- Validates `cert` is a Mapping; version in `SUPPORTED_VERSIONS`; all required fields present.
+- Normalizes `devices` (mapping or sequence of `DeviceRecord`) into a registry.
+- Resolves evaluation scope: v2 uses the certificate's own validated `binding_scope`
+  (unknown hop -> `INVALID_BINDING_SCOPE`); v1 defaults to [source, binary, device].
+  Evaluation always follows this order; canonical output sorts by hop name only.
+- **Hop 1 source:** `_check_hex64` then `sha256(source_bytes) == source_sha256`.
+- **Hop 2 binary:** `_check_hex64` then `sha256(binary_bytes) == binary_sha256`.
+- **Hop 3 device:** unknown -> `DEVICE_NOT_QUALIFIED`; revoked rule:
+  v1 / v2-without-horizon rejects any `revoked_at` (`DEVICE_REVOKED`);
+  v2-with-horizon valid only if `revoked_at > horizon` (still qualified at verification time).
+- Returns `REJECTED` with `reason` = first broken hop by scope order, else `VERIFIED`.
+- Structural problems raise `AnchorError`; binding failures are returned in the verdict.
+
+Helpers: `_is_hex64`, `_check_hex64`, `_normalize_devices`, `_resolve_scope`. A `__main__`
+self-check prints `VERIFIED <digest>` for a non-revoked sample.
+
+## test_implementation.py — what it adds
+
+16 tests across four groups, all CONFIRMED (standalone 16 passed / pytest 16 passed):
+- **Happy paths:** v2 all-holds VERIFIED (+ pinned digest `04d759...69f`), v1 default scope,
+  reconstructed fixture from real bytes, registry accepted as a sequence.
+- **Rejections (never silently accepted):** source tamper (`source_binding_failed`),
+  binary tamper (`binary_binding_failed`), unknown device with missing qualification preserved,
+  revoked device, and v2 revocation horizon before/after.
+- **Structural errors (raised):** unsupported version, missing field, malformed digest.
+- **Determinism:** identical verdicts, key-order independence, sorted canonical keys;
+  plus `SUPPORTED_VERSIONS == {1, 2}`.
+
+The structured certificate fixture does not exist on disk; it is reconstructed from real
+bytes whose sha256 equals the pinned digests — this is labeled as a reconstructed case,
+not native acceptance.
+
+## How to apply / verify
+
+Files are already in `tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP/`:
+```
+cd tools/monkey_campaign/contributions/D-W03-ANCHORS-20260924-FOLLOWUP
+python test_implementation.py      # 16 passed, 0 failed
+pytest test_implementation.py -q   # 16 passed
+python implementation.py           # VERIFIED 04d759cdf9d13be58ea23966c1bce7f7ea7116058b77a56db72c9509dc25069f
+```
+
+`candidate.diff` is the usable unified diff (both files as new-file additions); apply it
+to publish, or use the actual changed files already in `pr_destination`. Neither applies
+this prose document.
+
+## Scope boundaries (explicitly NOT in this patch)
+
+- No production source, anchor hashes, or frozen thresholds are read into or changed.
+- No GPU workloads; no CPU result is relabeled as device qualification — the host/device
+  gap isolated by the base diagnostic stays open and missing qualification is preserved as missing.
+- No digital signature, secret, or human identity; a pinned expected digest is the trust-anchor stand-in.
+- No physics recomputation equations or tolerances are touched.
