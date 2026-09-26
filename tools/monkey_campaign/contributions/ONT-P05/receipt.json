@@ -1,0 +1,65 @@
+{
+ "schema": "ont-p05.attempt_receipt.v1",
+ "task_id": "ONT-P05",
+ "planning_id": "P05",
+ "attempt_id": "1ea58bee28c04768b15253c2f1ba7888",
+ "agent_id": "arrival-9de32a8d32144d1fb62ffc7308cd11d7",
+ "branch": "branch-6",
+ "criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "depends_on": {
+  "task_id": "ONT-P03",
+  "status": "qualified winner",
+  "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/140",
+  "merge_commit_sha256": "736d12cca04964c333410a41ac31ced4bd004344"
+ },
+ "verification_profile": {
+  "id": "records",
+  "kind": "offline",
+  "numerical_evidence_required": true,
+  "nonvisual_reason": "A source/contract/measurement task whose truth requires records or numerical oracles, not a 3D image."
+ },
+ "deliverables": [
+  {"path": "tools/monkey_campaign/contributions/ONT-P05/PREREGISTRATION.md",
+   "sha256": "9e3aa8e3969a7991bfb995ab5a7fa39c2b308039f5ea14e17c6bc9dbe226cd5b",
+   "note": "frozen before implementation/probes; two pre-measurement amendments recorded"},
+  {"path": "tools/monkey_campaign/contributions/ONT-P05/implementation.py",
+   "sha256": "ed8f6acfe1e3fdd51d5544ad63f848b1d0a5c8bb2ae50f4674ade63dcc554534",
+   "note": "read-only identity audit tool (stdlib, CPU-only)"},
+  {"path": "tools/monkey_campaign/contributions/ONT-P05/test_implementation.py",
+   "sha256": "51ba1d288477a66c7691695ba2e684fa8a1fc3ac4402c642001fdb4b89aac6ef",
+   "note": "16 fixture regressions; temp dirs only; 16/16 OK"},
+  {"path": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json",
+   "sha256": "516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88",
+   "note": "official probe output against live records (schema ont-p05.identity_audit.v1)"},
+  {"path": "tools/monkey_campaign/contributions/ONT-P05/report.md",
+   "sha256": "a9c28c819ddf852c4af4d763e8453b8120806b3fd8eb826fd6447ddb433dba0e",
+   "note": "measured clause table, prediction scorecard, findings, commands, limits"}
+ ],
+ "verification_summary": {
+  "fixture_tests": "16/16 OK (python -B -m unittest test_implementation)",
+  "batteries_reexecuted_by_probe": {
+   "test_kanban": "11 tests OK",
+   "test_suggestion_box": "5 tests OK",
+   "test_merge_service": "2 tests OK",
+   "test_checkpoints": "19 tests OK"
+  },
+  "clause_results": {
+   "recoverable_commits": "PASS (25 startup receipts verified; own receipt binds task/attempt/criteria; 3 winner merges + attempt head resolve as commits)",
+   "run_manifests": "PARTIAL — schemas/law records present; modern records verify; TWO named historical-record findings (F1, F2)",
+   "training_checkpoints": "PASS (checkpoint law records present; curriculum 18 entries status-verbatim; 3 training receipts; battery green)",
+   "raw_blob_canonical_hash_labels": "PASS (map: raw 010311bb…, blob 466ba011f9df369e706497a7b21b516f36643385, canonical 01ea5cdd… distinct; verify_catalog passes with external anchor)",
+   "retry_rules": "PASS (5 rule markers present; 4 merge-service receipts; all 4 batteries green)"
+  },
+  "findings": [
+   "F1: agent_fleet/MANIFEST.json does not reproduce against its own pinned source_base bf0a6216… (7/8 sampled paths absent at that commit; THE_MASTER_LIST.md blob mismatch; recorded hash matches no recoverable state)",
+   "F2: FEATURE_WALK/MANIFEST_sha256.txt labels g*.png frames preserved nowhere reachable (videos and keyframes ARE preserved)"
+  ],
+  "probe_history": "probe run 1 VOIDED (instrument defects: law-token mispairing; verification target under-specified) — corrections recorded as PREREGISTRATION amendments before probe 2, the official run"
+ },
+ "prediction_scorecard": {"P1": "PASS", "P2": "PASS", "P3": "FAIL (reported as finding F1 — not tuned away)", "P4": "PASS", "P5": "PASS", "P6": "PASS"},
+ "resource_use": {"gpu": false, "engine_start": false, "model_start": false,
+  "writes_outside_attempt_workspace": "none (audit tool is read-only over records; fixtures use temp dirs)"},
+ "writes_stopped": true,
+ "handoff": "Candidate committed on branch-6 under tools/monkey_campaign/contributions/ONT-P05/; publication requested via worker_start.py --request-pr; lead publishes review/ONT-P05. Independent review pending in the review lane; historical-record disposition of F1/F2 belongs to the lead."
+}

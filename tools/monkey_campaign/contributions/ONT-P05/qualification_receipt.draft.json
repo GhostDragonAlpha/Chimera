@@ -1,0 +1,39 @@
+{
+ "schema": "ontology_qualification.draft.v1",
+ "note": "DRAFT assembled by the implementing worker per ONTOLOGY_QUEUE.md qualification schema (profile records, offline kind). evidence.source and evidence.numerical are final and hash-bound; evidence.independent_review is intentionally PENDING — it must be pinned by the independent reviewer to the actual reviewed head in the review lane before ACCEPTED. The lead verifies all artifacts and raw hashes.",
+ "task_id": "P05",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
+ "head_sha": "FILL_AT_PUBLICATION: exact published review/ONT-P05 head",
+ "done_when_verified": true,
+ "done_when_note": "All five record classes EXIST and are machine-verified (recoverable commits, run-manifest schemas + modern records, training checkpoints, raw/blob/canonical labels, retry rules). The standing audit preserves TWO named historical-record findings (agent_fleet MANIFEST.json unreproducible vs its pinned source_base; FEATURE_WALK raw-hash manifest frames unpreserved) as inventory for the lead; existence of the record classes is not claimed for the defective historical contents, and no record was repaired or fabricated.",
+ "profile_verified": true,
+ "profile": {
+  "id": "records",
+  "kind": "offline",
+  "numerical_evidence_required": true,
+  "camera_required_fields": [],
+  "nonvisual_reason": "A source/contract/measurement task whose truth requires records or numerical oracles, not a 3D image."
+ },
+ "evidence": {
+  "source": {
+   "reference": "tools/monkey_campaign/contributions/ONT-P05/implementation.py @ published head",
+   "raw_sha256": "ed8f6acfe1e3fdd51d5544ad63f848b1d0a5c8bb2ae50f4674ade63dcc554534"
+  },
+  "numerical": {
+   "reference": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json (official probe; rerunnable: python -B implementation.py --out identity_audit.json)",
+   "raw_sha256": "516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88"
+  },
+  "independent_review": {
+   "reference": "PENDING: independent review receipt (review lane, exact published head)",
+   "raw_sha256": null
+  }
+ },
+ "falsifier_scorecard": {
+  "missing_identity_unnamed": "NOT FIRED (all gaps named in identity_audit.json findings: F1, F2)",
+  "claimed_pass_unsupported_by_records": "NOT FIRED (run-manifests clause reports PARTIAL; prediction P3 failure reported, not tuned away)",
+  "fabricated_identity": "NOT FIRED (every field read from live records with recomputed hashes)",
+  "record_write_or_repair": "NOT FIRED (audit is read-only; fixtures in temp dirs only)",
+  "hash_label_conflation": "NOT FIRED (raw/blob/canonical reported as three distinct labeled identities)"
+ }
+}
