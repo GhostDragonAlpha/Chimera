@@ -1,0 +1,83 @@
+{
+ "frame_map": {
+  "diagnostic+clean interleaved per view": true,
+  "frame_index": "diagnostic and clean alternate per tick within each view segment",
+  "frames_per_view": 782,
+  "view_order": [
+   "normal follow-camera distance",
+   "obstructed and close-target views",
+   "repeatable inspection side view"
+  ]
+ },
+ "gate_validation": {
+  "capture_kind": "video",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "controls",
+  "structurally_valid": true,
+  "view_count": 6,
+  "visual_acceptance": false
+ },
+ "honest_boundary": "Deterministic CPU visualization of the recorded headless trace of the pinned camera subject (trace.jsonl); NOT native engine frames; the native integrated checkpoints (V03/V08) stay with the integration lane.",
+ "manifest": {
+  "raw_sha256": "103b93ed6d02964c42f7cabb76346618e1d02c2519d54249c868d1a5eae0f5dd",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U02\\2c724944121f4feb893f671504bbac00\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U02\\evidence\\capture_manifest.json"
+ },
+ "render_referents": {
+  "cylinders": "projected rim-circle silhouettes (12-point hull); clean rows draw scene only, depth-ordered",
+  "frame": "monkey_u02_world_yup_m (right-handed, Y-up, metres)",
+  "projection": "perspective 45 deg vertical FOV (tan_half 0.41421356), principal point centered",
+  "source_module": "tools/monkey_campaign/product/follow_camera.py @ f30f2224 (sha d61347f0)"
+ },
+ "run_id": "ont-u02-camera-20260926-2c724944",
+ "schema": "ont-u02.camera.capture.v1",
+ "state_binding": {
+  "kind": "trace",
+  "raw_sha256": "97f9fbfcfafcfbeaa02ced70636231bd3935ee446b8a9b9c114d2f05ad8a3c8a",
+  "rows": 391,
+  "tick_interval": [
+   0,
+   390
+  ]
+ },
+ "subject_sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+ "task_id": "U02",
+ "video": {
+  "bytes": 2343224,
+  "duration_s": 117.3,
+  "fps": 20,
+  "frames": 2346,
+  "raw_sha256": "e31290998b65b12886381523842c3d6c132421baefab3cdcf4ebe333d37c373e",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U02\\2c724944121f4feb893f671504bbac00\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U02\\evidence\\capture.mp4",
+  "resolution": [
+   640,
+   360
+  ]
+ },
+ "views": {
+  "normal follow-camera distance": {
+   "camera": "sampled_trajectory recorded_each_tick: the BASELINE pinned FollowCamera (no obstacles) applied solution per tick",
+   "role": "normal follow-camera distance law; motion on ground visible",
+   "seconds": [
+    0.0,
+    39.1
+   ]
+  },
+  "obstructed and close-target views": {
+   "camera": "sampled_trajectory recorded_each_tick: the SUBJECT pinned FollowCamera (trunk+pole+curb) applied solution per tick",
+   "role": "obstruction avoidance episode + trunk-mode close-target framing; degradation flag visible in diagnostic rows",
+   "seconds": [
+    39.1,
+    78.2
+   ]
+  },
+  "repeatable inspection side view": {
+   "camera": "fixed_bookmark (radius 14, theta pi/2, phi 0.3, target (3,0,-2)), pinned engine eye law",
+   "role": "repeatable deterministic inspection side view",
+   "seconds": [
+    78.2,
+    117.30000000000001
+   ]
+  }
+ }
+}

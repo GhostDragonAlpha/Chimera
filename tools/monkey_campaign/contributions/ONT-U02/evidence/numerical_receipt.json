@@ -1,0 +1,549 @@
+{
+ "all_green": true,
+ "attempt_id": "2c724944121f4feb893f671504bbac00",
+ "card_id": "ONT-U02",
+ "checks": [
+  {
+   "measured": {
+    "first": 3000,
+    "last": 3850,
+    "max_radius_dev": 0.0,
+    "max_subtend_anchor_deg": 1.1033837994625186,
+    "max_subtend_ground_ahead_deg": 6.834687431949609,
+    "max_target_vs_smoothed_dev": 0.0,
+    "max_theta_dev": 0.0,
+    "ticks_checked": 18
+   },
+   "name": "C1_ground_follow_law_motion_visible",
+   "ok": true
+  },
+  {
+   "measured": {
+    "focus_state_at_1450": "blurred",
+    "fresh_record_at_2950": [
+     0.763625
+    ],
+    "held_after_blur": [],
+    "held_at_3000": [
+     "W"
+    ],
+    "press_while_blurred_dropped_named": true,
+    "silent_1600_2400": true,
+    "tail_records_ms_speed": [
+     [
+      1450,
+      0.0
+     ]
+    ]
+   },
+   "name": "C2_controls_focus_loss_no_stuck",
+   "ok": true
+  },
+  {
+   "measured": {
+    "FIRED_prediction_note": "the frozen text predicted writes CEASE within 1.5 s; measured: the module's deadband suppresses sub-deadband STEPS, so the converging tail keeps proposing until the residual is under the deadbands -- recorded in prediction_deviations",
+    "anchor_framed_throughout_settle": true,
+    "exact_zero_record_ms": 5750,
+    "per_tick_applied_step_within_deadband_plus_floor": true,
+    "residual_applied_vs_smoothed_at_9400_m": 0.004999999999999893,
+    "settle_floor_budget_m": 0.30374999999999996,
+    "settle_path_len_m": 0.17999999999999616,
+    "settle_path_within_floor_budget": true,
+    "writes_during_settle": 15
+   },
+   "name": "C3_settle_law",
+   "ok": true
+  },
+  {
+   "measured": {
+    "all_nondegraded_clear_and_framed": true,
+    "avoidance_biconditional_on_smoothed_sightline": true,
+    "avoiding_ticks": 116,
+    "degraded_resolves_immediately_when_aim_exits_margin": true,
+    "degraded_ticks": 85,
+    "first_avoiding_ms": 4200,
+    "first_blocked_smoothed_ms": 4200,
+    "halt_solution_shape_retained_6100_9200": true,
+    "order_prefix_law": true,
+    "orders_seen": [
+     [
+      "steepen"
+     ],
+     [
+      "steepen",
+      "height_radius"
+     ],
+     [
+      "steepen",
+      "height_radius",
+      "orbit"
+     ]
+    ],
+    "release_to_base_after_turn": true
+   },
+   "name": "C4_pole_episode_oc1_oc6",
+   "ok": true
+  },
+  {
+   "measured": {
+    "anchor_and_contact_framed_all_trunk_ticks": true,
+    "enter_threshold": 2.9520858639364596,
+    "entry_axis_dist": 2.706159350015903,
+    "entry_ms": 12800,
+    "exits": [],
+    "framing_law_max_dev": true,
+    "max_subtend_anchor_deg": 3.6371940185626728,
+    "max_subtend_contact_deg": 2.859669875818992,
+    "transitions": [
+     [
+      0,
+      null,
+      "ground"
+     ],
+     [
+      12800,
+      "ground",
+      "trunk"
+     ]
+    ],
+    "trunk_ticks": 135
+   },
+   "name": "C5_trunk_approach_oc3_close_target",
+   "ok": true
+  },
+  {
+   "measured": {
+    "FIRED_prediction_note": "the frozen text predicted ZERO writes over the final idle; measured: a converging, floor-bounded taper (the deadband law suppresses sub-deadband steps, not the converging tail) -- recorded in prediction_deviations",
+    "case_matrix": {
+     "details": {
+      "avoidance_orders": [
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       [],
+       []
+      ],
+      "bitwise_identical_commands": true,
+      "stream_clean": true,
+      "ticks": 20,
+      "writes": 1
+     },
+     "ok": true
+    },
+    "final_idle_applied_target_path_len_m": 0.08435796092733534,
+    "final_idle_write_count": 30
+   },
+   "name": "C6_oc4_static_noop_and_tapering_settle",
+   "ok": true
+  },
+  {
+   "measured": {
+    "avoidance_order": [],
+    "command_equals_clean_scene": true,
+    "curb": {
+     "cx": 0.0,
+     "cz": -2.2,
+     "r": 0.12,
+     "top": 0.15
+    },
+    "eye_height_clear": true,
+    "footprint_2d_crossed": true,
+    "ray_clear_height_aware": true,
+    "stream_clean": true
+   },
+   "name": "C7_oc5_height_aware_flyover",
+   "ok": true
+  },
+  {
+   "measured": {
+    "case_matrix": {
+     "anchor": [
+      0.0,
+      0.0,
+      -0.8
+     ],
+     "anchor_in_blocker_optical_margin": true,
+     "degrade_reason": "occluded: no clear pose within declared bounds",
+     "degraded": true,
+     "order": [
+      "steepen",
+      "height_radius",
+      "orbit"
+     ],
+     "ray_clear": false,
+     "stream_clean": true
+    },
+    "degraded_iff_smoothed_aim_inside_optical_margin": true,
+    "degraded_ticks": [
+     4200,
+     4250,
+     4300,
+     4350,
+     4400,
+     4450,
+     4500,
+     4550,
+     4600,
+     4650,
+     4700,
+     4750,
+     4800,
+     5700,
+     5750,
+     5800,
+     5850,
+     5900,
+     5950,
+     6000,
+     6050,
+     6100,
+     6150,
+     6200,
+     6250,
+     6300,
+     6350,
+     6400,
+     6450,
+     6500,
+     6550,
+     6600,
+     6650,
+     6700,
+     6750,
+     6800,
+     6850,
+     6900,
+     6950,
+     7000,
+     7050,
+     7100,
+     7150,
+     7200,
+     7250,
+     7300,
+     7350,
+     7400,
+     7450,
+     7500,
+     7550,
+     7600,
+     7650,
+     7700,
+     7750,
+     7800,
+     7850,
+     7900,
+     7950,
+     8000,
+     8050,
+     8100,
+     8150,
+     8200,
+     8250,
+     8300,
+     8350,
+     8400,
+     8450,
+     8500,
+     8550,
+     8600,
+     8650,
+     8700,
+     8750,
+     8800,
+     8850,
+     8900,
+     8950,
+     9000,
+     9050,
+     9100,
+     9150,
+     9200,
+     9250
+    ],
+    "geometrically_necessary_ticks": [
+     4200,
+     4250,
+     4300,
+     4350,
+     4400,
+     4450,
+     4500,
+     4550,
+     4600,
+     4650,
+     4700,
+     4750,
+     4800,
+     5700,
+     5750,
+     5800,
+     5850,
+     5900,
+     5950,
+     6000,
+     6050,
+     6100,
+     6150,
+     6200,
+     6250,
+     6300,
+     6350,
+     6400,
+     6450,
+     6500,
+     6550,
+     6600,
+     6650,
+     6700,
+     6750,
+     6800,
+     6850,
+     6900,
+     6950,
+     7000,
+     7050,
+     7100,
+     7150,
+     7200,
+     7250,
+     7300,
+     7350,
+     7400,
+     7450,
+     7500,
+     7550,
+     7600,
+     7650,
+     7700,
+     7750,
+     7800,
+     7850,
+     7900,
+     7950,
+     8000,
+     8050,
+     8100,
+     8150,
+     8200,
+     8250,
+     8300,
+     8350,
+     8400,
+     8450,
+     8500,
+     8550,
+     8600,
+     8650,
+     8700,
+     8750,
+     8800,
+     8850,
+     8900,
+     8950,
+     9000,
+     9050,
+     9100,
+     9150,
+     9200,
+     9250
+    ],
+    "law": "every degraded tick is exactly a tick where the camera's aim point (the smoothed anchor) sits inside a declared obstacle's optical margin (no pose can clear it) -- the flag never conceals, never fakes"
+   },
+   "name": "C8_oc3b_honest_degrade_and_zero_concealed",
+   "ok": true
+  },
+  {
+   "measured": {
+    "anchor": [
+     3.8,
+     0.0,
+     -2.6
+    ],
+    "anchor_subtend_deg": 4.966216797043572,
+    "chosen_radius": 3.755322256372449,
+    "deterministic": true,
+    "echo": {
+     "echo": [
+      3.755322256372449,
+      2.976443976175166,
+      0.2563528611136915,
+      3.641099746826339,
+      0.0,
+      -3.553401519041964,
+      0.0,
+      0.0
+     ],
+     "max_err": 0.0,
+     "ok": true
+    },
+    "expected_mode": "trunk",
+    "eye_clear_by": 0.2735531026245404,
+    "mode": "trunk",
+    "order": [
+     "pull_in"
+    ],
+    "pre_avoidance_base_radius": 4.351330582616915,
+    "pull_floor": 2.534924255014732,
+    "ray_clear": true,
+    "stream_clean": true,
+    "trunk_axis_dist": 2.4331050121192876
+   },
+   "name": "C9_oc2_oc7_pullin_largest_feasible",
+   "ok": true
+  },
+  {
+   "measured": {
+    "anchor_source": "harness-owned BodyProvider integrating the REAL mapper's CommandRecords; camera code never writes it",
+    "baseline_stream": {
+     "allowlist_violations": 0,
+     "bad_field_count": 0,
+     "forbidden_hits": 0,
+     "pan_nonzero": 0,
+     "writes": 241
+    },
+    "case_matrices_clean": true,
+    "subject_stream": {
+     "allowlist_violations": 0,
+     "bad_field_count": 0,
+     "forbidden_hits": 0,
+     "pan_nonzero": 0,
+     "writes": 259
+    },
+    "undeclared_engine_attempts": []
+   },
+   "name": "C10_never_moves_the_animal_oc8",
+   "ok": true
+  },
+  {
+   "measured": {
+    "applied_target_jumps_over_0p5m": [
+     {
+      "applied_target_jump_m": 1.2457043214826733,
+      "mode": "trunk",
+      "t_ms": 12800
+     }
+    ],
+    "declared_cuts": [],
+    "law": "the smoothed-anchor step obeys max(0.05, 2*v_animal)*dt every tick; the ONE applied-target jump is the declared trunk-mode two-point re-framing at entry",
+    "max_smoothed_anchor_step_per_tick_m": 0.03818124958468229
+   },
+   "name": "C11_ff_speed_clamp_declared_reframes_only",
+   "ok": true
+  },
+  {
+   "measured": {
+    "baseline_verify_apply": {
+     "echo": [
+      2.534924255014732,
+      -3.250796326794898,
+      0.2563528611136915,
+      3.173589283088242,
+      0.0,
+      -4.289968805553694,
+      0.0,
+      0.0
+     ],
+     "max_err": 0.0,
+     "ok": true
+    },
+    "engine_applied_equals_last_command": true,
+    "subject_verify_apply": {
+     "echo": [
+      2.20928511466086,
+      -2.8316093280225,
+      0.2563528611136915,
+      3.210404058349164,
+      0.0,
+      -4.408084472342614,
+      0.0,
+      0.0
+     ],
+     "max_err": 0.0,
+     "ok": true
+    }
+   },
+   "name": "C12_fg_apply_echo",
+   "ok": true
+  },
+  {
+   "measured": {
+    "budget_ms": 50.0,
+    "max_subject_compute_plus_roundtrip_ms": 0.552199999219738,
+    "note": "in-process double round trip is inside the measured value; the mock's declared render deadline (1 frame @ 60 fps = 16.7 ms) keeps presentation < 200 ms; wall clock, NOT trace time; kept OUT of trace.jsonl so the trace stays byte-deterministic",
+    "presentation_mock_deadline_budget_ms": 200.0
+   },
+   "name": "C13_fd_latency_budgets",
+   "ok": true
+  },
+  {
+   "measured": {
+    "all_quaternions_unit": true,
+    "framing_violation_ticks": [],
+    "max_subtend_anchor_deg_non_degraded": 3.6371940185626728
+   },
+   "name": "C14_fe_framing_and_quaternion_unit",
+   "ok": true
+  },
+  {
+   "measured": {
+    "errors": 0,
+    "failures": 0,
+    "ok": true,
+    "output_tail": [
+     "OK"
+    ],
+    "tests_run": 24
+   },
+   "name": "C15_pinned_suite_24_tests",
+   "ok": true
+  }
+ ],
+ "checks_green": 15,
+ "checks_total": 15,
+ "criteria_sha256": "5fb0dee8d086f9fd638507058063dd7b7c138958ab7433e5f086da2bbc120b83",
+ "prediction_deviations": [
+  {
+   "fired": true,
+   "law_check": "C8_oc3b_honest_degrade_and_zero_concealed",
+   "measured": "%d degraded ticks (%s..%s).  The frozen open-loop derivation evaluated the sight-line at the RAW anchor; the module aims at the SMOOTHED anchor (EMA tau=0.3 s), which trails the walker by ~0.21 m and converges under the deadbands after the halt. Wherever that AIM POINT sits inside a declared obstacle's optical margin (r+m_ray), no pose can clear the look-ray and the module MUST report degraded.  The measured law: degraded(t) IFF smoothed-anchor(t) inside an obstacle optical margin (exact biconditional, both directions) -- the flag never conceals and never fakes (check C8).",
+   "sub_clause": "PREREGISTRATION C8/C14: 'the continuous run has ZERO degraded ticks'"
+  },
+  {
+   "fired": true,
+   "law_check": "C3_settle_law; C6_oc4_static_noop_and_tapering_settle",
+   "measured": "the pinned starvation law deadbands SUB-DEADBAND STEPS (|dR| < 0.0025R, |dTheta|,|dPhi| < 0.005 rad, |dTarget| < 0.01 m); it does not hard-stop the converging settle tail, so writes TAPER (floor-bounded 0.05 m/s, ~10/s decaying) until the residual is under the deadbands.  Measured laws that DO hold: per-tick applied steps stay within the settle floor (C3), the final-idle target path length is floor-bounded and the write count tapers (C6), the clean-scene static case is a one-write bitwise no-op (C6 case matrix).",
+   "sub_clause": "PREREGISTRATION C3/C6: 'writes CEASE within 1.5 s' / 'ZERO writes over the final idle'"
+  },
+  {
+   "fired": true,
+   "law_check": "C4_pole_episode_oc1_oc6",
+   "measured": "avoidance onset lags the raw-anchored window by the declared smoothing (the module aims at the smoothed anchor, ~5 ticks behind on this path).  On the module's ACTUAL sight-line the law is exact: avoidance order non-empty IFF the smoothed-aim base sight-line is blocked or the eye unclear (exact biconditional, check C4).",
+   "sub_clause": "PREREGISTRATION C4: 'no avoidance before the first derived blocked tick (+-2 ticks)' with the predicate evaluated on the RAW anchor path position"
+  }
+ ],
+ "profile_id": "controls",
+ "profile_kind": "motion",
+ "run_id": "ont-u02-camera-20260926-2c724944",
+ "runtime_evidence_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U02\\2c724944121f4feb893f671504bbac00\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U02\\evidence\\runtime_receipt.json",
+ "schema": "ont-u02.camera.numerical.v1",
+ "subject_sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+ "task_id": "U02",
+ "trace_raw_sha256": "97f9fbfcfafcfbeaa02ced70636231bd3935ee446b8a9b9c114d2f05ad8a3c8a",
+ "trace_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U02\\2c724944121f4feb893f671504bbac00\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U02\\evidence\\trace.jsonl"
+}
