@@ -1,4 +1,7 @@
 import copy
+import os
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 from rdflib import Graph, URIRef, Literal, RDF
@@ -62,6 +65,13 @@ class SemanticTests(unittest.TestCase):
         self.definition['nodes'][1]['parent'] = 'absent'
         with self.assertRaisesRegex(ValueError, 'missing_parent'):
             se.export(self.definition)
+
+    def test_cli_utf8_under_windows_legacy_output_encoding(self):
+        env = dict(os.environ, PYTHONIOENCODING='cp1252')
+        result = subprocess.run([sys.executable, '-B', str(HERE/'semantic_export.py'),
+                                 str(HERE/'ontology.json')], env=env,
+                                capture_output=True, check=True)
+        self.assertEqual(result.stdout.decode('utf-8'), se.export(self.definition))
 
 
 if __name__ == '__main__':

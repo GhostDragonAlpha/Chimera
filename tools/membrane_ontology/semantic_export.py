@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
 from urllib.parse import quote
 
@@ -68,6 +69,7 @@ def main():
     args = p.parse_args()
     with args.definition.open('rb') as f:
         definition = model.decode(f.read(model.MAX_DEFINITION + 1))
+    sys.stdout.reconfigure(encoding='utf-8', newline='\n')
     print(export(definition), end='')
 
 

@@ -37,10 +37,13 @@ ontology or substitute this pilot for the approved membrane/port authority.
 
 ## Verification receipt — 2026-09-26
 
-Seven tests passed in the isolated Windows/Python 3.14.3 environment specified by
+Eight tests passed in the isolated Windows/Python 3.14.3 environment specified by
 requirements-semantic.txt: positive real ontology, deterministic export and input
 preservation; five independently mutated RDF graphs rejected; malformed JSON still
 refused by the original validator before export. No live state was used or changed.
+The first CLI smoke test failed under Windows cp1252 on a Unicode label. The CLI
+now explicitly emits UTF-8/LF; a subprocess regression forces the old encoding
+and verifies byte-exact UTF-8 output. This failure is retained here as evidence.
 RDFLib/pyparsing emitted upstream deprecation warnings; no test failed.
 
 These checks overlap existing JSON validation. This experiment demonstrates a
