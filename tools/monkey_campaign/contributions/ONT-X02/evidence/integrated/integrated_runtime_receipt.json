@@ -1,0 +1,237 @@
+{
+ "schema": "chimera.ont_x02.integrated_runtime.v1",
+ "generated_utc": "2026-09-26T20:18:28Z",
+ "what_ran": "THE REAL integrated player application: the pinned playable-slice slice_server (own-engine port law) booting and owning a REAL native chimera_engine.exe process built for this run from the pinned engine source, plus the served page driven through its own keys in headless Chrome, plus the pinned M-X02 SessionFlow bound to the REAL World lifecycle seam. No test double stands in for boot, restart, teardown, the engine process, the HTTP server or the page in Sessions A/B.",
+ "source_pins": {
+  "play_repo": "E:/ChimeraWork/monkey-play-20260924 (live worktree HEAD 8d16d3c1, unwritten: git status still its 3 pre-existing porcelain entries)",
+  "application_commit": "8550b634ebd7034bb8873eed41d8bdce4d3843d0 (tools/playable_slice + dependencies + ChimeraEngine/engine)",
+  "session_flow_commit": "f30f2224663324e9374b076938c56672febf4082 (M-X02 session_flow 30e06c04, input_mapper 7a36a45e)",
+  "extraction": "read-only git archive / git show of the pinned blobs into the attempt workspace; the extraction manifest records the consumed files' sha256"
+ },
+ "engine_build": {
+  "source": "pinned 8550b634 ChimeraEngine/engine (194 files extracted; plus ChimeraEngine/native/viewer3rd/json.hpp from the same commit)",
+  "recipe": "cmake -S . -B build -G 'Visual Studio 17 2022' -A x64; cmake --build build --config Release",
+  "toolchain": "cmake 4.2.1, MSVC 17.14.40, Vulkan SDK 1.4.328.1",
+  "engine_exe_sha256": "a99640093f7c95a024e3cdf32639b895a0254fc9a02e3a2da284a940ee4110d7",
+  "shaders": "the build's 25 compiled .spv staged beside the exe (the engine loads shaders/ from its cwd)"
+ },
+ "environment": {
+  "python": "3.14.3",
+  "numpy": "2.2.6",
+  "scipy": "1.17.0",
+  "playwright": "1.57.0 (channel chrome, headless; no deviation fired in the final run)",
+  "ffmpeg": "8.1.1-full_build (webm -> mp4 h264 yuv420p conversion only)"
+ },
+ "extraction_manifest": {
+  "tools/playable_slice/slice_server.py": "ee40d6be145fab5075ace5ffe96e9d76fd4fc48d3c89247e38b3b16bc999ae7c",
+  "tools/playable_slice/scene_boot.py": "4019d74ebe59a39d3b5a1f35289309aba205c3301dbdba99d000871943e20bdb",
+  "tools/playable_slice/index.html": "d76701f85a8fea63f21cfd83d56dced1329c89b26cfe22ae4e9fa28642179040",
+  "tools/playable_slice/push_channel.py": "bac826cbd3d31fbe571790d1140d727fb55e5d5081278183db571a9a396278e6",
+  "tools/playable_slice/mock_registry.json": "f076cf51da97a9e9d1da7a99510be472d1ba1a8eef36662be069900185bcd731",
+  "tools/playable_slice/standing_body.obj": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "tools/playable_slice/standing_body.glb": "adb6aff2babbf2cd2745004b2f51150d3a3f47e55b2ce3b8e63b3c0d595dbae5",
+  "tools/playable_slice/ghost_standing.obj": "d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d",
+  "tools/playable_slice/boot_cache_manifest.json": "6f8bc866eee849762a44ca74ebaa0df7624cf4433986ca08f694a71460d41017",
+  "tools/science_funnel/ct_skeleton_layer.py": "c5cb186f358ea956e06bcf6af2a3df3798769790ef4cacfbcff4baf4df43b741",
+  "tools/science_funnel/ct_skeleton_triangle.py": "e8e6c34c26505a474942229912174ce2c092baf3c5f71d91828e3da2e05d8f8c",
+  "tools/science_funnel/validation/standing_pose_20260921/pose.json": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+  "tools/science_funnel/validation/standing_pose_20260921/standing_pose_core.py": "6eab8de8e7180d2f1753b00f993bc78662199860a0423d2e3edf86f4f9c72fff",
+  "tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+  "tools/science_funnel/data/morphosource_ct/meshes_body_20260922/body_manifest.json": "6d0328ce9aa5babfb25a98518b69477b879b3a7d902593fc0842c127bcc7f78a",
+  "tools/science_funnel/data/morphosource_ct/meshes/manifest.json": "5bf8aed9b226a7be96c6877c6bfafd4de3e8f46808c42312045cd66739473ad8",
+  "tools/science_funnel/data/morphosource_ct/bone_identification.json": "9580eac419a98462f32820788cbebf6aa89f686022dca652805c6b531149edf6",
+  "tools/monkey_campaign/product/session_flow.py": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+  "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+  "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+  "tools/science_funnel/data/morphosource_ct/meshes_preview/*.obj": "25 files",
+  "tools/matter_kernel/*.py": "14 files",
+  "tools/science_funnel/validation/hip_pivot_proof_20260921/*": "9 files"
+ },
+ "extraction_missing": [],
+ "session_a": {
+  "verdict": "PASS",
+  "entry": "the shipped slice_server process (R1 automated mode) + the served page in headless Chrome",
+  "boot": {
+   "engine_child": [
+    91276
+   ],
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "boot_seconds": 2.31
+  },
+  "play": {
+   "status_line": "REAL engine numbers \u2014 root_y 0.1246 m \u00b7 root_vy -0.0000 m/s \u00b7 gravity ON",
+   "ticks_advanced": true,
+   "console_errors": [],
+   "page_errors": []
+  },
+  "restart": {
+   "ok": true,
+   "key_receipt": {
+    "lowercase_r_boot_count": 1,
+    "lowercase_r_fired_restart": false,
+    "post_key_boot_count": 2
+   },
+   "old_engine_died_seconds": 0.25,
+   "boot_count": [
+    1,
+    2
+   ],
+   "scene_sha_equal": true,
+   "start_state_sha_equal": true,
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001"
+  },
+  "exit_finding": {
+   "ok": true,
+   "exit_kind": "hard_server_kill_measured",
+   "finding_no_remote_or_graceful_exit_control": true,
+   "app_graceful_path_exercised_elsewhere": "A3 restart (World.shutdown_engine) + session B7 (Q)",
+   "server_exit_code": 1,
+   "exit_seconds": 5.05,
+   "engine_children_at_exit": [
+    91368
+   ],
+   "engine_orphans_measured_after_kill": [],
+   "server_port_still_open": false,
+   "orphans_terminated_by_driver": [],
+   "orphans_still_alive_after_cleanup": []
+  },
+  "capture": {
+   "video_seconds": 43.8,
+   "mp4_sha256": "7ff408f2b15931497752147b8f5f7d6572bac4988269b7755b559dd305b18a6a",
+   "trace_sha256": "3ccd006cef41da946c47797f0ec66206f9839ac673afc2ca07a9c5c980c5d489",
+   "trace_rows": 80,
+   "marks": {
+    "page_load": 0.663,
+    "play_live": 3.507,
+    "help_toggled_off": 15.62,
+    "guide_display_after_H": "none",
+    "restart_pressed": 19.134,
+    "recovered_settled": 42.783
+   }
+  }
+ },
+ "session_b": {
+  "verdict": "PASS",
+  "entry": "the pinned SessionFlow's public key()/tick() mutators ONLY (Return/Escape/R/Q), with restart_scene=World.boot and teardown=World.shutdown_engine of the REAL reconstructed World",
+  "boot": {
+   "engine_pid": 66688,
+   "engine_port": 57950,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001"
+  },
+  "flow": {
+   "B0_world_boot": {
+    "ok": true,
+    "boot_seconds": 16.31,
+    "engine_pid": 66688,
+    "engine_port": 57950,
+    "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+    "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+    "boot_count": 1,
+    "engines_alive": [
+     66688
+    ]
+   },
+   "B1_return_to_playing": {
+    "state": "playing",
+    "is_playing": true
+   },
+   "B2_playing_records": {
+    "record_count": 7,
+    "first_records": [
+     "CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=615, source='u01_input_mapper', record_version=1)",
+     "CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=630, source='u01_input_mapper', record_version=1)",
+     "CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=645, source='u01_input_mapper', record_version=1)"
+    ],
+    "boot_count": 1
+   },
+   "B3_escape_pause": {
+    "state": "paused",
+    "is_paused": true,
+    "records_emitted_while_paused": 0,
+    "engine_pid_at_pause": 66688,
+    "engines_alive": [
+     66688
+    ]
+   },
+   "B4_restart_from_paused": {
+    "state": "playing",
+    "is_playing": true,
+    "restart_seconds": 16.32,
+    "engine_pid_before": 66688,
+    "engine_pid_after": 80712,
+    "engine_pid_changed": true,
+    "old_engine_pid_gone": true,
+    "port_before": 57950,
+    "port_after": 59421,
+    "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+    "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+    "boot_count_total": 2,
+    "boots_expected": 2,
+    "engines_alive": [
+     80712
+    ]
+   },
+   "B5_restart_while_playing": {
+    "state": "playing",
+    "boot_count_unchanged": true,
+    "boot_count": 2
+   },
+   "B6_resume_no_boot": {
+    "state": "playing",
+    "is_playing": true,
+    "was_paused": true,
+    "boot_count_unchanged": true
+   },
+   "B7_q_exit_teardown": {
+    "state": "exited",
+    "is_exited": true,
+    "exit_seconds": 0.05,
+    "engine_pid_at_exit": 80712,
+    "engine_pid_dead": true,
+    "world_proc_handle": null,
+    "engine_port_closed": true,
+    "engines_alive": []
+   },
+   "B8_terminal_inert": {
+    "state_unchanged": true,
+    "state": "exited",
+    "records_emitted_after_exit": 0
+   },
+   "B9_containment": {
+    "engines_alive_final": [],
+    "boot_count_total": 2,
+    "verdict_note": "exactly one engine alive at any step receipt above; zero at end; port closed"
+   }
+  },
+  "pins_verified": {
+   "session_flow_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+   "input_mapper_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "slice_server_sha256": "ee40d6be145fab5075ace5ffe96e9d76fd4fc48d3c89247e38b3b16bc999ae7c",
+   "engine_exe_sha256": "a99640093f7c95a024e3cdf32639b895a0254fc9a02e3a2da284a940ee4110d7",
+   "session_flow_pin_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+   "input_mapper_pin_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44"
+  }
+ },
+ "missing_integration": {
+  "M1_no_pause_or_exit_control": "slice_server imports neither session_flow nor input_mapper and ships no /api/pause or /api/exit route; index.html binds no Escape/Q handler. The pause/exit legs of done_when therefore run through the SessionFlow over the REAL World lifecycle seam (Session B) - the module's own declared integration contract. The page/server-level wiring of pause/exit is the unresolved piece.",
+  "M2_no_exit_signal_path": "the server installs no console/signal handler; its only graceful shutdown is KeyboardInterrupt -> its shipped `finally: WORLD.shutdown_engine()`. Delivering CTRL_C was measured impossible in this environment (a CREATE_NEW_PROCESS_GROUP child has CTRL_C disabled by the group flag; this process tree has no Windows console for a console-wide event; attach-console delivery returns TRUE but is unobserved by the child). A hard server kill ORPHANS the engine child (MEASURED in A4); the driver terminated its own orphan by PID. The app's own teardown is proven on the real engine in A3 (restart) and B7 (Q).",
+  "M3_worktree_missing_runtime": "the live play worktree (HEAD 8d16d3c1) ships neither tools/playable_slice/ nor a built engine on disk; the runtime was reconstructed from the pinned commit's bytes with the manifest above (read-only; the worktree is unwritten).",
+  "M4_no_locomotion_consumer": "mapper CommandRecords have no walking/climbing consumer in the standing-start slice; downstream skills stay out of X02 scope per the lead's direction."
+ },
+ "prediction_deviations": [
+  {
+   "clause": "PREREGISTRATION_INTEGRATED.md A4 (frozen): close the server via CTRL_BREAK_EVENT -> KeyboardInterrupt -> the shipped finally teardown; prediction: engine child gone within 12 s",
+   "outcome": "FIRED. MEASURED: CTRL_BREAK hard-kills the interpreter as exit 3221225786 (0xC000013A) WITHOUT running the finally, orphaning the engine; CTRL_C is undeliverable in this environment three ways (see M2). A4 was executed as the measured no-exit-control probe (hard kill -> orphan measured -> orphan terminated by the driver by PID); the app's own teardown path is exercised for real in A3 and B7 instead. The preregistration file is frozen and stays byte-identical; this receipt records the deviation."
+  }
+ ],
+ "honest_boundary": "The recording and stills are REAL pixels of the REAL running application (page HUD + WebGL canvas through the real camera path, plus the engine's own /frame passthru images). The prior head's PIL video remains exactly what it was labeled: a deterministic visualization of the headless trace. visual_acceptance stays false (validator law); independent visual review remains the reviewer's gate. V08 acceptance remains the lead's call.",
+ "pinned_blob_manifest": {
+  "pin": "8550b634ebd7034bb8873eed41d8bdce4d3843d0",
+  "files": 252,
+  "failed": [],
+  "method_note": "git cat-file blob (raw bytes; NO EOL smudge - git archive on this host applies CRLF via .gitattributes text:auto, so the FIRST extraction ran the sessions on content-identical CRLF text copies; every hash-pinned data file (standing_body.obj/glb, pose.json, the 25 preview bones, ghost cache) was verified byte-exact in both extractions, and the app's own pin checks passed during the runs",
+  "path": "scratch/evidence/pinned_blob_manifest.json (per-file raw-blob sha256)"
+ },
+ "eol_note": "The Sessions A/B RUNS executed on the first extraction, whose TEXT files carried a CRLF smudge (git archive + .gitattributes text:auto on this host; content-identical, EOLs only). Every hash-PINNED data file was byte-exact in both extractions - proven by the app's own pin checks passing during the runs (standing_body.obj bc9033bf, pose.json 27e6fd9e, the 25 preview bones per boot_cache_manifest, the ghost/import caches) - and the byte-exact raw-blob re-extraction (scratch/run/play_clean, 252 files, 0 failed) now stands beside the run tree for review."
+}

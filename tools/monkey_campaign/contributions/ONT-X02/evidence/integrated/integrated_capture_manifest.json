@@ -1,0 +1,414 @@
+{
+ "schema": "chimera.visual_capture_manifest.v1",
+ "task_id": "X02",
+ "run_id": "ONT-X02-integrated-20260926T201448",
+ "profile_id": "recovery",
+ "subject_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+ "capture_sha256": "7ff408f2b15931497752147b8f5f7d6572bac4988269b7755b559dd305b18a6a",
+ "tick_interval": [
+  221,
+  3816
+ ],
+ "views": [
+  {
+   "view_id": "matched before/after camera bookmark",
+   "mode": "diagnostic",
+   "pair_id": "V1",
+   "state_binding": {
+    "kind": "trace",
+    "sha256": "3ccd006cef41da946c47797f0ec66206f9839ac673afc2ca07a9c5c980c5d489"
+   },
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     3.507,
+     15.62
+    ]
+   },
+   "camera": {
+    "frame_id": "chimera.playable_slice.scene.world",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "-Z",
+    "up_axis": "+Y",
+    "near_far_planes": [
+     0.05,
+     60
+    ],
+    "viewport_resolution": [
+     1280,
+     720
+    ],
+    "aspect_ratio": 1.7777777777777777,
+    "projection": "perspective",
+    "vertical_fov_degrees": 51.56620156177409,
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "tick": 221,
+      "position": [
+       1.2941016998146806,
+       1.1470729967310545,
+       1.5364116730462316
+      ],
+      "target": [
+       0.0,
+       0.25,
+       0.0
+      ],
+      "distance_to_target": 2.2,
+      "orientation": [
+       0.9187355536130266,
+       -0.19582154163832347,
+       0.3353646562825599,
+       0.07148044259961052
+      ]
+     },
+     {
+      "tick": 3816,
+      "position": [
+       1.2941016998146806,
+       1.1470729967310545,
+       1.5364116730462316
+      ],
+      "target": [
+       0.0,
+       0.25,
+       0.0
+      ],
+      "distance_to_target": 2.2,
+      "orientation": [
+       0.9187355536130266,
+       -0.19582154163832347,
+       0.3353646562825599,
+       0.07148044259961052
+      ]
+     }
+    ]
+   },
+   "visibility": {
+    "layers": [
+     "state and tick IDs",
+     "active skill/contact labels",
+     "resource/session diagnostics"
+    ],
+    "label_ids": [],
+    "selected_ids": [],
+    "required_subject_ids": [
+     "physics_body"
+    ],
+    "observed_subject_ids": [
+     "physics_body",
+     "marker"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "mixed",
+    "tag_bindings": []
+   }
+  },
+  {
+   "view_id": "normal follow view during recovery",
+   "mode": "diagnostic",
+   "pair_id": "V2",
+   "state_binding": {
+    "kind": "trace",
+    "sha256": "3ccd006cef41da946c47797f0ec66206f9839ac673afc2ca07a9c5c980c5d489"
+   },
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     19.134,
+     42.783
+    ]
+   },
+   "camera": {
+    "frame_id": "chimera.playable_slice.scene.world",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "-Z",
+    "up_axis": "+Y",
+    "near_far_planes": [
+     0.05,
+     60
+    ],
+    "viewport_resolution": [
+     1280,
+     720
+    ],
+    "aspect_ratio": 1.7777777777777777,
+    "projection": "perspective",
+    "vertical_fov_degrees": 51.56620156177409,
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "tick": 221,
+      "position": [
+       1.2941016998146806,
+       1.1470729967310545,
+       1.5364116730462316
+      ],
+      "target": [
+       0.0,
+       0.25,
+       0.0
+      ],
+      "distance_to_target": 2.2,
+      "orientation": [
+       0.9187355536130266,
+       -0.19582154163832347,
+       0.3353646562825599,
+       0.07148044259961052
+      ]
+     },
+     {
+      "tick": 3816,
+      "position": [
+       1.2941016998146806,
+       1.1470729967310545,
+       1.5364116730462316
+      ],
+      "target": [
+       0.0,
+       0.25,
+       0.0
+      ],
+      "distance_to_target": 2.2,
+      "orientation": [
+       0.9187355536130266,
+       -0.19582154163832347,
+       0.3353646562825599,
+       0.07148044259961052
+      ]
+     }
+    ]
+   },
+   "visibility": {
+    "layers": [
+     "state and tick IDs",
+     "active skill/contact labels",
+     "resource/session diagnostics"
+    ],
+    "label_ids": [],
+    "selected_ids": [],
+    "required_subject_ids": [
+     "physics_body"
+    ],
+    "observed_subject_ids": [
+     "physics_body",
+     "marker"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "mixed",
+    "tag_bindings": []
+   }
+  },
+  {
+   "view_id": "matched before/after camera bookmark",
+   "mode": "clean",
+   "pair_id": "V1",
+   "state_binding": {
+    "kind": "trace",
+    "sha256": "3ccd006cef41da946c47797f0ec66206f9839ac673afc2ca07a9c5c980c5d489"
+   },
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     16.619999999999997,
+     19.034
+    ]
+   },
+   "camera": {
+    "frame_id": "chimera.playable_slice.scene.world",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "-Z",
+    "up_axis": "+Y",
+    "near_far_planes": [
+     0.05,
+     60
+    ],
+    "viewport_resolution": [
+     1280,
+     720
+    ],
+    "aspect_ratio": 1.7777777777777777,
+    "projection": "perspective",
+    "vertical_fov_degrees": 51.56620156177409,
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "tick": 221,
+      "position": [
+       1.2941016998146806,
+       1.1470729967310545,
+       1.5364116730462316
+      ],
+      "target": [
+       0.0,
+       0.25,
+       0.0
+      ],
+      "distance_to_target": 2.2,
+      "orientation": [
+       0.9187355536130266,
+       -0.19582154163832347,
+       0.3353646562825599,
+       0.07148044259961052
+      ]
+     },
+     {
+      "tick": 3816,
+      "position": [
+       1.2941016998146806,
+       1.1470729967310545,
+       1.5364116730462316
+      ],
+      "target": [
+       0.0,
+       0.25,
+       0.0
+      ],
+      "distance_to_target": 2.2,
+      "orientation": [
+       0.9187355536130266,
+       -0.19582154163832347,
+       0.3353646562825599,
+       0.07148044259961052
+      ]
+     }
+    ]
+   },
+   "visibility": {
+    "layers": [],
+    "label_ids": [],
+    "selected_ids": [],
+    "required_subject_ids": [
+     "physics_body"
+    ],
+    "observed_subject_ids": [
+     "physics_body",
+     "marker"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "depth_tested",
+    "tag_bindings": []
+   }
+  },
+  {
+   "view_id": "normal follow view during recovery",
+   "mode": "clean",
+   "pair_id": "V2",
+   "state_binding": {
+    "kind": "trace",
+    "sha256": "3ccd006cef41da946c47797f0ec66206f9839ac673afc2ca07a9c5c980c5d489"
+   },
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     42.983000000000004,
+     43.75
+    ]
+   },
+   "camera": {
+    "frame_id": "chimera.playable_slice.scene.world",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "-Z",
+    "up_axis": "+Y",
+    "near_far_planes": [
+     0.05,
+     60
+    ],
+    "viewport_resolution": [
+     1280,
+     720
+    ],
+    "aspect_ratio": 1.7777777777777777,
+    "projection": "perspective",
+    "vertical_fov_degrees": 51.56620156177409,
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "tick": 221,
+      "position": [
+       1.2941016998146806,
+       1.1470729967310545,
+       1.5364116730462316
+      ],
+      "target": [
+       0.0,
+       0.25,
+       0.0
+      ],
+      "distance_to_target": 2.2,
+      "orientation": [
+       0.9187355536130266,
+       -0.19582154163832347,
+       0.3353646562825599,
+       0.07148044259961052
+      ]
+     },
+     {
+      "tick": 3816,
+      "position": [
+       1.2941016998146806,
+       1.1470729967310545,
+       1.5364116730462316
+      ],
+      "target": [
+       0.0,
+       0.25,
+       0.0
+      ],
+      "distance_to_target": 2.2,
+      "orientation": [
+       0.9187355536130266,
+       -0.19582154163832347,
+       0.3353646562825599,
+       0.07148044259961052
+      ]
+     }
+    ]
+   },
+   "visibility": {
+    "layers": [],
+    "label_ids": [],
+    "selected_ids": [],
+    "required_subject_ids": [
+     "physics_body"
+    ],
+    "observed_subject_ids": [
+     "physics_body",
+     "marker"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "depth_tested",
+    "tag_bindings": []
+   }
+  }
+ ],
+ "capture_notes": {
+  "what": "REAL headless-Chrome video of the REAL running playable-slice application: page HUD + WebGL canvas rendering the engine's streamed real-body vertices, through the page's own [H] and [R] keys (boot -> play -> help hidden -> FULL World.boot restart -> settled). NOT a native engine frame and NOT a synthetic trace rendering.",
+  "state_binding_trace": "integrated_trace.jsonl rows (rel_s, ticks, root_y, root_vy, gravity_on, boot_count, settled) sampled at 0.5 s DURING the recording; sha256 is the binding of every view",
+  "engine_camera_path_artifacts": {
+   "engine_frame_before.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+   "engine_frame_after.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+   "note": "the ENGINE's own rendered frames fetched through the server's /api/frame passthru (?w=640); byte-identical before/after the restart (the engine's own byte-clean reload, measured)"
+  },
+  "clean_view_caveat": "the shipped page exposes NO HUD-free mode; its [H] key dismisses the help guide (verified display:'none' in the receipt) but the status/objective/buttons chrome remains on every segment - the clean rows are the cleanEST the real application offers, recorded honestly",
+  "clean_vs_diagnostic_identical_bytes_note": "element screenshots composite the DOM overlays and were MEASURED byte-identical to full-page shots; the still clean views therefore use the canvas's OWN toDataURL in the same rAF task as the page's draw",
+  "view_segments_from_marks": {
+   "page_load": 0.663,
+   "play_live": 3.507,
+   "help_toggled_off": 15.62,
+   "restart_pressed": 19.134,
+   "recovered_settled": 42.783
+  },
+  "video_seconds": 43.8,
+  "original_recording": "integrated_session.webm (Playwright native) converted to mp4 h264 yuv420p with ffmpeg; both hashed in the capture receipt"
+ }
+}

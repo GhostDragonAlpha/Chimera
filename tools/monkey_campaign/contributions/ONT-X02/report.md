@@ -1,3 +1,104 @@
+# ONT-X02 — INTEGRATED CORRECTION (lead msg-95a3ac7f, attempt 35676f7dcb9f4)
+
+**This attempt answers the lead's CHANGES_REQUIRED at eac8788: the prior head
+proved the flow LOGIC over test doubles and rendered that headless trace with
+PIL — valid component tests, but not evidence that the INTEGRATED player
+application boots, pauses, restarts, exits and tears down owned resources.
+This correction adds exactly that evidence: a SOURCE-BOUND INTEGRATED SESSION
+RUN through the player entry controls of the REAL application, with real
+process/socket receipts and REAL pixels. Everything the prior head shipped is
+preserved unchanged below; nothing was weakened or relabeled.**
+
+## What actually ran (real processes, real receipts)
+
+- The REAL application: the pinned playable-slice `slice_server` (play commit
+  `8550b634`, reconstructed read-only into the attempt workspace — the live
+  worktree at HEAD `8d16d3c1` ships neither the slice nor a built engine) —
+  booting and OWNING a real native `chimera_engine.exe` built FOR THIS RUN
+  from the pinned `ChimeraEngine/engine` source (cmake + MSVC + Vulkan SDK;
+  exe sha in `evidence/integrated/integrated_runtime_receipt.json`).
+- SESSION A (`integrated_session_a.py`, receipt `evidence/integrated/
+  session_a_receipt.json`, VERDICT PASS): the served page in headless Chrome
+  (channel `chrome`, the operator-sanctioned path) reaches live play (REAL
+  engine numbers in the page's own status line, ticks advancing, zero
+  console/page errors); the page's OWN keys drive it: [H] hides the guide
+  (verified `display:none`), lowercase `r` is a measured no-op (the pinned
+  legacy handler matches exact `e.key` 'R'), Shift+R runs a FULL `World.boot`
+  scene reload — the old engine PID is dead in 0.25 s (the app's own
+  `shutdown_engine` terminate→wait), a new engine PID + port appear,
+  `boot_count` 1→2, and the pinned state survives the reload byte-exactly:
+  `scene_sha256` `bc9033bf…` and `start_state_sha256` `8c040418…` EQUAL
+  before/after. The engine's own `/frame` renders are byte-identical across
+  the restart. EXIT is a measured finding (below).
+- SESSION B (`integrated_session_b.py`, receipt
+  `evidence/integrated/session_b_receipt.json`, VERDICT PASS, 9/9 probes):
+  the pinned M-X02 `SessionFlow` (its public `key()`/`tick()` mutators ONLY)
+  bound to the REAL `World` — `restart_scene=world.boot`,
+  `teardown=world.shutdown_engine` — over a REAL engine process: Return→
+  PLAYING, REAL CommandRecords while playing, Escape→PAUSED (quiesce; zero
+  records, zero mapper calls while paused), R-from-paused → EXACTLY ONE real
+  `World.boot` (new PID + port, same scene sha), R-while-playing no-op,
+  resume no-boot, Q→EXITED with the real engine dead in 0.05 s and its port
+  closed, terminal inert, containment clean (≤1 engine alive at any instant,
+  0 at end).
+- The REAL pixels: `evidence/integrated/integrated_capture.mp4` (43.8 s,
+  REAL headless-Chrome video of the live application through the restart —
+  the RESTARTING pill and the world coming back are on tape) + 4 stills
+  (full-page diagnostic / canvas-only clean, the clean via the canvas's own
+  toDataURL in the draw task) + 2 engine `/frame` images through the server's
+  own passthru. The camera manifest binds these REAL artifacts per the sealed
+  schema (kind motion → video, trace bindings) and validates GREEN with the
+  campaign's `visual_capture.validate_manifest` AND `visual_gate.verify`
+  against `card_task.json`. `visual_acceptance` stays false (validator law);
+  independent visual review remains the reviewer's gate.
+
+## Genuinely missing integration (recorded precisely, not faked)
+
+- **M1 — no pause/exit control in the app**: `slice_server` imports neither
+  `session_flow` nor `input_mapper` and ships no `/api/pause` or `/api/exit`
+  route; the page binds no Escape/Q. The pause/exit legs therefore run
+  through the SessionFlow over the REAL World seam (Session B) — the module's
+  own declared integration contract. Page/server-level wiring of pause/exit
+  is the unresolved piece.
+- **M2 — no graceful exit path**: the server installs no console/signal
+  handler; its only graceful shutdown is KeyboardInterrupt (its shipped
+  `finally: WORLD.shutdown_engine()`). CTRL_C was measured undeliverable
+  three ways in this environment; CTRL_BREAK hard-kills the interpreter as
+  `0xC000013A` WITHOUT the finally, ORPHANING the engine — measured, and the
+  frozen A4 prediction recorded FIRED (`integrated_runtime_receipt.json`).
+  A4 therefore measures the operator-class hard kill: the orphan is real,
+  then terminated by the driver by PID. The app's own teardown is proven on
+  the real engine in A3 (restart) and B7 (Q).
+- **M3 — the worktree ships no runtime**: play HEAD `8d16d3c1` has neither
+  `tools/playable_slice/` nor a built engine on disk; reconstructed from the
+  pinned blobs (252-file raw-blob manifest in the runtime receipt; the
+  worktree untouched).
+- **M4 — no locomotion consumer**: mapper CommandRecords have no
+  walking/climbing consumer in the standing-start slice (out of X02 scope
+  per the lead).
+
+## Records-leg resolution fix (the PR #135 reviewer's named follow-up)
+
+`verify_ontology.py` (and its suite run) now resolve the pinned modules from
+this contribution's byte-exact `reference/` copies with a by-name drift
+refusal (the D-W03 TIE2-guard pattern) instead of the live play product dir,
+which no longer ships those files on disk. Both unittest suites are 5/5 OK
+in this attempt, and the regenerated `reconciliation_receipt.json` is
+byte-identical to the preserved one (`cf0475d8…`) — the fix changes only how
+the pinned bytes are FOUND, never what is computed. `verify_ontology.py`'s
+own bytes change (supersedes `ca1b11cd…`); `session_flow_tests.py`
+(`b6ce2bba…`) joins `reference/` byte-exact from `f30f2224` so the existing
+falsifier suite can run at the pinned bytes anywhere.
+
+## Prior evidence (this attempt's base — PRESERVED, unchanged)
+
+The text below is the prior candidate's report (head eac8788), kept for the
+record. Its probes, trace, PIL visualization, receipts and tests all remain
+green and are re-verified in this attempt (see the new candidate_suite list
+in `qualification_receipt.json`).
+
+---
+
 # ONT-X02 — motion-profile qualification (correction, lead msg-f4584623)
 
 **Verdict: the card's done_when is MEASURED GREEN on the pinned M-X02 lineage

@@ -1,0 +1,41 @@
+{
+ "schema": "chimera.ont_x02.integrated_capture.v1",
+ "run_id": "ONT-X02-integrated-20260926T201448",
+ "capture_artifact": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\evidence\\integrated_capture.mp4",
+ "capture_sha256": "7ff408f2b15931497752147b8f5f7d6572bac4988269b7755b559dd305b18a6a",
+ "trace_sha256": "3ccd006cef41da946c47797f0ec66206f9839ac673afc2ca07a9c5c980c5d489",
+ "webm_sha256": "7d508cfbab382f2645e05c0eb136fd26f8d055db18a37990e38902aa5b1dc491",
+ "stills": {
+  "view_before_diagnostic.png": "66d8cd69f9d1b8c929ce71e3d5dd5f8b14a386523b3bfee1d17e228ffed6bb3f",
+  "view_before_clean.png": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e",
+  "view_after_diagnostic.png": "e3fe2f8d762b0e67c03605728f41aa12bec65a0eb6e803dd97a2b33536938516",
+  "view_after_clean.png": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e",
+  "engine_frame_before.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+  "engine_frame_after.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b"
+ },
+ "state_bindings": {
+  "before": "a3d01d7633c5247d9aed43c5405b914cd2a767a5b9e32cb2e3720c71fbaff3e6",
+  "after": "cebfcecc0c4ecac80521fd4794a74e9ecd01062d4685a65d14945c5de4bd9594"
+ },
+ "validate_manifest_result": {
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "structurally_valid": true,
+  "visual_acceptance": false,
+  "profile_id": "recovery",
+  "view_count": 4,
+  "capture_kind": "video",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required."
+ },
+ "visual_gate_verify_result": {
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "structurally_valid": true,
+  "visual_acceptance": false,
+  "profile_id": "recovery",
+  "view_count": 4,
+  "capture_kind": "video",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required."
+ },
+ "visual_acceptance": false,
+ "boundary": "structural camera-metadata validation only; independent visual review of the REAL recording remains the reviewer's gate",
+ "built_utc": "2026-09-26T20:14:48Z"
+}

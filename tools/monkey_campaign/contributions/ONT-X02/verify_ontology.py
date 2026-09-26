@@ -10,6 +10,7 @@ No reimplementation, no edits to the existing module, no engine/browser.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import pathlib
 import subprocess
@@ -17,7 +18,22 @@ import sys
 
 PLAY = pathlib.Path("E:/ChimeraWork/monkey-play-20260924")
 PRODUCT = PLAY / "tools/monkey_campaign/product"
+
+# TIE2-guard resolution (this correction; the PR #135 reviewer's named
+# follow-up): the LIVE play worktree (HEAD 8d16d3c1) no longer ships
+# product/session_flow.py on disk, so the pinned module is resolved from
+# THIS contribution's byte-exact reference/ copy (sha asserted against the
+# PREREGISTRATION pin) instead of the mutable live tree.
+HERE = pathlib.Path(__file__).resolve().parent
+REFERENCE = HERE / "reference/tools/monkey_campaign/product"
+PIN_SESSION_FLOW = ("30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f"
+                    "307458455cf")
+PRODUCT = REFERENCE
 sys.path.insert(0, str(PRODUCT))
+if hashlib.sha256((REFERENCE / "session_flow.py").read_bytes()).hexdigest() \
+        != PIN_SESSION_FLOW:
+    raise RuntimeError("verify_ontology: pinned session_flow.py drift vs "
+                       "reference/ - refusing by name")
 
 import session_flow as sf  # noqa: E402  (pinned existing module, read-only)
 
@@ -129,9 +145,27 @@ def check_resume_gating(r):
 
 
 def run_suite(r):
-    proc = subprocess.run(
-        [sys.executable, "-B", "session_flow_tests.py"],
-        cwd=str(PRODUCT), capture_output=True, timeout=110)
+    """Re-run the existing falsifier suite AT THE PINNED BYTES: the suite
+    file is resolved from reference/ (byte-exact, the PR #135 reviewer's
+    named follow-up) into a temp dir beside the pinned modules - the live
+    play product dir no longer ships these files on disk."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        # the pinned suite's own layout: flat product imports + the
+        # absolute tools.* cross-imports both resolve from <root>
+        tdp = pathlib.Path(td) / "tools/monkey_campaign/product"
+        tdp.mkdir(parents=True)
+        for name in ("session_flow.py", "session_flow_tests.py",
+                     "input_mapper.py"):
+            (tdp / name).write_bytes((REFERENCE / name).read_bytes())
+        tse = tdp.parent.parent / "science_funnel" / "typeb_export"
+        tse.mkdir(parents=True)
+        (tse / "command_record.py").write_bytes(
+            (HERE / "reference/tools/science_funnel/typeb_export/"
+             "command_record.py").read_bytes())
+        proc = subprocess.run(
+            [sys.executable, "-B", "session_flow_tests.py"],
+            cwd=str(tdp), capture_output=True, timeout=110)
     r["existing_suite_exit_0"] = proc.returncode == 0
     r["existing_suite_all_pass"] = b"ALL CHECKS PASS" in proc.stdout
 
