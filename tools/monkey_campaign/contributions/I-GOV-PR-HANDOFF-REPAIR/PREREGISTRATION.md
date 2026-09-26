@@ -1,71 +1,71 @@
-# PREREGISTRATION — I-GOV-PR-HANDOFF-REPAIR (PR #116 worker handoff + explicit routing)
+# PREREGISTRATION — I-GOV-PR-HANDOFF-REPAIR (correction attempt)
 
-- **Attempt:** ad0b478dfafe4b7f8fc471edb5571ea0 (arrival-f4b9cb2857a0457ab737de76eed3af12)
-- **Criteria sha256:** 71c0089538a563ea19173cd7e60604c150c51603e8538b3d1dad724fc92ecf9c
-- **Pinned review target:** PR #116 head `8730d3841c00cc7c6732d7e4ec702044c4f7f586`
-  (review: E:/Chimera/pr-review-20260925/REVIEW.md, "changes required", two findings)
-- **Frozen:** 2026-09-25, before any patch edit. Governance support card; does not
-  close P01 and does not alter game scope.
+Card: `I-GOV-PR-HANDOFF-REPAIR` (planning P01, governance support; does not close
+P01 or alter scope). Correction attempt `1ccb4bcdcddc4cf39c16a3fd1289e7c8`,
+agent `c95e1722350849bca846b237c1f60997`, criteria
+`71c0089538a563ea19173cd7e60604c150c51603e8538b3d1dad724fc92ecf9c`.
+Responds to lead correction `msg-a5dc3bf59c41441c89676dced7a37dc0` (CHANGES
+REQUIRED on PR #128 @ 8594a5fc). Written BEFORE the reconciliation probe ran.
 
-## STATEMENT
+## The correction decision (derived from the lead's message + current code)
 
-PR #116's kanban routing has two reproducible defects: (1) an explicit task request for
-a card where the same worker already holds a WORKING attempt returns the wrong card
-(the explicit lookup only matches PAUSED/PR_SUBMITTED, then the generic loop returns
-the worker's first WORKING attempt anywhere), and revisiting one task while working
-another leaves two WORKING attempts with no defined transition; (2) the documented
-PR-request bridge exists only as prose — posting a request leaves the attempt WORKING,
-so the worker's next poll returns the same card (trapped), and no durable request
-record, identity verification, or lead fulfilment path exists. Both are repairable in
-kanban.py + worker_start.py without changing criteria, capacity, or review/merge
-authority.
+PR #128 repaired two PR #116 review findings (D1 explicit-routing wrong-card,
+D2 prose-only PR-request bridge) against the OLD workflow. The installed
+astra-0017..0026 workflow already contains the successor machinery:
 
-## PREDICTIONS (falsified-by-run)
+- **D2 is superseded**: `continuous_cycle.request_publication` + `worker_start
+  --request-pr` implement the durable PR-request handoff (exact identity,
+  idempotence, next-card transition, no credentials). Live proof: this same
+  agent used `--request-pr` four times earlier TODAY (requests
+  `publication-3c5e99f9…`, `publication-e371340a…`, `publication-da5f190d…`,
+  `publication-32e57764…`), each recording `PUBLICATION_REQUESTED` and
+  returning the next card.
+- **D1 is superseded by an explicit-refusal + park protocol**: current
+  `continuous_cycle.join` filters candidates to the requested card and, when
+  the worker holds other WORKING work, REFUSES by name
+  (`checkpoint_active_work_before_switch`) instead of silently returning
+  another card. PR #128's AUTOMATIC displacement contradicts astra-0022
+  ("No automatic parking or other worker takeover is permitted") and must not
+  be installed.
 
-- **PD1:** with the pinned kanban.py in an isolated registry, the sequence
-  submit-T0 → join-T1 → revisit-T0(explicit) → request-T1(explicit) returns T0, and
-  after the revisit the worker holds two WORKING attempts.
-- **PD2:** with the pinned kanban.py, after a worker signals a PR request (any
-  inbox-message form), a generic poll returns the SAME card again, because the
-  attempt is still WORKING; there is no request state or transition.
-- **PD3 (post-repair):** the same sequences against the patched code return T1 for an
-  explicit T1 request, hold at most one WORKING attempt per worker (displaced attempt
-  becomes PAUSED with a recorded checkpoint), move a requesting worker to a different
-  card on the next poll, refuse stale criteria/head identity, treat repeated identical
-  requests and fulfilments idempotently, and leave card criteria, slot count and
-  ten-card capacity unchanged. A request never sets REVIEW/DONE, never creates a
-  `prs` entry, and never resolves messages.
+Per the lead's instruction, the deliverable is therefore a **no-change
+reconciliation receipt** with a probe proving the original defects cannot
+reproduce against the CURRENT modules in an isolated registry — not the
+obsolete patch.
 
-## FALSIFIERS (named before the run)
+## PREDICTIONS (not yet measured by this attempt)
 
-- **F1 wrong card:** patched explicit request for T1 returns anything but T1's
-  existing attempt for that worker → repair failed.
-- **F2 trapped worker:** after request_publication, the worker's next generic join
-  returns the requested card again → repair failed.
-- **F3 masquerade:** a publication request changes card state to REVIEW/DONE, creates
-  a prs entry, marks an attempt WON/SUPERSEDED, or resolves an inbox message → repair
-  failed (a request is never a submission or a merge).
-- **F4 identity hole:** a request with wrong criteria_sha256, wrong agent, or a
-  non-40-hex head is accepted → repair failed.
-- **F5 capacity/criteria drift:** refill behavior, slot numbering, ten-card capacity,
-  or any card's criteria hash changes due to the patch → repair failed.
-- **F6 cessation fabrication:** the patch manufactures cessation of ANOTHER worker's
-  attempt (only the requesting worker's own attempts may transition) → repair failed.
-- **F7 non-reproduction:** if PD1/PD2 do not reproduce against the pinned code in an
-  isolated registry, my premise is wrong and the repair must stop and report instead.
+Against current `E:/PythonChimera/tools/monkey_campaign` modules in isolated
+temp registries configured like production (`continuous_cycle`,
+`separate_review_lane`, `TEN_PERSISTENT_SLOT_BRANCHES`):
 
-## Probes (frozen)
+1. **D1 cannot reproduce**: explicit request for card X while other work is
+   WORKING raises the named refusal `checkpoint_active_work_before_switch`
+   and returns NO card packet; an explicit request with no other active work
+   returns exactly card X; after parking, an explicit request for a card with
+   a pending publication request never returns a different card (no packet
+   with `task_id != X` is ever produced by an explicit request for X).
+2. **D2 cannot reproduce**: `request_publication` records a durable request
+   bound to attempt/criteria/artifacts, flips the attempt to
+   `PUBLICATION_REQUESTED`, is idempotent for the same artifacts
+   (`REQUEST_ALREADY_RECORDED`, same request id), refuses a wrong criteria
+   hash by name, and the next generic join returns a DIFFERENT card — all
+   offline (registry file ops only).
+3. **Invariants**: board capacity stays 10; every card's `criteria_sha256` is
+   unchanged by joins/requests/parks; no attempt of ANOTHER agent is ever
+   touched (auto-displacement absent).
 
-- probe_defects.py against reference/kanban.py (pinned bytes) in a temp registry:
-  reproduce PD1 and PD2, print observed states.
-- test_repair.py against the patched code in isolated temp registries: PD3 plus all
-  card-required scenarios (explicit return; request → next work without REST
-  credentials — no network use at all; stale head/criteria refusal; concurrent/
-  repeated retries; ten-card capacity preservation; request-not-merge invariants;
-  outstanding lead messages preserved across request retries).
+## FALSIFIER
 
-## Bounds
+Any probe outcome deviating from 1–3 (a wrong card returned by an explicit
+request, a trapped worker, a masqueraded request, or changed
+criteria/capacity) FAILS the reconciliation and means PR #128 (or a minimal
+subset) is still needed — that would be reported, not smoothed over. Lying
+about the live-session evidence, or editing any production registry/module,
+also fails. No production edits occur; all probes run in `tempfile` registries.
 
-- CPU-only isolated temp registries; no production registry edits, no credentials,
-  no network, no models, no process control; each test invocation ≤ 120 s;
-  new output ≤ 16 MiB. The patch is proposed only — the lead applies it.
+## BOUNDS
+
+CPU-only; stdlib + the campaign modules imported read-only from
+`E:/PythonChimera/tools/monkey_campaign`; isolated temp registries; no
+credentials, no network, no process control; ≤16 MiB output.
