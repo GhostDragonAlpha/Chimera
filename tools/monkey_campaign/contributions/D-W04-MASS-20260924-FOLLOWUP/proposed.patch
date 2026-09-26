@@ -1,0 +1,806 @@
+diff --git a/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/PREREGISTRATION.md b/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/PREREGISTRATION.md
+new file mode 100644
+index 00000000..027069c6
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/PREREGISTRATION.md
+@@ -0,0 +1,62 @@
++# PREREGISTRATION — D-W04-MASS-20260924-FOLLOWUP
++
++Written BEFORE any implementation edit. Attempt `1842fc38d3734ad096308bce09a7dfd6`,
++arrival `arrival-74c8fd34cbd5413d90aa516badcac808`, criteria
++`d319ca0311e03505235364cec2dc895ef25fa527ad7a678f033c3df510026ee1`.
++
++## Rule-0 statement (disagreeable)
++
++The first-skill acceptance CoT denominator (`M_BODY_KG`, `tools/science_funnel/first_skill/acceptance.py:18`)
++and the trainer env's simulated rigid-assembly mass (`derived_numbers.json body_model.mass_kg`,
++consumed via `walker_model.py` `body_mass[i] = float(b["mass_kg"])`) are two independently
++frozen numbers from different lineages. A source-bound validator that resolves both from the
++pinned git objects MUST find them INCOMPATIBLE on the current pinned tree, and must return
++COMPATIBLE only when both resolve (with explicit units and recorded blob provenance) to the
++same kg value. Refusal — never a verdict — is the only legal outcome when any lineage link
++is unresolvable.
++
++## Prediction (not yet measured by this attempt at validator level)
++
++Resolving the pinned chain yields exactly: denominator `13824.5 kg` (blob `3df32b59…`
++identical at `8294053b` and `a62b286e`), training body `10.038 kg` (blob `8b6d75fb…` at
++`33e7a444`), ratio `13824.5 / 10.038 = 1377.216577007372`, weight consistency
++`10.038 x 9.80665 = 98.4391527 N` vs recorded `98.439 N` (rounded, |err| < 0.001 N).
++Consequently: validator on the current pins exits 1 (INCOMPATIBLE) with that exact ratio;
++a fixture registration whose denominator is corrected to the training mass exits 0
++(COMPATIBLE); every unresolved-lineage control exits 3 with a named refusal.
++
++## Falsifiers (named before the run)
++
++- F1: validator reports COMPATIBLE on the current pinned tree (it must catch the documented mismatch).
++- F2: any unresolved-lineage path (missing repo, unresolvable pin, path absent at pin, blob
++  anchor mismatch, unparseable literal) exits 0 or 1 instead of a named exit-3 refusal.
++- F3: any output labels a synthetic fixture as native acceptance, or claims a native/GPU run.
++- F4: the patch touches any production source, threshold, seed or frozen registration field
++  outside `tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/`.
++
++## Method constraints
++
++CPU-only; stdlib-only; git used read-only against the source repo
++`E:/ChimeraWork/monkey-play-20260924` (pins: acceptance `8294053b`, trainer `a62b286e`,
++scene numbers `33e7a444`); all writes inside this attempt workspace; every test invocation
++under 120 s. No body mass is substituted, no training threshold changed, no frozen field
++amended (the RUNBOOK law requires a NEW lead-authorized registration for that — this card
++delivers the CHECK, not the swap; the W04 registration ruling Q-34439597b1774332972da4d8b4ec6b2a
++remains open and is reported as a still-open gate).
++
++## Pre-verified source anchors (measured by this attempt before implementation)
++
++| object | pin | blob |
++|---|---|---|
++| first_skill/acceptance.py | 8294053b | 3df32b59b09411721913229c8df4eb3efa04379e (identical at a62b286e) |
++| validation/.../run_manifest.json | 8294053b | 3188e72f949149a335ea6aa1863db90b51e402f6 |
++| validation/.../RUNBOOK.md | 8294053b | 73a41120fce27a6bf85073712ccc7a68382ff46b |
++| typeb_gpu/walker_model.py | a62b286e | 89840918ce8b395c11035aca09e74cc9961b20b4 |
++| report_first_skill_checkpoint.py | a62b286e | d41c92802937da4c36f9183f3ae1d1bdaa053579 |
++| validation/gait_controller_20260918/derived_numbers.json | 33e7a444 | 8b6d75fbd408a8e1e2db31cdf15fc4a104b9a36a |
++| gait_scene.py | 33e7a444 | 5c8792aef60f9eb2eb2e10549546ff12a2efe21b |
++| acceptance.py absent at 43b599a7 (refusal-test pin) | 43b599a7 | — (rev-parse exit 128) |
++
++These anchors become the validator's `--expect-*-blob` integrity anchors: a file at the pin
++whose blob differs is BLOB_ANCHOR_MISMATCH (refusal), so the validator can never silently
++measure a different revision than the one the winning diagnostic cited.
+diff --git a/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/implementation.py b/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/implementation.py
+new file mode 100644
+index 00000000..9d16c9b3
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/implementation.py
+@@ -0,0 +1,332 @@
++"""Walking body/manifest consistency validator (D-W04-MASS-20260924-FOLLOWUP).
++
++Source-bound, read-only, CPU-only, stdlib-only check that the first-skill
++acceptance CoT denominator and the trainer env's simulated rigid-assembly
++body mass are THE SAME body, resolved from pinned git objects with explicit
++units and recorded blob provenance.
++
++Implements the check accepted from the winning diagnostic D-W04-MASS-20260924
++(merged PR #118, head 24db3062187e617cf576019adb131926df63a237): the frozen
++denominator (membrane inventory 13824.5 kg) and the training body (Oku-2021
++10.038 kg assembly) were proven to be different bodies (ratio 1377.2166x).
++This tool does NOT substitute a body mass and does NOT touch any frozen
++registration field — it only MEASURES and REPORTS the binding, refusing when
++any lineage link cannot be resolved.
++
++Usage:
++  python -B implementation.py --source-repo PATH
++        --acceptance-commit SHA --trainer-commit SHA --scene-numbers-commit SHA
++        --out PATH
++        [--expect-acceptance-blob SHA] [--expect-manifest-blob SHA]
++        [--expect-scene-numbers-blob SHA] [--scene-json PATH]
++
++Pins are required: the tool never measures an unpinned tree.
++
++Resolved quantities:
++  denominator_mass_kg   acceptance.py M_BODY_KG literal (frozen CoT denominator)
++  training_body_mass_kg scene bundle mass (via --scene-json) or pinned
++                        derived_numbers.json body_model.mass_kg
++  ratio_dimensionless   denominator / training body
++  weight_newton         training mass x g0 = 9.80665 m/s^2, cross-checked
++                        against the recorded body_model.weight_N
++
++Compatibility: COMPATIBLE requires denominator == training mass within
++REL_TOL, all frozen definition sites (acceptance literal, run_manifest.json
++definition, RUNBOOK step-5 line, checkpoint report label) to agree on the
++same kg value, and the walker_model.py structural guard to be present.
++Anything else is INCOMPATIBLE (a real verdict, exit 1) — never a refusal.
++
++Refusals (environment/lineage problems, exit 3, named, NO output file):
++  SOURCE_REPO_MISSING, PIN_UNRESOLVABLE, PATH_NOT_IN_PIN,
++  BLOB_ANCHOR_MISMATCH, UNPARSEABLE_DENOMINATOR, UNPARSEABLE_TRAINING_MASS,
++  NON_FINITE_MASS, SCENE_JSON_UNPARSEABLE, GIT_COMMAND_FAILED.
++
++Exit codes: 0 COMPATIBLE, 1 INCOMPATIBLE, 3 refusal.
++"""
++import argparse
++import hashlib
++import json
++import math
++import pathlib
++import re
++import subprocess
++import sys
++
++SCHEMA = "d-w04-mass-followup.body_manifest_consistency.v1"
++
++G0_M_S2 = 9.80665          # standard gravity, m/s^2 (exact by definition)
++WEIGHT_TOL_N = 0.01        # recorded weight_N may be rounded (98.439)
++REL_TOL = 1e-9             # masses must agree to 1e-9 relative to be the SAME body
++
++ACCEPTANCE_REL = "tools/science_funnel/first_skill/acceptance.py"
++MANIFEST_REL = "tools/science_funnel/validation/first_skill_prestage_20260922/run_manifest.json"
++RUNBOOK_REL = "tools/science_funnel/validation/first_skill_prestage_20260922/RUNBOOK.md"
++WALKER_MODEL_REL = "tools/science_funnel/typeb_gpu/walker_model.py"
++REPORT_LABEL_REL = "tools/report_first_skill_checkpoint.py"
++SCENE_NUMBERS_REL = "tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json"
++
++WALKER_GUARD = 'self.body_mass[i] = float(b["mass_kg"])'
++COT_EXPR = re.compile(r"cot\s*=\s*work\s*/\s*\(M_BODY_KG\s*\*\s*dist\)")
++DENOM_LINE = re.compile(r"^\s*M_BODY_KG\s*=\s*([0-9]+\.[0-9]+|[0-9]+)\s*(?:#.*)?$")
++HEX40 = re.compile(r"\A[0-9a-f]{40}\Z")
++
++
++class Refusal(RuntimeError):
++    """Named refusal: exit 3, no output file."""
++
++
++def sha256(data: bytes) -> str:
++    return hashlib.sha256(data).hexdigest()
++
++
++def check_git(repo: pathlib.Path, argv, stdin: bytes = None) -> subprocess.CompletedProcess:
++    cmd = ["git", "-C", str(repo), *argv]
++    proc = subprocess.run(cmd, capture_output=True, input=stdin)
++    if proc.returncode != 0:
++        raise Refusal("GIT_COMMAND_FAILED command=%r exit=%d stderr=%r" % (
++            " ".join(cmd), proc.returncode,
++            proc.stderr.decode("utf-8", errors="replace").strip()[:400]))
++    return proc
++
++
++def resolve_commit(repo: pathlib.Path, pin: str) -> str:
++    proc = subprocess.run(
++        ["git", "-C", str(repo), "rev-parse", "--verify", pin + "^{commit}"],
++        capture_output=True)
++    if proc.returncode != 0:
++        raise Refusal("PIN_UNRESOLVABLE pin=%r stderr=%r" % (
++            pin, proc.stderr.decode("utf-8", errors="replace").strip()[:200]))
++    full = proc.stdout.decode().strip()
++    if not HEX40.match(full):
++        raise Refusal("PIN_UNRESOLVABLE pin=%r resolved to non-40-hex %r" % (pin, full))
++    return full
++
++
++def blob_at(repo: pathlib.Path, commit: str, rel: str, expect_blob=None) -> dict:
++    probe = subprocess.run(
++        ["git", "-C", str(repo), "rev-parse", "%s:%s" % (commit, rel)],
++        capture_output=True)
++    if probe.returncode != 0:
++        raise Refusal("PATH_NOT_IN_PIN path=%r commit=%s" % (rel, commit[:12]))
++    blob = probe.stdout.decode().strip()
++    if not HEX40.match(blob):
++        raise Refusal("GIT_COMMAND_FAILED detail='rev-parse returned non-40-hex blob id %r'" % blob)
++    if expect_blob is not None and blob != expect_blob:
++        raise Refusal("BLOB_ANCHOR_MISMATCH path=%r commit=%s expected_blob=%s got_blob=%s"
++                      % (rel, commit[:12], expect_blob, blob))
++    data = check_git(repo, ["cat-file", "blob", blob]).stdout
++    return {"path": rel, "commit": commit, "blob_id": blob, "bytes": len(data),
++            "sha256_raw_bytes": sha256(data), "text": data.decode("utf-8", errors="replace")}
++
++
++def find_line(text: str, pattern) -> dict:
++    for i, ln in enumerate(text.splitlines(), start=1):
++        if pattern.search(ln):
++            return {"line_no": i, "line": ln.strip()}
++    return None
++
++
++def main(argv=None):
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--source-repo", required=True)
++    ap.add_argument("--acceptance-commit", required=True)
++    ap.add_argument("--trainer-commit", required=True)
++    ap.add_argument("--scene-numbers-commit", required=True)
++    ap.add_argument("--out", required=True)
++    ap.add_argument("--expect-acceptance-blob", default=None)
++    ap.add_argument("--expect-manifest-blob", default=None)
++    ap.add_argument("--expect-scene-numbers-blob", default=None)
++    ap.add_argument("--scene-json", default=None,
++                    help="optional compiled scene bundle (bodies[].mass_kg, kg); "
++                         "when present it is the PRIMARY training-body source")
++    args = ap.parse_args(argv)
++
++    repo = pathlib.Path(args.source_repo)
++    if not repo.is_dir():
++        raise Refusal("SOURCE_REPO_MISSING %r is not a directory" % str(repo))
++    probe = subprocess.run(["git", "-C", str(repo), "rev-parse", "--is-inside-work-tree"],
++                           capture_output=True)
++    if probe.returncode != 0:
++        raise Refusal("SOURCE_REPO_MISSING %r is not a git repository" % str(repo))
++
++    acc_commit = resolve_commit(repo, args.acceptance_commit)
++    trn_commit = resolve_commit(repo, args.trainer_commit)
++    scn_commit = resolve_commit(repo, args.scene_numbers_commit)
++
++    acc = blob_at(repo, acc_commit, ACCEPTANCE_REL, args.expect_acceptance_blob)
++    man = blob_at(repo, acc_commit, MANIFEST_REL, args.expect_manifest_blob)
++    run_txt = blob_at(repo, acc_commit, RUNBOOK_REL)
++    wmod = blob_at(repo, trn_commit, WALKER_MODEL_REL)
++    rlabel = blob_at(repo, trn_commit, REPORT_LABEL_REL)
++    scn = blob_at(repo, scn_commit, SCENE_NUMBERS_REL, args.expect_scene_numbers_blob)
++
++    checks = []
++
++    def check(name, ok, detail, **extra):
++        checks.append(dict({"check": name, "ok": bool(ok), "detail": detail}, **extra))
++        return bool(ok)
++
++    # -- denominator (acceptance CoT denominator, kg) -----------------------
++    m = find_line(acc["text"], DENOM_LINE)
++    if m is None:
++        raise Refusal("UNPARSEABLE_DENOMINATOR no 'M_BODY_KG = <number>' line in %s@%s"
++                      % (ACCEPTANCE_REL, acc_commit[:12]))
++    den_val = float(m["line"].split("=", 1)[1].split("#", 1)[0].strip())
++    if not math.isfinite(den_val) or den_val <= 0.0:
++        raise Refusal("NON_FINITE_MASS denominator=%r" % den_val)
++    den_literal = m["line"].split("=", 1)[1].split("#", 1)[0].strip()
++    unit_den = "kg"
++    check("denominator_literal_parsed", True,
++          "M_BODY_KG = %s at %s:%d (blob %s); unit %s"
++          % (den_literal, ACCEPTANCE_REL, m["line_no"], acc["blob_id"][:12], unit_den),
++          value=den_val, unit=unit_den, line_no=m["line_no"])
++
++    cotm = find_line(acc["text"], COT_EXPR)
++    check("denominator_used_in_cot_expression", cotm is not None,
++          ("cot = work / (M_BODY_KG * dist) at %s:%d" % (ACCEPTANCE_REL, cotm["line_no"]))
++          if cotm else "no cot = work / (M_BODY_KG * dist) expression found")
++
++    kg_token = "%s kg" % den_literal
++    man_line = find_line(man["text"], re.compile(re.escape(kg_token)))
++    check("manifest_definition_consistent", man_line is not None,
++          ("run_manifest.json cot_within_band.definition names %s at line %d"
++           % (kg_token, man_line["line_no"])) if man_line else
++          ("manifest definition does NOT name %s — frozen-site disagreement" % kg_token))
++
++    rb_line = find_line(run_txt["text"], re.compile(re.escape(kg_token)))
++    check("runbook_definition_consistent", rb_line is not None,
++          ("RUNBOOK.md names %s at line %d" % (kg_token, rb_line["line_no"]))
++          if rb_line else "RUNBOOK does NOT name %s — frozen-site disagreement" % kg_token)
++
++    rl_line = find_line(rlabel["text"], re.compile(re.escape(kg_token)))
++    check("report_label_consistent", rl_line is not None,
++          ("checkpoint report label names %s at line %d" % (kg_token, rl_line["line_no"]))
++          if rl_line else "checkpoint report label does NOT name %s" % kg_token)
++
++    # -- training body (the env's rigid assembly, kg) ------------------------
++    training_sources = {}
++    if args.scene_json:
++        try:
++            scene = json.loads(pathlib.Path(args.scene_json).read_text(encoding="utf-8"))
++            bodies = [b for b in scene["bodies"] if float(b["mass_kg"]) > 0.0]
++            scene_mass = sum(float(b["mass_kg"]) for b in bodies)
++        except Exception as exc:  # noqa: BLE001 - any parse failure is a refusal
++            raise Refusal("SCENE_JSON_UNPARSEABLE %r: %s" % (args.scene_json, exc))
++        if not math.isfinite(scene_mass) or scene_mass <= 0.0:
++            raise Refusal("NON_FINITE_MASS scene bundle mass=%r" % scene_mass)
++        training_sources["compiled_scene_bundle"] = {
++            "mass_kg": scene_mass, "nonzero_bodies": len(bodies),
++            "path": str(args.scene_json)}
++        train_val = scene_mass
++        train_prov = "compiled_scene_bundle"
++    else:
++        scn_data = json.loads(scn["text"])
++        try:
++            train_val = float(scn_data["body_model"]["mass_kg"])
++            weight_recorded = float(scn_data["body_model"]["weight_N"])
++        except (KeyError, TypeError, ValueError) as exc:
++            raise Refusal("UNPARSEABLE_TRAINING_MASS %s@%s: %s"
++                          % (SCENE_NUMBERS_REL, scn_commit[:12], exc))
++        if not math.isfinite(train_val) or train_val <= 0.0:
++            raise Refusal("NON_FINITE_MASS training mass=%r" % train_val)
++        training_sources["pinned_derived_numbers"] = {
++            "mass_kg": train_val, "recorded_weight_N": weight_recorded,
++            "blob_id": scn["blob_id"], "unit": "kg"}
++        train_prov = "pinned_derived_numbers"
++
++    check("training_mass_resolved", True,
++          "training body = %.6g kg from %s (unit kg)" % (train_val, train_prov),
++          value=train_val, unit="kg", provenance=train_prov)
++
++    guard = find_line(wmod["text"], re.compile(re.escape(WALKER_GUARD)))
++    check("trainer_structural_binding", guard is not None,
++          ("walker_model.py:%d loads body masses from the scene bundle (%s)"
++           % (guard["line_no"], WALKER_GUARD)) if guard else
++          "walker_model.py does not load body_mass from the scene bundle")
++
++    weight = train_val * G0_M_S2
++    weight_rec = training_sources.get("pinned_derived_numbers", {}).get("recorded_weight_N")
++    weight_ok = weight_rec is not None and abs(weight - weight_rec) <= WEIGHT_TOL_N
++    check("weight_consistency", weight_ok,
++          ("%.7f N = mass x g0 (%.5f m/s^2); recorded %.3f N; |err| %.7f N <= %.2f N"
++           % (weight, G0_M_S2, weight_rec, abs(weight - weight_rec), WEIGHT_TOL_N))
++          if weight_rec is not None else
++          "no recorded weight to cross-check (scene-bundle source)", unit="N")
++
++    # -- the actual compatibility verdict ------------------------------------
++    ratio = den_val / train_val
++    same_body = abs(den_val - train_val) <= REL_TOL * max(1.0, abs(train_val))
++    sites_ok = all(c["ok"] for c in checks
++                   if c["check"] in ("manifest_definition_consistent",
++                                     "runbook_definition_consistent",
++                                     "report_label_consistent"))
++    check("denominator_equals_training_mass", same_body,
++          ("denominator %s kg == training body %s kg: SAME body"
++           % (den_literal, train_val)) if same_body else
++          ("denominator %s kg (membrane-inventory lineage, %s@%s) != training body "
++           "%.6g kg (%s lineage): ratio %.12g — absolute CoT is mislabeled by this factor"
++           % (den_literal, ACCEPTANCE_REL, acc_commit[:12], train_val, train_prov, ratio)),
++          ratio_dimensionless=ratio if not same_body else 1.0)
++
++    compatible = same_body and sites_ok and cotm is not None and guard is not None
++    verdict = "COMPATIBLE" if compatible else "INCOMPATIBLE"
++
++    result = {
++        "schema": SCHEMA,
++        "source_repo": str(repo),
++        "pins": {"acceptance_commit": acc_commit, "trainer_commit": trn_commit,
++                 "scene_numbers_commit": scn_commit},
++        "units": {"denominator_mass": "kg", "training_body_mass": "kg",
++                  "weight": "N", "ratio": "dimensionless", "g0": "m/s^2"},
++        "g0_m_s2": G0_M_S2,
++        "denominator_mass_kg": den_val,
++        "training_body_mass_kg": train_val,
++        "training_body_source": training_sources,
++        "ratio_dimensionless": ratio,
++        "weight_newton": weight,
++        "verdict": verdict,
++        "provenance": {
++            "acceptance.py": {k: acc[k] for k in ("path", "commit", "blob_id", "bytes",
++                                                  "sha256_raw_bytes")},
++            "run_manifest.json": {k: man[k] for k in ("path", "commit", "blob_id", "bytes",
++                                                      "sha256_raw_bytes")},
++            "RUNBOOK.md": {k: run_txt[k] for k in ("path", "commit", "blob_id", "bytes",
++                                                   "sha256_raw_bytes")},
++            "walker_model.py": {k: wmod[k] for k in ("path", "commit", "blob_id", "bytes",
++                                                     "sha256_raw_bytes")},
++            "report_first_skill_checkpoint.py": {k: rlabel[k] for k in ("path", "commit",
++                                                                        "blob_id", "bytes",
++                                                                        "sha256_raw_bytes")},
++            "derived_numbers.json": {k: scn[k] for k in ("path", "commit", "blob_id", "bytes",
++                                                         "sha256_raw_bytes")},
++        },
++        "checks": checks,
++        "notes": [
++            "This tool measures and reports only; it does not amend any frozen "
++            "registration field. Correcting the denominator requires a NEW "
++            "lead-authorized registration (RUNBOOK frozen-field law).",
++            "Verdict is a source-lineage statement, not native acceptance: no "
++            "engine, GPU or training process is involved.",
++        ],
++    }
++    passed = sum(1 for c in checks if c["ok"])
++    result["summary"] = "%d/%d checks green — %s" % (passed, len(checks), verdict)
++
++    out = pathlib.Path(args.out)
++    out.mkdir(parents=True, exist_ok=True)
++    (out / "validation_result.json").write_text(
++        json.dumps(result, indent=2, ensure_ascii=False) + "\n",
++        encoding="utf-8", newline="\n")
++    print(result["summary"])
++    for c in checks:
++        print(("PASS" if c["ok"] else "FAIL"), c["check"], "-", c["detail"][:110])
++    print("VERDICT:", verdict)
++    return 0 if compatible else 1
++
++
++if __name__ == "__main__":
++    try:
++        sys.exit(main())
++    except Refusal as r:
++        print("REFUSAL %s" % r, file=sys.stderr)
++        sys.exit(3)
+diff --git a/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/report.md b/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/report.md
+new file mode 100644
+index 00000000..aedb2df1
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/report.md
+@@ -0,0 +1,108 @@
++# D-W04-MASS-20260924-FOLLOWUP — body/manifest consistency validator report
++
++- card: **D-W04-MASS-20260924-FOLLOWUP** (planning ids W04/P02; depends on D-W04-MASS-20260924, merged PR #118 at 24db3062187e617cf576019adb131926df63a237)
++- attempt: **1842fc38d3734ad096308bce09a7dfd6**
++- arrival: **arrival-74c8fd34cbd5413d90aa516badcac808**
++- branch: **branch-1** (isolated attempt checkout), base **c525b82c7c3ce0128565424764293a3c85811ab3**
++- criteria: **d319ca0311e03505235364cec2dc895ef25fa527ad7a678f033c3df510026ee1**
++- source repo (READ-ONLY): `E:/ChimeraWork/monkey-play-20260924`
++- preregistration: `PREREGISTRATION.md` (written before any implementation edit; Rule-0 statement/prediction/falsifier)
++
++## What was implemented
++
++`implementation.py` — a source-bound walking body/manifest consistency validator
++(stdlib-only, CPU-only, read-only against the source repo):
++
++1. Resolves the acceptance CoT denominator from pinned git objects: `M_BODY_KG`
++   literal in `tools/science_funnel/first_skill/acceptance.py` plus the structural
++   guard that line `cot = work / (M_BODY_KG * dist)` exists.
++2. Resolves the trainer's rigid-assembly mass from pinned
++   `validation/gait_controller_20260918/derived_numbers.json` (`body_model.mass_kg`),
++   or — when supplied — from a compiled scene bundle (`--scene-json`, nonzero
++   `bodies[].mass_kg` sum), with the `walker_model.py`
++   `self.body_mass[i] = float(b["mass_kg"])` structural binding recorded.
++3. Enforces blob anchors: `--expect-*-blob` 40-hex anchors make it impossible to
++   silently measure a different revision than the winning diagnostic cited
++   (`BLOB_ANCHOR_MISMATCH` refusal).
++4. Refuses (exit 3, named, NO output file) on: missing repo, unresolvable pin,
++   path absent at pin, blob anchor mismatch, unparseable/non-finite masses,
++   unparseable scene bundle, any nonzero git exit.
++5. Reports explicit units (`kg`, `N`, `dimensionless`, `g0=9.80665 m/s^2`),
++   full provenance (commit + blob + byte size + raw sha256 per file), the ratio
++   `denominator/training`, the weight cross-check `mass x g0` vs the recorded
++   `weight_N`, and consistency of ALL frozen definition sites (acceptance literal,
++   `run_manifest.json` definition, `RUNBOOK.md` step-5 line, checkpoint report label).
++6. Verdict `COMPATIBLE` (exit 0) only when denominator == training mass within
++   1e-9 relative AND all frozen sites agree AND the structural guards hold;
++   otherwise `INCOMPATIBLE` (exit 1) naming both lineages and the ratio.
++
++No body mass is substituted, no threshold/seed/frozen field is changed: the tool
++measures and reports; correcting the denominator remains a NEW lead-authorized
++registration (RUNBOOK frozen-field law).
++
++## Pre-verified source anchors (measured before implementation, in PREREGISTRATION.md)
++
++acceptance.py `3df32b59…` @8294053b (identical at a62b286e); run_manifest.json `3188e72f…` @8294053b;
++RUNBOOK.md `73a41120…` @8294053b; walker_model.py `89840918…` @a62b286e;
++report_first_skill_checkpoint.py `d41c9280…` @a62b286e; derived_numbers.json `8b6d75fb…` @33e7a444;
++gait_scene.py `5c8792ae…` @33e7a444; acceptance.py ABSENT at 43b599a7 (rev-parse exit 128).
++Arithmetic recomputed: 8.184 + 2x(0.557+0.269+0.080+0.021) = 10.038 kg;
++10.038 x 9.80665 = 98.4391527 N; 13824.5 / 10.038 = 1377.216577007372.
++
++## Verification (actual commands and observed results)
++
++1. `python -B -m unittest test_implementation -v` (from this directory):
++   **Ran 12 tests in 3.505s — OK** (exit 0). Coverage:
++   - real pinned sources: actual binding resolves to 13824.5 kg vs 10.038 kg, verdict
++     INCOMPATIBLE with ratio exactly 1377.216577007372 (rel_tol 1e-12); explicit units in
++     output; all five frozen definition sites agree on the current literal; weight
++     consistency 98.4391527 N vs recorded 98.439 N (|err| 0.0001527 N).
++   - refusal controls (each exit 3, named, no output file): missing repo
++     (SOURCE_REPO_MISSING), unresolvable pin (PIN_UNRESOLVABLE), acceptance.py @43b599a7
++     (PATH_NOT_IN_PIN), wrong expected blob (BLOB_ANCHOR_MISMATCH), unparseable
++     denominator (UNPARSEABLE_DENOMINATOR).
++   - fixture registrations (synthetic, labeled "fixture", throwaway temp git repos):
++     corrected denominator 10.038 -> COMPATIBLE (exit 0) including with positive blob
++     anchors; mismatched k-fill book mass 6.15 vs 10.038 -> INCOMPATIBLE with ratio
++     6.15/10.038; validator provably read-only (fixture HEAD + clean status unchanged).
++2. Standalone demonstration run with all three blob anchors:
++   `python -B implementation.py --source-repo E:/ChimeraWork/monkey-play-20260924
++   --acceptance-commit 8294053b --trainer-commit a62b286e --scene-numbers-commit 33e7a444
++   --out ../../../../../../evidence/validator_run --expect-acceptance-blob 3df32b59… --expect-manifest-blob 3188e72f… --expect-scene-numbers-blob 8b6d75fb…`
++   Observed: **8/9 checks green — INCOMPATIBLE** (exit 1, 0.42 s), the single red check
++   being `denominator_equals_training_mass` with the named lineages and ratio — the exact
++   defect the winning diagnostic proved. Result artifact:
++   `E:/ChimeraWork/monkey-coordination/kanban-attempts/D-W04-MASS-20260924-FOLLOWUP/1842fc38d3734ad096308bce09a7dfd6/evidence/validator_run/validation_result.json`.
++
++## Falsifier self-check
++
++- F1 (false COMPATIBLE on current tree): NOT FIRED — verdict is INCOMPATIBLE as preregistered.
++- F2 (silent unresolved lineage): NOT FIRED — all five refusal controls exit 3 named, no output file.
++- F3 (fixture labeled native acceptance): NOT FIRED — fixtures are labeled "fixture"; the
++  validator's own notes state the verdict is a source-lineage statement, not native acceptance.
++- F4 (out-of-scope physics/threshold edits): NOT FIRED — the commit adds only this
++  contribution directory; no production source, threshold, seed or frozen registration
++  field is touched (git diff vs base c525b82c confined to
++  `tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/`).
++
++## Candidate identity
++
++- base: `c525b82c7c3ce0128565424764293a3c85811ab3` (branch-1 checkout head at assignment)
++- candidate commit: recorded in the attempt-workspace receipt and publication request
++  (a committed file cannot contain its own commit sha); attempt
++  `1842fc38d3734ad096308bce09a7dfd6` on branch-1 of the isolated checkout.
++- proposed.patch: `E:/ChimeraWork/monkey-coordination/kanban-attempts/D-W04-MASS-20260924-FOLLOWUP/1842fc38d3734ad096308bce09a7dfd6/proposed.patch`
++  (diff of the candidate commit vs base; confined to this contribution directory).
++
++## Remaining gates (reported, not closed by this card)
++
++1. W04's denominator/body binding remains UNRESOLVED-AS-WRONG on the current tree
++   (13824.5 vs 10.038 kg). The correction itself needs the lead-authorized NEW
++   registration (acceptance.py:18, run_manifest.json:54, RUNBOOK step 5,
++   test_first_skill_prestage.py:70, report label) — Astra registration ruling
++   Q-34439597b1774332972da4d8b4ec6b2a is still open.
++2. This validator is a diagnostic check, NOT native acceptance: no engine run, no GPU,
++   no training process was started; W04's runtime/visual gates remain unexercised.
++3. When the registration correction lands, the W04 owner should run this validator with
++   the new pins (expect COMPATIBLE); a compiled scene bundle can be supplied via
++   `--scene-json` for the scene-derived binding the diagnostic recommended.
+diff --git a/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/test_implementation.py b/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/test_implementation.py
+new file mode 100644
+index 00000000..7f327485
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/D-W04-MASS-20260924-FOLLOWUP/test_implementation.py
+@@ -0,0 +1,280 @@
++"""Tests for the walking body/manifest consistency validator.
++
++Run:  python -B -m unittest test_implementation -v   (from this directory)
++
++Real-source tests use the read-only play repo at PLAY_REPO with the pins the
++winning D-W04-MASS-20260924 diagnostic cited; they are skipped automatically
++if that repo is absent. Fixture tests build throwaway git repos in the system
++temp dir (removed afterwards; nothing is written to any real source tree).
++
++Fixtures are SYNTHETIC REGISTRATIONS, clearly labeled; no output of this suite
++is native acceptance. Each validator invocation is bounded (timeout 110 s);
++the whole suite is CPU-only and stdlib-only.
++"""
++import json
++import math
++import os
++import pathlib
++import shutil
++import subprocess
++import sys
++import tempfile
++import unittest
++
++HERE = pathlib.Path(__file__).resolve().parent
++IMPL = HERE / "implementation.py"
++
++PLAY_REPO = pathlib.Path("E:/ChimeraWork/monkey-play-20260924")
++ACC_PIN = "8294053b"           # first_skill prestage lane tip (acceptance.py blob 3df32b59…)
++ABSENT_PIN = "43b599a7c1f11e789cd414b40d7305b9be05066d"  # acceptance.py not yet present
++TRN_PIN = "a62b286e"           # typeb tip (walker chain)
++SCN_PIN = "33e7a444"           # scene numbers / builder (10.038 kg)
++
++EXPECTED_DEN_KG = 13824.5      # frozen membrane inventory literal (acceptance.py:18)
++EXPECTED_TRAIN_KG = 10.038     # Oku-2021 assembly (derived_numbers.json:11)
++EXPECTED_RATIO = EXPECTED_DEN_KG / EXPECTED_TRAIN_KG  # 1377.216577007372
++
++ACCEPTANCE_REL = "tools/science_funnel/first_skill/acceptance.py"
++MANIFEST_REL = "tools/science_funnel/validation/first_skill_prestage_20260922/run_manifest.json"
++RUNBOOK_REL = "tools/science_funnel/validation/first_skill_prestage_20260922/RUNBOOK.md"
++WALKER_REL = "tools/science_funnel/typeb_gpu/walker_model.py"
++LABEL_REL = "tools/report_first_skill_checkpoint.py"
++SCN_REL = "tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json"
++
++
++def run_validator(argv, timeout=110):
++    proc = subprocess.run([sys.executable, "-B", str(IMPL), *argv],
++                          capture_output=True, timeout=timeout)
++    return {"exit": proc.returncode,
++            "stdout": proc.stdout.decode("utf-8", errors="replace"),
++            "stderr": proc.stderr.decode("utf-8", errors="replace")}
++
++
++def base_args(repo, out, acc=ACC_PIN, trn=TRN_PIN, scn=SCN_PIN, extra=()):
++    return ["--source-repo", str(repo),
++            "--acceptance-commit", acc, "--trainer-commit", trn,
++            "--scene-numbers-commit", scn, "--out", str(out), *extra]
++
++
++def git(repo, *argv):
++    proc = subprocess.run(["git", "-C", str(repo), *argv], capture_output=True)
++    assert proc.returncode == 0, proc.stderr.decode("utf-8", errors="replace")
++    return proc.stdout.decode("utf-8", errors="replace")
++
++
++def make_fixture_repo(den_literal, train_kg="10.038", weight_n="98.439",
++                      with_denominator_line=True):
++    """A throwaway git repo holding a minimal, structurally faithful registration.
++
++    Everything is synthetic and labeled 'fixture'; this is NOT a real
++    registration and NOT native acceptance.
++    """
++    root = pathlib.Path(tempfile.mkdtemp(prefix="d_w04_fixture_"))
++    for rel in (ACCEPTANCE_REL, MANIFEST_REL, RUNBOOK_REL, WALKER_REL, LABEL_REL, SCN_REL):
++        (root / rel).parent.mkdir(parents=True, exist_ok=True)
++    denom = ("M_BODY_KG = %s       # fixture: synthetic registration denominator\n"
++             % den_literal) if with_denominator_line else ""
++    (root / ACCEPTANCE_REL).write_text(
++        "# fixture synthetic registration (D-W04-MASS-20260924-FOLLOWUP test)\n"
++        + denom +
++        "EPISODE_CAP_TICKS = 300\n"
++        "INF = float('inf')\n"
++        "def episode_bars(record, reached, fell):\n"
++        "    dist = float(record.get('distance_m', 0.0))\n"
++        "    work = float(record.get('work_J', 0.0))\n"
++        "    cot = work / (M_BODY_KG * dist) if dist > 0.0 else INF\n"
++        "    return {'cot': cot}\n", encoding="utf-8")
++    (root / MANIFEST_REL).write_text(json.dumps({
++        "fixture": True,
++        "hard_conditions": {"cot_within_band": {"definition":
++            "CoT = E_episode / (m_body * d_reached); m_body = %s kg (fixture)" % den_literal}}}),
++        encoding="utf-8")
++    (root / RUNBOOK_REL).write_text(
++        "# fixture runbook\nstep 5: CoT = E_ledger/(%s kg x d_reached).\n" % den_literal,
++        encoding="utf-8")
++    (root / WALKER_REL).write_text(
++        "# fixture walker model\n        self.body_mass[i] = float(b[\"mass_kg\"])\n",
++        encoding="utf-8")
++    (root / LABEL_REL).write_text(
++        "# fixture checkpoint report\nLABEL = \"work_J/(%s kg x distance)\"\n" % den_literal,
++        encoding="utf-8")
++    (root / SCN_REL).write_text(json.dumps({
++        "fixture": True,
++        "body_model": {"mass_kg": float(train_kg), "weight_N": float(weight_n)}}),
++        encoding="utf-8")
++    git(root, "init", "-q")
++    git(root, "config", "user.email", "fixture@example.invalid")
++    git(root, "config", "user.name", "fixture")
++    git(root, "add", "-A")
++    git(root, "commit", "-q", "-m", "fixture registration den=%s train=%s" % (den_literal, train_kg))
++    return root
++
++
++class ValidatorRealSourceTests(unittest.TestCase):
++    """The actual resolved binding on the pinned play repo."""
++
++    @classmethod
++    def setUpClass(cls):
++        if not PLAY_REPO.is_dir():
++            raise unittest.SkipTest("play repo not present: %s" % PLAY_REPO)
++        cls.tmp = pathlib.Path(tempfile.mkdtemp(prefix="d_w04_real_"))
++        cls.out = cls.tmp / "out"
++
++    @classmethod
++    def tearDownClass(cls):
++        shutil.rmtree(cls.tmp, ignore_errors=True)
++
++    def test_actual_binding_incompatible_with_exact_ratio(self):
++        res = run_validator(base_args(PLAY_REPO, self.out))
++        self.assertEqual(res["exit"], 1, res)
++        self.assertIn("VERDICT: INCOMPATIBLE", res["stdout"])
++        data = json.loads((self.out / "validation_result.json").read_text(encoding="utf-8"))
++        self.assertEqual(data["verdict"], "INCOMPATIBLE")
++        self.assertEqual(data["denominator_mass_kg"], EXPECTED_DEN_KG)
++        self.assertEqual(data["training_body_mass_kg"], EXPECTED_TRAIN_KG)
++        self.assertTrue(math.isclose(data["ratio_dimensionless"], EXPECTED_RATIO,
++                                     rel_tol=1e-12),
++                        data["ratio_dimensionless"])
++        check = next(c for c in data["checks"]
++                     if c["check"] == "denominator_equals_training_mass")
++        self.assertFalse(check["ok"])
++
++    def test_units_explicit_in_output(self):
++        data = json.loads((self.out / "validation_result.json").read_text(encoding="utf-8"))
++        self.assertEqual(data["units"]["denominator_mass"], "kg")
++        self.assertEqual(data["units"]["training_body_mass"], "kg")
++        self.assertEqual(data["units"]["weight"], "N")
++        self.assertEqual(data["units"]["ratio"], "dimensionless")
++        self.assertTrue(math.isclose(data["weight_newton"], EXPECTED_TRAIN_KG * 9.80665,
++                                     rel_tol=1e-12))
++        self.assertEqual(data["provenance"]["acceptance.py"]["blob_id"],
++                         "3df32b59b09411721913229c8df4eb3efa04379e")
++        self.assertEqual(data["provenance"]["derived_numbers.json"]["blob_id"],
++                         "8b6d75fbd408a8e1e2db31cdf15fc4a104b9a36a")
++
++    def test_frozen_sites_agree_on_current_literal(self):
++        data = json.loads((self.out / "validation_result.json").read_text(encoding="utf-8"))
++        for name in ("manifest_definition_consistent", "runbook_definition_consistent",
++                     "report_label_consistent", "denominator_used_in_cot_expression",
++                     "trainer_structural_binding", "weight_consistency"):
++            c = next(c for c in data["checks"] if c["check"] == name)
++            self.assertTrue(c["ok"], (name, c["detail"]))
++
++
++class ValidatorRefusalTests(unittest.TestCase):
++    """Unresolved lineage must refuse (exit 3, named), never emit a verdict."""
++
++    @classmethod
++    def setUpClass(cls):
++        if not PLAY_REPO.is_dir():
++            raise unittest.SkipTest("play repo not present: %s" % PLAY_REPO)
++        cls.tmp = pathlib.Path(tempfile.mkdtemp(prefix="d_w04_refusal_"))
++
++    @classmethod
++    def tearDownClass(cls):
++        shutil.rmtree(cls.tmp, ignore_errors=True)
++
++    def _out(self, name):
++        return self.tmp / ("out_" + name)
++
++    def test_refusal_missing_repo(self):
++        res = run_validator(base_args(self.tmp / "no_such_repo", self._out("a")))
++        self.assertEqual(res["exit"], 3, res)
++        self.assertIn("SOURCE_REPO_MISSING", res["stderr"])
++
++    def test_refusal_unresolvable_pin(self):
++        res = run_validator(base_args(PLAY_REPO, self._out("b"),
++                                      acc="0" * 40))
++        self.assertEqual(res["exit"], 3, res)
++        self.assertIn("PIN_UNRESOLVABLE", res["stderr"])
++
++    def test_refusal_path_not_in_pin(self):
++        res = run_validator(base_args(PLAY_REPO, self._out("c"), acc=ABSENT_PIN))
++        self.assertEqual(res["exit"], 3, res)
++        self.assertIn("PATH_NOT_IN_PIN", res["stderr"])
++        self.assertIn("acceptance.py", res["stderr"])
++
++    def test_refusal_blob_anchor_mismatch(self):
++        res = run_validator(base_args(PLAY_REPO, self._out("d"),
++                                      extra=["--expect-acceptance-blob", "0" * 40]))
++        self.assertEqual(res["exit"], 3, res)
++        self.assertIn("BLOB_ANCHOR_MISMATCH", res["stderr"])
++
++    def test_refusal_writes_no_output_file(self):
++        out = self._out("e")
++        res = run_validator(base_args(PLAY_REPO, out, acc=ABSENT_PIN))
++        self.assertEqual(res["exit"], 3)
++        self.assertFalse((out / "validation_result.json").is_file(),
++                         "a refusal must not write an output file")
++
++
++class ValidatorFixtureTests(unittest.TestCase):
++    """Synthetic registrations (clearly labeled fixtures, never native acceptance)."""
++
++    @classmethod
++    def setUpClass(cls):
++        cls.tmp = pathlib.Path(tempfile.mkdtemp(prefix="d_w04_fx_"))
++
++    @classmethod
++    def tearDownClass(cls):
++        shutil.rmtree(cls.tmp, ignore_errors=True)
++
++    def test_corrected_fixture_is_compatible(self):
++        root = make_fixture_repo("10.038")
++        try:
++            out = self.tmp / "out_ok"
++            anchors = ["--expect-acceptance-blob",
++                       git(root, "rev-parse", "HEAD:" + ACCEPTANCE_REL).strip(),
++                       "--expect-scene-numbers-blob",
++                       git(root, "rev-parse", "HEAD:" + SCN_REL).strip()]
++            res = run_validator(base_args(root, out, acc="HEAD", trn="HEAD", scn="HEAD",
++                                          extra=anchors))
++            self.assertEqual(res["exit"], 0, res)
++            self.assertIn("VERDICT: COMPATIBLE", res["stdout"])
++            data = json.loads((out / "validation_result.json").read_text(encoding="utf-8"))
++            self.assertEqual(data["verdict"], "COMPATIBLE")
++            self.assertEqual(data["denominator_mass_kg"], 10.038)
++            self.assertEqual(data["training_body_mass_kg"], 10.038)
++            self.assertEqual(data["ratio_dimensionless"], 1.0)
++        finally:
++            shutil.rmtree(root, ignore_errors=True)
++
++    def test_mismatched_lineage_incompatible_named_ratio(self):
++        root = make_fixture_repo("6.15")  # the k-fill book mass, NOT the walker mass
++        try:
++            out = self.tmp / "out_mis"
++            res = run_validator(base_args(root, out, acc="HEAD", trn="HEAD", scn="HEAD"))
++            self.assertEqual(res["exit"], 1, res)
++            data = json.loads((out / "validation_result.json").read_text(encoding="utf-8"))
++            self.assertEqual(data["verdict"], "INCOMPATIBLE")
++            self.assertTrue(math.isclose(data["ratio_dimensionless"], 6.15 / 10.038,
++                                         rel_tol=1e-12))
++        finally:
++            shutil.rmtree(root, ignore_errors=True)
++
++    def test_refusal_unparseable_denominator(self):
++        root = make_fixture_repo("10.038", with_denominator_line=False)
++        try:
++            out = self.tmp / "out_unp"
++            res = run_validator(base_args(root, out, acc="HEAD", trn="HEAD", scn="HEAD"))
++            self.assertEqual(res["exit"], 3, res)
++            self.assertIn("UNPARSEABLE_DENOMINATOR", res["stderr"])
++        finally:
++            shutil.rmtree(root, ignore_errors=True)
++
++    def test_validator_is_readonly_against_sources(self):
++        root = make_fixture_repo("10.038")
++        try:
++            head_before = git(root, "rev-parse", "HEAD").strip()
++            status_before = git(root, "status", "--porcelain")
++            out = self.tmp / "out_ro"
++            run_validator(base_args(root, out, acc="HEAD", trn="HEAD", scn="HEAD"))
++            self.assertEqual(git(root, "rev-parse", "HEAD").strip(), head_before)
++            self.assertEqual(git(root, "status", "--porcelain"), status_before)
++            self.assertEqual(status_before, "")
++        finally:
++            shutil.rmtree(root, ignore_errors=True)
++
++
++if __name__ == "__main__":
++    unittest.main()
