@@ -1,0 +1,41 @@
+{
+  "schema": "chimera.monkey.p04.correction.qualification_receipt.v1",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "task_id": "P04",
+  "attempt_id": "4f4df57ef3d54c0996cf969e8a599d1b",
+  "agent_id": "arrival-0074d33c896e4039a01dc67fc628a8bf",
+  "corrects_publication_request": "publication-3a6a3e498a0740efad08936e19c831df",
+  "prior_attempt_id": "fccb0a3f4fc74a29a7189453b6f91ced",
+  "head_sha": "c525b82c7c3ce0128565424764293a3c85811ab3",
+  "criteria_sha256": "6191e11ce3098cf90190c88a658267676e01163106dadaf883b0c48b7dc072db",
+  "done_when_verified": true,
+  "verification_note": "CORRECTION submitted by the ONT-P04 worker for lead review; per ontology_queue.qualification the lead pins this receipt at review-accept with the independent_review evidence reference and re-binds head_sha to the exact published PR head. This flag replaces the prior draft's overstated true: it is true here because all three done_when clauses are verified by executed probes at the records profile - clause 2 now by an IMPLEMENTED, probe-verified GPU-A authority/state machine (the lead's ruling required the mechanism to exist and be verified). The records/offline profile removes any live-GPU execution requirement; the live qualification gate stays open with its owning records and is named in remaining_gates.",
+  "done_when_clause_map": {
+    "every_launched_job_uses_existing_ownership_broker_rules": "VERIFIED (carried forward, lead-verified PASS at head c525b82c): control.py authenticated claim/admission + atomic all-or-nothing resource grants; review_handoff.py supervisor-only release_review_slot with exact head identity, no resources held, preservation/drain evidence and receipt; re-verified by 5 pinned suites (57 tests) + carried-forward 17 contract probes, byte-identical copies of the prior hash-verified files",
+    "admitted_training_may_interrupt_gaming_and_local_inference_through_verified_supervisor_handoff": "VERIFIED (corrected by this attempt): the six-state GPU-A authority/state machine now EXISTS and is verified - gpu_handoff.HandoffControl extends the pinned controller under its existing authentication (one registry, BEGIN IMMEDIATE, Control._actor, Control._task, controller-owned grant/release/clear laws) implementing REQUESTED->DRAINING->READY->TRAINING->RESTORING->AVAILABLE plus RECOVERY_HOLD with 28 numerical transition probes: every legal edge exercised with registry facts, every illegal transition refused by frozen name, idempotent re-request, fair arrival-order serialization, crash-recovery reconstruction (restart/corruption/launch replay), supervisor-only invariants (graceful release before preemption, never force-kill, never release on timer/lease/silence), and the closed-on-timeout inference admission gate (RESOURCE_WAIT, no fallthrough, bypass refused)",
+    "already_running_protected_training_retains_ownership_until_confirmed_release": "VERIFIED (carried forward, lead-verified PASS at head c525b82c, and additionally enforced by the new machine): never-replace-reservation, owner/generation-bound evidence-gated release, child-first drain order, supervisor-only resource_clear with actual_process_drained_evidence, RECOVERY_HOLD recover refusing resources_still_held; new probes re-demonstrate the hold persisting through observed cessation until the owner's evidenced release and protection surviving a supervisor restart"
+  },
+  "consistency_defect_corrections": {
+    "prior_draft_done_when_verified_overstated": "The prior attempt's draft qualification_receipt.json set done_when_verified=true while clause 2 was unverified (lead anomaly). This replacement receipt sets the flag honestly: true now that all three clauses verify, with the live gate named as remaining.",
+    "first_run_failure_counts_reconciled": "Authoritative count is the prior receipt.json itemized enumeration = 7 individual expectation fixes (stale_generation->stale_or_foreign_claim x2; foreign_resource->stale_or_foreign_claim x1; over-broad admitted_mb assertion after queued auto-promotion; task-id charset train_a->train-a; broker supervisor token; wrapped-markdown record match). report.md's 4 counted only the refusal-name+memory subset (3+1) and omitted the task-id charset, broker-token and markdown-match fixes; the checkpoint's 5 was likewise an undercount of the same 7-item list. No contradictory evidence existed - both smaller numbers were stale summaries of one list. This attempt archives ITS OWN first-run failing outputs as files under first_run_failures/ (run1: 4 errors + 1 failure; run2: 1 error + 1 failure; run3: green 28/28) so preservation is verifiable from artifacts."
+  },
+  "evidence": {
+    "numerical": {
+      "reference": "probe_run_results.json in this attempt workspace (9 suites, 118 tests expected: 12+12+13+12+8 pinned + 17+6 carried forward + 28 new machine probes + 10 correction-records probes), exit 0, all_ok=true",
+      "raw_sha256": "66ca1b1da4d1e873d9bf2c51678c1b0d08378d62f70530466e45879c4d2f8a9e"
+    },
+    "source": {
+      "reference": "gpu_handoff.py - workspace copy and byte-identical checkout copy at tools/monkey_campaign/contributions/ONT-P04/gpu_handoff.py; pinned 52-file extraction of head c525b82c with per-file sha256 in pinned_file_hashes.json (hash-parity with the prior verified extraction for all common files)",
+      "raw_sha256": "100154452bcc5db16b916743507091dc00160aa34fcdb3a1bf75c59bfa3e7030"
+    },
+    "independent_review": {
+      "reference": "independent_review_PENDING.txt (marker; the non-author reviewer/lead replaces this entry with the completed review receipt at review-accept per ontology_queue.qualification)",
+      "raw_sha256": "78cff0a1e4752fd1bb499bc850ecb5e9306dd8b5033797ef531492cb7cd53198"
+    }
+  },
+  "remaining_gates": [
+    "GPU-B Bionic/inference adapter, GPU-C Windows game adapter, GPU-D independent recovery test (COORDINATION.md implementation queue)",
+    "live handoff qualification (live Bionic preservation/restore, real game safe-release, training across :00) - records profile removes the live-GPU requirement from this card; the live gate stays with its owning records",
+    "lead publication/review of this correction; head_sha re-binding to the published PR head"
+  ]
+}

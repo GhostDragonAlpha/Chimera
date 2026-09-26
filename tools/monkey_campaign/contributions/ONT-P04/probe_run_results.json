@@ -1,0 +1,125 @@
+{
+  "schema": "chimera.monkey.p04.correction.probe_run.v1",
+  "task_id": "ONT-P04",
+  "attempt_id": "4f4df57ef3d54c0996cf969e8a599d1b",
+  "corrects_publication_request": "publication-3a6a3e498a0740efad08936e19c831df",
+  "prior_attempt_id": "fccb0a3f4fc74a29a7189453b6f91ced",
+  "pinned_attempt_head": "c525b82c7c3ce0128565424764293a3c85811ab3",
+  "criteria_sha256": "6191e11ce3098cf90190c88a658267676e01163106dadaf883b0c48b7dc072db",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "profile": "records (offline); CPU-only fixtures; no GPU; no live registry; no live handoff; no process launches beyond python -B tests; loopback-only servers inside pinned fixtures",
+  "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "suites": [
+    {
+      "suite": "pinned:agent_fleet:test_resources",
+      "command": "-B -m unittest discover -s tools/agent_fleet -p test_resources.py",
+      "cwd": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\4f4df57ef3d54c0996cf969e8a599d1b\\pinned",
+      "exit_code": 0,
+      "unittest_summary": "Ran 12 tests in 0.674s",
+      "ok": true,
+      "seconds": 0.782,
+      "tests": 12
+    },
+    {
+      "suite": "pinned:agent_fleet:test_resource_lifecycle",
+      "command": "-B -m unittest discover -s tools/agent_fleet -p test_resource_lifecycle.py",
+      "cwd": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\4f4df57ef3d54c0996cf969e8a599d1b\\pinned",
+      "exit_code": 0,
+      "unittest_summary": "Ran 12 tests in 1.204s",
+      "ok": true,
+      "seconds": 1.347,
+      "tests": 12
+    },
+    {
+      "suite": "pinned:agent_fleet:test_review_handoff",
+      "command": "-B -m unittest discover -s tools/agent_fleet -p test_review_handoff.py",
+      "cwd": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\4f4df57ef3d54c0996cf969e8a599d1b\\pinned",
+      "exit_code": 0,
+      "unittest_summary": "Ran 13 tests in 1.422s",
+      "ok": true,
+      "seconds": 1.562,
+      "tests": 13
+    },
+    {
+      "suite": "pinned:agent_fleet:test_review_handoff_claim",
+      "command": "-B -m unittest discover -s tools/agent_fleet -p test_review_handoff_claim.py",
+      "cwd": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\4f4df57ef3d54c0996cf969e8a599d1b\\pinned",
+      "exit_code": 0,
+      "unittest_summary": "Ran 12 tests in 0.843s",
+      "ok": true,
+      "seconds": 0.952,
+      "tests": 12
+    },
+    {
+      "suite": "pinned:agent_fleet:test_run_queue",
+      "command": "-B -m unittest discover -s tools/agent_fleet -p test_run_queue.py",
+      "cwd": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\4f4df57ef3d54c0996cf969e8a599d1b\\pinned",
+      "exit_code": 0,
+      "unittest_summary": "Ran 8 tests in 0.001s",
+      "ok": true,
+      "seconds": 0.089,
+      "tests": 8
+    },
+    {
+      "suite": "probe:test_p04_contract",
+      "command": "-B -m unittest test_p04_contract",
+      "cwd": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\4f4df57ef3d54c0996cf969e8a599d1b",
+      "exit_code": 0,
+      "unittest_summary": "Ran 17 tests in 0.852s",
+      "ok": true,
+      "seconds": 0.97,
+      "tests": 17
+    },
+    {
+      "suite": "probe:test_p04_records",
+      "command": "-B -m unittest test_p04_records",
+      "cwd": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\4f4df57ef3d54c0996cf969e8a599d1b",
+      "exit_code": 0,
+      "unittest_summary": "Ran 6 tests in 0.006s",
+      "ok": true,
+      "seconds": 0.091,
+      "tests": 6
+    },
+    {
+      "suite": "probe:test_gpu_handoff",
+      "command": "-B -m unittest test_gpu_handoff",
+      "cwd": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\4f4df57ef3d54c0996cf969e8a599d1b",
+      "exit_code": 0,
+      "unittest_summary": "Ran 28 tests in 2.355s",
+      "ok": true,
+      "seconds": 2.47,
+      "tests": 28
+    },
+    {
+      "suite": "probe:test_correction_records",
+      "command": "-B -m unittest test_correction_records",
+      "cwd": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\4f4df57ef3d54c0996cf969e8a599d1b",
+      "exit_code": 0,
+      "unittest_summary": "Ran 10 tests in 0.025s",
+      "ok": true,
+      "seconds": 0.113,
+      "tests": 10
+    }
+  ],
+  "total_tests": 118,
+  "all_ok": true,
+  "carried_forward_hash_verified": {
+    "test_p04_contract.py": {
+      "expected": "e9b8b62d0af01821b0d6a370b5ddee47eb078e69033734ec0793b862956f77a0",
+      "actual": "e9b8b62d0af01821b0d6a370b5ddee47eb078e69033734ec0793b862956f77a0",
+      "identical": true
+    },
+    "test_p04_records.py": {
+      "expected": "153dd91c56f06f2f90b63a2b6cc7faab552a7544e65e0810d5875a2e978e924c",
+      "actual": "153dd91c56f06f2f90b63a2b6cc7faab552a7544e65e0810d5875a2e978e924c",
+      "identical": true
+    }
+  },
+  "deliverable_hashes": {
+    "PREREGISTRATION.md": "124c3acfc6ae572bdfab7021c30a0802ddd6f5551b4f9c12a18e8ad72e85ecbc",
+    "gpu_handoff.py": "100154452bcc5db16b916743507091dc00160aa34fcdb3a1bf75c59bfa3e7030",
+    "test_gpu_handoff.py": "900d30393ef94a10fbedc9fa6a1648ea28f623a11c66d5b02e3fe5caeb083c38",
+    "test_correction_records.py": "ca7f81128846f9f8f2443609e41b552575a793535f1f2ac24d0898fc5409d24c",
+    "pinned_file_hashes.json": "c79f248b5f75f38f2ae04f3b43de988801ae06ddfc1f8e1aee45c2125fbc0753"
+  }
+}

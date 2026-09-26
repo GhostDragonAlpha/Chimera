@@ -1,0 +1,7 @@
+independent_review PENDING - ONT-P04 correction attempt 4f4df57ef3d54c0996cf969e8a599d1b.
+Marker only: per ontology_queue.qualification the non-author reviewer (or the
+operational lead at review-accept) replaces the independent_review entry in
+qualification_receipt.json with the completed review receipt and re-binds
+head_sha to the exact published PR head. The worker is the author of
+gpu_handoff.py, test_gpu_handoff.py and test_correction_records.py and performs
+no self-review pinning.
