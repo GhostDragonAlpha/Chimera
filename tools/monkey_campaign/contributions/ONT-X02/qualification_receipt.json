@@ -1,0 +1,140 @@
+{
+ "schema": "ont-x02.motion.qualification.v1",
+ "task_id": "X02",
+ "card_id": "ONT-X02",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; the in-tree copy cannot know its own commit hash).",
+ "criteria_sha256": "a266d16164e64af20505d4ed5d76a532ebb74f3bd0975cfd548546eaa92c71bf",
+ "attempt_id": "35676f7dcb9f4ceea1c2fc41fbe45aa2",
+ "agent_id": "arrival-df8547ff0f8c4a64a6d28afaba1331c4",
+ "done_when": "Player reaches play and can pause/restart/exit without developer commands; reset is an explicit user action",
+ "done_when_verified": true,
+ "profile_verified": true,
+ "profile_id": "recovery",
+ "profile_kind": "motion",
+ "subject_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+ "pinned_lineage": {
+  "play_head": "f30f2224663324e9374b076938c56672febf4082",
+  "sources": {
+   "tools/monkey_campaign/product/session_flow.py": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+   "tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7"
+  }
+ },
+ "evidence": {
+  "source": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-reviews/ONT-X02/769540e4a2954868b37de6ce230a504c/evidence/reconciliation_receipt.json",
+   "raw_sha256": "cf0475d80f4653e2063ed08ffbf699db2e361201500c3c6d604c2dfa4458f188",
+   "provenance": "The preserved reconciliation records leg (publication-3d8c97cffe20430394ef238a62e7cff5, PR #135 head 441582bf16e0520e8f13235826f5ad94b6e603de); byte-identical copy verified by independent worker review 769540e4a2954868b37de6ce230a504c (verdict PASS)."
+  },
+  "numerical": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-X02/c3f7e9025d5645248f7a7a21f3b47f8a/checkout/tools/monkey_campaign/contributions/ONT-X02/evidence/numerical_receipt.json",
+   "raw_sha256": "173984f792a6994f2de98bb448539f034ef10361ffbcf5f574744d48a52b0ae8",
+   "provenance": "9/9 frozen checks green over evidence/trace.jsonl (5e15d57d71a8f1b638584e2af9e6680d735da3fc77fcce45b56da99471f998e0); two frozen sub-clause mispredictions honestly recorded FIRED in prediction_deviations."
+  },
+  "independent_review": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-reviews/ONT-X02/769540e4a2954868b37de6ce230a504c/evidence/review_result.json",
+   "raw_sha256": "8dfef590aa8e5041270819f97996beb997b64de6a1b5038f0936dfedd479a760",
+   "provenance": "Non-author independent worker review of the reconciliation leg at exact head 441582bf (verdict PASS, writes_stopped true), preserved by the review lane; the lead CHANGES_REQUIRED names exactly this missing motion evidence as the correction."
+  },
+  "runtime": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-X02/c3f7e9025d5645248f7a7a21f3b47f8a/checkout/tools/monkey_campaign/contributions/ONT-X02/evidence/runtime_receipt.json",
+   "raw_sha256": "7ba107595c7a1917a6e87dd7cfd70b130cef5700902b910d6ef7f02dd5a8a0b3",
+   "provenance": "The deterministic headless run record: real pinned SessionFlow + InputMapper + FollowCamera over injected milliseconds; world contacts exactly boot x1 + terminate/wait/kill x1; byte-identical on rerun."
+  },
+  "visual": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-X02/c3f7e9025d5645248f7a7a21f3b47f8a/checkout/tools/monkey_campaign/contributions/ONT-X02/evidence/capture.mp4",
+   "raw_sha256": "593c3438b6e186a742d48c7b3495c9f5bec33a6e1dfb9ff2db226fd61111b23e",
+   "provenance": "640x360 h264 134 frames @20fps (6.7 s), rendered deterministically from trace.jsonl (two views x 67 ticks); bitexact rebuild reproduces the identical file."
+  },
+  "camera": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-X02/c3f7e9025d5645248f7a7a21f3b47f8a/checkout/tools/monkey_campaign/contributions/ONT-X02/evidence/capture_manifest.json",
+   "raw_sha256": "791d1e6edc91be555e9a68b240ebb7c3885428acc685942e9cd5f99550d6e207",
+   "provenance": "chimera.visual_capture_manifest.v1, profile recovery, 2 views x diagnostic+clean, trace-bound (state_binding sha = trace.jsonl), validated in-process with the campaign's visual_capture.validate_manifest and visual_gate.verify against card_task.json."
+  }
+ },
+ "capture_context": {
+  "task_id": "X02",
+  "subject_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+  "run_id": "ont-x02-motion-20260926-c3f7e902",
+  "capture_sha256": "593c3438b6e186a742d48c7b3495c9f5bec33a6e1dfb9ff2db226fd61111b23e",
+  "tick_interval": [
+   0,
+   66
+  ]
+ },
+ "honest_boundary": "TWO kinds of visual evidence now exist and are labeled exactly: (1) the PRESERVED deterministic CPU trace visualization (capture.mp4, below) - qualified logic evidence, NOT runtime proof; (2) the NEW integrated recording and stills - REAL pixels of the REAL running application (page HUD + WebGL canvas through the real camera path, plus the engine's own /frame images fetched through the server's passthru). visual_acceptance stays false by validator law; independent visual review remains the reviewer's gate. The integrated native playable-runtime checkpoint V08 evidence is now a REAL engine process booting/pausing-context/restarting/exiting on this machine; V08 acceptance remains the lead's call.",
+ "candidate_suite": {
+  "probe": "tools/monkey_campaign/contributions/ONT-X02/motion_profile_probe.py",
+  "capture": "tools/monkey_campaign/contributions/ONT-X02/capture_build.py",
+  "integrated": [
+   "tools/monkey_campaign/contributions/ONT-X02/integrated_session_a.py",
+   "tools/monkey_campaign/contributions/ONT-X02/integrated_session_b.py",
+   "tools/monkey_campaign/contributions/ONT-X02/integrated_capture_build.py"
+  ],
+  "tests": "python -B -m unittest test_motion_profile_probe -v -> 5/5 OK; python -B -m unittest test_verify_ontology -v -> 5/5 OK",
+  "preregistrations": [
+   "tools/monkey_campaign/contributions/ONT-X02/PREREGISTRATION.md (0633a3d951b5253a1ba5d58fc39bbfc56f09a32af6726042ca10b56a194444a1)",
+   "tools/monkey_campaign/contributions/ONT-X02/PREREGISTRATION_INTEGRATED.md (frozen commit 7f29f292, before the run)"
+  ]
+ },
+ "supersedes_evidence_for": "the prior motion legs (source/numerical/runtime/visual) are PRESERVED below unchanged; the integrated evidence adds the REAL application run the lead required",
+ "integrated_correction": {
+  "preregistration": {
+   "path": "tools/monkey_campaign/contributions/ONT-X02/PREREGISTRATION_INTEGRATED.md",
+   "frozen_before_run": true,
+   "commit_note": "frozen as commit 7f29f292 before any integrated-run execution; probes A1-A4/B1-B9, views, pins and the missing-integration list M1-M4 declared in advance; one frozen clause (A4 exit path) FIRED and is recorded in integrated_runtime_receipt.prediction_deviations"
+  },
+  "source_bound": true,
+  "source_bound_note": "every integrated run consumed the REAL pinned sources: slice_server/scene_boot/index.html + engine source at play 8550b634, session_flow/input_mapper byte-exact at play f30f2224 (pins re-asserted inside session_b_receipt.pins_verified); the engine binary was built from the pinned source for this run",
+  "evidence": {
+   "session_a": {
+    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\integrated\\session_a_receipt.json",
+    "raw_sha256": "55edc367e53f2dbc1159bfd114e15e425ca22f6a7298e9136cf37c1dbfc7f653",
+    "provenance": "the REAL application through the PAGE's own controls: slice_server boots and owns a real chimera_engine.exe process (A1), the page reaches live play with REAL engine numbers and zero console errors (A2), the page's own [R] key runs a FULL World.boot scene reload - old engine PID dies in 0.25 s, boot_count 1->2, scene and start-state shas byte-equal across the reload (A3), and the exit path finding (A4, see the runtime receipt)."
+   },
+   "session_b": {
+    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\integrated\\session_b_receipt.json",
+    "raw_sha256": "d3f83a68628c60f476fb4645c2094e4e6dc9065bc22815ed27a3feb52ac1c91b",
+    "provenance": "the pinned SessionFlow over the REAL World lifecycle seam, key()-mutators only: Return->playing, REAL CommandRecords while playing, Escape->paused with zero records and zero mapper calls, R-from-paused -> exactly one real World.boot (new engine PID + port), R-while-playing no-op, resume no-boot, Q->EXITED with the real engine dead in 0.05 s and the port closed, terminal inert, containment clean (one engine alive at any instant, zero at end). 9/9 probes PASS."
+   },
+   "integrated_visual": {
+    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\integrated\\integrated_capture.mp4",
+    "raw_sha256": "7ff408f2b15931497752147b8f5f7d6572bac4988269b7755b559dd305b18a6a",
+    "provenance": "43.8 s REAL headless-Chrome video of the REAL running application through boot -> play -> [H] -> Shift+R restart -> settled; the RESTARTING pill, the world reload and the recovered standing start are on tape. NOT synthetic; NOT a trace re-render."
+   },
+   "integrated_trace": {
+    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\integrated\\integrated_trace.jsonl",
+    "raw_sha256": "3ccd006cef41da946c47797f0ec66206f9839ac673afc2ca07a9c5c980c5d489",
+    "provenance": "81 runtime rows sampled at 0.5 s DURING the recording (rel_s, ticks, root_y, root_vy, gravity_on, boot_count, settled); binds every manifest view (kind trace)."
+   },
+   "integrated_camera": {
+    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\integrated\\integrated_capture_manifest.json",
+    "raw_sha256": "f1487f82e1017913fe2cf2accab4f6edc1b22c002ef555c564d3396ea619437d",
+    "provenance": "chimera.visual_capture_manifest.v1, profile recovery (motion), 2 views x diagnostic+clean over the REAL video, camera fields from the page's OWN __CHIMERA_VIEW handle and pinned persp(0.9,a,0.05,60) constants; validated in-process with the campaign's visual_capture.validate_manifest AND visual_gate.verify against card_task.json (structurally_valid true, capture_kind video)."
+   },
+   "integrated_capture_receipt": {
+    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\integrated\\integrated_capture_receipt.json",
+    "raw_sha256": "493496f735af681a018f23bf1cbc052d9a862a31fe141e0bd76a03b20d57d7e0",
+    "provenance": "validator results + every shipped artifact hash (video, webm original, 4 stills, 2 engine /frame images) + the honest clean-view caveat (the shipped page has no HUD-free mode; [H] dismisses the guide, verified display:'none')."
+   },
+   "integrated_runtime": {
+    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\46c8c88d9c3a49a48e3383a26e9b1cbb\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\integrated\\integrated_runtime_receipt.json",
+    "raw_sha256": "30d4286f7159dd854c54fd06b176de13fb2be89e2617f24a61a5531796777d3c",
+    "provenance": "the run-environment record: engine build from pinned source (exe sha in receipt), 252-file raw-blob extraction manifest of the pinned tree, per-session verdicts, the missing-integration list M1-M4, and the FIRED A4 deviation recorded against the frozen preregistration. Narrative-layer correction (review 5afad702): the A4 outcome/M2 text now states exactly what A4 measured (hard server kill, exit 1, engine alive at the kill moment, zero surviving engines 3 s after, port closed, driver terminated nothing); the run bytes and every other field are unchanged from the preserved 0113aa58 record."
+   }
+  },
+  "capture_context": {
+   "task_id": "X02",
+   "subject_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "run_id": "ONT-X02-integrated-20260926T201448",
+   "capture_sha256": "7ff408f2b15931497752147b8f5f7d6572bac4988269b7755b559dd305b18a6a",
+   "tick_interval": [
+    221,
+    3816
+   ]
+  }
+ }
+}

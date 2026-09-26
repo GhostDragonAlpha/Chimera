@@ -1,0 +1,100 @@
+{
+ "schema": "chimera.ont_x02.integrated_session_b.v1",
+ "started_utc": "2026-09-26T20:10:06Z",
+ "preflight_terminated_leftover_engines": [],
+ "pins": {
+  "session_flow_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+  "input_mapper_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+  "slice_server_sha256": "ee40d6be145fab5075ace5ffe96e9d76fd4fc48d3c89247e38b3b16bc999ae7c",
+  "engine_exe_sha256": "a99640093f7c95a024e3cdf32639b895a0254fc9a02e3a2da284a940ee4110d7",
+  "session_flow_pin_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+  "input_mapper_pin_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44"
+ },
+ "probes": {
+  "B0_world_boot": {
+   "ok": true,
+   "boot_seconds": 16.31,
+   "engine_pid": 66688,
+   "engine_port": 57950,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "boot_count": 1,
+   "engines_alive": [
+    66688
+   ]
+  },
+  "B1_return_to_playing": {
+   "state": "playing",
+   "is_playing": true
+  },
+  "B2_playing_records": {
+   "record_count": 7,
+   "first_records": [
+    "CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=615, source='u01_input_mapper', record_version=1)",
+    "CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=630, source='u01_input_mapper', record_version=1)",
+    "CommandRecord(v_forward=0.763625, yaw_rate=0.0, issued_tick=645, source='u01_input_mapper', record_version=1)"
+   ],
+   "boot_count": 1
+  },
+  "B3_escape_pause": {
+   "state": "paused",
+   "is_paused": true,
+   "records_emitted_while_paused": 0,
+   "engine_pid_at_pause": 66688,
+   "engines_alive": [
+    66688
+   ]
+  },
+  "B4_restart_from_paused": {
+   "state": "playing",
+   "is_playing": true,
+   "restart_seconds": 16.32,
+   "engine_pid_before": 66688,
+   "engine_pid_after": 80712,
+   "engine_pid_changed": true,
+   "old_engine_pid_gone": true,
+   "port_before": 57950,
+   "port_after": 59421,
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "boot_count_total": 2,
+   "boots_expected": 2,
+   "engines_alive": [
+    80712
+   ]
+  },
+  "B5_restart_while_playing": {
+   "state": "playing",
+   "boot_count_unchanged": true,
+   "boot_count": 2
+  },
+  "B6_resume_no_boot": {
+   "state": "playing",
+   "is_playing": true,
+   "was_paused": true,
+   "boot_count_unchanged": true
+  },
+  "B7_q_exit_teardown": {
+   "state": "exited",
+   "is_exited": true,
+   "exit_seconds": 0.05,
+   "engine_pid_at_exit": 80712,
+   "engine_pid_dead": true,
+   "world_proc_handle": null,
+   "engine_port_closed": true,
+   "engines_alive": []
+  },
+  "B8_terminal_inert": {
+   "state_unchanged": true,
+   "state": "exited",
+   "records_emitted_after_exit": 0
+  },
+  "B9_containment": {
+   "engines_alive_final": [],
+   "boot_count_total": 2,
+   "verdict_note": "exactly one engine alive at any step receipt above; zero at end; port closed"
+  }
+ },
+ "verdict": "PASS",
+ "finished_utc": "2026-09-26T20:10:44Z"
+}

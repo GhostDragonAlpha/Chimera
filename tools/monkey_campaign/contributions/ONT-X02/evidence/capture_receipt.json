@@ -1,0 +1,68 @@
+{
+ "gate_validation": {
+  "capture_kind": "video",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "recovery",
+  "structurally_valid": true,
+  "view_count": 4,
+  "visual_acceptance": false
+ },
+ "honest_boundary": "Deterministic CPU visualization of the recorded headless session trace (trace.jsonl); NOT native engine frames; V08 stays with the integration lane.",
+ "manifest": {
+  "raw_sha256": "791d1e6edc91be555e9a68b240ebb7c3885428acc685942e9cd5f99550d6e207",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\c3f7e9025d5645248f7a7a21f3b47f8a\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\capture_manifest.json"
+ },
+ "render_referents": {
+  "frame": "monkey_session_world_yup_m (right-handed, Y-up, metres)",
+  "projection": "perspective 45 deg vertical FOV (tan_half 0.41421356), principal point centered",
+  "source_module": "tools/monkey_campaign/product/follow_camera.py @ f30f2224 (sha 30e06c04 is session_flow; follow_camera d61347f0)"
+ },
+ "run_id": "ont-x02-motion-20260926-c3f7e902",
+ "schema": "ont-x02.motion.capture.v1",
+ "state_binding": {
+  "kind": "trace",
+  "raw_sha256": "5e15d57d71a8f1b638584e2af9e6680d735da3fc77fcce45b56da99471f998e0",
+  "rows": 67,
+  "tick_interval": [
+   0,
+   66
+  ]
+ },
+ "subject_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+ "task_id": "X02",
+ "video": {
+  "bytes": 70300,
+  "duration_s": 6.7,
+  "fps": 20,
+  "frames": 134,
+  "raw_sha256": "593c3438b6e186a742d48c7b3495c9f5bec33a6e1dfb9ff2db226fd61111b23e",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\c3f7e9025d5645248f7a7a21f3b47f8a\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\capture.mp4",
+  "resolution": [
+   640,
+   360
+  ]
+ },
+ "views": {
+  "matched before/after camera bookmark": {
+   "camera": "fixed_bookmark engine default (radius 12, theta 0, phi 0.3, target origin)",
+   "distance_to_target": 12.0,
+   "eye": [
+    0.0,
+    3.5462424799360743,
+    -11.464037869507273
+   ],
+   "seconds": [
+    0.0,
+    3.35
+   ]
+  },
+  "normal follow view during recovery": {
+   "camera": "sampled_trajectory recorded_each_tick (real pinned FollowCamera applied solution)",
+   "seconds": [
+    3.35,
+    6.7
+   ]
+  }
+ }
+}

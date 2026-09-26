@@ -1,0 +1,240 @@
+{
+ "schema": "chimera.ont_x02.integrated_session_a.v1",
+ "started_utc": "2026-09-26T20:04:54Z",
+ "engine_exe": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\run\\engine\\chimera_engine.exe",
+ "engine_exe_sha256": "a99640093f7c95a024e3cdf32639b895a0254fc9a02e3a2da284a940ee4110d7",
+ "play_root": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\run\\play",
+ "viewport": "1280x720",
+ "steps": {
+  "A1_boot": {
+   "ok": true,
+   "url": "http://127.0.0.1:50678/",
+   "server_pid": 97188,
+   "boot_seconds": 2.31,
+   "health": {
+    "ok": true,
+    "world_booted": true
+   },
+   "engine_children_of_server": [
+    91276
+   ],
+   "engine_processes_global": [
+    91276
+   ],
+   "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "boot_count": 1
+  },
+  "A2_browser_channel": {
+   "channel": "chrome",
+   "deviations": []
+  },
+  "A2_play_reached": {
+   "ok": true,
+   "status_line": "REAL engine numbers \u2014 root_y 0.1246 m \u00b7 root_vy -0.0000 m/s \u00b7 gravity ON",
+   "ticks_sample_1": 722,
+   "ticks_sample_2": 1057,
+   "ticks_advanced": true,
+   "camera_handle": "{\"yaw\":0.7,\"pit\":0.42,\"dist\":2.2,\"tx\":0,\"ty\":0.25,\"tz\":0}",
+   "console_errors": [],
+   "page_errors": [],
+   "marks": {
+    "page_load": 0.663,
+    "play_live": 3.507
+   }
+  },
+  "A2_engine_frame_before": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\evidence\\engine_frame_before.png",
+   "sha256": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+   "bytes": 875995,
+   "kind": "png"
+  },
+  "A3_before_state": {
+   "scene": {
+    "schema": "chimera.playable_slice.scene.v1",
+    "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+    "start_state_sha256": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+    "settled": true,
+    "start_root_y": 0.124294,
+    "marker": {
+     "x": 0.6775709680740424,
+     "z": 0.9904027378916139,
+     "radius": 0.15,
+     "azimuth_rad": 0.6,
+     "dist_m": 1.2
+    },
+    "body": {
+     "schema": "chimera.playable_slice.real_body.v1",
+     "body_id": "physics_body",
+     "derived_from": "tools\\science_funnel\\data\\morphosource_ct\\meshes_body_20260922",
+     "bones": 25,
+     "vertices": 249743,
+     "triangles": 499976,
+     "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+     "under_cap": true,
+     "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+     "import_route": "cache",
+     "import_bytes": 8997312,
+     "import_stats": {
+      "verts": 249743,
+      "tris": 499976,
+      "volume": 0.000973470353,
+      "ymin": -0.134641007,
+      "ymax": 0.134641007,
+      "winding_flipped": false
+     },
+     "gravity_armed": true
+    },
+    "ghost": {
+     "pose_json_sha256": "27e6fd9e95a057af276f63859af65c6a8a4d20a35d0cedf7b495ea9c9ffa0053",
+     "registration_pin_sha256": "013810f87a6ca7c1e01916ef7a5454e61e8d0e88f8d6a589fbfdd1514017a173",
+     "mesh_dir": "meshes_preview (full committed preview resolution)",
+     "bones": 25,
+     "vertices": 355831,
+     "triangles": 712522,
+     "declared_id": "ghost_standing_pose",
+     "units": "scene metres, +Y up, pads' mean plane at y=0",
+     "ghost_source": "cache"
+    },
+    "ghost_bytes_sha256": "d07d976cbccc0d327586e99ace2a79badb7ba4918118c565d307273327ca771d"
+   },
+   "boot_count": 1,
+   "engine_children": [
+    91276
+   ],
+   "engine_global": [
+    91276
+   ],
+   "stats": {
+    "snapshot_req": 0,
+    "snapshot_bytes": 0,
+    "frame_req": 1,
+    "frame_bytes": 875995,
+    "verts_req": 0,
+    "verts_bytes": 0,
+    "gap_us_max": 0,
+    "gap_us_median": 0,
+    "gap_us_p95": 0,
+    "gap_us_n": 1,
+    "gap_us_hist_tail": [
+     0
+    ]
+   }
+  },
+  "A3_engine_frame_after": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\evidence\\engine_frame_after.png",
+   "sha256": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+   "bytes": 875995,
+   "kind": "png"
+  },
+  "A3_after_restart": {
+   "ok": true,
+   "restart_seconds": 24.55,
+   "key_receipt": {
+    "lowercase_r_boot_count": 1,
+    "lowercase_r_fired_restart": false,
+    "post_key_boot_count": 2
+   },
+   "old_engine_pid": 91276,
+   "old_engine_died_seconds": 0.25,
+   "boot_count_before": 1,
+   "boot_count_after": 2,
+   "engine_children_before": [
+    91276
+   ],
+   "engine_children_after": [
+    91368
+   ],
+   "engine_global_after": [],
+   "old_engine_pid_gone": true,
+   "scene_sha256_before": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "scene_sha256_after": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "start_state_sha256_before": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "start_state_sha256_after": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "start_root_y_before": 0.124294,
+   "start_root_y_after": 0.124576,
+   "status_line_after": "REAL engine numbers \u2014 root_y 0.1246 m \u00b7 root_vy -0.0000 m/s \u00b7 gravity ON",
+   "views_before": {
+    "diagnostic": {
+     "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\evidence\\view_before_diagnostic.png",
+     "sha256": "66d8cd69f9d1b8c929ce71e3d5dd5f8b14a386523b3bfee1d17e228ffed6bb3f"
+    },
+    "clean": {
+     "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\evidence\\view_before_clean.png",
+     "sha256": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e"
+    },
+    "camera": {
+     "cam": {
+      "yaw": 0.7,
+      "pit": 0.42,
+      "dist": 2.2,
+      "tx": 0,
+      "ty": 0.25,
+      "tz": 0
+     },
+     "cw": 1280,
+     "ch": 720
+    },
+    "state_binding_sha256": "a3d01d7633c5247d9aed43c5405b914cd2a767a5b9e32cb2e3720c71fbaff3e6"
+   },
+   "views_after": {
+    "diagnostic": {
+     "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\evidence\\view_after_diagnostic.png",
+     "sha256": "e3fe2f8d762b0e67c03605728f41aa12bec65a0eb6e803dd97a2b33536938516"
+    },
+    "clean": {
+     "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\evidence\\view_after_clean.png",
+     "sha256": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e"
+    },
+    "camera": {
+     "cam": {
+      "yaw": 0.7,
+      "pit": 0.42,
+      "dist": 2.2,
+      "tx": 0,
+      "ty": 0.25,
+      "tz": 0
+     },
+     "cw": 1280,
+     "ch": 720
+    },
+    "state_binding_sha256": "cebfcecc0c4ecac80521fd4794a74e9ecd01062d4685a65d14945c5de4bd9594"
+   }
+  },
+  "A5_capture": {
+   "ok": true,
+   "video_seconds": 43.8,
+   "mp4_sha256": "7ff408f2b15931497752147b8f5f7d6572bac4988269b7755b559dd305b18a6a",
+   "webm_kept_path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\35676f7dcb9f4ceea1c2fc41fbe45aa2\\scratch\\evidence\\integrated_session.webm",
+   "webm_sha256": "7d508cfbab382f2645e05c0eb136fd26f8d055db18a37990e38902aa5b1dc491",
+   "trace_sha256": "3ccd006cef41da946c47797f0ec66206f9839ac673afc2ca07a9c5c980c5d489",
+   "trace_rows": 80,
+   "marks": {
+    "page_load": 0.663,
+    "play_live": 3.507,
+    "help_toggled_off": 15.62,
+    "guide_display_after_H": "none",
+    "restart_pressed": 19.134,
+    "recovered_settled": 42.783
+   },
+   "ffmpeg_rc": 0
+  },
+  "A4_exit": {
+   "ok": true,
+   "exit_kind": "hard_server_kill_measured",
+   "finding_no_remote_or_graceful_exit_control": true,
+   "app_graceful_path_exercised_elsewhere": "A3 restart (World.shutdown_engine) + session B7 (Q)",
+   "server_exit_code": 1,
+   "exit_seconds": 5.05,
+   "engine_children_at_exit": [
+    91368
+   ],
+   "engine_orphans_measured_after_kill": [],
+   "server_port_still_open": false,
+   "orphans_terminated_by_driver": [],
+   "orphans_still_alive_after_cleanup": []
+  }
+ },
+ "preflight_terminated_leftover_engines": [],
+ "verdict": "PASS",
+ "finished_utc": "2026-09-26T20:05:49Z"
+}

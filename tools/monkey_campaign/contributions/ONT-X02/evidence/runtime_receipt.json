@@ -1,0 +1,73 @@
+{
+ "all_green": true,
+ "artifacts": {
+  "trace": {
+   "raw_sha256": "5e15d57d71a8f1b638584e2af9e6680d735da3fc77fcce45b56da99471f998e0",
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-X02\\c3f7e9025d5645248f7a7a21f3b47f8a\\checkout\\tools\\monkey_campaign\\contributions\\ONT-X02\\evidence\\trace.jsonl",
+   "rows": 67
+  }
+ },
+ "attempt_id": "c3f7e9025d5645248f7a7a21f3b47f8a",
+ "card_id": "ONT-X02",
+ "environment": {
+  "engine_process": false,
+  "gpu": false,
+  "headless": true,
+  "network": false,
+  "platform": "win32",
+  "python": "3.14.3"
+ },
+ "pinned_lineage": {
+  "play_head": "f30f2224663324e9374b076938c56672febf4082",
+  "recovery": "git -C E:/ChimeraWork/monkey-play-20260924 show f30f2224...:<path> into reference/ (read-only)",
+  "sources": {
+   "tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/monkey_campaign/product/session_flow.py": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+  }
+ },
+ "run_id": "ont-x02-motion-20260926-c3f7e902",
+ "schema": "ont-x02.motion.runtime.v1",
+ "subject": "tools/monkey_campaign/product/session_flow.py",
+ "subject_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+ "task_id": "X02",
+ "timeline": {
+  "focus_loss_ms": 800,
+  "key_events_ms": [
+   100,
+   130,
+   150,
+   180,
+   200,
+   230,
+   300,
+   1000,
+   1450,
+   1500,
+   1530,
+   1900,
+   1950,
+   2560,
+   2600,
+   2750,
+   2780,
+   2800,
+   2830,
+   2850,
+   3160,
+   3200,
+   3250,
+   3300
+  ],
+  "mouse_events_ms": [
+   550,
+   900
+  ],
+  "reconnect_ms": 1000,
+  "reload_ms": 1900,
+  "t_end_ms": 3300,
+  "tick_ms": 50,
+  "ticks": 67
+ }
+}
