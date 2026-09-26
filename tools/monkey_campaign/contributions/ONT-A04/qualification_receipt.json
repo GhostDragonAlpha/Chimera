@@ -1,0 +1,72 @@
+{
+ "agent_id": "arrival-32436e70ed1e4866a25a29940db1789c",
+ "attempt_id": "86b87bfe23b14059ac8ed516104340bf",
+ "camera": {
+  "provenance": "chimera.visual_capture_manifest.v1, profile anatomy, 6 rows (3 views x diagnostic+clean), trace... state-bound (state_binding sha = state_snapshot.json), tick_interval [0,0], fixed_bookmark cameras, orthographic spans measured to frame the owned subject unclipped; ALL 16 profile camera fields per camera (primary schema-validated + secondary cameras fully declared in camera.secondary_cameras); validated in-process with visual_capture.validate_manifest against card_task.json (structurally_valid true).",
+  "raw_sha256": "1e9afa01bf2a668ddc8cd749b09f10daf79703321934f045889a8d671403a085",
+  "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/86b87bfe23b14059ac8ed516104340bf/checkout/tools/monkey_campaign/contributions/ONT-A04/evidence/capture_manifest.json"
+ },
+ "candidate_suite": {
+  "capture": "tools/monkey_campaign/contributions/ONT-A04/capture_build.py",
+  "card_contract": "tools/monkey_campaign/contributions/ONT-A04/card_task.json",
+  "preregistration": "tools/monkey_campaign/contributions/ONT-A04/PREREGISTRATION.md (frozen before the first probe run of this attempt)",
+  "probe": "tools/monkey_campaign/contributions/ONT-A04/a04_correspondence_probe.py",
+  "report": "tools/monkey_campaign/contributions/ONT-A04/report.md",
+  "tests": "python -B -m unittest test_ont_a04 -> Ran 14 tests ... OK; probe 7/7 checks green; capture gate structurally_valid=True, fired=0"
+ },
+ "capture_context": {
+  "capture_sha256": "dd21432d6565d4ad80e228c3452250ad5b84e2e6cd0f774cdbdd38bc7c61ce81",
+  "run_id": "ont-a04-anatomy-20260926-86b87bfe",
+  "subject_sha256": "33d3219cc66071a7a5957b24f40f172accbada2ac8ec69c9de5e060de74b1164",
+  "task_id": "A04",
+  "tick_interval": [
+   0,
+   0
+  ]
+ },
+ "card_id": "ONT-A04",
+ "criteria_sha256": "bf8583ae76c4930f726c4c71861ab9219cdac65eb3913cb29ab6131671505570",
+ "done_when": "Source and target assembly correspondence is evidenced, including palm sign and geometry coverage",
+ "done_when_verified": true,
+ "evidence": {
+  "independent_review": null,
+  "independent_review_binding": "No independent worker review of this candidate exists yet. Independent review of THIS candidate is a REMAINING GATE; at ACCEPTED the lead sets this entry to the named review receipt + raw hash.",
+  "numerical": {
+   "provenance": "7/7 frozen checks green, byte-identical on rerun: C1 27/27 vendor STL hash pins + scales; C2 frame chain (R2-A4 origin pin, identity quats, <1e-12 m round-trip, det +1, extent record reproduced); C3 independent palm-sign re-derivation exact to 1e-9 with 5/5 compartment split; C4 anchor class under BOTH metrics (2 fired deviations honestly recorded: s2 metric convention, C2 print precision); C5 target band/far-end/component/mirror measures; C6 correspondence + coverage inventory with H-LEN/H-ASP UNRESOLVED and H-BODY circular recorded, no scale promoted; C7 palm-sign statement (source CLOSED, target UNRESOLVED - human A/B verdict missing).",
+   "raw_sha256": "e3864b161c865a404b0b2d0e73cce2a76e479bcf3c29c42c86c54d84c5db5fa1",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/86b87bfe23b14059ac8ed516104340bf/checkout/tools/monkey_campaign/contributions/ONT-A04/evidence/numerical_receipt.json"
+  },
+  "source": {
+   "provenance": "The PRESERVED source-identity leg: HAND_SOURCE_EVIDENCE (M-handsrc, 70c9ff41) 27-bone identity table with per-bone sha256 pins, re-pinned byte-exact from the git blob into reference/ alongside s1_inventory.json, s2_identity.json, s2b_cmc_diagnosis.json, s3_palm_normal.json, prereg.md, commands.md and the C2/B1 target measure receipts; every pin re-asserted at probe import and re-verified against the on-disk vendor files.",
+   "raw_sha256": "6dab6a40b55c881998232c1f590cd41233919869876a0e4b1e5c260dffd0a424",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/86b87bfe23b14059ac8ed516104340bf/checkout/tools/monkey_campaign/contributions/ONT-A04/reference/identity_table.md"
+  }
+ },
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; the in-tree copy cannot know its own commit hash).",
+ "honest_boundary": "Static pinned-geometry measurement and rendering only. Source palm sign is CLOSED (independently re-derived, split-validated); target palm sign is UNRESOLVED (the A/B human-labeling instrument exists, its verdict does not); same-assembly scale is UNDECIDED (H-LEN/H-ASP unresolved, H-BODY circular) and no scale number is promoted from any orientation result; 14 phalanges have NO identified-target coverage and are inventoried absent. No runtime/native claim; no production mapping; no grasp-reach quantity. Independent review and the human A/B labeling verdict remain named open gates.",
+ "pinned_lineage": {
+  "forearm_package_branch": "forearm-package-20260924 (handsrc 70c9ff41, handtgt 57beb8b2, handreq 768f3de0, I6 wave-3 ad09b8ea)",
+  "ontology_p02_merge": "8c7ed8c2 (review/ONT-P02 merged winner; lineage authority for this card)",
+  "source_xml_blob": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5 (branch blob; drifted .tmp copy 675e00d0 NOT used)",
+  "target_meshes": {
+   "monkey_birth.bin": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+   "monkey_joints.bin": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662"
+  },
+  "vendor": "MyoHub/myo_sim v0.1.0 @ 33f3ded946f55adbdcf963c99999587aadaf975f (Apache-2.0; KEPT_SEPARATE per P02)"
+ },
+ "profile_id": "anatomy",
+ "profile_kind": "visible_static",
+ "profile_verified": true,
+ "runtime": null,
+ "runtime_binding": "Profile is visible_static (offline); no runtime/native behavior claim is made or needed for this clause. The measured assemblies are P02-KEPT_SEPARATE analysis lineages; no training/production wiring exists or is proposed.",
+ "schema": "ont-a04.anatomy.qualification.v1",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "subject_sha256": "33d3219cc66071a7a5957b24f40f172accbada2ac8ec69c9de5e060de74b1164",
+ "task_id": "A04",
+ "visual": {
+  "provenance": "700x3628 contact sheet, 3 profile views x diagnostic/clean pairs; source and target inspected separately in every cell; all six anatomy diagnostic layers present (outer envelope, selected bones/joints, muscle/tendon paths, attachment sites, frame axes, stable 3D labels); honest in-panel titles (A/B letters label FACES not anatomy; palm verdict NOT claimed); byte-identical on rerun; CPU-only Agg + numpy z-buffer, no GPU context.",
+  "raw_sha256": "dd21432d6565d4ad80e228c3452250ad5b84e2e6cd0f774cdbdd38bc7c61ce81",
+  "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/86b87bfe23b14059ac8ed516104340bf/checkout/tools/monkey_campaign/contributions/ONT-A04/evidence/capture_a04.png"
+ }
+}

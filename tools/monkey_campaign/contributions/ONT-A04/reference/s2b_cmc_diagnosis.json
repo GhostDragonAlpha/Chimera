@@ -1,0 +1,265 @@
+{
+  "purpose": "prereg 2.4 refined-rule diagnosis (primary chain rule FIRED)",
+  "cmc_pairs": {
+    "trapezium|1mc": {
+      "anchor_to_parent_surf_mm": 4.525849176943022,
+      "surf_to_surf_gap_mm": 0.0016036328338364118,
+      "child_anchor_to_nearest_parent_pt_vec_mm": [
+        -3.4123014483231384,
+        2.79467113349292,
+        1.0145554956871687
+      ]
+    },
+    "trapezoid|2mc": {
+      "anchor_to_parent_surf_mm": 28.85398732309635,
+      "surf_to_surf_gap_mm": 0.0004131780891786958,
+      "child_anchor_to_nearest_parent_pt_vec_mm": [
+        -3.277999990254639,
+        28.4730001630187,
+        -3.3310001834332943
+      ]
+    },
+    "capitate|3mc": {
+      "anchor_to_parent_surf_mm": 30.39597744284032,
+      "surf_to_surf_gap_mm": 4.916562125695358e-06,
+      "child_anchor_to_nearest_parent_pt_vec_mm": [
+        -5.193000054031611,
+        29.937000416159634,
+        -0.8510001335740105
+      ]
+    },
+    "hamate|4mc": {
+      "anchor_to_parent_surf_mm": 31.3357848128799,
+      "surf_to_surf_gap_mm": 0.0015527317718920278,
+      "child_anchor_to_nearest_parent_pt_vec_mm": [
+        0.8830000070836402,
+        30.293999813288448,
+        -7.9640000087320795
+      ]
+    },
+    "hamate|5mc": {
+      "anchor_to_parent_surf_mm": 26.64906383882611,
+      "surf_to_surf_gap_mm": 0.00040596233125536195,
+      "child_anchor_to_nearest_parent_pt_vec_mm": [
+        10.021999977387487,
+        24.68299989673496,
+        -0.6940000265538688
+      ]
+    }
+  },
+  "mcp_pairs": {
+    "1mc|thumbprox": {
+      "anchor_to_parent_surf_mm": null,
+      "surf_to_surf_gap_mm": 0.0010933990869918758,
+      "child_anchor_inside_parent": true
+    },
+    "2mc|2proxph": {
+      "anchor_to_parent_surf_mm": null,
+      "surf_to_surf_gap_mm": 0.0010966425314437524,
+      "child_anchor_inside_parent": true
+    },
+    "3mc|3proxph": {
+      "anchor_to_parent_surf_mm": null,
+      "surf_to_surf_gap_mm": 0.001173801762039041,
+      "child_anchor_inside_parent": true
+    },
+    "4mc|4proxph": {
+      "anchor_to_parent_surf_mm": null,
+      "surf_to_surf_gap_mm": 0.00039890240376179605,
+      "child_anchor_inside_parent": true
+    },
+    "5mc|5proxph": {
+      "anchor_to_parent_surf_mm": null,
+      "surf_to_surf_gap_mm": 0.0012189661868186655,
+      "child_anchor_inside_parent": true
+    }
+  },
+  "mc_proximal_reach": {
+    "1mc": {
+      "anchor_y_mm": -25.023,
+      "surf_min_y_mm": -59.98300170707703,
+      "surf_max_y_mm": -20.025999901771545,
+      "proximal_reach_past_anchor_mm": 34.960001707077026
+    },
+    "2mc": {
+      "anchor_y_mm": -52.674,
+      "surf_min_y_mm": -86.5410015335083,
+      "surf_max_y_mm": -21.646999602556228,
+      "proximal_reach_past_anchor_mm": 33.8670015335083
+    },
+    "3mc": {
+      "anchor_y_mm": -54.293,
+      "surf_min_y_mm": -85.87300111579896,
+      "surf_max_y_mm": -21.281001018762588,
+      "proximal_reach_past_anchor_mm": 31.580001115798957
+    },
+    "4mc": {
+      "anchor_y_mm": -55.573,
+      "surf_min_y_mm": -84.77100020754337,
+      "surf_max_y_mm": -24.59999954807758,
+      "proximal_reach_past_anchor_mm": 29.198000207543373
+    },
+    "5mc": {
+      "anchor_y_mm": -49.737,
+      "surf_min_y_mm": -76.57699948203565,
+      "surf_max_y_mm": -22.146000620245935,
+      "proximal_reach_past_anchor_mm": 26.839999482035637
+    }
+  },
+  "anchor_gap_vectors": {
+    "1mc|thumbprox": {
+      "d_link_mm": 4.476347494315837,
+      "vec_child_to_parent_surf_mm": [
+        -4.3867308969207235,
+        -0.7751057077671832,
+        -0.4398750614157468
+      ]
+    },
+    "thumbprox|thumbdist": {
+      "d_link_mm": 2.1555728005535575,
+      "vec_child_to_parent_surf_mm": [
+        -1.9347767391951418,
+        -0.9065079607595977,
+        -0.28526546414733844
+      ]
+    },
+    "2mc|2proxph": {
+      "d_link_mm": 4.07425895180731,
+      "vec_child_to_parent_surf_mm": [
+        2.8900000026226036,
+        -2.597000137686725,
+        1.2260001125931757
+      ]
+    },
+    "2proxph|2midph": {
+      "d_link_mm": 2.545057905794089,
+      "vec_child_to_parent_surf_mm": [
+        0.8614550049701359,
+        -0.7324860392197013,
+        2.280061231766623
+      ]
+    },
+    "2midph|2distph": {
+      "d_link_mm": 1.4515979744493528,
+      "vec_child_to_parent_surf_mm": [
+        -0.014201551606668472,
+        -0.520789640316377,
+        1.3548849197981965
+      ]
+    },
+    "3mc|3proxph": {
+      "d_link_mm": 4.147373241849253,
+      "vec_child_to_parent_surf_mm": [
+        -3.9365826903998693,
+        0.5534465167629371,
+        1.1822514461544456
+      ]
+    },
+    "3proxph|3midph": {
+      "d_link_mm": 2.110804798128188,
+      "vec_child_to_parent_surf_mm": [
+        -0.03775464175336928,
+        -0.9171165060214287,
+        -1.9007811018657839
+      ]
+    },
+    "3midph|3distph": {
+      "d_link_mm": 1.3510330947054863,
+      "vec_child_to_parent_surf_mm": [
+        0.2320844326505027,
+        -1.2673810438393052,
+        -0.4064142330524011
+      ]
+    },
+    "4mc|4proxph": {
+      "d_link_mm": 3.4710518876838248,
+      "vec_child_to_parent_surf_mm": [
+        -3.363999968469143,
+        0.6440003111362474,
+        -0.5630000163316731
+      ]
+    },
+    "4proxph|4midph": {
+      "d_link_mm": 1.9938769396593254,
+      "vec_child_to_parent_surf_mm": [
+        0.5783888631984719,
+        -1.0865049363919799,
+        -1.5686040279908366
+      ]
+    },
+    "4midph|4distph": {
+      "d_link_mm": 1.4472659210888972,
+      "vec_child_to_parent_surf_mm": [
+        0.28437517393991796,
+        -0.9120620441908645,
+        -1.0871302747777365
+      ]
+    },
+    "5mc|5proxph": {
+      "d_link_mm": 3.624027320446719,
+      "vec_child_to_parent_surf_mm": [
+        2.872722999726053,
+        -0.7893665858550308,
+        2.0634769151421937
+      ]
+    },
+    "5proxph|5midph": {
+      "d_link_mm": 2.078430365028434,
+      "vec_child_to_parent_surf_mm": [
+        0.9208192102712793,
+        -0.6004227437793053,
+        -1.7639323379937617
+      ]
+    },
+    "5midph|5distph": {
+      "d_link_mm": 1.382054500646974,
+      "vec_child_to_parent_surf_mm": [
+        0.6419805426054124,
+        -0.7337931355897165,
+        -0.9795321637577955
+      ]
+    },
+    "trapezium|1mc": {
+      "d_link_mm": 4.525849176943022,
+      "vec_child_to_parent_surf_mm": [
+        -3.4123014483231384,
+        2.79467113349292,
+        1.0145554956871687
+      ]
+    },
+    "trapezoid|2mc": {
+      "d_link_mm": 28.85398732309635,
+      "vec_child_to_parent_surf_mm": [
+        -3.277999990254639,
+        28.4730001630187,
+        -3.3310001834332943
+      ]
+    },
+    "capitate|3mc": {
+      "d_link_mm": 30.39597744284032,
+      "vec_child_to_parent_surf_mm": [
+        -5.193000054031611,
+        29.937000416159634,
+        -0.8510001335740105
+      ]
+    },
+    "hamate|4mc": {
+      "d_link_mm": 31.3357848128799,
+      "vec_child_to_parent_surf_mm": [
+        0.8830000070836402,
+        30.293999813288448,
+        -7.9640000087320795
+      ]
+    },
+    "hamate|5mc": {
+      "d_link_mm": 26.64906383882611,
+      "vec_child_to_parent_surf_mm": [
+        10.021999977387487,
+        24.68299989673496,
+        -0.6940000265538688
+      ]
+    }
+  },
+  "started": "2026-09-24T17:34:38",
+  "elapsed_s": 125.20686483383179
+}
