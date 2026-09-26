@@ -1,0 +1,133 @@
+FAILING-FIRST EVIDENCE (REGENERATED 2026-09-26) — I-S02-PACKAGE-PREFLIGHT
+attempt 52645eef46df4af6aa0ca12a10542f9d (arrival-36aef27ac9414a8fbb863aeeef431bb6)
+
+This artifact REPLACES the irreproducible record of attempt 1b2d224dbae042aead907aded54a67d2
+(which claimed "FAILED (failures=3, errors=2)" = 5/7). Everything below the line is the
+VERBATIM, unedited unittest output of the PUBLISHED test_correction.py run against the
+byte-verified adopted base, executed TWICE in base_probe/ (python -B -m unittest
+test_correction -v; CPU-only; prereg frozen before the run at sha256 f61a405a27a0511a5730c9344e185c6796e95ec04a0d0629aab5f41c2c25093e).
+
+Provenance (sha256 verified before and after the runs):
+  module under test  package_preflight.py  7ccb66494ea9ee1b95a6247a1ad25981108c769fc3efb2143422822406561738
+                     (adopted BASE; CRLF form of blob d51e8718a1c3b4802d8411a8e6a6ac8f2f6cf8f52360fcefe48b01d45b97f15e
+                      at PR #124 head 155a0f5c6ed14d6ce0c95572676eb03f14bc8a50)
+  test file          test_correction.py    6a24a683ac930b4ba7bbe251daaae59ccdeeb0f223523418e2a844ad49408f61 (published, byte-identical)
+
+ACTUAL RESULT (both runs identical; deterministic): Ran 7 tests -> FAILED (failures=3, errors=0)
+  FAIL  R1 test_multi_name_import_is_flagged        (lead reproducer: multi-name import tail undeclared)
+  FAIL  R3 test_unparseable_py_is_named_refusal     (silent skip: no named parse refusal on base)
+  FAIL  R4 test_invalid_cap_fails_before_any_io     (base opened a.py and hashed despite invalid cap)
+  ok    R2 test_aliases_multiple_and_from_imports   (PASSES on base: regex already matched single-name and from-import forms)
+  ok    R2 test_stdlib_and_declared_still_pass
+  ok    R5 test_oversize_enforced_at_read_time      (PASSES on base: pre-stat cap check already fired P-SIZE, no digest verified)
+  ok    R5 test_bounded_read_never_exceeds_cap_plus_one
+=> 3/7 correction tests FAIL on base; 4/7 already PASS. Both lead defects still reproduced
+   failing-first (R1 = CHANGES-REQUIRED (a); R4 = CHANGES-REQUIRED (b)).
+
+===== RUN 1 (verbatim) =====
+test_multi_name_import_is_flagged (test_correction.R1LeadReproducer.test_multi_name_import_is_flagged) ... FAIL
+test_aliases_multiple_and_from_imports (test_correction.R2AstShapes.test_aliases_multiple_and_from_imports) ... ok
+test_stdlib_and_declared_still_pass (test_correction.R2AstShapes.test_stdlib_and_declared_still_pass) ... ok
+test_unparseable_py_is_named_refusal (test_correction.R3ParseRefusal.test_unparseable_py_is_named_refusal) ... FAIL
+test_invalid_cap_fails_before_any_io (test_correction.R4InvalidCapNoIO.test_invalid_cap_fails_before_any_io) ... FAIL
+test_bounded_read_never_exceeds_cap_plus_one (test_correction.R5ReadTimeCaps.test_bounded_read_never_exceeds_cap_plus_one) ... ok
+test_oversize_enforced_at_read_time (test_correction.R5ReadTimeCaps.test_oversize_enforced_at_read_time) ... ok
+
+======================================================================
+FAIL: test_multi_name_import_is_flagged (test_correction.R1LeadReproducer.test_multi_name_import_is_flagged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\monkey-coordination\kanban-attempts\I-S02-PACKAGE-PREFLIGHT\52645eef46df4af6aa0ca12a10542f9d\base_probe\test_correction.py", line 47, in test_multi_name_import_is_flagged
+    self.assertNotEqual(result.verdict, "PREFLIGHT-PASS",
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                         "defect: multi-name import passed undeclared")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'PREFLIGHT-PASS' == 'PREFLIGHT-PASS' : defect: multi-name import passed undeclared
+
+======================================================================
+FAIL: test_unparseable_py_is_named_refusal (test_correction.R3ParseRefusal.test_unparseable_py_is_named_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\monkey-coordination\kanban-attempts\I-S02-PACKAGE-PREFLIGHT\52645eef46df4af6aa0ca12a10542f9d\base_probe\test_correction.py", line 86, in test_unparseable_py_is_named_refusal
+    self.assertTrue(texts, "silent skip: unparseable .py yielded "
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                           "nothing")
+                           ^^^^^^^^^^
+AssertionError: [] is not true : silent skip: unparseable .py yielded nothing
+
+======================================================================
+FAIL: test_invalid_cap_fails_before_any_io (test_correction.R4InvalidCapNoIO.test_invalid_cap_fails_before_any_io)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\monkey-coordination\kanban-attempts\I-S02-PACKAGE-PREFLIGHT\52645eef46df4af6aa0ca12a10542f9d\base_probe\test_correction.py", line 98, in test_invalid_cap_fails_before_any_io
+    self.assertEqual(result.stats.get("paths_opened", []), [],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     "defect: files opened despite invalid cap")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['a.py'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'a.py'
+
+- ['a.py']
++ [] : defect: files opened despite invalid cap
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.040s
+
+FAILED (failures=3)
+
+===== RUN 2 (verbatim) =====
+test_multi_name_import_is_flagged (test_correction.R1LeadReproducer.test_multi_name_import_is_flagged) ... FAIL
+test_aliases_multiple_and_from_imports (test_correction.R2AstShapes.test_aliases_multiple_and_from_imports) ... ok
+test_stdlib_and_declared_still_pass (test_correction.R2AstShapes.test_stdlib_and_declared_still_pass) ... ok
+test_unparseable_py_is_named_refusal (test_correction.R3ParseRefusal.test_unparseable_py_is_named_refusal) ... FAIL
+test_invalid_cap_fails_before_any_io (test_correction.R4InvalidCapNoIO.test_invalid_cap_fails_before_any_io) ... FAIL
+test_bounded_read_never_exceeds_cap_plus_one (test_correction.R5ReadTimeCaps.test_bounded_read_never_exceeds_cap_plus_one) ... ok
+test_oversize_enforced_at_read_time (test_correction.R5ReadTimeCaps.test_oversize_enforced_at_read_time) ... ok
+
+======================================================================
+FAIL: test_multi_name_import_is_flagged (test_correction.R1LeadReproducer.test_multi_name_import_is_flagged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\monkey-coordination\kanban-attempts\I-S02-PACKAGE-PREFLIGHT\52645eef46df4af6aa0ca12a10542f9d\base_probe\test_correction.py", line 47, in test_multi_name_import_is_flagged
+    self.assertNotEqual(result.verdict, "PREFLIGHT-PASS",
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                         "defect: multi-name import passed undeclared")
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'PREFLIGHT-PASS' == 'PREFLIGHT-PASS' : defect: multi-name import passed undeclared
+
+======================================================================
+FAIL: test_unparseable_py_is_named_refusal (test_correction.R3ParseRefusal.test_unparseable_py_is_named_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\monkey-coordination\kanban-attempts\I-S02-PACKAGE-PREFLIGHT\52645eef46df4af6aa0ca12a10542f9d\base_probe\test_correction.py", line 86, in test_unparseable_py_is_named_refusal
+    self.assertTrue(texts, "silent skip: unparseable .py yielded "
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                           "nothing")
+                           ^^^^^^^^^^
+AssertionError: [] is not true : silent skip: unparseable .py yielded nothing
+
+======================================================================
+FAIL: test_invalid_cap_fails_before_any_io (test_correction.R4InvalidCapNoIO.test_invalid_cap_fails_before_any_io)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\ChimeraWork\monkey-coordination\kanban-attempts\I-S02-PACKAGE-PREFLIGHT\52645eef46df4af6aa0ca12a10542f9d\base_probe\test_correction.py", line 98, in test_invalid_cap_fails_before_any_io
+    self.assertEqual(result.stats.get("paths_opened", []), [],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     "defect: files opened despite invalid cap")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['a.py'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'a.py'
+
+- ['a.py']
++ [] : defect: files opened despite invalid cap
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.025s
+
+FAILED (failures=3)

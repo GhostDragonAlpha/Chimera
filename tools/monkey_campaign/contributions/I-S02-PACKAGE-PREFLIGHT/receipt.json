@@ -1,0 +1,39 @@
+{
+  "schema": "chimera.task.receipt.v1",
+  "task_id": "I-S02-PACKAGE-PREFLIGHT",
+  "attempt_id": "4139256674844346ae7c21857442d3f2",
+  "base_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+  "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+  "extracted_files": [],
+  "pinned_reads": {
+    "DEMO.bat": "92cbcceca31a80a5",
+    "tools/playable_slice/PlayableSlice.bat": "1b299af629b1ad78",
+    "tools/playable_slice/run_slice.ps1": "3c59439b40f7dad9",
+    "tools/monkey_campaign/product/session_flow.py": "30e06c04dc33da27",
+    "Chimera/core/uat_packager.py": "8ba24dfea4a8453a",
+    "tools/monkey_campaign/agents/S01_provenance/report.md": "7dde4dcb170c02fe"
+  },
+  "artifacts": {
+    "package_preflight.py": "d51e8718a1c3b4802d8411a8e6a6ac8f2f6cf8f52360fcefe48b01d45b97f15e",
+    "test_package_preflight.py": "fe279eb04a563c7748b5d000df4cee535db5408ca9a5678981b5780f4be272b8",
+    "PREREGISTRATION.md": "6f8aeb6d7617864dd5caf6c44d7adcac91900edd8a9053f9587840591bdea568",
+    "report.md": "5c66e71aff61dfe760bacaeae52b4c523d4a5415ae57dcc312377f92b81aa627"
+  },
+  "verification": {
+    "command": "python -B -m unittest test_package_preflight",
+    "result": "17/17 OK (run twice, deterministic; live NTFS junction test included)",
+    "falsifiers": {
+      "F1_relocation_invariance": "PASS",
+      "F2_undeclared_dependency_passes": "REFUTED (P-DEP/P-EXT-TOOL fire, verdict FAIL)",
+      "F3_permission_claim": "REFUTED (no permission state expressible; test-enforced)"
+    }
+  },
+  "prereg_frozen_before_implementation": true,
+  "mtimes_unix": {
+    "package_preflight.py": 1790305525,
+    "PREREGISTRATION.md": 1790305465,
+    "report.md": 1790305651,
+    "test_package_preflight.py": 1790305609
+  },
+  "generated_at_utc": "2026-09-25T03:07:46Z"
+}
