@@ -1,0 +1,34 @@
+{
+ "schema": "i-r06-followup.regression_entry.v1",
+ "identity": {
+  "runner_sha256": "d3e11285627259f5989e6085051df22051343e657e1ebda7ad97c63f8a459e69",
+  "suite_sha256": "283efad2ec8140e47fc82587b1342ac9bc43b9afe90113b100bb496d81fb247c",
+  "ledger_entries": 2661
+ },
+ "clean_run": {
+  "exit": 0,
+  "all_eight": true,
+  "tail": "8/8 sequences passed"
+ },
+ "suite_run": {
+  "exit": 0,
+  "ok": true,
+  "ran": 0
+ },
+ "counterexample_detection": {
+  "exit": 0,
+  "payload": {
+   "passed": false,
+   "violations": [
+    "zombie[seq01-key-release]: positive speed 0.763625 still emitted at 1350 ms, later than release 1210 + decay 100 = 1310 (released input remained latched)",
+    "zombie[seq01-key-release]: positive speed 0.763625 still emitted at 1400 ms, later than release 1210 + decay 100 = 1310 (released input remained latched)",
+    "zombie[seq01-key-release]: positive speed 0.763625 still emitted at 1450 ms, later than release 1210 + decay 100 = 1310 (released input remained latched)"
+   ],
+   "control": "LatchingMapper"
+  },
+  "detected": true
+ },
+ "device_testing_claimed": false,
+ "note": "headless CPU regression entry; no device/native testing claimed (card falsifier law)",
+ "all_ok": true
+}

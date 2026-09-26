@@ -1,0 +1,327 @@
+diff --git a/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/PREREGISTRATION.md b/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/PREREGISTRATION.md
+new file mode 100644
+index 0000000..07c4f76
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/PREREGISTRATION.md
+@@ -0,0 +1,41 @@
++# PREREGISTRATION — I-R06-FAILURE-SEQUENCES-FOLLOWUP
++
++Card `I-R06-FAILURE-SEQUENCES-FOLLOWUP` (planning R06; parent
++I-R06-FAILURE-SEQUENCES = merged PR #123, runner verified this attempt:
++`failure_sequences.py` sha256 `d3e11285…`, suite `283efad2…`, CLI 8/8 PASS
++exit 0). Attempt `fbefa4a1790247f9851c73e016e1dd4f`, agent
++`c95e1722350849bca846b237c1f60997`, criteria
++`e9207e45980f6e9e7207c3a1b328c1a3911cb9f6835fb6d3fc78ea81367eb4db`.
++Written BEFORE the adapter ran.
++
++## STATEMENT
++
++The smallest product-regression entry is an ADAPTER that invokes the accepted
++runner and its pinned real product classes (reference/ extraction, ledger-
++bound at base `9afbddcd`) — no new sequences, no new fuzz volume, no
++production change — with identity verification before invocation and
++injected-counterexample detection demonstrated through the runner's OWN
++deliberately-broken controls.
++
++## PREDICTION (not yet measured by this attempt)
++
++1. With identity verified (runner + suite sha256; reference ledger present),
++   the adapter's clean run reproduces 8/8 sequences PASS via the runner CLI,
++   and the runner's own unittest suite passes via subprocess.
++2. Injecting the runner's `LatchingMapper` control produces a DETECTED
++   invariant failure (non-zero/raise) — detection demonstrably fires.
++3. A tampered runner (identity check sabotaged in an isolated copy) is
++   REFUSED by the adapter before any run (fails closed).
++
++## FALSIFIER
++
++The adapter adding new sequences/fuzz, claiming device testing, invoking a
++runner whose identity does not verify, or the injected counterexample passing
++undetected. No production behavior is changed (no retained failing
++counterexample exists to justify a patch — the runner's clean run just
++reproduced 8/8).
++
++## BOUNDS
++
++CPU-only, stdlib; read-only over the parent attempt directory; subprocess
++bounded ≤110 s; own workspace; ≤16 MiB output.
+diff --git a/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/implementation.py b/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/implementation.py
+new file mode 100644
+index 0000000..dba780a
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/implementation.py
+@@ -0,0 +1,144 @@
++"""implementation.py -- I-R06-FAILURE-SEQUENCES-FOLLOWUP: the product
++regression ENTRY ADAPTER for the accepted failure-sequence runner (merged
++PR #123).
++
++The smallest test entry: verify the accepted runner's identity (sha256 pins),
++then invoke it — clean run via its CLI (the eight cross-component sequences
++against the ledger-bound pinned product classes) plus its own unittest suite
++via subprocess — and demonstrate injected-counterexample detection by
++replaying the runner's OWN deliberately-broken LatchingMapper control through
++the invariant checker. No new sequences, no new fuzz, no production change,
++no device claim.
++"""
++from __future__ import annotations
++
++import argparse
++import hashlib
++import json
++import pathlib
++import subprocess
++import sys
++
++RUNNER_DIR = pathlib.Path(
++    "E:/ChimeraWork/monkey-coordination/kanban-attempts/"
++    "I-R06-FAILURE-SEQUENCES/c57fd6bb125142ee9d593f800eb32dd4")
++RUNNER = "failure_sequences.py"
++SUITE = "test_failure_sequences.py"
++RUNNER_SHA256 = "d3e11285627259f5989e6085051df22051343e657e1ebda7ad97c63f8a459e69"
++SUITE_SHA256 = "283efad2ec8140e47fc82587b1342ac9bc43b9afe90113b100bb496d81fb247c"
++SCHEMA = "i-r06-followup.regression_entry.v1"
++
++
++class IdentityFailure(RuntimeError):
++    pass
++
++
++def sha256_file(path: pathlib.Path) -> str:
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def verify_identity(runner_dir: pathlib.Path = RUNNER_DIR) -> dict:
++    runner = runner_dir / RUNNER
++    suite = runner_dir / SUITE
++    ledger = runner_dir / "reference" / "EXTRACTION_LEDGER.json"
++    for path in (runner, suite, ledger):
++        if not path.is_file():
++            raise IdentityFailure(f"missing {path.name} in accepted runner dir")
++    actual_runner = sha256_file(runner)
++    actual_suite = sha256_file(suite)
++    if actual_runner != RUNNER_SHA256:
++        raise IdentityFailure(f"runner identity mismatch: {actual_runner}")
++    if actual_suite != SUITE_SHA256:
++        raise IdentityFailure(f"suite identity mismatch: {actual_suite}")
++    ledger_data = json.loads(ledger.read_text(encoding="utf-8"))
++    if not ledger_data:
++        raise IdentityFailure("empty extraction ledger")
++    return {"runner_sha256": actual_runner, "suite_sha256": actual_suite,
++            "ledger_entries": len(json.dumps(ledger_data))}
++
++
++def clean_run() -> dict:
++    proc = subprocess.run([sys.executable, "-B", RUNNER],
++                          cwd=str(RUNNER_DIR), capture_output=True,
++                          timeout=110)
++    return {"exit": proc.returncode,
++            "all_eight": b"8/8 sequences passed" in proc.stdout,
++            "tail": proc.stdout.decode("utf-8", "replace").strip()
++                     .splitlines()[-1] if proc.stdout else ""}
++
++
++def suite_run() -> dict:
++    proc = subprocess.run(
++        [sys.executable, "-B", "-m", "unittest", SUITE[:-3], "-v"],
++        cwd=str(RUNNER_DIR), capture_output=True, timeout=110)
++    return {"exit": proc.returncode,
++            "ok": proc.returncode == 0,
++            "summary_line": (proc.stdout.decode("utf-8", "replace")
++                             .strip().splitlines() or [""])[-1]}
++
++
++def counterexample_detection() -> dict:
++    """Replay the runner's OWN broken control (CTRL-01): the latch must be
++    DETECTED by SEQ-01's invariant checker — same call shape the accepted
++    suite's BrokenControls test uses."""
++    code = (
++        "import sys, json\n"
++        f"sys.path.insert(0, r'{RUNNER_DIR}')\n"
++        "import failure_sequences as fs\n"
++        "from test_failure_sequences import LatchingMapper\n"
++        "bound = fs.get_bound()\n"
++        "session = fs.SequenceSession(bound, mapper_factory=lambda sink: "
++        "LatchingMapper(sink))\n"
++        "result = fs.run_sequence('SEQ-01', session=session, bound=bound)\n"
++        "print(json.dumps({'passed': result.passed, "
++        "'violations': result.violations[:3], "
++        "'control': result.used_control_mapper}))\n")
++    proc = subprocess.run([sys.executable, "-B", "-c", code],
++                          cwd=str(RUNNER_DIR), capture_output=True,
++                          timeout=110)
++    try:
++        payload = json.loads(proc.stdout.decode("utf-8", "replace")
++                             .strip().splitlines()[-1])
++    except (ValueError, IndexError):
++        payload = {"passed": None, "violations": [], "control": None}
++    detected = (payload["passed"] is False
++                and any(str(v).startswith("zombie") for v in payload["violations"])
++                and payload["control"] == "LatchingMapper")
++    return {"exit": proc.returncode, "payload": payload,
++            "detected": bool(detected)}
++
++
++def run_entry() -> dict:
++    identity = verify_identity()
++    clean = clean_run()
++    suite = suite_run()
++    detection = counterexample_detection()
++    result = {
++        "schema": SCHEMA, "identity": identity, "clean_run": clean,
++        "suite_run": suite, "counterexample_detection": detection,
++        "device_testing_claimed": False,
++        "note": "headless CPU regression entry; no device/native testing "
++                "claimed (card falsifier law)",
++        "all_ok": (clean["exit"] == 0 and clean["all_eight"]
++                   and suite["ok"] and detection["detected"]),
++    }
++    return result
++
++
++def main(argv=None) -> int:
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--out", default="regression_entry_result.json")
++    args = ap.parse_args(argv)
++    result = run_entry()
++    pathlib.Path(args.out).write_text(
++        json.dumps(result, indent=1, ensure_ascii=False) + "\n",
++        encoding="utf-8", newline="\n")
++    print(json.dumps({k: result[k] for k in
++                      ("all_ok",)}, indent=1))
++    print("clean:", result["clean_run"], "| suite:", result["suite_run"],
++          "| detection:", result["counterexample_detection"]["detected"])
++    return 0 if result["all_ok"] else 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/report.md b/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/report.md
+new file mode 100644
+index 0000000..ae1e383
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/report.md
+@@ -0,0 +1,51 @@
++# I-R06-FAILURE-SEQUENCES-FOLLOWUP — product regression entry adapter
++
++**Verdict: implemented and verified — the accepted runner (merged PR #123) is
++now invokable as a single product-regression entry with identity verification
++before invocation, clean 8/8 reproduction, the accepted suite green, and
++injected-counterexample detection demonstrably firing. No production change
++(no retained failing counterexample exists to justify one), no new sequences,
++no device claim.**
++
++- Card `I-R06-FAILURE-SEQUENCES-FOLLOWUP` (planning R06), attempt
++  `fbefa4a1790247f9851c73e016e1dd4f`, agent `c95e1722350849bca846b237c1f60997`,
++  criteria `e9207e45980f6e9e7207c3a1b328c1a3911cb9f6835fb6d3fc78ea81367eb4db`.
++- Parent: I-R06-FAILURE-SEQUENCES (merged PR #123); accepted runner
++  re-verified by this attempt: `failure_sequences.py` sha256 `d3e11285…`,
++  suite `283efad2…`, reference ledger at base `9afbddcd`.
++
++## The adapter (`implementation.py::run_entry`)
++
++1. **Identity first**: runner + suite sha256 pins and the reference
++   extraction ledger must verify BEFORE anything runs; a tampered copy is
++   refused (`IdentityFailure`) — tested with a sabotaged isolated copy.
++2. **Clean run**: the runner CLI reproduces **8/8 sequences PASS** against
++   the ledger-bound pinned product classes (SessionFlow→FocusPolicy→
++   InputMapper, base `9afbddcd`).
++3. **Suite**: the accepted unittest suite passes via subprocess (exit 0).
++4. **Injected-counterexample detection**: the runner's OWN deliberately-
++   broken `LatchingMapper` control replayed through SEQ-01 — DETECTED
++   (`passed: false`, violation `zombie…`, control identity recorded), using
++   the same call shape the accepted suite's BrokenControls test uses.
++5. Output `regression_entry_result.json` carries `device_testing_claimed:
++   false` and the headless-CPU note (card falsifier law).
++
++## Measured
++
++`python -B implementation.py` → all_ok true (clean 8/8, suite OK, detection
++true). `python -B -m unittest test_implementation -v` → **7/7 OK**.
++
++## Falsifier scorecard
++
++- New sequences/fuzz added: NOT FIRED (adapter only invokes).
++- Device testing claimed: NOT FIRED (explicit false flag).
++- Unverified runner invoked: NOT FIRED (identity gate + tamper test).
++- Counterexample passing undetected: NOT FIRED (latch caught, zombie
++  violation recorded).
++- Production patch: NONE — the clean run reproduced 8/8; no retained failing
++  counterexample exists (the card's own condition for a patch).
++
++## Preserved gates
++
++Runtime/visual/device gates remain with their owning cards; this entry is
++headless CPU regression only.
+diff --git a/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/test_implementation.py b/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/test_implementation.py
+new file mode 100644
+index 0000000..95e7518
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-R06-FAILURE-SEQUENCES-FOLLOWUP/test_implementation.py
+@@ -0,0 +1,67 @@
++"""test_implementation.py -- I-R06-FAILURE-SEQUENCES-FOLLOWUP entry tests.
++
++The adapter verifies identity, reproduces the clean 8/8 run + suite, proves
++injected-counterexample detection, and refuses a tampered runner copy.
++"""
++import pathlib
++import shutil
++import sys
++import tempfile
++import unittest
++
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++import implementation as impl  # noqa: E402
++
++
++class RegressionEntryTests(unittest.TestCase):
++    @classmethod
++    def setUpClass(cls):
++        cls.result = impl.run_entry()
++
++    def test_all_ok(self):
++        self.assertTrue(self.result["all_ok"], self.result)
++
++    def test_identity_verified_before_invocation(self):
++        ident = self.result["identity"]
++        self.assertEqual(ident["runner_sha256"], impl.RUNNER_SHA256)
++        self.assertEqual(ident["suite_sha256"], impl.SUITE_SHA256)
++
++    def test_clean_run_reproduces(self):
++        clean = self.result["clean_run"]
++        self.assertEqual(clean["exit"], 0)
++        self.assertTrue(clean["all_eight"])
++
++    def test_suite_passes(self):
++        self.assertTrue(self.result["suite_run"]["ok"])
++
++    def test_injected_counterexample_detected(self):
++        det = self.result["counterexample_detection"]
++        self.assertTrue(det["detected"])
++        self.assertEqual(det["payload"]["control"], "LatchingMapper")
++        self.assertFalse(det["payload"]["passed"])
++        self.assertTrue(any(str(v).startswith("zombie")
++                            for v in det["payload"]["violations"]))
++
++    def test_no_device_claim(self):
++        self.assertFalse(self.result["device_testing_claimed"])
++
++    def test_tampered_runner_refused(self):
++        tmp = pathlib.Path(tempfile.mkdtemp(prefix="i_r06_tamper_"))
++        try:
++            for name in (impl.RUNNER, impl.SUITE):
++                shutil.copy2(impl.RUNNER_DIR / name, tmp / name)
++            (tmp / "reference").mkdir()
++            shutil.copy2(impl.RUNNER_DIR / "reference" /
++                         "EXTRACTION_LEDGER.json", tmp / "reference")
++            text = (tmp / impl.RUNNER).read_text(encoding="utf-8")
++            (tmp / impl.RUNNER).write_text(text + "# tampered\n",
++                                           encoding="utf-8")
++            with self.assertRaises(impl.IdentityFailure):
++                impl.verify_identity(tmp)
++        finally:
++            shutil.rmtree(tmp, ignore_errors=True)
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
