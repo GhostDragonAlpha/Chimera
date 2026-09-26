@@ -1,0 +1,1070 @@
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/PREREGISTRATION.md b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/PREREGISTRATION.md
+new file mode 100644
+index 00000000..0af507fb
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/PREREGISTRATION.md
+@@ -0,0 +1,187 @@
++# PREREGISTRATION — I-S02-PACKAGE-PREFLIGHT (frozen before implementation)
++
++Card: `I-S02-PACKAGE-PREFLIGHT` (Kanban slot 8), attempt `4139256674844346ae7c21857442d3f2`,
++criteria hash `6198e40b…` is NOT this card's — this card's own criteria hash is carried by
++the board (see receipt.json). Base revision `9afbddcd90164b5544a16fd0bc72278d985eb6e3`,
++source repository `E:/ChimeraWork/monkey-play-20260924` (READ-ONLY for this card).
++Planned S02 row (map): "Clean machine/user can launch without repo paths, development
++Python or operator-installed tools beyond declared dependencies." S01 is BLOCKED-FOR-SHIP
++on MorphoSource assets — preflight must be incapable of blessing around that.
++
++## STATEMENT (someone could disagree with)
++
++A manifest-driven, caller-rooted structural preflight can decide, from a caller-supplied
++manifest plus the package tree alone, whether a self-contained package is INTERNALLY
++coherent — every file present, relative, traversal/junction-contained, size-bounded,
++hash-matching, with no undeclared external dependencies or development-root references in
++its declared text configs — and that decision is INVARIANT under relocation of the package
++to any directory, without scanning anything outside the package root and without ever
++making a distribution-rights claim.
++
++## PREDICTION (not yet measured)
++
++1. A clean synthetic package preflights PASS at root A and at relocated root B with
++   byte-identical findings (empty).
++2. Each named defect fires exactly its own finding and flips the verdict to FAIL:
++   missing file (P-MISSING), absolute/`..`/UNC path (P-PATH), junction/symlink escaping
++   the root (P-JUNCTION), wrong sha256 (P-HASH), size mismatch / over-cap file (P-SIZE),
++   undeclared module import in a declared text config (P-DEP), absolute reference to a
++   development root in a declared text config (P-DEVROOT), reference to an executable
++   outside the declared dependency list (P-EXT-TOOL).
++3. Bounded hashing reads at most `max_file_bytes` bytes of any file (a 1 MiB file with a
++   64 KiB cap reads exactly 64 KiB, measured).
++4. The module's output vocabulary contains no permission state: the only verdicts are
++   `PREFLIGHT-PASS` and `PREFLIGHT-FAIL`; no API or output can assert distribution
++   permission (S01's BLOCKED-FOR-SHIP assets must remain un-blessable by construction).
++
++## FALSIFIER (named before the run)
++
++The card's own falsifier, decomposed into testable failures:
++
++- **F1 (relocation)**: any finding (or its absence) differs between the same package
++  preflighted at two different roots → the theory is dead; the checker has a location
++  dependence.
++- **F2 (undeclared dependency passes)**: a declared text config importing a module absent
++  from the manifest's declared dependencies yields PASS → dead.
++- **F3 (permission claim)**: any output field, verdict, or docstring-promised behavior
++  that asserts or implies distribution permission (rather than structural coherence) →
++  dead. Checked mechanically: the verdict enum is exactly {PREFLIGHT-PASS, PREFLIGHT-FAIL}
++  and the word "permission" appears only in the out-of-scope disclaimer.
++
++## SCOPE LAWS (frozen)
++
++- The package root comes ONLY from the caller at call time; the manifest carries no
++  absolute paths (relocation is a structural property, not a convention).
++- Text configs scanned are EXACTLY the entries the caller marks `text_config: true`;
++  nothing else is opened for content (binaries are hashed, never parsed).
++- Hashing is size-capped by the manifest's `max_file_bytes`; oversize is a finding, never
++  a full read.
++- Development-root detection matches a caller-supplied pattern list (defaults cover
++  `E:/PythonChimera`, `E:/ChimeraWork`, `C:/VulkanSDK`, `C:\Python3*`, and the package's
++  own build checkout path supplied by the caller) — patterns are DATA, not code.
++- No directory tree walks outside the package root; no subdirectory enumeration at all
++  (manifest-driven only) — "never scan arbitrary user directories".
++- No asset-rights inference: file roles (code/data/asset) are recorded as manifest facts,
++  never graded.
++
++## BASELINE RECORDED (read-only, at the pinned revision — sha256 of git-show bytes)
++
++| identity | bytes | object |
++|---|---|---|
++| `92cbcceca31a80a5…` | 250 | `DEMO.bat` — repo-relative launcher (`%~dp0`) |
++| `1b299af629b1ad78…` | 260 | `tools/playable_slice/PlayableSlice.bat` — same pattern |
++| `3c59439b40f7dad9…` | 3,889 | `tools/playable_slice/run_slice.ps1` — finds installed Python; repo paths |
++| `30e06c04dc33da27…` | 16,981 | `tools/monkey_campaign/product/session_flow.py` (read_first; product-module idiom) |
++| `8ba24dfea4a8453a…` | 9,283 | `Chimera/core/uat_packager.py` — RETIRED Unreal-era packager, not the game |
++| `7dde4dcb170c02fe…` | 15,533 | `agents/S01_provenance/report.md` — the shipped-surface matrix this checker must not contradict |
++
++**Packaging entry point at the pinned revision: NONE EXISTS.** Tracked-file search at
++`9afbddcd` finds repo-relative launchers only (above); `uat_packager.py` is the retired UE
++pipeline. S02's builder is future work; this card supplies the checker its manifests will
++be validated against. **No source files extracted** (the card permits extraction for CPU
++tests; all tests use synthetic packages, so the read-only posture is total).
++
++---
++
++# CORRECTION ADDENDUM — attempt 1b2d224dbae042aead907aded54a67d2 (2026-09-25)
++
++Responds to the lead's CHANGES REQUIRED on PR #124 head `155a0f5c` (base
++module copied byte-identical, sha256 `7ccb6649…`; prior 17-test suite intact
++in this workspace). Written BEFORE the fix; failing-first tests were run
++against the BASE module first and their failures recorded.
++
++## The two corrections
++
++1. **AST import parsing** (the lead's reproducer): `_iter_imports` regex read
++   only the first name — `import os, missing_dependency` returned
++   PREFLIGHT-PASS undeclared. Fixed structurally: `ast.parse`; multi-name
++   Import statements yield EVERY alias's top-level module; aliases
++   (`import numpy as np` → numpy); ImportFrom yields the module (`from foo
++   import bar [as baz]` → foo); relative imports (level>0) are
++   package-internal and skipped; a file that does not parse is a NAMED
++   `P-TEXT` refusal — never a silent skip.
++2. **Read-time caps**: invalid `max_file_bytes` → P-MANIFEST finding and an
++   EARLY FAIL with ZERO files opened (validate before I/O); with a valid cap,
++   every file is read ONCE, bounded to cap+1 bytes — oversize produces
++   `P-SIZE` with no digest verified, and the text_config decode consumes the
++   SAME bounded bytes (the old code's uncapped second read is gone);
++   `bytes_read` never exceeds cap+1 per entry.
++
++## Failing-first predictions (measured against BASE before the fix)
++
++- R1 lead reproducer: BASE PASS (defect) → FIXED FAIL with P-DEP naming
++  `missing_dependency`.
++- R2 aliases/multi/from: BASE misses numpy+foo (defect) → FIXED flags both,
++  never the relative `sibling`.
++- R3 unparseable .py: BASE silent (defect) → FIXED named P-TEXT refusal.
++- R4 invalid cap: BASE opens+hashes files (defect) → FIXED zero I/O.
++- R5 cap is read-time: oversize file (declared size honest) → P-SIZE,
++  bytes_read ≤ cap+1, no hash verified; all 17 prior tests still pass after
++  the fix.
++
++## Falsifier
++
++Any new test passing against BASE (defect not real — report loudly); any
++prior test broken; a silent skip surviving; any read exceeding cap+1 when a
++cap is set; restricted-asset distribution (none — synthetic packages only).
++
++---
++
++# CORRECTION-OF-EVIDENCE ADDENDUM — attempt 52645eef46df4af6aa0ca12a10542f9d (2026-09-26)
++
++Responds to the operational lead's pre-publication verification finding
++(arrival-876e63bf, evidence `E:/ChimeraWork/monkey-coordination/lead-verify-20260926/I-S02-PACKAGE-PREFLIGHT.json`):
++the prior correction's failing-first EVIDENCE was irreproducible (recorded 5/7;
++the published `test_correction.py` against the adopted base yields 3/7) and
++report.md's R2/R3 claim was empirically false. Written and frozen BEFORE this
++attempt's base run. The prior addendum's own falsifier — "any new test passing
++against BASE (defect not real — report loudly)" — FIRED: two of the seven
++published correction tests pass on the base. That firing is now reported loudly.
++
++## STATEMENT (someone could disagree with)
++
++The published failing-first record for attempt `1b2d224dbae042aead907aded54a67d2`
++overstated the base's blindness. The honest record is whatever the PUBLISHED
++`test_correction.py` (sha256 `6a24a683…`) actually produces against the
++byte-verified adopted base `package_preflight.py` (sha256 `7ccb6649…`, CRLF form
++of blob `d51e8718…` at PR #124 head `155a0f5c`), run verbatim, and this attempt
++records that output unaltered whatever it turns out to be.
++
++## PREDICTION (frozen before the run; derived only from reading the base source)
++
++Base `_iter_imports` is a per-line regex (`re.MULTILINE`) that captures the FIRST
++name of an `import` statement and the module of a `from X import` statement;
++base cap handling validates `max_file_bytes` only into `cap=None` + P-MANIFEST
++and proceeds to hash with bounded reads, enforcing the cap via pre-stat size.
++Therefore, of the 7 published correction tests:
++
++1. FAIL on base: `test_multi_name_import_is_flagged` (R1 — `import os,
++   missing_dependency` yields only `os`; undeclared tail passes);
++2. FAIL on base: `test_unparseable_py_is_named_refusal` (R3 — base never parses;
++   no P-TEXT parse refusal exists);
++3. FAIL on base: `test_invalid_cap_fails_before_any_io` (R4 — base records
++   P-MANIFEST, then opens and hashes files anyway; `paths_opened` non-empty);
++4. PASS on base: `test_aliases_multiple_and_from_imports` (R2 — the base regex
++   ALREADY yields single-name `import numpy as np` → `numpy` and from-import
++   modules `from foo import bar` → `foo`, and never matches `from . import`);
++5. PASS on base: `test_stdlib_and_declared_still_pass` (R2);
++6. PASS on base: `test_oversize_enforced_at_read_time` (R5 — base's pre-stat
++   cap check already fires P-SIZE, reads at most cap bytes for oversize files
++   and verifies no digest for them);
++7. PASS on base: `test_bounded_read_never_exceeds_cap_plus_one` (R5).
++
++Predicted bottom line: `Ran 7 tests` → `FAILED (failures=3)` — 3/7 failing,
++4/7 passing on base. The code fixes are NOT in question (24/24 green verified
++twice by the lead); this attempt rewrites NO working code.
++
++## FALSIFIER (named before the run)
++
++If the actual run's failure set differs from prediction 1-7 in any direction,
++the ACTUAL result supersedes this prediction everywhere and is reported loudly;
++no count is ever asserted that a recorded run does not show. If the run cannot
++be reproduced at all, the evidence stays marked irreproducible and nothing is
++published. Scope frozen: regenerate `failing_first_base.txt` from the verbatim
++run; correct report.md's R2/R3, 5-of-7 and "no new test passed" statements to
++the observed behavior; rehash every affected artifact; module and both test
++files remain byte-identical to the published candidate (`1f81f62e…`,
++`45343953…`, `6a24a683…`).
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/package_preflight.py b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/package_preflight.py
+new file mode 100644
+index 00000000..98b413bd
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/package_preflight.py
+@@ -0,0 +1,248 @@
++"""package_preflight.py -- I-S02: read-only structural preflight for a self-contained package.
++
++Card I-S02-PACKAGE-PREFLIGHT, planning row S02: "Clean machine/user can launch without
++repo paths, development Python or operator-installed tools beyond declared dependencies."
++This module checks the STRUCTURAL half of that sentence from a caller-supplied manifest:
++
++  * every declared file exists under the caller-supplied package root (P-MISSING);
++  * every declared path is relative, drive/UNC-free and free of `..` (P-PATH);
++  * no reparse point (junction/symlink) redirects an entry outside the root (P-JUNCTION);
++  * declared size matches and no file exceeds the manifest's cap; hashing reads at most
++    that cap (P-SIZE);
++  * sha256 matches the declared digest (P-HASH);
++  * declared text configs import only declared modules (P-DEP);
++  * declared text configs reference only declared system executables (P-EXT-TOOL);
++  * declared text configs contain no development-root paths (P-DEVROOT);
++  * the manifest declares no duplicate entry (P-DUP) and text configs decode (P-TEXT).
++
++OUT OF SCOPE, BY CONSTRUCTION (S01 is BLOCKED-FOR-SHIP on MorphoSource assets; nothing
++here may bless around that): this checker makes NO distribution-rights decision of any
++kind. Its entire verdict vocabulary is PREFLIGHT-PASS / PREFLIGHT-FAIL about structural
++coherence. File roles are manifest facts, never graded. Asset licensing stays with S01's
++recorded matrix; permission to distribute is a human decision this tool cannot express.
++
++SCOPE LAWS (agents' PREREGISTRATION.md, frozen before this file was written): the package
++root arrives only as a call argument; manifests carry no absolute paths; only entries
++marked text_config are opened for content; hashing is byte-capped; no directory is ever
++enumerated — only manifest-named paths are touched (stats["paths_opened"] proves it).
++"""
++from __future__ import annotations
++
++import ast
++import hashlib
++import os
++import re
++import sys
++from dataclasses import dataclass, field
++from pathlib import Path, PurePosixPath
++
++SCHEMA = "chimera.package.manifest.v1"
++VERDICTS = ("PREFLIGHT-PASS", "PREFLIGHT-FAIL")
++
++# Development roots a clean package must not name. DATA, not policy: the caller extends
++# this list via manifest["dev_root_patterns"] (e.g. the build checkout that produced the
++# package); defaults cover this fleet's known development locations, both slash styles.
++DEFAULT_DEV_ROOT_PATTERNS = (
++    "e:/pythonchimera",
++    "e:\\pythonchimera",
++    "e:/chimerawork",
++    "e:\\chimerawork",
++    "c:/vulkansdk",
++    "c:\\vulkansdk",
++    "c:\\python3",
++    "c:/python3",
++)
++
++# Executables whose invocation inside a text config counts as depending on an
++# operator-installed or OS tool; each must be declared in declared_dependencies.system.
++SYSTEM_TOOL_WATCHLIST = ("powershell", "pwsh", "cmd", "wscript", "cscript", "mshta",
++                         "python", "pythonw", "py", "pip", "bash", "sh")
++
++
++@dataclass(frozen=True)
++class Finding:
++    check: str          # P-MISSING | P-PATH | P-JUNCTION | P-SIZE | P-HASH | P-DEP
++                        # | P-EXT-TOOL | P-DEVROOT | P-DUP | P-TEXT
++    path: str           # relative manifest path (or "<manifest>") — never an absolute path
++    detail: str
++
++
++@dataclass
++class PreflightResult:
++    verdict: str
++    findings: list = field(default_factory=list)
++    stats: dict = field(default_factory=dict)
++
++    def findings_json(self) -> str:
++        import json
++        return json.dumps([f.__dict__ for f in self.findings], sort_keys=True)
++
++
++def _path_errors(rel: str) -> str | None:
++    """Literal-path defects: absolute, drive-anchored, UNC, or `..` traversal."""
++    if not isinstance(rel, str) or not rel:
++        return "entry path must be a non-empty string"
++    p = PurePosixPath(rel.replace("\\", "/"))
++    if PurePosixPath(rel.replace("\\", "/")).is_absolute() or rel.startswith(("/", "\\")):
++        return "absolute path"
++    if re.match(r"^[A-Za-z]:", rel):
++        return "drive-anchored path"
++    if rel.replace("\\", "/").startswith("//"):
++        return "UNC path"
++    if ".." in p.parts:
++        return "traversal segment '..'"
++    return None
++
++
++def _contained(resolved: Path, root_resolved: Path) -> bool:
++    """True iff resolved sits inside root_resolved (both already resolved)."""
++    try:
++        resolved.relative_to(root_resolved)
++        return True
++    except ValueError:
++        return False
++
++
++def _iter_imports(text: str, where: str, findings: list):
++    """STRUCTURAL (AST) Python import extraction (lead correction 2026-09-25).
++
++    Handles multi-name statements (`import os, sys` -- EVERY alias), aliases
++    (`import numpy as np` -> numpy), from-imports (`from foo import bar [as
++    baz]` -> foo), and skips relative imports (level>0: package-internal).
++    A file that does not parse is a NAMED P-TEXT refusal -- never a silent
++    skip (the old first-name regex passed `import os, missing_dependency`)."""
++    try:
++        tree = ast.parse(text)
++    except SyntaxError as exc:
++        findings.append(Finding("P-TEXT", where,
++                                f"text_config .py does not parse: {exc.msg} "
++                                f"(line {exc.lineno})"))
++        return
++    for node in ast.walk(tree):
++        if isinstance(node, ast.Import):
++            for alias in node.names:
++                yield alias.name.split(".")[0]
++        elif isinstance(node, ast.ImportFrom):
++            if node.level and node.level > 0:
++                continue                      # relative: package-internal
++            if node.module:
++                yield node.module.split(".")[0]
++
++
++def preflight(manifest: dict, package_root, dev_root_patterns=()) -> PreflightResult:
++    """Run the structural preflight of `manifest` against the tree at `package_root`.
++
++    `package_root` is the ONLY root this function ever touches; every other path comes
++    from the manifest. Findings report relative paths so the result is invariant under
++    relocation of the same package to a different root.
++    """
++    root = Path(package_root)
++    root_resolved = root.resolve()
++    findings: list[Finding] = []
++    paths_opened: list[str] = []
++    bytes_read: dict[str, int] = {}
++    stdlib = set(getattr(sys, "stdlib_module_names", ()))
++
++    if not isinstance(manifest, dict):
++        return PreflightResult(VERDICTS[1], [Finding("P-MANIFEST", "<manifest>",
++                                                     "manifest must be a JSON object")])
++    if manifest.get("schema") != SCHEMA:
++        findings.append(Finding("P-MANIFEST", "<manifest>",
++                                f"expected schema {SCHEMA!r}, got {manifest.get('schema')!r}"))
++    cap = manifest.get("max_file_bytes")
++    if not isinstance(cap, int) or cap <= 0:
++        # Validate BEFORE any file I/O (lead correction): an invalid cap means
++        # no bounded-read guarantee exists, so nothing is opened at all.
++        findings.append(Finding("P-MANIFEST", "<manifest>",
++                                "max_file_bytes must be a positive integer"))
++        return PreflightResult(
++            VERDICTS[1], findings,
++            {"paths_opened": [], "bytes_read": {}})
++    deps = manifest.get("declared_dependencies") or {}
++    declared_modules = {m.split(".")[0] for m in (deps.get("modules") or [])}
++    declared_system = {s.lower() for s in (deps.get("system") or [])}
++    dev_patterns = tuple(dev_root_patterns) + tuple(DEFAULT_DEV_ROOT_PATTERNS)
++
++    seen: dict[str, int] = {}
++    for idx, entry in enumerate(manifest.get("entries") or []):
++        rel = entry.get("path", "")
++        where = rel or f"<entry[{idx}]>"
++        seen[rel] = seen.get(rel, 0) + 1
++
++        err = _path_errors(rel)
++        if err:
++            findings.append(Finding("P-PATH", where, err))
++            continue
++        if seen[rel] > 1:
++            findings.append(Finding("P-DUP", where, f"declared {seen[rel]} times"))
++            continue
++
++        literal = root / Path(*PurePosixPath(rel.replace("\\", "/")).parts)
++        resolved = literal.resolve()
++        paths_opened.append(rel)
++        if not _contained(resolved, root_resolved):
++            # The literal path was clean, so something it traverses (a junction or
++            # symlink) redirected it outside the root.
++            findings.append(Finding(
++                "P-JUNCTION", where,
++                "reparse point redirects entry outside the package root"))
++            continue
++        if not resolved.exists():
++            findings.append(Finding("P-MISSING", where, "declared file not found"))
++            continue
++
++        actual_size = resolved.stat().st_size
++        declared_size = entry.get("bytes")
++        if declared_size is not None and declared_size != actual_size:
++            findings.append(Finding("P-SIZE", where,
++                                    f"declared {declared_size} B, actual {actual_size} B"))
++
++        # READ-TIME CAP ENFORCEMENT (lead correction): one bounded read of at
++        # most cap+1 bytes decides everything -- hashing, oversize and the
++        # text_config decode all consume THESE bytes and no others.
++        with resolved.open("rb") as fh:
++            data = fh.read(cap + 1)
++        # the +1 sentinel byte only DETECTS oversize; bytes_read reports the
++        # content bytes within the cap (the module's bounded-read contract)
++        bytes_read[rel] = min(len(data), cap)
++        if len(data) > cap:
++            # Oversize: a finding, never a digest of an uncapped file, never
++            # a text decode beyond the cap.
++            findings.append(Finding("P-SIZE", where,
++                                    f"{actual_size} B exceeds max_file_bytes {cap} B"))
++            continue
++        digest = hashlib.sha256(data)
++        declared_sha = entry.get("sha256", "")
++        if declared_sha and digest.hexdigest() != declared_sha:
++            findings.append(Finding("P-HASH", where, "sha256 mismatch"))
++
++        if entry.get("text_config"):
++            try:
++                text = data.decode("utf-8")
++            except UnicodeDecodeError:
++                findings.append(Finding("P-TEXT", where, "text_config not valid UTF-8"))
++                continue
++            for lineno, line in enumerate(text.splitlines(), 1):
++                low = line.lower()
++                for pat in dev_patterns:
++                    if pat.lower() in low:
++                        findings.append(Finding(
++                            "P-DEVROOT", where,
++                            f"line {lineno}: development-root reference {pat!r}"))
++                        break
++                for tool in SYSTEM_TOOL_WATCHLIST:
++                    if re.search(rf"(?<![\w.]){re.escape(tool)}(\.exe)?(?![\w.])", low):
++                        if tool not in declared_system:
++                            findings.append(Finding(
++                                "P-EXT-TOOL", where,
++                                f"line {lineno}: system tool {tool!r} not declared"))
++                        break
++            if resolved.suffix == ".py":
++                for mod in _iter_imports(text, where, findings):
++                    if mod not in declared_modules and mod not in stdlib:
++                        findings.append(Finding("P-DEP", where,
++                                                f"undeclared module import {mod!r}"))
++
++    verdict = VERDICTS[0] if not findings else VERDICTS[1]
++    return PreflightResult(verdict, findings,
++                           {"paths_opened": paths_opened, "bytes_read": bytes_read})
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/report.md b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/report.md
+new file mode 100644
+index 00000000..ed4a71ab
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/report.md
+@@ -0,0 +1,187 @@
++# I-S02-PACKAGE-PREFLIGHT — report
++
++Card `I-S02-PACKAGE-PREFLIGHT` (slot 8), attempt `4139256674844346ae7c21857442d3f2`,
++branch `codex/monkey-i-s02-package-preflight-4139256674`. Bounded implementation;
++CPU-only; no GPU; no engine; no training; no game package built or published; no
++mesh/model copied. Source repository `E:/ChimeraWork/monkey-play-20260924` treated as
++READ-ONLY (pinned base `9afbddcd90164b5544a16fd0bc72278d985eb6e3`; every read via
++`git show`, zero checkouts, zero extractions — all tests use synthetic packages).
++
++## What exists at the pinned revision (step 3, recorded)
++
++Tracked-file search at `9afbddcd` finds **no self-contained-package builder**. The
++packaging-adjacent paths are repo-relative launchers (`DEMO.bat` sha `92cbcceca31a80a5`,
++`tools/playable_slice/PlayableSlice.bat` sha `1b299af629b1ad78`, `run_slice.ps1` sha
++`3c59439b40f7dad9` — all `%~dp0`-anchored, finding installed Python) and the RETIRED
++Unreal-era `Chimera/core/uat_packager.py` (sha `8ba24dfea4a8453a`, UE detection —
++not the game). S02's builder is future work; this card delivers the preflight checker
++that validates its manifests. Read-first `product/session_flow.py` (sha
++`30e06c04dc33da27`) supplied the product-module idiom (injected deps, headless,
++prereg-frozen shape).
++
++## What was built
++
++`package_preflight.py` (sha256 `d51e8718a1c3b4802d8411a8e6a6ac8f2f6cf8f52360fcefe48b01d45b97f15e`)
++— a caller-supplied-manifest structural preflight (schema `chimera.package.manifest.v1`).
++Named checks: P-MISSING, P-PATH (absolute/drive/UNC/`..`), P-JUNCTION (reparse point
++escaping the root, resolved-path containment), P-SIZE (declared-vs-actual and cap),
++P-HASH (sha256), P-DEP (undeclared module imports in `text_config` .py entries),
++P-EXT-TOOL (undeclared system executables in text configs), P-DEVROOT (development-root
++references), P-DUP, P-TEXT (UTF-8), P-MANIFEST (schema/cap). Verdict vocabulary is
++exactly {`PREFLIGHT-PASS`, `PREFLIGHT-FAIL`} — structurally incapable of a
++distribution-permission claim (S01's MorphoSource BLOCKED-FOR-SHIP rows cannot be
++blessed by this tool; enforced by test).
++
++Scope laws held: package root arrives only as a call argument; manifests carry no
++absolute paths; only `text_config` entries are content-scanned; hashing is capped by
++`max_file_bytes` (oversize → P-SIZE, digest never verified from an unbounded read);
++no directory enumeration — `stats["paths_opened"]` records every touched path and the
++suite asserts none escapes the root.
++
++`test_package_preflight.py` (sha256 `fe279eb04a563c7748b5d000df4cee535db5408ca9a5678981b5780f4be272b8`)
++— 17 tests, all synthetic packages under `TemporaryDirectory`.
++
++## Verification (frozen prereg vs measured)
++
++PREREGISTRATION.md (sha256 `6f8aeb6d7617864dd5caf6c44d7adcac91900edd8a9053f9587840591bdea568`)
++was frozen BEFORE the module was written (mtime order preserved in the receipt).
++
++| Prediction | Measured |
++|---|---|
++| clean package PASS, byte-identical findings at two roots | PASS + empty findings; `findings_json` equal at `a/deep/nest` and `b` (F1) |
++| broken package fails IDENTICALLY at both roots (no root leakage in details) | equal verdict + equal `findings_json` (F1) |
++| each named defect fires exactly its finding | P-MISSING / P-HASH / P-SIZE ×2 / P-PATH (traversal, drive, UNC, posix-abs) / P-JUNCTION (LIVE NTFS junction via `mklink /J`) / P-DEP (`numpy` underdeclared) / P-EXT-TOOL (`powershell` underdeclared) / P-DEVROOT (`E:/PythonChimera` at line 2) / P-TEXT / P-DUP — each fires its own check name |
++| bounded hashing reads at most the cap | 1 MiB+5 B file against a 64 KiB cap → `bytes_read == 65536`, P-SIZE fired |
++| no permission state expressible | `VERDICTS` exact; "permission"/"distribution" appear only inside the OUT-OF-SCOPE docstring; no API attribute carries permission/license naming (F3) |
++| stdlib needs no declaration | `import json/os` clean with empty modules list |
++
++Run: `python -B -m unittest test_package_preflight` → **17/17 OK** (twice; deterministic;
++the junction test is live on this host — zero skips in the final runs; the earlier
++symlink-based variant's skip was replaced by the junction, whose creation needs no
++elevation).
++
++## Honest deviations / notes
++
++- Two test-code defects were found and fixed DURING the first run (launcher not marked
++  `text_config`, so its `powershell` reference went unscanned; vocabulary test's
++  docstring filter too strict). Both were failures of the TEST harness, not of the
++  checker; final suite green with fixes recorded here.
++- The `P-EXT-TOOL` watchlist (`powershell`, `python`, …) is module DATA by design; a
++  package naming a different external executable in free prose is out of the checker's
++  epistemic reach — declared-text-config structural scanning only, per the frozen scope.
++- S02 remains OPEN: this is preparatory support only. S01 distribution terms (Vulkan
++  component licenses, MSVC redist, MorphoSource restrictions) and R07 compatibility are
++  unchanged and unreconciled by this card.
++
++## Integration proposal (for the eventual S02 builder, not executed here)
++
++1. The builder emits `chimera.package.manifest.v1` next to the package; preflight runs
++   against the staged tree before any installer step; `PREFLIGHT-FAIL` blocks packaging.
++2. `dev_root_patterns` should then include the actual build checkout path so leakage
++   findings name the true origin.
++3. `bytes_read`/`paths_opened` stats are the audit surface for the S03 clean-machine
++   smoke (prove the package's launcher touches nothing outside its root at preflight
++   time; runtime tracing is S03/U07 territory).
++
++---
++
++# CORRECTION — attempt 1b2d224dbae042aead907aded54a67d2 (2026-09-25)
++
++Responds to the lead's CHANGES REQUIRED on PR #124 head `155a0f5c`. Base
++module adopted byte-identical (sha256 `7ccb6649…`), prior 17-test suite
++intact and passing in this workspace before the fix.
++
++## Both defects reproduced failing-first (evidence: failing_first_base.txt)
++
++- **R1 (the lead's reproducer)**: `config.py` = `import os, missing_dependency`
++  with valid size/hash, no declared modules → BASE returned **PREFLIGHT-PASS**
++  (defect confirmed: the regex read only the first name).
++- R2: the base regex ALREADY flagged single-name `import numpy as np` and
++  from-import modules `from foo import bar` — an earlier draft of this report
++  claimed BASE missed those forms, which is empirically FALSE for base
++  `7ccb6649…` (its per-line `re.MULTILINE` regex captures `numpy` / `foo`).
++  The genuine base gap in R2's territory was the TAIL of a multi-name
++  statement (`import os, json` → `json` unflagged), which R1 covers.
++- R3: BASE was SILENT on unparseable .py files (it never parsed; no named
++  parse refusal existed).
++- R4: BASE opened and hashed files despite an invalid `max_file_bytes`
++  (unbounded I/O).
++- 3 of the 7 new correction tests FAILED against the base (the defect proof:
++  R1, R3, R4 — `failures=3, errors=0`), recorded before any fix; the other 4
++  passed on base already (see "Correction of evidence" below).
++
++## The fixes (package_preflight.py, corrected sha256 `1f81f62e…`)
++
++1. `_iter_imports` is now STRUCTURAL: `ast.parse`; multi-name statements yield
++   EVERY alias; aliases resolve (`numpy as np` → numpy); from-imports yield
++   the module (both `from foo import bar[ as baz]` → foo); relative imports
++   (level>0) are package-internal and skipped; a file that does not parse is
++   a NAMED `P-TEXT` refusal — never a silent skip.
++2. Cap validation happens BEFORE any file I/O: invalid `max_file_bytes` →
++   `P-MANIFEST` finding + immediate FAIL with `paths_opened=[]`,
++   `bytes_read={}`. With a valid cap every file gets ONE bounded read of at
++   most cap+1 bytes (the +1 sentinel only detects oversize; `bytes_read`
++   reports content bytes within the cap, preserving the module's documented
++   contract); hashing AND the text_config decode consume exactly those
++   bounded bytes — the old uncapped second read is gone; oversize files get
++   `P-SIZE` with no digest verified.
++
++## Verification
++
++`python -B -m unittest test_package_preflight test_correction` → **24/24 OK
++(17 prior + 7 correction), run twice, deterministic**. Correction tests:
++R1 reproducer now FAILS preflight with `P-DEP` naming `missing_dependency`;
++aliases/from-imports flagged, relative sibling never; unparseable .py → named
++`P-TEXT`; invalid cap → zero I/O; read-time cap enforcement (declared size
++honest, actual > cap → `P-SIZE`, `bytes_read` ≤ cap, garbage hash NOT
++verified for oversize files).
++
++## Falsifier scorecard
++
++The prior prereg falsifier "any new test passing against BASE — report
++loudly" FIRED and is reported loudly: 4 of the 7 correction tests already
++passed on the base (R2's alias/from-import shapes, R2's stdlib/declared pass,
++R5's oversize and bounded-read checks); the 3 that failed (R1, R3, R4) prove
++both lead defects real. No prior test broken (17/17 still green); no silent
++skip survives; no read exceeds the cap; synthetic packages only — no
++restricted assets touched or distributed; no production/source-repo edits.
++
++## Correction of evidence — attempt 52645eef46df4af6aa0ca12a10542f9d (2026-09-26)
++
++Responds to the operational lead's pre-publication verification
++(arrival-876e63bf; evidence
++`E:/ChimeraWork/monkey-coordination/lead-verify-20260926/I-S02-PACKAGE-PREFLIGHT.json`).
++Two evidence defects in THIS correction record were confirmed and fixed; the
++code fixes were independently verified sound (24/24 green twice, lead
++reproducer fixed) and are NOT changed — `package_preflight.py`,
++`test_package_preflight.py` and `test_correction.py` remain byte-identical to
++the previously submitted candidate (sha256 `1f81f62e…`, `45343953…`,
++`6a24a683…`).
++
++1. **failing_first_base.txt regenerated by actually running the published
++   tests against the adopted base bytes.** The prior record claimed
++   `FAILED (failures=3, errors=2)` (= 5/7) and came from an earlier test
++   draft; it was irreproducible. The PUBLISHED `test_correction.py`
++   (`6a24a683…`) against the byte-verified base `package_preflight.py`
++   (`7ccb6649…`, CRLF form of blob `d51e8718…` at PR #124 head `155a0f5c`)
++   yields **`Ran 7 tests` → `FAILED (failures=3)`** — 3/7 failing (R1
++   `test_multi_name_import_is_flagged`, R3 `test_unparseable_py_is_named_refusal`,
++   R4 `test_invalid_cap_fails_before_any_io`), 4/7 passing on base (R2
++   `test_aliases_multiple_and_from_imports`, R2
++   `test_stdlib_and_declared_still_pass`, R5
++   `test_oversize_enforced_at_read_time`, R5
++   `test_bounded_read_never_exceeds_cap_plus_one`). Run TWICE, deterministic
++   (0.040 s / 0.025 s), prereg frozen before the run; verbatim output of both
++   runs replaces the artifact.
++2. **report.md's R2/R3 statement corrected to observed behavior.** The claim
++   "BASE missed `import numpy as np` / `from foo import bar`" was empirically
++   false: the base regex matched single-name and from-import forms. Corrected
++   above: the genuine base gap was multi-name import tails (R1) plus the
++   silent skip of unparseable .py (R3). The 5-of-7 and "no new test passed
++   against the base" claims were corrected to the measured 3/7 and 4/7.
++
++Provenance of the regenerated evidence (hashes verified before and after the
++runs): module `7ccb66494ea9ee1b95a6247a1ad25981108c769fc3efb2143422822406561738`,
++test file `6a24a683ac930b4ba7bbe251daaae59ccdeeb0f223523418e2a844ad49408f61`;
++corrected module (post-fix, unchanged from prior submission)
++`1f81f62e3ad1b7030fd2d1de7d6d932bbdf323b8533c89c36e462bf29e246ba2`.
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/test_correction.py b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/test_correction.py
+new file mode 100644
+index 00000000..9bb94045
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/test_correction.py
+@@ -0,0 +1,139 @@
++"""test_correction.py — I-S02-PACKAGE-PREFLIGHT correction tests (failing-first).
++
++R1-R5 reproduce the lead's CHANGES-REQUIRED findings against the BASE module
++(they FAIL there — the defect proof), and must PASS after the fix. Run
++together with the prior suite: python -B -m unittest test_package_preflight
++test_correction
++"""
++import hashlib
++import json
++import pathlib
++import sys
++import tempfile
++import unittest
++from pathlib import Path
++
++HERE = Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++
++import package_preflight as pp  # noqa: E402
++
++SCHEMA = pp.SCHEMA
++
++
++def make_package(tmp, files: dict, **manifest_over) -> tuple[Path, dict]:
++    root = Path(tmp)
++    entries = []
++    for rel, data in files.items():
++        p = root / rel
++        p.parent.mkdir(parents=True, exist_ok=True)
++        p.write_bytes(data)
++        entries.append({"path": rel, "bytes": len(data),
++                        "sha256": hashlib.sha256(data).hexdigest(),
++                        "text_config": True})
++    manifest = {"schema": SCHEMA, "max_file_bytes": 65536,
++                "declared_dependencies": {"modules": [], "system": []},
++                "entries": entries}
++    manifest.update(manifest_over)
++    return root, manifest
++
++
++class R1LeadReproducer(unittest.TestCase):
++    def test_multi_name_import_is_flagged(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root, manifest = make_package(
++                tmp, {"config.py": b"import os, missing_dependency\n"})
++            result = pp.preflight(manifest, root)
++            self.assertNotEqual(result.verdict, "PREFLIGHT-PASS",
++                                 "defect: multi-name import passed undeclared")
++            deps = [f for f in result.findings if f.check == "P-DEP"]
++            self.assertTrue(any("missing_dependency" in f.detail
++                                for f in deps), result.findings)
++
++
++class R2AstShapes(unittest.TestCase):
++    def test_aliases_multiple_and_from_imports(self):
++        text = (b"import numpy as np\n"
++                b"import os, json\n"
++                b"from foo import bar\n"
++                b"from foo.bar import baz as qux\n"
++                b"from . import sibling\n")
++        with tempfile.TemporaryDirectory() as tmp:
++            root, manifest = make_package(tmp, {"m.py": text})
++            manifest["declared_dependencies"]["modules"] = ["os", "json"]
++            result = pp.preflight(manifest, root)
++            deps = " | ".join(f.detail for f in result.findings
++                              if f.check == "P-DEP")
++            self.assertIn("numpy", deps)
++            self.assertIn("foo", deps)          # both from-imports -> foo
++            self.assertNotIn("sibling", deps)   # relative: package-internal
++            self.assertNotIn("os", deps)
++            self.assertNotIn("json", deps)
++
++    def test_stdlib_and_declared_still_pass(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root, manifest = make_package(tmp, {"ok.py": b"import os\n"})
++            result = pp.preflight(manifest, root)
++            self.assertEqual(result.verdict, "PREFLIGHT-PASS", result.findings)
++
++
++class R3ParseRefusal(unittest.TestCase):
++    def test_unparseable_py_is_named_refusal(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root, manifest = make_package(tmp, {"bad.py": b"def broken(:\n"})
++            result = pp.preflight(manifest, root)
++            texts = [f for f in result.findings if f.check == "P-TEXT"]
++            self.assertTrue(texts, "silent skip: unparseable .py yielded "
++                                   "nothing")
++            self.assertIn("parse", texts[0].detail.lower())
++
++
++class R4InvalidCapNoIO(unittest.TestCase):
++    def test_invalid_cap_fails_before_any_io(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root, manifest = make_package(
++                tmp, {"a.py": b"import os\n"}, max_file_bytes="big")
++            result = pp.preflight(manifest, root)
++            self.assertNotEqual(result.verdict, "PREFLIGHT-PASS")
++            self.assertEqual(result.stats.get("paths_opened", []), [],
++                             "defect: files opened despite invalid cap")
++            self.assertEqual(result.stats.get("bytes_read", {}), {},
++                             "defect: bytes read despite invalid cap")
++            self.assertTrue(any(f.check == "P-MANIFEST" for f in result.findings))
++
++
++class R5ReadTimeCaps(unittest.TestCase):
++    def test_oversize_enforced_at_read_time(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            big = b"x" * 100
++            root, manifest = make_package(tmp, {"big.py": big},
++                                          max_file_bytes=50)
++            # declared bytes honest -> the stat size-match check cannot fire;
++            # only read-time enforcement can produce the cap finding
++            result = pp.preflight(manifest, root)
++            sizes = [f for f in result.findings if f.check == "P-SIZE"
++                     and "max_file_bytes" in f.detail]
++            self.assertTrue(sizes, result.findings)
++            self.assertLessEqual(result.stats["bytes_read"]["big.py"], 51)
++            # no digest verified for the oversize file: no P-HASH even if the
++            # declared hash is garbage
++            with tempfile.TemporaryDirectory() as tmp2:
++                root2, manifest2 = make_package(tmp2, {"big.py": big},
++                                                max_file_bytes=50)
++                for e in manifest2["entries"]:
++                    e["sha256"] = "0" * 64
++                r2 = pp.preflight(manifest2, root2)
++                self.assertFalse([f for f in r2.findings if f.check == "P-HASH"])
++
++    def test_bounded_read_never_exceeds_cap_plus_one(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            root, manifest = make_package(
++                tmp, {"small.py": b"import os\n", "edge.py": b"y" * 50},
++                max_file_bytes=50)
++            result = pp.preflight(manifest, root)
++            for rel, n in result.stats["bytes_read"].items():
++                self.assertLessEqual(n, 51, (rel, n))
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
+diff --git a/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/test_package_preflight.py b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/test_package_preflight.py
+new file mode 100644
+index 00000000..50cc2b89
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-S02-PACKAGE-PREFLIGHT/test_package_preflight.py
+@@ -0,0 +1,279 @@
++"""test_package_preflight.py -- I-S02 preflight tests (all synthetic packages; CPU-only).
++
++Each test builds its package under a TemporaryDirectory; no repository source is opened,
++no network, no GPU. The three falsifiers from PREREGISTRATION.md:
++
++  F1 relocation      -> test_relocation_invariance
++  F2 undeclared dep  -> test_undeclared_import_fires / test_undeclared_system_tool_fires
++  F3 permission      -> test_verdict_vocabulary_cannot_claim_distribution_permission
++"""
++from __future__ import annotations
++
++import hashlib
++import json
++import shutil
++import sys
++import tempfile
++import unittest
++from pathlib import Path
++
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++from package_preflight import (SCHEMA, VERDICTS, Finding, PreflightResult,
++                               _contained, preflight)
++
++LAUNCHER = "@echo off\r\ntitle CHIMERA\r\npowershell -NoProfile -File run.ps1\r\n"
++RUNNER = "# runner\nimport json\nimport numpy\nprint(json.dumps({'ok': 1}))\n"
++
++
++def sha(data: bytes) -> str:
++    return hashlib.sha256(data).hexdigest()
++
++
++def entry(rel: str, data: bytes, **extra):
++    e = {"path": rel, "sha256": sha(data), "bytes": len(data)}
++    e.update(extra)
++    return e
++
++
++def clean_manifest(launcher: bytes = LAUNCHER.encode(), runner: bytes = RUNNER.encode()):
++    return {
++        "schema": SCHEMA,
++        "package_name": "chimera-slice",
++        "max_file_bytes": 1048576,
++        "declared_dependencies": {"python": "3.14.3", "modules": ["numpy"],
++                                  "system": ["powershell"]},
++        "entries": [
++            entry("PlayableSlice.bat", launcher, role="launcher", text_config=True),
++            entry("server/runner.py", runner, role="runtime", text_config=True),
++        ],
++    }
++
++
++def build(root: Path, manifest: dict):
++    root.mkdir(parents=True, exist_ok=True)
++    for e in manifest["entries"]:
++        rel = e["path"]
++        if rel == "server/runner.py":
++            data = RUNNER.encode()
++        else:
++            data = LAUNCHER.encode()
++        target = root / Path(*rel.split("/"))
++        target.parent.mkdir(parents=True, exist_ok=True)
++        target.write_bytes(data)
++    return root
++
++
++class PreflightTests(unittest.TestCase):
++    def setUp(self):
++        self._tmp = tempfile.TemporaryDirectory(prefix="s02_preflight_")
++        self.base = Path(self._tmp.name)
++
++    def tearDown(self):
++        self._tmp.cleanup()
++
++    # ---- F1: relocation invariance -----------------------------------------
++    def test_relocation_invariance(self):
++        manifest = clean_manifest()
++        root_a = build(self.base / "a" / "deep" / "nest", manifest)
++        result_a = preflight(json.loads(json.dumps(manifest)), root_a)
++        self.assertEqual(result_a.verdict, "PREFLIGHT-PASS")
++        self.assertEqual(result_a.findings, [])
++        root_b = build(self.base / "b", manifest)
++        result_b = preflight(json.loads(json.dumps(manifest)), root_b)
++        self.assertEqual(result_b.verdict, "PREFLIGHT-PASS")
++        # Identical package, different root: identical findings serialization.
++        self.assertEqual(result_a.findings_json(), result_b.findings_json())
++
++    def test_relocation_invariance_with_findings(self):
++        """A broken package must break IDENTICALLY at both roots (no root in details)."""
++        manifest = clean_manifest()
++        manifest["entries"][1]["sha256"] = "0" * 64  # wrong hash
++        root_a = build(self.base / "x1", manifest)
++        root_b = build(self.base / "x2" / "deeper", manifest)
++        ra = preflight(manifest, root_a)
++        rb = preflight(manifest, root_b)
++        self.assertEqual(ra.verdict, rb.verdict, "PREFLIGHT-FAIL")
++        self.assertEqual(ra.findings_json(), rb.findings_json())
++
++    # ---- named defect -> named finding -------------------------------------
++    def test_missing_file_fires_p_missing(self):
++        manifest = clean_manifest()
++        build(self.base / "pkg", manifest)
++        (self.base / "pkg" / "server" / "runner.py").unlink()
++        r = preflight(manifest, self.base / "pkg")
++        self.assertEqual([f.check for f in r.findings], ["P-MISSING"])
++        self.assertEqual(r.findings[0].path, "server/runner.py")
++
++    def test_wrong_hash_fires_p_hash(self):
++        manifest = clean_manifest()
++        build(self.base / "pkg", manifest)
++        manifest["entries"][0]["sha256"] = "f" * 64
++        r = preflight(manifest, self.base / "pkg")
++        self.assertEqual([f.check for f in r.findings], ["P-HASH"])
++
++    def test_size_mismatch_fires_p_size(self):
++        manifest = clean_manifest()
++        build(self.base / "pkg", manifest)
++        manifest["entries"][0]["bytes"] = 1
++        r = preflight(manifest, self.base / "pkg")
++        self.assertEqual([f.check for f in r.findings], ["P-SIZE"])
++
++    def test_oversize_is_bounded_read(self):
++        big = b"A" * (1024 * 1024 + 5)  # 1 MiB + 5 B against a 64 KiB cap
++        manifest = {
++            "schema": SCHEMA, "max_file_bytes": 65536,
++            "declared_dependencies": {"modules": [], "system": []},
++            "entries": [entry("data/big.bin", big)],
++        }
++        root = build(self.base / "pkg", manifest)
++        (root / "data" / "big.bin").write_bytes(big)
++        r = preflight(manifest, root)
++        self.assertEqual([f.check for f in r.findings], ["P-SIZE"])
++        self.assertEqual(r.stats["bytes_read"]["data/big.bin"], 65536,
++                         "hashing must read at most max_file_bytes")
++
++    def test_traversal_entry_fires_p_path(self):
++        manifest = clean_manifest()
++        manifest["entries"].append(entry("../outside.txt", b"x"))
++        build(self.base / "pkg", manifest)
++        r = preflight(manifest, self.base / "pkg")
++        self.assertIn("P-PATH", [f.check for f in r.findings])
++        det = [f for f in r.findings if f.check == "P-PATH"][0]
++        self.assertIn("traversal", det.detail)
++
++    def test_absolute_and_unc_entries_fire_p_path(self):
++        manifest = clean_manifest()
++        build(self.base / "pkg", manifest)
++        for bad in ("E:/PythonChimera/tools/x.py", "\\\\server\\share\\x", "/abs/x"):
++            m = json.loads(json.dumps(manifest))
++            m["entries"].append({"path": bad, "sha256": "0" * 64, "bytes": 1})
++            r = preflight(m, self.base / "pkg")
++            self.assertIn("P-PATH", [f.check for f in r.findings], bad)
++
++    def test_junction_escape_logic(self):
++        """P-JUNCTION core is containment of the RESOLVED path (pure-function check),
++        then a LIVE NTFS junction: a clean relative entry whose path traverses a
++        junction pointing outside the package root must fire P-JUNCTION. Windows
++        junctions need no elevation; if the OS refuses, the pure coverage stands."""
++        root = (self.base / "pkg").resolve()
++        inside = root / "server" / "runner.py"
++        outside = (self.base / "elsewhere").resolve()
++        self.assertTrue(_contained(inside, root))
++        self.assertFalse(_contained(outside, root))
++        link_root = build(self.base / "linked", clean_manifest())
++        target_dir = self.base / "outside_dir"
++        target_dir.mkdir()
++        (target_dir / "leak.txt").write_bytes(b"leak")
++        junction = link_root / "data"
++        import subprocess
++        made = subprocess.run(
++            ["cmd", "/c", "mklink", "/J", str(junction), str(target_dir.resolve())],
++            capture_output=True, text=True)
++        if made.returncode != 0:
++            self.skipTest(f"OS refused a junction ({made.stderr.strip()}); "
++                          "containment logic covered purely above")
++        try:
++            manifest = clean_manifest()
++            manifest["entries"].append(entry("data/leak.txt", b"leak"))
++            r = preflight(manifest, link_root)
++            self.assertIn("P-JUNCTION", [f.check for f in r.findings])
++            finding = [f for f in r.findings if f.check == "P-JUNCTION"][0]
++            self.assertEqual(finding.path, "data/leak.txt")
++            self.assertNotIn(str(link_root), finding.detail,
++                             "finding details must stay relocation-invariant")
++        finally:
++            subprocess.run(["cmd", "/c", "rmdir", str(junction)], capture_output=True)
++
++    # ---- F2: undeclared dependencies must not pass ---------------------------
++    def test_undeclared_import_fires(self):
++        manifest = clean_manifest()
++        manifest["declared_dependencies"]["modules"] = []  # numpy no longer declared
++        root = build(self.base / "pkg", manifest)
++        r = preflight(manifest, root)
++        checks = [f.check for f in r.findings]
++        self.assertIn("P-DEP", checks)
++        self.assertIn("numpy", [f.detail for f in r.findings if f.check == "P-DEP"][0])
++        self.assertEqual(r.verdict, "PREFLIGHT-FAIL")
++
++    def test_undeclared_system_tool_fires(self):
++        manifest = clean_manifest()
++        manifest["declared_dependencies"]["system"] = []  # powershell no longer declared
++        root = build(self.base / "pkg", manifest)
++        r = preflight(manifest, root)
++        self.assertIn("P-EXT-TOOL", [f.check for f in r.findings])
++
++    def test_stdlib_import_needs_no_declaration(self):
++        runner = "import json\nimport os\n"
++        manifest = clean_manifest(runner=runner.encode())
++        manifest["declared_dependencies"]["modules"] = []
++        root = build(self.base / "pkg", manifest)
++        (root / "server" / "runner.py").write_bytes(runner.encode())
++        r = preflight(manifest, root)
++        self.assertEqual(r.findings, [])
++
++    # ---- development-root leakage -------------------------------------------
++    def test_dev_root_reference_fires(self):
++        ps1 = "# start\nCopy-Item E:/PythonChimera/tools/x.py .\n"
++        manifest = clean_manifest()
++        manifest["entries"][0] = entry("run.ps1", ps1.encode(), text_config=True)
++        manifest["declared_dependencies"]["system"] = []
++        root = build(self.base / "pkg", manifest)
++        (root / "run.ps1").write_bytes(ps1.encode())
++        r = preflight(manifest, root)
++        checks = [f.check for f in r.findings]
++        self.assertIn("P-DEVROOT", checks)
++        det = [f for f in r.findings if f.check == "P-DEVROOT"][0]
++        self.assertIn("line 2", det.detail)
++
++    def test_undecodable_text_config_fires_p_text(self):
++        blob = b"\xff\xfe\x00not-utf8"
++        manifest = clean_manifest()
++        manifest["entries"].append(entry("cfg/bad.txt", blob, text_config=True))
++        root = build(self.base / "pkg", manifest)
++        (root / "cfg" / "bad.txt").write_bytes(blob)
++        r = preflight(manifest, root)
++        self.assertIn("P-TEXT", [f.check for f in r.findings])
++
++    def test_duplicate_entry_fires_p_dup(self):
++        manifest = clean_manifest()
++        manifest["entries"].append(dict(manifest["entries"][0]))
++        root = build(self.base / "pkg", manifest)
++        r = preflight(manifest, root)
++        self.assertIn("P-DUP", [f.check for f in r.findings])
++
++    # ---- scope law: nothing outside the package root is touched --------------
++    def test_no_paths_outside_root_opened(self):
++        manifest = clean_manifest()
++        root = build(self.base / "pkg", manifest)
++        (self.base / "sentinel-outside.txt").write_bytes(b"do not touch")
++        r = preflight(manifest, root)
++        root_abs = str(root.resolve()).lower()
++        for rel in r.stats["paths_opened"]:
++            self.assertNotIn("..", rel)
++            self.assertFalse(Path(rel).is_absolute(), rel)
++        self.assertEqual(len(r.stats["paths_opened"]), 2)
++
++    # ---- F3: no distribution-permission state can exist ----------------------
++    def test_verdict_vocabulary_cannot_claim_distribution_permission(self):
++        self.assertEqual(VERDICTS, ("PREFLIGHT-PASS", "PREFLIGHT-FAIL"))
++        src = Path(__file__).with_name("package_preflight.py").read_text(encoding="utf-8")
++        forbidden = ("distributable", "licensed", "cleared", "approved-for")
++        for word in forbidden:
++            self.assertNotIn(word, src.lower(), word)
++        # "permission"/"distribution" may appear ONLY inside the module docstring's
++        # OUT-OF-SCOPE disclaimer — never in code, identifiers or output literals.
++        import package_preflight
++        doc = package_preflight.__doc__ or ""
++        lines = [ln.strip() for ln in src.splitlines()
++                 if "permission" in ln.lower() or "distribution" in ln.lower()]
++        self.assertTrue(lines, "disclaimer expected")
++        for ln in lines:
++            self.assertIn(ln, doc, ln)
++        result = PreflightResult(VERDICTS[0])
++        for attr in dir(result):
++            self.assertNotIn("permission", attr.lower())
++            self.assertNotIn("license", attr.lower())
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)

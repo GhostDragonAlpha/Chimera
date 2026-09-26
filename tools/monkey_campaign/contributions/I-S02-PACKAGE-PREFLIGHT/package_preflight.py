@@ -28,6 +28,7 @@ enumerated — only manifest-named paths are touched (stats["paths_opened"] prov
 """
 from __future__ import annotations
 
+import ast
 import hashlib
 import os
 import re
@@ -56,9 +57,6 @@ DEFAULT_DEV_ROOT_PATTERNS = (
 # operator-installed or OS tool; each must be declared in declared_dependencies.system.
 SYSTEM_TOOL_WATCHLIST = ("powershell", "pwsh", "cmd", "wscript", "cscript", "mshta",
                          "python", "pythonw", "py", "pip", "bash", "sh")
-
-_IMPORT_RE = re.compile(r"^\s*(?:import\s+([A-Za-z_][\w.]*)|from\s+([A-Za-z_][\w.]*)\s+import)",
-                        re.MULTILINE)
 
 
 @dataclass(frozen=True)
@@ -105,11 +103,30 @@ def _contained(resolved: Path, root_resolved: Path) -> bool:
         return False
 
 
-def _iter_imports(text: str):
-    for match in _IMPORT_RE.finditer(text):
-        mod = match.group(1) or match.group(2)
-        if mod:
-            yield mod.split(".")[0]
+def _iter_imports(text: str, where: str, findings: list):
+    """STRUCTURAL (AST) Python import extraction (lead correction 2026-09-25).
+
+    Handles multi-name statements (`import os, sys` -- EVERY alias), aliases
+    (`import numpy as np` -> numpy), from-imports (`from foo import bar [as
+    baz]` -> foo), and skips relative imports (level>0: package-internal).
+    A file that does not parse is a NAMED P-TEXT refusal -- never a silent
+    skip (the old first-name regex passed `import os, missing_dependency`)."""
+    try:
+        tree = ast.parse(text)
+    except SyntaxError as exc:
+        findings.append(Finding("P-TEXT", where,
+                                f"text_config .py does not parse: {exc.msg} "
+                                f"(line {exc.lineno})"))
+        return
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                yield alias.name.split(".")[0]
+        elif isinstance(node, ast.ImportFrom):
+            if node.level and node.level > 0:
+                continue                      # relative: package-internal
+            if node.module:
+                yield node.module.split(".")[0]
 
 
 def preflight(manifest: dict, package_root, dev_root_patterns=()) -> PreflightResult:
@@ -134,9 +151,13 @@ def preflight(manifest: dict, package_root, dev_root_patterns=()) -> PreflightRe
                                 f"expected schema {SCHEMA!r}, got {manifest.get('schema')!r}"))
     cap = manifest.get("max_file_bytes")
     if not isinstance(cap, int) or cap <= 0:
-        cap = None
+        # Validate BEFORE any file I/O (lead correction): an invalid cap means
+        # no bounded-read guarantee exists, so nothing is opened at all.
         findings.append(Finding("P-MANIFEST", "<manifest>",
                                 "max_file_bytes must be a positive integer"))
+        return PreflightResult(
+            VERDICTS[1], findings,
+            {"paths_opened": [], "bytes_read": {}})
     deps = manifest.get("declared_dependencies") or {}
     declared_modules = {m.split(".")[0] for m in (deps.get("modules") or [])}
     declared_system = {s.lower() for s in (deps.get("system") or [])}
@@ -175,32 +196,30 @@ def preflight(manifest: dict, package_root, dev_root_patterns=()) -> PreflightRe
         if declared_size is not None and declared_size != actual_size:
             findings.append(Finding("P-SIZE", where,
                                     f"declared {declared_size} B, actual {actual_size} B"))
-        if cap is not None and actual_size > cap:
-            # Oversize is a finding; the digest of an oversize file is never verified
-            # (verifying it would require an unbounded read).
+
+        # READ-TIME CAP ENFORCEMENT (lead correction): one bounded read of at
+        # most cap+1 bytes decides everything -- hashing, oversize and the
+        # text_config decode all consume THESE bytes and no others.
+        with resolved.open("rb") as fh:
+            data = fh.read(cap + 1)
+        # the +1 sentinel byte only DETECTS oversize; bytes_read reports the
+        # content bytes within the cap (the module's bounded-read contract)
+        bytes_read[rel] = min(len(data), cap)
+        if len(data) > cap:
+            # Oversize: a finding, never a digest of an uncapped file, never
+            # a text decode beyond the cap.
             findings.append(Finding("P-SIZE", where,
                                     f"{actual_size} B exceeds max_file_bytes {cap} B"))
-            with resolved.open("rb") as fh:
-                bytes_read[rel] = len(fh.read(cap))
             continue
-
-        digest = hashlib.sha256()
-        with resolved.open("rb") as fh:
-            chunk = fh.read(65536)
-            total = 0
-            while chunk:
-                digest.update(chunk)
-                total += len(chunk)
-                chunk = fh.read(65536)
-        bytes_read[rel] = total
+        digest = hashlib.sha256(data)
         declared_sha = entry.get("sha256", "")
         if declared_sha and digest.hexdigest() != declared_sha:
             findings.append(Finding("P-HASH", where, "sha256 mismatch"))
 
         if entry.get("text_config"):
             try:
-                text = resolved.read_text(encoding="utf-8")
-            except (UnicodeDecodeError, OSError):
+                text = data.decode("utf-8")
+            except UnicodeDecodeError:
                 findings.append(Finding("P-TEXT", where, "text_config not valid UTF-8"))
                 continue
             for lineno, line in enumerate(text.splitlines(), 1):
@@ -219,7 +238,7 @@ def preflight(manifest: dict, package_root, dev_root_patterns=()) -> PreflightRe
                                 f"line {lineno}: system tool {tool!r} not declared"))
                         break
             if resolved.suffix == ".py":
-                for mod in _iter_imports(text):
+                for mod in _iter_imports(text, where, findings):
                     if mod not in declared_modules and mod not in stdlib:
                         findings.append(Finding("P-DEP", where,
                                                 f"undeclared module import {mod!r}"))

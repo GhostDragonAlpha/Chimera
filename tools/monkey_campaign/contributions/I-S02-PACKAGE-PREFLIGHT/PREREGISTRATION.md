@@ -80,3 +80,108 @@ The card's own falsifier, decomposed into testable failures:
 pipeline. S02's builder is future work; this card supplies the checker its manifests will
 be validated against. **No source files extracted** (the card permits extraction for CPU
 tests; all tests use synthetic packages, so the read-only posture is total).
+
+---
+
+# CORRECTION ADDENDUM — attempt 1b2d224dbae042aead907aded54a67d2 (2026-09-25)
+
+Responds to the lead's CHANGES REQUIRED on PR #124 head `155a0f5c` (base
+module copied byte-identical, sha256 `7ccb6649…`; prior 17-test suite intact
+in this workspace). Written BEFORE the fix; failing-first tests were run
+against the BASE module first and their failures recorded.
+
+## The two corrections
+
+1. **AST import parsing** (the lead's reproducer): `_iter_imports` regex read
+   only the first name — `import os, missing_dependency` returned
+   PREFLIGHT-PASS undeclared. Fixed structurally: `ast.parse`; multi-name
+   Import statements yield EVERY alias's top-level module; aliases
+   (`import numpy as np` → numpy); ImportFrom yields the module (`from foo
+   import bar [as baz]` → foo); relative imports (level>0) are
+   package-internal and skipped; a file that does not parse is a NAMED
+   `P-TEXT` refusal — never a silent skip.
+2. **Read-time caps**: invalid `max_file_bytes` → P-MANIFEST finding and an
+   EARLY FAIL with ZERO files opened (validate before I/O); with a valid cap,
+   every file is read ONCE, bounded to cap+1 bytes — oversize produces
+   `P-SIZE` with no digest verified, and the text_config decode consumes the
+   SAME bounded bytes (the old code's uncapped second read is gone);
+   `bytes_read` never exceeds cap+1 per entry.
+
+## Failing-first predictions (measured against BASE before the fix)
+
+- R1 lead reproducer: BASE PASS (defect) → FIXED FAIL with P-DEP naming
+  `missing_dependency`.
+- R2 aliases/multi/from: BASE misses numpy+foo (defect) → FIXED flags both,
+  never the relative `sibling`.
+- R3 unparseable .py: BASE silent (defect) → FIXED named P-TEXT refusal.
+- R4 invalid cap: BASE opens+hashes files (defect) → FIXED zero I/O.
+- R5 cap is read-time: oversize file (declared size honest) → P-SIZE,
+  bytes_read ≤ cap+1, no hash verified; all 17 prior tests still pass after
+  the fix.
+
+## Falsifier
+
+Any new test passing against BASE (defect not real — report loudly); any
+prior test broken; a silent skip surviving; any read exceeding cap+1 when a
+cap is set; restricted-asset distribution (none — synthetic packages only).
+
+---
+
+# CORRECTION-OF-EVIDENCE ADDENDUM — attempt 52645eef46df4af6aa0ca12a10542f9d (2026-09-26)
+
+Responds to the operational lead's pre-publication verification finding
+(arrival-876e63bf, evidence `E:/ChimeraWork/monkey-coordination/lead-verify-20260926/I-S02-PACKAGE-PREFLIGHT.json`):
+the prior correction's failing-first EVIDENCE was irreproducible (recorded 5/7;
+the published `test_correction.py` against the adopted base yields 3/7) and
+report.md's R2/R3 claim was empirically false. Written and frozen BEFORE this
+attempt's base run. The prior addendum's own falsifier — "any new test passing
+against BASE (defect not real — report loudly)" — FIRED: two of the seven
+published correction tests pass on the base. That firing is now reported loudly.
+
+## STATEMENT (someone could disagree with)
+
+The published failing-first record for attempt `1b2d224dbae042aead907aded54a67d2`
+overstated the base's blindness. The honest record is whatever the PUBLISHED
+`test_correction.py` (sha256 `6a24a683…`) actually produces against the
+byte-verified adopted base `package_preflight.py` (sha256 `7ccb6649…`, CRLF form
+of blob `d51e8718…` at PR #124 head `155a0f5c`), run verbatim, and this attempt
+records that output unaltered whatever it turns out to be.
+
+## PREDICTION (frozen before the run; derived only from reading the base source)
+
+Base `_iter_imports` is a per-line regex (`re.MULTILINE`) that captures the FIRST
+name of an `import` statement and the module of a `from X import` statement;
+base cap handling validates `max_file_bytes` only into `cap=None` + P-MANIFEST
+and proceeds to hash with bounded reads, enforcing the cap via pre-stat size.
+Therefore, of the 7 published correction tests:
+
+1. FAIL on base: `test_multi_name_import_is_flagged` (R1 — `import os,
+   missing_dependency` yields only `os`; undeclared tail passes);
+2. FAIL on base: `test_unparseable_py_is_named_refusal` (R3 — base never parses;
+   no P-TEXT parse refusal exists);
+3. FAIL on base: `test_invalid_cap_fails_before_any_io` (R4 — base records
+   P-MANIFEST, then opens and hashes files anyway; `paths_opened` non-empty);
+4. PASS on base: `test_aliases_multiple_and_from_imports` (R2 — the base regex
+   ALREADY yields single-name `import numpy as np` → `numpy` and from-import
+   modules `from foo import bar` → `foo`, and never matches `from . import`);
+5. PASS on base: `test_stdlib_and_declared_still_pass` (R2);
+6. PASS on base: `test_oversize_enforced_at_read_time` (R5 — base's pre-stat
+   cap check already fires P-SIZE, reads at most cap bytes for oversize files
+   and verifies no digest for them);
+7. PASS on base: `test_bounded_read_never_exceeds_cap_plus_one` (R5).
+
+Predicted bottom line: `Ran 7 tests` → `FAILED (failures=3)` — 3/7 failing,
+4/7 passing on base. The code fixes are NOT in question (24/24 green verified
+twice by the lead); this attempt rewrites NO working code.
+
+## FALSIFIER (named before the run)
+
+If the actual run's failure set differs from prediction 1-7 in any direction,
+the ACTUAL result supersedes this prediction everywhere and is reported loudly;
+no count is ever asserted that a recorded run does not show. If the run cannot
+be reproduced at all, the evidence stays marked irreproducible and nothing is
+published. Scope frozen: regenerate `failing_first_base.txt` from the verbatim
+run; correct report.md's R2/R3, 5-of-7 and "no new test passed" statements to
+the observed behavior; rehash every affected artifact; module and both test
+files remain byte-identical to the published candidate (`1f81f62e…`,
+`45343953…`, `6a24a683…`).
