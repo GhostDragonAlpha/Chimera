@@ -14,6 +14,11 @@ is not a schedule: independent child membranes can progress in parallel, and a
 large parent is accepted only after its required children/connections are ready.
 Dependency layers are logical readiness groups, not elapsed-time estimates.
 
+For newly authorized representation conversions, the [mapping/connection
+procedure](REPRESENTATION_MAPPING.md) supplies boundary checks within the existing
+owning integration card. Component passes alone do not qualify their connection.
+This optional procedure does not amend active criteria or create another task map.
+
 Checkpoint task IDs are contributors to an integration milestone. They do not
 make those tasks depend on their own checkpoint. Checkpoint `requires` orders
 integrated acceptance, not independent implementation. S05 accepts the feature

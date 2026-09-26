@@ -22,6 +22,7 @@ evidence of their recorded revision, not instructions for the current queue.
 | ARRIVAL, ATTEMPT, restart, lost context | [Startup recovery](../tools/monkey_campaign/STARTUP_RECOVERY.md) |
 | MAILBOX, architecture question, suggestion | [Suggestion box](../tools/monkey_campaign/SUGGESTION_BOX.md) |
 | MEMBRANE, containment, PORT | [Membrane ontology](MEMBRANE_ONTOLOGY.md) |
+| MAPPING CONTRACT, ADAPTER, PORT SEAM, VALIDITY ENVELOPE | [Representation mapping and connection checks](REPRESENTATION_MAPPING.md) |
 | RDF, SHACL, OWL, semantic validation | [Optional semantic pilot](../tools/membrane_ontology/SEMANTIC_PILOT.md) |
 | DEPENDENCY, backlog, qualification | [Ontology work plan](ONTOLOGY_WORK_PLAN.md), [ontology queue](../tools/monkey_campaign/ONTOLOGY_QUEUE.md) |
 | VISUAL, CAMERA, labels, debug geometry | Card's verification profile and [capture contract implementation](../tools/monkey_campaign/visual_capture.py) |
