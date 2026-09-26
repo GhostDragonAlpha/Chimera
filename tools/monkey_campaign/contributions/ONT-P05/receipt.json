@@ -1,0 +1,98 @@
+{
+ "schema": "ont-p05.attempt_receipt.v1",
+ "task_id": "ONT-P05",
+ "planning_id": "P05",
+ "attempt_id": "d7e4d5e96bb741c7b434f94d4bc3c560",
+ "agent_id": "arrival-0aa44ef399f64a029e1a268ffcaac2af",
+ "branch": "branch-1",
+ "criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "corrects": {
+  "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/146",
+  "reviewed_head": "f1b18a55c58bef45bb25dacadde162f0ff09f9c1",
+  "prior_attempt_id": "1ea58bee28c04768b15253c2f1ba7888",
+  "prior_agent_id": "arrival-9de32a8d32144d1fb62ffc7308cd11d7",
+  "prior_official_probe_sha256": "516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88",
+  "lead_finding": "training-checkpoint PASS rested on checkpoint schema/law, 18 pending curriculum records and test receipts, not an identified recoverable training-state artifact; preregistration amendment 2 followed a probe and must not be called pre-measurement"
+ },
+ "depends_on": {
+  "task_id": "ONT-P03",
+  "status": "qualified winner",
+  "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/140",
+  "merge_commit_sha256": "736d12cca04964c333410a41ac31ced4bd004344"
+ },
+ "verification_profile": {
+  "id": "records",
+  "kind": "offline",
+  "numerical_evidence_required": true,
+  "nonvisual_reason": "A source/contract/measurement task whose truth requires records or numerical oracles, not a 3D image."
+ },
+ "deliverables": [
+  {
+   "path": "tools/monkey_campaign/contributions/ONT-P05/PREREGISTRATION.md",
+   "sha256": "b0ce0ca6ea215d0dffc3bdaf383780cb09f97de379d10fc15ac943dd9cd6944d",
+   "note": "original freeze preserved verbatim; correction addendum (C1 identify-or-unavailable branch, C2 amendment-2 wording) frozen BEFORE the correction probe ran"
+  },
+  {
+   "path": "tools/monkey_campaign/contributions/ONT-P05/implementation.py",
+   "sha256": "7d88d3a3b4624ef7ced90567230538f14669b04cff7a55b1f5954b5e855aa138",
+   "note": "read-only identity audit tool (stdlib, CPU-only); correction: identifies actual recoverable training-state checkpoints with recomputed hashes, run identity records and stdlib .npy header load evidence bound to the trainer width law"
+  },
+  {
+   "path": "tools/monkey_campaign/contributions/ONT-P05/test_implementation.py",
+   "sha256": "60e7c86892420cacb38890febcc3582e73869c35444b0b483b2aee1651e58a29",
+   "note": "23 fixture regressions (16 prior + 7 correction); temp dirs only; 23/23 OK"
+  },
+  {
+   "path": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json",
+   "sha256": "408135fd46a83966f27495f641c2dc66a67fb3f777aebdc1e483a5d5530de9e6",
+   "note": "official correction probe (probe 3) against live records (schema ont-p05.identity_audit.v1); prior attempt's official probe 516e9edb... preserved unmodified as historical evidence"
+  },
+  {
+   "path": "tools/monkey_campaign/contributions/ONT-P05/report.md",
+   "sha256": "42988e488900959235bc61a203075305fba3ab88c9a82a54535e7122c98aaad8",
+   "note": "identified-checkpoint table, clause table, F1/F2 preserved + F3 named, corrected amendment history, commands, limits"
+  }
+ ],
+ "verification_summary": {
+  "fixture_tests": "23/23 OK (python -B -m unittest test_implementation)",
+  "batteries_reexecuted_by_probe": {
+   "test_kanban": "11 tests OK",
+   "test_suggestion_box": "5 tests OK",
+   "test_merge_service": "2 tests OK",
+   "test_checkpoints": "19 tests OK"
+  },
+  "clause_results": {
+   "recoverable_commits": "PASS (40 startup receipts verified; own receipt binds task/correction-attempt/criteria; 3 winner merges + attempt head resolve as commits)",
+   "run_manifests": "PARTIAL — schemas/law records present; modern records verify; TWO named historical-record findings (F1, F2), re-confirmed 8/8 at correction probe",
+   "training_checkpoints": "PASS on the lead's corrected standard: IDENTIFIED recoverable training-state checkpoints — walk_theta_entrained.npy 8f5dd3a6… (npy <f8 shape (8,), width law N_FREE+2), walk_theta_mult.npy ad8ed9a9… (6), stand_theta.npy 684f1eaa… (1160), step_theta.npy db943f46… (7) under E:/PythonChimera/ChimeraEngine/output/ports/; run identity agent_logs/f4_walk_walk_theta_entrained.json 9cd272ea… byte-identical at 3 preserved sites; load evidence = read-only stdlib .npy header parse against walk_port.py width law; restore consumer f4_walk.py --theta cited, NOT executed; plus the prior law/curriculum/receipt/battery records; certified_policy_checkpoints = 0 reported verbatim (no certified-walk checkpoint is claimed)",
+   "raw_blob_canonical_hash_labels": "PASS (map: raw 010311bb…, blob 466ba011f9df369e706497a7b21b516f36643385, canonical 01ea5cdd… distinct; verify_catalog passes with external anchor)",
+   "retry_rules": "PASS (5 rule markers present; 4 merge-service receipts; all 4 batteries green)"
+  },
+  "findings": [
+   "F1 (preserved by hash from prior attempt, re-confirmed): agent_fleet/MANIFEST.json does not reproduce against its own pinned source_base bf0a6216… (7/8 sampled paths absent at that commit; THE_MASTER_LIST.md blob mismatch; recorded hash matches no recoverable state)",
+   "F2 (preserved by hash from prior attempt, re-confirmed): FEATURE_WALK/MANIFEST_sha256.txt labels g*.png frames preserved nowhere reachable (videos and keyframes ARE preserved)",
+   "F3 (new, named honestly): the identified checkpoint store is single-site live data (git-ignored); no checkpoint belongs to a certified walk run (run verdicts verbatim); archive/hash-pin disposition is the lead's"
+  ],
+  "preregistration_history": "amendment 1 (pre-measurement, before any probe); amendment 2 FOLLOWED probe run 1 and VOIDED it before any result was accepted (instrument corrections only) — never to be described as pre-measurement; correction addendum C1/C2 frozen before the correction probe (probe 3, this submission's official run)",
+  "probe_history": "probe run 1 VOIDED (instrument defects) -> amendment 2 -> probe 2 official for the prior attempt -> lead CHANGES_REQUIRED -> correction addendum frozen -> probe 3 official for this correction"
+ },
+ "prediction_scorecard": {
+  "P1": "PASS",
+  "P2": "PASS",
+  "P3": "FAIL (reported as finding F1 — not tuned away)",
+  "P4": "PASS",
+  "P5": "PASS",
+  "P6": "PASS",
+  "C1": "SATISFIED VIA (a): actual checkpoint identified with path/hash/run-identity/load-evidence; clause NOT marked unavailable"
+ },
+ "resource_use": {
+  "gpu": false,
+  "engine_start": false,
+  "model_start": false,
+  "mujoco_rollout": false,
+  "writes_outside_attempt_workspace": "none (audit tool is read-only over records; fixtures use temp dirs)"
+ },
+ "writes_stopped": true,
+ "handoff": "Correction candidate committed on branch-1 under tools/monkey_campaign/contributions/ONT-P05/; publication requested via worker_start.py --request-pr; lead publishes review/ONT-P05. Independent review pending in the review lane; F1/F2/F3 disposition belongs to the lead."
+}

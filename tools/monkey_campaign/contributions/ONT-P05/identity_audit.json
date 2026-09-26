@@ -1,0 +1,914 @@
+{
+ "schema": "ont-p05.identity_audit.v1",
+ "task_id": "ONT-P05",
+ "attempt_id": "d7e4d5e96bb741c7b434f94d4bc3c560",
+ "agent_id": "arrival-0aa44ef399f64a029e1a268ffcaac2af",
+ "criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "mode": "READ_ONLY_RECORDS_AUDIT",
+ "clauses": [
+  {
+   "clause": "recoverable_commits",
+   "records": [
+    {
+     "file": "0227a03e2a756a66c3dd5f6c837093c0a30f63896fa5761501042f07f9399227.json",
+     "arrival_id": "arrival-c59287b07e0c438e9b8866aa7086e1b1",
+     "task_id": "ONT-P04"
+    },
+    {
+     "file": "04cbab68b6ad773c03862d6d58a24bb1f2ec71dc6de70d439215184ff2548300.json",
+     "arrival_id": "arrival-a80f813e8c52450ab2e913f10439ebd5",
+     "task_id": "R5-forest-review-FOLLOWUP"
+    },
+    {
+     "file": "0505990ab03addfdf75e72cab39104f06d5aa4011ae52447e96f684809c79203.json",
+     "arrival_id": "arrival-286909b6a5744dd79beb1a4a52c75b78",
+     "task_id": "ONT-P06"
+    },
+    {
+     "file": "08b7f6c50b2a9b1d4eee0b93739555bb21f1ea8e9a7920a0ad4315dce942e461.json",
+     "arrival_id": "arrival-35d4164c7018464fb998bf34886fcd6e",
+     "task_id": "ONT-X02"
+    },
+    {
+     "file": "0e50d4ea68b8041d14007e078103725c8c771dd2a0187b7c58a0a954e27ce2b1.json",
+     "arrival_id": "arrival-f742dfbb88244565a6d973717bc05f26",
+     "task_id": "ONT-P02"
+    },
+    {
+     "file": "1019194b0e607a3d08bc1391dc0a09cade141b19756d0dd682546e0d0ac7a878.json",
+     "arrival_id": "arrival-df8547ff0f8c4a64a6d28afaba1331c4",
+     "task_id": "ONT-X02"
+    },
+    {
+     "file": "12e916c73945e0c16949008c0194ac3df71c9ce592b031218f76b4e6c1f9305d.json",
+     "arrival_id": "arrival-2d3b7dbcf3c247feaebf16f6197fcff4",
+     "task_id": "ONT-P02"
+    },
+    {
+     "file": "18b68cfbc507dfbf86ddfab49646b1868db086269be995d21b5a7a6e513200b1.json",
+     "arrival_id": "arrival-bfab4649013b416c930befc5980fdd4a",
+     "task_id": "I-U07-TRACE"
+    },
+    {
+     "file": "1e39142713f91cf649ae6743f6a0a413ffb6f03370cd9f60125dfadefec261a6.json",
+     "arrival_id": "arrival-cf4d4f8e72d94ad9b73185eb402ff1bd",
+     "task_id": "ONT-X02"
+    },
+    {
+     "file": "23091d0b37940201a162ab1491a95b2c2b605795cd2d69c54e52dec51ce1e873.json",
+     "arrival_id": "arrival-d96c4ed14b3541f89fb80acf90a759b2",
+     "task_id": "ONT-U01"
+    },
+    {
+     "file": "23efc2955eb1b691f8d8cee231e2baa8d965b7d0c422697a65f482474a34e817.json",
+     "arrival_id": "arrival-55cf419ab9844e8db8b50761b0c7a04e",
+     "task_id": "ONT-P05"
+    },
+    {
+     "file": "28397801e90fd365351309a51098528112d47ea30497e34da56a09ed05befcc4.json",
+     "arrival_id": "arrival-a12bbee092ce4cf9bb1806e68ac852c4",
+     "task_id": "ONT-U01"
+    },
+    {
+     "file": "2bc72c6b8d39bd7a2f837889bd9c8f70c2ea7865d6e5bf9e919b53479a902c51.json",
+     "arrival_id": "arrival-53f44169fdb146a4ae235e0b0903e9f7",
+     "task_id": null
+    },
+    {
+     "file": "43f59c0cbb95b7d8780cb9101515508fb12beb2ab7039e535ede033b3ef69851.json",
+     "arrival_id": "arrival-0074d33c896e4039a01dc67fc628a8bf",
+     "task_id": "I-S02-PACKAGE-PREFLIGHT-FOLLOWUP"
+    },
+    {
+     "file": "499334f6ee2a8312b33ae1926da0bd8ea2e2c8daa276c6f83190e6ba20c59bb6.json",
+     "arrival_id": "arrival-b5e043fee98048ecb2714d07778769c6",
+     "task_id": "I-S02-PACKAGE-PREFLIGHT-FOLLOWUP"
+    },
+    {
+     "file": "4a132e87a4e744d1610f013e4b6bcf1b82834e991aad83a742746b8d13456abc.json",
+     "arrival_id": "arrival-170a63f5cc254183acd37bdd42fe75eb",
+     "task_id": null
+    },
+    {
+     "file": "4f8116263a112f11aeffb963bf7c1fcc506b3b355c0b26a797c97399adf540e8.json",
+     "arrival_id": "arrival-c077fc4dd7284df7a4aad08605ed24f6",
+     "task_id": "I-S02-PACKAGE-PREFLIGHT"
+    },
+    {
+     "file": "5549f64791f7444019bd81824963044a7fd5760fd4544ca2b7573a35eaf461f3.json",
+     "arrival_id": "arrival-98be0b3d2bc34173aa1cd902e137ff22",
+     "task_id": null
+    },
+    {
+     "file": "59ed3960d7cb5518300ecf5482b261b4f5ddf683ec4af58cca4a316c413d9bc7.json",
+     "arrival_id": "arrival-3927d96201dd40f0baae1027936ab5d8",
+     "task_id": "D-W03-ANCHORS-20260924-FOLLOWUP"
+    },
+    {
+     "file": "5f8dce903bcd840dbc66bee8af1cf35ee9702a7b9c4ee2967f81bbca9c44a361.json",
+     "arrival_id": "arrival-6420a78fb7884088bace7aa720046ec0",
+     "task_id": "D-W03-ANCHORS-20260924-FOLLOWUP"
+    },
+    {
+     "file": "6161bddba70d305e4808dd78dab9aa084d8f27756a28eac85c8f4106023e5d42.json",
+     "arrival_id": "arrival-b3261b6b7bc0458183dece20eb0786b2",
+     "task_id": "I-S02-PACKAGE-PREFLIGHT-FOLLOWUP"
+    },
+    {
+     "file": "66b6c415cd87fb1a6eff5d40815e60eb65d9dfb1d19374d6176f35bf2353180a.json",
+     "arrival_id": "arrival-5fa3f57a83574a62b674a3f9d8fdd873",
+     "task_id": "ONT-P02"
+    },
+    {
+     "file": "67d996f55455bc8373652a969532ec0c0ccc473ad629eb58c04d8d965434b53b.json",
+     "arrival_id": "arrival-7b36ccb2cb3540fd95ed62ec3a57f237",
+     "task_id": "ONT-X02"
+    },
+    {
+     "file": "67e06f40989691d210c9a5142920a22bdb0a6346a717ac164bd8ed36cc2c3ef5.json",
+     "arrival_id": "arrival-1c2c36d0c1cb44498a61af152f18ad61",
+     "task_id": "D-FOREST-RUNTIME-20260924-FOLLOWUP"
+    },
+    {
+     "file": "69d8424fbe8ef5347c43042631e8acc9d9a74331056e6cd885c3055d4334489b.json",
+     "arrival_id": "arrival-2350ac01b46a42cc8c3b3aae3d545862",
+     "task_id": "I-U07-TRACE-FOLLOWUP"
+    },
+    {
+     "file": "730a564933e36cb5d757485690eb399c9599d5c77cf3f6b543f73485318ca2e4.json",
+     "arrival_id": "arrival-6f9041bcb7fc462a99ea9a36bd994cf7",
+     "task_id": null
+    },
+    {
+     "file": "733183cf8ddc94bfadccbef337858f41c517f0aafb63f8c9a85d977727ab252c.json",
+     "arrival_id": "arrival-0aa44ef399f64a029e1a268ffcaac2af",
+     "task_id": "ONT-P05"
+    },
+    {
+     "file": "73f84ba72b4d03d543cef4df49e90c808a18f54ad5769090aa821da87b229b94.json",
+     "arrival_id": "arrival-62263f6aaed44244891c04ef5ebf4884",
+     "task_id": "ONT-P02"
+    },
+    {
+     "file": "7baef3274053b12f0b1993b5c90e0345ab64582bac720da5285adabedd6bb0ba.json",
+     "arrival_id": "arrival-fa11c6b3bf744572a0baa9baa33483fc",
+     "task_id": "D-W03-ANCHORS-20260924-FOLLOWUP"
+    },
+    {
+     "file": "831346efcba19104d68d9c1e00ab2722bd93af880c336933caa2cb739010005a.json",
+     "arrival_id": "arrival-773e9bcac941425c9a55d02b447db9a1",
+     "task_id": "ONT-P05"
+    },
+    {
+     "file": "84a9540e6483544f46ef717fb57c54b4317f2e55a4cdb0dfa27848e220dbfc8c.json",
+     "arrival_id": "arrival-36aef27ac9414a8fbb863aeeef431bb6",
+     "task_id": "ONT-P06"
+    },
+    {
+     "file": "8652527b82155d72a362e8481606b16fdd3585337715efa13f7ce4bf2b605643.json",
+     "arrival_id": "arrival-8a5b33b4f1e64b0dacebe9cf9e92079e",
+     "task_id": "ONT-U02"
+    },
+    {
+     "file": "9193edb13610a3fbb213227a54491f45c0ab2d4f45f45d21a2f05b898c05fa34.json",
+     "arrival_id": "c95e1722350849bca846b237c1f60997",
+     "task_id": null
+    },
+    {
+     "file": "94e90ac677de1a62f89f96051a3b89752dbf7fee501677b84d5bf242cdfa12c5.json",
+     "arrival_id": "arrival-876e63bf9dbb44a8b10c5b546f783e9b",
+     "task_id": null
+    },
+    {
+     "file": "96c804cf65028bebf356c4c8c071388720f5317f5384cae422f16099fd4d6375.json",
+     "arrival_id": "arrival-b3306179a8204335a73031a8eae9f97a",
+     "task_id": "ONT-P05"
+    },
+    {
+     "file": "ac96bd5b0f7035103ac3c5e92bd456d7b0dc912c3385d39ca17d6d0260d809b4.json",
+     "arrival_id": "arrival-077bc6f26e414df985b181f495a344f4",
+     "task_id": null
+    },
+    {
+     "file": "ae0a72580a19776ecba3b804c8a1d62fe0f84253b7c448b33b3f24e36f3b7c31.json",
+     "arrival_id": "arrival-948d21e6b1584144a9e5f26f66143ed0",
+     "task_id": "ONT-P02"
+    },
+    {
+     "file": "bc1bd58e2c03f6ca3543bdde87b3fdd60602c3b8d4548160623a502dcf19f13c.json",
+     "arrival_id": "arrival-5cf58e7a984c496aac82d1e6c98a7f19",
+     "task_id": "ONT-U02"
+    },
+    {
+     "file": "c66cc316b2d0ea1ec511a66b37f1e18758542497d2dece45c84908d5c25b6128.json",
+     "arrival_id": "arrival-07233adcf3f64d0db9e1e8fa95c607b8",
+     "task_id": "ONT-U01"
+    },
+    {
+     "file": "c6f39e54e8a647806ff270d10101575a89e230495bf28c72a9a32628a1547089.json",
+     "arrival_id": "arrival-80e0bab1f0364ec2868d5969ba32a3f2",
+     "task_id": "ONT-U01"
+    },
+    {
+     "file": "c7598059e38fe7359066d4b9f8a3e13f866f2d99eb1265052c8bd04627ace910.json",
+     "arrival_id": "arrival-fc45c2b5445647a8a4469b6cf403d5ac",
+     "task_id": "ONT-P02"
+    },
+    {
+     "file": "da590b736cc9f7c4c99f91e142a7347895c4fb682488176d08257db2d11efb42.json",
+     "arrival_id": "arrival-2e61bf1398b3425890bc7ccef5d0d45d",
+     "task_id": "I-R05-RESOURCE-LEDGER-FOLLOWUP"
+    },
+    {
+     "file": "e81459228e4244423fde98f1f8f4e3728dca62e016f9f99521558147cdb80ee7.json",
+     "arrival_id": "arrival-1d8999095f7a4a149f5dd27ccf3badef",
+     "task_id": "ONT-P05"
+    },
+    {
+     "file": "e92144377774dbb26265c7511537b7c9d92831e4a3e823782cd0377529e4ef88.json",
+     "arrival_id": "arrival-0aa4e63fa98c49759dd85eb8628f0959",
+     "task_id": null
+    },
+    {
+     "file": "ea0c198a6c9ce4dfa0ef7f35afc65b986da5614b7d2b937a8998a80d8c89774b.json",
+     "arrival_id": "arrival-1912245027394eb6a97af7e6461dc1d8",
+     "task_id": null
+    },
+    {
+     "file": "edbb3770b01289e53640c52e9d431b63fd9ff5ba9df946ac1b443bf0ad94e193.json",
+     "arrival_id": "arrival-9de32a8d32144d1fb62ffc7308cd11d7",
+     "task_id": "I-R05-RESOURCE-LEDGER-FOLLOWUP"
+    },
+    {
+     "file": "ee258e0db84606e74871ee2f464c2747ce8017e5a4e35d70127bf6afeed8dce8.json",
+     "arrival_id": "arrival-372aee4cc27f43db9a5d17ad3a5eaca6",
+     "task_id": null
+    },
+    {
+     "file": "f26eab7b14e2615b79b54d194a88edf9adde3348a9ccc2be10b9284942d59f68.json",
+     "arrival_id": "arrival-547c550c1d2c49edb0b0557e464143b8",
+     "task_id": "ONT-P04"
+    },
+    {
+     "file": "f9ebf79133a45f53e154d4f9731aadfde21e083e0f232dffd8e6fcd40e419d20.json",
+     "arrival_id": "arrival-c46584d9b5834442a19744ac359d285b",
+     "task_id": "I-U07-TRACE"
+    },
+    {
+     "file": "fbc7d260eb7fe80e6c903027180f39c69dd31bf4d1d6a68a05093788c9ef7b97.json",
+     "arrival_id": "arrival-def19617206b427aa7b8a40d66b59f72",
+     "task_id": "ONT-U02"
+    }
+   ],
+   "receipt_dir": {
+    "path": "E:/ChimeraWork/monkey-coordination/startup-receipts",
+    "note": "startup recovery receipt store; per-receipt raw labels in records"
+   },
+   "receipt_count": 50,
+   "own_receipt": true,
+   "findings": [],
+   "satisfied": true,
+   "checkout_identity": {
+    "record": {
+     "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P05\\d7e4d5e96bb741c7b434f94d4bc3c560\\checkout_identity.json",
+     "note": "per-attempt checkout manifest",
+     "raw_sha256": "e30f899d475290ec37cab0e7da5143eb6e62b966ab0f2214220de0bde02efa14"
+    },
+    "head_sha": "c525b82c7c3ce0128565424764293a3c85811ab3",
+    "head_resolvable": true,
+    "branch": "branch-1"
+   },
+   "winner_merges": [
+    {
+     "task": "ONT-P01",
+     "merge_sha256": "391f0ede0ebc2f4072c62c3386827b1b4eefc88e",
+     "resolvable_commit": true
+    },
+    {
+     "task": "ONT-P03",
+     "merge_sha256": "736d12cca04964c333410a41ac31ced4bd004344",
+     "resolvable_commit": true
+    },
+    {
+     "task": "ONT-X01",
+     "merge_sha256": "7a3d11eab2d19c04d70b62e1559eca8d97886658",
+     "resolvable_commit": true
+    }
+   ],
+   "worker_checkout_rule": "unrecorded_checkout_preserved_inspect_before_retry"
+  },
+  {
+   "clause": "run_manifests",
+   "fleet_manifest": {
+    "path": "E:\\ChimeraWork\\monkey-play-20260924\\docs\\evidence\\agent_fleet\\MANIFEST.json",
+    "note": "fleet evidence manifest (source_base + per-file sha256)",
+    "raw_sha256": "2cacad5b33f2578e99469e9a6540df8f3109189147c55133105c07c6bf7ee347"
+   },
+   "fleet_source_base": "bf0a62162008c8415b88091c671ac180dbb50193",
+   "fleet_entry_count": 21,
+   "walk_manifest": {
+    "path": "E:\\ChimeraWork\\monkey-play-20260924\\docs\\evidence\\agent_fleet\\FEATURE_WALK\\MANIFEST_sha256.txt",
+    "note": "raw-sha256 capture manifest",
+    "raw_sha256": "951724b69a92c4828daacbe381a2bee274a4190188e9e3c0ef48f843a5c28850"
+   },
+   "schema_records": [
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\checkpoints.py",
+      "note": "manifest schema record",
+      "raw_sha256": "50b2fe38fe0c2c589549c93abea066d25b7f321c243e1e95ec32e6009b962a91"
+     },
+     "schema_token": "chimera.checkpoint_context.v1",
+     "present": true,
+     "kind": "schema/law record, not a run capture"
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\visual_capture.py",
+      "note": "manifest schema record",
+      "raw_sha256": "5ee55d5ab52beb05ffc33e9b66858f94b706cb22c290786db4a79ab344a4ff05"
+     },
+     "schema_token": "chimera.visual_capture_manifest.v1",
+     "present": true,
+     "kind": "schema/law record, not a run capture"
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\CHECKPOINT_WORKFLOW.md",
+      "note": "manifest schema record",
+      "raw_sha256": "a5b75504bfe0cb02190ff806be2821e0580bfcfa2af88c98036c53a3d8f24a63"
+     },
+     "schema_token": "candidate manifest",
+     "present": true,
+     "kind": "schema/law record, not a run capture"
+    }
+   ],
+   "sampled_entries": [
+    {
+     "path": "docs/AGENT_BOOTSTRAP_READINESS.md",
+     "recorded_sha256": "40dac38be03a73bec0a7ffea7f0c9d4b9a59df2fbd065013321eefd407d4dfe9",
+     "worktree_drift": "stale",
+     "generation_verdict": "blob_unreadable"
+    },
+    {
+     "path": "docs/AGENT_START.md",
+     "recorded_sha256": "938f02eb5a118d55ddb0026b9c8256fe5332fccb899f321687a4fb6bf8c6c80e",
+     "worktree_drift": "stale",
+     "generation_verdict": "blob_unreadable"
+    },
+    {
+     "path": "docs/THE_AGENT_FLEET.md",
+     "recorded_sha256": "15179eb375ff9d42d11c51e10af53e3896e2a1d43179723a6574782ae2e24040",
+     "worktree_drift": "stale",
+     "generation_verdict": "blob_unreadable"
+    },
+    {
+     "path": "docs/THE_HOLODECK_BLUEPRINT.md",
+     "recorded_sha256": "44912dcad0e8759cc9907d975387f34f7ad371e89f7285bbe8b56f64a36e1d1e",
+     "worktree_drift": "stale",
+     "generation_verdict": "blob_unreadable"
+    },
+    {
+     "path": "docs/THE_MASTER_LIST.md",
+     "recorded_sha256": "4410bdfb6ecc05e3c539466a05c00bc92595da0fd53abcbe40660a8ed7e7fc08",
+     "worktree_drift": "stale",
+     "generation_verdict": "generation_mismatch"
+    },
+    {
+     "path": "docs/evidence/agent_fleet/DOCUMENTATION_INDEX.json",
+     "recorded_sha256": "c71966d31ec8ec5348a53d3fa44741892bfcf297b66e32a2e0ec72b0e55799e9",
+     "worktree_drift": "match",
+     "generation_verdict": "blob_unreadable"
+    },
+    {
+     "path": "docs/evidence/agent_fleet/DOCUMENTATION_REVIEW.md",
+     "recorded_sha256": "b627b0b611f02bc340c7d3e999d34eb8aacab5bb62ebce8734aaf4d618b8f198",
+     "worktree_drift": "match",
+     "generation_verdict": "blob_unreadable"
+    },
+    {
+     "path": "docs/evidence/agent_fleet/PREREGISTRATION.md",
+     "recorded_sha256": "a06b6ca019a2c3c8d55af855358c7814299aadebb3bd10a5b108c89df5d8873d",
+     "worktree_drift": "match",
+     "generation_verdict": "blob_unreadable"
+    },
+    {
+     "path": "g000.png",
+     "recorded_sha256": "093fa69c2f29d348c12ef5c9f60095b16ae63ebc584e6582de33afca25012459",
+     "verdict": "absent"
+    },
+    {
+     "path": "g001.png",
+     "recorded_sha256": "fdbc91b982bfea288d6be6dd641be9a26f1a6899d3eda6d0f68cd92531d1394a",
+     "verdict": "absent"
+    },
+    {
+     "path": "g002.png",
+     "recorded_sha256": "dedd1474e0b981951c32c82e71b07768fa65fb4c83d5e68a8e57413c7f2740b5",
+     "verdict": "absent"
+    },
+    {
+     "path": "g003.png",
+     "recorded_sha256": "54dab987e8860db1c5135db48eb28144bd66b3a061edbcb21e8ef963bce3eef1",
+     "verdict": "absent"
+    },
+    {
+     "path": "g004.png",
+     "recorded_sha256": "2557430b35e4ac51275c34fbeb36b3bd234fef4de2b34a04c456f57ea44bc084",
+     "verdict": "absent"
+    },
+    {
+     "path": "g005.png",
+     "recorded_sha256": "e03764d7cd42e74a2a5b2b84d3407c0fdbc9d4f622ab9177ca86e431e3d4462f",
+     "verdict": "absent"
+    },
+    {
+     "path": "g006.png",
+     "recorded_sha256": "af55413fd8d07378ddc1bdc11e3b38f1d5413d0b54e5ebfc6239b4a0cbcb4c21",
+     "verdict": "absent"
+    },
+    {
+     "path": "g007.png",
+     "recorded_sha256": "06ee07361ac2611a999cf956222a44884379b6f9f8c8da46abb30f703fc4e392",
+     "verdict": "absent"
+    }
+   ],
+   "sampled_match": 0,
+   "sampled_total": 16,
+   "findings": [
+    "generation_blob_unreadable:docs/AGENT_BOOTSTRAP_READINESS.md:fatal: path 'docs/AGENT_BOOTSTRAP_READINESS.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180dbb50193'",
+    "generation_blob_unreadable:docs/AGENT_START.md:fatal: path 'docs/AGENT_START.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180dbb50193'",
+    "generation_blob_unreadable:docs/THE_AGENT_FLEET.md:fatal: path 'docs/THE_AGENT_FLEET.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180dbb50193'",
+    "generation_blob_unreadable:docs/THE_HOLODECK_BLUEPRINT.md:fatal: path 'docs/THE_HOLODECK_BLUEPRINT.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180dbb50193'",
+    "generation_mismatch:docs/THE_MASTER_LIST.md",
+    "generation_blob_unreadable:docs/evidence/agent_fleet/DOCUMENTATION_INDEX.json:fatal: path 'docs/evidence/agent_fleet/DOCUMENTATION_INDEX.json' exists on disk, but not in 'bf0a62162008c8415b88091c671",
+    "generation_blob_unreadable:docs/evidence/agent_fleet/DOCUMENTATION_REVIEW.md:fatal: path 'docs/evidence/agent_fleet/DOCUMENTATION_REVIEW.md' exists on disk, but not in 'bf0a62162008c8415b88091c671a",
+    "generation_blob_unreadable:docs/evidence/agent_fleet/PREREGISTRATION.md:fatal: path 'docs/evidence/agent_fleet/PREREGISTRATION.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180d",
+    "manifest_generation_mismatch:g000.png:absent",
+    "manifest_generation_mismatch:g001.png:absent",
+    "manifest_generation_mismatch:g002.png:absent",
+    "manifest_generation_mismatch:g003.png:absent",
+    "manifest_generation_mismatch:g004.png:absent",
+    "manifest_generation_mismatch:g005.png:absent",
+    "manifest_generation_mismatch:g006.png:absent",
+    "manifest_generation_mismatch:g007.png:absent"
+   ],
+   "satisfied": false
+  },
+  {
+   "clause": "training_checkpoints",
+   "curriculum_record": {
+    "path": "E:\\ChimeraWork\\monkey-play-20260924\\Chimera\\docs\\curriculum\\pending_checkpoints.json",
+    "note": "engine curriculum training checkpoints",
+    "raw_sha256": "eed9dc4ef3db4cd08df5eced35806447117cdf6563a4fd77f307ec8986b674f3"
+   },
+   "curriculum_entries": 18,
+   "curriculum_statuses": [
+    {
+     "id": "fac.h-1",
+     "status": "pending",
+     "provenance_source_id": "H-1"
+    },
+    {
+     "id": "fac.h-2",
+     "status": "pending",
+     "provenance_source_id": "H-2"
+    },
+    {
+     "id": "fac.h-3",
+     "status": "pending",
+     "provenance_source_id": "H-3"
+    },
+    {
+     "id": "fac.h-7",
+     "status": "pending",
+     "provenance_source_id": "H-7"
+    },
+    {
+     "id": "fac.h-13",
+     "status": "pending",
+     "provenance_source_id": "H-13"
+    },
+    {
+     "id": "fac.h-14",
+     "status": "pending",
+     "provenance_source_id": "H-14"
+    },
+    {
+     "id": "fac.h-17",
+     "status": "pending",
+     "provenance_source_id": "H-17"
+    },
+    {
+     "id": "fac.h-19",
+     "status": "pending",
+     "provenance_source_id": "H-19"
+    },
+    {
+     "id": "fac.h-21",
+     "status": "pending",
+     "provenance_source_id": "H-21"
+    },
+    {
+     "id": "fac.h-22",
+     "status": "pending",
+     "provenance_source_id": "H-22"
+    },
+    {
+     "id": "fac.h-24",
+     "status": "pending",
+     "provenance_source_id": "H-24"
+    },
+    {
+     "id": "fac.h-25",
+     "status": "pending",
+     "provenance_source_id": "H-25"
+    },
+    {
+     "id": "fac.h-28",
+     "status": "pending",
+     "provenance_source_id": "H-28"
+    },
+    {
+     "id": "fac.h-29",
+     "status": "pending",
+     "provenance_source_id": "H-29"
+    },
+    {
+     "id": "fac.h-30",
+     "status": "pending",
+     "provenance_source_id": "H-30"
+    },
+    {
+     "id": "fac.h-31",
+     "status": "pending",
+     "provenance_source_id": "H-31"
+    },
+    {
+     "id": "fac.h-32",
+     "status": "pending",
+     "provenance_source_id": "H-32"
+    },
+    {
+     "id": "fac.h-33",
+     "status": "pending",
+     "provenance_source_id": "H-33"
+    }
+   ],
+   "training_receipts": [
+    {
+     "path": "E:\\ChimeraWork\\monkey-play-20260924\\tools\\monkey_campaign\\agents\\W7_landing\\receipts\\suite_green_landed.log",
+     "note": "training-suite receipt",
+     "raw_sha256": "fcacc4df01b91e8fb6147d846e25e14ab77e09294273b786d9e372ff3945823a"
+    },
+    {
+     "path": "E:\\ChimeraWork\\monkey-play-20260924\\tools\\monkey_campaign\\agents\\W7_landing\\receipts\\w5_suite.log",
+     "note": "training-suite receipt",
+     "raw_sha256": "104ad8c56fc269e72eb81b572585fac86fb3676fdf0ef365cd748c389d8f0529"
+    },
+    {
+     "path": "E:\\ChimeraWork\\monkey-play-20260924\\tools\\monkey_campaign\\agents\\W7_landing\\receipts\\w6_suite.log",
+     "note": "training-suite receipt",
+     "raw_sha256": "54b1b7c0ff77f88f9c65115f105c0809b69de832f9178ba6b81324aec076bbf2"
+    }
+   ],
+   "checkpoint_law_records": [
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\checkpoints.py",
+      "note": "checkpoint law/workflow record",
+      "raw_sha256": "50b2fe38fe0c2c589549c93abea066d25b7f321c243e1e95ec32e6009b962a91"
+     },
+     "schema_token": "chimera.checkpoint_receipt.v1",
+     "present": true
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\CHECKPOINT_WORKFLOW.md",
+      "note": "checkpoint law/workflow record",
+      "raw_sha256": "a5b75504bfe0cb02190ff806be2821e0580bfcfa2af88c98036c53a3d8f24a63"
+     },
+     "schema_token": "## Checkpoints for each affected feature",
+     "present": true
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\CHECKPOINT_VERIFICATION.md",
+      "note": "checkpoint law/workflow record",
+      "raw_sha256": "734175820f34684a492205a6a1aea915240f55ccfb0cdd6c0df758f0cbc17af4"
+     },
+     "schema_token": "first-unmet-gate",
+     "present": true
+    }
+   ],
+   "trainer_law_records": [
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\train_walk.py",
+      "note": "trainer/judge law source",
+      "raw_sha256": "aea4aa22de7aa8d750fb7369317ae1ec9ebcdc3039c56259b07ceeeafd3549d7"
+     },
+     "token": "np.save(OUTDIR / out_name, best_ever[1])",
+     "present": true,
+     "kind": "writer/width-law/restore-consumer record"
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\walk_port.py",
+      "note": "trainer/judge law source",
+      "raw_sha256": "8c73d690fecd77ff9c4ff1522b9ed104900f1a11d41b6256be8d916bc8678627"
+     },
+     "token": "N_FREE = 2 * len(OSC_JOINTS)",
+     "present": true,
+     "kind": "writer/width-law/restore-consumer record"
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\f4_walk.py",
+      "note": "trainer/judge law source",
+      "raw_sha256": "d197a193e8046f7185392049e2328f51b42e2f3272bce2176eac8a956ec98829"
+     },
+     "token": "--theta <path>",
+     "present": true,
+     "kind": "writer/width-law/restore-consumer record"
+    }
+   ],
+   "checkpoint_artifacts": [
+    {
+     "checkpoint": "walk_theta_entrained.npy",
+     "role": "walk policy checkpoint (entrained width)",
+     "path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\walk_theta_entrained.npy",
+     "raw_sha256": "8f5dd3a68ec4d430a9883f267112b6f7b043ec1432dba6a59d131e87d2a9af92",
+     "size_bytes": 192,
+     "load_evidence": {
+      "format": "npy",
+      "descr": "<f8",
+      "shape": [
+       8
+      ],
+      "read_only_header_parse": "ok"
+     },
+     "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)",
+     "width_law": {
+      "n_free": 6,
+      "expected_width": 8,
+      "measured_width": 8
+     }
+    },
+    {
+     "checkpoint": "walk_theta_mult.npy",
+     "role": "walk policy checkpoint (plain width)",
+     "path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\walk_theta_mult.npy",
+     "raw_sha256": "ad8ed9a9451f1c943bf535a98f2a7cf2fb38b5e36388b636177c3087854d8e90",
+     "size_bytes": 176,
+     "load_evidence": {
+      "format": "npy",
+      "descr": "<f8",
+      "shape": [
+       6
+      ],
+      "read_only_header_parse": "ok"
+     },
+     "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)",
+     "width_law": {
+      "n_free": 6,
+      "expected_width": 6,
+      "measured_width": 6
+     }
+    },
+    {
+     "checkpoint": "stand_theta.npy",
+     "role": "stand substrate policy checkpoint",
+     "path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\stand_theta.npy",
+     "raw_sha256": "684f1eaab29f683ef7c803180c32e9d4f1e5ddd64656d103ac5391fc79e851b7",
+     "size_bytes": 9408,
+     "load_evidence": {
+      "format": "npy",
+      "descr": "<f8",
+      "shape": [
+       1160
+      ],
+      "read_only_header_parse": "ok"
+     },
+     "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)"
+    },
+    {
+     "checkpoint": "step_theta.npy",
+     "role": "step policy checkpoint",
+     "path": "E:\\PythonChimera\\ChimeraEngine\\output\\ports\\step_theta.npy",
+     "raw_sha256": "db943f46b29422dc45053c0d9541a0be537cfc93149660a0d8a7cc9cac6e2a3c",
+     "size_bytes": 184,
+     "load_evidence": {
+      "format": "npy",
+      "descr": "<f8",
+      "shape": [
+       7
+      ],
+      "read_only_header_parse": "ok"
+     },
+     "restore_consumer": "python tools/f4_walk.py --theta <path> (documented judge; NOT executed here)"
+    }
+   ],
+   "run_identity_records": [
+    {
+     "site": "E:/ChimeraWork/l0-baseline-repro",
+     "raw_sha256": "9cd272ea65bd30305d122b9c8b1e5b64b7265d3e60278d74db9b01b5746873aa",
+     "names_checkpoint": "walk_theta_entrained.npy",
+     "verdict_verbatim": false,
+     "speed_median": 0.46006499408775303,
+     "seed_ids": [
+      0
+     ]
+    },
+    {
+     "site": "E:/ChimeraWork/lane-archive/w47-agent",
+     "raw_sha256": "9cd272ea65bd30305d122b9c8b1e5b64b7265d3e60278d74db9b01b5746873aa",
+     "names_checkpoint": "walk_theta_entrained.npy",
+     "verdict_verbatim": false,
+     "speed_median": 0.46006499408775303,
+     "seed_ids": [
+      0
+     ]
+    },
+    {
+     "site": "E:/ChimeraWork/pass3-integ/repo",
+     "raw_sha256": "9cd272ea65bd30305d122b9c8b1e5b64b7265d3e60278d74db9b01b5746873aa",
+     "names_checkpoint": "walk_theta_entrained.npy",
+     "verdict_verbatim": false,
+     "speed_median": 0.46006499408775303,
+     "seed_ids": [
+      0
+     ]
+    }
+   ],
+   "certified_policy_checkpoints": 0,
+   "honest_scope_note": "identified checkpoints are recoverable training-state artifacts; no certified-walk checkpoint exists (run verdicts reported verbatim) and the store is live single-site data preserved by the campaign checkout",
+   "prior_probe_preserved": {
+    "path": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json @ review/ONT-P05 f1b18a55c58bef45bb25dacadde162f0ff09f9c1",
+    "raw_sha256": "516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88",
+    "prior_attempt_id": "1ea58bee28c04768b15253c2f1ba7888"
+   },
+   "findings": [],
+   "satisfied": true
+  },
+  {
+   "clause": "raw_blob_canonical_hash_labels",
+   "subject": {
+    "path": "E:\\PythonChimera\\tools\\monkey_campaign\\monkey_completion_map.json",
+    "note": "sealed completion map",
+    "raw_sha256": "010311bb0a4fc5eec6c7f361db3a2631c2821e4b7d6cc56d751c02f6712fe161"
+   },
+   "scope_lock": {
+    "path": "E:\\PythonChimera\\tools\\monkey_campaign\\APPROVED_SCOPE.json",
+    "note": "dual-labeled scope lock over the map",
+    "raw_sha256": "92d0c33f6b02f7258a7b2ac392865673ad0bb26efc52b207fc8093647e620397"
+   },
+   "labels": {
+    "raw_sha256": "010311bb0a4fc5eec6c7f361db3a2631c2821e4b7d6cc56d751c02f6712fe161",
+    "git_blob_sha1": "466ba011f9df369e706497a7b21b516f36643385",
+    "canonical_sha256_chimera_json_v1": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6"
+   },
+   "lock_labels": {
+    "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "raw_file_sha256": "010311bb0a4fc5eec6c7f361db3a2631c2821e4b7d6cc56d751c02f6712fe161",
+    "lock_file_raw_sha256": "92d0c33f6b02f7258a7b2ac392865673ad0bb26efc52b207fc8093647e620397"
+   },
+   "labels_distinct": true,
+   "oracle": {
+    "verify_catalog": "pass",
+    "external_digest_checked": true
+   },
+   "law_reference": "decisions/20260924_campaign_handoffs.md MV-B4-1 + M01-F1: label each identity",
+   "findings": [],
+   "satisfied": true
+  },
+  {
+   "clause": "retry_rules",
+   "rule_records": [
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\MERGE_SERVICE.md",
+      "note": "retry-rule record",
+      "raw_sha256": "da2ba8e0c5b9185982326a36f66923c5c63aa6c53c38b124d1d465b068e76616"
+     },
+     "marker": "retry accept-merge",
+     "present": true
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\STARTUP_RECOVERY.md",
+      "note": "retry-rule record",
+      "raw_sha256": "4ac98c7f4355521c29e5c6c7d656e22689c8e0d19518d3bc97f92806bdc12545"
+     },
+     "marker": "Retry the receipt's arrival ID",
+     "present": true
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\continuous_cycle.py",
+      "note": "retry-rule record",
+      "raw_sha256": "4b00fee7fedc0962f4d6b05a099d9bff7ad79a80cb56c5a26784e1bb101cf601"
+     },
+     "marker": "PUBLICATION_ALREADY_REQUESTED",
+     "present": true
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\kanban.py",
+      "note": "retry-rule record",
+      "raw_sha256": "075e6b211c4506e3a456e67496fc17415dc0c8ef00a91e2b9478b8a9ac4b6953"
+     },
+     "marker": "ALREADY_COMPLETED",
+     "present": true
+    },
+    {
+     "record": {
+      "path": "E:\\PythonChimera\\tools\\monkey_campaign\\suggestion_box.py",
+      "note": "retry-rule record",
+      "raw_sha256": "709562a650984a92d3c3f5df8a26dc1cef08e6d55115ec15148b0f2ef6f429c8"
+     },
+     "marker": "exact_retry",
+     "present": true
+    }
+   ],
+   "merge_service_receipts": [
+    {
+     "path": "E:\\Chimera\\merge-service\\accept-117-result.json",
+     "note": "idempotent accept-merge receipt",
+     "raw_sha256": "ffc6205deab9024ab5fc6fe94e469c50a79ade7822e2c3bf3cbd0dba7f86ec54"
+    },
+    {
+     "path": "E:\\Chimera\\merge-service\\accept-118-result.json",
+     "note": "idempotent accept-merge receipt",
+     "raw_sha256": "8e48f1179c713ab9101a7425fc69f2acda0a0a68aa0f57fbb19f60945763ea2d"
+    },
+    {
+     "path": "E:\\Chimera\\merge-service\\accept-119-result.json",
+     "note": "idempotent accept-merge receipt",
+     "raw_sha256": "f02bc7296a56904756f79eb92e8183f492f010da39184adc38709b9a4bc1d724"
+    },
+    {
+     "path": "E:\\Chimera\\merge-service\\accept-120-result.json",
+     "note": "idempotent accept-merge receipt",
+     "raw_sha256": "7bc187514de8f2f4ffe270c92154b428d4acb4cce4ddaacb00b76a19fcfc2015"
+    }
+   ],
+   "batteries": [
+    {
+     "module": "test_kanban",
+     "ok": true,
+     "returncode": 0,
+     "summary": "---------------------------------------------------------------------- | Ran 11 tests in 0.484s | OK"
+    },
+    {
+     "module": "test_suggestion_box",
+     "ok": true,
+     "returncode": 0,
+     "summary": "---------------------------------------------------------------------- | Ran 5 tests in 0.237s | OK"
+    },
+    {
+     "module": "test_merge_service",
+     "ok": true,
+     "returncode": 0,
+     "summary": "---------------------------------------------------------------------- | Ran 2 tests in 0.000s | OK"
+    },
+    {
+     "module": "test_checkpoints",
+     "ok": true,
+     "returncode": 0,
+     "summary": "---------------------------------------------------------------------- | Ran 19 tests in 0.560s | OK"
+    }
+   ],
+   "findings": [],
+   "satisfied": true
+  }
+ ],
+ "clause_satisfied": {
+  "recoverable_commits": true,
+  "run_manifests": false,
+  "training_checkpoints": true,
+  "raw_blob_canonical_hash_labels": true,
+  "retry_rules": true
+ },
+ "findings": [
+  "run_manifests:generation_blob_unreadable:docs/AGENT_BOOTSTRAP_READINESS.md:fatal: path 'docs/AGENT_BOOTSTRAP_READINESS.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180dbb50193'",
+  "run_manifests:generation_blob_unreadable:docs/AGENT_START.md:fatal: path 'docs/AGENT_START.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180dbb50193'",
+  "run_manifests:generation_blob_unreadable:docs/THE_AGENT_FLEET.md:fatal: path 'docs/THE_AGENT_FLEET.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180dbb50193'",
+  "run_manifests:generation_blob_unreadable:docs/THE_HOLODECK_BLUEPRINT.md:fatal: path 'docs/THE_HOLODECK_BLUEPRINT.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180dbb50193'",
+  "run_manifests:generation_mismatch:docs/THE_MASTER_LIST.md",
+  "run_manifests:generation_blob_unreadable:docs/evidence/agent_fleet/DOCUMENTATION_INDEX.json:fatal: path 'docs/evidence/agent_fleet/DOCUMENTATION_INDEX.json' exists on disk, but not in 'bf0a62162008c8415b88091c671",
+  "run_manifests:generation_blob_unreadable:docs/evidence/agent_fleet/DOCUMENTATION_REVIEW.md:fatal: path 'docs/evidence/agent_fleet/DOCUMENTATION_REVIEW.md' exists on disk, but not in 'bf0a62162008c8415b88091c671a",
+  "run_manifests:generation_blob_unreadable:docs/evidence/agent_fleet/PREREGISTRATION.md:fatal: path 'docs/evidence/agent_fleet/PREREGISTRATION.md' exists on disk, but not in 'bf0a62162008c8415b88091c671ac180d",
+  "run_manifests:manifest_generation_mismatch:g000.png:absent",
+  "run_manifests:manifest_generation_mismatch:g001.png:absent",
+  "run_manifests:manifest_generation_mismatch:g002.png:absent",
+  "run_manifests:manifest_generation_mismatch:g003.png:absent",
+  "run_manifests:manifest_generation_mismatch:g004.png:absent",
+  "run_manifests:manifest_generation_mismatch:g005.png:absent",
+  "run_manifests:manifest_generation_mismatch:g006.png:absent",
+  "run_manifests:manifest_generation_mismatch:g007.png:absent"
+ ],
+ "all_clauses_satisfied": false,
+ "limits": "Records and hash oracles only; no visual, runtime or human claim. Battery runs exercise fixture registries, not live state."
+}

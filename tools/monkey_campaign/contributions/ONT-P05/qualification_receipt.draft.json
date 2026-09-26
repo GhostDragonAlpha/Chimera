@@ -1,0 +1,41 @@
+{
+ "schema": "ontology_qualification.draft.v1",
+ "note": "DRAFT assembled by the CORRECTING worker per ONTOLOGY_QUEUE.md qualification schema (profile records, offline kind), answering the lead's CHANGES_REQUIRED on PR #146 head f1b18a55. evidence.source and evidence.numerical are final and hash-bound to THIS correction attempt; evidence.independent_review is intentionally PENDING — it must be pinned by the independent reviewer to the actual reviewed head in the review lane before ACCEPTED. The lead verifies all artifacts and raw hashes. The prior attempt's official probe (516e9edb...) and its F1/F2 findings are preserved unmodified.",
+ "task_id": "P05",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
+ "head_sha": "FILL_AT_PUBLICATION: exact published review/ONT-P05 head",
+ "done_when_verified": true,
+ "done_when_note": "All five record classes EXIST and are machine-verified (recoverable commits, run-manifest schemas + modern records, training checkpoints, raw/blob/canonical labels, retry rules). CORRECTION: the training-checkpoints clause is now supported by an IDENTIFIED recoverable training-state artifact — walk_theta_entrained.npy (8f5dd3a68ec4d430a9883f267112b6f7b043ec1432dba6a59d131e87d2a9af92, npy <f8 shape (8,), width law N_FREE+2) and companions under E:/PythonChimera/ChimeraEngine/output/ports/, with run identity agent_logs/f4_walk_walk_theta_entrained.json (9cd272ea65bd30305d122b9c8b1e5b64b7265d3e60278d74db9b01b5746873aa) byte-identical at 3 preserved sites, stdlib read-only header-load evidence against the trainer width law, and the documented restore consumer cited but not executed; certified_policy_checkpoints = 0 is reported verbatim (no certified-walk checkpoint claimed; run verdict false). The standing audit preserves the TWO prior named historical-record findings (F1 agent_fleet MANIFEST.json unreproducible vs pinned source_base; F2 FEATURE_WALK raw-hash manifest frames unpreserved) re-confirmed 8/8, plus F3: the checkpoint store is single-site live data. No record was repaired or fabricated; no training run, GPU or rollout was used.",
+ "profile_verified": true,
+ "profile": {
+  "id": "records",
+  "kind": "offline",
+  "numerical_evidence_required": true,
+  "camera_required_fields": [],
+  "nonvisual_reason": "A source/contract/measurement task whose truth requires records or numerical oracles, not a 3D image."
+ },
+ "evidence": {
+  "source": {
+   "reference": "tools/monkey_campaign/contributions/ONT-P05/implementation.py @ published correction head",
+   "raw_sha256": "7d88d3a3b4624ef7ced90567230538f14669b04cff7a55b1f5954b5e855aa138"
+  },
+  "numerical": {
+   "reference": "tools/monkey_campaign/contributions/ONT-P05/identity_audit.json (official correction probe; rerunnable: python -B implementation.py --out identity_audit.json); prior attempt's official probe 516e9edb0683e687a7490bb42d6fe28982d187ba9114677ed9254ace43f8bf88 preserved unmodified",
+   "raw_sha256": "408135fd46a83966f27495f641c2dc66a67fb3f777aebdc1e483a5d5530de9e6"
+  },
+  "independent_review": {
+   "reference": "PENDING: independent review receipt (review lane, exact published head)",
+   "raw_sha256": null
+  }
+ },
+ "falsifier_scorecard": {
+  "missing_identity_unnamed": "NOT FIRED (all gaps named in identity_audit.json findings: F1, F2)",
+  "claimed_pass_unsupported_by_records": "NOT FIRED (run-manifests clause reports PARTIAL; prediction P3 failure reported, not tuned away; training-checkpoints clause now rests on an identified artifact with recomputed hash, not on schema/law alone)",
+  "fabricated_identity": "NOT FIRED (every field read from live records with recomputed hashes)",
+  "record_write_or_repair": "NOT FIRED (audit is read-only; fixtures in temp dirs only)",
+  "hash_label_conflation": "NOT FIRED (raw/blob/canonical reported as three distinct labeled identities)",
+  "checkpoint_relabeling": "NOT FIRED (only genuine trainer-written .npy policy-parameter checkpoints are identified; no non-checkpoint file relabeled; certified_policy_checkpoints = 0 reported verbatim; no rollout executed)"
+ },
+ "attempt_id": "d7e4d5e96bb741c7b434f94d4bc3c560"
+}
