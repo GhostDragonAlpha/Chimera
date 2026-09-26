@@ -1,0 +1,744 @@
+{
+ "capture_sha256": "127e18fce08e55ea2a4c767da3c7f9e733a02d8e72a051160b7193bbde52c31b",
+ "profile_id": "anatomy",
+ "run_id": "ont-p02-visible-static-20260926-b248ac96",
+ "schema": "chimera.visual_capture_manifest.v1",
+ "subject_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+ "task_id": "P02",
+ "tick_interval": [
+  0,
+  1
+ ],
+ "views": [
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     0,
+     0,
+     640,
+     420
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "coordinate_unit": "m",
+    "forward_axis": "+Z",
+    "frame_id": "playable_slice_scene_yup_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.05,
+     10.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.7118988692223074,
+      "orientation": [
+       0.5863480156604337,
+       0.1295797325938515,
+       -0.7807890521937569,
+       0.17255014751182512
+      ],
+      "position": [
+       0.5914429999999999,
+       0.299927,
+       0.329192
+      ],
+      "target": [
+       -0.028557,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.7118988692223074,
+      "orientation": [
+       0.5863480156604337,
+       0.1295797325938515,
+       -0.7807890521937569,
+       0.17255014751182512
+      ],
+      "position": [
+       0.5914429999999999,
+       0.299927,
+       0.329192
+      ],
+      "target": [
+       -0.028557,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "tick": 1
+     }
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "diagnostic",
+   "pair_id": "overview",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111"
+   },
+   "view_id": "whole-creature overview",
+   "visibility": {
+    "label_ids": [
+     "#hindchain_a_femur_b02",
+     "#hindchain_a_tibia_b06",
+     "#hindchain_a_foot_b15",
+     "#hindchain_a_fibula_b20",
+     "#hindchain_a_foot_b22",
+     "#hindchain_a_foot_b25",
+     "#attach_contact_patch",
+     "#attach_joint_b02_b06",
+     "#owner_membrane",
+     "#ghost_overlay"
+    ],
+    "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
+     "frame axes",
+     "stable 3D labels"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "env_standing_body",
+     "bone_b02",
+     "bone_b06",
+     "bone_b15",
+     "bone_b20",
+     "bone_b22",
+     "bone_b25",
+     "attach_contact_patch",
+     "attach_joint_b02_b06",
+     "membrane_creature",
+     "ghost_standing_overlay"
+    ],
+    "occlusion_mode": "xray",
+    "required_subject_ids": [
+     "env_standing_body"
+    ],
+    "selected_ids": [
+     "bone_b02",
+     "bone_b06",
+     "bone_b15",
+     "bone_b20",
+     "bone_b22",
+     "bone_b25"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "#hindchain_a_femur_b02",
+      "subject_id": "bone_b02"
+     },
+     {
+      "label_id": "#hindchain_a_tibia_b06",
+      "subject_id": "bone_b06"
+     },
+     {
+      "label_id": "#hindchain_a_foot_b15",
+      "subject_id": "bone_b15"
+     },
+     {
+      "label_id": "#hindchain_a_fibula_b20",
+      "subject_id": "bone_b20"
+     },
+     {
+      "label_id": "#hindchain_a_foot_b22",
+      "subject_id": "bone_b22"
+     },
+     {
+      "label_id": "#hindchain_a_foot_b25",
+      "subject_id": "bone_b25"
+     },
+     {
+      "label_id": "#attach_contact_patch",
+      "subject_id": "attach_contact_patch"
+     },
+     {
+      "label_id": "#attach_joint_b02_b06",
+      "subject_id": "attach_joint_b02_b06"
+     },
+     {
+      "label_id": "#owner_membrane",
+      "subject_id": "membrane_creature"
+     },
+     {
+      "label_id": "#ghost_overlay",
+      "subject_id": "ghost_standing_overlay"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     0,
+     420,
+     640,
+     420
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "coordinate_unit": "m",
+    "forward_axis": "+Z",
+    "frame_id": "playable_slice_scene_yup_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.05,
+     10.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.7118988692223074,
+      "orientation": [
+       0.5863480156604337,
+       0.1295797325938515,
+       -0.7807890521937569,
+       0.17255014751182512
+      ],
+      "position": [
+       0.5914429999999999,
+       0.299927,
+       0.329192
+      ],
+      "target": [
+       -0.028557,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.7118988692223074,
+      "orientation": [
+       0.5863480156604337,
+       0.1295797325938515,
+       -0.7807890521937569,
+       0.17255014751182512
+      ],
+      "position": [
+       0.5914429999999999,
+       0.299927,
+       0.329192
+      ],
+      "target": [
+       -0.028557,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "tick": 1
+     }
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "clean",
+   "pair_id": "overview",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111"
+   },
+   "view_id": "whole-creature overview",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "env_standing_body"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "env_standing_body"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     640,
+     0,
+     640,
+     420
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "coordinate_unit": "m",
+    "forward_axis": "+Z",
+    "frame_id": "playable_slice_scene_yup_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.02,
+     5.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.2513961017995307,
+      "orientation": [
+       0.8805472540933921,
+       0.1066194423651313,
+       0.45846182507188415,
+       -0.05551200563925701
+      ],
+      "position": [
+       -0.2792586260869565,
+       -0.07136676521739133,
+       0.11821892173913034
+      ],
+      "target": [
+       -0.07925862608695652,
+       -0.13136676521739132,
+       0.25821892173913036
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.2513961017995307,
+      "orientation": [
+       0.8805472540933921,
+       0.1066194423651313,
+       0.45846182507188415,
+       -0.05551200563925701
+      ],
+      "position": [
+       -0.2792586260869565,
+       -0.07136676521739133,
+       0.11821892173913034
+      ],
+      "target": [
+       -0.07925862608695652,
+       -0.13136676521739132,
+       0.25821892173913036
+      ],
+      "tick": 1
+     }
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "diagnostic",
+   "pair_id": "closeup",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111"
+   },
+   "view_id": "local attachment close-up",
+   "visibility": {
+    "label_ids": [
+     "#attach_contact_patch",
+     "#attach_joint_b02_b06",
+     "#hindchain_a_femur_b02",
+     "#hindchain_a_tibia_b06"
+    ],
+    "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
+     "stable 3D labels"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "env_standing_body",
+     "attach_contact_patch",
+     "attach_joint_b02_b06",
+     "bone_b02",
+     "bone_b06"
+    ],
+    "occlusion_mode": "xray",
+    "required_subject_ids": [
+     "attach_contact_patch",
+     "attach_joint_b02_b06"
+    ],
+    "selected_ids": [
+     "bone_b02",
+     "bone_b06"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "#attach_contact_patch",
+      "subject_id": "attach_contact_patch"
+     },
+     {
+      "label_id": "#attach_joint_b02_b06",
+      "subject_id": "attach_joint_b02_b06"
+     },
+     {
+      "label_id": "#hindchain_a_femur_b02",
+      "subject_id": "bone_b02"
+     },
+     {
+      "label_id": "#hindchain_a_tibia_b06",
+      "subject_id": "bone_b06"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     640,
+     420,
+     640,
+     420
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.5238095238095237,
+    "coordinate_unit": "m",
+    "forward_axis": "+Z",
+    "frame_id": "playable_slice_scene_yup_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.02,
+     5.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.2513961017995307,
+      "orientation": [
+       0.8805472540933921,
+       0.1066194423651313,
+       0.45846182507188415,
+       -0.05551200563925701
+      ],
+      "position": [
+       -0.2792586260869565,
+       -0.07136676521739133,
+       0.11821892173913034
+      ],
+      "target": [
+       -0.07925862608695652,
+       -0.13136676521739132,
+       0.25821892173913036
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.2513961017995307,
+      "orientation": [
+       0.8805472540933921,
+       0.1066194423651313,
+       0.45846182507188415,
+       -0.05551200563925701
+      ],
+      "position": [
+       -0.2792586260869565,
+       -0.07136676521739133,
+       0.11821892173913034
+      ],
+      "target": [
+       -0.07925862608695652,
+       -0.13136676521739132,
+       0.25821892173913036
+      ],
+      "tick": 1
+     }
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "viewport_resolution": [
+     640,
+     420
+    ]
+   },
+   "mode": "clean",
+   "pair_id": "closeup",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111"
+   },
+   "view_id": "local attachment close-up",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "env_standing_body",
+     "attach_contact_patch",
+     "attach_joint_b02_b06"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "attach_contact_patch",
+     "attach_joint_b02_b06"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     1280,
+     0,
+     840,
+     420
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.0,
+    "coordinate_unit": "m",
+    "forward_axis": "+Z",
+    "frame_id": "playable_slice_scene_yup_m",
+    "handedness": "right",
+    "interpolation": "linear_position_target_slerp_orientation",
+    "near_far_planes": [
+     0.05,
+     10.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.8,
+    "projection": "orthographic",
+    "sample_mode": "sampled_trajectory",
+    "samples": [
+     {
+      "distance_to_target": 1.2,
+      "orientation": [
+       0.7071067811865476,
+       0.0,
+       -0.7071067811865475,
+       -0.0
+      ],
+      "position": [
+       1.171443,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "target": [
+       -0.028557,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 1.3219304066402284,
+      "orientation": [
+       0.9026964905575745,
+       0.1967039311460565,
+       -0.3739091290955439,
+       0.08147743605280007
+      ],
+      "position": [
+       0.8214429999999999,
+       0.549927,
+       -0.700808
+      ],
+      "target": [
+       -0.028557,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "tick": 1
+     }
+    ],
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     420,
+     420
+    ]
+   },
+   "mode": "diagnostic",
+   "pair_id": "sideo",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111"
+   },
+   "view_id": "orthogonal side and oblique views",
+   "visibility": {
+    "label_ids": [
+     "#hindchain_a_femur_b02",
+     "#hindchain_a_tibia_b06",
+     "#hindchain_a_fibula_b20",
+     "#attach_contact_patch",
+     "#frame_axes_world"
+    ],
+    "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
+     "frame axes",
+     "stable 3D labels"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "env_standing_body",
+     "bone_b02",
+     "bone_b06",
+     "bone_b20",
+     "attach_contact_patch",
+     "world_frame_axes"
+    ],
+    "occlusion_mode": "xray",
+    "required_subject_ids": [
+     "env_standing_body"
+    ],
+    "selected_ids": [
+     "bone_b02",
+     "bone_b06",
+     "bone_b20"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "#hindchain_a_femur_b02",
+      "subject_id": "bone_b02"
+     },
+     {
+      "label_id": "#hindchain_a_tibia_b06",
+      "subject_id": "bone_b06"
+     },
+     {
+      "label_id": "#hindchain_a_fibula_b20",
+      "subject_id": "bone_b20"
+     },
+     {
+      "label_id": "#attach_contact_patch",
+      "subject_id": "attach_contact_patch"
+     },
+     {
+      "label_id": "#frame_axes_world",
+      "subject_id": "world_frame_axes"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "image",
+    "pixel_rectangle": [
+     1280,
+     420,
+     840,
+     420
+    ],
+    "region": "pixel_rectangle"
+   },
+   "camera": {
+    "aspect_ratio": 1.0,
+    "coordinate_unit": "m",
+    "forward_axis": "+Z",
+    "frame_id": "playable_slice_scene_yup_m",
+    "handedness": "right",
+    "interpolation": "linear_position_target_slerp_orientation",
+    "near_far_planes": [
+     0.05,
+     10.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.8,
+    "projection": "orthographic",
+    "sample_mode": "sampled_trajectory",
+    "samples": [
+     {
+      "distance_to_target": 1.2,
+      "orientation": [
+       0.7071067811865476,
+       0.0,
+       -0.7071067811865475,
+       -0.0
+      ],
+      "position": [
+       1.171443,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "target": [
+       -0.028557,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 1.3219304066402284,
+      "orientation": [
+       0.9026964905575745,
+       0.1967039311460565,
+       -0.3739091290955439,
+       0.08147743605280007
+      ],
+      "position": [
+       0.8214429999999999,
+       0.549927,
+       -0.700808
+      ],
+      "target": [
+       -0.028557,
+       -7.300000000000362e-05,
+       0.149192
+      ],
+      "tick": 1
+     }
+    ],
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     420,
+     420
+    ]
+   },
+   "mode": "clean",
+   "pair_id": "sideo",
+   "state_binding": {
+    "kind": "state",
+    "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111"
+   },
+   "view_id": "orthogonal side and oblique views",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "env_standing_body"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "env_standing_body"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  }
+ ]
+}

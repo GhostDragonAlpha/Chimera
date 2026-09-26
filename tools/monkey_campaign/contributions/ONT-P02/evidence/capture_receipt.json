@@ -1,0 +1,158 @@
+{
+ "card_id": "ONT-P02",
+ "clean_panels": "own panels, zero annotations/diagnostic pixels; occlusion depth_tested, envelope only",
+ "diagnostic_panels": "xray mode: envelope ghost pass + bone pass (alpha 200/255), overlay panel, frame axes, stable 3D labels",
+ "environment": {
+  "numpy": "2.2.6",
+  "pillow": "12.2.0",
+  "python": "3.14.3"
+ },
+ "frozen_probe_results": {
+  "closeup_anchors_in_frame": {
+   "inside": 4,
+   "ok": true,
+   "probed": 4
+  },
+  "oblique_all_verts_in_frame": {
+   "inside": 249743,
+   "ok": true,
+   "probed": 249743
+  },
+  "overview_all_verts_in_frame": {
+   "inside": 249743,
+   "ok": true,
+   "probed": 249743
+  },
+  "side_all_verts_in_frame": {
+   "inside": 249743,
+   "ok": true,
+   "probed": 249743
+  }
+ },
+ "gate_validation": {
+  "capture_kind": "image",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "anatomy",
+  "structurally_valid": true,
+  "view_count": 6,
+  "visual_acceptance": false
+ },
+ "honest_boundary": "Deterministic CPU software render (numpy + PIL painter's algorithm) of the pinned mesh bytes; NOT native engine frames; no GPU; no engine process; python -B CPU-only.",
+ "image": {
+  "bytes": 263219,
+  "encoder": "PIL PNG compress_level=6 (deterministic)",
+  "raw_sha256": "127e18fce08e55ea2a4c767da3c7f9e733a02d8e72a051160b7193bbde52c31b",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P02\\b248ac961ccb44b3b4b141c5878e9bd5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-P02\\evidence\\capture.png",
+  "resolution": [
+   2120,
+   840
+  ]
+ },
+ "layer_inventory": {
+  "attachment sites": "measured scene contact band centroid + DECLARED centroid-midpoint joint proxy (2-6 touching edge gap 2.91 mm per identification v3) + owner binding labels",
+  "frame axes": "+X/-X/+Y/-Y/+Z/-Z triad at origin, overview + side/oblique diagnostics only",
+  "muscle/tendon paths": "ABSENT - inventoried explicitly; no muscle/tendon lineage pinned for the runtime body; nothing invented",
+  "outer envelope": "pinned mesh surface, depth-tested in clean, ghost tone in diagnostic",
+  "selected bones/joints": "per-bone blocks (verified contiguous segmentation, sums 249743/499976); hind chain 'a' highlighted + labeled (sides never assigned)",
+  "stable 3D labels": "every label_id drawn and bound 1:1"
+ },
+ "manifest": {
+  "raw_sha256": "116fe870e8411333f546b050b5a47a7244b3d7ba08d30d7592f09e6a70ec4efc",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P02\\b248ac961ccb44b3b4b141c5878e9bd5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-P02\\evidence\\capture_manifest.json"
+ },
+ "render_referents": {
+  "area_skip_px2": 0.02,
+  "depth_sort": "numpy argsort(-depth, kind='stable'), painter back-to-front",
+  "frame": "playable_slice_scene_yup_m (scene metres, Y-up, right-handed; pads' mean plane y=0 per the committed compose header)",
+  "light": "directional, world dir (0.35, 0.8, -0.45) normalized (clean shading only)",
+  "projection": "perspective 40 deg vertical FOV (overview, close-up); orthographic span 0.80 m (side, oblique)"
+ },
+ "run_id": "ont-p02-visible-static-20260926-b248ac96",
+ "schema": "ont-p02.anatomy.visible_static.capture.v1",
+ "sheet_layout": {
+  "local attachment close-up": {
+   "clean": [
+    640,
+    420,
+    640,
+    420
+   ],
+   "diagnostic": [
+    640,
+    0,
+    640,
+    420
+   ]
+  },
+  "orthogonal side and oblique views": {
+   "bookmark_panels": {
+    "tick 0 side": [
+     1280,
+     0,
+     420,
+     420
+    ],
+    "tick 0 side (clean)": [
+     1280,
+     420,
+     420,
+     420
+    ],
+    "tick 1 oblique": [
+     1700,
+     0,
+     420,
+     420
+    ],
+    "tick 1 oblique (clean)": [
+     1700,
+     420,
+     420,
+     420
+    ]
+   },
+   "clean": [
+    1280,
+    420,
+    840,
+    420
+   ],
+   "diagnostic": [
+    1280,
+    0,
+    840,
+    420
+   ],
+   "note": "one profile view, two declared camera bookmarks; each 420x420 panel is one bookmark's frame at the declared viewport_resolution"
+  },
+  "whole-creature overview": {
+   "clean": [
+    0,
+    420,
+    640,
+    420
+   ],
+   "diagnostic": [
+    0,
+    0,
+    640,
+    420
+   ]
+  }
+ },
+ "state_binding": {
+  "kind": "state",
+  "note": "the pinned subject bytes ARE the static physical state; all 6 rows bind the same hash - view/layer toggles preserve it",
+  "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111"
+ },
+ "subject": {
+  "blob": "ef6f35302e1c00287b4c13c8cfbf276c7f3879d0",
+  "bytes": 18469042,
+  "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+  "extraction": "read-only git cat-file blob into attempt scratch; sha256+bytes asserted before parse",
+  "path": "tools/playable_slice/standing_body.obj",
+  "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111"
+ },
+ "task_id": "P02"
+}

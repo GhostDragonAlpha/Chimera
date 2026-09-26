@@ -1,0 +1,161 @@
+{
+ "frozen_predictions": {
+  "all_asserted_at_build": true,
+  "band_centroid": [
+   -0.079259,
+   -0.131367,
+   0.258219
+  ],
+  "band_owners": {
+   "2": 169,
+   "6": 61
+  },
+  "band_verts": 230,
+  "bbox_max": [
+   0.102051,
+   0.134568,
+   0.45177
+  ],
+  "bbox_min": [
+   -0.159165,
+   -0.134714,
+   -0.153386
+  ],
+  "chain_centroids": {
+   "2": [
+    -0.0661,
+    -0.072,
+    0.2886
+   ],
+   "6": [
+    -0.0866,
+    -0.0768,
+    0.3199
+   ],
+   "15": [
+    -0.0802,
+    -0.0011,
+    0.3415
+   ],
+   "20": [
+    -0.0721,
+    -0.0688,
+    0.3259
+   ],
+   "22": [
+    -0.0682,
+    -0.0001,
+    0.3828
+   ],
+   "25": [
+    -0.0825,
+    -0.0118,
+    0.3786
+   ]
+  }
+ },
+ "gate_validation": {
+  "capture_kind": "image",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "anatomy",
+  "structurally_valid": true,
+  "view_count": 6,
+  "visual_acceptance": false
+ },
+ "records_leg_reused": {
+  "head_sha": "8c7ed8c27d9e27d1210a7754cb17831bd4ec1532",
+  "independent_review_evidence": {
+   "raw_sha256": "d50b0c1d525072bf9cc7136a039770bcfeb929e3b83949b669bd5bb860ac7d59",
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-reviews\\ONT-P02\\101b464373ec4f119790f64d9753d1d0\\review_evidence\\ONT-P02_review_evidence.json"
+  },
+  "lineage_verification_receipt": {
+   "raw_sha256": "d3a71783930c4d9d0a3625ce7f86c15c622c39c7c0eb4f7fec8cd4a97acd839c",
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P02\\ab7b304e0a0446e99f324557addb21fb\\lineage_verification_receipt.json"
+  },
+  "monkey_lineage_map.json_sha256": "6a9d4ac83c2f99339c9a3fa72f0ecb4d018e0239cc2d26a1e8876a08d43a27b9",
+  "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/144",
+  "reviewer_pass": "152 checks / 23 pins, falsifier 23/23"
+ },
+ "run_id": "ont-p02-visible-static-20260926-b248ac96",
+ "schema": "ont-p02.anatomy.visible_static.numerical.v1",
+ "subject_measurements": {
+  "bbox_max": [
+   0.102051,
+   0.134568,
+   0.45177
+  ],
+  "bbox_min": [
+   -0.159165,
+   -0.134714,
+   -0.153386
+  ],
+  "bytes": 18469042,
+  "center": [
+   -0.028557,
+   -7.300000000000362e-05,
+   0.149192
+  ],
+  "contact_band": {
+   "centroid": [
+    -0.07925862608695652,
+    -0.13136676521739132,
+    0.25821892173913036
+   ],
+   "owners": {
+    "2": 169,
+    "6": 61
+   },
+   "verts": 230,
+   "y_threshold": -0.129714
+  },
+  "faces": 499976,
+  "segmentation": {
+   "blocks": 25,
+   "chain_a_centroids": {
+    "15": [
+     -0.08022941299392124,
+     -0.0010991319338905792,
+     0.34147119139437593
+    ],
+    "2": [
+     -0.06610466138068564,
+     -0.07197478824423101,
+     0.2886356896780939
+    ],
+    "20": [
+     -0.07210688444739835,
+     -0.06875441131788829,
+     0.3259184001139392
+    ],
+    "22": [
+     -0.06818657599912634,
+     -6.315243502948463e-05,
+     0.3827714593797778
+    ],
+    "25": [
+     -0.08249415672339648,
+     -0.011834457639798,
+     0.37857045782681825
+    ],
+    "6": [
+     -0.08655439870832929,
+     -0.07677444534143786,
+     0.3198971728559229
+    ]
+   },
+   "contiguous": true,
+   "face_sums_match": true,
+   "joint_proxy_b02_b06": [
+    -0.07632953004450746,
+    -0.07437461679283444,
+    0.30426643126700836
+   ],
+   "vert_sums_match": true
+  },
+  "sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "verts": 249743
+ },
+ "task_id": "P02",
+ "visual_camera_leg": "NEW evidence (this correction): capture.png + capture_manifest.json; structural gate PASS (visual_acceptance false by design - independent review remains the gate)"
+}
