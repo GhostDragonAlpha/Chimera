@@ -1,0 +1,1 @@
+{"adapter_selftest":"pass","schema":"chimera.monkey_campaign.resource_ledger.v1"}

@@ -1,0 +1,116 @@
+{
+  "schema": "chimera.monkey_campaign.receipt.v1",
+  "task_id": "I-R05-RESOURCE-LEDGER-FOLLOWUP",
+  "attempt_id": "a4592d4b796542a7ad657d8e2ad7d3ec",
+  "arrival_id": "arrival-d96c4ed14b3541f89fb80acf90a759b2",
+  "branch": "branch-3",
+  "base_revision": "c525b82c7c3ce0128565424764293a3c85811ab3",
+  "criteria_sha256": "03d70278eca25c1b2f7450abaca7178f475aba038a76ff9e1ed3e5e35669f815",
+  "preregistration": {
+    "path": "PREREGISTRATION.md",
+    "sha256": "a9757722502cb4529d282fc21de25f252b07cd20da846372bc2bc987cc1d800f",
+    "frozen_before_implementation": true
+  },
+  "accepted_dependency": {
+    "task_id": "I-R05-RESOURCE-LEDGER",
+    "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/139",
+    "head_sha": "47c00f05169fa49ea770c274cfe7f280e6710e82",
+    "merge_commit_sha": "becdcb2716ee441cfb2832287a349c8f4b6c7090",
+    "resource_ledger_sha256": "05cf62184931d6443188cd9b72aa9e88821cc8a9063a351a7e4d658d6690da6c",
+    "import_guard": "adapter refuses adapter_accepted_source_drift unless the imported source hashes to the accepted sha256; duck-typed ledgers refused (adapter_ledger_type)"
+  },
+  "pinned_sources": {
+    "revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+    "ledger": "reference/EXTRACTION_LEDGER.json",
+    "note": "monkey-play tip blobs byte-identical to 9afbddcd for all five pinned files (git blob ids compared); reference/ holds the read-only extraction and is frozen"
+  },
+  "artifacts": {
+    "adapter.py": "f1c20f06256f50c8657de17bc7b3245424a5957798a008bfccd3c0a586bcfe9f",
+    "test_adapter.py": "73a1cd832f304f7fac6d9a94acdcf78497fc75e1f512edb6a7ebcd9da4228056",
+    "report.md": "80f43f76265ffc65c284646c0a5298e92c8bc871327c4cf0447cfb95cb995392",
+    "reference/EXTRACTION_LEDGER.json": "401f85f86c09a4e8400d83a7ced76097c9cebe3cf9012a118fdb3a0cfdeae3c0",
+    "verification/unittest_run1.txt": "fcf583eb4e1d128df8e8b2a912689ca595866cb21ad11caf5259d3f6a152f811",
+    "verification/unittest_run2.txt": "a4a6c19a1b5325a18fbd27bb93f2f020587ee8fe96d9ee0e1745c6aa34a7b748",
+    "verification/adapter_selftest.txt": "f089e48138e3191b0b32da645329f7ad7edf83401162927c0c1ea75f3e0f7b38",
+    "verification/session_flow_tests_output.txt": "26ae487cc2e7af41e9ab5e3793823e7d0cf74a6a357f9994898ff9dd55fa706c",
+    "verification/session_flow_tests_receipt.json": "7b50a44435804ead05a58762b665ccfeffdd2b73b591396dedd5d3d036026f88"
+  },
+  "commands": [
+    {
+      "cmd": "python -B -m unittest -v test_adapter  (run 1, final code)",
+      "cwd": "contribution dir",
+      "exit": 0,
+      "result": "Ran 26 tests in 0.006s -- OK",
+      "wall_seconds": 0.186
+    },
+    {
+      "cmd": "python -B -m unittest test_adapter  (run 2, determinism)",
+      "cwd": "contribution dir",
+      "exit": 0,
+      "result": "Ran 26 tests in 0.006s -- OK",
+      "wall_seconds": 0.133
+    },
+    {
+      "cmd": "python -B adapter.py selftest",
+      "exit": 0,
+      "result": "{\"adapter_selftest\":\"pass\",\"schema\":\"chimera.monkey_campaign.resource_ledger.v1\"}"
+    },
+    {
+      "cmd": "python -B reference/resource_ledger.py selftest",
+      "exit": 0,
+      "result": "{\"schema\":\"chimera.monkey_campaign.resource_ledger.v1\",\"selftest\":\"pass\"} (accepted bytes)"
+    },
+    {
+      "cmd": "python -B reference/tools/monkey_campaign/product/session_flow_tests.py",
+      "cwd": "contribution dir",
+      "exit": 0,
+      "result": "RESULT: ALL CHECKS PASS; checks_total 74 (the EXISTING session teardown suite, unmodified, on the pinned bytes)",
+      "wall_seconds": 0.125,
+      "note": "the suite wrote its receipt artifact under reference/tools/monkey_campaign/agents/; it was moved to verification/session_flow_tests_receipt.json and reference/ was restored to exactly the 7 pinned files"
+    }
+  ],
+  "first_development_run": {
+    "result": "Ran 26 tests -- FAILED (failures=4, errors=1); adapter selftest FAIL",
+    "recorded_honestly": true,
+    "issues": [
+      "ERROR test_imported_ledger_is_the_accepted_module: adapter.RESOURCE_LEDGER_SHA256 missing (API gap) -- constant published",
+      "FAIL test_adapter_source_has_no_governor_tokens: 'import time' docstring substring false positive -- replaced by AST complete-import-set check",
+      "FAIL test_ceilings_flow_through_adapter_closes: test asserted violations on the wrong summary scope -- fixed to read close-time summary",
+      "FAIL test_wrong_owner_keeps_record_live_until_close: wrong test expectation; ledger law (recorded refusal fails zero-budget cycle) is correct -- test corrected, module unchanged",
+      "FAIL test_stale_claim_leaves_a_named_failure_not_a_close: failure event carries the CLAIMED generation; whole-ledger scope asserts the failure",
+      "adapter selftest FAIL: fixture never released engine:9347 before restart -- the ledger correctly named the leak (falsifier detection on my own fixture); fixture fixed, law unchanged"
+    ],
+    "second_invocation": "26/26 OK, run twice, deterministic"
+  },
+  "card_clause_results": {
+    "real_adapter_around_existing_hooks": "LedgeredSessionFlow(SessionFlow) + LedgeredForestScene(ForestScene) subclasses of the pinned bytes; hooks' own doubles drive the tests",
+    "deliberate_unreleased_resource": "named ledger_live_at_close and cycle FAILED: restart flavor, operator-owner exit flavor (not launderable by max_failures=1000), and f08_teardown_leak scene flavor",
+    "wrong_generation_release": "refused (ledger_wrong_generation), current record untouched and releasable by true generation; whole-ledger cycle fails on the recorded evidence",
+    "actual_source_imports_published": "all imported source sha256 pinned in report.md and re-verified at import",
+    "no_operator_process_control": "adapter import set is exactly {__future__, hashlib, importlib.util, sys, pathlib} (AST-checked); no process discovery/termination/launch, no wall clock, no network"
+  },
+  "falsifiers": {
+    "F1_standin_instead_of_accepted_module": "NOT FIRED",
+    "F2_leak_passes": "NOT FIRED",
+    "F3_wrong_generation_mutates_current_record": "NOT FIRED",
+    "F4_production_edit": "NOT FIRED (diff confined to this contribution directory)",
+    "F5_native_qualification_claimed_from_fixture": "NOT FIRED (no native claim made)"
+  },
+  "remaining_gates": [
+    "native engine-process qualification: World.shutdown_engine / World.boot exercised only as recorded doubles of the pinned slice_server paths; real child-process closure across repeated restarts and OS handle counts remain native runtime gates",
+    "VRAM / device-memory soak: completely open; no GPU work performed, no VRAM figure exists",
+    "slice_server.py live wiring (parent proposal C): reference only, zero edits",
+    "operator-side adoption of owner=operator records: ledger-level only",
+    "parent R05 runtime gates remain open; this card closes only the FOLLOWUP objective"
+  ],
+  "constraints": {
+    "cpu_only": true,
+    "gpu": false,
+    "network": false,
+    "stdlib_only": true,
+    "test_bound_seconds": 120,
+    "worst_wall_seconds": 0.19,
+    "production_checkout_edits": false,
+    "workspace": "E:/ChimeraWork/monkey-coordination/kanban-attempts/I-R05-RESOURCE-LEDGER-FOLLOWUP/a4592d4b796542a7ad657d8e2ad7d3ec"
+  }
+}
