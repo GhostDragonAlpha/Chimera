@@ -1,0 +1,832 @@
+{
+ "schema": "ont-p03.ledger_reconciliation.v1",
+ "registry_root": "E:/ChimeraWork/monkey-coordination",
+ "card_count": 23,
+ "done_with_winner": 8,
+ "cards_awaiting_lead_publication": 7,
+ "cards_awaiting_review_or_merge": 3,
+ "cards_with_missing_identities": 2,
+ "missing_detail": [
+  {
+   "id": "ONT-P06",
+   "missing": [
+    "owner:no_active_attempt"
+   ]
+  },
+  {
+   "id": "ONT-X01",
+   "missing": [
+    "owner:no_active_attempt"
+   ]
+  }
+ ],
+ "rows": [
+  {
+   "id": "D-W04-MASS-20260924",
+   "lane": "REVIEW",
+   "state": "DONE",
+   "missing": [],
+   "owners": [
+    "arrival-00bd1ee5284e4ab5a551191de42a2fae",
+    "arrival-2fe346f36eaa450e911a1cb1ca805409",
+    "arrival-48edc10ff590419298ce8c838e7346e0",
+    "arrival-8289eab9f50b4321a8ba798de06526e8",
+    "arrival-9e17bf8ab0f340619eb21c1b83976fa2",
+    "arrival-a2f9539875aa4b368ffbcc0087d58daf",
+    "arrival-cb06f58db7684002afe7f501ec9aed4d"
+   ],
+   "source_revision": {
+    "winner_head": "24db3062187e617cf576019adb131926df63a237",
+    "winner_merge": "a4fb2b41435904d56a2947973a08f0eab7bb4ec7",
+    "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/118"
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/118"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-098bd848a2e444699df7c42403b619b4",
+      "status": "PR_RECORDED",
+      "artifacts": 3
+     }
+    ],
+    "winner_merge_sha": "a4fb2b41435904d56a2947973a08f0eab7bb4ec7"
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/118",
+     "head": "24db3062187e617cf576019adb131926df63a237",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    }
+   ],
+   "ledger_complete": true
+  },
+  {
+   "id": "I-U07-TRACE",
+   "lane": "DEVELOPMENT",
+   "state": "CHANGES_REQUESTED",
+   "missing": [],
+   "owners": [
+    "arrival-37ca0f15526a403cbd8c1458d4b83cbe",
+    "arrival-4bf19f88f5b34ed9a8fd93dc18c02bfc",
+    "arrival-80193d96e3874bb2baabcb1e004695ec",
+    "arrival-9b09830994da44c78979a2c66aaec4ba",
+    "arrival-ec97e63be318447499de475cc02077cd"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/121"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-06c318287080457797b68021e26b0680",
+      "status": "PR_RECORDED",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/121",
+     "head": "b2df2d24bd96fecd9034dd3ba39daded3fb34a28",
+     "state": "COMPLETE",
+     "verdict": "CHANGES_REQUIRED"
+    }
+   ],
+   "awaiting": "review_or_merge",
+   "ledger_complete": true
+  },
+  {
+   "id": "R5-forest-review",
+   "lane": "REVIEW",
+   "state": "DONE",
+   "missing": [],
+   "owners": [
+    "110df8d319a94cb98171e352a896012e",
+    "arrival-046cfed1477c40aca394975d506de6bc",
+    "arrival-14abc8262fa44e67801ef8b16c58e217",
+    "arrival-456fad91b6224e8c980a9dae1bc26256",
+    "arrival-4b74c9f40bc44488aebecb7b4f3bb5ae",
+    "arrival-76b80e3e0c414d6db84bc1dc4ce54150",
+    "arrival-9fdcff5ff6bb4999853dd23f0360181f",
+    "arrival-cb06f58db7684002afe7f501ec9aed4d",
+    "arrival-cba7b89cb6734050a3c4fe5fff7e98f4",
+    "arrival-ee1848a285f24b6dacfafe749c032225",
+    "arrival-f4b9cb2857a0457ab737de76eed3af12"
+   ],
+   "source_revision": {
+    "winner_head": "7467bed2b2d82b636ee3045b4eaf6d2137019825",
+    "winner_merge": "ff48fada78f18d4109a45df019a6cd2426914109",
+    "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/126"
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/115",
+     "https://github.com/GhostDragonAlpha/Chimera/pull/126"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-5a5c92abbc54407dbdca4e555931f605",
+      "status": "PR_RECORDED",
+      "artifacts": 7
+     }
+    ],
+    "winner_merge_sha": "ff48fada78f18d4109a45df019a6cd2426914109"
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-76b80e3e0c414d6db84bc1dc4ce54150",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/115",
+     "head": "d6ad8f098b9d892ba5d9c3a69290a13580897c86",
+     "state": "COMPLETE",
+     "verdict": "CHANGES_REQUIRED"
+    },
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/115",
+     "head": "d6ad8f098b9d892ba5d9c3a69290a13580897c86",
+     "state": "COMPLETE",
+     "verdict": "CHANGES_REQUIRED"
+    },
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/126",
+     "head": "7467bed2b2d82b636ee3045b4eaf6d2137019825",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    },
+    {
+     "reviewer": "arrival-74c8fd34cbd5413d90aa516badcac808",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/126",
+     "head": "7467bed2b2d82b636ee3045b4eaf6d2137019825",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    },
+    {
+     "reviewer": "c95e1722350849bca846b237c1f60997",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/126",
+     "head": "7467bed2b2d82b636ee3045b4eaf6d2137019825",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    }
+   ],
+   "ledger_complete": true
+  },
+  {
+   "id": "ONT-P01",
+   "lane": "REVIEW",
+   "state": "DONE",
+   "missing": [],
+   "owners": [
+    "arrival-f4b9cb2857a0457ab737de76eed3af12"
+   ],
+   "source_revision": {
+    "winner_head": "dce368d75000d19a5041604dfe3fed904233db2f",
+    "winner_merge": "391f0ede0ebc2f4072c62c3386827b1b4eefc88e",
+    "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/127"
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/127"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-3559a3e962d8464a8a26c9f1b892504f",
+      "status": "PR_RECORDED",
+      "artifacts": 7
+     }
+    ],
+    "winner_merge_sha": "391f0ede0ebc2f4072c62c3386827b1b4eefc88e"
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-4e6e9a2450364135b7ceea86db5e5874",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/127",
+     "head": "dce368d75000d19a5041604dfe3fed904233db2f",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    },
+    {
+     "reviewer": "c95e1722350849bca846b237c1f60997",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/127",
+     "head": "dce368d75000d19a5041604dfe3fed904233db2f",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    }
+   ],
+   "ledger_complete": true
+  },
+  {
+   "id": "D-W04-MASS-20260924-FOLLOWUP",
+   "lane": "REVIEW",
+   "state": "PUBLICATION_PENDING",
+   "missing": [],
+   "owners": [
+    "arrival-74c8fd34cbd5413d90aa516badcac808",
+    "c95e1722350849bca846b237c1f60997"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [
+     {
+      "id": "publication-e371340a04414014af85b147891216d4",
+      "status": "PENDING",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "awaiting": "lead_publication",
+   "ledger_complete": true
+  },
+  {
+   "id": "D-W03-ANCHORS-20260924",
+   "lane": "REVIEW",
+   "state": "DONE",
+   "missing": [],
+   "owners": [
+    "arrival-4e777941a5114b3089d02c8a69d7b2e9",
+    "arrival-5582e5db77544840b4f419dbc3b0fb9b",
+    "arrival-aab1ce4a66a245ebaabb51cd8c2547f4",
+    "arrival-c0b9a70fdf8b48f98940963b4b749d49",
+    "arrival-ec97e63be318447499de475cc02077cd"
+   ],
+   "source_revision": {
+    "winner_head": "37fd8679aee97674eca34cd83031ba020ff99c04",
+    "winner_merge": "6489a0dda2349127c45884d877f6d3fc0bc1500b",
+    "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/119"
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/119"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-e482592194fe49869dfd692d91d27ff1",
+      "status": "PR_RECORDED",
+      "artifacts": 3
+     }
+    ],
+    "winner_merge_sha": "6489a0dda2349127c45884d877f6d3fc0bc1500b"
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/119",
+     "head": "37fd8679aee97674eca34cd83031ba020ff99c04",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    }
+   ],
+   "ledger_complete": true
+  },
+  {
+   "id": "I-R05-RESOURCE-LEDGER",
+   "lane": "DEVELOPMENT",
+   "state": "CHANGES_REQUESTED",
+   "missing": [],
+   "owners": [
+    "arrival-0c218b2977d04b32911a11428ad37274",
+    "arrival-19865e5bda784783b529c048d80c90df",
+    "arrival-2365627ab6124d76b0dbc0d418106f8f",
+    "arrival-528ad2cbef584cf98460db082650dddd",
+    "arrival-ec97e63be318447499de475cc02077cd"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/122"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-29d3ae77ae1f4851bd172db8190450f5",
+      "status": "PR_RECORDED",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/122",
+     "head": "8641b193b1584f695667bf3ba78aaf6a4e39ae72",
+     "state": "COMPLETE",
+     "verdict": "CHANGES_REQUIRED"
+    }
+   ],
+   "awaiting": "review_or_merge",
+   "ledger_complete": true
+  },
+  {
+   "id": "D-W03-ANCHORS-20260924-FOLLOWUP",
+   "lane": "REVIEW",
+   "state": "PUBLICATION_PENDING",
+   "missing": [],
+   "owners": [
+    "arrival-e5b2de423bdf4a18a79edc0b2d48fcc7",
+    "c95e1722350849bca846b237c1f60997"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [
+     {
+      "id": "publication-da5f190df7374c75845f4533a2ddd02b",
+      "status": "PENDING",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "awaiting": "lead_publication",
+   "ledger_complete": true
+  },
+  {
+   "id": "D-FOREST-RUNTIME-20260924",
+   "lane": "REVIEW",
+   "state": "DONE",
+   "missing": [],
+   "owners": [
+    "arrival-29a8ac9b6acb46a48515b115ec889b66",
+    "arrival-82c14b6768ff4d9dbf8e28caba0277d9",
+    "arrival-98b5c08575444dbd915932664cd875c8",
+    "arrival-c9de3c0fbf1b4da99ec561a8e56f19cb",
+    "arrival-ec97e63be318447499de475cc02077cd",
+    "arrival-ef05ddf2f65a4b04af29275b195e2b4b"
+   ],
+   "source_revision": {
+    "winner_head": "86d0d8d461ea50420c053681f7e297343e3fbb97",
+    "winner_merge": "d528cd3c2478547fa70a3ede71278bb1c45145e7",
+    "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/120"
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/120"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-a1b6985d9d1348cc8bd5f6fe0bcb0c29",
+      "status": "PR_RECORDED",
+      "artifacts": 3
+     }
+    ],
+    "winner_merge_sha": "d528cd3c2478547fa70a3ede71278bb1c45145e7"
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/120",
+     "head": "86d0d8d461ea50420c053681f7e297343e3fbb97",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    }
+   ],
+   "ledger_complete": true
+  },
+  {
+   "id": "I-S02-PACKAGE-PREFLIGHT",
+   "lane": "DEVELOPMENT",
+   "state": "CHANGES_REQUESTED",
+   "missing": [],
+   "owners": [
+    "arrival-26382927b4d14d218ef0c204846abf77",
+    "arrival-4b74c9f40bc44488aebecb7b4f3bb5ae",
+    "arrival-ca4bd532d9d44e91925290c63c0854f4"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/124"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-12bedeb4126e4aec82c638711543f4ea",
+      "status": "PR_RECORDED",
+      "artifacts": 2
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/124",
+     "head": "155a0f5c6ed14d6ce0c95572676eb03f14bc8a50",
+     "state": "COMPLETE",
+     "verdict": "CHANGES_REQUIRED"
+    }
+   ],
+   "awaiting": "review_or_merge",
+   "ledger_complete": true
+  },
+  {
+   "id": "D-FOREST-RUNTIME-20260924-FOLLOWUP",
+   "lane": "REVIEW",
+   "state": "PUBLICATION_PENDING",
+   "missing": [],
+   "owners": [
+    "arrival-bccd7c8d08df43869d1dfcd3d913de59",
+    "c95e1722350849bca846b237c1f60997"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [
+     {
+      "id": "publication-32e5776479484193a352144c7a1f6b25",
+      "status": "PENDING",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "awaiting": "lead_publication",
+   "ledger_complete": true
+  },
+  {
+   "id": "I-R02-SAVE-STORE",
+   "lane": "REVIEW",
+   "state": "DONE",
+   "missing": [],
+   "owners": [
+    "arrival-6488319ee5e64a2b8e9435dd7db3544c",
+    "arrival-cba7b89cb6734050a3c4fe5fff7e98f4"
+   ],
+   "source_revision": {
+    "winner_head": "9ba1be77228e181f55ed2e4d2eb3e73e2f09685f",
+    "winner_merge": "dcf04f94716271b2a37734b842ec58d7f95c5b71",
+    "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/117"
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/117"
+    ],
+    "publication_requests": [],
+    "winner_merge_sha": "dcf04f94716271b2a37734b842ec58d7f95c5b71"
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-76b80e3e0c414d6db84bc1dc4ce54150",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/117",
+     "head": "9ba1be77228e181f55ed2e4d2eb3e73e2f09685f",
+     "state": "INVALIDATED",
+     "verdict": "ACCEPTED"
+    },
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/117",
+     "head": "9ba1be77228e181f55ed2e4d2eb3e73e2f09685f",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    }
+   ],
+   "ledger_complete": true
+  },
+  {
+   "id": "I-GOV-PR-HANDOFF-REPAIR",
+   "lane": "REVIEW",
+   "state": "PUBLICATION_PENDING",
+   "missing": [],
+   "owners": [
+    "arrival-f4b9cb2857a0457ab737de76eed3af12",
+    "c95e1722350849bca846b237c1f60997"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/128"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-b252a13b195a4c2e954e726321676d4f",
+      "status": "PR_RECORDED",
+      "artifacts": 9
+     },
+     {
+      "id": "publication-a427930bdfba468980dc1733e68c7053",
+      "status": "PENDING",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "awaiting": "lead_publication",
+   "ledger_complete": true
+  },
+  {
+   "id": "I-R02-SAVE-STORE-FOLLOWUP",
+   "lane": "REVIEW",
+   "state": "PUBLICATION_PENDING",
+   "missing": [],
+   "owners": [
+    "c95e1722350849bca846b237c1f60997"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [
+     {
+      "id": "publication-3c5e99f9368b40c283f02416f2b812cd",
+      "status": "PENDING",
+      "artifacts": 4
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "awaiting": "lead_publication",
+   "ledger_complete": true
+  },
+  {
+   "id": "ONT-X02",
+   "lane": "REVIEW",
+   "state": "PUBLICATION_PENDING",
+   "missing": [],
+   "owners": [
+    "c95e1722350849bca846b237c1f60997"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [
+     {
+      "id": "publication-3d8c97cffe20430394ef238a62e7cff5",
+      "status": "PENDING",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "awaiting": "lead_publication",
+   "ledger_complete": true
+  },
+  {
+   "id": "I-R06-FAILURE-SEQUENCES-FOLLOWUP",
+   "lane": null,
+   "state": "OPEN",
+   "missing": [],
+   "owners": [
+    "arrival-8e8f7804e1e740f1bf35a464aaec478f"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": true
+  },
+  {
+   "id": "I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP",
+   "lane": null,
+   "state": "OPEN",
+   "missing": [],
+   "owners": [
+    "arrival-ffb64edc2c4d4affb645180611f06c41"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": true
+  },
+  {
+   "id": "I-R06-FAILURE-SEQUENCES",
+   "lane": "REVIEW",
+   "state": "DONE",
+   "missing": [],
+   "owners": [
+    "arrival-468805f909c245b08c40e51ce18fddbf",
+    "arrival-76b80e3e0c414d6db84bc1dc4ce54150",
+    "arrival-841f82ab56954ddf95ca2a3e65b71ca8",
+    "arrival-9e17bf8ab0f340619eb21c1b83976fa2",
+    "arrival-aaa6854800da47f0a18b02706079b5bf",
+    "arrival-cbd4d228c2914a2e8e609b8f6746001e",
+    "arrival-ec97e63be318447499de475cc02077cd",
+    "arrival-ecefd68f43554830bcc7ff5cc68c3614"
+   ],
+   "source_revision": {
+    "winner_head": "c844e686992bbb6a8e0ac866dad89bc197952e2f",
+    "winner_merge": "b258f83deb11e31316501a86455c927221995f0e",
+    "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/123"
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/123"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-2a83927bd9f64da0b189b2d3d6256492",
+      "status": "PR_RECORDED",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": "b258f83deb11e31316501a86455c927221995f0e"
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/123",
+     "head": "c844e686992bbb6a8e0ac866dad89bc197952e2f",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    }
+   ],
+   "ledger_complete": true
+  },
+  {
+   "id": "R5-forest-review-FOLLOWUP",
+   "lane": "REVIEW",
+   "state": "PUBLICATION_PENDING",
+   "missing": [],
+   "owners": [
+    "c95e1722350849bca846b237c1f60997"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [
+     {
+      "id": "publication-1342d4dd4d26485e9e46c36c97fa21ee",
+      "status": "PENDING",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "awaiting": "lead_publication",
+   "ledger_complete": true
+  },
+  {
+   "id": "ONT-P03",
+   "lane": null,
+   "state": "OPEN",
+   "missing": [],
+   "owners": [
+    "c95e1722350849bca846b237c1f60997"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": true
+  },
+  {
+   "id": "I-S04-PLAYER-DIAGNOSTICS",
+   "lane": "REVIEW",
+   "state": "DONE",
+   "missing": [],
+   "owners": [
+    "arrival-253a2d43f3b444178f17a591b053f9c9",
+    "arrival-4baaf5e782624893a34ddd41974162bb",
+    "arrival-4cd2a5c6208347ba9d9490b65ea48dc2",
+    "arrival-76b80e3e0c414d6db84bc1dc4ce54150",
+    "arrival-ca4bd532d9d44e91925290c63c0854f4"
+   ],
+   "source_revision": {
+    "winner_head": "7318d5a36f0cd76f4b13a72cc6c585bbe3bac7bf",
+    "winner_merge": "b758088efcf898d2a98ff9cd761a503b394eb655",
+    "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/125"
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/125"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-400e23491615457a87ba9c817d645701",
+      "status": "PR_RECORDED",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": "b758088efcf898d2a98ff9cd761a503b394eb655"
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-f4b9cb2857a0457ab737de76eed3af12",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/125",
+     "head": "7318d5a36f0cd76f4b13a72cc6c585bbe3bac7bf",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    }
+   ],
+   "ledger_complete": true
+  },
+  {
+   "id": "ONT-P06",
+   "lane": null,
+   "state": "OPEN",
+   "missing": [
+    "owner:no_active_attempt"
+   ],
+   "owners": [],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": false
+  },
+  {
+   "id": "ONT-X01",
+   "lane": null,
+   "state": "OPEN",
+   "missing": [
+    "owner:no_active_attempt"
+   ],
+   "owners": [],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": false
+  }
+ ],
+ "all_identities_present": false
+}
