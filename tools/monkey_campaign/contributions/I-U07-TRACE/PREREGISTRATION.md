@@ -57,3 +57,85 @@ with recorded hashes). stdlib only, Python 3.11+. No production edits, no
 network, no GUI, no engine starts, no GPU; tests bounded well under 120 s and
 16 MiB. An insertion-point patch PROPOSAL (text) is a deliverable; no live
 measurements are claimed.
+
+---
+
+# CORRECTION ADDENDUM — attempt 1b797ab5558149919bfe4b85066d484c (2026-09-25)
+
+Responds to the lead's CHANGES REQUIRED on PR #121 (base module adopted
+byte-identical, sha256 `4da6f5de…`; prior 20/20 suite green pre-fix).
+Written BEFORE the fix; failing-first tests were run against the BASE first.
+
+## The two corrections
+
+1. **Overflow after unit conversion + latency arithmetic**: parse_trace
+   accepted t=1e308 `s` (finite), multiplied by 1000 → inf, and chain
+   arithmetic then produced NaN latencies. Fixed: (a) named refusal
+   `time_overflow` when `t * UNITS_TO_MS[unit]` is not finite; (b) named
+   refusal `latency_overflow` when any chain segment difference is not
+   finite. NaN can never reach a summary.
+2. **Empty limits**: `summarize(events, limits={})` produced qualification
+   `pass` with ZERO checks (vacuous). Fixed: `{}` is `unqualified`
+   (`reason: p06_limits_empty`), exactly like absent limits — never PASS.
+
+Plus a CLI regression: refusals print the named refusal with
+`latency_output: null` — no latency values (law already present; now
+pinned by a test).
+
+## Failing-first predictions (against BASE before the fix)
+
+- C1 lead reproducer (t=1e308 s): BASE emits a summary containing NaN/inf
+  (defect) → FIXED refuses `time_overflow`.
+- C2 same trace in ms (t=1e308 ms single stage pair inf spread): BASE NaN
+  latency (defect) → FIXED refuses `latency_overflow` if conversion passed.
+- C3 empty limits {}: BASE `pass` with zero checks (defect) → FIXED
+  `unqualified` reason `p06_limits_empty`.
+- C4 CLI on the reproducer: exit 2, `latency_output` null, reason named.
+- All 20 prior tests still pass after the fix.
+
+## Falsifier
+
+Any new test passing on BASE (defect not real — report loudly); any prior
+test broken; any NaN/inf reaching a summary; empty limits ever yielding
+`pass`; a refusal printing a latency value.
+
+---
+
+# SECOND CORRECTION ADDENDUM — attempt 2321d1811a92415db7863826702e2d5c (2026-09-25, later)
+
+Scope correction per the independent candidate review (msg-a3856ac4): this
+addendum addresses the STATISTICS-ACCUMULATION overflow — a boundary DISTINCT
+from the unit-conversion overflow already fixed in the first correction.
+
+## The remaining boundary (independently reproduced by the lead's quality probe)
+
+Two COMPLETE chains with stage times [0,0,0,1e308] ms have finite per-chain
+latencies, but the statistics SUM over chains overflows: `math.fsum` raised an
+uncontrolled `OverflowError` mid-summary. (Unit conversion was never involved
+— these are already-millisecond finite values; the first correction's
+`time_overflow` correctly does not fire.)
+
+## Prediction (failing-first, then fixed)
+
+- The two-chain reproducer against the first-correction code raises raw
+  `OverflowError` (defect, recorded in the quality probe).
+- The returned candidate refuses it by name: `statistics_overflow`, CLI exit
+  2, `latency_output: null`; details carry `operation: "sum"` (the actual
+  operation), per the reviewer's labeling correction — the old nested reason
+  string `fsum_overflow` named an operation no longer used and is gone.
+
+## Documentation corrections applied (reviewer-directed, chronological)
+
+1. Source comment rewritten: sum() is NOT claimed more stable than fsum();
+   the real difference is silent-to-inf (detectable) vs raising
+   OverflowError; the approach is DETECT-AND-REFUSE.
+2. Refusal details: `{"operation": "sum", ...}` — accurate label.
+3. This addendum separates statistics-accumulation overflow from the
+   already-fixed unit-conversion overflow (the first addendum's objective
+   text conflated them; history preserved, not rewritten).
+
+## Falsifier
+
+The two-chain trace being accepted (any statistic emitted); the refusal
+raising an uncontrolled exception; any of the 25 first-correction tests or 20
+original tests failing; a details label naming an unused operation.

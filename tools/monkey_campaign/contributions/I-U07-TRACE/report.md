@@ -130,3 +130,63 @@ Wire the `TraceSink` wrapper (seam 2) into the pinned `input_mapper.py` call
 site inside a scoped follow-up card once this module is reviewed/merged; the
 engine-side seam 3 goes to the native runtime lane. No further work is
 unblocked by this card alone.
+
+---
+
+# CORRECTION — attempt 1b797ab5558149919bfe4b85066d484c (2026-09-25)
+
+Responds to the lead's CHANGES REQUIRED on PR #121. Base adopted
+byte-identical (input_trace.py sha256 `4da6f5de…`); prior 20/20 suite green
+pre-fix; failing-first proof recorded (4/5 new tests FAILED on base —
+`failing_first_base.txt`).
+
+## Fixes
+
+1. **`time_overflow`**: parse_trace now refuses when `t * UNITS_TO_MS[unit]`
+   is not finite (the lead's `t=1e308 s` reproducer → named refusal at
+   parse; no summary is reachable).
+2. **`latency_overflow`**: chain_latencies refuses when any segment
+   difference is non-finite — NaN can never reach a statistic.
+3. **Empty limits**: `summarize(events, limits={})` → `unqualified` with
+   reason `p06_limits_empty` (absent stays `p06_limits_absent`); the vacuous
+   zero-check `pass` is structurally impossible.
+4. CLI regression pinned: refusals exit 2 with the named reason and
+   `latency_output: null` — no latency values (tested end-to-end on the
+   reproducer trace).
+
+## Verification
+
+`python -B -m unittest test_input_trace test_correction` → **25/25 OK
+(20 prior + 5 correction), run twice, deterministic**. No prior test broken;
+no NaN/inf can reach a summary; empty limits never pass; synthetic traces
+only (no device claim, no production edits).
+
+---
+
+# SECOND CORRECTION — attempt 2321d1811a92415db7863826702e2d5c (2026-09-25, later)
+
+Returns the independently reviewed candidate (source `0a84cd77…`, tests
+`b77fe596…` — review msg-a3856ac4: 26 tests pass, two-chain overflow CLI
+exits 2 `statistics_overflow`, `latency_output` null) WITH the reviewer's
+documentation corrections applied, from this attempt's isolated workspace:
+
+1. **Statistics-accumulation overflow fixed** (distinct from the first
+   correction's unit-conversion overflow): two finite chains
+   [0,0,0,1e308] ms — finite per-chain latencies whose statistics sum
+   overflows — now refuse by name `statistics_overflow`; the regression
+   `test_fsum_overflow_two_chains` is in the suite.
+2. **Source comment corrected**: sum() is not claimed more stable than
+   math.fsum(); the implemented approach detects a non-finite sum and refuses
+   it (sum() overflows silently to inf = detectable; fsum raises an
+   uncontrolled OverflowError mid-statistic).
+3. **Refusal details accurately labeled**: `operation: "sum"` (the stale
+   `reason: "fsum_overflow"` named an unused operation and is removed).
+4. **Preregistration scope separated** (appended, chronological): statistics
+   accumulation ≠ unit conversion; the first addendum's text conflated them.
+5. Prior correction tests preserved (test_correction.py byte-identical to the
+   first correction); PR #130 (671-commit dirty head) NOT used — this handoff
+   contains only the trace deliverables + prior correction tests.
+
+Measured in this workspace: 26/26 tests, CLI reproducer exit 2 with
+`statistics_overflow` + `latency_output: null`, both lead reproducer probes
+(conversion refusal + statistics refusal) print their named refusals.

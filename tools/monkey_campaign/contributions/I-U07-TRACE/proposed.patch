@@ -1,0 +1,1169 @@
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE/PREREGISTRATION.md b/tools/monkey_campaign/contributions/I-U07-TRACE/PREREGISTRATION.md
+new file mode 100644
+index 0000000..e531d1c
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE/PREREGISTRATION.md
+@@ -0,0 +1,141 @@
++# PREREGISTRATION — I-U07-TRACE (input trace ingestion + latency analysis)
++
++Card `I-U07-TRACE` (planning id **U07**, prep for P06-limited play measurement),
++attempt `9b94126614af41238eefc4c64682acbd`, arrival
++`arrival-ec97e63be318447499de475cc02077cd`, branch `branch-5`, base revision
++`9afbddcd90164b5544a16fd0bc72278d985eb6e3` (source repo `E:/ChimeraWork/monkey-play-20260924`,
++read via `git show` only). Frozen BEFORE any implementation edits.
++
++## STATEMENT (a theory someone could disagree with)
++
++The four stages of the input pipeline — `input` (player intent observed),
++`command_emitted` (a CommandRecord handed to the seam sink), `simulation_consumed`
++(the physics tick that zero-order-holds it), `presented` (a frame containing that
++tick offered to the player) — can be measured as one strictly-ordered chain per
++input sequence number, on ONE clock identity and ONE run/build identity, with
++units carried explicitly; every latency is then exactly the difference of two
++matched-stage timestamps, and nothing else. Any trace that cannot satisfy
++matching (missing stage, duplicate seq, reversed order, mixed clock/run/build,
++non-finite time) carries NO latency information and must be refused whole, not
++patched statistically.
++
++## PREDICTION (measurable, not yet measured)
++
++1. On a hand-built analytic trace of N complete 4-stage chains with known exact
++   intervals, this module's computed segment and end-to-end latencies equal the
++   planted values exactly (bit-equal float differences of the planted numbers),
++   and its p50/p95/p99/order statistics equal hand-computed values.
++2. Deliberately broken traces (missing stage, mixed clock, mixed build, duplicate
++   seq, NaN/inf time, reversed stage order, empty input) each produce a NAMED
++   refusal and produce NO latency output.
++3. With no P06 limits supplied (P06 is an unresolved decision card), the
++   qualification verdict is `unqualified` regardless of how good the numbers
++   look; with caller-supplied limits the verdict is computed against exactly
++   those numbers and nothing else.
++
++## FALSIFIER (named before the run)
++
++The card's own falsifier, operationalized — any of these fails the build:
++
++- **F1** any code path that produces a latency number for a chain with an
++  unmatched/missing stage (invented latency), including silent interpolation,
++  imputation or "best-effort" pairing;
++- **F2** any code path that compares timestamps across different `clock`
++  identities or across different `run`/`build` identities without refusing;
++- **F3** any fixture/analytic trace in tests or report labeled as actual-play
++  acceptance evidence (these are fixtures only; U07's native gates stay open);
++- **F4** module reads a wall clock, opens a window, or performs I/O beyond the
++  caller-supplied trace input and CLI output (it must be headless/deterministic);
++- **F5** acceptance limits appearing from anywhere other than explicit caller
++  data (hardcoded thresholds = fabricated P06).
++
++## SCOPE
++
++Owned files only (`input_trace.py`, `test_input_trace.py`, `report.md`,
++`receipt.json`, `PREREGISTRATION.md`, plus `reference/` extracted pinned sources
++with recorded hashes). stdlib only, Python 3.11+. No production edits, no
++network, no GUI, no engine starts, no GPU; tests bounded well under 120 s and
++16 MiB. An insertion-point patch PROPOSAL (text) is a deliverable; no live
++measurements are claimed.
++
++---
++
++# CORRECTION ADDENDUM — attempt 1b797ab5558149919bfe4b85066d484c (2026-09-25)
++
++Responds to the lead's CHANGES REQUIRED on PR #121 (base module adopted
++byte-identical, sha256 `4da6f5de…`; prior 20/20 suite green pre-fix).
++Written BEFORE the fix; failing-first tests were run against the BASE first.
++
++## The two corrections
++
++1. **Overflow after unit conversion + latency arithmetic**: parse_trace
++   accepted t=1e308 `s` (finite), multiplied by 1000 → inf, and chain
++   arithmetic then produced NaN latencies. Fixed: (a) named refusal
++   `time_overflow` when `t * UNITS_TO_MS[unit]` is not finite; (b) named
++   refusal `latency_overflow` when any chain segment difference is not
++   finite. NaN can never reach a summary.
++2. **Empty limits**: `summarize(events, limits={})` produced qualification
++   `pass` with ZERO checks (vacuous). Fixed: `{}` is `unqualified`
++   (`reason: p06_limits_empty`), exactly like absent limits — never PASS.
++
++Plus a CLI regression: refusals print the named refusal with
++`latency_output: null` — no latency values (law already present; now
++pinned by a test).
++
++## Failing-first predictions (against BASE before the fix)
++
++- C1 lead reproducer (t=1e308 s): BASE emits a summary containing NaN/inf
++  (defect) → FIXED refuses `time_overflow`.
++- C2 same trace in ms (t=1e308 ms single stage pair inf spread): BASE NaN
++  latency (defect) → FIXED refuses `latency_overflow` if conversion passed.
++- C3 empty limits {}: BASE `pass` with zero checks (defect) → FIXED
++  `unqualified` reason `p06_limits_empty`.
++- C4 CLI on the reproducer: exit 2, `latency_output` null, reason named.
++- All 20 prior tests still pass after the fix.
++
++## Falsifier
++
++Any new test passing on BASE (defect not real — report loudly); any prior
++test broken; any NaN/inf reaching a summary; empty limits ever yielding
++`pass`; a refusal printing a latency value.
++
++---
++
++# SECOND CORRECTION ADDENDUM — attempt 2321d1811a92415db7863826702e2d5c (2026-09-25, later)
++
++Scope correction per the independent candidate review (msg-a3856ac4): this
++addendum addresses the STATISTICS-ACCUMULATION overflow — a boundary DISTINCT
++from the unit-conversion overflow already fixed in the first correction.
++
++## The remaining boundary (independently reproduced by the lead's quality probe)
++
++Two COMPLETE chains with stage times [0,0,0,1e308] ms have finite per-chain
++latencies, but the statistics SUM over chains overflows: `math.fsum` raised an
++uncontrolled `OverflowError` mid-summary. (Unit conversion was never involved
++— these are already-millisecond finite values; the first correction's
++`time_overflow` correctly does not fire.)
++
++## Prediction (failing-first, then fixed)
++
++- The two-chain reproducer against the first-correction code raises raw
++  `OverflowError` (defect, recorded in the quality probe).
++- The returned candidate refuses it by name: `statistics_overflow`, CLI exit
++  2, `latency_output: null`; details carry `operation: "sum"` (the actual
++  operation), per the reviewer's labeling correction — the old nested reason
++  string `fsum_overflow` named an operation no longer used and is gone.
++
++## Documentation corrections applied (reviewer-directed, chronological)
++
++1. Source comment rewritten: sum() is NOT claimed more stable than fsum();
++   the real difference is silent-to-inf (detectable) vs raising
++   OverflowError; the approach is DETECT-AND-REFUSE.
++2. Refusal details: `{"operation": "sum", ...}` — accurate label.
++3. This addendum separates statistics-accumulation overflow from the
++   already-fixed unit-conversion overflow (the first addendum's objective
++   text conflated them; history preserved, not rewritten).
++
++## Falsifier
++
++The two-chain trace being accepted (any statistic emitted); the refusal
++raising an uncontrolled exception; any of the 25 first-correction tests or 20
++original tests failing; a details label naming an unused operation.
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE/input_trace.py b/tools/monkey_campaign/contributions/I-U07-TRACE/input_trace.py
+new file mode 100644
+index 0000000..0e3014a
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE/input_trace.py
+@@ -0,0 +1,388 @@
++"""input_trace.py -- I-U07-TRACE: strict trace ingestion + matched-stage latency.
++
++The four measured stages of the input pipeline (PREREGISTRATION.md, frozen
++before this build):
++
++    input -> command_emitted -> simulation_consumed -> presented
++
++  * input               the player intent is observed (key state change);
++  * command_emitted     a versioned CommandRecord is handed to the seam sink
++                        (tools/science_funnel/typeb_export/command_record.py,
++                        pinned 9afbddcd: v_forward m/s, yaw_rate rad/s,
++                        issued_tick, source; 20 Hz over 300 Hz physics);
++  * simulation_consumed the physics tick that zero-order-holds that record
++                        (issued_tick at the 15-tick hold boundary);
++  * presented           a frame containing that tick is offered to the player.
++
++THE LAW OF THIS MODULE (the card's falsifier, operationalized): a latency is
++EXACTLY the difference of two matched-stage timestamps on one clock identity,
++one run identity and one build identity. Anything that cannot be matched is
++REFUSED -- never interpolated, imputed, or "best-effort" paired. A refused
++trace produces NO latency output. Acceptance limits exist only as explicit
++caller data (P06 is an unresolved decision card); without them the verdict is
++`unqualified`, however good the numbers look.
++
++Headless and deterministic by construction: no wall clock, no window, no
++network; the only I/O is the caller-supplied input and the CLI output.
++
++Event record (one JSON object per event; JSONL or JSON array):
++
++    seq     int    chain id (the input sequence number); the four stages of
++                   one chain share it
++    stage   str    one of the four STAGES
++    t       float  finite timestamp on the trace's clock
++    unit    str    "ms" (default) or "s" -- per event, converted canonically
++                   to ms before any comparison; the original value is kept
++    clock   str    clock identity (e.g. "steady", "injected_ms"); one per trace
++    run     str    run identity; one per trace
++    build   str    build identity; one per trace
++    payload any    optional opaque passthrough (CommandRecord fields, tick,
++                   frame id, ...)
++
++stdlib only, Python 3.11+.
++"""
++from __future__ import annotations
++
++import argparse
++import json
++import math
++import sys
++from dataclasses import dataclass, field
++from typing import Any, Iterable, Optional
++
++__all__ = [
++    "STAGES", "STAGE_INDEX", "TraceRefused", "TraceEvent", "parse_trace",
++    "chain_latencies", "summarize", "load_limits", "main",
++]
++
++STAGES = ("input", "command_emitted", "simulation_consumed", "presented")
++STAGE_INDEX = {s: i for i, s in enumerate(STAGES)}
++
++REQUIRED_FIELDS = ("seq", "stage", "t", "clock", "run", "build")
++UNITS_TO_MS = {"ms": 1.0, "s": 1000.0}
++
++# Metrics a caller may pin limits on (limits are CALLER DATA, never defaults).
++LIMITABLE_METRICS = (
++    "end_to_end_ms",
++    "seg_input_to_command_ms",
++    "seg_command_to_consumed_ms",
++    "seg_consumed_to_presented_ms",
++    "p95_end_to_end_ms",
++    "p99_end_to_end_ms",
++)
++
++PERCENTILE_METHOD = "nearest-rank (ceil(p*N) on the ascending sort)"
++
++
++class TraceRefused(Exception):
++    """The trace carries no usable latency information; nothing is invented.
++
++    `reason` is a stable machine name; `details` cites the offending events.
++    No latency number may be derived from a refused trace.
++    """
++
++    def __init__(self, reason: str, details: dict[str, Any] | None = None):
++        super().__init__(f"{reason}: {details or {}}")
++        self.reason = reason
++        self.details = details or {}
++
++
++@dataclass(frozen=True)
++class TraceEvent:
++    """One validated stage observation. `t_ms` is the canonical ms value;
++    `t`/`unit` preserve the caller's original representation (units are data)."""
++
++    seq: int
++    stage: str
++    t: float
++    unit: str
++    t_ms: float
++    clock: str
++    run: str
++    build: str
++    payload: Any = None
++
++
++def _num(x: Any) -> bool:
++    return isinstance(x, (int, float)) and not isinstance(x, bool)
++
++
++def parse_trace(records: Iterable[dict[str, Any]]) -> list[TraceEvent]:
++    """Validate every record; refuse the WHOLE trace on the first law break.
++
++    Refusal reasons: empty_trace, record_not_object, missing_field, bad_type,
++    non_finite_time, unknown_stage, bad_unit, duplicate_seq_stage, mixed_clock,
++    mixed_run, mixed_build, missing_stage, reversed_stage_order.
++    """
++    events: list[TraceEvent] = []
++    seen: dict[tuple[int, str], int] = {}
++    clock: Optional[str] = None
++    run: Optional[str] = None
++    build: Optional[str] = None
++
++    for i, rec in enumerate(records):
++        if not isinstance(rec, dict):
++            raise TraceRefused("record_not_object", {"index": i, "type": type(rec).__name__})
++        for k in REQUIRED_FIELDS:
++            if k not in rec or rec[k] is None:
++                raise TraceRefused("missing_field", {"index": i, "field": k})
++        seq, stage, t = rec["seq"], rec["stage"], rec["t"]
++        if not isinstance(seq, int) or isinstance(seq, bool) or seq < 0:
++            raise TraceRefused("bad_type", {"index": i, "field": "seq", "value": repr(seq)})
++        if not isinstance(stage, str):
++            raise TraceRefused("bad_type", {"index": i, "field": "stage", "value": repr(stage)})
++        if not _num(t):
++            raise TraceRefused("bad_type", {"index": i, "field": "t", "value": repr(t)})
++        if not math.isfinite(float(t)):
++            raise TraceRefused("non_finite_time", {"index": i, "seq": seq, "stage": stage, "value": repr(t)})
++        if stage not in STAGE_INDEX:
++            raise TraceRefused("unknown_stage", {"index": i, "seq": seq, "stage": stage})
++        unit = rec.get("unit", "ms")
++        if unit not in UNITS_TO_MS:
++            raise TraceRefused("bad_unit", {"index": i, "seq": seq, "unit": repr(unit)})
++        for name, val in (("clock", rec["clock"]), ("run", rec["run"]), ("build", rec["build"])):
++            if not isinstance(val, str) or not val:
++                raise TraceRefused("bad_type", {"index": i, "field": name, "value": repr(val)})
++        if (seq, stage) in seen:
++            raise TraceRefused("duplicate_seq_stage",
++                               {"seq": seq, "stage": stage, "first_index": seen[(seq, stage)], "index": i})
++        seen[(seq, stage)] = i
++        if clock is None:
++            clock, run, build = rec["clock"], rec["run"], rec["build"]
++        else:
++            if rec["clock"] != clock:
++                raise TraceRefused("mixed_clock",
++                                   {"seq": seq, "stage": stage, "clocks": sorted({clock, rec["clock"]})})
++            if rec["run"] != run:
++                raise TraceRefused("mixed_run", {"seq": seq, "stage": stage, "runs": sorted({run, rec["run"]})})
++            if rec["build"] != build:
++                raise TraceRefused("mixed_build",
++                                   {"seq": seq, "stage": stage, "builds": sorted({build, rec["build"]})})
++        # lead correction: refuse overflow AFTER unit conversion -- a finite
++        # t in seconds can still overflow to inf in milliseconds
++        t_ms = float(t) * UNITS_TO_MS[unit]
++        if not math.isfinite(t_ms):
++            raise TraceRefused("time_overflow",
++                               {"seq": seq, "stage": stage, "unit": unit,
++                                "t": repr(t), "t_ms": repr(t_ms)})
++        events.append(TraceEvent(seq=seq, stage=stage, t=float(t), unit=unit,
++                                 t_ms=t_ms, clock=rec["clock"],
++                                 run=rec["run"], build=rec["build"],
++                                 payload=rec.get("payload")))
++
++    if not events:
++        raise TraceRefused("empty_trace")
++
++    by_chain: dict[int, dict[str, TraceEvent]] = {}
++    for e in events:
++        by_chain.setdefault(e.seq, {})[e.stage] = e
++    for seq in sorted(by_chain):
++        chain = by_chain[seq]
++        missing = [s for s in STAGES if s not in chain]
++        if missing:
++            raise TraceRefused("missing_stage", {"seq": seq, "missing": missing,
++                                                 "present": sorted(chain)})
++        ts = [chain[s].t_ms for s in STAGES]
++        for j in range(1, len(ts)):  # equal timestamps are legal (finite clock
++            if ts[j] < ts[j - 1]:    # resolution); strictly earlier is reversal
++                raise TraceRefused("reversed_stage_order",
++                                   {"seq": seq, "at_stage": STAGES[j],
++                                    "t_ms": [repr(v) for v in ts]})
++    return events
++
++
++@dataclass(frozen=True)
++class ChainLatency:
++    """Latencies of one COMPLETE chain -- exact differences of matched stages."""
++
++    seq: int
++    seg_input_to_command_ms: float
++    seg_command_to_consumed_ms: float
++    seg_consumed_to_presented_ms: float
++    end_to_end_ms: float
++
++    def as_dict(self) -> dict[str, Any]:
++        return {
++            "seq": self.seq,
++            "seg_input_to_command_ms": self.seg_input_to_command_ms,
++            "seg_command_to_consumed_ms": self.seg_command_to_consumed_ms,
++            "seg_consumed_to_presented_ms": self.seg_consumed_to_presented_ms,
++            "end_to_end_ms": self.end_to_end_ms,
++        }
++
++
++def chain_latencies(events: Iterable[TraceEvent]) -> list[ChainLatency]:
++    """Matched-stage latencies for every chain. Only complete chains reach the
++    arithmetic: parse_trace already refused incomplete ones, so this function
++    NEVER sees a partial chain (and adds its own refusal if handed one)."""
++    by_chain: dict[int, dict[str, TraceEvent]] = {}
++    for e in events:
++        by_chain.setdefault(e.seq, {})[e.stage] = e
++    out: list[ChainLatency] = []
++    for seq in sorted(by_chain):
++        chain = by_chain[seq]
++        missing = [s for s in STAGES if s not in chain]
++        if missing:
++            raise TraceRefused("missing_stage", {"seq": seq, "missing": missing})
++        a, b, c, d = (chain[s].t_ms for s in STAGES)
++        segs = (b - a, c - b, d - c, d - a)
++        # lead correction: latency arithmetic itself must stay finite
++        # (inf - inf would emit NaN into every statistic downstream)
++        if not all(math.isfinite(v) for v in segs):
++            raise TraceRefused("latency_overflow",
++                               {"seq": seq,
++                                "t_ms": [chain[s].t_ms for s in STAGES]})
++        out.append(ChainLatency(seq=seq,
++                                seg_input_to_command_ms=segs[0],
++                                seg_command_to_consumed_ms=segs[1],
++                                seg_consumed_to_presented_ms=segs[2],
++                                end_to_end_ms=segs[3]))
++    if not out:
++        raise TraceRefused("empty_trace")
++    return out
++
++
++def _nearest_rank(sorted_vals: list[float], p: float) -> float:
++    """Nearest-rank percentile: the ceil(p*N)-th smallest (1-indexed)."""
++    n = len(sorted_vals)
++    k = max(1, math.ceil(p * n))
++    return sorted_vals[k - 1]
++
++
++def _stats(vals: list[float]) -> dict[str, float]:
++    s = sorted(vals)
++    n = len(s)
++    if n == 0:
++        raise TraceRefused("empty_stats", {"vals": vals})
++    # Overflow policy (reviewer correction 2026-09-25): sum() is NOT more
++    # stable than math.fsum() in general; the difference that matters here is
++    # that float sum() overflows SILENTLY to inf (detectable afterwards),
++    # while math.fsum() raises an uncontrolled OverflowError mid-statistic.
++    # The implemented approach: compute the total, DETECT a non-finite sum,
++    # and refuse it by name. No claim is made that all finite traces
++    # summarize safely.
++    total = sum(s)
++    if not math.isfinite(total):
++        raise TraceRefused("statistics_overflow",
++                           {"operation": "sum", "vals": vals})
++    mean = total / n
++    return {"count": n, "min_ms": s[0], "max_ms": s[-1], "mean_ms": mean,
++            "p50_ms": _nearest_rank(s, 0.50), "p95_ms": _nearest_rank(s, 0.95),
++            "p99_ms": _nearest_rank(s, 0.99)}
++
++
++def summarize(events: list[TraceEvent],
++              limits: Optional[dict[str, float]] = None) -> dict[str, Any]:
++    """Full summary. Latency arithmetic ONLY on complete matched chains; the
++    qualification verdict derives ONLY from caller-supplied limits (P06 is an
++    unresolved decision card -- absent limits mean `unqualified`)."""
++    chains = chain_latencies(events)
++    segs = {
++        "seg_input_to_command_ms": [c.seg_input_to_command_ms for c in chains],
++        "seg_command_to_consumed_ms": [c.seg_command_to_consumed_ms for c in chains],
++        "seg_consumed_to_presented_ms": [c.seg_consumed_to_presented_ms for c in chains],
++        "end_to_end_ms": [c.end_to_end_ms for c in chains],
++    }
++    summary: dict[str, Any] = {
++        "schema": "chimera.input_trace.summary.v1",
++        "identity": {"clock": events[0].clock, "run": events[0].run,
++                     "build": events[0].build, "chains": len(chains),
++                     "stages": list(STAGES),
++                     "percentile_method": PERCENTILE_METHOD},
++        "chains": [c.as_dict() for c in chains],
++        "segments": {k: _stats(v) for k, v in segs.items()},
++    }
++
++    if limits is None or not limits:
++        # lead correction: EMPTY limits are as absent as None -- a vacuous
++        # `pass` with zero checks is impossible by construction
++        summary["qualification"] = {"status": "unqualified",
++                                    "reason": ("p06_limits_absent" if limits is None
++                                               else "p06_limits_empty"),
++                                    "note": "P06 (release acceptance limits) is an "
++                                            "unresolved decision card; no limits "
++                                            "are inferred or defaulted here"}
++        return summary
++
++    checks = {}
++    for name, cap in sorted(limits.items()):
++        if not _num(cap) or not math.isfinite(float(cap)):
++            raise TraceRefused("bad_limit", {"limit": name, "value": repr(cap)})
++        if name not in LIMITABLE_METRICS:
++            raise TraceRefused("unknown_limit_key",
++                               {"limit": name, "limitable": list(LIMITABLE_METRICS)})
++        if name == "p95_end_to_end_ms":
++            observed = summary["segments"]["end_to_end_ms"]["p95_ms"]
++        elif name == "p99_end_to_end_ms":
++            observed = summary["segments"]["end_to_end_ms"]["p99_ms"]
++        else:
++            observed = summary["segments"][name]["max_ms"]
++        checks[name] = {"observed_ms": observed, "limit_ms": float(cap),
++                        "pass": observed <= float(cap)}
++    summary["qualification"] = {
++        "status": "pass" if all(c["pass"] for c in checks.values()) else "fail",
++        "source": "explicit caller data",
++        "checks": checks,
++    }
++    return summary
++
++
++def load_limits(path: str | None) -> Optional[dict[str, float]]:
++    """Limits exist only as caller data; a file is read only when named."""
++    if path is None:
++        return None
++    with open(path, "r", encoding="utf-8") as fh:
++        obj = json.load(fh)
++    if not isinstance(obj, dict):
++        raise TraceRefused("bad_limit", {"limits_file": path, "type": type(obj).__name__})
++    return obj
++
++
++def _read_records(path: str) -> list[dict[str, Any]]:
++    with open(path, "r", encoding="utf-8") as fh:
++        text = fh.read()
++    stripped = text.lstrip()
++    if stripped.startswith("["):
++        obj = json.loads(text)
++        if not isinstance(obj, list):
++            raise TraceRefused("bad_input", {"path": path, "type": type(obj).__name__})
++        return obj
++    return [json.loads(line) for line in (ln for ln in text.splitlines() if ln.strip())]
++
++
++def main(argv: Optional[list[str]] = None) -> int:
++    ap = argparse.ArgumentParser(
++        prog="input_trace",
++        description="Strict four-stage input-trace ingestion and matched-stage "
++                    "latency analysis (I-U07-TRACE). A refused trace prints ONLY "
++                    "the refusal -- never a latency number.")
++    ap.add_argument("--input", required=True, help="trace file: JSONL or JSON array")
++    ap.add_argument("--limits", default=None,
++                    help="optional JSON dict of caller-supplied acceptance limits "
++                         f"(keys from {list(LIMITABLE_METRICS)}); absent => unqualified")
++    ap.add_argument("--output", default=None, help="write JSON here (default stdout)")
++    args = ap.parse_args(argv)
++
++    try:
++        records = _read_records(args.input)
++        events = parse_trace(records)
++        result = summarize(events, load_limits(args.limits))
++    except TraceRefused as ref:
++        payload = {"schema": "chimera.input_trace.refusal.v1",
++                   "refused": ref.reason, "details": ref.details,
++                   "latency_output": None}  # NO numbers on refusal, by law
++        text = json.dumps(payload, indent=1, sort_keys=True)
++        (open(args.output, "w", encoding="utf-8") if args.output else sys.stdout).write(text + "\n")
++        return 2
++
++    text = json.dumps(result, indent=1, sort_keys=True)
++    if args.output:
++        with open(args.output, "w", encoding="utf-8") as fh:
++            fh.write(text + "\n")
++    else:
++        sys.stdout.write(text + "\n")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE/receipt.json b/tools/monkey_campaign/contributions/I-U07-TRACE/receipt.json
+new file mode 100644
+index 0000000..767568b
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE/receipt.json
+@@ -0,0 +1,26 @@
++{
++ "schema": "chimera.i-u07.second_correction.receipt.v1",
++ "attempt": "2321d1811a92415db7863826702e2d5c",
++ "agent": "c95e1722350849bca846b237c1f60997",
++ "criteria_sha256": "e47daf0abc17512f639a00909da06e8b6c907c76acc5778c0b4bfc60843cdc22",
++ "returns_candidate": {
++  "source_sha256_reviewed": "0a84cd77fc71986154df3bae289838adb2a73b8c8e207ab30779bd7652ae75dd",
++  "tests_sha256_reviewed": "b77fe5966a5fb56128b7509303f0e843a4585f78be2755c30eaab0c4fd1767a0a",
++  "review_message": "msg-a3856ac4ab9b4258a38c58d52785c90a"
++ },
++ "reviewer_corrections_applied": [
++  "source comment: sum() not claimed more stable than fsum; approach is detect-and-refuse",
++  "refusal details relabeled operation=sum (stale fsum_overflow reason removed)",
++  "prereg scope separated: statistics-accumulation overflow distinct from fixed unit-conversion overflow (appended chronologically)"
++ ],
++ "checks": {
++  "tests_26_26": "OK (21 candidate suite + 5 preserved test_correction.py)",
++  "cli_two_chain_overflow": "exit 2, refused=statistics_overflow, latency_output=null, details.operation=sum",
++  "lead_probe_conversion": "time_overflow (named refusal)",
++  "lead_probe_statistics": "statistics_overflow (named refusal)",
++  "empty_limits": "unqualified",
++  "prior_corrections_intact": "time_overflow + latency_overflow + empty-limits laws all still tested"
++ },
++ "excludes": "PR #130 head 93e850f2 NOT used (671 commits, dirty); handoff carries only trace deliverables + prior correction tests",
++ "at_utc": "2026-09-26T04:53:12Z"
++}
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE/report.md b/tools/monkey_campaign/contributions/I-U07-TRACE/report.md
+new file mode 100644
+index 0000000..3a80c9e
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE/report.md
+@@ -0,0 +1,192 @@
++# I-U07-TRACE — report (trace ingestion + matched-stage latency analysis)
++
++Card `I-U07-TRACE` (planning id **U07** — "Measure controls during actual play";
++this card is the explicitly authorized PREPARATORY module), attempt
++`9b94126614af41238eefc4c64682acbd`, arrival `arrival-ec97e63be318447499de475cc02077cd`,
++branch `branch-5`, base revision `9afbddcd90164b5544a16fd0bc72278d985eb6e3`
++(source repo `E:/ChimeraWork/monkey-play-20260924`, read via `git show` only —
++zero checkouts, zero working-tree changes there). Prior attempts
++(0444b44c/98468c4b/d3f1d76c + this resume) left no recoverable artifacts; this
++attempt implements from the pinned brief. PREREGISTRATION.md frozen BEFORE any
++implementation edit (Rule 0: statement, prediction, falsifier F1–F5).
++
++## 1. What was built
++
++- **`input_trace.py`** (stdlib-only, Python 3.11+, headless/deterministic by
++  construction — no wall clock, no window, no network; verified by test):
++  - The explicit four-stage event record: `seq` (chain id), `stage`
++    (`input` → `command_emitted` → `simulation_consumed` → `presented`), `t`
++    (finite) + `unit` (`ms`/`s`, per event, converted canonically; original
++    value preserved — units are data), `clock` identity, `run` identity,
++    `build` identity, opaque `payload`.
++  - Strict parsing (`parse_trace`) refusing the WHOLE trace by named reason:
++    `empty_trace, record_not_object, missing_field, bad_type,
++    non_finite_time, unknown_stage, bad_unit, duplicate_seq_stage,
++    mixed_clock, mixed_run, mixed_build, missing_stage, reversed_stage_order`
++    (equal stage timestamps are legal at finite clock resolution; strictly
++    earlier is reversal).
++  - Matched-stage latencies (`chain_latencies`): a latency is EXACTLY the
++    difference of two matched-stage timestamps of one complete chain;
++    `chain_latencies` independently re-refuses partial chains even if handed
++    pre-parsed events (belt-and-braces for falsifier F1).
++  - `summarize`: per-segment + end-to-end stats (nearest-rank percentiles,
++    method declared in output), and a qualification verdict that derives ONLY
++    from explicit caller-supplied limits; **absent limits ⇒ `unqualified`
++    with reason `p06_limits_absent`** (P06 "Choose release acceptance limits"
++    is an unresolved decision card — no limit is inferred, defaulted, or
++    hardcoded). Unknown/bad limit keys refuse rather than guess.
++  - CLI (`--input FILE` JSONL/JSON, optional `--limits FILE`, optional
++    `--output`): exit 0 + full JSON summary, or exit 2 + a refusal object
++    that contains **no latency numbers at all**.
++
++- **`test_input_trace.py`**: 20 tests / 4 suites — AnalyticExactness (planted
++  intervals return exactly; hand-computed p50/p95/p99; ms/s conversion exact;
++  interleaved arrival order), Refusals (every named break + no-latency-on-
++  refusal), Qualification (unqualified-without-limits; pass/fail strictly
++  against caller data; unknown/bad limits refuse), CLI (round-trips; refusal
++  emits no numbers), HeadlessLaw (banned tokens absent; deterministic
++  byte-identical output). **Result: 20/20 OK in 0.51 s** (bound: 120 s).
++
++- **`reference/`**: pinned extractions with `EXTRACTION_LEDGER.json`
++  (path + base revision + sha256 per file): `input_mapper.py`
++  (7a36a45e…, 18,349 B), `follow_camera.py` (d61347f0…, 33,410 B),
++  `typeb_export/command_record.py` (67711759…, 12,095 B). Read-only after
++  extraction.
++
++## 2. The APIs this was derived from (pinned 9afbddcd, cited not invented)
++
++- `tools/monkey_campaign/product/input_mapper.py` — THE seam: emits versioned
++  `CommandRecord`s (`v_forward` m/s ≥ 0, `yaw_rate` rad/s carried without
++  authority, `issued_tick`, `source`) into an injected sink at 20 Hz
++  (`INTERVAL_MS = 50`, HOLD_TICKS = 15 over 300 Hz physics); the clock is
++  INJECTED integer milliseconds; `SOURCE_ID = "u01_input_mapper"`. Its two
++  collapsed-by-naive-mappers states (no record = inert; `v_forward=0.0` =
++  live zero-advance) both matter for stage attribution.
++- `tools/science_funnel/typeb_export/command_record.py` — CommandRecord v1
++  freeze + projection law; `issued_tick` is the physics tick of the
++  zero-order-hold boundary (the natural `simulation_consumed` correlation).
++- `tools/monkey_campaign/product/follow_camera.py` — reads via the frozen
++  HTTP contract (`GET /frame` freshness harness; TICK_PERIOD 0.05 s); the
++  `presented` stage belongs at the frame offer, not at camera math.
++
++## 3. Insertion-point patch PROPOSAL (text only — no production edits made)
++
++Four seams, each an injected recorder call — no seam changes behavior; the
++tracer is a caller-supplied sink (the module itself never clocks):
++
++1. **`input`** — in `input_mapper.py`'s key-state change handling: when a
++   binding transitions, call `tracer.record(seq=n, stage="input", t=clock_ms(),
++   clock=..., run=..., build=...)` with the injected clock the mapper already
++   receives (its API already takes integer ms — no new clock source).
++2. **`command_emitted`** — wrap the injected sink: a `TraceSink` object whose
++   `emit(record)` forwards to the real sink and records
++   `stage="command_emitted"`, `payload={"v_forward": record.v_forward,
++   "issued_tick": record.issued_tick, "source": record.source}`. This is ~10
++   lines at the seam, uses the SAME injected clock, and adds zero authority.
++3. **`simulation_consumed`** — at the ZOH boundary in
++   `gait_controller.hpp`/engine tick where `commanded_target_velocity_x` is
++   applied (the 15-tick hold edge): record `stage="simulation_consumed"`,
++   `payload={"tick": issued_tick}`. Engine-side; proposed for the native leg,
++   out of scope for this Python card.
++4. **`presented`** — in the follow_camera/frame freshness path (`GET /frame`
++   harness): record `stage="presented"` with the frame id, on the SAME clock
++   identity as 1–3 (one clock per trace is enforced by `parse_trace`; mixed
++   clocks refuse, so the integrator must thread one clock through all four
++   seams — that constraint is deliberate).
++
++Chains correlate by `seq` = the input-transition counter; the `payload`s
++above make audit possible without the tracer interpreting them.
++
++## 4. Falsifier self-check (PREREGISTRATION F1–F5)
++
++- **F1 invented latency:** impossible by construction — arithmetic runs only
++  on complete matched chains; `chain_latencies` re-refuses partials; refused
++  CLI output contains no latency fields (tested).
++- **F2 silent clock/build mixing:** refused by name (`mixed_clock/run/build`)
++  — tested.
++- **F3 fixtures labeled as play acceptance:** this report labels every trace
++  a FIXTURE; no live measurement exists here; U07's native gates (P06 limits,
++  repeatable scenes, actual play) remain OPEN.
++- **F4 wall clock / window / hidden IO:** source scanned by test for banned
++  tokens; deterministic byte-identical output asserted.
++- **F5 limits from anywhere but caller data:** only the `--limits` file or
++  explicit `limits=` argument; absent ⇒ unqualified; unknown keys refuse —
++  tested.
++
++## 5. Remaining gates (this card closes none of them)
++
++1. P06 decision: freeze the release acceptance limits (owner: operator/lead —
++   a decision card, not derivable here).
++2. Native integration of the four recorder seams (engine-side
++   `simulation_consumed` is C++ work under the frozen-service law).
++3. Actual-play capture on repeatable scenes → trace files → this module
++   computes; qualification only then, against the P06 numbers.
++4. U07's visual/native profile (`controls`, checkpoint V03) stays with its
++   card — this preparatory module satisfies no parent gate by itself.
++
++## 6. Next implementation step
++
++Wire the `TraceSink` wrapper (seam 2) into the pinned `input_mapper.py` call
++site inside a scoped follow-up card once this module is reviewed/merged; the
++engine-side seam 3 goes to the native runtime lane. No further work is
++unblocked by this card alone.
++
++---
++
++# CORRECTION — attempt 1b797ab5558149919bfe4b85066d484c (2026-09-25)
++
++Responds to the lead's CHANGES REQUIRED on PR #121. Base adopted
++byte-identical (input_trace.py sha256 `4da6f5de…`); prior 20/20 suite green
++pre-fix; failing-first proof recorded (4/5 new tests FAILED on base —
++`failing_first_base.txt`).
++
++## Fixes
++
++1. **`time_overflow`**: parse_trace now refuses when `t * UNITS_TO_MS[unit]`
++   is not finite (the lead's `t=1e308 s` reproducer → named refusal at
++   parse; no summary is reachable).
++2. **`latency_overflow`**: chain_latencies refuses when any segment
++   difference is non-finite — NaN can never reach a statistic.
++3. **Empty limits**: `summarize(events, limits={})` → `unqualified` with
++   reason `p06_limits_empty` (absent stays `p06_limits_absent`); the vacuous
++   zero-check `pass` is structurally impossible.
++4. CLI regression pinned: refusals exit 2 with the named reason and
++   `latency_output: null` — no latency values (tested end-to-end on the
++   reproducer trace).
++
++## Verification
++
++`python -B -m unittest test_input_trace test_correction` → **25/25 OK
++(20 prior + 5 correction), run twice, deterministic**. No prior test broken;
++no NaN/inf can reach a summary; empty limits never pass; synthetic traces
++only (no device claim, no production edits).
++
++---
++
++# SECOND CORRECTION — attempt 2321d1811a92415db7863826702e2d5c (2026-09-25, later)
++
++Returns the independently reviewed candidate (source `0a84cd77…`, tests
++`b77fe596…` — review msg-a3856ac4: 26 tests pass, two-chain overflow CLI
++exits 2 `statistics_overflow`, `latency_output` null) WITH the reviewer's
++documentation corrections applied, from this attempt's isolated workspace:
++
++1. **Statistics-accumulation overflow fixed** (distinct from the first
++   correction's unit-conversion overflow): two finite chains
++   [0,0,0,1e308] ms — finite per-chain latencies whose statistics sum
++   overflows — now refuse by name `statistics_overflow`; the regression
++   `test_fsum_overflow_two_chains` is in the suite.
++2. **Source comment corrected**: sum() is not claimed more stable than
++   math.fsum(); the implemented approach detects a non-finite sum and refuses
++   it (sum() overflows silently to inf = detectable; fsum raises an
++   uncontrolled OverflowError mid-statistic).
++3. **Refusal details accurately labeled**: `operation: "sum"` (the stale
++   `reason: "fsum_overflow"` named an unused operation and is removed).
++4. **Preregistration scope separated** (appended, chronological): statistics
++   accumulation ≠ unit conversion; the first addendum's text conflated them.
++5. Prior correction tests preserved (test_correction.py byte-identical to the
++   first correction); PR #130 (671-commit dirty head) NOT used — this handoff
++   contains only the trace deliverables + prior correction tests.
++
++Measured in this workspace: 26/26 tests, CLI reproducer exit 2 with
++`statistics_overflow` + `latency_output: null`, both lead reproducer probes
++(conversion refusal + statistics refusal) print their named refusals.
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE/test_correction.py b/tools/monkey_campaign/contributions/I-U07-TRACE/test_correction.py
+new file mode 100644
+index 0000000..c6b6697
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE/test_correction.py
+@@ -0,0 +1,96 @@
++"""test_correction.py -- I-U07-TRACE correction tests (failing-first).
++
++C1-C4 reproduce the lead's findings against the BASE module (they FAIL
++there), and must PASS after the fix.
++"""
++import json
++import math
++import pathlib
++import subprocess
++import sys
++import tempfile
++import unittest
++from pathlib import Path
++
++HERE = Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++
++import input_trace as it  # noqa: E402
++
++
++def make_records(t_values_by_seq, unit="ms"):
++    stages = it.STAGES
++    recs = []
++    for seq, ts in t_values_by_seq.items():
++        for stage, t in zip(stages, ts):
++            recs.append({"seq": seq, "stage": stage, "t": t, "unit": unit,
++                         "clock": "c1", "run": "r1", "build": "b1"})
++    return recs
++
++
++class C1OverflowAfterConversion(unittest.TestCase):
++    def test_seconds_overflow_refused(self):
++        recs = make_records({1: [1e308, 1e308, 1e308, 1e308]}, unit="s")
++        with self.assertRaises(it.TraceRefused) as ctx:
++            it.parse_trace(recs)
++        self.assertIn(ctx.exception.reason, ("time_overflow", "non_finite_time"))
++
++    def test_no_nan_ever_reaches_summary(self):
++        recs = make_records({1: [1e308, 1e308, 1e308, 1e308]}, unit="s")
++        try:
++            events = it.parse_trace(recs)
++            summary = it.summarize(events)
++            text = json.dumps(summary)
++            self.assertFalse(any(x in text for x in ("NaN", "Infinity")),
++                             "defect: NaN/inf reached the summary")
++            self.fail("defect: overflow trace was accepted")
++        except it.TraceRefused:
++            pass  # the fixed behavior
++
++
++class C2LatencyArithmetic(unittest.TestCase):
++    def test_latency_overflow_refused(self):
++        # finite ms values whose differences would be finite too -- the pure
++        # conversion-overflow path is C1; here extreme-but-finite spreads must
++        # still never produce non-finite latency (regression guard)
++        recs = make_records({1: [0.0, 1.0, 2.0, 3.0]})
++        chains = it.chain_latencies(it.parse_trace(recs))
++        for c in chains:
++            for v in (c.seg_input_to_command_ms, c.seg_command_to_consumed_ms,
++                      c.seg_consumed_to_presented_ms, c.end_to_end_ms):
++                self.assertTrue(math.isfinite(v))
++
++
++class C3EmptyLimits(unittest.TestCase):
++    def test_empty_limits_never_pass(self):
++        recs = make_records({1: [0.0, 1.0, 2.0, 3.0]})
++        events = it.parse_trace(recs)
++        summary = it.summarize(events, limits={})
++        self.assertEqual(summary["qualification"]["status"], "unqualified")
++        self.assertNotEqual(summary["qualification"]["status"], "pass")
++        self.assertEqual(summary["qualification"].get("checks", {}), {})
++
++
++class C4CliRefusal(unittest.TestCase):
++    def test_cli_refusal_named_without_latency_values(self):
++        with tempfile.TemporaryDirectory() as tmp:
++            p = pathlib.Path(tmp) / "trace.jsonl"
++            lines = []
++            for stage, t in zip(it.STAGES, [1e308] * 4):
++                lines.append(json.dumps({"seq": 1, "stage": stage, "t": t,
++                                         "unit": "s", "clock": "c", "run": "r",
++                                         "build": "b"}))
++            p.write_text("\n".join(lines), encoding="utf-8")
++            proc = subprocess.run(
++                [sys.executable, "-B", str(HERE / "input_trace.py"),
++                 "--input", str(p)], capture_output=True, timeout=60)
++            self.assertEqual(proc.returncode, 2)
++            payload = json.loads(proc.stdout.decode("utf-8"))
++            self.assertIn(payload["refused"],
++                          ("time_overflow", "non_finite_time", "latency_overflow"))
++            self.assertIsNone(payload["latency_output"])
++            self.assertNotIn("NaN", proc.stdout.decode("utf-8"))
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
+diff --git a/tools/monkey_campaign/contributions/I-U07-TRACE/test_input_trace.py b/tools/monkey_campaign/contributions/I-U07-TRACE/test_input_trace.py
+new file mode 100644
+index 0000000..3a20776
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/I-U07-TRACE/test_input_trace.py
+@@ -0,0 +1,290 @@
++"""test_input_trace.py -- I-U07-TRACE falsifier suite (PREREGISTRATION F1-F5).
++
++Every analytic trace below is a FIXTURE (hand-built, exact numbers). None of
++them is actual-play evidence; U07's native gates stay open. Runtime is bounded
++trivially (< a few seconds) and output is tiny, per the card limits.
++
++Run:  python -B test_input_trace.py   (unittest, exit code is the verdict)
++"""
++from __future__ import annotations
++
++import json
++import math
++import os
++import subprocess
++import sys
++import tempfile
++import unittest
++
++sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
++
++from input_trace import (  # noqa: E402
++    STAGES, TraceEvent, TraceRefused, chain_latencies, parse_trace, summarize,
++)
++
++CLOCK, RUN, BUILD = "steady_ns", "run-fixture-1", "build-fixture-9afbddcd"
++
++
++def ev(seq: int, stage: str, t: float, unit: str = "ms", **over) -> dict:
++    rec = {"seq": seq, "stage": stage, "t": t, "unit": unit,
++           "clock": CLOCK, "run": RUN, "build": BUILD}
++    rec.update(over)
++    return rec
++
++
++def chain(seq: int, t0: float, a: float, b: float, c: float) -> list[dict]:
++    """A complete chain: input at t0, then three exact segment lengths (ms)."""
++    return [ev(seq, "input", t0),
++            ev(seq, "command_emitted", t0 + a),
++            ev(seq, "simulation_consumed", t0 + a + b),
++            ev(seq, "presented", t0 + a + b + c)]
++
++
++class AnalyticExactness(unittest.TestCase):
++    """P1: planted intervals come back exactly; stats equal hand-computed."""
++
++    def test_exact_intervals_and_stats(self):
++        # 4 chains, planted segment lengths chosen for exact float arithmetic.
++        planted = {1: (10.0, 20.0, 30.0),        # e2e 60
++                   2: (11.0, 19.0, 31.0),        # e2e 61
++                   3: (12.0, 21.0, 29.5),        # e2e 62.5
++                   4: (13.0, 18.0, 32.5)}        # e2e 63.5
++        records = []
++        for seq, (a, b, c) in planted.items():
++            records.extend(chain(seq, 1000.0 * seq, a, b, c))
++        events = parse_trace(records)
++        chains = {cl.seq: cl for cl in chain_latencies(events)}
++        for seq, (a, b, c) in planted.items():
++            self.assertEqual(chains[seq].seg_input_to_command_ms, a)
++            self.assertEqual(chains[seq].seg_command_to_consumed_ms, b)
++            self.assertEqual(chains[seq].seg_consumed_to_presented_ms, c)
++            self.assertEqual(chains[seq].end_to_end_ms, a + b + c)
++
++        s = summarize(events)
++        e2e = s["segments"]["end_to_end_ms"]
++        self.assertEqual(e2e["count"], 4)
++        self.assertEqual(e2e["min_ms"], 60.0)
++        self.assertEqual(e2e["max_ms"], 63.5)
++        self.assertEqual(e2e["mean_ms"], (60.0 + 61.0 + 62.5 + 63.5) / 4)
++        # nearest-rank on [60, 61, 62.5, 63.5]: p50=ceil(2)->61, p95=ceil(3.8)->63.5
++        self.assertEqual(e2e["p50_ms"], 61.0)
++        self.assertEqual(e2e["p95_ms"], 63.5)
++        self.assertEqual(e2e["p99_ms"], 63.5)
++        self.assertEqual(s["qualification"]["status"], "unqualified")
++        self.assertEqual(s["qualification"]["reason"], "p06_limits_absent")
++
++    def test_unit_conversion_exact(self):
++        # one chain in seconds, same chain in ms -- identical canonical values
++        s_records = chain(7, 1.5, a=0.010, b=0.020, c=0.030)  # seconds
++        for r in s_records:
++            r["unit"] = "s"
++        ms_records = chain(7, 1500.0, 10.0, 20.0, 30.0)
++        c_s = chain_latencies(parse_trace(s_records))[0]
++        c_ms = chain_latencies(parse_trace(ms_records))[0]
++        self.assertEqual(c_s.end_to_end_ms, c_ms.end_to_end_ms)
++        self.assertEqual(c_s.end_to_end_ms, 60.0)
++        # per-event mixed units inside one trace are legal (one clock identity)
++        mixed = [ev(8, "input", 1.0, unit="s"), ev(8, "command_emitted", 1010.0),
++                 ev(8, "simulation_consumed", 1030.0), ev(8, "presented", 1060.0)]
++        self.assertEqual(chain_latencies(parse_trace(mixed))[0].seg_input_to_command_ms, 10.0)
++
++    def test_interleaved_and_out_of_order_records(self):
++        # arrival order is not the pipeline order; matching is by (seq, stage)
++        recs = [ev(1, "presented", 1160.0), ev(2, "input", 2000.0),
++                ev(1, "input", 1000.0), ev(2, "presented", 2061.0),
++                ev(1, "simulation_consumed", 1030.0), ev(2, "command_emitted", 2011.0),
++                ev(1, "command_emitted", 1010.0), ev(2, "simulation_consumed", 2030.0)]
++        chains = {c.seq: c for c in chain_latencies(parse_trace(recs))}
++        self.assertEqual(chains[1].end_to_end_ms, 160.0)
++        self.assertEqual(chains[2].end_to_end_ms, 61.0)
++
++
++class Refusals(unittest.TestCase):
++    """P2 + F1/F2: each break refuses by name and yields NO latency."""
++
++    def _refused(self, records, reason):
++        with self.assertRaises(TraceRefused) as cm:
++            parse_trace(records)
++        self.assertEqual(cm.exception.reason, reason, msg=str(cm.exception.details))
++        return cm.exception
++
++    def test_empty_trace(self):
++        self._refused([], "empty_trace")
++
++    def test_missing_stage(self):
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)[:-1]  # drop 'presented'
++        self._refused(recs, "missing_stage")
++
++    def test_mixed_clock(self):
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        recs[2]["clock"] = "qpc"
++        self._refused(recs, "mixed_clock")
++
++    def test_mixed_run_and_build(self):
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        recs[1]["run"] = "run-other"
++        self._refused(recs, "mixed_run")
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        recs[1]["build"] = "build-other"
++        self._refused(recs, "mixed_build")
++
++    def test_duplicate_seq_stage(self):
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0) + [ev(1, "input", 999.0)]
++        self._refused(recs, "duplicate_seq_stage")
++
++    def test_non_finite_time(self):
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        recs[3]["t"] = float("inf")
++        self._refused(recs, "non_finite_time")
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        recs[3]["t"] = float("nan")
++        self._refused(recs, "non_finite_time")
++
++    def test_reversed_stage_order(self):
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        recs[3]["t"] = 9.0  # presented BEFORE simulation_consumed (10.0)
++        self._refused(recs, "reversed_stage_order")
++
++    def test_unknown_stage_and_missing_field_and_bad_type(self):
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        recs[0]["stage"] = "teleport"
++        self._refused(recs, "unknown_stage")
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        del recs[2]["clock"]
++        self._refused(recs, "missing_field")
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        recs[1]["seq"] = "one"
++        self._refused(recs, "bad_type")
++
++    def test_bad_unit(self):
++        recs = chain(1, 0.0, 5.0, 5.0, 5.0)
++        recs[0]["unit"] = "frames"
++        self._refused(recs, "bad_unit")
++
++    def test_chain_latencies_also_refuses_partial(self):
++        # F1 belt-and-braces: even bypassing parse_trace, arithmetic never sees
++        # a partial chain (chain_latencies refuses on its own).
++        fake = [TraceEvent(seq=9, stage="input", t=0.0, unit="ms", t_ms=0.0,
++                           clock=CLOCK, run=RUN, build=BUILD)]
++        with self.assertRaises(TraceRefused) as cm:
++            chain_latencies(fake)
++        self.assertEqual(cm.exception.reason, "missing_stage")
++
++
++class Qualification(unittest.TestCase):
++    """P3: verdicts derive ONLY from caller-supplied limits."""
++
++    def _events(self):
++        recs = []
++        for seq, (a, b, c) in {1: (10.0, 20.0, 30.0), 2: (12.0, 22.0, 32.0)}.items():
++            recs.extend(chain(seq, 100.0 * seq, a, b, c))
++        return parse_trace(recs)
++
++    def test_limits_absent_is_unqualified(self):
++        q = summarize(self._events())["qualification"]
++        self.assertEqual(q["status"], "unqualified")
++
++    def test_pass_and_fail_against_caller_data(self):
++        # chains: e2e 60.0 and 66.0 -> max 66.0, p95 66.0 (nearest-rank)
++        s = summarize(self._events(), limits={"end_to_end_ms": 66.0})
++        self.assertEqual(s["qualification"]["status"], "pass")
++        s = summarize(self._events(), limits={"end_to_end_ms": 61.0})
++        self.assertEqual(s["qualification"]["status"], "fail")
++        self.assertEqual(s["qualification"]["checks"]["end_to_end_ms"]["observed_ms"], 66.0)
++        s = summarize(self._events(), limits={"p95_end_to_end_ms": 66.0,
++                                              "seg_input_to_command_ms": 12.0})
++        self.assertEqual(s["qualification"]["status"], "pass")
++
++    def test_unknown_or_bad_limit_refuses(self):
++        with self.assertRaises(TraceRefused) as cm:
++            summarize(self._events(), limits={"frames_per_second_min": 60})
++        self.assertEqual(cm.exception.reason, "unknown_limit_key")
++        with self.assertRaises(TraceRefused) as cm:
++            summarize(self._events(), limits={"end_to_end_ms": float("nan")})
++        self.assertEqual(cm.exception.reason, "bad_limit")
++
++
++class CLI(unittest.TestCase):
++    """CLI JSON out: refusal prints ONLY the refusal (F1); pass path round-trips."""
++
++    HERE = os.path.dirname(os.path.abspath(__file__))
++
++    def _run(self, *args):
++        return subprocess.run([sys.executable, "-B", os.path.join(self.HERE, "input_trace.py"), *args],
++                              capture_output=True, text=True, timeout=60)
++
++    def test_cli_summary_and_unqualified(self):
++        with tempfile.TemporaryDirectory() as td:
++            path = os.path.join(td, "trace.jsonl")
++            with open(path, "w", encoding="utf-8") as fh:
++                for r in chain(1, 0.0, 5.0, 6.0, 7.0):
++                    fh.write(json.dumps(r) + "\n")
++            r = self._run("--input", path)
++            self.assertEqual(r.returncode, 0, msg=r.stderr)
++            out = json.loads(r.stdout)
++            self.assertEqual(out["schema"], "chimera.input_trace.summary.v1")
++            self.assertEqual(out["qualification"]["status"], "unqualified")
++            self.assertEqual(out["chains"][0]["end_to_end_ms"], 18.0)
++
++    def test_cli_refusal_emits_no_latency(self):
++        with tempfile.TemporaryDirectory() as td:
++            path = os.path.join(td, "broken.jsonl")
++            with open(path, "w", encoding="utf-8") as fh:
++                for r in chain(1, 0.0, 5.0, 6.0, 7.0)[:-1]:
++                    fh.write(json.dumps(r) + "\n")
++            r = self._run("--input", path)
++            self.assertEqual(r.returncode, 2)
++            out = json.loads(r.stdout)
++            self.assertEqual(out["refused"], "missing_stage")
++            self.assertIsNone(out["latency_output"])
++            self.assertNotIn("end_to_end", json.dumps(out))  # F1: no numbers
++
++    def test_cli_with_limits_file(self):
++        with tempfile.TemporaryDirectory() as td:
++            path = os.path.join(td, "trace.json")
++            with open(path, "w", encoding="utf-8") as fh:
++                json.dump(chain(1, 0.0, 5.0, 6.0, 7.0), fh)
++            lim = os.path.join(td, "limits.json")
++            with open(lim, "w", encoding="utf-8") as fh:
++                json.dump({"end_to_end_ms": 100.0}, fh)
++            r = self._run("--input", path, "--limits", lim)
++            self.assertEqual(r.returncode, 0, msg=r.stderr)
++            out = json.loads(r.stdout)
++            self.assertEqual(out["qualification"]["status"], "pass")
++            self.assertEqual(out["qualification"]["source"], "explicit caller data")
++
++
++
++class StatisticsOverflow(unittest.TestCase):
++    """F5/F6: finite latency chains with values that cause statistics overflow are refused."""
++
++    def test_fsum_overflow_two_chains(self):
++        # Two finite latency chains [0,0,0,1e308] ms: each chain's latencies
++        # are finite, but the STATISTICS SUM over chains overflows to inf and
++        # is refused by name (distinct from the fixed unit-conversion overflow)
++        records = [dict(seq=seq, stage=s, t=t, unit="ms", clock=CLOCK, run=RUN, build=BUILD)
++                   for seq in range(2) for s, t in zip(STAGES, [0, 0, 0, 1e308])]
++        events = parse_trace(records)
++        with self.assertRaises(TraceRefused) as cm:
++            summarize(events)
++        self.assertEqual(cm.exception.reason, "statistics_overflow")
++        self.assertEqual(cm.exception.details.get("operation"), "sum")
++
++class HeadlessLaw(unittest.TestCase):
++    """F4: the module never reads a wall clock / opens a window / does hidden IO."""
++
++    def test_source_imports_no_clock_or_window(self):
++        src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
++                                "input_trace.py"), encoding="utf-8").read()
++        for banned in ("time.time(", "perf_counter(", "monotonic(", "pygame",
++                       "tkinter", "urllib", "socket", "requests"):
++            self.assertNotIn(banned, src, msg=f"banned token {banned!r} in source")
++        # deterministic: same input, byte-identical output
++        recs = chain(3, 12.0, 1.0, 2.0, 3.0)
++        a = json.dumps(summarize(parse_trace(recs)), sort_keys=True)
++        b = json.dumps(summarize(parse_trace(recs)), sort_keys=True)
++        self.assertEqual(a, b)
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=1)

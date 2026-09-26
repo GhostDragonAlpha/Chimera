@@ -158,8 +158,15 @@ def parse_trace(records: Iterable[dict[str, Any]]) -> list[TraceEvent]:
             if rec["build"] != build:
                 raise TraceRefused("mixed_build",
                                    {"seq": seq, "stage": stage, "builds": sorted({build, rec["build"]})})
+        # lead correction: refuse overflow AFTER unit conversion -- a finite
+        # t in seconds can still overflow to inf in milliseconds
+        t_ms = float(t) * UNITS_TO_MS[unit]
+        if not math.isfinite(t_ms):
+            raise TraceRefused("time_overflow",
+                               {"seq": seq, "stage": stage, "unit": unit,
+                                "t": repr(t), "t_ms": repr(t_ms)})
         events.append(TraceEvent(seq=seq, stage=stage, t=float(t), unit=unit,
-                                 t_ms=float(t) * UNITS_TO_MS[unit], clock=rec["clock"],
+                                 t_ms=t_ms, clock=rec["clock"],
                                  run=rec["run"], build=rec["build"],
                                  payload=rec.get("payload")))
 
@@ -218,11 +225,18 @@ def chain_latencies(events: Iterable[TraceEvent]) -> list[ChainLatency]:
         if missing:
             raise TraceRefused("missing_stage", {"seq": seq, "missing": missing})
         a, b, c, d = (chain[s].t_ms for s in STAGES)
+        segs = (b - a, c - b, d - c, d - a)
+        # lead correction: latency arithmetic itself must stay finite
+        # (inf - inf would emit NaN into every statistic downstream)
+        if not all(math.isfinite(v) for v in segs):
+            raise TraceRefused("latency_overflow",
+                               {"seq": seq,
+                                "t_ms": [chain[s].t_ms for s in STAGES]})
         out.append(ChainLatency(seq=seq,
-                                seg_input_to_command_ms=b - a,
-                                seg_command_to_consumed_ms=c - b,
-                                seg_consumed_to_presented_ms=d - c,
-                                end_to_end_ms=d - a))
+                                seg_input_to_command_ms=segs[0],
+                                seg_command_to_consumed_ms=segs[1],
+                                seg_consumed_to_presented_ms=segs[2],
+                                end_to_end_ms=segs[3]))
     if not out:
         raise TraceRefused("empty_trace")
     return out
@@ -238,7 +252,20 @@ def _nearest_rank(sorted_vals: list[float], p: float) -> float:
 def _stats(vals: list[float]) -> dict[str, float]:
     s = sorted(vals)
     n = len(s)
-    mean = math.fsum(s) / n
+    if n == 0:
+        raise TraceRefused("empty_stats", {"vals": vals})
+    # Overflow policy (reviewer correction 2026-09-25): sum() is NOT more
+    # stable than math.fsum() in general; the difference that matters here is
+    # that float sum() overflows SILENTLY to inf (detectable afterwards),
+    # while math.fsum() raises an uncontrolled OverflowError mid-statistic.
+    # The implemented approach: compute the total, DETECT a non-finite sum,
+    # and refuse it by name. No claim is made that all finite traces
+    # summarize safely.
+    total = sum(s)
+    if not math.isfinite(total):
+        raise TraceRefused("statistics_overflow",
+                           {"operation": "sum", "vals": vals})
+    mean = total / n
     return {"count": n, "min_ms": s[0], "max_ms": s[-1], "mean_ms": mean,
             "p50_ms": _nearest_rank(s, 0.50), "p95_ms": _nearest_rank(s, 0.95),
             "p99_ms": _nearest_rank(s, 0.99)}
@@ -266,9 +293,12 @@ def summarize(events: list[TraceEvent],
         "segments": {k: _stats(v) for k, v in segs.items()},
     }
 
-    if limits is None:
+    if limits is None or not limits:
+        # lead correction: EMPTY limits are as absent as None -- a vacuous
+        # `pass` with zero checks is impossible by construction
         summary["qualification"] = {"status": "unqualified",
-                                    "reason": "p06_limits_absent",
+                                    "reason": ("p06_limits_absent" if limits is None
+                                               else "p06_limits_empty"),
                                     "note": "P06 (release acceptance limits) is an "
                                             "unresolved decision card; no limits "
                                             "are inferred or defaulted here"}

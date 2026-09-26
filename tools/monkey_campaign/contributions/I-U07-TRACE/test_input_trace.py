@@ -254,6 +254,22 @@ class CLI(unittest.TestCase):
             self.assertEqual(out["qualification"]["source"], "explicit caller data")
 
 
+
+class StatisticsOverflow(unittest.TestCase):
+    """F5/F6: finite latency chains with values that cause statistics overflow are refused."""
+
+    def test_fsum_overflow_two_chains(self):
+        # Two finite latency chains [0,0,0,1e308] ms: each chain's latencies
+        # are finite, but the STATISTICS SUM over chains overflows to inf and
+        # is refused by name (distinct from the fixed unit-conversion overflow)
+        records = [dict(seq=seq, stage=s, t=t, unit="ms", clock=CLOCK, run=RUN, build=BUILD)
+                   for seq in range(2) for s, t in zip(STAGES, [0, 0, 0, 1e308])]
+        events = parse_trace(records)
+        with self.assertRaises(TraceRefused) as cm:
+            summarize(events)
+        self.assertEqual(cm.exception.reason, "statistics_overflow")
+        self.assertEqual(cm.exception.details.get("operation"), "sum")
+
 class HeadlessLaw(unittest.TestCase):
     """F4: the module never reads a wall clock / opens a window / does hidden IO."""
 
