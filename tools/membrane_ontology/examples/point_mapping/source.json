@@ -1,0 +1,1 @@
+{"frame":"source-frame","points":[{"id":"0","position":[0,0,0]},{"id":"1","position":[1000,0,0]},{"id":"2","position":[0,1000,0]},{"id":"3","position":[0,0,1000]}],"representation":"source-fixture-v1","schema":"chimera.point_samples.v1","unit":"mm"}

@@ -80,6 +80,11 @@ Physics, boundaries and falsifiers stay attached to the membrane they describe.
 
 ## Next implementation steps
 
+For new or revised conversions, use the [representation mapping and connection
+verification procedure](REPRESENTATION_MAPPING.md). Its optional source-bound
+point coupon checks explicit frames, units, correspondences and numerical samples;
+it does not change this ontology or qualify physical/runtime behavior.
+
 Optional standard interchange: the [semantic validation pilot](../tools/membrane_ontology/SEMANTIC_PILOT.md)
 exports this JSON to RDF and checks selected structural constraints with SHACL.
 It separates types, containment, port connections and matter ownership. The JSON
