@@ -1,0 +1,411 @@
+{
+  "P1_source_bone": {
+    "d_distal_mm": 0.0,
+    "d_olecranon_mm": 0.0,
+    "distal_min_y_mm": -297.09479212760925,
+    "n_tri": 396,
+    "olecranon_min_x_mm": -28.320999816060066,
+    "receipt_distal_min_y_mm": -297.09479212760925,
+    "receipt_olecranon_min_x_mm": -28.320999816060066,
+    "verdict": true,
+    "x_span_mm": [
+      -28.320999816060066,
+      14.062999747693539
+    ],
+    "y_span_mm": [
+      -297.09479212760925,
+      14.575199782848358
+    ],
+    "z_span_mm": [
+      -14.065999537706375,
+      56.11100047826767
+    ]
+  },
+  "P2_target_olecranon_test": {
+    "axis_matches_receipt": true,
+    "axis_unit": [
+      -0.45584373480967805,
+      -0.8900578864387171,
+      0.0018569391502837888
+    ],
+    "best_station": {
+      "D_above_2mm": true,
+      "D_post_minus_ant_mm": 3.2891597453041737,
+      "boot_D_std_mm": 0.7328411463032158,
+      "d_D_mm": 0.0,
+      "n": 112,
+      "receipt_D_mm": 3.2891597453041737,
+      "rho_ant_max_mm": 9.117234136912321,
+      "rho_post_max_mm": 12.406393882216495,
+      "t_mm": 6.0,
+      "usable": true
+    },
+    "d_best_D_mm": 0.0,
+    "e1": [
+      0.8900598235145568,
+      -0.45584274273716563,
+      0.0009510305433596829
+    ],
+    "e1_matches_receipt": true,
+    "e2": [
+      0.0,
+      0.0020863082471820156,
+      0.9999978236565807
+    ],
+    "e2_matches_receipt": true,
+    "elbow_m": [
+      -0.11548098385334016,
+      0.3191090774536133,
+      -0.0060765563324093825
+    ],
+    "receipt_best_station": {
+      "D_post_minus_ant_mm": 3.2891597453041737,
+      "boot_D_std_mm": 0.7328411463032158,
+      "rho_ant_max_mm": 9.117234136912321,
+      "rho_post_max_mm": 12.406393882216495,
+      "t_mm": 6.0
+    },
+    "stations": [
+      {
+        "D_above_2mm": false,
+        "D_post_minus_ant_mm": 0.6295901838740363,
+        "d_D_mm": 0.0,
+        "n": 108,
+        "receipt_D_mm": 0.6295901838740363,
+        "rho_ant_max_mm": 10.69070992255751,
+        "rho_post_max_mm": 11.320300106431546,
+        "t_mm": -8.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": false,
+        "D_post_minus_ant_mm": 1.6136840280008204,
+        "d_D_mm": 0.0,
+        "n": 108,
+        "receipt_D_mm": 1.6136840280008204,
+        "rho_ant_max_mm": 10.174164497065185,
+        "rho_post_max_mm": 11.787848525066005,
+        "t_mm": -5.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.0231925147287537,
+        "d_D_mm": 0.0,
+        "n": 112,
+        "receipt_D_mm": 2.0231925147287537,
+        "rho_ant_max_mm": 9.285814204272798,
+        "rho_post_max_mm": 11.309006719001552,
+        "t_mm": -2.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 3.0114370540885282,
+        "d_D_mm": 0.0,
+        "n": 115,
+        "receipt_D_mm": 3.0114370540885282,
+        "rho_ant_max_mm": 8.935942920373815,
+        "rho_post_max_mm": 11.947379974462343,
+        "t_mm": 0.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.595364247077633,
+        "d_D_mm": 0.0,
+        "n": 112,
+        "receipt_D_mm": 2.595364247077633,
+        "rho_ant_max_mm": 9.255088672748823,
+        "rho_post_max_mm": 11.850452919826456,
+        "t_mm": 2.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.2345093994458036,
+        "d_D_mm": 0.0,
+        "n": 116,
+        "receipt_D_mm": 2.2345093994458036,
+        "rho_ant_max_mm": 9.482069284268,
+        "rho_post_max_mm": 11.716578683713804,
+        "t_mm": 4.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 3.2891597453041737,
+        "boot_D_std_mm": 0.7328411463032158,
+        "d_D_mm": 0.0,
+        "n": 112,
+        "receipt_D_mm": 3.2891597453041737,
+        "rho_ant_max_mm": 9.117234136912321,
+        "rho_post_max_mm": 12.406393882216495,
+        "t_mm": 6.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": false,
+        "D_post_minus_ant_mm": 1.8135108486900045,
+        "d_D_mm": 0.0,
+        "n": 112,
+        "receipt_D_mm": 1.8135108486900045,
+        "rho_ant_max_mm": 10.144210768534734,
+        "rho_post_max_mm": 11.957721617224738,
+        "t_mm": 8.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.022788127620448,
+        "d_D_mm": 0.0,
+        "n": 108,
+        "receipt_D_mm": 2.022788127620448,
+        "rho_ant_max_mm": 10.761644736172139,
+        "rho_post_max_mm": 12.784432863792587,
+        "t_mm": 10.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.0137122877566878,
+        "d_D_mm": 0.0,
+        "n": 116,
+        "receipt_D_mm": 2.0137122877566878,
+        "rho_ant_max_mm": 10.107434398476839,
+        "rho_post_max_mm": 12.121146686233526,
+        "t_mm": 12.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": false,
+        "D_post_minus_ant_mm": 0.6410168850751568,
+        "d_D_mm": 0.0,
+        "n": 112,
+        "receipt_D_mm": 0.6410168850751568,
+        "rho_ant_max_mm": 11.615701346350003,
+        "rho_post_max_mm": 12.25671823142516,
+        "t_mm": 16.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": false,
+        "D_post_minus_ant_mm": 0.41599365320160686,
+        "d_D_mm": 0.0,
+        "n": 108,
+        "receipt_D_mm": 0.41599365320160686,
+        "rho_ant_max_mm": 11.803294977593106,
+        "rho_post_max_mm": 12.219288630794713,
+        "t_mm": 20.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": false,
+        "D_post_minus_ant_mm": 0.9349622721789235,
+        "d_D_mm": 0.0,
+        "n": 108,
+        "receipt_D_mm": 0.9349622721789235,
+        "rho_ant_max_mm": 11.862596772090331,
+        "rho_post_max_mm": 12.797559044269255,
+        "t_mm": 30.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": false,
+        "D_post_minus_ant_mm": 1.5583596886486557,
+        "d_D_mm": 0.0,
+        "n": 108,
+        "receipt_D_mm": 1.5583596886486557,
+        "rho_ant_max_mm": 11.358788641228452,
+        "rho_post_max_mm": 12.917148329877108,
+        "t_mm": 48.0,
+        "usable": true
+      }
+    ],
+    "verdict": false,
+    "wrist_m": [
+      -0.1449945402145386,
+      0.26148236989974977,
+      -0.005956328995525837
+    ],
+    "zone_all_above_2mm": false,
+    "zone_rows": [
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.0231925147287537,
+        "d_D_mm": 0.0,
+        "n": 112,
+        "receipt_D_mm": 2.0231925147287537,
+        "rho_ant_max_mm": 9.285814204272798,
+        "rho_post_max_mm": 11.309006719001552,
+        "t_mm": -2.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 3.0114370540885282,
+        "d_D_mm": 0.0,
+        "n": 115,
+        "receipt_D_mm": 3.0114370540885282,
+        "rho_ant_max_mm": 8.935942920373815,
+        "rho_post_max_mm": 11.947379974462343,
+        "t_mm": 0.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.595364247077633,
+        "d_D_mm": 0.0,
+        "n": 112,
+        "receipt_D_mm": 2.595364247077633,
+        "rho_ant_max_mm": 9.255088672748823,
+        "rho_post_max_mm": 11.850452919826456,
+        "t_mm": 2.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.2345093994458036,
+        "d_D_mm": 0.0,
+        "n": 116,
+        "receipt_D_mm": 2.2345093994458036,
+        "rho_ant_max_mm": 9.482069284268,
+        "rho_post_max_mm": 11.716578683713804,
+        "t_mm": 4.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 3.2891597453041737,
+        "boot_D_std_mm": 0.7328411463032158,
+        "d_D_mm": 0.0,
+        "n": 112,
+        "receipt_D_mm": 3.2891597453041737,
+        "rho_ant_max_mm": 9.117234136912321,
+        "rho_post_max_mm": 12.406393882216495,
+        "t_mm": 6.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": false,
+        "D_post_minus_ant_mm": 1.8135108486900045,
+        "d_D_mm": 0.0,
+        "n": 112,
+        "receipt_D_mm": 1.8135108486900045,
+        "rho_ant_max_mm": 10.144210768534734,
+        "rho_post_max_mm": 11.957721617224738,
+        "t_mm": 8.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.022788127620448,
+        "d_D_mm": 0.0,
+        "n": 108,
+        "receipt_D_mm": 2.022788127620448,
+        "rho_ant_max_mm": 10.761644736172139,
+        "rho_post_max_mm": 12.784432863792587,
+        "t_mm": 10.0,
+        "usable": true
+      },
+      {
+        "D_above_2mm": true,
+        "D_post_minus_ant_mm": 2.0137122877566878,
+        "d_D_mm": 0.0,
+        "n": 116,
+        "receipt_D_mm": 2.0137122877566878,
+        "rho_ant_max_mm": 10.107434398476839,
+        "rho_post_max_mm": 12.121146686233526,
+        "t_mm": 12.0,
+        "usable": true
+      }
+    ]
+  },
+  "P3_sign_law": {
+    "law": "az_target = az_source + 90 deg (mod 360); source volar +x -> target volar +z",
+    "max_volar_law_residual_deg": 63.61229795664599,
+    "per_candidate": [
+      {
+        "d_err_no_flip_deg": 0.0,
+        "error_flip_deg": 116.38770204335401,
+        "error_no_flip_deg": 63.61229795664599,
+        "phi_flip_deg": -153.612297956646,
+        "phi_no_flip_deg": 26.38770204335401,
+        "receipt_error_flip_deg": 116.38770204335401,
+        "receipt_error_no_flip_deg": 63.61229795664599,
+        "roll_candidate": "ECU-P2",
+        "verdict": "NO-FLIP",
+        "volar_az_relative_to_b_deg": 138.2528597726697
+      },
+      {
+        "d_err_no_flip_deg": 0.0,
+        "error_flip_deg": 162.44722742259967,
+        "error_no_flip_deg": 17.552772577400333,
+        "phi_flip_deg": -107.55277257740033,
+        "phi_no_flip_deg": 72.44722742259967,
+        "receipt_error_flip_deg": 162.44722742259967,
+        "receipt_error_no_flip_deg": 17.552772577400333,
+        "roll_candidate": "ANC-P2",
+        "verdict": "NO-FLIP",
+        "volar_az_relative_to_b_deg": -175.68761484808468
+      },
+      {
+        "d_err_no_flip_deg": 0.0,
+        "error_flip_deg": 179.84646907573062,
+        "error_no_flip_deg": 0.15353092426937565,
+        "phi_flip_deg": -90.15353092426938,
+        "phi_no_flip_deg": 89.84646907573062,
+        "receipt_error_flip_deg": 179.84646907573062,
+        "receipt_error_no_flip_deg": 0.15353092426937565,
+        "roll_candidate": "TRIlat-P5",
+        "verdict": "NO-FLIP",
+        "volar_az_relative_to_b_deg": -158.28837319495372
+      }
+    ],
+    "receipt_unanimous_no_flip": true,
+    "target_volar_azimuth_deg": 90.0,
+    "trilat_no_flip_err_deg": 0.15353092426937565,
+    "unanimous_no_flip": true,
+    "verdict": true,
+    "witness_b_prime_azimuth_deg": -111.86515772931568
+  },
+  "attempt_id": "fb552e4136ef4bfdaaa93686fb063e78",
+  "card_id": "ONT-A01",
+  "criteria_sha256": "2bcf59fa0b786b009b30711334e38fe374d9a2a2bdefdba9566a4018c4a9c775",
+  "done_when": "Records ambiguity (see fired falsifiers; both readings preserved)",
+  "explicit_unresolved_inventory": [
+    "CT MorphoSource 000875604 bones: forearm bones are forearm_class only; bone_identification_v3 side_rule = 'sides never assigned (the curl jumbles them)' -> the CT dataset cannot yet re-decide radius-vs-ulna or volar side; recorded, not invented.",
+    "U-STR remains the architect's PROVISIONAL candidate (kept-separate forearm/paddle lane); this receipt is diagnostic evidence, NOT a production mapping and not a containment claim.",
+    "Membranes bones/skeleton/skin/inspection remain binding=unresolved, physics=not_qualified per tools/membrane_ontology/ontology.json rev 2."
+  ],
+  "fired_falsifiers": [
+    "F2",
+    "F4"
+  ],
+  "frozen_tolerances": {
+    "D_mm": 0.75,
+    "az_deg": 1.0,
+    "mesh_mm": 0.5
+  },
+  "honesty": {
+    "cpu_only": true,
+    "deterministic": true,
+    "gpu_used": false,
+    "native_engine_run": false,
+    "network_used": false,
+    "note": "offline re-measurement from pinned inputs; not a runtime claim"
+  },
+  "outcome": "AMBIGUITY_RECORDED",
+  "schema": "chimera.ota01_numerical_receipt.v1",
+  "sign_statement": {
+    "authority": "O1 audit, play lane forearm-package-20260924 commit c3255f74; re-verified here from pins",
+    "law": "az_target = az_source + 90 deg (mod 360) in the C3 (e1,e2) section bases",
+    "unanimous_witnesses": [
+      "ECU-P2",
+      "ANC-P2",
+      "TRIlat-P5"
+    ],
+    "world_mapping": "source volar +x <-> target volar +z (anterior); source dorsal -x <-> target dorsal -z (posterior)"
+  },
+  "task_id": "A01"
+}

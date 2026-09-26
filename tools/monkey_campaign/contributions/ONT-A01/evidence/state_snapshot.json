@@ -1,0 +1,91 @@
+{
+  "attempt_id": "fb552e4136ef4bfdaaa93686fb063e78",
+  "card_id": "ONT-A01",
+  "inputs": {
+    "birth": {
+      "path": "E:\\PythonChimera\\Saved\\meshes\\monkey_birth.bin",
+      "sha256": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c"
+    },
+    "pack": {
+      "path": "E:\\PythonChimera\\Saved\\meshes\\monkey_joints.bin",
+      "sha256": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662"
+    },
+    "ulna_stl": {
+      "path": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\ulna.stl",
+      "sha256": "710264159b68764dfd28fa51ae490d9b6c7ff7c0d2418f910c9db02969b1223e"
+    }
+  },
+  "outcome": "AMBIGUITY_RECORDED",
+  "pins": {
+    "game_lineage_master": "33e7a444",
+    "o1_integrated_commit": "c3255f74",
+    "ont_p02_lineage_map_commit": "8c7ed8c2",
+    "play_repo_forearm_package_lane": "forearm-package-20260924"
+  },
+  "preregistration": "PREREGISTRATION.md (committed before probes)",
+  "schema": "chimera.ota01_state.v1",
+  "sites_world_m": {
+    "ANC-P2": [
+      -0.11682000000000001,
+      0.8333100000000001,
+      0.16370000000000007
+    ],
+    "BRA-P3": [
+      -0.08652000000000001,
+      0.8199200000000001,
+      0.15898000000000007
+    ],
+    "BRA-P4": [
+      -0.0947,
+      0.8106500000000001,
+      0.15860000000000007
+    ],
+    "ECU-P2": [
+      -0.10541000000000002,
+      0.8025400000000001,
+      0.18717000000000006
+    ],
+    "ECU-P3": [
+      -0.10855000000000001,
+      0.7802700000000001,
+      0.18638000000000007
+    ],
+    "ECU-P4": [
+      -0.10943000000000001,
+      0.7388200000000001,
+      0.19048000000000007
+    ],
+    "PT-P2": [
+      -0.08304000000000002,
+      0.8008200000000001,
+      0.14338000000000006
+    ],
+    "TRIlat-P5": [
+      -0.11340000000000001,
+      0.8450100000000001,
+      0.15692000000000006
+    ]
+  },
+  "source_rest_frame": {
+    "definition": "chimanoid.xml rest frame: +x volar/anterior, +y up, +z right; bodies axis-aligned (asserted)",
+    "ulna_origin_m": [
+      -0.09150000000000001,
+      0.8345500000000001,
+      0.15770000000000006
+    ]
+  },
+  "target_world_frame": {
+    "definition": "pack frame (O1 sec.1): anterior +z, up +y, right -x",
+    "elbow_R_m": [
+      -0.11548098385334016,
+      0.3191090774536133,
+      -0.0060765563324093825
+    ],
+    "wrist_R_m": [
+      -0.1449945402145386,
+      0.26148236989974977,
+      -0.005956328995525837
+    ]
+  },
+  "task_id": "A01"
+}

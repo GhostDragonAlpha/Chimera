@@ -1,0 +1,22 @@
+{
+  "attempt_id": "fb552e4136ef4bfdaaa93686fb063e78",
+  "done_when_reading": "done_when is disjunctive: 'determines roll sign OR records ambiguity'. This attempt records the ambiguity per its own frozen rules (F2/F4: the strict zone claim 'D > 2 mm for every station t in [-2,+12]' fails at t=+8 with D=+1.81 mm, byte-identical to the pinned receipt's own table where +8 is unmarked) while the sign itself reproduces exactly under the record's preregistered best-station criterion (D(+6)=+3.29 mm, unanimous NO-FLIP law). Both readings are preserved in numerical_receipt.json; nothing was tuned or dropped.",
+  "prior_independent_audit": {
+    "branch": "forearm-package-20260924",
+    "independence": "the O1 evidence agent (wave 4, 2026-09-24) is a different agent and lane from attempt fb552e4136ef4bfdaaa93686fb063e78; its audit was preregistered in its own brief.md and its verdict was unanimous",
+    "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/report.md",
+    "preregistration_brief": "c3255f74:forearm_package/audits/O1_ulna_orientation/brief.md",
+    "receipts_dir": "reference/o1_receipts/ (bytes+hashes in reference/EXTRACTION.json)"
+  },
+  "schema": "chimera.ota01_independent_review_receipt.v1",
+  "task_id": "A01",
+  "this_attempt_separation": {
+    "method_identity": "section code carried over verbatim and basis asserted equal to the pinned receipt before any verdict",
+    "outcome": "AMBIGUITY_RECORDED",
+    "reverified_from_pins": [
+      "monkey_birth.bin",
+      "monkey_joints.bin",
+      "vendor/myo_sim/meshes/ulna.stl"
+    ]
+  }
+}

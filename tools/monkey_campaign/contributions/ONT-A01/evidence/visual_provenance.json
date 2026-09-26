@@ -1,0 +1,19 @@
+{
+  "honest_label": "deterministic CPU offline render (numpy z-buffer + Agg text); not native engine frames; subject is anatomy evidence records",
+  "outcome_bound": "captures the AMBIGUITY_RECORDED state of numerical_receipt.json",
+  "panels": {
+    "V1": "target pack mesh (monkey_birth.bin, sha 550a5b3e...) whole body, frame triad (+z anterior/+y up/-x right), boxed right forearm region, elbow_R/wrist_R labels; clean pair = mesh only",
+    "V2": "vendor ulna.stl (sha 71026415..., authored scale 1,1.2,1) in mm, six labeled sites (flexors crimson, extensors blue), ECU tendon course, volar +x / dorsal -x arrows; clean pair = bone only",
+    "V3": "four-bookmark trajectory: anterior, posterior, left-lateral oblique, superior; volar/dorsal/up/right arrows; clean strip = bone only"
+  },
+  "schema": "chimera.ota01_visual_provenance.v1",
+  "structural_validation": {
+    "capture_kind": "image",
+    "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+    "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+    "profile_id": "anatomy",
+    "structurally_valid": true,
+    "view_count": 6,
+    "visual_acceptance": false
+  }
+}
