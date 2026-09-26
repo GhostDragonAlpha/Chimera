@@ -22,6 +22,11 @@ Maintain a versioned off-machine copy and an offline or separately protected cop
 Record the last successful restore drill, backup location, custodian and timestamp
 in a private recovery receipt. This document does not establish that such copies exist.
 
+Captain's selection (2026-09-26): use BOTH an external drive, disconnected between
+backups, and private cloud storage. Exact drive path, cloud destination, access
+configuration and retention remain to be supplied and verified before backup jobs
+can be configured. Keep decryption/recovery access separately from this PC.
+
 ## Before a failure: preserve these
 
 - [ ] Push each reviewed/recoverable commit to its intended remote branch. Record
