@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "E:\Chimera\queue-check-20260926\current\reprobe.py", line 34, in <module>
+    results['checkpoint_without_payload'] = {'bytes': p.stat().st_size(), 'declared_load': m.parse_npy_header(p)}
+                                                      ~~~~~~~~~~~~~~~~^^
+TypeError: 'int' object is not callable

@@ -1,0 +1,56 @@
+{
+  "schema": "chimera.monkey.p04.correction.receipt.v1",
+  "task_id": "ONT-P04",
+  "attempt_id": "4f4df57ef3d54c0996cf969e8a599d1b",
+  "agent_id": "arrival-0074d33c896e4039a01dc67fc628a8bf",
+  "pinned_attempt_head": "c525b82c7c3ce0128565424764293a3c85811ab3",
+  "criteria_sha256": "6191e11ce3098cf90190c88a658267676e01163106dadaf883b0c48b7dc072db",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "corrects_publication_request": "publication-3a6a3e498a0740efad08936e19c831df",
+  "prior_attempt_id": "fccb0a3f4fc74a29a7189453b6f91ced",
+  "verification_profile": "records (offline)",
+  "checks_performed": [
+    "R0: extracted 52 files from attempt checkout commit c525b82c via git archive into pinned/ (per-file sha256 in pinned_file_hashes.json, whose whole-file sha256 c79f248b5f75f38f2ae04f3b43de988801ae06ddfc1f8e1aee45c2125fbc0753 equals the prior verified attempt's list); GPU_HANDOFF_PUBLICATION_RECEIPT.json is untracked at that head and is copied from the working tree as pinned/GPU_HANDOFF_PUBLICATION_RECEIPT.untracked.json with hash c153460accaa7df1a16eb527497045f6d3591faa480f3978317e63377bef0bec",
+    "P1: re-ran five pinned agent_fleet suites at the pinned head (test_resources 12, test_resource_lifecycle 12, test_review_handoff 13, test_review_handoff_claim 12, test_run_queue 8) - all OK",
+    "P2: carried forward the prior attempt's hash-verified probes byte-identically (test_p04_contract.py 17/17, test_p04_records.py 6/6) - clauses 1/3 records findings carry forward without rework, per the lead's verification",
+    "P3: IMPLEMENTED the GPU-A authority/state machine (gpu_handoff.py, HandoffControl additive subclass of the pinned Control): six states REQUESTED->DRAINING->READY->TRAINING->RESTORING->AVAILABLE plus RECOVERY_HOLD, under the controller's existing authentication/atomicity/identity/resource laws, mirrored byte-identically into the attempt checkout sparse path tools/monkey_campaign/contributions/ONT-P04/gpu_handoff.py (sha256 100154452bcc5db16b916743507091dc00160aa34fcdb3a1bf75c59bfa3e7030 both copies); 28 numerical transition probes test_gpu_handoff.py: every legal edge exercised with registry facts (6 edges incl. grant transfer through controller promotion and hold persisting through observed cessation until owner-evidenced release), every illegal transition refused by frozen name from every phase, idempotent re-request, arrival-order (not priority) admission, crash-recovery reconstruction (restart during TRAINING keeps the run protected and replay refused already_launched; READY with foreign holder refuses resources_still_held; corrupt phase stays RECOVERY_HOLD; hold-then-recover without evidence stays held; recover to RESTORING only with observed cessation evidence), supervisor-only invariants (force_kill_refused in every phase, graceful release identity+evidence, supervisor resource_clear still requires actual_process_drained_evidence, timer/lease/silence never releases), and the closed-on-timeout inference admission gate (RESOURCE_WAIT accumulation, gate_timeout_gate_stays_closed, inference_admission_closed bypass refusal, open only on the restore path) - 28/28 OK",
+    "P4: 10 correction-records probes test_correction_records.py: the 4/5/7 first-run-failure count reconciliation against the preserved prior artifacts read-only (authoritative 7-item enumeration in prior receipt.json; report 4 and checkpoint 5 are stale subset summaries; 4+3=7 arithmetic verified), implementation byte-identity workspace<->checkout, HandoffControl extends pinned Control with the six states, pinned control.py unmutated (hash + the head's own 'does not implement' statement), 52-file pinned hash parity with the prior verified extraction, prereg freeze integrity, receipt honesty (done_when_verified == all-clauses-VERIFIED; prior draft overstatement recorded; live gate named) - 10/10 OK",
+    "FINAL battery run_all_probes.py: 9 suites, 118/118 OK, exit 0, CPU-only python -B, isolated temporary registries, loopback-only servers only inside pinned fixtures (probe_run_results.json)",
+    "dependency check: ONT-P03 DONE (winner PR #140, head e1443d452ad9e4869e7bc3df20b2e4b98819a34f, merged) - unchanged; inbox read at worker start"
+  ],
+  "failures": [
+    "first-run failures of this attempt's new probes, all preserved as files under first_run_failures/ (INDEX.md enumerates the complete sequence): test_gpu_handoff run1 (4 errors + 1 failure) and run2 (1 error + 1 failure) - probe-fixture/expectation defects only (missing handoff_admit step in an H6 helper x3; new-cycle probe needed a newly admitted, genuinely contended controller request; one expectation contradicting the frozen recover semantics, reworked to the stronger already_launched assertion); battery stage: untracked-receipt extraction layout vs the carried probe (aligned to the prior verified pinned-root layout), two wrapped-markdown assertions in test_correction_records (whitespace normalization), and a runner bug checking this attempt's own prereg against the prior attempt's prereg hash (removed). No failure was in the frozen semantics or the implementation's decision logic; nothing suppressed"
+  ],
+  "consistency_defects_corrected": [
+    "prior draft qualification_receipt.json done_when_verified=true overstated (clause 2 unverified): replacement receipt derives the flag from the clause map (now honestly true - all three clauses VERIFIED at the records profile) and names the live gate as remaining; a records probe enforces flag==allVerified",
+    "first-run-failure counts reconciled: authoritative = the prior receipt.json itemized enumeration of 7 individual expectation fixes; report.md's 4 and the checkpoint's 5 are undercounted summaries of the same single list (4+3=7 verified by probe against preserved artifacts); this attempt archives its own failing-run outputs as files so preservation is artifact-verifiable"
+  ],
+  "named_gaps": [
+    "GPU-B Bionic/inference adapter, GPU-C Windows game adapter, GPU-D independent recovery test remain open in the COORDINATION.md implementation queue",
+    "live handoff qualification (live Bionic preservation/restore, real game safe-release, training across :00) remains gated by its owning records; all fixture 'drained'/'graceful' evidence is recorded strings, not real process state",
+    "planning observation 'Supervisor reported 8/8 passing' referent remains unresolved exactly as carried forward in the prior attempt's records probes (candidates test_run_queue.py + test_layer_guard.py)"
+  ],
+  "constraints_honored": {
+    "cpu_only_python_minus_B": true,
+    "no_gpu": true,
+    "no_live_handoff_or_training": true,
+    "no_process_launches_beyond_python_tests": true,
+    "writes_confined_to_attempt_workspace_and_its_scoped_checkout_sparse_path": true,
+    "zero_writes_in_E_PythonChimera": true,
+    "no_commits_no_pushes_no_merges_no_lead_role": true
+  },
+  "deliverable_sha256": {
+    "PREREGISTRATION.md": "124c3acfc6ae572bdfab7021c30a0802ddd6f5551b4f9c12a18e8ad72e85ecbc",
+    "gpu_handoff.py": "100154452bcc5db16b916743507091dc00160aa34fcdb3a1bf75c59bfa3e7030",
+    "test_gpu_handoff.py": "900d30393ef94a10fbedc9fa6a1648ea28f623a11c66d5b02e3fe5caeb083c38",
+    "test_correction_records.py": "ca7f81128846f9f8f2443609e41b552575a793535f1f2ac24d0898fc5409d24c",
+    "run_all_probes.py": "ae68092fe3303aa2d914c6e8af03d476e602d54a971fd2feb9c44715a71dd173",
+    "probe_run_results.json": "66ca1b1da4d1e873d9bf2c51678c1b0d08378d62f70530466e45879c4d2f8a9e",
+    "pinned_file_hashes.json": "c79f248b5f75f38f2ae04f3b43de988801ae06ddfc1f8e1aee45c2125fbc0753",
+    "report.md": "6b81b84b7ad49e4d50bda97d4f828bfafde0c6f2ea0efd6e7132695e5302da1e",
+    "qualification_receipt.json": "4ca0d18eebdc14d4b1cb8235da806569598740ab134055f82d152e5942f44da0",
+    "independent_review_PENDING.txt": "78cff0a1e4752fd1bb499bc850ecb5e9306dd8b5033797ef531492cb7cd53198",
+    "receipt.json": "self (computed at publication)"
+  },
+  "result": "DONE_WITHIN_SCOPE: correction delivered - GPU-A authority/state machine implemented and verified with 118/118 records-profile probes at pinned head c525b82c; clauses 1/3 carried forward byte-identical; both consistency defects corrected; live gates named, not claimed"
+}
