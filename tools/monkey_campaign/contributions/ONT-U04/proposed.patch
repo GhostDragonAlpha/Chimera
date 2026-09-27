@@ -1,0 +1,1129 @@
+diff --git a/tools/monkey_campaign/product/input_mapper.py b/tools/monkey_campaign/product/input_mapper.py
+new file mode 100644
+index 00000000..b872859d
+--- /dev/null
++++ b/tools/monkey_campaign/product/input_mapper.py
+@@ -0,0 +1,347 @@
++"""input_mapper.py -- M-U01: gameplay input -> the existing 20 Hz command seam.
++
++U01, verbatim: "Input emits bounded speed/heading commands at the existing 20 Hz
++boundary, without state teleportation." C12: "20 Hz implies a 50 ms command
++interval, not an end-to-end latency guarantee."
++
++THE SEAM THIS EMITS INTO (agents/U01_input/discovery_note.md; every number
++cited, none invented here):
++  * The versioned CommandRecord v1 (tools/science_funnel/typeb_export/
++    command_record.py, frozen at e028d6fb): `v_forward` (m/s, >= 0 -- the plant
++    law's own domain), `yaw_rate` (rad/s, CARRIED, no machinery authority at
++    v1), `issued_tick`, `source`. The V1FamilyAdapter routes EXACTLY
++    `commanded_target_velocity_x = float64(v_forward)` to
++    GaitWalker::configure() (ChimeraEngine/engine/gait_controller.hpp:2252-2255)
++    between ticks; zero-order hold at the tick boundary; the decision clock is
++    20 Hz over 300 Hz physics (HOLD_TICKS = 15 -> one command per 50 ms).
++  * The seam has TWO states a naive mapper would collapse: NO record at all
++    (the machinery is INERT and reads its legacy measured-v,
++    gait_controller.hpp:121-123,1117) vs a record with v_forward = 0.0 (a live
++    zero-advance target, command_record.py:81-83 -- legal, NOT a stop bar).
++    This module preserves both: idle emits NOTHING; a held `S` emits zeros.
++
++THE FROZEN CONTRACT (agents/U01_input/PREREGISTRATION.md, stated before this
++build): the mapping table, the 50 ms emission rule, the release-decay and
++expiry policies, the no-teleport invariant, and falsifiers F1-F5. The frozen
++walk contract is UNCHANGED by this file: it only PRODUCES records into an
++injected sink. A UI remap edits the bindings dict -- the parser's own
++"bindings are DATA" law (tools/parser.py:39-69, parser_tests.py falsifier 2) --
++and can never touch the record type, the bounds, or the clock.
++
++THE NO-TELEPORT INVARIANT: the ONLY thing this module can do is hand
++CommandRecord instances to `sink.emit(...)`. It imports no engine module,
++performs no HTTP, reads no state, holds no pose. Positions are OUTPUTS
++(docs/CONTROLLER_MAP.md), never inputs.
++
++Headless by construction: the clock is INJECTED (integer milliseconds; the
++tests use a deterministic counter). This module never reads a wall clock,
++never opens a window, never injects operator input anywhere.
++"""
++from __future__ import annotations
++
++import sys
++from pathlib import Path
++
++_ROOT = Path(__file__).resolve().parents[3]
++if str(_ROOT) not in sys.path:
++    sys.path.insert(0, str(_ROOT))
++
++# THE SEAM'S OWN TYPES AND NUMBERS -- imported, never redeclared: a second copy
++# of a frozen constant is exactly where a silent divergence lives.
++from tools.science_funnel.typeb_export.command_record import (  # noqa: E402
++    CommandRecord,
++    HOLD_TICKS,
++    PHYSICS_HZ,
++    POLICY_HZ,
++    V_MAX_IN_BAND_M_S,
++)
++
++__all__ = [
++    "InputMapper", "MockSink", "CommandRecord",
++    "INTERVAL_MS", "RELEASE_DECAY_MS", "VALID_MS", "EXPIRY_TICKS",
++    "V_MAX_IN_BAND_M_S", "OMEGA_MAX_RAD_S", "SENS_RAD_PER_COUNT",
++    "DEFAULT_BINDINGS", "ACTIONS", "REFUSALS", "SOURCE_ID",
++    "PHYSICS_HZ", "POLICY_HZ", "HOLD_TICKS",
++]
++
++SOURCE_ID = "u01_input_mapper"
++
++# ── THE FROZEN NUMBERS (prereg; citations inline) ────────────────────────────────
++INTERVAL_MS = 50          # 20 Hz decisions over 300 Hz physics (HOLD_TICKS=15);
++                          # command_record.py:68-70, infer_numpy.py:29-44,
++                          # gait_controller.hpp:108-111. Declared tolerance under
++                          # the tests' injected clock: EXACT.
++RELEASE_DECAY_MS = 100    # key release -> the demand decays to exactly 0.0 within
++                          # 2 intervals, sampled at the seam's own boundaries, then
++                          # emission stops (the inert path resumes).
++VALID_MS = 100            # consumer-side expiry: a record older than 2 intervals
++                          # is EXPIRED (U03 builds focus-loss on this floor).
++V_MAX_IN_BAND_M_S = V_MAX_IN_BAND_M_S     # 0.763625 m/s -- the seam's own measured
++                                          # in-band ceiling (command_record.py:66,
++                                          # R1-R4 veto-free). U01 never demands
++                                          # out-of-band; the machinery's clamp is
++                                          # not input's to lean on.
++OMEGA_MAX_RAD_S = 1.6     # INPUT-side steering bound, declared from the existing
++                          # steer constant (ChimeraEngine/controller.py:45
++                          # TURN_RATE = 1.6 rad/s). yaw_rate is CARRIED ONLY at
++                          # v1 (the adapter routes it nowhere,
++                          # command_record.py:180-181); this bound claims no
++                          # machinery authority.
++SENS_RAD_PER_COUNT = 0.002  # baseline mouse sensitivity (a declared input-side
++                            # preference -- "how far a hand should push a view
++                            # is a preference, not a physics",
++                            # ChimeraEngine/walker.py `look()`; U04 owns it).
++EXPIRY_TICKS = 2 * HOLD_TICKS  # VALID_MS expressed in physics ticks (30 @ 300 Hz).
++
++# ── THE FROZEN MAPPING TABLE (bindings are DATA; parser.py:39-69 precedent) ─────
++# Physical input name -> action. Remapping edits THIS dict (or the instance's),
++# never the demand logic below, never the seam.
++DEFAULT_BINDINGS = {
++    "W": "forward", "Up": "forward",
++    "S": "backward", "Down": "backward",
++    "A": "turn_left", "Left": "turn_left",
++    "D": "turn_right", "Right": "turn_right",
++    "Shift": "sprint",          # a REGISTERED REFUSAL, never a silent clamp
++    "Space": "jump",            # a REGISTERED REFUSAL (parser.py:96-102 rule)
++}
++ACTIONS = ("forward", "backward", "turn_left", "turn_right")  # precedence order:
++# speed-key conflicts resolve by this order and are NAMED in the trace -- the
++# parser's own rule ("registration order wins AND the conflict is named",
++# parser.py:19-20).
++REFUSALS = {
++    "sprint": "sprint: no seam authority at v1 -- the in-band ceiling IS the "
++              "measured band (V_MAX_IN_BAND_M_S); refusing by name, not clamping",
++    "jump": "jump: no walk-seam channel exists at v1 (commanded_heading itself "
++            "is reserved for a later lane)",
++}
++_SPEED_ACTIONS = ("forward", "backward")
++
++
++class MockSink:
++    """The clean test double for the seam: records EVERY call it receives.
++
++    The no-teleport falsifier reads this log: every entry must be
++    ("emit", <CommandRecord>). Anything else is F1 and the build is dead.
++    """
++
++    def __init__(self):
++        self.calls = []            # every (method_name, args) tuple, in order
++        self.records = []          # convenience: the CommandRecords emitted
++
++    def emit(self, record):
++        self.calls.append(("emit", record))
++        self.records.append(record)
++        return len(self.records)
++
++    def __len__(self):
++        return len(self.records)
++
++
++class InputMapper:
++    """Keyboard/mouse -> bounded CommandRecords at the 20 Hz boundary.
++
++    Usage (all times are INJECTED integer milliseconds -- never a wall clock):
++
++        sink = MockSink()         # or the live harness' real seam adapter
++        m = InputMapper(sink)
++        m.press("W", now_ms=1000)
++        m.tick(1000)              # -> CommandRecord(v_forward=0.763625)
++        m.tick(1050)              # -> re-issues (held keys refresh: the R4 rule)
++        m.release("W", now_ms=1070)
++        m.tick(1100)              # -> decay sample  v = v0*(1 - 30/100)
++        m.tick(1150)              # -> exactly 0.0, and emission now stops
++        m.release_all(now_ms=...) # U03's focus-loss/disconnect hook (this floor)
++
++    Semantic commitments (each pinned by a falsifier in input_mapper_tests.py):
++      * one record per 50 ms interval at most, current state only, NO replay
++        after a stall (F3);
++      * a held key RE-ISSUES every interval -- the R4 discipline (a held command
++        must track, command_record.py:84-87);
++      * idle emits NOTHING so the seam's inert path stays reachable; `S` held
++        emits LIVE ZEROS (a zero-advance target) -- the two seam states of
++        gait_controller.hpp:121-123 are distinct and both reachable (F6);
++      * release decays the LAST EMITTED speed -- you can only decay what you
++        commanded -- sampled at boundaries: the first boundary after release
++        carries the linear sample v0*(1 - elapsed/RELEASE_DECAY_MS), the second
++        carries EXACTLY 0.0 (the deadline clause), then emission stops (F4);
++      * steering is carried only alongside a speed demand: yaw_rate has no
++        machinery route at v1, so steering alone emits nothing and its mouse
++        counts are consumed into the trace, named, never resent (declared
++        limit; recorded for the later heading lane);
++      * `press` of a refusal action records a named refusal; nothing silent.
++    """
++
++    def __init__(self, sink, bindings=None, *, sensitivity=SENS_RAD_PER_COUNT,
++                 tick_source=None):
++        if not hasattr(sink, "emit"):
++            raise TypeError("sink must provide emit(record) -- the mapper can "
++                            "only produce commands, never touch state")
++        self._sink = sink
++        self.bindings = dict(DEFAULT_BINDINGS if bindings is None else bindings)
++        self.sensitivity = float(sensitivity)
++        self._tick_source = tick_source   # callable() -> int physics tick, or None
++        self._held = set()                # physical names currently held
++        self._mouse_counts = 0.0          # accumulated, consumed per boundary
++        self._next_due_ms = None          # the 50 ms grid (None = no grid)
++        self._last_v = 0.0                # the LAST EMITTED speed (the decay base)
++        self._tail = None                 # [v0, released_ms, boundaries_seen]
++        self.last_trace = {}              # the parse trace, refreshed per tick
++
++    # ── input events (times are injected) ────────────────────────────────────
++    def press(self, name, now_ms):
++        """A key went down. Refusals are recorded by name; nothing is silent."""
++        action = self.bindings.get(name)
++        self.last_trace.setdefault("pressed", []).append((name, int(now_ms)))
++        if action in REFUSALS:
++            self.last_trace.setdefault("refused", []).append((action, REFUSALS[action]))
++            return action
++        if action is None:
++            return None                     # an unbound input is not an error
++        if action in _SPEED_ACTIONS:
++            self._tail = None               # a fresh press overrides any decay
++        self._held.add(name)
++        return action
++
++    def release(self, name, now_ms):
++        """A key went up. Releasing the speed key starts the decay tail from
++        the LAST EMITTED speed -- you can only decay what you commanded."""
++        action = self.bindings.get(name)
++        self.last_trace.setdefault("released", []).append((name, int(now_ms)))
++        if action not in _SPEED_ACTIONS or name not in self._held:
++            self._held.discard(name)
++            return action
++        self._held.discard(name)
++        other_speed = any(self.bindings.get(n) in _SPEED_ACTIONS
++                          for n in self._held)
++        if not other_speed and self._last_v > 0.0 and self._tail is None:
++            self._tail = [self._last_v, int(now_ms), 0]
++        return action
++
++    def mouse(self, dx_counts):
++        """Accumulate mouse X counts (deltas consumed, never resent --
++        live_viewer.py:1978-1980). Applied at boundaries, clamped to OMEGA."""
++        self._mouse_counts += float(dx_counts)
++
++    def release_all(self, now_ms):
++        """Everything off (U03's focus-loss/disconnect hook builds on this)."""
++        for name in sorted(self._held):
++            self.release(name, now_ms)
++
++    @property
++    def held(self):
++        return frozenset(self._held)
++
++    # ── the 20 Hz boundary ───────────────────────────────────────────────────
++    def tick(self, now_ms):
++        """Advance to `now_ms`; emit at most ONE record if the interval elapsed.
++
++        Returns the list of CommandRecords emitted this call (also handed to
++        the sink). A tick before the due time emits nothing -- the interval is
++        the boundary, and C12's warning is honored: this is a command cadence,
++        not a latency guarantee.
++        """
++        now_ms = int(now_ms)
++        speed = self._speed_demand()                   # key demand only
++        pending = (speed is not None or self._tail is not None
++                   or self._mouse_counts != 0.0)
++        if self._next_due_ms is None:
++            if not pending:
++                self.last_trace["state"] = "inert"
++                self.last_trace["emitted"] = 0
++                return []
++            self._next_due_ms = now_ms                 # a fresh grid starts here
++        if now_ms < self._next_due_ms:
++            return []
++        # ── a boundary: ONE decision, whatever the gap since the last tick ──
++        self._next_due_ms = now_ms + INTERVAL_MS       # stall -> one record, no burst
++        speed = self._apply_tail(speed, now_ms)        # the decay samples HERE
++        if speed is None:
++            # no walk demand (mouse-only, or the tail just finished): no
++            # record. The machinery stays INERT; pending mouse counts had no
++            # carrier -- consumed into the trace, named, never resent.
++            if self._mouse_counts:
++                self.last_trace.setdefault("steer_without_speed", []) \
++                    .append(self._mouse_counts)
++                self._mouse_counts = 0.0
++            if self._tail is None and not self._held:
++                self._next_due_ms = None               # idle: the grid dissolves
++            self.last_trace["state"] = "inert" if self._tail is None else "decay"
++            self.last_trace["emitted"] = 0
++            return []
++        yaw = self._yaw_demand()
++        record = self._emit(speed, yaw, now_ms)
++        self.last_trace["state"] = "commanded"
++        self.last_trace["emitted"] = 1
++        return [record]
++
++    # ── demand computation ───────────────────────────────────────────────────
++    def _speed_demand(self):
++        """The walk demand: a live zero (S), the band ceiling (W), or None.
++        Speed-key conflicts resolve by ACTIONS order and are named (the
++        parser's registration-order rule). The decay tail is applied AT the
++        boundary by `_apply_tail`, because commands only change at boundaries."""
++        held_actions = [self.bindings[n] for n in self._held
++                        if self.bindings.get(n) in _SPEED_ACTIONS]
++        if len(held_actions) > 1:
++            self.last_trace.setdefault("conflicts", []).append(tuple(sorted(held_actions)))
++        if "forward" in held_actions:
++            return V_MAX_IN_BAND_M_S
++        if "backward" in held_actions:
++            return 0.0                                 # a LIVE zero-advance target
++        return None                                    # the tail decides at the boundary
++
++    def _apply_tail(self, speed, now_ms):
++        """Sample the release-decay tail at this boundary (frozen policy):
++        first boundary after release -> the linear sample
++            v0 * (1 - (now - released_ms) / RELEASE_DECAY_MS)   (floored at 0),
++        unless the gap already exceeded the deadline, in which case exactly
++        0.0 once; second boundary after release -> EXACTLY 0.0 in any case
++        (the deadline clause: the demand lands on zero at or before the
++        100 ms boundary). The tail then ENDS: the next boundary is inert and
++        emits nothing."""
++        if self._tail is None or speed is not None:
++            return speed
++        v0, released_ms, seen = self._tail
++        if seen == 0:
++            elapsed = max(0, now_ms - released_ms)
++            self._tail[2] = 1
++            if elapsed >= RELEASE_DECAY_MS:
++                self._tail = None                      # deadline passed in the gap
++                return 0.0
++            return v0 * (1.0 - elapsed / RELEASE_DECAY_MS)
++        self._tail = None                              # deadline: exact zero
++        return 0.0
++
++    def _yaw_demand(self):
++        """Carried yaw at this boundary: keys + clamped mouse counts. Counts
++        are consumed here (never resent); L+R keys cancel (+OMEGA + -OMEGA)."""
++        key_yaw = (OMEGA_MAX_RAD_S if any(self.bindings.get(n) == "turn_left"
++                                          for n in self._held) else 0.0) \
++                + (-OMEGA_MAX_RAD_S if any(self.bindings.get(n) == "turn_right"
++                                           for n in self._held) else 0.0)
++        mouse_yaw = 0.0
++        if self._mouse_counts:
++            interval_s = INTERVAL_MS / 1000.0
++            raw = self._mouse_counts * self.sensitivity / interval_s
++            mouse_yaw = max(-OMEGA_MAX_RAD_S, min(OMEGA_MAX_RAD_S, raw))
++            self._mouse_counts = 0.0
++        yaw = key_yaw + mouse_yaw
++        return max(-OMEGA_MAX_RAD_S, min(OMEGA_MAX_RAD_S, yaw))
++
++    def _emit(self, v_forward, yaw_rate, now_ms):
++        issued_tick = (int(self._tick_source()) if self._tick_source
++                       else (now_ms * PHYSICS_HZ) // 1000)
++        record = CommandRecord(v_forward=float(v_forward), yaw_rate=float(yaw_rate),
++                               issued_tick=int(issued_tick), source=SOURCE_ID)
++        self._last_v = float(v_forward)                 # the next decay starts here
++        self._sink.emit(record)
++        return record
++
++    # ── the consumer-side expiry contract (declared for U03/U07/W08) ─────────
++    @staticmethod
++    def is_expired(record, now_ms):
++        """A record older than VALID_MS (2 intervals) is EXPIRED: the consumer
++        reverts to the seam's inert path (commands nothing) until a fresh
++        record arrives. `record.issued_tick` is a 300 Hz physics tick."""
++        age_ms = (int(now_ms) * PHYSICS_HZ // 1000) - int(record.issued_tick)
++        return age_ms > EXPIRY_TICKS
+diff --git a/tools/monkey_campaign/product/input_settings.py b/tools/monkey_campaign/product/input_settings.py
+new file mode 100644
+index 00000000..904de480
+--- /dev/null
++++ b/tools/monkey_campaign/product/input_settings.py
+@@ -0,0 +1,504 @@
++"""input_settings.py -- M-U04: supported input settings, persisted and refusing.
++
++U04, verbatim (completion map line 106): "Sensitivity, inversion and bindings
++needed for the selected controls work and persist." Constraint, verbatim:
++"Keyboard/mouse baseline; controller support is an explicit product decision"
++-- no controller support lives here.
++
++THE SETTINGS MODEL (frozen in agents/U04_settings/PREREGISTRATION.md before
++this build; the mapper file is READ-ONLY -- U01's, consumed, never edited):
++  * bindings  -- physical input name -> action, exactly the mapper's own
++    table shape (input_mapper.DEFAULT_BINDINGS / its constructor's
++    `bindings=` parameter). Legal actions: the four selected controls
++    (ACTIONS) plus U01's registered-refusal actions (sprint/jump), which stay
++    legal to bind and refuse BY NAME at runtime.
++  * sensitivity -- per axis over AXES = ("yaw",): rad/s of yaw demand per
++    mouse count per 50 ms interval -- the mapper's own conversion
++    (`_yaw_demand`: counts * sensitivity / INTERVAL_S). Range (0.0,
++    SENS_YAW_MAX], with SENS_YAW_MAX = OMEGA_MAX_RAD_S * INTERVAL_MS / 1000
++    = 0.08 DERIVED: one count in one interval exactly saturating the declared
++    steer bound. Default = U01's frozen SENS_RAD_PER_COUNT = 0.002
++    (imported, never redeclared). Movement has NO sensitivity: the walk
++    demand is binary at the seam's frozen band ceiling -- a declared limit.
++  * inversion -- per axis, booleans. invert.yaw negates the yaw DELTA scale
++    (the applied mapper sensitivity becomes -sensitivity, per U01's
++    integration note); it does NOT swap turn_left/turn_right keys -- a key
++    swap is a REMAP, an ordinary data edit of the bindings table (values-only,
++    measured by U01's F5).
++
++THE PERSISTENCE CONTRACT (frozen): a versioned JSON file,
++schema id "chimera.monkey_input.v1" (F01's chimera.<thing>.v<N> naming,
++U01's integration-note suggestion), at a declared path. Atomic save: canonical
++UTF-8 bytes -> temp file in the DESTINATION directory -> flush + fsync ->
++os.replace (atomic rename); temp cleaned up on failure. Load is TOTAL and
++refusing: every possible file content resolves to either (the declared
++settings, status "loaded") or (U01's default settings + a NAMED refusal list)
++-- never a partial accept, never a silent default, never a write from load.
++Absent file = "first_run" defaults, nothing created. Corrupt JSON, duplicate
++JSON keys anywhere (Python's json otherwise silently last-wins),
++NaN/Infinity literals, unknown schema/version, unknown or missing keys, wrong
++types (booleans are NOT numbers), unknown actions/axes, out-of-coverage or
++out-of-range values: EACH refuses by machine code + human detail.
++
++THE SEAM PROTECTION RULE (U01's note, structural here): settings values can
++NEVER write the seam's own numbers. (1) The schema's key set is fixed -- a
++file carrying "v_max_in_band_m_s", "omega_max_rad_s", "interval_ms",
++"hold_ticks", ... arrives as an unknown key and refuses by name; (2) the
++apply surface is only `mapper.bindings = dict(...)` and
++`mapper.sensitivity = +-sensitivity` -- the mapper's own declared data
++inputs (constructor parameters, input_mapper.py:174-182); no module attribute
++of input_mapper or command_record is ever assigned; (3) the sensitivity
++ceiling is DERIVED from the seam's numbers, so the setting exists only inside
++the space the seam already bounds. A sensitivity of 100x scales INPUT deltas;
++the band ceiling and steer bound are the mapper's own clamp, reused, never
++bypassed.
++
++Headless, CPU-only: no clock, no window, no engine import, no desktop input.
++The mapper integration finding (for the coordinator, recorded in the
++handoff notes): the mapper ALREADY exposes both hooks this module needs --
++bindings-as-data and the delta-scale (`InputMapper.sensitivity`, consumed at
++each boundary in `_yaw_demand`, input_mapper.py:325) -- so NO mapper addition
++is required; the "delta-scaling hook" named in the brief IS
++`InputMapper.sensitivity` itself.
++"""
++from __future__ import annotations
++
++import json
++import math
++import os
++import sys
++from dataclasses import dataclass
++from pathlib import Path
++
++_HERE = Path(__file__).resolve().parent
++_ROOT = _HERE.parents[2]                    # the repo/worktree root
++for _p in (str(_ROOT), str(_HERE)):
++    if _p not in sys.path:
++        sys.path.insert(0, _p)
++
++# THE MAPPER'S OWN NUMBERS -- imported, never redeclared: a second copy of a
++# frozen constant is exactly where a silent divergence lives (U01's own law,
++# input_mapper.py:49-57; the seam's constants come via the mapper's re-exports).
++import input_mapper as IM                   # noqa: E402
++
++__all__ = [
++    "InputSettings", "Refusal", "LoadResult", "SaveResult",
++    "SCHEMA_ID", "AXES", "YAW", "SENS_YAW_MAX_RAD_PER_COUNT",
++    "KNOWN_ACTIONS", "SELECTED_ACTIONS", "DEFAULT_SETTINGS_PATH",
++    "default_settings", "load_settings", "save_settings",
++    "apply_settings", "configured_mapper", "canonical_bytes",
++]
++
++SCHEMA_ID = "chimera.monkey_input.v1"       # F01's chimera.<thing>.v<N> naming
++
++YAW = "yaw"
++AXES = (YAW,)                # the ONLY continuous input axis in the keyboard/
++                             # mouse baseline (mouse X). Movement is a binary
++                             # demand at the seam's frozen band ceiling -- no
++                             # movement sensitivity exists to expose (prereg).
++
++# DERIVED, not tuned: the sensitivity at which ONE mouse count in ONE 50 ms
++# interval exactly saturates the declared input-side steer bound. Above it the
++# scale is degenerate (every count saturates); the mapper's clamp is the bound.
++SENS_YAW_MAX_RAD_PER_COUNT = IM.OMEGA_MAX_RAD_S * IM.INTERVAL_MS / 1000.0
++
++SELECTED_ACTIONS = tuple(IM.ACTIONS)          # forward/backward/turn_left/turn_right
++KNOWN_ACTIONS = SELECTED_ACTIONS + tuple(IM.REFUSALS)  # + sprint/jump (refuse BY NAME)
++
++DEFAULT_SETTINGS_PATH = (_HERE.parent / "data" / "settings"
++                         / "monkey_input_settings.json")
++
++_REQUIRED_KEYS = frozenset({"schema", "bindings", "sensitivity", "invert"})
++
++
++# ── the settings object ──────────────────────────────────────────────────────
++@dataclass(frozen=True)
++class InputSettings:
++    """One frozen settings vector: bindings + per-axis sensitivity + inversion.
++
++    Equality is structural (dataclass): round-trip save->load must reproduce
++    EXACTLY this object's values (F4). `bindings` is copied on construction
++    so no caller can mutate a settings vector after the fact.
++    """
++
++    bindings: dict
++    sensitivity: float
++    invert_yaw: bool = False
++
++    def __post_init__(self):
++        object.__setattr__(self, "bindings", dict(self.bindings))
++
++    def signed_sensitivity(self) -> float:
++        """The yaw delta-scale the mapper actually consumes (the inversion)."""
++        return -self.sensitivity if self.invert_yaw else self.sensitivity
++
++    def to_document(self) -> dict:
++        """The exact v1 document this settings vector saves as."""
++        return {
++            "schema": SCHEMA_ID,
++            "bindings": dict(self.bindings),
++            "sensitivity": {YAW: self.sensitivity},
++            "invert": {YAW: bool(self.invert_yaw)},
++        }
++
++
++def default_settings() -> InputSettings:
++    """U01's exact baseline: his bindings table (deep copy), his baseline
++    sensitivity, no inversion. This is what first run gets and what every
++    refusal falls back to -- NEVER a partial blend."""
++    return InputSettings(bindings=dict(IM.DEFAULT_BINDINGS),
++                         sensitivity=IM.SENS_RAD_PER_COUNT,
++                         invert_yaw=False)
++
++
++# ── named refusals (the parser's law: refuse BY NAME, never a silent zero) ───
++@dataclass(frozen=True)
++class Refusal:
++    code: str        # machine-readable, one per offense class (see codes below)
++    detail: str      # human-readable, names the offense
++
++
++class _DuplicateKeyRefused(ValueError):
++    """Raised inside json parsing: a duplicate object key would silently
++    last-win (campaign prereg law: duplicate JSON keys are refused)."""
++
++    def __init__(self, key: str):
++        super().__init__(key)
++        self.key = key
++
++
++class _NonFiniteRefused(ValueError):
++    """Raised inside json parsing: a NaN/Infinity JSON extension literal.
++    Non-finite numbers never parse (campaign prereg law)."""
++
++    def __init__(self, token: str):
++        super().__init__(token)
++        self.token = token
++
++
++def _pairs_refusing_duplicates(pairs):
++    seen = {}
++    for key, value in pairs:
++        if key in seen:
++            raise _DuplicateKeyRefused(key)
++        seen[key] = value
++    return seen
++
++
++def _refuse_constant(token):
++    raise _NonFiniteRefused(token)
++
++
++# ── the refusing validator (total: any document -> settings or refusals) ─────
++def _validate(document):
++    """Validate an already-parsed JSON document against the frozen v1 schema.
++
++    Returns (settings, refusals): refusals non-empty => settings is the
++    DEFAULTS (never a partial accept). Every refusal names its offense.
++    """
++    refusals: list[Refusal] = []
++
++    if not isinstance(document, dict):
++        return default_settings(), [Refusal(
++            "root_not_object",
++            f"the settings document must be a JSON object, found "
++            f"{type(document).__name__}")]
++
++    # exact key set: missing AND unknown keys refuse by name. A file carrying
++    # a seam constant's name ("v_max_in_band_m_s", "interval_ms", ...) is an
++    # unknown key HERE -- this is layer (1) of the seam-protection rule.
++    for key in sorted(_REQUIRED_KEYS - set(document)):
++        refusals.append(Refusal("key_missing", f"required key {key!r} is missing"))
++    for key in sorted(set(document) - _REQUIRED_KEYS):
++        refusals.append(Refusal(
++            "key_unknown",
++            f"unknown key {key!r} -- the v1 schema refuses what it cannot "
++            f"name (seam constants like 'v_max_in_band_m_s' or 'interval_ms' "
++            f"are NOT settings and can never enter through this file)"))
++
++    # schema id: exact string match, else named refusal (no silent migration;
++    # R02 owns migration when an actual supported prior save requires it).
++    schema = document.get("schema")
++    if not isinstance(schema, str):
++        refusals.append(Refusal(
++            "schema_type",
++            f"'schema' must be the string {SCHEMA_ID!r}, found "
++            f"{type(schema).__name__}"))
++    elif schema != SCHEMA_ID:
++        refusals.append(Refusal(
++            "schema_unknown",
++            f"unknown schema {schema!r}; this loader opens exactly "
++            f"{SCHEMA_ID!r} -- a newer/older schema refuses by name rather "
++            f"than being silently accepted"))
++
++    bindings, b_refusals = _validate_bindings(document.get("bindings"))
++    refusals.extend(b_refusals)
++    sensitivity, s_refusals = _validate_axis_number(
++        document.get("sensitivity"), "sensitivity",
++        low_exclusive=0.0, high_inclusive=SENS_YAW_MAX_RAD_PER_COUNT,
++        range_detail=(f"0 < sensitivity.yaw <= {SENS_YAW_MAX_RAD_PER_COUNT!r} "
++                      f"rad per count (derived: one count in one "
++                      f"{IM.INTERVAL_MS} ms interval exactly saturating the "
++                      f"{IM.OMEGA_MAX_RAD_S!r} rad/s steer bound); the default "
++                      f"is U01's baseline {IM.SENS_RAD_PER_COUNT!r}"))
++    refusals.extend(s_refusals)
++    invert, i_refusals = _validate_axis_bool(document.get("invert"), "invert")
++    refusals.extend(i_refusals)
++
++    if refusals:
++        return default_settings(), refusals
++    return InputSettings(bindings=bindings, sensitivity=sensitivity,
++                         invert_yaw=invert), []
++
++
++def _validate_bindings(value):
++    if not isinstance(value, dict):
++        return None, [Refusal(
++            "bindings_type",
++            f"'bindings' must be a JSON object of physical-name -> action, "
++            f"found {type(value).__name__}")]
++    refusals = []
++    clean: dict[str, str] = {}
++    for name, action in value.items():
++        if not isinstance(name, str) or not name:
++            refusals.append(Refusal(
++                "binding_name_invalid",
++                f"binding physical names must be non-empty strings, found "
++                f"{name!r}"))
++            continue
++        if not isinstance(action, str) or not action:
++            refusals.append(Refusal(
++                "binding_type",
++                f"binding {name!r} must map to a non-empty action string, "
++                f"found {action!r}"))
++            continue
++        if action not in KNOWN_ACTIONS:
++            refusals.append(Refusal(
++                "action_unknown",
++                f"binding {name!r} -> unknown action {action!r}; the known "
++                f"actions are {sorted(KNOWN_ACTIONS)} (the grammar refuses "
++                f"what it cannot name, parser.py:130-132 precedent)"))
++            continue
++        clean[name] = action
++    # COVERAGE (U04's own words): the four selected controls must WORK after
++    # loading settings -- a file that leaves one with NO binding refuses.
++    for action in SELECTED_ACTIONS:
++        if not any(a == action for a in clean.values()):
++            refusals.append(Refusal(
++                "action_unbound",
++                f"no physical input is bound to selected action {action!r} -- "
++                f"the selected controls must work after settings load "
++                f"(alias bindings are legal; a total absence is not)"))
++    return (clean, refusals) if not refusals else (None, refusals)
++
++
++def _validate_axis_number(value, key, *, low_exclusive, high_inclusive,
++                          range_detail):
++    if not isinstance(value, dict):
++        return None, [Refusal(
++            f"{key}_type",
++            f"{key!r} must be a per-axis JSON object keyed by axis "
++            f"({sorted(AXES)}), found {type(value).__name__}")]
++    refusals = []
++    for axis in sorted(set(value) - set(AXES)):
++        refusals.append(Refusal(
++            "axis_unknown",
++            f"{key!r} names unknown axis {axis!r}; the keyboard/mouse "
++            f"baseline declares exactly the axes {sorted(AXES)} -- a newer "
++            f"schema adds axes by a new prereg, never silently"))
++    if YAW not in value:
++        refusals.append(Refusal(
++            "axis_missing",
++            f"{key!r} must declare the {YAW!r} axis (the only continuous "
++            f"input axis in the keyboard/mouse baseline)"))
++        return None, refusals
++    raw = value[YAW]
++    if isinstance(raw, bool):                 # bool IS an int in Python --
++        refusals.append(Refusal(              # refuse it explicitly
++            f"{key}_type",
++            f"{key}.yaw must be a JSON number, found boolean {raw!r} "
++            f"(booleans are not numbers)"))
++    elif not isinstance(raw, (int, float)):
++        refusals.append(Refusal(
++            f"{key}_type",
++            f"{key}.yaw must be a JSON number, found "
++            f"{type(raw).__name__} {raw!r}"))
++    else:
++        x = float(raw)
++        if not math.isfinite(x):              # e.g. JSON "1e400" -> inf
++            refusals.append(Refusal(
++                "value_not_finite",
++                f"{key}.yaw must be finite, found {raw!r} (NaN/Infinity are "
++                f"refused at the lexer and by magnitude)"))
++        elif not (low_exclusive < x <= high_inclusive):
++            refusals.append(Refusal(
++                "value_out_of_range",
++                f"{key}.yaw = {raw!r} is outside the declared range "
++                f"[{range_detail}]"))
++            return None, refusals
++        elif not refusals:
++            return x, []
++    return None, refusals
++
++
++def _validate_axis_bool(value, key):
++    if not isinstance(value, dict):
++        return None, [Refusal(
++            f"{key}_type",
++            f"{key!r} must be a per-axis JSON object keyed by axis "
++            f"({sorted(AXES)}), found {type(value).__name__}")]
++    refusals = []
++    for axis in sorted(set(value) - set(AXES)):
++        refusals.append(Refusal(
++            "axis_unknown",
++            f"{key!r} names unknown axis {axis!r}; the keyboard/mouse "
++            f"baseline declares exactly the axes {sorted(AXES)}"))
++    if YAW not in value:
++        refusals.append(Refusal(
++            "axis_missing",
++            f"{key!r} must declare the {YAW!r} axis"))
++        return None, refusals
++    raw = value[YAW]
++    if not isinstance(raw, bool):
++        refusals.append(Refusal(
++            f"{key}_type",
++            f"{key}.yaw must be a JSON boolean, found "
++            f"{type(raw).__name__} {raw!r}"))
++        return None, refusals
++    return raw, []
++
++
++# ── load: total, refusing, never writing ─────────────────────────────────────
++@dataclass(frozen=True)
++class LoadResult:
++    settings: InputSettings
++    status: str                 # "loaded" | "first_run" | "refused"
++    refusals: tuple = ()
++    path: Path = None
++
++    @property
++    def ok(self) -> bool:
++        return self.status == "loaded"
++
++
++def load_settings(path) -> LoadResult:
++    """Load settings from `path` under the frozen persistence contract.
++
++    Absent file -> (defaults, "first_run", no refusals) and NOTHING is
++    created (load never writes). Any content problem -> (defaults, "refused",
++    named refusals). Never a partial accept, never a silent default.
++    """
++    path = Path(path)
++    try:
++        raw = path.read_bytes()
++    except FileNotFoundError:
++        return LoadResult(default_settings(), "first_run", (), path)
++    except IsADirectoryError as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("io_error",
++                                   f"settings path is a directory, not a "
++                                   f"file: {path} ({exc})"),), path)
++    except OSError as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("io_error",
++                                   f"settings file could not be read: {path} "
++                                   f"({exc})"),), path)
++
++    try:
++        text = raw.decode("utf-8")
++    except UnicodeDecodeError as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("json_corrupt",
++                                   f"settings file is not valid UTF-8: "
++                                   f"{exc}"),), path)
++    try:
++        document = json.loads(text, object_pairs_hook=_pairs_refusing_duplicates,
++                              parse_constant=_refuse_constant)
++    except _DuplicateKeyRefused as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("key_duplicate",
++                                   f"duplicate JSON key {exc.key!r} -- JSON "
++                                   f"would silently last-win; the file is "
++                                   f"refused whole"),), path)
++    except _NonFiniteRefused as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("not_finite_json",
++                                   f"non-finite JSON literal {exc.token!r} "
++                                   f"(NaN/Infinity are not numbers this "
++                                   f"schema accepts)"),), path)
++    except json.JSONDecodeError as exc:
++        return LoadResult(default_settings(), "refused",
++                          (Refusal("json_corrupt",
++                                   f"settings file is not valid JSON: "
++                                   f"{exc}"),), path)
++
++    settings, refusals = _validate(document)
++    status = "loaded" if not refusals else "refused"
++    return LoadResult(settings, status, tuple(refusals), path)
++
++
++# ── save: canonical bytes, atomic temp+rename ────────────────────────────────
++def canonical_bytes(settings: InputSettings) -> bytes:
++    """The deterministic v1 document bytes (sorted keys, fixed separators,
++    one trailing newline). Two saves of equal settings are byte-identical."""
++    return (json.dumps(settings.to_document(), sort_keys=True,
++                       ensure_ascii=False, separators=(",", ":"),
++                       allow_nan=False) + "\n").encode("utf-8")
++
++
++@dataclass(frozen=True)
++class SaveResult:
++    path: Path
++    bytes_written: int
++    atomic: bool
++
++
++def save_settings(settings: InputSettings, path) -> SaveResult:
++    """Atomically write `settings` to `path` (temp file in the SAME directory,
++    flush + fsync, os.replace). The temp file is removed on any failure so no
++    partial settings file is ever observable under the real name."""
++    path = Path(path)
++    payload = canonical_bytes(settings)
++    directory = path.parent
++    directory.mkdir(parents=True, exist_ok=True)   # explicit save: creating
++    #                                              # the declared dir is the
++    #                                              # caller's named action.
++    tmp = directory / f".{path.name}.tmp-{os.getpid()}"
++    try:
++        with open(tmp, "wb") as handle:
++            handle.write(payload)
++            handle.flush()
++            os.fsync(handle.fileno())
++        os.replace(tmp, path)                      # atomic on POSIX and Windows
++    except BaseException:
++        try:
++            tmp.unlink()
++        except OSError:
++            pass
++        raise
++    return SaveResult(path, len(payload), atomic=True)
++
++
++# ── the mapper integration surface (the mapper file stays READ-ONLY) ─────────
++def apply_settings(settings: InputSettings, mapper):
++    """Feed a settings vector to a live InputMapper through its OWN declared
++    data inputs -- and nothing else:
++
++      mapper.bindings     = a fresh dict of physical-name -> action
++      mapper.sensitivity  = the signed yaw delta-scale (+-sensitivity)
++
++    These are exactly U01's constructor parameters (input_mapper.py:174-182);
++    F5 measured that such data edits change emitted VALUES only. No module
++    attribute of input_mapper or command_record is ever assigned here -- the
++    seam's numbers are not input's to write (the seam-protection rule).
++    Returns the mapper for chaining.
++    """
++    mapper.bindings = dict(settings.bindings)
++    mapper.sensitivity = settings.signed_sensitivity()
++    return mapper
++
++
++def configured_mapper(sink, settings: InputSettings, **kwargs):
++    """Build a settings-configured InputMapper in one call (headless: any
++    injected tick_source passes straight through)."""
++    return apply_settings(settings, IM.InputMapper(sink, **kwargs))
+diff --git a/tools/science_funnel/__init__.py b/tools/science_funnel/__init__.py
+new file mode 100644
+index 00000000..2b8eadef
+--- /dev/null
++++ b/tools/science_funnel/__init__.py
+@@ -0,0 +1 @@
++"""Offline scientific intake; canonical graph admission is a separate transaction."""
+diff --git a/tools/science_funnel/typeb_export/__init__.py b/tools/science_funnel/typeb_export/__init__.py
+new file mode 100644
+index 00000000..e69de29b
+diff --git a/tools/science_funnel/typeb_export/command_record.py b/tools/science_funnel/typeb_export/command_record.py
+new file mode 100644
+index 00000000..a9e0444f
+--- /dev/null
++++ b/tools/science_funnel/typeb_export/command_record.py
+@@ -0,0 +1,250 @@
++"""THE VERSIONED COMMAND RECORD v1 + THE FAMILY-ADAPTER PROJECTION LAW
++(lane/policy-interface-freeze-20260920; preregistered BEFORE this build).
++
++Astra round 5 (settled): hierarchical control -- derived reflexes fixed below,
++command-conditioned policies WITHIN behavior families at 20 Hz over 300 Hz
++physics (15-tick holds), certified option-transitions between families, a
++planner on top. The PLANNER's only downward currency is a COMMAND RECORD. This
++module freezes that currency's v1 shape and its PROJECTION LAW:
++
++    versioned command record -> family adapter (versioned) -> fixed actor input
++
++THE LAW (what makes the freeze irreversible-safe):
++  1. A record carries its `record_version`. An adapter carries its
++     `adapter_version`. An adapter of version N reads ONLY the fields declared
++     by version N -- a later record version may ADD fields, and they can never
++     leak into an older adapter's projection (the v2-record-through-v1-adapter
++     bit-identity test).
++  2. The v1 deployment's actor is UNCONDITIONED: the old actor's fixed input is
++     its old projection (the frozen 80-field observation; the actor's own
++     8-channel walk-interface output path untouched). The v1 adapter's actor
++     conditioning is therefore the EMPTY vector -- the old actor gets exactly
++     its old projection, byte for byte.
++  3. The v1 adapter's machinery projection routes EXACTLY ONE field to the
++     walk's command channel: `commanded_target_velocity_x = v_forward` (the
++     typea-command-adapter receipt's channel: GaitWalker::configure() between
++     ticks, zero-order hold at the tick boundary, 20 Hz re-issue legal -- F-ZOH-
++     CLOCK GREEN). `yaw_rate` is CARRIED but routed NOWHERE: the typea receipt
++     reserved commanded_heading for a later lane and this lane does not invent
++     authority it has not measured.
++
++THE NUMBERS (all measured, none tuned; the typea receipt is the source):
++  - domain: v_forward >= 0 (the plant law's own max(0, .) domain).
++  - supported range: [0.0, 0.763625] m/s -- the scene seed's band, measured
++    veto-free horizons 137-222 ticks (R1-R4 GREEN clause (b)).
++  - out-of-band: LEGAL up to the declared envelope; the MACHINERY absorbs the
++    excess through its own reach annulus (R5: 1.30 m/s demanded, clamped to
++    xoff 0.258747 m by the existing fore clamp; refused by the existing budget
++    at the M2 class -- F_COMMAND_ENVELOPE GREEN). The adapter never pre-clamps.
++  - rate limits: DECLARED UNLIMITED at v1 (rate_limit_v_per_s = None,
++    rate_limit_yaw_per_s = None). Step changes are measured-legal: R1-R3 step
++    commands onset latency 7 ticks <= the 15-tick hold. No rate number is
++    invented; the schema fields exist so a v2 record can fill them from a
++    derivation.
++  - zero-speed semantics: v_forward = 0.0 is the plant law's own
++    x_off = 0*(DUTY_SAMPLED*T_CYCLE)/2 = 0 -- a legal command that targets the
++    walk's own zero advance. It is NOT a stop bar: stopping bars are a
++    DIFFERENT lane's job (declared; this module only carries the note).
++  - the R4 lesson (carried as a SEMANTIC constraint, enforced by the planner,
++    not by this module): never feed a constant seed pinned from entry -- a held
++    command must TRACK the measured relation (R4 refused at 282 of
++    gait_impact_event_budget, a class flip, when the law's v was frozen while
++    measured v dipped).
++"""
++from __future__ import annotations
++
++import hashlib
++import json
++import struct
++from dataclasses import dataclass, field
++from typing import Optional
++
++COMMAND_RECORD_VERSION = 1
++ADAPTER_VERSION = 1
++
++# the measured envelope (the typea receipt's authority table; nothing tuned)
++V_MAX_IN_BAND_M_S = 0.763625   # the scene seed: measured veto-free 137-222 ticks
++V_ENVELOPE_DEMO_M_S = 1.30     # R5: legal out-of-band demand, machinery-absorbed
++HOLD_TICKS = 15                # the 20 Hz decision clock over 300 Hz physics
++POLICY_HZ = 20
++PHYSICS_HZ = 300
++
++
++class CommandRecordError(ValueError):
++    """A record violates the v1 law (validator message says which)."""
++
++
++@dataclass(frozen=True)
++class CommandRecord:
++    """The planner's downward currency, version 1.
++
++    Fields (v1 -- the ONLY fields a v1 adapter may read):
++      v_forward : float, m/s, >= 0. The walk-interface forward-speed demand.
++      yaw_rate  : float, rad/s. CARRIED, NO AUTHORITY (commanded_heading is
++                  reserved for a later lane per the typea receipt); present so
++                  the wire format never changes when the authority is derived.
++      issued_tick : int, the physics tick at which the planner issued (the ZOH
++                  applies it at the next step() and holds >= HOLD_TICKS).
++    Semantic (planner-owned, carried for provenance):
++      source : the issuing planner's id (a string; the R4 discipline lives here).
++    """
++    v_forward: float
++    yaw_rate: float = 0.0
++    issued_tick: int = 0
++    source: str = "planner"
++    record_version: int = COMMAND_RECORD_VERSION
++
++    def __post_init__(self):
++        if self.record_version != COMMAND_RECORD_VERSION:
++            raise CommandRecordError(
++                f"record_version {self.record_version} != {COMMAND_RECORD_VERSION} "
++                "(a new version is a NEW declared wire format, not a free field)")
++        vf = float(self.v_forward)
++        if vf != vf or vf in (float("inf"), float("-inf")):
++            raise CommandRecordError("v_forward must be finite")
++        if vf < 0.0:
++            raise CommandRecordError(
++                "v_forward < 0 is outside the plant law's own max(0, .) domain")
++        yr = float(self.yaw_rate)
++        if yr != yr or yr in (float("inf"), float("-inf")):
++            raise CommandRecordError("yaw_rate must be finite")
++        object.__setattr__(self, "v_forward", vf)
++        object.__setattr__(self, "yaw_rate", yr)
++
++    # ---- the wire format (canonical bytes; the F2 pin) ----------------------
++    def canonical_fields(self) -> dict:
++        return {
++            "record_version": self.record_version,
++            "v_forward": self.v_forward,
++            "yaw_rate": self.yaw_rate,
++            "issued_tick": int(self.issued_tick),
++            "source": self.source,
++        }
++
++    def canonical_bytes(self) -> bytes:
++        return json.dumps(self.canonical_fields(), sort_keys=True,
++                          separators=(",", ":")).encode("utf-8")
++
++    def canonical_sha256(self) -> str:
++        return hashlib.sha256(self.canonical_bytes()).hexdigest()
++
++    # ---- the float-bit identity (the projection law's test surface) ---------
++    def v1_field_bits(self) -> bytes:
++        """The exact float64 bits of the v1-readable fields, in declared order
++        (v_forward, yaw_rate). The bit-identity test compares THESE: a v2
++        record carrying the same v1 values must produce these exact bits."""
++        return (struct.pack("<d", float(self.v_forward))
++                + struct.pack("<d", float(self.yaw_rate)))
++
++
++# ---- the family adapter (versioned) ----------------------------------------
++
++@dataclass(frozen=True)
++class V1FamilyAdapter:
++    """The v1 walk-family adapter: the fixed projection law.
++
++    project_to_machinery : routes v_forward to the typea command channel
++        (commanded_target_velocity_x) EXACTLY, as a float64 pass-through -- the
++        machinery owns every clamp (the reach annulus) and every budget; the
++        adapter pre-clamps nothing (R5/F_COMMAND_ENVELOPE measured).
++    project_to_actor_conditioning : the EMPTY vector. The v1 actor is
++        unconditioned -- its fixed input is its old projection (the frozen
++        80-field observation); this adapter adds no bits to it.
++    """
++    adapter_version: int = ADAPTER_VERSION
++
++    def project(self, rec: CommandRecord) -> dict:
++        """The machinery projection (validate + route). Reads ONLY the v1
++        field set: v_forward, yaw_rate(carry-only). A record with ANY extra
++        fields (a v2 wire format) produces bit-identical output here."""
++        if not isinstance(rec, CommandRecord):
++            raise CommandRecordError("adapter v1 consumes CommandRecord instances")
++        return {
++            "adapter_version": self.adapter_version,
++            "commanded_target_velocity_x": float(rec.v_forward),  # float64 passthrough
++            # yaw_rate: carried, NO ROUTE (authority not derived; declared above)
++            "routed_yaw_rate": False,
++        }
++
++    def project_to_actor_conditioning(self, rec: CommandRecord) -> bytes:
++        """The actor-conditioning projection: EMPTY at v1 (the law's clause 2).
++        Bit-for-bit identical for every record, of any version the caller
++        claims: the old actor gets exactly its old projection."""
++        return b""
++
++    def projection_bytes(self, rec: CommandRecord) -> bytes:
++        """Canonical byte serialization of the full projection (the F2 pin and
++        the bit-identity test's surface)."""
++        p = self.project(rec)
++        return json.dumps(p, sort_keys=True, separators=(",", ":"),
++                          allow_nan=False).encode("utf-8") + b"|cond=" \
++            + self.project_to_actor_conditioning(rec)
++
++
++def project_v1(rec: CommandRecord, adapter: Optional[V1FamilyAdapter] = None) -> dict:
++    """The v1 projection law, functional form (the unittest's stable entry)."""
++    return (adapter or V1FamilyAdapter()).project(rec)
++
++
++# ---- the declared v1 WIRE decoder -------------------------------------------
++
++def decode_v1(wire: dict) -> CommandRecord:
++    """The DECLARED v1 decoder: reads ONLY the v1 field set from a wire dict.
++
++    THIS is the law's enforcement point for forward compatibility: a v2 (or
++    any later) wire carries extra keys and a possibly-bumped record_version;
++    decode_v1 ignores every key it does not know. A v2 wire with the same v1
++    values therefore decodes to a record whose projection is BIT-IDENTICAL to
++    the v1 wire's (the unittest pins this with float64 bits)."""
++    return CommandRecord(
++        v_forward=float(wire["v_forward"]),
++        yaw_rate=float(wire.get("yaw_rate", 0.0)),
++        issued_tick=int(wire.get("issued_tick", 0)),
++        source=str(wire.get("source", "planner")),
++        record_version=COMMAND_RECORD_VERSION,   # the DECODER's version, not the wire's
++    )
++
++
++def wire_version(wire: dict) -> int:
++    """The wire's DECLARED record version (the runtime dispatches decoders on
++    this; an unversioned wire is v1)."""
++    return int(wire.get("record_version", 1))
++
++
++# ---- declared semantics (read-only tables for the certificate lane) ---------
++
++ZERO_SPEED_SEMANTICS = (
++    "v_forward = 0.0 is the plant law's own x_off = 0 (a legal command, the "
++    "walk's own zero-advance target). It is NOT a stop bar: the stopping "
++    "criterion is a DIFFERENT lane's job and is not declared here.")
++
++R4_SEMANTIC_CONSTRAINT = (
++    "never feed a constant seed pinned from entry (R4: refusal 282, "
++    "gait_impact_event_budget, a class flip -- the frozen v removed the walk's "
++    "own speed feedback). A held command must TRACK the measured relation. "
++    "Enforced by the planner; this module carries the note on every record's "
++    "consumer path.")
++
++RANGES = {
++    "v_forward": {
++        "domain_lo": 0.0,
++        "domain_hi": None,             # the plant law's own domain is [0, inf)
++        "in_band_hi": V_MAX_IN_BAND_M_S,   # measured veto-free band
++        "envelope_demo": V_ENVELOPE_DEMO_M_S,  # measured machinery-absorbed demand
++        "out_of_band_semantics": "legal; the machinery's own reach annulus "
++                                 "absorbs the excess (R5 measured), the "
++                                 "existing budgets own the refusal",
++    },
++    "yaw_rate": {
++        "authority": "NONE (reserved: commanded_heading is a later lane's)",
++        "carried": True,
++    },
++}
++
++RATE_LIMITS = {
++    "v_forward_per_s": None,   # DECLARED UNLIMITED at v1: step changes measured
++                               # legal (R1-R3: onset 7 ticks <= hold 15)
++    "yaw_rate_per_s": None,    # no authority to rate-limit
++    "derivation_status": "no rate number is invented; the fields exist so a v2 "
++                         "record can fill them from a derivation",
++}
