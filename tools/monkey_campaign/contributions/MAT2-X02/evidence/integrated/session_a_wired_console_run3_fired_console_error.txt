@@ -1,0 +1,44 @@
+  [PASS] A1_boot_world_booted -- {'ok': True, 'world_booted': True}
+  [PASS] A1_boot_single_engine_child -- [12236]
+  [PASS] A1_boot_count_is_1 -- 1
+  [PASS] A2_overlay_loaded -- True
+  [PASS] A2_session_hud_present -- True
+  [PASS] A2_initial_state_attract -- attract
+  [PASS] A2_start_key_only -- True
+  [PASS] A2_mapper_records_while_playing -- records 0 -> 5
+  [PASS] A2_settled_before_restart -- True
+  [PASS] A3_pause_key_only -- True
+  [PASS] A3_zero_records_while_paused -- records 5 -> 5 across 2.0s of ticks
+  [PASS] A3_restart_from_paused_reached_playing -- True
+  [PASS] A3_engine_pid_swapped -- [12236] -> True
+  [PASS] A3_old_engine_terminated -- [12236]
+  [PASS] A3_settled_after_restart -- True
+  [PASS] A3_scene_sha256_byte_equal -- scene identity across the reload
+  [PASS] A4_exit_key_only -- True
+  [PASS] A4_engine_child_dead -- []
+  [FIRE] A2_zero_console_errors -- ['Failed to load resource: net::ERR_NO_BUFFER_SPACE']
+  [PASS] A2_zero_page_errors -- []
+  [PASS] A5_real_video_captured -- E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-X02\74bc0ad345074c429272982299a76f4e\scratch\evidence\integrated\wired_session.webm
+  [PASS] A4_server_port_closed -- 57284
+  [PASS] A4_zero_surviving_engines -- []
+Traceback (most recent call last):
+  File "E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-X02\74bc0ad345074c429272982299a76f4e\checkout\tools\monkey_campaign\contributions\MAT2-X02\session_a_wired.py", line 532, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-X02\74bc0ad345074c429272982299a76f4e\checkout\tools\monkey_campaign\contributions\MAT2-X02\session_a_wired.py", line 526, in main
+    json.dumps(receipt, indent=1))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\json\__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Python314\Lib\json\encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Python314\Lib\json\encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Python314\Lib\json\encoder.py", line 182, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type WindowsPath is not JSON serializable
+when serializing dict item 'detail'
+when serializing list item 20
+when serializing dict item 'checks'

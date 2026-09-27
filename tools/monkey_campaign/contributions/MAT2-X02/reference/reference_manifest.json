@@ -1,0 +1,50 @@
+{
+ "schema": "chimera.mat2_x02.reference_manifest.v1",
+ "method": "git cat-file blob (raw bytes, no EOL smudge), read-only from play repo E:/ChimeraWork/monkey-play-20260924",
+ "pins": {
+  "session_modules": "f30f2224663324e9374b076938c56672febf4082",
+  "playable_slice": "8550b634ebd7034bb8873eed41d8bdce4d3843d0"
+ },
+ "files": {
+  "tools/monkey_campaign/product/session_flow.py": {
+   "pin": "f30f2224663324e9374b076938c56672febf4082",
+   "sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+   "size": 16981
+  },
+  "tools/monkey_campaign/product/input_mapper.py": {
+   "pin": "f30f2224663324e9374b076938c56672febf4082",
+   "sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "size": 18349
+  },
+  "tools/monkey_campaign/product/session_flow_tests.py": {
+   "pin": "f30f2224663324e9374b076938c56672febf4082",
+   "sha256": "b6ce2bba598fcb8119de82f9a06639ee6d2744c1605ac82c8d699b8df75ef49a",
+   "size": 23224
+  },
+  "tools/playable_slice/slice_server.py": {
+   "pin": "8550b634ebd7034bb8873eed41d8bdce4d3843d0",
+   "sha256": "5accc730541067c48e61122d384e6d2b3e568012908908ae03dcbc06ae6d6eef",
+   "size": 28101
+  },
+  "tools/playable_slice/scene_boot.py": {
+   "pin": "8550b634ebd7034bb8873eed41d8bdce4d3843d0",
+   "sha256": "71780d1aae70e3802560c17a118e372f39a986b29d08035f08abe1fdf695bf4d",
+   "size": 23763
+  },
+  "tools/playable_slice/index.html": {
+   "pin": "8550b634ebd7034bb8873eed41d8bdce4d3843d0",
+   "sha256": "9fac0ee13657923bb42b62ab84c75b04df377b156cff740bcad547464ee24a05",
+   "size": 58869
+  },
+  "tools/playable_slice/push_channel.py": {
+   "pin": "8550b634ebd7034bb8873eed41d8bdce4d3843d0",
+   "sha256": "3fea5a5595d6e7d00add9d4c4137b44cea613f924d33088ef97ff7350fc31fd4",
+   "size": 16428
+  },
+  "tools/science_funnel/typeb_export/command_record.py": {
+   "pin": "f30f2224663324e9374b076938c56672febf4082",
+   "sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+   "size": 12095
+  }
+ }
+}

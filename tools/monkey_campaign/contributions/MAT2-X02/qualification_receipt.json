@@ -1,0 +1,237 @@
+{
+ "schema": "chimera.mat2-x02.qualification.v1",
+ "task_id": "MAT2-X02",
+ "criteria_sha256": "e50bf1e89689aac419c95c1b3a8ce02bb0f5ca5b3c67cf50b575662c0bd63c20",
+ "attempt_id": "74bc0ad345074c429272982299a76f4e",
+ "agent_id": "arrival-7d28ea9afd7f4ce5819f3aa13ce355e0",
+ "base_revision": "97993cbefaf00380803d8e67652ac51d50c37d06",
+ "instruction_revision": "astra-0031",
+ "verification_profile": {
+  "id": "recovery",
+  "kind": "motion",
+  "checkpoint_ids": [
+   "V08"
+  ]
+ },
+ "reconciliation": {
+  "reused_byte_exact": {
+   "tools/monkey_campaign/product/session_flow.py": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/monkey_campaign/product/session_flow_tests.py": "b6ce2bba598fcb8119de82f9a06639ee6d2744c1605ac82c8d699b8df75ef49a",
+   "tools/playable_slice/slice_server.py": "5accc730541067c48e61122d384e6d2b3e568012908908ae03dcbc06ae6d6eef",
+   "tools/playable_slice/scene_boot.py": "71780d1aae70e3802560c17a118e372f39a986b29d08035f08abe1fdf695bf4d",
+   "tools/playable_slice/index.html": "9fac0ee13657923bb42b62ab84c75b04df377b156cff740bcad547464ee24a05",
+   "tools/playable_slice/push_channel.py": "3fea5a5595d6e7d00add9d4c4137b44cea613f924d33088ef97ff7350fc31fd4",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+  },
+  "pins": "8550b634ebd7034bb8873eed41d8bdce4d3843d0",
+  "extraction_file_count": 252,
+  "first_unmet_clause": "app-level session wiring (archived ONT-X02 M1: no session_flow/input_mapper import, no pause/exit control, no Escape/Q/Enter binding)",
+  "not_promoted": "archived ONT-X02 DONE (criteria a266d161...) is archived-scope evidence, not MAT2 acceptance"
+ },
+ "unit_probe": {
+  "evidence_class": "records",
+  "probe": "python -B test_session_app.py (CPU-only)",
+  "red_run": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\red_run.txt",
+   "sha256": "3b00332672864f5de260b3e6a915851bcd4c5fb9986e1535bb0fbd9fc9eec34e",
+   "evidence_class": "records"
+  },
+  "green_run": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\green_run.txt",
+   "sha256": "b29bf5bb49998eeb0ad4c0ac75e38ffd3e3130c95676608c2a2d0e3efaa38167",
+   "evidence_class": "records"
+  },
+  "f1_mutation_run": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\f1_mutation_run.txt",
+   "sha256": "c94f4c8dc85df5cc0d29b7995e44183ae596c3f584c77fc8ffe2bc7c5b54d25e",
+   "evidence_class": "records"
+  },
+  "pinned_suite": "reference session_flow_tests re-run at recovered bytes: exit 0, ALL CHECKS PASS"
+ },
+ "integrated_session": {
+  "evidence_class": "motion",
+  "summary": "REAL reconstructed playable application (pinned 8550b634 bytes) + REAL native engine built from pinned source + REAL headless Chrome driving the NEW session controls through the page's capture-phase keys.",
+  "engine_exe_sha256": "3ea54423059d05f5badb1fba42e0fd919d050ca23c3dcb3f6d76329d1f045af2",
+  "checks_total": 23,
+  "checks_fired": [],
+  "verdict": "ALL CHECKS PASS (23 checks)",
+  "receipt": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\session_a_wired_receipt.json",
+   "sha256": "f83f8de94f5352155583defc1ab0b8533ac782cd99ffd38ad19a7a8f376f5f3a",
+   "evidence_class": "motion"
+  },
+  "console": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\session_a_wired_console.txt",
+   "sha256": "5bc872a1bde2fdaf73c669b9b128972389a10f97bbe827ac2c47ee041bcac1e4",
+   "evidence_class": "records"
+  },
+  "prior_run_fired_console_error": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\session_a_wired_console_run3_fired_console_error.txt",
+   "sha256": "757a0f19b05c52e24488e54c36476030329ab958a546f2f6bddf278f60579a99",
+   "evidence_class": "records"
+  },
+  "video": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\wired_session.webm",
+   "sha256": "c9ab927b0a71d5afbd883de0472e3739cc51782f8e6829e30df4035e9b1062fb",
+   "evidence_class": "motion"
+  },
+  "trace": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\wired_trace.jsonl",
+   "sha256": "935040d3bad73591b9013fa5aff97917a61349a324195e0095eb3b01c175897c",
+   "evidence_class": "motion"
+  },
+  "state_bindings": [
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\state_binding_before.json",
+    "sha256": "7a46856069270d6c002a7f8e754a6d77252fd406da0480888ef7359f452d7ce7",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\state_binding_after.json",
+    "sha256": "3538312293d4f110af0f4784ce4e3885e5fa1f92d7f4cb7427e8a06138de0216",
+    "evidence_class": "motion"
+   }
+  ],
+  "page_stills": [
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_attract_diagnostic.png",
+    "sha256": "922e1dd28386ae2f5917406543fe89620d43e86150ba81e3e829bb3e4d504c39",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_attract_clean.png",
+    "sha256": "60517fa02929f50aac47577cb2df565fb105a65334329182da545399cc36d93a",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_before_diagnostic.png",
+    "sha256": "5710ac5aa3d06526be02a4877b7146324f9f36016e82a02a7043f27a98c931ae",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_before_clean.png",
+    "sha256": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_paused_diagnostic.png",
+    "sha256": "e381777d3203440f132ab0aa2e29e5a2c8bc605610605c4dd48e44a4d02c1b52",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_paused_clean.png",
+    "sha256": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_after_diagnostic.png",
+    "sha256": "2768190c0910f7ff0ca5dcfc3b6b3891ffbd81d9d5aff1c822bd2ecffe0d1f24",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_after_clean.png",
+    "sha256": "114c97607d27076474970474275c7bb4e3413f103d6a9efd45a540bd70b35c9f",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_exited_diagnostic.png",
+    "sha256": "d4a845bc74208f4243b5d9e603a571f9b020cc18f2ae87a497c26e38cf627b26",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\view_exited_clean.png",
+    "sha256": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e",
+    "evidence_class": "motion"
+   }
+  ],
+  "engine_frames": [
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\engine_frame_before.png",
+    "sha256": "95cf786882f3b63a1d7b5b12221f002aa6b6ede7a270e1fc47fa7fc314f0d8be",
+    "evidence_class": "motion"
+   },
+   {
+    "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\engine_frame_after.png",
+    "sha256": "60ffc69cff06c5b842073a882fc58af67bc8d94eea1cd2c755a0ee6b3b2a90fc",
+    "evidence_class": "motion"
+   }
+  ],
+  "server_log": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\server_log.txt",
+   "sha256": "1e65bd8f08b953dbd7601a1301a2680853db389912cfea9a353615afadd2d3d1",
+   "evidence_class": "records"
+  },
+  "extraction_manifest": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\pinned_blob_manifest.json",
+   "sha256": "3e8152b57e200ecf6e0c4d9c0b0f8b845a0cce8a838f4b981f3e4eeac4ce3de5",
+   "evidence_class": "records"
+  },
+  "numerical": {
+   "scene_sha256_before": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "scene_sha256_after": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+   "scene_sha256_equal": true,
+   "start_state_sha256_before": "8c040418fe5bfaac6f56004364d033429a8495bb5b78d2dff5545427ab2e9001",
+   "start_state_sha256_after": "83e7c31e4dbeb2aeab2bb77a55906e035c09b4b2a6327061be06273186968603",
+   "start_state_equal": false,
+   "start_state_deviation_measured": "the ROOT stream is identical (settled root_y 0.124641 both boots; g_contact_n 135618) and scene identity is byte-equal; the full-vertex start_state hash differs at the engine's own reflex-breathing phase (sub-visible vertex ulps at capture time). RECORDED AS MEASURED per prereg P3/P4; never tuned.",
+   "mapper_records_playing": "0 -> 2",
+   "mapper_records_paused": "2 -> 2 across 2.0s of ticks (zero boundaries while suspended)",
+   "boot_count_after_restart": 2,
+   "engine_pids": {
+    "before": [
+     23776
+    ],
+    "after": [
+     3348
+    ]
+   },
+   "zero_surviving_engines_after_exit": [],
+   "server_port_closed_after_exit": true
+  },
+  "predictions": {
+   "P3_start_state_equality": {
+    "expected": "equal across boots (determinism claim)",
+    "measured_equal": false,
+    "outcome": "FIRED (recorded as measured)"
+   },
+   "P3_console_errors": {
+    "expected": "zero console/page errors",
+    "measured": {
+     "final_run": "zero",
+     "prior_run": "one transient net::ERR_NO_BUFFER_SPACE (kept, labeled FIRED in the prior-run console record)"
+    }
+   }
+  }
+ },
+ "evidence_class_statement": {
+  "motion": "wired_session.webm (+ transcode), view_*.png page pixels, engine_frame_*.png engine renders, wired_trace and state bindings \u2014 all from the REAL running application.",
+  "records": "unit probe outputs, extraction/reference manifests, server log \u2014 offline evidence, never offered as runtime proof.",
+  "not_claimed": "V08 checkpoint acceptance (lead's call); human player acceptance (operator receipt); locomotion consumer (archived M4 stands)."
+ },
+ "missing_or_unresolved": [
+  "mapper CommandRecords have no locomotion consumer (archived M4; the record stream is session diagnostics)",
+  "V08 native integrated checkpoint acceptance remains the lead's decision; visual_acceptance is false by validator law pending independent visual review",
+  "human player acceptance requires the operator receipt"
+ ],
+ "evidence": {
+  "camera": {
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\wired_capture_manifest.json",
+   "raw_sha256": "ac88a2bd3547d7d27394b5f21927796deb8dc7ae2503bd227655a090b845581e"
+  },
+  "visual": {
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\wired_capture.mp4",
+   "raw_sha256": "6e9fa7bb638f7cc4f490e3c49afc03b4a7c960800fb8c2416df7e6b9b6454762"
+  }
+ },
+ "capture_context": {
+  "task_id": "MAT2-X02",
+  "subject_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+  "run_id": "MAT2-X02-wired-2026-09-27T094908Z",
+  "capture_sha256": "6e9fa7bb638f7cc4f490e3c49afc03b4a7c960800fb8c2416df7e6b9b6454762",
+  "tick_interval": [
+   0,
+   2953
+  ]
+ }
+}

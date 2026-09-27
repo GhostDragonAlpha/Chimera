@@ -1,0 +1,53 @@
+{
+ "when": "after_restart",
+ "scene_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
+ "start_state_sha256": "83e7c31e4dbeb2aeab2bb77a55906e035c09b4b2a6327061be06273186968603",
+ "start_root_y": 0.124655,
+ "boot_count": 2,
+ "engine_children": [
+  3348
+ ],
+ "camera": {
+  "yaw": 0.7,
+  "pit": 0.42,
+  "dist": 2.2,
+  "target": [
+   0,
+   0.25,
+   0
+  ],
+  "viewport": [
+   1280,
+   720
+  ]
+ },
+ "session": {
+  "schema": "chimera.mat2-x02.session-app.v1",
+  "state": "playing",
+  "held": [],
+  "records": 2,
+  "quiesces": 1,
+  "restarts": 1,
+  "dropped": 77,
+  "transitions": [
+   [
+    "attract",
+    "confirm",
+    "playing",
+    18211382
+   ],
+   [
+    "playing",
+    "pause",
+    "paused",
+    18225414
+   ],
+   [
+    "paused",
+    "restart",
+    "playing",
+    18227863
+   ]
+  ]
+ }
+}
