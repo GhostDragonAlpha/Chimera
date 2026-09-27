@@ -12,6 +12,15 @@ packet and an in-chat presentation. A path, hash, report, mailbox notice or requ
 to open a local file does not satisfy this gate. Workers prepare evidence; the
 Lieutenant presents it. The Sergeant routes the packet and continues unrelated work.
 
+For anatomical or other spatial-semantic questions, first run the semantic-frame
+procedure in [Semantic 3D verification](../../docs/SEMANTIC_3D_VERIFICATION.md).
+Geometry, independent domain claims, topology, ports and a physical witness should
+determine the direction when the evidence exists. A screenshot is then a debugging
+view of those facts. If the semantic packet refuses because required anatomy is
+missing, state that limitation; do not ask a model to guess. The Captain may still
+make an explicit authored convention choice, but its receipt must call it authored
+semantics rather than biological inference.
+
 The packet must contain:
 
 - the task ID, exact source/build/head and decision ID;
