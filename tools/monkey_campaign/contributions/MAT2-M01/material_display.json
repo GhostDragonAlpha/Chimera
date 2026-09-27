@@ -1,0 +1,459 @@
+{
+ "schema": "chimera.material_state.v1",
+ "object_id": "teddy-prototype",
+ "revision": 1,
+ "regions": [
+  {
+   "id": "ankle_left",
+   "kind": "shell",
+   "parent": "belly",
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "ankle_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "belly",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "chest",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "ear_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "ear_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "elbow_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "elbow_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "face",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "foot_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "foot_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "forearm_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "forearm_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "head",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "knee_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "knee_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "muzzle",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "neck",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "paw_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "paw_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "shin_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "shin_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "shoulder_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "shoulder_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "thigh_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "thigh_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "toes_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "toes_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "upper_arm_left",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  },
+  {
+   "id": "upper_arm_right",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "source": "teddy_membranes.json membrane region (rest = authored prototype geometry)"
+   },
+   "current_geometry": {
+    "source": "equal to rest at revision 1 (no solver in this qualification)"
+   }
+  }
+ ],
+ "relations": {
+  "containment": [
+   {
+    "child": "ankle_left",
+    "parent": "belly"
+   }
+  ],
+  "contacts": [
+   {
+    "id": "contact_belly_chest",
+    "endpoints": [
+     {
+      "region_id": "belly",
+      "port": "surface"
+     },
+     {
+      "region_id": "chest",
+      "port": "surface"
+     }
+    ],
+    "state": "touching"
+   },
+   {
+    "id": "contact_core_ground",
+    "endpoints": [
+     {
+      "region_id": "chest",
+      "port": "surface"
+     }
+    ],
+    "state": "separated"
+   }
+  ],
+  "bonds": [
+   {
+    "id": "bond_belly_chest_surface",
+    "endpoints": [
+     {
+      "region_id": "belly",
+      "port": "surface"
+     },
+     {
+      "region_id": "chest",
+      "port": "surface"
+     }
+    ],
+    "status": "planned",
+    "transfers": "force_moment"
+   }
+  ],
+  "note": "containment is not a bond; bonds and contacts are distinct types"
+ },
+ "mass_summary": {
+  "total_mass_kg": 2.0,
+  "owned_matter": [
+   {
+    "matter_id": "core_matter",
+    "owner_region": "chest",
+    "mass_kg": 0.75,
+    "provenance": "authored fixture mass at chosen fidelity (no measured source); explicit, single-owner"
+   },
+   {
+    "matter_id": "fur_matter",
+    "owner_region": "belly",
+    "mass_kg": 1.25,
+    "provenance": "authored fixture mass at chosen fidelity (no measured source); explicit, single-owner"
+   }
+  ],
+  "reference_claims": 58,
+  "note": "each matter id is owned once; references never re-own mass"
+ },
+ "material_directions": [
+  {
+   "id": "fur_grain",
+   "region_id": "belly",
+   "axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "history": [
+    {
+     "revision": 1,
+     "state": "authored fixture direction (declared, not inferred)"
+    }
+   ],
+   "frame": "rest"
+  }
+ ],
+ "laws": [
+  {
+   "id": "fur_pressure_law",
+   "kind": "pressure_deformation",
+   "regions": [
+    "belly",
+    "chest"
+   ],
+   "parameters": {
+    "model": "declared_fixture_placeholder",
+    "stiffness_note": "values deferred to runtime-facing cards (M03/M04); no number invented here"
+   },
+   "provenance": "declared fixture placeholder law; parameter numbers intentionally absent until a sourced law exists"
+  }
+ ],
+ "counts": {
+  "region_count": 30,
+  "shell_count": 30,
+  "matter_count": 2,
+  "owner_count": 2,
+  "reference_count": 58,
+  "direction_count": 1,
+  "law_count": 1,
+  "contact_count": 2,
+  "bond_count": 1,
+  "port_count": 30
+ },
+ "canonical_sha256": "1c015e2d4cc18cc49fb9ab78d67b5a74f7cae883c5b7b3c8c1d77015a32d9bf1",
+ "display_honesty": {
+  "kind": "structured_records_display",
+  "visual_clause": "PENDING_RUNTIME: no native material solver exists at base revision c525b82c; motion-profile camera evidence is deferred to runtime-facing cards (M03/M04, MAT-PRESSURE). Not passed here.",
+  "numerical_clause": "PASSED_HERE: validation, ownership, relation distinctness and identity stability are checked by test_material_state.py (35 named checks) against the committed fixture."
+ }
+}
