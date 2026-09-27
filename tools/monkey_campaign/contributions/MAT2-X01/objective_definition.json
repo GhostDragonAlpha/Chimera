@@ -1,0 +1,183 @@
+{
+ "schema": "mat2-x01.objective.v1",
+ "card": "MAT2-X01",
+ "planning_id": "X01",
+ "done_when": "A finite purpose/lesson/free-play completion definition is selected without inventing a campaign",
+ "selected_definition": {
+  "framing": {
+   "choice": "complete game (not movement demo)",
+   "recovered_from": "The goal is one physically controlled monkey in a small forest: walk on all fours, steer, stop, approach a rigid trunk, attach, climb, hold, descend, release and walk again, with a usable camera and complete player flow.",
+   "observation_source": "Movement demo versus complete game needs this explicit product choice"
+  },
+  "repeatable_objective": {
+   "definition": "ONE complete ground -> trunk -> climb -> hold -> descend -> release -> ground loop, in one session, repeated as free play",
+   "finite_frame_core_clause_verbatim": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded",
+   "success_loop_clause_current_verbatim": "Player approaches, attaches, ascends, holds, descends, releases and resumes all-fours walking in one session",
+   "failure_semantics": "explicit success/failure behavior per the frozen core clause; failures stay physical under the pinned law: No kinematic locomotion substitute or invisible support force is permitted.",
+   "repetition": "free-play repetition, no scripted progression; the loop is the whole game frame, so each session is one more attempt at the same finite objective",
+   "milestone_order_material_first_verbatim": "Reusable matter is the architecture; walking through woods is the first product milestone, followed by the existing climb/return goal. Additional materials remain extensible, not universal-physics prerequisites."
+  },
+  "session_and_completion_semantics": {
+   "card_completion": "Lead-approved exact-head PR merged with full ontology qualification evidence; a diagnostic or scaffold alone cannot close this card.",
+   "game_completion": "Every selected requirement has scoped, integrated evidence and the player acceptance task has actual human acceptance.",
+   "session_flow_owner": {
+    "task": "MAT2-X02",
+    "done_when_current_verbatim": "Player reaches play and can pause/restart/exit without developer commands; reset is an explicit user action"
+   },
+   "operator_acceptance_owner": {
+    "task": "S05",
+    "done_when_current_verbatim": "All selected core/product behaviors pass; remaining issues are triaged explicitly; operator accepts actual play"
+   }
+  },
+  "no_campaign_law": {
+   "contract_clause_verbatim": "broader features excluded",
+   "catalog_finish_line_verbatim": "One playable monkey walks through woods, climbs, holds, descends and releases through composed physical matter; reusable material architecture remains extensible beyond this game.",
+   "monkey_run_backlog_law_verbatim": "Keep broader Chimera features in the later backlog.",
+   "note": "In this revision the selected material assembly consumes B01-B07 as required selected tasks; that is the approved scope, not a campaign: nothing outside the selected tasks gates completion."
+  }
+ },
+ "unresolved_inventory": [
+  {
+   "id": "mat2-f01-spatial-envelope",
+   "pending": "finite clearing extent/coordinates and safe spawn",
+   "owner_card": "MAT2-F01",
+   "owner_done_when_current_verbatim": "Deterministic terrain/tree recipe, explicit extent and coordinate convention, safe spawn and visible boundary",
+   "archived_envelope_numbers_promoted": false
+  },
+  {
+   "id": "mat2-p06-acceptance-limits",
+   "pending": "hardware/controls/duration/latency/frame-time limits",
+   "owner_card": "MAT2-P06",
+   "archived_limit_values_promoted": false
+  },
+  {
+   "id": "mat2-x02-session-flow",
+   "pending": "start/pause/restart/exit implementation (definition names the owner only)",
+   "owner_card": "MAT2-X02"
+  }
+ ],
+ "operator_decision_requests": [
+  {
+   "id": "objective-presentation-surface",
+   "question": "How is the repeatable loop surfaced to the player?",
+   "options": [
+    "silent free-play (no counter)",
+    "attempt counter (loops completed this session)",
+    "timer + counter"
+   ],
+   "recommendation": "attempt counter (loops completed this session) -- the page's existing state feedback carries it without a new HUD surface; no thresholds, no scores",
+   "provenance": "carried unresolved from ONT-X01; disclosed open in the lead review of PR #136 (presentation, not definition)"
+  }
+ ],
+ "legacy_crosswalk": {
+  "reused": [
+   "definition structure (selected_definition / framing / no_campaign_law / single decision request)",
+   "objective-presentation-surface decision request (still unresolved)"
+  ],
+  "not_carried": [
+   "archived envelope numbers (20.0 m clearing half-width; trunk 11.976783/2.471766) -- spatial envelope is MAT2-F01 scope, not yet frozen",
+   "archived 'B01-B07 never auto-activated' wording -- obsolete: this revision requires B01-B07 as selected tasks",
+   "K08 sourced from the archived contract -- now cited from the live catalog",
+   "archived SC-FAILURE-BEHAVIOR verbatim clause -- replaced by the frozen core clause plus the pinned MONKEY_RUN physical law"
+  ],
+  "promotion_claim": "NONE -- archived DONE is not new acceptance",
+  "provenance": {
+   "card": "ONT-X01",
+   "attempt_id": "30614130594b42b1afd8cbcfe5e6c840",
+   "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/136",
+   "pr_head_sha": "0c9a615cceccf7f7269b9545f555bd2be8daa138",
+   "criteria_sha256": "ff69d9a1099058276b43af6721a2ff118523235f936bc6de0782173dbbbaa74f",
+   "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+   "archived_contract_sha256": "80b2e2f2736ce6fd594633f85fa22bda702991c3ed4d415a0d9c4eadd377163b",
+   "definition_rerun_sha256": "45e97fc64df8f28b15da80affc0124af5a631075149806503e81a3108960057d",
+   "state": "DONE (archived board); reused as structure/provenance only"
+  }
+ },
+ "evidence_map": {
+  "finite_frame_core_clause_verbatim": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\lead-verify-20260926\\MAT2-P01-accept-materialized\\contract.json",
+   "sha256": "e255eb44203212c039598d28629c21e6e1c019d1abe6caa07b4430fca53715a5",
+   "quote": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded"
+  },
+  "p01_done_when_carry": {
+   "path": "E:\\PythonChimera\\tools\\monkey_campaign\\monkey_completion_map.json",
+   "sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+   "quote": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded. Material-first addition: Reusable matter is the architecture; walking through woods is the first product milestone, followed by the existing climb/return goal. Additional materials remain extensible, not universal-physics prerequisites."
+  },
+  "milestone_order_material_first_verbatim": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\lead-verify-20260926\\MAT2-P01-accept-materialized\\contract.json",
+   "sha256": "e255eb44203212c039598d28629c21e6e1c019d1abe6caa07b4430fca53715a5",
+   "quote": "Reusable matter is the architecture; walking through woods is the first product milestone, followed by the existing climb/return goal. Additional materials remain extensible, not universal-physics prerequisites."
+  },
+  "success_loop_clause_current_verbatim": {
+   "path": "E:\\PythonChimera\\tools\\monkey_campaign\\monkey_completion_map.json",
+   "sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+   "quote": "Player approaches, attaches, ascends, holds, descends, releases and resumes all-fours walking in one session"
+  },
+  "framing_recovered_from": {
+   "path": "E:\\PythonChimera\\docs\\MONKEY_RUN.md",
+   "sha256": "2d4611802c6338c26c43bd5217e59ab514588a0a25b949ac5c8fbbe22651359d",
+   "quote": "The goal is one physically controlled monkey in a small forest: walk on all fours, steer, stop, approach a rigid trunk, attach, climb, hold, descend, release and walk again, with a usable camera and complete player flow."
+  },
+  "failure_semantics_law": {
+   "path": "E:\\PythonChimera\\docs\\MONKEY_RUN.md",
+   "sha256": "2d4611802c6338c26c43bd5217e59ab514588a0a25b949ac5c8fbbe22651359d",
+   "quote": "No kinematic locomotion substitute or invisible support force is permitted."
+  },
+  "no_campaign_backlog_law": {
+   "path": "E:\\PythonChimera\\docs\\MONKEY_RUN.md",
+   "sha256": "2d4611802c6338c26c43bd5217e59ab514588a0a25b949ac5c8fbbe22651359d",
+   "quote": "Keep broader Chimera features in the later backlog."
+  },
+  "b01_b07_required_note": {
+   "path": "E:\\PythonChimera\\docs\\MONKEY_RUN.md",
+   "sha256": "2d4611802c6338c26c43bd5217e59ab514588a0a25b949ac5c8fbbe22651359d",
+   "quote": "The selected material assembly consumes B01-B07, so those seven items are required in this revision."
+  },
+  "card_completion": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\lead-verify-20260926\\MAT2-P01-accept-materialized\\contract.json",
+   "sha256": "e255eb44203212c039598d28629c21e6e1c019d1abe6caa07b4430fca53715a5",
+   "quote": "Lead-approved exact-head PR merged with full ontology qualification evidence; a diagnostic or scaffold alone cannot close this card."
+  },
+  "game_completion": {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\lead-verify-20260926\\MAT2-P01-accept-materialized\\contract.json",
+   "sha256": "e255eb44203212c039598d28629c21e6e1c019d1abe6caa07b4430fca53715a5",
+   "quote": "Every selected requirement has scoped, integrated evidence and the player acceptance task has actual human acceptance."
+  },
+  "session_flow_owner": {
+   "path": "E:\\PythonChimera\\tools\\monkey_campaign\\monkey_completion_map.json",
+   "sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+   "quote": "Player reaches play and can pause/restart/exit without developer commands; reset is an explicit user action"
+  },
+  "operator_acceptance_owner": {
+   "path": "E:\\PythonChimera\\tools\\monkey_campaign\\monkey_completion_map.json",
+   "sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+   "quote": "All selected core/product behaviors pass; remaining issues are triaged explicitly; operator accepts actual play"
+  },
+  "framing_observation_source": {
+   "path": "E:\\PythonChimera\\tools\\monkey_campaign\\monkey_completion_map.json",
+   "sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+   "quote": "Movement demo versus complete game needs this explicit product choice"
+  },
+  "no_campaign_catalog_finish_line": {
+   "path": "E:\\PythonChimera\\tools\\monkey_campaign\\monkey_completion_map.json",
+   "sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+   "quote": "One playable monkey walks through woods, climbs, holds, descends and releases through composed physical matter; reusable material architecture remains extensible beyond this game."
+  }
+ },
+ "records": {
+  "criteria_sha256": "e2f2c219a438c9575c01698dc5dd66f799f6eef8a7577ad3571dcae8c8d1c9aa",
+  "active_scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+  "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "instruction_revision": "astra-0031",
+  "mat2_p01_contract_sha256": "e255eb44203212c039598d28629c21e6e1c019d1abe6caa07b4430fca53715a5",
+  "material_plan_adoption_sha256": "81f432fc9fcee8aee6fcdcac39487f50538f1f4c1b9d4c2821d3bb0f40e47287",
+  "approved_scope_sha256": "fe74180d7b6ad584f48c5fd9a642db4393c26c4e4cd64c8b41652e9b30c27660",
+  "monkey_run_sha256": "2d4611802c6338c26c43bd5217e59ab514588a0a25b949ac5c8fbbe22651359d",
+  "completion_map_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+  "holodeck_catalog_sha256": "d5c7aa8b9e264e96bb3de6a0f3d48069ee0b88c9f10ae84b52bd8cfce797fcd8",
+  "archived_ont_p01_contract_sha256": "80b2e2f2736ce6fd594633f85fa22bda702991c3ed4d415a0d9c4eadd377163b",
+  "legacy_definition_rerun_sha256": "45e97fc64df8f28b15da80affc0124af5a631075149806503e81a3108960057d",
+  "goal_line_verified_in_monkey_run": true
+ }
+}
