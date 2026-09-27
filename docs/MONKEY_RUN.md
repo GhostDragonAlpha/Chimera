@@ -1,3 +1,7 @@
+# Playable delivery and bounded review — astra-0030
+
+Read [DELIVERY.md](../tools/monkey_campaign/DELIVERY.md). Operator approved: prioritize the same executable flat-ground monkey build, then terrain, then climbing. Ten workers is a ceiling, not a quota. Ordinary independent review coverage is capped per exact head; obsolete or excessive reviews retire only at their owner's next startup. Existing artifacts, ownership, criteria and scientific gates are preserved. Use delivery.py for honest stage reporting and evidence_pack.py for artifact hashes. Speculative workflow expansion is paused. The existing scope hash is unchanged.
+
 # Candidate correction routing — astra-0029
 
 The lead can return an exact unpublished candidate with kanban_cli reject-publication.
@@ -278,8 +282,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 29,
-  "revision_id": "astra-0029",
+  "revision": 30,
+  "revision_id": "astra-0030",
   "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -331,7 +335,12 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/verified_submission.py",
     "tools/monkey_campaign/merge_service.py",
     "tools/monkey_campaign/MERGE_SERVICE.md",
-    "tools/monkey_campaign/STARTUP_RECOVERY.md"
+    "tools/monkey_campaign/STARTUP_RECOVERY.md",
+    "tools/monkey_campaign/review_allocation.py",
+    "tools/monkey_campaign/delivery.py",
+    "tools/monkey_campaign/evidence_pack.py",
+    "tools/monkey_campaign/DELIVERY.md",
+    "tools/monkey_campaign/PLAYABLE_BUILD.json"
   ]
 }
 CHIMERA_LEAD_CONTROL -->

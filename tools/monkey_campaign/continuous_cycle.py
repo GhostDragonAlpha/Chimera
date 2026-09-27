@@ -67,15 +67,17 @@ def join(registry,agent_id,task_id=None):
                 packet['next_action']='This card already has a publication candidate. Preserve your attempt, cease writes, fill park_template honestly, save it as JSON, and immediately run the canonical E:/PythonChimera/tools/monkey_campaign/worker_start.py --arrival-id '+agent_id+' --park PATH_TO_JSON. Execute the returned operational-lead or review assignment; do not wait for Astra or create another duplicate attempt.'
                 return packet
             return k.packet(c,a,'RESUME_ATTEMPT')
-        # Resume review work unless its head/criteria changed, in which case retain
-        # the stale attempt and route a fresh review for the actual current head.
-        for c in active:
-            for review in c.get('worker_reviews',[]):
-                if review['agent_id']==agent_id and review['state']=='WORKING':
-                    pr=c['prs'].get(review['pr_url'],{})
-                    if pr.get('head_sha')==review['head_sha'] and review['criteria_sha256']==c['criteria_sha256']:
-                        return review_packet(c,review)
-                    review['state']='STALE'
+        # Retire only this caller's obsolete/excess review at its own checkpoint.
+        from review_allocation import resume_allowed, available
+        for c in b['cards'].values():
+            for review in c.get('worker_reviews', []):
+                if review['agent_id'] == agent_id and review['state'] == 'WORKING':
+                    if resume_allowed(c, review):
+                        return review_packet(c, review)
+                    review['state'] = 'STALE'
+                    review['retired_reason'] = 'candidate_closed_changed_or_coverage_satisfied'
+                    registry.event(state, 'review_retired_at_owner_checkpoint',
+                                   {'task': c['id'], 'review': review['id']})
         if not task_id and not b.get('separate_review_lane'):
             from operational_lead import assign
             coordination=assign(registry,state,agent_id)
@@ -85,6 +87,7 @@ def join(registry,agent_id,task_id=None):
             from review_lane import development
             if not development(c):continue
             if task_id and c['id']!=task_id:continue
+            if any(a['state']=='WORKING' for a in c['attempts'].values()):continue
             correction=c['state']=='CHANGES_REQUESTED'
             if correction and b.get('separate_review_lane'):
                 from review_lane import pending_review_prs
@@ -95,7 +98,8 @@ def join(registry,agent_id,task_id=None):
             if any(a['state'] in ('PR_SUBMITTED','PUBLICATION_REQUESTED') for a in own) and not correction:continue
             candidates.append(c)
         if candidates:
-            candidates.sort(key=lambda c:(sum(a['state']=='WORKING' for a in c['attempts'].values()),c['state']!='CHANGES_REQUESTED',c['slot']))
+            from delivery import priority
+            candidates.sort(key=lambda c:(sum(a['state']=='WORKING' for a in c['attempts'].values()),c['state']!='CHANGES_REQUESTED',priority(c['spec']),c['slot']))
             c=candidates[0]
             require(len(c['attempts'])<200,'attempt_history_capacity_requires_preservation')
             ident=uuid.uuid4().hex
@@ -108,22 +112,17 @@ def join(registry,agent_id,task_id=None):
             from operational_lead import assign
             coordination=assign(registry,state,agent_id)
             if coordination:return coordination
-        for c in sorted(active,key=lambda c:c['slot']):
-            from review_lane import pending_review_prs
-            review_items=pending_review_prs(c) if b.get('separate_review_lane') else list(c['prs'].items())
-            for url,pr in review_items:
-                author=c['attempts'][pr['attempt_id']]['agent_id']
-                if author==agent_id:continue
-                history=c.setdefault('worker_reviews',[])
-                if any(x['agent_id']==agent_id and x['pr_url']==url and x['head_sha']==pr['head_sha'] and x['state'] in ('WORKING','COMPLETE') for x in history):continue
-                if (pr.get('review') or {}).get('verdict')=='ACCEPTED':continue
-                require(len(history)<200,'review_history_capacity')
-                ident=uuid.uuid4().hex
-                review={'id':ident,'agent_id':agent_id,'state':'WORKING','pr_url':url,'head_sha':pr['head_sha'],
-                        'criteria_sha256':c['criteria_sha256'],'workspace':str(registry.root/'kanban-reviews'/c['id']/ident)}
-                history.append(review)
-                registry.event(state,'cycle_review',{'task':c['id'],'review':ident})
-                return review_packet(c,review)
+        for _, _, _, c, url, pr in available(active, agent_id, task_id):
+            history = c.setdefault('worker_reviews', [])
+            require(len(history) < 200, 'review_history_capacity')
+            ident = uuid.uuid4().hex
+            review = {'id': ident, 'agent_id': agent_id, 'state': 'WORKING',
+                      'pr_url': url, 'head_sha': pr['head_sha'],
+                      'criteria_sha256': c['criteria_sha256'],
+                      'workspace': str(registry.root/'kanban-reviews'/c['id']/ident)}
+            history.append(review)
+            registry.event(state, 'cycle_review', {'task': c['id'], 'review': ident})
+            return review_packet(c, review)
         return {'state':'AWAITING_LEAD_ACTION','all_ten_have_prs':len(active)==10 and all(c['prs'] for c in active),
                 'next_action':'No eligible implementation or independent review remains for this identity. Report pending publication/merge or author-only reviews to the lead. Preserve evidence; do not fabricate work, self-approve or busy-poll.'}
 

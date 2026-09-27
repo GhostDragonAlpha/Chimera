@@ -21,7 +21,7 @@ def github_pr(url):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action',choices=['status','inbox','join','message','submit','review','accept-merge','enqueue','park','release-lead','record-publication','merge-queue','reject-publication'])
+    p.add_argument('action',choices=['status','inbox','join','message','submit','review','accept-merge','enqueue','park','release-lead','record-publication','merge-queue','reject-publication','request-review'])
     p.add_argument('--task');p.add_argument('--agent');p.add_argument('--arguments',type=Path)
     args=p.parse_args();instructions=inspect(Path(__file__).resolve().parents[2]);r=Registry(DEFAULT_ROOT)
     if args.action=='status':result=k.read(r)
@@ -39,6 +39,7 @@ def main():
         from operational_lead import release, record_pr
         if args.action=='release-lead':result=release(r,a)
         elif args.action=='record-publication':result=record_pr(r,a,github_pr(a['pr_url']))
+        elif args.action=='request-review':result=__import__('review_allocation').request_review(r,a)
         elif args.action=='accept-merge':result=k.accept_merge(r,a,github_pr(a['pr_url']))
         else:result={'reject-publication':k.reject_publication,'message':k.post,'submit':__import__('verified_submission').submit,'review':k.review,'enqueue':k.enqueue,'park':k.park}[args.action](r,a)
     print(json.dumps({'instruction_revision':instructions['revision_id'],'result':result},indent=2))
