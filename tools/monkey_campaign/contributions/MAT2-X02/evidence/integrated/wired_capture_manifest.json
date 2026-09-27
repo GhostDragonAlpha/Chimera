@@ -1,6 +1,6 @@
 {
  "schema": "chimera.visual_capture_manifest.v1",
- "task_id": "MAT2-X02",
+ "task_id": "X02",
  "run_id": "MAT2-X02-wired-2026-09-27T094908Z",
  "profile_id": "recovery",
  "subject_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
