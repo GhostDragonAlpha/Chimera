@@ -1,0 +1,381 @@
+{
+  "inputs": {
+    "stl": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\ulna.stl",
+    "n_tri": 396,
+    "scale_applied": [
+      1.0,
+      1.2,
+      1.0
+    ],
+    "note": "chimanoid.xml:853 scale '1 1.2 1'; geom at ulna body origin, no pos/quat"
+  },
+  "mesh_extents_m": {
+    "x": [
+      -0.028320999816060066,
+      0.014062999747693539
+    ],
+    "y": [
+      -0.29709479212760925,
+      0.014575199782848358
+    ],
+    "z": [
+      -0.014065999537706375,
+      0.05611100047826767
+    ],
+    "diag_stl_normal_winding_agreement": 1.0
+  },
+  "site_surface_test": [
+    {
+      "site": "TRIlong-P5",
+      "compartment": "extensor(dorsal)",
+      "pos_local": [
+        -0.0219,
+        0.01046,
+        -0.00078
+      ],
+      "dist_to_surface_m": 0.00020038595154595973,
+      "nearest_surface_point": [
+        -0.02201325101172727,
+        0.010624972105196938,
+        -0.0007693725625562845
+      ],
+      "surface_normal_outward": [
+        -0.565164428212409,
+        0.8232718108439797,
+        0.0530348428206916
+      ],
+      "normal_dot_x": -0.565164428212409,
+      "nearest_on_volar_face": false
+    },
+    {
+      "site": "TRIlat-P5",
+      "compartment": "extensor(dorsal)",
+      "pos_local": [
+        -0.0219,
+        0.01046,
+        -0.00078
+      ],
+      "dist_to_surface_m": 0.00020038595154595973,
+      "nearest_surface_point": [
+        -0.02201325101172727,
+        0.010624972105196938,
+        -0.0007693725625562845
+      ],
+      "surface_normal_outward": [
+        -0.565164428212409,
+        0.8232718108439797,
+        0.0530348428206916
+      ],
+      "normal_dot_x": -0.565164428212409,
+      "nearest_on_volar_face": false
+    },
+    {
+      "site": "TRImed-P5",
+      "compartment": "extensor(dorsal)",
+      "pos_local": [
+        -0.0219,
+        0.01046,
+        -0.00078
+      ],
+      "dist_to_surface_m": 0.00020038595154595973,
+      "nearest_surface_point": [
+        -0.02201325101172727,
+        0.010624972105196938,
+        -0.0007693725625562845
+      ],
+      "surface_normal_outward": [
+        -0.565164428212409,
+        0.8232718108439797,
+        0.0530348428206916
+      ],
+      "normal_dot_x": -0.565164428212409,
+      "nearest_on_volar_face": false
+    },
+    {
+      "site": "ANC-P2",
+      "compartment": "extensor(dorsal)",
+      "pos_local": [
+        -0.02532,
+        -0.00124,
+        0.006
+      ],
+      "dist_to_surface_m": 5.4568490868036976e-05,
+      "nearest_surface_point": [
+        -0.02527856630138943,
+        -0.0012515590081519368,
+        0.005966423845580427
+      ],
+      "surface_normal_outward": [
+        -0.7592971319432137,
+        0.21182568856247197,
+        0.6153029685348874
+      ],
+      "normal_dot_x": -0.7592971319432137,
+      "nearest_on_volar_face": false
+    },
+    {
+      "site": "BRA-P4",
+      "compartment": "flexor(volar)",
+      "pos_local": [
+        -0.0032,
+        -0.0239,
+        0.0009
+      ],
+      "dist_to_surface_m": 0.0028753535255827078,
+      "nearest_surface_point": [
+        -0.0010277187490597525,
+        -0.02570127537520548,
+        0.00034840314851085287
+      ],
+      "surface_normal_outward": [
+        -0.7554831889758744,
+        0.6264535331670007,
+        0.1918361852139077
+      ],
+      "normal_dot_x": -0.7554831889758744,
+      "nearest_on_volar_face": false
+    },
+    {
+      "site": "BRA-P3",
+      "compartment": "flexor(volar)",
+      "pos_local": [
+        0.00498,
+        -0.01463,
+        0.00128
+      ],
+      "dist_to_surface_m": 4.416868999049914e-05,
+      "nearest_surface_point": [
+        0.00494186033671976,
+        -0.014613894974376115,
+        0.001295390497392895
+      ],
+      "surface_normal_outward": [
+        -0.8634999880785584,
+        0.36462538570527836,
+        0.34844812912054257
+      ],
+      "normal_dot_x": -0.8634999880785584,
+      "nearest_on_volar_face": false
+    },
+    {
+      "site": "ECU-P2",
+      "compartment": "extensor(dorsal)",
+      "pos_local": [
+        -0.01391,
+        -0.03201,
+        0.02947
+      ],
+      "dist_to_surface_m": 0.010625652187405226,
+      "nearest_surface_point": [
+        -0.011910994736384971,
+        -0.03393856686712603,
+        0.019213826629645315
+      ],
+      "surface_normal_outward": [
+        -0.4889955388572556,
+        0.2403343951734387,
+        0.8385241448368196
+      ],
+      "normal_dot_x": -0.4889955388572556,
+      "nearest_on_volar_face": false
+    },
+    {
+      "site": "ECU-P3",
+      "compartment": "extensor(dorsal)",
+      "pos_local": [
+        -0.01705,
+        -0.05428,
+        0.02868
+      ],
+      "dist_to_surface_m": 0.007048919588896109,
+      "nearest_surface_point": [
+        -0.01530155232326385,
+        -0.05516983966971217,
+        0.021909595030232994
+      ],
+      "surface_normal_outward": [
+        -0.365408958337348,
+        0.11798083340543325,
+        0.9233400327700373
+      ],
+      "normal_dot_x": -0.365408958337348,
+      "nearest_on_volar_face": false
+    },
+    {
+      "site": "ECU-P4",
+      "compartment": "extensor(dorsal)",
+      "pos_local": [
+        -0.01793,
+        -0.09573,
+        0.03278
+      ],
+      "dist_to_surface_m": 0.00582984070512163,
+      "nearest_surface_point": [
+        -0.01722764061895516,
+        -0.09658589203957914,
+        0.027056261469674173
+      ],
+      "surface_normal_outward": [
+        -0.12047659903088048,
+        0.14681225146121324,
+        0.9818001588443761
+      ],
+      "normal_dot_x": -0.12047659903088048,
+      "nearest_on_volar_face": false
+    },
+    {
+      "site": "PT-P2",
+      "compartment": "flexor(volar)",
+      "pos_local": [
+        0.00846,
+        -0.03373,
+        -0.01432
+      ],
+      "dist_to_surface_m": 0.014143035042223879,
+      "nearest_surface_point": [
+        -0.0002424292196735343,
+        -0.0240702180784265,
+        -0.008753872161925616
+      ],
+      "surface_normal_outward": [
+        -0.4102708718108088,
+        0.6679951211851316,
+        0.6208545158219115
+      ],
+      "normal_dot_x": -0.4102708718108088,
+      "nearest_on_volar_face": false
+    }
+  ],
+  "identity_verdict": {
+    "rule_frozen_first": "all 10 sites within 6 mm of the surface",
+    "rule_frozen_first_max_distance_m": 0.014143035042223879,
+    "rule_frozen_first_holds": false,
+    "rule_frozen_first_FIRED": true,
+    "off_surface_sites_under_frozen_rule": [
+      {
+        "site": "ECU-P2",
+        "dist_m": 0.010625652187405226
+      },
+      {
+        "site": "ECU-P3",
+        "dist_m": 0.007048919588896109
+      },
+      {
+        "site": "PT-P2",
+        "dist_m": 0.014143035042223879
+      }
+    ],
+    "refined_rule": "anchor-class sites (TRI-point, ANC-P2, BRA-P4, BRA-P3) within 3.5 mm; course-class sites (ECU-P2/3/4, PT-P2) reported as soft-tissue offsets",
+    "refined_anchor_class_max_distance_m": 0.0028753535255827078,
+    "identity_holds_refined": true,
+    "basis_for_refinement": "C1 receipt sec.1 site membership: terminal vs interior waypoints; course points are not bone anchors (no tuning of measured values)"
+  },
+  "proximal_bone": {
+    "n_verts_region": 308,
+    "y_range": [
+      -0.00965759977698326,
+      0.014575199782848358
+    ],
+    "max_dorsal_protrusion_negx_m": -0.028320999816060066,
+    "max_volar_protrusion_posx_m": -0.005171000026166439,
+    "dorsovolar_protrusion_span_m": 0.023149999789893627,
+    "olecranon_vertex_at_min_x": [
+      -0.028320999816060066,
+      0.007603199779987335,
+      -0.003633999964222312
+    ]
+  },
+  "bone_x_extent_at_site_stations": {
+    "TRIlong-P5": {
+      "y_m": 0.01046,
+      "n_band_verts": 97,
+      "y_half_band_m": 0.004,
+      "bone_x_min_m": -0.028320999816060066,
+      "bone_x_max_m": -0.005171000026166439,
+      "site_x_m": -0.0219,
+      "site_x_fraction_of_breadth": 0.27736500537089515
+    },
+    "TRIlat-P5": {
+      "y_m": 0.01046,
+      "n_band_verts": 97,
+      "y_half_band_m": 0.004,
+      "bone_x_min_m": -0.028320999816060066,
+      "bone_x_max_m": -0.005171000026166439,
+      "site_x_m": -0.0219,
+      "site_x_fraction_of_breadth": 0.27736500537089515
+    },
+    "TRImed-P5": {
+      "y_m": 0.01046,
+      "n_band_verts": 97,
+      "y_half_band_m": 0.004,
+      "bone_x_min_m": -0.028320999816060066,
+      "bone_x_max_m": -0.005171000026166439,
+      "site_x_m": -0.0219,
+      "site_x_fraction_of_breadth": 0.27736500537089515
+    },
+    "ANC-P2": {
+      "y_m": -0.00124,
+      "n_band_verts": 90,
+      "y_half_band_m": 0.004,
+      "bone_x_min_m": -0.025203999131917953,
+      "bone_x_max_m": -0.011811000294983387,
+      "site_x_m": -0.02532,
+      "site_x_fraction_of_breadth": -0.00866130651502363
+    },
+    "BRA-P4": {
+      "y_m": -0.0239,
+      "n_band_verts": 98,
+      "y_half_band_m": 0.004,
+      "bone_x_min_m": -0.027201000601053238,
+      "bone_x_max_m": 0.0037350000347942114,
+      "site_x_m": -0.0032,
+      "site_x_fraction_of_breadth": 0.7758275183522526
+    },
+    "BRA-P3": {
+      "y_m": -0.01463,
+      "n_band_verts": 124,
+      "y_half_band_m": 0.004,
+      "bone_x_min_m": -0.027814000844955444,
+      "bone_x_max_m": 0.006211999803781509,
+      "site_x_m": 0.00498,
+      "site_x_fraction_of_breadth": 0.9637924005086609
+    },
+    "ECU-P2": {
+      "y_m": -0.03201,
+      "n_band_verts": 41,
+      "y_half_band_m": 0.004,
+      "bone_x_min_m": -0.02726300060749054,
+      "bone_x_max_m": -0.003148999996483326,
+      "site_x_m": -0.01391,
+      "site_x_fraction_of_breadth": 0.5537447237765828
+    },
+    "ECU-P3": {
+      "y_m": -0.05428,
+      "n_band_verts": 32,
+      "y_half_band_m": 0.004,
+      "bone_x_min_m": -0.02560799941420555,
+      "bone_x_max_m": -0.009267999790608883,
+      "site_x_m": -0.01705,
+      "site_x_fraction_of_breadth": 0.5237453862512277
+    },
+    "ECU-P4": {
+      "y_m": -0.09573,
+      "n_band_verts": 35,
+      "y_half_band_m": 0.016,
+      "bone_x_min_m": -0.022393999621272087,
+      "bone_x_max_m": -0.007666000165045261,
+      "site_x_m": -0.01793,
+      "site_x_fraction_of_breadth": 0.30309612887612913
+    },
+    "PT-P2": {
+      "y_m": -0.03373,
+      "n_band_verts": 24,
+      "y_half_band_m": 0.004,
+      "bone_x_min_m": -0.019742999225854874,
+      "bone_x_max_m": -0.0034580000210553408,
+      "site_x_m": 0.00846,
+      "site_x_fraction_of_breadth": 1.7318391527795014
+    }
+  },
+  "distal_extent_y_m": -0.29709479212760925
+}

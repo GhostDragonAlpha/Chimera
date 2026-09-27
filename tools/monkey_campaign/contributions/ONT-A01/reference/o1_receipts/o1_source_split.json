@@ -1,0 +1,537 @@
+{
+  "inputs": {
+    "xml": "E:\\PythonChimera\\forearm_package\\baseline_snapshot\\source_xml\\chimanoid.xml",
+    "walk": "intake semantics (world = parent_world + parent_rot @ pos)"
+  },
+  "rest_frame_assertion": {
+    "axis_aligned_quats": {
+      "humerus": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "ulna": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "radius": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "hand_r": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "axis_aligned": true
+  },
+  "origins_m": {
+    "ulna": [
+      -0.09150000000000001,
+      0.8345500000000001,
+      0.15770000000000006
+    ],
+    "radius": [
+      -0.09110000000000001,
+      0.8230470000000001,
+      0.17769900000000005
+    ],
+    "hand_r": [
+      -0.07310000000000001,
+      0.5326470000000001,
+      0.20269900000000005
+    ]
+  },
+  "axes": {
+    "USTR_source_axis_unit": [
+      0.01733504836583838,
+      -0.49851265338060197,
+      0.866709080671009
+    ],
+    "anatomical_forearm_axis_unit": [
+      0.060171573546703126,
+      -0.9872814439386042,
+      0.14715546945804853
+    ],
+    "elbow_to_wrist_mm": 305.79223569279844
+  },
+  "site_table": [
+    {
+      "site": "TRIlong-P5",
+      "compartment_class": "extensor(dorsal)",
+      "pos_local_m": [
+        -0.0219,
+        0.01046,
+        -0.00078
+      ],
+      "dorsovolar_signed_x_mm": -21.9,
+      "lateral_z_mm": -0.78,
+      "axial_anatomical_mm": -11.759502630447901,
+      "axial_percent_of_elbow_wrist": -3.8455857467426346,
+      "abs_p_mm": 24.282298079053405,
+      "x_sign_agrees_with_compartment": true,
+      "bone_x_span_at_station_mm": [
+        -28.320999816060066,
+        -5.171000026166439
+      ],
+      "site_volar_face_fraction_at_station": 0.27736500537089515,
+      "dist_to_bone_surface_mm": 0.20038595154595973
+    },
+    {
+      "site": "TRIlat-P5",
+      "compartment_class": "extensor(dorsal)",
+      "pos_local_m": [
+        -0.0219,
+        0.01046,
+        -0.00078
+      ],
+      "dorsovolar_signed_x_mm": -21.9,
+      "lateral_z_mm": -0.78,
+      "axial_anatomical_mm": -11.759502630447901,
+      "axial_percent_of_elbow_wrist": -3.8455857467426346,
+      "abs_p_mm": 24.282298079053405,
+      "x_sign_agrees_with_compartment": true,
+      "bone_x_span_at_station_mm": [
+        -28.320999816060066,
+        -5.171000026166439
+      ],
+      "site_volar_face_fraction_at_station": 0.27736500537089515,
+      "dist_to_bone_surface_mm": 0.20038595154595973
+    },
+    {
+      "site": "TRImed-P5",
+      "compartment_class": "extensor(dorsal)",
+      "pos_local_m": [
+        -0.0219,
+        0.01046,
+        -0.00078
+      ],
+      "dorsovolar_signed_x_mm": -21.9,
+      "lateral_z_mm": -0.78,
+      "axial_anatomical_mm": -11.759502630447901,
+      "axial_percent_of_elbow_wrist": -3.8455857467426346,
+      "abs_p_mm": 24.282298079053405,
+      "x_sign_agrees_with_compartment": true,
+      "bone_x_span_at_station_mm": [
+        -28.320999816060066,
+        -5.171000026166439
+      ],
+      "site_volar_face_fraction_at_station": 0.27736500537089515,
+      "dist_to_bone_surface_mm": 0.20038595154595973
+    },
+    {
+      "site": "ANC-P2",
+      "compartment_class": "extensor(dorsal)",
+      "pos_local_m": [
+        -0.02532,
+        -0.00124,
+        0.006
+      ],
+      "dorsovolar_signed_x_mm": -25.32,
+      "lateral_z_mm": 6.0,
+      "axial_anatomical_mm": 0.5836175650296568,
+      "axial_percent_of_elbow_wrist": 0.19085427846374886,
+      "abs_p_mm": 26.050719759730246,
+      "x_sign_agrees_with_compartment": true,
+      "bone_x_span_at_station_mm": [
+        -25.203999131917953,
+        -11.811000294983387
+      ],
+      "site_volar_face_fraction_at_station": -0.00866130651502363,
+      "dist_to_bone_surface_mm": 0.05456849086803697
+    },
+    {
+      "site": "BRA-P4",
+      "compartment_class": "flexor(volar)",
+      "pos_local_m": [
+        -0.0032,
+        -0.0239,
+        0.0009
+      ],
+      "dorsovolar_signed_x_mm": -3.2,
+      "lateral_z_mm": 0.9,
+      "axial_anatomical_mm": 23.535917397295467,
+      "axial_percent_of_elbow_wrist": 7.696702090546163,
+      "abs_p_mm": 24.130064235306165,
+      "x_sign_agrees_with_compartment": false,
+      "bone_x_span_at_station_mm": [
+        -27.201000601053238,
+        3.7350000347942114
+      ],
+      "site_volar_face_fraction_at_station": 0.7758275183522526,
+      "dist_to_bone_surface_mm": 2.8753535255827076
+    },
+    {
+      "site": "BRA-P3",
+      "compartment_class": "flexor(volar)",
+      "pos_local_m": [
+        0.00498,
+        -0.01463,
+        0.00128
+      ],
+      "dorsovolar_signed_x_mm": 4.98,
+      "lateral_z_mm": 1.28,
+      "axial_anatomical_mm": 14.931940961990692,
+      "axial_percent_of_elbow_wrist": 4.8830346945078915,
+      "abs_p_mm": 15.507278936035197,
+      "x_sign_agrees_with_compartment": true,
+      "bone_x_span_at_station_mm": [
+        -27.814000844955444,
+        6.211999803781509
+      ],
+      "site_volar_face_fraction_at_station": 0.9637924005086609,
+      "dist_to_bone_surface_mm": 0.04416868999049914
+    },
+    {
+      "site": "ECU-P2",
+      "compartment_class": "extensor(dorsal)",
+      "pos_local_m": [
+        -0.01391,
+        -0.03201,
+        0.02947
+      ],
+      "dorsovolar_signed_x_mm": -13.91,
+      "lateral_z_mm": 29.47,
+      "axial_anatomical_mm": 35.10256411736876,
+      "axial_percent_of_elbow_wrist": 11.479220209054981,
+      "abs_p_mm": 45.6794165899697,
+      "x_sign_agrees_with_compartment": true,
+      "bone_x_span_at_station_mm": [
+        -27.26300060749054,
+        -3.148999996483326
+      ],
+      "site_volar_face_fraction_at_station": 0.5537447237765828,
+      "dist_to_bone_surface_mm": 10.625652187405226
+    },
+    {
+      "site": "ECU-P3",
+      "compartment_class": "extensor(dorsal)",
+      "pos_local_m": [
+        -0.01705,
+        -0.05428,
+        0.02868
+      ],
+      "dorsovolar_signed_x_mm": -17.05,
+      "lateral_z_mm": 28.68,
+      "axial_anatomical_mm": 56.78413031207298,
+      "axial_percent_of_elbow_wrist": 18.569513442165622,
+      "abs_p_mm": 63.714702384928394,
+      "x_sign_agrees_with_compartment": true,
+      "bone_x_span_at_station_mm": [
+        -25.60799941420555,
+        -9.267999790608883
+      ],
+      "site_volar_face_fraction_at_station": 0.5237453862512277,
+      "dist_to_bone_surface_mm": 7.0489195888961085
+    },
+    {
+      "site": "ECU-P4",
+      "compartment_class": "extensor(dorsal)",
+      "pos_local_m": [
+        -0.01793,
+        -0.09573,
+        0.03278
+      ],
+      "dorsovolar_signed_x_mm": -17.93,
+      "lateral_z_mm": 32.779999999999994,
+      "axial_anatomical_mm": 98.25733260338501,
+      "axial_percent_of_elbow_wrist": 32.13205606112746,
+      "abs_p_mm": 102.76305853758926,
+      "x_sign_agrees_with_compartment": true,
+      "bone_x_span_at_station_mm": [
+        -22.393999621272087,
+        -7.666000165045261
+      ],
+      "site_volar_face_fraction_at_station": 0.30309612887612913,
+      "dist_to_bone_surface_mm": 5.829840705121629
+    },
+    {
+      "site": "PT-P2",
+      "compartment_class": "flexor(volar)",
+      "pos_local_m": [
+        0.00846,
+        -0.03373,
+        -0.01432
+      ],
+      "dorsovolar_signed_x_mm": 8.46,
+      "lateral_z_mm": -14.32,
+      "axial_anatomical_mm": 31.70278829361501,
+      "axial_percent_of_elbow_wrist": 10.367427486113124,
+      "abs_p_mm": 37.60780371146396,
+      "x_sign_agrees_with_compartment": true,
+      "bone_x_span_at_station_mm": [
+        -19.742999225854874,
+        -3.4580000210553408
+      ],
+      "site_volar_face_fraction_at_station": 1.7318391527795014,
+      "dist_to_bone_surface_mm": 14.143035042223879
+    }
+  ],
+  "split_verdict": {
+    "RAW_preregistered_method_a": {
+      "flexor_x_mm": [
+        -3.2,
+        4.98,
+        8.46
+      ],
+      "extensor_x_mm": [
+        -21.9,
+        -21.9,
+        -21.9,
+        -25.32,
+        -13.91,
+        -17.05,
+        -17.93
+      ],
+      "clean_raw_split": false,
+      "dissenter_sites": [
+        "BRA-P4"
+      ],
+      "stop_rule_text": "if the flexor/dorsal split is mixed -> UNRESOLVED SIGN blocker",
+      "mixed_raw_split": true
+    },
+    "BONE_SURFACE_RESOLUTION": {
+      "per_site": [
+        {
+          "site": "TRIlong-P5",
+          "volar_face_fraction": 0.27736500537089515,
+          "expected_volar": false,
+          "agrees": true
+        },
+        {
+          "site": "TRIlat-P5",
+          "volar_face_fraction": 0.27736500537089515,
+          "expected_volar": false,
+          "agrees": true
+        },
+        {
+          "site": "TRImed-P5",
+          "volar_face_fraction": 0.27736500537089515,
+          "expected_volar": false,
+          "agrees": true
+        },
+        {
+          "site": "ANC-P2",
+          "volar_face_fraction": -0.00866130651502363,
+          "expected_volar": false,
+          "agrees": true
+        },
+        {
+          "site": "BRA-P4",
+          "volar_face_fraction": 0.7758275183522526,
+          "expected_volar": true,
+          "agrees": true
+        },
+        {
+          "site": "BRA-P3",
+          "volar_face_fraction": 0.9637924005086609,
+          "expected_volar": true,
+          "agrees": true
+        },
+        {
+          "site": "ECU-P2",
+          "volar_face_fraction": 0.5537447237765828,
+          "expected_volar": false,
+          "agrees": false
+        },
+        {
+          "site": "ECU-P3",
+          "volar_face_fraction": 0.5237453862512277,
+          "expected_volar": false,
+          "agrees": false
+        },
+        {
+          "site": "ECU-P4",
+          "volar_face_fraction": 0.30309612887612913,
+          "expected_volar": false,
+          "agrees": true
+        },
+        {
+          "site": "PT-P2",
+          "volar_face_fraction": 1.7318391527795014,
+          "expected_volar": true,
+          "agrees": true
+        }
+      ],
+      "clean_bone_local_split": false,
+      "basis": "volar/dorsal half of the LOCAL bone cross-section breadth at each site's own station (bone = the source's own mesh asset, identity tested in o1_ulna_mesh_probe.json; NOT containment, NOT mechanical)"
+    },
+    "falsifier_PT_dorsal": {
+      "PT_dorsovolar_x_mm": 8.46,
+      "PT_medial_z_mm": -14.32,
+      "PT_bone_volar_face_fraction": 1.7318391527795014,
+      "fired": false
+    }
+  },
+  "radius_corroboration_panel": [
+    {
+      "site": "BIClong-P9",
+      "class": "elbow flexor (anterior arm)",
+      "dorsovolar_signed_x_mm": 14.67,
+      "lateral_z_mm": -10.62
+    },
+    {
+      "site": "BIClong-P11",
+      "class": "elbow flexor (anterior arm)",
+      "dorsovolar_signed_x_mm": -2.0,
+      "lateral_z_mm": -2.0
+    },
+    {
+      "site": "BICshort-P6",
+      "class": "elbow flexor (anterior arm)",
+      "dorsovolar_signed_x_mm": 11.9375,
+      "lateral_z_mm": -11.4103
+    },
+    {
+      "site": "BICshort-P8",
+      "class": "elbow flexor (anterior arm)",
+      "dorsovolar_signed_x_mm": -2.0,
+      "lateral_z_mm": -2.0
+    },
+    {
+      "site": "BRD-P2",
+      "class": "elbow flexor, anterolateral course",
+      "dorsovolar_signed_x_mm": 35.77,
+      "lateral_z_mm": 23.150000000000002
+    },
+    {
+      "site": "BRD-P3",
+      "class": "elbow flexor, anterolateral course",
+      "dorsovolar_signed_x_mm": 41.9,
+      "lateral_z_mm": 22.4
+    },
+    {
+      "site": "ECRL-P2",
+      "class": "extensor (anterolateral course)",
+      "dorsovolar_signed_x_mm": 31.95,
+      "lateral_z_mm": 27.79
+    },
+    {
+      "site": "ECRL-P3",
+      "class": "extensor (anterolateral course)",
+      "dorsovolar_signed_x_mm": 42.43,
+      "lateral_z_mm": 36.2
+    },
+    {
+      "site": "ECRB-P2",
+      "class": "extensor (anterolateral course)",
+      "dorsovolar_signed_x_mm": 29.05,
+      "lateral_z_mm": 23.85
+    },
+    {
+      "site": "ECRB-P3",
+      "class": "extensor (anterolateral course)",
+      "dorsovolar_signed_x_mm": 35.49,
+      "lateral_z_mm": 39.370000000000005
+    },
+    {
+      "site": "ECU-P5",
+      "class": "extensor (posterior)",
+      "dorsovolar_signed_x_mm": -14.21,
+      "lateral_z_mm": 34.81
+    },
+    {
+      "site": "FCR-P2",
+      "class": "flexor (volar)",
+      "dorsovolar_signed_x_mm": 21.1,
+      "lateral_z_mm": 1.27
+    },
+    {
+      "site": "FCU-P2",
+      "class": "flexor (volar)",
+      "dorsovolar_signed_x_mm": 10.5197,
+      "lateral_z_mm": 0.12376999999999999
+    },
+    {
+      "site": "FCU-P3",
+      "class": "flexor (volar)",
+      "dorsovolar_signed_x_mm": 10.82,
+      "lateral_z_mm": 9.690000000000001
+    },
+    {
+      "site": "PT-P3",
+      "class": "flexor (volar)",
+      "dorsovolar_signed_x_mm": 11.790000000000001,
+      "lateral_z_mm": -22.189
+    },
+    {
+      "site": "PT-P5",
+      "class": "flexor (volar)",
+      "dorsovolar_signed_x_mm": 25.4,
+      "lateral_z_mm": 19.8
+    }
+  ],
+  "ustr_frame": {
+    "e1_unit": [
+      0.9998497367595564,
+      0.008643039688486035,
+      -0.015026701793447924
+    ],
+    "e2_unit": [
+      -1.734723475976807e-18,
+      0.866839334758394,
+      0.4985875727649306
+    ],
+    "volar_transverse_unit": [
+      0.9998497367595564,
+      0.008643039688486035,
+      -0.015026701793447924
+    ],
+    "volar_azimuth_e_basis_deg": 4.969616689786745e-17,
+    "note": "volar azimuth is 0 deg in the e-rule basis BY CONSTRUCTION (e1 = rejection of +x); the non-trivial content is each roll candidate's azimuth relative to it, and (in o1_combine) the target-side azimuths",
+    "roll_candidates": {
+      "ECU-P2": {
+        "b_unit": [
+          -0.7459784999243236,
+          -0.5836286314440895,
+          -0.320770475900378
+        ],
+        "c_unit": [
+          0.6657443756794419,
+          -0.6409857681556829,
+          -0.3819969519159271
+        ],
+        "b_azimuth_e_basis_deg": -138.2528597726697,
+        "volar_azimuth_relative_to_b_deg": 138.2528597726697,
+        "roll_witness_norm_m": 0.0196054075016885
+      },
+      "ANC-P2": {
+        "b_unit": [
+          -0.997019064869979,
+          0.05656278776486011,
+          0.05247509243498068
+        ],
+        "c_unit": [
+          -0.07518297935002588,
+          -0.865035135390291,
+          -0.4960461008377693
+        ],
+        "b_azimuth_e_basis_deg": 175.68761484808468,
+        "volar_azimuth_relative_to_b_deg": -175.68761484808468,
+        "roll_witness_norm_m": 0.025489235420289327
+      },
+      "TRIlat-P5": {
+        "b_unit": [
+          -0.928917917969129,
+          0.3126445838573217,
+          0.19840581105547453
+        ],
+        "c_unit": [
+          -0.36987970716714447,
+          -0.8085409690325617,
+          -0.4576576270770908
+        ],
+        "b_azimuth_e_basis_deg": 158.28837319495372,
+        "volar_azimuth_relative_to_b_deg": -158.28837319495372,
+        "roll_witness_norm_m": 0.02345880821804824
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "files": {
+    "chimanoid.xml": {
+      "bytes": 154834,
+      "pin": "43b599a7:forearm_package/baseline_snapshot/source_xml/chimanoid.xml",
+      "sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5"
+    },
+    "mesh_target_o1.py": {
+      "bytes": 9599,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/work/mesh_target_o1.py",
+      "sha256": "268f139a9e90e561f4a5f8ab02553f0d87f51633f635139e6cec6f5c9cfa19a0"
+    },
+    "o1_receipts/external_citations.md": {
+      "bytes": 3317,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/external_citations.md",
+      "sha256": "4fba75d49971b191b021d86cf1acb46a320c23e3eb975abffe3b755f97f7a95e"
+    },
+    "o1_receipts/o1_combine_sign.json": {
+      "bytes": 2910,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/o1_combine_sign.json",
+      "sha256": "fc35f7e9f01601daf3ada563677e7de05961bb19d83beca83f592e54d1e00972"
+    },
+    "o1_receipts/o1_source_split.json": {
+      "bytes": 15333,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/o1_source_split.json",
+      "sha256": "a61ebbe03f6df1fc03e4bd3d922bd953506dbd935291f9aed4ee003af7be2e9b"
+    },
+    "o1_receipts/o1_target_olecranon.json": {
+      "bytes": 56964,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/o1_target_olecranon.json",
+      "sha256": "709c0f6f85413a6b358df40fb190682accb3222ada81f081d88fe5d996ca6095"
+    },
+    "o1_receipts/o1_target_sections_directed.json": {
+      "bytes": 71597,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/o1_target_sections_directed.json",
+      "sha256": "50ab223b49f49fe48c576ad0db59b11f6de62375eca7d5924d7d1e8ef7f3ebad"
+    },
+    "o1_receipts/o1_ulna_mesh_probe.json": {
+      "bytes": 10672,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/o1_ulna_mesh_probe.json",
+      "sha256": "d86f6c67bfa415722e844ca77def3654018444a419e3035aca4aeed395cf0713"
+    },
+    "o1_source_split.py": {
+      "bytes": 11260,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/scripts/o1_source_split.py",
+      "sha256": "19dc2478839f4266fea68223dd15e6df49de139ab8caffa963c959019a84d054"
+    }
+  },
+  "rule": "read-only extraction from git pins in E:/ChimeraWork/monkey-play-20260924; bytes preserved (hashes below); no writes to any source checkout",
+  "schema": "chimera.ota01_extraction.v1"
+}
