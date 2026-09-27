@@ -1,0 +1,20 @@
+{
+ "prediction": "P1",
+ "probe": "python -B tools/science_funnel/gait_scene.py --output <scratch>/scene_out from blob-identical extraction of the 17ba94b9 tree files",
+ "generated_by": "arrival-fb675f3fd2934822acfe7190d04bc790 attempt b6607daeeed549aeb865302efd24eb9a",
+ "scene_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+ "anchor_match": true,
+ "extracted_inputs": {
+  "tools/science_funnel/gait_scene.py": "git 17ba94b9 (blob-identical extraction)",
+  "tools/science_funnel/common.py": "git 17ba94b9",
+  "tools/science_funnel/coupled_arm.py": "git 17ba94b9",
+  "tools/science_funnel/macaque_anatomy.py": "git 17ba94b9",
+  "tools/science_funnel/__init__.py": "git 17ba94b9",
+  "tools/creature_graph/store.py": "git 17ba94b9",
+  "tools/creature_graph/schema.py": "git 17ba94b9",
+  "tools/creature_graph/views.py": "git 17ba94b9",
+  "tools/creature_graph/data/creature_graph.json + bulk_00..10.json": "git 17ba94b9",
+  "tools/science_funnel/validation/gait_controller_20260918/derived_numbers.json": "git 17ba94b9",
+  "tools/science_funnel/validation/gait_zero_20260919/{derived_entry_pose,derived_load_strut_trade,derived_leaned_entry,trunk_vault_reachable,trunk_pitch_table,derived_height_hold}.json": "git 17ba94b9"
+ }
+}
