@@ -1,0 +1,421 @@
+{
+ "schema": "ont-p06.release_limits.proposal.v1",
+ "card": "ONT-P06",
+ "law": "every numeric is DERIVED (re-measured at run time from sha256-asserted bytes recovered read-only at pinned git revisions into reference/; no live-worktree source is read) or explicitly OPERATOR_DECISION_REQUESTED; zero fabricated numbers",
+ "correction": {
+  "supersedes": "publication-94455595e531451db91a9ed701e9fc3f (withheld, not published)",
+  "lead_finding": "arrival-876e63bf9dbb44a8b10c5b546f783e9b",
+  "evidence": "E:/ChimeraWork/monkey-coordination/lead-verify-20260926/ONT-P06.json",
+  "play_worktree_head": "8d16d3c1",
+  "changed": "every cited source re-pointed to a pinned git revision recovered into reference/ (sha256 asserted at import, identity re-verified against the repository); the 7 previously value-hardcoded limits (controls-bindings, simulation-tick-hz, walking-worst-ledger-j, trunk-blocking-radius-m, stability-settle-sink-m, stability-settle-vy-ms, ui-poll-cadence-ms) now measured from pinned bytes; the 15 VALUES unchanged (lead-verified)"
+ },
+ "source_lineage": {
+  "play_repository": "E:\\ChimeraWork\\monkey-play-20260924",
+  "recovery": "git -c safe.directory=<play> -C <play> show <commit>:<path> > reference/<path> (read-only)",
+  "pinned_sources": {
+   "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json": {
+    "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+    "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1"
+   },
+   "tools/monkey_campaign/data/monkey_trunk/trunk_declaration.json": {
+    "commit": "b4de4de886a9c5bfba4572a2100b2104b178cb2d",
+    "blob_sha256": "94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1"
+   },
+   "tools/monkey_campaign/product/session_flow.py": {
+    "commit": "42f7cdc4ba421cf83ecd2fa0be69e94fb772cd37",
+    "blob_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf"
+   },
+   "tools/monkey_campaign/product/input_mapper.py": {
+    "commit": "8550b634ebd7034bb8873eed41d8bdce4d3843d0",
+    "blob_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44"
+   },
+   "tools/science_funnel/typeb_export/command_record.py": {
+    "commit": "e028d6fb55e272da15a31405ba0f92a8c4c0bb0e",
+    "blob_sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+   },
+   "tools/playable_slice/slice_server.py": {
+    "commit": "0b3b22a5e4763ef69c508a97a6e5cc7e750ab5f8",
+    "blob_sha256": "5accc730541067c48e61122d384e6d2b3e568012908908ae03dcbc06ae6d6eef"
+   },
+   "tools/science_funnel/first_skill/acceptance.py": {
+    "commit": "8294053be688cb9cae5251b16ee927f6338b0b92",
+    "blob_sha256": "1065ab2f23b70ccfa2a34f1ec0f9d04f7591939085d17984cac401935f977fe6"
+   },
+   "tools/science_funnel/validation/gait_zero_20260919/receipt_wave47.json": {
+    "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+    "blob_sha256": "4480d18b8709d93457784ad23f3662768036498e318c1387c1f6d2ec5b05163d"
+   },
+   "ChimeraEngine/engine/gait_controller.hpp": {
+    "commit": "8cec4a6bf1d6cb74e93cf8b04ec0910634530b81",
+    "blob_sha256": "f0ffea12795bd47f7c48f5ed9b8aa98869725467d94a1081b1d942f6fba129bd"
+   },
+   "ChimeraEngine/engine/earth_environment.hpp": {
+    "commit": "ee52a99f44b68cfb6410f07287583aaf068c0083",
+    "blob_sha256": "b4747d349ce201ebadb74227b33725466d16edd860ed421ac590ad789178469a"
+   }
+  }
+ },
+ "derived_limits": [
+  {
+   "id": "terrain-envelope-half-width-m",
+   "value": 20.0,
+   "unit": "m",
+   "source": "clearing_declaration.json@c9aee37c boundary.physical.half_width_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "boundary.physical.half_width_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "spawn-position-m",
+   "value": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "unit": "m",
+   "source": "clearing_declaration.json@c9aee37c spawn.position_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "spawn.position_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "spawn-required-clearance-m",
+   "value": 1.5,
+   "unit": "m",
+   "source": "clearing_declaration.json@c9aee37c spawn.required_clearance_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "spawn.required_clearance_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "body-envelope-radius-m",
+   "value": 0.25,
+   "unit": "m",
+   "source": "clearing_declaration.json@c9aee37c spawn.body_radius_envelope_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "spawn.body_radius_envelope_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "scene-seed",
+   "value": 4598321,
+   "unit": "dimensionless",
+   "source": "clearing_declaration.json@c9aee37c seed",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "seed"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "trunk-base-centre-m",
+   "value": [
+    11.976783,
+    0.0,
+    2.471766
+   ],
+   "unit": "m",
+   "source": "trunk_declaration.json@b4de4de8 site.base_centre_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_trunk/trunk_declaration.json",
+     "commit": "b4de4de886a9c5bfba4572a2100b2104b178cb2d",
+     "blob_sha256": "94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1",
+     "method": "json-field-read",
+     "locator": "site.base_centre_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "trunk-blocking-radius-m",
+   "value": 0.287,
+   "unit": "m",
+   "source": "trunk_declaration.json@b4de4de8 geometry.radius_m (0.037) + clearing_declaration.json@c9aee37c spawn.body_radius_envelope_m (0.25), rounded 3 dp (F07 blocking derivation)",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_trunk/trunk_declaration.json",
+     "commit": "b4de4de886a9c5bfba4572a2100b2104b178cb2d",
+     "blob_sha256": "94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1",
+     "method": "json-field-read + arithmetic",
+     "locator": "geometry.radius_m = 0.037 (F07 trunk bound)"
+    },
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read + arithmetic",
+     "locator": "spawn.body_radius_envelope_m = 0.25"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read + arithmetic"
+  },
+  {
+   "id": "controls-bindings",
+   "value": {
+    "start_resume": "Return",
+    "pause": "Escape",
+    "restart": "R",
+    "exit": "Q"
+   },
+   "unit": "keys",
+   "source": "session_flow.py@42f7cdc4 DEFAULT_FLOW_BINDINGS imported from the pinned bytes (frozen X02 surface)",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/product/session_flow.py",
+     "commit": "42f7cdc4ba421cf83ecd2fa0be69e94fb772cd37",
+     "blob_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+     "method": "module-import-attribute",
+     "locator": "DEFAULT_FLOW_BINDINGS inverted key->action"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "module-import-attribute"
+  },
+  {
+   "id": "simulation-tick-hz",
+   "value": 300,
+   "unit": "Hz",
+   "source": "gait_controller.hpp@8cec4a6b:1961 require(dt<=1/300.)+substeps==4; corroborated earth_environment.hpp@ee52a99f:91 tick_hz==300",
+   "provenance": [
+    {
+     "path": "ChimeraEngine/engine/gait_controller.hpp",
+     "commit": "8cec4a6bf1d6cb74e93cf8b04ec0910634530b81",
+     "blob_sha256": "f0ffea12795bd47f7c48f5ed9b8aa98869725467d94a1081b1d942f6fba129bd",
+     "method": "regex-parse",
+     "locator": "line 1961: dt<=1/300. and substeps==4"
+    },
+    {
+     "path": "ChimeraEngine/engine/earth_environment.hpp",
+     "commit": "ee52a99f44b68cfb6410f07287583aaf068c0083",
+     "blob_sha256": "b4747d349ce201ebadb74227b33725466d16edd860ed421ac590ad789178469a",
+     "method": "regex-parse (cross-check)",
+     "locator": "line 91: tick_hz==300"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "regex-parse"
+  },
+  {
+   "id": "walking-episode-cap-ticks",
+   "value": 300,
+   "unit": "ticks",
+   "source": "tools/science_funnel/first_skill/acceptance.py@8294053b:19 EPISODE_CAP_TICKS",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/first_skill/acceptance.py",
+     "commit": "8294053be688cb9cae5251b16ee927f6338b0b92",
+     "blob_sha256": "1065ab2f23b70ccfa2a34f1ec0f9d04f7591939085d17984cac401935f977fe6",
+     "method": "literal-parse",
+     "locator": "line 19: EPISODE_CAP_TICKS = 300"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "literal-parse"
+  },
+  {
+   "id": "walking-eval-window-ticks",
+   "value": 270,
+   "unit": "ticks",
+   "source": "tools/science_funnel/first_skill/acceptance.py@8294053b:20 EVAL_WINDOW_TICKS",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/first_skill/acceptance.py",
+     "commit": "8294053be688cb9cae5251b16ee927f6338b0b92",
+     "blob_sha256": "1065ab2f23b70ccfa2a34f1ec0f9d04f7591939085d17984cac401935f977fe6",
+     "method": "literal-parse",
+     "locator": "line 20: EVAL_WINDOW_TICKS = 270"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "literal-parse"
+  },
+  {
+   "id": "walking-worst-ledger-j",
+   "value": 30.970714,
+   "unit": "J",
+   "source": "receipt_wave47.json@33e7a444 'worst moving ledger 30.970714 J' (4 consistent occurrences; W03 bar, R5/D-W03 chain); UNRESOLVED: CoT denominator lineage mismatch (D-W04: 13824.5 vs 10.038 kg) — absolute CoT limits cannot freeze until the registration lands",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave47.json",
+     "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+     "blob_sha256": "4480d18b8709d93457784ad23f3662768036498e318c1387c1f6d2ec5b05163d",
+     "method": "regex-parse",
+     "locator": "'worst moving ledger 30.970714 J' x4"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "regex-parse"
+  },
+  {
+   "id": "stability-settle-sink-m",
+   "value": 0.01,
+   "unit": "m",
+   "source": "slice_server.py@0b3b22a5:48 SETTLE_SINK_M recorded bar 0.01 m; the line expression evaluates to 0.0099999 m (rounds to the recorded bar at the line's 4-dp display; the 13824.5 kg lineage stays under the D-W04 caveat)",
+   "provenance": [
+    {
+     "path": "tools/playable_slice/slice_server.py",
+     "commit": "0b3b22a5e4763ef69c508a97a6e5cc7e750ab5f8",
+     "blob_sha256": "5accc730541067c48e61122d384e6d2b3e568012908908ae03dcbc06ae6d6eef",
+     "method": "recorded-bar-parse + arithmetic cross-check",
+     "locator": "line 48: comment bar 0.01 m; expression 13824.5 * 9.81 / 1.3562e7 = 0.00999987796785135 m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "recorded-bar-parse + arithmetic cross-check"
+  },
+  {
+   "id": "stability-settle-vy-ms",
+   "value": 0.05,
+   "unit": "m/s",
+   "source": "slice_server.py@0b3b22a5:44 SETTLE_VY",
+   "provenance": [
+    {
+     "path": "tools/playable_slice/slice_server.py",
+     "commit": "0b3b22a5e4763ef69c508a97a6e5cc7e750ab5f8",
+     "blob_sha256": "5accc730541067c48e61122d384e6d2b3e568012908908ae03dcbc06ae6d6eef",
+     "method": "literal-parse",
+     "locator": "line 44: SETTLE_VY = 0.05"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "literal-parse"
+  },
+  {
+   "id": "ui-poll-cadence-ms",
+   "value": 100,
+   "unit": "ms",
+   "source": "slice_server.py@0b3b22a5:449 (the page's own poll loop)",
+   "provenance": [
+    {
+     "path": "tools/playable_slice/slice_server.py",
+     "commit": "0b3b22a5e4763ef69c508a97a6e5cc7e750ab5f8",
+     "blob_sha256": "5accc730541067c48e61122d384e6d2b3e568012908908ae03dcbc06ae6d6eef",
+     "method": "regex-parse",
+     "locator": "line 449: 'every 100 ms'"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "regex-parse"
+  }
+ ],
+ "operator_decision_requests": [
+  {
+   "id": "session-duration-cap",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "Product session duration limit for acceptance trials",
+   "options": [
+    "per-episode (1 s @300 Hz)",
+    "5 min continuous",
+    "30 min continuous",
+    "operator value"
+   ],
+   "recommendation": "5 min continuous (covers the ground-tree-ground loop many times; leaves training-episode semantics untouched)",
+   "source": null
+  },
+  {
+   "id": "supported-hardware-floor",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "End-user hardware floor phrasing (thin client: browser + HTTP to the local engine; rendering is WebGL2 client-side, physics server-side)",
+   "options": [
+    "any WebGL2 browser",
+    "WebGL2 + dedicated GPU class",
+    "operator list"
+   ],
+   "recommendation": "any WebGL2 browser (the slice architecture's own contract; the server owns physics)",
+   "source": null
+  },
+  {
+   "id": "network-latency-sla-ms",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "Latency SLA beyond the recorded 100 ms poll cadence",
+   "options": [
+    "poll cadence only (100 ms)",
+    "100 ms + 50 ms headroom",
+    "operator value"
+   ],
+   "recommendation": "poll cadence + 50 ms headroom once a measurement protocol exists",
+   "source": null
+  },
+  {
+   "id": "frame-time-budget-ms",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "Frame-time budget for acceptance trials (records carry ticks/s, not a frame budget)",
+   "options": [
+    "16.7 ms (60 fps)",
+    "33.3 ms (30 fps)",
+    "operator value"
+   ],
+   "recommendation": "16.7 ms with a 30 fps degradation floor, pending the viewer lane's own measurement",
+   "source": null
+  }
+ ],
+ "derived_count": 15,
+ "decision_requested_count": 4,
+ "measurement_modes": {
+  "json-field-read": 6,
+  "json-field-read + arithmetic": 1,
+  "module-import-attribute": 1,
+  "regex-parse": 3,
+  "literal-parse": 3,
+  "recorded-bar-parse + arithmetic cross-check": 1
+ },
+ "unresolved_acceptance_numerics": [
+  "cot-denominator-lineage (D-W04: acceptance CoT uses 13824.5 kg membrane inventory vs 10.038 kg training body; absolute CoT limits blocked until the lead-authorized registration lands; also the lineage of slice_server.py SETTLE_SINK_M)"
+ ]
+}

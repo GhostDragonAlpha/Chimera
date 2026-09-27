@@ -1,0 +1,948 @@
+{
+ "schema": "mat2-p06.release_limits.contract.v1",
+ "card": "MAT2-P06",
+ "planning_id": "P06",
+ "kind": "decision",
+ "law": "every numeric is DERIVED (re-measured at run time from sha256-asserted bytes recovered read-only at pinned git revisions into reference/) or explicitly OPERATOR_DECISION_REQUESTED; zero fabricated numbers; operator-decision items remain open requests, not decisions",
+ "identities": {
+  "criteria_sha256": "adfd6c0c8aa993c1ed0c5379a5fe790b8949ea4786ccc7865863b23c8b4d9ce8",
+  "criteria_source": "worker_start.py assignment 6ecad9d537c346c4a31e9ce7b48a1fc7",
+  "active_scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+  "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "dependency_P01": {
+   "state": "DONE",
+   "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/192",
+   "head_sha": "e61838b9fb058b19631717fc5d15be8c31681954",
+   "merge_commit_sha": "97993cbefaf00380803d8e67652ac51d50c37d06",
+   "merged_at": "2026-09-27T08:47:35Z",
+   "source": "kanban_cli.py status board record, read 2026-09-27"
+  },
+  "archived_lineage_ONT-P06": {
+   "state": "DONE (archived scope, HISTORICAL_SCOPE_READ_ONLY)",
+   "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/156",
+   "head_sha": "2148f8d3c722cd41ec05297775538fd949a226e0",
+   "criteria_sha256": "7bea081e57fa35a83fcedfc7dfc8243c63d027448b0d9b104eab179dd96f1333",
+   "independent_review": "PASS 43b415fe0db04e72b9f5e047754839c4",
+   "lead_verdict": "ACCEPTED"
+  },
+  "repositories": {
+   "play_repository": "E:\\ChimeraWork\\monkey-play-20260924",
+   "play_worktree_head_observed": "8d16d3c1 (read-only)",
+   "source_checkout": "E:\\PythonChimera",
+   "source_worktree_head_observed": "f394d11f (read-only)"
+  },
+  "catalog_live_matches_pin": true
+ },
+ "done_when_map": [
+  {
+   "clause": "Supported hardware, controls, terrain/trunk envelope, session duration, latency, frame-time and stability limits are frozen before acceptance trials",
+   "evidence": "crosswalk of the lead-accepted ONT-P06 proposal: carried_limits (15 DERIVED, re-measured) + 4 carried OPERATOR_DECISION_REQUESTED; byte-identical clause text in both cards' done_when",
+   "sections": [
+    "carried_limits",
+    "operator_decision_requests(0-3)",
+    "crosswalk"
+   ]
+  },
+  {
+   "clause": "Freeze numerical/convergence/energy/contact/performance limits and camera-visible player outcomes before experiments",
+   "evidence": "material_first_limits (record-backed bars + status freezes), camera_visible_player_outcomes (pinned catalog text), new decision requests for the three numerics no record supplies",
+   "sections": [
+    "material_first_limits",
+    "camera_visible_player_outcomes",
+    "operator_decision_requests(4-6)"
+   ]
+  },
+  {
+   "clause": "Report first walking-through-woods acceptance separately from later full climbing completion",
+   "evidence": "report structure derived from the pinned checkpoint graph and first_visible_sequence",
+   "sections": [
+    "separate_acceptance_reports"
+   ]
+  }
+ ],
+ "crosswalk": {
+  "target": "reference/ont-p06/limits_proposal.json",
+  "target_sha256": "80d567eaecc432552e5605eda625d6942fe533903386faccf789a0f92744140e",
+  "value_diffs": [],
+  "decision_request_diffs": [],
+  "values_checked": 15,
+  "requests_checked": 4
+ },
+ "carried_limits": [
+  {
+   "id": "terrain-envelope-half-width-m",
+   "value": 20.0,
+   "unit": "m",
+   "source": "clearing_declaration.json@c9aee37c boundary.physical.half_width_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "repo": "play-repository",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "boundary.physical.half_width_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "spawn-position-m",
+   "value": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "unit": "m",
+   "source": "clearing_declaration.json@c9aee37c spawn.position_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "repo": "play-repository",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "spawn.position_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "spawn-required-clearance-m",
+   "value": 1.5,
+   "unit": "m",
+   "source": "clearing_declaration.json@c9aee37c spawn.required_clearance_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "repo": "play-repository",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "spawn.required_clearance_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "body-envelope-radius-m",
+   "value": 0.25,
+   "unit": "m",
+   "source": "clearing_declaration.json@c9aee37c spawn.body_radius_envelope_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "repo": "play-repository",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "spawn.body_radius_envelope_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "scene-seed",
+   "value": 4598321,
+   "unit": "dimensionless",
+   "source": "clearing_declaration.json@c9aee37c seed",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "repo": "play-repository",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read",
+     "locator": "seed"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "trunk-base-centre-m",
+   "value": [
+    11.976783,
+    0.0,
+    2.471766
+   ],
+   "unit": "m",
+   "source": "trunk_declaration.json@b4de4de8 site.base_centre_m",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_trunk/trunk_declaration.json",
+     "repo": "play-repository",
+     "commit": "b4de4de886a9c5bfba4572a2100b2104b178cb2d",
+     "blob_sha256": "94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1",
+     "method": "json-field-read",
+     "locator": "site.base_centre_m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "trunk-blocking-radius-m",
+   "value": 0.287,
+   "unit": "m",
+   "source": "trunk_declaration.json@b4de4de8 geometry.radius_m (0.037) + clearing_declaration.json@c9aee37c spawn.body_radius_envelope_m (0.25), rounded 3 dp (F07 blocking derivation)",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/data/monkey_trunk/trunk_declaration.json",
+     "repo": "play-repository",
+     "commit": "b4de4de886a9c5bfba4572a2100b2104b178cb2d",
+     "blob_sha256": "94ff906ec5e8b8388e4de318aa3321bad9c791fbb168e8234c371ed1d327e3f1",
+     "method": "json-field-read + arithmetic",
+     "locator": "geometry.radius_m = 0.037 (F07 trunk bound)"
+    },
+    {
+     "path": "tools/monkey_campaign/data/monkey_clearing/clearing_declaration.json",
+     "repo": "play-repository",
+     "commit": "c9aee37ce9b1602ad4c831fc0804415c4980ccc8",
+     "blob_sha256": "18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1",
+     "method": "json-field-read + arithmetic",
+     "locator": "spawn.body_radius_envelope_m = 0.25"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read + arithmetic"
+  },
+  {
+   "id": "controls-bindings",
+   "value": {
+    "start_resume": "Return",
+    "pause": "Escape",
+    "restart": "R",
+    "exit": "Q"
+   },
+   "unit": "keys",
+   "source": "session_flow.py@42f7cdc4 DEFAULT_FLOW_BINDINGS imported from the pinned bytes (frozen X02 surface)",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/product/session_flow.py",
+     "repo": "play-repository",
+     "commit": "42f7cdc4ba421cf83ecd2fa0be69e94fb772cd37",
+     "blob_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+     "method": "module-import-attribute",
+     "locator": "DEFAULT_FLOW_BINDINGS inverted key->action"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "module-import-attribute"
+  },
+  {
+   "id": "simulation-tick-hz",
+   "value": 300,
+   "unit": "Hz",
+   "source": "gait_controller.hpp@8cec4a6b:1961 require(dt<=1/300.)+substeps==4; corroborated earth_environment.hpp@ee52a99f:91 tick_hz==300",
+   "provenance": [
+    {
+     "path": "ChimeraEngine/engine/gait_controller.hpp",
+     "repo": "play-repository",
+     "commit": "8cec4a6bf1d6cb74e93cf8b04ec0910634530b81",
+     "blob_sha256": "f0ffea12795bd47f7c48f5ed9b8aa98869725467d94a1081b1d942f6fba129bd",
+     "method": "regex-parse",
+     "locator": "line 1961: dt<=1/300. and substeps==4"
+    },
+    {
+     "path": "ChimeraEngine/engine/earth_environment.hpp",
+     "repo": "play-repository",
+     "commit": "ee52a99f44b68cfb6410f07287583aaf068c0083",
+     "blob_sha256": "b4747d349ce201ebadb74227b33725466d16edd860ed421ac590ad789178469a",
+     "method": "regex-parse (cross-check)",
+     "locator": "line 91: tick_hz==300"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "regex-parse"
+  },
+  {
+   "id": "walking-episode-cap-ticks",
+   "value": 300,
+   "unit": "ticks",
+   "source": "tools/science_funnel/first_skill/acceptance.py@8294053b:19 EPISODE_CAP_TICKS",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/first_skill/acceptance.py",
+     "repo": "play-repository",
+     "commit": "8294053be688cb9cae5251b16ee927f6338b0b92",
+     "blob_sha256": "1065ab2f23b70ccfa2a34f1ec0f9d04f7591939085d17984cac401935f977fe6",
+     "method": "literal-parse",
+     "locator": "line 19: EPISODE_CAP_TICKS = 300"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "literal-parse"
+  },
+  {
+   "id": "walking-eval-window-ticks",
+   "value": 270,
+   "unit": "ticks",
+   "source": "tools/science_funnel/first_skill/acceptance.py@8294053b:20 EVAL_WINDOW_TICKS",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/first_skill/acceptance.py",
+     "repo": "play-repository",
+     "commit": "8294053be688cb9cae5251b16ee927f6338b0b92",
+     "blob_sha256": "1065ab2f23b70ccfa2a34f1ec0f9d04f7591939085d17984cac401935f977fe6",
+     "method": "literal-parse",
+     "locator": "line 20: EVAL_WINDOW_TICKS = 270"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "literal-parse"
+  },
+  {
+   "id": "walking-worst-ledger-j",
+   "value": 30.970714,
+   "unit": "J",
+   "source": "receipt_wave47.json@33e7a444 'worst moving ledger 30.970714 J' (4 consistent occurrences; W03 bar, R5/D-W03 chain); UNRESOLVED: CoT denominator lineage mismatch (D-W04: 13824.5 vs 10.038 kg) — absolute CoT limits cannot freeze until the registration lands",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave47.json",
+     "repo": "play-repository",
+     "commit": "33e7a444fe7b4c35aa99afe7ef898046877025b4",
+     "blob_sha256": "4480d18b8709d93457784ad23f3662768036498e318c1387c1f6d2ec5b05163d",
+     "method": "regex-parse",
+     "locator": "'worst moving ledger 30.970714 J' x4"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "regex-parse"
+  },
+  {
+   "id": "stability-settle-sink-m",
+   "value": 0.01,
+   "unit": "m",
+   "source": "slice_server.py@0b3b22a5:48 SETTLE_SINK_M recorded bar 0.01 m; the line expression evaluates to 0.0099999 m (rounds to the recorded bar at the line's 4-dp display; the 13824.5 kg lineage stays under the D-W04 caveat)",
+   "provenance": [
+    {
+     "path": "tools/playable_slice/slice_server.py",
+     "repo": "play-repository",
+     "commit": "0b3b22a5e4763ef69c508a97a6e5cc7e750ab5f8",
+     "blob_sha256": "5accc730541067c48e61122d384e6d2b3e568012908908ae03dcbc06ae6d6eef",
+     "method": "recorded-bar-parse + arithmetic cross-check",
+     "locator": "line 48: comment bar 0.01 m; expression 13824.5 * 9.81 / 1.3562e7 = 0.00999987796785135 m"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "recorded-bar-parse + arithmetic cross-check"
+  },
+  {
+   "id": "stability-settle-vy-ms",
+   "value": 0.05,
+   "unit": "m/s",
+   "source": "slice_server.py@0b3b22a5:44 SETTLE_VY",
+   "provenance": [
+    {
+     "path": "tools/playable_slice/slice_server.py",
+     "repo": "play-repository",
+     "commit": "0b3b22a5e4763ef69c508a97a6e5cc7e750ab5f8",
+     "blob_sha256": "5accc730541067c48e61122d384e6d2b3e568012908908ae03dcbc06ae6d6eef",
+     "method": "literal-parse",
+     "locator": "line 44: SETTLE_VY = 0.05"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "literal-parse"
+  },
+  {
+   "id": "ui-poll-cadence-ms",
+   "value": 100,
+   "unit": "ms",
+   "source": "slice_server.py@0b3b22a5:449 (the page's own poll loop)",
+   "provenance": [
+    {
+     "path": "tools/playable_slice/slice_server.py",
+     "repo": "play-repository",
+     "commit": "0b3b22a5e4763ef69c508a97a6e5cc7e750ab5f8",
+     "blob_sha256": "5accc730541067c48e61122d384e6d2b3e568012908908ae03dcbc06ae6d6eef",
+     "method": "regex-parse",
+     "locator": "line 449: 'every 100 ms'"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "regex-parse"
+  }
+ ],
+ "material_first_limits": [
+  {
+   "id": "coupled-energy-residual-bound-j",
+   "value": 1e-05,
+   "unit": "J",
+   "source": "coupled_native receipt@32105f18 limits[] text 'Worst energy/store residual must remain below 1e-5 J on preregistered ten-second trials' (first record-backed numerical/energy bar for material-coupled trials)",
+   "applies_to": "M07 coupled-step energy accounting; M03/M04 membrane trials",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/validation/coupled_native_20260917/receipt.json",
+     "repo": "source-checkout",
+     "commit": "32105f18d7340ba14d4764cc1e0d3abb4496f80f",
+     "blob_sha256": "651fe095553f98ec48ffed9315a492cda4d9af226ce51ff6b89e40c2d76bbc50",
+     "method": "limits-text-parse",
+     "locator": "limits[]: 'below 1e-05 J' (regex on record text)"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "limits-text-parse"
+  },
+  {
+   "id": "coupled-refinement-required-order",
+   "value": "fourth",
+   "unit": "text (free-trajectory convergence requirement)",
+   "source": "coupled_native receipt@32105f18 limits[] text 'Free trajectory refinement must approach fourth order; impact trajectories require their own event tolerances'",
+   "applies_to": "M07 timestep-refinement duty; impact cases need their own event tolerances",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/validation/coupled_native_20260917/receipt.json",
+     "repo": "source-checkout",
+     "commit": "32105f18d7340ba14d4764cc1e0d3abb4496f80f",
+     "blob_sha256": "651fe095553f98ec48ffed9315a492cda4d9af226ce51ff6b89e40c2d76bbc50",
+     "method": "limits-text-parse",
+     "locator": "limits[]: 'approach fourth order'"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "limits-text-parse"
+  },
+  {
+   "id": "coupled-applicability-boundary",
+   "value": [
+    "RK4 explicit reference is qualified only for this source model, admitted gains/caps and timestep; no unconditional stability claim. Endpoint crossing/event bisection is not a general arbitrary-speed continuous collision detector.",
+    "Work consumption and braking are resolved per substep; within-substep reversals are not separately metered. The energy ledger is a discrete ideal-work model. Earth air/temperature fields are informational here; only sampled gravity enters arm dynamics."
+   ],
+   "unit": "verbatim record text (applicability boundary, not a numeric)",
+   "source": "coupled_native receipt@32105f18 limits[] verbatim: RK4 explicit reference qualified only for that source model, admitted gains/caps and timestep; no unconditional stability claim; per-substep work metering; discrete ideal-work ledger",
+   "applies_to": "these bars are NOT universal physics; M07/M08 must declare their own timestep/convergence against them",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/validation/coupled_native_20260917/receipt.json",
+     "repo": "source-checkout",
+     "commit": "32105f18d7340ba14d4764cc1e0d3abb4496f80f",
+     "blob_sha256": "651fe095553f98ec48ffed9315a492cda4d9af226ce51ff6b89e40c2d76bbc50",
+     "method": "limits-text-parse",
+     "locator": "limits[] entries 1 and 4 (verbatim)"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "limits-text-parse"
+  },
+  {
+   "id": "coupled-worst-measured-energy-residual-j",
+   "value": 4.2412640066658014e-10,
+   "unit": "J",
+   "supporting_observation": true,
+   "source": "coupled_native receipt@32105f18 metrics.worst_ten_second_energy_residual_J (measured; demonstrates the 1e-5 J bound was met in the pinned validation)",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/validation/coupled_native_20260917/receipt.json",
+     "repo": "source-checkout",
+     "commit": "32105f18d7340ba14d4764cc1e0d3abb4496f80f",
+     "blob_sha256": "651fe095553f98ec48ffed9315a492cda4d9af226ce51ff6b89e40c2d76bbc50",
+     "method": "json-field-read",
+     "locator": "metrics.worst_ten_second_energy_residual_J"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "coupled-refinement-measured-ratio",
+   "value": 15.962558823963903,
+   "unit": "dimensionless (fourth order implies ~2^4=16)",
+   "supporting_observation": true,
+   "source": "coupled_native receipt@32105f18 metrics.free_trajectory_refinement_ratio (measured)",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/validation/coupled_native_20260917/receipt.json",
+     "repo": "source-checkout",
+     "commit": "32105f18d7340ba14d4764cc1e0d3abb4496f80f",
+     "blob_sha256": "651fe095553f98ec48ffed9315a492cda4d9af226ce51ff6b89e40c2d76bbc50",
+     "method": "json-field-read",
+     "locator": "metrics.free_trajectory_refinement_ratio"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "coupled-native-reference-worst-abs-error",
+   "value": 1.2732925824820995e-11,
+   "unit": "model units (worst native/reference scalar gap, measured)",
+   "supporting_observation": true,
+   "source": "coupled_native receipt@32105f18 metrics.worst_native_reference_absolute_error (measured over 714 scalar comparisons)",
+   "provenance": [
+    {
+     "path": "tools/science_funnel/validation/coupled_native_20260917/receipt.json",
+     "repo": "source-checkout",
+     "commit": "32105f18d7340ba14d4764cc1e0d3abb4496f80f",
+     "blob_sha256": "651fe095553f98ec48ffed9315a492cda4d9af226ce51ff6b89e40c2d76bbc50",
+     "method": "json-field-read",
+     "locator": "metrics.worst_native_reference_absolute_error"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "json-field-read"
+  },
+  {
+   "id": "walker-contact-friction-placeholder",
+   "value": 0.6,
+   "unit": "friction coefficient — UNEVIDENCED PLACEHOLDER, explicitly NOT an acceptance limit",
+   "source": "admit_gait_walker_20260919.py@8707551c:60 bare literal CONTACT_FRICTION = 0.6 with no citation comment on the line; consumed at line 179; any friction envelope must be measured before F05/G04 acceptance trials",
+   "applies_to": "F05 surface-friction envelope; G04 grip contact",
+   "provenance": [
+    {
+     "path": "tools/creature_graph/validation/admit_gait_walker_20260919.py",
+     "repo": "source-checkout",
+     "commit": "8707551c072a847e1d4d85b50202f3e89d048198",
+     "blob_sha256": "3f149765bc9d17b9cd2ead8e323fc258038f4d81b7e862ea6e300c3680f6eef3",
+     "method": "literal-parse + no-citation-check",
+     "locator": "line 60: CONTACT_FRICTION = 0.6 (bare literal); line 179: consumption"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "literal-parse + no-citation-check"
+  },
+  {
+   "id": "native-walking-contact-model",
+   "value": "single ground plane scalar plane_model_y_ (declaration line 94); heightfield/height_field occurrences in the pinned bytes: 0",
+   "unit": "status (structural observation, not a numeric)",
+   "source": "gait_controller.hpp@8cec4a6b:94 'plane_world_y_=0,plane_model_y_=0' — the pinned walking engine has a single-plane contact model; no heightfield/trunk contact service exists at this revision",
+   "applies_to": "F02/F03/F04/M06 own the material/contact path; no numeric contact tolerance may be claimed met by this pinned engine",
+   "provenance": [
+    {
+     "path": "ChimeraEngine/engine/gait_controller.hpp",
+     "repo": "play-repository",
+     "commit": "8cec4a6bf1d6cb74e93cf8b04ec0910634530b81",
+     "blob_sha256": "f0ffea12795bd47f7c48f5ed9b8aa98869725467d94a1081b1d942f6fba129bd",
+     "method": "regex-parse + negative-search",
+     "locator": "line 94: plane_model_y_=0 declaration; 'heightfield|height_field' count = 0"
+    }
+   ],
+   "class": "DERIVED",
+   "measured_now": true,
+   "measurement_mode": "regex-parse + negative-search"
+  }
+ ],
+ "camera_visible_player_outcomes": {
+  "law": "player-visible outcomes are frozen from the pinned catalog text; no outcome is invented here",
+  "walking_replay_scenario": {
+   "value": "Replay the frozen start/stop/turn/speed/fall sequence; inspect stance and swing over the full declared interval.",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "ontology_contract.visual_profiles[id=walking].scenario"
+    }
+   ],
+   "class": "DERIVED"
+  },
+  "walking_falsifier_outcomes": {
+   "value": "Sliding/penetration, unsupported propulsion, hidden reset, wrong command response or diagnostic/clean state divergence fails.",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "ontology_contract.visual_profiles[id=walking].falsifier"
+    }
+   ],
+   "class": "DERIVED"
+  },
+  "material_falsifier_outcomes": {
+   "value": "Unbound media, clipped load path, hidden constraint/support, area-independent triangle forces, overlay-driven motion, or unaccounted energy prevents acceptance.",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "ontology_contract.visual_profiles[id=material].falsifier"
+    }
+   ],
+   "class": "DERIVED"
+  },
+  "clean_view_required": {
+   "value": {
+    "walking": true,
+    "material": true
+   },
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "ontology_contract.visual_profiles[walking|material].clean_view_required"
+    }
+   ],
+   "class": "DERIVED"
+  },
+  "camera_required_fields": {
+   "value": [
+    "frame_id",
+    "coordinate_unit",
+    "position",
+    "orientation_convention_and_values",
+    "target",
+    "distance_to_target",
+    "projection",
+    "vertical_fov_or_orthographic_span",
+    "near_far_planes",
+    "aspect_ratio",
+    "viewport_resolution",
+    "camera_motion_or_bookmark_sequence",
+    "visibility_layers",
+    "label_ids",
+    "occlusion_or_xray_mode",
+    "state_or_tick_interval"
+   ],
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "ontology_contract.visual_profiles[id=walking].camera_required_fields"
+    }
+   ],
+   "class": "DERIVED"
+  },
+  "walking_through_woods_acceptance": {
+   "value": "The operator launches and steers the physical monkey through woods, stops, contacts a trunk and resets in one reproducible build.",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "ontology_contract.checkpoints[id=MAT-WOODS].acceptance"
+    }
+   ],
+   "class": "DERIVED"
+  },
+  "climb_loop_acceptance": {
+   "value": "Climb, hold, descend, release and skill transitions preserve physical state across the full declared loop.",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "ontology_contract.checkpoints[id=V07].acceptance"
+    }
+   ],
+   "class": "DERIVED"
+  },
+  "feature_completion_clause": {
+   "value": "All selected core/product behaviors pass; remaining issues are triaged explicitly; operator accepts actual play",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "tasks[id=S05].done_when"
+    }
+   ],
+   "class": "DERIVED"
+  },
+  "demonstration_order_first_visible_sequence": {
+   "value": [
+    "P02",
+    "M01",
+    "M02",
+    "M03",
+    "M04",
+    "M05",
+    "M06",
+    "M07",
+    "M08",
+    "M09",
+    "M10",
+    "M11",
+    "M12",
+    "W10",
+    "F06",
+    "K08",
+    "S05"
+   ],
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "first_visible_sequence"
+    }
+   ],
+   "class": "DERIVED"
+  },
+  "controls_surface": {
+   "value": "carried limit controls-bindings (frozen X02 session-flow surface)",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/product/session_flow.py",
+     "repo": "play-repository",
+     "commit": "42f7cdc4ba421cf83ecd2fa0be69e94fb772cd37",
+     "blob_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+     "method": "cross-reference",
+     "locator": "carried_limits:controls-bindings"
+    }
+   ],
+   "class": "DERIVED"
+  }
+ },
+ "separate_acceptance_reports": {
+  "rule": "Report first walking-through-woods acceptance separately from later full climbing completion; neither report implies or completes the other (done_when clause 3).",
+  "report_A_walking_through_woods": {
+   "reported": "FIRST (the first product milestone)",
+   "checkpoints": [
+    "V03",
+    "V04",
+    "MAT-WOODS"
+   ],
+   "contributor_tasks": [
+    "F06",
+    "F08",
+    "U07",
+    "W10"
+   ],
+   "gate_limits": [
+    "terrain-envelope-half-width-m",
+    "spawn-position-m",
+    "spawn-required-clearance-m",
+    "body-envelope-radius-m",
+    "scene-seed",
+    "trunk-base-centre-m",
+    "trunk-blocking-radius-m",
+    "controls-bindings",
+    "simulation-tick-hz",
+    "walking-episode-cap-ticks",
+    "walking-eval-window-ticks",
+    "walking-worst-ledger-j",
+    "stability-settle-sink-m",
+    "stability-settle-vy-ms",
+    "ui-poll-cadence-ms"
+   ],
+   "camera_outcomes": [
+    "walking_replay_scenario",
+    "walking_falsifier_outcomes",
+    "walking_through_woods_acceptance",
+    "clean_view_required",
+    "camera_required_fields"
+   ],
+   "evidence_chain": "MAT-WOODS requires MAT-REUSE; first_visible_sequence places W10/F06 before K08/S05",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "ontology_contract.checkpoints[id=MAT-WOODS]"
+    },
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "first_visible_sequence"
+    }
+   ]
+  },
+  "report_B_full_climbing_completion": {
+   "reported": "SEPARATELY, only after report_A exists",
+   "checkpoints": [
+    "V07"
+   ],
+   "contributor_tasks": [
+    "K04",
+    "K05",
+    "K06",
+    "K07",
+    "K08"
+   ],
+   "feature_acceptance_task": "S05",
+   "camera_outcomes": [
+    "climb_loop_acceptance",
+    "feature_completion_clause",
+    "camera_required_fields"
+   ],
+   "evidence_chain": "V07 requires V04+V06; first_visible_sequence places K08/S05 after W10/F06; S05 remains the operator-accepted feature completion",
+   "provenance": [
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "ontology_contract.checkpoints[id=V07]"
+    },
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "tasks[id=S05].done_when"
+    },
+    {
+     "path": "tools/monkey_campaign/monkey_completion_map.json",
+     "repo": "source-checkout",
+     "commit": "59f81d4dcb1cf45192bde124c1e35510fb439f1b",
+     "blob_sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272",
+     "method": "catalog-text-parse",
+     "locator": "first_visible_sequence"
+    }
+   ]
+  },
+  "class": "DERIVED"
+ },
+ "operator_decision_requests": [
+  {
+   "id": "session-duration-cap",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "Product session duration limit for acceptance trials",
+   "options": [
+    "per-episode (1 s @300 Hz)",
+    "5 min continuous",
+    "30 min continuous",
+    "operator value"
+   ],
+   "recommendation": "5 min continuous (covers the ground-tree-ground loop many times; leaves training-episode semantics untouched)",
+   "source": null
+  },
+  {
+   "id": "supported-hardware-floor",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "End-user hardware floor phrasing (thin client: browser + HTTP to the local engine; rendering is WebGL2 client-side, physics server-side)",
+   "options": [
+    "any WebGL2 browser",
+    "WebGL2 + dedicated GPU class",
+    "operator list"
+   ],
+   "recommendation": "any WebGL2 browser (the slice architecture's own contract; the server owns physics)",
+   "source": null
+  },
+  {
+   "id": "network-latency-sla-ms",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "Latency SLA beyond the recorded 100 ms poll cadence",
+   "options": [
+    "poll cadence only (100 ms)",
+    "100 ms + 50 ms headroom",
+    "operator value"
+   ],
+   "recommendation": "poll cadence + 50 ms headroom once a measurement protocol exists",
+   "source": null
+  },
+  {
+   "id": "frame-time-budget-ms",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "Frame-time budget for acceptance trials (records carry ticks/s, not a frame budget)",
+   "options": [
+    "16.7 ms (60 fps)",
+    "33.3 ms (30 fps)",
+    "operator value"
+   ],
+   "recommendation": "16.7 ms with a 30 fps degradation floor, pending the viewer lane's own measurement",
+   "source": null
+  },
+  {
+   "id": "contact-geometric-tolerance",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "Numeric bounds for F02 render/collision agreement and F04 tunnelling/interpenetration/ghost-support on the material contact path (no record supplies one; the pinned walking engine is single-plane only)",
+   "options": [
+    "penetration bound 0.0025 m = 1% of the frozen body-envelope-radius 0.25 m, render/collision agreement at the same scale",
+    "penetration bound 1e-4 m (solver-tolerance-anchored)",
+    "operator value"
+   ],
+   "recommendation": "envelope-derived 0.0025 m, frozen only after M06/F02 demonstrate the contact path's achievable tolerance; the single-plane pinned engine must never be presented as having met any contact tolerance",
+   "source": null
+  },
+  {
+   "id": "surface-friction-envelope",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "Surface-friction envelope for the clearing/trunk (the only recorded value is the bare placeholder 0.6 at admit_gait_walker_20260919.py@8707551c:60, uncited)",
+   "options": [
+    "measure the bark-on-appendage coefficient before F05/G04 trials",
+    "adopt placeholder 0.6 explicitly labeled UNEVIDENCED and excluded from acceptance evidence",
+    "operator value"
+   ],
+   "recommendation": "measure before any acceptance trial; the placeholder must not enter acceptance evidence",
+   "source": null
+  },
+  {
+   "id": "material-pass-performance-budget",
+   "class": "OPERATOR_DECISION_REQUESTED",
+   "question": "Frame-time/VRAM ceiling for the coupled GPU material passes before M08/M12/R03 performance claims (records carry tick-rate and the coupled-arm receipt's runtime, not a frame/VRAM budget)",
+   "options": [
+    "tie to carried frame-time-budget-ms once measured; record the VRAM ceiling at the first M08 reserved-window profile",
+    "33.3 ms (30 fps) degradation floor",
+    "operator value"
+   ],
+   "recommendation": "tie to the carried frame-time decision and record VRAM at the first profile; no performance pass/fail claim before that measurement exists (C27: contention invalidates benchmark claims)",
+   "source": null
+  }
+ ],
+ "unresolved_acceptance_numerics": [
+  "cot-denominator-lineage (D-W04: acceptance CoT uses 13824.5 kg membrane inventory vs 10.038 kg training body; absolute CoT limits blocked until the lead-authorized registration lands; mailbox Q-34439597b1774332972da4d8b4ec6b2a NEEDS_EVIDENCE, supersession question Q-136fedaa492e4375a5b6f7589345e881 OPEN as of 2026-09-27)",
+  "surface-friction envelope: only an uncited placeholder (0.6) exists in records",
+  "numeric contact tolerances (render/collision agreement, penetration/tunnelling): absent from all records; the pinned walking engine is single-plane only",
+  "frame-time/VRAM budgets for the coupled GPU material passes: absent from records until the first M08/R03 reserved-window profile",
+  "W03 walking anchors (302 ticks, 30.970714 J) are baseline evidence only until rerun against the selected material representation (catalog W03 material-first note)"
+ ],
+ "carried_count": 15,
+ "material_first_derived_count": 8,
+ "decision_requested_count": 7,
+ "measurement_modes": {
+  "json-field-read": 9,
+  "json-field-read + arithmetic": 1,
+  "module-import-attribute": 1,
+  "regex-parse": 3,
+  "literal-parse": 3,
+  "recorded-bar-parse + arithmetic cross-check": 1,
+  "limits-text-parse": 3,
+  "literal-parse + no-citation-check": 1,
+  "regex-parse + negative-search": 1
+ }
+}
