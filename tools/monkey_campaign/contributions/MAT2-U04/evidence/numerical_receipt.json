@@ -1,0 +1,151 @@
+{
+ "agent_id": "arrival-1390bce44d204c709636097a9613e84f",
+ "all_green": true,
+ "attempt_id": "d9ce4334674e435d95b9cb95373327e5",
+ "card_id": "MAT2-U04",
+ "checks": [
+  {
+   "counts": {
+    "reference_files": 6
+   },
+   "detail": [],
+   "id": "N0",
+   "ok": true,
+   "prediction": "reference pins + lineage identity equal the frozen values"
+  },
+  {
+   "counts": {
+    "refusals": 0
+   },
+   "detail": [],
+   "id": "N1",
+   "ok": true,
+   "prediction": "first_run on absent path: defaults, nothing created"
+  },
+  {
+   "counts": {
+    "ceiling_boundaries": 60,
+    "mouse_boundaries": 265,
+    "ratio_first": 4.0
+   },
+   "detail": [],
+   "id": "N2",
+   "ok": true,
+   "prediction": "mouse yaw bit-exact vs the mapper's own law; 4x ratio; exact ceiling"
+  },
+  {
+   "counts": {
+    "inverted_boundaries": 100
+   },
+   "detail": [],
+   "id": "N3",
+   "ok": true,
+   "prediction": "inversion flips the same counts to exactly -OMEGA; signed law exact"
+  },
+  {
+   "counts": {
+    "cancel_boundaries": 10
+   },
+   "detail": [],
+   "id": "N4",
+   "ok": true,
+   "prediction": "turn key path unaffected by inversion (+OMEGA + -OMEGA == 0.0 exact)"
+  },
+  {
+   "counts": {
+    "named_refusals": 1
+   },
+   "detail": [],
+   "id": "N5",
+   "ok": true,
+   "prediction": "rebound keys flip emitted sign; E->sprint refused by name; coverage refuses"
+  },
+  {
+   "counts": {
+    "child_pid": 15544,
+    "child_records": 10,
+    "replay_records": 10,
+    "settings_bytes": 279
+   },
+   "detail": [],
+   "id": "N6",
+   "ok": true,
+   "prediction": "save canonical; reload exact in parent AND a fresh child process; replays field-exact"
+  },
+  {
+   "counts": {
+    "poisons": 9
+   },
+   "detail": [],
+   "id": "N7",
+   "ok": true,
+   "prediction": "nine poison classes refuse BY NAME with defaults; load never writes"
+  },
+  {
+   "counts": {
+    "apply_calls": 4
+   },
+   "detail": [],
+   "id": "N8",
+   "ok": true,
+   "prediction": "seam constants, bindings table and pinned module bytes unchanged"
+  },
+  {
+   "counts": {
+    "records": 368,
+    "replay_records_measured": 10,
+    "trace_rows": 391
+   },
+   "detail": [],
+   "id": "N9",
+   "ok": true,
+   "prediction": "368 main records conform to provenance/band/timing laws"
+  }
+ ],
+ "criteria_sha256": "192ca43f061c4b6b2763d11213e0246ea075c3f62e6948948ba8c64213bf5180",
+ "deviations": [],
+ "environment": {
+  "clock_note": "trace times are INJECTED tick ms",
+  "engine_process": false,
+  "gpu": false,
+  "headless": true,
+  "network": false,
+  "platform": "win32",
+  "python": "3.14.3"
+ },
+ "pinned_lineage": {
+  "integration_commit": "4699b37d",
+  "play_head": "f30f2224663324e9374b076938c56672febf4082",
+  "records_leg_pr_head": "939e8e6f725d162b18e8998aa725ad24f53fdb36"
+ },
+ "prediction_deviations": [
+  {
+   "check": "N9",
+   "measured": 10,
+   "prereg": "11 replay records per replay runner (boundaries 0..500)",
+   "reason": "the prereg's arithmetic miscounted: boundary 450 emits the tail's exact-zero record and boundary 500 is the grid-dissolve tick, which emits nothing; the enforced frozen law of the pinned mapper is 10. Disclosed, not silently corrected (ONT-U01 prediction_deviations precedent)."
+  },
+  {
+   "check": "N6",
+   "measured": "replay-law conformance + parent/child field-exact",
+   "prereg": "M2 replay records field-exact == original-phase records for the same (settings, input) pairs",
+   "reason": "no main-trace window pairs 1:1 with the replay sequence's key+mouse combination, so the comparison implemented is (a) every replay record bit-exact vs the mapper's own law recomputed under the RELOADED settings and (b) parent M2 vs fresh-child records field-exact. The main-trace laws themselves are N2-N5."
+  }
+ ],
+ "run_id": "mat2-u04-input-20260927-d9ce4334",
+ "schema": "mat2-u04.input-settings.numerical.v1",
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "settings_file": {
+  "bytes": 279,
+  "sha256": "abb29055ee87f3d1062822691f18e40722b3bdb4aa5cd75978b708236fa914de"
+ },
+ "subject": "tools/monkey_campaign/product/input_settings.py",
+ "subject_sha256": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
+ "task_id": "U04",
+ "trace": {
+  "reference": "tools/monkey_campaign/contributions/MAT2-U04/evidence/trace.jsonl",
+  "rows": 391,
+  "sha256": "9aea974e6c7cfbf95e70d345e1fbb48c7faceae0265ee5bd0803e761d907da2c"
+ },
+ "wall_clock_probe_seconds": 0.14357409999865922
+}
