@@ -1,0 +1,151 @@
+{
+  "digest_rebuilt": "52c92fe0d207a59971d9765d10009fc4f1d94e0f0e38e2eea59a1d64be4a7df8",
+  "digest_recorded": "52c92fe0d207a59971d9765d10009fc4f1d94e0f0e38e2eea59a1d64be4a7df8",
+  "digest_match": true,
+  "handedness": "preserve",
+  "global_scale": 1.0,
+  "n_landmarks": 79,
+  "n_segments": 18,
+  "records": {
+    "radius": {
+      "parent": "ulna",
+      "scale_policy": "uniform",
+      "coords": [],
+      "axial_unresolved": false,
+      "axis_assumptions": {
+        "b": {
+          "value": 0.22170679566544982,
+          "provenance": "authored_uniform_transverse_envelope_bounded",
+          "note": "uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is measured by the bounded forearm-envelope estimator (target_envelope.py) and is an OUTER-ENVELOPE CONSTRAINT only \u2014 skin width is NOT evidence for internal (bone/tissue) cross-section scaling"
+        },
+        "c": {
+          "value": 0.22170679566544982,
+          "provenance": "authored_uniform_transverse_envelope_bounded",
+          "note": "uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is measured by the bounded forearm-envelope estimator (target_envelope.py) and is an OUTER-ENVELOPE CONSTRAINT only \u2014 skin width is NOT evidence for internal (bone/tissue) cross-section scaling"
+        }
+      },
+      "axis_measure_kind": {
+        "b": "authored",
+        "c": "authored"
+      },
+      "landmarks": {
+        "prox": {
+          "id": "radius.prox",
+          "target": [
+            -0.11548098385334016,
+            0.3191090774536133,
+            -0.0060765563324093825
+          ],
+          "source_resolution": "body_origin:radius",
+          "source": [
+            -0.09110000000000001,
+            0.8230470000000001,
+            0.17769900000000005
+          ]
+        },
+        "dist": {
+          "id": "radius.dist",
+          "target": [
+            -0.1449945402145386,
+            0.26148236989974977,
+            -0.005956328995525837
+          ],
+          "source_resolution": "body_origin:hand_r",
+          "source": [
+            -0.07310000000000001,
+            0.5326470000000001,
+            0.20269900000000005
+          ]
+        },
+        "roll": {
+          "id": "radius.roll",
+          "target": [
+            -0.16961276888847351,
+            0.23864266276359558,
+            -0.03463515102863312
+          ],
+          "source_resolution": "site:PT-P2",
+          "source": [
+            -0.08304000000000002,
+            0.8008200000000001,
+            0.14338000000000006
+          ]
+        }
+      },
+      "handedness": "preserve",
+      "mirror_plane_normal": null,
+      "note_from_builder": "axial elbow_R->wrist_R ; b/c measured on elbow_R band",
+      "implied_axial_scale": 0.22170679566544982
+    },
+    "radius_l": {
+      "parent": "ulna_l",
+      "scale_policy": "uniform",
+      "coords": [],
+      "axial_unresolved": false,
+      "axis_assumptions": {
+        "b": {
+          "value": 0.22170679566544982,
+          "provenance": "authored_uniform_transverse_envelope_bounded",
+          "note": "uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is measured by the bounded forearm-envelope estimator (target_envelope.py) and is an OUTER-ENVELOPE CONSTRAINT only \u2014 skin width is NOT evidence for internal (bone/tissue) cross-section scaling"
+        },
+        "c": {
+          "value": 0.22170679566544982,
+          "provenance": "authored_uniform_transverse_envelope_bounded",
+          "note": "uniform transverse assumed = axial for the forearm; the outer (skin) envelope of interior cross-sections is measured by the bounded forearm-envelope estimator (target_envelope.py) and is an OUTER-ENVELOPE CONSTRAINT only \u2014 skin width is NOT evidence for internal (bone/tissue) cross-section scaling"
+        }
+      },
+      "axis_measure_kind": {
+        "b": "authored",
+        "c": "authored"
+      },
+      "landmarks": {
+        "prox": {
+          "id": "radius_l.prox",
+          "target": [
+            0.11548098385334016,
+            0.3191090774536133,
+            -0.0060765563324093825
+          ],
+          "source_resolution": "body_origin:radius_l",
+          "source": [
+            -0.09110000000000001,
+            0.822997,
+            -0.17769899999999994
+          ]
+        },
+        "dist": {
+          "id": "radius_l.dist",
+          "target": [
+            0.1449945402145386,
+            0.26148236989974977,
+            -0.005956328995525837
+          ],
+          "source_resolution": "body_origin:hand_l",
+          "source": [
+            -0.07310000000000001,
+            0.532597,
+            -0.20269899999999993
+          ]
+        },
+        "roll": {
+          "id": "radius_l.roll",
+          "target": [
+            0.16961275339126589,
+            0.23864267826080324,
+            -0.03463515102863312
+          ],
+          "source_resolution": "site:PT_l-P2",
+          "source": [
+            -0.08304000000000002,
+            0.80077,
+            -0.14337999999999995
+          ]
+        }
+      },
+      "handedness": "preserve",
+      "mirror_plane_normal": null,
+      "note_from_builder": "axial elbow_L->wrist_L ; b/c measured on elbow_L band",
+      "implied_axial_scale": 0.22170679566544982
+    }
+  }
+}

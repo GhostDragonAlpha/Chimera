@@ -1,0 +1,181 @@
+{
+  "before": {
+    "radius": {
+      "scale": 0.22170679566544982,
+      "t": [
+        -0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "det_full_map_L": 0.010897754382730345,
+      "det_packet_rotation_G": 1.0000000000000002,
+      "source_span_m": 0.2920293820833787,
+      "P": [
+        -0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "P_d": [
+        -0.1449945402145386,
+        0.26148236989974977,
+        -0.005956328995525837
+      ],
+      "span_m": 0.06474489854186721,
+      "max_world_reconstruction_error_m": 0.0
+    },
+    "radius_l": {
+      "scale": 0.22170679566544982,
+      "t": [
+        0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "det_full_map_L": 0.010897754382730345,
+      "det_packet_rotation_G": 1.0000000000000002,
+      "source_span_m": 0.2920293820833787,
+      "P": [
+        0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "P_d": [
+        0.1449945402145386,
+        0.26148236989974977,
+        -0.005956328995525837
+      ],
+      "span_m": 0.06474489854186721,
+      "max_world_reconstruction_error_m": 0.0
+    }
+  },
+  "mechanism": {
+    "radius": {
+      "gap_m": 0.005115804490107064,
+      "joint_eps": 1e-09,
+      "refusal_would_fire": true
+    },
+    "radius_l": {
+      "gap_m": 0.005115804490107064,
+      "joint_eps": 1e-09,
+      "refusal_would_fire": true
+    }
+  },
+  "after": {
+    "radius": {
+      "scale": 0.20418868001006546,
+      "t": [
+        -0.5743881501002028,
+        -0.36085729483653595,
+        -0.23549874330359868
+      ],
+      "det_full_map_L": 0.008513242115903171,
+      "s_cubed": 0.008513242115903161,
+      "P": [
+        -0.11781299127866669,
+        0.3145557153217149,
+        -0.006067056594766505
+      ],
+      "P_d_unchanged": [
+        -0.1449945402145386,
+        0.26148236989974977,
+        -0.005956328995525837
+      ],
+      "span_m": 0.05962909405176015,
+      "G_vs_packet_max_abs_diff": 2.220446049250313e-16,
+      "Bp_vs_packet_max_abs_diff": 2.220446049250313e-16,
+      "scale_change_pct": -7.901478889180636
+    },
+    "radius_l": {
+      "scale": 0.20418868001006546,
+      "t": [
+        0.574361083994982,
+        -0.3608152902169819,
+        -0.23549689450767744
+      ],
+      "det_full_map_L": 0.008513242115903171,
+      "s_cubed": 0.008513242115903161,
+      "P": [
+        0.11781299127866669,
+        0.3145557153217149,
+        -0.006067056594766505
+      ],
+      "P_d_unchanged": [
+        0.1449945402145386,
+        0.26148236989974977,
+        -0.005956328995525837
+      ],
+      "span_m": 0.05962909405176015,
+      "G_vs_packet_max_abs_diff": 6.661338147750939e-16,
+      "Bp_vs_packet_max_abs_diff": 6.661338147750939e-16,
+      "scale_change_pct": -7.901478889180636
+    }
+  },
+  "site_deltas": {
+    "radius": {
+      "n_sites": 16,
+      "max_displacement_m": 0.004950983466166482,
+      "worst_site": "BICshort-P6",
+      "all": {
+        "BIClong-P9": 0.004948423135921823,
+        "BIClong-P11": 0.004469262714455107,
+        "BICshort-P6": 0.004950983466166482,
+        "BICshort-P8": 0.004469262714455107,
+        "BRD-P2": 0.002872205825984615,
+        "BRD-P3": 0.0012866373213189367,
+        "ECRL-P2": 0.0027401535858366747,
+        "ECRL-P3": 0.0010497632691427632,
+        "ECRB-P2": 0.0028016082504958985,
+        "ECRB-P3": 0.0011620097033655007,
+        "ECU-P5": 0.0012581805068016603,
+        "FCR-P2": 0.0013120429865690455,
+        "FCU-P2": 0.0019191153814078414,
+        "FCU-P3": 0.0012127275883658832,
+        "PT-P3": 0.004230275419775235,
+        "PT-P5": 0.0031852327941221618
+      },
+      "note": "globals recompute under the AFTER map; source locals are source-verbatim and untouched (S13)"
+    },
+    "radius_l": {
+      "n_sites": 16,
+      "max_displacement_m": 0.004948423135921825,
+      "worst_site": "BIClong_l-P9",
+      "all": {
+        "BIClong_l-P9": 0.004948423135921825,
+        "BIClong_l-P11": 0.004469262714455128,
+        "BICshort_l-P6": 0.004948419704815337,
+        "BICshort_l-P8": 0.004469262714455128,
+        "BRD_l-P2": 0.0028722058259846766,
+        "BRD_l-P3": 0.0012866373213189007,
+        "ECRL_l-P2": 0.002740153585836704,
+        "ECRL_l-P3": 0.0010497632691428029,
+        "ECRB_l-P2": 0.0028016082504959045,
+        "ECRB_l-P3": 0.0011620097033654935,
+        "ECU_l-P5": 0.0012581805068016387,
+        "FCR_l-P2": 0.0013120429865690257,
+        "FCU_l-P2": 0.0019168020920057888,
+        "FCU_l-P3": 0.0012127275883658546,
+        "PT_l-P3": 0.004230275419775217,
+        "PT_l-P5": 0.0031852327941221752
+      },
+      "note": "globals recompute under the AFTER map; source locals are source-verbatim and untouched (S13)"
+    }
+  },
+  "preservation": {
+    "manifest_hash_match": "44/44",
+    "git_porcelain_baseline": "",
+    "a4_receipt_present": true,
+    "tracked_modifications_under_forearm_package": [],
+    "foreign_untracked_lanes_recorded": [
+      "forearm_package/audits/HAND_EVIDENCE_REQUEST/"
+    ],
+    "note": "the repo-wide worktree dirt (Chimera/ChimeraEngine/story/tools, 213 paths) predates and is outside this diagnostic; none of it is under forearm_package"
+  },
+  "fractions": {
+    "derived_distal_point_mm": 5.1158044955338156,
+    "target_per_edge_fraction_pct": 7.901478841651782,
+    "source_authored_fraction_pct": 7.54585630372521,
+    "drift_factor": 1.0471281884537094,
+    "drift_check": 7.901478841651782,
+    "r1_law": "7.5459% x k_rad/axis-ratio = 7.9015% (R1 \u00a75.3)"
+  },
+  "ok": true
+}
