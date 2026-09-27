@@ -1,0 +1,34 @@
+== A1: float/bool/NaN/Inf smuggling into IntentEvent ==
+  [REPRO] A1.a float issued_tick refused
+  [REPRO] A1.b float now_ms refused
+  [REPRO] A1.c NaN stamp refused
+  [REPRO] A1.d Inf stamp refused
+  [REPRO] A1.e bool stamp refused
+  [REPRO] A1.f huge (unbounded) int accepted -- spec has no upper bound
+  [REPRO] A1.g POST-FIX (AMR-1): intent_version=True (bool) REFUSED by the validator  -- ev=None
+  [REPRO] A1.h string version '1' refused (1 != '1')
+  [REPRO] A1.i extra kwargs refused (dataclass: no field smuggling)
+  [REPRO] A1.j frozen event cannot be mutated
+== A2: version confusion (v1 presented as v2 / foreign shapes) ==
+  [REPRO] A2.a a v2 wire dict refused by the v1 constructor
+  [REPRO] A2.b a v3 dict refused too
+  [REPRO] A2.c an unknown intent name at version 1 refused
+  [REPRO] A2.d INTENT_VERSION is the module constant the validator compares to
+== A3: press on the exact gate-transition tick (same now_ms) ==
+  [REPRO] A3.a press-then-pause AT THE SAME ms: DELIVERED (call order decides), deterministic 100/100  -- delivery_counts=[1]
+  [REPRO] A3.b pause-then-press AT THE SAME ms: DROPPED_BY_NAME, deterministic 100/100  -- delivery_counts=[0]
+== A4: second listener / two sinks ==
+  [REPRO] A4.a FINDING-CHECK: two channels wired to one sink DOUBLE-deliver (no exclusivity guard; the seam has no add_listener API)  -- events=2
+  [REPRO] A4.b the channel exposes no add_listener/attach -- second-listener race cannot occur through the declared surface
+  [REPRO] A4.c chan.bindings is a COPY: the module default is untouched
+== A5: boundary values and failure ordering ==
+  [REPRO] A5.a negative now_ms press RAISES (validator fires)  -- IntentEventError
+  [REPRO] A5.b POST-FIX (AMR-3): the edge was NOT armed by the bad-stamp press -- held=set(), zero events  -- held=[], events=0
+  [REPRO] A5.c POST-FIX (AMR-3): the NEXT VALID press DELIVERS (no silent consumption of a physical press)  -- events=1, ret='climb_request'
+  [REPRO] A5.d POST-FIX (AMR-3): a raising tick_source leaves the edge UNARMED  -- held=[], events=0
+  [REPRO] A5.e POST-FIX (AMR-2): a forged source is REFUSED by the validator  -- forged=None
+  [REPRO] A5.f FINDING-CHECK: press() returns the intent name on a REPEAT (held) press -- indistinguishable from a delivered press by return value, contra the docstring's 'else None'  -- ret2='climb_request', events=1
+  [REPRO] A5.g unbound press ignored-but-recorded; release of never-pressed key safe
+  [REPRO] A5.h bool intent at construction refused
+
+PROBE RESULT: 27 expectations reproduced as expected, 0 adversarial FINDINGS (probe checks whose ok=False mark a claimed-safe behavior that broke)

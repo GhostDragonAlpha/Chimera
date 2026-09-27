@@ -1,0 +1,16 @@
+{
+ "c12_note": "50 ms is the walk seam's command cadence, not a latency claim; actual call durations recorded, nothing derived",
+ "command": "python -B tools/monkey_campaign/contributions/MAT2-U05/seam_motion_probe.py",
+ "delivery_is_synchronous": "structural: the strict sink records the delivery inside emit(), called inside press(); no queue, no emitter thread",
+ "final_states": {
+  "channel": "ready",
+  "channel_held": [],
+  "flow": "playing"
+ },
+ "main_run_duration_s": 0.00517510000281618,
+ "python": "3.14.3",
+ "run_id": "mat2-u05-seam-20260927-867dc0b1",
+ "schema": "mat2-u05.seam.runtime.v1",
+ "task_id": "MAT2-U05",
+ "total_probe_duration_s": 0.7263664999991306
+}
