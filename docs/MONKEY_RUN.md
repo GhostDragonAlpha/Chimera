@@ -1,3 +1,16 @@
+# Material-owned physical ports — astra-0032
+
+Read [PHYSICAL_PORTS.md](PHYSICAL_PORTS.md), the Captain's 2026-09-27 ruling.
+A physical port is a localized interaction field owned by one element of matter.
+Contact or declared embedding activates compatible laws over the affected region;
+the resulting connection is discovered and maintained rather than manually wired
+for every triangle pair. Physical containment supplies the child's material
+environment with two-way response, not automatic rigid attachment.
+Reconcile this definition at your next checkpoint/startup within the assigned task.
+Preserve frozen criteria and evidence; report any required amendment explicitly.
+The 95-item scope and current claims are unchanged. This records architecture;
+it does not claim an implemented or qualified contact solver.
+
 # Active material-first plan — astra-0031
 
 The Captain stopped all agents and authorized installation of the revised plan.
@@ -294,8 +307,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 31,
-  "revision_id": "astra-0031",
+  "revision": 32,
+  "revision_id": "astra-0032",
   "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -354,7 +367,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/DELIVERY.md",
     "tools/monkey_campaign/PLAYABLE_BUILD.json",
     "tools/monkey_campaign/scope_migration.py",
-    "tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md"
+    "tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md",
+    "docs/PHYSICAL_PORTS.md"
   ]
 }
 CHIMERA_LEAD_CONTROL -->

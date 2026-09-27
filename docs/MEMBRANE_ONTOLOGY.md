@@ -2,6 +2,13 @@
 
 Operator clarification, 2026-09-24; lead architectural interpretation v1.
 
+Updated physical semantics, Captain's decision 2026-09-27:
+[Physical ports: material-owned interaction fields](PHYSICAL_PORTS.md) governs
+physical containment and ports. A physical port belongs to one element of matter;
+contact or declared embedding activates compatible interaction laws locally and
+creates the runtime connection. The explicit links below describe the authored
+structural representation, not a requirement to manually wire every contact.
+
 A membrane is a unit in the ontology. It encompasses its definition, boundary,
 contents, physics and validation. It can contain other membranes and connect to
 other membranes through ports. This applies recursively: the creature contains
@@ -20,6 +27,9 @@ an interface or responsibility rather than inventing a physical surface.
 **Containment** gives each entry one immediate parent in this authored hierarchy.
 Stable IDs survive moves and renames. A child's membership does not automatically
 inherit mass, density, a frame, proof, or runtime readiness from its parent.
+For physical enclosures, containment does establish the material environment and
+its applicable interaction laws, with two-way physical response. It does not
+automatically weld the child to the parent or copy its transform.
 
 **Connection** links explicit ports on named membranes. It never reparents them.
 Ports declare a protocol and units; connection compatibility is a structural
