@@ -19,7 +19,7 @@ I2 VERSION/SCHEMA: every event is versioned, named, stamped; no floats
   [PASS] I2.b every intent is one of the frozen two  -- names=['climb_request', 'let_go', 'climb_request']
   [PASS] I2.c source is stamped on every event
   [PASS] I2.d both stamps ride every event (ms + tick, the seam's convention)  -- stamps=[(1000, 300), (1100, 330), (1200, 360)]
-  [PASS] I2.e the canonical field set is EXACTLY five, on every event  -- {'intent_version', 'source', 'now_ms', 'issued_tick', 'intent'}
+  [PASS] I2.e the canonical field set is EXACTLY five, on every event  -- {'source', 'now_ms', 'issued_tick', 'intent', 'intent_version'}
   [PASS] I2.f NO float field exists in the wire format (pure signal: the only numbers are stamps)
   [PASS] I2.g the canonical form is JSON-serializable and round-trips
   [PASS] I2.h a wrong intent_version is REFUSED
