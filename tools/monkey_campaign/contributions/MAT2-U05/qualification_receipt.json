@@ -1,0 +1,54 @@
+{
+ "agent_id": "arrival-3ba367764f6543598c2669131d8b9982",
+ "attempt_id": "867dc0b142e84c138c99a486e4d4caa6",
+ "base_rev": "2e2b8f5e02fa92d951f4065480ef4ddf2fa6fa1c",
+ "capture_context": {
+  "capture_sha256": "e952a5f55453e569f12d6390ba65cddbfdcbb6a73c7d9dad91ea610fba2fc8ed",
+  "run_id": "mat2-u05-seam-20260927-867dc0b1",
+  "subject_sha256": "586cb1c541afdc391ac14ce989cf2d2561a9ee79e25e874f7fbfc2312fd3c5a2",
+  "task_id": "U05",
+  "tick_interval": [
+   0,
+   300
+  ]
+ },
+ "contract_task_id": "U05",
+ "criteria_sha256": "0bc5d131c64d029e0b12f86ad4188b3fbe411ce5e2bc74510c5f7164e72c9a4a",
+ "evidence": {
+  "camera": {
+   "raw_sha256": "400725ba81ec9db8ac03ddfc187f62bb23fe3dcc6e5efab46dd3d78acfa20b5e",
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-U05\\867dc0b142e84c138c99a486e4d4caa6\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-U05\\evidence\\capture_manifest.json"
+  },
+  "numerical": {
+   "raw_sha256": "476841b46aade97ac6a1758f61194a76afb4b60a748f836aad29b514cc068a12",
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-U05\\867dc0b142e84c138c99a486e4d4caa6\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-U05\\evidence\\numerical_receipt.json"
+  },
+  "runtime": {
+   "raw_sha256": "2dca008d5091a70f771f89aaebe093a14509b9c198876daf4ec1763b1040d917",
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-U05\\867dc0b142e84c138c99a486e4d4caa6\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-U05\\evidence\\runtime_receipt.json"
+  },
+  "visual": {
+   "raw_sha256": "e952a5f55453e569f12d6390ba65cddbfdcbb6a73c7d9dad91ea610fba2fc8ed",
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-U05\\867dc0b142e84c138c99a486e4d4caa6\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-U05\\evidence\\capture.mp4"
+  }
+ },
+ "gate_validation": {
+  "capture_kind": "video",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "controls",
+  "structurally_valid": true,
+  "view_count": 6,
+  "visual_acceptance": false
+ },
+ "preregistration_sha256": "41b22f89d881220cf78215e21377154a27b694843357cecf1da9d5ec580f7529",
+ "records_leg": {
+  "byte_exact": true,
+  "identity_manifest_pins": 17,
+  "lineage_rev": "272e7bda",
+  "reused_from": "ONT-U05 PR #179 head cdb0d81c95fb0fe93577e7b5d1f73d1549b3ec29"
+ },
+ "schema": "mat2-u05.qualification.v1",
+ "subject_sha256": "586cb1c541afdc391ac14ce989cf2d2561a9ee79e25e874f7fbfc2312fd3c5a2",
+ "task_id": "MAT2-U05"
+}

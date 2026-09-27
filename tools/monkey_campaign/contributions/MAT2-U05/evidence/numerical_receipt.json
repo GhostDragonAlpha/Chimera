@@ -1,0 +1,269 @@
+{
+ "checks": [
+  {
+   "measured": {
+    "delivered": [
+     [
+      2000,
+      "climb_request",
+      600
+     ],
+     [
+      3000,
+      "let_go",
+      900
+     ],
+     [
+      5500,
+      "climb_request",
+      1650
+     ],
+     [
+      9500,
+      "climb_request",
+      2850
+     ],
+     [
+      10200,
+      "let_go",
+      3060
+     ]
+    ],
+    "issued_tick_matches_now_ms_physics_hz": true,
+    "refused_versions": 0,
+    "wire_field_set_exact": true
+   },
+   "name": "C2_versioned_delivery_to_declared_sink",
+   "ok": true
+  },
+  {
+   "measured": {
+    "command_records": 99,
+    "first_record": {
+     "at_ms": 500,
+     "issued_tick": 150,
+     "source": "u01_input_mapper",
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0
+    },
+    "named_space_refusals": 5,
+    "predicted_module_truth": 99,
+    "prediction_deviations": "PREREGISTRATION APPENDIX A (frozen derivation said 101; module law measured 99)"
+   },
+   "name": "C3_walk_side_frozen_behavior",
+   "ok": true
+  },
+  {
+   "measured": {
+    "deliveries": 5,
+    "delivery_order_equals_press_order": true,
+    "per_press_counts": {
+     "2000": 1,
+     "3000": 1,
+     "5500": 1,
+     "9500": 1,
+     "10200": 1
+    },
+    "repeat_noops": [
+     [
+      2050,
+      "Space"
+     ],
+     [
+      2100,
+      "Space"
+     ]
+    ]
+   },
+   "name": "C4_exactly_once_per_press_ordered",
+   "ok": true
+  },
+  {
+   "measured": {
+    "delivered_at_gated_ms": [],
+    "drops": [
+     [
+      4500,
+      "Space",
+      "dropped_blurred"
+     ],
+     [
+      7000,
+      "C",
+      "dropped_disconnected"
+     ],
+     [
+      8500,
+      "Space",
+      "dropped_paused"
+     ]
+    ],
+    "final_channel_state": "ready"
+   },
+   "name": "C5_gates_drop_named_no_phantom",
+   "ok": true
+  },
+  {
+   "measured": {
+    "let_go_deliveries": [
+     [
+      3000,
+      "let_go"
+     ],
+     [
+      10200,
+      "let_go"
+     ]
+    ]
+   },
+   "name": "C6_no_fabricated_retract",
+   "ok": true
+  },
+  {
+   "measured": {
+    "final_channel_held": [],
+    "held_after_quiesce": [],
+    "post_reload_delivery": true,
+    "world_boot_calls": [
+     [
+      "boot"
+     ]
+    ]
+   },
+   "name": "C7_session_reload_no_stuck_intent",
+   "ok": true
+  },
+  {
+   "measured": {
+    "intent_stamps_match_convention": true,
+    "walk_record_stamps_match_convention": true,
+    "walk_records": 99
+   },
+   "name": "C12_one_timeline_correlation",
+   "ok": true
+  },
+  {
+   "measured": {
+    "intent_deliveries": 5,
+    "sink_violations": [],
+    "walk_records": 99
+   },
+   "name": "C1_exclusive_sinks",
+   "ok": true
+  },
+  {
+   "measured": {
+    "identical": true,
+    "post_run_pin_drift": []
+   },
+   "name": "F-C_pinned_bytes_unchanged",
+   "ok": true
+  },
+  {
+   "measured": [
+    {
+     "duration_s": 0.12835830000040005,
+     "exit": 0,
+     "result_line": "RESULT: GREEN -- all falsifier checks passed",
+     "suite": "climb_intent_tests.py",
+     "tail": [
+      "seam sha256 at end:   6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+     ]
+    },
+    {
+     "duration_s": 0.06950829999914276,
+     "exit": 0,
+     "result_line": "RESULT: GREEN -- all 4 amendment checks passed",
+     "suite": "climb_intent_amr_tests.py",
+     "tail": [
+      "RESULT: GREEN -- all 4 amendment checks passed"
+     ]
+    }
+   ],
+   "name": "F-B_original_suites_green",
+   "ok": true
+  },
+  {
+   "measured": [
+    {
+     "detail": {
+      "deliveries": 7,
+      "extra_repeat_deliveries": [
+       2050,
+       2100
+      ]
+     },
+     "exit": 0,
+     "fired": true,
+     "mutation": "m1_edge_law",
+     "predicts": "C4"
+    },
+    {
+     "detail": {
+      "accepted_deliveries": 0,
+      "refused_versions": 5
+     },
+     "exit": 0,
+     "fired": true,
+     "mutation": "m2_wire_version",
+     "predicts": "C2"
+    },
+    {
+     "detail": {
+      "deliveries": 7,
+      "leaked_gated_deliveries": [
+       [
+        4500,
+        "climb_request"
+       ],
+       [
+        7000,
+        "let_go"
+       ],
+       [
+        8500,
+        "climb_request"
+       ]
+      ]
+     },
+     "exit": 0,
+     "fired": true,
+     "mutation": "m3_gate_law",
+     "predicts": "C5"
+    }
+   ],
+   "name": "F-D_probe_teeth_failing_first",
+   "ok": true
+  }
+ ],
+ "contract_task_id": "U05",
+ "counts": {
+  "climb_request": 3,
+  "intent_deliveries": 5,
+  "let_go": 2,
+  "named_drops": 3,
+  "policy_calls": 8,
+  "refused_versions": 0,
+  "repeat_noops": 2,
+  "sink_violations": 0,
+  "walk_command_records": 99,
+  "walk_named_space_refusals": 5,
+  "world_boot_calls": 1
+ },
+ "criteria_sha256": "0bc5d131c64d029e0b12f86ad4188b3fbe411ce5e2bc74510c5f7164e72c9a4a",
+ "preregistration_sha256": "41b22f89d881220cf78215e21377154a27b694843357cecf1da9d5ec580f7529",
+ "run_id": "mat2-u05-seam-20260927-867dc0b1",
+ "schema": "mat2-u05.seam.numerical.v1",
+ "state_binding": {
+  "kind": "trace",
+  "raw_sha256": "59bb8430c2a0ce73234c6d298a4355138c571a2237c7cfe14325e18af332d8b5",
+  "rows": 301,
+  "tick_interval": [
+   0,
+   300
+  ]
+ },
+ "subject_sha256": "586cb1c541afdc391ac14ce989cf2d2561a9ee79e25e874f7fbfc2312fd3c5a2",
+ "task_id": "MAT2-U05",
+ "walk_contract_sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+}
