@@ -1,0 +1,34 @@
+{
+ "schema": "chimera.qualification_receipt.v1",
+ "task_id": "MAT2-P01",
+ "kind": "offline",
+ "criteria_sha256": "e4521ad79a5bc263ba333b81ebe36599e1d6da5a13eed92c2ff5fa3a0e670c5e",
+ "head_sha": null,
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "statement": "Completion contract frozen: core clause carried verbatim from archived ONT-P01; material-first addition adopted under astra-0031; identities bound; records-only completion evaluation with live falsifiers.",
+ "predictions": {
+  "P1": "carried verbatim",
+  "P2": "scope identity bound",
+  "P3": "authority hashes bound"
+ },
+ "falsifiers": {
+  "F1": "IDENTITY_MISMATCH",
+  "F2": "SCOPE_UNSUPPORTED / CORE_CLAUSE_INCOMPLETE",
+  "F3": "RECORD_SUBSTITUTION"
+ },
+ "evidence": {
+  "numerical": {
+   "kind": "records",
+   "reference": "test_contract.py output (ALL CHECKS PASS)",
+   "fired": []
+  },
+  "source": "test_contract.py + contract.json + PREREGISTRATION.md in this contribution",
+  "independent_review": null
+ },
+ "honest_boundary": "Offline records-kind card: no runtime, visual or native claim. Contract freezes the goal; it does not implement it. Independent review pending.",
+ "authorities_sha256_full": {
+  "E:/PythonChimera/tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md": "81f432fc9fcee8aee6fcdcac39487f50538f1f4c1b9d4c2821d3bb0f40e47287",
+  "E:/PythonChimera/tools/monkey_campaign/APPROVED_SCOPE.json": "fe74180d7b6ad584f48c5fd9a642db4393c26c4e4cd64c8b41652e9b30c27660",
+  "E:/PythonChimera/docs/MONKEY_RUN.md": "2d4611802c6338c26c43bd5217e59ab514588a0a25b949ac5c8fbbe22651359d"
+ }
+}
