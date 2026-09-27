@@ -96,6 +96,14 @@ Future integration receipts should retain task ID, source/build identities, firs
 implementation time, integration time, measured agent usage if available, actual
 player actions and runtime/visual evidence. Do not fabricate historical timing.
 
+Human visual decisions follow [OPERATOR_VISUAL_DECISIONS.md](OPERATOR_VISUAL_DECISIONS.md).
+A local decision panel, screenshot path or mailbox notice is not presentation.
+The Lieutenant must inspect and display the actual evidence in the Captain's active
+conversation, explain labeled choices and consequences, and bind the explicit reply
+to the exact shown bytes. Workers and the Sergeant must never choose for the Captain.
+While waiting, mark the card decision-blocked, release its development capacity and
+continue other eligible work. A missing human answer is not a worker failure.
+
 Judge success by accepted behavior in the playable build, first-review acceptance,
 correction cycles, duplicate coverage and integration latency. Checklist completion
 is explicitly unweighted and is not a forecast of effort or elapsed time.

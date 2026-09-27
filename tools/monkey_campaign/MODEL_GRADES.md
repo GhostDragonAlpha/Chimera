@@ -57,6 +57,9 @@ Case score = sum(weight * dimension / 2). Score only terminal, attributable unit
 A legitimate external blocker is not a model failure. If a unit cannot yet be
 fairly scored, record it as pending or excluded with the reason; do not fill unknown
 dimensions with zero. Difficult honest negative findings can score fully.
+Waiting for a human visual decision is an external blocker. Score the worker on the
+accuracy and usability of its packet and the lead on actual presentation/receipt
+binding; never reward a model for selecting the human's answer.
 
 ## Grade, confidence and trend
 
