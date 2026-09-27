@@ -1,0 +1,76 @@
+{
+  "schema_version": "chimera.rigid_body_cell_groups.v1",
+  "body_groups": [
+    {
+      "body_id": "mc-body-1",
+      "cell_ids": [
+        "cell-R",
+        "cell-S"
+      ],
+      "body_frame": {
+        "frame_id": "mc-frame-1",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [
+            [
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.5,
+              0.8660254037844386,
+              0.0
+            ],
+            [
+              -0.8660254037844386,
+              0.5,
+              0.0
+            ]
+          ],
+          "origin_m": [
+            2.0,
+            -1.0,
+            3.0
+          ]
+        }
+      }
+    },
+    {
+      "body_id": "mc-body-2",
+      "cell_ids": [
+        "cell-D"
+      ],
+      "body_frame": {
+        "frame_id": "mc-frame-2",
+        "handedness": "right",
+        "coordinate_unit": "m",
+        "domain_from_body": {
+          "rotation": [
+            [
+              0.0,
+              -0.5,
+              0.8660254037844386
+            ],
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.8660254037844386,
+              0.5
+            ]
+          ],
+          "origin_m": [
+            -1.0,
+            4.0,
+            -2.0
+          ]
+        }
+      }
+    }
+  ]
+}
