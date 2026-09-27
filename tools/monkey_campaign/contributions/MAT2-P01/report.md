@@ -40,10 +40,38 @@ Completion semantics recorded: card closes only on lead-approved exact-head
 merge with qualification evidence; the game closes only with integrated
 evidence for every selected requirement and actual human player acceptance.
 
+## Correction (independent review bb096a44d27e451fb4535f468411a9c5, verdict CHANGES_REQUIRED)
+
+Defects found by the independent reviewer at head a195f457 and fixed in this correction:
+
+- D1: the frozen prereg falsifier F1 ("removing or altering any identity binding
+  (criteria sha, scope sha, archived scope sha, planning id) makes test_contract.py
+  exit nonzero with IDENTITY_MISMATCH") was not implemented: the test had no
+  planning_id check and its three hash checks were prefix-only, so planning id
+  removal/alteration and 4-char hash-suffix alterations all exited 0.
+- D2: test_contract.py contained a tautological self-referential criteria check
+  (lines 50-51, "self-referential skip") — dead code presented as a criteria check.
+
+Fix (test-only; PREREGISTRATION.md and contract.json are byte-identical to the
+originally published artifacts, sha256 e895e8a2... and e255eb44...): test_contract.py
+now parses the FULL 64-hex criteria/active-scope/archived-scope hashes and the
+planning id from the frozen PREREGISTRATION.md text and requires exact equality with
+contract.json, deletes the dead check, and additionally cross-checks the criteria sha
+against the live registry card (fail-closed when the campaign store is reachable).
+
+Failing-first demonstration (transcript bound in review workspace
+kanban-reviews/MAT2-P01/bb096a44d27e451fb4535f468411a9c5/evidence/transcripts_correction.txt):
+planning id removed -> exit 1 IDENTITY_MISMATCH; planning id altered to P99 -> exit 1;
+4-char suffix alteration of criteria/active-scope/archived-scope sha -> exit 1 each;
+criteria removed -> exit 1; active scope swapped with archived -> exit 1; prereg+contract
+collusion on the criteria sha -> exit 1 via the live registry card check. Baseline
+unchanged -> ALL CHECKS PASS, exit 0. No new probes were added: the frozen prereg
+(P1-P3, F1-F3) is unchanged and is now fully implemented.
+
 ## Artifacts (absolute paths + sha256)
 
-- PREREGISTRATION.md — e895e8a2d46d6c9e4b5a6980c6a83f9a8a785142c06248e0d843b013369c73c9
-- contract.json — e255eb44203212c039598d28629c21e6e1c019d1abe6caa07b4430fca53715a5
-- test_contract.py — 9db1a4d94db3879b171efbfa9269dce6e7a167af923b1ce357d62563411d2f25
-- qualification_receipt.json — 648b42a1a447191a628a09c66ff1cf816e74d587c45afca7f36c4416baef5993
-- report.md — this file
+- PREREGISTRATION.md — e895e8a2d46d6c9e4b5a6980c6a83f9a8a785142c06248e0d843b013369c73c9 (unchanged by correction)
+- contract.json — e255eb44203212c039598d28629c21e6e1c019d1abe6caa07b4430fca53715a5 (unchanged by correction)
+- test_contract.py — changed by correction; exact sha256 in the publication record
+- qualification_receipt.json — changed by correction; exact sha256 in the publication record
+- report.md — this file (changed by correction)
