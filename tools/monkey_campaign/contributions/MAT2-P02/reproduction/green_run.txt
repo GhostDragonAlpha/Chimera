@@ -1,0 +1,35 @@
+GREEN RUN TRANSCRIPT — MAT2-P02 test_prototype_recovery after claim authored
+Date: 2026-09-27T09:26:31Z
+Command: MAT2P02_REPO=<attempt checkout> python -B -m unittest test_prototype_recovery -v
+===
+test_claim_files_exist (test_prototype_recovery.FailingFirstRed.test_claim_files_exist) ... ok
+test_M4_gap_flipped_resolved (test_prototype_recovery.GapAndCarryControls.test_M4_gap_flipped_resolved) ... ok
+test_M5_gap_deleted (test_prototype_recovery.GapAndCarryControls.test_M5_gap_deleted) ... ok
+test_M6_reverification_outcome_flipped (test_prototype_recovery.GapAndCarryControls.test_M6_reverification_outcome_flipped) ... E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-P02\b6607daeeed549aeb865302efd24eb9a\checkout\tools\monkey_campaign\contributions\MAT2-P02\test_prototype_recovery.py:172: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\allen\\AppData\\Local\\Temp\\tmp9m9ukf9i\\lineage_reverification.json' mode='r' encoding='utf-8'>
+  rec = json.loads(open(p5p, encoding="utf-8").read())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_M7_reverification_counts_cut (test_prototype_recovery.GapAndCarryControls.test_M7_reverification_counts_cut) ... E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-P02\b6607daeeed549aeb865302efd24eb9a\checkout\tools\monkey_campaign\contributions\MAT2-P02\test_prototype_recovery.py:188: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\allen\\AppData\\Local\\Temp\\tmp_t_zdeqr\\lineage_reverification.json' mode='r' encoding='utf-8'>
+  rec = json.loads(open(p5p, encoding="utf-8").read())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_anchor_mutation_bites (test_prototype_recovery.GapAndCarryControls.test_anchor_mutation_bites) ... E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-P02\b6607daeeed549aeb865302efd24eb9a\checkout\tools\monkey_campaign\contributions\MAT2-P02\test_prototype_recovery.py:204: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\allen\\AppData\\Local\\Temp\\tmpgcq_xszp\\dump_run_record.json' mode='r' encoding='utf-8'>
+  rec = json.loads(open(p2p, encoding="utf-8").read())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_M1_criteria_suffix_altered (test_prototype_recovery.IdentityControls.test_M1_criteria_suffix_altered) ... ok
+test_M2_scope_swapped_with_archived (test_prototype_recovery.IdentityControls.test_M2_scope_swapped_with_archived) ... ok
+test_M2b_planning_id_altered (test_prototype_recovery.IdentityControls.test_M2b_planning_id_altered) ... ok
+test_M2c_prereg_binding_live (test_prototype_recovery.IdentityControls.test_M2c_prereg_binding_live) ... E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-P02\b6607daeeed549aeb865302efd24eb9a\checkout\tools\monkey_campaign\contributions\MAT2-P02\test_prototype_recovery.py:116: ResourceWarning: unclosed file <_io.BufferedReader name='E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-P02\\b6607daeeed549aeb865302efd24eb9a\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-P02\\PREREGISTRATION.md'>
+  actual = hashlib.sha256(open(PREREG, "rb").read()).hexdigest()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
+test_honest_claim_passes (test_prototype_recovery.IdentityControls.test_honest_claim_passes) ... ok
+test_M3_pin_blob_altered (test_prototype_recovery.PinResolution.test_M3_pin_blob_altered) ... ok
+test_pins_resolve_against_object_store (test_prototype_recovery.PinResolution.test_pins_resolve_against_object_store) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 4.144s
+
+OK
+unittest_exit=0

@@ -1,0 +1,58 @@
+{
+ "schema": "chimera.qualification_receipt.v1",
+ "task_id": "MAT2-P02",
+ "kind": "reconcile",
+ "criteria_sha256": "28148c96061a42ae49753b622876f9ed1337aadb8f814b34204fb13fc7023c0d",
+ "head_sha": null,
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "statement": "Operator-observed prototype (real CT body walking on all fours, 17ba94b9) recovered and REPRODUCED byte-exactly from pinned records (scene anchor, motion anchors, q-dump bit-identity, movie bytes, walk numbers); five-item lineage clause carried by the merged ONT-P02 map (51eaa010) and re-verified in place (152 checks / 23 pins PASS, 23/23 falsifier tests); five standing gaps named UNRESOLVED with owners.",
+ "attempt_id": "b6607daeeed549aeb865302efd24eb9a",
+ "agent_id": "arrival-fb675f3fd2934822acfe7190d04bc790",
+ "preregistration": {
+  "frozen_before_any_run": true,
+  "sha256": "00a0502de9670ac0be9bb150fa9139823e98b0ce6adf8f78626ccbc43a6366c4"
+ },
+ "predictions": {
+  "P1_scene_regeneration": "CONFIRMED (scene sha f6844eea... EXACT)",
+  "P2_motion_reproduction": "CONFIRMED (stdout 8c537cdb EXACT, stderr c6f9b6c0 EXACT, dump b47b709c bit-identical to pinned in-tree bytes, 302 ticks, base dx 0.9131056683968011)",
+  "P3_walk_numbers": "CONFIRMED (302 ticks, refusal 302, worst ledger 30.970714 J, base dx 0.9131)",
+  "P4_behavior_bytes": "CONFIRMED (movie 2e2982f1 at 1570836 bytes; frame plan 24+302+14=340; reproduced dump == in-tree dump)",
+  "P5_lineage_carry": "CONFIRMED (PASS 152 checks / 23 pins; falsifier suite 23/23 OK in 15.810s, CPU-only)"
+ },
+ "falsifiers": {
+  "F1_pin_resolution": "did not fire (12/12 pins resolve; all anchors exact); mutation controls bite",
+  "F2_lineage_regression": "did not fire (records leg re-verified unchanged at this candidate)",
+  "F3_gap_invention": "did not fire (5 gaps recorded UNRESOLVED; flipped/deleted-gap mutations refused)"
+ },
+ "evidence": {
+  "numerical": {
+   "kind": "records+reproduction",
+   "reference": "reproduction/ receipts in this contribution (scene, motion, numbers, behavior bytes, lineage re-verification)",
+   "fired": []
+  },
+  "source": "prototype_recovery.json + verify_prototype_recovery.py + test_prototype_recovery.py + PREREGISTRATION.md + report.md in this contribution; all pins resolve by read-only git plumbing against the attempt checkout's object store",
+  "independent_review": "pending; auto-queued on publication request"
+ },
+ "failing_first": "reproduction/failing_first_red.txt (RED: claim absent, exit 1) -> reproduction/green_run.txt (GREEN: 13/13 OK, exit 0); mutation suite: criteria suffix, scope swap, planning id, pin blob, gap RESOLVED flip, gap deletion, P5 outcome flip, P5 count cut, anchor mutation all refused with named reasons",
+ "gaps_standing": [
+  "trained_walking_policy",
+  "interactive_playable_walk",
+  "judge_stride_phase_verdict",
+  "ct_distribution_clearance",
+  "cot_denominator_correction"
+ ],
+ "honest_boundary": "Records/anatomy recovery card. The walk was not re-RECORDED (movie + capture chain carried as pinned bytes + receipts); the visual_static capture leg is the merged ONT-P02 winner's capture, carried by reference. The merged capture-build test suite was not re-run (extraction-depth/subject-cache prerequisite; recorded in report.md section 7). No new physics, no subsystem replacement, no playable-completion claim; MAT2-P01's frozen contract is the finish line.",
+ "authorities_sha256_full": {
+  "E:/PythonChimera/tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md": "81f432fc9fcee8aee6fcdcac39487f50538f1f4c1b9d4c2821d3bb0f40e47287",
+  "E:/PythonChimera/tools/monkey_campaign/APPROVED_SCOPE.json": "fe74180d7b6ad584f48c5fd9a642db4393c26c4e4cd64c8b41652e9b30c27660",
+  "E:/PythonChimera/docs/MONKEY_RUN.md": "2d4611802c6338c26c43bd5217e59ab514588a0a25b949ac5c8fbbe22651359d"
+ },
+ "postmerge_audit_of_dependency_MAT2-P01": {
+  "merge_commit": "97993cbefaf00380803d8e67652ac51d50c37d06",
+  "pr": 192,
+  "pr_head": "e61838b9fb058b19631717fc5d15be8c31681954",
+  "verdict": "PASS 4/4",
+  "verification_json_sha256": "621f0d72c2bf6e734ed7dba4f5299f3103e335197fae0780898d0e2375b9d8c1",
+  "report_path": "E:/ChimeraWork/monkey-coordination/review-workspaces/postmerge-audit_GM/report.md"
+ }
+}
