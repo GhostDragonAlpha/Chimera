@@ -1,0 +1,159 @@
+{
+ "cells": [
+  {
+   "cell_id": "cell-na1",
+   "proposals": [
+    "region-A"
+   ],
+   "vertex_ids": [
+    "a0",
+    "a1",
+    "a2",
+    "a3"
+   ]
+  },
+  {
+   "cell_id": "cell-na2",
+   "proposals": [
+    "region-A2"
+   ],
+   "vertex_ids": [
+    "a1",
+    "a2",
+    "a3",
+    "b3"
+   ]
+  },
+  {
+   "cell_id": "cell-nb1",
+   "proposals": [
+    "region-B"
+   ],
+   "vertex_ids": [
+    "c0",
+    "c1",
+    "c2",
+    "c3"
+   ]
+  }
+ ],
+ "coordinate_frame": {
+  "coordinate_unit": "m",
+  "frame_id": "coupon-u-domain",
+  "handedness": "right",
+  "scale_to_m": 0.01
+ },
+ "mass_authority": "reconstructed_tissue_mass",
+ "materials": [
+  {
+   "conditions": "uniform",
+   "density_kg_m3": 12.0,
+   "density_source": "b02 analytic coupon fixture",
+   "material_id": "tissue-A"
+  },
+  {
+   "conditions": "uniform",
+   "density_kg_m3": 7.0,
+   "density_source": "b02 analytic coupon fixture",
+   "material_id": "tissue-B"
+  },
+  {
+   "conditions": "uniform",
+   "density_kg_m3": 1000.0,
+   "density_source": "b02 analytic coupon fixture",
+   "material_id": "tissue-C"
+  }
+ ],
+ "regions": [
+  {
+   "mass_owner_id": "owner-A",
+   "material_id": "tissue-A",
+   "region_id": "region-A"
+  },
+  {
+   "mass_owner_id": "owner-A2",
+   "material_id": "tissue-B",
+   "region_id": "region-A2"
+  },
+  {
+   "mass_owner_id": "owner-B",
+   "material_id": "tissue-C",
+   "region_id": "region-B"
+  }
+ ],
+ "schema_version": "chimera.material_partition.v1",
+ "vertices": [
+  {
+   "position": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "vertex_id": "a0"
+  },
+  {
+   "position": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "vertex_id": "a1"
+  },
+  {
+   "position": [
+    0.0,
+    100.0,
+    0.0
+   ],
+   "vertex_id": "a2"
+  },
+  {
+   "position": [
+    0.0,
+    0.0,
+    100.0
+   ],
+   "vertex_id": "a3"
+  },
+  {
+   "position": [
+    200.0,
+    100.0,
+    100.0
+   ],
+   "vertex_id": "b3"
+  },
+  {
+   "position": [
+    500.0,
+    -300.0,
+    200.0
+   ],
+   "vertex_id": "c0"
+  },
+  {
+   "position": [
+    600.0,
+    -300.0,
+    200.0
+   ],
+   "vertex_id": "c1"
+  },
+  {
+   "position": [
+    500.0,
+    -200.0,
+    200.0
+   ],
+   "vertex_id": "c2"
+  },
+  {
+   "position": [
+    500.0,
+    -300.0,
+    300.0
+   ],
+   "vertex_id": "c3"
+  }
+ ]
+}

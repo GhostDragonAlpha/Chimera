@@ -1,0 +1,73 @@
+{
+ "cells": [
+  {
+   "cell_id": "cell-d1",
+   "proposals": [
+    "region-D"
+   ],
+   "vertex_ids": [
+    "d0",
+    "d1",
+    "d2",
+    "d3"
+   ]
+  }
+ ],
+ "coordinate_frame": {
+  "coordinate_unit": "m",
+  "frame_id": "coupon-d-domain",
+  "handedness": "right",
+  "scale_to_m": 1.0
+ },
+ "mass_authority": "reconstructed_tissue_mass",
+ "materials": [
+  {
+   "conditions": "uniform",
+   "density_kg_m3": 6.0,
+   "density_source": "b02 analytic coupon fixture",
+   "material_id": "tissue-D"
+  }
+ ],
+ "regions": [
+  {
+   "mass_owner_id": "owner-D",
+   "material_id": "tissue-D",
+   "region_id": "region-D"
+  }
+ ],
+ "schema_version": "chimera.material_partition.v1",
+ "vertices": [
+  {
+   "position": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "vertex_id": "d0"
+  },
+  {
+   "position": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "vertex_id": "d1"
+  },
+  {
+   "position": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "vertex_id": "d2"
+  },
+  {
+   "position": [
+    0.25,
+    0.5,
+    9.5367431640625e-07
+   ],
+   "vertex_id": "d3"
+  }
+ ]
+}

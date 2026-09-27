@@ -1,0 +1,111 @@
+{
+ "body_groups": [
+  {
+   "body_frame": {
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "origin_m": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "rotation": [
+      [
+       0.0,
+       -1.0,
+       0.0
+      ],
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ]
+    },
+    "frame_id": "frame-A",
+    "handedness": "right"
+   },
+   "body_id": "coupon-body-A",
+   "cell_ids": [
+    "cell-na1",
+    "cell-na2"
+   ]
+  },
+  {
+   "body_frame": {
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "origin_m": [
+      5.0,
+      -3.0,
+      2.0
+     ],
+     "rotation": [
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ]
+    },
+    "frame_id": "frame-B",
+    "handedness": "right"
+   },
+   "body_id": "coupon-body-B",
+   "cell_ids": [
+    "cell-nb1"
+   ]
+  },
+  {
+   "body_frame": {
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "origin_m": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "rotation": [
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ]
+    },
+    "frame_id": "frame-ghost",
+    "handedness": "right"
+   },
+   "body_id": "coupon-body-ghost",
+   "cell_ids": [
+    "cell-ghost"
+   ]
+  }
+ ],
+ "schema_version": "chimera.rigid_body_cell_groups.v1"
+}
