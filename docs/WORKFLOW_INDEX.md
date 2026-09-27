@@ -1,3 +1,7 @@
+# Current delivery direction
+
+See [playable delivery](../tools/monkey_campaign/DELIVERY.md), [build record](../tools/monkey_campaign/PLAYABLE_BUILD.json), and `python -B tools/monkey_campaign/delivery.py` for implementation, qualification and integration status.
+
 # Workflow index and glossary
 
 For the playable-monkey campaign, execute [MONKEY_RUN.md](MONKEY_RUN.md).

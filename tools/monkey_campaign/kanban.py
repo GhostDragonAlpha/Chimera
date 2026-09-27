@@ -25,7 +25,8 @@ def refill(b):
     sync(b)
     from review_lane import refill_corrections, free_slot
     refill_corrections(b)
-    for spec in b['backlog']:
+    from delivery import priority
+    for spec in sorted(b['backlog'], key=priority):
         tid=spec['id']
         if tid in b['cards']:continue
         free=free_slot(b)

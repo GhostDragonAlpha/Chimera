@@ -1,3 +1,7 @@
+# Current delivery direction — astra-0030
+
+[DELIVERY.md](DELIVERY.md) governs priority, bounded review and integration reporting. Read it before applying older maximum-parallel wording below.
+
 # Development and Review
 
 Ten numbered slots are development capacity. Review is a separate durable queue

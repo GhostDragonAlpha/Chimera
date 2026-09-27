@@ -1,3 +1,7 @@
+# Current delivery direction — astra-0030
+
+[DELIVERY.md](DELIVERY.md) governs priority, bounded review and integration reporting. Read it before applying older maximum-parallel wording below.
+
 # Continuous ten-slot work cycle
 
 Keep the same arrival ID. Execute the returned assignment, then immediately call

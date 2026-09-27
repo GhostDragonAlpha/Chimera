@@ -1,3 +1,7 @@
+# Current delivery direction — astra-0030
+
+[DELIVERY.md](DELIVERY.md) governs priority, bounded review and integration reporting. Read it before applying older maximum-parallel wording below.
+
 # Current merge owner — astra-0026
 
 MERGE_SERVICE.md supersedes local ready/merge execution below: ZCode workers prepare and review; the connected lead services ACCEPTED heads on operator-triggered lead sessions. Release your coordination claim after recording acceptance, then continue work. Do not attempt tokenless merges or file duplicate credential blockers.

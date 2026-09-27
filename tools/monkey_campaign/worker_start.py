@@ -146,6 +146,8 @@ def main():
             out.update(assignment=allocation,task_claimed=allocation['state'] in ('ASSIGNED','RESUME_ATTEMPT','REVIEW_ASSIGNED','OPERATIONAL_LEAD_ASSIGNED','CHECKPOINT_FOR_COORDINATION'),
                 next_action=allocation['next_action'],board=kanban.read(registry),
                 continuation='Read REVIEW_LANE.md. Development has ten slots; submitted candidates move to a separate Review queue and publish on review/<task-id>. Continue eligible work. Preserve existing PRs; only verified merge closes the task and unlocks dependencies.')
+            out['delivery_direction'] = 'Read tools/monkey_campaign/DELIVERY.md. Prioritize the flat-ground playable build; capacity is a ceiling, not a quota. Reuse tool-generated evidence and never infer runtime integration from a merged component.'
+            out['delivery_progress_command'] = 'python -B E:/PythonChimera/tools/monkey_campaign/delivery.py'
             if 'attempt' in allocation or 'review' in allocation:
                 planning_ids = allocation.get('brief', {}).get('planning_ids', [])
                 out['ontology_task_packets'] = [t for t in plan['tasks'] if t['id'] in planning_ids]
