@@ -1,3 +1,15 @@
+# Active material-first plan — astra-0031
+
+The Captain stopped all agents and authorized installation of the revised plan.
+Read [MATERIAL_PLAN_ADOPTION.md](../tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md).
+The active catalog has 95 selected requirements and uses MAT2- task IDs. Old ONT-
+claims, PRs and evidence are preserved in a read-only scope archive; they do not
+qualify revised tasks automatically. Resume with the same arrival ID and canonical
+worker_start.py command; do not resume an old task checkout. No new goal is needed.
+Recover the working prototype first, reuse material/GPU implementations and evidence,
+then demonstrate the composed physical monkey walking through woods.
+This section supersedes the older scope/count and dispatch wording below.
+
 # Playable delivery and bounded review — astra-0030
 
 Read [DELIVERY.md](../tools/monkey_campaign/DELIVERY.md). Operator approved: prioritize the same executable flat-ground monkey build, then terrain, then climbing. Ten workers is a ceiling, not a quota. Ordinary independent review coverage is capped per exact head; obsolete or excessive reviews retire only at their owner's next startup. Existing artifacts, ownership, criteria and scientific gates are preserved. Use delivery.py for honest stage reporting and evidence_pack.py for artifact hashes. Speculative workflow expansion is paused. The existing scope hash is unchanged.
@@ -282,9 +294,9 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 30,
-  "revision_id": "astra-0030",
-  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "revision": 31,
+  "revision_id": "astra-0031",
+  "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
   "files": [
     "docs/MONKEY_RUN.md",
     "tools/monkey_campaign/COORDINATION.md",
@@ -340,7 +352,9 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/delivery.py",
     "tools/monkey_campaign/evidence_pack.py",
     "tools/monkey_campaign/DELIVERY.md",
-    "tools/monkey_campaign/PLAYABLE_BUILD.json"
+    "tools/monkey_campaign/PLAYABLE_BUILD.json",
+    "tools/monkey_campaign/scope_migration.py",
+    "tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md"
   ]
 }
 CHIMERA_LEAD_CONTROL -->
@@ -415,13 +429,14 @@ in the later backlog. The architecture, frozen walking runbook and falsifiers re
 in force. No kinematic locomotion substitute or invisible support force is permitted.
 
 Read `tools/monkey_campaign/MONKEY_COMPLETION_MAP.md` for the scope, existing receipts,
-83 work items, 28 calculation contracts, dependencies and completion conditions.
+95 work items (83 retained plus M01-M12), 28 legacy calculation contracts, dependencies and completion conditions.
 The matching JSON contains the task definitions, not live progress.
 
-Default selection: 76 core/product items; the seven conditional material/assembly
-items become required only if the selected playable build consumes them. Preserve
-ongoing explicit assignments on that branch. Do not interrupt authorized walking
-training to complete an unrelated compiler or catalogue.
+Current selection: all 95 items through dependency closure. The selected material
+assembly consumes B01-B07, so those seven items are required in this revision.
+Prior assignments were archived under the Captain's explicit fleet stop; recover
+their evidence through current MAT2- cards. Training must use the newly qualified
+body/material/action contract rather than assuming an old policy remains compatible.
 
 Product-decision cards remain required decisions; they are not permission to invent
 the operator's tastes. Implement independent parts while awaiting the few decisions
@@ -429,7 +444,7 @@ that cannot be derived or recovered from existing instructions.
 
 **Scope fingerprint (`sha256-chimera-json-v1`):**
 
-`01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6`
+`cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097`
 
 The operator's copy of this fingerprint in the commissioning conversation is the
 trust anchor. Record it with the trusted coordinator/controller outside worker write
@@ -467,7 +482,7 @@ print credentials or obtain supervisor secrets to manufacture permissions. Do no
 start a second registry, duplicate task board, or replacement service. No service
 restart, database reset, mass worktree migration or takeover is implied by this entry.
 
-Map the 83 planning IDs onto existing native/controller tasks by meaning and receipts.
+Map the 95 planning IDs onto existing native/controller tasks by meaning and receipts.
 The JSON's `UNRECONCILED` means this review did not establish current acceptance; it
 does not mean the implementation is missing. Store the ID crosswalk and disk forecasts
 in a coordinator-owned bindings file using `bindings.example.json` as its format.

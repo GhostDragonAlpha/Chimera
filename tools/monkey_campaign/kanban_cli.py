@@ -29,7 +29,8 @@ def main():
         from merge_service import queue
         result=queue(r)
     elif args.action=='inbox':
-        card=k.read(r,args.task);result={'task_id':card['id'],'state':card['state'],'messages':card['messages'],'prs':card['prs'],'winner':card['winner']}
+        card=k.read(r,args.task)
+        result=card if card.get('state')=='HISTORICAL_SCOPE_READ_ONLY' else {'task_id':card['id'],'state':card['state'],'messages':card['messages'],'prs':card['prs'],'winner':card['winner']}
     elif args.action=='join':result=k.join(r,args.agent,args.task)
     else:
         if not args.arguments:raise ValueError('arguments_file_required')

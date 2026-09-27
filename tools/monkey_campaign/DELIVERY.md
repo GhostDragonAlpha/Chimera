@@ -1,3 +1,7 @@
+# Material-first delivery — astra-0031
+
+The active 95-item catalog replaces the original scope. Read [MATERIAL_PLAN_ADOPTION.md](MATERIAL_PLAN_ADOPTION.md). Recover the existing prototype; reconcile pressure, passive material, removable tissue interfaces and resident GPU interactions; reuse the same laws across shapes and the monkey limb. The first product checkpoint is controlled walking through woods, followed by climbing. No invisible skeletal hinge or cosmetic-only skin can substitute for the declared material assembly.
+
 # Playable delivery — operator approved 2026-09-27
 
 The next result is one physically controlled monkey on flat ground in one runnable
@@ -18,7 +22,7 @@ kinematic translation or alternate body can substitute for this result.
 
 Scheduling ranks eligible prerequisite closure; it never unlocks a dependency,
 changes a frozen criterion, preempts an existing owner or invents physical values.
-The 83-task catalog and its selected 76-task scope are unchanged. Useful unrelated
+The 95-task catalog uses versioned MAT2- qualifications. Useful unrelated
 work may proceed when the critical path is resource- or decision-blocked.
 
 `PLAYABLE_BUILD.json` is the single build record. `astra/gait-capture` is the

@@ -48,7 +48,7 @@ class StartupTests(unittest.TestCase):
 
     def test_start_reads_real_plan_and_claims_once(self):
         result = self.run_start('--arrival-id', 'startup-fixture')
-        self.assertEqual(result['plan']['approved_task_count'], 83)
+        self.assertEqual(result['plan']['approved_task_count'], 95)
         self.assertTrue(result['task_claimed'])
         self.assertEqual(result['assignment']['state'], 'ASSIGNED')
         self.assertTrue(result['assignment']['brief']['steps'])
