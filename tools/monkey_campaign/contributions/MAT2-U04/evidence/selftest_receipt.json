@@ -1,0 +1,19 @@
+{
+ "all_fired": true,
+ "demonstrations": [
+  {
+   "fired": true,
+   "name": "SENS-LAW-BREAK fires N2"
+  },
+  {
+   "fired": true,
+   "name": "INVERT-BREAK fires N3"
+  },
+  {
+   "fired": true,
+   "name": "PERSIST-BREAK fires N6"
+  }
+ ],
+ "run_id": "mat2-u04-input-20260927-d9ce4334",
+ "schema": "mat2-u04.input-settings.selftest.v1"
+}

@@ -1,0 +1,86 @@
+{
+ "agent_id": "arrival-1390bce44d204c709636097a9613e84f",
+ "attempt_id": "d9ce4334674e435d95b9cb95373327e5",
+ "candidate_suite": {
+  "capture": "tools/monkey_campaign/contributions/MAT2-U04/capture_build_settings.py (d608717a26c646be01485bdfe941649f8e587ea084848f41e34aa9d0ec546377)",
+  "card_task": "tools/monkey_campaign/contributions/MAT2-U04/card_task.json (45552973383b1b197080c95d1e9484b2932056af55fca20619ddf5a23b9a70cc)",
+  "child": "tools/monkey_campaign/contributions/MAT2-U04/child_load_probe.py (e4d34c013b56de3a2f29ee3e38f0a9140a70e85cd093821ac57a791078e7cfa9)",
+  "falsifier_demos": "tools/monkey_campaign/contributions/MAT2-U04/evidence/falsifier_demos.log (a3e14d510f4e2530d7a8bca2b2170ef0b781bac39aca4c05a6b6b5778a223335): PIN-DRIFT, SENS-LAW-BREAK->N2, INVERT-BREAK->N3, PERSIST-BREAK->N6, GATE-NEGATIVE->validate_manifest refuse, BATTERY-NEGATIVE->hash-proof abort; ALL FIRED",
+  "preregistration": "tools/monkey_campaign/contributions/MAT2-U04/PREREGISTRATION.md (a4e31f052b228f67c414492da68aef97906264c4622d7d417f02a385f91646a0, frozen at commit 9b93a848 BEFORE any probe/battery/capture run)",
+  "probe": "tools/monkey_campaign/contributions/MAT2-U04/input_settings_probe.py (4c547f3fde83d20489bbe9c1a4f89ed8d985ecd80eb49fae090338dd064bce72)",
+  "selftest_receipt": "tools/monkey_campaign/contributions/MAT2-U04/evidence/selftest_receipt.json (33203460a5a5e4207dfe624f83d5830eead3a4c3bddae06ec3dd76799ad475f4)",
+  "tests": "python -B -m unittest test_input_settings_probe -v -> 17/17 OK (test_input_settings_probe.py d380f70b78d5888fd83e6f1a5d80bf5c12d2c7fe9501ce6c02a52feb297f2e2a)"
+ },
+ "capture_context": {
+  "capture_sha256": "2460983934b228b8a5233e1a885c26e251736c69121ce15d1c70946d42854376",
+  "run_id": "mat2-u04-input-20260927-d9ce4334",
+  "subject_sha256": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
+  "task_id": "U04",
+  "tick_interval": [
+   0,
+   390
+  ]
+ },
+ "card_id": "MAT2-U04",
+ "criteria_sha256": "192ca43f061c4b6b2763d11213e0246ea075c3f62e6948948ba8c64213bf5180",
+ "done_when": "Sensitivity, inversion and bindings needed for the selected controls work and persist",
+ "done_when_verified": true,
+ "evidence": {
+  "camera": {
+   "provenance": "chimera.visual_capture_manifest.v1, profile controls, identity envelope task_id U04 (the CONTRACT task id, not the card id), subject_sha256 8d1a49d6, capture_sha256 bound to the committed video bytes, tick_interval [0,390]; 3 views x diagnostic+clean pairs, trace-bound (state_binding sha = trace.jsonl), sampled_trajectory recorded_each_tick for the two follow views and fixed_bookmark for the inspection view; validated in-process with the campaign's own visual_capture.validate_manifest AND visual_gate.verify against card_task.json (structurally_valid true). GATE-NEGATIVE demonstration fired (tampered sample refused camera_target_distance_mismatch).",
+   "raw_sha256": "c82abdf7bb23a5ef6527d0095a08f8118c6eede33a95bd2cc2e9f75b231e2bca",
+   "reference": "tools/monkey_campaign/contributions/MAT2-U04/evidence/capture_manifest.json"
+  },
+  "independent_review": null,
+  "independent_review_binding": "No independent worker review of THIS candidate exists yet. Independent review of this candidate is a REMAINING GATE; at ACCEPTED the lead sets this entry to the named review receipt + raw hash.",
+  "numerical": {
+   "provenance": "Frozen checks N0-N9 ALL GREEN (prediction_deviations disclose two prereg wording miscounts; nothing silently corrected): first-run defaults with nothing created; 265 mouse boundaries bit-exact vs the mapper's own law incl. the derived 0.08 ceiling saturating EXACTLY at OMEGA and the 4x ratio; 100 inverted boundaries bit-exact vs the signed law with the same counts flipping +OMEGA to -OMEGA; the turn key path unaffected by inversion (+OMEGA + -OMEGA == 0.0 exact); rebound keys flip emitted sign and E->sprint refuses BY NAME; save canonical bytes, reload EXACT in the parent AND in a separate child OS process with field-exact replay records; nine poison classes refuse BY NAME with defaults and load never writes; seam constants/bytes unchanged; 368 records conform to provenance/band/timing laws. Trace 9aea974e6c7cfbf95e70d345e1fbb48c7faceae0265ee5bd0803e761d907da2c (391 rows), byte-identical across runs.",
+   "raw_sha256": "a4ae25189b0d9c225e2138e4f6edbd4dd6c346abccbb20876f44cb92078db50b",
+   "reference": "tools/monkey_campaign/contributions/MAT2-U04/evidence/numerical_receipt.json"
+  },
+  "runtime": {
+   "provenance": "The deterministic headless run record: REAL pinned input_settings + InputMapper + CommandRecord seam over injected integer milliseconds, CPU-only, no GPU/engine/network; the persistence leg spawns a REAL separate python -B process (child_load_probe.py) that re-loads the saved file and replays the frozen sequence; trace times injected, wall clocks reported separately.",
+   "raw_sha256": "68bc21bb174b35e8ca678fcf72ce9ec4eb8397155ca0e2328aeceeb638137b1a",
+   "reference": "tools/monkey_campaign/contributions/MAT2-U04/evidence/runtime_receipt.json"
+  },
+  "source": {
+   "provenance": "THE QUALIFIED SUBJECT, recovered byte-exact from the pinned play head f30f2224 (== integration commit 4699b37d == 9afbddcd for this file); hashes asserted at probe import, PIN-DRIFT demonstration fired before the green run.",
+   "raw_sha256": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
+   "reference": "tools/monkey_campaign/contributions/MAT2-U04/reference/tools/monkey_campaign/product/input_settings.py"
+  },
+  "visual": {
+   "provenance": "640x360 h264 2346 frames @20fps (117.3 s): three profile views x diagnostic+clean segments x 391 ticks; clean segments carry NO diagnostic pixels; built twice from the same trace with bitexact ffmpeg flags - identical files (capture_receipt.bitexact_proof).",
+   "raw_sha256": "2460983934b228b8a5233e1a885c26e251736c69121ce15d1c70946d42854376",
+   "reference": "tools/monkey_campaign/contributions/MAT2-U04/evidence/capture.mp4"
+  }
+ },
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; a changed PR head invalidates the receipt). In-tree it is null by design because the candidate cannot know its publication head.",
+ "honest_boundary": "TWO legs, honestly separated. (1) RECORDS (reused + freshly re-run): the preserved ONT-U04 battery leg, verified by 13 PASS reviews and re-run GREEN here. (2) MOTION (this attempt's new work): the capture pixels are a deterministic CPU visualization of the recorded headless trace of the pinned settings/mapper/seam modules; the walking body in them is the harness's DECLARED integration of the modules' REAL emitted CommandRecords - they are NOT native engine frames and make no native-render/W10 claim. The persistence leg is a REAL separate OS process; everything else is component-level qualification of the pinned lineage. Camera obstruction AVOIDANCE (U02's subject), focus loss (U03), climb intent (U05) and native checkpoints (V03/V04) are NOT claimed. No trained gait, new model or full-game completion is claimed or required.",
+ "pinned_lineage": {
+  "integration_commit": "4699b37d (monkey-play U04 integration; the four product/seam modules are byte-identical at 4699b37d, at 9afbddcd and at the pinned head f30f2224 - re-verified this attempt via read-only git show from E:/ChimeraWork/monkey-play-20260924)",
+  "play_head": "f30f2224663324e9374b076938c56672febf4082",
+  "records_leg_pr_head": "939e8e6f725d162b18e8998aa725ad24f53fdb36",
+  "sources": {
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/monkey_campaign/product/input_settings.py": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
+   "tools/monkey_campaign/product/input_settings_tests.py": "5845178ab12a69773e6b4bcdf2e8aa0b9fd144cddff7ee1e89204e0c5dd3720f",
+   "tools/science_funnel/__init__.py": "c5a9f9b162177ec18d127edb799bbfe1ba08442ed95c72f8f0947f9d64618b19",
+   "tools/science_funnel/typeb_export/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+  }
+ },
+ "profile_id": "controls",
+ "profile_kind": "motion",
+ "profile_verified": true,
+ "reconciliation": {
+  "card_definition_note": "definition_raw_sha256 57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1 is byte-identical between the ONT-U04 and MAT2-U04 cards (same done_when, same controls/motion profile); only the scope digest differs (cb5475f8 MAT2 vs 01ea5cdd ONT).",
+  "integration_note": "The pinned modules live on the monkey-play lineage (integration commit 4699b37d, pinned head f30f2224) and are NOT yet on astra/gait-capture; integration and publication remain lead-serialized. Same delivery shape as the merged MAT2-U02 candidate: qualification evidence over the pinned lineage, no proposed.patch.",
+  "motion_complement_is_new": "The motion complement (actual through-the-interface runs + camera manifest + runtime evidence) is THIS attempt's new work - exactly what the lead's CR found missing.",
+  "records_leg_reused": "The archived ONT-U04 candidate (PR #182 head 939e8e6f) carried the records/proof qualification: 13 COMPLETE PASS worker reviews reproduced its pins, battery, lineage receipts and 14-file scope. Lead CHANGES_REQUIRED (card message msg-b5edae96, ONT-X02 precedent) refused it SOLELY for missing motion-profile evidence, preserved the records leg ('nothing needs re-running') and directed 'Reuse the current PR as the records leg.' This attempt fetched the reviewed head from the origin remote and snapshots its 14 files verbatim under records_leg/ONT-U04/, then RE-RAN the unmodified pinned battery at this scope (evidence/records_leg_rerun.json: GREEN 33 PASS / 0 FAIL, internal hash proof candidate==reference==ledger, 3.5 s of the 120 s bound)."
+ },
+ "schema": "mat2-u04.input-settings.qualification.v1",
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "subject_sha256": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
+ "task_id": "U04"
+}
