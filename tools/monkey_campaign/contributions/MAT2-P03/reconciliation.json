@@ -1,0 +1,1174 @@
+{
+ "schema": "mat2-p03.ledger_reconciliation.v1",
+ "registry_root": "E:/ChimeraWork/monkey-coordination",
+ "registry_revision": 1148,
+ "old_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "active_scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "active_scope_source": "kanban.backlog[MAT2-P03].ontology_qualification.scope_sha256",
+ "card_count": 7,
+ "done_with_winner": 1,
+ "cards_awaiting_lead_publication": 1,
+ "cards_awaiting_review_or_merge": 0,
+ "cards_with_missing_identities": 0,
+ "missing_detail": [],
+ "rows": [
+  {
+   "id": "MAT2-P01",
+   "lane": "REVIEW",
+   "state": "DONE",
+   "criteria_sha256_present": true,
+   "missing": [],
+   "owners": [
+    "arrival-876e63bf9dbb44a8b10c5b546f783e9b",
+    "arrival-c31bb71ab28c4b4c9ae9c59548134ad7"
+   ],
+   "source_revision": {
+    "winner_head": "e61838b9fb058b19631717fc5d15be8c31681954",
+    "winner_merge": "97993cbefaf00380803d8e67652ac51d50c37d06",
+    "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/192"
+   },
+   "receipts": {
+    "prs": [
+     "https://github.com/GhostDragonAlpha/Chimera/pull/191",
+     "https://github.com/GhostDragonAlpha/Chimera/pull/192"
+    ],
+    "publication_requests": [
+     {
+      "id": "publication-0387614571c740a6909651cbc27d14a9",
+      "status": "PR_RECORDED",
+      "artifacts": 5
+     },
+     {
+      "id": "publication-a88addd3953c46a6842c731eff935907",
+      "status": "PR_RECORDED",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": "97993cbefaf00380803d8e67652ac51d50c37d06"
+   },
+   "scoped_verdicts": [
+    {
+     "reviewer": "arrival-4333d2ecb8df403393c79377c1f9813e",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/191",
+     "head": "a195f457931e097975210a79eb51a9c80b469dab",
+     "state": "COMPLETE",
+     "verdict": null
+    },
+    {
+     "reviewer": "arrival-c31bb71ab28c4b4c9ae9c59548134ad7",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/191",
+     "head": "a195f457931e097975210a79eb51a9c80b469dab",
+     "state": "COMPLETE",
+     "verdict": null
+    },
+    {
+     "reviewer": "arrival-ce370ab3c8e34dc6af1cf17c00df1de6",
+     "pr": "https://github.com/GhostDragonAlpha/Chimera/pull/192",
+     "head": "e61838b9fb058b19631717fc5d15be8c31681954",
+     "state": "COMPLETE",
+     "verdict": "ACCEPTED"
+    }
+   ],
+   "ledger_complete": true
+  },
+  {
+   "id": "MAT2-F01",
+   "lane": null,
+   "state": "OPEN",
+   "criteria_sha256_present": true,
+   "missing": [],
+   "owners": [
+    "arrival-d4559daabbbb41c38d5a810c1db20de8"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": true
+  },
+  {
+   "id": "MAT2-P02",
+   "lane": null,
+   "state": "OPEN",
+   "criteria_sha256_present": true,
+   "missing": [],
+   "owners": [
+    "arrival-fb675f3fd2934822acfe7190d04bc790"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": true
+  },
+  {
+   "id": "MAT2-P03",
+   "lane": null,
+   "state": "OPEN",
+   "criteria_sha256_present": true,
+   "missing": [],
+   "owners": [
+    "arrival-ad31c256f02840e48b99ebbeb12fd3b6"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": true
+  },
+  {
+   "id": "MAT2-P06",
+   "lane": null,
+   "state": "OPEN",
+   "criteria_sha256_present": true,
+   "missing": [],
+   "owners": [
+    "arrival-e43f2a7138c44240b07bc79f0e15176a"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": true
+  },
+  {
+   "id": "MAT2-X02",
+   "lane": null,
+   "state": "OPEN",
+   "criteria_sha256_present": true,
+   "missing": [],
+   "owners": [
+    "arrival-7d28ea9afd7f4ce5819f3aa13ce355e0"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "ledger_complete": true
+  },
+  {
+   "id": "MAT2-X01",
+   "lane": "REVIEW",
+   "state": "PUBLICATION_PENDING",
+   "criteria_sha256_present": true,
+   "missing": [],
+   "owners": [
+    "arrival-44b4c756e017416b9c81f9532c4cb3a1"
+   ],
+   "source_revision": {
+    "winner_head": null,
+    "winner_merge": null,
+    "winner_pr": null
+   },
+   "receipts": {
+    "prs": [],
+    "publication_requests": [
+     {
+      "id": "publication-d7dad85accab477c978ef03063924ae7",
+      "status": "PENDING",
+      "artifacts": 5
+     }
+    ],
+    "winner_merge_sha": null
+   },
+   "scoped_verdicts": [],
+   "awaiting": "lead_publication",
+   "ledger_complete": true
+  }
+ ],
+ "all_identities_present": true,
+ "crosswalk": {
+  "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "archived_board_sha256": "0fca6e61f89a56492ff5b36ab3b78298a1d879c61c0ad50ce26a6accd1be6ab5",
+  "archive_reason": "Captain stopped all workers and authorized material-first scope migration",
+  "archived_card_count": 43,
+  "rows": [
+   {
+    "archived_id": "D-FOREST-RUNTIME-20260924",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "dc47ff858da36a02a6e2354ea25aa480e929e098e0ad89742a0c7d09bf815cb8",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/120",
+     "winner_head": "86d0d8d461ea50420c053681f7e297343e3fbb97",
+     "winner_merge": "d528cd3c2478547fa70a3ede71278bb1c45145e7",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "D-FOREST-RUNTIME-20260924-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "be7394fa3f7f02f43e67a271926342fb994c1a2042d58791c8cac75fe505a7c3",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/170",
+     "winner_head": "960a2f551703a3e84c04e88b5d688dc7166ec35b",
+     "winner_merge": "a16080f9f39ff5d3ac941f3fe490e2c1e03e0823",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "D-W03-ANCHORS-20260924",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "841796bb2d8c072af8d571e3d4222c93126c44bfff6e406b43bd6faa0fb3c886",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/119",
+     "winner_head": "37fd8679aee97674eca34cd83031ba020ff99c04",
+     "winner_merge": "6489a0dda2349127c45884d877f6d3fc0bc1500b",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "D-W03-ANCHORS-20260924-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "6c301b40e033f40ff1c97148f11bdf8e44000134ab3214c8f3582991ea62730f",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/133",
+     "winner_head": "94774bbd88d7251d483cd70aa81e75e5fd4b9609",
+     "winner_merge": "d5de6575347c7a19e280bf847a499ddd905f86d1",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "D-W04-MASS-20260924",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "ee0cc5fb27850b82c9b24decf50d06c306ba82fae8c8aa4e9148d66032ff55b1",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/118",
+     "winner_head": "24db3062187e617cf576019adb131926df63a237",
+     "winner_merge": "a4fb2b41435904d56a2947973a08f0eab7bb4ec7",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "D-W04-MASS-20260924-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "d319ca0311e03505235364cec2dc895ef25fa527ad7a678f033c3df510026ee1",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/132",
+     "winner_head": "b0a768ec059d8c7c88576fb23b6c7e5a1af1a8a6",
+     "winner_merge": "68d248617d40259dc26ad05a7378240bdd05f54f",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-GOV-PR-HANDOFF-REPAIR",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "71c0089538a563ea19173cd7e60604c150c51603e8538b3d1dad724fc92ecf9c",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/141",
+     "winner_head": "562dfa8f72e05b67c5e7b640a17c048e3fd9905f",
+     "winner_merge": "10a00917f59fae4f71fcff05af6297822872189d",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-R02-SAVE-STORE",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "0f60830b82c0ed0fe52a693384d5b73c976a8fea2cb671390eed49529b7b087d",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/117",
+     "winner_head": "9ba1be77228e181f55ed2e4d2eb3e73e2f09685f",
+     "winner_merge": "dcf04f94716271b2a37734b842ec58d7f95c5b71",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-R02-SAVE-STORE-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "e6011f9304d14799c953cd323881d28674a5491b1eb702625082085f0f1fce5d",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/134",
+     "winner_head": "d8b20e74274c10bebf2e52eea83fdd54deb0b8d0",
+     "winner_merge": "6e374e189dae429fcf320cd8241aa19c427b63d4",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-R05-RESOURCE-LEDGER",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "7bc0d82358e88ac69ddf46f6b581b759a63364c9ba55ac791b599478ec72be43",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/139",
+     "winner_head": "47c00f05169fa49ea770c274cfe7f280e6710e82",
+     "winner_merge": "becdcb2716ee441cfb2832287a349c8f4b6c7090",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-R05-RESOURCE-LEDGER-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "03d70278eca25c1b2f7450abaca7178f475aba038a76ff9e1ed3e5e35669f815",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/148",
+     "winner_head": "bd425514155892aceb0eada5e979751c3bf6686c",
+     "winner_merge": "2c3dfc67a1fc486eb354bac211a0390a5e985bea",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-R06-FAILURE-SEQUENCES",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "dbb0d4762647d161dee7112464bbde6c108331fe890a4328456a354255778dc4",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/123",
+     "winner_head": "c844e686992bbb6a8e0ac866dad89bc197952e2f",
+     "winner_merge": "b258f83deb11e31316501a86455c927221995f0e",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-R06-FAILURE-SEQUENCES-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "e9207e45980f6e9e7207c3a1b328c1a3911cb9f6835fb6d3fc78ea81367eb4db",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/137",
+     "winner_head": "4efaaa206040a9f534872645d9188a399043bb96",
+     "winner_merge": "e70da0916641126bc9ca69c3a6610c9eded30b43",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-S02-PACKAGE-PREFLIGHT",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "1951c42b219d49c0c6fd30354f907ca7f49e49558b42a9cba5f73962ae2702ab",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/153",
+     "winner_head": "e0a0abc83c714dac7ae399da872ec9bdb376186f",
+     "winner_merge": "e449405f3cfdad7ab69536c474c9bf6f4fbfc68c",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-S02-PACKAGE-PREFLIGHT-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "b19c2b9e09610d10f9dd7e770e8735216aaa65c8c8e6001242cff396a03e8afc",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/173",
+     "winner_head": "e7de0d652d238d3772c7f4c5f824b8174dd86fac",
+     "winner_merge": "4a1fc4f17df6dee267f2884bf6428b42553d47e1",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-S04-PLAYER-DIAGNOSTICS",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "24a866e21e77af0e9e9ec176a129dbbb7f1346abd7f9075b4bf965bd300f9176",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/125",
+     "winner_head": "7318d5a36f0cd76f4b13a72cc6c585bbe3bac7bf",
+     "winner_merge": "b758088efcf898d2a98ff9cd761a503b394eb655",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-S04-PLAYER-DIAGNOSTICS-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "9fa0a82d860fcf38f0a1809fab638ac1187962a257127a4d26de86c721bbe4f3",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/159",
+     "winner_head": "e03547816904774645d70c0efbb6341a15ad1f53",
+     "winner_merge": "8567f629aa691c7abb5dcaa55fef7047e3efb97b",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-U07-TRACE",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "e47daf0abc17512f639a00909da06e8b6c907c76acc5778c0b4bfc60843cdc22",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/138",
+     "winner_head": "4d2ececcfbae1bff13d9108599df735e1b585025",
+     "winner_merge": "eaa2fa46df5e6b4e0b09022e687bf93cc452cbc1",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "I-U07-TRACE-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "eda6af92ccbe16496e7cf6ac7d5d3e9805f9bc0a50f42e21078b63484e32e8dc",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/145",
+     "winner_head": "189166031cf19c1f1f301e055d56a240f8c6646f",
+     "winner_merge": "1ad4ac541b299f83a274185fe0afce92d86d1141",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-A01",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "2bcf59fa0b786b009b30711334e38fe374d9a2a2bdefdba9566a4018c4a9c775",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/176",
+     "winner_head": "6f90c288ce93f236c820a2d665b0418c11d7024a",
+     "winner_merge": "f301e9b355e485ca08a432defe25450e191eb5eb",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-A01",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-A02",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "ab47206c8bd41e3f9769f8f96489545c3335cf2183a76f88f6c010e3b3789cb1",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/181",
+     "winner_head": "dadfda280d7c4abcc403b78f5c5b6ecd8332a402",
+     "winner_merge": "970ffe1a34eb8a895956c6cb92ce66d01dc74961",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-A02",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-A03",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "d15183d955c5d3764ed605e4c265145400806e5fb7e67738cebb3cf569056e7d",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/187",
+     "winner_head": "051d341da2c0786fe9706d169fe16b8127cb8772",
+     "winner_merge": "4aecbc9ee98cb115ec9a690f5c0df173d9f3efbf",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-A03",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-A04",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "bf8583ae76c4930f726c4c71861ab9219cdac65eb3913cb29ab6131671505570",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/177",
+     "winner_head": "020c0a5c216a4182d0bed9c4ade59cb0beb585ad",
+     "winner_merge": "56d0116ac20d70962b6d20e60b65380d3ca49d43",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-A04",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-A05",
+    "archived_state": "REVIEW",
+    "archived_criteria_sha256": "a19ba471bfde65e094f63ef8f3e6d1edc4d55390f5901e1e82f3d6883d18823d",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": null,
+     "winner_head": null,
+     "winner_merge": null,
+     "accepted_review_count": 0
+    },
+    "mat2_id": "MAT2-A05",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-F01",
+    "archived_state": "CHANGES_REQUESTED",
+    "archived_criteria_sha256": "cbbcae167a0930f55ba11b7da57a5827013e70e6fbcb0fae8f70c3cd7914e654",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": null,
+     "winner_head": null,
+     "winner_merge": null,
+     "accepted_review_count": 0
+    },
+    "mat2_id": "MAT2-F01",
+    "target_kind": "card",
+    "target_criteria_sha256": "bbcda6c08ab5f52efd1579e3af0504d46d024450d99ca5a8bcc47d600a99a665",
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-P01",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "395fc0d6ea6187a258325aa766ca8df6446b9355956297b721a03cb8d428173d",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/127",
+     "winner_head": "dce368d75000d19a5041604dfe3fed904233db2f",
+     "winner_merge": "391f0ede0ebc2f4072c62c3386827b1b4eefc88e",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-P01",
+    "target_kind": "card",
+    "target_criteria_sha256": "e4521ad79a5bc263ba333b81ebe36599e1d6da5a13eed92c2ff5fa3a0e670c5e",
+    "clause_relation": "extended_material_first",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-P02",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "5c0720b4451b8b9ea22360575461968667496000220c8cba645e1d3e28f252ef",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/157",
+     "winner_head": "010ccd2d3d8b2e37842dcab00dfe31bfc7fa6c8a",
+     "winner_merge": "51eaa010177b71d7728234c8b2883ef6547fa3a4",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-P02",
+    "target_kind": "card",
+    "target_criteria_sha256": "28148c96061a42ae49753b622876f9ed1337aadb8f814b34204fb13fc7023c0d",
+    "clause_relation": "extended_material_first",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-P03",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "1fcf0eea7c11d4d6346a27b09c88bf7144dff9219ff1c0de7f77505e27b5f391",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/140",
+     "winner_head": "e1443d452ad9e4869e7bc3df20b2e4b98819a34f",
+     "winner_merge": "736d12cca04964c333410a41ac31ced4bd004344",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-P03",
+    "target_kind": "card",
+    "target_criteria_sha256": "67caf01f86c2ba57b8cae7ebe453d3580bfdd2c5981aee40820c431156fd6135",
+    "clause_relation": "extended_material_first",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-P04",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "6191e11ce3098cf90190c88a658267676e01163106dadaf883b0c48b7dc072db",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/175",
+     "winner_head": "16390061951fc139bae539bda819cd8260d729c1",
+     "winner_merge": "b7c4b79756d03aa26552273f6339495d419d19d5",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-P04",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-P05",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "53cb0e60f447a52e9c0aca432f46d7173a3ff6cecc536cee1346d8306f715eb4",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/174",
+     "winner_head": "52dbc2ce35857fd442fc2b0ea20b67a58071233e",
+     "winner_merge": "78f3b5248dc5503526fefb763ff3195dc769d957",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-P05",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-P06",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "7bea081e57fa35a83fcedfc7dfc8243c63d027448b0d9b104eab179dd96f1333",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/156",
+     "winner_head": "2148f8d3c722cd41ec05297775538fd949a226e0",
+     "winner_merge": "2e258b45c9c4e24fa6843a65d9d5324156d10b8d",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-P06",
+    "target_kind": "card",
+    "target_criteria_sha256": "adfd6c0c8aa993c1ed0c5379a5fe790b8949ea4786ccc7865863b23c8b4d9ce8",
+    "clause_relation": "extended_material_first",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-S01",
+    "archived_state": "REVIEW",
+    "archived_criteria_sha256": "97b8ad4ec192f3d9900a1d344e4f960365fec49161744a086228f80a247c3112",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": null,
+     "winner_head": null,
+     "winner_merge": null,
+     "accepted_review_count": 0
+    },
+    "mat2_id": "MAT2-S01",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-U01",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "7c54e8356f287c08e694fc7455d64b31e1d0d295a1835d921f8163fa39b2fa62",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/169",
+     "winner_head": "f8a5f712ea65e8871840a89e20b4f75e1c68ff7c",
+     "winner_merge": "048b63f41587bc76ecc27a8cf779d3bd94cd3254",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-U01",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-U02",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "5fb0dee8d086f9fd638507058063dd7b7c138958ab7433e5f086da2bbc120b83",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/154",
+     "winner_head": "c8f0f3b7e4fe2ec6bee0827e54ceacb8fe392750",
+     "winner_merge": "7f35104439bb30b8ed85e5b2e765db7b3ec1ea53",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-U02",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-U03",
+    "archived_state": "REVIEW",
+    "archived_criteria_sha256": "a161edd6e1bb2aaf7f55c96503992b17a008f5ebe111032be01d717846aef625",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": null,
+     "winner_head": null,
+     "winner_merge": null,
+     "accepted_review_count": 0
+    },
+    "mat2_id": "MAT2-U03",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-U04",
+    "archived_state": "REVIEW",
+    "archived_criteria_sha256": "91ae72baefd10d8e670a4c715fa0fec8ef8bddd014fe5cb7b1a4bcfbbffd931b",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": null,
+     "winner_head": null,
+     "winner_merge": null,
+     "accepted_review_count": 0
+    },
+    "mat2_id": "MAT2-U04",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-U05",
+    "archived_state": "REVIEW",
+    "archived_criteria_sha256": "699696427b5c52bad16f970e88af13e5dbfb137533d8d48c890f126676d28f92",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": null,
+     "winner_head": null,
+     "winner_merge": null,
+     "accepted_review_count": 0
+    },
+    "mat2_id": "MAT2-U05",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-W01",
+    "archived_state": "REVIEW",
+    "archived_criteria_sha256": "c42bd4f9ce228ebddcb1be6c87b261979c8a38987ff3d5e74ad37536f397be24",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": null,
+     "winner_head": null,
+     "winner_merge": null,
+     "accepted_review_count": 0
+    },
+    "mat2_id": "MAT2-W01",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-W02",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "bf9f89874ee4a7d0606c46215e843474331482444af556ac4f199a6bfcd087f2",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/184",
+     "winner_head": "531b99354ef241ced711abbaa137105afb28ca5b",
+     "winner_merge": "6348533e4c0e25d8968b50e312151f6105146ae4",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-W02",
+    "target_kind": "backlog",
+    "target_criteria_sha256": null,
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-X01",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "ff69d9a1099058276b43af6721a2ff118523235f936bc6de0782173dbbbaa74f",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/136",
+     "winner_head": "0c9a615cceccf7f7269b9545f555bd2be8daa138",
+     "winner_merge": "7a3d11eab2d19c04d70b62e1559eca8d97886658",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-X01",
+    "target_kind": "card",
+    "target_criteria_sha256": "e2f2c219a438c9575c01698dc5dd66f799f6eef8a7577ad3571dcae8c8d1c9aa",
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "ONT-X02",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "a266d16164e64af20505d4ed5d76a532ebb74f3bd0975cfd548546eaa92c71bf",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/171",
+     "winner_head": "45ca7bba98a897f6ed46d9fb7b9c0328e8fe7b57",
+     "winner_merge": "d15987dad2c6d8bbe345954837e731375a1866ff",
+     "accepted_review_count": 1
+    },
+    "mat2_id": "MAT2-X02",
+    "target_kind": "card",
+    "target_criteria_sha256": "e50bf1e89689aac419c95c1b3a8ce02bb0f5ca5b3c67cf50b575662c0bd63c20",
+    "clause_relation": "unchanged",
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "R5-forest-review",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "6198e40ba1cfe37059275bc908e55e1e4fa804d58d418bcc21ea8520e4753ae6",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/126",
+     "winner_head": "7467bed2b2d82b636ee3045b4eaf6d2137019825",
+     "winner_merge": "ff48fada78f18d4109a45df019a6cd2426914109",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   },
+   {
+    "archived_id": "R5-forest-review-FOLLOWUP",
+    "archived_state": "DONE",
+    "archived_criteria_sha256": "6e10706bf24877a657ea8b4a43c9894b24fdd46b97d0d120b0573f8af0aadbcc",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "archived_receipt": {
+     "winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/150",
+     "winner_head": "2e200242cae5fa4ded4b96d7f9ae5bce391b05a2",
+     "winner_merge": "5849af4b07af681fc085a1a80a5abecccc793959",
+     "accepted_review_count": 1
+    },
+    "mat2_id": null,
+    "target_kind": "workflow",
+    "target_criteria_sha256": null,
+    "clause_relation": null,
+    "promoted_to_acceptance": false,
+    "historical_evidence_only": true
+   }
+  ],
+  "mapped_to_catalog": 22,
+  "workflow_card_count": 21,
+  "promoted_to_acceptance_count": 0,
+  "catalog_task_count": 95,
+  "catalog_ids_without_archived_counterpart": [
+   "MAT2-A06",
+   "MAT2-A07",
+   "MAT2-A08",
+   "MAT2-A09",
+   "MAT2-B01",
+   "MAT2-B02",
+   "MAT2-B03",
+   "MAT2-B04",
+   "MAT2-B05",
+   "MAT2-B06",
+   "MAT2-B07",
+   "MAT2-F02",
+   "MAT2-F03",
+   "MAT2-F04",
+   "MAT2-F05",
+   "MAT2-F06",
+   "MAT2-F07",
+   "MAT2-F08",
+   "MAT2-G01",
+   "MAT2-G02",
+   "MAT2-G03",
+   "MAT2-G04",
+   "MAT2-G05",
+   "MAT2-G06",
+   "MAT2-G07",
+   "MAT2-G08",
+   "MAT2-K01",
+   "MAT2-K02",
+   "MAT2-K03",
+   "MAT2-K04",
+   "MAT2-K05",
+   "MAT2-K06",
+   "MAT2-K07",
+   "MAT2-K08",
+   "MAT2-M01",
+   "MAT2-M02",
+   "MAT2-M03",
+   "MAT2-M04",
+   "MAT2-M05",
+   "MAT2-M06",
+   "MAT2-M07",
+   "MAT2-M08",
+   "MAT2-M09",
+   "MAT2-M10",
+   "MAT2-M11",
+   "MAT2-M12",
+   "MAT2-R01",
+   "MAT2-R02",
+   "MAT2-R03",
+   "MAT2-R04",
+   "MAT2-R05",
+   "MAT2-R06",
+   "MAT2-R07",
+   "MAT2-S02",
+   "MAT2-S03",
+   "MAT2-S04",
+   "MAT2-S05",
+   "MAT2-S06",
+   "MAT2-U06",
+   "MAT2-U07",
+   "MAT2-W03",
+   "MAT2-W04",
+   "MAT2-W05",
+   "MAT2-W06",
+   "MAT2-W07",
+   "MAT2-W08",
+   "MAT2-W09",
+   "MAT2-W10",
+   "MAT2-X03",
+   "MAT2-X04",
+   "MAT2-X05",
+   "MAT2-X06",
+   "MAT2-X07"
+  ],
+  "catalog_ids_without_archived_counterpart_count": 73
+ },
+ "material_search": {
+  "root": "E:\\PythonChimera",
+  "probe_count": 14,
+  "found": [
+   {
+    "path": "tools/monkey_campaign/monkey_completion_map.json",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 219053,
+    "sha256": "8fa2e1409a2da1e3cbe70a84f59f7620a61d3eed12519171190e9c61543cb272"
+   },
+   {
+    "path": "tools/monkey_campaign/APPROVED_SCOPE.json",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 520,
+    "sha256": "fe74180d7b6ad584f48c5fd9a642db4393c26c4e4cd64c8b41652e9b30c27660"
+   },
+   {
+    "path": "docs/MONKEY_RUN.md",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 41611,
+    "sha256": "2d4611802c6338c26c43bd5217e59ab514588a0a25b949ac5c8fbbe22651359d"
+   },
+   {
+    "path": "docs/THE_MASTER_LIST.md",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 248859,
+    "sha256": "da75558d42613aae421df34b75509ed93586f6076a7e8055862bb109e7cd3da1"
+   },
+   {
+    "path": "docs/THE_HOLODECK_BLUEPRINT.md",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 148888,
+    "sha256": "ff234db07ae8fa8bb7b49a4b0ca15663a733fd41d18d5d9dd4be75368029faa1"
+   },
+   {
+    "path": "docs/roadmap/holodeck_tasks.json",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 368730,
+    "sha256": "d5c7aa8b9e264e96bb3de6a0f3d48069ee0b88c9f10ae84b52bd8cfce797fcd8"
+   },
+   {
+    "path": "docs/architecture/CREATURE_ARCHITECTURE_REBASE_2026-09-15.md",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 37894,
+    "sha256": "eb1a6acb09ec72b8821285e9e4d7665a98293d28e197eabb030a8b480c8e6066"
+   },
+   {
+    "path": "agent_logs/local_buffy_qwen/assembly_handoff_02.md",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 15978,
+    "sha256": "1467f4c32ce76974c62b58f510afc714ca491320d96ac74204427f76ff5d27f8"
+   },
+   {
+    "path": "Chimera/core/membranes.py",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 32621,
+    "sha256": "83b45471092cd6ef9622bde3fe1d7ed181e139e8865499b6e98c96170911cb65"
+   },
+   {
+    "path": "Chimera/core/membrane_shapes.py",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 10681,
+    "sha256": "d146ba1c7c0a658cda0a438b7a471afee45c996bcfc4e885486857c6923c86be"
+   },
+   {
+    "path": "Chimera/core/matter_derive.py",
+    "status": "FOUND",
+    "kind": "file",
+    "size_bytes": 40944,
+    "sha256": "cde76347226c34496ab642bd325d6c2a47669dafd69127506daa0e9c484c5109"
+   }
+  ],
+  "unavailable": [
+   {
+    "path": "forearm_package/ANATOMICAL_DECISION_TABLE.md",
+    "status": "UNAVAILABLE"
+   },
+   {
+    "path": "planning_inventory.json",
+    "status": "UNAVAILABLE"
+   },
+   {
+    "path": "plans/material-first-v2",
+    "status": "UNAVAILABLE"
+   }
+  ]
+ }
+}
