@@ -1,0 +1,42 @@
+{
+  "schema": "chimera.completion_contract.v1",
+  "task_id": "MAT2-P01",
+  "planning_id": "P01",
+  "frozen_at": "2026-09-27T07:50Z",
+  "identities": {
+    "criteria_sha256": "e4521ad79a5bc263ba333b81ebe36599e1d6da5a13eed92c2ff5fa3a0e670c5e",
+    "active_scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+    "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "instruction_revision": "astra-0031"
+  },
+  "core_clause": {
+    "carried_verbatim_from": "ONT-P01 (archived board, state DONE)",
+    "text": "One monkey, ground movement, one climbable trunk, return to ground, explicit success/failure behavior; broader features excluded"
+  },
+  "material_first_addition": {
+    "adopted_by": "Captain via astra-0031 (MATERIAL_PLAN_ADOPTION.md)",
+    "text": "Reusable matter is the architecture; walking through woods is the first product milestone, followed by the existing climb/return goal. Additional materials remain extensible, not universal-physics prerequisites.",
+    "architecture_selected": [
+      "reusable material regions",
+      "membrane pressure",
+      "explicit removable tissue connections",
+      "graph-defined composition",
+      "shared GPU interaction passes"
+    ],
+    "physics_constraints": [
+      "density is one property, not a substitute for the selected response law and state",
+      "Barnes-Hut applies only to qualified aggregatable interactions",
+      "local material/contact passes share GPU state without being reinterpreted as gravity"
+    ]
+  },
+  "authorities": {
+    "E:/PythonChimera/tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md": "81f432fc9fcee8ae_prefix_full_in_receipt",
+    "E:/PythonChimera/tools/monkey_campaign/APPROVED_SCOPE.json": "fe74180d7b6ad584_prefix_full_in_receipt",
+    "E:/PythonChimera/docs/MONKEY_RUN.md": "2d4611802c6338c2_prefix_full_in_receipt"
+  },
+  "completion_semantics": {
+    "card_completion": "Lead-approved exact-head PR merged with full ontology qualification evidence; a diagnostic or scaffold alone cannot close this card.",
+    "game_completion": "Every selected requirement has scoped, integrated evidence and the player acceptance task has actual human acceptance.",
+    "falsifier": "Missing identities or a claimed pass unsupported by records fails; a screenshot is not a substitute."
+  }
+}
