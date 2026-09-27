@@ -1,0 +1,24 @@
+  [PASS] A1_boot_world_booted -- {'ok': True, 'world_booted': True}
+  [PASS] A1_boot_single_engine_child -- [23776]
+  [PASS] A1_boot_count_is_1 -- 1
+  [PASS] A2_overlay_loaded -- True
+  [PASS] A2_session_hud_present -- True
+  [PASS] A2_initial_state_attract -- attract
+  [PASS] A2_start_key_only -- True
+  [PASS] A2_mapper_records_while_playing -- records 0 -> 2
+  [PASS] A2_settled_before_restart -- True
+  [PASS] A3_pause_key_only -- True
+  [PASS] A3_zero_records_while_paused -- records 2 -> 2 across 2.0s of ticks
+  [PASS] A3_restart_from_paused_reached_playing -- True
+  [PASS] A3_engine_pid_swapped -- [23776] -> True
+  [PASS] A3_old_engine_terminated -- [23776]
+  [PASS] A3_settled_after_restart -- True
+  [PASS] A3_scene_sha256_byte_equal -- scene identity across the reload
+  [PASS] A4_exit_key_only -- True
+  [PASS] A4_engine_child_dead -- []
+  [PASS] A2_zero_console_errors -- []
+  [PASS] A2_zero_page_errors -- []
+  [PASS] A5_real_video_captured -- E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-X02\74bc0ad345074c429272982299a76f4e\scratch\evidence\integrated\wired_session.webm
+  [PASS] A4_server_port_closed -- 57652
+  [PASS] A4_zero_surviving_engines -- []
+SESSION A (wired) RESULT: ALL CHECKS PASS (23 checks)
