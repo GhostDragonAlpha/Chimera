@@ -1,0 +1,84 @@
+{
+ "task_id": "MAT2-X02",
+ "criteria_sha256": "e50bf1e89689aac419c95c1b3a8ce02bb0f5ca5b3c67cf50b575662c0bd63c20",
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "definition_raw_sha256": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+ "card_namespace": "MAT2-",
+ "task": {
+  "id": "X02",
+  "title": "Implement start, pause and session restart flow",
+  "kind": "implementation",
+  "group": "Player experience and complete game loop",
+  "scope": "recommended_product",
+  "depends_on": [
+   "P01"
+  ],
+  "calculation_ids": [],
+  "done_when": "Player reaches play and can pause/restart/exit without developer commands; reset is an explicit user action",
+  "observation": "Proposed minimal product requirement",
+  "implementation_state": "UNRECONCILED",
+  "validation_state": "NOT_REVERIFIED_IN_THIS_REVIEW",
+  "authorization": "Planning record; reconcile existing assignment and gate before dispatch",
+  "catalog_refs": [
+   "AUTH-04",
+   "AUTH-06",
+   "LGT-01",
+   "SND-05",
+   "SOC-05"
+  ],
+  "ontology": {
+   "primary_membrane": "session",
+   "related_membranes": [
+    "player",
+    "walking",
+    "climbing"
+   ],
+   "connection_ids": [],
+   "verification_profile": "recovery",
+   "checkpoint_ids": [
+    "V08"
+   ],
+   "scenario_scope": "Player reaches play and can pause/restart/exit without developer commands; reset is an explicit user action"
+  },
+  "dependency_reasons": {},
+  "selected": true,
+  "dependency_layer": 1,
+  "verification_profile": {
+   "id": "recovery",
+   "kind": "motion",
+   "subject": "Save/restore, restart and resource/failure transitions",
+   "scenario": "Qualify only this task: Player reaches play and can pause/restart/exit without developer commands; reset is an explicit user action Profile procedure: Compare before/after pinned state through reload, pause/resume, reconnect/focus loss and safe teardown. Use the task-owned subset of layers/behaviors. Inventory absent or unresolved components explicitly; do not require downstream skills to accept an upstream interface. Freeze exact applicable probes and views before execution.",
+   "diagnostic_layers": [
+    "state and tick IDs",
+    "active skill/contact labels",
+    "resource/session diagnostics"
+   ],
+   "views": [
+    "matched before/after camera bookmark",
+    "normal follow view during recovery"
+   ],
+   "clean_view_required": true,
+   "camera_required_fields": [
+    "frame_id",
+    "coordinate_unit",
+    "position",
+    "orientation_convention_and_values",
+    "target",
+    "distance_to_target",
+    "projection",
+    "vertical_fov_or_orthographic_span",
+    "near_far_planes",
+    "aspect_ratio",
+    "viewport_resolution",
+    "camera_motion_or_bookmark_sequence",
+    "visibility_layers",
+    "label_ids",
+    "occlusion_or_xray_mode",
+    "state_or_tick_interval"
+   ],
+   "falsifier": "Changed pose/contact/ownership or stale commands after restore, leaked owned resources or mismatched camera/state evidence fails.",
+   "numerical_evidence_required": true,
+   "nonvisual_reason": null
+  }
+ }
+}
