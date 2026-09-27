@@ -1,0 +1,61 @@
+{
+  "anchors": {
+    "approved_head": "dadfda280d7c4abcc403b78f5c5b6ecd8332a402",
+    "current_tip": "6af853ad3be90e2f9564cb7f908fd4a202f9241c",
+    "merge_181": "970ffe1a34eb8a895956c6cb92ce66d01dc74961",
+    "merge_era": "4aecbc9ee98cb115ec9a690f5c0df173d9f3efbf"
+  },
+  "applicability_notes": [
+    "replica suite re-execution READ two pinned external inputs from the read-only play checkout (E:/PythonChimera/Saved/meshes/monkey_birth.bin, 661076 bytes and monkey_joints.bin, 296589 bytes; hash-pinned inside the receipt under test) and imported visual_capture/visual_gate support modules from the play checkout (visual_capture byte-identical to the base blob; read-only imports, python -B, no bytecode writes, no network)."
+  ],
+  "attempt_id": "ce71ec9ca3d74978bd62f99a5c0fcdfe",
+  "candidate_base": "6af853ad3be90e2f9564cb7f908fd4a202f9241c",
+  "card_id": "MAT2-A02",
+  "checks_pass": 6,
+  "checks_total": 6,
+  "criteria_sha256": "c5d0e02ef376f01afcab78ee81e087f3b28dd9c7f29aef1bd0375c9ac2dd7bdf",
+  "honesty": {
+    "cpu_only": true,
+    "gpu_used": false,
+    "native_engine_run": false,
+    "network_used": false,
+    "note": "read-only probe over committed bytes + registry read-only; temp replica under attempt workspace probe_tmp/"
+  },
+  "outcome": "RECONCILED",
+  "preregistration_freeze_commit": "dc2906816b0d435042010b38fb1a9db6f7407810",
+  "probe_corrections": [],
+  "probes": [
+    {
+      "details": "files=35 (frozen 35) identical blob sha256 across dadfda28 -> 970ffe1a -> 4aecbc9e -> 6af853ad",
+      "id": "PR-1",
+      "pass": true
+    },
+    {
+      "details": "suite exit=0; final count line='106/106 tests PASS' (frozen '106/106 tests PASS'); FAIL lines=0; cpu-only python -B",
+      "id": "PR-2",
+      "pass": true
+    },
+    {
+      "details": "outcome PRESENTED_AND_VERIFIED, 57/57 PASS (census {\"N0\": 4, \"N1\": 12, \"N2\": 30, \"N3\": 4, \"N4\": 7}), all 22 exact value pins + 9 structural pins reproduced, task_id A02 envelope",
+      "id": "PR-3",
+      "pass": true
+    },
+    {
+      "details": "task_id=A02 envelope, 6 rows = V1/V2/V3 x diagnostic/clean, all 16 contract camera fields located on every row, PNG bytes bound (sha a728b16a\u2026), qualification receipt binds all 4 evidence digests, canonical validate_manifest (base blob, play-checkout copy byte-identical): structurally_valid=True view_count=6; visual_gate.verify(task_id A02 contract): structurally_valid=True view_count=6",
+      "id": "PR-4",
+      "pass": true
+    },
+    {
+      "details": "MAT2-A01 state=DONE merged via PR #211 merge_commit=6af853ad == candidate base 6af853ad (winner ontology_qualification task_id=A01); freeze commit dc290681 (parent 6af853ad, ancestor-of-HEAD=True, files=['PREREGISTRATION.md']); HEAD carries contribution dir=True",
+      "id": "PR-5",
+      "pass": true
+    },
+    {
+      "details": "pristine passes=True; tampered (1 token: outcome->TAMPERED_RECORD) passes=False (outcome='TAMPERED_RECORD')",
+      "id": "PR-6",
+      "pass": true
+    }
+  ],
+  "schema": "chimera.mat2_a02_reconciliation_receipt.v1",
+  "task_id": "A02"
+}
