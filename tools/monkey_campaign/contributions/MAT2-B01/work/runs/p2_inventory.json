@@ -1,0 +1,108 @@
+{
+ "total": 66,
+ "ok": true,
+ "inventory": {
+  "material_volume_checks": {
+   "count": 17,
+   "expected": 17,
+   "names": [
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_all_unresolved_is_json_safe_and_unknown_region_is_refused",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_degenerate_inverted_open_and_nonmanifold_inputs_are_refused",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_duplicate_mass_owner_is_refused_at_region_boundary",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_independent_simplex_oracle_covers_heterogeneous_density_fixture",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_json_schema_requires_volume_source_and_refuses_ignored_fields",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_material_density_changes_properties_and_density_is_validated",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_overlapping_disconnected_cells_are_refused_and_disjoint_are_counted",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_shared_interface_cancels_and_each_material_surface_closes",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_stiffness_is_not_read_by_mass_properties",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_stiffness_is_optional_metadata_and_not_a_mass_input",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_subdivision_preserves_integrated_mass_properties",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_thin_sheet_and_effective_skeletal_mass_cannot_be_added_to_volume",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_translation_does_not_change_com_relative_tensor_or_mass",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_two_material_bipyramid_has_one_oriented_shared_interface",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_uniform_scaling_laws_mass_cubed_inertia_fifth",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_unit_simplex_matches_independent_analytic_mass_com_and_inertia",
+    "material_volume_checks.material_volume_checks.MaterialVolumeChecks.test_unresolved_and_conflicting_cells_never_get_default_material"
+   ]
+  },
+  "material_volume_admission_checks": {
+   "count": 21,
+   "expected": 21,
+   "names": [
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_cell_and_vertex_list_reordering_preserves_entire_report",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_duplicate_ownership_is_not_admitted",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_equivalent_coordinate_units_preserve_si_identity_and_mass_properties",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_homogeneous_subdivision_preserves_mass_but_changes_cell_identity",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_manifest_requires_one_mass_authority_and_rejects_mixed_claims",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_matching_manifest_admits_and_report_is_canonical_and_pure",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_missing_cell_is_reported_even_when_remaining_tet_is_watertight",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_missing_density_preserves_cell_assignment_without_total_mass",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_region_relabeling_changes_interface_direction_not_geometry_identity",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_removed_component_is_detected_by_expected_manifest",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_rigid_transform_preserves_mass_and_transforms_com_and_inertia",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_scale_declaration_is_compared_not_guessed_or_repaired",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_schema_and_examples_are_valid_json_with_both_schema_variants",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_shared_face_orientation_survives_positive_cell_permutation",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_source_effective_authority_does_not_consume_or_require_density",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_source_effective_authority_never_emits_reconstructed_mass",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_surface_overlay_cannot_double_own_volumetric_membrane",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_touching_and_overlapping_tetrahedra_are_distinguished_across_scales",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_uniform_geometric_scale_changes_identity_and_obeys_mass_property_laws",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_unresolved_and_conflicted_proposals_are_retained",
+    "material_volume_admission_checks.material_volume_admission_checks.MaterialVolumeAdmissionChecks.test_vertex_id_bijection_preserves_canonical_geometry_identity"
+   ]
+  },
+  "material_volume_body_export_checks": {
+   "count": 8,
+   "expected": 8,
+   "names": [
+    "material_volume_body_export_checks.material_volume_body_export_checks.MaterialVolumeBodyExportChecks.test_authored_translation_and_rotation_transform_com_and_full_tensor",
+    "material_volume_body_export_checks.material_volume_body_export_checks.MaterialVolumeBodyExportChecks.test_duplicate_cell_ownership_refuses_instead_of_double_counting",
+    "material_volume_body_export_checks.material_volume_body_export_checks.MaterialVolumeBodyExportChecks.test_missing_density_blocks_export_and_keeps_affected_cell",
+    "material_volume_body_export_checks.material_volume_body_export_checks.MaterialVolumeBodyExportChecks.test_refuses_untrusted_passed_flag_and_nonrigid_or_reflected_frame",
+    "material_volume_body_export_checks.material_volume_body_export_checks.MaterialVolumeBodyExportChecks.test_report_hashes_and_cli_output_are_deterministic_and_finite",
+    "material_volume_body_export_checks.material_volume_body_export_checks.MaterialVolumeBodyExportChecks.test_source_effective_authority_returns_explicit_unsupported_without_mass_reads",
+    "material_volume_body_export_checks.material_volume_body_export_checks.MaterialVolumeBodyExportChecks.test_two_explicit_group_masses_recombine_to_partition_total",
+    "material_volume_body_export_checks.material_volume_body_export_checks.MaterialVolumeBodyExportChecks.test_unassigned_cells_are_reported_and_not_silently_included"
+   ]
+  },
+  "material_volume_shared_interface_proof": {
+   "count": 5,
+   "expected": 5,
+   "names": [
+    "material_volume_shared_interface_proof.material_volume_shared_interface_proof.SharedInterfaceCouponProof.test_F1_exported_bodies_match_frozen_mass_com_and_inertia",
+    "material_volume_shared_interface_proof.material_volume_shared_interface_proof.SharedInterfaceCouponProof.test_F1_recombination_matches_partition_total",
+    "material_volume_shared_interface_proof.material_volume_shared_interface_proof.SharedInterfaceCouponProof.test_F2_internal_interface_contributes_no_duplicate_material",
+    "material_volume_shared_interface_proof.material_volume_shared_interface_proof.SharedInterfaceCouponProof.test_F4_off_diagonal_inertia_terms_retained",
+    "material_volume_shared_interface_proof.material_volume_shared_interface_proof.SharedInterfaceCouponProof.test_F5_independent_quadrature_agrees_with_frozen_rationals"
+   ]
+  },
+  "material_volume_frame_composition_proof": {
+   "count": 8,
+   "expected": 8,
+   "names": [
+    "material_volume_frame_composition_proof.material_volume_frame_composition_proof.FrameCompositionCouponProof.test_F1_run_masses_match_frozen",
+    "material_volume_frame_composition_proof.material_volume_frame_composition_proof.FrameCompositionCouponProof.test_F3_composed_run_com_and_full_inertia_match_frozen",
+    "material_volume_frame_composition_proof.material_volume_frame_composition_proof.FrameCompositionCouponProof.test_F3_cross_run_domain_recovery_matches_frozen",
+    "material_volume_frame_composition_proof.material_volume_frame_composition_proof.FrameCompositionCouponProof.test_F3_direct_and_composed_oracle_routes_agree",
+    "material_volume_frame_composition_proof.material_volume_frame_composition_proof.FrameCompositionCouponProof.test_F3_shared_run_com_and_full_inertia_match_frozen",
+    "material_volume_frame_composition_proof.material_volume_frame_composition_proof.FrameCompositionCouponProof.test_F4_off_diagonal_inertia_terms_retained",
+    "material_volume_frame_composition_proof.material_volume_frame_composition_proof.FrameCompositionCouponProof.test_F5_independent_quadrature_agrees_with_frozen_domain",
+    "material_volume_frame_composition_proof.material_volume_frame_composition_proof.FrameCompositionCouponProof.test_F7_schema_blocker_parent_composition_not_silently_extended"
+   ]
+  },
+  "material_volume_export_proof_verify": {
+   "count": 7,
+   "expected": 7,
+   "names": [
+    "material_volume_export_proof_verify.material_volume_export_proof_verify.ExportProofIntegratedVerification.test_audit_perturbation_tracking_agrees_with_quadrature",
+    "material_volume_export_proof_verify.material_volume_export_proof_verify.ExportProofIntegratedVerification.test_audit_proof_oracles_do_not_import_shared_code",
+    "material_volume_export_proof_verify.material_volume_export_proof_verify.ExportProofIntegratedVerification.test_audit_quadrature_oracles_are_file_local",
+    "material_volume_export_proof_verify.material_volume_export_proof_verify.ExportProofIntegratedVerification.test_cli_determinism_and_saved_example_bytes",
+    "material_volume_export_proof_verify.material_volume_export_proof_verify.ExportProofIntegratedVerification.test_proof_suites_pass",
+    "material_volume_export_proof_verify.material_volume_export_proof_verify.ExportProofIntegratedVerification.test_reader_accepts_example_and_coupon_reports",
+    "material_volume_export_proof_verify.material_volume_export_proof_verify.ExportProofIntegratedVerification.test_reproduced_legacy_suites_are_17_21_8"
+   ]
+  }
+ }
+}

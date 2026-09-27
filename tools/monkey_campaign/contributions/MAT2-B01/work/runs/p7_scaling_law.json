@@ -1,0 +1,215 @@
+{
+ "rows": [
+  {
+   "s": "1/2",
+   "quantity": "I[0][0]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "1/2",
+   "quantity": "I[0][1]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "1/2",
+   "quantity": "I[0][2]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "1/2",
+   "quantity": "I[1][0]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "1/2",
+   "quantity": "I[1][1]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "1/2",
+   "quantity": "I[1][2]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "1/2",
+   "quantity": "I[2][0]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "1/2",
+   "quantity": "I[2][1]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "1/2",
+   "quantity": "I[2][2]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "1/2",
+   "quantity": "mass",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "I[0][0]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "I[0][1]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "I[0][2]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "I[1][0]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "I[1][1]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "I[1][2]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "I[2][0]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "I[2][1]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "I[2][2]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "2",
+   "quantity": "mass",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "I[0][0]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "I[0][1]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "I[0][2]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "I[1][0]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "I[1][1]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "I[1][2]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "I[2][0]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "I[2][1]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "I[2][2]",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  },
+  {
+   "s": "10",
+   "quantity": "mass",
+   "observed_ratio": 1.0,
+   "abs_err": 0.0,
+   "ok": true
+  }
+ ],
+ "all_ok": true
+}
