@@ -1,0 +1,206 @@
+{
+  "card_id": "ONT-A02",
+  "files": [
+    {
+      "blob_sha1": "ce6674f97b11b0f0d4333f02186e291f73d17b20",
+      "branch": "forearm-package-20260924",
+      "bytes": 15393,
+      "dest": "USTR_DIAGNOSTIC_RECEIPT.md",
+      "origin": "git",
+      "path": "forearm_package/USTR_DIAGNOSTIC_RECEIPT.md",
+      "repository": "E:\\PythonChimera",
+      "sha256": "f3b406c75b2f8a706d59745a97d302470c24a7eebdcd9697fa095bcbeae6554f"
+    },
+    {
+      "blob_sha1": "0e0635c6a4e5a93be1cc112101f8acf22988d17e",
+      "branch": "forearm-package-20260924",
+      "bytes": 12599,
+      "dest": "ANATOMICAL_DECISION_TABLE.md",
+      "origin": "git",
+      "path": "forearm_package/ANATOMICAL_DECISION_TABLE.md",
+      "repository": "E:\\PythonChimera",
+      "sha256": "80b4d3034faffeb2efc1c9be7e4f380271f892bfd0618e77dde00e284f3114db"
+    },
+    {
+      "blob_sha1": "bd7e24b60a883226b3841c2f43c0bdc26ec6ceb7",
+      "branch": "forearm-package-20260924",
+      "bytes": 10067,
+      "dest": "baseline_snapshot/MANIFEST.json",
+      "origin": "git",
+      "path": "forearm_package/baseline_snapshot/MANIFEST.json",
+      "repository": "E:\\PythonChimera",
+      "sha256": "a753340ec01a27122455854602c0a57b2233dce2f0d4e618f53ef0f1a92f84e5"
+    },
+    {
+      "blob_sha1": "9c8656e4ad2c339ae39892e50cf17bc62794aeff",
+      "branch": "forearm-package-20260924",
+      "bytes": 154834,
+      "dest": "baseline_snapshot/source_xml/chimanoid.xml",
+      "origin": "git",
+      "path": "forearm_package/baseline_snapshot/source_xml/chimanoid.xml",
+      "repository": "E:\\PythonChimera",
+      "sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5"
+    },
+    {
+      "blob_sha1": "b76546c2ffbd022639ebeba3fd7dc26d2d5b50bf",
+      "branch": "forearm-package-20260924",
+      "bytes": 1294000,
+      "dest": "baseline_snapshot/runs/actual_monkey_fit.json",
+      "origin": "git",
+      "path": "forearm_package/baseline_snapshot/runs/actual_monkey_fit.json",
+      "repository": "E:\\PythonChimera",
+      "sha256": "7b5d6345f6d56ec77c072aecefde2ae592e3bc3fc96b439e5eff164425834268"
+    },
+    {
+      "blob_sha1": "8a5d1a53ba564546a78b1010eb8643c213ede0f5",
+      "branch": "forearm-package-20260924",
+      "bytes": 41302,
+      "dest": "baseline_snapshot/code/compiler.py",
+      "origin": "git",
+      "path": "forearm_package/baseline_snapshot/code/compiler.py",
+      "repository": "E:\\PythonChimera",
+      "sha256": "8a4ba07c033111730e390764c5401ae3ce0fa41f8504ccbda28bd4bd56edf852"
+    },
+    {
+      "blob_sha1": "159b351b6c002c40c8190bfb878d7143322b15b8",
+      "branch": "forearm-package-20260924",
+      "bytes": 22829,
+      "dest": "receipts/R1_report.md",
+      "origin": "git",
+      "path": "forearm_package/audits/R1_radioulnar_evidence/report.md",
+      "repository": "E:\\PythonChimera",
+      "sha256": "521403e7e360dd3b15c3846d5a2f4142213e15ad4590a9b550bc620dda39149a"
+    },
+    {
+      "blob_sha1": "c5aaaa6d6362585e4e1d66f26001ead27b37f6c8",
+      "branch": "forearm-package-20260924",
+      "bytes": 1503,
+      "dest": "receipts/R1_arithmetic.txt",
+      "origin": "git",
+      "path": "forearm_package/audits/R1_radioulnar_evidence/receipts/arithmetic.txt",
+      "repository": "E:\\PythonChimera",
+      "sha256": "3a10c7f95ece4cbced96ada8be64ae3b95fbe1de2acd8b5d6eb1ae91b87d94db"
+    },
+    {
+      "blob_sha1": "ce5d12737f043d378f1c4ce78eb44dcf9f61e08d",
+      "branch": "forearm-package-20260924",
+      "bytes": 6035,
+      "dest": "receipts/R1_citations.md",
+      "origin": "git",
+      "path": "forearm_package/audits/R1_radioulnar_evidence/receipts/citations.md",
+      "repository": "E:\\PythonChimera",
+      "sha256": "aadf3d9c2eee175ad98a0914252a601a4cdbcec3d55658bc77c425c966190a0a"
+    },
+    {
+      "blob_sha1": "2d2e97adbca22ea03c4652a3d133b576b5642825",
+      "branch": "forearm-package-20260924",
+      "bytes": 11240,
+      "dest": "receipts/C1_c1_geometry.txt",
+      "origin": "git",
+      "path": "forearm_package/audits/C1_ulna_evidence/receipts/c1_geometry.txt",
+      "repository": "E:\\PythonChimera",
+      "sha256": "6b636f7d1596c4363ad8eaa4a25e9f7dbe92fb81a235284135cd6db378cd7d36"
+    },
+    {
+      "blob_sha1": "652e327c8bb493b48340877aa51b196ad4f4aeee",
+      "branch": "forearm-package-20260924",
+      "bytes": 20761,
+      "dest": "receipts/I7_report.md",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/report.md",
+      "repository": "E:\\PythonChimera",
+      "sha256": "d7e5b97bdf8596aaaf6c434068683a3ed9e4ae4337388409416064884ab69b16"
+    },
+    {
+      "blob_sha1": "2b9db6f51c60e5571cc3060e4f91c8d13f7bba4e",
+      "branch": "forearm-package-20260924",
+      "bytes": 9884,
+      "dest": "receipts/I7_00_candidate_declaration.json",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/00_candidate_declaration.json",
+      "repository": "E:\\PythonChimera",
+      "sha256": "473f7526da894e63c8f4620e5b62774330b1cd9b5f44e819dcc3147fdc4c2255"
+    },
+    {
+      "blob_sha1": "351c0cd5ac03c9d040f3060c2cf91c9727bbe73c",
+      "branch": "forearm-package-20260924",
+      "bytes": 4985,
+      "dest": "receipts/I7_07_gate_table.json",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/07_gate_table.json",
+      "repository": "E:\\PythonChimera",
+      "sha256": "e645cb3470d80f8160aa0ce0d41deab2be4cc1cd33a55cefbd8b7c5deef3eb85"
+    },
+    {
+      "blob_sha1": "1a7f3742bacf10122cb3070970cbe3c7af1fdccd",
+      "branch": "forearm-package-20260924",
+      "bytes": 5787,
+      "dest": "receipts/I7_08_radius_before_after.json",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/08_radius_before_after.json",
+      "repository": "E:\\PythonChimera",
+      "sha256": "4354478f4244645f8c438da9deaa9cc5487d15494aca713609856da6fea2c025"
+    },
+    {
+      "blob_sha1": "7c03e497d542a32bcb6690db8e5432974c52056f",
+      "branch": "forearm-package-20260924",
+      "bytes": 7140,
+      "dest": "receipts/I7_09_c1_replacement.json",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/09_c1_replacement.json",
+      "repository": "E:\\PythonChimera",
+      "sha256": "c8cbfc78c2043f692bff3651f5dfa942014f78ec2b8124488abc770574c44128"
+    },
+    {
+      "blob_sha1": "437b8799516ced670747214ad1554e08084c25f7",
+      "branch": "forearm-package-20260924",
+      "bytes": 13933,
+      "dest": "receipts/I7_10_coverage_topology.json",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/10_coverage_topology.json",
+      "repository": "E:\\PythonChimera",
+      "sha256": "1b0337c009f2ee1ddc5b3bf3e58df50224d63d26f7f0a2eb303656561af2c01d"
+    },
+    {
+      "blob_sha1": "bca1771dbec89c5b75c8444e40096820e7036531",
+      "branch": "forearm-package-20260924",
+      "bytes": 2910,
+      "dest": "receipts/o1_combine_sign.json",
+      "origin": "git",
+      "path": "forearm_package/audits/O1_ulna_orientation/receipts/o1_combine_sign.json",
+      "repository": "E:\\PythonChimera",
+      "sha256": "fc35f7e9f01601daf3ada563677e7de05961bb19d83beca83f592e54d1e00972"
+    },
+    {
+      "blob_sha1": "3b9d31a106d63a81337f68c74926c88c190382da",
+      "branch": "forearm-package-20260924",
+      "bytes": 5531,
+      "dest": "receipts/B4_01_known_good_records.json",
+      "origin": "git",
+      "path": "forearm_package/audits/B4_correspondence_challenge/receipts/01_known_good_records.json",
+      "repository": "E:\\PythonChimera",
+      "sha256": "3f6a5a7afaa00efa8e6e18d4d0bbb7abe6a3d5278cf801ddbc98e5f9bd142bdb"
+    },
+    {
+      "bytes": 19884,
+      "dest": "meshes/ulna.stl",
+      "origin": "working_tree",
+      "path": "vendor/myo_sim/meshes/ulna.stl",
+      "repository": "E:\\PythonChimera",
+      "sha256": "710264159b68764dfd28fa51ae490d9b6c7ff7c0d2418f910c9db02969b1223e",
+      "tracked": false
+    },
+    {
+      "bytes": 19584,
+      "dest": "meshes/radius.stl",
+      "origin": "working_tree",
+      "path": "vendor/myo_sim/meshes/radius.stl",
+      "repository": "E:\\PythonChimera",
+      "sha256": "1cfc0056df1774187d219aaf9dec532826bee42698c16910567149463049b5dd",
+      "tracked": false
+    }
+  ],
+  "note": "Read-only byte-preserved copies for ONT-A02 re-measurement; no source repository was modified and no git write occurred.",
+  "schema": "chimera.ont_a02_extraction.v1",
+  "task_id": "A02"
+}

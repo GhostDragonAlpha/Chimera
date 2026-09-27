@@ -1,0 +1,523 @@
+{
+  "scenario_counts": {
+    "baseline": 2,
+    "diagnostic_ulna_only": 4,
+    "diagnostic_plus_hand (context, NOT this run)": 14
+  },
+  "table": {
+    "baseline": {
+      "ECRB_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "ECRB-P4",
+        "breaker_body": "hand_r",
+        "unresolved_owners": [
+          "hand_r"
+        ]
+      },
+      "ECRL_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "ECRL-P4",
+        "breaker_body": "hand_r",
+        "unresolved_owners": [
+          "hand_r"
+        ]
+      },
+      "ECU_tendon": {
+        "in_source": true,
+        "n_sites": 6,
+        "complete": false,
+        "earliest_unresolved_site": "ECU-P2",
+        "breaker_body": "ulna",
+        "unresolved_owners": [
+          "hand_r",
+          "ulna"
+        ]
+      },
+      "FCR_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": false,
+        "earliest_unresolved_site": "FCR-P3",
+        "breaker_body": "hand_r",
+        "unresolved_owners": [
+          "hand_r"
+        ]
+      },
+      "FCU_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "FCU-P4",
+        "breaker_body": "hand_r",
+        "unresolved_owners": [
+          "hand_r"
+        ]
+      },
+      "PT_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "PT-P2",
+        "breaker_body": "ulna",
+        "unresolved_owners": [
+          "ulna"
+        ]
+      },
+      "BIClong_tendon": {
+        "in_source": true,
+        "n_sites": 10,
+        "complete": false,
+        "earliest_unresolved_site": "BIClong-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BICshort_tendon": {
+        "in_source": true,
+        "n_sites": 7,
+        "complete": false,
+        "earliest_unresolved_site": "BICshort-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BRD_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "ECRB_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "ECRB_l-P4",
+        "breaker_body": "hand_l",
+        "unresolved_owners": [
+          "hand_l"
+        ]
+      },
+      "ECRL_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "ECRL_l-P4",
+        "breaker_body": "hand_l",
+        "unresolved_owners": [
+          "hand_l"
+        ]
+      },
+      "ECU_l_tendon": {
+        "in_source": true,
+        "n_sites": 6,
+        "complete": false,
+        "earliest_unresolved_site": "ECU_l-P2",
+        "breaker_body": "ulna_l",
+        "unresolved_owners": [
+          "hand_l",
+          "ulna_l"
+        ]
+      },
+      "FCR_l_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": false,
+        "earliest_unresolved_site": "FCR_l-P3",
+        "breaker_body": "hand_l",
+        "unresolved_owners": [
+          "hand_l"
+        ]
+      },
+      "FCU_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "FCU_l-P4",
+        "breaker_body": "hand_l",
+        "unresolved_owners": [
+          "hand_l"
+        ]
+      },
+      "PT_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "PT_l-P2",
+        "breaker_body": "ulna_l",
+        "unresolved_owners": [
+          "ulna_l"
+        ]
+      },
+      "BIClong_l_tendon": {
+        "in_source": true,
+        "n_sites": 10,
+        "complete": false,
+        "earliest_unresolved_site": "BIClong_l-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BICshort_l_tendon": {
+        "in_source": true,
+        "n_sites": 7,
+        "complete": false,
+        "earliest_unresolved_site": "BICshort_l-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BRD_l_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      }
+    },
+    "diagnostic_ulna_only": {
+      "ECRB_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "ECRB-P4",
+        "breaker_body": "hand_r",
+        "unresolved_owners": [
+          "hand_r"
+        ]
+      },
+      "ECRL_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "ECRL-P4",
+        "breaker_body": "hand_r",
+        "unresolved_owners": [
+          "hand_r"
+        ]
+      },
+      "ECU_tendon": {
+        "in_source": true,
+        "n_sites": 6,
+        "complete": false,
+        "earliest_unresolved_site": "ECU-P6",
+        "breaker_body": "hand_r",
+        "unresolved_owners": [
+          "hand_r"
+        ]
+      },
+      "FCR_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": false,
+        "earliest_unresolved_site": "FCR-P3",
+        "breaker_body": "hand_r",
+        "unresolved_owners": [
+          "hand_r"
+        ]
+      },
+      "FCU_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "FCU-P4",
+        "breaker_body": "hand_r",
+        "unresolved_owners": [
+          "hand_r"
+        ]
+      },
+      "PT_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "BIClong_tendon": {
+        "in_source": true,
+        "n_sites": 10,
+        "complete": false,
+        "earliest_unresolved_site": "BIClong-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BICshort_tendon": {
+        "in_source": true,
+        "n_sites": 7,
+        "complete": false,
+        "earliest_unresolved_site": "BICshort-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BRD_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "ECRB_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "ECRB_l-P4",
+        "breaker_body": "hand_l",
+        "unresolved_owners": [
+          "hand_l"
+        ]
+      },
+      "ECRL_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "ECRL_l-P4",
+        "breaker_body": "hand_l",
+        "unresolved_owners": [
+          "hand_l"
+        ]
+      },
+      "ECU_l_tendon": {
+        "in_source": true,
+        "n_sites": 6,
+        "complete": false,
+        "earliest_unresolved_site": "ECU_l-P6",
+        "breaker_body": "hand_l",
+        "unresolved_owners": [
+          "hand_l"
+        ]
+      },
+      "FCR_l_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": false,
+        "earliest_unresolved_site": "FCR_l-P3",
+        "breaker_body": "hand_l",
+        "unresolved_owners": [
+          "hand_l"
+        ]
+      },
+      "FCU_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": false,
+        "earliest_unresolved_site": "FCU_l-P4",
+        "breaker_body": "hand_l",
+        "unresolved_owners": [
+          "hand_l"
+        ]
+      },
+      "PT_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "BIClong_l_tendon": {
+        "in_source": true,
+        "n_sites": 10,
+        "complete": false,
+        "earliest_unresolved_site": "BIClong_l-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BICshort_l_tendon": {
+        "in_source": true,
+        "n_sites": 7,
+        "complete": false,
+        "earliest_unresolved_site": "BICshort_l-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BRD_l_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      }
+    },
+    "diagnostic_plus_hand (context, NOT this run)": {
+      "ECRB_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "ECRL_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "ECU_tendon": {
+        "in_source": true,
+        "n_sites": 6,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "FCR_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "FCU_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "PT_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "BIClong_tendon": {
+        "in_source": true,
+        "n_sites": 10,
+        "complete": false,
+        "earliest_unresolved_site": "BIClong-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BICshort_tendon": {
+        "in_source": true,
+        "n_sites": 7,
+        "complete": false,
+        "earliest_unresolved_site": "BICshort-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BRD_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "ECRB_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "ECRL_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "ECU_l_tendon": {
+        "in_source": true,
+        "n_sites": 6,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "FCR_l_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "FCU_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "PT_l_tendon": {
+        "in_source": true,
+        "n_sites": 4,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      },
+      "BIClong_l_tendon": {
+        "in_source": true,
+        "n_sites": 10,
+        "complete": false,
+        "earliest_unresolved_site": "BIClong_l-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BICshort_l_tendon": {
+        "in_source": true,
+        "n_sites": 7,
+        "complete": false,
+        "earliest_unresolved_site": "BICshort_l-P1",
+        "breaker_body": "thorax",
+        "unresolved_owners": [
+          "thorax"
+        ]
+      },
+      "BRD_l_tendon": {
+        "in_source": true,
+        "n_sites": 3,
+        "complete": true,
+        "earliest_unresolved_site": null,
+        "breaker_body": null,
+        "unresolved_owners": []
+      }
+    }
+  },
+  "brd_repair": {
+    "owner_body": "ulna",
+    "packet_status": "unresolved_body",
+    "statement": "BRD/BRD_l elbow arms null at baseline solely on ulna ownership; the diagnostic's ulna resolution is the repair (B2 \u00a75 'additionally gain their elbow_flexion(_l) arms')"
+  },
+  "ok": true
+}

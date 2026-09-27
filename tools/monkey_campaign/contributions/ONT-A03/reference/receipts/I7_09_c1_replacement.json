@@ -1,0 +1,243 @@
+{
+  "sides": {
+    "ulna": {
+      "rows": [
+        {
+          "site": "ANC-P2",
+          "pred_global": [
+            -0.11641630891578952,
+            0.3182363642184169,
+            -0.011708726743036087
+          ],
+          "axial_pct_of_forearm": 1.8421046105538659,
+          "transverse_mm": 5.651136708994613,
+          "inside_envelope": true
+        },
+        {
+          "site": "BRA-P3",
+          "pred_global": [
+            -0.11395975673254743,
+            0.31621767756430474,
+            -0.0050060452313635635
+          ],
+          "axial_pct_of_forearm": 2.9068842876185568,
+          "transverse_mm": 2.8771812762640563,
+          "inside_envelope": true
+        },
+        {
+          "site": "BRA-P4",
+          "pred_global": [
+            -0.11276047620699756,
+            0.31456589514731137,
+            -0.0068372694063661655
+          ],
+          "axial_pct_of_forearm": 4.3279954414271,
+          "transverse_mm": 4.55722194990671,
+          "inside_envelope": true
+        },
+        {
+          "site": "ECU-P2",
+          "pred_global": [
+            -0.11708242388026864,
+            0.3096454105128788,
+            -0.009307559223920597
+          ],
+          "axial_pct_of_forearm": 14.128090650685762,
+          "transverse_mm": 4.346652074914716,
+          "inside_envelope": true
+        },
+        {
+          "site": "ECU-P3",
+          "pred_global": [
+            -0.114244360223297,
+            0.30560906921105224,
+            -0.010046936806680767
+          ],
+          "axial_pct_of_forearm": 17.676618685067595,
+          "transverse_mm": 8.28021856776022,
+          "inside_envelope": true
+        },
+        {
+          "site": "ECU-P4",
+          "pred_global": [
+            -0.11000411557813544,
+            0.29740837870180886,
+            -0.010338117962804639
+          ],
+          "axial_pct_of_forearm": 25.96400453881552,
+          "transverse_mm": 15.378193337959955,
+          "inside_envelope": true
+        },
+        {
+          "site": "PT-P2",
+          "pred_global": [
+            -0.10875783123059297,
+            0.31453623845765316,
+            -0.004230199648378254
+          ],
+          "axial_pct_of_forearm": 1.558135077996174,
+          "transverse_mm": 8.276651922285168,
+          "inside_envelope": true
+        },
+        {
+          "site": "TRIlat-P5",
+          "pred_global": [
+            -0.11657131898865206,
+            0.32121925230645,
+            -0.010907803309439433
+          ],
+          "axial_pct_of_forearm": -2.147082909054372,
+          "transverse_mm": 5.200977200153784,
+          "inside_envelope": true
+        },
+        {
+          "site": "TRIlong-P5",
+          "pred_global": [
+            -0.11657131898865206,
+            0.32121925230645,
+            -0.010907803309439433
+          ],
+          "axial_pct_of_forearm": -2.147082909054372,
+          "transverse_mm": 5.200977200153784,
+          "inside_envelope": true
+        },
+        {
+          "site": "TRImed-P5",
+          "pred_global": [
+            -0.11657131898865206,
+            0.32121925230645,
+            -0.010907803309439433
+          ],
+          "axial_pct_of_forearm": -2.147082909054372,
+          "transverse_mm": 5.200977200153784,
+          "inside_envelope": true
+        }
+      ],
+      "max_transverse_mm": 15.378193337959955,
+      "s_implied": 0.2217067956654491,
+      "ok": true
+    },
+    "ulna_l": {
+      "rows": [
+        {
+          "site": "ANC_l-P2",
+          "pred_global": [
+            0.11641630790600177,
+            0.31823636370107083,
+            -0.011708726830566176
+          ],
+          "axial_pct_of_forearm": 1.8421046105538303,
+          "transverse_mm": 5.651136708994614,
+          "inside_envelope": true
+        },
+        {
+          "site": "BRA_l-P3",
+          "pred_global": [
+            0.11395975692333542,
+            0.31621767766313946,
+            -0.005006044693300463
+          ],
+          "axial_pct_of_forearm": 2.9068842876186136,
+          "transverse_mm": 2.877181276264082,
+          "inside_envelope": true
+        },
+        {
+          "site": "BRA_l-P4",
+          "pred_global": [
+            0.11276047606895517,
+            0.31456589507850025,
+            -0.006837268501731583
+          ],
+          "axial_pct_of_forearm": 4.327995441427067,
+          "transverse_mm": 4.557221949906702,
+          "inside_envelope": true
+        },
+        {
+          "site": "ECU_l-P2",
+          "pred_global": [
+            0.11708242329763296,
+            0.30964541021569514,
+            -0.009307558642246166
+          ],
+          "axial_pct_of_forearm": 14.12809065068573,
+          "transverse_mm": 4.34665207491471,
+          "inside_envelope": true
+        },
+        {
+          "site": "ECU_l-P3",
+          "pred_global": [
+            0.11424435950663245,
+            0.3056090688470598,
+            -0.010046935345826718
+          ],
+          "axial_pct_of_forearm": 17.67661868506763,
+          "transverse_mm": 8.280218567760233,
+          "inside_envelope": true
+        },
+        {
+          "site": "ECU_l-P4",
+          "pred_global": [
+            0.11000411480621575,
+            0.2974083783126736,
+            -0.010338114989196246
+          ],
+          "axial_pct_of_forearm": 25.964004538815487,
+          "transverse_mm": 15.378193337959935,
+          "inside_envelope": true
+        },
+        {
+          "site": "PT_l-P2",
+          "pred_global": [
+            0.10875783155980816,
+            0.3145362386296507,
+            -0.004230198023622043
+          ],
+          "axial_pct_of_forearm": 1.5581350779961696,
+          "transverse_mm": 8.276651922285163,
+          "inside_envelope": true
+        },
+        {
+          "site": "TRIlat_l-P5",
+          "pred_global": [
+            0.11657131812353025,
+            0.32121925186256545,
+            -0.010907803698561775
+          ],
+          "axial_pct_of_forearm": -2.147082909054367,
+          "transverse_mm": 5.200977200153783,
+          "inside_envelope": true
+        },
+        {
+          "site": "TRIlong_l-P5",
+          "pred_global": [
+            0.11657131812353025,
+            0.32121925186256545,
+            -0.010907803698561775
+          ],
+          "axial_pct_of_forearm": -2.147082909054367,
+          "transverse_mm": 5.200977200153783,
+          "inside_envelope": true
+        },
+        {
+          "site": "TRImed_l-P5",
+          "pred_global": [
+            0.11657131812353025,
+            0.32121925186256545,
+            -0.010907803698561775
+          ],
+          "axial_pct_of_forearm": -2.147082909054367,
+          "transverse_mm": 5.200977200153783,
+          "inside_envelope": true
+        }
+      ],
+      "max_transverse_mm": 15.378193337959935,
+      "s_implied": 0.2217067956654491,
+      "ok": true
+    }
+  },
+  "mirror": {
+    "max_deviation_m": 3.0967132823440887e-09,
+    "ok": true
+  },
+  "ok": true
+}
