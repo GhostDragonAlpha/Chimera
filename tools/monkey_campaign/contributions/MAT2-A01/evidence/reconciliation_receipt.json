@@ -1,0 +1,71 @@
+{
+  "anchors": {
+    "approved_head": "6f90c288ce93f236c820a2d665b0418c11d7024a",
+    "current_tip": "8ec90f13",
+    "merge_era": "4aecbc9e"
+  },
+  "applicability_notes": [
+    "replica suite re-execution READ one pinned external input from the read-only play checkout (E:/PythonChimera/Saved/meshes/monkey_birth.bin, target pack, 661076 bytes, mtime 2026-08-31) via the archived reference/mesh_target_o1.py; read-only, no writes, no network."
+  ],
+  "attempt_id": "f59c82c7dba94fb5abb210fe818ef537",
+  "candidate_base": "8ec90f13",
+  "card_id": "MAT2-A01",
+  "checks_pass": 6,
+  "checks_total": 6,
+  "criteria_sha256": "3ffafb225eb06eb7dc958676d48c17bfcfd7f9d266c68b6e3a32d8b97920ff56",
+  "honesty": {
+    "cpu_only": true,
+    "gpu_used": false,
+    "native_engine_run": false,
+    "network_used": false,
+    "note": "read-only probe over committed bytes + registry read-only; temp replica under attempt workspace probe_tmp/"
+  },
+  "outcome": "RECONCILED",
+  "preregistration_freeze_commit": "8ec90f13e76954596af3711c241c08b843ff78bf",
+  "probe_corrections": [
+    {
+      "cause": "probe counting heuristic: regex '\\.\\.\\. ok' undercounts when unittest wraps a multi-line docstring or a ResourceWarning line lands before the verdict word; unittest's own summary printed 'Ran 26 tests / OK', exit 0, zero FAIL/ERROR result lines",
+      "fired_first_run": "PR-2 FAIL: suite exit=0 ok=25 fail/error=0 (expected 26 ok, cpu-only python -B)",
+      "fix": "PR-2 now asserts the authoritative unittest summary (exit 0, Ran 26 tests, final OK, zero 'FAIL:'/'ERROR:' result lines); the per-line count is kept as a disclosed diagnostic. FROZEN EXPECTATION UNCHANGED (26/26, zero fail)."
+    },
+    {
+      "cause": "probe locator idiom '(vis.get(\"layers\") or [None])[0]' read the clean rows' honestly-EMPTY declared 'layers': [] as absent; clean rows carry empty layers/label_ids by definition (clean semantics) and the canonical validator accepts this by design",
+      "fired_first_run": "PR-4 FAIL: missing camera fields={V1:clean, V2:clean, V3:clean: [visibility_layers]}",
+      "fix": "locator now treats an empty list as a present, honestly-empty declaration; only an absent (null) field is missing. FROZEN EXPECTATION UNCHANGED (all 16 contract fields locatable on every row)."
+    }
+  ],
+  "probes": [
+    {
+      "details": "files=25 identical blob sha256 across 6f90c288 -> 4aecbc9e -> 8ec90f13",
+      "id": "PR-1",
+      "pass": true
+    },
+    {
+      "details": "suite exit=0; unittest summary: Ran 26 tests, OK=True; hard FAIL/ERROR result lines=0 (frozen: exit 0, 26 tests, zero fail; cpu-only python -B); per-line-ok diagnostic=25",
+      "id": "PR-2",
+      "pass": true
+    },
+    {
+      "details": "outcome AMBIGUITY_RECORDED, F2/F4 fired, P1 x=-28.320999816060066 mm, P2 t=+6 D=3.2891597453041737 mm, P3 0.15353092426937565 deg unanimous NO-FLIP, task_id A01, cpu_only, all exact",
+      "id": "PR-3",
+      "pass": true
+    },
+    {
+      "details": "task_id=A01 envelope, 6 rows = V1/V2/V3 x diagnostic/clean, all 16 contract camera fields located on every row (canonical schema layout), PNG bytes bound (sha 1639c68e\u2026), canonical validate_manifest: structurally_valid=True view_count=6 mode=CAMERA_METADATA_STRUCTURE_ONLY",
+      "id": "PR-4",
+      "pass": true
+    },
+    {
+      "details": "MAT2-P02 state=DONE merged via PR #196 merge_commit=8ec90f13 == candidate base 8ec90f13; freeze-commit parent 8ec90f13",
+      "id": "PR-5",
+      "pass": true
+    },
+    {
+      "details": "pristine passes=True; tampered (1 byte: outcome->TAMPERED_RECORD) passes=False (outcome='TAMPERED_RECORD')",
+      "id": "PR-6",
+      "pass": true
+    }
+  ],
+  "schema": "chimera.mat2_a01_reconciliation_receipt.v1",
+  "task_id": "A01"
+}
