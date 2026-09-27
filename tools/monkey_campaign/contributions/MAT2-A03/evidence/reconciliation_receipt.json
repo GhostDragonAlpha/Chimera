@@ -1,0 +1,106 @@
+{
+  "adopted_record": {
+    "approval_act": "lead merge of exact head 051d341da2c0786fe9706d169fe16b8127cb8772 as PR #187 merge 4aecbc9ee98cb115ec9a690f5c0df173d9f3efbf (registry ACCEPTED, 2026-09-27T06:44:32Z); record status kept exactly as merged",
+    "path": "tools/monkey_campaign/contributions/ONT-A03/transforms/radius_supersession_record.json",
+    "sha256": "e98c3c772e8088311278be13078a8cada43af59d1a81d962a634390c49514526",
+    "status": "STAGED_FOR_ARCHITECT_APPROVAL"
+  },
+  "anchors": {
+    "approved_head": "051d341da2c0786fe9706d169fe16b8127cb8772",
+    "base": "cb4af613aac6841925535624405b3f630a787c3c",
+    "definition_raw_sha256": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+    "merge_187": "4aecbc9ee98cb115ec9a690f5c0df173d9f3efbf",
+    "ont_card_criteria": "d15183d955c5d3764ed605e4c265145400806e5fb7e67738cebb3cf569056e7d",
+    "ont_scope": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "projected_task_digest": "944e19ee697cf953046f73501dc2669f3a0611789abcb7ae356a944b303324a9"
+  },
+  "attempt_id": "7ac643af941548f39ad251b024eda976",
+  "bounds_carried": {
+    "no_grasp_claim": "this adoption does NOT authorize mechanically qualified grasp (G-chain work remains)",
+    "no_utility_selection": "no moment-arm/utility evidence entered the selection",
+    "not_anatomical": "basis is kinematic-convention fidelity; R1's refutation retained verbatim and never relabeled",
+    "staged_only": "nothing outside the merged ONT-A03 contribution was executed or written; no production source, model store, fit or training body is touched by this card"
+  },
+  "candidate_base": "cb4af613aac6841925535624405b3f630a787c3c",
+  "card_id": "MAT2-A03",
+  "checks_pass": 11,
+  "checks_total": 11,
+  "criteria_sha256": "a4d6c38cbc07587a261fbde90425e5f0afa5dbd2d8edb4f40713f277e93c3aa8",
+  "environmental_notes": [
+    "MR-6 reproduces the merged independent review's recorded environmental behavior on a path-changed replica: the committed state snapshot embeds the original ONT-A03 attempt checkout's absolute staged_record_path, so exactly that one check fails on the pristine replica; the key-level diff (MR-5) shows staged_record_path is the ONLY differing state key and state_snapshot_sha256 the ONLY differing receipt key.",
+    "MR-5b (Amendment 1) reproduces the same family on the regenerated replica: the committed capture manifest pins the committed state snapshot's hash, so regenerating the state snapshot breaks exactly that one binding; suite 138/138 requires the original attempt checkout path, as the merged review recorded. Both committed pairs (state<->receipt, manifest->state) are verified intact at the base by MR-3/MR-7."
+  ],
+  "honesty": {
+    "cpu_only": true,
+    "gpu_used": false,
+    "native_engine_run": false,
+    "network_used": false,
+    "note": "read-only probe over committed bytes + registry read-only; temp replicas under attempt workspace probe_tmp/; ONT-A03 contribution bytes never modified"
+  },
+  "original_freeze_commit": "5019ceea9d0a23e5c41be27a8cfd73c08290a414",
+  "outcome": "ADOPTED_AND_REVERIFIED",
+  "preregistration_freeze_commit": "a0c1e5549d9ed9db59438450a812ba00a1cd22a3",
+  "probe_corrections": [
+    "Amendment 1 (commit a0c1e5549d9ed9db59438450a812ba00a1cd22a3, child of the original freeze 5019ceea9d0a23e5c41be27a8cfd73c08290a414, both touching only PREREGISTRATION.md): corrected the mis-derived MR-5b prediction before the confirmatory run; full disclosure in PREREGISTRATION.md Amendment 1 section.",
+    "Instrument shakeout (first probe run, receipts discarded, observations preserved in REPORT.md): (1) spec-diff path formatting fixed to match the frozen 'depends_on[0]' wording; (2) removed a wrongly-assumed criteria_sha256 field from the receipt envelope pins (the merged receipt has none; the frozen MR-3 text never pinned one); (3) visual_gate import moved to the play checkout because visual_gate.py is not part of the base tree (the A02 merged precedent imported it the same way); its sha256 is recorded in the MR-7 detail."
+  ],
+  "probes": [
+    {
+      "details": "freeze chain HEAD<-a0c1e554(parent 5019ceea=original 5019ceea, parent cb4af613=base); both commits touch only PREREGISTRATION.md; ancestors-of-HEAD=True/True; HEAD-vs-base diff 6 file(s) all under MAT2-A03/",
+      "id": "MR-0",
+      "pass": true
+    },
+    {
+      "details": "digest(spec)==criteria both cards (ONT d15183d9\u2026 / MAT2 a4d6c38c\u2026); definition_raw 57ded6eb\u2026 equal; projected task digest 944e19ee\u2026 equal; spec diff exactly ['depends_on[0]', 'id', 'ontology_qualification.scope_sha256']; attempt 7ac643af WORKING",
+      "id": "MR-1",
+      "pass": true
+    },
+    {
+      "details": "files=37 (frozen 37) blob-identical across 051d341d\u2026 -> 4aecbc9e\u2026 -> cb4af613\u2026",
+      "id": "MR-2",
+      "pass": true
+    },
+    {
+      "details": "all 10 file pins + record/receipt/manifest/context/qualification envelopes reproduce at the base",
+      "id": "MR-3",
+      "pass": true
+    },
+    {
+      "details": "ONT-A03 winner PR #187 head 051d341d\u2026 merged 4aecbc9e at 2026-09-27T06:44:32Z, review ACCEPTED at that head, oq done_when_verified; merge is ancestor of base; MAT2-A02 DONE via PR #214 merge == base",
+      "id": "MR-4",
+      "pass": true
+    },
+    {
+      "details": "pristine suite exit=1; final='137/138 tests PASS'; FAIL lines=['FAIL recomputed state equals the committed state snapshot'] (frozen exactly ['recomputed state equals the committed state snapshot'])",
+      "id": "MR-6",
+      "pass": true
+    },
+    {
+      "details": "probe exit=0; final='checks 75/75 PASS  outcome=STAGED_AND_QUALIFIED'; regenerated staged record sha e98c3c77\u2026; state diff keys=['staged_record_path'] (frozen ['staged_record_path']); receipt diff keys=['state_snapshot_sha256'] (frozen ['state_snapshot_sha256']); regenerated receipt re-binds regenerated state=True",
+      "id": "MR-5",
+      "pass": true
+    },
+    {
+      "details": "post-regeneration suite exit=1; final='137/138 tests PASS'; FAIL lines=['FAIL subject hash matches the state snapshot'] (frozen exactly ['subject hash matches the state snapshot']: the committed manifest binds the committed state hash; regenerating the state snapshot in a path-changed replica breaks exactly that binding)",
+      "id": "MR-5b",
+      "pass": true
+    },
+    {
+      "details": "task_id A03 envelope, 6 rows V1/V2/V3 x diagnostic/clean, all 16 contract camera fields on every row, pairs share camera+state, PNG bound 7ee98625\u2026; validate_manifest (base blob, play-copy byte-identical): structurally_valid=True view_count=6; visual_gate.verify(task_id A03 contract): structurally_valid=True view_count=6; visual_capture+integrity imported as base blobs (play copies byte-identical), visual_gate from the play checkout (not in the base tree; A02 precedent), sha 13cf07f4\u2026; limits: CPU software-raster component capture, CAMERA_METADATA_STRUCTURE_ONLY, no native frames, no new human acceptance claimed",
+      "id": "MR-7",
+      "pass": true
+    },
+    {
+      "details": "(a) record tamper (1 token status->TAMPERED_RECORD) check_pins fails with \"record status='TAMPERED_RECORD'\"; (b) winner head tamper check_approval fails (fired)",
+      "id": "MR-8ab",
+      "pass": true
+    },
+    {
+      "details": "one-ulp tamper of pinned receipt 08 (radius before scale) -> probe final='checks 73/75 PASS  outcome=DISCREPANCY_RECORDED' (outcome=DISCREPANCY_RECORDED, pass=73<75, M0 identity/provenance checks fail as recorded by the merged review)",
+      "id": "MR-8c",
+      "pass": true
+    }
+  ],
+  "schema": "chimera.mat2_a03_adoption_receipt.v1",
+  "task_id": "A03"
+}
