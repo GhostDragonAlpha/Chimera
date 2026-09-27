@@ -1,0 +1,237 @@
+{
+ "schema": "chimera.mat2-w02.qualification-receipt.v1",
+ "task_id": "MAT2-W02",
+ "planning_ids": [
+  "W02"
+ ],
+ "attempt_id": "296a4a34840e4c81a3a65f95ec491d11",
+ "arrival_id": "arrival-f2170bddbe024617aae68cfdfd9d7b0e",
+ "criteria_sha256": "a9014f57b2cd9b88425fe1a92e26031e4cb7d2fb0884787de385f33736385e19",
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "instruction_revision": "astra-0031",
+ "checkout_base_sha": "9ba1be77228e181f55ed2e4d2eb3e73e2f09685f",
+ "publication_base_sha": "8ec90f13e76954596af3711c241c08b843ff78bf",
+ "publication_branch": "review/MAT2-W02",
+ "pr_repository": "GhostDragonAlpha/Chimera",
+ "pr_base": "astra/gait-capture",
+ "done_when": "Reference-math equivalence is demonstrated at the frozen sites without tolerance relaxation",
+ "qualification_verdict": "QUALIFIED_RECORDS_PROFILE",
+ "gate_verdict": "PASS_NO_TOLERANCE",
+ "lineage_verdict": "LINEAGE_OK",
+ "pins_verdict": "PINS_OK",
+ "tolerance": "NONE - IEEE-754 bit equality is the only pass condition",
+ "claims": {
+  "frozen_sites_bit_exact": "125/125",
+  "dense_sweep_bit_exact": [
+   55392,
+   55392
+  ],
+  "dense_census_predicted_and_met": 55392,
+  "deterministic_rerun_byte_identical": true,
+  "gate_stdout_sha256_this_attempt": "517096e569b6bc7bbeb3e581ab590c5f84fa8e1da9e97962ab2d34f61291d935",
+  "matches_historical_gate_and_independent_review_run": true,
+  "fdlibm_reference_equivalent": false,
+  "preserved_libdevice_vs_crt_recount": {
+   "differing_sites": 31,
+   "by_function": {
+    "ACOS": 4,
+    "HYPOT": 11,
+    "SIN": 5,
+    "ATAN2": 6,
+    "COS": 5
+   },
+   "all_exactly_one_ulp": false
+  },
+  "preserved_fdlibm_vs_crt_recount": {
+   "bit_identical_sites": 115,
+   "differing_sites": 10
+  }
+ },
+ "claim_class_per_delivery_policy": {
+  "class": "component_complete",
+  "statement": "Reference-math parity at the 125 frozen sites is closed on the host leg with zero tolerance, and the adopted reconstruction is present in the walker kernel at the publication base. This is not a playable feature.",
+  "downstream_integration_tasks": [
+   "MAT2-W01",
+   "MAT2-W03",
+   "MAT2-W04",
+   "MAT2-W07",
+   "MAT2-W08"
+  ],
+  "required_ports_or_state": "gait.comp phase/consts SSBO inputs and the CPU reference schedule; no new port is introduced by this card",
+  "unresolved_blockers": [
+   "Fresh on-device (GPU) parity re-qualification remains with the GPU lanes",
+   "PLAYABLE_BUILD.json status UNQUALIFIED: source_commit/build_recipe/executable_sha256 are null",
+   "tick-3 discrete forelimb parity defect (MAT2-W01) is a separate card"
+  ]
+ },
+ "reconciles": {
+  "historical_card": "ONT-W02",
+  "archived_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "historical_criteria_sha256": "bf9f89874ee4a7d0606c46215e843474331482444af556ac4f199a6bfcd087f2",
+  "historical_winner_pr": "https://github.com/GhostDragonAlpha/Chimera/pull/184",
+  "historical_head_sha": "531b99354ef241ced711abbaa137105afb28ca5b",
+  "historical_merge_commit_sha": "6348533e4c0e25d8968b50e312151f6105146ae4",
+  "done_when_clause_unchanged_between_scopes": true,
+  "reimplementation_performed": false,
+  "historical_ledger_sha256": "e1d6a5096ca5e50f6907e5d68f9c57fe2d4e6141902badb23ecc454b18e105fa"
+ },
+ "dependencies_verified": {
+  "MAT2-P02": {
+   "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/196",
+   "head_sha": "e1606b934f37f057abc6b09e8688eb76afb0f81f",
+   "merge_commit_sha": "8ec90f13e76954596af3711c241c08b843ff78bf",
+   "ancestor_of_publication_base": true
+  },
+  "MAT2-P03": {
+   "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/194",
+   "head_sha": "250d6b243947eceb0abd93c6ffadea099a612bd7",
+   "merge_commit_sha": "13a943911da711a4dd24a450055ba0d1b1fe1d04",
+   "ancestor_of_publication_base": true
+  }
+ },
+ "toolchain": {
+  "vcvars64": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat",
+  "compiler": "Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64",
+  "toolset": "MSVC 14.44.35207",
+  "flags": "/nologo /O2 /fp:precise /EHsc /FI host_qual_shim.h"
+ },
+ "evidence_classes": {
+  "fresh_numerical_runs_here": [
+   "parity_gate_run.txt",
+   "parity_gate_result.json"
+  ],
+  "fresh_identity_checks_here": [
+   "lineage_receipt.json",
+   "pin_manifest.json"
+  ],
+  "preserved_records_cited_not_remeasured": [
+   "preserved/trig_host.txt",
+   "preserved/trig_gpu.txt",
+   "preserved/trig_fdlibm_out.txt",
+   "preserved/co7_gate_out2.txt",
+   "preserved/co7_dense_full2.txt",
+   "preserved/co6_trig_dense.txt"
+  ],
+  "not_claimed": [
+   "GPU/on-device re-qualification",
+   "engine launch",
+   "walker runtime behavior",
+   "walking/training completion",
+   "playable build qualification"
+  ]
+ },
+ "resource_accounting": {
+  "gpu_runs": 0,
+  "engine_launches": 0,
+  "training_runs": 0,
+  "native_builds": 1,
+  "profile": "records (offline)"
+ },
+ "artifacts": [
+  {
+   "role": "preregistration",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-W02\\PREREGISTRATION.md",
+   "raw_sha256": "332798be3fabab5680c8792975c7f94002d125340697b74a4d84ae5cab29a1e1"
+  },
+  {
+   "role": "gate_driver_reused",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-W02\\run_gate.py",
+   "raw_sha256": "20d3bbd7834d9acda7c8838823d2db5b8e1f076463eb02d99951fe4d3f0193f2"
+  },
+  {
+   "role": "pin_extraction_tool",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-W02\\extract_pins.py",
+   "raw_sha256": "afb603b462c8e1f4b67aea12ff947923e4e776f6b511cd8f4a0de4c6d3f7aa91"
+  },
+  {
+   "role": "pin_manifest",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-W02\\pin_manifest.json",
+   "raw_sha256": "62480578258f9670906d638c5ce2dafa41ab4a80512c427e7df9a6dba60dde68"
+  },
+  {
+   "role": "lineage_tool",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-W02\\reconcile_lineage.py",
+   "raw_sha256": "4f0dd54c17b42955c065a290a4b332a3349c20ee74e34685530b9fd57f2b6cf6"
+  },
+  {
+   "role": "lineage_receipt",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-W02\\lineage_receipt.json",
+   "raw_sha256": "7cd17c01567036541395b9d1a29ec7c5dd23136b488f42e49029e5227ab5b5a2"
+  },
+  {
+   "role": "compiler_identity_tool",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-W02\\capture_compiler.py",
+   "raw_sha256": "8dc8e61b79aed1d335b3eba519764b31b08c5a013615946513c713374fb4e9ca"
+  },
+  {
+   "role": "compiler_identity",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\build_gate\\compiler_identity.txt",
+   "raw_sha256": "e7c606d64c0cce6d45a8e78e29228b08f5495f7bbd8b38b26f3f7287f374846e"
+  },
+  {
+   "role": "gate_run_stdout",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\build_gate\\parity_gate_run.txt",
+   "raw_sha256": "56be1938e4dd14a2197defc0f3d14e2f64ed492c49ace08ef46169610ecfa48b"
+  },
+  {
+   "role": "numerical_ledger",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-W02\\parity_gate_result.json",
+   "raw_sha256": "1962bc3d2ab797c3b86f9323c65f2bb21f6962cf750b0e7f31f6c38ccc673f67"
+  },
+  {
+   "role": "report",
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-W02\\296a4a34840e4c81a3a65f95ec491d11\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-W02\\report.md",
+   "raw_sha256": "69433ce71da12e60e493b06c468deb493767ae48e5d6f36237fd782d1e93d692"
+  }
+ ],
+ "pinned_inputs_reused_unchanged": [
+  {
+   "path": "frozen_sites/trig_inputs.txt",
+   "raw_sha256": "a21467e5e5aeb09f23a6de39c16902c34d2a34ebaa83cbccaab01ba1a0ea8b01"
+  },
+  {
+   "path": "frozen_sites/ucrt_math.c",
+   "raw_sha256": "cde32a8d36c0fbf481d67fa0005ace7dab08f066971085e543f7909740900b97"
+  },
+  {
+   "path": "frozen_sites/ucrt_math_tables.h",
+   "raw_sha256": "cdae6a920bb38d517c11683e11fda0c2f15b6069ab5c1ee4d5bbdd9a62d437ed"
+  },
+  {
+   "path": "frozen_sites/ucrt_math_consts.h",
+   "raw_sha256": "106b7cc7cc9823d58092a0eddc4987df5a31f0e02d0705e905292b2759aec938"
+  },
+  {
+   "path": "frozen_sites/parity_gate_host.cxx",
+   "raw_sha256": "9cdc67df81b7fd358d7eef83634ba294a4f9ac310500f5d452fe74b51b17c683"
+  },
+  {
+   "path": "frozen_sites/host_qual_shim.h",
+   "raw_sha256": "39ebeeb939d85345c28dcea41f4ab4e4443f168b4c2a4b3a0e0ac33772c1250a"
+  },
+  {
+   "path": "frozen_sites/preserved/trig_host.txt",
+   "raw_sha256": "ed48cf12865115dc8223c0e4ab03ca331144a7c6267ad5e25dda327a9b0a24f2"
+  },
+  {
+   "path": "frozen_sites/preserved/trig_gpu.txt",
+   "raw_sha256": "bb896746b5883a3cfd73acccd6b4373496da589aa61361fe58be83237fa9e733"
+  },
+  {
+   "path": "frozen_sites/preserved/trig_fdlibm_out.txt",
+   "raw_sha256": "41e484b2bf5be5eba7d7607d029d3221880e1af236ea424d938570dd158c34ed"
+  },
+  {
+   "path": "frozen_sites/preserved/co7_gate_out2.txt",
+   "raw_sha256": "54e72577920b1fb0a1cfe068ac482198929bfc208779738c2ddf9c7ab1c740a4"
+  },
+  {
+   "path": "frozen_sites/preserved/co7_dense_full2.txt",
+   "raw_sha256": "2bc8d9bc9631d58f81cf5c1e1d5774455b40e4c30e50661d62351f49ce909f67"
+  },
+  {
+   "path": "frozen_sites/preserved/co6_trig_dense.txt",
+   "raw_sha256": "c51cda41db828723bdfa3c9360709f2733927164be05cc21db92727c5d5db8d2"
+  }
+ ]
+}
