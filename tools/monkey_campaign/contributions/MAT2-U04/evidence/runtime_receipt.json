@@ -1,0 +1,44 @@
+{
+ "agent_id": "arrival-1390bce44d204c709636097a9613e84f",
+ "attempt_id": "d9ce4334674e435d95b9cb95373327e5",
+ "card_id": "MAT2-U04",
+ "child_process": {
+  "command": "python -B child_load_probe.py <settings.json> <scratch>/child_records.json",
+  "exit_code": 0,
+  "pid": 15544,
+  "records": 10,
+  "role": "fresh-interpreter settings RELOAD + frozen replay",
+  "wall_clock_ms": 80.07630000065546
+ },
+ "criteria_sha256": "192ca43f061c4b6b2763d11213e0246ea075c3f62e6948948ba8c64213bf5180",
+ "environment": {
+  "cpu_only": true,
+  "engine_process": false,
+  "gpu": false,
+  "headless": true,
+  "network": false,
+  "platform": "win32",
+  "python": "3.14.3",
+  "timing": "all trace times are INJECTED tick milliseconds (20 Hz boundary); the only wall clocks are the separately-reported durations here"
+ },
+ "pinned_suite": {
+  "outcome": "see evidence/records_leg_rerun.json (GREEN 33/0)",
+  "runner": "records_leg/ONT-U04/run_falsifiers.py (UNMODIFIED, from reviewed PR #182 head 939e8e6f725d162b18e8998aa725ad24f53fdb36)"
+ },
+ "records_emitted": 368,
+ "run_id": "mat2-u04-input-20260927-d9ce4334",
+ "schema": "mat2-u04.input-settings.runtime.v1",
+ "subject": "tools/monkey_campaign/product/input_settings.py",
+ "subject_sha256": "8d1a49d63f85164f3b9ac27f3387237d0a0790f68075e2455a74e2caa485a2f1",
+ "task_id": "U04",
+ "timing_chain": "every record issued_tick == t_ms*300//1000 (check N9); release decay lands exactly 0.0 within the 100 ms deadline (frozen boundaries 18500/19000)",
+ "trace_identity": {
+  "rows": 391,
+  "sha256": "9aea974e6c7cfbf95e70d345e1fbb48c7faceae0265ee5bd0803e761d907da2c",
+  "tick_interval": [
+   0,
+   390
+  ]
+ },
+ "wall_clock_probe_seconds": 0.14357409999865922
+}
