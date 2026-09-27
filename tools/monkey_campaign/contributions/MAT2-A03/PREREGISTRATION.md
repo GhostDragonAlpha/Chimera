@@ -133,10 +133,13 @@ read-only registry BEFORE this freeze.
   the regenerated numerical receipt equals the committed one in EVERY field except
   exactly `state_snapshot_sha256` (path-dependent binding), and its value equals
   sha256 of the regenerated state snapshot; the regenerated state snapshot equals
-  the committed one in EVERY field except exactly `staged_record_path`; after the
-  regeneration the suite re-run is self-consistent (see MR-5b).
-- **MR-5b suite re-run AFTER regeneration**: exit 0, final line exactly
-  "138/138 tests PASS", zero FAIL lines.
+  the committed one in EVERY field except exactly `staged_record_path`.
+- **MR-5b suite re-run AFTER regeneration**: exit 1; final line exactly
+  "137/138 tests PASS"; the ONLY FAIL line is "subject hash matches the state
+  snapshot" (the committed capture manifest binds the committed state snapshot's
+  hash; regenerating the state snapshot in a path-changed replica breaks exactly
+  that binding — consistent with the merged independent review's recorded limit
+  that suite 138/138 requires the original attempt checkout path).
 - **MR-6 suite on the PRISTINE replica (committed evidence intact), run BEFORE
   MR-5**: exit 1; final line exactly "137/138 tests PASS"; the ONLY FAIL line is
   "recomputed state equals the committed state snapshot"; a key-level diff of the
@@ -163,6 +166,35 @@ read-only registry BEFORE this freeze.
   `reference/receipts/I7_08_radius_before_after.json` in a fresh replica makes the
   probe report DISCREPANCY_RECORDED with fewer than 75 PASS (M0 identity/
   provenance checks fail), reproducing the merged review's recorded behavior.
+
+## Amendment 1 (2026-09-27, BEFORE the confirmatory run)
+
+Original freeze: commit `5019ceea9d0a23e5c41be27a8cfd73c08290a414` (parent ==
+base, this file only). This amendment commit changes ONLY this file and is a
+direct child of the original freeze; both are ancestors of the candidate HEAD.
+
+Amended: the MR-5b prediction and the MR-5 sentence that claimed the post-
+regeneration suite re-run is "self-consistent". Original MR-5b predicted
+"exit 0, 138/138 tests PASS, zero FAIL lines". Reason for amendment: that
+expectation was mis-derived — the committed capture manifest pins
+`subject_sha256` = the committed state snapshot's hash, so regenerating the
+state snapshot in a path-changed replica necessarily breaks exactly that one
+binding; the merged ONT-A03 independent review had already recorded the
+underlying environmental limit ("suite 138/138 requires the original attempt
+checkout path"), which the original prediction contradicted. Disclosure: one
+instrument-shakeout run of the probe was executed before this amendment; its
+genuine evidence observations (MR-6 pristine 137/138 with exactly the recorded
+recompute-equality FAIL; MR-5 probe 75/75 STAGED_AND_QUALIFIED with staged
+record byte-identity and exactly the two expected path-dependent diff keys;
+MR-2/MR-4 PASS) are preserved in REPORT.md. No prediction that concerns the
+evidence itself was changed; the corrected MR-5b expectation is derived from
+the recorded environmental limit plus the manifest binding structure, and it
+is now confirmed by observation, not assumed. Instrument corrections made in
+the same window (probe only, not predictions): diff-path formatting for
+`depends_on[0]`; removal of a wrongly-assumed `criteria_sha256` receipt field
+(the merged receipt has none, and the frozen MR-3 text never pinned one);
+visual_gate imported from the play checkout (the A02 merged precedent) because
+`visual_gate.py` is not part of the base tree — recorded with its hash.
 
 ## Falsifier (decidable either way, reported as it falls)
 
