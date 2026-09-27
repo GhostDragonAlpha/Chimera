@@ -1,0 +1,33 @@
+{
+  "schema_version": "chimera.fitting_manifest.v1",
+  "fitting_id": "analytic-fit-001",
+  "domain_id": "triangular-bipyramid",
+  "domain_revision": "fixture-v1",
+  "coordinate_frame": {
+    "frame_id": "bipyramid-local",
+    "handedness": "right",
+    "coordinate_unit": "fixture_unit",
+    "scale_to_m": 1.0
+  },
+  "vertices": [
+    {"vertex_id": "v0", "position": [0.0, 0.0, 0.0]},
+    {"vertex_id": "v1", "position": [1.0, 0.0, 0.0]},
+    {"vertex_id": "v2", "position": [0.0, 1.0, 0.0]},
+    {"vertex_id": "v3", "position": [0.0, 0.0, 1.0]},
+    {"vertex_id": "v4", "position": [0.0, 0.0, -1.0]}
+  ],
+  "cells": [
+    {"cell_id": "cell-lower", "vertex_ids": ["v0", "v2", "v1", "v4"], "component_id": "body-0"},
+    {"cell_id": "cell-upper", "vertex_ids": ["v0", "v1", "v2", "v3"], "component_id": "body-0"}
+  ],
+  "regions": [
+    {"region_id": "region-A", "mass_owner_id": "owner-A", "material_id": "upper-tissue"},
+    {"region_id": "region-B", "mass_owner_id": "owner-B", "material_id": "lower-tissue"}
+  ],
+  "mass_authority": "reconstructed_tissue_mass",
+  "source_effective_segment_ids": [],
+  "matter_ownership": [
+    {"matter_id": "upper-tissue-matter", "representation": "tetrahedral_volume", "mass_owner_id": "owner-A"},
+    {"matter_id": "lower-tissue-matter", "representation": "tetrahedral_volume", "mass_owner_id": "owner-B"}
+  ]
+}

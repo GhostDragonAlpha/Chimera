@@ -1,0 +1,40 @@
+{
+ "body_groups": [
+  {
+   "body_frame": {
+    "coordinate_unit": "m",
+    "domain_from_body": {
+     "origin_m": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "rotation": [
+      [
+       1.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       1.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.0,
+       1.0
+      ]
+     ]
+    },
+    "frame_id": "frame-D",
+    "handedness": "right"
+   },
+   "body_id": "stress-body-D",
+   "cell_ids": [
+    "cell-d1"
+   ]
+  }
+ ],
+ "schema_version": "chimera.rigid_body_cell_groups.v1"
+}

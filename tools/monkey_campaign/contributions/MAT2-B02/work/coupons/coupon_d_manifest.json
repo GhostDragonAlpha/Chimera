@@ -1,0 +1,74 @@
+{
+ "cells": [
+  {
+   "cell_id": "cell-d1",
+   "component_id": "component-d-1",
+   "vertex_ids": [
+    "d0",
+    "d1",
+    "d2",
+    "d3"
+   ]
+  }
+ ],
+ "coordinate_frame": {
+  "coordinate_unit": "m",
+  "frame_id": "coupon-d-domain",
+  "handedness": "right",
+  "scale_to_m": 1.0
+ },
+ "domain_id": "d-domain",
+ "domain_revision": "b02-coupon-v1",
+ "fitting_id": "d-fit-v1",
+ "mass_authority": "reconstructed_tissue_mass",
+ "matter_ownership": [
+  {
+   "mass_owner_id": "owner-D",
+   "matter_id": "matter-owner-D",
+   "representation": "tetrahedral_volume"
+  }
+ ],
+ "regions": [
+  {
+   "mass_owner_id": "owner-D",
+   "material_id": "tissue-D",
+   "region_id": "region-D"
+  }
+ ],
+ "schema_version": "chimera.fitting_manifest.v1",
+ "source_effective_segment_ids": [],
+ "vertices": [
+  {
+   "position": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "vertex_id": "d0"
+  },
+  {
+   "position": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "vertex_id": "d1"
+  },
+  {
+   "position": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "vertex_id": "d2"
+  },
+  {
+   "position": [
+    0.25,
+    0.5,
+    9.5367431640625e-07
+   ],
+   "vertex_id": "d3"
+  }
+ ]
+}
