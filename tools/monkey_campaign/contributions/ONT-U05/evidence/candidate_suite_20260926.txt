@@ -1,0 +1,25 @@
+test_channel_stamps_with_injected_tick_source (test_climb_intent_candidate.C12Stamps.test_channel_stamps_with_injected_tick_source) ... ok
+test_default_stamp_convention (test_climb_intent_candidate.C12Stamps.test_default_stamp_convention) ... ok
+test_press_hold_release_rearm (test_climb_intent_candidate.EdgeLaw.test_press_hold_release_rearm) ... ok
+test_two_independent_edges (test_climb_intent_candidate.EdgeLaw.test_two_independent_edges) ... ok
+test_amr_suite_green (test_climb_intent_candidate.FullRecoveredSuites.test_amr_suite_green) ... ok
+test_main_suite_green_with_seam_hash_bound (test_climb_intent_candidate.FullRecoveredSuites.test_main_suite_green_with_seam_hash_bound) ... ok
+test_dominance_disconnected_blur_paused (test_climb_intent_candidate.GateLaw.test_dominance_disconnected_blur_paused) ... ok
+test_no_fabricated_retract_under_gate_churn (test_climb_intent_candidate.GateLaw.test_no_fabricated_retract_under_gate_churn) ... ok
+test_pause_drops_by_name_and_recovery_is_clean (test_climb_intent_candidate.GateLaw.test_pause_drops_by_name_and_recovery_is_clean) ... ok
+test_release_passes_under_gates_and_never_emits (test_climb_intent_candidate.GateLaw.test_release_passes_under_gates_and_never_emits) ... ok
+test_space_is_named_walk_refusal_and_one_climb_request (test_climb_intent_candidate.Integration.test_space_is_named_walk_refusal_and_one_climb_request) ... ok
+test_original_author_receipt_numbers_reproduced (test_climb_intent_candidate.PinnedLineage.test_original_author_receipt_numbers_reproduced) ... ok
+test_pinned_hashes_hold (test_climb_intent_candidate.PinnedLineage.test_pinned_hashes_hold) ... ok
+test_event_wire_has_no_float_field (test_climb_intent_candidate.PureSignal.test_event_wire_has_no_float_field) ... ok
+test_import_surface_is_exactly_declared (test_climb_intent_candidate.PureSignal.test_import_surface_is_exactly_declared) ... ok
+test_physics_hz_is_imported_not_redeclared (test_climb_intent_candidate.PureSignal.test_physics_hz_is_imported_not_redeclared) ... ok
+test_forged_source_refused (test_climb_intent_candidate.VersionLaw.test_forged_source_refused) ... ok
+test_unknown_intent_and_bad_stamps_refused (test_climb_intent_candidate.VersionLaw.test_unknown_intent_and_bad_stamps_refused) ... ok
+test_valid_v1_constructs (test_climb_intent_candidate.VersionLaw.test_valid_v1_constructs) ... ok
+test_wrong_versions_refused (test_climb_intent_candidate.VersionLaw.test_wrong_versions_refused) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 1.456s
+
+OK

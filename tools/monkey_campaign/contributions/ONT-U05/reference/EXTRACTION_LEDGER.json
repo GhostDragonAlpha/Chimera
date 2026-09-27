@@ -1,0 +1,289 @@
+{
+ "schema": "ont-u05.extraction.ledger.v1",
+ "source_repository": "E:/ChimeraWork/monkey-play-20260924 (READ-ONLY; extraction via `git -c safe.directory='*' -C E:/ChimeraWork/monkey-play-20260924 show 9afbddcd...:<path>`)",
+ "pinned_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+ "pinned_revision_note": "monkey-play game lineage at 'F08 integrated - FOREST FRONT COMPLETE'; U05 integrated at ancestor 87c14ca5 (73/73) and amended at ancestor 272e7bda (77/77 + R4 AMR landing)",
+ "method": "byte-exact `git show` piped to files; no checkout, no branch switch, no edit of any source repository",
+ "entries": [
+  {
+   "local_path": "climb_intent.py",
+   "source_path": "tools/monkey_campaign/product/climb_intent.py",
+   "source_sha256_git_blob": "586cb1c541afdc391ac14ce989cf2d2561a9ee79e25e874f7fbfc2312fd3c5a2",
+   "extracted_sha256": "586cb1c541afdc391ac14ce989cf2d2561a9ee79e25e874f7fbfc2312fd3c5a2",
+   "byte_exact": true,
+   "role": "candidate (the recovered seam module)"
+  },
+  {
+   "local_path": "climb_intent_tests.py",
+   "source_path": "tools/monkey_campaign/product/climb_intent_tests.py",
+   "source_sha256_git_blob": "291eb0b60e754e497d425dada1dffdf0839ea3f8a91f16fd0239ab3f9fdc9895",
+   "extracted_sha256": "291eb0b60e754e497d425dada1dffdf0839ea3f8a91f16fd0239ab3f9fdc9895",
+   "byte_exact": true,
+   "role": "candidate (the author's 73-check falsifier suite)"
+  },
+  {
+   "local_path": "climb_intent_amr_tests.py",
+   "source_path": "tools/monkey_campaign/product/climb_intent_amr_tests.py",
+   "source_sha256_git_blob": "7ff7f3ba2678d6533e6f40666b5faf9f102751377bc4f89bf68846d2df3b7538",
+   "extracted_sha256": "7ff7f3ba2678d6533e6f40666b5faf9f102751377bc4f89bf68846d2df3b7538",
+   "byte_exact": true,
+   "role": "candidate (the R4 amendment suite, 4 checks)"
+  },
+  {
+   "local_path": "reference/tools/monkey_campaign/product/input_mapper.py",
+   "source_path": "tools/monkey_campaign/product/input_mapper.py",
+   "source_sha256_git_blob": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "extracted_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "byte_exact": true,
+   "role": "reference dependency (U01 walk mapper; I7 integration subject)"
+  },
+  {
+   "local_path": "reference/tools/monkey_campaign/product/focus_policy.py",
+   "source_path": "tools/monkey_campaign/product/focus_policy.py",
+   "source_sha256_git_blob": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+   "extracted_sha256": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+   "byte_exact": true,
+   "role": "reference dependency (U03 gate-law source of the drop names)"
+  },
+  {
+   "local_path": "reference/tools/monkey_campaign/product/session_flow.py",
+   "source_path": "tools/monkey_campaign/product/session_flow.py",
+   "source_sha256_git_blob": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+   "extracted_sha256": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+   "byte_exact": true,
+   "role": "reference dependency (X02 pause-gate precedent; I7 parity)"
+  },
+  {
+   "local_path": "reference/tools/science_funnel/typeb_export/command_record.py",
+   "source_path": "tools/science_funnel/typeb_export/command_record.py",
+   "source_sha256_git_blob": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+   "extracted_sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+   "byte_exact": true,
+   "role": "reference dependency (the FROZEN walk contract; I6 hash subject; PHYSICS_HZ import)"
+  },
+  {
+   "local_path": "recovered/U05_climb_intent/INTENT_SEAM_SPEC.md",
+   "source_path": "tools/monkey_campaign/agents/U05_climb_intent/INTENT_SEAM_SPEC.md",
+   "source_sha256_git_blob": "772d809df620bb93cce97fd41f081ba244b44edfef8d9ee4797f16cc8eac143b",
+   "extracted_sha256": "772d809df620bb93cce97fd41f081ba244b44edfef8d9ee4797f16cc8eac143b",
+   "byte_exact": true,
+   "role": "recovered provenance (THE REVIEWED INTERFACE DECISION, incl. R4 amendments sections 12-13)"
+  },
+  {
+   "local_path": "recovered/U05_climb_intent/PREREGISTRATION.md",
+   "source_path": "tools/monkey_campaign/agents/U05_climb_intent/PREREGISTRATION.md",
+   "source_sha256_git_blob": "5f1d94f4e2d1cdc13e85fdf664db0784385df99a5f606e809c3e9eec0528ba2d",
+   "extracted_sha256": "5f1d94f4e2d1cdc13e85fdf664db0784385df99a5f606e809c3e9eec0528ba2d",
+   "byte_exact": true,
+   "role": "recovered provenance (original frozen prereg, falsifiers I1-I8, REVISION A)"
+  },
+  {
+   "local_path": "recovered/U05_climb_intent/INTEGRATION_U06_X02_K.md",
+   "source_path": "tools/monkey_campaign/agents/U05_climb_intent/INTEGRATION_U06_X02_K.md",
+   "source_sha256_git_blob": "9768a6c4d1e7f2d7884592cdeb41b8066e2031a33bfdad50ec5ea3c84fbdb26c",
+   "extracted_sha256": "9768a6c4d1e7f2d7884592cdeb41b8066e2031a33bfdad50ec5ea3c84fbdb26c",
+   "byte_exact": true,
+   "role": "recovered provenance (integration note for U06/X02/K)"
+  },
+  {
+   "local_path": "recovered/U05_climb_intent/brief.md",
+   "source_path": "tools/monkey_campaign/agents/U05_climb_intent/brief.md",
+   "source_sha256_git_blob": "fcd2c3eed3f55d71476769419d5b2571dc8bae145b0b21c4371e729459700007",
+   "extracted_sha256": "fcd2c3eed3f55d71476769419d5b2571dc8bae145b0b21c4371e729459700007",
+   "byte_exact": true,
+   "role": "recovered provenance (dispatch brief)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/PREREGISTRATION.md",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/PREREGISTRATION.md",
+   "source_sha256_git_blob": "d334afc94827904ab6f98dfdc61538a4d9375ca22a4a60df59292d315b8f2c19",
+   "extracted_sha256": "d334afc94827904ab6f98dfdc61538a4d9375ca22a4a60df59292d315b8f2c19",
+   "byte_exact": true,
+   "role": "recovered provenance (amendments prereg; R4 binding fixes failing-first)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/INTEGRATION_U07.md",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/INTEGRATION_U07.md",
+   "source_sha256_git_blob": "f60410340ad866e680804e2a20b5493bd4dcb898fb150c969308ceb889adf68e",
+   "extracted_sha256": "f60410340ad866e680804e2a20b5493bd4dcb898fb150c969308ceb889adf68e",
+   "byte_exact": true,
+   "role": "recovered provenance (U07 insertion note)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/brief.md",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/brief.md",
+   "source_sha256_git_blob": "22308934ca8a250c0f72c8d596e027a8b0d52254cfe58ad8c5984b1a779b681f",
+   "extracted_sha256": "22308934ca8a250c0f72c8d596e027a8b0d52254cfe58ad8c5984b1a779b681f",
+   "byte_exact": true,
+   "role": "recovered provenance (dispatch brief)"
+  },
+  {
+   "local_path": "recovered/R4_intent_review/report.md",
+   "source_path": "tools/monkey_campaign/agents/R4_intent_review/report.md",
+   "source_sha256_git_blob": "e456945f568e2c7eb750cd807607152e83da2d19a28875fdc07dedafb25de418",
+   "extracted_sha256": "e456945f568e2c7eb750cd807607152e83da2d19a28875fdc07dedafb25de418",
+   "byte_exact": true,
+   "role": "recovered provenance (R4 interface review: APPROVED-WITH-AMENDMENTS; six rulings)"
+  },
+  {
+   "local_path": "recovered/R4_intent_review/PREREGISTERED_CHECKS.md",
+   "source_path": "tools/monkey_campaign/agents/R4_intent_review/PREREGISTERED_CHECKS.md",
+   "source_sha256_git_blob": "2699e8e45d7a33c2ba2ca9ae3ed5cc08f8d24243456905cdd872fad57204dbe0",
+   "extracted_sha256": "2699e8e45d7a33c2ba2ca9ae3ed5cc08f8d24243456905cdd872fad57204dbe0",
+   "byte_exact": true,
+   "role": "recovered provenance (reviewer's frozen checklist)"
+  },
+  {
+   "local_path": "recovered/R4_intent_review/brief.md",
+   "source_path": "tools/monkey_campaign/agents/R4_intent_review/brief.md",
+   "source_sha256_git_blob": "1f185181c8decc47d44df9a6e26c036ff16b2d80a4baddc665a26f0d86669f50",
+   "extracted_sha256": "1f185181c8decc47d44df9a6e26c036ff16b2d80a4baddc665a26f0d86669f50",
+   "byte_exact": true,
+   "role": "recovered provenance (review dispatch brief)"
+  },
+  {
+   "local_path": "recovered/U05_climb_intent/receipts/climb_intent_tests_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05_climb_intent/receipts/climb_intent_tests_20260924.txt",
+   "source_sha256_git_blob": "91e9e2208241e50ac389c483e58dbef1a584b7b7d6774655d95980dde09f33a0",
+   "extracted_sha256": "91e9e2208241e50ac389c483e58dbef1a584b7b7d6774655d95980dde09f33a0",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05_climb_intent/receipts/integrity_git_status_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05_climb_intent/receipts/integrity_git_status_20260924.txt",
+   "source_sha256_git_blob": "416a1bf0dfd980a15f265301ad79da4a73a7f7c751d66d06a5f283f5d5276d6a",
+   "extracted_sha256": "416a1bf0dfd980a15f265301ad79da4a73a7f7c751d66d06a5f283f5d5276d6a",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05_climb_intent/receipts/u01_baseline_recheck_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05_climb_intent/receipts/u01_baseline_recheck_20260924.txt",
+   "source_sha256_git_blob": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c",
+   "extracted_sha256": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05_climb_intent/receipts/u03_baseline_recheck_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05_climb_intent/receipts/u03_baseline_recheck_20260924.txt",
+   "source_sha256_git_blob": "3e31524f765697290469fcba5f35b11524e9a916e6c9e6d2800aad32e2967552",
+   "extracted_sha256": "3e31524f765697290469fcba5f35b11524e9a916e6c9e6d2800aad32e2967552",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05_climb_intent/receipts/x02_baseline_recheck_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05_climb_intent/receipts/x02_baseline_recheck_20260924.txt",
+   "source_sha256_git_blob": "0c58d2f966897e60c0d6eadb31c7b74c89d5c763d8f28c8c0330af7cc6c65320",
+   "extracted_sha256": "0c58d2f966897e60c0d6eadb31c7b74c89d5c763d8f28c8c0330af7cc6c65320",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/receipts/amr_failing_first_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/receipts/amr_failing_first_20260924.txt",
+   "source_sha256_git_blob": "90f1398ec371135224e20312aeed5b8b91da1c406d40fcab1f3aad687c2dafd7",
+   "extracted_sha256": "90f1398ec371135224e20312aeed5b8b91da1c406d40fcab1f3aad687c2dafd7",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/receipts/amr_green_after_fix_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/receipts/amr_green_after_fix_20260924.txt",
+   "source_sha256_git_blob": "1bfca1d8014b3b3558af0d413d809893f9221dc5d770fa0689b0fae17cfabe93",
+   "extracted_sha256": "1bfca1d8014b3b3558af0d413d809893f9221dc5d770fa0689b0fae17cfabe93",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/receipts/climb_intent_tests_77of77_with_amr_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/receipts/climb_intent_tests_77of77_with_amr_20260924.txt",
+   "source_sha256_git_blob": "8f7b9f0965bdcd13249a2438aaca1aff0a74558e95a290c46fa0ece90221e990",
+   "extracted_sha256": "8f7b9f0965bdcd13249a2438aaca1aff0a74558e95a290c46fa0ece90221e990",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/receipts/git_status_u05b_session_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/receipts/git_status_u05b_session_20260924.txt",
+   "source_sha256_git_blob": "39c2c083e3330acb380a7b95b6a632f36b14af4736a8a94ba2626c72638932e0",
+   "extracted_sha256": "39c2c083e3330acb380a7b95b6a632f36b14af4736a8a94ba2626c72638932e0",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/receipts/no_capability_claim_fuzz_receipt_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/receipts/no_capability_claim_fuzz_receipt_20260924.txt",
+   "source_sha256_git_blob": "300957ff5622a4b7cf709064cf7aa673409ded5eac2668156fe4741e1a615400",
+   "extracted_sha256": "300957ff5622a4b7cf709064cf7aa673409ded5eac2668156fe4741e1a615400",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/receipts/r4_probe_battery_postfix_allgreen_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/receipts/r4_probe_battery_postfix_allgreen_20260924.txt",
+   "source_sha256_git_blob": "04c7d70b67d5f6df63a2500132d234d5c98ba2bf7f5ac41ed079e966f62a4509",
+   "extracted_sha256": "04c7d70b67d5f6df63a2500132d234d5c98ba2bf7f5ac41ed079e966f62a4509",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/receipts/r4_probe_battery_verbatim_postfix_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/receipts/r4_probe_battery_verbatim_postfix_20260924.txt",
+   "source_sha256_git_blob": "612708f531281f019828bba14850ed87c1285f96fa2c21d8e3e01712f67d5c07",
+   "extracted_sha256": "612708f531281f019828bba14850ed87c1285f96fa2c21d8e3e01712f67d5c07",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/U05b_amendments_U06/receipts/state_feedback_tests_green_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/U05b_amendments_U06/receipts/state_feedback_tests_green_20260924.txt",
+   "source_sha256_git_blob": "f54a9d4ae28841a4199ed4728ace9e18f2ff24dcb1c172329e3b515d67b81569",
+   "extracted_sha256": "f54a9d4ae28841a4199ed4728ace9e18f2ff24dcb1c172329e3b515d67b81569",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/R4_intent_review/receipts/adversarial_probes_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/R4_intent_review/receipts/adversarial_probes_20260924.txt",
+   "source_sha256_git_blob": "75dd50b3aa1ca7bc2505b559acfc4d66ff1ec24f524b2179aea0b106caccebd5",
+   "extracted_sha256": "75dd50b3aa1ca7bc2505b559acfc4d66ff1ec24f524b2179aea0b106caccebd5",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/R4_intent_review/receipts/adversarial_probes_source.py",
+   "source_path": "tools/monkey_campaign/agents/R4_intent_review/receipts/adversarial_probes_source.py",
+   "source_sha256_git_blob": "f56fa5b6d8ecf09aacc309578a742d642af24238019a3859bd667685022cc743",
+   "extracted_sha256": "f56fa5b6d8ecf09aacc309578a742d642af24238019a3859bd667685022cc743",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/R4_intent_review/receipts/climb_intent_tests_r4_rerun_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/R4_intent_review/receipts/climb_intent_tests_r4_rerun_20260924.txt",
+   "source_sha256_git_blob": "f0190390996dffc854d11b49fde78a747b26c127deea962fb1c171d98a23484f",
+   "extracted_sha256": "f0190390996dffc854d11b49fde78a747b26c127deea962fb1c171d98a23484f",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/R4_intent_review/receipts/git_status_r4_session_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/R4_intent_review/receipts/git_status_r4_session_20260924.txt",
+   "source_sha256_git_blob": "63a04d5d03b71a98e0b53eafbd14b0549a69e38c8cb6ab95927c9ab5434457b0",
+   "extracted_sha256": "63a04d5d03b71a98e0b53eafbd14b0549a69e38c8cb6ab95927c9ab5434457b0",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  },
+  {
+   "local_path": "recovered/R4_intent_review/receipts/walk_contract_hash_proof_20260924.txt",
+   "source_path": "tools/monkey_campaign/agents/R4_intent_review/receipts/walk_contract_hash_proof_20260924.txt",
+   "source_sha256_git_blob": "75fe5cb6e07e7cb153495d3d6b415957f35e408d8b54ad4330cd5f6636b3caf8",
+   "extracted_sha256": "75fe5cb6e07e7cb153495d3d6b415957f35e408d8b54ad4330cd5f6636b3caf8",
+   "byte_exact": true,
+   "role": "recovered provenance (original run receipt)"
+  }
+ ]
+}
