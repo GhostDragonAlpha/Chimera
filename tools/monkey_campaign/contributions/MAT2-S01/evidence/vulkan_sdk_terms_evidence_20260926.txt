@@ -1,0 +1,50 @@
+ONT-S01 BANKED EVIDENCE — Vulkan SDK / vulkan-1 loader distribution terms (closes M-S01 gap 3, row R8)
+Retrieved & hashed 2026-09-26 by attempt a3ed434776cf4eff8b09170cdf990f3a (card ONT-S01).
+Label: HONEST MIXED EVIDENCE — one on-disk license file (hashed) + one dated web-fetch
+attempt that could NOT retrieve the component registry. Nothing here is embellished.
+
+== 1. ON-DISK LICENSE FILE (primary recorded evidence) ==
+File:   C:/VulkanSDK/1.4.328.1/Licenses/LICENSE.txt
+sha256: 60235e110d60b20157600176867d3e7559b2862b3474d214301fd1fb1ac91ee7
+bytes:  949
+Full text (verbatim, it is short):
+
+  Copyright 2016-2025 LunarG Inc.
+
+  The Vulkan SDK is comprised of 100% open-source components. The majority of the
+  materials are MIT or Apache 2.0 licenses. The Vulkan SDK licensing registry (found
+  at vulkan.lunarg.com) discloses all components in the SDK and their corresponding
+  open source license. The SDK itself is not licensed because to do so would
+  re-attribute licenses to all the things included in the SDK.
+
+  ALL INFORMATION HERE IS PROVIDED "AS IS." LUNARG MAKES NO REPRESENTATIONS OR
+  WARRANTIES, EXPRESS OR IMPLIED, WITH REGARD TO THIS LIST OR ITS ACCURACY OR
+  COMPLETENESS, OR WITH RESPECT TO ANY RESULTS TO BE OBTAINED FROM USE OR
+  DISTRIBUTION OF THE LIST. BY USING OR DISTRIBUTING THIS LIST, YOU AGREE THAT IN NO
+  EVENT SHALL LUNARG BE HELD LIABLE FOR ANY DAMAGES WHATSOEVER RESULTING FROM ANY USE
+  OR DISTRIBUTION OF THIS LIST, INCLUDING, WITHOUT LIMITATION, ANY SPECIAL,
+  CONSEQUENTIAL, INCIDENTAL OR OTHER DIRECT OR INDIRECT DAMAGES.
+
+Markers machine-checked 2026-09-26: "100% open-source components" present;
+"MIT or Apache 2.0" present; "vulkan.lunarg.com" present.
+
+== 2. DATED WEB-FETCH ATTEMPT AT THE COMPONENT REGISTRY (honest negative result) ==
+URL:    https://vulkan.lunarg.com/license
+Date:   2026-09-26
+Method: HTTP GET, markdown conversion (WebFetch)
+Result: NEGATIVE — the page is a script-rendered shell ("LunarXchange" navigation:
+  SDK / Issues / Docs / Licenses / Khronos; cookie-consent boilerplate; (c) 2026
+  LunarG, Inc.). NO component-name-to-license mappings were retrievable as static
+  content. No claim of a fetched registry is made.
+
+== 3. WHAT THIS RECORDS (terms status for row R8) ==
+Recorded terms: the SDK consists of 100% open-source components, majority MIT or
+Apache 2.0 (per the SDK's own disclosure file, hashed above); the per-component
+disclosure lives in the SDK licensing registry and was not statically retrievable on
+2026-09-26. This converts M-S01 row R8 from UNKNOWN-terms to RECORDED-terms-with-a
+named residual action; it is assembly-time paperwork, not a consent blocker.
+RESIDUAL ACTION (package time, unchanged from M-S01): at S02 packaging, export the
+local per-component disclosure (SDK Licenses directory manifest or the registry page
+as rendered) and pin the exact vulkan-1.dll version shipped. The installed SDK is
+1.4.328.1 at C:/VulkanSDK (drift vs README's "Vulkan 1.2" note stands, as recorded
+by M-S01 and ONT-P02).
