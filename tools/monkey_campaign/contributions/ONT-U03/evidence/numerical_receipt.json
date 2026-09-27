@@ -1,0 +1,449 @@
+{
+ "all_green": true,
+ "attempt_id": "593b5ff8b920461581bb715826613ad7",
+ "card_id": "ONT-U03",
+ "checks": [
+  {
+   "deviations": [
+    {
+     "fired": true,
+     "measured": "schedule 1774 (seed 20260926): a live S press at t=1428 overrode the decaying W tail; the mapper's own precedence law emitted a SECOND exact-zero record at t=1487 (a live zero-advance target, command_record.py:81-83) which the policy gate honestly delivered. No positive speed ever survived its deadline (the no-stuck invariant holds); the strict silence clause is evaluated on the scripted timeline (C2/C3, holds); the generated-schedule behavior is recorded as the second_zero_observations measurement per the prereg revision trail.",
+     "sub_clause": "C1 (original wording): the strict P6 two-zeros silence clause on generated schedules"
+    }
+   ],
+   "measured": {
+    "forbidden_marker_hits": [],
+    "fuzz_exercise_stats": {
+     "accepted_speed_presses": 8369,
+     "blur": 8343,
+     "clears": 624,
+     "disconnect": 8490,
+     "drops": 32915,
+     "states": [
+      "blurred",
+      "disconnected",
+      "focused"
+     ]
+    },
+    "fuzz_non_emit_sink_calls": 0,
+    "fuzz_records_checked": 43046,
+    "fuzz_schedules": 5000,
+    "fuzz_seed": 20260926,
+    "fuzz_violation_samples": [],
+    "fuzz_violations": 0,
+    "scripted_in_bounds": true,
+    "scripted_records": 29,
+    "second_zero_note": "U01's frozen precedence law measured on generated schedules (recorded observation, not a stuck command; see PREREGISTRATION C1)",
+    "second_zero_observations": [
+     "(1774, 'second-zero', 1428, 1487)"
+    ],
+    "second_zero_observations_count": 1,
+    "sink_only_emit_calls": true
+   },
+   "name": "C1_policy_no_stuck_fuzz",
+   "ok": true,
+   "prediction": 1
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "decay_restarted": false,
+    "double_blur_no_op": [
+     [
+      "blur",
+      1620
+     ]
+    ],
+    "held_at_blur": [],
+    "post_zero_positive": false,
+    "post_zero_records": [],
+    "release_receipt": [
+     [
+      "blur",
+      1600,
+      [
+       "W"
+      ]
+     ]
+    ],
+    "scripted_timeline_silence_holds": true,
+    "tail_ms_values": [
+     [
+      1600,
+      [
+       0.763625
+      ]
+     ],
+     [
+      1650,
+      [
+       0.0
+      ]
+     ],
+     [
+      1700,
+      []
+     ],
+     [
+      1750,
+      []
+     ],
+     [
+      1800,
+      []
+     ],
+     [
+      1850,
+      []
+     ]
+    ],
+    "zero_record_ms": 1650
+   },
+   "name": "C2_blur_clears_no_stuck_command",
+   "ok": true,
+   "prediction": 2
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "dropped_S_while_disconnected": [
+     [
+      "S",
+      2650
+     ]
+    ],
+    "state_after_reconnect": "focused",
+    "state_at_disconnect": "disconnected",
+    "tail_ms_values": [
+     [
+      2550,
+      [
+       0.763625
+      ]
+     ],
+     [
+      2600,
+      [
+       0.0
+      ]
+     ],
+     [
+      2650,
+      []
+     ],
+     [
+      2700,
+      []
+     ]
+    ],
+    "zero_record_ms": 2600
+   },
+   "name": "C3_disconnect_clears_named_state",
+   "ok": true,
+   "prediction": 3
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "dropped_at_1700": [
+     [
+      "W",
+      1700
+     ],
+     [
+      [
+       "mouse",
+       30.0
+      ],
+      "n/a"
+     ]
+    ],
+    "held_at_1700": [],
+    "records_at_1700": 0,
+    "releases_reached_mapper": 0,
+    "releases_total": 0
+   },
+   "name": "C4_press_mouse_dropped_while_unfocused",
+   "ok": true,
+   "prediction": 4
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "fresh_grid_first_record": [
+     {
+      "issued_tick": 570,
+      "sha256": "e629ae05eafec10006712a88ebe09da6a0849ac4931fc687d1170c156e148dac",
+      "v_forward": 0.763625,
+      "yaw_rate": 0.0
+     }
+    ],
+    "idle_blur_records": 0,
+    "rearmed_at_focus": [
+     [
+      "focus",
+      1800,
+      []
+     ]
+    ],
+    "rearmed_at_reconnect": [
+     [
+      "focus",
+      1800,
+      []
+     ],
+     [
+      "focus",
+      2300,
+      []
+     ],
+     [
+      "reconnect",
+      2700,
+      []
+     ]
+    ],
+    "records_between_focus_and_press": []
+   },
+   "name": "C5_recovery_clean_rearm",
+   "ok": true,
+   "prediction": 5
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "EXPIRY_TICKS": 30,
+    "delivered_at": [
+     1000,
+     1050,
+     1100
+    ],
+    "delivery_ages_physics_ticks": [
+     0,
+     15,
+     30
+    ],
+    "drops_named": [
+     [
+      300,
+      1150
+     ],
+     [
+      300,
+      1200
+     ],
+     [
+      300,
+      1300
+     ]
+    ],
+    "duplicated_frozen_literals": [],
+    "frozen_number_identity": {
+     "EXPIRY_TICKS_is_mapper": true,
+     "INTERVAL_MS_is_mapper": true,
+     "MAX_AGE_MS_is_VALID_MS": true,
+     "OMEGA_is_mapper": true,
+     "RELEASE_DECAY_MS_is_mapper": true,
+     "VALID_MS_is_mapper": true,
+     "V_MAX_is_mapper": true
+    },
+    "gate_stats": {
+     "expired_at_gate": 3,
+     "passed": 3
+    },
+    "healthy_clock_expired_at_gate": 0,
+    "healthy_clock_trace_has_expired": false,
+    "schedule": [
+     1000,
+     1050,
+     1100,
+     1150,
+     1200,
+     1300
+    ]
+   },
+   "name": "C6_age_floor_expiry_gate",
+   "ok": true,
+   "prediction": 6
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "policy_records": 6,
+    "policy_source_ids": [
+     "u01_input_mapper"
+    ],
+    "release_all_records": 6,
+    "sample": [
+     [
+      0.763625,
+      0.0,
+      300,
+      "u01_input_mapper",
+      1
+     ],
+     [
+      0.763625,
+      0.0,
+      315,
+      "u01_input_mapper",
+      1
+     ],
+     [
+      0.763625,
+      0.0,
+      330,
+      "u01_input_mapper",
+      1
+     ],
+     [
+      0.763625,
+      0.0,
+      345,
+      "u01_input_mapper",
+      1
+     ]
+    ],
+    "source_is_u01_mapper": true,
+    "streams_byte_identical": true
+   },
+   "name": "C7_consistency_with_u01_release_all",
+   "ok": true,
+   "prediction": 7
+  },
+  {
+   "deviations": [
+    {
+     "fired": true,
+     "measured": "the deadband-honest camera issued 0 writes inside the window (the solution had already settled at the last pre-window write); camera pipeline ticks still ran every window tick and every write on the run carries exactly the 8 camera fields, so the camera surface cannot carry a body command. The body-stillness and record-silence laws are green.",
+     "sub_clause": "C8a: '... while camera writes are observed' in the camera-only window"
+    }
+   ],
+   "measured": {
+    "body_vs_record_integral_residual": 0.0,
+    "camera_write_fields_exact": true,
+    "camera_writes_total": 25,
+    "max_body_step_m": 0.03818125000000001,
+    "step_bound_m": 0.038181250001,
+    "window": [
+     3100,
+     3400
+    ],
+    "window_body_position_end": [
+     -0.1292728346421317,
+     0.0,
+     0.8965632482015189
+    ],
+    "window_body_position_start": [
+     -0.1292728346421317,
+     0.0,
+     0.8965632482015189
+    ],
+    "window_body_still_exact": true,
+    "window_camera_writes": 0,
+    "window_input_events": 0,
+    "window_records": 0
+   },
+   "name": "C8_no_camera_induced_body_movement",
+   "ok": true,
+   "prediction": 8
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "close_target_distances": [
+     2.4668607927510404,
+     2.6406069120338214
+    ],
+    "distance_band_met": true,
+    "occlusion_ray_blocked_all_ticks": true,
+    "pillar_declared": {
+     "cx": 0.9,
+     "cz": 0.75,
+     "r": 0.3,
+     "top": 2.0
+    },
+    "target_center_in_frustum_all_ticks": true
+   },
+   "name": "C9_obstruction_declared_target_readable",
+   "ok": true,
+   "prediction": 9
+  },
+  {
+   "deviations": [],
+   "measured": {
+    "cadence_statement": "50 ms is the command interval (C12), not an end-to-end latency guarantee; measured gaps are in [0, 50] ms by construction of the boundary grid",
+    "issued_tick_chain_300hz": true,
+    "press_to_first_record_gaps": [
+     {
+      "dropped_by_name": false,
+      "first_record_ms": 1000,
+      "gap_ms": 0,
+      "press_ms": 1000
+     },
+     {
+      "dropped_by_name": false,
+      "first_record_ms": 1450,
+      "gap_ms": 0,
+      "press_ms": 1450
+     },
+     {
+      "dropped_by_name": true,
+      "first_record_ms": 1900,
+      "press_ms": 1700
+     },
+     {
+      "dropped_by_name": false,
+      "first_record_ms": 1900,
+      "gap_ms": 0,
+      "press_ms": 1900
+     },
+     {
+      "dropped_by_name": false,
+      "first_record_ms": 2400,
+      "gap_ms": 0,
+      "press_ms": 2400
+     },
+     {
+      "dropped_by_name": true,
+      "first_record_ms": 2800,
+      "press_ms": 2650
+     },
+     {
+      "dropped_by_name": false,
+      "first_record_ms": 2800,
+      "gap_ms": 0,
+      "press_ms": 2800
+     }
+    ]
+   },
+   "name": "C10_timing_chain_bound",
+   "ok": true,
+   "prediction": 10
+  }
+ ],
+ "checks_green": 10,
+ "checks_total": 10,
+ "criteria_sha256": "a161edd6e1bb2aaf7f55c96503992b17a008f5ebe111032be01d717846aef625",
+ "prediction_deviations": [
+  {
+   "fired": true,
+   "measured": "schedule 1774 (seed 20260926): a live S press at t=1428 overrode the decaying W tail; the mapper's own precedence law emitted a SECOND exact-zero record at t=1487 (a live zero-advance target, command_record.py:81-83) which the policy gate honestly delivered. No positive speed ever survived its deadline (the no-stuck invariant holds); the strict silence clause is evaluated on the scripted timeline (C2/C3, holds); the generated-schedule behavior is recorded as the second_zero_observations measurement per the prereg revision trail.",
+   "sub_clause": "C1 (original wording): the strict P6 two-zeros silence clause on generated schedules"
+  },
+  {
+   "fired": true,
+   "measured": "the deadband-honest camera issued 0 writes inside the window (the solution had already settled at the last pre-window write); camera pipeline ticks still ran every window tick and every write on the run carries exactly the 8 camera fields, so the camera surface cannot carry a body command. The body-stillness and record-silence laws are green.",
+   "sub_clause": "C8a: '... while camera writes are observed' in the camera-only window"
+  }
+ ],
+ "profile_id": "controls",
+ "profile_kind": "motion",
+ "run_id": "ont-u03-focus-policy-20260926-593b5ff8",
+ "runtime_evidence_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U03\\593b5ff8b920461581bb715826613ad7\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U03\\evidence\\runtime_receipt.json",
+ "schema": "ont-u03.controls.numerical.v1",
+ "subject_sha256": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+ "task_id": "U03",
+ "trace_raw_sha256": "2dd6f2995d0d2987e0f9054346688bdcfdb27962b3cd9ed876619e386d17192f",
+ "trace_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U03\\593b5ff8b920461581bb715826613ad7\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U03\\evidence\\trace.jsonl"
+}
