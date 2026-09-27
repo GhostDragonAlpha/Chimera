@@ -1,0 +1,496 @@
+diff --git a/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/PREREGISTRATION.md b/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/PREREGISTRATION.md
+new file mode 100644
+index 0000000..45e49dd
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/PREREGISTRATION.md
+@@ -0,0 +1,87 @@
++# PREREGISTRATION — R5-forest-review-FOLLOWUP
++
++Card `R5-forest-review-FOLLOWUP` (planning F01-F08/W10; parent R5-forest-review
++= PR #126 @ `7467bed2` — reviewed PASS by this same agent earlier today at the
++exact head). Attempt `cdad032e39ad4f31a6f11b95ada1791b`, agent
++`c95e1722350849bca846b237c1f60997`, criteria
++`6e10706bf24877a657ea8b4a43c9894b24fdd46b97d0d120b0573f8af0aadbcc`.
++Written BEFORE the implementation.
++
++## Predecessor facts (from the accepted R5 correction, none fabricated)
++
++- The corrected R5 verdict (PR #126, verified this session): F01/F02/F03/F04/
++  F07/F08 verified STATIC only; F05/F06 never started; W10 NOT ready — missing
++  native heightfield/trunk contact, trained walking (W05–W09), in-scene
++  walking/camera acceptance.
++- Documented runtime endpoints (slice_server.py, play HEAD `f30f2224`):
++  GET `/api/health` → `{ok, world_booted}` (`:460`), GET `/api/status` →
++  `WORLD.status()` (`:458`), GET `/tick_state` (`:153,220,264`), POST
++  `/tick_touch` (`:269`), POST `/tick_gravity` (`:324,327`). The D-FOREST
++  parent brief's negative evidence (§2.4): the HTTP contract has NO collision
++  query route.
++- The F01–F03 identity pins (from R5's identity receipt, re-verified by this
++  agent during the R5 review with the PR's own tools 13/13 + 30/30): terrain
++  file sha `446ed3fb…`/self-pin `8c7d60c8…`, trunk `94ff906e…`/`b7089e78…`,
++  clearing `18dd2ff6…`/`aa2607df…`, seed 4598321, extent 20.0.
++
++## STATEMENT (a theory that can lose)
++
++A configurable smoke-test runner over ONLY the documented endpoints, with an
++injected transport, bounded timeouts and pinned expected identities, can
++mechanize the R5 scene-readiness gate: it reports READY only when the live
++runtime answers every documented check AND the native collision capability
++exists; against today's engine it must report NOT_READY with the collision
++route NAMED missing — the runner can never turn the static front into native
++readiness, and a fixture transport can never be labeled native acceptance.
++
++## PREDICTION (not yet measured)
++
++With a FakeTransport in CPU tests:
++
++1. Engine unavailable (transport raises / times out) → verdict NOT_READY,
++   finding `engine_unavailable`, bounded runtime (< timeout).
++2. Health/status answered but a configured expected field mismatches (e.g.
++   scene/world identity) → finding `scene_identity_mismatch` naming expected
++   vs served values.
++3. Supported responses with collision_routes=[] (today's documented truth) →
++   verdict NOT_READY with finding `native_collision_route_missing` (the
++   accepted negative finding, preserved as machinery) and `walking_open`
++   (W05–W09 prerequisite, from the accepted verdict).
++4. A hypothetical transport serving a documented collision route + all checks
++   → verdict READY, with output labeled `transport: injected-fixture` and an
++   explicit note that fixture READY is NOT native acceptance (controlled
++   native run + visual capture still required).
++5. No endpoint outside the documented set is ever probed (the request log of
++   every scenario contains only configured documented paths).
++
++## FALSIFIER
++
++Any fixture output labeled native acceptance; any endpoint invented; any
++missing capability silently passed; any predecessor fact above not traceable
++to the accepted PR #126 evidence or the cited source lines; unscoped
++physics/threshold edits (there are none — this is a test runner). Fails the
++card if any prediction 1–5 does not hold.
++
++## BOUNDS
++
++CPU-only, stdlib-only; injected transport in tests (urllib transport provided
++but not exercised against a live engine — no engine is started by this card);
++bounded timeouts; own attempt workspace; ≤16 MiB output.
++
++## AMENDMENT (2026-09-26, correction attempt `165ca25f52df48fd9de4cb24d42c68d6`,
++arrival `arrival-773e9bcac941425c9a55d02b447db9a1`)
++
++The operational lead's pre-publication verification (lead-verify-20260926)
++found two transcription corruptions in the predecessor identity pins above;
++the corrupted forms exist in no accepted record. Corrected to the accepted
++receipt values at pinned play revision `dc7ea811`:
++
++- trunk self-pin `b7099e78…` → `b7089e78…` (R5 identity receipt
++  `A1_recompile_trunk`; F03 validate_receipt `declaration_sha256
++  b7089e7826a221a5…`);
++- routes self-pin `c3a7d6e8…` → `7c3ad6e8…` (R5 identity receipt
++  `A1_recompile_routes`; F07 run.json).
++
++Both are pass-through fixture values in the runner config (never validated
++against served data), so no behavioral change and all original predictions
++above are preserved unchanged.
+diff --git a/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/implementation.py b/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/implementation.py
+new file mode 100644
+index 0000000..bfab6ec
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/implementation.py
+@@ -0,0 +1,179 @@
++"""implementation.py -- R5-forest-review-FOLLOWUP: scene-readiness smoke-test
++runner.
++
++Mechanizes the accepted R5 corrected verdict's readiness gate over ONLY the
++documented slice runtime endpoints (slice_server.py: /api/health, /api/status,
++/tick_state, /tick_touch, /tick_gravity -- cited in PREREGISTRATION.md). The
++transport is INJECTED (an urllib transport class is provided for live use;
++CPU tests use fakes; this card starts no engine).
++
++LAWS:
++  - documented endpoints only: every probe goes through the configured
++    endpoint set; the request log is part of the verdict;
++  - bounded: every request carries the configured timeout;
++  - named failures: engine_unavailable, health_unhealthy, scene_identity_
++    mismatch, native_collision_route_missing, walking_open;
++  - the collision capability check consumes the accepted negative finding
++    (the documented HTTP contract has NO collision query route); a configured
++    non-empty route list probes it -- nothing is invented;
++  - a fixture transport is labeled in every output and can NEVER yield a
++    native-acceptance claim: fixture READY still requires a controlled native
++    run + visual capture (stated in the verdict itself).
++
++Verdict: READY | NOT_READY with findings[].
++"""
++from __future__ import annotations
++
++import argparse
++import json
++import pathlib
++import time
++import urllib.error
++import urllib.request
++
++DOCUMENTED_ENDPOINTS = ("/api/health", "/api/status", "/tick_state",
++                       "/tick_touch", "/tick_gravity")   # slice_server.py cites
++
++SCHEMA = "r5-followup.scene_readiness.v1"
++
++
++class UrllibTransport:
++    """Live transport (GET/POST JSON with a bounded timeout). Not exercised
++    by this card's tests -- a live engine is out of scope here."""
++
++    def __init__(self, base_url, timeout_s=5.0):
++        self.base_url = base_url.rstrip("/")
++        self.timeout_s = float(timeout_s)
++
++    def request(self, method, path, body=None):
++        data = json.dumps(body).encode() if body is not None else None
++        req = urllib.request.Request(
++            self.base_url + path, data=data, method=method,
++            headers={"Content-Type": "application/json"})
++        with urllib.request.urlopen(req, timeout=self.timeout_s) as resp:
++            return resp.status, json.loads(resp.read().decode("utf-8"))
++
++
++class ReadinessRunner:
++    def __init__(self, config, transport, transport_label="injected-fixture"):
++        self.config = config
++        self.transport = transport
++        self.transport_label = transport_label
++        self.requests = []
++        # documented set = the five cited routes plus any EXPLICITLY declared
++        # future contract additions; probing anything else is refused
++        self.documented = DOCUMENTED_ENDPOINTS + tuple(
++            config.get("extra_documented_endpoints", ()))
++
++    def _request(self, method, path, body=None):
++        if path not in self.documented:
++            raise ValueError("endpoint_not_documented %r (invention refused)" % path)
++        self.requests.append((method, path))
++        return self.transport.request(method, path, body)
++
++    def run(self) -> dict:
++        cfg = self.config
++        findings = []
++        started = time.monotonic()
++
++        def finding(code, **detail):
++            findings.append({"code": code, **detail})
++
++        # 1. engine availability (documented health route)
++        health = None
++        try:
++            status, health = self._request("GET", cfg.get("health_path",
++                                                          "/api/health"))
++        except Exception as exc:                          # noqa: BLE001
++            finding("engine_unavailable", error=type(exc).__name__,
++                    detail=str(exc)[:200])
++            health = None
++        if health is not None:
++            for field, expected in (cfg.get("expected_health") or {}).items():
++                if health.get(field) != expected:
++                    finding("health_unhealthy", field=field,
++                            expected=expected, served=health.get(field))
++
++        # 2. scene/build identity (documented status route; configurable field)
++        if health is not None and cfg.get("scene_identity"):
++            ident = cfg["scene_identity"]
++            try:
++                _, served_status = self._request("GET", "/api/status")
++                served = served_status.get(ident["field"])
++                if served != ident["expected"]:
++                    finding("scene_identity_mismatch", field=ident["field"],
++                            expected=ident["expected"], served=served)
++                else:
++                    self.scene_served = served
++            except Exception as exc:                      # noqa: BLE001
++                finding("engine_unavailable", error=type(exc).__name__,
++                        detail="status route: " + str(exc)[:160])
++
++        # 3. native collision capability: the accepted negative finding, or a
++        #    probe of a DOCUMENTED route if the contract ever gains one
++        routes = cfg.get("collision_routes", [])
++        if not routes:
++            finding("native_collision_route_missing",
++                    detail="the documented HTTP contract has no collision "
++                           "query route (accepted R5/D-FOREST negative "
++                           "finding); native heightfield/trunk contact is "
++                           "absent on the current engine")
++        else:
++            probed = False
++            for path in routes:
++                try:
++                    status, payload = self._request("GET", path)
++                    if status == 200 and payload:
++                        probed = True
++                except Exception:                          # noqa: BLE001
++                    continue
++            if not probed:
++                finding("native_collision_route_missing",
++                        detail="configured collision routes did not answer",
++                        routes=list(routes))
++
++        # 4. walking prerequisite (process fact, not a transport probe)
++        if cfg.get("walking_prerequisites_open", True):
++            finding("walking_open",
++                    detail="trained walking W05-W09 and in-scene walking/"
++                           "camera acceptance remain open (accepted R5 "
++                           "verdict); scene readiness cannot precede them")
++
++        ready = not findings
++        verdict = {
++            "schema": SCHEMA,
++            "verdict": "READY" if ready else "NOT_READY",
++            "transport": self.transport_label,
++            "native_acceptance": False,
++            "note": ("A READY verdict under transport=%s is NOT native "
++                     "acceptance: a controlled native run plus visual capture "
++                     "remains required (card falsifier)." %
++                     self.transport_label),
++            "findings": findings,
++            "requests": list(self.requests),
++            "elapsed_seconds": round(time.monotonic() - started, 3),
++            "pinned_scene_identities": self.config.get("pinned_scene_identities"),
++        }
++        return verdict
++
++
++def main(argv=None) -> int:
++    ap = argparse.ArgumentParser()
++    ap.add_argument("--config", required=True)
++    ap.add_argument("--base-url", default=None,
++                    help="live transport base URL (omit for dry self-check)")
++    args = ap.parse_args(argv)
++    config = json.loads(pathlib.Path(args.config).read_text(encoding="utf-8"))
++    if args.base_url:
++        transport = UrllibTransport(args.base_url, config.get("timeout_s", 5.0))
++        label = "live-urllib"
++    else:
++        raise SystemExit("no transport injected: pass --base-url for a live run "
++                         "(CPU regression uses the injected fakes in tests)")
++    verdict = ReadinessRunner(config, transport, label).run()
++    print(json.dumps(verdict, indent=1))
++    return 0 if verdict["verdict"] == "READY" else 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/report.md b/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/report.md
+new file mode 100644
+index 0000000..813a146
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/report.md
+@@ -0,0 +1,67 @@
++# R5-forest-review-FOLLOWUP — scene-readiness smoke-test runner
++
++**Verdict: implemented and verified (7/7 CPU tests). The runner mechanizes the
++accepted R5 readiness gate: against today's engine it can only report
++NOT_READY — with the missing native collision capability and the open walking
++prerequisites NAMED — and a fixture READY is structurally labeled non-native.**
++
++- Card `R5-forest-review-FOLLOWUP` (planning F01-F08/W10; parent R5 =
++  PR #126 @ `7467bed2`, PASS-reviewed at the exact head by this agent).
++- Attempt `cdad032e39ad4f31a6f11b95ada1791b`, agent
++  `c95e1722350849bca846b237c1f60997`, criteria
++  `6e10706bf24877a657ea8b4a43c9894b24fdd46b97d0d120b0573f8af0aadbcc`.
++- Preregistration written before the implementation (Rule 0).
++
++## What was implemented
++
++`implementation.py` — `ReadinessRunner(config, transport)`, transport INJECTED
++(urllib live class provided, unexercised here; CPU tests use fakes; no engine
++started by this card):
++
++- probes ONLY the documented endpoints (slice_server.py cites:
++  `/api/health`, `/api/status`, `/tick_state`, `/tick_touch`,
++  `/tick_gravity`); probing anything outside the configured documented set
++  raises `endpoint_not_documented` (invention refused); a future collision
++  route must be EXPLICITLY declared (`extra_documented_endpoints`) before it
++  can be probed;
++- every request bounded by the configured timeout;
++- pinned scene identities carried in every verdict (R5 identity receipt:
++  clearing/terrain/trunk/routes self-pins, seed 4598321, extent 20.0, trunk
++  site (11.976783, 2.471766));
++- NAMED findings: `engine_unavailable`, `health_unhealthy`,
++  `scene_identity_mismatch` (expected vs served), 
++  `native_collision_route_missing` (the accepted negative finding, preserved
++  as machinery when the collision route set is empty or unanswering),
++  `walking_open` (W05–W09 + in-scene acceptance prerequisite);
++- verdict `READY`/`NOT_READY` + `requests` log + `transport` label; every
++  verdict states `native_acceptance: false` and the note that fixture READY
++  still requires a controlled native run + visual capture.
++
++## Measured (python -B -m unittest test_implementation -v → 7/7 OK)
++
++1. unavailable engine → NOT_READY + `engine_unavailable`, bounded;
++2. mismatched scene identity → `scene_identity_mismatch` naming both values;
++3. today's documented truth (collision_routes=[]) → NOT_READY +
++   `native_collision_route_missing` + `walking_open`;
++4. supported responses incl. a DECLARED collision route → READY, labeled
++   `injected-fixture`, `native_acceptance: false`, explicit non-native note;
++5. endpoint law: every probe within the configured documented set;
++6. invented endpoint refused by name;
++7. schema + pinned identities carried.
++
++## Falsifier scorecard
++
++- Fixture labeled native acceptance: NOT FIRED (label + note + flag asserted).
++- Endpoint invented: NOT FIRED (refusal law + request-log test).
++- Missing capability silently passed: NOT FIRED (named findings).
++- Predecessor fact fabricated: NOT FIRED — endpoint set cites slice_server
++  lines; negative collision finding cites the accepted PR #126/D-FOREST
++  evidence; identity pins re-verified during this session's R5 review.
++- Unscoped physics/threshold changes: NONE (test runner only).
++
++## Preserved gates (not closed by this card)
++
++An actual controlled native run + visual capture remain required for any
++scene-readiness acceptance; the walking prerequisites (W05–W09, camera) stay
++open per the accepted verdict. The runner is the reusable gate for when they
++close: rerun with a live transport and the grown documented contract.
+diff --git a/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/test_implementation.py b/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/test_implementation.py
+new file mode 100644
+index 0000000..444af56
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/R5-forest-review-FOLLOWUP/test_implementation.py
+@@ -0,0 +1,139 @@
++"""test_implementation.py -- R5-forest-review-FOLLOWUP targeted tests.
++
++FakeTransport CPU regressions for the four card scenarios + the endpoint and
++labeling laws. Fixtures are labeled fixtures; no native acceptance is claimed
++anywhere (asserted).
++"""
++import json
++import pathlib
++import sys
++import unittest
++
++HERE = pathlib.Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++import implementation as impl  # noqa: E402
++
++PINNED = {
++    "clearing_self_pin": "aa2607df97e0d6ec",
++    "terrain_self_pin": "8c7d60c88a75234a",
++    "trunk_self_pin": "b7089e7826a221a5",
++    "routes_self_pin": "7c3ad6e86039b633",
++    "seed": 4598321,
++    "extent_half_width_m": 20.0,
++    "trunk_site_m": [11.976783, 2.471766],
++}
++
++
++class FakeTransport:
++    def __init__(self, responses=None, fail=False):
++        self.responses = responses or {}
++        self.fail = fail
++        self.calls = []
++
++    def request(self, method, path, body=None):
++        self.calls.append((method, path, body))
++        if self.fail:
++            raise ConnectionRefusedError("fixture: engine down")
++        if path in self.responses:
++            status, payload = self.responses[path]
++            return status, payload
++        raise FileNotFoundError("fixture: no response for " + path)
++
++
++def base_config(**over):
++    cfg = {
++        "timeout_s": 1.0,
++        "expected_health": {"ok": True, "world_booted": True},
++        "scene_identity": {"field": "scene", "expected": "forest-one-clearing"},
++        "collision_routes": [],              # today's documented truth
++        "walking_prerequisites_open": True,
++        "pinned_scene_identities": PINNED,
++    }
++    cfg.update(over)
++    return cfg
++
++
++class ReadinessRunnerTests(unittest.TestCase):
++    def test_unavailable_engine(self):
++        runner = impl.ReadinessRunner(base_config(), FakeTransport(fail=True))
++        v = runner.run()
++        self.assertEqual(v["verdict"], "NOT_READY")
++        codes = [f["code"] for f in v["findings"]]
++        self.assertIn("engine_unavailable", codes)
++        self.assertLess(v["elapsed_seconds"], 5.0)
++
++    def test_mismatched_scene_identity(self):
++        transport = FakeTransport(responses={
++            "/api/health": (200, {"ok": True, "world_booted": True}),
++            "/api/status": (200, {"scene": "SOME-OTHER-SCENE"}),
++        })
++        v = impl.ReadinessRunner(base_config(), transport).run()
++        mismatch = next(f for f in v["findings"]
++                        if f["code"] == "scene_identity_mismatch")
++        self.assertEqual(mismatch["expected"], "forest-one-clearing")
++        self.assertEqual(mismatch["served"], "SOME-OTHER-SCENE")
++
++    def test_missing_native_collision_named(self):
++        transport = FakeTransport(responses={
++            "/api/health": (200, {"ok": True, "world_booted": True}),
++            "/api/status": (200, {"scene": "forest-one-clearing"}),
++        })
++        v = impl.ReadinessRunner(base_config(), transport).run()
++        codes = [f["code"] for f in v["findings"]]
++        self.assertIn("native_collision_route_missing", codes)
++        self.assertIn("walking_open", codes)
++        self.assertEqual(v["verdict"], "NOT_READY")
++
++    def test_supported_responses_ready_but_labeled_fixture(self):
++        transport = FakeTransport(responses={
++            "/api/health": (200, {"ok": True, "world_booted": True}),
++            "/api/status": (200, {"scene": "forest-one-clearing"}),
++            "/api/collision_query": (200, {"h_m": 0.0, "inside": True}),
++        })
++        v = impl.ReadinessRunner(
++            base_config(collision_routes=["/api/collision_query"],
++                        extra_documented_endpoints=["/api/collision_query"],
++                        walking_prerequisites_open=False),
++            transport).run()
++        self.assertEqual(v["verdict"], "READY")
++        self.assertEqual(v["transport"], "injected-fixture")
++        self.assertFalse(v["native_acceptance"])
++        self.assertIn("NOT native acceptance", v["note"])
++
++    def test_only_documented_or_configured_routes_probed(self):
++        transport = FakeTransport(responses={
++            "/api/health": (200, {"ok": True, "world_booted": True}),
++            "/api/status": (200, {"scene": "forest-one-clearing"}),
++        })
++        runner = impl.ReadinessRunner(base_config(), FakeTransport(responses={
++            "/api/health": (200, {"ok": True, "world_booted": True}),
++            "/api/status": (200, {"scene": "forest-one-clearing"}),
++        }))
++        runner.run()
++        for method, path in runner.requests:
++            self.assertIn(path, runner.documented)
++            self.assertIn(path, impl.DOCUMENTED_ENDPOINTS)
++
++    def test_invented_endpoint_refused(self):
++        class Sneaky(impl.ReadinessRunner):
++            def run(self):                     # try to probe an invented route
++                self._request("GET", "/totally/new/route")
++                return {}
++        with self.assertRaises(ValueError) as ctx:
++            Sneaky(base_config(), FakeTransport()).run()
++        self.assertIn("endpoint_not_documented", str(ctx.exception))
++
++    def test_verdict_schema_and_pins_carried(self):
++        transport = FakeTransport(responses={
++            "/api/health": (200, {"ok": True, "world_booted": True}),
++            "/api/status": (200, {"scene": "forest-one-clearing"}),
++        })
++        v = impl.ReadinessRunner(base_config(), transport).run()
++        self.assertEqual(v["schema"], impl.SCHEMA)
++        self.assertEqual(v["pinned_scene_identities"]["seed"], 4598321)
++        self.assertEqual(v["pinned_scene_identities"]["extent_half_width_m"],
++                         20.0)
++
++
++if __name__ == "__main__":
++    unittest.main(verbosity=2)
