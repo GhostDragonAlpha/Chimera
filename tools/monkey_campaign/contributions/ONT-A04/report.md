@@ -7,6 +7,17 @@ Preregistration frozen before the first probe run of this attempt
 (`PREREGISTRATION.md`; it is the first evidence-bearing file of the attempt and
 predates every artifact in `evidence/`).
 
+**Capture correction (this head).** Worker review `8837d083c2544b2784178ea462bd9f87`
+returned CHANGES_REQUIRED on PR #172 with three capture findings (collapsed
+source placement, locator-rect convention, close-up subject overreach). The
+correction was applied by attempt `d9e5561a0c7b4c0881faf8a213e475b2`
+(`arrival-685b1adcb79c4f0f933db12466db1fc7`), CPU-only, card-scoped: the capture
+builder, manifest, PNG, capture receipt and this report are refreshed; the
+numerical leg (`evidence/numerical_receipt.json` `e3864b16…`,
+`evidence/state_snapshot.json` `33d3219c…`) is byte-identical to the reviewed
+`7df75f41` pins — a capture correction only. Details in item 6 below and in
+`qualification_receipt.json` → `capture_correction`.
+
 ## DONE_WHEN (the only clause qualified)
 
 "Source and target assembly correspondence is evidenced, including palm sign and
@@ -67,14 +78,30 @@ numerical evidence required). Dependency ONT-P02: merged and lead-verified
    `chimera.visual_capture_manifest.v1` validated in-process with the campaign's
    `visual_capture.validate_manifest` against the exact card profile
    (`structurally_valid: true`, view toggles share one state hash).
+6. **Capture-truth guards** (correction for review `8837d083` on PR #172) —
+   every source bone is placed at `tris + hand_r origin + per-bone XML anchor`
+   (the first commit had dropped the anchor term and superimposed all 27 bones
+   at the hand_r origin); the build now ASSERTS that each declared camera
+   targets the vertex mean of its framed subject, that the declared
+   orthographic span equals the auto-frame span over the PLACED geometry
+   (overview span 0.29511 m vs 0.20515 m over the collapsed set — guard), that
+   the collapsed guard actually differs, and that every declared subject vertex
+   projects inside its declared frame (A01-lesson bounds, per-camera margins
+   recorded in `evidence/capture_receipt.json` → `capture_truth`). The
+   `artifact_locator` rects follow the documented `[left, top, width, height]`
+   upper-left convention, and the close-up view scopes its region subjects to
+   what it frames (`src/assembly/27_bones/carpal_row`,
+   `tgt/envelope/distal_band/proximal_segment`). `TestCaptureTruth` (5 tests)
+   regresses all three findings failing-first against the pre-fix artifacts.
 
 ## Verification actually executed (exact commands)
 
 ```
 python -B a04_correspondence_probe.py     # all_green=True, 2 recorded deviations
 python -B capture_build.py                # structurally_valid=True, fired=0
-python -B -m unittest test_ont_a04        # Ran 14 tests ... OK  (CPU-only)
-# determinism: both builders re-run; all four evidence artifacts byte-identical
+python -B -m unittest test_ont_a04        # Ran 19 tests ... OK  (CPU-only)
+# determinism: both builders re-run; numerical_receipt/state_snapshot byte-identical
+# to the reviewed 7df75f41 pins (e3864b16/33d3219c); capture artifacts byte-identical rerun
 ```
 
 ## Recorded deviations (FIRED, preserved — never smoothed)

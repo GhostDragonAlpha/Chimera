@@ -5,7 +5,9 @@ full probe: transform round-trip/handedness (C01 machinery), camera quaternion
 and projection consistency, z-buffer raster, the palm-plate sign method on a
 synthetic plate, manifest validation (positive on the actual evidence artifact,
 negative on a diagnostic-polluted clean view), reference pin identity, coverage
-inventory counts, and the actual receipts' green state.
+inventory counts, the actual receipts' green state, and capture truth (rendered
+source = assembled XML-anchor hand, locator rect convention, per-view subject
+scoping — regressions for review 8837d083).
 """
 from __future__ import annotations
 
@@ -22,7 +24,7 @@ sys.dont_write_bytecode = True
 
 import a04_correspondence_probe as P  # noqa: E402
 from capture_build import (  # noqa: E402
-    auto_half_h, basis_to_quat_wxyz, cam_record, camera_basis, project,
+    DIV, auto_half_h, basis_to_quat_wxyz, cam_record, camera_basis, project,
     raster, shade)
 
 
@@ -218,6 +220,142 @@ class TestEvidenceArtifacts(unittest.TestCase):
             d, c = self.man["views"][i], self.man["views"][i + 1]
             self.assertEqual(d["state_binding"], c["state_binding"])
             self.assertEqual(d["state_binding"]["kind"], "state")
+
+
+class TestCaptureTruth(unittest.TestCase):
+    """Regression for review 8837d083 (PR #172 CHANGES_REQUIRED): the capture
+    must render the ASSEMBLED 27-bone source hand at its per-bone XML anchors
+    (never the anchor-dropped collapsed set), artifact_locator rects must follow
+    the documented [left, top, width, height] upper-left convention, and the
+    close-up view must declare only region subjects it actually frames."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.man = json.loads((HERE / "evidence" / "capture_manifest.json").read_text())
+        cls.receipt = json.loads((HERE / "evidence" / "capture_receipt.json").read_text())
+        src = P.parse_source_xml((P.REF / "chimanoid.xml").read_bytes())
+        cls.origin = src["hand_r_origin"]
+        assembled, collapsed = [], []
+        for bone in P.BONES:
+            tris, _ = P.load_stl(P.VENDOR / f"{bone}.stl")
+            assembled.append(tris + cls.origin + src["anchors"][bone])
+            collapsed.append(tris + cls.origin)
+        cls.assembled = np.concatenate(assembled, axis=0).reshape(-1, 3)
+        cls.collapsed = np.concatenate(collapsed, axis=0).reshape(-1, 3)
+        cls.cen_a = cls.assembled.mean(axis=0)
+        cls.cen_c = cls.collapsed.mean(axis=0)
+
+    def test_assembled_subject_differs_from_collapsed_set(self):
+        """The anchor offsets must move the rendered bone set away from the
+        hand_r-origin tangle: centroids and auto-frame spans must differ."""
+        origin = self.origin
+        self.assertGreater(float(np.linalg.norm(self.cen_a - origin)), 0.02)
+        self.assertGreater(float(np.linalg.norm(self.cen_a - self.cen_c)), 0.02)
+        cam = self.man["views"][0]["camera"]
+        s = cam["samples"][0]
+        eye, look = np.asarray(s["position"], float), np.asarray(s["target"], float)
+        hh_a = auto_half_h(eye, look, np.array([0.0, 1.0, 0.0]), self.assembled, 348, 600)
+        hh_c = auto_half_h(eye, look, np.array([0.0, 1.0, 0.0]), self.collapsed, 348, 600)
+        self.assertGreater(abs(hh_a - hh_c), 0.025)
+        self.assertAlmostEqual(cam["orthographic_span"], 2.0 * hh_a, delta=1e-9)
+        self.assertGreater(abs(cam["orthographic_span"] - 2.0 * hh_c), 0.05)
+
+    def test_declared_source_cameras_frame_assembled_subject(self):
+        """Every chimanoid_world_m camera declared in the manifest must target
+        the vertex mean of its framed source subject (full assembly for the
+        overview/side/oblique views, carpal row for the close-up) and frame it
+        unclipped (A01-lesson) — never the collapsed origin-superimposed set."""
+        up = np.array([0.0, 1.0, 0.0])
+        carpals = ["pisiform", "lunate", "scaphoid", "triquetrum", "hamate",
+                   "capitate", "trapezoid", "trapezium"]
+        src = P.parse_source_xml((P.REF / "chimanoid.xml").read_bytes())
+        carpal_tris = np.concatenate(
+            [P.load_stl(P.VENDOR / f"{b}.stl")[0] + self.origin + src["anchors"][b]
+             for b in carpals], axis=0).reshape(-1, 3)
+        subjects = {"pair-overview": self.assembled,
+                    "pair-closeup": carpal_tris,
+                    "pair-side-oblique": self.assembled}
+        seen = set()
+        for row in self.man["views"]:
+            cam = row["camera"]
+            if cam["frame_id"] != "chimanoid_world_m":
+                continue
+            subject = subjects[row["pair_id"]]
+            s = cam["samples"][0]
+            eye = np.asarray(s["position"], float)
+            look = np.asarray(s["target"], float)
+            self.assertTrue(np.allclose(look, subject.mean(axis=0), atol=1e-9))
+            w, h = cam["viewport_resolution"]
+            self.assertAlmostEqual(cam["orthographic_span"],
+                                   2.0 * auto_half_h(eye, look, up, subject, w, h),
+                                   delta=1e-9)
+            x_cam, y_cam, _ = camera_basis(eye, look, up)
+            half_h = cam["orthographic_span"] / 2.0
+            half_w = half_h * w / h
+            rel = subject - eye
+            u, v = rel @ x_cam, rel @ y_cam
+            self.assertGreaterEqual(float(u.min() + half_w), 0.0)
+            self.assertGreaterEqual(float(half_w - u.max()), 0.0)
+            self.assertGreaterEqual(float(half_h - v.max()), 0.0)
+            self.assertGreaterEqual(float(v.min() + half_h), 0.0)
+            seen.add((row["pair_id"], row["mode"]))
+        self.assertEqual(len(seen), 6)  # 3 view pairs x diagnostic+clean, primary = source cam
+
+    def test_artifact_locator_rects_upper_left_convention(self):
+        """rects are [left, top, width, height] from the upper-left corner and
+        tile the sheet rows without overlap (review 8837d083 finding 2)."""
+        W, H = self.man["sheet_layout"]["pixel_size"]
+        rows = self.man["views"]
+        self.assertEqual(len(rows), 6)
+        prev = None
+        for row in rows:
+            rect = row["artifact_locator"]["pixel_rectangle"]
+            self.assertEqual(rect[0], 0)                     # left edge
+            self.assertEqual(rect[2], W)                     # full sheet width
+            self.assertGreaterEqual(rect[1], 0)              # top offset
+            self.assertLessEqual(rect[1] + rect[3], H)       # inside the sheet
+            if prev is not None:
+                self.assertGreater(rect[1], prev[1])         # rows in order
+                self.assertLessEqual(prev[1] + prev[3], rect[1])  # no overlap
+            prev = rect
+        self.assertEqual(prev[1] + prev[3], H)               # last row ends the sheet
+
+    def test_closeup_view_declares_only_framed_subjects(self):
+        """The close-up frames the carpal row and the proximal band segment, so
+        its region subject ids must be the scoped ones (finding 3)."""
+        close = [r for r in self.man["views"] if r["pair_id"] == "pair-closeup"]
+        self.assertEqual(len(close), 2)
+        for row in close:
+            vis = row["visibility"]
+            self.assertIn("src/assembly/27_bones/carpal_row", vis["observed_subject_ids"])
+            self.assertIn("tgt/envelope/distal_band/proximal_segment",
+                          vis["observed_subject_ids"])
+            self.assertNotIn("src/assembly/27_bones", vis["observed_subject_ids"])
+            self.assertNotIn("tgt/envelope/distal_band", vis["observed_subject_ids"])
+            self.assertNotIn("src/assembly/27_bones", vis["required_subject_ids"])
+            self.assertIn("tgt/envelope/distal_band/proximal_segment",
+                          vis["required_subject_ids"])
+        other = [r for r in self.man["views"] if r["pair_id"] != "pair-closeup"]
+        for row in other:
+            self.assertIn("src/assembly/27_bones", row["visibility"]["observed_subject_ids"])
+            self.assertIn("tgt/envelope/distal_band",
+                          row["visibility"]["observed_subject_ids"])
+
+    def test_capture_receipt_records_truth_and_bounds(self):
+        ct = self.receipt["capture_truth"]
+        self.assertTrue(ct["collapsed_guard_differs"])
+        self.assertTrue(np.allclose(ct["placed_source_vertex_mean_world_m"],
+                                    self.cen_a, atol=1e-12))
+        self.assertTrue(np.allclose(ct["collapsed_no_anchor_vertex_mean_world_m"],
+                                    self.cen_c, atol=1e-12))
+        self.assertGreater(abs(ct["collapsed_no_anchor_span_m"]
+                               - ct["declared_overview_orthographic_span_m"]), 0.05)
+        b = ct["bounds_check"]
+        self.assertTrue(b["all_inside"])
+        self.assertEqual(len(b["cameras"]), 8)
+        for entry in b["cameras"]:
+            self.assertTrue(entry["inside"])
+            self.assertTrue(all(m > 0.0 for m in entry["margins_px_lrtb"]))
 
 
 if __name__ == "__main__":

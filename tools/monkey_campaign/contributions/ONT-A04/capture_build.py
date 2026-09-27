@@ -41,7 +41,7 @@ import a04_correspondence_probe as P  # noqa: E402
 OUT = HERE / "evidence"
 CARD = json.loads((HERE / "card_task.json").read_text())
 
-RUN_ID = "ont-a04-anatomy-20260926-86b87bfe"
+RUN_ID = "ont-a04-anatomy-20260926-d9e5561a"
 VIEW_IDS = list(CARD["task"]["verification_profile"]["views"])
 LAYERS = list(CARD["task"]["verification_profile"]["diagnostic_layers"])
 
@@ -305,7 +305,10 @@ def main() -> int:
     placed = {}
     for bone in P.BONES:
         tris, _ = P.load_stl(P.VENDOR / f"{bone}.stl")
-        placed[bone] = tris + origin + 0.0  # anchor already hand_r local == world offset
+        # per-bone XML anchor (hand_r local, m); the chain rotation is identity,
+        # so world placement = tris + hand_r origin + anchor (probe C2 convention:
+        # a04_correspondence_probe verts_by_bone / x_world = R x_local + t)
+        placed[bone] = tris + origin + src["anchors"][bone]
     all_src_tris = np.concatenate([placed[b] for b in P.BONES], axis=0)
 
     V, F = P.load_birth(P.BIRTH)
@@ -547,7 +550,10 @@ def main() -> int:
     H, W = sheet.shape[:2]
 
     def rect_of(row_img, y0):
-        return [int((H - y0 - row_img.shape[0])), int(0), int(row_img.shape[1]), int(row_img.shape[0])]
+        # validator convention (visual_capture.artifact_locator): image
+        # rectangles are [left, top, width, height] with an UPPER-LEFT origin;
+        # y0 is the row's top offset inside the stacked sheet (rows_y)
+        return [0, int(y0), int(row_img.shape[1]), int(row_img.shape[0])]
 
     rows_y = [0, row1_d.shape[0] + DIV, row1_d.shape[0] + row1_c.shape[0] + 2 * DIV,
               row1_d.shape[0] + row1_c.shape[0] + row2_d.shape[0] + 3 * DIV,
@@ -557,24 +563,22 @@ def main() -> int:
 
     subject_sha = P.sha256_path(OUT / "state_snapshot.json")
 
-    def visibility(labels, subjects_bindings, required):
+    def visibility(labels, subjects_bindings, required, framed):
         return {"layers": LAYERS, "label_ids": [b["label_id"] for b in subjects_bindings],
                 "selected_ids": [b["subject_id"] for b in subjects_bindings],
                 "required_subject_ids": required,
                 "observed_subject_ids": sorted({b["subject_id"] for b in subjects_bindings}
-                                               | {"src/assembly/27_bones",
-                                                  "tgt/envelope/distal_band"}),
+                                               | set(framed)),
                 "missing_subject_ids": [],
                 "occlusion_mode": "depth_tested",
                 "tag_bindings": subjects_bindings}
 
-    CLEAN_VIS = {"layers": [], "label_ids": [], "selected_ids": [],
-                 "required_subject_ids": ["src/assembly/27_bones",
-                                          "tgt/envelope/distal_band"],
-                 "observed_subject_ids": ["src/assembly/27_bones",
-                                          "tgt/envelope/distal_band"],
-                 "missing_subject_ids": [], "occlusion_mode": "depth_tested",
-                 "tag_bindings": []}
+    def clean_visibility(framed):
+        return {"layers": [], "label_ids": [], "selected_ids": [],
+                "required_subject_ids": sorted(framed),
+                "observed_subject_ids": sorted(framed),
+                "missing_subject_ids": [], "occlusion_mode": "depth_tested",
+                "tag_bindings": []}
 
     sb1 = [{"label_id": i, "subject_id": s} for i, s in [
         ("SRC_BONE_LUNATE", "src/bone/lunate"), ("SRC_BONE_PISIFORM", "src/bone/pisiform"),
@@ -606,22 +610,32 @@ def main() -> int:
         ("TGT_STATION_80MM", "tgt/station/80mm"), ("TGT_STATION_111_4MM", "tgt/station/111.4mm"),
         ("TGT_FACE_A", "tgt/face/+T_R"), ("TGT_FACE_B", "tgt/face/-T_R")]]
 
+    # region subjects actually framed per view (review 8837d083 finding 3: a view
+    # must declare only subjects it frames). Views 1/3 frame the full source
+    # assembly and the full distal band; the close-up (view 2) frames the carpal
+    # row and the proximal band segment only, so its region ids are scoped.
+    SRC_ASSEMBLY = "src/assembly/27_bones"
+    TGT_BAND = "tgt/envelope/distal_band"
+    SRC_CARPAL_ROW = "src/assembly/27_bones/carpal_row"
+    TGT_BAND_PROX = "tgt/envelope/distal_band/proximal_segment"
+
     req1 = ["src/frame/hand_r", "src/vector/n_palm", "tgt/anchor/wrist_R",
             "tgt/envelope/distal_band", "src/assembly/27_bones"]
     req2 = ["src/site/FCR-P3", "src/site/FCU-P4", "src/site/ECRL-P4", "src/site/ECRB-P4",
-            "src/site/ECU-P6", "src/vector/n_palm", "tgt/anchor/wrist_R", "tgt/envelope/distal_band"]
+            "src/site/ECU-P6", "src/vector/n_palm", "tgt/anchor/wrist_R",
+            TGT_BAND_PROX]
     req3 = ["src/frame/hand_r", "src/vector/n_palm", "tgt/anchor/wrist_R",
             "tgt/face/+T_R", "tgt/face/-T_R", "tgt/envelope/distal_band"]
 
     def view_row(view_id, pair_id, diag_rect, clean_rect, primary, secondaries,
-                 bindings, required):
+                 bindings, required, framed):
         rows = []
         for mode, rect in (("diagnostic", diag_rect), ("clean", clean_rect)):
             cam = json.loads(json.dumps(primary))
             if mode == "diagnostic":
-                vis = visibility(LAYERS, bindings, required)
+                vis = visibility(LAYERS, bindings, required, framed)
             else:
-                vis = json.loads(json.dumps(CLEAN_VIS))
+                vis = clean_visibility(framed)
             rows.append({
                 "view_id": view_id,
                 "mode": mode,
@@ -644,13 +658,81 @@ def main() -> int:
     secondaries2 = [cam_tgt_close]
     secondaries3 = [cam_src_oblique, cam_tgt_side, cam_tgt_oblique]
 
+    # ---- capture truth + A01-lesson bounds (regression guard for review
+    # 8837d083 finding 1: the declared cameras must frame the RENDERED source
+    # geometry, i.e. the assembled 27-bone hand at its XML anchors, never the
+    # anchor-dropped collapsed set) ------------------------------------------
+    def quat_wxyz_to_basis(q):
+        w, x, y, z = (float(v) for v in q)
+        return np.array([
+            [1 - 2 * (y * y + z * z), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+            [2 * (x * y + z * w), 1 - 2 * (x * x + z * z), 2 * (y * z - x * w)],
+            [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x * x + y * y)],
+        ])
+
+    def margins_px(cam, tris):
+        """Signed px distances (left, right, top, bottom) from the subject's
+        vertex extremes to the DECLARED orthographic frame (positive = inside),
+        using only values written into the manifest camera record."""
+        s = cam["samples"][0]
+        R = quat_wxyz_to_basis(s["orientation"])
+        w, h = cam["viewport_resolution"]
+        half_h = cam["orthographic_span"] / 2.0
+        half_w = half_h * w / h
+        rel = tris.reshape(-1, 3) - np.asarray(s["position"], float)
+        u, v = rel @ R[:, 0], rel @ R[:, 1]
+        return {"left": float((u.min() + half_w) / (2 * half_w) * w),
+                "right": float((half_w - u.max()) / (2 * half_w) * w),
+                "top": float((half_h - v.max()) / (2 * half_h) * h),
+                "bottom": float((v.min() + half_h) / (2 * half_h) * h)}
+
+    collapsed_tris = np.concatenate(
+        [placed[b] - src["anchors"][b] for b in P.BONES], axis=0)
+    collapsed_center = collapsed_tris.reshape(-1, 3).mean(axis=0)
+    s_over = cam_src_over["samples"][0]
+    span_assembled = 2.0 * auto_half_h(np.asarray(s_over["position"], float),
+                                       np.asarray(s_over["target"], float),
+                                       y_up, all_src_tris, SUB_W, SUB_H)
+    span_collapsed = 2.0 * auto_half_h(np.asarray(s_over["position"], float),
+                                       np.asarray(s_over["target"], float),
+                                       y_up, collapsed_tris, SUB_W, SUB_H)
+    # hard build-time invariants: never ship a manifest whose declared framing
+    # describes the collapsed set instead of the placed assembly
+    assert np.allclose(np.asarray(s_over["target"], float), hand_center, atol=1e-12), \
+        "declared overview target is not the placed source vertex mean"
+    assert abs(cam_src_over["orthographic_span"] - span_assembled) <= 1e-12, \
+        "declared overview span is not the auto-frame span over the placed source"
+    assert abs(span_collapsed - span_assembled) > 0.05 and \
+        float(np.linalg.norm(collapsed_center - hand_center)) > 0.02, \
+        "collapsed guard ineffective: collapsed and assembled framing agree"
+
+    truth_bounds = []
+    for cam, subject, tris in ((cam_src_over, SRC_ASSEMBLY, all_src_tris),
+                               (cam_tgt_over, TGT_BAND, band_tris),
+                               (cam_src_close, SRC_CARPAL_ROW, carpal_tris),
+                               (cam_tgt_close, TGT_BAND_PROX, prox_tris),
+                               (cam_src_side, SRC_ASSEMBLY, all_src_tris),
+                               (cam_src_oblique, SRC_ASSEMBLY, all_src_tris),
+                               (cam_tgt_side, TGT_BAND, band_tris),
+                               (cam_tgt_oblique, TGT_BAND, band_tris)):
+        m = margins_px(cam, tris)
+        truth_bounds.append({"frame_id": cam["frame_id"], "subject_id": subject,
+                             "margins_px_lrtb": [m["left"], m["right"], m["top"],
+                                                 m["bottom"]],
+                             "inside": all(v > 0.0 for v in m.values())})
+    assert all(b["inside"] for b in truth_bounds), \
+        "A01-lesson bounds violated: a declared subject overflows its declared frame"
+
     views = []
     views += view_row(VIEW_IDS[0], "pair-overview", rect_of(row1_d, rows_y[0]),
-                      rect_of(row1_c, rows_y[1]), cam_src_over, secondaries1, sb1, req1)
+                      rect_of(row1_c, rows_y[1]), cam_src_over, secondaries1, sb1, req1,
+                      (SRC_ASSEMBLY, TGT_BAND))
     views += view_row(VIEW_IDS[1], "pair-closeup", rect_of(row2_d, rows_y[2]),
-                      rect_of(row2_c, rows_y[3]), cam_src_close, secondaries2, sb2, req2)
+                      rect_of(row2_c, rows_y[3]), cam_src_close, secondaries2, sb2, req2,
+                      (SRC_CARPAL_ROW, TGT_BAND_PROX))
     views += view_row(VIEW_IDS[2], "pair-side-oblique", rect_of(row3_d, rows_y[4]),
-                      rect_of(row3_c, rows_y[5]), cam_src_side, secondaries3, sb3, req3)
+                      rect_of(row3_c, rows_y[5]), cam_src_side, secondaries3, sb3, req3,
+                      (SRC_ASSEMBLY, TGT_BAND))
 
     manifest = {
         "schema": "chimera.visual_capture_manifest.v1",
@@ -708,6 +790,27 @@ def main() -> int:
             "cell_layout": "each view cell = SOURCE | TARGET panels; PRIMARY camera = source "
                            "camera (schema-validated); target/side/oblique cameras fully "
                            "declared in camera.secondary_cameras (same 16 fields)",
+        },
+        "capture_truth": {
+            "placement": "per-bone STL vertices + hand_r origin + per-bone XML anchor "
+                         "(hand_r local metres; chain R = I == probe C2 placement; "
+                         "correction for review 8837d083 finding 1)",
+            "placed_source_vertex_count": int(all_src_tris.size // 3),
+            "placed_source_vertex_mean_world_m": [float(v) for v in hand_center],
+            "declared_overview_target_world_m": s_over["target"],
+            "declared_overview_orthographic_span_m": cam_src_over["orthographic_span"],
+            "auto_span_over_placed_source_m": span_assembled,
+            "collapsed_no_anchor_vertex_mean_world_m": [float(v) for v in collapsed_center],
+            "collapsed_no_anchor_span_m": span_collapsed,
+            "collapsed_guard_differs": True,
+            "bounds_check": {
+                "convention": "A01-lesson: every declared subject vertex projects inside "
+                              "its declared orthographic frame (margins_px_lrtb > 0)",
+                "all_inside": True,
+                "cameras": truth_bounds,
+            },
+            "artifact_locator_convention": "[left, top, width, height] pixels, upper-left "
+                                           "origin per visual_capture.artifact_locator",
         },
         "honest_boundary": "Static pinned-geometry inspection only. The capture shows the "
                            "pinned SOURCE hand assembly and the pinned TARGET fitted band "
