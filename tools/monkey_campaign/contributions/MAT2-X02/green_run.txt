@@ -1,0 +1,20 @@
+test_08_declared_new_routes_only (__main__.TestAdditiveRouteLaw.test_08_declared_new_routes_only) ... ok
+test_09_legacy_routes_forward_unchanged (__main__.TestAdditiveRouteLaw.test_09_legacy_routes_forward_unchanged) ... ok
+test_10_unknown_route_still_404s_via_base (__main__.TestAdditiveRouteLaw.test_10_unknown_route_still_404s_via_base) ... ok
+test_11_page_injection_is_exactly_one_disclosed_tag (__main__.TestAdditiveRouteLaw.test_11_page_injection_is_exactly_one_disclosed_tag) ... ok
+test_12_overlay_names_all_player_controls (__main__.TestAdditiveRouteLaw.test_12_overlay_names_all_player_controls) ... ok
+test_01_start_is_key_only_from_attract (__main__.TestSessionWiringClauses.test_01_start_is_key_only_from_attract) ... ok
+test_02_pause_quiesces_and_leaks_zero (__main__.TestSessionWiringClauses.test_02_pause_quiesces_and_leaks_zero) ... ok
+test_03_resume_via_return_accepts_fresh_keys (__main__.TestSessionWiringClauses.test_03_resume_via_return_accepts_fresh_keys) ... ok
+test_04_restart_only_from_paused_exactly_one_boot (__main__.TestSessionWiringClauses.test_04_restart_only_from_paused_exactly_one_boot) ... ok
+test_05_exit_teardown_once_terminal (__main__.TestSessionWiringClauses.test_05_exit_teardown_once_terminal) ... ok
+test_06_exit_from_any_nonexited_state (__main__.TestSessionWiringClauses.test_06_exit_from_any_nonexited_state) ... ok
+test_07_session_snapshot_names_state (__main__.TestSessionWiringClauses.test_07_session_snapshot_names_state) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.003s
+
+OK
+test_session_app -- MAT2-X02 falsifier probe (prereg P1/P2/F1)
+  session_app import loaded: True
+RESULT: ALL CHECKS PASS (12 tests, 0 failures, 0 errors)
