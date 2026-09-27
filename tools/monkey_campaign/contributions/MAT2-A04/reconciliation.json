@@ -1,0 +1,149 @@
+{
+ "schema": "mat2-a04.hand_correspondence_reconciliation.v1",
+ "task_id": "MAT2-A04",
+ "planning_task_id": "A04",
+ "kind": "reconcile",
+ "attempt_id": "31c8beb654664b6d8e28280e38f7c0d6",
+ "agent_id": "arrival-73c48ff5c55146f1ad7ff5231213ec6c",
+ "criteria_sha256": "b6a4bb30f1bfe207c76969f2eebfd736d33360546d1d0522bae8e29860a1bf3d",
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "base_sha256": "8ec90f13",
+ "preregistration_commit": "d18b12bc",
+ "branch": "work-a04-reconcile (isolated attempt checkout; publication lead-serialized)",
+ "checkout": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-A04\\31c8beb654664b6d8e28280e38f7c0d6\\checkout",
+ "workspace": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-A04\\31c8beb654664b6d8e28280e38f7c0d6",
+ "preregistration": "PREREGISTRATION.md (committed d18b12bc BEFORE any re-verification run of this attempt)",
+ "merged_evidence_authority": {
+  "card": "ONT-A04",
+  "legacy_criteria_sha256": "bf8583ae76c4930f726c4c71861ab9219cdac65eb3913cb29ab6131671505570",
+  "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/177",
+  "accepted_head_sha256": "020c0a5c216a4182d0bed9c4ade59cb0beb585ad",
+  "merged_into_integration_as": "56d0116a",
+  "lead_review": {
+   "review_id": "6e27829fa06c44cc92907bb5fa0273c8",
+   "verdict": "ACCEPTED",
+   "done_when_verified": true,
+   "profile_verified": true,
+   "evidence_reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-reviews\\ONT-A04\\6e27829fa06c44cc92907bb5fa0273c8 (independent non-author reviewer arrival-4defc82a reproduced everything at the repaired head)"
+  },
+  "tree_path": "tools/monkey_campaign/contributions/ONT-A04/",
+  "clause_identity": "The MAT2-A04 done_when clause, definition_raw_sha256 57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1, calculation contracts C01/C16 and verification profile anatomy (kind visible_static) are identical between eras; only scope (01ea5cdd... -> cb5475f8...) and card criteria (bf8583ae... -> b6a4bb30...) changed.",
+  "dependency": {
+   "id": "P02",
+   "state": "DONE",
+   "evidence": "MAT2-P02 merged as PR #196 (659adb37-era); ONT-P02 lineage authority 8c7ed8c2 inherited by the merged ONT-A04 work"
+  }
+ },
+ "clause_map": [
+  {
+   "clause": "Source and target assembly correspondence is evidenced",
+   "verdict": "satisfied_by_merged_evidence",
+   "evidence": [
+    "C01/C2 frame chain: hand_r world origin (-0.0731, 0.532647, 0.202699) m re-derived from the pinned XML chain (R2-A4 pin), all chain quats identity, x_world = R x_local + t round-trip < 1e-12 m, det(R) = +1",
+    "C6 correspondence inventory: 27 source bone IDs + 5 source port IDs + 1 target band region + 2 target anchors, owner map per port",
+    "anatomy-profile capture: source 27-bone assembly at per-bone XML anchors and target band rendered SEPARATELY in every view cell (capture_a04.png 878eb3de..., manifest 4447058a...)"
+   ],
+   "pins": [
+    "tools/monkey_campaign/contributions/ONT-A04/evidence/numerical_receipt.json = e3864b161c865a404b0b2d0e73cce2a76e479bcf3c29c42c86c54d84c5db5fa1",
+    "tools/monkey_campaign/contributions/ONT-A04/evidence/capture_manifest.json = 4447058a4627d74779a5a8410408149d22077c93a4b213854cca32f062501224"
+   ]
+  },
+  {
+   "clause": "including palm sign",
+   "verdict": "source_closed_target_unresolved_operator_gate_named",
+   "evidence": [
+    "SOURCE sign CLOSED: frozen pisiform-signed palm-plate method independently re-implemented; n_palm = (+0.128427, -0.168691, -0.977266) hand_r local exact to 1e-9 vs s3 receipt; compartment split 5/5 clean; exact L/R XML z-mirror (max |delta| = 0)",
+    "TARGET sign UNRESOLVED by honest design: the +T_R/-T_R A/B face instrument exists in-tree (reference/LABELING_CARD.md) and is rendered in the capture, but the HUMAN labeling verdict is not recorded; the card's own falsifier F-D FAILS the card if the target palm face is claimed decided"
+   ],
+   "decision_request": "see decision_request below; not answered by this attempt"
+  },
+  {
+   "clause": "geometry coverage",
+   "verdict": "satisfied_by_merged_evidence_with_explicit_gaps",
+   "evidence": [
+    "13 carpals/metacarpals region-covered by the target band (region homology ONLY, scale UNDECIDED)",
+    "14 phalanges + thumb distal ray inventoried with ZERO target geometry coverage (single-component target band; sampling grooves refuted by C2)",
+    "scale alternatives recorded, never decided: H-LEN s=0.716 and H-ASP UNRESOLVED (blocked on same-assembly evidence), H-BODY s=0.2217 REJECTED as circular; proportion mismatch 3.4-3.5x recorded; no scale number promoted from any orientation result"
+   ]
+  }
+ ],
+ "reverification": {
+  "cpu_only": true,
+  "python": "python -B, stdlib + numpy + matplotlib Agg only",
+  "location": "scratch copy rerun/ONT-A04 inside the attempt workspace; the in-tree merged ONT-A04 tree was NOT modified",
+  "predictions": "PREREGISTRATION.md P1-P6, frozen at commit d18b12bc before the first run",
+  "results": [
+   {
+    "id": "P1",
+    "prediction": "7/7 in-tree ONT-A04 files byte-match the accepted head pins",
+    "observed": "7/7 PASS",
+    "receipt": "verification/P1_pin_check.txt",
+    "fired": false
+   },
+   {
+    "id": "P2",
+    "prediction": "probe exits 0, all_green=True, exactly the 2 merged-record deviations; numerical_receipt/state_snapshot regenerate byte-identical to e3864b16.../33d3219c...",
+    "observed": "exit 0, all_green=True deviations=2 (C4 s2 site-metric convention within the 3.5 mm anchor class; C5 far-end 18.0393 vs printed 18.1 mm); on-disk regenerated files byte-identical (e3864b16..., 33d3219c...). NOTE: the probe console prints LF-canonical hashes (1208bfbe..., acf4f53d...) of the same bytes - Windows CRLF write translation, deterministic, per the merged review record; on-disk hashes are the governing pins",
+    "receipt": "verification/P2_probe_rerun.txt",
+    "fired": false
+   },
+   {
+    "id": "P3",
+    "prediction": "19/19 unit tests OK",
+    "observed": "Ran 19 tests ... OK, exit 0",
+    "receipt": "verification/P3_unittest_rerun.txt",
+    "fired": false
+   },
+   {
+    "id": "P4",
+    "prediction": "capture_a04.png and capture_manifest.json regenerate byte-identical (878eb3de.../4447058a...), structurally_valid=True fired=0",
+    "observed": "capture_sha256=878eb3de... sheet=700x3628 views=6 structurally_valid=True fired=0, exit 0; both on-disk artifacts byte-identical to the accepted pins",
+    "receipt": "verification/P4_capture_rerun.txt",
+    "fired": false
+   },
+   {
+    "id": "P5",
+    "prediction": "merged capture manifest validates structurally under the current-era envelope (task_id A04, scope cb5475f8..., profile anatomy/visible_static) with visual_capture.validate_manifest",
+    "observed": "structurally_valid=True; manifest bound to context subject 33d3219c..., capture 878eb3de..., tick_interval [0,0], run_id ont-a04-anatomy-20260926-d9e5561a; validator materialized read-only from this base commit (8ec90f13)",
+    "receipt": "verification/P5_manifest_revalidation.json",
+    "harness": "verification/revalidate_manifest.py",
+    "fired": false
+   },
+   {
+    "id": "P6",
+    "prediction": "no human A/B palm-face verdict exists anywhere in the merged record or the prepared gate artifact",
+    "observed": "the only occurrences of the answer strings are the UNFILLED instrument template itself (gate_artifact/DECISION_CARD.md ANSWER block: no pick, no reader, no date) and the in-tree LABELING_CARD.md; the labeling-gate workspace's own VERIFICATION.txt records 34/34 PASS for the INSTRUMENT (panel provenance), not an answer; DECISION_PANEL.png sha256 33b88a30ee2b4b6c90751c65f36fb6557ddf04a837400415769cde5cf49861b0, DECISION_CARD.md sha256 c4a36f289087e8cf3ff401ec425e74d3d9d42616c3fad724ae4e70e54370646c",
+    "receipt": "verification/P6_gate_state.md",
+    "fired": false
+   }
+  ],
+  "fired_deviations_carried": [
+   "C4 s2 site-metric convention: s2 surface numbers reproduce under nearest-vertex metric (FCU->pisiform exact to 1e-12, others within 0.11 mm); exact point-to-surface puts anchor sites at 0.001-0.011 mm; both inside the governing 3.5 mm anchor class",
+   "C5 far-end c1 extent 18.0393 mm vs C2 printed 18.1 mm (within 0.1 mm print precision, above the 0.05 mm recording tolerance)"
+  ]
+ },
+ "decision_request": {
+  "kind": "OPERATOR_DECISION_REQUEST",
+  "addressee": "Execution Sergeant / operator (human terminal only; a model answer is another claim, not a verdict)",
+  "question_verbatim": "Which lettered face is the PALM (ventral) - A or B?",
+  "instrument": {
+   "card": "tools/monkey_campaign/contributions/ONT-A04/reference/LABELING_CARD.md (merged, PR #177)",
+   "prepared_gate_artifact": "E:/ChimeraWork/monkey-coordination/review-workspaces/labeling_gate_ER/gate_artifact/DECISION_PANEL.png",
+   "artifact_verification": "gate_artifact/VERIFICATION.txt: 34/34 checks PASS (panel provenance re-derived from evidence bytes; sheet 878eb3de... == manifest.capture_sha256 == receipt pin)"
+  },
+  "what_the_answer_closes": "the SIGN of the target paddle palm/dorsum in the known birth frame (A = +T_R side, B = -T_R side, T_R = (0.890060, -0.455843, 0.000951)); CANNOT DECIDE (F-R1a) is a lawful answer that refutes the visibility assumption and is recorded, not retried",
+  "what_it_does_not_close": "dimensions, same-assembly (H-LEN/H-ASP, section R3), digit structure (14 phalanges), force capacity",
+  "lawful_answers": ["A is the palm", "B is the palm", "CANNOT DECIDE (F-R1a)"],
+  "recorded_by_worker": "NO ANSWER RECORDED - this attempt is not the human terminal; recording the request is the task-owned decision-phase deliverable per the card plan (escalate only a genuinely missing decision)",
+  "blocking_scope": "Non-blocking for THIS reconciliation: the merged work evidences the palm-sign leg honestly (source CLOSED, target instrument-delivered and verdict-named-unresolved), and the done_when clause asks for palm-sign evidence, not a completed operator verdict. The verdict remains a named open gate for every downstream consumer of the target palm sign.",
+  "requested_via": "task inbox message on this publication request"
+ },
+ "honest_boundary": "Reconcile-only attempt. No new anatomy, no new measurement code, no constants authored, no edits to the merged ONT-A04 tree, no runtime/native claim, no scale promoted, no target palm verdict claimed. The merged evidence is reused at hash-verified identity with scoped CPU-only re-verification. Independent review of THIS candidate and the operator A/B verdict remain named open gates.",
+ "gaps_standing": [
+  {"id": "G1", "text": "target palm sign verdict (human A/B labeling)", "state": "UNRESOLVED", "owner": "operator via lead; decision request recorded in this file"},
+  {"id": "G2", "text": "same-assembly scale (H-LEN/H-ASP unresolved; H-BODY circular)", "state": "UNRESOLVED", "owner": "downstream same-assembly evidence card"},
+  {"id": "G3", "text": "14 phalanges + thumb distal ray have no target geometry coverage (no digit structure)", "state": "UNRESOLVED", "owner": "A05 (acquire or author evidenced hand/digit structure)"},
+  {"id": "G4", "text": "C16 reach/ROM leg of the calculation contract", "state": "NOT_CLAIMED_HERE", "owner": "downstream grasp-skill scope"},
+  {"id": "G5", "text": "independent review of this reconciliation candidate", "state": "PENDING", "owner": "non-author reviewer via lead"}
+ ]
+}
