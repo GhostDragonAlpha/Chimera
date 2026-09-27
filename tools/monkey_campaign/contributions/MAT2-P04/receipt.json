@@ -1,0 +1,55 @@
+{
+  "schema": "chimera.monkey.mat2_p04.qualification_receipt.v1",
+  "task_id": "MAT2-P04",
+  "attempt_id": "90d82bf414454bb7bf7cb4b38ee5dec8",
+  "agent_id": "arrival-b06f9edfa4f64d1b9834c47b943348fb",
+  "criteria_sha256": "967f4062200c2b0448f8436d507d99fcbb0989a0dcca5c39f16bb9379ddf7020",
+  "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+  "pinned_attempt_head": "c525b82c7c3ce0128565424764293a3c85811ab3",
+  "verification_profile": "records (offline); numerical evidence required; nonvisual",
+  "contribution_kind": "reconciliation (no reimplementation; no production path modified)",
+  "carried_evidence": {
+    "legacy_card": "ONT-P04",
+    "legacy_criteria_sha256": "6191e11ce3098cf90190c88a658267676e01163106dadaf883b0c48b7dc072db",
+    "legacy_state": "DONE; lead ACCEPTED at PR #175 head 16390061951fc139bae539bda819cd8260d729c1 (prior ACCEPT at PR #158 head 68290bec..., then CHANGES_REQUIRED resolved by the fencing correction)",
+    "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/175",
+    "pr_state_observed": "MERGED into base astra/gait-capture, merge commit b7c4b79756d03aa26552273f6339495d419d19d5 (gh pr view 175, observed 2026-09-27)",
+    "machine_of_record": "tools/monkey_campaign/contributions/ONT-P04/gpu_handoff.py sha256 fd664b5f8182ea3466b37f9cdfe217950bcc6e91a4bb72c23c9ac6c33ad78dc0 (byte-identical at PR head and merge commit; verified P2/P3)",
+    "carry_forward_basis": "MATERIAL_PLAN_ADOPTION.md: old evidence may satisfy unchanged clauses after checking exact inputs, dependencies and validity; the reconciliation is submitted as this card's contribution"
+  },
+  "done_when_clause_map": {
+    "clause_1_every_launched_job_uses_existing_ownership_broker_rules": "VERIFIED at records profile - pinned control.py 39ff01dc (archive convention; identical blob at pinned head) + review_handoff broker; fresh: pinned suites 12/12+12/12+13/13+12/12+8/8, test_layer_guard 8/8, test_p04_contract 17/17",
+    "clause_2_admitted_training_may_interrupt_gaming_and_local_inference_through_a_verified_supervisor_handoff": "VERIFIED at records profile - merged HandoffControl (six states + RECOVERY_HOLD, supervisor-only, additive over pinned Control) re-verified: test_gpu_handoff 28/28, test_correction_fencing 11/11, test_correction_records 10/10; live preemption NOT executed or claimed; GPU-B/C/D and live qualification remain open gates",
+    "clause_3_already_running_protected_training_retains_ownership_until_confirmed_release": "VERIFIED at records profile - owner/generation-bound evidenced release, release_requires_observed_cessation, supervisor-only resource_clear with drained evidence, force_kill_refused in every phase, crash-recovery protection; fresh: test_resource_lifecycle 12/12, test_gpu_handoff 28/28, test_correction_fencing 11/11"
+  },
+  "done_when_verified": true,
+  "numerical_evidence": {
+    "reference": "probe_run_results.json (this directory)",
+    "note": "run 3: 11 suites, 137/137 OK, exit 0, CPU-only python -B, isolated temporary registries, no GPU; identity checks P1/P2/P3/P3b/P5/P6 all true",
+    "identity_checks": "reconciliation_checks.json (this directory)"
+  },
+  "source_evidence": {
+    "reference": "RECONCILIATION.md (this directory)",
+    "note": "clause-to-evidence map, legacy-to-current crosswalk, C27 applicability boundary, remaining gates, decision requests"
+  },
+  "frozen_preregistrations": [
+    "PREREGISTRATION.md sha256 0d4a27fe0412c0f4d600e6b939f2a8ea2c171ad43217c74a8d19ee2d2e8c81c5",
+    "PREREGISTRATION-ADDENDUM.md sha256 32086bc84de3269a573d47fb882c90e27101d712cf5ae9e33ff02629fdb5a498",
+    "PREREGISTRATION-ADDENDUM-2.md sha256 ea852b07ef24103072e32ee28ceb06b96d006a22dc4a713fece321b7c5131720"
+  ],
+  "run_ledger": [
+    "run 1: runner crash before any probe (layout defect) - preserved first_run_failures/runner_run1_traceback.txt",
+    "run 2: identity P1 FAIL (raw-blob vs archive CRLF extraction; identical content) + test_correction_records 7/10 (missing legacy-untracked fixture elements) - preserved run2_* files and suite log; fixes frozen in addendum 2",
+    "run 3: all identity checks true, 137/137 OK, exit 0"
+  ],
+  "failures": "none open; first-run and second-run failures preserved and dispositioned in PREREGISTRATION-ADDENDUM-2.md",
+  "remaining_gates": [
+    "GPU-B Bionic/inference adapter, GPU-C Windows game adapter, GPU-D independent recovery test (COORDINATION.md implementation queue)",
+    "live handoff qualification (live Bionic preservation/restore, real game safe-release, training across :00) - owned by its own records; no live preemption claimed here",
+    "lead publication and independent (non-author) review of this reconciliation; head_sha re-binding to the published PR head"
+  ],
+  "decision_requests": "none new; training-over-gaming is an already-published operator override (COORDINATION.md 2026-09-24)",
+  "c27_boundary": "C27 compute/memory/frame budget measurement stays with the runtime-facing cards (M08, R03); this records-profile card claims the admission contract only",
+  "independent_review": "PENDING - marker for the non-author reviewer to pin",
+  "writes_stopped": true
+}
