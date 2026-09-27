@@ -1,0 +1,14 @@
+[sc4]
+[sc1e6]
+[edge]
+[atan2grid]
+[atan2pow]
+[acos]
+[hypot]
+[hypotscale]
+dense sweep: 55517/55517 bit-identical
+  sin   6421/6421
+  cos   6421/6421
+  atan2 40425/40425
+  acos  1025/1025
+  hypot 1225/1225
