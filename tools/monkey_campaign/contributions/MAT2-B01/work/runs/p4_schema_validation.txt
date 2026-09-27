@@ -1,0 +1,9 @@
+E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-B01\67fafbdd5cdb4bc09faa3e4fd9b53eb1\checkout\tools\monkey_campaign\contributions\MAT2-B01\work\m02_rerun\material_volume_campaign\agents\M02_multicell\validate_fixture.py:66: DeprecationWarning: Accessing jsonschema.__version__ is deprecated and will be removed in a future release. Use importlib.metadata directly to query for jsonschema's version.
+  print(f"jsonschema version: {jsonschema.__version__ if hasattr(jsonschema, '__version__') else 'n/a'}")
+jsonschema version: 4.25.1
+PASS mc_manifest.json: valid against https://chimera.invalid/schemas/material_volume_admission.v1.json
+PASS mc_partition.json: valid against https://chimera.invalid/schemas/material_volume_admission.v1.json
+PASS mc_groups.json: valid against https://chimera.invalid/schemas/rigid_body_mass_export.v1.json
+PASS mc_manifest.json: valid against $defs/fittingManifest
+PASS mc_partition.json: valid against $defs/materialPartition
+SCHEMA VALIDATION: PASS
