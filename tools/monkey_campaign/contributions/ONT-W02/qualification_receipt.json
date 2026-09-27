@@ -1,0 +1,161 @@
+{
+ "schema": "chimera.monkey.qualification-receipt.v1",
+ "task_id": "ONT-W02",
+ "attempt_id": "681e63e9e5d84eaa9702379faf347ac5",
+ "agent_id": "arrival-535a6d99aaf94c78b3aed6a239885498",
+ "criteria_sha256": "bf9f89874ee4a7d0606c46215e843474331482444af556ac4f199a6bfcd087f2",
+ "planning_ids": [
+  "W02"
+ ],
+ "calculation_ids": [
+  "C09"
+ ],
+ "verification_profile": {
+  "id": "records",
+  "kind": "offline"
+ },
+ "checkout_base": "155a0f5c6ed14d6ce0c95572676eb03f14bc8a50 (branch-8)",
+ "preregistration": {
+  "file": "PREREGISTRATION.md",
+  "frozen_before_probes": true
+ },
+ "done_when": "Reference-math equivalence is demonstrated at the frozen sites without tolerance relaxation",
+ "done_when_demonstrated": true,
+ "verdict": "PASS_NO_TOLERANCE",
+ "fresh_evidence": {
+  "evidence_class": "component/records-subject host probe; NOT an engine/GPU/training claim",
+  "frozen125": {
+   "passed": 125,
+   "total": 125,
+   "tolerance": "NONE (IEEE-754 bit equality)"
+  },
+  "dense": {
+   "passed": 55392,
+   "total": 55392
+  },
+  "oracle": "linked MSVC UCRT (the lane pinned ground truth), independent of the reconstruction",
+  "deterministic_rerun_bit_identical": true,
+  "gate_stdout_sha256": "517096e569b6bc7bbeb3e581ab590c5f84fa8e1da9e97962ab2d34f61291d935",
+  "compiler": "MSVC 19.44.35228 for x64 (toolset 14.44.35207), /O2 /fp:precise /EHsc",
+  "gpu_runs": 0,
+  "engine_launches": 0,
+  "training_runs": 0
+ },
+ "preserved_evidence": {
+  "libdevice_vs_crt": {
+   "differing_sites": 31,
+   "by_function": {
+    "ACOS": 4,
+    "HYPOT": 11,
+    "SIN": 5,
+    "ATAN2": 6,
+    "COS": 5
+   },
+   "all_exactly_one_ulp": false,
+   "finding": "F-ONTW02-ULPCLASS: 30x1ulp + HYPOT@16 2ulp (corrects closeout-3 wording)"
+  },
+  "fdlibm_vs_crt": {
+   "identical": 115,
+   "differing": 10,
+   "conclusion": "fdlibm NOT reference-equivalent; must not be assumed"
+  },
+  "on_device_gate_record": "55517/55517 bit-identical -- PASS (co7_gate_out2.txt, historical)",
+  "lane_archive_ref": "refs/chimera-archive-source/20260925/agent/typeb-gpu-finish-20260922 (a62b286e)"
+ },
+ "predictions": {
+  "P1_frozen125_bit_exact": true,
+  "P2_oracle_matches_preserved_record": true,
+  "P3_dense_zero_diff_and_census": true,
+  "P4_fdlibm_not_equivalent_115_of_125": true,
+  "P5_libdevice_31_of_125_count_and_distribution": true,
+  "P5_frozen_all_one_ulp_subclaim": false,
+  "P6_device_gate_record_preserved": true
+ },
+ "findings": [
+  "F-ONTW02-ULPCLASS: preserved records correct the closeout-3 claim - 30/31 libdevice diffs are exactly 1 ulp, HYPOT input 16 differs by exactly 2 ulps.",
+  "F-ONTW02-CENSUS: prereg grand-total line 53,392 was an author addition slip; per-function census (6396/6396/40400/1000/1200, sums 55,392) was frozen correctly and matched exactly. Prereg file left frozen; correction recorded."
+ ],
+ "constraints_honored": {
+  "cpu_only": true,
+  "no_gpu": true,
+  "no_engine_launch": true,
+  "no_training": true,
+  "python_minus_B": true,
+  "writes_confined_to_attempt_workspace": true
+ },
+ "artifacts": [
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\PREREGISTRATION.md",
+   "sha256": "3496d4e07e1f161ddcc5d5c470a51a65e1ecc97768b36877a793cad1054c3364"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\report.md",
+   "sha256": "786312256d84f7a66910ca314c5d85b04a84b6562c6d096e250d7e6b0fdcdb2d"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\run_gate.py",
+   "sha256": "7cd46a8245ed09c3e54cc702b8556c14e7fde66b03d7cd20d2d3384753a03e87"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\parity_gate_result.json",
+   "sha256": "e1d6a5096ca5e50f6907e5d68f9c57fe2d4e6141902badb23ecc454b18e105fa"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\candidate.diff",
+   "sha256": "b47f1a2cddbdeb3b5447a4be1275830966a28e167c2a97a2298611b3bdae1923"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\parity_gate_host.cxx",
+   "sha256": "9cdc67df81b7fd358d7eef83634ba294a4f9ac310500f5d452fe74b51b17c683"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\host_qual_shim.h",
+   "sha256": "39ebeeb939d85345c28dcea41f4ab4e4443f168b4c2a4b3a0e0ac33772c1250a"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\trig_inputs.txt",
+   "sha256": "a21467e5e5aeb09f23a6de39c16902c34d2a34ebaa83cbccaab01ba1a0ea8b01"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\ucrt_math.c",
+   "sha256": "cde32a8d36c0fbf481d67fa0005ace7dab08f066971085e543f7909740900b97"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\ucrt_math_tables.h",
+   "sha256": "cdae6a920bb38d517c11683e11fda0c2f15b6069ab5c1ee4d5bbdd9a62d437ed"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\ucrt_math_consts.h",
+   "sha256": "106b7cc7cc9823d58092a0eddc4987df5a31f0e02d0705e905292b2759aec938"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\trig_host.txt",
+   "sha256": "ed48cf12865115dc8223c0e4ab03ca331144a7c6267ad5e25dda327a9b0a24f2"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\trig_gpu.txt",
+   "sha256": "bb896746b5883a3cfd73acccd6b4373496da589aa61361fe58be83237fa9e733"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\trig_fdlibm_out.txt",
+   "sha256": "41e484b2bf5be5eba7d7607d029d3221880e1af236ea424d938570dd158c34ed"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\co7_gate_out2.txt",
+   "sha256": "54e72577920b1fb0a1cfe068ac482198929bfc208779738c2ddf9c7ab1c740a4"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\co7_dense_full2.txt",
+   "sha256": "2bc8d9bc9631d58f81cf5c1e1d5774455b40e4c30e50661d62351f49ce909f67"
+  },
+  {
+   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\co6_trig_dense.txt",
+   "sha256": "c51cda41db828723bdfa3c9360709f2733927164be05cc21db92727c5d5db8d2"
+  }
+ ],
+ "candidate_diff": {
+  "file": "candidate.diff",
+  "applies_with": "git -c core.autocrlf=false apply (verified: git apply --check --cached passes)",
+  "contains": "all 16 contribution files as new-file additions"
+ }
+}

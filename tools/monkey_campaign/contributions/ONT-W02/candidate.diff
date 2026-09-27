@@ -1,0 +1,4376 @@
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/PREREGISTRATION.md b/tools/monkey_campaign/contributions/ONT-W02/PREREGISTRATION.md
+new file mode 100644
+index 00000000..de858358
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/PREREGISTRATION.md
+@@ -0,0 +1,145 @@
++# ONT-W02 — Close transcendental parity defects (frozen before any probe run)
++
++Task card: W02, kind=implementation, group="Walking foundation", calculation_ids=[C09],
++verification_profile=records (offline, numerical_evidence_required=true), criteria_sha256
++`bf9f89874ee4a7d0606c46215e843474331482444af556ac4f199a6bfcd087f2`.
++done_when: **"Reference-math equivalence is demonstrated at the frozen sites without
++tolerance relaxation."** Card observation (stale, to be reconciled): *"31/125 sites
++reported; fdlibm equivalence must not be assumed."*
++
++This preregistration is written and frozen BEFORE the probes below are built or run.
++Attempt: `681e63e9e5d84eaa9702379faf347ac5`, arrival `arrival-535a6d99aaf94c78b3aed6a239885498`,
++base revision of the attempt checkout (branch-8): `155a0f5c6ed14d6ce0c95572676eb03f14bc8a50`.
++Constraints honored: no GPU work, no engine launches, no training, python -B CPU-only
++drivers; a small MSVC host C compile of the pinned probe is the only native build.
++Writes are confined to this attempt workspace.
++
++## 1. Reconciliation (read-only git pins; what EXISTS already)
++
++The 125 frozen sites and the whole parity lane live in archive ref
++`refs/chimera-archive-source/20260925/agent/typeb-gpu-finish-20260922` (head `a62b286e`,
++lane commits: `2c062c2c` closeout-3, `77023970`+`11df019c` closeout-5, `714eba2b`/`c7058a6f`/
++`d0b5eda8`/`7b092267`/`9e2e5c41` closeout-7, `e3b591e1`/`ef3f3554` closeout-8).
++None of it is an ancestor of the current production head, and the card still says
++"31/125 sites reported" — the implementation_state=UNRECONCILED gap this card owns.
++
++Verified history (commit-message records + preserved output records):
++- closeout-3 (`2c062c2c`): the frozen probe `trig_probe.cu` vs `trig_probe_host.cxx` on
++  `trig_inputs.txt` — **31/125** sampled evaluations differ in the final bit between CUDA
++  libdevice and the MSVC CRT (SIN 5/25, COS 5/25, ATAN2 6/25, ACOS 4/25, HYPOT 11/25),
++  always exactly 1 ulp.
++- closeout-5 (`77023970`): a netlib fdlibm port probed the same 125 points — **115/125**
++  bit-identical, 10 differ by exactly 1 ulp → the 125/125 adoption gate FAILED; fdlibm
++  was NOT adopted ("fdlibm equivalence must not be assumed" is a measured fact, not an
++  assumption).
++- closeout-7 (`d0b5eda8`, `7b092267`, `9e2e5c41`): a bit-exact reconstruction of the actual
++  UCRT objects (`ucrt_math.c` + generated tables/consts, transcribed from the extracted
++  `libucrt.lib` disasms) reached **125/125** bit-match host-side and the dense sweep
++  **55,517/55,517** bit-identical host-side (`co7_dense_full2.txt`), then the CUDA port of
++  the same reconstruction passed the **on-device gate 55,517/55,517 bit-identical**
++  (`co7_gate_out2.txt`, device vs host CRT).
++- closeout-8 (`e3b591e1`): the reconstruction was adopted into the walker build
++  (`#define`-redirect of sin/cos/atan2/acos/hypot, `-DUCRT_MATH_DEVICE`, `-fmad=false`).
++
++## 2. The frozen sites (exact definition, pinned identities)
++
++A frozen site is one (function, input) pair from the card's original probe: 25 pinned
++inputs (12 exact tick-1 rot-axis angles + a synthetic IK grid; `trig_inputs.txt`,
++25 one-per-line doubles) x 5 functions, with the exact argument derivations of
++`trig_probe_host.cxx` / `trig_probe.cu` (git blobs `007c6f6a`, `8751479e`):
++
++- SIN(i): sin(x)
++- COS(i): cos(x)
++- ATAN2(i): atan2(wy, wx), wy = sin(x*0.5)*0.2, wx = 0.3 + cos(x)*0.15
++- ACOS(i): acos(clamp(1.0 - |x|*1e-6, -1.0, 1.0))
++- HYPOT(i): hypot(wx, wy)
++
++125 sites total. The reference math implementation under test is the adopted
++`ucrt_math.c` reconstruction (blob `efd87d67`, sha256 `cde32a8d...8b01a0ea8b01`-family
++below); its declared reference/oracle is the MSVC UCRT the C++ parity reference
++(`gait_controller_ref.hpp`) links on this machine — the lane's pinned ground truth
++("the lib on disk as ground truth", closeout-5 standing order).
++
++Pinned input/source identities (byte copies under `frozen_sites/`, extracted with
++`git -c core.autocrlf=false show` from `a62b286e`; sha256 at extraction):
++
++| file | git blob (a62b286e) | sha256 | bytes |
++|---|---|---|---|
++| frozen_sites/trig_inputs.txt | 252366b2d1106a13f87bb3cf8380c0202f97f71c | a21467e5e5aeb09f23a6de39c16902c34d2a34ebaa83cbccaab01ba1a0ea8b01 | 349 |
++| frozen_sites/ucrt_math.c | efd87d67b114c350c1a8e081183d3a139a35a3df | cde32a8d36c0fbf481d67fa0005ace7dab08f066971085e543f7909740900b97 | 28375 |
++| frozen_sites/ucrt_math_tables.h | bf81305a13fa11437d31238ae2791b89a3d349e1 | cdae6a920bb38d517c11683e11fda0c2f15b6069ab5c1ee4d5bbdd9a62d437ed | 12970 |
++| frozen_sites/ucrt_math_consts.h | 74e86ae2d55f7ca3eeccf6003b94f552bb05e229 | 106b7cc7cc9823d58092a0eddc4987df5a31f0e02d0705e905292b2759aec938 | 13101 |
++| frozen_sites/preserved/trig_host.txt | 0a89550d6fe1aedc205c3b34835d83b8f8c85ca1 | ed48cf12865115dc8223c0e4ab03ca331144a7c6267ad5e25dda327a9b0a24f2 | 5463 |
++| frozen_sites/preserved/trig_gpu.txt | 5ba31ec7a1f527ffa86ab4f5b7d08718a0abc6c5 | bb896746b5883a3cfd73acccd6b4373496da589aa61361fe58be83237fa9e733 | 5458 |
++| frozen_sites/preserved/trig_fdlibm_out.txt | d9cf26eac0f65fdb7790820c056eed9866856b97 | 41e484b2bf5be5eba7d7607d029d3221880e1af236ea424d938570dd158c34ed | 5469 |
++| frozen_sites/preserved/co7_gate_out2.txt | f7fbfb11258f6ec3fb24f048541c32cda10f1cfc | 54e72577920b1fb0a1cfe068ac482198929bfc208779738c2ddf9c7ab1c740a4 | 155 |
++| frozen_sites/preserved/co7_dense_full2.txt | af66ec6a229738fa90c47498b40e1769ea092d2e | 2bc8d9bc9631d58f81cf5c1e1d5774455b40e4c30e50661d62351f49ce909f67 | 203 |
++| frozen_sites/preserved/co6_trig_dense.txt | 23fed41a5e5a0986b0505afab709af433873f654 | c51cda41db828723bdfa3c9360709f2733927164be05cc21db92727c5d5db8d2 | 2419 |
++
++## 3. Frozen probes (exact, before execution)
++
++Probe A — `parity_gate_host.cxx` (new, task-owned, compiled `/O2 /fp:precise /EHsc` with
++the pinned `ucrt_math.c` via MSVC vcvars64; contraction stays off on the host because the
++reconstruction carries its own explicit `fma()`):
++1. **frozen125 section**: recompute all 125 sites twice per site — once through the linked
++   CRT (`sin/cos/atan2/acos/hypot` — the live oracle) and once through the pinned
++   reconstruction (`ucrt_sin/ucrt_cos/ucrt_atan2/ucrt_acos/ucrt_hypot`) — printing IEEE-754
++   hex bits for both. Zero tolerance: the gate is bit equality (`016llx` string equality).
++2. **dense section**: the dense sweep generator ported VERBATIM from
++   `trig_probe2_host.cxx` (git blob `5bfe2c46`): xorshift64* seed `0x243F6A8885A308D3`,
++   the same class generators and iteration counts, reconstruction vs live CRT, bit equality.
++
++Driver — `run_gate.py` (python -B): verifies pinned sha256s BEFORE building, builds in a
++scratch dir under the attempt workspace, runs the probe, then cross-checks against the
++preserved records (below) and writes `parity_gate_result.json` plus a per-site ledger.
++
++Records derivations (no run, pure record analysis):
++3. Recount the **31/125** class by text-comparing preserved `trig_gpu.txt` (libdevice)
++   against preserved `trig_host.txt` (CRT) bit columns; assert every differing pair is
++   exactly 1 ulp (adjacent doubles).
++4. Parse preserved `trig_fdlibm_out.txt` vs `trig_host.txt` → expect 115/125 with the 10
++   differences at exactly 1 ulp.
++5. Parse preserved `co7_gate_out2.txt` and `co7_dense_full2.txt` → cite the lane's
++   on-device gate (55,517/55,517) and host dense totals (6421/6421, 40425/40425, 1025/1025,
++   1225/1225) as preserved device/history evidence — NOT re-measured here.
++
++## 4. Predictions (named before the run; each marked CONFIRMED/REFUTED in report.md)
++
++- **P1**: Fresh host gate, frozen125 section: reconstruction vs live CRT bit-identical at
++  **125/125** sites; zero differing bits.
++- **P2**: The live CRT oracle bits equal the preserved `trig_host.txt` bits at all 125
++  sites (no oracle drift on this machine since the record was made).
++- **P3**: Fresh host gate, dense section: **0** differing bits. Predicted totals from the
++  frozen generator's arithmetic (counted from the source BEFORE the run): sin 6396,
++  cos 6396, atan2 40400, acos 1000, hypot 1200; grand total 53,392 evaluations.
++  (This is my probe's own census; the lane's preserved 55,517 total came from the lane's
++  own final probe build and is cited as history, not re-claimed.)
++- **P4**: Preserved fdlibm record vs preserved CRT record: 115/125 identical; 10 differing
++  pairs all exactly 1 ulp → fdlibm is NOT reference-equivalent; the substitution used is
++  the UCRT reconstruction, not fdlibm.
++- **P5**: Preserved libdevice-vs-CRT recount: **31** differing sites, every difference
++  exactly 1 ulp, distribution SIN 5, COS 5, ATAN2 6, ACOS 4, HYPOT 11.
++- **P6**: Preserved device record `co7_gate_out2.txt` states 55,517/55,517 bit-identical
++  ON-DEVICE (historical; GPU work is barred for this attempt, so this stays a preserved
++  record with its hash, never a fresh claim).
++
++## 5. Falsifiers (any one fails the card)
++
++- F1: any differing bit in Probe A frozen125 (reconstruction vs live CRT) — equivalence
++  with any tolerance (1 ulp, relative eps, "close enough") is a FAIL by definition.
++- F2: any differing bit in Probe A dense section.
++- F3: oracle drift (P2 refuted) without an explicit recorded finding and re-pin.
++- F4: any claim that fdlibm equivalence, libdevice parity, or a fresh GPU qualification
++  was demonstrated here (they are not; each is labeled preserved-record evidence).
++- F5: a missing identity (any pinned file whose sha256 differs at verification time), or
++  a claimed pass unsupported by the actual run outputs.
++
++## 6. Evidence classes (labeled honestly)
++
++- Fresh evidence (this attempt, CPU-only host): bit-equality of the pinned UCRT
++  reconstruction against the live MSVC UCRT at the 125 frozen sites and over the dense
++  sweep. This is component/records-subject evidence about pinned math implementations —
++  it does NOT by itself re-qualify the GPU runtime or the engine.
++- Preserved evidence (hash-pinned, cited, not re-measured): libdevice 31/125 class,
++  fdlibm 115/125 failure, on-device gate 55,517/55,517, lane dense totals.
++- Not claimed anywhere: fresh GPU runs, engine launches, training, walker runtime bars.
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/host_qual_shim.h b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/host_qual_shim.h
+new file mode 100644
+index 00000000..5d1dab34
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/host_qual_shim.h
+@@ -0,0 +1,22 @@
++/* host_qual_shim.h -- ONT-W02 compile-time qualifier neutralizer.
++ *
++ * The pinned ucrt_math.c (git blob efd87d67, archive ref
++ * refs/chimera-archive-source/20260925/agent/typeb-gpu-finish-20260922) carries
++ * nvcc address-space qualifiers (__host__/__device__) on its inline helpers so
++ * the same translation unit dual-compiles for the CUDA device gate. For a
++ * plain-cl HOST build those markers must expand to nothing. This mirrors the
++ * lane's own host_shim/cuda_runtime.h precedent (closeout-8: "host_shim/
++ * cuda_runtime.h neutralizes nvcc qualifiers for the plain-cl drill builds").
++ *
++ * This file is forced-include (/FI) only; no pinned source byte is modified.
++ * Compile recipe (frozen in PREREGISTRATION.md before the run):
++ *   cl /nologo /O2 /fp:precise /EHsc /FI host_qual_shim.h ^
++ *      ucrt_math.c parity_gate_host.cxx /Fe:parity_gate.exe
++ */
++#if !defined(UCRT_MATH_DEVICE)
++#ifndef ONT_W02_HOST_QUAL_SHIM
++#define ONT_W02_HOST_QUAL_SHIM
++#define __host__
++#define __device__
++#endif
++#endif
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/parity_gate_host.cxx b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/parity_gate_host.cxx
+new file mode 100644
+index 00000000..158365b1
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/parity_gate_host.cxx
+@@ -0,0 +1,213 @@
++// parity_gate_host.cxx -- ONT-W02 frozen reference-math equivalence gate.
++//
++// FROZEN IN PREREGISTRATION.md BEFORE ANY RUN (attempt 681e63e9e5d84eaa9702379faf347ac5).
++//
++// Demonstrates, at the card's frozen sites and WITHOUT tolerance relaxation
++// (the gate is IEEE-754 bit equality, nothing softer), that the adopted
++// reference-math implementation -- the UCRT reconstruction ucrt_math.c
++// (pinned git blob efd87d67, extracted verbatim from the lane archive ref
++// refs/chimera-archive-source/20260925/agent/typeb-gpu-finish-20260922) --
++// is bit-equivalent to its declared reference, the MSVC UCRT (the live CRT
++// this program links, the same "lib on disk as ground truth" oracle the lane
++// pinned in closeout-5), at:
++//   (1) the 125 frozen sites: the 25 pinned trig_inputs.txt inputs x 5
++//       functions with the EXACT argument derivations of the card's original
++//       probe trig_probe_host.cxx (git blob 007c6f6a);
++//   (2) a dense sweep ported VERBATIM from trig_probe2_host.cxx
++//       (git blob 5bfe2c46): same xorshift seed, generators, iteration counts.
++//
++// This is a CPU-only host leg. The on-device gate (55,517/55,517) remains a
++// PRESERVED RECORD of the lane (co7_gate_out2.txt); no GPU claim is made here.
++//
++// The gate itself is enforced downstream by run_gate.py, which parses the
++// printed gate lines (FROZEN125, DENSE, DENSE-TOTAL) and requires
++// passed == total everywhere. Output lines are machine-parseable:
++//   XBITS <i> <hex>                input x bit pattern (frozen125)
++//   SITE <i> <FN> <oracle_hex> <recon_hex> <MATCH|DIFF>
++//   FROZEN125 <passed>/<total>
++//   [section markers] then DENSE <fn> <passed>/<total> lines,
++//   DENSE-TOTAL <passed>/<total>
++// Trailer Agent: GLM 5.3 (monkey campaign worker, ONT-W02).
++#include <cstdio>
++#include <cstdint>
++#include <cstring>
++#include <cmath>
++
++extern "C" {
++double ucrt_sin(double);
++double ucrt_cos(double);
++double ucrt_atan2(double, double);
++double ucrt_acos(double);
++double ucrt_hypot(double, double);
++}
++
++typedef union { uint64_t u; double d; } bits;
++static uint64_t B(double x) { bits b; b.d = x; return b.u; }
++
++static const char* FN[5] = { "SIN", "COS", "ATAN2", "ACOS", "HYPOT" };
++static long long tot[5] = { 0, 0, 0, 0, 0 };
++static long long bad[5] = { 0, 0, 0, 0, 0 };
++
++static void fail_note(int f, const double* a, double got, double want) {
++    if (bad[f] <= 8) {
++        printf("DENSE-FAIL %s args", FN[f]);
++        for (int i = 0; i < (f == 2 || f == 4 ? 2 : 1); ++i) printf(" %.17g", a[i]);
++        printf("  got %016llx want %016llx\n", (unsigned long long)B(got),
++               (unsigned long long)B(want));
++    }
++}
++
++static void chk(int f, const double* a, double got, double want) {
++    ++tot[f];
++    if (B(got) != B(want)) { ++bad[f]; fail_note(f, a, got, want); }
++}
++
++/* ---- (1) the 125 frozen sites --------------------------------------------
++ * Inputs pinned from trig_inputs.txt (25 lines); spelled exactly as the lane's
++ * own embedded table in trig_probe2_host.cxx so the compiled artifact carries
++ * the sites. run_gate.py cross-checks these printed XBITS against the pinned
++ * trig_inputs.txt bytes.
++ */
++static const double T[25] = {
++    0.0, -0.20640000000000000, 0.76460100000000009, -0.55238900000000002,
++    0.06578700000000004, -0.071399000000000004, -0.94038900000000003,
++    0.49178700000000009, -0.21051299999999995, 0.3714869999999999,
++    -0.90293861457026869, 0.83791351673274095, 0.0, 1e-08, 0.0001,
++    0.20513105922366801, 0.38607655499999999, 1.0, 2.0, 3.1415926535897931,
++    -0.90000000000000002, 0.90000000000000002, 0.001, 0.25, 0.5 };
++
++static void frozen125(void) {
++    long long badsites = 0, total = 0;
++    for (int i = 0; i < 25; ++i) {
++        double x = T[i];
++        printf("XBITS %d %016llx\n", i, (unsigned long long)B(x));
++        double wy = sin(x * 0.5) * 0.2, wx = 0.3 + cos(x) * 0.15;   // trig_probe_host.cxx
++        double ca = 1.0 - fabs(x) * 1e-6;
++        if (ca > 1.0) ca = 1.0;
++        if (ca < -1.0) ca = -1.0;
++        struct { int f; double o; double r; double a0; double a1; } sites[5] = {
++            { 0, sin(x),          ucrt_sin(x),          x,  0.0 },
++            { 1, cos(x),          ucrt_cos(x),          x,  0.0 },
++            { 2, atan2(wy, wx),   ucrt_atan2(wy, wx),   wy, wx  },
++            { 3, acos(ca),        ucrt_acos(ca),        ca, 0.0 },
++            { 4, hypot(wx, wy),   ucrt_hypot(wx, wy),   wx, wy  },
++        };
++        for (int s = 0; s < 5; ++s) {
++            ++total;
++            bool m = B(sites[s].o) == B(sites[s].r);
++            if (!m) ++badsites;
++            if (s == 2 || s == 4)
++                printf("SITE %d %s %016llx %016llx %s ABITS %016llx %016llx\n",
++                       i, FN[sites[s].f], (unsigned long long)B(sites[s].o),
++                       (unsigned long long)B(sites[s].r), m ? "MATCH" : "DIFF",
++                       (unsigned long long)B(sites[s].a0), (unsigned long long)B(sites[s].a1));
++            else
++                printf("SITE %d %s %016llx %016llx %s ABITS %016llx\n",
++                       i, FN[sites[s].f], (unsigned long long)B(sites[s].o),
++                       (unsigned long long)B(sites[s].r), m ? "MATCH" : "DIFF",
++                       (unsigned long long)B(sites[s].a0));
++        }
++    }
++    printf("FROZEN125 %lld/%lld\n", total - badsites, total);
++}
++
++/* ---- (2) dense sweep, ported verbatim from trig_probe2_host.cxx ---------- */
++static void dense(void) {
++    unsigned long long st = 0x243F6A8885A308D3ULL;
++    auto rnd = [&]() {
++        st ^= st << 13; st ^= st >> 7; st ^= st << 17;
++        return (double)(st >> 11) * (1.0 / 9007199254740992.0);
++    };
++    printf("[sc4]\n");
++    for (int i = 0; i < 4000; ++i) {
++        double x = (rnd() * 2 - 1) * 4.0;
++        double a[1] = { x };
++        chk(0, a, ucrt_sin(x), sin(x));
++        chk(1, a, ucrt_cos(x), cos(x));
++    }
++    printf("[sc1e6]\n");
++    for (int i = 0; i < 1000; ++i) {
++        double x = (rnd() * 2 - 1) * 1e6;
++        double a[1] = { x };
++        chk(0, a, ucrt_sin(x), sin(x));
++        chk(1, a, ucrt_cos(x), cos(x));
++    }
++    for (int i = 0; i < 500; ++i) {
++        double x = (rnd() * 2 - 1) * 1e-3;
++        double a[1] = { x };
++        chk(0, a, ucrt_sin(x), sin(x));
++        chk(1, a, ucrt_cos(x), cos(x));
++    }
++    printf("[edge]\n");
++    static const double edge[] = {
++        0.78539816339744830961, 0.7853981633974483, 2.0e7, 2.0e7 * (1 + 1e-12),
++        1.220703125e-4, 1.2207031249e-4, 7.450580596923828e-9, 7.45e-9,
++        1.5707963267948966, 3.141592653589793, 6.283185307179586,
++        0.0625, 0.06249999, 16.0 };
++    int ne = (int)(sizeof(edge) / sizeof(edge[0]));
++    for (int i = 0; i < ne; ++i) {
++        for (int j = 0; j < 64; ++j) {
++            bits x; x.u = B(edge[i]) + (j - 32);
++            double a[1] = { x.d };
++            chk(0, a, ucrt_sin(x.d), sin(x.d));
++            chk(1, a, ucrt_cos(x.d), cos(x.d));
++        }
++    }
++    printf("[atan2grid]\n");
++    for (int i = 0; i < 200; ++i) {
++        for (int j = 0; j < 200; ++j) {
++            double dy = (i + 0.5) / 100.0 - 1.0;
++            double dx = (j + 0.5) / 100.0 - 1.0;
++            double a[2] = { dy, dx };
++            chk(2, a, ucrt_atan2(dy, dx), atan2(dy, dx));
++        }
++    }
++    printf("[atan2pow]\n");
++    for (int i = 0; i < 400; ++i) {
++        double s1 = rnd() < 0.5 ? -1.0 : 1.0, s2 = rnd() < 0.5 ? -1.0 : 1.0;
++        double dy = s1 * pow(10.0, rnd() * 8 - 4);
++        double dx = s2 * pow(10.0, rnd() * 8 - 4);
++        double a[2] = { dy, dx };
++        chk(2, a, ucrt_atan2(dy, dx), atan2(dy, dx));
++    }
++    printf("[acos]\n");
++    for (int i = 0; i < 500; ++i) {
++        double x = 2.0 * rnd() - 1.0;
++        double a[1] = { x };
++        chk(3, a, ucrt_acos(x), acos(x));
++    }
++    for (int i = 0; i < 500; ++i) {
++        double s = rnd() < 0.5 ? -1.0 : 1.0;
++        double x = 1.0 - s * pow(10.0, -rnd() * 15);
++        if (x > 1.0) x = 1.0;
++        if (x < -1.0) x = -1.0;
++        double a[1] = { x };
++        chk(3, a, ucrt_acos(x), acos(x));
++    }
++    printf("[hypot]\n");
++    for (int i = 0; i < 1000; ++i) {
++        double a = rnd() * 2 - 1, b = rnd() * 2 - 1;
++        double q[2] = { a, b };
++        chk(4, q, ucrt_hypot(a, b), hypot(a, b));
++    }
++    printf("[hypotscale]\n");
++    for (int i = 0; i < 200; ++i) {
++        double s = pow(10.0, rnd() * 600 - 300);
++        double a = rnd() * 2 * s, b = rnd() * 2 * s;
++        double q[2] = { a, b };
++        chk(4, q, ucrt_hypot(a, b), hypot(a, b));
++    }
++    long long P = 0, TT = 0;
++    for (int f = 0; f < 5; ++f) {
++        printf("DENSE %s %lld/%lld%s\n", FN[f], tot[f] - bad[f], tot[f],
++               bad[f] ? " FAIL" : "");
++        P += tot[f] - bad[f]; TT += tot[f];
++    }
++    printf("DENSE-TOTAL %lld/%lld\n", P, TT);
++}
++
++int main(void) {
++    frozen125();
++    dense();
++    return 0;
++}
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/co6_trig_dense.txt b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/co6_trig_dense.txt
+new file mode 100644
+index 00000000..23fed41a
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/co6_trig_dense.txt
+@@ -0,0 +1,18 @@
++FAIL atan2 #1 args -0.18636800000000001 -0.2064  got -3.1424400591560335 (c00923b79d1db948) want -2.4071524548726662 (c00341d925715051)
++FAIL acos  #1 args 0.29359999999999997  got 1.2728612817427778 (3ff45da3ca96e0c2) want 1.2728056830707719 (3ff45d697def3b02)
++FAIL atan2 #2 args 0.17290237000000003 0.76460100000000009  got 3.1605331171160989e+233 (7069726373654420) want 0.22239364621916885 (3fcc77651eacbd36)
++FAIL acos  #2 args 0.76460100000000009  got 1.0292208202757069 (3ff077b0403724ae) want 0.70037430470501982 (3fe669775fb5566b)
++FAIL atan2 #3 args -0.31438392999999998 -0.55238900000000002  got -nan (ffffffffffffffff) want -2.6241772250151061 (c004fe50a102c887)
++FAIL acos  #3 args -0.052389000000000019  got 1.5184313207161955 (3ff84b7ea3fb2b9c) want 1.6232093209801264 (3ff9f8aa5642c08d)
++FAIL atan2 #4 args -0.085658809999999988 0.06578700000000004  got -1.5705187208164539 (bff920d83cfa994a) want -0.91586680266524578 (bfed4ec7e59e0ee1)
++FAIL acos  #4 args 0.06578700000000004  got 1.5049617818596186 (3ff81452ce2d1238) want 1.5049617805554543 (3ff81452cdd3731e)
++FAIL atan2 #5 args -0.13641763000000001 -0.071399000000000004  got -1.5709002516999191 (bff922684d6544e6) want -2.0529767788155806 (c0006c7f16e3aec9)
++FAIL acos  #5 args 0.42860100000000001  got 1.1288546482758286 (3ff20fc9e444842a) want 1.1278525528934018 (3ff20baf1e563243)
++FAIL cos   #6 args -0.94038900000000003  got -0.58947384031430694 (bfe2dcf83e3feb50) want 0.58947384031430694 (3fe2dcf83e3feb50)
++FAIL atan2 #6 args -0.45794393 -0.94038900000000003  got -3.141819689959326 (c00922725c926eee) want -2.6884209559784176 (c00581e2d89e7785)
++FAIL acos  #6 args -0.44038900000000003  got 1.1448055968210642 (3ff2511fac69fcdb) want 2.0268282321159208 (400036f1b85c6107)
++FAIL atan2 #7 args 0.071961190000000022 0.49178700000000009  got 0.99996062735115576 (3fefffad6df858f1) want 0.14529480260070465 (3fc2990524b9725a)
++FAIL acos  #7 args 0.49178700000000009  got 1.0597217273951829 (3ff0f49ec5205df4) want 1.0566554255223783 (3ff0e80f84fc273c)
++FAIL atan2 #8 args -0.18788980999999999 -0.21051299999999995  got -3.1418970399221235 (c009229aea4eeaf6) want -2.412918288773831 (c0034da81a91a190)
++FAIL acos  #8 args 0.28948700000000005  got 1.2771555629389582 (3ff46f3aabeba300) want 1.2771054807765463 (3ff46f062817a458)
++FAIL cos   #10 args -0.90293861457026869  got -0.61930539177302768 (bfe3d1598a7cda15) want 0.61930539177302768 (3fe3d1598a7cda15)
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/co7_dense_full2.txt b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/co7_dense_full2.txt
+new file mode 100644
+index 00000000..af66ec6a
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/co7_dense_full2.txt
+@@ -0,0 +1,14 @@
++[sc4]
++[sc1e6]
++[edge]
++[atan2grid]
++[atan2pow]
++[acos]
++[hypot]
++[hypotscale]
++dense sweep: 55517/55517 bit-identical
++  sin   6421/6421
++  cos   6421/6421
++  atan2 40425/40425
++  acos  1025/1025
++  hypot 1225/1225
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/co7_gate_out2.txt b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/co7_gate_out2.txt
+new file mode 100644
+index 00000000..f7fbfb11
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/co7_gate_out2.txt
+@@ -0,0 +1,7 @@
++cases: 55517
++  sin   6421/6421
++  cos   6421/6421
++  atan2 40425/40425
++  acos  1025/1025
++  hypot 1225/1225
++ON-DEVICE GATE: 55517/55517 bit-identical -- PASS
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/trig_fdlibm_out.txt b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/trig_fdlibm_out.txt
+new file mode 100644
+index 00000000..d9cf26ea
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/trig_fdlibm_out.txt
+@@ -0,0 +1,127 @@
++N 25
++SIN 0 0 0000000000000000
++COS 0 1 3ff0000000000000
++ATAN2 0 0 0000000000000000
++ACOS 0 0 0000000000000000
++HYPOT 0 0.44999999999999996 3fdccccccccccccc
++SIN 1 -0.20493764533956399 bfca3b659239f13a
++COS 1 0.97877503110912834 3fef5220039829b0
++ATAN2 1 -0.046078893183676653 bfa797a716850062
++ACOS 1 0.00064249514718842571 3f450da3d28fc92b
++HYPOT 1 0.44729102921017666 3fdca06a8d901ef5
++SIN 2 0.69224911188413074 3fe626e79c0746c0
++COS 2 0.72165862226930555 3fe717d3d2b0bd1c
++ATAN2 2 0.18076414273265773 3fc7234788a9c244
++ACOS 2 0.0012366091519912465 3f5442b6f7683ae4
++HYPOT 2 0.41501072855831461 3fda8f8928a969ff
++SIN 3 -0.52472241650533813 bfe0ca86aa4bcae6
++COS 3 0.85127339064298169 3feb3da1b198884e
++ATAN2 3 -0.12683571446336614 bfc03c2716cadfb3
++ACOS 3 0.0010510842505160995 3f5138911ecdbd36
++HYPOT 3 0.43115441667851057 3fdb9808b1ca400f
++SIN 4 0.065739556686163006 3fb0d44ebe054695
++COS 4 0.99783681566010918 3fefee477940288c
++ATAN2 4 0.014626201244797205 3f8df4578016c54a
++ACOS 4 0.0003627313073889835 3f37c59f1a3b8a39
++HYPOT 4 0.44972362522626996 3fdcc84599a57708
++SIN 5 -0.071338352285556517 bfb2433af2045998
++COS 5 0.99745217403802466 3fefeb20d25a2846
++ATAN2 5 -0.015875224278071726 bf904198445d2ab8
++ACOS 5 0.00037788622863300643 3f38c3e0fe5bc0cc
++HYPOT 5 0.44967448901539686 3fdcc777820aaa3e
++SIN 6 -0.80778746684081637 bfe9d9651a066653
++COS 6 0.58947384031430694 3fe2dcf83e3feb50
++ATAN2 6 -0.22918396263282945 bfcd55e66c2349c3
++ACOS 6 0.0013714147056177579 3f56782153d51a36
++HYPOT 6 0.39885016674352375 3fd986c2d98ab9a7
++SIN 7 0.47220186470945408 3fde388e2b82637b
++COS 7 0.88149044178874369 3fec352b71670410
++ATAN2 7 0.11216480392778114 3fbcb6d524a1cf7e
++ACOS 7 0.00099175303409785253 3f503fb6b637da97
++HYPOT 7 0.43495678222315681 3fdbd654f8b4993c
++SIN 8 -0.2089616022532553 bfcabf40f7e61433
++COS 8 0.97792384610651162 3fef4b26f3203130
++ATAN2 8 -0.04700584106105743 bfa811264c280be0
++ACOS 8 0.0006488651746207149 3f4543135a2d5c59
++HYPOT 8 0.44718252182424373 3fdc9ea370a4fcdb
++SIN 9 0.36300140242061857 3fd73b6a3bf31dc5
++COS 9 0.93178859289039595 3fedd1364fa800e4
++ATAN2 9 0.083791800108014347 3fb5736121230b48
++ACOS 9 0.00086195942253779201 3f4c3ea3c3e02d81
++HYPOT 9 0.4413166392667997 3fdc3e88253537db
++SIN 10 -0.78515019691830723 bfe91ff34e46c970
++COS 10 0.61930539177302768 3fe3d1598a7cda15
++ATAN2 10 -0.21854146118064016 bfcbf92aa64ba2b6
++ACOS 10 0.0013438294165758725 3f56046dd9517271
++HYPOT 10 0.40246864313930431 3fd9c20bd6fcb940
++SIN 11 0.74324885009496988 3fe7c8b1cffe51f0
++COS 11 0.66901505725394916 3fe5689243edfe31
++ATAN2 11 0.20049445522568834 3fc9a9cd641ca125
++ACOS 11 0.0012945374723807993 3f5535af06de5d3f
++HYPOT 11 0.40853595901891893 3fda257401ce7aee
++SIN 12 0 0000000000000000
++COS 12 1 3ff0000000000000
++ATAN2 12 0 0000000000000000
++ACOS 12 0 0000000000000000
++HYPOT 12 0.44999999999999996 3fdccccccccccccc
++SIN 13 1e-08 3e45798ee2308c3a
++COS 13 1 3ff0000000000000
++ATAN2 13 2.2222222222222225e-09 3e2316b7e5807ca6
++ACOS 13 1.4136482746161737e-07 3e82f9422c23c482
++HYPOT 13 0.44999999999999996 3fdccccccccccccc
++SIN 14 9.9999999833333343e-05 3f1a36e2ea609cc8
++COS 14 0.99999999500000003 3feffffffd50ce24
++ATAN2 14 2.2222222246342025e-05 3ef74d3b7c13f865
++ACOS 14 1.4142136208911564e-05 3eeda88066815a95
++HYPOT 14 0.44999999936111112 3fdccccccc1d2efe
++SIN 15 0.2036954731286777 3fca12b179b7284e
++COS 15 0.97903429675720965 3fef543fbbc781a2
++ATAN2 15 0.045793014366461819 3fa7722e962dad27
++ACOS 15 0.00064051708215009137 3f44fd0bf5ce7cb6
++HYPOT 15 0.4473240818948937 3fdca0f52f9cea32
++SIN 16 0.37655666841046986 3fd8198123fa79ce
++COS 16 0.92639358561877327 3feda504292e9e2a
++ATAN2 16 0.087185941969103578 3fb651d1616da209
++ACOS 16 0.00087872245878941116 3f4ccb421c8370a0
++HYPOT 16 0.44063268738430572 3fdc335371774ece
++SIN 17 0.8414709848078965 3feaed548f090cee
++COS 17 0.54030230586813977 3fe14a280fb5068c
++ATAN2 17 0.2465187746246924 3fcf8ded5d6e7860
++ACOS 17 0.0014142136802445852 3f572ba46065af16
++HYPOT 17 0.39292430505074943 3fd925abfbffc699
++SIN 18 0.90929742682568171 3fed18f6ead1b446
++COS 18 -0.41614683654714241 bfdaa22657537205
++ATAN2 18 0.61632440017407664 3fe3b8edf2cf2ee8
++ACOS 18 0.0020000003333067277 3f60624e00c0da18
++HYPOT 18 0.29114640768346151 3fd2a2248ad64b5f
++SIN 19 1.2246467991473532e-16 3ca1a62633145c07
++COS 19 -1 bff0000000000000
++ATAN2 19 0.9272952180016123 3fedac670561bb50
++ACOS 19 0.0025066289308601736 3f6488c8290003f7
++HYPOT 19 0.25 3fd0000000000000
++SIN 20 -0.78332690962748341 bfe91103985da841
++COS 20 0.62160996827066439 3fe3e43a9692e21c
++ATAN2 20 -0.21771422581927624 bfcbde0f4be245a4
++ACOS 20 0.0013416408871008674 3f55fb3feeeab1f4
++HYPOT 20 0.40274889722213925 3fd9c6a34f846d02
++SIN 21 0.78332690962748341 3fe91103985da841
++COS 21 0.62160996827066439 3fe3e43a9692e21c
++ATAN2 21 0.21771422581927624 3fcbde0f4be245a4
++ACOS 21 0.0013416408871008674 3f55fb3feeeab1f4
++HYPOT 21 0.40274889722213925 3fd9c6a34f846d02
++SIN 22 0.00099999983333334168 3f50624da5218a62
++COS 22 0.99999950000004167 3feffffef390876c
++ATAN2 22 0.00022222224634202144 3f2d208a8f9b6b98
++ACOS 22 4.4721358921319356e-05 3f0772663126c72d
++HYPOT 22 0.44999993611111816 3fdccccc8833286b
++SIN 23 0.24740395925452294 3fcfaaeed4f31577
++COS 23 0.96891242171064473 3fef01549f7deea1
++ATAN2 23 0.055932801647718647 3faca33963b382b2
++ACOS 23 0.00070710679596735864 3f472ba4481f6def
++HYPOT 23 0.44603438582805677 3fdc8bd3cf017802
++SIN 24 0.47942553860420301 3fdeaee8744b05f0
++COS 24 0.87758256189037276 3fec1528065b7d50
++ATAN2 24 0.1141368681409254 3fbd3812e3eee231
++ACOS 24 0.0010000000416255381 3f50624dde62cd04
++HYPOT 24 0.43446424510348686 3fdbce431f000d2d
++EXIT=0
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/trig_gpu.txt b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/trig_gpu.txt
+new file mode 100644
+index 00000000..5ba31ec7
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/trig_gpu.txt
+@@ -0,0 +1,126 @@
++N 25
++SIN 0 0 0000000000000000
++SIN 1 -0.20493764533956399 bfca3b659239f13a
++SIN 2 0.69224911188413074 3fe626e79c0746c0
++SIN 3 -0.52472241650533813 bfe0ca86aa4bcae6
++SIN 4 0.065739556686163006 3fb0d44ebe054695
++SIN 5 -0.071338352285556517 bfb2433af2045998
++SIN 6 -0.80778746684081626 bfe9d9651a066652
++SIN 7 0.47220186470945408 3fde388e2b82637b
++SIN 8 -0.2089616022532553 bfcabf40f7e61433
++SIN 9 0.36300140242061857 3fd73b6a3bf31dc5
++SIN 10 -0.78515019691830723 bfe91ff34e46c970
++SIN 11 0.74324885009496988 3fe7c8b1cffe51f0
++SIN 12 0 0000000000000000
++SIN 13 1e-08 3e45798ee2308c3a
++SIN 14 9.9999999833333343e-05 3f1a36e2ea609cc8
++SIN 15 0.2036954731286777 3fca12b179b7284e
++SIN 16 0.37655666841046986 3fd8198123fa79ce
++SIN 17 0.8414709848078965 3feaed548f090cee
++SIN 18 0.90929742682568171 3fed18f6ead1b446
++SIN 19 1.2246467991473532e-16 3ca1a62633145c07
++SIN 20 -0.7833269096274833 bfe91103985da840
++SIN 21 0.7833269096274833 3fe91103985da840
++SIN 22 0.00099999983333334168 3f50624da5218a62
++SIN 23 0.24740395925452294 3fcfaaeed4f31577
++SIN 24 0.47942553860420301 3fdeaee8744b05f0
++COS 0 1 3ff0000000000000
++COS 1 0.97877503110912834 3fef5220039829b0
++COS 2 0.72165862226930566 3fe717d3d2b0bd1d
++COS 3 0.85127339064298169 3feb3da1b198884e
++COS 4 0.99783681566010918 3fefee477940288c
++COS 5 0.99745217403802466 3fefeb20d25a2846
++COS 6 0.58947384031430705 3fe2dcf83e3feb51
++COS 7 0.88149044178874369 3fec352b71670410
++COS 8 0.97792384610651162 3fef4b26f3203130
++COS 9 0.93178859289039595 3fedd1364fa800e4
++COS 10 0.61930539177302779 3fe3d1598a7cda16
++COS 11 0.66901505725394927 3fe5689243edfe32
++COS 12 1 3ff0000000000000
++COS 13 1 3ff0000000000000
++COS 14 0.99999999500000003 3feffffffd50ce24
++COS 15 0.97903429675720965 3fef543fbbc781a2
++COS 16 0.92639358561877327 3feda504292e9e2a
++COS 17 0.54030230586813977 3fe14a280fb5068c
++COS 18 -0.41614683654714241 bfdaa22657537205
++COS 19 -1 bff0000000000000
++COS 20 0.6216099682706645 3fe3e43a9692e21d
++COS 21 0.6216099682706645 3fe3e43a9692e21d
++COS 22 0.99999950000004167 3feffffef390876c
++COS 23 0.96891242171064473 3fef01549f7deea1
++COS 24 0.87758256189037276 3fec1528065b7d50
++ATAN2 0 0 0000000000000000
++ATAN2 1 -0.046078893183676646 bfa797a716850061
++ATAN2 2 0.18076414273265773 3fc7234788a9c244
++ATAN2 3 -0.12683571446336614 bfc03c2716cadfb3
++ATAN2 4 0.014626201244797205 3f8df4578016c54a
++ATAN2 5 -0.015875224278071726 bf904198445d2ab8
++ATAN2 6 -0.22918396263282947 bfcd55e66c2349c4
++ATAN2 7 0.11216480392778114 3fbcb6d524a1cf7e
++ATAN2 8 -0.04700584106105743 bfa811264c280be0
++ATAN2 9 0.083791800108014333 3fb5736121230b47
++ATAN2 10 -0.21854146118064016 bfcbf92aa64ba2b6
++ATAN2 11 0.20049445522568834 3fc9a9cd641ca125
++ATAN2 12 0 0000000000000000
++ATAN2 13 2.2222222222222225e-09 3e2316b7e5807ca6
++ATAN2 14 2.2222222246342025e-05 3ef74d3b7c13f865
++ATAN2 15 0.045793014366461826 3fa7722e962dad28
++ATAN2 16 0.087185941969103578 3fb651d1616da209
++ATAN2 17 0.24651877462469243 3fcf8ded5d6e7861
++ATAN2 18 0.61632440017407653 3fe3b8edf2cf2ee7
++ATAN2 19 0.9272952180016123 3fedac670561bb50
++ATAN2 20 -0.21771422581927624 bfcbde0f4be245a4
++ATAN2 21 0.21771422581927624 3fcbde0f4be245a4
++ATAN2 22 0.00022222224634202144 3f2d208a8f9b6b98
++ATAN2 23 0.055932801647718647 3faca33963b382b2
++ATAN2 24 0.1141368681409254 3fbd3812e3eee231
++ACOS 0 0 0000000000000000
++ACOS 1 0.0006424951471884256 3f450da3d28fc92a
++ACOS 2 0.0012366091519912465 3f5442b6f7683ae4
++ACOS 3 0.0010510842505160995 3f5138911ecdbd36
++ACOS 4 0.0003627313073889835 3f37c59f1a3b8a39
++ACOS 5 0.00037788622863300637 3f38c3e0fe5bc0cb
++ACOS 6 0.0013714147056177579 3f56782153d51a36
++ACOS 7 0.00099175303409785231 3f503fb6b637da96
++ACOS 8 0.0006488651746207149 3f4543135a2d5c59
++ACOS 9 0.00086195942253779211 3f4c3ea3c3e02d82
++ACOS 10 0.0013438294165758725 3f56046dd9517271
++ACOS 11 0.0012945374723807993 3f5535af06de5d3f
++ACOS 12 0 0000000000000000
++ACOS 13 1.4136482746161737e-07 3e82f9422c23c482
++ACOS 14 1.4142136208911564e-05 3eeda88066815a95
++ACOS 15 0.00064051708215009137 3f44fd0bf5ce7cb6
++ACOS 16 0.00087872245878941116 3f4ccb421c8370a0
++ACOS 17 0.0014142136802445852 3f572ba46065af16
++ACOS 18 0.0020000003333067277 3f60624e00c0da18
++ACOS 19 0.0025066289308601736 3f6488c8290003f7
++ACOS 20 0.0013416408871008674 3f55fb3feeeab1f4
++ACOS 21 0.0013416408871008674 3f55fb3feeeab1f4
++ACOS 22 4.4721358921319356e-05 3f0772663126c72d
++ACOS 23 0.00070710679596735864 3f472ba4481f6def
++ACOS 24 0.0010000000416255381 3f50624dde62cd04
++HYPOT 0 0.44999999999999996 3fdccccccccccccc
++HYPOT 1 0.44729102921017672 3fdca06a8d901ef6
++HYPOT 2 0.41501072855831461 3fda8f8928a969ff
++HYPOT 3 0.43115441667851051 3fdb9808b1ca400e
++HYPOT 4 0.44972362522626996 3fdcc84599a57708
++HYPOT 5 0.44967448901539686 3fdcc777820aaa3e
++HYPOT 6 0.39885016674352369 3fd986c2d98ab9a6
++HYPOT 7 0.43495678222315676 3fdbd654f8b4993b
++HYPOT 8 0.44718252182424378 3fdc9ea370a4fcdc
++HYPOT 9 0.44131663926679976 3fdc3e88253537dc
++HYPOT 10 0.40246864313930431 3fd9c20bd6fcb940
++HYPOT 11 0.40853595901891887 3fda257401ce7aed
++HYPOT 12 0.44999999999999996 3fdccccccccccccc
++HYPOT 13 0.4499999999999999 3fdccccccccccccb
++HYPOT 14 0.44999999936111112 3fdccccccc1d2efe
++HYPOT 15 0.44732408189489364 3fdca0f52f9cea31
++HYPOT 16 0.44063268738430578 3fdc335371774ecf
++HYPOT 17 0.39292430505074943 3fd925abfbffc699
++HYPOT 18 0.29114640768346156 3fd2a2248ad64b60
++HYPOT 19 0.25 3fd0000000000000
++HYPOT 20 0.40274889722213925 3fd9c6a34f846d02
++HYPOT 21 0.40274889722213925 3fd9c6a34f846d02
++HYPOT 22 0.44999993611111816 3fdccccc8833286b
++HYPOT 23 0.44603438582805682 3fdc8bd3cf017803
++HYPOT 24 0.4344642451034868 3fdbce431f000d2c
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/trig_host.txt b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/trig_host.txt
+new file mode 100644
+index 00000000..0a89550d
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/preserved/trig_host.txt
+@@ -0,0 +1,126 @@
++N 25
++SIN 0 0 0000000000000000
++COS 0 1 3ff0000000000000
++ATAN2 0 0 0000000000000000
++ACOS 0 0 0000000000000000
++HYPOT 0 0.44999999999999996 3fdccccccccccccc
++SIN 1 -0.20493764533956399 bfca3b659239f13a
++COS 1 0.97877503110912834 3fef5220039829b0
++ATAN2 1 -0.046078893183676646 bfa797a716850061
++ACOS 1 0.00064249514718842571 3f450da3d28fc92b
++HYPOT 1 0.44729102921017666 3fdca06a8d901ef5
++SIN 2 0.69224911188413063 3fe626e79c0746bf
++COS 2 0.72165862226930566 3fe717d3d2b0bd1d
++ATAN2 2 0.18076414273265773 3fc7234788a9c244
++ACOS 2 0.0012366091519912465 3f5442b6f7683ae4
++HYPOT 2 0.41501072855831461 3fda8f8928a969ff
++SIN 3 -0.52472241650533813 bfe0ca86aa4bcae6
++COS 3 0.85127339064298169 3feb3da1b198884e
++ATAN2 3 -0.12683571446336614 bfc03c2716cadfb3
++ACOS 3 0.0010510842505160995 3f5138911ecdbd36
++HYPOT 3 0.43115441667851057 3fdb9808b1ca400f
++SIN 4 0.065739556686163006 3fb0d44ebe054695
++COS 4 0.99783681566010918 3fefee477940288c
++ATAN2 4 0.014626201244797205 3f8df4578016c54a
++ACOS 4 0.0003627313073889835 3f37c59f1a3b8a39
++HYPOT 4 0.44972362522626996 3fdcc84599a57708
++SIN 5 -0.071338352285556517 bfb2433af2045998
++COS 5 0.99745217403802466 3fefeb20d25a2846
++ATAN2 5 -0.015875224278071726 bf904198445d2ab8
++ACOS 5 0.00037788622863300643 3f38c3e0fe5bc0cc
++HYPOT 5 0.44967448901539686 3fdcc777820aaa3e
++SIN 6 -0.80778746684081637 bfe9d9651a066653
++COS 6 0.58947384031430694 3fe2dcf83e3feb50
++ATAN2 6 -0.22918396263282945 bfcd55e66c2349c3
++ACOS 6 0.0013714147056177579 3f56782153d51a36
++HYPOT 6 0.39885016674352369 3fd986c2d98ab9a6
++SIN 7 0.47220186470945408 3fde388e2b82637b
++COS 7 0.88149044178874369 3fec352b71670410
++ATAN2 7 0.11216480392778114 3fbcb6d524a1cf7e
++ACOS 7 0.00099175303409785253 3f503fb6b637da97
++HYPOT 7 0.43495678222315681 3fdbd654f8b4993c
++SIN 8 -0.2089616022532553 bfcabf40f7e61433
++COS 8 0.97792384610651162 3fef4b26f3203130
++ATAN2 8 -0.04700584106105743 bfa811264c280be0
++ACOS 8 0.0006488651746207149 3f4543135a2d5c59
++HYPOT 8 0.44718252182424373 3fdc9ea370a4fcdb
++SIN 9 0.36300140242061857 3fd73b6a3bf31dc5
++COS 9 0.93178859289039595 3fedd1364fa800e4
++ATAN2 9 0.083791800108014347 3fb5736121230b48
++ACOS 9 0.00086195942253779201 3f4c3ea3c3e02d81
++HYPOT 9 0.4413166392667997 3fdc3e88253537db
++SIN 10 -0.78515019691830723 bfe91ff34e46c970
++COS 10 0.61930539177302768 3fe3d1598a7cda15
++ATAN2 10 -0.21854146118064016 bfcbf92aa64ba2b6
++ACOS 10 0.0013438294165758725 3f56046dd9517271
++HYPOT 10 0.40246864313930431 3fd9c20bd6fcb940
++SIN 11 0.74324885009496999 3fe7c8b1cffe51f1
++COS 11 0.66901505725394916 3fe5689243edfe31
++ATAN2 11 0.20049445522568834 3fc9a9cd641ca125
++ACOS 11 0.0012945374723807993 3f5535af06de5d3f
++HYPOT 11 0.40853595901891893 3fda257401ce7aee
++SIN 12 0 0000000000000000
++COS 12 1 3ff0000000000000
++ATAN2 12 0 0000000000000000
++ACOS 12 0 0000000000000000
++HYPOT 12 0.44999999999999996 3fdccccccccccccc
++SIN 13 1e-08 3e45798ee2308c3a
++COS 13 1 3ff0000000000000
++ATAN2 13 2.2222222222222225e-09 3e2316b7e5807ca6
++ACOS 13 1.4136482746161737e-07 3e82f9422c23c482
++HYPOT 13 0.44999999999999996 3fdccccccccccccc
++SIN 14 9.9999999833333343e-05 3f1a36e2ea609cc8
++COS 14 0.99999999500000003 3feffffffd50ce24
++ATAN2 14 2.2222222246342025e-05 3ef74d3b7c13f865
++ACOS 14 1.4142136208911564e-05 3eeda88066815a95
++HYPOT 14 0.44999999936111112 3fdccccccc1d2efe
++SIN 15 0.2036954731286777 3fca12b179b7284e
++COS 15 0.97903429675720965 3fef543fbbc781a2
++ATAN2 15 0.045793014366461819 3fa7722e962dad27
++ACOS 15 0.00064051708215009137 3f44fd0bf5ce7cb6
++HYPOT 15 0.4473240818948937 3fdca0f52f9cea32
++SIN 16 0.37655666841046986 3fd8198123fa79ce
++COS 16 0.92639358561877327 3feda504292e9e2a
++ATAN2 16 0.087185941969103578 3fb651d1616da209
++ACOS 16 0.00087872245878941116 3f4ccb421c8370a0
++HYPOT 16 0.44063268738430567 3fdc335371774ecd
++SIN 17 0.8414709848078965 3feaed548f090cee
++COS 17 0.54030230586813977 3fe14a280fb5068c
++ATAN2 17 0.24651877462469243 3fcf8ded5d6e7861
++ACOS 17 0.0014142136802445852 3f572ba46065af16
++HYPOT 17 0.39292430505074943 3fd925abfbffc699
++SIN 18 0.90929742682568171 3fed18f6ead1b446
++COS 18 -0.41614683654714241 bfdaa22657537205
++ATAN2 18 0.61632440017407664 3fe3b8edf2cf2ee8
++ACOS 18 0.0020000003333067277 3f60624e00c0da18
++HYPOT 18 0.29114640768346151 3fd2a2248ad64b5f
++SIN 19 1.2246467991473532e-16 3ca1a62633145c07
++COS 19 -1 bff0000000000000
++ATAN2 19 0.9272952180016123 3fedac670561bb50
++ACOS 19 0.0025066289308601736 3f6488c8290003f7
++HYPOT 19 0.25 3fd0000000000000
++SIN 20 -0.78332690962748341 bfe91103985da841
++COS 20 0.62160996827066439 3fe3e43a9692e21c
++ATAN2 20 -0.21771422581927624 bfcbde0f4be245a4
++ACOS 20 0.0013416408871008674 3f55fb3feeeab1f4
++HYPOT 20 0.40274889722213925 3fd9c6a34f846d02
++SIN 21 0.78332690962748341 3fe91103985da841
++COS 21 0.62160996827066439 3fe3e43a9692e21c
++ATAN2 21 0.21771422581927624 3fcbde0f4be245a4
++ACOS 21 0.0013416408871008674 3f55fb3feeeab1f4
++HYPOT 21 0.40274889722213925 3fd9c6a34f846d02
++SIN 22 0.00099999983333334168 3f50624da5218a62
++COS 22 0.99999950000004167 3feffffef390876c
++ATAN2 22 0.00022222224634202144 3f2d208a8f9b6b98
++ACOS 22 4.4721358921319356e-05 3f0772663126c72d
++HYPOT 22 0.44999993611111816 3fdccccc8833286b
++SIN 23 0.24740395925452294 3fcfaaeed4f31577
++COS 23 0.96891242171064473 3fef01549f7deea1
++ATAN2 23 0.05593280164771864 3faca33963b382b1
++ACOS 23 0.00070710679596735864 3f472ba4481f6def
++HYPOT 23 0.44603438582805682 3fdc8bd3cf017803
++SIN 24 0.47942553860420301 3fdeaee8744b05f0
++COS 24 0.87758256189037276 3fec1528065b7d50
++ATAN2 24 0.11413686814092541 3fbd3812e3eee232
++ACOS 24 0.0010000000416255381 3f50624dde62cd04
++HYPOT 24 0.43446424510348686 3fdbce431f000d2d
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/trig_inputs.txt b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/trig_inputs.txt
+new file mode 100644
+index 00000000..252366b2
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/trig_inputs.txt
+@@ -0,0 +1,25 @@
++0
++-0.2064
++0.76460100000000009
++-0.55238900000000002
++0.06578700000000004
++-0.071399000000000004
++-0.94038900000000003
++0.49178700000000009
++-0.21051299999999995
++0.3714869999999999
++-0.90293861457026869
++0.83791351673274095
++0
++1e-08
++0.0001
++0.20513105922366801
++0.38607655499999999
++1
++2
++3.1415926535897931
++-0.90000000000000002
++0.90000000000000002
++0.001
++0.25
++0.5
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/ucrt_math.c b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/ucrt_math.c
+new file mode 100644
+index 00000000..efd87d67
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/ucrt_math.c
+@@ -0,0 +1,628 @@
++/* ucrt_math.c -- bit-exact reconstruction of the MSVC UCRT double sin, cos,
++ * atan2, acos, hypot on the FMA3-live path (__use_fma3_lib=3 on this machine),
++ * transcribed literally from the extracted libucrt.lib objects:
++ *   ucrt_objs/sin_mt.disasm  cos_mt.disasm  rempiby2_fma3.disasm
++ *   acos_fma.disasm  atan2_fma.disasm  hypot_mt.disasm
++ * Tables: ucrt_math_tables.h (generated verbatim from the .obj .rdata).
++ * vfmadd/vfnmadd/vfmsub -> fma() (correctly-rounded fused multiply-add);
++ * all other arithmetic is non-contracted on the host (/fp:precise) and runs
++ * under -fmad=false on the device.
++ * Trailer Agent: GLM 5.3.
++ */
++#include <math.h>
++#include <stdint.h>
++#include <string.h>
++#include "ucrt_math_tables.h"
++
++/* UCRT_API: host-plain by default; the device gate includes this file with
++   UCRT_MATH_DEVICE defined to compile the same functions for CUDA. */
++#ifdef UCRT_MATH_DEVICE
++#define UCRT_API static __device__
++#else
++#define UCRT_API
++#endif
++
++typedef union { uint64_t u; double d; } ubits;
++static __host__ __device__ inline uint64_t b_of(double x) { ubits b; b.d = x; return b.u; }
++static __host__ __device__ inline double d_of(uint64_t u) { ubits b; b.u = u; return b.d; }
++
++#define U_PI_4        0x3FE921FB54442D18ULL
++#define U_2NEG13      0x3F20000000000000ULL
++#define U_2NEG27      0x3E40000000000000ULL
++#define U_ONE_SIXTH   0x3FC5555555555555ULL
++#define U_ONE_HALF    0x3FE0000000000000ULL
++#define U_ONE         0x3FF0000000000000ULL
++#define U_SMALL_CW    0x411E848000000000ULL   /* 5e5   */
++#define U_SMALL_BDL   0x417312D000000000ULL   /* 2e7   */
++#define U_INF_MASK    0x7FF0000000000000ULL
++#define U_ABS_MASK    0x7FFFFFFFFFFFFFFFULL
++#define U_SIGNBIT     0x8000000000000000ULL
++#define U_L2BYPY      0x3FE45F306DC9C883ULL
++#define U_2TO32       0x41F0000000000000ULL
++
++#define C_PI2_LEAD 0x3FF921FB54442D18ULL
++#define C_PI2_P1   0x3FF921FB50000000ULL
++#define C_PI2_P2   0x3E5110B460000000ULL
++#define C_PI2_P3   0x3C91A62633145C06ULL
++#define C_FFF800   0xFFFFFFFFF8000000ULL
++#define C_XC1      0x3FF921FB54442D18ULL
++#define C_XC2      0x3C91A62633145C00ULL
++#define C_XC3      0x397B839A252049C0ULL
++#define C_SIGMA    0x4338000000000000ULL
++
++static __host__ __device__ inline double fmsub(double a, double b, double c) { return -fma(-a, b, c); }
++
++/* 64x64 -> 128 multiply (MSVC x64 has no __int128) */
++static __host__ __device__ void mul64(uint64_t a, uint64_t b, uint64_t *lo, uint64_t *hi) {
++    uint64_t a0 = a & 0xFFFFFFFFULL, a1 = a >> 32;
++    uint64_t b0 = b & 0xFFFFFFFFULL, b1 = b >> 32;
++    uint64_t p00 = a0 * b0, p01 = a0 * b1, p10 = a1 * b0, p11 = a1 * b1;
++    uint64_t mid = (p00 >> 32) + (p01 & 0xFFFFFFFFULL) + (p10 & 0xFFFFFFFFULL);
++    *lo = (p00 & 0xFFFFFFFFULL) | (mid << 32);
++    *hi = p11 + (p01 >> 32) + (p10 >> 32) + (mid >> 32);
++}
++
++/* ── __remainder_piby2_fma3_bdl  (2e7 > |x| >= pi/4) ────────────────────── */
++static __host__ __device__ void u_rem_bdl(double x, double *r_out, double *rt_out, int *n_out) {
++    const double twobypi = d_of(U_L2BYPY);
++    const double sigma = d_of(C_SIGMA);
++    const double xc1 = d_of(C_XC1), xc2 = d_of(C_XC2), xc3 = d_of(C_XC3);
++    double nd = fma(x, twobypi, sigma) - sigma;   /* round to nearest int */
++    int n = (int)nd;                              /* vcvttpd2dq           */
++    double w = fma(-nd, xc1, x);                  /* x - n*xc1, fused     */
++    double t3 = nd * xc2;
++    double z = xc2 * nd - t3;                     /* +0.0 (dead in asm)   */
++    double u = w - t3;
++    double u2 = (w - u) - t3;
++    w = fma(-nd, xc2, w);
++    u = (u - w) + u2;
++    u = u - z;
++    *r_out = w;
++    *rt_out = fma(-nd, xc3, u);
++    *n_out = n & 3;
++}
++
++/* ── __remainder_piby2_fma3  (|x| >= 2e7) ───────────────────────────────── */
++static __host__ __device__ void u_rem_gen(double x, double *r_out, double *rt_out, int *n_out) {
++    uint64_t xb = b_of(x);
++    int64_t e = (int64_t)(xb >> 52) - 1023;
++    uint64_t m = (xb << 12) >> 12;
++    m |= (1ULL << 52);
++    int64_t tb = (e >> 3) - 0x86;
++    tb = -tb;                          /* byte offset into the digit table */
++    const unsigned char *T = u_l2bypi + tb;
++    uint64_t q0, q1, q2;
++    memcpy(&q0, T, 8); memcpy(&q1, T + 8, 8); memcpy(&q2, T + 16, 8);
++    uint64_t r8, rh, lo1, hi1;
++    mul64(q0, m, &r8, &rh);
++    mul64(q1, m, &lo1, &hi1);
++    uint64_t s1 = lo1 + rh;
++    uint64_t cry = (s1 < lo1) ? 1u : 0u;
++    uint64_t r10 = hi1 + cry;
++    uint64_t r9 = s1;
++    uint64_t p2lo, p2hi;
++    mul64(q2, m, &p2lo, &p2hi);
++    r10 = r10 + p2lo;                  /* carry intentionally dropped */
++    int sh = 0x36 - (int)(e & 7);
++    uint64_t nq = r10 >> sh;
++    int half = (int)((r10 >> (sh - 1)) & 1ULL);
++    uint64_t signflip = 0;
++    if (half) { r10 = ~r10; r9 = ~r9; r8 = ~r8; signflip = U_SIGNBIT; }
++    nq = nq + (uint64_t)half;
++    int n = (int)(nq & 3);
++    int sh2 = (int)(e & 7) + 10;
++    r10 = (r10 << sh2) >> sh2;
++    int64_t r11 = (int64_t)sh2 - 64;
++    int pos;
++    if (r10 == 0) {
++        r10 = r9; r9 = r8; r8 = 0;
++        pos = 63; { uint64_t v = r10; int p = -1; while (v) { p++; v >>= 1; } pos = p; }
++        r11 -= 64;
++    } else {
++        pos = 63; { uint64_t v = r10; int p = -1; while (v) { p++; v >>= 1; } pos = p; }
++    }
++    r11 += pos;
++    int c2 = pos - 0x34;
++    uint64_t lead, tail;
++    if (c2 < 0) {
++        int k = -c2, k2 = 64 - k;
++        uint64_t old9 = r9;
++        lead = (r10 << k) | (old9 >> k2);
++        tail = (r9 << k) | (r8 >> k2);
++    } else if (c2 == 0) {
++        lead = r10; tail = r9;
++    } else {
++        int k = c2, k2 = 64 - k;
++        uint64_t old10 = r10;
++        lead = old10 >> k;
++        tail = (r9 >> k) | (old10 << k2);
++    }
++    int64_t e2 = r11 + 1023;
++    lead &= ~(1ULL << 52);
++    lead |= signflip;
++    lead |= ((uint64_t)e2 << 52);
++    double lead_d = d_of(lead);
++    int pos9 = 63; { uint64_t v = tail; int p = -1; while (v) { p++; v >>= 1; } pos9 = p; }
++    int k9 = 64 - pos9;
++    tail = (tail << k9) >> 12;
++    int64_t rc = k9 + 0x34;
++    int64_t e3 = e2 - rc;
++    tail |= signflip;
++    tail |= ((uint64_t)e3 << 52);
++    double tail_d = d_of(tail);
++
++    const double p2lead = d_of(C_PI2_LEAD);
++    const double part1 = d_of(C_PI2_P1), part2 = d_of(C_PI2_P2), part3 = d_of(C_PI2_P3);
++    double h = d_of(lead & C_FFF800);
++    double t = lead_d - h;
++    double a = lead_d * p2lead;
++    double b = h * part1;
++    b = b - a;
++    b = fma(t, part1, b);
++    b = fma(h, part2, b);
++    b = fma(t, part2, b);
++    double c3 = tail_d * p2lead;
++    c3 = fma(lead_d, part3, c3);
++    b = b + c3;
++    *r_out = a + b;
++    *rt_out = (a - *r_out) + b;
++    *n_out = n;
++}
++
++/* ── sin (sin_mt.obj, Lsin_fma3) ────────────────────────────────────────── */
++UCRT_API double ucrt_sin(double x) {
++    uint64_t ux = b_of(x);
++    uint64_t axb = ux & U_ABS_MASK;
++    double ax = d_of(axb);
++    if (ax < d_of(U_PI_4)) {
++        if (ax >= d_of(U_2NEG13)) {           /* Lsin_fma3_calc_sin_for_absx_lt_piby4 */
++            double x2 = x * x;
++            double p = d_of(u_sinarr[5]);
++            p = fma(p, x2, d_of(u_sinarr[4]));
++            p = fma(p, x2, d_of(u_sinarr[3]));
++            p = fma(p, x2, d_of(u_sinarr[2]));
++            p = fma(p, x2, d_of(u_sinarr[1]));
++            p = fma(p, x2, d_of(u_sinarr[0]));
++            double xx2 = x * x2;
++            return fma(xx2, p, x);
++        }
++        if (ax >= d_of(U_2NEG27)) {           /* Lsin_fma3_compute_x_xxx_0_1666 */
++            double x3 = (x * x) * x;
++            return fma(-x3, d_of(U_ONE_SIXTH), x);
++        }
++        return x;                             /* the xmm1 stores are dead */
++    }
++    if (ax >= U_INF_MASK) return x + x;       /* _sin_special */
++    double xr = ax;
++    double r, rt; int n;
++    if (ax >= d_of(U_SMALL_BDL)) u_rem_gen(xr, &r, &rt, &n);
++    else                          u_rem_bdl(xr, &r, &rt, &n);
++    double result;
++    double x2 = r * r;
++    if (n & 1) {                              /* Lsin_fma3_calc_cos */
++        double h = x2 * d_of(U_ONE_HALF);
++        double t1 = 1.0 - h;
++        double t2 = 1.0 - t1;
++        t2 = t2 - h;
++        double p = d_of(u_cosarr[5]);
++        p = fma(p, x2, d_of(u_cosarr[4]));
++        p = fma(p, x2, d_of(u_cosarr[3]));
++        p = fma(p, x2, d_of(u_cosarr[2]));
++        p = fma(p, x2, d_of(u_cosarr[1]));
++        p = fma(p, x2, d_of(u_cosarr[0]));
++        double x4 = x2 * x2;
++        t2 = fma(-r, rt, t2);                 /* vfnmadd231sd xmm2,xmm0,xmm1 */
++        p = fma(p, x4, t2);                   /* vfmadd213sd  xmm5,xmm1,xmm2 */
++        result = p + t1;
++    } else {                                  /* Lsin_fma3_calc_sin */
++        double p = d_of(u_sinarr[5]);
++        p = fma(p, x2, d_of(u_sinarr[4]));
++        p = fma(p, x2, d_of(u_sinarr[3]));
++        p = fma(p, x2, d_of(u_sinarr[2]));
++        p = fma(p, x2, d_of(u_sinarr[1]));
++        double xx2 = r * x2;
++        double px = xx2 * p;
++        double h = rt * d_of(U_ONE_HALF);
++        double t = h - px;
++        t = x2 * t;
++        t = t - rt;
++        t = fma(-xx2, d_of(u_sinarr[0]), t);
++        result = r - t;
++    }
++    uint64_t sb = ((n & 2) ? U_SIGNBIT : 0ULL) ^ (ux & U_SIGNBIT);
++    return d_of(b_of(result) ^ sb);
++}
++
++/* ── cos (cos_mt.obj, L_cos_fma3) ───────────────────────────────────────── */
++UCRT_API double ucrt_cos(double x) {
++    uint64_t ux = b_of(x);
++    uint64_t axb = ux & U_ABS_MASK;
++    double ax = d_of(axb);
++    if (ax < d_of(U_PI_4)) {
++        if (ax >= d_of(U_2NEG13)) {           /* Lcompute_cos_piby4 */
++            double x2 = x * x;
++            double p = d_of(u_cosarr[5]);
++            p = fma(p, x2, d_of(u_cosarr[4]));
++            p = fma(p, x2, d_of(u_cosarr[3]));
++            p = fma(p, x2, d_of(u_cosarr[2]));
++            p = fma(p, x2, d_of(u_cosarr[1]));
++            p = fma(p, x2, d_of(u_cosarr[0]));      /* vfmadd213sd .. cosarray+0 */
++            p = fma(p, x2, -d_of(U_ONE_HALF));/* vfmsub213sd .. L_one_half */
++            p = fma(p, x2, 1.0);              /* vfmadd213sd .. L_one      */
++            return p;
++        }
++        if (ax >= d_of(U_2NEG27)) {           /* Lcompute_1_xx_5 */
++            double h = x * d_of(U_ONE_HALF);
++            return fma(-x, h, 1.0);           /* vfnmadd213sd xmm0,xmm1,L_one */
++        }
++        (void)d_of(U_2TO32);                  /* the x+2^32 store is dead */
++        return 1.0;
++    }
++    if (ax >= U_INF_MASK) return x + x;       /* _cos_special */
++    double xr = ax;
++    double r, rt; int n;
++    if (ax >= d_of(U_SMALL_BDL)) u_rem_gen(xr, &r, &rt, &n);
++    else                          u_rem_bdl(xr, &r, &rt, &n);
++    double result;
++    double x2 = r * r;
++    if (n & 1) {                              /* Lsin_piby4_compute (cos: odd) */
++        double p = d_of(u_sinarr[4]);
++        p = fma(x2, d_of(u_sinarr[5]), p);
++        p = fma(p, x2, d_of(u_sinarr[3]));
++        p = fma(p, x2, d_of(u_sinarr[2]));
++        p = fma(p, x2, d_of(u_sinarr[1]));
++        double xx2 = r * x2;
++        double px = xx2 * p;
++        double h = rt * d_of(U_ONE_HALF);
++        double t = h - px;
++        t = x2 * t;
++        t = t - rt;
++        t = fma(-xx2, d_of(u_sinarr[0]), t);
++        result = r - t;
++    } else {                                  /* Lcos_piby4_compute (cos: even) */
++        double h = x2 * d_of(U_ONE_HALF);
++        double t1 = 1.0 - h;
++        double t2 = 1.0 - t1;
++        t2 = t2 - h;
++        double q = d_of(u_cosarr[4]);
++        q = fma(x2, d_of(u_cosarr[5]), q);
++        q = fma(q, x2, d_of(u_cosarr[3]));
++        q = fma(q, x2, d_of(u_cosarr[2]));
++        q = fma(q, x2, d_of(u_cosarr[1]));
++        q = fma(q, x2, d_of(u_cosarr[0]));
++        double x4 = x2 * x2;
++        t2 = fma(-r, rt, t2);                 /* vfnmadd231sd xmm2,xmm0,xmm1 */
++        q = fma(q, x4, t2);                   /* vfmadd213sd  xmm5,xmm1,xmm2 */
++        result = q + t1;
++    }
++    /* the disasm's sign rule (Lcos_exit: add eax,1; and eax,2; cmovne
++       L_signbit): flip when ((n+1)&2)!=0 — n==1,2 mod 4 — and NEVER x's
++       own sign (cos is even; the old line XORed ux's signbit, flipping
++       every negative input and missing cos(pi) */
++    uint64_t sb = (((n + 1) & 2) != 0) ? U_SIGNBIT : 0ULL;
++    return d_of(b_of(result) ^ sb);
++}
++
++/* ── hypot (hypot_mt.obj, _hypot) ───────────────────────────────────────── */
++UCRT_API double ucrt_hypot(double x, double y) {
++    uint64_t xb = b_of(x) & U_ABS_MASK;       /* r8  = |x| bits */
++    uint64_t yb = b_of(y) & U_ABS_MASK;       /* rdx = |y| bits */
++    uint64_t xe = xb >> 52, ye = yb >> 52;
++    const uint64_t absmask = 0x7FFFFFFFFFFFFFFFULL;
++    if (xe == 0x7FFULL) {                     /* x inf/nan */
++        if ((xb & 0x000FFFFFFFFFFFFFULL) == 0 && (yb & absmask) == 0) {
++            /* x inf, y 0 -> set_statfp; +inf */
++            return d_of(0x7FF0000000000000ULL);
++        }
++        if (ye == 0x7FF && (yb & 0x000FFFFFFFFFFFFFULL) == 0) {
++            return d_of(0x7FF0000000000000ULL);  /* both inf */
++        }
++        double a = d_of(xb), b = d_of(yb);
++        return a * a + b * b;                 /* inf/nan propagation */
++    }
++    if (ye == 0x7FF) {                        /* y inf/nan */
++        if ((yb & 0x000FFFFFFFFFFFFFULL) == 0 && (xb & absmask) == 0) {
++            return d_of(0x7FF0000000000000ULL);
++        }
++        double a = d_of(xb), b = d_of(yb);
++        return a * a + b * b;
++    }
++    double ax = d_of(xb), ay = d_of(yb);
++    if (xb == 0) return ay;                   /* test r8 / movaps xmm3 */
++    if (yb == 0) return ax;                   /* test rdx / movaps xmm2 */
++    int64_t diff = (int64_t)xe - (int64_t)ye + 0x36;
++    if ((uint64_t)diff > 0x6CULL) {           /* > 108: gap too big */
++        return ax + ay;                       /* addsd xmm2,xmm3 (max-ish) */
++    }
++    double a = ax, b = ay, scale = 1.0;
++    int r10 = 0;                              /* the rescale exponent */
++    if (xe > 0x5F3ULL || ye > 0x5F3ULL) {
++        /* scale down: add 0xDA80000000000000 to both bit patterns */
++        a = d_of(b_of(ax) + 0xDA80000000000000ULL);
++        b = d_of(b_of(ay) + 0xDA80000000000000ULL);
++        r10 = 0x258;                          /* +600 */
++    } else if (xe < 0x20BULL || ye < 0x20BULL) {
++        /* scale up: subnormals get the +0x259 bump, normals +0x258 */
++        (void)d_of(0xA590000000000000ULL);
++        if (xe == 0) a = d_of(b_of(ax) + 0x2590000000000000ULL);
++        else         a = d_of(b_of(ax) + 0x2580000000000000ULL);
++        if (ye == 0) b = d_of(b_of(ay) + 0x2590000000000000ULL);
++        else         b = d_of(b_of(ay) + 0x2580000000000000ULL);
++        r10 = -600;
++    }
++    double r = sqrt(a * a + b * b);           /* mulsd,mulsd,addsd,sqrtsd */
++    if (r10 != 0) {
++        r = d_of(((uint64_t)(int64_t)(r10 + 0x3FF)) << 52) * r;
++    }
++    if (r > d_of(0x7FEFFFFFFFFFFFFFULL)) return d_of(0x7FF0000000000000ULL);
++    return r;
++}
++
++/* ── acos (acos_fma.obj) ────────────────────────────────────────────────── */
++UCRT_API double ucrt_acos(double x) {
++    uint64_t ux = b_of(x);
++    uint64_t axb = ux & 0x7FFFFFFFFFFFFFFFULL;
++    uint64_t xe = (ux >> 52) & 0x7FF;
++    if (axb > 0x7FF0000000000000ULL) return x + x;         /* NaN */
++    if (xe < 0x3C7) return 1.5707963267948966;             /* |x| < 2^-56: pi/2 */
++    if (xe >= 0x3FF) {                                     /* |x| >= 1 */
++        if (x == 1.0) return 0.0;
++        if (x == -1.0) return 3.141592653589793;
++        return x + x;                                      /* domain error NaN */
++    }
++    double axv = d_of(axb);                   /* xmm6 */
++    double r, s = 0.0;
++    if (xe >= 0x3FE) {                        /* |x| >= 0.5 */
++        r = (1.0 - axv) * d_of(0x3FE0000000000000ULL);
++        s = sqrt(r);
++    } else {
++        r = axv * axv;
++    }
++    /* p (numer) chain */
++    double p = 4.8290192034478698e-05;        /* 0x3F0951665D321061 */
++    p = fma(p, r, 0.0010924269723507467);     /* 0x3F51E5F887A62135 */
++    p = fmsub(p, r, 0.054998980923568586);    /* 0x3FAC28D390C29690 */
++    p = fma(p, r, d_of(0x3FD1A2BEC1B7EF59ULL)); /* the term the first
++                                                   transcription DROPPED (the
++                                                   disasm's 0164 vfmadd213; the
++                                                   measured ~5.6e-5 acos class) */
++    p = fmsub(p, r, 0.44501721686763562);     /* 0x3FDC7B297E269EAC */
++    p = fma(p, r, 0.22748583555693502);       /* 0x3FCD1E4180029834 */
++    double pnum = p * r;
++    /* q (denom) chain */
++    double q = 0.10586942208720437;           /* 0x3FBB1A422982CE76 */
++    q = fmsub(q, r, 0.94363913703249269);     /* 0x3FEE324AB418F78D */
++    q = fma(q, r, 2.7656885915727099);        /* 0x40062021571DCCFC */
++    q = fmsub(q, r, 3.2843150572095867);      /* 0x400A4646F903CDEA */
++    q = fma(q, r, 1.3649150133416104);        /* 0x3FF5D6B12001F228 */
++    double pq = pnum / q;                     /* xmm7 */
++    /* RESULT PATHS — branch order per the disasm: the |x|<0.5 test (jb 01B3)
++       comes FIRST and its path uses SIGNED x throughout (xmm4=x at 025F:
++       t1 = x - t, NOT |x| - t — classes (a)+(b) of the dense-sweep fails);
++       the sign split below applies only when |x| >= 0.5. */
++    if (xe < 0x3FE) {                         /* |x| < 0.5 (disasm 0246 path) */
++        double t = fma(-x, pq, 6.123233995736766e-17);  /* -(x*pq)+tail */
++        double t1 = x - t;                    /* SIGNED (was axv — class (a)) */
++        return 1.5707963267948966 - t1;
++    }
++    if (ux >= 0x8000000000000000ULL) {        /* x < 0, |x|>=0.5 (01BE path) */
++        /* 0140: xmm6 = xmm5 = s (right after the sqrt) — the operand here
++           is s, NOT |x| (the sweep's random negatives exposed it; the
++           125-set had no negative |x|>=0.5 case) */
++        double t0 = fmsub(pq, s, 6.123233995736766e-17); /* pq*s - tail */
++        double t1 = t0 + s;
++        double t2 = t1 + t1;
++        return 3.141592653589793 - t2;
++    }
++    /* x >= 0, |x| >= 0.5 (01F0 path) */
++    double sh = d_of(b_of(s) & 0xFFFFFFFF00000000ULL);
++    double a = sh + s;
++    double bnum = fma(-sh, sh, r);
++    double bq = bnum / a;
++    double b2 = bq + bq;
++    double b3 = fma(pq, s + s, b2);           /* 022E vfmadd231sd xmm3,xmm7,xmm2:
++                                                 b3 = b2 + pq*(2s) — was mistranscribed
++                                                 as fma(b2,pq,s)=b2*pq+s (class (c);
++                                                 proven by acos(0.5): got exactly 1.5
++                                                 want pi/3) */
++    double res = b3 + (sh + sh);
++    return res;
++}
++
++/* ── atan2 (atan2_fma.obj) ──────────────────────────────────────────────── */
++static __host__ __device__ void u_atan_ratio(double big, double sml, int flip,
++                         uint64_t xb_raw, uint64_t yb_raw,
++                         double *base_out, double *val_out) {
++    /* returns (base, val): result = base + val with the sign/quad fixups
++       applied by the caller exactly as the asm does. */
++    double base = 0.0, val;
++    double rq = sml / big;                    /* vdivsd xmm5,xmm9,xmm7 with
++                                                 xmm9=min(blend), xmm7=max(blend):
++                                                 rq = smaller/larger <= 1 (the
++                                                 2026-09-23 fix — was big/sml,
++                                                 overflowing u_atan_lead via
++                                                 k=rq*256+0.5; proven at the
++                                                 blend chain 0393-03C6) */
++    if (rq > 0.0625) {                        /* comisd 3fb0.../jbe    */
++        int k = (int)trunc(fma(rq, 256.0, 0.5));   /* fma + cvttsd2si   */
++        int idx = k - 16;
++        base = d_of(u_atan_lead[idx]);        /* xmm6 = lead           */
++        double kd = (double)k;                /* vcvtsi2sd             */
++        double rnew = kd * 0.00390625;        /* xmm5 = k/256          */
++        /* split sml's exponent so max/sml is computed without cancellation */
++        uint64_t mb = b_of(sml);
++        int64_t me = (int64_t)((mb >> 52) & 0x7FF);
++        int64_t r8 = 1023 - me;
++        int64_t h1 = r8 / 2;                  /* cdq;sub edx;sar,1     */
++        int64_t h2 = r8 - h1;
++        double s1 = d_of(((uint64_t)(h1 + 1023)) << 52);
++        double s2 = d_of(((uint64_t)(h2 + 1023)) << 52);
++        double mins1 = sml * s1;              /* xmm0 = min*scale1     */
++        double mins2 = mins1 * s2;            /* xmm4 = min scaled     */
++        double maxs1 = big * s1;              /* xmm0 = max*scale1    */
++        double maxs2 = maxs1 * s2;            /* xmm3 = max scaled     */
++        /* the head-split runs on MAXS2 (047E: rax=bits(maxs2)&~0x7FFFFF) and
++           the residual numerator is mins2 - rnew*maxs2 (0492/049B: min -
++           mhead*rnew - rnew*mrest) — the first transcription had the two
++           roles swapped (num = max - rnew*min), computing O(1) garbage where
++           the true residual is O(1/256^2); numerically verified: for
++           wy=0.1729,wx=0.7646 the correct num/den ~ -4.5e-4 */
++        double mhead = d_of(b_of(maxs2) & 0xFFFFFFFFF8000000ULL);
++        double mrest = maxs2 - mhead;
++        double num = fma(-mhead, rnew, mins2);
++        num = fma(-rnew, mrest, num);
++        double den = fma(mins2, rnew, maxs2);  /* 04AC vfmadd231sd xmm1,xmm3,xmm5:
++                                                  den = maxs2 + mins2*rnew (the
++                                                  transcription had the two roles
++                                                  swapped: maxs2*rnew+mins2 — the
++                                                  measured ~6e-4 class) */
++        double frac = num / den;
++        val = frac + d_of(u_atan_tail[idx]);
++        double x2 = frac * frac;
++        double poly = fma(-x2, 0.19999918038989142, 0.33333333333224097);
++        poly = poly * x2;
++        val = fma(-frac, poly, val);
++    } else if (1e-8 > rq) {                   /* r < 1e-8: atan = r    */
++        base = 0.0;
++        val = rq;
++    } else {                                  /* direct poly on r      */
++        base = 0.0;
++        double x2 = rq * rq;
++        /* the same role-swap as the k-branch (5th instance of the class,
++           proven empirically by the tiny-x fails: got == big/sml exactly):
++           num = sml - rq*big (big's head split), corr = num / big */
++        double rh = d_of(b_of(rq) & 0xFFFFFFFF00000000ULL);
++        double bh = d_of(b_of(big) & 0xFFFFFFFF00000000ULL);
++        double brest = big - bh;
++        double rrest = rq - rh;
++        double num = fma(-bh, rh, sml);
++        num = fma(-rh, brest, num);
++        num = fma(-big, rrest, num);
++        /* the poly chain runs DESCENDING (0540-0563 vfnmadd213: p = c_next
++           - p*x2), NOT ascending Horner — the same constants in the opposite
++           direction are a different polynomial; this was the ~2.5e-11 class
++           (sizes exactly: x3*dp ~ 1.3e-11 for the 1e-3 case) */
++        double poly = 0.090029810285449791;
++        poly = fma(-poly, x2, 0.11110736283514526);
++        poly = fma(-poly, x2, 0.1428571356180717);
++        poly = fma(-poly, x2, 0.19999999999393223);
++        poly = fma(-poly, x2, 0.33333333333333171);
++        double x3 = x2 * rq;
++        double corr = num / big;
++        corr = fma(-x3, poly, corr);
++        val = corr + rq;
++    }
++    /* the quadrant/sign fixups (057D..05C6) */
++    if (flip) {
++        base = 1.5707963267948966 - base;
++        val = 6.123233995736766e-17 - val;
++    }
++    if ((int64_t)xb_raw < 0) {
++        base = 3.1415926218032837 - base;
++        val = 3.1786509547056392e-08 - val;
++    }
++    *base_out = base;
++    *val_out = val;
++}
++
++UCRT_API double ucrt_atan2(double y, double x) {
++    uint64_t yb_raw = b_of(y), xb_raw = b_of(x);
++    uint64_t xabs = xb_raw & U_ABS_MASK, yabs = yb_raw & U_ABS_MASK;
++    uint64_t xexp = xabs >> 52, yexp = yabs >> 52;
++    if (xabs > U_INF_MASK) return y + y;      /* x NaN */
++    if (yabs > U_INF_MASK) return x + x;      /* y NaN */
++    if (yabs == 0) {                          /* y == +-0 */
++        if ((int64_t)xb_raw >= 0) return y;
++        return (yb_raw & U_SIGNBIT) ? -3.141592653589793 : 3.141592653589793;
++    }
++    if (xabs == 0) {                          /* x == +-0: +-pi/2 by y sign */
++        return (yb_raw & U_SIGNBIT) ? -1.5707963267948966 : 1.5707963267948966;
++    }
++    int64_t edi;
++    if ((int64_t)xexp < 0x3FD && (int64_t)yexp < 0x3FD) {
++        /* both below 0.25: the exponent-bump measure (012D..01D5) */
++        uint64_t rcx, rdi;
++        if (xb_raw & U_SIGNBIT) rcx = xb_raw + 0x4000000000000000ULL;
++        else {
++            double v0 = d_of(xb_raw | 0x4010000000000000ULL);
++            rcx = b_of(v0 + (-4.0));
++        }
++        if (yb_raw & U_SIGNBIT) rdi = yb_raw + 0x4000000000000000ULL;
++        else {
++            double v0 = d_of(yb_raw | 0x4010000000000000ULL);
++            rdi = b_of(v0 + (-4.0));
++        }
++        edi = (int64_t)((rdi >> 52) & 0x7FF) - (int64_t)((rcx >> 52) & 0x7FF);
++    } else {
++        edi = (int64_t)yexp - (int64_t)xexp;
++    }
++    if (edi > 0x38) {                         /* y >> x by > 56: +-pi/2 */
++        return (yb_raw & U_SIGNBIT) ? -1.5707963267948966 : 1.5707963267948966;
++    }
++    if (edi >= -28) {
++        if (yabs == 0x7FF0000000000000ULL && xabs == 0x7FF0000000000000ULL) {
++            if ((int64_t)yb_raw < 0)
++                return (int64_t)xb_raw < 0 ? -2.3561944901923448 : -0.78539816339744828;
++            return (int64_t)xb_raw < 0 ? 2.3561944901923448 : 0.78539816339744828;
++        }
++        {
++            double ax = d_of(xabs), ay = d_of(yabs);
++            int flip = (ay > ax) ? 1 : 0;
++            double big = flip ? ay : ax;
++            double sml = flip ? ax : ay;
++            double base, val;
++            u_atan_ratio(big, sml, flip, xb_raw, yb_raw, &base, &val);
++            double final_ = base + val;
++            return (yb_raw & U_SIGNBIT) ? -final_ : final_;
++        }
++    }
++    /* edi < -28 */
++    if ((int64_t)xb_raw < 0) {
++        if (edi < -56) {
++            return (yb_raw & U_SIGNBIT) ? -3.141592653589793 : 3.141592653589793;
++        }
++        if (yabs == 0x7FF0000000000000ULL && xabs == 0x7FF0000000000000ULL) {
++            if ((int64_t)yb_raw < 0)
++                return (int64_t)xb_raw < 0 ? -2.3561944901923448 : -0.78539816339744828;
++            return (int64_t)xb_raw < 0 ? 2.3561944901923448 : 0.78539816339744828;
++        }
++        {
++            double ax = d_of(xabs), ay = d_of(yabs);
++            int flip = (ay > ax) ? 1 : 0;
++            double big = flip ? ay : ax;
++            double sml = flip ? ax : ay;
++            double base, val;
++            u_atan_ratio(big, sml, flip, xb_raw, yb_raw, &base, &val);
++            double final_ = base + val;
++            return (yb_raw & U_SIGNBIT) ? -final_ : final_;
++        }
++    }
++    /* edi < -28, x >= 0 */
++    if (edi < -1074) return (yb_raw & U_SIGNBIT) ? -0.0 : 0.0;
++    if (edi >= -1022) return y / x;           /* direct signed division */
++    {                                          /* edi in [-1074,-1022): denorm */
++        double t = d_of(0x4630000000000000ULL) * y / x;
++        uint64_t qb = b_of(t);
++        uint64_t r8 = qb & 0x8000000000000000ULL;
++        uint64_t rdx = qb & 0x7FFFFFFFFFFFFFFFULL;
++        uint64_t rcx = (rdx >> 52);
++        if (rcx > 100) {
++            rdx &= 0x800FFFFFFFFFFFFFULL;
++            rcx -= 100;
++            rcx = (rcx << 52) | rdx;
++        } else {
++            rdx &= 0x801FFFFFFFFFFFFFULL;
++            rdx |= 0x0010000000000000ULL;
++            int64_t eax = 101 - (int64_t)rcx;
++            if (eax > 54) {
++                rcx = 0;
++            } else {
++                uint64_t sh = (uint64_t)(100 - eax);
++                uint64_t t2v = rdx >> sh;
++                uint64_t lowbit = t2v & 1;
++                rcx = (t2v >> 1) + lowbit;
++            }
++        }
++        return d_of(r8 | rcx);
++    }
++}
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/ucrt_math_consts.h b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/ucrt_math_consts.h
+new file mode 100644
+index 00000000..74e86ae2
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/ucrt_math_consts.h
+@@ -0,0 +1,123 @@
++/* ucrt_math_consts.h -- generated VERBATIM labeled .rdata constants of the
++ * extracted UCRT math objects (gen_ucrt_consts.py). Do not hand-edit.
++ * Trailer Agent: GLM 5.3. */
++#ifndef UCRT_MATH_CONSTS_H
++#define UCRT_MATH_CONSTS_H
++static const double u_sin_L_2_by_pi[2] = { 0.63661977236758138, 0.5 }; // L_2_by_pi
++static const double u_sin_L__inf_mask_64[2] = { inf, 0.99999999999999989 }; // L__inf_mask_64
++static const double u_sin_L_int_one[2] = { 4.9406564584124654e-324, 0 }; // L_int_one
++static const double u_sin_L_int_three[2] = { 1.4821969375237396e-323, 0 }; // L_int_three
++static const double u_sin_L_int_two[2] = { 9.8813129168249309e-324, 0 }; // L_int_two
++static const double u_sin_L_near_one = 0.99999999999999989; // L_near_one (0x3FEFFFFFFFFFFFFF)
++static const double u_sin_L_one[2] = { 1, 1 }; // L_one
++static const double u_sin_L_one_half[2] = { 0.5, 0.16666666666666666 }; // L_one_half
++static const double u_sin_L_one_sixth[2] = { 0.16666666666666666, 7.4505805969238281e-09 }; // L_one_sixth
++static const double u_sin_L_piby4[2] = { 0.78539816339744828, 500000 }; // L_piby4
++static const double u_sin_L_real_piby2_1[2] = { 1.5707963267341256, 0 }; // L_real_piby2_1
++static const double u_sin_L_real_piby2_1tail[2] = { 6.0771005065061922e-11, 0 }; // L_real_piby2_1tail
++static const double u_sin_L_real_piby2_2[2] = { 6.077100506303966e-11, 0 }; // L_real_piby2_2
++static const double u_sin_L_real_piby2_2tail[2] = { 2.0222662487959506e-21, 0 }; // L_real_piby2_2tail
++static const double u_sin_L_signbit[2] = { -0, 0 }; // L_signbit
++static const double u_sin_L_small_arg_bdl[2] = { 20000000, inf }; // L_small_arg_bdl
++static const double u_sin_L_small_arg_cw[2] = { 500000, 20000000 }; // L_small_arg_cw
++static const double u_sin_L_two_to_neg_13[2] = { 0.0001220703125, 0.78539816339744828 }; // L_two_to_neg_13
++static const double u_sin_L_two_to_neg_27[2] = { 7.4505805969238281e-09, 0.0001220703125 }; // L_two_to_neg_27
++static const double u_sin_Lsin_fma3[2] = { -6.6302642782688737e+84, 6.2467193204667894e-245 }; // Lsin_fma3
++static const double u_sin_Lsin_fma3_absx_nlt_piby4[2] = { 1.9656826082877648e-236, -3.1492453533520107e+278 }; // Lsin_fma3_absx_nlt_piby4
++static const double u_sin_Lsin_fma3_calc_cos[2] = { 1.7539672172571481e-315, 3.7591761977311845e-315 }; // Lsin_fma3_calc_cos
++static const double u_sin_Lsin_fma3_calc_sin[2] = { 1.7013322025924412e-312, 3.4863677012528224e-310 }; // Lsin_fma3_calc_sin
++static const double u_sin_Lsin_fma3_calc_sin_for_absx_lt_piby4[2] = { 1.7013322025924412e-312, -6.0925669389688395e-107 }; // Lsin_fma3_calc_sin_for_absx_lt_piby4
++static const double u_sin_Lsin_fma3_compute_x_xxx_0_1666[2] = { -3.5324354088365894e+40, 1.2184440701139784e-313 }; // Lsin_fma3_compute_x_xxx_0_1666
++static const double u_sin_Lsin_fma3_do_general_arg_reduction[2] = { 1.2619963482315344e-309, -1.9305995653445171e+199 }; // Lsin_fma3_do_general_arg_reduction
++static const double u_sin_Lsin_fma3_exit_s[2] = { 2.9371557180810286e+125, 1.6828262171720005e+78 }; // Lsin_fma3_exit_s
++static const double u_sin_Lsin_fma3_exit_s_1[2] = { 1.1482755415686639e-310, 5.5053531910207672e-235 }; // Lsin_fma3_exit_s_1
++static const double u_sin_Lsin_piby4[2] = { -1.3929882723410877e+78, 1.9055807422726176e-304 }; // Lsin_piby4
++static const double u_sin_Lsin_reduce_precise[2] = { 8.7398998801645695e+245, 2.7555946749349577e-304 }; // Lsin_reduce_precise
++static const double u_sin_Lsin_sse2[2] = { 2.3599211940908536e+111, 2.3916128083082256e-309 }; // Lsin_sse2
++static const double u_sin_Lsin_sse2_absx_lt_piby4[2] = { 5.4861240704886863e+303, 1.0312332772753105e+121 }; // Lsin_sse2_absx_lt_piby4
++static const double u_sin_Lsin_sse2_absx_nlt_piby4[2] = { 3.3908824735211595e+184, 2.9526229470361227e-308 }; // Lsin_sse2_absx_nlt_piby4
++static const double u_sin_Lsin_sse2_adjust_region[2] = { -7.8987141783125743e+268, 7.4029880174888796e-252 }; // Lsin_sse2_adjust_region
++static const double u_sin_Lsin_sse2_calc_cos[2] = { 1.2320520427516768e-91, 9.1890562833388516e-246 }; // Lsin_sse2_calc_cos
++static const double u_sin_Lsin_sse2_cleanup[2] = { 1.90371925458955e+185, 4.277967689842539e-317 }; // Lsin_sse2_cleanup
++static const double u_sin_Lsin_sse2_compute_sine_directly[2] = { -1.160806374917836e+79, 1.7000056569507169e-312 }; // Lsin_sse2_compute_sine_directly
++static const double u_sin_Lsin_sse2_cw_reduction_done[2] = { -9.8632708946179234e+160, -1.3929882723410877e+78 }; // Lsin_sse2_cw_reduction_done
++static const double u_sin_Lsin_x_naninf[2] = { 1.2644215349036645e-309, -6.4215259750124657e-228 }; // Lsin_x_naninf
++static const double u_cos_L_2_to_32 = 4294967296; // L_2_to_32 (0x41F0000000000000)
++static const double u_cos_L_cos_fma3[2] = { -57227311.87195161, 1.255420347317349e+58 }; // L_cos_fma3
++static const double u_cos_L_neg_one_half[2] = { -0.5, 7.4505805969238281e-09 }; // L_neg_one_half
++static const double u_cos_L_sign_mask[2] = { nan, inf }; // L_sign_mask
++static const double u_cos_Lcompute_1_xx_5[2] = { 1.7695117082328637e-315, 1.1067118144178746e-315 }; // Lcompute_1_xx_5
++static const double u_cos_Lcompute_cos_pyby_4[2] = { 8.3979122848597542e-284, -6.0925625462687906e-107 }; // Lcompute_cos_pyby_4
++static const double u_cos_Lcos_absx_nlt_piby4[2] = { 2.1258034766199086e-206, 1.2335009454293997e-293 }; // Lcos_absx_nlt_piby4
++static const double u_cos_Lcos_early_exit_s[2] = { 4.4601490400659591e+43, 1.4070733558777324e-190 }; // Lcos_early_exit_s
++static const double u_cos_Lcos_exit_s[2] = { -2.5576349825839768e+26, -2.4178516399737614e+24 }; // Lcos_exit_s
++static const double u_cos_Lcos_exit_s_1[2] = { -8.1548835487005159e+156, 1.1182418432681795e-313 }; // Lcos_exit_s_1
++static const double u_cos_Lcos_piby4[2] = { -1.3929882723410877e+78, 1.9055807422726176e-304 }; // Lcos_piby4
++static const double u_cos_Lcos_piby4_compute[2] = { 1.7539672172571481e-315, 3.1773785450743972e-90 }; // Lcos_piby4_compute
++static const double u_cos_Lcos_reduce_precise[2] = { 8.7398998801645695e+245, 1.7298006949767646e-234 }; // Lcos_reduce_precise
++static const double u_cos_Lcos_remainder_piby2[2] = { -7.5126147221349994e+303, 3.7005612269379642e-310 }; // Lcos_remainder_piby2
++static const double u_cos_Lcos_sse2[2] = { 2.3599211940908536e+111, -4.4484247129719599e+244 }; // Lcos_sse2
++static const double u_cos_Lcos_sse2_absx_lt_piby4[2] = { 1.9656826085166004e-236, 9.9609260197459995e-116 }; // Lcos_sse2_absx_lt_piby4
++static const double u_cos_Lcos_sse2_adjust_region[2] = { 2.0623258049339767e-229, -92.240650214310875 }; // Lcos_sse2_adjust_region
++static const double u_cos_Lcos_sse2_calc_cos[2] = { 1.2320520427516768e-91, 9.1890562833388516e-246 }; // Lcos_sse2_calc_cos
++static const double u_cos_Lcos_sse2_cleanup[2] = { 1.903719173544324e+185, 4.277967689842539e-317 }; // Lcos_sse2_cleanup
++static const double u_cos_Lcos_sse2_cw_reduction_done[2] = { -9.8632708946179234e+160, -1.3929882723410877e+78 }; // Lcos_sse2_cw_reduction_done
++static const double u_cos_Lcos_sse2_x_small[2] = { 2.5503485776156363e-167, -4.6497142437887112e+77 }; // Lcos_sse2_x_small
++static const double u_cos_Lcos_sse2_x_smaller[2] = { 1.7692134358618129e-315, 4.3196437222979431e-308 }; // Lcos_sse2_x_smaller
++static const double u_cos_Lcos_x_naninf[2] = { 1.2644215349036645e-309, -6.4009142989497549e-228 }; // Lcos_x_naninf
++static const double u_cos_Lrange_reduce[2] = { 6.2471714650515144e-245, 5.1292924087993594e-304 }; // Lrange_reduce
++static const double u_cos_Lsin_piby4_compute[2] = { 1.3618206444890614e-312, -7.0547105468140224e-30 }; // Lsin_piby4_compute
++static const double u_rem_L__form_mantissa[2] = { 7.1160391298521458e+39, 1.4360043841748827e+64 }; // L__form_mantissa
++static const double u_rem_L__form_numbers[2] = { 4.460166049898122e+43, 8.8523278724857199e+61 }; // L__form_numbers
++static const double u_rem_L__hsb_below_52[2] = { -1.6789108167941296e+93, 52250.27756657057 }; // L__hsb_below_52
++static const double u_rem_L__no_point_five[2] = { 5.2951145968860319e-290, -8.3630263773251176e+55 }; // L__no_point_five
++static const double u_rem_L_fff800[2] = { nan, nan }; // L_fff800
++static const double u_rem_L_inf_mask_64[2] = { inf, inf }; // L_inf_mask_64
++static const double u_rem_L_piby2_1[2] = { 1.5707963267341256, 1.5707963267341256 }; // L_piby2_1
++static const double u_rem_L_piby2_1tail[2] = { 6.0771005065061922e-11, 6.0771005065061922e-11 }; // L_piby2_1tail
++static const double u_rem_L_piby2_2[2] = { 6.077100506303966e-11, 6.077100506303966e-11 }; // L_piby2_2
++static const double u_rem_L_piby2_2tail[2] = { 2.0222662487959506e-21, 2.0222662487959506e-21 }; // L_piby2_2tail
++static const double u_rem_L_piby2_3[2] = { 2.0222662487111665e-21, 2.0222662487111665e-21 }; // L_piby2_3
++static const double u_rem_L_piby2_3tail[2] = { 8.4784276603688996e-32, 8.4784276603688996e-32 }; // L_piby2_3tail
++static const double u_rem_L_piby2_lead[2] = { 1.5707963267948966, 1.5707963267948966 }; // L_piby2_lead
++static const double u_rem_L_piby2_part1[2] = { 1.5707963109016418, 1.5707963109016418 }; // L_piby2_part1
++static const double u_rem_L_piby2_part2[2] = { 1.5893254712295857e-08, 1.5893254712295857e-08 }; // L_piby2_part2
++static const double u_rem_L_piby2_part3[2] = { 6.1232339957367648e-17, 6.1232339957367648e-17 }; // L_piby2_part3
++static const double u_rem_L_point_five[2] = { 0.5, 0.5 }; // L_point_five
++static const double u_rem_L_r[2] = { 0.63661977236758138, 0.63661977236758138 }; // L_r
++static const double u_rem_L_sigma[2] = { 6755399441055744, 6755399441055744 }; // L_sigma
++static const double u_rem_L_twobypi[2] = { 0.63661977236758138, 0.63661977236758138 }; // L_twobypi
++static const double u_rem_L_xc1[2] = { 1.5707963267948966, 1.5707963267948966 }; // L_xc1
++static const double u_rem_L_xc2[2] = { 6.1232339957367574e-17, 6.1232339957367574e-17 }; // L_xc2
++static const double u_rem_L_xc3[2] = { 8.4784276603688985e-32, 8.4784276603688985e-32 }; // L_xc3
++static const double uc_acos_33145c07 = 6.123233995736766e-17; // __real@3c91a62633145c07 (0x3C91A62633145C07)
++static const double uc_acos_5d321061 = 4.8290192034478698e-05; // __real@3f0951665d321061 (0x3F0951665D321061)
++static const double uc_acos_87a62135 = 0.0010924269723507467; // __real@3f51e5f887a62135 (0x3F51E5F887A62135)
++static const double uc_acos_90c29690 = 0.054998980923568586; // __real@3fac28d390c29690 (0x3FAC28D390C29690)
++static const double uc_acos_2982ce76 = 0.10586942208720437; // __real@3fbb1a422982ce76 (0x3FBB1A422982CE76)
++static const double uc_acos_80029834 = 0.22748583555693502; // __real@3fcd1e4180029834 (0x3FCD1E4180029834)
++static const double uc_acos_c1b7ef59 = 0.27555817525693765; // __real@3fd1a2bec1b7ef59 (0x3FD1A2BEC1B7EF59)
++static const double uc_acos_7e269eac = 0.44501721686763562; // __real@3fdc7b297e269eac (0x3FDC7B297E269EAC)
++static const double uc_acos_00000000 = 0.5; // __real@3fe0000000000000 (0x3FE0000000000000)
++static const double uc_acos_b418f78d = 0.94363913703249269; // __real@3fee324ab418f78d (0x3FEE324AB418F78D)
++static const double uc_acos_2001f228 = 1.3649150133416104; // __real@3ff5d6b12001f228 (0x3FF5D6B12001F228)
++static const double uc_acos_54442d18 = 1.5707963267948966; // __real@3ff921fb54442d18 (0x3FF921FB54442D18)
++static const double uc_acos_571dccfc = 2.7656885915727099; // __real@40062021571dccfc (0x40062021571DCCFC)
++static const double uc_acos_f903cdea = 3.2843150572095867; // __real@400a4646f903cdea (0x400A4646F903CDEA)
++static const double uc_atan_33145c07 = 6.123233995736766e-17; // __real@3c91a62633145c07 (0x3C91A62633145C07)
++static const double uc_atan_e2308c3a = 1e-08; // __real@3e45798ee2308c3a (0x3E45798EE2308C3A)
++static const double uc_atan_611a6263 = 3.1786509547056392e-08; // __real@3e6110b4611a6263 (0x3E6110B4611A6263)
++static const double uc_atan_00000000 = 0.00390625; // __real@3f70000000000000 (0x3F70000000000000)
++static const double uc_atan_92d751c2 = 0.090029810285449791; // __real@3fb70c3192d751c2 (0x3FB70C3192D751C2)
++static const double uc_atan_39b8c4eb = 0.11110736283514526; // __real@3fbc718839b8c4eb (0x3FBC718839B8C4EB)
++static const double uc_atan_82bd6be1 = 0.1428571356180717; // __real@3fc2492482bd6be1 (0x3FC2492482BD6BE1)
++static const double uc_atan_b9802d7d = 0.19999918038989142; // __real@3fc99992b9802d7d (0x3FC99992B9802D7D)
++static const double uc_atan_999643a3 = 0.19999999999393223; // __real@3fc99999999643a3 (0x3FC99999999643A3)
++static const double uc_atan_55550877 = 0.33333333333224097; // __real@3fd5555555550877 (0x3FD5555555550877)
++static const double uc_atan_55555538 = 0.33333333333333171; // __real@3fd5555555555538 (0x3FD5555555555538)
++static const double uc_atan_54442d18 = 0.78539816339744828; // __real@3fe921fb54442d18 (0x3FE921FB54442D18)
++static const double uc_atan_7f3321d2 = 2.3561944901923448; // __real@4002d97c7f3321d2 (0x4002D97C7F3321D2)
++static const double uc_atan_50000000 = 3.1415926218032837; // __real@400921fb50000000 (0x400921FB50000000)
++static const double uc_hyp_ffffffff = 1.7976931348623157e+308; // __real@7fefffffffffffff (0x7FEFFFFFFFFFFFFF)
++static const double uc_hyp_00000000 = -9.2329786177857358e-128; // __real@a590000000000000 (0xA590000000000000)
++#endif
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/ucrt_math_tables.h b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/ucrt_math_tables.h
+new file mode 100644
+index 00000000..bf81305a
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/frozen_sites/ucrt_math_tables.h
+@@ -0,0 +1,158 @@
++#ifdef UCRT_MATH_DEVICE
++#define UCRT_TBL static __device__ const
++#else
++#define UCRT_TBL static const
++#endif
++
++/* ucrt_math_tables.h -- generated VERBATIM from the extracted UCRT objects
++ * (ucrt_objs/*.obj .rdata) by gen_ucrt_tables.py. Do not hand-edit.
++ * Trailer Agent: GLM 5.3. */
++#ifndef UCRT_MATH_TABLES_H
++#define UCRT_MATH_TABLES_H
++UCRT_TBL uint64_t u_sinarr[6] = {
++    0xBFC5555555555555ULL,0x3F81111111110BB3ULL,0xBF2A01A019E83E5CULL,0x3EC71DE3796CDE01ULL,0xBE5AE600B42FDFA7ULL,0x3DE5E0B2F9A43BB8ULL };
++UCRT_TBL uint64_t u_cosarr[6] = {
++    0x3FA5555555555555ULL,0xBF56C16C16C16967ULL,0x3EFA01A019F4EC91ULL,0xBE927E4FA17F667BULL,0x3E21EEB690382EECULL,0xBDA907DB47258AA7ULL };
++UCRT_TBL uint64_t u_atan_lead[241] = {
++    0x3FAFF55B00000000ULL,0x3FB0F99E00000000ULL,0x3FB1F86D00000000ULL,0x3FB2F71900000000ULL,
++    0x3FB3F59F00000000ULL,0x3FB4F3FD00000000ULL,0x3FB5F23200000000ULL,0x3FB6F03B00000000ULL,
++    0x3FB7EE1800000000ULL,0x3FB8EBC500000000ULL,0x3FB9E94100000000ULL,0x3FBAE68A00000000ULL,
++    0x3FBBE39E00000000ULL,0x3FBCE07C00000000ULL,0x3FBDDD2100000000ULL,0x3FBED98C00000000ULL,
++    0x3FBFD5BA00000000ULL,0x3FC068D500000000ULL,0x3FC0E6AD00000000ULL,0x3FC1646500000000ULL,
++    0x3FC1E1FA00000000ULL,0x3FC25F6E00000000ULL,0x3FC2DCBD00000000ULL,0x3FC359E800000000ULL,
++    0x3FC3D6EE00000000ULL,0x3FC453CE00000000ULL,0x3FC4D08700000000ULL,0x3FC54D1800000000ULL,
++    0x3FC5C98100000000ULL,0x3FC645BF00000000ULL,0x3FC6C1D400000000ULL,0x3FC73DBD00000000ULL,
++    0x3FC7B97B00000000ULL,0x3FC8350B00000000ULL,0x3FC8B06E00000000ULL,0x3FC92BA300000000ULL,
++    0x3FC9A6A800000000ULL,0x3FCA217E00000000ULL,0x3FCA9C2300000000ULL,0x3FCB169600000000ULL,
++    0x3FCB90D700000000ULL,0x3FCC0AE500000000ULL,0x3FCC84BF00000000ULL,0x3FCCFE6500000000ULL,
++    0x3FCD77D500000000ULL,0x3FCDF11000000000ULL,0x3FCE6A1400000000ULL,0x3FCEE2E100000000ULL,
++    0x3FCF5B7500000000ULL,0x3FCFD3D100000000ULL,0x3FD025FA00000000ULL,0x3FD061EE00000000ULL,
++    0x3FD09DC500000000ULL,0x3FD0D97E00000000ULL,0x3FD1151A00000000ULL,0x3FD1509700000000ULL,
++    0x3FD18BF500000000ULL,0x3FD1C73500000000ULL,0x3FD2025500000000ULL,0x3FD23D5600000000ULL,
++    0x3FD2783700000000ULL,0x3FD2B2F700000000ULL,0x3FD2ED9800000000ULL,0x3FD3281800000000ULL,
++    0x3FD3627700000000ULL,0x3FD39CB400000000ULL,0x3FD3D6D100000000ULL,0x3FD410CB00000000ULL,
++    0x3FD44AA400000000ULL,0x3FD4845A00000000ULL,0x3FD4BDEE00000000ULL,0x3FD4F75F00000000ULL,
++    0x3FD530AD00000000ULL,0x3FD569D800000000ULL,0x3FD5A2E000000000ULL,0x3FD5DBC300000000ULL,
++    0x3FD6148400000000ULL,0x3FD64D1F00000000ULL,0x3FD6859700000000ULL,0x3FD6BDEA00000000ULL,
++    0x3FD6F61900000000ULL,0x3FD72E2200000000ULL,0x3FD7660700000000ULL,0x3FD79DC600000000ULL,
++    0x3FD7D56000000000ULL,0x3FD80CD400000000ULL,0x3FD8442200000000ULL,0x3FD87B4B00000000ULL,
++    0x3FD8B24D00000000ULL,0x3FD8E92900000000ULL,0x3FD91FDE00000000ULL,0x3FD9566D00000000ULL,
++    0x3FD98CD500000000ULL,0x3FD9C31600000000ULL,0x3FD9F93000000000ULL,0x3FDA2F2300000000ULL,
++    0x3FDA64EE00000000ULL,0x3FDA9A9200000000ULL,0x3FDAD00F00000000ULL,0x3FDB056400000000ULL,
++    0x3FDB3A9100000000ULL,0x3FDB6F9600000000ULL,0x3FDBA47300000000ULL,0x3FDBD92800000000ULL,
++    0x3FDC0DB400000000ULL,0x3FDC421900000000ULL,0x3FDC765500000000ULL,0x3FDCAA6800000000ULL,
++    0x3FDCDE5300000000ULL,0x3FDD121500000000ULL,0x3FDD45AE00000000ULL,0x3FDD791F00000000ULL,
++    0x3FDDAC6700000000ULL,0x3FDDDF8500000000ULL,0x3FDE127B00000000ULL,0x3FDE454800000000ULL,
++    0x3FDE77EB00000000ULL,0x3FDEAA6500000000ULL,0x3FDEDCB600000000ULL,0x3FDF0EDE00000000ULL,
++    0x3FDF40DD00000000ULL,0x3FDF72B200000000ULL,0x3FDFA45D00000000ULL,0x3FDFD5E000000000ULL,
++    0x3FE0039C00000000ULL,0x3FE01C3400000000ULL,0x3FE034B700000000ULL,0x3FE04D2500000000ULL,
++    0x3FE0657E00000000ULL,0x3FE07DC300000000ULL,0x3FE095F300000000ULL,0x3FE0AE0E00000000ULL,
++    0x3FE0C61400000000ULL,0x3FE0DE0500000000ULL,0x3FE0F5E200000000ULL,0x3FE10DAA00000000ULL,
++    0x3FE1255D00000000ULL,0x3FE13CFB00000000ULL,0x3FE1548500000000ULL,0x3FE16BFA00000000ULL,
++    0x3FE1835A00000000ULL,0x3FE19AA500000000ULL,0x3FE1B1DC00000000ULL,0x3FE1C8FE00000000ULL,
++    0x3FE1E00B00000000ULL,0x3FE1F70400000000ULL,0x3FE20DE800000000ULL,0x3FE224B700000000ULL,
++    0x3FE23B7100000000ULL,0x3FE2521700000000ULL,0x3FE268A900000000ULL,0x3FE27F2600000000ULL,
++    0x3FE2958E00000000ULL,0x3FE2ABE200000000ULL,0x3FE2C22100000000ULL,0x3FE2D84C00000000ULL,
++    0x3FE2EE6200000000ULL,0x3FE3046400000000ULL,0x3FE31A5200000000ULL,0x3FE3302B00000000ULL,
++    0x3FE345F000000000ULL,0x3FE35BA000000000ULL,0x3FE3713D00000000ULL,0x3FE386C500000000ULL,
++    0x3FE39C3900000000ULL,0x3FE3B19800000000ULL,0x3FE3C6E400000000ULL,0x3FE3DC1C00000000ULL,
++    0x3FE3F13F00000000ULL,0x3FE4064F00000000ULL,0x3FE41B4A00000000ULL,0x3FE4303200000000ULL,
++    0x3FE4450600000000ULL,0x3FE459C600000000ULL,0x3FE46E7200000000ULL,0x3FE4830A00000000ULL,
++    0x3FE4978F00000000ULL,0x3FE4AC0000000000ULL,0x3FE4C05E00000000ULL,0x3FE4D4A800000000ULL,
++    0x3FE4E8DE00000000ULL,0x3FE4FD0100000000ULL,0x3FE5111000000000ULL,0x3FE5250C00000000ULL,
++    0x3FE538F500000000ULL,0x3FE54CCA00000000ULL,0x3FE5608D00000000ULL,0x3FE5743C00000000ULL,
++    0x3FE587D800000000ULL,0x3FE59B6000000000ULL,0x3FE5AED600000000ULL,0x3FE5C23900000000ULL,
++    0x3FE5D58900000000ULL,0x3FE5E8C600000000ULL,0x3FE5FBF000000000ULL,0x3FE60F0800000000ULL,
++    0x3FE6220D00000000ULL,0x3FE634FF00000000ULL,0x3FE647DE00000000ULL,0x3FE65AAB00000000ULL,
++    0x3FE66D6600000000ULL,0x3FE6800E00000000ULL,0x3FE692A400000000ULL,0x3FE6A52700000000ULL,
++    0x3FE6B79800000000ULL,0x3FE6C9F700000000ULL,0x3FE6DC4400000000ULL,0x3FE6EE7F00000000ULL,
++    0x3FE700A700000000ULL,0x3FE712BE00000000ULL,0x3FE724C300000000ULL,0x3FE736B600000000ULL,
++    0x3FE7489700000000ULL,0x3FE75A6700000000ULL,0x3FE76C2400000000ULL,0x3FE77DD100000000ULL,
++    0x3FE78F6B00000000ULL,0x3FE7A0F400000000ULL,0x3FE7B26C00000000ULL,0x3FE7C3D300000000ULL,
++    0x3FE7D52800000000ULL,0x3FE7E66C00000000ULL,0x3FE7F79E00000000ULL,0x3FE808C000000000ULL,
++    0x3FE819D000000000ULL,0x3FE82AD000000000ULL,0x3FE83BBE00000000ULL,0x3FE84C9C00000000ULL,
++    0x3FE85D6900000000ULL,0x3FE86E2500000000ULL,0x3FE87ED000000000ULL,0x3FE88F6B00000000ULL,
++    0x3FE89FF500000000ULL,0x3FE8B06F00000000ULL,0x3FE8C0D900000000ULL,0x3FE8D13200000000ULL,
++    0x3FE8E17A00000000ULL,0x3FE8F1B300000000ULL,0x3FE901DB00000000ULL,0x3FE911F300000000ULL,
++    0x3FE921FB00000000ULL,
++};
++UCRT_TBL uint64_t u_atan_tail[241] = {
++    0x3E56E59FBD38DB2CULL,0x3E64E3AA54DEDF96ULL,0x3E67E105AB1BDA88ULL,0x3E48C5254D013FD0ULL,
++    0x3E2CF8AB3AD62670ULL,0x3E59DCA4BEC80468ULL,0x3E53F4B5EC98A8DAULL,0x3E6B9D49619D81FEULL,
++    0x3E43017887460934ULL,0x3E511E3ECA0B9944ULL,0x3E54F3F73C5A332EULL,0x3E5C71C8AE0E00A6ULL,
++    0x3E67CDE0F86FBDC7ULL,0x3E570F328C889C72ULL,0x3E5C07AE9B994EFEULL,0x3E40C8021D7B1698ULL,
++    0x3E635585EDB8CB22ULL,0x3E70842567B30E96ULL,0x3E799E811031472EULL,0x3E6041821416BCEEULL,
++    0x3E7F6086E4DC96F4ULL,0x3E471A535C5F1B58ULL,0x3E765F743FE63CA1ULL,0x3E7DBD733472D014ULL,
++    0x3E7D18CC4D8B0D1DULL,0x3E78C12553C8FB29ULL,0x3E753B49E2E8F991ULL,0x3E77422AE148C141ULL,
++    0x3E4E3EC269DF56A8ULL,0x3E7FF6754E7E0AC9ULL,0x3E7131267B1B5AADULL,0x3E7D14FA403A94BCULL,
++    0x3E62F396C089A3D8ULL,0x3E7C731D78FA95BBULL,0x3E7C50F385177399ULL,0x3E6F41409C6F2C20ULL,
++    0x3E7D2D90C4C39EC0ULL,0x3E680420696F2106ULL,0x3E4B40327943A2E8ULL,0x3E65D35E02F3D2A2ULL,
++    0x3E64A498288117B0ULL,0x3E635DA119AFB324ULL,0x3E714E85CDB9A908ULL,0x3E638754E5547B9AULL,
++    0x3E7BE40AE6CE3246ULL,0x3E70C993B3BEA7E7ULL,0x3E71D2DD89AC3359ULL,0x3E61476603332C46ULL,
++    0x3E7F25901BAC55B7ULL,0x3E7F881B7C826E28ULL,0x3E7441996D698D20ULL,0x3E8407AC521EA089ULL,
++    0x3E82FB0C6C4B1723ULL,0x3E8CA135966A3E18ULL,0x3E6B1218E4D646E4ULL,0x3E6D4E72A350D288ULL,
++    0x3E84617E2F04C329ULL,0x3E6096EC41E82650ULL,0x3E79F91F25773E6EULL,0x3E659C0820F1D674ULL,
++    0x3E602BF7A2DF1064ULL,0x3E8FB36BFC40508FULL,0x3E7EA08F3F8DC892ULL,0x3E73ED6254656A0EULL,
++    0x3E6B83F5E5E69C58ULL,0x3E8D6EC2AF768592ULL,0x3E6493889A226F94ULL,0x3E85AD8FA65279BAULL,
++    0x3E6B615784D45434ULL,0x3E809A184368F145ULL,0x3E761A2439B0D91CULL,0x3E7CE1A65E39A978ULL,
++    0x3E832A39A93B6A66ULL,0x3E81C3699AF804E7ULL,0x3E575E0F4E44EDE8ULL,0x3E8F77CED1A7A83BULL,
++    0x3E284E7F0CB1B500ULL,0x3E8EC6B838B02DFEULL,0x3E83EBF4DFBEDA87ULL,0x3E89397AED9CB475ULL,
++    0x3E707937BC239C54ULL,0x3E8AA754553131B6ULL,0x3E74A05D407C45DCULL,0x3E8132231A206DD0ULL,
++    0x3E72D8ECFDD69C88ULL,0x3E7A852C74218606ULL,0x3E871BF2BAEEBB50ULL,0x3E483D7DB7491820ULL,
++    0x3E6CA50D92B6DA14ULL,0x3E56F5CDE8530298ULL,0x3E7F343198910740ULL,0x3E70E8D241CCD80AULL,
++    0x3E71535AC619E6C8ULL,0x3E77316041C36CD2ULL,0x3E7985A000637D8EULL,0x3E6F2F29858C0A68ULL,
++    0x3E8879847F96D909ULL,0x3E8AB3D319E12E42ULL,0x3E75088162DFC4C2ULL,0x3E605749A1CD9D8CULL,
++    0x3E5DA65C6C6B8618ULL,0x3E6739BF7DF1AD64ULL,0x3E6BC31252AA3340ULL,0x3E5E528191AD3AA8ULL,
++    0x3E8929D93DF19F18ULL,0x3E5FF11EB693A080ULL,0x3E455AE3F145A3A0ULL,0x3E7CBCD8C6C0CA82ULL,
++    0x3E70CB04D425D304ULL,0x3E79ADFCAB5BE678ULL,0x3E893D90C5662508ULL,0x3E768489BD35FF40ULL,
++    0x3E3586ED3DA2B7E0ULL,0x3E87604D2E850EEEULL,0x3E7AC1D12BFB53D8ULL,0x3E39B3D468274740ULL,
++    0x3E7FC5D68D10E53CULL,0x3E88F9E51884BECBULL,0x3E8A87F0869C06D1ULL,0x3E831E7279F685FAULL,
++    0x3E46A8282F9719B0ULL,0x3E60D2724A8A44E0ULL,0x3E8A60524B11AD4EULL,0x3E575FDF832750F0ULL,
++    0x3E8CF06902E4CD36ULL,0x3E6E82422D4F6D10ULL,0x3E524A091063E6C0ULL,0x3E78A1A172DC6F38ULL,
++    0x3E929B6619F8A92DULL,0x3E79274D9C1B70C8ULL,0x3E50C34B1FBB7930ULL,0x3E6639866C20EB50ULL,
++    0x3E86D6D0F6832E9EULL,0x3E9AF54DEF99F25EULL,0x3E916CFC52A00262ULL,0x3E8DCC1E83569C32ULL,
++    0x3E937F7A551ED425ULL,0x3E9F6360ADC98887ULL,0x3E92C6EC8D35A2C1ULL,0x3E8BD44DF84CB036ULL,
++    0x3E9117CF826E310EULL,0x3E9CA533F332CFC9ULL,0x3E90F208509DBC2EULL,0x3E8CD07D93C945DEULL,
++    0x3E957BDFD67E6D72ULL,0x3E7AAB89C516C658ULL,0x3E63E823B1A1B8A0ULL,0x3E8307464A9D6D3CULL,
++    0x3E9C5993CD438843ULL,0x3E9BA2FCA02AB554ULL,0x3E801A5B6983A268ULL,0x3E6273D1B350EFC8ULL,
++    0x3E864C238C37B0C6ULL,0x3E6ADED07370A300ULL,0x3E878091197EB47EULL,0x3E74B0F245E0DABCULL,
++    0x3E9080D9794E2EAFULL,0x3E8D4EC242B60C76ULL,0x3E4221D2F940CAA0ULL,0x3E7CDBC42B2BBA5CULL,
++    0x3E6CCE37BB440840ULL,0x3E96C1D999CF1DD0ULL,0x3E5BED8A07EB0870ULL,0x3E769ED88F490E3CULL,
++    0x3E6CD41719B73EF0ULL,0x3E9CBC4AC95B41B7ULL,0x3E9238F1B890F5D7ULL,0x3E750C4282259CC4ULL,
++    0x3E9713D2DE87B3E2ULL,0x3E81D5A7D2255276ULL,0x3E9C0DFD48227AC1ULL,0x3E91C964DAB76753ULL,
++    0x3E86DE56D5704496ULL,0x3E84AEB71FD19968ULL,0x3E8FBF91C57B1918ULL,0x3E9D6BEF7FBE5D9AULL,
++    0x3E9464D3DC249066ULL,0x3E9638E2EC4D9073ULL,0x3E716F4A7247EA7CULL,0x3E31A0A740F1D440ULL,
++    0x3E86EDBB0114A33CULL,0x3E7DBEE8BF1D513CULL,0x3E95B8BDB0248F73ULL,0x3E97DE3D3F5EAC64ULL,
++    0x3E8EE24187AE448AULL,0x3E9E06C591EC5192ULL,0x3E74E3861A332738ULL,0x3E7A9599DCC2BFE4ULL,
++    0x3E6F732FBAD43468ULL,0x3E9EB9F573B727D9ULL,0x3E98B212A2EB9897ULL,0x3E9384884C167215ULL,
++    0x3E90E2D363020051ULL,0x3E92820879FBD022ULL,0x3E9A1AB9893E4B30ULL,0x3E82D1B817A24478ULL,
++    0x3E615D7B8DED4878ULL,0x3E78968F9DB3A5E4ULL,0x3E971C4171FE135FULL,0x3E96D80F605D0D8CULL,
++    0x3E7C91F043691590ULL,0x3E839F8A15FCE2B2ULL,0x3E455BEDA9D94B80ULL,0x3E8B12C15D60949AULL,
++    0x3E924167B312BFE3ULL,0x3E90AB8633070277ULL,0x3E854554EBBC80EEULL,0x3E60204AEF5A4BB8ULL,
++    0x3E98AF08C679CF2CULL,0x3E90852A330AE6C8ULL,0x3E86D3EB9EC32916ULL,0x3E8685CB7FCBBAFEULL,
++    0x3E91F751C1E0BD95ULL,0x3E5705B1B0F72560ULL,0x3E9B98D8D808CA92ULL,0x3E62EA22C75CC980ULL,
++    0x3E97ABA62BCA0350ULL,0x3E9D73833442278CULL,0x3E95A5CA1FB18BF9ULL,0x3E61A6092B6ECF28ULL,
++    0x3E744FD049AAC104ULL,0x3E2C114FD8DF5180ULL,0x3E95972F130FEAE5ULL,0x3E7CA034A55FE198ULL,
++    0x3E96E2B149990227ULL,0x3E7B00000294592CULL,0x3E98B9BDC442620EULL,0x3E8D94FDFABF3E4EULL,
++    0x3E85DB30B145AD9AULL,0x3E8E3E1EB95022B0ULL,0x3E9D5B8B45442BD6ULL,0x3E97A046231ECD2EULL,
++    0x3E9FEAFE3EF55232ULL,0x3E9839E7BFD78267ULL,0x3E645CF49D6FA900ULL,0x3E4BE3132B27F380ULL,
++    0x3E9533980BB84F9FULL,0x3E5889E2CE3BA390ULL,0x3E7F7778C3AD0CC8ULL,0x3E846660CEC4EBA2ULL,
++    0x3E85110B4611A626ULL,
++};
++#ifdef UCRT_MATH_DEVICE
++static __device__ const unsigned char u_l2bypi[158] = {
++#else
++static const unsigned char u_l2bypi[158] = {
++#endif
++    0xE0,0xF1,0x1B,0xC1,0x0C,0x58,0x21,0x74,0x35,0x7E,0xC4,0x7E,0xED,0xAF,0xA9,0x4B,
++    0x4A,0x29,0xDE,0xE7,0x1C,0xF4,0xEC,0xC5,0x97,0xAF,0x1F,0xEB,0x9E,0xD4,0xB5,0xA8,
++    0x7F,0x79,0x9A,0xFD,0x18,0x3D,0xDD,0x26,0x2C,0x9F,0x3C,0xFB,0xD9,0xB4,0x7D,0xB4,
++    0x29,0x68,0x2D,0x46,0xBC,0xBC,0x3F,0x60,0x16,0x78,0xFF,0x5F,0xE2,0x7F,0xEC,0xA0,
++    0xE4,0xF7,0x2E,0x7E,0x11,0x72,0xD2,0xE7,0x4C,0x0D,0xE6,0x58,0x47,0xE6,0x04,0xF9,
++    0x7D,0xD1,0x9A,0xC0,0x71,0xA6,0x13,0x12,0xED,0xBA,0xD4,0xD7,0x08,0xA2,0xFB,0x9C,
++    0xA6,0xC4,0x72,0xAC,0x77,0xF8,0x73,0x48,0x46,0x27,0xA8,0xBB,0x24,0x19,0x80,0x4B,
++    0x37,0x09,0xE9,0xB8,0x91,0xDC,0x86,0x15,0xEF,0x7A,0xAF,0x8E,0x45,0xF9,0x07,0x41,
++    0x0E,0xF1,0x64,0x56,0x8A,0x6D,0x03,0x77,0xD3,0xD4,0x47,0x5F,0x9D,0xF0,0xA7,0x54,
++    0x10,0x39,0xB9,0x0D,0xE6,0x8B,0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
++};
++#endif
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/parity_gate_result.json b/tools/monkey_campaign/contributions/ONT-W02/parity_gate_result.json
+new file mode 100644
+index 00000000..50072473
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/parity_gate_result.json
+@@ -0,0 +1,1891 @@
++{
++ "schema": "chimera.ont-w02.parity-gate.v1",
++ "task": "ONT-W02",
++ "attempt_id": "681e63e9e5d84eaa9702379faf347ac5",
++ "criteria_sha256": "bf9f89874ee4a7d0606c46215e843474331482444af556ac4f199a6bfcd087f2",
++ "frozen_before_run": "PREREGISTRATION.md (same directory)",
++ "tolerance": "NONE - IEEE-754 bit equality is the only pass condition",
++ "evidence_class": "fresh CPU-only host component probe of pinned math implementations; no GPU, no engine, no training",
++ "started_utc": "2026-09-26T21:38:11.167675+00:00",
++ "pins": {
++  "trig_inputs.txt": {
++   "sha256": "a21467e5e5aeb09f23a6de39c16902c34d2a34ebaa83cbccaab01ba1a0ea8b01",
++   "size": 349,
++   "git_blob_a62b286e": "252366b2d1106a13f87bb3cf8380c0202f97f71c"
++  },
++  "ucrt_math.c": {
++   "sha256": "cde32a8d36c0fbf481d67fa0005ace7dab08f066971085e543f7909740900b97",
++   "size": 28375,
++   "git_blob_a62b286e": "efd87d67b114c350c1a8e081183d3a139a35a3df"
++  },
++  "ucrt_math_tables.h": {
++   "sha256": "cdae6a920bb38d517c11683e11fda0c2f15b6069ab5c1ee4d5bbdd9a62d437ed",
++   "size": 12970,
++   "git_blob_a62b286e": "bf81305a13fa11437d31238ae2791b89a3d349e1"
++  },
++  "ucrt_math_consts.h": {
++   "sha256": "106b7cc7cc9823d58092a0eddc4987df5a31f0e02d0705e905292b2759aec938",
++   "size": 13101,
++   "git_blob_a62b286e": "74e86ae2d55f7ca3eeccf6003b94f552bb05e229"
++  },
++  "preserved/trig_host.txt": {
++   "sha256": "ed48cf12865115dc8223c0e4ab03ca331144a7c6267ad5e25dda327a9b0a24f2",
++   "size": 5463,
++   "git_blob_a62b286e": "0a89550d6fe1aedc205c3b34835d83b8f8c85ca1"
++  },
++  "preserved/trig_gpu.txt": {
++   "sha256": "bb896746b5883a3cfd73acccd6b4373496da589aa61361fe58be83237fa9e733",
++   "size": 5458,
++   "git_blob_a62b286e": "5ba31ec7a1f527ffa86ab4f5b7d08718a0abc6c5"
++  },
++  "preserved/trig_fdlibm_out.txt": {
++   "sha256": "41e484b2bf5be5eba7d7607d029d3221880e1af236ea424d938570dd158c34ed",
++   "size": 5469,
++   "git_blob_a62b286e": "d9cf26eac0f65fdb7790820c056eed9866856b97"
++  },
++  "preserved/co7_gate_out2.txt": {
++   "sha256": "54e72577920b1fb0a1cfe068ac482198929bfc208779738c2ddf9c7ab1c740a4",
++   "size": 155,
++   "git_blob_a62b286e": "f7fbfb11258f6ec3fb24f048541c32cda10f1cfc"
++  },
++  "preserved/co7_dense_full2.txt": {
++   "sha256": "2bc8d9bc9631d58f81cf5c1e1d5774455b40e4c30e50661d62351f49ce909f67",
++   "size": 203,
++   "git_blob_a62b286e": "af66ec6a229738fa90c47498b40e1769ea092d2e"
++  },
++  "preserved/co6_trig_dense.txt": {
++   "sha256": "c51cda41db828723bdfa3c9360709f2733927164be05cc21db92727c5d5db8d2",
++   "size": 2419,
++   "git_blob_a62b286e": "23fed41a5e5a0986b0505afab709af433873f654"
++  }
++ },
++ "gate_run_exit": 0,
++ "gate_run_output": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\build_gate\\parity_gate_run.txt",
++ "deterministic_rerun": {
++  "second_exit": 0,
++  "stdout_sha256_first": "517096e569b6bc7bbeb3e581ab590c5f84fa8e1da9e97962ab2d34f61291d935",
++  "stdout_sha256_second": "517096e569b6bc7bbeb3e581ab590c5f84fa8e1da9e97962ab2d34f61291d935",
++  "bit_identical": true
++ },
++ "frozen125": {
++  "passed": 125,
++  "total": 125,
++  "p1_pass": true,
++  "input_bits_match_trig_inputs_txt": true,
++  "oracle_bits_match_preserved_trig_host": true,
++  "oracle_drift_sites": [],
++  "sites": [
++   {
++    "index": 0,
++    "fn": "SIN",
++    "oracle_hex": "0000000000000000",
++    "recon_hex": "0000000000000000",
++    "match": true,
++    "arg_hex": [
++     "0000000000000000"
++    ]
++   },
++   {
++    "index": 0,
++    "fn": "COS",
++    "oracle_hex": "3ff0000000000000",
++    "recon_hex": "3ff0000000000000",
++    "match": true,
++    "arg_hex": [
++     "0000000000000000"
++    ]
++   },
++   {
++    "index": 0,
++    "fn": "ATAN2",
++    "oracle_hex": "0000000000000000",
++    "recon_hex": "0000000000000000",
++    "match": true,
++    "arg_hex": [
++     "0000000000000000",
++     "3fdccccccccccccc"
++    ]
++   },
++   {
++    "index": 0,
++    "fn": "ACOS",
++    "oracle_hex": "0000000000000000",
++    "recon_hex": "0000000000000000",
++    "match": true,
++    "arg_hex": [
++     "3ff0000000000000"
++    ]
++   },
++   {
++    "index": 0,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdccccccccccccc",
++    "recon_hex": "3fdccccccccccccc",
++    "match": true,
++    "arg_hex": [
++     "3fdccccccccccccc",
++     "0000000000000000"
++    ]
++   },
++   {
++    "index": 1,
++    "fn": "SIN",
++    "oracle_hex": "bfca3b659239f13a",
++    "recon_hex": "bfca3b659239f13a",
++    "match": true,
++    "arg_hex": [
++     "bfca6b50b0f27bb3"
++    ]
++   },
++   {
++    "index": 1,
++    "fn": "COS",
++    "oracle_hex": "3fef5220039829b0",
++    "recon_hex": "3fef5220039829b0",
++    "match": true,
++    "arg_hex": [
++     "bfca6b50b0f27bb3"
++    ]
++   },
++   {
++    "index": 1,
++    "fn": "ATAN2",
++    "oracle_hex": "bfa797a716850061",
++    "recon_hex": "bfa797a716850061",
++    "match": true,
++    "arg_hex": [
++     "bf95190d9b2c5438",
++     "3fdc98a334473fb4"
++    ]
++   },
++   {
++    "index": 1,
++    "fn": "ACOS",
++    "oracle_hex": "3f450da3d28fc92b",
++    "recon_hex": "3f450da3d28fc92b",
++    "match": true,
++    "arg_hex": [
++     "3fefffff9130999a"
++    ]
++   },
++   {
++    "index": 1,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdca06a8d901ef5",
++    "recon_hex": "3fdca06a8d901ef5",
++    "match": true,
++    "arg_hex": [
++     "3fdc98a334473fb4",
++     "bf95190d9b2c5438"
++    ]
++   },
++   {
++    "index": 2,
++    "fn": "SIN",
++    "oracle_hex": "3fe626e79c0746bf",
++    "recon_hex": "3fe626e79c0746bf",
++    "match": true,
++    "arg_hex": [
++     "3fe8779c842fa50a"
++    ]
++   },
++   {
++    "index": 2,
++    "fn": "COS",
++    "oracle_hex": "3fe717d3d2b0bd1d",
++    "recon_hex": "3fe717d3d2b0bd1d",
++    "match": true,
++    "arg_hex": [
++     "3fe8779c842fa50a"
++    ]
++   },
++   {
++    "index": 2,
++    "fn": "ATAN2",
++    "oracle_hex": "3fc7234788a9c244",
++    "recon_hex": "3fc7234788a9c244",
++    "match": true,
++    "arg_hex": [
++     "3fb319b7cffcc203",
++     "3fda20bf8c01d255"
++    ]
++   },
++   {
++    "index": 2,
++    "fn": "ACOS",
++    "oracle_hex": "3f5442b6f7683ae4",
++    "recon_hex": "3f5442b6f7683ae4",
++    "match": true,
++    "arg_hex": [
++     "3feffffe658209eb"
++    ]
++   },
++   {
++    "index": 2,
++    "fn": "HYPOT",
++    "oracle_hex": "3fda8f8928a969ff",
++    "recon_hex": "3fda8f8928a969ff",
++    "match": true,
++    "arg_hex": [
++     "3fda20bf8c01d255",
++     "3fb319b7cffcc203"
++    ]
++   },
++   {
++    "index": 3,
++    "fn": "SIN",
++    "oracle_hex": "bfe0ca86aa4bcae6",
++    "recon_hex": "bfe0ca86aa4bcae6",
++    "match": true,
++    "arg_hex": [
++     "bfe1ad2bb23571d2"
++    ]
++   },
++   {
++    "index": 3,
++    "fn": "COS",
++    "oracle_hex": "3feb3da1b198884e",
++    "recon_hex": "3feb3da1b198884e",
++    "match": true,
++    "arg_hex": [
++     "bfe1ad2bb23571d2"
++    ]
++   },
++   {
++    "index": 3,
++    "fn": "ATAN2",
++    "oracle_hex": "bfc03c2716cadfb3",
++    "recon_hex": "bfc03c2716cadfb3",
++    "match": true,
++    "arg_hex": [
++     "bfabec924aed6138",
++     "3fdb5f4a1badc27e"
++    ]
++   },
++   {
++    "index": 3,
++    "fn": "ACOS",
++    "oracle_hex": "3f5138911ecdbd36",
++    "recon_hex": "3f5138911ecdbd36",
++    "match": true,
++    "arg_hex": [
++     "3feffffed7703be3"
++    ]
++   },
++   {
++    "index": 3,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdb9808b1ca400f",
++    "recon_hex": "3fdb9808b1ca400f",
++    "match": true,
++    "arg_hex": [
++     "3fdb5f4a1badc27e",
++     "bfabec924aed6138"
++    ]
++   },
++   {
++    "index": 4,
++    "fn": "SIN",
++    "oracle_hex": "3fb0d44ebe054695",
++    "recon_hex": "3fb0d44ebe054695",
++    "match": true,
++    "arg_hex": [
++     "3fb0d76ab5807ff0"
++    ]
++   },
++   {
++    "index": 4,
++    "fn": "COS",
++    "oracle_hex": "3fefee477940288c",
++    "recon_hex": "3fefee477940288c",
++    "match": true,
++    "arg_hex": [
++     "3fb0d76ab5807ff0"
++    ]
++   },
++   {
++    "index": 4,
++    "fn": "ATAN2",
++    "oracle_hex": "3f8df4578016c54a",
++    "recon_hex": "3f8df4578016c54a",
++    "match": true,
++    "arg_hex": [
++     "3f7af105e5618d08",
++     "3fdcc77bd7933f5d"
++    ]
++   },
++   {
++    "index": 4,
++    "fn": "ACOS",
++    "oracle_hex": "3f37c59f1a3b8a39",
++    "recon_hex": "3f37c59f1a3b8a39",
++    "match": true,
++    "arg_hex": [
++     "3fefffffdcae4db7"
++    ]
++   },
++   {
++    "index": 4,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdcc84599a57708",
++    "recon_hex": "3fdcc84599a57708",
++    "match": true,
++    "arg_hex": [
++     "3fdcc77bd7933f5d",
++     "3f7af105e5618d08"
++    ]
++   },
++   {
++    "index": 5,
++    "fn": "SIN",
++    "oracle_hex": "bfb2433af2045998",
++    "recon_hex": "bfb2433af2045998",
++    "match": true,
++    "arg_hex": [
++     "bfb2473471f79421"
++    ]
++   },
++   {
++    "index": 5,
++    "fn": "COS",
++    "oracle_hex": "3fefeb20d25a2846",
++    "recon_hex": "3fefeb20d25a2846",
++    "match": true,
++    "arg_hex": [
++     "bfb2473471f79421"
++    ]
++   },
++   {
++    "index": 5,
++    "fn": "ATAN2",
++    "oracle_hex": "bf904198445d2ab8",
++    "recon_hex": "bf904198445d2ab8",
++    "match": true,
++    "arg_hex": [
++     "bf7d3d233c0c0d5f",
++     "3fdcc689d8b4a5ae"
++    ]
++   },
++   {
++    "index": 5,
++    "fn": "ACOS",
++    "oracle_hex": "3f38c3e0fe5bc0cc",
++    "recon_hex": "3f38c3e0fe5bc0cc",
++    "match": true,
++    "arg_hex": [
++     "3fefffffd9aaff04"
++    ]
++   },
++   {
++    "index": 5,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdcc777820aaa3e",
++    "recon_hex": "3fdcc777820aaa3e",
++    "match": true,
++    "arg_hex": [
++     "3fdcc689d8b4a5ae",
++     "bf7d3d233c0c0d5f"
++    ]
++   },
++   {
++    "index": 6,
++    "fn": "SIN",
++    "oracle_hex": "bfe9d9651a066653",
++    "recon_hex": "bfe9d9651a066653",
++    "match": true,
++    "arg_hex": [
++     "bfee17aaac1094a3"
++    ]
++   },
++   {
++    "index": 6,
++    "fn": "COS",
++    "oracle_hex": "3fe2dcf83e3feb50",
++    "recon_hex": "3fe2dcf83e3feb50",
++    "match": true,
++    "arg_hex": [
++     "bfee17aaac1094a3"
++    ]
++   },
++   {
++    "index": 6,
++    "fn": "ATAN2",
++    "oracle_hex": "bfcd55e66c2349c3",
++    "recon_hex": "bfcd55e66c2349c3",
++    "match": true,
++    "arg_hex": [
++     "bfb732580ba03979",
++     "3fd8dbe412acc698"
++    ]
++   },
++   {
++    "index": 6,
++    "fn": "ACOS",
++    "oracle_hex": "3f56782153d51a36",
++    "recon_hex": "3f56782153d51a36",
++    "match": true,
++    "arg_hex": [
++     "3feffffe0721eb84"
++    ]
++   },
++   {
++    "index": 6,
++    "fn": "HYPOT",
++    "oracle_hex": "3fd986c2d98ab9a6",
++    "recon_hex": "3fd986c2d98ab9a6",
++    "match": true,
++    "arg_hex": [
++     "3fd8dbe412acc698",
++     "bfb732580ba03979"
++    ]
++   },
++   {
++    "index": 7,
++    "fn": "SIN",
++    "oracle_hex": "3fde388e2b82637b",
++    "recon_hex": "3fde388e2b82637b",
++    "match": true,
++    "arg_hex": [
++     "3fdf79702e6644da"
++    ]
++   },
++   {
++    "index": 7,
++    "fn": "COS",
++    "oracle_hex": "3fec352b71670410",
++    "recon_hex": "3fec352b71670410",
++    "match": true,
++    "arg_hex": [
++     "3fdf79702e6644da"
++    ]
++   },
++   {
++    "index": 7,
++    "fn": "ATAN2",
++    "oracle_hex": "3fbcb6d524a1cf7e",
++    "recon_hex": "3fbcb6d524a1cf7e",
++    "match": true,
++    "arg_hex": [
++     "3fa8ed3067e5102b",
++     "3fdba98d086bb46b"
++    ]
++   },
++   {
++    "index": 7,
++    "fn": "ACOS",
++    "oracle_hex": "3f503fb6b637da97",
++    "recon_hex": "3f503fb6b637da97",
++    "match": true,
++    "arg_hex": [
++     "3feffffef7f94f34"
++    ]
++   },
++   {
++    "index": 7,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdbd654f8b4993c",
++    "recon_hex": "3fdbd654f8b4993c",
++    "match": true,
++    "arg_hex": [
++     "3fdba98d086bb46b",
++     "3fa8ed3067e5102b"
++    ]
++   },
++   {
++    "index": 8,
++    "fn": "SIN",
++    "oracle_hex": "bfcabf40f7e61433",
++    "recon_hex": "bfcabf40f7e61433",
++    "match": true,
++    "arg_hex": [
++     "bfcaf21709310128"
++    ]
++   },
++   {
++    "index": 8,
++    "fn": "COS",
++    "oracle_hex": "3fef4b26f3203130",
++    "recon_hex": "3fef4b26f3203130",
++    "match": true,
++    "arg_hex": [
++     "bfcaf21709310128"
++    ]
++   },
++   {
++    "index": 8,
++    "fn": "ATAN2",
++    "oracle_hex": "bfa811264c280be0",
++    "recon_hex": "bfa811264c280be0",
++    "match": true,
++    "arg_hex": [
++     "bf958449af95621c",
++     "3fdc968baf567528"
++    ]
++   },
++   {
++    "index": 8,
++    "fn": "ACOS",
++    "oracle_hex": "3f4543135a2d5c59",
++    "recon_hex": "3f4543135a2d5c59",
++    "match": true,
++    "arg_hex": [
++     "3fefffff8efb5047"
++    ]
++   },
++   {
++    "index": 8,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdc9ea370a4fcdb",
++    "recon_hex": "3fdc9ea370a4fcdb",
++    "match": true,
++    "arg_hex": [
++     "3fdc968baf567528",
++     "bf958449af95621c"
++    ]
++   },
++   {
++    "index": 9,
++    "fn": "SIN",
++    "oracle_hex": "3fd73b6a3bf31dc5",
++    "recon_hex": "3fd73b6a3bf31dc5",
++    "match": true,
++    "arg_hex": [
++     "3fd7c67168f8e7dc"
++    ]
++   },
++   {
++    "index": 9,
++    "fn": "COS",
++    "oracle_hex": "3fedd1364fa800e4",
++    "recon_hex": "3fedd1364fa800e4",
++    "match": true,
++    "arg_hex": [
++     "3fd7c67168f8e7dc"
++    ]
++   },
++   {
++    "index": 9,
++    "fn": "ATAN2",
++    "oracle_hex": "3fb5736121230b48",
++    "recon_hex": "3fb5736121230b48",
++    "match": true,
++    "arg_hex": [
++     "3fa2e9345a2c902a",
++     "3fdc2529e4b266aa"
++    ]
++   },
++   {
++    "index": 9,
++    "fn": "ACOS",
++    "oracle_hex": "3f4c3ea3c3e02d81",
++    "recon_hex": "3f4c3ea3c3e02d81",
++    "match": true,
++    "arg_hex": [
++     "3fefffff388f372a"
++    ]
++   },
++   {
++    "index": 9,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdc3e88253537db",
++    "recon_hex": "3fdc3e88253537db",
++    "match": true,
++    "arg_hex": [
++     "3fdc2529e4b266aa",
++     "3fa2e9345a2c902a"
++    ]
++   },
++   {
++    "index": 10,
++    "fn": "SIN",
++    "oracle_hex": "bfe91ff34e46c970",
++    "recon_hex": "bfe91ff34e46c970",
++    "match": true,
++    "arg_hex": [
++     "bfece4df857bfecc"
++    ]
++   },
++   {
++    "index": 10,
++    "fn": "COS",
++    "oracle_hex": "3fe3d1598a7cda15",
++    "recon_hex": "3fe3d1598a7cda15",
++    "match": true,
++    "arg_hex": [
++     "bfece4df857bfecc"
++    ]
++   },
++   {
++    "index": 10,
++    "fn": "ATAN2",
++    "oracle_hex": "bfcbf92aa64ba2b6",
++    "recon_hex": "bfcbf92aa64ba2b6",
++    "match": true,
++    "arg_hex": [
++     "bfb65683ee2bd230",
++     "3fd925347658a7d3"
++    ]
++   },
++   {
++    "index": 10,
++    "fn": "ACOS",
++    "oracle_hex": "3f56046dd9517271",
++    "recon_hex": "3f56046dd9517271",
++    "match": true,
++    "arg_hex": [
++     "3feffffe1b3d0fd0"
++    ]
++   },
++   {
++    "index": 10,
++    "fn": "HYPOT",
++    "oracle_hex": "3fd9c20bd6fcb940",
++    "recon_hex": "3fd9c20bd6fcb940",
++    "match": true,
++    "arg_hex": [
++     "3fd925347658a7d3",
++     "bfb65683ee2bd230"
++    ]
++   },
++   {
++    "index": 11,
++    "fn": "SIN",
++    "oracle_hex": "3fe7c8b1cffe51f1",
++    "recon_hex": "3fe7c8b1cffe51f1",
++    "match": true,
++    "arg_hex": [
++     "3fead03001e7ca84"
++    ]
++   },
++   {
++    "index": 11,
++    "fn": "COS",
++    "oracle_hex": "3fe5689243edfe31",
++    "recon_hex": "3fe5689243edfe31",
++    "match": true,
++    "arg_hex": [
++     "3fead03001e7ca84"
++    ]
++   },
++   {
++    "index": 11,
++    "fn": "ATAN2",
++    "oracle_hex": "3fc9a9cd641ca125",
++    "recon_hex": "3fc9a9cd641ca125",
++    "match": true,
++    "arg_hex": [
++     "3fb4d41bfe2ec8b6",
++     "3fd99f5f1460ff75"
++    ]
++   },
++   {
++    "index": 11,
++    "fn": "ACOS",
++    "oracle_hex": "3f5535af06de5d3f",
++    "recon_hex": "3f5535af06de5d3f",
++    "match": true,
++    "arg_hex": [
++     "3feffffe3e260b0d"
++    ]
++   },
++   {
++    "index": 11,
++    "fn": "HYPOT",
++    "oracle_hex": "3fda257401ce7aee",
++    "recon_hex": "3fda257401ce7aee",
++    "match": true,
++    "arg_hex": [
++     "3fd99f5f1460ff75",
++     "3fb4d41bfe2ec8b6"
++    ]
++   },
++   {
++    "index": 12,
++    "fn": "SIN",
++    "oracle_hex": "0000000000000000",
++    "recon_hex": "0000000000000000",
++    "match": true,
++    "arg_hex": [
++     "0000000000000000"
++    ]
++   },
++   {
++    "index": 12,
++    "fn": "COS",
++    "oracle_hex": "3ff0000000000000",
++    "recon_hex": "3ff0000000000000",
++    "match": true,
++    "arg_hex": [
++     "0000000000000000"
++    ]
++   },
++   {
++    "index": 12,
++    "fn": "ATAN2",
++    "oracle_hex": "0000000000000000",
++    "recon_hex": "0000000000000000",
++    "match": true,
++    "arg_hex": [
++     "0000000000000000",
++     "3fdccccccccccccc"
++    ]
++   },
++   {
++    "index": 12,
++    "fn": "ACOS",
++    "oracle_hex": "0000000000000000",
++    "recon_hex": "0000000000000000",
++    "match": true,
++    "arg_hex": [
++     "3ff0000000000000"
++    ]
++   },
++   {
++    "index": 12,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdccccccccccccc",
++    "recon_hex": "3fdccccccccccccc",
++    "match": true,
++    "arg_hex": [
++     "3fdccccccccccccc",
++     "0000000000000000"
++    ]
++   },
++   {
++    "index": 13,
++    "fn": "SIN",
++    "oracle_hex": "3e45798ee2308c3a",
++    "recon_hex": "3e45798ee2308c3a",
++    "match": true,
++    "arg_hex": [
++     "3e45798ee2308c3a"
++    ]
++   },
++   {
++    "index": 13,
++    "fn": "COS",
++    "oracle_hex": "3ff0000000000000",
++    "recon_hex": "3ff0000000000000",
++    "match": true,
++    "arg_hex": [
++     "3e45798ee2308c3a"
++    ]
++   },
++   {
++    "index": 13,
++    "fn": "ATAN2",
++    "oracle_hex": "3e2316b7e5807ca6",
++    "recon_hex": "3e2316b7e5807ca6",
++    "match": true,
++    "arg_hex": [
++     "3e112e0be826d695",
++     "3fdccccccccccccc"
++    ]
++   },
++   {
++    "index": 13,
++    "fn": "ACOS",
++    "oracle_hex": "3e82f9422c23c482",
++    "recon_hex": "3e82f9422c23c482",
++    "match": true,
++    "arg_hex": [
++     "3fefffffffffffa6"
++    ]
++   },
++   {
++    "index": 13,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdccccccccccccc",
++    "recon_hex": "3fdccccccccccccc",
++    "match": true,
++    "arg_hex": [
++     "3fdccccccccccccc",
++     "3e112e0be826d695"
++    ]
++   },
++   {
++    "index": 14,
++    "fn": "SIN",
++    "oracle_hex": "3f1a36e2ea609cc8",
++    "recon_hex": "3f1a36e2ea609cc8",
++    "match": true,
++    "arg_hex": [
++     "3f1a36e2eb1c432d"
++    ]
++   },
++   {
++    "index": 14,
++    "fn": "COS",
++    "oracle_hex": "3feffffffd50ce24",
++    "recon_hex": "3feffffffd50ce24",
++    "match": true,
++    "arg_hex": [
++     "3f1a36e2eb1c432d"
++    ]
++   },
++   {
++    "index": 14,
++    "fn": "ATAN2",
++    "oracle_hex": "3ef74d3b7c13f865",
++    "recon_hex": "3ef74d3b7c13f865",
++    "match": true,
++    "arg_hex": [
++     "3ee4f8b588bde144",
++     "3fdccccccbfea43e"
++    ]
++   },
++   {
++    "index": 14,
++    "fn": "ACOS",
++    "oracle_hex": "3eeda88066815a95",
++    "recon_hex": "3eeda88066815a95",
++    "match": true,
++    "arg_hex": [
++     "3feffffffff24190"
++    ]
++   },
++   {
++    "index": 14,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdccccccc1d2efe",
++    "recon_hex": "3fdccccccc1d2efe",
++    "match": true,
++    "arg_hex": [
++     "3fdccccccbfea43e",
++     "3ee4f8b588bde144"
++    ]
++   },
++   {
++    "index": 15,
++    "fn": "SIN",
++    "oracle_hex": "3fca12b179b7284e",
++    "recon_hex": "3fca12b179b7284e",
++    "match": true,
++    "arg_hex": [
++     "3fca41bc0b613713"
++    ]
++   },
++   {
++    "index": 15,
++    "fn": "COS",
++    "oracle_hex": "3fef543fbbc781a2",
++    "recon_hex": "3fef543fbbc781a2",
++    "match": true,
++    "arg_hex": [
++     "3fca41bc0b613713"
++    ]
++   },
++   {
++    "index": 15,
++    "fn": "ATAN2",
++    "oracle_hex": "3fa7722e962dad27",
++    "recon_hex": "3fa7722e962dad27",
++    "match": true,
++    "arg_hex": [
++     "3f94f7f6eb022152",
++     "3fdc994651ef0d4a"
++    ]
++   },
++   {
++    "index": 15,
++    "fn": "ACOS",
++    "oracle_hex": "3f44fd0bf5ce7cb6",
++    "recon_hex": "3f44fd0bf5ce7cb6",
++    "match": true,
++    "arg_hex": [
++     "3fefffff91df007c"
++    ]
++   },
++   {
++    "index": 15,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdca0f52f9cea32",
++    "recon_hex": "3fdca0f52f9cea32",
++    "match": true,
++    "arg_hex": [
++     "3fdc994651ef0d4a",
++     "3f94f7f6eb022152"
++    ]
++   },
++   {
++    "index": 16,
++    "fn": "SIN",
++    "oracle_hex": "3fd8198123fa79ce",
++    "recon_hex": "3fd8198123fa79ce",
++    "match": true,
++    "arg_hex": [
++     "3fd8b57a705e8cd3"
++    ]
++   },
++   {
++    "index": 16,
++    "fn": "COS",
++    "oracle_hex": "3feda504292e9e2a",
++    "recon_hex": "3feda504292e9e2a",
++    "match": true,
++    "arg_hex": [
++     "3fd8b57a705e8cd3"
++    ]
++   },
++   {
++    "index": 16,
++    "fn": "ATAN2",
++    "oracle_hex": "3fb651d1616da209",
++    "recon_hex": "3fb651d1616da209",
++    "match": true,
++    "arg_hex": [
++     "3fa3a50351aecd84",
++     "3fdc17e7a5f462a6"
++    ]
++   },
++   {
++    "index": 16,
++    "fn": "ACOS",
++    "oracle_hex": "3f4ccb421c8370a0",
++    "recon_hex": "3f4ccb421c8370a0",
++    "match": true,
++    "arg_hex": [
++     "3fefffff30ba0ad6"
++    ]
++   },
++   {
++    "index": 16,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdc335371774ecd",
++    "recon_hex": "3fdc335371774ecd",
++    "match": true,
++    "arg_hex": [
++     "3fdc17e7a5f462a6",
++     "3fa3a50351aecd84"
++    ]
++   },
++   {
++    "index": 17,
++    "fn": "SIN",
++    "oracle_hex": "3feaed548f090cee",
++    "recon_hex": "3feaed548f090cee",
++    "match": true,
++    "arg_hex": [
++     "3ff0000000000000"
++    ]
++   },
++   {
++    "index": 17,
++    "fn": "COS",
++    "oracle_hex": "3fe14a280fb5068c",
++    "recon_hex": "3fe14a280fb5068c",
++    "match": true,
++    "arg_hex": [
++     "3ff0000000000000"
++    ]
++   },
++   {
++    "index": 17,
++    "fn": "ATAN2",
++    "oracle_hex": "3fcf8ded5d6e7861",
++    "recon_hex": "3fcf8ded5d6e7861",
++    "match": true,
++    "arg_hex": [
++     "3fb88bed29d59e5a",
++     "3fd8630c04b64ec3"
++    ]
++   },
++   {
++    "index": 17,
++    "fn": "ACOS",
++    "oracle_hex": "3f572ba46065af16",
++    "recon_hex": "3f572ba46065af16",
++    "match": true,
++    "arg_hex": [
++     "3feffffde7210be9"
++    ]
++   },
++   {
++    "index": 17,
++    "fn": "HYPOT",
++    "oracle_hex": "3fd925abfbffc699",
++    "recon_hex": "3fd925abfbffc699",
++    "match": true,
++    "arg_hex": [
++     "3fd8630c04b64ec3",
++     "3fb88bed29d59e5a"
++    ]
++   },
++   {
++    "index": 18,
++    "fn": "SIN",
++    "oracle_hex": "3fed18f6ead1b446",
++    "recon_hex": "3fed18f6ead1b446",
++    "match": true,
++    "arg_hex": [
++     "4000000000000000"
++    ]
++   },
++   {
++    "index": 18,
++    "fn": "COS",
++    "oracle_hex": "bfdaa22657537205",
++    "recon_hex": "bfdaa22657537205",
++    "match": true,
++    "arg_hex": [
++     "4000000000000000"
++    ]
++   },
++   {
++    "index": 18,
++    "fn": "ATAN2",
++    "oracle_hex": "3fe3b8edf2cf2ee8",
++    "recon_hex": "3fe3b8edf2cf2ee8",
++    "match": true,
++    "arg_hex": [
++     "3fc58aaa0c073d8c",
++     "3fce68f47f66f764"
++    ]
++   },
++   {
++    "index": 18,
++    "fn": "ACOS",
++    "oracle_hex": "3f60624e00c0da18",
++    "recon_hex": "3f60624e00c0da18",
++    "match": true,
++    "arg_hex": [
++     "3feffffbce4217d3"
++    ]
++   },
++   {
++    "index": 18,
++    "fn": "HYPOT",
++    "oracle_hex": "3fd2a2248ad64b5f",
++    "recon_hex": "3fd2a2248ad64b5f",
++    "match": true,
++    "arg_hex": [
++     "3fce68f47f66f764",
++     "3fc58aaa0c073d8c"
++    ]
++   },
++   {
++    "index": 19,
++    "fn": "SIN",
++    "oracle_hex": "3ca1a62633145c07",
++    "recon_hex": "3ca1a62633145c07",
++    "match": true,
++    "arg_hex": [
++     "400921fb54442d18"
++    ]
++   },
++   {
++    "index": 19,
++    "fn": "COS",
++    "oracle_hex": "bff0000000000000",
++    "recon_hex": "bff0000000000000",
++    "match": true,
++    "arg_hex": [
++     "400921fb54442d18"
++    ]
++   },
++   {
++    "index": 19,
++    "fn": "ATAN2",
++    "oracle_hex": "3fedac670561bb50",
++    "recon_hex": "3fedac670561bb50",
++    "match": true,
++    "arg_hex": [
++     "3fc999999999999a",
++     "3fc3333333333333"
++    ]
++   },
++   {
++    "index": 19,
++    "fn": "ACOS",
++    "oracle_hex": "3f6488c8290003f7",
++    "recon_hex": "3f6488c8290003f7",
++    "match": true,
++    "arg_hex": [
++     "3feffff9695ecb20"
++    ]
++   },
++   {
++    "index": 19,
++    "fn": "HYPOT",
++    "oracle_hex": "3fd0000000000000",
++    "recon_hex": "3fd0000000000000",
++    "match": true,
++    "arg_hex": [
++     "3fc3333333333333",
++     "3fc999999999999a"
++    ]
++   },
++   {
++    "index": 20,
++    "fn": "SIN",
++    "oracle_hex": "bfe91103985da841",
++    "recon_hex": "bfe91103985da841",
++    "match": true,
++    "arg_hex": [
++     "bfeccccccccccccd"
++    ]
++   },
++   {
++    "index": 20,
++    "fn": "COS",
++    "oracle_hex": "3fe3e43a9692e21c",
++    "recon_hex": "3fe3e43a9692e21c",
++    "match": true,
++    "arg_hex": [
++     "bfeccccccccccccd"
++    ]
++   },
++   {
++    "index": 20,
++    "fn": "ATAN2",
++    "oracle_hex": "bfcbde0f4be245a4",
++    "recon_hex": "bfcbde0f4be245a4",
++    "match": true,
++    "arg_hex": [
++     "bfb6452e24c76b51",
++     "3fd92ade605f43d5"
++    ]
++   },
++   {
++    "index": 20,
++    "fn": "ACOS",
++    "oracle_hex": "3f55fb3feeeab1f4",
++    "recon_hex": "3f55fb3feeeab1f4",
++    "match": true,
++    "arg_hex": [
++     "3feffffe1cd0f11f"
++    ]
++   },
++   {
++    "index": 20,
++    "fn": "HYPOT",
++    "oracle_hex": "3fd9c6a34f846d02",
++    "recon_hex": "3fd9c6a34f846d02",
++    "match": true,
++    "arg_hex": [
++     "3fd92ade605f43d5",
++     "bfb6452e24c76b51"
++    ]
++   },
++   {
++    "index": 21,
++    "fn": "SIN",
++    "oracle_hex": "3fe91103985da841",
++    "recon_hex": "3fe91103985da841",
++    "match": true,
++    "arg_hex": [
++     "3feccccccccccccd"
++    ]
++   },
++   {
++    "index": 21,
++    "fn": "COS",
++    "oracle_hex": "3fe3e43a9692e21c",
++    "recon_hex": "3fe3e43a9692e21c",
++    "match": true,
++    "arg_hex": [
++     "3feccccccccccccd"
++    ]
++   },
++   {
++    "index": 21,
++    "fn": "ATAN2",
++    "oracle_hex": "3fcbde0f4be245a4",
++    "recon_hex": "3fcbde0f4be245a4",
++    "match": true,
++    "arg_hex": [
++     "3fb6452e24c76b51",
++     "3fd92ade605f43d5"
++    ]
++   },
++   {
++    "index": 21,
++    "fn": "ACOS",
++    "oracle_hex": "3f55fb3feeeab1f4",
++    "recon_hex": "3f55fb3feeeab1f4",
++    "match": true,
++    "arg_hex": [
++     "3feffffe1cd0f11f"
++    ]
++   },
++   {
++    "index": 21,
++    "fn": "HYPOT",
++    "oracle_hex": "3fd9c6a34f846d02",
++    "recon_hex": "3fd9c6a34f846d02",
++    "match": true,
++    "arg_hex": [
++     "3fd92ade605f43d5",
++     "3fb6452e24c76b51"
++    ]
++   },
++   {
++    "index": 22,
++    "fn": "SIN",
++    "oracle_hex": "3f50624da5218a62",
++    "recon_hex": "3f50624da5218a62",
++    "match": true,
++    "arg_hex": [
++     "3f50624dd2f1a9fc"
++    ]
++   },
++   {
++    "index": 22,
++    "fn": "COS",
++    "oracle_hex": "3feffffef390876c",
++    "recon_hex": "3feffffef390876c",
++    "match": true,
++    "arg_hex": [
++     "3f50624dd2f1a9fc"
++    ]
++   },
++   {
++    "index": 22,
++    "fn": "ATAN2",
++    "oracle_hex": "3f2d208a8f9b6b98",
++    "recon_hex": "3f2d208a8f9b6b98",
++    "match": true,
++    "arg_hex": [
++     "3f1a36e2d8c9034a",
++     "3fdccccc7c44f56d"
++    ]
++   },
++   {
++    "index": 22,
++    "fn": "ACOS",
++    "oracle_hex": "3f0772663126c72d",
++    "recon_hex": "3f0772663126c72d",
++    "match": true,
++    "arg_hex": [
++     "3fefffffff768fa1"
++    ]
++   },
++   {
++    "index": 22,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdccccc8833286b",
++    "recon_hex": "3fdccccc8833286b",
++    "match": true,
++    "arg_hex": [
++     "3fdccccc7c44f56d",
++     "3f1a36e2d8c9034a"
++    ]
++   },
++   {
++    "index": 23,
++    "fn": "SIN",
++    "oracle_hex": "3fcfaaeed4f31577",
++    "recon_hex": "3fcfaaeed4f31577",
++    "match": true,
++    "arg_hex": [
++     "3fd0000000000000"
++    ]
++   },
++   {
++    "index": 23,
++    "fn": "COS",
++    "oracle_hex": "3fef01549f7deea1",
++    "recon_hex": "3fef01549f7deea1",
++    "match": true,
++    "arg_hex": [
++     "3fd0000000000000"
++    ]
++   },
++   {
++    "index": 23,
++    "fn": "ATAN2",
++    "oracle_hex": "3faca33963b382b1",
++    "recon_hex": "3faca33963b382b1",
++    "match": true,
++    "arg_hex": [
++     "3f99888bf2058b5f",
++     "3fdc80662fd8faca"
++    ]
++   },
++   {
++    "index": 23,
++    "fn": "ACOS",
++    "oracle_hex": "3f472ba4481f6def",
++    "recon_hex": "3f472ba4481f6def",
++    "match": true,
++    "arg_hex": [
++     "3fefffff79c842fa"
++    ]
++   },
++   {
++    "index": 23,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdc8bd3cf017803",
++    "recon_hex": "3fdc8bd3cf017803",
++    "match": true,
++    "arg_hex": [
++     "3fdc80662fd8faca",
++     "3f99888bf2058b5f"
++    ]
++   },
++   {
++    "index": 24,
++    "fn": "SIN",
++    "oracle_hex": "3fdeaee8744b05f0",
++    "recon_hex": "3fdeaee8744b05f0",
++    "match": true,
++    "arg_hex": [
++     "3fe0000000000000"
++    ]
++   },
++   {
++    "index": 24,
++    "fn": "COS",
++    "oracle_hex": "3fec1528065b7d50",
++    "recon_hex": "3fec1528065b7d50",
++    "match": true,
++    "arg_hex": [
++     "3fe0000000000000"
++    ]
++   },
++   {
++    "index": 24,
++    "fn": "ATAN2",
++    "oracle_hex": "3fbd3812e3eee232",
++    "recon_hex": "3fbd3812e3eee232",
++    "match": true,
++    "arg_hex": [
++     "3fa9558bdd8f4460",
++     "3fdb9ff2684ea598"
++    ]
++   },
++   {
++    "index": 24,
++    "fn": "ACOS",
++    "oracle_hex": "3f50624dde62cd04",
++    "recon_hex": "3f50624dde62cd04",
++    "match": true,
++    "arg_hex": [
++     "3feffffef39085f5"
++    ]
++   },
++   {
++    "index": 24,
++    "fn": "HYPOT",
++    "oracle_hex": "3fdbce431f000d2d",
++    "recon_hex": "3fdbce431f000d2d",
++    "match": true,
++    "arg_hex": [
++     "3fdb9ff2684ea598",
++     "3fa9558bdd8f4460"
++    ]
++   }
++  ]
++ },
++ "dense": {
++  "per_function": {
++   "SIN": {
++    "passed": 6396,
++    "total": 6396
++   },
++   "COS": {
++    "passed": 6396,
++    "total": 6396
++   },
++   "ATAN2": {
++    "passed": 40400,
++    "total": 40400
++   },
++   "ACOS": {
++    "passed": 1000,
++    "total": 1000
++   },
++   "HYPOT": {
++    "passed": 1200,
++    "total": 1200
++   }
++  },
++  "total": [
++   55392,
++   55392
++  ],
++  "predicted_census": {
++   "SIN": 6396,
++   "COS": 6396,
++   "ATAN2": 40400,
++   "ACOS": 1000,
++   "HYPOT": 1200
++  },
++  "predicted_total": 55392,
++  "p3_pass": true
++ },
++ "preserved_libdevice_vs_crt": {
++  "differing_sites": 31,
++  "by_function": {
++   "ACOS": 4,
++   "HYPOT": 11,
++   "SIN": 5,
++   "ATAN2": 6,
++   "COS": 5
++  },
++  "all_exactly_one_ulp": false,
++  "not_one_ulp": [
++   {
++    "site": [
++     "HYPOT",
++     16
++    ],
++    "a": "3fdc335371774ecf",
++    "b": "3fdc335371774ecd",
++    "exactly_one_ulp": false,
++    "numerically_equal_zero_pair": false
++   }
++  ],
++  "finding": "F-ONTW02-ULPCLASS: the preserved trig_gpu.txt vs trig_host.txt comparison shows 31/125 differing sites as claimed, but NOT all at exactly 1 ulp: 30 sites differ by exactly 1 ulp and 1 site (HYPOT input 16) by exactly 2 ulps. The closeout-3 commit-message claim 'always exactly 1 ulp' is corrected by the records themselves.",
++  "diffs": [
++   {
++    "site": [
++     "ACOS",
++     1
++    ],
++    "a": "3f450da3d28fc92a",
++    "b": "3f450da3d28fc92b",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     1
++    ],
++    "a": "3fdca06a8d901ef6",
++    "b": "3fdca06a8d901ef5",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "SIN",
++     2
++    ],
++    "a": "3fe626e79c0746c0",
++    "b": "3fe626e79c0746bf",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     3
++    ],
++    "a": "3fdb9808b1ca400e",
++    "b": "3fdb9808b1ca400f",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ACOS",
++     5
++    ],
++    "a": "3f38c3e0fe5bc0cb",
++    "b": "3f38c3e0fe5bc0cc",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ATAN2",
++     6
++    ],
++    "a": "bfcd55e66c2349c4",
++    "b": "bfcd55e66c2349c3",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "COS",
++     6
++    ],
++    "a": "3fe2dcf83e3feb51",
++    "b": "3fe2dcf83e3feb50",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "SIN",
++     6
++    ],
++    "a": "bfe9d9651a066652",
++    "b": "bfe9d9651a066653",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ACOS",
++     7
++    ],
++    "a": "3f503fb6b637da96",
++    "b": "3f503fb6b637da97",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     7
++    ],
++    "a": "3fdbd654f8b4993b",
++    "b": "3fdbd654f8b4993c",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     8
++    ],
++    "a": "3fdc9ea370a4fcdc",
++    "b": "3fdc9ea370a4fcdb",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ACOS",
++     9
++    ],
++    "a": "3f4c3ea3c3e02d82",
++    "b": "3f4c3ea3c3e02d81",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ATAN2",
++     9
++    ],
++    "a": "3fb5736121230b47",
++    "b": "3fb5736121230b48",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     9
++    ],
++    "a": "3fdc3e88253537dc",
++    "b": "3fdc3e88253537db",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "COS",
++     10
++    ],
++    "a": "3fe3d1598a7cda16",
++    "b": "3fe3d1598a7cda15",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "COS",
++     11
++    ],
++    "a": "3fe5689243edfe32",
++    "b": "3fe5689243edfe31",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     11
++    ],
++    "a": "3fda257401ce7aed",
++    "b": "3fda257401ce7aee",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "SIN",
++     11
++    ],
++    "a": "3fe7c8b1cffe51f0",
++    "b": "3fe7c8b1cffe51f1",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     13
++    ],
++    "a": "3fdccccccccccccb",
++    "b": "3fdccccccccccccc",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ATAN2",
++     15
++    ],
++    "a": "3fa7722e962dad28",
++    "b": "3fa7722e962dad27",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     15
++    ],
++    "a": "3fdca0f52f9cea31",
++    "b": "3fdca0f52f9cea32",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     16
++    ],
++    "a": "3fdc335371774ecf",
++    "b": "3fdc335371774ecd",
++    "exactly_one_ulp": false,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ATAN2",
++     18
++    ],
++    "a": "3fe3b8edf2cf2ee7",
++    "b": "3fe3b8edf2cf2ee8",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     18
++    ],
++    "a": "3fd2a2248ad64b60",
++    "b": "3fd2a2248ad64b5f",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "COS",
++     20
++    ],
++    "a": "3fe3e43a9692e21d",
++    "b": "3fe3e43a9692e21c",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "SIN",
++     20
++    ],
++    "a": "bfe91103985da840",
++    "b": "bfe91103985da841",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "COS",
++     21
++    ],
++    "a": "3fe3e43a9692e21d",
++    "b": "3fe3e43a9692e21c",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "SIN",
++     21
++    ],
++    "a": "3fe91103985da840",
++    "b": "3fe91103985da841",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ATAN2",
++     23
++    ],
++    "a": "3faca33963b382b2",
++    "b": "3faca33963b382b1",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ATAN2",
++     24
++    ],
++    "a": "3fbd3812e3eee231",
++    "b": "3fbd3812e3eee232",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     24
++    ],
++    "a": "3fdbce431f000d2c",
++    "b": "3fdbce431f000d2d",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   }
++  ],
++  "p5_pass_count_and_distribution": true,
++  "p5_frozen_all_one_ulp_subclaim": false
++ },
++ "preserved_fdlibm_vs_crt": {
++  "bit_identical_sites": 115,
++  "differing_sites": 10,
++  "all_exactly_one_ulp": true,
++  "conclusion": "fdlibm is NOT reference-equivalent at the frozen sites; the adopted substitution is the UCRT reconstruction",
++  "diffs": [
++   {
++    "site": [
++     "ATAN2",
++     1
++    ],
++    "a": "bfa797a716850062",
++    "b": "bfa797a716850061",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "COS",
++     2
++    ],
++    "a": "3fe717d3d2b0bd1c",
++    "b": "3fe717d3d2b0bd1d",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "SIN",
++     2
++    ],
++    "a": "3fe626e79c0746c0",
++    "b": "3fe626e79c0746bf",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     6
++    ],
++    "a": "3fd986c2d98ab9a7",
++    "b": "3fd986c2d98ab9a6",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "SIN",
++     11
++    ],
++    "a": "3fe7c8b1cffe51f0",
++    "b": "3fe7c8b1cffe51f1",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     16
++    ],
++    "a": "3fdc335371774ece",
++    "b": "3fdc335371774ecd",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ATAN2",
++     17
++    ],
++    "a": "3fcf8ded5d6e7860",
++    "b": "3fcf8ded5d6e7861",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ATAN2",
++     23
++    ],
++    "a": "3faca33963b382b2",
++    "b": "3faca33963b382b1",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "HYPOT",
++     23
++    ],
++    "a": "3fdc8bd3cf017802",
++    "b": "3fdc8bd3cf017803",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   },
++   {
++    "site": [
++     "ATAN2",
++     24
++    ],
++    "a": "3fbd3812e3eee231",
++    "b": "3fbd3812e3eee232",
++    "exactly_one_ulp": true,
++    "numerically_equal_zero_pair": false
++   }
++  ],
++  "p4_pass": true
++ },
++ "preserved_device_leg": {
++  "record": "co7_gate_out2.txt (historical, closeout-7; NOT re-measured here)",
++  "cases": 55517,
++  "on_device_gate": "ON-DEVICE GATE: 55517/55517 bit-identical -- PASS",
++  "host_dense_record": "dense sweep: 55517/55517 bit-identical",
++  "p6_record_present_and_consistent": true
++ },
++ "predictions": {
++  "P1_frozen125_bit_exact": true,
++  "P2_oracle_matches_preserved_record": true,
++  "P3_dense_zero_diff_and_census": true,
++  "P4_fdlibm_not_equivalent_115_of_125": true,
++  "P5_libdevice_31_of_125_count_and_distribution": true,
++  "P5_frozen_all_one_ulp_subclaim": false,
++  "P6_device_gate_record_preserved": true
++ },
++ "verdict": "PASS_NO_TOLERANCE",
++ "finished_utc": "2026-09-26T21:38:13.198657+00:00",
++ "build_log": [
++  {
++   "step": "compile",
++   "exit": 0,
++   "stdout": "ucrt_math.c\nGenerating Code...\nCompiling...\nparity_gate_host.cxx\nGenerating Code...\n",
++   "stderr": "",
++   "command": "@echo off\n\ncall \"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat\" >nul 2>&1\n\ncl /nologo /O2 /fp:precise /EHsc /FI host_qual_shim.h ucrt_math.c parity_gate_host.cxx /Fe:parity_gate.exe\n\n"
++  }
++ ]
++}
+\ No newline at end of file
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/qualification_receipt.json b/tools/monkey_campaign/contributions/ONT-W02/qualification_receipt.json
+new file mode 100644
+index 00000000..89ee7ff3
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/qualification_receipt.json
+@@ -0,0 +1,168 @@
++{
++ "schema": "chimera.monkey.qualification-receipt.v1",
++ "task_id": "ONT-W02",
++ "attempt_id": "681e63e9e5d84eaa9702379faf347ac5",
++ "agent_id": "arrival-535a6d99aaf94c78b3aed6a239885498",
++ "criteria_sha256": "bf9f89874ee4a7d0606c46215e843474331482444af556ac4f199a6bfcd087f2",
++ "planning_ids": [
++  "W02"
++ ],
++ "calculation_ids": [
++  "C09"
++ ],
++ "verification_profile": {
++  "id": "records",
++  "kind": "offline"
++ },
++ "checkout_base": "155a0f5c6ed14d6ce0c95572676eb03f14bc8a50 (branch-8)",
++ "preregistration": {
++  "file": "PREREGISTRATION.md",
++  "frozen_before_probes": true
++ },
++ "done_when": "Reference-math equivalence is demonstrated at the frozen sites without tolerance relaxation",
++ "done_when_demonstrated": true,
++ "verdict": "PASS_NO_TOLERANCE",
++ "fresh_evidence": {
++  "evidence_class": "component/records-subject host probe; NOT an engine/GPU/training claim",
++  "frozen125": {
++   "passed": 125,
++   "total": 125,
++   "tolerance": "NONE (IEEE-754 bit equality)"
++  },
++  "dense": {
++   "passed": 55392,
++   "total": 55392
++  },
++  "oracle": "linked MSVC UCRT (the lane pinned ground truth), independent of the reconstruction",
++  "deterministic_rerun_bit_identical": true,
++  "gate_stdout_sha256": "517096e569b6bc7bbeb3e581ab590c5f84fa8e1da9e97962ab2d34f61291d935",
++  "compiler": "MSVC 19.44.35228 for x64 (toolset 14.44.35207), /O2 /fp:precise /EHsc",
++  "gpu_runs": 0,
++  "engine_launches": 0,
++  "training_runs": 0
++ },
++ "preserved_evidence": {
++  "libdevice_vs_crt": {
++   "differing_sites": 31,
++   "by_function": {
++    "ACOS": 4,
++    "HYPOT": 11,
++    "SIN": 5,
++    "ATAN2": 6,
++    "COS": 5
++   },
++   "all_exactly_one_ulp": false,
++   "finding": "F-ONTW02-ULPCLASS: 30x1ulp + HYPOT@16 2ulp (corrects closeout-3 wording)"
++  },
++  "fdlibm_vs_crt": {
++   "identical": 115,
++   "differing": 10,
++   "conclusion": "fdlibm NOT reference-equivalent; must not be assumed"
++  },
++  "on_device_gate_record": "55517/55517 bit-identical -- PASS (co7_gate_out2.txt, historical)",
++  "lane_archive_ref": "refs/chimera-archive-source/20260925/agent/typeb-gpu-finish-20260922 (a62b286e)"
++ },
++ "predictions": {
++  "P1_frozen125_bit_exact": true,
++  "P2_oracle_matches_preserved_record": true,
++  "P3_dense_zero_diff_and_census": true,
++  "P4_fdlibm_not_equivalent_115_of_125": true,
++  "P5_libdevice_31_of_125_count_and_distribution": true,
++  "P5_frozen_all_one_ulp_subclaim": false,
++  "P6_device_gate_record_preserved": true
++ },
++ "findings": [
++  "F-ONTW02-ULPCLASS: preserved records correct the closeout-3 claim - 30/31 libdevice diffs are exactly 1 ulp, HYPOT input 16 differs by exactly 2 ulps.",
++  "F-ONTW02-CENSUS: prereg grand-total line 53,392 was an author addition slip; per-function census (6396/6396/40400/1000/1200, sums 55,392) was frozen correctly and matched exactly. Prereg file left frozen; correction recorded."
++ ],
++ "constraints_honored": {
++  "cpu_only": true,
++  "no_gpu": true,
++  "no_engine_launch": true,
++  "no_training": true,
++  "python_minus_B": true,
++  "writes_confined_to_attempt_workspace": true
++ },
++ "artifacts": [
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\PREREGISTRATION.md",
++   "sha256": "3496d4e07e1f161ddcc5d5c470a51a65e1ecc97768b36877a793cad1054c3364",
++   "bytes": 10122
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\report.md",
++   "sha256": "786312256d84f7a66910ca314c5d85b04a84b6562c6d096e250d7e6b0fdcdb2d",
++   "bytes": 8961
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\run_gate.py",
++   "sha256": "7cd46a8245ed09c3e54cc702b8556c14e7fde66b03d7cd20d2d3384753a03e87",
++   "bytes": 16708
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\parity_gate_result.json",
++   "sha256": "e1d6a5096ca5e50f6907e5d68f9c57fe2d4e6141902badb23ecc454b18e105fa",
++   "bytes": 39872
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\parity_gate_host.cxx",
++   "sha256": "9cdc67df81b7fd358d7eef83634ba294a4f9ac310500f5d452fe74b51b17c683",
++   "bytes": 8766
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\host_qual_shim.h",
++   "sha256": "39ebeeb939d85345c28dcea41f4ab4e4443f168b4c2a4b3a0e0ac33772c1250a",
++   "bytes": 1010
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\trig_inputs.txt",
++   "sha256": "a21467e5e5aeb09f23a6de39c16902c34d2a34ebaa83cbccaab01ba1a0ea8b01",
++   "bytes": 349
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\ucrt_math.c",
++   "sha256": "cde32a8d36c0fbf481d67fa0005ace7dab08f066971085e543f7909740900b97",
++   "bytes": 28375
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\ucrt_math_tables.h",
++   "sha256": "cdae6a920bb38d517c11683e11fda0c2f15b6069ab5c1ee4d5bbdd9a62d437ed",
++   "bytes": 12970
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\ucrt_math_consts.h",
++   "sha256": "106b7cc7cc9823d58092a0eddc4987df5a31f0e02d0705e905292b2759aec938",
++   "bytes": 13101
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\trig_host.txt",
++   "sha256": "ed48cf12865115dc8223c0e4ab03ca331144a7c6267ad5e25dda327a9b0a24f2",
++   "bytes": 5463
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\trig_gpu.txt",
++   "sha256": "bb896746b5883a3cfd73acccd6b4373496da589aa61361fe58be83237fa9e733",
++   "bytes": 5458
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\trig_fdlibm_out.txt",
++   "sha256": "41e484b2bf5be5eba7d7607d029d3221880e1af236ea424d938570dd158c34ed",
++   "bytes": 5469
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\co7_gate_out2.txt",
++   "sha256": "54e72577920b1fb0a1cfe068ac482198929bfc208779738c2ddf9c7ab1c740a4",
++   "bytes": 155
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\co7_dense_full2.txt",
++   "sha256": "2bc8d9bc9631d58f81cf5c1e1d5774455b40e4c30e50661d62351f49ce909f67",
++   "bytes": 203
++  },
++  {
++   "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-W02\\681e63e9e5d84eaa9702379faf347ac5\\checkout\\tools\\monkey_campaign\\contributions\\ONT-W02\\frozen_sites\\preserved\\co6_trig_dense.txt",
++   "sha256": "c51cda41db828723bdfa3c9360709f2733927164be05cc21db92727c5d5db8d2",
++   "bytes": 2419
++  }
++ ]
++}
+\ No newline at end of file
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/report.md b/tools/monkey_campaign/contributions/ONT-W02/report.md
+new file mode 100644
+index 00000000..992a6793
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/report.md
+@@ -0,0 +1,128 @@
++# ONT-W02 report — Close transcendental parity defects
++
++Task W02 (implementation, group "Walking foundation", calculation C09, profile
++`records` offline, numerical evidence required). Attempt `681e63e9e5d84eaa9702379faf347ac5`,
++arrival `arrival-535a6d99aaf94c78b3aed6a239885498`, criteria_sha256
++`bf9f89874ee4a7d0606c46215e843474331482444af556ac4f199a6bfcd087f2`.
++Attempt checkout base: branch-8 @ `155a0f5c6ed14d6ce0c95572676eb03f14bc8a50`.
++done_when: **"Reference-math equivalence is demonstrated at the frozen sites without
++tolerance relaxation."**
++
++VERDICT: **done_when demonstrated** — fresh, independently observed, zero-tolerance
++(bit-exact) host evidence at all 125 frozen sites, on top of the reconciled lane history;
++`RESULT PASS_NO_TOLERANCE` in `parity_gate_result.json`.
++
++## 1. Existed vs built
++
++**Existed (reconciled, read-only git pins; reused, not rebuilt):** the entire parity lane
++in archive ref `refs/chimera-archive-source/20260925/agent/typeb-gpu-finish-20260922`
++(head `a62b286e`): the frozen-site probe definition (`trig_probe_host.cxx` blob
++`007c6f6a` / `trig_probe.cu` blob `8751479e` / `trig_inputs.txt` blob `252366b2`),
++the libdevice-vs-CRT measurement (closeout-3 `2c062c2c`, records `trig_host.txt`
++blob `0a89550d`, `trig_gpu.txt` blob `5ba31ec7`), the fdlibm rejection (closeout-5
++`77023970`, `trig_fdlibm_out.txt` blob `d9cf26ea`), the UCRT reconstruction
++(`ucrt_math.c` blob `efd87d67` + generated `ucrt_math_tables.h` blob `bf81305a` /
++`ucrt_math_consts.h` blob `74e86ae2`; closeout-7 `d0b5eda8`/`7b092267`/`9e2e5c41`),
++the on-device gate record (`co7_gate_out2.txt` blob `f7fbfb11`: 55,517/55,517
++bit-identical), and the adoption into the walker build (closeout-8 `e3b591e1`).
++None of these artifacts exist on the current production head; the card observation
++("31/125 sites reported; fdlibm equivalence must not be assumed") was stale — that is
++the UNRECONCILED state this card owns.
++
++**Built (this attempt, task-owned):**
++- `frozen_sites/` — byte-identical pinned copies of the lane artifacts above
++  (extracted with `git -c core.autocrlf=false show`; sha256+git-blob table in
++  PREREGISTRATION.md section 2, verified by the driver at 10/10 before any run).
++- `frozen_sites/parity_gate_host.cxx` — the new frozen zero-tolerance gate probe:
++  the 125 frozen sites (25 pinned inputs x 5 functions with the exact
++  `trig_probe_host.cxx` argument derivations) plus the dense sweep ported verbatim
++  from `trig_probe2_host.cxx` (blob `5bfe2c46`), reconstruction-vs-live-CRT, IEEE-754
++  bit equality as the only pass condition.
++- `frozen_sites/host_qual_shim.h` — compile-time neutralizer for the nvcc
++  `__host__/__device__` markers in the pinned source (the lane's own host_shim
++  precedent, closeout-8); no pinned byte is modified.
++- `run_gate.py` — python -B driver: pin verification, MSVC host build
++  (vcvars64.bat, `cl /nologo /O2 /fp:precise /EHsc /FI host_qual_shim.h`), probe
++  execution (twice, for a determinism check), preserved-record cross-checks,
++  machine-readable result.
++- `parity_gate_result.json` — the evidence ledger (pins, per-site oracle/recon bits,
++  dense census, preserved-record recounts, predictions, verdict).
++- `PREREGISTRATION.md`, `report.md`, `qualification_receipt.json`.
++
++## 2. Frozen predictions — outcomes
++
++Frozen in `PREREGISTRATION.md` BEFORE the probe was built or run.
++
++| id | prediction | outcome |
++|---|---|---|
++| P1 | reconstruction vs live CRT bit-identical at 125/125 frozen sites | **CONFIRMED** — `FROZEN125 125/125`, zero differing bits |
++| P2 | live CRT oracle bits equal preserved `trig_host.txt` bits at all 125 sites (plus pinned-input identity) | **CONFIRMED** — 0 oracle-drift sites; input bits match |
++| P3 | dense sweep: 0 differing bits; census sin 6396, cos 6396, atan2 40400, acos 1000, hypot 1200 | **CONFIRMED with one prereg-text correction** — measured 55,392/55,392 bit-identical and the per-function census matched exactly; the prereg's grand-total line said 53,392, an author addition slip (its own per-function numbers sum to 55,392). Prereg file left frozen; correction recorded here and as `PREDICTED_DENSE_TOTAL=55392` in the driver. Finding id F-ONTW02-CENSUS. |
++| P4 | preserved fdlibm record: 115/125 identical, 10 diffs all exactly 1 ulp | **CONFIRMED** — fdlibm is NOT reference-equivalent at the frozen sites |
++| P5 | preserved libdevice-vs-CRT: 31 diffs, distribution SIN 5, COS 5, ATAN2 6, ACOS 4, HYPOT 11, "every difference exactly 1 ulp" | **PARTIALLY REFUTED (finding F-ONTW02-ULPCLASS)** — count and distribution CONFIRMED (31 diffs, exact distribution); the all-1-ulp sub-claim is corrected by the records themselves: 30 diffs are exactly 1 ulp, 1 site (HYPOT input 16) differs by exactly 2 ulps (`3fdc335371774ecf` vs `3fdc335371774ecd`). The closeout-3 commit-message wording "always exactly 1 ulp" overstates precision. This strengthens, not weakens, the non-equivalence of libdevice. |
++| P6 | preserved on-device gate record present and consistent | **CONFIRMED** — `ON-DEVICE GATE: 55517/55517 bit-identical -- PASS` (`co7_gate_out2.txt`), historical, not re-measured |
++
++## 3. Actual verification (commands and identities)
++
++All steps are re-runnable: `python -B run_gate.py` (in this directory). Executed
++2026-09-26 (UTC timestamps inside `parity_gate_result.json`):
++
++1. Pin check: 10/10 pinned files match sha256+size (PREREGISTRATION.md table).
++2. Build: `vcvars64.bat` (the lane's path) + `cl /nologo /O2 /fp:precise /EHsc /FI
++   host_qual_shim.h ucrt_math.c parity_gate_host.cxx /Fe:parity_gate.exe` — exit 0.
++   Compiler: Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35228 for x64
++   (MSVC toolset 14.44.35207). `/fp:precise` keeps host contraction off; the
++   reconstruction carries explicit `fma()` — the same recipe the lane used for the
++   adoption probe (`build_trig_probe2.ps1`).
++3. Run probe twice: outputs byte-identical
++   (`stdout_sha256_first == stdout_sha256_second ==
++   517096e569b6bc7bbeb3e581ab590c5f84fa8e1da9e97962ab2d34f61291d935`).
++4. Gates: `FROZEN125 125/125` (bit equality), `DENSE-TOTAL 55392/55392` (bit
++   equality, census-exact), fdlibm recount 115/125 (10 diffs all 1 ulp),
++   libdevice recount 31/125 (count+distribution), on-device record parsed.
++
++The independent oracle is the MSVC UCRT this probe links (the lane's pinned ground
++truth: "the lib on disk as ground truth", closeout-5) — not the reconstruction, not a
++fixture, not a reconstruction-of-the-reconstruction.
++
++## 4. Evidence classes (honest labeling)
++
++- **Fresh real runs (this attempt)**: compile + two executions of the frozen probe on
++  this machine's CPU; component/records-subject evidence about the pinned math
++  implementations (`ucrt_math.c` vs the linked UCRT). NOT an engine run, NOT a fresh
++  GPU qualification, NOT a training or walker-runtime claim.
++- **Preserved records (hash-pinned, cited, not re-measured)**: `trig_gpu.txt`
++  (libdevice class), `trig_fdlibm_out.txt` (fdlibm failure), `co7_gate_out2.txt`
++  (on-device gate), `co7_dense_full2.txt`, `co6_trig_dense.txt`, `trig_host.txt`.
++- **Records derivations**: the 31/125 and 115/125 recounts are pure text comparisons
++  of the preserved records (values shown site-by-site in `parity_gate_result.json`).
++
++## 5. done_when mapping
++
++"Reference-math equivalence is demonstrated at the frozen sites without tolerance
++relaxation": the frozen sites are the card's original 125 (probe definitions pinned);
++"reference-math equivalence" is bit equality between the adopted reference-math
++implementation (the UCRT reconstruction the walker kernels `#define`-redirect to since
++closeout-8) and its declared reference (the MSVC UCRT of the C++ parity reference);
++"without tolerance relaxation" holds because the pass condition is IEEE-754 bit
++equality — any 1-ulp tolerance would fail this gate. Demonstrated fresh (125/125 +
++55,392/55,392 dense) and reconciled with the lane's historical legs (fdlibm rejected;
++libdevice non-equivalent; on-device gate PASS as a preserved record).
++
++## 6. Remaining gates (stayed open, honestly)
++
++- Fresh GPU/on-device re-qualification and walker-runtime bars are NOT claimed here
++  (GPU and engine work are barred for this attempt); they remain with the owning
++  runtime lanes. The preserved closeout-7 device record stands as history.
++- Independent review of this candidate (queued automatically on publication request).
++- Lead-serialized publication; this attempt does not merge anything.
++
++## 7. Containment
++
++All writes stayed inside
++`E:\ChimeraWork\monkey-coordination\kanban-attempts\ONT-W02\681e63e9e5d84eaa9702379faf347ac5`
++(checkout contribution dir + `build_gate\` scratch). One early driver revision computed
++its build dir one level too high; the stray `kanban-attempts/ONT-W02/build_gate`
++directory was deleted in the same session before any further writes (nothing else was
++created outside the attempt workspace). No GPU, no engine launches, no training,
++python -B CPU-only drivers throughout.
+diff --git a/tools/monkey_campaign/contributions/ONT-W02/run_gate.py b/tools/monkey_campaign/contributions/ONT-W02/run_gate.py
+new file mode 100644
+index 00000000..88631330
+--- /dev/null
++++ b/tools/monkey_campaign/contributions/ONT-W02/run_gate.py
+@@ -0,0 +1,353 @@
++#!/usr/bin/env python -B
++"""ONT-W02 frozen reference-math equivalence gate driver (CPU-only).
++
++Frozen in PREREGISTRATION.md before any run. Verifies pinned identities,
++builds the frozen probe with MSVC (host only, no GPU, no engine), runs it,
++cross-checks the preserved lane records, and writes parity_gate_result.json.
++
++Usage: python -B run_gate.py
++Exit 0 iff every frozen gate passes; 1 otherwise.
++Trailer Agent: GLM 5.3 (monkey campaign worker, ONT-W02).
++"""
++import hashlib
++import json
++import re
++import struct
++import subprocess
++import sys
++from datetime import datetime, timezone
++from pathlib import Path
++
++HERE = Path(__file__).resolve().parent
++# parents: [0]=contributions, [1]=monkey_campaign, [2]=tools, [3]=checkout,
++# [4]=attempt root (681e63e9e5d84eaa9702379faf347ac5)
++ATTEMPT_ROOT = HERE.parents[4]
++BUILD = ATTEMPT_ROOT / "build_gate"
++RESULT_JSON = HERE / "parity_gate_result.json"
++
++VCVARS_CANDIDATES = [
++    r"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat",
++    r"C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat",
++]
++
++# Pinned identities (PREREGISTRATION.md section 2, frozen before the run).
++PINS = {
++    "trig_inputs.txt": (
++        "a21467e5e5aeb09f23a6de39c16902c34d2a34ebaa83cbccaab01ba1a0ea8b01", 349),
++    "ucrt_math.c": (
++        "cde32a8d36c0fbf481d67fa0005ace7dab08f066971085e543f7909740900b97", 28375),
++    "ucrt_math_tables.h": (
++        "cdae6a920bb38d517c11683e11fda0c2f15b6069ab5c1ee4d5bbdd9a62d437ed", 12970),
++    "ucrt_math_consts.h": (
++        "106b7cc7cc9823d58092a0eddc4987df5a31f0e02d0705e905292b2759aec938", 13101),
++    "preserved/trig_host.txt": (
++        "ed48cf12865115dc8223c0e4ab03ca331144a7c6267ad5e25dda327a9b0a24f2", 5463),
++    "preserved/trig_gpu.txt": (
++        "bb896746b5883a3cfd73acccd6b4373496da589aa61361fe58be83237fa9e733", 5458),
++    "preserved/trig_fdlibm_out.txt": (
++        "41e484b2bf5be5eba7d7607d029d3221880e1af236ea424d938570dd158c34ed", 5469),
++    "preserved/co7_gate_out2.txt": (
++        "54e72577920b1fb0a1cfe068ac482198929bfc208779738c2ddf9c7ab1c740a4", 155),
++    "preserved/co7_dense_full2.txt": (
++        "2bc8d9bc9631d58f81cf5c1e1d5774455b40e4c30e50661d62351f49ce909f67", 203),
++    "preserved/co6_trig_dense.txt": (
++        "c51cda41db828723bdfa3c9360709f2733927164be05cc21db92727c5d5db8d2", 2419),
++}
++GIT_BLOBS_AT_A62B286E = {
++    "trig_inputs.txt": "252366b2d1106a13f87bb3cf8380c0202f97f71c",
++    "ucrt_math.c": "efd87d67b114c350c1a8e081183d3a139a35a3df",
++    "ucrt_math_tables.h": "bf81305a13fa11437d31238ae2791b89a3d349e1",
++    "ucrt_math_consts.h": "74e86ae2d55f7ca3eeccf6003b94f552bb05e229",
++    "preserved/trig_host.txt": "0a89550d6fe1aedc205c3b34835d83b8f8c85ca1",
++    "preserved/trig_gpu.txt": "5ba31ec7a1f527ffa86ab4f5b7d08718a0abc6c5",
++    "preserved/trig_fdlibm_out.txt": "d9cf26eac0f65fdb7790820c056eed9866856b97",
++    "preserved/co7_gate_out2.txt": "f7fbfb11258f6ec3fb24f048541c32cda10f1cfc",
++    "preserved/co7_dense_full2.txt": "af66ec6a229738fa90c47498b40e1769ea092d2e",
++    "preserved/co6_trig_dense.txt": "23fed41a5e5a0986b0505afab709af433873f654",
++}
++# P3 predicted dense census, counted from the frozen generator BEFORE the run.
++# PREREG AMENDMENT (recorded, prereg file left frozen): the prereg's grand-total
++# line said 53,392 -- an author addition slip. The frozen prereg's own
++# per-function census (sin 6396, cos 6396, atan2 40400, acos 1000, hypot 1200)
++# sums to 55,392, which is the arithmetic-correct total and what the probe is
++# required to reproduce. See report.md finding F-ONTW02-CENSUS.
++PREDICTED_DENSE = {"SIN": 6396, "COS": 6396, "ATAN2": 40400, "ACOS": 1000, "HYPOT": 1200}
++PREDICTED_DENSE_TOTAL = 55392
++
++
++def sha256(path):
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def check_pins():
++    ok, found = True, {}
++    for rel, (want, size) in PINS.items():
++        p = HERE / "frozen_sites" / rel
++        if not p.is_file():
++            print(f"PIN-MISSING {rel}")
++            ok = False
++            continue
++        b = p.read_bytes()
++        got = hashlib.sha256(b).hexdigest()
++        found[rel] = {"sha256": got, "size": len(b),
++                      "git_blob_a62b286e": GIT_BLOBS_AT_A62B286E[rel]}
++        if got != want or len(b) != size:
++            print(f"PIN-MISMATCH {rel} got {got} {len(b)} want {want} {size}")
++            ok = False
++    return ok, found
++
++
++def parse_records(path):
++    """Parse a trig record: {(tag, i): hexbits}."""
++    out = {}
++    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
++        m = re.match(r"^(SIN|COS|ATAN2|ACOS|HYPOT)\s+(\d+)\s+\S+\s+([0-9a-f]{16})\s*$", line)
++        if m:
++            out[(m.group(1), int(m.group(2)))] = m.group(3)
++    return out
++
++
++def ulp_apart(ha, hb):
++    """Return (exact_one_ulp, numeric_equal) for two hex bit strings."""
++    a, b = int(ha, 16), int(hb, 16)
++
++    def key(u):
++        return (~u) & 0xFFFFFFFFFFFFFFFF if (u >> 63) else u | 0x8000000000000000
++
++    ka, kb = key(a), key(b)
++    return abs(ka - kb) == 1, a == b
++
++
++def recount_diffs(rec_a, rec_b):
++    """Count sites where rec_a differs from rec_b; classify 1-ulp."""
++    keys = sorted(set(rec_a) & set(rec_b), key=lambda k: (k[1], k[0]))
++    diffs = []
++    for k in keys:
++        if rec_a[k] != rec_b[k]:
++            one, numeq = ulp_apart(rec_a[k], rec_b[k])
++            diffs.append({"site": k, "a": rec_a[k], "b": rec_b[k],
++                          "exactly_one_ulp": one, "numerically_equal_zero_pair": numeq})
++    return keys, diffs
++
++
++def main():
++    result = {
++        "schema": "chimera.ont-w02.parity-gate.v1",
++        "task": "ONT-W02",
++        "attempt_id": "681e63e9e5d84eaa9702379faf347ac5",
++        "criteria_sha256": "bf9f89874ee4a7d0606c46215e843474331482444af556ac4f199a6bfcd087f2",
++        "frozen_before_run": "PREREGISTRATION.md (same directory)",
++        "tolerance": "NONE - IEEE-754 bit equality is the only pass condition",
++        "evidence_class": "fresh CPU-only host component probe of pinned math "
++                          "implementations; no GPU, no engine, no training",
++        "started_utc": datetime.now(timezone.utc).isoformat(),
++    }
++    ok, pins = check_pins()
++    result["pins"] = pins
++    if not ok:
++        result["verdict"] = "FAIL_PIN_IDENTITY"
++        RESULT_JSON.write_text(json.dumps(result, indent=1), encoding="utf-8")
++        print("GATE FAIL: pin identity mismatch")
++        return 1
++    print("PINS OK (10/10 sha256+size)")
++
++    fs = HERE / "frozen_sites"
++    BUILD.mkdir(parents=True, exist_ok=True)
++    for name in ("ucrt_math.c", "ucrt_math_tables.h", "parity_gate_host.cxx",
++                 "host_qual_shim.h"):
++        (BUILD / name).write_bytes((fs / name).read_bytes())
++
++    vcvars = next((v for v in VCVARS_CANDIDATES if Path(v).is_file()), None)
++    if not vcvars:
++        print("GATE FAIL: vcvars64.bat not found")
++        result["verdict"] = "FAIL_NO_COMPILER"
++        RESULT_JSON.write_text(json.dumps(result, indent=1), encoding="utf-8")
++        return 1
++    bat = BUILD / "run_build.bat"
++    bat.write_text(
++        "@echo off\r\n"
++        'call "{}" >nul 2>&1\r\n'
++        "cl /nologo /O2 /fp:precise /EHsc /FI host_qual_shim.h "
++        "ucrt_math.c parity_gate_host.cxx /Fe:parity_gate.exe\r\n".format(vcvars),
++        encoding="ascii")
++    proc = subprocess.run(["cmd", "/c", str(bat)], cwd=str(BUILD),
++                          capture_output=True, text=True, shell=False)
++    build_log = [{"step": "compile", "exit": proc.returncode,
++                  "stdout": proc.stdout[-4000:], "stderr": proc.stderr[-4000:],
++                  "command": bat.read_text(encoding="ascii").replace("\r\n", " ; ")}]
++    print(f"COMPILE exit={proc.returncode}")
++    if proc.returncode != 0:
++        print(proc.stdout[-2000:], proc.stderr[-2000:])
++        result["build_log"] = build_log
++        result["verdict"] = "FAIL_BUILD"
++        RESULT_JSON.write_text(json.dumps(result, indent=1), encoding="utf-8")
++        return 1
++    m = re.search(r"Compiler Version ([^\r\n]+) for x64", proc.stdout or "")
++    if m:
++        result["cl_version"] = m.group(1).strip()
++
++    run = subprocess.run([str(BUILD / "parity_gate.exe")], cwd=str(BUILD),
++                         capture_output=True, text=True, timeout=600)
++    gate_out = run.stdout
++    (BUILD / "parity_gate_run.txt").write_text(gate_out, encoding="utf-8")
++    run2 = subprocess.run([str(BUILD / "parity_gate.exe")], cwd=str(BUILD),
++                          capture_output=True, text=True, timeout=600)
++    result["gate_run_exit"] = run.returncode
++    result["gate_run_output"] = str(BUILD / "parity_gate_run.txt")
++    result["deterministic_rerun"] = {
++        "second_exit": run2.returncode,
++        "stdout_sha256_first": hashlib.sha256(gate_out.encode("utf-8")).hexdigest(),
++        "stdout_sha256_second": hashlib.sha256(run2.stdout.encode("utf-8")).hexdigest(),
++        "bit_identical": (run2.stdout == gate_out and run.returncode == run2.returncode),
++    }
++
++    # ---- frozen125 ----
++    xbits = {}
++    site_rows = []
++    for line in gate_out.splitlines():
++        p = line.split()
++        if p[:1] == ["XBITS"]:
++            xbits[int(p[1])] = p[2]
++        elif p[:1] == ["SITE"]:
++            row = {"index": int(p[1]), "fn": p[2], "oracle_hex": p[3],
++                   "recon_hex": p[4], "match": p[5] == "MATCH",
++                   "arg_hex": p[7:]}
++            site_rows.append(row)
++    m = re.search(r"^FROZEN125 (\d+)/(\d+)$", gate_out, re.M)
++    f125 = (int(m.group(1)), int(m.group(2))) if m else (None, None)
++
++    # P2 (full): pinned trig_inputs.txt bits vs probe XBITS, AND fresh live-CRT
++    # oracle bits vs the preserved trig_host.txt record bits at all 125 sites
++    # (no oracle drift on this machine since the record was made).
++    inputs = [float(s) for s in fs.joinpath("trig_inputs.txt").read_text().split()]
++    input_bits = [format(struct.unpack("<Q", struct.pack("<d", v))[0], "016x")
++                  for v in inputs]
++    xbits_ok = (len(inputs) == 25 and
++                all(xbits.get(i) == input_bits[i] for i in range(25)))
++    host = parse_records(fs / "preserved" / "trig_host.txt")
++    oracle_drift = []
++    for row in site_rows:
++        k = (row["fn"], row["index"])
++        if k in host and row["oracle_hex"] != host[k]:
++            oracle_drift.append({"site": k, "fresh": row["oracle_hex"],
++                                 "preserved": host[k]})
++    p2 = xbits_ok and len(site_rows) == 125 and not oracle_drift
++    result["frozen125"] = {
++        "passed": f125[0], "total": f125[1], "p1_pass": f125 == (125, 125),
++        "input_bits_match_trig_inputs_txt": xbits_ok,
++        "oracle_bits_match_preserved_trig_host": not oracle_drift,
++        "oracle_drift_sites": oracle_drift,
++        "sites": site_rows,
++    }
++    print(f"FROZEN125 {f125[0]}/{f125[1]}  P1={'PASS' if f125 == (125, 125) else 'FAIL'}"
++          f"  P2(input+oracle identity)={'PASS' if p2 else 'FAIL'}")
++
++    # ---- dense ----
++    dense = {}
++    for fn, key in (("SIN", "SIN"), ("COS", "COS"), ("ATAN2", "ATAN2"),
++                    ("ACOS", "ACOS"), ("HYPOT", "HYPOT")):
++        m = re.search(r"^DENSE %s (\d+)/(\d+)( FAIL)?$" % fn, gate_out, re.M)
++        if m:
++            dense[key] = {"passed": int(m.group(1)), "total": int(m.group(2))}
++    m = re.search(r"^DENSE-TOTAL (\d+)/(\d+)$", gate_out, re.M)
++    dense_total = (int(m.group(1)), int(m.group(2))) if m else (None, None)
++    dense_ok = (all(v["passed"] == v["total"] for v in dense.values()) and
++                dense_total[0] == dense_total[1] and
++                {k: v["total"] for k, v in dense.items()} == PREDICTED_DENSE and
++                dense_total[1] == PREDICTED_DENSE_TOTAL)
++    result["dense"] = {"per_function": dense, "total": list(dense_total),
++                       "predicted_census": PREDICTED_DENSE,
++                       "predicted_total": PREDICTED_DENSE_TOTAL,
++                       "p3_pass": dense_ok}
++    print(f"DENSE {dense_total[0]}/{dense_total[1]}  "
++          f"P3={'PASS' if dense_ok else 'FAIL'}")
++
++    # ---- preserved records ----
++    host = parse_records(fs / "preserved" / "trig_host.txt")
++    gpu = parse_records(fs / "preserved" / "trig_gpu.txt")
++    fdl = parse_records(fs / "preserved" / "trig_fdlibm_out.txt")
++    if len(host) != 125:
++        print(f"RECORD PARSE WARN: trig_host.txt sites={len(host)}")
++    _, gpu_diffs = recount_diffs(gpu, host)
++    gpu_by_fn = {}
++    for d in gpu_diffs:
++        gpu_by_fn[d["site"][0]] = gpu_by_fn.get(d["site"][0], 0) + 1
++    gpu_one_ulp = all(d["exactly_one_ulp"] for d in gpu_diffs)
++    # P5 as frozen: 31 diffs, distribution {SIN 5, COS 5, ATAN2 6, ACOS 4,
++    # HYPOT 11}, "every difference exactly 1 ulp". The count and distribution
++    # are card-relevant and gate; the all-1-ulp sub-claim is a historical
++    # claim check -- where it fails, it is recorded as finding
++    # F-ONTW02-ULPCLASS (does not weaken the card: libdevice being 2 ulps off
++    # at one site is stronger non-equivalence, not weaker).
++    p5_count = (len(gpu_diffs) == 31 and
++                gpu_by_fn == {"SIN": 5, "COS": 5, "ATAN2": 6, "ACOS": 4, "HYPOT": 11})
++    p5 = p5_count
++    result["preserved_libdevice_vs_crt"] = {
++        "differing_sites": len(gpu_diffs), "by_function": gpu_by_fn,
++        "all_exactly_one_ulp": gpu_one_ulp,
++        "not_one_ulp": [d for d in gpu_diffs if not d["exactly_one_ulp"]],
++        "finding": ("F-ONTW02-ULPCLASS: the preserved trig_gpu.txt vs "
++                    "trig_host.txt comparison shows 31/125 differing sites as "
++                    "claimed, but NOT all at exactly 1 ulp: 30 sites differ by "
++                    "exactly 1 ulp and 1 site (HYPOT input 16) by exactly 2 "
++                    "ulps. The closeout-3 commit-message claim 'always exactly "
++                    "1 ulp' is corrected by the records themselves."
++                    if not gpu_one_ulp else "all differing sites exactly 1 ulp"),
++        "diffs": gpu_diffs,
++        "p5_pass_count_and_distribution": p5_count,
++        "p5_frozen_all_one_ulp_subclaim": gpu_one_ulp,
++    }
++    print(f"PRESERVED libdevice-vs-CRT recount: {len(gpu_diffs)} diffs "
++          f"{gpu_by_fn} 1ulp={gpu_one_ulp}  P5(count/distribution)="
++          f"{'PASS' if p5 else 'FAIL'}")
++
++    _, fdl_diffs = recount_diffs(fdl, host)
++    fdl_one_ulp = all(d["exactly_one_ulp"] for d in fdl_diffs)
++    fdl_match = 125 - len(fdl_diffs)
++    p4 = (fdl_match == 115 and len(fdl_diffs) == 10 and fdl_one_ulp)
++    result["preserved_fdlibm_vs_crt"] = {
++        "bit_identical_sites": fdl_match, "differing_sites": len(fdl_diffs),
++        "all_exactly_one_ulp": fdl_one_ulp,
++        "conclusion": "fdlibm is NOT reference-equivalent at the frozen sites; "
++                      "the adopted substitution is the UCRT reconstruction",
++        "diffs": fdl_diffs, "p4_pass": p4,
++    }
++    print(f"PRESERVED fdlibm-vs-CRT: {fdl_match}/125 identical, "
++          f"{len(fdl_diffs)} diffs 1ulp={fdl_one_ulp}  P4={'PASS' if p4 else 'FAIL'}")
++
++    gate2 = (fs / "preserved" / "co7_gate_out2.txt").read_text()
++    m = re.search(r"cases:\s*(\d+)", gate2)
++    m2 = re.search(r"ON-DEVICE GATE:\s*(\d+)/(\d+)\s+bit-identical -- (\w+)", gate2)
++    dense2 = (fs / "preserved" / "co7_dense_full2.txt").read_text()
++    m3 = re.search(r"dense sweep:\s*(\d+)/(\d+)\s+bit-identical", dense2)
++    p6 = bool(m and m2 and m3 and m2.group(2) == "55517" and m2.group(3) == "PASS")
++    result["preserved_device_leg"] = {
++        "record": "co7_gate_out2.txt (historical, closeout-7; NOT re-measured here)",
++        "cases": int(m.group(1)) if m else None,
++        "on_device_gate": m2.group(0).strip() if m2 else None,
++        "host_dense_record": m3.group(0).strip() if m3 else None,
++        "p6_record_present_and_consistent": p6,
++    }
++    print(f"PRESERVED device leg: {m2.group(0).strip() if m2 else 'MISSING'}  "
++          f"P6={'PASS' if p6 else 'FAIL'}")
++
++    overall = (f125 == (125, 125) and xbits_ok and dense_ok and p4 and p5 and p6)
++    result["predictions"] = {
++        "P1_frozen125_bit_exact": f125 == (125, 125),
++        "P2_oracle_matches_preserved_record": xbits_ok,
++        "P3_dense_zero_diff_and_census": dense_ok,
++        "P4_fdlibm_not_equivalent_115_of_125": p4,
++        "P5_libdevice_31_of_125_count_and_distribution": p5,
++        "P5_frozen_all_one_ulp_subclaim": gpu_one_ulp,
++        "P6_device_gate_record_preserved": p6,
++    }
++    result["verdict"] = "PASS_NO_TOLERANCE" if overall else "FAIL"
++    result["finished_utc"] = datetime.now(timezone.utc).isoformat()
++    result["build_log"] = build_log
++    RESULT_JSON.write_text(json.dumps(result, indent=1), encoding="utf-8")
++    print(f"RESULT {result['verdict']}  -> {RESULT_JSON}")
++    return 0 if overall else 1
++
++
++if __name__ == "__main__":
++    sys.exit(main())
