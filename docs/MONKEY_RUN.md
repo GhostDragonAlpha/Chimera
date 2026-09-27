@@ -140,7 +140,7 @@ Taking leadership never turns your own implementation into independent review.
 
 Ontology acceptance now checks actual capture/manifest hashes and runs the existing camera validator. Follow the visual-file gate in [ONTOLOGY_QUEUE.md](../tools/monkey_campaign/ONTOLOGY_QUEUE.md). Numerical and independent media review remain required. Active task criteria and assignments are unchanged.
 
-# Semantic 3D verification
+# Semantic 3D verification — astra-0035
 
 Before asking a model or the Captain to infer anatomical orientation from a render,
 read [SEMANTIC_3D_VERIFICATION.md](SEMANTIC_3D_VERIFICATION.md). Tasks that create or
@@ -342,8 +342,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 34,
-  "revision_id": "astra-0034",
+  "revision": 35,
+  "revision_id": "astra-0035",
   "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -405,7 +405,9 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md",
     "docs/PHYSICAL_PORTS.md",
     "tools/monkey_campaign/MODEL_GRADES.md",
-    "tools/monkey_campaign/OPERATOR_VISUAL_DECISIONS.md"
+    "tools/monkey_campaign/OPERATOR_VISUAL_DECISIONS.md",
+    "docs/SEMANTIC_3D_VERIFICATION.md",
+    "tools/monkey_campaign/semantic_frame.py"
   ]
 }
 CHIMERA_LEAD_CONTROL -->
