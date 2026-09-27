@@ -81,6 +81,10 @@ def main():
     # Require the installed store; never silently initialize a replacement authority.
     mailbox=box.listing(pending=True)
     slots=Registry(DEFAULT_ROOT).readonly()
+    if 'kanban' in slots:
+        queue={'goal':catalog['finish_line'], 'tasks':[
+            {'id':c['id'],'objective':c['spec']['objective'],'state':c['state']}
+            for c in slots['kanban']['cards'].values() if c['state']!='DONE']}
     out={'instruction_revision':instructions['revision_id'],
          'bundle_sha256':instructions['bundle_sha256'],
          'orientation_exit':run.returncode,'orientation':run.stdout[:12000],
@@ -146,7 +150,7 @@ def main():
             out.update(assignment=allocation,task_claimed=allocation['state'] in ('ASSIGNED','RESUME_ATTEMPT','REVIEW_ASSIGNED','OPERATIONAL_LEAD_ASSIGNED','CHECKPOINT_FOR_COORDINATION'),
                 next_action=allocation['next_action'],board=kanban.read(registry),
                 continuation='Read REVIEW_LANE.md. Development has ten slots; submitted candidates move to a separate Review queue and publish on review/<task-id>. Continue eligible work. Preserve existing PRs; only verified merge closes the task and unlocks dependencies.')
-            out['delivery_direction'] = 'Read tools/monkey_campaign/DELIVERY.md. Prioritize the flat-ground playable build; capacity is a ceiling, not a quota. Reuse tool-generated evidence and never infer runtime integration from a merged component.'
+            out['delivery_direction'] = 'Read tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md and DELIVERY.md. Recover the working prototype, reconcile material foundation evidence, then integrate the physical monkey walking through woods. Capacity is a ceiling. Archived old-scope receipts are evidence, not current qualification.'
             out['delivery_progress_command'] = 'python -B E:/PythonChimera/tools/monkey_campaign/delivery.py'
             if 'attempt' in allocation or 'review' in allocation:
                 planning_ids = allocation.get('brief', {}).get('planning_ids', [])

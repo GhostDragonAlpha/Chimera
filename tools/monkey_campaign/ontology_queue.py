@@ -9,13 +9,15 @@ HERE = Path(__file__).resolve().parent
 
 def generate(projection):
     cards = []
+    prefix = projection.get('card_namespace', 'ONT-')
+    require(re.fullmatch(r'[A-Z][A-Z0-9]*-', prefix) is not None, 'invalid_ontology_namespace')
     for t in sorted(projection['tasks'], key=lambda t: (t['dependency_layer'], t['id'])):
         if not t['selected']:
             continue
         cards.append(dict(
-            id='ONT-'+t['id'], planning_ids=[t['id']],
+            id=prefix+t['id'], planning_ids=[t['id']],
             objective=t['title']+' — '+t['done_when'],
-            depends_on=['ONT-'+d for d in t['depends_on']],
+            depends_on=[prefix+d for d in t['depends_on']],
             ontology_qualification=dict(scope_sha256=projection['scope_sha256'],
                 task_id=t['id'], task=t,
                 definition_raw_sha256=projection['definition_raw_sha256']),
@@ -54,6 +56,10 @@ def dependencies_satisfied(b,spec):
             return False
         if spec.get('ontology_qualification') and not (c.get('winner') or {}).get('ontology_qualification'):
             return False
+        if spec.get('ontology_qualification') and spec['ontology_qualification'].get('scope_sha256'):
+            proof = c['winner']['ontology_qualification']
+            if proof.get('scope_sha256') != spec['ontology_qualification']['scope_sha256']:
+                return False
     return True
 
 def eligible(b,spec):

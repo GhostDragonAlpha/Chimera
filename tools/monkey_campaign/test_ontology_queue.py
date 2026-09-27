@@ -29,11 +29,11 @@ class Tests(unittest.TestCase):
             self.assertEqual(k.read(r,second['id'])['state'],'OPEN')
             self.assertTrue(k.read(r,first['id'])['winner']['ontology_qualification'])
     def projection(self):
-        return q.project(q.load_catalog(Path('E:/PythonChimera/tools/monkey_campaign/monkey_completion_map.json')))
+        return q.project(q.load_catalog(Path(__file__).resolve().parent/'monkey_completion_map.json'))
 
     def test_real_projection_and_conditional_exclusion(self):
         p=self.projection();cards=q.generate(p)
-        self.assertEqual(len(cards),76)
+        self.assertEqual(len(cards),95)
         k.validate_specs(cards)
         self.assertTrue(all(c['planning_ids'] for c in cards))
 
@@ -50,7 +50,7 @@ class Tests(unittest.TestCase):
 
     def test_refill_is_bounded_idempotent_and_preserves_active(self):
         p=self.projection();b={'ontology_scheduler':{'scope_sha256':p['scope_sha256']},'backlog':[], 'cards':{},'branch_policy':'TEN_PERSISTENT_SLOT_BRANCHES'}
-        with patch.object(q,'HERE',Path('E:/PythonChimera/tools/monkey_campaign')):
+        with patch.object(q,'HERE',Path(__file__).resolve().parent):
             k.refill(b);before=k.digest(b);k.refill(b)
         self.assertEqual(before,k.digest(b))
         self.assertLessEqual(len(b['cards']),10)
@@ -58,7 +58,7 @@ class Tests(unittest.TestCase):
         for c in b['cards'].values():self.assertEqual(c['publication_branch'],'branch-'+str(c['slot']))
 
     def test_scope_drift_refused(self):
-        with patch.object(q,'HERE',Path('E:/PythonChimera/tools/monkey_campaign')):
+        with patch.object(q,'HERE',Path(__file__).resolve().parent):
             with self.assertRaisesRegex(ValueError,'scope_changed'):q.sync({'ontology_scheduler':{'scope_sha256':'wrong'}})
 
     def test_qualification_requires_visual_camera_and_exact_head(self):

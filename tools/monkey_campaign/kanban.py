@@ -34,6 +34,8 @@ def refill(b):
         if not eligible(b,spec):continue
         b['cards'][tid]={'id':tid,'slot':free,'state':'OPEN','spec':deepcopy(spec),
             'criteria_sha256':digest(spec),'attempts':{},'prs':{},'messages':[], 'winner':None}
+        prior=b.get('migration',{}).get('prior_tasks',{})
+        b['cards'][tid]['legacy_work']=[deepcopy(row) for pid in spec.get('planning_ids',[]) for row in prior.get(pid,[])]
         if b.get('branch_policy')=='TEN_PERSISTENT_SLOT_BRANCHES':
             b['cards'][tid]['publication_branch']=('review/'+tid if b.get('separate_review_lane') else 'branch-'+str(free))
 
@@ -99,7 +101,10 @@ def summary(b):
         'active_count':sum(development(c) for c in b['cards'].values()),'review_count':len(sections(b)['review']),'goal_complete':False}
 
 def read(registry,task_id=None):
-    b=board(registry.readonly())
+    state=registry.readonly();b=board(state)
+    if task_id and task_id not in b['cards']:
+        from scope_migration import historical_card
+        return historical_card(state,task_id)
     return deepcopy(b['cards'][task_id]) if task_id else summary(b)
 
 def join(registry,agent_id,task_id=None):
@@ -154,6 +159,7 @@ def packet(c,a,status):
         'next_action':('Read task inbox first. Work in isolated scratch/detached checkout; submit candidate patch/commit with task ID, attempt ID and criteria hash for lead publication to '+publication+'. Never push or check out the shared branch concurrently; read KANBAN.md.' if publication else 'Read task inbox first. Work only in this attempt workspace/branch. Submit a PR with task ID, attempt ID and criteria hash. A report alone does not close the card; read KANBAN.md for commands.')}
 
 def owned_attempt(b,a):
+    require(a['task_id'] in b['cards'], 'task_not_in_current_scope_run_canonical_startup')
     c=b['cards'][a['task_id']];attempt=c['attempts'][a['attempt_id']]
     require(attempt['agent_id']==a['agent_id'],'wrong_attempt_owner')
     require(c['state']!='DONE','task_already_completed')

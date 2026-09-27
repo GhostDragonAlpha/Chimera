@@ -49,6 +49,9 @@ def join(registry,agent_id,task_id=None):
     k=_k();require(isinstance(agent_id,str) and agent_id.strip(),'agent_id_required')
     with registry.transaction() as state:
         b=k.board(state);active=[c for c in b['cards'].values() if c['state']!='DONE']
+        if task_id and task_id not in b['cards'] and state.get('scope_archives'):
+            from scope_migration import historical_card
+            return historical_card(state,task_id)
         # Resume only work actually owned by this worker. Never expire other workers.
         working=[(c,a) for c in active for a in c['attempts'].values() if a['agent_id']==agent_id and a['state']=='WORKING']
         from review_lane import development, checkpoint_packet

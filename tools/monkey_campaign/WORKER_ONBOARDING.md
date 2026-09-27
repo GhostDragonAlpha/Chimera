@@ -1,3 +1,7 @@
+# Material-first scope — astra-0031
+
+Read [MATERIAL_PLAN_ADOPTION.md](MATERIAL_PLAN_ADOPTION.md). Use canonical startup, your existing arrival ID, and the returned MAT2- assignment. Prior ONT- work is archived evidence, not an active claim. Do not ask the operator for a new goal or recreate completed implementation.
+
 # Current delivery direction — astra-0030
 
 [DELIVERY.md](DELIVERY.md) governs priority, bounded review and integration reporting. Read it before applying older maximum-parallel wording below.
