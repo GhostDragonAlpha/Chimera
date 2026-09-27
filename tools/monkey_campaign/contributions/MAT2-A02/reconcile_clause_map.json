@@ -1,0 +1,98 @@
+{
+  "schema": "chimera.mat2_a02_clause_map.v1",
+  "card_id": "MAT2-A02",
+  "planning_id": "A02",
+  "criteria_sha256": "c5d0e02ef376f01afcab78ee81e087f3b28dd9c7f29aef1bd0375c9ac2dd7bdf",
+  "reconcile_method": "clause-identity proof against the archived card, then scoped verification of the merged evidence (MATERIAL_PLAN_ADOPTION.md: old evidence may satisfy unchanged clauses after checking exact inputs, dependencies and validity)",
+
+  "clause_identity": {
+    "definition_raw_sha256": {
+      "MAT2-A02": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+      "archived ONT-A02 (scope archive 01ea5cdd..., registry read-only)": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+      "equal": true
+    },
+    "projected_task_object_canonical_digest": {
+      "MAT2-A02": "f804c9151fda7d3c47e3ac662bdeb8cf5b5f754f188c18b1d2df93be2a2f61eb",
+      "archived ONT-A02": "f804c9151fda7d3c47e3ac662bdeb8cf5b5f754f188c18b1d2df93be2a2f61eb",
+      "unified_diff_lines": 0,
+      "covers": ["done_when", "observation ('U-ANA rejected; U-STR provisional; radius supersession not authorized')", "kind", "verification_profile (anatomy/visible_static, all 16 camera_required_fields, views, diagnostic_layers, falsifier, numerical_evidence_required, clean_view_required)", "calculation_ids C01/C16", "catalog_refs CTRL-01/BIO-02/MAT-03/PROC-02"],
+      "convention_cross_check": "the same computation reproduces MAT2-A01's recorded projected-task digest 5f121837b1c6a9a6b2405ba9320191810ca590b47118e4fbf1880b11f678dd83 exactly for both A01 cards"
+    },
+    "criteria_pin": {
+      "recomputed digest(spec)": "c5d0e02ef376f01afcab78ee81e087f3b28dd9c7f29aef1bd0375c9ac2dd7bdf",
+      "registry criteria_sha256": "c5d0e02ef376f01afcab78ee81e087f3b28dd9c7f29aef1bd0375c9ac2dd7bdf",
+      "attempt criteria_sha256": "c5d0e02ef376f01afcab78ee81e087f3b28dd9c7f29aef1bd0375c9ac2dd7bdf",
+      "equal": true
+    },
+    "envelope_only_differences": {
+      "card_id": "ONT-A02 -> MAT2-A02",
+      "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6 -> cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+      "depends_on": "ONT-A01 -> MAT2-A01"
+    }
+  },
+
+  "clause_to_evidence": [
+    {
+      "clause": "done_when clause 1 — Radioulnar definition ... presented",
+      "evidence": "tools/monkey_campaign/contributions/ONT-A02 (merged PR #181, head dadfda280d7c4abcc403b78f5c5b6ecd8332a402, merge 970ffe1a34eb8a895956c6cb92ce66d01dc74961): REPORT section 1 + numerical_receipt checks N1.* (12 checks) present the two kinematic anchors (ulna body_origin <-> elbow_R, gap 0.0; radius body_origin <-> elbow_R + 5.1158 mm along unit(elbow->wrist)), the authored offset (0.0004, -0.011503, 0.019999) m decomposed 14.324/18.088/0.301 mm at 51.63 deg, and the binding reading: a KINEMATIC JOINT-FRAME offset, not a bone-landmark distance",
+      "merged_bytes_verified": "35/35 files identical git blob sha256 across dadfda28 -> 970ffe1a -> 4aecbc9e -> 6af853ad (probe PR-1)",
+      "numerical_identity": "N1.u2r_mm 23.07463997552291 mm; N1.r2h_mm 292.0293820833787; N1.e2h_mm 305.79223569279844; N1.axial_mm 14.323729312735956; N1.lateral_mm 18.088103293382634; N1.posterior_mm 0.3005126010484894; N1.angle_deg 51.62861170617259; N1.source_fraction_pct 7.545855414950395; N1.quats_identity true (probe PR-3, all exact)"
+    },
+    {
+      "clause": "done_when clause 2 — independent evidence ... presented",
+      "evidence": "merged REPORT section 2 + N4.*: three applicable primary human sources (London 1981 8 elbows; Brownhill 2009 12 specimens; Hollister 1994 fresh specimens) place the radial head at ~0% +/- ~1% of forearm length, outside the frozen 4-12% band by >= 3.0 points (N4.band_margin 3.0) - the ANATOMICAL reading of the re-anchoring is refuted; in-model: O1 roll witnesses ECU-P2 63.61229795664599 deg, ANC-P2 17.552772577400333 deg, TRIlat-P5 0.15353092426937565 deg, unanimous NO-FLIP (N4.o1_unanimous true), and C1's independent 10/10 ulna landmark set (N4.c1_10of10 true)"
+    },
+    {
+      "clause": "done_when clause 3 — B4 result ... presented",
+      "evidence": "merged REPORT section 3 + N3.*: the architect-authorized isolated U-STR B4 diagnostic on the frozen candidate (U-STR + O1-resolved roll, TRIlat-P5 residual 0.1535 deg): N3.gate_cells '10 PASS' (T1-T5 per side, 10 verdict cells), N3.t6 {verdict PASS, banned_evidence_occurrences 0}, N3.receipt_08_ok true, N3.coverage_ok true. Bound carried verbatim: the PASS is a SOURCE-KINEMATIC FIDELITY statement only; R1's refutation is retained, not relabeled; a diagnostic PASS does not close A03 or authorize mechanically qualified grasp"
+    },
+    {
+      "clause": "done_when clause 4 — before/after radius mapping ... presented",
+      "evidence": "merged REPORT section 4 + N2.* (closed form only, nothing executed): radius P moves elbow_R -> ulna.P_d (+5.115804490107078 mm toward the wrist, N2.derived_mm); span 64.74489854186721 mm -> 59.62909405176015 mm; uniform scale 0.22170679566544982 -> 0.20418868001006546 (N2.scale_change_pct -7.901478889180636); det(full map) 0.008513242115903161; rigid part G unchanged (max diff 2.220446049250313e-16); 16+16 site globals recomputed, max displacement 4.950983466166482 mm (BICshort-P6) right / 4.948423135921825 mm (BIClong_l-P9) left; source locals untouched; mechanism first-child shared-joint closure (compiler.py:399-423, JOINT_EPS 1e-9)",
+      "supersession_status": "NOT AUTHORIZED and NOT EXECUTED - the card observation stands; ONT-A03 (merged PR #187 @ 4aecbc9e) carries the staged supersession record on the source-kinematic basis, whose approval act remains a lead review/merge decision on that exact head; the old radius record and every failed alternative remain preserved"
+    },
+    {
+      "clause": "observation: U-ANA rejected; U-STR provisional; radius supersession not authorized",
+      "evidence": "merged receipt honesty block (cpu_only true, native_engine_run false; 'NOT native engine frames'); merged REPORT bounds: nothing executed, B4 PASS not relabeled as anatomy; this reconciliation executes nothing and adds no production claim"
+    },
+    {
+      "clause": "verification_profile anatomy / visible_static (clean_view_required, numerical_evidence_required, 16 camera fields, 3 declared views, 6 diagnostic layers, falsifier)",
+      "evidence": "evidence/capture_manifest.json + capture_context.json + capture_sheet.png (merged bytes)",
+      "verified": "envelope task_id 'A02' + profile_id 'anatomy' + schema chimera.visual_capture_manifest.v1; 6 rows = V1/V2/V3 x {diagnostic, clean}; diagnostic rows occlusion 'mixed', clean rows 'depth_tested' with honestly-empty layers/label_ids; all 16 contract camera fields located on every row in the canonical schema layout; capture_sheet.png bytes == context.capture_sha256 == manifest.capture_sha256 == merged qualification receipt evidence.visual.raw_sha256 (a728b16a6c0fb87170c3ce2dd6c1824bf7a9a353e4c304a5cf41966b5d4462fa); qualification receipt binds numerical/source/camera digests to the actual merged bytes; canonical visual_capture.validate_manifest (base blob 210a6ecc..., play-checkout copy byte-identical): structurally_valid=true, view_count=6; visual_gate.verify against replica-resolved absolute paths with THIS card's contract (task_id A02): structurally_valid=true, view_count=6 (probe PR-4)",
+      "class_delivered": "visible_static class bound to committed bytes with the CONTRACT task_id envelope; no new capture produced (the merged review-accepted capture IS the visual evidence)"
+    },
+    {
+      "clause": "falsifier: Wrong owner/frame, hidden outside placement, clipped/occluded subject or label ambiguity fails. View toggles must preserve the physical state hash.",
+      "evidence": "already enforced in the merged record: all-bookmark subject-bounds regression (test_all_bookmark_bounds) passed inside the re-executed suite; diagnostic/clean pairs share camera and state binding (validated by the canonical validator's pair checks and by the suite's test_clean_pairs_share_camera_and_state)",
+      "this_attempt": "probe PR-6 demonstrates the reconciliation probe itself has teeth (1-token tamper of the receipt FAILS PR-3 while pristine passes)"
+    },
+    {
+      "clause": "calculation contracts C01 (frames, units, source correspondence) and C16 (grasp reach and anatomical correspondence)",
+      "evidence": "C01: the merged record's frame chain (source_rest_frame(+x volar,+y up,+z right; chimanoid.xml rest, axis-aligned asserted via N1.quats_identity) / target_world_frame(+z anterior,+y up,-x right; O1 section 1); the capture manifest declares both frames per view; round-trip/handedness semantics carried by the re-executed suite's definition/mapping clause tests). C16: the radioulnar correspondence evidence (U-STR candidate with O1-resolved roll; B4 correspondence result; the before/after radius mapping) is the bones-side input the grasp chain consumes; no grasp claim, no ROM/reach computation, and no utility-based selection is made here"
+    },
+    {
+      "clause": "depends_on: MAT2-A01",
+      "verdict": "SATISFIED",
+      "evidence": "registry read-only: MAT2-A01 state DONE, winner merge_commit_sha 6af853ad3be90e2f9564cb7f908fd4a202f9241c (PR #211) == this candidate's base revision, winner carries ontology_qualification task_id A01 scope cb5475f8 (probe PR-5); the merged ulna records-ambiguity arm (AMBIGUITY_RECORDED) stays intact and is not relabeled by this card"
+    },
+    {
+      "clause": "completion: Lead-approved exact-head PR merged with full ontology qualification evidence",
+      "verdict": "OPEN until lead merge (by design)",
+      "note": "this reconciliation is the candidate for that gate; it does not self-approve"
+    }
+  ],
+
+  "lineage_records_reconciled": [
+    {"record": "ONT-A02 U-STR / radius-consequence validation", "where": "merged PR #181, head dadfda28, merge 970ffe1a, on merged line since", "contribution": "all four done_when clauses presented and re-verified: 57/57 re-measurement checks (PRESENTED_AND_VERIFIED), 106/106 CPU suite, 6-row canonical visual capture with honesty label (CPU software raster, not native frames)"},
+    {"record": "ONT-A03 staged radius supersession (planning id A03)", "where": "merged PR #187 @ 4aecbc9e, tools/monkey_campaign/contributions/ONT-A03/", "contribution": "staged adoption of the section-4 consequence on the source-kinematic basis with O1's resolved roll (residual 0.1535 deg selection-not-validation), R1's refutation carried verbatim; approval act remains a lead decision; recorded here, never executed"},
+    {"record": "MAT2-A01 ulna records-ambiguity arm", "where": "merged PR #211 @ 6af853ad (this candidate's base), tools/monkey_campaign/contributions/MAT2-A01/", "contribution": "AMBIGUITY_RECORDED arm intact; TRIlat-P5 0.15353092426937565 deg consistent across the A01 and A02 records; dependency admission satisfied with winner ontology_qualification"}
+  ],
+
+  "explicit_unresolved_preserved": [
+    "R1's refutation stands: primary human anatomy places the radial head at ~0% +/- 1% of forearm length; the 7.9015% target anchor preserves the source author's kinematic convention (7.5459% -> 7.9015%, drift +0.356 points, mechanism identified) and carries NO primary-anatomical support",
+    "radius supersession NOT authorized by this card; ONT-A03's staged record awaits its own lead review/merge decision; the old radius record and all failed alternatives (U-ANA rejected, H-BODY rejected, every fired falsifier) remain preserved",
+    "the B4 PASS is a source-kinematic fidelity statement only and does not close A03 or authorize mechanically qualified grasp",
+    "target palm sign question belongs to the A01/A04 lane (not touched here)",
+    "the merged capture's honesty label stands: deterministic CPU numpy z-buffer software raster + matplotlib Agg compose, NOT native engine frames; independent image/physics review remains mandatory"
+  ]
+}
