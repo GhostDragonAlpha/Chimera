@@ -1,7 +1,7 @@
 {
- "capture_sha256": "dd21432d6565d4ad80e228c3452250ad5b84e2e6cd0f774cdbdd38bc7c61ce81",
+ "capture_sha256": "878eb3de68123bb6b82fc0c25b172b18be6346773d24ede8b4f5f24edc3685b2",
  "profile_id": "anatomy",
- "run_id": "ont-a04-anatomy-20260926-86b87bfe",
+ "run_id": "ont-a04-anatomy-20260926-d9e5561a",
  "schema": "chimera.visual_capture_manifest.v1",
  "sheet_layout": {
   "honest_titles": "rendered inside every panel; A/B letters label FACES, not anatomy; no target palm verdict claimed",
@@ -29,7 +29,7 @@
    "artifact_locator": {
     "kind": "image",
     "pixel_rectangle": [
-     3028,
+     0,
      0,
      700,
      600
@@ -49,27 +49,27 @@
      1.5
     ],
     "orientation_convention": "quaternion_wxyz_camera_to_frame",
-    "orthographic_span": 0.10057760508593261,
+    "orthographic_span": 0.29511469892631603,
     "projection": "orthographic",
     "sample_mode": "fixed_bookmark",
     "samples": [
      {
-      "distance_to_target": 0.5,
+      "distance_to_target": 0.49999999999999994,
       "orientation": [
        0.951531647270424,
-       0.18081891101640046,
-       0.2444073412343252,
+       0.18081891101640044,
+       0.24440734123432523,
        -0.04644456063356214
       ],
       "position": [
-       0.15197225150686983,
-       0.34271600432769644,
-       0.6100097611149367
+       0.15708560921554887,
+       0.28557808350891667,
+       0.6109511349047234
       ],
       "target": [
-       -0.07219101362641633,
-       0.5261223121640215,
-       0.20244018814532552
+       -0.06707765591773727,
+       0.46898439134524167,
+       0.20338156193511228
       ],
       "tick": 0
      }
@@ -303,8 +303,8 @@
    "artifact_locator": {
     "kind": "image",
     "pixel_rectangle": [
-     2424,
      0,
+     604,
      700,
      600
     ],
@@ -323,27 +323,27 @@
      1.5
     ],
     "orientation_convention": "quaternion_wxyz_camera_to_frame",
-    "orthographic_span": 0.10057760508593261,
+    "orthographic_span": 0.29511469892631603,
     "projection": "orthographic",
     "sample_mode": "fixed_bookmark",
     "samples": [
      {
-      "distance_to_target": 0.5,
+      "distance_to_target": 0.49999999999999994,
       "orientation": [
        0.951531647270424,
-       0.18081891101640046,
-       0.2444073412343252,
+       0.18081891101640044,
+       0.24440734123432523,
        -0.04644456063356214
       ],
       "position": [
-       0.15197225150686983,
-       0.34271600432769644,
-       0.6100097611149367
+       0.15708560921554887,
+       0.28557808350891667,
+       0.6109511349047234
       ],
       "target": [
-       -0.07219101362641633,
-       0.5261223121640215,
-       0.20244018814532552
+       -0.06707765591773727,
+       0.46898439134524167,
+       0.20338156193511228
       ],
       "tick": 0
      }
@@ -431,8 +431,8 @@
    "artifact_locator": {
     "kind": "image",
     "pixel_rectangle": [
-     1820,
      0,
+     1208,
      700,
      600
     ],
@@ -451,7 +451,7 @@
      1.5
     ],
     "orientation_convention": "quaternion_wxyz_camera_to_frame",
-    "orthographic_span": 0.03194290622868269,
+    "orthographic_span": 0.08811636771128314,
     "projection": "orthographic",
     "sample_mode": "fixed_bookmark",
     "samples": [
@@ -464,14 +464,14 @@
        -0.1620540127739116
       ],
       "position": [
-       -0.012260601404304905,
-       0.4798076110536176,
-       0.0643948170051121
+       -0.011595653818458937,
+       0.4679171079816683,
+       0.061511099684512516
       ],
       "target": [
-       -0.07297916648355275,
-       0.5320601107604138,
-       0.20289727954317818
+       -0.07231421889770678,
+       0.5201696076884645,
+       0.2000135622225786
       ],
       "tick": 0
      }
@@ -563,7 +563,7 @@
     ],
     "missing_subject_ids": [],
     "observed_subject_ids": [
-     "src/assembly/27_bones",
+     "src/assembly/27_bones/carpal_row",
      "src/bone/capitate",
      "src/bone/pisiform",
      "src/frame/hand_r",
@@ -575,7 +575,7 @@
      "src/vector/n_palm",
      "tgt/anchor/elbow_R",
      "tgt/anchor/wrist_R",
-     "tgt/envelope/distal_band",
+     "tgt/envelope/distal_band/proximal_segment",
      "tgt/station/55mm"
     ],
     "occlusion_mode": "depth_tested",
@@ -587,7 +587,7 @@
      "src/site/ECU-P6",
      "src/vector/n_palm",
      "tgt/anchor/wrist_R",
-     "tgt/envelope/distal_band"
+     "tgt/envelope/distal_band/proximal_segment"
     ],
     "selected_ids": [
      "src/site/FCR-P3",
@@ -659,8 +659,8 @@
    "artifact_locator": {
     "kind": "image",
     "pixel_rectangle": [
-     1216,
      0,
+     1812,
      700,
      600
     ],
@@ -679,7 +679,7 @@
      1.5
     ],
     "orientation_convention": "quaternion_wxyz_camera_to_frame",
-    "orthographic_span": 0.03194290622868269,
+    "orthographic_span": 0.08811636771128314,
     "projection": "orthographic",
     "sample_mode": "fixed_bookmark",
     "samples": [
@@ -692,14 +692,14 @@
        -0.1620540127739116
       ],
       "position": [
-       -0.012260601404304905,
-       0.4798076110536176,
-       0.0643948170051121
+       -0.011595653818458937,
+       0.4679171079816683,
+       0.061511099684512516
       ],
       "target": [
-       -0.07297916648355275,
-       0.5320601107604138,
-       0.20289727954317818
+       -0.07231421889770678,
+       0.5201696076884645,
+       0.2000135622225786
       ],
       "tick": 0
      }
@@ -771,13 +771,13 @@
     "layers": [],
     "missing_subject_ids": [],
     "observed_subject_ids": [
-     "src/assembly/27_bones",
-     "tgt/envelope/distal_band"
+     "src/assembly/27_bones/carpal_row",
+     "tgt/envelope/distal_band/proximal_segment"
     ],
     "occlusion_mode": "depth_tested",
     "required_subject_ids": [
-     "src/assembly/27_bones",
-     "tgt/envelope/distal_band"
+     "src/assembly/27_bones/carpal_row",
+     "tgt/envelope/distal_band/proximal_segment"
     ],
     "selected_ids": [],
     "tag_bindings": []
@@ -787,8 +787,8 @@
    "artifact_locator": {
     "kind": "image",
     "pixel_rectangle": [
-     608,
      0,
+     2416,
      700,
      604
     ],
@@ -807,7 +807,7 @@
      1.5
     ],
     "orientation_convention": "quaternion_wxyz_camera_to_frame",
-    "orthographic_span": 0.0957571912858247,
+    "orthographic_span": 0.2542388137894696,
     "projection": "orthographic",
     "sample_mode": "fixed_bookmark",
     "samples": [
@@ -815,19 +815,19 @@
       "distance_to_target": 0.42000000000000004,
       "orientation": [
        0.9972302524663744,
-       -0.07437622984429391,
+       -0.07437622984429398,
        0.0,
        0.0
       ],
       "position": [
-       -0.07219101362641633,
-       0.5884253023947242,
-       0.6177934563500105
+       -0.06707765591773727,
+       0.5312873815759445,
+       0.6187348301397972
       ],
       "target": [
-       -0.07219101362641633,
-       0.5261223121640215,
-       0.20244018814532552
+       -0.06707765591773727,
+       0.46898439134524167,
+       0.20338156193511228
       ],
       "tick": 0
      }
@@ -846,7 +846,7 @@
        1.5
       ],
       "orientation_convention": "quaternion_wxyz_camera_to_frame",
-      "orthographic_span": 0.09331311571064729,
+      "orthographic_span": 0.24537375630031003,
       "projection": "orthographic",
       "sample_mode": "fixed_bookmark",
       "samples": [
@@ -854,19 +854,19 @@
         "distance_to_target": 0.42,
         "orientation": [
          0.25900533892913397,
-         0.051347554254667256,
+         0.05134755425466728,
          0.946097165298118,
-         -0.1875628345198855
+         -0.18756283451988556
         ],
         "position": [
-         0.12555617864804453,
-         0.3658906684961586,
-         -0.13165840256565367
+         0.13066953635672357,
+         0.3087527476773787,
+         -0.1307170287758669
         ],
         "target": [
-         -0.07219101362641633,
-         0.5261223121640215,
-         0.20244018814532552
+         -0.06707765591773727,
+         0.46898439134524167,
+         0.20338156193511228
         ],
         "tick": 0
        }
@@ -1104,7 +1104,7 @@
     "kind": "image",
     "pixel_rectangle": [
      0,
-     0,
+     3024,
      700,
      604
     ],
@@ -1123,7 +1123,7 @@
      1.5
     ],
     "orientation_convention": "quaternion_wxyz_camera_to_frame",
-    "orthographic_span": 0.0957571912858247,
+    "orthographic_span": 0.2542388137894696,
     "projection": "orthographic",
     "sample_mode": "fixed_bookmark",
     "samples": [
@@ -1131,19 +1131,19 @@
       "distance_to_target": 0.42000000000000004,
       "orientation": [
        0.9972302524663744,
-       -0.07437622984429391,
+       -0.07437622984429398,
        0.0,
        0.0
       ],
       "position": [
-       -0.07219101362641633,
-       0.5884253023947242,
-       0.6177934563500105
+       -0.06707765591773727,
+       0.5312873815759445,
+       0.6187348301397972
       ],
       "target": [
-       -0.07219101362641633,
-       0.5261223121640215,
-       0.20244018814532552
+       -0.06707765591773727,
+       0.46898439134524167,
+       0.20338156193511228
       ],
       "tick": 0
      }
@@ -1162,7 +1162,7 @@
        1.5
       ],
       "orientation_convention": "quaternion_wxyz_camera_to_frame",
-      "orthographic_span": 0.09331311571064729,
+      "orthographic_span": 0.24537375630031003,
       "projection": "orthographic",
       "sample_mode": "fixed_bookmark",
       "samples": [
@@ -1170,19 +1170,19 @@
         "distance_to_target": 0.42,
         "orientation": [
          0.25900533892913397,
-         0.051347554254667256,
+         0.05134755425466728,
          0.946097165298118,
-         -0.1875628345198855
+         -0.18756283451988556
         ],
         "position": [
-         0.12555617864804453,
-         0.3658906684961586,
-         -0.13165840256565367
+         0.13066953635672357,
+         0.3087527476773787,
+         -0.1307170287758669
         ],
         "target": [
-         -0.07219101362641633,
-         0.5261223121640215,
-         0.20244018814532552
+         -0.06707765591773727,
+         0.46898439134524167,
+         0.20338156193511228
         ],
         "tick": 0
        }

@@ -2,9 +2,9 @@
  "agent_id": "arrival-32436e70ed1e4866a25a29940db1789c",
  "attempt_id": "86b87bfe23b14059ac8ed516104340bf",
  "camera": {
-  "provenance": "chimera.visual_capture_manifest.v1, profile anatomy, 6 rows (3 views x diagnostic+clean), trace... state-bound (state_binding sha = state_snapshot.json), tick_interval [0,0], fixed_bookmark cameras, orthographic spans measured to frame the owned subject unclipped; ALL 16 profile camera fields per camera (primary schema-validated + secondary cameras fully declared in camera.secondary_cameras); validated in-process with visual_capture.validate_manifest against card_task.json (structurally_valid true).",
-  "raw_sha256": "1e9afa01bf2a668ddc8cd749b09f10daf79703321934f045889a8d671403a085",
-  "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/86b87bfe23b14059ac8ed516104340bf/checkout/tools/monkey_campaign/contributions/ONT-A04/evidence/capture_manifest.json"
+  "provenance": "chimera.visual_capture_manifest.v1, profile anatomy, 6 rows (3 views x diagnostic+clean), trace... state-bound (state_binding sha = state_snapshot.json), tick_interval [0,0], fixed_bookmark cameras, orthographic spans measured to frame the owned subject unclipped; SOURCE bones placed at their per-bone XML anchors (assembled hand, not the origin-collapsed set) with a build-asserted capture-truth guard and A01-lesson bounds check recorded in capture_receipt.json; artifact_locator rects in the documented [left, top, width, height] upper-left convention; close-up view region subjects scoped to the framed carpal row / proximal band segment; ALL 16 profile camera fields per camera (primary schema-validated + secondary cameras fully declared in camera.secondary_cameras); validated in-process with visual_capture.validate_manifest against card_task.json (structurally_valid true).",
+  "raw_sha256": "4447058a4627d74779a5a8410408149d22077c93a4b213854cca32f062501224",
+  "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/d9e5561a0c7b4c0881faf8a213e475b2/checkout/tools/monkey_campaign/contributions/ONT-A04/evidence/capture_manifest.json"
  },
  "candidate_suite": {
   "capture": "tools/monkey_campaign/contributions/ONT-A04/capture_build.py",
@@ -12,17 +12,36 @@
   "preregistration": "tools/monkey_campaign/contributions/ONT-A04/PREREGISTRATION.md (frozen before the first probe run of this attempt)",
   "probe": "tools/monkey_campaign/contributions/ONT-A04/a04_correspondence_probe.py",
   "report": "tools/monkey_campaign/contributions/ONT-A04/report.md",
-  "tests": "python -B -m unittest test_ont_a04 -> Ran 14 tests ... OK; probe 7/7 checks green; capture gate structurally_valid=True, fired=0"
+  "tests": "python -B -m unittest test_ont_a04 -> Ran 19 tests ... OK (incl. TestCaptureTruth regressions for review 8837d083); probe 7/7 checks green; capture gate structurally_valid=True, fired=0"
  },
  "capture_context": {
-  "capture_sha256": "dd21432d6565d4ad80e228c3452250ad5b84e2e6cd0f774cdbdd38bc7c61ce81",
-  "run_id": "ont-a04-anatomy-20260926-86b87bfe",
+  "capture_sha256": "878eb3de68123bb6b82fc0c25b172b18be6346773d24ede8b4f5f24edc3685b2",
+  "run_id": "ont-a04-anatomy-20260926-d9e5561a",
   "subject_sha256": "33d3219cc66071a7a5957b24f40f172accbada2ac8ec69c9de5e060de74b1164",
   "task_id": "A04",
   "tick_interval": [
    0,
    0
   ]
+ },
+ "capture_correction": {
+  "applied_by": "arrival-685b1adcb79c4f0f933db12466db1fc7 (attempt d9e5561a0c7b4c0881faf8a213e475b2)",
+  "findings_fixed": [
+   "finding 1 (MAJOR): capture_build.py now places every source bone at tris + hand_r origin + per-bone XML anchor (was tris + origin + 0.0, which superimposed all 27 bones at the hand_r origin); cameras re-frame on the true assembly; capture-truth guard + A01-lesson bounds check asserted at build time and recorded in capture_receipt.json",
+   "finding 2 (MINOR): artifact_locator rects now [left, top, width, height] upper-left origin (was [H - y0 - h, 0, w, h], off-convention/mirrored)",
+   "finding 3 (MINOR): close-up view region subjects scoped to src/assembly/27_bones/carpal_row and tgt/envelope/distal_band/proximal_segment (was the unframed full-set ids)"
+  ],
+  "regenerated": {
+   "capture_a04.png": "878eb3de68123bb6b82fc0c25b172b18be6346773d24ede8b4f5f24edc3685b2",
+   "capture_manifest.json": "4447058a4627d74779a5a8410408149d22077c93a4b213854cca32f062501224",
+   "capture_receipt.json": "7473143820d6e185fb2f3d68cfc98f7c6792021fe551df79c82aa8180cd118e8",
+   "note": "byte-identical on rerun; sheet 700x3628; structurally_valid=True, fired=0"
+  },
+  "review_binding": "WORKER REVIEW CHANGES_REQUIRED on PR #172 @ 7df75f41, review 8837d083c2544b2784178ea462bd9f87",
+  "unchanged_byte_identical": {
+   "numerical_receipt.json": "e3864b161c865a404b0b2d0e73cce2a76e479bcf3c29c42c86c54d84c5db5fa1",
+   "state_snapshot.json": "33d3219cc66071a7a5957b24f40f172accbada2ac8ec69c9de5e060de74b1164"
+  }
  },
  "card_id": "ONT-A04",
  "criteria_sha256": "bf8583ae76c4930f726c4c71861ab9219cdac65eb3913cb29ab6131671505570",
@@ -34,12 +53,12 @@
   "numerical": {
    "provenance": "7/7 frozen checks green, byte-identical on rerun: C1 27/27 vendor STL hash pins + scales; C2 frame chain (R2-A4 origin pin, identity quats, <1e-12 m round-trip, det +1, extent record reproduced); C3 independent palm-sign re-derivation exact to 1e-9 with 5/5 compartment split; C4 anchor class under BOTH metrics (2 fired deviations honestly recorded: s2 metric convention, C2 print precision); C5 target band/far-end/component/mirror measures; C6 correspondence + coverage inventory with H-LEN/H-ASP UNRESOLVED and H-BODY circular recorded, no scale promoted; C7 palm-sign statement (source CLOSED, target UNRESOLVED - human A/B verdict missing).",
    "raw_sha256": "e3864b161c865a404b0b2d0e73cce2a76e479bcf3c29c42c86c54d84c5db5fa1",
-   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/86b87bfe23b14059ac8ed516104340bf/checkout/tools/monkey_campaign/contributions/ONT-A04/evidence/numerical_receipt.json"
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/d9e5561a0c7b4c0881faf8a213e475b2/checkout/tools/monkey_campaign/contributions/ONT-A04/evidence/numerical_receipt.json"
   },
   "source": {
    "provenance": "The PRESERVED source-identity leg: HAND_SOURCE_EVIDENCE (M-handsrc, 70c9ff41) 27-bone identity table with per-bone sha256 pins, re-pinned byte-exact from the git blob into reference/ alongside s1_inventory.json, s2_identity.json, s2b_cmc_diagnosis.json, s3_palm_normal.json, prereg.md, commands.md and the C2/B1 target measure receipts; every pin re-asserted at probe import and re-verified against the on-disk vendor files.",
    "raw_sha256": "6dab6a40b55c881998232c1f590cd41233919869876a0e4b1e5c260dffd0a424",
-   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/86b87bfe23b14059ac8ed516104340bf/checkout/tools/monkey_campaign/contributions/ONT-A04/reference/identity_table.md"
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/d9e5561a0c7b4c0881faf8a213e475b2/checkout/tools/monkey_campaign/contributions/ONT-A04/reference/identity_table.md"
   }
  },
  "head_sha": null,
@@ -65,8 +84,8 @@
  "subject_sha256": "33d3219cc66071a7a5957b24f40f172accbada2ac8ec69c9de5e060de74b1164",
  "task_id": "A04",
  "visual": {
-  "provenance": "700x3628 contact sheet, 3 profile views x diagnostic/clean pairs; source and target inspected separately in every cell; all six anatomy diagnostic layers present (outer envelope, selected bones/joints, muscle/tendon paths, attachment sites, frame axes, stable 3D labels); honest in-panel titles (A/B letters label FACES not anatomy; palm verdict NOT claimed); byte-identical on rerun; CPU-only Agg + numpy z-buffer, no GPU context.",
-  "raw_sha256": "dd21432d6565d4ad80e228c3452250ad5b84e2e6cd0f774cdbdd38bc7c61ce81",
-  "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/86b87bfe23b14059ac8ed516104340bf/checkout/tools/monkey_campaign/contributions/ONT-A04/evidence/capture_a04.png"
+  "provenance": "700x3628 contact sheet, 3 profile views x diagnostic/clean pairs; SOURCE rendered as the assembled 27-bone hand at its per-bone XML anchors (correction for review 8837d083 finding 1; declared camera target == assembled vertex mean and declared span == auto-frame span over the placed set, build-asserted); source and target inspected separately in every cell; all six anatomy diagnostic layers present (outer envelope, selected bones/joints, muscle/tendon paths, attachment sites, frame axes, stable 3D labels); honest in-panel titles (A/B letters label FACES not anatomy; palm verdict NOT claimed); byte-identical on rerun; CPU-only Agg + numpy z-buffer, no GPU context.",
+  "raw_sha256": "878eb3de68123bb6b82fc0c25b172b18be6346773d24ede8b4f5f24edc3685b2",
+  "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A04/d9e5561a0c7b4c0881faf8a213e475b2/checkout/tools/monkey_campaign/contributions/ONT-A04/evidence/capture_a04.png"
  }
 }
