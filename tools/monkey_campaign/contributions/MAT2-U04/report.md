@@ -123,3 +123,45 @@ Independent worker review of this candidate; lead-serialized publication to
 `review/MAT2-U04`. At acceptance the lead sets `head_sha` and
 `independent_review` on `qualification_receipt.json`
 (in-tree `head_sha` is null by design).
+
+## CORRECTION (independent-review findings applied; this attempt)
+
+Attempt `c6818f39ff824b8bb612d3d1ba4204f3` (branch-1), worked per the P01
+reviewer-executed-correction precedent. Applies the two exact defects of the
+independent review of this candidate (review
+`f926df0ce66c4dcabd51338940510c0b`, verdict CHANGES_REQUIRED, PR #204 head
+`504a7fa0a90b163743eadadacbd6173325211a48`). Everything else in the report
+above is the original candidate text, unchanged; all verification was re-run
+GREEN in the review and the candidate bytes are otherwise untouched.
+
+1. **qualification_receipt.json evidence bindings now bind the DELIVERED
+   bytes.** The original receipt carried stale hashes for two entries (the
+   probe rewrites `numerical_receipt.json`/`runtime_receipt.json` on every
+   run — wall clock, child pid — and the receipt generator ran before the
+   final probe run): `evidence.numerical.raw_sha256` `a4ae2518…` ->
+   `578fae40c41f147ba8f6d191595b5d8867820708bd76d4186571076a40932c78`;
+   `evidence.runtime.raw_sha256` `68bc21bb…` ->
+   `ca1dae90a7381784f42ba456cbd13606c0c6c450c68e221e80519de8ca8a77d9`.
+   Recomputed from the committed files; no probe re-run; every other binding
+   (source, visual, camera, candidate_suite) already matched and is unchanged.
+   Regenerated receipt sha256
+   `4af13d1299a5b6fccb8e95a18ecfb6189f29820e0a85ec85bccc98fccdaaff7f`.
+2. **Third prereg-vs-measured miscount now disclosed.** The frozen prereg
+   labels the decay tail's second record "boundary 19000: v == 0.0 exactly;
+   then inert", but the pinned mapper's frozen second-boundary deadline law
+   emits the exact zero at boundary **18550** (18500 -> V_MAX, 18550 -> 0.0,
+   then inert; 19000 emits nothing). The 368-record count held exactly and no
+   N-check enforced the label, so no GREEN check is falsified. The entry is
+   recorded in the qualification receipt's `prediction_deviations`
+   (check `N9-decay-label`, trace-bound), NOT corrected in the frozen
+   prereg — PREREGISTRATION.md is byte-identical to freeze commit `9b93a848`
+   (sha256 `a4e31f052b228f67c414492da68aef97906264c4622d7d417f02a385f91646a0`).
+   The two miscounts recorded in `evidence/numerical_receipt.json`
+   `prediction_deviations` are unchanged (that file was not rewritten).
+
+Diff vs the reviewed head touches ONLY `qualification_receipt.json` and this
+`report.md`. Both campaign validators re-verified on the committed envelope
+(task_id `U04`): `visual_capture.validate_manifest` and `visual_gate.verify`
+-> structurally_valid true. Unit tests 17/17 re-run OK. All other candidate
+bytes (probe, battery, records-leg snapshot, trace, capture, manifests,
+receipts, reference pins) are byte-identical to the reviewed head.

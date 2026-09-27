@@ -34,13 +34,13 @@
   "independent_review": null,
   "independent_review_binding": "No independent worker review of THIS candidate exists yet. Independent review of this candidate is a REMAINING GATE; at ACCEPTED the lead sets this entry to the named review receipt + raw hash.",
   "numerical": {
-   "provenance": "Frozen checks N0-N9 ALL GREEN (prediction_deviations disclose two prereg wording miscounts; nothing silently corrected): first-run defaults with nothing created; 265 mouse boundaries bit-exact vs the mapper's own law incl. the derived 0.08 ceiling saturating EXACTLY at OMEGA and the 4x ratio; 100 inverted boundaries bit-exact vs the signed law with the same counts flipping +OMEGA to -OMEGA; the turn key path unaffected by inversion (+OMEGA + -OMEGA == 0.0 exact); rebound keys flip emitted sign and E->sprint refuses BY NAME; save canonical bytes, reload EXACT in the parent AND in a separate child OS process with field-exact replay records; nine poison classes refuse BY NAME with defaults and load never writes; seam constants/bytes unchanged; 368 records conform to provenance/band/timing laws. Trace 9aea974e6c7cfbf95e70d345e1fbb48c7faceae0265ee5bd0803e761d907da2c (391 rows), byte-identical across runs.",
-   "raw_sha256": "a4ae25189b0d9c225e2138e4f6edbd4dd6c346abccbb20876f44cb92078db50b",
+   "provenance": "Frozen checks N0-N9 ALL GREEN (evidence/numerical_receipt.json prediction_deviations disclose two prereg wording miscounts; a third decay-label miscount is disclosed in THIS receipt's prediction_deviations; nothing silently corrected): first-run defaults with nothing created; 265 mouse boundaries bit-exact vs the mapper's own law incl. the derived 0.08 ceiling saturating EXACTLY at OMEGA and the 4x ratio; 100 inverted boundaries bit-exact vs the signed law with the same counts flipping +OMEGA to -OMEGA; the turn key path unaffected by inversion (+OMEGA + -OMEGA == 0.0 exact); rebound keys flip emitted sign and E->sprint refuses BY NAME; save canonical bytes, reload EXACT in the parent AND in a separate child OS process with field-exact replay records; nine poison classes refuse BY NAME with defaults and load never writes; seam constants/bytes unchanged; 368 records conform to provenance/band/timing laws. Trace 9aea974e6c7cfbf95e70d345e1fbb48c7faceae0265ee5bd0803e761d907da2c (391 rows), byte-identical across runs.",
+   "raw_sha256": "578fae40c41f147ba8f6d191595b5d8867820708bd76d4186571076a40932c78",
    "reference": "tools/monkey_campaign/contributions/MAT2-U04/evidence/numerical_receipt.json"
   },
   "runtime": {
    "provenance": "The deterministic headless run record: REAL pinned input_settings + InputMapper + CommandRecord seam over injected integer milliseconds, CPU-only, no GPU/engine/network; the persistence leg spawns a REAL separate python -B process (child_load_probe.py) that re-loads the saved file and replays the frozen sequence; trace times injected, wall clocks reported separately.",
-   "raw_sha256": "68bc21bb174b35e8ca678fcf72ce9ec4eb8397155ca0e2328aeceeb638137b1a",
+   "raw_sha256": "ca1dae90a7381784f42ba456cbd13606c0c6c450c68e221e80519de8ca8a77d9",
    "reference": "tools/monkey_campaign/contributions/MAT2-U04/evidence/runtime_receipt.json"
   },
   "source": {
@@ -70,6 +70,18 @@
    "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
   }
  },
+ "prediction_deviations": [
+  {
+   "binding": {
+    "reference": "tools/monkey_campaign/contributions/MAT2-U04/evidence/trace.jsonl",
+    "sha256": "9aea974e6c7cfbf95e70d345e1fbb48c7faceae0265ee5bd0803e761d907da2c"
+   },
+   "check": "N9-decay-label",
+   "measured": "boundary 18550: v == 0.0 exactly; boundary 19000 emits nothing (trace.jsonl: 18500 -> V_MAX, 18550 -> 0.0, then inert)",
+   "prereg": "timeline row and N9 prediction label the decay tail's second record 'boundary 19000: v == 0.0 exactly; then inert' ('368 main-trace records (200..18450 = 366, + tail 18500, 19000)')",
+   "reason": "the prereg mislabeled the boundary: the pinned mapper's frozen release-decay law is the second-boundary deadline clause (first boundary carries v0, second returns EXACTLY 0.0, tail then ends), so the exact zero lands at 18550, not 19000. The 368-record COUNT prediction held exactly (the tail has two records either way) and no N-check enforced the 19000 label, so no GREEN check is falsified; the substantive claim (decay lands exactly 0.0 within the 100 ms deadline) is verified. Disclosed by the independent-review correction (review f926df0ce66c4dcabd51338940510c0b, CHANGES_REQUIRED), not silently corrected: the frozen PREREGISTRATION.md is byte-identical to freeze commit 9b93a848. The two miscounts recorded in evidence/numerical_receipt.json prediction_deviations are unchanged by this correction."
+  }
+ ],
  "profile_id": "controls",
  "profile_kind": "motion",
  "profile_verified": true,
