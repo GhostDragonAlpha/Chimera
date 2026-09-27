@@ -1,3 +1,14 @@
+# Mandatory operator visual decisions — astra-0034
+
+Read [OPERATOR_VISUAL_DECISIONS.md](../tools/monkey_campaign/OPERATOR_VISUAL_DECISIONS.md).
+Any human decision depending on appearance, orientation, labeling, motion, camera
+framing, gameplay feel or visual comparison must be presented by the Lieutenant in
+the Captain's active conversation with the actual labeled image/video and choice
+consequences. A disk path, hash, report or mailbox notice is not presentation.
+No agent chooses for the Captain. Silence is not consent. Bind an explicit answer to
+the exact shown packet before using it; while waiting, release the worker slot and
+continue unrelated eligible work. This changes workflow, not the 95-task scope.
+
 # Shared model quality record — astra-0033
 
 Read [MODEL_GRADES.md](../tools/monkey_campaign/MODEL_GRADES.md) and its current
@@ -321,8 +332,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 33,
-  "revision_id": "astra-0033",
+  "revision": 34,
+  "revision_id": "astra-0034",
   "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -383,7 +394,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/scope_migration.py",
     "tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md",
     "docs/PHYSICAL_PORTS.md",
-    "tools/monkey_campaign/MODEL_GRADES.md"
+    "tools/monkey_campaign/MODEL_GRADES.md",
+    "tools/monkey_campaign/OPERATOR_VISUAL_DECISIONS.md"
   ]
 }
 CHIMERA_LEAD_CONTROL -->
