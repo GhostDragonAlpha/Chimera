@@ -407,7 +407,7 @@ def build_state_and_receipt():
         "schema": "chimera.ota01_state.v1",
         "task_id": "A01",
         "card_id": "ONT-A01",
-        "attempt_id": "fb552e4136ef4bfdaaa93686fb063e78",
+        "attempt_id": "d7edda352388470092b17a35e17391ba",
         "preregistration": "PREREGISTRATION.md (committed before probes)",
         "pins": PINS,
         "inputs": inputs,
@@ -433,7 +433,7 @@ def build_state_and_receipt():
         "schema": "chimera.ota01_numerical_receipt.v1",
         "task_id": "A01",
         "card_id": "ONT-A01",
-        "attempt_id": "fb552e4136ef4bfdaaa93686fb063e78",
+        "attempt_id": "d7edda352388470092b17a35e17391ba",
         "criteria_sha256": "2bcf59fa0b786b009b30711334e38fe374d9a2a2bdefdba9566a4018c4a9c775",
         "honesty": {
             "cpu_only": True, "gpu_used": False, "network_used": False,

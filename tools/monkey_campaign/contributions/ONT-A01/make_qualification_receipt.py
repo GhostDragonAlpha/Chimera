@@ -19,7 +19,7 @@ EVIDENCE = HERE / "evidence"
 
 SCOPE_SHA256 = "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6"
 CRITERIA_SHA256 = "2bcf59fa0b786b009b30711334e38fe374d9a2a2bdefdba9566a4018c4a9c775"
-ATTEMPT = "fb552e4136ef4bfdaaa93686fb063e78"
+ATTEMPT = "d7edda352388470092b17a35e17391ba"
 
 
 def sha(path: Path) -> str:
@@ -80,10 +80,11 @@ def main() -> int:
         "attempt_id": ATTEMPT,
         "head_sha": None,
         "head_sha_binding_note": (
-            "bound to the attempt commit carrying tools/monkey_campaign/contributions/"
-            "ONT-A01 on branch-1 of the attempt checkout; the independent reviewer "
-            "pins head_sha to the reviewed PR head - a changed PR head invalidates "
-            "this receipt and its review (visual gate recomputes all hashes)"),
+            "bound to the attempt work commit carrying tools/monkey_campaign/"
+            "contributions/ONT-A01 in the attempt checkout (published by the lead "
+            "to review/ONT-A01); the independent reviewer pins head_sha to the "
+            "reviewed PR head - a changed PR head invalidates this receipt and "
+            "its review (visual gate recomputes all hashes)"),
         "criteria_sha256": CRITERIA_SHA256,
         "done_when_verified": True,
         "profile_verified": True,
