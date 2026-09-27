@@ -179,15 +179,38 @@ class SessionRoutes:
 def make_wired_handler(base_handler, session):
     """Return a handler class whose ONLY deltas are the four additive routes;
     every other GET/POST reaches the base (pinned) handler untouched.
-    `session` is a SliceSession or an already-built SessionRoutes."""
-    routes = (session if isinstance(session, SessionRoutes)
-              else SessionRoutes(session, _default_page_loader()))
+
+    `session` is a SliceSession, a SessionRoutes, or a ZERO-ARG FACTORY
+    returning either -- the factory form exists because the shipped
+    slice_server.main() constructs WORLD itself (boot before serve), so the
+    routes can only be built on the first request. The factory is invoked
+    once per handler class and reused thereafter."""
+    lazy = None
+    if isinstance(session, SessionRoutes):
+        routes = session
+    elif isinstance(session, SliceSession):
+        routes = SessionRoutes(session, _default_page_loader())
+    elif callable(session):
+        routes, lazy = None, session
+    else:
+        raise TypeError("session must be a SliceSession, SessionRoutes, "
+                        "or a zero-arg factory of either")
 
     class WiredHandler(base_handler):
-        session_routes = routes
+        if lazy is None:
+            session_routes = routes
 
-        def _route_session(self):
-            return self.session_routes
+            def _route_session(self):
+                return self.session_routes
+        else:
+            _built_routes = None
+
+            def _route_session(self):
+                built = type(self)._built_routes
+                if built is None:
+                    built = lazy()
+                    type(self)._built_routes = built
+                return built
 
         def do_GET(self):
             handled, payload = self._route_session().handle_get(self.path)
