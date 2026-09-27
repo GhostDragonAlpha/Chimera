@@ -1,0 +1,6 @@
+# git -C E:\ChimeraWork\monkey-coordination\kanban-attempts\ONT-U05\c7f9519f83c54b3094f1cf097baa742b\checkout status --porcelain -uall
+ M tools/monkey_campaign/contributions/ONT-U05/receipts/baseline_suites.txt
+ M tools/monkey_campaign/contributions/ONT-U05/receipts/mutation_M1_edge_law_failing_first.txt
+ M tools/monkey_campaign/contributions/ONT-U05/receipts/mutation_M2_version_law_failing_first.txt
+ M tools/monkey_campaign/contributions/ONT-U05/receipts/mutation_M3_gate_law_failing_first.txt
+ M tools/monkey_campaign/contributions/ONT-U05/receipts/restored_green.txt
