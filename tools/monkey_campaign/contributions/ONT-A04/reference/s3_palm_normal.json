@@ -1,0 +1,205 @@
+{
+  "method": "pisiform-signed palm-plate plane (prereg sec.3, frozen)",
+  "plate_bones": [
+    "pisiform",
+    "lunate",
+    "scaphoid",
+    "triquetrum",
+    "hamate",
+    "capitate",
+    "trapezoid",
+    "trapezium",
+    "2mc",
+    "3mc",
+    "4mc",
+    "5mc"
+  ],
+  "started": "2026-09-24T17:45:46",
+  "gate_inputs": {
+    "site_anchor_class_max_mm": 0.8031,
+    "extent_record_reproduced": {
+      "distal_3distph_anchor_m": 0.1552851087934706,
+      "distal_3distph_record_m": 0.15529,
+      "ray_chain_anchors_m": {
+        "1": 0.06698922524922708,
+        "2": 0.09641508474265666,
+        "3": 0.1001740505001804,
+        "4": 0.0890953034518162,
+        "5": 0.07860571329892962
+      },
+      "ray_chain_record_m": {
+        "1": 0.067,
+        "2": 0.0964,
+        "3": 0.1002,
+        "4": 0.0891,
+        "5": 0.0786
+      }
+    },
+    "cmc_surf_gaps_mm": {
+      "trapezium|1mc": 0.0016036328338364118,
+      "trapezoid|2mc": 0.0004131780891786958,
+      "capitate|3mc": 4.916562125695358e-06,
+      "hamate|4mc": 0.0015527317718920278,
+      "hamate|5mc": 0.00040596233125536195
+    },
+    "note": "primary 19-link rule FIRED (preserved); R2-A3 bar evidence: sites 0.06-0.80mm, ray links 1.35-2.55mm, CMC surf gaps 0.00mm"
+  },
+  "right": {
+    "n_hat_unsigned": [
+      -0.12842717672758958,
+      0.16869104032883564,
+      0.9772664903651183
+    ],
+    "eigenvalues_cov": [
+      3.459681088652196e-05,
+      0.00015592554882334138,
+      0.0005844608502914665
+    ],
+    "c_pisi_minus_c_rest_mm": [
+      -14.154202964712967,
+      20.15819218162596,
+      -12.467576142956846
+    ],
+    "pisiform_sign_rule_dot_mm": -6.965853644732865,
+    "sign_applied": -1.0,
+    "n_palm_hand_r_local": [
+      0.12842717672758958,
+      -0.16869104032883564,
+      -0.9772664903651183
+    ],
+    "plate_rms_residual_mm": 5.881905378916246,
+    "angle_deg_to_minus_z": 12.24044137190468,
+    "angle_deg_to_plus_z": 167.75955862809533,
+    "c_all_hand_r_local_mm": [
+      1.2466104336619566,
+      -28.936806376018332,
+      0.9350110593098259
+    ],
+    "c_pisi_mm": [
+      -11.31691855725233,
+      -11.04402693026791,
+      -10.131437168755006
+    ]
+  },
+  "acceptance_split": {
+    "rows": [
+      {
+        "site": "ECRL-P4",
+        "compartment": "extensor",
+        "expect": "dorsal(-)",
+        "offset_along_n_palm_mm": -3.26372410166262,
+        "agree": true
+      },
+      {
+        "site": "ECRB-P4",
+        "compartment": "extensor",
+        "expect": "dorsal(-)",
+        "offset_along_n_palm_mm": -9.095587805356896,
+        "agree": true
+      },
+      {
+        "site": "ECU-P6",
+        "compartment": "extensor",
+        "expect": "dorsal(-)",
+        "offset_along_n_palm_mm": -2.62723448254403,
+        "agree": true
+      },
+      {
+        "site": "FCR-P3",
+        "compartment": "flexor",
+        "expect": "palm(+)",
+        "offset_along_n_palm_mm": 5.286894945016168,
+        "agree": true
+      },
+      {
+        "site": "FCU-P4",
+        "compartment": "flexor",
+        "expect": "palm(+)",
+        "offset_along_n_palm_mm": 4.361062234095587,
+        "agree": true
+      }
+    ],
+    "clean": true,
+    "criterion": "flexors >0, extensors <0 (all five)"
+  },
+  "falsifier_b_fired": false,
+  "mirror": {
+    "anchor_z_mirror_max_abs_mm": 0.0,
+    "anchor_z_mirror_per_bone_mm": {
+      "pisiform": 0.0,
+      "lunate": 0.0,
+      "scaphoid": 0.0,
+      "triquetrum": 0.0,
+      "hamate": 0.0,
+      "capitate": 0.0,
+      "trapezoid": 0.0,
+      "trapezium": 0.0,
+      "1mc": 0.0,
+      "2mc": 0.0,
+      "3mc": 0.0,
+      "4mc": 0.0,
+      "5mc": 0.0,
+      "thumbprox": 0.0,
+      "thumbdist": 0.0,
+      "2proxph": 0.0,
+      "2midph": 0.0,
+      "2distph": 0.0,
+      "3proxph": 0.0,
+      "3midph": 0.0,
+      "3distph": 0.0,
+      "4proxph": 0.0,
+      "4midph": 0.0,
+      "4distph": 0.0,
+      "5proxph": 0.0,
+      "5midph": 0.0,
+      "5distph": 0.0
+    },
+    "site_z_mirror_max_abs_mm": 0.0,
+    "left_stl_in_vendor": false,
+    "limitation": "left <name>_l.stl absent from vendor set; left identity not testable on disk (prereg sec.2.6c) - check is construction-level"
+  },
+  "left": {
+    "n_palm_hand_l_local": [
+      0.12842717672758958,
+      -0.16869104032883564,
+      0.9772664903651183
+    ],
+    "pisiform_sign_rule_dot_mm": 6.965853644732865,
+    "equals_exact_mirror_of_right": true,
+    "left_split_clean_same_method": true,
+    "rows": [
+      {
+        "site": "ECRL_l-P4",
+        "compartment": "extensor",
+        "offset_along_n_palm_mm": -3.26372410166262,
+        "agree": true
+      },
+      {
+        "site": "ECRB_l-P4",
+        "compartment": "extensor",
+        "offset_along_n_palm_mm": -9.095587805356896,
+        "agree": true
+      },
+      {
+        "site": "ECU_l-P6",
+        "compartment": "extensor",
+        "offset_along_n_palm_mm": -2.62723448254403,
+        "agree": true
+      },
+      {
+        "site": "FCR_l-P3",
+        "compartment": "flexor",
+        "offset_along_n_palm_mm": 5.286894945016168,
+        "agree": true
+      },
+      {
+        "site": "FCU_l-P4",
+        "compartment": "flexor",
+        "offset_along_n_palm_mm": 4.361062234095587,
+        "agree": true
+      }
+    ]
+  },
+  "falsifier_c_fired": false,
+  "elapsed_s": 0.03369784355163574
+}
