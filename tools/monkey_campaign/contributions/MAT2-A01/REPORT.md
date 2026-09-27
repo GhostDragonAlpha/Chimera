@@ -48,16 +48,21 @@ PYTHONDONTWRITEBYTECODE=1 python -B verify_reconciliation.py   [exit 0]
              on every row, PNG bytes bound (1639c68e…), canonical
              validate_manifest: structurally_valid=True view_count=6
   PASS PR-5: MAT2-P02 DONE via PR #196 merge 8ec90f13 == candidate base;
-             freeze-commit parent == base
+             freeze commit 38c2ada2 (parent 8ec90f13, ancestor of HEAD,
+             touched only PREREGISTRATION.md); HEAD carries the contribution
   PASS PR-6: failing-first — 1-byte tamper of the receipt FAILS PR-3 while the
              pristine replica passes
 ```
+
+Final-state determinism: from the committed candidate, a second probe run is
+byte-identical (`reconciliation_receipt.json` sha256 equal across runs, outcome
+RECONCILED 6/6 both times).
 
 All probes read only: git objects of this attempt checkout, the registry
 (`agent_slots.sqlite3`, opened read-only), and a TEMP replica extracted under the
 attempt workspace's `probe_tmp/` (outside the candidate tree). CPU-only, offline.
 
-## FALSIFIERS FIRED FIRST — honest accounting (two, both probe-implementation defects; predictions untouched)
+## FALSIFIERS FIRED FIRST — honest accounting (three runs, all probe-implementation defects; predictions untouched)
 
 The FIRST probe run returned `FALSIFIER_FIRED (4/6)`:
 
@@ -76,7 +81,21 @@ The FIRST probe run returned `FALSIFIER_FIRED (4/6)`:
    empty declaration; only an absent (null) field is missing. The frozen expectation
    (all 16 fields locatable on every row) was NOT changed — it held.
 
-Both corrections are recorded verbatim in `probe_corrections` inside
+The SECOND probe run (after fixes 1–2, from the committed candidate state, HEAD now
+at the candidate work commit) returned `FALSIFIER_FIRED (5/6)`:
+
+3. `PR-5 FAIL: ... freeze-commit parent 38c2ada2 MISMATCH`. Cause: the chronology
+   check read `git rev-parse HEAD~1` and labelled it the freeze-commit parent; once
+   the candidate work commit was created HEAD moved and `HEAD~1` became the freeze
+   commit itself. The registry-dependency half of PR-5 (MAT2-P02 merged at this
+   base) passed throughout. Fix: chronology is now HEAD-position-independent — the
+   freeze commit is located by its frozen message, and PR-5 asserts freeze parent ==
+   base `8ec90f13`, freeze is an ancestor of HEAD, the freeze commit touched ONLY
+   `PREREGISTRATION.md`, and HEAD carries the candidate contribution dir. The frozen
+   expectation was NOT changed — it held.
+
+The THIRD run returned `RECONCILED (6/6)`, byte-deterministic on re-run. All three
+corrections are recorded verbatim in `probe_corrections` inside
 `evidence/reconciliation_receipt.json`. Nothing was tuned after seeing results; the
 falsifiers fired, were root-caused, and the implementation was repaired to measure
 what the frozen predictions actually asked.

@@ -275,7 +275,19 @@ def pr4():
     return record("PR-4", not errs, detail)
 
 
-# --- PR-5 dependency merged at this base ------------------------------------
+# --- PR-5 dependency merged at this base + freeze chronology -----------------
+FREEZE_MSG_PREFIX = "MAT2-A01: PREREGISTRATION frozen before probes"
+
+
+def find_freeze_commit():
+    """(sha, parent) of the freeze commit, HEAD-position-independent."""
+    for line in git("log", "--format=%H %P %s", "--max-count=64").splitlines():
+        parts = line.split(" ", 2)
+        if len(parts) == 3 and parts[2].startswith(FREEZE_MSG_PREFIX):
+            return parts[0], parts[1]
+    return None, None
+
+
 def pr5():
     con = sqlite3.connect("file:%s?mode=ro" % COORD.as_posix(), uri=True)
     try:
@@ -286,14 +298,30 @@ def pr5():
     card = state["kanban"]["cards"]["MAT2-P02"]
     winner = card.get("winner") or {}
     merge_sha = winner.get("merge_commit_sha", "")
-    ok = (card.get("state") == "DONE" and merge_sha.startswith(CURRENT_TIP)
-          and winner.get("pr_url", "").endswith("/196"))
-    base = git("rev-parse", "HEAD~1").strip()  # freeze commit's parent = base
-    base_ok = base.startswith(CURRENT_TIP)
-    detail = ("MAT2-P02 state=%s merged via PR #196 merge_commit=%s == candidate base %s; "
-              "freeze-commit parent %s" % (card.get("state"), merge_sha[:8],
-                                           CURRENT_TIP[:8], base[:8]))
-    return record("PR-5", ok and base_ok, detail + ("" if (ok and base_ok) else " MISMATCH"))
+    dep_ok = (card.get("state") == "DONE" and merge_sha.startswith(CURRENT_TIP)
+              and winner.get("pr_url", "").endswith("/196"))
+    # freeze chronology, HEAD-position-independent: find the freeze commit by its
+    # frozen message, require freeze parent == base, freeze ancestor of HEAD,
+    # freeze touching ONLY the preregistration file, and HEAD carrying the
+    # candidate contribution dir
+    freeze_sha, freeze_parent = find_freeze_commit()
+    chron = freeze_sha is not None and (freeze_parent or "").startswith(CURRENT_TIP)
+    anc = subprocess.run(["git", "-C", str(REPO), "merge-base", "--is-ancestor",
+                          freeze_sha or "HEAD", "HEAD"], capture_output=True)
+    files = [f for f in git("show", "--name-only", "--format=",
+                            freeze_sha or "HEAD").split() if f]
+    only_prereg = files == [
+        "tools/monkey_campaign/contributions/MAT2-A01/PREREGISTRATION.md"]
+    has_dir = bool(git("ls-tree", "HEAD", "--name-only", "--",
+                       "tools/monkey_campaign/contributions/MAT2-A01/").strip())
+    ok = (dep_ok and chron and anc.returncode == 0 and only_prereg and has_dir)
+    detail = ("MAT2-P02 state=%s merged via PR #196 merge_commit=%s == candidate base "
+              "%s; freeze commit %s (parent %s, ancestor-of-HEAD=%s, files=%s); HEAD "
+              "carries contribution dir=%s" % (
+                  card.get("state"), merge_sha[:8], CURRENT_TIP[:8],
+                  (freeze_sha or "?")[:8], (freeze_parent or "?")[:8],
+                  anc.returncode == 0, [f.rsplit('/', 1)[-1] for f in files], has_dir))
+    return record("PR-5", ok, detail + ("" if ok else " MISMATCH"))
 
 
 # --- PR-6 failing-first: probe has teeth ------------------------------------
@@ -317,6 +345,7 @@ def pr6():
 
 def main():
     TMP.mkdir(parents=True, exist_ok=True)
+    freeze_sha, _ = find_freeze_commit()
     pr1()
     pr2()
     pr3()
@@ -330,7 +359,7 @@ def main():
         "card_id": "MAT2-A01",
         "attempt_id": "f59c82c7dba94fb5abb210fe818ef537",
         "criteria_sha256": "3ffafb225eb06eb7dc958676d48c17bfcfd7f9d266c68b6e3a32d8b97920ff56",
-        "preregistration_freeze_commit": git("rev-parse", "HEAD~1").strip(),
+        "preregistration_freeze_commit": freeze_sha,
         "candidate_base": CURRENT_TIP,
         "anchors": {"approved_head": APPROVED_HEAD, "merge_era": MERGE_ERA,
                     "current_tip": CURRENT_TIP},
@@ -359,6 +388,19 @@ def main():
                     "declaration; only an absent (null) field is missing. FROZEN "
                     "EXPECTATION UNCHANGED (all 16 contract fields locatable on every "
                     "row)."},
+            {"fired_second_run": "PR-5 FAIL: ... freeze-commit parent 38c2ada2 MISMATCH "
+                                 "(run from the committed candidate state, HEAD already "
+                                 "at the candidate work commit)",
+             "cause": "the chronology check read 'git rev-parse HEAD~1' and labelled it "
+                      "the freeze-commit parent; once the candidate work commit was "
+                      "created HEAD moved and HEAD~1 became the freeze commit itself. "
+                      "The registry-dependency half of PR-5 passed throughout",
+             "fix": "chronology is now HEAD-position-independent: the freeze commit is "
+                    "located by its frozen message, and PR-5 asserts freeze parent == "
+                    "base 8ec90f13, freeze is an ancestor of HEAD, the freeze commit "
+                    "touched ONLY PREREGISTRATION.md, and HEAD carries the candidate "
+                    "contribution dir. FROZEN EXPECTATION UNCHANGED (dependency merged "
+                    "at this base; freeze-before-probes chronology)."},
         ],
         "applicability_notes": [
             "replica suite re-execution READ one pinned external input from the "

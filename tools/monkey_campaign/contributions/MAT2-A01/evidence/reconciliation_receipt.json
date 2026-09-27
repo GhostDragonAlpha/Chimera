@@ -21,7 +21,7 @@
     "note": "read-only probe over committed bytes + registry read-only; temp replica under attempt workspace probe_tmp/"
   },
   "outcome": "RECONCILED",
-  "preregistration_freeze_commit": "8ec90f13e76954596af3711c241c08b843ff78bf",
+  "preregistration_freeze_commit": "38c2ada2d7f6bc7826974bfb7824410136ac1ff6",
   "probe_corrections": [
     {
       "cause": "probe counting heuristic: regex '\\.\\.\\. ok' undercounts when unittest wraps a multi-line docstring or a ResourceWarning line lands before the verdict word; unittest's own summary printed 'Ran 26 tests / OK', exit 0, zero FAIL/ERROR result lines",
@@ -32,6 +32,11 @@
       "cause": "probe locator idiom '(vis.get(\"layers\") or [None])[0]' read the clean rows' honestly-EMPTY declared 'layers': [] as absent; clean rows carry empty layers/label_ids by definition (clean semantics) and the canonical validator accepts this by design",
       "fired_first_run": "PR-4 FAIL: missing camera fields={V1:clean, V2:clean, V3:clean: [visibility_layers]}",
       "fix": "locator now treats an empty list as a present, honestly-empty declaration; only an absent (null) field is missing. FROZEN EXPECTATION UNCHANGED (all 16 contract fields locatable on every row)."
+    },
+    {
+      "cause": "the chronology check read 'git rev-parse HEAD~1' and labelled it the freeze-commit parent; once the candidate work commit was created HEAD moved and HEAD~1 became the freeze commit itself. The registry-dependency half of PR-5 passed throughout",
+      "fired_second_run": "PR-5 FAIL: ... freeze-commit parent 38c2ada2 MISMATCH (run from the committed candidate state, HEAD already at the candidate work commit)",
+      "fix": "chronology is now HEAD-position-independent: the freeze commit is located by its frozen message, and PR-5 asserts freeze parent == base 8ec90f13, freeze is an ancestor of HEAD, the freeze commit touched ONLY PREREGISTRATION.md, and HEAD carries the candidate contribution dir. FROZEN EXPECTATION UNCHANGED (dependency merged at this base; freeze-before-probes chronology)."
     }
   ],
   "probes": [
@@ -56,7 +61,7 @@
       "pass": true
     },
     {
-      "details": "MAT2-P02 state=DONE merged via PR #196 merge_commit=8ec90f13 == candidate base 8ec90f13; freeze-commit parent 8ec90f13",
+      "details": "MAT2-P02 state=DONE merged via PR #196 merge_commit=8ec90f13 == candidate base 8ec90f13; freeze commit 38c2ada2 (parent 8ec90f13, ancestor-of-HEAD=True, files=['PREREGISTRATION.md']); HEAD carries contribution dir=True",
       "id": "PR-5",
       "pass": true
     },
