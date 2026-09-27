@@ -1,0 +1,122 @@
+{
+  "schema": "chimera.completion_contract.v1",
+  "contract_id": "PLAYABLE-MONKEY-COMPLETION-CONTRACT",
+  "version": "1.0.0",
+  "status": "FROZEN",
+  "frozen_date": "2026-09-25",
+  "frozen_by_attempt": "8f541785519c46ebbb4fcfc92d8798b6",
+  "planning_task": "P01",
+  "base_revision": "c525b82c7c3ce0128565424764293a3c85811ab3",
+  "statement": "The playable-monkey game is complete if and only if: one physically simulated monkey, in one finite forest clearing, supports the full player loop - walk on all fours, steer, stop, approach one rigid trunk, attach, climb, hold, descend, release, resume walking - with a usable camera and complete player flow; every one of the 76 selected items of the sealed 83-item map holds item-scoped integrated evidence; the integrated ground-tree-ground playthrough (K08) passes on the native runtime; and the operator explicitly accepts the actual play (S05). Nothing outside the sealed list gates completion.",
+  "rule0": {
+    "statement": "Completion is exactly the sealed 83-item map's selected 76 items with item-scoped integrated evidence, plus the integrated ground-tree-ground playthrough (K08) and explicit operator acceptance (S05); nothing else gates completion.",
+    "prediction": "At freeze time no record establishes game completion: the integrated playthrough and operator acceptance remain open; freezing this contract changes no task acceptance status.",
+    "falsifier": "Any completion claim lacking item-scoped evidence, the native-runtime playthrough record, or explicit operator acceptance is false; any identity below that cannot be recomputed from the actual records invalidates this contract."
+  },
+  "success_conditions": [
+    {
+      "id": "SC-GROUND",
+      "clause": "Ground movement: player-controlled all-fours walking that steers and stops, produced only through the approved physical actuation and learned skills on the declared terrain envelope.",
+      "evidence_bound_tasks": ["W07", "F06", "U04", "P06"]
+    },
+    {
+      "id": "SC-TRUNK",
+      "clause": "One rigid climbable trunk: grip, support and release operate through the physical solver against the declared trunk asset; no invisible anchors or kinematic substitutes.",
+      "evidence_bound_tasks": ["F03", "G04", "G07"]
+    },
+    {
+      "id": "SC-LOOP",
+      "clause": "Return to ground: the complete ground-tree-ground loop - approach, attach, ascend, hold, descend, release, resume all-fours walking - succeeds in one session on the native runtime with explicit walk/climb arbitration and boundary/failure behavior.",
+      "evidence_bound_tasks": ["K06", "K07", "K08"],
+      "terminal_done_when_verbatim": {
+        "K08": "Player approaches, attaches, ascends, holds, descends, releases and resumes all-fours walking in one session"
+      }
+    },
+    {
+      "id": "SC-FAILURE-BEHAVIOR",
+      "clause": "Explicit failure behavior: failures remain physical and visible (falls when support is lost, rejected out-of-reach grips, lost contact); no silent teleport, hidden support force or kinematic rescue; the player has an explicit way to continue from any failure state within the game flow.",
+      "evidence_bound_tasks": ["G07", "K07", "R06"]
+    },
+    {
+      "id": "SC-PLAYER-FLOW",
+      "clause": "Complete player flow and usable camera: launch, settings, pause/restart, persistence, camera follow and command mapping meet the frozen P06 limits and package identity matches the accepted game.",
+      "evidence_bound_tasks": ["P06", "U01", "U02", "U03", "U05", "U06", "U07", "R01", "R02", "R03", "R04", "R05", "R07", "S01"]
+    },
+    {
+      "id": "SC-ACCEPTANCE",
+      "clause": "All selected core/product behaviors pass; remaining issues are triaged explicitly; the operator accepts actual play.",
+      "evidence_bound_tasks": ["S05"],
+      "terminal_done_when_verbatim": {
+        "S05": "All selected core/product behaviors pass; remaining issues are triaged explicitly; operator accepts actual play"
+      }
+    }
+  ],
+  "exclusions": {
+    "conditional_items": {
+      "ids": ["B01", "B02", "B03", "B04", "B05", "B06", "B07"],
+      "rule": "Required only if the selected playable build actually consumes them; never auto-activated to fill slots; activation requires a lead scope amendment with operator authorization."
+    },
+    "deferred_families": [
+      "Multiple climbable tree forms and branch traversal",
+      "Jumping, swinging, brachiation, get-up and carrying",
+      "More species and creature construction",
+      "Multiplayer and networked persistence",
+      "Large streamed worlds and ecosystems",
+      "Water, weather, thermal and chemical interactions",
+      "Deformable trees, damage, tissue surgery and repair",
+      "Creator tools, UGC and collaborative authoring",
+      "Space, vehicles, economies and social systems",
+      "XR, haptics and advanced cognition/quantum research"
+    ],
+    "forbidden_substitutes": [
+      "Kinematic locomotion in place of physical actuation",
+      "Invisible support forces or hidden anchors in place of solver contact",
+      "Invented anatomy, constants, thresholds or supersessions without authorization",
+      "Percent-complete, calendar forecasts, reports, screenshots or PRs counted as completion",
+      "A merged diagnostic qualifying its parent gameplay task"
+    ],
+    "finish_line_verbatim": "Playable monkey game first; broader Chimera vision later"
+  },
+  "acceptance_oracle": {
+    "per_item": "Each of the 76 selected items requires item-scoped integrated evidence matching its sealed verification profile (records/numerical/runtime/visual) at the reviewed exact head; a diagnostic or scaffold never qualifies its parent.",
+    "integration": "Integration checkpoints collect contributor evidence and never become prerequisites of their own contributors; the integrated playthrough (K08) and package identity (R07) are measured on the native runtime.",
+    "human_terminal": "The only final terminal is the operator's explicit acceptance of actual play (S05); no agent self-acceptance, no automatic completion, no synthetic pass.",
+    "binding_rule": "This contract binds completion semantics only; it cannot add, remove, weaken or reinterpret any sealed item, criterion or dependency."
+  },
+  "identities": {
+    "algorithm": "sha256-chimera-json-v1",
+    "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+    "map_path": "tools/monkey_campaign/monkey_completion_map.json",
+    "map_raw_sha256": "010311bb0a4fc5eec6c7f361db3a2631c2821e4b7d6cc56d751c02f6712fe161",
+    "lock_path": "tools/monkey_campaign/APPROVED_SCOPE.json",
+    "lock_raw_sha256": "92d0c33f6b02f7258a7b2ac392865673ad0bb26efc52b207fc8093647e620397",
+    "ontology_definition_path": "tools/membrane_ontology/ontology.json",
+    "ontology_definition_raw_sha256": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+    "task_count": 83,
+    "selected_count": 76,
+    "conditional_ids": ["B01", "B02", "B03", "B04", "B05", "B06", "B07"],
+    "selected_rule": "scope != 'conditional' per tools/monkey_campaign/campaign.py::selected_tasks",
+    "calculation_contract_count": 28,
+    "amendment_chain": [
+      "33a8fb7204e20bf71f563014c57d772dd111a198cd1d6b212fd053653858f863",
+      "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
+      "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6"
+    ],
+    "amendments": [
+      {
+        "path": "tools/monkey_campaign/SCOPE_AMENDMENT_20260924.json",
+        "raw_sha256": "d3ae91f6dbccc5d716ab212a21b5a5b689a5763597a2f1fc1af392cc9999b5b3",
+        "purpose": "P04 done_when correction (admitted training may interrupt gaming via verified supervisor handoff); operator-authorized",
+        "previous_scope_sha256": "33a8fb7204e20bf71f563014c57d772dd111a198cd1d6b212fd053653858f863",
+        "resulting_scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00"
+      },
+      {
+        "path": "tools/monkey_campaign/SCOPE_AMENDMENT_ONTOLOGY_20260924.json",
+        "raw_sha256": "face809e5075af8f1f3aced80830ab728cd602d89aea24b38f4f2a96ca40c1a0",
+        "purpose": "Operator-authorized ontology alignment of the 83-task plan (order, visual verification, camera fields)",
+        "previous_scope_sha256": "5b07ce0c49c6a8cae42bc4f04ebce8d2835104d5591df4f1feecf7fa0dc56a00",
+        "resulting_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6"
+      }
+    ]
+  }
+}
