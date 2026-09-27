@@ -131,3 +131,61 @@ remains a named open gate for downstream consumers of the target palm sign.
   `fe74180d…` (scope `cb5475f8…`, 2026-09-27, 95 tasks).
 - CPU-only: stdlib + numpy + matplotlib Agg before pyplot import; no
   GPU/OpenGL/Vulkan/CUDA at any step.
+
+---
+
+## CORRECTION (attempt `c8bb40c32ddb4b01a1c99d7a66582e37`, agent `arrival-749dfd83baf04ac3835e45ef54657633`)
+
+Lieutenant return `msg-0ea0fba3` asked, narrowly: preserve the verified reconciliation
+bytes; bind the authorized palm-face decision to the correspondence record; define and
+verify the required geometry-coverage result or request a precise amendment. All three
+are done; nothing else changed.
+
+**Preservation.** All 12 candidate files from published head `72ecc827` (prior attempt
+`31c8beb654664b6d8e28280e38f7c0d6`, commits `d18b12bc` + `4e80fe27`) are carried
+byte-preserved (verified against the `72ecc827` blobs) onto the merged tip `4dba6cb1`
+(commit `f23d7233`). `PREREGISTRATION.md`, the frozen P1-P6 receipts, `card_task.json`
+and `revalidate_manifest.py` are untouched. The correction preregistration
+(`CORRECTION_PREREGISTRATION.md`) was committed ALONE at `1f2a58b7` before any
+correction run.
+
+**(1) Palm sign bound — UNRESOLVED to RESOLVED-BY-OPERATOR.** The Captain (operator)
+answered the prepared instrument verbatim "B" (2026-09-27T18:20Z): the PALM (ventral)
+face is **B = the -T_R side** (T_R = (0.890060, -0.455843, 0.000951)). Bound with full
+source identity in `verification/P7_operator_decision_binding.json`: decision record
+`OPERATOR_DECISION.json` sha256 `4999a60c…`; instruments re-verified on disk
+(`DECISION_PANEL.png` `33b88a30…`, `DECISION_CARD.md` `c4a36f28…`,
+`VERIFICATION.txt` `95ac1609…`, 34/34 PASS). Disclosed, not hidden: the decision
+record's own `instrument.sha256` field carries the VERIFICATION.txt hash under the
+panel path key — the binding uses the on-disk verified hashes; the operator file was
+not edited. The answer closes ONLY what the card says it closes; dimensions,
+same-assembly, digit structure and force capacity stay exactly as recorded.
+
+**(2) Geometry coverage — required result defined and verified; no amendment needed.**
+`verification/P10_geometry_coverage.md` defines the required result from the merged
+evidence's own claims and verifies each leg at the preserved bytes: 27/27 source
+assembly STL identity (C1); the 342,111-vertex placed source assembly bound inside the
+declared capture frames (`capture_receipt.json → capture_truth`); the C6 identity-leg
+topology (27 bones + 5 ports + per-port owner map + 2 target anchors); C4 anchor-class
+correspondence within the governing 3.5 mm bar; the explicit 13-covered /
+14-not-covered boundary carried verbatim. Determination: the 14-phalanges gap does NOT
+leave the clause unsatisfiable — the identical clause was lead-ACCEPTED
+(`done_when_verified: true`) with the same explicit gap, and the operator answer's own
+scope keeps digit structure outside this card (owned by A05). NO amendment request is
+filed; nothing was weakened; G3 stays exactly as it was.
+
+**(3) Base-move re-verification (the merged line moved `8ec90f13` to `4dba6cb1`).**
+`verification/P8_base_move.txt`: 7/7 accepted-head pins byte-match at the new base; the
+frozen probe rerun exits 0 with `all_green=True` and exactly the two merged-recorded
+deviations, regenerating `numerical_receipt.json` / `state_snapshot.json` byte-identical
+(`e3864b16…` / `33d3219c…`); the suite passes 19/19. `verification/P9_validators.json`:
+BOTH campaign validators TRUE on the committed envelope (`card_task.json` CONTRACT
+`task_id "A04"`) — `visual_capture.validate_manifest` structurally_valid=True
+(regenerated P5 receipt byte-identical, `2c713cac…`) and `visual_gate.verify`
+structurally_valid=True (6 views, CAMERA_METADATA_STRUCTURE_ONLY) with the capture
+evidence FROZEN (no rebuild).
+
+Nothing was inferred beyond the operator record, no anatomy manufactured, no clause
+text weakened, no unchanged proof silently re-run: the re-verification was forced by
+the base move and ordered for the correction. Independent review of this changed exact
+head remains the closing gate.
