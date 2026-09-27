@@ -140,6 +140,16 @@ Taking leadership never turns your own implementation into independent review.
 
 Ontology acceptance now checks actual capture/manifest hashes and runs the existing camera validator. Follow the visual-file gate in [ONTOLOGY_QUEUE.md](../tools/monkey_campaign/ONTOLOGY_QUEUE.md). Numerical and independent media review remain required. Active task criteria and assignments are unchanged.
 
+# Semantic 3D verification
+
+Before asking a model or the Captain to infer anatomical orientation from a render,
+read [SEMANTIC_3D_VERIFICATION.md](SEMANTIC_3D_VERIFICATION.md). Tasks that create or
+change anatomical, terrain or interaction frames must supply a machine-checkable
+semantic-frame packet and run `tools/monkey_campaign/semantic_frame.py`. Missing
+landmarks, topology, knowledge provenance or physical witnesses are named refusals;
+do not replace them with a vision guess. Labeled orthographic views remain required
+debug evidence and use the qualified semantic frame for their camera and tags.
+
 # Ontology-derived backlog — astra-0019
 
 Read [ONTOLOGY_QUEUE.md](../tools/monkey_campaign/ONTOLOGY_QUEUE.md). Free slots now refill from the sealed ontology task graph. Reconcile existing evidence before implementing missing work. Generated cards include membrane/port bindings and verification profiles. A merged diagnostic never qualifies its parent task; exact-head qualified acceptance unlocks downstream work. Existing assignments and criteria stay intact. Startup remains the same.

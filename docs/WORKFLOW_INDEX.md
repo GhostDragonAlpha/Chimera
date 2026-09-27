@@ -28,6 +28,7 @@ evidence of their recorded revision, not instructions for the current queue.
 | ARRIVAL, ATTEMPT, restart, lost context | [Startup recovery](../tools/monkey_campaign/STARTUP_RECOVERY.md) |
 | MAILBOX, architecture question, suggestion | [Suggestion box](../tools/monkey_campaign/SUGGESTION_BOX.md) |
 | MEMBRANE, containment, PORT | [Membrane ontology](MEMBRANE_ONTOLOGY.md) |
+| 3D SEMANTICS, anatomical axes, palm/dorsal, spatial unit tests | [Semantic 3D verification](SEMANTIC_3D_VERIFICATION.md), [validator](../tools/monkey_campaign/semantic_frame.py) |
 | MAPPING CONTRACT, ADAPTER, PORT SEAM, VALIDITY ENVELOPE | [Representation mapping and connection checks](REPRESENTATION_MAPPING.md) |
 | RDF, SHACL, OWL, semantic validation | [Optional semantic pilot](../tools/membrane_ontology/SEMANTIC_PILOT.md) |
 | DEPENDENCY, backlog, qualification | [Ontology work plan](ONTOLOGY_WORK_PLAN.md), [ontology queue](../tools/monkey_campaign/ONTOLOGY_QUEUE.md) |
@@ -68,6 +69,9 @@ evidence of their recorded revision, not instructions for the current queue.
 - **Visual evidence:** proof suited to the card's claim. Static asset inspection
   and actual player-motion verification are different requirements. Record element
   identity, debug visibility, camera position/orientation/distance and framing.
+- **Semantic spatial evidence:** explicit signed axes, independent landmarks,
+  topology coverage, ports and physical witnesses. A render may debug these facts;
+  it cannot invent missing anatomy or convert an under-specified asset into PASS.
 - **Preregistration:** statement, prediction and falsifier recorded before the run.
   A retrospective test description must not be relabeled preregistration.
 
