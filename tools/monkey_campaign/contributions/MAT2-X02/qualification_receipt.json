@@ -216,8 +216,8 @@
  ],
  "evidence": {
   "camera": {
-   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\wired_capture_manifest.json",
-   "raw_sha256": "ac88a2bd3547d7d27394b5f21927796deb8dc7ae2503bd227655a090b845581e"
+   "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\09f3928fb8154867a7efc62652ad42dc\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\wired_capture_manifest.json",
+   "raw_sha256": "6f6cfd6aea4c433c1502b976a90738011f2465c30fc131048b3592161c9362ae"
   },
   "visual": {
    "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-X02\\74bc0ad345074c429272982299a76f4e\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-X02\\evidence\\integrated\\wired_capture.mp4",
@@ -225,7 +225,7 @@
   }
  },
  "capture_context": {
-  "task_id": "MAT2-X02",
+  "task_id": "X02",
   "subject_sha256": "bc9033bfc6c54db0220364821ee19028bf2ac6f740dc70f4c1e9be5f02089111",
   "run_id": "MAT2-X02-wired-2026-09-27T094908Z",
   "capture_sha256": "6e9fa7bb638f7cc4f490e3c49afc03b4a7c960800fb8c2416df7e6b9b6454762",
