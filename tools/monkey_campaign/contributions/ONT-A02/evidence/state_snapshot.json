@@ -1,0 +1,1414 @@
+{
+  "arrival_id": "arrival-db815a40e472418c810c538a333bbc5e",
+  "attempt_id": "a6c4ddd216a648348d0810f05dd464d4",
+  "b4_result": {
+    "before_after_receipt_ok": true,
+    "bounds": "SOURCE-KINEMATIC FIDELITY ONLY; R1 refutation retained; no production radius supersession, hand fit or training-body change authorized or executed; a diagnostic PASS does not close A03.",
+    "c1_replacement_ok": true,
+    "coverage": {
+      "ok": true,
+      "scenario_counts": {
+        "baseline": 2,
+        "diagnostic_plus_hand (context, NOT this run)": 14,
+        "diagnostic_ulna_only": 4
+      }
+    },
+    "key_numbers": {
+      "t2_source_bone_len_m": 0.023074639975522924,
+      "t2_target_pair_len_m": 0.005115804490107064,
+      "t4_c1_worst_delta_pts": 0.0040045388155185435,
+      "t4_ortho_note": "orthonormality 4.1e-16 / det(Q) 1 / anchor gap 0.0 (receipt 07 subchecks)",
+      "t5_resolution_count": [
+        "ulna"
+      ]
+    },
+    "protocol": "existing B4 T1-T6, tolerances unchanged (challenge_protocol \u00a72-\u00a74, amendments A1-A5)",
+    "side_test_pass": 10,
+    "side_test_verdict_cells": 10,
+    "side_test_verdicts": {
+      "ulna": {
+        "T1_source_provenance": "PASS",
+        "T2_landmark_sufficiency": "PASS",
+        "T3_laterality": "PASS",
+        "T4_transform_explainability": "PASS",
+        "T5_uniqueness": "PASS"
+      },
+      "ulna_l": {
+        "T1_source_provenance": "PASS",
+        "T2_landmark_sufficiency": "PASS",
+        "T3_laterality": "PASS",
+        "T4_transform_explainability": "PASS",
+        "T5_uniqueness": "PASS"
+      }
+    },
+    "t6_per_side_headline": "12/12 side-test verdicts + T6 process PASS (I7 report wording; 07 receipt stores T6 once, T1-T5 per side)",
+    "t6_process": {
+      "banned_evidence_occurrences": 0,
+      "verdict": "PASS"
+    }
+  },
+  "before_after_mapping": {
+    "checks": [],
+    "sides": {
+      "radius": {
+        "A": [
+          -0.09110000000000001,
+          0.8230470000000001,
+          0.17769900000000005
+        ],
+        "Bp_new_vs_old_max_abs_diff": 2.220446049250313e-16,
+        "Bp_old_max_abs_diff_from_onb": 0.0,
+        "G_new_vs_old_max_abs_diff": 2.220446049250313e-16,
+        "G_old": [
+          [
+            0.7200870160065339,
+            0.5404946332772689,
+            0.43513244050205724
+          ],
+          [
+            -0.43916512037190586,
+            0.8405170085350946,
+            -0.31727772599403437
+          ],
+          [
+            -0.5372231253655555,
+            0.03737258034557531,
+            0.8426117752623554
+          ]
+        ],
+        "G_old_max_abs_diff_from_onb_closure": 0.0,
+        "P_d_old": [
+          -0.1449945402145386,
+          0.26148236989974977,
+          -0.005956328995525837
+        ],
+        "P_new": [
+          -0.11781299127866669,
+          0.3145557153217149,
+          -0.006067056594766505
+        ],
+        "P_old": [
+          -0.11548098385334016,
+          0.3191090774536133,
+          -0.0060765563324093825
+        ],
+        "det_new_s3": 0.008513242115903161,
+        "det_old_s3": 0.010897754382730345,
+        "gap_m": 0.005115804490107064,
+        "max_delta_m": 0.004950983466166482,
+        "residual_packet": 0.0,
+        "roll_source": [
+          -0.08304000000000002,
+          0.8008200000000001,
+          0.14338000000000006
+        ],
+        "s_new": 0.20418868001006546,
+        "s_old": 0.22170679566544982,
+        "site_deltas": {
+          "BIClong-P11": 0.004469262714455107,
+          "BIClong-P9": 0.004948423135921823,
+          "BICshort-P6": 0.004950983466166482,
+          "BICshort-P8": 0.004469262714455107,
+          "BRD-P2": 0.002872205825984615,
+          "BRD-P3": 0.0012866373213189367,
+          "ECRB-P2": 0.0028016082504958985,
+          "ECRB-P3": 0.0011620097033655007,
+          "ECRL-P2": 0.0027401535858366747,
+          "ECRL-P3": 0.0010497632691427632,
+          "ECU-P5": 0.0012581805068016603,
+          "FCR-P2": 0.0013120429865690455,
+          "FCU-P2": 0.0019191153814078414,
+          "FCU-P3": 0.0012127275883658832,
+          "PT-P3": 0.004230275419775235,
+          "PT-P5": 0.0031852327941221618
+        },
+        "span_new_m": 0.05962909405176015,
+        "span_old_m": 0.06474489854186721,
+        "span_src_m": 0.2920293820833787,
+        "src_D": [
+          -0.07310000000000001,
+          0.5326470000000001,
+          0.20269900000000005
+        ],
+        "t_new": [
+          -0.5743881501002028,
+          -0.36085729483653595,
+          -0.23549874330359868
+        ],
+        "worst_site": "BICshort-P6"
+      },
+      "radius_l": {
+        "A": [
+          -0.09110000000000001,
+          0.822997,
+          -0.17769899999999994
+        ],
+        "Bp_new_vs_old_max_abs_diff": 6.661338147750939e-16,
+        "Bp_old_max_abs_diff_from_onb": 0.0,
+        "G_new_vs_old_max_abs_diff": 6.661338147750939e-16,
+        "G_old": [
+          [
+            -0.7200871124579534,
+            -0.5404946262646331,
+            0.43513228959825684
+          ],
+          [
+            -0.4391651694161956,
+            0.8405170121677621,
+            0.31727764848508133
+          ],
+          [
+            -0.5372229559909097,
+            0.0373726000651957,
+            -0.842611882375721
+          ]
+        ],
+        "G_old_max_abs_diff_from_onb_closure": 0.0,
+        "P_d_old": [
+          0.1449945402145386,
+          0.26148236989974977,
+          -0.005956328995525837
+        ],
+        "P_new": [
+          0.11781299127866669,
+          0.3145557153217149,
+          -0.006067056594766505
+        ],
+        "P_old": [
+          0.11548098385334016,
+          0.3191090774536133,
+          -0.0060765563324093825
+        ],
+        "det_new_s3": 0.008513242115903161,
+        "det_old_s3": 0.010897754382730345,
+        "gap_m": 0.005115804490107064,
+        "max_delta_m": 0.004948423135921825,
+        "residual_packet": 0.0,
+        "roll_source": [
+          -0.08304000000000002,
+          0.80077,
+          -0.14337999999999995
+        ],
+        "s_new": 0.20418868001006546,
+        "s_old": 0.22170679566544982,
+        "site_deltas": {
+          "BIClong_l-P11": 0.004469262714455128,
+          "BIClong_l-P9": 0.004948423135921825,
+          "BICshort_l-P6": 0.004948419704815337,
+          "BICshort_l-P8": 0.004469262714455128,
+          "BRD_l-P2": 0.0028722058259846766,
+          "BRD_l-P3": 0.0012866373213189007,
+          "ECRB_l-P2": 0.0028016082504959045,
+          "ECRB_l-P3": 0.0011620097033654935,
+          "ECRL_l-P2": 0.002740153585836704,
+          "ECRL_l-P3": 0.0010497632691428029,
+          "ECU_l-P5": 0.0012581805068016387,
+          "FCR_l-P2": 0.0013120429865690257,
+          "FCU_l-P2": 0.0019168020920057888,
+          "FCU_l-P3": 0.0012127275883658546,
+          "PT_l-P3": 0.004230275419775217,
+          "PT_l-P5": 0.0031852327941221752
+        },
+        "span_new_m": 0.05962909405176015,
+        "span_old_m": 0.06474489854186721,
+        "span_src_m": 0.2920293820833787,
+        "src_D": [
+          -0.07310000000000001,
+          0.532597,
+          -0.20269899999999993
+        ],
+        "t_new": [
+          0.574361083994982,
+          -0.3608152902169819,
+          -0.23549689450767744
+        ],
+        "worst_site": "BIClong_l-P9"
+      }
+    }
+  },
+  "bounds": {
+    "a03": "a diagnostic PASS does not close A03 or authorize mechanically qualified grasp",
+    "b4": "source-kinematic fidelity only; R1 refutation retained",
+    "executed": false,
+    "preserved": "old radius record, U-ANA, H-BODY and every failed alternative remain history"
+  },
+  "card_id": "ONT-A02",
+  "check_summary": {
+    "fail": 0,
+    "pass": 57,
+    "total": 57
+  },
+  "checks": [
+    {
+      "description": "every reference/ file matches EXTRACTION.json",
+      "difference": 0.0,
+      "id": "N0.reference_integrity",
+      "measured": true,
+      "recorded": true,
+      "source": "reference/EXTRACTION.json",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "XML reproduces the MANIFEST-recorded identity (single trailing CRLF)",
+      "difference": 0.0,
+      "id": "N0.xml_manifest_identity",
+      "measured": true,
+      "recorded": true,
+      "source": "baseline_snapshot/MANIFEST.json",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "packet reproduces the MANIFEST-recorded identity (full CRLF)",
+      "difference": 0.0,
+      "id": "N0.packet_manifest_identity",
+      "measured": true,
+      "recorded": true,
+      "source": "baseline_snapshot/MANIFEST.json",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "monkey_birth.bin / monkey_joints.bin hash pins",
+      "difference": null,
+      "id": "N0.mesh_input_pins",
+      "measured": [
+        "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+        "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662"
+      ],
+      "recorded": [
+        "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+        "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662"
+      ],
+      "source": "O1 frozen EXPECT_SHA",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "|ulna->radius| source offset",
+      "difference": 3.9975522909685424e-05,
+      "id": "N1.u2r_mm",
+      "measured": 23.07463997552291,
+      "recorded": 23.0746,
+      "source": "C1 c1_geometry.txt / R1 \u00a73",
+      "tolerance": 0.0005,
+      "unit": "mm",
+      "verdict": "PASS"
+    },
+    {
+      "description": "|radius->hand_r| source span",
+      "difference": -1.791662128880489e-05,
+      "id": "N1.r2h_mm",
+      "measured": 292.0293820833787,
+      "recorded": 292.0294,
+      "source": "C1 c1_geometry.txt / R1 \u00a73",
+      "tolerance": 0.0005,
+      "unit": "mm",
+      "verdict": "PASS"
+    },
+    {
+      "description": "|elbow->hand| straight-line",
+      "difference": 3.5692798462605424e-05,
+      "id": "N1.e2h_mm",
+      "measured": 305.79223569279844,
+      "recorded": 305.7922,
+      "source": "C1 c1_geometry.txt / R1 \u00a73",
+      "tolerance": 0.0005,
+      "unit": "mm",
+      "verdict": "PASS"
+    },
+    {
+      "description": "axial component of the ulna->radius offset",
+      "difference": -0.00027068726404344545,
+      "id": "N1.axial_mm",
+      "measured": 14.323729312735956,
+      "recorded": 14.324,
+      "source": "C1 \u00a72 / R1 \u00a73",
+      "tolerance": 0.0005,
+      "unit": "mm",
+      "verdict": "PASS"
+    },
+    {
+      "description": "lateral component",
+      "difference": 0.00010329338263304066,
+      "id": "N1.lateral_mm",
+      "measured": 18.088103293382634,
+      "recorded": 18.088,
+      "source": "C1 \u00a72 / R1 \u00a73",
+      "tolerance": 0.0005,
+      "unit": "mm",
+      "verdict": "PASS"
+    },
+    {
+      "description": "posterior component",
+      "difference": -0.0004873989515105648,
+      "id": "N1.posterior_mm",
+      "measured": 0.3005126010484894,
+      "recorded": 0.301,
+      "source": "C1 \u00a72 / R1 \u00a73",
+      "tolerance": 0.0005,
+      "unit": "mm",
+      "verdict": "PASS"
+    },
+    {
+      "description": "obliquity of the offset to the forearm axis",
+      "difference": -0.0013882938274107914,
+      "id": "N1.angle_deg",
+      "measured": 51.62861170617259,
+      "recorded": 51.63,
+      "source": "C1 \u00a72 / R1 \u00a73",
+      "tolerance": 0.01,
+      "unit": "deg",
+      "verdict": "PASS"
+    },
+    {
+      "description": "authored fraction = |ulna->radius| / |elbow->hand|",
+      "difference": -4.4585049604251026e-05,
+      "id": "N1.source_fraction_pct",
+      "measured": 7.545855414950395,
+      "recorded": 7.5459,
+      "source": "R1 arithmetic.txt",
+      "tolerance": 0.001,
+      "unit": "%",
+      "verdict": "PASS"
+    },
+    {
+      "description": "anatomical basis a reproduces C1's receipted value",
+      "difference": null,
+      "id": "N1.basis_a",
+      "measured": [
+        0.060172,
+        -0.987281,
+        0.147155
+      ],
+      "recorded": [
+        0.060172,
+        -0.987281,
+        0.147155
+      ],
+      "source": "C1 \u00a72",
+      "tolerance": 1e-05,
+      "unit": "vector",
+      "verdict": "PASS"
+    },
+    {
+      "description": "anatomical basis l reproduces C1's receipted value",
+      "difference": null,
+      "id": "N1.basis_l",
+      "measured": [
+        -0.008952,
+        0.146883,
+        0.989113
+      ],
+      "recorded": [
+        -0.008952,
+        0.146883,
+        0.989113
+      ],
+      "source": "C1 \u00a72",
+      "tolerance": 1e-05,
+      "unit": "vector",
+      "verdict": "PASS"
+    },
+    {
+      "description": "anatomical basis p reproduces C1's receipted value",
+      "difference": null,
+      "id": "N1.basis_p",
+      "measured": [
+        -0.998148,
+        -0.060834,
+        0.0
+      ],
+      "recorded": [
+        -0.998148,
+        -0.060834,
+        0.0
+      ],
+      "source": "C1 \u00a72",
+      "tolerance": 1e-05,
+      "unit": "vector",
+      "verdict": "PASS"
+    },
+    {
+      "description": "arm-chain rest quats identity (C1/DERIVATION precondition)",
+      "difference": 0.0,
+      "id": "N1.quats_identity",
+      "measured": true,
+      "recorded": true,
+      "source": "C1 \u00a71",
+      "tolerance": 0.0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius packet span",
+      "difference": 0.0,
+      "id": "N2.radius.span_old_m",
+      "measured": 0.06474489854186721,
+      "recorded": 0.06474489854186721,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius packet scale",
+      "difference": 0.0,
+      "id": "N2.radius.s_old",
+      "measured": 0.22170679566544982,
+      "recorded": 0.22170679566544982,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-12,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius before anchor P",
+      "difference": null,
+      "id": "N2.radius.P_old",
+      "measured": [
+        -0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "recorded": [
+        -0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius closure gap |P_old - P_new|",
+      "difference": 0.0,
+      "id": "N2.radius.gap_m",
+      "measured": 0.005115804490107064,
+      "recorded": 0.005115804490107064,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius after scale",
+      "difference": 0.0,
+      "id": "N2.radius.s_new",
+      "measured": 0.20418868001006546,
+      "recorded": 0.20418868001006546,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-12,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius after span",
+      "difference": 0.0,
+      "id": "N2.radius.span_new_m",
+      "measured": 0.05962909405176015,
+      "recorded": 0.05962909405176015,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius det(full map) after = s^3",
+      "difference": -1.0408340855860843e-17,
+      "id": "N2.radius.det_new",
+      "measured": 0.008513242115903161,
+      "recorded": 0.008513242115903171,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-15,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius rigid part G vs packet (max abs diff)",
+      "difference": 0.0,
+      "id": "N2.radius.G_unchanged",
+      "measured": 2.220446049250313e-16,
+      "recorded": 2.220446049250313e-16,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-15,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius max site displacement",
+      "difference": 0.0,
+      "id": "N2.radius.max_delta_m",
+      "measured": 0.004950983466166482,
+      "recorded": 0.004950983466166482,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius worst-displaced site",
+      "difference": null,
+      "id": "N2.radius.worst_site",
+      "measured": "BICshort-P6",
+      "recorded": "BICshort-P6",
+      "source": "I7 receipt 08",
+      "tolerance": 0.0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius all 16 site deltas",
+      "difference": null,
+      "id": "N2.radius.site_deltas_all",
+      "measured": "max abs diff 0.000e+00",
+      "recorded": "receipt 08 all[]",
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius site count",
+      "difference": 0.0,
+      "id": "N2.radius.n_sites",
+      "measured": 16,
+      "recorded": 16,
+      "source": "I7 receipt 08",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius packet rotation reconstructs as Bp@B^T",
+      "difference": null,
+      "id": "N2.radius.G_closure",
+      "measured": "max abs diff 0.000e+00",
+      "recorded": "A4/B4 verified",
+      "source": "A4/B4 (this attempt's 3rd check)",
+      "tolerance": 1e-09,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l packet span",
+      "difference": 0.0,
+      "id": "N2.radius_l.span_old_m",
+      "measured": 0.06474489854186721,
+      "recorded": 0.06474489854186721,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l packet scale",
+      "difference": 0.0,
+      "id": "N2.radius_l.s_old",
+      "measured": 0.22170679566544982,
+      "recorded": 0.22170679566544982,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-12,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l before anchor P",
+      "difference": null,
+      "id": "N2.radius_l.P_old",
+      "measured": [
+        0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "recorded": [
+        0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l closure gap |P_old - P_new|",
+      "difference": 0.0,
+      "id": "N2.radius_l.gap_m",
+      "measured": 0.005115804490107064,
+      "recorded": 0.005115804490107064,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l after scale",
+      "difference": 0.0,
+      "id": "N2.radius_l.s_new",
+      "measured": 0.20418868001006546,
+      "recorded": 0.20418868001006546,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-12,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l after span",
+      "difference": 0.0,
+      "id": "N2.radius_l.span_new_m",
+      "measured": 0.05962909405176015,
+      "recorded": 0.05962909405176015,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l det(full map) after = s^3",
+      "difference": -1.0408340855860843e-17,
+      "id": "N2.radius_l.det_new",
+      "measured": 0.008513242115903161,
+      "recorded": 0.008513242115903171,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-15,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l rigid part G vs packet (max abs diff)",
+      "difference": 0.0,
+      "id": "N2.radius_l.G_unchanged",
+      "measured": 6.661338147750939e-16,
+      "recorded": 6.661338147750939e-16,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-15,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l max site displacement",
+      "difference": 0.0,
+      "id": "N2.radius_l.max_delta_m",
+      "measured": 0.004948423135921825,
+      "recorded": 0.004948423135921825,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l worst-displaced site",
+      "difference": null,
+      "id": "N2.radius_l.worst_site",
+      "measured": "BIClong_l-P9",
+      "recorded": "BIClong_l-P9",
+      "source": "I7 receipt 08",
+      "tolerance": 0.0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l all 16 site deltas",
+      "difference": null,
+      "id": "N2.radius_l.site_deltas_all",
+      "measured": "max abs diff 0.000e+00",
+      "recorded": "receipt 08 all[]",
+      "source": "I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "m",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l site count",
+      "difference": 0.0,
+      "id": "N2.radius_l.n_sites",
+      "measured": 16,
+      "recorded": 16,
+      "source": "I7 receipt 08",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "radius_l packet rotation reconstructs as Bp@B^T",
+      "difference": null,
+      "id": "N2.radius_l.G_closure",
+      "measured": "max abs diff 0.000e+00",
+      "recorded": "A4/B4 verified",
+      "source": "A4/B4 (this attempt's 3rd check)",
+      "tolerance": 1e-09,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "7.5459% x k_rad/axis-ratio = target fraction (exact-float form)",
+      "difference": 4.752888127512733e-08,
+      "id": "N2.fraction_law",
+      "measured": 7.901478889180663,
+      "recorded": 7.901478841651782,
+      "source": "R1 \u00a75.3 / I7 receipt 08",
+      "tolerance": 1e-09,
+      "unit": "%",
+      "verdict": "PASS"
+    },
+    {
+      "description": "derived distal point = |ulna->radius| x k_rad",
+      "difference": -5.426737281766236e-09,
+      "id": "N2.derived_mm",
+      "measured": 5.115804490107078,
+      "recorded": 5.1158044955338156,
+      "source": "I7 receipt 08",
+      "tolerance": 0.0005,
+      "unit": "mm",
+      "verdict": "PASS"
+    },
+    {
+      "description": "k_rad / (target forearm ratio)",
+      "difference": 1.296327571953526e-07,
+      "id": "N2.drift_factor",
+      "measured": 1.0471283180864666,
+      "recorded": 1.0471281884537094,
+      "source": "R1 \u00a75.3",
+      "tolerance": 1e-06,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "uniform scale change",
+      "difference": 0.0,
+      "id": "N2.scale_change_pct",
+      "measured": -7.901478889180636,
+      "recorded": -7.901478889180636,
+      "source": "I7 receipt 08",
+      "tolerance": 1e-06,
+      "unit": "%",
+      "verdict": "PASS"
+    },
+    {
+      "description": "T1-T5 verdict cells both sides all PASS",
+      "difference": null,
+      "id": "N3.gate_cells",
+      "measured": "10 PASS",
+      "recorded": "10 cells",
+      "source": "I7 receipt 07",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "T6 utility-ban process PASS, 0 banned occurrences",
+      "difference": null,
+      "id": "N3.t6",
+      "measured": {
+        "banned_evidence_occurrences": 0,
+        "verdict": "PASS"
+      },
+      "recorded": {
+        "banned": 0,
+        "verdict": "PASS"
+      },
+      "source": "I7 receipt 07",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "before/after receipt internal ok flag",
+      "difference": 0.0,
+      "id": "N3.receipt_08_ok",
+      "measured": true,
+      "recorded": true,
+      "source": "I7 receipt 08",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "coverage topology receipt ok flag",
+      "difference": 0.0,
+      "id": "N3.coverage_ok",
+      "measured": true,
+      "recorded": true,
+      "source": "I7 receipt 10",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "primary fraction 0-1% vs frozen 4-12% band margin",
+      "difference": 0.0,
+      "id": "N4.band_margin",
+      "measured": 3.0,
+      "recorded": 3.0,
+      "source": "R1 \u00a76.1",
+      "tolerance": 0.0,
+      "unit": "points",
+      "verdict": "PASS"
+    },
+    {
+      "description": "O1 declared residual reproduces from the O1 receipt",
+      "difference": 0.0,
+      "id": "N4.o1_ECU-P2",
+      "measured": 63.61229795664599,
+      "recorded": 63.61229795664599,
+      "source": "o1_combine_sign.json",
+      "tolerance": 1e-09,
+      "unit": "deg",
+      "verdict": "PASS"
+    },
+    {
+      "description": "O1 declared residual reproduces from the O1 receipt",
+      "difference": 0.0,
+      "id": "N4.o1_ANC-P2",
+      "measured": 17.552772577400333,
+      "recorded": 17.552772577400333,
+      "source": "o1_combine_sign.json",
+      "tolerance": 1e-09,
+      "unit": "deg",
+      "verdict": "PASS"
+    },
+    {
+      "description": "O1 declared residual reproduces from the O1 receipt",
+      "difference": 0.0,
+      "id": "N4.o1_TRIlat-P5",
+      "measured": 0.15353092426937565,
+      "recorded": 0.15353092426937565,
+      "source": "o1_combine_sign.json",
+      "tolerance": 1e-09,
+      "unit": "deg",
+      "verdict": "PASS"
+    },
+    {
+      "description": "C1's independent 10/10 landmark set reproduced under the declared frame",
+      "difference": 0.0,
+      "id": "N4.c1_10of10",
+      "measured": true,
+      "recorded": true,
+      "source": "I7 receipt 09",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "O1 receipt unanimous NO-FLIP sign verdict",
+      "difference": 0.0,
+      "id": "N4.o1_unanimous",
+      "measured": true,
+      "recorded": true,
+      "source": "o1_combine_sign.json",
+      "tolerance": 0,
+      "unit": "",
+      "verdict": "PASS"
+    },
+    {
+      "description": "R1 arithmetic receipt source fraction (rounded inputs)",
+      "difference": -8.887748146335639e-07,
+      "id": "N4.arith_source_pct",
+      "measured": 7.545855414950395,
+      "recorded": 7.54585630372521,
+      "source": "R1 arithmetic.txt",
+      "tolerance": 1e-05,
+      "unit": "%",
+      "verdict": "PASS"
+    }
+  ],
+  "criteria_sha256": "ab47206c8bd41e3f9769f8f96489545c3335cf2183a76f88f6c010e3b3789cb1",
+  "definition": {
+    "anatomical_decomposition_right": {
+      "a": [
+        0.060171573546703126,
+        -0.987281443938604,
+        0.14715546945804858
+      ],
+      "angle_deg": 51.62861170617259,
+      "axial_mm": 14.323729312735956,
+      "l": [
+        -0.008952033589570654,
+        0.14688292373870376,
+        0.9891133745979687
+      ],
+      "lateral_mm": 18.088103293382634,
+      "p": [
+        -0.9981479062902074,
+        -0.06083384887112688,
+        0.0
+      ],
+      "perp_norm_mm": 18.090599453181994,
+      "posterior_mm": 0.3005126010484894,
+      "reconstruction_residual_m": 4.909233435856758e-18
+    },
+    "definition_text": "P body_origin:ulna <-> elbow_R; P_d body_origin:radius <-> derived point elbow_R + 5.1158 mm along unit(elbow->wrist)",
+    "meshes_declared": {
+      "radius": {
+        "file": "Geometry/radius.stl",
+        "scale": [
+          1.0,
+          1.2,
+          1.0
+        ]
+      },
+      "ulna": {
+        "file": "Geometry/ulna.stl",
+        "scale": [
+          1.0,
+          1.2,
+          1.0
+        ]
+      }
+    },
+    "source": {
+      "left": {
+        "chain_sum_m": 0.3151040220589016,
+        "e2h": [
+          0.0184,
+          -0.301903,
+          -0.044999
+        ],
+        "e2h_norm_m": 0.30579223569279845,
+        "elbow_world_m": [
+          -0.09150000000000001,
+          0.8345,
+          -0.15769999999999995
+        ],
+        "hand_world_m": [
+          -0.07310000000000001,
+          0.532597,
+          -0.20269899999999993
+        ],
+        "quats_identity": true,
+        "r2h": [
+          0.018,
+          -0.2904,
+          -0.025
+        ],
+        "r2h_norm_m": 0.2920293820833787,
+        "radius_world_m": [
+          -0.09110000000000001,
+          0.822997,
+          -0.17769899999999994
+        ],
+        "u2r": [
+          0.0004,
+          -0.011503,
+          -0.019999
+        ],
+        "u2r_norm_m": 0.02307463997552291
+      },
+      "right": {
+        "chain_sum_m": 0.3151040220589016,
+        "e2h": [
+          0.0184,
+          -0.301903,
+          0.044999
+        ],
+        "e2h_norm_m": 0.30579223569279845,
+        "elbow_world_m": [
+          -0.09150000000000001,
+          0.8345500000000001,
+          0.15770000000000006
+        ],
+        "hand_world_m": [
+          -0.07310000000000001,
+          0.5326470000000001,
+          0.20269900000000005
+        ],
+        "quats_identity": true,
+        "r2h": [
+          0.018,
+          -0.2904,
+          0.025
+        ],
+        "r2h_norm_m": 0.2920293820833787,
+        "radius_world_m": [
+          -0.09110000000000001,
+          0.8230470000000001,
+          0.17769900000000005
+        ],
+        "u2r": [
+          0.0004,
+          -0.011503,
+          0.019999
+        ],
+        "u2r_norm_m": 0.02307463997552291
+      }
+    },
+    "what_it_measures": "radius BODY-ORIGIN frame offset in the ulna frame (kinematic joint-frame offset), rest pose; NOT a bone-landmark distance and NOT a radial-head position"
+  },
+  "fraction_law": {
+    "derived_distal_point_mm": 5.115804490107078,
+    "drift_factor": 1.0471283180864666,
+    "law_exact": true,
+    "law_product_pct": 7.901478889180663,
+    "source_authored_fraction_pct": 7.545855414950395,
+    "target_per_edge_fraction_pct": 7.901478889180665
+  },
+  "independent_evidence": {
+    "applicable_lane": "HUMAN base anatomy \u2014 the source is FreeMusco's fictional 'Chimanoid' (modified human model); no species-specific osteometry can exist.",
+    "arith_receipt_excerpt": [
+      "target derived anchor = L_ur*k_rad = 0.005115804 m = 5.1158 mm   [C3: 5.116 mm]",
+      "target fitted span    = t_EW - d   = 0.059629095 m = 59.6291 mm [C3: 59.63 mm]",
+      "target s              = span/L_rh  = 0.20418868   [C3: 0.20418]",
+      "TARGET 7.9%: d/t_EW = 7.9015 %   (campaign: 7.9%)",
+      "preservation drift: target 7.901% vs source 7.546% = +0.356 pts",
+      "  explanation: numerator scales by radius-edge scale k_rad, denominator by forearm ratio 0.211728; k_rad/(forearm ratio) = 1.04713; 7.5459 * 1.04713 = 7.9015 %  = target 7.901% (exact)",
+      "BIC tuberosity site, axial from elbow = 24.524 mm = 8.0197 % of source forearm",
+      "FROZEN BAND 4-12%: primary human axial fraction ~= 0-1%  -> OUTSIDE band (margin >= 3.0 pts below 4%)"
+    ],
+    "band_margin_points": 3.0,
+    "citations_receipt_excerpt": [
+      "# R1 \u2014 CITATION RECEIPT (receipts = citation list + arithmetic)",
+      "",
+      "Statuses: APPLICABLE (measures a quantity transformable into the common definition D) / INAPPLICABLE (measures a different quantity; kept with the explicit finding, never forced).",
+      "",
+      "## A. APPLICABLE primary sources (human = the Chimanoid's base anatomy; n = 3)",
+      "",
+      "**S1.** London JT. \"Kinematics of the elbow.\" *J Bone Joint Surg Am* 1981;63(4):529\u2013535. PMID 7217119.",
+      "- Measured: 8 normal elbows (4 cadaveric, 4 living subjects), true lateral roentgenograms, special technique. Finding: flexion occurs about a **single axis through the centers of the arcs of the trochlear sulcus and the capitellar periphery**; carrying angle constant during flexion; surface motion sliding except at motion extremes.",
+      "- Relevance: the humeroulnar (trochlear) and humeroradial (capitellar) articular surfaces are **coaxial** \u2014 the radius, articulating with the capitellum and rotating with the forearm about this axis, has its center at the elbow-joint level. Transformable: axial offset of the radial head from the humeroulnar hinge \u2248 0 (technique error mm-scale \u21d2 \u2248 0 % \u00b1 ~1 % of forearm length). Uncertainty: axis-location technique error is millimeter-scale (paper-level; exact per-specimen errors in full text, not in the abstract).",
+      "- Variance reported in abstract: none (n = 8 elbows stated).",
+      "",
+      "**S2.** Brownhill JR, Ferreira LM, Pichora JE, Johnson JA, King GJ. \"Defining the flexion-extension axis of the ulna: implications for intra-operative elbow alignment.\" *J Biomech Eng* 2009;131(2):021005. DOI 10.1115/1.3005203. PMID 19102564."
+    ],
+    "convergent_finding": "radial head center \u2248 0 % \u00b1 ~1 % of forearm length distal to the humeroulnar hinge (coaxial; transverse-dominated offset), outside the frozen 4-12 % band by >= 3.0 points.",
+    "in_model_corroboration": "the model's own radius biceps-tuberosity site sits at 8.020 % axial \u2014 the radius ANATOMY does not start at its body origin (qualitative only).",
+    "inapplicable_recorded": "Macaca morphometry (Cheng & Scott 2000; Graham & Scott 2003) measures other quantities; recorded INAPPLICABLE, never forced.",
+    "sources": [
+      {
+        "citation": "London 1981, JBJS Am 63:529-535 (8 elbows, true-lateral roentgenography)",
+        "finding": "flexion about a single axis through the trochlear sulcus and capitellar periphery; the radius center is AT the elbow joint.",
+        "id": "S1"
+      },
+      {
+        "citation": "Brownhill et al. 2009, J Biomech Eng 131:021005 (12 cadaveric specimens)",
+        "finding": "the radial head is a defining landmark OF the ulnohumeral flexion axis; its center lies on the hinge.",
+        "id": "S2"
+      },
+      {
+        "citation": "Hollister et al. 1994, Clin Orthop 298:272-276 (fresh specimens)",
+        "finding": "the forearm rotation axis runs from the radial head center to the distal ulna center; the radial head is the proximal terminus \u2014 no positive distal fraction.",
+        "id": "S3"
+      }
+    ]
+  },
+  "input_pins": {
+    "birth_expected": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+    "birth_ok": true,
+    "pack_expected": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+    "pack_ok": true
+  },
+  "inputs": {
+    "c1_geometry_sha256": "6b636f7d1596c4363ad8eaa4a25e9f7dbe92fb81a235284135cd6db378cd7d36",
+    "declaration_sha256": "473f7526da894e63c8f4620e5b62774330b1cd9b5f44e819dcc3147fdc4c2255",
+    "known_good_sha256": "3f6a5a7afaa00efa8e6e18d4d0bbb7abe6a3d5278cf801ddbc98e5f9bd142bdb",
+    "manifest_sha256": "a753340ec01a27122455854602c0a57b2233dce2f0d4e618f53ef0f1a92f84e5",
+    "monkey_birth_sha256": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+    "monkey_joints_sha256": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+    "o1_combine_sign_sha256": "fc35f7e9f01601daf3ada563677e7de05961bb19d83beca83f592e54d1e00972",
+    "packet_sha256": "7b5d6345f6d56ec77c072aecefde2ae592e3bc3fc96b439e5eff164425834268",
+    "r1_arithmetic_sha256": "3a10c7f95ece4cbced96ada8be64ae3b95fbe1de2acd8b5d6eb1ae91b87d94db",
+    "r1_citations_sha256": "aadf3d9c2eee175ad98a0914252a601a4cdbcec3d55658bc77c425c966190a0a",
+    "radius_stl_sha256": "1cfc0056df1774187d219aaf9dec532826bee42698c16910567149463049b5dd",
+    "receipt_07_sha256": "e645cb3470d80f8160aa0ce0d41deab2be4cc1cd33a55cefbd8b7c5deef3eb85",
+    "receipt_08_sha256": "4354478f4244645f8c438da9deaa9cc5487d15494aca713609856da6fea2c025",
+    "receipt_09_sha256": "c8cbfc78c2043f692bff3651f5dfa942014f78ec2b8124488abc770574c44128",
+    "receipt_10_sha256": "1b0337c009f2ee1ddc5b3bf3e58df50224d63d26f7f0a2eb303656561af2c01d",
+    "reference_extraction_sha256": "60241502ebe8f7679f4dd42f69a498a547417aa0c2342cf7571940e53f121089",
+    "ulna_stl_sha256": "710264159b68764dfd28fa51ae490d9b6c7ff7c0d2418f910c9db02969b1223e",
+    "xml_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5"
+  },
+  "manifest_identity": {
+    "packet": {
+      "crlf_bytes": 1346469,
+      "crlf_sha256": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+      "lf_blob_sha256": "7b5d6345f6d56ec77c072aecefde2ae592e3bc3fc96b439e5eff164425834268",
+      "lf_bytes": 1294000,
+      "manifest_bytes": 1346469,
+      "manifest_recorded": "a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+      "verdict": "PASS"
+    },
+    "xml": {
+      "crlf_tail_bytes": 154835,
+      "crlf_tail_sha256": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1",
+      "lf_blob_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+      "lf_bytes": 154834,
+      "manifest_bytes": 154835,
+      "manifest_recorded": "675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1",
+      "verdict": "PASS"
+    }
+  },
+  "o1_evidence": {
+    "declared_residuals_deg": {
+      "ANC-P2": 17.552772577400333,
+      "ECU-P2": 63.61229795664599,
+      "TRIlat-P5": 0.15353092426937565
+    },
+    "law": "az_target(q) = az_source(s) + 90 deg (mod 360)",
+    "receipt_keys": [
+      "SIGN_VERDICT",
+      "inputs",
+      "per_candidate",
+      "unanimous_verdict"
+    ],
+    "recorded_error_no_flip_deg": {
+      "ANC-P2": 17.552772577400333,
+      "ECU-P2": 63.61229795664599,
+      "TRIlat-P5": 0.15353092426937565
+    },
+    "residual_role": "the residual SELECTS the pair and is NOT validation (roll-ref site circular, C3 \u00a72.5)",
+    "rows": [
+      {
+        "declared": 63.61229795664599,
+        "receipt": 63.61229795664599,
+        "site": "ECU-P2",
+        "verdict": "PASS"
+      },
+      {
+        "declared": 17.552772577400333,
+        "receipt": 17.552772577400333,
+        "site": "ANC-P2",
+        "verdict": "PASS"
+      },
+      {
+        "declared": 0.15353092426937565,
+        "receipt": 0.15353092426937565,
+        "site": "TRIlat-P5",
+        "verdict": "PASS"
+      }
+    ],
+    "sign_basis": "the SIGN (no-flip) is unanimous over all three candidates (independent site-split + olecranon chain, O1 \u00a72/\u00a74); the residual selects the pair and is NOT independent validation (the roll-ref site is circular for its own roll DOF \u2014 C3 \u00a72.5, O1 caveat)",
+    "sign_mapping": "source +x (volar) <-> target +z (volar/anterior); source -x (dorsal) <-> target -z (dorsal/posterior); source anatomical frame: volar=+x, dorsal=-x, lateral=+z; target world: volar/anterior=+z, dorsal/posterior=-z, right=-x",
+    "unanimous_verdict": true
+  },
+  "reference_integrity": [
+    {
+      "blob_sha1": "ce6674f97b11b0f0d4333f02186e291f73d17b20",
+      "dest": "USTR_DIAGNOSTIC_RECEIPT.md",
+      "measured_bytes": 15393,
+      "measured_sha256": "f3b406c75b2f8a706d59745a97d302470c24a7eebdcd9697fa095bcbeae6554f",
+      "origin": "git",
+      "path": "forearm_package/USTR_DIAGNOSTIC_RECEIPT.md",
+      "recorded_bytes": 15393,
+      "recorded_sha256": "f3b406c75b2f8a706d59745a97d302470c24a7eebdcd9697fa095bcbeae6554f",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "0e0635c6a4e5a93be1cc112101f8acf22988d17e",
+      "dest": "ANATOMICAL_DECISION_TABLE.md",
+      "measured_bytes": 12599,
+      "measured_sha256": "80b4d3034faffeb2efc1c9be7e4f380271f892bfd0618e77dde00e284f3114db",
+      "origin": "git",
+      "path": "forearm_package/ANATOMICAL_DECISION_TABLE.md",
+      "recorded_bytes": 12599,
+      "recorded_sha256": "80b4d3034faffeb2efc1c9be7e4f380271f892bfd0618e77dde00e284f3114db",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "bd7e24b60a883226b3841c2f43c0bdc26ec6ceb7",
+      "dest": "baseline_snapshot/MANIFEST.json",
+      "measured_bytes": 10067,
+      "measured_sha256": "a753340ec01a27122455854602c0a57b2233dce2f0d4e618f53ef0f1a92f84e5",
+      "origin": "git",
+      "path": "forearm_package/baseline_snapshot/MANIFEST.json",
+      "recorded_bytes": 10067,
+      "recorded_sha256": "a753340ec01a27122455854602c0a57b2233dce2f0d4e618f53ef0f1a92f84e5",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "9c8656e4ad2c339ae39892e50cf17bc62794aeff",
+      "dest": "baseline_snapshot/source_xml/chimanoid.xml",
+      "measured_bytes": 154834,
+      "measured_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+      "origin": "git",
+      "path": "forearm_package/baseline_snapshot/source_xml/chimanoid.xml",
+      "recorded_bytes": 154834,
+      "recorded_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "b76546c2ffbd022639ebeba3fd7dc26d2d5b50bf",
+      "dest": "baseline_snapshot/runs/actual_monkey_fit.json",
+      "measured_bytes": 1294000,
+      "measured_sha256": "7b5d6345f6d56ec77c072aecefde2ae592e3bc3fc96b439e5eff164425834268",
+      "origin": "git",
+      "path": "forearm_package/baseline_snapshot/runs/actual_monkey_fit.json",
+      "recorded_bytes": 1294000,
+      "recorded_sha256": "7b5d6345f6d56ec77c072aecefde2ae592e3bc3fc96b439e5eff164425834268",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "8a5d1a53ba564546a78b1010eb8643c213ede0f5",
+      "dest": "baseline_snapshot/code/compiler.py",
+      "measured_bytes": 41302,
+      "measured_sha256": "8a4ba07c033111730e390764c5401ae3ce0fa41f8504ccbda28bd4bd56edf852",
+      "origin": "git",
+      "path": "forearm_package/baseline_snapshot/code/compiler.py",
+      "recorded_bytes": 41302,
+      "recorded_sha256": "8a4ba07c033111730e390764c5401ae3ce0fa41f8504ccbda28bd4bd56edf852",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "159b351b6c002c40c8190bfb878d7143322b15b8",
+      "dest": "receipts/R1_report.md",
+      "measured_bytes": 22829,
+      "measured_sha256": "521403e7e360dd3b15c3846d5a2f4142213e15ad4590a9b550bc620dda39149a",
+      "origin": "git",
+      "path": "forearm_package/audits/R1_radioulnar_evidence/report.md",
+      "recorded_bytes": 22829,
+      "recorded_sha256": "521403e7e360dd3b15c3846d5a2f4142213e15ad4590a9b550bc620dda39149a",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "c5aaaa6d6362585e4e1d66f26001ead27b37f6c8",
+      "dest": "receipts/R1_arithmetic.txt",
+      "measured_bytes": 1503,
+      "measured_sha256": "3a10c7f95ece4cbced96ada8be64ae3b95fbe1de2acd8b5d6eb1ae91b87d94db",
+      "origin": "git",
+      "path": "forearm_package/audits/R1_radioulnar_evidence/receipts/arithmetic.txt",
+      "recorded_bytes": 1503,
+      "recorded_sha256": "3a10c7f95ece4cbced96ada8be64ae3b95fbe1de2acd8b5d6eb1ae91b87d94db",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "ce5d12737f043d378f1c4ce78eb44dcf9f61e08d",
+      "dest": "receipts/R1_citations.md",
+      "measured_bytes": 6035,
+      "measured_sha256": "aadf3d9c2eee175ad98a0914252a601a4cdbcec3d55658bc77c425c966190a0a",
+      "origin": "git",
+      "path": "forearm_package/audits/R1_radioulnar_evidence/receipts/citations.md",
+      "recorded_bytes": 6035,
+      "recorded_sha256": "aadf3d9c2eee175ad98a0914252a601a4cdbcec3d55658bc77c425c966190a0a",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "2d2e97adbca22ea03c4652a3d133b576b5642825",
+      "dest": "receipts/C1_c1_geometry.txt",
+      "measured_bytes": 11240,
+      "measured_sha256": "6b636f7d1596c4363ad8eaa4a25e9f7dbe92fb81a235284135cd6db378cd7d36",
+      "origin": "git",
+      "path": "forearm_package/audits/C1_ulna_evidence/receipts/c1_geometry.txt",
+      "recorded_bytes": 11240,
+      "recorded_sha256": "6b636f7d1596c4363ad8eaa4a25e9f7dbe92fb81a235284135cd6db378cd7d36",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "652e327c8bb493b48340877aa51b196ad4f4aeee",
+      "dest": "receipts/I7_report.md",
+      "measured_bytes": 20761,
+      "measured_sha256": "d7e5b97bdf8596aaaf6c434068683a3ed9e4ae4337388409416064884ab69b16",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/report.md",
+      "recorded_bytes": 20761,
+      "recorded_sha256": "d7e5b97bdf8596aaaf6c434068683a3ed9e4ae4337388409416064884ab69b16",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "2b9db6f51c60e5571cc3060e4f91c8d13f7bba4e",
+      "dest": "receipts/I7_00_candidate_declaration.json",
+      "measured_bytes": 9884,
+      "measured_sha256": "473f7526da894e63c8f4620e5b62774330b1cd9b5f44e819dcc3147fdc4c2255",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/00_candidate_declaration.json",
+      "recorded_bytes": 9884,
+      "recorded_sha256": "473f7526da894e63c8f4620e5b62774330b1cd9b5f44e819dcc3147fdc4c2255",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "351c0cd5ac03c9d040f3060c2cf91c9727bbe73c",
+      "dest": "receipts/I7_07_gate_table.json",
+      "measured_bytes": 4985,
+      "measured_sha256": "e645cb3470d80f8160aa0ce0d41deab2be4cc1cd33a55cefbd8b7c5deef3eb85",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/07_gate_table.json",
+      "recorded_bytes": 4985,
+      "recorded_sha256": "e645cb3470d80f8160aa0ce0d41deab2be4cc1cd33a55cefbd8b7c5deef3eb85",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "1a7f3742bacf10122cb3070970cbe3c7af1fdccd",
+      "dest": "receipts/I7_08_radius_before_after.json",
+      "measured_bytes": 5787,
+      "measured_sha256": "4354478f4244645f8c438da9deaa9cc5487d15494aca713609856da6fea2c025",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/08_radius_before_after.json",
+      "recorded_bytes": 5787,
+      "recorded_sha256": "4354478f4244645f8c438da9deaa9cc5487d15494aca713609856da6fea2c025",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "7c03e497d542a32bcb6690db8e5432974c52056f",
+      "dest": "receipts/I7_09_c1_replacement.json",
+      "measured_bytes": 7140,
+      "measured_sha256": "c8cbfc78c2043f692bff3651f5dfa942014f78ec2b8124488abc770574c44128",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/09_c1_replacement.json",
+      "recorded_bytes": 7140,
+      "recorded_sha256": "c8cbfc78c2043f692bff3651f5dfa942014f78ec2b8124488abc770574c44128",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "437b8799516ced670747214ad1554e08084c25f7",
+      "dest": "receipts/I7_10_coverage_topology.json",
+      "measured_bytes": 13933,
+      "measured_sha256": "1b0337c009f2ee1ddc5b3bf3e58df50224d63d26f7f0a2eb303656561af2c01d",
+      "origin": "git",
+      "path": "forearm_package/audits/I7_ustr_diagnostic/receipts/10_coverage_topology.json",
+      "recorded_bytes": 13933,
+      "recorded_sha256": "1b0337c009f2ee1ddc5b3bf3e58df50224d63d26f7f0a2eb303656561af2c01d",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "bca1771dbec89c5b75c8444e40096820e7036531",
+      "dest": "receipts/o1_combine_sign.json",
+      "measured_bytes": 2910,
+      "measured_sha256": "fc35f7e9f01601daf3ada563677e7de05961bb19d83beca83f592e54d1e00972",
+      "origin": "git",
+      "path": "forearm_package/audits/O1_ulna_orientation/receipts/o1_combine_sign.json",
+      "recorded_bytes": 2910,
+      "recorded_sha256": "fc35f7e9f01601daf3ada563677e7de05961bb19d83beca83f592e54d1e00972",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": "3b9d31a106d63a81337f68c74926c88c190382da",
+      "dest": "receipts/B4_01_known_good_records.json",
+      "measured_bytes": 5531,
+      "measured_sha256": "3f6a5a7afaa00efa8e6e18d4d0bbb7abe6a3d5278cf801ddbc98e5f9bd142bdb",
+      "origin": "git",
+      "path": "forearm_package/audits/B4_correspondence_challenge/receipts/01_known_good_records.json",
+      "recorded_bytes": 5531,
+      "recorded_sha256": "3f6a5a7afaa00efa8e6e18d4d0bbb7abe6a3d5278cf801ddbc98e5f9bd142bdb",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": null,
+      "dest": "meshes/ulna.stl",
+      "measured_bytes": 19884,
+      "measured_sha256": "710264159b68764dfd28fa51ae490d9b6c7ff7c0d2418f910c9db02969b1223e",
+      "origin": "working_tree",
+      "path": "vendor/myo_sim/meshes/ulna.stl",
+      "recorded_bytes": 19884,
+      "recorded_sha256": "710264159b68764dfd28fa51ae490d9b6c7ff7c0d2418f910c9db02969b1223e",
+      "verdict": "PASS"
+    },
+    {
+      "blob_sha1": null,
+      "dest": "meshes/radius.stl",
+      "measured_bytes": 19584,
+      "measured_sha256": "1cfc0056df1774187d219aaf9dec532826bee42698c16910567149463049b5dd",
+      "origin": "working_tree",
+      "path": "vendor/myo_sim/meshes/radius.stl",
+      "recorded_bytes": 19584,
+      "recorded_sha256": "1cfc0056df1774187d219aaf9dec532826bee42698c16910567149463049b5dd",
+      "verdict": "PASS"
+    }
+  ],
+  "schema": "chimera.ont_a02_state.v1",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "task_id": "A02"
+}

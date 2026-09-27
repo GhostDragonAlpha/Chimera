@@ -1,0 +1,214 @@
+{
+  "role": "M-A02diag \u2014 isolated U-STR B4 diagnostic (authorized; memo \u00a75)",
+  "authorization_verbatim": "Authorize the isolated U-STR B4 diagnostic without requiring the hand-scoped O2 gate to pass. This authorization is for source-kinematic fidelity diagnostics only. Retain the anatomical falsifier outcome from R1; do not relabel source convention as anatomical evidence. No production radius supersession, hand fit, or training-body change is authorized by that diagnostic. Preserve old radius and all failed alternatives. Return the existing B4 criteria, exact proposed radius effects and resulting defined/undefined tendon coverage. A diagnostic PASS does not close A03 or authorize mechanically qualified grasp.",
+  "candidate_identity": "U-STR exactly as I6 defined it (P body_origin:ulna <-> elbow; P_d body_origin:radius <-> derived 5.1158 mm point; s_a = 0.2217 kinematic) WITH the resolved roll",
+  "roll_choice": {
+    "declared_source_site": {
+      "ulna": "TRIlat-P5",
+      "ulna_l": "TRIlat_l-P5"
+    },
+    "declared_target_witness": "the shipped `_band_roll` extreme vertex (reused from the known-good radius record)",
+    "law": "az_target(q) = az_source(s) + 90 deg (mod 360)",
+    "law_source": "audits/O1_ulna_orientation/report.md \u00a75; receipts/o1_combine_sign.json",
+    "selection_rule": "the law + the existing witness demand az_source = +158.1348 deg; exactly one declared candidate lies within the +/-10 deg tube-line precision (C3-S2)",
+    "residual_deg": {
+      "ulna": 0.15353092426937565,
+      "ulna_l": 0.1535193865940414
+    },
+    "o1_receipted_residuals_deg": {
+      "ECU-P2": 63.61229795664599,
+      "ANC-P2": 17.552772577400333,
+      "TRIlat-P5": 0.15353092426937565
+    },
+    "sign_basis": "the SIGN (no-flip) is unanimous over all three candidates (independent site-split + olecranon chain, O1 \u00a72/\u00a74); the residual selects the pair and is NOT independent validation (the roll-ref site is circular for its own roll DOF \u2014 C3 \u00a72.5, O1 caveat)",
+    "witness_dependency": "DEPENDENT (the radius edge consumes the same witness); declared, not hidden",
+    "shared_point_note": "TRIlat-P5 == TRIlong-P5 == TRImed-P5 (one authored point, C3-S1): the roll consumes the single TRI point; effective independent validators 8 points / 10 site records"
+  },
+  "measured_residuals_all_candidates": {
+    "TRIlat-P5": {
+      "az_source_b_deg": 158.28837319495366,
+      "demanded_target_az_deg": 248.28837319495366,
+      "witness_az_deg": -111.86515772931568,
+      "residual_deg": 0.15353092426937565
+    },
+    "ANC-P2": {
+      "az_source_b_deg": 175.6876148480847,
+      "demanded_target_az_deg": 265.6876148480847,
+      "witness_az_deg": -111.86515772931568,
+      "residual_deg": 17.55277257740039
+    },
+    "ECU-P2": {
+      "az_source_b_deg": -138.25285977266975,
+      "demanded_target_az_deg": 311.74714022733025,
+      "witness_az_deg": -111.86515772931568,
+      "residual_deg": 63.61229795664593
+    },
+    "TRIlat_l-P5": {
+      "az_source_b_deg": -158.28837319495366,
+      "demanded_target_az_deg": 291.7116268050463,
+      "witness_az_deg": -68.13485380835964,
+      "residual_deg": 0.1535193865940414
+    },
+    "ANC_l-P2": {
+      "az_source_b_deg": -175.6876148480847,
+      "demanded_target_az_deg": 274.3123851519153,
+      "witness_az_deg": -68.13485380835964,
+      "residual_deg": 17.552761039725056
+    },
+    "ECU_l-P2": {
+      "az_source_b_deg": 138.25285977266975,
+      "demanded_target_az_deg": 228.25285977266975,
+      "witness_az_deg": -68.13485380835964,
+      "residual_deg": 63.6122864189706
+    }
+  },
+  "witness_azimuth_deg": {
+    "right": -111.86515772931568,
+    "left": -68.13485380835964
+  },
+  "records": {
+    "ulna": {
+      "parent": "humerus",
+      "scale_policy": "uniform",
+      "coords": [
+        "elbow_flexion"
+      ],
+      "axial_unresolved": false,
+      "axis_assumptions": {},
+      "axis_measure_kind": {},
+      "landmarks": {
+        "prox": {
+          "id": "ulna.prox",
+          "target": [
+            -0.11548098385334016,
+            0.3191090774536133,
+            -0.0060765563324093825
+          ],
+          "source_resolution": "body_origin:ulna",
+          "source": [
+            -0.09150000000000001,
+            0.8345500000000001,
+            0.15770000000000006
+          ]
+        },
+        "dist": {
+          "id": "ulna.dist",
+          "target": [
+            -0.11781299127866669,
+            0.3145557153217149,
+            -0.006067056594766505
+          ],
+          "source_resolution": "body_origin:radius",
+          "source": [
+            -0.09110000000000001,
+            0.8230470000000001,
+            0.17769900000000005
+          ]
+        },
+        "roll": {
+          "id": "ulna.roll",
+          "target": [
+            -0.16961276888847351,
+            0.23864266276359558,
+            -0.03463515102863312
+          ],
+          "source_resolution": "site:TRIlat-P5",
+          "source": [
+            -0.11340000000000001,
+            0.8450100000000001,
+            0.15692000000000006
+          ]
+        }
+      },
+      "handedness": "preserve",
+      "mirror_plane_normal": null,
+      "implied_axial_scale": 0.22170679566544982,
+      "provenance": {
+        "P": "packet joint origin elbow_flexion(_l) (B4-E6 anchor gap 0.0)",
+        "P_d": "I6 authored derived point: elbow + |src_D-src_A| * 0.22170679566544982 along unit(elbow->wrist), toward the wrist (C1 \u00a71.4 distal direction resolution)",
+        "Q": "shipped `_band_roll` extreme vertex \u2014 the known-good radius edge's own declared roll target, reused EXACTLY (B4 receipt 01); DEPENDENT by reuse (C3 \u00a72.5), declared as such",
+        "roll_source_site": "TRIlat-P5 per O1's witness law (see derivation)"
+      }
+    },
+    "ulna_l": {
+      "parent": "humerus_l",
+      "scale_policy": "uniform",
+      "coords": [
+        "elbow_flexion_l"
+      ],
+      "axial_unresolved": false,
+      "axis_assumptions": {},
+      "axis_measure_kind": {},
+      "landmarks": {
+        "prox": {
+          "id": "ulna_l.prox",
+          "target": [
+            0.11548098385334016,
+            0.3191090774536133,
+            -0.0060765563324093825
+          ],
+          "source_resolution": "body_origin:ulna_l",
+          "source": [
+            -0.09150000000000001,
+            0.8345,
+            -0.15769999999999995
+          ]
+        },
+        "dist": {
+          "id": "ulna_l.dist",
+          "target": [
+            0.11781299127866669,
+            0.3145557153217149,
+            -0.006067056594766505
+          ],
+          "source_resolution": "body_origin:radius_l",
+          "source": [
+            -0.09110000000000001,
+            0.822997,
+            -0.17769899999999994
+          ]
+        },
+        "roll": {
+          "id": "ulna_l.roll",
+          "target": [
+            0.16961275339126589,
+            0.23864267826080324,
+            -0.03463515102863312
+          ],
+          "source_resolution": "site:TRIlat_l-P5",
+          "source": [
+            -0.11340000000000001,
+            0.84496,
+            -0.15691999999999995
+          ]
+        }
+      },
+      "handedness": "preserve",
+      "mirror_plane_normal": null,
+      "implied_axial_scale": 0.22170679566544982,
+      "provenance": {
+        "P": "packet joint origin elbow_flexion(_l) (B4-E6 anchor gap 0.0)",
+        "P_d": "I6 authored derived point: elbow + |src_D-src_A| * 0.22170679566544982 along unit(elbow->wrist), toward the wrist (C1 \u00a71.4 distal direction resolution)",
+        "Q": "shipped `_band_roll` extreme vertex \u2014 the known-good radius edge's own declared roll target, reused EXACTLY (B4 receipt 01); DEPENDENT by reuse (C3 \u00a72.5), declared as such",
+        "roll_source_site": "TRIlat-P5 per O1's witness law (see derivation)"
+      }
+    }
+  },
+  "preregistration": {
+    "prediction": "The declared U-STR candidate passes the EXISTING B4 gate T1-T6 unchanged (T1 provenance: parent humerus, 10-site set, dist body_origin:radius, TRIlat-P5 owned by ulna; T2: spans 23.075 mm / 5.116 mm, roll witnesses >> 1e-9; T3: right/left sides clean, det +1; T4: s = 0.221707 in the humerus neighbor band, constructed frames exact, C1's independent 10/10 re-placement reproduced; T5: resolution-consistency count == 1; T6: process clean).",
+    "falsifiers": [
+      "F-T1: any claimed site/resolution/parent the XML does not place there",
+      "F-T2: any declared landmark missing/non-finite, span <= 1e-12, or roll witness <= ROLL_EPS 1e-9",
+      "F-T3: cross-side claim, det(Q) != +1 beyond 1e-12, negative scale under preserve",
+      "F-T4: constructed-frame law violation, scale outside the factor-2 humerus neighbor band or [0.2, 5.0] envelope, or C1's independent 10/10 region test NOT reproduced under the declared frame (any site leaving its demanded region)",
+      "F-T5: resolution-consistency count != 1 (a second equally supported owner)",
+      "F-T6: any utility number computed as evidence in the gate scripts",
+      "F-ANAT (RETAINED, not re-litigated): R1's refutation stands \u2014 the re-anchor this candidate forces carries NO primary-anatomical support; its basis is source-kinematic convention only"
+    ],
+    "stop_rule": "Any fired falsifier stops the diagnostic and is reported with numbers; no tolerance is weakened, no candidate is repaired, no alternative is searched. The diagnostic ends at the verdict + before/after + coverage tables.",
+    "acceptance_criteria": "the EXISTING B4 T1-T6 protocol unchanged (challenge_protocol.md \u00a72-\u00a74, amendments A1-A5)"
+  },
+  "frozen_before_evaluation": true,
+  "cpu_only": true,
+  "baseline_read_only": true
+}
