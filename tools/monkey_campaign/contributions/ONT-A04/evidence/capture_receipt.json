@@ -1,0 +1,159 @@
+{
+ "capture": {
+  "pixel_size": [
+   700,
+   3628
+  ],
+  "raw_sha256": "878eb3de68123bb6b82fc0c25b172b18be6346773d24ede8b4f5f24edc3685b2",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A04\\d9e5561a0c7b4c0881faf8a213e475b2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A04\\evidence\\capture_a04.png"
+ },
+ "capture_truth": {
+  "artifact_locator_convention": "[left, top, width, height] pixels, upper-left origin per visual_capture.artifact_locator",
+  "auto_span_over_placed_source_m": 0.29511469892631603,
+  "bounds_check": {
+   "all_inside": true,
+   "cameras": [
+    {
+     "frame_id": "chimanoid_world_m",
+     "inside": true,
+     "margins_px_lrtb": [
+      117.47996819436867,
+      22.695652173912908,
+      169.16236060951434,
+      108.45914513829723
+     ],
+     "subject_id": "src/assembly/27_bones"
+    },
+    {
+     "frame_id": "monkey_birth_world_m",
+     "inside": true,
+     "margins_px_lrtb": [
+      54.662421152362775,
+      22.695652173913018,
+      187.36172861569173,
+      211.70608319035264
+     ],
+     "subject_id": "tgt/envelope/distal_band"
+    },
+    {
+     "frame_id": "chimanoid_world_m",
+     "inside": true,
+     "margins_px_lrtb": [
+      22.695652173913025,
+      44.279652161829006,
+      182.7893333747207,
+      196.38606558520164
+     ],
+     "subject_id": "src/assembly/27_bones/carpal_row"
+    },
+    {
+     "frame_id": "monkey_birth_world_m",
+     "inside": true,
+     "margins_px_lrtb": [
+      65.17951203501379,
+      22.695652173913047,
+      130.22723263519254,
+      175.3464870943447
+     ],
+     "subject_id": "tgt/envelope/distal_band/proximal_segment"
+    },
+    {
+     "frame_id": "chimanoid_world_m",
+     "inside": true,
+     "margins_px_lrtb": [
+      129.3404018417921,
+      100.71930567895292,
+      68.37398603340158,
+      19.56521739130436
+     ],
+     "subject_id": "src/assembly/27_bones"
+    },
+    {
+     "frame_id": "chimanoid_world_m",
+     "inside": true,
+     "margins_px_lrtb": [
+      128.50540304871944,
+      126.92353854095735,
+      71.33073632835125,
+      19.565217391304323
+     ],
+     "subject_id": "src/assembly/27_bones"
+    },
+    {
+     "frame_id": "monkey_birth_world_m",
+     "inside": true,
+     "margins_px_lrtb": [
+      22.69565217391299,
+      46.6540143660792,
+      102.27007019228267,
+      142.61245741304575
+     ],
+     "subject_id": "tgt/envelope/distal_band"
+    },
+    {
+     "frame_id": "monkey_birth_world_m",
+     "inside": true,
+     "margins_px_lrtb": [
+      46.652549414588385,
+      22.695652173912904,
+      55.90930332476551,
+      71.90232454269963
+     ],
+     "subject_id": "tgt/envelope/distal_band"
+    }
+   ],
+   "convention": "A01-lesson: every declared subject vertex projects inside its declared orthographic frame (margins_px_lrtb > 0)"
+  },
+  "collapsed_guard_differs": true,
+  "collapsed_no_anchor_span_m": 0.20514728670655638,
+  "collapsed_no_anchor_vertex_mean_world_m": [
+   -0.07219101362641633,
+   0.5261223121640215,
+   0.20244018814532552
+  ],
+  "declared_overview_orthographic_span_m": 0.29511469892631603,
+  "declared_overview_target_world_m": [
+   -0.06707765591773727,
+   0.46898439134524167,
+   0.20338156193511228
+  ],
+  "placed_source_vertex_count": 342111,
+  "placed_source_vertex_mean_world_m": [
+   -0.06707765591773727,
+   0.46898439134524167,
+   0.20338156193511228
+  ],
+  "placement": "per-bone STL vertices + hand_r origin + per-bone XML anchor (hand_r local metres; chain R = I == probe C2 placement; correction for review 8837d083 finding 1)"
+ },
+ "gate_validation": {
+  "capture_kind": "image",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "anatomy",
+  "structurally_valid": true,
+  "view_count": 6,
+  "visual_acceptance": false
+ },
+ "honest_boundary": "Static pinned-geometry inspection only. The capture shows the pinned SOURCE hand assembly and the pinned TARGET fitted band separately, side by side per view; it is NOT a native engine frame and makes no runtime/native claim. A/B face letters label faces, not anatomy; the human palm verdict is NOT recorded, so the target palm sign stays UNRESOLVED (named in the numerical receipt).",
+ "manifest": {
+  "raw_sha256": "c3d3098e04005d0314d9d4f0aa971443693ee9135192ad9ba952ea78b5b4ba5d",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A04\\d9e5561a0c7b4c0881faf8a213e475b2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A04\\evidence\\capture_manifest.json"
+ },
+ "render_referents": {
+  "cell_layout": "each view cell = SOURCE | TARGET panels; PRIMARY camera = source camera (schema-validated); target/side/oblique cameras fully declared in camera.secondary_cameras (same 16 fields)",
+  "clean_segments": "own panels, geometry only, depth-tested, zero diagnostic pixels",
+  "frames": {
+   "source": "chimanoid_world_m (right-handed, metres; hand_r chain quats identity, R2-A4 origin pin)",
+   "target": "monkey_birth_world_m (right-handed, metres; anterior +z, up +y, creature right at -x per O1; MESH_UNIT_TO_M 0.065 authored)"
+  },
+  "renderer": "matplotlib 3.10.8 Agg (CPU, software) + custom numpy z-buffer orthographic rasterizer; NO GPU contexts"
+ },
+ "run_id": "ont-a04-anatomy-20260926-d9e5561a",
+ "schema": "ont-a04.anatomy.capture.v1",
+ "state_binding": {
+  "kind": "state",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A04\\d9e5561a0c7b4c0881faf8a213e475b2\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A04\\evidence\\state_snapshot.json",
+  "sha256": "33d3219cc66071a7a5957b24f40f172accbada2ac8ec69c9de5e060de74b1164"
+ },
+ "task_id": "A04"
+}
