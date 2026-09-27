@@ -1,0 +1,50 @@
+{
+ "agent_id": "arrival-749dfd83baf04ac3835e45ef54657633",
+ "attempt_id": "c8bb40c32ddb4b01a1c99d7a66582e37",
+ "authority_chain": {
+  "lieutenant_correction_return": "msg-0ea0fba3 (narrow return: bind the authorized palm-face decision with source/capture identity)",
+  "operator_terminal": "human Captain via the Execution Sergeant lead session (per the decision record answered_by field); no model answer recorded anywhere",
+  "workflow_ruling": "msg-d6204cbc (record A/B only bound to the shown panel hash; the shown/prepared panel hash 33b88a30... is the on-disk verified DECISION_PANEL.png)"
+ },
+ "binding": {
+  "clause": "including palm sign",
+  "gaps_standing_G1": "RESOLVED-BY-OPERATOR",
+  "new_state": "RESOLVED-BY-OPERATOR: target palm/ventral face = B = the -T_R side (T_R = (0.890060, -0.455843, 0.000951), C3 fixed +x-rejection rule); sign decided in the known birth frame per the card WHAT-EACH-ANSWER-CLOSES section",
+  "not_closed_by_this_answer_verbatim_scope": "dimensions, same-assembly (H-LEN/H-ASP section R3), digit structure (14 phalanges), force capacity stay exactly as recorded",
+  "prior_state": "source_closed_target_unresolved_operator_gate_named (target palm sign UNRESOLVED; G1 UNRESOLVED)"
+ },
+ "correction_preregistration_commit": "1f2a58b7eddfc992cd3fc9f0394a58bdabde8f23",
+ "decision_record": {
+  "anatomical_effect_verbatim": "palm sign = B-side (-T_R); the assembled hand palm orientation is resolved: ventral surface is the -T_R face",
+  "answer_verbatim": "B",
+  "answered_at_verbatim": "2026-09-27T18:20Z (operator statement in Execution Sergeant session)",
+  "answered_by_verbatim": "Captain (operator), verbatim message: B",
+  "path": "E:\\ChimeraWork\\monkey-coordination\\review-workspaces\\labeling_gate_ER\\gate_artifact\\OPERATOR_DECISION.json",
+  "question_verbatim": "Which lettered face is the PALM (ventral) - A or B? (A = broad face on the +T_R side; B = -T_R side)",
+  "sha256_on_disk_verified": "4999a60cb9045f2e27f32b92e7b4f115cda8e34ed78dbdbf95af619255c6ad46"
+ },
+ "disclosed_instrument_record_defect": {
+  "handling": "disclosed verbatim and worked around by binding the on-disk verified hash for every instrument; the operator record file is outside this attempt write authority and was not edited; the answer itself and its identity fields are unaffected",
+  "observation": "inside OPERATOR_DECISION.json the instrument.sha256 field contains 95ac1609b588fe583e4baa37ad39bdef608e5c8fe8622df1aa8f70defd45b808 (the VERIFICATION.txt hash) while placed under the decision_panel_png path key; the on-disk DECISION_PANEL.png hash is 33b88a30ee2b4b6c90751c65f36fb6557ddf04a837400415769cde5cf49861b0"
+ },
+ "falsifier_checks": {
+  "GC-A_decision_forgery_drift": "did not fire (all on-disk hashes match the frozen identities; answer strings verbatim)",
+  "GC-B_honesty_inheritance": "did not fire (nothing bound beyond the operator record; no gap text weakened)"
+ },
+ "instrument_hashes_on_disk_verified": {
+  "DECISION_CARD.md": "c4a36f289087e8cf3ff401ec425e74d3d9d42616c3fad724ae4e70e54370646c",
+  "DECISION_PANEL.png": "33b88a30ee2b4b6c90751c65f36fb6557ddf04a837400415769cde5cf49861b0",
+  "VERIFICATION.txt": "95ac1609b588fe583e4baa37ad39bdef608e5c8fe8622df1aa8f70defd45b808",
+  "crop_index.json": "57badd478ed0453b6b78cded896fbbb2099c1635b5e1a699b75cac0b87411680",
+  "verification_txt_total": "34/34 checks PASS (instrument provenance; self-pins panel 33b88a30... and card c4a36f28...)"
+ },
+ "planning_task_id": "A04",
+ "prediction": "PC-1 of CORRECTION_PREREGISTRATION.md",
+ "question_linkage": {
+  "equality": "the decision record question equals the prior OPERATOR_DECISION_REQUEST question followed by the LABELING_CARD lettering-convention parenthetical (A = +T_R side; B = -T_R side); the core question string is character-identical",
+  "prior_decision_request_question_verbatim": "Which lettered face is the PALM (ventral) - A or B?"
+ },
+ "result": "PASS",
+ "schema": "mat2-a04.operator_decision_binding.v1",
+ "task_id": "MAT2-A04"
+}
