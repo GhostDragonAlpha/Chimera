@@ -1,3 +1,17 @@
+# Shared model quality record — astra-0033
+
+Read [MODEL_GRADES.md](../tools/monkey_campaign/MODEL_GRADES.md) and its current
+scorecard at onboarding and after a grading-rubric revision. Before handoff, check
+claims against artifacts, state limitations, verify ownership and complete the
+required submission. Accurate negative results and legitimate blockers are not
+model failures; never hide a failure, weaken a test or invent a PASS to improve a grade.
+The shared scorecard records evidence-backed model/configuration grades by role
+and work class. Capture attribution during normal dispatch, reuse independent
+reviews, and distinguish model errors from external blockers. Unknown attribution
+stays unknown; workers do not self-award grades. The lead updates the shared record
+on operator-triggered queue checks. No extra benchmark campaign or background loop.
+Grades advise assignment; they do not change task criteria or grant authority.
+
 # Material-owned physical ports — astra-0032
 
 Read [PHYSICAL_PORTS.md](PHYSICAL_PORTS.md), the Captain's 2026-09-27 ruling.
@@ -307,8 +321,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
 {
   "schema": "chimera.lead_instructions.v1",
   "lead_id": "astra-codex",
-  "revision": 32,
-  "revision_id": "astra-0032",
+  "revision": 33,
+  "revision_id": "astra-0033",
   "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
   "files": [
     "docs/MONKEY_RUN.md",
@@ -368,7 +382,8 @@ If startup fails, report its exact error and preserve existing work; do not ask
     "tools/monkey_campaign/PLAYABLE_BUILD.json",
     "tools/monkey_campaign/scope_migration.py",
     "tools/monkey_campaign/MATERIAL_PLAN_ADOPTION.md",
-    "docs/PHYSICAL_PORTS.md"
+    "docs/PHYSICAL_PORTS.md",
+    "tools/monkey_campaign/MODEL_GRADES.md"
   ]
 }
 CHIMERA_LEAD_CONTROL -->
