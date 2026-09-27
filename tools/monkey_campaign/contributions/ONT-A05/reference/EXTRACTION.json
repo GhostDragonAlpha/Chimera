@@ -1,0 +1,28 @@
+{
+ "a04_winner_head": "020c0a5c216a4182d0bed9c4ade59cb0beb585ad",
+ "files": {
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/a04_capture_build.py": "90f3eb4a8c87d4e69d553cb1a77d42edf994a1a15f7c9510a92dafcabc7005d1",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/a04_correspondence_probe.py": "8e36aa2fb2c8ebda791d97ef6b91fd23b619d48392da12cdfa156cdae7365669",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/card_task.json": "6418b7ec99b01709f3df089a8c5c44a6b98708bd45e4212eb4e0bff38055ed62",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/evidence/numerical_receipt.json": "e3864b161c865a404b0b2d0e73cce2a76e479bcf3c29c42c86c54d84c5db5fa1",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/evidence/state_snapshot.json": "33d3219cc66071a7a5957b24f40f172accbada2ac8ec69c9de5e060de74b1164",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/qualification_receipt.json": "726efaf8a7630c7df7fd108064dd1daf2386e1bfa82f5286ddb591126601d9c4",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/chimanoid.xml": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/identity_table.md": "6dab6a40b55c881998232c1f590cd41233919869876a0e4b1e5c260dffd0a424",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/prereg.md": "76f3174dedb54d6382eead14d55fe01ef9377580cf16d1c8fa6b88ce954860e2",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/s1_inventory.json": "54159f3267e82b98c784a2ec9f65bf0d1ce3b408f7aecc3db7b764f60b739be4",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/s2_identity.json": "e1b2131d4af4935e2539b24b6f2bdd486a5fd6e1b1d8ac90b1e6f1e15c61ec68",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/s3_palm_normal.json": "6f29b2dd76542f40d8e4b9e25f4f393d57d1a2bd58533d479fd6c19333e5d8b4",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/target_hand_region_v3.txt": "24aa983b5f308fa9d61a9604852269043111c536ca2ffa1862a135c5363fb633",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/target_paddle_measures.txt": "7d1b8dad377c1cfdca18947a1b7af04c99aa56820e8fc705466938b2e0e53af6",
+  "a04_winner:tools/monkey_campaign/contributions/ONT-A04/report.md": "7c027b40a69fe44f7bec1770a6fef74dceb1e7201e3d2907544bec08b255cc12",
+  "vendor:LICENSE": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+  "vendor:VERSION": "3d097c315a1c543040f548da4c7051265e94c77211a2411ced1d4621344270de",
+  "vendor:hand/assets/myohand_body.xml": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28",
+  "vendor:hand/myohand.xml": "f05e6897ca76e23102b32b02fb4e7b8cc4505845b6c9674de199382e289833b3"
+ },
+ "method": "git show WINNER:<path> (read-only) + byte copies of the vendored Apache-2.0 MyoSuite hand files (read-only); no checkout, no branch switch",
+ "schema": "chimera.ont_a05.reference_extraction.v1",
+ "source_repository": "E:/ChimeraWork/monkey-play-20260924",
+ "vendor_root": "E:\\PythonChimera\\vendor\\myo_sim"
+}

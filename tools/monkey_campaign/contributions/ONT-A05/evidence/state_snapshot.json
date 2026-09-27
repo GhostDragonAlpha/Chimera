@@ -1,0 +1,536 @@
+{
+ "adaptation_delta": {
+  "carried_wrist": [
+   "wrist_dev_r",
+   "wrist_flex_r",
+   "wrist_3_r"
+  ],
+  "digit_geom_mesh_remap": {
+   "distal_thumb": "thumbdist",
+   "distph2": "2distph",
+   "distph3": "3distph",
+   "distph4": "4distph",
+   "distph5": "5distph",
+   "fifthmc": "5mc",
+   "firstmc": "1mc",
+   "fourthmc": "4mc",
+   "midph2": "2midph",
+   "midph3": "3midph",
+   "midph4": "4midph",
+   "midph5": "5midph",
+   "proximal_thumb": "thumbprox",
+   "proxph2": "2proxph",
+   "proxph3": "3proxph",
+   "proxph4": "4proxph",
+   "proxph5": "5proxph",
+   "secondmc": "2mc",
+   "thirdmc": "3mc"
+  },
+  "excluded": [
+   "scale number",
+   "target-runtime binding",
+   "origin promotion",
+   "palm-sign claim"
+  ],
+  "new_bodies": 19,
+  "new_joints": 20,
+  "proposal": "graft the vendored myohand digit tree under the pinned chimanoid hand_r's existing 3-DOF wrist",
+  "vendor_digit_body_poses_verbatim": {
+   "distal_thumb": {
+    "pos": "0.014 -0.0259 -0.0101",
+    "quat": null
+   },
+   "distph2": {
+    "pos": "0.003333 -0.024888 0.00122",
+    "quat": null
+   },
+   "distph3": {
+    "pos": "0.001365 -0.029047 0.001954",
+    "quat": null
+   },
+   "distph4": {
+    "pos": "-0.002317 -0.024789 0.000563",
+    "quat": null
+   },
+   "distph5": {
+    "pos": "-0.002871 -0.020677 -0.002243",
+    "quat": null
+   },
+   "fifthmc": {
+    "pos": "-0.021896 -0.034683 -0.004218",
+    "quat": null
+   },
+   "firstmc": {
+    "pos": "0.0072 -0.0054 -0.0025",
+    "quat": null
+   },
+   "fourthmc": {
+    "pos": "-0.012046 -0.040519 0.003513",
+    "quat": null
+   },
+   "midph2": {
+    "pos": "0.00751 -0.041273 0.007326",
+    "quat": null
+   },
+   "midph3": {
+    "pos": "0.00165 -0.044211 0.00623",
+    "quat": null
+   },
+   "midph4": {
+    "pos": "-0.003528 -0.040255 0.001345",
+    "quat": null
+   },
+   "midph5": {
+    "pos": "-0.005279 -0.035563 -0.002879",
+    "quat": null
+   },
+   "proximal_thumb": {
+    "pos": "0.0165 -0.0292 -0.0127",
+    "quat": null
+   },
+   "proxph2": {
+    "pos": "0.003501 -0.028243 0.00362",
+    "quat": null
+   },
+   "proxph3": {
+    "pos": "0.00024 -0.02629 0.001778",
+    "quat": null
+   },
+   "proxph4": {
+    "pos": "-0.00183 -0.023689 -0.000173",
+    "quat": null
+   },
+   "proxph5": {
+    "pos": "-0.001597 -0.021431 -0.001496",
+    "quat": null
+   },
+   "secondmc": {
+    "pos": "0.014685 -0.03762 0.005032",
+    "quat": null
+   },
+   "thirdmc": {
+    "pos": "0.000477 -0.039239 0.007377",
+    "quat": null
+   }
+  },
+  "vendor_digit_joints_verbatim": {
+   "cmc_abduction": {
+    "axis": "-0.042399 -0.665286 0.745384",
+    "pos": "0 0 0",
+    "range": "-0.5 0.78",
+    "type": null
+   },
+   "cmc_flexion": {
+    "axis": "0.495557 0.731736 0.467959",
+    "pos": "0 0 0",
+    "range": "-0.78 0.7",
+    "type": null
+   },
+   "ip_flexion": {
+    "axis": "-0.050102 -0.479623 0.876043",
+    "pos": "0 0 0",
+    "range": "-1.309 0.436332",
+    "type": null
+   },
+   "mcp2_abduction": {
+    "axis": "-0.054999 0.085899 0.994785",
+    "pos": "0 0 0",
+    "range": "-0.261799 0.261799",
+    "type": null
+   },
+   "mcp2_flexion": {
+    "axis": "0.995013 0.09975 0",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "mcp3_abduction": {
+    "axis": "-0.198669 0 0.980067",
+    "pos": "0 0 0",
+    "range": "-0.261799 0.261799",
+    "type": null
+   },
+   "mcp3_flexion": {
+    "axis": "0.980067 0 0.198669",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "mcp4_abduction": {
+    "axis": "-0.434966 0 0.900447",
+    "pos": "0 0 0",
+    "range": "-0.261799 0.261799",
+    "type": null
+   },
+   "mcp4_flexion": {
+    "axis": "0.900447 0 0.434966",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "mcp5_abduction": {
+    "axis": "-0.564642 0 0.825336",
+    "pos": "0 0 0",
+    "range": "-0.261799 0.261799",
+    "type": null
+   },
+   "mcp5_flexion": {
+    "axis": "0.825336 0 0.564642",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "md2_flexion": {
+    "axis": "0.995004 0.0998334 0",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "md3_flexion": {
+    "axis": "1 0 0",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "md4_flexion": {
+    "axis": "0.825336 0 0.564642",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "md5_flexion": {
+    "axis": "0.643112 -0.226804 0.731414",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "mp_flexion": {
+    "axis": "-0.084295 -0.203488 0.975442",
+    "pos": "0 0 0",
+    "range": "-0.785398 0.698132",
+    "type": null
+   },
+   "pm2_flexion": {
+    "axis": "0.97517 0.0998334 -0.197677",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "pm3_flexion": {
+    "axis": "1 0 0",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "pm4_flexion": {
+    "axis": "0.921061 0 0.389418",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   },
+   "pm5_flexion": {
+    "axis": "0.825336 0 0.564642",
+    "pos": "0 0 0",
+    "range": "0 1.5708",
+    "type": null
+   }
+  }
+ },
+ "bones": [
+  {
+   "anchor_hand_r_local": [
+    0.026485,
+    -0.025023,
+    -0.010481
+   ],
+   "bone": "1mc",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/1mc.stl",
+   "mesh_sha16": "b75e58243a2005af"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.033028,
+    -0.147078,
+    0.019525
+   ],
+   "bone": "2distph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/2distph.stl",
+   "mesh_sha16": "39fca93724345208"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.018677,
+    -0.052674,
+    0.007359
+   ],
+   "bone": "2mc",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/2mc.stl",
+   "mesh_sha16": "ac3286bfb7281a7d"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.029695,
+    -0.12219,
+    0.018305
+   ],
+   "bone": "2midph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/2midph.stl",
+   "mesh_sha16": "074318c92e652ba0"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.022178,
+    -0.080917,
+    0.010979
+   ],
+   "bone": "2proxph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/2proxph.stl",
+   "mesh_sha16": "041bf5a60e9376c0"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.007724,
+    -0.153841,
+    0.019666
+   ],
+   "bone": "3distph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/3distph.stl",
+   "mesh_sha16": "d5ecddeac9b45720"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.004469,
+    -0.054293,
+    0.009704
+   ],
+   "bone": "3mc",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/3mc.stl",
+   "mesh_sha16": "eaa77802c8afe5a3"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.006359,
+    -0.124794,
+    0.017712
+   ],
+   "bone": "3midph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/3midph.stl",
+   "mesh_sha16": "5e0ef3d76f2f99f9"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.004709,
+    -0.080583,
+    0.011482
+   ],
+   "bone": "3proxph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/3proxph.stl",
+   "mesh_sha16": "48094bce62d115ae"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.015729,
+    -0.144306,
+    0.007575
+   ],
+   "bone": "4distph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/4distph.stl",
+   "mesh_sha16": "02f01c191dfc86ab"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.008054,
+    -0.055573,
+    0.00584
+   ],
+   "bone": "4mc",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/4mc.stl",
+   "mesh_sha16": "ad2fe21562879512"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.013412,
+    -0.119517,
+    0.007012
+   ],
+   "bone": "4midph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/4midph.stl",
+   "mesh_sha16": "98ecb5ad76749abd"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.009884,
+    -0.079262,
+    0.005667
+   ],
+   "bone": "4proxph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/4proxph.stl",
+   "mesh_sha16": "eea82e95eb50e934"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.027651,
+    -0.127408,
+    -0.008509
+   ],
+   "bone": "5distph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/5distph.stl",
+   "mesh_sha16": "a2ca70efdb0a5e59"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.017904,
+    -0.049737,
+    -0.001891
+   ],
+   "bone": "5mc",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/5mc.stl",
+   "mesh_sha16": "46c75922ddc94f98"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.02478,
+    -0.106731,
+    -0.006266
+   ],
+   "bone": "5midph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/5midph.stl",
+   "mesh_sha16": "d383a1f058224f71"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.019501,
+    -0.071168,
+    -0.003387
+   ],
+   "bone": "5proxph",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/5proxph.stl",
+   "mesh_sha16": "b04672ea67df7403"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.003992,
+    -0.015054,
+    0.002327
+   ],
+   "bone": "capitate",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/capitate.stl",
+   "mesh_sha16": "51c4ff14860a267f"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.006977,
+    -0.017549,
+    0.001577
+   ],
+   "bone": "hamate",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/hamate.stl",
+   "mesh_sha16": "d880faf00df1cc47"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bone": "lunate",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/lunate.stl",
+   "mesh_sha16": "225cbfc34bc7e246"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.013388,
+    -0.009886,
+    -0.010593
+   ],
+   "bone": "pisiform",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/pisiform.stl",
+   "mesh_sha16": "a8cfa7c74c1f551d"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.012345,
+    -0.004464,
+    -0.001254
+   ],
+   "bone": "scaphoid",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/scaphoid.stl",
+   "mesh_sha16": "0a016dd1497f6719"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.056985,
+    -0.080123,
+    -0.033281
+   ],
+   "bone": "thumbdist",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/thumbdist.stl",
+   "mesh_sha16": "95b059723be971e7"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.042985,
+    -0.054223,
+    -0.023181
+   ],
+   "bone": "thumbprox",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/thumbprox.stl",
+   "mesh_sha16": "d55ea0de846c5acf"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.019285,
+    -0.019623,
+    -0.007981
+   ],
+   "bone": "trapezium",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/trapezium.stl",
+   "mesh_sha16": "f130696c1dfec4d0"
+  },
+  {
+   "anchor_hand_r_local": [
+    0.013135,
+    -0.019116,
+    -0.000137
+   ],
+   "bone": "trapezoid",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/trapezoid.stl",
+   "mesh_sha16": "3a68fabd59a87208"
+  },
+  {
+   "anchor_hand_r_local": [
+    -0.010784,
+    -0.007499,
+    -0.001289
+   ],
+   "bone": "triquetrum",
+   "mesh": "E:/PythonChimera/vendor/myo_sim/meshes/triquetrum.stl",
+   "mesh_sha16": "8828f38da02f8a9f"
+  }
+ ],
+ "frame": "chimanoid hand_r local metres; world origin at the A04 R2-A4 pin (-0.0731, 0.532647, 0.202699)",
+ "run_id": "ont-a05-anatomy-20260926-1a7c4775",
+ "schema": "ont-a05.anatomy.state.v1",
+ "sites": [
+  {
+   "site": "ECRL-P4"
+  },
+  {
+   "site": "ECRB-P4"
+  },
+  {
+   "site": "ECU-P6"
+  },
+  {
+   "site": "FCR-P3"
+  },
+  {
+   "site": "FCU-P4"
+  }
+ ],
+ "wrist_joints": [
+  "wrist_dev_r",
+  "wrist_flex_r",
+  "wrist_3_r"
+ ]
+}
