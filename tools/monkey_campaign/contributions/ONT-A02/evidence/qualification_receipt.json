@@ -1,0 +1,84 @@
+{
+  "arrival_id": "arrival-db815a40e472418c810c538a333bbc5e",
+  "attempt_id": "a6c4ddd216a648348d0810f05dd464d4",
+  "bounds": {
+    "a03": "a diagnostic PASS does not close A03 or authorize mechanically qualified grasp",
+    "b4": "source-kinematic fidelity only; R1 refutation retained",
+    "executed": false,
+    "preserved": "old radius record, U-ANA, H-BODY and every failed alternative remain history"
+  },
+  "capture_context": {
+    "capture_sha256": "a728b16a6c0fb87170c3ce2dd6c1824bf7a9a353e4c304a5cf41966b5d4462fa",
+    "run_id": "ONT-A02-ota02-deterministic-cpu-20260926",
+    "subject_sha256": "9e770ea52f8172e3b004df58ac2feb534a0cedfb106d82d775c008931eedcb58",
+    "task_id": "A02",
+    "tick_interval": [
+      0,
+      3
+    ]
+  },
+  "card_id": "ONT-A02",
+  "check_summary": {
+    "fail": 0,
+    "pass": 57,
+    "total": 57
+  },
+  "clause_map": {
+    "b4_result": {
+      "presented": "authorized isolated U-STR B4 diagnostic: T1-T5 PASS on both sides + T6 process PASS, tolerances unchanged; SOURCE-KINEMATIC FIDELITY ONLY; R1's refutation retained; no production consequence executed; a diagnostic PASS does not close A03",
+      "where": "numerical_receipt checks N3.* ; state_snapshot.b4_result"
+    },
+    "before_after_radius_mapping": {
+      "presented": "radius P: elbow_R -> ulna.P_d (gap 5.1158 mm >> JOINT_EPS 1e-9, closure forced); span 64.7449 -> 59.6291 mm; uniform scale 0.22170679566544982 -> 0.204188680010 (-7.9015 %); det 0.0108977544 -> 0.0085132421; rigid part G unchanged; 16+16 site globals recomputed, max displacement 4.9510 mm (BICshort-P6) / 4.9484 mm (BIClong_l-P9); source locals untouched; CLOSED FORM ONLY",
+      "where": "numerical_receipt checks N2.* ; state_snapshot.before_after_mapping"
+    },
+    "independent_evidence": {
+      "presented": "R1's three applicable primary human sources place the radial head at ~0 % +/- 1 % of forearm length (outside the frozen 4-12 % band by >= 3.0 points); applicable lane is HUMAN base anatomy (source is a modified human model); plus O1's unanimous no-flip roll evidence and C1's independent 10/10 landmark reproduction",
+      "where": "numerical_receipt checks N4.* ; state_snapshot.independent_evidence"
+    },
+    "radioulnar_definition": {
+      "presented": "P body_origin:ulna<->elbow_R; P_d body_origin:radius<-> 5.1158 mm derived point; source offset 23.0746 mm decomposed 14.324 axial / 18.088 lateral / 0.301 posterior at 51.63 deg; 7.5459 % of the 305.7922 mm elbow->hand axis; kinematic joint-frame offset, not a bone-landmark or radial-head position",
+      "where": "numerical_receipt checks N1.* ; state_snapshot.definition"
+    }
+  },
+  "criteria_sha256": "ab47206c8bd41e3f9769f8f96489545c3335cf2183a76f88f6c010e3b3789cb1",
+  "done_when": "Radioulnar definition, independent evidence, B4 result and before/after radius mapping are presented",
+  "done_when_verified": true,
+  "evidence": {
+    "camera": {
+      "raw_sha256": "6a7957d3d4c9aa4d0493f2ad984768bce182232f77a7909067926f7a0e8c0f6d",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\a6c4ddd216a648348d0810f05dd464d4\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\evidence\\capture_manifest.json"
+    },
+    "independent_review": {
+      "note": "PENDING: only the independently assigned reviewer can produce this entry; the reviewer fills reference+raw_sha256. The zero digest is a placeholder, exactly as the accepted ONT-A01 receipt carried it. The lead must not accept while this entry is pending.",
+      "pending": true,
+      "raw_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "reference": "E:/ChimeraWork/monkey-coordination/kanban-reviews/ONT-A02/<review-id>/independent_review_receipt.json"
+    },
+    "numerical": {
+      "raw_sha256": "2aa382a15c0f005ef421fb0fa967b912486e03bdac2f75b9a50529d3ab90cce1",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\a6c4ddd216a648348d0810f05dd464d4\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\evidence\\numerical_receipt.json"
+    },
+    "source": {
+      "raw_sha256": "60241502ebe8f7679f4dd42f69a498a547417aa0c2342cf7571940e53f121089",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\a6c4ddd216a648348d0810f05dd464d4\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\reference\\EXTRACTION.json"
+    },
+    "visual": {
+      "raw_sha256": "a728b16a6c0fb87170c3ce2dd6c1824bf7a9a353e4c304a5cf41966b5d4462fa",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\a6c4ddd216a648348d0810f05dd464d4\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\evidence\\capture_sheet.png"
+    }
+  },
+  "falsifier_statement": {
+    "a03": "a diagnostic PASS does not close A03 or authorize mechanically qualified grasp",
+    "b4": "source-kinematic fidelity only; R1 refutation retained",
+    "executed": false,
+    "preserved": "old radius record, U-ANA, H-BODY and every failed alternative remain history"
+  },
+  "head_sha": null,
+  "head_sha_binding_note": "bound to the attempt work commit carrying tools/monkey_campaign/contributions/ONT-A02 in the attempt checkout (published by the lead to review/ONT-A02); the independent reviewer pins head_sha to the reviewed PR head \u2014 a changed head invalidates this receipt",
+  "profile_verified": true,
+  "schema": "chimera.ont_a02_qualification.v1",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "task_id": "A02",
+  "visual_gate_profile": "anatomy (visible_static; clean view required; numerical evidence required)"
+}

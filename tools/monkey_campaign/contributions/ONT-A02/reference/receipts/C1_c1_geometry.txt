@@ -1,0 +1,183 @@
+==============================================================================
+SECTION 1 -- VERBATIM SOURCE GEOMETRY (chimanoid.xml, sha 675e00d0...)
+==============================================================================
+body humerus  pos = " -0.0176   -0.007     0.17"  quat = "1.0 0.0 0.0 0.0"
+body ulna     pos = "  0.0061  -0.34845  -0.0123"  quat = "1.0 0.0 0.0 0.0"
+body radius   pos = "  0.0004 -0.011503 0.019999"  quat = "1.0 0.0 0.0 0.0"
+body hand_r   pos = "   0.018   -0.2904    0.025"  quat = "1.0 0.0 0.0 0.0"
+all four quats identity (bodies axis-aligned; DERIVATION sec.2 convention confirmed)
+
+offsets (local pos, m):
+  humerus -> ulna    (elbow offset from shoulder)  = [ 0.0061  -0.34845 -0.0123 ]  |.| = 0.348720379
+  ulna -> radius     (THE 2.31 cm AXIS)            = [ 0.0004   -0.011503  0.019999]  |.| = 0.023074640
+  radius -> hand_r   (wrist offset)                = [ 0.018  -0.2904  0.025 ]  |.| = 0.292029382
+
+accumulated world origins (m):
+  humerus        = [-0.017600, -0.007000,  0.170000]
+  ulna (elbow)   = [-0.011500, -0.355450,  0.157700]
+  radius         = [-0.011100, -0.366953,  0.177699]
+  hand_r (wrist) = [ 0.006900, -0.657353,  0.202699]
+
+direct joints (verbatim):
+  ulna  : elbow_flexion type=hinge pos="0 0 0" axis="       0        0        1" range="       0  2.26893"
+  hand_r: wrist_dev_r  type=hinge pos="0 0 0" axis="-0.819064 -0.135611 -0.557444" range="-0.436332 0.610865"
+  hand_r: wrist_flex_r type=hinge pos="0 0 0" axis="0.956427 -0.252207 0.147104" range="-0.610864 0.610864"
+  hand_r: wrist_3_r    type=hinge pos="0 0 0" axis="       0        1        0" range="-1.22173  1.22173"
+
+ulna direct sites: 10
+  TRIlong-P5   pos = "-0.0219 0.01046 -0.00078"
+  TRIlat-P5    pos = "-0.0219 0.01046 -0.00078"
+  TRImed-P5    pos = "-0.0219 0.01046 -0.00078"
+  ANC-P2       pos = "-0.02532 -0.00124 0.006"
+  BRA-P4       pos = "-0.0032 -0.0239 0.0009"
+  BRA-P3       pos = "0.00498 -0.01463 0.00128"
+  ECU-P2       pos = "-0.01391 -0.03201 0.02947"
+  ECU-P3       pos = "-0.01705 -0.05428 0.02868"
+  ECU-P4       pos = "-0.01793 -0.09573 0.03278"
+  PT-P2        pos = "0.00846 -0.03373 -0.01432"
+
+tendon membership of the 10 sites (from packet tendons[].path):
+  TRIlong-P5   referenced_by=['TRIlong_tendon']
+  TRIlat-P5    referenced_by=['TRIlat_tendon']
+  TRImed-P5    referenced_by=['TRImed_tendon']
+  ANC-P2       referenced_by=['ANC_tendon']
+  BRA-P4       referenced_by=['BRA_tendon']
+  BRA-P3       referenced_by=['BRA_tendon']
+  ECU-P2       referenced_by=['ECU_tendon']
+  ECU-P3       referenced_by=['ECU_tendon']
+  ECU-P4       referenced_by=['ECU_tendon']
+  PT-P2        referenced_by=['PT_tendon']
+
+==============================================================================
+SECTION 2 -- ANATOMICAL FRAME DERIVED FROM THE CHAIN (source world)
+==============================================================================
+elbow->wrist source vector = [ 0.018400, -0.301903,  0.044999]
+|elbow->wrist| source = 0.305792236 m   (frozen evidence: ~0.306 m)
+chain-sum |ulna->radius|+|radius->hand| = 0.315104022 m (> |EW| : the two offsets are NOT collinear)
+
+axis direction question:
+  |ulna->radius|                     = 23.075 mm
+  component ALONG elbow->wrist       = +14.324 mm  (62.1% of |axis|)
+  component PERPENDICULAR            = 18.091 mm  (78.4% of |axis|)
+  angle(axis, forearm axis)          = 51.63 deg
+
+anatomical basis: a (axial, elbow->wrist) = [0.060172, -0.987281, 0.147155]
+                  l (lateral, +z-source-RIGHT orthogonalized) = [-0.008952, 0.146883, 0.989113]
+                  p = a x l = [-0.998148, -0.060834, 0.000000]  (points -x = POSTERIOR, +x forward)
+det([a l p]) = 1.000000000000
+
+  ulna->radius in the anatomical frame (axial, lateral, dorsovolar):
+    axial   = +14.324 mm
+    lateral = +18.088 mm   (+ = toward source +z/right = the side the RADIUS body sits on)
+    p-axis  = +0.301 mm   (positive = posterior)
+    |resid| check: 23.075 mm vs |axis| 23.075 mm
+
+  VERDICT on the open direction question: the axis is OBLIQUE, PERPENDICULAR-dominant:
+    perpendicular-dominant: 78.4% of the offset is transverse (18.1 of 23.1 mm),
+    but 62.1% runs ALONG the forearm (14.3 mm distal), so 'pure lateral' is false too;
+    the transverse part is 100.0% lateral / 1.7% dorsovolar -> the offset lies in the
+    coronal plane of the forearm (radial head sits beside the ulna, slightly distal).
+
+==============================================================================
+SECTION 3 -- THE 10 ULNA SITES IN THE ELBOW->WRIST ANATOMICAL FRAME
+==============================================================================
+axial = p.a (distal from elbow); lateral = p.l (+ = radius side); p3 = p.p (+ = posterior)
+fractions are of the SOURCE forearm |elbow->wrist| = 305.792 mm
+
+site           |p| mm  axial mm  ax %EW   lat mm    p3 mm  p.ur mm  perp_ur
+TRIlong-P5     24.282   -11.760   -3.85    0.961   21.223   -6.270   23.459
+TRIlat-P5      24.282   -11.760   -3.85    0.961   21.223   -6.270   23.459
+TRImed-P5      24.282   -11.760   -3.85    0.961   21.223   -6.270   23.459
+ANC-P2         26.051     0.584    0.19    5.979   25.349    5.379   25.489
+BRA-P4         24.130    23.536    7.70   -2.592    4.648   12.639   20.555
+BRA-P3         15.507    14.932    4.88   -0.927   -4.081    8.489   12.977
+ECU-P2         45.679    35.103   11.48   24.572   15.832   41.258   19.605
+ECU-P3         63.715    56.784   18.57   20.548   20.320   51.621   37.348
+ECU-P4        102.763    98.257   32.13   18.523   23.720   75.823   69.363
+PT-P2          37.608    31.703   10.37  -19.194   -6.392    4.550   37.332
+
+max |p| = 102.763 mm (ECU-P4)
+  / |ulna->radius axis| 23.074 mm  = 4.454  (the '4.4x' number)
+  axial extent of the AXIS itself  = 14.324 mm -> max-axial/axis-axial = 6.860
+  ECU-P4 perp to KINEMATIC axis    = 69.363 mm ; perp to FOREARM axis = 30.096 mm
+
+==============================================================================
+SECTION 4 -- TARGET ANCHORS (packet actual_monkey_fit.json) + CANDIDATE FRAMES
+==============================================================================
+elbow_R (packet elbow_flexion origin) = [-0.115480983853340158, 0.319109077453613277, -0.006076556332409382]
+wrist_R (packet wrist triple origin)  = [-0.144994540214538586, 0.261482369899749767, -0.005956328995525837]
+shoulder_R                            = [-0.067622623, 0.382859197, -0.001143796]
+|elbow_R->wrist_R| = 0.064744899 m   |shoulder_R->elbow_R| = 0.079867593 m
+packet radius scale (known-good)      = [0.22170679566544982, 0.22170679566544982, 0.22170679566544982]
+check 0.292029*0.221707 = 0.064744874 m  vs |EW| 0.064744899 m
+source->target forearm ratio |EWt|/|EWs| = 0.211728
+
+U-STR: dist landmark = elbow_R + 0.005116 m along elbow->wrist (authored, no pack joint)
+  implied s_a = 0.005116/0.023075 = 0.221715   (packet body scale 0.22170679566544982; diff 8.47e-06 -> immaterial)
+  target forearm partition: ulna owns 7.9% of |EW|, radius (by closure) owns 92.1%
+  using s = 0.221707 for the site table below
+
+U-ANA: dist landmark = site:ECU-P4 (|p| = 0.102763 m) mapped to wrist_R
+  implied s_a = 0.064745/0.102763 = 0.630041
+  ECU-P4 is an INTERIOR tendon waypoint (4 of 6 in ECU_tendon), not a terminal site; terminal = ECU-P6 on hand_r: referenced_by=['ECU_tendon'] / ['ECU_tendon']
+
+U-ANA frame axis (unit origin->ECU-P4) = [-0.174479, -0.931560, 0.318986]
+  angle to source forearm axis a = 17.03 deg
+  angle to kinematic axis u_ur   = 42.45 deg
+
+==============================================================================
+SECTION 5 -- GEOMETRY-ONLY PREDICTED SITE PLACEMENTS UNDER EACH AUTHORING
+==============================================================================
+axial placement along the target forearm (roll-independent: a' = B'e . e1 = wrist direction,
+so fitted_axial = s * (p . a_src_frame) exactly; transverse = s * |perp to the frame axis|).
+No fitting run, no search: closed-form consequence of each single authoring.
+
+-- U-STR (frame axis = ulna->radius kinematic axis, s = 0.221707) --
+site         fitted_ax mm   %EWt  src %EW  delta pt  transv mm
+TRIlong-P5         -1.390  -2.15    -3.85      1.70      5.201
+TRIlat-P5          -1.390  -2.15    -3.85      1.70      5.201
+TRImed-P5          -1.390  -2.15    -3.85      1.70      5.201
+ANC-P2              1.193   1.84     0.19      1.65      5.651
+BRA-P4              2.802   4.33     7.70     -3.37      4.557
+BRA-P3              1.882   2.91     4.88     -1.98      2.877
+ECU-P2              9.147  14.13    11.48      2.65      4.347
+ECU-P3             11.445  17.68    18.57     -0.89      8.280
+ECU-P4             16.810  25.96    32.13     -6.17     15.378
+PT-P2               1.009   1.56    10.37     -8.81      8.277
+  ECU-P4 lands at 16.81 mm of 64.74 mm (26.0%) — NOT at the wrist (it is not mapped to it).
+
+-- U-ANA (frame axis = origin->ECU-P4, s = 0.630041) --
+site         fitted_ax mm   %EWt  src %EW  delta pt  transv mm
+TRIlong-P5         -3.889  -6.01    -3.85     -2.16     14.796
+TRIlat-P5          -3.889  -6.01    -3.85     -2.16     14.796
+TRImed-P5          -3.889  -6.01    -3.85     -2.16     14.796
+ANC-P2              4.717   7.29     0.19      7.09     15.721
+BRA-P4             14.560  22.49     7.70     14.79      4.374
+BRA-P3              8.296  12.81     4.88      7.93      5.160
+ECU-P2             26.239  40.53    11.48     29.05     11.823
+ECU-P3             39.496  61.00    18.57     42.43      7.176
+ECU-P4             64.745 100.00    32.13     67.87      0.000  <= construction input
+PT-P2              15.989  24.70    10.37     14.33     17.487
+
+==============================================================================
+SECTION 6 -- THE '4.4x EXTRAPOLATION' DECOMPOSED
+==============================================================================
+(a) kinematic-frame reading:  max|p|/|axis| = 0.102763/0.023075 = 4.4535x
+    (this is the number behind 'frame extrapolation ~4.4x the bone length')
+(b) anatomical-frame reading: the sites are NOT 'off' the axis mostly transversely —
+    ECU-P4 axial in the anatomical frame = 98.257 mm (95.6% of its |p|) vs transverse 30.096 mm
+    -> max-axial/|axis| = 4.258x ; max-axial/axial-extent-of-axis = 6.860x ; max-transverse/|axis| = 1.304x
+(c) under U-STR the whole layout scales by s = 0.221707: the extrapolation survives the map
+    1:1 (it is a property of the SOURCE layout, not of the target scale).
+(d) source->target body-scale ratio (0.2217) and 1/0.2217 = 4.510 are a DIFFERENT number —
+    do not conflate the cross-animal scale with the intra-source frame extrapolation.
+
+mass closed form (uniform policy), stated WITHOUT preference:
+  U-STR: 0.729 * 0.221707^3 = 0.007944 kg
+  U-ANA: 0.729 * 0.630041^3 = 0.182320 kg   (ratio 22.95x)
+  (m' = m*det(S); DERIVATION sec.9; physiology not carried)
+
+envelope context (session-3 medians, quoted from B1 report sec.4.1: b 20.2 mm / c 22.9 mm;
+B4 E4: hand-region cluster median perp 1.9 cm):
+  U-STR max transverse placement = 15.38 mm
+  U-ANA max transverse placement = 17.49 mm
