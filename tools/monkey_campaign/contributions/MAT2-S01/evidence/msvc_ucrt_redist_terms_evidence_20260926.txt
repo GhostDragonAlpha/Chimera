@@ -1,0 +1,70 @@
+ONT-S01 BANKED EVIDENCE — MSVC/UCRT runtime redistributable terms (closes M-S01 gap 4, row R9)
+Retrieved 2026-09-26 by attempt a3ed434776cf4eff8b09170cdf990f3a (card ONT-S01).
+Label: HONEST WEB SNAPSHOT — quoted excerpts of two static Microsoft Learn
+documentation pages, each pinned by its published document identity. The full
+Microsoft Software License Terms (MSLT) text itself was NOT retrieved; the excerpts
+below are the pages that the MSLT's "Distributable Code" section itself points to.
+
+== SOURCE A — "Redistribute Visual C++ Files | Microsoft Learn" ==
+URL:        https://learn.microsoft.com/en-us/cpp/windows/redistributing-visual-cpp-files?view=msvc-170
+Retrieved:  2026-09-26 (HTTP GET, markdown conversion)
+Doc identity (page metadata): ms.date 2026-04-13; updated_at 2026-04-15;
+  original_content_git_url github.com/MicrosoftDocs/cpp-docs-pr, docs/windows/redistributing-visual-cpp-files.md
+  git_commit_id 64d64c38a91851deeb0838da6163005e25a15159; document_id
+  bfdd5052-e8a5-633e-3c31-74e5ac664917
+Verbatim quote (section "Redistributable files and licensing"):
+
+  "Distribution of the Visual C++ Runtime Redistributable package, merge modules,
+   and individual binaries is limited to licensed Visual Studio users and is subject
+   to Microsoft Software License Terms."
+
+Verbatim quote (moniker msvc-170):
+
+  "To view the 'REDIST list' that's referenced in the 'Distributable Code' section of
+   the Visual Studio 2022 Microsoft Software License Terms, see [Distributable code
+   files for Microsoft Visual Studio 2022]
+   (/en-us/visualstudio/releases/2022/redistribution#-distributable-code-files-for-visual-studio-2022)."
+
+== SOURCE B — "Visual Studio 2022 Redistribution | Microsoft Learn" (the REDIST list) ==
+URL:        https://learn.microsoft.com/en-us/visualstudio/releases/2022/redistribution
+Retrieved:  2026-09-26 (HTTP GET, markdown conversion)
+Doc identity (page metadata): ms.date 2025-11-11; updated_at 2025-09-11;
+  git_commit_id 4122773d4a60074003f5c201a3852cc01038c401 (devdiv RECON repo);
+  document_id f56bfb26-0f4f-30fd-9dae-bbe9fd77192a
+Verbatim quotes (section "Distributable Code Files for Visual Studio 2022"):
+
+  "The following section is the 'Distributable List' or 'REDIST.txt' that is
+   referenced in the 'Distributable Code' section of the Microsoft Software License
+   Terms for Visual Studio Enterprise 2022, Visual Studio Professional 2022, Visual
+   Studio Community 2022 ('the software'). If you have a validly licensed copy of such
+   software, you may copy and distribute with your program the unmodified form of the
+   files listed below, subject to the License Terms for the software."
+
+  (Visual C++ Runtime Files) "Subject to the License Terms for the software, you may
+   copy and distribute with your program any of the files within the following folder
+   and its subfolders except as noted below. You may not modify these files.
+     - [VisualStudioFolder]\VC\redist"
+
+  "Distribution of the Visual C++ Runtime Redistributable package, merge modules, and
+   individual binaries obtained from those pages is limited to licensed Visual Studio
+   users and is subject to its license terms."
+
+  (Not-distributable note) "You may *not* distribute the contents of the following
+   folders ... [VisualStudioFolder]VC\Redist\MSVC\[version]\debug_nonredist ...".
+
+== WHAT THIS RECORDS (terms status for row R9) ==
+Recorded terms: the MSVC/UCRT runtime binaries the engine ships (vcruntime140.dll,
+vcruntime140_1.dll, msvcp140.dll, ucrtbase.dll via the VC Redist package / VC\redist
+folder) are Microsoft "Distributable Code": redistributable in unmodified form with
+your program, subject to the Visual Studio 2022 Microsoft Software License Terms;
+distribution of the Redistributable package/individual binaries is limited to licensed
+Visual Studio users. The project builds with VS 2022 Build Tools (recorded MSVC 19.44
+in ChimeraEngine/engine/README.md L78; corroborated 2026-09-26: the runtime Python
+3.14.3 build itself reports MSC v.1944). This converts M-S01 row R9 from UNKNOWN-terms
+to RECORDED-terms.
+RESIDUAL ACTION (package time, unchanged from M-S01): pin the exact vc_redist version
+shipped in the S02 package manifest. Honest limitation: the full MSLT text is the
+governing document; it is accepted at toolchain install and reachable via the
+Visual Studio License Directory (https://visualstudio.microsoft.com/license-terms/) —
+its body was not statically retrievable on 2026-09-26 and no quote of it is fabricated
+here.
