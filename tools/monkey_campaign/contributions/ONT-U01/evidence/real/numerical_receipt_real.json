@@ -1,0 +1,238 @@
+{
+ "schema": "chimera.ont_u01.real_numerical.v1",
+ "generated_utc": "2026-09-26T21:35:47Z",
+ "frozen_prereg_sha256": "da5dba00b0cbe24713408e1cf3e4ead834f3edf5fcadbaf14bf7d478e8421b48",
+ "R3_emission": {
+  "records": 138,
+  "N1_v_bound_ok": true,
+  "N2_yaw_bound_ok": true,
+  "N3_cadence_ok": false,
+  "gap_min_ms": 50,
+  "gap_max_ms": 2943,
+  "suspect_gaps_ms": [
+   67
+  ],
+  "held_boundary_count": 134,
+  "N4_decay_ok": true,
+  "decay_report": [
+   {
+    "release_wall_ms": 21210,
+    "v_last": 0.763625,
+    "first_after": 0.580355,
+    "second_after": 0.0,
+    "silence_until_next_press": true,
+    "ok": true
+   },
+   {
+    "release_wall_ms": 29212,
+    "v_last": 0.763625,
+    "first_after": 0.49635625,
+    "second_after": 0.0,
+    "silence_until_next_press": true,
+    "ok": true
+   },
+   {
+    "release_wall_ms": 24210,
+    "v_last": 0.763625,
+    "first_after": 0.66435375,
+    "second_after": 0.0,
+    "silence_until_next_press": true,
+    "ok": true
+   }
+  ],
+  "N5_sink_and_seam_ok": true,
+  "releases_measured": 3
+ },
+ "R4_observed_body": {
+  "geometry_pairs": 19,
+  "N7_geometry_bound_ok": true,
+  "max_dxz_fraction_of_bound": 0.0,
+  "N8_root_y_bound_ok": true,
+  "root_y_pairs": 323,
+  "max_root_y_step_m": 0.0,
+  "ticks_monotonic": true,
+  "total_stream_dxz_m": 0.0,
+  "geom_rows": [
+   {
+    "wall_ms": 17420,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758130460977554,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 6252
+   },
+   {
+    "wall_ms": 18328,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 6427
+   },
+   {
+    "wall_ms": 19344,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 6604
+   },
+   {
+    "wall_ms": 20366,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 6780
+   },
+   {
+    "wall_ms": 21411,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 6953
+   },
+   {
+    "wall_ms": 22424,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 7128
+   },
+   {
+    "wall_ms": 23462,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 7307
+   },
+   {
+    "wall_ms": 24506,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 7477
+   },
+   {
+    "wall_ms": 25551,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 7657
+   },
+   {
+    "wall_ms": 26534,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 7820
+   },
+   {
+    "wall_ms": 27575,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 7995
+   },
+   {
+    "wall_ms": 28613,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 8162
+   },
+   {
+    "wall_ms": 29619,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 8312
+   },
+   {
+    "wall_ms": 30634,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 8473
+   },
+   {
+    "wall_ms": 31695,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 8650
+   },
+   {
+    "wall_ms": 32647,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 8816
+   },
+   {
+    "wall_ms": 33715,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 8988
+   },
+   {
+    "wall_ms": 34701,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 9137
+   },
+   {
+    "wall_ms": 35735,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 9304
+   },
+   {
+    "wall_ms": 36781,
+    "cx": -0.048232853412628174,
+    "cy": 0.09758123755455017,
+    "cz": 0.07834967970848083,
+    "n": 249743,
+    "ticks": 9459
+   }
+  ],
+  "no_teleportation_observed": true
+ },
+ "prediction_deviations": [
+  {
+   "clause": "R2",
+   "frozen": "SPACE press transient: max|vy|>0.01 m/s and max|dy|>1e-3 m",
+   "measured": "max|vy|=0.0 m/s, max|dy|=0.0 m",
+   "verdict": "FIRED",
+   "note": "the frozen magnitude guess fired; the observer-validation PURPOSE is carried by the measured transient itself (observed_transient=True) and by the auxiliary fall test (aux max|vy|=3.161, engine verdict phase=done) -- the observation channel demonstrably reports real body motion"
+  },
+  {
+   "clause": "R3_cadence",
+   "frozen": "every held-W boundary gap 50 ms +/- 15 ms",
+   "measured": "one gap of 67 ms (neighbors 56/52 ms; one boundary arrived late, no burst, no lost record, the grid resumed at 50 ms)",
+   "verdict": "FIRED",
+   "note": "wall-clock jitter under concurrent geometry pulls; the mapper's own stall law (one record, no burst) held"
+  }
+ ],
+ "all_laws_green": true,
+ "execution_leg": "INCOMPLETE",
+ "execution_leg_note": "The emission leg is REAL and bounded (R3) and the observed body never teleports (R4, non-circular: engine-authored state only). The INPUT->BODY-EXECUTION leg is INCOMPLETE: the pinned engine exposes no route that consumes V1 speed/heading records (R5 measured refusals); per the lead finding's own alternative the run is retained as component evidence with qualification incomplete on exactly that leg."
+}

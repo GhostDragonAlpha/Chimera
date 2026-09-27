@@ -1,0 +1,16 @@
+{
+ "schema": "chimera.ont_u01.engine_build.v1",
+ "built_utc": "2026-09-26T21:37:27Z",
+ "source": "pinned 8550b634ebd7034bb8873eed41d8bdce4d3843d0 ChimeraEngine/engine (raw git blobs) + ChimeraEngine/native/viewer3rd/json.hpp",
+ "source_files": 184,
+ "recipe": "cmake -S . -B build -G \"Visual Studio 17 2022\" -A x64; cmake --build build --config Release",
+ "toolchain": {
+  "cmake": "4.2.1",
+  "msvc": "14.44.35207 (VS 2022 BuildTools)",
+  "vulkan_sdk": "1.4.328.1"
+ },
+ "engine_exe_sha256": "4bbf2a98d8b2bff66e7a512c6dfa292a6adb5d80ee88a5e4ffab60c07ad83c5a",
+ "engine_exe_bytes": 2721792,
+ "shaders": "the builds compiled .spv set staged beside the exe (shaders/); the engine loads shaders/ from its cwd",
+ "note": "exe bytes differ from the X02 lane a9964009 build (non-deterministic link); same pinned source + recipe"
+}

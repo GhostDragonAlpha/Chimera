@@ -1,0 +1,41 @@
+{
+ "schema": "chimera.ont_u01.real_capture.v1",
+ "run_id": "ONT-U01-real-20260926T213609",
+ "capture_artifact": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U01\\29bb1ccc4ea449d7ba2524a441d0cc49\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U01\\evidence\\real\\real_capture.mp4",
+ "capture_sha256": "846f0b3281c15abcad7930a1a9fa105d9bb50d2b33a5ed70eede2d9682fcd0cf",
+ "trace_sha256": "0d52b79d182f9666cee8ae34129d4f744df04b8e4921e280253cba124c8e1248",
+ "commands_sha256": "3afdc2a24f8d3d28628bca3bdf5458d1c2c76e387566e87c54affdd1d8cbad73",
+ "webm_sha256": "efa27d5eac11e1bc31366820abebb4ddfcf69cb0880bae67a536a545d5d9257f",
+ "stills": {
+  "view_v1_diagnostic.png": "4a94d2b86facabe240ffb759f930c7de7b22fb427ec0cc666f72ee3cade83f1f",
+  "view_v1_clean.png": "7fe200a454f0fca3da4dcb06ccbc5007d5dd23ad3fbf402300cf568d2d0fa46e",
+  "view_v2_diagnostic.png": "9ce97265675cd3d6ae63947f4f0741d50f385c3f43b231066226cb2f8a768b88",
+  "view_v2_clean.png": "a68ac83ce1c9f15897c41bfd3b9a8e1d88af1178a7d5a03912cc1b0c62d53af6",
+  "view_v3_diagnostic.png": "ba7d6910cf9b6668d75c999cbbb4342201e1d57fde174ee741e6a3ec5d6bf1fc",
+  "view_v3_clean.png": "046b6094b646953cf987881c032547106ecb758f72fe5a0383acfb7f0e5120da",
+  "engine_frame_v1.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+  "engine_frame_v2.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b",
+  "engine_frame_v3.png": "1ae0b509a9ea4446bfea54cf4afb15edeac923020f88e7dc93fc8c402d7a175b"
+ },
+ "validate_manifest_result": {
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "structurally_valid": true,
+  "visual_acceptance": false,
+  "profile_id": "controls",
+  "view_count": 6,
+  "capture_kind": "video",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required."
+ },
+ "visual_gate_verify_result": {
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "structurally_valid": true,
+  "visual_acceptance": false,
+  "profile_id": "controls",
+  "view_count": 6,
+  "capture_kind": "video",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required."
+ },
+ "visual_acceptance": false,
+ "boundary": "structural camera-metadata validation only; independent visual review of the REAL recording remains the reviewer's gate",
+ "built_utc": "2026-09-26T21:36:09Z"
+}

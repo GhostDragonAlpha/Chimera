@@ -1,0 +1,39 @@
+input_mapper_tests -- U01 falsifiers (prereg: agents/U01_input/PREREGISTRATION.md)
+F1 NO-TELEPORT: the only output is emit(CommandRecord); no state writes
+  [PASS] F1a every sink call is emit(CommandRecord)  -- 9 calls, 9 records
+  [PASS] F1b calls == records (nothing else was handed to the seam)
+  [PASS] F1c no pose-route / transport / desktop-injection strings in the module  -- none of 14 markers present
+  [PASS] F1d imports are exactly the declared set (stdlib + the seam's record)  -- imports: ['__future__', 'pathlib', 'sys', 'tools.science_funnel.typeb_export.command_record']
+F2 OUT-OF-BOUNDS: 5000 random input events never leave the band
+  [PASS] F2a every one of the fuzz records is finite and inside the bounds  -- 1214 records checked, 0 violations
+  [PASS] F2b the fuzz actually exercised emission (not vacuously green)  -- 1214 records emitted
+F3 CLOCK: held-key records exactly 50 ms apart; stall -> one record
+  [PASS] F3a held-key records are EXACTLY 50 ms apart under the injected clock  -- 7 records at 1000..1300, diffs [50]
+  [PASS] F3b the interval grid starts AT the press (first boundary emits)
+  [PASS] F3c ticks inside the interval emit nothing
+  [PASS] F3d a 450 ms stall yields exactly ONE record (current state), no burst  -- stall emitted 1, next interval 1
+  [PASS] F3e the grid re-anchors after the stall (50 ms cadence resumes)  -- last issued ticks [510, 525] (physics ticks; 15 = 50 ms at 300 Hz)
+F4 RELEASE: monotone decay, exact 0.0 within 100 ms, then silence
+  [PASS] F4a the tail is monotone non-increasing  -- tail [(0.5345375, 1100), (0.0, 1150)]
+  [PASS] F4a' the whole record stream is monotone while decaying
+  [PASS] F4b a record with EXACTLY 0.0 exists at or before release+100 ms  -- zero at (0.0, 1150)
+  [PASS] F4c emission STOPS after the zero (the inert path resumed)  -- 0 records after the zero
+  [PASS] F4d no record with v>0 later than release+100 ms
+F5 REMAP: a binding swap changes emitted values, nothing else
+  [PASS] F5a the remap changed the emitted value (default W -> band ceiling)  -- default 0.763625, remapped 0.0
+  [PASS] F5b same record type and version on both sides
+  [PASS] F5c same bounds and clock after the remap
+  [PASS] F5d the adapter projection is untouched by the remap (velocity passthrough, yaw routed nowhere)
+F6 SEAM STATES: idle emits nothing; S emits live zeros; refusals named
+  [PASS] F6a idle emits NOTHING (the machinery's inert path stays reachable)
+  [PASS] F6b S held emits LIVE ZERO-advance records (a distinct seam state)  -- 4 records, values [0.0, 0.0, 0.0, 0.0]
+  [PASS] F6c steering alone emits nothing (yaw is carried, no route at v1)
+  [PASS] F6d idle mouse counts are consumed into the trace, named, not resent  -- trace keys ['emitted', 'pressed', 'state', 'steer_without_speed']
+  [PASS] F6e sprint/jump refuse BY NAME (registered refusals, never silent)  -- refused: ['jump', 'sprint']
+  [PASS] F6f yaw is clamped to the declared steer bound (keys) and mouse  -- 1.6, 1.6
+  [PASS] F6g a held key RE-ISSUES its record every interval (the R4 rule)
+  [PASS] F6h the expiry contract: valid at 95 ms, expired at 105 ms
+  [PASS] F6i the tick source is injectable (the live harness pins issued_tick)  -- issued_tick 777
+  [PASS] F6j W+S resolves to forward (precedence) and is named in the trace  -- conflicts [('backward', 'forward')]
+
+VERDICT: GREEN -- all falsifier checks passed; the frozen numbers held.
