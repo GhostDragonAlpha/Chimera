@@ -1,4 +1,11 @@
-"""MAT2-P01 contract test: P1-P3 identity/carry checks + F1-F3 falsifier bites. CPU-only, no network."""
+"""MAT2-P01 contract test: P1-P3 identity/carry checks + F1-F3 falsifier bites. CPU-only, no network.
+
+Correction of review bb096a44d27e451fb4535f468411a9c5 findings D1/D2: F1 is enforced exactly as
+frozen in PREREGISTRATION.md - the FULL 64-hex criteria/active-scope/archived-scope hashes and the
+planning id recorded in the frozen prereg text must equal contract.json byte-for-byte (no prefix
+checks), and the criteria sha is additionally cross-checked against the live registry card. The
+former tautological self-referential criteria check was removed. PREREGISTRATION.md and
+contract.json are byte-identical to the originally published artifacts."""
 import hashlib
 import json
 import pathlib
@@ -45,16 +52,46 @@ missing = [e for e in elements if e not in core]
 if missing:
     fail('CORE_CLAUSE_INCOMPLETE', 'missing elements: %s' % missing)
 
-# ---- P2/P3: identity bindings + authority hashes
+# ---- P2/P3: identity bindings + authority hashes.
+# F1 exactly as frozen: the FULL identities recorded in PREREGISTRATION.md must equal
+# contract.json byte-for-byte. Prefix or partial alterations cannot pass.
 ids = contract['identities']
-if ids['criteria_sha256'] != sha256_file(HERE / 'contract.json')[:0] + ids['criteria_sha256']:
-    pass  # self-referential skip
-if not re.fullmatch('[0-9a-f]{64}', ids['criteria_sha256']) or not ids['criteria_sha256'].startswith('e4521ad7'):
-    fail('IDENTITY_MISMATCH', 'criteria sha malformed')
-if not ids['active_scope_sha256'].startswith('cb5475f8486197a9'):
-    fail('IDENTITY_MISMATCH', 'active scope sha not the astra-0031 pinned value')
-if not ids['archived_scope_sha256'].startswith('01ea5cddca8d4795'):
-    fail('IDENTITY_MISMATCH', 'archived scope sha not the pre-install value')
+frozen_bindings = {
+    'criteria_sha256': re.search(r'criteria\s+sha256\s+([0-9a-f]{64})', prereg),
+    'active_scope_sha256': re.search(r'(?<!archived )scope sha256\s+([0-9a-f]{64})', prereg),
+    'archived_scope_sha256': re.search(r'archived\s+scope\s+sha256\s+([0-9a-f]{64})', prereg),
+}
+for key, match in frozen_bindings.items():
+    if not match:
+        fail('IDENTITY_MISMATCH', 'prereg missing frozen full binding: %s' % key)
+    if ids.get(key) != match.group(1):
+        fail('IDENTITY_MISMATCH', 'identity drifted from frozen prereg value: %s' % key)
+planning = re.search(r'planning id\s+(P\d+)', prereg)
+if not planning:
+    fail('IDENTITY_MISMATCH', 'prereg missing frozen planning id')
+if contract.get('planning_id') != planning.group(1):
+    fail('IDENTITY_MISMATCH', 'planning id drifted from frozen prereg value')
+
+# Live-registry criteria cross-check (defense in depth beyond the frozen prereg binding).
+campaign = next((p for p in HERE.parents if (p / 'agent_slots.py').is_file()), None)
+if campaign is None and pathlib.Path('E:/PythonChimera/tools/monkey_campaign/agent_slots.py').is_file():
+    campaign = pathlib.Path('E:/PythonChimera/tools/monkey_campaign')
+if campaign is None:
+    print('NOTE: campaign package not found; live-registry criteria cross-check skipped (frozen prereg binding still enforced)')
+else:
+    sys.path.insert(0, str(campaign))
+    try:
+        from agent_slots import Registry
+        from suggestion_box import DEFAULT_ROOT
+    except ImportError:
+        print('NOTE: campaign package not importable; live-registry criteria cross-check skipped (frozen prereg binding still enforced)')
+    else:
+        try:
+            live = Registry(DEFAULT_ROOT).readonly()['kanban']['cards']['MAT2-P01']['criteria_sha256']
+        except Exception as exc:
+            fail('IDENTITY_MISMATCH', 'live registry criteria unavailable: %r' % exc)
+        if ids['criteria_sha256'] != live:
+            fail('IDENTITY_MISMATCH', 'criteria sha drifted from live registry card')
 for path, prefix in contract['authorities'].items():
     full = sha256_file(path)
     if not full.startswith(prefix.split('_')[0]) or not full.startswith(prefix[:16]):

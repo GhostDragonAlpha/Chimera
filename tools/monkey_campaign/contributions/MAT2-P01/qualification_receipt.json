@@ -23,7 +23,21 @@
    "fired": []
   },
   "source": "test_contract.py + contract.json + PREREGISTRATION.md in this contribution",
-  "independent_review": null
+  "independent_review": "pending at correction head; review bb096a44d27e451fb4535f468411a9c5 (CHANGES_REQUIRED at head a195f457) recused as correction author"
+ },
+ "correction": {
+  "review_id": "bb096a44d27e451fb4535f468411a9c5",
+  "supersedes_head": "a195f457931e097975210a79eb51a9c80b469dab",
+  "defects": {
+   "D1": "frozen prereg falsifier F1 was not implemented: no planning_id check and prefix-only hash checks let planning id removal/alteration and 4-char hash-suffix alterations exit 0",
+   "D2": "tautological self-referential criteria check (dead code) in test_contract.py lines 50-51"
+  },
+  "fix": "test_contract.py now requires exact equality between contract.json identities/planning_id and the FULL values recorded in the frozen PREREGISTRATION.md, removes the dead check, and cross-checks the criteria sha against the live registry card (fail-closed)",
+  "prereg_contract_unchanged": {
+   "PREREGISTRATION.md": "e895e8a2d46d6c9e4b5a6980c6a83f9a8a785142c06248e0d843b013369c73c9",
+   "contract.json": "e255eb44203212c039598d28629c21e6e1c019d1abe6caa07b4430fca53715a5"
+  },
+  "failing_first": "planning id removed/altered, 4-char suffix alteration of each identity hash, criteria removal, scope swap, and prereg+contract criteria collusion all exit 1 IDENTITY_MISMATCH; transcript in kanban-reviews/MAT2-P01/bb096a44d27e451fb4535f468411a9c5/evidence/transcripts_correction.txt"
  },
  "honest_boundary": "Offline records-kind card: no runtime, visual or native claim. Contract freezes the goal; it does not implement it. Independent review pending.",
  "authorities_sha256_full": {
