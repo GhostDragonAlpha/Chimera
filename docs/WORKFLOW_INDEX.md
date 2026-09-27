@@ -1,5 +1,11 @@
 # Current delivery direction
 
+The operator-requested [material-first replacement plan](../tools/monkey_campaign/plans/material-first-v2/README.md)
+revises the 83-task catalog into 95 explicit gates, preserving every old ID and
+receipt. It includes a full crosswalk, validated dependency graph and live-adoption
+procedure. It is **prepared, not deployed**; active workers retain their current
+criteria until the versioned migration is installed.
+
 See [playable delivery](../tools/monkey_campaign/DELIVERY.md), [build record](../tools/monkey_campaign/PLAYABLE_BUILD.json), and `python -B tools/monkey_campaign/delivery.py` for implementation, qualification and integration status.
 
 # Workflow index and glossary
