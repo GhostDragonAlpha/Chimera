@@ -1,0 +1,944 @@
+{
+  "attempt_id": "b4a2b12b8c854e55bc400c64a502c85c",
+  "capture_sha256": "88f94dc3c48ddc8505a546cb7109db9db84600f40008de882359887d9ad24b62",
+  "card_id": "ONT-A02",
+  "profile_id": "anatomy",
+  "render": {
+    "backend": "numpy-zbuffer-software-raster-cpu + matplotlib Agg compose",
+    "deterministic": true,
+    "gpu_used": false,
+    "honesty": "NOT native application frames; anatomy evidence component capture for A02",
+    "native_engine_frames": false,
+    "occlusion_semantics": "mesh true z-buffer; diagnostic overlays (labels, arrows, sites, courses) intentionally unoccluded = xray semantics, declared occlusion_mode 'mixed'; clean rows depth_tested",
+    "state_hash_after_render": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0",
+    "state_hash_before_render": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0",
+    "state_hash_preserved_under_view_toggles": true
+  },
+  "run_id": "ONT-A02-ota02-deterministic-cpu-20260926",
+  "schema": "chimera.visual_capture_manifest.v1",
+  "subject_sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0",
+  "task_id": "A02",
+  "tick_interval": [
+    0,
+    3
+  ],
+  "views": [
+    {
+      "artifact_locator": {
+        "kind": "image",
+        "pixel_rectangle": [
+          0,
+          0,
+          480,
+          360
+        ],
+        "region": "pixel_rectangle"
+      },
+      "camera": {
+        "aspect_ratio": 1.3333333333333333,
+        "camera_motion_or_bookmark_sequence": "fixed_bookmark (ticks 0,3)",
+        "coordinate_unit": "m",
+        "distance_to_target": 0.9892279955165435,
+        "forward_axis": "-Z",
+        "frame_id": "target_world_frame(+z anterior,+y up,-x right; O1 sec.1)",
+        "handedness": "right",
+        "near_far_planes": [
+          0.01,
+          2.581
+        ],
+        "orientation_convention": "quaternion_wxyz_camera_to_frame",
+        "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame [0.9764885175055722, -0.15932142916238742, 0.143318083378039, 0.023383420756376776]",
+        "orthographic_span": 0.7050441399016805,
+        "position": [
+          0.254773811190627,
+          0.6008821330798378,
+          0.8365897161800891
+        ],
+        "projection": "orthographic",
+        "sample_mode": "fixed_bookmark",
+        "samples": [
+          {
+            "distance_to_target": 0.9892279955165435,
+            "orientation": [
+              0.9764885175055722,
+              -0.15932142916238742,
+              0.143318083378039,
+              0.023383420756376776
+            ],
+            "position": [
+              0.254773811190627,
+              0.6008821330798378,
+              0.8365897161800891
+            ],
+            "target": [
+              -0.014737365159279118,
+              0.2864524273382808,
+              -0.061780871652931044
+            ],
+            "tick": 0
+          },
+          {
+            "distance_to_target": 0.9892279955165435,
+            "orientation": [
+              0.9764885175055722,
+              -0.15932142916238742,
+              0.143318083378039,
+              0.023383420756376776
+            ],
+            "position": [
+              0.254773811190627,
+              0.6008821330798378,
+              0.8365897161800891
+            ],
+            "target": [
+              -0.014737365159279118,
+              0.2864524273382808,
+              -0.061780871652931044
+            ],
+            "tick": 3
+          }
+        ],
+        "state_or_tick_interval": [
+          0,
+          3
+        ],
+        "target": [
+          -0.014737365159279118,
+          0.2864524273382808,
+          -0.061780871652931044
+        ],
+        "up_axis": "+Y",
+        "vertical_fov_or_orthographic_span": 0.7050441399016805,
+        "viewport_resolution": [
+          480,
+          360
+        ]
+      },
+      "mode": "diagnostic",
+      "pair_id": "V1",
+      "state_binding": {
+        "kind": "state",
+        "sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0"
+      },
+      "view_id": "whole-creature overview",
+      "visibility": {
+        "label_ids": [
+          "L-mesh",
+          "L-elbow_R",
+          "L-wrist_R",
+          "L-region-box",
+          "L-P-before",
+          "L-P-after"
+        ],
+        "layers": [
+          "outer envelope",
+          "selected bones/joints",
+          "frame axes",
+          "stable 3D labels"
+        ],
+        "missing_subject_ids": [],
+        "observed_subject_ids": [
+          "target_monkey_mesh",
+          "target_joint_elbow_R",
+          "target_joint_wrist_R",
+          "target_forearm_region_box",
+          "radius_anchor_P_before",
+          "radius_anchor_P_after"
+        ],
+        "occlusion_mode": "mixed",
+        "required_subject_ids": [
+          "target_monkey_mesh",
+          "radius_anchor_P_before",
+          "radius_anchor_P_after"
+        ],
+        "selected_ids": [
+          "target_monkey_mesh",
+          "target_joint_elbow_R",
+          "target_joint_wrist_R",
+          "target_forearm_region_box",
+          "radius_anchor_P_before",
+          "radius_anchor_P_after"
+        ],
+        "tag_bindings": [
+          {
+            "label_id": "L-mesh",
+            "subject_id": "target_monkey_mesh"
+          },
+          {
+            "label_id": "L-elbow_R",
+            "subject_id": "target_joint_elbow_R"
+          },
+          {
+            "label_id": "L-wrist_R",
+            "subject_id": "target_joint_wrist_R"
+          },
+          {
+            "label_id": "L-region-box",
+            "subject_id": "target_forearm_region_box"
+          },
+          {
+            "label_id": "L-P-before",
+            "subject_id": "radius_anchor_P_before"
+          },
+          {
+            "label_id": "L-P-after",
+            "subject_id": "radius_anchor_P_after"
+          }
+        ]
+      }
+    },
+    {
+      "artifact_locator": {
+        "kind": "image",
+        "pixel_rectangle": [
+          480,
+          0,
+          480,
+          360
+        ],
+        "region": "pixel_rectangle"
+      },
+      "camera": {
+        "aspect_ratio": 1.3333333333333333,
+        "camera_motion_or_bookmark_sequence": "fixed_bookmark (ticks 0,3)",
+        "coordinate_unit": "m",
+        "distance_to_target": 0.9892279955165435,
+        "forward_axis": "-Z",
+        "frame_id": "target_world_frame(+z anterior,+y up,-x right; O1 sec.1)",
+        "handedness": "right",
+        "near_far_planes": [
+          0.01,
+          2.581
+        ],
+        "orientation_convention": "quaternion_wxyz_camera_to_frame",
+        "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame [0.9764885175055722, -0.15932142916238742, 0.143318083378039, 0.023383420756376776]",
+        "orthographic_span": 0.7050441399016805,
+        "position": [
+          0.254773811190627,
+          0.6008821330798378,
+          0.8365897161800891
+        ],
+        "projection": "orthographic",
+        "sample_mode": "fixed_bookmark",
+        "samples": [
+          {
+            "distance_to_target": 0.9892279955165435,
+            "orientation": [
+              0.9764885175055722,
+              -0.15932142916238742,
+              0.143318083378039,
+              0.023383420756376776
+            ],
+            "position": [
+              0.254773811190627,
+              0.6008821330798378,
+              0.8365897161800891
+            ],
+            "target": [
+              -0.014737365159279118,
+              0.2864524273382808,
+              -0.061780871652931044
+            ],
+            "tick": 0
+          },
+          {
+            "distance_to_target": 0.9892279955165435,
+            "orientation": [
+              0.9764885175055722,
+              -0.15932142916238742,
+              0.143318083378039,
+              0.023383420756376776
+            ],
+            "position": [
+              0.254773811190627,
+              0.6008821330798378,
+              0.8365897161800891
+            ],
+            "target": [
+              -0.014737365159279118,
+              0.2864524273382808,
+              -0.061780871652931044
+            ],
+            "tick": 3
+          }
+        ],
+        "state_or_tick_interval": [
+          0,
+          3
+        ],
+        "target": [
+          -0.014737365159279118,
+          0.2864524273382808,
+          -0.061780871652931044
+        ],
+        "up_axis": "+Y",
+        "vertical_fov_or_orthographic_span": 0.7050441399016805,
+        "viewport_resolution": [
+          480,
+          360
+        ]
+      },
+      "mode": "clean",
+      "pair_id": "V1",
+      "state_binding": {
+        "kind": "state",
+        "sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0"
+      },
+      "view_id": "whole-creature overview",
+      "visibility": {
+        "label_ids": [],
+        "layers": [],
+        "missing_subject_ids": [],
+        "observed_subject_ids": [
+          "target_monkey_mesh"
+        ],
+        "occlusion_mode": "depth_tested",
+        "required_subject_ids": [
+          "target_monkey_mesh"
+        ],
+        "selected_ids": [],
+        "tag_bindings": []
+      }
+    },
+    {
+      "artifact_locator": {
+        "kind": "image",
+        "pixel_rectangle": [
+          960,
+          0,
+          480,
+          360
+        ],
+        "region": "pixel_rectangle"
+      },
+      "camera": {
+        "aspect_ratio": 1.3333333333333333,
+        "camera_motion_or_bookmark_sequence": "fixed_bookmark (ticks 0,3)",
+        "coordinate_unit": "m",
+        "distance_to_target": 0.3,
+        "forward_axis": "-Z",
+        "frame_id": "target_world_frame(+z anterior,+y up,-x right; O1 sec.1; panel annotations in mm)",
+        "handedness": "right",
+        "near_far_planes": [
+          0.001,
+          1.0
+        ],
+        "orientation_convention": "quaternion_wxyz_camera_to_frame",
+        "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame [0.9899164186292649, -0.12055563264467853, 0.07383074359859847, 0.0089913772876713]",
+        "orthographic_span": 0.0677011752528299,
+        "position": [
+          -0.08684817791483126,
+          0.36606761304073565,
+          0.2810221472171475
+        ],
+        "projection": "orthographic",
+        "sample_mode": "fixed_bookmark",
+        "samples": [
+          {
+            "distance_to_target": 0.3,
+            "orientation": [
+              0.9899164186292649,
+              -0.12055563264467853,
+              0.07383074359859847,
+              0.0089913772876713
+            ],
+            "position": [
+              -0.08684817791483126,
+              0.36606761304073565,
+              0.2810221472171475
+            ],
+            "target": [
+              -0.13004956038119,
+              0.29406530893013777,
+              -0.006987069225244066
+            ],
+            "tick": 0
+          },
+          {
+            "distance_to_target": 0.3,
+            "orientation": [
+              0.9899164186292649,
+              -0.12055563264467853,
+              0.07383074359859847,
+              0.0089913772876713
+            ],
+            "position": [
+              -0.08684817791483126,
+              0.36606761304073565,
+              0.2810221472171475
+            ],
+            "target": [
+              -0.13004956038119,
+              0.29406530893013777,
+              -0.006987069225244066
+            ],
+            "tick": 3
+          }
+        ],
+        "state_or_tick_interval": [
+          0,
+          3
+        ],
+        "target": [
+          -0.13004956038119,
+          0.29406530893013777,
+          -0.006987069225244066
+        ],
+        "up_axis": "+Y",
+        "vertical_fov_or_orthographic_span": 0.0677011752528299,
+        "viewport_resolution": [
+          480,
+          360
+        ]
+      },
+      "mode": "diagnostic",
+      "pair_id": "V2",
+      "state_binding": {
+        "kind": "state",
+        "sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0"
+      },
+      "view_id": "local attachment close-up",
+      "visibility": {
+        "label_ids": [
+          "L-edge",
+          "L-P-before",
+          "L-P-after",
+          "L-sites",
+          "L-sites-after",
+          "L-pt-course"
+        ],
+        "layers": [
+          "selected bones/joints",
+          "muscle/tendon paths",
+          "attachment sites",
+          "stable 3D labels"
+        ],
+        "missing_subject_ids": [],
+        "observed_subject_ids": [
+          "radius_edge_elbow_wrist",
+          "radius_anchor_P_before",
+          "radius_anchor_P_after",
+          "radius_sites_16_before",
+          "radius_sites_16_after",
+          "pt_tendon_course"
+        ],
+        "occlusion_mode": "mixed",
+        "required_subject_ids": [
+          "radius_anchor_P_before",
+          "radius_anchor_P_after",
+          "radius_sites_16_before"
+        ],
+        "selected_ids": [
+          "radius_edge_elbow_wrist",
+          "radius_anchor_P_before",
+          "radius_anchor_P_after",
+          "radius_sites_16_before",
+          "radius_sites_16_after",
+          "pt_tendon_course"
+        ],
+        "tag_bindings": [
+          {
+            "label_id": "L-edge",
+            "subject_id": "radius_edge_elbow_wrist"
+          },
+          {
+            "label_id": "L-P-before",
+            "subject_id": "radius_anchor_P_before"
+          },
+          {
+            "label_id": "L-P-after",
+            "subject_id": "radius_anchor_P_after"
+          },
+          {
+            "label_id": "L-sites",
+            "subject_id": "radius_sites_16_before"
+          },
+          {
+            "label_id": "L-sites-after",
+            "subject_id": "radius_sites_16_after"
+          },
+          {
+            "label_id": "L-pt-course",
+            "subject_id": "pt_tendon_course"
+          }
+        ]
+      }
+    },
+    {
+      "artifact_locator": {
+        "kind": "image",
+        "pixel_rectangle": [
+          1440,
+          0,
+          480,
+          360
+        ],
+        "region": "pixel_rectangle"
+      },
+      "camera": {
+        "aspect_ratio": 1.3333333333333333,
+        "camera_motion_or_bookmark_sequence": "fixed_bookmark (ticks 0,3)",
+        "coordinate_unit": "m",
+        "distance_to_target": 0.3,
+        "forward_axis": "-Z",
+        "frame_id": "target_world_frame(+z anterior,+y up,-x right; O1 sec.1; panel annotations in mm)",
+        "handedness": "right",
+        "near_far_planes": [
+          0.001,
+          1.0
+        ],
+        "orientation_convention": "quaternion_wxyz_camera_to_frame",
+        "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame [0.9899164186292649, -0.12055563264467853, 0.07383074359859847, 0.0089913772876713]",
+        "orthographic_span": 0.0677011752528299,
+        "position": [
+          -0.08684817791483126,
+          0.36606761304073565,
+          0.2810221472171475
+        ],
+        "projection": "orthographic",
+        "sample_mode": "fixed_bookmark",
+        "samples": [
+          {
+            "distance_to_target": 0.3,
+            "orientation": [
+              0.9899164186292649,
+              -0.12055563264467853,
+              0.07383074359859847,
+              0.0089913772876713
+            ],
+            "position": [
+              -0.08684817791483126,
+              0.36606761304073565,
+              0.2810221472171475
+            ],
+            "target": [
+              -0.13004956038119,
+              0.29406530893013777,
+              -0.006987069225244066
+            ],
+            "tick": 0
+          },
+          {
+            "distance_to_target": 0.3,
+            "orientation": [
+              0.9899164186292649,
+              -0.12055563264467853,
+              0.07383074359859847,
+              0.0089913772876713
+            ],
+            "position": [
+              -0.08684817791483126,
+              0.36606761304073565,
+              0.2810221472171475
+            ],
+            "target": [
+              -0.13004956038119,
+              0.29406530893013777,
+              -0.006987069225244066
+            ],
+            "tick": 3
+          }
+        ],
+        "state_or_tick_interval": [
+          0,
+          3
+        ],
+        "target": [
+          -0.13004956038119,
+          0.29406530893013777,
+          -0.006987069225244066
+        ],
+        "up_axis": "+Y",
+        "vertical_fov_or_orthographic_span": 0.0677011752528299,
+        "viewport_resolution": [
+          480,
+          360
+        ]
+      },
+      "mode": "clean",
+      "pair_id": "V2",
+      "state_binding": {
+        "kind": "state",
+        "sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0"
+      },
+      "view_id": "local attachment close-up",
+      "visibility": {
+        "label_ids": [],
+        "layers": [],
+        "missing_subject_ids": [],
+        "observed_subject_ids": [
+          "radius_edge_elbow_wrist",
+          "radius_anchor_P_before",
+          "radius_anchor_P_after",
+          "radius_sites_16_before",
+          "radius_sites_16_after"
+        ],
+        "occlusion_mode": "depth_tested",
+        "required_subject_ids": [
+          "radius_edge_elbow_wrist",
+          "radius_anchor_P_before",
+          "radius_anchor_P_after"
+        ],
+        "selected_ids": [],
+        "tag_bindings": []
+      }
+    },
+    {
+      "artifact_locator": {
+        "kind": "image",
+        "pixel_rectangle": [
+          0,
+          360,
+          1920,
+          360
+        ],
+        "region": "pixel_rectangle"
+      },
+      "camera": {
+        "aspect_ratio": 1.3333333333333333,
+        "camera_motion_or_bookmark_sequence": "sampled_trajectory (anterior, posterior, left-lateral oblique, superior)",
+        "coordinate_unit": "mm",
+        "distance_to_target": 320.0,
+        "forward_axis": "-Z",
+        "frame_id": "source_rest_frame(+x volar,+y proximal,+z right; chimanoid.xml rest, axis-aligned asserted)",
+        "handedness": "right",
+        "interpolation": "linear_position_target_slerp_orientation",
+        "near_far_planes": [
+          1.0,
+          2000.0
+        ],
+        "orientation_convention": "quaternion_wxyz_camera_to_frame",
+        "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame (per-sample in samples)",
+        "orthographic_span": 385.662375497818,
+        "position": [
+          312.1634028324958,
+          -118.54739606380463,
+          22.967000231146812
+        ],
+        "projection": "orthographic",
+        "sample_mode": "sampled_trajectory",
+        "samples": [
+          {
+            "distance_to_target": 320.0,
+            "orientation": [
+              0.7071067811865476,
+              0.0,
+              0.7071067811865475,
+              0.0
+            ],
+            "position": [
+              312.1634028324958,
+              -118.54739606380463,
+              22.967000231146812
+            ],
+            "target": [
+              -7.836597167504168,
+              -118.54739606380463,
+              22.967000231146812
+            ],
+            "tick": 0
+          },
+          {
+            "distance_to_target": 320.0,
+            "orientation": [
+              0.7071067811865476,
+              0.0,
+              -0.7071067811865475,
+              0.0
+            ],
+            "position": [
+              -327.8365971675042,
+              -118.54739606380463,
+              22.967000231146812
+            ],
+            "target": [
+              -7.836597167504168,
+              -118.54739606380463,
+              22.967000231146812
+            ],
+            "tick": 1
+          },
+          {
+            "distance_to_target": 320.0,
+            "orientation": [
+              -0.2473363570124931,
+              0.02677260094695771,
+              0.9629349512555082,
+              0.10423163621893129
+            ],
+            "position": [
+              -146.16485527890634,
+              -47.59567272322235,
+              -265.75428232528424
+            ],
+            "target": [
+              4.477238084935017,
+              -116.06935152496841,
+              8.140432881700029
+            ],
+            "tick": 2
+          },
+          {
+            "distance_to_target": 320.0,
+            "orientation": [
+              0.576704088924317,
+              -0.4091605966096607,
+              0.576704088924317,
+              0.4091605966096607
+            ],
+            "position": [
+              96.28635486722408,
+              197.4040976630909,
+              22.967000231146812
+            ],
+            "target": [
+              -9.425781045769869,
+              -104.63057637403467,
+              22.967000231146812
+            ],
+            "tick": 3
+          }
+        ],
+        "state_or_tick_interval": [
+          0,
+          3
+        ],
+        "target": [
+          -7.836597167504168,
+          -118.54739606380463,
+          22.967000231146812
+        ],
+        "up_axis": "+Y",
+        "vertical_fov_or_orthographic_span": 385.662375497818,
+        "viewport_resolution": [
+          480,
+          360
+        ]
+      },
+      "mode": "diagnostic",
+      "pair_id": "V3",
+      "state_binding": {
+        "kind": "state",
+        "sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0"
+      },
+      "view_id": "orthogonal side and oblique views",
+      "visibility": {
+        "label_ids": [
+          "L-ulna",
+          "L-radius-origin",
+          "L-volar",
+          "L-dorsal",
+          "L-proximal",
+          "L-right"
+        ],
+        "layers": [
+          "selected bones/joints",
+          "frame axes",
+          "stable 3D labels"
+        ],
+        "missing_subject_ids": [],
+        "observed_subject_ids": [
+          "source_ulna_mesh",
+          "radius_body_origin_offset",
+          "source_volar_axis_x",
+          "source_dorsal_axis_x",
+          "source_frame_axis_proximal_y",
+          "source_frame_axis_right_z"
+        ],
+        "occlusion_mode": "mixed",
+        "required_subject_ids": [
+          "source_ulna_mesh",
+          "radius_body_origin_offset"
+        ],
+        "selected_ids": [
+          "source_ulna_mesh",
+          "radius_body_origin_offset",
+          "source_volar_axis_x",
+          "source_dorsal_axis_x",
+          "source_frame_axis_proximal_y",
+          "source_frame_axis_right_z"
+        ],
+        "tag_bindings": [
+          {
+            "label_id": "L-ulna",
+            "subject_id": "source_ulna_mesh"
+          },
+          {
+            "label_id": "L-radius-origin",
+            "subject_id": "radius_body_origin_offset"
+          },
+          {
+            "label_id": "L-volar",
+            "subject_id": "source_volar_axis_x"
+          },
+          {
+            "label_id": "L-dorsal",
+            "subject_id": "source_dorsal_axis_x"
+          },
+          {
+            "label_id": "L-proximal",
+            "subject_id": "source_frame_axis_proximal_y"
+          },
+          {
+            "label_id": "L-right",
+            "subject_id": "source_frame_axis_right_z"
+          }
+        ]
+      }
+    },
+    {
+      "artifact_locator": {
+        "kind": "image",
+        "pixel_rectangle": [
+          0,
+          720,
+          1920,
+          360
+        ],
+        "region": "pixel_rectangle"
+      },
+      "camera": {
+        "aspect_ratio": 1.3333333333333333,
+        "camera_motion_or_bookmark_sequence": "sampled_trajectory (anterior, posterior, left-lateral oblique, superior)",
+        "coordinate_unit": "mm",
+        "distance_to_target": 320.0,
+        "forward_axis": "-Z",
+        "frame_id": "source_rest_frame(+x volar,+y proximal,+z right; chimanoid.xml rest, axis-aligned asserted)",
+        "handedness": "right",
+        "interpolation": "linear_position_target_slerp_orientation",
+        "near_far_planes": [
+          1.0,
+          2000.0
+        ],
+        "orientation_convention": "quaternion_wxyz_camera_to_frame",
+        "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame (per-sample in samples)",
+        "orthographic_span": 385.662375497818,
+        "position": [
+          312.1634028324958,
+          -118.54739606380463,
+          22.967000231146812
+        ],
+        "projection": "orthographic",
+        "sample_mode": "sampled_trajectory",
+        "samples": [
+          {
+            "distance_to_target": 320.0,
+            "orientation": [
+              0.7071067811865476,
+              0.0,
+              0.7071067811865475,
+              0.0
+            ],
+            "position": [
+              312.1634028324958,
+              -118.54739606380463,
+              22.967000231146812
+            ],
+            "target": [
+              -7.836597167504168,
+              -118.54739606380463,
+              22.967000231146812
+            ],
+            "tick": 0
+          },
+          {
+            "distance_to_target": 320.0,
+            "orientation": [
+              0.7071067811865476,
+              0.0,
+              -0.7071067811865475,
+              0.0
+            ],
+            "position": [
+              -327.8365971675042,
+              -118.54739606380463,
+              22.967000231146812
+            ],
+            "target": [
+              -7.836597167504168,
+              -118.54739606380463,
+              22.967000231146812
+            ],
+            "tick": 1
+          },
+          {
+            "distance_to_target": 320.0,
+            "orientation": [
+              -0.2473363570124931,
+              0.02677260094695771,
+              0.9629349512555082,
+              0.10423163621893129
+            ],
+            "position": [
+              -146.16485527890634,
+              -47.59567272322235,
+              -265.75428232528424
+            ],
+            "target": [
+              4.477238084935017,
+              -116.06935152496841,
+              8.140432881700029
+            ],
+            "tick": 2
+          },
+          {
+            "distance_to_target": 320.0,
+            "orientation": [
+              0.576704088924317,
+              -0.4091605966096607,
+              0.576704088924317,
+              0.4091605966096607
+            ],
+            "position": [
+              96.28635486722408,
+              197.4040976630909,
+              22.967000231146812
+            ],
+            "target": [
+              -9.425781045769869,
+              -104.63057637403467,
+              22.967000231146812
+            ],
+            "tick": 3
+          }
+        ],
+        "state_or_tick_interval": [
+          0,
+          3
+        ],
+        "target": [
+          -7.836597167504168,
+          -118.54739606380463,
+          22.967000231146812
+        ],
+        "up_axis": "+Y",
+        "vertical_fov_or_orthographic_span": 385.662375497818,
+        "viewport_resolution": [
+          480,
+          360
+        ]
+      },
+      "mode": "clean",
+      "pair_id": "V3",
+      "state_binding": {
+        "kind": "state",
+        "sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0"
+      },
+      "view_id": "orthogonal side and oblique views",
+      "visibility": {
+        "label_ids": [],
+        "layers": [],
+        "missing_subject_ids": [],
+        "observed_subject_ids": [
+          "source_ulna_mesh"
+        ],
+        "occlusion_mode": "depth_tested",
+        "required_subject_ids": [
+          "source_ulna_mesh"
+        ],
+        "selected_ids": [],
+        "tag_bindings": []
+      }
+    }
+  ]
+}

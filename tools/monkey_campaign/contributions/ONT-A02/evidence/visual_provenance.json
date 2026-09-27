@@ -1,0 +1,26 @@
+{
+  "framing": "cameras framed from the PROJECTED BOUNDS of each view's declared subject point set (declared_subject_points) + uniform 8% frame margin (fit_camera); generation-time guard assert_in_bounds; bounds regression in test_ota02_radioulnar.py",
+  "honest_label": "deterministic CPU offline render (numpy z-buffer + Agg text); not native engine frames; subject is the A02 anatomy evidence (radioulnar definition, B4 result, before/after radius mapping)",
+  "outcome_bound": "captures the numerical_receipt.json outcome state",
+  "panels": {
+    "V1": "target pack mesh (monkey_birth.bin, sha 550a5b3e...) whole body, frame triad via region box, boxed right forearm region, elbow_R/wrist_R labels, BEFORE/AFTER radius anchors; clean pair = mesh only",
+    "V2": "elbow->wrist edge with BEFORE (elbow_R) vs AFTER (ulna.P_d) anchors, the 5.1158 mm forced-closure gap arrow, all 16 radius site globals before (filled) / after (open), PT tendon course before (solid) / after (dashed); clean pair = geometry only",
+    "V3": "vendor ulna.stl (sha in state inputs, authored scale 1,1.2,1) in mm, four-bookmark trajectory, the 23.0746 mm / 51.63 deg radius body-origin offset vector, volar/dorsal/proximal/right axes; clean strip = bone only"
+  },
+  "schema": "chimera.ota02_visual_provenance.v1",
+  "state_hash": {
+    "after_render": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0",
+    "before_render": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0",
+    "note": "view toggles (diagnostic/clean, bookmark changes) never touch the physical state snapshot",
+    "preserved": true
+  },
+  "structural_validation": {
+    "capture_kind": "image",
+    "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+    "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+    "profile_id": "anatomy",
+    "structurally_valid": true,
+    "view_count": 6,
+    "visual_acceptance": false
+  }
+}

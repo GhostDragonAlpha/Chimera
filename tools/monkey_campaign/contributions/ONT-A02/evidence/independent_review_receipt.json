@@ -1,0 +1,40 @@
+{
+  "attempt_id": "b4a2b12b8c854e55bc400c64a502c85c",
+  "done_when_reading": "done_when is conjunctive: radioulnar definition (P1/P2 + V3), independent evidence (this attempt's own pin-bound re-derivation + the three pinned independent audits), B4 result (receipted T1-T6 table presented with its source-kinematic-only bound and the machine-forced closure mechanism re-derived), and before/after radius mapping (closed-form both sides, reproduced to 1e-12 where the receipts are exact) - all four are presented and hash-bound",
+  "prior_independent_audits": {
+    "I7_isolated_ustr_b4": {
+      "agent": "M-A02diag (2026-09-24), distinct diagnostic lane",
+      "pin": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/07_gate_table.json, f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/08_radius_before_after.json, f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/10_coverage_topology.json",
+      "used_here": "the receipted B4 T1-T6 verdicts (presented, not re-run) and the before/after/coverage receipts this attempt re-derived from raw pins"
+    },
+    "O1_ulna_orientation": {
+      "agent": "O1 evidence agent (wave 4, 2026-09-24), a different agent and lane from attempt b4a2b12b8c854e55bc400c64a502c85c",
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/report.md (+ brief.md and receipts, branch forearm-package-20260924)",
+      "used_here": "the frozen roll sign law and the declared candidate's roll pair; re-verified from pins by ONT-A01 at PR 176 (its own evidence, bound to A01)"
+    },
+    "R1_radioulnar_evidence": {
+      "agent": "R1 evidence agent (wave 4, 2026-09-24), independent web-primary-source lane",
+      "pin": "d02af013:forearm_package/audits/R1_radioulnar_evidence/report.md (+ receipts/arithmetic.txt, extracted hash-bound under reference/r1_receipts/)",
+      "used_here": "the RETAINED anatomical refutation and the 5.3 drift law; its falsifier outcome is preserved, not relabeled"
+    }
+  },
+  "reviewer_review_still_required": "a non-author independent review of THIS exact candidate head and evidence remains the review lane's step; the historical audits above are evidence inputs, not a review of this attempt",
+  "schema": "chimera.ota02_independent_review_receipt.v1",
+  "task_id": "A02",
+  "this_attempt_separation": {
+    "fired_falsifiers": [
+      "P3:mirror_t_overbroad_prediction"
+    ],
+    "fired_note": "P3:mirror_t_overbroad_prediction is THIS attempt's own frozen prediction authored too broadly (mirror-exactness claimed for a translation whose inputs are asymmetric); the receipt itself carries the same asymmetry; both readings preserved; no tolerance was moved post hoc",
+    "method_identity": "the DERIVATION 5.1 ONB construction law is re-implemented in this attempt's module and asserted equal to the pinned records (packet site reproduction max err 5.551115123125783e-17 m) before any verdict",
+    "outcome": "DISCREPANCY_RECORDED",
+    "rederived_from_pins": [
+      "chimanoid.xml",
+      "actual_monkey_fit.json",
+      "monkey_birth.bin",
+      "monkey_joints.bin",
+      "00_candidate_declaration.json",
+      "01_known_good_records.json"
+    ]
+  }
+}

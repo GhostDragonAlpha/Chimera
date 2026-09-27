@@ -1,0 +1,61 @@
+{
+  "files": {
+    "b4_receipts/01_known_good_records.json": {
+      "bytes": 5531,
+      "pin": "f1023853:forearm_package/audits/B4_correspondence_challenge/receipts/01_known_good_records.json",
+      "sha256": "3f6a5a7afaa00efa8e6e18d4d0bbb7abe6a3d5278cf801ddbc98e5f9bd142bdb"
+    },
+    "chimanoid.xml": {
+      "bytes": 154834,
+      "pin": "f1023853:forearm_package/baseline_snapshot/source_xml/chimanoid.xml",
+      "sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5"
+    },
+    "i7_receipts/00_candidate_declaration.json": {
+      "bytes": 9884,
+      "pin": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/00_candidate_declaration.json",
+      "sha256": "473f7526da894e63c8f4620e5b62774330b1cd9b5f44e819dcc3147fdc4c2255"
+    },
+    "i7_receipts/07_gate_table.json": {
+      "bytes": 4985,
+      "pin": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/07_gate_table.json",
+      "sha256": "e645cb3470d80f8160aa0ce0d41deab2be4cc1cd33a55cefbd8b7c5deef3eb85"
+    },
+    "i7_receipts/08_radius_before_after.json": {
+      "bytes": 5787,
+      "pin": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/08_radius_before_after.json",
+      "sha256": "4354478f4244645f8c438da9deaa9cc5487d15494aca713609856da6fea2c025"
+    },
+    "i7_receipts/10_coverage_topology.json": {
+      "bytes": 13933,
+      "pin": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/10_coverage_topology.json",
+      "sha256": "1b0337c009f2ee1ddc5b3bf3e58df50224d63d26f7f0a2eb303656561af2c01d"
+    },
+    "mesh_target_o1.py": {
+      "bytes": 9599,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/work/mesh_target_o1.py",
+      "sha256": "268f139a9e90e561f4a5f8ab02553f0d87f51633f635139e6cec6f5c9cfa19a0"
+    },
+    "o1_receipts/o1_combine_sign.json": {
+      "bytes": 2910,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/o1_combine_sign.json",
+      "sha256": "fc35f7e9f01601daf3ada563677e7de05961bb19d83beca83f592e54d1e00972"
+    },
+    "o1_receipts/o1_source_split.json": {
+      "bytes": 15333,
+      "pin": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/o1_source_split.json",
+      "sha256": "a61ebbe03f6df1fc03e4bd3d922bd953506dbd935291f9aed4ee003af7be2e9b"
+    },
+    "packet/actual_monkey_fit.json": {
+      "bytes": 1294000,
+      "pin": "f1023853:forearm_package/baseline_snapshot/runs/actual_monkey_fit.json",
+      "sha256": "7b5d6345f6d56ec77c072aecefde2ae592e3bc3fc96b439e5eff164425834268"
+    },
+    "r1_receipts/arithmetic.txt": {
+      "bytes": 1503,
+      "pin": "d02af013:forearm_package/audits/R1_radioulnar_evidence/receipts/arithmetic.txt",
+      "sha256": "3a10c7f95ece4cbced96ada8be64ae3b95fbe1de2acd8b5d6eb1ae91b87d94db"
+    }
+  },
+  "rule": "read-only extraction from git pins in E:/PythonChimera (git cat-file blob; bytes preserved; no writes to any source checkout)",
+  "schema": "chimera.ota02_extraction.v1"
+}

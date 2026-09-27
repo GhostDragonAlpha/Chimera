@@ -1,0 +1,68 @@
+{
+  "attempt_id": "b4a2b12b8c854e55bc400c64a502c85c",
+  "capture_context": {
+    "capture_sha256": "88f94dc3c48ddc8505a546cb7109db9db84600f40008de882359887d9ad24b62",
+    "run_id": "ONT-A02-ota02-deterministic-cpu-20260926",
+    "subject_sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0",
+    "task_id": "A02",
+    "tick_interval": [
+      0,
+      3
+    ]
+  },
+  "card_id": "ONT-A02",
+  "criteria_sha256": "ab47206c8bd41e3f9769f8f96489545c3335cf2183a76f88f6c010e3b3789cb1",
+  "done_when_how_satisfied": "done_when is conjunctive: radioulnar definition (P1/P2 + V3), independent evidence (this attempt's own pin-bound re-derivation + the three pinned independent audits), B4 result (receipted T1-T6 table presented with its source-kinematic-only bound and the machine-forced closure mechanism re-derived), and before/after radius mapping (closed-form both sides, reproduced to 1e-12 where the receipts are exact) - all four are presented and hash-bound",
+  "done_when_verified": true,
+  "evidence": {
+    "camera": {
+      "raw_sha256": "6acda65ee666fe37f9cbac742004165fbfa765172ed52e6f6b3c42b87a81a563",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\evidence\\capture_manifest.json"
+    },
+    "independent_review": {
+      "raw_sha256": "bf951b26185cb196f9c2787b1358837af5976edbd38e102c03ef2c5cbe7ea80d",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\evidence\\independent_review_receipt.json"
+    },
+    "numerical": {
+      "raw_sha256": "5dc0ac6766beeb3cb3c38856adcff268eb0900f7ce952cc91cffa3f9cc8bb345",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\evidence\\numerical_receipt.json"
+    },
+    "preregistration": {
+      "raw_sha256": "4de878fa4d7a6a79ae29499fa1be9acf9f629c2e09cf910e0d7fde486e019697",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\PREREGISTRATION.md"
+    },
+    "source": {
+      "raw_sha256": "56e86cd1218e8d279faf55c396a182406136050df8ba7ede7d6859bc56459401",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\reference\\EXTRACTION.json"
+    },
+    "state": {
+      "raw_sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\evidence\\state_snapshot.json"
+    },
+    "visual": {
+      "raw_sha256": "88f94dc3c48ddc8505a546cb7109db9db84600f40008de882359887d9ad24b62",
+      "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\evidence\\capture_sheet.png"
+    }
+  },
+  "head_sha": null,
+  "head_sha_binding_note": "bound to the attempt work commit carrying tools/monkey_campaign/contributions/ONT-A02 in the attempt checkout (published by the lead to review/ONT-A02); the independent reviewer pins head_sha to the reviewed PR head - a changed PR head invalidates this receipt and its review (visual gate recomputes all hashes)",
+  "honesty": {
+    "anatomical_support_claimed": false,
+    "behavior_claim_about_real_application": false,
+    "capture_kind": "component/records evidence for an anatomy evidence subject (radioulnar definition, B4 result, before/after radius mapping)",
+    "cpu_only": true,
+    "deterministic": true,
+    "gpu_used": false,
+    "native_engine_frames": false,
+    "network_used": false,
+    "outcome_note": "DISCREPANCY_RECORDED refers to this attempt's own over-broad frozen mirror prediction, recorded per falsifier FA; every source-evidence reproduction is within its frozen tolerance",
+    "production_authority_claimed": false,
+    "render_backend": "numpy-zbuffer-software-raster-cpu + matplotlib Agg compose",
+    "supersession_executed": false
+  },
+  "outcome": "DISCREPANCY_RECORDED",
+  "profile_verified": true,
+  "schema": "chimera.ontology_qualification_receipt.v1",
+  "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "task_id": "A02"
+}

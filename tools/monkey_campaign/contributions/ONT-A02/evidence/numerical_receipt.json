@@ -1,0 +1,627 @@
+{
+  "attempt_id": "b4a2b12b8c854e55bc400c64a502c85c",
+  "b4_result_presented": {
+    "agent": "M-A02diag (2026-09-24, I7 isolated U-STR B4 diagnostic)",
+    "pin": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/07_gate_table.json",
+    "reading": "12/12 side-test verdicts + T6 process PASS on the EXISTING B4 T1-T6 protocol, tolerances unchanged. SOURCE-KINEMATIC FIDELITY ONLY: it does not answer anatomy (R1 refutation retained), authorize a production supersession, close A03, or qualify grasp (I7 memo, verbatim bounds).",
+    "verdicts_presented": {
+      "_T6_utility_ban": {
+        "banned_evidence_occurrences": 0,
+        "packet_tendon_readers": [],
+        "verdict": "PASS"
+      },
+      "_baseline_integrity": {
+        "command": "git -C E:/PythonChimera status --porcelain -- forearm_package/baseline_snapshot",
+        "empty": true,
+        "output": ""
+      },
+      "_declaration": {
+        "frozen_before_evaluation": true,
+        "law": "az_target(q) = az_source(s) + 90 deg (mod 360)",
+        "residual_deg": {
+          "ulna": 0.15353092426937565,
+          "ulna_l": 0.1535193865940414
+        },
+        "roll_choice": {
+          "ulna": "TRIlat-P5",
+          "ulna_l": "TRIlat_l-P5"
+        }
+      },
+      "ulna": {
+        "T1_source_provenance": {
+          "parent": "humerus",
+          "resolutions": {
+            "dist": "body_origin:radius",
+            "prox": "body_origin:ulna",
+            "roll": "site:TRIlat-P5",
+            "roll_xml_owner": "ulna"
+          },
+          "site_set_equal": true,
+          "verdict": "PASS"
+        },
+        "T2_landmark_sufficiency": {
+          "roll_eps": 1e-09,
+          "roll_t_norm_source_m": 0.02345880821804825,
+          "roll_t_norm_target_m": 0.030953085467249303,
+          "scale_policy": "uniform",
+          "source_bone_len_m": 0.023074639975522924,
+          "target_pair_len_m": 0.005115804490107064,
+          "verdict": "PASS"
+        },
+        "T3_laterality": {
+          "det_Q_constructed": 0.9999999999999999,
+          "handedness": "preserve",
+          "source_side": "right",
+          "target_prox_joint": "elbow_R",
+          "target_side": "right",
+          "verdict": "PASS"
+        },
+        "T4_transform_explainability": {
+          "anchor_gap_m": 0.0,
+          "c1_10_of_10": true,
+          "plausibility": {
+            "aspect_policy": true,
+            "band": [
+              0.11451523674718446,
+              0.45806094698873784
+            ],
+            "in_band": true,
+            "neighbor": "humerus",
+            "neighbor_axial": 0.22903047349436892
+          },
+          "s_implied": 0.2217067956654491,
+          "subchecks": {
+            "anchor_gap_0": true,
+            "aspect_policy": true,
+            "axial_roll_independent": true,
+            "c1_independent_10_of_10_reproduced": true,
+            "det_L_is_s3": true,
+            "det_Q": true,
+            "edge_on_elbow_wrist_line": true,
+            "neighbor_band": true,
+            "no_packet_transform_to_contradict": true,
+            "ortho_constructed": true
+          },
+          "verdict": "PASS",
+          "worst_c1_delta_pts": 0.0040045388155185435
+        },
+        "T5_uniqueness": {
+          "declared_roll_xml_owner": "ulna",
+          "in_band_others_context": [
+            "hand_l",
+            "hand_r",
+            "ulna_l"
+          ],
+          "nearest_scale_alternative": {
+            "body": "ulna_l",
+            "s": 0.2217067956654491
+          },
+          "resolution_supporters": [
+            "ulna"
+          ],
+          "supporter_count": 1,
+          "verdict": "PASS"
+        }
+      },
+      "ulna_l": {
+        "T1_source_provenance": {
+          "parent": "humerus_l",
+          "resolutions": {
+            "dist": "body_origin:radius_l",
+            "prox": "body_origin:ulna_l",
+            "roll": "site:TRIlat_l-P5",
+            "roll_xml_owner": "ulna_l"
+          },
+          "site_set_equal": true,
+          "verdict": "PASS"
+        },
+        "T2_landmark_sufficiency": {
+          "roll_eps": 1e-09,
+          "roll_t_norm_source_m": 0.02345880821804825,
+          "roll_t_norm_target_m": 0.030953082931149515,
+          "scale_policy": "uniform",
+          "source_bone_len_m": 0.023074639975522924,
+          "target_pair_len_m": 0.005115804490107064,
+          "verdict": "PASS"
+        },
+        "T3_laterality": {
+          "det_Q_constructed": 0.9999999999999996,
+          "handedness": "preserve",
+          "source_side": "left",
+          "target_prox_joint": "elbow_L",
+          "target_side": "left",
+          "verdict": "PASS"
+        },
+        "T4_transform_explainability": {
+          "anchor_gap_m": 0.0,
+          "c1_10_of_10": true,
+          "plausibility": {
+            "aspect_policy": true,
+            "band": [
+              0.11449883247658872,
+              0.4579953299063549
+            ],
+            "in_band": true,
+            "neighbor": "humerus_l",
+            "neighbor_axial": 0.22899766495317744
+          },
+          "s_implied": 0.2217067956654491,
+          "subchecks": {
+            "anchor_gap_0": true,
+            "aspect_policy": true,
+            "axial_roll_independent": true,
+            "c1_independent_10_of_10_reproduced": true,
+            "det_L_is_s3": true,
+            "det_Q": true,
+            "edge_on_elbow_wrist_line": true,
+            "neighbor_band": true,
+            "no_packet_transform_to_contradict": true,
+            "ortho_constructed": true
+          },
+          "verdict": "PASS",
+          "worst_c1_delta_pts": 0.004004538815486569
+        },
+        "T5_uniqueness": {
+          "declared_roll_xml_owner": "ulna_l",
+          "in_band_others_context": [
+            "hand_l",
+            "hand_r",
+            "ulna"
+          ],
+          "nearest_scale_alternative": {
+            "body": "ulna",
+            "s": 0.2217067956654491
+          },
+          "resolution_supporters": [
+            "ulna_l"
+          ],
+          "supporter_count": 1,
+          "verdict": "PASS"
+        }
+      }
+    }
+  },
+  "before_after_radius_map": {
+    "fractions": {
+      "checks": {
+        "derived_matches_declared_gap": true,
+        "derived_vs_receipt": true,
+        "drift_law": true,
+        "frac_target_vs_receipt": true,
+        "receipt_truncation_reproduced": true
+      },
+      "derived_distal_point_mm": 5.115804490107081,
+      "drift_check_pct": 7.9014788891806695,
+      "drift_factor": 1.0471283180864666,
+      "ok": true,
+      "receipt": {
+        "derived_distal_point_mm": 5.1158044955338156,
+        "drift_check": 7.901478841651782,
+        "drift_factor": 1.0471281884537094,
+        "r1_law": "7.5459% x k_rad/axis-ratio = 7.9015% (R1 \u00a75.3)",
+        "source_authored_fraction_pct": 7.54585630372521,
+        "target_per_edge_fraction_pct": 7.901478841651782
+      },
+      "receipt_truncated_input_reproduction": {
+        "derived_matches_receipt": true,
+        "derived_mm": 5.1158044955338156,
+        "frac_matches_receipt": true,
+        "frac_target_pct": 7.901478841651782,
+        "inputs": {
+          "src_offset_m": 0.02307464,
+          "tgt_forearm_m": 0.064744899
+        }
+      },
+      "source_authored_fraction_pct": 7.545855414950401,
+      "target_per_edge_fraction_pct": 7.9014788891806695
+    },
+    "left": {
+      "G_vs_packet_max_abs_diff": 6.661338147750939e-16,
+      "L_minus_sG_max": 2.7755575615628914e-17,
+      "P_d_old_m": [
+        0.1449945402145386,
+        0.26148236989974977,
+        -0.005956328995525837
+      ],
+      "P_new_m": [
+        0.11781299127866669,
+        0.3145557153217149,
+        -0.006067056594766505
+      ],
+      "P_old_m": [
+        0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "body": "radius_l",
+      "det_B_src": 1.0000000000000002,
+      "det_Bp_new": 1.0000000000000002,
+      "gap_m": 0.005115804490107064,
+      "joint_eps": 1e-09,
+      "landmark_oracle_after_D_m": 0.0,
+      "landmark_oracle_before_D_m": 8.673617379884035e-19,
+      "ok": true,
+      "packet_reconstruction_max_err_m": 1.734723475976807e-18,
+      "refusal_would_fire": true,
+      "roundtrip_max": 7.632783294297951e-17,
+      "s_new": 0.20418868001006546,
+      "s_old": 0.22170679566544982,
+      "scale_change_pct": -7.901478889180636,
+      "span_new_m": 0.05962909405176015,
+      "span_old_m": 0.06474489854186721,
+      "src_span_m": 0.2920293820833787,
+      "t_new_m": [
+        0.574361083994982,
+        -0.3608152902169819,
+        -0.23549689450767744
+      ],
+      "worst_delta_m": 0.004948423135921825,
+      "worst_site": "BIClong_l-P9"
+    },
+    "left_checks": {
+      "G_unchanged": true,
+      "L_equals_sG": true,
+      "P_d_old_m": true,
+      "P_new_m": true,
+      "P_old_m": true,
+      "detL_equals_s_cubed": true,
+      "detL_receipt": true,
+      "gap_m": true,
+      "landmark_map_after_D": true,
+      "landmark_map_before_D": true,
+      "onb_dets": true,
+      "packet_sites_reproduced": true,
+      "refusal_fires": true,
+      "roundtrip": true,
+      "s_new": true,
+      "s_old": true,
+      "scale_change_pct": true,
+      "span_new_m": true,
+      "span_old_m": true,
+      "t_new_m": true,
+      "transcription_slip_rejected": true,
+      "worst_delta_vs_receipt_m": true
+    },
+    "mirror_max_diffs": {
+      "P_d_old": 0.0,
+      "P_new": 0.0,
+      "s_new": 0.0,
+      "span_new": 0.0,
+      "t_new": 4.20046195540591e-05
+    },
+    "mirror_ok": true,
+    "right": {
+      "G_vs_packet_max_abs_diff": 2.220446049250313e-16,
+      "L_minus_sG_max": 2.7755575615628914e-17,
+      "P_d_old_m": [
+        -0.1449945402145386,
+        0.26148236989974977,
+        -0.005956328995525837
+      ],
+      "P_new_m": [
+        -0.11781299127866669,
+        0.3145557153217149,
+        -0.006067056594766505
+      ],
+      "P_old_m": [
+        -0.11548098385334016,
+        0.3191090774536133,
+        -0.0060765563324093825
+      ],
+      "body": "radius",
+      "det_B_src": 1.0000000000000002,
+      "det_Bp_new": 1.0000000000000002,
+      "gap_m": 0.005115804490107064,
+      "joint_eps": 1e-09,
+      "landmark_oracle_after_D_m": 0.0,
+      "landmark_oracle_before_D_m": 0.0,
+      "ok": true,
+      "packet_reconstruction_max_err_m": 5.551115123125783e-17,
+      "refusal_would_fire": true,
+      "roundtrip_max": 1.1102230246251565e-16,
+      "s_new": 0.20418868001006546,
+      "s_old": 0.22170679566544982,
+      "scale_change_pct": -7.901478889180636,
+      "span_new_m": 0.05962909405176015,
+      "span_old_m": 0.06474489854186721,
+      "src_span_m": 0.2920293820833787,
+      "t_new_m": [
+        -0.5743881501002028,
+        -0.36085729483653595,
+        -0.23549874330359868
+      ],
+      "worst_delta_m": 0.004950983466166482,
+      "worst_site": "BICshort-P6"
+    },
+    "right_checks": {
+      "G_unchanged": true,
+      "L_equals_sG": true,
+      "P_d_old_m": true,
+      "P_new_m": true,
+      "P_old_m": true,
+      "detL_equals_s_cubed": true,
+      "detL_receipt": true,
+      "gap_m": true,
+      "landmark_map_after_D": true,
+      "landmark_map_before_D": true,
+      "onb_dets": true,
+      "packet_sites_reproduced": true,
+      "refusal_fires": true,
+      "roundtrip": true,
+      "s_new": true,
+      "s_old": true,
+      "scale_change_pct": true,
+      "span_new_m": true,
+      "span_old_m": true,
+      "t_new_m": true,
+      "transcription_slip_rejected": true,
+      "worst_delta_vs_receipt_m": true
+    },
+    "site_deltas_left_m": {
+      "BIClong_l-P11": 0.004469262714455128,
+      "BIClong_l-P9": 0.004948423135921825,
+      "BICshort_l-P6": 0.004948419704815337,
+      "BICshort_l-P8": 0.004469262714455128,
+      "BRD_l-P2": 0.0028722058259846766,
+      "BRD_l-P3": 0.0012866373213189007,
+      "ECRB_l-P2": 0.0028016082504959045,
+      "ECRB_l-P3": 0.0011620097033654935,
+      "ECRL_l-P2": 0.002740153585836704,
+      "ECRL_l-P3": 0.0010497632691428029,
+      "ECU_l-P5": 0.0012581805068016387,
+      "FCR_l-P2": 0.0013120429865690257,
+      "FCU_l-P2": 0.0019168020920057888,
+      "FCU_l-P3": 0.0012127275883658546,
+      "PT_l-P3": 0.004230275419775217,
+      "PT_l-P5": 0.0031852327941221752
+    },
+    "site_deltas_right_m": {
+      "BIClong-P11": 0.004469262714455107,
+      "BIClong-P9": 0.004948423135921823,
+      "BICshort-P6": 0.004950983466166482,
+      "BICshort-P8": 0.004469262714455107,
+      "BRD-P2": 0.002872205825984615,
+      "BRD-P3": 0.0012866373213189367,
+      "ECRB-P2": 0.0028016082504958985,
+      "ECRB-P3": 0.0011620097033655007,
+      "ECRL-P2": 0.0027401535858366747,
+      "ECRL-P3": 0.0010497632691427632,
+      "ECU-P5": 0.0012581805068016603,
+      "FCR-P2": 0.0013120429865690455,
+      "FCU-P2": 0.0019191153814078414,
+      "FCU-P3": 0.0012127275883658832,
+      "PT-P3": 0.004230275419775235,
+      "PT-P5": 0.0031852327941221618
+    },
+    "status": "CLOSED_FORM_DIAGNOSTIC_CONSEQUENCE_ONLY; UNAUTHORIZED AND UNEXECUTED as production supersession"
+  },
+  "card_id": "ONT-A02",
+  "coverage_topology": {
+    "baseline_resolved_bodies": [
+      "femur_l",
+      "femur_r",
+      "humerus",
+      "humerus_l",
+      "radius",
+      "radius_l",
+      "thorax_dummy",
+      "tibia_l",
+      "tibia_r"
+    ],
+    "checks": {
+      "baseline_complete": true,
+      "diagnostic_complete": true,
+      "joint_owner": true,
+      "per_tendon_baseline": true,
+      "plus_hand_complete": true
+    },
+    "hand_blocked_baseline": [
+      "ECRB_l_tendon",
+      "ECRB_tendon",
+      "ECRL_l_tendon",
+      "ECRL_tendon",
+      "ECU_l_tendon",
+      "ECU_tendon",
+      "FCR_l_tendon",
+      "FCR_tendon",
+      "FCU_l_tendon",
+      "FCU_tendon"
+    ],
+    "joint_owner_elbow_flexion": "ulna",
+    "joint_owner_elbow_flexion_l": "ulna_l",
+    "newly_defined_diagnostic": [
+      "PT_l_tendon",
+      "PT_tendon"
+    ],
+    "ok": true,
+    "receipt_counts": {
+      "baseline": 2,
+      "diagnostic_plus_hand (context, NOT this run)": 14,
+      "diagnostic_ulna_only": 4
+    },
+    "scenario_counts": {
+      "baseline": 2,
+      "diagnostic_ulna_only": 4,
+      "plus_hand": 14
+    },
+    "thorax_blocked_baseline": [
+      "BIClong_l_tendon",
+      "BIClong_tendon",
+      "BICshort_l_tendon",
+      "BICshort_tendon"
+    ]
+  },
+  "criteria_sha256": "ab47206c8bd41e3f9769f8f96489545c3335cf2183a76f88f6c010e3b3789cb1",
+  "done_when": "Radioulnar definition, independent evidence, B4 result and before/after radius mapping are presented (all four presented here; visual component in capture_manifest.json)",
+  "fired_falsifiers": [
+    "P3:mirror_t_overbroad_prediction"
+  ],
+  "honesty": {
+    "cpu_only": true,
+    "deterministic": true,
+    "gpu_used": false,
+    "native_engine_run": false,
+    "network_used": false,
+    "note": "offline re-derivation from pinned inputs; no store touched",
+    "supersession_executed": false
+  },
+  "inputs": {
+    "birth": {
+      "path": "E:\\PythonChimera\\Saved\\meshes\\monkey_birth.bin",
+      "sha256": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c"
+    },
+    "candidate_declaration": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\reference\\i7_receipts\\00_candidate_declaration.json",
+      "sha256": "473f7526da894e63c8f4620e5b62774330b1cd9b5f44e819dcc3147fdc4c2255"
+    },
+    "chimanoid_xml": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\reference\\chimanoid.xml",
+      "sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5"
+    },
+    "known_good": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\reference\\b4_receipts\\01_known_good_records.json",
+      "sha256": "3f6a5a7afaa00efa8e6e18d4d0bbb7abe6a3d5278cf801ddbc98e5f9bd142bdb"
+    },
+    "pack": {
+      "path": "E:\\PythonChimera\\Saved\\meshes\\monkey_joints.bin",
+      "sha256": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662"
+    },
+    "packet": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\reference\\packet\\actual_monkey_fit.json",
+      "sha256": "7b5d6345f6d56ec77c072aecefde2ae592e3bc3fc96b439e5eff164425834268"
+    },
+    "receipt_08": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\reference\\i7_receipts\\08_radius_before_after.json",
+      "sha256": "4354478f4244645f8c438da9deaa9cc5487d15494aca713609856da6fea2c025"
+    },
+    "receipt_10": {
+      "path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A02\\b4a2b12b8c854e55bc400c64a502c85c\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A02\\reference\\i7_receipts\\10_coverage_topology.json",
+      "sha256": "1b0337c009f2ee1ddc5b3bf3e58df50224d63d26f7f0a2eb303656561af2c01d"
+    },
+    "ulna_stl": {
+      "path": "E:\\PythonChimera\\vendor\\myo_sim\\meshes\\ulna.stl",
+      "sha256": "710264159b68764dfd28fa51ae490d9b6c7ff7c0d2418f910c9db02969b1223e"
+    }
+  },
+  "outcome": "DISCREPANCY_RECORDED",
+  "pins": {
+    "b4_known_good": "f1023853:forearm_package/audits/B4_correspondence_challenge/receipts/01_known_good_records.json",
+    "chimanoid_xml": "f1023853:forearm_package/baseline_snapshot/source_xml/chimanoid.xml",
+    "i7_candidate_declaration": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/00_candidate_declaration.json",
+    "i7_coverage_topology": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/10_coverage_topology.json",
+    "i7_gate_table": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/07_gate_table.json",
+    "i7_radius_before_after": "f1023853:forearm_package/audits/I7_ustr_diagnostic/receipts/08_radius_before_after.json",
+    "o1_combine_sign": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/o1_combine_sign.json",
+    "o1_report": "c3255f74:forearm_package/audits/O1_ulna_orientation/report.md",
+    "o1_source_split": "c3255f74:forearm_package/audits/O1_ulna_orientation/receipts/o1_source_split.json",
+    "packet": "f1023853:forearm_package/baseline_snapshot/runs/actual_monkey_fit.json",
+    "r1_arithmetic": "d02af013:forearm_package/audits/R1_radioulnar_evidence/receipts/arithmetic.txt",
+    "r1_report": "d02af013:forearm_package/audits/R1_radioulnar_evidence/report.md",
+    "ustr_receipt_addendum": "f1023853:forearm_package/USTR_DIAGNOSTIC_RECEIPT.md"
+  },
+  "preregistration": "PREREGISTRATION.md (frozen before probes)",
+  "r1_refutation": {
+    "anatomical_support": false,
+    "bounds": "after-map is an UNAUTHORIZED, UNEXECUTED production supersession candidate; the B4 PASS is source-kinematic fidelity only (I7 memo); no A03/grasp claim",
+    "drift_law_consistent": true,
+    "falsifier_fired": true,
+    "frozen_plausibility_band_pct": [
+      4.0,
+      12.0
+    ],
+    "kinematic_reading": "preserves the source author's joint-frame convention (R1 5.3 drift law); source-kinematic fidelity only, never anatomy",
+    "ok": true,
+    "primary_band_pct_recorded": [
+      0.0,
+      1.0
+    ],
+    "primary_data_outside_plausibility_band": true,
+    "r1_refutation_status": "RETAINED_FIRED",
+    "target_fraction_pct": 7.9014788891806695,
+    "target_outside_primary_band": true
+  },
+  "radioulnar_definition": {
+    "authored_fraction_pct": 7.545855414950401,
+    "axial_component_mm": 14.323729312735995,
+    "declared_source_binding_max_diff_m": 0.0,
+    "declared_source_binding_ok": true,
+    "diff_forearm_mm": 3.5692798462605424e-05,
+    "diff_offset_mm": 3.997552292389628e-05,
+    "diff_radius_edge_mm": -1.791662128880489e-05,
+    "hand_r_origin_m": [
+      -0.07310000000000001,
+      0.5326470000000001,
+      0.20269900000000005
+    ],
+    "lateral_component_mm": 18.090599453181984,
+    "obliquity_deg": 51.62861170617249,
+    "offset_norm_mm": 23.074639975522924,
+    "offset_vector_ulna_frame_m": [
+      0.0003999999999999976,
+      -0.011503000000000041,
+      0.01999899999999999
+    ],
+    "radius_origin_m": [
+      -0.09110000000000001,
+      0.8230470000000001,
+      0.17769900000000005
+    ],
+    "receipt_values_mm": {
+      "forearm": 305.7922,
+      "offset": 23.0746,
+      "radius_edge": 292.0294
+    },
+    "source_forearm_ulna_to_hand_mm": 305.79223569279844,
+    "source_radius_edge_radius_to_hand_mm": 292.0293820833787,
+    "ulna_origin_m": [
+      -0.09150000000000001,
+      0.8345500000000001,
+      0.15770000000000006
+    ],
+    "verdict": true,
+    "wrong_owner_norms_mm": {
+      "hand_r_local_minus_radius_local_mm": 279.4965234309723,
+      "humerus_to_radius_origin_mm": 360.09399718684557,
+      "radius_origin_to_hand_r_mm": 292.0293820833787,
+      "ulna_origin_to_hand_r_mm": 305.79223569279844
+    },
+    "wrong_owner_reproductions": {
+      "hand_r_local_minus_radius_local_mm": false,
+      "humerus_to_radius_origin_mm": false,
+      "radius_origin_to_hand_r_mm": false,
+      "ulna_origin_to_hand_r_mm": false
+    }
+  },
+  "schema": "chimera.ota02_numerical_receipt.v1",
+  "source_rest_frame": {
+    "definition": "chimanoid.xml authored rest pose; ulna frame +x volar, +y proximal, +z right; arm-chain quats identity",
+    "radius_offset_in_ulna_frame_m": [
+      0.0003999999999999976,
+      -0.011503000000000041,
+      0.01999899999999999
+    ],
+    "ulna_origin_m": [
+      -0.09150000000000001,
+      0.8345500000000001,
+      0.15770000000000006
+    ]
+  },
+  "target_binding": {
+    "elbow_R_vs_declared_ulna_prox_m": 0.0,
+    "wrist_R_vs_knowngood_radius_dist_m": 0.0
+  },
+  "target_world_frame": {
+    "definition": "pack frame (O1 sec.1): anterior +z, up +y, right -x",
+    "elbow_R_m": [
+      -0.11548098385334016,
+      0.3191090774536133,
+      -0.0060765563324093825
+    ],
+    "wrist_R_m": [
+      -0.1449945402145386,
+      0.26148236989974977,
+      -0.005956328995525837
+    ]
+  },
+  "task_id": "A02"
+}

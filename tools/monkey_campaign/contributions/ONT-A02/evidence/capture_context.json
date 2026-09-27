@@ -1,0 +1,10 @@
+{
+  "capture_sha256": "88f94dc3c48ddc8505a546cb7109db9db84600f40008de882359887d9ad24b62",
+  "run_id": "ONT-A02-ota02-deterministic-cpu-20260926",
+  "subject_sha256": "c0da0e0b0f1fe40268e0f42d6c3b06cb07e1e58b1cb8251d408bb1c0f372b0e0",
+  "task_id": "A02",
+  "tick_interval": [
+    0,
+    3
+  ]
+}
