@@ -1,0 +1,83 @@
+{
+ "schema": "mat2-u02.camera.qualification.v1",
+ "task_id": "U02",
+ "card_id": "MAT2-U02",
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; a changed PR head invalidates the receipt). In-tree it is null by design because the candidate cannot know its publication head.",
+ "criteria_sha256": "59dda60fd40a0b94c27378f660bd576e44fe5f7f36f66533448f764128d98c89",
+ "attempt_id": "8c5027541211433d8b449f695e714bc5",
+ "agent_id": "arrival-5bd346d1456b4af9942242139034b13d",
+ "done_when": "Player can see motion on ground and at trunk; camera avoids tested obstruction cases and never moves the animal",
+ "done_when_verified": true,
+ "profile_verified": true,
+ "profile_id": "controls",
+ "profile_kind": "motion",
+ "subject_sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+ "reconciliation": {
+  "ported_from": "merged ONT-U02 candidate: PR #154 head c8f0f3b7e4fe2ec6bee0827e54ceacb8fe392750, lead ACCEPTED, merged into astra/gait-capture at 7f351044; PASS worker review 22bb4e0b67ad4a2ea0e94e28213805c3",
+  "card_definition_note": "definition_raw_sha256 57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1 is byte-identical between the ONT-U02 and MAT2-U02 cards (same done_when, same controls/motion profile, same C23 attachment); only the scope digest differs (cb5475f8 MAT2 vs 01ea5cdd ONT)",
+  "reference_recovery": "git show 7f351044:tools/monkey_campaign/contributions/ONT-U02/... into this attempt's reference/ subtree; every recovered byte re-hashed equal to the registry-recorded pin before the freeze commit fc600f4c",
+  "identity_scoped_port": "docstrings, RUN_ID mat2-u02-camera-20260926-8c502754, CRITERIA_SHA256 59dda60f..., receipt schemas ont-u02.camera.* -> mat2-u02.camera.*, card_id MAT2-U02, attempt_id, recovery provenance string, scratch frame dir name, test docstring; exact diff audit vs the archived candidate: camera_profile_probe.py 17 lines removed / 22 added, capture_build_camera.py 5 / 5, test_camera_profile_probe.py 1 / 2; zero changes to any frozen prediction, law, threshold, timeline, scene or render law",
+  "frozen_preregistration": "PREREGISTRATION.md frozen at freeze commit fc600f4c BEFORE this attempt's first probe run; the archived preregistration 18f1ffcaad155e35c4831c861483f53468fdca1b6806f2b29cd5402c823d379d is appended byte-verbatim as the appendix (tail 246 lines hash-equal the archived file). ERRATUM (disclosed, frozen file left untouched): the header's port-audit sentence cites estimated diff counts (20/9/2 changed lines); the exact counts measured after the freeze are 17 removed/22 added (probe), 5/5 (builder), 1/2 (tests). The error is in that descriptive sentence only; it touches no prediction, law or bound.",
+  "failing_first": "PIN DRIFT bite: one corrupted reference byte -> probe refused at import with exit 1 before any check ran, then restored byte-exact (before == after d61347f0). Gate negative controls on the built manifest: distance-law tamper -> camera_target_distance_mismatch; clean-row diagnostics tamper -> clean_view_contains_diagnostics; identity-envelope tamper -> capture_identity_mismatch:run_id"
+ },
+ "pinned_lineage": {
+  "play_head": "f30f2224663324e9374b076938c56672febf4082",
+  "sources": {
+   "tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+   "tools/monkey_campaign/product/focus_policy.py": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+   "tools/monkey_campaign/product/state_feedback.py": "74c0aad033eeafef971888809702a0d0f4f387c55ac9690ee5380edc02a189d1",
+   "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+   "tools/monkey_campaign/product/follow_camera_tests.py": "4d75164ff6a16bf0d817332b7c5229513750782727ad1a23911025dc93d31b27",
+   "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+  },
+  "recovery": "MAT2-U02 port: read-only git show from the local object store at 7f351044 (astra/gait-capture merge of PR #154, reviewed head c8f0f3b7); upstream pin f30f2224 unchanged; every recovered byte hash-equal to the merged reviewed candidate and to the registry-recorded pins"
+ },
+ "evidence": {
+  "source": {
+   "reference": "tools/monkey_campaign/contributions/MAT2-U02/reference/tools/monkey_campaign/product/follow_camera.py (the qualified subject, hash-pinned at import by camera_profile_probe.py; commit fc600f4c froze these bytes before any probe run)",
+   "raw_sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+   "provenance": "Recovered read-only from the merged ONT-U02 candidate at 7f351044; the same bytes the ONT-U02 PASS review PIN-verified against git show f30f2224:<path> and re-measured 15/15. This attempt re-measures the SAME subject bytes at the MAT2 scope."
+  },
+  "numerical": {
+   "reference": "tools/monkey_campaign/contributions/MAT2-U02/evidence/numerical_receipt.json",
+   "raw_sha256": "a6b25692d387efa35a14065ca2823433e16134a7916853642e947e46808f8f22",
+   "provenance": "15/15 frozen checks green over evidence/trace.jsonl (97f9fbfcfafcfbeaa02ced70636231bd3935ee446b8a9b9c114d2f05ad8a3c8a) reproduced BYTE-IDENTICALLY by this attempt's rerun from the pinned bytes: C1 ground-follow motion visible (ground patch and anchor subtend < 22.5 deg), C2 controls + focus-loss no-stuck through REAL FocusPolicy/InputMapper, C3 settle + write starvation, C4 pole episode OC1+OC6 with EXACT avoidance biconditional on the smoothed sight-line and latch retain/release, C5 trunk approach OC3 two-point close-target framing (motion at trunk visible), C6 OC4 static no-op, C7 OC5 height-aware flyover, C8 OC3b honest degrade with zero concealed obstruction, C9 OC2/OC7 pull-in, C10 never-moves-the-animal stream audit (OC8), C11 FF speed clamp, C12 FG apply echo, C13 FD latency, C14 FE framing + quaternion unit, C15 pinned suite re-run 24/24. The 3 prereg sub-clause boundary mispredictions are recorded FIRED in prediction_deviations exactly as in the archived reviewed run (same three)."
+  },
+  "independent_review": {
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-reviews/ONT-U02/22bb4e0b67ad4a2ea0e94e28213805c3/review_report.md (registry PASS review of the merged ONT-U02 candidate at head c8f0f3b7e4fe2ec6bee0827e54ceacb8fe392750, verdict PASS; upstream lineage: pinned M-U02 VERDICT.md 63de66cdfcddcc519f0eb1652c1fb4dc196d78b922206772ee79f015628401ac)",
+   "raw_sha256": "f003587f6ac624a29854139ec36bd087251ae521c0a9b825bef6f255125fdfb6",
+   "provenance": "The independent PASS review that verified the SAME subject bytes and the same frozen checks at the archived head (probe 15/15 rerun, suite OK, trace byte-identical, PIN identity, visual_gate re-verified). The independent review of THIS MAT2 port itself is a REMAINING GATE and is not claimed here."
+  },
+  "runtime": {
+   "reference": "tools/monkey_campaign/contributions/MAT2-U02/evidence/runtime_receipt.json",
+   "raw_sha256": "f0b26ecbe98d427ef86c5ba22a6406b148134f3e4b4dee8391650e7e58c39556",
+   "provenance": "Deterministic headless run record of THIS attempt (Python 3.14.3 win32, CPU-only, no engine process, no GPU, no network): REAL pinned FollowCamera (subject + baseline) + FocusPolicy + InputMapper over injected milliseconds; strict engine doubles whose only write surface is POST /camera; timeline, scene and case matrices recorded; wall-clock latency reported separately (max subject 0.60 ms vs 50 ms budget); pinned suite re-run recorded inside (24/24 OK)."
+  },
+  "visual": {
+   "reference": "tools/monkey_campaign/contributions/MAT2-U02/evidence/capture.mp4",
+   "raw_sha256": "e31290998b65b12886381523842c3d6c132421baefab3cdcf4ebe333d37c373e",
+   "provenance": "640x360 h264, 2346 frames @ 20 fps (117.3 s), rendered deterministically by this attempt from this attempt's trace.jsonl; the rebuild is BYTE-IDENTICAL (sha e3129099...) to the archived, independently PASS-reviewed ONT-U02 capture - the same pixels the reviewer inspected. Three declared views x diagnostic+clean pairs."
+  },
+  "camera": {
+   "reference": "tools/monkey_campaign/contributions/MAT2-U02/evidence/capture_manifest.json",
+   "raw_sha256": "fa4e869b3b4482e3b5ae3ed9908bae71c9ebcba4194bfe384dd78770612477d4",
+   "provenance": "chimera.visual_capture_manifest.v1 with the identity envelope bound to THIS attempt's committed bytes: task_id U02, run_id mat2-u02-camera-20260926-8c502754, subject_sha256 d61347f0 (pinned subject bytes), capture_sha256 e3129099 (committed capture bytes), tick_interval [0,390]; profile controls; 3 views x diagnostic+clean; state_binding kind trace sha 97f9fbfc (committed trace bytes); validated in-process with the campaign's visual_capture.validate_manifest AND visual_gate.verify against card_task.json (structurally_valid true, mode CAMERA_METADATA_STRUCTURE_ONLY); three negative controls (distance law, clean-view diagnostics, identity envelope) all refused."
+  }
+ },
+ "capture_context": {
+  "task_id": "U02",
+  "subject_sha256": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+  "run_id": "mat2-u02-camera-20260926-8c502754",
+  "capture_sha256": "e31290998b65b12886381523842c3d6c132421baefab3cdcf4ebe333d37c373e",
+  "tick_interval": [0, 390]
+ },
+ "honest_boundary": "The capture pixels are a deterministic CPU visualization of the recorded headless trace of the pinned camera subject (the module is headless by construction; the engine is consumed only through its HTTP contract which strict doubles stand in for). They are NOT native engine frames and make no V03 native checkpoint claim - the integrated native checkpoint (V03: walk and steer in the clearing) stays with the integration lane and requires the pinned native build. The obstruction model is the declared injected cylinder scene; unmodeled obstacles can still occlude. Component-level boundary preserved exactly as in the merged ONT-U02 acceptance; human visual acceptance is not claimed by this receipt.",
+ "candidate_suite": {
+  "probe": "tools/monkey_campaign/contributions/MAT2-U02/camera_profile_probe.py (71ad074b4c1536a8cd9eb1473a775b8bd5bd29d3126ca9d32df304ae04fa6872)",
+  "capture": "tools/monkey_campaign/contributions/MAT2-U02/capture_build_camera.py (c79c45d78bb106052f77783fdca5b35161e7110b40b09db02f8981e962a1a0f3)",
+  "tests": "python -B -m unittest test_camera_profile_probe -v -> 8/8 OK (test_camera_profile_probe.py d9da29f490381d74f0f3e4dc0b8b8bc80b6b25cd907e39e1d3c76c9bdf66b41f)",
+  "preregistration": "tools/monkey_campaign/contributions/MAT2-U02/PREREGISTRATION.md (1e77bc7764f3ffbfc917f2d8ec043a1f14cc68263bc8929c6b476262c520c01c, frozen at commit fc600f4c BEFORE this attempt's first probe run; archived prereg 18f1ffca appended byte-verbatim)"
+ }
+}
