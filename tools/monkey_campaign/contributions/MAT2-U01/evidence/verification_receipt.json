@@ -1,0 +1,114 @@
+{
+ "agent_id": "arrival-e922be0c34ef46ff84f504eb27e99178",
+ "attempt_id": "c1488004ef62400389ba98a46837e5b7",
+ "criteria_sha256": "bda3feb8fa32838f8799a83939af08a2d70c6069ec5af7b6c355b759f5aa019e",
+ "evidence_class": "component-level over the REAL pinned seam bytes; NOT an integrated-application claim",
+ "falsifier_outcomes": {
+  "F-A_lineage_drift": "did not fire",
+  "F-B_pinned_fail": "did not fire",
+  "F-C_suite_vacuous": "did not fire"
+ },
+ "lineage_assertion": {
+  "entries": [
+   {
+    "expected": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+    "match": true,
+    "observed": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+    "path": "tools/monkey_campaign/product/input_mapper.py"
+   },
+   {
+    "expected": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+    "match": true,
+    "observed": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+    "path": "tools/science_funnel/typeb_export/command_record.py"
+   },
+   {
+    "expected": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+    "match": true,
+    "observed": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+    "path": "tools/monkey_campaign/product/follow_camera.py"
+   },
+   {
+    "expected": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
+    "match": true,
+    "observed": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
+    "path": "tools/monkey_campaign/product/input_mapper_tests.py"
+   },
+   {
+    "expected": "0aadc3cd5fec7e7bd0a7aba0bcfa2a5d05edf8fcb6805eda2ecae92d4d3d1b5f",
+    "match": true,
+    "observed": "0aadc3cd5fec7e7bd0a7aba0bcfa2a5d05edf8fcb6805eda2ecae92d4d3d1b5f",
+    "path": "tools/monkey_campaign/agents/U01_input/PREREGISTRATION.md"
+   },
+   {
+    "expected": "38efdf393bd03b7b1260896e917231f2968963a501a180f4fc01491a02b30849",
+    "match": true,
+    "observed": "38efdf393bd03b7b1260896e917231f2968963a501a180f4fc01491a02b30849",
+    "path": "tools/monkey_campaign/agents/U01_input/discovery_note.md"
+   },
+   {
+    "expected": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c",
+    "match": true,
+    "observed": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c",
+    "path": "tools/monkey_campaign/agents/U01_input/receipts/input_mapper_tests_20260924.txt"
+   }
+  ],
+  "expected_count": 7,
+  "match_count": 7
+ },
+ "predictions": {
+  "P1_lineage_7of7": {
+   "held": true,
+   "observed": 7,
+   "prediction": "match_count == 7"
+  },
+  "P2_pinned_green": {
+   "held": true,
+   "observed": {
+    "exit": 0,
+    "fails": 0
+   },
+   "prediction": "exit 0, 0 FAIL lines"
+  },
+  "P3_mutant_fails": {
+   "held": true,
+   "observed": {
+    "exit": 1,
+    "fails": 3
+   },
+   "prediction": "exit 1, >=1 FAIL line"
+  }
+ },
+ "probes": [
+  {
+   "exit_code": 1,
+   "fail_count": 3,
+   "fail_lines": [
+    "  [FAIL] F3a held-key records are EXACTLY 50 ms apart under the injected clock  -- 8 records at 1000..1280, diffs [40]",
+    "  [FAIL] F3c ticks inside the interval emit nothing",
+    "  [FAIL] F5c same bounds and clock after the remap"
+   ],
+   "label": "mutant_INTERVAL_MS_40",
+   "mutated_file": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-U01\\c1488004ef62400389ba98a46837e5b7\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-U01\\reconcile\\mutant_seam\\tools\\monkey_campaign\\product\\input_mapper.py",
+   "mutated_file_sha256": "3052713c4420338cb7d9d1426787bdd7cbb57b3e042a06efb8e6fb7b56935c20",
+   "mutation": {
+    "new": "INTERVAL_MS = 40",
+    "old": "INTERVAL_MS = 50",
+    "semantic": "command cadence bound 50 ms -> 40 ms"
+   },
+   "stdout_tail": "g  -- tail [(0.6872625, 1080), (0.0, 1120)]\n  [PASS] F4a' the whole record stream is monotone while decaying\n  [PASS] F4b a record with EXACTLY 0.0 exists at or before release+100 ms  -- zero at (0.0, 1120)\n  [PASS] F4c emission STOPS after the zero (the inert path resumed)  -- 0 records after the zero\n  [PASS] F4d no record with v>0 later than release+100 ms\nF5 REMAP: a binding swap changes emitted values, nothing else\n  [PASS] F5a the remap changed the emitted value (default W -> band ceiling)  -- default 0.763625, remapped 0.0\n  [PASS] F5b same record type and version on both sides\n  [FAIL] F5c same bounds and clock after the remap\n  [PASS] F5d the adapter projection is untouched by the remap (velocity passthrough, yaw routed nowhere)\nF6 SEAM STATES: idle emits nothing; S emits live zeros; refusals named\n  [PASS] F6a idle emits NOTHING (the machinery's inert path stays reachable)\n  [PASS] F6b S held emits LIVE ZERO-advance records (a distinct seam state)  -- 4 records, values [0.0, 0.0, 0.0, 0.0]\n  [PASS] F6c steering alone emits nothing (yaw is carried, no route at v1)\n  [PASS] F6d idle mouse counts are consumed into the trace, named, not resent  -- trace keys ['emitted', 'pressed', 'state', 'steer_without_speed']\n  [PASS] F6e sprint/jump refuse BY NAME (registered refusals, never silent)  -- refused: ['jump', 'sprint']\n  [PASS] F6f yaw is clamped to the declared steer bound (keys) and mouse  -- 1.6, 1.6\n  [PASS] F6g a held key RE-ISSUES its record every interval (the R4 rule)\n  [PASS] F6h the expiry contract: valid at 95 ms, expired at 105 ms\n  [PASS] F6i the tick source is injectable (the live harness pins issued_tick)  -- issued_tick 777\n  [PASS] F6j W+S resolves to forward (precedence) and is named in the trace  -- conflicts [('backward', 'forward')]\n\nVERDICT: FAIL -- 3 falsifier check(s) fired: ['F3a held-key records are EXACTLY 50 ms apart under the injected clock', 'F3c ticks inside the interval emit nothing', 'F5c same bounds and clock after the remap']\n",
+   "verdict_line": "VERDICT: FAIL -- 3 falsifier check(s) fired: ['F3a held-key records are EXACTLY 50 ms apart under the injected clock', 'F3c ticks inside the interval emit nothing', 'F5c same bounds and clock after the remap']"
+  },
+  {
+   "exit_code": 0,
+   "fail_count": 0,
+   "fail_lines": [],
+   "label": "pinned_bytes",
+   "stdout_tail": "s; 15 = 50 ms at 300 Hz)\nF4 RELEASE: monotone decay, exact 0.0 within 100 ms, then silence\n  [PASS] F4a the tail is monotone non-increasing  -- tail [(0.5345375, 1100), (0.0, 1150)]\n  [PASS] F4a' the whole record stream is monotone while decaying\n  [PASS] F4b a record with EXACTLY 0.0 exists at or before release+100 ms  -- zero at (0.0, 1150)\n  [PASS] F4c emission STOPS after the zero (the inert path resumed)  -- 0 records after the zero\n  [PASS] F4d no record with v>0 later than release+100 ms\nF5 REMAP: a binding swap changes emitted values, nothing else\n  [PASS] F5a the remap changed the emitted value (default W -> band ceiling)  -- default 0.763625, remapped 0.0\n  [PASS] F5b same record type and version on both sides\n  [PASS] F5c same bounds and clock after the remap\n  [PASS] F5d the adapter projection is untouched by the remap (velocity passthrough, yaw routed nowhere)\nF6 SEAM STATES: idle emits nothing; S emits live zeros; refusals named\n  [PASS] F6a idle emits NOTHING (the machinery's inert path stays reachable)\n  [PASS] F6b S held emits LIVE ZERO-advance records (a distinct seam state)  -- 4 records, values [0.0, 0.0, 0.0, 0.0]\n  [PASS] F6c steering alone emits nothing (yaw is carried, no route at v1)\n  [PASS] F6d idle mouse counts are consumed into the trace, named, not resent  -- trace keys ['emitted', 'pressed', 'state', 'steer_without_speed']\n  [PASS] F6e sprint/jump refuse BY NAME (registered refusals, never silent)  -- refused: ['jump', 'sprint']\n  [PASS] F6f yaw is clamped to the declared steer bound (keys) and mouse  -- 1.6, 1.6\n  [PASS] F6g a held key RE-ISSUES its record every interval (the R4 rule)\n  [PASS] F6h the expiry contract: valid at 95 ms, expired at 105 ms\n  [PASS] F6i the tick source is injectable (the live harness pins issued_tick)  -- issued_tick 777\n  [PASS] F6j W+S resolves to forward (precedence) and is named in the trace  -- conflicts [('backward', 'forward')]\n\nVERDICT: GREEN -- all falsifier checks passed; the frozen numbers held.\n",
+   "verdict_line": "VERDICT: GREEN -- all falsifier checks passed; the frozen numbers held."
+  }
+ ],
+ "reconciliation_verified": true,
+ "schema": "mat2-u01.reconciliation.verification.v1",
+ "task_id": "MAT2-U01"
+}
