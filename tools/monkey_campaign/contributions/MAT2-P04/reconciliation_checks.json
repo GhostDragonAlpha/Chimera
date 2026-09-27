@@ -1,0 +1,88 @@
+{
+  "schema": "chimera.monkey.mat2_p04.reconciliation_checks.v1",
+  "items": [
+    {
+      "check": "P1.manifest_whole_sha256",
+      "ok": true,
+      "detail": "observed c79f248b5f75f38f2ae04f3b43de988801ae06ddfc1f8e1aee45c2125fbc0753 expected c79f248b5f75f38f2ae04f3b43de988801ae06ddfc1f8e1aee45c2125fbc0753"
+    },
+    {
+      "check": "P1.pinned_tree_52_files",
+      "ok": true,
+      "detail": "52 entries checked; mismatches=[]"
+    },
+    {
+      "check": "P1.control_py_frozen",
+      "ok": true,
+      "detail": "pinned/tools/agent_fleet/control.py sha256 39ff01dc8a4192e04606ee9d87386780739e89c8a1774da48501a9545792f6b3 (expected prefix 39ff01dc)"
+    },
+    {
+      "check": "P2.merge_commit_equals_pr_head",
+      "ok": true,
+      "detail": "20 merged paths byte-compared between b7c4b79756d0 and 16390061951f; diffs=[]"
+    },
+    {
+      "check": "P3.executed_probes_are_merged_blobs",
+      "ok": true,
+      "detail": {
+        "test_gpu_handoff.py": {
+          "sha256_disk": "900d30393ef94a10fbedc9fa6a1648ea28f623a11c66d5b02e3fe5caeb083c38",
+          "equal_to_merge_commit_blob": true
+        },
+        "test_correction_records.py": {
+          "sha256_disk": "ca7f81128846f9f8f2443609e41b552575a793535f1f2ac24d0898fc5409d24c",
+          "equal_to_merge_commit_blob": true
+        },
+        "test_correction_fencing.py": {
+          "sha256_disk": "8e72987fdc5dc8eec9b1ad8b006f04f380e768fb7d7d14ed3792aa80c9e4ea86",
+          "equal_to_merge_commit_blob": true
+        },
+        "gpu_handoff.py": {
+          "sha256_disk": "fd664b5f8182ea3466b37f9cdfe217950bcc6e91a4bb72c23c9ac6c33ad78dc0",
+          "equal_to_merge_commit_blob": true
+        },
+        "run_all_probes.py": {
+          "sha256_disk": "0bd4b745ea856c40f2e1b089348db34a04586d0c0cecdd4e45cf4ed96250f3c6",
+          "equal_to_merge_commit_blob": true
+        }
+      }
+    },
+    {
+      "check": "P3b.carried_probes_match_pr158_and_manifest",
+      "ok": true,
+      "detail": {
+        "test_p04_contract.py": {
+          "sha256_disk": "e9b8b62d0af01821b0d6a370b5ddee47eb078e69033734ec0793b862956f77a0",
+          "expected_carried": "e9b8b62d0af01821b0d6a370b5ddee47eb078e69033734ec0793b862956f77a0",
+          "equal_to_pr158_head_blob": true
+        },
+        "test_p04_records.py": {
+          "sha256_disk": "153dd91c56f06f2f90b63a2b6cc7faab552a7544e65e0810d5875a2e978e924c",
+          "expected_carried": "153dd91c56f06f2f90b63a2b6cc7faab552a7544e65e0810d5875a2e978e924c",
+          "equal_to_pr158_head_blob": true
+        }
+      }
+    },
+    {
+      "check": "P5.untracked_receipt_provenance",
+      "ok": true,
+      "detail": {
+        "source": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-P04\\06792d79c3704ac29df519055aabbc57\\pinned\\GPU_HANDOFF_PUBLICATION_RECEIPT.untracked.json",
+        "source_sha256": "c153460accaa7df1a16eb527497045f6d3591faa480f3978317e63377bef0bec",
+        "copy_sha256": "c153460accaa7df1a16eb527497045f6d3591faa480f3978317e63377bef0bec"
+      }
+    },
+    {
+      "check": "P6.legacy_untracked_layout_provenance",
+      "ok": true,
+      "detail": {
+        "qualification_receipt_copy_sha256": "4ca0d18eebdc14d4b1cb8235da806569598740ab134055f82d152e5942f44da0",
+        "qualification_receipt_source_sha256": "4ca0d18eebdc14d4b1cb8235da806569598740ab134055f82d152e5942f44da0",
+        "mirror_copy_sha256": "fd664b5f8182ea3466b37f9cdfe217950bcc6e91a4bb72c23c9ac6c33ad78dc0",
+        "mirror_source_sha256": "fd664b5f8182ea3466b37f9cdfe217950bcc6e91a4bb72c23c9ac6c33ad78dc0",
+        "merged_machine_sha256": "fd664b5f8182ea3466b37f9cdfe217950bcc6e91a4bb72c23c9ac6c33ad78dc0"
+      }
+    }
+  ],
+  "all_ok": true
+}
