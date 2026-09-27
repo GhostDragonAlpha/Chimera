@@ -1,0 +1,23 @@
+{
+ "movie_sha256": "2e2982f1e98204a3682b71f70bb6be542ae6b3edeceec9f2ad09f96dcd84699a",
+ "movie_bytes": 1570836,
+ "movie_anchor": "2e2982f1e98204a3682b71f70bb6be542ae6b3edeceec9f2ad09f96dcd84699a",
+ "movie_match": true,
+ "movie_bytes_expected": 1570836,
+ "intree_dump_sha256": "b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93",
+ "reproduced_dump_sha256": "b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93",
+ "dump_equal_pinned_b47b709c": true,
+ "dump_reproduced_equals_intree": true,
+ "frame_plan": {
+  "lead_in": 24,
+  "walk": 302,
+  "end_hold": 14,
+  "total": 340
+ },
+ "frame_plan_sum": 340,
+ "frames_declared": 340,
+ "receipt_frames": 340,
+ "receipt_duration_s": "20.040000",
+ "arithmetic_consistent": true,
+ "movie_bytes_match": true
+}
