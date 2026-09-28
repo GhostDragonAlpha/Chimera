@@ -220,6 +220,23 @@ executable, per the M01/M02/M04 precedent for "native tests" at this stage.
   X3 sliding run (block decelerating from 0.5 m/s to rest under friction) over
   its full tick range; the loaded interface close-up binds the SAME trace.
 
+## Amendment A1 (frozen after the freeze commit 1aa6794e, BEFORE implementation and before any measurement)
+
+- Correction of a factual figure in the frozen X0 clause: the compiled
+  7-region arm carries 5384 triangles (clavicle 156, hand 3724, humerus 464,
+  radius 222, scapula 358, sternum 16, ulna 444; read from the pinned blob
+  51d8231e...), NOT "42 shell triangles". The "42/21" figures in the freeze
+  above were wrong and are retracted here; nothing else changes.
+- X0 arm clause revised to match the done_when scope ("small fixtures"): the
+  complete candidate-vs-exhaustive comparison (recall 1.0 required) runs on
+  (a) the pinned independent-shape fixture (tetra+plate, 8 cross-body pairs)
+  and (b) the declared small compiled region pair sternum x clavicle
+  (16 x 156 = 2496 exhaustive pairs). Over the full compiled arm the candidate
+  search still runs and records candidate/counts plus the internal subset
+  property (every contact record's pair is in the candidate set); a complete
+  exhaustive comparison of 14.5M pairs is NOT claimed (out of the card's small
+  fixture scope; recorded as an applicability note, not a pass).
+
 ## Applicability boundary (honest, frozen)
 
 Offline CPU-only contact experiment executable over pinned M02 surfaces and
