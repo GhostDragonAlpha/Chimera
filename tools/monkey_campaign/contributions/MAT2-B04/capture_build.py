@@ -16,12 +16,28 @@ Honesty rules enforced here:
 - The fitted packet frames are NOT placed in world coordinates anywhere (no
   fusion of coordinate systems): they appear as a legend of binding stubs,
   attached to their component root by stable name only.
-- Absent components (outer envelope, muscle/tendon paths, attachment sites
-  beyond the authored frame ports) are drawn as an explicit absence inventory,
-  never fabricated.
+- The registry anatomy profile's six diagnostic layers are all honestly drawn:
+  frame axes, stable 3D labels and selected bones/joints come from the authored
+  document; the outer envelope is the placement AABB of the authored chains
+  (placement-only; no skin/mesh envelope exists); muscle/tendon paths and
+  attachment sites are SOURCE-DECLARED REFERENCE OVERLAYS projected from the
+  pinned monkeyArm_current.osim recorded by the document in
+  independent_reference_not_merged.osim (sha256-verified before drawing, osim
+  default coordinates, placed exactly as the document's recorded correspondence
+  matrix encodes: graph world == osim default-pose ground). Wrap objects are
+  NOT simulated: polylines connect the declared path points directly. Every
+  reference overlay carries the on-canvas caption 'reference: source-declared,
+  not validated by this card'. The close-up framing carries the authored chain
+  content only; each view's visibility list names exactly what that view draws.
+- The validation profile is LOADED FROM THE REGISTRY (agent_slots.sqlite3 ->
+  state -> kanban.cards.MAT2-B04.spec.ontology_qualification.task.
+  verification_profile) at generation time. No hand-copied profile exists in
+  this generator; layer and view names in the manifest are taken verbatim from
+  the registry object.
 - Diagnostic and clean views of a pair share the camera and the state binding
   (sha256 of frame_forest.json): view toggles preserve the state hash.
-- Clean frames carry no text, labels, axes, ports, or panels at all.
+- Clean frames carry no text, labels, axes, ports, envelopes, or reference
+  overlays at all.
 """
 from __future__ import annotations
 
@@ -29,7 +45,9 @@ import hashlib
 import json
 import math
 import pathlib
+import sqlite3
 import sys
+import xml.etree.ElementTree as ET
 
 from PIL import Image, ImageDraw
 
@@ -62,13 +80,51 @@ COL_Z = (32, 72, 196)
 COL_PORT = (196, 108, 20)
 COL_LANDMARK = (90, 32, 160)
 COL_ABSENT = (150, 32, 32)
+COL_ENV = (108, 116, 196)        # outer envelope (placement-only)
+COL_MUSCLE = (172, 24, 118)      # osim reference muscle/tendon paths
+COL_SITE = (222, 168, 16)        # osim reference attachment sites
+COL_REF = (150, 24, 110)         # reference provenance captions
 
-VIEWS = (
-    "whole-creature overview",
-    "local attachment close-up",
-    "orthogonal side and oblique views",
-)
-LAYERS = ["frame axes", "stable 3D labels", "selected bones/joints"]
+# ---- registry verification profile (authority; no hand copy) -----------------
+REGISTRY_DB = r"E:\ChimeraWork\monkey-coordination\agent_slots.sqlite3"
+CARD_ID = "MAT2-B04"
+PROJECT_HOME = pathlib.Path(r"E:\PythonChimera")
+# Tripwire only: this set never supplies values to validate_manifest; it makes
+# a registry profile shape change fail LOUDLY instead of silently projecting a
+# differently spelled layer list onto the sheet.
+CANONICAL_LAYERS = {"outer envelope", "selected bones/joints",
+                    "muscle/tendon paths", "attachment sites",
+                    "frame axes", "stable 3D labels"}
+
+
+def load_registry_profile():
+    """Read the verification profile straight from the coordination registry."""
+    uri = "file:%s?mode=ro" % REGISTRY_DB.replace("\\", "/")
+    con = sqlite3.connect(uri, uri=True)
+    try:
+        row = con.execute("SELECT payload FROM state WHERE id=1").fetchone()
+    finally:
+        con.close()
+    if row is None:
+        raise SystemExit("registry state row missing in " + REGISTRY_DB)
+    payload = json.loads(row[0])
+    card = payload["kanban"]["cards"][CARD_ID]
+    profile = card["spec"]["ontology_qualification"]["task"]["verification_profile"]
+    for key in ("id", "kind", "views", "clean_view_required", "diagnostic_layers"):
+        if key not in profile:
+            raise SystemExit("registry verification_profile missing %r" % key)
+    if set(profile["diagnostic_layers"]) != CANONICAL_LAYERS:
+        raise SystemExit("registry diagnostic_layers drifted: %r"
+                         % (profile["diagnostic_layers"],))
+    return profile
+
+
+PROFILE = load_registry_profile()
+VIEWS = tuple(PROFILE["views"])
+LAYERS = list(PROFILE["diagnostic_layers"])     # exact registry spellings
+L_OUTER, L_BONES, L_MUSCLE, L_SITES, L_AXES, L_LABELS = LAYERS
+CLOSEUP_LAYERS = [L_BONES, L_AXES, L_LABELS]
+
 AXIS_LEN = 0.08
 WHOLE_OBLIQUE_DEG = 35.0
 WHOLE_SPAN = 1.9
@@ -247,7 +303,233 @@ def draw_forest(draw, project, doc, world, hops, diag):
             draw_axes(draw, project, origin)
 
 
-def legend_and_absences(draw, doc):
+# ---- outer envelope (placement-only AABB of the authored chains) -------------
+def chain_bounds(hops):
+    pts = [p for key in ROOT_ORDER for p in hops[key]]
+    lo = [min(p[c] for p in pts) for c in range(3)]
+    hi = [max(p[c] for p in pts) for c in range(3)]
+    return lo, hi
+
+
+def draw_envelope(draw, project, lo, hi, tag_offset=None):
+    corners = [[lo[c] if ((i >> c) & 1) == 0 else hi[c] for c in range(3)]
+               for i in range(8)]
+    for a in range(8):
+        for c in range(3):
+            b = a ^ (1 << c)
+            if b > a:
+                draw.line([project(corners[a]), project(corners[b])],
+                          fill=COL_ENV, width=1)
+    if tag_offset:
+        tx, ty = project(corners[4])          # (lo x, lo y, hi z) corner
+        draw.text((tx + tag_offset[0], ty + tag_offset[1]),
+                  "outer envelope (placement-only)", fill=COL_ENV)
+
+
+# ---- pinned osim reference overlay (source-declared, never merged) -----------
+def _vec(s):
+    return [float(x) for x in s.split()]
+
+
+def _mm(a, b):
+    return [[sum(a[i][k] * b[k][j] for k in range(3)) for j in range(3)]
+            for i in range(3)]
+
+
+def _mv(a, v):
+    return [sum(a[i][k] * v[k] for k in range(3)) for i in range(3)]
+
+
+def _euler_abc(a, b, c):
+    """OpenSim 'Euler XYZ body-fixed' joint/body orientation angles.
+
+    Composition Rz(c)*Ry(b)*Rx(a): this is the convention under which the
+    model's negated parent/child orientation pairs (radius_jcc vs its child
+    weld, radius vs wrist_tmp) cancel exactly at the default pose, and it
+    reproduces the graph's recorded body spatial matrices (verified against the
+    forest-recorded correspondence below at generation time).
+    """
+    cz, sz = math.cos(c), math.sin(c)
+    Rz = [[cz, -sz, 0.0], [sz, cz, 0.0], [0.0, 0.0, 1.0]]
+    cy, sy = math.cos(b), math.sin(b)
+    Ry = [[cy, 0.0, sy], [0.0, 1.0, 0.0], [-sy, 0.0, cy]]
+    cx, sx = math.cos(a), math.sin(a)
+    Rx = [[1.0, 0.0, 0.0], [0.0, cx, -sx], [0.0, sx, cx]]
+    return _mm(Rz, _mm(Ry, Rx))
+
+
+def _axis_angle(axis, ang):
+    x, y, z = axis
+    c, s = math.cos(ang), math.sin(ang)
+    C = 1.0 - c
+    return [[c + x * x * C, x * y * C - z * s, x * z * C + y * s],
+            [y * x * C + z * s, c + y * y * C, y * z * C - x * s],
+            [z * x * C - y * s, z * y * C + x * s, c + z * z * C]]
+
+
+_IDENTITY3 = [[1.0 if i == k else 0.0 for k in range(3)] for i in range(3)]
+
+
+def load_osim_reference(doc):
+    """Parse the pinned osim and project its muscle paths/sites at defaults.
+
+    Placement chain (all recorded, nothing guessed): each GeometryPath point is
+    declared in a body frame -> forward kinematics over the osim's own joint
+    tree at the model's default coordinate values -> osim ground coordinates.
+    The document's recorded correspondence matrix (graph world_from_local for
+    ref.macaque_arm.body.ulna, recorded verbatim in frame_forest.json) maps
+    ulna-local coordinates to graph world; generation FAILS if it does not
+    exactly agree with the FK placement of the ulna frame origin, i.e. graph
+    world == osim default-pose ground. The osim stays an independent reference:
+    nothing here authors, tunes, or merges assembly frames.
+    """
+    ref = doc["independent_reference_not_merged"]["osim"]
+    osim_path = PROJECT_HOME / ref["path"]
+    if not osim_path.is_file() or sha256_file(osim_path) != ref["sha256"]:
+        raise SystemExit("pinned osim missing or hash mismatch: %s (pin sha %s)"
+                         % (osim_path, ref["sha256"]))
+    model = ET.parse(osim_path).getroot().find(".//Model")
+
+    defaults = {}
+    joints = {}
+    for body in model.findall("./BodySet/objects/Body"):
+        for joint in body.findall("./Joint/*"):
+            joints[body.get("name")] = (joint, joint.findtext("parent_body"))
+            for coord in joint.findall("./CoordinateSet/objects/Coordinate"):
+                defaults[coord.get("name")] = float(coord.findtext("default_value"))
+
+    def joint_SR(joint):
+        st = joint.find("SpatialTransform")
+        rot = [list(r) for r in _IDENTITY3]
+        trans = [0.0, 0.0, 0.0]
+        if st is None:
+            return rot, trans
+        for ta in st.findall("./TransformAxis"):
+            fn = ta.find("./function/*")
+            axis = _vec(ta.findtext("axis"))
+            coords = (ta.findtext("coordinates") or "").split()
+            if fn.tag == "LinearFunction":
+                slope, intercept = _vec(fn.findtext("coefficients"))
+                q = sum(defaults[c] for c in coords)
+                value = slope * q + intercept
+            else:
+                value = float(fn.findtext("value"))
+            if ta.get("name", "").startswith("rotation"):
+                rot = _mm(rot, _axis_angle(axis, value))
+            else:
+                for k in range(3):
+                    trans[k] += axis[k] * value
+        return rot, trans
+
+    placed = {"ground": {"R": _IDENTITY3, "t": [0.0, 0.0, 0.0]}}
+
+    def entry_of(name):
+        if name in placed:
+            return placed[name]
+        joint, parent = joints[name]
+        px = entry_of(parent)
+        loc_p = _vec(joint.findtext("location_in_parent"))
+        ori_p = _vec(joint.findtext("orientation_in_parent"))
+        loc_c = _vec(joint.findtext("location"))
+        ori_c = _vec(joint.findtext("orientation"))
+        SR, t = joint_SR(joint)
+        q_R = _mm(px["R"], _euler_abc(*ori_p))
+        q_t = [px["t"][k] + _mv(px["R"], loc_p)[k] for k in range(3)]
+        s_R = _mm(q_R, SR)
+        s_t = [q_t[k] + _mv(q_R, t)[k] for k in range(3)]
+        r_ori = _euler_abc(*ori_c)
+        r_inv = [[r_ori[j][i] for j in range(3)] for i in range(3)]
+        m_R = _mm(s_R, r_inv)
+
+        def xform(p):
+            d = [p[k] - loc_c[k] for k in range(3)]
+            return [_mv(s_R, _mv(r_inv, d))[k] + s_t[k] for k in range(3)]
+
+        placed[name] = {"R": m_R, "t": s_t, "x": xform}
+        return placed[name]
+
+    def xform_of(name):
+        return entry_of(name)["x"]
+
+    muscles = []
+    sites = []
+    point_count = 0
+    wrap_muscles = 0
+    for force in model.findall("./ForceSet/objects/*"):
+        gp = force.find("./GeometryPath")
+        if gp is None:
+            continue
+        pts = []
+        for pp in gp.findall("./PathPointSet/objects/PathPoint"):
+            loc = _vec(pp.findtext("location"))
+            pts.append(xform_of(pp.findtext("body"))(loc))
+            point_count += 1
+        name = force.get("name")
+        muscles.append((name, pts))
+        for idx, endpoint in ((0, "origin"), (len(pts) - 1, "insertion")):
+            sites.append({"muscle": name, "endpoint": endpoint, "point": pts[idx]})
+        if gp.find("./PathWrapSet/objects/PathWrap") is not None:
+            wrap_muscles += 1
+
+    recorded = doc["independent_reference_not_merged"]["graph"]["world_from_local"]
+    recorded_origin = [recorded[i][3] for i in range(3)]
+    fk_ulna_origin = xform_of("ulna")([0.0, 0.0, 0.0])
+    err = max(abs(a - b) for a, b in zip(recorded_origin, fk_ulna_origin))
+    if err > 1e-9:
+        raise SystemExit("recorded correspondence matrix disagrees with osim FK "
+                         "(max abs err %.3e); refusing to draw overlays" % err)
+
+    all_pts = [p for _n, pts in muscles for p in pts]
+    lo = [min(p[c] for p in all_pts) for c in range(3)]
+    hi = [max(p[c] for p in all_pts) for c in range(3)]
+    return {
+        "osim_path": str(osim_path),
+        "osim_sha256": ref["sha256"],
+        "model_name": model.get("name"),
+        "muscles": muscles,
+        "sites": sites,
+        "point_count": point_count,
+        "wrap_muscle_count": wrap_muscles,
+        "default_coordinate_values": defaults,
+        "recorded_matrix_check_max_abs_err": err,
+        "ulna_origin_world": fk_ulna_origin,
+        "world_aabb_m": {"lo": lo, "hi": hi},
+    }
+
+
+def osim_caption_lines(osim_ref):
+    pin = osim_ref["osim_sha256"][:8]
+    return [
+        "monkeyArm_current.osim (pinned sha %s) - reference overlay" % pin,
+        "muscle/tendon paths + attachment sites (path endpoints)",
+        "reference: source-declared, not validated by this card",
+        "osim default pose (elbow_flexion 1.5707963 rad); wraps not simulated",
+        "placed by forest-recorded correspondence: graph world == osim",
+        "default-pose ground; independent reference, never numerically merged",
+    ]
+
+
+def draw_osim_caption(draw, osim_ref, xy):
+    x, y = xy
+    for i, line in enumerate(osim_caption_lines(osim_ref)):
+        draw.text((x, y + i * 12), line, fill=COL_REF)
+
+
+def draw_osim_reference(draw, project, osim_ref):
+    """Draw the reference cluster; call BEFORE the authored chains so every
+    pre-existing label stays drawn on top and readable."""
+    for _name, pts in osim_ref["muscles"]:
+        if len(pts) >= 2:
+            draw.line([project(p) for p in pts], fill=COL_MUSCLE, width=1)
+    for site in osim_ref["sites"]:
+        px, py = project(site["point"])
+        draw.rectangle([px - 2, py - 2, px + 2, py + 2], outline=COL_SITE, width=1)
+    ux, uy = project(osim_ref["ulna_origin_world"])
+    draw.ellipse([ux - 3, uy - 3, ux + 3, uy + 3], outline=COL_REF, width=1)
+    draw.text((ux - 100, uy + 26), "osim ulna origin", fill=COL_REF)
+
+
+def legend_and_layers(draw, doc, with_reference_layers):
     y = 316
     draw.text((10, y), "component fitted stubs (stable NAME binding only; coordinates "
                        "NOT fused):", fill=COL_TEXT)
@@ -258,14 +540,29 @@ def legend_and_absences(draw, doc):
                   fill=ROOT_COLOR[component["root_frame_id"]])
         y += 14
     y += 8
-    lines = [
-        "absence inventory (out of B04 task-owned scope; never fabricated):",
-        "- outer envelope (skin): ABSENT",
-        "- muscle/tendon paths: ABSENT",
-        "- attachment sites: authored frame PORTS only (mechanically unqualified)",
-    ]
+    if with_reference_layers:
+        lines = [
+            "diagnostic layers: outer envelope = placement AABB of authored chains "
+            "(placement-only);",
+            "selected bones/joints = pinned chimanoid.xml chains; frame axes; "
+            "stable 3D labels = stable ids",
+            "muscle/tendon paths + attachment sites = pinned monkeyArm_current.osim "
+            "reference overlay -",
+            "reference: source-declared, not validated by this card; wraps not "
+            "simulated; placed by the",
+            "recorded correspondence only, never merged; ports unqualified; fitted "
+            "stubs bound by name",
+        ]
+    else:
+        lines = [
+            "this close framing draws: %s" % ", ".join(CLOSEUP_LAYERS),
+            "(outer envelope, muscle/tendon paths and attachment sites are carried by",
+            " the whole-creature overview and orthogonal side and oblique views)",
+            "honest gaps: authored frame ports remain mechanically unqualified; no",
+            "  mass/geometry validated; fitted packet frames bound by name only",
+        ]
     for line in lines:
-        draw.text((10, y), line, fill=COL_ABSENT)
+        draw.text((10, y), line, fill=COL_TEXT)
         y += 14
 
 
@@ -288,7 +585,7 @@ def viewport_surface():
     return Image.new("RGB", (VIEW_W, VIEW_H), COL_PANEL)
 
 
-def render_whole(doc, world, hops, doc_sha, diag):
+def render_whole(doc, world, hops, doc_sha, osim_ref, diag):
     frame = base_frame("whole-creature overview", diag)
     view = viewport_surface()
     draw = ImageDraw.Draw(view)
@@ -297,13 +594,18 @@ def render_whole(doc, world, hops, doc_sha, diag):
     oblique = WHOLE_OBLIQUE_DEG
     position = add(target, rot_y([0.0, 0.0, 2.4], oblique))
     project = make_projector(position, target, span)
+    lo, hi = chain_bounds(hops)
+    if diag:
+        draw_osim_reference(draw, project, osim_ref)
+        draw_envelope(draw, project, lo, hi, tag_offset=(-200, -4))
     draw_forest(draw, project, doc, world, hops, diag)
     if diag:
         state_strip(draw, doc_sha)
         draw.text((10, 28),
                   "oblique %.0f deg about +y; orthographic span %.2f m; chain hops are "
                   "pinned chimanoid.xml declarations" % (oblique, span), fill=COL_TEXT)
-        legend_and_absences(draw, doc)
+        draw_osim_caption(draw, osim_ref, (700, 500))
+        legend_and_layers(draw, doc, True)
     frame.paste(view, (VP[0], VP[1]))
     return frame, camera_record(
         "mat2_b04_forest_world_m", position, target, span,
@@ -311,7 +613,7 @@ def render_whole(doc, world, hops, doc_sha, diag):
         % oblique)
 
 
-def render_closeup(doc, world, hops, doc_sha, diag):
+def render_closeup(doc, world, hops, doc_sha, osim_ref, diag):
     frame = base_frame("local attachment close-up", diag)
     view = viewport_surface()
     draw = ImageDraw.Draw(view)
@@ -361,7 +663,7 @@ def render_closeup(doc, world, hops, doc_sha, diag):
                   "oblique %.0f deg about +y; orthographic span %.2f m; thorax->humerus->"
                   "ulna source chain; landmarks/ports from semantic_frame_ulna_r.json; "
                   "elbow axis = ulna +z" % (oblique, span), fill=COL_TEXT)
-        legend_and_absences(draw, doc)
+        legend_and_layers(draw, doc, False)
     frame.paste(view, (VP[0], VP[1]))
     return frame, camera_record(
         "mat2_b04_ulna_r_closeup_m", position, target, span,
@@ -370,7 +672,7 @@ def render_closeup(doc, world, hops, doc_sha, diag):
         "packet landmarks" % oblique)
 
 
-def render_side_oblique(doc, world, hops, doc_sha, diag):
+def render_side_oblique(doc, world, hops, doc_sha, osim_ref, diag):
     frame = base_frame("orthogonal side and oblique views", diag)
     view = viewport_surface()
     draw = ImageDraw.Draw(view)
@@ -389,6 +691,12 @@ def render_side_oblique(doc, world, hops, doc_sha, diag):
         draw.text((10, 28),
                   "left: orthogonal side (forward -x); right: oblique %g deg; both "
                   "orthographic span %.2f m" % (oblique, span), fill=COL_TEXT)
+    if diag:
+        lo, hi = chain_bounds(hops)
+        draw_osim_reference(draw, project_side, osim_ref)
+        draw_osim_reference(draw, project_oblique, osim_ref)
+        draw_envelope(draw, project_side, lo, hi)
+        draw_envelope(draw, project_oblique, lo, hi, tag_offset=(-200, -4))
     for project, color in ((project_side, COL_EDGE), (project_oblique, COL_EDGE)):
         for key in ROOT_ORDER:
             pts = hops[key]
@@ -398,6 +706,7 @@ def render_side_oblique(doc, world, hops, doc_sha, diag):
                 px, py = project(pts[-1])
                 draw.ellipse([px - 3, py - 3, px + 3, py + 3], outline=ROOT_COLOR[key],
                              width=2)
+                draw_axes(draw, project, pts[-1])
         if diag:
             px, py = project(world)
             draw.ellipse([px - 3, py - 3, px + 3, py + 3], outline=COL_TEXT, width=1)
@@ -409,7 +718,8 @@ def render_side_oblique(doc, world, hops, doc_sha, diag):
                    project_oblique(hops["root_ulna_l"][-1])[1] + 6), "root_ulna_l",
                   fill=COL_ULNA_L)
         state_strip(draw, doc_sha)
-        legend_and_absences(draw, doc)
+        draw_osim_caption(draw, osim_ref, (200, 520))
+        legend_and_layers(draw, doc, True)
     frame.paste(view, (VP[0], VP[1]))
     panel_cameras = {
         "side": {"note": "this view's declared camera record projects the LEFT panel "
@@ -440,29 +750,64 @@ def render_side_oblique(doc, world, hops, doc_sha, diag):
         panel_cameras=panel_cameras)
 
 
-RENDERERS = (("whole-creature overview", render_whole),
-             ("local attachment close-up", render_closeup),
-             ("orthogonal side and oblique views", render_side_oblique))
+RENDERERS = ((VIEWS[0], render_whole),
+             (VIEWS[1], render_closeup),
+             (VIEWS[2], render_side_oblique))
+assert tuple(name for name, _r in RENDERERS) == VIEWS, "renderer/view drift"
 
 SUBJECT_IDS = ["assembly_world", "root_pelvis", "root_thorax", "root_ulna", "root_ulna_l"]
+OSIM_SUBJECT = "reference_osim_arm"
+OSIM_LABEL_IDS = ["osim_ref_muscle_paths", "osim_ref_attachment_sites",
+                  "osim_ref_provenance"]
+ENVELOPE_LABEL_ID = "outer_envelope_note"
 CLOSEUP_LABELS = ["root_ulna", "root_thorax", "assembly_world", "elbow_pivot",
                   "radius_pivot", "hand_pivot", "elbow_proximal_port",
                   "wrist_distal_port", "lateral_port", "+x", "+y", "+z"]
 WHOLE_LABELS = ["assembly_world", "root_pelvis", "root_thorax", "root_ulna", "root_ulna_l"]
+REF_VIEW_LABELS = WHOLE_LABELS + [ENVELOPE_LABEL_ID] + OSIM_LABEL_IDS
+REF_VIEW_SUBJECTS = SUBJECT_IDS + [OSIM_SUBJECT]
 
 
 def subject_of(label_id):
     if label_id in ("elbow_pivot", "radius_pivot", "hand_pivot", "elbow_proximal_port",
                     "wrist_distal_port", "lateral_port", "+x", "+y", "+z"):
         return "root_ulna"
+    if label_id in OSIM_LABEL_IDS:
+        return OSIM_SUBJECT
+    if label_id == ENVELOPE_LABEL_ID:
+        return "assembly_world"
     return label_id
 
 
-def build(doc, world, hops, doc_sha):
+def reference_gaps():
+    return [
+        "%s: placement AABB of authored chains only (placement-only; no skin/mesh "
+        "envelope)" % L_OUTER,
+        "%s: source-declared reference overlay from the pinned osim; wrap objects not "
+        "simulated (straight declared segments)" % L_MUSCLE,
+        "%s: source-declared osim muscle path endpoints; authored frame ports remain "
+        "mechanically unqualified" % L_SITES,
+        "osim reference placed by the frame-forest-recorded correspondence (graph world "
+        "== osim default-pose ground); never numerically merged",
+        "fitted packet frames carried by name binding only",
+    ]
+
+
+def closeup_gaps():
+    return [
+        "osim reference overlays (%s, %s) and the %s are out of this close framing; "
+        "carried by the %s and %s diagnostic views"
+        % (L_MUSCLE, L_SITES, L_OUTER, VIEWS[0], VIEWS[2]),
+        "authored frame ports remain mechanically unqualified",
+        "fitted packet frames carried by name binding only",
+    ]
+
+
+def build(doc, world, hops, doc_sha, osim_ref):
     rendered = []
     for _name, renderer in RENDERERS:
         for diag in (True, False):
-            rendered.append(renderer(doc, world, hops, doc_sha, diag))
+            rendered.append(renderer(doc, world, hops, doc_sha, osim_ref, diag))
     sheet = Image.new("RGB", (FRAME_W * 3, FRAME_H * 2), (255, 255, 255))
     view_rows = []
     for col, (view_id, _r) in enumerate(RENDERERS):
@@ -473,17 +818,21 @@ def build(doc, world, hops, doc_sha):
             if view_id == VIEWS[1]:
                 required = ["root_ulna", "root_thorax", "assembly_world"]
                 label_ids = CLOSEUP_LABELS if mode == "diagnostic" else []
+                observed = list(SUBJECT_IDS)
             else:
                 required = SUBJECT_IDS
-                label_ids = WHOLE_LABELS if mode == "diagnostic" else []
+                label_ids = REF_VIEW_LABELS if mode == "diagnostic" else []
+                observed = REF_VIEW_SUBJECTS if mode == "diagnostic" else list(SUBJECT_IDS)
+            layers = list(LAYERS if view_id != VIEWS[1] else CLOSEUP_LAYERS) \
+                if mode == "diagnostic" else []
             visibility = {
-                "layers": list(LAYERS) if mode == "diagnostic" else [],
+                "layers": layers,
                 "label_ids": label_ids,
                 "selected_ids": (["root_ulna"] if view_id == VIEWS[1]
                                  else ["root_pelvis", "root_thorax", "root_ulna",
                                        "root_ulna_l"]),
                 "required_subject_ids": required,
-                "observed_subject_ids": list(SUBJECT_IDS),
+                "observed_subject_ids": observed,
                 "missing_subject_ids": [],
                 "occlusion_mode": "xray" if mode == "diagnostic" else "depth_tested",
                 "tag_bindings": [{"label_id": lid, "subject_id": subject_of(lid)}
@@ -498,13 +847,10 @@ def build(doc, world, hops, doc_sha):
                                      "pixel_rectangle": list(region)},
                 "camera": camera,
                 "visibility": visibility,
-                "layer_inventory": list(LAYERS) if mode == "diagnostic" else [],
-                "honest_gaps": (["outer envelope absent (out of task-owned scope)",
-                                 "muscle/tendon paths absent (out of task-owned scope)",
-                                 "attachment sites: authored frame ports only, "
-                                 "mechanically unqualified",
-                                 "fitted packet frames carried by name binding only"]
-                                if mode == "diagnostic" else []),
+                "layer_inventory": list(layers),
+                "honest_gaps": (reference_gaps() if (mode == "diagnostic"
+                                                     and view_id != VIEWS[1])
+                                else closeup_gaps() if mode == "diagnostic" else []),
             })
     return sheet, view_rows
 
@@ -515,7 +861,8 @@ def main():
     doc_sha = sha256_file(DOC_PATH)
     hops = {key: chain_points(doc, key) for key in ROOT_ORDER}
     world = doc["frames"]["assembly_world"]["origin_m"]
-    sheet, view_rows = build(doc, world, hops, doc_sha)
+    osim_ref = load_osim_reference(doc)
+    sheet, view_rows = build(doc, world, hops, doc_sha, osim_ref)
     sheet.save(SHEET_PATH, "PNG")
     sheet_sha = sha256_file(SHEET_PATH)
     manifest = {
@@ -524,7 +871,7 @@ def main():
         "run_id": RUN_ID,
         "subject_sha256": doc_sha,
         "capture_sha256": sheet_sha,
-        "profile_id": "anatomy",
+        "profile_id": PROFILE["id"],
         "tick_interval": TICKS,
         "capture_kind": "labeled_2d_orthographic_sheet_png",
         "views": view_rows,
@@ -536,14 +883,9 @@ def main():
         "capture_sha256": sheet_sha,
         "tick_interval": TICKS,
     }
-    profile = {
-        "id": "anatomy",
-        "kind": "visible_static",
-        "views": list(VIEWS),
-        "clean_view_required": True,
-        "diagnostic_layers": list(LAYERS),
-    }
-    receipt = visual_capture.validate_manifest(manifest, context, profile)
+    # THE registry object itself (loaded above straight from agent_slots.sqlite3);
+    # no hand-copied profile is used anywhere.
+    receipt = visual_capture.validate_manifest(manifest, context, PROFILE)
     (EVID / "cameras.json").write_text(json.dumps(
         {("%s:%s" % (r["view_id"], r["mode"])): r["camera"] for r in view_rows},
         indent=1), encoding="utf-8")
@@ -553,6 +895,48 @@ def main():
                                                 encoding="utf-8")
     (EVID / "validation_receipt.json").write_text(json.dumps(receipt, indent=1),
                                                   encoding="utf-8")
+    (EVID / "registry_verification_profile.json").write_text(
+        json.dumps(PROFILE, indent=1, sort_keys=True), encoding="utf-8")
+    (EVID / "registry_profile_provenance.json").write_text(json.dumps({
+        "source_db": REGISTRY_DB,
+        "row": "state id=1 -> kanban.cards.%s.spec.ontology_qualification.task."
+               "verification_profile" % CARD_ID,
+        "extracted_by": "capture_build.load_registry_profile (read-only sqlite URI)",
+        "used_for": "visual_capture.validate_manifest(manifest, context, PROFILE); "
+                    "layer/view names copied verbatim into the manifest",
+        "note": "this corrects the earlier hand-copied profile defect; the "
+                "CANONICAL_LAYERS set in the generator is a loud-failure tripwire "
+                "only and never supplies validation values",
+    }, indent=1), encoding="utf-8")
+    (EVID / "osim_reference_overlay.json").write_text(json.dumps({
+        "osim_path_used": osim_ref["osim_path"],
+        "osim_sha256": osim_ref["osim_sha256"],
+        "sha256_verified_against_forest_pin": True,
+        "model_name": osim_ref["model_name"],
+        "recorded_reference": doc["independent_reference_not_merged"]["osim"],
+        "placement": "osim default-pose ground coordinates == graph world via the "
+                     "frame-forest-recorded correspondence matrix; generation aborts "
+                     "unless the recorded matrix agrees with the osim FK of the ulna "
+                     "frame origin (recorded_matrix_check_max_abs_err below)",
+        "recorded_matrix_check_max_abs_err": osim_ref["recorded_matrix_check_max_abs_err"],
+        "fk_method": "osim joint tree at default coordinate values; CustomJoint "
+                     "SpatialTransform LinearFunction/Constant axes; OpenSim "
+                     "'Euler XYZ body-fixed' = Rz(c)Ry(b)Rx(a) (the convention under "
+                     "which the model's negated orientation pairs cancel)",
+        "default_coordinate_values": osim_ref["default_coordinate_values"],
+        "muscle_count": len(osim_ref["muscles"]),
+        "path_point_count": osim_ref["point_count"],
+        "attachment_site_count": len(osim_ref["sites"]),
+        "wrap_muscle_count": osim_ref["wrap_muscle_count"],
+        "wraps_note": "PathWrap wrap objects are NOT simulated; polylines connect the "
+                      "declared path points directly",
+        "markers_note": "the osim MarkerSet (13 named markers) is NOT drawn; the "
+                        "attachment-sites layer carries only muscle path endpoints",
+        "world_aabb_m": osim_ref["world_aabb_m"],
+        "on_canvas_caption": "reference: source-declared, not validated by this card",
+        "scope_note": "correction-round addition only; frame_forest.json and all "
+                      "authored substance are byte-unchanged",
+    }, indent=1), encoding="utf-8")
     print(json.dumps(receipt, indent=1, sort_keys=True))
     print("sheet", SHEET_PATH, "sha256", sheet_sha)
 

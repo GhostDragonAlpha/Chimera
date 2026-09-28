@@ -3,7 +3,7 @@
  "task_id": "B04",
  "run_id": "mat2-b04-forest-static-20260928",
  "subject_sha256": "156ef55722e1ecda3238f3733131eb707f209cb93531d0e133227b00ebba8203",
- "capture_sha256": "79688f145879bb53badceb11f583dc02bf8ee79bb5f6f80f0f8e500181e3bf95",
+ "capture_sha256": "6bd842e47ec61472ae8a654fe22b918791272748f680c78174eaf4409a5419b3",
  "profile_id": "anatomy",
  "tick_interval": [
   0,
@@ -77,16 +77,23 @@
    },
    "visibility": {
     "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
      "frame axes",
-     "stable 3D labels",
-     "selected bones/joints"
+     "stable 3D labels"
     ],
     "label_ids": [
      "assembly_world",
      "root_pelvis",
      "root_thorax",
      "root_ulna",
-     "root_ulna_l"
+     "root_ulna_l",
+     "outer_envelope_note",
+     "osim_ref_muscle_paths",
+     "osim_ref_attachment_sites",
+     "osim_ref_provenance"
     ],
     "selected_ids": [
      "root_pelvis",
@@ -106,7 +113,8 @@
      "root_pelvis",
      "root_thorax",
      "root_ulna",
-     "root_ulna_l"
+     "root_ulna_l",
+     "reference_osim_arm"
     ],
     "missing_subject_ids": [],
     "occlusion_mode": "xray",
@@ -130,18 +138,38 @@
      {
       "label_id": "root_ulna_l",
       "subject_id": "root_ulna_l"
+     },
+     {
+      "label_id": "outer_envelope_note",
+      "subject_id": "assembly_world"
+     },
+     {
+      "label_id": "osim_ref_muscle_paths",
+      "subject_id": "reference_osim_arm"
+     },
+     {
+      "label_id": "osim_ref_attachment_sites",
+      "subject_id": "reference_osim_arm"
+     },
+     {
+      "label_id": "osim_ref_provenance",
+      "subject_id": "reference_osim_arm"
      }
     ]
    },
    "layer_inventory": [
+    "outer envelope",
+    "selected bones/joints",
+    "muscle/tendon paths",
+    "attachment sites",
     "frame axes",
-    "stable 3D labels",
-    "selected bones/joints"
+    "stable 3D labels"
    ],
    "honest_gaps": [
-    "outer envelope absent (out of task-owned scope)",
-    "muscle/tendon paths absent (out of task-owned scope)",
-    "attachment sites: authored frame ports only, mechanically unqualified",
+    "outer envelope: placement AABB of authored chains only (placement-only; no skin/mesh envelope)",
+    "muscle/tendon paths: source-declared reference overlay from the pinned osim; wrap objects not simulated (straight declared segments)",
+    "attachment sites: source-declared osim muscle path endpoints; authored frame ports remain mechanically unqualified",
+    "osim reference placed by the frame-forest-recorded correspondence (graph world == osim default-pose ground); never numerically merged",
     "fitted packet frames carried by name binding only"
    ]
   },
@@ -305,9 +333,9 @@
    },
    "visibility": {
     "layers": [
+     "selected bones/joints",
      "frame axes",
-     "stable 3D labels",
-     "selected bones/joints"
+     "stable 3D labels"
     ],
     "label_ids": [
      "root_ulna",
@@ -392,14 +420,13 @@
     ]
    },
    "layer_inventory": [
+    "selected bones/joints",
     "frame axes",
-    "stable 3D labels",
-    "selected bones/joints"
+    "stable 3D labels"
    ],
    "honest_gaps": [
-    "outer envelope absent (out of task-owned scope)",
-    "muscle/tendon paths absent (out of task-owned scope)",
-    "attachment sites: authored frame ports only, mechanically unqualified",
+    "osim reference overlays (muscle/tendon paths, attachment sites) and the outer envelope are out of this close framing; carried by the whole-creature overview and orthogonal side and oblique views diagnostic views",
+    "authored frame ports remain mechanically unqualified",
     "fitted packet frames carried by name binding only"
    ]
   },
@@ -619,16 +646,23 @@
    },
    "visibility": {
     "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
      "frame axes",
-     "stable 3D labels",
-     "selected bones/joints"
+     "stable 3D labels"
     ],
     "label_ids": [
      "assembly_world",
      "root_pelvis",
      "root_thorax",
      "root_ulna",
-     "root_ulna_l"
+     "root_ulna_l",
+     "outer_envelope_note",
+     "osim_ref_muscle_paths",
+     "osim_ref_attachment_sites",
+     "osim_ref_provenance"
     ],
     "selected_ids": [
      "root_pelvis",
@@ -648,7 +682,8 @@
      "root_pelvis",
      "root_thorax",
      "root_ulna",
-     "root_ulna_l"
+     "root_ulna_l",
+     "reference_osim_arm"
     ],
     "missing_subject_ids": [],
     "occlusion_mode": "xray",
@@ -672,18 +707,38 @@
      {
       "label_id": "root_ulna_l",
       "subject_id": "root_ulna_l"
+     },
+     {
+      "label_id": "outer_envelope_note",
+      "subject_id": "assembly_world"
+     },
+     {
+      "label_id": "osim_ref_muscle_paths",
+      "subject_id": "reference_osim_arm"
+     },
+     {
+      "label_id": "osim_ref_attachment_sites",
+      "subject_id": "reference_osim_arm"
+     },
+     {
+      "label_id": "osim_ref_provenance",
+      "subject_id": "reference_osim_arm"
      }
     ]
    },
    "layer_inventory": [
+    "outer envelope",
+    "selected bones/joints",
+    "muscle/tendon paths",
+    "attachment sites",
     "frame axes",
-    "stable 3D labels",
-    "selected bones/joints"
+    "stable 3D labels"
    ],
    "honest_gaps": [
-    "outer envelope absent (out of task-owned scope)",
-    "muscle/tendon paths absent (out of task-owned scope)",
-    "attachment sites: authored frame ports only, mechanically unqualified",
+    "outer envelope: placement AABB of authored chains only (placement-only; no skin/mesh envelope)",
+    "muscle/tendon paths: source-declared reference overlay from the pinned osim; wrap objects not simulated (straight declared segments)",
+    "attachment sites: source-declared osim muscle path endpoints; authored frame ports remain mechanically unqualified",
+    "osim reference placed by the frame-forest-recorded correspondence (graph world == osim default-pose ground); never numerically merged",
     "fitted packet frames carried by name binding only"
    ]
   },
