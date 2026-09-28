@@ -38,11 +38,13 @@ def main():
     action.add_argument('--checkpoint',type=Path,help='Cessation/checkpoint arguments JSON; recover next window.')
     action.add_argument('--submit-pr',type=Path,help='Record PR arguments JSON, then take next card.')
     action.add_argument('--park',type=Path,help='Preserve attempt and cease writes; no next card is dealt.')
-    parser.add_argument('--take-next',action='store_true',help='After a take-next handoff (finish/submit-pr), explicitly deal the next card. Park and checkpoint never re-deal.')
+    action.add_argument('--request-pr',type=Path,help='Request lead publication of hash-bound candidate artifacts; no next card is dealt.')
+    action.add_argument('--review-result',type=Path,help='Record independent review evidence against a PR; no next card is dealt.')
+    parser.add_argument('--take-next',action='store_true',help='After a take-next handoff (finish/submit-pr/request-pr/review-result), explicitly deal the next card. Park and checkpoint never re-deal.')
     args=parser.parse_args()
-    if args.check and (args.finish or args.checkpoint or args.submit_pr or args.park):
+    if args.check and (args.finish or args.checkpoint or args.submit_pr or args.park or args.request_pr or args.review_result):
         raise ValueError('check_cannot_submit_handoff')
-    handoff_actions=('finish','checkpoint','submit_pr','park')
+    handoff_actions=('finish','checkpoint','submit_pr','park','request_pr','review_result')
     took_handoff=any(getattr(args,n) for n in handoff_actions)
     if args.take_next and (args.park or args.checkpoint):
         raise ValueError('park_checkpoint_do_not_redeal_run_explicit_startup_for_next')
@@ -79,7 +81,7 @@ def main():
     out['orientation_identity_note'] = 'Engine current/next terms are scene hierarchy entries, never agent or authenticated session identities.'
     if not args.check:
         identity=args.arrival_id or os.environ.get('CHIMERA_WORKER_ID')
-        if (args.finish or args.checkpoint or args.submit_pr or args.park) and not identity:
+        if (args.finish or args.checkpoint or args.submit_pr or args.park or args.request_pr or args.review_result) and not identity:
             raise ValueError('existing_arrival_id_required_for_handoff')
         identity=identity or 'arrival-'+uuid.uuid4().hex
         registry=Registry(DEFAULT_ROOT)
@@ -93,6 +95,14 @@ def main():
             out['handoff']=(finish if args.finish else checkpoint)(registry,data)
         out['arrival_id']=identity
         if kanban_enabled:
+            cycle_path=args.request_pr or args.review_result
+            if cycle_path:
+                with cycle_path.open('rb') as stream: raw=stream.read(65537)
+                if len(raw)>65536: raise ValueError('handoff_arguments_size_limit')
+                data=decode(raw)
+                if data.get('agent_id')!=identity: raise ValueError('handoff_identity_mismatch')
+                import continuous_cycle
+                out['handoff']=(continuous_cycle.request_publication if args.request_pr else continuous_cycle.submit_review)(registry,data)
             if args.submit_pr or args.park:
                 with (args.submit_pr or args.park).open('rb') as stream:raw=stream.read(65537)
                 if len(raw)>65536:raise ValueError('handoff_arguments_size_limit')
@@ -115,7 +125,7 @@ def main():
                     'attempt_id':allocation['attempt']['id'],'criteria_sha256':allocation['attempt']['criteria_sha256'],
                     'pr_url':'https://github.com/GhostDragonAlpha/Chimera/pull/NUMBER','head_sha':'<full 40-character PR head SHA>'}
             print(json.dumps(out,indent=2));return
-        if args.submit_pr or args.park:raise ValueError('kanban_not_initialized')
+        if args.submit_pr or args.park or args.request_pr or args.review_result:raise ValueError('kanban_not_initialized')
         allocation = claim_next(registry,queue['tasks'],identity,instructions['revision_id'],instructions['bundle_sha256'])
         out['assignment'] = allocation
         out['task_claimed'] = allocation['state'] == 'ASSIGNED'
