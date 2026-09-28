@@ -1,0 +1,652 @@
+{
+ "schema": "chimera.mutation_manifest.v1",
+ "task_id": "MAT2-A05",
+ "attempt_id": "b4ad70883ac2480a928dcc828f33c65f",
+ "arrival_id": "arrival-b22e42ce0ecf4204acb2f99d0aecff97",
+ "date": "2026-09-28",
+ "captain_decision": {
+  "decision_id": "A05-DIGIT-MUTATION-20260928",
+  "record": "E:/ChimeraWork/monkey-coordination/kanban-attempts/MAT2-A05/CAPTAIN_DECISION_2_MUTATION.json",
+  "sha256": "3c34168ef28b00b1dc60c2362cc9d2d6ffb273a8c28a1663d9bff729596dd1d7",
+  "authority": "Captain (highest)",
+  "verbatim_excerpt": "use a human data then modify it to fit macaque data ... our first mutation where we take something like a human hand and augment it with what you would call macaque DNA ... take what exists and then modify"
+ },
+ "model": {
+  "id": "model.macaque_arm_hand_mutation",
+  "structure_record": "mutation_structure.json",
+  "structure_record_sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+  "mjcf_record": "macaque_hand_mutation.xml",
+  "mjcf_record_sha256": "9c91124600abc67a4a33d78ce79ab1a0604a48b5a9a2e6377d15de05717e5adf",
+  "units": {
+   "length": "m",
+   "angle": "rad",
+   "mass": "kg",
+   "inertia": "kg m^2"
+  },
+  "frame": "macaque_arm_hand_mutation_frame",
+  "species_disclosure": "Hybrid derivation: human per-digit topology and base bone shapes; macaque scale, wrist ranges, hand mass, muscle anchors and frame. Declared adaptation per Captain decision 2, not a species-true scan claim."
+ },
+ "human_derived_base": {
+  "vendor_rev": "33f3ded946f55adbdcf963c99999587aadaf975f",
+  "vendor_tree": "E:/PythonChimera/vendor/myo_sim (read-only, unpinned upstream clone; rev+sha256 pinned at use)",
+  "pins": [
+   {
+    "path": "E:/PythonChimera/vendor/myo_sim/hand/assets/myohand_body.xml",
+    "sha256": "21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28"
+   },
+   {
+    "path": "E:/PythonChimera/vendor/myo_sim/finger/finger_v0.xml",
+    "sha256": "6975e5c56d2adbd41c1b9ad8cdbece90b84611c80288337338adc7951a8b4b5f"
+   }
+  ],
+  "taken_verbatim": [
+   "per-digit body topology (5 digits, 5 mc + 14 phalanges)",
+   "joint names, axes and ranges",
+   "inter-segment directions (magnitudes scaled by s)",
+   "19 digit STL bone shapes at recorded uniform scale s",
+   "per-body relative mass fractions (renormalized to macaque hand mass)"
+  ]
+ },
+ "macaque_constraints": {
+  "pins": [
+   {
+    "path": "E:/PythonChimera/tools/science_funnel/data/macaque_arm/monkeyArm_current.osim",
+    "sha256": "4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895"
+   },
+   {
+    "path": "E:/PythonChimera/tools/science_funnel/data/macaque_arm/Geometry/hand.vtp",
+    "sha256": "a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6"
+   },
+   {
+    "path": "E:/PythonChimera/tools/creature_graph/data/creature_graph.json",
+    "sha256": "eeaace01160f7a585e3c57fb4a7b2fbe19e2067cd59e1834fb86c972c33eca56"
+   }
+  ],
+  "applied": [
+   {
+    "constraint": "hand body mass/center/inertia",
+    "value": {
+     "mass_kg": 0.049,
+     "mass_center_m": [
+      0.012,
+      -0.025,
+      0.007
+     ],
+     "inertia_kg_m2": [
+      3.82e-05,
+      1.56e-06,
+      3.82e-05,
+      0.0,
+      0.0,
+      0.0
+     ]
+    },
+    "source": "monkeyArm_current.osim Body \"hand\" verbatim"
+   },
+   {
+    "constraint": "wrist_flexion range rad",
+    "value": [
+     -1.30899694,
+     1.57079633
+    ],
+    "source": "osim wrist Coordinate"
+   },
+   {
+    "constraint": "wrist_abduction range rad",
+    "value": [
+     -1.04719755,
+     0.78539816
+    ],
+    "source": "osim wrist Coordinate"
+   },
+   {
+    "constraint": "MACAQUE_HAND_LENGTH m",
+    "value": 0.08360625000000001,
+    "source": "geom.macaque_arm.hand bounds_m Y extent (hand.vtp sha256-pinned, mm->m 0.001)"
+   },
+   {
+    "constraint": "MUTATION_SCALE s",
+    "value": 0.5384048132470733,
+    "formula": "s = 0.08360625 / 0.155285"
+   },
+   {
+    "constraint": "forearm references m",
+    "value": {
+     "ulna": 0.157970763
+    },
+    "source": "geom.macaque_arm.ulna bounds_m"
+   },
+   {
+    "constraint": "digit-named muscle anchors",
+    "value": [
+     {
+      "muscle": "ext_digitorum",
+      "path_point": "ext_digitorum-P3",
+      "location_m": [
+       0.00106101,
+       -0.00804001,
+       0.00594996
+      ],
+      "nearest_mutant_body": "macaque_hand_anchor",
+      "distance_m": 0.010058306369454054
+     },
+     {
+      "muscle": "ext_digitorum",
+      "path_point": "ext_digitorum-P2",
+      "location_m": [
+       0.00222721,
+       -0.0391191,
+       0.00429738
+      ],
+      "nearest_mutant_body": "proxph3",
+      "distance_m": 0.004674974795050801
+     },
+     {
+      "muscle": "flex_digit_profundus",
+      "path_point": "flex_digit_profundus-P4",
+      "location_m": [
+       -0.00139132,
+       -0.0172483,
+       -0.00108922
+      ],
+      "nearest_mutant_body": "fifthmc",
+      "distance_m": 0.012604227792366404
+     }
+    ],
+    "source": "osim Schutte1993Muscle_Deprecated ext_digitorum / flex_digit_profundus hand-frame PathPoints"
+   }
+  ]
+ },
+ "stated_formula": {
+  "human_hand_length_m": 0.1552851087934706,
+  "macaque_hand_length_m": 0.08360625000000001,
+  "mutation_scale": 0.5384048132470733,
+  "rule": "mutant offset = s * human offset (componentwise); s = MACAQUE_HAND_LENGTH / HUMAN_HAND_LENGTH",
+  "mass_prior_rule": "mass_prior_i = 0.049 kg * human_mass_i / 0.1589 kg",
+  "allometry": {
+   "human_ratio": 0.6345264041055995,
+   "macaque_ratio": 0.5292514159724607,
+   "mutant_ratio": 0.5292514159724607,
+   "tolerances": {
+    "hand_length_identity": 1e-09,
+    "ratio": 0.001
+   }
+  }
+ },
+ "derived_structure": {
+  "body_count": 19,
+  "phalanx_count": 14,
+  "metacarpal_count": 5,
+  "digit_joint_count": 20,
+  "wrist_dof": 2,
+  "bodies": [
+   {
+    "name": "firstmc",
+    "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+    "pos_m": [
+     0.014259651478848738,
+     -0.013472503641881519,
+     -0.005643020847642575
+    ],
+    "mass_prior_kg": 0.004933920704845815,
+    "joints": [
+     {
+      "name": "cmc_abduction",
+      "axis": "-0.042399 -0.665286 0.745384",
+      "range": [
+       -0.5,
+       0.78
+      ]
+     },
+     {
+      "name": "cmc_flexion",
+      "axis": "0.495557 0.731736 0.467959",
+      "range": [
+       -0.78,
+       0.7
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.1mc"
+   },
+   {
+    "name": "proximal_thumb",
+    "parent": "ref.macaque_arm_hand_mutation.body.firstmc",
+    "pos_m": [
+     0.00888367941857671,
+     -0.01572142054681454,
+     -0.006837741128237831
+    ],
+    "mass_prior_kg": 0.0024361233480176213,
+    "joints": [
+     {
+      "name": "mp_flexion",
+      "axis": "-0.084295 -0.203488 0.975442",
+      "range": [
+       -0.785398,
+       0.698132
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.thumbprox"
+   },
+   {
+    "name": "distal_thumb",
+    "parent": "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+    "pos_m": [
+     0.007537667385459027,
+     -0.0139446846630992,
+     -0.005437888613795441
+    ],
+    "mass_prior_kg": 0.0009251101321585902,
+    "joints": [
+     {
+      "name": "ip_flexion",
+      "axis": "-0.050102 -0.479623 0.876043",
+      "range": [
+       -1.309,
+       0.436332
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.thumbdist"
+   },
+   {
+    "name": "secondmc",
+    "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+    "pos_m": [
+     0.010055786697015588,
+     -0.02835993513297634,
+     0.003962121020685213
+    ],
+    "mass_prior_kg": 0.006167400881057268,
+    "joints": [],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.2mc"
+   },
+   {
+    "name": "proxph2",
+    "parent": "ref.macaque_arm_hand_mutation.body.secondmc",
+    "pos_m": [
+     0.001884955251178004,
+     -0.015206167140537094,
+     0.0019490254239544055
+    ],
+    "mass_prior_kg": 0.003083700440528634,
+    "joints": [
+     {
+      "name": "mcp2_flexion",
+      "axis": "0.995013 0.09975 0",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     },
+     {
+      "name": "mcp2_abduction",
+      "axis": "-0.054999 0.085899 0.994785",
+      "range": [
+       -0.261799,
+       0.261799
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.2proxph"
+   },
+   {
+    "name": "midph2",
+    "parent": "ref.macaque_arm_hand_mutation.body.proxph2",
+    "pos_m": [
+     0.004043420147485521,
+     -0.022221581857146455,
+     0.003944353661848059
+    ],
+    "mass_prior_kg": 0.0009251101321585902,
+    "joints": [
+     {
+      "name": "pm2_flexion",
+      "axis": "0.97517 0.0998334 -0.197677",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.2midph"
+   },
+   {
+    "name": "distph2",
+    "parent": "ref.macaque_arm_hand_mutation.body.midph2",
+    "pos_m": [
+     0.0017945032425524955,
+     -0.013399818992093162,
+     0.0006568538721614294
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "joints": [
+     {
+      "name": "md2_flexion",
+      "axis": "0.995004 0.0998334 0",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.2distph"
+   },
+   {
+    "name": "thirdmc",
+    "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+    "pos_m": [
+     0.0024061311104011706,
+     -0.029231612525623354,
+     0.0052246803077496
+    ],
+    "mass_prior_kg": 0.006167400881057268,
+    "joints": [],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.3mc"
+   },
+   {
+    "name": "proxph3",
+    "parent": "ref.macaque_arm_hand_mutation.body.thirdmc",
+    "pos_m": [
+     0.0001292171551792976,
+     -0.014154662540265558,
+     0.0009572837579532964
+    ],
+    "mass_prior_kg": 0.003083700440528634,
+    "joints": [
+     {
+      "name": "mcp3_flexion",
+      "axis": "0.980067 0 0.198669",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     },
+     {
+      "name": "mcp3_abduction",
+      "axis": "-0.198669 0 0.980067",
+      "range": [
+       -0.261799,
+       0.261799
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.3proxph"
+   },
+   {
+    "name": "midph3",
+    "parent": "ref.macaque_arm_hand_mutation.body.proxph3",
+    "pos_m": [
+     0.000888367941857671,
+     -0.02380341519846636,
+     0.003354261986529267
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "joints": [
+     {
+      "name": "pm3_flexion",
+      "axis": "1 0 0",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.3midph"
+   },
+   {
+    "name": "distph3",
+    "parent": "ref.macaque_arm_hand_mutation.body.midph3",
+    "pos_m": [
+     0.0007349225700822551,
+     -0.015639044610387738,
+     0.0010520430050847812
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "joints": [
+     {
+      "name": "md3_flexion",
+      "axis": "1 0 0",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.3distph"
+   },
+   {
+    "name": "fourthmc",
+    "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+    "pos_m": [
+     -0.004336312365891928,
+     -0.029920770686579605,
+     0.0031442841093629083
+    ],
+    "mass_prior_kg": 0.006167400881057268,
+    "joints": [],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.4mc"
+   },
+   {
+    "name": "proxph4",
+    "parent": "ref.macaque_arm_hand_mutation.body.fourthmc",
+    "pos_m": [
+     -0.0009852808082421443,
+     -0.012754271621009922,
+     -9.31440326917437e-05
+    ],
+    "mass_prior_kg": 0.003083700440528634,
+    "joints": [
+     {
+      "name": "mcp4_flexion",
+      "axis": "0.900447 0 0.434966",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     },
+     {
+      "name": "mcp4_abduction",
+      "axis": "-0.434966 0 0.900447",
+      "range": [
+       -0.261799,
+       0.261799
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.4proxph"
+   },
+   {
+    "name": "midph4",
+    "parent": "ref.macaque_arm_hand_mutation.body.proxph4",
+    "pos_m": [
+     -0.0018994921811356746,
+     -0.021673485757260937,
+     0.0007241544738173137
+    ],
+    "mass_prior_kg": 0.0009251101321585902,
+    "joints": [
+     {
+      "name": "pm4_flexion",
+      "axis": "0.921061 0 0.389418",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.4midph"
+   },
+   {
+    "name": "distph4",
+    "parent": "ref.macaque_arm_hand_mutation.body.midph4",
+    "pos_m": [
+     -0.0012474839522934689,
+     -0.0133465169155817,
+     0.0003031219098581023
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "joints": [
+     {
+      "name": "md4_flexion",
+      "axis": "0.825336 0 0.564642",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.4distph"
+   },
+   {
+    "name": "fifthmc",
+    "parent": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+    "pos_m": [
+     -0.009639599776375601,
+     -0.026778640196469684,
+     -0.0010181235018502158
+    ],
+    "mass_prior_kg": 0.006167400881057268,
+    "joints": [],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.5mc"
+   },
+   {
+    "name": "proxph5",
+    "parent": "ref.macaque_arm_hand_mutation.body.fifthmc",
+    "pos_m": [
+     -0.0008598324867555761,
+     -0.011538553552698028,
+     -0.0008054536006176216
+    ],
+    "mass_prior_kg": 0.001541850220264317,
+    "joints": [
+     {
+      "name": "mcp5_flexion",
+      "axis": "0.825336 0 0.564642",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     },
+     {
+      "name": "mcp5_abduction",
+      "axis": "-0.564642 0 0.825336",
+      "range": [
+       -0.261799,
+       0.261799
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.5proxph"
+   },
+   {
+    "name": "midph5",
+    "parent": "ref.macaque_arm_hand_mutation.body.proxph5",
+    "pos_m": [
+     -0.0028422390091313,
+     -0.019147290373505668,
+     -0.0015500674573383241
+    ],
+    "mass_prior_kg": 0.0006167400881057269,
+    "joints": [
+     {
+      "name": "pm5_flexion",
+      "axis": "0.825336 0 0.564642",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.5midph"
+   },
+   {
+    "name": "distph5",
+    "parent": "ref.macaque_arm_hand_mutation.body.midph5",
+    "pos_m": [
+     -0.0015457602188323474,
+     -0.011132596323509736,
+     -0.0012076419961131856
+    ],
+    "mass_prior_kg": 0.00030837004405286344,
+    "joints": [
+     {
+      "name": "md5_flexion",
+      "axis": "0.643112 -0.226804 0.731414",
+      "range": [
+       0.0,
+       1.5708
+      ]
+     }
+    ],
+    "geometry_asset": "geom.macaque_arm_hand_mutation.5distph"
+   }
+  ],
+  "chain_lengths_m": {
+   "thumb": 0.055887,
+   "digit2": 0.081837,
+   "digit3": 0.083606,
+   "digit4": 0.078262,
+   "digit5": 0.070343
+  },
+  "fingertips_m": {
+   "thumb": [
+    0.030680998282884474,
+    -0.043138608851795254,
+    -0.017918650589675848
+   ],
+   "digit2": [
+    0.01777866533823161,
+    -0.07918750312275306,
+    0.010512353978649105
+   ],
+   "digit3": [
+    0.0041586387775203945,
+    -0.08282873487474302,
+    0.010588269057316944
+   ],
+   "digit4": [
+    -0.008468569307563217,
+    -0.07769504498043216,
+    0.004078416460346581
+   ],
+   "digit5": [
+    -0.014887431491094824,
+    -0.06859708044618312,
+    -0.0045812865559193465
+   ]
+  }
+ },
+ "declared_deviations": [
+  "species mixing: human base structure/shapes with macaque frame numbers; declared hybrid per Captain decision (not species-true, not REALITY-category)",
+  "uniform allometric scale s instead of macaque per-phalanx proportions (no such data in-repo)",
+  "carpal chain folded into the palm anchor; macaque hand body owns carpus mass/geometry",
+  "radial (X/Z) fingertip overshoot vs hand.vtp envelope recorded (thumb X +0.030681 vs +0.020731 max; d2/d3 Z ~+0.0106 vs +0.00464 max; d5 X -0.014887 vs -0.0124375 min); Y-span coherence holds (preregistered falsifier)",
+  "masses are proportional training priors, not measured per-phalanx masses (anchor mass and digit priors are alternative views of the same 0.049 kg, not additive)",
+  "muscle/tendon paths are anchor points only; no volume, skin or wrap geometry",
+  "digit joint ranges remain human base values (no macaque per-digit ROM in-repo); only the wrist is macaque-ranged",
+  "geometry = vendor STLs at recorded scale s + explicit scaled segment vectors; no fabricated mesh; macaque hand.vtp bound via graph record only (VTP not MuJoCo-loadable)"
+ ],
+ "validation": {
+  "validator": "validate_mutation.py",
+  "validator_sha256": "333fbb60dbfbd8baf99146efbb91fc630b82851ec2f41f5eca927c156bc798bf",
+  "receipt": "validation_receipt.json",
+  "receipt_sha256": "1781aa6bfe7069183c225d54be21f8788c460b24b9abeca1aaac25ff0fa6c3ff",
+  "summary": {
+   "total": 37,
+   "passed": 37,
+   "failed": 0
+  },
+  "note": "First validation run reported 2 FAILs caused by validator-side defects (phalanx name filter missed the thumb bodies; connectivity walk did not treat the anchor as terminal). Corrected in validate_mutation.py; the structure values were unaffected and the corrected run passes 37/37."
+ },
+ "preregistration": {
+  "path": "PREREGISTRATION.md",
+  "sha256": "e79b4a7853916629d54a22904d4b1dcb92984556f37122b44211ee15b19ae5f9"
+ },
+ "derivation_log": {
+  "path": "derivation_output.txt",
+  "sha256": "e10ad1c055fc5bee9206862213cf0559b1c97ca730a9845e642b06a9194839d8"
+ }
+}

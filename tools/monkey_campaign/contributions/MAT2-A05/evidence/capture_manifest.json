@@ -1,0 +1,1379 @@
+{
+ "schema": "chimera.visual_capture_manifest.v1",
+ "task_id": "A05",
+ "profile_id": "anatomy",
+ "run_id": "mat2-a05-mutation-static-20260928-d8bb22f9",
+ "tick_interval": [
+  0,
+  0
+ ],
+ "subject_sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+ "capture_sha256": "d8bb22f9ada9b5c5e20dbd5f6f316f6fd45f5f2bdeb5f264370cfd4619c86514",
+ "sheet_layout": {
+  "pixel_size": [
+   1280,
+   4320
+  ],
+  "honest_titles": "rendered inside every row: view_id, mode, tick and the state hash prefix; footer carries frame_id, orthographic span, camera distance and resolution; clean rows carry no subject labels",
+  "rows": [
+   "row 0 whole-creature overview diagnostic (tick 0)",
+   "row 1 whole-creature overview clean (tick 0)",
+   "row 2 local attachment close-up diagnostic (tick 0)",
+   "row 3 local attachment close-up clean (tick 0)",
+   "row 4 orthogonal side and oblique views diagnostic (two viewports, tick 0)",
+   "row 5 orthogonal side and oblique views clean (two viewports, tick 0)"
+  ],
+  "capture_is": "a 2D orthographic projection of the derived mutation skeleton (mutation_structure.json) over the macaque hand.vtp envelope point cloud, rendered by capture_evidence.py (PIL); the hashed artifact is this PNG sheet; no pixels authored by hand; no 3D renderer exists",
+  "honest_gaps": [
+   "no 3D renderer/mesh display: bones are skeleton line segments between body origins; envelope is the hand.vtp POINT CLOUD (no surfaces)",
+   "muscle/tendon paths drawn as recorded anchor points only (osim hand-frame points)",
+   "no macaque per-phalanx proportions: uniform scale s=0.538404813 (declared deviation)",
+   "radial envelope overshoot of thumb/d2/d3/d5 recorded in the structure, visible as chains extending past the point-cloud silhouette in some projections",
+   "static capture: single tick, fixed cameras (visible_static profile)"
+  ]
+ },
+ "views": [
+  {
+   "view_id": "whole-creature overview",
+   "mode": "diagnostic",
+   "pair_id": "pair-overview",
+   "artifact_locator": {
+    "kind": "image",
+    "region": "pixel_rectangle",
+    "pixel_rectangle": [
+     0,
+     0,
+     1280,
+     720
+    ]
+   },
+   "camera": {
+    "view_id": "whole-creature overview",
+    "frame_id": "macaque_arm_hand_mutation_frame",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "+Y",
+    "up_axis": "+Z",
+    "position": [
+     0.0,
+     -0.04,
+     0.3505
+    ],
+    "target": [
+     0.0,
+     -0.04,
+     0.0005
+    ],
+    "distance_to_target": 0.35,
+    "orientation": [
+     0.7071067811865476,
+     -0.7071067811865475,
+     0.0,
+     -0.0
+    ],
+    "projection": "orthographic",
+    "orthographic_span": 0.12,
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "aspect_ratio": 1.7777777777777777,
+    "viewport_resolution": [
+     1280,
+     720
+    ],
+    "sample_mode": "fixed_bookmark",
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single static pose at tick 0 (visible_static profile)",
+    "samples": [
+     {
+      "tick": 0,
+      "position": [
+       0.0,
+       -0.04,
+       0.3505
+      ],
+      "target": [
+       0.0,
+       -0.04,
+       0.0005
+      ],
+      "distance_to_target": 0.35,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ]
+     }
+    ],
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+   },
+   "state_binding": {
+    "kind": "state",
+    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "note": "sha256 of mutation_structure.json (static derived structure state)"
+   },
+   "visibility": {
+    "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
+     "frame axes",
+     "stable 3D labels"
+    ],
+    "label_ids": [
+     "axis +X (anchor frame)",
+     "axis +Y (anchor frame)",
+     "axis +Z (anchor frame)",
+     "ext_digitorum:ext_digitorum-P3",
+     "ext_digitorum:ext_digitorum-P2",
+     "flex_digit_profundus:flex_digit_profundus-P4",
+     "firstmc",
+     "proximal_thumb",
+     "distal_thumb",
+     "secondmc",
+     "proxph2",
+     "midph2",
+     "distph2",
+     "thirdmc",
+     "proxph3",
+     "midph3",
+     "distph3",
+     "fourthmc",
+     "proxph4",
+     "midph4",
+     "distph4",
+     "fifthmc",
+     "proxph5",
+     "midph5",
+     "distph5",
+     "anchor (macaque hand body origin)"
+    ],
+    "selected_ids": [
+     "axis.+X",
+     "axis.+Y",
+     "axis.+Z",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P2",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P3",
+     "muscle_anchor.flex_digit_profundus.flex_digit_profundus-P4",
+     "ref.macaque_arm_hand_mutation.body.distal_thumb",
+     "ref.macaque_arm_hand_mutation.body.distph2",
+     "ref.macaque_arm_hand_mutation.body.distph3",
+     "ref.macaque_arm_hand_mutation.body.distph4",
+     "ref.macaque_arm_hand_mutation.body.distph5",
+     "ref.macaque_arm_hand_mutation.body.fifthmc",
+     "ref.macaque_arm_hand_mutation.body.firstmc",
+     "ref.macaque_arm_hand_mutation.body.fourthmc",
+     "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+     "ref.macaque_arm_hand_mutation.body.midph2",
+     "ref.macaque_arm_hand_mutation.body.midph3",
+     "ref.macaque_arm_hand_mutation.body.midph4",
+     "ref.macaque_arm_hand_mutation.body.midph5",
+     "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+     "ref.macaque_arm_hand_mutation.body.proxph2",
+     "ref.macaque_arm_hand_mutation.body.proxph3",
+     "ref.macaque_arm_hand_mutation.body.proxph4",
+     "ref.macaque_arm_hand_mutation.body.proxph5",
+     "ref.macaque_arm_hand_mutation.body.secondmc",
+     "ref.macaque_arm_hand_mutation.body.thirdmc"
+    ],
+    "required_subject_ids": [
+     "ref.macaque_arm_hand_mutation.body.firstmc",
+     "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+     "ref.macaque_arm_hand_mutation.body.distal_thumb",
+     "ref.macaque_arm_hand_mutation.body.secondmc",
+     "ref.macaque_arm_hand_mutation.body.proxph2",
+     "ref.macaque_arm_hand_mutation.body.midph2",
+     "ref.macaque_arm_hand_mutation.body.distph2",
+     "ref.macaque_arm_hand_mutation.body.thirdmc",
+     "ref.macaque_arm_hand_mutation.body.proxph3",
+     "ref.macaque_arm_hand_mutation.body.midph3",
+     "ref.macaque_arm_hand_mutation.body.distph3",
+     "ref.macaque_arm_hand_mutation.body.fourthmc",
+     "ref.macaque_arm_hand_mutation.body.proxph4",
+     "ref.macaque_arm_hand_mutation.body.midph4",
+     "ref.macaque_arm_hand_mutation.body.distph4",
+     "ref.macaque_arm_hand_mutation.body.fifthmc",
+     "ref.macaque_arm_hand_mutation.body.proxph5",
+     "ref.macaque_arm_hand_mutation.body.midph5",
+     "ref.macaque_arm_hand_mutation.body.distph5",
+     "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor"
+    ],
+    "observed_subject_ids": [
+     "axis.+X",
+     "axis.+Y",
+     "axis.+Z",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P2",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P3",
+     "muscle_anchor.flex_digit_profundus.flex_digit_profundus-P4",
+     "ref.macaque_arm_hand_mutation.body.distal_thumb",
+     "ref.macaque_arm_hand_mutation.body.distph2",
+     "ref.macaque_arm_hand_mutation.body.distph3",
+     "ref.macaque_arm_hand_mutation.body.distph4",
+     "ref.macaque_arm_hand_mutation.body.distph5",
+     "ref.macaque_arm_hand_mutation.body.fifthmc",
+     "ref.macaque_arm_hand_mutation.body.firstmc",
+     "ref.macaque_arm_hand_mutation.body.fourthmc",
+     "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+     "ref.macaque_arm_hand_mutation.body.midph2",
+     "ref.macaque_arm_hand_mutation.body.midph3",
+     "ref.macaque_arm_hand_mutation.body.midph4",
+     "ref.macaque_arm_hand_mutation.body.midph5",
+     "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+     "ref.macaque_arm_hand_mutation.body.proxph2",
+     "ref.macaque_arm_hand_mutation.body.proxph3",
+     "ref.macaque_arm_hand_mutation.body.proxph4",
+     "ref.macaque_arm_hand_mutation.body.proxph5",
+     "ref.macaque_arm_hand_mutation.body.secondmc",
+     "ref.macaque_arm_hand_mutation.body.thirdmc"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "xray",
+    "tag_bindings": [
+     {
+      "label_id": "axis +X (anchor frame)",
+      "subject_id": "axis.+X"
+     },
+     {
+      "label_id": "axis +Y (anchor frame)",
+      "subject_id": "axis.+Y"
+     },
+     {
+      "label_id": "axis +Z (anchor frame)",
+      "subject_id": "axis.+Z"
+     },
+     {
+      "label_id": "ext_digitorum:ext_digitorum-P3",
+      "subject_id": "muscle_anchor.ext_digitorum.ext_digitorum-P3"
+     },
+     {
+      "label_id": "ext_digitorum:ext_digitorum-P2",
+      "subject_id": "muscle_anchor.ext_digitorum.ext_digitorum-P2"
+     },
+     {
+      "label_id": "flex_digit_profundus:flex_digit_profundus-P4",
+      "subject_id": "muscle_anchor.flex_digit_profundus.flex_digit_profundus-P4"
+     },
+     {
+      "label_id": "firstmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.firstmc"
+     },
+     {
+      "label_id": "proximal_thumb",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proximal_thumb"
+     },
+     {
+      "label_id": "distal_thumb",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distal_thumb"
+     },
+     {
+      "label_id": "secondmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.secondmc"
+     },
+     {
+      "label_id": "proxph2",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph2"
+     },
+     {
+      "label_id": "midph2",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph2"
+     },
+     {
+      "label_id": "distph2",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph2"
+     },
+     {
+      "label_id": "thirdmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.thirdmc"
+     },
+     {
+      "label_id": "proxph3",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph3"
+     },
+     {
+      "label_id": "midph3",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph3"
+     },
+     {
+      "label_id": "distph3",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph3"
+     },
+     {
+      "label_id": "fourthmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.fourthmc"
+     },
+     {
+      "label_id": "proxph4",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph4"
+     },
+     {
+      "label_id": "midph4",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph4"
+     },
+     {
+      "label_id": "distph4",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph4"
+     },
+     {
+      "label_id": "fifthmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.fifthmc"
+     },
+     {
+      "label_id": "proxph5",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph5"
+     },
+     {
+      "label_id": "midph5",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph5"
+     },
+     {
+      "label_id": "distph5",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph5"
+     },
+     {
+      "label_id": "anchor (macaque hand body origin)",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor"
+     }
+    ]
+   },
+   "cell_layout_note": "single viewport"
+  },
+  {
+   "view_id": "whole-creature overview",
+   "mode": "clean",
+   "pair_id": "pair-overview",
+   "artifact_locator": {
+    "kind": "image",
+    "region": "pixel_rectangle",
+    "pixel_rectangle": [
+     0,
+     720,
+     1280,
+     720
+    ]
+   },
+   "camera": {
+    "view_id": "whole-creature overview",
+    "frame_id": "macaque_arm_hand_mutation_frame",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "+Y",
+    "up_axis": "+Z",
+    "position": [
+     0.0,
+     -0.04,
+     0.3505
+    ],
+    "target": [
+     0.0,
+     -0.04,
+     0.0005
+    ],
+    "distance_to_target": 0.35,
+    "orientation": [
+     0.7071067811865476,
+     -0.7071067811865475,
+     0.0,
+     -0.0
+    ],
+    "projection": "orthographic",
+    "orthographic_span": 0.12,
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "aspect_ratio": 1.7777777777777777,
+    "viewport_resolution": [
+     1280,
+     720
+    ],
+    "sample_mode": "fixed_bookmark",
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single static pose at tick 0 (visible_static profile)",
+    "samples": [
+     {
+      "tick": 0,
+      "position": [
+       0.0,
+       -0.04,
+       0.3505
+      ],
+      "target": [
+       0.0,
+       -0.04,
+       0.0005
+      ],
+      "distance_to_target": 0.35,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ]
+     }
+    ],
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+   },
+   "state_binding": {
+    "kind": "state",
+    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "note": "sha256 of mutation_structure.json (static derived structure state)"
+   },
+   "visibility": {
+    "layers": [],
+    "label_ids": [],
+    "selected_ids": [],
+    "required_subject_ids": [
+     "mutation_skeleton/all_19_digit_bodies",
+     "envelope/macaque_hand_vtp_point_cloud",
+     "anchor/macaque_hand_body_origin"
+    ],
+    "observed_subject_ids": [
+     "mutation_skeleton/all_19_digit_bodies",
+     "envelope/macaque_hand_vtp_point_cloud",
+     "anchor/macaque_hand_body_origin"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "depth_tested",
+    "tag_bindings": []
+   },
+   "cell_layout_note": "clean row: identical cameras and state to its diagnostic pair; no labels/layers by design"
+  },
+  {
+   "view_id": "local attachment close-up",
+   "mode": "diagnostic",
+   "pair_id": "pair-closeup",
+   "artifact_locator": {
+    "kind": "image",
+    "region": "pixel_rectangle",
+    "pixel_rectangle": [
+     0,
+     1440,
+     1280,
+     720
+    ]
+   },
+   "camera": {
+    "view_id": "local attachment close-up",
+    "frame_id": "macaque_arm_hand_mutation_frame",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "+Y",
+    "up_axis": "+Z",
+    "position": [
+     0.002,
+     -0.026,
+     0.182
+    ],
+    "target": [
+     0.002,
+     -0.026,
+     0.002
+    ],
+    "distance_to_target": 0.18,
+    "orientation": [
+     0.7071067811865476,
+     -0.7071067811865475,
+     0.0,
+     -0.0
+    ],
+    "projection": "orthographic",
+    "orthographic_span": 0.06,
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "aspect_ratio": 1.7777777777777777,
+    "viewport_resolution": [
+     1280,
+     720
+    ],
+    "sample_mode": "fixed_bookmark",
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single static pose at tick 0 (visible_static profile)",
+    "samples": [
+     {
+      "tick": 0,
+      "position": [
+       0.002,
+       -0.026,
+       0.182
+      ],
+      "target": [
+       0.002,
+       -0.026,
+       0.002
+      ],
+      "distance_to_target": 0.18,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ]
+     }
+    ],
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+   },
+   "state_binding": {
+    "kind": "state",
+    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "note": "sha256 of mutation_structure.json (static derived structure state)"
+   },
+   "visibility": {
+    "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
+     "frame axes",
+     "stable 3D labels"
+    ],
+    "label_ids": [
+     "axis +X (anchor frame)",
+     "axis +Y (anchor frame)",
+     "axis +Z (anchor frame)",
+     "ext_digitorum:ext_digitorum-P3",
+     "ext_digitorum:ext_digitorum-P2",
+     "flex_digit_profundus:flex_digit_profundus-P4",
+     "firstmc",
+     "proximal_thumb",
+     "distal_thumb",
+     "secondmc",
+     "proxph2",
+     "midph2",
+     "distph2",
+     "thirdmc",
+     "proxph3",
+     "midph3",
+     "distph3",
+     "fourthmc",
+     "proxph4",
+     "midph4",
+     "distph4",
+     "fifthmc",
+     "proxph5",
+     "midph5",
+     "distph5",
+     "anchor (macaque hand body origin)"
+    ],
+    "selected_ids": [
+     "axis.+X",
+     "axis.+Y",
+     "axis.+Z",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P2",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P3",
+     "muscle_anchor.flex_digit_profundus.flex_digit_profundus-P4",
+     "ref.macaque_arm_hand_mutation.body.distal_thumb",
+     "ref.macaque_arm_hand_mutation.body.distph2",
+     "ref.macaque_arm_hand_mutation.body.distph3",
+     "ref.macaque_arm_hand_mutation.body.distph4",
+     "ref.macaque_arm_hand_mutation.body.distph5",
+     "ref.macaque_arm_hand_mutation.body.fifthmc",
+     "ref.macaque_arm_hand_mutation.body.firstmc",
+     "ref.macaque_arm_hand_mutation.body.fourthmc",
+     "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+     "ref.macaque_arm_hand_mutation.body.midph2",
+     "ref.macaque_arm_hand_mutation.body.midph3",
+     "ref.macaque_arm_hand_mutation.body.midph4",
+     "ref.macaque_arm_hand_mutation.body.midph5",
+     "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+     "ref.macaque_arm_hand_mutation.body.proxph2",
+     "ref.macaque_arm_hand_mutation.body.proxph3",
+     "ref.macaque_arm_hand_mutation.body.proxph4",
+     "ref.macaque_arm_hand_mutation.body.proxph5",
+     "ref.macaque_arm_hand_mutation.body.secondmc",
+     "ref.macaque_arm_hand_mutation.body.thirdmc"
+    ],
+    "required_subject_ids": [
+     "ref.macaque_arm_hand_mutation.body.firstmc",
+     "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+     "ref.macaque_arm_hand_mutation.body.distal_thumb",
+     "ref.macaque_arm_hand_mutation.body.secondmc",
+     "ref.macaque_arm_hand_mutation.body.proxph2",
+     "ref.macaque_arm_hand_mutation.body.midph2",
+     "ref.macaque_arm_hand_mutation.body.distph2",
+     "ref.macaque_arm_hand_mutation.body.thirdmc",
+     "ref.macaque_arm_hand_mutation.body.proxph3",
+     "ref.macaque_arm_hand_mutation.body.midph3",
+     "ref.macaque_arm_hand_mutation.body.distph3",
+     "ref.macaque_arm_hand_mutation.body.fourthmc",
+     "ref.macaque_arm_hand_mutation.body.proxph4",
+     "ref.macaque_arm_hand_mutation.body.midph4",
+     "ref.macaque_arm_hand_mutation.body.distph4",
+     "ref.macaque_arm_hand_mutation.body.fifthmc",
+     "ref.macaque_arm_hand_mutation.body.proxph5",
+     "ref.macaque_arm_hand_mutation.body.midph5",
+     "ref.macaque_arm_hand_mutation.body.distph5",
+     "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor"
+    ],
+    "observed_subject_ids": [
+     "axis.+X",
+     "axis.+Y",
+     "axis.+Z",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P2",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P3",
+     "muscle_anchor.flex_digit_profundus.flex_digit_profundus-P4",
+     "ref.macaque_arm_hand_mutation.body.distal_thumb",
+     "ref.macaque_arm_hand_mutation.body.distph2",
+     "ref.macaque_arm_hand_mutation.body.distph3",
+     "ref.macaque_arm_hand_mutation.body.distph4",
+     "ref.macaque_arm_hand_mutation.body.distph5",
+     "ref.macaque_arm_hand_mutation.body.fifthmc",
+     "ref.macaque_arm_hand_mutation.body.firstmc",
+     "ref.macaque_arm_hand_mutation.body.fourthmc",
+     "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+     "ref.macaque_arm_hand_mutation.body.midph2",
+     "ref.macaque_arm_hand_mutation.body.midph3",
+     "ref.macaque_arm_hand_mutation.body.midph4",
+     "ref.macaque_arm_hand_mutation.body.midph5",
+     "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+     "ref.macaque_arm_hand_mutation.body.proxph2",
+     "ref.macaque_arm_hand_mutation.body.proxph3",
+     "ref.macaque_arm_hand_mutation.body.proxph4",
+     "ref.macaque_arm_hand_mutation.body.proxph5",
+     "ref.macaque_arm_hand_mutation.body.secondmc",
+     "ref.macaque_arm_hand_mutation.body.thirdmc"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "xray",
+    "tag_bindings": [
+     {
+      "label_id": "axis +X (anchor frame)",
+      "subject_id": "axis.+X"
+     },
+     {
+      "label_id": "axis +Y (anchor frame)",
+      "subject_id": "axis.+Y"
+     },
+     {
+      "label_id": "axis +Z (anchor frame)",
+      "subject_id": "axis.+Z"
+     },
+     {
+      "label_id": "ext_digitorum:ext_digitorum-P3",
+      "subject_id": "muscle_anchor.ext_digitorum.ext_digitorum-P3"
+     },
+     {
+      "label_id": "ext_digitorum:ext_digitorum-P2",
+      "subject_id": "muscle_anchor.ext_digitorum.ext_digitorum-P2"
+     },
+     {
+      "label_id": "flex_digit_profundus:flex_digit_profundus-P4",
+      "subject_id": "muscle_anchor.flex_digit_profundus.flex_digit_profundus-P4"
+     },
+     {
+      "label_id": "firstmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.firstmc"
+     },
+     {
+      "label_id": "proximal_thumb",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proximal_thumb"
+     },
+     {
+      "label_id": "distal_thumb",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distal_thumb"
+     },
+     {
+      "label_id": "secondmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.secondmc"
+     },
+     {
+      "label_id": "proxph2",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph2"
+     },
+     {
+      "label_id": "midph2",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph2"
+     },
+     {
+      "label_id": "distph2",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph2"
+     },
+     {
+      "label_id": "thirdmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.thirdmc"
+     },
+     {
+      "label_id": "proxph3",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph3"
+     },
+     {
+      "label_id": "midph3",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph3"
+     },
+     {
+      "label_id": "distph3",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph3"
+     },
+     {
+      "label_id": "fourthmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.fourthmc"
+     },
+     {
+      "label_id": "proxph4",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph4"
+     },
+     {
+      "label_id": "midph4",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph4"
+     },
+     {
+      "label_id": "distph4",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph4"
+     },
+     {
+      "label_id": "fifthmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.fifthmc"
+     },
+     {
+      "label_id": "proxph5",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph5"
+     },
+     {
+      "label_id": "midph5",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph5"
+     },
+     {
+      "label_id": "distph5",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph5"
+     },
+     {
+      "label_id": "anchor (macaque hand body origin)",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor"
+     }
+    ]
+   },
+   "cell_layout_note": "single viewport"
+  },
+  {
+   "view_id": "local attachment close-up",
+   "mode": "clean",
+   "pair_id": "pair-closeup",
+   "artifact_locator": {
+    "kind": "image",
+    "region": "pixel_rectangle",
+    "pixel_rectangle": [
+     0,
+     2160,
+     1280,
+     720
+    ]
+   },
+   "camera": {
+    "view_id": "local attachment close-up",
+    "frame_id": "macaque_arm_hand_mutation_frame",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "+Y",
+    "up_axis": "+Z",
+    "position": [
+     0.002,
+     -0.026,
+     0.182
+    ],
+    "target": [
+     0.002,
+     -0.026,
+     0.002
+    ],
+    "distance_to_target": 0.18,
+    "orientation": [
+     0.7071067811865476,
+     -0.7071067811865475,
+     0.0,
+     -0.0
+    ],
+    "projection": "orthographic",
+    "orthographic_span": 0.06,
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "aspect_ratio": 1.7777777777777777,
+    "viewport_resolution": [
+     1280,
+     720
+    ],
+    "sample_mode": "fixed_bookmark",
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single static pose at tick 0 (visible_static profile)",
+    "samples": [
+     {
+      "tick": 0,
+      "position": [
+       0.002,
+       -0.026,
+       0.182
+      ],
+      "target": [
+       0.002,
+       -0.026,
+       0.002
+      ],
+      "distance_to_target": 0.18,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ]
+     }
+    ],
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+   },
+   "state_binding": {
+    "kind": "state",
+    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "note": "sha256 of mutation_structure.json (static derived structure state)"
+   },
+   "visibility": {
+    "layers": [],
+    "label_ids": [],
+    "selected_ids": [],
+    "required_subject_ids": [
+     "mutation_skeleton/all_19_digit_bodies",
+     "envelope/macaque_hand_vtp_point_cloud",
+     "anchor/macaque_hand_body_origin"
+    ],
+    "observed_subject_ids": [
+     "mutation_skeleton/all_19_digit_bodies",
+     "envelope/macaque_hand_vtp_point_cloud",
+     "anchor/macaque_hand_body_origin"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "depth_tested",
+    "tag_bindings": []
+   },
+   "cell_layout_note": "clean row: identical cameras and state to its diagnostic pair; no labels/layers by design"
+  },
+  {
+   "view_id": "orthogonal side and oblique views",
+   "mode": "diagnostic",
+   "pair_id": "pair-sideoblique",
+   "artifact_locator": {
+    "kind": "image",
+    "region": "pixel_rectangle",
+    "pixel_rectangle": [
+     0,
+     2880,
+     1280,
+     720
+    ]
+   },
+   "camera": {
+    "view_id": "orthogonal side and oblique views",
+    "frame_id": "macaque_arm_hand_mutation_frame",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "+Y",
+    "up_axis": "+Z",
+    "position": [
+     0.3,
+     -0.042,
+     0.001
+    ],
+    "target": [
+     0.0,
+     -0.042,
+     0.001
+    ],
+    "distance_to_target": 0.3,
+    "orientation": [
+     0.7071067811865476,
+     0.0,
+     0.0,
+     0.7071067811865475
+    ],
+    "projection": "orthographic",
+    "orthographic_span": 0.1,
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "aspect_ratio": 0.8888888888888888,
+    "viewport_resolution": [
+     640,
+     720
+    ],
+    "sample_mode": "fixed_bookmark",
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single static pose at tick 0 (visible_static profile)",
+    "samples": [
+     {
+      "tick": 0,
+      "position": [
+       0.3,
+       -0.042,
+       0.001
+      ],
+      "target": [
+       0.0,
+       -0.042,
+       0.001
+      ],
+      "distance_to_target": 0.3,
+      "orientation": [
+       0.7071067811865476,
+       0.0,
+       0.0,
+       0.7071067811865475
+      ]
+     }
+    ],
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41...",
+    "secondary_cameras": [
+     {
+      "view_id": "orthogonal side and oblique views",
+      "frame_id": "macaque_arm_hand_mutation_frame",
+      "coordinate_unit": "m",
+      "handedness": "right",
+      "orientation_convention": "quaternion_wxyz_camera_to_frame",
+      "forward_axis": "+Y",
+      "up_axis": "+Z",
+      "position": [
+       0.2598076211353316,
+       -0.19200000000000003,
+       0.001
+      ],
+      "target": [
+       0.0,
+       -0.042,
+       0.001
+      ],
+      "distance_to_target": 0.30000000000000004,
+      "orientation": [
+       0.8660254037844387,
+       0.0,
+       0.0,
+       0.5
+      ],
+      "projection": "orthographic",
+      "orthographic_span": 0.1,
+      "near_far_planes": [
+       0.001,
+       2.0
+      ],
+      "aspect_ratio": 0.8888888888888888,
+      "viewport_resolution": [
+       640,
+       720
+      ],
+      "sample_mode": "fixed_bookmark",
+      "camera_motion_or_bookmark_sequence": "fixed_bookmark: single static pose at tick 0 (visible_static profile)",
+      "samples": [
+       {
+        "tick": 0,
+        "position": [
+         0.2598076211353316,
+         -0.19200000000000003,
+         0.001
+        ],
+        "target": [
+         0.0,
+         -0.042,
+         0.001
+        ],
+        "distance_to_target": 0.30000000000000004,
+        "orientation": [
+         0.8660254037844387,
+         0.0,
+         0.0,
+         0.5
+        ]
+       }
+      ],
+      "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+     }
+    ]
+   },
+   "state_binding": {
+    "kind": "state",
+    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "note": "sha256 of mutation_structure.json (static derived structure state)"
+   },
+   "visibility": {
+    "layers": [
+     "outer envelope",
+     "selected bones/joints",
+     "muscle/tendon paths",
+     "attachment sites",
+     "frame axes",
+     "stable 3D labels"
+    ],
+    "label_ids": [
+     "axis +X (anchor frame)",
+     "axis +Y (anchor frame)",
+     "axis +Z (anchor frame)",
+     "ext_digitorum:ext_digitorum-P3",
+     "ext_digitorum:ext_digitorum-P2",
+     "flex_digit_profundus:flex_digit_profundus-P4",
+     "firstmc",
+     "proximal_thumb",
+     "distal_thumb",
+     "secondmc",
+     "proxph2",
+     "midph2",
+     "distph2",
+     "thirdmc",
+     "proxph3",
+     "midph3",
+     "distph3",
+     "fourthmc",
+     "proxph4",
+     "midph4",
+     "distph4",
+     "fifthmc",
+     "proxph5",
+     "midph5",
+     "distph5",
+     "anchor (macaque hand body origin)"
+    ],
+    "selected_ids": [
+     "axis.+X",
+     "axis.+Y",
+     "axis.+Z",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P2",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P3",
+     "muscle_anchor.flex_digit_profundus.flex_digit_profundus-P4",
+     "ref.macaque_arm_hand_mutation.body.distal_thumb",
+     "ref.macaque_arm_hand_mutation.body.distph2",
+     "ref.macaque_arm_hand_mutation.body.distph3",
+     "ref.macaque_arm_hand_mutation.body.distph4",
+     "ref.macaque_arm_hand_mutation.body.distph5",
+     "ref.macaque_arm_hand_mutation.body.fifthmc",
+     "ref.macaque_arm_hand_mutation.body.firstmc",
+     "ref.macaque_arm_hand_mutation.body.fourthmc",
+     "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+     "ref.macaque_arm_hand_mutation.body.midph2",
+     "ref.macaque_arm_hand_mutation.body.midph3",
+     "ref.macaque_arm_hand_mutation.body.midph4",
+     "ref.macaque_arm_hand_mutation.body.midph5",
+     "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+     "ref.macaque_arm_hand_mutation.body.proxph2",
+     "ref.macaque_arm_hand_mutation.body.proxph3",
+     "ref.macaque_arm_hand_mutation.body.proxph4",
+     "ref.macaque_arm_hand_mutation.body.proxph5",
+     "ref.macaque_arm_hand_mutation.body.secondmc",
+     "ref.macaque_arm_hand_mutation.body.thirdmc"
+    ],
+    "required_subject_ids": [
+     "ref.macaque_arm_hand_mutation.body.firstmc",
+     "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+     "ref.macaque_arm_hand_mutation.body.distal_thumb",
+     "ref.macaque_arm_hand_mutation.body.secondmc",
+     "ref.macaque_arm_hand_mutation.body.proxph2",
+     "ref.macaque_arm_hand_mutation.body.midph2",
+     "ref.macaque_arm_hand_mutation.body.distph2",
+     "ref.macaque_arm_hand_mutation.body.thirdmc",
+     "ref.macaque_arm_hand_mutation.body.proxph3",
+     "ref.macaque_arm_hand_mutation.body.midph3"
+    ],
+    "observed_subject_ids": [
+     "axis.+X",
+     "axis.+Y",
+     "axis.+Z",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P2",
+     "muscle_anchor.ext_digitorum.ext_digitorum-P3",
+     "muscle_anchor.flex_digit_profundus.flex_digit_profundus-P4",
+     "ref.macaque_arm_hand_mutation.body.distal_thumb",
+     "ref.macaque_arm_hand_mutation.body.distph2",
+     "ref.macaque_arm_hand_mutation.body.distph3",
+     "ref.macaque_arm_hand_mutation.body.distph4",
+     "ref.macaque_arm_hand_mutation.body.distph5",
+     "ref.macaque_arm_hand_mutation.body.fifthmc",
+     "ref.macaque_arm_hand_mutation.body.firstmc",
+     "ref.macaque_arm_hand_mutation.body.fourthmc",
+     "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor",
+     "ref.macaque_arm_hand_mutation.body.midph2",
+     "ref.macaque_arm_hand_mutation.body.midph3",
+     "ref.macaque_arm_hand_mutation.body.midph4",
+     "ref.macaque_arm_hand_mutation.body.midph5",
+     "ref.macaque_arm_hand_mutation.body.proximal_thumb",
+     "ref.macaque_arm_hand_mutation.body.proxph2",
+     "ref.macaque_arm_hand_mutation.body.proxph3",
+     "ref.macaque_arm_hand_mutation.body.proxph4",
+     "ref.macaque_arm_hand_mutation.body.proxph5",
+     "ref.macaque_arm_hand_mutation.body.secondmc",
+     "ref.macaque_arm_hand_mutation.body.thirdmc"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "xray",
+    "tag_bindings": [
+     {
+      "label_id": "axis +X (anchor frame)",
+      "subject_id": "axis.+X"
+     },
+     {
+      "label_id": "axis +Y (anchor frame)",
+      "subject_id": "axis.+Y"
+     },
+     {
+      "label_id": "axis +Z (anchor frame)",
+      "subject_id": "axis.+Z"
+     },
+     {
+      "label_id": "ext_digitorum:ext_digitorum-P3",
+      "subject_id": "muscle_anchor.ext_digitorum.ext_digitorum-P3"
+     },
+     {
+      "label_id": "ext_digitorum:ext_digitorum-P2",
+      "subject_id": "muscle_anchor.ext_digitorum.ext_digitorum-P2"
+     },
+     {
+      "label_id": "flex_digit_profundus:flex_digit_profundus-P4",
+      "subject_id": "muscle_anchor.flex_digit_profundus.flex_digit_profundus-P4"
+     },
+     {
+      "label_id": "firstmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.firstmc"
+     },
+     {
+      "label_id": "proximal_thumb",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proximal_thumb"
+     },
+     {
+      "label_id": "distal_thumb",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distal_thumb"
+     },
+     {
+      "label_id": "secondmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.secondmc"
+     },
+     {
+      "label_id": "proxph2",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph2"
+     },
+     {
+      "label_id": "midph2",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph2"
+     },
+     {
+      "label_id": "distph2",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph2"
+     },
+     {
+      "label_id": "thirdmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.thirdmc"
+     },
+     {
+      "label_id": "proxph3",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph3"
+     },
+     {
+      "label_id": "midph3",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph3"
+     },
+     {
+      "label_id": "distph3",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph3"
+     },
+     {
+      "label_id": "fourthmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.fourthmc"
+     },
+     {
+      "label_id": "proxph4",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph4"
+     },
+     {
+      "label_id": "midph4",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph4"
+     },
+     {
+      "label_id": "distph4",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph4"
+     },
+     {
+      "label_id": "fifthmc",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.fifthmc"
+     },
+     {
+      "label_id": "proxph5",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.proxph5"
+     },
+     {
+      "label_id": "midph5",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.midph5"
+     },
+     {
+      "label_id": "distph5",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.distph5"
+     },
+     {
+      "label_id": "anchor (macaque hand body origin)",
+      "subject_id": "ref.macaque_arm_hand_mutation.body.macaque_hand_anchor"
+     }
+    ]
+   },
+   "cell_layout_note": "left viewport of two (primary camera); right viewport is the declared secondary oblique camera"
+  },
+  {
+   "view_id": "orthogonal side and oblique views",
+   "mode": "clean",
+   "pair_id": "pair-sideoblique",
+   "artifact_locator": {
+    "kind": "image",
+    "region": "pixel_rectangle",
+    "pixel_rectangle": [
+     0,
+     3600,
+     1280,
+     720
+    ]
+   },
+   "camera": {
+    "view_id": "orthogonal side and oblique views",
+    "frame_id": "macaque_arm_hand_mutation_frame",
+    "coordinate_unit": "m",
+    "handedness": "right",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "forward_axis": "+Y",
+    "up_axis": "+Z",
+    "position": [
+     0.3,
+     -0.042,
+     0.001
+    ],
+    "target": [
+     0.0,
+     -0.042,
+     0.001
+    ],
+    "distance_to_target": 0.3,
+    "orientation": [
+     0.7071067811865476,
+     0.0,
+     0.0,
+     0.7071067811865475
+    ],
+    "projection": "orthographic",
+    "orthographic_span": 0.1,
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "aspect_ratio": 0.8888888888888888,
+    "viewport_resolution": [
+     640,
+     720
+    ],
+    "sample_mode": "fixed_bookmark",
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: single static pose at tick 0 (visible_static profile)",
+    "samples": [
+     {
+      "tick": 0,
+      "position": [
+       0.3,
+       -0.042,
+       0.001
+      ],
+      "target": [
+       0.0,
+       -0.042,
+       0.001
+      ],
+      "distance_to_target": 0.3,
+      "orientation": [
+       0.7071067811865476,
+       0.0,
+       0.0,
+       0.7071067811865475
+      ]
+     }
+    ],
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41...",
+    "secondary_cameras": [
+     {
+      "view_id": "orthogonal side and oblique views",
+      "frame_id": "macaque_arm_hand_mutation_frame",
+      "coordinate_unit": "m",
+      "handedness": "right",
+      "orientation_convention": "quaternion_wxyz_camera_to_frame",
+      "forward_axis": "+Y",
+      "up_axis": "+Z",
+      "position": [
+       0.2598076211353316,
+       -0.19200000000000003,
+       0.001
+      ],
+      "target": [
+       0.0,
+       -0.042,
+       0.001
+      ],
+      "distance_to_target": 0.30000000000000004,
+      "orientation": [
+       0.8660254037844387,
+       0.0,
+       0.0,
+       0.5
+      ],
+      "projection": "orthographic",
+      "orthographic_span": 0.1,
+      "near_far_planes": [
+       0.001,
+       2.0
+      ],
+      "aspect_ratio": 0.8888888888888888,
+      "viewport_resolution": [
+       640,
+       720
+      ],
+      "sample_mode": "fixed_bookmark",
+      "camera_motion_or_bookmark_sequence": "fixed_bookmark: single static pose at tick 0 (visible_static profile)",
+      "samples": [
+       {
+        "tick": 0,
+        "position": [
+         0.2598076211353316,
+         -0.19200000000000003,
+         0.001
+        ],
+        "target": [
+         0.0,
+         -0.042,
+         0.001
+        ],
+        "distance_to_target": 0.30000000000000004,
+        "orientation": [
+         0.8660254037844387,
+         0.0,
+         0.0,
+         0.5
+        ]
+       }
+      ],
+      "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+     }
+    ]
+   },
+   "state_binding": {
+    "kind": "state",
+    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "note": "sha256 of mutation_structure.json (static derived structure state)"
+   },
+   "visibility": {
+    "layers": [],
+    "label_ids": [],
+    "selected_ids": [],
+    "required_subject_ids": [
+     "mutation_skeleton/all_19_digit_bodies",
+     "envelope/macaque_hand_vtp_point_cloud",
+     "anchor/macaque_hand_body_origin"
+    ],
+    "observed_subject_ids": [
+     "mutation_skeleton/all_19_digit_bodies",
+     "envelope/macaque_hand_vtp_point_cloud",
+     "anchor/macaque_hand_body_origin"
+    ],
+    "missing_subject_ids": [],
+    "occlusion_mode": "depth_tested",
+    "tag_bindings": []
+   },
+   "cell_layout_note": "clean row: identical cameras and state to its diagnostic pair; no labels/layers by design"
+  }
+ ]
+}
