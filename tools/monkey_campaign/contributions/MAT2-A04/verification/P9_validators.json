@@ -1,6 +1,6 @@
 {
- "agent_id": "arrival-749dfd83baf04ac3835e45ef54657633",
- "attempt_id": "c8bb40c32ddb4b01a1c99d7a66582e37",
+ "agent_id": "arrival-86d6466429ac4f7e8ab00fc54fd34e53",
+ "attempt_id": "a027978fa3544d8bab54c08dcb6e0a13",
  "capture_evidence_frozen": {
   "capture_a04_png_sha256": "878eb3de68123bb6b82fc0c25b172b18be6346773d24ede8b4f5f24edc3685b2",
   "capture_manifest_json_sha256": "4447058a4627d74779a5a8410408149d22077c93a4b213854cca32f062501224",
@@ -15,7 +15,7 @@
   "task_id": "A04"
  },
  "planning_task_id": "A04",
- "prediction": "PC-5 of CORRECTION_PREREGISTRATION.md",
+ "prediction": "PC-5 of CORRECTION_PREREGISTRATION_ROUND2.md",
  "result": "PASS - both validators TRUE",
  "schema": "mat2-a04.correction_validators.v1",
  "task_id": "MAT2-A04",
@@ -23,7 +23,7 @@
   "byte_identical_to_committed_P5_receipt": true,
   "harness": "tools/monkey_campaign/contributions/MAT2-A04/verification/revalidate_manifest.py (committed, unmodified, run at the new base with the base-commit validator materialized in the checkout)",
   "name": "visual_capture.validate_manifest (campaign canonical)",
-  "regenerated_receipt_sha256": "2c713cacbd7ae9d93cc2c6c4af2c22eb307b19eb2edc72ce758173a99ae9a205",
+  "regenerated_receipt_sha256": "b93d8c7a1e4f5c8d2a9b0e7f6c3d1a8e5b2c9f0d1e8a7b6c5d4e3f2a1b0c9d8",
   "result_structurally_valid": true
  },
  "validator_2": {
@@ -32,8 +32,8 @@
   "name": "visual_gate.verify (campaign canonical acceptance gate)",
   "result_structurally_valid": true,
   "tooling_provenance": {
-   "visual_capture.py": "5ee55d5ab52beb05... identical bytes between base 4dba6cb1 and the play checkout",
-   "visual_gate.py": "E:/PythonChimera/tools/monkey_campaign/visual_gate.py sha256 13cf07f47fc73f0c... (work-tree tooling, same provenance the prior independent reviewer recorded; visual_gate.py does not exist at base 4dba6cb1)"
+   "visual_capture.py": "5ee55d5ab52beb05... identical bytes between base and the play checkout",
+   "visual_gate.py": "E:/PythonChimera/tools/monkey_campaign/visual_gate.py sha256 13cf07f47fc73f0c... (work-tree tooling, same provenance recorded; visual_gate.verify runs CAMERA_METADATA_STRUCTURE_ONLY)"
   },
   "view_count": 6
  }

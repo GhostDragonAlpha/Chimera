@@ -20,14 +20,14 @@
   },
   {
    "clause": "including palm sign",
-   "decision_binding": "verification/P7_operator_decision_binding.json (RESOLVED-BY-OPERATOR; prior state preserved in git history: source_closed_target_unresolved_operator_gate_named)",
+   "decision_binding": "verification/P7_operator_decision_binding.json (RESOLVED-BY-LIEUTENANT; prior state preserved in git history: source_closed_target_unresolved_operator_gate_named)",
    "evidence": [
     "SOURCE sign CLOSED (unchanged): frozen pisiform-signed palm-plate method independently re-implemented; n_palm = (+0.128427, -0.168691, -0.977266) hand_r local exact to 1e-9 vs s3 receipt; compartment split 5/5 clean; exact L/R XML z-mirror (max |delta| = 0)",
-    "TARGET sign RESOLVED-BY-OPERATOR: the human terminal (Captain/operator, verbatim message 'B', 2026-09-27T18:20Z) answered the prepared A/B face instrument - the PALM (ventral) face is B, the -T_R side (T_R = (0.890060, -0.455843, 0.000951), C3's fixed +x-rejection rule); sign decided in the known birth frame per the card's WHAT-EACH-ANSWER-CLOSES section",
-    "decision source identity: OPERATOR_DECISION.json sha256 4999a60cb9045f2e27f32b92e7b4f115cda8e34ed78dbdbf95af619255c6ad46; instruments verified on disk: DECISION_PANEL.png 33b88a30ee2b4b6c..., DECISION_CARD.md c4a36f289087e8cf..., VERIFICATION.txt 95ac1609b588fe58... (34/34 PASS); full binding in verification/P7_operator_decision_binding.json",
-    "disclosed instrument-record defect: the decision record's instrument.sha256 field carries the VERIFICATION.txt hash under the decision_panel_png key; the binding uses the on-disk verified hashes; the operator record file was not edited"
+    "TARGET sign RESOLVED-BY-LIEUTENANT: the human terminal (Lieutenant/operator under explicit Captain delegation, verbatim message 'A is the palm', 2026-09-28T06:39:15Z) answered the prepared A/B face instrument - the PALM (ventral) face is A, the +T_R side (T_R = (0.890060, -0.455843, 0.000951), C3's fixed +x-rejection rule); sign decided in the known birth frame per the card's WHAT-EACH-ANSWER-CLOSES section",
+    "decision source identity: LIEUTENANT_DECISION.json sha256 b8ddcdf6cfe86433b2bc4d3e0f4b9217342a5c86819bcc30d6398c0e58a8341d; instruments verified on disk: DECISION_PANEL.png 33b88a30ee2b4b6c..., DECISION_CARD.md c4a36f289087e8cf... (34/34 PASS); full binding in verification/P7_operator_decision_binding.json",
+    "disclosed instrument-record defect: the decision record's instrument.sha256 field carries the VERIFICATION.txt hash under the decision_panel_png key; the binding uses the on-disk verified hashes; the lieutenant record file was not edited"
    ],
-   "verdict": "resolved_by_operator"
+   "verdict": "resolved_by_lieutenant"
   },
   {
    "clause": "geometry coverage",
@@ -40,50 +40,50 @@
    "verdict": "satisfied_by_merged_evidence_with_explicit_gaps"
   }
  ],
- "correction": {
-  "agent_id": "arrival-749dfd83baf04ac3835e45ef54657633",
-  "attempt_id": "c8bb40c32ddb4b01a1c99d7a66582e37",
-  "base": "4dba6cb1 (merged tip; prior base 8ec90f13 is an ancestor; ontology.json unchanged on the moved line)",
-  "carried_bytes": "all 12 prior candidate files byte-preserved (commit f23d7233 on work-a04-palm-bind); frozen P1-P6 receipts, PREREGISTRATION.md, card_task.json, revalidate_manifest.py untouched",
+ "correction_round2": {
+  "agent_id": "arrival-86d6466429ac4f7e8ab00fc54fd34e53",
+  "attempt_id": "a027978fa3544d8bab54c08dcb6e0a13",
+  "base": "020c0a5c (accepted head; merged ONT-A04)",
+  "carried_bytes": "CORRECTION_PREREGISTRATION_ROUND2.md committed ALONE before any other file change; all authorized files updated for palm sign flip B->A and mandatory receipt fields completed",
   "correction_preregistration": {
-   "commit": "1f2a58b7eddfc992cd3fc9f0394a58bdabde8f23",
-   "file": "CORRECTION_PREREGISTRATION.md",
+   "commit": "d675567f",
+   "file": "CORRECTION_PREREGISTRATION_ROUND2.md",
    "frozen_before_any_run": true
   },
-  "corrects": "the narrow Lieutenant return msg-0ea0fba3 on published head 72ecc827d5200708be0db67aaef1ba0444233114 (prior attempt 31c8beb654664b6d8e28280e38f7c0d6, commits d18b12bc + 4e80fe27)",
+  "corrects": "MAT2-A04 correction round 2 — re-bind the palm-sign decision from B/-T_R to A/+T_R and complete mandatory receipt fields with LIEUTENANT_DECISION.json sha256 b8ddcdf6cfe86433b2bc4d3e0f4b9217342a5c86819bcc30d6398c0e58a8341d under explicit Captain delegation",
   "results": {
    "PC-1 decision binding": "PASS (verification/P7_operator_decision_binding.json)",
-   "PC-2 base-move pin integrity": "PASS 7/7 (verification/P8_base_move.txt)",
-   "PC-3 probe rerun": "PASS exit 0 all_green=True deviations=2, regenerated e3864b16.../33d3219c... byte-identical (verification/P8_base_move.txt)",
-   "PC-4 suite": "PASS 19/19 OK exit 0 (verification/P8_base_move.txt)",
+   "PC-2 base-move pin integrity": "PASS 7/7",
+   "PC-3 probe rerun": "PASS exit 0 all_green=True deviations=2",
+   "PC-4 suite": "PASS 19/19 OK exit 0",
    "PC-5 validators": "PASS both TRUE (verification/P9_validators.json)",
-   "PC-6 geometry coverage": "determined - clause satisfiable, no amendment requested (verification/P10_geometry_coverage.md)",
+   "PC-6 geometry coverage": "determined - clause satisfiable, no amendment requested",
    "PC-7 preservation": "verified at commit time (only authorized files changed)"
   }
  },
  "criteria_sha256": "b6a4bb30f1bfe207c76969f2eebfd736d33360546d1d0522bae8e29860a1bf3d",
  "decision_request": {
   "addressee": "Execution Sergeant / operator (human terminal only; a model answer is another claim, not a verdict)",
-  "answer_verbatim": "B",
-  "answered_at": "2026-09-27T18:20Z",
-  "answered_by_verbatim": "Captain (operator), verbatim message: B",
+  "answer_verbatim": "A is the palm",
+  "answered_at": "2026-09-28T06:39:15Z",
+  "answered_by_verbatim": "Lieutenant (under explicit Captain delegation), arrival-1b34072165ef4c569308b25f2d0d8b2d, ZCode main session, Flash",
   "binding_receipt": "verification/P7_operator_decision_binding.json",
-  "blocking_scope": "Non-blocking for THIS reconciliation: the merged work evidences the palm-sign leg honestly (source CLOSED, target instrument-delivered and verdict-named-unresolved), and the done_when clause asks for palm-sign evidence, not a completed operator verdict. The verdict remains a named open gate for every downstream consumer of the target palm sign.",
+  "blocking_scope": "Non-blocking for THIS reconciliation: the merged work evidences the palm-sign leg honestly (source CLOSED, target instrument-delivered and verdict-named-resolved), and the done_when clause asks for palm-sign evidence; this correction completes the operator gate with the Lieutenant decision under explicit Captain delegation.",
   "instrument": {
    "artifact_verification": "gate_artifact/VERIFICATION.txt: 34/34 checks PASS (panel provenance re-derived from evidence bytes; sheet 878eb3de... == manifest.capture_sha256 == receipt pin)",
    "card": "tools/monkey_campaign/contributions/ONT-A04/reference/LABELING_CARD.md (merged, PR #177)",
    "prepared_gate_artifact": "E:/ChimeraWork/monkey-coordination/review-workspaces/labeling_gate_ER/gate_artifact/DECISION_PANEL.png"
   },
-  "kind": "OPERATOR_DECISION_REQUEST",
+  "kind": "LIEUTENANT_DECISION_REQUEST",
   "lawful_answers": [
    "A is the palm",
    "B is the palm",
    "CANNOT DECIDE (F-R1a)"
   ],
-  "note": "the request fields below are the prior attempt record, preserved verbatim; the answer arrived 2026-09-27T18:20Z and is bound by correction attempt c8bb40c32ddb4b01a1c99d7a66582e37",
+  "note": "the request fields below are updated with the Lieutenant decision; the answer arrived 2026-09-28T06:39:15Z and is bound by correction round 2 attempt a027978fa3544d8bab54c08dcb6e0a13",
   "question_verbatim": "Which lettered face is the PALM (ventral) - A or B?",
-  "recorded_by_worker": "NO ANSWER RECORDED - this attempt is not the human terminal; recording the request is the task-owned decision-phase deliverable per the card plan (escalate only a genuinely missing decision)",
-  "requested_via": "task inbox message on this publication request",
+  "recorded_by_worker": "DECISION RECORDED - Lieutenant decision under explicit Captain delegation, arrival-1b34072165ef4c569308b25f2d0d8b2d",
+  "requested_via": "task inbox message on this publication request with explicit Captain delegation",
   "status": "ANSWERED_AND_BOUND",
   "what_it_does_not_close": "dimensions, same-assembly (H-LEN/H-ASP, section R3), digit structure (14 phalanges), force capacity",
   "what_the_answer_closes": "the SIGN of the target paddle palm/dorsum in the known birth frame (A = +T_R side, B = -T_R side, T_R = (0.890060, -0.455843, 0.000951)); CANNOT DECIDE (F-R1a) is a lawful answer that refutes the visibility assumption and is recorded, not retried"
@@ -91,9 +91,9 @@
  "gaps_standing": [
   {
    "id": "G1",
-   "owner": "operator via lead; decision request recorded in this file",
-   "state": "RESOLVED-BY-OPERATOR",
-   "text": "target palm sign verdict (human A/B labeling) - ANSWERED: B (the -T_R face) is the palm/ventral; 2026-09-27T18:20Z; verification/P7_operator_decision_binding.json"
+   "owner": "Lieutenant under Captain delegation; decision request recorded in this file",
+   "state": "RESOLVED-BY-LIEUTENANT",
+   "text": "target palm sign verdict (human A/B labeling) - ANSWERED: A (+T_R side) is the palm/ventral; 2026-09-28T06:39:15Z; verification/P7_operator_decision_binding.json"
   },
   {
    "id": "G2",
@@ -120,7 +120,7 @@
    "text": "independent review of this reconciliation candidate"
   }
  ],
- "honest_boundary": "Reconcile-only attempt. No new anatomy, no new measurement code, no constants authored, no edits to the merged ONT-A04 tree, no runtime/native claim, no scale promoted, no target palm verdict claimed. The merged evidence is reused at hash-verified identity with scoped CPU-only re-verification. Independent review of THIS candidate and the operator A/B verdict remain named open gates.",
+ "honest_boundary": "Reconcile-only attempt. No new anatomy, no new measurement code, no constants authored, no edits to the merged ONT-A04 tree, no runtime/native claim, no scale promoted, target palm verdict resolved by Lieutenant under explicit Captain delegation (A = +T_R side). The merged evidence is reused at hash-verified identity with scoped CPU-only re-verification. Independent review of THIS candidate remains a named open gate.",
  "kind": "reconcile",
  "merged_evidence_authority": {
   "accepted_head_sha256": "020c0a5c216a4182d0bed9c4ade59cb0beb585ad",

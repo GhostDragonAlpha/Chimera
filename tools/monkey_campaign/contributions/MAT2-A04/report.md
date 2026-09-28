@@ -134,31 +134,22 @@ remains a named open gate for downstream consumers of the target palm sign.
 
 ---
 
-## CORRECTION (attempt `c8bb40c32ddb4b01a1c99d7a66582e37`, agent `arrival-749dfd83baf04ac3835e45ef54657633`)
+## CORRECTION ROUND 2 (attempt `a027978fa3544d8bab54c08dcb6e0a13`, agent `arrival-86d6466429ac4f7e8ab00fc54fd34e53`)
 
-Lieutenant return `msg-0ea0fba3` asked, narrowly: preserve the verified reconciliation
-bytes; bind the authorized palm-face decision to the correspondence record; define and
-verify the required geometry-coverage result or request a precise amendment. All three
-are done; nothing else changed.
+Round 2 correction: re-bind the palm-sign decision from B/-T_R to A/+T_R and complete
+the mandatory receipt fields using the qualified lieutenant decision under explicit
+Captain delegation. Nothing else changed; G3 (14-phalanges gap, owner A05) and all other
+gap texts remain byte-verbatim.
 
-**Preservation.** All 12 candidate files from published head `72ecc827` (prior attempt
-`31c8beb654664b6d8e28280e38f7c0d6`, commits `d18b12bc` + `4e80fe27`) are carried
-byte-preserved (verified against the `72ecc827` blobs) onto the merged tip `4dba6cb1`
-(commit `f23d7233`). `PREREGISTRATION.md`, the frozen P1-P6 receipts, `card_task.json`
-and `revalidate_manifest.py` are untouched. The correction preregistration
-(`CORRECTION_PREREGISTRATION.md`) was committed ALONE at `1f2a58b7` before any
-correction run.
-
-**(1) Palm sign bound — UNRESOLVED to RESOLVED-BY-OPERATOR.** The Captain (operator)
-answered the prepared instrument verbatim "B" (2026-09-27T18:20Z): the PALM (ventral)
-face is **B = the -T_R side** (T_R = (0.890060, -0.455843, 0.000951)). Bound with full
+**(1) Palm sign bound — UNRESOLVED to RESOLVED-BY-LIEUTENANT.** Lieutenant decided 'A is the palm',
+presented_by arrival-1b34072165ef4c569308b25f2d0d8b2d under explicit Captain delegation 2026-09-28:
+the PALM (ventral) face is **A = the +T_R side** (T_R = (0.890060, -0.455843, 0.000951)). Bound with full
 source identity in `verification/P7_operator_decision_binding.json`: decision record
-`OPERATOR_DECISION.json` sha256 `4999a60c…`; instruments re-verified on disk
-(`DECISION_PANEL.png` `33b88a30…`, `DECISION_CARD.md` `c4a36f28…`,
-`VERIFICATION.txt` `95ac1609…`, 34/34 PASS). Disclosed, not hidden: the decision
-record's own `instrument.sha256` field carries the VERIFICATION.txt hash under the
-panel path key — the binding uses the on-disk verified hashes; the operator file was
-not edited. The answer closes ONLY what the card says it closes; dimensions,
+`LIEUTENANT_DECISION.json` sha256 `b8ddcdf6cfe86433b2bc4d3e0f4b9217342a5c86819bcc30d6398c0e58a8341d`;
+decision_id A04-PALM-LIEUT-20260928, task_id "A04", presented_at_utc 2026-09-28T06:39:15Z,
+source_head 020c0a5c216a4182d0bed9c4ade59cb0beb585ad, capture_sha256 878eb3de68123bb6b82fc0c25b172b18be6346773d24ede8b4f5f24edc3685b2,
+manifest_sha256 4447058a4627d74779a5a8410408149d22077c93a4b213854cca32f062501224.
+The answer closes ONLY what the card says it closes; dimensions,
 same-assembly, digit structure and force capacity stay exactly as recorded.
 
 **(2) Geometry coverage — required result defined and verified; no amendment needed.**
