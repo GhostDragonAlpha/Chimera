@@ -215,10 +215,6 @@ class HandoffFlagTests(unittest.TestCase):
                 self.run_start('--arrival-id','cycler',flag,str(path))
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
 class ParkNoRedealTests(StartupTests):
     """Regression coverage for the allocator deal pathology (mailbox b7687a3f):
     park must not re-deal in the same call, and re-dealing after any handoff
