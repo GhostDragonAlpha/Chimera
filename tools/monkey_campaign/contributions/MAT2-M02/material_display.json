@@ -1,0 +1,843 @@
+{
+ "kind": "mat2_m02_region_display",
+ "objects": [
+  {
+   "object_id": "monkey-arm-regions",
+   "revision": 1,
+   "canonical_sha256": "51767d1fd33c4002041a31764158dbd75ded27b4bec4c1ecb63453d87cfb316a",
+   "summary": {
+    "object_id": "monkey-arm-regions",
+    "revision": 1,
+    "region_count": 7,
+    "shell_count": 2,
+    "region_ids": [
+     "clavicle",
+     "hand",
+     "humerus",
+     "radius",
+     "scapula",
+     "sternum",
+     "ulna"
+    ],
+    "matter_count": 7,
+    "owner_count": 7,
+    "reference_count": 0,
+    "total_mass_kg": 7.005999999999999,
+    "direction_count": 0,
+    "law_count": 0,
+    "contact_count": 0,
+    "bond_count": 6,
+    "port_count": 7,
+    "renames": {},
+    "schema": "chimera.material_state.v1"
+   },
+   "total_mass_once_kg": 7.005999999999999,
+   "regions": [
+    {
+     "id": "clavicle",
+     "kind": "region",
+     "triangles": 156,
+     "vertices": 80,
+     "closure": "closed_outward_consistent",
+     "open_edge_count": 0,
+     "signed_volume_m3": 1.3101298443114225e-06,
+     "surface_area_m2": 0.0012050371206310541,
+     "bounds_m": [
+      [
+       -0.001254468,
+       -0.0035374050000000004,
+       -0.045706134
+      ],
+      [
+       0.033511215999999996,
+       0.022499469,
+       0.003142419
+      ]
+     ],
+     "source_units_to_m": [
+      0.001,
+      0.001,
+      0.001
+     ],
+     "shell_thickness_m": null,
+     "matter_claims": {
+      "mass_clavicle": "owner"
+     },
+     "render_to_physics": "identity"
+    },
+    {
+     "id": "hand",
+     "kind": "shell",
+     "triangles": 3724,
+     "vertices": 1920,
+     "closure": "open_surface",
+     "open_edge_count": 18,
+     "signed_volume_m3": null,
+     "surface_area_m2": 0.0029687658919266523,
+     "bounds_m": [
+      [
+       -0.0124375,
+       -0.0837075,
+       -0.00152775
+      ],
+      [
+       0.020731000000000003,
+       -0.00010125000000000001,
+       0.004639750000000001
+      ]
+     ],
+     "source_units_to_m": [
+      0.001,
+      0.001,
+      0.001
+     ],
+     "shell_thickness_m": null,
+     "matter_claims": {
+      "mass_hand": "owner"
+     },
+     "render_to_physics": "identity"
+    },
+    {
+     "id": "humerus",
+     "kind": "region",
+     "triangles": 464,
+     "vertices": 234,
+     "closure": "closed_outward_consistent",
+     "open_edge_count": 0,
+     "signed_volume_m3": 1.2504681471383375e-05,
+     "surface_area_m2": 0.005955672466433878,
+     "bounds_m": [
+      [
+       -0.009926191,
+       -0.12989674099999998,
+       -0.0136898
+      ],
+      [
+       0.013402453,
+       0.009416281,
+       0.014682085000000001
+      ]
+     ],
+     "source_units_to_m": [
+      0.001,
+      0.001,
+      0.001
+     ],
+     "shell_thickness_m": null,
+     "matter_claims": {
+      "mass_humerus": "owner"
+     },
+     "render_to_physics": "identity"
+    },
+    {
+     "id": "radius",
+     "kind": "region",
+     "triangles": 222,
+     "vertices": 113,
+     "closure": "closed_outward_consistent",
+     "open_edge_count": 0,
+     "signed_volume_m3": 5.0558415568324745e-06,
+     "surface_area_m2": 0.0036546868600412096,
+     "bounds_m": [
+      [
+       -0.007044638,
+       -0.137812523,
+       -0.009810871
+      ],
+      [
+       0.017654734000000002,
+       0.001748324,
+       0.006446365
+      ]
+     ],
+     "source_units_to_m": [
+      0.001,
+      0.001,
+      0.001
+     ],
+     "shell_thickness_m": null,
+     "matter_claims": {
+      "mass_radius": "owner"
+     },
+     "render_to_physics": "identity"
+    },
+    {
+     "id": "scapula",
+     "kind": "shell",
+     "triangles": 358,
+     "vertices": 180,
+     "closure": "open_surface",
+     "open_edge_count": 10,
+     "signed_volume_m3": null,
+     "surface_area_m2": 0.00726254837144141,
+     "bounds_m": [
+      [
+       -0.05543015,
+       -0.047756708,
+       -0.049731802000000006
+      ],
+      [
+       0.005005801,
+       0.017625026,
+       0.009428616999999999
+      ]
+     ],
+     "source_units_to_m": [
+      0.001,
+      0.001,
+      0.001
+     ],
+     "shell_thickness_m": null,
+     "matter_claims": {
+      "mass_scapula": "owner"
+     },
+     "render_to_physics": "identity"
+    },
+    {
+     "id": "sternum",
+     "kind": "region",
+     "triangles": 16,
+     "vertices": 10,
+     "closure": "closed_outward_consistent",
+     "open_edge_count": 0,
+     "signed_volume_m3": 2.6493280581797473e-07,
+     "surface_area_m2": 0.000888288093934399,
+     "bounds_m": [
+      [
+       0.026174625,
+       -0.036350375,
+       -0.05670000000000001
+      ],
+      [
+       0.04110562500000001,
+       0.004639000000000001,
+       -0.04725
+      ]
+     ],
+     "source_units_to_m": [
+      0.001,
+      0.001,
+      0.001
+     ],
+     "shell_thickness_m": null,
+     "matter_claims": {
+      "mass_sternum": "owner"
+     },
+     "render_to_physics": "identity"
+    },
+    {
+     "id": "ulna",
+     "kind": "region",
+     "triangles": 444,
+     "vertices": 224,
+     "closure": "closed_outward_consistent",
+     "open_edge_count": 0,
+     "signed_volume_m3": 5.699077518562791e-06,
+     "surface_area_m2": 0.003829158130633911,
+     "bounds_m": [
+      [
+       -0.01745347,
+       -0.141516132,
+       -0.00595906
+      ],
+      [
+       0.00436281,
+       0.016454631,
+       0.0072987880000000005
+      ]
+     ],
+     "source_units_to_m": [
+      0.001,
+      0.001,
+      0.001
+     ],
+     "shell_thickness_m": null,
+     "matter_claims": {
+      "mass_ulna": "owner"
+     },
+     "render_to_physics": "identity"
+    }
+   ],
+   "bonds": [
+    {
+     "id": "bond_sternum_clavicle_joint",
+     "status": "source_declared",
+     "endpoints": [
+      {
+       "region_id": "sternum",
+       "port": "surface"
+      },
+      {
+       "region_id": "clavicle",
+       "port": "surface"
+      }
+     ],
+     "transfers": "force_moment"
+    },
+    {
+     "id": "bond_radius_hand_joint",
+     "status": "source_declared",
+     "endpoints": [
+      {
+       "region_id": "radius",
+       "port": "surface"
+      },
+      {
+       "region_id": "hand",
+       "port": "surface"
+      }
+     ],
+     "transfers": "force_moment"
+    },
+    {
+     "id": "bond_scapula_humerus_joint",
+     "status": "source_declared",
+     "endpoints": [
+      {
+       "region_id": "scapula",
+       "port": "surface"
+      },
+      {
+       "region_id": "humerus",
+       "port": "surface"
+      }
+     ],
+     "transfers": "force_moment"
+    },
+    {
+     "id": "bond_ulna_radius_joint",
+     "status": "source_declared",
+     "endpoints": [
+      {
+       "region_id": "ulna",
+       "port": "surface"
+      },
+      {
+       "region_id": "radius",
+       "port": "surface"
+      }
+     ],
+     "transfers": "force_moment"
+    },
+    {
+     "id": "bond_clavicle_scapula_joint",
+     "status": "source_declared",
+     "endpoints": [
+      {
+       "region_id": "clavicle",
+       "port": "surface"
+      },
+      {
+       "region_id": "scapula",
+       "port": "surface"
+      }
+     ],
+     "transfers": "force_moment"
+    },
+    {
+     "id": "bond_humerus_ulna_joint",
+     "status": "source_declared",
+     "endpoints": [
+      {
+       "region_id": "humerus",
+       "port": "surface"
+      },
+      {
+       "region_id": "ulna",
+       "port": "surface"
+      }
+     ],
+     "transfers": "force_moment"
+    }
+   ],
+   "absent_internal_anatomy": [
+    "no skin or fat surface geometry exists in the pinned source; none compiled",
+    "no muscle volume geometry: the 39 source muscles are 1D path points only",
+    "no organs or internal tissue surfaces; the compiled regions are bone surface segments only",
+    "no layer thicknesses: bone surfaces declare shell_thickness_m null; declaring one would fabricate tissue",
+    "no material directions and no pressure/deformation laws are declared; none is inferred from geometry (deferred to downstream cards)"
+   ],
+   "intersection_check": {
+    "frame": "world at default pose (admitted world_from_local)",
+    "pairs": [
+     {
+      "pair": [
+       "clavicle",
+       "hand"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "clavicle",
+       "humerus"
+      ],
+      "aabb_overlap": true,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "clavicle",
+       "radius"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "clavicle",
+       "scapula"
+      ],
+      "aabb_overlap": true,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "clavicle",
+       "sternum"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "clavicle",
+       "ulna"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "hand",
+       "humerus"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "hand",
+       "radius"
+      ],
+      "aabb_overlap": true,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "hand",
+       "scapula"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "hand",
+       "sternum"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "hand",
+       "ulna"
+      ],
+      "aabb_overlap": true,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "humerus",
+       "radius"
+      ],
+      "aabb_overlap": true,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "humerus",
+       "scapula"
+      ],
+      "aabb_overlap": true,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "humerus",
+       "sternum"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "humerus",
+       "ulna"
+      ],
+      "aabb_overlap": true,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "radius",
+       "scapula"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "radius",
+       "sternum"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "radius",
+       "ulna"
+      ],
+      "aabb_overlap": true,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "scapula",
+       "sternum"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "scapula",
+       "ulna"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "sternum",
+       "ulna"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     }
+    ],
+    "intersecting_pair_count": 0,
+    "note": "measured overlaps between body-surface segments; segment masses stay single-owned regardless"
+   }
+  },
+  {
+   "object_id": "independent-shape-regions",
+   "revision": 1,
+   "canonical_sha256": "23995548570aaaac41fccfe9fb0e6cdbee1f7a3f25b151989ce4289be463ceed",
+   "summary": {
+    "object_id": "independent-shape-regions",
+    "revision": 1,
+    "region_count": 2,
+    "shell_count": 1,
+    "region_ids": [
+     "plate",
+     "tetra"
+    ],
+    "matter_count": 2,
+    "owner_count": 2,
+    "reference_count": 0,
+    "total_mass_kg": 0.13999999999999999,
+    "direction_count": 0,
+    "law_count": 0,
+    "contact_count": 0,
+    "bond_count": 0,
+    "port_count": 2,
+    "renames": {},
+    "schema": "chimera.material_state.v1"
+   },
+   "total_mass_once_kg": 0.13999999999999999,
+   "regions": [
+    {
+     "id": "plate",
+     "kind": "shell",
+     "triangles": 2,
+     "vertices": 4,
+     "closure": "open_surface",
+     "open_edge_count": 4,
+     "signed_volume_m3": null,
+     "surface_area_m2": 0.020000000000000004,
+     "bounds_m": [
+      [
+       -0.015862098980028133,
+       -0.10897700048296842,
+       0.099682085
+      ],
+      [
+       0.18413790101997188,
+       -0.008977000482968414,
+       0.099682085
+      ]
+     ],
+     "source_units_to_m": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "shell_thickness_m": 0.002,
+     "matter_claims": {
+      "mass_plate": "owner"
+     },
+     "render_to_physics": "identity"
+    },
+    {
+     "id": "tetra",
+     "kind": "region",
+     "triangles": 4,
+     "vertices": 4,
+     "closure": "closed_outward_consistent",
+     "open_edge_count": 0,
+     "signed_volume_m3": 0.00016666666666666682,
+     "surface_area_m2": 0.023660254037844386,
+     "bounds_m": [
+      [
+       0.3237059520399438,
+       -0.14045346996593683,
+       -0.05670000000000001
+      ],
+      [
+       0.42370595203994377,
+       -0.04045346996593682,
+       0.0433
+      ]
+     ],
+     "source_units_to_m": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "shell_thickness_m": null,
+     "matter_claims": {
+      "mass_tetra": "owner"
+     },
+     "render_to_physics": "identity"
+    }
+   ],
+   "bonds": [],
+   "absent_internal_anatomy": [
+    "no skin or fat surface geometry exists in the pinned source; none compiled",
+    "no muscle volume geometry: the 39 source muscles are 1D path points only",
+    "no organs or internal tissue surfaces; the compiled regions are bone surface segments only",
+    "no layer thicknesses: bone surfaces declare shell_thickness_m null; declaring one would fabricate tissue",
+    "no material directions and no pressure/deformation laws are declared; none is inferred from geometry (deferred to downstream cards)"
+   ],
+   "intersection_check": {
+    "frame": "world",
+    "pairs": [
+     {
+      "pair": [
+       "plate",
+       "tetra"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "clavicle",
+       "plate"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "clavicle",
+       "tetra"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "hand",
+       "plate"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "hand",
+       "tetra"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "humerus",
+       "plate"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "humerus",
+       "tetra"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "plate",
+       "radius"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "plate",
+       "scapula"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "plate",
+       "sternum"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "plate",
+       "tetra"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "plate",
+       "ulna"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "radius",
+       "tetra"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "scapula",
+       "tetra"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "sternum",
+       "tetra"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     },
+     {
+      "pair": [
+       "tetra",
+       "ulna"
+      ],
+      "aabb_overlap": false,
+      "triangle_pairs_intersecting": 0,
+      "intersecting": false
+     }
+    ],
+    "intersecting_pair_count": 0,
+    "note": "independent shape disjoint from every compiled region (frozen placement margins)"
+   }
+  }
+ ],
+ "mesh_blob": {
+  "file": "monkey_arm_independent_meshes.json",
+  "sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+  "region_keys": [
+   "clavicle",
+   "hand",
+   "humerus",
+   "plate",
+   "radius",
+   "scapula",
+   "sternum",
+   "tetra",
+   "ulna"
+  ]
+ },
+ "world_bounds_note": "world_vertices_m in the mesh blob carry the admitted default-pose transforms; regions render from the blob only",
+ "display_honesty": {
+  "kind": "compiled_region_display_with_real_triangle_geometry",
+  "visual_clause": "CAPTURED_SEPARATELY: the motion-profile capture (3D orthographic views of these exact triangle sets) is built in the attempt capture workspace and validated with visual_capture.validate_manifest; visual acceptance belongs to the independent reviewer",
+  "numerical_clause": "PASSED_HERE: test_material_regions.py (142 frozen probes: P1-P9, P11, F1-F5) on this revision",
+  "absent": [
+   "force vectors (no solver at revision 1)",
+   "energy/work (no solver at revision 1)",
+   "material directions (none declared, none inferred)",
+   "contacts (none declared; bonds are the source joint chains)",
+   "shell thickness on bone surfaces (none used, none invented)"
+  ]
+ },
+ "compile_receipt": {
+  "base_revision": "c4650f0a8a321353d5409ce6244aa5e6a2fe61b2",
+  "extraction_revision": "eafbc15161ae10ae95b62d07d3f4878aefa34d9d",
+  "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834"
+ }
+}
