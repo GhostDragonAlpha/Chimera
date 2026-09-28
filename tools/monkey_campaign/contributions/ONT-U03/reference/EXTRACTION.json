@@ -1,0 +1,20 @@
+{
+ "files": {
+  "tools/monkey_campaign/agents/U01_input/PREREGISTRATION.md": "0aadc3cd5fec7e7bd0a7aba0bcfa2a5d05edf8fcb6805eda2ecae92d4d3d1b5f",
+  "tools/monkey_campaign/agents/U01_input/discovery_note.md": "38efdf393bd03b7b1260896e917231f2968963a501a180f4fc01491a02b30849",
+  "tools/monkey_campaign/agents/U01_input/receipts/input_mapper_tests_20260924.txt": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c",
+  "tools/monkey_campaign/agents/U03_focus/PREREGISTRATION.md": "f078f1fd0ae1db22eb130ec8f2534c6ffce0c98b82b0c36106a9bde8e510d531",
+  "tools/monkey_campaign/agents/U03_focus/brief.md": "3156ab60e40535b25a136d36589c060d0a556c6b950bdf98a92c84f12c1cb801",
+  "tools/monkey_campaign/agents/U03_focus/receipts/focus_policy_tests_20260924.txt": "3e31524f765697290469fcba5f35b11524e9a916e6c9e6d2800aad32e2967552",
+  "tools/monkey_campaign/product/focus_policy.py": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+  "tools/monkey_campaign/product/focus_policy_tests.py": "f1d7a2fd39dca37729532c41a74f2d061e6d7fc95dedb3da564d13b2b4304fa9",
+  "tools/monkey_campaign/product/follow_camera.py": "d61347f085644e66a5f29ab1e689e2bbd2cd5ff04099856ade70e5da90a791a7",
+  "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+  "tools/monkey_campaign/product/input_mapper_tests.py": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e",
+  "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e"
+ },
+ "method": "git show PIN:<path> (read-only); no checkout, no branch switch",
+ "pinned_revision": "9afbddcd90164b5544a16fd0bc72278d985eb6e3",
+ "schema": "chimera.ont_u03.reference_extraction.v1",
+ "source_repository": "E:/ChimeraWork/monkey-play-20260924"
+}

@@ -1,0 +1,83 @@
+{
+ "gate_validation": {
+  "capture_kind": "video",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "controls",
+  "structurally_valid": true,
+  "view_count": 6,
+  "visual_acceptance": false
+ },
+ "honest_boundary": "Deterministic CPU visualization of the recorded headless focus-policy trace (trace.jsonl); NOT native engine frames; 'alt-tab' is the policy's DECLARED on_blur event, never an OS focus change; the native playable-runtime checkpoint stays with the integration lane.",
+ "manifest": {
+  "raw_sha256": "361b26992b166b3139181190b8e517268d02b98e30a03ec69bad1c9283023c56",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U03\\593b5ff8b920461581bb715826613ad7\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U03\\evidence\\capture_manifest.json"
+ },
+ "render_referents": {
+  "clean_segments": "rendered as their OWN frames; a decoded clean view contains no diagnostic pixels",
+  "frame": "monkey_session_world_yup_m (right-handed, Y-up, metres)",
+  "projection": "perspective 45 deg vertical FOV (tan_half 0.41421356), principal point centered",
+  "source_module": "tools/monkey_campaign/product/follow_camera.py @ 9afbddcd (d61347f0); subject focus_policy.py (e0b23968)"
+ },
+ "run_id": "ont-u03-focus-policy-20260926-593b5ff8",
+ "schema": "ont-u03.controls.capture.v1",
+ "state_binding": {
+  "kind": "trace",
+  "raw_sha256": "2dd6f2995d0d2987e0f9054346688bdcfdb27962b3cd9ed876619e386d17192f",
+  "rows": 69,
+  "tick_interval": [
+   0,
+   68
+  ]
+ },
+ "subject_sha256": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+ "task_id": "U03",
+ "video": {
+  "bytes": 242450,
+  "duration_s": 20.7,
+  "encoder": "ffmpeg libx264 yuv420p crf=23 bitexact threads=1",
+  "fps": 20,
+  "frames": 414,
+  "raw_sha256": "adae7561713afd235c6140ea4ef4bb99496e25e5916a35bcade9a6280c536b1f",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-U03\\593b5ff8b920461581bb715826613ad7\\checkout\\tools\\monkey_campaign\\contributions\\ONT-U03\\evidence\\capture.mp4",
+  "resolution": [
+   640,
+   360
+  ]
+ },
+ "views": {
+  "normal follow-camera distance": {
+   "camera": "sampled_trajectory recorded_each_tick (REAL pinned FollowCamera applied solution per tick)",
+   "clean_seconds": [
+    3.45,
+    6.9
+   ],
+   "diagnostic_seconds": [
+    0.0,
+    3.45
+   ]
+  },
+  "obstructed and close-target views": {
+   "camera": "sampled_trajectory recorded_each_tick (frozen through-pillar construction; measured occlusion ray per tick)",
+   "clean_seconds": [
+    10.35,
+    13.8
+   ],
+   "diagnostic_seconds": [
+    6.9,
+    10.35
+   ]
+  },
+  "repeatable inspection side view": {
+   "camera": "fixed_bookmark engine side bookmark (radius 12, theta pi/2, phi 0.3, target origin) identical all 69 samples",
+   "clean_seconds": [
+    17.25,
+    20.7
+   ],
+   "diagnostic_seconds": [
+    13.8,
+    17.25
+   ]
+  }
+ }
+}
