@@ -1,0 +1,99 @@
+{
+ "schema": "chimera.passive_law.v1",
+ "revision": 1,
+ "object_id": "mat2-m04-arm-rigid-laws",
+ "source_documents": [
+  {
+   "id": "monkey_arm_regions",
+   "path": "tools/monkey_campaign/contributions/MAT2-M02/monkey_arm_regions.json",
+   "object_id": "monkey-arm-regions",
+   "canonical_sha256": "51767d1fd33c4002041a31764158dbd75ded27b4bec4c1ecb63453d87cfb316a"
+  },
+  {
+   "id": "independent_shape_regions",
+   "path": "tools/monkey_campaign/contributions/MAT2-M02/independent_shape_regions.json",
+   "object_id": "independent-shape-regions",
+   "canonical_sha256": "23995548570aaaac41fccfe9fb0e6cdbee1f7a3f25b151989ce4289be463ceed"
+  },
+  {
+   "id": "mesh_blob",
+   "path": "tools/monkey_campaign/contributions/MAT2-M02/monkey_arm_independent_meshes.json",
+   "object_id": "mat2-m02-mesh-blob",
+   "canonical_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834"
+  }
+ ],
+ "gauges": [],
+ "profiles": [
+  {
+   "id": "rigid",
+   "constitutive_equation": "x = 0 for any load in range; transmits F_out = F_in exactly; U = Q = 0",
+   "parameters": {},
+   "source_status": "synthetic_authored",
+   "damping": null,
+   "valid_strain_range": [
+    0.0,
+    0.0
+   ],
+   "rest_state": "no strain state exists; rest geometry is the only geometry"
+  }
+ ],
+ "directions": [],
+ "assignments": [
+  {
+   "region_id": "sternum",
+   "profile_id": "rigid",
+   "gauge_id": null,
+   "direction_id": null,
+   "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+  },
+  {
+   "region_id": "clavicle",
+   "profile_id": "rigid",
+   "gauge_id": null,
+   "direction_id": null,
+   "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+  },
+  {
+   "region_id": "scapula",
+   "profile_id": "rigid",
+   "gauge_id": null,
+   "direction_id": null,
+   "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+  },
+  {
+   "region_id": "humerus",
+   "profile_id": "rigid",
+   "gauge_id": null,
+   "direction_id": null,
+   "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+  },
+  {
+   "region_id": "ulna",
+   "profile_id": "rigid",
+   "gauge_id": null,
+   "direction_id": null,
+   "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+  },
+  {
+   "region_id": "radius",
+   "profile_id": "rigid",
+   "gauge_id": null,
+   "direction_id": null,
+   "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+  },
+  {
+   "region_id": "hand",
+   "profile_id": "rigid",
+   "gauge_id": null,
+   "direction_id": null,
+   "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+  }
+ ],
+ "provenance": {
+  "card": "MAT2-M04",
+  "planning_id": "M04",
+  "attempt": "262e9d2a30ae4c4b82d84de7de9661a1",
+  "note": "all seven compiled arm regions rigid; no compliant or fiber profile assigned to any arm region because no soft tissue exists in the compiled inputs; density is never an input to stiffness",
+  "schema_gap_note": "M01 material_state.v1 'laws' rows are closed at kind pressure_deformation; passive laws are declared in this chimera.passive_law.v1 document until the schema vocabulary is extended by serial integration"
+ }
+}

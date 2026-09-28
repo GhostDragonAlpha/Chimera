@@ -1,0 +1,423 @@
+{
+ "schema": "chimera.material_state.v1",
+ "revision": 1,
+ "object_id": "independent-shape-regions",
+ "provenance": {
+  "base_revision": "c4650f0a8a321353d5409ce6244aa5e6a2fe61b2",
+  "source_receipt_revision": "4fb7dddeec06a0df9525c18f37234a824cb1b5b1",
+  "extraction_revision": "eafbc15161ae10ae95b62d07d3f4878aefa34d9d",
+  "source_license": "MIT",
+  "data_root": "tools/monkey_campaign/contributions/MAT2-M02/data/macaque_arm (byte-verified extraction of tools/science_funnel/data/macaque_arm at the recorded revision)",
+  "unit_convention": "source VTP geometry is millimetre-scaled; admitted graph pins source_units_to_m [0.001, 0.001, 0.001] (data/graph_pins.json); compiled geometry is metres",
+  "tools": {
+   "compiler": "tools/monkey_campaign/contributions/MAT2-M02/compile_material_regions.py",
+   "compiler_sha256": "0c9cc7896cf58e3cbe8f3134fe454adb5675c205c62d632eef30ee97782825a5",
+   "input_builder": "tools/monkey_campaign/contributions/MAT2-M02/build_pinned_inputs.py",
+   "schema_authority": "tools/monkey_campaign/contributions/MAT2-M01/material_state.py (unmodified M01 validator)",
+   "schema_authority_sha256": "b6b009713daa4b315c6b5cb43c7ad4e756123b50edcdd802eeebd55c6afd6c40",
+   "vtp_parser": "vendored credited adaptation of qualified tools/science_funnel/macaque_anatomy.py read_vtp + mesh_metrics at revision eafbc15161ae10ae95b62d07d3f4878aefa34d9d (Amendment A1); output verified against the admitted graph-pinned metrics"
+  },
+  "decisions": [
+   "region ids reuse the source body names (stable pinned identities)",
+   "kinds follow the frozen closure rule: closed outward-consistent meshes are regions; open meshes (scapula, hand) are shells and carry no volume claim",
+   "bonds are the source-declared OpenSim joint chains between geometry-bearing bodies; containment does not exist here (all regions are roots) and no contact is implied by proximity",
+   "no directions or laws are compiled: none can be inferred from surface geometry without inventing material structure",
+   "measured region intersections are reported in intersection_check; region ownership keeps every matter id owned exactly once regardless of overlap",
+   "self-intersection within one source mesh is NOT claimed either way (source qualification limit carried from the graph)"
+  ],
+  "absent_internal_anatomy": [
+   "no skin or fat surface geometry exists in the pinned source; none compiled",
+   "no muscle volume geometry: the 39 source muscles are 1D path points only",
+   "no organs or internal tissue surfaces; the compiled regions are bone surface segments only",
+   "no layer thicknesses: bone surfaces declare shell_thickness_m null; declaring one would fabricate tissue",
+   "no material directions and no pressure/deformation laws are declared; none is inferred from geometry (deferred to downstream cards)"
+  ],
+  "independent_shape": {
+   "definition": "authored analytic right tetrahedron (0.1 m orthogonal edges) + authored open square plate (0.2 m x 0.1 m, authored thickness 0.002 m)",
+   "independence": "derived from no macaque or repository geometry; exact analytic values are the preregistered predictions",
+   "placement_offsets_m": {
+    "tetra": [
+     0.3237059520399438,
+     -0.14045346996593683,
+     -0.05670000000000001
+    ],
+    "plate": [
+     -0.015862098980028133,
+     -0.10897700048296842,
+     0.099682085
+    ]
+   },
+   "measured_gaps_m": {
+    "to_arm": [
+     {
+      "region": "tetra",
+      "gap_m": 0.10000000000000003
+     },
+     {
+      "region": "plate",
+      "gap_m": 0.08
+     }
+    ],
+    "tetra_plate": 0.1395680510199719
+   }
+  },
+  "mesh_blob": {
+   "file": "monkey_arm_independent_meshes.json",
+   "sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834"
+  },
+  "intersection_check": {
+   "frame": "world",
+   "pairs": [
+    {
+     "pair": [
+      "plate",
+      "tetra"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "clavicle",
+      "plate"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "clavicle",
+      "tetra"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "hand",
+      "plate"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "hand",
+      "tetra"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "humerus",
+      "plate"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "humerus",
+      "tetra"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "plate",
+      "radius"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "plate",
+      "scapula"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "plate",
+      "sternum"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "plate",
+      "tetra"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "plate",
+      "ulna"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "radius",
+      "tetra"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "scapula",
+      "tetra"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "sternum",
+      "tetra"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    },
+    {
+     "pair": [
+      "tetra",
+      "ulna"
+     ],
+     "aabb_overlap": false,
+     "triangle_pairs_intersecting": 0,
+     "intersecting": false
+    }
+   ],
+   "intersecting_pair_count": 0,
+   "note": "independent shape disjoint from every compiled region (frozen placement margins)"
+  },
+  "mat2_m04_directions": "direction rows declared by MAT2-M04 (attempt 262e9d2a30ae4c4b82d84de7de9661a1) through the unmodified M01 direction schema; no law rows added because M01 law kinds are closed at pressure_deformation (M03); geometry, matter, bonds and all revision-1 records are byte-preserved from the pinned M02 document"
+ },
+ "regions": [
+  {
+   "id": "plate",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "unit": "m",
+    "frame": "world",
+    "source_path": "authored analytic shape (independent of macaque data)",
+    "source_sha256": "authored:f57098c900ec6d909dcfc7355fd680324157135557d37f04685341542858a8bb",
+    "source_units_to_m": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "mesh_blob": "monkey_arm_independent_meshes.json",
+    "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+    "mesh_blob_region_key": "plate",
+    "vertex_count": 4,
+    "triangle_count": 2,
+    "bounds_m": [
+     [
+      -0.015862098980028133,
+      -0.10897700048296842,
+      0.099682085
+     ],
+     [
+      0.18413790101997188,
+      -0.008977000482968414,
+      0.099682085
+     ]
+    ],
+    "surface_area_m2": 0.020000000000000004,
+    "edges_not_shared_twice": 4,
+    "closure": "open_surface",
+    "open_edge_count": 4,
+    "orientation": "open_surface_unoriented",
+    "signed_volume_m3": null,
+    "volume_claim_m3": null,
+    "shell_thickness_m": 0.002,
+    "shell_thickness_provenance": "authored at chosen fidelity (independent shape demonstrator); explicit declaration with provenance",
+    "render_to_physics_mapping": {
+     "visual_mesh": "mesh_blob triangle list (identity)",
+     "physical_mesh": "mesh_blob triangle list (identity)",
+     "mapping": "identity",
+     "visual_triangle_count": 2,
+     "physical_triangle_count": 2
+    }
+   },
+   "current_geometry": {
+    "equal_to": "rest_geometry",
+    "reason": "revision 1; no solver exists"
+   },
+   "matter_claims": [
+    {
+     "matter_id": "mass_plate",
+     "role": "owner"
+    }
+   ],
+   "ports": [
+    {
+     "id": "surface",
+     "protocol": "material_contact",
+     "unit": "unitless_interface_id"
+    }
+   ],
+   "sources": [
+    "authored analytic shape (independent of macaque data)"
+   ]
+  },
+  {
+   "id": "tetra",
+   "kind": "region",
+   "parent": null,
+   "rest_geometry": {
+    "unit": "m",
+    "frame": "world",
+    "source_path": "authored analytic shape (independent of macaque data)",
+    "source_sha256": "authored:ae7aefa938ab92874669a24ff005129dd61703dd5fb1734fffe21e6c1d44d304",
+    "source_units_to_m": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "mesh_blob": "monkey_arm_independent_meshes.json",
+    "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+    "mesh_blob_region_key": "tetra",
+    "vertex_count": 4,
+    "triangle_count": 4,
+    "bounds_m": [
+     [
+      0.3237059520399438,
+      -0.14045346996593683,
+      -0.05670000000000001
+     ],
+     [
+      0.42370595203994377,
+      -0.04045346996593682,
+      0.0433
+     ]
+    ],
+    "surface_area_m2": 0.023660254037844386,
+    "edges_not_shared_twice": 0,
+    "closure": "closed_outward_consistent",
+    "open_edge_count": 0,
+    "orientation": "outward_consistent",
+    "signed_volume_m3": 0.00016666666666666682,
+    "volume_claim_m3": 0.00016666666666666682,
+    "shell_thickness_m": null,
+    "shell_thickness_provenance": "no source shell thickness exists for this surface; none used, none invented",
+    "render_to_physics_mapping": {
+     "visual_mesh": "mesh_blob triangle list (identity)",
+     "physical_mesh": "mesh_blob triangle list (identity)",
+     "mapping": "identity",
+     "visual_triangle_count": 4,
+     "physical_triangle_count": 4
+    }
+   },
+   "current_geometry": {
+    "equal_to": "rest_geometry",
+    "reason": "revision 1; no solver exists"
+   },
+   "matter_claims": [
+    {
+     "matter_id": "mass_tetra",
+     "role": "owner"
+    }
+   ],
+   "ports": [
+    {
+     "id": "surface",
+     "protocol": "material_contact",
+     "unit": "unitless_interface_id"
+    }
+   ],
+   "sources": [
+    "authored analytic shape (independent of macaque data)"
+   ]
+  }
+ ],
+ "matter": [
+  {
+   "id": "mass_tetra",
+   "mass_kg": 0.12,
+   "provenance": "authored fixture mass at chosen fidelity (no measured source); explicit, single-owner"
+  },
+  {
+   "id": "mass_plate",
+   "mass_kg": 0.02,
+   "provenance": "authored fixture mass at chosen fidelity (no measured source); explicit, single-owner"
+  }
+ ],
+ "directions": [
+  {
+   "id": "fiber_tetra_0",
+   "region_id": "tetra",
+   "axis": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "history": [
+    {
+     "revision": 0,
+     "state": "declared_by_MAT2-M04"
+    }
+   ]
+  },
+  {
+   "id": "fiber_tetra_45",
+   "region_id": "tetra",
+   "axis": [
+    0.7071067811865476,
+    0.7071067811865476,
+    0.0
+   ],
+   "history": [
+    {
+     "revision": 0,
+     "state": "declared_by_MAT2-M04"
+    }
+   ]
+  },
+  {
+   "id": "fiber_tetra_90",
+   "region_id": "tetra",
+   "axis": [
+    6.123233995736766e-17,
+    1.0,
+    0.0
+   ],
+   "history": [
+    {
+     "revision": 0,
+     "state": "declared_by_MAT2-M04"
+    }
+   ]
+  }
+ ],
+ "laws": [],
+ "contacts": [],
+ "bonds": []
+}

@@ -1,0 +1,249 @@
+{
+ "schema": "chimera.passive_response_receipt.v1",
+ "task_id": "M04",
+ "attempt": "262e9d2a30ae4c4b82d84de7de9661a1",
+ "criteria_sha256": "e9faa5bcb3926b2cdcd68f110c2c9480bb7b7d18e40a2623beb5ff5ce978a665",
+ "base_revision": "986f270ef24cda0008c52bd40d4b6d08565c0692",
+ "subject_sha256": "ae396848907319c758491c17d1a4a52769e0e9ffd625cc954db6e39d8ef7a18c",
+ "trace_sha256": "d7a13653d62138d00c5d116cc35db5b031f5d174fd7d7a06c1c87950762c5e8f",
+ "experiments": {
+  "E1": {
+   "verdicts": [
+    "P3:rigid green",
+    "P3:compliant_maxwell green",
+    "P3:fiber_0 green",
+    "P3:fiber_45 green",
+    "P3:fiber_90 green",
+    "P3:ordering+rigid green"
+   ],
+   "cases": [
+    {
+     "case": "rigid",
+     "profile": "rigid",
+     "loads_N": [
+      25.0,
+      50.0,
+      100.0,
+      250.0
+     ],
+     "x_m": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "k_N_per_m": [
+      null,
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "case": "compliant_maxwell",
+     "profile": "compliant_maxwell",
+     "loads_N": [
+      25.0,
+      50.0,
+      100.0,
+      250.0
+     ],
+     "x_m": [
+      0.001,
+      0.002,
+      0.004,
+      0.01
+     ],
+     "k_N_per_m": [
+      25000.0,
+      25000.0,
+      25000.0,
+      25000.0
+     ]
+    },
+    {
+     "case": "fiber_0",
+     "profile": "fiber_reinforced",
+     "loads_N": [
+      25.0,
+      50.0,
+      100.0,
+      250.0
+     ],
+     "x_m": [
+      0.00025,
+      0.0005,
+      0.001,
+      0.0025
+     ],
+     "k_N_per_m": [
+      100000.0,
+      100000.0,
+      100000.0,
+      100000.0
+     ]
+    },
+    {
+     "case": "fiber_45",
+     "profile": "fiber_reinforced",
+     "loads_N": [
+      25.0,
+      50.0,
+      100.0,
+      250.0
+     ],
+     "x_m": [
+      0.0004,
+      0.0008,
+      0.0016,
+      0.004
+     ],
+     "k_N_per_m": [
+      62500.0,
+      62500.0,
+      62500.0,
+      62500.0
+     ]
+    },
+    {
+     "case": "fiber_90",
+     "profile": "fiber_reinforced",
+     "loads_N": [
+      25.0,
+      50.0,
+      100.0,
+      250.0
+     ],
+     "x_m": [
+      0.001,
+      0.002,
+      0.004,
+      0.01
+     ],
+     "k_N_per_m": [
+      25000.0,
+      25000.0,
+      25000.0,
+      25000.0
+     ]
+    }
+   ]
+  },
+  "E2": {
+   "verdicts": [
+    "P4 green",
+    "P6 green"
+   ],
+   "closed_form": {
+    "F_ramp_N": 34.416939742673655,
+    "F_end_N": 0.630368239982134,
+    "W_J": 0.038957650643315876,
+    "U_ramp_J": 0.023690514825016586,
+    "U_end_J": 7.947282359563465e-06,
+    "Q_J": 0.038949703360956316,
+    "Q_ramp_J": 0.015267135818299296,
+    "Q_hold_J": 0.02368256754265702
+   },
+   "solver": {
+    "F_ramp_N": 34.41693974267365,
+    "F_end_N": 0.6303682399821346,
+    "W_J": 0.03895765064331588,
+    "U_ramp_J": 0.023690514825016575,
+    "U_end_J": 7.947282359563482e-06,
+    "Q_J": 0.03894970336095633,
+    "x_end_m": 0.002
+   },
+   "ledger": {
+    "W_J": 0.03895765064331588,
+    "U_J": 7.947282359563482e-06,
+    "Q_J": 0.03894970336095633,
+    "residual_J": 6.938893903907228e-18,
+    "tolerance_relative": 1e-09
+   }
+  },
+  "E3": {
+   "verdicts": [
+    "P5 green"
+   ],
+   "ratio_90_over_0": 4.0,
+   "E45_Pa": 1250000.0,
+   "cases": [
+    {
+     "direction_id": "fiber_tetra_0",
+     "axis": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "F_N": 50.0,
+     "x_m": 0.0005,
+     "k_N_per_m": 100000.0
+    },
+    {
+     "direction_id": "fiber_tetra_45",
+     "axis": [
+      0.7071067811865476,
+      0.7071067811865476,
+      0.0
+     ],
+     "F_N": 50.0,
+     "x_m": 0.0008,
+     "k_N_per_m": 62500.0
+    },
+    {
+     "direction_id": "fiber_tetra_90",
+     "axis": [
+      6.123233995736766e-17,
+      1.0,
+      0.0
+     ],
+     "F_N": 50.0,
+     "x_m": 0.002,
+     "k_N_per_m": 25000.0
+    }
+   ]
+  },
+  "interface": {
+   "verdicts": [
+    "P7 green"
+   ],
+   "equal": {
+    "shares_N": [
+     25.0,
+     25.0
+    ],
+    "summed_N": 50.0,
+    "sum_bitwise_exact": true,
+    "total_area_m2": 0.020000000000000004
+   },
+   "twin": {
+    "shares_N": [
+     33.333333333333336,
+     16.666666666666668
+    ],
+    "summed_N": 50.0,
+    "sum_bitwise_exact": true,
+    "total_area_m2": 0.03
+   }
+  },
+  "protocol_V": {
+   "verdicts": [
+    "PV frozen limits green"
+   ],
+   "final_strain": 0.1632,
+   "final_x_m": {
+    "compliant_maxwell": 0.01632,
+    "fiber_0": 0.0012,
+    "fiber_45": 0.00192,
+    "fiber_90": 0.0048,
+    "rigid": 0.0
+   }
+  },
+  "P9": {
+   "zero_load_extension_m": 0.0,
+   "over_band_load_N": 10000.0,
+   "over_band_refusal": "outside_valid_strain_range"
+  }
+ },
+ "all_frozen_limits_met": true
+}
