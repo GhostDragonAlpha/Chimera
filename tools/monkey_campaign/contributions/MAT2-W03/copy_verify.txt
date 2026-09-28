@@ -1,0 +1,64 @@
+MAT2-W03 canonical handoff copy verification
+attempt_id: bc69290103b04193829dc8be59f41b23
+agent: arrival-db26712d6a264e4899c951f55b074d80
+source (scratch): E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-W03\sergeant-arrival-db26712d
+destination (attempt): E:\ChimeraWork\monkey-coordination\kanban-attempts\MAT2-W03\bc69290103b04193829dc8be59f41b23
+method: shutil.copy2 then independent sha256 of both sides
+
+relpath                                                                                                        result sha256_before == sha256_after
+REPORT.md                                                                                                      MATCH 6692f07fc5314210c854884d1c17d7a8e561b1c9fa131c02131e3611198d64fa
+PREREGISTRATION.md                                                                                             MATCH 12b2b02f0b3265402fbf5bfff6a7c30f958a413c65710ef9195e01236e5045bf
+run_records.json                                                                                               MATCH 15da8e227935b43e9a34e02acaebefb94c430027d382bfbd7b80585f1e1560fb
+extract_pinned.py                                                                                              MATCH 4aaeb4f3ed97475fd0b6dea78b2fed185ccdc32a19dfd9c1a72d21f2aaf9be6e
+extract_record.json                                                                                            MATCH 9ebf23faada1e4054197d13394788f265a742b774ac9dc1e3ad2bc7dece4f89d
+dev_original_v2_clean.out                                                                                      MATCH 4c75cb24804eea154abaaa33396e480fcf396326bfd6a18ec81e383e19beb771
+dev_rebuilt_v2_clean.out                                                                                       MATCH 4c75cb24804eea154abaaa33396e480fcf396326bfd6a18ec81e383e19beb771
+gpu_clean_window_start.txt                                                                                     MATCH 868580a61e6c5fd7ddafa41ddc8d2c3cfc8078936b5166a91894188ba2b25168
+gpu_clean_window_end.txt                                                                                       MATCH 82b2b05f3470ed696d05a1d4ad9847db063e2dcc66b4091d015bbddd30397b8c
+viswalk_dump\build_log.txt                                                                                     MATCH ff596d96df505296584585b1b475d072381f580691df2469f401098cdabf5271
+viswalk_dump\dump.obj                                                                                          MATCH a7ef181200f549dcba593a8e7a0cc8d4f87f376712acf991fdf6772dda2dd409
+viswalk_dump\dump_run_record.json                                                                              MATCH 6278f4b02089d62500b5ce48748209a476ccbdb773bc40f1a413bb9e2954bb85
+viswalk_dump\dump_stderr.txt                                                                                   MATCH c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481
+viswalk_dump\dump_stdout.txt                                                                                   MATCH 8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc
+viswalk_dump\gait_unit_viswalk_dump.exe                                                                        MATCH f3aa30620351928dda507788515081c36dba4229dd77752ed5f5bd244aa53f9d
+viswalk_dump\states_run1.jsonl                                                                                 MATCH b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93
+viswalk_dump\states_run2.jsonl                                                                                 MATCH b47b709c43a021d24bfee13bb2fe4592167cf205ee0abf9971de462319389c93
+viswalk_dump\walk_numbers_record.json                                                                          MATCH 717a721499b5ad4b829d8e50b611b11da38621c1a3f9a80ddb833088286e0d5d
+scene_out\scene.json                                                                                           MATCH f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342
+typeb_build\build_dll_v2.log                                                                                   MATCH 935562bd76f854b1e6a1e5f7b3bc9cd256c3048509b0e5b3eedf80bf7246636e
+typeb_build\build_host_loop.log                                                                                MATCH cf6cbc38375ffd95be9cd0e690769236f6b4971d8d140d934bd9e98ad9ae8f2e
+typeb_build\hl_rebuilt_v2.err                                                                                  MATCH e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+typeb_build\hl_rebuilt_v2.out                                                                                  MATCH 0c9128b6e8ca05be39f9f18ba65025b1b2c0e846d0d6505118c5f211598c73a2
+typeb_build\hl_rebuilt_v2_full.err                                                                             MATCH e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+typeb_build\hl_rebuilt_v2_full.out                                                                             MATCH 6ba8123b80c3b8132e69165ea015ddc83861432b4b06502f797059bb42fd5128
+typeb_build\host_loop.cxx                                                                                      MATCH 3a061dc5cdd234d61a05556924a6d77589def29d66eb57b669ef802e0076d4f5
+typeb_build\host_loop.exe                                                                                      MATCH 65805557afd6d111e074ac5ee4edf49b45e119be1daf42317ac4406d9545676e
+typeb_build\host_loop.obj                                                                                      MATCH 215ef62e4b9b7e3b354d47e837f6d2cf41486e23bce717458f1115d137c9c8e5
+typeb_build\host_shim\a_true.txt                                                                               MATCH 2276a3718e63cead60803e1e134f3570b3f896346b13dc07598e9a73d43f44f8
+typeb_build\host_shim\acc_true_capture.txt                                                                     MATCH e98981f2506f2d70e0f378e8db48c668dc8a33f72e82e46c0539279c10779594
+typeb_build\host_shim\cst.txt                                                                                  MATCH 2ea99dde969f478767467cd9904c496864e2a79e9a189937a90787b6f304b57d
+typeb_build\host_shim\csti.txt                                                                                 MATCH 14f8d2eea2f956caf195f5efac3719c1e37ee48781d639461232927a5233f012
+typeb_build\host_shim\csti_ff.txt                                                                              MATCH 92c318a205c7d5bc102acfa9566d2dca434820918e8ed274f9b434629fb47a20
+typeb_build\host_shim\csti_nom.txt                                                                             MATCH 896c08a32419593a31ce57723d3b79d8874731e1f112cb97562001bcd5fb4cc4
+typeb_build\host_shim\cuda_runtime.h                                                                           MATCH 23f7d362f3c85859e87dd0cbe4d4fbc9de6e834c148c59c15f8933716fd00f5e
+typeb_build\host_shim\gv_probe.txt                                                                             MATCH 7ca686b5d65be8d7976bd9a6a9fb0137b94782807cc8672480a6a7c7ff63a619
+typeb_build\host_shim\integ_args.txt                                                                           MATCH 58f9f48a33605a2822ca054188004f5f29860b74389ab9a66f1799dc425aacca
+typeb_build\host_shim\M_probe.txt                                                                              MATCH e55ca91d405a0d81dec4e4b7b330990376533d4cddeb4399876b654edea17093
+typeb_build\host_shim\mdi.txt                                                                                  MATCH 5a0c65b1e3270540772e757630ae4b1dc85888e937d866e3063d8800ac02e0f4
+typeb_build\host_shim\mdl.txt                                                                                  MATCH eed14a13d3906e9dee49738341e90f2e0cb1221d1bd150c5644d76170bc68842
+typeb_build\host_shim\q.txt                                                                                    MATCH d44a27e7599ddfe4727a2b1e73af3b5982e5e7fde592e4abf54994b115551474
+typeb_build\host_shim\store.txt                                                                                MATCH 9e253900dab7015b55de8e57b681e95fee99f5c2de38b0e791d64733febef3c0
+typeb_build\host_shim\touch0.txt                                                                               MATCH d9b2aefb1febe2dd6e403f634e18917a8c0dd1a440c976e9fe126b465ae9fc8d
+typeb_build\host_shim\v.txt                                                                                    MATCH 607393b562eb8519485ffb8ea602d8f6bebd327b9e746a255f20d696d2a39f3a
+typeb_build\ucrt_math.c                                                                                        MATCH cde32a8d36c0fbf481d67fa0005ace7dab08f066971085e543f7909740900b97
+typeb_build\ucrt_math_tables.h                                                                                 MATCH cdae6a920bb38d517c11683e11fda0c2f15b6069ab5c1ee4d5bbdd9a62d437ed
+typeb_build\walker_env.cu                                                                                      MATCH 7622f8e3f8f552df879e8aa8c181a19faa93ec8105008e41eb14f16ee20bfa0f
+typeb_build\walker_env_v2.dll                                                                                  MATCH 9366d02df3e5cf90c9f645e78d81905d900291f8be74fb0e27d718c40b7a49d1
+typeb_build\walker_env_v2.exp                                                                                  MATCH 5d68ffe4d509e8078e819947c83dfe60e2e62c7da725d513c10ea3d9441a1f8d
+typeb_build\walker_env_v2.lib                                                                                  MATCH b79743c8ca9696e23d98654dc521318a213e05b582cb906528445aff57e456ea
+typeb_build\walker_kernels.cuh                                                                                 MATCH 6531ba085e2b2a2a21eb3dac0b38c8d5147d03be78ffba5d0fcbda5ef1bf4747
+typeb_run/tools/science_funnel/validation/typeb_gpu_fullport_20260921/bars_split_b32_co8.json                  MATCH 791b194a0c46adbaf518c24e1f43b8787c60f28b19cb9a285b01e0a3d018c0d1
+typeb_run/tools/science_funnel/validation/typeb_gpu_fullport_20260921/bars_split_b32_v2original.json           MATCH 9e90d5bf72070467ada0e9f377bd264efc3ae7d248e6c1211df4aeea5a870993
+typeb_run/tools/science_funnel/validation/typeb_gpu_fullport_20260921/bars_split_b32_v2rebuilt.json            MATCH 410d1b12170007b271f918ccb680fa32f8267dd76c58b5d2256f2b573a7d5168
+
+summary: 54 files planned; 54 copied and sha256-verified MATCH; 0 failures
