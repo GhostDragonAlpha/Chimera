@@ -1,0 +1,63 @@
+{
+ "schema": "chimera.qualification_receipt.v1",
+ "task_id": "MAT2-U03",
+ "planning_id": "U03",
+ "attempt_id": "53bf60ba7dee454bac95cec63ba717cf",
+ "agent_id": "arrival-6da597476070494bbf757db3cb05d4f8",
+ "kind": "implement_and_verify",
+ "criteria_sha256": "03b278cbe376141d5e3659b6d9b211530e0f7fc9990376e33087da4a9c3e724c",
+ "base_revision": "c525b82c7c3ce0128565424764293a3c85811ab3",
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "statement": "Alt-tab, disconnect and key release clear or age commands under a declared policy (u03_focus_release_policy.v1); no stuck movement. The policy wraps the U01 pinned seam (release_all + is_expired aging floor, imported, never redeclared): key release ages via the unchanged U01 decay tail; focus loss and disconnect clear held keys, age any live demand to exactly 0.0, then hold new demands (named refusals) until refocus/reconnect, which resumes with a fresh grid and no replay; the consumer-side effective demand is inert whenever the held record exceeds the 100 ms aging floor.",
+ "dependency_reconciliation": {
+  "MAT2-U01": {
+   "state": "DONE",
+   "pr_url": "https://github.com/GhostDragonAlpha/Chimera/pull/197",
+   "head_sha": "a445461bcf53754438fd3d17a17a96cf1dbf0816",
+   "merge_commit_sha": "ebdfda61bf3df9b1f6985f771044fd946dd5e9db",
+   "pinned_seam_raw_sha256": {
+    "tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+    "tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+    "tools/monkey_campaign/product/input_mapper_tests.py": "95f44e90998f9728802ff5f7cb8628f18f2026bef1fb2c4de681e5253381216e"
+   },
+   "verification": "all three re-derived from the committed pinned_seam bytes at the merge commit and equal to U01's declared subject hashes; vendored byte-exact at pinned_seam/ and re-verified at test time on the ACTUAL loaded module files"
+  },
+  "prior_attempt_f633058890344cb4ada3561352506015": "parked PAUSED by lead; workspace verified read-only to contain only a bare sparse .git at the same base (no commits, no tree, no artifacts); no prior work to continue"
+ },
+ "predictions": {
+  "P0": "vendored U01 falsifier module F1-F6 runs GREEN unchanged on the pinned bytes",
+  "P1": "policy identity + interface pin: missing U01 members refused by name; loaded module files hash to the pinned subject/seam bytes",
+  "P2": "alt-tab mid-walk: held cleared; exactly two tail records (linear sample then EXACTLY 0.0); emission stops; gated presses refused by name; refocus resumes fresh with no replay",
+  "P3": "disconnect on the live-zero path: demand cleared, no tail, inert resumes; event named",
+  "P4": "key release: monotone decay to EXACTLY 0.0 by release+100 ms on the probe grid; wrapper-transparent",
+  "P5": "consumer aging floor with NO producer ticks: commanded at age 30 ticks, inert from 31 (strict >)",
+  "P6": "gate transitions with nothing held are named no-ops"
+ },
+ "falsifiers": {
+  "F1": "stuck command bitten live: forced gated press refused by name; no nonzero demand past trigger+100 ms; hazard baseline H1 recorded (raw mapper keeps commanding while held)",
+  "F2": "unbound timing: decay at elapsed==100 ms is EXACTLY 0.0; aging strict at 30 vs 31 ticks; every event binds its injected now_ms",
+  "F3": "nothing silent: focus loss, press/mouse refusals and resume all leave named trace entries"
+ },
+ "evidence": {
+  "commands": [
+   "python -B tools/monkey_campaign/contributions/MAT2-U03/test_focus_policy.py",
+   "python -B tools/monkey_campaign/contributions/MAT2-U03/pinned_seam/tools/monkey_campaign/product/input_mapper_tests.py",
+   "python -B tools/monkey_campaign/contributions/MAT2-U03/emit_focus_trace.py"
+  ],
+  "numerical": {
+   "kind": "records",
+   "reference": "test_focus_policy.py -> Ran 11 tests OK; PROBE SUMMARY: 52 named checks, 0 failed (P0 subprocess: U01 falsifiers VERDICT GREEN)",
+   "display": "policy_traces.json: 30-row per-tick table, 17 sink records, episode-scoped no-stuck-movement invariants true for focus loss 1257 (last nonzero 1300, cease by 1357), disconnect 1815 (last nonzero 1900, cease by 1915), key release 2080 (last nonzero 2150, cease by 2180); byte-reproducible sha256 4bf407250c2d92c397f7d9ecf640de3340afbddf906c67de35a89b47f3b4eece"
+  },
+  "source": "focus_policy.py + test_focus_policy.py + emit_focus_trace.py + pinned_seam/ vendored bytes in this contribution directory",
+  "independent_review": null
+ },
+ "failures_preserved": [
+  "test draft called module-level M.is_expired (AttributeError): is_expired is a staticmethod of the upstream InputMapper class; fixed in the test (instance access)",
+  "emit_focus_trace.py first draft dispatched script events only inside tick rows, so the gated press at 1460 ms and the DISCONNECT at 1815 ms never fired and the trace invariants failed; fixed with a merged timeline (events at exact injected ms, 20 Hz boundary only at tick times)",
+  "no-stuck-movement invariant needed two corrections (all-later-rows scan; then charging later episodes' lawful post-resume demands to earlier triggers); final form is per demand episode"
+ ],
+ "behavior_note": "The upstream grid is boundary-anchored, so with offset ticks the exact-zero landing record can land later than release+100 ms wall-clock (observed: release 1815 -> zero record at 1950); the upstream deadline clause is boundary-based. What this card asserts and verifies: the last NONZERO record after a release is the first boundary sample (never past release+100 ms) and the consumer aging floor makes the demand inert within 100 ms even with no producer ticks.",
+ "honest_boundary": "No runtime, GPU, training, network, engine or desktop-automation claim. The controls motion profile's visual/camera clause (camera-required fields, views, clean view) is PENDING_RUNTIME: this sparse attempt checkout has no integrated game loop consuming the seam, and real alt-tab would touch operator desktop focus, which the card observation forbids; focus/disconnect/key-release are injected policy events on an injected clock. Recorded in policy_traces.json.display_honesty and report.md; deferred to the runtime lane. Independent review pending.",
+ "artifacts_note": "Artifact sha256 values are recorded in the request-pr handoff submission."
+}

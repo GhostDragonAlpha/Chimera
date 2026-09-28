@@ -1,0 +1,709 @@
+{
+ "schema": "u03_focus_trace.v1",
+ "policy_id": "u03_focus_release_policy.v1",
+ "policy": {
+  "id": "u03_focus_release_policy.v1",
+  "focus_loss": "clear_held_age_to_zero",
+  "disconnect": "clear_held_age_to_zero",
+  "key_release": "age_decay_to_zero",
+  "gate": "hold_new_demands_while_gated",
+  "resume": "fresh_grid_no_replay"
+ },
+ "upstream": {
+  "input_mapper_sha256": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+  "command_record_sha256": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+  "constants": {
+   "INTERVAL_MS": 50,
+   "RELEASE_DECAY_MS": 100,
+   "VALID_MS": 100,
+   "EXPIRY_TICKS": 30,
+   "PHYSICS_HZ": 300,
+   "V_MAX_IN_BAND_M_S": 0.763625
+  }
+ },
+ "scenario_events": [
+  {
+   "now_ms": 1000,
+   "event": "press",
+   "args": [
+    "W"
+   ]
+  },
+  {
+   "now_ms": 1257,
+   "event": "focus_lost",
+   "args": []
+  },
+  {
+   "now_ms": 1460,
+   "event": "press",
+   "args": [
+    "W"
+   ]
+  },
+  {
+   "now_ms": 1500,
+   "event": "mouse",
+   "args": [
+    40
+   ]
+  },
+  {
+   "now_ms": 1700,
+   "event": "focus_gained",
+   "args": []
+  },
+  {
+   "now_ms": 1710,
+   "event": "press",
+   "args": [
+    "W"
+   ]
+  },
+  {
+   "now_ms": 1815,
+   "event": "disconnected",
+   "args": []
+  },
+  {
+   "now_ms": 2000,
+   "event": "reconnected",
+   "args": []
+  },
+  {
+   "now_ms": 2010,
+   "event": "press",
+   "args": [
+    "W"
+   ]
+  },
+  {
+   "now_ms": 2080,
+   "event": "release",
+   "args": [
+    "W"
+   ]
+  },
+  {
+   "now_ms": 2400,
+   "event": "focus_lost",
+   "args": []
+  }
+ ],
+ "rows": [
+  {
+   "now_ms": 1000,
+   "is_boundary": true,
+   "events": [
+    {
+     "event": "press",
+     "name": "W",
+     "accepted": true,
+     "refusal": null
+    }
+   ],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 300,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 300
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1050,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 315,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 315
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1100,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 330,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 330
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1150,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 345,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 345
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1200,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 360,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 360
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1250,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 375,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 375
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1257,
+   "is_boundary": false,
+   "events": [
+    {
+     "event": "focus_lost",
+     "action": "clear_held_age_to_zero"
+    }
+   ],
+   "emitted": [],
+   "gated": true,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 375
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1300,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.43526625,
+     "yaw_rate": 0.0,
+     "issued_tick": 390,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": true,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.43526625,
+    "issued_tick": 390
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1350,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.0,
+     "yaw_rate": 0.0,
+     "issued_tick": 405,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": true,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.0,
+    "issued_tick": 405
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1400,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [],
+   "gated": true,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.0,
+    "issued_tick": 405
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1450,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [],
+   "gated": true,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.0,
+    "issued_tick": 405
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1460,
+   "is_boundary": false,
+   "events": [
+    {
+     "event": "press",
+     "name": "W",
+     "accepted": false,
+     "refusal": "press_refused_while_gated"
+    }
+   ],
+   "emitted": [],
+   "gated": true,
+   "held": [],
+   "effective_demand": null,
+   "demand_state": "inert"
+  },
+  {
+   "now_ms": 1500,
+   "is_boundary": true,
+   "events": [
+    {
+     "event": "mouse",
+     "counts": 40,
+     "accepted": false,
+     "refusal": "mouse_refused_while_gated"
+    }
+   ],
+   "emitted": [],
+   "gated": true,
+   "held": [],
+   "effective_demand": null,
+   "demand_state": "inert"
+  },
+  {
+   "now_ms": 1700,
+   "is_boundary": true,
+   "events": [
+    {
+     "event": "focus_gained",
+     "action": "fresh_grid_no_replay"
+    }
+   ],
+   "emitted": [],
+   "gated": false,
+   "held": [],
+   "effective_demand": null,
+   "demand_state": "inert"
+  },
+  {
+   "now_ms": 1710,
+   "is_boundary": true,
+   "events": [
+    {
+     "event": "press",
+     "name": "W",
+     "accepted": true,
+     "refusal": null
+    }
+   ],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 513,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 513
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1760,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 528,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 528
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1810,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 543,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 543
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1815,
+   "is_boundary": false,
+   "events": [
+    {
+     "event": "disconnected",
+     "action": "clear_held_age_to_zero"
+    }
+   ],
+   "emitted": [],
+   "gated": true,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 543
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1850,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [],
+   "gated": true,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 543
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1900,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.11454375000000001,
+     "yaw_rate": 0.0,
+     "issued_tick": 570,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": true,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.11454375000000001,
+    "issued_tick": 570
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 1950,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.0,
+     "yaw_rate": 0.0,
+     "issued_tick": 585,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": true,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.0,
+    "issued_tick": 585
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 2000,
+   "is_boundary": true,
+   "events": [
+    {
+     "event": "reconnected",
+     "action": "fresh_grid_no_replay"
+    }
+   ],
+   "emitted": [],
+   "gated": false,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.0,
+    "issued_tick": 585
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 2010,
+   "is_boundary": true,
+   "events": [
+    {
+     "event": "press",
+     "name": "W",
+     "accepted": true,
+     "refusal": null
+    }
+   ],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 603,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 603
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 2060,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.763625,
+     "yaw_rate": 0.0,
+     "issued_tick": 618,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [
+    "W"
+   ],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 618
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 2080,
+   "is_boundary": false,
+   "events": [
+    {
+     "event": "release",
+     "name": "W"
+    }
+   ],
+   "emitted": [],
+   "gated": false,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 618
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 2100,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [],
+   "gated": false,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.763625,
+    "issued_tick": 618
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 2150,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.22908750000000003,
+     "yaw_rate": 0.0,
+     "issued_tick": 645,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.22908750000000003,
+    "issued_tick": 645
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 2200,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [
+    {
+     "v_forward": 0.0,
+     "yaw_rate": 0.0,
+     "issued_tick": 660,
+     "source": "u01_input_mapper"
+    }
+   ],
+   "gated": false,
+   "held": [],
+   "effective_demand": {
+    "v_forward": 0.0,
+    "issued_tick": 660
+   },
+   "demand_state": "commanded"
+  },
+  {
+   "now_ms": 2400,
+   "is_boundary": true,
+   "events": [
+    {
+     "event": "focus_lost",
+     "action": "clear_held_age_to_zero"
+    }
+   ],
+   "emitted": [],
+   "gated": true,
+   "held": [],
+   "effective_demand": null,
+   "demand_state": "inert"
+  },
+  {
+   "now_ms": 2450,
+   "is_boundary": true,
+   "events": [],
+   "emitted": [],
+   "gated": true,
+   "held": [],
+   "effective_demand": null,
+   "demand_state": "inert"
+  }
+ ],
+ "invariants": {
+  "focus_lost_1257": {
+   "trigger_ms": 1257,
+   "declared_cease_by_ms": 1357,
+   "episode_window_end_ms": 1710,
+   "last_nonzero_within_window_ms": 1300,
+   "nonzero_after_deadline_within_episode": [],
+   "no_stuck_movement": true
+  },
+  "disconnected_1815": {
+   "trigger_ms": 1815,
+   "declared_cease_by_ms": 1915,
+   "episode_window_end_ms": 2010,
+   "last_nonzero_within_window_ms": 1900,
+   "nonzero_after_deadline_within_episode": [],
+   "no_stuck_movement": true
+  },
+  "key_release_2080": {
+   "trigger_ms": 2080,
+   "declared_cease_by_ms": 2180,
+   "episode_window_end_ms": null,
+   "last_nonzero_within_window_ms": 2150,
+   "nonzero_after_deadline_within_episode": [],
+   "no_stuck_movement": true
+  },
+  "gated_press_refused_by_name": true,
+  "no_replay_after_resume": true
+ },
+ "display_honesty": {
+  "kind": "numerical_records_trace",
+  "visual_clause": "PENDING_RUNTIME: the controls motion profile camera/visual clause is not claimable here -- this sparse attempt checkout has no integrated game loop consuming the seam, and real alt-tab would touch operator desktop focus, which the card observation forbids. Deferred to the runtime lane; not passed here.",
+  "numerical_clause": "PASSED_HERE: per-tick command/policy/consumer traces with exact injected timing; named checks in test_focus_policy.py."
+ }
+}
