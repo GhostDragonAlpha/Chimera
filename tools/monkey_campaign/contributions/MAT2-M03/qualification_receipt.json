@@ -1,0 +1,431 @@
+{
+ "attempt_id": "61aa525f80da4b61a10b7e3c788d87fc",
+ "base_revision": "986f270ef24cda0008c52bd40d4b6d08565c0692",
+ "checks": [
+  {
+   "bound": 1e-18,
+   "check": "T0_m02_tetra_volume_vs_compiled_m3",
+   "detail": {
+    "derived_exact": 0.00016666666666666666,
+    "duplicate_directed_edges": 0,
+    "open_edge_count": 0,
+    "triangle_count": 4,
+    "vertex_count": 4
+   },
+   "passed": true,
+   "value": 0.0
+  },
+  {
+   "bound": 1e-18,
+   "check": "T0_m02_tetra_area_vs_compiled_m2",
+   "passed": true,
+   "value": 0.0
+  },
+  {
+   "bound": 1e-12,
+   "check": "T1_net_force_triangle_level_N",
+   "detail": {
+    "frozen": [
+     0.5,
+     0.5,
+     0.5,
+     0.8660254037844386
+    ],
+    "per_triangle_force_n": [
+     0.49999999999999994,
+     0.49999999999999994,
+     0.5000000000000001,
+     0.8660254037844385
+    ]
+   },
+   "passed": true,
+   "value": 1.9229626863835638e-16
+  },
+  {
+   "bound": 1e-12,
+   "check": "T1_net_torque_origin_triangle_Nm",
+   "passed": true,
+   "value": 6.359601310784502e-17
+  },
+  {
+   "bound": 1e-12,
+   "check": "T1_net_force_vertex_lumped_N",
+   "passed": true,
+   "value": 2.884444029575346e-16
+  },
+  {
+   "bound": 1e-12,
+   "check": "T1_net_torque_vertex_lumped_Nm",
+   "passed": true,
+   "value": 1.1283990352745104e-16
+  },
+  {
+   "bound": 1e-12,
+   "check": "T2_cube_n1_force_vs_rho_gV_rel",
+   "passed": true,
+   "value": 5.564558958092284e-16
+  },
+  {
+   "bound": 1e-12,
+   "check": "T2_cube_n1_force_vs_-qV_rel",
+   "passed": true,
+   "value": 5.564558958092284e-16
+  },
+  {
+   "bound": 0.1,
+   "check": "T2_cube_n1_torque_about_centre_Nm",
+   "detail": {
+    "note": "coarse member: h^2 quadrature convergence (correction A7)"
+   },
+   "passed": true,
+   "value": 0.0
+  },
+  {
+   "bound": 1e-12,
+   "check": "T2_cube_n2_force_vs_rho_gV_rel",
+   "passed": true,
+   "value": 3.2073406434870343e-15
+  },
+  {
+   "bound": 1e-12,
+   "check": "T2_cube_n2_force_vs_-qV_rel",
+   "passed": true,
+   "value": 3.2073406434870343e-15
+  },
+  {
+   "bound": 1e-09,
+   "check": "T2_cube_n2_torque_about_centre_Nm",
+   "passed": true,
+   "value": 3.2554955994956693e-12
+  },
+  {
+   "bound": 1e-12,
+   "check": "T2_cube_n4_force_vs_rho_gV_rel",
+   "passed": true,
+   "value": 7.71298858289191e-15
+  },
+  {
+   "bound": 1e-12,
+   "check": "T2_cube_n4_force_vs_-qV_rel",
+   "passed": true,
+   "value": 7.71298858289191e-15
+  },
+  {
+   "bound": 1e-09,
+   "check": "T2_cube_n4_torque_about_centre_Nm",
+   "passed": true,
+   "value": 4.303613702801999e-12
+  },
+  {
+   "bound": "strictly decreasing (A7); L0 <= 1.0e-1",
+   "check": "T2_tetra_torque_quadrature_monotone_Nm",
+   "passed": true,
+   "value": [
+    0.019262079765907186,
+    0.004815519941495696,
+    0.0012038799853049235
+   ]
+  },
+  {
+   "bound": 1e-12,
+   "check": "T3_icosphere_L0_force_vs_-qV_rel",
+   "passed": true,
+   "value": 1.5549042589631535e-15
+  },
+  {
+   "bound": 0.1,
+   "check": "T3_icosphere_L0_torque_about_centroid_Nm",
+   "detail": {
+    "note": "coarse member: h^2 quadrature convergence (A7)"
+   },
+   "passed": true,
+   "value": 2.0287786294951967e-13
+  },
+  {
+   "bound": 1.0,
+   "check": "T3_icosphere_L0_volume_relerr",
+   "detail": {
+    "note": "no absolute prereg bound for this level; monotone decrease across levels is checked separately"
+   },
+   "passed": true,
+   "value": 0.3945386170874742
+  },
+  {
+   "bound": 1e-12,
+   "check": "T3_icosphere_L1_force_vs_-qV_rel",
+   "passed": true,
+   "value": 1.818916213584517e-15
+  },
+  {
+   "bound": 1e-09,
+   "check": "T3_icosphere_L1_torque_about_centroid_Nm",
+   "passed": true,
+   "value": 1.1857424082013816e-12
+  },
+  {
+   "bound": 1.0,
+   "check": "T3_icosphere_L1_volume_relerr",
+   "detail": {
+    "note": "no absolute prereg bound for this level; monotone decrease across levels is checked separately"
+   },
+   "passed": true,
+   "value": 0.12654679999693663
+  },
+  {
+   "bound": 1e-12,
+   "check": "T3_icosphere_L2_force_vs_-qV_rel",
+   "passed": true,
+   "value": 6.6406492453079126e-15
+  },
+  {
+   "bound": 1e-09,
+   "check": "T3_icosphere_L2_torque_about_centroid_Nm",
+   "passed": true,
+   "value": 4.336487264483895e-12
+  },
+  {
+   "bound": 0.06,
+   "check": "T3_icosphere_L2_volume_relerr",
+   "passed": true,
+   "value": 0.03384863659914393
+  },
+  {
+   "bound": "strictly decreasing",
+   "check": "T3_volume_relerr_monotone_decreasing",
+   "passed": true,
+   "value": [
+    0.3945386170874742,
+    0.12654679999693663,
+    0.03384863659914393
+   ]
+  },
+  {
+   "bound": 1e-12,
+   "check": "T4_worst_net_force_N",
+   "detail": {
+    "family_members": [
+     "cube_n1",
+     "cube_n2",
+     "cube_n4",
+     "icosphere_L0",
+     "icosphere_L1",
+     "icosphere_L2",
+     "m02_tetra",
+     "tetra_L0",
+     "tetra_L1",
+     "tetra_L2"
+    ]
+   },
+   "passed": true,
+   "value": 1.6410337382425186e-15
+  },
+  {
+   "bound": 1e-12,
+   "check": "T4_worst_net_torque_Nm",
+   "passed": true,
+   "value": 6.359601310784502e-17
+  },
+  {
+   "bound": 1e-15,
+   "check": "T5_max_step_traction_volume_diff_J",
+   "passed": true,
+   "value": 7.994813646283912e-16
+  },
+  {
+   "bound": 1e-14,
+   "check": "T5_volume_sum_telescoping_J",
+   "detail": {
+    "closed_form_frozen_J": 0.008275
+   },
+   "passed": true,
+   "value": 1.734723475976807e-18
+  },
+  {
+   "bound": 1e-12,
+   "check": "T5_closed_form_vs_frozen_J",
+   "passed": true,
+   "value": 2.0816681711721685e-17
+  },
+  {
+   "bound": 1e-16,
+   "check": "T6_power_W",
+   "detail": {
+    "power_watts": 0.030000000000000002
+   },
+   "passed": true,
+   "value": 3.469446951953614e-18
+  },
+  {
+   "bound": {
+    "delta_p_limit": "pressure_source_delta_p_limit_exceeded",
+    "flow_limit": "pressure_source_flow_limit_exceeded",
+    "negative_absolute": "pressure_source_negative_absolute",
+    "undeclared": "pressure_source_undeclared"
+   },
+   "check": "T6_named_refusals",
+   "passed": true,
+   "value": {
+    "delta_p_limit": "pressure_source_delta_p_limit_exceeded",
+    "flow_limit": "pressure_source_flow_limit_exceeded",
+    "negative_absolute": "pressure_source_negative_absolute",
+    "undeclared": "pressure_source_undeclared"
+   }
+  },
+  {
+   "bound": 1e-06,
+   "check": "T7_com_drift_m",
+   "detail": {
+    "note": "uniform internal pressure does not propel the free body"
+   },
+   "passed": true,
+   "value": 3.0941589075683863e-17
+  },
+  {
+   "bound": ">= 1.02",
+   "check": "T7_peak_volume_ratio",
+   "passed": true,
+   "peak_tick": 10,
+   "value": 1.235183567473153
+  },
+  {
+   "bound": "<= 1.0e-2",
+   "check": "T7_recoil_final_volume_ratio",
+   "passed": true,
+   "value": 0.005382403334799113
+  },
+  {
+   "bound": "reported (scaffold validity)",
+   "check": "T7_max_edge_strain_reported",
+   "passed": true,
+   "value": 0.004638720793961992
+  },
+  {
+   "bound": "|R| <= max(1.0*(|W_press|+E_diss+E_kin+E_el), 1e-6)",
+   "check": "T9_residual_within_turnover_every_tick",
+   "passed": true,
+   "value": {
+    "all_ticks_within": true,
+    "max_abs_residual_J": 0.03431854461238184
+   }
+  },
+  {
+   "bound": 1e-12,
+   "check": "T9_ledger_closes_J",
+   "detail": {
+    "identity": "E_final - E_0 = sum(W_press) - sum(E_diss) + sum(R)"
+   },
+   "passed": true,
+   "value": 5.551115123125783e-17
+  },
+  {
+   "bound": "equal canonical digests",
+   "check": "T8_determinism_byte_identical",
+   "passed": true,
+   "value": {
+    "run1": "d949eb09e442d05a481d1438fd69b01c3048235b6b47ab54cb95b6beabeccb0e",
+    "run2": "d949eb09e442d05a481d1438fd69b01c3048235b6b47ab54cb95b6beabeccb0e"
+   }
+  },
+  {
+   "bound": {
+    "law_count": 1,
+    "matter_count": 1,
+    "reference_count": 0,
+    "region_count": 1,
+    "total_mass_kg": 0.05
+   },
+   "check": "T10_material_state_v1_validates",
+   "passed": true,
+   "value": {
+    "bond_count": 0,
+    "contact_count": 0,
+    "direction_count": 0,
+    "law_count": 1,
+    "matter_count": 1,
+    "object_id": "mat2-m03-pressure-membrane-experiment",
+    "owner_count": 1,
+    "port_count": 1,
+    "reference_count": 0,
+    "region_count": 1,
+    "region_ids": [
+     "membrane"
+    ],
+    "renames": {},
+    "revision": 1,
+    "schema": "chimera.material_state.v1",
+    "shell_count": 0,
+    "total_mass_kg": 0.05
+   }
+  }
+ ],
+ "criteria_sha256": "f91d2bca94b7f72c2650eab4f14356eb0889e139facb6f07d66920b021bb8ded",
+ "determinism": "no stochastic inputs anywhere; replay equality is checked by T8 (canonical digests)",
+ "falsifier_bites": [
+  {
+   "bit": true,
+   "bound": "tampered >= 1e-2 N while correct <= 1e-12 N",
+   "falsifier": "F1_area_independent_tamper",
+   "observed": {
+    "correct_net_force_N": 1.9229626863835638e-16,
+    "tampered_net_force_N": 0.43301270189221935
+   }
+  },
+  {
+   "bit": true,
+   "bound": "tampered >= 1e-3 while correct <= 1e-12",
+   "falsifier": "F1_buoyancy_identity_tamper_subdivided_tetra_L2",
+   "observed": {
+    "correct_rel_error": 1.0227737926128718e-13,
+    "tampered_rel_error": 267.4151153389337
+   }
+  },
+  {
+   "bit": true,
+   "bound": "tampered >= 1e-3 m while correct <= 1e-6 m",
+   "falsifier": "F2_free_body_propulsion_tamper",
+   "observed": {
+    "correct_com_drift_m": 2.636779683484747e-16,
+    "tampered_com_drift_m": 0.0075055534994650655
+   }
+  },
+  {
+   "bit": true,
+   "bound": "closure_open_edges then traction refused",
+   "falsifier": "F4_deleted_triangle_closure",
+   "observed": {
+    "closure_refusal": "closure_open_edges",
+    "traction_refusal": "closure_open_edges"
+   }
+  },
+  {
+   "bit": true,
+   "bound": "orientation_inconsistent and net force >= 1e-6 N",
+   "falsifier": "F5_flipped_winding",
+   "observed": {
+    "net_force_N_tampered": 1.732050807568877,
+    "orientation_refusal": "orientation_inconsistent",
+    "signed_volume_m3": -0.0005885082735800232
+   }
+  },
+  {
+   "bit": true,
+   "bound": "tampered mismatch >= 1e-6 J (correct <= 1e-15 J per step)",
+   "falsifier": "F6_area_factor_omitted_work_account",
+   "observed": {
+    "correct_total_J": 0.008274999998437522,
+    "tampered_mismatch_J": 0.05543981655498284,
+    "tampered_total_J": 0.06371481655498286
+   }
+  }
+ ],
+ "preregistration": "PREREGISTRATION.md (incl. corrections A1-A5)",
+ "schema": "chimera.mat2_m03.qualification_receipt.v1",
+ "state_document_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+ "task_id": "M03",
+ "trace_sha256": "e6178210a8754ced0eb2af5581a391197d6596f10573c9998d9fbdb96ceb08ed",
+ "upstream_authority": {
+  "m01_validator": "tools/monkey_campaign/contributions/MAT2-M01/material_state.py (unmodified)",
+  "m01_validator_sha256": "b6b009713daa4b315c6b5cb43c7ad4e756123b50edcdd802eeebd55c6afd6c40",
+  "m02_mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834"
+ }
+}
