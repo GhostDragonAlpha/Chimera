@@ -37,10 +37,15 @@ def main():
     action.add_argument('--finish',type=Path,help='Completion arguments JSON; submit evidence and take next work.')
     action.add_argument('--checkpoint',type=Path,help='Cessation/checkpoint arguments JSON; recover next window.')
     action.add_argument('--submit-pr',type=Path,help='Record PR arguments JSON, then take next card.')
-    action.add_argument('--park',type=Path,help='Preserve attempt and cease writes, then take another card.')
+    action.add_argument('--park',type=Path,help='Preserve attempt and cease writes; no next card is dealt.')
+    parser.add_argument('--take-next',action='store_true',help='After a take-next handoff (finish/submit-pr), explicitly deal the next card. Park and checkpoint never re-deal.')
     args=parser.parse_args()
     if args.check and (args.finish or args.checkpoint or args.submit_pr or args.park):
         raise ValueError('check_cannot_submit_handoff')
+    handoff_actions=('finish','checkpoint','submit_pr','park')
+    took_handoff=any(getattr(args,n) for n in handoff_actions)
+    if args.take_next and (args.park or args.checkpoint):
+        raise ValueError('park_checkpoint_do_not_redeal_run_explicit_startup_for_next')
     project=Path(__file__).resolve().parents[2]
     instructions=inspect(project)
     catalog, scope_check = verify_catalog(project/'tools/monkey_campaign/monkey_completion_map.json',
@@ -95,8 +100,11 @@ def main():
                 if data.get('agent_id')!=identity:raise ValueError('handoff_identity_mismatch')
                 out['handoff']=(kanban.submit if args.submit_pr else kanban.park)(registry,data)
             target=args.task or (out.get('handoff',{}).get('task') if args.finish else None)
-            allocation=kanban.join(registry,identity,target)
-            out.update(assignment=allocation,task_claimed=allocation['state']=='ASSIGNED',
+            if not took_handoff or args.take_next:
+                allocation=kanban.join(registry,identity,target)
+            else:
+                allocation={'state':'STOPPED_AFTER_HANDOFF','next_action':'Handoff recorded; no next card dealt. Run the canonical startup (optionally --take-next) to take new work explicitly.'}
+            out.update(assignment=allocation,task_claimed=allocation['state'] in ('ASSIGNED','CHECKPOINT_FOR_COORDINATION'),
                 next_action=allocation['next_action'],board=kanban.read(registry),
                 continuation='Read task inbox before edits and each PR update. Submit a PR with --submit-pr, then take another card. No timer or exclusive task lease. Lead closes the card only after review and verified merge.')
             if 'attempt' in allocation:
