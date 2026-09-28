@@ -1,0 +1,1 @@
+capture_sha256=878eb3de68123bb6b82fc0c25b172b18be6346773d24ede8b4f5f24edc3685b2 sheet=700x3628 views=6 structurally_valid=True fired=0
