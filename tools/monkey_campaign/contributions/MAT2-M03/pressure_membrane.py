@@ -291,9 +291,16 @@ class Membrane:
 
     # ---- external-field references (independently derived) -----------------
     def linear_field_reference(self, field):
-        """Exact references for p_ext(x) = p0 + q . x on a closed mesh:
-        F = -q*V and tau_origin = -V*(x_bar x q); torque about the volume
-        centroid is exactly zero. Divergence theorem, no simulation."""
+        """References for p_ext(x) = p0 + q . x on a closed mesh:
+        F = -q*V is an exact identity (machine precision); uniform pressure
+        (p0) alone gives zero net force/torque exactly (closed-surface
+        identity; observed values are round-off only). Torque under the
+        linear part is h^2-convergent quadrature, never claimed exact
+        (correction A7): tau_origin -> -V*(x_bar x q) and the torque about
+        the volume centroid -> 0 at that h^2 rate (measured 1.926e-2 ->
+        4.816e-3 -> 1.204e-3 N m on the tetra family, exactly x4 per
+        midpoint subdivision; refined members <= 1e-9 N m). Divergence
+        theorem, no simulation."""
         v_total = self.signed_volume()
         x_bar = self.volume_centroid()
         q = field.gradient_pa_per_m

@@ -34,8 +34,9 @@ M02's compiled tetra mesh blob (byte-verified against its recorded sha256
 
 - `qualification_receipt.json`: 41/41 checks PASS, 6/6 falsifier bites.
   Highlights: M02 tetra closure exact (V within 1e-18 of the compiled value);
-  uniform dp=100 Pa net force/torque <= 1.2e-16 N / 5.6e-17 N m across the
-  nine-mesh refinement families; buoyancy identity |F - (-qV)|/|qV| <= 1e-12
+  uniform dp=100 Pa net force/torque worst 1.641e-15 N / 6.36e-17 N m across
+  the T4 family (nine refinement meshes + the M02 tetra); buoyancy identity
+  |F - (-qV)|/|qV| <= 1e-12
   at every family member (cube grids exactly rho*g*V = 9806.65 N per m^3);
   icosphere volume error monotone 0.3945 -> 0.1265 -> 0.0338 (L2 within the
   A2-derived 6e-2 bound); quasi-static work closed form 8.275e-3 J exact,
@@ -43,18 +44,18 @@ M02's compiled tetra mesh blob (byte-verified against its recorded sha256
   dynamic run COM drift 2.9e-17 m (uniform internal pressure does NOT propel
   the free body), peak volume ratio 1.2352, recoil 0.54 percent, max edge
   strain 0.46 percent, ledger residual within tick turnover at every tick and
-  the account closes to 8.7e-19 J; byte-identical replay (T8); the experiment
+  the account closes to 5.551e-17 J; byte-identical replay (T8); the experiment
   document validates under the UNMODIFIED M01 validator (T10).
 - `test_pressure_membrane.py`: 15/15 tests OK (probes P1-P10 + falsifier
   bites F1-F6 as assertions).
 - Falsifier proof (each bite demonstrated on a tampered copy, observed values
   in the receipt): F1 area-independent traction -> uniform-dp net force
-  0.433 N (vs 1.1e-16 N correct) and buoyancy identity broken >= 1e-3 rel;
+  0.433 N (vs 1.92e-16 N correct) and buoyancy identity broken >= 1e-3 rel;
   F2 tampered free body drifts 7.5e-3 m (vs 2.6e-16 m correct); F3 undeclared
   / negative-absolute sources refused by name; F4 deleted triangle ->
   `closure_open_edges`, traction refused; F5 flipped winding ->
-  `orientation_inconsistent`, volume drops, net force 0.5 N; F6 area factor
-  omitted -> work account mismatch 2.3e-3 J (vs <= 1e-15 J per step correct).
+  `orientation_inconsistent`, volume drops, net force 1.732 N; F6 area factor
+  omitted -> work account mismatch 5.54e-2 J (vs <= 1e-15 J per step correct).
 - Determinism: no stochastic inputs anywhere; replay equality is checked
   (T8) by canonical digests; the render replay asserts per-tick volume
   equality with the committed trace at 1e-15.
@@ -77,7 +78,7 @@ M02's compiled tetra mesh blob (byte-verified against its recorded sha256
   views, diagnostic+clean pairs, fixed_bookmark cameras with fully declared
   fields, required subject visibility declared).
 - Pixels inspected (not inferred from filenames): frames 03/10/22 show the
-  ball inflating (V 3.906e-3 -> 4.519e-3 -> 3.887e-3 m^3), radial force
+  ball inflating (V 3.904e-3 -> 4.519e-3 -> 3.687e-3 m^3), radial force
   arrows growing with dp and vanishing at dp=0, close-up tetra arrows scaling
   with triangle area (slant A=0.0087 longer than leg A=0.0050) and with
   pressure, clean rows clean, COM drift line showing no propulsion.
