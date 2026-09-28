@@ -1,0 +1,7 @@
+# Regenerable pinned inputs (rebuild via extract_pinned.py; hashes in extract_record.json)
+engine_tree17/tools/creature_graph/data/
+engine_tree17/ChimeraEngine/native/viewer3rd/json.hpp
+__pycache__/
+*.obj
+build_dll_v2.log
+build_host_loop.log

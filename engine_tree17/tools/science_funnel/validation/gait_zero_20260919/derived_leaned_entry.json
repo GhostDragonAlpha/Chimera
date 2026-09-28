@@ -1,0 +1,430 @@
+{
+ "schema": "chimera.leaned_entry.v1",
+ "standing_pin": {
+  "branches": [
+   {
+    "q1_rad": -0.9029386145702687,
+    "q2_rad": 0.837913516732741
+   },
+   {
+    "q1_rad": 0.9029386145702685,
+    "q2_rad": -0.9679637124077962
+   }
+  ],
+  "selected": "back",
+  "selection_law": "the 291-class existence proof selects the BACK branch: it IS the wave-12/13 authored pose (cross-validated to 4.83e-07 rad); the capture equation selected the forward branch in wave 14 and the run falsified that composition at tick 30 -- the existence proof, not taste",
+  "cross_validation_err_rad": {
+   "wave12_back": 3.3306690738754696e-16,
+   "wave14_forward": 3.3306690738754696e-16
+  }
+ },
+ "entry_trunk": {
+  "theta_star_0_rad": -0.2064,
+  "law": "the committed vault table's own engine-frame entry value (the scene's sign probe re-run on the composition model; round4 as emitted) -- NOT a chosen constant",
+  "sign_probe": 1.0,
+  "raw_table_value_rad": -0.2064327
+ },
+ "composition_state": {
+  "law": "the 291-class entry composition re-derived on the corrected assembly: the BACK fore pose (the standing pin's back root), the full vault lean theta*(0), the FORE seat (base_y = the lowest raw paw + the authored gap -- the fore pads under the lean), the corrected hind columns {0, 0.5} (the wave-16 repair stands)",
+  "base_trans_y_m": 0.3860765546230136,
+  "seat_point": "fore_left_mp_head",
+  "q1_rad": -0.9029386145702687,
+  "q2_rad": 0.837913516732741,
+  "gaps_m": {
+   "left_heel": 0.06496305145847851,
+   "left_mp_head": 0.07111530580961349,
+   "right_heel": 0.17444282986361748,
+   "right_mp_head": 0.11732305409163246,
+   "fore_left_heel": 0.01766396406186521,
+   "fore_left_mp_head": 2.000000000002e-06,
+   "fore_right_heel": 0.01766396406186521,
+   "fore_right_mp_head": 2.000000000002e-06
+  },
+  "hind_pairmin_gaps_m": {
+   "left": 0.06496305145847851,
+   "right": 0.11732305409163246
+  },
+  "per_paw_dangle_max_m": 0.17444282986361748,
+  "spread_m": 0.17444282986361748,
+  "d_td_heel_m": 0.06496305145847851,
+  "com_x_m": 0.05593945792880454,
+  "weight_N": 98.43913308670002
+ },
+ "model_validation": {
+  "gates": {
+   "D_leaned_wave15_m": {
+    "derived": 0.06496305145847851,
+    "committed": 0.064955,
+    "err": 8.051458478514073e-06
+   },
+   "D_level_wave15_m": {
+    "derived": 0.04616119182219022,
+    "committed": 0.046161,
+    "err": 1.91822190222235e-07
+   },
+   "spread_leaned_wave15_m": {
+    "derived": 0.17444282986361748,
+    "committed": 0.17443,
+    "err": 1.2829863617475068e-05
+   },
+   "pairmin_level_wave16_m": {
+    "left": {
+     "derived": 0.04616119182219022,
+     "committed": 0.046161,
+     "err": 1.91822190222235e-07
+    },
+    "right": {
+     "derived": 0.049125177137240864,
+     "committed": 0.049125,
+     "err": 1.771372408615468e-07
+    }
+   }
+  },
+  "gate_scale_m": 0.002,
+  "note": "the derivation machinery reproduces the committed wave-15/16 Assembly measurements of THIS composition's geometry before any prediction is issued"
+ },
+ "strut_census": {
+  "d_td_heel_m": 0.06496305145847851,
+  "d_td_vs_D_SURV": {
+   "value_m": 0.06496305145847851,
+   "anchor_m": 0.059,
+   "excess_m": 0.005963051458478516,
+   "statement": "the calibrated TD-heel strut difference exceeds the 0.059 m strut-side anchor by 0.0060 m. The anchor is the STRUT-SIDE law of the level/partial-lean membranes (waves 15-18); the 291 run SURVIVED this composition at 6.5e-2 (defected assembly, the left column identical): the anchor is conservative here and the composition is its own existence proof. Reported honestly, never tuned away."
+  },
+  "spread_m": 0.17444282986361748,
+  "spread_vs_D_LIVED": {
+   "value_m": 0.17444282986361748,
+   "anchor_m": 0.1744,
+   "excess_m": 4.2829863617477315e-05,
+   "statement": "the full 8-point spread vs the strongest dangle that ever SURVIVED a settle. The wave-15 measurement 0.17443 WAS this composition's census (the scene's Assembly always carried the corrected columns); the re-measurement matches to the gate. The wave-13 RUNTIME's actual spread was never census-measured and its defected right hind sat at the forward TD column (smaller dangle); the corrected right hind sits deeper -- the survived anchor's coverage is carried at its measured value, the settle survival is the run's to measure."
+  },
+  "per_paw_bound_m": 0.17444282986361748,
+  "census_bounds": {
+   "d_td_m": 0.06496305145847851,
+   "per_paw_m": 0.17444282986361748,
+   "spread_m": 0.17444282986361748,
+   "gate_m": 0.002,
+   "law": "the falsifier bounds are the derived composition's OWN census values: the runtime must build this state to the 2e-3 gate and the settle may only DECAY the dangles (the wave-13/16/17 precedent) -- growth beyond the authored composition is the direct falsification"
+  }
+ },
+ "fore_press": {
+  "declared_share_line": {
+   "weight_N": 98.43913308670001,
+   "pad_reaction_N": 22.148804944507503,
+   "demands_N_m": {
+    "left": {
+     "shoulder": 3.499603553736595,
+     "elbow": 1.0426297822177344
+    },
+    "right": {
+     "shoulder": 3.499603553736595,
+     "elbow": 1.0426297822177344
+    }
+   },
+   "shoulder_cap_N_m": 4.229,
+   "elbow_cap_N_m": 3.76,
+   "note": "the pose's CAPACITY at the declared s=0.45 share (the wave-14/15 machinery, unchanged)"
+  },
+  "cantilever_note": {
+   "reaction_total_N": 49.21956654335,
+   "shoulder_demands_N_m": [
+    7.826286263804257,
+    7.826286263804257
+   ],
+   "note": "the quasi-static full-W opening IF the fore pads alone bore the body: the shoulder demand exceeds the 4.229 cap -- the pre-registered wave-16/17 NOTE stands (the statics line is the pose's capacity; the entry's load path is the census's to measure). The velocity-level least-norm does not route W into the pads; the composition's MEASURED press is the wave-13 anchor below."
+  },
+  "wave13_back_pose_anchors": {
+   "heel_reaction_N_per_pad": [
+    10.5,
+    12.2
+   ],
+   "note": "the BACK pose at the same full lean pressed 10.5-12.2 N heel reactions through the wave-13 settle with 1.1 mm slip (the campaign map; the pads PINNED) -- the composition's own measured press"
+  },
+  "falsifier_bound": {
+   "plant_total_N": 5.199,
+   "pinned_marker_total_N": 21.85,
+   "deadline_tick": 10,
+   "law": "fore press >= N_plant-consistent reactions (>= 5.199 N total) BY TICK 10: the direct test this is the 291-class load path (the lean's press). The pads pinned (slip <= 0.1 m/s, gaps in band, N >= 5.199) by the capture at 60 is the hold clause."
+  },
+  "mu_store": 0.6
+ },
+ "hind_landing": {
+  "per_point": {
+   "left_heel": {
+    "dangle_m": 0.06496305145847851,
+    "anchor_touch_tick": 42.3965331381349,
+    "anchor_window_ticks": [
+     26,
+     76
+    ],
+    "tip_arm_m": 0.0006634892073538318
+   },
+   "left_mp_head": {
+    "dangle_m": 0.07111530580961349,
+    "anchor_touch_tick": 46.41165018722922,
+    "anchor_window_ticks": [
+     29,
+     83
+    ],
+    "tip_arm_m": -0.08511616902464744
+   },
+   "right_heel": {
+    "dangle_m": 0.17444282986361748,
+    "anchor_touch_tick": 113.84581005635079,
+    "anchor_window_ticks": [
+     72,
+     202
+    ],
+    "tip_arm_m": 0.3005611561803293,
+    "theta_land_rad": 0.5803904672197763,
+    "tip_torque_N_m": 1.983284559805532,
+    "I_edge_kg_m2": 3.231441405658373,
+    "alpha_rad_s2": 0.6137460999084581,
+    "free_tip_land_ticks_upper_bound": 412.5741515046836
+   },
+   "right_mp_head": {
+    "dangle_m": 0.11732305409163246,
+    "anchor_touch_tick": 76.56799733064119,
+    "anchor_window_ticks": [
+     48,
+     136
+    ],
+    "tip_arm_m": 0.2362701675757188,
+    "theta_land_rad": 0.49656313065437385,
+    "tip_torque_N_m": 1.983284559805532,
+    "I_edge_kg_m2": 3.231441405658373,
+    "alpha_rad_s2": 0.6137460999084581,
+    "free_tip_land_ticks_upper_bound": 381.6182319353358
+   }
+  },
+  "left_window_ticks": [
+   26,
+   83
+  ],
+  "left_law": "the L hind lands through the settle: the carried anchor rate (1.5323e-03 m/tick, the wave-18 leaned-settle measurement) scales the L pair's dangles; the predicted leg touch is ~tick 42.4",
+  "left_touch_pred_tick": 42.3965331381349,
+  "right_pred_tick": 211.00777781121076,
+  "right_window_ticks": [
+   166,
+   246
+  ],
+  "right_law": "the corrected right hind enters AIRBORNE at its 0.5 column (1.1732e-01 m pair-min at the composition vs 4.913e-2 at level): its touch cannot fire before its clock's first TD slot 166.5 (the swing descends monotonically to TD at phi=1.0), delayed by the dangle excess at the carried anchor rate (~44.5 ticks) -- the wave-16/17 verified clock schedule, re-derived for the leaned geometry",
+  "settle_note": "the R hind's window extends past the settle: the capture at 60 fires with the right hind still airborne -- the corrected composition's honest state (the defected original landed its TD-column right foot by ~tick 40; the corrected mid-stance column is ~2x deeper). The support through the gap is the fore press + the L hind."
+ },
+ "containment": {
+  "com_x_m": 0.05593945792880454,
+  "stage_A_tick0": {
+   "contacts": "fore pair only",
+   "polygon_x_m": [
+    0.07608677635407715,
+    0.16043969938809177
+   ],
+   "com_inside": false,
+   "tip_lever_m": 0.020147318425272613
+  },
+  "stage_B_after_L_hind": {
+   "contacts": "fore pair + left hind",
+   "polygon_x_m": [
+    0.07542328714672332,
+    0.1612029453787246
+   ],
+   "com_inside": false
+  },
+  "stage_C_after_R_hind": {
+   "contacts": "all paws",
+   "polygon_x_m": [
+    -0.22447437982625212,
+    0.1612029453787246
+   ],
+   "com_inside": true
+  },
+  "fore_line_posture_moment": {
+   "tau_posture_N_m": -1.983284559805532,
+   "lambda_N": 98.4391330867,
+   "identity_W_xcom_minus_x_contact_N_m": -1.9832845598055344,
+   "contact_x_m": 0.07608677635407715,
+   "com_x_m": 0.05593945792880454,
+   "W_N": 98.43913308670002,
+   "cap_N_m": 11.2125,
+   "ratio_of_cap": 0.1768815660919092,
+   "statement": "the exact contact-frame posture moment at the fore line (the wave-18 identity, machine-checked): the quasi-static demand the posture servo sees with the body hanging from the fore line. The wave-18 measured caveat stands: the RUN demand follows the FOLD (-0.086 deg/tick at lean 0 AND at theta_e), not the statics -- this number is the quasi-static margin, the fold transient is the named tension the run measures."
+  }
+ },
+ "capture_prediction": {
+  "per_leg": {
+   "left": {
+    "reset_offset_m": -0.11765216739946416,
+    "delta_loaded_m": -0.098,
+    "delta_unloaded_m": 0.019124936957580274,
+    "band_m": [
+     -0.21565216739946416,
+     -0.09852723044188388
+    ]
+   },
+   "right": {
+    "reset_offset_m": -0.11765216739946416,
+    "delta_loaded_m": -0.0922,
+    "delta_unloaded_m": 0.019534936957580268,
+    "band_m": [
+     -0.20985216739946416,
+     -0.09811723044188389
+    ]
+   }
+  },
+  "mean_band_m": [
+   -0.21275216739946418,
+   -0.09832223044188389
+  ],
+  "hold_height_m": 0.19186088311964727,
+  "x_off_prior_m": 0.10197183584,
+  "fold_geometry_cross_check": {
+   "predicted_transfer_m": -0.11019388311964727,
+   "predicted_capture_m": -0.22784605051911144,
+   "inside_band": false
+  },
+  "predicted_region": "the LOADED end (the lean's press folds the arms under load -- the wave-13/14/15 measured anchor mechanism): predicted capture ~ -0.213 m (the wave-13 starvation geometry)",
+  "interpolation_law": "delta_settle linear in the fore load fraction between the two measured anchors; the fraction statically indeterminate -> the FULL anchor range is the pre-registered band (derived, not chosen)"
+ },
+ "entry_stance_law": {
+  "dmax_m": 0.2613244882908271,
+  "amax_fold_m": 0.24823575345115503,
+  "amax_hold_m": 0.17742573012111765,
+  "per_leg": {
+   "fore_right": {
+    "grid_lift_wait_ticks": 92.27159999999999,
+    "loaded": {
+     "amax_m": 0.24823575345115503,
+     "tau_env_ticks": 24.31889405267638,
+     "lift_wait_ticks": 24.31889405267638,
+     "envelope_binds": true
+    },
+    "hold": {
+     "amax_m": 0.17742573012111765,
+     "tau_env_ticks": 55.44336862280022,
+     "lift_wait_ticks": 55.44336862280022,
+     "envelope_binds": true
+    }
+   },
+   "fore_left": {
+    "grid_lift_wait_ticks": 198.77159999999998,
+    "loaded": {
+     "amax_m": 0.24823575345115503,
+     "tau_env_ticks": 24.31889405267638,
+     "lift_wait_ticks": 24.31889405267638,
+     "envelope_binds": true
+    },
+    "hold": {
+     "amax_m": 0.17742573012111765,
+     "tau_env_ticks": 55.44336862280022,
+     "lift_wait_ticks": 55.44336862280022,
+     "envelope_binds": true
+    }
+   }
+  },
+  "envelope_binds_both_corners": true,
+  "double_swing_window_ticks_loaded_corner": [
+   84.31889405267638,
+   179.35889405267636
+  ],
+  "swing_ticks": 95.03999999999999,
+  "verdict": "THE KNOWN RISK, PRE-REGISTERED: at every capture corner the envelope binds BOTH entry stances (tau_env << the grid lift waits) -- the behind capture cannot hold either paw to its grid slot, so the two fore lifts fire within ~0 ticks of each other and a both-fore-airborne window of ~95 ticks opens at [84, 179]. The wave-13 run-2 counter-anchor (the SAME composition with the envelope-bounded entry) died at tick 120 inside the same window; the wave-13 run-1 plowing-but-planted struts survived 170 ticks longer -- FRONT SUPPORT outweighs REACH in the entry transient. THIS lane's difference: the composition's press (the fore load path the wave-13/15 level entries never had) and the braced wide landing. If the walk refuses inside the predicted window, the membrane's run falsifier fires with this analysis as the pre-registered cause and the banked fork is THE CLOCK'S MID-ENTRY RE-PLANT (re-plant forward at the envelope edge instead of lifting -- out of this lane's scope: the clock is retained untouched)."
+ },
+ "hind_clock_schedule": {
+  "release_phase": {
+   "left": 0.0,
+   "right": 0.5
+  },
+  "settle_total": 60,
+  "right_first_td_pred_tick": 166.5,
+  "toe_off_phase": 0.68,
+  "law": "phi_leg=(t/T+off) mod 1, off={0,0.5} (the doc 5.1); the clock resets at each leg's own kTouch crossing"
+ },
+ "fore_pose": {
+  "shoulder_rad": -0.9029386145702687,
+  "elbow_rad": 0.837913516732741
+ },
+ "entry_state": {
+  "entry_trunk_rad": -0.2064,
+  "start_phase_left": 0.0,
+  "start_phase_right": 0.5
+ },
+ "gait_bounds": {
+  "d_td_m": 0.06496305145847851,
+  "per_paw_dangle_m": 0.17444282986361748,
+  "spread_m": 0.17444282986361748,
+  "census_gate_m": 0.002,
+  "hind_pairmin_gaps_derived_m": {
+   "left": 0.06496305145847851,
+   "right": 0.11732305409163246
+  },
+  "fore_press_plant_N": 5.199,
+  "fore_press_pinned_N": 21.85,
+  "fore_press_deadline_tick": 10,
+  "fore_plant_slip_bound_m_s": 0.1,
+  "hind_land_left_window_ticks": [
+   26,
+   83
+  ],
+  "hind_land_right_window_ticks": [
+   166,
+   246
+  ],
+  "capture_band_left_m": [
+   -0.21565216739946416,
+   -0.09852723044188388
+  ],
+  "capture_band_right_m": [
+   -0.20985216739946416,
+   -0.09811723044188389
+  ],
+  "hind_load_floor_N": null,
+  "hind_load_floor_note": "NONE: the fore-seat composition opens with all four hind points airborne (the pre-registered cantilever note) -- the wave-17 hind-seat tick-0 floor clause is dropped with the seat it belonged to; the landing windows are the hind clauses now"
+ },
+ "statics": {
+  "declared_share_line": {
+   "weight_N": 98.43913308670001,
+   "pad_reaction_N": 22.148804944507503,
+   "demands_N_m": {
+    "left": {
+     "shoulder": 3.499603553736595,
+     "elbow": 1.0426297822177344
+    },
+    "right": {
+     "shoulder": 3.499603553736595,
+     "elbow": 1.0426297822177344
+    }
+   },
+   "shoulder_cap_N_m": 4.229,
+   "elbow_cap_N_m": 3.76
+  },
+  "worst_shoulder_N_m": 3.499603553736595,
+  "worst_elbow_N_m": 1.0426297822177344
+ },
+ "provenance": {
+  "script": "tools/science_funnel/validation/gait_zero_20260919/derive_leaned_entry.py",
+  "law": "THE LEANED ENTRY, RECONCILED: the 291-class entry composition (full vault lean theta*(0), the BACK pose, the FORE seat) re-derived on the corrected assembly (the wave-16 hind repair + the wave-15 clock repair retained); the wave-15 level entry and its hand-off blend are NOT used (the legacy wave-10 ramp holds through the settle exactly as the original did); the wave-17 dangle re-pin and hind seat are REMOVED (they gate this composition). Every stage above carries a measured existence proof (the 291 run) or a carried measured anchor; no number was tuned.",
+  "measured_anchors": {
+   "delta_loaded_m": {
+    "left": -0.098,
+    "right": -0.0922
+   },
+   "delta_unloaded_m": {
+    "left": 0.019124936957580274,
+    "right": 0.019534936957580268
+   },
+   "v_settle_prior_m_s": 0.42044,
+   "H_FOLD_m": 0.081667,
+   "settle_descent_rate_m_per_tick": 0.0015322727272727272,
+   "press_anchor_heel_N": [
+    10.5,
+    12.2
+   ],
+   "n_plant_total_N": [
+    5.199,
+    21.85
+   ],
+   "D_SURV_m": 0.059,
+   "D_LIVED_m": 0.1744
+  }
+ }
+}
