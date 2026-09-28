@@ -30,3 +30,7 @@ tools/membrane_ontology/ontology.json -text
 docs/ONTOLOGY_WORK_PLAN.md -text
 
 tools/membrane_ontology/model.py -text
+
+# monkey-campaign-preservation-20260928 (Astra final ruling): hash-manifested
+# snapshot bytes must be checkout-invariant. Last match wins over * text=auto.
+tools/monkey_campaign/** -text
