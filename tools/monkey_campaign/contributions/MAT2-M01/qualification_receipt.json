@@ -1,0 +1,43 @@
+{
+ "schema": "chimera.qualification_receipt.v1",
+ "task_id": "MAT2-M01",
+ "planning_id": "M01",
+ "attempt_id": "9f1c28b48a6d4a03a10feb0d651debd1",
+ "agent_id": "arrival-4333d2ecb8df403393c79377c1f9813e",
+ "kind": "implement_and_verify",
+ "criteria_sha256": "6ad0547d180d402881dbbf09e6f62581c5b0ebafa308cbddc0b6d5f69abfd859",
+ "base_revision": "c525b82c7c3ce0128565424764293a3c85811ab3",
+ "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+ "statement": "One versioned schema (chimera.material_state.v1) distinguishes regions/shells, rest/current geometry, single-owner mass, material direction/history, pressure/deformation law, and distinct contact vs bond relation types; the teddy prototype displays its actual regions and graph relations with stable IDs; no mass double-counting and no containment-as-bond.",
+ "predictions": {
+  "P1": "schema validates; canonical round-trip byte-identical; stable-ID grammar on all identities",
+  "P2": "owners == matter == 2; 58 references; total mass 2.0 kg counted exactly once via independent oracle",
+  "P3": "containment, contacts and bonds listed as separate relation kinds; port endpoints enforced; single-endpoint bond refused",
+  "P4": "fixture region set equals pinned teddy_membranes.json set at base revision; blob hashes recorded and re-verified through git show"
+ },
+ "falsifiers": {
+  "F1": "duplicate_matter_owner / unowned_matter refusals live",
+  "F2": "bond_requires_explicit_endpoints live; explicit bond removal drops bond_count 1->0 with regions and mass unchanged; containment survives (not mechanical)",
+  "F3": "region_identity_drift refused; declared rename lawful; canonical digests stable"
+ },
+ "evidence": {
+  "commands": [
+   "python -B tools/monkey_campaign/contributions/MAT2-M01/test_material_state.py",
+   "python -B tools/monkey_campaign/contributions/MAT2-M01/render_material_display.py",
+   "python -B tools/monkey_campaign/contributions/MAT2-M01/build_teddy_fixture.py (fixture regeneration, reproducible)"
+  ],
+  "numerical": {
+   "kind": "records",
+   "reference": "test_material_state.py -> Ran 7 tests OK; PROBE SUMMARY: 35 named checks, 0 failed",
+   "display": "material_display.json: 30 regions, 2 owned matter, 58 references, 1 containment, 2 contacts, 1 bond, total mass 2.0 kg once, canonical_sha256 1c015e2d4cc18cc49fb9ab78d67b5a74f7cae883c5b7b3c8c1d77015a32d9bf1"
+  },
+  "source": "material_state.py + build_teddy_fixture.py + teddy_fixture.json + render_material_display.py + test_material_state.py in this contribution directory",
+  "independent_review": null
+ },
+ "failures_preserved": [
+  "invalid_region_fields on first fixture run (schema initially disallowed region ports field); fixed in schema",
+  "test-file bugs fixed and re-run to green: scratch __length_hint__ assertion, nonexistent tail_stub probe name, rename probe colliding with fixture provenance field, stale tail_stub reference in rename_accepted check"
+ ],
+ "honest_boundary": "No runtime, GPU, training, network or engine claim. The material motion profile's visual/camera clause is PENDING_RUNTIME (no runnable material solver at base revision; documented gap in ChimeraEngine/THE_ACTUATED_MEMBRANE.md) and is deferred to runtime-facing cards M03/M04, MAT-PRESSURE. Masses/law are authored at chosen fidelity with provenance; no anatomy constant or activation law invented. Independent review pending.",
+ "artifacts_note": "Artifact sha256 values are recorded in the request-pr handoff submission."
+}
