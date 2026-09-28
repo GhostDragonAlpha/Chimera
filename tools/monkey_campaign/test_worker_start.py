@@ -74,10 +74,6 @@ class StartupTests(unittest.TestCase):
         self.assertEqual(self.registry.snapshot()['registered_agents'],0)
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
 class ParkNoRedealTests(StartupTests):
     """Regression coverage for the allocator deal pathology (mailbox b7687a3f):
     park must not re-deal in the same call, and re-dealing after any handoff
