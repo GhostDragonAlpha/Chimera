@@ -237,6 +237,23 @@ executable, per the M01/M02/M04 precedent for "native tests" at this stage.
   exhaustive comparison of 14.5M pairs is NOT claimed (out of the card's small
   fixture scope; recorded as an applicability note, not a pass).
 
+## Amendment A2 (frozen after amendment A1, BEFORE implementation and before any measurement)
+
+- Correction of the X1 ledger identity: the freeze wrote "sum of all body
+  momentum changes + anchor impulses = 0 per component per tick", which omits
+  the external gravity term and is wrong as written. The DECLARed balance,
+  which replaces it, is:
+  (i) reciprocity: every contact impulse is applied two-sided, +J to one body
+  and -J to the other, recorded both sides (within 1e-12 per component);
+  (ii) per tick, sum over bodies of (m * delta-v) = sum of EXTERNAL impulses
+  (gravity on free bodies + anchor impulses on pinned bodies) within 1e-12 per
+  component (internal contact impulses cancel);
+  (iii) at X1 equilibrium the pinned anchor reaction magnitude equals the
+  full weight impulse m*g*dt = 0.005886000000000001 N·s per tick within 1e-12
+  (the two-sided load path closes into the pinned support).
+- F3's tamper target is accordingly (i)+(ii): a one-sided impulse copy fires
+  the reciprocity/balance checks in X1/X4. Nothing else changes.
+
 ## Applicability boundary (honest, frozen)
 
 Offline CPU-only contact experiment executable over pinned M02 surfaces and
