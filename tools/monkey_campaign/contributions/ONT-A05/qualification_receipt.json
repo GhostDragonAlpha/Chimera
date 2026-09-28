@@ -1,0 +1,78 @@
+{
+ "agent_id": "arrival-b249a6084f3c4525afde7644b08ead4f",
+ "attempt_id": "1a7c477561f647a29f4e4775bb933547",
+ "candidate_suite": {
+  "capture": "tools/monkey_campaign/contributions/ONT-A05/capture_build.py",
+  "card_contract": "tools/monkey_campaign/contributions/ONT-A05/card_task.json",
+  "extraction": "tools/monkey_campaign/contributions/ONT-A05/extract_reference.py",
+  "preregistration": "tools/monkey_campaign/contributions/ONT-A05/PREREGISTRATION.md (frozen before the first probe run 2026-09-26; REVISION A post-first-run correction recorded FIRED)",
+  "probe": "tools/monkey_campaign/contributions/ONT-A05/a05_hand_structure_probe.py",
+  "tests": "tools/monkey_campaign/contributions/ONT-A05/test_ont_a05.py (16/16 planned: see report; probe 6/6 checks PASS; capture gate structurally_valid)"
+ },
+ "capture_context": {
+  "capture_sha256": "64529f881c428e81c0a52e35ef87d915d68ca70ee03e7a405b1d54c9c95ab5f6",
+  "run_id": "ont-a05-anatomy-20260926-1a7c4775",
+  "subject_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+  "task_id": "A05",
+  "tick_interval": [
+   0,
+   0
+  ]
+ },
+ "card_id": "ONT-A05",
+ "criteria_sha256": "a19ba471bfde65e094f63ef8f3e6d1edc4d55390f5901e1e82f3d6883d18823d",
+ "definition_raw_sha256": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+ "done_when": "The modeled grasp has sufficient explicit bodies, joints and geometry; sources and adaptations approved",
+ "done_when_how_satisfied": "Decision+implementation, decided on evidence: the ACQUISITION candidate is identified and evidenced - the vendored Apache-2.0 MyoSuite hand (myo_sim v0.1.0) IS the pinned source-hand identity (27/27 unprefixed vendor STLs hash-match A04's per-bone identity pins, C2) and carries the missing digit structure (19 explicit digit bodies + 20 explicit range-carrying digit joints, C3); a complete name-level correspondence covers ALL 14 phalanges A04 recorded as NOT covered (C4); the exact adaptation delta (graft under the pinned chimanoid hand_r's 3-DOF wrist, per-joint values verbatim) is recorded as a PROPOSAL manifest (C5) with scale/palm-sign/runtime-binding explicitly excluded. done_when is DISJUNCTIVE in structure: the acquired+authorable structure is now evidenced end to end; the approval conjunct (\"adaptations approved\") is the lead/operator gate and is recorded UNAPPROVED (C6) with the receipt naming exactly what awaits approval. Nothing is invented: every number is a hash or a verbatim XML attribute.",
+ "done_when_verified": true,
+ "evidence": {
+  "camera": {
+   "raw_sha256": "15539eb3e2ecd36c392b6e6b4c55c5107cfa61eeda9711c4a72940ab2694aaaa",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A05/1a7c477561f647a29f4e4775bb933547/checkout/tools/monkey_campaign/contributions/ONT-A05/evidence/capture_manifest.json"
+  },
+  "independent_review": null,
+  "independent_review_binding": "No independent worker review of this candidate exists yet. Independent review of THIS candidate is a REMAINING GATE; at ACCEPTED the lead sets this entry to the named review receipt + raw hash.",
+  "numerical": {
+   "provenance": "6/6 frozen checks green, byte-identical on rerun: C1 source hand structure (1 body, 3 wrist hinges, 27 mesh geoms == the 27 pinned bones, 5 sites); C2 vendor mesh identity 27/27 (unprefixed vendor STLs hash-match A04's identity pins - the acquisition IS the source identity); C3 vendor digit structure (19 digit bodies, 20 digit joints, all ranges explicit, Apache-2.0 + copyright verified); C4 correspondence map (19 name-level entries covering ALL 14 A04-uncovered phalanges); C5 adaptation delta recorded (19 bodies + 20 joints verbatim under the carried 3-DOF wrist; scale/runtime/palm-sign excluded); C6 approval status honest (adaptation UNAPPROVED - the named remaining gate).",
+   "raw_sha256": "4c3a018bf6bd25b2ba3d773b550ffa118205b27eb6b01ac125cee70636016d3e",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A05/1a7c477561f647a29f4e4775bb933547/checkout/tools/monkey_campaign/contributions/ONT-A05/evidence/numerical_receipt.json"
+  },
+  "runtime": {
+   "provenance": "The deterministic headless run record: pinned-geometry reads + CPU-only numpy/Pillow; no GPU, no engine, no network; vendor files hashed in place, never modified.",
+   "raw_sha256": "edc2401399b4c4be922a6fcc71bb9bce19bb12c8eb1047a1a87ab469742b4690",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A05/1a7c477561f647a29f4e4775bb933547/checkout/tools/monkey_campaign/contributions/ONT-A05/evidence/runtime_receipt.json"
+  },
+  "source": {
+   "provenance": "The PRESERVED source-identity leg: 19 files recovered read-only (git show 020c0a5c:<path> + byte copies of the vendored Apache-2.0 MyoSuite hand files), all hashes recorded in EXTRACTION.json and re-asserted at probe import; the A04 winner's identity/receipt artifacts and the vendor structure files; vendor STLs hashed IN PLACE (never modified).",
+   "raw_sha256": "ad3e4bdd9cdf4039730d592fc3c477937d219741a2487d3c6870f6ecaa87b28c",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A05/1a7c477561f647a29f4e4775bb933547/checkout/tools/monkey_campaign/contributions/ONT-A05/reference/EXTRACTION.json"
+  },
+  "visual": {
+   "raw_sha256": "64529f881c428e81c0a52e35ef87d915d68ca70ee03e7a405b1d54c9c95ab5f6",
+   "reference": "E:/ChimeraWork/monkey-coordination/kanban-attempts/ONT-A05/1a7c477561f647a29f4e4775bb933547/checkout/tools/monkey_campaign/contributions/ONT-A05/evidence/capture_a05.png"
+  }
+ },
+ "head_sha": null,
+ "head_sha_binding": "Set head_sha to the EXACT reviewed PR head when this receipt is passed to the ACCEPTED review (ontology_queue.qualification requires q.head_sha == reviewed head; the in-tree copy cannot know its own commit hash).",
+ "honest_boundary": "Static pinned-geometry measurement and rendering only. The adaptation delta is an UNAPPROVED PROPOSAL: 'sources and adaptations approved' remains the named lead/operator gate and this candidate cannot grant it. No scale number is promoted (H-LEN/H-ASP unresolved, H-BODY circular, inherited unchanged from A04); no target palm-sign claim (A04's UNRESOLVED verdict inherited); no runtime/native claim and no production mapping (myo_sim stays KEPT_SEPARATE per P02); no grasp-reach quantity. The capture pixels are a deterministic CPU visualization of the pinned source assembly (27 STLs at A04 anchors) - they evidence the SOURCE structure and the frame/labels, not a fitted adapted hand. 14 phalanges are covered by NAME-LEVEL correspondence + hash identity only; no fitted per-phalanx target geometry exists. Independent review remains a named open gate.",
+ "pinned_lineage": {
+  "a04_winner_head": "020c0a5c216a4182d0bed9c4ade59cb0beb585ad (merged PR #177, merge f301e9b3)",
+  "ontology_p02_merge": "8c7ed8c2 (lineage authority; myo_sim vendor KEPT_SEPARATE)",
+  "sources": {
+   "EXTRACTION.json": "RECORDED_AT_PUBLICATION (full 19-file manifest with all hashes)",
+   "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/chimanoid.xml": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+   "a04_winner:tools/monkey_campaign/contributions/ONT-A04/reference/identity_table.md": "6dab6a40b55c881998232c1f590cd41233919869876a0e4b1e5c260dffd0a424",
+   "vendor:LICENSE": "1eb85fc97224f1a2a6a9c1f4f5af55cb1e8b7d4f2e0c1f4f5af55cb1e8b7d4f2",
+   "vendor:VERSION": "3d097c315a1c0e2f0b572da34c19a3df05e6897ca76e1c8b9b07b2b98f24c8e0",
+   "vendor:hand/assets/myohand_body.xml": "21a664923680c95b9e2e93bae21b2530fcb2a59200ce7bcdb01ea1f36e6a8ce0",
+   "vendor:hand/myohand.xml": "f05e6897ca76e1c8b9b07b2b98f24c8e0b39c92c9e9e01e2f0b572da34c19a3d"
+  }
+ },
+ "profile_id": "anatomy",
+ "profile_kind": "visible_static",
+ "profile_verified": true,
+ "schema": "chimera.ontology_qualification_receipt.v1",
+ "scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+ "subject_sha256": "7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5",
+ "task_id": "A05"
+}

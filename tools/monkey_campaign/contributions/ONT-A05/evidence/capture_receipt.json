@@ -1,0 +1,54 @@
+{
+ "capture_truth_guard": {
+  "anchor_extent_3distph_m": 0.1552851087934706,
+  "assembled_span_m": [
+   0.09995000019302965,
+   0.17848899955487252,
+   0.06478299976441264
+  ],
+  "placement": "27 pinned STLs at their per-bone A04 s2 anchors (assembled hand; NOT origin-collapsed)"
+ },
+ "gate_validation": {
+  "capture_kind": "image",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "anatomy",
+  "structurally_valid": true,
+  "view_count": 6,
+  "visual_acceptance": false
+ },
+ "manifest": {
+  "raw_sha256": "15539eb3e2ecd36c392b6e6b4c55c5107cfa61eeda9711c4a72940ab2694aaaa",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A05\\1a7c477561f647a29f4e4775bb933547\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A05\\evidence\\capture_manifest.json"
+ },
+ "render_referents": {
+  "clean_segments": "rendered as their OWN panels; zero diagnostic pixels",
+  "frame": "chimanoid hand_r local metres; world origin at the A04 R2-A4 pin",
+  "raster": "the MERGED A04 winner's pinned z-buffer orthographic rasterizer (reference/a04_winner/a04_capture_build.py)"
+ },
+ "run_id": "ont-a05-anatomy-20260926-1a7c4775",
+ "schema": "ont-a05.anatomy.capture.v1",
+ "sheet": {
+  "raw_sha256": "64529f881c428e81c0a52e35ef87d915d68ca70ee03e7a405b1d54c9c95ab5f6",
+  "reference": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\ONT-A05\\1a7c477561f647a29f4e4775bb933547\\checkout\\tools\\monkey_campaign\\contributions\\ONT-A05\\evidence\\capture_a05.png",
+  "size_px": [
+   1284,
+   1268
+  ]
+ },
+ "state_binding": {
+  "kind": "state",
+  "raw_sha256": "7944df30c79e54e2004060bdffd3ae27c7fd8796c4c92bd4c978e60d7be1b13e"
+ },
+ "subject_sha256": "7944df30c79e54e2004060bdffd3ae27c7fd8796c4c92bd4c978e60d7be1b13e",
+ "task_id": "A05",
+ "visual_gate_receipt": {
+  "capture_kind": "image",
+  "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_id": "anatomy",
+  "structurally_valid": true,
+  "view_count": 6,
+  "visual_acceptance": false
+ }
+}
