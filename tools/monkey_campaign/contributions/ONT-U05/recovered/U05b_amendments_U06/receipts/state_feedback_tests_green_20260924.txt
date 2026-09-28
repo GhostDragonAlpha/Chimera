@@ -1,0 +1,47 @@
+state_feedback_tests -- M-U05b/U06 falsifiers (prereg: agents/U05b_amendments_U06/PREREGISTRATION.md §2)
+V1 DERIVABILITY: every vocabulary row renders from real modules
+  [PASS] V1.session_menu renders from real inputs with the FROZEN prompt  -- 'Menu — controls inactive'
+  [PASS] V1.session_paused renders from real inputs with the FROZEN prompt  -- 'Paused — controls inactive'
+  [PASS] V1.session_exited renders from real inputs with the FROZEN prompt  -- 'Exited — controls inactive'
+  [PASS] V1.input_disconnected renders from real inputs with the FROZEN prompt  -- 'No input device — keys dropped'
+  [PASS] V1.input_blurred renders from real inputs with the FROZEN prompt  -- 'Window lost focus — keys dropped'
+  [PASS] V1.intent_paused renders from real inputs with the FROZEN prompt  -- 'Paused — controls inactive'
+  [PASS] V1.climb_sent renders from real inputs with the FROZEN prompt  -- 'Climb intent sent (no climb skill loaded)'
+  [PASS] V1.let_go_sent renders from real inputs with the FROZEN prompt  -- 'Let-go intent sent (nothing to release)'
+  [PASS] V1.climb_key_held renders from real inputs with the FROZEN prompt  -- 'Climb key held (ask already sent)'
+  [PASS] V1.walking renders from real inputs with the FROZEN prompt  -- 'Walking — movement input active'
+  [PASS] V1.climb_ready renders from real inputs with the FROZEN prompt  -- 'Climb key ready (Space) — no climb skill loaded'
+  [PASS] V1.sources every row cites its source module(s)  -- per-row SOURCE_MAP citations
+  [PASS] V1.remap the ready line interpolates the LIVE bindings table (data, never semantics)  -- 'Climb key ready (F) — no climb skill loaded'
+V2 NO-CAPABILITY-CLAIM FUZZ: 20000 seeded adversarial combos, every rendered string scanned
+  [PASS] V2.a ZERO forbidden claim tokens in 30099 rendered strings (722376 token scans)  -- hits=[]
+  [PASS] V2.b the ladder is MODEL-CHECKED: state_key and prompt match the independent model on all 20000 combos  -- misses=[]
+  [PASS] V2.c every rendered key is in the FROZEN table, and the full table is reachable (no dead row, no invented row)  -- n_keys=11 of 11
+V2.d-g ADVERSARIAL INPUTS: unknown values RAISE, never render
+  [PASS] V2.d unknown session/focus/gate values raise UnknownStateError (refuse-what-you-cannot-name)
+  [PASS] V2.e a flash event outside v1 (a foreign version, the AMR-1 bool, or a foreign intent name) RAISES -- U06 is an IntentEvent consumer and enforces spec §7.1's check-the-version law
+  [PASS] V2.f malformed scalars (walk_live, held members, binding names, stamps) raise -- a renderer that guesses is a renderer that fabricates
+  [PASS] V2.g UnknownStateError is a ValueError (the house refusal class)
+V3 U05 INTEGRATION: intent events/drops surface correctly
+  [PASS] V3.a the DELIVERED climb_request renders the brief's exact line (capability disclaimed, never 'climbing')  -- 'Climb intent sent (no climb skill loaded)'
+  [PASS] V3.b the same instant WITHOUT the flash surfaces the held edge (the input fact), never a game state  -- 'Climb key held (ask already sent)'
+  [PASS] V3.c the structured record carries the delivered event's canonical fields verbatim (the C12 chain: same clocks as CommandRecord)
+  [PASS] V3.d a gated press shows the INPUT-gate line; the named drop is DIAGNOSTICS-ONLY (default OFF == empty string)  -- diag=state=input_blurred; session=playing [x02]; focus=blurred [u03]; intent_gates=bl...
+  [PASS] V3.e diagnostics stay OPTIONAL engineering language and still carry zero claim tokens
+V4 X02/U03 GATING: real flow + real policy take over the line
+  [PASS] V4.a attract: the menu line (X02 owns it)
+  [PASS] V4.b real session pause takes the line (even though the intent channel was not told)  -- 'Paused — controls inactive'
+  [PASS] V4.c with the channel told, the line still reads as paused (honest: either source suffices to close the gate)
+  [PASS] V4.d resume returns the ladder to the WALKING row (the recovery word appears NOWHERE)
+  [PASS] V4.e real blur takes the line; on_focus returns to walking
+  [PASS] V4.f focus regained: back to walking (U01's record still live)
+  [PASS] V4.g disconnect dominates and is named; the gate clears back to walking on reconnect
+  [PASS] V4.h a cross-source mis-wire (focus blurred, channel open) still renders the conservative gate line, and the mismatch goes to DIAGNOSTICS ONLY
+V5 HONESTY BOUNDARIES: falling/recovery/support have NO row
+  [PASS] V5.a the map's non-derivable nouns have NO vocabulary row (no landed module provides them: F04's L1 is offline geometry, W09 recovery is future, K-series climb is future)
+  [PASS] V5.b the no-skill disclaimer is MANDATORY in both climb-capability lines (the brief's honesty example)
+  [PASS] V5.c the held-edge line is an INPUT fact (never 'holding', never 'climbing')
+  [PASS] V5.d the unavailable-support noun maps to INPUT-gate language ('keys dropped'), never a support/contact claim
+  [PASS] V5.e the structured record JSON round-trips (state_key, prompt, sources, observed)  -- keys=['diagnostics', 'observed', 'prompt', 'sources', 'state_key']
+
+RESULT: GREEN -- all U06 falsifier checks passed

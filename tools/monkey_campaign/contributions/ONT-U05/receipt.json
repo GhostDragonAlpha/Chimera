@@ -1,0 +1,132 @@
+{
+ "card": "ONT-U05",
+ "attempt": "b60923e0331d44b1b4ac03dbd327bc01",
+ "agent_id": "arrival-3c2e330f584e4c399906ec4eff127054",
+ "branch": "attempt/ont-u05-b60923e0",
+ "base_commit": "56d0116ac20d70962b6d20e60b65380d3ca49d43 (then-tip of astra/gait-capture; U01 dependency merge 048b63f41587bc76ecc27a8cf779d3bd94cd3254 = PR #169 verified present)",
+ "criteria_sha256": "699696427b5c52bad16f970e88af13e5dbfb137533d8d48c890f126676d28f92",
+ "rule0": "attempt PREREGISTRATION.md frozen BEFORE the first artifact write; pinned hashes observed read-only beforehand",
+ "reconciliation": {
+  "reviewed_interface_decision": "recovered/U05_climb_intent/INTENT_SEAM_SPEC.md (772d809df620bb93cce97fd41f081ba244b44edfef8d9ee4797f16cc8eac143b) - R4 verdict APPROVED-WITH-AMENDMENTS (recovered/R4_intent_review/report.md, e456945f568e2c7eb750cd807607152e83da2d19a28875fdc07dedafb25de418); all six interface rulings APPROVE; AMR-1..4 binding, landed inside v1",
+  "existing_implementation": "game lineage E:/ChimeraWork/monkey-play-20260924 at 9afbddcd90164b5544a16fd0bc72278d985eb6e3; integrated 87c14ca5 (73/73), amended 272e7bda (77/77); candidate here is a BYTE-EXACT recovery, not a rewrite",
+  "kanban_gap": "astra/gait-capture carried none of it; five prior ONT-U05 attempt workspaces verified empty 2026-09-26",
+  "done_when_map": "see report.md section 1 (intent vocabulary / delivery-to-declared-selector-interface / version rule / walk-contract isolation, each with its falsifier evidence)"
+ },
+ "checks_performed": [
+  "byte-exact extraction of 35 pinned files via git show from the read-only game worktree; reference/EXTRACTION_LEDGER.json (ae03fc496f5896cf373f72866694797226073a4b1161f3cd71b3b75d011d5067) records source+extracted sha256 per file, all byte_exact=true (F-R1)",
+  "runenv mirror hash-asserted (7/7 files == pinned) BEFORE any run; CPU-only python -B; timeout 120; outputs a few KB (budget 16 MiB)",
+  "climb_intent_tests.py -> exit 0, RESULT: GREEN, 73 [PASS], seam sha256 67711759... start AND end (I6 fresh) (evidence/suite_main_20260926.txt)",
+  "climb_intent_amr_tests.py -> exit 0, RESULT: GREEN, 4 [PASS] (evidence/suite_amr_20260926.txt)",
+  "fuzz reproduction BIT-IDENTICAL to the original author receipt: events=354, let_go=185, named_drops=1089, repeat=416, no_op=744, seed 20260924 (third independent reproduction: author, R4, this attempt)",
+  "FAILING-FIRST sabotage demos on scratch copies (pristine candidate bytes never mutated; diff -q verified): (1) repeat-press guard deleted -> FAIL 14 checks (I1.*); (2) _gate_open->True -> FAIL 11 checks (I3.*/I7.*); (3) version validator accepting 2 -> FIRED I2.h; then pristine re-run GREEN x2 (evidence/sabotage*_20260926.txt, evidence/suite_*_post_sabotage_restore_20260926.txt)",
+  "NEW conformance suite test_climb_intent_candidate.py: python -B -m unittest test_climb_intent_candidate -v -> Ran 20 tests, OK (evidence/candidate_suite_20260926.txt): pinned-hash binding, version refusals (2/True/False/'1'/1.0/None), unknown-intent + bad-stamp + forged-source refusals, C12 stamp convention + injected tick_source override, edge law, gate law incl. dominance + releases-pass + no-fabrication, AST import surface (exactly PHYSICS_HZ from command_record; CommandRecord never constructed), no-float 5-field wire, walk/intert sink non-crossing I7 scenario, and full-suite subprocess re-runs with seam-hash binding",
+  "C12 honored: intents are edge facts OFF the 50 ms decision grid (synchronous delivery, spec section 5); stamps ride the walk seam's convention for one timeline; no latency claim made"
+ ],
+ "runs": [
+  {
+   "cmd": "python -B tools/monkey_campaign/product/climb_intent_tests.py (runenv)",
+   "exit": 0
+  },
+  {
+   "cmd": "python -B tools/monkey_campaign/product/climb_intent_amr_tests.py (runenv)",
+   "exit": 0
+  },
+  {
+   "cmd": "python -B tools/monkey_campaign/product/climb_intent_tests.py (runenv_sab1, edge law sabotaged)",
+   "exit": 1,
+   "note": "14 falsifier checks fired"
+  },
+  {
+   "cmd": "python -B tools/monkey_campaign/product/climb_intent_tests.py (runenv_sab2, gate law sabotaged)",
+   "exit": 1,
+   "note": "11 falsifier checks fired"
+  },
+  {
+   "cmd": "python -B tools/monkey_campaign/product/climb_intent_tests.py (runenv_sab3, version law sabotaged)",
+   "exit": 1,
+   "note": "I2.h fired"
+  },
+  {
+   "cmd": "python -B tools/monkey_campaign/product/climb_intent_tests.py (runenv, post-sabotage restore)",
+   "exit": 0
+  },
+  {
+   "cmd": "python -B tools/monkey_campaign/product/climb_intent_amr_tests.py (runenv, post-sabotage restore)",
+   "exit": 0
+  },
+  {
+   "cmd": "python -B -m unittest test_climb_intent_candidate -v (contribution dir)",
+   "exit": 0,
+   "note": "Ran 20 tests, OK"
+  }
+ ],
+ "failures": [
+  "RUN 1 (honest) of the NEW unittest suite: FAILED 1/20 - my checker asserted the string 'CommandRecord' absent from module source, but docstrings NAME the separation law (the module's own I5 note: prose is not a violation; the original author's REVISION A records the same checker-defect class). Fixed the CHECKER only (AST import-surface check + not-constructed regex kept); candidate bytes untouched. No other failure observed.",
+  "sabotage-3 first mutation produced a SyntaxError (unbalanced parens across a multiline condition); rewritten to a balanced expression BEFORE any sabotage receipt was recorded; never counted as evidence."
+ ],
+ "falsifier_self_check": {
+  "F_R1_lineage_drift": "not observed: 35/35 ledger entries byte_exact",
+  "F_R2_suite_failure": "not observed on byte-exact trees: 73+4 checks GREEN twice (fresh + post-sabotage) + 20/20 candidate cases",
+  "F_R3_undetected_sabotage": "not observed: all three sabotaged copies FAIL with named checks; the suites are not vacuous",
+  "F_R4_walk_contract_touched": "not observed: command_record.py 67711759... start==end every full run; imports exactly PHYSICS_HZ; CommandRecord never constructed; sinks never crossed",
+  "F_R5_invented_semantics": "not observed: candidate bytes are the pinned bytes; the only new code is the conformance suite; no selector built; no live climb claimed"
+ },
+ "honest_boundary": "The reviewed interface decision (R4-approved) and the versioned delivery channel are QUALIFIED here headlessly; the selector does not exist yet (K01/K06 downstream; the map's observation clause makes the interface ruling the reviewable artifact). No live key feel, no in-game climb observation, no selector behavior, no actual-play acceptance is claimed; the controls/motion profile's native/visual probes are recorded as NOT-APPLICABLE-YET with reasons in report.md section 4. U07's actual-play lane and the K-series gates stay open.",
+ "remaining_gates": [
+  "independent lead review of this candidate (review/ONT-U05)",
+  "publisher integration into the game lineage (production product/ path is lead-serialized)",
+  "K01/K06 selector semantics; U06 rendering; harness wiring + U07 actual-play lane"
+ ],
+ "artifact_sha256": {
+  "card_task.json": "73bc8992d2922fabdf3af8e42dd83c6be8e5fa415e47e2f265b022b771007e4d",
+  "climb_intent.py": "586cb1c541afdc391ac14ce989cf2d2561a9ee79e25e874f7fbfc2312fd3c5a2",
+  "climb_intent_amr_tests.py": "7ff7f3ba2678d6533e6f40666b5faf9f102751377bc4f89bf68846d2df3b7538",
+  "climb_intent_tests.py": "291eb0b60e754e497d425dada1dffdf0839ea3f8a91f16fd0239ab3f9fdc9895",
+  "evidence/candidate_suite_20260926.txt": "7230621d1ff43ebfc56a7d751e71a19f1323950c1eb336cec8b89e271f7947f7",
+  "evidence/sabotage1_edge_law_fails_20260926.txt": "38214b4a06d5376b4ffdff5601ac98a5f1fade0d271a18bfc23058c117eeddb5",
+  "evidence/sabotage2_gate_law_fails_20260926.txt": "1ad598f5081fc000e0a0d314aaeb7a3543454dbdcba3752d41cdef46c95134fd",
+  "evidence/sabotage3_version_law_fails_20260926.txt": "b849bc79bd7320170f0e3ce948e5f5be0ce9dde03bb17b68a9c15844d0d50b6a",
+  "evidence/suite_amr_20260926.txt": "fd647c007326ddcff296bbf4ef58f54b1b1969a1f6f18aa92f5e389da09c2a30",
+  "evidence/suite_amr_post_sabotage_restore_20260926.txt": "fd647c007326ddcff296bbf4ef58f54b1b1969a1f6f18aa92f5e389da09c2a30",
+  "evidence/suite_main_20260926.txt": "f25c4c577d36ac2f19b2219c707f4213f0a20a7a5c87036ef7327dded69721e4",
+  "evidence/suite_main_post_sabotage_restore_20260926.txt": "0ff7f0bb036dc4d63ac8ccefa40f5d7972ed3404267c7a9e4ada50013498456a",
+  "PREREGISTRATION.md": "0396cd09ec298f1d9d59cb71668b9cb57ec277a48278e5f24cb0c325e9633e30",
+  "recovered/R4_intent_review/brief.md": "1f185181c8decc47d44df9a6e26c036ff16b2d80a4baddc665a26f0d86669f50",
+  "recovered/R4_intent_review/PREREGISTERED_CHECKS.md": "2699e8e45d7a33c2ba2ca9ae3ed5cc08f8d24243456905cdd872fad57204dbe0",
+  "recovered/R4_intent_review/receipts/adversarial_probes_20260924.txt": "75dd50b3aa1ca7bc2505b559acfc4d66ff1ec24f524b2179aea0b106caccebd5",
+  "recovered/R4_intent_review/receipts/adversarial_probes_source.py": "f56fa5b6d8ecf09aacc309578a742d642af24238019a3859bd667685022cc743",
+  "recovered/R4_intent_review/receipts/climb_intent_tests_r4_rerun_20260924.txt": "f0190390996dffc854d11b49fde78a747b26c127deea962fb1c171d98a23484f",
+  "recovered/R4_intent_review/receipts/git_status_r4_session_20260924.txt": "63a04d5d03b71a98e0b53eafbd14b0549a69e38c8cb6ab95927c9ab5434457b0",
+  "recovered/R4_intent_review/receipts/walk_contract_hash_proof_20260924.txt": "75fe5cb6e07e7cb153495d3d6b415957f35e408d8b54ad4330cd5f6636b3caf8",
+  "recovered/R4_intent_review/report.md": "e456945f568e2c7eb750cd807607152e83da2d19a28875fdc07dedafb25de418",
+  "recovered/U05_climb_intent/brief.md": "fcd2c3eed3f55d71476769419d5b2571dc8bae145b0b21c4371e729459700007",
+  "recovered/U05_climb_intent/INTEGRATION_U06_X02_K.md": "9768a6c4d1e7f2d7884592cdeb41b8066e2031a33bfdad50ec5ea3c84fbdb26c",
+  "recovered/U05_climb_intent/INTENT_SEAM_SPEC.md": "772d809df620bb93cce97fd41f081ba244b44edfef8d9ee4797f16cc8eac143b",
+  "recovered/U05_climb_intent/PREREGISTRATION.md": "5f1d94f4e2d1cdc13e85fdf664db0784385df99a5f606e809c3e9eec0528ba2d",
+  "recovered/U05_climb_intent/receipts/climb_intent_tests_20260924.txt": "91e9e2208241e50ac389c483e58dbef1a584b7b7d6774655d95980dde09f33a0",
+  "recovered/U05_climb_intent/receipts/integrity_git_status_20260924.txt": "416a1bf0dfd980a15f265301ad79da4a73a7f7c751d66d06a5f283f5d5276d6a",
+  "recovered/U05_climb_intent/receipts/u01_baseline_recheck_20260924.txt": "00c73e346298f3880c61f4f30c77f490565c6f630e61f9bf414839ae6f6fa84c",
+  "recovered/U05_climb_intent/receipts/u03_baseline_recheck_20260924.txt": "3e31524f765697290469fcba5f35b11524e9a916e6c9e6d2800aad32e2967552",
+  "recovered/U05_climb_intent/receipts/x02_baseline_recheck_20260924.txt": "0c58d2f966897e60c0d6eadb31c7b74c89d5c763d8f28c8c0330af7cc6c65320",
+  "recovered/U05b_amendments_U06/brief.md": "22308934ca8a250c0f72c8d596e027a8b0d52254cfe58ad8c5984b1a779b681f",
+  "recovered/U05b_amendments_U06/INTEGRATION_U07.md": "f60410340ad866e680804e2a20b5493bd4dcb898fb150c969308ceb889adf68e",
+  "recovered/U05b_amendments_U06/PREREGISTRATION.md": "d334afc94827904ab6f98dfdc61538a4d9375ca22a4a60df59292d315b8f2c19",
+  "recovered/U05b_amendments_U06/receipts/amr_failing_first_20260924.txt": "90f1398ec371135224e20312aeed5b8b91da1c406d40fcab1f3aad687c2dafd7",
+  "recovered/U05b_amendments_U06/receipts/amr_green_after_fix_20260924.txt": "1bfca1d8014b3b3558af0d413d809893f9221dc5d770fa0689b0fae17cfabe93",
+  "recovered/U05b_amendments_U06/receipts/climb_intent_tests_77of77_with_amr_20260924.txt": "8f7b9f0965bdcd13249a2438aaca1aff0a74558e95a290c46fa0ece90221e990",
+  "recovered/U05b_amendments_U06/receipts/git_status_u05b_session_20260924.txt": "39c2c083e3330acb380a7b95b6a632f36b14af4736a8a94ba2626c72638932e0",
+  "recovered/U05b_amendments_U06/receipts/no_capability_claim_fuzz_receipt_20260924.txt": "300957ff5622a4b7cf709064cf7aa673409ded5eac2668156fe4741e1a615400",
+  "recovered/U05b_amendments_U06/receipts/r4_probe_battery_postfix_allgreen_20260924.txt": "04c7d70b67d5f6df63a2500132d234d5c98ba2bf7f5ac41ed079e966f62a4509",
+  "recovered/U05b_amendments_U06/receipts/r4_probe_battery_verbatim_postfix_20260924.txt": "612708f531281f019828bba14850ed87c1285f96fa2c21d8e3e01712f67d5c07",
+  "recovered/U05b_amendments_U06/receipts/state_feedback_tests_green_20260924.txt": "f54a9d4ae28841a4199ed4728ace9e18f2ff24dcb1c172329e3b515d67b81569",
+  "reference/EXTRACTION_LEDGER.json": "ae03fc496f5896cf373f72866694797226073a4b1161f3cd71b3b75d011d5067",
+  "reference/tools/monkey_campaign/product/focus_policy.py": "e0b23968bb8ee8e7c5449da464948d68cc67bf3cc62db40dd30a73ee8ef0f9d0",
+  "reference/tools/monkey_campaign/product/input_mapper.py": "7a36a45ead6637d9ba5659ea43b54a6b424803c8e57d02720ac970b42cfe6b44",
+  "reference/tools/monkey_campaign/product/session_flow.py": "30e06c04dc33da271bfe817d26a4adbf1251f392b224546fc795f307458455cf",
+  "reference/tools/science_funnel/typeb_export/command_record.py": "6771175933ad20ac6d20c360df96f6a9729a56deb31c58a13be5e76e1cc4355e",
+  "report.md": "241ac433de1461b094e387717603e521dd4b403d0f74d3ac7c4766364b5c639f",
+  "test_climb_intent_candidate.py": "88ee55c1e80b5468ba5a4a7f6d3a97930ac820a7f3aec244e6c4969a24aa58ca"
+ },
+ "receipt_json_note": "receipt.json is self-referential; its own hash is bound in the submission/publication record, not here",
+ "writes_stopped": true
+}
