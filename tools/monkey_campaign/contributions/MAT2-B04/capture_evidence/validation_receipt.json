@@ -1,0 +1,9 @@
+{
+ "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "structurally_valid": true,
+ "visual_acceptance": false,
+ "profile_id": "anatomy",
+ "view_count": 6,
+ "capture_kind": "image",
+ "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required."
+}
