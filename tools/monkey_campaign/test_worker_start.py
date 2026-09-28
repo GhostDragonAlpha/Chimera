@@ -76,3 +76,51 @@ class StartupTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ParkNoRedealTests(StartupTests):
+    """Regression coverage for the allocator deal pathology (mailbox b7687a3f):
+    park must not re-deal in the same call, and re-dealing after any handoff
+    requires the explicit --take-next flag."""
+
+    def _two_cards(self):
+        import kanban
+        kanban.initialize(self.registry,[dict(id='TASK',objective='Implement task',falsifier='wrong result',
+            steps=['implement'],completion='Reviewed merged PR')],kanban.LEAD)
+        kanban.enqueue(self.registry,{'actor':kanban.LEAD,'spec':dict(id='TASK2',objective='Second task',
+            falsifier='wrong',steps=['work'],completion='merge')})
+
+    def _park_first_card(self):
+        first=self.run_start('--arrival-id','parker')
+        attempt_id=first['assignment']['attempt']['id']
+        park_args=self.root/'park_args.json'
+        park_args.write_text(json.dumps({'agent_id':'parker','task_id':'TASK','attempt_id':attempt_id,
+            'checkpoint':'writes stopped honestly','writes_stopped':True}),encoding='utf-8')
+        result=self.run_start('--arrival-id','parker','--park',str(park_args))
+        return result,attempt_id
+
+    def test_park_does_not_redeal_next_card(self):
+        self._two_cards()
+        result,attempt_id=self._park_first_card()
+        self.assertEqual(result['handoff']['state'],'PAUSED')
+        self.assertEqual(result['assignment']['state'],'STOPPED_AFTER_HANDOFF')
+        self.assertFalse(result['task_claimed'])
+        board=self.registry.readonly()['kanban']
+        self.assertEqual(board['cards']['TASK2']['attempts'],{})
+        self.assertEqual(board['cards']['TASK']['attempts'][attempt_id]['state'],'PAUSED')
+
+    def test_park_with_take_next_is_refused(self):
+        self._two_cards()
+        with self.assertRaisesRegex(ValueError,'park_checkpoint_do_not_redeal'):
+            self.run_start('--arrival-id','parker','--park',str(self.root/'unused.json'),'--take-next')
+
+    def test_plain_startup_after_park_still_claims_explicitly(self):
+        self._two_cards()
+        self._park_first_card()
+        second=self.run_start('--arrival-id','parker')
+        self.assertTrue(second['task_claimed'])
+        self.assertIn(second['assignment']['task_id'],('TASK','TASK2'))
+
+
+if __name__ == '__main__':
+    unittest.main()
