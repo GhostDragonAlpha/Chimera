@@ -1,0 +1,7 @@
+{
+ "source_db": "E:\\ChimeraWork\\monkey-coordination\\agent_slots.sqlite3",
+ "row": "state id=1 -> kanban.cards.MAT2-B04.spec.ontology_qualification.task.verification_profile",
+ "extracted_by": "capture_build.load_registry_profile (read-only sqlite URI)",
+ "used_for": "visual_capture.validate_manifest(manifest, context, PROFILE); layer/view names copied verbatim into the manifest",
+ "note": "this corrects the earlier hand-copied profile defect; the CANONICAL_LAYERS set in the generator is a loud-failure tripwire only and never supplies validation values"
+}
