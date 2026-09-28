@@ -1,0 +1,495 @@
+{
+  "generated_utc": "2026-09-28T20:23:53Z",
+  "source": "E:/PythonChimera/tools/monkey_campaign (canonical per Astra final ruling, Captain-relayed 2026-09-28)",
+  "ruling_reference": "mailbox 2a1fecaad76b",
+  "file_count": 106,
+  "files": [
+    {
+      "path": "APPROVED_SCOPE.json",
+      "sha256": "fe74180d7b6ad584f48c5fd9a642db4393c26c4e4cd64c8b41652e9b30c27660"
+    },
+    {
+      "path": "AUDIT_PREREGISTRATION.md",
+      "sha256": "f3857e34aac829e448bb64fe9250a8c2091e2db3281bebc088107abcebf532d9"
+    },
+    {
+      "path": "CHECKPOINT_PREREGISTRATION.md",
+      "sha256": "cc29de264e49f449e550e966c3a982bddd4b284f3ca4ee120b3f6b157cb4eed1"
+    },
+    {
+      "path": "CHECKPOINT_VERIFICATION.md",
+      "sha256": "734175820f34684a492205a6a1aea915240f55ccfb0cdd6c0df758f0cbc17af4"
+    },
+    {
+      "path": "CHECKPOINT_WORKFLOW.md",
+      "sha256": "a5b75504bfe0cb02190ff806be2821e0580bfcfa2af88c98036c53a3d8f24a63"
+    },
+    {
+      "path": "CONTINUATION_VERIFICATION.md",
+      "sha256": "7353270760688b36fb13cb270d0e8e0eb1d0e75d6a40c82b87e663a33b81d111"
+    },
+    {
+      "path": "CONTINUOUS_CYCLE.md",
+      "sha256": "64320391db414eda3f31c2ce91353432681110093fb136bd2b8abc82794eb045"
+    },
+    {
+      "path": "CONTINUOUS_EXECUTION.md",
+      "sha256": "507a0fcf60915220648cbdeaf1d0fab7c2d3fc47fa6669f486223a5d607b40f6"
+    },
+    {
+      "path": "COORDINATION.md",
+      "sha256": "f0346856f6f0cd2be555c63104136de6a131986a12fa54c7a2ec575999bdf986"
+    },
+    {
+      "path": "DELIVERY.md",
+      "sha256": "8d8bc454ff9237ea9ca3355a57202a3ce039509fd6a3700c1b020d6475ba883c"
+    },
+    {
+      "path": "DELIVERY_VERIFICATION.md",
+      "sha256": "c7d7ffa4228db499408978915bf4907255c128c780eda3c989d1a2ca9e9aa4a9"
+    },
+    {
+      "path": "DOC_AUDIT.md",
+      "sha256": "46f7df841858d5d49ec7b727136918135993a2f8cf8cdb432fd98e11291a1ff2"
+    },
+    {
+      "path": "DOC_AUDIT_INVENTORY.json",
+      "sha256": "6a9ff8828d16ede72bb62975d74263bf7ede1dfc8420adac34a0f019d824a657"
+    },
+    {
+      "path": "EXECUTION_QUEUE.json",
+      "sha256": "8f78d129904f1d6325255d8a6d513e066b663b91feaa39937aed208443f1a785"
+    },
+    {
+      "path": "EXECUTION_SERGEANT.md",
+      "sha256": "61d6bbe00a5a9631b858796faff21afc630c5cb3e5e692a5bd61d3d773c0c589"
+    },
+    {
+      "path": "EXECUTION_SERGEANT.sha256",
+      "sha256": "c739b9a9815dc2d81089957315a93c62d472be2ca0bd89a456ed07f27cb81a75"
+    },
+    {
+      "path": "GPU_HANDOFF_PREREGISTRATION.md",
+      "sha256": "48a1bdb8cf0e67c7455098f9e3021801ede5eb3503324c52efe276a3bccea746"
+    },
+    {
+      "path": "GPU_HANDOFF_PUBLICATION_RECEIPT.json",
+      "sha256": "c153460accaa7df1a16eb527497045f6d3591faa480f3978317e63377bef0bec"
+    },
+    {
+      "path": "Invoke-MonkeyCampaign.ps1",
+      "sha256": "2332d2535f6aa7ad9178486dbd0af5d46356dbd2527b0bbd6ef39ba28b7d1379"
+    },
+    {
+      "path": "KANBAN.md",
+      "sha256": "c747cd0957812693e783b8eb7e89e249b8d45a0888be81ed9ee2eaeb4a9078fb"
+    },
+    {
+      "path": "KANBAN_BACKLOG.json",
+      "sha256": "ba675ecfaf9885622164712359212f956762d8455faa34384b857521dc06c7cc"
+    },
+    {
+      "path": "LEAD_CONTROL_INSTALLATION_RECEIPT.json",
+      "sha256": "af0cbd4de74336302ad8ab6975378b2f182edc476a723735feeee38de1682b2e"
+    },
+    {
+      "path": "LEAD_CONTROL_PREREGISTRATION.md",
+      "sha256": "8806da2e1ef171bfedeb87591d8d01d84f80c5619a2bd4efa30c4e823859ab2c"
+    },
+    {
+      "path": "LEAD_CONTROL_VERIFICATION.md",
+      "sha256": "eebc6d106424d54dc1df8699b737508292ccfe5ef92a3774e9f2af6d471cbf78"
+    },
+    {
+      "path": "LIEUTENANT_ONBOARDING.md",
+      "sha256": "e2ba7e7cd5ac9dcec3ebc2f306b0ecaf3b8c89a1e2deba3be8dbf0720fd3d832"
+    },
+    {
+      "path": "MATERIAL_PLAN_ADOPTION.md",
+      "sha256": "81f432fc9fcee8aee6fcdcac39487f50538f1f4c1b9d4c2821d3bb0f40e47287"
+    },
+    {
+      "path": "MERGE_SERVICE.md",
+      "sha256": "da2ba8e0c5b9185982326a36f66923c5c63aa6c53c38b124d1d465b068e76616"
+    },
+    {
+      "path": "MODEL_EVIDENCE.json",
+      "sha256": "6f6554a2bf10606b9504224ddd03169424d0b8db14abe957aa32698c09b40a68"
+    },
+    {
+      "path": "MODEL_GRADES.md",
+      "sha256": "2752a4f5c6e283cbf48a8f1a8e95e0754905ec17799b08c441160642a5f8c35c"
+    },
+    {
+      "path": "MODEL_SCORECARD.json",
+      "sha256": "a8376e5a5fbf9461abdb494dbb19f338f80d982ab8672ced541245fdad77aee5"
+    },
+    {
+      "path": "MONKEY_COMPLETION_MAP.md",
+      "sha256": "0e3984578b0cae38ab435daaa77cc10559cceeadbaf9885c3f31b979a362ecae"
+    },
+    {
+      "path": "ONTOLOGY_QUEUE.md",
+      "sha256": "9b4322e74cb3c87d58ed5895c6636319bfa8e2dae5c5ae36dcf59095e9f993da"
+    },
+    {
+      "path": "OPERATIONAL_LEAD.md",
+      "sha256": "fd7efe52f45bd5274c4dfc19a53861887cfe9f1bc296ca88cfd3956722ba7495"
+    },
+    {
+      "path": "OPERATOR_VISUAL_DECISIONS.md",
+      "sha256": "e06e7db7d58f448c5118211f27d0647e5305c2533864bfcbcdb8827dd2abe62e"
+    },
+    {
+      "path": "PLAYABLE_BUILD.json",
+      "sha256": "1d0d7bb3fe2b3ae64a3cbee9c9bb5377355093669c10c4c846eb24add3dc2643"
+    },
+    {
+      "path": "PREREGISTRATION.md",
+      "sha256": "cbfd485f9c334528e0f31e81e075d898130594bb382f9b6621adc182f0e3b88e"
+    },
+    {
+      "path": "REVIEW_LANE.md",
+      "sha256": "dbcb29ad2fd78aaf399a6389f1a1f861cbea7a817673be4ca883d94672eb9c18"
+    },
+    {
+      "path": "SCOPE_AMENDMENT_20260924.json",
+      "sha256": "d3ae91f6dbccc5d716ab212a21b5a5b689a5763597a2f1fc1af392cc9999b5b3"
+    },
+    {
+      "path": "SCOPE_AMENDMENT_ONTOLOGY_20260924.json",
+      "sha256": "face809e5075af8f1f3aced80830ab728cd602d89aea24b38f4f2a96ca40c1a0"
+    },
+    {
+      "path": "SLOT_BRANCHES.md",
+      "sha256": "96c83b2f6f74e5fd6bf8321b6d0cbddade0156a36f09f72c69430b18960d9826"
+    },
+    {
+      "path": "STARTUP_RECOVERY.md",
+      "sha256": "4ac98c7f4355521c29e5c6c7d656e22689c8e0d19518d3bc97f92806bdc12545"
+    },
+    {
+      "path": "SUGGESTION_BOX.md",
+      "sha256": "2cd9c27d27c0783f0ca92be277e2cac5bde343f4db5a7a7357b1906fd46a6f53"
+    },
+    {
+      "path": "VERIFICATION.md",
+      "sha256": "e284ba1195bce99a7972eb9f9e10c5d05244355ac708740cdd0dcb3303b0b037"
+    },
+    {
+      "path": "WORKER_ONBOARDING.md",
+      "sha256": "a94e02e99e019174dffa020505b39900036f8291b0846cc9274fa82443b881fc"
+    },
+    {
+      "path": "agent_slots.py",
+      "sha256": "8fbac8d92c2e3d160677696bf806348720ae277ef59376c3cacee543ba6fb38f"
+    },
+    {
+      "path": "bindings.example.json",
+      "sha256": "7b91dd2415365a9a112e394ae9d6dca1a59def2ee2490b6fa9088333f145a978"
+    },
+    {
+      "path": "campaign.py",
+      "sha256": "dfff2377a59b9f51e0f429bdf7b809aae66a2fe595a5dcb3782aec55ca77a254"
+    },
+    {
+      "path": "checkpoint_context.example.json",
+      "sha256": "0e32e3c2092dc623ac7deddb6bd93b79eaa61f11df5fb7a2024c8af1e3655e43"
+    },
+    {
+      "path": "checkpoint_receipt.example.json",
+      "sha256": "802662a83144ad6a3ff462d3b11ab8fc0a44a03dacf37947e90d3f316ac9303b"
+    },
+    {
+      "path": "checkpoints.py",
+      "sha256": "50b2fe38fe0c2c589549c93abea066d25b7f321c243e1e95ec32e6009b962a91"
+    },
+    {
+      "path": "continuous_cycle.py",
+      "sha256": "13fe949dcf8a463461f5d9d08dfe308d7ae8da17def38381f77559e818747c51"
+    },
+    {
+      "path": "delivery.py",
+      "sha256": "0084a14e9d51b72af1a4c3e89c04313fdcb5a583c6a6b1a8fcab539cd4d0a9e9"
+    },
+    {
+      "path": "dump_board.py",
+      "sha256": "58e19e120d6d5b1bbe09869b84598c69790b2bdeb45f2bcb08de2e749876fb83"
+    },
+    {
+      "path": "dump_kanban_section.py",
+      "sha256": "25e139a461cf01aeb1c235b69e58e48e324c857f2ccbb6bc66fb32f061c82049"
+    },
+    {
+      "path": "evidence_pack.py",
+      "sha256": "acde40accedbc2e1aa41aad628485e4db3b9ba3b66e0c5242a9548ae3b40c882"
+    },
+    {
+      "path": "execution_plan.py",
+      "sha256": "1ce70618fac5e95b47ad01738226d5a190dd65645a20c3b8e1961a4cf3aa0e9b"
+    },
+    {
+      "path": "instruction_state.py",
+      "sha256": "582cbec5e47f810989309c23c82fe49d4e256f300c0dda9a64241df09f8a3190"
+    },
+    {
+      "path": "integrity.py",
+      "sha256": "c3ff77401c1abb5ca657afeee59fb95bac739ebef2cfd688f174b4f97caf82b2"
+    },
+    {
+      "path": "kanban.py",
+      "sha256": "a8470d88126d5936c2583a13df8a98451253337fd6eab9c64973ca9152040cef"
+    },
+    {
+      "path": "kanban_cli.py",
+      "sha256": "64fa91221284b1955efc2fd58dbd9dfd7d141376f1262d5d7635f81b7fa73bdd"
+    },
+    {
+      "path": "merge_service.py",
+      "sha256": "6fb6c7a50f76ab8f2fcc9b42d653c801556aef4bc26620f7bd80904d84791fe5"
+    },
+    {
+      "path": "monkey_completion_map.json",
+      "sha256": "3efbfb141299d7cad63724431f7e5269febe15eee68d812b80d91de324385b84"
+    },
+    {
+      "path": "ontology_plan.py",
+      "sha256": "017fc4cde14ba0013496f9a8009af9978cb8881f4635d7ca246ab187d42c98e3"
+    },
+    {
+      "path": "ontology_queue.py",
+      "sha256": "f13edcfcbaa1d252889fa448c3027e8fe174276d9b2f59e13f15265baa8f5d9b"
+    },
+    {
+      "path": "operational_lead.py",
+      "sha256": "c0a5b27f5a517b3cc15546abc849d2fe21677e19bed7aadbc56936c22d977436"
+    },
+    {
+      "path": "queue_control.py",
+      "sha256": "7124492c33324e61e15e22052f56ee3777341341bc74cba0e1605be74592cdd9"
+    },
+    {
+      "path": "review_allocation.py",
+      "sha256": "a85c65db1b7e09c4140556d5ec24dad8d62fb853bae648bbc8cd7948ddb4412e"
+    },
+    {
+      "path": "review_lane.py",
+      "sha256": "76fdd5f425ba43e43082aa100941385fc954eac74a99b89464015c9de5a6e64f"
+    },
+    {
+      "path": "scope_migration.py",
+      "sha256": "ad788d2868c538349ebb7a57de5ec71d4bdc17b0a241a4f52a8747ead7430fb8"
+    },
+    {
+      "path": "semantic_frame.py",
+      "sha256": "e5306b867e098d0ebd8d3652b871898743882b7859a11f7d9380c339e66da460"
+    },
+    {
+      "path": "suggestion_box.py",
+      "sha256": "709562a650984a92d3c3f5df8a26dc1cef08e6d55115ec15148b0f2ef6f429c8"
+    },
+    {
+      "path": "task_queue.py",
+      "sha256": "4b86a8e128bde0dcec9d1992222936b11322c110050b879049839d6805a9c40e"
+    },
+    {
+      "path": "test_agent_slots.py",
+      "sha256": "3bbcdb7501ecae22aa15bdf5469b25d1733a2352f3293e61a52a76866de9dae2"
+    },
+    {
+      "path": "test_campaign.py",
+      "sha256": "0a890091009c3c78a68b3382c7e93e96b828d5e5c296c83623dcbcb6d71cfed1"
+    },
+    {
+      "path": "test_checkpoints.py",
+      "sha256": "84623b87db11336831bfcfc5160284e6b8a9a5406be09cd488b6c11e7f494858"
+    },
+    {
+      "path": "test_completion_regression.py",
+      "sha256": "2b5e9dae5bf1a4f02ad71a37d26205d3514eba27e1a3d86d0560f8e82d959b37"
+    },
+    {
+      "path": "test_cycle.py",
+      "sha256": "bbb6692771fb1af4579d6251275acbc3b7b6aec1bba28a896c1a2fe1ad7cf3f7"
+    },
+    {
+      "path": "test_delivery.py",
+      "sha256": "f6fb412768621c2aeaf8c9037fc2c48849fe627e8f1838e6d8e02f70427ebce7"
+    },
+    {
+      "path": "test_execution_plan.py",
+      "sha256": "efd4578e6f0f129a21684aff95dd535b409f0b3db33bb47c083eb6d899d3ca19"
+    },
+    {
+      "path": "test_github_handoff.py",
+      "sha256": "a72f3f58a05c336a4a6f82adf034afd1d988e7c0aab994a7780a0ee3baabe7f5"
+    },
+    {
+      "path": "test_instruction_state.py",
+      "sha256": "6d958d62ce43c57b9a9fdc706ee2620174dd0c3d72a7c04ef6d1f824f2670a2d"
+    },
+    {
+      "path": "test_integrity.py",
+      "sha256": "011b8841962f2f3e1dc56fa3df7b0a86546eedcde3e17745ad40ef73f90dfcbc"
+    },
+    {
+      "path": "test_kanban.py",
+      "sha256": "b4a1a946e9c2f9c191e02c4070019cf4a618dffd13aaf764ba7e066afdfd9adb"
+    },
+    {
+      "path": "test_merge_service.py",
+      "sha256": "d5e020c184cf7fd981bda3dd526a357510448738d10bc3d28294ddb6989bbe7f"
+    },
+    {
+      "path": "test_ontology_plan.py",
+      "sha256": "d825f551706d2c4c5d35a7b0e382cda2fe83819ed267ab407b1da39afaaebc7e"
+    },
+    {
+      "path": "test_ontology_queue.py",
+      "sha256": "f3e0abf6dfbcd4cbd1be47dff67e2890d673402a56c2165f939d42b1b4386e02"
+    },
+    {
+      "path": "test_operational_lead.py",
+      "sha256": "64e15dac18686616d8fd7e7533e33829582841dd8486ff710847a00f2122f27a"
+    },
+    {
+      "path": "test_publication_corrections.py",
+      "sha256": "1d6599bc427ddc9d73f42285c4739c188bca1a51f6de9c0275dd8d35d38ff562"
+    },
+    {
+      "path": "test_queue_lifecycle.py",
+      "sha256": "8fc190abb6d2c31688d5a995165de7fa95dfaf31bd5e61fc6adf8ffcb5b78c6e"
+    },
+    {
+      "path": "test_replacement_review.py",
+      "sha256": "56d72bd26da974ae34aca2c435c3690cfe171e42f6c02a103a54b6452d807a7d"
+    },
+    {
+      "path": "test_resume_coordination.py",
+      "sha256": "6937f368847a1cac79d7cd8da5db4a9ac8332a53bf17cfec801723b18d183e88"
+    },
+    {
+      "path": "test_review_allocation.py",
+      "sha256": "9b8e6e7f84547b7abfe5ddbe76c84100df4dd5165058c5092a0f972e35f5fbe1"
+    },
+    {
+      "path": "test_review_lane.py",
+      "sha256": "9de256efa5b1b015019b31b544a9ec7f402d1b55fc32f8756d5ba6842f38100d"
+    },
+    {
+      "path": "test_scope_migration.py",
+      "sha256": "0921d244099a2fc8e987416c99c536f63900c4f434f3d8e2664d9cb46b42f888"
+    },
+    {
+      "path": "test_semantic_frame.py",
+      "sha256": "213f279cf288bb393563dc31580eca440ba3a88049dcc59bd802f96810ecb262"
+    },
+    {
+      "path": "test_suggestion_box.py",
+      "sha256": "1ba8e7e479016a33493d6499433eea20d7018eb7f64e2b1ec988cdd69e367bed"
+    },
+    {
+      "path": "test_task_queue.py",
+      "sha256": "8669638af80031a7f10e29323363316f1efdc0e78a1b89deb6e570726ae27cea"
+    },
+    {
+      "path": "test_visual_capture.py",
+      "sha256": "ac0ce450d6e731eb4fcc8d51ac7f753b08d848e59714571a4ef65d33966ae698"
+    },
+    {
+      "path": "test_visual_gate.py",
+      "sha256": "d98e39bf4a2dc207acbfa1225f17fad5c3947dc0fa1ff2d8921bd5429889efaf"
+    },
+    {
+      "path": "test_worker_checkout.py",
+      "sha256": "691ebf23fb3a77c1a08c2ec4e856e010b54767cbd6fab53776f04002eaf816ad"
+    },
+    {
+      "path": "test_worker_start.py",
+      "sha256": "97b279aa89b33f0b7501528165d9534101445e42bea985a50f18a466ed486d1e"
+    },
+    {
+      "path": "verified_submission.py",
+      "sha256": "4d8c68a9cef1dae2763fb7efbd325b48228c91ce3839478aa2f6d260088f7e9f"
+    },
+    {
+      "path": "visual_capture.py",
+      "sha256": "5ee55d5ab52beb05ffc33e9b66858f94b706cb22c290786db4a79ab344a4ff05"
+    },
+    {
+      "path": "visual_gate.py",
+      "sha256": "13cf07f47fc73f0c7fa9b5208752f6afadbdcfc66cf30b83457d756d2bc6c8c3"
+    },
+    {
+      "path": "worker_checkout.py",
+      "sha256": "f57a3e2805e7d676020b84d945761096259ad42a15bab3202db273cb5f9a19f2"
+    },
+    {
+      "path": "worker_start.py",
+      "sha256": "d4d73901fee223596d667c50e2af33542dc3c934dcfe4499c76b4997a58c133f"
+    }
+  ],
+  "excluded": [
+    {
+      "pattern": "__pycache__/",
+      "reason": "Python bytecode cache (cpython-314 .pyc); not source."
+    },
+    {
+      "pattern": "_extract.py",
+      "reason": "One-off scratch: underscore-prefixed inspection script, decoded dump or .out/.log/.err scratch output."
+    },
+    {
+      "pattern": "_extract_out.txt",
+      "reason": "One-off scratch: underscore-prefixed inspection script, decoded dump or .out/.log/.err scratch output."
+    },
+    {
+      "pattern": "_inspect_board.py",
+      "reason": "One-off scratch: underscore-prefixed inspection script, decoded dump or .out/.log/.err scratch output."
+    },
+    {
+      "pattern": "_inspect_slots.py",
+      "reason": "One-off scratch: underscore-prefixed inspection script, decoded dump or .out/.log/.err scratch output."
+    },
+    {
+      "pattern": "_start_decoded.json",
+      "reason": "One-off scratch: underscore-prefixed inspection script, decoded dump or .out/.log/.err scratch output."
+    },
+    {
+      "pattern": "_start_out.txt",
+      "reason": "One-off scratch: underscore-prefixed inspection script, decoded dump or .out/.log/.err scratch output."
+    },
+    {
+      "pattern": "agent_slots.sqlite3",
+      "reason": "Live campaign SQLite/database state; excluded per Astra ruling (no live databases)."
+    },
+    {
+      "pattern": "contributions/",
+      "reason": "Live worker-submission lane state; the branch's own tracked copies are left untouched by this commit."
+    },
+    {
+      "pattern": "decisions/",
+      "reason": "Live campaign runtime state; the branch-tracked decisions file is left untouched."
+    },
+    {
+      "pattern": "history/",
+      "reason": "Historical dated backups (17 'before-*' directories); excluded per Astra ruling."
+    },
+    {
+      "pattern": "plans/",
+      "reason": "Live campaign runtime state (material-first-v2)."
+    },
+    {
+      "pattern": "startup-receipts/",
+      "reason": "Named by the Astra ruling; not present in the tree at survey time."
+    },
+    {
+      "pattern": "kanban-attempts/",
+      "reason": "Named by the Astra ruling; not present in the tree at survey time."
+    },
+    {
+      "pattern": "kanban-reviews/",
+      "reason": "Named by the Astra ruling; not present in the tree at survey time."
+    }
+  ],
+  "note": "Exact preservation snapshot; not a claim these bytes passed review"
+}

@@ -1,0 +1,8 @@
+{
+  "revision": "astra-0002",
+  "bundle_sha256": "57584fcbe0da2ff9fd427230fa434dfb4a64f957141c59e787fdd21dbc663bcc",
+  "scope_sha256": "33a8fb7204e20bf71f563014c57d772dd111a198cd1d6b212fd053653858f863",
+  "instruction_state": "READ_AND_ACK_REQUIRED",
+  "deployment": "Specification and implementation queue only; no model unload, game close, training launch or service deployment.",
+  "mailbox_pending": 0
+}
