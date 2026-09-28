@@ -1,0 +1,1061 @@
+{
+ "schema": "chimera.material_state.v1",
+ "revision": 1,
+ "object_id": "monkey-arm-material-volume-input",
+ "regions": [
+  {
+   "id": "clavicle",
+   "kind": "region",
+   "parent": null,
+   "rest_geometry": {
+    "unit": "m",
+    "frame": "body:clavicle",
+    "source_path": "macaque_arm/Geometry/clavicle.vtp",
+    "source_sha256": "84caf2d4724aef05b7f8e904474deda7342db1b6c0329cfa5b399802bfebc905",
+    "source_units_to_m": [
+     0.001,
+     0.001,
+     0.001
+    ],
+    "mesh_blob": "monkey_arm_independent_meshes.json",
+    "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+    "mesh_blob_region_key": "clavicle",
+    "vertex_count": 80,
+    "triangle_count": 156,
+    "bounds_m": [
+     [
+      -0.001254468,
+      -0.0035374050000000004,
+      -0.045706134
+     ],
+     [
+      0.033511215999999996,
+      0.022499469,
+      0.003142419
+     ]
+    ],
+    "surface_area_m2": 0.0012050371206310541,
+    "edges_not_shared_twice": 0,
+    "closure": "closed_outward_consistent",
+    "open_edge_count": 0,
+    "orientation": "outward_consistent",
+    "signed_volume_m3": 1.3101298443114225e-06,
+    "volume_claim_m3": 1.3101298443114225e-06,
+    "shell_thickness_m": null,
+    "shell_thickness_provenance": "no source shell thickness exists for this surface; none used, none invented",
+    "render_to_physics_mapping": {
+     "visual_mesh": "mesh_blob triangle list (identity)",
+     "physical_mesh": "mesh_blob triangle list (identity)",
+     "mapping": "identity",
+     "visual_triangle_count": 156,
+     "physical_triangle_count": 156
+    },
+    "material_volume": {
+     "counted": true,
+     "density_kg_m3": 1800.0,
+     "density_band_kg_m3": [
+      1650.0,
+      1950.0
+     ],
+     "density_source": {
+      "library_file": "data/matter_library_1af0bbde.json",
+      "library_sha256": "de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed",
+      "library_origin": "tools/monkey_campaign/contributions/MAT2-B02/work/frozen/1af0bbde/Chimera/docs/matter/matter_library.json",
+      "entry": "materials.bone.physical.density_kg_m3",
+      "provenance_class": "researched",
+      "citation_note": "Biomechanics reviews: cortical bone 'assumed apparent density of 1800 kg/m3' \u00e2\u20ac\u201d typical value used in biomechanical analyses; spread widened to cover 1800-2000 kg/m3 variation band.",
+      "honesty": "library provenance class recorded; not claimed to be proof of authentic measurement (MAT-03)"
+     },
+     "density_conditions": "source library states no temperature/moisture/strain-rate conditions for this entry; treated as apparent cortical bone density at reference (near-ambient, wet tissue) conditions; under-specification recorded, not fabricated",
+     "volume_m3_method_a": 1.3101298443114227e-06,
+     "volume_m3_method_b": 1.3101298443114231e-06,
+     "volume_provenance": "exact divergence-theorem integral over the pinned closed triangle set (mesh_blob sha 51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834); two independent formulations agree",
+     "volume_claim_m3": 1.3101298443114227e-06,
+     "mass_kg": 0.002358233719760561,
+     "mass_method": "m = integral rho dV = rho*V (uniform authored density; exact reduction)",
+     "com_m_world_default_pose": [
+      0.016615713460591805,
+      0.011736984742020808,
+      -0.02339658126614586
+     ],
+     "com_m_body_frame": [
+      0.016615713460591805,
+      0.011736984742020808,
+      -0.02339658126614586
+     ],
+     "inertia_about_own_com_kg_m2": [
+      [
+       5.482546190500087e-07,
+       1.4917972080889498e-07,
+       2.755213943218764e-07
+      ],
+      [
+       1.4917972080889498e-07,
+       6.133755198266205e-07,
+       -2.159918649823354e-07
+      ],
+      [
+       2.755213943218764e-07,
+       -2.159918649823354e-07,
+       3.270105198707301e-07
+      ]
+     ]
+    }
+   },
+   "current_geometry": {
+    "equal_to": "rest_geometry",
+    "reason": "revision 1; no solver exists"
+   },
+   "matter_claims": [
+    {
+     "matter_id": "bone_clavicle",
+     "role": "owner"
+    }
+   ],
+   "ports": [
+    {
+     "id": "surface",
+     "protocol": "material_contact",
+     "unit": "unitless_interface_id"
+    }
+   ],
+   "sources": [
+    "macaque_arm/Geometry/clavicle.vtp"
+   ]
+  },
+  {
+   "id": "hand",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "unit": "m",
+    "frame": "body:hand",
+    "source_path": "macaque_arm/Geometry/hand.vtp",
+    "source_sha256": "a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6",
+    "source_units_to_m": [
+     0.001,
+     0.001,
+     0.001
+    ],
+    "mesh_blob": "monkey_arm_independent_meshes.json",
+    "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+    "mesh_blob_region_key": "hand",
+    "vertex_count": 1920,
+    "triangle_count": 3724,
+    "bounds_m": [
+     [
+      -0.0124375,
+      -0.0837075,
+      -0.00152775
+     ],
+     [
+      0.020731000000000003,
+      -0.00010125000000000001,
+      0.004639750000000001
+     ]
+    ],
+    "surface_area_m2": 0.0029687658919266523,
+    "edges_not_shared_twice": 18,
+    "closure": "open_surface",
+    "open_edge_count": 18,
+    "orientation": "open_surface_unoriented",
+    "signed_volume_m3": null,
+    "volume_claim_m3": null,
+    "shell_thickness_m": null,
+    "shell_thickness_provenance": "no source shell thickness exists for this surface; none used, none invented",
+    "render_to_physics_mapping": {
+     "visual_mesh": "mesh_blob triangle list (identity)",
+     "physical_mesh": "mesh_blob triangle list (identity)",
+     "mapping": "identity",
+     "visual_triangle_count": 3724,
+     "physical_triangle_count": 3724
+    },
+    "material_volume": {
+     "counted": false,
+     "volume_claim_m3": null,
+     "volume_owned_mass_kg": 0.0,
+     "refusal": "shell_volume_claim_refused: static mesh does not implicitly provide interiors",
+     "excluded_osim_segment_claim_kg": 0.049,
+     "open_edge_count": 18
+    }
+   },
+   "current_geometry": {
+    "equal_to": "rest_geometry",
+    "reason": "revision 1; no solver exists"
+   },
+   "matter_claims": [
+    {
+     "matter_id": "shell_hand",
+     "role": "owner"
+    }
+   ],
+   "ports": [
+    {
+     "id": "surface",
+     "protocol": "material_contact",
+     "unit": "unitless_interface_id"
+    }
+   ],
+   "sources": [
+    "macaque_arm/Geometry/hand.vtp"
+   ]
+  },
+  {
+   "id": "humerus",
+   "kind": "region",
+   "parent": null,
+   "rest_geometry": {
+    "unit": "m",
+    "frame": "body:humerus",
+    "source_path": "macaque_arm/Geometry/humerus.vtp",
+    "source_sha256": "87f6034aa082c49b6448259ae7ec4452c6b0d3314442d5be3e8e1a5e4ec8118b",
+    "source_units_to_m": [
+     0.001,
+     0.001,
+     0.001
+    ],
+    "mesh_blob": "monkey_arm_independent_meshes.json",
+    "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+    "mesh_blob_region_key": "humerus",
+    "vertex_count": 234,
+    "triangle_count": 464,
+    "bounds_m": [
+     [
+      -0.009926191,
+      -0.12989674099999998,
+      -0.0136898
+     ],
+     [
+      0.013402453,
+      0.009416281,
+      0.014682085000000001
+     ]
+    ],
+    "surface_area_m2": 0.005955672466433878,
+    "edges_not_shared_twice": 0,
+    "closure": "closed_outward_consistent",
+    "open_edge_count": 0,
+    "orientation": "outward_consistent",
+    "signed_volume_m3": 1.2504681471383375e-05,
+    "volume_claim_m3": 1.2504681471383375e-05,
+    "shell_thickness_m": null,
+    "shell_thickness_provenance": "no source shell thickness exists for this surface; none used, none invented",
+    "render_to_physics_mapping": {
+     "visual_mesh": "mesh_blob triangle list (identity)",
+     "physical_mesh": "mesh_blob triangle list (identity)",
+     "mapping": "identity",
+     "visual_triangle_count": 464,
+     "physical_triangle_count": 464
+    },
+    "material_volume": {
+     "counted": true,
+     "density_kg_m3": 1800.0,
+     "density_band_kg_m3": [
+      1650.0,
+      1950.0
+     ],
+     "density_source": {
+      "library_file": "data/matter_library_1af0bbde.json",
+      "library_sha256": "de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed",
+      "library_origin": "tools/monkey_campaign/contributions/MAT2-B02/work/frozen/1af0bbde/Chimera/docs/matter/matter_library.json",
+      "entry": "materials.bone.physical.density_kg_m3",
+      "provenance_class": "researched",
+      "citation_note": "Biomechanics reviews: cortical bone 'assumed apparent density of 1800 kg/m3' \u00e2\u20ac\u201d typical value used in biomechanical analyses; spread widened to cover 1800-2000 kg/m3 variation band.",
+      "honesty": "library provenance class recorded; not claimed to be proof of authentic measurement (MAT-03)"
+     },
+     "density_conditions": "source library states no temperature/moisture/strain-rate conditions for this entry; treated as apparent cortical bone density at reference (near-ambient, wet tissue) conditions; under-specification recorded, not fabricated",
+     "volume_m3_method_a": 1.2504681471383361e-05,
+     "volume_m3_method_b": 1.2504681471383366e-05,
+     "volume_provenance": "exact divergence-theorem integral over the pinned closed triangle set (mesh_blob sha 51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834); two independent formulations agree",
+     "volume_claim_m3": 1.2504681471383361e-05,
+     "mass_kg": 0.02250842664849005,
+     "mass_method": "m = integral rho dV = rho*V (uniform authored density; exact reduction)",
+     "com_m_world_default_pose": [
+      0.002524017843440086,
+      -0.05409578372932956,
+      0.007976228881625387
+     ],
+     "com_m_body_frame": [
+      0.002524017843440086,
+      -0.05609578372932956,
+      0.0029762288816253873
+     ],
+     "inertia_about_own_com_kg_m2": [
+      [
+       5.47792449612424e-05,
+       -1.414291994454173e-06,
+       -8.15088358910704e-08
+      ],
+      [
+       -1.414291994454173e-06,
+       8.648224989742144e-07,
+       -6.129876199373597e-07
+      ],
+      [
+       -8.15088358910704e-08,
+       -6.129876199373597e-07,
+       5.469645552058519e-05
+      ]
+     ]
+    }
+   },
+   "current_geometry": {
+    "equal_to": "rest_geometry",
+    "reason": "revision 1; no solver exists"
+   },
+   "matter_claims": [
+    {
+     "matter_id": "bone_humerus",
+     "role": "owner"
+    }
+   ],
+   "ports": [
+    {
+     "id": "surface",
+     "protocol": "material_contact",
+     "unit": "unitless_interface_id"
+    }
+   ],
+   "sources": [
+    "macaque_arm/Geometry/humerus.vtp"
+   ]
+  },
+  {
+   "id": "radius",
+   "kind": "region",
+   "parent": null,
+   "rest_geometry": {
+    "unit": "m",
+    "frame": "body:radius",
+    "source_path": "macaque_arm/Geometry/radius.vtp",
+    "source_sha256": "8a2d3f2fe5f8b27014c0f024994ff76659bac73a52844494926dd29b9f3bb10e",
+    "source_units_to_m": [
+     0.001,
+     0.001,
+     0.001
+    ],
+    "mesh_blob": "monkey_arm_independent_meshes.json",
+    "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+    "mesh_blob_region_key": "radius",
+    "vertex_count": 113,
+    "triangle_count": 222,
+    "bounds_m": [
+     [
+      -0.007044638,
+      -0.137812523,
+      -0.009810871
+     ],
+     [
+      0.017654734000000002,
+      0.001748324,
+      0.006446365
+     ]
+    ],
+    "surface_area_m2": 0.0036546868600412096,
+    "edges_not_shared_twice": 0,
+    "closure": "closed_outward_consistent",
+    "open_edge_count": 0,
+    "orientation": "outward_consistent",
+    "signed_volume_m3": 5.0558415568324745e-06,
+    "volume_claim_m3": 5.0558415568324745e-06,
+    "shell_thickness_m": null,
+    "shell_thickness_provenance": "no source shell thickness exists for this surface; none used, none invented",
+    "render_to_physics_mapping": {
+     "visual_mesh": "mesh_blob triangle list (identity)",
+     "physical_mesh": "mesh_blob triangle list (identity)",
+     "mapping": "identity",
+     "visual_triangle_count": 222,
+     "physical_triangle_count": 222
+    },
+    "material_volume": {
+     "counted": true,
+     "density_kg_m3": 1800.0,
+     "density_band_kg_m3": [
+      1650.0,
+      1950.0
+     ],
+     "density_source": {
+      "library_file": "data/matter_library_1af0bbde.json",
+      "library_sha256": "de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed",
+      "library_origin": "tools/monkey_campaign/contributions/MAT2-B02/work/frozen/1af0bbde/Chimera/docs/matter/matter_library.json",
+      "entry": "materials.bone.physical.density_kg_m3",
+      "provenance_class": "researched",
+      "citation_note": "Biomechanics reviews: cortical bone 'assumed apparent density of 1800 kg/m3' \u00e2\u20ac\u201d typical value used in biomechanical analyses; spread widened to cover 1800-2000 kg/m3 variation band.",
+      "honesty": "library provenance class recorded; not claimed to be proof of authentic measurement (MAT-03)"
+     },
+     "density_conditions": "source library states no temperature/moisture/strain-rate conditions for this entry; treated as apparent cortical bone density at reference (near-ambient, wet tissue) conditions; under-specification recorded, not fabricated",
+     "volume_m3_method_a": 5.055841556832483e-06,
+     "volume_m3_method_b": 5.055841556832478e-06,
+     "volume_provenance": "exact divergence-theorem integral over the pinned closed triangle set (mesh_blob sha 51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834); two independent formulations agree",
+     "volume_claim_m3": 5.055841556832483e-06,
+     "mass_kg": 0.00910051480229847,
+     "mass_method": "m = integral rho dV = rho*V (uniform authored density; exact reduction)",
+     "com_m_world_default_pose": [
+      0.08237054303689022,
+      -0.11653077052187315,
+      0.004228820991154625
+     ],
+     "com_m_body_frame": [
+      0.006468554448033843,
+      -0.07437049809409227,
+      -0.0027739594444329135
+     ],
+     "inertia_about_own_com_kg_m2": [
+      [
+       3.26198827947389e-07,
+       -1.750223545566405e-06,
+       3.536977125302569e-07
+      ],
+      [
+       -1.750223545566405e-06,
+       1.9414916619706014e-05,
+       6.613234555924928e-08
+      ],
+      [
+       3.536977125302569e-07,
+       6.613234555924928e-08,
+       1.957806717834597e-05
+      ]
+     ]
+    }
+   },
+   "current_geometry": {
+    "equal_to": "rest_geometry",
+    "reason": "revision 1; no solver exists"
+   },
+   "matter_claims": [
+    {
+     "matter_id": "bone_radius",
+     "role": "owner"
+    }
+   ],
+   "ports": [
+    {
+     "id": "surface",
+     "protocol": "material_contact",
+     "unit": "unitless_interface_id"
+    }
+   ],
+   "sources": [
+    "macaque_arm/Geometry/radius.vtp"
+   ]
+  },
+  {
+   "id": "scapula",
+   "kind": "shell",
+   "parent": null,
+   "rest_geometry": {
+    "unit": "m",
+    "frame": "body:scapula",
+    "source_path": "macaque_arm/Geometry/scapula.vtp",
+    "source_sha256": "e9ffe8ef9ad2dc577fb8c50afd87f694d0ddb6e243d230ba91e2aa7137480fe7",
+    "source_units_to_m": [
+     0.001,
+     0.001,
+     0.001
+    ],
+    "mesh_blob": "monkey_arm_independent_meshes.json",
+    "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+    "mesh_blob_region_key": "scapula",
+    "vertex_count": 180,
+    "triangle_count": 358,
+    "bounds_m": [
+     [
+      -0.05543015,
+      -0.047756708,
+      -0.049731802000000006
+     ],
+     [
+      0.005005801,
+      0.017625026,
+      0.009428616999999999
+     ]
+    ],
+    "surface_area_m2": 0.00726254837144141,
+    "edges_not_shared_twice": 10,
+    "closure": "open_surface",
+    "open_edge_count": 10,
+    "orientation": "open_surface_unoriented",
+    "signed_volume_m3": null,
+    "volume_claim_m3": null,
+    "shell_thickness_m": null,
+    "shell_thickness_provenance": "no source shell thickness exists for this surface; none used, none invented",
+    "render_to_physics_mapping": {
+     "visual_mesh": "mesh_blob triangle list (identity)",
+     "physical_mesh": "mesh_blob triangle list (identity)",
+     "mapping": "identity",
+     "visual_triangle_count": 358,
+     "physical_triangle_count": 358
+    },
+    "material_volume": {
+     "counted": false,
+     "volume_claim_m3": null,
+     "volume_owned_mass_kg": 0.0,
+     "refusal": "shell_volume_claim_refused: static mesh does not implicitly provide interiors",
+     "excluded_osim_segment_claim_kg": 0.0,
+     "open_edge_count": 10
+    }
+   },
+   "current_geometry": {
+    "equal_to": "rest_geometry",
+    "reason": "revision 1; no solver exists"
+   },
+   "matter_claims": [
+    {
+     "matter_id": "shell_scapula",
+     "role": "owner"
+    }
+   ],
+   "ports": [
+    {
+     "id": "surface",
+     "protocol": "material_contact",
+     "unit": "unitless_interface_id"
+    }
+   ],
+   "sources": [
+    "macaque_arm/Geometry/scapula.vtp"
+   ]
+  },
+  {
+   "id": "sternum",
+   "kind": "region",
+   "parent": null,
+   "rest_geometry": {
+    "unit": "m",
+    "frame": "body:sternum",
+    "source_path": "macaque_arm/Geometry/sternum.vtp",
+    "source_sha256": "fc688ea2643c356f28a6eb3c825e056941d307d407414f77f0c5d655c91a227d",
+    "source_units_to_m": [
+     0.001,
+     0.001,
+     0.001
+    ],
+    "mesh_blob": "monkey_arm_independent_meshes.json",
+    "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+    "mesh_blob_region_key": "sternum",
+    "vertex_count": 10,
+    "triangle_count": 16,
+    "bounds_m": [
+     [
+      0.026174625,
+      -0.036350375,
+      -0.05670000000000001
+     ],
+     [
+      0.04110562500000001,
+      0.004639000000000001,
+      -0.04725
+     ]
+    ],
+    "surface_area_m2": 0.000888288093934399,
+    "edges_not_shared_twice": 0,
+    "closure": "closed_outward_consistent",
+    "open_edge_count": 0,
+    "orientation": "outward_consistent",
+    "signed_volume_m3": 2.6493280581797473e-07,
+    "volume_claim_m3": 2.6493280581797473e-07,
+    "shell_thickness_m": null,
+    "shell_thickness_provenance": "no source shell thickness exists for this surface; none used, none invented",
+    "render_to_physics_mapping": {
+     "visual_mesh": "mesh_blob triangle list (identity)",
+     "physical_mesh": "mesh_blob triangle list (identity)",
+     "mapping": "identity",
+     "visual_triangle_count": 16,
+     "physical_triangle_count": 16
+    },
+    "material_volume": {
+     "counted": true,
+     "density_kg_m3": 1800.0,
+     "density_band_kg_m3": [
+      1650.0,
+      1950.0
+     ],
+     "density_source": {
+      "library_file": "data/matter_library_1af0bbde.json",
+      "library_sha256": "de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed",
+      "library_origin": "tools/monkey_campaign/contributions/MAT2-B02/work/frozen/1af0bbde/Chimera/docs/matter/matter_library.json",
+      "entry": "materials.bone.physical.density_kg_m3",
+      "provenance_class": "researched",
+      "citation_note": "Biomechanics reviews: cortical bone 'assumed apparent density of 1800 kg/m3' \u00e2\u20ac\u201d typical value used in biomechanical analyses; spread widened to cover 1800-2000 kg/m3 variation band.",
+      "honesty": "library provenance class recorded; not claimed to be proof of authentic measurement (MAT-03)"
+     },
+     "density_conditions": "source library states no temperature/moisture/strain-rate conditions for this entry; treated as apparent cortical bone density at reference (near-ambient, wet tissue) conditions; under-specification recorded, not fabricated",
+     "volume_m3_method_a": 2.6493280581797494e-07,
+     "volume_m3_method_b": 2.6493280581797346e-07,
+     "volume_provenance": "exact divergence-theorem integral over the pinned closed triangle set (mesh_blob sha 51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834); two independent formulations agree",
+     "volume_claim_m3": 2.6493280581797494e-07,
+     "mass_kg": 0.0004768790504723549,
+     "mass_method": "m = integral rho dV = rho*V (uniform authored density; exact reduction)",
+     "com_m_world_default_pose": [
+      0.03359314597438678,
+      -0.015348973118061118,
+      -0.053154427434152184
+     ],
+     "com_m_body_frame": [
+      0.03359314597438678,
+      -0.015348973118061118,
+      -0.053154427434152184
+     ],
+     "inertia_about_own_com_kg_m2": [
+      [
+       6.302283304927593e-08,
+       2.0650354827141096e-08,
+       6.827944126282893e-10
+      ],
+      [
+       2.0650354827141096e-08,
+       9.952774256007566e-09,
+       -1.903416286561398e-09
+      ],
+      [
+       6.827944126282893e-10,
+       -1.903416286561398e-09,
+       6.742558785187972e-08
+      ]
+     ]
+    }
+   },
+   "current_geometry": {
+    "equal_to": "rest_geometry",
+    "reason": "revision 1; no solver exists"
+   },
+   "matter_claims": [
+    {
+     "matter_id": "bone_sternum",
+     "role": "owner"
+    }
+   ],
+   "ports": [
+    {
+     "id": "surface",
+     "protocol": "material_contact",
+     "unit": "unitless_interface_id"
+    }
+   ],
+   "sources": [
+    "macaque_arm/Geometry/sternum.vtp"
+   ]
+  },
+  {
+   "id": "ulna",
+   "kind": "region",
+   "parent": null,
+   "rest_geometry": {
+    "unit": "m",
+    "frame": "body:ulna",
+    "source_path": "macaque_arm/Geometry/ulna.vtp",
+    "source_sha256": "8f80ac47453fa175118fa385a5fbcb9cf770a21cf10c1757dccc5df2cceb1409",
+    "source_units_to_m": [
+     0.001,
+     0.001,
+     0.001
+    ],
+    "mesh_blob": "monkey_arm_independent_meshes.json",
+    "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+    "mesh_blob_region_key": "ulna",
+    "vertex_count": 224,
+    "triangle_count": 444,
+    "bounds_m": [
+     [
+      -0.01745347,
+      -0.141516132,
+      -0.00595906
+     ],
+     [
+      0.00436281,
+      0.016454631,
+      0.0072987880000000005
+     ]
+    ],
+    "surface_area_m2": 0.003829158130633911,
+    "edges_not_shared_twice": 0,
+    "closure": "closed_outward_consistent",
+    "open_edge_count": 0,
+    "orientation": "outward_consistent",
+    "signed_volume_m3": 5.699077518562791e-06,
+    "volume_claim_m3": 5.699077518562791e-06,
+    "shell_thickness_m": null,
+    "shell_thickness_provenance": "no source shell thickness exists for this surface; none used, none invented",
+    "render_to_physics_mapping": {
+     "visual_mesh": "mesh_blob triangle list (identity)",
+     "physical_mesh": "mesh_blob triangle list (identity)",
+     "mapping": "identity",
+     "visual_triangle_count": 444,
+     "physical_triangle_count": 444
+    },
+    "material_volume": {
+     "counted": true,
+     "density_kg_m3": 1800.0,
+     "density_band_kg_m3": [
+      1650.0,
+      1950.0
+     ],
+     "density_source": {
+      "library_file": "data/matter_library_1af0bbde.json",
+      "library_sha256": "de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed",
+      "library_origin": "tools/monkey_campaign/contributions/MAT2-B02/work/frozen/1af0bbde/Chimera/docs/matter/matter_library.json",
+      "entry": "materials.bone.physical.density_kg_m3",
+      "provenance_class": "researched",
+      "citation_note": "Biomechanics reviews: cortical bone 'assumed apparent density of 1800 kg/m3' \u00e2\u20ac\u201d typical value used in biomechanical analyses; spread widened to cover 1800-2000 kg/m3 variation band.",
+      "honesty": "library provenance class recorded; not claimed to be proof of authentic measurement (MAT-03)"
+     },
+     "density_conditions": "source library states no temperature/moisture/strain-rate conditions for this entry; treated as apparent cortical bone density at reference (near-ambient, wet tissue) conditions; under-specification recorded, not fabricated",
+     "volume_m3_method_a": 5.699077518562756e-06,
+     "volume_m3_method_b": 5.6990775185627765e-06,
+     "volume_provenance": "exact divergence-theorem integral over the pinned closed triangle set (mesh_blob sha 51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834); two independent formulations agree",
+     "volume_claim_m3": 5.699077518562756e-06,
+     "mass_kg": 0.010258339533412961,
+     "mass_method": "m = integral rho dV = rho*V (uniform authored density; exact reduction)",
+     "com_m_world_default_pose": [
+      0.04317334696807098,
+      -0.13190838938014773,
+      0.0034658207551539477
+     ],
+     "com_m_body_frame": [
+      -0.008908389518522781,
+      -0.043173346939518666,
+      0.0014658207551539477
+     ],
+     "inertia_about_own_com_kg_m2": [
+      [
+       2.3076419064751888e-07,
+       -1.2379773427691491e-06,
+       -3.074965768090777e-07
+      ],
+      [
+       -1.2379773427691491e-06,
+       2.0959601367998422e-05,
+       1.2246880263548669e-08
+      ],
+      [
+       -3.074965768090777e-07,
+       1.2246880263548669e-08,
+       2.107898129701316e-05
+      ]
+     ]
+    }
+   },
+   "current_geometry": {
+    "equal_to": "rest_geometry",
+    "reason": "revision 1; no solver exists"
+   },
+   "matter_claims": [
+    {
+     "matter_id": "bone_ulna",
+     "role": "owner"
+    }
+   ],
+   "ports": [
+    {
+     "id": "surface",
+     "protocol": "material_contact",
+     "unit": "unitless_interface_id"
+    }
+   ],
+   "sources": [
+    "macaque_arm/Geometry/ulna.vtp"
+   ]
+  }
+ ],
+ "matter": [
+  {
+   "id": "bone_clavicle",
+   "mass_kg": 0.002358233719760561,
+   "provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 1.3101298443114227e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region"
+  },
+  {
+   "id": "shell_hand",
+   "mass_kg": 0.0,
+   "provenance": "open surface (no interior authored); carries ZERO volume-owned mass; the .osim effective segment claim (0.049 kg) is recorded as an excluded claim and is NOT counted"
+  },
+  {
+   "id": "bone_humerus",
+   "mass_kg": 0.02250842664849005,
+   "provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 1.2504681471383361e-05 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region"
+  },
+  {
+   "id": "bone_radius",
+   "mass_kg": 0.00910051480229847,
+   "provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.055841556832483e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region"
+  },
+  {
+   "id": "shell_scapula",
+   "mass_kg": 0.0,
+   "provenance": "open surface (no interior authored); carries ZERO volume-owned mass; the .osim effective segment claim (0.0 kg) is recorded as an excluded claim and is NOT counted"
+  },
+  {
+   "id": "bone_sternum",
+   "mass_kg": 0.0004768790504723549,
+   "provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 2.6493280581797494e-07 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region"
+  },
+  {
+   "id": "bone_ulna",
+   "mass_kg": 0.010258339533412961,
+   "provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.699077518562756e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region"
+  }
+ ],
+ "directions": [],
+ "laws": [],
+ "contacts": [],
+ "bonds": [
+  {
+   "id": "bond_sternum_clavicle_joint",
+   "status": "source_declared",
+   "endpoints": [
+    {
+     "region_id": "sternum",
+     "port": "surface"
+    },
+    {
+     "region_id": "clavicle",
+     "port": "surface"
+    }
+   ],
+   "transfers": "force_moment"
+  },
+  {
+   "id": "bond_radius_hand_joint",
+   "status": "source_declared",
+   "endpoints": [
+    {
+     "region_id": "radius",
+     "port": "surface"
+    },
+    {
+     "region_id": "hand",
+     "port": "surface"
+    }
+   ],
+   "transfers": "force_moment"
+  },
+  {
+   "id": "bond_scapula_humerus_joint",
+   "status": "source_declared",
+   "endpoints": [
+    {
+     "region_id": "scapula",
+     "port": "surface"
+    },
+    {
+     "region_id": "humerus",
+     "port": "surface"
+    }
+   ],
+   "transfers": "force_moment"
+  },
+  {
+   "id": "bond_ulna_radius_joint",
+   "status": "source_declared",
+   "endpoints": [
+    {
+     "region_id": "ulna",
+     "port": "surface"
+    },
+    {
+     "region_id": "radius",
+     "port": "surface"
+    }
+   ],
+   "transfers": "force_moment"
+  },
+  {
+   "id": "bond_clavicle_scapula_joint",
+   "status": "source_declared",
+   "endpoints": [
+    {
+     "region_id": "clavicle",
+     "port": "surface"
+    },
+    {
+     "region_id": "scapula",
+     "port": "surface"
+    }
+   ],
+   "transfers": "force_moment"
+  },
+  {
+   "id": "bond_humerus_ulna_joint",
+   "status": "source_declared",
+   "endpoints": [
+    {
+     "region_id": "humerus",
+     "port": "surface"
+    },
+    {
+     "region_id": "ulna",
+     "port": "surface"
+    }
+   ],
+   "transfers": "force_moment"
+  }
+ ],
+ "provenance": {
+  "base_revision": "986f270ef24cda0008c52bd40d4b6d08565c0692",
+  "derived_from": {
+   "m02_document": "tools/monkey_campaign/contributions/MAT2-M02/monkey_arm_regions.json",
+   "m02_document_sha256": "15ae0e5a3d540d52b9a0e5c9b8af2f8a6bf7f2c9770a5f2cd7c1e9e8758366f1",
+   "mesh_blob_sha256": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+   "graph_pins_sha256": "849f9988d1a6ccb451bb45d79f298dd954c4e5605acd19d7d882a5c70a285b97",
+   "validator": "tools/monkey_campaign/contributions/MAT2-M01/material_state.py (unmodified)",
+   "validator_sha256": "b6b009713daa4b315c6b5cb43c7ad4e756123b50edcdd802eeebd55c6afd6c40"
+  },
+  "preregistration": {
+   "file": "tools/monkey_campaign/contributions/MAT2-B03/PREREGISTRATION.md",
+   "frozen_commit": "421a9873",
+   "note": "frozen before implementation and before any measurement"
+  },
+  "density_source": {
+   "library_file": "data/matter_library_1af0bbde.json",
+   "library_sha256": "de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed",
+   "library_origin": "tools/monkey_campaign/contributions/MAT2-B02/work/frozen/1af0bbde/Chimera/docs/matter/matter_library.json",
+   "entry": "materials.bone.physical.density_kg_m3",
+   "mean_kg_m3": 1800.0,
+   "uncertainty_band_kg_m3": [
+    1650.0,
+    1950.0
+   ],
+   "provenance_class": "researched",
+   "conditions": "source library states no temperature/moisture/strain-rate conditions for this entry; treated as apparent cortical bone density at reference (near-ambient, wet tissue) conditions; under-specification recorded, not fabricated",
+   "fidelity": "uniform apparent density per counted region; no heterogeneous field, muscle volume, skin or fat is authored (none supported by pinned geometry)"
+  },
+  "counted_set": {
+   "regions": [
+    "clavicle",
+    "humerus",
+    "radius",
+    "sternum",
+    "ulna"
+   ],
+   "rule": "closed_outward_consistent regions only",
+   "counted_total_kg": 0.0447023937544344
+  },
+  "excluded_claims": [
+   {
+    "claim_id": "mass_clavicle",
+    "mass_kg": 0.0,
+    "kind": "osim_effective_body_segment_mass",
+    "reason": "effective body segment mass from the admitted .osim row; not owned by this bone-geometry input; not counted",
+    "source": "MAT2-M02 monkey_arm_regions.json (sha 15ae0e5a3d540d52b9a0e5c9b8af2f8a6bf7f2c9770a5f2cd7c1e9e8758366f1)"
+   },
+   {
+    "claim_id": "mass_hand",
+    "mass_kg": 0.049,
+    "kind": "osim_effective_body_segment_mass",
+    "reason": "effective body segment mass from the admitted .osim row; not owned by this bone-geometry input; not counted",
+    "source": "MAT2-M02 monkey_arm_regions.json (sha 15ae0e5a3d540d52b9a0e5c9b8af2f8a6bf7f2c9770a5f2cd7c1e9e8758366f1)"
+   },
+   {
+    "claim_id": "mass_humerus",
+    "mass_kg": 0.203,
+    "kind": "osim_effective_body_segment_mass",
+    "reason": "effective body segment mass from the admitted .osim row; not owned by this bone-geometry input; not counted",
+    "source": "MAT2-M02 monkey_arm_regions.json (sha 15ae0e5a3d540d52b9a0e5c9b8af2f8a6bf7f2c9770a5f2cd7c1e9e8758366f1)"
+   },
+   {
+    "claim_id": "mass_radius",
+    "mass_kg": 0.0618,
+    "kind": "osim_effective_body_segment_mass",
+    "reason": "effective body segment mass from the admitted .osim row; not owned by this bone-geometry input; not counted",
+    "source": "MAT2-M02 monkey_arm_regions.json (sha 15ae0e5a3d540d52b9a0e5c9b8af2f8a6bf7f2c9770a5f2cd7c1e9e8758366f1)"
+   },
+   {
+    "claim_id": "mass_scapula",
+    "mass_kg": 0.0,
+    "kind": "osim_effective_body_segment_mass",
+    "reason": "effective body segment mass from the admitted .osim row; not owned by this bone-geometry input; not counted",
+    "source": "MAT2-M02 monkey_arm_regions.json (sha 15ae0e5a3d540d52b9a0e5c9b8af2f8a6bf7f2c9770a5f2cd7c1e9e8758366f1)"
+   },
+   {
+    "claim_id": "mass_sternum",
+    "mass_kg": 6.6,
+    "kind": "osim_effective_body_segment_mass",
+    "reason": "effective body segment mass from the admitted .osim row; not owned by this bone-geometry input; not counted",
+    "source": "MAT2-M02 monkey_arm_regions.json (sha 15ae0e5a3d540d52b9a0e5c9b8af2f8a6bf7f2c9770a5f2cd7c1e9e8758366f1)"
+   },
+   {
+    "claim_id": "mass_ulna",
+    "mass_kg": 0.0922,
+    "kind": "osim_effective_body_segment_mass",
+    "reason": "effective body segment mass from the admitted .osim row; not owned by this bone-geometry input; not counted",
+    "source": "MAT2-M02 monkey_arm_regions.json (sha 15ae0e5a3d540d52b9a0e5c9b8af2f8a6bf7f2c9770a5f2cd7c1e9e8758366f1)"
+   }
+  ],
+  "surface_mass_note": "no surface mass is represented: no source shell thickness exists for bone surfaces (M02); shells count zero volume mass",
+  "centre_of_mass_m_world_default_pose": [
+   0.029182250935887232,
+   -0.08077650378331411,
+   0.0038711022502886743
+  ],
+  "inertia_about_com_kg_m2": [
+   [
+    0.00013633554245097646,
+    3.902594758518892e-05,
+    1.9010112710626508e-06
+   ],
+   [
+    3.902594758518892e-05,
+    8.967994799654837e-05,
+    4.414215350941436e-06
+   ],
+   [
+    1.9010112710626508e-06,
+    4.414215350941436e-06,
+    0.00021658059511006397
+   ]
+  ],
+  "inertia_frame": "world:default_pose",
+  "verification": {
+   "probes": [
+    {
+     "id": "W5",
+     "ok": true,
+     "detail": "excluded claims contribute exactly zero"
+    },
+    {
+     "id": "V3",
+     "ok": true,
+     "detail": "analytic cube and right tetra closed forms reproduced"
+    },
+    {
+     "id": "V1",
+     "ok": true,
+     "detail": "cross-method volumes agree within 1e-09"
+    },
+    {
+     "id": "V2",
+     "ok": true,
+     "detail": "volumes continuous with M02 claims and graph pins"
+    },
+    {
+     "id": "W1",
+     "ok": true,
+     "detail": "cross-method COM/inertia agree within 1e-09"
+    },
+    {
+     "id": "W2",
+     "ok": true,
+     "detail": "rotation covariance for ((30.0, (0.0, 0.0, 1.0)), (25.0, (1.0, 0.0, 0.0)))"
+    },
+    {
+     "id": "W3",
+     "ok": true,
+     "detail": "parallel-axis recombination exact within 1e-09"
+    },
+    {
+     "id": "W4",
+     "ok": true,
+     "detail": "tensor symmetric, eigenvalues [6.74846319501813e-05, 0.00015822316831496326, 0.00021688828529244417]"
+    }
+   ]
+  },
+  "absent_or_unresolved": [
+   "muscle volumes: the 39 source muscles are 1D path points only; no volume authored",
+   "skin/fat geometry: absent from the pinned source",
+   "organs/interior tissue: absent",
+   "heterogeneous density field: not authored (uniform per-region apparent density only)",
+   "temperature/moisture/strain-rate conditions for the density source: not stated by the source; recorded as a limitation",
+   "runtime solver: none exists at revision 1"
+  ]
+ }
+}
