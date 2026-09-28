@@ -1,0 +1,292 @@
+{
+ "summary": {
+  "total": 37,
+  "passed": 37,
+  "failed": 0
+ },
+ "checks": [
+  {
+   "id": "V0-structure-json-parses",
+   "result": "PASS",
+   "detail": "mutation_structure.json parses as JSON"
+  },
+  {
+   "id": "V0-mjcf-parses",
+   "result": "PASS",
+   "detail": "macaque_hand_mutation.xml is well-formed XML with root <mujoco>",
+   "observed": "mujoco"
+  },
+  {
+   "id": "V1-body-count",
+   "result": "PASS",
+   "detail": "exactly 19 explicit digit bodies (5 metacarpals + 14 phalanges)",
+   "observed": 19
+  },
+  {
+   "id": "V1-phalanx-count",
+   "result": "PASS",
+   "detail": "14 phalanges present (prox/mid/dist x4 + thumb 2)",
+   "observed": 14
+  },
+  {
+   "id": "V1-metacarpal-count",
+   "result": "PASS",
+   "detail": "5 metacarpals present (firstmc..fifthmc)",
+   "observed": 5
+  },
+  {
+   "id": "V1-chain-connectivity",
+   "result": "PASS",
+   "detail": "all 19 bodies connected to macaque_hand_anchor within <=4 hops",
+   "observed": []
+  },
+  {
+   "id": "V1-thumb-topology",
+   "result": "PASS",
+   "detail": "thumb chain anchor->firstmc->proximal_thumb->distal_thumb"
+  },
+  {
+   "id": "V1-joint-count",
+   "result": "PASS",
+   "detail": "20 explicit digit joints (thumb 4 + fingers 16)",
+   "observed": 20
+  },
+  {
+   "id": "V1-anchor-wrist-joints",
+   "result": "PASS",
+   "detail": "mutant wrist anchor declares the 2 macaque wrist dof",
+   "observed": [
+    "mutation_wrist_flexion",
+    "mutation_wrist_abduction"
+   ]
+  },
+  {
+   "id": "V1-xml-json-body-agreement",
+   "result": "PASS",
+   "detail": "MJCF body set equals JSON body set",
+   "observed": []
+  },
+  {
+   "id": "V1-xml-json-parent-agreement",
+   "result": "PASS",
+   "detail": "MJCF parent structure equals JSON parent structure"
+  },
+  {
+   "id": "V2-positions-recomputable",
+   "result": "PASS",
+   "detail": "every mutant pos_m equals s*human offset componentwise within 1e-12",
+   "observed": 0.0
+  },
+  {
+   "id": "V2-xml-positions-recomputable",
+   "result": "PASS",
+   "detail": "MJCF body pos equals s*human offset within 1e-9 (9 sig digits emitted)",
+   "observed": 4.730197136759706e-11
+  },
+  {
+   "id": "V2-scale-recomputable",
+   "result": "PASS",
+   "detail": "recorded mutation scale equals recomputed s",
+   "observed": {
+    "recorded": 0.5384048132470733,
+    "recomputed": 0.5384048132470733
+   }
+  },
+  {
+   "id": "V2-digit-ranges-verbatim",
+   "result": "PASS",
+   "detail": "every digit joint range equals its myohand source range verbatim",
+   "observed": []
+  },
+  {
+   "id": "V2-wrist-ranges-macaque",
+   "result": "PASS",
+   "detail": "mutant wrist anchor carries the macaque wrist ranges verbatim",
+   "observed": {
+    "mutation_wrist_flexion": [
+     -1.30899694,
+     1.57079633
+    ],
+    "mutation_wrist_abduction": [
+     -1.04719755,
+     0.78539816
+    ]
+   }
+  },
+  {
+   "id": "V2-wrist-axes-macaque",
+   "result": "PASS",
+   "detail": "mutant wrist axes equal the osim TransformAxis axes",
+   "observed": {
+    "mutation_wrist_flexion": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "mutation_wrist_abduction": [
+     0.0,
+     0.0,
+     1.0
+    ]
+   }
+  },
+  {
+   "id": "V2-mass-priors-recomputable",
+   "result": "PASS",
+   "detail": "every mass prior equals 0.049*human_mass/0.1589 within 1e-12",
+   "observed": 0.0
+  },
+  {
+   "id": "V2-anchor-mass-verbatim",
+   "result": "PASS",
+   "detail": "anchor body carries the macaque hand body mass/center/inertia verbatim"
+  },
+  {
+   "id": "V3-hand-length-identity",
+   "result": "PASS",
+   "detail": "mutant hand length equals MACAQUE_HAND_LENGTH within 1e-9",
+   "observed": {
+    "mutant": 0.08360625000000001,
+    "macaque": 0.08360625000000001,
+    "diff": 0.0
+   }
+  },
+  {
+   "id": "V3-ratio-coherence",
+   "result": "PASS",
+   "detail": "mutant hand/forearm(ulna) equals macaque ratio within 1e-3",
+   "observed": {
+    "mutant": 0.5292514159724607,
+    "macaque": 0.5292514159724607
+   }
+  },
+  {
+   "id": "V3-vtp-vs-graph-agreement",
+   "result": "PASS",
+   "detail": "hand.vtp direct bbox (mm->m) matches geom.macaque_arm.hand graph bounds",
+   "observed": {
+    "vtp": 0.08360625000000001,
+    "graph": 0.08360625000000001
+   }
+  },
+  {
+   "id": "V3-y-span-fits-envelope",
+   "result": "PASS",
+   "detail": "every mutant fingertip Y lies inside the hand.vtp Y span (preregistered falsifier)",
+   "observed": {
+    "thumb": -0.043138608851795254,
+    "digit2": -0.07918750312275306,
+    "digit3": -0.08282873487474302,
+    "digit4": -0.07769504498043216,
+    "digit5": -0.06859708044618312
+   }
+  },
+  {
+   "id": "V3-radial-overshoot-declared",
+   "result": "PASS",
+   "detail": "radial (X/Z) envelope overshoot recorded as declared deviation (honest, not hidden)",
+   "observed": [
+    "thumb",
+    "digit2",
+    "digit3",
+    "digit5"
+   ]
+  },
+  {
+   "id": "V4-units-block",
+   "result": "PASS",
+   "detail": "structure declares m/rad/kg units",
+   "observed": {
+    "length": "m",
+    "angle": "rad",
+    "mass": "kg",
+    "inertia": "kg m^2"
+   }
+  },
+  {
+   "id": "V4-no-mm-as-m",
+   "result": "PASS",
+   "detail": "no mutant position exceeds 0.2 m (mm-as-m scale error would be ~1000x)",
+   "observed": []
+  },
+  {
+   "id": "V4-single-mm-to-m",
+   "result": "PASS",
+   "detail": "mm->m conversion recorded exactly once, on the macaque vtp assets",
+   "observed": [
+    0.001,
+    0.001,
+    0.001
+   ]
+  },
+  {
+   "id": "V4-no-double-scale",
+   "result": "PASS",
+   "detail": "scale applied exactly once (positions match single-scaled offsets)",
+   "observed": []
+  },
+  {
+   "id": "V5-muscle-anchors-recorded",
+   "result": "PASS",
+   "detail": "all three macaque hand-frame muscle anchors recorded with osim coordinates",
+   "observed": [
+    "ext_digitorum/ext_digitorum-P3->macaque_hand_anchor",
+    "ext_digitorum/ext_digitorum-P2->proxph3",
+    "flex_digit_profundus/flex_digit_profundus-P4->fifthmc"
+   ]
+  },
+  {
+   "id": "V5-species-labels",
+   "result": "PASS",
+   "detail": "both source lineages carry species labels (hybrid disclosure)",
+   "observed": {
+    "source.myo_sim_human_hand": "Homo sapiens (MoBL-ARD myo_sim human hand, human-derived bas",
+    "source.macaque_arm_constraints": "Macaca mulatta (Limblab monkeyArm research model; original s"
+   }
+  },
+  {
+   "id": "V5-geometry-bindings",
+   "result": "PASS",
+   "detail": "every body binds its vendor STL asset at the recorded mutation scale",
+   "observed": []
+  },
+  {
+   "id": "V5-stl-files-exist",
+   "result": "PASS",
+   "detail": "all referenced STL files exist in the vendor tree",
+   "observed": []
+  },
+  {
+   "id": "V6-human-pins",
+   "result": "PASS",
+   "detail": "every body pins its human source body + vendor file sha256",
+   "observed": []
+  },
+  {
+   "id": "V6-captain-decision-pin",
+   "result": "PASS",
+   "detail": "captain decision reference resolves and its sha256 matches",
+   "observed": {
+    "sha256": "3c34168ef28b00b1dc60c2362cc9d2d6ffb273a8c28a1663d9bff729596dd1d7",
+    "decision_id": "A05-DIGIT-MUTATION-20260928"
+   }
+  },
+  {
+   "id": "V6-mjcf-mesh-files",
+   "result": "PASS",
+   "detail": "every MJCF mesh file path resolves on disk",
+   "observed": []
+  },
+  {
+   "id": "V6-mjcf-geom-resolve",
+   "result": "PASS",
+   "detail": "every MJCF geom mesh reference resolves to a declared asset",
+   "observed": []
+  },
+  {
+   "id": "V6-mjcf-mesh-scale",
+   "result": "PASS",
+   "detail": "every MJCF mesh scale equals the mutation scale s"
+  }
+ ]
+}

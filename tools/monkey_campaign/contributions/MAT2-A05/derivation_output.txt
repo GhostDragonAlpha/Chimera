@@ -1,0 +1,115 @@
+== source pin verification ==
+OK E:\PythonChimera\vendor\myo_sim\hand\assets\myohand_body.xml sha256=21a6649236801439649ae992459c29bbc020767c2022c4d79de688689462ed28
+OK E:\PythonChimera\vendor\myo_sim\finger\finger_v0.xml sha256=6975e5c56d2adbd41c1b9ad8cdbece90b84611c80288337338adc7951a8b4b5f
+OK E:\PythonChimera\tools\science_funnel\data\macaque_arm\monkeyArm_current.osim sha256=4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895
+OK E:\PythonChimera\tools\science_funnel\data\macaque_arm\Geometry\hand.vtp sha256=a06ea7e079c849df07d6eec001e9bcc2ea193ecd3914011c78a993a5faa94fc6
+OK E:\PythonChimera\tools\creature_graph\data\creature_graph.json sha256=eeaace01160f7a585e3c57fb4a7b2fbe19e2067cd59e1834fb86c972c33eca56
+
+== human base: myohand_body.xml chain extraction ==
+digit bodies carry no euler/quat: chain geometry is pure translation composition
+human chain displacement from lunate origin (m):
+  thumb: vector=[+0.056985,-0.080123,-0.033281] |v|=0.103801
+  digit2: vector=[+0.033021,-0.147078,+0.019525] |v|=0.151999
+  digit3: vector=[+0.007724,-0.153841,+0.019666] |v|=0.155285
+  digit4: vector=[-0.015729,-0.144306,+0.007575] |v|=0.145358
+  digit5: vector=[-0.027651,-0.127408,-0.008509] |v|=0.130651
+HUMAN_HAND_LENGTH = max chain displacement = 0.155285 m (digit 3)
+human 19-digit-body mass sum = 0.1589 kg
+human radius.stl tris=390 +Y extent=0.002726 m; wrist(lunate y)=-0.242000; L_forearm_human=0.244726 m
+human hand/forearm ratio = 0.155285/0.244726 = 0.6345
+
+== macaque constraints: monkeyArm_current.osim + graph geom node ==
+macaque hand body: mass=0.049 kg mass_center=[0.012, -0.025, 0.007] inertia=[3.82e-05, 1.56e-06, 3.82e-05, 0.0, 0.0, 0.0]
+macaque wrist ranges (rad): {'wrist_flexion': [-1.30899694, 1.57079633], 'wrist_abduction': [-1.04719755, 0.78539816]}
+macaque wrist transform axes: {'rotation1': {'coordinates': 'wrist_flexion', 'axis': [1.0, 0.0, 0.0]}, 'rotation2': {'coordinates': 'wrist_abduction', 'axis': [0.0, 0.0, 1.0]}, 'rotation3': {'coordinates': None, 'axis': [0.0, 1.0, 0.0]}, 'translation1': {'coordinates': None, 'axis': [1.0, 0.0, 0.0]}, 'translation2': {'coordinates': None, 'axis': [0.0, 1.0, 0.0]}, 'translation3': {'coordinates': None, 'axis': [0.0, 0.0, 1.0]}}
+macaque muscle anchor on hand body: ext_digitorum/ext_digitorum-P3 location_m=[+0.00106101,-0.00804001,+0.00594996]
+macaque muscle anchor on hand body: ext_digitorum/ext_digitorum-P2 location_m=[+0.00222721,-0.03911910,+0.00429738]
+macaque muscle anchor on hand body: flex_digit_profundus/flex_digit_profundus-P4 location_m=[-0.00139132,-0.01724830,-0.00108922]
+MACAQUE_HAND_LENGTH = geom.macaque_arm.hand bounds_m Y extent = 0.08360625 m
+macaque forearm refs (m): ulna Y extent=0.157971, radius Y extent=0.139561
+macaque hand/forearm(ulna) ratio = 0.08360625/0.157971 = 0.5293
+
+== mutation scale formula ==
+s = MACAQUE_HAND_LENGTH / HUMAN_HAND_LENGTH = 0.08360625 / 0.155285 = 0.538404813
+mutant hand/forearm(ulna) ratio = 0.08360625/0.157971 = 0.5293 (macaque 0.5293; human base 0.6345)
+
+== mutant bodies: anchor-relative positions (m) ==
+  firstmc: parent=macaque_hand_anchor pos=[+0.014260,-0.013473,-0.005643] |pos|=0.020413
+  proximal_thumb: parent=firstmc pos=[+0.008884,-0.015721,-0.006838] |pos|=0.019309
+  distal_thumb: parent=proximal_thumb pos=[+0.007538,-0.013945,-0.005438] |pos|=0.016758
+  secondmc: parent=macaque_hand_anchor pos=[+0.010056,-0.028360,+0.003962] |pos|=0.030350
+  proxph2: parent=secondmc pos=[+0.001885,-0.015206,+0.001949] |pos|=0.015446
+  midph2: parent=proxph2 pos=[+0.004043,-0.022222,+0.003944] |pos|=0.022928
+  distph2: parent=midph2 pos=[+0.001795,-0.013400,+0.000657] |pos|=0.013535
+  thirdmc: parent=macaque_hand_anchor pos=[+0.002406,-0.029232,+0.005225] |pos|=0.029792
+  proxph3: parent=thirdmc pos=[+0.000129,-0.014155,+0.000957] |pos|=0.014188
+  midph3: parent=proxph3 pos=[+0.000888,-0.023803,+0.003354] |pos|=0.024055
+  distph3: parent=midph3 pos=[+0.000735,-0.015639,+0.001052] |pos|=0.015692
+  fourthmc: parent=macaque_hand_anchor pos=[-0.004336,-0.029921,+0.003144] |pos|=0.030396
+  proxph4: parent=fourthmc pos=[-0.000985,-0.012754,-0.000093] |pos|=0.012793
+  midph4: parent=proxph4 pos=[-0.001899,-0.021673,+0.000724] |pos|=0.021769
+  distph4: parent=midph4 pos=[-0.001247,-0.013347,+0.000303] |pos|=0.013408
+  fifthmc: parent=macaque_hand_anchor pos=[-0.009640,-0.026779,-0.001018] |pos|=0.028479
+  proxph5: parent=fifthmc pos=[-0.000860,-0.011539,-0.000805] |pos|=0.011599
+  midph5: parent=proxph5 pos=[-0.002842,-0.019147,-0.001550] |pos|=0.019419
+  distph5: parent=midph5 pos=[-0.001546,-0.011133,-0.001208] |pos|=0.011304
+  mutant thumb chain length = 0.055887 m
+  mutant digit2 chain length = 0.081837 m
+  mutant digit3 chain length = 0.083606 m
+  mutant digit4 chain length = 0.078262 m
+  mutant digit5 chain length = 0.070343 m
+MUTANT_HAND_LENGTH = 0.08360625 m (target 0.08360625, diff 0.00e+00)
+mutant fingertip anchor-frame positions (m):
+  thumb: [+0.030681,-0.043139,-0.017919] inside hand.vtp bbox XYZ=(False, True, False)
+  digit2: [+0.017779,-0.079188,+0.010512] inside hand.vtp bbox XYZ=(True, True, False)
+  digit3: [+0.004159,-0.082829,+0.010588] inside hand.vtp bbox XYZ=(True, True, False)
+  digit4: [-0.008469,-0.077695,+0.004078] inside hand.vtp bbox XYZ=(True, True, True)
+  digit5: [-0.014887,-0.068597,-0.004581] inside hand.vtp bbox XYZ=(False, True, False)
+muscle anchor mapping (rest pose, nearest mutant body):
+  ext_digitorum/ext_digitorum-P3 -> macaque_hand_anchor (distance 0.010058 m)
+  ext_digitorum/ext_digitorum-P2 -> proxph3 (distance 0.004675 m)
+  flex_digit_profundus/flex_digit_profundus-P4 -> fifthmc (distance 0.012604 m)
+mutant per-body mass priors (formula: 0.049 * human_mass / 0.1589):
+  firstmc: human 0.016 -> 0.004934 kg
+  proximal_thumb: human 0.0079 -> 0.002436 kg
+  distal_thumb: human 0.003 -> 0.000925 kg
+  secondmc: human 0.02 -> 0.006167 kg
+  proxph2: human 0.01 -> 0.003084 kg
+  midph2: human 0.003 -> 0.000925 kg
+  distph2: human 0.002 -> 0.000617 kg
+  thirdmc: human 0.02 -> 0.006167 kg
+  proxph3: human 0.01 -> 0.003084 kg
+  midph3: human 0.002 -> 0.000617 kg
+  distph3: human 0.002 -> 0.000617 kg
+  fourthmc: human 0.02 -> 0.006167 kg
+  proxph4: human 0.01 -> 0.003084 kg
+  midph4: human 0.003 -> 0.000925 kg
+  distph4: human 0.002 -> 0.000617 kg
+  fifthmc: human 0.02 -> 0.006167 kg
+  proxph5: human 0.005 -> 0.001542 kg
+  midph5: human 0.002 -> 0.000617 kg
+  distph5: human 0.001 -> 0.000308 kg
+mutant geometry assets (vendor STL @ uniform scale s):
+  1mc.stl sha256=b75e58243a2005af... tris=5744 verts=2874
+  thumbprox.stl sha256=d55ea0de846c5acf... tris=3948 verts=1976
+  thumbdist.stl sha256=95b059723be971e7... tris=3484 verts=1744
+  2mc.stl sha256=ac3286bfb7281a7d... tris=8360 verts=4182
+  2proxph.stl sha256=041bf5a60e9376c0... tris=5122 verts=2563
+  2midph.stl sha256=074318c92e652ba0... tris=2000 verts=1002
+  2distph.stl sha256=39fca93724345208... tris=2206 verts=1105
+  3mc.stl sha256=eaa77802c8afe5a3... tris=8086 verts=4045
+  3proxph.stl sha256=48094bce62d115ae... tris=5604 verts=2804
+  3midph.stl sha256=5e0ef3d76f2f99f9... tris=2234 verts=1119
+  3distph.stl sha256=d5ecddeac9b45720... tris=2546 verts=1275
+  4mc.stl sha256=ad2fe21562879512... tris=6486 verts=3245
+  4proxph.stl sha256=eea82e95eb50e934... tris=5264 verts=2634
+  4midph.stl sha256=98ecb5ad76749abd... tris=2204 verts=1104
+  4distph.stl sha256=02f01c191dfc86ab... tris=2608 verts=1306
+  5mc.stl sha256=46c75922ddc94f98... tris=5016 verts=2510
+  5proxph.stl sha256=b04672ea67df7403... tris=3742 verts=1873
+  5midph.stl sha256=d383a1f058224f71... tris=1566 verts=785
+  5distph.stl sha256=a2ca70efdb0a5e59... tris=2979 verts=1491
+
+captain decision record sha256: 3c34168ef28b00b1dc60c2362cc9d2d6ffb273a8c28a1663d9bff729596dd1d7
+emitted macaque_hand_mutation.xml (well-formed XML verified)
+emitted mutation_structure.json sha256=8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83

@@ -1,0 +1,14 @@
+{
+ "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "structurally_valid": true,
+ "visual_acceptance": false,
+ "profile_id": "anatomy",
+ "view_count": 6,
+ "capture_kind": "image",
+ "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+ "fired": [],
+ "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-A05].spec.ontology_qualification.task.verification_profile (read-only sqlite)",
+ "validated_profile_id": "anatomy",
+ "validated_profile_kind": "visible_static",
+ "capture_sha256": "d8bb22f9ada9b5c5e20dbd5f6f316f6fd45f5f2bdeb5f264370cfd4619c86514"
+}
