@@ -1,0 +1,7 @@
+# Raw byte evidence for MAT2-W03 (frozen anchors are byte identities; the raw
+# replay stdout IS the anchor 8c537cdb...). Follows the evidence-forensics-byte-
+# stability-01 precedent (PR #73 review LOW-1; PR #69 gen-2 HIGH root): sha-recorded
+# evidence must be checkout-invariant. Last match wins over the root `* text=auto`:
+# no eol/encoding conversion either way, so committed blobs and every checkout carry
+# the exact scratch bytes recorded in copy_verify.txt and binaries_manifest.json.
+* -text
