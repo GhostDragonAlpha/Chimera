@@ -245,3 +245,22 @@ authoring, no new meshes, no .osim segment-mass replacement (excluded claims
 only), no master merge, no push (the lead publishes). If a frozen clause
 cannot be met, the attempt records the gap honestly rather than widening
 scope.
+
+## Amendment A1 (recorded before candidate review; original frozen bytes remain in commit 421a9873)
+
+Transcription erratum in the prediction table above: two parenthetical printed
+values were mis-transcribed by the author when this file was written. The
+operative frozen predictions are the arithmetic values of the frozen rule
+(rho = 1800.0 kg/m3 on the admitted full-precision pin volumes), not the
+typographical digits. Corrected printed truncations:
+
+- humerus: table says 0.022508426664849; the frozen-rule value is
+  0.022508426648490 (kg).
+- counted total: table says 0.044702393770792; the frozen-rule value is
+  0.044702393754434 (kg).
+
+No measured number changed: the derivation reproduces the frozen-rule values
+to 1.55e-15 relative (receipt predictions, all match=True). The mis-typed
+digits are probe P4's subject: the suite asserts the corrected digits and this
+erratum, so the error is preserved rather than quietly rewritten. No other
+clause of this preregistration is amended.
