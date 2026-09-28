@@ -1,3 +1,5 @@
+> **Fleet methodology:** [Captain, Lieutenant, Sergeants, ten-slot Kanban and verification](docs/FLEET_WORKFLOW.md). Campaign workers start with [MONKEY_RUN.md](docs/MONKEY_RUN.md).
+
 # CHIMERA — the membrane game
 
 **A world built from membranes — cosmic down to molecular — where the physics cannot lie.**

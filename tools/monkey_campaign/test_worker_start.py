@@ -22,6 +22,8 @@ class StartupTests(unittest.TestCase):
         self.assertEqual(result['assignment']['task_inbox'][0]['body'],'Fix the exact input case')
         self.assertEqual(self.registry.snapshot()['registered_agents'],0)
         self.assertIn('pr_submission_template',result)
+        self.assertEqual(result['checkout']['branch'],'branch-1')
+        self.assertEqual(result['working_directory'],str(self.root/'checkout'))
 
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -36,6 +38,7 @@ class StartupTests(unittest.TestCase):
     def run_start(self, *args):
         output = io.StringIO()
         with patch.object(worker_start, 'DEFAULT_ROOT', self.root), \
+             patch.object(worker_start, 'prepare_checkout', return_value={'working_directory':str(self.root/'checkout'),'branch':'branch-1','state':'PREPARED'}), \
              patch('sys.argv', ['worker_start.py', *args]), \
              patch.object(worker_start.subprocess, 'run', return_value=SimpleNamespace(
                  returncode=0, stdout='{"current":"theMeaning"}', stderr='')), \
@@ -72,6 +75,43 @@ class StartupTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'orientation_failed'):
                 worker_start.main()
         self.assertEqual(self.registry.snapshot()['registered_agents'],0)
+
+
+class RecoveryTests(StartupTests):
+    def setup_card(self):
+        import kanban
+        kanban.initialize(self.registry,[dict(id='RECOVER',objective='Task',falsifier='wrong',steps=['work'],completion='merge')],kanban.LEAD)
+
+    def test_broken_stdout_preserves_claim_and_identity(self):
+        self.setup_card()
+        import builtins
+        def broken(*args,**kwargs):
+            if kwargs.get('file') is worker_start.sys.stderr:
+                return
+            raise BrokenPipeError('consumer closed stdout')
+        with patch.object(worker_start,'print',side_effect=broken,create=True):
+            with self.assertRaises(BrokenPipeError):self.run_start('--arrival-id','cut-output')
+        attempts=self.registry.readonly()['kanban']['cards']['RECOVER']['attempts']
+        self.assertEqual(len(attempts),1)
+        receipts=list((self.root/'startup-receipts').glob('*.json'))
+        self.assertEqual(len(receipts),1)
+        receipt=json.loads(receipts[0].read_text())
+        self.assertEqual(receipt['arrival_id'],'cut-output')
+        self.assertEqual(receipt['assignment_id'],next(iter(attempts)))
+        result=self.run_start('--arrival-id','cut-output')
+        self.assertEqual(result['assignment']['attempt']['id'],receipt['assignment_id'])
+        self.assertEqual(len(self.registry.readonly()['kanban']['cards']['RECOVER']['attempts']),1)
+
+    def test_missing_status_snapshot_does_not_block_startup(self):
+        self.setup_card()
+        (self.root/'STATUS.json').unlink(missing_ok=True)
+        result=self.run_start('--arrival-id','sqlite-worker')
+        self.assertEqual(result['registry_source'],'sqlite-readonly')
+        self.assertTrue(result['task_claimed'])
+
+    def test_receipt_does_not_persist_role_token(self):
+        path=worker_start.save_recovery(self.root,'worker',{'state':'OPERATIONAL_LEAD_ASSIGNED','operational_lead':{'token':'secret-role'}},'astra-test')
+        self.assertNotIn('secret-role',Path(path).read_text())
 
 
 if __name__ == '__main__':

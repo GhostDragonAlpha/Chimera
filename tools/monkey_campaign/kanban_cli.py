@@ -21,10 +21,13 @@ def github_pr(url):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action',choices=['status','inbox','join','message','submit','review','accept-merge','enqueue','park'])
+    p.add_argument('action',choices=['status','inbox','join','message','submit','review','accept-merge','enqueue','park','release-lead','record-publication','merge-queue','reject-publication'])
     p.add_argument('--task');p.add_argument('--agent');p.add_argument('--arguments',type=Path)
     args=p.parse_args();instructions=inspect(Path(__file__).resolve().parents[2]);r=Registry(DEFAULT_ROOT)
     if args.action=='status':result=k.read(r)
+    elif args.action=='merge-queue':
+        from merge_service import queue
+        result=queue(r)
     elif args.action=='inbox':
         card=k.read(r,args.task);result={'task_id':card['id'],'state':card['state'],'messages':card['messages'],'prs':card['prs'],'winner':card['winner']}
     elif args.action=='join':result=k.join(r,args.agent,args.task)
@@ -33,8 +36,11 @@ def main():
         with args.arguments.open('rb') as f:raw=f.read(65537)
         if len(raw)>65536:raise ValueError('arguments_size_limit')
         a=decode(raw)
-        if args.action=='accept-merge':result=k.accept_merge(r,a,github_pr(a['pr_url']))
-        else:result={'message':k.post,'submit':k.submit,'review':k.review,'enqueue':k.enqueue,'park':k.park}[args.action](r,a)
+        from operational_lead import release, record_pr
+        if args.action=='release-lead':result=release(r,a)
+        elif args.action=='record-publication':result=record_pr(r,a,github_pr(a['pr_url']))
+        elif args.action=='accept-merge':result=k.accept_merge(r,a,github_pr(a['pr_url']))
+        else:result={'reject-publication':k.reject_publication,'message':k.post,'submit':__import__('verified_submission').submit,'review':k.review,'enqueue':k.enqueue,'park':k.park}[args.action](r,a)
     print(json.dumps({'instruction_revision':instructions['revision_id'],'result':result},indent=2))
 
 if __name__=='__main__':
