@@ -1,0 +1,27 @@
+# git -C E:\ChimeraWork\monkey-coordination\kanban-attempts\ONT-U05\c7f9519f83c54b3094f1cf097baa742b\checkout status --porcelain -uall
+?? tools/monkey_campaign/contributions/ONT-U05/INTENT_SEAM_SPEC.md
+?? tools/monkey_campaign/contributions/ONT-U05/PREREGISTRATION.md
+?? tools/monkey_campaign/contributions/ONT-U05/implementation.py
+?? tools/monkey_campaign/contributions/ONT-U05/receipts/baseline_suites.txt
+?? tools/monkey_campaign/contributions/ONT-U05/receipts/identity_manifest.json
+?? tools/monkey_campaign/contributions/ONT-U05/receipts/mutation_M1_edge_law_failing_first.txt
+?? tools/monkey_campaign/contributions/ONT-U05/receipts/mutation_M2_version_law_failing_first.txt
+?? tools/monkey_campaign/contributions/ONT-U05/receipts/mutation_M3_gate_law_failing_first.txt
+?? tools/monkey_campaign/contributions/ONT-U05/receipts/restored_green.txt
+?? tools/monkey_campaign/contributions/ONT-U05/receipts/scope_check.txt
+?? tools/monkey_campaign/contributions/ONT-U05/reference/lineage/PREREGISTRATION_U05_lineage.md
+?? tools/monkey_campaign/contributions/ONT-U05/reference/lineage/receipts/R4_review_report.md
+?? tools/monkey_campaign/contributions/ONT-U05/reference/lineage/receipts/amr_failing_first_20260924.txt
+?? tools/monkey_campaign/contributions/ONT-U05/reference/lineage/receipts/climb_intent_tests_20260924.txt
+?? tools/monkey_campaign/contributions/ONT-U05/reference/lineage/receipts/climb_intent_tests_77of77_with_amr_20260924.txt
+?? tools/monkey_campaign/contributions/ONT-U05/reference/lineage/receipts/r4_probe_battery_postfix_allgreen_20260924.txt
+?? tools/monkey_campaign/contributions/ONT-U05/reference/lineage/receipts/walk_contract_hash_proof_20260924.txt
+?? tools/monkey_campaign/contributions/ONT-U05/reference/product/climb_intent_amr_tests.py
+?? tools/monkey_campaign/contributions/ONT-U05/reference/product/climb_intent_tests.py
+?? tools/monkey_campaign/contributions/ONT-U05/reference/product/focus_policy.py
+?? tools/monkey_campaign/contributions/ONT-U05/reference/product/input_mapper.py
+?? tools/monkey_campaign/contributions/ONT-U05/reference/product/session_flow.py
+?? tools/monkey_campaign/contributions/ONT-U05/reference/science_funnel/__init__.py
+?? tools/monkey_campaign/contributions/ONT-U05/reference/science_funnel/typeb_export/__init__.py
+?? tools/monkey_campaign/contributions/ONT-U05/reference/science_funnel/typeb_export/command_record.py
+?? tools/monkey_campaign/contributions/ONT-U05/test_implementation.py

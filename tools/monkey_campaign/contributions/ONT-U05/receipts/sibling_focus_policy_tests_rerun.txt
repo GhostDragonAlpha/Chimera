@@ -1,0 +1,50 @@
+focus_policy_tests -- U03 falsifiers (prereg: agents/U03_focus/PREREGISTRATION.md)
+P1 NO-STUCK: every clearing event decays to exact zero, then silence
+  [PASS] P1.a blur mid-command: post-blur stream is monotone non-increasing  -- [(1150, 0.5345375), (1200, 0.0)]
+  [PASS] P1.b an EXACT-0.0 record lands at or before blur+decay deadline  -- zero at (1200, 0.0), deadline 1220
+  [PASS] P1.c TOTAL SILENCE after the zero (the inert path resumed)  -- 0 records after the zero
+  [PASS] P1.d no positive-speed record later than blur+decay deadline
+  [PASS] P1.e the pre-blur command was live (the scenario is not vacuous)  -- 3 records before the blur
+  [PASS] P1.f blur during a tail does NOT restart it (the tail keeps its original release instant)  -- v(1150) = [0.52690125] (expected the 1119-tail sample v0*0.69, not the restarted v0*0.75)
+  [PASS] P1.g the interrupted tail still lands exact zero at or before its own deadline, then silence  -- zero at (1200, 0.0), deadline 1219
+  [PASS] P1.h the pre-blur stream ends on an exact live-zero record
+  [PASS] P1.i blur from the live-zero state emits NOTHING further (already at zero; no stuck demand)  -- 0 post-blur records
+  [PASS] P1.j blur while idle emits nothing and stays inert
+  [PASS] P1.k disconnect mid-command: exact zero lands at or before disconnect+decay deadline, then silence  -- zero at (1200, 0.0), deadline 1220
+  [PASS] P1.l blur-while-disconnected does not restart the tail (the boundary-sampled tail keeps the 950 release instant: sample at 950, EXACT zero at the second boundary)  -- v(950) = [0.763625], v(1000) = [0.0] (a restarted tail from 960 would show v0*0.6 at 1000, not exact zero)
+P2 CONSISTENCY: policy blur == U01's own release_all, byte for byte
+  [PASS] P2.a blur's sink stream is BYTE-IDENTICAL to U01 release_all at the same instant (count, values, issued ticks, source, version)  -- 5 vs 5 records, 0 field mismatches
+  [PASS] P2.a' the policy never rewrote a record (source stays U01's)
+  [PASS] P2.b every frozen number is the SAME OBJECT as U01's (imported, not redeclared)  -- identity holds for all 6
+  [PASS] P2.b' MAX_AGE_MS is the expiry floor itself
+  [PASS] P2.c no frozen literal is duplicated anywhere in the module source  -- none of ['= 100', '= 50', '0.763', '1.6', '300', '= 30'] present
+P3 EXPIRY FLOOR: stale records are dropped at emission, by name
+  [PASS] P3.a exactly the fresh records reached the sink (3 of 6 boundary ticks; the stalled clock aged the rest past the max age)  -- delivered at [1000, 1050, 1100]
+  [PASS] P3.b every DELIVERED record was within the max age at delivery (strictly-greater boundary, same as is_expired)  -- delivery ages in physics ticks: [0, 15, 30] (0/15/30 kept; 45/60/90 dropped)
+  [PASS] P3.c every drop is NAMED in the trace with its issued tick  -- trace: [(300, 1150), (300, 1200), (300, 1300)]
+  [PASS] P3.d the gate's stats agree with its trace  -- {'passed': 3, 'expired_at_gate': 3}
+  [PASS] P3.e a healthy clock: ZERO records dropped at the gate  -- stats {'passed': 5, 'expired_at_gate': 0}
+P4 NO DESKTOP: imports, surfaces, and the test's own honesty
+  [PASS] P4.a imports are exactly the declared set (stdlib + the seam's record + U01's mapper)  -- imports: ['__future__', 'input_mapper', 'pathlib', 'sys', 'tools.science_funnel.typeb_export.command_record']
+  [PASS] P4.b no desktop-injection / transport / wall-clock / pose surface in the module  -- none of 23 markers present
+  [PASS] P4.c the TESTS themselves are synthetic-event only (imports are exactly stdlib + U01's mapper + the policy)  -- imports: ['__future__', 'focus_policy', 'input_mapper', 'pathlib', 'random', 'sys', 'tools.science_funnel.typeb_export.command_record']
+P5 NAMED STATE: disconnect dominates; drops named; recovery re-arms
+  [PASS] P5.a fresh policy reports 'focused'
+  [PASS] P5.b blur -> 'blurred'
+  [PASS] P5.c double blur is a NAMED no-op (one release receipt only)  -- released_all [('blur', 1000, [])], no_op [('blur', 1001)]
+  [PASS] P5.d disconnect DOMINATES blur in the named state
+  [PASS] P5.e reconnect restores 'blurred' (the two states are independent)
+  [PASS] P5.f focus restores 'focused'
+  [PASS] P5.g press/mouse while blurred are DROPPED and NAMED (the mapper's held set stays empty)  -- drops: [('W', 1011), (('mouse', 120.0), 'n/a')]
+  [PASS] P5.h press while disconnected is DROPPED under the disconnect name  -- drops: [('S', 1013)]
+  [PASS] P5.i a release is NEVER gated -- the mapper saw it (a release can only reduce demand)
+  [PASS] P5.j recovery receipts show an EMPTY held set (no phantom keys)  -- rearmed: [('reconnect', 1003, []), ('focus', 1004, []), ('reconnect', 1020, []), ('focus', 1021, [])]
+  [PASS] P5.k the first accepted press arms a FRESH grid (emits at its own boundary, at the band ceiling, and nothing existed before it)  -- 1 record(s) total
+P6 CYCLES + FUZZ: the invariant holds at every clearing event (4000 frames, seed 20260924; the brief's floor is 200 events)
+  [PASS] P6.z no phantom key while the gate is closed (a blur/disconnect released everything; drops never arm keys)  -- 249 deliveries across states ['blurred', 'disconnected', 'focused']
+  [PASS] P6.a no clearing event leaves a positive-speed record past its deadline, a missing zero, or a post-zero emission  -- 230 clearing events, 249 deliveries, 0 violations
+  [PASS] P6.b every delivered record is finite and inside U01's bounds  -- 249 records checked, 0 bad
+  [PASS] P6.c no DELIVERED record was already expired at delivery (the belt, re-checked per record)  -- 0 stale deliveries
+  [PASS] P6.d the fuzz is not vacuous (policy events, drops, clears, and emissions all exercised)  -- blur 118, disconnect 111, drops 438, clears 230, deliveries 249, states ['blurred', 'disconnected', 'focused']
+
+VERDICT: GREEN -- all falsifier checks passed; U01's frozen numbers held under the focus/disconnect policy.
