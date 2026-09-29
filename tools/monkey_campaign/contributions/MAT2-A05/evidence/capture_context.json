@@ -1,8 +1,8 @@
 {
  "task_id": "A05",
- "run_id": "mat2-a05-mutation-static-20260928-d8bb22f9",
- "subject_sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
- "capture_sha256": "d8bb22f9ada9b5c5e20dbd5f6f316f6fd45f5f2bdeb5f264370cfd4619c86514",
+ "run_id": "mat2-a05-mutation-static-20260928-5f6656c5",
+ "subject_sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
+ "capture_sha256": "5f6656c52d7320070c4f2a89b4f2d1d4c8b12ddded43a64f2978ca0853cb1eee",
  "tick_interval": [
   0,
   0

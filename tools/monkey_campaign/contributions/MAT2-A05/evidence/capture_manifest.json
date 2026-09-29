@@ -2,13 +2,13 @@
  "schema": "chimera.visual_capture_manifest.v1",
  "task_id": "A05",
  "profile_id": "anatomy",
- "run_id": "mat2-a05-mutation-static-20260928-d8bb22f9",
+ "run_id": "mat2-a05-mutation-static-20260928-5f6656c5",
  "tick_interval": [
   0,
   0
  ],
- "subject_sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
- "capture_sha256": "d8bb22f9ada9b5c5e20dbd5f6f316f6fd45f5f2bdeb5f264370cfd4619c86514",
+ "subject_sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
+ "capture_sha256": "5f6656c52d7320070c4f2a89b4f2d1d4c8b12ddded43a64f2978ca0853cb1eee",
  "sheet_layout": {
   "pixel_size": [
    1280,
@@ -107,11 +107,11 @@
       ]
      }
     ],
-    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
    },
    "state_binding": {
     "kind": "state",
-    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
     "note": "sha256 of mutation_structure.json (static derived structure state)"
    },
    "visibility": {
@@ -414,11 +414,11 @@
       ]
      }
     ],
-    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
    },
    "state_binding": {
     "kind": "state",
-    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
     "note": "sha256 of mutation_structure.json (static derived structure state)"
    },
    "visibility": {
@@ -515,11 +515,11 @@
       ]
      }
     ],
-    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
    },
    "state_binding": {
     "kind": "state",
-    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
     "note": "sha256 of mutation_structure.json (static derived structure state)"
    },
    "visibility": {
@@ -822,11 +822,11 @@
       ]
      }
     ],
-    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
    },
    "state_binding": {
     "kind": "state",
-    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
     "note": "sha256 of mutation_structure.json (static derived structure state)"
    },
    "visibility": {
@@ -923,7 +923,7 @@
       ]
      }
     ],
-    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41...",
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47...",
     "secondary_cameras": [
      {
       "view_id": "orthogonal side and oblique views",
@@ -985,13 +985,13 @@
         ]
        }
       ],
-      "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+      "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
      }
     ]
    },
    "state_binding": {
     "kind": "state",
-    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
     "note": "sha256 of mutation_structure.json (static derived structure state)"
    },
    "visibility": {
@@ -1284,7 +1284,7 @@
       ]
      }
     ],
-    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41...",
+    "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47...",
     "secondary_cameras": [
      {
       "view_id": "orthogonal side and oblique views",
@@ -1346,13 +1346,13 @@
         ]
        }
       ],
-      "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+      "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
      }
     ]
    },
    "state_binding": {
     "kind": "state",
-    "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+    "sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
     "note": "sha256 of mutation_structure.json (static derived structure state)"
    },
    "visibility": {

@@ -59,7 +59,7 @@
     ]
    }
   ],
-  "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+  "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
  },
  "closeup": {
   "view_id": "local attachment close-up",
@@ -121,7 +121,7 @@
     ]
    }
   ],
-  "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+  "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
  },
  "side": {
   "view_id": "orthogonal side and oblique views",
@@ -183,7 +183,7 @@
     ]
    }
   ],
-  "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+  "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
  },
  "oblique": {
   "view_id": "orthogonal side and oblique views",
@@ -245,7 +245,7 @@
     ]
    }
   ],
-  "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 8d51b55180965d41..."
+  "state_or_tick_interval": "static capture, tick_interval [0, 0], state sha256 48b037593f63ec47..."
  },
  "render_record": {
   "kind": "static image sheet",
@@ -845,10 +845,10 @@
   ],
   "state_binding": {
    "kind": "state",
-   "sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+   "sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
    "note": "sha256 of mutation_structure.json (the static derived structure; view toggles preserve the physical state hash)"
   },
-  "sheet_png_sha256": "d8bb22f9ada9b5c5e20dbd5f6f316f6fd45f5f2bdeb5f264370cfd4619c86514",
+  "sheet_png_sha256": "5f6656c52d7320070c4f2a89b4f2d1d4c8b12ddded43a64f2978ca0853cb1eee",
   "row_height_px": 720,
   "sheet_pixel_size": [
    1280,
