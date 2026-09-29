@@ -632,14 +632,18 @@ def mode_falsify():
         gpu.step_tick(tick, 0.0 if tick > 2 else 60.0)
         block = gpu.diagnostics().copy()
         # clean control: current block carries the right tick + digest.
-        # Host recompute follows kernel_mirror's zero-then-fold convention:
-        # the D_DIGEST slot folds as 0.0 (the downloaded block carries the
-        # device-written digest in that slot, which is NOT what was folded).
+        # Host recompute follows kernel_mirror's zero-then-fold convention
+        # (the D_DIGEST slot folds as 0.0). Comparison carries a 1e-9
+        # relative tolerance: the device fold's fused arithmetic can drift
+        # the host recompute by ~1 ULP (observed 9.1e-13 on a ~4.3e3
+        # digest at tick 0; ticks 1-3 bit-exact), while a STALE block
+        # changes the digest by O(1) - nine orders above the tolerance.
         d_tick_ok = int(block[0][km.D_TICK]) == tick
         host_blk = block[0].copy()
         host_blk[km.D_DIGEST] = 0.0
-        d_digest_ok = (km.block_digest(host_blk, tick)
-                       == block[0][km.D_DIGEST])
+        host_d = km.block_digest(host_blk, tick)
+        dev_d = float(block[0][km.D_DIGEST])
+        d_digest_ok = abs(host_d - dev_d) <= 1e-9 * max(1.0, abs(host_d))
         clean_ok = clean_ok and d_tick_ok and d_digest_ok
         if prev_block is not None:
             # tampered read: the PREVIOUS tick's block at this tick
@@ -648,8 +652,9 @@ def mode_falsify():
                     raise ValueError(rgw.E_STALE)
                 prev_blk = prev_block[0].copy()
                 prev_blk[km.D_DIGEST] = 0.0
-                if km.block_digest(prev_blk, tick) \
-                        != prev_block[0][km.D_DIGEST]:
+                prev_host = km.block_digest(prev_blk, tick)
+                prev_dev = float(prev_block[0][km.D_DIGEST])
+                if abs(prev_host - prev_dev) > 1e-9 * max(1.0, abs(prev_host)):
                     raise ValueError(rgw.E_STALE)
             except ValueError as exc:
                 if str(exc) == rgw.E_STALE:
@@ -667,7 +672,8 @@ def mode_falsify():
                               and receipt['arms']['F3_stale_diagnostics_caught']
                               and receipt['arms']['F3_clean_chain_green'])
     (HERE / 'falsifier_receipt.json').write_bytes(canonical(receipt))
-    print(json.dumps(receipt['arms'], indent=1))
+    print(json.dumps(receipt['arms'], indent=1,
+                     default=_numpy_json_default))
 
 
 def mode_regression():
