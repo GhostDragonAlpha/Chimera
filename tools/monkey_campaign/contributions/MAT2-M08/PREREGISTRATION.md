@@ -398,3 +398,16 @@ frozen experiments (component-B NaN from a component-tiled adjacency
 out-of-bounds read, fixed and localized by the armed gate-failure dump)
 are preserved as failed checks in the mailbox failed/ records; the frozen
 acceptance windows themselves never changed.
+
+## Amendment A3 (frozen after A2; diagnostic-gate correction, no acceptance window changed)
+
+The host pair-slot gate compared the M07 per-tick SUM of active pairs
+(agg over the declared substeps) against the PER-SUBSTEP kernel slot
+capacity (64). Measured at tick 43: 20 active pairs per substep (sum 80,
+well inside per-substep capacity; GS residual 2.2e-14 N*s; reciprocity
+exact; residual 7.7e-10 J inside the 3.1e-6 J bound; components A and B
+identical) — the gate was wrong, not the physics. Corrected: the host
+gate bounds the tick sum by MAX_ACTIVE * N_SUB; true per-substep slot
+overflow still raises through the kernel's own cap path (P_GSRES = 1e300
+-> convergence_gate_not_met). The armed gate-failure dump produced this
+measurement.

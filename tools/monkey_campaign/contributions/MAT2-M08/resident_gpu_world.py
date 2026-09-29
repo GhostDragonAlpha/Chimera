@@ -1549,8 +1549,12 @@ class ResidentGpuWorld:
         return self.h_diag
 
     def check_gates(self, block):
-        """Host-side named refusals (the declared gates)."""
-        require(int(block[D_ACTIVE]) <= MAX_ACTIVE, E_PAIRCAP)
+        """Host-side named refusals (the declared gates). D_ACTIVE is the
+        M07 per-tick SUM over the declared substeps; the per-substep slot
+        capacity is MAX_ACTIVE and the kernel's own cap path raises it via
+        P_GSRES = 1e300 (convergence gate), so the host gate bounds the
+        tick sum by MAX_ACTIVE * N_SUB."""
+        require(int(block[D_ACTIVE]) <= MAX_ACTIVE * 4, E_PAIRCAP)
         require(block[D_GSRES] <= GS_TOL_N_S, E_CONV)
         require(block[D_MINVN] >= -1e-9, E_SEPARATION)
         require(block[D_STICK] <= 1e-9, E_STICK)
