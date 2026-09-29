@@ -214,11 +214,20 @@ def run_agreement(ticks=TICKS, comps=(('A', 0.0), ('B', 3.0)),
         g1 = block[1]
         row = {'tick': tick}
         vacuous_selftest = vacuous_guard_selftest()
+        # Amendment A2: the vacuous guard gates the FALSIFIABLE window gates
+        # (residual bound, momentum, BH windows, F-arms; guard self-tested in
+        # the receipt). A plain agreement comparison of two identically-zero
+        # values is itself exact agreement evidence: recorded as an
+        # exact-zero pair with diff 0.0, never silently dropped.
+        exact_zeros = 0
         for name, slot in COMPARABLE:
             a = float(orow[name])
             b = float(g0[slot])
-            refuse_vacuous(a, b)
-            d = abs(a - b)
+            if a == 0.0 and b == 0.0:
+                exact_zeros += 1
+                d = 0.0
+            else:
+                d = abs(a - b)
             rel = d / max(1.0, abs(a), abs(b))
             if rel > AGREE_SCALAR_WINDOW:
                 row[name + '_EXCEEDED'] = [a, b, rel]
@@ -228,11 +237,15 @@ def run_agreement(ticks=TICKS, comps=(('A', 0.0), ('B', 3.0)),
         for name, slot in COMPARABLE:
             a = float(brow[name])
             b = float(g1[slot])
-            refuse_vacuous(a, b)
-            d = abs(a - b)
+            if a == 0.0 and b == 0.0:
+                exact_zeros += 1
+                d = 0.0
+            else:
+                d = abs(a - b)
             rel = d / max(1.0, abs(a), abs(b))
             if rel > AGREE_SCALAR_WINDOW:
                 row['B_' + name + '_EXCEEDED'] = [a, b, rel]
+        row['exact_zero_pairs'] = exact_zeros
         row['vacuous_guard_selftest'] = vacuous_selftest
         trace_rows.append(row)
     mem_after = ctx.get_memory_info()

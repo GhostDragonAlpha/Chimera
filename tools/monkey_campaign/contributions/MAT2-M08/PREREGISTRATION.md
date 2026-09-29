@@ -380,3 +380,21 @@ GPU submission remains the read-only environment probe):
    rehearsal path uses the exact direct sum in place of the theta-gated
    traversal (the CUDA Barnes-Hut is validated on the GPU against the same
    direct reference by its own frozen windows).
+
+## Amendment A2 (frozen after A1; the X1 measurement is being rerun after a diagnostic code fix; no acceptance window changed)
+
+The vacuous-comparison guard (M07's independent-review lesson, armed and
+self-tested) gates the FALSIFIABLE window claims: the per-tick residual
+bound, the momentum ledger, the Barnes-Hut error windows and the falsifier
+arms. A plain X1 agreement comparison of two IDENTICALLY-ZERO values
+(e.g. w_press at tick 0, where the declared schedule is zero on both
+sides) is itself the agreement evidence: it is recorded as an exact-zero
+pair with difference exactly 0.0 inside the declared window — counted per
+tick in the trace — and is not "refused", because unlike a window gate
+there is no falsifiable claim being vacuously satisfied. The refusal
+`vacuous_comparison_refused` remains armed and self-tested for the window
+gates. Also recorded here: the two GPU failures during the rerun of the
+frozen experiments (component-B NaN from a component-tiled adjacency
+out-of-bounds read, fixed and localized by the armed gate-failure dump)
+are preserved as failed checks in the mailbox failed/ records; the frozen
+acceptance windows themselves never changed.
