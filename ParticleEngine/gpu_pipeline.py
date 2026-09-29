@@ -12,8 +12,9 @@ except Exception:                            # pragma: no cover - CPU fallback p
 
 import os as _os
 _TILE_DIAG = _os.environ.get('CHIMERA_TILE_DIAG') == '1'
-# how full a tile must get before it is worth reporting, as a fraction of the cap
-_TILE_DIAG_AT = float(_os.environ.get('CHIMERA_TILE_DIAG_AT', '0.5'))
+# (`CHIMERA_TILE_DIAG_AT`, which scaled this report against the old cap, is gone with
+# the cap itself: over-cap density is now reported unconditionally when CHIMERA_TILE_DIAG=1,
+# because it is information about the scene and no longer a loss event.)
 # ── THREE DIAGNOSTIC LENSES OVER THE SAME COST, EACH ANSWERING A DIFFERENT QUESTION ─────────────
 # The frame cost is (splat, tile) pairs. Given a scene that costs too much, there are three
 # distinct things you can be asking, and one flag cannot serve all three:
@@ -62,25 +63,38 @@ TILE_SIZE = int(_os.environ.get('CHIMERA_TILE_SIZE', _DEFAULT_TILE_SIZE))
 # So a non-default tile size DOES NOT CACHE. It costs a recompile per process, which is exactly
 # what a measurement run should pay, and it makes the sweep unable to corrupt the default.
 _CACHE_TILE_KERNELS = (TILE_SIZE == _DEFAULT_TILE_SIZE)
-# HOW MANY SPLATS ONE 32-PX TILE MAY HOLD. Past this the far ones are evicted, and if the survivors
-# do not happen to cover the tile you get a hard-edged black RECTANGLE on the tile grid.
+# HOW MANY SPLATS ONE 32-PX TILE MAY HOLD -- NOW A DENSITY REPORTING THRESHOLD, NOT A CAP.
 #
-# RAISED 4096 -> 16384 (2026-07-29). A sweep of every membrane found SEVEN over the old cap --
-# theGalaxy and theSolarSystem at 221%, theCloud 211%, theHumanClock 170%, theCooling 156%,
-# theClock 155%, theDensityClock 101% -- and the cause is not too many grains, it is BIG ones: these
-# membranes draw soft fields whose splats reach 68-195 px, so a single one spans up to 144 tiles.
-# 4096 was chosen for scenes of small surface grains and was simply too low for a soft field.
+# IT WAS A CAP, AND THE CAP WAS THE DEFECT. Past `MAX_PER_TILE` the binner EVICTED the far
+# splats from the tile, and if the survivors did not happen to cover the tile the pixel showed
+# the background through them -- a hard-edged black RECTANGLE on the tile grid. Measured on the
+# 2.38M-splat 1600x900 scene (2026-09-28): 21-80 tiles over cap per frame, worst blank ~60x90 px.
+# The cap was raised 4096 -> 16384 (2026-07-29) hoping to outrun the defect -- a sweep of every
+# membrane still found SEVEN over it (theGalaxy and theSolarSystem at 221%, theCloud 211%,
+# theHumanClock 170%, theCooling 156%, theClock 155%, theDensityClock 101%) -- because the cause
+# is not too many grains, it is BIG ones: soft-field splats reach 68-195 px and a single one
+# spans up to 144 tiles. A cap you can raise into is not a fix; it is a deferral with a knob.
 #
-# It is free on the live path: the CuPy binner allocates `tids` to the KEPT total, not to
-# n_tiles*MAX_PER_TILE, so nothing is preallocated against this number. (The numba fallback's
-# preallocation is sized off the particle count and does not read it either.)
-#
-# NOT EVERY OVERRUN IS FIXED HERE. thePlanets' was a real emit bug -- 900 grains packed into a
-# sub-pixel world -- and was fixed at the source with matter.grains_for(). Raising a cap is the
-# right answer only when the grains themselves are honest. Check with CHIMERA_TILE_DIAG=1 before
-# assuming which kind you have: if the splats in the hot tile are LARGE, it is this; if they are
-# small and thousands are centred inside one tile, it is the emit.
+# THE LOSSLESS REPLACEMENT (ASTRA ROUND 6 R2, 2026-09-29) DELETES THE EVICTION INSTEAD OF
+# RESIZING IT. Every (tile, splat) overlap record is now processed, in the total order
+# (tile ID, ordered depth, persistent splat ID), in passes of at most `TILE_BUDGET` records,
+# into persistent per-pixel accumulators. `MAX_PER_TILE` survives only as the threshold
+# CHIMERA_TILE_DIAG uses to REPORT unusually dense tiles -- information about the scene, not a
+# loss event. Nothing reads it on the render path. See `_composite_tiled` for the architecture.
 MAX_PER_TILE = 16384
+
+# HOW MANY (TILE, SPLAT) OVERLAP RECORDS ONE COMPOSITE PASS PROCESSES -- the B of the chunked
+# architecture. The record stream is cut into windows of at most this many records; each window
+# is binned, composited into the persistent per-pixel accumulators, and COMPLETED before the
+# next opens (R2 step 3-5). The budget bounds the record working set, not the picture: because
+# every pass continues the exact per-splat arithmetic sequence C += T*alpha*c; T *= (1-alpha),
+# any two budgets that process the same records in the same order produce BYTE-IDENTICAL output
+# (asserted by test_tile_eviction_lossless across 977 / 50000 / single-pass). Memory is
+# O(N + B + pixels + tiles) instead of the cap's O(N * T_tiles) with silent loss.
+# A single splat wider than the budget is processed whole (its window simply exceeds B by that
+# splat's span) so every budget still terminates on every scene.
+_DEFAULT_TILE_BUDGET = 4000000
+TILE_BUDGET = max(1, int(_os.environ.get('CHIMERA_TILE_BUDGET', _DEFAULT_TILE_BUDGET)))
 
 # ── HOW FAR A SPLAT REACHES, DERIVED FROM THE COMPOSITOR'S OWN CUTOFF ────────────────────────────
 # The binner expanded every splat to `1.5 * rad` and nobody had checked that against the number the
@@ -593,155 +607,54 @@ def _gather(jx, jy, jic00, jic01, jic11, jcr, jcg, jcb, jopa, jrad,
     kcr[i] = jcr[j]; kcg[i] = jcg[j]; kcb[i] = jcb[j]
     kopa[i] = jopa[j]; krad[i] = jrad[j]
 
-@cuda.jit(cache=True)
-def _tiles_count(pos_x, pos_y, radii, tile_fill, tiles_x, tiles_y, tile_sz, n):
-    """First pass: atomically count splats per tile."""
-    i = cuda.grid(1)
-    if i >= n: return
-    px = int(pos_x[i]); py = int(pos_y[i]); r = int(radii[i] * 1.5) + 1   # cover the splat's FULL footprint: the
-    if r < 1: r = 1                                                        # compositor reaches 1.5*rad -> else a tile-edge GRID
-    tx0 = max(0, (px - r) // tile_sz); ty0 = max(0, (py - r) // tile_sz)
-    tx1 = min(tiles_x - 1, (px + r) // tile_sz); ty1 = min(tiles_y - 1, (py + r) // tile_sz)
-    for ty in range(ty0, ty1 + 1):
-        for tx in range(tx0, tx1 + 1):
-            cuda.atomic.add(tile_fill, ty * tiles_x + tx, 1)
-
-
-@cuda.jit(cache=True)
-def _tiles_write(pos_x, pos_y, radii, tile_ids, tile_offsets, tile_fill, tiles_x, tiles_y, tile_sz, max_pt, n):
-    """Second pass: write splat indices to tiles using computed offsets."""
-    i = cuda.grid(1)
-    if i >= n: return
-    px = int(pos_x[i]); py = int(pos_y[i]); r = int(radii[i] * 1.5) + 1   # cover the splat's FULL footprint: the
-    if r < 1: r = 1                                                        # compositor reaches 1.5*rad -> else a tile-edge GRID
-    tx0 = max(0, (px - r) // tile_sz); ty0 = max(0, (py - r) // tile_sz)
-    tx1 = min(tiles_x - 1, (px + r) // tile_sz); ty1 = min(tiles_y - 1, (py + r) // tile_sz)
-    for ty in range(ty0, ty1 + 1):
-        for tx in range(tx0, tx1 + 1):
-            tid = ty * tiles_x + tx
-            slot = cuda.atomic.add(tile_fill, tid, 1)
-            if slot < max_pt:
-                tile_ids[tile_offsets[tid] + slot] = i
-
-@cuda.jit(cache=True)
-def _tile_offsets(tile_fill, tile_offsets, n_tiles, max_pt):
-    i = cuda.grid(1)
-    if i > 0: return
-    acc = 0
-    for t in range(n_tiles):
-        tile_offsets[t] = acc
-        c = tile_fill[t]
-        if c > max_pt: c = max_pt
-        acc += c
-    tile_offsets[n_tiles] = acc
-
-@cuda.jit(cache=True)
-def _sort_tiles(tile_ids, tile_offsets, n_tiles):
-    """Restore DEPTH ORDER inside each tile. `_tiles_write` fills slots via atomic.add, whose retirement
-    order is nondeterministic -- so the CPU depth-sort was being scrambled and closed surfaces rendered
-    INSIDE-OUT. The stored ids are the gathered indices, which ARE depth rank (argsort(hd), nearest = 0),
-    so sorting each tile's segment ASCENDING puts it nearest-first for the front-to-back compositor.
-    Insertion sort: tile lists are short, and a correct order lets the compositor's opaque early-out fire."""
-    tid = cuda.grid(1)
-    if tid >= n_tiles: return
-    start = tile_offsets[tid]; end = tile_offsets[tid + 1]
-    for a in range(start + 1, end):
-        key = tile_ids[a]; b = a - 1
-        while b >= start and tile_ids[b] > key:
-            tile_ids[b + 1] = tile_ids[b]; b -= 1
-        tile_ids[b + 1] = key
-
-
-# THE ONLY KERNEL THAT BAKES TILE_SIZE IN, hence the only one whose cache a swept value can
-# poison. See `_CACHE_TILE_KERNELS` for what that cost before it was noticed.
-@cuda.jit(cache=_CACHE_TILE_KERNELS)
-def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
-               tile_ids, tile_offsets, out,
-               w, h, tiles_x, n_tiles, bg_r, bg_g, bg_b, n_splats):
-    # Writes directly to a uint8 (h, w, 3) image -- clip+scale happen IN-KERNEL, so the host does ONE
-    # download and no np.stack/np.clip/*255/astype on a 3MB float image every frame (~10ms of host work gone).
-    ix = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
-    iy = cuda.blockIdx.y * cuda.blockDim.y + cuda.threadIdx.y
-    if ix >= w or iy >= h: return
-    r, g, b = 0.0, 0.0, 0.0; trans = 1.0
-    tid = (iy // TILE_SIZE) * tiles_x + (ix // TILE_SIZE)
-    if tid < n_tiles:
-        start = tile_offsets[tid]; end = tile_offsets[tid + 1]
-        for si in range(start, end):
-            i = tile_ids[si]
-            if i < 0 or i >= n_splats: continue
-            a = opa[i]
-            if a < 0.0001: continue
-            dx = float(ix) - px[i]; dy = float(iy) - py[i]
-            if dx*dx + dy*dy > rad[i]*rad[i] * 2.25: continue
-            ge = dx*dx*ic00[i] + 2.0*dx*dy*ic01[i] + dy*dy*ic11[i]
-            if ge > 20.0: continue
-            wgt = math.exp(-0.5 * ge)
-            if wgt < 0.001: continue
-            # CORRECT front-to-back "over": the splat's OWN alpha is (opacity * gaussian). Its colour is
-            # weighted by the transmittance so far, and transmittance decays by that own alpha -- NOT by
-            # the already-weighted contribution. `trans *= (1 - a*wgt*trans)` decayed T far too slowly,
-            # so ~35 splats accumulated instead of ~2 (total alpha 2.1 instead of 1.0). THAT was the
-            # ~2.5x over-accumulation every hand-calibrated _PLANET_GAIN/_SURFACE_GAIN was compensating,
-            # and the source of the dark "dancing dots" and the white blow-out at small scales.
-            al = a * wgt
-            c = al * trans
-            r += cr[i]*c; g += cg[i]*c; b += cb[i]*c
-            trans *= (1.0 - al)
-            if trans < 0.01: break
-    # THE BACKGROUND IS THE FARTHEST LAYER: it survives only by the residual
-    # transmittance, final = bg*trans_end + sum(c_i). This used to pre-load
-    # `r, g, b = bg` at full strength, so every pixel rendered at bg + sum(c_i)
-    # and an opaque splat over a bright background clipped to white (e.g. the
-    # shipped sky bg (0.66,0.75,0.85) + a dark-green ground splat (0.287,0.378,
-    # 0.173) -> (0.947,1.128,1.023) -> clipped (241,255,255); measured across the
-    # composition2 white-outs). With bg=(0,0,0) the added term is exactly 0.0 and
-    # the output is BIT-IDENTICAL to the old kernel -- the additive series here
-    # was already the correct over-composite against black, which is why the
-    # bg=0 render-side workaround hid the defect.
-    out[iy, ix, 0] = int(max(0.0, min(1.0, r + bg_r * trans)) * 255.0)
-    out[iy, ix, 1] = int(max(0.0, min(1.0, g + bg_g * trans)) * 255.0)
-    out[iy, ix, 2] = int(max(0.0, min(1.0, b + bg_b * trans)) * 255.0)
-
-
 # ═══════════════════════════════════════════════════════════════════
-#  PIPELINE
+#  TILE RECORDS: LOSSLESS, TOTALLY ORDERED, BUDGET-CHUNKED (fix #2)
 # ═══════════════════════════════════════════════════════════════════
-def _tile_stats(expansions, kept, n_tiles, nv, hot=None):
-    """The per-frame tile-work record. ONE shape, both binner paths, so a reader of
-    `pipe.expansion_count()` cannot get a different thing depending on whether CuPy was present.
+# THE OLD BINNING IS GONE, AND ITS CORPSE IS NOT LEFT TO CONFUSE. `_tiles_count`,
+# `_tiles_write`, `_tile_offsets` and `_sort_tiles` -- the atomic per-tile write whose
+# retirement order scrambled depth (inside-out shells), the O(n^2) per-tile insertion sort
+# that replaced it, and the `max_pt` clamp that silently dropped the far splats of an
+# over-cap tile (the hard black rectangles) -- had zero live call sites since the global
+# (tile, depth) sort landed, and every one of them documented a mechanism that no longer
+# ran. A reader trusting the comments would have modelled the pipeline wrong. Deleted,
+# not deprecated: the architecture they describe is the defect this file no longer has.
 
-    `expansions` is the count BEFORE the per-tile cap and `kept` is the count after, and the
-    distinction is the whole point rather than bookkeeping:
 
-        the binner EXPANDS all of them        -> cost scales with `expansions`
-        the sorter SORTS all of them          -> cost scales with `expansions`
-        the compositor BLENDS only survivors  -> cost scales with `kept`
+class _TileSpans:
+    """Per-frame, per-splat TILE SPANS -- the O(N) state every pass of the frame shares.
 
-    Two of the three stages pay for the pairs that are about to be thrown away, so a budget written
-    against `kept` would under-count the work by exactly the amount the cap is doing. `expansions`
-    is the one to budget against; `kept` is here so the gap between them is visible instead of
-    inferred, because a large gap means the cap is evicting splats and something is being NOT DRAWN.
+    For each visible splat (already in (depth, persistent ID) order -- index IS rank,
+    nearest = 0, from `_depth_order` + `_gather`): the clamped tile bounding box reach
+    (`tx0`, `ty0`, `nx` spans) and the resulting record count. `total` is the number of
+    (tile, splat) overlap records the frame will process -- ALL of them, losslessly.
+    Holding this once per FRAME and slicing it per PASS is what makes the chunked
+    architecture O(N + B + pixels + tiles) rather than O(total) per pass.
     """
-    return {"expansions": int(expansions), "kept": int(kept),
-            "n_tiles": int(n_tiles), "nv": int(nv),
-            "hot": (None if hot is None else int(hot))}
+    __slots__ = ("total", "counts", "tx0", "ty0", "nx", "_gpu")
+
+    def __init__(self, total, counts, tx0, ty0, nx, gpu):
+        self.total = total          # int, host-side (the one sync the frame already paid)
+        self.counts = counts        # records per splat, int (device cupy / host numpy)
+        self.tx0 = tx0              # first tile column of each splat's bbox
+        self.ty0 = ty0              # first tile row of each splat's bbox
+        self.nx = nx                # bbox width in tiles
+        self._gpu = gpu
+
+    def cs_host(self):
+        """Inclusive prefix sum of `counts`, on the HOST (numpy int64).
+
+        Needed only to cut multi-pass windows. On the GPU path this downloads nv int64 --
+        which is why the single-pass case (total <= TILE_BUDGET, every ordinary frame)
+        never calls it and keeps the frame at its historical one-sync cost.
+        """
+        if self._gpu:
+            return cp.cumsum(self.counts).get()
+        return np.cumsum(self.counts)
 
 
-def _build_tiles_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz, max_pt):
-    """Tile binning with DEPTH ORDER preserved, via ONE global (tile, depth) sort -- the 3DGS approach.
-
-    `sx/sy/srad` are the DEPTH-SORTED splats (index i = depth rank, nearest = 0). Each splat is duplicated
-    once per tile its 1.5*rad footprint touches; the pairs are sorted by key = tile_id*nv + i, which groups
-    by tile and, WITHIN a tile, keeps nearest-first. Returns (tile_ids, tile_offsets). This replaces the
-    old atomic tile-write (which SCRAMBLED depth order -> inside-out) + the O(n^2) per-tile insertion sort
-    (which was slow): one vectorised numpy sort of ~10^5 pairs, ~tens of ms instead of ~600 ms."""
+def _tile_spans_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz):
+    """The tile-span state, on the host (the no-CuPy binning path)."""
     nv = len(sx)
-    n_tiles = tiles_x * tiles_y
-    empty = (np.zeros(0, np.int32), np.zeros(n_tiles + 1, np.int32),
-             _tile_stats(0, 0, n_tiles, 0))
-    if nv == 0:
-        return empty
     # CLAMP BEFORE THE CAST, OR int64 WRAPS AND A SPAN GOES NEGATIVE.
     #
     # `_project` rejects vz >= 0 and cw <= 0, but not cw ~ 0 -- a grain lying in the camera's own
@@ -769,38 +682,17 @@ def _build_tiles_cpu(sx, sy, srad, tiles_x, tiles_y, tile_sz, max_pt):
     nx = tx1 - tx0 + 1; ny = ty1 - ty0 + 1
     counts = nx * ny
     total = int(counts.sum())
-    if total == 0:
-        return empty
-    splat = np.repeat(np.arange(nv, dtype=np.int32), counts)          # already depth-ordered (nearest first)
-    local = np.arange(total, dtype=np.int64) - np.repeat(np.cumsum(counts) - counts, counts)
-    nxr = np.repeat(nx, counts)
-    tile_id = ((np.repeat(ty0, counts) + local // nxr) * tiles_x
-               + (np.repeat(tx0, counts) + local % nxr)).astype(np.int32)
-    # COUNTING SORT by tile_id: stable => radix on a small-range int32 (values < n_tiles), O(total).
-    # `splat` is already ascending = depth order, so a STABLE regroup keeps each tile nearest-first.
-    # (Was argsort on int64 `tile_id*nv+splat` -> 95ms; the combined key forced a wide radix. This is ~4x cheaper.)
-    order = np.argsort(tile_id, kind="stable")
-    sorted_tile = tile_id[order]; sorted_splat = splat[order]
-    per_tile = np.bincount(sorted_tile, minlength=n_tiles)
-    capped = np.minimum(per_tile, max_pt)
-    within = np.arange(total, dtype=np.int64) - np.repeat(np.cumsum(per_tile) - per_tile, per_tile)
-    keep = within < np.repeat(capped, per_tile)                       # cap per tile -> keep the NEAREST
-    offsets = np.zeros(n_tiles + 1, dtype=np.int32); offsets[1:] = np.cumsum(capped)
-    return (sorted_splat[keep], offsets,
-            _tile_stats(total, int(capped.sum()), n_tiles, nv, hot=int(per_tile.max())))
+    return _TileSpans(total, counts, np.ascontiguousarray(tx0), np.ascontiguousarray(ty0),
+                      np.ascontiguousarray(nx), gpu=False)
 
 
-def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
-    """Same (tile, depth) binning as _build_tiles_cpu, but ON THE GPU via CuPy -- no host round-trip.
+def _tile_spans_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz):
+    """The tile-span state, on the device (the CuPy path -- no host round-trip).
 
-    `kx/ky/krad` are numba device arrays (the DEPTH-SORTED projected splats). We wrap them zero-copy as
-    CuPy arrays (shared __cuda_array_interface__), do the expand + radix sort + bincount on-device, and
-    return numba-array VIEWS of the result (kept alive by the caller). This deletes the 41ms CPU binning
-    AND its 3 host downloads + 2 uploads -- the whole tile stage becomes a sub-ms GPU op."""
-    n_tiles = tiles_x * tiles_y
+    Same clamps, same `FOOTPRINT` reach, same integer box arithmetic as the CPU path, so
+    both paths enumerate the same record set for the same frame.
+    """
     sx = cp.asarray(kx)[:nv]; sy = cp.asarray(ky)[:nv]; srad = cp.asarray(krad)[:nv]
-    # Same clamp as the CPU path -- see the long note in `_build_tiles_cpu`. A grain in the camera's
-    # view plane projects to ~1e33, int64 saturates, `px - r` wraps, and the span goes negative.
     span = tiles_x * tile_sz + tiles_y * tile_sz
     srad = cp.nan_to_num(srad, nan=0.0, posinf=float(span), neginf=0.0)
     sx = cp.nan_to_num(sx, nan=-1e9, posinf=1e9, neginf=-1e9)
@@ -813,88 +705,239 @@ def _build_tiles_gpu(kx, ky, krad, nv, tiles_x, tiles_y, tile_sz, max_pt):
     nx = tx1 - tx0 + 1; ny = ty1 - ty0 + 1
     counts = (nx * ny).astype(cp.int64)
     # THIS SYNC IS NOT NEW AND THE EXPANSION COUNT IS THEREFORE FREE. `total` has always been
-    # computed here because the zero-check below needs it on the host; it was simply thrown away
+    # computed here because the zero-check needs it on the host; it was simply thrown away
     # afterwards. Reporting it costs no additional device->host transfer, which is why the count
     # can be on the LIVE path rather than behind a diagnostic flag.
     total = int(counts.sum())
-    if nv == 0 or total == 0:
+    return _TileSpans(total, counts,
+                      cp.ascontiguousarray(tx0), cp.ascontiguousarray(ty0),
+                      cp.ascontiguousarray(nx), gpu=True)
+
+
+def _plan_passes(cs, total, budget):
+    """Cut the rank-ordered record stream into windows of <= `budget` records (R2 step 3).
+
+    Returns (r0, r1, k0, k1) tuples: splat-rank window [r0, r1) covering record window
+    [k0, k1) of the frame's `total` records. Records are enumerated in splat-rank order
+    (== (depth, persistent ID) order), so consecutive windows continue the stream: every
+    tile sees ascending depth rank ACROSS passes exactly as it does WITHIN one.
+
+    A single splat whose span exceeds the budget is processed WHOLE -- its window exceeds
+    `budget` by that splat's span -- so every budget terminates on every scene ("all splats
+    cover every tile" is the worst case and it is handled, not special-cased).
+
+    Integer arithmetic throughout: window boundaries cannot depend on FP rounding, so the
+    partition -- and therefore the record order -- is a pure function of (scene, budget).
+    """
+    n = len(cs)
+    if total <= budget:
+        return [(0, n, 0, total)]
+    passes = []
+    r0 = 0; k0 = 0
+    while k0 < total:
+        k1 = min(k0 + budget, total)
+        i = int(np.searchsorted(cs, k1, side="left"))   # first splat whose records end at/after k1
+        r1 = min(i + 1, n)                              # include it whole -- windows never split a splat
+        if r1 <= r0:
+            r1 = r0 + 1                                 # unreachable given counts >= 1; belt and braces
+        k1 = int(cs[r1 - 1])
+        passes.append((r0, r1, k0, k1))
+        r0, k0 = r1, k1
+    return passes
+
+
+def _pass_records_cpu(spans, r0, r1, tiles_x, n_tiles):
+    """Enumerate + bin ONE pass's (tile, splat) records on the host (R2 steps 2-4).
+
+    Each splat in the rank window is duplicated once per tile its FOOTPRINT bbox touches --
+    the same formula as the old global binner, applied to a window, so the record VALUES
+    are identical. The stable tile sort then orders each tile's segment by ascending rank
+    (= ascending (depth, persistent ID)), and consecutive windows continue that order.
+
+    Returns (sorted_splat int32[n], offsets int32[n_tiles+1], per_tile int64[n_tiles]).
+    """
+    cw = spans.counts[r0:r1]
+    cs_w = np.cumsum(cw)
+    total_w = int(cs_w[-1])
+    if total_w == 0:
+        return (np.zeros(0, np.int32), np.zeros(n_tiles + 1, np.int32),
+                np.zeros(n_tiles, np.int64))
+    splat = np.repeat(np.arange(r0, r1, dtype=np.int32), cw)
+    local = np.arange(total_w, dtype=np.int64) - np.repeat(cs_w - cw, cw)
+    nxr = np.repeat(spans.nx[r0:r1], cw)
+    tile_id = ((np.repeat(spans.ty0[r0:r1], cw) + local // nxr) * tiles_x
+               + (np.repeat(spans.tx0[r0:r1], cw) + local % nxr)).astype(np.int32)
+    # STABLE regroup by tile: `splat` within the window is ascending rank, so each tile's
+    # segment is nearest-first (the property the old atomic write famously lost).
+    order = np.argsort(tile_id, kind="stable")
+    sorted_splat = np.ascontiguousarray(splat[order])
+    sorted_tile = tile_id[order]
+    per_tile = np.bincount(sorted_tile, minlength=n_tiles)[:n_tiles].astype(np.int64)
+    offsets = np.zeros(n_tiles + 1, dtype=np.int32); offsets[1:] = np.cumsum(per_tile).astype(np.int32)
+    return sorted_splat, offsets, per_tile
+
+
+def _pass_records_gpu(spans, r0, r1, nv, tiles_x, n_tiles):
+    """Same as `_pass_records_cpu`, on the device via CuPy -- no host round-trip.
+
+    The sort key `tile_id * nv + splat` is unique per record (it is the total order key's
+    tile and rank fields), so the radix sort needs no stability to be deterministic -- the
+    same key the pre-fix global binner used, which is why a non-over-cap frame enumerates
+    in EXACTLY the order it did before the fix. Pure integer emission (repeat/arange/
+    floor-div/mod) and integer reduction (bincount): NO atomics anywhere in the record
+    path, so nothing here is order-nondeterministic to begin with.
+    """
+    cw = spans.counts[r0:r1]
+    cs_w = cp.cumsum(cw)
+    total_w = int(cs_w[-1])
+    if total_w == 0:
         z = cp.zeros(0, cp.int32); o = cp.zeros(n_tiles + 1, cp.int32)
         return (cuda.as_cuda_array(z), cuda.as_cuda_array(o), (z, o),
-                _tile_stats(0, 0, n_tiles, nv))
-    splat = cp.repeat(cp.arange(nv, dtype=cp.int64), counts)          # depth rank (nearest first)
-    local = cp.arange(total, dtype=cp.int64) - cp.repeat(cp.cumsum(counts) - counts, counts)
-    nxr = cp.repeat(nx, counts)
-    tile_id = ((cp.repeat(ty0, counts) + local // nxr) * tiles_x
-               + (cp.repeat(tx0, counts) + local % nxr))
-    # ONE radix sort by the combined key (tile-major, nearest-first within tile). Thrust radix on int64 is
-    # ~sub-ms for 10^5-10^6 keys; the unique key means non-stable sort is fine (no tie-break needed).
+                cp.zeros(n_tiles, cp.int64))
+    splat = cp.repeat(cp.arange(r0, r1, dtype=cp.int64), cw)
+    local = cp.arange(total_w, dtype=cp.int64) - cp.repeat(cs_w - cw, cw)
+    nxr = cp.repeat(spans.nx[r0:r1], cw)
+    tile_id = ((cp.repeat(spans.ty0[r0:r1], cw) + local // nxr) * tiles_x
+               + (cp.repeat(spans.tx0[r0:r1], cw) + local % nxr))
     order = cp.argsort(tile_id * nv + splat)
+    sorted_splat = cp.ascontiguousarray(splat[order]).astype(cp.int32)
     sorted_tile = tile_id[order].astype(cp.int32)
-    sorted_splat = splat[order].astype(cp.int32)
-    per_tile = cp.bincount(sorted_tile, minlength=n_tiles)[:n_tiles]
-    capped = cp.minimum(per_tile, max_pt)
-    if _TILE_DIAG:
-        _pt = per_tile.get(); _hot = int(_pt.max())
-        if _hot > max_pt * _TILE_DIAG_AT:
-            # THE HOTTEST FIVE, not just the hottest one. A single maximum cannot tell a scene
-            # with one pathological tile from a scene that is uniformly close to the cap, and
-            # those want opposite fixes -- the first is a splat too large, the second is a
-            # density too high everywhere. It also shows WHERE they are, so "concentrated at the
-            # object's centre" becomes something you can read rather than assume.
-            _top = _pt.argsort()[::-1][:5]
-            for _r, _t in enumerate(_top):
-                _t = int(_t)
-                if _pt[_t] <= 0:
-                    break
-                print("[tile-diag]   #%d TILE (%4d,%4d): %6d/%d (%5.1f%%)"
-                      % (_r + 1, (_t % tiles_x) * tile_sz, (_t // tiles_x) * tile_sz,
-                         int(_pt[_t]), max_pt, 100.0 * _pt[_t] / max_pt), flush=True)
-            if int((_pt > max_pt).sum()):
-                print("[tile-diag]   *** %d TILE(S) OVER CAP %d -- the far splats in them are "
-                      "EVICTED, and if the survivors do not cover the tile you get a hard-edged "
-                      "black rectangle on the tile grid. Raise MAX_PER_TILE or shrink the splats."
-                      % (int((_pt > max_pt).sum()), max_pt), flush=True)
-            _i = int(_pt.argmax())
-            print("[tile-diag] busiest tile %d (px x=%d..%d y=%d..%d) holds %d of %d allowed; "
-                  "%d tiles over cap; total expansions %d for %d splats"
-                  % (_i, (_i % tiles_x) * tile_sz, (_i % tiles_x) * tile_sz + tile_sz - 1,
-                     (_i // tiles_x) * tile_sz, (_i // tiles_x) * tile_sz + tile_sz - 1,
-                     _hot, max_pt, int((_pt > max_pt).sum()), total, nv), flush=True)
-            # WHAT is filling it: the radii of the splats binned there, and how many of them have
-            # their CENTRE outside the tile (those are the ones that cost a slot and paint nothing).
-            _m = (sorted_tile == _i)
-            _ids = sorted_splat[_m]
-            _rr = srad[_ids]; _cx = sx[_ids]; _cy = sy[_ids]
-            _tx = (_i % tiles_x) * tile_sz; _ty = (_i // tiles_x) * tile_sz
-            _inside = ((_cx >= _tx) & (_cx < _tx + tile_sz) & (_cy >= _ty) & (_cy < _ty + tile_sz))
-            _kept = _ids[:max_pt]
-            _kept_in = int(((sx[_kept] >= _tx) & (sx[_kept] < _tx + tile_sz)
-                            & (sy[_kept] >= _ty) & (sy[_kept] < _ty + tile_sz)).sum())
-            print("[tile-diag]   radii px: min %.1f med %.1f max %.1f | centres INSIDE the tile: %d of %d"
-                  " | of the %d KEPT, %d are centred inside"
-                  % (float(_rr.min()), float(cp.median(_rr)), float(_rr.max()),
-                     int(_inside.sum()), int(_m.sum()), min(max_pt, int(_m.sum())), _kept_in), flush=True)
-    within = cp.arange(total, dtype=cp.int64) - cp.repeat(cp.cumsum(per_tile) - per_tile, per_tile)
-    keep = within < cp.repeat(capped, per_tile)
-    offsets = cp.zeros(n_tiles + 1, dtype=cp.int32); offsets[1:] = cp.cumsum(capped).astype(cp.int32)
-    tids = cp.ascontiguousarray(sorted_splat[keep])
-    # KEPT AND HOT COST A SECOND SYNC, SO THEY ARE OPT-IN. `total` above is free (the zero-check
-    # already downloaded it); `capped.sum()` and `per_tile.max()` are not, and this runs once per
-    # frame on the live viewer's render thread. They are folded into ONE transfer when asked for,
-    # never two, and the frame budget in perf_guard is written against `expansions` precisely so
-    # that the number it needs is the free one.
-    _kept, _hot = -1, None
-    if _TILE_DIAG or _EXPAND_DIAG:
-        _both = cp.stack([capped.sum(), per_tile.max()]).get()
-        _kept, _hot = int(_both[0]), int(_both[1])
-    # return numba views + the owning CuPy arrays (caller must hold them so the memory isn't freed)
-    return (cuda.as_cuda_array(tids), cuda.as_cuda_array(offsets), (tids, offsets),
-            _tile_stats(total, _kept, n_tiles, nv, hot=_hot))
+    per_tile = cp.bincount(sorted_tile, minlength=n_tiles)[:n_tiles].astype(cp.int64)
+    offsets = cp.zeros(n_tiles + 1, dtype=cp.int32); offsets[1:] = cp.cumsum(per_tile).astype(cp.int32)
+    return (cuda.as_cuda_array(sorted_splat), cuda.as_cuda_array(offsets),
+            (sorted_splat, offsets), per_tile)
+
+
+# THE ONLY KERNEL THAT BAKES TILE_SIZE IN, hence the only one whose cache a swept value can
+# poison. See `_CACHE_TILE_KERNELS` for what that cost before it was noticed.
+#
+# ══ THE COMPOSITE PASS, AND THE BYTE-IDENTITY LAW IT CARRIES ═══════════════════════════════
+# One pass composites at most TILE_BUDGET records into PERSISTENT per-pixel accumulators
+# `acc` (float64 r, g, b, trans). The picture is finished by the LAST pass only; every
+# earlier pass stores partial state and the next continues it. This is what makes chunking
+# legal: the per-splat arithmetic sequence
+#
+#       C += T*alpha*c ;  T *= (1-alpha)
+#
+# runs over the tile's full ascending-(depth, ID) record list exactly as it did in one
+# pass -- a store/load of float64 is exact, so splitting the loop cannot move a byte.
+# Compositing chunks INDEPENDENTLY and combining afterwards would change the FP
+# association and is explicitly ruled out (R2 byte-identity law).
+#
+# THE TOTAL ORDER is (tile ID, ordered depth, persistent splat ID):
+#   depth      -- `_depth_order`'s stable argsort; ties break on the splat's persistent
+#                 index (emit order), which is deterministic ID-ordered emission, not an
+#                 artifact of atomic retirement order;
+#   nonfinite  -- a NaN depth sorts after every finite depth (IEEE sort semantics, same
+#                 placement in numpy and cupy), +/-inf sorts beyond every finite depth;
+#                 the span clamps then confine its tiles exactly as for finite splats.
+#                 The order is DEFINED and reproducible, which is what the law requires.
+#
+# THE OLD EARLY-OUT, MOVED ONE STATEMENT. The one-pass kernel composited a splat then
+# `break`ed the tile loop when trans fell under 0.01. A chunked loop that broke would
+# RESTART on the next pass and resume compositing with trans already under 0.01 -- bytes
+# the one-pass kernel never produced. Tested BEFORE compositing each splat instead, the
+# guard is arithmetically identical to the break for ANY partition of the record list:
+# a splat entered with trans >= 0.01 is composited in both; one entered under is skipped
+# in both (skipping touches no state). The break fired once and ended the walk; the guard
+# re-tests per record -- per-pixel extra comparisons, zero byte difference.
+@cuda.jit(cache=_CACHE_TILE_KERNELS)
+def _composite_pass(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
+                    tile_ids, tile_offsets, acc, out,
+                    w, h, tiles_x, n_tiles, bg_r, bg_g, bg_b, n_splats,
+                    first, last):
+    # Writes directly to a uint8 (h, w, 3) image on the last pass -- clip+scale happen
+    # IN-KERNEL, so the host does ONE download and no np.stack/np.clip/*255/astype on a
+    # 3MB float image every frame (~10ms of host work gone).
+    ix = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
+    iy = cuda.blockIdx.y * cuda.blockDim.y + cuda.threadIdx.y
+    if ix >= w or iy >= h: return
+    if first:
+        r, g, b = 0.0, 0.0, 0.0; trans = 1.0
+    else:
+        r = acc[iy, ix, 0]; g = acc[iy, ix, 1]; b = acc[iy, ix, 2]; trans = acc[iy, ix, 3]
+    tid = (iy // TILE_SIZE) * tiles_x + (ix // TILE_SIZE)
+    if tid < n_tiles:
+        start = tile_offsets[tid]; end = tile_offsets[tid + 1]
+        for si in range(start, end):
+            i = tile_ids[si]
+            if i < 0 or i >= n_splats: continue
+            if trans < 0.01: continue        # the old break, made chunk-safe -- see above
+            a = opa[i]
+            if a < 0.0001: continue
+            dx = float(ix) - px[i]; dy = float(iy) - py[i]
+            if dx*dx + dy*dy > rad[i]*rad[i] * 2.25: continue
+            ge = dx*dx*ic00[i] + 2.0*dx*dy*ic01[i] + dy*dy*ic11[i]
+            if ge > 20.0: continue
+            wgt = math.exp(-0.5 * ge)
+            if wgt < 0.001: continue
+            # CORRECT front-to-back "over": the splat's OWN alpha is (opacity * gaussian). Its colour is
+            # weighted by the transmittance so far, and transmittance decays by that own alpha -- NOT by
+            # the already-weighted contribution. `trans *= (1 - a*wgt*trans)` decayed T far too slowly,
+            # so ~35 splats accumulated instead of ~2 (total alpha 2.1 instead of 1.0). THAT was the
+            # ~2.5x over-accumulation every hand-calibrated _PLANET_GAIN/_SURFACE_GAIN was compensating,
+            # and the source of the dark "dancing dots" and the white blow-out at small scales.
+            al = a * wgt
+            c = al * trans
+            r += cr[i]*c; g += cg[i]*c; b += cb[i]*c
+            trans *= (1.0 - al)
+    if last:
+        # THE BACKGROUND IS THE FARTHEST LAYER: it survives only by the residual
+        # transmittance, final = bg*trans_end + sum(c_i). This used to pre-load
+        # `r, g, b = bg` at full strength, so every pixel rendered at bg + sum(c_i)
+        # and an opaque splat over a bright background clipped to white (e.g. the
+        # shipped sky bg (0.66,0.75,0.85) + a dark-green ground splat (0.287,0.378,
+        # 0.173) -> (0.947,1.128,1.023) -> clipped (241,255,255); measured across the
+        # composition2 white-outs). With bg=(0,0,0) the added term is exactly 0.0 and
+        # the output is BIT-IDENTICAL to the old kernel -- the additive series here
+        # was already the correct over-composite against black, which is why the
+        # bg=0 render-side workaround hid the defect.
+        out[iy, ix, 0] = int(max(0.0, min(1.0, r + bg_r * trans)) * 255.0)
+        out[iy, ix, 1] = int(max(0.0, min(1.0, g + bg_g * trans)) * 255.0)
+        out[iy, ix, 2] = int(max(0.0, min(1.0, b + bg_b * trans)) * 255.0)
+    else:
+        # PERSISTENT ACCUMULATORS: the next pass continues this pixel's exact
+        # arithmetic sequence. float64 store/load is exact -- no byte can move.
+        acc[iy, ix, 0] = r; acc[iy, ix, 1] = g; acc[iy, ix, 2] = b; acc[iy, ix, 3] = trans
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  PIPELINE
+# ═══════════════════════════════════════════════════════════════════
+def _tile_stats(expansions, kept, n_tiles, nv, hot=None, passes=1):
+    """The per-frame tile-work record. ONE shape, both binner paths, so a reader of
+    `pipe.expansion_count()` cannot get a different thing depending on whether CuPy was present.
+
+        the binner EXPANDS all of them        -> cost scales with `expansions`
+        the sorter SORTS all of them          -> cost scales with `expansions`
+        the compositor BLENDS all of them     -> cost scales with `kept`
+
+    `expansions` is the enumerated (tile, splat) overlap count and `kept` is what the
+    compositor was actually handed. Under the old per-tile cap these came apart -- the cap
+    EVICTED the far records of an over-cap tile, `kept < expansions`, and the gap was
+    "something is being NOT DRAWN" (the hard black rectangles). The lossless chunked
+    architecture has no cap, and `kept` is now MEASURED as the sum of the per-pass record
+    counts (each counted on device, not assumed from the plan), so kept == expansions is a
+    counted zero-loss proof per frame, not a construction claim. A gap would mean records
+    were lost between enumeration and composite and must be treated as a defect.
+
+    `passes` is how many TILE_BUDGET windows the frame needed -- 1 for every ordinary
+    scene, more on dense ones, and none of them loses a record.
+    """
+    return {"expansions": int(expansions), "kept": int(kept),
+            "n_tiles": int(n_tiles), "nv": int(nv),
+            "hot": (None if hot is None else int(hot)),
+            "passes": int(passes)}
 
 
 class FullGPUPipeline:
-    def __init__(self, bg=(0.01, 0.01, 0.05), base_scale=0.5):
+    def __init__(self, bg=(0.01, 0.01, 0.05), base_scale=0.5, tile_budget=None):
         self.bg = bg; self.base_scale = base_scale
+        # THE PASS BUDGET, PER PIPELINE. Unlike TILE_SIZE this is never baked into a kernel
+        # (it only cuts the record stream on the host), so a caller may run two budgets side
+        # by side and compare bytes -- which is exactly what the losslessness test does.
+        # Default: the module's env-configurable TILE_BUDGET.
+        self.tile_budget = TILE_BUDGET if tile_budget is None else max(1, int(tile_budget))
         self._a = 0; self._n = 0
         self.attractors: list = []  # [(x, y, z, strength, type_code, radius), ...]
         # THE FRAME'S WORK, RECORDED RATHER THAN RECOMPUTED. `expansion_count()` returns what the
@@ -936,9 +979,13 @@ class FullGPUPipeline:
         self._kcr = A(); self._kcg = A(); self._kcb = A()
         self._kopa = A(); self._krad = A()
         self._pfx = Ai()
-        # Tile arrays: need n_tiles*MAX_PER_TILE entries. Allocate large enough.
-        # Worst case: 1920x1080 = 8100 tiles @ 1024 = 8.3M. Cap at a reasonable size.
-        max_tile_entries = max(self._a * 16, 2000000)  # generous: 16× particle count for tile coverage
+        # TILE RECORD BUFFERS, CPU-BINNING PATH ONLY (the CuPy path allocates its records
+        # per pass on device). Both are sized by NEED, not by a guess about the worst case:
+        # `_tids` grows to the pass budget on first use (`_ensure_tile_capacity`) -- the old
+        # `max(particles * 16, 2,000,000)` preallocation was a number about the wrong thing
+        # under the lossless architecture, where the record count is bounded by the BUDGET,
+        # not by the particle count -- and `_to` backs `n_tiles + 1` ints (see the note below).
+        self._tids = cuda.device_array(0, dtype=np.int32)
         # THE TILE-OFFSET BUFFER IS SIZED FROM THE TILE GRID, NOT FROM THE PARTICLE COUNT. It held
         # `max(20000, n_particles)` int32, which is a number about the wrong thing: the array it
         # backs is `n_tiles + 1` long. At TILE_SIZE 32 that is 8,161 and the 20,000 floor happened
@@ -946,9 +993,16 @@ class FullGPUPipeline:
         # would have written past the end. The bug was latent only because nobody had ever changed
         # TILE_SIZE -- which is the same reason the value had never been measured.
         _mt = ((3840 + TILE_SIZE - 1) // TILE_SIZE) * ((2160 + TILE_SIZE - 1) // TILE_SIZE) + 1
-        self._tf = cuda.device_array(max(_mt, self._a), dtype=np.int32)   # 4K worst case
         self._to = cuda.device_array(max(_mt, self._a), dtype=np.int32)
-        self._tids = cuda.device_array(max_tile_entries, dtype=np.int32)
+
+    def _ensure_tile_capacity(self, records, n_tiles):
+        """Grow the CPU-path record buffers to what THIS pass needs. `self._tids` backs the
+        pass's (tile, splat) records -- bounded by TILE_BUDGET, not by scene size -- and
+        `self._to` backs n_tiles + 1 offsets for any monitor the caller can attach."""
+        if self._tids.size < records:
+            self._tids = cuda.device_array(max(records, 1), dtype=np.int32)
+        if self._to.size < n_tiles + 1:
+            self._to = cuda.device_array(n_tiles + 1, dtype=np.int32)
 
     # ── WHAT THE LAST FRAME COST ────────────────────────────────────────────────────────────────
     def _count_expansions(self) -> int:
@@ -1392,34 +1446,116 @@ class FullGPUPipeline:
             self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
             _sidx, nv)
 
-        # Tile binning: ONE global (tile, depth) sort on CPU -- depth order preserved (no atomic scramble ->
-        # no inside-out) and no O(n^2) per-tile sort. kx/ky/krad are already depth-sorted (index = depth rank).
+        # LOSSLESS TILE STAGE: enumerate every (tile, splat) overlap record in the frame's
+        # (depth, persistent ID) order, process <= TILE_BUDGET per pass into persistent
+        # pixel accumulators. Nothing is evicted -- see `_composite_tiled`.
         tx = (params.width + TILE_SIZE - 1) // TILE_SIZE
         ty = (params.height + TILE_SIZE - 1) // TILE_SIZE
         nt = tx * ty
-        if _HAS_CUPY:
-            tids_dev, toff_dev, _own, _st = _build_tiles_gpu(self._kx, self._ky, self._krad, nv,
-                                                        tx, ty, TILE_SIZE, MAX_PER_TILE)  # _own kept alive below
-        else:
-            tids_h, toff_h, _st = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
-                                              self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
-            self._tids[:len(tids_h)] = cuda.to_device(tids_h)
-            self._to[:nt + 1] = cuda.to_device(toff_h)
-            tids_dev, toff_dev, _own = self._tids, self._to, None
-        self._tile_stats = _st
-        self._report_expansions(tx, ty)
+        return self._composite_tiled(params, tx, ty, nt, nv)
 
-        # GPU composite
-        out = cuda.device_array((params.height, params.width, 3), dtype=np.uint8)
+    def _composite_tiled(self, params, tx, ty, nt, nv):
+        """THE TILE STAGE: lossless, totally ordered, budget-chunked compositing.
+
+        THE ARCHITECTURE (ASTRA ROUND 6 R2, single-depth-per-splat form), and what each
+        step is here:
+          1. all N splats globally sorted by (depth, persistent ID)  -- `_depth_order` +
+             `_gather`, already done by the caller; record enumeration then proceeds in
+             that order, so "persistent splat ID" is the splat's own index: deterministic
+             emission, no atomics anywhere;
+          2. tile overlaps enumerated in that order                      -- `_TileSpans`;
+          3. <= tile_budget overlap records processed per pass (default TILE_BUDGET)
+                                                            -- `_plan_passes`;
+          4. each pass stably regrouped by tile                          -- `_pass_records_*`;
+          5. composited into persistent pixel accumulators, one pass completing before
+             the next consumes                                           -- `_composite_pass`.
+        Memory is O(N + B + pixels + tiles); the worst case (all splats covering every
+        tile) is processed, not truncated. The old per-tile cap -- which EVICTED the far
+        records of an over-cap tile and black-rectangled 21-80 tiles on the 2.38M-splat
+        scene -- is gone; MAX_PER_TILE survives only as a density REPORTING threshold.
+
+        BYTE-IDENTITY: every pass continues the exact per-splat arithmetic sequence
+        C += T*alpha*c; T *= (1-alpha) held in the accumulators, so any two budgets that
+        process the same records in the same order emit identical bytes (pinned across
+        977 / 50000 / single-pass by test_tile_eviction_lossless). A single-pass frame
+        never touches the accumulators and reproduces the pre-fix kernel exactly.
+        """
+        w, h = params.width, params.height
+        if _HAS_CUPY:
+            spans = _tile_spans_gpu(self._kx, self._ky, self._krad, nv, tx, ty, TILE_SIZE)
+        else:
+            spans = _tile_spans_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
+                                    self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE)
+        total = spans.total
+        if total > 2147483646:      # offsets travel the kernels as int32; a frame this big
+            raise MemoryError(      # cannot fit in memory either -- fail honestly, not by wrap
+                f"{total:,} (tile, splat) records exceed the int32 offset range; "
+                "raise TILE_SIZE or reduce the scene before this frame can render")
+        # THE PLAN IS HOST ARITHMETIC ON INTEGER COUNTS: the partition is a pure function
+        # of (scene, budget), so two budgets differ ONLY in where windows start and stop.
+        plan = (_plan_passes(spans.cs_host(), total, self.tile_budget)
+                if total > self.tile_budget else [(0, nv, 0, total)])
+
+        out = cuda.device_array((h, w, 3), dtype=np.uint8)
+        # PERSISTENT PIXEL ACCUMULATORS: float64, because that is what the composite's
+        # registers accumulate in (r/g/b start as Python literals; numba keeps them
+        # float64 against float32 splat columns) -- a narrower store would round every
+        # multi-pass pixel and break byte-identity with the single-pass kernel.
+        acc = cuda.device_array((h, w, 4), dtype=np.float64)
+        gk2 = ((w + 15) // 16, (h + 15) // 16)
         bk2 = (16, 16)
-        gk2 = ((params.width + 15) // 16, (params.height + 15) // 16)
-        _composite[gk2, bk2](self._kx, self._ky,
-            self._kic00, self._kic01, self._kic11,
-            self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
-            tids_dev, toff_dev, out,
-            params.width, params.height, tx, nt,
-            self.bg[0], self.bg[1], self.bg[2], nv)
+        npass = len(plan)
+        _kept_sum = 0
+        per_tile_total = (cp.zeros(nt, dtype=cp.int64) if _HAS_CUPY
+                          else np.zeros(nt, dtype=np.int64)) if (_TILE_DIAG or _EXPAND_DIAG) else None
+        for pi, (r0, r1, k0, k1) in enumerate(plan):
+            if _HAS_CUPY:
+                tids_dev, toff_dev, _own, per_tile_w = _pass_records_gpu(spans, r0, r1, nv, tx, nt)
+            else:
+                tids_h, toff_h, per_tile_w = _pass_records_cpu(spans, r0, r1, tx, nt)
+                self._ensure_tile_capacity(k1 - k0, nt)
+                self._tids[:k1 - k0] = cuda.to_device(tids_h)
+                self._to[:nt + 1] = cuda.to_device(toff_h)
+                tids_dev, toff_dev = self._tids, self._to
+            _kept_sum += k1 - k0            # measured pass size, not the plan's assumption
+            if per_tile_total is not None:
+                per_tile_total += per_tile_w
+            _composite_pass[gk2, bk2](self._kx, self._ky,
+                self._kic00, self._kic01, self._kic11,
+                self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
+                tids_dev, toff_dev, acc, out,
+                w, h, tx, nt,
+                self.bg[0], self.bg[1], self.bg[2], nv,
+                1 if pi == 0 else 0, 1 if pi == npass - 1 else 0)
         cuda.synchronize()
+
+        # THE FRAME'S WORK RECORD: `kept` is the measured record total across passes, so
+        # kept == expansions is a counted zero-loss proof for EVERY frame, live and free.
+        _hot, _pt_host = None, None
+        if per_tile_total is not None:
+            _pt_host = per_tile_total.get() if _HAS_CUPY else per_tile_total
+            if _pt_host.size and int(_pt_host.max()) > 0:
+                _hot = int(_pt_host.max())
+        self._tile_stats = _tile_stats(total, _kept_sum, nt, nv, hot=_hot, passes=npass)
+        self._report_expansions(tx, ty)
+        if _TILE_DIAG:
+            # WHAT DENSITY LOOKS LIKE NOW. Under the cap this block used to announce
+            # EVICTIONS; it now reports the same density as information -- every record
+            # listed here is processed, across however many passes the frame needed.
+            if _pt_host is not None and _pt_host.size:
+                _over = int((_pt_host > MAX_PER_TILE).sum())
+                _top = _pt_host.argsort()[::-1][:5]
+                for _r, _t in enumerate(_top):
+                    _t = int(_t)
+                    if _pt_host[_t] <= 0:
+                        break
+                    print("[tile-diag]   #%d TILE (%4d,%4d): %6d splats (%5.1f%% of the old cap)"
+                          % (_r + 1, (_t % tx) * TILE_SIZE, (_t // tx) * TILE_SIZE,
+                             int(_pt_host[_t]), 100.0 * _pt_host[_t] / MAX_PER_TILE), flush=True)
+                print("[tile-diag] busiest tile holds %d splats; %d tile(s) over the MAX_PER_TILE "
+                      "reporting threshold (%d) -- processed LOSSLESSLY in %d pass(es); "
+                      "total records %d for %d splats"
+                      % (_hot or 0, _over, MAX_PER_TILE, npass, total, nv), flush=True)
         return out.copy_to_host()
 
     def render_splats(self, positions, covariances_3x3, colors, opacities, camera, params):
@@ -1493,32 +1629,11 @@ class FullGPUPipeline:
             self._kx, self._ky, self._kic00, self._kic01, self._kic11,
             self._kcr, self._kcg, self._kcb, self._kopa, self._krad, _sidx, nv)
 
+        # LOSSLESS TILE STAGE: same architecture as render_from_gpu -- see `_composite_tiled`.
         tx = (params.width + TILE_SIZE - 1) // TILE_SIZE
         ty = (params.height + TILE_SIZE - 1) // TILE_SIZE
         nt = tx * ty
-        if _HAS_CUPY:
-            tids_dev, toff_dev, _own, _st = _build_tiles_gpu(self._kx, self._ky, self._krad, nv,
-                                                        tx, ty, TILE_SIZE, MAX_PER_TILE)  # _own kept alive below
-        else:
-            tids_h, toff_h, _st = _build_tiles_cpu(self._kx.copy_to_host()[:nv], self._ky.copy_to_host()[:nv],
-                                              self._krad.copy_to_host()[:nv], tx, ty, TILE_SIZE, MAX_PER_TILE)
-            self._tids[:len(tids_h)] = cuda.to_device(tids_h)
-            self._to[:nt + 1] = cuda.to_device(toff_h)
-            tids_dev, toff_dev, _own = self._tids, self._to, None
-        self._tile_stats = _st
-        self._report_expansions(tx, ty)
-
-        out = cuda.device_array((params.height, params.width, 3), dtype=np.uint8)
-        bk2 = (16, 16)
-        gk2 = ((params.width + 15) // 16, (params.height + 15) // 16)
-        _composite[gk2, bk2](self._kx, self._ky,
-            self._kic00, self._kic01, self._kic11,
-            self._kcr, self._kcg, self._kcb, self._kopa, self._krad,
-            tids_dev, toff_dev, out,
-            params.width, params.height, tx, nt,
-            self.bg[0], self.bg[1], self.bg[2], nv)
-        cuda.synchronize()
-        return out.copy_to_host()
+        return self._composite_tiled(params, tx, ty, nt, nv)
         self.step_particles(dt, cvars)
         return self.render_from_gpu(camera, params)
 
