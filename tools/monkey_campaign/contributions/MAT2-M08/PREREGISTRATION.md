@@ -330,3 +330,53 @@ on the agreement fixture. GPU work runs EXCLUSIVELY through the mailbox
 (E:/ChimeraWork/gpu-queue per PROTOCOL.md); no direct GPU access from this
 agent. "Frame" in this card means one physics tick plus its snapshot present;
 the declared percentiles are over that measured quantity, labeled as such.
+
+## Amendment A1 (frozen after the freeze commit d1aca4fb, BEFORE implementation completed and BEFORE any experiment or measurement)
+
+Refinements derived during honest design (no experiment has run; the only
+GPU submission remains the read-only environment probe):
+
+1. Barnes-Hut declared mass elements: the lumped membrane vertices at their
+   lumped masses and the plate CORNERS at plate_mass/4 (the rigid plate's
+   mass split over its four vertices). The freeze's "masses/3" phrase is
+   corrected to this declaration.
+2. Barnes-Hut hierarchy form: a Morton-sorted binary hierarchy of STATIC
+   SHAPE (deterministic bitonic sort on (code, index); children 2i+1/2i+2)
+   whose per-node aggregates (AABB, mass, center of mass — the DSL's
+   declared weighted_sum) are REFIT on device each substep from resident
+   positions. "Build/refit" of the freeze is satisfied by the per-tick
+   device refit; the shape never touches the host.
+3. Near-field reference test, precise frozen form: rerunning the SAME
+   traversal with theta = 0 forces every pair down the leaf-direct path;
+   that run must reproduce the on-device exact direct sum pair-exact
+   (<= 1e-12 relative, every body, every measurement tick) — proving the
+   near path is direct, not aggregated. The falsifier arm F2b is the
+   aggregate-everything run (theta = 1e9) measured under the SAME 1e-12
+   window, which MUST fail; F2a is that run measured under the production
+   5e-3 window, which MUST also fail. Clean controls: production theta
+   within 5e-3 and theta = 0 within 1e-12 in the same executable.
+4. Far-field pass position: executed ONCE PER SUBSTEP, after the contact
+   pass and before position integration, as an additional declared external
+   load; its per-tick work (trapezoid) and impulses are recorded and enter
+   the whole-system ledger exactly like gravity (w_external and the
+   momentum-ledger right-hand side). On the agreement fixture the pass is
+   absent (zero), matching the sealed oracle.
+5. Diagnostic block: the declared 96-f64 per-component block layout is the
+   slot table at the head of kernel_mirror.py (single transcription source
+   shared by mirror and CUDA); the chained tick digest is computed over the
+   block content plus the tick, recomputed host-side, and its mismatch is
+   the F3 refusal `stale_diagnostics_detected`.
+6. X1 comparison method: per-tick, per-component scalar comparisons under
+   the declared relative window (floor 1.0; vacuous identically-zero
+   comparisons refused) plus full membrane/plate vertex-array comparison at
+   the declared capture ticks; the oracle's per-tick row fields and the
+   GPU diagnostic block slots carry the same named quantities.
+7. Mirrored rehearsal: the kernel logic exists as kernel_mirror.py (pure
+   numpy, identical statement order), locally validated BITWISE against the
+   sealed oracle on the frozen fixture (trajectories exactly equal, ledger
+   scalars <= 8.7e-19 over the full 80-tick two-component run, commit
+   01012cb4) BEFORE the CUDA port. The CUDA module is its mechanical
+   transcription; X1 measures the port on the GPU. The mirror's far-field
+   rehearsal path uses the exact direct sum in place of the theta-gated
+   traversal (the CUDA Barnes-Hut is validated on the GPU against the same
+   direct reference by its own frozen windows).
