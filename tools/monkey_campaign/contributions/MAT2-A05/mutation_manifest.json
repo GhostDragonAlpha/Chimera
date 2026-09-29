@@ -639,7 +639,7 @@
    "passed": 39,
    "failed": 0
   },
-  "note": "First validation run reported 2 FAILs caused by validator-side defects (phalanx name filter missed the thumb bodies; connectivity walk did not treat the anchor as terminal). Corrected in validate_mutation.py; the structure values were unaffected and the corrected run passes 37/37."
+  "note": "First validation run reported 2 FAILs caused by validator-side defects (phalanx name filter missed the thumb bodies; connectivity walk did not treat the anchor as terminal). Corrected in validate_mutation.py; the structure values were unaffected and the corrected run passes 39/39."
  },
  "preregistration": {
   "path": "PREREGISTRATION.md",

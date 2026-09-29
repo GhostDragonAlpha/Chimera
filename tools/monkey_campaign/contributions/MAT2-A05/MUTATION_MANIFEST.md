@@ -141,17 +141,22 @@ d4 -0.077695, d5 -0.068597).
 
 ## Artifact identities
 
+Pin refresh 2026-09-29 post-#263/#264 (lane lead/a05-docsync, base 22464551): rows
+re-pinned to on-disk sha256 at this head, including this commit's make_manifest_json.py
+note fix and its regenerated mutation_manifest.json; the 2026-09-28 seal-time narrative
+elsewhere in this manifest is preserved as history.
+
 | artifact | sha256 |
 |---|---|
-| PREREGISTRATION.md | e79b4a7853916629d54a22904d4b1dcb92984556f37122b44211ee15b19ae5f9 |
-| build_mutation.py | 80bbf6b99083e6a6456f42e14fe4f428960351199e82dc60efe41df92ffeb3db |
+| PREREGISTRATION.md | 0cab8cf7a834d3ac64b634d5a2082ded676a56b4059c237f55974eff296e4cc1 |
+| build_mutation.py | 76b8b1476ced544183d36dd3f6af4666ec6a7f2746e44dc49571724f6c3cd266 |
 | macaque_hand_mutation.xml | 9c91124600abc67a4a33d78ce79ab1a0604a48b5a9a2e6377d15de05717e5adf |
-| mutation_structure.json | 8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83 |
-| derivation_output.txt | e10ad1c055fc5bee9206862213cf0559b1c97ca730a9845e642b06a9194839d8 |
-| validate_mutation.py | 333fbb60dbfbd8baf99146efbb91fc630b82851ec2f41f5eca927c156bc798bf |
-| validation_receipt.json | 1781aa6bfe7069183c225d54be21f8788c460b24b9abeca1aaac25ff0fa6c3ff |
-| make_manifest_json.py | 65c5b010f25da244ecb5b975f519834a88a42dd038c826b4a4a349e0268cbab8 |
-| mutation_manifest.json | eb5c3ebeee7bf13f1ca2966eb8353cb597f3d24242ab99c59225b56417876a44 |
+| mutation_structure.json | 48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649 |
+| derivation_output.txt | c9314d9044d4a0fd35afb46bed78e4d921692f1d1d530092db4729bf1e6ed103 |
+| validate_mutation.py | a090c0d17606a42154a6705e134f3d298b5b5cd8bb11fc92e6170f0054d9d292 |
+| validation_receipt.json | fa507700611cfdc89149eae6b07a962974945667fcc0bfe14d472e4b74858618 |
+| make_manifest_json.py | f7128c5f2e22091bff74c5e5dc505ab75b4b737b02c0da98f4cfa1056a2bfff9 |
+| mutation_manifest.json | db7af71636af6c2a2c34a0162bbf1fa3e3d7e3bfb5e829cae754f410d261c329 |
 
 Validator result at manifest time: 37/37 checks passed, 0 failed
 (validation_receipt.json; two validator-side defects in the first run were corrected
@@ -162,9 +167,9 @@ and are documented in report.md — structure values were unaffected).
 Labeled capture evidence (preregistered P7): capture/capture_mat2_a05_mutation_20260928.png
 (1280x4320 sheet, 6 rows = 3 profile views x diagnostic/clean; 2D orthographic projection
 of the mutant skeleton over the macaque hand.vtp envelope point cloud; state binding =
-sha256 of mutation_structure.json, hash strip 8d51b55180965d41 rendered on every row).
+sha256 of mutation_structure.json, hash strip 48b037593f63ec47 rendered on every row).
 Manifest + context + validator receipt: evidence/capture_manifest.json,
 evidence/capture_context.json, evidence/cameras.json, evidence/validation_receipt.json.
 visual_capture.validate_manifest verdict: structurally_valid=True, profile_id anatomy,
 capture_kind image, view_count 6 (profile read read-only from the registry sqlite).
-Capture sheet sha256: d8bb22f9ada9b5c5e20dbd5f6f316f6fd45f5f2bdeb5f264370cfd4619c86514.
+Capture sheet sha256: 5f6656c52d7320070c4f2a89b4f2d1d4c8b12ddded43a64f2978ca0853cb1eee.
