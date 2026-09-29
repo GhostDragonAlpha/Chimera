@@ -33,6 +33,7 @@ atomics. Host involvement per substep is the bounded command block only.
 """
 from __future__ import annotations
 
+import math
 import pathlib
 import sys
 
@@ -85,7 +86,7 @@ def bh_direct_numpy(xs, ms, g=G_N):
     d = xs[None, :, :] - xs[:, None, :]
     r2 = (d * d).sum(axis=2)
     np.fill_diagonal(r2, 1.0)
-    inv = 1.0 / (r2 * np.sqrt(r2))
+    inv = 1.0 / (r2 * math.sqrt(r2))
     return (g * (d * inv[:, :, None] * ms[None, :, None])).sum(axis=1)
 
 
@@ -307,7 +308,7 @@ def k_bh_force(X, PX, MASSES, PMASS, IDX, NPOW, N_REAL, NMIN, NMAX, NM,
                     dz = pos[2] - zi
                     r2 = dx * dx + dy * dy + dz * dz
                     if r2 > 0.0:
-                        inv = 1.0 / (r2 * np.sqrt(r2))
+                        inv = 1.0 / (r2 * math.sqrt(r2))
                         f = G_N * mj * inv
                         ax += f * dx
                         ay += f * dy
@@ -317,11 +318,11 @@ def k_bh_force(X, PX, MASSES, PMASS, IDX, NPOW, N_REAL, NMIN, NMAX, NM,
             dy = NCOM[node, 1] - yi
             dz = NCOM[node, 2] - zi
             d2 = dx * dx + dy * dy + dz * dz
-            d = np.sqrt(d2)
+            d = math.sqrt(d2)
             sx = NMAX[node, 0] - NMIN[node, 0]
             sy = NMAX[node, 1] - NMIN[node, 1]
             sz = NMAX[node, 2] - NMIN[node, 2]
-            s = np.sqrt(sx * sx + sy * sy + sz * sz)
+            s = math.sqrt(sx * sx + sy * sy + sz * sz)
             if NM[node] > 0.0 and s <= THETA[0] * d:
                 if d2 > 0.0:
                     inv = 1.0 / (d2 * d)
@@ -416,16 +417,16 @@ def k_bh_check(X, PX, MASSES, PMASS, SGA, BH_ERRS, MODE):
         dz = pos[2] - zi
         r2 = dx * dx + dy * dy + dz * dz
         if r2 > 0.0:
-            inv = 1.0 / (r2 * np.sqrt(r2))
+            inv = 1.0 / (r2 * math.sqrt(r2))
             f = G_N * mj * inv
             ax += f * dx
             ay += f * dy
             az += f * dz
-    ref = np.sqrt(ax * ax + ay * ay + az * az)
+    ref = math.sqrt(ax * ax + ay * ay + az * az)
     dx = SGA[body, 0] - ax
     dy = SGA[body, 1] - ay
     dz = SGA[body, 2] - az
-    err = np.sqrt(dx * dx + dy * dy + dz * dz)
+    err = math.sqrt(dx * dx + dy * dy + dz * dz)
     BH_ERRS[body] = err / max(ref, 1.0e-300)
 
 
@@ -443,7 +444,7 @@ def k_bh_reduce(BH_ERRS, OUT_MAX, OUT_RMS, OUT_N, N_REAL):
     for i in range(n):
         s += BH_ERRS[i] * BH_ERRS[i]
     OUT_MAX[0] = mx
-    OUT_RMS[0] = np.sqrt(s / n)
+    OUT_RMS[0] = math.sqrt(s / n)
     OUT_N[0] = float(n)
 
 
