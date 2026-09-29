@@ -159,7 +159,15 @@ class TestRegistryAndBites(unittest.TestCase):
         self.assertEqual(profile["kind"], "visible_static")
         self.assertEqual(receipt["canonical_sha256"],
                          impl.PROFILE_CANONICAL_SHA256)
-        self.assertEqual(receipt["attempt_state"], "WORKING")
+        # attempt_state is mutable live-workspace lifecycle state (WORKING
+        # advances to WON at acceptance), so its VALUE is out of scope for
+        # this frozen suite (REGRESSION_MATRIX RED #2; the #240 docs-sync
+        # lesson, registry edition). The read-only receipt must still
+        # surface a non-empty state; the immutable pins above (profile
+        # id/kind, canonical_sha256; impl also require()s criteria_sha256
+        # and the attempt id) remain the frozen predicates.
+        self.assertIsInstance(receipt["attempt_state"], str)
+        self.assertTrue(receipt["attempt_state"])
 
     def test_t13_bites_bite(self):
         corr = impl.measure_correspondence(TRUNK, GEOM)
