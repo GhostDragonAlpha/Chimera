@@ -1579,6 +1579,22 @@ class ResidentGpuWorld:
         return self.snapshots[tick]
 
     def release(self):
+        # Idempotent teardown. The synchronize() drains every pending
+        # async op THIS world enqueued, so a latent fault surfaces here —
+        # inside the owning run — instead of going sticky and detonating
+        # in the next world that shares the context (observed: [700] at
+        # the clean control's first cuMemcpyHtoD). A sync failure is
+        # reported to stderr and swallowed: teardown cannot heal a
+        # poisoned context, but it must never mask the in-flight
+        # exception either.
+        if getattr(self, '_released', False):
+            return
+        self._released = True
+        try:
+            cuda.synchronize()
+        except Exception as exc:  # noqa: BLE001
+            print(f'release-sync fault (context suspect): {exc!r}',
+                  file=sys.stderr)
         for name in [a for a in dir(self) if a.startswith('d_')]:
             delattr(self, name)
         self.h_diag = None

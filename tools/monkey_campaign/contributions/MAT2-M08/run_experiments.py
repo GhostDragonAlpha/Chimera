@@ -128,12 +128,29 @@ def run_agreement(ticks=TICKS, comps=(('A', 0.0), ('B', 3.0)),
                   roundtrip_tamper=False):
     """X1: the sealed CPU oracle and the resident GPU world step the SAME
     fixture; every tick is compared under the frozen windows. Returns
-    (trace, receipt)."""
+    (trace, receipt). The world is released on EVERY exit path — a raise
+    (E_BYTES, a gate, a CUDA fault) must never leak device state into the
+    next world sharing this context."""
     from numba import cuda
     comps_obj = [iw.Component(cid, off) for cid, off in comps]
+    gpu = rgw.ResidentGpuWorld(comps_obj, gravity=True, far_field=far_field)
+    try:
+        trace_rows, receipt = _run_agreement_body(
+            gpu, comps_obj, ticks=ticks, comps=comps,
+            store_snapshots=store_snapshots, far_field=far_field,
+            roundtrip_tamper=roundtrip_tamper)
+    finally:
+        gpu.release()
+    return trace_rows, receipt
+
+
+def _run_agreement_body(gpu, comps_obj, ticks=TICKS,
+                        comps=(('A', 0.0), ('B', 3.0)),
+                        store_snapshots=True, far_field=False,
+                        roundtrip_tamper=False):
+    from numba import cuda
     oracle = iw.IntegratedWorld([iw.Component(cid, off)
                                  for cid, off in comps])
-    gpu = rgw.ResidentGpuWorld(comps_obj, gravity=True, far_field=far_field)
     ctx = cuda.current_context()
     mem_before = ctx.get_memory_info()
     trace_rows = []
@@ -149,7 +166,9 @@ def run_agreement(ticks=TICKS, comps=(('A', 0.0), ('B', 3.0)),
         gpu.step_tick(tick, dp)
         if roundtrip_tamper:
             # F1 tamper: full state down+up every tick (the claimed-GPU-
-            # dynamics-with-a-roundtrip failure), then resume
+            # dynamics-with-a-roundtrip failure), then resume. The raw
+            # copies bypass the world's accounting, so the tamper must
+            # book its own bus bytes or the E_BYTES gate stays blind.
             xb = gpu.d_x.copy_to_host()
             vxb = gpu.d_v.copy_to_host()
             pxb = gpu.d_px.copy_to_host()
@@ -158,6 +177,10 @@ def run_agreement(ticks=TICKS, comps=(('A', 0.0), ('B', 3.0)),
             gpu.d_v.copy_to_device(vxb)
             gpu.d_px.copy_to_device(pxb)
             gpu.d_pv.copy_to_device(pvb)
+            tampered_bus_bytes = (xb.nbytes + vxb.nbytes
+                                  + pxb.nbytes + pvb.nbytes)
+            gpu.host_bytes_down += tampered_bus_bytes
+            gpu.host_bytes_up += tampered_bus_bytes
         block = gpu.diagnostics()
         up = gpu.host_bytes_up - up0
         down = gpu.host_bytes_down - down0
@@ -285,7 +308,6 @@ def run_agreement(ticks=TICKS, comps=(('A', 0.0), ('B', 3.0)),
     }
     if store_snapshots:
         receipt['snapshots'] = {str(k): v for k, v in snapshots.items()}
-    gpu.release()
     return trace_rows, receipt
 
 
@@ -511,7 +533,13 @@ def mode_falsify():
     """F1/F2/F3 arms — each tampered copy and its clean control in the same
     executable; tampered copies are scratch (never committed state)."""
     receipt = {'schema': 'chimera.m08_falsifiers.v1', 'arms': {}}
-    # F1: full-state roundtrip every tick vs the clean resident path
+    # F1: full-state roundtrip every tick vs the clean resident path.
+    # Clean control FIRST: the tamper arm must never leave context debris
+    # in front of the clean measurement (observed: a sticky [700] from
+    # the tamper teardown poisoning the clean control's first launch).
+    clean, crec = run_agreement(ticks=6, store_snapshots=False)
+    receipt['arms']['F1_clean_within_budget'] = crec['telemetry'][
+        'within_budget']
     fired = False
     try:
         run_agreement(ticks=6, store_snapshots=False,
@@ -519,9 +547,6 @@ def mode_falsify():
     except ValueError as exc:
         fired = str(exc) == rgw.E_BYTES
     receipt['arms']['F1_state_roundtrip_fires'] = fired
-    clean, crec = run_agreement(ticks=6, store_snapshots=False)
-    receipt['arms']['F1_clean_within_budget'] = crec['telemetry'][
-        'within_budget']
     # F2a: aggregate-everything (theta gate removed) exceeds the 5e-3 window
     comps = [iw.Component(f'c{i}', 3.0 * i) for i in range(4)]
     gpu = rgw.ResidentGpuWorld(comps, gravity=True, far_field=True)
@@ -581,6 +606,7 @@ def mode_falsify():
         prev_block = block
     receipt['arms']['F3_stale_diagnostics_caught'] = stale_caught
     receipt['arms']['F3_clean_chain_green'] = clean_ok
+    gpu.release()
     receipt['F_all_green'] = (receipt['arms']['F1_state_roundtrip_fires']
                               and receipt['arms']['F1_clean_within_budget']
                               and receipt['arms']['F2a_exceeds_window']
