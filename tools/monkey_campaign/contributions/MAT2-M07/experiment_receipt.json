@@ -3070,6 +3070,11 @@
    ],
    "revision": 1,
    "schema": "chimera.material_state.v1"
+  },
+  "P_vacuous_comparison_guard": {
+   "fires_on_identically_zero_window": true,
+   "lesson": "a <= window gate with both sides identically zero cannot fail; the receipt build refuses it (review lesson, MAT2-M07 correction round) - a gate that cannot fail fails the build",
+   "refusal_code": "vacuous_comparison_refused"
   }
  },
  "X1_coupling": {
@@ -3159,9 +3164,11 @@
   "regimes": {
    "impact_separation_recontact": {
     "accumulated_impulse_N_s": {
-     "h": 0.0,
-     "h2": 0.0
+     "h": 0.011619140116635241,
+     "h2": 0.010680391826507353
     },
+    "accumulated_impulse_metric": "A8 APPLIED totals: per-tick jn_applied_total_N_s (every applied normal impulse of every Gauss-Seidel pass) summed over the event window; the converged-pass contact records are ~0 by construction (A8) and would make the comparison vacuous",
+    "accumulated_impulse_rel_diff": 0.08789455531004363,
     "dissipation_j_h": 0.0010778766821947015,
     "dissipation_j_h2": 0.0008792518532636981,
     "event_dissipation_chain_j": [

@@ -152,6 +152,10 @@ def p5(arg):
         require_(impact['event_time_abs_diff_s'] <= 3.0 * iw.DT_S,
                  'x3_impact_event_time')
         jn = impact['accumulated_impulse_N_s']
+        # review lesson: refuse a receipt whose impulse window is the
+        # vacuous 0 <= 0 comparison (a gate that cannot fail fails the build)
+        rx.refuse_vacuous_comparison(jn['h'], jn['h2'],
+                                     'x3_impact_impulse_window')
         require_(abs(jn['h'] - jn['h2']) <= 0.10 * max(abs(jn['h2']), 1e-30),
                  'x3_impact_impulse_window')
         require_(impact['event_dissipation_monotone'],

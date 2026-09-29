@@ -59,7 +59,7 @@
   "P7_determinism_two_fresh_runs_byte_identical": {
    "determinism": {
     "note": "two fresh subprocess runs produced byte-identical files",
-    "receipt_sha256": "4315e0590ff51881d7250064addccb19833a6870d1504cc7d56783b6db6d8d77",
+    "receipt_sha256": "2f4e119c7bf8a017f4ec029b1e74ab9a6e2f1677c326e4464181074a8f129a4a",
     "trace_sha256": "910778fde960ec1e807ef200b6c6cad1ab3b2bb69371ea166a70bb4e66cabf0e"
    },
    "ok": true

@@ -119,6 +119,7 @@ def main():
       f' N*s vs cumulative weight impulse '
       f"{x1['A']['cumulative_gravity_weight_impulse_N_s']} N*s; wall "
       f"{x1['A']['final_wall_reaction_impulse_N_s']} N*s |")
+    jn = im['accumulated_impulse_N_s']
     w(f'| timestep refinement | Astra R3 design: levels h, h/2, h/4, h/8, '
       f'THREE preregistered regimes, integrated-observable p_obs RECORDED '
       f'(R3 window outcome: RECORDED NOT MET on this fixture, A6), gates = '
@@ -135,8 +136,12 @@ def main():
       f'impact: full '
       f'separation/recontact event sequence, event-time diff '
       f'{im["event_time_abs_diff_s"]:.2e} s <= 3*dt0, pre-event order '
-      f'{im["order_pre_event"]:.2f}, accumulated-impulse window green and '
-      f'event dissipation chain monotone |')
+      f'{im["order_pre_event"]:.2f}, accumulated-impulse window green '
+      f'(A8 APPLIED totals: h {jn["h"]:.6f} vs h/2 {jn["h2"]:.6f} N*s, '
+      f'rel diff {im["accumulated_impulse_rel_diff"]:.4f} within the 10% '
+      f'window; vacuous_comparison_refused guard armed against the '
+      f'identically-zero comparison) and event dissipation chain '
+      f'monotone |')
     w(f'| long-duration passive run | X4: {x4["cycles"]} pressure cycles, '
       f'{x4["ticks"]} ticks at production dt | max |R_E| '
       f'{x4["max_abs_R_E_j"]:.3e} J within bound, bookkeeping ratio '
@@ -249,6 +254,15 @@ def main():
       f'`momentum_ledger_open` ({f4["refusal"]}).')
     w(f'- F5 convergence gate decorative: the single-pass copy fires '
       f'`convergence_gate_not_met` ({f5["refusal"]}).')
+    guard = receipt['P_probes']['P_vacuous_comparison_guard']
+    w(f'- Vacuity guard (independent-review lesson, correction round): a '
+      f'window gate whose two sides are identically zero cannot fail (the '
+      f'pre-correction receipt recorded the vacuous h=0.0 vs h2=0.0 '
+      f'comparison); the gate code now REFUSES such comparisons with '
+      f'`{guard["refusal_code"]}` and the refusal is self-tested on every '
+      f'experiment run (fires_on_identically_zero_window = '
+      f'{guard["fires_on_identically_zero_window"]}); the impact impulse '
+      f'window reads the A8 APPLIED totals.')
     w('- Profile arms: unbound media (the capture binds the committed trace '
       'sha256, below, and rendered positions are the trace-stored vertices '
       'asserted against the trace volume before any pixel is written); '

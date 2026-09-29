@@ -165,16 +165,39 @@ def _event_transitions(world, cid):
 
 
 def accumulated_impulse(world, cid, tick_lo, tick_hi):
+    """A8 applied-total impulse over the event window: the per-tick
+    recorded field `jn_applied_total_N_s` (every applied normal impulse of
+    EVERY Gauss-Seidel pass, all pairs, summed across the window ticks).
+    Amendment A8 (frozen): the impact-window impulse comparison uses the
+    APPLIED totals. The CONVERGED-pass per-pair contact records (`jn_N_s`
+    of the last pass) are ~0 by construction -- the exact resting-contact
+    failure mode A8 documents; reading them (the pre-correction defect
+    found in independent review) makes the gate vacuous."""
     total = 0.0
     for t in world.ticks:
         if not (tick_lo <= t['tick'] <= tick_hi):
             continue
-        row = t['components'][cid]
-        for c in row['contacts']:
-            surfaces = {str(k) for k in c['pair_key'][0::2]}
-            if surfaces == {'plate', 'membrane'}:
-                total += abs(c['jn_N_s'])
+        total += abs(t['components'][cid]['jn_applied_total_N_s'])
     return total
+
+
+def refuse_vacuous_comparison(a, b, code):
+    """Review lesson (MAT2-M07 correction round): a relative-window gate
+    |a - b| <= tol*|b| whose two measured sides are IDENTICALLY ZERO cannot
+    fail (0 <= 0.1*0 is vacuously true); a preregistered gate that cannot
+    fail is not a measurement. A gate that cannot fail FAILS THE BUILD:
+    raise the named refusal instead of recording a vacuous green."""
+    if a == 0.0 and b == 0.0:
+        raise ValueError('vacuous_comparison_refused:' + code)
+
+
+def vacuous_guard_selftest():
+    """The guard must REFUSE the identically-zero window comparison."""
+    try:
+        refuse_vacuous_comparison(0.0, 0.0, 'selftest')
+    except ValueError as exc:
+        return str(exc) == 'vacuous_comparison_refused:selftest'
+    return False
 
 
 def total_dissipation(world, cid):
@@ -185,6 +208,8 @@ def total_dissipation(world, cid):
 
 def main():
     pins = iw.verify_input_pins()
+    guard_selftest = vacuous_guard_selftest()
+    require(guard_selftest, 'vacuous_guard_selftest_failed')
     receipt = {'task': 'MAT2-M07', 'planning_id': 'M07',
                'schema': iw.SCHEMA,
                'declaration': iw.DECLARATION,
@@ -440,6 +465,17 @@ def main():
                                 int(ev_time[DT0 / 2] / (DT0 / 2)) + 4)
     regimes['impact_separation_recontact']['accumulated_impulse_N_s'] = {
         'h': jn_h, 'h2': jn_h2}
+    regimes['impact_separation_recontact'][
+        'accumulated_impulse_metric'] = (
+        'A8 APPLIED totals: per-tick jn_applied_total_N_s (every applied '
+        'normal impulse of every Gauss-Seidel pass) summed over the event '
+        'window; the converged-pass contact records are ~0 by '
+        'construction (A8) and would make the comparison vacuous')
+    regimes['impact_separation_recontact'][
+        'accumulated_impulse_rel_diff'] = (abs(jn_h - jn_h2)
+                                           / max(abs(jn_h2), 1e-30))
+    refuse_vacuous_comparison(jn_h, jn_h2,
+                              'x3_impact_accumulated_impulse_window')
     require(abs(jn_h - jn_h2) <= 0.10 * max(abs(jn_h2), 1e-30),
             'x3_impact_accumulated_impulse_window')
     d_imp_chain = []
@@ -529,6 +565,13 @@ def main():
             t['order_digest'] == iw.DECLARED_DIGEST for t in joint.ticks),
         'P_order_digest_constant': iw.DECLARED_DIGEST,
         'P_single_owner_ast': p_single_owner(),
+        'P_vacuous_comparison_guard': {
+            'fires_on_identically_zero_window': guard_selftest,
+            'refusal_code': 'vacuous_comparison_refused',
+            'lesson': 'a <= window gate with both sides identically zero '
+                      'cannot fail; the receipt build refuses it (review '
+                      'lesson, MAT2-M07 correction round) - a gate that '
+                      'cannot fail fails the build'},
         'P_area_scaled_traction': {
             'note': 'per-triangle pressure traction |F_i|/A_i equals the '
                     'declared delta_p on the CURRENT geometry (an '
