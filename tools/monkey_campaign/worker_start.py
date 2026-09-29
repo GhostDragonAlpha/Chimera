@@ -39,7 +39,7 @@ def main():
     action.add_argument('--submit-pr',type=Path,help='Record PR arguments JSON; no next card dealt without --take-next.')
     action.add_argument('--park',type=Path,help='Preserve attempt and cease writes; no next card is dealt.')
     action.add_argument('--request-pr',type=Path,help='Request lead publication of hash-bound candidate artifacts; no next card dealt without --take-next.')
-    action.add_argument('--review-result',type=Path,help='Record independent review evidence against a PR; no next card is dealt.')
+    action.add_argument('--review-result',type=Path,help='Record independent review evidence against a PR; no next card dealt without --take-next.')
     parser.add_argument('--take-next',action='store_true',help='After a take-next handoff (finish/submit-pr/request-pr/review-result), explicitly deal the next card. Park and checkpoint never re-deal.')
     args=parser.parse_args()
     if args.check and (args.finish or args.checkpoint or args.submit_pr or args.park or args.request_pr or args.review_result):

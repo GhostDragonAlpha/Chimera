@@ -17,6 +17,11 @@ docs/evidence/** -text
 
 # Preserve raw-byte identities of the sealed workflow instruction bundle.
 docs/MONKEY_RUN.md -text
+# tooling-polish3 (PR #240 review follow-up): both are instruction-bundle files
+# whose LF blobs smudged to CRLF on Windows checkouts, making raw_sha256 and the
+# bundle hash checkout-dependent. Last match wins over * text=auto.
+docs/PHYSICAL_PORTS.md -text
+docs/SEMANTIC_3D_VERIFICATION.md -text
 tools/monkey_campaign/** -text
 AGENTS.md -text
 docs/AGENT_START.md -text
