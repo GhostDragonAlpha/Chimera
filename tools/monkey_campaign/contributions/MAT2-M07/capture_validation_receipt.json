@@ -1,0 +1,18 @@
+{
+ "capture_kind": "video",
+ "frame_count": 80,
+ "limits": "Structural camera-metadata validation only; independent image/physics review remains mandatory.",
+ "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "profile_id": "material",
+ "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-M07].spec.ontology_qualification.task.verification_profile (read read-only)",
+ "structurally_valid": true,
+ "subject_path": "tools/monkey_campaign/contributions/MAT2-M07/integrated_state.json",
+ "subject_sha256": "75d099035506ee2e8b484383cbc6a7d5b2dd7003d75b1598e7a766fd3c46e567",
+ "trace_path": "tools/monkey_campaign/contributions/MAT2-M07/experiment_trace.json",
+ "trace_sha256": "7a20215464dd660f6943da6d0595a0f4e7001c553ae1104072b44548cf8daca3",
+ "validator": "tools/monkey_campaign/visual_capture.py validate_manifest",
+ "video_path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-M07\\cc584d2e1e7c46de80bacbaf7ba12f77\\capture-evidence-20260929\\capture\\capture_mat2_m07_integrated_20260929.mkv",
+ "video_sha256": "2f926f68def9a91eed7e89147d8db150af63ac51019932c0702782b463e3c1e2",
+ "view_count": 6,
+ "visual_acceptance": false
+}

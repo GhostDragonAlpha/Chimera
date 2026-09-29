@@ -1,0 +1,1004 @@
+{
+ "capture_sha256": "2f926f68def9a91eed7e89147d8db150af63ac51019932c0702782b463e3c1e2",
+ "profile_id": "material",
+ "run_id": "mat2-m07-integrated-visual-20260929-2f926f68",
+ "schema": "chimera.visual_capture_manifest.v1",
+ "sheet_layout": {
+  "frame_files": {
+   "frame_00.png": "c35d58122b06bb4e1a7511144f273373678ccc024651b1e53da366536a7a2b72",
+   "frame_01.png": "11341a398dd797ef078f9a1a67738444ed57dd3cb6db4071fc683aa14d50e18b",
+   "frame_02.png": "707b7b7e670203dc18038ace9ce158b1aae416ed4f3b5c581f364466e2c0dde1",
+   "frame_03.png": "2eb4dc55c8b5035d787c16f05e81c5d5353c5978a0504bd8f8dba9da756ddd61",
+   "frame_04.png": "1188ed3c5fde14797b8b24e66a10a8dd7d1d3ac755e60ba07c0c6372be45e872",
+   "frame_05.png": "a54c061b09d08d802100bbda348f3f0d3282b4774b9125916607aa69c3e77b6d",
+   "frame_06.png": "bd3973a2fdc180ca7735711351f16797658cd7ccf2a2094add2bba7e6a408271",
+   "frame_07.png": "96fa884b8b863280e64e99b7a4f2cff4b8211259bf701fe22a9bf93b27c17f8a",
+   "frame_08.png": "fe9c4acb3fabaf8e176643d4d4e36c1c01cc4f653a7e48d69e43277afe25c901",
+   "frame_09.png": "dcb7c85dcbb428f0847553524fee66de639db1ad5a5a56ceba9f3d841c6b09e3",
+   "frame_10.png": "1c81d20e124e8b86ddc2ce1c078c689dbf547ba12c970ae9fd419f2f8deaaa00",
+   "frame_11.png": "cce48ea1171f9f5b0424834eda5d602194b649a5a7420eb5c5ab379ec41c8622",
+   "frame_12.png": "dfadbc928e1ef75a5e9cb101bb5ebe534a1f1f1f1de0c375f2d7b04817a74e9d",
+   "frame_13.png": "e89d25359354c214a2ac1784466c7226331d02c804d4ec0b9c5a04c7b10b2cca",
+   "frame_14.png": "cdc62607310a6690ca53a8a48e02cfdd9bbb45600d1126b6712c54ff25aea519",
+   "frame_15.png": "e516abd06229fae904e107943b95e26b127ba4d3bc9eb332bf9bcc859542fb50",
+   "frame_16.png": "c3fd1a09db9fc097ce921ab3dd2aaec7e44f3360d7f358b16fd1461b833060ee",
+   "frame_17.png": "d131b553deedaa38f62c03e511d10be37726f99da7d69dcde31847ed93f8c117",
+   "frame_18.png": "76f3f1ae7dc4add9b6c3fe119892fa23539e39aea36bbdf866fad40b6b5ae42c",
+   "frame_19.png": "77c88231bdc833c5de26b6a8d8021ef98e3cea205ce0507237f07630c06b233c",
+   "frame_20.png": "99b4a9f51c5e3bcbe2028103fb3cb3a363bf2eef9e7ef40e8e282a18a97212e3",
+   "frame_21.png": "3a9405c91d690e0e296f43e73a5b7548a7ba72e3996fa8750e3003d7afd5e59e",
+   "frame_22.png": "0947efc3da3d32600ea93b40269d6a5f9fb4c6c298375d7e87352e262b740388",
+   "frame_23.png": "0c07e6478663d75085c0fdedd91bd945c50b6428d7b2b29be5ce1564943d1d7c",
+   "frame_24.png": "e26b4e6b5913c97f0bb632bad8173fd32831136af32c4535a1cada22cddd6390",
+   "frame_25.png": "8f9a52713b96699329ddd7a22a4800a2cca9b3f6238c8aea5dada994770a7ceb",
+   "frame_26.png": "2aa81e4560f70245fd8af190e024fbf42eebd7df103114ff044151746da9ac36",
+   "frame_27.png": "bcf706a2ea5d6bb9d284047c29375a472bf50546c7799618c60c723fe2ec50b8",
+   "frame_28.png": "0d0aa3c38134b2725b8094aa570a1514c9e7ae470ce93e3fd64843546a6b0183",
+   "frame_29.png": "608fdbb18d29f6df7e8bd7cedb1dccb282d879be5d1381c84f3cc2ba53826a31",
+   "frame_30.png": "e44ef682d79ace12648ff190db58141d6eb3f0d80e0fd20cf0ff8d3c65315632",
+   "frame_31.png": "1dedc2d6381fe5cb1abbb40311011b85648ad33004d52ad999e4a7cc7dba85fa",
+   "frame_32.png": "73821eced601805242c8701991654843666fb2b934855057fb28e882ddc0e31d",
+   "frame_33.png": "387645d0e0f8e6f434ed901a949355cb9519bbaf159e9c5ae2fd362390e87fdb",
+   "frame_34.png": "6d567116192acc7a4c0edc9f836c771d6a2dca142151140c7a1d2260092f1ec1",
+   "frame_35.png": "b77c0683b3a7980ed815f703844f70ecf627bf0860c4951a2cd6a8c7cb373cf7",
+   "frame_36.png": "f51d20930ac9ac770c9363a731bd00181c6ced2199c83af14bef2ab52c13d075",
+   "frame_37.png": "b2dd47d9a4dbed2e7b8e7aed5ef16304d555e9cab434e75a055032e6c70f52b0",
+   "frame_38.png": "375f9fd0434ab5c4595cfc92d2c9b5a69a13f1f39c4dc0fd9a165dd4e7665473",
+   "frame_39.png": "0bb3a802b14246c7b986444ea6a97eaf216a3dd2584ebfc6f09402539d64eaff",
+   "frame_40.png": "95e7e67fa0b8cc7764451431827f0200cea3adbc275b11d2d7b8191e1f4d84c3",
+   "frame_41.png": "eba0b4ec920a01be9a61fc9329e565ce42b5882daa5b6de7bbcef0fea35eaa5c",
+   "frame_42.png": "3e6fa7f0f3c8886593397e4c3585c06d9be1a9165ee5ad64bf36dd39d14b2712",
+   "frame_43.png": "e7fb0bd331fce3de304e822efe843b186375f13072365ecc64c8715cdadaff67",
+   "frame_44.png": "acd7a8244c6cfa3687d23499a8eaa93f52f2574b6c72d0d5a8fc9966b29a021e",
+   "frame_45.png": "fb34b4d0a098004ae828afec6e23ee7df65a6ea6631e0708a5a59f50fbd48af5",
+   "frame_46.png": "d36a4093a264670c26e387d6116e4255fcb8cade3a0441b2dc5817b817e87c21",
+   "frame_47.png": "b7c8bad25678fa38da7f146fcbe1a22716827f2bb8b98ce9d24e4ca1daee531b",
+   "frame_48.png": "a80ca947e5683d6e854fbbae83ac8b7291869554775e07d400ab2f06cb0b66f6",
+   "frame_49.png": "ee6eb56c1bd5fe451942749a68e519f0963b485814e12431a74c21b9c13256d6",
+   "frame_50.png": "9d07573166e609f560e58304e75b2ea655f6231b79bd946641b6c121b92fef7c",
+   "frame_51.png": "38dc0898449f21cf31b58be4652e21d0e50ea246e45227e838986b8314f93858",
+   "frame_52.png": "dfc7542b3e1be237fcd49ea08ff8674fdcd62e057387bef13f759c6de316a766",
+   "frame_53.png": "2a8b09dff6f2c1bbe11ec3dd957ed5c04659b62563f8cd5655efb436bd2db4b3",
+   "frame_54.png": "5f9ea946690554fc22cb5c9f8a114385d3036b3a167ebcefe234e6f0ce2b9aa4",
+   "frame_55.png": "576fa495eca6603d64078932185895e356cdce18d83f2397236fcfb6bfff70f0",
+   "frame_56.png": "cb881a7c7241e0d39eb52a8d9f7b23f7e6bbef42087b60d67e1e46834a9d631c",
+   "frame_57.png": "c674a4e1abfb0efa49e47be3ecb61b9a7294bf48c3663f9d4c2887af1ddc8e76",
+   "frame_58.png": "d123c71c5debc39243fb95fee3e29de31237c44d3adbef50ac9f2905d96ecad5",
+   "frame_59.png": "0d5fb246cce0f4fe744394d60a28abbebdeba9a76a0c8f1bb01e1b37a5a8856b",
+   "frame_60.png": "28de640e565d43ebd2fc6929145a7e611167fcb2ff083a1b5700028103eddafd",
+   "frame_61.png": "fa9b16ae5d50c64002d2bc655067897ef31e70f0254dc43785edc8909ddaa7e9",
+   "frame_62.png": "f4685fa9674c4bc12480d577ef08bfbdbe1c9d42d6d3d74c7e89b5a7b469b406",
+   "frame_63.png": "c6036569aa8e684a083cd0bb48b5c3605f72815f5bbf75a32ae46a2ca9f43981",
+   "frame_64.png": "4df16ad83e71182b7e0663c356c5af3a9b9c6bc082700e2856b4d88167e50106",
+   "frame_65.png": "d293a7d1a2b155c2ef4b9183d6aa97e164c88370ecb75c9a7d683301cac35b66",
+   "frame_66.png": "30e7699e1b9e137af341b18d012b8985c4f997239e27996b50167161b7149f1f",
+   "frame_67.png": "2c7fd7a539942a537a0e523c1640d186ed6217d160cdf28a7fce8ac69cd72f44",
+   "frame_68.png": "7d7309f716ab3748ff8293aa79c94019f9353bf7b019410aec63611af495e7dd",
+   "frame_69.png": "edeaf7e4cea0a860a1595b9f167f023170f3724c485e5268b292f2f593e8161b",
+   "frame_70.png": "cf28fd580eccda9d24a01ceb96678a96bc8df6b83cdeeb7a7c33539a4353c839",
+   "frame_71.png": "00ab7c113c20e7d28095919d98e30f7dd5746bc2b519ac18e2a570a71b8f6df2",
+   "frame_72.png": "df865b24121cd6d64ed346ca7a75d0417001c17a36aeec36c711b7c4ce7f56ff",
+   "frame_73.png": "868b69a7cb1149b726855a6d063327b5e40593b9d4d43862be291a1ac1dfe6da",
+   "frame_74.png": "772a3bbc1ba0561fcdecf514a81faf4ec3d0f360e48d0dec160f7face2f1812c",
+   "frame_75.png": "6eab0062dbb636b0426c3bcb2c855751d525719b42d9c40bb7420dd3aabf4618",
+   "frame_76.png": "912e84dc81628f6848acbd5cc4fa6473981396cd9b9de816536ade4c502a3865",
+   "frame_77.png": "4d1d8c2a9c263494c534308d2e436dc5b249741b54e8b295569dfa30fe496c02",
+   "frame_78.png": "650922f128e07126f7a221593a03685a4243c02c80bf4c9d85834fe9db2af54e",
+   "frame_79.png": "ca438d5211fef3e1a0cf828400195eeaf2e271a86815ed32f565b6dbcfd06d12"
+  },
+  "honest_titles": "rendered inside every viewport: view_id, mode, tick and delta-p; every diagnostic viewport carries the layer row, the state line (plate x, Maxwell F, active contacts, cumulative Q) and the port/state hash; footer carries frame_id, the tick-to-seconds mapping and the state hash",
+  "pixel_size": [
+   2560,
+   840
+  ],
+  "rows": [
+   "top    diagnostic viewports [whole | side | front | close-up] with all five declared diagnostic layers",
+   "middle clean viewports (identical cameras, no labels, no overlays, depth-tested)",
+   "bottom delta-p / plate displacement / cumulative work traces + footer"
+  ],
+  "tick_to_seconds_map": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); frame t = tick t"
+ },
+ "subject_sha256": "75d099035506ee2e8b484383cbc6a7d5b2dd7003d75b1598e7a766fd3c46e567",
+ "task_id": "M07",
+ "tick_interval": [
+  0,
+  79
+ ],
+ "views": [
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     80
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every sample tick; the SUBJECT moves (membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m07_whole_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 1.0427012995100755,
+      "orientation": [
+       0.80237418461078,
+       0.5689363939790311,
+       0.10428661557469861,
+       0.1470759983420057
+      ],
+      "position": [
+       0.38,
+       -0.92,
+       0.4
+      ],
+      "target": [
+       0.031,
+       0.0,
+       0.055
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 1.0427012995100755,
+      "orientation": [
+       0.80237418461078,
+       0.5689363939790311,
+       0.10428661557469861,
+       0.1470759983420057
+      ],
+      "position": [
+       0.38,
+       -0.92,
+       0.4
+      ],
+      "target": [
+       0.031,
+       0.0,
+       0.055
+      ],
+      "tick": 79
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 79]",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 42.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 1); fixed camera; the membrane pressurizes, presses the loose plate, both slide, then the pressure relaxes and the Maxwell mount pulls the plate back",
+   "mode": "diagnostic",
+   "pair_id": "pair-whole",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M07/experiment_trace.json: the per-tick solver trace (declared order digest, delta-p, plate/Maxwell state, contact records with converged-pass impulses, per-tick energy ledger with measured residual and recorded projection exchange, boundary reactions, per-tick state hash rendered in every frame footer); rendered positions are the trace-stored vertex positions, asserted to reproduce the trace volume before any pixel is written",
+    "sha256": "7a20215464dd660f6943da6d0595a0f4e7001c553ae1104072b44548cf8daca3"
+   },
+   "view_id": "whole experiment at fixed distance",
+   "visibility": {
+    "label_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A (pinned support)",
+     "wall_anchor_A",
+     "membrane_A/t0",
+     "membrane_A/t1",
+     "membrane_A/t2",
+     "membrane_A/t3"
+    ],
+    "layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "selected_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "membrane_A",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "plate_A",
+      "subject_id": "plate_A"
+     },
+     {
+      "label_id": "ground_A (pinned support)",
+      "subject_id": "ground_A"
+     },
+     {
+      "label_id": "wall_anchor_A",
+      "subject_id": "wall_anchor_A"
+     },
+     {
+      "label_id": "membrane_A/t0",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "membrane_A/t1",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "membrane_A/t2",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "membrane_A/t3",
+      "subject_id": "membrane_A"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     80
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every sample tick; the SUBJECT moves (membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m07_whole_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 1.0427012995100755,
+      "orientation": [
+       0.80237418461078,
+       0.5689363939790311,
+       0.10428661557469861,
+       0.1470759983420057
+      ],
+      "position": [
+       0.38,
+       -0.92,
+       0.4
+      ],
+      "target": [
+       0.031,
+       0.0,
+       0.055
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 1.0427012995100755,
+      "orientation": [
+       0.80237418461078,
+       0.5689363939790311,
+       0.10428661557469861,
+       0.1470759983420057
+      ],
+      "position": [
+       0.38,
+       -0.92,
+       0.4
+      ],
+      "target": [
+       0.031,
+       0.0,
+       0.055
+      ],
+      "tick": 79
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 79]",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 42.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair; no labels, layers or diagnostic styling by design",
+   "mode": "clean",
+   "pair_id": "pair-whole",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M07/experiment_trace.json: the per-tick solver trace (declared order digest, delta-p, plate/Maxwell state, contact records with converged-pass impulses, per-tick energy ledger with measured residual and recorded projection exchange, boundary reactions, per-tick state hash rendered in every frame footer); rendered positions are the trace-stored vertex positions, asserted to reproduce the trace volume before any pixel is written",
+    "sha256": "7a20215464dd660f6943da6d0595a0f4e7001c553ae1104072b44548cf8daca3"
+   },
+   "view_id": "whole experiment at fixed distance",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     80
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every sample tick; the SUBJECT moves (membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m07_side_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.42,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 1.05,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       0.031,
+       1.05,
+       0.055
+      ],
+      "target": [
+       0.031,
+       0.0,
+       0.055
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 1.05,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       0.031,
+       1.05,
+       0.055
+      ],
+      "target": [
+       0.031,
+       0.0,
+       0.055
+      ],
+      "tick": 79
+     }
+    ],
+    "secondary_cameras": [
+     {
+      "aspect_ratio": 1.7777777777777777,
+      "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every sample tick; the SUBJECT moves (membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+      "coordinate_unit": "m",
+      "forward_axis": "-Z",
+      "frame_id": "mat2_m07_front_canvas_m",
+      "handedness": "right",
+      "near_far_planes": [
+       0.01,
+       100.0
+      ],
+      "orientation_convention": "quaternion_wxyz_camera_to_frame",
+      "orthographic_span": 0.42,
+      "projection": "orthographic",
+      "sample_mode": "fixed_bookmark",
+      "samples": [
+       {
+        "distance_to_target": 1.0190000000000001,
+        "orientation": [
+         0.5,
+         0.5,
+         0.5,
+         -0.5
+        ],
+        "position": [
+         1.05,
+         0.0,
+         0.055
+        ],
+        "target": [
+         0.031,
+         0.0,
+         0.055
+        ],
+        "tick": 0
+       },
+       {
+        "distance_to_target": 1.0190000000000001,
+        "orientation": [
+         0.5,
+         0.5,
+         0.5,
+         -0.5
+        ],
+        "position": [
+         1.05,
+         0.0,
+         0.055
+        ],
+        "target": [
+         0.031,
+         0.0,
+         0.055
+        ],
+        "tick": 79
+       }
+      ],
+      "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 79]",
+      "up_axis": "+Y",
+      "viewport_resolution": [
+       640,
+       360
+      ]
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 79]",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "two side-by-side viewports (sheet columns 2-3): side (primary camera) and front (secondary, fully declared with the same 16 camera fields); the pinned ground support and the wall anchor are rendered and labeled (nothing hidden)",
+   "mode": "diagnostic",
+   "pair_id": "pair-planes",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M07/experiment_trace.json: the per-tick solver trace (declared order digest, delta-p, plate/Maxwell state, contact records with converged-pass impulses, per-tick energy ledger with measured residual and recorded projection exchange, boundary reactions, per-tick state hash rendered in every frame footer); rendered positions are the trace-stored vertex positions, asserted to reproduce the trace volume before any pixel is written",
+    "sha256": "7a20215464dd660f6943da6d0595a0f4e7001c553ae1104072b44548cf8daca3"
+   },
+   "view_id": "orthogonal side and front",
+   "visibility": {
+    "label_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A (pinned support)",
+     "wall_anchor_A",
+     "membrane_A/t0",
+     "membrane_A/t1",
+     "membrane_A/t2",
+     "membrane_A/t3"
+    ],
+    "layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "selected_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "membrane_A",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "plate_A",
+      "subject_id": "plate_A"
+     },
+     {
+      "label_id": "ground_A (pinned support)",
+      "subject_id": "ground_A"
+     },
+     {
+      "label_id": "wall_anchor_A",
+      "subject_id": "wall_anchor_A"
+     },
+     {
+      "label_id": "membrane_A/t0",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "membrane_A/t1",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "membrane_A/t2",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "membrane_A/t3",
+      "subject_id": "membrane_A"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     80
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every sample tick; the SUBJECT moves (membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m07_side_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.42,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 1.05,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       0.031,
+       1.05,
+       0.055
+      ],
+      "target": [
+       0.031,
+       0.0,
+       0.055
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 1.05,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       0.031,
+       1.05,
+       0.055
+      ],
+      "target": [
+       0.031,
+       0.0,
+       0.055
+      ],
+      "tick": 79
+     }
+    ],
+    "secondary_cameras": [
+     {
+      "aspect_ratio": 1.7777777777777777,
+      "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every sample tick; the SUBJECT moves (membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+      "coordinate_unit": "m",
+      "forward_axis": "-Z",
+      "frame_id": "mat2_m07_front_canvas_m",
+      "handedness": "right",
+      "near_far_planes": [
+       0.01,
+       100.0
+      ],
+      "orientation_convention": "quaternion_wxyz_camera_to_frame",
+      "orthographic_span": 0.42,
+      "projection": "orthographic",
+      "sample_mode": "fixed_bookmark",
+      "samples": [
+       {
+        "distance_to_target": 1.0190000000000001,
+        "orientation": [
+         0.5,
+         0.5,
+         0.5,
+         -0.5
+        ],
+        "position": [
+         1.05,
+         0.0,
+         0.055
+        ],
+        "target": [
+         0.031,
+         0.0,
+         0.055
+        ],
+        "tick": 0
+       },
+       {
+        "distance_to_target": 1.0190000000000001,
+        "orientation": [
+         0.5,
+         0.5,
+         0.5,
+         -0.5
+        ],
+        "position": [
+         1.05,
+         0.0,
+         0.055
+        ],
+        "target": [
+         0.031,
+         0.0,
+         0.055
+        ],
+        "tick": 79
+       }
+      ],
+      "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 79]",
+      "up_axis": "+Y",
+      "viewport_resolution": [
+       640,
+       360
+      ]
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 79]",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "clean row: identical cameras and state to its diagnostic pair",
+   "mode": "clean",
+   "pair_id": "pair-planes",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M07/experiment_trace.json: the per-tick solver trace (declared order digest, delta-p, plate/Maxwell state, contact records with converged-pass impulses, per-tick energy ledger with measured residual and recorded projection exchange, boundary reactions, per-tick state hash rendered in every frame footer); rendered positions are the trace-stored vertex positions, asserted to reproduce the trace volume before any pixel is written",
+    "sha256": "7a20215464dd660f6943da6d0595a0f4e7001c553ae1104072b44548cf8daca3"
+   },
+   "view_id": "orthogonal side and front",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     80
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every sample tick; the SUBJECT moves (membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m07_closeup_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.3016438297064934,
+      "orientation": [
+       0.8015609144831033,
+       0.5364890637425566,
+       0.146824109323605,
+       0.21936787772820432
+      ],
+      "position": [
+       0.2,
+       -0.24,
+       0.17
+      ],
+      "target": [
+       0.058,
+       0.0,
+       0.055
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.3016438297064934,
+      "orientation": [
+       0.8015609144831033,
+       0.5364890637425566,
+       0.146824109323605,
+       0.21936787772820432
+      ],
+      "position": [
+       0.2,
+       -0.24,
+       0.17
+      ],
+      "target": [
+       0.058,
+       0.0,
+       0.055
+      ],
+      "tick": 79
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 79]",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 33.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 4); oblique close-up of the loaded interface: membrane-plate contact patch markers and area-scaled pressure traction arrows; the Maxwell mount force arrow grows with the recorded element force",
+   "mode": "diagnostic",
+   "pair_id": "pair-interface",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M07/experiment_trace.json: the per-tick solver trace (declared order digest, delta-p, plate/Maxwell state, contact records with converged-pass impulses, per-tick energy ledger with measured residual and recorded projection exchange, boundary reactions, per-tick state hash rendered in every frame footer); rendered positions are the trace-stored vertex positions, asserted to reproduce the trace volume before any pixel is written",
+    "sha256": "7a20215464dd660f6943da6d0595a0f4e7001c553ae1104072b44548cf8daca3"
+   },
+   "view_id": "oblique close-up of the loaded interface",
+   "visibility": {
+    "label_ids": [
+     "membrane_A",
+     "plate_A",
+     "wall_anchor_A",
+     "membrane_A/t0",
+     "membrane_A/t1",
+     "membrane_A/t2",
+     "membrane_A/t3"
+    ],
+    "layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "wall_anchor_A"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "wall_anchor_A"
+    ],
+    "selected_ids": [
+     "membrane_A",
+     "plate_A",
+     "wall_anchor_A"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "membrane_A",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "plate_A",
+      "subject_id": "plate_A"
+     },
+     {
+      "label_id": "wall_anchor_A",
+      "subject_id": "wall_anchor_A"
+     },
+     {
+      "label_id": "membrane_A/t0",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "membrane_A/t1",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "membrane_A/t2",
+      "subject_id": "membrane_A"
+     },
+     {
+      "label_id": "membrane_A/t3",
+      "subject_id": "membrane_A"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     80
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every sample tick; the SUBJECT moves (membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m07_closeup_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.3016438297064934,
+      "orientation": [
+       0.8015609144831033,
+       0.5364890637425566,
+       0.146824109323605,
+       0.21936787772820432
+      ],
+      "position": [
+       0.2,
+       -0.24,
+       0.17
+      ],
+      "target": [
+       0.058,
+       0.0,
+       0.055
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.3016438297064934,
+      "orientation": [
+       0.8015609144831033,
+       0.5364890637425566,
+       0.146824109323605,
+       0.21936787772820432
+      ],
+      "position": [
+       0.2,
+       -0.24,
+       0.17
+      ],
+      "target": [
+       0.058,
+       0.0,
+       0.055
+      ],
+      "tick": 79
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 79]",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 33.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair",
+   "mode": "clean",
+   "pair_id": "pair-interface",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M07/experiment_trace.json: the per-tick solver trace (declared order digest, delta-p, plate/Maxwell state, contact records with converged-pass impulses, per-tick energy ledger with measured residual and recorded projection exchange, boundary reactions, per-tick state hash rendered in every frame footer); rendered positions are the trace-stored vertex positions, asserted to reproduce the trace volume before any pixel is written",
+    "sha256": "7a20215464dd660f6943da6d0595a0f4e7001c553ae1104072b44548cf8daca3"
+   },
+   "view_id": "oblique close-up of the loaded interface",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane_A",
+     "plate_A",
+     "ground_A",
+     "wall_anchor_A"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  }
+ ]
+}

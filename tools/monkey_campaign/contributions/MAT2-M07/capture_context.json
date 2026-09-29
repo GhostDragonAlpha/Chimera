@@ -1,0 +1,10 @@
+{
+ "capture_sha256": "2f926f68def9a91eed7e89147d8db150af63ac51019932c0702782b463e3c1e2",
+ "run_id": "mat2-m07-integrated-visual-20260929-2f926f68",
+ "subject_sha256": "75d099035506ee2e8b484383cbc6a7d5b2dd7003d75b1598e7a766fd3c46e567",
+ "task_id": "M07",
+ "tick_interval": [
+  0,
+  79
+ ]
+}
