@@ -191,6 +191,8 @@ per tick over the FULL interval, not at the last tick only.
   ground arrays by +1 cm while the collision body is untouched — P1 array
   equality MUST fire (render/collision decoupled detected) and the marker
   classify MUST flip to VISIBLE_BUT_MISMATCH.
+  (Operationalized by Amendment A3: the +1 cm raise is applied to ALL THREE
+  vertices of the ground triangle the marker's classify ray actually hits.)
 - FB7_off_frame_probe_subject: a required subject 155.7 deg off the V2 view
   azimuth MUST classify OFF_FRAME (tags alone do not establish contact).
 
@@ -283,3 +285,13 @@ pinned pass is assembled; a non-biting falsifier fails the whole build
   overlap) with a spurious bias velocity kick"). No bar is loosened; FB1's
   ground control still exhibits the full pass-through (0.03 m/tick vs the
   0.004 m ground contact band) and keeps its original form.
+- A3 (this commit, before any implementation or build run): FB6's perturbation
+  target is made outcome-independent: the +1 cm raise is applied to ALL THREE
+  vertices of the ground triangle the marker's classify ray hits first (the
+  single-vertex form measured a 2-of-3 chance of remaining VISIBLE_EXACT at
+  the flat spawn site, where the hit point sits near the edge opposite the
+  raised corner and the height error cancels to first order). Raising the
+  whole hit triangle moves the rendered surface +1 cm everywhere the ray can
+  land, so the classify MUST read the height error against the untouched
+  query oracle. No bar is loosened; the 1e-9 height bar and the
+  VISIBLE_BUT_MISMATCH refusal are unchanged.
