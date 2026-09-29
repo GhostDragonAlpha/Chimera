@@ -243,7 +243,7 @@ def s1_random_sweep():
         'seed_base': ac.SEED_BASE,
         'total_missed': sum(s['missed'] for s in scenes),
         'recall_min': min(s['recall'] for s in scenes),
-        'total_contacts': contacts,
+        'total_contacts': sum(s['contacts'] for s in scenes),
     }
 
 
