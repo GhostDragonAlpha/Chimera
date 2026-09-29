@@ -69,13 +69,14 @@ DIAG = 96
  D_SPARE9, D_SPARE10, D_SPARE11, D_SPARE12, D_SPARE13, D_SPARE14, D_SPARE15,
  D_SPARE16, D_SPARE17, D_SPARE18, D_SPARE19, D_SPARE20) = range(DIAG)
 
-N_PASS = 46
+N_PASS = 49
 (P_WPRESS, P_WGRAVM, P_WGRAVP, P_GIMX, P_GIMY, P_GIMZ, P_GIPX, P_GIPY,
  P_GIPZ, P_WMAT, P_Q, P_MATIMP, P_SUBCLOSE, P_WCKE, P_DFRIC, P_DIMP,
  P_ESTAB, P_JNTOT, P_TRAP, P_ITERS, P_GSRES, P_ACTIVE, P_MINJN, P_MINVN,
  P_CONE, P_STICK, P_ANCX, P_ANCY, P_ANCZ, P_CMX, P_CMY, P_CMZ, P_CPX,
  P_CPY, P_CPZ, P_CGX, P_CGY, P_CGZ, P_RECIPX, P_RECIPY, P_RECIPZ, P_PROJ,
- P_WSG, P_SGIMPX, P_SGIMPY, P_SGIMPZ) = range(N_PASS)
+ P_WSG, P_SGIMPX, P_SGIMPY, P_SGIMPZ, P_SGIPX, P_SGIPY,
+ P_SGIPZ) = range(N_PASS)
 
 E_ORDER = 'declared_order_mismatch'
 E_TICK = 'tick_sequence_invalid'
@@ -690,11 +691,26 @@ class MirrorWorld:
         self.tick = tick + 1
 
     def _far_field(self, st, h, sub):
-        """The declared Barnes-Hut far-field pass (Amendment A1): external
-        point-mass self-gravity on the resident state, theta-gated, executed
-        within the pressure stage. Work = trapezoid over the applied dv."""
-        from resident_bh import bh_accel_mirror   # avoids the import at rest
-        accel = bh_accel_mirror(st, self.states)
+        """Rehearsal form of the declared far-field pass (Amendment A1): the
+        exact direct sum stands in for the theta-gated traversal here (the
+        CUDA Barnes-Hut is validated against this same direct reference on
+        the GPU by its own frozen error window). External point-mass
+        self-gravity on the resident state; work = trapezoid over the dv."""
+        from resident_bh import bh_bodies_host, bh_direct_numpy, G_N
+
+        class _C:
+            pass
+        comps = []
+        for s2 in self.states:
+            c = _C()
+            c.x = s2['x']
+            c.masses = s2['masses']
+            c.plate = _C()
+            c.plate.x = s2['px']
+            c.plate.mass_kg = s2['plate_mass']
+            comps.append(c)
+        xs, ms = bh_bodies_host(comps)
+        accel = bh_direct_numpy(xs, ms)
         v_pre = st['v'].copy()
         pv_pre = st['pv'].copy()
         st['v'] = st['v'] + accel[:N_VERT] * h
@@ -709,6 +725,8 @@ class MirrorWorld:
         w_sg += float(np.dot(st['plate_mass'] * accel[N_VERT:].sum(axis=0),
                              pv_bar)) * h
         st['P'][sub, P_WSG] = w_sg
+        st['P'][sub, P_SGIMPX:P_SGIMPZ + 1] = sg_imp_mem
+        st['P'][sub, P_SGIPX:P_SGIPZ + 1] = sg_imp_plate
         st['sg_imp_mem'] = st['sg_imp_mem'] + sg_imp_mem
         st['sg_imp_plate'] = st['sg_imp_plate'] + sg_imp_plate
         st['w_sg'] = st['w_sg'] + w_sg
