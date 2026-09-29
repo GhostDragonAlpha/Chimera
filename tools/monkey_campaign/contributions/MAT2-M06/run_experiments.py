@@ -395,9 +395,11 @@ def x3_sliding():
                 w_force_path += lc.pair_mu(bodies[0], bodies[1])[1] * \
                     r['jn_Ns'] * ds
         v_prev = vx
+        gaps = [r['gap_m'] for r in rec]
         entry = {'tick': tick, 'block_x': block.vertices[0][0], 'vx': vx,
                  'jn_total_Ns': jn, 'jt_total_Ns': jt, 'modes': mode,
                  'ds_m': ds, 'contacts': len(rec),
+                 'min_gap_m': min(gaps) if gaps else None,
                  'ledger_residual_max': max(lc.vlen(led['residual'][b.id])
                                             for b in bodies)}
         trace.append(entry)

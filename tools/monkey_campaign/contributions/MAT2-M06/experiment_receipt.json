@@ -14,10 +14,10 @@
  "modules_sha256": {
   "local_contact.py": "1cd662b30343011eb4a0a01e461a1e82b00482d0371857c8e42d6bec8f9a28dc",
   "author_contact.py": "fe287648c14f7e553a0ef09ad8299244bce54d32cb2611564421b8151ded3f08",
-  "run_experiments.py": "8a99de648acc7bf2e13c61d09cb2d23b406945641f001d8b85ada974369ed7a3"
+  "run_experiments.py": "e5c4e0307d256497965551b689d165e1afae987055bc0468cff964e61e309882"
  },
  "contact_law_sha256": "583962c29f18118a478dedb167f2c3667414b86f5cab4ee54763416f1df7e41b",
- "trace_sha256": "583710695a8eab36d6bd4d2175184135e090300b04eb3b4f026bcba3eb1def6a",
+ "trace_sha256": "138da897e3224e80d5ce90bdb30c179ead3c236cf3e8c019056814c37e4334ca",
  "experiments": {
   "X0_independent_shapes": {
    "fixture": "independent-shape tetra+plate, compiled default poses",
