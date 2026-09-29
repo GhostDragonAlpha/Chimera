@@ -66,8 +66,9 @@ seeded generators and its merged evidence are the things that must reproduce.
 | F03 pinned trunk mesh asset | contributions/MAT2-F03/assets/trunk_01_mesh.json | `3b17441764714c5e5e9c7a43c3253b3271a0f508954095e1960a57820cef6ee7` |
 | F04 contact-qualification machinery (imported, never forked) | contributions/MAT2-F04/implementation.py | `5c398d22b4259d9e4c89ca3a7900610d629e318ac13b57681cbc7c617619e083` |
 | F07 scene module (imported, never forked: seeded placement, contact bodies, render/classify law) | contributions/MAT2-F07/implementation.py | `49a975c7a1a14238eb79bd5edcb0e96bbd5231a2cdf329dccacd282f65b36a94` |
-| F07 published obstacle declaration (seed-regeneration target) | contributions/MAT2-F07/assets/obstacle_declaration.json | `7164eaf7ef110a8259572526eed0f9e1a5433f95d585cd953c3411634669b81b` |
-| F07 published contact trace (dynamics-reproduction target) | contributions/MAT2-F07/evidence/contact_trace.json | sha recorded at build from the pinned bytes; the build refuses if the re-derived trace differs (P2) |
+| F07 published obstacle declaration (seed-regeneration target) | contributions/MAT2-F07/assets/obstacle_declaration.json | `73525a3de022d5b8d9901ca90fde77124904471f33a67f2f79a94f7ad1636769` (A1) |
+| F07 published contact trace (dynamics-reproduction target) | contributions/MAT2-F07/evidence/contact_trace.json | `710bfd1993894bd82c496c7c1c095d4201842ba1bebb248776f79392b925f0f7` (A1) |
+| F07 published capture frames (render-reproduction targets, raw sha256, A1) | contributions/MAT2-F07/evidence/frame_V1_clearing_overview_clean.bmp \| _diagnostic \| frame_V2_seam_closeup_clean \| _diagnostic \| frame_V3_side_depth_clean \| _diagnostic | `6c9316279e1b231b5dd0352b4a10a1b191d7391ffb03895714bd953814a58b87` / `e241729012d1238ac643f66b5a078b9c66b570b079dc970739ef619824e57405` / `360e7eac5e1f0a0f78da600ca7b147d49d6b09c71dd71580f42eac739db4025f` / `6d4e64117e43ad867b7c2c22e5edec1ea17daa000fa939bd514264ff937a0210` / `407fd44a22ebcfbbfdd0df1f3885d7393ec24ae418a5e11f174c49e722d1cdf0` / `539888a720705d6bbbb68c7b0493d69a0b4f9f506f95c335fb80654344fd47c3` |
 
 Merged-card constants reused as frozen (no new physics constants): seeds
 `4598321` (terrain recipe, F01) and `4600823` (obstacle placement, F07); the
@@ -300,20 +301,39 @@ under the attempt scratch; the production pins are never modified.
   clearing scene; nothing from that lane enters the build.
 - Budgets: <= 32 files and <= 16 MB in this contribution directory.
 
-## 10. Reconciliation disclosures (measured BEFORE this commit; no build run)
+## 10. Amendments (each committed separately BEFORE the implementation/build)
+
+- A1 (this commit, before any implementation commit or build): the pin row for
+  F07's obstacle declaration originally carried
+  `7164eaf7ef110a8259572526eed0f9e1a5433f95d585cd953c3411634669b81b` — which
+  is the declaration's EMBEDDED self_sha256 (the sha of the canonical body
+  WITHOUT the self_sha256 field, the value F07's report records), not the raw
+  sha256 of the published file bytes that this contribution's pin scheme
+  asserts. The raw sha256 of the file bytes at the base revision is
+  `73525a3de022d5b8d9901ca90fde77124904471f33a67f2f79a94f7ad1636769`; the
+  discovery was made when the strict loader refused on the raw-byte check
+  BEFORE any build ran (no evidence existed). The embedded self_sha256 is
+  unchanged and continues to be verified by F07's own intake; no published
+  bytes differ and no bar moved. The same amendment freezes the RAW sha256 of
+  the seven F07 reproduction-target evidence files (contact trace + six
+  frames) listed in section 1, replacing "recorded at build".
+
+## 11. Reconciliation disclosures (measured BEFORE this commit; no build run)
 
 Read-only probes over the pinned bytes (attempt scratch only, never evidence),
 disclosed here because the predictions rely on them; each is RE-MEASURED at
 every build and refused on drift:
 
-- seed 4598321 regenerates the terrain declaration byte-exact (sha
+- seed 4598321 regenerates the terrain declaration byte-exact (raw file sha
   18dd2ff65410cd1cf184a7a8df61c7503a6ce15083f30159e727e9a8117bfbc1);
-- the regenerated declaration regenerates the terrain bundle byte-exact (sha
-  446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52);
-- seed 4600823 regenerates the obstacle declaration byte-exact (sha
-  7164eaf7ef110a8259572526eed0f9e1a5433f95d585cd953c3411634669b81b);
+- the regenerated declaration regenerates the terrain bundle byte-exact (raw
+  file sha 446ed3fbd0f50205c61a7233ceca289bfc3316f76dfc672fec307b20d8305d52);
+- seed 4600823 regenerates the obstacle declaration byte-exact (raw file sha
+  73525a3de022d5b8d9901ca90fde77124904471f33a67f2f79a94f7ad1636769; the
+  declaration's embedded self_sha256 is 7164eaf7ef110a8259572526eed0f9e1a5433
+  f95d585cd953c3411634669b81b, F07's recorded form);
 - the re-derived seven-run trace equals the published F07 contact_trace.json
-  byte-exact, twice in fresh subprocesses (sha 710bfd19... prefix recorded in
-  the build receipt);
+  byte-exact, twice in fresh subprocesses (raw sha
+  710bfd1993894bd82c496c7c1c095d4201842ba1bebb248776f79392b925f0f7);
 - the re-derived V1 clean frame equals the published F07 gate artifact
   byte-exact (sha 6c9316279e1b231b5dd0352b4a10a1b191d7391ffb03895714bd953814a58b87).
