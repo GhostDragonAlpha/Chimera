@@ -56,6 +56,18 @@ re-reads them via `git cat-file` at the frozen commit and refuses any mismatch)
 | dw04_mass_matrix | tools/monkey_campaign/contributions/D-W04-MASS-20260924/mass_matrix.json | pinned at runtime by re-hash of the sealed blob; recorded in the emitted document |
 | dw04_receipt | tools/monkey_campaign/contributions/D-W04-MASS-20260924/receipt.json | same rule |
 
+## Amendment A1 (recorded before any implementation commit)
+
+The two "pinned at runtime" rows above are replaced by exact pins (blob sha256
+at the sealed tip, computed the same way as every other row):
+
+| role | blob sha256 |
+|---|---|
+| dw04_mass_matrix | `6a32229438f59158a0995b6b90043639e8b103eedf2d09243502faaa9a68ff39` |
+| dw04_receipt | `f37fb0cc7bf8ccdf1572fc31ba909ef9b0ae8eff043613a13b9e4c4648cbf445` |
+
+Everything else in this preregistration is unchanged.
+
 ## 3. Cheng source pins (live host files; sha256 verified at every run; the
 evaluator refuses `cheng_source_unavailable` / `cheng_source_pin_mismatch`)
 
