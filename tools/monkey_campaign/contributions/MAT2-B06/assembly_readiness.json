@@ -1,0 +1,977 @@
+{
+ "base_head": "c525b82c7c3ce0128565424764293a3c85811ab3",
+ "card_id": "MAT2-B06",
+ "carried_observation": "Buffy 02 binds 9 claims but 17.039978509953905 kg stays transported/not counted; readiness false",
+ "cheng_license_note": "license UNVERIFIED (transcription README); internal use only; cited by file+sha256; no table bytes committed to the repository",
+ "cheng_source_pins": {
+  "cheng_m2_3_mulatta_morphometry": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-3_mulatta_morphometry.csv",
+   "sha256": "16ca8bcd9be48b3766125801eb05a8f4f10b446b4caed76d9fddeb2e45df71fa"
+  },
+  "cheng_m2_5_fascicularis_morphometry": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-5_fascicularis_morphometry.csv",
+   "sha256": "9469449f8735df84a163d364a67402d127ca8ac54a402595ce4cebb6d16cf148"
+  },
+  "cheng_m2_6_mulatta_inertials": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-6_mulatta_inertials.csv",
+   "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+  },
+  "cheng_m2_7_fascicularis_inertials": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-7_fascicularis_inertials.csv",
+   "sha256": "d1d601feaf61b033bdbccf8509be946d0e1884fec62388c8630287703fc63133"
+  },
+  "cheng_m2_8_regressions": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-8_regressions.csv",
+   "sha256": "b185ee8e98b6e663defed0abd4d004fec053eb6417e027c54801070cd894ec22"
+  },
+  "cheng_readme": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/README_cheng_tables.md",
+   "sha256": "7ec44aa1031df22f0263a023aade9cc0c6c572ce268d14934a6ef49a61900ca3"
+  },
+  "cheng_receipt": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/TRANSCRIPTION_RECEIPT.md",
+   "sha256": "a3031b236dc368fb8f59f571e39666fc0ed504f383fff9b34d26c36817f2e568"
+  }
+ },
+ "counts": {
+  "gaps_by_domain": {
+   "frame": 2,
+   "mass": 3,
+   "ownership": 4,
+   "port": 1
+  },
+  "gate_gap": 10,
+  "gate_satisfied": 4,
+  "measured_screen_rows": 5,
+  "requirement_gate_rows": 14
+ },
+ "criteria_sha256": "6c3bb5fb51aa87adb261e6a07f444c78cae28910b2327fe88f2b79c6da80802b",
+ "determinism": {
+  "canonical_json": true,
+  "derive_command": "python -B assembly_readiness.py derive",
+  "newline": "\\n"
+ },
+ "done_when": "All mass/ownership/frame/port requirements evaluated, with remaining gaps explicit",
+ "law_statement": "no substituted stand-in, no silent gap promotion, no fitting, no sealed-record edits; every gate row is either satisfied with pinned re-read evidence or a gap naming its missing evidence and authorizing rank; measured screens never gate",
+ "object_id": "mat2_b06_assembly_readiness",
+ "preregistration_sha256": "729dd133d65c0458182c50c8ed1721e456fa5c177cc9d2a6fb9fdb1a871e9809",
+ "readiness": {
+  "assembly_readiness": false,
+  "rule": "assembly_readiness is true ONLY IF every requirement_gate row is evaluated_satisfied_at_scope AND every satisfied row's evidence pin re-verifies bitwise against the sealed bytes; screens never gate; declared never qualifies; authored requirements never qualify a port; no substituted stand-in, no silent promotion, no fitting",
+  "verdict_note": "FALSE as carried by the sealed records: the transported claims stay uncounted, ownership mapping/correspondence and the bound port frame are unresolved, and 8/8 ports remain blocked; evaluation completeness is the card outcome, not readiness"
+ },
+ "readiness_rule": "assembly_readiness is true ONLY IF every requirement_gate row is evaluated_satisfied_at_scope AND every satisfied row's evidence pin re-verifies bitwise against the sealed bytes; screens never gate; declared never qualifies; authored requirements never qualify a port; no substituted stand-in, no silent promotion, no fitting",
+ "registry_profile": {
+  "available": true,
+  "profile_id": "anatomy",
+  "profile_kind": "visible_static",
+  "profile_sha256_canonical": "7cfaca8c8b59c5c2855087f5cbd50b47c5ed28d3e652e2fc2819036d3b1ac3f3",
+  "registry_criteria_sha256": "6c3bb5fb51aa87adb261e6a07f444c78cae28910b2327fe88f2b79c6da80802b",
+  "source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-B06].spec.ontology_qualification.task.verification_profile (read-only sqlite)",
+  "task_id": "B06"
+ },
+ "requirements": [
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     }
+    ],
+    "reason": "the counted inventory is bone-only geometry mass; Cheng segment masses are whole-tissue masses of other subjects; see S-MASS-05/06/07 screens",
+    "verdict": "does_not_close"
+   },
+   "domain": "mass",
+   "evidence": {
+    "items": [
+     {
+      "pointer": "provenance.counted_set.counted_total_kg",
+      "value": 0.0447023937544344
+     },
+     {
+      "pointer": "provenance.counted_set.regions",
+      "value": [
+       "clavicle",
+       "humerus",
+       "radius",
+       "sternum",
+       "ulna"
+      ]
+     },
+     {
+      "pointer": "recomputed.region_mass_sum_kg",
+      "value": 0.0447023937544344
+     }
+    ],
+    "kind": "sealed_field_reread",
+    "note": "recomputed region-mass sum equals the sealed counted total exactly; per-region masses re-read"
+   },
+   "kind": "requirement_gate",
+   "requirement_id": "R-MASS-01",
+   "scope": "counted-bone scope (shells and segment claims excluded by law)",
+   "sealed_source": {
+    "blob_sha256": "6e8033f26c823f410eb5beb8fdaaefd4c0c37db61327a86221e087bc832b9ddc",
+    "path": "tools/monkey_campaign/contributions/MAT2-B03/material_volume_input.json",
+    "role": "b03_material"
+   },
+   "statement": "counted bone mass inventory for the five closed arm-bone regions (C02)",
+   "status": "evaluated_satisfied_at_scope"
+  },
+  {
+   "carried_from": {
+    "pointer": "authored_from_reread_density_fields",
+    "role": "b03_material"
+   },
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     },
+     {
+      "file": "M2-3_mulatta_morphometry.csv",
+      "role": "cheng_m2_3_mulatta_morphometry",
+      "sha256": "16ca8bcd9be48b3766125801eb05a8f4f10b446b4caed76d9fddeb2e45df71fa"
+     }
+    ],
+    "reason": "no material-density column exists in any Cheng table (segment/tissue masses and inertials only); a segment mass cannot close a material density gap",
+    "verdict": "inadmissible_to_close"
+   },
+   "domain": "mass",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "recorded lead decision (MAT-03 admission)",
+    "detail": "the counted inventory uses density provenance class 'researched' (archived matter library entry, 1800.0 kg/m3) with NO temperature/moisture/strain-rate conditions stated; a measured bone material density with stated conditions, admitted through MAT-03, is absent"
+   },
+   "requirement_id": "R-MASS-02",
+   "scope": "material admission (MAT-03)",
+   "sealed_source": {
+    "blob_sha256": "6e8033f26c823f410eb5beb8fdaaefd4c0c37db61327a86221e087bc832b9ddc",
+    "path": "tools/monkey_campaign/contributions/MAT2-B03/material_volume_input.json",
+    "role": "b03_material"
+   },
+   "statement": "measured bone material density support for the counted inventory",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     },
+     {
+      "file": "M2-8_regressions.csv",
+      "role": "cheng_m2_8_regressions",
+      "sha256": "b185ee8e98b6e663defed0abd4d004fec053eb6417e027c54801070cd894ec22"
+     }
+    ],
+    "reason": "measured M. mulatta segment bands + BW regressions can SCREEN a future counted mass (S-MASS-05/06); they are not a counted mass of THIS assembly (different subjects, segment conventions, no specimen binding)",
+    "verdict": "partially_informs"
+   },
+   "domain": "mass",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "recorded lead decision (a counted, validated carried-load mass)",
+    "carried_verbatim_from": {
+     "pointer": "ports[*].inputs.weights.blocked.carried_load_segment_weights.missing_evidence",
+     "role": "b05_ports"
+    },
+    "detail": "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+   },
+   "requirement_id": "R-MASS-03",
+   "scope": "port weights input (B05 ledger)",
+   "sealed_counts": {
+    "excluded_osim_segment_claims_kg": 0.406
+   },
+   "sealed_source": {
+    "blob_sha256": "ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+    "path": "tools/monkey_campaign/contributions/MAT2-B05/mechanical_port_requirements.json",
+    "role": "b05_ports"
+   },
+   "statement": "counted, validated carried-load segment weights for the eight real tendon ports (B05 `weights` blocked side)",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     },
+     {
+      "file": "M2-8_regressions.csv",
+      "role": "cheng_m2_8_regressions",
+      "sha256": "b185ee8e98b6e663defed0abd4d004fec053eb6417e027c54801070cd894ec22"
+     }
+    ],
+    "reason": "S-MASS-06 shows the transported total is not the body mass of the arm claims (expected/claim > 2); sharper, but measurement cannot own or decompose the transported claims",
+    "verdict": "partially_informs"
+   },
+   "domain": "mass",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "recorded lead decision",
+    "carried_verbatim_from": {
+     "pointer": "masses[3].semantic_identity",
+     "role": "dw04_mass_matrix"
+    },
+    "detail": "17.039978509953905 kg stays class transported_source_effective: declared owned, counted_mass_kg 0.0, components_with_validated_tissue_mass 0; no recorded ownership decision decomposes the claims"
+   },
+   "requirement_id": "R-MASS-04",
+   "scope": "assembly readiness accounting (D-W04 mass lineage)",
+   "sealed_source": {
+    "blob_sha256": "6a32229438f59158a0995b6b90043639e8b103eedf2d09243502faaa9a68ff39",
+    "path": "tools/monkey_campaign/contributions/D-W04-MASS-20260924/mass_matrix.json",
+    "role": "dw04_mass_matrix"
+   },
+   "statement": "transported-assembly accounting (Buffy 02): the transported claims must be decomposed into counted, validated owned masses",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": null,
+   "domain": "ownership",
+   "evidence": {
+    "items": [
+     {
+      "pointer": "path_records[*].owner_body+role",
+      "value": true
+     },
+     {
+      "pointer": "attachments[*].interface_id+bone",
+      "value": true
+     },
+     {
+      "pointer": "counts.path_records",
+      "value": 48
+     },
+     {
+      "pointer": "counts.attachments",
+      "value": 26
+     },
+     {
+      "pointer": "counts.waypoint_records",
+      "value": 22
+     },
+     {
+      "pointer": "counts.grasp_endpoints",
+      "value": 6
+     }
+    ],
+    "kind": "sealed_field_reread",
+    "note": "owner+role presence re-read over all 48 path records; interface+bone presence over all 26 attachments"
+   },
+   "kind": "requirement_gate",
+   "requirement_id": "R-OWN-01",
+   "scope": "ownership registry scope (assembly mapping is R-OWN-02/03)",
+   "sealed_source": {
+    "blob_sha256": "f1f0430772258e8449fc354841becf2f1869783399e63f3f145565b8d0b1041c",
+    "path": "tools/monkey_campaign/contributions/MAT2-A06/attachment_ownership.json",
+    "role": "a06_ownership"
+   },
+   "statement": "every grasp-relevant endpoint and waypoint record carries an explicit approved owner body and role in the sealed ownership registry",
+   "status": "evaluated_satisfied_at_scope"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-3_mulatta_morphometry.csv",
+      "role": "cheng_m2_3_mulatta_morphometry",
+      "sha256": "16ca8bcd9be48b3766125801eb05a8f4f10b446b4caed76d9fddeb2e45df71fa"
+     }
+    ],
+    "reason": "a measurement cannot authorize a mapping decision",
+    "verdict": "does_not_apply"
+   },
+   "domain": "ownership",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "recorded lead or captain decision",
+    "carried_verbatim_from": {
+     "pointer": "path_resolutions[pending_assembly_mapping first].missing_evidence",
+     "role": "a07_resolution"
+    },
+    "detail": "no lead/captain-recorded nearest-mutant-body correspondence exists for this path point in any pinned source; a recorded assembly-mapping decision (with distance) is required before this placement can be supported"
+   },
+   "requirement_id": "R-OWN-02",
+   "scope": "assembly-level ownership (A07 resolutions)",
+   "sealed_counts": {
+    "mutant_mapped_records": 3,
+    "pending_assembly_mapping": 14
+   },
+   "sealed_source": {
+    "blob_sha256": "cd596d7c21fa81a4c2632e13b63ba26e62da51d44eca2355147fd5dff1587490",
+    "path": "tools/monkey_campaign/contributions/MAT2-A07/placement_resolution.json",
+    "role": "a07_resolution"
+   },
+   "statement": "assembly mapping for the pending hand-body path records",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-3_mulatta_morphometry.csv",
+      "role": "cheng_m2_3_mulatta_morphometry",
+      "sha256": "16ca8bcd9be48b3766125801eb05a8f4f10b446b4caed76d9fddeb2e45df71fa"
+     }
+    ],
+    "reason": "a measurement cannot authorize a mapping decision",
+    "verdict": "does_not_apply"
+   },
+   "domain": "ownership",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "recorded lead or captain decision",
+    "carried_verbatim_from": {
+     "pointer": "path_resolutions[forearm_correspondence first].missing_evidence",
+     "role": "a07_resolution"
+    },
+    "detail": "the A05 mutation record's scope is the hand; no recorded forearm correspondence exists for these bodies, so their mutant-assembly placement stays unresolved (never defaulted)"
+   },
+   "requirement_id": "R-OWN-03",
+   "scope": "assembly-level ownership (A07 resolutions)",
+   "sealed_counts": {
+    "forearm_correspondence_records": 31
+   },
+   "sealed_source": {
+    "blob_sha256": "cd596d7c21fa81a4c2632e13b63ba26e62da51d44eca2355147fd5dff1587490",
+    "path": "tools/monkey_campaign/contributions/MAT2-A07/placement_resolution.json",
+    "role": "a07_resolution"
+   },
+   "statement": "forearm assembly correspondence records",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     }
+    ],
+    "reason": "segment morphometry carries no attachment-site geometry; nothing to measure a placement against",
+    "verdict": "does_not_apply"
+   },
+   "domain": "ownership",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "separately authorized fitting experiment (recorded lead or captain decision)",
+    "carried_verbatim_from": {
+     "pointer": "carried_observation.missing_evidence",
+     "role": "a07_resolution"
+    },
+    "detail": "measured outside placements stay placement_failed_outside with exact per-axis excesses; resolving them requires a new fitting experiment, which is NOT authorized for this card (fitting_not_authorized; carried observation: Candidate C remains failed at 67.147 micrometres per side)"
+   },
+   "requirement_id": "R-OWN-04",
+   "scope": "assembly-level ownership (A07 resolutions)",
+   "sealed_counts": {
+    "envelope_measured_outside": 8,
+    "outside_insertions": 4,
+    "outside_waypoints": 4
+   },
+   "sealed_source": {
+    "blob_sha256": "cd596d7c21fa81a4c2632e13b63ba26e62da51d44eca2355147fd5dff1587490",
+    "path": "tools/monkey_campaign/contributions/MAT2-A07/placement_resolution.json",
+    "role": "a07_resolution"
+   },
+   "statement": "measured-outside attachment placements (envelope test excesses carried exactly by A07)",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-3_mulatta_morphometry.csv",
+      "role": "cheng_m2_3_mulatta_morphometry",
+      "sha256": "16ca8bcd9be48b3766125801eb05a8f4f10b446b4caed76d9fddeb2e45df71fa"
+     }
+    ],
+    "reason": "morphometry is muscle-belly level (mass, fascicle length, PCSA); no patch area, areal stiffness or couple resistance at any attachment interface",
+    "verdict": "does_not_close"
+   },
+   "domain": "ownership",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "measured attachment-interface sources admitted by recorded lead decision",
+    "carried_verbatim_from": {
+     "pointer": "c17",
+     "role": "a07_resolution"
+    },
+    "detail": "no attachment patch area/shape, areal stiffness, couple resistance or weights exist in the pinned sources; none is invented; no synthetic lambda_min"
+   },
+   "requirement_id": "R-OWN-05",
+   "scope": "attachment interfaces (A06/A07 C17 blocks)",
+   "sealed_source": {
+    "blob_sha256": "cd596d7c21fa81a4c2632e13b63ba26e62da51d44eca2355147fd5dff1587490",
+    "path": "tools/monkey_campaign/contributions/MAT2-A07/placement_resolution.json",
+    "role": "a07_resolution"
+   },
+   "statement": "C17 finite attachment mechanics inputs for the 26 explicit tissue-to-bone attachments",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     }
+    ],
+    "reason": "the tables carry percentages only (no absolute segment lengths); they cannot author or bind frames",
+    "verdict": "does_not_apply"
+   },
+   "domain": "frame",
+   "evidence": {
+    "items": [
+     {
+      "pointer": "recomposed_roots.root_pelvis.origin_m",
+      "value": [
+       0.0,
+       0.73,
+       6.12323e-17
+      ]
+     },
+     {
+      "pointer": "recomposed_roots.root_thorax.origin_m",
+      "value": [
+       -0.08,
+       1.19,
+       6.12323e-17
+      ]
+     },
+     {
+      "pointer": "recomposed_roots.root_ulna.origin_m",
+      "value": [
+       -0.09150000000000001,
+       0.8345500000000001,
+       0.15770000000000006
+      ]
+     },
+     {
+      "pointer": "recomposed_roots.root_ulna_l.origin_m",
+      "value": [
+       -0.09150000000000001,
+       0.8345,
+       -0.15769999999999995
+      ]
+     }
+    ],
+    "kind": "sealed_recomposition",
+    "note": "every root recomposed left-to-right from its embedded chain with identity quats asserted; exact equality to the sealed origins; every hop sha256 = the pinned chimanoid raw sha"
+   },
+   "kind": "requirement_gate",
+   "requirement_id": "R-FRM-01",
+   "scope": "authored-placement scope (no fitted fusion by law)",
+   "sealed_source": {
+    "blob_sha256": "156ef55722e1ecda3238f3733131eb707f209cb93531d0e133227b00ebba8203",
+    "path": "tools/monkey_campaign/contributions/MAT2-B04/frame_forest.json",
+    "role": "b04_frames"
+   },
+   "statement": "authored assembly frame forest composed ONLY from pinned active body declarations",
+   "status": "evaluated_satisfied_at_scope"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     }
+    ],
+    "reason": "no absolute segment lengths or frame correspondence in the tables; binding stays a recorded-decision matter",
+    "verdict": "does_not_apply"
+   },
+   "domain": "frame",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "recorded lead/architect decision (correspondence acceptance + binding authorization)",
+    "carried_verbatim_from": {
+     "pointer": "ports[*].inputs.anchor_frame_id.missing_evidence",
+     "role": "b05_ports"
+    },
+    "detail": "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open) | an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+   },
+   "requirement_id": "R-FRM-02",
+   "scope": "port anchor frame input (B05 ledger)",
+   "sealed_source": {
+    "blob_sha256": "ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+    "path": "tools/monkey_campaign/contributions/MAT2-B05/mechanical_port_requirements.json",
+    "role": "b05_ports"
+   },
+   "statement": "accepted ulna-edge correspondence and authorized packet-to-forest binding (bound port frame)",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     }
+    ],
+    "reason": "segment tables carry no assembly topology",
+    "verdict": "does_not_apply"
+   },
+   "domain": "frame",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "recorded lead decision admitting the components/bodies or a superseding assembly",
+    "carried_verbatim_from": {
+     "pointer": "matter_boundary.statement",
+     "role": "b04_frames"
+    },
+    "detail": "4 disconnected components and 9 unresolved bodies remain; counted mass 0.0; frames are placement only; no mass is counted, promoted, or relabelled; admission statuses carry through unchanged (pelvis root_reference_frame_only; thorax/ulna/ulna_l geometry-mass unresolved)"
+   },
+   "requirement_id": "R-FRM-03",
+   "scope": "admission ledger (B04 carried statuses)",
+   "sealed_source": {
+    "blob_sha256": "156ef55722e1ecda3238f3733131eb707f209cb93531d0e133227b00ebba8203",
+    "path": "tools/monkey_campaign/contributions/MAT2-B04/frame_forest.json",
+    "role": "b04_frames"
+   },
+   "statement": "component/bond admission ledger resolved (no disconnected components or unresolved bodies left unadmitted)",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-3_mulatta_morphometry.csv",
+      "role": "cheng_m2_3_mulatta_morphometry",
+      "sha256": "16ca8bcd9be48b3766125801eb05a8f4f10b446b4caed76d9fddeb2e45df71fa"
+     },
+     {
+      "file": "M2-5_fascicularis_morphometry.csv",
+      "role": "cheng_m2_5_fascicularis_morphometry",
+      "sha256": "9469449f8735df84a163d364a67402d127ca8ac54a402595ce4cebb6d16cf148"
+     }
+    ],
+    "reason": "the missing evidence is attachment-site patch/stiffness/couple/frame, not muscle morphometry; and PT has no morphometry row at all (S-PORT-09)",
+    "verdict": "does_not_close"
+   },
+   "domain": "port",
+   "kind": "requirement_gate",
+   "missing_evidence": {
+    "authorization_required": "the per-input authorizations named in the B05 ledger (measured sources / recorded decisions)",
+    "carried_verbatim_from": {
+     "pointer": "qualification_rule",
+     "role": "b05_ports"
+    },
+    "detail": "8 of 8 ports remain blocked; every blocked row names its missing evidence (patch area measured footprint, areal stiffness, couple resistance, bound frame, carried-load weights); mechanical_qualification is true ONLY if every required input row of the port has status qualified; authored requirements, declared laws and demonstrated gate mechanics NEVER qualify a port"
+   },
+   "requirement_id": "R-PRT-01",
+   "scope": "B05 qualification rule, re-enforced verbatim",
+   "sealed_counts": {
+    "ports": 8,
+    "ports_mechanically_qualified": 0,
+    "ports_remaining_blocked": 8,
+    "waypoints_refused_as_ports": 24
+   },
+   "sealed_source": {
+    "blob_sha256": "ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+    "path": "tools/monkey_campaign/contributions/MAT2-B05/mechanical_port_requirements.json",
+    "role": "b05_ports"
+   },
+   "statement": "mechanical qualification of the eight real tendon ports (radius/radius_l: BIClong-P11, BICshort-P8, BRD-P3, PT-P5)",
+   "status": "evaluated_gap"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     }
+    ],
+    "reason": "no pressure-limit content exists in the tables",
+    "verdict": "does_not_apply"
+   },
+   "domain": "port",
+   "evidence": {
+    "items": [
+     {
+      "pointer": "ports[*].inputs.pressure_limits.status",
+      "value": [
+       "declared",
+       "declared",
+       "declared",
+       "declared",
+       "declared",
+       "declared",
+       "declared",
+       "declared"
+      ]
+     },
+     {
+      "pointer": "input_status_ledger.authored_engineering_requirements[pressure_limits].source_status",
+      "value": "synthetic_authored"
+     }
+    ],
+    "kind": "sealed_field_reread",
+    "note": "declared status re-read on all eight ports; declared is NOT qualified and never flips R-PRT-01"
+   },
+   "kind": "requirement_gate",
+   "requirement_id": "R-PRT-02",
+   "scope": "declared law (never a qualification)",
+   "sealed_source": {
+    "blob_sha256": "ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+    "path": "tools/monkey_campaign/contributions/MAT2-B05/mechanical_port_requirements.json",
+    "role": "b05_ports"
+   },
+   "statement": "declared pressure limits carried from the pinned M03 pressure source",
+   "status": "evaluated_satisfied_at_scope"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     }
+    ],
+    "reason": "magnitude consistency screen only; n=6 different subjects, segment conventions differ, no specimen binding; the ownership exclusion is untouched",
+    "verdict": "partially_informs"
+   },
+   "cheng_values": {
+    "forearm": [
+     194.0,
+     78.0
+    ],
+    "hand": [
+     57.0,
+     11.0
+    ],
+    "upper_arm": [
+     294.0,
+     119.0
+    ]
+   },
+   "computed": {
+    "all_inside_1sd": true,
+    "comparisons": [
+     {
+      "abs_delta_kg": 0.09099999999999997,
+      "cheng_columns": [
+       "upper_arm"
+      ],
+      "cheng_mean_kg": 0.294,
+      "cheng_sd_kg": 0.11900000000000001,
+      "claim": "humerus",
+      "claim_kg": 0.203,
+      "inside_1sd": true
+     },
+     {
+      "abs_delta_kg": 0.04000000000000001,
+      "cheng_columns": [
+       "forearm"
+      ],
+      "cheng_mean_kg": 0.194,
+      "cheng_sd_kg": 0.078,
+      "claim": "radius_plus_ulna",
+      "claim_kg": 0.154,
+      "inside_1sd": true
+     },
+     {
+      "abs_delta_kg": 0.008,
+      "cheng_columns": [
+       "hand"
+      ],
+      "cheng_mean_kg": 0.057,
+      "cheng_sd_kg": 0.011,
+      "claim": "hand",
+      "claim_kg": 0.049,
+      "inside_1sd": true
+     }
+    ]
+   },
+   "domain": "mass",
+   "gates": false,
+   "kind": "measured_screen",
+   "outcome": "confirmed",
+   "prediction": "all three |claim - mean| <= 1 sd",
+   "requirement_id": "S-MASS-05",
+   "sealed_values": {
+    "mass_hand": 0.049,
+    "mass_humerus": 0.203,
+    "mass_radius": 0.0618,
+    "mass_ulna": 0.0922
+   },
+   "statement": "excluded .osim segment claims screened against the measured M. mulatta segment mass bands (Cheng M2-6); the claims remain EXCLUDED regardless of the screen",
+   "status": "measured_screen",
+   "unit_law": "cheng g -> kg via 1e-3"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-8_regressions.csv",
+      "role": "cheng_m2_8_regressions",
+      "sha256": "b185ee8e98b6e663defed0abd4d004fec053eb6417e027c54801070cd894ec22"
+     },
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     }
+    ],
+    "reason": "determinate internal-inconsistency screen: the transported total is not the body mass of the arm claims; no measured table can own or decompose the claims, so the accounting gap stays open",
+    "verdict": "partially_informs"
+   },
+   "cheng_values": {
+    "b_g": {
+     "forearm": 17.5,
+     "hand": 35.4,
+     "upper_arm": 23.0
+    },
+    "m_g_per_kg": {
+     "forearm": 22.4,
+     "hand": 2.77,
+     "upper_arm": 34.4
+    },
+    "upper_arm_pct_bw": 3.8
+   },
+   "computed": {
+    "all_implied_in_4_7_kg": true,
+    "expected_over_claim_ratio": 3.1897496718140315,
+    "implied_body_weight": [
+     {
+      "b_g": 23.0,
+      "claim": "upper_arm",
+      "claim_g": 203.0,
+      "implied_body_weight_kg": 5.232558139534884,
+      "m_g_per_kg": 34.4
+     },
+     {
+      "b_g": 17.5,
+      "claim": "forearm_radius_ulna",
+      "claim_g": 154.0,
+      "implied_body_weight_kg": 6.09375,
+      "m_g_per_kg": 22.4
+     },
+     {
+      "b_g": 35.4,
+      "claim": "hand",
+      "claim_g": 49.0,
+      "implied_body_weight_kg": 4.909747292418773,
+      "m_g_per_kg": 2.77
+     }
+    ],
+    "ratio_gt_2": true,
+    "transported_pctbw_expected_upper_arm_g": 647.5191833782484
+   },
+   "domain": "mass",
+   "gates": false,
+   "kind": "measured_screen",
+   "outcome": "confirmed",
+   "prediction": "all implied body weights in [4.0, 7.0] kg AND expected/claim ratio > 2",
+   "requirement_id": "S-MASS-06",
+   "sealed_values": {
+    "transported_kg": 17.039978509953905
+   },
+   "statement": "body-weight implied by the arm claims via the Cheng M2-8 regressions, and the %BW screen of the transported total (17.039978509953905 kg) against the upper-arm claim",
+   "status": "measured_screen"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-6_mulatta_inertials.csv",
+      "role": "cheng_m2_6_mulatta_inertials",
+      "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+     }
+    ],
+    "reason": "bone-only vs whole-segment are different quantities about different reference points from different subjects; same order of magnitude is the only claim; B03's own cross-method verification stands at its own scope and is not re-verified here",
+    "verdict": "partially_informs"
+   },
+   "cheng_values": {
+    "icg_mean_g_cm2": {
+     "forearm": [
+      2710.0,
+      1460.0
+     ],
+     "hand": [
+      393.0,
+      173.0
+     ],
+     "upper_arm": [
+      3240.0,
+      1200.0
+     ]
+    },
+    "icg_sum_g_cm2": 6343.0
+   },
+   "computed": {
+    "bone_trace_over_measured_segment_sum": 0.6977709058136352,
+    "icg_sum_kg_m2": 0.0006343,
+    "inside_0_3_1_5": true
+   },
+   "domain": "mass",
+   "gates": false,
+   "kind": "measured_screen",
+   "outcome": "confirmed",
+   "prediction": "ratio in [0.3, 1.5]",
+   "requirement_id": "S-MASS-07",
+   "sealed_values": {
+    "inertia_trace_kg_m2": 0.0004425960855575888
+   },
+   "statement": "trace invariant of the sealed B03 aggregate bone inertia vs the sum of Cheng M2-6 Icg mean values (eigen-free; clustered-spectrum eigensolvers are diagnostics only)",
+   "status": "measured_screen",
+   "unit_law": "1 g*cm^2 = 1e-7 kg*m^2"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-5_fascicularis_morphometry.csv",
+      "role": "cheng_m2_5_fascicularis_morphometry",
+      "sha256": "9469449f8735df84a163d364a67402d127ca8ac54a402595ce4cebb6d16cf148"
+     },
+     {
+      "file": "M2-7_fascicularis_inertials.csv",
+      "role": "cheng_m2_7_fascicularis_inertials",
+      "sha256": "d1d601feaf61b033bdbccf8509be946d0e1884fec62388c8630287703fc63133"
+     }
+    ],
+    "reason": "different species under the biological law; the fascicularis tables are retained only as cross-species reference and close nothing here",
+    "verdict": "inadmissible_species_law"
+   },
+   "cheng_values": {},
+   "computed": {
+    "m_fascicularis_tables": [
+     "cheng_m2_5_fascicularis_morphometry",
+     "cheng_m2_7_fascicularis_inertials"
+    ],
+    "m_fascicularis_verdict": "inadmissible_species_law",
+    "m_mulatta_tables": [
+     "cheng_m2_3_mulatta_morphometry",
+     "cheng_m2_6_mulatta_inertials",
+     "cheng_m2_8_regressions"
+    ],
+    "m_mulatta_verdict": "admissible_as_screening_reference_only"
+   },
+   "domain": "mass",
+   "gates": false,
+   "kind": "measured_screen",
+   "outcome": "confirmed",
+   "prediction": "M. fascicularis tables inadmissible to close any requirement on this assembly; M. mulatta tables admissible as screening references only",
+   "requirement_id": "S-MASS-08",
+   "sealed_values": {
+    "rhesis_band_midpoint_kg": 6.15
+   },
+   "statement": "species law: the campaign animal context is rhesus (M. mulatta; Turnquist & Kessler adult-female band book context per the sealed D-W04 record)",
+   "status": "measured_screen"
+  },
+  {
+   "cheng_evaluation": {
+    "files": [
+     {
+      "file": "M2-3_mulatta_morphometry.csv",
+      "role": "cheng_m2_3_mulatta_morphometry",
+      "sha256": "16ca8bcd9be48b3766125801eb05a8f4f10b446b4caed76d9fddeb2e45df71fa"
+     },
+     {
+      "file": "M2-5_fascicularis_morphometry.csv",
+      "role": "cheng_m2_5_fascicularis_morphometry",
+      "sha256": "9469449f8735df84a163d364a67402d127ca8ac54a402595ce4cebb6d16cf148"
+     }
+    ],
+    "reason": "muscle-belly morphometry is not a port-gate input; and the port set is incomplete even at muscle level (PT absent from both tables)",
+    "verdict": "does_not_close"
+   },
+   "cheng_values": {
+    "m23_mulatta": {
+     "has_biceps_long": true,
+     "has_biceps_short": true,
+     "has_brachioradialis": true,
+     "has_pronator": false,
+     "muscle_rows": 21
+    },
+    "m25_fascicularis": {
+     "has_biceps_long": true,
+     "has_biceps_short": true,
+     "has_brachioradialis": true,
+     "has_pronator": false,
+     "muscle_rows": 21
+    }
+   },
+   "computed": {
+    "coverage_ok": true
+   },
+   "domain": "port",
+   "gates": false,
+   "kind": "measured_screen",
+   "outcome": "confirmed",
+   "prediction": "BL/BS/Br present, PT absent, 21 rows in M2-3 and M2-5",
+   "requirement_id": "S-PORT-09",
+   "sealed_values": {
+    "port_muscles": [
+     "biceps long (BIClong)",
+     "biceps short (BICshort)",
+     "brachioradialis (BRD)",
+     "pronator teres (PT)"
+    ]
+   },
+   "statement": "port muscle coverage: Biceps long / Biceps short / Brachioradialis rows exist and Pronator teres is absent in BOTH morphometry tables (21 muscle rows each)",
+   "status": "measured_screen"
+  }
+ ],
+ "revision": 1,
+ "schema": "chimera.assembly_readiness.v1",
+ "sealed_input_pins": {
+  "a06_ownership": {
+   "blob_sha256": "f1f0430772258e8449fc354841becf2f1869783399e63f3f145565b8d0b1041c",
+   "path": "tools/monkey_campaign/contributions/MAT2-A06/attachment_ownership.json",
+   "role": "a06_ownership"
+  },
+  "a07_resolution": {
+   "blob_sha256": "cd596d7c21fa81a4c2632e13b63ba26e62da51d44eca2355147fd5dff1587490",
+   "path": "tools/monkey_campaign/contributions/MAT2-A07/placement_resolution.json",
+   "role": "a07_resolution"
+  },
+  "b03_material": {
+   "blob_sha256": "6e8033f26c823f410eb5beb8fdaaefd4c0c37db61327a86221e087bc832b9ddc",
+   "path": "tools/monkey_campaign/contributions/MAT2-B03/material_volume_input.json",
+   "role": "b03_material"
+  },
+  "b03_matter_library": {
+   "blob_sha256": "de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed",
+   "path": "tools/monkey_campaign/contributions/MAT2-B03/data/matter_library_1af0bbde.json",
+   "role": "b03_matter_library"
+  },
+  "b04_frames": {
+   "blob_sha256": "156ef55722e1ecda3238f3733131eb707f209cb93531d0e133227b00ebba8203",
+   "path": "tools/monkey_campaign/contributions/MAT2-B04/frame_forest.json",
+   "role": "b04_frames"
+  },
+  "b05_ports": {
+   "blob_sha256": "ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+   "path": "tools/monkey_campaign/contributions/MAT2-B05/mechanical_port_requirements.json",
+   "role": "b05_ports"
+  },
+  "dw04_mass_matrix": {
+   "blob_sha256": "6a32229438f59158a0995b6b90043639e8b103eedf2d09243502faaa9a68ff39",
+   "path": "tools/monkey_campaign/contributions/D-W04-MASS-20260924/mass_matrix.json",
+   "role": "dw04_mass_matrix"
+  },
+  "dw04_receipt": {
+   "blob_sha256": "f37fb0cc7bf8ccdf1572fc31ba909ef9b0ae8eff043613a13b9e4c4648cbf445",
+   "path": "tools/monkey_campaign/contributions/D-W04-MASS-20260924/receipt.json",
+   "role": "dw04_receipt"
+  }
+ },
+ "sealed_tip": "051123cf1d549479c765e4f3e112ddddbedcf752",
+ "task_id": "B06"
+}
