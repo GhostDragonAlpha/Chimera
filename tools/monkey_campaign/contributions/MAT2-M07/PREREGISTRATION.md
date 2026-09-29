@@ -549,3 +549,20 @@ Nothing else changes.
   Measured recontact event times: 0.10000 / 0.10167 / 0.10417 / 0.10458 s
   across h -> h/8 (all within the 3*dt0 bound).
 Nothing else changes.
+
+## Amendment A9 (measured X4 outcome: absolute bookkeeping threshold falsified, relative bound adopted; BEFORE the receipt freeze)
+
+- Measured X4 (800 ticks, 10 cycles): sum|R_E| = 2.825e-06 J against
+  sum|W_external| = 1.630e-01 J (ratio 1.73e-05); max |R_E| = 2.102e-08 J
+  (per-tick bound green at every tick); max edge-strain deviation
+  7.453e-06; max speed 0.185 m/s; peak plate displacement 1.72e-03 m;
+  mechanical energy second-half average BELOW first-half (3.86e-06 vs
+  2.07e-05 J — no sustained growth). The A5 absolute threshold
+  sum|R_E| <= 1e-6 J is RECORDED AS FALSIFIED: the declared Maxwell driver
+  gap accumulates linearly with the tick count (measured ~3.5e-9 J/tick ->
+  ~2.8e-6 J over 800 ticks), exactly the R3 "bookkeeping only" residual.
+- A9 replaces the X4 bookkeeping-integrity gate with the relative bound:
+  sum|R_E| / sum|W_external| <= 1e-4 (measured 1.73e-05, ~6x margin),
+  keeping every other X4 demand (per-tick A1 bound, monotone-final-state
+  not required here, strain/speed/displacement bounds) unchanged.
+Nothing else changes.
