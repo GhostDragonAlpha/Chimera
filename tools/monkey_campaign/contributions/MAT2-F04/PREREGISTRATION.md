@@ -239,8 +239,9 @@ pinned pass is assembled; a non-biting falsifier fails the whole build
   `visual_gate.verify` re-hashes camera JSON + video and binds
   capture_sha256. `visual_acceptance` stays false BY DESIGN — independent
   visual review remains mandatory.
-- tick_interval: [0, 109] (the concatenated frozen replay timeline; per-row
-  windows recorded in seconds).
+- tick_interval: the measured concatenated replay timeline (Amendment A6:
+  [0, 101] with the measured scenario lengths; per-row windows recorded in
+  seconds).
 
 ## 8. Honest boundaries (inventoried before the build)
 
@@ -325,3 +326,12 @@ pinned pass is assembled; a non-biting falsifier fails the whole build
   AND PUBLISHED but not banded — the 0.2 m probe shell rides up the trunk
   face as it sinks, producing tail-contact altitudes up to ~0.21 m by
   geometry, not by any contact failure. The impact-altitude bar is unchanged.
+- A6 (this commit, before the first build run): the capture manifest's frozen
+  tick_interval becomes the MEASURED replay length instead of the first
+  estimate [0, 109]: SEAM_HIGH's frozen window-end rule (first trunk contact
+  + 3 ticks) closed the seam window at 32 states (handover/contact at tick
+  28), so the overview montage carries 30+30+32+5+5 = 102 states and the
+  manifest interval is [0, 101] (328 video frames across the six rows). The
+  manifest now derives the interval from the actual replay at build time and
+  the receipt records the measured per-row state counts. No acceptance bar is
+  affected; the interval describes the timeline, it does not bound it.
