@@ -351,6 +351,7 @@ def main() -> int:
              'parent': f'{REF}.body.{par}' if par in HUMAN_BODIES else f'{REF}.body.macaque_hand_anchor',
              'joints': joints[n],
              'geometry': [{'asset_id': f'{GEOM}.{BODY_MESH[n]}',
+                           'stl_sha256': geom_assets[BODY_MESH[n]]['sha256'],
                            'transform': {'uniform_scale': s, 'source_units': 'm'},
                            'why_scaled_reference': 'no macaque phalanx mesh exists in-repo (PR #229/#230 search); vendor human STL reused at recorded mutation scale'}]}
         bodies_json.append(b)
