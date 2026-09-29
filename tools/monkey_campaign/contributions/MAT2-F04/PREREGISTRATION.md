@@ -191,8 +191,12 @@ per tick over the FULL interval, not at the last tick only.
   ground arrays by +1 cm while the collision body is untouched — P1 array
   equality MUST fire (render/collision decoupled detected) and the marker
   classify MUST flip to VISIBLE_BUT_MISMATCH.
-  (Operationalized by Amendment A3: the +1 cm raise is applied to ALL THREE
-  vertices of the ground triangle the marker's classify ray actually hits.)
+  (Operationalized by Amendments A3+A4: the +1 cm raise is applied to ALL
+  THREE vertices of the ground triangle the marker's classify ray actually
+  hits, and the frozen discriminator is the LOSS of VISIBLE_EXACT — the raised
+  render surface stands as a nearer same-surface hit, so the classify reads
+  OCCLUDED on the decoupled copy while the untouched render stays
+  VISIBLE_EXACT.)
 - FB7_off_frame_probe_subject: a required subject 155.7 deg off the V2 view
   azimuth MUST classify OFF_FRAME (tags alone do not establish contact).
 
@@ -295,3 +299,12 @@ pinned pass is assembled; a non-biting falsifier fails the whole build
   land, so the classify MUST read the height error against the untouched
   query oracle. No bar is loosened; the 1e-9 height bar and the
   VISIBLE_BUT_MISMATCH refusal are unchanged.
+- A4 (this commit, before any implementation or build run): FB6's bite form is
+  the LOSS of VISIBLE_EXACT on the decoupled copy (measured outcome OCCLUDED,
+  "same surface but a nearer hit stands in front": the +1 cm raise moves the
+  rendered surface toward the camera, so the marker's own distance bar
+  (1e-6) fires before the height bar can). The untouched render classifies
+  VISIBLE_EXACT on the same ray — the flip is the render/collision
+  decouple detection. No bar is loosened; the marker bars are unchanged and
+  the shipped-scene requirement (every assigned marker VISIBLE_EXACT on the
+  UNPERTURBED assets) is untouched.
