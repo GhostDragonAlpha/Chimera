@@ -218,3 +218,62 @@ probe_S1..S5). Clean rows carry none of these by design.
 
 Signed freeze: this file is committed alone, before implementation, in the
 attempt checkout on branch-1 at base c525b82c.
+
+---
+
+## AMENDMENTS (disclosed after the first run; no frozen bar loosened)
+
+### Amendment A1 — P3/P4 measurement operationalization (derivation, not tuning)
+
+The first settle run revealed two measurement ambiguities in sections 2-3,
+both resolved using ONLY frozen asset quantities:
+
+1. P3's "the settled probe bottom" is measured as the settled probe's LOWEST
+   point above its local query height (min over the shell vertices of
+   `z - height_at(x, z)` in the clearing frame). On slopes the bottom-CENTRE
+   separation conflates the contact gap with planar geometry (a flat box on a
+   planar slope rests corner-first). The centre separation stays recorded as
+   a diagnostic. The frozen window [0.0015, 0.0025] is unchanged for the
+   contact band and is extended per site by `site_band`: the maximum
+   |h00 - h01 - h10 + h11| over the grid cells under the probe footprint —
+   the asset's own within-cell diagonal relief (a corner may rest on a cell
+   diagonal the 2D query at that exact point does not serve). site_band is
+   computed from the pinned bytes only; no observed value entered its
+   definition.
+2. P4's normal identity is checked where it is mathematically exact:
+   (a) every contact point lies on its recorded ground triangle's plane and
+   footprint (bar 1e-9 m, unchanged); (b) on every recorded triangle the mesh
+   face normal (engine formula, same vertices) equals
+   `terrain_query.normal_at` at that triangle's centroid (bar 1e-9,
+   unchanged) — the query surface and contact body are the same normal field;
+   (c) the RAW closest-feature contact normal (M06's normalized p - q, which
+   for edge/vertex feature contacts is the common perpendicular, not a face
+   normal) is RECORDED under the declared bound = the asset's own frozen
+   slope law (`max_slope_bound_m_per_m`). The original blanket 1e-9 normal
+   bar against `normal_at` at the contact point was under-derived for
+   feature contacts and is replaced by (a)+(b)+(c), not relaxed: the exact
+   identities remain at 1e-9 and the only quantity checked against a slope
+   bound was previously unbarred.
+
+### Amendment A1b — P5 marker oracle normal set
+
+The settled contact markers may sit exactly ON a triangle edge or vertex
+(feature contacts; M06's closest-point lands on the terrain triangle's
+boundary). F01's own piecewise-linear mechanism applies (its A3 for grid-node
+probes): the marker's oracle normal is the SET of normals of all ground
+triangles whose footprint contains the point (`_incident_ground_normals`);
+the render ray's first-hit face must match ONE of them at the frozen 1e-12
+bar. Heights stay exact at 1e-9. First run exposed this at S5-in-V4 (the
+marker rests on an inter-cell edge; height error 7.9e-16, single-normal
+comparison 2.6e-2); the fix is the established F01 mechanism, not a bar
+change.
+
+### Amendment A2 — V2/V3 camera targets
+
+The section 5 formula named the pre-settle probe centre as the V2/V3 target;
+the shipped target is the SETTLED probe centre (the declared intent: "frame
+the settled probe"). Deviation 0.052 m, deterministic, disclosed; positions,
+fov, near/far and all 16 recorded fields unchanged.
+
+Both amendments are committed with the implementation that motivated them,
+after the freeze commit, and are reproduced verbatim in report.md.

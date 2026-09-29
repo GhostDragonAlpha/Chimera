@@ -1,0 +1,120 @@
+{
+ "schema": "chimera.local_contact.v1",
+ "revision": 1,
+ "object_id": "local-contact-law",
+ "provenance": {
+  "base_revision": "f67a622ab37bf0f3201613701cf89028d6a8eed4",
+  "input_pins": {
+   "monkey_arm_independent_meshes.json": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+   "independent_shape_regions.json": "0f0b7165883183446b15b7043fd5471f0b12d6d992ffabc27107f4de1238887e",
+   "monkey_arm_regions.json": "15ae0e5a3d540d52b9a0e5c9b8af2f8a6bf7f2c9770a5f2cd7c1e9e8758366f1"
+  },
+  "thickness_source": "MAT2-M02 independent_shape_regions.json shell_thickness_m = 0.002",
+  "mass_sources": "mass_tetra 0.12 kg, mass_plate 0.02 kg (pinned compiled matter rows)",
+  "heritage": [
+   "G3 deterministic Baumgarte contact solve, estimator B penetration proxy (docs/THE_MASTER_LIST.md H7 stage 3, agent_logs/kimi/contact_ref_01.md, .tmp/contact_ref.py: 0 ULP double-run discipline)",
+   "B2 bonds-are-materials: capacity = strength x area (area-scaled per-triangle load report)",
+   "L3 tri_ca registry: triangle centers as stable addresses (stable triangle ids in contact records)",
+   "req.teddy_gpu_matter_kernel law_families.local: contact/friction use local adjacency/constraint passes; a far-field monopole cannot substitute"
+  ],
+  "declarations_status": "synthetic_authored law constants (mu, beta, slop, margin, dt); thickness and masses pinned from MAT2-M02"
+ },
+ "declarations": {
+  "g": 9.81,
+  "dt": 0.005,
+  "thickness_m": 0.002,
+  "slop_m": 1e-05,
+  "margin_m": 1e-05,
+  "beta": 0.2,
+  "restitution": 0.0,
+  "pair_friction_rule": "elementwise_min",
+  "ccd": {
+   "method": "conservative_advancement",
+   "max_iters": 64,
+   "activation_tolerance_m": 1e-12,
+   "fallback": "uniform resample of the remaining window (S = max_iters samples) when the Lipschitz advance crawls; under-detection bounded by |w|*dt/S for the sampled interval",
+   "declared_capture_bound_m_per_tick": 0.02
+  },
+  "candidate_search": {
+   "method": "sweep_and_prune",
+   "axis_rule": "max_variance_center",
+   "inflation": "motion_bound + thickness + margin"
+  },
+  "area_report_rule": "uniform contact pressure over contacted area: p = Jn_total/(dt*sum(a)); F_i = p*a_i",
+  "seeds": {
+   "rng": "lcg_64bit",
+   "seed_base": 20260928,
+   "scenes": 32,
+   "scene_k_seed": "seed_base + k"
+  }
+ },
+ "surfaces": [
+  {
+   "id": "plate",
+   "matter_id": "mass_plate",
+   "mass_kg": 0.02,
+   "pinned": true,
+   "mu_s": 0.7,
+   "mu_k": 0.5,
+   "thickness_m": 0.002,
+   "triangle_count": 2,
+   "provenance": "support fixture; area construction equal to the pinned independent-shape plate (0.01 m^2 each, bitwise equal); also carries the pinned compiled plate triangles in the X0 vocabulary run; mass value = pinned mass_plate"
+  },
+  {
+   "id": "block",
+   "matter_id": "mass_block",
+   "mass_kg": 0.12,
+   "pinned": false,
+   "mu_s": 0.6,
+   "mu_k": 0.4,
+   "thickness_m": 0.002,
+   "triangle_count": 2,
+   "provenance": "authored sliding/resting fixture; mass value = pinned mass_tetra"
+  },
+  {
+   "id": "twin_plate",
+   "matter_id": "mass_plate",
+   "mass_kg": 0.02,
+   "pinned": true,
+   "mu_s": 0.7,
+   "mu_k": 0.5,
+   "thickness_m": 0.002,
+   "triangle_count": 2,
+   "provenance": "authored area-scaling twin: triangle areas 0.01 and 0.02 m^2 (ratio 2)"
+  },
+  {
+   "id": "shell_a",
+   "matter_id": "mass_shell_a",
+   "mass_kg": 0.02,
+   "pinned": false,
+   "mu_s": 0.6,
+   "mu_k": 0.4,
+   "thickness_m": 0.002,
+   "triangle_count": 2,
+   "provenance": "authored crossing shell (high-speed fixture); mass value = pinned mass_plate"
+  },
+  {
+   "id": "shell_b",
+   "matter_id": "mass_shell_b",
+   "mass_kg": 0.02,
+   "pinned": false,
+   "mu_s": 0.6,
+   "mu_k": 0.4,
+   "thickness_m": 0.002,
+   "triangle_count": 2,
+   "provenance": "authored crossing shell (high-speed fixture)"
+  },
+  {
+   "id": "tetra",
+   "matter_id": "mass_tetra",
+   "mass_kg": 0.12,
+   "pinned": false,
+   "mu_s": 0.6,
+   "mu_k": 0.4,
+   "thickness_m": 0.002,
+   "triangle_count": 4,
+   "provenance": "pinned MAT2-M02 independent-shape tetra (identity visual/physical triangle lists; rigid placement offset declared per scenario)"
+  }
+ ],
+ "contacts": []
+}
