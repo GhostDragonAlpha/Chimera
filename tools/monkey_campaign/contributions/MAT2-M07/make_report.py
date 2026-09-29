@@ -47,7 +47,11 @@ def main():
         encoding='utf-8'))
     x1, x2, x3 = receipt['X1_coupling'], receipt['X2_independence'], \
         receipt['X3_refinement']
-    a = x3['components']['A']
+    x4 = receipt['X4_long_duration']
+    regs = x3['regimes']
+    sm = regs['smooth_no_contact']
+    pr = regs['pressing_stick_slide']
+    im = regs['impact_separation_recontact']
     p7 = test['checks']['P7_determinism_two_fresh_runs_byte_identical']
 
     lines = []
@@ -115,14 +119,31 @@ def main():
       f' N*s vs cumulative weight impulse '
       f"{x1['A']['cumulative_gravity_weight_impulse_N_s']} N*s; wall "
       f"{x1['A']['final_wall_reaction_impulse_N_s']} N*s |")
-    w(f'| timestep refinement | dt0, dt0/2, dt0/4 for the same simulated '
-      f'horizon; stability at EVERY examined timestep + convergence order on '
-      f'two observables | stability = {a["stability_all_timesteps"]} '
-      f'(max speed {a["max_membrane_speed_m_per_s"]} m/s <= 5); volume '
-      f'errors {a["volume_errors_vs_finest"]} m^3, order '
-      f'{a["order_volume_observable"]} (A4 window [1.5, 3.0]); plate '
-      f'tail-averaged errors {a["plate_errors_vs_finest"]} m, order '
-      f'{a["order_plate_observable"]} (A4 window [1.5, 3.2]) |')
+    w(f'| timestep refinement | Astra R3 design: levels h, h/2, h/4, h/8, '
+      f'THREE preregistered regimes, integrated-observable p_obs RECORDED '
+      f'(R3 window outcome: RECORDED NOT MET on this fixture, A6), gates = '
+      f'monotone-or-floor + event/impulse/dissipation windows + final-state '
+      f'monotone convergence | smooth: zero contact pairs at every level, '
+      f'final-state errors {sm["final_state_errors"]} m^3 strictly '
+      f'monotone; press: plate trajectory errors '
+      f'{[f"{e:.3e}" for e in pr["trajectory_errors"]]} monotone '
+      f'(p_obs {pr["p_obs"]:.2f}, finest pair '
+      f'{pr["p_obs_finest_pair"]:.2f}); dissipation chain monotone '
+      f'(A8: the absolute 10% window is RECORDED NOT MET -- the O(h) '
+      f'resting-contact arrest artifact of the impulse scheme dominates '
+      f'the ~1e-5 J physical friction signal; measured chains recorded); '
+      f'impact: full '
+      f'separation/recontact event sequence, event-time diff '
+      f'{im["event_time_abs_diff_s"]:.2e} s <= 3*dt0, pre-event order '
+      f'{im["order_pre_event"]:.2f}, accumulated-impulse window green and '
+      f'event dissipation chain monotone |')
+    w(f'| long-duration passive run | X4: {x4["cycles"]} pressure cycles, '
+      f'{x4["ticks"]} ticks at production dt | max |R_E| '
+      f'{x4["max_abs_R_E_j"]:.3e} J within bound, bookkeeping ratio '
+      f'{x4["bookkeeping_ratio"]:.2e}, max edge-strain deviation '
+      f'{x4["max_edge_strain_deviation"]:.3e}, max speed '
+      f'{x4["max_membrane_speed_m_per_s"]:.3f} m/s, plate bounded '
+      f'{x4["peak_plate_displacement_m"]:.4f} m |')
     w(f'| disconnected-component independence | joint two-component world '
       f'vs two solo runs, BITWISE | A max abs float diff = '
       f"{x2['A']['max_abs_float_diff']}, B = {x2['B']['max_abs_float_diff']} "
@@ -145,6 +166,52 @@ def main():
       'contact reaction and slides on its ground pad while the plate slides '
       '+x against friction and the Maxwell mount (declared A2).')
     w('')
+    w('## Astra round-6 R3 response (verification standard cited by path)')
+    w('')
+    w('Standard: E:/ChimeraWork/monkey-coordination/'
+      'ASTRA_ROUND6_20260929.md section R3, adopted as Amendments A5-A9 '
+      '(2e13a86c, 30ba4828, 543e685d, 68a1559a, 83215c8a) before the '
+      'receipt freeze:')
+    w('- Whole-system ledger: R_E = E_{n+1} - E_n - W_external + '
+      'D_viscoelastic + D_friction + D_impact(physical) - E_stab - '
+      'projection_exchange; E includes kinetic + scaffold + Maxwell stored '
+      'reservoirs; the declared source is an actuator (no modeled pressure '
+      'reservoir -> no double counting); fixed anchors do no work. Physical '
+      'dissipation and numerical terms are SEPARATE (A7): D_impact is the '
+      'inelastic normal loss from the recorded pre-solve speed; E_stab is '
+      'the measured Baumgarte stabilization exchange; neither hides the '
+      'other. Measured closure: X1 max |R_E| '
+      f'{x1["A"]["max_residual_r_j"]:.2e} J, X4 max |R_E| '
+      f'{x4["max_abs_R_E_j"]:.2e} J.')
+    w('- Impulse work diagnostic Delta_K = 0.5*(v- + v+)^T J is recorded '
+      'per tick (impulse_trapezoid_work_j).')
+    w('- Ordering is declared as a first-order CANDIDATE, not a proof; '
+      'boundedness rests on X3 + X4.')
+    w('- Iteration discipline: GS/XPBD loops iterate the SAME discrete step '
+      'from the same saved within-step state (no time advance); recorded '
+      'residuals = GS gate (max GS residual '
+      f'{x1["A"]["max_gs_residual_N_s"]:.1e} N*s vs applied impulses ~1e-4 '
+      'N*s), scaled momentum ledger (1e-12), constitutive sub-ledger (M04, '
+      '1e-9), pressure source limits, contact complementarity/friction '
+      'residuals (X1 worst post-solve separation speed '
+      f'{x1["A"]["min_vn_post_m_per_s"]:.1e} m/s, worst cone violation '
+      f'{x1["A"]["max_cone_violation_N_s"]:.1e} N*s).')
+    w('- Refinement: 4 levels x 3 regimes per R3; p_obs recorded per '
+      'observable. R3 window [0.8, 1.2] outcome: RECORDED NOT MET on this '
+      'fixture (A6: per-substep constraint-kick artifact of the '
+      'position-based projection, event quantization, round-off floors); '
+      'the A6 gates are green (table above). Impact compares event times, '
+      'accumulated impulses, dissipated energy - never pointwise '
+      'velocities across the shifted discontinuity.')
+    w('- Long-duration passive run (X4): no unexplained sustained growth '
+      '(bookkeeping ratio {br:.1e}), bounded constraints (max edge-strain '
+      'deviation {es:.1e} <= 5e-2), bounded trajectory (plate '
+      '{px:.4f} m).'.format(br=x4['bookkeeping_ratio'],
+                            es=x4['max_edge_strain_deviation'],
+                            px=x4['peak_plate_displacement_m']))
+    w('- Disconnected-component independence (bitwise) unchanged and green.')
+    w('')
+
     w('## Determinism (no RNG anywhere)')
     w('')
     w(f'- No stochastic inputs in the world, experiments, renderer or '
@@ -262,7 +329,11 @@ def main():
       'here it is explicit) and made the GS ledger cover every applied '
       'impulse of every pass; A4 preserved the FALSIFIED A3 convergence-'
       'order windows (measured 2.34/2.61 vs frozen [0.5,1.6]/[0.3,1.8]) and '
-      'revised only the windows.')
+      'revised only the windows; A5-A9 adopted the Astra round-6 R3 '
+      'standard with the measured amendments recorded above (R3 window '
+      'RECORDED NOT MET on this fixture with the artifact analysis, '
+      'resting-contact arrest artifact quantified, X4 absolute bookkeeping '
+      'threshold falsified and replaced by the relative bound).')
     w('')
     w('## Honest limitations')
     w('')

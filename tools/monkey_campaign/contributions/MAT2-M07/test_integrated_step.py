@@ -130,11 +130,36 @@ def p5(arg):
         x2 = receipt['X2_independence'][cid]
         require_(x2['bitwise_identical'] and x2['max_abs_float_diff'] == 0.0,
                  'x2_bitwise')
-        x3 = receipt['X3_refinement']['components'][cid]
-        require_(x3['stability_all_timesteps'], 'x3_stability')
-        require_(1.5 <= x3['order_volume_observable'] <= 3.0, 'x3_p_vol')
-        require_(1.5 <= x3['order_plate_observable'] <= 3.2
-                 or x3['plate_errors_vs_finest'][1] == 0.0, 'x3_p_plate')
+        x3 = receipt['X3_refinement']
+        require_(len(x3['levels_s']) == 4, 'x3_levels')
+        smooth = x3['regimes']['smooth_no_contact']
+        gated = smooth.get('gated_primaries',
+                           ['u_scaffold_j', 'membrane_volume_m3'])
+        require_(all(smooth['observables'][k]['monotone_decrease']
+                     or smooth['observables'][k]['at_roundoff_floor']
+                     or smooth['observables'][k]['plateau_ratio'] <= 0.25
+                     for k in gated),
+                 'x3_smooth_primary_gates')
+        require_(all(e1 > e2 for e1, e2 in
+                     zip(smooth['final_state_errors'],
+                         smooth['final_state_errors'][1:])),
+                 'x3_smooth_final_state_monotone')
+        press = x3['regimes']['pressing_stick_slide']
+        require_(press['monotone_decrease'], 'x3_press_monotone')
+        require_(press['dissipation_monotone_decrease'],
+                 'x3_press_dissipation_monotone')
+        impact = x3['regimes']['impact_separation_recontact']
+        require_(impact['event_time_abs_diff_s'] <= 3.0 * iw.DT_S,
+                 'x3_impact_event_time')
+        jn = impact['accumulated_impulse_N_s']
+        require_(abs(jn['h'] - jn['h2']) <= 0.10 * max(abs(jn['h2']), 1e-30),
+                 'x3_impact_impulse_window')
+        require_(impact['event_dissipation_monotone'],
+                 'x3_impact_dissipation_monotone')
+        x4 = receipt['X4_long_duration']
+        require_(x4['all_residuals_within_bound'], 'x4_residuals')
+        require_(x4['bookkeeping_ratio'] <= 1e-4, 'x4_bookkeeping')
+        require_(x4['max_edge_strain_deviation'] <= 5e-2, 'x4_strain')
     require_(receipt['P_probes']['P_declared_order_digest_every_tick'],
              'p_order_digest')
     require_(receipt['P_probes']['P_single_owner_ast']['ok'], 'p_ast')

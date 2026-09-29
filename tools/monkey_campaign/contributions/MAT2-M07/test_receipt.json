@@ -1,22 +1,22 @@
 {
  "all_green": true,
  "attempt_id": "cc584d2e1e7c46de80bacbaf7ba12f77",
- "candidate_revision": "integrated_step.py sha256 af338c47a8d0576934e52387f368e0fa6b3e104fb9390071088e16da93911add",
+ "candidate_revision": "integrated_step.py sha256 36c556dcf2cf0b3c9b7fe3c79dd42baae6489ad2c0b3093a5ac1bd550d8c66e4",
  "checks": {
   "F1_hidden_coupling_cross_wire_caught_by_independence_oracle": {
    "F1": {
     "caught_by": "independence_oracle_state_hash",
-    "max_abs_diff_B": 3.6637359812630166e-13,
+    "max_abs_diff_B": 8.659739592076221e-13,
     "note": "cross-wired components are caught"
    },
    "ok": true
   },
   "F2_ordering_swap_caught_by_declared_order_check": {
    "F2": {
-    "abs_diff": 0.00019580198116170983,
+    "abs_diff": 0.00019205877049594672,
     "guard_fired": "declared_order_mismatch",
-    "plate_x_declared": 0.06220010474742325,
-    "plate_x_swapped": 0.06200430276626154
+    "plate_x_declared": 0.06219634979386086,
+    "plate_x_swapped": 0.06200429102336491
    },
    "ok": true
   },
@@ -28,7 +28,7 @@
   },
   "F4_separate_pass_overwrites_motion_caught": {
    "F4": {
-    "refusal": "momentum_ledger_open"
+    "refusal": "contact_separation_violation"
    },
    "ok": true
   },
@@ -59,8 +59,8 @@
   "P7_determinism_two_fresh_runs_byte_identical": {
    "determinism": {
     "note": "two fresh subprocess runs produced byte-identical files",
-    "receipt_sha256": "7387b0dfa307eeba33d9b79dbf46554e498390763cb3c368dfc6f6e2688c57c8",
-    "trace_sha256": "7a20215464dd660f6943da6d0595a0f4e7001c553ae1104072b44548cf8daca3"
+    "receipt_sha256": "4315e0590ff51881d7250064addccb19833a6870d1504cc7d56783b6db6d8d77",
+    "trace_sha256": "910778fde960ec1e807ef200b6c6cad1ab3b2bb69371ea166a70bb4e66cabf0e"
    },
    "ok": true
   },

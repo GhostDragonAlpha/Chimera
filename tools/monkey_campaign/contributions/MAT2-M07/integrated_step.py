@@ -57,7 +57,9 @@ DT_S = 1.0 / 300.0                # req.teddy_gpu_matter_kernel 300 Hz pin
 N_SUB = 4                         # declared substeps per tick
 GS_TOL_N_S = 1e-12                # contact Gauss-Seidel convergence gate
 GS_CAP = 32                       # iteration cap
-XPBD_ITERATIONS = 8               # M03/M05 scaffold heritage
+XPBD_TOL_M = 1e-10                # A6: projection tolerance (algebraic
+# error below the O(h^2) truncation scale, per Astra round-6 R3)
+XPBD_ITERATIONS_CAP = 100         # A6: adaptive iteration cap
 XPBD_COMPLIANCE_M_PER_N = 1.0e-5  # M03/M05 scaffold heritage
 THICKNESS_M = 0.002               # M06/M02 shell thickness pin
 CONTACT_MARGIN_M = 1e-5           # M6 slop/margin pin
@@ -77,6 +79,15 @@ GROUND_Z_M = -0.001               # ground midsurface plane
 WALL_K_N_PER_M = 20.0             # Maxwell element stiffness (declared)
 WALL_C_N_S_PER_M = 8.0            # Maxwell element damping (declared)
 PRESS_SCHEDULE = {tick: 60.0 for tick in range(1, 41)}   # Pa, ticks 1..40
+
+
+def cyclic_press_schedule(tick):
+    """A5 X4 long-duration schedule: the frozen X1 cycle repeated
+    (press at tick mod 80 in 1..40, relax otherwise)."""
+    phase = tick % 80
+    return 60.0 if 1 <= phase <= 40 else 0.0
+
+
 TICKS = 80
 RESIDUAL_TURNOVER_FRACTION = 5e-2
 
@@ -90,7 +101,8 @@ DECLARATION = {
     'substeps_per_tick': N_SUB,
     'contact_gauss_seidel_tol_N_s': GS_TOL_N_S,
     'contact_gauss_seidel_cap': GS_CAP,
-    'xpbd_iterations': XPBD_ITERATIONS,
+    'xpbd_tolerance_m': XPBD_TOL_M,
+    'xpbd_iteration_cap': XPBD_ITERATIONS_CAP,
     'xpbd_compliance_m_per_N': XPBD_COMPLIANCE_M_PER_N,
     'thickness_m': THICKNESS_M,
     'contact_margin_m': CONTACT_MARGIN_M,
@@ -293,14 +305,26 @@ def _pair_adapter(holder):
 # ---- component ----------------------------------------------------------------
 
 class Component:
-    """One pressurized membrane + loose plate + Maxwell mount + own ground."""
+    """One pressurized membrane + loose plate + Maxwell mount + own ground.
 
-    def __init__(self, component_id, x_offset=0.0):
+    Rig variants (A5): plate_x0 moves the plate/mount anchor (smooth and
+    impact rigs); initial_velocity gives the plate a declared launch speed
+    (impact rig); membrane_center_z pre-settles the membrane onto its
+    ground (zero initial gap).
+    """
+
+    def __init__(self, component_id, x_offset=0.0, plate_x0=PLATE_X0_M,
+                 initial_velocity=(0.0, 0.0, 0.0),
+                 membrane_center_z=MEMBRANE_CENTER_Z_M):
         require(isinstance(component_id, str) and component_id.strip(),
                 'component_id_invalid')
         self.component_id = component_id
         off = np.array([x_offset, 0.0, 0.0])
-        self.membrane = build_membrane(component_id, x_offset)
+        base = pm.icosphere(1, MEMBRANE_RADIUS_M,
+                            name=f'membrane_{component_id}')
+        center = np.array([x_offset, 0.0, float(membrane_center_z)])
+        self.membrane = pm.Membrane(base.vertices + center, base.triangles,
+                                    f'membrane_{component_id}')
         n = self.membrane.vertices.shape[0]
         self.rest = self.membrane.vertices.copy()
         self.masses = np.full(n, MEMBRANE_MASS_KG / n)
@@ -318,8 +342,9 @@ class Component:
         self.v = np.zeros_like(self.x)
         self.plate = ShellBody(
             f'plate_{component_id}', f'mat_{component_id}_plate',
-            build_plate_vertices(PLATE_X0_M) + off, PLATE_TRIS,
+            build_plate_vertices(float(plate_x0)) + off, PLATE_TRIS,
             PLATE_MASS_KG, PLATE_MU, pinned=False)
+        self.plate.velocity = np.array(initial_velocity, dtype=np.float64)
         self.ground = ShellBody(
             f'ground_{component_id}', f'mat_{component_id}_ground',
             build_ground_vertices(x_offset), GROUND_TRIS, None, GROUND_MU,
@@ -350,7 +375,8 @@ class IntegratedWorld:
     asserted by the test suite through source inspection).
     """
 
-    def __init__(self, components, dt_s=DT_S, n_sub=N_SUB):
+    def __init__(self, components, dt_s=DT_S, n_sub=N_SUB, gravity=True,
+                 schedule=None):
         require(isinstance(components, list) and components,
                 'world_components_invalid')
         ids = [c.component_id for c in components]
@@ -361,6 +387,10 @@ class IntegratedWorld:
         self.components = list(components)
         self.dt_s = float(dt_s)
         self.n_sub = int(n_sub)
+        self.gravity = bool(gravity)   # declared per-run experimental
+        # condition (A5 regime rigs; M06 A3 heritage), NOT part of the
+        # frozen order guard.
+        self.schedule = schedule       # None -> frozen PRESS_SCHEDULE dict
         self.tick = 0
         self.ticks = []
         # The order guard anchors on the LITERAL frozen order; the run's dt
@@ -377,7 +407,7 @@ class IntegratedWorld:
         current = pm.Membrane(comp.x, comp.membrane.triangles,
                               comp.membrane.name)
         pressure_loads, forces, closure = current.vertex_loads(scheduled)
-        grav = np.array([0.0, 0.0, -G_M_S2])
+        grav = np.array([0.0, 0.0, -G_M_S2 * (1.0 if self.gravity else 0.0)])
         g_loads = comp.masses[:, None] * grav[None, :]
         loads = pressure_loads + g_loads
         v_pre = comp.v.copy()
@@ -480,28 +510,50 @@ class IntegratedWorld:
         contact = {'membrane': np.zeros(3), 'plate': np.zeros(3),
                    'ground': np.zeros(3)}
         recip = (0.0, 0.0, 0.0)
+        d_friction = 0.0
+        d_impact_physical = 0.0
+        impulse_trapezoid_work = 0.0
+        jn_applied_total = 0.0
         for iteration in range(GS_CAP):
             iterations = iteration + 1
             records = []
             pass_max = 0.0
             for (body_a, body_b, gap, normal, key) in active:
+                va_pre = np.asarray(body_a.velocity, dtype=np.float64).copy()
+                vb_pre = np.asarray(body_b.velocity, dtype=np.float64).copy()
                 rec = lc.solve_contact(_pair_adapter(body_a),
                                        _pair_adapter(body_b), gap,
                                        normal, key)
+                va_post = np.asarray(body_a.velocity, dtype=np.float64)
+                vb_post = np.asarray(body_b.velocity, dtype=np.float64)
                 pass_max = max(pass_max, rec['jn_Ns'], abs(rec['jt_Ns']))
                 records.append(rec)
                 # EVERY applied impulse is accumulated (the ledger must
                 # cover all passes, not just the converged one)
-                for holder, impulse in ((body_a, rec['impulse_on_a']),
-                                        (body_b, rec['impulse_on_b'])):
+                ja = np.array(rec['impulse_on_a'])
+                jb = np.array(rec['impulse_on_b'])
+                for holder, impulse in ((body_a, ja), (body_b, jb)):
                     if isinstance(holder, MembranePort):
-                        contact['membrane'] += np.array(impulse)
+                        contact['membrane'] += impulse
                     elif holder is comp.ground:
-                        contact['ground'] += np.array(impulse)
+                        contact['ground'] += impulse
                     else:
-                        contact['plate'] += np.array(impulse)
+                        contact['plate'] += impulse
                 recip = lc.vadd(recip, tuple(rec['impulse_on_a']))
                 recip = lc.vadd(recip, tuple(rec['impulse_on_b']))
+                # R3 impulse-work diagnostic: Delta_K = 0.5*(v- + v+)^T J
+                impulse_trapezoid_work += float(
+                    0.5 * np.dot(0.5 * (va_pre + va_post), ja)
+                    + 0.5 * np.dot(0.5 * (vb_pre + vb_post), jb))
+                d_friction += float(rec.get('w_f_ke_J', 0.0))
+                jn_applied_total += abs(rec['jn_Ns'])
+                # A7: PHYSICAL inelastic loss from the pre-solve normal
+                # speed (restitution 0); the remainder of the contact-stage
+                # KE change is the recorded stabilization exchange
+                vn_pre = float(np.dot(va_pre - vb_pre,
+                                      np.array(normal, dtype=np.float64)))
+                if vn_pre < 0.0:
+                    d_impact_physical += 0.5 * rec['m_eff'] * vn_pre * vn_pre
             max_jn = pass_max
             if pass_max <= GS_TOL_N_S:
                 break
@@ -509,10 +561,46 @@ class IntegratedWorld:
         w_contact_ke = -(self._component_ke(comp) - ke_pre)
         # reciprocity: every applied impulse bitwise two-sided (M05/M06 law)
         require(lc.vlen(recip) <= 1e-12, 'ledger_imbalance')
+        # A5 contact residuals (post-solve, whole active set): normal
+        # impulse nonnegativity, post-solve separation velocity, friction
+        # cone, stick residual tangential speed
+        min_jn = min((rec['jn_Ns'] for rec in records), default=0.0)
+        min_vn_post = 0.0
+        max_cone_violation = 0.0
+        max_stick_vt_post = 0.0
+        for rec, (body_a, body_b, gap, normal, key) in zip(records, active):
+            va = np.asarray(body_a.velocity, dtype=np.float64)
+            vb = np.asarray(body_b.velocity, dtype=np.float64)
+            rv = va - vb
+            vn_post = float(np.dot(rv, np.array(normal)))
+            min_vn_post = min(min_vn_post, vn_post)
+            mu = rec.get('mu_used', 0.0)
+            if rec['jn_Ns'] > 0.0 and rec['mode'] != 'still':
+                max_cone_violation = max(
+                    max_cone_violation,
+                    max(0.0, abs(rec['jt_Ns'])
+                        - mu * rec['jn_Ns'] - 1e-15))
+            if rec['mode'] == 'stick':
+                vt = rv - vn_post * np.array(normal)
+                max_stick_vt_post = max(max_stick_vt_post,
+                                        float(np.linalg.norm(vt)))
+        require(min_vn_post >= -1e-9, 'contact_separation_violation')
+        require(max_stick_vt_post <= 1e-9, 'contact_stick_violation')
         anchor_tick = -contact['ground']
         comp.ground_anchor_impulse = comp.ground_anchor_impulse + anchor_tick
+        e_stab = -w_contact_ke + d_friction + d_impact_physical
         return {'records': records, 'iterations': iterations,
                 'gs_residual_N_s': max_jn, 'w_contact_ke_j': w_contact_ke,
+                'd_friction_j': d_friction,
+                'd_impact_physical_j': d_impact_physical,
+                'e_stab_j': e_stab,
+                'jn_applied_total_N_s': jn_applied_total,
+                'impulse_trapezoid_work_j': impulse_trapezoid_work,
+                'contact_residuals': {
+                    'min_jn_N_s': min_jn,
+                    'min_vn_post_m_per_s': min_vn_post,
+                    'max_cone_violation_N_s': max_cone_violation,
+                    'max_stick_vt_post_m_per_s': max_stick_vt_post},
                 'active_pairs': len(active), 'contact': contact,
                 'anchor_tick': anchor_tick}
 
@@ -531,10 +619,15 @@ class IntegratedWorld:
                      / (2.0 * XPBD_COMPLIANCE_M_PER_N))
 
     def _project(self, comp, h):
-        """XPBD edge projection (M03 scaffold pattern, declared iterations)."""
+        """XPBD edge projection (M03 scaffold pattern); A6: the sweep loop
+        is TOLERANCE-DRIVEN (max edge violation <= XPBD_TOL_M, cap
+        XPBD_ITERATIONS_CAP) so the solver's algebraic error stays below
+        the O(h^2) truncation scale and cannot floor the refinement study.
+        Time never advances inside this loop."""
         alpha_tilde = XPBD_COMPLIANCE_M_PER_N / (h * h)
         lam = np.zeros(len(comp.edge_list))
-        for _ in range(XPBD_ITERATIONS):
+        for _ in range(XPBD_ITERATIONS_CAP):
+            max_c = 0.0
             for e, (a1, a2) in enumerate(comp.edge_list):
                 d = comp.x[a2] - comp.x[a1]
                 length = float(np.linalg.norm(d))
@@ -542,11 +635,14 @@ class IntegratedWorld:
                     continue
                 grad = d / length
                 cc = length - comp.rest_lengths[e]
+                max_c = max(max_c, abs(cc))
                 w_sum = comp.inv_masses[a1] + comp.inv_masses[a2]
                 dlam = (-cc - alpha_tilde * lam[e]) / (w_sum + alpha_tilde)
                 lam[e] += dlam
                 comp.x[a1] -= comp.inv_masses[a1] * dlam * grad
                 comp.x[a2] += comp.inv_masses[a2] * dlam * grad
+            if max_c <= XPBD_TOL_M:
+                break
 
     # -- the single writer ---------------------------------------------------------
     def step(self, tick):
@@ -573,7 +669,10 @@ class IntegratedWorld:
 
     def _step_component(self, comp, tick):
         h = self.dt_s / self.n_sub
-        dp = float(PRESS_SCHEDULE.get(tick, 0.0))
+        if self.schedule is not None:
+            dp = float(self.schedule(tick))
+        else:
+            dp = float(PRESS_SCHEDULE.get(tick, 0.0))
         v_mem_start = comp.v.copy()
         v_plate_start = comp.plate.velocity.copy()
         ke_start = self._component_ke(comp)
@@ -582,13 +681,17 @@ class IntegratedWorld:
         u_scaff_prev = self._scaffold_energy(comp)
         agg = {'w_press_j': 0.0, 'w_grav_j': 0.0, 'w_mat_on_plate_j': 0.0,
                'w_in_mat_j': 0.0, 'q_mat_tick_j': 0.0, 'w_contact_ke_j': 0.0,
+               'd_friction_j': 0.0, 'd_impact_physical_j': 0.0,
+               'e_stab_j': 0.0, 'jn_applied_total_N_s': 0.0,
+               'impulse_trapezoid_work_j': 0.0,
                'projection_exchange_j': 0.0,
                'g_imp_mem': np.zeros(3), 'g_imp_plate': np.zeros(3),
                'iterations': 0, 'gs_residual': 0.0, 'active_pairs': 0,
                'contact': {'membrane': np.zeros(3), 'plate': np.zeros(3),
                            'ground': np.zeros(3)},
                'anchor_tick': np.zeros(3), 'mat_imp': 0.0, 'contacts': [],
-               'delta_p_pa': dp}
+               'delta_p_pa': dp,
+               'contact_residuals': None}
         for sub in range(self.n_sub):
             ph1 = self._phase_pressure_and_gravity(comp, dp, h)
             ph2 = self._phase_material(comp, h)
@@ -614,7 +717,30 @@ class IntegratedWorld:
             agg['q_mat_tick_j'] += ph2['q_mat_j']
             agg['mat_imp'] += ph2['mat_impulse_n_s']
             agg['w_contact_ke_j'] += ph3['w_contact_ke_j']
+            agg['d_friction_j'] += ph3['d_friction_j']
+            agg['d_impact_physical_j'] += ph3['d_impact_physical_j']
+            agg['e_stab_j'] += ph3['e_stab_j']
+            agg['jn_applied_total_N_s'] += ph3['jn_applied_total_N_s']
+            agg['impulse_trapezoid_work_j'] += \
+                ph3['impulse_trapezoid_work_j']
             agg['projection_exchange_j'] += proj_exchange
+            cr = ph3['contact_residuals']
+            if agg['contact_residuals'] is None:
+                agg['contact_residuals'] = cr
+            else:
+                agg['contact_residuals'] = {
+                    'min_jn_N_s': min(agg['contact_residuals']['min_jn_N_s'],
+                                      cr['min_jn_N_s']),
+                    'min_vn_post_m_per_s':
+                        min(agg['contact_residuals']['min_vn_post_m_per_s'],
+                            cr['min_vn_post_m_per_s']),
+                    'max_cone_violation_N_s':
+                        max(agg['contact_residuals']['max_cone_violation_N_s'],
+                            cr['max_cone_violation_N_s']),
+                    'max_stick_vt_post_m_per_s':
+                        max(agg['contact_residuals'][
+                                'max_stick_vt_post_m_per_s'],
+                            cr['max_stick_vt_post_m_per_s'])}
             agg['iterations'] += ph3['iterations']
             agg['gs_residual'] = max(agg['gs_residual'],
                                      ph3['gs_residual_N_s'])
@@ -638,10 +764,25 @@ class IntegratedWorld:
                     + abs(agg['w_contact_ke_j']) + ke)
         bound = (RESIDUAL_TURNOVER_FRACTION * turnover + u_mat + u_mat_prev
                  + u_scaff + u_scaff_prev + 1e-9)
-        residual = e_mech - e_prev - (agg['w_press_j'] + agg['w_grav_j']
-                                      + agg['w_mat_on_plate_j']
-                                      - agg['w_contact_ke_j']
-                                      + agg['projection_exchange_j'])
+        # Whole-system energy ledger (A5, Astra round-6 R3):
+        # R_E = E_{n+1} - E_n - W_external + D_viscoelastic + D_friction
+        #       + D_impact - projection_exchange
+        # E includes ALL modeled reservoirs (kinetic + scaffold + Maxwell
+        # stored); the declared source is an actuator (W_press external, no
+        # modeled reservoir -> no double counting); fixed anchors do no
+        # work; D_impact is the PHYSICAL inelastic normal loss (A7) and
+        # E_stab the recorded numerical stabilization exchange (bias
+        # (inelastic normal loss + declared bias injection, measured, never
+        # injection/withdrawal) -- neither hides the other; projection_
+        # exchange is the
+        # recorded positional-correction energy term. Expected closure
+        # scale: the declared Maxwell driver gap (~1e-9 J).
+        d_impact = agg['d_impact_physical_j']
+        e_stab = agg['e_stab_j']
+        w_external = agg['w_press_j'] + agg['w_grav_j']
+        residual = e_mech - e_prev - w_external + agg['q_mat_tick_j'] \
+            + agg['d_friction_j'] + d_impact - e_stab \
+            - agg['projection_exchange_j']
         require(abs(residual) <= bound, 'unexplained_energy')
         # momentum ledger (Amendment A1 (iii)): recorded terms, 1e-12 identity
         mem_dv = (comp.masses[:, None] * (comp.v - v_mem_start)).sum(axis=0)
@@ -679,6 +820,14 @@ class IntegratedWorld:
             'q_mat_tick_j': agg['q_mat_tick_j'],
             'w_contact_ke_j': agg['w_contact_ke_j'],
             'projection_exchange_j': agg['projection_exchange_j'],
+            'w_external_j': w_external,
+            'D_viscoelastic_j': agg['q_mat_tick_j'],
+            'D_friction_j': agg['d_friction_j'],
+            'D_impact_j': d_impact,
+            'E_stab_j': e_stab,
+            'impulse_trapezoid_work_j': agg['impulse_trapezoid_work_j'],
+            'jn_applied_total_N_s': agg['jn_applied_total_N_s'],
+            'contact_residuals': agg['contact_residuals'],
             'residual_r_j': residual, 'residual_bound_j': bound,
             'residual_within_bound': bool(abs(residual) <= bound),
             'projection_delta_mem_N_s': [float(c) for c in proj_delta_mem],
