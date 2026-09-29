@@ -165,18 +165,22 @@ def _run_agreement_body(gpu, comps_obj, ticks=TICKS,
         down0 = gpu.host_bytes_down
         gpu.step_tick(tick, dp)
         if roundtrip_tamper:
-            # F1 tamper: full state down+up every tick (the claimed-GPU-
-            # dynamics-with-a-roundtrip failure), then resume. The raw
-            # copies bypass the world's accounting, so the tamper must
-            # book its own bus bytes or the E_BYTES gate stays blind.
+            # F1 tamper (context-safe redesign): the claimed-GPU-dynamics-
+            # with-a-full-roundtrip violation, moving state-sized bytes
+            # through the bus every tick. The roundtrip runs through fresh
+            # SHADOW buffers: raw H2D copies INTO the live device arrays
+            # deterministically poisoned the CUDA context on this stack
+            # (recovery-drain bisection 2026-09-29, [700] sticky fault),
+            # and the falsifier must fault the BUDGET, not the context.
+            # The tamper still books its own bus bytes — the raw copies
+            # bypass the world's accounting and would blind E_BYTES.
             xb = gpu.d_x.copy_to_host()
             vxb = gpu.d_v.copy_to_host()
             pxb = gpu.d_px.copy_to_host()
             pvb = gpu.d_pv.copy_to_host()
-            gpu.d_x.copy_to_device(xb)
-            gpu.d_v.copy_to_device(vxb)
-            gpu.d_px.copy_to_device(pxb)
-            gpu.d_pv.copy_to_device(pvb)
+            shadow = [cuda.to_device(a) for a in (xb, vxb, pxb, pvb)]
+            roundtripped = [s.copy_to_host() for s in shadow]
+            del shadow, roundtripped
             tampered_bus_bytes = (xb.nbytes + vxb.nbytes
                                   + pxb.nbytes + pvb.nbytes)
             gpu.host_bytes_down += tampered_bus_bytes
@@ -547,29 +551,44 @@ def mode_falsify():
     except ValueError as exc:
         fired = str(exc) == rgw.E_BYTES
     receipt['arms']['F1_state_roundtrip_fires'] = fired
-    # F2a: aggregate-everything (theta gate removed) exceeds the 5e-3 window
+    # F2a: aggregate-everything (theta gate removed) must EXCEED the 5e-3
+    # window. Two-fixture design (CPU-preflighted 2026-09-29): on the
+    # standard 3.0-spacing fixture even FULL aggregation errs only ~1e-6 —
+    # per-component monopoles are quadrupole-exact at that range, so the
+    # window can never bite there. The tamper therefore runs on a CLUSTERED
+    # 0.30-spacing fixture (2.5x the 0.122 m component extent: no
+    # interpenetration; preflighted aggregate-all rel err ~5e-2), while the
+    # clean controls stay on the well-separated production fixture where
+    # the 5e-3 window is the honest operating claim.
+    from numba import cuda
+    ccomps = [iw.Component(f'c{i}', 0.30 * i) for i in range(4)]
+    cgpu = rgw.ResidentGpuWorld(ccomps, gravity=True, far_field=True)
+    cbh = cgpu.bh
+    cbh._refit()  # tree aggregates refit from construction positions
+    cbh.d_theta.copy_to_device(np.array([1.0e9]))
+    rb.k_bh_force[cbh.n_real, 1](cgpu.d_x, cgpu.d_px, cgpu.d_masses,
+                                 cgpu.d_pmass, cbh.d_idx, cbh.d_npow,
+                                 cbh.d_nreal, cbh.d_nmin, cbh.d_nmax,
+                                 cbh.d_nm, cbh.d_ncom, cbh.d_theta,
+                                 cbh.d_sga)
+    cbh.d_mode.copy_to_device(np.array([1.0]))
+    rb.k_bh_check[cbh.n_real, 1](cgpu.d_x, cgpu.d_px, cgpu.d_masses,
+                                 cgpu.d_pmass, cbh.d_sga, cbh.d_bh_errs,
+                                 cbh.d_mode)
+    rb.k_bh_reduce[1, 1](cbh.d_bh_errs, cbh.d_out_max, cbh.d_out_rms,
+                         cbh.d_out_n, cbh.d_nreal)
+    f2a_err = float(cbh.d_out_max.copy_to_host()[0])
+    cgpu.release()
+    receipt['arms']['F2a_aggregate_all_err'] = f2a_err
+    receipt['arms']['F2a_fixture_offset_m'] = 0.30
+    receipt['arms']['F2a_exceeds_window'] = f2a_err > rb.BH_ERROR_WINDOW
+    # clean controls: production theta within 5e-3; theta0 within 1e-12
     comps = [iw.Component(f'c{i}', 3.0 * i) for i in range(4)]
     gpu = rgw.ResidentGpuWorld(comps, gravity=True, far_field=True)
     bh = gpu.bh
     for tick in range(6):
         gpu.step_tick(tick, _cyclic_schedule(tick))
         gpu.diagnostics()
-    bh.d_theta.copy_to_device(np.array([1.0e9]))
-    from numba import cuda
-    k_bh_force = rb.k_bh_force
-    k_bh_force[bh.n_real, 1](gpu.d_x, gpu.d_px, gpu.d_masses, gpu.d_pmass,
-                             bh.d_idx, bh.d_npow, bh.d_nreal, bh.d_nmin,
-                             bh.d_nmax, bh.d_nm, bh.d_ncom, bh.d_theta,
-                             bh.d_sga)
-    bh.d_mode.copy_to_device(np.array([1.0]))
-    rb.k_bh_check[bh.n_real, 1](gpu.d_x, gpu.d_px, gpu.d_masses, gpu.d_pmass,
-                                bh.d_sga, bh.d_bh_errs, bh.d_mode)
-    rb.k_bh_reduce[1, 1](bh.d_bh_errs, bh.d_out_max, bh.d_out_rms,
-                         bh.d_out_n, bh.d_nreal)
-    f2a_err = float(bh.d_out_max.copy_to_host()[0])
-    receipt['arms']['F2a_aggregate_all_err'] = f2a_err
-    receipt['arms']['F2a_exceeds_window'] = f2a_err > rb.BH_ERROR_WINDOW
-    # clean controls: production theta within 5e-3; theta0 within 1e-12
     err, _rms = bh.measure(theta0=False)
     near_err, _rms2 = bh.measure(theta0=True)
     receipt['arms']['F2_clean_theta_err'] = err
@@ -578,6 +597,14 @@ def mode_falsify():
     receipt['arms']['F2_clean_theta0_err'] = near_err
     receipt['arms']['F2_clean_theta0_within_window'] = \
         near_err <= rb.BH_NEAR_WINDOW
+    # refuse_vacuous: aggregation must actually degrade the approximation.
+    # The pre-fix Barnes-Hut read err = 0.0 for EVERY theta (one-element
+    # pos locals corrupted the node aggregates; the traversal resolved
+    # everything leaf-direct), so the tamper could never bite. The arm is
+    # only green when the tamper measures strictly worse than production
+    # AND outside the window — else it measured nothing.
+    receipt['arms']['F2a_discriminating'] = (f2a_err > err
+                                             and f2a_err > rb.BH_ERROR_WINDOW)
     gpu.release()
     # F3: stale diagnostics caught by the chained tick digest
     comps = [iw.Component('A', 0.0)]
@@ -610,6 +637,7 @@ def mode_falsify():
     receipt['F_all_green'] = (receipt['arms']['F1_state_roundtrip_fires']
                               and receipt['arms']['F1_clean_within_budget']
                               and receipt['arms']['F2a_exceeds_window']
+                              and receipt['arms']['F2a_discriminating']
                               and receipt['arms']['F2_clean_theta_within_window']
                               and receipt['arms']['F2_clean_theta0_within_window']
                               and receipt['arms']['F3_stale_diagnostics_caught']

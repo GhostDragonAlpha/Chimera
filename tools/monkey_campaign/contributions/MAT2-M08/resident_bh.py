@@ -149,7 +149,7 @@ def k_bh_codes(X, PX, MASSES, PMASS, BLO, BSCALE, CODES, IDX, NPOW, N_REAL):
         CODES[i] = PAD_CODE
         IDX[i] = -1
         return
-    pos = cuda.local.array(1, dtype=np.float64)
+    pos = cuda.local.array(3, dtype=np.float64)
     out_m = cuda.local.array(1, dtype=np.float64)
     bh_body_pos_mass(X, PX, MASSES, PMASS, i, pos, out_m)
     qx = int((pos[0] - BLO[0]) / BSCALE[0] * 2097151.0)
@@ -227,7 +227,7 @@ def k_bh_agg_ranges(X, PX, MASSES, PMASS, IDX, FIRST, LAST, NPOW,
     maxx = -1.0e300
     maxy = -1.0e300
     maxz = -1.0e300
-    pos = cuda.local.array(1, dtype=np.float64)
+    pos = cuda.local.array(3, dtype=np.float64)
     out_m = cuda.local.array(1, dtype=np.float64)
     for k in range(lo, hi + 1):
         body = IDX[k]
@@ -281,7 +281,7 @@ def k_bh_force(X, PX, MASSES, PMASS, IDX, NPOW, N_REAL, NMIN, NMAX, NM,
     if body >= N_REAL[0]:
         return
     nn = NPOW[0] - 1
-    pos = cuda.local.array(1, dtype=np.float64)
+    pos = cuda.local.array(3, dtype=np.float64)
     out_m = cuda.local.array(1, dtype=np.float64)
     bh_body_pos_mass(X, PX, MASSES, PMASS, body, pos, out_m)
     xi = pos[0]
@@ -396,7 +396,7 @@ def k_bh_check(X, PX, MASSES, PMASS, SGA, BH_ERRS, MODE):
     body = cuda.grid(1)
     if body >= SGA.shape[0]:
         return
-    pos = cuda.local.array(1, dtype=np.float64)
+    pos = cuda.local.array(3, dtype=np.float64)
     out_m = cuda.local.array(1, dtype=np.float64)
     bh_body_pos_mass(X, PX, MASSES, PMASS, body, pos, out_m)
     xi = pos[0]
