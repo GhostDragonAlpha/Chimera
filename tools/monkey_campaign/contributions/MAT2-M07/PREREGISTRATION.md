@@ -277,3 +277,32 @@ membrane is a lumped XPBD scaffold (M03 heritage), the plate a rigid shell
 (M06 heritage kinematics), the mount a 1-D declared Maxwell element (M04) —
 the integrated OWNER is the deliverable, not a new material law; no new
 physical law is invented here, and none is needed by the done_when.
+
+## Amendment A1 (frozen after the freeze commit 33238aba, BEFORE implementation and before any measurement)
+
+- Correction of the declared energy-ledger accounts, derived during honest
+  design (no measurement has run; M06's amendment precedent):
+  (i) The material stage carries TWO declared accounts. The ELEMENT account
+  (M04's own protocol, cumulative per component) closes exactly:
+  W_in = v1x * int F dt == dU + Q within 1e-9, checked by M04's UNMODIFIED
+  `check_ledger`, where v1x is the declared driver velocity (the plate's
+  x velocity after the pressure stage — the declared order makes the material
+  stage see that velocity). The WORLD work account uses the applied-impulse
+  trapezoid W_mat_on_plate = -J * 0.5*(v_pre_x + v_post_x), exactly like
+  every other applied load (M05 A1 pattern). The difference J^2/(2*m_plate)
+  (driver-discretization) belongs to the MEASURED residual R, like the
+  contact bias injection and the projection exchange — reported, never
+  hidden.
+  (ii) The X1 residual bound therefore gains the reservoir terms (M05 A1
+  heritage), replacing the freeze's bare formula:
+  |R_tick| <= 5e-2 * turnover + (U_mat + U_mat_prev + U_scaff +
+  U_scaff_prev) + 1e-9, turnover = |W_press| + |W_grav| + |W_mat_on_plate| +
+  |W_contact_ke| + E_kin. X3's stability clause (a) uses this same bound.
+  (iii) The X1 momentum-ledger clause gains the declared material and
+  projection terms: per body per tick,
+  m*dv == gravity + contact + anchors + material impulse + projection_delta,
+  all five right-hand terms recorded, within 1e-12 per component; the
+  projection_delta is the measured velocity redefinition of the XPBD
+  projection (M03/M05 keep its work in R). Pinned anchors remain exactly
+  -(their received contact impulses). P-boundary-reactions is unchanged.
+  Nothing else changes.
