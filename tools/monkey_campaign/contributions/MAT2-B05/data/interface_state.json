@@ -1,0 +1,1415 @@
+{
+ "bound_revision": {
+  "bonds": [
+   {
+    "endpoints": [
+     {
+      "port": "port:bond_anchor",
+      "region_id": "body_a"
+     },
+     {
+      "port": "port:bond_anchor",
+      "region_id": "body_b"
+     }
+    ],
+    "id": "bond:strap",
+    "status": "qualified",
+    "transfers": "force_moment"
+   }
+  ],
+  "contacts": [
+   {
+    "endpoints": [
+     {
+      "port": "port:seam",
+      "region_id": "body_a"
+     },
+     {
+      "port": "port:seam",
+      "region_id": "body_b"
+     }
+    ],
+    "id": "contact:ab_seam",
+    "interface": {
+     "kind": "planar_seam",
+     "normal": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "shared_face_area_m2": 0.0175
+    },
+    "state": "touching"
+   }
+  ],
+  "directions": [
+   {
+    "axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "frame": "rest",
+    "history": [
+     {
+      "revision": 0,
+      "state": "declared interface normal"
+     }
+    ],
+    "id": "dir:seam_normal",
+    "region_id": "body_a"
+   },
+   {
+    "axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "frame": "rest",
+    "history": [
+     {
+      "revision": 0,
+      "state": "declared bond axis"
+     }
+    ],
+    "id": "dir:bond_axis",
+    "region_id": "body_b"
+   }
+  ],
+  "laws": [
+   {
+    "id": "law:contact_penalty",
+    "kind": "pressure_deformation",
+    "parameters": {
+     "c_n_N_s_per_m": 12.0,
+     "k_c_Pa_per_m": 100000.0
+    },
+    "provenance": "declared unilateral penalty contact (PREREGISTRATION law 2)",
+    "regions": [
+     "body_a",
+     "body_b"
+    ]
+   },
+   {
+    "id": "law:bond_element",
+    "kind": "pressure_deformation",
+    "parameters": {
+     "k_s_N_per_m": 40.0,
+     "k_t_N_per_m": 60.0,
+     "k_theta_N_m_per_rad": 0.8,
+     "rest_length_m": 0.0,
+     "transfers": "force_moment"
+    },
+    "provenance": "declared bond element (PREREGISTRATION law 3)",
+    "regions": [
+     "body_a",
+     "body_b"
+    ]
+   }
+  ],
+  "matter": [
+   {
+    "id": "mat_a",
+    "mass_kg": 0.05,
+    "provenance": "declared body A mass (PREREGISTRATION law 7)"
+   },
+   {
+    "id": "mat_b",
+    "mass_kg": 0.02,
+    "provenance": "declared body B mass (PREREGISTRATION law 7)"
+   },
+   {
+    "id": "mat_iface",
+    "mass_kg": 0.002,
+    "provenance": "declared shared interface patch; owner body_a, reference body_b; counted once"
+   }
+  ],
+  "object_id": "mat2_m05_interface_rig",
+  "provenance": {
+   "note": "revision 1 = bound state; revision 2 = bond released (bond relation removed; contact persists)",
+   "preregistration": "PREREGISTRATION.md (this directory)",
+   "task": "MAT2-M05"
+  },
+  "regions": [
+   {
+    "current_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       2,
+       3
+      ],
+      [
+       0,
+       4,
+       1
+      ],
+      [
+       1,
+       4,
+       2
+      ],
+      [
+       2,
+       4,
+       3
+      ],
+      [
+       3,
+       4,
+       0
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       -0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "id": "body_a",
+    "kind": "region",
+    "matter_claims": [
+     {
+      "matter_id": "mat_a",
+      "role": "owner"
+     },
+     {
+      "matter_id": "mat_iface",
+      "role": "owner"
+     }
+    ],
+    "parent": null,
+    "ports": [
+     {
+      "id": "port:seam",
+      "protocol": "normal_pressure",
+      "unit": "Pa"
+     },
+     {
+      "id": "port:bond_anchor",
+      "protocol": "tension_shear_twist",
+      "unit": "N,N*m"
+     }
+    ],
+    "rest_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       2,
+       3
+      ],
+      [
+       0,
+       4,
+       1
+      ],
+      [
+       1,
+       4,
+       2
+      ],
+      [
+       2,
+       4,
+       3
+      ],
+      [
+       3,
+       4,
+       0
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       -0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "sources": [
+     "MAT2-M05 interface experiment; supported body"
+    ]
+   },
+   {
+    "current_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       2,
+       1
+      ],
+      [
+       0,
+       3,
+       2
+      ],
+      [
+       0,
+       1,
+       4
+      ],
+      [
+       1,
+       2,
+       4
+      ],
+      [
+       2,
+       3,
+       4
+      ],
+      [
+       3,
+       0,
+       4
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "id": "body_b",
+    "kind": "region",
+    "matter_claims": [
+     {
+      "matter_id": "mat_b",
+      "role": "owner"
+     },
+     {
+      "matter_id": "mat_iface",
+      "role": "reference"
+     }
+    ],
+    "parent": null,
+    "ports": [
+     {
+      "id": "port:seam",
+      "protocol": "normal_pressure",
+      "unit": "Pa"
+     },
+     {
+      "id": "port:bond_anchor",
+      "protocol": "tension_shear_twist",
+      "unit": "N,N*m"
+     }
+    ],
+    "rest_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       2,
+       1
+      ],
+      [
+       0,
+       3,
+       2
+      ],
+      [
+       0,
+       1,
+       4
+      ],
+      [
+       1,
+       2,
+       4
+      ],
+      [
+       2,
+       3,
+       4
+      ],
+      [
+       3,
+       0,
+       4
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "sources": [
+     "MAT2-M05 interface experiment; free body"
+    ]
+   }
+  ],
+  "revision": 1,
+  "schema": "chimera.material_state.v1"
+ },
+ "bound_summary": {
+  "bond_count": 1,
+  "contact_count": 1,
+  "direction_count": 2,
+  "law_count": 2,
+  "matter_count": 3,
+  "object_id": "mat2_m05_interface_rig",
+  "owner_count": 3,
+  "port_count": 4,
+  "reference_count": 1,
+  "region_count": 2,
+  "region_ids": [
+   "body_a",
+   "body_b"
+  ],
+  "renames": {},
+  "revision": 1,
+  "schema": "chimera.material_state.v1",
+  "shell_count": 0,
+  "total_mass_kg": 0.07200000000000001
+ },
+ "canonical_sha256": {
+  "bound_revision": "8e0dff09bf214572f6f510bdfae6afe9c479c950fb19747d4fb4d0334214690a",
+  "released_revision": "22ccb6a95269272726b3c4bb50c79336ac084ea7de1677ca81908b2fcbad134f"
+ },
+ "containment_probe": {
+  "bonds": [],
+  "contacts": [
+   {
+    "endpoints": [
+     {
+      "port": "port:seam",
+      "region_id": "body_a"
+     },
+     {
+      "port": "port:seam",
+      "region_id": "body_b"
+     }
+    ],
+    "id": "contact:ab_seam",
+    "interface": {
+     "kind": "planar_seam",
+     "normal": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "shared_face_area_m2": 0.0175
+    },
+    "state": "touching"
+   }
+  ],
+  "directions": [
+   {
+    "axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "frame": "rest",
+    "history": [
+     {
+      "revision": 0,
+      "state": "declared interface normal"
+     }
+    ],
+    "id": "dir:seam_normal",
+    "region_id": "body_a"
+   },
+   {
+    "axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "frame": "rest",
+    "history": [
+     {
+      "revision": 0,
+      "state": "declared bond axis"
+     }
+    ],
+    "id": "dir:bond_axis",
+    "region_id": "body_b"
+   }
+  ],
+  "laws": [
+   {
+    "id": "law:contact_penalty",
+    "kind": "pressure_deformation",
+    "parameters": {
+     "c_n_N_s_per_m": 12.0,
+     "k_c_Pa_per_m": 100000.0
+    },
+    "provenance": "declared unilateral penalty contact (PREREGISTRATION law 2)",
+    "regions": [
+     "body_a",
+     "body_b"
+    ]
+   },
+   {
+    "id": "law:bond_element",
+    "kind": "pressure_deformation",
+    "parameters": {
+     "k_s_N_per_m": 40.0,
+     "k_t_N_per_m": 60.0,
+     "k_theta_N_m_per_rad": 0.8,
+     "rest_length_m": 0.0,
+     "transfers": "force_moment"
+    },
+    "provenance": "declared bond element (PREREGISTRATION law 3)",
+    "regions": [
+     "body_a",
+     "body_b"
+    ]
+   }
+  ],
+  "matter": [
+   {
+    "id": "mat_a",
+    "mass_kg": 0.05,
+    "provenance": "declared body A mass (PREREGISTRATION law 7)"
+   },
+   {
+    "id": "mat_b",
+    "mass_kg": 0.02,
+    "provenance": "declared body B mass (PREREGISTRATION law 7)"
+   },
+   {
+    "id": "mat_iface",
+    "mass_kg": 0.002,
+    "provenance": "declared shared interface patch; owner body_a, reference body_b; counted once"
+   }
+  ],
+  "object_id": "mat2_m05_interface_rig",
+  "provenance": {
+   "note": "revision 1 = bound state; revision 2 = bond released (bond relation removed; contact persists)",
+   "preregistration": "PREREGISTRATION.md (this directory)",
+   "task": "MAT2-M05"
+  },
+  "regions": [
+   {
+    "current_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       2,
+       3
+      ],
+      [
+       0,
+       4,
+       1
+      ],
+      [
+       1,
+       4,
+       2
+      ],
+      [
+       2,
+       4,
+       3
+      ],
+      [
+       3,
+       4,
+       0
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       -0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "id": "body_a",
+    "kind": "region",
+    "matter_claims": [
+     {
+      "matter_id": "mat_a",
+      "role": "owner"
+     },
+     {
+      "matter_id": "mat_iface",
+      "role": "owner"
+     }
+    ],
+    "parent": null,
+    "ports": [
+     {
+      "id": "port:seam",
+      "protocol": "normal_pressure",
+      "unit": "Pa"
+     },
+     {
+      "id": "port:bond_anchor",
+      "protocol": "tension_shear_twist",
+      "unit": "N,N*m"
+     }
+    ],
+    "rest_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       2,
+       3
+      ],
+      [
+       0,
+       4,
+       1
+      ],
+      [
+       1,
+       4,
+       2
+      ],
+      [
+       2,
+       4,
+       3
+      ],
+      [
+       3,
+       4,
+       0
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       -0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "sources": [
+     "MAT2-M05 interface experiment; supported body"
+    ]
+   },
+   {
+    "current_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       2,
+       1
+      ],
+      [
+       0,
+       3,
+       2
+      ],
+      [
+       0,
+       1,
+       4
+      ],
+      [
+       1,
+       2,
+       4
+      ],
+      [
+       2,
+       3,
+       4
+      ],
+      [
+       3,
+       0,
+       4
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "id": "body_b",
+    "kind": "region",
+    "matter_claims": [
+     {
+      "matter_id": "mat_b",
+      "role": "owner"
+     },
+     {
+      "matter_id": "mat_iface",
+      "role": "reference"
+     }
+    ],
+    "parent": "shell_around_b",
+    "ports": [
+     {
+      "id": "port:seam",
+      "protocol": "normal_pressure",
+      "unit": "Pa"
+     },
+     {
+      "id": "port:bond_anchor",
+      "protocol": "tension_shear_twist",
+      "unit": "N,N*m"
+     }
+    ],
+    "rest_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       2,
+       1
+      ],
+      [
+       0,
+       3,
+       2
+      ],
+      [
+       0,
+       1,
+       4
+      ],
+      [
+       1,
+       2,
+       4
+      ],
+      [
+       2,
+       3,
+       4
+      ],
+      [
+       3,
+       0,
+       4
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "sources": [
+     "MAT2-M05 interface experiment; free body"
+    ]
+   },
+   {
+    "current_geometry": {
+     "note": "declared enclosing shell"
+    },
+    "id": "shell_around_b",
+    "kind": "shell",
+    "matter_claims": [],
+    "parent": null,
+    "ports": [],
+    "rest_geometry": {
+     "note": "declared enclosing shell"
+    },
+    "sources": []
+   }
+  ],
+  "revision": 1,
+  "schema": "chimera.material_state.v1"
+ },
+ "containment_summary": {
+  "bond_count": 0,
+  "contact_count": 1,
+  "direction_count": 2,
+  "law_count": 2,
+  "matter_count": 3,
+  "object_id": "mat2_m05_interface_rig",
+  "owner_count": 3,
+  "port_count": 4,
+  "reference_count": 1,
+  "region_count": 3,
+  "region_ids": [
+   "body_a",
+   "body_b",
+   "shell_around_b"
+  ],
+  "renames": {},
+  "revision": 1,
+  "schema": "chimera.material_state.v1",
+  "shell_count": 1,
+  "total_mass_kg": 0.07200000000000001
+ },
+ "interface_inventory": {
+  "area_body_a_m2": 0.0659228055802316,
+  "area_body_b_m2": 0.0659228055802316,
+  "bond_bound": true,
+  "mass_rows": [
+   {
+    "mass_kg": 0.05,
+    "matter_id": "mat_a",
+    "owner_region": "body_a",
+    "role": "owner"
+   },
+   {
+    "mass_kg": 0.02,
+    "matter_id": "mat_b",
+    "owner_region": "body_b",
+    "role": "owner"
+   },
+   {
+    "mass_kg": 0.002,
+    "matter_id": "mat_iface",
+    "owner_region": "body_a",
+    "referenced_by": "body_b",
+    "role": "owner"
+   }
+  ],
+  "shared_face_area_m2": 0.0175,
+  "total_area_m2": 0.1143456111604632,
+  "total_mass_kg": 0.07200000000000001
+ },
+ "released_revision": {
+  "bonds": [],
+  "contacts": [
+   {
+    "endpoints": [
+     {
+      "port": "port:seam",
+      "region_id": "body_a"
+     },
+     {
+      "port": "port:seam",
+      "region_id": "body_b"
+     }
+    ],
+    "id": "contact:ab_seam",
+    "interface": {
+     "kind": "planar_seam",
+     "normal": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "shared_face_area_m2": 0.0175
+    },
+    "state": "loaded"
+   }
+  ],
+  "directions": [
+   {
+    "axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "frame": "rest",
+    "history": [
+     {
+      "revision": 0,
+      "state": "declared interface normal"
+     }
+    ],
+    "id": "dir:seam_normal",
+    "region_id": "body_a"
+   },
+   {
+    "axis": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "frame": "rest",
+    "history": [
+     {
+      "revision": 0,
+      "state": "declared bond axis"
+     }
+    ],
+    "id": "dir:bond_axis",
+    "region_id": "body_b"
+   }
+  ],
+  "laws": [
+   {
+    "id": "law:contact_penalty",
+    "kind": "pressure_deformation",
+    "parameters": {
+     "c_n_N_s_per_m": 12.0,
+     "k_c_Pa_per_m": 100000.0
+    },
+    "provenance": "declared unilateral penalty contact (PREREGISTRATION law 2)",
+    "regions": [
+     "body_a",
+     "body_b"
+    ]
+   },
+   {
+    "id": "law:bond_element",
+    "kind": "pressure_deformation",
+    "parameters": {
+     "k_s_N_per_m": 40.0,
+     "k_t_N_per_m": 60.0,
+     "k_theta_N_m_per_rad": 0.8,
+     "rest_length_m": 0.0,
+     "transfers": "force_moment"
+    },
+    "provenance": "declared bond element (PREREGISTRATION law 3)",
+    "regions": [
+     "body_a",
+     "body_b"
+    ]
+   }
+  ],
+  "matter": [
+   {
+    "id": "mat_a",
+    "mass_kg": 0.05,
+    "provenance": "declared body A mass (PREREGISTRATION law 7)"
+   },
+   {
+    "id": "mat_b",
+    "mass_kg": 0.02,
+    "provenance": "declared body B mass (PREREGISTRATION law 7)"
+   },
+   {
+    "id": "mat_iface",
+    "mass_kg": 0.002,
+    "provenance": "declared shared interface patch; owner body_a, reference body_b; counted once"
+   }
+  ],
+  "object_id": "mat2_m05_interface_rig",
+  "provenance": {
+   "note": "revision 1 = bound state; revision 2 = bond released (bond relation removed; contact persists)",
+   "preregistration": "PREREGISTRATION.md (this directory)",
+   "task": "MAT2-M05"
+  },
+  "regions": [
+   {
+    "current_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       2,
+       3
+      ],
+      [
+       0,
+       4,
+       1
+      ],
+      [
+       1,
+       4,
+       2
+      ],
+      [
+       2,
+       4,
+       3
+      ],
+      [
+       3,
+       4,
+       0
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       -0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "id": "body_a",
+    "kind": "region",
+    "matter_claims": [
+     {
+      "matter_id": "mat_a",
+      "role": "owner"
+     },
+     {
+      "matter_id": "mat_iface",
+      "role": "owner"
+     }
+    ],
+    "parent": null,
+    "ports": [
+     {
+      "id": "port:seam",
+      "protocol": "normal_pressure",
+      "unit": "Pa"
+     },
+     {
+      "id": "port:bond_anchor",
+      "protocol": "tension_shear_twist",
+      "unit": "N,N*m"
+     }
+    ],
+    "rest_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       0,
+       2,
+       3
+      ],
+      [
+       0,
+       4,
+       1
+      ],
+      [
+       1,
+       4,
+       2
+      ],
+      [
+       2,
+       4,
+       3
+      ],
+      [
+       3,
+       4,
+       0
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       -0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "sources": [
+     "MAT2-M05 interface experiment; supported body"
+    ]
+   },
+   {
+    "current_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       2,
+       1
+      ],
+      [
+       0,
+       3,
+       2
+      ],
+      [
+       0,
+       1,
+       4
+      ],
+      [
+       1,
+       2,
+       4
+      ],
+      [
+       2,
+       3,
+       4
+      ],
+      [
+       3,
+       0,
+       4
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "id": "body_b",
+    "kind": "region",
+    "matter_claims": [
+     {
+      "matter_id": "mat_b",
+      "role": "owner"
+     },
+     {
+      "matter_id": "mat_iface",
+      "role": "reference"
+     }
+    ],
+    "parent": null,
+    "ports": [
+     {
+      "id": "port:seam",
+      "protocol": "normal_pressure",
+      "unit": "Pa"
+     },
+     {
+      "id": "port:bond_anchor",
+      "protocol": "tension_shear_twist",
+      "unit": "N,N*m"
+     }
+    ],
+    "rest_geometry": {
+     "frame": "rest",
+     "triangles": [
+      [
+       0,
+       2,
+       1
+      ],
+      [
+       0,
+       3,
+       2
+      ],
+      [
+       0,
+       1,
+       4
+      ],
+      [
+       1,
+       2,
+       4
+      ],
+      [
+       2,
+       3,
+       4
+      ],
+      [
+       3,
+       0,
+       4
+      ]
+     ],
+     "vertices_m": [
+      [
+       0.0,
+       0.0,
+       0.0
+      ],
+      [
+       0.0,
+       0.2,
+       0.0
+      ],
+      [
+       0.0,
+       0.15,
+       0.1
+      ],
+      [
+       0.0,
+       0.0,
+       0.1
+      ],
+      [
+       0.16,
+       0.08809523809523807,
+       0.04761904761904761
+      ]
+     ]
+    },
+    "sources": [
+     "MAT2-M05 interface experiment; free body"
+    ]
+   }
+  ],
+  "revision": 2,
+  "schema": "chimera.material_state.v1"
+ },
+ "released_summary": {
+  "bond_count": 0,
+  "contact_count": 1,
+  "direction_count": 2,
+  "law_count": 2,
+  "matter_count": 3,
+  "object_id": "mat2_m05_interface_rig",
+  "owner_count": 3,
+  "port_count": 4,
+  "reference_count": 1,
+  "region_count": 2,
+  "region_ids": [
+   "body_a",
+   "body_b"
+  ],
+  "renames": {},
+  "revision": 2,
+  "schema": "chimera.material_state.v1",
+  "shell_count": 0,
+  "total_mass_kg": 0.07200000000000001
+ },
+ "schema": "chimera.material_state.v1.set",
+ "task": "MAT2-M05"
+}

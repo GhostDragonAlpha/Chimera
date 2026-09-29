@@ -1,0 +1,1184 @@
+{
+ "capture_sha256": "d7f677aad1cb85c9513d64325812a70b3822086c5e8e72574c1a6d6dc5729e60",
+ "profile_id": "grasp",
+ "run_id": "mat2-b05-portrequirements-visual-20260928-d7f677aa",
+ "schema": "chimera.visual_capture_manifest.v1",
+ "sheet_layout": {
+  "frame_files": {
+   "frame_000.png": "3ac22391cc6971068e804ecd98270d6175924fe570e13a1b212ae712c1531545",
+   "frame_001.png": "2b64fb814907f1ca926a771c53df0a4bb3aa9bb586dd61857da406a35e2fd7de",
+   "frame_002.png": "104951849f6726b2211302e8c3601f1ad211d55bcfccb0bd80c903dc37013ed1",
+   "frame_003.png": "43ce70cd377e0821aa2746931e4da8a7031210eb91b0d3e25edff9a97a47de63",
+   "frame_004.png": "385bf7759e24bfb94e63d9ff0856ff24da3042101ec4985f4b368a805e45b462",
+   "frame_005.png": "5d8d8c3d45773a645260af8eac5d98457ae50e270edb2c39075075891f664fe9",
+   "frame_006.png": "9664362ce2d13feb8ed7b5f72fb737efc647d073f940389321d95fe542d34a1e",
+   "frame_007.png": "adf7ceb7bfec578ded70439e76ef2b8089f16c2ea5c86efefa7da96866df5ff3",
+   "frame_008.png": "524471b3ea6cfda58dab9a89f41d56ef07b30d619ab457725e559181f1974cf2",
+   "frame_009.png": "7238e5edeb5d04096bec92b6c5a791111d8e21af912d4929082825eba7f551f8",
+   "frame_010.png": "dfa8d5939a20da249f4356accf268962b32d712d002ad3ab9d62f43a9b52b1c0",
+   "frame_011.png": "e02c18c75b5d2ca683703910cba39ddf37a35c8b966a26a067bcc3f80dcb1b10",
+   "frame_012.png": "84c5456828b12fb350d67d03ddf0e0cefa5436758d4c4658cfc5e0630b12b370",
+   "frame_013.png": "4523b2117c449417b44cda6481c44c25cfe48ce914f548a4e19e0efd82683b63",
+   "frame_014.png": "0fd66ecd70fdc6f1fa55b9502e9d236c40686365e3f88931f30b82a1ccbd0634",
+   "frame_015.png": "3b83e618eac3d6a18d0b44358772bdc2731e3f399c134e3d2cbfe982a8edc991",
+   "frame_016.png": "b0f5fc2fec2ffea3ff445ce24e7b1351b2f64047f053e9e2a837d7432e609026",
+   "frame_017.png": "5650dc0bf234facb67b56105fe9f239efffec09dfaa67a45ef5eb52506729be8",
+   "frame_018.png": "4ea49d05e57c8f11422a8f9f220c30fe092457bcb21dd084b2d882f4b0f3fc9e",
+   "frame_019.png": "03acba86d0ca40bde62b4a6824996983d6ca9f0c3095df5c5c34265e2237b836",
+   "frame_020.png": "d30e7f44b6cbb4ff52c9fe049abfb7b54d64331923060c10e0ce664880f1bfd5",
+   "frame_021.png": "6ceb36fabc5bf1b5a3bbbdfacfc3af1b70e0419f31ecf1e9687297a52621538c",
+   "frame_022.png": "45a16e6c8f61ffc50ecf6b0f9e02f89b85d84eeb60b4cd1e207dce64e0b505d6",
+   "frame_023.png": "a08e51ee406f6383fd43270cb0276bcf158594de86d2de2df4b93e3b1e60d5ec",
+   "frame_024.png": "01c5ac97cd5194bf95df182ddbb328049e062a3ffcefcd39c5d5bf1c9c719ac5",
+   "frame_025.png": "b6853402d9d63f255200b690883ddda677cbff2673631ac3823784e3ab246e6a",
+   "frame_026.png": "7a44163f5bf9ede6f102ecde7c38c32a976dd1b27492b3b6b88f76ed6fdc36ff",
+   "frame_027.png": "da593fa5eba96d292565e3d7ce47e6a91e39a402f7646dd8038a818f6f0c2448",
+   "frame_028.png": "227f87fc6babf7c315822e61b7bb9849095de76d9344f2163529e57a203229e2",
+   "frame_029.png": "3f4841f2a956f16a78b1136fa74b79c36081bfabac929fafde83774afe438b71",
+   "frame_030.png": "36de0ace2ccbdab533653f08fe0ab8172a4efe3b757a1158a886dde1d9c95ac3",
+   "frame_031.png": "130303771a4f777fb6c1318f7ad77da99efc934844184ef8f5eff45d1ea80859",
+   "frame_032.png": "ebcec9d8f5c2ee06f4e326e57fa0a99a28119978f675e77df99821a63a1058c9",
+   "frame_033.png": "ae034c600a28a7d2051ce95b9f0812d8009eebf4482d2d11fac5383743e49281",
+   "frame_034.png": "c02bb4a873a2c049b3c40fbcaedee2583cb767f482ce86c08899c474e87b1cca",
+   "frame_035.png": "2f3fb9fd3189137a40653c830575ddc5ce60e349af113025ebd46d347d0bcf04",
+   "frame_036.png": "12db298fa03fd5dac532e392338583d1eff2532cad944605691063ee47557eec",
+   "frame_037.png": "2b81aefc19b2572e739015165edf52e346805bf53f044a8222f944c30702381f",
+   "frame_038.png": "354596e33b298006f5b39166209c7d26a606d3b9cd9457cce777911d9470a0f4",
+   "frame_039.png": "f78f58b91ded74f24a85cae9015462df907e76f554ed7f0c437e9e3f78d3b1bf",
+   "frame_040.png": "00f8c645c5bf1680bec92535881c705ec04fe74b1fd857456807714cb2a15c92",
+   "frame_041.png": "1157c0b2de3882baccd2fa965752b6be1d484e616696715ece40dd668ecb4951",
+   "frame_042.png": "f634dade4f853b21c8e976c50473c0c12118887b35d8e0dcbc29dc93684d7e01",
+   "frame_043.png": "e5dd32d5f7fd1b6f5fcb79abc3708841ebae4cd6a6ed7a490003c5b845509aca",
+   "frame_044.png": "559f9c664d77eef664e577278862e12b694918a11c1ea7cbbd3eec6ef85e890d",
+   "frame_045.png": "3f1904e9bf9108910786f3f504537b29a3fa11726c9e0e531cda6196413f100a",
+   "frame_046.png": "b67fee8da314dc09bc2936e00f3dc6f434d644b21f4bbacac49ec40de15dcf1b",
+   "frame_047.png": "16097625a4762de629990c6ca24b529878e3e6c1766ef46f4e37482c7aa7b422",
+   "frame_048.png": "062a0fd1596b04b2d5d7197a3d5d608f2c2d0d6a84ec216b31b5ee28fc417cc7",
+   "frame_049.png": "cd05dafee21b43ac7b549f0ab0e1130684476d448a6c24a70c1f9dbf9c435d2a",
+   "frame_050.png": "d1eb9cee93ff866a306431ffb254ada6a553160df8e3c81684fd8542f34911ad",
+   "frame_051.png": "6acb541c41d630afe888f0820f5512863c4bdb00c84313256d27be746b999e55",
+   "frame_052.png": "0d7eed4861e491b2d83197f7e33e1235d7fc1980f9bfe556eeae7937ffadfcb6",
+   "frame_053.png": "611f80e62269a89d5f4dd290800e7e5c0720eb27eaf7a4c68ba6d6421633dcdb",
+   "frame_054.png": "c55133cdcd775dbf3da9435e34d0fe6a920193bc6223a295372f709d5300cd66",
+   "frame_055.png": "0ba9b688bb05553e971782df7b3afa6238b8ccc70ed82c5df4b5390f0a8dbf0b",
+   "frame_056.png": "38a0b7be4bc57054dd531b330ed126665cb8fefec86066e45fdbb2c56e2f3c8a",
+   "frame_057.png": "cb54903f22d6f969f2f24b62823c16a216879fb28315344f71f7d3872dfd0bdf",
+   "frame_058.png": "3b74e2b72c7bc901761d11c4e10eb2f1ea64429be0658aac50f1d79268f14802",
+   "frame_059.png": "e47e8e58779a6d36f29f05195d5172526b5b0af31734c00f1aa39fe368b79c86",
+   "frame_060.png": "b723f1ad77c38031e6258fd36c77259d71076a9abf623898c15a2e5628501da9",
+   "frame_061.png": "1a723b42408e81de923e49c1042745d027f5fdf1c2434d551a37768ec6180ec7",
+   "frame_062.png": "b05acae3230ae610eed10d5b15f4f1fbbc412f3b08d3757c03b4f39bd8269dae",
+   "frame_063.png": "4bf601640d19fbad4de93ec85d0dc9b37a9500e3ad061a86778b0e5dd1222a69",
+   "frame_064.png": "e0882becb803d3a12d7024b4dc3f4c4341d7aaba0792c78ef3be20d5965397db",
+   "frame_065.png": "19dc8034e0591379a4d00afe794e962b1f77e34a7cb98e1d5450cbd52623b411",
+   "frame_066.png": "ffb27ea5936b3f2a942046c8c478e2a12f40ae9c8821f0b9968e1eddd53aa301",
+   "frame_067.png": "80c41c87bfcc87acbdfb7cef2ce11289370246830155927d48c17e0eae2d0b88",
+   "frame_068.png": "2d6ea2c772a55aa38c4524293d28ab562c87087e82a5567d12b9e161cdf1bdec",
+   "frame_069.png": "bbac69b29aaa0442d880eaeaabf52a59cd544de54f36f687d9915c753fca0cde",
+   "frame_070.png": "08d739b20acc0455d31ef59ec1b1e0a653eeadc38f99411a533f401811f845c3",
+   "frame_071.png": "d80d5db732ef1e55ddaa447900470da4dbd468aa0a4b4ac1c196144abe10c369",
+   "frame_072.png": "de0e5f100b8f24218928fe68e63dc4e03eba8dcc9b0870b972368520dfc61cc5",
+   "frame_073.png": "068b72224e91b0f8e3911b31bd295105489636f12a9e758fed9967c0327926d5",
+   "frame_074.png": "1e57203dda6054e879a5ceed49421e9e287f67252700ce3b262dcb17f002c8ac",
+   "frame_075.png": "2cef5eb6cd5f09cd9ac376780f07cd73a4f5a5941a65a8b744b47b674a455e54",
+   "frame_076.png": "db70b9e074cdb3e35efa141f90efaaefde88e5829a9c2a6a1df4d0f717bec82d",
+   "frame_077.png": "95c07061adadef7a6b5e332d909776f95acc5e824cc65a822f33c00f5bfb6789",
+   "frame_078.png": "8ea8ddf90ca9bf1228438659a2ac7c9f6ef901f59c90fa46a5e6af308d22ebe3",
+   "frame_079.png": "48ee3ebd5810d966f741536bc703bcfd27ae73bae851f487a704d3de724d64ed",
+   "frame_080.png": "035622c435f2c51f1346cdb7d44ec4ed41de3fb64323c349f088cf86b09497db",
+   "frame_081.png": "4007c12d77aa7f640baf7341291dc28e72b98f87c075dcc3c34d5971e680ac7d",
+   "frame_082.png": "5164d81eb3ad183c38fa35d1d82a1b56a9bc1953211698d384dd3c4dc6e14d2f",
+   "frame_083.png": "1940ce1cc230785a800e4304ce575e5b178196250b018cd780324db01ec52c8b",
+   "frame_084.png": "18aee19a7f59138b70b542cbab77132609f95ab4b98f5c76803ddad3e8dd1b71",
+   "frame_085.png": "3cd60cb22883318929304e19eb946113309f743ee2627c0dcb012dd93b640a86",
+   "frame_086.png": "57c4a364e423f55fc9e6d4d8e2ac3b239b7b1140c0a0ab55d16a03229ee92eae",
+   "frame_087.png": "7a4407e7ba137f7b5e82b164d8de44a593d043b0caf87adb43c9ba4d0ebc1243",
+   "frame_088.png": "99ba152e0aeb146abb2342075fc4df327bbefd96e832b2c1e23ef61a031059ab",
+   "frame_089.png": "dcce1e536dd5d1195893dc500967410d049d31d42d2b4e91fe358ec14dbaf68f",
+   "frame_090.png": "94cdc1ba042cd22896adad9dc693ee86fd1fd18ee11be92e30873c7bc58a0e1c",
+   "frame_091.png": "20f3633635f397e892de0921df7ead979716f433fbef2a9d1041c02a19982ff6",
+   "frame_092.png": "1fdbe64543a79f02491067af634a2f5be84aa21cd0206cb6601dde9d0166c6e0",
+   "frame_093.png": "d1330048342cba0784ea1f01f1ab6e5be6d1baa25f22dca0b5eee3fd444d6b77",
+   "frame_094.png": "67da08b7eca7419320422843eec57bd59fe59b27bb96b54e3f8b1b5f2682a33c",
+   "frame_095.png": "cfc18ff663b05696c34246aef810ae2b2b1d9c7e00d8e71de55731cd54915950",
+   "frame_096.png": "27771ce63a8e4ffc7c31d5dc24ec2d7b1ba2221efdd3ba5e19c3a8f8c055cc2f",
+   "frame_097.png": "5b4086a845647fc9261a31a8f0dfc2f80887d504ccded7e54e5ea0103889d680",
+   "frame_098.png": "8d094e8aa235ffdb364cd9927f0addf00ca4abc47ebeff9adf8d9b4fee60db1d",
+   "frame_099.png": "77774b3023ea3d57c4c8698ecc22d2cc0e7e551a53a746d7fc782e199d9e8542",
+   "frame_100.png": "cc93acacbe784c89b0b0f0ef6b8d45b4aab382bd1471ff1a21f6c3ee4b50a555",
+   "frame_101.png": "85ca5e9f3094fab72681a2b783bae3642017437014bc3ba44cac1fb6d4b088ea",
+   "frame_102.png": "ae5a83c9694c0747fbec7737da5f26e40c390d3a6d1172b7ed11823f6ef97b2f",
+   "frame_103.png": "72bedfd82c22c036b8f863d9f53905fa9a3d063f022ddde83006accba2574cb7",
+   "frame_104.png": "c4f8ebb72d519ff0dc5dd53084849e07c7d6fe4efd9aecc08ffa7c8a90485572",
+   "frame_105.png": "48f5199a717e7b716f2b25a2050c77936eebc91aa1cab68e597663373549c800",
+   "frame_106.png": "b05b9d18323261a53b8dd98e745658489034b9216ad6d66e062de7fa3afb8710",
+   "frame_107.png": "bcb42296dd82e4800fa97ffcb3303f6953f1309453a0eb2036ef6e9f081d797f",
+   "frame_108.png": "3cc33685ccabd7936af1e11ee23fee7837632bd4550f41a56e95996adf054a4b",
+   "frame_109.png": "f42e0dd088531aa59558ec49d55670af44e028e488f261c2f91b3d5b78f8d5c3",
+   "frame_110.png": "ce376c72427c9cbff8bcf7b5df1927d7f3437460df8c89103c059071796777a1",
+   "frame_111.png": "4b482da92ba5ac62eeca8a594d37f4d142ca1b5564f7bacdb131764fbbf11a7e",
+   "frame_112.png": "948fc03e1e6fb0d16b92708f33c5d3c993a018c1aa03519242901f185e1a6edc",
+   "frame_113.png": "cd98309a5c37375cfd6bbd5ae0bf4439f22baeca19ffa08440f9673baead19b4",
+   "frame_114.png": "6c175f024d00721378cee9842c3102237d66534411ec07f784028f1716aa1a96",
+   "frame_115.png": "42616c56e9b4a0d0188ba54b55eafa4235ea80bf8e08be10eb57d185787228f2",
+   "frame_116.png": "e8f294172d8d6dabb9916e3c6aa5aa5a7ee56b65a3d881e967301277d5531316",
+   "frame_117.png": "65994895aa07c84cdbfdaa3602a733514211fcd15feb7d8227f03b27588a107d",
+   "frame_118.png": "b7cc79aeead26b1dab4567358dd0b397994be54f491526c39524e2e10a2b5012",
+   "frame_119.png": "e2697226f3fe70a3b6498773a4b9adb0852fcf29449c2c67602627fe17ec3558",
+   "frame_120.png": "6e860312c597a412f5a6f385dad628d265d2de8c6a072effcbddc758ed0ea2ba",
+   "frame_121.png": "5fbbe0cc42bf0f931b1b6a8e947065b744b2a2da005938f7266afa7c9767527a",
+   "frame_122.png": "e9c3569ff0cb0ee7aeafc6d49ecd12cd22e575158f700ea97354077efd844a82",
+   "frame_123.png": "d5e115ebbc7231cc9e0938d6fb6cd0f4371b7a970ebab11e04f948dab64b940b",
+   "frame_124.png": "db02ac7694036770fb10c1f7f61b9d42e2adc80a422a84cdbc166a1c17086b65",
+   "frame_125.png": "2727f3e32ff2e35f2144bfd2f1e58529719b0c13b3eec5fa485834d687903fa1",
+   "frame_126.png": "28acbe58c7f31ffb12c4b10b21e06871b9f8f456907d8da9e79c47672eb741ed",
+   "frame_127.png": "808602b92dab4b1c6e3560cb81dc567295b1a6faa5124f55402b7ac3ab329f1f",
+   "frame_128.png": "89aed4ea9d4ee116dafcf7f26597ea031b47555f5376eb2106cf481c8583e508",
+   "frame_129.png": "506ade241043905d0e8e9bf9ca58ff4d45108d446b9e672d1e3973c033337e11",
+   "frame_130.png": "b1cc64a0a64bc0c0e386d82124cdbd3ac285032858f129774337a4838750bef4",
+   "frame_131.png": "75f0dcf3c022859926de54909a8bce10d80035493280b629df4750d8f9001993",
+   "frame_132.png": "e1e0c85afb42f18ad55649df3d6ff36f9b1ed9d543eec613e32aa27699071550",
+   "frame_133.png": "c1ac0650f2aa3ad8f414f2225ab0786aca867181a3eb6d5513e01e8d24ace3a5",
+   "frame_134.png": "2c0e9756f7d83806182dfb1e42fd0179a736088ed39f0b6fe73fa03bf6f0edcd",
+   "frame_135.png": "1a2df5736564259aa6ef0190302fe4e745e8b22f2aa9d18b4b05f5172e280416",
+   "frame_136.png": "be22e493ffd5b2f620283b15b9cef3073109f2d142fc966c7c85bede4a999974",
+   "frame_137.png": "2fae2b5188806abba004c14bc1888b6d87eb5702bfddbfd9aa9a173ded29840f",
+   "frame_138.png": "175d64f9bddafaab5dfcf865c9c9b1c4df764af95caee84e8b63553bad89c3b6",
+   "frame_139.png": "b8e5ad3b85873a306985f88aa6f1331783d878b85f0fe19a4df0cf244a35b52c",
+   "frame_140.png": "ee1aac9532ca111960456eb8965aa435896bd82c9b8cce0e0dfbb5e767ef34dd",
+   "frame_141.png": "2e97a0a061facc78a3058bf0bb112de63eabc62cf51f4f7536e5588a965ee92b",
+   "frame_142.png": "98f9e5e9a238f25c6ead1c200c438df18450198eca2fb8173d03b45696184952",
+   "frame_143.png": "21313342e386edb7f54559d5d02b392a33e8b9a3bb2eeae12f8ffa499d9f7d8d",
+   "frame_144.png": "4953828f40e9e8240986347335ea26a045c463be17500fc677219e4485aca033",
+   "frame_145.png": "7f6d0726710967c764a178d8a55ff2908a23ae84ed77709d12f9e913dd00a15e",
+   "frame_146.png": "eb6a63b16e41c3c5142862bdbce3052bd8f33d59c8646a54ed22612a6edfd68d",
+   "frame_147.png": "0fc6ecb7a5d49484f4f884df1e825e5eb2420491c66ffd55576587a66c8bc7f4",
+   "frame_148.png": "8787b57b128d3f74ba981ee3618bcb83d06133ef30384d2e9e323bae0d337d9e",
+   "frame_149.png": "4b8e38d0d9e1caf24e4b55a986db784e3fd907c277d60841d8d49420f4385106",
+   "frame_150.png": "70c15bd5a7f586b574e3376a203dde04e407d4e2cc7ba43e3a3f33e6c2db349b",
+   "frame_151.png": "90290464d20fa117af243a2d668b15d986cddc8cf3675fc7875180eae5c41f9c",
+   "frame_152.png": "3d8d00cf08ca30b742817b61d481183c7781404e7bd715c39fd10a968be22dd3",
+   "frame_153.png": "645960064d5f7fbad18d477e79b24aa07a0fba720f7f366d8c9f1edc67d23b78",
+   "frame_154.png": "76c1bf4eff7fa7051918454c5902083fc4245d870e4828119edee41918d9df39",
+   "frame_155.png": "490243e6446c61ced0dac42f828ddf4956cae3f2994c5af7e2da8711948b0293",
+   "frame_156.png": "ad6b56e55962c6eeacacc76f9969dbdaad141cb63f710a44610149d2de1e414f",
+   "frame_157.png": "6089e5a77a129bf882743da600540e946c479d79835d1f24c88c3de3efe718d0",
+   "frame_158.png": "b53b5c91da102332fc786dcf045e3ba8a721cf1455b3ff6ce0fcc25ec6cf16e2",
+   "frame_159.png": "8dede113cce5e405d41925fe572073d3b1b1993d07c524b4828568c6b7dd84e8",
+   "frame_160.png": "ae5dfc57984c88ce584ae3cbe9e4f01745fabbedb153ff9fae26ff97e763e394",
+   "frame_161.png": "d1388a2cefea84f36f4bc2a2b97ed0451ff48fc965ca4b8780c4b174f396d5df",
+   "frame_162.png": "4227b705bf0bf9aeb749cdef78b289ed5be4192ae09096b823e2dd589cd448a0",
+   "frame_163.png": "c99bc055f4bd9fef814d51ee92934e9a49caec7460ffc4e4149a6670949eb657",
+   "frame_164.png": "f924876410b3c175f2cbb41d6496713dc238dfc6253f1133a420449175ce4796",
+   "frame_165.png": "2771b50ff8803ce0078fe5a440deb02d7b47b5622d0153e12a9d37d8c08ba960",
+   "frame_166.png": "69c03ef49152709323c8af8e8b9367ecf5cfad499666950da8f68cf46a3bfb3b",
+   "frame_167.png": "33df2c4e8fe2315cba36e0037a41079122017fa5815bf719588ef8c1c302386b",
+   "frame_168.png": "cda8eecb5211a6a923186618434a7b203c31cd60876f9d38d99cebdef817bcd1",
+   "frame_169.png": "e9156e7121798f747e68a76749d025ea68862ceb6799e4c071e948d4980c0b36",
+   "frame_170.png": "66691792303e1c878fa85033b938446c6858021bbfa4f2695db2663fc32d566a",
+   "frame_171.png": "52bd6b40c6d6a23d6675a24faae4e14ef971e89907657b543f9ee77e6e22eaec",
+   "frame_172.png": "b35370a6fbadfb7e5e54d4d7f5a703555899f81640311d690e78cfb47e86eb20",
+   "frame_173.png": "8b7a892175571b2a3839af73909354a70d56199a346cb887559c550c3875bf77",
+   "frame_174.png": "3daacf8e5951da0fd8776b468831f8c6ac89712afeb5e988f6226bc79f420034",
+   "frame_175.png": "496f43a5e1ca921018aab1aaeb8d981b03e50f7ff7d3a8cce7365f385c65e8a0",
+   "frame_176.png": "47f1e4245b5f061370474a04d842a691d1f432ac9c5a6cd5fbf48e25848c98fd",
+   "frame_177.png": "40d1e9118df244d9372a6735bd7d1e58270a4adb576a65f0cf89198ec7d9dabf",
+   "frame_178.png": "afb4b7be132d78fce162bcba40a3189458a78283bb02d23764a859ed93890f64",
+   "frame_179.png": "5c38c7ea0639cbd3362617363fb17089ef248c06ebebe59254bea19e7fbe7d1a",
+   "frame_180.png": "dabc5df7152e4ec4bd6bf55ce66565a8d6103a878c2401b93a4ccd1f628c71c1",
+   "frame_181.png": "427d640018f9fc5cd65ffd4a047f482cfebae05c22fd2b2c820f65cffc8434bf",
+   "frame_182.png": "44e287c68f191f9f1ae46412f959029fa07fba4fa522e90d1a730f64c8ac7468",
+   "frame_183.png": "0795b9f2c701fd609b0dea8b95691deab86598b0f9e9f6d7aa3a274bae8ea58e",
+   "frame_184.png": "d6dc6e82ba668afd49f1bd9096f0a4ac79f6ad05fb72f897c15862ff595ada4e",
+   "frame_185.png": "90f8d482f2544129da5a5551f81f3cd863ce16693d18a06feaed69d0cfb65dd2",
+   "frame_186.png": "d88e356772eb604ceed83b692894dbf16c9d2de9e41efaa7f788eb5a5102c049",
+   "frame_187.png": "065b4ee36f1f6f18ff3e3ce80b043cc318825f8883d76c533144abb761512fbc",
+   "frame_188.png": "f9113cde7fba9c473232981622c2009df6a615a4c90f6112726c2b2867a8fafe",
+   "frame_189.png": "6c26adcfa5460e6bfb51e96d843c8b69447dfcf1c5836bdaddde87d56aa788de",
+   "frame_190.png": "189315f553174db82b09c68200f96a099829a2c1648b44194d6118377dedd5a3",
+   "frame_191.png": "e4498247fcb72e16846b1e10014922b0bbc0d1cd9d7ea9b05118df4322af964e",
+   "frame_192.png": "64d4c3b38c51516e3b63538c5ce4976941b7155466d7752dcc06d6a6998d59f7",
+   "frame_193.png": "a61c798bd3368cf6b4fd2b072c51188db62af1f3ec0a67238966a5d290aa673d",
+   "frame_194.png": "0b6dbeeedee86cb52752e8bc7e80436a378de9d7adb538cf56d22b0e1d2161cf",
+   "frame_195.png": "32e1314640a604254895082bb8c3b652d24d3af25072a26b2c65e609bd871fd5",
+   "frame_196.png": "3ed1771c41bdce055389641a964c33fad5a62f8cc70a58a6f94affb9eb9f2439",
+   "frame_197.png": "383f32c36801a54a56e3f2f96b7c40fe9315da51d36be9ac3768a53bcce91e87",
+   "frame_198.png": "c2f592fdf8711c9317288d2ea489ca547fdedee61e7a440e8e55d121d364c112",
+   "frame_199.png": "4eb29f20cfb4117484974ec4e77dfc6b5e0036e44b20d750a8acbfe3f8d075e6",
+   "frame_200.png": "f411244e260cfa64db39e275e4b7f0a505f0fde3afc703b24f3ffa3ad707781c",
+   "frame_201.png": "67286b3dbf268a56fc3e25aa013cf0d48a3cf37ee48e475ed460e7f78594a731",
+   "frame_202.png": "3aadb4a2caa5b014436900df702ed3b4189d97b4e8a842c6af205d19ac8674cc",
+   "frame_203.png": "15ad00f3d918e40abc77ef8ae377abb3d2f18bd5df58b97e4e652bf3363d5f99",
+   "frame_204.png": "b22aed3d67ef2f2d46df37ea0432c9742481ba820c893cb216d3aa60ec03365c",
+   "frame_205.png": "7d7cc98acc355b662b2d8cbbef9bde2f2df77e61667abd26f9196f71b162d8df",
+   "frame_206.png": "38c4810756d711015b48838a42b8a2536f24d3d6dbb6823b2b49c8cb84f8ac6e",
+   "frame_207.png": "6ed94dd8916619f8daf624c47299d8ad025e1850785f9a85fde4223e7b48d9f7",
+   "frame_208.png": "5dafe2881e57dc19d5e4b194073e634aa358cee7d9c4f478b02205eafe3c3c1a",
+   "frame_209.png": "6aad29296f09f4def23f9e9d623cf3ec0971a5ab9879c5de07f469f856afff54",
+   "frame_210.png": "7a11bce3b5f45fcd831f1c81aad9f2fafb494d02d469be226e121c94573d8ecd",
+   "frame_211.png": "9e51fc9128efb6de85dbc0bff786e5ea0fdee9e629c0eff973fb4b2a4ec13074",
+   "frame_212.png": "ec7ec14936d078ab4871db9b55557dfd3edba65079e529ea7b7ca4140c175b9e",
+   "frame_213.png": "c85fcb0bb499165d93f3a647b1736ff9a81cc238f242fe866674406080d215d9",
+   "frame_214.png": "ca627e1ebcf6aedc48076b692c641afe00cfc5bfcef8de46db2c50f5ab447806",
+   "frame_215.png": "6acef637480cf1e1d9579367de0868eaea4992e6746a7fa6218334dc6931b515",
+   "frame_216.png": "3178d3107a59b787a2b8d904a294142844b34affafc7b979d164a05a69341ee7",
+   "frame_217.png": "1d9ffe128e5d8bd148ec1822f8879eb6da71f50aa3f89e95f4f4ab19b8ad1d93",
+   "frame_218.png": "376bcc516d3c9d9fb1285d8d0fd2335d0f28f3a690fdecdb667a1c5ee5ce1d4c",
+   "frame_219.png": "e554a1a4c7ffed7be6a79619c7b3ed8558f8a40656098bbbd83cb0ba57109e9e",
+   "frame_220.png": "6b539397dd250ba74ba2e14fb2b5f8c4917cf5a214d5db6d7e6db7a8f89d25ce",
+   "frame_221.png": "accfa60d80c12fd0a83d3f651eb48eea953a1447a2f6461733f47372a68cb3af",
+   "frame_222.png": "ca1e47e3ae3f238c872286b647c03fc61ba2bc13f5757a83db81e21f150bbe81",
+   "frame_223.png": "2f67f04f6a82ed8ed4ac0e719c2322d692a3b380aab8b679b3fbd40546d192f8",
+   "frame_224.png": "ae261a157bba648a9e1e5a87be5cbbbe8e1f5ab32bca01de40178b8dad27e352",
+   "frame_225.png": "6319a6ada87dd898641b6434d2e3b9b26458d6d32110a79be93ad6b2ecacba99",
+   "frame_226.png": "bf3d39ad3b007589de2a0967b0b12277dfb9d74dda266ec0795bf0002b8aae27",
+   "frame_227.png": "d8ad936c5c173b37a74613c2b93b26fa2a3a1fd6c9092d1a26964cd4b07f0a5f",
+   "frame_228.png": "7b9aa674f2659521c5f9f092a4f2cc56267a144a11250d9dcb1248ba91ce38e9",
+   "frame_229.png": "9444c390146ba2983694bd0679e00cc029255e0b6239a4d273336eabeb675353",
+   "frame_230.png": "2b1432d6c09ceee49932928a6ca792940c671cb9c88fa13a7ba99ace0b6e9937",
+   "frame_231.png": "eca3ab86a8078fca6b3d888312e67941edb1b4a6585f2d21aa4386118b7d8938",
+   "frame_232.png": "6ac711a7cea049b12750d50a953c26f459727fd55d03bb975ced34a147ec174e",
+   "frame_233.png": "adb494f2a1acd6105a3634394c0ba0cb6ffd9cc962e280a1f84a8fdc9e94b44a",
+   "frame_234.png": "822b9130a4be070d1b3efe5dd403f1c0fd8db41c750b1c11937fec639c28ebac",
+   "frame_235.png": "dfc30949f4c8ea2c988f51211106489ecc1c373508163781bb78e49adcbc9db1",
+   "frame_236.png": "fb795071f21c788070bb09746b6c526dae76a9d323dfc3627e09c6ab4a14517f",
+   "frame_237.png": "88e34dabb9d0888aa80c2f9e19d6caccd63c2136da61366f34652138113abec6",
+   "frame_238.png": "c3dfd191f486882e9f02c2510b8c1df7ecfc29beb65873435ca750eeff4c33a8",
+   "frame_239.png": "64bbfe38d46a838036c2c2c278245ec3021aa5e47d2ebd952353c6b055999fe4",
+   "frame_240.png": "15b535f45d342ba4ec7c84ac4b62c5099283ff8a44c6087558b82a84ef77b7ad",
+   "frame_241.png": "3e627c7a904df22d18776d778200a109df8f525db1387ada44ceeb4f623aff4e",
+   "frame_242.png": "0446e432e8a5faa73576cba1d48a62dec806be2136ccd80c54f3823293b96d0f",
+   "frame_243.png": "9d27c46bdc485be503824d14a35f24966fca6e2526f4b766f8180100f21e17e7",
+   "frame_244.png": "d652c3fc700854a557959a6b37893ab2aa486e13a0482e3da8261301041bba8d",
+   "frame_245.png": "0e1b84f4efba830dded17ed6219407c7d2bd9a8addb80c0fae60031a72f30e70",
+   "frame_246.png": "b3c9845ed1ed4a4695bca58b0b2c939e38f8585a2c8c5567b54a3dfaf1e3b5a0",
+   "frame_247.png": "c24dd78295f5185018d3ea73f2c9ea8525e4971dee30150fc4955082a4987a61",
+   "frame_248.png": "1e50ec0995f6f6ac012b9b091a3fbd6615347a93202b7f1d05f273ff071ff67d",
+   "frame_249.png": "e1116a05adb969902015eca724bfda28d3d8b2294f8f279fdcbecb469e1e90f2",
+   "frame_250.png": "c9b0732073ef69c976c796fca0b7673c4d115d8a3cca6594e68a3a27d99a77ad",
+   "frame_251.png": "b5b631f29d3c26ef047bb83aabc58f6797f456e8da0be70750d1d3feda2ee2bc",
+   "frame_252.png": "6c37961e945f010d0348f466aafa51163c871841521e5f4ae0d754468cb7653e",
+   "frame_253.png": "329e052b6d978c4f37029556645596578b157005895b4cf167d850fc28168cb9",
+   "frame_254.png": "f835130459e35f16630efbea09a5f79318c825374c4828c1a8952b7d6aa3feb3",
+   "frame_255.png": "80b33a6dcd25ce94775e5b62ab8223a35c413496f73fe79d93ea78937e11ca1f",
+   "frame_256.png": "b6f92214af02c473a797bf1d5bbc6cc50a481b398976182f4b388e83622f5d5b",
+   "frame_257.png": "9e046f7e14768e9464247cbbe9768ec5edec40c347144e50318b400355b1169d",
+   "frame_258.png": "baef6f3fd08a92c84c91d7cc6500517ebcd9d096e1c63c2d7fa997778dfe8da6",
+   "frame_259.png": "6d21f78c1802900b3cc106c9a2f1feb6258390eda27912c1173839c73c391011",
+   "frame_260.png": "298bad12e575566d38d2e552d66e681aa0beb63038a7c1f2f6bad56da4685583",
+   "frame_261.png": "53dd285e6a0e4b35a2c3336398b06dd738b447ab2565a36396bf9148ea43bd53",
+   "frame_262.png": "fbd6b0e5005f6804d28a2afa333ea70d3f3a846c7597f7d33044416041bc419f",
+   "frame_263.png": "53bb17226300ebf2896ed25064cbd1eb2be5ca83a1a8349c954bf19ca9cb1be1",
+   "frame_264.png": "cacb418b373152d9f5943b7da8aa81887f444e056e9c0f2ba4fe1c4c6409860f",
+   "frame_265.png": "3f8b6d7b5068ae66824f8760e340e1f8394bfac804bb7dbd0883bf9932c98461",
+   "frame_266.png": "323798b25056d48e360084ba65caa1679e6b4b424a583b695d7c1e53b405ca4b",
+   "frame_267.png": "d71b7eb15995040eb643a037564d14f2a2197a516677d97a5bd5eb88da2e7e91",
+   "frame_268.png": "61c4edc417ccdfd642106a94694a7c6fd7b92fd51faa4f33a7a5164d40271371",
+   "frame_269.png": "19203cce6772658cd605a1cb319474d2e01077c7fe1fb8dfd5203fc26be3bcb8",
+   "frame_270.png": "307d11a542672d0b388f1c163dd4e4cc5d970a3703c73a999563890c1618a9cf",
+   "frame_271.png": "bbe0ceabbde7b6551ca9f408e62e047e01c95fd0489ab85669768ad1a560101a",
+   "frame_272.png": "fce13146a59ae1f150648914757425498c3e2faf2935b869242cf969b2998da0",
+   "frame_273.png": "61667cf95f0fabc1e74627cfd557f6b892f5fb5c28602c6a0a08fb11c185942e",
+   "frame_274.png": "4a06677f8a7517de286b75b03e4aa12d725762d7ecc5dbae671ef595c1fd7445",
+   "frame_275.png": "0ad717e8991dda6d491b748b229493156c5ce5cecbe039292590c65be53cc56a",
+   "frame_276.png": "8fa2e4dcea438596f991103a9943f878c023ede1ea12f5e6f57e8c2ff45b84d1",
+   "frame_277.png": "179c03ccc60138cc3a00103a9b486e442523156f925fde5dbaa7065fbfdf8a68",
+   "frame_278.png": "26e52d02b23b7cb40ea0bcf7fbdd49810a3d0e02321dcbb7946fcd6b96e4b17a",
+   "frame_279.png": "0789101f3d66a487689c81f313b9f13613bee0966c4148e3969edf757e0e5d7e",
+   "frame_280.png": "d0c8508a72b6195c20c0432fea633ba96f2f525717e378815bf4b5e565694ae2",
+   "frame_281.png": "719b411cd7ddfc8670d7c42f2e5fb71843cfbafe3619f1fb48f21e4e4d2c5166",
+   "frame_282.png": "c95a64c571505cbb0b688166874cf57cfa270f364723987aca0ace471f5f21b6",
+   "frame_283.png": "836c51cc392e05c59cc1bae01574e6333b8d782bbc401263b114a4ba34038abf",
+   "frame_284.png": "37d10f50cb8383f7a8ba941d2a1dab352af63eeba0a166dbaf963d49eb62750b",
+   "frame_285.png": "a3d1e23b86083a7e5c355cc3b2b3a9ac2f7ceacd2a1fb3fcdc9034dd53f1f085",
+   "frame_286.png": "a5254a264641f912ad8e167244c4093fd6dbca033e1983e6e077bd66119afab8",
+   "frame_287.png": "380e3ce8beeabb23b7ef6869e22048f2f611c48abb372df1190cc539e6b3a6a4",
+   "frame_288.png": "150a66ca29e0c09fd4c925e3d16ae6fae34a86558046b33abb89bc4aa254aa51",
+   "frame_289.png": "d1fc98abc91f46557dc240d7d1c57d5638dc3d404b12a0b0eb02979c15b4a404",
+   "frame_290.png": "83a9115a54d95f26d9930942ec586e45ebc0ffad9c950b5bdef64a28722a3c8d",
+   "frame_291.png": "227813b0d82165eb74be137e1d74df86beb9be8cce0247bcba6296ec2fae71ce",
+   "frame_292.png": "015730e466b5b483a483adf0df8b471f997be800201fa8b51950035323076876",
+   "frame_293.png": "cdb70623f136669c27c716a565f1acffae265aaa7df9c9c57756be5bc349d4a7",
+   "frame_294.png": "c771c812b1406a9fa2bef68dc20cd7b8bb09722cc090d2233d709dab954bece3",
+   "frame_295.png": "d4375eeeea3ac8afc8194349bd0ace7d6c0f8e48696666f5a6f8a16a12a9cdf9",
+   "frame_296.png": "ccc0c6a8e6bd9469ef5477465bce1592be7eecf37d64e689d48f9396c5667586",
+   "frame_297.png": "fd686adc7f618b7b36a824a829becadb35b556f2d474ccae3c607ef5f044877e",
+   "frame_298.png": "316591f40960f65f960e6e81ca86551477b12d26108db0648243df53b565a5a8",
+   "frame_299.png": "4560936f8d0780705dca9c96143be337652d19252489e901c9af044f4fb14359",
+   "frame_300.png": "64daf97567acbfe5b87c5e78ffa85f7821588b3ea46386d24c1eb58f67ab661f",
+   "frame_301.png": "f2ff811c4b932be2de9c50a0465fbfe7faab3c874189a17f0b37c0431f623df5",
+   "frame_302.png": "d0cfcebfc1243a8bbadc1ce0ab724eb7c98031fe69708c8b39f290fd3785e670",
+   "frame_303.png": "89f4184149f0c265e963378bd8be6adf1a76b3383e2bcd7a7a18a8378865cf3f",
+   "frame_304.png": "8460e6921c61bfd675338c212b72ed813cf01541d04dfc566a1c0dcf6eec901a",
+   "frame_305.png": "9aaee995533aba94a3ddbe384a2965dfc59e4a78497a72799acdb90ba1b44f98",
+   "frame_306.png": "4818d2a331acaa25dfd1def4a8f8b121b80d6ff1e163a61892e914bdbabbb93c",
+   "frame_307.png": "c287ab351a5dc9a2f15a117bf9bc952715b7c8b8b7aa0ac0577396d5247357cd",
+   "frame_308.png": "31ad55887870625152bea2035e15402f4b6cfb353789105309f973b76cb117f4",
+   "frame_309.png": "cb659e9c4b1e976a0d32022a3a515ec9210e9f0421d7d7e17c668732311df118",
+   "frame_310.png": "23ddca1e469ca0204878b4639352bdb611b8d86ad2a6b6973d0b500b89c89a3d",
+   "frame_311.png": "d38f81bd1e12b3599a68872387f70ccdcc163c93bec51db64ac49c2a2f2f8b5f",
+   "frame_312.png": "5ce2e33064da105731fa12e5d0b9c7cd3f744cb84200b42fbbddac8f38bbd7f3",
+   "frame_313.png": "dc011855a147de35f7422830af2885e7e26f36e34fd6001b03cb7ed2f754ca83",
+   "frame_314.png": "33d6e34c97655866f82442f84cdacc2080791bb3089d48282f472f457db5174d",
+   "frame_315.png": "5ceca1b027811e4696b5dfb6577ecd92ffb0990ac02b451a35db8d0a6aebdf52",
+   "frame_316.png": "313ce5f877a8fe83af32b2bb8a308d21139da85ab19fee46756529b9407f1764",
+   "frame_317.png": "7ba03221601cdd4682db05ed497ca8c2120d46f69004cc3ee0e804b041985274",
+   "frame_318.png": "7b3489ab494d9c9d11ab04a7b1427dac561eb189de43b424702af08e5ed41639",
+   "frame_319.png": "68e5b6ce7ad317e6ffcb1eb5ea8642428e461b71bf716aeaf36efbfe0aa5b0ba",
+   "frame_320.png": "f804195eec41446a918071e17b2e4f3367dca187bfe15934b5802ede1c7a34c2",
+   "frame_321.png": "e06e166d450841fcc4feeb86fe2aea1dd89eededf481fa2b42e7041e94b880bf",
+   "frame_322.png": "6a18f00464521379d492ceca3dc88058d6a14e86c239a1e97d1baf50b10c024b",
+   "frame_323.png": "05f72fb0b7ebbc6046dc7786c7202755b507b737c15593d462026965b8976db4",
+   "frame_324.png": "6eed02d5ab90ff2b665eaeaaec9e6494e60aa9fbf9291e05c7f52326e2f259f9",
+   "frame_325.png": "f7e1fd28403f525319227c38f7300dc3f814d9384abb4c0273b360b2e51a340e",
+   "frame_326.png": "21a9261a4ec9a66004048e554a3b73a34d4f3b7ab2bedcc59fe748cb33ed3da4",
+   "frame_327.png": "e88e9f9ff66335c0eb0f20bad8a9040c864a6361e737044e2202e55afc73ccf9",
+   "frame_328.png": "1adee4e13f74c50ccc4c6a44716de7d7eaa654461cc01013f3b1f3f91619cf10",
+   "frame_329.png": "6885d2b13b8e3ef8f84c592a7fbf11a5e933fc591a975f8dead1ae9ac8d58adb",
+   "frame_330.png": "38c40d42449c9dd65ca429912e74de979d2d0fa0521d100ed775a65878f05fc4",
+   "frame_331.png": "2052352da88746baef563343ba29495fb43655c98a71de261bdc69ebaaf3f1e4",
+   "frame_332.png": "d88b6c3edf32c7479ee64ccddd4cf2db208541002ff1f180c5d4e5df0eac1aa1",
+   "frame_333.png": "ac59b8e9a74f1f01d1d9f4c997c19839c41bc7400f35de68dbada9881f2d3c57",
+   "frame_334.png": "ab292ad67ecff71ac019ca577c6bafd6e9f5e236538f0e22285ec996b0b21f8e",
+   "frame_335.png": "68b2a7bd0f5c2b9c953e40db826b6af967fe0ccee30728feea486d0304ecf79b",
+   "frame_336.png": "6ce3a7f99dc6052dc1f107f1a5a6634cb03f53b09d7aaf31ff641fddfb6e0981",
+   "frame_337.png": "cdf811d4c120e5bfb0631af12ac024c30aae932b3e9c6c85f65b04d403591dd9",
+   "frame_338.png": "82d07040e6abd9d3b920c600568557e4d2c1e6c12481b4e0007ef8f06ad89b8a",
+   "frame_339.png": "79173bfaf7c027cc1d6873fee08318a75c16eb727d70c8cd6a9fb4ef01df810c",
+   "frame_340.png": "d30bb7bcda497174df87ab7d146feccce64e52e1c00d20d652ff0c8ccaf3d6b4",
+   "frame_341.png": "8505df6d424f5b05a280327053e0a80d14a6e7869c151b502c823644167b9b97",
+   "frame_342.png": "70a18f4e921a62a9cbde8671434a6f49bb83a0dcb09b32f15f035ba8a96c4cf7",
+   "frame_343.png": "b92976c82b7c88f87ed6e84e9f7cb93ae5262e658f6f55066711eb833dd719ab",
+   "frame_344.png": "a93bb92d5152f578a63f83b4df36eb80f12541313cd9a0c7b433ecd6294f32a4",
+   "frame_345.png": "f62e17c53159a16907a33c43dcb3f91583e609897d70c9875594489635a7dcb5",
+   "frame_346.png": "5a25f558f2d6605766e7a67112a35d01feb3e161a7172c44a6cbd192b0603775",
+   "frame_347.png": "a34dc34443a5690f005dbf8ef2dc3b4595b1b3ed04d09383512576370651f40e",
+   "frame_348.png": "573367277862709571b4341b7f44d008939eca233c4bece2b53ade8b3d886479",
+   "frame_349.png": "0d9099454851f7852cdd9fcf35bb3e13138a45a792633911bad514158b179274",
+   "frame_350.png": "b18b53f07a4ef8b9e97832158ff88acb6d9f5e6f319b027dbebec75f9a1e4bc0",
+   "frame_351.png": "b151f34395a60e0f86edcd7f6bc09f2ff4acd5991cf5ea58fbe566571f82daee",
+   "frame_352.png": "47ae97e55265073a37cad8958b81340598b5bf705a985c43c87ab036cb49ebf7",
+   "frame_353.png": "c84f2f6f7131343faafd67eb0a92a5ba9b433ad9e68565802418b58b5bb6aad3",
+   "frame_354.png": "45d65ff7c1918a02efe0b7ba50c8e2db9015e9396abe20b9f13d5af14a94c8b1",
+   "frame_355.png": "2983835a1f11023c61e4e495d3591af3b23c757fbec6f9fa7beb501d7d8e94f4",
+   "frame_356.png": "d82731ea2e45a55117f2c43ea4f0f12b0c3bcea30154760f51f468046a7902bc",
+   "frame_357.png": "0adc4fc68ea956a81e79b0602fdc6a74b4183d8c09c51774ac31c1542a09de41",
+   "frame_358.png": "d6171d4ed0af26c0bd7177cbb6f11f163165d4f19a856b61a27fd4228f7c0c40",
+   "frame_359.png": "b4588a899b55709633831ed7978ad7ff855692f47556c06dbe38bf17a1b6f875"
+  },
+  "honest_titles": "rendered inside every viewport: view_id, mode, tick and phase; every diagnostic viewport carries the five declared diagnostic layers (attachment patches and endpoint IDs, tendon/strap path, joint/frame axes gizmo, contact/force arrows, support-state line) plus the energy ledger line; the footer carries the tick-to-seconds map and the per-tick state hash; the carrier box is a TRANSLUCENT visual carrier (declared occlusion_mode 'mixed'), not the real mesh",
+  "pixel_size": [
+   2560,
+   840
+  ],
+  "rows": [
+   "top    diagnostic viewports [whole | close-up | orthogonal face-on of each loaded interface] with all five declared diagnostic layers",
+   "middle clean viewports (identical cameras, no labels, no overlays)",
+   "bottom telemetry traces (patch |F| A/B, strap tension, approach gap, support band, release line) + footer"
+  ],
+  "tick_to_seconds_map": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); frame t = tick t"
+ },
+ "subject_sha256": "ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+ "task_id": "B05",
+ "tick_interval": [
+  0,
+  359
+ ],
+ "views": [
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     360
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.8266666666666667,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sampled ticks (and every rendered frame); the SUBJECT moves (strap tip, carriage, load, force arrows), never the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "b05_whole_view_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     20.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.6531653695657785,
+      "orientation": [
+       0.9379005428070533,
+       -0.17855707654272235,
+       0.29217444894125566,
+       0.05562403801078084
+      ],
+      "position": [
+       0.34,
+       0.1,
+       0.5
+      ],
+      "target": [
+       -0.005,
+       -0.14,
+       0.0
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.6531653695657785,
+      "orientation": [
+       0.9379005428070533,
+       -0.17855707654272235,
+       0.29217444894125566,
+       0.05562403801078084
+      ],
+      "position": [
+       0.34,
+       0.1,
+       0.5
+      ],
+      "target": [
+       -0.005,
+       -0.14,
+       0.0
+      ],
+      "tick": 359
+     }
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 42.0,
+    "viewport_resolution": [
+     848,
+     300
+    ]
+   },
+   "cell_layout_note": "single viewport (top row, column 1): whole scene — stand, translucent carrier, rail path, strap, carriage, load; the approach/attach/load/hold/transfer/release sequence is visible in full",
+   "mode": "diagnostic",
+   "pair_id": "pair-0",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-B05/replay_trace.json: per-tick replay telemetry (phase, approach gap, bond/patch/strap/hook forces, support state, energy ledger, per-tick state hash); rendered positions replay this trace",
+    "sha256": "ec7b690956135d9d0e46f2e8fa78dff907927709e5f0c80d2b58f7690b0b56cd"
+   },
+   "view_id": "whole-body/trunk relationship",
+   "visibility": {
+    "label_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "layers": [
+     "attachment patches and endpoint IDs",
+     "tendon paths",
+     "joint/frame axes",
+     "contact normals and forces",
+     "support state"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "occlusion_mode": "mixed",
+    "required_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "selected_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "port:BIClong-P11",
+      "subject_id": "port:BIClong-P11"
+     },
+     {
+      "label_id": "port:BRD-P3",
+      "subject_id": "port:BRD-P3"
+     },
+     {
+      "label_id": "load",
+      "subject_id": "load"
+     },
+     {
+      "label_id": "strap",
+      "subject_id": "strap"
+     },
+     {
+      "label_id": "stand",
+      "subject_id": "stand"
+     },
+     {
+      "label_id": "carrier",
+      "subject_id": "carrier"
+     },
+     {
+      "label_id": "transfer:rail",
+      "subject_id": "transfer:rail"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     360
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.8266666666666667,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sampled ticks (and every rendered frame); the SUBJECT moves (strap tip, carriage, load, force arrows), never the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "b05_whole_view_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     20.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.6531653695657785,
+      "orientation": [
+       0.9379005428070533,
+       -0.17855707654272235,
+       0.29217444894125566,
+       0.05562403801078084
+      ],
+      "position": [
+       0.34,
+       0.1,
+       0.5
+      ],
+      "target": [
+       -0.005,
+       -0.14,
+       0.0
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.6531653695657785,
+      "orientation": [
+       0.9379005428070533,
+       -0.17855707654272235,
+       0.29217444894125566,
+       0.05562403801078084
+      ],
+      "position": [
+       0.34,
+       0.1,
+       0.5
+      ],
+      "target": [
+       -0.005,
+       -0.14,
+       0.0
+      ],
+      "tick": 359
+     }
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 42.0,
+    "viewport_resolution": [
+     848,
+     300
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair; no labels, layers or diagnostic overlays by design",
+   "mode": "clean",
+   "pair_id": "pair-0",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-B05/replay_trace.json: per-tick replay telemetry (phase, approach gap, bond/patch/strap/hook forces, support state, energy ledger, per-tick state hash); rendered positions replay this trace",
+    "sha256": "ec7b690956135d9d0e46f2e8fa78dff907927709e5f0c80d2b58f7690b0b56cd"
+   },
+   "view_id": "whole-body/trunk relationship",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     360
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.8266666666666667,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sampled ticks (and every rendered frame); the SUBJECT moves (strap tip, carriage, load, force arrows), never the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "b05_closeup_port_a_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     20.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.09662427231291318,
+      "orientation": [
+       0.9115517384657905,
+       -0.035430883632148365,
+       0.4093469516080036,
+       0.015910807467723505
+      ],
+      "position": [
+       0.07,
+       -0.03,
+       0.062
+      ],
+      "target": [
+       -0.002,
+       -0.0375,
+       -0.002
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.09662427231291318,
+      "orientation": [
+       0.9115517384657905,
+       -0.035430883632148365,
+       0.4093469516080036,
+       0.015910807467723505
+      ],
+      "position": [
+       0.07,
+       -0.03,
+       0.062
+      ],
+      "target": [
+       -0.002,
+       -0.0375,
+       -0.002
+      ],
+      "tick": 359
+     }
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 35.0,
+    "viewport_resolution": [
+     848,
+     300
+    ]
+   },
+   "cell_layout_note": "single viewport (top row, column 2): close-up of the declared BIClong-P11 patch (disc at its pinned source-local position, 3 rim anchors) with the attachment force arrow while loaded",
+   "mode": "diagnostic",
+   "pair_id": "pair-1",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-B05/replay_trace.json: per-tick replay telemetry (phase, approach gap, bond/patch/strap/hook forces, support state, energy ledger, per-tick state hash); rendered positions replay this trace",
+    "sha256": "ec7b690956135d9d0e46f2e8fa78dff907927709e5f0c80d2b58f7690b0b56cd"
+   },
+   "view_id": "wrist/digit attachment close-up",
+   "visibility": {
+    "label_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "layers": [
+     "attachment patches and endpoint IDs",
+     "tendon paths",
+     "joint/frame axes",
+     "contact normals and forces",
+     "support state"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "occlusion_mode": "mixed",
+    "required_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "selected_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "port:BIClong-P11",
+      "subject_id": "port:BIClong-P11"
+     },
+     {
+      "label_id": "port:BRD-P3",
+      "subject_id": "port:BRD-P3"
+     },
+     {
+      "label_id": "load",
+      "subject_id": "load"
+     },
+     {
+      "label_id": "strap",
+      "subject_id": "strap"
+     },
+     {
+      "label_id": "stand",
+      "subject_id": "stand"
+     },
+     {
+      "label_id": "carrier",
+      "subject_id": "carrier"
+     },
+     {
+      "label_id": "transfer:rail",
+      "subject_id": "transfer:rail"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     360
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.8266666666666667,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sampled ticks (and every rendered frame); the SUBJECT moves (strap tip, carriage, load, force arrows), never the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "b05_closeup_port_a_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     20.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.09662427231291318,
+      "orientation": [
+       0.9115517384657905,
+       -0.035430883632148365,
+       0.4093469516080036,
+       0.015910807467723505
+      ],
+      "position": [
+       0.07,
+       -0.03,
+       0.062
+      ],
+      "target": [
+       -0.002,
+       -0.0375,
+       -0.002
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.09662427231291318,
+      "orientation": [
+       0.9115517384657905,
+       -0.035430883632148365,
+       0.4093469516080036,
+       0.015910807467723505
+      ],
+      "position": [
+       0.07,
+       -0.03,
+       0.062
+      ],
+      "target": [
+       -0.002,
+       -0.0375,
+       -0.002
+      ],
+      "tick": 359
+     }
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 35.0,
+    "viewport_resolution": [
+     848,
+     300
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair; no labels, layers or diagnostic overlays by design",
+   "mode": "clean",
+   "pair_id": "pair-1",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-B05/replay_trace.json: per-tick replay telemetry (phase, approach gap, bond/patch/strap/hook forces, support state, energy ledger, per-tick state hash); rendered positions replay this trace",
+    "sha256": "ec7b690956135d9d0e46f2e8fa78dff907927709e5f0c80d2b58f7690b0b56cd"
+   },
+   "view_id": "wrist/digit attachment close-up",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     360
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.8266666666666667,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sampled ticks (and every rendered frame); the SUBJECT moves (strap tip, carriage, load, force arrows), never the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "b05_ortho_interfaces_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     20.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.24,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.7071067811865476,
+       0.0,
+       0.7071067811865475,
+       0.0
+      ],
+      "position": [
+       0.6,
+       -0.135,
+       0.004
+      ],
+      "target": [
+       -0.02,
+       -0.135,
+       0.004
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.7071067811865476,
+       0.0,
+       0.7071067811865475,
+       0.0
+      ],
+      "position": [
+       0.6,
+       -0.135,
+       0.004
+      ],
+      "target": [
+       -0.02,
+       -0.135,
+       0.004
+      ],
+      "tick": 359
+     }
+    ],
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     848,
+     300
+    ]
+   },
+   "cell_layout_note": "single viewport (top row, column 3): orthographic face-on view along the declared patch normals showing EACH loaded interface (BIClong-P11 and BRD-P3 discs face-on simultaneously)",
+   "mode": "diagnostic",
+   "pair_id": "pair-2",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-B05/replay_trace.json: per-tick replay telemetry (phase, approach gap, bond/patch/strap/hook forces, support state, energy ledger, per-tick state hash); rendered positions replay this trace",
+    "sha256": "ec7b690956135d9d0e46f2e8fa78dff907927709e5f0c80d2b58f7690b0b56cd"
+   },
+   "view_id": "orthogonal view of each loaded interface",
+   "visibility": {
+    "label_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "layers": [
+     "attachment patches and endpoint IDs",
+     "tendon paths",
+     "joint/frame axes",
+     "contact normals and forces",
+     "support state"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "occlusion_mode": "mixed",
+    "required_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "selected_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "port:BIClong-P11",
+      "subject_id": "port:BIClong-P11"
+     },
+     {
+      "label_id": "port:BRD-P3",
+      "subject_id": "port:BRD-P3"
+     },
+     {
+      "label_id": "load",
+      "subject_id": "load"
+     },
+     {
+      "label_id": "strap",
+      "subject_id": "strap"
+     },
+     {
+      "label_id": "stand",
+      "subject_id": "stand"
+     },
+     {
+      "label_id": "carrier",
+      "subject_id": "carrier"
+     },
+     {
+      "label_id": "transfer:rail",
+      "subject_id": "transfer:rail"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     360
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.8266666666666667,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sampled ticks (and every rendered frame); the SUBJECT moves (strap tip, carriage, load, force arrows), never the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "b05_ortho_interfaces_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     20.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.24,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.7071067811865476,
+       0.0,
+       0.7071067811865475,
+       0.0
+      ],
+      "position": [
+       0.6,
+       -0.135,
+       0.004
+      ],
+      "target": [
+       -0.02,
+       -0.135,
+       0.004
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.7071067811865476,
+       0.0,
+       0.7071067811865475,
+       0.0
+      ],
+      "position": [
+       0.6,
+       -0.135,
+       0.004
+      ],
+      "target": [
+       -0.02,
+       -0.135,
+       0.004
+      ],
+      "tick": 359
+     }
+    ],
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     848,
+     300
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair; no labels, layers or diagnostic overlays by design",
+   "mode": "clean",
+   "pair_id": "pair-2",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-B05/replay_trace.json: per-tick replay telemetry (phase, approach gap, bond/patch/strap/hook forces, support state, energy ledger, per-tick state hash); rendered positions replay this trace",
+    "sha256": "ec7b690956135d9d0e46f2e8fa78dff907927709e5f0c80d2b58f7690b0b56cd"
+   },
+   "view_id": "orthogonal view of each loaded interface",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "port:BIClong-P11",
+     "port:BRD-P3",
+     "load",
+     "strap",
+     "stand",
+     "carrier",
+     "transfer:rail"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  }
+ ]
+}
