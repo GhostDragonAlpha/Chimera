@@ -222,6 +222,16 @@ validator runs happen BEFORE renders are accepted; acceptance itself belongs
 to the independent visual reviewer (this build claims structural validity and
 binding, not visual acceptance).
 
+## AMENDMENT A1 (disclosed arithmetic correction; committed BEFORE the build)
+
+The PROBES paragraph's in-text total "Total 28 probes" is an arithmetic
+slip: the enumerated set is 25 ground + 1 spawn + 8 seam + 6 trunk lateral +
+1 base-cap rim + 1 top-cap centre + 4 boundary-post + 1 climb-grip marker
+= 47 probes. No probe, view, bar, prediction, bite or capture binding is
+changed; the implementation asserts `len(probes) == 47` with a named refusal
+(`f03_probe_count`). Frozen 2026-09-28, before any build/verify run in this
+workspace.
+
 ## HONEST LIMITS (frozen)
 
 No engine run, no HTTP mesh route, no native collision change, no walk or
