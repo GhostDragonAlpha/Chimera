@@ -138,3 +138,21 @@ law profiles, M03 pressure source limits, B03 counted masses, B04 authored frame
 
 Signed-frozen at freeze time by the implementer; any post-freeze change must be recorded as a
 numbered correction (A1, A2, ...) with the triggering observation, never silently.
+
+## Correction A1 (pre-implementation, pre-receipt)
+
+Triggering observation: the exact documented admission counterexample geometry was located in the
+pinned reference battery (host reference `tools/finite_area_attachment/test_dynamics_and_corrections.py`,
+`TestAdmissionGate.LEAD_ANCHORS` — untracked host artifact, recorded by path+content below; the
+formulation document and its battery are the C17 authority, not re-derived here).
+
+- **P6 re-issued with exact numbers**: anchors
+  `[[0.02, 1e-5, 0], [-0.02, 1e-5, 0], [-0.02, -1e-5, 0], [0.02, -1e-5, 0]]` m (uniform weights
+  1/4), scalar k = 80 N/m; closed form `A = sum_i w_i a~_i a~_i^T = diag(4e-4, 1e-10, 0)`,
+  `M = k((tr A) I - A)`; eigenvalues `{8e-9, 3.2e-2, 3.200008e-2}` N*m/rad (measured vs closed form
+  within 1e-9 relative); REJECTED at authored requirement 1.0 N*m/rad; ADMITTED at 1e-9 with
+  consistent provenance `kappa_areal = 1e8 N/m^3`, `A_patch = 8e-7 m^2` (k = 80 = 1e8 * 8e-7).
+- **Disc-patch closed form added (P5 completion)**: three rim anchors uniformly on a circle of
+  radius r, weights 1/3 each, isotropic K: `A = diag(r^2/2, r^2/2, 0)` in the patch plane basis,
+  eigenvalues `{k r^2/2, k r^2/2, k r^2}` — weakest in-plane at half the normal stiffness, matching
+  the reference `min_patch_radius` note; measured-vs-closed-form within 1e-12 relative.
