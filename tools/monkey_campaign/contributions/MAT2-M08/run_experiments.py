@@ -631,16 +631,24 @@ def mode_falsify():
     for tick in range(4):
         gpu.step_tick(tick, 0.0 if tick > 2 else 60.0)
         block = gpu.diagnostics().copy()
-        # clean control: current block carries the right tick + digest
+        # clean control: current block carries the right tick + digest.
+        # Host recompute follows kernel_mirror's zero-then-fold convention:
+        # the D_DIGEST slot folds as 0.0 (the downloaded block carries the
+        # device-written digest in that slot, which is NOT what was folded).
         d_tick_ok = int(block[0][km.D_TICK]) == tick
-        d_digest_ok = km.block_digest(block[0], tick) == block[0][km.D_DIGEST]
+        host_blk = block[0].copy()
+        host_blk[km.D_DIGEST] = 0.0
+        d_digest_ok = (km.block_digest(host_blk, tick)
+                       == block[0][km.D_DIGEST])
         clean_ok = clean_ok and d_tick_ok and d_digest_ok
         if prev_block is not None:
             # tampered read: the PREVIOUS tick's block at this tick
             try:
                 if int(prev_block[0][km.D_TICK]) != tick:
                     raise ValueError(rgw.E_STALE)
-                if km.block_digest(prev_block[0], tick) \
+                prev_blk = prev_block[0].copy()
+                prev_blk[km.D_DIGEST] = 0.0
+                if km.block_digest(prev_blk, tick) \
                         != prev_block[0][km.D_DIGEST]:
                     raise ValueError(rgw.E_STALE)
             except ValueError as exc:

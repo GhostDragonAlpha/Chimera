@@ -1371,11 +1371,16 @@ def k_tick_diag(MV, PV, X, PX, TRIS, EDGES, REST, MASSES, PLATE_MASS,
     BLOCK[comp, D_PROJDMZ] = pdmz
     BLOCK[comp, D_ANCHORRES] = anres
     BLOCK[comp, D_PROJDPLATE] = norm3_seq(pdplx, pdply, pdplz)
+    # Fold the D_DIGEST slot as 0.0 — kernel_mirror's declared convention
+    # (zero-then-fold, km:608-609). Skipping the slot entirely is NOT
+    # equivalent: the accumulator's 1.0000000000000002 multiply drifts even
+    # for a zero addend, so the host recompute (which folds the slot, as 0)
+    # could never match the device digest. First measured by falsify-005's
+    # F3_clean_chain_green (every prior falsify run died before F3).
     d = 0.0
     for i in range(DIAG):
-        if i != D_DIGEST:
-            d = (d * 1.0000000000000002 + BLOCK[comp, i] * (i + 1)) \
-                % 1000000007.0
+        v = 0.0 if i == D_DIGEST else BLOCK[comp, i]
+        d = (d * 1.0000000000000002 + v * (i + 1)) % 1000000007.0
     d = (d + float(TICK[0]) * 7919.0) % 1000000007.0
     BLOCK[comp, D_DIGEST] = d
 
