@@ -83,13 +83,14 @@ Two full builds produced byte-identical artifacts: 13; identical=true.
 - Obstacle friction is F03's declared UNEVIDENCED-PLACEHOLDER (G04 debt); rock matter reuses the probe material values (no separately acquired rock matter).
 - Traversal is verified on the declared 0.5 m walkability mask with the declared 0.25 m body envelope; continuous-space motion planning is NOT claimed (card observation: player steering needs no general autonomous pathfinding).
 - The extent rule is the DECLARED refusal in the mask/vocabulary (citing earth_environment.hpp:118); no native out_of_patch run is claimed.
-- The V1 overview renders the obstacles at sub-2-px scale (disclosed, F03's own form for the trunk); the resolvable scene, trunk, post ring and the five diagnostic layers are verified in the V2/V3 frames, and every obstacle surface's visibility is established by the pure ray/geometry marker classify (markers never read pixels).
+- Measured V1 pixel extents of the declared obstacles in the committed gate still (deterministic probe receipt evidence/pixel_extents.json; threshold colour distance > 15 from the measured ground RGB 96,84,60; window +/- 16 px around each p7 marker): rock_01 19x18 px (40 px), rock_02 6x4 px (19 px), rock_03 5x5 px (17 px), log_01 29x3 px (87 px), log_02 19x3 px (57 px), stand_01 12x27 px (53 px), stand_02 11x16 px (54 px); the only sub-2-px subject is the trunk at 2x6 px (5 px), F03's own disclosed form. The resolvable scene, trunk, post ring and the five diagnostic layers are verified in the V2/V3 frames, and every obstacle surface's visibility is established by the pure ray/geometry marker classify (markers never read pixels).
 - Structural capture validity only: visual acceptance belongs to the independent visual reviewer.
 
 ## 9. Exact commands (from this directory, Python 3.14, CPU only)
 
     python -B implementation.py bites    # 7/7 fail-first, each with a passing clean control
     python -B implementation.py build    # receipt + declaration + frames
+    python -B measure_pixel_extents.py  # V1 pixel-extent receipt from the committed gate still
     python -B implementation.py verify   # P8 double-run determinism
     python -B make_report.py             # this file, from receipts
     python -B lint_report_numbers.py --selftest

@@ -1,11 +1,16 @@
 """Generate report.md for MAT2-F07 from the evidence receipts.
 
 Every observed value is read from evidence/checks.json,
-evidence/route_trace.json, evidence/validation_receipt.json and
-evidence/determinism.json -- nothing is hand-transcribed.
+evidence/route_trace.json, evidence/validation_receipt.json,
+evidence/determinism.json and evidence/pixel_extents.json -- nothing is
+hand-transcribed. The pixel-extent receipt is produced by
+measure_pixel_extents.py from the committed gate still; this generator
+refuses to run without it or against a stale one (review C1: qualitative
+scale prose must be measured, not written).
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import pathlib
 
@@ -15,6 +20,49 @@ EVIDENCE = HERE / "evidence"
 
 def load(name):
     return json.loads((EVIDENCE / name).read_bytes())
+
+
+def sha_of(name):
+    return hashlib.sha256((EVIDENCE / name).read_bytes()).hexdigest()
+
+
+def require(condition, code, detail=""):
+    if not condition:
+        raise SystemExit("refusal %s: %s" % (code, detail))
+
+
+def load_pixel_extents(checks, capture):
+    path = EVIDENCE / "pixel_extents.json"
+    require(path.is_file(), "f07_report_pixel_receipt_missing",
+            "run: python -B measure_pixel_extents.py")
+    doc = json.loads(path.read_bytes())
+    require(doc.get("schema") == "chimera.mat2_f07.pixel_extents.v1",
+            "f07_report_pixel_receipt_schema", str(doc.get("schema")))
+    # bind the receipt to the exact committed still and checks bytes
+    still_name = pathlib.Path(capture["gate_artifact"]).name
+    require(doc["method"]["still"] == capture["gate_artifact"],
+            "f07_report_pixel_receipt_still", doc["method"]["still"])
+    require(doc["method"]["still_sha256"] == capture["capture_sha256"],
+            "f07_report_pixel_receipt_still_sha")
+    require(doc["method"]["still_sha256"] == sha_of(still_name),
+            "f07_report_pixel_stale_still", still_name)
+    require(doc["method"]["checks_sha256"] == sha_of("checks.json"),
+            "f07_report_pixel_stale_checks")
+    by_marker = {s["marker"]: s for s in doc["subjects"]}
+    obstacle_ids = [ob["id"] for ob in checks["p1_tied_assets"]
+                    ["per_obstacle"]]
+    require(doc["obstacle_order"] == obstacle_ids,
+            "f07_report_pixel_obstacle_order")
+    for ob in obstacle_ids:
+        require("subject_%s" % ob in by_marker,
+                "f07_report_pixel_subject_missing", ob)
+    require("subject_trunk" in by_marker, "f07_report_pixel_trunk_missing")
+    # the disclosure sentence asserts trunk-only sub-2-px scale: the receipt
+    # must still say exactly that, otherwise the generator refuses to speak
+    require(doc["sub_two_px_subjects"] == ["subject_trunk"],
+            "f07_report_pixel_sub2px_changed",
+            str(doc["sub_two_px_subjects"]))
+    return doc, by_marker
 
 
 def main():
@@ -32,6 +80,7 @@ def main():
     p5 = checks["p5_impacts"]
     p7 = checks["p7_markers"]
     capture = checks["capture"]
+    pixel_doc, by_marker = load_pixel_extents(checks, capture)
     pins = checks["pins"]
     obstacle_ids = [ob["id"] for ob in p1["per_obstacle"]]
 
@@ -211,11 +260,26 @@ def main():
     w("- The extent rule is the DECLARED refusal in the mask/vocabulary "
       "(citing earth_environment.hpp:118); no native out_of_patch run is "
       "claimed.")
-    w("- The V1 overview renders the obstacles at sub-2-px scale (disclosed, "
-      "F03's own form for the trunk); the resolvable scene, trunk, post ring "
-      "and the five diagnostic layers are verified in the V2/V3 frames, and "
-      "every obstacle surface's visibility is established by the pure "
-      "ray/geometry marker classify (markers never read pixels).")
+    w("- Measured V1 pixel extents of the declared obstacles in the "
+      "committed gate still (deterministic probe receipt "
+      "evidence/pixel_extents.json; threshold colour distance > %d from "
+      "the measured ground RGB %s; window +/- %d px around each p7 "
+      "marker): %s; the only sub-2-px subject is the trunk at %dx%d px "
+      "(%d px), F03's own disclosed form. The resolvable scene, trunk, "
+      "post ring and the five diagnostic layers are verified in the V2/V3 "
+      "frames, and every obstacle surface's visibility is established by "
+      "the pure ray/geometry marker classify (markers never read pixels)."
+      % (pixel_doc["method"]["threshold_gt"],
+         ",".join(str(v) for v in pixel_doc["method"]["background_rgb"]),
+         pixel_doc["method"]["window_half_width_px"],
+         ", ".join("%s %dx%d px (%d px)"
+                   % (ob, by_marker["subject_%s" % ob]["bbox_w_px"],
+                      by_marker["subject_%s" % ob]["bbox_h_px"],
+                      by_marker["subject_%s" % ob]["pixels"])
+                   for ob in pixel_doc["obstacle_order"]),
+         by_marker["subject_trunk"]["bbox_w_px"],
+         by_marker["subject_trunk"]["bbox_h_px"],
+         by_marker["subject_trunk"]["pixels"]))
     w("- Structural capture validity only: visual acceptance belongs to the "
       "independent visual reviewer.")
     w("")
@@ -225,6 +289,8 @@ def main():
       "a passing clean control")
     w("    python -B implementation.py build    # receipt + declaration + "
       "frames")
+    w("    python -B measure_pixel_extents.py  # V1 pixel-extent receipt "
+      "from the committed gate still")
     w("    python -B implementation.py verify   # P8 double-run determinism")
     w("    python -B make_report.py             # this file, from receipts")
     w("    python -B lint_report_numbers.py --selftest")
