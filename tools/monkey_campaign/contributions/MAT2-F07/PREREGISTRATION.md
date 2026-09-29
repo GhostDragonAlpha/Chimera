@@ -337,4 +337,54 @@ its clean control passes. A non-biting arm fails the whole build
 
 ## 10. Amendments (each committed separately BEFORE the implementation/build)
 
-- (none yet)
+- A1 (this commit, before any implementation or build run): the obstacle
+  impact acceptance is the STOP LAW — first contact pre-overlap (ccd,
+  gap_m > 0) + mesh-exact penetration <= PEN_BAR_M over ALL ticks + the
+  approach coordinate of the probe centre relative to the struck body's
+  mid-plane/axis stays > 0 at EVERY tick (never crosses) + at least one
+  contact record naming the struck obstacle's declared surface. Reason:
+  pre-build scratch (attempt workspace only, never committed evidence)
+  measured that under the pinned law's own gravity (solve_tick default,
+  gravity=True) a post-impact probe slides/falls ALONG the struck surface, so
+  any residual-speed bar measures gravitational sliding, not obstacle
+  permeability. ARREST_SPEED_BAR (section 3) is dropped and replaced by the
+  not-crossed guard. Disclosed scratch numbers (rock/log/sapling forms):
+  first contacts at ticks 14/12/14 all pre-overlap with gap 1e-05 m; worst
+  mesh-exact penetration 0 m in all three; min approach coordinate
+  0.4583 / 0.2398 / 0.1605 m (none crossed); hull face derivation 20 faces,
+  30 edges, watertight True. No existing bar is loosened: PEN_BAR_M,
+  PRE_OVERLAP, LEDGER_BAR, PLANE_BAR_M, ANALYTIC_BAR and the record-reality
+  requirement are unchanged.
+- A2 (this commit, before any implementation or build run): mesh and start
+  operationalizations, all measured consequences disclosed:
+  (i) a rock IS the scaled regular icosahedron and its declared analytic
+  solid is the CONVEX HULL of its own vertex table (hull faces derived by
+  the orientation predicate and watertight-checked at build; the hull IS the
+  render mesh, so the penetration metric is mesh-exact and ANALYTIC_BAR for
+  rocks is the frozen 1e-9); no ellipsoid is used anywhere.
+  (ii) the 24-gon prisms are FACET-ALIGNED (cross-section angles offset by
+  pi/24) so a facet plane is exactly perpendicular to the frozen approach
+  axis of logs and saplings.
+  (iii) impact starts are measured from the struck mesh's own approach extent
+  (the facet plane for prisms, the hull extent for rocks) + the frozen 0.25 m
+  clearance; the probe centre starts 0.25 m from the facet/extent plane
+  along the approach axis.
+  (iv) resting placement: a rock's hull bottom vertex equals the query height
+  at its centre; a log's axis height = h + r*cos(pi/24) so its lowest prism
+  vertices equal the query height; a sapling's base cap equals the query
+  height at the sapling axis.
+  (v) the rock mask footprint is the hull's x/z extents rectangle inflated
+  by BLOCK_INFLATION_M (conservative over all heights).
+  (vi) FB2's ghost is a FOURTH rock (rock_ghost) and FB3's phantom a FOURTH
+  stand (stand_phantom); both are declared inside their falsifier arms only,
+  never in the shipped scene.
+- A3 (this commit, before any implementation or build run): P0 becomes a
+  MEASURED per-obstacle disclosure instead of a uniform refusal prediction.
+  Scratch measured `nonfinite_state` refusals for ground + a flat-based
+  sapling, ground + a facet-bottomed log and ground + a rock whose hull
+  bottom exactly touched the plane, but obstacles placed on sloped ground
+  need not touch exactly. The build measures the co-instantiation outcome for
+  every obstacle, records it in checks.json, and the impact runs instantiate
+  exactly the struck obstacle REGARDLESS (declared composition scope, F04
+  heritage). A non-refusal is recorded as an unresolved upstream composition
+  limitation, never silently repaired.
