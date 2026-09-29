@@ -224,10 +224,16 @@ def main():
         "capture_sha256": capture_sha,
         "sheet_layout": {
             "pixel_size": [f01.W, f01.H],
-            "honest_titles": ("rendered inside every diagnostic frame: view name, "
-                              "mode, frame_id and the 16-field camera record's "
-                              "layer list; clean rows intentionally carry no "
-                              "labels and no diagnostic styling"),
+            "honest_titles": ("no text is rendered inside any frame (the pinned "
+                              "F01 render law draws geometry only, so frames do "
+                              "not self-identify view/mode/frame_id); frame "
+                              "identity is bound by this manifest instead: the "
+                              "per-row artifact_locator.raw_sha256 locators over "
+                              "the evidence/frame_<view>_<mode>.bmp file names, "
+                              "plus each row's camera_record_16field_convention "
+                              "record carried from evidence/camera_manifest.json; "
+                              "clean rows intentionally carry no overlays and no "
+                              "diagnostic styling"),
             "rows": ["V1_clearing_overview clean+diagnostic",
                      "V2_contact_seam clean+diagnostic",
                      "V3_side_depth clean+diagnostic"],

@@ -165,6 +165,8 @@ and is refused; FB4 extends the contact body past the rendered extent and the
 extent rule fires; FB5 classifies a required subject 155.7 deg off the seam
 camera OFF_FRAME (tags alone do not establish contact).
 
+- Review disclosure (N1, sgt-pr249-be2a097): the committed FB2 bite stub constructs its own empty `support_records` input (circular); the protection is nonetheless real — an independent live tamper (settle tick loop replaced by a direct height clamp) left zero `local_contact.v1` records and the full build refused with `f02_no_contact_records` (review evidence: kanban-reviews/MAT2-F02/sgt-pr249-be2a097/falsifiers/FB2_live_parallel_solver.log); the stub is left unchanged.
+
 ## 5. Render/collision correspondence and shear (P5, P6)
 
 - P5 (F01's `classify_probe`, bars 1e-6 visibility / 1e-9 height / 1e-12
