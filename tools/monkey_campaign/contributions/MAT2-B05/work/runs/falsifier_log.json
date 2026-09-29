@@ -1,0 +1,58 @@
+{
+ "falsifiers": [
+  {
+   "bites": true,
+   "code": "input_pin_mismatch",
+   "detail": "attachment_candidates got 5f252331c8487cf478d8b38b52c5d84615257ec600039ba7d74e7887044162a0 want 854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae",
+   "expected_code": "input_pin_mismatch",
+   "id": "F1_input_pin_tamper"
+  },
+  {
+   "bites": true,
+   "code": "endpoint_role_inconsistent",
+   "detail": "BIClong-P9 display ['first_endpoint'] vs membership ['waypoint'] (port_vs_waypoint_rule: only first/last path entries are endpoints)",
+   "expected_code": "endpoint_role_inconsistent",
+   "id": "F2_waypoint_promotion"
+  },
+  {
+   "bites": true,
+   "code": "qualify_requires_all_inputs_qualified",
+   "detail": "BIClong-P11 qualification flipped while required inputs are [('anchor_frame_id', 'blocked'), ('endpoints_local_frame_id', 'blocked'), ('patch_area_m2', 'blocked_as_measured'), ('kappa_areal_n_m3', 'blocked_as_measured'), ('k_couple_min_n_m_per_rad', 'blocked_as_measured'), ('weights', 'split')]",
+   "expected_code": "qualify_requires_all_inputs_qualified",
+   "id": "F3a_qualification_promotion"
+  },
+  {
+   "bites": true,
+   "code": "unknown_provenance_value",
+   "detail": "BIClong-P11.patch_area_m2 claims qualified without a provenance pin",
+   "expected_code": "unknown_provenance_value",
+   "id": "F3b_unprovenanced_qualified_value"
+  },
+  {
+   "bites": true,
+   "code": "k_provenance_inconsistent",
+   "detail": "k=1.9634954084936207 != kappa_areal*patch_area=2.0",
+   "expected_code": "k_provenance_inconsistent",
+   "id": "F4_k_provenance_break"
+  },
+  {
+   "bites": true,
+   "code": "synthetic_lambda_min_does_not_transfer",
+   "detail": "source_status='synthetic_authored'",
+   "expected_code": "synthetic_lambda_min_does_not_transfer",
+   "id": "F5_synthetic_lambda_min_transfer"
+  },
+  {
+   "bites": true,
+   "code": "deformed_centroid_anchor_refused",
+   "detail": "deformed_face_centroid",
+   "expected_code": "deformed_centroid_anchor_refused",
+   "id": "F6_deformed_centroid_anchor"
+  },
+  {
+   "bites": true,
+   "detail": "committed document sha256 ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d; re-derived canonical sha256 ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+   "id": "real_artifact_untouched"
+  }
+ ]
+}

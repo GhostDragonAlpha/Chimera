@@ -156,3 +156,21 @@ formulation document and its battery are the C17 authority, not re-derived here)
   radius r, weights 1/3 each, isotropic K: `A = diag(r^2/2, r^2/2, 0)` in the patch plane basis,
   eigenvalues `{k r^2/2, k r^2/2, k r^2}` — weakest in-plane at half the normal stiffness, matching
   the reference `min_patch_radius` note; measured-vs-closed-form within 1e-12 relative.
+
+## Correction A2 (pre-receipt, capture details)
+
+Triggering observations: (a) the grasp profile is kind `motion` and the committed validator
+(`tools/monkey_campaign/visual_capture.py`) requires a VIDEO artifact locator for motion profiles,
+so the frozen "sha256 over the ordered frame PNG bytes" binding rule cannot be the capture
+identity; (b) a 8-tick replay cannot show the declared phase sequence at the declared 1/300 s
+tick with visible dynamics.
+
+- **Binding re-issued**: `capture_sha256` = sha256 of the SINGLE encoded video artifact (mkv),
+  matching the lead's single-artifact binding requirement and the MAT2-M05 precedent; per-frame
+  sha256 values are still recorded in `sheet_layout.frame_files`.
+- **Sequence length re-issued**: 360 ticks at 1/300 s simulated (1 video second per tick), still
+  covering exactly the declared phases approach, attach, load, hold, transfer, release.
+- **Layout detail**: sheet 2560x840; top row three diagnostic viewports 848x300 (whole, close-up,
+  orthographic face-on of each loaded interface), middle row the three clean pairs (identical
+  cameras), bottom row telemetry traces + footer. The declared profile views/layers are used
+  verbatim; the registry profile object is read read-only at build time.

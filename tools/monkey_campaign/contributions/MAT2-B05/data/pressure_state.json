@@ -1,0 +1,96 @@
+{
+ "bonds": [],
+ "contacts": [],
+ "directions": [],
+ "laws": [
+  {
+   "id": "law_pressure_deformation",
+   "kind": "pressure_deformation",
+   "parameters": {
+    "damping_per_s": 240.0,
+    "dt_s": 0.0033333333333333335,
+    "edge_compliance_m_per_n": 0.025,
+    "max_delta_p_pa": 5000.0,
+    "max_dv_dt_m3_per_s": 0.001,
+    "p_ext_pa": 0.0,
+    "p_int_peak_pa": 120.0,
+    "source_id": "mat2_m03_membrane",
+    "tick_count": 24,
+    "traction_rule": "F_i = dp * A_i * n_i, equal-third vertex lumping",
+    "xpbd_iterations": 8
+   },
+   "provenance": "authored demonstrator pressure source (PREREGISTRATION.md T6: max |dp| 5000 Pa, max dV/dt 1e-3 m^3/s; no catalog constant imported)",
+   "regions": [
+    "membrane"
+   ]
+  }
+ ],
+ "matter": [
+  {
+   "id": "mass_membrane",
+   "mass_kg": 0.05,
+   "provenance": "authored demonstrator membrane mass; law: remeshing preserves mass (docs/THE_MEMBRANE_INVENTORY.md \"Triangles are not physical weights\"); refinement families keep the same total"
+  }
+ ],
+ "object_id": "mat2-m03-pressure-membrane-experiment",
+ "provenance": {
+  "base_revision": "986f270ef24cda0008c52bd40d4b6d08565c0692",
+  "laws": "traction F = dp*A_i*n_i from a declared source; volume by divergence theorem; P-V work W = dp*dV; power dp*dV/dt",
+  "preregistration": "PREREGISTRATION.md (corrections A1-A5)",
+  "schema_authority": "tools/monkey_campaign/contributions/MAT2-M01/material_state.py (unmodified M01 validator)",
+  "schema_authority_sha256": "b6b009713daa4b315c6b5cb43c7ad4e756123b50edcdd802eeebd55c6afd6c40",
+  "task_id": "M03",
+  "upstream_regions": "tools/monkey_campaign/contributions/MAT2-M02/ (tetra mesh blob 51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834)"
+ },
+ "regions": [
+  {
+   "current_geometry": {
+    "closure": "closed_outward_consistent",
+    "delta_p_pa": 0.0,
+    "frame": "world",
+    "open_edge_count": 0,
+    "signed_volume_m3": 0.003678404873304326,
+    "surface_area_m2": 0.11714299619916048,
+    "tick": 23,
+    "triangle_count": 80,
+    "unit": "m",
+    "vertex_count": 42
+   },
+   "id": "membrane",
+   "kind": "region",
+   "matter_claims": [
+    {
+     "matter_id": "mass_membrane",
+     "role": "owner"
+    }
+   ],
+   "parent": null,
+   "ports": [
+    {
+     "id": "pressure_inlet",
+     "protocol": "chimera.pressure_traction.v1",
+     "unit": "Pa"
+    }
+   ],
+   "rest_geometry": {
+    "centre_m": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "closure": "closed_outward_consistent",
+    "frame": "world",
+    "kind": "icosphere_level1",
+    "open_edge_count": 0,
+    "radius_m": 0.1,
+    "signed_volume_m3": 0.0036587122085121604,
+    "surface_area_m2": 0.1166593139171832,
+    "triangle_count": 80,
+    "unit": "m",
+    "vertex_count": 42
+   }
+  }
+ ],
+ "revision": 1,
+ "schema": "chimera.material_state.v1"
+}

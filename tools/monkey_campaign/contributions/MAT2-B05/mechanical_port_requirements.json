@@ -1,0 +1,3042 @@
+{
+ "anchor_convention": {
+  "authority": "MAT2-M05 correction A1 and durable lesson 3: ports are material points; anchoring interface geometry to a deforming face centroid wobbles under one-sided loads",
+  "declared_rule": "rest anchor + mean body translation",
+  "kind": "material_point",
+  "refused_alternative": "deformed_centroid_anchor_refused"
+ },
+ "c17_authority": {
+  "admission_battery": {
+   "class": "host_artifact_untracked",
+   "path": "E:\\PythonChimera\\tools\\finite_area_attachment\\test_dynamics_and_corrections.py",
+   "sha256": "5ebb6d163e3e7208540046a015ce1b066ed53eac45f78b5134e48c5959cc2d42"
+  },
+  "formulation_document": {
+   "class": "host_artifact_untracked",
+   "path": "E:\\PythonChimera\\tools\\finite_area_attachment\\DERIVATION.md",
+   "sha256": "b28cbf09fa934755656937892e040bb7bf2231730723605758a0fc4410281dab"
+  },
+  "note": "C17-approved finite-area formulation: patch points x_i with area-quadrature weights w_i (sum 1), bone state (c, R), bone-local anchors a_i, energy Pi = 1/2 sum w_i e_i^T W e_i, Kbar = kappa_areal * A_patch; rotational block about the anchor centroid M = sum_i w_i [a~_i]_x^T Kbar [a~_i]_x; admission accepts iff lambda_min(M) >= k_couple_min where k_couple_min is an AUTHORED requirement unless independently sourced; isotropic scalar k must equal kappa_areal*A_patch within 1e-3 relative (consistent provenance never admits by itself). The synthetic lambda_min = 32 N*m/rad demo result does NOT transfer (C17 verification clause). This module re-implements the closed-form block and the gate; it does not import the untracked reference."
+ },
+ "counts": {
+  "ports": 8,
+  "ports_mechanically_qualified": 0,
+  "ports_remaining_blocked": 8,
+  "waypoints_refused": 24
+ },
+ "criteria_sha256": "6b8fda77de9184ced004bcb6b14b83c0e46139981609a4a9f72975a738ebc8da",
+ "determinism": {
+  "canonical_json": true,
+  "random": "none",
+  "wall_clock": "none"
+ },
+ "honest_limits": [
+  "the eight anatomical ports remain mechanically UNQUALIFIED; the card's 'qualify or remain blocked' is executed by naming the missing evidence per input",
+  "the C17 requirement check runs on DECLARED inputs at chosen detail (engineering assumptions labeled synthetic_authored); it demonstrates the approved gate mechanics and the real-parameter outcome of the declared values, not anatomy",
+  "no native-engine runtime run is claimed; runtime-facing qualification belongs to downstream checkpoints (V11 / B06 / B07)"
+ ],
+ "input_pins": [
+  {
+   "file": "data/attachment_candidates_854f7097.json",
+   "id": "attachment_candidates",
+   "origin": {
+    "class": "host_artifact_untracked",
+    "note": "attachment candidates rev 5; 'derived from the fitted packet site/tendon order + the fit's own recorded transforms and measurements; nothing re-measured or re-invented' (revision_safety, verbatim). Upstream provenance embedded in the document: source_xml_raw_sha256 675e00d0898cf7a175f3e4fe8f240eb24301c2f5e201ffa9215aea45b01b83d1, source_xml_canonical_sha256 7caa32c6e31e319876ea21625b662c5c00e736038f542b38ce6b0cb81aadc8a5, fitted_packet_sha256 a447555069748d7fe421ff2a4ddeaa108729924ae088478741c86c38c3880937",
+    "source_path": "E:\\PythonChimera\\.tmp\\anatomy_compiler\\runs\\attachment_candidates.json"
+   },
+   "sha256": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae"
+  },
+  {
+   "file": "data/mechanical_requirements_cannot_produce.json",
+   "id": "mechanical_requirements_cannot_produce",
+   "origin": {
+    "branch": "origin/forearm-package-20260924",
+    "class": "git",
+    "commit": "64ed7cd3f9f5f244d721971c2797d02e0b4a5288",
+    "path": "tools/assembly_handoff/inputs/mechanical_requirements.cannot_produce.json"
+   },
+   "sha256": "639a4a4b7ab6039ad61a23aced8d838f01ee744d44efcb042e01d0303cfe40b6"
+  },
+  {
+   "file": "data/material_volume_input.json",
+   "id": "material_volume_input",
+   "origin": {
+    "branch": "origin/review/MAT2-B03",
+    "class": "git",
+    "commit": "72822775a6756891e8dda6ee7f06d1a20b5ec38c",
+    "note": "byte-identical at origin/review/MAT2-M05 cadaabc6ae0522c2530ce6fa090f07725d19a25f; MAT2-B03 counted mass total 0.044702393754434 kg",
+    "path": "tools/monkey_campaign/contributions/MAT2-B03/material_volume_input.json"
+   },
+   "sha256": "6e8033f26c823f410eb5beb8fdaaefd4c0c37db61327a86221e087bc832b9ddc"
+  },
+  {
+   "file": "data/frame_forest.json",
+   "id": "frame_forest",
+   "origin": {
+    "branch": "origin/review/MAT2-B04",
+    "class": "git",
+    "commit": "ba24f78622bbf5e1e0e4338187e7889b7da221f5",
+    "note": "byte-identical at origin/review/MAT2-M05 cadaabc6ae0522c2530ce6fa090f07725d19a25f; chimera.assembly_frame_forest.v1 with authored roots root_pelvis/root_thorax/root_ulna/root_ulna_l; no_fusion_statement honored",
+    "path": "tools/monkey_campaign/contributions/MAT2-B04/frame_forest.json"
+   },
+   "sha256": "156ef55722e1ecda3238f3733131eb707f209cb93531d0e133227b00ebba8203"
+  },
+  {
+   "file": "data/arm_rigid_laws.json",
+   "id": "arm_rigid_laws",
+   "origin": {
+    "branch": "origin/review/MAT2-M04",
+    "class": "git",
+    "commit": "f53d384b5c548cea7592a8231fdc5b87c6d9cea5",
+    "note": "byte-identical at origin/review/MAT2-M05 cadaabc6ae0522c2530ce6fa090f07725d19a25f; all seven arm regions rigid, source_status synthetic_authored",
+    "path": "tools/monkey_campaign/contributions/MAT2-M04/arm_rigid_laws.json"
+   },
+   "sha256": "a9e971db4b36c1a6c35f9c27171ebd06787d5ffc96d58cd4b039e9e4e7f02d32"
+  },
+  {
+   "file": "data/interface_state.json",
+   "id": "interface_state",
+   "origin": {
+    "branch": "origin/review/MAT2-M05",
+    "class": "git",
+    "commit": "cadaabc6ae0522c2530ce6fa090f07725d19a25f",
+    "path": "tools/monkey_campaign/contributions/MAT2-M05/interface_state.json"
+   },
+   "sha256": "c09bdf0564d152fa8b9a41489bd874fd0570f75e40ed3ce848f4c474fd0320c6"
+  },
+  {
+   "file": "data/interface_exchange_m05.py",
+   "id": "interface_exchange_source",
+   "origin": {
+    "branch": "origin/review/MAT2-M05",
+    "class": "git",
+    "commit": "cadaabc6ae0522c2530ce6fa090f07725d19a25f",
+    "note": "declared interface constants are parsed from these pinned bytes, never hand-copied",
+    "path": "tools/monkey_campaign/contributions/MAT2-M05/interface_exchange.py"
+   },
+   "sha256": "295e6c898ada14918f09b2b0633f5926c1623c9e09cd37258e516ab57450b9b9"
+  },
+  {
+   "file": "data/pressure_state.json",
+   "id": "pressure_state",
+   "origin": {
+    "branch": "origin/review/MAT2-M03",
+    "class": "git",
+    "commit": "70aff3ed0566c2c38d2a31e3f4d40ef18950af7a",
+    "path": "tools/monkey_campaign/contributions/MAT2-M03/pressure_state.json"
+   },
+   "sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03"
+  }
+ ],
+ "input_status_ledger": {
+  "authored_engineering_requirements": [
+   {
+    "detail": "disc radius 2.5e-3 m at chosen detail",
+    "input": "patch_area_m2",
+    "source_status": "synthetic_authored"
+   },
+   {
+    "detail": "carried from pinned M05 K_CONTACT_PA_PER_M = 1.0e5 Pa/m == N/m^3",
+    "input": "kappa_areal_n_m3",
+    "source_status": "synthetic_authored"
+   },
+   {
+    "detail": "carried from pinned M05 K_TWIST_N_M_PER_RAD = 0.8 N*m/rad",
+    "input": "k_couple_min_n_m_per_rad",
+    "source_status": "synthetic_authored"
+   },
+   {
+    "detail": "uniform 3-rim-anchor quadrature (sum 1)",
+    "input": "weights.quadrature_w_i",
+    "source_status": "synthetic_authored"
+   },
+   {
+    "detail": "carried from pinned M03 pressure source limits",
+    "input": "pressure_limits",
+    "source_status": "synthetic_authored"
+   }
+  ],
+  "blocked": [
+   {
+    "input": "anchor_frame_id",
+    "missing_evidence": [
+     "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+     "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+    ]
+   },
+   {
+    "input": "endpoints_local_frame_id",
+    "missing_evidence": [
+     "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+     "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+    ]
+   },
+   {
+    "input": "patch_area_m2",
+    "missing_evidence": [
+     "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+     "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+    ]
+   },
+   {
+    "input": "kappa_areal_n_m3",
+    "missing_evidence": [
+     "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+    ]
+   },
+   {
+    "input": "k_couple_min_n_m_per_rad",
+    "missing_evidence": [
+     "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+    ]
+   },
+   {
+    "input": "weights.carried_load_segment_weights",
+    "missing_evidence": [
+     "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+    ]
+   }
+  ],
+  "qualified": [
+   {
+    "evidence": "material_volume_input (B03 C02 counted ledger; bone_radius 0.00910051480229847 kg; researched density provenance)",
+    "input": "weights.counted_arm_bone_masses",
+    "pin": "6e8033f26c823f410eb5beb8fdaaefd4c0c37db61327a86221e087bc832b9ddc"
+   },
+   {
+    "boundary": "qualified as authored placement references ONLY; a bound PORT frame stays blocked on the accepted correspondence",
+    "evidence": "frame_forest (B04 authored placement only; root_ulna/root_ulna_l exist with pinned chimanoid.xml chains)",
+    "input": "frame.authored_root_frames",
+    "pin": "156ef55722e1ecda3238f3733131eb707f209cb93531d0e133227b00ebba8203"
+   }
+  ]
+ },
+ "object_id": "mat2-b05-mechanical-port-requirements",
+ "observation": "Eight ports missing parameters; source tendon points are insufficient",
+ "port_source_rule": "a site is a FIRST/LAST ENDPOINT of tendon X only when it is the first/last entry of X's ordered site_names; intermediate entries are waypoints and never endpoints for that tendon. Endpoint roles are NOT mechanical qualifications: every site ships mechanical_qualification=false.",
+ "ports": [
+  {
+   "anchor_convention": {
+    "authority": "MAT2-M05 correction A1 and durable lesson 3: ports are material points; anchoring interface geometry to a deforming face centroid wobbles under one-sided loads",
+    "kind": "material_point",
+    "rule": "rest anchor + mean body translation"
+   },
+   "blocked_reasons": [
+    {
+     "input": "anchor_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "endpoints_local_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "patch_area_m2",
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "kappa_areal_n_m3",
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "k_couple_min_n_m_per_rad",
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "weights",
+     "missing_evidence": [
+      "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+     ],
+     "status": "split"
+    }
+   ],
+   "endpoint_roles": [
+    "last_endpoint"
+   ],
+   "inputs": {
+    "anchor_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "no_fusion_statement": "The mapping between anatomy_packet_fitted and assembly_world_source_chain is intentionally NOT authored: deriving it would be a guessed alignment. Frame binding between the two systems is by stable name only (component root body == authored root frame body).",
+     "qualified_references_available": {
+      "root_ulna": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        534,
+        593
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345500000000001,
+        0.15770000000000006
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      },
+      "root_ulna_l": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna_l",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        675,
+        733
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345,
+        -0.15769999999999995
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      }
+     },
+     "requirement": "bound authored root frame",
+     "status": "blocked"
+    },
+    "c17_requirement_check": {
+     "admitted": false,
+     "anchors_source_local_m": [
+      [
+       -0.002,
+       -0.04,
+       -0.002
+      ],
+      [
+       -0.002,
+       -0.03625,
+       -0.004165063509461097
+      ],
+      [
+       -0.002,
+       -0.03625,
+       0.00016506350946109615
+      ]
+     ],
+     "eigen_solver_rel_err": 5.521796321985267e-16,
+     "eigenvalues_analytic_n_m_per_rad": [
+      6.135923151542571e-06,
+      6.135923151542571e-06,
+      1.2271846303085142e-05
+     ],
+     "eigenvalues_measured_n_m_per_rad": [
+      6.135923151542564e-06,
+      6.135923151542576e-06,
+      1.227184630308514e-05
+     ],
+     "independent_check": "algebraic identity M == (k r^2/2)(I + n n^T); the generic trigonometric cubic eigensolver is a diagnostic only (its accuracy is clustering-limited when two eigenvalues coincide)",
+     "k_couple_min_required_n_m_per_rad": 0.8,
+     "k_n_per_m": 1.963495408493621,
+     "kappa_areal_n_m3": 100000.0,
+     "lambda_min_closed_form_n_m_per_rad": 6.135923151542566e-06,
+     "lambda_min_n_m_per_rad": 6.135923151542564e-06,
+     "matrix_identity_rel_err": 9.183921032882605e-16,
+     "patch_area_m2": 1.963495408493621e-05,
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "sizing_radius_to_meet_requirement_m": 0.9027033336764101,
+     "verdict_note": "requirement check on DECLARED inputs at chosen detail; NOT an anatomical qualification; C17: synthetic lambda_min does not transfer"
+    },
+    "endpoints_local_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "provisional_fitted_reference": {
+      "fitted_reference": {
+       "fitted_pos_global": [
+        -0.120486899,
+        0.312456432,
+        -0.006522686
+       ],
+       "fitted_pos_local": [
+        0.008202326,
+        0.000957034,
+        -0.001149713
+       ],
+       "resolved": true,
+       "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local"
+      },
+      "record": "fitted_pos_global = fitted_origin + R @ source_pos_local (pinned attachment_candidates fitted record)",
+      "status_note": "provisional U-STR fitted record; never merged; does not bind"
+     },
+     "requirement": "bound authored frame for every endpoint",
+     "status": "blocked"
+    },
+    "k_couple_min_n_m_per_rad": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_n_m_per_rad": 0.8,
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_TWIST_N_M_PER_RAD"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m_per_rad": 0.8
+     },
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "kappa_areal_n_m3": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_pa_per_m": 100000.0,
+       "dimensional_note": "Pa/m == N/m^3 (areal stiffness density)",
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_CONTACT_PA_PER_M"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m3": 100000.0
+     },
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "patch_area_m2": {
+     "authored_requirement": {
+      "anchor_angles_rad": [
+       0.0,
+       2.0943951023931953,
+       4.1887902047863905
+      ],
+      "area_m2": 1.963495408493621e-05,
+      "center_source_local_m": [
+       -0.002,
+       -0.0375,
+       -0.002
+      ],
+      "note": "attachment area at CHOSEN DETAIL (engineering assumption), not a measured footprint",
+      "plane_normal_source_local": [
+       1.0,
+       0.0,
+       0.0
+      ],
+      "radius_m": 0.0025,
+      "shape": "disc",
+      "source_status": "synthetic_authored"
+     },
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "pressure_limits": {
+     "carried_from": {
+      "input_pin": "pressure_state",
+      "law_id": "mat2_m03_membrane"
+     },
+     "limits": {
+      "max_delta_p_pa": 5000.0,
+      "max_dv_dt_m3_per_s": 0.001,
+      "p_ext_pa": 0.0,
+      "p_int_peak_pa": 120.0,
+      "traction_rule": "F_i = dp * A_i * n_i, equal-third vertex lumping"
+     },
+     "provenance": "authored demonstrator pressure source (PREREGISTRATION.md T6: max |dp| 5000 Pa, max dV/dt 1e-3 m^3/s; no catalog constant imported)",
+     "source_status": "synthetic_authored",
+     "status": "declared"
+    },
+    "stiffness_law_reference": {
+     "input_pin": "arm_rigid_laws",
+     "note": "arm regions are RIGID (declared, synthetic_authored); no soft-tissue stiffness is invented, so the attachment areal stiffness stays an authored engineering requirement",
+     "profile_id": "rigid",
+     "radius_assignment": {
+      "profile_id": "rigid",
+      "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+     }
+    },
+    "weights": {
+     "blocked": {
+      "carried_load_segment_weights": {
+       "missing_evidence": [
+        "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+       ],
+       "status": "blocked"
+      }
+     },
+     "quadrature_source_status": "synthetic_authored",
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "qualified": {
+      "counted_arm_total_kg": 0.0447023937544344,
+      "counted_bone_mass_radius_kg": 0.00910051480229847,
+      "counted_bone_mass_radius_provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.055841556832483e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region",
+      "input_pin": "material_volume_input",
+      "note": "real counted masses of the target arm's bone regions (B03, C02 ledger)"
+     },
+     "status": "split"
+    }
+   },
+   "inputs_all_qualified": false,
+   "mechanical_qualification": false,
+   "port_id": "BIClong-P11",
+   "source_body": "radius",
+   "source_mechanical_qualification": false,
+   "source_mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+   "source_pos_local_m": [
+    -0.002,
+    -0.0375,
+    -0.002
+   ],
+   "source_pos_local_units": "source SI (metres), verbatim from the XML — NOT scaled by the target mesh factor",
+   "tendon_membership": [
+    {
+     "index_in_path": 9,
+     "path_length": 10,
+     "role": "last_endpoint",
+     "tendon": "BIClong_tendon"
+    }
+   ]
+  },
+  {
+   "anchor_convention": {
+    "authority": "MAT2-M05 correction A1 and durable lesson 3: ports are material points; anchoring interface geometry to a deforming face centroid wobbles under one-sided loads",
+    "kind": "material_point",
+    "rule": "rest anchor + mean body translation"
+   },
+   "blocked_reasons": [
+    {
+     "input": "anchor_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "endpoints_local_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "patch_area_m2",
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "kappa_areal_n_m3",
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "k_couple_min_n_m_per_rad",
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "weights",
+     "missing_evidence": [
+      "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+     ],
+     "status": "split"
+    }
+   ],
+   "endpoint_roles": [
+    "last_endpoint"
+   ],
+   "inputs": {
+    "anchor_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "no_fusion_statement": "The mapping between anatomy_packet_fitted and assembly_world_source_chain is intentionally NOT authored: deriving it would be a guessed alignment. Frame binding between the two systems is by stable name only (component root body == authored root frame body).",
+     "qualified_references_available": {
+      "root_ulna": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        534,
+        593
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345500000000001,
+        0.15770000000000006
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      },
+      "root_ulna_l": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna_l",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        675,
+        733
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345,
+        -0.15769999999999995
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      }
+     },
+     "requirement": "bound authored root frame",
+     "status": "blocked"
+    },
+    "c17_requirement_check": {
+     "admitted": false,
+     "anchors_source_local_m": [
+      [
+       -0.002,
+       -0.04,
+       -0.002
+      ],
+      [
+       -0.002,
+       -0.03625,
+       -0.004165063509461097
+      ],
+      [
+       -0.002,
+       -0.03625,
+       0.00016506350946109615
+      ]
+     ],
+     "eigen_solver_rel_err": 5.521796321985267e-16,
+     "eigenvalues_analytic_n_m_per_rad": [
+      6.135923151542571e-06,
+      6.135923151542571e-06,
+      1.2271846303085142e-05
+     ],
+     "eigenvalues_measured_n_m_per_rad": [
+      6.135923151542564e-06,
+      6.135923151542576e-06,
+      1.227184630308514e-05
+     ],
+     "independent_check": "algebraic identity M == (k r^2/2)(I + n n^T); the generic trigonometric cubic eigensolver is a diagnostic only (its accuracy is clustering-limited when two eigenvalues coincide)",
+     "k_couple_min_required_n_m_per_rad": 0.8,
+     "k_n_per_m": 1.963495408493621,
+     "kappa_areal_n_m3": 100000.0,
+     "lambda_min_closed_form_n_m_per_rad": 6.135923151542566e-06,
+     "lambda_min_n_m_per_rad": 6.135923151542564e-06,
+     "matrix_identity_rel_err": 9.183921032882605e-16,
+     "patch_area_m2": 1.963495408493621e-05,
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "sizing_radius_to_meet_requirement_m": 0.9027033336764101,
+     "verdict_note": "requirement check on DECLARED inputs at chosen detail; NOT an anatomical qualification; C17: synthetic lambda_min does not transfer"
+    },
+    "endpoints_local_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "provisional_fitted_reference": {
+      "fitted_reference": {
+       "fitted_pos_global": [
+        -0.120486899,
+        0.312456432,
+        -0.006522686
+       ],
+       "fitted_pos_local": [
+        0.008202326,
+        0.000957034,
+        -0.001149713
+       ],
+       "resolved": true,
+       "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local"
+      },
+      "record": "fitted_pos_global = fitted_origin + R @ source_pos_local (pinned attachment_candidates fitted record)",
+      "status_note": "provisional U-STR fitted record; never merged; does not bind"
+     },
+     "requirement": "bound authored frame for every endpoint",
+     "status": "blocked"
+    },
+    "k_couple_min_n_m_per_rad": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_n_m_per_rad": 0.8,
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_TWIST_N_M_PER_RAD"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m_per_rad": 0.8
+     },
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "kappa_areal_n_m3": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_pa_per_m": 100000.0,
+       "dimensional_note": "Pa/m == N/m^3 (areal stiffness density)",
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_CONTACT_PA_PER_M"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m3": 100000.0
+     },
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "patch_area_m2": {
+     "authored_requirement": {
+      "anchor_angles_rad": [
+       0.0,
+       2.0943951023931953,
+       4.1887902047863905
+      ],
+      "area_m2": 1.963495408493621e-05,
+      "center_source_local_m": [
+       -0.002,
+       -0.0375,
+       -0.002
+      ],
+      "note": "attachment area at CHOSEN DETAIL (engineering assumption), not a measured footprint",
+      "plane_normal_source_local": [
+       1.0,
+       0.0,
+       0.0
+      ],
+      "radius_m": 0.0025,
+      "shape": "disc",
+      "source_status": "synthetic_authored"
+     },
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "pressure_limits": {
+     "carried_from": {
+      "input_pin": "pressure_state",
+      "law_id": "mat2_m03_membrane"
+     },
+     "limits": {
+      "max_delta_p_pa": 5000.0,
+      "max_dv_dt_m3_per_s": 0.001,
+      "p_ext_pa": 0.0,
+      "p_int_peak_pa": 120.0,
+      "traction_rule": "F_i = dp * A_i * n_i, equal-third vertex lumping"
+     },
+     "provenance": "authored demonstrator pressure source (PREREGISTRATION.md T6: max |dp| 5000 Pa, max dV/dt 1e-3 m^3/s; no catalog constant imported)",
+     "source_status": "synthetic_authored",
+     "status": "declared"
+    },
+    "stiffness_law_reference": {
+     "input_pin": "arm_rigid_laws",
+     "note": "arm regions are RIGID (declared, synthetic_authored); no soft-tissue stiffness is invented, so the attachment areal stiffness stays an authored engineering requirement",
+     "profile_id": "rigid",
+     "radius_assignment": {
+      "profile_id": "rigid",
+      "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+     }
+    },
+    "weights": {
+     "blocked": {
+      "carried_load_segment_weights": {
+       "missing_evidence": [
+        "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+       ],
+       "status": "blocked"
+      }
+     },
+     "quadrature_source_status": "synthetic_authored",
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "qualified": {
+      "counted_arm_total_kg": 0.0447023937544344,
+      "counted_bone_mass_radius_kg": 0.00910051480229847,
+      "counted_bone_mass_radius_provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.055841556832483e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region",
+      "input_pin": "material_volume_input",
+      "note": "real counted masses of the target arm's bone regions (B03, C02 ledger)"
+     },
+     "status": "split"
+    }
+   },
+   "inputs_all_qualified": false,
+   "mechanical_qualification": false,
+   "port_id": "BICshort-P8",
+   "source_body": "radius",
+   "source_mechanical_qualification": false,
+   "source_mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+   "source_pos_local_m": [
+    -0.002,
+    -0.0375,
+    -0.002
+   ],
+   "source_pos_local_units": "source SI (metres), verbatim from the XML — NOT scaled by the target mesh factor",
+   "tendon_membership": [
+    {
+     "index_in_path": 6,
+     "path_length": 7,
+     "role": "last_endpoint",
+     "tendon": "BICshort_tendon"
+    }
+   ]
+  },
+  {
+   "anchor_convention": {
+    "authority": "MAT2-M05 correction A1 and durable lesson 3: ports are material points; anchoring interface geometry to a deforming face centroid wobbles under one-sided loads",
+    "kind": "material_point",
+    "rule": "rest anchor + mean body translation"
+   },
+   "blocked_reasons": [
+    {
+     "input": "anchor_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "endpoints_local_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "patch_area_m2",
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "kappa_areal_n_m3",
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "k_couple_min_n_m_per_rad",
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "weights",
+     "missing_evidence": [
+      "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+     ],
+     "status": "split"
+    }
+   ],
+   "endpoint_roles": [
+    "last_endpoint"
+   ],
+   "inputs": {
+    "anchor_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "no_fusion_statement": "The mapping between anatomy_packet_fitted and assembly_world_source_chain is intentionally NOT authored: deriving it would be a guessed alignment. Frame binding between the two systems is by stable name only (component root body == authored root frame body).",
+     "qualified_references_available": {
+      "root_ulna": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        534,
+        593
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345500000000001,
+        0.15770000000000006
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      },
+      "root_ulna_l": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna_l",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        675,
+        733
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345,
+        -0.15769999999999995
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      }
+     },
+     "requirement": "bound authored root frame",
+     "status": "blocked"
+    },
+    "c17_requirement_check": {
+     "admitted": false,
+     "anchors_source_local_m": [
+      [
+       0.0419,
+       -0.2235,
+       0.0224
+      ],
+      [
+       0.0419,
+       -0.21975,
+       0.020234936490538903
+      ],
+      [
+       0.0419,
+       -0.21975,
+       0.024565063509461096
+      ]
+     ],
+     "eigen_solver_rel_err": 2.8677294587933466e-09,
+     "eigenvalues_analytic_n_m_per_rad": [
+      6.1359231163502324e-06,
+      6.1359231867349095e-06,
+      1.2271846303085142e-05
+     ],
+     "eigenvalues_measured_n_m_per_rad": [
+      6.135923151542568e-06,
+      6.135923151542577e-06,
+      1.2271846303085142e-05
+     ],
+     "independent_check": "algebraic identity M == (k r^2/2)(I + n n^T); the generic trigonometric cubic eigensolver is a diagnostic only (its accuracy is clustering-limited when two eigenvalues coincide)",
+     "k_couple_min_required_n_m_per_rad": 0.8,
+     "k_n_per_m": 1.963495408493621,
+     "kappa_areal_n_m3": 100000.0,
+     "lambda_min_closed_form_n_m_per_rad": 6.135923151542566e-06,
+     "lambda_min_n_m_per_rad": 6.135923151542568e-06,
+     "matrix_identity_rel_err": 1.0391643162550248e-15,
+     "patch_area_m2": 1.963495408493621e-05,
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "sizing_radius_to_meet_requirement_m": 0.9027033336764101,
+     "verdict_note": "requirement check on DECLARED inputs at chosen detail; NOT an anatomical qualification; C17: synthetic lambda_min does not transfer"
+    },
+    "endpoints_local_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "provisional_fitted_reference": {
+      "fitted_reference": {
+       "fitted_pos_global": [
+        -0.133113481,
+        0.27227079,
+        -0.008713645
+       ],
+       "fitted_pos_local": [
+        0.049721553,
+        0.000432233,
+        0.006266151
+       ],
+       "resolved": true,
+       "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local"
+      },
+      "record": "fitted_pos_global = fitted_origin + R @ source_pos_local (pinned attachment_candidates fitted record)",
+      "status_note": "provisional U-STR fitted record; never merged; does not bind"
+     },
+     "requirement": "bound authored frame for every endpoint",
+     "status": "blocked"
+    },
+    "k_couple_min_n_m_per_rad": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_n_m_per_rad": 0.8,
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_TWIST_N_M_PER_RAD"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m_per_rad": 0.8
+     },
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "kappa_areal_n_m3": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_pa_per_m": 100000.0,
+       "dimensional_note": "Pa/m == N/m^3 (areal stiffness density)",
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_CONTACT_PA_PER_M"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m3": 100000.0
+     },
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "patch_area_m2": {
+     "authored_requirement": {
+      "anchor_angles_rad": [
+       0.0,
+       2.0943951023931953,
+       4.1887902047863905
+      ],
+      "area_m2": 1.963495408493621e-05,
+      "center_source_local_m": [
+       0.0419,
+       -0.221,
+       0.0224
+      ],
+      "note": "attachment area at CHOSEN DETAIL (engineering assumption), not a measured footprint",
+      "plane_normal_source_local": [
+       1.0,
+       0.0,
+       0.0
+      ],
+      "radius_m": 0.0025,
+      "shape": "disc",
+      "source_status": "synthetic_authored"
+     },
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "pressure_limits": {
+     "carried_from": {
+      "input_pin": "pressure_state",
+      "law_id": "mat2_m03_membrane"
+     },
+     "limits": {
+      "max_delta_p_pa": 5000.0,
+      "max_dv_dt_m3_per_s": 0.001,
+      "p_ext_pa": 0.0,
+      "p_int_peak_pa": 120.0,
+      "traction_rule": "F_i = dp * A_i * n_i, equal-third vertex lumping"
+     },
+     "provenance": "authored demonstrator pressure source (PREREGISTRATION.md T6: max |dp| 5000 Pa, max dV/dt 1e-3 m^3/s; no catalog constant imported)",
+     "source_status": "synthetic_authored",
+     "status": "declared"
+    },
+    "stiffness_law_reference": {
+     "input_pin": "arm_rigid_laws",
+     "note": "arm regions are RIGID (declared, synthetic_authored); no soft-tissue stiffness is invented, so the attachment areal stiffness stays an authored engineering requirement",
+     "profile_id": "rigid",
+     "radius_assignment": {
+      "profile_id": "rigid",
+      "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+     }
+    },
+    "weights": {
+     "blocked": {
+      "carried_load_segment_weights": {
+       "missing_evidence": [
+        "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+       ],
+       "status": "blocked"
+      }
+     },
+     "quadrature_source_status": "synthetic_authored",
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "qualified": {
+      "counted_arm_total_kg": 0.0447023937544344,
+      "counted_bone_mass_radius_kg": 0.00910051480229847,
+      "counted_bone_mass_radius_provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.055841556832483e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region",
+      "input_pin": "material_volume_input",
+      "note": "real counted masses of the target arm's bone regions (B03, C02 ledger)"
+     },
+     "status": "split"
+    }
+   },
+   "inputs_all_qualified": false,
+   "mechanical_qualification": false,
+   "port_id": "BRD-P3",
+   "source_body": "radius",
+   "source_mechanical_qualification": false,
+   "source_mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+   "source_pos_local_m": [
+    0.0419,
+    -0.221,
+    0.0224
+   ],
+   "source_pos_local_units": "source SI (metres), verbatim from the XML — NOT scaled by the target mesh factor",
+   "tendon_membership": [
+    {
+     "index_in_path": 2,
+     "path_length": 3,
+     "role": "last_endpoint",
+     "tendon": "BRD_tendon"
+    }
+   ]
+  },
+  {
+   "anchor_convention": {
+    "authority": "MAT2-M05 correction A1 and durable lesson 3: ports are material points; anchoring interface geometry to a deforming face centroid wobbles under one-sided loads",
+    "kind": "material_point",
+    "rule": "rest anchor + mean body translation"
+   },
+   "blocked_reasons": [
+    {
+     "input": "anchor_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "endpoints_local_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "patch_area_m2",
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "kappa_areal_n_m3",
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "k_couple_min_n_m_per_rad",
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "weights",
+     "missing_evidence": [
+      "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+     ],
+     "status": "split"
+    }
+   ],
+   "endpoint_roles": [
+    "last_endpoint"
+   ],
+   "inputs": {
+    "anchor_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "no_fusion_statement": "The mapping between anatomy_packet_fitted and assembly_world_source_chain is intentionally NOT authored: deriving it would be a guessed alignment. Frame binding between the two systems is by stable name only (component root body == authored root frame body).",
+     "qualified_references_available": {
+      "root_ulna": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        534,
+        593
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345500000000001,
+        0.15770000000000006
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      },
+      "root_ulna_l": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna_l",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        675,
+        733
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345,
+        -0.15769999999999995
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      }
+     },
+     "requirement": "bound authored root frame",
+     "status": "blocked"
+    },
+    "c17_requirement_check": {
+     "admitted": false,
+     "anchors_source_local_m": [
+      [
+       0.0254,
+       -0.1113,
+       0.0198
+      ],
+      [
+       0.0254,
+       -0.10754999999999999,
+       0.017634936490538905
+      ],
+      [
+       0.0254,
+       -0.10754999999999999,
+       0.021965063509461098
+      ]
+     ],
+     "eigen_solver_rel_err": 2.027790729305851e-09,
+     "eigenvalues_analytic_n_m_per_rad": [
+      6.13592312665783e-06,
+      6.135923176427312e-06,
+      1.2271846303085142e-05
+     ],
+     "eigenvalues_measured_n_m_per_rad": [
+      6.135923151542566e-06,
+      6.135923151542576e-06,
+      1.2271846303085142e-05
+     ],
+     "independent_check": "algebraic identity M == (k r^2/2)(I + n n^T); the generic trigonometric cubic eigensolver is a diagnostic only (its accuracy is clustering-limited when two eigenvalues coincide)",
+     "k_couple_min_required_n_m_per_rad": 0.8,
+     "k_n_per_m": 1.963495408493621,
+     "kappa_areal_n_m3": 100000.0,
+     "lambda_min_closed_form_n_m_per_rad": 6.135923151542566e-06,
+     "lambda_min_n_m_per_rad": 6.135923151542566e-06,
+     "matrix_identity_rel_err": 1.0391643162550248e-15,
+     "patch_area_m2": 1.963495408493621e-05,
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "sizing_radius_to_meet_requirement_m": 0.9027033336764101,
+     "verdict_note": "requirement check on DECLARED inputs at chosen detail; NOT an anatomical qualification; C17: synthetic lambda_min does not transfer"
+    },
+    "endpoints_local_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "provisional_fitted_reference": {
+      "fitted_reference": {
+       "fitted_pos_global": [
+        -0.122553427,
+        0.294968501,
+        -0.006304447
+       ],
+       "fitted_pos_local": [
+        0.024710016,
+        -0.001495576,
+        0.004474055
+       ],
+       "resolved": true,
+       "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local"
+      },
+      "record": "fitted_pos_global = fitted_origin + R @ source_pos_local (pinned attachment_candidates fitted record)",
+      "status_note": "provisional U-STR fitted record; never merged; does not bind"
+     },
+     "requirement": "bound authored frame for every endpoint",
+     "status": "blocked"
+    },
+    "k_couple_min_n_m_per_rad": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_n_m_per_rad": 0.8,
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_TWIST_N_M_PER_RAD"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m_per_rad": 0.8
+     },
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "kappa_areal_n_m3": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_pa_per_m": 100000.0,
+       "dimensional_note": "Pa/m == N/m^3 (areal stiffness density)",
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_CONTACT_PA_PER_M"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m3": 100000.0
+     },
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "patch_area_m2": {
+     "authored_requirement": {
+      "anchor_angles_rad": [
+       0.0,
+       2.0943951023931953,
+       4.1887902047863905
+      ],
+      "area_m2": 1.963495408493621e-05,
+      "center_source_local_m": [
+       0.0254,
+       -0.1088,
+       0.0198
+      ],
+      "note": "attachment area at CHOSEN DETAIL (engineering assumption), not a measured footprint",
+      "plane_normal_source_local": [
+       1.0,
+       0.0,
+       0.0
+      ],
+      "radius_m": 0.0025,
+      "shape": "disc",
+      "source_status": "synthetic_authored"
+     },
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "pressure_limits": {
+     "carried_from": {
+      "input_pin": "pressure_state",
+      "law_id": "mat2_m03_membrane"
+     },
+     "limits": {
+      "max_delta_p_pa": 5000.0,
+      "max_dv_dt_m3_per_s": 0.001,
+      "p_ext_pa": 0.0,
+      "p_int_peak_pa": 120.0,
+      "traction_rule": "F_i = dp * A_i * n_i, equal-third vertex lumping"
+     },
+     "provenance": "authored demonstrator pressure source (PREREGISTRATION.md T6: max |dp| 5000 Pa, max dV/dt 1e-3 m^3/s; no catalog constant imported)",
+     "source_status": "synthetic_authored",
+     "status": "declared"
+    },
+    "stiffness_law_reference": {
+     "input_pin": "arm_rigid_laws",
+     "note": "arm regions are RIGID (declared, synthetic_authored); no soft-tissue stiffness is invented, so the attachment areal stiffness stays an authored engineering requirement",
+     "profile_id": "rigid",
+     "radius_assignment": {
+      "profile_id": "rigid",
+      "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+     }
+    },
+    "weights": {
+     "blocked": {
+      "carried_load_segment_weights": {
+       "missing_evidence": [
+        "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+       ],
+       "status": "blocked"
+      }
+     },
+     "quadrature_source_status": "synthetic_authored",
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "qualified": {
+      "counted_arm_total_kg": 0.0447023937544344,
+      "counted_bone_mass_radius_kg": 0.00910051480229847,
+      "counted_bone_mass_radius_provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.055841556832483e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region",
+      "input_pin": "material_volume_input",
+      "note": "real counted masses of the target arm's bone regions (B03, C02 ledger)"
+     },
+     "status": "split"
+    }
+   },
+   "inputs_all_qualified": false,
+   "mechanical_qualification": false,
+   "port_id": "PT-P5",
+   "source_body": "radius",
+   "source_mechanical_qualification": false,
+   "source_mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+   "source_pos_local_m": [
+    0.0254,
+    -0.1088,
+    0.0198
+   ],
+   "source_pos_local_units": "source SI (metres), verbatim from the XML — NOT scaled by the target mesh factor",
+   "tendon_membership": [
+    {
+     "index_in_path": 3,
+     "path_length": 4,
+     "role": "last_endpoint",
+     "tendon": "PT_tendon"
+    }
+   ]
+  },
+  {
+   "anchor_convention": {
+    "authority": "MAT2-M05 correction A1 and durable lesson 3: ports are material points; anchoring interface geometry to a deforming face centroid wobbles under one-sided loads",
+    "kind": "material_point",
+    "rule": "rest anchor + mean body translation"
+   },
+   "blocked_reasons": [
+    {
+     "input": "anchor_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "endpoints_local_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "patch_area_m2",
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "kappa_areal_n_m3",
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "k_couple_min_n_m_per_rad",
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "weights",
+     "missing_evidence": [
+      "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+     ],
+     "status": "split"
+    }
+   ],
+   "endpoint_roles": [
+    "last_endpoint"
+   ],
+   "inputs": {
+    "anchor_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "no_fusion_statement": "The mapping between anatomy_packet_fitted and assembly_world_source_chain is intentionally NOT authored: deriving it would be a guessed alignment. Frame binding between the two systems is by stable name only (component root body == authored root frame body).",
+     "qualified_references_available": {
+      "root_ulna": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        534,
+        593
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345500000000001,
+        0.15770000000000006
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      },
+      "root_ulna_l": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna_l",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        675,
+        733
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345,
+        -0.15769999999999995
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      }
+     },
+     "requirement": "bound authored root frame",
+     "status": "blocked"
+    },
+    "c17_requirement_check": {
+     "admitted": false,
+     "anchors_source_local_m": [
+      [
+       -0.002,
+       -0.04,
+       0.002
+      ],
+      [
+       -0.002,
+       -0.03625,
+       -0.0001650635094610966
+      ],
+      [
+       -0.002,
+       -0.03625,
+       0.004165063509461097
+      ]
+     ],
+     "eigen_solver_rel_err": 2.027790729305851e-09,
+     "eigenvalues_analytic_n_m_per_rad": [
+      6.13592312665783e-06,
+      6.135923176427312e-06,
+      1.2271846303085142e-05
+     ],
+     "eigenvalues_measured_n_m_per_rad": [
+      6.135923151542566e-06,
+      6.135923151542576e-06,
+      1.2271846303085142e-05
+     ],
+     "independent_check": "algebraic identity M == (k r^2/2)(I + n n^T); the generic trigonometric cubic eigensolver is a diagnostic only (its accuracy is clustering-limited when two eigenvalues coincide)",
+     "k_couple_min_required_n_m_per_rad": 0.8,
+     "k_n_per_m": 1.963495408493621,
+     "kappa_areal_n_m3": 100000.0,
+     "lambda_min_closed_form_n_m_per_rad": 6.135923151542566e-06,
+     "lambda_min_n_m_per_rad": 6.135923151542566e-06,
+     "matrix_identity_rel_err": 1.0391643162550248e-15,
+     "patch_area_m2": 1.963495408493621e-05,
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "sizing_radius_to_meet_requirement_m": 0.9027033336764101,
+     "verdict_note": "requirement check on DECLARED inputs at chosen detail; NOT an anatomical qualification; C17: synthetic lambda_min does not transfer"
+    },
+    "endpoints_local_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "provisional_fitted_reference": {
+      "fitted_reference": {
+       "fitted_pos_global": [
+        0.120486899,
+        0.312456432,
+        -0.006522686
+       ],
+       "fitted_pos_local": [
+        0.008202326,
+        0.000957034,
+        0.001149713
+       ],
+       "resolved": true,
+       "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local"
+      },
+      "record": "fitted_pos_global = fitted_origin + R @ source_pos_local (pinned attachment_candidates fitted record)",
+      "status_note": "provisional U-STR fitted record; never merged; does not bind"
+     },
+     "requirement": "bound authored frame for every endpoint",
+     "status": "blocked"
+    },
+    "k_couple_min_n_m_per_rad": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_n_m_per_rad": 0.8,
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_TWIST_N_M_PER_RAD"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m_per_rad": 0.8
+     },
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "kappa_areal_n_m3": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_pa_per_m": 100000.0,
+       "dimensional_note": "Pa/m == N/m^3 (areal stiffness density)",
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_CONTACT_PA_PER_M"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m3": 100000.0
+     },
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "patch_area_m2": {
+     "authored_requirement": {
+      "anchor_angles_rad": [
+       0.0,
+       2.0943951023931953,
+       4.1887902047863905
+      ],
+      "area_m2": 1.963495408493621e-05,
+      "center_source_local_m": [
+       -0.002,
+       -0.0375,
+       0.002
+      ],
+      "note": "attachment area at CHOSEN DETAIL (engineering assumption), not a measured footprint",
+      "plane_normal_source_local": [
+       1.0,
+       0.0,
+       0.0
+      ],
+      "radius_m": 0.0025,
+      "shape": "disc",
+      "source_status": "synthetic_authored"
+     },
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "pressure_limits": {
+     "carried_from": {
+      "input_pin": "pressure_state",
+      "law_id": "mat2_m03_membrane"
+     },
+     "limits": {
+      "max_delta_p_pa": 5000.0,
+      "max_dv_dt_m3_per_s": 0.001,
+      "p_ext_pa": 0.0,
+      "p_int_peak_pa": 120.0,
+      "traction_rule": "F_i = dp * A_i * n_i, equal-third vertex lumping"
+     },
+     "provenance": "authored demonstrator pressure source (PREREGISTRATION.md T6: max |dp| 5000 Pa, max dV/dt 1e-3 m^3/s; no catalog constant imported)",
+     "source_status": "synthetic_authored",
+     "status": "declared"
+    },
+    "stiffness_law_reference": {
+     "input_pin": "arm_rigid_laws",
+     "note": "arm regions are RIGID (declared, synthetic_authored); no soft-tissue stiffness is invented, so the attachment areal stiffness stays an authored engineering requirement",
+     "profile_id": "rigid",
+     "radius_assignment": {
+      "profile_id": "rigid",
+      "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+     }
+    },
+    "weights": {
+     "blocked": {
+      "carried_load_segment_weights": {
+       "missing_evidence": [
+        "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+       ],
+       "status": "blocked"
+      }
+     },
+     "quadrature_source_status": "synthetic_authored",
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "qualified": {
+      "counted_arm_total_kg": 0.0447023937544344,
+      "counted_bone_mass_radius_kg": 0.00910051480229847,
+      "counted_bone_mass_radius_provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.055841556832483e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region",
+      "input_pin": "material_volume_input",
+      "note": "real counted masses of the target arm's bone regions (B03, C02 ledger)"
+     },
+     "status": "split"
+    }
+   },
+   "inputs_all_qualified": false,
+   "mechanical_qualification": false,
+   "port_id": "BIClong_l-P11",
+   "source_body": "radius_l",
+   "source_mechanical_qualification": false,
+   "source_mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+   "source_pos_local_m": [
+    -0.002,
+    -0.0375,
+    0.002
+   ],
+   "source_pos_local_units": "source SI (metres), verbatim from the XML — NOT scaled by the target mesh factor",
+   "tendon_membership": [
+    {
+     "index_in_path": 9,
+     "path_length": 10,
+     "role": "last_endpoint",
+     "tendon": "BIClong_l_tendon"
+    }
+   ]
+  },
+  {
+   "anchor_convention": {
+    "authority": "MAT2-M05 correction A1 and durable lesson 3: ports are material points; anchoring interface geometry to a deforming face centroid wobbles under one-sided loads",
+    "kind": "material_point",
+    "rule": "rest anchor + mean body translation"
+   },
+   "blocked_reasons": [
+    {
+     "input": "anchor_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "endpoints_local_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "patch_area_m2",
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "kappa_areal_n_m3",
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "k_couple_min_n_m_per_rad",
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "weights",
+     "missing_evidence": [
+      "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+     ],
+     "status": "split"
+    }
+   ],
+   "endpoint_roles": [
+    "last_endpoint"
+   ],
+   "inputs": {
+    "anchor_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "no_fusion_statement": "The mapping between anatomy_packet_fitted and assembly_world_source_chain is intentionally NOT authored: deriving it would be a guessed alignment. Frame binding between the two systems is by stable name only (component root body == authored root frame body).",
+     "qualified_references_available": {
+      "root_ulna": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        534,
+        593
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345500000000001,
+        0.15770000000000006
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      },
+      "root_ulna_l": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna_l",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        675,
+        733
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345,
+        -0.15769999999999995
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      }
+     },
+     "requirement": "bound authored root frame",
+     "status": "blocked"
+    },
+    "c17_requirement_check": {
+     "admitted": false,
+     "anchors_source_local_m": [
+      [
+       -0.002,
+       -0.04,
+       0.002
+      ],
+      [
+       -0.002,
+       -0.03625,
+       -0.0001650635094610966
+      ],
+      [
+       -0.002,
+       -0.03625,
+       0.004165063509461097
+      ]
+     ],
+     "eigen_solver_rel_err": 2.027790729305851e-09,
+     "eigenvalues_analytic_n_m_per_rad": [
+      6.13592312665783e-06,
+      6.135923176427312e-06,
+      1.2271846303085142e-05
+     ],
+     "eigenvalues_measured_n_m_per_rad": [
+      6.135923151542566e-06,
+      6.135923151542576e-06,
+      1.2271846303085142e-05
+     ],
+     "independent_check": "algebraic identity M == (k r^2/2)(I + n n^T); the generic trigonometric cubic eigensolver is a diagnostic only (its accuracy is clustering-limited when two eigenvalues coincide)",
+     "k_couple_min_required_n_m_per_rad": 0.8,
+     "k_n_per_m": 1.963495408493621,
+     "kappa_areal_n_m3": 100000.0,
+     "lambda_min_closed_form_n_m_per_rad": 6.135923151542566e-06,
+     "lambda_min_n_m_per_rad": 6.135923151542566e-06,
+     "matrix_identity_rel_err": 1.0391643162550248e-15,
+     "patch_area_m2": 1.963495408493621e-05,
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "sizing_radius_to_meet_requirement_m": 0.9027033336764101,
+     "verdict_note": "requirement check on DECLARED inputs at chosen detail; NOT an anatomical qualification; C17: synthetic lambda_min does not transfer"
+    },
+    "endpoints_local_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "provisional_fitted_reference": {
+      "fitted_reference": {
+       "fitted_pos_global": [
+        0.120486899,
+        0.312456432,
+        -0.006522686
+       ],
+       "fitted_pos_local": [
+        0.008202326,
+        0.000957034,
+        0.001149713
+       ],
+       "resolved": true,
+       "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local"
+      },
+      "record": "fitted_pos_global = fitted_origin + R @ source_pos_local (pinned attachment_candidates fitted record)",
+      "status_note": "provisional U-STR fitted record; never merged; does not bind"
+     },
+     "requirement": "bound authored frame for every endpoint",
+     "status": "blocked"
+    },
+    "k_couple_min_n_m_per_rad": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_n_m_per_rad": 0.8,
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_TWIST_N_M_PER_RAD"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m_per_rad": 0.8
+     },
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "kappa_areal_n_m3": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_pa_per_m": 100000.0,
+       "dimensional_note": "Pa/m == N/m^3 (areal stiffness density)",
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_CONTACT_PA_PER_M"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m3": 100000.0
+     },
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "patch_area_m2": {
+     "authored_requirement": {
+      "anchor_angles_rad": [
+       0.0,
+       2.0943951023931953,
+       4.1887902047863905
+      ],
+      "area_m2": 1.963495408493621e-05,
+      "center_source_local_m": [
+       -0.002,
+       -0.0375,
+       0.002
+      ],
+      "note": "attachment area at CHOSEN DETAIL (engineering assumption), not a measured footprint",
+      "plane_normal_source_local": [
+       1.0,
+       0.0,
+       0.0
+      ],
+      "radius_m": 0.0025,
+      "shape": "disc",
+      "source_status": "synthetic_authored"
+     },
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "pressure_limits": {
+     "carried_from": {
+      "input_pin": "pressure_state",
+      "law_id": "mat2_m03_membrane"
+     },
+     "limits": {
+      "max_delta_p_pa": 5000.0,
+      "max_dv_dt_m3_per_s": 0.001,
+      "p_ext_pa": 0.0,
+      "p_int_peak_pa": 120.0,
+      "traction_rule": "F_i = dp * A_i * n_i, equal-third vertex lumping"
+     },
+     "provenance": "authored demonstrator pressure source (PREREGISTRATION.md T6: max |dp| 5000 Pa, max dV/dt 1e-3 m^3/s; no catalog constant imported)",
+     "source_status": "synthetic_authored",
+     "status": "declared"
+    },
+    "stiffness_law_reference": {
+     "input_pin": "arm_rigid_laws",
+     "note": "arm regions are RIGID (declared, synthetic_authored); no soft-tissue stiffness is invented, so the attachment areal stiffness stays an authored engineering requirement",
+     "profile_id": "rigid",
+     "radius_assignment": {
+      "profile_id": "rigid",
+      "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+     }
+    },
+    "weights": {
+     "blocked": {
+      "carried_load_segment_weights": {
+       "missing_evidence": [
+        "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+       ],
+       "status": "blocked"
+      }
+     },
+     "quadrature_source_status": "synthetic_authored",
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "qualified": {
+      "counted_arm_total_kg": 0.0447023937544344,
+      "counted_bone_mass_radius_kg": 0.00910051480229847,
+      "counted_bone_mass_radius_provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.055841556832483e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region",
+      "input_pin": "material_volume_input",
+      "note": "real counted masses of the target arm's bone regions (B03, C02 ledger)"
+     },
+     "status": "split"
+    }
+   },
+   "inputs_all_qualified": false,
+   "mechanical_qualification": false,
+   "port_id": "BICshort_l-P8",
+   "source_body": "radius_l",
+   "source_mechanical_qualification": false,
+   "source_mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+   "source_pos_local_m": [
+    -0.002,
+    -0.0375,
+    0.002
+   ],
+   "source_pos_local_units": "source SI (metres), verbatim from the XML — NOT scaled by the target mesh factor",
+   "tendon_membership": [
+    {
+     "index_in_path": 6,
+     "path_length": 7,
+     "role": "last_endpoint",
+     "tendon": "BICshort_l_tendon"
+    }
+   ]
+  },
+  {
+   "anchor_convention": {
+    "authority": "MAT2-M05 correction A1 and durable lesson 3: ports are material points; anchoring interface geometry to a deforming face centroid wobbles under one-sided loads",
+    "kind": "material_point",
+    "rule": "rest anchor + mean body translation"
+   },
+   "blocked_reasons": [
+    {
+     "input": "anchor_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "endpoints_local_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "patch_area_m2",
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "kappa_areal_n_m3",
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "k_couple_min_n_m_per_rad",
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "weights",
+     "missing_evidence": [
+      "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+     ],
+     "status": "split"
+    }
+   ],
+   "endpoint_roles": [
+    "last_endpoint"
+   ],
+   "inputs": {
+    "anchor_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "no_fusion_statement": "The mapping between anatomy_packet_fitted and assembly_world_source_chain is intentionally NOT authored: deriving it would be a guessed alignment. Frame binding between the two systems is by stable name only (component root body == authored root frame body).",
+     "qualified_references_available": {
+      "root_ulna": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        534,
+        593
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345500000000001,
+        0.15770000000000006
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      },
+      "root_ulna_l": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna_l",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        675,
+        733
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345,
+        -0.15769999999999995
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      }
+     },
+     "requirement": "bound authored root frame",
+     "status": "blocked"
+    },
+    "c17_requirement_check": {
+     "admitted": false,
+     "anchors_source_local_m": [
+      [
+       0.0419,
+       -0.2235,
+       -0.0224
+      ],
+      [
+       0.0419,
+       -0.21975,
+       -0.024565063509461096
+      ],
+      [
+       0.0419,
+       -0.21975,
+       -0.020234936490538903
+      ]
+     ],
+     "eigen_solver_rel_err": 4.1413472414889503e-16,
+     "eigenvalues_analytic_n_m_per_rad": [
+      6.135923151542572e-06,
+      6.135923151542572e-06,
+      1.227184630308514e-05
+     ],
+     "eigenvalues_measured_n_m_per_rad": [
+      6.135923151542568e-06,
+      6.135923151542577e-06,
+      1.227184630308514e-05
+     ],
+     "independent_check": "algebraic identity M == (k r^2/2)(I + n n^T); the generic trigonometric cubic eigensolver is a diagnostic only (its accuracy is clustering-limited when two eigenvalues coincide)",
+     "k_couple_min_required_n_m_per_rad": 0.8,
+     "k_n_per_m": 1.963495408493621,
+     "kappa_areal_n_m3": 100000.0,
+     "lambda_min_closed_form_n_m_per_rad": 6.135923151542566e-06,
+     "lambda_min_n_m_per_rad": 6.135923151542568e-06,
+     "matrix_identity_rel_err": 1.0391643162550248e-15,
+     "patch_area_m2": 1.963495408493621e-05,
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "sizing_radius_to_meet_requirement_m": 0.9027033336764101,
+     "verdict_note": "requirement check on DECLARED inputs at chosen detail; NOT an anatomical qualification; C17: synthetic lambda_min does not transfer"
+    },
+    "endpoints_local_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "provisional_fitted_reference": {
+      "fitted_reference": {
+       "fitted_pos_global": [
+        0.13311348,
+        0.27227079,
+        -0.008713643
+       ],
+       "fitted_pos_local": [
+        0.049721553,
+        0.000432233,
+        -0.006266151
+       ],
+       "resolved": true,
+       "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local"
+      },
+      "record": "fitted_pos_global = fitted_origin + R @ source_pos_local (pinned attachment_candidates fitted record)",
+      "status_note": "provisional U-STR fitted record; never merged; does not bind"
+     },
+     "requirement": "bound authored frame for every endpoint",
+     "status": "blocked"
+    },
+    "k_couple_min_n_m_per_rad": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_n_m_per_rad": 0.8,
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_TWIST_N_M_PER_RAD"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m_per_rad": 0.8
+     },
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "kappa_areal_n_m3": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_pa_per_m": 100000.0,
+       "dimensional_note": "Pa/m == N/m^3 (areal stiffness density)",
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_CONTACT_PA_PER_M"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m3": 100000.0
+     },
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "patch_area_m2": {
+     "authored_requirement": {
+      "anchor_angles_rad": [
+       0.0,
+       2.0943951023931953,
+       4.1887902047863905
+      ],
+      "area_m2": 1.963495408493621e-05,
+      "center_source_local_m": [
+       0.0419,
+       -0.221,
+       -0.0224
+      ],
+      "note": "attachment area at CHOSEN DETAIL (engineering assumption), not a measured footprint",
+      "plane_normal_source_local": [
+       1.0,
+       0.0,
+       0.0
+      ],
+      "radius_m": 0.0025,
+      "shape": "disc",
+      "source_status": "synthetic_authored"
+     },
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "pressure_limits": {
+     "carried_from": {
+      "input_pin": "pressure_state",
+      "law_id": "mat2_m03_membrane"
+     },
+     "limits": {
+      "max_delta_p_pa": 5000.0,
+      "max_dv_dt_m3_per_s": 0.001,
+      "p_ext_pa": 0.0,
+      "p_int_peak_pa": 120.0,
+      "traction_rule": "F_i = dp * A_i * n_i, equal-third vertex lumping"
+     },
+     "provenance": "authored demonstrator pressure source (PREREGISTRATION.md T6: max |dp| 5000 Pa, max dV/dt 1e-3 m^3/s; no catalog constant imported)",
+     "source_status": "synthetic_authored",
+     "status": "declared"
+    },
+    "stiffness_law_reference": {
+     "input_pin": "arm_rigid_laws",
+     "note": "arm regions are RIGID (declared, synthetic_authored); no soft-tissue stiffness is invented, so the attachment areal stiffness stays an authored engineering requirement",
+     "profile_id": "rigid",
+     "radius_assignment": {
+      "profile_id": "rigid",
+      "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+     }
+    },
+    "weights": {
+     "blocked": {
+      "carried_load_segment_weights": {
+       "missing_evidence": [
+        "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+       ],
+       "status": "blocked"
+      }
+     },
+     "quadrature_source_status": "synthetic_authored",
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "qualified": {
+      "counted_arm_total_kg": 0.0447023937544344,
+      "counted_bone_mass_radius_kg": 0.00910051480229847,
+      "counted_bone_mass_radius_provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.055841556832483e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region",
+      "input_pin": "material_volume_input",
+      "note": "real counted masses of the target arm's bone regions (B03, C02 ledger)"
+     },
+     "status": "split"
+    }
+   },
+   "inputs_all_qualified": false,
+   "mechanical_qualification": false,
+   "port_id": "BRD_l-P3",
+   "source_body": "radius_l",
+   "source_mechanical_qualification": false,
+   "source_mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+   "source_pos_local_m": [
+    0.0419,
+    -0.221,
+    -0.0224
+   ],
+   "source_pos_local_units": "source SI (metres), verbatim from the XML — NOT scaled by the target mesh factor",
+   "tendon_membership": [
+    {
+     "index_in_path": 2,
+     "path_length": 3,
+     "role": "last_endpoint",
+     "tendon": "BRD_l_tendon"
+    }
+   ]
+  },
+  {
+   "anchor_convention": {
+    "authority": "MAT2-M05 correction A1 and durable lesson 3: ports are material points; anchoring interface geometry to a deforming face centroid wobbles under one-sided loads",
+    "kind": "material_point",
+    "rule": "rest anchor + mean body translation"
+   },
+   "blocked_reasons": [
+    {
+     "input": "anchor_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "endpoints_local_frame_id",
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "status": "blocked"
+    },
+    {
+     "input": "patch_area_m2",
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "kappa_areal_n_m3",
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "k_couple_min_n_m_per_rad",
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    {
+     "input": "weights",
+     "missing_evidence": [
+      "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+     ],
+     "status": "split"
+    }
+   ],
+   "endpoint_roles": [
+    "last_endpoint"
+   ],
+   "inputs": {
+    "anchor_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "no_fusion_statement": "The mapping between anatomy_packet_fitted and assembly_world_source_chain is intentionally NOT authored: deriving it would be a guessed alignment. Frame binding between the two systems is by stable name only (component root body == authored root frame body).",
+     "qualified_references_available": {
+      "root_ulna": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        534,
+        593
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345500000000001,
+        0.15770000000000006
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      },
+      "root_ulna_l": {
+       "authority": "MAT2-B04 authored frame forest (placement only; pinned chains)",
+       "basis_rows": [
+        [
+         1.0,
+         0.0,
+         0.0
+        ],
+        [
+         0.0,
+         1.0,
+         0.0
+        ],
+        [
+         0.0,
+         0.0,
+         1.0
+        ]
+       ],
+       "body": "ulna_l",
+       "chain_lines": [
+        55,
+        411,
+        420,
+        675,
+        733
+       ],
+       "coordinate_unit": "m",
+       "evidence": "composed exclusively from the pinned declarations in chain; no fitted, tuned, or appearance-derived value",
+       "handedness": "right",
+       "origin_m": [
+        -0.09150000000000001,
+        0.8345,
+        -0.15769999999999995
+       ],
+       "parent_frame_id": "assembly_world",
+       "scale_to_m": 1.0,
+       "status_row": "qualified_reference_only"
+      }
+     },
+     "requirement": "bound authored root frame",
+     "status": "blocked"
+    },
+    "c17_requirement_check": {
+     "admitted": false,
+     "anchors_source_local_m": [
+      [
+       0.0254,
+       -0.1113,
+       -0.0198
+      ],
+      [
+       0.0254,
+       -0.10754999999999999,
+       -0.021965063509461098
+      ],
+      [
+       0.0254,
+       -0.10754999999999999,
+       -0.017634936490538905
+      ]
+     ],
+     "eigen_solver_rel_err": 2.027790729305851e-09,
+     "eigenvalues_analytic_n_m_per_rad": [
+      6.13592312665783e-06,
+      6.135923176427312e-06,
+      1.2271846303085142e-05
+     ],
+     "eigenvalues_measured_n_m_per_rad": [
+      6.135923151542566e-06,
+      6.135923151542576e-06,
+      1.2271846303085142e-05
+     ],
+     "independent_check": "algebraic identity M == (k r^2/2)(I + n n^T); the generic trigonometric cubic eigensolver is a diagnostic only (its accuracy is clustering-limited when two eigenvalues coincide)",
+     "k_couple_min_required_n_m_per_rad": 0.8,
+     "k_n_per_m": 1.963495408493621,
+     "kappa_areal_n_m3": 100000.0,
+     "lambda_min_closed_form_n_m_per_rad": 6.135923151542566e-06,
+     "lambda_min_n_m_per_rad": 6.135923151542566e-06,
+     "matrix_identity_rel_err": 1.0391643162550248e-15,
+     "patch_area_m2": 1.963495408493621e-05,
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "sizing_radius_to_meet_requirement_m": 0.9027033336764101,
+     "verdict_note": "requirement check on DECLARED inputs at chosen detail; NOT an anatomical qualification; C17: synthetic lambda_min does not transfer"
+    },
+    "endpoints_local_frame_id": {
+     "missing_evidence": [
+      "an accepted ulna-edge correspondence (architect decision 4: U-STR verdict-ready pending volr-side roll sign identification; radius-record supersession acceptance still open)",
+      "an authorized binding of the fitted packet frames to the authored frame forest (MAT2-B04 no_fusion_statement: fitted frames bind by stable name only; authoring the alignment would be a guessed alignment)"
+     ],
+     "provisional_fitted_reference": {
+      "fitted_reference": {
+       "fitted_pos_global": [
+        0.122553427,
+        0.294968501,
+        -0.006304446
+       ],
+       "fitted_pos_local": [
+        0.024710016,
+        -0.001495576,
+        -0.004474055
+       ],
+       "resolved": true,
+       "transform_application": "fitted_pos_global = fitted_origin + R @ source_pos_local"
+      },
+      "record": "fitted_pos_global = fitted_origin + R @ source_pos_local (pinned attachment_candidates fitted record)",
+      "status_note": "provisional U-STR fitted record; never merged; does not bind"
+     },
+     "requirement": "bound authored frame for every endpoint",
+     "status": "blocked"
+    },
+    "k_couple_min_n_m_per_rad": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_n_m_per_rad": 0.8,
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_TWIST_N_M_PER_RAD"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m_per_rad": 0.8
+     },
+     "missing_evidence": [
+      "a sourced minimum rotational-resistance requirement (none exists in any pinned source; the value carried below is an AUTHORED requirement, and the C17 clause 'synthetic lambda_min does not transfer' forbids using any synthetic demo result as qualification evidence)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "kappa_areal_n_m3": {
+     "authored_requirement": {
+      "carried_from": {
+       "declared_value_pa_per_m": 100000.0,
+       "dimensional_note": "Pa/m == N/m^3 (areal stiffness density)",
+       "input_pin": "interface_exchange_source",
+       "symbol": "K_CONTACT_PA_PER_M"
+      },
+      "source_status": "synthetic_authored",
+      "value_n_m3": 100000.0
+     },
+     "missing_evidence": [
+      "a measured areal stiffness density for the tendon-to-bone attachment (no measured value exists in any pinned source; MAT2-M04 assigns the arm regions rigid with source_status synthetic_authored and invents no soft-tissue stiffness)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "patch_area_m2": {
+     "authored_requirement": {
+      "anchor_angles_rad": [
+       0.0,
+       2.0943951023931953,
+       4.1887902047863905
+      ],
+      "area_m2": 1.963495408493621e-05,
+      "center_source_local_m": [
+       0.0254,
+       -0.1088,
+       -0.0198
+      ],
+      "note": "attachment area at CHOSEN DETAIL (engineering assumption), not a measured footprint",
+      "plane_normal_source_local": [
+       1.0,
+       0.0,
+       0.0
+      ],
+      "radius_m": 0.0025,
+      "shape": "disc",
+      "source_status": "synthetic_authored"
+     },
+     "missing_evidence": [
+      "a measured attachment footprint (the pinned source records exactly one POINT per site: source_pos_local; no footprint/area measurement exists in any pinned source)",
+      "an accepted correspondence that would place the footprint on the real target bone geometry (blocked with the frame input)"
+     ],
+     "status": "blocked_as_measured"
+    },
+    "pressure_limits": {
+     "carried_from": {
+      "input_pin": "pressure_state",
+      "law_id": "mat2_m03_membrane"
+     },
+     "limits": {
+      "max_delta_p_pa": 5000.0,
+      "max_dv_dt_m3_per_s": 0.001,
+      "p_ext_pa": 0.0,
+      "p_int_peak_pa": 120.0,
+      "traction_rule": "F_i = dp * A_i * n_i, equal-third vertex lumping"
+     },
+     "provenance": "authored demonstrator pressure source (PREREGISTRATION.md T6: max |dp| 5000 Pa, max dV/dt 1e-3 m^3/s; no catalog constant imported)",
+     "source_status": "synthetic_authored",
+     "status": "declared"
+    },
+    "stiffness_law_reference": {
+     "input_pin": "arm_rigid_laws",
+     "note": "arm regions are RIGID (declared, synthetic_authored); no soft-tissue stiffness is invented, so the attachment areal stiffness stays an authored engineering requirement",
+     "profile_id": "rigid",
+     "radius_assignment": {
+      "profile_id": "rigid",
+      "provenance": "bone surface segment (M02 compiled region); treated as rigid for the monkey per preregistration; the compiled arm has no soft-tissue volumes (M02 absence inventory preserved)"
+     }
+    },
+    "weights": {
+     "blocked": {
+      "carried_load_segment_weights": {
+       "missing_evidence": [
+        "a counted, validated carried-load mass for the hand/forearm (the .osim segment masses are EXCLUDED transported claims — 17.039978509953905 kg, never counted; the hand shell carries ZERO volume-owned mass in the pinned B03 document; hand assembly identity and scale remain unresolved per A04/A05)"
+       ],
+       "status": "blocked"
+      }
+     },
+     "quadrature_source_status": "synthetic_authored",
+     "quadrature_w_i": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+     ],
+     "qualified": {
+      "counted_arm_total_kg": 0.0447023937544344,
+      "counted_bone_mass_radius_kg": 0.00910051480229847,
+      "counted_bone_mass_radius_provenance": "volume-owned: m = integral rho dV = 1800.0 kg/m3 * 5.055841556832483e-06 m3; density from archived matter library materials.bone (researched, sha de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed); counted region",
+      "input_pin": "material_volume_input",
+      "note": "real counted masses of the target arm's bone regions (B03, C02 ledger)"
+     },
+     "status": "split"
+    }
+   },
+   "inputs_all_qualified": false,
+   "mechanical_qualification": false,
+   "port_id": "PT_l-P5",
+   "source_body": "radius_l",
+   "source_mechanical_qualification": false,
+   "source_mechanical_qualification_note": "resolved coordinates and tendon endpoint membership do NOT qualify a membrane attachment port; qualification requires independent anatomical evidence not present in this packet.",
+   "source_pos_local_m": [
+    0.0254,
+    -0.1088,
+    -0.0198
+   ],
+   "source_pos_local_units": "source SI (metres), verbatim from the XML — NOT scaled by the target mesh factor",
+   "tendon_membership": [
+    {
+     "index_in_path": 3,
+     "path_length": 4,
+     "role": "last_endpoint",
+     "tendon": "PT_l_tendon"
+    }
+   ]
+  }
+ ],
+ "preregistration_sha256": "f8b3faee9453966544dec764fad287bd303b7d7b956becfdefb57b820c2aa9b2",
+ "qualification_rule": "mechanical_qualification is true ONLY if every required input row of the port has status qualified; authored requirements, declared laws and demonstrated gate mechanics NEVER qualify a port",
+ "revision": 1,
+ "schema": "chimera.mechanical_port_requirements.v1",
+ "task_id": "MAT2-B05",
+ "waypoints_refused_as_ports": [
+  "BIClong-P9",
+  "BICshort-P6",
+  "BRD-P2",
+  "ECRB-P2",
+  "ECRB-P3",
+  "ECRL-P2",
+  "ECRL-P3",
+  "ECU-P5",
+  "FCR-P2",
+  "FCU-P2",
+  "FCU-P3",
+  "PT-P3",
+  "BIClong_l-P9",
+  "BICshort_l-P6",
+  "BRD_l-P2",
+  "ECRB_l-P2",
+  "ECRB_l-P3",
+  "ECRL_l-P2",
+  "ECRL_l-P3",
+  "ECU_l-P5",
+  "FCR_l-P2",
+  "FCU_l-P2",
+  "FCU_l-P3",
+  "PT_l-P3"
+ ]
+}
