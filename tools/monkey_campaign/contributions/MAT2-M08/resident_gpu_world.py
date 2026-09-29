@@ -37,6 +37,7 @@ for _p in (str(HERE), str(CONTRIB / 'MAT2-M01'), str(CONTRIB / 'MAT2-M03'),
         sys.path.insert(0, _p)
 
 import integrated_step as iw  # noqa: E402  (M07 sealed oracle; constants)
+from resident_bh import BH_ERROR_WINDOW  # noqa: E402  (far-field gate window)
 
 # ---- frozen constants (kernel_mirror.py is the single transcription source) --
 from kernel_mirror import (  # noqa: E402
