@@ -1,0 +1,1 @@
+{"refused":{"code":"duplicate_role_input","detail":"2 present inputs claim role 'ownership_bindings' (['ownership_complete', 'ownership_second']); merge them into one document or drop the extra \u2014 this adapter does not pick a winner","field_path":"inputs[role=ownership_bindings]"}}

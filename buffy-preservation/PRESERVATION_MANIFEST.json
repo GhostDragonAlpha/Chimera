@@ -1,0 +1,134 @@
+{
+  "generated_utc": "2026-09-29T16:47:08Z",
+  "source": "E:/PythonChimera (project home worktree, master 32105f18-era dirty tree; artifacts read in place, never moved)",
+  "index_reference": "E:/ChimeraWork/monkey-coordination/buffy-records/BUFFY_INDEX.md section 4 (preservation list, items 1-4)",
+  "pattern_reference": "#237 pattern: lead/preservation-20260928 commit d65e8453 (PRESERVATION_MANIFEST.json, hash-manifested snapshot)",
+  "branch": "lead/preservation-buffy-20260930",
+  "file_count": 14,
+  "provenance": "Buffy-02 era records (worker identity behind agent_logs/local_buffy_qwen, session 2026-09-24 12:51-13:59 local). All 14 sha256 values independently match BUFFY_INDEX.md sections 2.1-2.3.",
+  "files": [
+    {
+      "path": ".tmp/anatomy_compiler/runs/attachment_candidates.json",
+      "original_absolute_path": "E:/PythonChimera/.tmp/anatomy_compiler/runs/attachment_candidates.json",
+      "why_excluded_from_git": "Ignored by .gitignore:223 (.tmp/) in E:/PythonChimera; the scratch .tmp directory is routinely swept. Port-evidence packet rev 5 cited by sha256 (854f7097...) inside the session-02 report.",
+      "size_bytes": 62615,
+      "mtime_utc": "2026-09-24T04:18:42Z",
+      "sha256": "854f70976deb10264f052a8dafc3247c9bf6bf03761748e343329ce30e1032ae"
+    },
+    {
+      "path": "agent_logs/local_buffy_qwen/assembly_handoff_01.md",
+      "original_absolute_path": "E:/PythonChimera/agent_logs/local_buffy_qwen/assembly_handoff_01.md",
+      "why_excluded_from_git": "Untracked and invisible to git status: hidden by the directory-level ignore rule .gitignore:297 (/agent_logs/) in E:/PythonChimera; one 'git clean -x' would permanently delete it. Session-01 report of the Buffy-02 assembly-handoff run (2026-09-24).",
+      "size_bytes": 14913,
+      "mtime_utc": "2026-09-24T18:21:59Z",
+      "sha256": "7e07b091f785dced0c2ac9d012f50ec3c62a971015115c110d470aad67af231a"
+    },
+    {
+      "path": "agent_logs/local_buffy_qwen/assembly_handoff_02.md",
+      "original_absolute_path": "E:/PythonChimera/agent_logs/local_buffy_qwen/assembly_handoff_02.md",
+      "why_excluded_from_git": "Untracked and invisible to git status: hidden by the directory-level ignore rule .gitignore:297 (/agent_logs/) in E:/PythonChimera; one 'git clean -x' would permanently delete it. Session-02 report, the 'Buffy 02 disk report' cited directly by completion-map cards B03-B07.",
+      "size_bytes": 15978,
+      "mtime_utc": "2026-09-24T18:58:53Z",
+      "sha256": "1467f4c32ce76974c62b58f510afc714ca491320d96ac74204427f76ff5d27f8"
+    },
+    {
+      "path": "tools/assembly_handoff/out/complete_assembly_manifest.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/complete_assembly_manifest.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 20152,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "67d7842e9f2bff14414d7f27e3099dc77c41f7cff6e78d6f8aaa06b4d6239af4"
+    },
+    {
+      "path": "tools/assembly_handoff/out/control_missing_input_manifest.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/control_missing_input_manifest.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 16979,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "9cefb6a3a833521e27050d32f99654158747432edea4243b3c8e82b0267df198"
+    },
+    {
+      "path": "tools/assembly_handoff/out/control_unbound_matter_manifest.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/control_unbound_matter_manifest.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 20718,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "e3d88527362d2f093ef6e317dfde531448a33176cfc077b0bf1ee6c968d800dc"
+    },
+    {
+      "path": "tools/assembly_handoff/out/real_packet_readiness.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/real_packet_readiness.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 18072,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "4f24571bf6f14cd3032af263adeaa649a5a02e4bc3bc7c74deeba6f578a69f3b"
+    },
+    {
+      "path": "tools/assembly_handoff/out/refusal_duplicate_mass_ownership.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/refusal_duplicate_mass_ownership.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 357,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "347d1feceeed244cdfb26850df52a105251019586325ea45ecc4c2ee531d20d5"
+    },
+    {
+      "path": "tools/assembly_handoff/out/refusal_duplicate_role_input.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/refusal_duplicate_role_input.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 288,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "528db58e55e2b83865a8925ddb9c49ffeaf34425bdcebb4bf33af9e7268f9cab"
+    },
+    {
+      "path": "tools/assembly_handoff/out/refusal_mass_status_promotion.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/refusal_mass_status_promotion.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 325,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "69ed985192747f45c2a2e46a07179100d93ebe9718f3b887256d41b2276a7cc3"
+    },
+    {
+      "path": "tools/assembly_handoff/out/refusal_unsupported_surface_mass_claim.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/refusal_unsupported_surface_mass_claim.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 472,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "6f7666e52516c0492634c7ee70937843d4fb40827ecec9cfe8c5c9d85de2ba27"
+    },
+    {
+      "path": "tools/assembly_handoff/out/refusal_waypoint_promoted_to_attachment.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/refusal_waypoint_promoted_to_attachment.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 332,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "cce2f862bb452d7bcca9e6bdb4459f16671068f6aaa3ae1b82d0f9e67d55b845"
+    },
+    {
+      "path": "tools/assembly_handoff/out/unresolved_anatomy_mass_manifest.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/unresolved_anatomy_mass_manifest.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 20562,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "26cb6a735d46c84aa7d527eb642eccde4e638e6ca0f4ec8a5da6e09e01e6b3d1"
+    },
+    {
+      "path": "tools/assembly_handoff/out/waypoint_not_attachment_manifest.json",
+      "original_absolute_path": "E:/PythonChimera/tools/assembly_handoff/out/waypoint_not_attachment_manifest.json",
+      "why_excluded_from_git": "Untracked generated output, never committed anywhere: git status in E:/PythonChimera shows only '?? tools/assembly_handoff/'; this file exists solely on disk in E:/PythonChimera/tools/assembly_handoff/out/ (all 11 share mtime 2026-09-24 13:59, the session-02 rerun).",
+      "size_bytes": 23329,
+      "mtime_utc": "2026-09-24T18:59:00Z",
+      "sha256": "5dad3b876ddc2722d908d47f07b25baf9c2c1397f0a8928f1f4ee2e51e1b8cec"
+    }
+  ],
+  "excluded": [
+    {
+      "pattern": "tools/assembly_handoff/__pycache__/*.pyc (4 files)",
+      "reason": "Regenerable bytecode; no record value (BUFFY_INDEX.md section 4)."
+    },
+    {
+      "pattern": "tools/assembly_handoff/ producer, fixtures, and inputs/ documents",
+      "reason": "Already committed on branch forearm-package-20260924 (commit 43b599a7, present on origin); recoverable via 'git cat-file -p 43b599a7:<path>', though unreachable from master."
+    }
+  ],
+  "note": "Byte-exact preservation snapshot of at-risk untracked/ignored Buffy records; copies only, originals left read-only in place. Preservation of bytes is not a claim that these bytes passed review. The manifest does not list itself; .gitattributes (** -text) keeps snapshot bytes checkout-invariant so the sha256 manifest verifies on every platform."
+}

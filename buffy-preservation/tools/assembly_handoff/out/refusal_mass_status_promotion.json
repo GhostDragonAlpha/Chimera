@@ -1,0 +1,1 @@
+{"refused":{"code":"mass_status_promotion","detail":"claim 'anatomy:synthetic_anatomy:physiology:upper' is supported as 'transported_source_effective' by its source; asserting 'reconstructed_tissue_volume' would promote provenance to a claim","field_path":"ownership[ownership_complete].mass_claims[2].assert_mass_status"}}

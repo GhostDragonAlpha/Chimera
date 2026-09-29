@@ -1,0 +1,1 @@
+{"refused":{"code":"waypoint_promoted_to_attachment","detail":"site 's_up_2' is an intermediate tendon waypoint on 'upper'; a waypoint does not become a membrane attachment patch automatically. Author endpoint_role explicitly if this port is intended.","field_path":"requirements[requirements_complete].attachments[1].endpoints"}}

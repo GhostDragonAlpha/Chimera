@@ -1,0 +1,1 @@
+{"refused":{"code":"duplicate_mass_ownership","detail":"matter 'material_volume:materials_synthetic:region:region-upper' is declared to count toward the mass of 2 bindings ['body-lower', 'body-upper']; the same matter may be counted once and only once","field_path":"mass_ownership_ledger.claims[material_volume:materials_synthetic:region:region-upper]"}}
