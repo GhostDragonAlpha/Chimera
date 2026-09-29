@@ -407,14 +407,37 @@ def mode_compare():
          sha256_file(HERE / 'experiment_receipt.json'))
     b = (sha256_file(HERE / 'experiment_trace_rerun2.json'),
          sha256_file(HERE / 'experiment_receipt_rerun2.json'))
+    run1 = json.loads((HERE / 'experiment_receipt.json').read_text())
+    run2 = json.loads((HERE / 'experiment_receipt_rerun2.json')
+                      .read_text())
+    only1 = sorted(set(run1) - set(run2))
+    only2 = sorted(set(run2) - set(run1))
+    shared_differ = sorted(k for k in set(run1) & set(run2)
+                           if run1[k] != run2[k])
+    # X2's declared determinism unit is the TRACE. mode_main augments its
+    # receipt with four run-mode keys mode_rerun does not write; receipts
+    # are therefore expected to differ on exactly that key set. X2_pass
+    # demands byte-identical traces AND a receipt delta scoped to those
+    # augmentation keys with zero shared-key differences.
+    augmentation_keys = ['X1_pass', 'input_pins', 'p_gates_declared',
+                         'p_single_writer']
+    trace_identical = a[0] == b[0]
     receipt = {
         'schema': 'chimera.m08_determinism.v1',
         'trace_sha_run1': a[0], 'receipt_sha_run1': a[1],
         'trace_sha_run2': b[0], 'receipt_sha_run2': b[1],
+        'X2_trace_byte_identical': trace_identical,
+        'X2_receipt_byte_identical': a[1] == b[1],
+        'receipt_keys_only_in_main': only1,
+        'receipt_keys_only_in_rerun': only2,
+        'receipt_shared_keys_differing': shared_differ,
         'X2_byte_identical': a == b,
+        'X2_pass': trace_identical and only1 == augmentation_keys
+        and not only2 and not shared_differ,
     }
     (HERE / 'determinism_receipt.json').write_bytes(canonical(receipt))
-    print(json.dumps(receipt, indent=1))
+    print(json.dumps(receipt, indent=1,
+                     default=_numpy_json_default))
 
 
 def _cyclic_schedule(tick):
