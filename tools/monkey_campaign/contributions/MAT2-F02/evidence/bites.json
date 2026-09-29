@@ -1,0 +1,49 @@
+{
+ "all_bite": true,
+ "bites": [
+  {
+   "bite": "FB1_ghost_support_decoupled_asset",
+   "bites": true,
+   "min_corner_separation_m": 0.01201,
+   "raised_m": 0.01,
+   "site_diagonal_band_m": 0.0,
+   "vertex": 4676,
+   "window_m": [
+    0.0015,
+    0.0025
+   ]
+  },
+  {
+   "bite": "FB2_parallel_solver_unaccepted",
+   "bites": true,
+   "clamped_bottom_m": 0.0,
+   "query_height_m": 0.0,
+   "rule": "every support impulse must appear as a local_contact.v1 record",
+   "support_record_count": 0
+  },
+  {
+   "bite": "FB3_material_identity_detached",
+   "bites": true,
+   "check_refused": true,
+   "declared": "clearing_ground_topsoil",
+   "matter_id": "mass_plate"
+  },
+  {
+   "bite": "FB4_ghost_support_past_boundary",
+   "bites": true,
+   "contact_extent_xz_m": [
+    21.0,
+    20.0
+   ],
+   "rendered_half_width_m": 20.0
+  },
+  {
+   "behind_camera": true,
+   "bite": "FB5_off_frame_probe_subject",
+   "bites": true,
+   "camera": "V2_seam_closeup",
+   "off_axis_deg": 155.7293565553561,
+   "subject": "post_top_SW"
+  }
+ ]
+}
