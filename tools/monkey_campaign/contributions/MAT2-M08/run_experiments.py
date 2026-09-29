@@ -484,7 +484,7 @@ def mode_bharm():
     comps = [iw.Component(f'c{i}', 3.0 * i) for i in range(PROFILE_COMPS)]
     gpu = rgw.ResidentGpuWorld(comps, gravity=True, far_field=True)
     bh = gpu.bh
-    identity_rel = rb.bh_two_body_identity()
+    identity_rel = float(rb.bh_two_body_identity())
     rows = []
     w_sg_total = 0.0
     sg_imp_total = [0.0, 0.0, 0.0]
@@ -514,14 +514,14 @@ def mode_bharm():
         'G_N_SI': rb.G_N, 'theta': rb.BH_THETA,
         'bodies': bh.n_real,
         'two_body_identity_rel_err': identity_rel,
-        'two_body_identity_within_1e-12': identity_rel <= 1e-12,
+        'two_body_identity_within_1e-12': bool(identity_rel <= 1e-12),
         'bh_error_window': rb.BH_ERROR_WINDOW,
         'near_field_window': rb.BH_NEAR_WINDOW,
         'measurements': rows,
         'final_bh_rel_err_max': err,
         'final_near_theta0_rel_err_max': near_err,
-        'X4_bh_within_window': err <= rb.BH_ERROR_WINDOW,
-        'X4_near_field_within_window': near_err <= rb.BH_NEAR_WINDOW,
+        'X4_bh_within_window': bool(err <= rb.BH_ERROR_WINDOW),
+        'X4_near_field_within_window': bool(near_err <= rb.BH_NEAR_WINDOW),
         'w_sg_total_J': w_sg_total,
         'sg_impulse_total_N_s': sg_imp_total,
     }

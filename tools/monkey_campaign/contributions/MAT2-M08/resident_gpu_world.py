@@ -466,7 +466,14 @@ def k_pressure_geometry(X, TRIS, DP_A, FTRI, AREAS):
     idx = cuda.grid(1)
     comp = idx // N_TRI
     tri = idx % N_TRI
-    if comp >= X.shape[0]:
+    # guard against the COMPONENT count, not X's vertex-row count: the
+    # rounded-up grid launches threads past n_comp*N_TRI, and the old
+    # X.shape[0] comparison never rejected them (480 vertices vs 2
+    # comps) - they read TRIS past its end and wrote AREAS/FTRI out of
+    # bounds (compute-sanitizer: invalid __global__ read of size 8,
+    # block (2,0,0), 1 byte past the 3,840-byte TRIS allocation; latent
+    # [700] whenever the neighbor page is unmapped).
+    if idx >= TRIS.shape[0] * N_TRI:
         return
     b = comp * N_VERT
     i0 = TRIS[comp, tri, 0] + b
