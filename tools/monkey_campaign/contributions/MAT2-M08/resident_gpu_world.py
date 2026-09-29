@@ -1013,7 +1013,7 @@ def ke_membrane_plate(MV, PV, MASSES, PLATE_MASS, b, comp):
 @cuda.jit
 def k_integrate_mem(X, XPRE, MV, H):
     gv = cuda.grid(1)
-    if gv >= X.shape[0] * N_VERT:
+    if gv >= X.shape[0]:
         return
     XPRE[gv, 0] = X[gv, 0]
     XPRE[gv, 1] = X[gv, 1]
@@ -1397,13 +1397,13 @@ class ResidentGpuWorld:
         self.n_vert = c0.x.shape[0]
         self.n_tri = c0.membrane.triangles.shape[0]
         self.k_el, self.c_el = (float(v) for v in c0.maxwell_element())
-        x = np.empty((self.n_comp, self.n_vert, 3))
+        x = np.empty((self.n_comp * self.n_vert, 3))
         v = np.zeros_like(x)
-        masses = np.empty((self.n_comp, self.n_vert))
+        masses = np.empty(self.n_comp * self.n_vert)
         for ci, c in enumerate(comps):
-            x[ci] = c.x
-            v[ci] = c.v
-            masses[ci] = c.masses
+            x[ci * self.n_vert:(ci + 1) * self.n_vert] = c.x
+            v[ci * self.n_vert:(ci + 1) * self.n_vert] = c.v
+            masses[ci * self.n_vert:(ci + 1) * self.n_vert] = c.masses
         self.d_x = cuda.to_device(np.ascontiguousarray(x))
         self.d_v = cuda.to_device(np.ascontiguousarray(v))
         self.d_v_pre = cuda.device_array_like(self.d_v)
@@ -1452,7 +1452,7 @@ class ResidentGpuWorld:
         self.d_loads = cuda.device_array_like(self.d_x)
         self.d_gloads = cuda.device_array_like(self.d_x)
         self.d_glh = cuda.device_array_like(self.d_x)
-        adj_off, adj_val = _lumping_adjacency(c0)
+        adj_off, adj_val = _lumping_adjacency(c0, self.n_comp)
         self.d_adj_off = cuda.to_device(adj_off)
         self.d_adj_val = cuda.to_device(adj_val)
         self.d_dp = cuda.to_device(np.zeros(1))
@@ -1567,7 +1567,8 @@ class ResidentGpuWorld:
         px = self.d_px.copy_to_host()
         self.host_bytes_down += x.nbytes + px.nbytes
         self.snapshots[tick] = {
-            'membrane_positions_m': x[0].tolist(),
+            'membrane_positions_m':
+                x[:self.n_vert].tolist(),
             'plate_vertices_m': px[0].tolist(),
         }
         return self.snapshots[tick]
@@ -1599,14 +1600,19 @@ def _port_masses(comp):
     return [comp.masses[list(t)].sum() for t in comp.membrane.triangles]
 
 
-def _lumping_adjacency(comp):
-    """Per vertex: slot-0 tris ascending, then slot-1, then slot-2 (exactly
-    np.add.at's accumulation order)."""
+def _lumping_adjacency(comp, n_comp=1):
+    """Per vertex (component-tiled, flat): slot-0 tris ascending, then
+    slot-1, then slot-2 (exactly np.add.at's accumulation order); the
+    packed value carries the component-offset triangle index."""
     tris = np.asarray(comp.membrane.triangles)
-    adj = [[] for _ in range(comp.membrane.vertices.shape[0])]
-    for slot in range(3):
-        for ti in range(tris.shape[0]):
-            adj[int(tris[ti, slot])].append((ti << 2) | slot)
+    n_vert = comp.membrane.vertices.shape[0]
+    n_tri = tris.shape[0]
+    adj = [[] for _ in range(n_comp * n_vert)]
+    for ci in range(n_comp):
+        for slot in range(3):
+            for ti in range(n_tri):
+                adj[ci * n_vert + int(tris[ti, slot])].append(
+                    ((ti + ci * n_tri) << 2) | slot)
     adj_val = []
     adj_off = [0]
     for lst in adj:
