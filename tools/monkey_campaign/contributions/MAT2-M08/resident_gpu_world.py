@@ -497,7 +497,7 @@ def k_pressure_lump_velocity(MV, MVPRE, LOADS, GLOADS, GLH, MASSES, INV_M,
     gv = comp * N_VERT + v
     lx = 0.0; ly = 0.0; lz = 0.0
     for k in range(ADJ_OFF[gv], ADJ_OFF[gv + 1]):
-        tri = ADJ_VAL[k] >> 2
+        tri = (ADJ_VAL[k] >> 2) - comp * N_TRI
         lx += FTRI[comp, tri, 0] / 3.0
         ly += FTRI[comp, tri, 1] / 3.0
         lz += FTRI[comp, tri, 2] / 3.0
