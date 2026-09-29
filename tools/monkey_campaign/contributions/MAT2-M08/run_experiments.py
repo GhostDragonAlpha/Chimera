@@ -173,6 +173,9 @@ def run_agreement(ticks=TICKS, comps=(('A', 0.0), ('B', 3.0)),
         # trajectories: full membrane + plate vertex arrays
         if store_snapshots and tick in CAPTURE_TICKS:
             snap = gpu.snapshot(tick)
+            snap['tick'] = tick
+            snap['delta_p_pa'] = dp
+            snap['gpu_block'] = [float(c) for c in block[0]]
             snapshots[tick] = snap
             omem = np.asarray(ocomp.x)
             gmem = np.asarray(snap['membrane_positions_m'])
