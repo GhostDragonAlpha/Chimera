@@ -1276,9 +1276,9 @@ def k_tick_diag(MV, PV, X, PX, TRIS, EDGES, REST, MASSES, PLATE_MASS,
         i0 = TRIS[comp, t, 0] + b
         i1 = TRIS[comp, t, 1] + b
         i2 = TRIS[comp, t, 2] + b
-        c1y = X[i1, 1] * X[i2, 2] - X[i1, 2] * X[i2, 1]
-        c1z = X[i1, 2] * X[i2, 0] - X[i1, 0] * X[i2, 2]
-        c1x = X[i1, 0] * X[i2, 1] - X[i1, 1] * X[i2, 0]
+        c1x = X[i1, 1] * X[i2, 2] - X[i1, 2] * X[i2, 1]
+        c1y = X[i1, 2] * X[i2, 0] - X[i1, 0] * X[i2, 2]
+        c1z = X[i1, 0] * X[i2, 1] - X[i1, 1] * X[i2, 0]
         tmp8[t] = X[i0, 0] * c1x + X[i0, 1] * c1y + X[i0, 2] * c1z
     vol = npsum(tmp8, N_TRI) / 6.0
     maxspd = 0.0
