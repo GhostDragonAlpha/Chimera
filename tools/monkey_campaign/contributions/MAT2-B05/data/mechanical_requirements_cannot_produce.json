@@ -1,0 +1,126 @@
+{
+  "evidence": {
+    "natural_root_is_a_segment": false,
+    "ports_identified": 8,
+    "segment_tree_declares_root_frame": false
+  },
+  "ports_missing_parameters": [
+    {
+      "has_source_pos_local": true,
+      "mechanical_qualification": false,
+      "missing_parameters": [
+        "patch_area_m2",
+        "kappa_areal_n_m3",
+        "k_couple_min_n_m_per_rad",
+        "weights",
+        "anchor_frame_id (bound authored root frame)",
+        "endpoints[*].local_frame_id (bound authored frame)"
+      ],
+      "port_id": "BIClong-P11",
+      "source_body": "radius"
+    },
+    {
+      "has_source_pos_local": true,
+      "mechanical_qualification": false,
+      "missing_parameters": [
+        "patch_area_m2",
+        "kappa_areal_n_m3",
+        "k_couple_min_n_m_per_rad",
+        "weights",
+        "anchor_frame_id (bound authored root frame)",
+        "endpoints[*].local_frame_id (bound authored frame)"
+      ],
+      "port_id": "BICshort-P8",
+      "source_body": "radius"
+    },
+    {
+      "has_source_pos_local": true,
+      "mechanical_qualification": false,
+      "missing_parameters": [
+        "patch_area_m2",
+        "kappa_areal_n_m3",
+        "k_couple_min_n_m_per_rad",
+        "weights",
+        "anchor_frame_id (bound authored root frame)",
+        "endpoints[*].local_frame_id (bound authored frame)"
+      ],
+      "port_id": "BRD-P3",
+      "source_body": "radius"
+    },
+    {
+      "has_source_pos_local": true,
+      "mechanical_qualification": false,
+      "missing_parameters": [
+        "patch_area_m2",
+        "kappa_areal_n_m3",
+        "k_couple_min_n_m_per_rad",
+        "weights",
+        "anchor_frame_id (bound authored root frame)",
+        "endpoints[*].local_frame_id (bound authored frame)"
+      ],
+      "port_id": "PT-P5",
+      "source_body": "radius"
+    },
+    {
+      "has_source_pos_local": true,
+      "mechanical_qualification": false,
+      "missing_parameters": [
+        "patch_area_m2",
+        "kappa_areal_n_m3",
+        "k_couple_min_n_m_per_rad",
+        "weights",
+        "anchor_frame_id (bound authored root frame)",
+        "endpoints[*].local_frame_id (bound authored frame)"
+      ],
+      "port_id": "BIClong_l-P11",
+      "source_body": "radius_l"
+    },
+    {
+      "has_source_pos_local": true,
+      "mechanical_qualification": false,
+      "missing_parameters": [
+        "patch_area_m2",
+        "kappa_areal_n_m3",
+        "k_couple_min_n_m_per_rad",
+        "weights",
+        "anchor_frame_id (bound authored root frame)",
+        "endpoints[*].local_frame_id (bound authored frame)"
+      ],
+      "port_id": "BICshort_l-P8",
+      "source_body": "radius_l"
+    },
+    {
+      "has_source_pos_local": true,
+      "mechanical_qualification": false,
+      "missing_parameters": [
+        "patch_area_m2",
+        "kappa_areal_n_m3",
+        "k_couple_min_n_m_per_rad",
+        "weights",
+        "anchor_frame_id (bound authored root frame)",
+        "endpoints[*].local_frame_id (bound authored frame)"
+      ],
+      "port_id": "BRD_l-P3",
+      "source_body": "radius_l"
+    },
+    {
+      "has_source_pos_local": true,
+      "mechanical_qualification": false,
+      "missing_parameters": [
+        "patch_area_m2",
+        "kappa_areal_n_m3",
+        "k_couple_min_n_m_per_rad",
+        "weights",
+        "anchor_frame_id (bound authored root frame)",
+        "endpoints[*].local_frame_id (bound authored frame)"
+      ],
+      "port_id": "PT_l-P5",
+      "source_body": "radius_l"
+    }
+  ],
+  "producer": "tools/assembly_handoff/produce_inputs.py::produce_mechanical_requirements_report",
+  "required_role": "mechanical_requirements",
+  "verdict": "cannot_produce",
+  "what_astra_must_supply": "an authored mechanical-requirements document: the assembly frame tree with exactly one authored root frame declaring parent_frame_id null plus origin_m/basis_rows/scale_to_m, and per attachment its anchors, weights, patch_area_m2, kappa_areal_n_m3 and k_couple_min_n_m_per_rad.",
+  "why_not_authorable": "the candidates carry a resolved source_pos_local but no patch_area_m2, areal stiffness, minimum couple stiffness or weights; and the segment tree declares no authored root frame. Producing those values would invent mechanical assumptions and an alignment nobody authored."
+}

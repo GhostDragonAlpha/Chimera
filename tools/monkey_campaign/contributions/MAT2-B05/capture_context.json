@@ -1,0 +1,10 @@
+{
+ "capture_sha256": "d7f677aad1cb85c9513d64325812a70b3822086c5e8e72574c1a6d6dc5729e60",
+ "run_id": "mat2-b05-portrequirements-visual-20260928-d7f677aa",
+ "subject_sha256": "ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+ "task_id": "B05",
+ "tick_interval": [
+  0,
+  359
+ ]
+}
