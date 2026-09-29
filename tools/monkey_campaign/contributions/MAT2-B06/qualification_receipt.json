@@ -1,0 +1,263 @@
+{
+ "artifact_sha256": {
+  "PREREGISTRATION.md": "729dd133d65c0458182c50c8ed1721e456fa5c177cc9d2a6fb9fdb1a871e9809",
+  "assembly_readiness.json": "88fa5e2d599017f5c9bf69ac92d920f23334c221f4afe87ccdda235f1fab2c71",
+  "assembly_readiness.py": "7cd66fa70d611f560f79184c0afc71795b76816d299eab3dcf56074795d255e3",
+  "capture/capture_mat2_b06_readiness_20260929.png": "1d24ce882fc7f010a444d9f8f1de6aebb016989c00038ba185a3cec9e5f7ca8b",
+  "capture_readiness.py": "6ab9d7c0fcbbeddd106f0c7b0ffbaf34b7498b6e849ec0514a5972ffeb2dc5d2",
+  "derivation_receipt.json": "c04b21b1611d93c0db3d12e0cd1cf35a2f19e92c52a4f9d2ecee8a33812425f3",
+  "evidence/cameras.json": "4c3be15d3df2e1ce4149b5e06f94708c1a0021f4130e44cb46c66a9538ddcc2f",
+  "evidence/capture_context.json": "3024843ee13b3a6e345ccb37ffeb1ba6359bedc1171b477f5702a2f6d78d13a3",
+  "evidence/capture_manifest.json": "9a5145c66811bb3f5dd2441bc428393903a7f16b75bbe91eb6a946c1bd1b5ba9",
+  "evidence/validation_receipt.json": "93bf69c85975dfd5978a4478a4d0264bbeb8f085f55e8d5c3c88e19ebf76a143",
+  "lint_report_numbers.py": "55024b5578abf1a1c25bf10d226e8fb8ed5210ff5cddbb81ee50d66f194e73a1",
+  "test_assembly_readiness.py": "12fce879d1ebceb1db85cc954fc8385021a988afeb03edb7cf409499eb997e2e",
+  "work/runs/falsifier_log.json": "04a28c4b8a05404010a4cbf43511319580b4cd51244c036cad685fd582e71b9c",
+  "work/runs/verification_receipt.json": "9784f25b991c03ddcd5df51b34f22a579b410e03171f00e923cc788afd3288dd"
+ },
+ "attempt": {
+  "arrival_id": "arrival-b431f1fbeb554366b78bdf06dea80ba8",
+  "id": "87c14d5c21ef4468962337301e0c3702",
+  "slot_branch": "branch-1",
+  "workspace": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-B06\\87c14d5c21ef4468962337301e0c3702"
+ },
+ "capture": {
+  "capture_sha256": "1d24ce882fc7f010a444d9f8f1de6aebb016989c00038ba185a3cec9e5f7ca8b",
+  "pixel_inspection": "rows 0/1/2/4/5 cropped and inspected at full resolution: labels readable with backdrops, no clipped subject, clean rows carry no subject labels, side+oblique agree on the z-separation of the two arm chains, 8 outside excess labels match the sealed A07 per-axis values",
+  "run_id": "mat2-b06-readiness-static-20260929-1d24ce88",
+  "sheet_pixel_size": [
+   1280,
+   4320
+  ],
+  "subject_sha256": "88fa5e2d599017f5c9bf69ac92d920f23334c221f4afe87ccdda235f1fab2c71",
+  "task_id": "B06",
+  "validation": {
+   "fired": [],
+   "profile_id": "anatomy",
+   "profile_kind": "visible_static",
+   "structurally_valid": true
+  }
+ },
+ "card_id": "MAT2-B06",
+ "cheng_license_note": "license UNVERIFIED (transcription README); internal use only; cited by file+sha256; no table bytes committed to the repository",
+ "cheng_source_pins": {
+  "cheng_m2_3_mulatta_morphometry": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-3_mulatta_morphometry.csv",
+   "sha256": "16ca8bcd9be48b3766125801eb05a8f4f10b446b4caed76d9fddeb2e45df71fa"
+  },
+  "cheng_m2_5_fascicularis_morphometry": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-5_fascicularis_morphometry.csv",
+   "sha256": "9469449f8735df84a163d364a67402d127ca8ac54a402595ce4cebb6d16cf148"
+  },
+  "cheng_m2_6_mulatta_inertials": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-6_mulatta_inertials.csv",
+   "sha256": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3"
+  },
+  "cheng_m2_7_fascicularis_inertials": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-7_fascicularis_inertials.csv",
+   "sha256": "d1d601feaf61b033bdbccf8509be946d0e1884fec62388c8630287703fc63133"
+  },
+  "cheng_m2_8_regressions": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/M2-8_regressions.csv",
+   "sha256": "b185ee8e98b6e663defed0abd4d004fec053eb6417e027c54801070cd894ec22"
+  },
+  "cheng_readme": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/README_cheng_tables.md",
+   "sha256": "7ec44aa1031df22f0263a023aade9cc0c6c572ce268d14934a6ef49a61900ca3"
+  },
+  "cheng_receipt": {
+   "file": "E:/ChimeraWork/research-data/20260929/cheng_tables/TRANSCRIPTION_RECEIPT.md",
+   "sha256": "a3031b236dc368fb8f59f571e39666fc0ed504f383fff9b34d26c36817f2e568"
+  }
+ },
+ "clause_map": [
+  {
+   "clause": "All mass/ownership/frame/port requirements evaluated",
+   "execution": "14 requirement_gate rows (4 evaluated_satisfied_at_scope with pinned re-read evidence, 10 evaluated_gap naming missing evidence + authorizing rank) + 5 measured_screen rows (Cheng-fuelled, never gate); every satisfied row re-reads bitwise from the sealed tip bytes; readiness gate rule enforced by the validator",
+   "result": "gates 14 / satisfied 4 / gap 10 / screens 5; readiness FALSE"
+  },
+  {
+   "clause": "with remaining gaps explicit",
+   "execution": "every gap row carries missing_evidence.detail + authorization_required (A07 rank vocabulary); carried-verbatim texts re-checked against the sealed bytes (carried_text_mismatch refuses)",
+   "result": "gaps_by_domain mass 3 / ownership 4 / frame 2 / port 1"
+  },
+  {
+   "clause": "without substitutions",
+   "execution": "inputs are ONLY the 8 sealed pins (raw bytes at the frozen tip via git cat-file, sha-pinned) + the 7 pinned Cheng host files; assert_allowed_inputs refuses anything else (unbound_input_refused, F1)",
+   "result": "no stand-in, no silent promotion (F2), no unevidenced satisfied row (F3), no sealed-record edit"
+  },
+  {
+   "clause": "Cheng tables evaluation (new fuel)",
+   "execution": "closes/partially_informs/inadmissible/does_not_apply verdicts per row with file+sha256 provenance and recomputed screens (S-MASS-05..08, S-PORT-09); verdicts never flip sealed statuses; no table bytes committed (license UNVERIFIED, internal use)",
+   "result": "0 close, 4 partially_informs, 1 inadmissible_species_law, rest does_not_apply/does_not_close/inadmissible_to_close"
+  },
+  {
+   "clause": "profile anatomy (visible_static), numerical_evidence_required",
+   "execution": "capture_mat2_b06_readiness_20260929.png 1280x4320, 3 view pairs x diagnostic/clean, two declared frames never merged (assembly_world vs osim hand), 16-field cameras with computed unit quaternions (self-test asserted), state_binding = document sha256 on every view",
+   "result": "visual_capture.validate_manifest structurally_valid=True (6 views); implementer pixel inspection performed on rows 0/1/2/4/5"
+  }
+ ],
+ "commands": [
+  {
+   "cmd": "python -B assembly_readiness.py derive",
+   "exit": 0,
+   "observed": "valid=True gates=14 screens=5 gap=10 readiness=False"
+  },
+  {
+   "cmd": "python -B assembly_readiness.py verify",
+   "exit": 0,
+   "observed": "byte_identical=True valid=True falsifiers_all_bitten=True"
+  },
+  {
+   "cmd": "python -B -m unittest test_assembly_readiness",
+   "exit": 0,
+   "observed": "Ran 10 tests: OK (P1-P9 + F1-F6)"
+  },
+  {
+   "cmd": "python -B lint_report_numbers.py --selftest",
+   "exit": 0,
+   "observed": "all report literals traceable; planted fakes flagged"
+  },
+  {
+   "cmd": "python -B capture_readiness.py",
+   "exit": 0,
+   "observed": "structurally_valid=True; capture re-bound after the final document bytes (state 88fa5e2d599017f5...)"
+  }
+ ],
+ "counts": {
+  "gaps_by_domain": {
+   "frame": 2,
+   "mass": 3,
+   "ownership": 4,
+   "port": 1
+  },
+  "gate_gap": 10,
+  "gate_satisfied": 4,
+  "measured_screen_rows": 5,
+  "requirement_gate_rows": 14
+ },
+ "criteria_sha256": "6c3bb5fb51aa87adb261e6a07f444c78cae28910b2327fe88f2b79c6da80802b",
+ "dependency_pins": {
+  "a06_ownership": {
+   "blob_sha256": "f1f0430772258e8449fc354841becf2f1869783399e63f3f145565b8d0b1041c",
+   "path": "tools/monkey_campaign/contributions/MAT2-A06/attachment_ownership.json",
+   "role": "a06_ownership"
+  },
+  "a07_resolution": {
+   "blob_sha256": "cd596d7c21fa81a4c2632e13b63ba26e62da51d44eca2355147fd5dff1587490",
+   "path": "tools/monkey_campaign/contributions/MAT2-A07/placement_resolution.json",
+   "role": "a07_resolution"
+  },
+  "b03_material": {
+   "blob_sha256": "6e8033f26c823f410eb5beb8fdaaefd4c0c37db61327a86221e087bc832b9ddc",
+   "path": "tools/monkey_campaign/contributions/MAT2-B03/material_volume_input.json",
+   "role": "b03_material"
+  },
+  "b03_matter_library": {
+   "blob_sha256": "de10200fb87bf48c3cc80d5e223805f02e27df115b91186f42f28064a64054ed",
+   "path": "tools/monkey_campaign/contributions/MAT2-B03/data/matter_library_1af0bbde.json",
+   "role": "b03_matter_library"
+  },
+  "b04_frames": {
+   "blob_sha256": "156ef55722e1ecda3238f3733131eb707f209cb93531d0e133227b00ebba8203",
+   "path": "tools/monkey_campaign/contributions/MAT2-B04/frame_forest.json",
+   "role": "b04_frames"
+  },
+  "b05_ports": {
+   "blob_sha256": "ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+   "path": "tools/monkey_campaign/contributions/MAT2-B05/mechanical_port_requirements.json",
+   "role": "b05_ports"
+  },
+  "dw04_mass_matrix": {
+   "blob_sha256": "6a32229438f59158a0995b6b90043639e8b103eedf2d09243502faaa9a68ff39",
+   "path": "tools/monkey_campaign/contributions/D-W04-MASS-20260924/mass_matrix.json",
+   "role": "dw04_mass_matrix"
+  },
+  "dw04_receipt": {
+   "blob_sha256": "f37fb0cc7bf8ccdf1572fc31ba909ef9b0ae8eff043613a13b9e4c4648cbf445",
+   "path": "tools/monkey_campaign/contributions/D-W04-MASS-20260924/receipt.json",
+   "role": "dw04_receipt"
+  }
+ },
+ "done_when": "All mass/ownership/frame/port requirements evaluated, with remaining gaps explicit",
+ "falsifiers": [
+  {
+   "arm": "F1 unbound_input_refused",
+   "bitten": true,
+   "detail": "unbound_input_refused: input 'standin_segment_mass' is neither a pinned sealed record nor a pinned Cheng source; substituted stand-ins cannot close a gap (allowed: ['a06_ownership', 'a07_resolution', 'b03_material', 'b03_matter_library', 'b",
+   "expected": "unbound_input_refused",
+   "observed": "unbound_input_refused"
+  },
+  {
+   "arm": "F2 silent gap promotion",
+   "bitten": true,
+   "detail": "satisfied_requires_pinned_evidence: R-OWN-02 satisfied without an evidence block",
+   "expected": "satisfied_requires_pinned_evidence",
+   "observed": "satisfied_requires_pinned_evidence"
+  },
+  {
+   "arm": "F3 satisfied pin-broken",
+   "bitten": true,
+   "detail": "satisfied_requires_pinned_evidence: R-MASS-01 provenance.counted_set.counted_total_kg: recorded 0.05 != sealed 0.0447023937544344",
+   "expected": "satisfied_requires_pinned_evidence",
+   "observed": "satisfied_requires_pinned_evidence"
+  },
+  {
+   "arm": "F4 cheng_source_pin_mismatch",
+   "bitten": true,
+   "detail": "cheng_source_pin_mismatch: cheng_m2_6_mulatta_inertials (M2-6_mulatta_inertials.csv) sha256 9cc4a2db364fe15a6bd5138572108e90433a8f42c84be2098e3549e7a18e9d34 != pinned 1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3",
+   "expected": "cheng_source_pin_mismatch",
+   "observed": "cheng_source_pin_mismatch"
+  },
+  {
+   "arm": "F5 unlawful status",
+   "bitten": true,
+   "detail": "unlawful_status_refused: R-MASS-01 status 'qualified'",
+   "expected": "unlawful_status_refused",
+   "observed": "unlawful_status_refused"
+  },
+  {
+   "arm": "F6 sealed_pin_mismatch",
+   "bitten": true,
+   "detail": "sealed_pin_mismatch: b05_ports (tools/monkey_campaign/contributions/MAT2-B05/mechanical_port_requirements.json) sha256 458dfd31f1b9eeae16b9e63f8d19470d35684badb8b5c07c15e93e0545048c03 != pinned ef69ee740262cc5783e763517e4d27e0306f31d059b827",
+   "expected": "sealed_pin_mismatch",
+   "observed": "sealed_pin_mismatch"
+  }
+ ],
+ "falsifiers_all_bitten": true,
+ "honest_limits": [
+  "readiness FALSE is the honest sealed outcome (carried observation); this card's outcome is evaluation completeness, not readiness",
+  "Cheng values are cited measurement results with file+sha256 provenance; license UNVERIFIED (internal use only); no table bytes committed",
+  "screens compare different quantities on labeled terms (bone-only vs whole-segment; claims vs measured bands; n=6 other subjects); a screen never promotes a status",
+  "the capture is a 2D orthographic structured-records sheet (PIL) of sealed records, declared as such; not a native-engine 3D render; no dynamics; view toggles preserve the state hash",
+  "implementer pixel inspection is not independent visual acceptance; the reviewer owns the visual gate"
+ ],
+ "objective": "Re-run real assembly readiness without substitutions - All mass/ownership/frame/port requirements evaluated, with remaining gaps explicit",
+ "preregistration": {
+  "commits": [
+   "78856821 (frozen, ALONE, before implementation)",
+   "80e1642f (Amendment A1: exact D-W04 pins, still before implementation)"
+  ],
+  "doc_binding": "validator refuses preregistration_pin_mismatch",
+  "sha256": "729dd133d65c0458182c50c8ed1721e456fa5c177cc9d2a6fb9fdb1a871e9809"
+ },
+ "profile": {
+  "criteria_identity": "registry card criteria == document criteria (asserted at capture time)",
+  "id": "anatomy",
+  "kind": "visible_static",
+  "registry_criteria_sha256": "6c3bb5fb51aa87adb261e6a07f444c78cae28910b2327fe88f2b79c6da80802b",
+  "source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-B06].spec.ontology_qualification.task.verification_profile (read-only)"
+ },
+ "readiness": {
+  "assembly_readiness": false,
+  "rule": "assembly_readiness is true ONLY IF every requirement_gate row is evaluated_satisfied_at_scope AND every satisfied row's evidence pin re-verifies bitwise against the sealed bytes; screens never gate; declared never qualifies; authored requirements never qualify a port; no substituted stand-in, no silent promotion, no fitting",
+  "verdict_note": "FALSE as carried by the sealed records: the transported claims stay uncounted, ownership mapping/correspondence and the bound port frame are unresolved, and 8/8 ports remain blocked; evaluation completeness is the card outcome, not readiness"
+ },
+ "sealed_line": {
+  "base_head": "c525b82c7c3ce0128565424764293a3c85811ab3",
+  "fast_forward": "ancestor check passed; merge --ff-only from c525b82c to 051123cf before any edit",
+  "remote": "git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git (reported only; no pushes, no PRs)",
+  "sealed_tip": "051123cf1d549479c765e4f3e112ddddbedcf752"
+ },
+ "task_id": "B06"
+}

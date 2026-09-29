@@ -1,0 +1,10 @@
+{
+ "task_id": "B06",
+ "run_id": "mat2-b06-readiness-static-20260929-1d24ce88",
+ "subject_sha256": "88fa5e2d599017f5c9bf69ac92d920f23334c221f4afe87ccdda235f1fab2c71",
+ "capture_sha256": "1d24ce882fc7f010a444d9f8f1de6aebb016989c00038ba185a3cec9e5f7ca8b",
+ "tick_interval": [
+  0,
+  0
+ ]
+}
