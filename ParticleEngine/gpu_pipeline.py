@@ -663,7 +663,7 @@ def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
     ix = cuda.blockIdx.x * cuda.blockDim.x + cuda.threadIdx.x
     iy = cuda.blockIdx.y * cuda.blockDim.y + cuda.threadIdx.y
     if ix >= w or iy >= h: return
-    r, g, b = bg_r, bg_g, bg_b; trans = 1.0
+    r, g, b = 0.0, 0.0, 0.0; trans = 1.0
     tid = (iy // TILE_SIZE) * tiles_x + (ix // TILE_SIZE)
     if tid < n_tiles:
         start = tile_offsets[tid]; end = tile_offsets[tid + 1]
@@ -689,9 +689,19 @@ def _composite(px, py, ic00, ic01, ic11, cr, cg, cb, opa, rad,
             r += cr[i]*c; g += cg[i]*c; b += cb[i]*c
             trans *= (1.0 - al)
             if trans < 0.01: break
-    out[iy, ix, 0] = int(max(0.0, min(1.0, r)) * 255.0)
-    out[iy, ix, 1] = int(max(0.0, min(1.0, g)) * 255.0)
-    out[iy, ix, 2] = int(max(0.0, min(1.0, b)) * 255.0)
+    # THE BACKGROUND IS THE FARTHEST LAYER: it survives only by the residual
+    # transmittance, final = bg*trans_end + sum(c_i). This used to pre-load
+    # `r, g, b = bg` at full strength, so every pixel rendered at bg + sum(c_i)
+    # and an opaque splat over a bright background clipped to white (e.g. the
+    # shipped sky bg (0.66,0.75,0.85) + a dark-green ground splat (0.287,0.378,
+    # 0.173) -> (0.947,1.128,1.023) -> clipped (241,255,255); measured across the
+    # composition2 white-outs). With bg=(0,0,0) the added term is exactly 0.0 and
+    # the output is BIT-IDENTICAL to the old kernel -- the additive series here
+    # was already the correct over-composite against black, which is why the
+    # bg=0 render-side workaround hid the defect.
+    out[iy, ix, 0] = int(max(0.0, min(1.0, r + bg_r * trans)) * 255.0)
+    out[iy, ix, 1] = int(max(0.0, min(1.0, g + bg_g * trans)) * 255.0)
+    out[iy, ix, 2] = int(max(0.0, min(1.0, b + bg_b * trans)) * 255.0)
 
 
 # ═══════════════════════════════════════════════════════════════════
