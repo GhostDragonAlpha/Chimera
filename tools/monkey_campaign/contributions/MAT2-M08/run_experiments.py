@@ -167,8 +167,31 @@ def run_agreement(ticks=TICKS, comps=(('A', 0.0), ('B', 3.0)),
                             * gpu.n_comp})
         if up > TELEMETRY_BUDGET_UP_PER_TICK or down >                 TELEMETRY_BUDGET_DOWN_PER_COMP * gpu.n_comp:
             raise ValueError(rgw.E_BYTES)
-        gpu.check_gates(block[0])
-        gpu.check_gates(block[1])
+        try:
+            gpu.check_gates(block[0])
+            gpu.check_gates(block[1])
+        except ValueError:
+            # debug evidence: dump the failing tick's full diagnostic blocks
+            # and the per-substep pass values (attempt scratch, not a claim)
+            dbg = {'tick': tick, 'blocks': block.tolist(),
+                   'component': 'B' if True else 'A'}
+            try:
+                import kernel_mirror as _km
+                names = {i: n for i, n in enumerate(
+                    [a for a in dir(_km) if a.startswith('D_')])}
+                slots = {}
+                for a in dir(_km):
+                    if a.startswith('D_'):
+                        slots[getattr(_km, a)] = a
+                dbg['named'] = [{slots.get(i, f'slot{i}'): v
+                                 for i, v in enumerate(b)} for b in block]
+                pv = gpu.d_pass.copy_to_host()
+                dbg['pass_comp1'] = pv[1].tolist()
+            except Exception as dbg_err:
+                dbg['dump_error'] = repr(dbg_err)
+            (HERE / 'debug_gate_failure.json').write_text(
+                json.dumps(dbg, indent=1))
+            raise
         ocomp = oracle._component(comps[0][0])
         # trajectories: full membrane + plate vertex arrays
         if store_snapshots and tick in CAPTURE_TICKS:
