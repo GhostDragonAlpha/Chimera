@@ -123,7 +123,8 @@ def main() -> None:
             'note': 'First validation run reported 2 FAILs caused by validator-side defects '
                     '(phalanx name filter missed the thumb bodies; connectivity walk did not '
                     'treat the anchor as terminal). Corrected in validate_mutation.py; the '
-                    'structure values were unaffected and the corrected run passes 37/37.',
+                    'structure values were unaffected and the corrected run passes '
+                    f"{receipt['summary']['passed']}/{receipt['summary']['total']}.",
         },
         'preregistration': {'path': 'PREREGISTRATION.md',
                             'sha256': sha256_file(HERE / 'PREREGISTRATION.md')},

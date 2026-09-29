@@ -104,23 +104,28 @@ vs -0.0124) recorded as declared deviation, visible in the capture.
 
 ## Artifact hashes (final)
 
+Pin refresh 2026-09-29 post-#263/#264 (lane lead/a05-docsync, base 22464551): rows
+re-pinned to on-disk sha256 at this head, including this commit's make_manifest_json.py
+note fix and its regenerated mutation_manifest.json; the run-log narrative above
+preserves the 2026-09-28 seal-time values as history.
+
 | artifact | sha256 |
 |---|---|
-| PREREGISTRATION.md | e79b4a7853916629d54a22904d4b1dcb92984556f37122b44211ee15b19ae5f9 |
-| build_mutation.py | 80bbf6b99083e6a6456f42e14fe4f428960351199e82dc60efe41df92ffeb3db |
+| PREREGISTRATION.md | 0cab8cf7a834d3ac64b634d5a2082ded676a56b4059c237f55974eff296e4cc1 |
+| build_mutation.py | 76b8b1476ced544183d36dd3f6af4666ec6a7f2746e44dc49571724f6c3cd266 |
 | macaque_hand_mutation.xml | 9c91124600abc67a4a33d78ce79ab1a0604a48b5a9a2e6377d15de05717e5adf |
-| mutation_structure.json | 8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83 |
-| derivation_output.txt | e10ad1c055fc5bee9206862213cf0559b1c97ca730a9845e642b06a9194839d8 |
-| validate_mutation.py | 333fbb60dbfbd8baf99146efbb91fc630b82851ec2f41f5eca927c156bc798bf |
-| validation_receipt.json | 1781aa6bfe7069183c225d54be21f8788c460b24b9abeca1aaac25ff0fa6c3ff |
-| make_manifest_json.py | 65c5b010f25da244ecb5b975f519834a88a42dd038c826b4a4a349e0268cbab8 |
-| mutation_manifest.json | eb5c3ebeee7bf13f1ca2966eb8353cb597f3d24242ab99c59225b56417876a44 |
-| MUTATION_MANIFEST.md | eaf0fe535ffcfbfb81e38567c28d2594d092dc96f0d74379cfe86d9b8e53f92b |
-| capture/capture_mat2_a05_mutation_20260928.png | d8bb22f9ada9b5c5e20dbd5f6f316f6fd45f5f2bdeb5f264370cfd4619c86514 |
-| evidence/cameras.json | 0a22e3ab98c65d12f84d0ff49a694d4331ecfa2798dccc44c47077301a6b467b |
-| evidence/capture_manifest.json | 5bb60c3518eb4dedb5327c9d8836bfed1f6ad7b829d2da48e9ddaea1b3c20ee5 |
-| evidence/capture_context.json | 287781a61bc3383349a92fd7621cfc7024819316eed6f4e2b44729c4264d66e6 |
-| evidence/validation_receipt.json | 9780bd65a69b71c6ef013925ff30d6d9017d874a1165e9b5833851a09dbd20ad |
+| mutation_structure.json | 48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649 |
+| derivation_output.txt | c9314d9044d4a0fd35afb46bed78e4d921692f1d1d530092db4729bf1e6ed103 |
+| validate_mutation.py | a090c0d17606a42154a6705e134f3d298b5b5cd8bb11fc92e6170f0054d9d292 |
+| validation_receipt.json | fa507700611cfdc89149eae6b07a962974945667fcc0bfe14d472e4b74858618 |
+| make_manifest_json.py | f7128c5f2e22091bff74c5e5dc505ab75b4b737b02c0da98f4cfa1056a2bfff9 |
+| mutation_manifest.json | db7af71636af6c2a2c34a0162bbf1fa3e3d7e3bfb5e829cae754f410d261c329 |
+| MUTATION_MANIFEST.md | 9582117323a63d83055f52d15ea8046c851d67f13418a0b9b06624baa3316a25 |
+| capture/capture_mat2_a05_mutation_20260928.png | 5f6656c52d7320070c4f2a89b4f2d1d4c8b12ddded43a64f2978ca0853cb1eee |
+| evidence/cameras.json | e02f10ca5995b4da59a13f80e93dfbe1b48adac302c998467c54b53a32b92790 |
+| evidence/capture_manifest.json | d16771afa365fc4dd55b9ff2b93e975f9c15227de4710a105dff74b854643f66 |
+| evidence/capture_context.json | 55b0bf67177b85a2c66362bd1d1f4b6b0af475abc071875c66420c568f038ee2 |
+| evidence/validation_receipt.json | 399949f9a77efc8f558d80b6092032346794d95f606364a93ed1a22b7edaca77 |
 
 ## Honest limitations
 
