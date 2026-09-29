@@ -1,0 +1,2298 @@
+{
+ "views": {
+  "V1_clearing_overview_clean": {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "static bookmark (single frozen frame)",
+   "coordinate_unit": "m",
+   "distance_to_target": 56.0357029044876,
+   "frame_id": "MAT2-F02/V1_clearing_overview_clean",
+   "label_ids": [
+    {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "id": "spawn",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      360.00000000000006
+     ]
+    },
+    {
+     "anchor": [
+      11.976783,
+      1.158,
+      2.471766
+     ],
+     "id": "trunk_01",
+     "in_frame": true,
+     "projected_px": [
+      493.39680211412156,
+      327.06811385482695
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SW",
+     "in_frame": true,
+     "projected_px": [
+      955.2337928141487,
+      610.6762131946691
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SE",
+     "in_frame": true,
+     "projected_px": [
+      324.7662071858513,
+      610.6762131946691
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NE",
+     "in_frame": true,
+     "projected_px": [
+      432.694109288807,
+      184.49418949732865
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NW",
+     "in_frame": true,
+     "projected_px": [
+      847.305890711193,
+      184.49418949732865
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      20.0
+     ],
+     "id": "edge_N",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      184.49418949732865
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_E",
+     "in_frame": true,
+     "projected_px": [
+      389.8761366382024,
+      353.5723414792368
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      -20.0
+     ],
+     "id": "edge_S",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      610.6762131946691
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_W",
+     "in_frame": true,
+     "projected_px": [
+      890.1238633617976,
+      353.5723414792368
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.093056,
+      -6.422639
+     ],
+     "id": "mound_m1",
+     "in_frame": true,
+     "projected_px": [
+      882.1874623193839,
+      429.02415998251286
+     ]
+    },
+    {
+     "anchor": [
+      -12.927758,
+      0.094601,
+      17.030711
+     ],
+     "id": "mound_m2",
+     "in_frame": true,
+     "projected_px": [
+      776.1104815806825,
+      212.23584551742582
+     ]
+    },
+    {
+     "anchor": [
+      19.265584,
+      0.104618,
+      6.057064
+     ],
+     "id": "mound_m3",
+     "in_frame": true,
+     "projected_px": [
+      415.7371921658911,
+      301.424318970242
+     ]
+    },
+    {
+     "anchor": [
+      13.807676,
+      0.10993,
+      -18.304543
+     ],
+     "id": "mound_m4",
+     "in_frame": true,
+     "projected_px": [
+      430.1022930362741,
+      587.4682575104603
+     ]
+    },
+    {
+     "anchor": [
+      -9.268795,
+      0.082347,
+      -11.77237
+     ],
+     "id": "mound_m5",
+     "in_frame": true,
+     "projected_px": [
+      770.161973830642,
+      495.05146679278755
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.22200999999999999,
+      -0.0
+     ],
+     "id": "probe_S1",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      358.4302391887144
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.31198483170326663,
+      -6.422639
+     ],
+     "id": "probe_S2",
+     "in_frame": true,
+     "projected_px": [
+      883.0227019967501,
+      427.6030872201453
+     ]
+    },
+    {
+     "anchor": [
+      -15.035646,
+      0.2558899142874196,
+      -6.422639
+     ],
+     "id": "probe_S3",
+     "in_frame": true,
+     "projected_px": [
+      839.3553135094397,
+      427.96813395044194
+     ]
+    },
+    {
+     "anchor": [
+      11.226783,
+      0.22200999999999999,
+      2.471766
+     ],
+     "id": "probe_S4",
+     "in_frame": true,
+     "projected_px": [
+      504.4211479273139,
+      333.96493246390037
+     ]
+    },
+    {
+     "anchor": [
+      19.23236482372261,
+      0.3247833914865865,
+      6.057064
+     ],
+     "id": "probe_S5",
+     "in_frame": true,
+     "projected_px": [
+      415.4407232365917,
+      299.7775529513263
+     ]
+    }
+   ],
+   "near_far_planes": [
+    0.05,
+    200.0
+   ],
+   "occlusion_or_xray_mode": "opaque z-buffer (no x-ray)",
+   "orientation_convention_and_values": "look-at, right-handed, x=east y=up z=south; fwd=[0, -0.82090520178548709, 0.57106448819859978] right=[-1, 0, 0] up=[0, 0.57106448819859978, 0.82090520178548709] (unit vectors)",
+   "position": [
+    0.0,
+    46.0,
+    -32.0
+   ],
+   "projection": "perspective pinhole",
+   "state_or_tick_interval": "static scene, settled contact state (t=0)",
+   "target": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "vertical_fov_or_orthographic_span": 55.0,
+   "viewport_resolution": [
+    1280,
+    720
+   ],
+   "visibility_layers": [
+    "monkey_clearing_ground",
+    "monkey_clearing_boundary_posts",
+    "trunk_01"
+   ]
+  },
+  "V1_clearing_overview_diagnostic": {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "static bookmark (single frozen frame)",
+   "coordinate_unit": "m",
+   "distance_to_target": 56.0357029044876,
+   "frame_id": "MAT2-F02/V1_clearing_overview_diagnostic",
+   "label_ids": [
+    {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "id": "spawn",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      360.00000000000006
+     ]
+    },
+    {
+     "anchor": [
+      11.976783,
+      1.158,
+      2.471766
+     ],
+     "id": "trunk_01",
+     "in_frame": true,
+     "projected_px": [
+      493.39680211412156,
+      327.06811385482695
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SW",
+     "in_frame": true,
+     "projected_px": [
+      955.2337928141487,
+      610.6762131946691
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SE",
+     "in_frame": true,
+     "projected_px": [
+      324.7662071858513,
+      610.6762131946691
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NE",
+     "in_frame": true,
+     "projected_px": [
+      432.694109288807,
+      184.49418949732865
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NW",
+     "in_frame": true,
+     "projected_px": [
+      847.305890711193,
+      184.49418949732865
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      20.0
+     ],
+     "id": "edge_N",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      184.49418949732865
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_E",
+     "in_frame": true,
+     "projected_px": [
+      389.8761366382024,
+      353.5723414792368
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      -20.0
+     ],
+     "id": "edge_S",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      610.6762131946691
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_W",
+     "in_frame": true,
+     "projected_px": [
+      890.1238633617976,
+      353.5723414792368
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.093056,
+      -6.422639
+     ],
+     "id": "mound_m1",
+     "in_frame": true,
+     "projected_px": [
+      882.1874623193839,
+      429.02415998251286
+     ]
+    },
+    {
+     "anchor": [
+      -12.927758,
+      0.094601,
+      17.030711
+     ],
+     "id": "mound_m2",
+     "in_frame": true,
+     "projected_px": [
+      776.1104815806825,
+      212.23584551742582
+     ]
+    },
+    {
+     "anchor": [
+      19.265584,
+      0.104618,
+      6.057064
+     ],
+     "id": "mound_m3",
+     "in_frame": true,
+     "projected_px": [
+      415.7371921658911,
+      301.424318970242
+     ]
+    },
+    {
+     "anchor": [
+      13.807676,
+      0.10993,
+      -18.304543
+     ],
+     "id": "mound_m4",
+     "in_frame": true,
+     "projected_px": [
+      430.1022930362741,
+      587.4682575104603
+     ]
+    },
+    {
+     "anchor": [
+      -9.268795,
+      0.082347,
+      -11.77237
+     ],
+     "id": "mound_m5",
+     "in_frame": true,
+     "projected_px": [
+      770.161973830642,
+      495.05146679278755
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.22200999999999999,
+      -0.0
+     ],
+     "id": "probe_S1",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      358.4302391887144
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.31198483170326663,
+      -6.422639
+     ],
+     "id": "probe_S2",
+     "in_frame": true,
+     "projected_px": [
+      883.0227019967501,
+      427.6030872201453
+     ]
+    },
+    {
+     "anchor": [
+      -15.035646,
+      0.2558899142874196,
+      -6.422639
+     ],
+     "id": "probe_S3",
+     "in_frame": true,
+     "projected_px": [
+      839.3553135094397,
+      427.96813395044194
+     ]
+    },
+    {
+     "anchor": [
+      11.226783,
+      0.22200999999999999,
+      2.471766
+     ],
+     "id": "probe_S4",
+     "in_frame": true,
+     "projected_px": [
+      504.4211479273139,
+      333.96493246390037
+     ]
+    },
+    {
+     "anchor": [
+      19.23236482372261,
+      0.3247833914865865,
+      6.057064
+     ],
+     "id": "probe_S5",
+     "in_frame": true,
+     "projected_px": [
+      415.4407232365917,
+      299.7775529513263
+     ]
+    }
+   ],
+   "near_far_planes": [
+    0.05,
+    200.0
+   ],
+   "occlusion_or_xray_mode": "opaque z-buffer (no x-ray)",
+   "orientation_convention_and_values": "look-at, right-handed, x=east y=up z=south; fwd=[0, -0.82090520178548709, 0.57106448819859978] right=[-1, 0, 0] up=[0, 0.57106448819859978, 0.82090520178548709] (unit vectors)",
+   "position": [
+    0.0,
+    46.0,
+    -32.0
+   ],
+   "projection": "perspective pinhole",
+   "state_or_tick_interval": "static scene, settled contact state (t=0)",
+   "target": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "vertical_fov_or_orthographic_span": 55.0,
+   "viewport_resolution": [
+    1280,
+    720
+   ],
+   "visibility_layers": [
+    "monkey_clearing_ground",
+    "monkey_clearing_boundary_posts",
+    "trunk_01",
+    "diagnostic: render-mesh wireframe",
+    "diagnostic: collision surfaces (probe shell + contacted ground triangles)",
+    "diagnostic: normals/contact markers",
+    "diagnostic: scene bounds",
+    "diagnostic: stable 3D labels"
+   ]
+  },
+  "V2_contact_seam_clean": {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "static bookmark (single frozen frame)",
+   "coordinate_unit": "m",
+   "distance_to_target": 1.9558452975491185,
+   "frame_id": "MAT2-F02/V2_contact_seam_clean",
+   "label_ids": [
+    {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "id": "spawn",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      11.976783,
+      1.158,
+      2.471766
+     ],
+     "id": "trunk_01",
+     "in_frame": false,
+     "projected_px": [
+      477.3960000082525,
+      -106.8079983348147
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SW",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SE",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NE",
+     "in_frame": false,
+     "projected_px": [
+      1079.104774200876,
+      -152.55932680381625
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NW",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      20.0
+     ],
+     "id": "edge_N",
+     "in_frame": false,
+     "projected_px": [
+      8015.346493280849,
+      3.498969157641434
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_E",
+     "in_frame": false,
+     "projected_px": [
+      -153.23958471770624,
+      -118.43909832252825
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      -20.0
+     ],
+     "id": "edge_S",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_W",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.093056,
+      -6.422639
+     ],
+     "id": "mound_m1",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -12.927758,
+      0.094601,
+      17.030711
+     ],
+     "id": "mound_m2",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      19.265584,
+      0.104618,
+      6.057064
+     ],
+     "id": "mound_m3",
+     "in_frame": false,
+     "projected_px": [
+      516.4654096032327,
+      -57.03684200227082
+     ]
+    },
+    {
+     "anchor": [
+      13.807676,
+      0.10993,
+      -18.304543
+     ],
+     "id": "mound_m4",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -9.268795,
+      0.082347,
+      -11.77237
+     ],
+     "id": "mound_m5",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      0.0,
+      0.22200999999999999,
+      -0.0
+     ],
+     "id": "probe_S1",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.31198483170326663,
+      -6.422639
+     ],
+     "id": "probe_S2",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -15.035646,
+      0.2558899142874196,
+      -6.422639
+     ],
+     "id": "probe_S3",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      11.226783,
+      0.22200999999999999,
+      2.471766
+     ],
+     "id": "probe_S4",
+     "in_frame": true,
+     "projected_px": [
+      639.9999999999999,
+      325.1513130241984
+     ]
+    },
+    {
+     "anchor": [
+      19.23236482372261,
+      0.3247833914865865,
+      6.057064
+     ],
+     "id": "probe_S5",
+     "in_frame": false,
+     "projected_px": [
+      515.7267909331259,
+      -77.16919771824006
+     ]
+    }
+   ],
+   "near_far_planes": [
+    0.05,
+    200.0
+   ],
+   "occlusion_or_xray_mode": "opaque z-buffer (no x-ray)",
+   "orientation_convention_and_values": "look-at, right-handed, x=east y=up z=south; fwd=[0.65280367603713052, -0.61251776993876184, 0.44572339187174737] right=[-0.56388076057289271, 0, 0.8258562150009745] up=[0.50585160710246357, 0.7904568182445173, 0.34538698597748113] (unit vectors)",
+   "position": [
+    9.95,
+    1.3,
+    1.6
+   ],
+   "projection": "perspective pinhole",
+   "state_or_tick_interval": "static scene, settled contact state (t=0)",
+   "target": [
+    11.226783,
+    0.10200999999999999,
+    2.471766
+   ],
+   "vertical_fov_or_orthographic_span": 55.0,
+   "viewport_resolution": [
+    1280,
+    720
+   ],
+   "visibility_layers": [
+    "monkey_clearing_ground",
+    "monkey_clearing_boundary_posts",
+    "trunk_01"
+   ]
+  },
+  "V2_contact_seam_diagnostic": {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "static bookmark (single frozen frame)",
+   "coordinate_unit": "m",
+   "distance_to_target": 1.9558452975491185,
+   "frame_id": "MAT2-F02/V2_contact_seam_diagnostic",
+   "label_ids": [
+    {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "id": "spawn",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      11.976783,
+      1.158,
+      2.471766
+     ],
+     "id": "trunk_01",
+     "in_frame": false,
+     "projected_px": [
+      477.3960000082525,
+      -106.8079983348147
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SW",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SE",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NE",
+     "in_frame": false,
+     "projected_px": [
+      1079.104774200876,
+      -152.55932680381625
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NW",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      20.0
+     ],
+     "id": "edge_N",
+     "in_frame": false,
+     "projected_px": [
+      8015.346493280849,
+      3.498969157641434
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_E",
+     "in_frame": false,
+     "projected_px": [
+      -153.23958471770624,
+      -118.43909832252825
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      -20.0
+     ],
+     "id": "edge_S",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_W",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.093056,
+      -6.422639
+     ],
+     "id": "mound_m1",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -12.927758,
+      0.094601,
+      17.030711
+     ],
+     "id": "mound_m2",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      19.265584,
+      0.104618,
+      6.057064
+     ],
+     "id": "mound_m3",
+     "in_frame": false,
+     "projected_px": [
+      516.4654096032327,
+      -57.03684200227082
+     ]
+    },
+    {
+     "anchor": [
+      13.807676,
+      0.10993,
+      -18.304543
+     ],
+     "id": "mound_m4",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -9.268795,
+      0.082347,
+      -11.77237
+     ],
+     "id": "mound_m5",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      0.0,
+      0.22200999999999999,
+      -0.0
+     ],
+     "id": "probe_S1",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.31198483170326663,
+      -6.422639
+     ],
+     "id": "probe_S2",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -15.035646,
+      0.2558899142874196,
+      -6.422639
+     ],
+     "id": "probe_S3",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      11.226783,
+      0.22200999999999999,
+      2.471766
+     ],
+     "id": "probe_S4",
+     "in_frame": true,
+     "projected_px": [
+      639.9999999999999,
+      325.1513130241984
+     ]
+    },
+    {
+     "anchor": [
+      19.23236482372261,
+      0.3247833914865865,
+      6.057064
+     ],
+     "id": "probe_S5",
+     "in_frame": false,
+     "projected_px": [
+      515.7267909331259,
+      -77.16919771824006
+     ]
+    }
+   ],
+   "near_far_planes": [
+    0.05,
+    200.0
+   ],
+   "occlusion_or_xray_mode": "opaque z-buffer (no x-ray)",
+   "orientation_convention_and_values": "look-at, right-handed, x=east y=up z=south; fwd=[0.65280367603713052, -0.61251776993876184, 0.44572339187174737] right=[-0.56388076057289271, 0, 0.8258562150009745] up=[0.50585160710246357, 0.7904568182445173, 0.34538698597748113] (unit vectors)",
+   "position": [
+    9.95,
+    1.3,
+    1.6
+   ],
+   "projection": "perspective pinhole",
+   "state_or_tick_interval": "static scene, settled contact state (t=0)",
+   "target": [
+    11.226783,
+    0.10200999999999999,
+    2.471766
+   ],
+   "vertical_fov_or_orthographic_span": 55.0,
+   "viewport_resolution": [
+    1280,
+    720
+   ],
+   "visibility_layers": [
+    "monkey_clearing_ground",
+    "monkey_clearing_boundary_posts",
+    "trunk_01",
+    "diagnostic: render-mesh wireframe",
+    "diagnostic: collision surfaces (probe shell + contacted ground triangles)",
+    "diagnostic: normals/contact markers",
+    "diagnostic: scene bounds",
+    "diagnostic: stable 3D labels"
+   ]
+  },
+  "V3_side_depth_clean": {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "static bookmark (single frozen frame)",
+   "coordinate_unit": "m",
+   "distance_to_target": 8.444856377631975,
+   "frame_id": "MAT2-F02/V3_side_depth_clean",
+   "label_ids": [
+    {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "id": "spawn",
+     "in_frame": false,
+     "projected_px": [
+      -253.35825945053116,
+      256.37403995782813
+     ]
+    },
+    {
+     "anchor": [
+      11.976783,
+      1.158,
+      2.471766
+     ],
+     "id": "trunk_01",
+     "in_frame": false,
+     "projected_px": [
+      -769.6919613798539,
+      173.541089438544
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SW",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SE",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NE",
+     "in_frame": false,
+     "projected_px": [
+      -269.10114945884584,
+      140.98229070913027
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NW",
+     "in_frame": true,
+     "projected_px": [
+      768.8145201524361,
+      140.98229070913027
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      20.0
+     ],
+     "id": "edge_N",
+     "in_frame": true,
+     "projected_px": [
+      249.85668534679513,
+      140.98229070913027
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_E",
+     "in_frame": false,
+     "projected_px": [
+      -1479.7341537104774,
+      202.39723694467793
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      -20.0
+     ],
+     "id": "edge_S",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_W",
+     "in_frame": true,
+     "projected_px": [
+      940.3544083334219,
+      202.39723694467793
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.093056,
+      -6.422639
+     ],
+     "id": "mound_m1",
+     "in_frame": true,
+     "projected_px": [
+      976.7875202013765,
+      364.2102571661981
+     ]
+    },
+    {
+     "anchor": [
+      -12.927758,
+      0.094601,
+      17.030711
+     ],
+     "id": "mound_m2",
+     "in_frame": true,
+     "projected_px": [
+      580.6920423148687,
+      168.5635362074042
+     ]
+    },
+    {
+     "anchor": [
+      19.265584,
+      0.104618,
+      6.057064
+     ],
+     "id": "mound_m3",
+     "in_frame": false,
+     "projected_px": [
+      -822.0350604770459,
+      206.06473808436007
+     ]
+    },
+    {
+     "anchor": [
+      13.807676,
+      0.10993,
+      -18.304543
+     ],
+     "id": "mound_m4",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -9.268795,
+      0.082347,
+      -11.77237
+     ],
+     "id": "mound_m5",
+     "in_frame": false,
+     "projected_px": [
+      -859.0243324640576,
+      779.072650426234
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.22200999999999999,
+      -0.0
+     ],
+     "id": "probe_S1",
+     "in_frame": false,
+     "projected_px": [
+      -257.3321783147256,
+      243.2400382767316
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.31198483170326663,
+      -6.422639
+     ],
+     "id": "probe_S2",
+     "in_frame": true,
+     "projected_px": [
+      979.3507352339863,
+      342.55943757691875
+     ]
+    },
+    {
+     "anchor": [
+      -15.035646,
+      0.2558899142874196,
+      -6.422639
+     ],
+     "id": "probe_S3",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      348.1382482123426
+     ]
+    },
+    {
+     "anchor": [
+      11.226783,
+      0.22200999999999999,
+      2.471766
+     ],
+     "id": "probe_S4",
+     "in_frame": false,
+     "projected_px": [
+      -708.4386162147746,
+      222.51637001672185
+     ]
+    },
+    {
+     "anchor": [
+      19.23236482372261,
+      0.3247833914865865,
+      6.057064
+     ],
+     "id": "probe_S5",
+     "in_frame": false,
+     "projected_px": [
+      -825.2354482484182,
+      196.5740310162922
+     ]
+    }
+   ],
+   "near_far_planes": [
+    0.05,
+    200.0
+   ],
+   "occlusion_or_xray_mode": "opaque z-buffer (no x-ray)",
+   "orientation_convention_and_values": "look-at, right-handed, x=east y=up z=south; fwd=[0, -0.29178827626237763, 0.95648293337405166] right=[-1, 0, 0] up=[0, 0.95648293337405166, 0.29178827626237763] (unit vectors)",
+   "position": [
+    -15.035646,
+    2.6,
+    -14.5
+   ],
+   "projection": "perspective pinhole",
+   "state_or_tick_interval": "static scene, settled contact state (t=0)",
+   "target": [
+    -15.035646,
+    0.13588991428741956,
+    -6.422639
+   ],
+   "vertical_fov_or_orthographic_span": 45.0,
+   "viewport_resolution": [
+    1280,
+    720
+   ],
+   "visibility_layers": [
+    "monkey_clearing_ground",
+    "monkey_clearing_boundary_posts",
+    "trunk_01"
+   ]
+  },
+  "V3_side_depth_diagnostic": {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "static bookmark (single frozen frame)",
+   "coordinate_unit": "m",
+   "distance_to_target": 8.444856377631975,
+   "frame_id": "MAT2-F02/V3_side_depth_diagnostic",
+   "label_ids": [
+    {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "id": "spawn",
+     "in_frame": false,
+     "projected_px": [
+      -253.35825945053116,
+      256.37403995782813
+     ]
+    },
+    {
+     "anchor": [
+      11.976783,
+      1.158,
+      2.471766
+     ],
+     "id": "trunk_01",
+     "in_frame": false,
+     "projected_px": [
+      -769.6919613798539,
+      173.541089438544
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SW",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SE",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NE",
+     "in_frame": false,
+     "projected_px": [
+      -269.10114945884584,
+      140.98229070913027
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NW",
+     "in_frame": true,
+     "projected_px": [
+      768.8145201524361,
+      140.98229070913027
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      20.0
+     ],
+     "id": "edge_N",
+     "in_frame": true,
+     "projected_px": [
+      249.85668534679513,
+      140.98229070913027
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_E",
+     "in_frame": false,
+     "projected_px": [
+      -1479.7341537104774,
+      202.39723694467793
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      -20.0
+     ],
+     "id": "edge_S",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_W",
+     "in_frame": true,
+     "projected_px": [
+      940.3544083334219,
+      202.39723694467793
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.093056,
+      -6.422639
+     ],
+     "id": "mound_m1",
+     "in_frame": true,
+     "projected_px": [
+      976.7875202013765,
+      364.2102571661981
+     ]
+    },
+    {
+     "anchor": [
+      -12.927758,
+      0.094601,
+      17.030711
+     ],
+     "id": "mound_m2",
+     "in_frame": true,
+     "projected_px": [
+      580.6920423148687,
+      168.5635362074042
+     ]
+    },
+    {
+     "anchor": [
+      19.265584,
+      0.104618,
+      6.057064
+     ],
+     "id": "mound_m3",
+     "in_frame": false,
+     "projected_px": [
+      -822.0350604770459,
+      206.06473808436007
+     ]
+    },
+    {
+     "anchor": [
+      13.807676,
+      0.10993,
+      -18.304543
+     ],
+     "id": "mound_m4",
+     "in_frame": false,
+     "projected_px": null
+    },
+    {
+     "anchor": [
+      -9.268795,
+      0.082347,
+      -11.77237
+     ],
+     "id": "mound_m5",
+     "in_frame": false,
+     "projected_px": [
+      -859.0243324640576,
+      779.072650426234
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.22200999999999999,
+      -0.0
+     ],
+     "id": "probe_S1",
+     "in_frame": false,
+     "projected_px": [
+      -257.3321783147256,
+      243.2400382767316
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.31198483170326663,
+      -6.422639
+     ],
+     "id": "probe_S2",
+     "in_frame": true,
+     "projected_px": [
+      979.3507352339863,
+      342.55943757691875
+     ]
+    },
+    {
+     "anchor": [
+      -15.035646,
+      0.2558899142874196,
+      -6.422639
+     ],
+     "id": "probe_S3",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      348.1382482123426
+     ]
+    },
+    {
+     "anchor": [
+      11.226783,
+      0.22200999999999999,
+      2.471766
+     ],
+     "id": "probe_S4",
+     "in_frame": false,
+     "projected_px": [
+      -708.4386162147746,
+      222.51637001672185
+     ]
+    },
+    {
+     "anchor": [
+      19.23236482372261,
+      0.3247833914865865,
+      6.057064
+     ],
+     "id": "probe_S5",
+     "in_frame": false,
+     "projected_px": [
+      -825.2354482484182,
+      196.5740310162922
+     ]
+    }
+   ],
+   "near_far_planes": [
+    0.05,
+    200.0
+   ],
+   "occlusion_or_xray_mode": "opaque z-buffer (no x-ray)",
+   "orientation_convention_and_values": "look-at, right-handed, x=east y=up z=south; fwd=[0, -0.29178827626237763, 0.95648293337405166] right=[-1, 0, 0] up=[0, 0.95648293337405166, 0.29178827626237763] (unit vectors)",
+   "position": [
+    -15.035646,
+    2.6,
+    -14.5
+   ],
+   "projection": "perspective pinhole",
+   "state_or_tick_interval": "static scene, settled contact state (t=0)",
+   "target": [
+    -15.035646,
+    0.13588991428741956,
+    -6.422639
+   ],
+   "vertical_fov_or_orthographic_span": 45.0,
+   "viewport_resolution": [
+    1280,
+    720
+   ],
+   "visibility_layers": [
+    "monkey_clearing_ground",
+    "monkey_clearing_boundary_posts",
+    "trunk_01",
+    "diagnostic: render-mesh wireframe",
+    "diagnostic: collision surfaces (probe shell + contacted ground triangles)",
+    "diagnostic: normals/contact markers",
+    "diagnostic: scene bounds",
+    "diagnostic: stable 3D labels"
+   ]
+  },
+  "V4_oblique_depth_clean": {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "static bookmark (single frozen frame)",
+   "coordinate_unit": "m",
+   "distance_to_target": 49.558046773455466,
+   "frame_id": "MAT2-F02/V4_oblique_depth_clean",
+   "label_ids": [
+    {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "id": "spawn",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      360.0
+     ]
+    },
+    {
+     "anchor": [
+      11.976783,
+      1.158,
+      2.471766
+     ],
+     "id": "trunk_01",
+     "in_frame": true,
+     "projected_px": [
+      568.6067581813322,
+      297.1551925667077
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SW",
+     "in_frame": true,
+     "projected_px": [
+      587.7832450700281,
+      672.7965899649582
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SE",
+     "in_frame": true,
+     "projected_px": [
+      255.7775872349007,
+      339.10088050595493
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NE",
+     "in_frame": true,
+     "projected_px": [
+      656.2633142035793,
+      247.39606651198469
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NW",
+     "in_frame": true,
+     "projected_px": [
+      1050.2934840299067,
+      358.3804110928694
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      20.0
+     ],
+     "id": "edge_N",
+     "in_frame": true,
+     "projected_px": [
+      809.1802234284772,
+      290.4673444122029
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_E",
+     "in_frame": true,
+     "projected_px": [
+      494.55339430185813,
+      284.425046889922
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      -20.0
+     ],
+     "id": "edge_S",
+     "in_frame": true,
+     "projected_px": [
+      360.364788478937,
+      444.22047559668556
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_W",
+     "in_frame": true,
+     "projected_px": [
+      897.9650264885131,
+      461.9338624961341
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.093056,
+      -6.422639
+     ],
+     "id": "mound_m1",
+     "in_frame": true,
+     "projected_px": [
+      792.668128430518,
+      509.97344383287134
+     ]
+    },
+    {
+     "anchor": [
+      -12.927758,
+      0.094601,
+      17.030711
+     ],
+     "id": "mound_m2",
+     "in_frame": true,
+     "projected_px": [
+      929.3708339193213,
+      350.20433691097895
+     ]
+    },
+    {
+     "anchor": [
+      19.265584,
+      0.104618,
+      6.057064
+     ],
+     "id": "mound_m3",
+     "in_frame": true,
+     "projected_px": [
+      554.548105147408,
+      281.44016425051785
+     ]
+    },
+    {
+     "anchor": [
+      13.807676,
+      0.10993,
+      -18.304543
+     ],
+     "id": "mound_m4",
+     "in_frame": true,
+     "projected_px": [
+      309.9881903775062,
+      368.78485626817036
+     ]
+    },
+    {
+     "anchor": [
+      -9.268795,
+      0.082347,
+      -11.77237
+     ],
+     "id": "mound_m5",
+     "in_frame": true,
+     "projected_px": [
+      588.2874276233713,
+      472.69229120583697
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.22200999999999999,
+      -0.0
+     ],
+     "id": "probe_S1",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      357.16033292736563
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.31198483170326663,
+      -6.422639
+     ],
+     "id": "probe_S2",
+     "in_frame": true,
+     "projected_px": [
+      793.0771176257094,
+      506.17500573618497
+     ]
+    },
+    {
+     "anchor": [
+      -15.035646,
+      0.2558899142874196,
+      -6.422639
+     ],
+     "id": "probe_S3",
+     "in_frame": true,
+     "projected_px": [
+      740.6777506799156,
+      478.3089994096015
+     ]
+    },
+    {
+     "anchor": [
+      11.226783,
+      0.22200999999999999,
+      2.471766
+     ],
+     "id": "probe_S4",
+     "in_frame": true,
+     "projected_px": [
+      574.2895506847258,
+      309.7788193536199
+     ]
+    },
+    {
+     "anchor": [
+      19.23236482372261,
+      0.3247833914865865,
+      6.057064
+     ],
+     "id": "probe_S5",
+     "in_frame": true,
+     "projected_px": [
+      554.6334793428183,
+      279.3111967875518
+     ]
+    }
+   ],
+   "near_far_planes": [
+    0.05,
+    200.0
+   ],
+   "occlusion_or_xray_mode": "opaque z-buffer (no x-ray)",
+   "orientation_convention_and_values": "look-at, right-handed, x=east y=up z=south; fwd=[0.68606416543057247, -0.40356715613563088, 0.60535073420344632] right=[-0.66162163708684629, 0, 0.7498378553650924] up=[0.30260993085253085, 0.914950026224711, 0.267008762516939] (unit vectors)",
+   "position": [
+    -34.0,
+    20.0,
+    -30.0
+   ],
+   "projection": "perspective pinhole",
+   "state_or_tick_interval": "static scene, settled contact state (t=0)",
+   "target": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "vertical_fov_or_orthographic_span": 55.0,
+   "viewport_resolution": [
+    1280,
+    720
+   ],
+   "visibility_layers": [
+    "monkey_clearing_ground",
+    "monkey_clearing_boundary_posts",
+    "trunk_01"
+   ]
+  },
+  "V4_oblique_depth_diagnostic": {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "static bookmark (single frozen frame)",
+   "coordinate_unit": "m",
+   "distance_to_target": 49.558046773455466,
+   "frame_id": "MAT2-F02/V4_oblique_depth_diagnostic",
+   "label_ids": [
+    {
+     "anchor": [
+      0.0,
+      0.0,
+      0.0
+     ],
+     "id": "spawn",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      360.0
+     ]
+    },
+    {
+     "anchor": [
+      11.976783,
+      1.158,
+      2.471766
+     ],
+     "id": "trunk_01",
+     "in_frame": true,
+     "projected_px": [
+      568.6067581813322,
+      297.1551925667077
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SW",
+     "in_frame": true,
+     "projected_px": [
+      587.7832450700281,
+      672.7965899649582
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      -20.0
+     ],
+     "id": "corner_SE",
+     "in_frame": true,
+     "projected_px": [
+      255.7775872349007,
+      339.10088050595493
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NE",
+     "in_frame": true,
+     "projected_px": [
+      656.2633142035793,
+      247.39606651198469
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      20.0
+     ],
+     "id": "corner_NW",
+     "in_frame": true,
+     "projected_px": [
+      1050.2934840299067,
+      358.3804110928694
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      20.0
+     ],
+     "id": "edge_N",
+     "in_frame": true,
+     "projected_px": [
+      809.1802234284772,
+      290.4673444122029
+     ]
+    },
+    {
+     "anchor": [
+      20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_E",
+     "in_frame": true,
+     "projected_px": [
+      494.55339430185813,
+      284.425046889922
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.9,
+      -20.0
+     ],
+     "id": "edge_S",
+     "in_frame": true,
+     "projected_px": [
+      360.364788478937,
+      444.22047559668556
+     ]
+    },
+    {
+     "anchor": [
+      -20.0,
+      0.9,
+      0.0
+     ],
+     "id": "edge_W",
+     "in_frame": true,
+     "projected_px": [
+      897.9650264885131,
+      461.9338624961341
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.093056,
+      -6.422639
+     ],
+     "id": "mound_m1",
+     "in_frame": true,
+     "projected_px": [
+      792.668128430518,
+      509.97344383287134
+     ]
+    },
+    {
+     "anchor": [
+      -12.927758,
+      0.094601,
+      17.030711
+     ],
+     "id": "mound_m2",
+     "in_frame": true,
+     "projected_px": [
+      929.3708339193213,
+      350.20433691097895
+     ]
+    },
+    {
+     "anchor": [
+      19.265584,
+      0.104618,
+      6.057064
+     ],
+     "id": "mound_m3",
+     "in_frame": true,
+     "projected_px": [
+      554.548105147408,
+      281.44016425051785
+     ]
+    },
+    {
+     "anchor": [
+      13.807676,
+      0.10993,
+      -18.304543
+     ],
+     "id": "mound_m4",
+     "in_frame": true,
+     "projected_px": [
+      309.9881903775062,
+      368.78485626817036
+     ]
+    },
+    {
+     "anchor": [
+      -9.268795,
+      0.082347,
+      -11.77237
+     ],
+     "id": "mound_m5",
+     "in_frame": true,
+     "projected_px": [
+      588.2874276233713,
+      472.69229120583697
+     ]
+    },
+    {
+     "anchor": [
+      0.0,
+      0.22200999999999999,
+      -0.0
+     ],
+     "id": "probe_S1",
+     "in_frame": true,
+     "projected_px": [
+      640.0,
+      357.16033292736563
+     ]
+    },
+    {
+     "anchor": [
+      -18.312917,
+      0.31198483170326663,
+      -6.422639
+     ],
+     "id": "probe_S2",
+     "in_frame": true,
+     "projected_px": [
+      793.0771176257094,
+      506.17500573618497
+     ]
+    },
+    {
+     "anchor": [
+      -15.035646,
+      0.2558899142874196,
+      -6.422639
+     ],
+     "id": "probe_S3",
+     "in_frame": true,
+     "projected_px": [
+      740.6777506799156,
+      478.3089994096015
+     ]
+    },
+    {
+     "anchor": [
+      11.226783,
+      0.22200999999999999,
+      2.471766
+     ],
+     "id": "probe_S4",
+     "in_frame": true,
+     "projected_px": [
+      574.2895506847258,
+      309.7788193536199
+     ]
+    },
+    {
+     "anchor": [
+      19.23236482372261,
+      0.3247833914865865,
+      6.057064
+     ],
+     "id": "probe_S5",
+     "in_frame": true,
+     "projected_px": [
+      554.6334793428183,
+      279.3111967875518
+     ]
+    }
+   ],
+   "near_far_planes": [
+    0.05,
+    200.0
+   ],
+   "occlusion_or_xray_mode": "opaque z-buffer (no x-ray)",
+   "orientation_convention_and_values": "look-at, right-handed, x=east y=up z=south; fwd=[0.68606416543057247, -0.40356715613563088, 0.60535073420344632] right=[-0.66162163708684629, 0, 0.7498378553650924] up=[0.30260993085253085, 0.914950026224711, 0.267008762516939] (unit vectors)",
+   "position": [
+    -34.0,
+    20.0,
+    -30.0
+   ],
+   "projection": "perspective pinhole",
+   "state_or_tick_interval": "static scene, settled contact state (t=0)",
+   "target": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "vertical_fov_or_orthographic_span": 55.0,
+   "viewport_resolution": [
+    1280,
+    720
+   ],
+   "visibility_layers": [
+    "monkey_clearing_ground",
+    "monkey_clearing_boundary_posts",
+    "trunk_01",
+    "diagnostic: render-mesh wireframe",
+    "diagnostic: collision surfaces (probe shell + contacted ground triangles)",
+    "diagnostic: normals/contact markers",
+    "diagnostic: scene bounds",
+    "diagnostic: stable 3D labels"
+   ]
+  }
+ }
+}
