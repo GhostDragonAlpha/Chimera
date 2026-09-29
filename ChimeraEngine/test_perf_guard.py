@@ -16,9 +16,14 @@ the later shadowing the earlier -- so every call was still comparing expansions 
     CHIMERA_ENGINE_ROOT=PATH python ChimeraEngine/test_perf_guard.py
 
 ROOT is resolved in that order: --root argument, then CHIMERA_ENGINE_ROOT, then the
-documented project home (E:/PythonChimera). A hardcoded home made this gate test
-whichever checkout lived there instead of its own tree; a chosen ROOT without
-ChimeraEngine/perf_guard.py is refused loudly rather than silently testing elsewhere.
+checkout this file itself lives in. The old fallback -- the documented project home,
+E:/PythonChimera -- re-created the very contamination this gate exists to kill: any
+clone run with neither env nor flag silently gated whichever tree sat at the home
+path and passed without naming it. The home checkout is still reachable, but only
+when named explicitly via --root or CHIMERA_ENGINE_ROOT, and every run prints the
+ROOT it resolved, so a green run always names the tree it gated. A resolved ROOT
+without ChimeraEngine/perf_guard.py is refused loudly rather than silently testing
+elsewhere.
 """
 import os
 import warnings; warnings.filterwarnings('ignore')
@@ -26,14 +31,25 @@ import sys, io, math, json, contextlib
 from pathlib import Path
 import numpy as np
 
-DEFAULT_ROOT = Path('E:/PythonChimera')          # the documented project home
+DEFAULTED = False
 if '--root' in sys.argv:
     ROOT = Path(sys.argv[sys.argv.index('--root') + 1])
+    ROOT_FROM = '--root argument'
+elif os.environ.get('CHIMERA_ENGINE_ROOT'):
+    ROOT = Path(os.environ['CHIMERA_ENGINE_ROOT'])
+    ROOT_FROM = 'CHIMERA_ENGINE_ROOT'
 else:
-    ROOT = Path(os.environ.get('CHIMERA_ENGINE_ROOT', str(DEFAULT_ROOT)))
+    ROOT = Path(__file__).resolve().parents[1]   # gate the checkout this file lives in
+    ROOT_FROM = "default: this file's own checkout"
+    DEFAULTED = True
 if not (ROOT / 'ChimeraEngine' / 'perf_guard.py').is_file():
+    if DEFAULTED:
+        sys.exit(f"test_perf_guard: no ChimeraEngine/perf_guard.py under the default "
+                 f"ROOT={ROOT} (this file's own checkout) -- pass --root PATH or set "
+                 f"CHIMERA_ENGINE_ROOT to the checkout to gate")
     sys.exit(f"test_perf_guard: no ChimeraEngine/perf_guard.py under ROOT={ROOT} -- "
              f"pass --root PATH or set CHIMERA_ENGINE_ROOT to the checkout to gate")
+print(f"test_perf_guard: resolved ROOT={ROOT} (from {ROOT_FROM})")
 sys.path.insert(0, str(ROOT / 'ChimeraEngine')); sys.path.insert(0, str(ROOT))
 
 import perf_guard as pg
