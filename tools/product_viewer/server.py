@@ -55,7 +55,7 @@ class EngineWindowMirror:
                 window_capture.user32.GetWindowTextW(hwnd, title, 256)
                 self.hwnd, self.title = hwnd, title.value
                 return True
-        except (ValueError, subprocess.SubprocessError, OSError):
+        except (ValueError, sp.SubprocessError, OSError):
             pass
         self.find_attempts += 1
         return False
@@ -565,8 +565,6 @@ function pace(imgEl, path, gap){
     imgEl.onerror=()=>{busy=false; setTimeout(next,Math.max(gap,1000));};
     imgEl.src=path+'?t='+t;
   }
-  next();
-}
   next();
 }
 function tick(){
