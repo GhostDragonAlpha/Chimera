@@ -388,3 +388,40 @@ its clean control passes. A non-biting arm fails the whole build
   exactly the struck obstacle REGARDLESS (declared composition scope, F04
   heritage). A non-refusal is recorded as an unresolved upstream composition
   limitation, never silently repaired.
+- A4 (this commit, before the first build run; no acceptance bar touched):
+  (i) the frozen destination set is TWELVE, not the ten first written:
+  D_trunk + the four edge gates + seven obstacle viewpoints (the word "TEN"
+  in section 4 and FB5 was a miscount of the same frozen table; the table
+  itself, every destination and every bar are unchanged).
+  (ii) FB5's fence ring radius moves 1.0 -> 1.2 m. Reason: measured at the
+  frozen 0.5 m grid, the declared RECT rock footprint (A2 v) at ring radius
+  1.0 m blocks the spawn cell itself (its corner cells sit at 0.707 m from
+  the ring centres, inside the rect + envelope 0.75 m), which would be a
+  fence THROUGH the spawn rather than around it. At 1.2 m the spawn cell is
+  passable and all four exit steps are blocked — the exact fixture the arm
+  requires. The fence is falsifier furniture only; no scene bar changes.
+  (iii) a destination counts as REACHED iff the nearest BFS-reachable
+  passable cell lies within MAX_VIEWPOINT_OFFSET_M = 1.0 m of its frozen
+  target (the viewpoints are the nearest passable cells outside the inflated
+  footprints; the pre-build scratch measured viewpoint offsets 0.169-0.789 m
+  on the real scene). Without this bar a fenced spawn's lone reachable cell
+  would count as "reaching" everything and FB5 could not bite. This bar
+  TIGHTENS the route law; nothing is loosened.
+- A5 (this commit, after the FIRST build attempt was REFUSED by the frozen
+  f07_impact_plane bar and BEFORE any evidence artifact was written or any
+  build completed; nothing published, nothing tuned to pass): the contact
+  geometry bars are applied PER SIDE. Measured on the frozen scene: the
+  STRUCK body's contact point lies EXACTLY on its render triangle plane in
+  every run of all seven obstacles (worst plane error 0 m against the
+  unchanged 1e-9 bar — F02/F04's form), while the PROBE-side point is the
+  probe's own feature point ~1.0e-3 off the struck plane (measured pair
+  separation <= 1.011e-3 m, a constant of the pinned solver's feature-point
+  construction, recorded per run in checks.json; the probe feature carries
+  no surface claim). The analytic identity bar for prisms gains the pinned
+  law's own slop constant: sagitta + margin_m (1e-5, contact_law.json
+  declarations.slop_m = margin_m = 1e-5) + 1e-9. Measured struck-side
+  analytic deficits: rocks exactly 0; log_01 worst 1.21349e-3 vs chord
+  sagitta 1.21343e-3 (excess 6.1e-8, covered by the declared 1e-5 slop);
+  log_02 and both stands inside the chord sagitta. The rocks' mesh-exact
+  1e-9 bar is unchanged. No bar is loosened beyond the pinned law's own
+  declared constants.
