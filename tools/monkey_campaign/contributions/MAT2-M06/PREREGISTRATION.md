@@ -254,6 +254,22 @@ executable, per the M01/M02/M04 precedent for "native tests" at this stage.
 - F3's tamper target is accordingly (i)+(ii): a one-sided impulse copy fires
   the reciprocity/balance checks in X1/X4. Nothing else changes.
 
+## Amendment A3 (frozen after amendment A2, BEFORE implementation and before any measurement)
+
+- Gravity flag per scenario (declared experimental condition): X1 (resting)
+  and X3 (sliding) run with gravity ON; X2 (oblique impact) and X4 (crossing)
+  run in the declared free-space rig with gravity OFF — otherwise the
+  accumulated fall speed would invalidate the frozen impact numbers
+  (v_n 0.25 m/s, closing 4 m/s). The ledger identity (ii) holds with the
+  external term = gravity + anchors in all cases.
+- W_f definition made discrete-exact: W_f is measured as the kinetic energy
+  removed by friction impulses, W_f = sum over contacts of
+  0.5*m_eff*(|vt_pre|^2 - |vt_post|^2), frozen |W_f - 0.015| <= 1e-9 J.
+  The force-path work sum(mu_k * Jn * ds) is ALSO recorded and must satisfy
+  |(KE_loss - W_f) - force_path_work| <= 1e-3 J (declared discrete
+  integration slack, derived bound: ticks * 0.5*m*(mu_k*g*dt)^2 = 26 x
+  2.308e-5 = 6.0e-4 J). Nothing else changes.
+
 ## Applicability boundary (honest, frozen)
 
 Offline CPU-only contact experiment executable over pinned M02 surfaces and
