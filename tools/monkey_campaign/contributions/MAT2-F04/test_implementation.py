@@ -9,7 +9,10 @@ from __future__ import annotations
 
 import json
 import pathlib
+import struct
+import subprocess
 import sys
+import tempfile
 import unittest
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -131,6 +134,46 @@ class FrozenForms(unittest.TestCase):
         self.assertEqual(len(bites), 7)
         for row in bites:
             self.assertTrue(row["bites"], row["bite"])
+            # house standard: every arm records its own clean control and
+            # the bite is credited only when that control passes
+            self.assertTrue(row["observed"].get("clean_control"),
+                            row["bite"])
+        fb4 = next(b for b in bites if b["bite"] == "FB4_ghost_support_trunk")
+        # P1-scoped metric: the clean control (cap-centre vertices excluded)
+        # is within the declared tolerance; the ghost's own gap violates it
+        self.assertLess(
+            fb4["observed"]["clean_control"]["worst_vertex_radial_gap_m"],
+            impl.TRUNK_RADIAL_TOL_M)
+        self.assertGreater(fb4["observed"]["worst_vertex_radial_gap_m"],
+                           impl.TRUNK_RADIAL_TOL_M)
+
+    def test_seam_high_records_per_phase_metrics(self):
+        """Review law: a phase metric is never derived by scanning
+        heterogeneous states; phase-B states carry BOTH metrics."""
+        sc = impl.scenario_seam_high(self.lc, self.ta, self.surface)
+        a = [st for st in sc["states"] if st.get("phase") == "A"]
+        b = [st for st in sc["states"] if st.get("phase") == "B"]
+        self.assertTrue(a)
+        self.assertTrue(b)
+        for st in a:
+            self.assertIn("min_clearance_above_query_m", st)
+            self.assertNotIn("min_radial_clearance_m", st)
+        for st in b:
+            self.assertIn("min_radial_clearance_m", st)
+            self.assertIn("min_clearance_above_query_m", st)
+        worst_b = impl.phase_metric(sc["states"], "B",
+                                    "min_clearance_above_query_m")
+        self.assertEqual(worst_b,
+                         min(st["min_clearance_above_query_m"] for st in b))
+        self.assertGreater(worst_b, 0.0)
+        self.assertLess(worst_b, impl.SEAM_BAND_M[1])
+        # heterogeneous scans refuse: phase A carries no radial metric and
+        # no phase "C" exists
+        with self.assertRaises(impl.Refusal):
+            impl.phase_metric(sc["states"], "A", "min_radial_clearance_m")
+        with self.assertRaises(impl.Refusal):
+            impl.phase_metric(sc["states"], "C",
+                              "min_clearance_above_query_m")
 
     def test_asset_identity_exact(self):
         trunk_raw = (impl.CONTRIB
@@ -166,6 +209,150 @@ class FrozenForms(unittest.TestCase):
                               impl.TRUNK_VERTS_CACHE, self.groups)
         rec = impl.classify_marker(mesh, cam, sp)
         self.assertEqual(rec["outcome"], "VISIBLE_EXACT")
+
+
+class CaptureRowOrder(unittest.TestCase):
+    """Review F3 class kill: frame_bytes must feed the rawvideo pipe
+    TOP-DOWN rows so a decoded video frame equals write_bmp's decoded
+    orientation (the BMP container flips rows itself; the raw pipe does
+    not). Pure stdlib -- runs without ffmpeg or a built capture."""
+
+    def test_bmp_decode_equals_rawvideo_rows_identity(self):
+        # asymmetric pattern so a flipped reading can never coincide
+        colour = [[((37 * x + 101 * y) % 256, (91 * x + 5 * y) % 256,
+                    (7 * x + 211 * y) % 256)
+                   for x in range(impl.W)] for y in range(impl.H)]
+        with tempfile.TemporaryDirectory() as td:
+            path = pathlib.Path(td) / "probe.bmp"
+            impl.write_bmp(path, colour)
+            bmp = path.read_bytes()
+        raw = impl.frame_bytes(colour)
+        off = struct.unpack_from("<I", bmp, 10)[0]
+        pad = (impl.W * 3 + 3) & ~3
+        row_bytes = impl.W * 3
+        # identity: BMP row H-1-y stores display row y; the raw pipe row y
+        # must be the SAME display row, byte for byte
+        for y in range(impl.H):
+            from_bmp = bmp[off + (impl.H - 1 - y) * pad:
+                           off + (impl.H - 1 - y) * pad + row_bytes]
+            from_raw = raw[y * pad: y * pad + row_bytes]
+            self.assertEqual(from_bmp, from_raw, "display row %d" % y)
+        # sensitivity guard: reading the BMP top-down (the old bottom-up
+        # bug) must NOT match, so this test still dies if the class returns
+        from_bmp_flipped = bmp[off: off + row_bytes]
+        from_raw_top = raw[0:row_bytes]
+        self.assertNotEqual(from_bmp_flipped, from_raw_top)
+
+
+class CaptureGate(unittest.TestCase):
+    """The reviewer's capture gate, adopted permanently: decode the
+    gate-bound video frames at the committed stills' indices and require
+    pixel identity under the IDENTITY transform only, across the explicit
+    transform list identity/vflip/hflip."""
+
+    TRANSFORMS = ("identity", "vflip", "hflip")
+
+    @classmethod
+    def _read_bmp_rows(cls, path):
+        raw = path.read_bytes()
+        off = struct.unpack_from("<I", raw, 10)[0]
+        w = struct.unpack_from("<i", raw, 18)[0]
+        h = struct.unpack_from("<i", raw, 22)[0]
+        pad = (w * 3 + 3) & ~3
+        rows = []  # display row y (top-down) as bytes
+        for y in range(h):  # BMP rows are stored bottom-up
+            rows.append(raw[off + (h - 1 - y) * pad:
+                            off + (h - 1 - y) * pad + w * 3])
+        return rows
+
+    @classmethod
+    def _decode_frame_rows(cls, video, idx):
+        cmd = ["ffmpeg", "-v", "error", "-i", str(video), "-vf",
+               "select=eq(n\\,%d)" % idx, "-frames:v", "1",
+               "-f", "rawvideo", "-pix_fmt", "rgb24", "-"]
+        out = subprocess.run(cmd, capture_output=True, timeout=600)
+        if out.returncode != 0:
+            raise AssertionError("ffmpeg decode failed: %r"
+                                 % out.stderr[-300:])
+        pad = (impl.W * 3 + 3) & ~3
+        need = pad * (impl.H - 1) + impl.W * 3
+        if len(out.stdout) < need:
+            raise AssertionError("short rawvideo frame: %d < %d"
+                                 % (len(out.stdout), need))
+        return [out.stdout[y * pad: y * pad + impl.W * 3]
+                for y in range(impl.H)]
+
+    @staticmethod
+    def _hflip_row(row):
+        rev = row[::-1]  # reversed pixels, channels per pixel reversed too
+        out = bytearray(rev)
+        for i in range(0, len(out), 3):
+            out[i], out[i + 2] = out[i + 2], out[i]
+        return bytes(out)
+
+    @classmethod
+    def _transform(cls, rows, kind):
+        if kind == "identity":
+            return rows
+        if kind == "vflip":
+            return rows[::-1]
+        if kind == "hflip":
+            return [cls._hflip_row(r) for r in rows]
+        raise ValueError(kind)
+
+    @classmethod
+    def _diff_pixels(cls, a_rows, b_rows):
+        diff = 0
+        for ra, rb in zip(a_rows, b_rows):
+            if ra != rb:
+                diff += sum(1 for i in range(0, len(ra), 3)
+                            if ra[i:i + 3] != rb[i:i + 3])
+        return diff
+
+    def test_stills_match_decoded_frames_identity_only(self):
+        checks_path = HERE / "evidence" / "checks.json"
+        video = (impl.ATTEMPT_WORKSPACE / impl.CAPTURE_DIR_NAME /
+                 "mat2_f04_contact_motion.avi")
+        if not (checks_path.is_file() and video.is_file()):
+            self.skipTest("built capture not present; run "
+                          "`python -B implementation.py build` first")
+        checks = json.loads(checks_path.read_bytes())
+        ticks = {k: v["ticks"]
+                 for k, v in checks["scenario_summary"].items()}
+        firsts = {k: v["first_contact_tick"]
+                  for k, v in checks["scenario_summary"].items()}
+        # row windows from the SAME frozen plan the build encodes
+        windows = {}
+        offset = 0
+        for plan_row in impl.ROW_PLAN:
+            n = sum(len(rng) if rng is not None else ticks[sname]
+                    for sname, rng in plan_row[2])
+            windows["%s_%s" % (plan_row[0], plan_row[1])] = (offset,
+                                                             offset + n)
+            offset += n
+        self.assertEqual(offset, checks["capture"]["frames"])
+        for vname, mode in [(v, m) for v in impl.VIEW_ORDER
+                            for m in ("diagnostic", "clean")]:
+            sname, _ = impl.STILL_OF[vname]
+            seg = next(p for p in impl.ROW_PLAN
+                       if p[0] == vname and p[1] == mode)
+            before = 0
+            for sname2, rng in seg[2]:
+                if sname2 == sname:
+                    break
+                before += len(rng) if rng is not None else ticks[sname2]
+            idx = windows["%s_%s" % (vname, mode)][0] + before + firsts[sname]
+            still = self._read_bmp_rows(
+                HERE / "evidence" / ("frame_%s_%s.bmp" % (vname, mode)))
+            frame = self._decode_frame_rows(video, idx)
+            diffs = {kind: self._diff_pixels(still,
+                                             self._transform(frame, kind))
+                     for kind in self.TRANSFORMS}
+            self.assertEqual(
+                diffs["identity"], 0,
+                "%s still vs decoded frame %d matches only under %s "
+                "(diffs %s) -- capture row order is broken"
+                % (vname, idx, min(diffs, key=diffs.get), diffs))
 
 
 if __name__ == "__main__":

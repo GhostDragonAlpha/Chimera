@@ -29,7 +29,9 @@ BEFORE this file existed):
    silently repaired.
 
 4. Falsifier arms FB1-FB7 run FIRST (fail-first, recorded), each with a named
-   refusal; a non-biting falsifier fails the whole build.
+   refusal and its OWN passing clean control (F03 heritage premature guard:
+   the bite is credited only when the clean control passes); a non-biting
+   falsifier fails the whole build.
 
 5. Capture: REGISTRY profile `contact-motion` (kind motion) read READ-ONLY
    from agent_slots.sqlite3; exactly the three profile views x (diagnostic,
@@ -129,6 +131,37 @@ TICKS_T_CROSS = 30
 TICKS_SEAM_HIGH = 40
 TICKS_G_SEAM_REST = 40
 TICKS_TRUNK_TOP_REST = 40
+
+# Frozen video row plan (one row per profile view x diagnostic/clean; each
+# row concatenates whole scenario replays, except the two rest tails which
+# contribute their last 5 ticks). Module level so the capture-gate test
+# derives still frame indices from the SAME plan the build encodes.
+ROW_PLAN = [
+    ("V1_clearing_overview", "diagnostic",
+     [("G_HIGH", None), ("T_CROSS", None), ("SEAM_HIGH", None),
+      ("G_SEAM_REST", range(TICKS_G_SEAM_REST - 5,
+                            TICKS_G_SEAM_REST)),
+       ("TRUNK_TOP_REST", range(TICKS_TRUNK_TOP_REST - 5,
+                                TICKS_TRUNK_TOP_REST))]),
+    ("V1_clearing_overview", "clean",
+     [("G_HIGH", None), ("T_CROSS", None), ("SEAM_HIGH", None),
+      ("G_SEAM_REST", range(TICKS_G_SEAM_REST - 5,
+                            TICKS_G_SEAM_REST)),
+       ("TRUNK_TOP_REST", range(TICKS_TRUNK_TOP_REST - 5,
+                                TICKS_TRUNK_TOP_REST))]),
+    ("V2_seam_closeup", "diagnostic", [("SEAM_HIGH", None)]),
+    ("V2_seam_closeup", "clean", [("SEAM_HIGH", None)]),
+    ("V3_opposite_oblique", "diagnostic", [("T_CROSS", None)]),
+    ("V3_opposite_oblique", "clean", [("T_CROSS", None)]),
+]
+
+# Committed stills: the impact-tick (first-contact) frame of each row's
+# still scenario.
+STILL_OF = {
+    "V1_clearing_overview": ("G_HIGH", None),   # first-contact tick
+    "V2_seam_closeup": ("SEAM_HIGH", None),     # first trunk-contact tick
+    "V3_opposite_oblique": ("T_CROSS", None),
+}
 
 # --- frozen views/cameras (clearing frame, Y up; prereg section 7) --------------
 W, H = 960, 540
@@ -460,9 +493,15 @@ def scenario_seam_high(lc, trunk_assets, surface):
     while t < TICKS_SEAM_HIGH:
         records, ledger = lc.solve_tick(bodies, ccd_enabled=True)
         contact_now = bool(records)
+        # Per-phase metric law (prereg section 8: the tail value is measured
+        # and published): phase-B states carry BOTH the trunk radial metric
+        # AND the ground-oracle clearance, so a phase-B metric never has to
+        # be derived by scanning phase-A states.
         states.append(state_of(probe, t, records, ledger, bodies,
                                {"min_radial_clearance_m":
                                 trunk_clearance_m(probe, base, radius),
+                                "min_clearance_above_query_m":
+                                ground_clearance_m(probe, surface),
                                 "phase": "B"}))
         if contact_now:
             tail += 1
@@ -605,6 +644,17 @@ def episode_firsts(states):
 def metric_worst(states, key):
     vals = [st[key] for st in states if key in st]
     return min(vals) if vals else None
+
+
+def phase_metric(states, phase, key):
+    """Per-phase metric extraction. Review law: NEVER derive a phase metric
+    by scanning heterogeneous states -- filter by the recorded per-state
+    phase tag and require every state of that phase to carry the key."""
+    sel = [st for st in states if st.get("phase") == phase]
+    require(sel, "f04_seam_phase_missing", phase)
+    require(all(key in st for st in sel), "f04_seam_phase_metric_key_missing",
+            {"phase": phase, "key": key})
+    return min(st[key] for st in sel)
 
 
 def contact_geometry_checks(scenarios, trunk_assets, surface):
@@ -1268,7 +1318,12 @@ def frame_bytes(colour):
     pad = (W * 3 + 3) & ~3
     buf = bytearray(pad * H)
     for y in range(H):
-        src = colour[H - 1 - y]
+        # TOP-DOWN rows: ffmpeg's rawvideo rgb24 pipe consumes rows from the
+        # top line down (unlike the BMP container, which stores rows
+        # bottom-up; write_bmp handles that flip itself). Writing
+        # colour[H-1-y] here mirrored every decoded frame against the bound
+        # camera and the committed stills.
+        src = colour[y]
         row = y * pad
         for x in range(W):
             r, g, b = src[x]
@@ -1487,57 +1542,128 @@ def run_bites(lc, bundle, surface, trunk_assets):
         bites.append(row)
         return row
 
-    # FB1: CCD-off ground control tunnels
+    # FB1: CCD-off ground control tunnels. Clean control (prereg bite clause):
+    # the SAME trajectory under the shipped CCD-on law must be pre-overlap
+    # clean, or the bite is not credited (F03 heritage premature guard).
     sc = scenario_g_high(lc, {"bundle": bundle}, surface, ccd=False)
     firsts = episode_firsts(sc["states"])
     worst = metric_worst(sc["states"], "min_clearance_above_query_m")
-    bit = bool(firsts) and firsts[0]["gap_m"] < 0.0 and worst < -PEN_BAR_M
+    sc_on = scenario_g_high(lc, {"bundle": bundle}, surface, ccd=True)
+    on_firsts = episode_firsts(sc_on["states"])
+    on_worst = metric_worst(sc_on["states"], "min_clearance_above_query_m")
+    on_clean = (bool(on_firsts) and on_firsts[0]["kind"] == "ccd"
+                and on_firsts[0]["gap_m"] > 0.0 and on_worst >= -PEN_BAR_M)
+    require(on_clean, "f04_fb1_premature",
+            {"first_contact": on_firsts[0] if on_firsts else None,
+             "worst_clearance_m": on_worst})
+    bit = (bool(firsts) and firsts[0]["gap_m"] < 0.0 and worst < -PEN_BAR_M
+           and on_clean)
     add("FB1_ccd_off_ground_tunnels",
         {"first_contact": firsts[0] if firsts else None,
-         "worst_clearance_m": worst, "pen_bar_m": PEN_BAR_M}, bit)
+         "worst_clearance_m": worst, "pen_bar_m": PEN_BAR_M,
+         "clean_control": {"run": "G_HIGH same trajectory, CCD on",
+                           "first_contact": on_firsts[0] if on_firsts else None,
+                           "worst_clearance_m": on_worst,
+                           "pre_overlap_clean": on_clean,
+                           "guard": "f04_fb1_premature"}}, bit)
     # FB2: CCD-off trunk control tunnels (Amendment A2 form: late detection
     # after mid-surface overlap; pass-through is impossible at the frozen speed)
     sc = scenario_t_cross(lc, trunk_assets, ccd=False)
     firsts = episode_firsts(sc["states"])
     worst = metric_worst(sc["states"], "min_radial_clearance_m")
+    # clean control: the shipped CCD-on trunk run is pre-overlap clean
+    t_clean = scenario_t_cross(lc, trunk_assets, ccd=True)
+    t_clean_firsts = episode_firsts(t_clean["states"])
+    t_clean_worst = metric_worst(t_clean["states"], "min_radial_clearance_m")
+    t_clean_ok = (bool(t_clean_firsts)
+                  and t_clean_firsts[0]["kind"] == "ccd"
+                  and t_clean_firsts[0]["gap_m"] > 0.0
+                  and t_clean_worst >= -PEN_BAR_M)
+    require(t_clean_ok, "f04_fb2_premature",
+            {"first_contact": t_clean_firsts[0] if t_clean_firsts else None,
+             "worst_radial_clearance_m": t_clean_worst})
     crossed = any(v[0] > trunk_assets["base"][0] + trunk_assets["radius"]
                   for st in sc["states"]
                   for v in st["probe_vertices_clearing_m"])
     pen_at_detection = (-firsts[0]["gap_m"]) if firsts else 0.0
     bit = bool(firsts) and firsts[0]["gap_m"] < 0.0 \
-        and pen_at_detection > PEN_BAR_M
+        and pen_at_detection > PEN_BAR_M and t_clean_ok
     add("FB2_ccd_off_trunk_tunnels",
         {"first_contact": firsts[0] if firsts else None,
          "penetration_at_detection_m": pen_at_detection,
          "pen_bar_m": PEN_BAR_M,
          "worst_radial_clearance_m": worst,
          "passed_through_far_side": crossed,
+         "clean_control": {"run": "T_CROSS clean, CCD on",
+                           "first_contact": t_clean_firsts[0]
+                           if t_clean_firsts else None,
+                           "worst_radial_clearance_m": t_clean_worst,
+                           "pre_overlap_clean": t_clean_ok,
+                           "guard": "f04_fb2_premature"},
          "form": "A2: late detection after mid-surface overlap (M06 X4 "
                  "control signature); 0.02 m/tick < 0.074 m trunk diameter "
                  "so full pass-through is geometrically impossible here"}, bit)
-    # FB3: ghost ground vertex
+    # FB3: ghost ground vertex. Clean control: the unperturbed G_HIGH run
+    # (sc_on, FB1's control) rests inside the frozen window and stops.
     sc = scenario_g_high(lc, {"bundle": bundle}, surface, ccd=True,
                          ghost_vertex=True, vertex_raise_m=0.01)
     probe = sc["probe"]
     seps = [v[2] - surface.height_at(v[0], -v[1]) for v in probe.vertices]
     band = site_band(bundle, 0.0, 0.0)
     sep = min(seps)
-    bit = not (REST_LO_M <= sep <= REST_HI_M + band)
+    on_probe = sc_on["probe"]
+    on_seps = [v[2] - surface.height_at(v[0], -v[1]) for v in on_probe.vertices]
+    clean_rest_ok = (REST_LO_M <= min(on_seps) <= REST_HI_M + band
+                     and lc_vlen(on_probe.velocity) <= SPEED_BAR_M_S)
+    require(clean_rest_ok, "f04_fb3_premature",
+            {"min_corner_separation_m": min(on_seps),
+             "window_m": [REST_LO_M, REST_HI_M + band]})
+    bit = (not (REST_LO_M <= sep <= REST_HI_M + band)) and clean_rest_ok
     add("FB3_ghost_support_ground",
         {"min_corner_separation_m": sep,
-         "window_m": [REST_LO_M, REST_HI_M + band]}, bit)
-    # FB4: ghost trunk vertex (radially inward 1 cm)
-    sc = scenario_t_cross(lc, trunk_assets, ccd=True, ghost=True)
+         "window_m": [REST_LO_M, REST_HI_M + band],
+         "clean_control": {"run": "G_HIGH clean (FB1 control run)",
+                           "min_corner_separation_m": min(on_seps),
+                           "window_m": [REST_LO_M, REST_HI_M + band],
+                           "in_window_and_stopped": clean_rest_ok,
+                           "guard": "f04_fb3_premature"}}, bit)
+    # FB4: ghost trunk vertex (radially inward 1 cm; F03 B1 form). The metric
+    # is P1's own scope: per-vertex radial gap of the collision body against
+    # the analytic cylinder -- which IS the render array (P1 exact equality) --
+    # with the two cap-centre vertices excluded (i >= CENTER_VERTEX_BASE; they
+    # sit ON the axis by construction, exactly as identity_checks excludes
+    # them). Without that scope the clean body already reads 0.037 (cap
+    # centres) and the arm fires with no ghost. House standard (F03 heritage
+    # premature guard): the clean control runs first and the bite is credited
+    # only if it passes.
+    def p1_scoped_radial_gap(vertices):
+        worst = 0.0
+        for i, v in enumerate(vertices):
+            if i >= CENTER_VERTEX_BASE:
+                continue
+            d = math.hypot(v[0] - base[0], v[1] - base[1])
+            worst = max(worst, abs(d - radius))
+        return worst
+
     base = trunk_assets["base"]
     radius = trunk_assets["radius"]
-    worst = 0.0
-    for v in sc["body"].vertices:
-        d = math.hypot(v[0] - base[0], v[1] - base[1])
-        worst = max(worst, abs(d - radius))
-    bit = worst > TRUNK_RADIAL_TOL_M
+    clean_body = trunk_body(lc, trunk_assets["groups"],
+                            trunk_assets["vertices"], "trunk_01.lateral")
+    clean_worst = p1_scoped_radial_gap(clean_body.vertices)
+    require(clean_worst <= TRUNK_RADIAL_TOL_M, "f04_fb4_premature",
+            clean_worst)
+    sc = scenario_t_cross(lc, trunk_assets, ccd=True, ghost=True)
+    worst = p1_scoped_radial_gap(sc["body"].vertices)
+    bit = worst > TRUNK_RADIAL_TOL_M and clean_worst <= TRUNK_RADIAL_TOL_M
     add("FB4_ghost_support_trunk",
         {"worst_vertex_radial_gap_m": worst,
-         "declared_tolerance_m": TRUNK_RADIAL_TOL_M}, bit)
+         "declared_tolerance_m": TRUNK_RADIAL_TOL_M,
+         "clean_control": {"metric_scope": "P1 form: cap-centre vertices "
+                           "(i >= %d) excluded" % CENTER_VERTEX_BASE,
+                           "worst_vertex_radial_gap_m": clean_worst,
+                           "within_tolerance":
+                           clean_worst <= TRUNK_RADIAL_TOL_M,
+                           "guard": "f04_fb4_premature"}}, bit)
     # FB5: forced interpenetration (probe corner starts 1 cm inside the solid)
     body = trunk_body(lc, trunk_assets["groups"], trunk_assets["vertices"],
                       "trunk_01.lateral")
@@ -1547,10 +1673,15 @@ def run_bites(lc, bundle, surface, trunk_assets):
     probe = box_probe(lc, "probe_FB5", forced_centre, (0.0, 0.0, 0.0))
     records, ledger = lc.solve_tick([body, probe], ccd_enabled=True)
     pen = -trunk_clearance_m(probe, base, trunk_assets["radius"])
-    bit = pen > PEN_BAR_M and len(records) > 0
+    require(t_clean_ok, "f04_fb5_premature", t_clean_worst)
+    bit = pen > PEN_BAR_M and len(records) > 0 and t_clean_ok
     add("FB5_forced_interpenetration",
         {"measured_penetration_m": pen, "pen_bar_m": PEN_BAR_M,
          "contact_records": len(records),
+         "clean_control": {"run": "T_CROSS clean, CCD on (FB2 control run)",
+                           "worst_radial_clearance_m": t_clean_worst,
+                           "no_interpenetration": t_clean_worst >= -PEN_BAR_M,
+                           "guard": "f04_fb5_premature"},
          "placement": "nearest box corner forced 0.01 m inside the analytic "
                       "cylinder (box half 0.1 m > trunk radius 0.037 m, so "
                       "axis-centring would place no vertex inside)"}, bit)
@@ -1585,6 +1716,13 @@ def run_bites(lc, bundle, surface, trunk_assets):
         {"perturbed_render_vertices": list(hit_verts), "raised_m": 0.01,
          "ray_hit_triangle_vertices": list(hit_verts),
          "marker_xy": [mx, mz],
+         "clean_control": {"run": "classify on the UNPERTURBED render, "
+                           "same ray and marker",
+                           "outcome": rec_true["outcome"],
+                           "visible_exact": rec_true["outcome"]
+                           == "VISIBLE_EXACT",
+                           "guard": "bit requires the clean control "
+                                    "VISIBLE_EXACT"},
          "marker_outcome_true_render": rec_true["outcome"],
          "marker_outcome_decoupled_render": rec["outcome"],
          "decouple_note": rec.get("note", ""),
@@ -1592,7 +1730,9 @@ def run_bites(lc, bundle, surface, trunk_assets):
                  "VISIBLE_EXACT is the discriminator; the marker is at a "
                  "cell interior because the spawn point is a degenerate "
                  "grid node (F01 A3)"}, bit)
-    # FB7: off-frame probe subject
+    # FB7: off-frame probe subject. Clean control: an in-frame trunk subject
+    # in the SAME view classifies VISIBLE_EXACT (the classifier is not
+    # vacuously OFF_FRAME).
     cam2 = Camera(VIEW_SPECS["V2_seam_closeup"])
     fwd = vnorm(vsub(cam2.target, cam2.position))
     point = [-20.0, 0.9, -20.0]
@@ -1602,9 +1742,18 @@ def run_bites(lc, bundle, surface, trunk_assets):
     m = {"point": point, "surface": "monkey_clearing_boundary_posts",
          "kind": "identity"}
     rec = classify_marker(mesh2_for_fb7(bundle, trunk_assets), cam2, m)
-    bit = (dot <= 0.0 or off_axis > 90.0) and rec["outcome"] == "OFF_FRAME"
+    sp_on = trunk_subject_probe(cam2, trunk_assets, 0.3)
+    rec_on = classify_marker(mesh2_for_fb7(bundle, trunk_assets), cam2, sp_on)
+    on_clean7 = rec_on["outcome"] == "VISIBLE_EXACT"
+    require(on_clean7, "f04_fb7_premature", rec_on)
+    bit = ((dot <= 0.0 or off_axis > 90.0)
+           and rec["outcome"] == "OFF_FRAME" and on_clean7)
     add("FB7_off_frame_probe_subject",
-        {"off_axis_deg": off_axis, "outcome": rec["outcome"]}, bit)
+        {"off_axis_deg": off_axis, "outcome": rec["outcome"],
+         "clean_control": {"run": "trunk_subject_probe in the same V2 view",
+                           "outcome": rec_on["outcome"],
+                           "visible_exact": on_clean7,
+                           "guard": "f04_fb7_premature"}}, bit)
 
     for row in bites:
         require(row["bites"], "f04_falsifier_did_not_bite", row["bite"])
@@ -1863,25 +2012,6 @@ def build():
         c1, d1, _ = render_static(mesh, cam, diagnostic=True)
         bases[vname] = {"clean": (c0, d0), "diagnostic": (c1, d1)}
 
-    ROW_PLAN = [
-        ("V1_clearing_overview", "diagnostic",
-         [("G_HIGH", None), ("T_CROSS", None), ("SEAM_HIGH", None),
-          ("G_SEAM_REST", range(TICKS_G_SEAM_REST - 5,
-                                TICKS_G_SEAM_REST)),
-           ("TRUNK_TOP_REST", range(TICKS_TRUNK_TOP_REST - 5,
-                                    TICKS_TRUNK_TOP_REST))]),
-        ("V1_clearing_overview", "clean",
-         [("G_HIGH", None), ("T_CROSS", None), ("SEAM_HIGH", None),
-          ("G_SEAM_REST", range(TICKS_G_SEAM_REST - 5,
-                                TICKS_G_SEAM_REST)),
-           ("TRUNK_TOP_REST", range(TICKS_TRUNK_TOP_REST - 5,
-                                    TICKS_TRUNK_TOP_REST))]),
-        ("V2_seam_closeup", "diagnostic", [("SEAM_HIGH", None)]),
-        ("V2_seam_closeup", "clean", [("SEAM_HIGH", None)]),
-        ("V3_opposite_oblique", "diagnostic", [("T_CROSS", None)]),
-        ("V3_opposite_oblique", "clean", [("T_CROSS", None)]),
-    ]
-
     def row_states(plan_row):
         vname, mode, segs = plan_row
         out = []
@@ -1924,16 +2054,11 @@ def build():
             "f04_video_probe_mismatch", probe)
 
     # committed stills: the impact-tick frame of each row
-    still_of = {
-        "V1_clearing_overview": ("G_HIGH", None),   # first-contact tick
-        "V2_seam_closeup": ("SEAM_HIGH", None),     # first trunk-contact tick
-        "V3_opposite_oblique": ("T_CROSS", None),
-    }
     still_hashes = {}
     row_still_state = {}
     for vname, mode in [(v, m) for v in VIEW_ORDER
                         for m in ("diagnostic", "clean")]:
-        sname, tick = still_of[vname]
+        sname, tick = STILL_OF[vname]
         sts = scenarios[sname]["states"]
         i = tick if tick is not None else next(
             idx for idx, st in enumerate(sts) if st["contacts"])
@@ -2118,15 +2243,34 @@ def build():
         } for name, sc in scenarios.items()},
         "seam_composition": {
             "phase_A": "ballistic, no static parts, clearance measured",
-            "phase_B": "trunk_01.lateral instantiated",
+            "phase_B": "trunk_01.lateral instantiated (ground-oracle "
+                       "clearance recorded per phase-B state as the "
+                       "composition disclosure)",
+            "metric_law": "phase metrics are extracted per phase via "
+                          "phase_metric(states, phase, key) -- never by "
+                          "scanning heterogeneous states",
+            "phase_state_counts": {
+                "A": sum(1 for st in scenarios["SEAM_HIGH"]["states"]
+                         if st.get("phase") == "A"),
+                "B": sum(1 for st in scenarios["SEAM_HIGH"]["states"]
+                         if st.get("phase") == "B")},
+            "per_phase_min_clearance_above_query_m": {
+                "A": phase_metric(scenarios["SEAM_HIGH"]["states"], "A",
+                                  "min_clearance_above_query_m"),
+                "B": phase_metric(scenarios["SEAM_HIGH"]["states"], "B",
+                                  "min_clearance_above_query_m")},
+            "measured_phase_B_min_clearance_above_query_m":
+                phase_metric(scenarios["SEAM_HIGH"]["states"], "B",
+                             "min_clearance_above_query_m"),
+            "measured_phase_B_min_radial_clearance_m":
+                phase_metric(scenarios["SEAM_HIGH"]["states"], "B",
+                             "min_radial_clearance_m"),
             "unsupported_sink_disclosure":
                 "phase B runs without the ground body; the probe's post-"
                 "arrest fall inside the frozen tail is a composition "
-                "artifact, measured below and excluded from the "
-                "interpenetration bar by the declared instantiation scope",
-            "measured_phase_B_min_clearance_above_query_m":
-                metric_worst(scenarios["SEAM_HIGH"]["states"],
-                             "min_clearance_above_query_m"),
+                "artifact, measured per phase beside this record and "
+                "excluded from the interpenetration bar by the declared "
+                "instantiation scope",
         },
         "capture": {
             "profile_id": profile["id"], "kind": profile["kind"],
@@ -2153,20 +2297,26 @@ def build():
 
 
 def verify_determinism():
-    """P8: two full builds; every evidence artifact and the video byte-identical."""
+    """P8: two full builds; every evidence artifact and the video byte-identical.
+    The record's own output (determinism.json) is excluded from the compared
+    set, so the artifact count is independent of whether a previous verify
+    left a determinism.json behind."""
+    def snapshot():
+        return {p.name: sha_bytes(p.read_bytes())
+                for p in sorted(EVIDENCE.iterdir())
+                if p.is_file() and p.name != "determinism.json"}
+
     first = build()
-    snap = {p.name: sha_bytes(p.read_bytes())
-            for p in sorted(EVIDENCE.iterdir()) if p.is_file()}
+    snap = snapshot()
     snap["__video__"] = first["capture"]["video_sha256"]
     second = build()
-    snap2 = {p.name: sha_bytes(p.read_bytes())
-             for p in sorted(EVIDENCE.iterdir()) if p.is_file()}
+    snap2 = snapshot()
     snap2["__video__"] = second["capture"]["video_sha256"]
     identical = snap == snap2
     require(identical, "f04_nondeterministic",
             {k for k in set(snap) | set(snap2) if snap.get(k) != snap2.get(k)})
     record = {"prediction": "P8_determinism",
-              "artifacts": len(snap), "identical": True,
+              "artifacts": len(snap) - 1, "identical": True,
               "hashes": snap,
               "video_sha256": snap["__video__"]}
     (EVIDENCE / "determinism.json").write_bytes(canonical(record))

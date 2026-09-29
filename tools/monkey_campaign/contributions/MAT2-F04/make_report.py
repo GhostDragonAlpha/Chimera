@@ -38,7 +38,8 @@ def main():
       + "), the collision bodies are element-identical to the rendered assets "
       "(exact array equality; trunk radial gap "
       + fmt(checks["p1_tied_asset_identity"]["trunk"]["worst_radial_gap_to_analytic_m"], 3)
-      + " m), all seven falsifier arms bite fail-first, and the "
+      + " m), all seven falsifier arms bite fail-first, each against its own "
+      "passing clean control, and the "
       "contact-motion capture is structurally valid under the REGISTRY "
       "profile with a single gate-bound video artifact and committed stills. "
       "Visual acceptance itself belongs to the independent visual reviewer.")
@@ -188,8 +189,10 @@ def main():
         w("| " + b["bite"] + " | " + str(b["bites"]) + " | `" + obs + "` |")
     w("")
     w("Full observed records in evidence/bites.json inside checks.json "
-      "(falsifier_bites). A non-biting arm refuses the whole build "
-      "(`f04_falsifier_did_not_bite`).")
+      "(falsifier_bites). Every arm carries its own clean control and the "
+      "bite is credited only when that control passes (F03 heritage "
+      "premature guards, named f04_fb*_premature). A non-biting arm refuses "
+      "the whole build (`f04_falsifier_did_not_bite`).")
     w("")
     w("## 8. Capture (REGISTRY profile contact-motion, kind motion)")
     w("")
@@ -213,6 +216,11 @@ def main():
       "impact tick): " + "; ".join(
           k.split("_", 1)[0] + "/" + k.split("_", 1)[1] + " = " + v[:16]
           + "..." for k, v in cap["stills"].items()) + ".")
+    w("- stills/video row order: each committed still is pixel-identical to "
+      "its decoded video frame under the identity transform ONLY (the "
+      "capture-gate test evaluates explicit identity/vflip/hflip transforms "
+      "and requires identity to match with zero differing pixels -- the "
+      "video plays the bound camera convention, no flip).")
     w("- visual_capture.validate_manifest: structurally_valid="
       + str(val["validate_manifest"]["structurally_valid"]) + " ("
       + val["validate_manifest"]["mode"] + ", profile_id "
@@ -249,10 +257,16 @@ def main():
       + "); a static seam solve (probe supported by the ground WHILE "
       "touching the trunk) is NOT demonstrated and is recorded as an "
       "unresolved upstream component for the integrator.")
+    seam = checks["seam_composition"]
     w("- SEAM_HIGH's trunk phase runs without the ground body; the "
-      "post-arrest unsupported sink inside the frozen tail is measured (min "
+      "post-arrest unsupported sink inside the frozen tail is measured PER "
+      "PHASE (never by scanning heterogeneous states): phase-B min ground "
       "clearance "
-      + fmt(checks["seam_composition"]["measured_phase_B_min_clearance_above_query_m"], 4)
+      + fmt(seam["measured_phase_B_min_clearance_above_query_m"], 4)
+      + " m (phase-B min radial clearance to the trunk "
+      + fmt(seam["measured_phase_B_min_radial_clearance_m"], 4)
+      + " m; phase-A min ground clearance "
+      + fmt(seam["per_phase_min_clearance_above_query_m"]["A"], 4)
       + " m) and disclosed as a composition artifact, excluded from the "
       "interpenetration bar by the declared instantiation scope.")
     w("- CPU-only (stdlib + ffmpeg encode); no engine run, no native change, "
@@ -264,10 +278,13 @@ def main():
     w("")
     w("## 11. Exact commands (from this directory, Python 3.14, CPU only)")
     w("")
-    w("    python -B implementation.py bites    # 7/7 fail-first")
+    w("    python -B implementation.py bites    # 7/7 fail-first, each with "
+      "a passing clean control")
     w("    python -B implementation.py build    # receipt + frames + video")
     w("    python -B implementation.py verify   # P8 double-run determinism")
     w("    python -B make_report.py             # this file, from receipts")
+    w("    python -B lint_report_numbers.py --selftest")
+    w("                                         # report numbers traceable")
     w("    python -B -m unittest test_implementation -v")
     w("")
     (HERE / "report.md").write_text("\n".join(lines), encoding="utf-8")
