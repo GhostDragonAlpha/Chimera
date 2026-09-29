@@ -306,3 +306,26 @@ physical law is invented here, and none is needed by the done_when.
   projection (M03/M05 keep its work in R). Pinned anchors remain exactly
   -(their received contact impulses). P-boundary-reactions is unchanged.
   Nothing else changes.
+
+## Amendment A2 (frozen after Amendment A1, BEFORE implementation and before any measurement)
+
+- Geometry corrections from honest derivation of the frozen scaffold
+  compliance (no measurement has run): with XPBD compliance 1e-5 m/N the
+  membrane is a stiff pressurized shell — it CANNOT inflate 7 mm to close
+  the frozen 0.007 m membrane-to-plate gap, so that scenario would never
+  make contact. Replaced, per the card's own visible result ("A membrane
+  pressing on a loose object moves both through the same solved
+  interaction"):
+  (i) the plate's rest midsurface plane moves to x = 0.062 m so the initial
+  membrane-to-plate gap is EXACTLY 0 (touching within the declared margin);
+  the pressure resultant of the inflated membrane transmits through the
+  M06 contact from tick 1;
+  (ii) the plate's midsurface z-span is [0.001, 0.121] m so its initial
+  ground gap is exactly 0 (the freeze's [0.002, 0.122] left a 1 mm drop);
+  (iii) declared consequence: the membrane receives the -x contact reaction
+  and slides on its own ground pad (declared pair friction (0.5, 0.35),
+  threshold ~0.069 N, below the transmitted pressure resultant), while the
+  plate slides +x against its ground friction and the Maxwell mount — both
+  bodies move through the same solved interaction, which is exactly the
+  frozen X1 claim. The X1/X3 frozen numbers and windows are unchanged.
+  Nothing else changes.
