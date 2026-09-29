@@ -329,3 +329,33 @@ physical law is invented here, and none is needed by the done_when.
   bodies move through the same solved interaction, which is exactly the
   frozen X1 claim. The X1/X3 frozen numbers and windows are unchanged.
   Nothing else changes.
+
+## Amendment A3 (frozen before the frozen experiments X1-X3 were executed or reported)
+
+Provenance, stated plainly: after the A2 commit, implementation smoke/debug
+runs (single-component, up to 60 ticks) were run to make the integrated step
+execute at all; no frozen experiment (X1 two-component 80-tick run, X2
+independence comparison, X3 refinement chain) had been executed when this
+amendment was frozen. The debugging surfaced one missing LEDGER term (not a
+change to any frozen experiment, prediction, window or threshold):
+
+- The XPBD projection's energy exchange (its kinetic-energy redefinition
+  plus its scaffold-strain change per substep) is RECORDED as a first-class
+  ledger term `projection_exchange_j` and enters the tick identity
+  explicitly, replacing the A1 sentence that kept it inside the measured
+  residual (the M03/M05 convention). Declared tick identity:
+  E(t) - E(t-1) = W_press + W_grav + W_mat_on_plate - W_contact_ke_removed
+                  + projection_exchange + R,
+  with R now holding only the small declared Maxwell driver gap
+  (impulse-vs-exponential account, J^2/(2*m_plate) scale) and round-off;
+  |R| stays under the A1 bound. The momentum ledger already recorded the
+  projection delta (A1 (iii)); this makes the energy side equally explicit.
+  The contact term's sign is now written correctly as MINUS the measured
+  contact KE removal (A1's turnover definition is unchanged).
+- The contact Gauss-Seidel accumulation covers EVERY applied impulse of
+  EVERY pass (the ledger and the reciprocity check must cover all applied
+  impulses, not only the converged pass's records; the per-tick contact
+  records remain those of the converged pass).
+- M06's solve_contact returns tuple velocities; the world's adapters
+  normalize them back to declared numpy arrays (write-through typing, not a
+  law change). Nothing else changes.
