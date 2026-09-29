@@ -1,0 +1,10 @@
+{
+ "capture_sha256": "cfc58c5eced1960b2b2c4641662d25baa65f8e8cfeb315b4a411583c0cbcdab5",
+ "run_id": "mat2-m05-interface-visual-20260928-cfc58c5e",
+ "subject_sha256": "c09bdf0564d152fa8b9a41489bd874fd0570f75e40ed3ce848f4c474fd0320c6",
+ "task_id": "M05",
+ "tick_interval": [
+  0,
+  23
+ ]
+}

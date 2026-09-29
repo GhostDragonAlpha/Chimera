@@ -1,0 +1,25 @@
+{
+ "capture_kind": "video",
+ "frame_count": 24,
+ "limits": "Structural camera-metadata validation only; independent image/physics review remains mandatory.",
+ "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "profile_id": "material",
+ "profile_source": {
+  "card_path": "kanban.cards.MAT2-M05.spec.ontology_qualification.task.verification_profile",
+  "kind": "motion",
+  "profile_id": "material",
+  "read_mode": "sqlite3 mode=ro (read-only)",
+  "registry": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3",
+  "registry_criteria_sha256": "0a93a04afbb63c9767fd0e2c988c33d4d40742e03a1dd613bf93d0e9a9f3d461"
+ },
+ "structurally_valid": true,
+ "subject_path": "tools/monkey_campaign/contributions/MAT2-M05/interface_state.json",
+ "subject_sha256": "c09bdf0564d152fa8b9a41489bd874fd0570f75e40ed3ce848f4c474fd0320c6",
+ "trace_path": "tools/monkey_campaign/contributions/MAT2-M05/interface_trace.json",
+ "trace_sha256": "2e1a2f483f69c162af43e15e9800ab259b303492d466a85346238db01865d45e",
+ "validator": "tools/monkey_campaign/visual_capture.py validate_manifest",
+ "video_path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-M05\\45bc250a82894954b7f7cd61bfae410c\\capture\\capture\\capture_mat2_m05_interface_20260928.mkv",
+ "video_sha256": "cfc58c5eced1960b2b2c4641662d25baa65f8e8cfeb315b4a411583c0cbcdab5",
+ "view_count": 6,
+ "visual_acceptance": false
+}

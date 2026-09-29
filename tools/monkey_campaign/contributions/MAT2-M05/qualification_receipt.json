@@ -1,0 +1,378 @@
+{
+ "arrival": "arrival-3cb83ace592841a3a5ef7a8ab5757148",
+ "attempt": "45bc250a82894954b7f7cd61bfae410c",
+ "base_revision": "e62e3c43533d4b27b98cf14ed28099000ba8a827",
+ "check_count": 19,
+ "checks": [
+  {
+   "bound": "equal sha256 of canonical trace",
+   "check": "T8 determinism: replayed trace canonical digest equal",
+   "note": "no stochastic inputs anywhere; no seed needed, none used",
+   "observed": true,
+   "pass": true
+  },
+  {
+   "bound": "ratio <= 1 at all 24 ticks",
+   "check": "T9/T10 ledger: |R_tick| within the declared reservoir bound (A1 item 5) at every tick",
+   "note": "",
+   "observed": {
+    "violations": 0,
+    "worst_ratio": 0.5879024332716621,
+    "worst_tick": 20
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "net_force": "bitwise 0",
+    "torque_ratio": "<= 1 of pair_force*transverse_offset + 1e-14"
+   },
+   "check": "T7 per-tick reciprocity: summed interface force bitwise zero; torque within the derived couple bound (A2 item 2)",
+   "note": "",
+   "observed": {
+    "net_force_worst": 0.0,
+    "torque_worst_ratio": 0.9093979563719874,
+    "torque_worst_tick": 20
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "final_state": "loaded, no bond",
+    "gap_tick11_m": "[0.008, 0.020]",
+    "gap_tick13_m": "[0.015, 0.045]",
+    "max_penetration_m": ">= -0.012",
+    "max_speed_m_per_s": "<= 6.0",
+    "post_release_peak_m": "[0.025, 0.045]",
+    "transverse_anchor_offset_m": "<= 3e-3"
+   },
+   "check": "T9 dynamic bounds (A1 item 7 / A2 item 1)",
+   "note": "",
+   "observed": {
+    "final_bond_active": false,
+    "final_state": "loaded",
+    "gap_tick11_m": 0.012167282153309936,
+    "gap_tick13_m": 0.02375721793424375,
+    "max_penetration_m": -0.005906687350740087,
+    "max_speed_m_per_s": 3.8900985982271497,
+    "post_release_peak_m": 0.03015654948959102,
+    "transverse_anchor_offset_m": 2.040820545170689e-13
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "separation_m": ">= 0.005",
+    "tension_t7_t10_N": "strictly increasing, > 0"
+   },
+   "check": "T10 held-then-separated (A1 item 7): monotone-nonzero bond tension ticks 7-10; post-release peak exceeds release-tick gap by >= 5 mm",
+   "note": "",
+   "observed": {
+    "separation_m": 0.017989267336281083,
+    "tension_t7_t10_N": [
+     0.016910185875871897,
+     0.11060037403050005,
+     0.2637862552822935,
+     0.4698550142226976
+    ]
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "bond_force_n": "bitwise [0,0,0]",
+    "bond_stored_energy_j": 0.0,
+    "release_dissipation_identity": "within 1e-18 J"
+   },
+   "check": "T4 release law: bond force and stored energy bitwise 0.0 at every post-release tick; E_diss_release == U at the release tick",
+   "note": "",
+   "observed": {
+    "bond_u_prev_tick_j": 0.0018396977865850947,
+    "e_diss_release_j": 0.0018396977865850947,
+    "ticks_checked": 13
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "bond_count": 1,
+    "contact_count": 1,
+    "matter_count": 3,
+    "owner_count": 3,
+    "port_count": 4,
+    "reference_count": 1,
+    "region_count": 2,
+    "total_mass_kg": 0.072
+   },
+   "check": "T0 M01 gate, revision 1 (bound state document, UNMODIFIED validator)",
+   "note": "",
+   "observed": {
+    "bond_count": 1,
+    "contact_count": 1,
+    "matter_count": 3,
+    "owner_count": 3,
+    "port_count": 4,
+    "reference_count": 1,
+    "region_count": 2,
+    "total_mass_kg": 0.07200000000000001
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "bond_count": 0,
+    "contact_count": 1,
+    "state": "loaded"
+   },
+   "check": "T4/T0 release removes the bond relation; contact persists (M01 validation of revision 2 at the final run geometry)",
+   "note": "",
+   "observed": {
+    "bond_count": 0,
+    "contact_count": 1,
+    "state": "loaded"
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "bond_count_containment": 0,
+    "bond_count_overlap": 0,
+    "guard": "auto_bond_refused"
+   },
+   "check": "T5 no automatic bonding: overlap and containment keep bond_count 0; the explicit guard refuses auto_bond_refused",
+   "note": "",
+   "observed": {
+    "bond_count_containment": 0,
+    "bond_count_overlap": 0,
+    "guard_raised": true,
+    "regions_containment": 3
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "total_area_formula": "A_rest(a) + A_rest(b) - A_iface",
+    "total_mass_kg": 0.072
+   },
+   "check": "T6 once-only inventory: shared face counted once; mass via owner/reference counted once",
+   "note": "",
+   "observed": {
+    "area_reference_m2": 0.1143456111604632,
+    "matter_rows": [
+     {
+      "mass_kg": 0.05,
+      "matter_id": "mat_a",
+      "owner_region": "body_a",
+      "role": "owner"
+     },
+     {
+      "mass_kg": 0.02,
+      "matter_id": "mat_b",
+      "owner_region": "body_b",
+      "role": "owner"
+     },
+     {
+      "mass_kg": 0.002,
+      "matter_id": "mat_iface",
+      "owner_region": "body_a",
+      "referenced_by": "body_b",
+      "role": "owner"
+     }
+    ],
+    "shared_face_area_m2": 0.0175,
+    "total_area_m2": 0.1143456111604632,
+    "total_mass_kg": 0.07200000000000001
+   },
+   "pass": true
+  },
+  {
+   "bound": "within 1e-18 / bitwise",
+   "check": "T1 geometry exactness: interface areas 0.0100/0.0075 m^2, shared face 0.0175 m^2, volumes A*0.16/3, normals bitwise +-x, anchors coincident at gap 0",
+   "note": "",
+   "observed": {
+    "anchors_bitwise_equal_at_gap0": true,
+    "iface_areas_m2": [
+     0.010000000000000002,
+     0.0075
+    ],
+    "normal_a0": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "normal_b0": [
+     -1.0,
+     0.0,
+     0.0
+    ],
+    "shared_face_area_m2": 0.0175,
+    "volume_a_m3": 0.0009333333333333333,
+    "volume_b_m3": 0.0009333333333333333
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "bitwise_negatives": true,
+    "net_force_n": 0.0,
+    "ratio": "4/3 within 1e-12",
+    "torque_nm": "<= 1e-15"
+   },
+   "check": "T2 contact reciprocity at declared penetration 0.5 mm: bitwise negatives, per-triangle ratio 4/3 (area scaling), net force bitwise zero, torque within 1e-15 N*m",
+   "note": "",
+   "observed": {
+    "bitwise_negatives": true,
+    "force_b_n": [
+     [
+      0.5000000000000006,
+      0.0,
+      0.0
+     ],
+     [
+      0.37500000000000033,
+      0.0,
+      0.0
+     ]
+    ],
+    "net_force_n": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "pressure_pa": 50.00000000000004,
+    "ratio": 1.3333333333333337,
+    "torque_worst_nm": 0.0
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "compression": "exact zeros",
+    "couple": "bitwise negatives",
+    "tension_N": "k_t*e exact"
+   },
+   "check": "T3 bond element laws: never-bound refuses; tension bitwise-exact; shear/twist couples bitwise-negative; energy identity; tension-only compression; release refuses twice",
+   "note": "",
+   "observed": {
+    "compression_exact_zeros": true,
+    "never_bound_refusal": true,
+    "tension_N_at_e_0.024": 1.4400000000000004,
+    "tension_exact_N": 1.44,
+    "twist_couple_Nm": 0.08000000000000002,
+    "u_tension_j": 0.01728,
+    "u_with_twist_0_1_rad_j": 0.02128000000000001
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "real": "bitwise zero at all post-release ticks",
+    "tamper": "residual >= 1e-3 N detected"
+   },
+   "check": "F1 hidden hinge after removal (card falsifier): stale bond force after release is detected by the bitwise-zero probe",
+   "note": "",
+   "observed": {
+    "real_post_release_worst_n": 0.0,
+    "tamper_post_release_worst_n": 1.5057568098713887
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "real": "bond_count 0 with no bind",
+    "tamper": "bond_count 1"
+   },
+   "check": "F2 spatial neighbor automatically bonded (card falsifier): the auto-bond defect (bond present with no bind call) is detected",
+   "note": "",
+   "observed": {
+    "bond_count_no_bind": 0,
+    "bond_count_tampered": 1
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "real": "net bitwise 0",
+    "tamper": ">= 1e-3 N"
+   },
+   "check": "F3 transfer not reciprocal: halving one side of the pair is detected by the bitwise-zero probe",
+   "note": "",
+   "observed": {
+    "net_real_n": 0.0,
+    "net_tampered_n": 0.43750000000000044
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "mass_shift_kg": 0.002,
+    "reown": "duplicate_matter_owner"
+   },
+   "check": "F4 shared face/mass double-counted: re-owning the shared matter trips duplicate_matter_owner; the reference double-count shifts the inventory by exactly +0.002 kg",
+   "note": "",
+   "observed": {
+    "reown_refusal": true,
+    "shift_observed_kg": 0.0020000000000000018,
+    "tampered_total_mass_kg": 0.07400000000000001
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "real_ratio": "4/3 within 1e-12",
+    "tamper_ratio": 1.0
+   },
+   "check": "F5 area-independent interface forces: equal per-triangle split breaks the 4/3 area ratio (detected by the same T2 probe)",
+   "note": "",
+   "observed": {
+    "real_ratio": 1.3333333333333337,
+    "tamper_ratio": 1.0,
+    "triangle_centroid_distance_m": 0.07453559924999298
+   },
+   "pass": true
+  },
+  {
+   "bound": {
+    "omitted_residual": "> 5% of E_diss_release"
+   },
+   "check": "F6 unaccounted energy: dropping E_diss_release exceeds the release account bound (5% of the released energy)",
+   "note": "",
+   "observed": {
+    "e_diss_release_j": 0.0018396977865850947,
+    "release_bound_j": 9.198488932925475e-05,
+    "residual_if_omitted_j": 0.0018396977861393606
+   },
+   "pass": true
+  }
+ ],
+ "criteria_sha256": "0a93a04afbb63c9767fd0e2c988c33d4d40742e03a1dd613bf93d0e9a9f3d461",
+ "determinism": {
+  "no_stochastic_inputs": true,
+  "replay_canonical_sha256": "6af3ec6effe95682cf0283e809c9be58c012337fc90169bda959193e3c43a24f",
+  "replay_equal": true,
+  "seed_used": null,
+  "trace_canonical_sha256": "6af3ec6effe95682cf0283e809c9be58c012337fc90169bda959193e3c43a24f"
+ },
+ "failed": [],
+ "falsifiers": [
+  "F1",
+  "F2",
+  "F3",
+  "F4",
+  "F5",
+  "F6"
+ ],
+ "limits": "Fixture results are fixtures; visual acceptance of the capture remains with the independent reviewer.",
+ "passed": 19,
+ "planning_id": "M05",
+ "preregistration": "PREREGISTRATION.md (this directory, corrections A1-A2 pre-receipt)",
+ "schema": "chimera.mat2_m05.qualification.v1",
+ "task": "MAT2-M05",
+ "upstream": {
+  "m01_validator": "tools/monkey_campaign/contributions/MAT2-M01/material_state.py (UNMODIFIED)",
+  "m01_validator_sha256": "b6b009713daa4b315c6b5cb43c7ad4e756123b50edcdd802eeebd55c6afd6c40",
+  "m03_module": "tools/monkey_campaign/contributions/MAT2-M03/pressure_membrane.py (UNMODIFIED)",
+  "m03_module_sha256": "3dd64f6465430380f1c0a53a95523c700cd51a6b1115e60f0df8afde2239c96e",
+  "m04_module": "tools/monkey_campaign/contributions/MAT2-M04/passive_response.py (style reference)"
+ }
+}
