@@ -49,7 +49,16 @@ from kernel_mirror import (N_VERT, P_WSG, P_SGIMPX, P_SGIMPY, P_SGIMPZ,   # noqa
                            P_SGIPX, P_SGIPY, P_SGIPZ, require)
 
 G_N = 6.674e-11
-BH_THETA = 0.5
+# Amendment A4 (2026-09-29, measurement-driven): theta=0.5 measures max
+# rel err 3.5e-2 (construction) / 5.0e-2 (post-stepping) against the
+# DECLARED 5e-3 window once aggregation actually engages - the pre-fix
+# traversal never aggregated (vacuous pos locals), so the window was
+# validated vacuously. Measured sweep on the standard 4-comp fixture:
+# 0.5 -> 3.51e-2 FAIL; 0.25 -> 1.04e-3 PASS (4.8x margin); <=0.175 ->
+# 2.62e-6 (the leaf-direct floor - aggregation stops contributing).
+# 0.25 is chosen because its error sits 400x ABOVE that floor: the
+# aggregator demonstrably works while the declared window is met.
+BH_THETA = 0.25
 BH_ERROR_WINDOW = 5e-3
 BH_NEAR_WINDOW = 1e-12
 PAD_CODE = 9223372036854775807              # int64 max (padding key)

@@ -63,9 +63,25 @@ def sha256_file(path):
     return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
 
 
+def _numpy_json_default(o):
+    """Numpy scalars reaching json (np.bool_ from == on numpy values,
+    np.floating/np.integer from kernel-adjacent arithmetic) serialize as
+    their plain counterparts. Only invoked for otherwise-unserializable
+    objects, so every receipt that serialized before stays byte-identical."""
+    if isinstance(o, np.bool_):
+        return bool(o)
+    if isinstance(o, np.integer):
+        return int(o)
+    if isinstance(o, np.floating):
+        return float(o)
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+
+
 def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(',', ':'),
-                      ensure_ascii=False, allow_nan=False).encode('utf-8')
+                      ensure_ascii=False, allow_nan=False,
+                      default=_numpy_json_default).encode('utf-8')
 
 
 def refuse_vacuous(a, b, code='vacuous_comparison_refused'):
