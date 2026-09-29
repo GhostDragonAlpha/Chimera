@@ -46,8 +46,11 @@ lambda_min(M) >= k_couple_min (authored requirement). Per port it derives
 k = 1.9634954084936207 N/m, lambda_min measured 6.135923e-06 N*m/rad vs closed form k*r^2/2
 (relative error 2.761e-16), algebraic matrix identity M == (k r^2/2)(I + n n^T) worst relative
 Frobenius error 1.039e-15, and records the REAL-PARAMETER OUTCOME: the declared patch at chosen
-detail does NOT meet the declared couple requirement (6.14e-06 << 0.8; sizing to meet it would
-need r = 4.766e-02 m) — recorded as `admitted: false`, honestly reinforcing "remain blocked".
+detail does NOT meet the declared couple requirement (6.14e-06 << 0.8; the document's
+`sizing_radius_to_meet_requirement_m` = 0.9027033336764101 m on every port is the radius that
+meets 0.8 N*m/rad via lambda_min = k*r^2/2 with k held at the declared patch stiffness
+kappa*A = 1.9634954084936207 N/m) — recorded as `admitted: false`, honestly reinforcing
+"remain blocked".
 The documented 40x20 um sliver counterexample (anchors [[0.02,1e-5,0],[-0.02,1e-5,0],
 [-0.02,-1e-5,0],[0.02,-1e-5,0]] m, k=80 N/m) measures lambda_min 8e-9 N*m/rad, is REJECTED at
 authored requirement 1.0 and ADMITTED at 1e-9 with consistent provenance (kappa 1e8 N/m^3,
@@ -100,9 +103,10 @@ A 8e-7 m^2).
   artifact; per-frame hashes in `sheet_layout.frame_files`).
 - `visual_capture.validate_manifest` returned `structurally_valid: true` (6 views, profile
   grasp, capture_kind video) BEFORE handoff; receipt `capture_validation_receipt.json`.
-- Implementer pixel inspection (not inferred from filenames): tick 10 approach (gap 44.7 mm
-  label, support `hook+carriage`), tick 100 hold A (patch disc + 3 rim anchors at the pinned
-  source-local position, Fpatch 0.0194 N arrow, strap T=0.180 N, support paths
+- Implementer pixel inspection (not inferred from filenames): tick 10 approach (gap 44.2 mm
+  label on frame_010.png, matching trace `replay_trace.json` ticks[10].approach_gap_m
+  0.044172774818681794 m, support `hook+carriage`), tick 100 hold A (patch disc + 3 rim anchors
+  at the pinned source-local position, Fpatch 0.0194 N arrow, strap T=0.180 N, support paths
   `['patch A','strap->A']`), tick 200 transfer (strap unbound, carriage carries, support
   `['hook+carriage']`), tick 262 bind B (T=0.180 N, support adds `patch B`/`strap->B`), tick 320
   post-release (`unsupported paths=[]`, load fallen, magenta release line at 296). Decoded video
