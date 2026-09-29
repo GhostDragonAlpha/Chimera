@@ -1,0 +1,133 @@
+{
+ "schema": "chimera.qualification_receipt.v1",
+ "task_id": "MAT2-A06",
+ "attempt_id": "d35796819ef74e6681f1bc6a5fd2ec9e",
+ "arrival_id": "arrival-6fa733ab10c745d580180fe59cd2565f",
+ "criteria_sha256": "31b38a12a8d7a1f28d6b5191e428bab4c11b7267649c549416d85225ee39ecbe",
+ "base_head": "c525b82c7c3ce0128565424764293a3c85811ab3",
+ "preregistration_commit": "c436b865d4173cd50e8a0ed5bf7a8289e540ef42",
+ "publication": "lead-serialized; worker never pushes (remote reported only)",
+ "done_when_clauses": [
+  {
+   "clause": "Every grasp-relevant endpoint and waypoint has an explicit approved body and role.",
+   "evidence": "attachment_ownership.json: 48 path records (13 grasp-relevant muscles; 17 on osim body hand), every row carries owner_body + role + approved_by osim pin; 6 A05 grasp endpoints (5 fingertips + palm anchor) with owner bodies and Captain-decision approval; validator checks P2/P3; mutant mapping honest (3 mapped / 14 pending_assembly_mapping, never defaulted).",
+   "verdict": "IMPLEMENTED (static ownership registry); runtime behavior out of scope for a static ownership card"
+  },
+  {
+   "clause": "Represent tissue-to-bone attachments explicitly;",
+   "evidence": "26 attachment records, one per muscle path endpoint (13 origins + 13 insertions, all insertions on hand), each with interface_id iface:tendon-<muscle>-{origin,insertion}, transfers=force, provenance explicit_declaration sha-pinned to the osim bytes; no attachment exists without an interface (M05 law).",
+   "verdict": "IMPLEMENTED"
+  },
+  {
+   "clause": "ontology containment and conventional rig parentage never silently create a mechanical bond.",
+   "evidence": "containment_edges (31) / attachments (26) / bonds (22) are disjoint relation lists (identity overlap refused); every bond provenance.kind=explicit_declaration (Captain decision A05-DIGIT-MUTATION-20260928); falsifiers T1/T1b: rig-parentage and containment promotions refuse bond_from_parentage_refused; separation check: dropping containment changes no bond/attachment digest and vice versa (B04 law generalized).",
+   "verdict": "IMPLEMENTED + FALSIFIED-PROOF (tamper refused)"
+  }
+ ],
+ "card_observation": {
+  "clause": "Do not reinterpret waypoints as attachment ports",
+  "evidence": "22 waypoint rows carry interface=None and bond=False, including 4 hand-body waypoints (abd_poll_longus idx4 P3, ext_carp_rad_brevis idx3, ext_digitorum idx3, ext_digiti idx3) that are ON the bone yet NOT attachments; tamper T3 (waypoint promoted to a port) refuses waypoint_is_not_attachment_port.",
+  "verdict": "HONOURED"
+ },
+ "calculation_contracts": [
+  {
+   "id": "C17",
+   "title": "Finite attachment mechanics",
+   "status": "OPEN INVENTORY (no new numerical result claimed)",
+   "reason": "required inputs (patch area/shape, areal stiffness, couple resistance, weights, frame) do not exist in the pinned sources (osim declares path points only); none invented; validator refuses any stiffness number (attachment_stiffness_unsourced, tamper probe BIT)",
+   "verification": "analytic/independent checks remain required when real parameters are pinned; synthetic lambda_min does not transfer"
+  }
+ ],
+ "verification_profile": {
+  "id": "anatomy",
+  "kind": "visible_static",
+  "source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-A06].spec.ontology_qualification.task.verification_profile (read-only sqlite; registry criteria_sha256 matches attempt criteria)"
+ },
+ "capture": {
+  "task_id": "A06",
+  "sheet": "capture/capture_mat2_a06_ownership_20260929.png",
+  "sheet_sha256": "3cea13a8ed67d31950367819e61fa403cd38eb6e49536d4259ba1a633c3babb0",
+  "state_binding": "attachment_ownership.json sha256 f1f0430772258e8449fc354841becf2f1869783399e63f3f145565b8d0b1041c on every row (view toggles preserve the physical state hash)",
+  "views": "6 rows = 3 profile views x diagnostic/clean; side/oblique view has two viewports per row",
+  "validate_manifest": {
+   "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+   "structurally_valid": true,
+   "visual_acceptance": false,
+   "profile_id": "anatomy",
+   "view_count": 6,
+   "capture_kind": "image",
+   "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+   "fired": [],
+   "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-A06].spec.ontology_qualification.task.verification_profile (read-only sqlite)",
+   "validated_profile_id": "anatomy",
+   "validated_profile_kind": "visible_static",
+   "capture_sha256": "3cea13a8ed67d31950367819e61fa403cd38eb6e49536d4259ba1a633c3babb0",
+   "registry_criteria_sha256": "31b38a12a8d7a1f28d6b5191e428bab4c11b7267649c549416d85225ee39ecbe"
+  },
+  "pixel_inspection": "all 6 rows visually inspected by the author at 1:1 and 3x zoom (labels legible, no clipping, clean rows diagnostics-free); independent pixel review remains mandatory and is NOT claimed"
+ },
+ "commands_and_observed": [
+  {
+   "cmd": "python -B attachment_ownership.py --emit --verify",
+   "observed": "wrote attachment_ownership.json sha256 f1f04307...; validate_document PASS (48 records, 17 hand-body, 26 endpoints, 22 waypoints, 26 attachments, 22 bonds, 31 containment, 3 mapped / 14 pending); separation check true/true"
+  },
+  {
+   "cmd": "python -B attachment_ownership.py --tamper-rig --tamper-containment --tamper-unowned --tamper-role --tamper-waypoint --tamper-stiffness",
+   "observed": "all 6 probes BIT with the exact named refusals: bond_from_parentage_refused x2, unowned_endpoint, unowned_role, waypoint_is_not_attachment_port, attachment_stiffness_unsourced"
+  },
+  {
+   "cmd": "python -B -m unittest test_attachment_ownership",
+   "observed": "Ran 22 tests ... OK (P1-P8, T1-T6, byte determinism, emitted==build)"
+  },
+  {
+   "cmd": "python -B capture_ownership.py (run twice)",
+   "observed": "byte-identical PNG both runs: sha256 3cea13a8ed67d31950367819e61fa403cd38eb6e49536d4259ba1a633c3babb0; validate_manifest structurally_valid=True profile_id anatomy capture_kind image view_count 6; camera quaternion self-test asserted"
+  }
+ ],
+ "falsifier_proofs": {
+  "T1_rig_parentage_bond": "BIT bond_from_parentage_refused:bond.rig_tamper.anchor_firstmc:rig_parentage",
+  "T1b_containment_attachment": "BIT bond_from_parentage_refused:attach.containment_tamper",
+  "T2_unowned": "BIT unowned_endpoint:path.abd_poll_longus.0 (+ unowned_role variant)",
+  "T3_waypoint_port": "BIT waypoint_is_not_attachment_port:path.abd_poll_longus.3",
+  "T4_owner_default": "BIT owner_default_refused (resolve_owner refuses None/empty owner)",
+  "T5_wrong_pin": "BIT live_source_hash_mismatch (non-pinned input refused)",
+  "T6_stiffness_claim": "BIT attachment_stiffness_unsourced:attach.abd_poll_longus.origin"
+ },
+ "dependencies": {
+  "MAT2-A03": {
+   "head": "775d09dea53051d28c84b197bdb9ec58a5d4efd4",
+   "use": "ulna correspondence context; osim stays an independent unmerged reference (with B04)"
+  },
+  "MAT2-A05": {
+   "head": "a4fdaaa721f14ec085768bf5dcff2c6834a9abeb",
+   "use": "mutant hand structure record (grasp endpoints, bonds, frame); structure sha 48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649"
+  },
+  "MAT2-M05": {
+   "head": "cadaabc6ae0522c2530ce6fa090f07725d19a25f",
+   "use": "bonds only through identified interfaces; auto-bond refusal law"
+  },
+  "MAT2-B04": {
+   "head": "ba24f78622bbf5e1e0e4338187e7889b7da221f5",
+   "use": "containment/bond disjoint relation lists; separation check pattern"
+  }
+ },
+ "honest_limitations": [
+  "static ownership registry; no runtime/dynamic claim (the profile is visible_static; runtime phases remain pending, never passed by a fixture)",
+  "osim remains an independent unmerged reference (B04); only 3 A05-recorded anchors carry mutant mappings; 14 hand-body points pending_assembly_mapping",
+  "C17 open: no attachment patch/stiffness numbers exist in pinned sources; none invented",
+  "capture is a 2D orthographic PIL projection; validate_manifest is structural only; author pixel inspection recorded but independent visual review remains mandatory",
+  "Schutte1993Muscle_Deprecated path-structural roles; no wrapping surfaces declared for the 13 muscles (inventoried absent)"
+ ],
+ "artifact_sha256": {
+  "PREREGISTRATION.md": "442b072234ac56c1be6ed43573c12a6b040d844a120d8d6c500dd9b677877242",
+  "attachment_ownership.py": "7c9a50900aaf74b786b19b3830f373b648c8dca15e51d0809e72c7abd02797a1",
+  "test_attachment_ownership.py": "9fcc62331707aa322e31da69df04e503b3241389e38f936a58c2cb4b99d7d984",
+  "attachment_ownership.json": "f1f0430772258e8449fc354841becf2f1869783399e63f3f145565b8d0b1041c",
+  "capture_ownership.py": "534e40b236299dac7c20720333696400a590b0d23e82d6fdc56aada491733408",
+  "capture/capture_mat2_a06_ownership_20260929.png": "3cea13a8ed67d31950367819e61fa403cd38eb6e49536d4259ba1a633c3babb0",
+  "evidence/cameras.json": "15af7278e83385d334e344333f7732d4674ffd519151f5f8bcef954c52dbe75e",
+  "evidence/capture_manifest.json": "8588656382ec2543dafc7cb0d0d546a75b9d6a042e6338d18642e9d8c61a72da",
+  "evidence/capture_context.json": "667c89c2473efe77dbc268bd8fd29fac4de59c5ab54c3d2dca9803f1c69672a5",
+  "evidence/validation_receipt.json": "e4184177eb9c836babc77be5f9d4e323bed023133551eb3f15d116e99eea5309"
+ }
+}
