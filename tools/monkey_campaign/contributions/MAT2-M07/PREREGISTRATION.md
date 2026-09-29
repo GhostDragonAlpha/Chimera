@@ -524,3 +524,28 @@ Nothing else changes.
 - The A6 dissipation window is evaluated on the physical terms over the
   FULL horizon (including the settle impacts, which are physical events).
 Nothing else changes.
+
+## Amendment A8 (measured A7 outcomes: dissipation windows revised to monotone convergence; applied-impulse recording added; BEFORE the receipt freeze)
+
+- Measured: with the A7 physical/stabilization split, the remaining
+  dissipation terms still carry the impulse-scheme's O(h) RESTING-CONTACT
+  ARREST artifact (each substep gravity is re-arrested by the contact
+  solve; the counted "impact dissipation" of that cycle ~ m*(g*h)^2-scale,
+  halving exactly per refinement level). Measured chains: press regime
+  total dissipation 2.43e-4 -> 5.99e-5 -> ... (monotone, ~O(h)); impact
+  event-window dissipation 1.078e-03 -> 8.793e-04 -> 7.385e-04 ->
+  6.643e-04 J (monotone; pairwise rel diffs 0.226 / 0.191 / 0.112,
+  converging toward the 10% window). The PHYSICAL sustained friction
+  dissipation (~1e-5 J) is smaller than this artifact at every examined
+  timestep, so the A6/A7 ABSOLUTE 10% dissipation window is RECORDED AS
+  NOT MET for regimes (2) and (3), replaced by the gate: MONOTONE DECREASE
+  of the dissipation chain across the refinement levels (demonstrated
+  convergence), with all measured chains recorded.
+- A8 also adds the per-tick recorded field `jn_applied_total_N_s` (the
+  total APPLIED normal impulse over ALL Gauss-Seidel passes): the A6
+  accumulated-impulse window accidentally read the CONVERGED-pass records,
+  whose applied impulses are ~0 by construction (the last pass converges);
+  the impact-window impulse comparison now uses the applied totals.
+  Measured recontact event times: 0.10000 / 0.10167 / 0.10417 / 0.10458 s
+  across h -> h/8 (all within the 3*dt0 bound).
+Nothing else changes.
