@@ -1,0 +1,10 @@
+{
+ "capture_sha256": "30a15d87a38050c437e38e6e2ab18306e0461d05861150e6e121a8114322f815",
+ "run_id": "mat2-m03-pressure-visual-20260928-30a15d87",
+ "subject_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+ "task_id": "M03",
+ "tick_interval": [
+  0,
+  23
+ ]
+}

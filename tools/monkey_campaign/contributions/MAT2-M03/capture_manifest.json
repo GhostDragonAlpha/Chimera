@@ -1,0 +1,911 @@
+{
+ "capture_sha256": "30a15d87a38050c437e38e6e2ab18306e0461d05861150e6e121a8114322f815",
+ "profile_id": "material",
+ "run_id": "mat2-m03-pressure-visual-20260928-30a15d87",
+ "schema": "chimera.visual_capture_manifest.v1",
+ "sheet_layout": {
+  "frame_files": {
+   "frame_00.png": "6007a778e197b3c19e820dc75628d25d6551c28f3b608b14d31e536c788e664d",
+   "frame_01.png": "804cc6e31888037ea296ec474681e485596de12a92a173ead1cbb3e0f9ed9cb9",
+   "frame_02.png": "ae3d7b6aa55b980807761b8c705cb424ed4572f1b676545cda11ef7bfd876bdf",
+   "frame_03.png": "f245c9d205cd8cd94ef6092d8c20513e87f84166b612d74e04d284b15edfaf03",
+   "frame_04.png": "b5fdc3e875ee7859202b582e538e4f0553997a4ac1d213a38c5219f4b3fee185",
+   "frame_05.png": "1e5f5842951e90ce8e764ad6357213d6921b07f47aca503128eb7f1e7ede2ff1",
+   "frame_06.png": "21eb6dfb8f26993bbdc386b918f7aadbb6e4abd0b2aa4c64dc4124ed4152fd3b",
+   "frame_07.png": "71b1e654f7c3fdad34b3ba7be6e69fdc777099ff32156cb091ec4410d9c7fe6d",
+   "frame_08.png": "600d04cefe79f8b86a770cf1962fc869234a470794ca7e714d5988586028c8b9",
+   "frame_09.png": "c51806e837e92d26a6aa8195c26c072a861b03c64d9d52ff3585448892e695aa",
+   "frame_10.png": "211f86a21f73f05138096dd63213db990fbf07de2a53a5681211b291ceef02a5",
+   "frame_11.png": "6281f2228e1078b8eb4ed37afb31100d63a5f3f1e9a9170303bd77080b728f92",
+   "frame_12.png": "d05e0cd4c5e02735fff5e9be60d7ff58effad4a48c30cea9f9bdc9a79d85c9c5",
+   "frame_13.png": "fc9269fdc0417977c9ce10e70913744c6f1628e55eece32e33e3c5d5616b70eb",
+   "frame_14.png": "80eb83f0022fff416df6f201004e193a53f54cadbd5a78dce437a1f3861c5b62",
+   "frame_15.png": "57992405a0885c23cc74ed4e8b055bd7be768457a5897b1983880bacf358b8aa",
+   "frame_16.png": "9c8b3744598a55dd605222789953f39a5a5a12d7a69f267720b42414665edd01",
+   "frame_17.png": "1f6877942e9ce7092585daafe927614f42dfad882200c7b4e64ed5f9f9be33da",
+   "frame_18.png": "340d131d62e177a05cd388024f6067ff9962ba40e198b5f631f68c582ee828f4",
+   "frame_19.png": "59b9940f415bda7acff812fffe2d77b42d6f24dd3b3b9c7025e7ac21a49d66b7",
+   "frame_20.png": "c7bedece93ccf64432e3c356793d9f646194f0add71866259ee86930c9af0065",
+   "frame_21.png": "af52b2268e5ebba3381f0d1d0a7ef817db8fcb1fc5bd433679c0295ef65983c9",
+   "frame_22.png": "a2e0a3acc29ac160e3783029649b3fd5a1a8dc636124aa59b9ae554671a0a921",
+   "frame_23.png": "21b4cf6dab75c0f3176245d477b568ba7946a18fab2d5cac6fcd3fada880f466"
+  },
+  "honest_titles": "rendered inside every viewport: view_id, mode, tick and delta-p; every diagnostic viewport carries the layer row, the state line (volume, pressure work, COM drift) and the port/state hash; footer carries frame_id, the tick-to-seconds mapping and the state hash",
+  "pixel_size": [
+   2560,
+   840
+  ],
+  "rows": [
+   "top    diagnostic viewports [whole | side | front | close-up] with all five declared diagnostic layers",
+   "middle clean viewports (identical cameras, no labels, no overlays, depth-tested)",
+   "bottom pressure / volume / cumulative work traces + footer"
+  ],
+  "tick_to_seconds_map": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); frame t = tick t"
+ },
+ "subject_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+ "task_id": "M03",
+ "tick_interval": [
+  0,
+  23
+ ],
+ "views": [
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     24
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sample ticks; the SUBJECT moves (membrane inflates/deflates; tetra traction arrows grow), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m03_whole_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 2.8825856448681626,
+      "orientation": [
+       0.3584213159038833,
+       0.23009901924012263,
+       0.48878214014140386,
+       0.7613675992116103
+      ],
+      "position": [
+       2.2,
+       1.6,
+       1.2
+      ],
+      "target": [
+       0.18,
+       -0.07,
+       0.0
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 2.8825856448681626,
+      "orientation": [
+       0.3584213159038833,
+       0.23009901924012263,
+       0.48878214014140386,
+       0.7613675992116103
+      ],
+      "position": [
+       2.2,
+       1.6,
+       1.2
+      ],
+      "target": [
+       0.18,
+       -0.07,
+       0.0
+      ],
+      "tick": 23
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 23]",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 1); fixed camera; the membrane inflates/deflates under the declared source beside the M02 tetra traction demonstrator",
+   "mode": "diagnostic",
+   "pair_id": "pair-whole",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M03/pressure_trace.json: the per-tick solver trace (delta_p, volume, area, energy ledger with measured constraint-projection residual, COM drift, per-tick state hash rendered in every frame footer); render positions are a replay asserted equal to the committed trace volumes",
+    "sha256": "e6178210a8754ced0eb2af5581a391197d6596f10573c9998d9fbdb96ceb08ed"
+   },
+   "view_id": "whole experiment at fixed distance",
+   "visibility": {
+    "label_ids": [
+     "membrane",
+     "m02_tetra",
+     "port:pressure_inlet",
+     "m02_tetra/t0",
+     "m02_tetra/t1",
+     "m02_tetra/t2",
+     "m02_tetra/t3"
+    ],
+    "layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "selected_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "membrane",
+      "subject_id": "membrane"
+     },
+     {
+      "label_id": "m02_tetra",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "port:pressure_inlet",
+      "subject_id": "membrane"
+     },
+     {
+      "label_id": "m02_tetra/t0",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "m02_tetra/t1",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "m02_tetra/t2",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "m02_tetra/t3",
+      "subject_id": "m02_tetra"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     24
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sample ticks; the SUBJECT moves (membrane inflates/deflates; tetra traction arrows grow), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m03_whole_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 2.8825856448681626,
+      "orientation": [
+       0.3584213159038833,
+       0.23009901924012263,
+       0.48878214014140386,
+       0.7613675992116103
+      ],
+      "position": [
+       2.2,
+       1.6,
+       1.2
+      ],
+      "target": [
+       0.18,
+       -0.07,
+       0.0
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 2.8825856448681626,
+      "orientation": [
+       0.3584213159038833,
+       0.23009901924012263,
+       0.48878214014140386,
+       0.7613675992116103
+      ],
+      "position": [
+       2.2,
+       1.6,
+       1.2
+      ],
+      "target": [
+       0.18,
+       -0.07,
+       0.0
+      ],
+      "tick": 23
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 23]",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair; no labels, layers or diagnostic styling by design",
+   "mode": "clean",
+   "pair_id": "pair-whole",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M03/pressure_trace.json: the per-tick solver trace (delta_p, volume, area, energy ledger with measured constraint-projection residual, COM drift, per-tick state hash rendered in every frame footer); render positions are a replay asserted equal to the committed trace volumes",
+    "sha256": "e6178210a8754ced0eb2af5581a391197d6596f10573c9998d9fbdb96ceb08ed"
+   },
+   "view_id": "whole experiment at fixed distance",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     24
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sample ticks; the SUBJECT moves (membrane inflates/deflates; tetra traction arrows grow), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m03_side_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 1.4,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 2.820868660537034,
+      "orientation": [
+       0.49375726548704435,
+       0.49375726548704435,
+       0.5061657463506953,
+       0.5061657463506954
+      ],
+      "position": [
+       3.0,
+       0.0,
+       0.0
+      ],
+      "target": [
+       0.18,
+       -0.07,
+       0.0
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 2.820868660537034,
+      "orientation": [
+       0.49375726548704435,
+       0.49375726548704435,
+       0.5061657463506953,
+       0.5061657463506954
+      ],
+      "position": [
+       3.0,
+       0.0,
+       0.0
+      ],
+      "target": [
+       0.18,
+       -0.07,
+       0.0
+      ],
+      "tick": 23
+     }
+    ],
+    "secondary_cameras": [
+     {
+      "aspect_ratio": 1.7777777777777777,
+      "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sample ticks; the SUBJECT moves (membrane inflates/deflates; tetra traction arrows grow), not the camera",
+      "coordinate_unit": "m",
+      "forward_axis": "-Z",
+      "frame_id": "mat2_m03_front_canvas_m",
+      "handedness": "right",
+      "near_far_planes": [
+       0.01,
+       100.0
+      ],
+      "orientation_convention": "quaternion_wxyz_camera_to_frame",
+      "orthographic_span": 1.4,
+      "projection": "orthographic",
+      "sample_mode": "fixed_bookmark",
+      "samples": [
+       {
+        "distance_to_target": 2.9355238033441324,
+        "orientation": [
+         0.7067740605017253,
+         0.7067740605017253,
+         -0.021689338438585577,
+         -0.021689338438585577
+        ],
+        "position": [
+         0.0,
+         -3.0,
+         0.0
+        ],
+        "target": [
+         0.18,
+         -0.07,
+         0.0
+        ],
+        "tick": 0
+       },
+       {
+        "distance_to_target": 2.9355238033441324,
+        "orientation": [
+         0.7067740605017253,
+         0.7067740605017253,
+         -0.021689338438585577,
+         -0.021689338438585577
+        ],
+        "position": [
+         0.0,
+         -3.0,
+         0.0
+        ],
+        "target": [
+         0.18,
+         -0.07,
+         0.0
+        ],
+        "tick": 23
+       }
+      ],
+      "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 23]",
+      "up_axis": "+Y",
+      "viewport_resolution": [
+       640,
+       360
+      ]
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 23]",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "two side-by-side viewports (sheet columns 2-3): side (primary camera) and front (secondary, fully declared with the same 16 camera fields)",
+   "mode": "diagnostic",
+   "pair_id": "pair-planes",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M03/pressure_trace.json: the per-tick solver trace (delta_p, volume, area, energy ledger with measured constraint-projection residual, COM drift, per-tick state hash rendered in every frame footer); render positions are a replay asserted equal to the committed trace volumes",
+    "sha256": "e6178210a8754ced0eb2af5581a391197d6596f10573c9998d9fbdb96ceb08ed"
+   },
+   "view_id": "orthogonal side and front",
+   "visibility": {
+    "label_ids": [
+     "membrane",
+     "m02_tetra",
+     "port:pressure_inlet",
+     "m02_tetra/t0",
+     "m02_tetra/t1",
+     "m02_tetra/t2",
+     "m02_tetra/t3"
+    ],
+    "layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "selected_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "membrane",
+      "subject_id": "membrane"
+     },
+     {
+      "label_id": "m02_tetra",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "port:pressure_inlet",
+      "subject_id": "membrane"
+     },
+     {
+      "label_id": "m02_tetra/t0",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "m02_tetra/t1",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "m02_tetra/t2",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "m02_tetra/t3",
+      "subject_id": "m02_tetra"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     24
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sample ticks; the SUBJECT moves (membrane inflates/deflates; tetra traction arrows grow), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m03_side_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 1.4,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 2.820868660537034,
+      "orientation": [
+       0.49375726548704435,
+       0.49375726548704435,
+       0.5061657463506953,
+       0.5061657463506954
+      ],
+      "position": [
+       3.0,
+       0.0,
+       0.0
+      ],
+      "target": [
+       0.18,
+       -0.07,
+       0.0
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 2.820868660537034,
+      "orientation": [
+       0.49375726548704435,
+       0.49375726548704435,
+       0.5061657463506953,
+       0.5061657463506954
+      ],
+      "position": [
+       3.0,
+       0.0,
+       0.0
+      ],
+      "target": [
+       0.18,
+       -0.07,
+       0.0
+      ],
+      "tick": 23
+     }
+    ],
+    "secondary_cameras": [
+     {
+      "aspect_ratio": 1.7777777777777777,
+      "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sample ticks; the SUBJECT moves (membrane inflates/deflates; tetra traction arrows grow), not the camera",
+      "coordinate_unit": "m",
+      "forward_axis": "-Z",
+      "frame_id": "mat2_m03_front_canvas_m",
+      "handedness": "right",
+      "near_far_planes": [
+       0.01,
+       100.0
+      ],
+      "orientation_convention": "quaternion_wxyz_camera_to_frame",
+      "orthographic_span": 1.4,
+      "projection": "orthographic",
+      "sample_mode": "fixed_bookmark",
+      "samples": [
+       {
+        "distance_to_target": 2.9355238033441324,
+        "orientation": [
+         0.7067740605017253,
+         0.7067740605017253,
+         -0.021689338438585577,
+         -0.021689338438585577
+        ],
+        "position": [
+         0.0,
+         -3.0,
+         0.0
+        ],
+        "target": [
+         0.18,
+         -0.07,
+         0.0
+        ],
+        "tick": 0
+       },
+       {
+        "distance_to_target": 2.9355238033441324,
+        "orientation": [
+         0.7067740605017253,
+         0.7067740605017253,
+         -0.021689338438585577,
+         -0.021689338438585577
+        ],
+        "position": [
+         0.0,
+         -3.0,
+         0.0
+        ],
+        "target": [
+         0.18,
+         -0.07,
+         0.0
+        ],
+        "tick": 23
+       }
+      ],
+      "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 23]",
+      "up_axis": "+Y",
+      "viewport_resolution": [
+       640,
+       360
+      ]
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 23]",
+    "up_axis": "+Y",
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "clean row: identical cameras and state to its diagnostic pair",
+   "mode": "clean",
+   "pair_id": "pair-planes",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M03/pressure_trace.json: the per-tick solver trace (delta_p, volume, area, energy ledger with measured constraint-projection residual, COM drift, per-tick state hash rendered in every frame footer); render positions are a replay asserted equal to the committed trace volumes",
+    "sha256": "e6178210a8754ced0eb2af5581a391197d6596f10573c9998d9fbdb96ceb08ed"
+   },
+   "view_id": "orthogonal side and front",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     24
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sample ticks; the SUBJECT moves (membrane inflates/deflates; tetra traction arrows grow), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m03_closeup_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.9024965373894793,
+      "orientation": [
+       0.7588128132111808,
+       0.4389087155697792,
+       0.2409371363113968,
+       0.41654717649923373
+      ],
+      "position": [
+       1.017039285373277,
+       -0.5271201366326035,
+       0.4266333333333333
+      ],
+      "target": [
+       0.3570392853732771,
+       -0.10712013663260349,
+       -0.023366666666666674
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.9024965373894793,
+      "orientation": [
+       0.7588128132111808,
+       0.4389087155697792,
+       0.2409371363113968,
+       0.41654717649923373
+      ],
+      "position": [
+       1.017039285373277,
+       -0.5271201366326035,
+       0.4266333333333333
+      ],
+      "target": [
+       0.3570392853732771,
+       -0.10712013663260349,
+       -0.023366666666666674
+      ],
+      "tick": 23
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 23]",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 30.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 4); oblique close-up of the M02 tetra loaded interface; per-triangle arrows grow with delta-p and scale with triangle area (slant face A=0.0087 longer than leg faces A=0.0050 at every tick)",
+   "mode": "diagnostic",
+   "pair_id": "pair-interface",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M03/pressure_trace.json: the per-tick solver trace (delta_p, volume, area, energy ledger with measured constraint-projection residual, COM drift, per-tick state hash rendered in every frame footer); render positions are a replay asserted equal to the committed trace volumes",
+    "sha256": "e6178210a8754ced0eb2af5581a391197d6596f10573c9998d9fbdb96ceb08ed"
+   },
+   "view_id": "oblique close-up of the loaded interface",
+   "visibility": {
+    "label_ids": [
+     "membrane",
+     "m02_tetra",
+     "port:pressure_inlet",
+     "m02_tetra/t0",
+     "m02_tetra/t1",
+     "m02_tetra/t2",
+     "m02_tetra/t3"
+    ],
+    "layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "selected_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "membrane",
+      "subject_id": "membrane"
+     },
+     {
+      "label_id": "m02_tetra",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "port:pressure_inlet",
+      "subject_id": "membrane"
+     },
+     {
+      "label_id": "m02_tetra/t0",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "m02_tetra/t1",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "m02_tetra/t2",
+      "subject_id": "m02_tetra"
+     },
+     {
+      "label_id": "m02_tetra/t3",
+      "subject_id": "m02_tetra"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     24
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at both sample ticks; the SUBJECT moves (membrane inflates/deflates; tetra traction arrows grow), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m03_closeup_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.9024965373894793,
+      "orientation": [
+       0.7588128132111808,
+       0.4389087155697792,
+       0.2409371363113968,
+       0.41654717649923373
+      ],
+      "position": [
+       1.017039285373277,
+       -0.5271201366326035,
+       0.4266333333333333
+      ],
+      "target": [
+       0.3570392853732771,
+       -0.10712013663260349,
+       -0.023366666666666674
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.9024965373894793,
+      "orientation": [
+       0.7588128132111808,
+       0.4389087155697792,
+       0.2409371363113968,
+       0.41654717649923373
+      ],
+      "position": [
+       1.017039285373277,
+       -0.5271201366326035,
+       0.4266333333333333
+      ],
+      "target": [
+       0.3570392853732771,
+       -0.10712013663260349,
+       -0.023366666666666674
+      ],
+      "tick": 23
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated, replayed at 1 video second per tick (slow motion x300); tick_interval [0, 23]",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 30.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair",
+   "mode": "clean",
+   "pair_id": "pair-interface",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M03/pressure_trace.json: the per-tick solver trace (delta_p, volume, area, energy ledger with measured constraint-projection residual, COM drift, per-tick state hash rendered in every frame footer); render positions are a replay asserted equal to the committed trace volumes",
+    "sha256": "e6178210a8754ced0eb2af5581a391197d6596f10573c9998d9fbdb96ceb08ed"
+   },
+   "view_id": "oblique close-up of the loaded interface",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "membrane",
+     "m02_tetra"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  }
+ ]
+}
