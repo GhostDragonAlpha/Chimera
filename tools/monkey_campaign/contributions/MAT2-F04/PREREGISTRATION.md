@@ -114,7 +114,7 @@ Scenario = (instantiated static parts, probe initial state, tick count).
 |---|---|---|---|
 | G_HIGH (ground crossing, CCD on) | ground (full 3200-tri render slice) | centre above S1 (0,0): bottom at h_query+0.5, v=(0,0,-4) m/s | 30 |
 | T_CROSS (trunk crossing, CCD on) | trunk_01.lateral (64 tris) | centre at clearing (11.626783, 0.5, 2.471766), i.e. contact (11.626783, -2.471766, 0.5), v=(+4,0,0) m/s at the lateral facet nearest +x | 30 |
-| SEAM_HIGH (seam crossing/impact, CCD on, phased) | phase A: none (ballistic approach, clearance measured); phase B: trunk_01.lateral | start clearing (11.263783, 0.14, 2.471766), v=(+4,0,+0.5) m/s; handover at the declared first-contact tick of phase B; window ends 3 ticks after first trunk contact | 32 |
+| SEAM_HIGH (seam crossing/impact, CCD on, phased; Amendment A1) | phase A: none (ballistic approach, clearance measured); phase B: trunk_01.lateral | start clearing (11.263783, 0.14, 2.471766), v=(+4,0,+0.5) m/s; phase A runs until the PRE-tick remaining face-to-cylinder distance is within one per-tick motion (0.02 m), then the trunk is instantiated and phase B continues to the first trunk contact + 3 ticks (within the window) | 40 |
 | G_SEAM_REST (ground rest at the seam approach) | ground | F02 S4 site (11.226783, 2.471766), bottom at h_query+0.05, v=(+0.2,0,0) toward the trunk | 40 |
 | TRUNK_TOP_REST (cap rest) | trunk_01.base_cap, trunk_01.top_cap (never mutually touching) | F03 S3 form: tetra on top_cap at (0.02, 0.01) cap-plane offset, 2e-5 above | 40 |
 
@@ -254,3 +254,18 @@ pinned pass is assembled; a non-biting falsifier fails the whole build
 - Visual acceptance itself belongs to the independent visual reviewer; this
   build's capture machinery is structural (validator + hashes + committed
   stills), not acceptance.
+
+## 9. Amendments (each committed separately BEFORE the implementation/build)
+
+- A1 (this commit, before any implementation or build run): SEAM_HIGH's
+  frozen window is extended 32 -> 40 ticks and the phase-A handover rule is
+  made checkable (PRE-tick remaining face-to-cylinder distance <= one per-tick
+  motion, 0.02 m). Reason: the pre-freeze scratch measurement (attempt
+  workspace only) put the ballistic handover at tick 32 with the face 0.006 m
+  from the cylinder, so a 32-tick window cannot contain the trunk contact plus
+  the frozen 3-tick tail. No bar is loosened: impact/pre-overlap, seam-band,
+  penetration and ledger bars are unchanged; the extension only makes room for
+  the contact the profile requires. Scratch also recorded the first trunk
+  contact altitudes 0.0735-0.0935 m (inside the declared seam band [0, 0.15])
+  and the phase-B composition sink (about 6.6e-3 m over the tail), which the
+  build must publish as disclosed in section 8.
