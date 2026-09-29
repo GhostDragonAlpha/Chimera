@@ -379,3 +379,80 @@ change to any frozen experiment, prediction, window or threshold):
   These windows still fail a non-converging scheme (p <= 0 or non-decreasing
   errors) and an explosive one. The falsified A3 run and its values are
   reported in report.md.
+
+## Amendment A5 (triggered by the Lieutenant's verification addendum: Astra round 6, R3)
+
+Source of the verification standard (cited by path):
+E:\ChimeraWork\monkey-coordination\ASTRA_ROUND6_20260929.md, section R3
+("Coupled pressure+viscoelastic+contact integrator (M07 verification
+standard)"). Triggered BEFORE the receipt freeze; the already-committed
+candidate (e00e70bd) is superseded by the A5 revision. Changes:
+
+1. WHOLE-SYSTEM ENERGY LEDGER (replaces the A1/A3 tick identity as the
+   declared ledger): R_E = E_{n+1} - E_n - W_external + D_viscoelastic +
+   D_friction + D_impact - projection_exchange, with E = kinetic + scaffold
+   elastic + Maxwell stored (all modeled reservoirs; the declared pressure
+   source is an actuator whose work W_press is external — no modeled
+   pressure reservoir, so no double counting; the wall/ground anchors are
+   fixed and do no work). D_viscoelastic = the M04 Maxwell dissipation Q;
+   D_friction = sum of the per-record friction KE removal (M06 w_f_ke);
+   D_impact = -(contact-stage KE change) - D_friction, measured per tick
+   (inelastic normal loss + declared bias injection, never hidden as
+   generic dissipation); projection_exchange stays the explicitly recorded
+   positional-correction energy term. Impulse transfer work is recorded as
+   the trapezoid diagnostic Delta_K = sum 0.5*(v- + v+)^T J per applied
+   impulse pair. |R_E| stays under the A1 bound at every tick; expected
+   closure scale is the declared Maxwell driver gap (~1e-9 J) — R3's
+   "bookkeeping only" caveat is acknowledged: closure alone is not physics;
+   the physical claims are carried by X3/X4 below.
+2. ITERATION DISCIPLINE (declared): the contact Gauss-Seidel loop and the
+   XPBD projection loop iterate the SAME discrete step from the same saved
+   within-step state (velocity/constraint iterations; time advances only
+   through the declared N_SUB physical substeps — never inside a solver
+   loop). Recorded residuals: GS convergence residual; scaled momentum
+   ledger (1e-12); constitutive sub-ledger (M04, 1e-9); pressure source
+   limits (M03 refusals); NEW per-tick contact residuals — minimum normal
+   impulse (>= 0), minimum post-solve normal relative velocity (>= -1e-9),
+   friction-cone violation (<= 1e-15 relative), stick residual tangential
+   speed (<= 1e-9). Solver tolerance: GS 1e-12 N*s vs applied impulses
+   ~1e-4 N*s — tightening further is negligible vs timestep differences
+   and below the O(h^2) local truncation scale.
+3. REFINEMENT STUDY (replaces the A3/A4 single-scenario study; the A4
+   measured orders 2.34/2.61 on final-value observables are preserved as
+   the recorded motivation: final-value volume observables saturate — the
+   h/4 and h/8 runs agreed bitwise — so R3's integrated observables are
+   adopted). Same ICs + duration at h, h/2, h/4, h/8 (FOUR levels), spatial
+   discretization fixed, solver tolerances tight. THREE preregistered
+   regimes, each with p_obs = log2(||u_h - u_h/2|| / ||u_h/2 - u_h/4||) on
+   time-integrated trajectory observables (aligned at common physical
+   times), demand window [0.8, 1.2] (R3: "practical tolerance, not
+   guarantee"):
+   (1) SMOOTH pressure-viscoelastic WITHOUT contact: declared free-space
+       rig, gravity OFF (M06 A3 heritage), membrane floating at its rest
+       position, plate at x = 0.25 m (mount anchored there), ground
+       unreachable; asserted zero active contact pairs at every tick.
+       Observable u = membrane COM (x, z) trajectory.
+   (2) SUSTAINED pressing/stick-slide: the X1 rig exactly (gravity on).
+       Observable u = plate displacement trajectory; total dissipated
+       energy (Q + D_friction + D_impact) within 10% between h and h/2.
+   (3) IMPACT/separation/recontact: declared free-space rig, gravity OFF,
+       plate at x = 0.10 m (mount anchored there) with declared initial
+       velocity (-0.5, 0, 0) m/s; it impacts the membrane (e = 0), they
+       separate under the Maxwell mount and recontact. Horizon 120 ticks.
+       At the impact NO pointwise velocity convergence is claimed (R3);
+       the preregistered comparisons are: first-impact event time within
+       2*h of the h/8 reference; pre-event trajectory L2 (ticks strictly
+       before the reference event) p_obs in [0.8, 1.2]; accumulated normal
+       impulse over the impact window within 10%; total dissipated energy
+       within 10%.
+4. LONG-DURATION PASSIVE RUN (new X4): the X1 rig at production dt for 10
+   declared pressure cycles (800 ticks; cycle = press ticks 1..40 mod 80).
+   Demands: |R_E| within the A1 bound at every tick; bookkeeping integrity
+   sum |R_E| <= 1e-6 * sum |W_external| + 1e-6 J over the run; bounded
+   constraints: max membrane edge-length strain deviation <= 5%, max
+   plate-ground penetration <= margin + slop, max speed <= 5 m/s, plate
+   displacement bounded by 0.05 m.
+5. The disconnected-component independence test (X2, bitwise) is unchanged
+   and remains required. Ordering remains a declared first-order candidate,
+   not a proof; boundedness claims now rest on X3 + X4. Nothing else in
+   A1-A4 changes.
