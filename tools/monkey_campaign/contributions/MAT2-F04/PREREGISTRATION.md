@@ -176,6 +176,8 @@ per tick over the FULL interval, not at the last tick only.
   trajectory under the shipped law is pre-overlap clean.
 - FB2_ccd_off_trunk_tunnels: rerun T_CROSS with CCD off — the control MUST
   first detect with a vertex already inside the analytic cylinder (> PEN_BAR).
+  (Operationalized by Amendment A2: the solver's first-contact mid-surface
+  overlap, gap_m < 0 with penetration_m = -gap_m > PEN_BAR.)
 - FB3_ghost_support_ground: raise ONE ground contact vertex under S1 by +1 cm
   (render/query untouched, F02 FB1 form) — the resting window MUST be
   violated (ghost support detected).
@@ -269,3 +271,15 @@ pinned pass is assembled; a non-biting falsifier fails the whole build
   contact altitudes 0.0735-0.0935 m (inside the declared seam band [0, 0.15])
   and the phase-B composition sink (about 6.6e-3 m over the tail), which the
   build must publish as disclosed in section 8.
+- A2 (this commit, before any implementation or build run): FB2's frozen
+  wording ("a vertex already inside the analytic cylinder") is operationalized
+  as the solver's own first-contact overlap: gap_m < 0 at the first detection
+  with penetration_m = -gap_m > PEN_BAR_M (the same frozen 1e-4 bar). Reason:
+  at edge/face feature contacts the overlap lives in the solver gap, not in a
+  per-vertex predicate, and at the frozen speed the per-tick motion
+  (0.02 m) is smaller than the trunk diameter (0.074 m), so a full pass-through
+  is geometrically impossible; late detection after overlap IS the tunnelling
+  signature M06's X4 declared for its no-CCD controls ("detect late (after
+  overlap) with a spurious bias velocity kick"). No bar is loosened; FB1's
+  ground control still exhibits the full pass-through (0.03 m/tick vs the
+  0.004 m ground contact band) and keeps its original form.
