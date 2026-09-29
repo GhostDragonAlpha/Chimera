@@ -44,7 +44,11 @@ for _p in (str(HERE), str(CONTRIB / 'MAT2-M03'), str(CONTRIB / 'MAT2-M07')):
 
 import integrated_step as iw  # noqa: E402
 import pressure_membrane as pm  # noqa: E402
+import local_contact as lc  # noqa: E402
 import kernel_mirror as km  # noqa: E402
+
+THICKNESS_M = km.THICKNESS_M
+CONTACT_MARGIN_M = km.CONTACT_MARGIN_M
 
 W_VP, H_VP = 640, 360
 ASPECT = 16.0 / 9.0
@@ -292,6 +296,24 @@ def main():
         wall = comp_a.wall_anchor
         ground_v = comp_a.ground.x
         active = int(gblock[km.D_ACTIVE])
+        # contact/bond state markers: membrane triangles whose CURRENT gap
+        # to any plate/ground triangle is within the declared margin
+        # (diagnostic recomputation from the snapshot for display; the
+        # per-tick authoritative count is the GPU diagnostic block)
+        contact_tris = set()
+        plate_tris_v = [plate_v[[0, 1, 2]], plate_v[[0, 2, 3]]]
+        ground_tris_v = [ground_v[[0, 1, 2]], ground_v[[0, 2, 3]]]
+        for e_a in range(80):
+            ta = verts[np.asarray(comp_a.membrane.triangles[e_a])]
+            ta = [tuple(v) for v in ta]
+            for tb in plate_tris_v + ground_tris_v:
+                tb = [tuple(v) for v in tb]
+                _, _, dist = lc.tri_tri_closest(*ta, *tb)
+                if dist - THICKNESS_M <= CONTACT_MARGIN_M + 1e-12:
+                    contact_tris.add(e_a)
+                    break
+        contact_centroids = [membrane_now.centroids[i]
+                             for i in sorted(contact_tris)]
         w_press_cum = float(gblock[km.D_WPRESS])
         resid = float(gblock[km.D_RESID])
         bytes_down = receipt['telemetry']['max_down_bytes_per_tick']
@@ -302,15 +324,31 @@ def main():
                      ('side', cams['side'], (W_VP, 0)),
                      ('front', cams['front'], (2 * W_VP, 0)),
                      ('closeup', cams['closeup'], (3 * W_VP, 0))]
+        max_force = float(np.linalg.norm(forces_now, axis=1).max())
+        arrow_scale = (0.02 / max_force) if max_force > 0 else 0.0
+        plate_centroid = plate_v.mean(axis=0)
         for name, cam, off in cams_diag:
             draw_membrane(draw, verts, comp_a.membrane.triangles,
                           membrane_now.normals, cam, arrows=forces_now,
-                          arrow_scale=0.0006, offset=off, labels=True,
+                          arrow_scale=arrow_scale, offset=off, labels=True,
                           fonts=fonts)
             draw_shell(draw, plate_v, [(0, 1, 2), (0, 2, 3)], cam,
                        (235, 200, 120), offset=off)
             draw_shell(draw, ground_v, [(0, 1, 2), (0, 2, 3)], cam,
                        (150, 160, 150), offset=off)
+            # contact markers (red circles at contacted membrane centroids)
+            for c3 in contact_centroids:
+                c2, _ = cam.project([c3])
+                x, y = float(c2[0][0]) + off[0], float(c2[0][1]) + off[1]
+                if math.isfinite(x) and math.isfinite(y):
+                    draw.ellipse([x - 4, y - 4, x + 4, y + 4],
+                                 outline=(200, 30, 30), width=2)
+            # the declared Maxwell mount: wall anchor -> plate centroid
+            wa, _ = cam.project([wall])
+            pc, _ = cam.project([plate_centroid])
+            draw.line([float(wa[0][0]) + off[0], float(wa[0][1]) + off[1],
+                       float(pc[0][0]) + off[0], float(pc[0][1]) + off[1]],
+                      fill=(120, 40, 140), width=2)
             wx, _ = cam.project([wall])
             draw.text((wx[0][0] + off[0] - 30, wx[0][1] + off[1] + 8),
                       'wall_anchor (Maxwell mount)', fill=(120, 40, 140),

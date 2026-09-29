@@ -449,7 +449,7 @@ def k_reset(MV, PV, SC, VSTART, PVSTART, PASS, X, EDGES, REST, MASSES,
         VSTART[b + fl, c] = MV[b + fl, c]
     for c in range(3):
         PVSTART[comp, c] = PV[comp, c]
-    ke = ke_parts(MV, PV, MASSES, PLATE_MASS, b, comp)
+    ke = ke_membrane_plate(MV, PV, MASSES, PLATE_MASS, b, comp)
     us = scaffold_edges(X, EDGES, REST, b, comp, INV2C)
     E_PREV[comp] = ke + us + SC[comp, 1]
     UMAT_PRE[comp] = SC[comp, 1]
