@@ -499,3 +499,28 @@ candidate (e00e70bd) is superseded by the A5 revision. Changes:
   R3 requires solver algebraic error below the O(h^2) truncation scale;
   the frozen 'xpbd_iterations: 8' declaration is superseded.
 Nothing else changes.
+
+## Amendment A7 (measured A6 outcome: the lumped D_impact mixes physical loss with numerical injection; separated BEFORE the receipt freeze)
+
+- Measured: the A6 lumped D_impact = -(contact-stage KE change) - D_friction
+  is NEGATIVE in the sustained phase of the h/2 press run (numerical
+  stabilization injection exceeding friction removal) — counting that as
+  "dissipation" would hide a numerical energy source inside a physical
+  term, exactly what R3 forbids in both directions.
+- Separation (replacing the A5 D_impact definition): per applied contact
+  solve the PHYSICAL inelastic loss is
+  D_impact_i = 0.5 * m_eff * vn_pre^2 for approaching pairs (vn_pre < 0,
+  restitution 0), computed from the recorded pre-solve relative normal
+  speed; the REMAINDER of the measured contact-stage KE change,
+  E_stab = -(contact-stage KE change) - D_friction - sum(D_impact_i),
+  is recorded per tick as the declared NUMERICAL STABILIZATION EXCHANGE
+  (Baumgarte bias injection/withdrawal), explicitly separate from physical
+  dissipation and from the projection exchange. The whole-system ledger
+  becomes R_E = E_{n+1} - E_n - W_external + D_viscoelastic + D_friction
+  + D_impact(physical) - E_stab - projection_exchange (closes to the same
+  ~1e-9 J driver gap). Dissipation comparisons (the 10% windows) use the
+  PHYSICAL terms only (Q + D_friction + D_impact); sum(E_stab) is recorded
+  as a numerical-health metric.
+- The A6 dissipation window is evaluated on the physical terms over the
+  FULL horizon (including the settle impacts, which are physical events).
+Nothing else changes.
