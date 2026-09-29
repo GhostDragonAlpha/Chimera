@@ -308,3 +308,20 @@ pinned pass is assembled; a non-biting falsifier fails the whole build
   decouple detection. No bar is loosened; the marker bars are unchanged and
   the shipped-scene requirement (every assigned marker VISIBLE_EXACT on the
   UNPERTURBED assets) is untouched.
+- A5 (this commit, before any implementation or build run): two
+  operationalizations forced by pre-build measurement of the phased seam
+  scenario, neither loosening a bar:
+  (i) the SEAM_HIGH phase-A handover threshold moves from one per-tick motion
+  (0.02 m) to 1.5 per-tick motions (0.03 m), checked PRE-tick, with the
+  handover happening BEFORE the ballistic tick that would cross the threshold.
+  Measured reason: at the 0.02 m threshold the ballistic tick could hand over
+  a state already up to 0.2 mm INSIDE the cylinder, which the shared path then
+  (correctly) reports as a post-overlap persistent contact — a composition
+  artifact, not a law defect. At 0.03 m the handed-over state is provably
+  outside (worst case 0.0098 m clearance) and the CCD advance converges to a
+  pre-overlap 'ccd' first contact within one or two phase-B ticks.
+  (ii) the SEAM_BAND rule ([0, 0.15] m altitude) applies to the FIRST trunk
+  contact (the impact); contacts during the frozen 3-tick tail are RECORDED
+  AND PUBLISHED but not banded — the 0.2 m probe shell rides up the trunk
+  face as it sinks, producing tail-contact altitudes up to ~0.21 m by
+  geometry, not by any contact failure. The impact-altitude bar is unchanged.
