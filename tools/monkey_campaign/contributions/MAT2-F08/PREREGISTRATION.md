@@ -39,9 +39,14 @@ disclosing what changed and why. No bar is tuned after a measurement is seen.
   depth checks"], clean_view_required true, numerical_evidence_required true,
   falsifier: "Rendered/collision mismatch, ghost support, missing boundaries
   or off-frame probe subject fails; tags alone do not establish contact."
-  Known canonical sha256 of the identical `forest` profile object (F07's
-  receipt): `3348d00194c8d920abe3c5902c36a0f23088838bd293172f10f65a3de2670852`;
-  the build re-derives it and refuses on drift.
+  Canonical sha256 of THIS card's profile object (A2):
+  `2c9d0ab3e2af5f18b89704f0265850f94c341d2290da2a62b1197bea8f1a206b`; the
+  build re-derives it and refuses on drift. (A2 correction: the profile
+  object is NOT byte-identical across cards — the scenario sentence embeds
+  each card's own done_when — so F07's receipt sha
+  `3348d00194c8d920abe3c5902c36a0f23088838bd293172f10f65a3de2670852` is the
+  canonical sha of F07's object, not of F08's. The id/kind/layers/views are
+  the shared `forest` profile; the scenario sentence is task-specific.)
 - task_id in the capture manifest/context: `F08` (SHORT form).
 - card observation (verbatim): "Resource cleanup uses existing lifecycle
   machinery".
@@ -260,11 +265,11 @@ under the attempt scratch; the production pins are never modified.
   the pinned bookmarks, aspect == 960/540, one sample at tick 0; 16-field
   camera records in `evidence/capture_manifest.json`.
 - REGISTRY profile validation: `visual_capture.validate_manifest` with the
-  profile object read READ-ONLY from agent_slots.sqlite3 (canonical sha256
-  3348d00194c8d920abe3c5902c36a0f23088838bd293172f10f65a3de2670852 re-derived
-  at build); `visual_gate.verify` re-hashes camera JSON + capture and binds
-  capture_sha256. `visual_acceptance` stays false BY DESIGN — independent
-  visual review remains mandatory.
+  profile object read READ-ONLY from agent_slots.sqlite3 (canonical sha256 of
+  THIS card's object 2c9d0ab3e2af5f18b89704f0265850f94c341d2290da2a62b1197bea
+  8f1a206b, A2, re-derived at build); `visual_gate.verify` re-hashes camera
+  JSON + capture and binds capture_sha256. `visual_acceptance` stays false BY
+  DESIGN — independent visual review remains mandatory.
 
 ## 9. Honest boundaries (inventoried before the build)
 
@@ -317,6 +322,14 @@ under the attempt scratch; the production pins are never modified.
   bytes differ and no bar moved. The same amendment freezes the RAW sha256 of
   the seven F07 reproduction-target evidence files (contact trace + six
   frames) listed in section 1, replacing "recorded at build".
+- A2 (this commit, before the implementation commit; discovered by the
+  build's own drift guard BEFORE any evidence artifact was written): the
+  registry `forest` verification_profile object is per-card — its scenario
+  sentence embeds the card's done_when — so the canonical sha256 of F08's
+  object is `2c9d0ab3e2af5f18b89704f0265850f94c341d2290da2a62b1197bea8f1a206b`,
+  not F07's `3348d001...`. Section 0 corrected; the drift guard pins F08's
+  object. No bar moved; the id/kind/layers/views of the shared `forest`
+  profile are unchanged.
 
 ## 11. Reconciliation disclosures (measured BEFORE this commit; no build run)
 
