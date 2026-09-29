@@ -112,4 +112,4 @@ mutant geometry assets (vendor STL @ uniform scale s):
 
 captain decision record sha256: 3c34168ef28b00b1dc60c2362cc9d2d6ffb273a8c28a1663d9bff729596dd1d7
 emitted macaque_hand_mutation.xml (well-formed XML verified)
-emitted mutation_structure.json sha256=8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83
+emitted mutation_structure.json sha256=48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649

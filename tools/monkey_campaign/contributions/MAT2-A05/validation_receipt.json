@@ -1,7 +1,7 @@
 {
  "summary": {
-  "total": 37,
-  "passed": 37,
+  "total": 39,
+  "passed": 39,
   "failed": 0
  },
  "checks": [
@@ -254,6 +254,18 @@
    "id": "V5-stl-files-exist",
    "result": "PASS",
    "detail": "all referenced STL files exist in the vendor tree",
+   "observed": []
+  },
+  {
+   "id": "V5-stl-sha256-recorded",
+   "result": "PASS",
+   "detail": "every body binding records a full 64-hex stl_sha256 (not a 16-hex prefix)",
+   "observed": []
+  },
+  {
+   "id": "V5-stl-sha256-matches-vendor",
+   "result": "PASS",
+   "detail": "every recorded stl_sha256 equals the sha256 recomputed from the pinned vendor STL",
    "observed": []
   },
   {

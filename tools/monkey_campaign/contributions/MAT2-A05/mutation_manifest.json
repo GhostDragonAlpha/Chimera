@@ -14,7 +14,7 @@
  "model": {
   "id": "model.macaque_arm_hand_mutation",
   "structure_record": "mutation_structure.json",
-  "structure_record_sha256": "8d51b55180965d413ce6bd461dd98daa37f455c3e2af3353c78a403fc3c8eb83",
+  "structure_record_sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649",
   "mjcf_record": "macaque_hand_mutation.xml",
   "mjcf_record_sha256": "9c91124600abc67a4a33d78ce79ab1a0604a48b5a9a2e6377d15de05717e5adf",
   "units": {
@@ -631,22 +631,22 @@
  ],
  "validation": {
   "validator": "validate_mutation.py",
-  "validator_sha256": "333fbb60dbfbd8baf99146efbb91fc630b82851ec2f41f5eca927c156bc798bf",
+  "validator_sha256": "a090c0d17606a42154a6705e134f3d298b5b5cd8bb11fc92e6170f0054d9d292",
   "receipt": "validation_receipt.json",
-  "receipt_sha256": "1781aa6bfe7069183c225d54be21f8788c460b24b9abeca1aaac25ff0fa6c3ff",
+  "receipt_sha256": "fa507700611cfdc89149eae6b07a962974945667fcc0bfe14d472e4b74858618",
   "summary": {
-   "total": 37,
-   "passed": 37,
+   "total": 39,
+   "passed": 39,
    "failed": 0
   },
   "note": "First validation run reported 2 FAILs caused by validator-side defects (phalanx name filter missed the thumb bodies; connectivity walk did not treat the anchor as terminal). Corrected in validate_mutation.py; the structure values were unaffected and the corrected run passes 37/37."
  },
  "preregistration": {
   "path": "PREREGISTRATION.md",
-  "sha256": "e79b4a7853916629d54a22904d4b1dcb92984556f37122b44211ee15b19ae5f9"
+  "sha256": "0cab8cf7a834d3ac64b634d5a2082ded676a56b4059c237f55974eff296e4cc1"
  },
  "derivation_log": {
   "path": "derivation_output.txt",
-  "sha256": "e10ad1c055fc5bee9206862213cf0559b1c97ca730a9845e642b06a9194839d8"
+  "sha256": "c9314d9044d4a0fd35afb46bed78e4d921692f1d1d530092db4729bf1e6ed103"
  }
 }
