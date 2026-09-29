@@ -222,6 +222,60 @@ validator runs happen BEFORE renders are accepted; acceptance itself belongs
 to the independent visual reviewer (this build claims structural validity and
 binding, not visual acceptance).
 
+## AMENDMENT A3 (disclosed contact-instantiation scoping; committed BEFORE the build)
+
+Reconciliation also measured how the unmodified M06 law treats the SPLIT
+asset: because the seam rings are EXACT duplicates (Amendment A2), lateral and
+cap triangles from two DIFFERENT pinned bodies sit at gap-0 contact, and
+`local_contact.solve_tick` refuses a both-pinned contact pair with
+`nonfinite_state` (M06's denominator inv_ma + inv_mb = 0). Corrections:
+
+1. P5's instantiation clause is scoped: each experiment instantiates exactly
+   the declared parts it touches — S1/S2 the `trunk_01.lateral` body plus the
+   probe, S3 both cap bodies plus the probe (the caps never touch each
+   other). All three parts are still constructed through M06's `Body`
+   validator in every experiment (areas, indices, friction eagerly checked),
+   and the surface-id flow bars are unchanged (S1 surface_b
+   `trunk_01.lateral`; S3 surface_b `trunk_01.top_cap`).
+2. The full-split co-instantiation refusal is RECORDED as a measured property
+   of the duplicated-ring mesh under the pinned contact law (outcome refused,
+   code `nonfinite_state`), not silently avoided.
+3. No friction, press, mass, bar or bite is changed.
+
+Frozen 2026-09-28, before any build/verify run in this workspace.
+
+## AMENDMENT A2 (disclosed measured-topology correction; committed BEFORE the build)
+
+Reconciliation measured the pinned mesh's actual topology before the build:
+the 130-vertex/128-triangle asset duplicates its two seam rings EXACTLY
+(130 stored vertices, 66 distinct positions, worst duplicate distance 0.0 m),
+so the RAW triangle set is topologically open (128 boundary edges) while the
+WELDED surface (identical positions merged) is closed — 192 undirected edges,
+every one shared by exactly 2 triangles — and outward-consistent. Corrections,
+each strictly narrower or equally explicit versus the original text; no bar is
+loosened:
+
+1. P1 restated to the measured truth: raw open edges = 128 (exact seam
+   duplicates); welded closure = 0 open edges; distinct positions = 66; the
+   implementation asserts all three with named refusals.
+2. Region kind corrected `region` -> `shell` per the M02 frozen closure rule
+   ("zero open edges -> volume region; open edges -> shell that is never
+   treated as sealed; volume claim refused"). volume_claim_m3 = null. The
+   exact collision law remains the asset's declared analytic cylinder solid.
+3. P3 mass formula corrected to m = rho x V_analytic
+   (760 x 0.0049803731169212051 = 3.7850835688601157 kg; band
+   [3.2372425259987834, 4.2333171493830246] kg at 650/850): the mass derives
+   from the DECLARED exact solid, not from a claimed filled shell volume. The
+   welded divergence-theorem volume 0.004948423828872138 m3 (ratio to analytic
+   0.9935849609458944; relative deviation from the P2 inscribed-polygon
+   prediction 1.902e-6, within P2's 1e-5 bar) is recorded as the
+   discretization cross-check, with the two-ordering agreement bar unchanged.
+4. B3 (missing boundary) evaluated on the welded graph: removing the top cap
+   must leave the welded surface with open edges (refusing a volume claim).
+
+P2's numeric bars are unchanged and hold for the measured value. Frozen
+2026-09-28, before any build/verify run in this workspace.
+
 ## AMENDMENT A1 (disclosed arithmetic correction; committed BEFORE the build)
 
 The PROBES paragraph's in-text total "Total 28 probes" is an arithmetic
