@@ -1,0 +1,89 @@
+{
+ "all_green": true,
+ "attempt_id": "cc584d2e1e7c46de80bacbaf7ba12f77",
+ "candidate_revision": "integrated_step.py sha256 36c556dcf2cf0b3c9b7fe3c79dd42baae6489ad2c0b3093a5ac1bd550d8c66e4",
+ "checks": {
+  "F1_hidden_coupling_cross_wire_caught_by_independence_oracle": {
+   "F1": {
+    "caught_by": "independence_oracle_state_hash",
+    "max_abs_diff_B": 8.659739592076221e-13,
+    "note": "cross-wired components are caught"
+   },
+   "ok": true
+  },
+  "F2_ordering_swap_caught_by_declared_order_check": {
+   "F2": {
+    "abs_diff": 0.00019205877049594672,
+    "guard_fired": "declared_order_mismatch",
+    "plate_x_declared": 0.06219634979386086,
+    "plate_x_swapped": 0.06200429102336491
+   },
+   "ok": true
+  },
+  "F3_mixed_tick_state_caught": {
+   "F3": {
+    "refusal": "unexplained_energy"
+   },
+   "ok": true
+  },
+  "F4_separate_pass_overwrites_motion_caught": {
+   "F4": {
+    "refusal": "contact_separation_violation"
+   },
+   "ok": true
+  },
+  "F5_convergence_gate_disabled_fires": {
+   "F5": {
+    "refusal": "convergence_gate_not_met"
+   },
+   "ok": true
+  },
+  "P1_input_pins": {
+   "ok": true
+  },
+  "P2_declared_order_guard": {
+   "ok": true
+  },
+  "P3_single_owner_ast": {
+   "ok": true
+  },
+  "P4_world_state_is_owned": {
+   "ok": true
+  },
+  "P5_receipt_claims_replay": {
+   "ok": true
+  },
+  "P6_state_document_m01": {
+   "ok": true
+  },
+  "P7_determinism_two_fresh_runs_byte_identical": {
+   "determinism": {
+    "note": "two fresh subprocess runs produced byte-identical files",
+    "receipt_sha256": "2f4e119c7bf8a017f4ec029b1e74ab9a6e2f1677c326e4464181074a8f129a4a",
+    "trace_sha256": "910778fde960ec1e807ef200b6c6cad1ab3b2bb69371ea166a70bb4e66cabf0e"
+   },
+   "ok": true
+  },
+  "P8_regressions_M03_M04_M05_M06_green": {
+   "ok": true,
+   "regressions": {
+    "MAT2-M03": {
+     "exit": 0
+    },
+    "MAT2-M04": {
+     "exit": 0
+    },
+    "MAT2-M05": {
+     "exit": 0
+    },
+    "MAT2-M06": {
+     "exit": 0
+    }
+   }
+  }
+ },
+ "criteria_sha256": "ff18b443b97f2b3947cc993ff64175a9e848fc6d806ed90bd719fa2bd24e87b4",
+ "failures": [],
+ "planning_id": "M07",
+ "task": "MAT2-M07"
+}
