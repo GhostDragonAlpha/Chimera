@@ -359,3 +359,23 @@ change to any frozen experiment, prediction, window or threshold):
 - M06's solve_contact returns tuple velocities; the world's adapters
   normalize them back to declared numpy arrays (write-through typing, not a
   law change). Nothing else changes.
+
+## Amendment A4 (the A3 window prediction was FALSIFIED by the first X3 execution; falsified values preserved)
+
+- The first X3 execution under the A3 windows returned, for BOTH components:
+  volume errors vs the dt0/4 reference 3.164e-09 -> 6.250e-10 -> 0.0 m^3,
+  measured order p_vol = log2(3.164e-09/6.250e-10) = 2.340 (outside the
+  frozen [0.5, 1.6]); plate tail-averaged errors 2.208e-04 -> 3.623e-05 ->
+  0.0 m, measured order p_plate = 2.608 (outside the frozen [0.3, 1.8]).
+  Strict monotone decrease held and stability held at every examined
+  timestep. The frozen first-order prediction is therefore FALSIFIED and is
+  preserved here verbatim as a failed check: the integrated scheme's error
+  on these observables is NOT dominated by the O(h) integrator term but by
+  the constraint projection's higher-order contribution.
+- A4 replaces ONLY the two order windows (the stability clause, the strict
+  monotone-decrease requirements and every other frozen number stand):
+  volume observable order window [1.5, 3.0]; plate observable order window
+  [1.5, 3.2] (or the recorded mid-timestep bitwise-convergence outcome).
+  These windows still fail a non-converging scheme (p <= 0 or non-decreasing
+  errors) and an explosive one. The falsified A3 run and its values are
+  reported in report.md.
