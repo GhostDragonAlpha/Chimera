@@ -12,13 +12,28 @@ the later shadowing the earlier -- so every call was still comparing expansions 
 250,000-GRAIN cap. Reading the file did not show it; running it did.
 
     python ChimeraEngine/test_perf_guard.py
+    python ChimeraEngine/test_perf_guard.py --root PATH
+    CHIMERA_ENGINE_ROOT=PATH python ChimeraEngine/test_perf_guard.py
+
+ROOT is resolved in that order: --root argument, then CHIMERA_ENGINE_ROOT, then the
+documented project home (E:/PythonChimera). A hardcoded home made this gate test
+whichever checkout lived there instead of its own tree; a chosen ROOT without
+ChimeraEngine/perf_guard.py is refused loudly rather than silently testing elsewhere.
 """
+import os
 import warnings; warnings.filterwarnings('ignore')
 import sys, io, math, json, contextlib
 from pathlib import Path
 import numpy as np
 
-ROOT = Path('E:/PythonChimera')
+DEFAULT_ROOT = Path('E:/PythonChimera')          # the documented project home
+if '--root' in sys.argv:
+    ROOT = Path(sys.argv[sys.argv.index('--root') + 1])
+else:
+    ROOT = Path(os.environ.get('CHIMERA_ENGINE_ROOT', str(DEFAULT_ROOT)))
+if not (ROOT / 'ChimeraEngine' / 'perf_guard.py').is_file():
+    sys.exit(f"test_perf_guard: no ChimeraEngine/perf_guard.py under ROOT={ROOT} -- "
+             f"pass --root PATH or set CHIMERA_ENGINE_ROOT to the checkout to gate")
 sys.path.insert(0, str(ROOT / 'ChimeraEngine')); sys.path.insert(0, str(ROOT))
 
 import perf_guard as pg
@@ -68,7 +83,13 @@ from ParticleEngine.camera import FirstPersonCamera
 
 pipe = FullGPUPipeline(bg=(0.015, 0.015, 0.04))
 cam = FirstPersonCamera((0.0, -3.0, 0.0))
-buf = sa.scene_buffer('theMining')
+# The falsifier's data is whichever live membrane renders the biggest frame -- the matter-era
+# theMining buffer this test was written against no longer exists, and hardcoding another
+# membrane name would only set the same trap for its successor. Pick the largest live term.
+_LIVE = [(t, sa.scene_buffer(t)) for t in sa.scene_terms()]
+_LIVE = [(t, b) for t, b in _LIVE if b is not None and len(b)]
+TERM, buf = max(_LIVE, key=lambda tb: len(tb[1]))
+print(f"  falsifier membrane: {TERM} ({len(buf):,} grains -- the largest live term)")
 R = LOD.body_radius(buf); dist = 2.8 * R * 0.25
 pos = (0.0, -dist, 0.0)
 cam.position = np.array(pos, dtype=np.float32)
@@ -79,7 +100,7 @@ demo._aim_at_origin(cam, pos)
 # 1280x720, which is 2.9x fewer tiles and therefore 385k expansions. A threshold test whose
 # threshold is copied from a different resolution tests the copy, not the guard.
 with contextlib.redirect_stdout(io.StringIO()):
-    demo._render_frame(pipe, cam, buf, "probe", 0, term="theMining")
+    demo._render_frame(pipe, cam, buf, "probe", 0, term=TERM)
 _frame_exp = pipe.expansion_count()
 real_cap = pg.MAX_EXPANSIONS_PER_FRAME
 pg.MAX_EXPANSIONS_PER_FRAME = _frame_exp // 2      # this frame is exactly 2x the wall
@@ -87,7 +108,7 @@ print(f"  this frame makes {_frame_exp:,} expansions at {demo._W}x{demo._H}; "
       f"wall moved to {pg.MAX_EXPANSIONS_PER_FRAME:,} (frame is 2.0x over)")
 cap_out = io.StringIO()
 with contextlib.redirect_stdout(cap_out):
-    demo._render_frame(pipe, cam, buf, "falsifier", 4242, term="theMining")
+    demo._render_frame(pipe, cam, buf, "falsifier", 4242, term=TERM)
 pg.MAX_EXPANSIONS_PER_FRAME = real_cap
 txt = cap_out.getvalue()
 check("demo._render_frame prints [PERF] on an over-budget frame",
@@ -95,7 +116,7 @@ check("demo._render_frame prints [PERF] on an over-budget frame",
 
 cap_out = io.StringIO()
 with contextlib.redirect_stdout(cap_out):
-    demo._render_frame(pipe, cam, buf, "falsifier", 4243, term="theMining")
+    demo._render_frame(pipe, cam, buf, "falsifier", 4243, term=TERM)
 check("and stays SILENT when the same frame is inside budget",
       "[PERF]" not in cap_out.getvalue())
 
