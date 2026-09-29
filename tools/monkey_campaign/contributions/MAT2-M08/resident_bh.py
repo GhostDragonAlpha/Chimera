@@ -86,7 +86,7 @@ def bh_direct_numpy(xs, ms, g=G_N):
     d = xs[None, :, :] - xs[:, None, :]
     r2 = (d * d).sum(axis=2)
     np.fill_diagonal(r2, 1.0)
-    inv = 1.0 / (r2 * math.sqrt(r2))
+    inv = 1.0 / (r2 * np.sqrt(r2))
     return (g * (d * inv[:, :, None] * ms[None, :, None])).sum(axis=1)
 
 
