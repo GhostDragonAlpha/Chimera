@@ -1,0 +1,15 @@
+{
+ "provenance": "derived by make_report.py from the committed receipts; formulas recorded per entry",
+ "recovery_limb_m": {
+  "formula": "|gap_off(loaded) - gap_off(dedicated off run)| (limb)",
+  "value": 6.24002881601966e-06
+ },
+ "t1_drop_n": {
+  "formula": "T1(bound hold) - T1(released) (POST_RELEASE_WINDOW means)",
+  "value": 0.18983688031126916
+ },
+ "worst_whole_system_residual_n": {
+  "formula": "max over shapes/windows of |F_clamp + sum(F_contacts) - W_total|",
+  "value": 0.0011729533419591043
+ }
+}

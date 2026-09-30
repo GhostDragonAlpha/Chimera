@@ -1,0 +1,1576 @@
+{
+ "camera_consistency_proof": {
+  "per_still": {
+   "frame_00": {
+    "closeup": {
+     "above": {
+      "mean_row": 104.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       200,
+       60
+      ]
+     },
+     "below": {
+      "mean_row": 124.71428571428571,
+      "px_count": 35,
+      "rgb": [
+       0,
+       220,
+       120
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 20.714285714285708,
+     "tie_px_count": 26
+    },
+    "leakage": {
+     "pixels_outside_viewports": 0,
+     "tie_rgb": [
+      0,
+      170,
+      255
+     ]
+    },
+    "whole": {
+     "above": {
+      "mean_row": 97.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       70,
+       70
+      ]
+     },
+     "below": {
+      "mean_row": 132.0,
+      "px_count": 97,
+      "rgb": [
+       60,
+       60,
+       225
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 35.0
+    }
+   },
+   "frame_04": {
+    "closeup": {
+     "above": {
+      "mean_row": 113.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       200,
+       60
+      ]
+     },
+     "below": {
+      "mean_row": 195.0,
+      "px_count": 55,
+      "rgb": [
+       0,
+       220,
+       120
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 82.0,
+     "tie_px_count": 135
+    },
+    "leakage": {
+     "pixels_outside_viewports": 0,
+     "tie_rgb": [
+      0,
+      170,
+      255
+     ]
+    },
+    "whole": {
+     "above": {
+      "mean_row": 97.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       70,
+       70
+      ]
+     },
+     "below": {
+      "mean_row": 132.0,
+      "px_count": 97,
+      "rgb": [
+       60,
+       60,
+       225
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 35.0
+    }
+   },
+   "frame_10": {
+    "closeup": {
+     "above": {
+      "mean_row": 113.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       200,
+       60
+      ]
+     },
+     "below": {
+      "mean_row": 195.0,
+      "px_count": 55,
+      "rgb": [
+       0,
+       220,
+       120
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 82.0,
+     "tie_px_count": 136
+    },
+    "leakage": {
+     "pixels_outside_viewports": 0,
+     "tie_rgb": [
+      0,
+      170,
+      255
+     ]
+    },
+    "whole": {
+     "above": {
+      "mean_row": 97.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       70,
+       70
+      ]
+     },
+     "below": {
+      "mean_row": 132.0,
+      "px_count": 97,
+      "rgb": [
+       60,
+       60,
+       225
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 35.0
+    }
+   },
+   "frame_16": {
+    "closeup": {
+     "above": {
+      "mean_row": 111.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       200,
+       60
+      ]
+     },
+     "below": {
+      "mean_row": 195.0,
+      "px_count": 55,
+      "rgb": [
+       0,
+       220,
+       120
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 84.0,
+     "tie_px_count": 140
+    },
+    "leakage": {
+     "pixels_outside_viewports": 0,
+     "tie_rgb": [
+      0,
+      170,
+      255
+     ]
+    },
+    "whole": {
+     "above": {
+      "mean_row": 97.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       70,
+       70
+      ]
+     },
+     "below": {
+      "mean_row": 132.0,
+      "px_count": 97,
+      "rgb": [
+       60,
+       60,
+       225
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 35.0
+    }
+   }
+  },
+  "rule": "declared-above marker mean pixel row < declared-below marker mean pixel row (rows grow downward), per perspective viewport, declared +Z-dominant camera up; measured on the committed diagnostic stills",
+  "viewports": {
+   "closeup": {
+    "above": "free pole (T1 anchor)",
+    "below": "foot contact"
+   },
+   "whole": {
+    "above": "clamp_ring",
+    "below": "load_surrogate"
+   }
+  }
+ },
+ "cameras": {
+  "closeup": {
+   "aspect_ratio": 1.8307692307692307,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+   "coordinate_unit": "m",
+   "distance_to_target": 0.23822172712141462,
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m11_limb_closeup_sheet",
+   "handedness": "right",
+   "label_ids": [
+    "tissue_bladder",
+    "clamp_ring (visible support)",
+    "chain T1 humerus",
+    "chain T2 ulna",
+    "chain T3 radius",
+    "chain T4 foot(hand)",
+    "bond:load_surrogate",
+    "source_m11_source"
+   ],
+   "near_far_planes": [
+    0.005,
+    50.0
+   ],
+   "occlusion_or_xray_mode": "depth_tested",
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+   "position": [
+    0.13395721253366552,
+    -0.18754009754713175,
+    0.09528074564014949
+   ],
+   "projection": "perspective",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 0.23822172712141462,
+     "orientation": [
+      0.7537720336052248,
+      0.581974618826295,
+      0.18650252730457478,
+      0.24155759500715113
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.13395721253366552,
+      -0.18754009754713175,
+      0.09528074564014949
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.035
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 0.23822172712141462,
+     "orientation": [
+      0.7537720336052248,
+      0.581974618826295,
+      0.18650252730457478,
+      0.24155759500715113
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.13395721253366552,
+      -0.18754009754713175,
+      0.09528074564014949
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.035
+     ],
+     "tick": 300
+    },
+    {
+     "distance_to_target": 0.23822172712141462,
+     "orientation": [
+      0.7537720336052248,
+      0.581974618826295,
+      0.18650252730457478,
+      0.24155759500715113
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.13395721253366552,
+      -0.18754009754713175,
+      0.09528074564014949
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.035
+     ],
+     "tick": 450
+    },
+    {
+     "distance_to_target": 0.23822172712141462,
+     "orientation": [
+      0.7537720336052248,
+      0.581974618826295,
+      0.18650252730457478,
+      0.24155759500715113
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.13395721253366552,
+      -0.18754009754713175,
+      0.09528074564014949
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.035
+     ],
+     "tick": 700
+    },
+    {
+     "distance_to_target": 0.23822172712141462,
+     "orientation": [
+      0.7537720336052248,
+      0.581974618826295,
+      0.18650252730457478,
+      0.24155759500715113
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.13395721253366552,
+      -0.18754009754713175,
+      0.09528074564014949
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.035
+     ],
+     "tick": 1000
+    },
+    {
+     "distance_to_target": 0.23822172712141462,
+     "orientation": [
+      0.7537720336052248,
+      0.581974618826295,
+      0.18650252730457478,
+      0.24155759500715113
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.13395721253366552,
+      -0.18754009754713175,
+      0.09528074564014949
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.035
+     ],
+     "tick": 1100
+    },
+    {
+     "distance_to_target": 0.23822172712141462,
+     "orientation": [
+      0.7537720336052248,
+      0.581974618826295,
+      0.18650252730457478,
+      0.24155759500715113
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.13395721253366552,
+      -0.18754009754713175,
+      0.09528074564014949
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.035
+     ],
+     "tick": 1200
+    },
+    {
+     "distance_to_target": 0.23822172712141462,
+     "orientation": [
+      0.7537720336052248,
+      0.581974618826295,
+      0.18650252730457478,
+      0.24155759500715113
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.13395721253366552,
+      -0.18754009754713175,
+      0.09528074564014949
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.035
+     ],
+     "tick": 1350
+    },
+    {
+     "distance_to_target": 0.23822172712141462,
+     "orientation": [
+      0.7537720336052248,
+      0.581974618826295,
+      0.18650252730457478,
+      0.24155759500715113
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.13395721253366552,
+      -0.18754009754713175,
+      0.09528074564014949
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.035
+     ],
+     "tick": 1499
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+   "target": [
+    0.0,
+    0.0,
+    0.035
+   ],
+   "up_axis": "+Y",
+   "vertical_fov_degrees": 30,
+   "vertical_fov_or_orthographic_span": "vertical_fov_degrees=30",
+   "viewport_resolution": [
+    476,
+    260
+   ],
+   "visibility_layers": [
+    "stable membrane/triangle/port IDs",
+    "pressure and area-scaled force vectors",
+    "rest/current geometry and material directions",
+    "contact/bond state",
+    "energy/work and simulation tick"
+   ]
+  },
+  "front": {
+   "aspect_ratio": 1.8307692307692307,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+   "coordinate_unit": "m",
+   "distance_to_target": 0.62,
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m11_limb_front_sheet",
+   "handedness": "right",
+   "label_ids": [
+    "tissue_bladder",
+    "clamp_ring (visible support)",
+    "chain T1 humerus",
+    "chain T2 ulna",
+    "chain T3 radius",
+    "chain T4 foot(hand)",
+    "bond:load_surrogate",
+    "source_m11_source"
+   ],
+   "near_far_planes": [
+    0.005,
+    50.0
+   ],
+   "occlusion_or_xray_mode": "depth_tested",
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+   "orthographic_span": 0.46,
+   "position": [
+    0.62,
+    0.0,
+    0.19
+   ],
+   "projection": "orthographic",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.62,
+      0.0,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.62,
+      0.0,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 300
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.62,
+      0.0,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 450
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.62,
+      0.0,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 700
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.62,
+      0.0,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1000
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.62,
+      0.0,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1100
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.62,
+      0.0,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1200
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.62,
+      0.0,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1350
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.62,
+      0.0,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1499
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+   "target": [
+    0.0,
+    0.0,
+    0.19
+   ],
+   "up_axis": "+Y",
+   "vertical_fov_or_orthographic_span": "orthographic_span_m=0.46",
+   "viewport_resolution": [
+    476,
+    260
+   ],
+   "visibility_layers": [
+    "stable membrane/triangle/port IDs",
+    "pressure and area-scaled force vectors",
+    "rest/current geometry and material directions",
+    "contact/bond state",
+    "energy/work and simulation tick"
+   ]
+  },
+  "side": {
+   "aspect_ratio": 1.8307692307692307,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+   "coordinate_unit": "m",
+   "distance_to_target": 0.62,
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m11_limb_side_sheet",
+   "handedness": "right",
+   "label_ids": [
+    "tissue_bladder",
+    "clamp_ring (visible support)",
+    "chain T1 humerus",
+    "chain T2 ulna",
+    "chain T3 radius",
+    "chain T4 foot(hand)",
+    "bond:load_surrogate",
+    "source_m11_source"
+   ],
+   "near_far_planes": [
+    0.005,
+    50.0
+   ],
+   "occlusion_or_xray_mode": "depth_tested",
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+   "orthographic_span": 0.46,
+   "position": [
+    0.0,
+    0.62,
+    0.19
+   ],
+   "projection": "orthographic",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.7071067811865476
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.0,
+      0.62,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.7071067811865476
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.0,
+      0.62,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 300
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.7071067811865476
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.0,
+      0.62,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 450
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.7071067811865476
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.0,
+      0.62,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 700
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.7071067811865476
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.0,
+      0.62,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1000
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.7071067811865476
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.0,
+      0.62,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1100
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.7071067811865476
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.0,
+      0.62,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1200
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.7071067811865476
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.0,
+      0.62,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1350
+    },
+    {
+     "distance_to_target": 0.62,
+     "orientation": [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.7071067811865476
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.0,
+      0.62,
+      0.19
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1499
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+   "target": [
+    0.0,
+    0.0,
+    0.19
+   ],
+   "up_axis": "+Y",
+   "vertical_fov_or_orthographic_span": "orthographic_span_m=0.46",
+   "viewport_resolution": [
+    476,
+    260
+   ],
+   "visibility_layers": [
+    "stable membrane/triangle/port IDs",
+    "pressure and area-scaled force vectors",
+    "rest/current geometry and material directions",
+    "contact/bond state",
+    "energy/work and simulation tick"
+   ]
+  },
+  "whole": {
+   "aspect_ratio": 1.8307692307692307,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+   "coordinate_unit": "m",
+   "distance_to_target": 0.5550675634551167,
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m11_limb_whole_sheet",
+   "handedness": "right",
+   "label_ids": [
+    "tissue_bladder",
+    "clamp_ring (visible support)",
+    "chain T1 humerus",
+    "chain T2 ulna",
+    "chain T3 radius",
+    "chain T4 foot(hand)",
+    "bond:load_surrogate",
+    "source_m11_source"
+   ],
+   "near_far_planes": [
+    0.005,
+    50.0
+   ],
+   "occlusion_or_xray_mode": "depth_tested",
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+   "position": [
+    0.32,
+    -0.44,
+    0.3
+   ],
+   "projection": "perspective",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 0.5550675634551167,
+     "orientation": [
+      0.7360673681180132,
+      0.6021402425875683,
+      0.19580626040179558,
+      0.2393571938251908
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.32,
+      -0.44,
+      0.3
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 0.5550675634551167,
+     "orientation": [
+      0.7360673681180132,
+      0.6021402425875683,
+      0.19580626040179558,
+      0.2393571938251908
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.32,
+      -0.44,
+      0.3
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 300
+    },
+    {
+     "distance_to_target": 0.5550675634551167,
+     "orientation": [
+      0.7360673681180132,
+      0.6021402425875683,
+      0.19580626040179558,
+      0.2393571938251908
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.32,
+      -0.44,
+      0.3
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 450
+    },
+    {
+     "distance_to_target": 0.5550675634551167,
+     "orientation": [
+      0.7360673681180132,
+      0.6021402425875683,
+      0.19580626040179558,
+      0.2393571938251908
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.32,
+      -0.44,
+      0.3
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 700
+    },
+    {
+     "distance_to_target": 0.5550675634551167,
+     "orientation": [
+      0.7360673681180132,
+      0.6021402425875683,
+      0.19580626040179558,
+      0.2393571938251908
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.32,
+      -0.44,
+      0.3
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1000
+    },
+    {
+     "distance_to_target": 0.5550675634551167,
+     "orientation": [
+      0.7360673681180132,
+      0.6021402425875683,
+      0.19580626040179558,
+      0.2393571938251908
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.32,
+      -0.44,
+      0.3
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1100
+    },
+    {
+     "distance_to_target": 0.5550675634551167,
+     "orientation": [
+      0.7360673681180132,
+      0.6021402425875683,
+      0.19580626040179558,
+      0.2393571938251908
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.32,
+      -0.44,
+      0.3
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1200
+    },
+    {
+     "distance_to_target": 0.5550675634551167,
+     "orientation": [
+      0.7360673681180132,
+      0.6021402425875683,
+      0.19580626040179558,
+      0.2393571938251908
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.32,
+      -0.44,
+      0.3
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1350
+    },
+    {
+     "distance_to_target": 0.5550675634551167,
+     "orientation": [
+      0.7360673681180132,
+      0.6021402425875683,
+      0.19580626040179558,
+      0.2393571938251908
+     ],
+     "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+     "position": [
+      0.32,
+      -0.44,
+      0.3
+     ],
+     "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+     "target": [
+      0.0,
+      0.0,
+      0.19
+     ],
+     "tick": 1499
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+   "target": [
+    0.0,
+    0.0,
+    0.19
+   ],
+   "up_axis": "+Y",
+   "vertical_fov_degrees": 40,
+   "vertical_fov_or_orthographic_span": "vertical_fov_degrees=40",
+   "viewport_resolution": [
+    476,
+    260
+   ],
+   "visibility_layers": [
+    "stable membrane/triangle/port IDs",
+    "pressure and area-scaled force vectors",
+    "rest/current geometry and material directions",
+    "contact/bond state",
+    "energy/work and simulation tick"
+   ]
+  }
+ },
+ "frame_raw_sha256": {
+  "frame_00": {
+   "frame_index": 0,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "ec4328f8eb2a6c60753e2653c74bf626199979283918f546acadc49455c034e6",
+   "snapshot_tick": 0,
+   "width": 960
+  },
+  "frame_01": {
+   "frame_index": 1,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "472ef81d282488b86b03d239c6cba6e8b852d166b5ae096be576a3b1860b15a2",
+   "snapshot_tick": 0,
+   "width": 960
+  },
+  "frame_02": {
+   "frame_index": 2,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "a6448d0073754959d8df5548a1d051c6c12002b033184f6e50f650d7256c67d4",
+   "snapshot_tick": 300,
+   "width": 960
+  },
+  "frame_03": {
+   "frame_index": 3,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "0e5e31f7e2fea1c055e4633010e614f05816a169bf69a3386e1bac06da525c41",
+   "snapshot_tick": 300,
+   "width": 960
+  },
+  "frame_04": {
+   "frame_index": 4,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "d417b2e368485eef8e231d9cb4875547e528b7ff5cc40067afb4f83200b2c330",
+   "snapshot_tick": 450,
+   "width": 960
+  },
+  "frame_05": {
+   "frame_index": 5,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "7735f79c0ec27bd2c9101fdd04c09b67c9a4fc280a5c5afee2f22a374b5b710d",
+   "snapshot_tick": 450,
+   "width": 960
+  },
+  "frame_06": {
+   "frame_index": 6,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "ecbeb830459984248b02f4886b71c19e5b3bac141279ff61d0c091956b9deeb4",
+   "snapshot_tick": 700,
+   "width": 960
+  },
+  "frame_07": {
+   "frame_index": 7,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "21a2b36194a1cd49f33fec5d43291d21848f16374d5382cc9baa1830ea5907e4",
+   "snapshot_tick": 700,
+   "width": 960
+  },
+  "frame_08": {
+   "frame_index": 8,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "97750c22746874391be48c3bffc07ea0c589a19e4ac9f4648c3cbde237f10858",
+   "snapshot_tick": 1000,
+   "width": 960
+  },
+  "frame_09": {
+   "frame_index": 9,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "dcd3825061fe7a0537990a98217b2d54d649e30d7e911be0f3529b4470fac0e7",
+   "snapshot_tick": 1000,
+   "width": 960
+  },
+  "frame_10": {
+   "frame_index": 10,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "8811a96b74918491cc35c1f0731ba386d2a8afcf29e1fdc22080f2ffde0ce787",
+   "snapshot_tick": 1100,
+   "width": 960
+  },
+  "frame_11": {
+   "frame_index": 11,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "747aae166a89b3730e220fc71c2af9a696f6c6e4726ad1c2b7e79223b788ba63",
+   "snapshot_tick": 1100,
+   "width": 960
+  },
+  "frame_12": {
+   "frame_index": 12,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "8538334899e13f8aa2ce08ce7cd515e983c939c5cbdc0b550a0ca1087db376c2",
+   "snapshot_tick": 1200,
+   "width": 960
+  },
+  "frame_13": {
+   "frame_index": 13,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "2876826d155fc48c53d30abdcd14766a373bc5ca94fda3f2b0ad901058f19182",
+   "snapshot_tick": 1200,
+   "width": 960
+  },
+  "frame_14": {
+   "frame_index": 14,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "7cd44ba5e2589944056bcb9468f428eb26861be85e02f1a11049bf4d0ddcceb1",
+   "snapshot_tick": 1350,
+   "width": 960
+  },
+  "frame_15": {
+   "frame_index": 15,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "5589b0c6f559bdfe190a10ebbe1b130352529c00a8f6eaf7b3709b08116da338",
+   "snapshot_tick": 1350,
+   "width": 960
+  },
+  "frame_16": {
+   "frame_index": 16,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "7afd53ea1603e413a320bd5fbd119224cc6f92e37e5a72abc0ced9f0fb8dfd20",
+   "snapshot_tick": 1499,
+   "width": 960
+  },
+  "frame_17": {
+   "frame_index": 17,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "6c86644f2860553abed4222b1f65e7612d8846c83dad1dbc788e3969419f0405",
+   "snapshot_tick": 1499,
+   "width": 960
+  }
+ },
+ "labels": [
+  "tissue_bladder",
+  "clamp_ring (visible support)",
+  "chain T1 humerus",
+  "chain T2 ulna",
+  "chain T3 radius",
+  "chain T4 foot(hand)",
+  "bond:load_surrogate",
+  "source_m11_source"
+ ],
+ "layer_presence_proof": {
+  "per_layer": {
+   "contact/bond state": {
+    "key_colors": {
+     "(0, 150, 90)": 294,
+     "(0, 170, 255)": 278
+    },
+    "layer_index": 3,
+    "pixels_present": 572,
+    "present": true
+   },
+   "energy/work and simulation tick": {
+    "key_colors": {
+     "(140, 235, 140)": 100
+    },
+    "layer_index": 4,
+    "pixels_present": 100,
+    "present": true
+   },
+   "pressure and area-scaled force vectors": {
+    "key_colors": {
+     "(220, 30, 30)": 2576
+    },
+    "layer_index": 1,
+    "pixels_present": 2576,
+    "present": true
+   },
+   "rest/current geometry and material directions": {
+    "key_colors": {
+     "(255, 140, 0)": 1302
+    },
+    "layer_index": 2,
+    "pixels_present": 1302,
+    "present": true
+   },
+   "stable membrane/triangle/port IDs": {
+    "key_colors": {
+     "(255, 200, 90)": 63
+    },
+    "layer_index": 0,
+    "pixels_present": 63,
+    "present": true
+   }
+  },
+  "rule": "each declared layer rendered alone places >= 1 pixel of a layer key color"
+ },
+ "layer_probe_meta": {
+  "layer_0": {
+   "mode": "diagnostic",
+   "sha256": "3db06e6b2f9e65682b1513162b72b178805708a8af8bb7364c836d6034ae91bb",
+   "snapshot_tick": 300
+  },
+  "layer_1": {
+   "mode": "diagnostic",
+   "sha256": "6a8e4b859c8dbab30ec7a570dd78d020d1329337a3c799a1a18b143422093920",
+   "snapshot_tick": 300
+  },
+  "layer_2": {
+   "mode": "diagnostic",
+   "sha256": "e7e983f6bbc966c62a38dddfe90902d1b24acb355602a580c3dc5b513604e068",
+   "snapshot_tick": 300
+  },
+  "layer_3": {
+   "mode": "diagnostic",
+   "sha256": "3538f517532624ab9331cde2404209bd9c3392eea844fc05ad2b15fdb264f261",
+   "snapshot_tick": 300
+  },
+  "layer_4": {
+   "mode": "diagnostic",
+   "sha256": "51d6055f0fac4142ac90704686838c646a6a31d2c6540bcd9dde775c6cc2bf21",
+   "snapshot_tick": 300
+  }
+ },
+ "row_order_proof": {
+  "frame_00": {
+   "bmp_rows_match_payload": true,
+   "topdown_misread_does_not_match": true
+  },
+  "frame_04": {
+   "bmp_rows_match_payload": true,
+   "topdown_misread_does_not_match": true
+  },
+  "frame_10": {
+   "bmp_rows_match_payload": true,
+   "topdown_misread_does_not_match": true
+  },
+  "frame_16": {
+   "bmp_rows_match_payload": true,
+   "topdown_misread_does_not_match": true
+  }
+ },
+ "sheet": [
+  960,
+  540
+ ],
+ "still_hashes": {
+  "frame_00": {
+   "mode": "diagnostic",
+   "path": "capture/frames/frame_00.bmp",
+   "sha256": "be8d40a5d5323aa49c4d33a8048af4daf3074491ef65f4caec31e2c1a6c96d84",
+   "snapshot_tick": 0
+  },
+  "frame_04": {
+   "mode": "diagnostic",
+   "path": "capture/frames/frame_04.bmp",
+   "sha256": "3380b2c55ddf0385300a7aaee2071c77cc8b9c1ceedd1d26b3a336d738b1304f",
+   "snapshot_tick": 450
+  },
+  "frame_10": {
+   "mode": "diagnostic",
+   "path": "capture/frames/frame_10.bmp",
+   "sha256": "82b2ac507ba68eb34fc13c5295904e82406363dc64ac5f4ffe238dce9837516b",
+   "snapshot_tick": 1100
+  },
+  "frame_16": {
+   "mode": "diagnostic",
+   "path": "capture/frames/frame_16.bmp",
+   "sha256": "c7245d10388450ef94c267cf601cd58e388cc5c2c52217e9b252d37f5d7f7e61",
+   "snapshot_tick": 1499
+  }
+ },
+ "still_indices": [
+  0,
+  4,
+  10,
+  16
+ ],
+ "subjects": [
+  "tissue_bladder",
+  "clamp_ring",
+  "humerus",
+  "ulna",
+  "radius",
+  "foot",
+  "load_surrogate",
+  "source_m11_source"
+ ],
+ "tick_map": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,300,450,700,1000,1100,1200,1350,1499; even frames are the diagnostic sheets, odd frames the clean sheets (1 video second per snapshot)",
+ "view_ids": [
+  "whole experiment at fixed distance",
+  "orthogonal side and front",
+  "oblique close-up of the loaded interface"
+ ],
+ "viewport_rects": {
+  "closeup": [
+   484,
+   268,
+   959,
+   527
+  ],
+  "front": [
+   4,
+   268,
+   479,
+   527
+  ],
+  "side": [
+   484,
+   4,
+   959,
+   263
+  ],
+  "whole": [
+   4,
+   4,
+   479,
+   263
+  ]
+ }
+}
