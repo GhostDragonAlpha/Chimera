@@ -1,0 +1,330 @@
+{
+ "X0_material_state": {
+  "bond_count": 1,
+  "law_count": 1,
+  "region_count": 2,
+  "revision2_region_count": 2,
+  "revision2_validated": true,
+  "total_mass_kg": 0.03,
+  "validated": true
+ },
+ "X1_directional": {
+  "X1a_contraction": true,
+  "X1b_belt_extension": true,
+  "X1c_iso_baseline": true,
+  "X1d_dir_belt_vs_iso": true,
+  "X1d_dir_braid_vs_iso": true,
+  "delta_gap": {
+   "belt": 0.004339807809431356,
+   "braid": -0.0006280676406770352,
+   "iso": 0.001670179773190228
+  },
+  "per_layout": {
+   "belt": {
+    "chord_strain_max": 0.00802769027830004,
+    "chord_strain_min": -0.004610343766503016,
+    "delta_gap_m": 0.004339807809431356,
+    "ke_max_j": 0.030053244946666537,
+    "max_delta_p_pa": 2000.0,
+    "max_flow_m3_per_s": 3.252606517456513e-17,
+    "max_speed_m_per_s": 2.4516624949885144,
+    "settle_ok": true,
+    "traction_ratio_worst": 5.090455420370867e-16
+   },
+   "braid": {
+    "chord_strain_max": 0.006649096072198407,
+    "chord_strain_min": -0.0038691918914502544,
+    "delta_gap_m": -0.0006280676406770352,
+    "ke_max_j": 0.030053244946666537,
+    "max_delta_p_pa": 2000.0,
+    "max_flow_m3_per_s": 3.252606517456513e-17,
+    "max_speed_m_per_s": 2.4516624949885144,
+    "settle_ok": true,
+    "traction_ratio_worst": 4.736951571734001e-16
+   },
+   "iso": {
+    "chord_strain_max": 0.0,
+    "chord_strain_min": 0.0,
+    "delta_gap_m": 0.001670179773190228,
+    "ke_max_j": 0.030053244946666537,
+    "max_delta_p_pa": 2000.0,
+    "max_flow_m3_per_s": 0.0,
+    "max_speed_m_per_s": 2.4516624949885144,
+    "settle_ok": true,
+    "traction_ratio_worst": 4.872293045212116e-16
+   }
+  }
+ },
+ "X1_pass": true,
+ "X1e_monotonicity": {
+  "ordered": true,
+  "per_level": {
+   "1000": {
+    "delta_gap_m": -0.0003063065152302813,
+    "max_speed_m_per_s": 2.4516624949885144,
+    "volume_m3": 0.0005100546953071097,
+    "z_south_m": -0.04969369348476972
+   },
+   "2000": {
+    "delta_gap_m": -0.0006280676406770352,
+    "max_speed_m_per_s": 2.4516624949885144,
+    "volume_m3": 0.0005140032748004452,
+    "z_south_m": -0.04937193235932297
+   },
+   "4000": {
+    "delta_gap_m": -0.001086198224026419,
+    "max_speed_m_per_s": 2.4516624949885144,
+    "volume_m3": 0.0005215062567468248,
+    "z_south_m": -0.04891380177597359
+   }
+  }
+ },
+ "X2_blocked": {
+  "magnitude_window": true,
+  "monotone_nondecreasing": true,
+  "per_level": {
+   "1000": {
+    "max_speed_m_per_s": 2.4516624949885144,
+    "pin_force_n": [
+     -1.2847710011869321e-15,
+     3.5256491629534958e-15,
+     -0.04068925304288177
+    ],
+    "reaction_on_anchor_n": [
+     1.2847710011869321e-15,
+     -3.5256491629534958e-15,
+     0.04068925304288177
+    ]
+   },
+   "2000": {
+    "max_speed_m_per_s": 2.4516624949885144,
+    "pin_force_n": [
+     -4.520844876051762e-16,
+     -2.325392586887926e-15,
+     -0.11818279834263415
+    ],
+    "reaction_on_anchor_n": [
+     4.520844876051762e-16,
+     2.325392586887926e-15,
+     0.11818279834263415
+    ]
+   },
+   "3000": {
+    "max_speed_m_per_s": 2.4516624949885144,
+    "pin_force_n": [
+     3.263058211285424e-15,
+     -3.2559223729864476e-16,
+     -0.2080051721430304
+    ],
+    "reaction_on_anchor_n": [
+     -3.263058211285424e-15,
+     3.2559223729864476e-16,
+     0.2080051721430304
+    ]
+   },
+   "4000": {
+    "max_speed_m_per_s": 2.4516624949885144,
+    "pin_force_n": [
+     8.050031705773678e-16,
+     3.854819412891136e-15,
+     -0.297251504922436
+    ],
+    "reaction_on_anchor_n": [
+     -8.050031705773678e-16,
+     -3.854819412891136e-15,
+     0.297251504922436
+    ]
+   }
+  },
+  "reaction_1000_z_n": 0.04068925304288177,
+  "reaction_4000_z_n": 0.297251504922436,
+  "reaction_sign_positive": true,
+  "sublinear_low_p": true
+ },
+ "X2_pass": true,
+ "X2d_power_off": {
+  "reaction_z_n": -0.0,
+  "within": true
+ },
+ "X3_pass": true,
+ "X3_reciprocity": {
+  "2000": {
+   "dF_block_dp_m2": 8.365795955007433e-05,
+   "dV_dx_at_fixed_p_m2": 0.00011807554971627716,
+   "dV_m3": -3.376063883249632e-08,
+   "dx_m": -0.00028592404535587174,
+   "relative_disagreement": 0.29148786729263254,
+   "within_window": true
+  },
+  "3000": {
+   "dF_block_dp_m2": 8.953435328990093e-05,
+   "dV_dx_at_fixed_p_m2": 9.614388843127225e-05,
+   "dV_m3": -2.3550343226865118e-08,
+   "dx_m": -0.0002449489365483684,
+   "relative_disagreement": 0.06874628485716075,
+   "within_window": true
+  }
+ },
+ "X4_pass": true,
+ "X4_superposition": {
+  "F_block_n": 0.297251504922436,
+  "T_meas_n": 0.09806649999999915,
+  "dz_free_m": 0.001086198224026412,
+  "dz_loaded_m": 0.0008600061480545859,
+  "dz_pred_m": 0.000727849632438019,
+  "relative_disagreement": 0.18157117861541397,
+  "tie_follow_m": 0.00016344416666663752,
+  "tie_follow_within": true,
+  "within_window": true
+ },
+ "X5_pass": true,
+ "X5_work": {
+  "chord_strain_max": 0.0002619245354583607,
+  "chord_strain_min": -0.00018592897192219168,
+  "eta": 0.004850546420836674,
+  "eta_within": true,
+  "ledger_gates": {
+   "ledger_cumulative_bound_j": 0.0005,
+   "ledger_cumulative_residual_j": 0.00021370462063536813,
+   "ledger_worst_relative_r": 0.4744838685439313,
+   "ticks_checked": 1500,
+   "tie_ledger_worst_relative": 0.0005432503725131036,
+   "work_measures_worst_diff_j": 4.050519739930147e-09
+  },
+  "lift_m": 0.0015189389504911555,
+  "lift_positive": true,
+  "lift_within": true,
+  "max_delta_p_pa": 4000.0,
+  "max_flow_m3_per_s": 2.5944815552859588e-05,
+  "phase_state_counts": {
+   "A_rampup": 200,
+   "B_hold": 700,
+   "C_poweroff": 200,
+   "D_settled_off": 200,
+   "P0_presettle": 200
+  },
+  "phases": {
+   "A_rampup": {
+    "count": 200,
+    "w_press_j": 0.0303764789274623,
+    "worst_abs_r_j": 0.002361306612699911
+   },
+   "B_hold": {
+    "count": 700,
+    "w_press_j": 0.00033285022120032454,
+    "worst_abs_r_j": 0.0023724193427196567
+   },
+   "C_poweroff": {
+    "count": 200,
+    "w_press_j": -0.03025220269100424,
+    "worst_abs_r_j": 0.0023526622548450727
+   },
+   "D_settled_off": {
+    "count": 200,
+    "w_press_j": 0.0,
+    "worst_abs_r_j": 6.862487131056102e-06
+   },
+   "P0_presettle": {
+    "count": 200,
+    "w_press_j": 0.0,
+    "worst_abs_r_j": 6.309447513456894e-05
+   }
+  },
+  "power_identity_rel": 0.0,
+  "power_identity_within": true,
+  "power_off_return_m": -8.783816340951489e-08,
+  "power_off_within": true,
+  "south_lift_peak_m": 0.001518993371773289,
+  "tie_return_within": true,
+  "tie_tension_peak_n": 0.09806649999999793,
+  "traction_ratio_worst": 4.547473508864641e-16,
+  "w_load_j": 0.0001489570265883409,
+  "w_press_hold_total_j": 0.030709329148662635,
+  "w_press_total_j": 0.0004571264576583708
+ },
+ "X6_limits": {
+  "all_fired": true,
+  "refusals": {
+   "pressure_source_delta_p_limit_exceeded": {
+    "code": "pressure_source_delta_p_limit_exceeded",
+    "fired": true
+   },
+   "pressure_source_flow_limit_exceeded": {
+    "code": "pressure_source_flow_limit_exceeded",
+    "fired": true
+   },
+   "pressure_source_negative_absolute": {
+    "code": "pressure_source_negative_absolute",
+    "fired": true
+   },
+   "pressure_source_undeclared": {
+    "code": "pressure_source_undeclared",
+    "fired": true
+   }
+  }
+ },
+ "X6_pass": true,
+ "all_gates_green": true,
+ "arrival_id": "arrival-5c71030b5a614f89ac0716c1d99bfa0d",
+ "attempt_id": "02cc9dbda6f3494f8d8de36e20b94c0f",
+ "classification_rule": {
+  "bio_efficiency_band": [
+   0.2,
+   0.4
+  ],
+  "bio_specific_tension_pa": 200000.0,
+  "bio_work_density_j_per_kg": 20.0,
+  "scaffold_mass_kg": 0.02
+ },
+ "criteria_sha256": "5e7560caa9efae9ec819c9127ab6ee6e7016e134bdf97e525f06cfedee31190c",
+ "input_pins": {
+  "MAT2-M01/material_state.py": "b6b009713daa4b315c6b5cb43c7ad4e756123b50edcdd802eeebd55c6afd6c40",
+  "MAT2-M03/pressure_membrane.py": "3dd64f6465430380f1c0a53a95523c700cd51a6b1115e60f0df8afde2239c96e",
+  "MAT2-M04/passive_response.py": "68a696e1728066a3dce93db7b6c98f8bb4826322a84bbad20eeadf38350e326b",
+  "MAT2-M05/interface_exchange.py": "295e6c898ada14918f09b2b0633f5926c1623c9e09cd37258e516ab57450b9b9"
+ },
+ "p_vacuous_guard": {
+  "fires_on_identically_zero_window": true,
+  "lesson": "a gate that cannot fail is not a measurement (M07 independent-review lesson)",
+  "refusal_code": "vacuous_comparison_refused"
+ },
+ "trace_sha256": "05530438ad9056029891a8585b01e6993fa3fd8a7d1892d6adf28e75b60eda5b",
+ "windows": {
+  "audit_bite_m": 0.001,
+  "audit_window_m": 1e-09,
+  "buoyancy_rel": 1e-12,
+  "buoyancy_tamper_rel": 1e-06,
+  "dir_belt_min": 0.002,
+  "dir_braid_max": -0.001,
+  "eta_hi": 0.5,
+  "f_block_hi_n": 10.0,
+  "f_block_lo_n": 0.01,
+  "f_linearity_abs": 0.25,
+  "f_zero_floor_n": 0.0001,
+  "f_zero_residual": 0.02,
+  "fb5_path_factor": 5.0,
+  "gap_belt_min": 0.002,
+  "gap_braid_max": -0.0002,
+  "gap_iso_min": 0.001,
+  "ledger_cum_abs_j": 0.0005,
+  "ledger_cum_floor_j": 1e-05,
+  "ledger_cum_rel": 0.05,
+  "ledger_floor_j": 0.005,
+  "ledger_rel": 0.05,
+  "lift_hi_m": 0.01,
+  "lift_lo_m": 0.0001,
+  "monotone_epsilon_m": 1e-05,
+  "power_identity_rel": 1e-09,
+  "power_off_recovery": 0.1,
+  "reciprocity_floor": 1e-12,
+  "reciprocity_rel": 0.35,
+  "settle_speed_m_per_s": 0.0001,
+  "superposition_floor_m": 0.0001,
+  "superposition_rel": 0.25,
+  "tie_follow_m": 0.005,
+  "tie_return_factor": 1.2,
+  "traction_ratio_rel": 1e-09,
+  "work_measures_floor_j": 1e-12,
+  "work_measures_scale_rel": 0.0001
+ }
+}

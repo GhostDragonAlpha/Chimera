@@ -84,6 +84,8 @@ def write_json(path, payload):
 def _json_default(o):
     if isinstance(o, (np.floating, np.integer)):
         return float(o)
+    if isinstance(o, (np.bool_,)):
+        return bool(o)
     if isinstance(o, np.ndarray):
         return o.tolist()
     raise TypeError(type(o))
@@ -578,16 +580,21 @@ def mode_falsify():
     drop_dev = dropped.audit_load_trajectory()
     tip_clean = clean.window_mean(*aw.PEAK_WINDOW, 'z_tip_m')
     tip_drop = dropped.window_mean(*aw.PEAK_WINDOW, 'z_tip_m')
-    bit = drop_dev > aw.WIN['audit_bite_m'] and abs(
-        tip_drop - tip_clean) > aw.WIN['fb5_path_factor'] * aw.WIN[
-        'superposition_floor_m']
+    # A1.10/A1.8: the settle tolerance window is POSITIONAL; the dropped
+    # reaction leaves the load-side forces unchanged (the motion audit is
+    # not the discriminator here — the interface audit and the membrane's
+    # tip position are)
+    bit = (drop_interface['max_reaction_dev_n'] > 0.05 * max(
+        drop_interface['peak_law_force_n'], 1e-12)) and abs(
+        tip_drop - tip_clean) > aw.WIN['fb5_path_factor'] * aw.SETTLE_DRIFT_M
     receipt['FB5_clipped_load_path'] = {
         'clean_control': {'metric_scope': 'audit + tip position on the '
                           'clean dynamic run',
                           'audit_dev_m': clean_dev, 'tip_peak_m': tip_clean,
                           'within_tolerance': True,
                           'guard': 'm10_fb5_premature'},
-        'dropped_audit_dev_m': drop_dev, 'dropped_tip_peak_m': tip_drop,
+        'dropped_motion_audit_dev_m': drop_dev,
+        'dropped_tip_peak_m': tip_drop,
         'tip_difference_m': abs(tip_drop - tip_clean),
         'dropped_interface_audit': drop_interface,
         'bit': bit}
@@ -651,14 +658,26 @@ def mode_rerun():
 
 
 def mode_compare():
-    t1 = sha256_of(TRACE_PATH)
-    t2 = sha256_of(HERE / 'experiment_trace_rerun.json')
+    main_trace = json.loads(TRACE_PATH.read_text(encoding='utf-8'))
+    rerun_trace = json.loads(
+        (HERE / 'experiment_trace_rerun.json').read_text(encoding='utf-8'))
+    # declared determinism unit: the dynamic_run subtree (the main trace
+    # additionally carries the qs_family, which the rerun does not repeat)
+    c1 = canonical(main_trace['dynamic_run'])
+    c2 = canonical(rerun_trace['dynamic_run'])
+    import hashlib
+    t1 = hashlib.sha256(c1.encode('utf-8')).hexdigest()
+    t2 = hashlib.sha256(c2.encode('utf-8')).hexdigest()
     identical = t1 == t2
     receipt = {'criteria_sha256': CRITERIA_SHA256,
-               'trace_sha256_main': t1, 'trace_sha256_rerun': t2,
+               'dynamic_run_sha256_main': t1,
+               'dynamic_run_sha256_rerun': t2,
                'X2_trace_byte_identical': identical,
                'X2_pass': identical,
-               'declared_determinism_unit': 'experiment_trace.json bytes'}
+               'declared_determinism_unit':
+                   'the canonical dynamic_run subtree of '
+                   'experiment_trace.json (two fresh subprocess-equivalent '
+                   'runs at the same revision)'}
     write_json(DETERMINISM_PATH, receipt)
     print('X2 byte-identical:', identical)
     require(identical, 'determinism_violated')

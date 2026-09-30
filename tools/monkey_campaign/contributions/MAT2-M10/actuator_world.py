@@ -925,7 +925,7 @@ class WorldRun:
         worst = 0.0
         for tick in range(self.ticks):
             for sub in range(N_SUB):
-                f = np.array(self.force_rows[tick][sub])
+                f = np.array(self.force_rows[tick][sub][0:3])
                 v = v * max(0.0, 1.0 - C_LOAD * HS)
                 v = v + f / self.load_mass * HS
                 pos = pos + v * HS

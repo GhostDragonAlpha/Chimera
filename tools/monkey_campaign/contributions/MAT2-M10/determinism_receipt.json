@@ -1,0 +1,8 @@
+{
+ "X2_pass": true,
+ "X2_trace_byte_identical": true,
+ "criteria_sha256": "5e7560caa9efae9ec819c9127ab6ee6e7016e134bdf97e525f06cfedee31190c",
+ "declared_determinism_unit": "the canonical dynamic_run subtree of experiment_trace.json (two fresh subprocess-equivalent runs at the same revision)",
+ "dynamic_run_sha256_main": "d777b3e5caac8db1f05d2462aa463478d10c4b0b7735e2e8b20329660989af0c",
+ "dynamic_run_sha256_rerun": "d777b3e5caac8db1f05d2462aa463478d10c4b0b7735e2e8b20329660989af0c"
+}
