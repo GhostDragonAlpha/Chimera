@@ -459,3 +459,88 @@ an exact identity, a declared scenario constant, or a closed-form
 derivation shown with its formula. The original bounds above are superseded
 only by a pre-receipt CORRECTION/AMENDMENT recorded in this file with its
 triggering observation, never by a silent edit.
+
+
+## AMENDMENT A1 (pre-receipt, 2026-09-29Z; implementation bring-up, BEFORE the
+## frozen receipt run — no receipt numbers were produced or relied on)
+
+Each re-issued item records its triggering observation from the module
+bring-up (all gates armed during bring-up, exactly as the CPU-FIRST
+discipline requires):
+
+1. DAMPING SCHEDULE (law 5 re-issue): the frozen uniform c_v = 120 1/s gave
+   the free fall a 0.082 m/s terminal speed (observed: after 39 ticks the
+   bones had fallen 27 mm of their 21-39 mm drops; first ground contact
+   would land near tick 250, outside the 90-tick run — the separate-falls
+   evidence needs a near-ideal free fall). Re-issued: c_v = 8.0 1/s for the
+   loose phase (ticks 0..44; the sealed M05 value) and c_v = 120.0 1/s for
+   the bound/released phases (ticks 45..89; the declared assembly medium).
+   Always dissipated in the ledger either way.
+2. LIGAMENT REST LENGTH (law 5 re-issue): the frozen "rest length frozen at
+   bind" ligament produces ZERO bind force (rest = the bind distance), so
+   nothing drives the assembly and the pull phase never engages it within
+   its window (observed in the bring-up analysis). Re-issued: the ligament
+   is a declared SHORT CHECK-REIN with rest length 0.02 m and k_t = 60 N/m
+   (the sealed M05 stiffness): the bind act itself pulls the bones together
+   (observed bind tension ~5.4 N), and the pull phase engages it after
+   0.02 m of separation.
+3. CAPSULE ANCHORS (law 5 re-issue): the frozen shank anchors (0.03 m
+   behind each head face) make the compressed strut PRY THE JOINT OPEN
+   (anchors pushed apart inside the bones) instead of passing load through
+   the interface (observed in the bring-up force analysis). Re-issued: the
+   capsule is a strut anchored AT the head-face ports (port:head, the same
+   identified ports as the ligament), rest length frozen at bind; its
+   declared bidirectional law (k_c = 12 N/m) now resists closure and passes
+   load through the contact interface exactly like joint cartilage.
+4. SCHEDULE (law 5 re-issue): with the honest press dynamics the frozen
+   press window could not close the joint (triggering observation: press
+   3.0 N over ticks 60..69 left a 12.7 mm head gap at tick 69 — the contact
+   material never loaded; the closing crawl is set by the declared damping
+   and the capsule's 1.44 N closing resistance). Re-issued: press ticks
+   60..74 at 6.0 N toward bone_a; pull ticks 75..89 at 3.0 N away; RELEASE
+   TICK 85 (was 80). Bring-up values at the re-issued constants: first
+   bone-ground contact ticks bone_b 21, bone_a 30; first bone-bone contact
+   tick 66; sustained loaded press ticks 66..74 (joint gap ~1e-3 m at
+   tick 74); held at tick 84: ligament tension 1.73 N, contact OPEN (no
+   adhesion), gap 0.048 m; release bitwise zero from tick 85; gap(89) -
+   gap(84) = 0.0223 m (the released pair blows past the held gap).
+5. RESIDUAL FORM (law 9 re-issue): the impact tick exposed the XPBD
+   projection's kinetic-energy exchange (triggering observation: tick-30
+   residual -7.9e-4 J against a 3.5e-4 J bound, with the scaffold
+   reservoir at only 1.7e-6 J — the position-based projection discards
+   the impact violation energy within the tick). Re-issued: the projection
+   exchange Q_proj (per-tick KE change across the projection stage, both
+   bones) is a MEASURED ledger term (M07 e_stab heritage): R = E_mech(t) -
+   E_mech(t-1) - (W_act + W_lig + W_cap + W_grav) + Q_damp + Q_contact +
+   Q_proj + E_diss_release; the bound form is unchanged. Also re-issued
+   per the same bring-up tick: W_grav (gravity work) was missing from the
+   frozen residual form and is added (the falling phase residual equals
+   the missing gravity work otherwise).
+6. CONTACT NARROW PHASE (law 6 declaration): canonical pair order (body_a
+   carries the smaller body id) with DECLARED fallback normals for the
+   dist == 0 overlap case (+x bone-bone, +z bone-ground): the sealed
+   triangle-winding fallback was pair-order-dependent (triggering
+   observation: deep-overlap resolution at the bind-driven approach could
+   pick an order-dependent sign). Entries carry the BODY id so M06's
+   sweep_prune excludes same-body pairs (triggering observation: holder
+   indices made adjacent triangles of ONE bone contact each other).
+7. MOMENTUM LEDGER (law 6 re-issue): the identity is enforced per body per
+   substep over stages 1-3 with telescoping recorded deltas (m*(v4-v0) ==
+   gravity + damping + element_actuator + contact impulses, <= 1e-12); the
+   projection impulse is internal and pairwise (its work is the measured
+   Q_proj). The FB3 anchor-consistency gate isolates the ground-transmitted
+   impulse by subtracting the tracked bone-bone impulse total (triggering
+   observation: the bone accumulators already contain it, so the frozen
+   one-line form double-subtracted).
+8. T0/T4/T7/T10 RE-ISSUE at the re-issued schedule: document ticks
+   {0, 46, 70, 86, 89} with bond counts {0, 2, 2, 0, 0}; bitwise zero bond
+   force and energy on ticks 85..89 with E_diss_release == U_lig(84) +
+   U_cap(84); first bone-ground contact ticks bone_b in [17, 24], bone_a in
+   [24, 31] (differ by >= 3); first bone-bone contact tick in [46, 74]; at
+   tick 74 the joint contact is loaded (positive accumulated normal
+   impulse) with joint gap <= 1e-3 m; at tick 84 the ligament tension
+   exceeds 1.0 N with the joint contact OPEN and gap < 0.10 m; at tick 89
+   the gap exceeds the tick-84 gap by >= 0.015 m with bond forces bitwise
+   zero on all of [85, 89]; max bone speed <= 4.0 m/s; restrained
+   direction count >= 1 on every bound tick and 0 with a BITWISE zero
+   restraint matrix on every tick >= 85.
