@@ -1,0 +1,10 @@
+{
+ "capture_sha256": "b6980bd297b33050f9a35ac09e7276f446d597f45b82eef41f6d650a671b6a58",
+ "run_id": "mat2-g03-pose-sweep-20260930-b6980bd2",
+ "subject_sha256": "c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b",
+ "task_id": "G03",
+ "tick_interval": [
+  0,
+  20
+ ]
+}

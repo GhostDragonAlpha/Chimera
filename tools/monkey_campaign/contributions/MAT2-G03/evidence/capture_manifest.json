@@ -1,0 +1,964 @@
+{
+ "capture_sha256": "b6980bd297b33050f9a35ac09e7276f446d597f45b82eef41f6d650a671b6a58",
+ "numerical_evidence": {
+  "a09_terminal_ledger": {
+   "mapped": 3,
+   "not_on_hand_body": 31,
+   "pending_assembly_mapping": 14
+  },
+  "arm_rows": 546,
+  "document": "tendon_sweep.json",
+  "document_sha256": "c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b",
+  "fk_closure_observed": 1.1102230246251565e-16,
+  "fk_closure_window": 1e-12,
+  "kind": "pose_sweep_window_proofs",
+  "trace_sha256": "4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929",
+  "w2_abs_m": 1e-08,
+  "w2_rel": 1e-06,
+  "worst_residual_static_m": 2.377519188467847e-12,
+  "worst_residual_sweep_m": 9.639565621416546e-12
+ },
+ "profile_id": "tendon-pose-sweep",
+ "run_id": "mat2-g03-pose-sweep-20260930-b6980bd2",
+ "schema": "chimera.visual_capture_manifest.v1",
+ "sheet_layout": {
+  "frame_files": [
+   {
+    "frame": "frame_00.png",
+    "sha256": "26fdc4a158bd535fe57fb097cb8d406e54c98ad9dc5b824ab98aed97079f1b1d",
+    "tick": 0
+   },
+   {
+    "frame": "frame_01.png",
+    "sha256": "9146135ea6c8f717ce72b6af223d1a6e70303643fba61500a7eb9ca22da7f7e7",
+    "tick": 1
+   },
+   {
+    "frame": "frame_02.png",
+    "sha256": "dc0dba06d1b748818faf2387c135ef154744d1e2ce6e25bdca1b6dff6fb564dd",
+    "tick": 2
+   },
+   {
+    "frame": "frame_03.png",
+    "sha256": "5ad7b9e0c3907b202bf4ac15258d5d5c2422ff5ab75ac4e144971e0bfb7e2a0f",
+    "tick": 3
+   },
+   {
+    "frame": "frame_04.png",
+    "sha256": "0040c200db8e3acad1cd0aacc2e20523a2379cb67a994267096c8222af66b125",
+    "tick": 4
+   },
+   {
+    "frame": "frame_05.png",
+    "sha256": "ccee3a3285f6a1c555238e8db72c3a6fe4efea32b0fee56bdafd480d2a28b1cc",
+    "tick": 5
+   },
+   {
+    "frame": "frame_06.png",
+    "sha256": "67eb35b1ad8cf21db789b19ac38a0714431a1db77cc4e41b059ef711e50187ed",
+    "tick": 6
+   },
+   {
+    "frame": "frame_07.png",
+    "sha256": "d22fcf36d0dcc01b7dd2f8cef3bbe4391851449feeb7243243662b218d29c609",
+    "tick": 7
+   },
+   {
+    "frame": "frame_08.png",
+    "sha256": "e91b383914318c3d75369ef5c1fb49adabdaf4abb795cbf7b40c652b6f8ee435",
+    "tick": 8
+   },
+   {
+    "frame": "frame_09.png",
+    "sha256": "51a987e450ec5de5ef8d362fd10d1bcc159030e9e7872a4a79362cfc3e8f6819",
+    "tick": 9
+   },
+   {
+    "frame": "frame_10.png",
+    "sha256": "0c2808613e820c584f7257610a23fda782cf6a16da2f01f33d4bb60de3689096",
+    "tick": 10
+   },
+   {
+    "frame": "frame_11.png",
+    "sha256": "166831f2737c4ee0429b2ed02ef31c179d03d0d206a8bd106387c4f414917940",
+    "tick": 11
+   },
+   {
+    "frame": "frame_12.png",
+    "sha256": "a8d9d816797f381250970aabc98bd856635c00791e8911ce6b70f82fb510c2eb",
+    "tick": 12
+   },
+   {
+    "frame": "frame_13.png",
+    "sha256": "12a20ca3b90efc12b1912aaaf5c17462a2eb63c0faddc68f39ce00cef714a105",
+    "tick": 13
+   },
+   {
+    "frame": "frame_14.png",
+    "sha256": "e0bb15093025e14ddb4699c60acbc783761e6241bc7deb3735fabf433bc87a97",
+    "tick": 14
+   },
+   {
+    "frame": "frame_15.png",
+    "sha256": "dfe8b576c47deffa5432aacc9eedd4047ed4674b75ed224f71c725102065fd26",
+    "tick": 15
+   },
+   {
+    "frame": "frame_16.png",
+    "sha256": "b260ef568de6c84db81d1666bb90526f50599675ff78be9f66449ad8ddde257f",
+    "tick": 16
+   },
+   {
+    "frame": "frame_17.png",
+    "sha256": "0fc4c0d5d794570800a9cf34f5841768207a945cf834016946555b7a41d46686",
+    "tick": 17
+   },
+   {
+    "frame": "frame_18.png",
+    "sha256": "04892254253c39140c4cd8b45a9903780c598a0a1b1e99950e192d947fdc03f7",
+    "tick": 18
+   },
+   {
+    "frame": "frame_19.png",
+    "sha256": "7220fa6604cafbcb8edf5eddd4b57ee0224ef844df6da369e7f49c8eaca09273",
+    "tick": 19
+   },
+   {
+    "frame": "frame_20.png",
+    "sha256": "042e9ec24386a9e27dd0a265fe37f6226cc59d21b0b736cefb19d967ff3d8e19",
+    "tick": 20
+   }
+  ],
+  "honest_titles": "rendered inside every viewport: view_id, mode, tick, trace sha prefix; diagnostic rows carry the three required layers; clean rows carry no subject labels; footer carries frame_id, span, q_wrist_flexion and the document sha prefix",
+  "pixel_size": [
+   2928,
+   1232
+  ],
+  "rows": [
+   "top    diagnostic viewports [chain overview | endpoint close-up | alternate pose/axis view] with the three required diagnostic layers",
+   "bottom clean viewports (identical cameras and trace; no labels/layers by design; depth-tested)"
+  ],
+  "tick_to_seconds_map": "1 tick = one pose of the declared wrist_flexion sweep (21 uniform poses over the declared range); frames at 1 video second per tick"
+ },
+ "subject_sha256": "c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b",
+ "task_id": "G03",
+ "tick_interval": [
+  0,
+  20
+ ],
+ "views": [
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     21
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.6,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: static camera across the 21-tick wrist_flexion pose sweep (the STATE moves, the camera does not)",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.55,
+    "forward_axis": "+Y",
+    "frame_id": "monkeyArm_current_osim_ground_frame",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "orientation": [
+     0.7071067811865476,
+     -0.7071067811865475,
+     0.0,
+     -0.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.42,
+    "position": [
+     0.085,
+     -0.115,
+     0.555
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.55,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.085,
+       -0.115,
+       0.555
+      ],
+      "target": [
+       0.085,
+       -0.115,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.55,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.085,
+       -0.115,
+       0.555
+      ],
+      "target": [
+       0.085,
+       -0.115,
+       0.005
+      ],
+      "tick": 20
+     }
+    ],
+    "state_or_tick_interval": "motion capture, tick_interval [0, 20], one tick per sweep pose; trace sha256 4f813a82793d26c0...",
+    "target": [
+     0.085,
+     -0.115,
+     0.005
+    ],
+    "up_axis": "+Z",
+    "view_id": "chain overview",
+    "viewport_resolution": [
+     960,
+     600
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 1, top diagnostic row); declared-chain skeleton, tendon paths, joint axes, per-tick length/moment-arm trace strip",
+   "mode": "diagnostic",
+   "pair_id": "pair-overview",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G03/sweep_trace.json: the per-tick l(q) and signed moment-arm values (analytic velocity identity + central finite difference) of the declared-chain pose sweep; the subject document is tendon_sweep.json (sha256 c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b)",
+    "sha256": "4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929"
+   },
+   "view_id": "chain overview",
+   "visibility": {
+    "label_ids": [
+     "joint.wrist_flexion.axis",
+     "joint.wrist_abduction.axis",
+     "joint.elbow_flexion.axis",
+     "path.muscle.ext_carpi_ulnaris",
+     "trace.l.flex_carpi_radialis.curve",
+     "trace.l.ext_carpi_ulnaris.curve",
+     "trace.r_wrist_flexion.flex_carpi_radialis.curve",
+     "trace.r_wrist_abduction.flex_digit_profundus.curve"
+    ],
+    "layers": [
+     "resolved tendon endpoints and paths",
+     "joint axes and stable IDs",
+     "length and moment-arm traces"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "joint.elbow_flexion",
+     "joint.wrist_abduction",
+     "joint.wrist_flexion",
+     "muscle.ext_carpi_ulnaris",
+     "trace.l.ext_carpi_ulnaris",
+     "trace.l.flex_carpi_radialis",
+     "trace.r_wrist_abduction.flex_digit_profundus",
+     "trace.r_wrist_flexion.flex_carpi_radialis"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "joint.elbow_flexion",
+     "joint.wrist_abduction",
+     "joint.wrist_flexion",
+     "trace.l.ext_carpi_ulnaris",
+     "trace.l.flex_carpi_radialis",
+     "trace.r_wrist_abduction.flex_digit_profundus",
+     "trace.r_wrist_flexion.flex_carpi_radialis"
+    ],
+    "selected_ids": [
+     "joint.elbow_flexion",
+     "joint.wrist_abduction",
+     "joint.wrist_flexion",
+     "muscle.ext_carpi_ulnaris",
+     "trace.l.ext_carpi_ulnaris",
+     "trace.l.flex_carpi_radialis",
+     "trace.r_wrist_abduction.flex_digit_profundus",
+     "trace.r_wrist_flexion.flex_carpi_radialis"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "joint.wrist_flexion.axis",
+      "subject_id": "joint.wrist_flexion"
+     },
+     {
+      "label_id": "joint.wrist_abduction.axis",
+      "subject_id": "joint.wrist_abduction"
+     },
+     {
+      "label_id": "joint.elbow_flexion.axis",
+      "subject_id": "joint.elbow_flexion"
+     },
+     {
+      "label_id": "path.muscle.ext_carpi_ulnaris",
+      "subject_id": "muscle.ext_carpi_ulnaris"
+     },
+     {
+      "label_id": "trace.l.flex_carpi_radialis.curve",
+      "subject_id": "trace.l.flex_carpi_radialis"
+     },
+     {
+      "label_id": "trace.l.ext_carpi_ulnaris.curve",
+      "subject_id": "trace.l.ext_carpi_ulnaris"
+     },
+     {
+      "label_id": "trace.r_wrist_flexion.flex_carpi_radialis.curve",
+      "subject_id": "trace.r_wrist_flexion.flex_carpi_radialis"
+     },
+     {
+      "label_id": "trace.r_wrist_abduction.flex_digit_profundus.curve",
+      "subject_id": "trace.r_wrist_abduction.flex_digit_profundus"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     21
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.6,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: static camera across the 21-tick wrist_flexion pose sweep (the STATE moves, the camera does not)",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.55,
+    "forward_axis": "+Y",
+    "frame_id": "monkeyArm_current_osim_ground_frame",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "orientation": [
+     0.7071067811865476,
+     -0.7071067811865475,
+     0.0,
+     -0.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.42,
+    "position": [
+     0.085,
+     -0.115,
+     0.555
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.55,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.085,
+       -0.115,
+       0.555
+      ],
+      "target": [
+       0.085,
+       -0.115,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.55,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.085,
+       -0.115,
+       0.555
+      ],
+      "target": [
+       0.085,
+       -0.115,
+       0.005
+      ],
+      "tick": 20
+     }
+    ],
+    "state_or_tick_interval": "motion capture, tick_interval [0, 20], one tick per sweep pose; trace sha256 4f813a82793d26c0...",
+    "target": [
+     0.085,
+     -0.115,
+     0.005
+    ],
+    "up_axis": "+Z",
+    "view_id": "chain overview",
+    "viewport_resolution": [
+     960,
+     600
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 1, top diagnostic row); declared-chain skeleton, tendon paths, joint axes, per-tick length/moment-arm trace strip; clean row: identical camera and trace state, bottom row, no labels/layers by design",
+   "mode": "clean",
+   "pair_id": "pair-overview",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G03/sweep_trace.json: the per-tick l(q) and signed moment-arm values (analytic velocity identity + central finite difference) of the declared-chain pose sweep; the subject document is tendon_sweep.json (sha256 c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b)",
+    "sha256": "4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929"
+   },
+   "view_id": "chain overview",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "declared_chain/11_bodies",
+     "tendon_paths/13_grasp_muscles"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "declared_chain/11_bodies",
+     "tendon_paths/13_grasp_muscles"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     21
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.6,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: static camera across the 21-tick wrist_flexion pose sweep (the STATE moves, the camera does not)",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.12,
+    "forward_axis": "+Y",
+    "frame_id": "monkeyArm_current_osim_ground_frame",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "orientation": [
+     0.7071067811865476,
+     -0.7071067811865475,
+     0.0,
+     -0.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.045,
+    "position": [
+     0.14,
+     -0.116,
+     0.1255
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.14,
+       -0.116,
+       0.1255
+      ],
+      "target": [
+       0.14,
+       -0.116,
+       0.0055
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.14,
+       -0.116,
+       0.1255
+      ],
+      "target": [
+       0.14,
+       -0.116,
+       0.0055
+      ],
+      "tick": 20
+     }
+    ],
+    "state_or_tick_interval": "motion capture, tick_interval [0, 20], one tick per sweep pose; trace sha256 4f813a82793d26c0...",
+    "target": [
+     0.14,
+     -0.116,
+     0.0055
+    ],
+    "up_axis": "+Z",
+    "view_id": "endpoint close-up",
+    "viewport_resolution": [
+     960,
+     600
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 2, top row); wrist joint close-up: flexion+abduction axes, tendon endpoint markers colored by A09 terminal resolution",
+   "mode": "diagnostic",
+   "pair_id": "pair-closeup",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G03/sweep_trace.json: the per-tick l(q) and signed moment-arm values (analytic velocity identity + central finite difference) of the declared-chain pose sweep; the subject document is tendon_sweep.json (sha256 c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b)",
+    "sha256": "4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929"
+   },
+   "view_id": "endpoint close-up",
+   "visibility": {
+    "label_ids": [
+     "joint.wrist_flexion.axis",
+     "joint.wrist_abduction.axis"
+    ],
+    "layers": [
+     "resolved tendon endpoints and paths",
+     "joint axes and stable IDs",
+     "length and moment-arm traces"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "joint.wrist_abduction",
+     "joint.wrist_flexion"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "joint.wrist_abduction",
+     "joint.wrist_flexion"
+    ],
+    "selected_ids": [
+     "joint.wrist_abduction",
+     "joint.wrist_flexion"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "joint.wrist_flexion.axis",
+      "subject_id": "joint.wrist_flexion"
+     },
+     {
+      "label_id": "joint.wrist_abduction.axis",
+      "subject_id": "joint.wrist_abduction"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     21
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.6,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: static camera across the 21-tick wrist_flexion pose sweep (the STATE moves, the camera does not)",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.12,
+    "forward_axis": "+Y",
+    "frame_id": "monkeyArm_current_osim_ground_frame",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "orientation": [
+     0.7071067811865476,
+     -0.7071067811865475,
+     0.0,
+     -0.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.045,
+    "position": [
+     0.14,
+     -0.116,
+     0.1255
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.14,
+       -0.116,
+       0.1255
+      ],
+      "target": [
+       0.14,
+       -0.116,
+       0.0055
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.7071067811865476,
+       -0.7071067811865475,
+       0.0,
+       -0.0
+      ],
+      "position": [
+       0.14,
+       -0.116,
+       0.1255
+      ],
+      "target": [
+       0.14,
+       -0.116,
+       0.0055
+      ],
+      "tick": 20
+     }
+    ],
+    "state_or_tick_interval": "motion capture, tick_interval [0, 20], one tick per sweep pose; trace sha256 4f813a82793d26c0...",
+    "target": [
+     0.14,
+     -0.116,
+     0.0055
+    ],
+    "up_axis": "+Z",
+    "view_id": "endpoint close-up",
+    "viewport_resolution": [
+     960,
+     600
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 2, top row); wrist joint close-up: flexion+abduction axes, tendon endpoint markers colored by A09 terminal resolution; clean row: identical camera and trace state, bottom row, no labels/layers by design",
+   "mode": "clean",
+   "pair_id": "pair-closeup",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G03/sweep_trace.json: the per-tick l(q) and signed moment-arm values (analytic velocity identity + central finite difference) of the declared-chain pose sweep; the subject document is tendon_sweep.json (sha256 c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b)",
+    "sha256": "4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929"
+   },
+   "view_id": "endpoint close-up",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "declared_chain/11_bodies",
+     "tendon_paths/13_grasp_muscles"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "declared_chain/11_bodies",
+     "tendon_paths/13_grasp_muscles"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     21
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.6,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: static camera across the 21-tick wrist_flexion pose sweep (the STATE moves, the camera does not)",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.45,
+    "forward_axis": "+Y",
+    "frame_id": "monkeyArm_current_osim_ground_frame",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "orientation": [
+     0.0,
+     0.0,
+     0.0,
+     1.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.36,
+    "position": [
+     0.085,
+     0.335,
+     0.005
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.45,
+      "orientation": [
+       0.0,
+       0.0,
+       0.0,
+       1.0
+      ],
+      "position": [
+       0.085,
+       0.335,
+       0.005
+      ],
+      "target": [
+       0.085,
+       -0.115,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.45,
+      "orientation": [
+       0.0,
+       0.0,
+       0.0,
+       1.0
+      ],
+      "position": [
+       0.085,
+       0.335,
+       0.005
+      ],
+      "target": [
+       0.085,
+       -0.115,
+       0.005
+      ],
+      "tick": 20
+     }
+    ],
+    "state_or_tick_interval": "motion capture, tick_interval [0, 20], one tick per sweep pose; trace sha256 4f813a82793d26c0...",
+    "target": [
+     0.085,
+     -0.115,
+     0.005
+    ],
+    "up_axis": "+Z",
+    "view_id": "alternate pose/axis view",
+    "viewport_resolution": [
+     960,
+     600
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 3, top row); same state from the orthogonal -Y axis view (alternate pose/axis view)",
+   "mode": "diagnostic",
+   "pair_id": "pair-alternate",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G03/sweep_trace.json: the per-tick l(q) and signed moment-arm values (analytic velocity identity + central finite difference) of the declared-chain pose sweep; the subject document is tendon_sweep.json (sha256 c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b)",
+    "sha256": "4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929"
+   },
+   "view_id": "alternate pose/axis view",
+   "visibility": {
+    "label_ids": [
+     "joint.wrist_flexion.axis",
+     "joint.wrist_abduction.axis",
+     "joint.elbow_flexion.axis",
+     "path.muscle.abd_poll_longus"
+    ],
+    "layers": [
+     "resolved tendon endpoints and paths",
+     "joint axes and stable IDs",
+     "length and moment-arm traces"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "joint.elbow_flexion",
+     "joint.wrist_abduction",
+     "joint.wrist_flexion",
+     "muscle.abd_poll_longus"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "joint.wrist_flexion"
+    ],
+    "selected_ids": [
+     "joint.elbow_flexion",
+     "joint.wrist_abduction",
+     "joint.wrist_flexion",
+     "muscle.abd_poll_longus"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "joint.wrist_flexion.axis",
+      "subject_id": "joint.wrist_flexion"
+     },
+     {
+      "label_id": "joint.wrist_abduction.axis",
+      "subject_id": "joint.wrist_abduction"
+     },
+     {
+      "label_id": "joint.elbow_flexion.axis",
+      "subject_id": "joint.elbow_flexion"
+     },
+     {
+      "label_id": "path.muscle.abd_poll_longus",
+      "subject_id": "muscle.abd_poll_longus"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     21
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.6,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: static camera across the 21-tick wrist_flexion pose sweep (the STATE moves, the camera does not)",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.45,
+    "forward_axis": "+Y",
+    "frame_id": "monkeyArm_current_osim_ground_frame",
+    "handedness": "right",
+    "near_far_planes": [
+     0.001,
+     2.0
+    ],
+    "orientation": [
+     0.0,
+     0.0,
+     0.0,
+     1.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orthographic_span": 0.36,
+    "position": [
+     0.085,
+     0.335,
+     0.005
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.45,
+      "orientation": [
+       0.0,
+       0.0,
+       0.0,
+       1.0
+      ],
+      "position": [
+       0.085,
+       0.335,
+       0.005
+      ],
+      "target": [
+       0.085,
+       -0.115,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.45,
+      "orientation": [
+       0.0,
+       0.0,
+       0.0,
+       1.0
+      ],
+      "position": [
+       0.085,
+       0.335,
+       0.005
+      ],
+      "target": [
+       0.085,
+       -0.115,
+       0.005
+      ],
+      "tick": 20
+     }
+    ],
+    "state_or_tick_interval": "motion capture, tick_interval [0, 20], one tick per sweep pose; trace sha256 4f813a82793d26c0...",
+    "target": [
+     0.085,
+     -0.115,
+     0.005
+    ],
+    "up_axis": "+Z",
+    "view_id": "alternate pose/axis view",
+    "viewport_resolution": [
+     960,
+     600
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 3, top row); same state from the orthogonal -Y axis view (alternate pose/axis view); clean row: identical camera and trace state, bottom row, no labels/layers by design",
+   "mode": "clean",
+   "pair_id": "pair-alternate",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G03/sweep_trace.json: the per-tick l(q) and signed moment-arm values (analytic velocity identity + central finite difference) of the declared-chain pose sweep; the subject document is tendon_sweep.json (sha256 c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b)",
+    "sha256": "4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929"
+   },
+   "view_id": "alternate pose/axis view",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "declared_chain/11_bodies",
+     "tendon_paths/13_grasp_muscles"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "declared_chain/11_bodies",
+     "tendon_paths/13_grasp_muscles"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  }
+ ]
+}

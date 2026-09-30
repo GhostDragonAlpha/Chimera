@@ -1,0 +1,269 @@
+{
+ "cameras": {
+  "alternate pose/axis view": {
+   "aspect_ratio": 1.6,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: static camera across the 21-tick wrist_flexion pose sweep (the STATE moves, the camera does not)",
+   "coordinate_unit": "m",
+   "distance_to_target": 0.45,
+   "forward_axis": "+Y",
+   "frame_id": "monkeyArm_current_osim_ground_frame",
+   "handedness": "right",
+   "near_far_planes": [
+    0.001,
+    2.0
+   ],
+   "orientation": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orthographic_span": 0.36,
+   "position": [
+    0.085,
+    0.335,
+    0.005
+   ],
+   "projection": "orthographic",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 0.45,
+     "orientation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ],
+     "position": [
+      0.085,
+      0.335,
+      0.005
+     ],
+     "target": [
+      0.085,
+      -0.115,
+      0.005
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 0.45,
+     "orientation": [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ],
+     "position": [
+      0.085,
+      0.335,
+      0.005
+     ],
+     "target": [
+      0.085,
+      -0.115,
+      0.005
+     ],
+     "tick": 20
+    }
+   ],
+   "state_or_tick_interval": "motion capture, tick_interval [0, 20], one tick per sweep pose; trace sha256 4f813a82793d26c0...",
+   "target": [
+    0.085,
+    -0.115,
+    0.005
+   ],
+   "up_axis": "+Z",
+   "view_id": "alternate pose/axis view",
+   "viewport_resolution": [
+    960,
+    600
+   ]
+  },
+  "chain overview": {
+   "aspect_ratio": 1.6,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: static camera across the 21-tick wrist_flexion pose sweep (the STATE moves, the camera does not)",
+   "coordinate_unit": "m",
+   "distance_to_target": 0.55,
+   "forward_axis": "+Y",
+   "frame_id": "monkeyArm_current_osim_ground_frame",
+   "handedness": "right",
+   "near_far_planes": [
+    0.001,
+    2.0
+   ],
+   "orientation": [
+    0.7071067811865476,
+    -0.7071067811865475,
+    0.0,
+    -0.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orthographic_span": 0.42,
+   "position": [
+    0.085,
+    -0.115,
+    0.555
+   ],
+   "projection": "orthographic",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 0.55,
+     "orientation": [
+      0.7071067811865476,
+      -0.7071067811865475,
+      0.0,
+      -0.0
+     ],
+     "position": [
+      0.085,
+      -0.115,
+      0.555
+     ],
+     "target": [
+      0.085,
+      -0.115,
+      0.005
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 0.55,
+     "orientation": [
+      0.7071067811865476,
+      -0.7071067811865475,
+      0.0,
+      -0.0
+     ],
+     "position": [
+      0.085,
+      -0.115,
+      0.555
+     ],
+     "target": [
+      0.085,
+      -0.115,
+      0.005
+     ],
+     "tick": 20
+    }
+   ],
+   "state_or_tick_interval": "motion capture, tick_interval [0, 20], one tick per sweep pose; trace sha256 4f813a82793d26c0...",
+   "target": [
+    0.085,
+    -0.115,
+    0.005
+   ],
+   "up_axis": "+Z",
+   "view_id": "chain overview",
+   "viewport_resolution": [
+    960,
+    600
+   ]
+  },
+  "endpoint close-up": {
+   "aspect_ratio": 1.6,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: static camera across the 21-tick wrist_flexion pose sweep (the STATE moves, the camera does not)",
+   "coordinate_unit": "m",
+   "distance_to_target": 0.12,
+   "forward_axis": "+Y",
+   "frame_id": "monkeyArm_current_osim_ground_frame",
+   "handedness": "right",
+   "near_far_planes": [
+    0.001,
+    2.0
+   ],
+   "orientation": [
+    0.7071067811865476,
+    -0.7071067811865475,
+    0.0,
+    -0.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orthographic_span": 0.045,
+   "position": [
+    0.14,
+    -0.116,
+    0.1255
+   ],
+   "projection": "orthographic",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 0.12,
+     "orientation": [
+      0.7071067811865476,
+      -0.7071067811865475,
+      0.0,
+      -0.0
+     ],
+     "position": [
+      0.14,
+      -0.116,
+      0.1255
+     ],
+     "target": [
+      0.14,
+      -0.116,
+      0.0055
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 0.12,
+     "orientation": [
+      0.7071067811865476,
+      -0.7071067811865475,
+      0.0,
+      -0.0
+     ],
+     "position": [
+      0.14,
+      -0.116,
+      0.1255
+     ],
+     "target": [
+      0.14,
+      -0.116,
+      0.0055
+     ],
+     "tick": 20
+    }
+   ],
+   "state_or_tick_interval": "motion capture, tick_interval [0, 20], one tick per sweep pose; trace sha256 4f813a82793d26c0...",
+   "target": [
+    0.14,
+    -0.116,
+    0.0055
+   ],
+   "up_axis": "+Z",
+   "view_id": "endpoint close-up",
+   "viewport_resolution": [
+    960,
+    600
+   ]
+  }
+ },
+ "render_record": {
+  "bones": "segments between declared body origins (no mesh display exists; declared 2D reduction)",
+  "envelope": "none - the A05 mutant envelope is NOT in the declared osim chain and is not drawn",
+  "ffmpeg_version": "ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+  "frames": 21,
+  "kind": "motion sheet per tick",
+  "sheet_pixel_size": [
+   2928,
+   1232
+  ],
+  "state_binding": {
+   "kind": "trace",
+   "sha256": "4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929"
+  },
+  "viewport_pixel_size": [
+   960,
+   600
+  ]
+ }
+}
