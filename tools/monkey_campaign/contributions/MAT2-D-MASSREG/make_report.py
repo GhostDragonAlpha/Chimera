@@ -111,12 +111,13 @@ def main():
       'gate | all {a} store anchors verified against MANIFEST.json at '
       'build time and in check P_input_pins | PASS |'.format(
           a=len(enum['anchor_manifest'])))
+    reconciled_flags = [s['reconciled_into_one']
+                        for s in reg['systems'].values()]
     w('| Declaring the two systems reconciled into one fails | '
       'two_systems_declared_distinct={d}, systems reconciled_into_one '
-      'flags={[s["reconciled_into_one"] for s in reg["systems"].values()]}'
-      '| T8 green |'.format(
+      'flags={flags} | T8 green |'.format(
           d=reg['law']['two_systems_declared_distinct'],
-          s=reg))
+          flags=reconciled_flags))
     w('')
     w('## The register')
     w('')
