@@ -908,6 +908,7 @@ def _gpu_bank_run(trace_path, receipt_path, profile_path):
 def _gpu_bank_body(gpu, oracle, pins):
     """The lockstep oracle-vs-resident run (called under the world's
     release guard)."""
+    import resident_bones as rb
     rows = []
     worst_pos = 0.0
     scalar_worst = {}
@@ -938,11 +939,11 @@ def _gpu_bank_body(gpu, oracle, pins):
         except ValueError as exc:
             _gpu_debug_dump(gpu, block, tick, exc)
             raise
-        # digest chain recompute from the emitted block (stale guard) is
-        # inside check_gates; record its verdict
+        # digest chain gate (the M08-proven tolerant form; the tick slot is
+        # exact and the fold carries the declared 1e-9 relative tolerance —
+        # a stale block still moves the digest by O(1))
         for b in range(km.N_BONES):
-            want = km.block_digest(block[b], tick)
-            if want != float(block[b][km.D_DIGEST]):
+            if not rb.digest_matches(block[b], tick):
                 digest_green = False
         # frozen position window: the full 16-row vertex snapshot
         oa = np.asarray(oracle.bone_a.x)

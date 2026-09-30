@@ -119,6 +119,28 @@ def _receipts_present():
         and (HERE / 'gpu_determinism_receipt.json').exists()
 
 
+@unittest.skipUnless((HERE / 'debug_gate_failure.json').exists(),
+                     'm09-gmain-002 debug dump not present')
+class DigestGate(unittest.TestCase):
+    def test_digest_gate_tolerant_but_bites(self):
+        """The measured m09-gmain-002 case: the device fold drifted the
+        host recompute by 1.1e-16 on comp1 (comp0 bit-exact) — the declared
+        gate must ACCEPT that and still REFUSE a stale/forged block (its
+        digest moves O(1))."""
+        import kernel_mirror as km
+        dbg = load('debug_gate_failure.json')
+        tick = dbg['tick']
+        for b in range(km.N_BONES):
+            row = [dbg['blocks'][b][f'slot{i}'] for i in range(96)]
+            self.assertTrue(rb.digest_matches(row, tick))
+        row = [dbg['blocks'][1][f'slot{i}'] for i in range(96)]
+        row[km.D_TICK] = float(tick)          # forged tick, stale values
+        self.assertFalse(rb.digest_matches(row, tick + 1))
+        row[km.D_TICK] = float(tick)
+        row[0] = row[0] * 1.05                # tampered value
+        self.assertFalse(rb.digest_matches(row, tick))
+
+
 @unittest.skipUnless(_receipts_present(),
                      'GPU bank receipts not present (run gmain/grerun/'
                      'gcompare on the GPU box first)')

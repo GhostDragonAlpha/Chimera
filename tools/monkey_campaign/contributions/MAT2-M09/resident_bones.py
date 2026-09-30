@@ -1643,6 +1643,23 @@ def k_tick_diag(X, V, PASS, SYS, VSTART_TICK, TRIS, EDGES, RESTLEN, MASSES,
 # the resident world (host orchestration; MirrorWorld's device twin)
 # ===========================================================================
 
+DIGEST_GATE_TOLERANCE = 1e-9
+
+
+def digest_matches(block_row, tick):
+    """The declared digest-chain gate, in the M08-proven form (measured on
+    hardware twice now): the device fold's fused arithmetic can drift the
+    host recompute by ~1 ULP (m09-gmain-002: comp0 bit-exact, comp1 off by
+    1.1e-16; M08 F3: 9.1e-13 on a ~4.3e3 digest), while a STALE or
+    tampered block changes the digest by O(1) — nine orders above the
+    tolerance. The tick slot is checked exactly; the folded digest is
+    checked within DIGEST_GATE_TOLERANCE relative (floor 1.0)."""
+    if int(round(block_row[D_TICK])) != int(tick):
+        return False
+    want = block_digest(block_row, tick)
+    got = float(block_row[D_DIGEST])
+    return abs(want - got) <= DIGEST_GATE_TOLERANCE * max(1.0, abs(want))
+
 class ResidentBonesWorld:
     """GPU-resident executor of M09's declared tick. All physical state
     lives in device arrays from construction to release; the host submits
@@ -1796,8 +1813,7 @@ class ResidentBonesWorld:
         for b in range(N_BONES):
             for v in block[b]:
                 require(np.isfinite(v), E_NONFINITE)
-            want = block_digest(block[b], tick)
-            require(want == block[b][D_DIGEST], E_DIGEST)
+            require(digest_matches(block[b], tick), E_DIGEST)
 
     def release(self):
         # Idempotent teardown. The synchronize() drains every pending
