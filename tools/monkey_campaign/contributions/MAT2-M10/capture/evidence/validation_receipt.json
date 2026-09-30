@@ -1,0 +1,27 @@
+{
+ "attempt_id": "02cc9dbda6f3494f8d8de36e20b94c0f",
+ "capture_kind": "video",
+ "codec": {
+  "bitexact": true,
+  "codec": "ffv1",
+  "container": "matroska",
+  "ffmpeg_version": "ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+  "gop": 1,
+  "level": 3,
+  "standard": "E:/ChimeraWork/monkey-coordination/codec-benchmark/CODEC_STANDARD.md"
+ },
+ "criteria_sha256": "5e7560caa9efae9ec819c9127ab6ee6e7016e134bdf97e525f06cfedee31190c",
+ "limits": "Structural camera-metadata validation only; independent image/physics review remains mandatory.",
+ "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "profile_id": "material",
+ "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-M10].spec.ontology_qualification.task.verification_profile (read read-only)",
+ "render_source": "solver snapshot stream of the braid-jack work run (9 declared ticks, diagnostic/clean sheet pairs); software rasterization of solver state, declared in the applicability boundary",
+ "structurally_valid": true,
+ "trace_dynamic_run_sha256": "cbc033448c40765ec89d9253d1c92f328373452c27519dfca8ccf76cb6c06cde",
+ "trace_path": "tools/monkey_campaign/contributions/MAT2-M10/experiment_trace.json",
+ "validator": "tools/monkey_campaign/visual_capture.py validate_manifest",
+ "video_path": "..\\..\\..\\capture-test\\capture\\capture_mat2_m10_jack.mkv",
+ "video_sha256": "e31845779da9fcf1608f61d9504e70472481de5b8d7e4a857f1e3cb7578e193d",
+ "view_count": 6,
+ "visual_acceptance": false
+}
