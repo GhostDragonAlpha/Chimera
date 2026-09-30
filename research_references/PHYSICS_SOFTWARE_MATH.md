@@ -186,7 +186,7 @@ The human menu items A5+G1 (motion matching) and B1 (foot IK) are these rows.
 | CCD inverse kinematics | iterate joints end-to-root, rotate each toward target | well-known heuristic | quick IK |
 | FABRIK | forward/backward reach passes along the chain, joint-length preserving | Aristidou & Lasenby 2011 | **B1 foot IK** |
 | Damped least squares (Jacobian) | Δq = Jᵀ(JJᵀ + λ²I)⁻¹ e — singularity-robust IK | Buss & Kim 2005 | precise foot placement |
-| Foot phase from GRF | stance/swing segmentation from measured GRF curves | gait_normative.json (in repo) | IK target timing |
+| Foot phase from GRF | stance/swing segmentation from measured GRF curves | gait_normative.json (in repo; deleted by 2fb2f75f 2026-08-06, restored 2026-09-30, blob `ea801b08`) | IK target timing |
 
 ## 11. PHYSIOLOGY — Fiala thermal, Pennes bioheat, respiratory models
 

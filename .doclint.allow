@@ -84,7 +84,6 @@ story/HIERARCHIES.md
 story/LANGUAGE.md
 story/audit.py
 story/data/gait_directional.json
-story/data/gait_normative.json
 story/data/material_genomes.json
 story/data/physics_catalog.json
 story/data/signatures/second_pass.json
