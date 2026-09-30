@@ -18,13 +18,14 @@ CARD_ID = 'G02'
 FILES = ('PREREGISTRATION.md', 'attachment_patch.py', 'run_experiments.py',
          'test_attachment_fixture.py', 'lint_report_numbers.py',
          'render_run.py', 'make_capture.py', 'make_report.py',
+         'check_capture_pixels.py',
          'KNOWN_SKIPS.md', '.gitattributes',
          'experiment_receipt.json', 'experiment_trace.json',
          'experiment_receipt_rerun2.json', 'experiment_trace_rerun2.json',
          'determinism_receipt.json', 'falsifier_receipt.json',
          'regression_receipt.json',
          'capture_manifest.json', 'capture_context.json',
-         'capture_validation_receipt.json')
+         'capture_validation_receipt.json', 'capture_pixel_presence.json')
 
 
 def load(name):
@@ -42,7 +43,10 @@ def main():
     reg = load('regression_receipt.json')
     prof = load('experiment_profile.json')
     cap = load('capture_validation_receipt.json')
+    px = load('capture_pixel_presence.json')
     t8 = r['T8']
+    t3 = next(p for p in r['element_probes']
+              if p['probe'] == 'T3_reciprocity')
     arms = fal['arms']
     w = []
     add = w.append
@@ -55,7 +59,8 @@ def main():
         'Isolated attempt-workspace checkout of E:/PythonChimera; candidate '
         'branch codex/monkey-mat2-g02-983a9a8b1b on the sealed line tip '
         'f6cbf7a9 (= origin/astra/gait-capture). Composed against '
-        'CARD_STARTER.md v2; house standards IMPLEMENTER_CHECKLIST.md '
+        'CARD_STARTER.md v2; round-1 corrections composed against '
+        'CARD_STARTER.md v3; house standards IMPLEMENTER_CHECKLIST.md '
         '(G1-G9) and TOOLKIT.md (P1-P9) cited at the candidate commit.')
     add('')
     add('## done_when clause map (executed on the exact candidate revision)')
@@ -68,10 +73,11 @@ def main():
         f'(worst rel {r["worst_agreement_rel"]}) | {x1} |')
     c1 = 'PASS' if r['T3_pass'] else 'FAIL'
     add('| Finite-area attachment forces and moments enter both connected '
-        'material states | T3 reciprocity (bitwise force pairs, summed '
-        f'torque {t8["worst_ledger_residual_J"]} N*m ledger class; '
-        'interface force sums bitwise zero; per-body received moments '
-        f'recorded in the trace) | {c1} |')
+        'material states | T3 reciprocity (bitwise force pairs; worst '
+        f'summed torque {t3["worst_summed_torque_N_m"]} N*m against the '
+        'frozen 1e-15 bound (receipt element_probes T3 block); interface '
+        'force sums bitwise zero; per-body received moments recorded in '
+        f'the trace) | {c1} |')
     c2 = 'PASS' if (t8['bitwise_release_identity']
                     and t8['post_release_bitwise_zero']
                     and r['documents']['released_document_bond_count'] == 0
@@ -157,6 +163,17 @@ def main():
         'fixed bookmarks; clean pairs share the exact camera and the '
         'exact physical state; state hash preserved across view toggles: '
         f'{cap["state_hash_preserved_across_view_toggles"]}.')
+    pp = cap['pixel_presence']
+    add('- Pixel-presence grounding (round-1 fix): draw_viewport() is '
+        'called for all six viewports; every visibility claim is measured '
+        f'per frame in capture_pixel_presence.json (min tile non-bg '
+        f'pixels {pp["min_tile_nonbg_pixels"]}, footer trace-inset line '
+        f'min {pp["footer_min_trace_line_pixels"]} px, reprojection-oracle '
+        f'max delta {pp["camera_consistency_max_delta_px"]} px); '
+        'check_capture_pixels.py re-measures the committed frames against '
+        'the manifest (GREEN) and REDs on the pre-fix capture (control: '
+        '420 violations, five of six tiles at zero non-background '
+        'pixels).')
     add('- Honest limit: validate_manifest is structural only; independent '
         'image/physics review (the Sergeant gate) remains mandatory and is '
         'owned by the Lieutenant.')
@@ -192,6 +209,38 @@ def main():
         'holds tick i+1); the bound M01 document is now captured while '
         'still bound; the released document is emitted after the release '
         'tick executes.')
+    add('- Round-1 corrections (review sgt-pr281-r1, CHANGES_REQUIRED): '
+        'the published capture had draw_viewport() defined with ZERO call '
+        'sites - five of six viewports were uniform background while the '
+        'manifest claimed all subjects observed. Fixed: draw_viewport() '
+        'called for all six tiles (diagnostic rows with overlays and port '
+        'labels; clean rows geometry-only); cameras re-derived with an '
+        'in-frame gate (every declared subject point of the camera '
+        'framing scope must project inside the viewport, checked per '
+        'frame); the camera record made mathematically true (right-handed '
+        'camera frame +X right/+Y up/-Z forward; quaternion = '
+        'camera-to-frame rotation; an independent reprojection oracle '
+        'reproduces drawn anchors from the serialized record alone); '
+        'visibility rows are MEASURED (capture_pixel_presence.json, '
+        'per-frame exact-color evidence) and make_capture refuses the '
+        'build if any required subject lacks pixels; the sheet gained a '
+        'declared footer band so the trace inset no longer overlaps a '
+        'clean viewport. The physics chain is UNCHANGED: all receipts '
+        'regenerate byte-identically (trace 259b731d..., experiment/'
+        'determinism/falsifier/regression receipts identical; only the '
+        'declared live-field experiment_profile.json differs, by '
+        'declaration).')
+    add('- Refusals disclosure (review finding F6): the submit-time '
+        'coordination record (LIEUTENANT_RESUME_v2.json, 2026-09-30 15:4x '
+        'CDT entry) states "4 named refusals disclosed" for development '
+        'of this attempt. No durable artifact of this attempt records '
+        'their names or triggers (verified by the r1 reviewer across '
+        'report.md, PREREGISTRATION.md, KNOWN_SKIPS.md, commit messages, '
+        'the PR body and the attempt workspace; re-verified by this '
+        'corrections pass). Their content is therefore recorded as '
+        'UNRECOVERABLE - no names are invented. Durable process record: '
+        'development-time refusals must be written into report.md or '
+        'KNOWN_SKIPS.md when they happen, not left in a coordination log.')
     add('')
     add('## file identities at freeze')
     add('')

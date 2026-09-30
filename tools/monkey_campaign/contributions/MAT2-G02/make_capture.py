@@ -8,6 +8,13 @@ hash derived from files on disk; single-artifact binding (ONE video,
 capture_sha256 = its sha256, every view row an artifact_locator on it);
 diagnostic/clean pairs with identical cameras and identical physical state.
 
+Round-1 corrections (review sgt-pr281-r1): visibility rows are MEASURED -
+observed/missing subject ids come from render_run's per-frame pixel
+evidence (evidence/pixel_presence.json) and make_capture REFUSES to build
+the manifest if any required subject lacks pixel evidence (the previous
+revision asserted observed_subject_ids without pixels while five of six
+viewports were empty).
+
 Run AFTER render_run:
     python -B make_capture.py <attempt_capture_dir> <ffmpeg_path>
 """
@@ -61,27 +68,105 @@ def registry_profile():
     return profile
 
 
-def vis_diagnostic():
-    return {'layers': list(LAYERS),
-            'label_ids': list(LABELS),
-            'selected_ids': list(LABELS),
-            'required_subject_ids': list(LABELS),
-            'observed_subject_ids': list(LABELS),
-            'missing_subject_ids': [],
-            'occlusion_mode': 'depth_tested',
-            'tag_bindings': [{'label_id': lab, 'subject_id': lab}
-                             for lab in LABELS]}
+def vis_rows(presence, cams):
+    """Measured visibility rows (round-1 fix): observed/missing subject ids
+    come from render_run's per-frame pixel evidence; make_capture REFUSES
+    instead of publishing a claim the pixels do not back."""
+    req = presence['required_subjects']
+    frames = presence['per_tile_frames']
+    rows = {}
+    for view_id in VIEWS:
+        for mode in ('diagnostic', 'clean'):
+            tile = cams_tile(view_id, mode)
+            per_frame = frames[tile]
+            required = list(req[tile])
+            observed = [s for s in required
+                        if all(fr['subjects'][s]['present']
+                               for fr in per_frame)]
+            missing = [s for s in required if s not in observed]
+            if missing:
+                raise SystemExit(f'subject_pixels_missing:{tile}: {missing}'
+                                 ' (refusing to publish a manifest the '
+                                 'pixels do not back)')
+            entry = {'required_subject_ids': required,
+                     'observed_subject_ids': observed,
+                     'missing_subject_ids': []}
+            if mode == 'diagnostic':
+                labels = sorted({lab
+                                 for rec in cams[f'{view_id}:diagnostic']
+                                 for lab in rec['label_ids']})
+                entry.update({
+                    'layers': list(LAYERS),
+                    'label_ids': labels,
+                    'selected_ids': list(labels),
+                    'occlusion_mode': 'depth_tested',
+                    'tag_bindings': [{'label_id': lab, 'subject_id': lab}
+                                     for lab in labels],
+                    'pixel_evidence': {
+                        'min_tile_nonbg_pixels':
+                            min(fr['nonbg_pixels'] for fr in per_frame),
+                        'footer_min_trace_line_pixels':
+                            min(fh['footer']['trace_line_pixels']
+                                for fh in presence['frames']),
+                        'source': 'evidence/pixel_presence.json '
+                                  '(render_run measured signatures)'},
+                })
+            else:
+                entry.update({
+                    'layers': [],
+                    'label_ids': [],
+                    'selected_ids': [],
+                    'occlusion_mode': 'depth_tested',
+                    'tag_bindings': [],
+                    'pixel_evidence': {
+                        'min_tile_nonbg_pixels':
+                            min(fr['nonbg_pixels'] for fr in per_frame),
+                        'label_pixels_total_max':
+                            max(fr['label_pixels_total']
+                                for fr in per_frame),
+                        'source': 'evidence/pixel_presence.json '
+                                  '(render_run measured signatures)'},
+                })
+            rows[f'{view_id}:{mode}'] = entry
+    return rows
 
 
-def vis_clean():
-    return {'layers': [],
-            'label_ids': [],
-            'selected_ids': [],
-            'required_subject_ids': list(LABELS),
-            'observed_subject_ids': list(LABELS),
-            'missing_subject_ids': [],
-            'occlusion_mode': 'depth_tested',
-            'tag_bindings': []}
+def cams_tile(view_id, mode):
+    pair = f'pair-{VIEWS.index(view_id)}'
+    return f'{pair}:{mode}'
+
+
+def req_tile(presence, tile):
+    return list(presence['required_subjects'][tile])
+
+
+def pixel_presence_summary(presence):
+    tiles = {}
+    for key, per_frame in sorted(presence['per_tile_frames'].items()):
+        required = req_tile(presence, key)
+        observed = [s for s in required
+                    if all(fr['subjects'][s]['present']
+                           for fr in per_frame)]
+        tiles[key] = {'required': required, 'observed': observed,
+                      'missing': [s for s in required
+                                  if s not in observed],
+                      'min_nonbg_pixels': min(fr['nonbg_pixels']
+                                              for fr in per_frame)}
+    return {
+        'all_present': bool(presence['all_present']),
+        'min_tile_nonbg_pixels':
+            min(t['min_nonbg_pixels'] for t in tiles.values()),
+        'footer_min_trace_line_pixels':
+            min(fh['footer']['trace_line_pixels']
+                for fh in presence['frames']),
+        'camera_consistency_max_delta_px':
+            max(c['delta_px'] for c in presence['camera_consistency']),
+        'tiles': tiles,
+        'evidence_file': 'evidence/pixel_presence.json',
+        'independent_check': 'check_capture_pixels.py <capture_dir> '
+                             '(re-measures from the committed frames; '
+                             'control mode red on the pre-fix capture)',
+    }
 
 
 def ffmpeg_version(ffmpeg):
@@ -121,10 +206,13 @@ def main():
                               .read_bytes().decode('utf-8'))
     state_hashes = json.loads((evidence_dir / 'state_hashes.json')
                               .read_bytes().decode('utf-8'))
+    presence = json.loads((evidence_dir / 'pixel_presence.json')
+                          .read_bytes().decode('utf-8'))
     for view_id in VIEWS:
         assert cams[f'{view_id}:diagnostic'][0] == \
             cams[f'{view_id}:clean'][0], \
             f'{view_id}: clean/diagnostic camera mismatch'
+    vis = vis_rows(presence, cams)
 
     binding = {'kind': 'trace', 'sha256': trace_sha,
                'note': 'sha256 of contributions/' + CARD_FULL +
@@ -132,38 +220,51 @@ def main():
                        'of the run; rendered state is bound to the '
                        'committed receipts before any pixel is written'}
 
-    def view(pair_id, view_id, mode, camera, visibility, note):
-        return {'artifact_locator': {'kind': 'video',
-                                     'seconds': [0, len(SNAP_TICKS)]},
-                'camera': camera,
-                'cell_layout_note': note,
-                'mode': mode,
-                'pair_id': pair_id,
-                'state_binding': binding,
-                'view_id': view_id,
-                'visibility': visibility}
+    def view(pair_id, view_id, mode, camera, visibility, note,
+             secondary=None):
+        row = {'artifact_locator': {'kind': 'video',
+                                    'seconds': [0, len(SNAP_TICKS)]},
+               'camera': camera,
+               'cell_layout_note': note,
+               'mode': mode,
+               'pair_id': pair_id,
+               'state_binding': binding,
+               'view_id': view_id,
+               'visibility': visibility}
+        if secondary:
+            row['secondary_cameras'] = secondary
+        return row
 
     views = []
     notes = {
         VIEWS[0]: 'whole-fixture viewport; fixed bookmark camera; the '
-                  'patch quad, both bodies and the declared support stand '
-                  'are fully in frame (nothing hidden or clipped)',
-        VIEWS[1]: 'loaded interface close-up; fixed bookmark camera '
-                  'centered on the patch plane',
-        VIEWS[2]: 'orthogonal side view; the diagnostic row also declares '
-                  'a fully-declared oblique secondary camera '
-                  '(secondary_cameras in the camera record)',
+                  'in-frame gate asserted per frame that the patch quad, '
+                  'both bodies and the declared support stand project '
+                  'inside the viewport (nothing hidden or clipped)',
+        VIEWS[1]: 'loaded interface close-up; fixed bookmark camera; '
+                  'declared framing scope = the loaded patch quad and '
+                  'seam (interface subjects)',
+        VIEWS[2]: 'orthogonal patch view (axis-aligned, looking along '
+                  '+X); declared framing scope = the patch quad and seam; '
+                  'the diagnostic cell additionally renders the declared '
+                  'oblique secondary camera as a labeled picture-in-'
+                  'picture inset (secondary_cameras; the inset is '
+                  'gate-checked to hide no subject point and no label)',
     }
     for vi, view_id in enumerate(VIEWS):
         pair_id = f'pair-{vi}'
+        secondary = cams[f'{view_id}:diagnostic'][1:] or None
         views.append(view(pair_id, view_id, 'diagnostic',
                           cams[f'{view_id}:diagnostic'][0],
-                          vis_diagnostic(), notes[view_id]))
+                          vis[f'{view_id}:diagnostic'], notes[view_id],
+                          secondary=secondary))
         views.append(view(pair_id, view_id, 'clean',
-                          cams[f'{view_id}:clean'][0], vis_clean(),
+                          cams[f'{view_id}:clean'][0],
+                          vis[f'{view_id}:clean'],
                           'clean row: identical camera and identical '
                           'physical state to its diagnostic pair; no '
-                          'labels, layers or diagnostic styling by design'))
+                          'labels, layers or diagnostic styling by design '
+                          '(measured: zero label and triad pixels)'))
 
     manifest = {
         'schema': 'chimera.visual_capture_manifest.v1',
@@ -174,12 +275,16 @@ def main():
         'subject_sha256': subject_sha,
         'capture_sha256': video_sha,
         'sheet_layout': {
-            'pixel_size': list((2 * 640, 3 * 240)),
+            'pixel_size': [2 * 640, 3 * 240 + 56],
+            'tile_rects': presence['tile_rects'],
+            'footer_rect': presence['footer_rect'],
             'honest_titles': 'rendered inside every viewport: view name, '
-                             'mode and tick; diagnostic footer carries the '
-                             'gap/displacement trace inset',
+                             'mode and tick (exact-color marker chips '
+                             'measured); the shared diagnostic footer band '
+                             'carries the gap/displacement trace inset '
+                             'outside every viewport rect',
             'rows': ['one row per registry view id: diagnostic (left) and '
-                     'clean (right) viewports of the same state'],
+                     'clean (right) 640x240 viewports of the same state'],
             'tick_to_seconds_map': TICK_MAP + '; frame t = snapshot tick t',
             'frame_files': frame_hashes,
         },
@@ -203,26 +308,36 @@ def main():
                        'CODEC_STANDARD.md 2026-09-29'
     receipt['render_source'] = ('render_run.py software raster over the '
                                 'committed experiment_trace.json rows '
-                                '(solver state bound before pixels)')
+                                '(solver state bound before pixels); '
+                                'draw_viewport() called for all six '
+                                'viewports; in-frame gate + reprojection '
+                                'oracle gate passed before any manifest')
     receipt['state_hash_preserved_across_view_toggles'] = \
         bool(state_hashes.get('preserved_across_view_toggles'))
     receipt['state_hashes'] = state_hashes.get('hashes', {})
+    receipt['pixel_presence'] = pixel_presence_summary(presence)
     receipt['validator'] = ('tools/monkey_campaign/visual_capture.py '
                             'validate_manifest')
     receipt['profile_source'] = REGISTRY_DB + f' kanban.cards[{CARD_FULL}]' \
                               '.spec.ontology_qualification.task' \
                               '.verification_profile (read read-only)'
     receipt['limits'] = ('Structural camera-metadata validation only; '
-                         'independent image/physics review remains '
-                         'mandatory.')
+                         'pixel grounding is recorded by render_run '
+                         '(pixel_presence) and re-checked by '
+                         'check_capture_pixels.py; independent image/'
+                         'physics review remains mandatory. The raster is '
+                         'wireframe (no hidden-line removal); occlusion is '
+                         'declared depth_tested per the validator enum.')
 
     for target, payload in (
             (HERE / 'capture_manifest.json', manifest),
             (HERE / 'capture_context.json', context),
             (HERE / 'capture_validation_receipt.json', receipt),
+            (HERE / 'capture_pixel_presence.json', presence),
             (evidence_dir / 'capture_manifest.json', manifest),
             (evidence_dir / 'capture_context.json', context),
-            (evidence_dir / 'validation_receipt.json', receipt)):
+            (evidence_dir / 'validation_receipt.json', receipt),
+            (evidence_dir / 'capture_pixel_presence.json', presence)):
         target.write_bytes((json.dumps(payload, indent=1,
                                        ensure_ascii=False, sort_keys=True)
                             + '\n').encode('utf-8'))

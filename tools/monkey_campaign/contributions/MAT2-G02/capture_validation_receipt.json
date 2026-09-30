@@ -3,11 +3,129 @@
  "codec": "ffv1 level 3 g 1, -fflags +bitexact (mkv); CODEC_STANDARD.md 2026-09-29",
  "ffmpeg_version": "ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
  "frame_count": 7,
- "limits": "Structural camera-metadata validation only; independent image/physics review remains mandatory.",
+ "limits": "Structural camera-metadata validation only; pixel grounding is recorded by render_run (pixel_presence) and re-checked by check_capture_pixels.py; independent image/physics review remains mandatory. The raster is wireframe (no hidden-line removal); occlusion is declared depth_tested per the validator enum.",
  "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "pixel_presence": {
+  "all_present": true,
+  "camera_consistency_max_delta_px": 0.985,
+  "evidence_file": "evidence/pixel_presence.json",
+  "footer_min_trace_line_pixels": 1264,
+  "independent_check": "check_capture_pixels.py <capture_dir> (re-measures from the committed frames; control mode red on the pre-fix capture)",
+  "min_tile_nonbg_pixels": 2777,
+  "tiles": {
+   "pair-0:clean": {
+    "min_nonbg_pixels": 2777,
+    "missing": [],
+    "observed": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ]
+   },
+   "pair-0:diagnostic": {
+    "min_nonbg_pixels": 4698,
+    "missing": [],
+    "observed": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ]
+   },
+   "pair-1:clean": {
+    "min_nonbg_pixels": 3174,
+    "missing": [],
+    "observed": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ]
+   },
+   "pair-1:diagnostic": {
+    "min_nonbg_pixels": 4692,
+    "missing": [],
+    "observed": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ]
+   },
+   "pair-2:clean": {
+    "min_nonbg_pixels": 7724,
+    "missing": [],
+    "observed": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ]
+   },
+   "pair-2:diagnostic": {
+    "min_nonbg_pixels": 8613,
+    "missing": [],
+    "observed": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam",
+     "fixture_body_a",
+     "fixture_body_b"
+    ],
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam",
+     "fixture_body_a",
+     "fixture_body_b"
+    ]
+   }
+  }
+ },
  "profile_id": "attachment-fixture",
  "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-G02].spec.ontology_qualification.task.verification_profile (read read-only)",
- "render_source": "render_run.py software raster over the committed experiment_trace.json rows (solver state bound before pixels)",
+ "render_source": "render_run.py software raster over the committed experiment_trace.json rows (solver state bound before pixels); draw_viewport() called for all six viewports; in-frame gate + reprojection oracle gate passed before any manifest",
  "state_hash_preserved_across_view_toggles": true,
  "state_hashes": {
   "0": "97cbd98d6c54060d0fd678af92faf9bdf4cf7bdeafd898fa3ce9ea3668dc1d24",
@@ -24,8 +142,8 @@
  "trace_path": "tools/monkey_campaign/contributions/MAT2-G02/experiment_trace.json",
  "trace_sha256": "259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b",
  "validator": "tools/monkey_campaign/visual_capture.py validate_manifest",
- "video_path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-G02\\983a9a8b1be54457a6aa516319290aa1\\capture\\capture\\capture_mat2_g02_attachment_20260930.mkv",
- "video_sha256": "d20a9174cbf143a17c8b958a3ede4d48a2d011d3398368245b3882637ea677e6",
+ "video_path": "E:\\ChimeraWork\\_scratch\\mat2-g02-corrections\\new_capture\\capture\\capture_mat2_g02_attachment_20260930.mkv",
+ "video_sha256": "b3e57b89f17238eb6ed710bf18a637eb9da36ffad01df0834a1c981de59f28b3",
  "view_count": 6,
  "visual_acceptance": false
 }
