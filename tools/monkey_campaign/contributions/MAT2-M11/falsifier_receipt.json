@@ -78,6 +78,14 @@
   "tampered_refusal_fired": true
  },
  "all_arms_bit": true,
+ "arms": {
+  "FB1_overlay_driven_motion_fires": true,
+  "FB2_area_independent_forces_fires": true,
+  "FB3_clipped_load_path_fires": true,
+  "FB4_hidden_support_fires": true,
+  "FB5_unaccounted_energy_fires": true,
+  "FB6_synthetic_port_standin_fires": true
+ },
  "arrival_id": "arrival-f11f7489a821465ea2c014fea51698f8",
  "attempt_id": "8de1349ae67840fc8b8a15fb647c5e4a",
  "criteria_sha256": "0588c4140a9968160cd640507e02a5b0cefefa6238ff3107de4c232f0d7ea72e",

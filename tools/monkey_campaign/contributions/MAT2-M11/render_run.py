@@ -671,7 +671,18 @@ def main():
             (frames_dir / (fname + '.bmp')).read_bytes())
     cc_proof = camera_consistency_proof(cc_stills)
     lp_proof = layer_presence_proof(presence_stills)
+    # cameras.json: the format-spec camera registry (map view-key ->
+    # array of camera records, one record per viewport)
     (evidence_dir / 'cameras.json').write_text(
+        json.dumps({VIEW_IDS[0]: [cam_records['whole']],
+                    VIEW_IDS[1]: [cam_records['side'],
+                                  cam_records['front']],
+                    VIEW_IDS[2]: [cam_records['closeup']]},
+                   indent=1, sort_keys=True) + '\n', encoding='utf-8',
+        newline='\n')
+    # capture_evidence.json: the full evidence bundle (proofs, hashes,
+    # subjects/labels, layer presence)
+    (evidence_dir / 'capture_evidence.json').write_text(
         json.dumps({'cameras': cam_records, 'view_ids': VIEW_IDS,
                     'subjects': SUBJECTS, 'labels': LABELS,
                     'tick_map': TICK_MAP, 'sheet': [W_SHEET, H_SHEET],

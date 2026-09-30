@@ -177,6 +177,15 @@ class FalsifierArms(unittest.TestCase):
                      'FB5_unaccounted_energy',
                      'FB6_synthetic_port_standin'):
             self.assertTrue(f[name]['bit'], name)
+        self.assertEqual(set(f['arms']),
+                         {n + '_fires' for n in (
+                             'FB1_overlay_driven_motion',
+                             'FB2_area_independent_forces',
+                             'FB3_clipped_load_path', 'FB4_hidden_support',
+                             'FB5_unaccounted_energy',
+                             'FB6_synthetic_port_standin')})
+        for flag, fired in f['arms'].items():
+            self.assertTrue(fired, flag)
             self.assertIn('clean_control', f[name], name)
             self.assertTrue(f[name]['clean_control']['within_tolerance'],
                             name)
@@ -264,7 +273,7 @@ class P4CaptureGate(unittest.TestCase):
         import numpy as np
         frames = self._decode_frames()
         self.assertEqual(len(frames), 18)
-        evidence = load(str(CAPTURE / 'evidence' / 'cameras.json'))
+        evidence = load(str(CAPTURE / 'evidence' / 'capture_evidence.json'))
         recorded = evidence['frame_raw_sha256']
         for fi in self.STILL_INDICES:
             still = self._still_rgb(fi)
@@ -314,7 +323,7 @@ class CameraConsistencyGate(unittest.TestCase):
 
     def test_signed_row_order_content_and_leakage(self):
         import numpy as np
-        evidence = load(str(CAPTURE / 'evidence' / 'cameras.json'))
+        evidence = load(str(CAPTURE / 'evidence' / 'capture_evidence.json'))
         proof = evidence['camera_consistency_proof']
         self.assertIsNotNone(proof)
         for fname, row in proof['per_still'].items():
@@ -358,7 +367,7 @@ class LayerPresenceGate(unittest.TestCase):
     must place >= 1 pixel of a layer key color (probe receipt)."""
 
     def test_layer_presence_proof(self):
-        evidence = load(str(CAPTURE / 'evidence' / 'cameras.json'))
+        evidence = load(str(CAPTURE / 'evidence' / 'capture_evidence.json'))
         proof = evidence['layer_presence_proof']
         sys.path.insert(0, str(HERE))
         from render_run import LAYERS
@@ -389,12 +398,9 @@ class G8SingleCaptureIdentity(unittest.TestCase):
         bindings = {v['state_binding']['sha256']
                     for v in manifest['views']}
         self.assertEqual(len(bindings), 1)
-        trace = load('experiment_trace.json')
-        dyn_sha = hashlib.sha256(json.dumps(
-            trace['dynamic_run'], sort_keys=True,
-            separators=(',', ':'), ensure_ascii=False,
-            default=_default).encode('utf-8')).hexdigest()
-        self.assertEqual(list(bindings)[0], dyn_sha)
+        trace_sha = hashlib.sha256(
+            (HERE / 'experiment_trace.json').read_bytes()).hexdigest()
+        self.assertEqual(list(bindings)[0], trace_sha)
         self.assertEqual(manifest['capture_sha256'],
                          context['capture_sha256'])
         self.assertEqual(crec.get('video_sha256'),

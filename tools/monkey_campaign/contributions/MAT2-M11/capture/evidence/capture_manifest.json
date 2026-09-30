@@ -309,8 +309,8 @@
    "pair_id": "pair-whole",
    "state_binding": {
     "kind": "trace",
-    "note": "whole-file binding of contributions/MAT2-M11/experiment_trace.json (the per-tick solver trace of the limb loaded run); rendered vertex/chain arrays are asserted against the trace rows before any pixel is written; the canonical dynamic_run subtree sha is separately bound in determinism_receipt.json",
-    "sha256": "70a30f3dd6ddb345a8bff2f5d9d8bd93278846b679a46ac89df8ffe493006e24"
+    "note": "canonical dynamic_run subtree of contributions/MAT2-M11/experiment_trace.json: the per-tick solver trace of the limb loaded run; rendered vertex/chain arrays are asserted against the trace rows before any pixel is written",
+    "sha256": "3878a094ddf1232b1dcae21a0d1792d7bc4313983be203297f10e471801f2d1b"
    },
    "view_id": "whole experiment at fixed distance",
    "visibility": {
@@ -665,8 +665,8 @@
    "pair_id": "pair-whole",
    "state_binding": {
     "kind": "trace",
-    "note": "whole-file binding of contributions/MAT2-M11/experiment_trace.json (the per-tick solver trace of the limb loaded run); rendered vertex/chain arrays are asserted against the trace rows before any pixel is written; the canonical dynamic_run subtree sha is separately bound in determinism_receipt.json",
-    "sha256": "70a30f3dd6ddb345a8bff2f5d9d8bd93278846b679a46ac89df8ffe493006e24"
+    "note": "canonical dynamic_run subtree of contributions/MAT2-M11/experiment_trace.json: the per-tick solver trace of the limb loaded run; rendered vertex/chain arrays are asserted against the trace rows before any pixel is written",
+    "sha256": "3878a094ddf1232b1dcae21a0d1792d7bc4313983be203297f10e471801f2d1b"
    },
    "view_id": "whole experiment at fixed distance",
    "visibility": {
@@ -1219,8 +1219,8 @@
    "pair_id": "pair-planes",
    "state_binding": {
     "kind": "trace",
-    "note": "whole-file binding of contributions/MAT2-M11/experiment_trace.json (the per-tick solver trace of the limb loaded run); rendered vertex/chain arrays are asserted against the trace rows before any pixel is written; the canonical dynamic_run subtree sha is separately bound in determinism_receipt.json",
-    "sha256": "70a30f3dd6ddb345a8bff2f5d9d8bd93278846b679a46ac89df8ffe493006e24"
+    "note": "canonical dynamic_run subtree of contributions/MAT2-M11/experiment_trace.json: the per-tick solver trace of the limb loaded run; rendered vertex/chain arrays are asserted against the trace rows before any pixel is written",
+    "sha256": "3878a094ddf1232b1dcae21a0d1792d7bc4313983be203297f10e471801f2d1b"
    },
    "view_id": "orthogonal side and front",
    "visibility": {
@@ -1830,8 +1830,8 @@
    "pair_id": "pair-planes",
    "state_binding": {
     "kind": "trace",
-    "note": "whole-file binding of contributions/MAT2-M11/experiment_trace.json (the per-tick solver trace of the limb loaded run); rendered vertex/chain arrays are asserted against the trace rows before any pixel is written; the canonical dynamic_run subtree sha is separately bound in determinism_receipt.json",
-    "sha256": "70a30f3dd6ddb345a8bff2f5d9d8bd93278846b679a46ac89df8ffe493006e24"
+    "note": "canonical dynamic_run subtree of contributions/MAT2-M11/experiment_trace.json: the per-tick solver trace of the limb loaded run; rendered vertex/chain arrays are asserted against the trace rows before any pixel is written",
+    "sha256": "3878a094ddf1232b1dcae21a0d1792d7bc4313983be203297f10e471801f2d1b"
    },
    "view_id": "orthogonal side and front",
    "visibility": {
@@ -2129,8 +2129,8 @@
    "pair_id": "pair-interface",
    "state_binding": {
     "kind": "trace",
-    "note": "whole-file binding of contributions/MAT2-M11/experiment_trace.json (the per-tick solver trace of the limb loaded run); rendered vertex/chain arrays are asserted against the trace rows before any pixel is written; the canonical dynamic_run subtree sha is separately bound in determinism_receipt.json",
-    "sha256": "70a30f3dd6ddb345a8bff2f5d9d8bd93278846b679a46ac89df8ffe493006e24"
+    "note": "canonical dynamic_run subtree of contributions/MAT2-M11/experiment_trace.json: the per-tick solver trace of the limb loaded run; rendered vertex/chain arrays are asserted against the trace rows before any pixel is written",
+    "sha256": "3878a094ddf1232b1dcae21a0d1792d7bc4313983be203297f10e471801f2d1b"
    },
    "view_id": "oblique close-up of the loaded interface",
    "visibility": {
@@ -2461,8 +2461,8 @@
    "pair_id": "pair-interface",
    "state_binding": {
     "kind": "trace",
-    "note": "whole-file binding of contributions/MAT2-M11/experiment_trace.json (the per-tick solver trace of the limb loaded run); rendered vertex/chain arrays are asserted against the trace rows before any pixel is written; the canonical dynamic_run subtree sha is separately bound in determinism_receipt.json",
-    "sha256": "70a30f3dd6ddb345a8bff2f5d9d8bd93278846b679a46ac89df8ffe493006e24"
+    "note": "canonical dynamic_run subtree of contributions/MAT2-M11/experiment_trace.json: the per-tick solver trace of the limb loaded run; rendered vertex/chain arrays are asserted against the trace rows before any pixel is written",
+    "sha256": "3878a094ddf1232b1dcae21a0d1792d7bc4313983be203297f10e471801f2d1b"
    },
    "view_id": "oblique close-up of the loaded interface",
    "visibility": {

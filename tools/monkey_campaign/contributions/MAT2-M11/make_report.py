@@ -54,7 +54,7 @@ def main():
     crec = load('capture_validation_receipt.json',
                 ('structurally_valid', 'video_sha256', 'codec',
                  'criteria_sha256'))
-    cams = load(str(pathlib.Path('capture') / 'evidence' / 'cameras.json'),
+    cams = load(str(pathlib.Path('capture') / 'evidence' / 'capture_evidence.json'),
                 ('row_order_proof', 'camera_consistency_proof',
                  'layer_presence_proof'))
     anch = load('evidence_anchors.json', ('anchors',))
@@ -265,7 +265,9 @@ def main():
       'capture_sha256 %s; every view row an artifact_locator of that '
       'video; every view row carries the same state_binding.sha256 (the '
       'canonical dynamic_run trace sha %s) — view toggles preserve the '
-      'physical state hash. All 16 registry camera fields on every camera '
+      'physical state hash (the whole-file trace binding; the canonical '
+      'dynamic_run subtree sha is separately bound in the determinism '
+      'receipt). All 16 registry camera fields on every camera '
       'record; fixed bookmarks; clean rows carry zero labels/layers/'
       'overlays; per-viewport offscreen rendering (cross-viewport leakage '
       'impossible by construction; the leakage gate measures 0 outside '
@@ -317,6 +319,22 @@ def main():
       'beside it, never hidden.')
     w('- Independent visual judgment of imagery stays with review '
       '(visual_acceptance stays false in the validator receipt).')
+    w('- The format-spec lane validate_card.py (a draft conformance '
+      'layer, 2026-09-29) was run and its findings disclosed: the '
+      'card-local conformance fixes it drove are IN (the registered '
+      'capture_validation_receipt.v1 key set, numeric frame_files '
+      'keys, the falsifier arms fire-flag vocabulary, the whole-file '
+      'trace binding, the cameras.json camera-registry split); its '
+      'RESIDUAL reds are the unregistered m11 schema tags (its own '
+      'hard-coded registry covers the m08 family only - the merged '
+      'MAT2-M10 winner carries the identical red class), its '
+      'camera_record draft vocabulary conflicting with the registry '
+      'profile own 16 required camera fields (additionalProperties '
+      'false rejects position/target/label_ids/...), and the '
+      'M08-shaped T08 heuristic (X1_pass without M08 agreement '
+      'window keys). Registering the m11 schemas requires editing '
+      'the format-validator lane file - outside this attempt '
+      'ownership; disclosed to the Lieutenant instead.')
     w('')
     w('## Evidence anchors (CARD_STARTER v2: sha-verified store copies)')
     w('')

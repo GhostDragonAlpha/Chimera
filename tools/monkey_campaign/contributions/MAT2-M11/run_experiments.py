@@ -730,11 +730,15 @@ def mode_falsify():
         'bit': bool(fb6_fired)}
     require(bool(fb6_fired), 'fb6_arm_did_not_bite')
 
-    receipt['all_arms_bit'] = all(
-        receipt[k]['bit'] for k in (
-            'FB1_overlay_driven_motion', 'FB2_area_independent_forces',
-            'FB3_clipped_load_path', 'FB4_hidden_support',
-            'FB5_unaccounted_energy', 'FB6_synthetic_port_standin'))
+    arm_names = ('FB1_overlay_driven_motion',
+                 'FB2_area_independent_forces', 'FB3_clipped_load_path',
+                 'FB4_hidden_support', 'FB5_unaccounted_energy',
+                 'FB6_synthetic_port_standin')
+    receipt['all_arms_bit'] = all(receipt[k]['bit'] for k in arm_names)
+    # the format-spec falsifier vocabulary (T06): per-arm fire flags under
+    # 'arms'; each arm must be able to FAIL and did
+    receipt['arms'] = {k + '_fires': bool(receipt[k]['bit'])
+                       for k in arm_names}
     write_json(FALSIFIER_PATH, receipt)
     print('falsifier arms all bit:', receipt['all_arms_bit'])
     return 0

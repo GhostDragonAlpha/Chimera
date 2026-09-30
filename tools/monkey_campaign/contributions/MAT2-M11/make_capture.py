@@ -123,7 +123,7 @@ def main():
     capture_dir = pathlib.Path(sys.argv[1])
     payloads_dir = capture_dir / 'payloads'
     evidence_dir = capture_dir / 'evidence'
-    video_path = HERE / 'capture' / 'capture' / 'capture_mat2_m11_limb.mkv'
+    video_path = HERE / 'capture' / 'capture_mat2_m11_limb.mkv'
     video_path.parent.mkdir(parents=True, exist_ok=True)
     payloads = sorted(payloads_dir.glob('frame_*.raw'))
     require(len(payloads) == 18, 'expected 18 payload frames, found %d'
@@ -147,21 +147,24 @@ def main():
 
     trace_path = HERE / 'experiment_trace.json'
     trace = json.loads(trace_path.read_text(encoding='utf-8'))
+    trace_file_sha = sha256_file(trace_path)
     trace_sha = hashlib.sha256(
         canonical(trace['dynamic_run']).encode('utf-8')).hexdigest()
     receipt_sha = sha256_file(HERE / 'experiment_receipt.json')
-    evidence = json.loads((evidence_dir / 'cameras.json').read_text(
+    evidence = json.loads((evidence_dir / 'capture_evidence.json').read_text(
         encoding='utf-8'))
     cams = evidence['cameras']
     frame_hashes = evidence['frame_raw_sha256']
 
     binding = {'kind': 'trace',
-               'sha256': trace_sha,
-               'note': 'canonical dynamic_run subtree of contributions/'
-                       'MAT2-M11/experiment_trace.json: the per-tick '
-                       'solver trace of the limb loaded run; rendered '
-                       'vertex/chain arrays are asserted against the '
-                       'trace rows before any pixel is written'}
+               'sha256': trace_file_sha,
+               'note': 'whole-file binding of contributions/MAT2-M11/'
+                       'experiment_trace.json (the per-tick solver trace '
+                       'of the limb loaded run); rendered vertex/chain '
+                       'arrays are asserted against the trace rows before '
+                       'any pixel is written; the canonical dynamic_run '
+                       'subtree sha is separately bound in '
+                       'determinism_receipt.json'}
 
     def view(pair_id, view_id, mode, camera, secondary, visibility, note):
         row = {'artifact_locator': {'kind': 'video', 'seconds': [0, 18]},
@@ -233,7 +236,8 @@ def main():
             'tick_to_seconds_map': evidence['tick_map'] +
             '; frame t = sheet of snapshot tick t//2 '
             '(diagnostic when t is even, clean when odd)',
-            'frame_files': frame_hashes,
+            'frame_files': {str(v['frame_index']): v['raw_payload_sha256']
+                            for v in frame_hashes.values()},
         },
         'views': views,
     }
@@ -245,6 +249,15 @@ def main():
         'tick_interval': [0, 1499],
     }
     receipt = validate_manifest(manifest, context, PROFILE)
+    require(receipt['structurally_valid'] is True,
+            'manifest_structurally_invalid')
+    # the registered chimera.capture_validation_receipt.v1 required keys
+    # (format-spec schemas/): the authority's structural verdict + the
+    # locally resolvable identity bindings, all derived from files
+    receipt['frame_count'] = len(payloads)
+    receipt['subject_path'] = 'experiment_receipt.json'
+    receipt['trace_sha256'] = trace_file_sha
+    receipt['schema'] = 'chimera.capture_validation_receipt.v1'
     receipt['criteria_sha256'] = CRITERIA
     receipt['attempt_id'] = ATTEMPT
     receipt['video_path'] = str(video_path)
