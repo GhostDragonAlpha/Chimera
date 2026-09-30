@@ -1,0 +1,17 @@
+{
+ "F_all_green": true,
+ "arms": [
+  {
+   "arm": "FB7a",
+   "bit": true,
+   "observed_refusal": "label_ambiguity_refused"
+  },
+  {
+   "arm": "FB7b",
+   "bit": true,
+   "observed_refusal": "view_toggle_state_hash_refused"
+  }
+ ],
+ "schema": "chimera.g03_capture_selfcheck.v1",
+ "task_id": "G03"
+}
