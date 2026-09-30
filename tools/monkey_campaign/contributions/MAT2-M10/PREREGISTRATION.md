@@ -400,3 +400,152 @@ No measured value appears above; every number is declared or derived from
 the frozen scenario constants. Amendments, if any, will be committed
 separately BEFORE the affected receipt exists, with the triggering probe
 value recorded (M03 A1-A4 precedent).
+
+## AMENDMENT A1 (frozen BEFORE any experiment receipt exists; pre-measurement
+## design re-issue with all triggering probe values recorded; no acceptance
+## window weakened to fit a measurement — every re-issued bound is derived
+## and bracketed around the recorded probes, M03 A1-A4 precedent)
+
+A1.0 Box-beam draft abandoned with recorded cause. The first implementation
+draft used the declared closed box beam (L x w x h = 0.30 x 0.06 x 0.06,
+n=8 grid, 386 vertices / 768 triangles; counts derived 6(n+1)^2-12(n+1)+8).
+Design probes (geometry-only solver probes, no receipts) showed a face-bulge
+localization (aneurysm snap-through): at delta_p = 1000 Pa the free end cap
+fell -7.0 mm (fibers top), -8.0 mm (fibers bottom), -7.5 mm (isotropic) —
+identical in every fiber layout, i.e. NO directional response; at 2000 Pa the
+volume inflated to 1.72x rest with 47-77% section expansion (top face +47%,
+bottom +77%). The mode is governed by out-of-plane face compliance of an
+edge-only XPBD scaffold, not by the authored axial fibers; stiffening the
+direct edges froze the mode entirely (Cauchy rigidity of a triangulated
+lattice with stiffened edges) and still carried no directional response
+(probe: cap fall -10.8/-13.2/-11.6 mm for top/bottom/iso builds with hoop
+fibers at 1e7 Pa). The box beam cannot demonstrate authored directional
+contraction with these sealed laws; it is abandoned honestly rather than
+tuned.
+
+A1.1 Re-issued architecture: the clamped spherical pressure-vessel jack.
+Body = M03 icosphere level 2, R = 0.05 m (162 vertices, 320 triangles,
+derived L2 counts; closure verified through Membrane.require_closed; volume
+error vs 4/3 pi R^3 recorded 1.77e-05 relative at construction). Declared
+visible support: the NORTH polar cap clamp (the pole vertex + its edge
+ring = 7 vertices, pinned at rest positions). Declared output: the SOUTH
+pole vertex (stable ID). Declared attachment: ONE tie (M05-form,
+tension-only, k_tie = 600 N/m, rest length L_TIE = 0.10 m) bound (never
+implied) between the south pole vertex and the load (m_load = 0.010 kg,
+gravity g = 9.80665 m/s^2 on the load only, load damping 4.0 1/s); the tie
+hangs vertically clear of the shell; initial load position = initial anchor
+position - L_TIE (zero initial tie extension; the load settles onto the
+taut tie during the pre-settle phase; the earlier patch-mean anchor placed
+the load 3.9 mm over-length = 2.3 N snatch at tick 0 — probed, recorded,
+re-issued). Declared scaffold mass 0.020 kg (equal per vertex; T7 heritage
+scale).
+
+A1.2 Authored directional resistance (re-issued): a chord net over a soft
+bladder. ALL direct mesh edges stay at E_TRANS = 1.0e6 Pa (the inflatable
+bladder). The fibers are CHORDS: declared distance-2 vertex pairs (M05-form
+tension-only spring law, rest length = initial chord length, chord
+cross-section A_chord = t_wall^2 = 9.0e-6 m^2, E_FIBER = 1.0e8 Pa, k_chord =
+E_FIBER * A_chord / L_chord; chords project as bilateral distance
+constraints — the measured chord strain range is recorded every run and
+stays symmetric about zero within +-0.007 in the probed regime, so the
+bilateral form is honest for the measured regime). Two authored bands by
+chord |dz| (z = polar axis):
+- BRAID (production): |dz| in [0.42, 0.87], endpoints |z| <= 0.75 R
+  (464 chords at construction): the McKibben mechanism — radial inflation
+  rotates the diagonal chords toward the equator and the polar axis
+  CONTRACTS.
+- BELT (sign-flip control): |dz| in [0.0, 0.42] (258 chords): the same
+  mechanism drives PROLATE extension.
+- ISOTROPIC control: no chords (isotropic=True).
+M04's effective_modulus is the per-edge/per-chord stiffness law (UNMODIFIED,
+called per member; the meridian/hoop edge-stiffening variants remain in the
+module as probed layouts and carry NO frozen claims).
+
+A1.3 Probed directional values (recorded; free runs, no load, 400 ticks at
+delta_p = 2000 Pa): pole-gap change delta_gap: braid -6.3e-4 m (CONTRACTION),
+belt +4.34e-3 m (extension), isotropic +1.67e-3 m (pure-inflation baseline;
+the clamp breaks spherical symmetry so the iso build extends too).
+
+A1.4 Re-issued frozen predictions (windows bracket the recorded probes by
+derived factors; none tuned to pass):
+- X1a contraction: delta_gap_braid(2000) <= -2.0e-4 m.
+- X1b belt extension: delta_gap_belt(2000) >= +2.0e-3 m.
+- X1c iso baseline: delta_gap_iso(2000) >= +1.0e-3 m.
+- X1d directional deltas vs the iso baseline (the negative control, same
+  executable): (delta_gap_braid - delta_gap_iso) <= -1.0e-3 m AND
+  (delta_gap_belt - delta_gap_iso) >= +2.0e-3 m — the SAME chord mechanism
+  drives BOTH signs depending on the authored band (the card falsifier
+  "contraction is claimed from isotropic inflation alone" is refused by
+  construction: the iso build extends while the braid build contracts).
+- X1e monotonicity: delta_gap_braid(4000) < delta_gap_braid(2000) <
+  delta_gap_braid(1000) < 0.
+- X2 blocked-load reaction (south pole pinned at its settled p=0 position;
+  pin force time-averaged over the settle window; reaction ON THE ANCHOR =
+  minus the pin force): reaction_z > 0 (the blocked actuator pushes its
+  support UP along the lift direction) with magnitude in [1.0e-2, 10.0] N
+  at 4000 Pa (probe 0.297 N at 4000 Pa with a slammed schedule; production
+  runs use the ramped schedule); near-linearity |F(1000)/F(4000) - 0.25|
+  <= 0.15; power-off |reaction(0)| <= 0.02 * reaction(4000) + 1.0e-4 N.
+- X3 Betti reciprocity (production braid, quasi-static families at levels
+  {1000, 2000, 3000, 4000} Pa): |dF_block/dp - dV_free/dz_south| <= 0.20 *
+  max(|dF/dp|, |dV/dz|, 1e-12) at the interior levels (central differences);
+  vacuous comparisons refused (P5 guard armed and self-tested before any
+  receipt).
+- X4 load-line superposition at 4000 Pa: |dz_south_loaded - dz_pred| <=
+  0.25 * max(|dz_pred|, 1e-4) with dz_pred = dz_free * (1 - T_meas /
+  F_block(4000)); the load follows the pole through the taut tie:
+  |dz_load - dz_south| <= 5.0e-3 m (elastic stroke mg/k_tie = 1.635e-4 m
+  plus the swing allowance, derived).
+- X5 work/energy ledger (dynamic work run, below): per tick
+  |R_tick| <= max(0.05 * turnover, 1.0e-6 J) (floor re-issued from the
+  measured projection-exchange noise 5.1e-8 J — 20x margin, recorded);
+  the tie-work identity |W_tie_load + W_tie_mem + dU_tie| <= max(0.05 *
+  tie_turnover, 1.0e-6 J) per tick (same re-issue); cumulative
+  |sum R_tick| <= max(0.05 * |W_press_total|, 1.0e-5 J); per tick
+  |W_press_vol - W_press_traction| <= max(1e-9 * |W_press_tick|, 1e-12 J);
+  power identity |sum P dt - W_press| <= 1e-9 relative.
+- X5d bounded work: W_load = mg * lift with lift = z_load(peak settle) -
+  z_load(settled start) > 0 and eta = W_load / W_press_hold_total <= 0.5
+  (probe: lift +1.519e-3 m at 4000 Pa loaded, W_load 1.49e-4 J,
+  W_hold 3.07e-2 J, eta 0.0049).
+- X5e power-off recovery: |z_load(end) - z_load(start)| <= 0.1 * lift
+  (probe: return delta 2e-6 m); tie tension returns <= 1.2 * mg_settled.
+- X1f lift claim: lift in [1.0e-4, 1.0e-2] m (probe 1.519e-3 m).
+- X6 pressure limits: unchanged (M03 refusal codes; measured max
+  |delta_p| <= 5000 Pa and max |dV/dt| <= 1e-3 m^3/s recorded per run;
+  probe max flow 9.6e-5).
+- X7 determinism: unchanged (byte-identical fresh reruns; trace sha256).
+- X0 material_state gate: unchanged (region actuator + load, one declared
+  bond relation, M01 validator UNMODIFIED).
+
+A1.5 Re-issued solver/schedule declarations (all BEFORE the frozen
+receipts; probe-driven stability derivations recorded):
+- N_SUB = 16 substeps per 300 Hz tick (substep hs = 1/4800 s; explicit-step
+  stability margin hs^2 k / m ~ 0.4 on the softest load path), XPBD
+  under-relaxation XPBD_RELAX = 0.15 with 8 iterations (relaxation 1.0
+  diverged by Jacobi over-correction on the stiff lattice — probed,
+  recorded), membrane damping C_V = 2000 1/s (near-critical ring decay;
+  40 and 200 probed — ringing), load damping 4.0 1/s.
+- Quasi-static level runs: p = 0 for ticks 0-199 (pre-settle), ramp to the
+  level over ticks 200-399, hold to tick 1499; settle window = final 200
+  ticks; settle criterion max speed <= 1.0e-4 m/s (measured values
+  recorded next to the bound).
+- Dynamic work run (1500 ticks, capture scenario): P0_presettle 0-199
+  (p=0), A_rampup 200-399 (0 -> 4000 Pa), B_hold 400-1099 (hold 4000 Pa),
+  C_poweroff 1100-1299 (4000 -> 0, POWER OFF), D_settled_off 1300-1499;
+  snapshots at ticks [0, 300, 400, 700, 1000, 1100, 1200, 1350, 1499];
+  committed BMP stills at frame indices [0, 4, 5, 8] (recomputable).
+- Metrics: z_south = south pole vertex z; delta_gap = pole_gap(p) -
+  pole_gap(0); rho = pole_gap / equatorial diameter; lift per X5d.
+- Views/cameras unchanged in contract (the three registry views as
+  diagnostic/clean pairs, all 16 registry camera fields, fixed bookmarks);
+  camera aim points re-aimed at the spherical jack (declared in the capture
+  cameras.json, all fields recorded).
+
+A1.6 Honesty limits (re-issued additions): the chords are bilateral
+distance constraints in the projection; the measured chord strain range is
+recorded every run and the acceptance claim uses the measured regime only.
+No contact physics, no valve model, no biological claims. The box-beam draft
+and the meridian/hoop edge-stiffening variants remain in the module source
+as probed, abandoned layouts with their probe values recorded here; they
+carry no frozen claims.
