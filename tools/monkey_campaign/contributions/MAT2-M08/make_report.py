@@ -29,7 +29,7 @@ def main():
     brec = load('bh_receipt.json')
     frec = load('falsifier_receipt.json')
     rrec = load('regression_receipt.json')
-    crec = load('capture_validation_receipt.json')
+    crec = load('capture/validation_receipt.json')
     trace_sha = sha256_file(HERE / 'experiment_trace.json')
     receipt_sha = sha256_file(HERE / 'experiment_receipt.json')
 
@@ -208,7 +208,8 @@ def main():
     w('## Motion-profile capture (visual evidence, material profile)')
     w('')
     w('Built in the attempt capture directory; frames, video, evidence/; '
-      'manifest + context + validation receipt also committed here.')
+      'manifest + context + validation receipt committed under capture/ '
+      '(Amendment A5: the loose root duplicates are gone).')
     w('- task_id "M08" (SHORT form) in manifest and context; profile_id '
       + str(crec['profile_id']) + '; validate_manifest ran with the '
       'REGISTRY profile object read READ-ONLY from agent_slots.sqlite3 '
@@ -221,8 +222,19 @@ def main():
       'capture ticks) of the resident GPU world, software-rasterized '
       '(declared); views: the three registry view ids, each diagnostic+clean '
       '(clean_view_required); ALL FIVE registry diagnostic layers carried '
-      'in every diagnostic row; the pinned ground support and the wall '
-      'anchor are rendered and labeled.')
+      'in every diagnostic row - layer 1 (membrane/triangle/port IDs) '
+      'rendered as navy m:t and port:maxwell_mount labels topmost of every '
+      'diagnostic viewport; the pinned ground support and the wall anchor '
+      'are rendered and labeled.')
+    w('- Render cosmetics follow-up (independent visual-gate findings F1-F7, '
+      'Amendment A5 of the preregistration): per-lane trace strip (each '
+      'series in its own lane), layer-1 navy IDs rendered in all four '
+      'diagnostic viewports, footer carries the GPU pair-event count and '
+      'the display contact-triangle count as named separate quantities, '
+      'clean captions drawn inside their viewports, lambert-shaded fills '
+      '(shade() 0..255 input-scale fix), per-viewport rasterization (no '
+      'cross-cell spill); the merged original capture remains archived and '
+      'the re-rendered capture re-pins the same trace state binding.')
     w(f'- Key hashes (generated): video {crec["video_sha256"]}; trace '
       f'{trace_sha}; subject (experiment_receipt.json) {receipt_sha}.')
     w('')

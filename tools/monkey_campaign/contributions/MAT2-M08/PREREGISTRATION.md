@@ -411,3 +411,87 @@ gate bounds the tick sum by MAX_ACTIVE * N_SUB; true per-substep slot
 overflow still raises through the kernel's own cap path (P_GSRES = 1e300
 -> convergence_gate_not_met). The armed gate-failure dump produced this
 measurement.
+
+## AMENDMENT A5 (render cosmetics; post-merge visual-gate follow-up,
+## 2026-09-29Z, branch m08-render-cosmetics — recorded BEFORE the
+## re-render, observations quoted from the independent gate)
+
+Triggering record: the deferred visual_acceptance item was closed by the
+independent visual gate (reviewer sgt-m08-visual; REVIEW_EVIDENCE.md +
+VERDICT.json under kanban-reviews/MAT2-M08/visual-gate/; verdict PASS
+with findings F1-F7, measured on the MERGED capture
+20c9dc49540496de5ff2d827151a30ab8ca8263db07bc3c963cb1ebaca1914c3 decoded
+from the mkv itself). No finding touches physics, state binding,
+integrity or honesty; all seven are render/prose/housekeeping workmanship
+on the renderer, its generators and their declared prose. The merged
+original capture stays archived untouched as the merged original; every
+correction below is render-side, generator-side or housekeeping and is
+re-measured on the new capture. The state binding is UNCHANGED: every
+view still binds sha256 of the committed experiment_trace.json
+(826a5e8f...), the frozen cameras are unchanged (cameras.json stays
+byte-identical), and the in-code volume binding assertion still gates
+every frame.
+
+1. F1 per-lane trace strip (renderer fix): gate observation — the red
+   delta_p series had ZERO visible pixels in all 9 frames; it was drawn
+   but 100.00% exactly overdrawn by the green cumulative-work series
+   (4502/4502 predicted red px covered) because all three series shared
+   one band. Re-issued: the strip draws ONE SERIES PER LANE (three
+   separate 18-px bands with per-lane colored series tags), so no series
+   can overpaint another.
+2. F2 diagnostic layer 1 RENDERED in every diagnostic viewport (was
+   falsified for the close-up): gate measurement — L1 (m:t0..3 navy
+   labels) was exactly 0 px in the close-up at every tick (drawn first,
+   then erased by the close-up cell's own plate/ground polygons).
+   Re-issued by RENDERING the layer (preferred over prose amendment):
+   navy (15,15,90) m:t0..3 membrane-triangle ID labels at their
+   centroids plus the navy 'port:maxwell_mount' port ID (anchor dot +
+   label) at the Maxwell mount anchor, drawn TOPMOST of every diagnostic
+   viewport; clean rows carry none. Projection probe: all four m:t
+   centroids project inside the close-up viewport at every tick, so the
+   layer is renderable there.
+3. F3 footer/marker agreement (footer binding fix): gate observation —
+   L4 contact circles were 0 px at ticks 10/20/40 while the same frames'
+   footers declared GPU active pairs 8/26/14. The GPU count D_ACTIVE is
+   a pair-EVENT sum over the tick's substeps (an event integral, not an
+   end-state); the circles are the end-state display recomputation, and
+   the snapshot carries no GPU pair identities to draw. Re-issued: the
+   footer names both quantities precisely — 'GPU contact pair-events N
+   (summed over the tick's 4 substeps; end-state display contact
+   triangles M)' — so the circles and the footer agree on what each
+   number is; no value is hand-typed (both from the snapshot block /
+   display set).
+4. F4 clean captions inside their viewports (renderer fix): gate
+   observation — clean captions were drawn at y=352-365, inside the
+   diagnostic row, 3-16 px ABOVE their clean viewports. Re-issued: each
+   caption is drawn INSIDE its clean viewport image (top-left), the
+   clean cell's only text, declared in honest_titles and the clean view
+   notes.
+5. F5 shade() unit scale (renderer fix): the previous form multiplied
+   0..255 base channels by an extra 255 (int(min(255, c*lam*255))),
+   saturating every polygon fill to pure white (gate observation: the
+   render was effectively wireframe). Re-issued: shade() treats the base
+   scale as 0..255 with the named assert shade_base_not_0_255_scale;
+   fills are lambert-shaded.
+6. F6 per-viewport clipping (renderer fix; root cause of F2's close-up
+   loss and the wall-anchor line loss): gate observation — no viewport
+   clipping; later viewports' geometry overpainted earlier overlays
+   (wall-anchor line 679 drawn vs 1/1/4/0 visible px). Re-issued: every
+   diagnostic/clean viewport is rasterized into its OWN 640x360 image
+   and pasted into the sheet, so no projected geometry can leave its
+   cell. Frozen cameras unchanged.
+7. F7 housekeeping: the three untracked loose JSONs the committed
+   original also wrote at the contribution root (byte-identical
+   duplicates of the committed evidence) are removed; make_capture.py
+   now writes the manifest/context/receipt only into the attempt
+   evidence directory, and make_report.py reads the committed
+   capture/validation_receipt.json.
+8. Re-capture identity: same 9 capture ticks, same frozen cameras
+   (camera records unchanged), state binding unchanged — every frame is
+   still bound to the committed trace (sha256 826a5e8f...) via the
+   snapshot volume assertion. The cosmetics fixes intentionally change
+   frame pixels, so the NEW capture carries a NEW video sha256 and NEW
+   frame hashes, re-pinned in the manifest/context/receipt; the
+   decoded-frame == committed-still gate re-runs on the new artifact,
+   with the adapted visual-gate measurement scripts first validated
+   against the OLD capture as control.
