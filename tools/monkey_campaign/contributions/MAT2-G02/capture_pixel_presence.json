@@ -67,6 +67,19 @@
    "tile": "pair-2:diagnostic"
   },
   {
+   "delta_px": 0.744,
+   "drawn_px": [
+    91,
+    43
+   ],
+   "predicted_px": [
+    91.5,
+    43.74
+   ],
+   "tick": 0,
+   "tile": "pair-2:diagnostic:pip"
+  },
+  {
    "delta_px": 0.814,
    "drawn_px": [
     334,
@@ -145,6 +158,19 @@
    "tile": "pair-2:diagnostic"
   },
   {
+   "delta_px": 0.718,
+   "drawn_px": [
+    91,
+    43
+   ],
+   "predicted_px": [
+    91.3,
+    43.72
+   ],
+   "tick": 20,
+   "tile": "pair-2:diagnostic:pip"
+  },
+  {
    "delta_px": 0.817,
    "drawn_px": [
     334,
@@ -223,6 +249,19 @@
    "tile": "pair-2:diagnostic"
   },
   {
+   "delta_px": 0.812,
+   "drawn_px": [
+    107,
+    45
+   ],
+   "predicted_px": [
+    107.6,
+    45.81
+   ],
+   "tick": 150,
+   "tile": "pair-2:diagnostic:pip"
+  },
+  {
    "delta_px": 0.671,
    "drawn_px": [
     331,
@@ -301,6 +340,19 @@
    "tile": "pair-2:diagnostic"
   },
   {
+   "delta_px": 0.705,
+   "drawn_px": [
+    122,
+    47
+   ],
+   "predicted_px": [
+    122.33,
+    47.71
+   ],
+   "tick": 232,
+   "tile": "pair-2:diagnostic:pip"
+  },
+  {
    "delta_px": 0.588,
    "drawn_px": [
     330,
@@ -379,6 +431,19 @@
    "tile": "pair-2:diagnostic"
   },
   {
+   "delta_px": 0.707,
+   "drawn_px": [
+    122,
+    47
+   ],
+   "predicted_px": [
+    122.35,
+    47.71
+   ],
+   "tick": 233,
+   "tile": "pair-2:diagnostic:pip"
+  },
+  {
    "delta_px": 0.588,
    "drawn_px": [
     330,
@@ -457,6 +522,19 @@
    "tile": "pair-2:diagnostic"
   },
   {
+   "delta_px": 0.854,
+   "drawn_px": [
+    123,
+    47
+   ],
+   "predicted_px": [
+    123.49,
+    47.85
+   ],
+   "tick": 250,
+   "tile": "pair-2:diagnostic:pip"
+  },
+  {
    "delta_px": 0.582,
    "drawn_px": [
     330,
@@ -535,6 +613,19 @@
    "tile": "pair-2:diagnostic"
   },
   {
+   "delta_px": 0.698,
+   "drawn_px": [
+    91,
+    43
+   ],
+   "predicted_px": [
+    91.15,
+    43.7
+   ],
+   "tick": 320,
+   "tile": "pair-2:diagnostic:pip"
+  },
+  {
    "delta_px": 0.819,
    "drawn_px": [
     334,
@@ -562,7 +653,7 @@
     "trace_line_pixels": 1264
    },
    "frame": "frame_00.png",
-   "sha256": "4c9bd47f11eba7f09c83273c66648133f917250d5ecb6354255402df3932b648",
+   "sha256": "de2fb8478cdd2c2df80afbc955a00e552dd5c2d9007d89e9185111b4a665c775",
    "tick": 0
   },
   {
@@ -572,7 +663,7 @@
     "trace_line_pixels": 1264
    },
    "frame": "frame_01.png",
-   "sha256": "01a6e9cffe6efef36715a6e29ef8076e05e01f2063cc6d6d24c7489df7921fde",
+   "sha256": "95543f391718dd2d440ccfb3c73b59b3915abf73c7835f714b028149687d9ef3",
    "tick": 20
   },
   {
@@ -582,7 +673,7 @@
     "trace_line_pixels": 1264
    },
    "frame": "frame_02.png",
-   "sha256": "d4dec129c8ce063100bb735a122ea212f767c89341a647cb4cc029bacf86175a",
+   "sha256": "abdd43a70001c4be675eeddb096ecb07506745d64fe2f72f01536db332dce242",
    "tick": 150
   },
   {
@@ -592,7 +683,7 @@
     "trace_line_pixels": 1265
    },
    "frame": "frame_03.png",
-   "sha256": "5b6410c27b72aa7c366d61fb9c10675caca672aeca20163ab7df21c218c2f64b",
+   "sha256": "20b077671fe1c73e83b45c4c039b7fd2cac4a0b0fab2b65d50ae65b05c5a0072",
    "tick": 232
   },
   {
@@ -602,7 +693,7 @@
     "trace_line_pixels": 1265
    },
    "frame": "frame_04.png",
-   "sha256": "154178630d6a798ab9cb2d7130c42fa4c98521a46cff353cb958bac1aa31bdf5",
+   "sha256": "bd387b9652856493a01a3784c8ee26631c65fc9c1e49ec500ae39e349cf33aef",
    "tick": 233
   },
   {
@@ -612,7 +703,7 @@
     "trace_line_pixels": 1265
    },
    "frame": "frame_05.png",
-   "sha256": "c9f53dc125b609d67e75a236321f182a3857a9a89a11fef2ddadf82d6e90430d",
+   "sha256": "526c65cd6c6ecc616a422b767ad098ea4d14694a4ba823063e21ad7380638b7c",
    "tick": 250
   },
   {
@@ -622,7 +713,7 @@
     "trace_line_pixels": 1264
    },
    "frame": "frame_06.png",
-   "sha256": "8ef5a6e5b8015b65c75500e16a2fc604c042cb65ed82f907264ec11fce7167ad",
+   "sha256": "42ab71e8365f431f57c904ecce130e001683aacbde3c0f219a29dc3efc0911f5",
    "tick": 320
   }
  ],
@@ -4220,8 +4311,43 @@
     "label_expected": true,
     "label_pixels_total": 157,
     "missing": [],
-    "nonbg_pixels": 11027,
-    "pip_nonbg_pixels": 354,
+    "nonbg_pixels": 11960,
+    "pip": {
+     "camera_frame_id": "g02_oblique_patch",
+     "caption_chip_pixels": 44,
+     "measurement": "measured inside the declared inset rect; tile stats are post-paste",
+     "nonbg_pixels": 1085,
+     "occluded_prepaste_nonbg_pixels": 152,
+     "occluded_prepaste_pixels": {
+      "body_a": 0,
+      "body_b": 152,
+      "patch": 0,
+      "seam": 0,
+      "stand": 0
+     },
+     "rect_px": [
+      344,
+      6,
+      632,
+      82
+     ],
+     "render_mode": "picture_in_picture_inset",
+     "seam_anchor_px": [
+      91,
+      43
+     ],
+     "signatures": {
+      "body_a": 110,
+      "body_b": 445,
+      "patch": 4,
+      "seam": 37,
+      "stand": 92
+     },
+     "viewport_resolution": [
+      288,
+      76
+     ]
+    },
     "required": [
      "iface:fixture-patch-p1",
      "iface:fixture-patch-p2",
@@ -4231,20 +4357,20 @@
      "fixture_body_b"
     ],
     "signatures": {
-     "body_a": 56,
-     "body_b": 988,
-     "patch": 6399,
+     "body_a": 166,
+     "body_b": 1281,
+     "patch": 6403,
      "seam": 25,
-     "stand": 470
+     "stand": 562
     },
     "subjects": {
      "fixture_body_a": {
-      "geometry_pixels": 56,
+      "geometry_pixels": 166,
       "method": "area_signature",
       "present": true
      },
      "fixture_body_b": {
-      "geometry_pixels": 988,
+      "geometry_pixels": 1281,
       "method": "area_signature",
       "present": true
      },
@@ -4286,9 +4412,9 @@
      }
     },
     "tick": 0,
-    "title_pixels": 92,
+    "title_pixels": 136,
     "triad_pixels": 598,
-    "unique_colors": 480
+    "unique_colors": 487
    },
    {
     "label_bbox_pixels": {
@@ -4350,8 +4476,43 @@
     "label_expected": true,
     "label_pixels_total": 157,
     "missing": [],
-    "nonbg_pixels": 11084,
-    "pip_nonbg_pixels": 354,
+    "nonbg_pixels": 12014,
+    "pip": {
+     "camera_frame_id": "g02_oblique_patch",
+     "caption_chip_pixels": 44,
+     "measurement": "measured inside the declared inset rect; tile stats are post-paste",
+     "nonbg_pixels": 1082,
+     "occluded_prepaste_nonbg_pixels": 152,
+     "occluded_prepaste_pixels": {
+      "body_a": 0,
+      "body_b": 152,
+      "patch": 0,
+      "seam": 0,
+      "stand": 0
+     },
+     "rect_px": [
+      344,
+      6,
+      632,
+      82
+     ],
+     "render_mode": "picture_in_picture_inset",
+     "seam_anchor_px": [
+      91,
+      43
+     ],
+     "signatures": {
+      "body_a": 111,
+      "body_b": 441,
+      "patch": 4,
+      "seam": 37,
+      "stand": 92
+     },
+     "viewport_resolution": [
+      288,
+      76
+     ]
+    },
     "required": [
      "iface:fixture-patch-p1",
      "iface:fixture-patch-p2",
@@ -4361,20 +4522,20 @@
      "fixture_body_b"
     ],
     "signatures": {
-     "body_a": 84,
-     "body_b": 988,
-     "patch": 6399,
+     "body_a": 195,
+     "body_b": 1277,
+     "patch": 6403,
      "seam": 25,
-     "stand": 470
+     "stand": 562
     },
     "subjects": {
      "fixture_body_a": {
-      "geometry_pixels": 84,
+      "geometry_pixels": 195,
       "method": "area_signature",
       "present": true
      },
      "fixture_body_b": {
-      "geometry_pixels": 988,
+      "geometry_pixels": 1277,
       "method": "area_signature",
       "present": true
      },
@@ -4416,9 +4577,9 @@
      }
     },
     "tick": 20,
-    "title_pixels": 92,
+    "title_pixels": 136,
     "triad_pixels": 598,
-    "unique_colors": 486
+    "unique_colors": 493
    },
    {
     "label_bbox_pixels": {
@@ -4480,8 +4641,43 @@
     "label_expected": true,
     "label_pixels_total": 156,
     "missing": [],
-    "nonbg_pixels": 9732,
-    "pip_nonbg_pixels": 354,
+    "nonbg_pixels": 10734,
+    "pip": {
+     "camera_frame_id": "g02_oblique_patch",
+     "caption_chip_pixels": 44,
+     "measurement": "measured inside the declared inset rect; tile stats are post-paste",
+     "nonbg_pixels": 1306,
+     "occluded_prepaste_nonbg_pixels": 304,
+     "occluded_prepaste_pixels": {
+      "body_a": 152,
+      "body_b": 152,
+      "patch": 0,
+      "seam": 0,
+      "stand": 0
+     },
+     "rect_px": [
+      344,
+      6,
+      632,
+      82
+     ],
+     "render_mode": "picture_in_picture_inset",
+     "seam_anchor_px": [
+      107,
+      45
+     ],
+     "signatures": {
+      "body_a": 297,
+      "body_b": 479,
+      "patch": 4,
+      "seam": 37,
+      "stand": 92
+     },
+     "viewport_resolution": [
+      288,
+      76
+     ]
+    },
     "required": [
      "iface:fixture-patch-p1",
      "iface:fixture-patch-p2",
@@ -4491,20 +4687,20 @@
      "fixture_body_b"
     ],
     "signatures": {
-     "body_a": 1238,
-     "body_b": 1038,
-     "patch": 3990,
+     "body_a": 1383,
+     "body_b": 1365,
+     "patch": 3994,
      "seam": 22,
-     "stand": 470
+     "stand": 562
     },
     "subjects": {
      "fixture_body_a": {
-      "geometry_pixels": 1238,
+      "geometry_pixels": 1383,
       "method": "area_signature",
       "present": true
      },
      "fixture_body_b": {
-      "geometry_pixels": 1038,
+      "geometry_pixels": 1365,
       "method": "area_signature",
       "present": true
      },
@@ -4546,9 +4742,9 @@
      }
     },
     "tick": 150,
-    "title_pixels": 92,
+    "title_pixels": 136,
     "triad_pixels": 480,
-    "unique_colors": 524
+    "unique_colors": 530
    },
    {
     "label_bbox_pixels": {
@@ -4610,8 +4806,43 @@
     "label_expected": true,
     "label_pixels_total": 158,
     "missing": [],
-    "nonbg_pixels": 8708,
-    "pip_nonbg_pixels": 354,
+    "nonbg_pixels": 9757,
+    "pip": {
+     "camera_frame_id": "g02_oblique_patch",
+     "caption_chip_pixels": 44,
+     "measurement": "measured inside the declared inset rect; tile stats are post-paste",
+     "nonbg_pixels": 1353,
+     "occluded_prepaste_nonbg_pixels": 304,
+     "occluded_prepaste_pixels": {
+      "body_a": 152,
+      "body_b": 152,
+      "patch": 0,
+      "seam": 0,
+      "stand": 0
+     },
+     "rect_px": [
+      344,
+      6,
+      632,
+      82
+     ],
+     "render_mode": "picture_in_picture_inset",
+     "seam_anchor_px": [
+      122,
+      47
+     ],
+     "signatures": {
+      "body_a": 310,
+      "body_b": 513,
+      "patch": 4,
+      "seam": 37,
+      "stand": 92
+     },
+     "viewport_resolution": [
+      288,
+      76
+     ]
+    },
     "required": [
      "iface:fixture-patch-p1",
      "iface:fixture-patch-p2",
@@ -4621,20 +4852,20 @@
      "fixture_body_b"
     ],
     "signatures": {
-     "body_a": 1330,
-     "body_b": 1062,
-     "patch": 2940,
+     "body_a": 1488,
+     "body_b": 1423,
+     "patch": 2944,
      "seam": 14,
-     "stand": 470
+     "stand": 562
     },
     "subjects": {
      "fixture_body_a": {
-      "geometry_pixels": 1330,
+      "geometry_pixels": 1488,
       "method": "area_signature",
       "present": true
      },
      "fixture_body_b": {
-      "geometry_pixels": 1062,
+      "geometry_pixels": 1423,
       "method": "area_signature",
       "present": true
      },
@@ -4676,9 +4907,9 @@
      }
     },
     "tick": 232,
-    "title_pixels": 92,
+    "title_pixels": 136,
     "triad_pixels": 409,
-    "unique_colors": 546
+    "unique_colors": 551
    },
    {
     "label_bbox_pixels": {
@@ -4740,8 +4971,43 @@
     "label_expected": true,
     "label_pixels_total": 158,
     "missing": [],
-    "nonbg_pixels": 8710,
-    "pip_nonbg_pixels": 354,
+    "nonbg_pixels": 9759,
+    "pip": {
+     "camera_frame_id": "g02_oblique_patch",
+     "caption_chip_pixels": 44,
+     "measurement": "measured inside the declared inset rect; tile stats are post-paste",
+     "nonbg_pixels": 1353,
+     "occluded_prepaste_nonbg_pixels": 304,
+     "occluded_prepaste_pixels": {
+      "body_a": 152,
+      "body_b": 152,
+      "patch": 0,
+      "seam": 0,
+      "stand": 0
+     },
+     "rect_px": [
+      344,
+      6,
+      632,
+      82
+     ],
+     "render_mode": "picture_in_picture_inset",
+     "seam_anchor_px": [
+      122,
+      47
+     ],
+     "signatures": {
+      "body_a": 310,
+      "body_b": 513,
+      "patch": 4,
+      "seam": 37,
+      "stand": 92
+     },
+     "viewport_resolution": [
+      288,
+      76
+     ]
+    },
     "required": [
      "iface:fixture-patch-p1",
      "iface:fixture-patch-p2",
@@ -4751,20 +5017,20 @@
      "fixture_body_b"
     ],
     "signatures": {
-     "body_a": 1330,
-     "body_b": 1062,
-     "patch": 2940,
+     "body_a": 1488,
+     "body_b": 1423,
+     "patch": 2944,
      "seam": 14,
-     "stand": 470
+     "stand": 562
     },
     "subjects": {
      "fixture_body_a": {
-      "geometry_pixels": 1330,
+      "geometry_pixels": 1488,
       "method": "area_signature",
       "present": true
      },
      "fixture_body_b": {
-      "geometry_pixels": 1062,
+      "geometry_pixels": 1423,
       "method": "area_signature",
       "present": true
      },
@@ -4806,9 +5072,9 @@
      }
     },
     "tick": 233,
-    "title_pixels": 92,
+    "title_pixels": 136,
     "triad_pixels": 409,
-    "unique_colors": 546
+    "unique_colors": 551
    },
    {
     "label_bbox_pixels": {
@@ -4870,8 +5136,43 @@
     "label_expected": true,
     "label_pixels_total": 158,
     "missing": [],
-    "nonbg_pixels": 8613,
-    "pip_nonbg_pixels": 354,
+    "nonbg_pixels": 9667,
+    "pip": {
+     "camera_frame_id": "g02_oblique_patch",
+     "caption_chip_pixels": 44,
+     "measurement": "measured inside the declared inset rect; tile stats are post-paste",
+     "nonbg_pixels": 1358,
+     "occluded_prepaste_nonbg_pixels": 304,
+     "occluded_prepaste_pixels": {
+      "body_a": 152,
+      "body_b": 152,
+      "patch": 0,
+      "seam": 0,
+      "stand": 0
+     },
+     "rect_px": [
+      344,
+      6,
+      632,
+      82
+     ],
+     "render_mode": "picture_in_picture_inset",
+     "seam_anchor_px": [
+      123,
+      47
+     ],
+     "signatures": {
+      "body_a": 311,
+      "body_b": 516,
+      "patch": 5,
+      "seam": 37,
+      "stand": 92
+     },
+     "viewport_resolution": [
+      288,
+      76
+     ]
+    },
     "required": [
      "iface:fixture-patch-p1",
      "iface:fixture-patch-p2",
@@ -4881,20 +5182,20 @@
      "fixture_body_b"
     ],
     "signatures": {
-     "body_a": 1275,
-     "body_b": 1064,
-     "patch": 2899,
+     "body_a": 1434,
+     "body_b": 1428,
+     "patch": 2904,
      "seam": 11,
-     "stand": 470
+     "stand": 562
     },
     "subjects": {
      "fixture_body_a": {
-      "geometry_pixels": 1275,
+      "geometry_pixels": 1434,
       "method": "area_signature",
       "present": true
      },
      "fixture_body_b": {
-      "geometry_pixels": 1064,
+      "geometry_pixels": 1428,
       "method": "area_signature",
       "present": true
      },
@@ -4936,9 +5237,9 @@
      }
     },
     "tick": 250,
-    "title_pixels": 92,
+    "title_pixels": 136,
     "triad_pixels": 407,
-    "unique_colors": 545
+    "unique_colors": 551
    },
    {
     "label_bbox_pixels": {
@@ -5000,8 +5301,43 @@
     "label_expected": true,
     "label_pixels_total": 157,
     "missing": [],
-    "nonbg_pixels": 11272,
-    "pip_nonbg_pixels": 354,
+    "nonbg_pixels": 12131,
+    "pip": {
+     "camera_frame_id": "g02_oblique_patch",
+     "caption_chip_pixels": 44,
+     "measurement": "measured inside the declared inset rect; tile stats are post-paste",
+     "nonbg_pixels": 1087,
+     "occluded_prepaste_nonbg_pixels": 228,
+     "occluded_prepaste_pixels": {
+      "body_a": 76,
+      "body_b": 152,
+      "patch": 0,
+      "seam": 0,
+      "stand": 0
+     },
+     "rect_px": [
+      344,
+      6,
+      632,
+      82
+     ],
+     "render_mode": "picture_in_picture_inset",
+     "seam_anchor_px": [
+      91,
+      43
+     ],
+     "signatures": {
+      "body_a": 121,
+      "body_b": 436,
+      "patch": 4,
+      "seam": 37,
+      "stand": 92
+     },
+     "viewport_resolution": [
+      288,
+      76
+     ]
+    },
     "required": [
      "iface:fixture-patch-p1",
      "iface:fixture-patch-p2",
@@ -5011,20 +5347,20 @@
      "fixture_body_b"
     ],
     "signatures": {
-     "body_a": 176,
-     "body_b": 987,
-     "patch": 6460,
+     "body_a": 221,
+     "body_b": 1271,
+     "patch": 6464,
      "seam": 25,
-     "stand": 470
+     "stand": 562
     },
     "subjects": {
      "fixture_body_a": {
-      "geometry_pixels": 176,
+      "geometry_pixels": 221,
       "method": "area_signature",
       "present": true
      },
      "fixture_body_b": {
-      "geometry_pixels": 987,
+      "geometry_pixels": 1271,
       "method": "area_signature",
       "present": true
      },
@@ -5066,12 +5402,13 @@
      }
     },
     "tick": 320,
-    "title_pixels": 92,
+    "title_pixels": 136,
     "triad_pixels": 602,
-    "unique_colors": 495
+    "unique_colors": 500
    }
   ]
  },
+ "pip_law": "the declared picture-in-picture inset is measured like a viewport (round-2 fix): every declared geometry signature must have > 0 exact-color pixels INSIDE the declared inset rect (caption text alone cannot pass), the inset camera is in-frame-gated and consistency-oracled in the inset coordinate space, and the tile stats are measured POST-paste so they describe the committed pixels; the primary geometry occluded by the paste is measured and disclosed",
  "pip_rect_tile_px": [
   344,
   6,

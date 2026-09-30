@@ -111,6 +111,9 @@ def vis_rows(presence, cams):
                         'source': 'evidence/pixel_presence.json '
                                   '(render_run measured signatures)'},
                 })
+                inset = inset_evidence(presence, tile)
+                if inset is not None:
+                    entry['pixel_evidence']['secondary_inset'] = inset
             else:
                 entry.update({
                     'layers': [],
@@ -136,6 +139,41 @@ def cams_tile(view_id, mode):
     return f'{pair}:{mode}'
 
 
+def inset_evidence(presence, tile):
+    """Measured picture-in-picture inset evidence (round-2 fix, the r2
+    blocker: the declared 288x76 oblique inset contained caption text
+    only). Every number is measured INSIDE the declared rect; the gate is
+    exact-color signatures of the declared inset render, so a caption-
+    only inset cannot pass."""
+    per_frame = presence['per_tile_frames'][tile]
+    pips = [fr.get('pip') for fr in per_frame if fr.get('pip')]
+    if not pips:
+        return None
+    sig_names = sorted(pips[0]['signatures'])
+    return {
+        'rect_px': list(pips[0]['rect_px']),
+        'viewport_resolution': list(pips[0]['viewport_resolution']),
+        'camera_frame_id': pips[0]['camera_frame_id'],
+        'render_mode': pips[0]['render_mode'],
+        'min_signature_pixels_inside_rect':
+            {k: min(p['signatures'][k] for p in pips)
+             for k in sig_names},
+        'min_caption_chip_pixels':
+            min(p['caption_chip_pixels'] for p in pips),
+        'min_nonbg_pixels': min(p['nonbg_pixels'] for p in pips),
+        'max_occluded_prepaste_pixels':
+            max(sum(p['occluded_prepaste_pixels'].values())
+                for p in pips),
+        'gate': 'every declared geometry signature > 0 exact-color px '
+                'INSIDE the declared rect (render_run gate + '
+                'check_capture_pixels inset check); a caption-only '
+                'inset fails every signature gate',
+        'measurement': 'post-paste tile stats; primary geometry '
+                       'occluded by the paste disclosed per frame '
+                       '(pixel_presence.json pip blocks)',
+    }
+
+
 def req_tile(presence, tile):
     return list(presence['required_subjects'][tile])
 
@@ -152,6 +190,9 @@ def pixel_presence_summary(presence):
                                   if s not in observed],
                       'min_nonbg_pixels': min(fr['nonbg_pixels']
                                               for fr in per_frame)}
+    insets = {key: inset_evidence(presence, key)
+              for key in sorted(presence['per_tile_frames'])}
+    insets = {k: v for k, v in insets.items() if v is not None}
     return {
         'all_present': bool(presence['all_present']),
         'min_tile_nonbg_pixels':
@@ -161,11 +202,13 @@ def pixel_presence_summary(presence):
                 for fh in presence['frames']),
         'camera_consistency_max_delta_px':
             max(c['delta_px'] for c in presence['camera_consistency']),
+        'secondary_insets': insets,
         'tiles': tiles,
         'evidence_file': 'evidence/pixel_presence.json',
         'independent_check': 'check_capture_pixels.py <capture_dir> '
                              '(re-measures from the committed frames; '
-                             'control mode red on the pre-fix capture)',
+                             'control mode red on the pre-fix capture '
+                             'and on the r2 caption-only inset)',
     }
 
 
@@ -248,8 +291,13 @@ def main():
                   '+X); declared framing scope = the patch quad and seam; '
                   'the diagnostic cell additionally renders the declared '
                   'oblique secondary camera as a labeled picture-in-'
-                  'picture inset (secondary_cameras; the inset is '
-                  'gate-checked to hide no subject point and no label)',
+                  'picture inset (secondary_cameras) at its declared '
+                  '288x76 resolution: the inset camera is in-frame-gated '
+                  'in the INSET coordinate space, every declared geometry '
+                  'signature is measured > 0 exact-color px INSIDE the '
+                  'declared rect (caption-only insets refuse to build), '
+                  'and the gate-checked inset hides no subject point and '
+                  'no label of the primary viewport',
     }
     for vi, view_id in enumerate(VIEWS):
         pair_id = f'pair-{vi}'
@@ -310,8 +358,13 @@ def main():
                                 'committed experiment_trace.json rows '
                                 '(solver state bound before pixels); '
                                 'draw_viewport() called for all six '
-                                'viewports; in-frame gate + reprojection '
-                                'oracle gate passed before any manifest')
+                                'viewports AND the 288x76 oblique PiP '
+                                'inset at its own target resolution '
+                                '(round-2 fix); in-frame gate + '
+                                'reprojection oracle gate passed before '
+                                'any manifest, inset content gated by '
+                                'exact-color signatures inside the '
+                                'declared rect')
     receipt['state_hash_preserved_across_view_toggles'] = \
         bool(state_hashes.get('preserved_across_view_toggles'))
     receipt['state_hashes'] = state_hashes.get('hashes', {})

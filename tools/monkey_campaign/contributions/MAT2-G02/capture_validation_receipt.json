@@ -10,8 +10,36 @@
   "camera_consistency_max_delta_px": 0.985,
   "evidence_file": "evidence/pixel_presence.json",
   "footer_min_trace_line_pixels": 1264,
-  "independent_check": "check_capture_pixels.py <capture_dir> (re-measures from the committed frames; control mode red on the pre-fix capture)",
+  "independent_check": "check_capture_pixels.py <capture_dir> (re-measures from the committed frames; control mode red on the pre-fix capture and on the r2 caption-only inset)",
   "min_tile_nonbg_pixels": 2777,
+  "secondary_insets": {
+   "pair-2:diagnostic": {
+    "camera_frame_id": "g02_oblique_patch",
+    "gate": "every declared geometry signature > 0 exact-color px INSIDE the declared rect (render_run gate + check_capture_pixels inset check); a caption-only inset fails every signature gate",
+    "max_occluded_prepaste_pixels": 304,
+    "measurement": "post-paste tile stats; primary geometry occluded by the paste disclosed per frame (pixel_presence.json pip blocks)",
+    "min_caption_chip_pixels": 44,
+    "min_nonbg_pixels": 1082,
+    "min_signature_pixels_inside_rect": {
+     "body_a": 110,
+     "body_b": 436,
+     "patch": 4,
+     "seam": 37,
+     "stand": 92
+    },
+    "rect_px": [
+     344,
+     6,
+     632,
+     82
+    ],
+    "render_mode": "picture_in_picture_inset",
+    "viewport_resolution": [
+     288,
+     76
+    ]
+   }
+  },
   "tiles": {
    "pair-0:clean": {
     "min_nonbg_pixels": 2777,
@@ -102,7 +130,7 @@
     ]
    },
    "pair-2:diagnostic": {
-    "min_nonbg_pixels": 8613,
+    "min_nonbg_pixels": 9667,
     "missing": [],
     "observed": [
      "iface:fixture-patch-p1",
@@ -125,7 +153,7 @@
  },
  "profile_id": "attachment-fixture",
  "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-G02].spec.ontology_qualification.task.verification_profile (read read-only)",
- "render_source": "render_run.py software raster over the committed experiment_trace.json rows (solver state bound before pixels); draw_viewport() called for all six viewports; in-frame gate + reprojection oracle gate passed before any manifest",
+ "render_source": "render_run.py software raster over the committed experiment_trace.json rows (solver state bound before pixels); draw_viewport() called for all six viewports AND the 288x76 oblique PiP inset at its own target resolution (round-2 fix); in-frame gate + reprojection oracle gate passed before any manifest, inset content gated by exact-color signatures inside the declared rect",
  "state_hash_preserved_across_view_toggles": true,
  "state_hashes": {
   "0": "97cbd98d6c54060d0fd678af92faf9bdf4cf7bdeafd898fa3ce9ea3668dc1d24",
@@ -142,8 +170,8 @@
  "trace_path": "tools/monkey_campaign/contributions/MAT2-G02/experiment_trace.json",
  "trace_sha256": "259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b",
  "validator": "tools/monkey_campaign/visual_capture.py validate_manifest",
- "video_path": "E:\\ChimeraWork\\_scratch\\mat2-g02-corrections\\new_capture\\capture\\capture_mat2_g02_attachment_20260930.mkv",
- "video_sha256": "b3e57b89f17238eb6ed710bf18a637eb9da36ffad01df0834a1c981de59f28b3",
+ "video_path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-G02\\983a9a8b1be54457a6aa516319290aa1\\capture\\capture\\capture_mat2_g02_attachment_20260930.mkv",
+ "video_sha256": "49d2023ccd78ae26d3c87ebf39041039629b4e3b9a42a77d16bbe8fd1eaa948d",
  "view_count": 6,
  "visual_acceptance": false
 }
