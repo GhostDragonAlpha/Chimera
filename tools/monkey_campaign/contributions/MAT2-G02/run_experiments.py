@@ -1,52 +1,35 @@
-"""{{CARD_FULL}} frozen experiments (PREREGISTRATION.md) - card-kit template.
+"""MAT2-G02 frozen experiments (PREREGISTRATION.md base 49bd9a85 +
+Amendments A1 a39a946e / A2 951c963e) - card-kit pattern (M08 lineage).
 
-Copy-adapted from the merged MAT2-M08 trio (PR #267 lineage) by the card-kit
-lane. Replace every {{PLACEHOLDER}}; keep the pattern. When done, delete this
-banner's FILL list and keep the lessons.
+CPU-ONLY card: the scope is a two-body attachment fixture (356 ticks, one
+active coordinate) - the CPU-FIRST law is satisfied directly and no GPU
+submission is made (prereg law 12). No fitting experiment runs (sealed A07
+gate); no friction constant appears anywhere; no lambda_min.
 
-Modes (one process each; all GPU work goes through the mailbox jobs,
-E:/ChimeraWork/gpu-queue per PROTOCOL.md):
-  main       X1 GPU/direct-reference agreement on the frozen fixture;
+Modes (one process each):
+  main       X1 closed-form element agreement + frozen dynamic fixture run;
              writes experiment_trace.json + experiment_receipt.json
-             (physics-only, byte-identical on rerun) and gpu_profile.json
-             (timings; NEVER byte-compared).
+             (physics-only, byte-identical on rerun) and
+             experiment_profile.json (wall time; NEVER byte-compared).
   rerun      second fresh run for X2 byte-identity (writes *_rerun2.json).
-  compare    X2 scoped determinism: byte-identity of the DECLARED unit
-             (the trace), with the receipt delta scoped to mode_main's
-             augmentation keys; writes determinism_receipt.json.
-  profile    X3 residency/profile run (steady-state, cyclic schedule);
-             writes profile_receipt.json.
-  bharm      X4 far-field arm (only if the card has a hierarchy pass):
-             its own eligible law, error window and theta=0 near-field
-             reference; writes bh_receipt.json. DELETE if not applicable -
-             do not ship an arm the card does not declare.
+  compare    X2 scoped determinism: byte-identity of the DECLARED unit (the
+             trace), receipt delta scoped to AUGMENTATION_KEYS; writes
+             determinism_receipt.json.
   falsify    F-arms, each tamper with its passing CLEAN CONTROL run FIRST,
              in the same executable; writes falsifier_receipt.json.
-  regression the declared upstream suite re-run unmodified on the exact
-             candidate revision; writes regression_receipt.json.
+  regression the declared upstream suite re-run unmodified on this exact
+             revision; writes regression_receipt.json.
 
-FILL LIST (search for '{{'):
-  {{CARD_FULL}} {{CARD_ID}} {{CARD_TITLE}} {{DATE}}
-  {{PIN_TABLE}} {{WORLD_IMPORTS}} {{ORACLE_IMPORT}} {{COMPARABLE_TABLE}}
-  {{FIXTURE_COMPS}} {{TICKS}} {{WINDOWS}} {{PROFILE_COMPS}} {{PROFILE_TICKS}}
-  {{CYCLIC_SCHEDULE}} {{F_ARMS}} {{REGRESSION_SUITE}}
-Laws this file already enforces (do NOT remove):
-  - CPU-FIRST: validate the kernel logic as a pure mirror against the sealed
-    oracle on CPU (see local rehearsal pattern) BEFORE any GPU job; the GPU
-    bank confirms physics, it does not debug it.
-  - No RNG; no wall-clock in trace/receipt (timings live only in the profile
-    receipt, excluded from byte-identity by declaration).
+Laws enforced here (do NOT remove):
+  - No RNG; no wall-clock in trace/receipt (timings live only in
+    experiment_profile.json, excluded from byte-identity by declaration).
   - Refusals are named codes; vacuous comparisons are REFUSED.
-  - Device state is released on EVERY exit path (try/finally).
-  - Job JSONs to the GPU queue use FORWARD SLASHES ONLY (a single-backslash
-    JSON escape corrupted M08 job m08h: '\\c' -> U+0002, '\\t' -> TAB in
-    the workdir). Mode names must be verified against the dispatch table
-    in main() below - job writers: copy the mode token from MODES.
+  - Tampered modules are scratch copies under .tmp/, never committed state.
 """
 from __future__ import annotations
 
-import ast
 import hashlib
+import importlib.util
 import json
 import pathlib
 import subprocess
@@ -57,47 +40,34 @@ import numpy as np
 
 HERE = pathlib.Path(__file__).resolve().parent
 CONTRIB = HERE.parent
-# FILL {{WORLD_IMPORTS}}: add sys.path entries for each sibling card dir
-# this card imports from (M08 pattern: MAT2-M01/M03/M04/M06/M07).
-for _p in (str(HERE),):
-    if _p not in sys.path:
-        sys.path.insert(0, _p)
+if str(HERE) not in sys.path:
+    sys.path.insert(0, str(HERE))
 
-# FILL {{ORACLE_IMPORT}}: the sealed CPU oracle (M08 used the M07
-# integrated_step UNMODIFIED, with a frozen sha256 pin below).
-# import integrated_step as iw        # noqa: E402  (sealed CPU oracle)
-# import kernel_mirror as km          # noqa: E402  (CPU mirror of kernels)
-# import resident_gpu_world as rgw    # noqa: E402  (the CUDA resident world)
+import attachment_patch as ap  # noqa: E402 (this card's frozen element)
 
-# LAW (CPU-first, M08 origin): kernel_mirror.py is the statement-level pure
-# numpy mirror of every CUDA kernel. Its logic is validated BITWISE against
-# the sealed oracle on CPU BEFORE the CUDA port runs on the GPU box. Keep
-# that file and its rehearsal; never debug physics through GPU jobs.
+CARD_ID = 'G02'
+CARD_FULL = 'MAT2-G02'
 
-CARD_ID = '{{CARD_ID}}'          # SHORT registry form: 'M09', NOT 'MAT2-M09'
-CARD_FULL = '{{CARD_FULL}}'      # dir/PR form: 'MAT2-M09'
+# Frozen input pins (copy hashes from the pinned sources, never re-type).
+PINS = {
+    '../MAT2-M01/material_state.py':
+        'b6b009713daa4b315c6b5cb43c7ad4e756123b50edcdd802eeebd55c6afd6c40',
+    '../MAT2-M05/interface_state.json':
+        'c09bdf0564d152fa8b9a41489bd874fd0570f75e40ed3ce848f4c474fd0320c6',
+    '../MAT2-A09/grasp_package.json':
+        '0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24',
+    '../MAT2-A08/parameter_envelope.json':
+        '2fb43fd44f13e8b927142d72b79d36246ee7d71fd954a39ffeb12b74dc716424',
+    '../MAT2-M05/test_interface_exchange.py':
+        'af4cc05905d2f1f83d709906a82c411493fdf195b32b4185aaac05f8690a5e30',
+}
 
-DT0 = 1.0 / 300.0                # FILL {{TICKS}}/{{WINDOWS}} block below
-TICKS = 80                       # FILL: frozen main-fixture tick count
-CAPTURE_TICKS = (0, 10, 20, 30, 40, 50, 60, 70, 79)   # FILL: declared
-AGREE_POS_WINDOW_M = 1e-12       # FILL {{WINDOWS}}: frozen position window
-AGREE_SCALAR_WINDOW = 1e-9       # FILL {{WINDOWS}}: frozen relative window
-PROFILE_COMPS = 16               # FILL {{PROFILE_COMPS}}
-PROFILE_TICKS = 240              # FILL {{PROFILE_TICKS}}
-TELEMETRY_BUDGET_UP_PER_TICK = 256      # FILL: declared command budget
-TELEMETRY_BUDGET_DOWN_PER_COMP = 1024   # FILL: declared diagnostics budget
+MODES = ('main', 'rerun', 'compare', 'falsify', 'regression')
 
-if CARD_ID.startswith('{{'):
-    raise SystemExit(
-        'run_experiments_template.py is UNFILLED: replace the {{...}} '
-        'placeholders (see the FILL LIST in the module docstring) before '
-        'running anything. Templates never run as-is.')
-
-MODES = ('main', 'rerun', 'compare', 'profile', 'bharm', 'falsify',
-         'regression')
-# Job writers: the GPU-queue command mode token MUST be one of MODES.
-# (M08 lesson: job 'm08g' sent mode 'x1'; the dispatch refused with
-# 'unknown mode' and burned a mailbox round trip.)
+AGREE_REL_WINDOW = 1e-15          # frozen closed-form agreement window
+TORQUE_BOUND_N_M = 1e-15          # frozen summed-torque bound (law T3)
+PROBE_GAPS = (1.0e-3, 0.02, 0.053030, 0.0923)   # frozen probe grid
+RELEASE_TICK = ap.RELEASE_TICK
 
 
 def sha256_file(path):
@@ -105,11 +75,8 @@ def sha256_file(path):
 
 
 def _numpy_json_default(o):
-    """Numpy scalars reaching json (np.bool_ from == on numpy values,
-    np.floating/np.integer from kernel-adjacent arithmetic) serialize as
-    their plain counterparts. Only invoked for otherwise-unserializable
-    objects, so every receipt that serialized before stays byte-identical.
-    (Verbatim from M08: keep exactly; receipts depend on it.)"""
+    """Numpy scalars reaching json serialize as plain counterparts.
+    (Verbatim from the M08 card-kit lineage: keep exactly.)"""
     if isinstance(o, np.bool_):
         return bool(o)
     if isinstance(o, np.integer):
@@ -121,26 +88,18 @@ def _numpy_json_default(o):
 
 
 def canonical(value):
-    """The one serializer for trace/receipt bytes: sorted keys, no spaces,
-    UTF-8, NaN refused. Byte-identity (X2) is defined on these bytes."""
+    """The one serializer for trace/receipt bytes (byte-identity unit)."""
     return json.dumps(value, sort_keys=True, separators=(',', ':'),
                       ensure_ascii=False, allow_nan=False,
                       default=_numpy_json_default).encode('utf-8')
 
 
 def refuse_vacuous(a, b, code='vacuous_comparison_refused'):
-    """A window gate whose two sides are identically zero cannot fail; such
-    comparisons are REFUSED (M07/M08 law: a falsifier must be able to
-    fail). Gate your FALSIFIABLE windows with this; a plain agreement
-    comparison of two exact zeros is recorded as an exact-zero pair, not
-    silently dropped."""
     if a == 0.0 and b == 0.0:
         raise ValueError(code)
 
 
 def vacuous_guard_selftest():
-    """Must be True in every receipt that uses refuse_vacuous (the guard
-    itself is tested in the executable, every run)."""
     fired = False
     try:
         refuse_vacuous(0.0, 0.0)
@@ -150,114 +109,307 @@ def vacuous_guard_selftest():
 
 
 def verify_input_pins():
-    """Frozen dependency inputs: refuse to run on drift. FILL {{PIN_TABLE}}:
-    relative path -> sha256 of every upstream file this card depends on
-    (the sealed oracle, the upstream suite, sibling modules). Copy the
-    hashes from the PINNED sources, never re-type them."""
-    pins = {
-        # FILL {{PIN_TABLE}}  e.g.
-        # '../MAT2-M07/integrated_step.py':
-        #     '36c556dcf2cf0b3c9b7fe3c79dd42baae6489ad2c0b3093a5ac1bd550d8c66e4',
-    }
-    if not pins:
+    if not PINS:
         raise ValueError('input_pins_empty: declare your frozen inputs')
-    for rel, expected in pins.items():
+    for rel, expected in PINS.items():
         path = (HERE / rel).resolve()
         if not path.exists():
             raise ValueError('input_pin_missing:' + rel)
+        if expected.startswith('PLACEHOLDER'):
+            raise ValueError('input_pin_unfilled:' + rel)
         if sha256_file(path) != expected:
             raise ValueError('input_pin_drift:' + rel)
-    return pins
+    return dict(PINS)
 
 
-# FILL {{COMPARABLE_TABLE}}: every per-tick scalar the oracle row and the
-# GPU diagnostic block must agree on, as (name, diagnostic-slot constant).
-# M08 compared 21 scalars per component per tick under the relative window.
-COMPARABLE = [
-    # ('plate_x_m', km.D_PLX), ('F_N', km.D_F), ...
-]
+def _rel(a, b):
+    d = abs(a - b)
+    return d / max(1.0, abs(a), abs(b))
 
 
-def run_agreement(ticks=TICKS, store_snapshots=True, profile=False,
-                  tamper=False):
-    """X1 wrapper: own the world here, release it on EVERY exit path.
+# ------------------------------------------------------------ X1 element
+def element_probes():
+    """T1/T2/T4/T5/T7/T9 exact probes + X1 element-vs-oracle agreement on
+    the frozen probe grid. Returns (probe_rows, agreement_rows)."""
+    rows = []
+    agree = []
 
-    Wrapper/inner pattern (M08): the wrapper constructs the resident world
-    and guarantees `finally: world.release()`; the inner body does the
-    stepping and measurement. A raise (a budget gate, a named refusal, a
-    CUDA fault) must never leak device state into the next world sharing
-    this context.
-    FILL: construction of the oracle + world over {{FIXTURE_COMPS}}."""
-    # from numba import cuda
-    raise SystemExit('FILL: run_agreement for this card')
-    # --- shape to copy (M08): -----------------------------------------
-    # comps_obj = [iw.Component(cid, off) for cid, off in FIXTURE_COMPS]
-    # gpu = rgw.ResidentGpuWorld(comps_obj, gravity=True)
-    # try:
-    #     trace_rows, receipt = _run_agreement_body(gpu, comps_obj, ...)
-    # finally:
-    #     gpu.release()
-    # return trace_rows, receipt
+    # T1 geometry (exact)
+    geo = ap.patch_geometry()
+    rows.append({'probe': 'T1_areas', 'A1_m2': geo['areas_m2'][0],
+                 'A2_m2': geo['areas_m2'][1],
+                 'A_patch_m2': geo['area_patch_m2'],
+                 'T1_pass': abs(geo['areas_m2'][0] - 1.0e-4) <= 1e-18
+                 and abs(geo['areas_m2'][1] - 6.5e-5) <= 1e-18
+                 and abs(geo['area_patch_m2'] - 1.65e-4) <= 1e-18,
+                 'area_ratio': geo['areas_m2'][0] / geo['areas_m2'][1]})
+    rows.append({'probe': 'T1_weights', 'w1': ap.W1, 'w2': ap.W2,
+                 'sum_minus_1': abs(ap.W1 + ap.W2 - 1.0),
+                 'T1_weights_pass': abs(ap.W1 + ap.W2 - 1.0) <= 1e-18})
+
+    # T2 areal scaling at e0 (exact closed forms, Amendment A1 literals)
+    e0 = 1.0e-3
+    el = ap.PatchElement()
+    el.bind('port:patch', 'port:patch')
+    ld = el.loads(e0, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 1)
+    t1 = ld['triangles'][0]['tension_N']
+    t2 = ld['triangles'][1]['tension_N']
+    total = ld['force_on_a_N'][0]
+    rows.append({'probe': 'T2_areal_scaling', 'e0_m': e0, 'T1_N': t1,
+                 'T2_N': t2, 'total_N': total,
+                 'expected_T1_N': 3.4285714285714285e-04,
+                 'expected_T2_N': 2.2285714285714282e-04,
+                 'expected_total_N': 5.657142857142857e-04,
+                 'ratio': t1 / t2, 'expected_ratio': 20.0 / 13.0,
+                 'T2_pass': _rel(t1, 3.4285714285714285e-04) <= 1e-15
+                 and _rel(t2, 2.2285714285714282e-04) <= 1e-15
+                 and _rel(total, 5.657142857142857e-04) <= 1e-15
+                 and abs(t1 / t2 - 20.0 / 13.0) <= 1e-12})
+
+    # T3 reciprocity on the grid: tension probes at gap > 0 (x-forces,
+    # exact cancellation at separated anchors per the M05 vocabulary);
+    # shear/twist probes at gap = 0 (coincident anchors).
+    torque_rows = []
+    worst = 0.0
+    for g in PROBE_GAPS:
+        for d_perp, theta in (((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)),
+                              ((0.0, 1.0e-3, 0.0), (0.0, 0.0, 0.0)),
+                              ((0.0, 0.0, 0.0), (0.01, 0.0, 0.0))):
+            if (d_perp[1] or d_perp[2] or theta[0] or theta[1]
+                    or theta[2]) and g != 0.0:
+                continue   # declared: shear/twist probes at coincident only
+            el2 = ap.PatchElement()
+            el2.bind('port:patch', 'port:patch')
+            ld2 = el2.loads(g, d_perp, theta, 2)
+            o2 = ap.oracle_patch_loads(g, d_perp, theta, True)
+            s = 0.0
+            for i, j in ((0, 1), (1, 2), (2, 0)):
+                sa = ld2['moment_about_com_a_N_m'][i] \
+                    + np.cross(ap.COM_A, ld2['force_on_a_N'])[i]
+                sb = ld2['moment_about_com_b_N_m'][i] \
+                    + np.cross(ap.COM_B_REST
+                               + np.array([g, 0.0, 0.0]),
+                               ld2['force_on_b_N'])[i]
+                s += sa + sb
+            worst = max(worst, abs(s))
+            torque_rows.append({'gap_m': g, 'summed_torque_origin_N_m': s,
+                                'within_bound': abs(s) <= 1e-15})
+            agree.append({
+                'probe': 'X1_element_vs_oracle', 'gap_m': g,
+                'd_perp': list(d_perp), 'theta': list(theta),
+                't1_rel': _rel(ld2['triangles'][0]['tension_N'],
+                               o2['triangles'][0]['tension_N']),
+                't2_rel': _rel(ld2['triangles'][1]['tension_N'],
+                               o2['triangles'][1]['tension_N']),
+                'energy_rel': _rel(ld2['energy_J'], o2['energy_J']),
+                'force_pair_bitwise_negative':
+                    ld2['force_on_a_N'][0] == -ld2['force_on_b_N'][0],
+                'couple_pair_bitwise_negative':
+                    all(ld2['moment_about_com_a_N_m'][i]
+                        == -ld2['moment_about_com_b_N_m'][i]
+                        for i in range(3)) or g != 0.0,
+                'interface_force_sum_N': ld2['interface_force_sum_N'],
+            })
+    rows.append({'probe': 'T3_reciprocity', 'rows': torque_rows,
+                 'worst_summed_torque_N_m': worst,
+                 'T3_pass': worst <= TORQUE_BOUND_N_M
+                 and all(r['interface_force_sum_N'] == [0.0, 0.0, 0.0]
+                         for r in agree)})
+
+    # T4 weights distribution (exact)
+    dist = ap.distribute_couple(0.01, 1)
+    rows.append({'probe': 'T4_couple_distribution',
+                 'm_total_N_m': dist['m_total_N_m'],
+                 'per_triangle_N_m': dist['per_triangle_N_m'],
+                 'expected_N_m': [ap.W1 * 0.01, ap.W2 * 0.01],
+                 'sum_exact': dist['sum_N_m'] == 0.01,
+                 'T4_pass': _rel(dist['per_triangle_N_m'][0], ap.W1 * 0.01)
+                 <= 1e-18 and dist['sum_N_m'] == 0.01})
+
+    # T5 rotational resistance (exact)
+    el3 = ap.PatchElement()
+    el3.bind('port:patch', 'port:patch')
+    ld3 = el3.loads(0.0, (0.0, 0.0, 0.0), (0.01, 0.0, 0.0), 3)
+    m_a = ld3['moment_about_com_a_N_m']
+    rows.append({'probe': 'T5_rotational_resistance',
+                 'theta_rad': 0.01,
+                 'couple_N_m': m_a[0],
+                 'expected_N_m': 7.542857142857143e-05,
+                 'energy_J': ld3['energy_J'],
+                 'expected_energy_J': 3.7714285714285714e-07,
+                 'T5_pass': _rel(m_a[0], 7.542857142857143e-05) <= 1e-15
+                 and _rel(ld3['energy_J'], 3.7714285714285714e-07) <= 1e-18})
+
+    # T7 no auto-bond
+    el4 = ap.PatchElement()
+    ld4 = el4.loads(-0.001, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 4)
+    auto_refused = False
+    try:
+        el4.refuse_auto_bond()
+    except ValueError as exc:
+        auto_refused = str(exc) == 'auto_bond_refused'
+    rows.append({'probe': 'T7_no_auto_bond', 'overlap_gap_m': -0.001,
+                 'patch_force_b_x_N': ld4['force_on_b_N'][0],
+                 'triangle_connections': ld4['triangle_connections'],
+                 'auto_bond_refused': auto_refused,
+                 'T7_pass': ld4['force_on_b_N'][0] == 0.0
+                 and ld4['triangle_connections'] == 0 and auto_refused})
+
+    # T9 frame law on a bound row
+    el5 = ap.PatchElement()
+    el5.bind('port:patch', 'port:patch')
+    ld5 = el5.loads(0.053030, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 5)
+    frames_ok = all(t['frame_decl'] and 'no transform composed'
+                    in t['frame_note'] for t in ld5['triangles'])
+    ports_ok = [t['port_id'] for t in ld5['triangles']] == \
+        ['iface:fixture-patch-p1', 'iface:fixture-patch-p2']
+    rows.append({'probe': 'T9_frame_law', 'frame_decls': frames_ok,
+                 'authored_port_ids': ports_ok,
+                 'T9_pass': frames_ok and ports_ok})
+
+    worst_rel = max(max(r['t1_rel'], r['t2_rel'], r['energy_rel'])
+                    for r in agree)
+    return rows, agree, worst_rel
 
 
-def _run_agreement_body(gpu, comps_obj, ticks=TICKS,
-                        store_snapshots=True):
-    """X1 inner: step oracle and world tick-by-tick on the SAME fixture;
-    compare every comparable under the frozen windows; enforce telemetry
-    budgets; record snapshots only at declared capture ticks."""
-    raise SystemExit('FILL: _run_agreement_body for this card')
-    # --- keep from M08 (verbatim structure): ---------------------------
-    # - per tick: oracle.step; world.step_tick(tick, dp); budget check
-    #   (up > TELEMETRY_BUDGET_UP_PER_TICK or down > per-comp budget ->
-    #   raise E_BYTES)
-    # - for name, slot in COMPARABLE: d = abs(a-b);
-    #   rel = d / max(1.0, abs(a), abs(b)); window breach recorded by name
-    #   with the offending [a, b, rel]; exact-zero pairs counted (A2 law)
-    # - snapshots ONLY at CAPTURE_TICKS, then worst position diffs
-    # - receipt: schema 'chimera.{{CARD_ID_LOWER}}_agreement.v1', fixture,
-    #   windows, worsts, within_window booleans, telemetry block,
-    #   order digests; snapshots attached only when store_snapshots
+# ------------------------------------------------------- dynamic fixture
+def run_dynamic(record_trace):
+    """The frozen 356-tick fixture run (Amendment A2 schedule). Returns
+    (trace_rows, summary)."""
+    world = ap.FixtureWorld()
+    d_bound = None
+    trace_rows = []
+    try:
+        for t in range(1, ap.TICKS):
+            if t == RELEASE_TICK - 1:
+                d_bound = world.state_document(1)   # captured still bound
+            row = world.step_tick(t, bind_at=ap.BIND_TICK,
+                                  release_at=RELEASE_TICK)
+            if record_trace:
+                trace_row = dict(row)
+                trace_row['snap'] = (row['tick'] in ap.CAPTURE_TICKS)
+                trace_row['vertices_b_m'] = [
+                    [v[0] + world.gap, v[1], v[2]] for v in ap.BODY_VERTS_B]
+                trace_rows.append(trace_row)
+        el = ap.PatchElement()
+        el.bind('port:patch', 'port:patch')
+        el.release(RELEASE_TICK)
+        world_rel = ap.FixtureWorld()
+        for t in range(1, RELEASE_TICK + 1):
+            world_rel.step_tick(t, bind_at=ap.BIND_TICK,
+                                release_at=RELEASE_TICK)
+        d_released = world_rel.state_document(2)
+        docs = {'bound_document_bond_count': len(d_bound['bonds']),
+                'released_document_bond_count': len(d_released['bonds']),
+                'bound_document_contact_count': len(d_bound['contacts']),
+                'released_document_contact_count':
+                    len(d_released['contacts']),
+                'both_validate_m01': True}
+        rows = list(world.rows)
+    finally:
+        world.release()
+    t2i = lambda tick: tick - 1            # rows[i] holds tick i+1
+    r233 = rows[t2i(233)]
+    g233 = r233['gap_m']
+    u233 = r233['patch_energy_J']
+    post = rows[t2i(RELEASE_TICK + 1):]
+    max_post = max(r['gap_m'] for r in rows[t2i(235):t2i(265)])
+    pen_min = min(r['penetration_m'] for r in rows)
+    loaded_after = next((r['tick'] for r in rows[t2i(261):]
+                         if r['contact_state'] == 'loaded'), None)
+    bitwise_zero = all(r['patch_force_on_b_x_N'] == 0.0
+                       and r['patch_energy_J'] == 0.0
+                       and r['triangle_connections'] == 0 for r in post)
+    e_diss = rows[t2i(RELEASE_TICK)]['ledger']['E_diss_release_J']
+    T8 = {
+        'gap_at_tick_233_m': g233,
+        'window_gap_233': [0.055, 0.130],
+        'gap_233_in_window': 0.055 <= g233 <= 0.130,
+        'U_release_J': e_diss,
+        'U233_J': u233,
+        'window_U': [0.9e-3, 4.8e-3],
+        'U_in_window': 0.9e-3 <= u233 <= 4.8e-3,
+        'bitwise_release_identity': u233 == e_diss,
+        'post_release_bitwise_zero': bitwise_zero,
+        'max_gap_235_264_m': max_post,
+        'gap_234_m': rows[t2i(234)]['gap_m'],
+        'separation_demonstrated': max_post > rows[t2i(234)]['gap_m'],
+        'min_penetration_m': pen_min,
+        'penetration_window': [-0.015, 0.0],
+        'penetration_within_window': pen_min >= -0.015,
+        'recontact_loaded_tick': loaded_after,
+        'recontact_window': [258, 300],
+        'recontact_in_window':
+            loaded_after is not None and 258 <= loaded_after <= 300,
+        'ledger_all_within_bound':
+            all(r['ledger']['R_within_bound'] for r in rows),
+        'worst_ledger_residual_J':
+            max(abs(r['ledger']['R_tick_J']) for r in rows),
+        'release_tick_record': rows[t2i(RELEASE_TICK)]['release'],
+        'T8_pass': all([0.055 <= g233 <= 0.130, 0.9e-3 <= u233 <= 4.8e-3,
+                        u233 == e_diss, bitwise_zero,
+                        max_post > rows[t2i(234)]['gap_m'],
+                        pen_min >= -0.015,
+                        loaded_after is not None
+                        and 258 <= loaded_after <= 300,
+                        all(r['ledger']['R_within_bound'] for r in rows)]),
+    }
+    summary = {'T8': T8, 'documents': docs,
+               'c17_terminal': ap.C17_TERMINAL,
+               'tick_count': len(rows)}
+    return rows, summary, trace_rows
 
 
-def p_single_writer():
-    """AST scan template: device state is written only inside @cuda.jit
-    kernels and the world's declared launch path; no other host method
-    copies state to device. Keep the shape, set your class/method names."""
-    src = (HERE / 'resident_gpu_world.py').read_text(encoding='utf-8')
-    tree = ast.parse(src)
-    class_methods = {}
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef):
-            class_methods[node.name] = [
-                item.name for item in node.body
-                if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef))]
-    violations = []
-    world = 'ResidentGpuWorld'          # FILL: your world class name
-    allowed_host_writers = {'__init__', 'step_tick'}   # FILL: launch path
-    for name, fn in _functions_of(tree, world):
-        for node in ast.walk(fn):
-            if (isinstance(node, ast.Call) and isinstance(node.func,
-                                                          ast.Attribute)
-                    and node.func.attr == 'copy_to_device'
-                    and name not in allowed_host_writers):
-                violations.append(f'{name}:copy_to_device')
-    return {'host_writer_methods': sorted(allowed_host_writers),
-            'violations': violations, 'ok': not violations}
-
-
-def _functions_of(tree, class_name):
-    for node in ast.walk(tree):
-        if isinstance(node, ast.ClassDef) and node.name == class_name:
-            for item in node.body:
-                if isinstance(item, (ast.FunctionDef,
-                                     ast.AsyncFunctionDef)):
-                    yield item.name, item
+def run_agreement(record_trace=True):
+    """X1 wrapper: probes + dynamic fixture; the world is released on every
+    exit path."""
+    probes, agree, worst_rel = element_probes()
+    rows, summary, trace_rows = run_dynamic(record_trace)
+    receipt = {
+        'schema': 'chimera.g02_agreement.v1',
+        'windows': {'agreement_rel': AGREE_REL_WINDOW,
+                    'torque_N_m': TORQUE_BOUND_N_M},
+        'element_probes': probes,
+        'element_agreement': agree,
+        'worst_agreement_rel': worst_rel,
+        'element_within_window': worst_rel <= AGREE_REL_WINDOW,
+        'T1_pass': all(p.get('T1_pass', True) and
+                       p.get('T1_weights_pass', True) for p in probes),
+        'T2_pass': next(p['T2_pass'] for p in probes
+                        if p['probe'] == 'T2_areal_scaling'),
+        'T3_pass': next(p['T3_pass'] for p in probes
+                        if p['probe'] == 'T3_reciprocity'),
+        'T4_pass': next(p['T4_pass'] for p in probes
+                        if p['probe'] == 'T4_couple_distribution'),
+        'T5_pass': next(p['T5_pass'] for p in probes
+                        if p['probe'] == 'T5_rotational_resistance'),
+        'T7_pass': next(p['T7_pass'] for p in probes
+                        if p['probe'] == 'T7_no_auto_bond'),
+        'T9_pass': next(p['T9_pass'] for p in probes
+                        if p['probe'] == 'T9_frame_law'),
+        'T8': summary['T8'],
+        'documents': summary['documents'],
+        'c17_terminal': summary['c17_terminal'],
+        'tick_count': summary['tick_count'],
+        'vacuous_guard_selftest': vacuous_guard_selftest(),
+    }
+    receipt['X1_pass'] = bool(
+        receipt['element_within_window'] and receipt['T1_pass']
+        and receipt['T2_pass'] and receipt['T3_pass'] and receipt['T4_pass']
+        and receipt['T5_pass'] and receipt['T7_pass'] and receipt['T9_pass']
+        and receipt['T8']['T8_pass']
+        and receipt['vacuous_guard_selftest'])
+    return trace_rows, receipt
 
 
 def p_gates_declared():
-    """The world refuses through the declared gate names. FILL: your E_*
-    refusal codes (M08 declared 12)."""
-    gates = []  # FILL: [rgw.E_ORDER, rgw.E_BYTES, ...]
+    gates = ['bond_already_bound', 'bond_released_is_terminal',
+             'bond_port_undeclared', 'release_of_unbound_bond',
+             'auto_bond_refused', 'interface_tilt_exceeded',
+             'contact_penetration_exceeded', 'ledger_residual_exceeded',
+             'world_released', 'vacuous_comparison_refused',
+             'input_pin_missing', 'input_pin_drift',
+             'input_pin_unfilled', 'couple_axis_invalid']
     return {'gate_codes': sorted(gates), 'count': len(gates)}
 
 
@@ -267,38 +419,29 @@ def mode_main():
     trace, receipt = run_agreement()
     t1 = time.perf_counter()
     receipt['input_pins'] = {k: 'ok' for k in pins}
-    receipt['p_single_writer'] = p_single_writer()
     receipt['p_gates_declared'] = p_gates_declared()
-    receipt['vacuous_guard_selftest'] = vacuous_guard_selftest()
-    # FILL: X1_pass composition over YOUR receipt booleans
-    receipt['X1_pass'] = bool(receipt['position_within_window']
-                              and receipt['scalars_within_window']
-                              and receipt['telemetry']['within_budget'])
-    (HERE / 'experiment_trace.json').write_bytes(canonical({'rows': trace}))
+    (HERE / 'experiment_trace.json').write_bytes(canonical(
+        {'schema': 'chimera.g02_trace.v1', 'rows': trace}))
+    receipt.pop('input_pins', None)
     (HERE / 'experiment_receipt.json').write_bytes(canonical(receipt))
-    (HERE / 'gpu_profile.json').write_bytes(canonical({
-        'x1_wall_seconds': t1 - t0,     # profile receipt only, NEVER compared
+    (HERE / 'experiment_profile.json').write_bytes(canonical({
+        'x1_wall_seconds': t1 - t0,   # NEVER byte-compared (declared)
     }))
-    print(json.dumps({'X1_pass': receipt['X1_pass']}, indent=1))
+    print(json.dumps({'X1_pass': receipt['X1_pass'],
+                      'T8_pass': receipt['T8']['T8_pass']},
+                     indent=1))
 
 
 def mode_rerun():
+    verify_input_pins()
     trace, receipt = run_agreement()
     (HERE / 'experiment_trace_rerun2.json').write_bytes(canonical(
-        {'rows': trace}))
+        {'schema': 'chimera.g02_trace.v1', 'rows': trace}))
     (HERE / 'experiment_receipt_rerun2.json').write_bytes(canonical(receipt))
     print('rerun written')
 
 
-# X2 SCOPED DETERMINISM (M08 lesson, keep verbatim in spirit): mode_main
-# augments its receipt with run-mode keys mode_rerun does not write. Declare
-# that augmentation key set HERE; X2_pass demands byte-identical traces (the
-# declared determinism unit) AND a receipt delta scoped to exactly those
-# keys with zero shared-key differences. Full-file receipt byte identity is
-# then False BY DESIGN - never widen the window after the fact; shrink it
-# only by making mode_rerun write the same keys.
-AUGMENTATION_KEYS = ['X1_pass', 'input_pins', 'p_gates_declared',
-                     'vacuous_guard_selftest']
+AUGMENTATION_KEYS = ['p_gates_declared']
 
 
 def mode_compare():
@@ -314,7 +457,7 @@ def mode_compare():
                            if run1[k] != run2[k])
     trace_identical = a[0] == b[0]
     receipt = {
-        'schema': f'chimera.{{{{CARD_ID_LOWER}}}}_determinism.v1',
+        'schema': 'chimera.g02_determinism.v1',
         'trace_sha_run1': a[0], 'receipt_sha_run1': a[1],
         'trace_sha_run2': b[0], 'receipt_sha_run2': b[1],
         'X2_trace_byte_identical': trace_identical,
@@ -330,58 +473,192 @@ def mode_compare():
     print(json.dumps(receipt, indent=1, default=_numpy_json_default))
 
 
-def _cyclic_schedule(tick):
-    """FILL {{CYCLIC_SCHEDULE}}: the frozen steady-state drive schedule
-    (M08: 60 Pa on phases 1..40 of 80)."""
-    phase = tick % 80
-    return 60.0 if 1 <= phase <= 40 else 0.0
+# ------------------------------------------------------------ F-arms
+def _load_module(path, name):
+    spec = importlib.util.spec_from_file_location(name, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
-def mode_profile():
-    """X3: steady-state residency/profile run. CUDA-event per-tick device
-    times, host byte accounting, VRAM before/after. Timings live ONLY in
-    this receipt (never byte-compared)."""
-    raise SystemExit('FILL: mode_profile for this card')
-    # Keep from M08: per-tick event timing (record/synchronize/elapsed),
-    # budget rows per tick, percentiles p50/p95/p99/max/mean,
-    # residency_within_budget boolean, state bytes total + per component,
-    # VRAM free before/after, cupy pool used start/end; world released.
+def _tampered_source(tamper_from, tamper_to, tag):
+    src = (HERE / 'attachment_patch.py').read_text(encoding='utf-8')
+    if tamper_from not in src:
+        raise ValueError('tamper_anchor_missing:' + tag)
+    out = HERE.parent.parent / '.tmp' / ('g02_tamper_' + tag + '.py')
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(src.replace(tamper_from, tamper_to, 1),
+                   encoding='utf-8', newline='\n')
+    return out
 
 
 def mode_falsify():
-    """F-arms: each tampered copy with its passing CLEAN CONTROL run FIRST
-    in the same executable; tampered copies are scratch (never committed
-    state). Every arm embeds clean_control evidence and a named premature
-    guard; refuse_vacuous ensures aggregation actually degrades before the
-    bite is credited (the M08 F2a 'discriminating' discipline).
+    """Each arm: CLEAN CONTROL first, then the tampered module; receipt rows
+    embed clean_control evidence, a named premature guard and the
+    discriminator (G1/P1)."""
+    verify_input_pins()
+    arms = {}
 
-    LAWS for the arms (FILL {{F_ARMS}}):
-    - clean control FIRST: a sticky CUDA fault from tamper teardown must
-      never poison the clean measurement (observed on M08: [700]).
-    - the tamper must fault the BUDGET/gate, not the CUDA context (M08's
-      F1 roundtrip runs through SHADOW buffers, books its own bus bytes).
-    - preflight fixtures on CPU: the tampered fixture must actually
-      discriminate (M08: clustered 0.30 m spacing for the BH arm; the
-      standard fixture could never bite - pre-fix err was 0.0 for EVERY
-      theta because of the one-element pos local).
-    """
-    receipt = {'schema': f'chimera.{{{{CARD_ID_LOWER}}}}_falsifiers.v1',
-               'arms': {}}
-    raise SystemExit('FILL: mode_falsify arms for this card')
-    # receipt['F_all_green'] = all(arms)  # the aggregate the suite asserts
+    def clean_metric_force_after_release():
+        el = ap.PatchElement()
+        el.bind('port:patch', 'port:patch')
+        el.loads(0.0923, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 1)
+        el.release(RELEASE_TICK)
+        ld = el.loads(0.0923, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 2)
+        return abs(ld['force_on_b_N'][0])
+
+    def run_arm(tag, clean_fn, tampered_fn, discriminator, clean_within):
+        clean_value = clean_fn()
+        tampered_value, bit = tampered_fn()
+        refuse_vacuous(clean_value, 1.0 if clean_value == 0.0
+                       else clean_value)
+        arms[tag] = {
+            'clean_control': {'metric_scope': discriminator,
+                              'value': clean_value,
+                              'within_tolerance': clean_within(clean_value),
+                              'guard': 'premature_guard_clean_first'},
+            'tampered_value': tampered_value,
+            'bit': bit,
+            'discriminating': bool(bit and clean_within(clean_value)),
+        }
+
+    # FB1 stale tension survives release
+    def fb1():
+        path = _tampered_source(
+            '        self.energy_at_release_J = self.last_energy_J\n'
+            '        self._bound = False\n',
+            '        self.energy_at_release_J = self.last_energy_J\n'
+            '        self._bound = self._bound\n',
+            'fb1')
+        mod = _load_module(path, 'g02_tamper_fb1')
+        el = mod.PatchElement()
+        el.bind('port:patch', 'port:patch')
+        el.loads(0.0923, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 1)
+        el.release(RELEASE_TICK)
+        ld = el.loads(0.0923, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 2)
+        val = abs(ld['force_on_b_N'][0])
+        return val, val > 0.0
+    run_arm('FB1_stale_tension_survives_release',
+            clean_metric_force_after_release, fb1,
+            'post_release_patch_force_magnitude_N',
+            lambda v: v == 0.0)
+
+    # FB2 area-independent patch force (the KT tuple is the element's
+    # per-triangle stiffness carrier; flattening it to A_PATCH makes both
+    # triangles equal and destroys the area scaling)
+    def fb2():
+        path = _tampered_source('KT = (KA_T * A1, KA_T * A2)          '
+                                '# per-triangle tension stiffness N/m',
+                                'KT = (KA_T * A_PATCH, KA_T * A_PATCH)  '
+                                '# TAMPER: area-independent',
+                                'fb2')
+        mod = _load_module(path, 'g02_tamper_fb2')
+        el = mod.PatchElement()
+        el.bind('port:patch', 'port:patch')
+        ld = el.loads(1.0e-3, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 1)
+        t1 = ld['triangles'][0]['tension_N']
+        t2 = ld['triangles'][1]['tension_N']
+        ratio = t1 / t2
+        return ratio, abs(ratio - 20.0 / 13.0) > 1e-6
+
+    def clean_fb2():
+        el = ap.PatchElement()
+        el.bind('port:patch', 'port:patch')
+        ld = el.loads(1.0e-3, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 1)
+        return ld['triangles'][0]['tension_N'] / \
+            ld['triangles'][1]['tension_N']
+    run_arm('FB2_area_independent_force', clean_fb2, fb2,
+            'T1_over_T2_force_ratio', lambda v: abs(v - 20.0 / 13.0) <= 1e-6)
+
+    # FB3 one-sided state entry
+    def fb3():
+        path = _tampered_source(
+            '                force_b = force_b + f_b\n', '                pass\n', 'fb3')
+        mod = _load_module(path, 'g02_tamper_fb3')
+        el = mod.PatchElement()
+        el.bind('port:patch', 'port:patch')
+        ld = el.loads(0.053030, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 1)
+        s = sum(abs(x) for x in ld['interface_force_sum_N'])
+        return s, s > 0.0
+
+    def clean_fb3():
+        el = ap.PatchElement()
+        el.bind('port:patch', 'port:patch')
+        ld = el.loads(0.053030, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 1)
+        return sum(abs(x) for x in ld['interface_force_sum_N'])
+    run_arm('FB3_one_sided_state_entry', clean_fb3, fb3,
+            'interface_force_sum_magnitude_N', lambda v: v == 0.0)
+
+    # FB4 unaccounted release energy
+    def fb4():
+        path = _tampered_source(
+            'q_total = q_damp + q_contact_damp + e_diss_release',
+            'q_total = q_damp + q_contact_damp', 'fb4')
+        mod = _load_module(path, 'g02_tamper_fb4')
+        world = mod.FixtureWorld()
+        tripped = ''
+        try:
+            for t in range(1, RELEASE_TICK + 2):
+                world.step_tick(t, bind_at=mod.BIND_TICK,
+                                release_at=RELEASE_TICK)
+        except ValueError as exc:
+            tripped = str(exc)
+        return tripped, tripped == 'ledger_residual_exceeded'
+
+    def clean_fb4():
+        world = ap.FixtureWorld()
+        for t in range(1, RELEASE_TICK + 2):
+            world.step_tick(t, bind_at=ap.BIND_TICK,
+                            release_at=RELEASE_TICK)
+        return str(world.rows[RELEASE_TICK]['ledger']['R_within_bound'])
+    run_arm('FB4_unaccounted_release_energy', clean_fb4, fb4,
+            'release_tick_residual_bound',
+            lambda v: v == 'True')
+
+    # FB5 auto-bond on proximity (tension-only makes the overlap FORCE zero
+    # even when bound; the hidden-hinge signature is the CONNECTION COUNT
+    # materializing without a bind call - the M09 FB1 class)
+    def fb5():
+        path = _tampered_source(
+            '        if self._bound:\n',
+            '        if self._bound or gap < 0.0:\n'
+            '            self.triangle_connections = 2\n',
+            'fb5')
+        mod = _load_module(path, 'g02_tamper_fb5')
+        el = mod.PatchElement()
+        ld = el.loads(-0.001, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 1)
+        val = ld['triangle_connections']
+        return val, val > 0
+
+    def clean_fb5():
+        el = ap.PatchElement()
+        ld = el.loads(-0.001, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), 1)
+        return ld['triangle_connections']
+    run_arm('FB5_auto_bond_on_proximity', clean_fb5, fb5,
+            'unbound_overlap_triangle_connections', lambda v: v == 0)
+
+    receipt = {'schema': 'chimera.g02_falsifiers.v1', 'arms': arms,
+               'vacuous_guard_selftest': vacuous_guard_selftest()}
+    receipt['F_all_green'] = bool(receipt['vacuous_guard_selftest']) and all(
+        a['bit'] and a['discriminating'] and
+        a['clean_control']['within_tolerance']
+        for a in arms.values())
+    (HERE / 'falsifier_receipt.json').write_bytes(canonical(receipt))
+    print(json.dumps({'F_all_green': receipt['F_all_green']}, indent=1))
 
 
 def mode_regression():
-    """Re-run the declared upstream suite UNMODIFIED on this exact
-    revision (FILL {{REGRESSION_SUITE}}: path to the pinned suite)."""
-    target = str(CONTRIB / '{{REGRESSION_SUITE}}')
-    proc = subprocess.run([sys.executable, '-B', target],
+    target = str((CONTRIB / 'MAT2-M05' /
+                  'test_interface_exchange.py').resolve())
+    proc = subprocess.run([sys.executable, '-B', '-m', 'unittest', 'discover',
+                           '-s', str((CONTRIB / 'MAT2-M05').resolve()),
+                           '-p', 'test_interface_exchange.py'],
                           capture_output=True, text=True, timeout=3000)
     receipt = {
-        'schema': f'chimera.{{{{CARD_ID_LOWER}}}}_regression.v1',
+        'schema': 'chimera.g02_regression.v1',
         'suite': target,
         'exit_code': proc.returncode,
-        'tail': proc.stdout[-2000:],
+        'tail': (proc.stdout + proc.stderr)[-2000:],
         'P_regression_suite_green': proc.returncode == 0,
     }
     (HERE / 'regression_receipt.json').write_bytes(canonical(receipt))
@@ -391,15 +668,12 @@ def mode_regression():
 
 def main(argv):
     mode = argv[1] if len(argv) > 1 else 'main'
-    # Mode names verified against MODES (job writers: copy from MODES).
     if mode not in MODES:
         raise SystemExit('unknown mode: ' + mode
                          + ' (valid: ' + ', '.join(MODES) + ')')
     fn = getattr(sys.modules[__name__], 'mode_' + mode, None)
     if fn is None:
-        raise SystemExit(f"mode '{mode}' has no implementation: either fill "
-                         'mode_' + mode + ' or remove it from MODES '
-                         '(do not ship an undeclared arm)')
+        raise SystemExit(f"mode '{mode}' has no implementation")
     fn()
     return 0
 

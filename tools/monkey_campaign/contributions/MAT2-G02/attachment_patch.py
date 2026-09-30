@@ -1,8 +1,9 @@
 """MAT2-G02 finite-area attachment patch element and fixture world.
 
-Implemented AFTER PREREGISTRATION.md (base eda436eb + Amendment A1 945826a1)
-was committed; every constant below is the frozen prereg number, none is
-measured, none is fitted (sealed A07 gate), none is biological.
+Implemented AFTER PREREGISTRATION.md (base 49bd9a85 + Amendment A1 a39a946e
++ Amendment A2 951c963e) was committed; every constant below is the frozen
+prereg number, none is measured, none is fitted (sealed A07 gate), none is
+biological.
 
 Law carriers (pinned in run_experiments.verify_input_pins):
 - MAT2-M01 material_state.py  b6b009713daa4b315c6b5cb43c7ad4e756123b50edcd
