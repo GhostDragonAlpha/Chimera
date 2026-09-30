@@ -1,0 +1,19 @@
+{
+ "capture_kind": "video",
+ "frame_count": 9,
+ "limits": "Structural camera-metadata validation only; independent image/physics review remains mandatory.",
+ "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "profile_id": "material",
+ "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-M08].spec.ontology_qualification.task.verification_profile (read read-only)",
+ "render_source": "GPU-solved snapshot stream (9 declared async capture ticks) of the resident GPU world; software rasterization of solver state, declared in the applicability boundary",
+ "structurally_valid": true,
+ "subject_path": "tools/monkey_campaign/contributions/MAT2-M08/experiment_receipt.json",
+ "subject_sha256": "93afe68c2bc96524c29a93b10fc09fe2557de5e20eb013be49e096fcf5aa9812",
+ "trace_path": "tools/monkey_campaign/contributions/MAT2-M08/experiment_trace.json",
+ "trace_sha256": "826a5e8fe32adcf67b6b63ace7e34e3a6bc50211e1137362dca1aa9891a29175",
+ "validator": "tools/monkey_campaign/visual_capture.py validate_manifest",
+ "video_path": "..\\..\\..\\..\\..\\..\\..\\MAT2-M08\\28c16b488fff4ad48e08508ccbba2dcb\\capture\\capture\\capture_mat2_m08_resident_20260929.mkv",
+ "video_sha256": "20c9dc49540496de5ff2d827151a30ab8ca8263db07bc3c963cb1ebaca1914c3",
+ "view_count": 6,
+ "visual_acceptance": false
+}

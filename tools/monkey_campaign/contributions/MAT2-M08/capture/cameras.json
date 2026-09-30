@@ -1,0 +1,1650 @@
+{
+ "closeup:clean": [
+  {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (GPU-solved membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+   "coordinate_unit": "m",
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m08_resident_closeup_canvas_m",
+   "handedness": "right",
+   "near_far_planes": [
+    0.01,
+    100.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "projection": "perspective",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 10
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 20
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 30
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 40
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 50
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 60
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 70
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 79
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared GPU snapshot ticks 0,10,..,70,79 at 1 video second per frame",
+   "up_axis": "+Y",
+   "vertical_fov_degrees": 33.0,
+   "viewport_resolution": [
+    640,
+    360
+   ]
+  }
+ ],
+ "closeup:diagnostic": [
+  {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (GPU-solved membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+   "coordinate_unit": "m",
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m08_resident_closeup_canvas_m",
+   "handedness": "right",
+   "near_far_planes": [
+    0.01,
+    100.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "projection": "perspective",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 10
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 20
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 30
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 40
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 50
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 60
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 70
+    },
+    {
+     "distance_to_target": 0.3016438297064934,
+     "orientation": [
+      0.8015609144831033,
+      0.5364890637425566,
+      0.146824109323605,
+      0.21936787772820432
+     ],
+     "position": [
+      0.2,
+      -0.24,
+      0.17
+     ],
+     "target": [
+      0.058,
+      0.0,
+      0.055
+     ],
+     "tick": 79
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared GPU snapshot ticks 0,10,..,70,79 at 1 video second per frame",
+   "up_axis": "+Y",
+   "vertical_fov_degrees": 33.0,
+   "viewport_resolution": [
+    640,
+    360
+   ]
+  }
+ ],
+ "front:clean": [
+  {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (GPU-solved membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+   "coordinate_unit": "m",
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m08_resident_front_canvas_m",
+   "handedness": "right",
+   "near_far_planes": [
+    0.01,
+    100.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orthographic_span": 0.42,
+   "projection": "orthographic",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 10
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 20
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 30
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 40
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 50
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 60
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 70
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 79
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared GPU snapshot ticks 0,10,..,70,79 at 1 video second per frame",
+   "up_axis": "+Y",
+   "viewport_resolution": [
+    640,
+    360
+   ]
+  }
+ ],
+ "front:diagnostic": [
+  {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (GPU-solved membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+   "coordinate_unit": "m",
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m08_resident_front_canvas_m",
+   "handedness": "right",
+   "near_far_planes": [
+    0.01,
+    100.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orthographic_span": 0.42,
+   "projection": "orthographic",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 10
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 20
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 30
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 40
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 50
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 60
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 70
+    },
+    {
+     "distance_to_target": 1.0190000000000001,
+     "orientation": [
+      0.5,
+      0.5,
+      0.5,
+      -0.5
+     ],
+     "position": [
+      1.05,
+      0.0,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 79
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared GPU snapshot ticks 0,10,..,70,79 at 1 video second per frame",
+   "up_axis": "+Y",
+   "viewport_resolution": [
+    640,
+    360
+   ]
+  }
+ ],
+ "side:clean": [
+  {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (GPU-solved membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+   "coordinate_unit": "m",
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m08_resident_side_canvas_m",
+   "handedness": "right",
+   "near_far_planes": [
+    0.01,
+    100.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orthographic_span": 0.42,
+   "projection": "orthographic",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 10
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 20
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 30
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 40
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 50
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 60
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 70
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 79
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared GPU snapshot ticks 0,10,..,70,79 at 1 video second per frame",
+   "up_axis": "+Y",
+   "viewport_resolution": [
+    640,
+    360
+   ]
+  }
+ ],
+ "side:diagnostic": [
+  {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (GPU-solved membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+   "coordinate_unit": "m",
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m08_resident_side_canvas_m",
+   "handedness": "right",
+   "near_far_planes": [
+    0.01,
+    100.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "orthographic_span": 0.42,
+   "projection": "orthographic",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 10
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 20
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 30
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 40
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 50
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 60
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 70
+    },
+    {
+     "distance_to_target": 1.05,
+     "orientation": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     "position": [
+      0.031,
+      1.05,
+      0.055
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 79
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared GPU snapshot ticks 0,10,..,70,79 at 1 video second per frame",
+   "up_axis": "+Y",
+   "viewport_resolution": [
+    640,
+    360
+   ]
+  }
+ ],
+ "whole:clean": [
+  {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (GPU-solved membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+   "coordinate_unit": "m",
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m08_resident_whole_canvas_m",
+   "handedness": "right",
+   "near_far_planes": [
+    0.01,
+    100.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "projection": "perspective",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 10
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 20
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 30
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 40
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 50
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 60
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 70
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 79
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared GPU snapshot ticks 0,10,..,70,79 at 1 video second per frame",
+   "up_axis": "+Y",
+   "vertical_fov_degrees": 42.0,
+   "viewport_resolution": [
+    640,
+    360
+   ]
+  }
+ ],
+ "whole:diagnostic": [
+  {
+   "aspect_ratio": 1.7777777777777777,
+   "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (GPU-solved membrane inflates and slides, plate slides against friction and the Maxwell mount), not the camera",
+   "coordinate_unit": "m",
+   "forward_axis": "-Z",
+   "frame_id": "mat2_m08_resident_whole_canvas_m",
+   "handedness": "right",
+   "near_far_planes": [
+    0.01,
+    100.0
+   ],
+   "orientation_convention": "quaternion_wxyz_camera_to_frame",
+   "projection": "perspective",
+   "sample_mode": "fixed_bookmark",
+   "samples": [
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 0
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 10
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 20
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 30
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 40
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 50
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 60
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 70
+    },
+    {
+     "distance_to_target": 1.0427012995100755,
+     "orientation": [
+      0.80237418461078,
+      0.5689363939790311,
+      0.10428661557469861,
+      0.1470759983420057
+     ],
+     "position": [
+      0.38,
+      -0.92,
+      0.4
+     ],
+     "target": [
+      0.031,
+      0.0,
+      0.055
+     ],
+     "tick": 79
+    }
+   ],
+   "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared GPU snapshot ticks 0,10,..,70,79 at 1 video second per frame",
+   "up_axis": "+Y",
+   "vertical_fov_degrees": 42.0,
+   "viewport_resolution": [
+    640,
+    360
+   ]
+  }
+ ]
+}
