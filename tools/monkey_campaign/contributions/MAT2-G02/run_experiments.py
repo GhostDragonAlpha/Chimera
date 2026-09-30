@@ -279,6 +279,25 @@ def run_dynamic(record_trace):
     world = ap.FixtureWorld()
     d_bound = None
     trace_rows = []
+    initial = {
+        'tick': 0, 'gap_m': 0.0, 'penetration_m': 0.0, 'velocity_m_per_s': 0.0,
+        'actuator_N': 0.0, 'contact_N': 0.0, 'patch_force_on_b_x_N': 0.0,
+        'contact_state': 'touching', 'patch_bound': False,
+        'patch_energy_J': 0.0, 'patch_extension_m': 0.0,
+        'triangle_connections': 0, 'interface_force_sum_N': [0.0, 0.0, 0.0],
+        'moment_about_com_a_N_m': [0.0, 0.0, 0.0],
+        'moment_about_com_b_N_m': [0.0, 0.0, 0.0],
+        'ledger': {'W_actuators_J': 0.0, 'W_contact_J': 0.0, 'U_patch_J': 0.0,
+                   'E_diss_damping_J': 0.0, 'E_diss_contact_J': 0.0,
+                   'E_diss_release_J': 0.0, 'E_mech_J': 0.0, 'R_tick_J': 0.0,
+                   'R_bound_J': 1e-06, 'R_within_bound': True,
+                   'xpbd_projection_work_J': 0.0, 'scaffold_residual_m': 0.0},
+        'release': None,
+    }
+    if record_trace:
+        initial['snap'] = (0 in ap.CAPTURE_TICKS)
+        initial['vertices_b_m'] = [list(v) for v in ap.BODY_VERTS_B]
+        trace_rows.append(initial)
     try:
         for t in range(1, ap.TICKS):
             if t == RELEASE_TICK - 1:

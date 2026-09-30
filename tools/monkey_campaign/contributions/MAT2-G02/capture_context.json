@@ -1,0 +1,10 @@
+{
+ "capture_sha256": "d20a9174cbf143a17c8b958a3ede4d48a2d011d3398368245b3882637ea677e6",
+ "run_id": "g02-attachment-fixture-20260930-d20a9174",
+ "subject_sha256": "e594336599cf0a78b12660f3f305417256230276d85795f1ba6a3cd70599016f",
+ "task_id": "G02",
+ "tick_interval": [
+  0,
+  320
+ ]
+}

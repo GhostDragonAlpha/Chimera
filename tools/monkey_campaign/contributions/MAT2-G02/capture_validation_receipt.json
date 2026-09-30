@@ -1,0 +1,31 @@
+{
+ "capture_kind": "video",
+ "codec": "ffv1 level 3 g 1, -fflags +bitexact (mkv); CODEC_STANDARD.md 2026-09-29",
+ "ffmpeg_version": "ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+ "frame_count": 7,
+ "limits": "Structural camera-metadata validation only; independent image/physics review remains mandatory.",
+ "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "profile_id": "attachment-fixture",
+ "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-G02].spec.ontology_qualification.task.verification_profile (read read-only)",
+ "render_source": "render_run.py software raster over the committed experiment_trace.json rows (solver state bound before pixels)",
+ "state_hash_preserved_across_view_toggles": true,
+ "state_hashes": {
+  "0": "97cbd98d6c54060d0fd678af92faf9bdf4cf7bdeafd898fa3ce9ea3668dc1d24",
+  "150": "7852f7c19adf1e6708af0c9e656862b6cf46c109b9ea13bba7f1f37abf0ef74d",
+  "20": "524f978905d30a7da3b9d392c6444d5fb8c64f7c592571ac10775339fdeadb52",
+  "232": "28f514177092afc7c1181a93626df81d8ebf60e865fde204821dccd2e9051c36",
+  "233": "1b2500fbe1c7285edb5adf1b36cf6f53fa85c7a309dc90a95c44c505c2021d4e",
+  "250": "9a631f6959dfe027bd0aa975bd9ba2fae3a068e284084d463a40a67ad7054d89",
+  "320": "ee99fcd8ba2a3c83dc09914225e76b961310e0a9516e8dc70b3793b0bd60bbbc"
+ },
+ "structurally_valid": true,
+ "subject_path": "tools/monkey_campaign/contributions/MAT2-G02/experiment_receipt.json",
+ "subject_sha256": "e594336599cf0a78b12660f3f305417256230276d85795f1ba6a3cd70599016f",
+ "trace_path": "tools/monkey_campaign/contributions/MAT2-G02/experiment_trace.json",
+ "trace_sha256": "259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b",
+ "validator": "tools/monkey_campaign/visual_capture.py validate_manifest",
+ "video_path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-G02\\983a9a8b1be54457a6aa516319290aa1\\capture\\capture\\capture_mat2_g02_attachment_20260930.mkv",
+ "video_sha256": "d20a9174cbf143a17c8b958a3ede4d48a2d011d3398368245b3882637ea677e6",
+ "view_count": 6,
+ "visual_acceptance": false
+}
