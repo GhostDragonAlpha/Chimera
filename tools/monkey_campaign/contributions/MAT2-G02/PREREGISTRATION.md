@@ -345,5 +345,23 @@ discriminating condition; all preflighted on CPU to discriminate)
 
 ## Amendment ledger
 
-- (none yet — amendments append below, each in its own commit, BEFORE the
-  experiments they affect; measurement-driven disclosures go in the report)
+- (base: no amendments at freeze; append below, each in its own commit,
+  BEFORE the experiments they affect; measurement-driven disclosures go in
+  the report)
+
+### Amendment A1 (2026-09-30, pre-implementation, arithmetic repair)
+
+T2's per-triangle tension literals were written three decades too large
+(the patch-total line was correct). The frozen element law is unchanged;
+only the prediction literals are repaired to the exact closed forms:
+
+- WRONG (base prereg T2): "T1 = kA_t*A1*e0 = 3.4285714285714284e-1 N" and
+  "T2 = kA_t*A2*e0 = 2.228571428571428e-1 N".
+- CORRECT: with kA_t = 3428.5714285714284 N/m^3, k_t_1 = kA_t*A1 =
+  0.34285714285714285 N/m and k_t_2 = kA_t*A2 = 0.22285714285714285 N/m,
+  so at e0 = 1.0e-3 m: T1 = 3.4285714285714285e-4 N,
+  T2 = 2.2285714285714282e-4 N, patch total k_t_patch*e0 =
+  5.657142857142857e-4 N (unchanged), ratio T1/T2 = 1.5384615384615385
+  (unchanged). The T2 check asserts the CORRECTED literals; the window
+  tightness (1e-15 relative) is unchanged. No experiment had run when this
+  amendment was written.
