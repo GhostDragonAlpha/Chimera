@@ -1,0 +1,211 @@
+{
+ "schema": "chimera.qualification_receipt.v1",
+ "task_id": "MAT2-A09",
+ "planning_task_id": "A09",
+ "title": "Issue the grasp anatomy input package",
+ "attempt_id": "2c3a18f2fa494ce1a06ca691dd9fe03c",
+ "agent_id": "chimera-worker-A09",
+ "date": "2026-09-30",
+ "base_head": "ee2bcb98cd627b796662edaf9ad75b8c1f7f7be5",
+ "preregistration": "PREREGISTRATION.md freeze 2640fa86 + Amendment A1 8079b0a6 (pre-implementation)",
+ "criteria_sha256": "f56d4ddbb0cf92a0897d30cda743a37554d9d7a30c6d69f151c6b41360f6026f",
+ "done_when_verbatim": "One versioned package carries supported mappings, parameters, provenance and explicit gaps. Material-first addition: Package the skeletal/tissue/interface graph and each explicit reduction; removal of represented tissue must remove its mechanical connection.",
+ "card_observation_verbatim": "Anatomy completion does not itself prove climbing",
+ "document_sha256": "0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24",
+ "clause_map": [
+  {
+   "clause": "One versioned package carries supported mappings",
+   "verified_by": [
+    "P2 frozen counts",
+    "P5 placement carriage",
+    "P6 owner/frame closure",
+    "P12 capture"
+   ],
+   "evidence": [
+    "grasp_package.json#0a70adb1029d860a",
+    "evidence/falsifier_receipt.json#FB1..FB3"
+   ],
+   "result": "carried"
+  },
+  {
+   "clause": "parameters",
+   "verified_by": [
+    "P4 parameter carriage field-for-field vs pinned A08"
+   ],
+   "evidence": [
+    "grasp_package.json#tissue_graph/engineering_carriers"
+   ],
+   "result": "carried"
+  },
+  {
+   "clause": "provenance",
+   "verified_by": [
+    "P3 provenance totality (sealed vocabulary)"
+   ],
+   "evidence": [
+    "grasp_package.json#tissue_graph"
+   ],
+   "result": "carried"
+  },
+  {
+   "clause": "explicit gaps",
+   "verified_by": [
+    "P9 contracts open-inventory",
+    "explicit_gaps section (U1-U8 + A07 pending + scope boundaries)"
+   ],
+   "evidence": [
+    "grasp_package.json#explicit_gaps/calculation_contracts"
+   ],
+   "result": "carried"
+  },
+  {
+   "clause": "Package the skeletal/tissue/interface graph",
+   "verified_by": [
+    "P2/P6 closure",
+    "capture diagnostic rows"
+   ],
+   "evidence": [
+    "grasp_package.json#skeletal_graph/tissue_graph/interface_graph"
+   ],
+   "result": "carried"
+  },
+  {
+   "clause": "each explicit reduction",
+   "verified_by": [
+    "P8 reduction ledger (RED-1..RED-7 with removal semantics + sealed sources)"
+   ],
+   "evidence": [
+    "grasp_package.json#explicit_reductions"
+   ],
+   "result": "carried"
+  },
+  {
+   "clause": "removal of represented tissue must remove its mechanical connection",
+   "verified_by": [
+    "P7 removal closure (per-muscle degrees sum to connections_total; zero dangling references)",
+    "FB4 dangling_connection_after_removal_refused"
+   ],
+   "evidence": [
+    "grasp_package.json#removal_closure",
+    "evidence/falsifier_receipt.json#FB4"
+   ],
+   "result": "carried"
+  }
+ ],
+ "commands_and_results": [
+  {
+   "command": "python -B grasp_package.py --emit",
+   "result": "emit OK; document sha256 0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24"
+  },
+  {
+   "command": "python -B grasp_package.py --verify",
+   "result": "verify OK (recompute-and-refuse over pinned bytes)"
+  },
+  {
+   "command": "python -B grasp_package.py --falsify",
+   "result": "F_all_green true (7 arms, clean controls first)"
+  },
+  {
+   "command": "python -B capture_package.py",
+   "result": "verdict structurally_valid=True; capture sha256 c08ee0733c0c8830d3e0c199b960ef89a053c11426b91063226fb62c67857357"
+  },
+  {
+   "command": "python -B test_grasp_package.py",
+   "result": "see named-check suite (batch_gates named_check_suite)"
+  },
+  {
+   "command": "python -B lint_report_numbers.py --selftest",
+   "result": "LINT OK; selftest flags planted literals"
+  },
+  {
+   "command": "python -B batch_gates.py <card_dir> --card-token a09",
+   "result": "see PR body / report receipts (card-kit CPU gates)"
+  }
+ ],
+ "falsifier_proofs": {
+  "F_all_green": true,
+  "arms": {
+   "FB1_wrong_owner_refused": {
+    "bit": true,
+    "expected_refusal": "wrong_owner",
+    "clean_control_guard": "a09_fb1_premature"
+   },
+   "FB2_frame_mismatch_refused": {
+    "bit": true,
+    "expected_refusal": "frame_mismatch_refused",
+    "clean_control_guard": "a09_fb2_premature"
+   },
+   "FB3_hidden_outside_refused": {
+    "bit": true,
+    "expected_refusal": "hidden_outside_refused",
+    "clean_control_guard": "a09_fb3_premature"
+   },
+   "FB4_dangling_connection_after_removal_refused": {
+    "bit": true,
+    "expected_refusal": "dangling_connection_after_removal",
+    "clean_control_guard": "a09_fb4_premature"
+   },
+   "FB5_silent_default_refused": {
+    "bit": true,
+    "expected_refusal": "silent_default_refused",
+    "clean_control_guard": "a09_fb5_premature"
+   },
+   "FB6_fitting_unauthorized_refused": {
+    "bit": true,
+    "expected_refusal": "fitting_unauthorized_refused",
+    "clean_control_guard": "a09_fb6_premature"
+   },
+   "FB7_input_pin_drift": {
+    "bit": true,
+    "expected_refusal": "input_pin_drift",
+    "clean_control_guard": "a09_fb7_premature"
+   }
+  }
+ },
+ "capture": {
+  "capture_sha256": "c08ee0733c0c8830d3e0c199b960ef89a053c11426b91063226fb62c67857357",
+  "subject_sha256": "0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24",
+  "task_id": "A09",
+  "profile_id": "anatomy",
+  "profile_kind": "visible_static",
+  "structurally_valid": true,
+  "view_count": 6,
+  "diagnostic_views": 3,
+  "clean_views": 3,
+  "validation_mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+  "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-A09].spec.ontology_qualification.task.verification_profile (read-only sqlite)",
+  "honesty": "validate_manifest is CAMERA_METADATA_STRUCTURE_ONLY; independent pixel review remains mandatory and is not claimed"
+ },
+ "determinism": {
+  "in_process_rebuild_sha256": "0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24",
+  "committed_document_sha256": "0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24",
+  "byte_identical": true
+ },
+ "artifact_sha256": {
+  "grasp_package.json": "0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24",
+  "PREREGISTRATION.md": "313982fab90fc6ba34cf509e16243d12ec4ca93a2b27874b3c24c927936732fb",
+  "grasp_package.py": "354a96a958844c0937d99ca6696d6e2c0da1804ee129dd3d0081ff02194a77c0",
+  "capture_package.py": "15495045221c873c3cadcdaec9c87ae6a260b7f1868ca07a3d357cdd411cffbd",
+  "make_report.py": "602198598750c3d1d0f90b170aecac96785a4efb1c235301a96d2095ecfbdd80",
+  "lint_report_numbers.py": "1bcd3ae01d7a0a12c701eb63cf9525eb9d7de6849988106e32ba430fe9340579",
+  "test_grasp_package.py": "f6d55e11afcadcb716eb67a9f88177ad2d6999c73751c5d5bb976da6dc8d14bd",
+  ".gitattributes": "705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da",
+  "evidence/falsifier_receipt.json": "d670c953e2fcca5a267e1e740baf85ce1c9f25ba31c34f778289c726ba7aa1ea",
+  "evidence/capture_manifest.json": "994cc10a098e0ed58a2a0394b92d7f343fd2935166afb90edbf5cc2786539dc7",
+  "evidence/capture_context.json": "1711c96773d8aebafc174c1ffd850ce41602f78cd27bad1c7d8fd7bf71469b64",
+  "evidence/validation_receipt.json": "157c687bd4fa7512767c2cc8f18724a1d4b280e21b5c21cd030253600c8551f9",
+  "evidence/cameras.json": "81df941b0519960a551a56b4c6ab1120a5c69d3a3cddd91186060bb665fb9276",
+  "evidence/registry_verification_profile.json": "81dc90014b80ceb8c3944c54afa7d5f3364040ea91b6e2e83a3a03d10550671d",
+  "evidence/registry_profile_provenance.json": "410688b1fccd2ee0a1475bf5166a1d54678eec94a733f42516aac73e4164e2a5",
+  "capture/capture_mat2_a09_package_20260930.png": "c08ee0733c0c8830d3e0c199b960ef89a053c11426b91063226fb62c67857357"
+ },
+ "honest_limits": [
+  "static completion-of-record only; no runtime/dynamic claim",
+  "2D orthographic PIL projection; no 3D renderer/GPU",
+  "removal closure is a STATIC graph identity; the dynamic bitwise-release proof remains sealed M09 T4, carried by reference",
+  "no transform composed between the two declared frames; C01 round-trip verification registered still-REQUIRED downstream",
+  "26 non-grasp actuators carry parameters without packaged path geometry (grasp-scope boundary; disclosed)",
+  "C17 stays open; no attachment mechanics numbers invented",
+  "anatomy completion does not itself prove climbing"
+ ]
+}
