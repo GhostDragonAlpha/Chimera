@@ -18,7 +18,23 @@ X1/X2 are green):
             fixture (every row value, both state_hash chains, the vertex
             trajectories and the declared-order diagnostic block fold);
             writes mirror_rehearsal_receipt.json.
-No RNG; no wall-clock in trace or receipt.
+  gmain     X3 GPU bank arm 1 (GPU box only, after X1/X2 AND the bitwise
+            mirror): the resident CUDA world (resident_bones.py) and the
+            CPU oracle step the SAME 90-tick fixture in one process;
+            every tick compares the 16-row vertex snapshot (frozen window
+            1e-12 m), the declared comparable slots (1e-9 relative, floor
+            1.0, vacuous identically-zero comparisons recorded, never
+            silently dropped), the declared-order digest chain and the
+            telemetry budgets (<= 256 B/tick up, <= 1024 B/component/tick
+            down); writes gpu_trace.json + gpu_receipt.json (+ the
+            never-compared gpu_profile.json).
+  grerun    X3 GPU bank arm 2: a fresh identical run writing
+            gpu_trace_rerun2.json + gpu_receipt_rerun2.json.
+  gcompare  X3 verdict: sha256 byte-identity of the two fresh GPU traces
+            AND receipts, both receipts' X3_pass, and the frozen-window
+            verdicts; writes gpu_determinism_receipt.json.
+No RNG; no wall-clock in trace or receipt (timing goes to gpu_profile.json
+only, which is never compared).
 """
 from __future__ import annotations
 
@@ -37,6 +53,7 @@ CONTRIB = HERE.parent
 sys.path.insert(0, str(HERE))
 
 import assembly as asm  # noqa: E402
+import kernel_mirror as km  # noqa: E402  (X3 layout authority; numba-free)
 
 BIND = asm.BIND_TICK
 REL = asm.RELEASE_TICK
@@ -647,11 +664,465 @@ def mode_mirror():
                       or k.startswith('worst_')}, indent=1))
 
 
+# ----------------------------------------------------------- X3 GPU bank ----
+
+ORACLE_TRACE_FROZEN_SHA256 = ('273dbc4f8c73a6f5'
+                              '62c0260050f7d23012288af29426f4d7b8a191b35efeb'
+                              '744')
+AGREE_POS_WINDOW_M = 1e-12
+AGREE_SCALAR_WINDOW = 1e-9
+
+# (name, component, slot, oracle extractor) — the declared comparable
+# slots (kernel_mirror's block layout; system scalars in component 0).
+# The oracle extractor maps the oracle row to the compared scalar (None
+# maps to the mirror's declared 0.0 sentinel).
+SCALAR_COMPARABLES = [
+    ('gap_head_anchors_m', 0, km.D_GAP, lambda r: r['gap_head_anchors_m']),
+    ('joint_gap_m', 0, km.D_JGAP,
+     lambda r: 0.0 if r['joint_gap_m'] is None else r['joint_gap_m']),
+    ('joint_jn_Ns', 0, km.D_JJN, lambda r: r['joint_jn_Ns']),
+    ('contact_active_pairs', 0, km.D_ACTIVE,
+     lambda r: r['contact_active_pairs']),
+    ('contact_iterations', 0, km.D_ITERS, lambda r: r['contact_iterations']),
+    ('gs_residual_N_s', 0, km.D_GSRES, lambda r: r['gs_residual_N_s']),
+    ('jn_applied_total_N_s', 0, km.D_JNTOT,
+     lambda r: r['jn_applied_total_N_s']),
+    ('d_friction_j', 0, km.D_DFRIC, lambda r: r['d_friction_j']),
+    ('d_impact_physical_j', 0, km.D_DIMP, lambda r: r['d_impact_physical_j']),
+    ('lig_tension_n', 0, km.D_LIGT, lambda r: r['lig_tension_n']),
+    ('lig_extension_m', 0, km.D_LIGEXT, lambda r: r['lig_extension_m']),
+    ('cap_axial_n', 0, km.D_CAPAX, lambda r: r['cap_axial_n']),
+    ('u_ligament_j', 0, km.D_ULIG, lambda r: r['u_ligament_j']),
+    ('u_capsule_j', 0, km.D_UCAP, lambda r: r['u_capsule_j']),
+    ('e_mechanical_j', 0, km.D_EMECH, lambda r: r['e_mechanical_j']),
+    ('w_actuator_j', 0, km.D_WACT, lambda r: r['w_actuator_j']),
+    ('w_ligament_j', 0, km.D_WLIG, lambda r: r['w_ligament_j']),
+    ('w_capsule_j', 0, km.D_WCAP, lambda r: r['w_capsule_j']),
+    ('w_gravity_j', 0, km.D_WGRAV, lambda r: r['w_gravity_j']),
+    ('q_damping_j', 0, km.D_QDAMP, lambda r: r['q_damping_j']),
+    ('q_contact_j', 0, km.D_QCONTACT, lambda r: r['q_contact_j']),
+    ('q_projection_j', 0, km.D_QPROJ, lambda r: r['q_projection_j']),
+    ('e_diss_release_j', 0, km.D_EDISS, lambda r: r['e_diss_release_j']),
+    ('residual_r_j', 0, km.D_RESID, lambda r: r['residual_r_j']),
+    ('residual_bound_j', 0, km.D_BOUND, lambda r: r['residual_bound_j']),
+    ('anchor_consistency_err_N_s', 0, km.D_ANCHORERR,
+     lambda r: r['anchor_consistency_err_N_s']),
+    ('ground_jn_a', 0, km.D_GJNA,
+     lambda r: r['ground_jn_N_s']['bone_a']),
+    ('ground_jn_b', 0, km.D_GJNB,
+     lambda r: r['ground_jn_N_s']['bone_b']),
+]
+
+# (name, component, slot triple, oracle list extractor)
+VECTOR_COMPARABLES = [
+    ('com_a_m', 0, (km.D_COMX, km.D_COMY, km.D_COMZ),
+     lambda r: r['com_a_m']),
+    ('com_b_m', 1, (km.D_COMX, km.D_COMY, km.D_COMZ),
+     lambda r: r['com_b_m']),
+    ('lig_force_n', 0, (km.D_LIGFX, km.D_LIGFY, km.D_LIGFZ),
+     lambda r: r['lig_force_n']),
+    ('cap_force_n', 0, (km.D_CAPFX, km.D_CAPFY, km.D_CAPFZ),
+     lambda r: r['cap_force_n']),
+    ('ground_anchor_impulse_N_s', 0, (km.D_GIMPX, km.D_GIMPY, km.D_GIMPZ),
+     lambda r: r['ground_anchor_impulse_N_s']),
+]
+
+RESTRAINT_SLOTS = [(km.D_REST00 + 3 * i + j, i, j)
+                   for i in range(3) for j in range(3)]
+
+
+def refuse_vacuous(a, b, code='vacuous_comparison_refused'):
+    """M07's independent-review lesson: a window gate whose two sides are
+    identically zero cannot fail; such comparisons are REFUSED when used
+    as falsifiable gates. Plain agreement comparisons of identically-zero
+    values are exact agreement evidence: recorded as exact-zero pairs with
+    diff 0.0, never silently dropped (Amendment A2 pattern)."""
+    if a == 0.0 and b == 0.0:
+        raise ValueError(code)
+
+
+def vacuous_guard_selftest():
+    fired = False
+    try:
+        refuse_vacuous(0.0, 0.0)
+    except ValueError as exc:
+        fired = str(exc) == 'vacuous_comparison_refused'
+    return fired
+
+
+def p_bone_layout():
+    """The resident module's declared layout equals kernel_mirror's (the
+    single transcription source). CPU-runnable; import is numba-lazy but
+    decoration-only, so this also runs without a GPU."""
+    import resident_bones as rb
+    slots = {d: getattr(rb, d) == getattr(km, d)
+             for d in dir(km) if d.startswith('D_')}
+    p = {s: getattr(rb, s) == getattr(km, s)
+         for s in ('P_WGRAV', 'P_QDAMP', 'P_IMPGX', 'P_DMPX', 'P_WLIG',
+                   'P_WCAP', 'P_WACT', 'P_ELMX', 'P_CIMPX', 'P_LEDGER')}
+    s = {t: getattr(rb, t) == getattr(km, t)
+         for t in ('S_QCONTACT', 'S_DFRIC', 'S_DIMP', 'S_JNTOT', 'S_ITERS',
+                   'S_GSRES', 'S_ACTIVE', 'S_JGAP', 'S_JHAS', 'S_JNX',
+                   'S_GJNA', 'S_BBIX', 'S_CAX', 'S_CGX', 'S_RECX',
+                   'S_QPROJ')}
+    sizes = all(getattr(rb, n) == getattr(km, n)
+                for n in ('DIAG', 'N_PASS', 'N_SYS', 'CMD_F64',
+                          'MAX_ACTIVE', 'N_ENTRIES', 'H_SUB', 'GS_TOL_N_S',
+                          'GS_CAP', 'XPBD_COMPLIANCE'))
+    ok = (all(slots.values()) and all(p.values()) and all(s.values())
+          and sizes)
+    return {'ok': ok, 'd_slots': len(slots), 'p_slots': len(p),
+            'sys_slots': len(s), 'sizes_match': sizes}
+
+
+def p_bone_single_writer():
+    """AST scan: device state is written only inside @cuda.jit kernels and
+    the ResidentBonesWorld construction/step path; host methods outside
+    __init__/step_tick never copy_to_device."""
+    import resident_bones as rb
+    src = (HERE / 'resident_bones.py').read_text(encoding='utf-8')
+    tree = ast.parse(src)
+    kernels = set()
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef) and node.decorator_list:
+            kernels.add(node.name)
+    class_methods = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ClassDef) \
+                and node.name == 'ResidentBonesWorld':
+            for item in node.body:
+                if isinstance(item, ast.FunctionDef):
+                    class_methods[item.name] = item
+    violations = []
+    allowed_host_writers = {'__init__', 'step_tick'}
+    for name in class_methods:
+        for node in ast.walk(class_methods[name]):
+            if isinstance(node, ast.Call) and isinstance(node.func,
+                                                         ast.Attribute):
+                if node.func.attr == 'copy_to_device' \
+                        and name not in allowed_host_writers:
+                    violations.append(f'{name}:copy_to_device')
+    return {'kernels': sorted(kernels),
+            'host_writer_methods': sorted(allowed_host_writers),
+            'violations': violations, 'ok': not violations}
+
+
+def p_gates_declared():
+    """The GPU world refuses through the declared gate names."""
+    import resident_bones as rb
+    gates = [rb.E_ORDER, rb.E_TICK, rb.E_BYTES, rb.E_PAIRCAP, rb.E_CONV,
+             rb.E_LEDGER, rb.E_SUPPORT, rb.E_UNEXPLAINED, rb.E_NONFINITE,
+             rb.E_DIGEST]
+    return {'gate_codes': sorted(gates), 'count': len(gates)}
+
+
+def _gpu_debug_dump(gpu, block, tick, exc):
+    """Debug evidence for a gate refusal (attempt scratch, not a claim):
+    the failing tick's full named diagnostic blocks and partials."""
+    import resident_bones as rb
+    named = []
+    for b in range(km.N_BONES):
+        named.append({f'slot{i}': float(v) for i, v in
+                      enumerate(block[b])})
+    dbg = {'tick': tick, 'refusal': str(exc), 'blocks': named}
+    try:
+        dbg['pass'] = gpu.d_pass.copy_to_host().tolist()
+        dbg['sys'] = gpu.d_sys.copy_to_host().tolist()
+    except Exception as dbg_err:  # noqa: BLE001
+        dbg['dump_error'] = repr(dbg_err)
+    (HERE / 'debug_gate_failure.json').write_bytes(canonical(dbg))
+
+
+def _gpu_bank_run(trace_path, receipt_path, profile_path):
+    """One X3 GPU bank arm: the resident CUDA world and the CPU oracle
+    step the SAME frozen fixture; every tick compared under the frozen
+    windows. The world is released on EVERY exit path — a raise (E_BYTES,
+    a gate, a CUDA fault) must never leak device state into the next world
+    sharing this context. Receipt content is deterministic (no wall-clock,
+    no mode keys) so gmain/grerun receipts are byte-identical."""
+    import time
+    import resident_bones as rb
+    t0 = time.perf_counter()
+    pins = asm.verify_input_pins()
+    oracle = asm.AssemblyRun()
+    gpu = rb.ResidentBonesWorld()
+    try:
+        rows, receipt = _gpu_bank_body(gpu, oracle, pins)
+    finally:
+        gpu.release()
+    t1 = time.perf_counter()
+    (HERE / trace_path.name).write_bytes(canonical({'rows': rows}))
+    (HERE / receipt_path.name).write_bytes(canonical(receipt))
+    if profile_path is not None:
+        (HERE / profile_path.name).write_bytes(canonical({
+            'bank_wall_seconds': t1 - t0,   # profile only, never compared
+        }))
+    print(json.dumps({'X3_pass': receipt['X3_pass'],
+                      'worst_pos_m':
+                          receipt['worst_position_diff_m'],
+                      'worst_scalar_rel':
+                          receipt['worst_scalar_relative_overall'],
+                      'telemetry_within_budget':
+                          receipt['telemetry']['within_budget'],
+                      'digest_chain_green':
+                          receipt['digest_chain_green_every_tick']},
+                     indent=1, default=_np_default))
+
+
+def _gpu_bank_body(gpu, oracle, pins):
+    """The lockstep oracle-vs-resident run (called under the world's
+    release guard)."""
+    rows = []
+    worst_pos = 0.0
+    scalar_worst = {}
+    exact_zero_pairs = 0
+    digest_green = True
+    budget_rows = []
+    exceeded_ticks = []
+    for tick in range(asm.TICKS):
+        orow = oracle.step(tick)
+        up0 = gpu.host_bytes_up
+        down0 = gpu.host_bytes_down
+        gpu.step_tick(tick)
+        block = gpu.diagnostics()
+        xsnap = gpu.snapshot()
+        up = gpu.host_bytes_up - up0
+        down = gpu.host_bytes_down - down0
+        budget_rows.append({'tick': tick, 'up_bytes': up,
+                            'down_bytes': down,
+                            'down_budget': (km.
+                                            TELEMETRY_BUDGET_DOWN_PER_COMP
+                                            * gpu.declaration['n_bones'])})
+        if up > km.TELEMETRY_BUDGET_UP_PER_TICK or down > \
+                km.TELEMETRY_BUDGET_DOWN_PER_COMP * \
+                gpu.declaration['n_bones']:
+            raise ValueError(km.E_BYTES)
+        try:
+            gpu.check_gates(block, tick)
+        except ValueError as exc:
+            _gpu_debug_dump(gpu, block, tick, exc)
+            raise
+        # digest chain recompute from the emitted block (stale guard) is
+        # inside check_gates; record its verdict
+        for b in range(km.N_BONES):
+            want = km.block_digest(block[b], tick)
+            if want != float(block[b][km.D_DIGEST]):
+                digest_green = False
+        # frozen position window: the full 16-row vertex snapshot
+        oa = np.asarray(oracle.bone_a.x)
+        ob = np.asarray(oracle.bone_b.x)
+        dpos = max(float(np.abs(xsnap[:8] - oa).max()),
+                   float(np.abs(xsnap[8:] - ob).max()))
+        worst_pos = max(worst_pos, dpos)
+        row = {'tick': tick, 'worst_position_diff_m': dpos,
+               'exceeded': [], 'exact_zero_pairs': 0}
+        ez = 0
+        # scalar comparables
+        for name, comp, slot, extractor in SCALAR_COMPARABLES:
+            a = float(extractor(orow))
+            b = float(block[comp][slot])
+            if a == 0.0 and b == 0.0:
+                ez += 1
+                rel = 0.0
+            else:
+                rel = abs(a - b) / max(1.0, abs(a), abs(b))
+            if rel > AGREE_SCALAR_WINDOW:
+                row['exceeded'].append({'name': name, 'oracle': a,
+                                        'gpu': b, 'rel': rel})
+            scalar_worst.setdefault(name, 0.0)
+            if rel > scalar_worst[name]:
+                scalar_worst[name] = rel
+            row[name] = {'oracle': a, 'gpu': b, 'rel': rel}
+        # vector comparables
+        for name, comp, slots, extractor in VECTOR_COMPARABLES:
+            vals = extractor(orow)
+            for k, slot in enumerate(slots):
+                a = float(vals[k])
+                b = float(block[comp][slot])
+                if a == 0.0 and b == 0.0:
+                    ez += 1
+                    rel = 0.0
+                else:
+                    rel = abs(a - b) / max(1.0, abs(a), abs(b))
+                tag = f'{name}[{k}]'
+                if rel > AGREE_SCALAR_WINDOW:
+                    row['exceeded'].append({'name': tag, 'oracle': a,
+                                            'gpu': b, 'rel': rel})
+                scalar_worst.setdefault(tag, 0.0)
+                if rel > scalar_worst[tag]:
+                    scalar_worst[tag] = rel
+                row[tag] = {'oracle': a, 'gpu': b, 'rel': rel}
+        # restraint matrix slots + derived eigen-count (host fold)
+        for slot, i, j in RESTRAINT_SLOTS:
+            a = float(orow['restraint_matrix'][3 * i + j])
+            b = float(block[0][slot])
+            rel = abs(a - b) / max(1.0, abs(a), abs(b))
+            tag = f'restraint_matrix[{i}][{j}]'
+            if rel > AGREE_SCALAR_WINDOW:
+                row['exceeded'].append({'name': tag, 'oracle': a,
+                                        'gpu': b, 'rel': rel})
+            scalar_worst.setdefault(tag, 0.0)
+            if rel > scalar_worst[tag]:
+                scalar_worst[tag] = rel
+            row[tag] = {'oracle': a, 'gpu': b, 'rel': rel}
+        kmat = np.array([float(block[0][slot])
+                         for slot, _i, _j in RESTRAINT_SLOTS]
+                        ).reshape(3, 3)
+        cnt = int(km.MirrorWorld._restrained_direction_count(kmat))
+        row['restrained_direction_count'] = {
+            'oracle': int(orow['restrained_direction_count']), 'gpu': cnt}
+        if cnt != int(orow['restrained_direction_count']):
+            row['exceeded'].append({'name': 'restrained_direction_count',
+                                    'oracle':
+                                        int(orow['restrained_direction_count'
+                                                 ]), 'gpu': cnt, 'rel': 1.0})
+        # derived host folds over per-bone slots (the harness's own folds,
+        # declared in mirror_rehearsal)
+        folds = {
+            'e_kinetic_j': (float(block[0][km.D_KE])
+                            + float(block[1][km.D_KE]),
+                            float(orow['e_kinetic_j'])),
+            'u_scaffold_j': (float(block[0][km.D_USCAFF])
+                             + float(block[1][km.D_USCAFF]),
+                             float(orow['u_scaffold_j'])),
+            'max_speed_m_per_s': (max(float(block[0][km.D_MAXSPD]),
+                                      float(block[1][km.D_MAXSPD])),
+                                  float(orow['max_speed_m_per_s'])),
+            'min_vertex_z_m': (min(float(block[0][km.D_MINZ]),
+                                   float(block[1][km.D_MINZ])),
+                               float(orow['min_vertex_z_m'])),
+            'ledger_worst_N_s': (max(float(block[0][km.D_LEDGERW]),
+                                     float(block[1][km.D_LEDGERW])),
+                                 float(orow['ledger_residual_worst_N_s'])),
+        }
+        for name, (bval, aval) in folds.items():
+            if aval == 0.0 and bval == 0.0:
+                ez += 1
+                rel = 0.0
+            else:
+                rel = abs(aval - bval) / max(1.0, abs(aval), abs(bval))
+            if rel > AGREE_SCALAR_WINDOW:
+                row['exceeded'].append({'name': name, 'oracle': aval,
+                                        'gpu': bval, 'rel': rel})
+            scalar_worst.setdefault(name, 0.0)
+            if rel > scalar_worst[name]:
+                scalar_worst[name] = rel
+            row[name] = {'oracle': aval, 'gpu': bval, 'rel': rel}
+        row['exact_zero_pairs'] = ez
+        exact_zero_pairs += ez
+        if row['exceeded']:
+            exceeded_ticks.append(tick)
+        rows.append(row)
+    layout = p_bone_layout()
+    writer = p_bone_single_writer()
+    gates = p_gates_declared()
+    trace_sha = asm.sha256_file(HERE / 'experiment_trace.json')
+    position_within = worst_pos <= AGREE_POS_WINDOW_M
+    scalars_within = all(v <= AGREE_SCALAR_WINDOW
+                         for v in scalar_worst.values())
+    receipt = {
+        'schema': 'chimera.m09_gpu_bank.v1',
+        'criteria_sha256':
+            '803ca2d1cd6e410217fb9e3a2bdb8e29fbe291ae2fe685fcfb83f66'
+            'b442dacc4',
+        'fixture': {'ticks': asm.TICKS, 'dt_s': asm.DT_S,
+                    'substeps_per_tick': asm.N_SUB,
+                    'declared_order': list(asm.DECLARED_ORDER)},
+        'windows': {'position_m': AGREE_POS_WINDOW_M,
+                    'scalar_relative': AGREE_SCALAR_WINDOW,
+                    'vacuous_policy': 'exact-zero pairs recorded; the '
+                                      'self-tested guard gates falsifiable '
+                                      'comparisons'},
+        'worst_position_diff_m': worst_pos,
+        'worst_scalar_relative': scalar_worst,
+        'worst_scalar_relative_overall': max(scalar_worst.values())
+        if scalar_worst else 0.0,
+        'position_within_window': position_within,
+        'comparables_within_window': scalars_within,
+        'exceeded_ticks': exceeded_ticks,
+        'exact_zero_pairs': exact_zero_pairs,
+        'vacuous_guard_selftest': vacuous_guard_selftest(),
+        'digest_chain_green_every_tick': digest_green,
+        'gates_declared': {'count': gates['count'],
+                           'codes': gates['gate_codes']},
+        'telemetry': {
+            'max_up_bytes_per_tick': max(r['up_bytes']
+                                         for r in budget_rows),
+            'max_down_bytes_per_tick': max(r['down_bytes']
+                                           for r in budget_rows),
+            'up_budget': km.TELEMETRY_BUDGET_UP_PER_TICK,
+            'down_budget_per_comp': km.TELEMETRY_BUDGET_DOWN_PER_COMP,
+            'within_budget':
+                max(r['up_bytes'] for r in budget_rows)
+                <= km.TELEMETRY_BUDGET_UP_PER_TICK
+                and max(r['down_bytes'] for r in budget_rows)
+                <= km.TELEMETRY_BUDGET_DOWN_PER_COMP * 2,
+            'total_up_bytes': gpu.host_bytes_up,
+            'total_down_bytes': gpu.host_bytes_down},
+        'order_digest_gpu': gpu.order_digest,
+        'input_pins': {k: 'ok' for k in pins},
+        'p_bone_layout': {'ok': layout['ok'], 'd_slots': layout['d_slots'],
+                          'p_slots': layout['p_slots'],
+                          'sys_slots': layout['sys_slots'],
+                          'sizes_match': layout['sizes_match']},
+        'p_bone_single_writer': {'ok': writer['ok'],
+                                 'violations': writer['violations']},
+        'oracle_trace_frozen': {
+            'sha256': trace_sha,
+            'expected': ORACLE_TRACE_FROZEN_SHA256,
+            'matches': trace_sha == ORACLE_TRACE_FROZEN_SHA256},
+        'declaration': gpu.declaration,
+    }
+    receipt['X3_pass'] = bool(
+        position_within and scalars_within
+        and receipt['telemetry']['within_budget'] and digest_green
+        and not exceeded_ticks and receipt['vacuous_guard_selftest']
+        and layout['ok'] and writer['ok']
+        and receipt['oracle_trace_frozen']['matches'])
+    return rows, receipt
+
+
+def mode_gmain():
+    _gpu_bank_run(HERE / 'gpu_trace.json', HERE / 'gpu_receipt.json',
+                  HERE / 'gpu_profile.json')
+
+
+def mode_grerun():
+    _gpu_bank_run(HERE / 'gpu_trace_rerun2.json',
+                  HERE / 'gpu_receipt_rerun2.json', None)
+
+
+def mode_gcompare():
+    t1 = asm.sha256_file(HERE / 'gpu_trace.json')
+    t2 = asm.sha256_file(HERE / 'gpu_trace_rerun2.json')
+    r1 = asm.sha256_file(HERE / 'gpu_receipt.json')
+    r2 = asm.sha256_file(HERE / 'gpu_receipt_rerun2.json')
+    run1 = json.loads((HERE / 'gpu_receipt.json').read_text(
+        encoding='utf-8'))
+    run2 = json.loads((HERE / 'gpu_receipt_rerun2.json').read_text(
+        encoding='utf-8'))
+    trace_identical = t1 == t2
+    receipt_identical = r1 == r2
+    receipt = {
+        'schema': 'chimera.m09_gpu_determinism.v1',
+        'trace_sha_run1': t1, 'receipt_sha_run1': r1,
+        'trace_sha_run2': t2, 'receipt_sha_run2': r2,
+        'X3_trace_byte_identical': trace_identical,
+        'X3_receipt_byte_identical': receipt_identical,
+        'X3_runs_pass': bool(run1.get('X3_pass') and run2.get('X3_pass')),
+        'X3_pass': bool(trace_identical and receipt_identical
+                        and run1.get('X3_pass') and run2.get('X3_pass')),
+    }
+    (HERE / 'gpu_determinism_receipt.json').write_bytes(canonical(receipt))
+    print(json.dumps(receipt, indent=1))
+
+
 def main(argv):
     mode = argv[1] if len(argv) > 1 else 'main'
     {'main': mode_main, 'rerun': mode_rerun, 'compare': mode_compare,
      'falsify': mode_falsify, 'regression': mode_regression,
-     'mirror': mode_mirror}[mode]()
+     'mirror': mode_mirror, 'gmain': mode_gmain, 'grerun': mode_grerun,
+     'gcompare': mode_gcompare}[mode]()
     return 0
 
 
