@@ -128,6 +128,16 @@ def main():
     add(f"- X4 regression: M05 suite exit {reg['suites']['M05']['exit_code']}"
         f", M06 suite exit {reg['suites']['M06']['exit_code']} (both "
         'UNMODIFIED, this revision).')
+    add('- render cosmetics follow-up (visual-gate findings F1-F5, '
+        'Amendment A4 of the preregistration): shade() input-scale fix '
+        '(lambert-shaded fills), per-viewport rasterization (no '
+        'cross-cell spill), diagnostic layer 1 rendered as navy '
+        'port:head/triangle ID labels, ligament visible as a declared '
+        'purple underlay beneath the red capsule core; registry profile '
+        'snapshot + provenance written to evidence '
+        '(registry_profile_snapshot.json); the merged original capture '
+        'remains archived and the re-rendered capture re-pins the same '
+        'trace state binding.')
     add('')
     add('## Applicability and disclosure')
     add('')

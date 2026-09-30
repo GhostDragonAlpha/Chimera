@@ -16,6 +16,20 @@ arms FB2/FB5 bite exactly here). Fixed bookmarks: the camera never moves;
 the SUBJECTS move. CPU rasterizer, painter's algorithm (declared
 occlusion_mode depth_tested). Deterministic.
 
+Amendment A4 render discipline (visual-gate findings, none physics):
+  F1 shade() treats base channels as 0..255 (named input-scale assert);
+     polygon fills are lambert-shaded, not saturated white.
+  F2 every viewport is rasterized into its OWN 640x360 image and pasted
+     into the sheet, so no camera's projected geometry can spill into
+     another cell (the close-up ground polygon previously overpainted
+     neighbouring viewports' overlays).
+  F3 diagnostic layer 1 is RENDERED: navy (15,15,90) port:head ID labels
+     with anchor markers plus tri0/tri1 face-triangle IDs, drawn topmost
+     in every diagnostic viewport (clean rows carry none).
+  F5 the ligament strap renders as a declared 7-px purple underlay
+     beneath the 3-px red capsule core; both run the port:head axis, so
+     both connective elements are visible where they act.
+
 Frames + evidence (frame_hashes.json, cameras.json, frame_sources.json)
 are written to the attempt capture directory passed as argv[1].
 """
@@ -50,6 +64,11 @@ CAPTURE_TICKS = (0, 10, 21, 30, 44, 45, 60, 66, 70, 74, 85, 89)
 TICK_MAP = ('1 tick = 1/300 s simulated; frames are the declared capture '
             'ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second '
             'per frame (Amendment A1 schedule)')
+LBL = (15, 15, 90)          # diagnostic layer 1 ID color (navy)
+LIG_COLOR = (120, 40, 140)  # ligament underlay (purple)
+CAP_COLOR = (200, 30, 30)   # capsule core (red)
+LIG_WIDTH = 7               # declared underlay width (A4 F5)
+CAP_WIDTH = 3               # declared core width
 
 
 def require(condition, code):
@@ -170,8 +189,12 @@ LIGHT = LIGHT / np.linalg.norm(LIGHT)
 
 
 def shade(normal, base):
+    """Lambert shade a 0..255 base color (A4 F1: the input scale is
+    0..255, NOT 0..1 — the unit assumption is asserted by name)."""
+    require(all(0.0 <= float(c) <= 255.0 for c in base),
+            'shade_base_not_0_255_scale')
     lam = 0.35 + 0.65 * abs(float(np.dot(normal, LIGHT)))
-    return tuple(int(min(255, c * lam * 255)) for c in base)
+    return tuple(int(min(255.0, float(c) * lam)) for c in base)
 
 
 def draw_arrow(draw, start2, end2, color):
@@ -186,8 +209,7 @@ def draw_arrow(draw, start2, end2, color):
                    ey + 7.0 * math.sin(ang + da)], fill=color, width=2)
 
 
-def draw_bone(draw, verts, tris, cam, color, offset, labels=False,
-              fonts=None):
+def draw_bone(draw, verts, tris, cam, color):
     tri = np.array([[verts[i] for i in t] for t in tris])
     centres = tri.mean(axis=1)
     _, depth = cam.project(centres)
@@ -198,13 +220,117 @@ def draw_bone(draw, verts, tris, cam, color, offset, labels=False,
         p3, _ = cam.project(tri[i])
         if not np.all(np.isfinite(p3)):
             continue
-        draw.polygon([tuple(p + np.array(offset)) for p in p3],
-                     fill=shade(n, color), outline=(60, 60, 80))
-        if labels and fonts and i < 2:
-            c2, _ = cam.project(centres[i])
-            draw.text((c2[0][0] + offset[0] + 3, c2[0][1] + offset[1] - 6),
-                      f'tri{i}',
-                      fill=(15, 15, 90), font=fonts['small'])
+        draw.polygon([tuple(p) for p in p3], fill=shade(n, color),
+                     outline=(60, 60, 80))
+
+
+def draw_scene(draw, cam, ground_v, ground_tris, va, vb, run):
+    """Geometry only: the declared ground support and the two bones."""
+    for t in ground_tris:
+        p3, _ = cam.project(ground_v[t])
+        n = np.cross(ground_v[t[1]] - ground_v[t[0]],
+                     ground_v[t[2]] - ground_v[t[0]])
+        n = n / max(np.linalg.norm(n), 1e-30)
+        draw.polygon([tuple(p) for p in p3], fill=shade(n, (150, 160, 150)),
+                     outline=(60, 60, 80))
+    draw_bone(draw, va, [list(t) for t in run.bone_a.triangles], cam,
+              (120, 170, 235))
+    draw_bone(draw, vb, [list(t) for t in run.bone_b.triangles], cam,
+              (235, 200, 120))
+
+
+def draw_layer1_ids(draw, cam, va, run, anchor_a, anchor_b, fonts):
+    """Diagnostic layer 1 'stable membrane/triangle/port IDs' (A4 F3):
+    navy port:head ID labels with anchor markers plus tri0/tri1 face-
+    triangle IDs, drawn TOPMOST so no polygon can overpaint them.
+    Label placement keeps the two port IDs legible even where the ports
+    meet (press ticks): the bone_a label extends away from the bone_b
+    dot and the bone_b label away from the bone_a dot; tri0/tri1 stack
+    in their own rows BELOW the port-label row (the face-triangle
+    centroids coincide with the port:head anchor, so shared rows would
+    collide exactly where the elements meet)."""
+    tri = np.array([[va[i] for i in t] for t in run.bone_a.triangles])
+    centres = tri.mean(axis=1)
+    c0, _ = cam.project(centres[0])
+    c1, _ = cam.project(centres[1])
+    draw.text((float(c0[0][0]) - 4, float(c0[0][1]) + 18), 'tri0',
+              fill=LBL, font=fonts['small'])
+    draw.text((float(c1[0][0]) - 4, float(c1[0][1]) + 31), 'tri1',
+              fill=LBL, font=fonts['small'])
+    pa, _ = cam.project([anchor_a])
+    pb, _ = cam.project([anchor_b])
+    xa, ya = float(pa[0][0]), float(pa[0][1])
+    xb, yb = float(pb[0][0]), float(pb[0][1])
+    draw.ellipse([xa - 2, ya - 2, xa + 2, ya + 2], fill=LBL)
+    draw.ellipse([xb - 2, yb - 2, xb + 2, yb + 2], fill=LBL)
+    ta, tb = 'port:head bone_a', 'port:head bone_b'
+    wa = draw.textlength(ta, font=fonts['small'])
+    wb = draw.textlength(tb, font=fonts['small'])
+    if xa >= xb:
+        draw.text((xa + 6, ya + 3), ta, fill=LBL, font=fonts['small'])
+        draw.text((xb - 6 - wb, yb + 3), tb, fill=LBL, font=fonts['small'])
+    else:
+        draw.text((xa - 6 - wa, ya + 3), ta, fill=LBL, font=fonts['small'])
+        draw.text((xb + 6, yb + 3), tb, fill=LBL, font=fonts['small'])
+
+
+def render_diag_viewport(name, cam, tick, row, va, vb, run, ground_v,
+                         ground_tris, anchor_a, anchor_b, lig_f, cap_f,
+                         scale, fonts):
+    """One diagnostic viewport rasterized into its OWN image (A4 F2:
+    per-viewport clipping — nothing drawn here can leave the cell)."""
+    vp = Image.new('RGB', (W_VP, H_VP), (252, 252, 250))
+    d = ImageDraw.Draw(vp)
+    draw_scene(d, cam, ground_v, ground_tris, va, vb, run)
+    # connective material straps on the port:head axis (the authored
+    # connections): ligament purple underlay first, capsule red core
+    # over it (A4 F5) — both declared widths, both visible
+    if float(np.linalg.norm(lig_f)) > 1e-12 or tick == 45:
+        a2, _ = cam.project([anchor_a])
+        b2, _ = cam.project([anchor_b])
+        d.line([float(a2[0][0]), float(a2[0][1]),
+                float(b2[0][0]), float(b2[0][1])],
+               fill=LIG_COLOR, width=LIG_WIDTH)
+    if float(np.linalg.norm(cap_f)) > 1e-12 or tick == 45:
+        a2, _ = cam.project([anchor_a])
+        b2, _ = cam.project([anchor_b])
+        d.line([float(a2[0][0]), float(a2[0][1]),
+                float(b2[0][0]), float(b2[0][1])],
+               fill=CAP_COLOR, width=CAP_WIDTH)
+    # area-scaled force arrows at the anchors
+    for f3, anchor in ((lig_f, anchor_b), (cap_f, anchor_b)):
+        if float(np.linalg.norm(f3)) > 1e-12:
+            c2, _ = cam.project([anchor])
+            t3 = anchor + f3 * scale
+            t2, _ = cam.project([t3])
+            draw_arrow(d, c2[0], t2[0], CAP_COLOR)
+    # joint contact marker
+    if row['joint_gap_m'] is not None:
+        mid = (anchor_a + anchor_b) / 2.0
+        c2, _ = cam.project([mid])
+        x, y = float(c2[0][0]), float(c2[0][1])
+        d.ellipse([x - 5, y - 5, x + 5, y + 5],
+                  outline=CAP_COLOR, width=2)
+    # layer 1 IDs drawn topmost of the geometry/straps
+    draw_layer1_ids(d, cam, va, run, anchor_a, anchor_b, fonts)
+    d.text((6, 4), f'{name}: tick {tick} ({row["phase"]})',
+           fill=(20, 20, 20), font=fonts['title'])
+    d.text((6, H_VP - 18),
+           f'gap {row["gap_head_anchors_m"]*1e3:.1f} mm | '
+           f'lig {row["lig_tension_n"]:.2f} N | '
+           f'cap {row["cap_axial_n"]:.2f} N | '
+           f'{row["contact_state"]} | rst '
+           f'{row["restrained_direction_count"]}',
+           fill=(30, 30, 30), font=fonts['small'])
+    return vp
+
+
+def render_clean_viewport(cam, va, vb, run, ground_v, ground_tris):
+    """One clean viewport: identical camera and state, geometry only."""
+    vp = Image.new('RGB', (W_VP, H_VP), (252, 252, 250))
+    d = ImageDraw.Draw(vp)
+    draw_scene(d, cam, ground_v, ground_tris, va, vb, run)
+    return vp
 
 
 def main():
@@ -269,10 +395,6 @@ def main():
                                   'state_hash': row['state_hash']})
         img = Image.new('RGB', SHEET, (252, 252, 250))
         draw = ImageDraw.Draw(img)
-        cams_diag = [('whole', cams['whole'], (0, 0)),
-                     ('side', cams['side'], (W_VP, 0)),
-                     ('front', cams['front'], (2 * W_VP, 0)),
-                     ('closeup', cams['closeup'], (3 * W_VP, 0))]
         lig_f = np.array(row['lig_force_n'])
         cap_f = np.array(row['cap_force_n'])
         mag = max(float(np.linalg.norm(lig_f)),
@@ -282,71 +404,22 @@ def main():
                                                   - run.bone_a.rest_mean)
         anchor_b = run.bone_b.rest_head_anchor + (vb.mean(axis=0)
                                                   - run.bone_b.rest_mean)
-        for name, cam, off in cams_diag:
-            # ground (the declared visible support)
-            for t in ground_tris:
-                p3, _ = cam.project(ground_v[t])
-                n = np.cross(ground_v[t[1]] - ground_v[t[0]],
-                             ground_v[t[2]] - ground_v[t[0]])
-                n = n / max(np.linalg.norm(n), 1e-30)
-                draw.polygon([tuple(p + np.array(off)) for p in p3],
-                             fill=shade(n, (150, 160, 150)),
-                             outline=(60, 60, 80))
-            draw_bone(draw, va, [list(t) for t in run.bone_a.triangles],
-                      cam, (120, 170, 235), offset=off, labels=True,
-                      fonts=fonts)
-            draw_bone(draw, vb, [list(t) for t in run.bone_b.triangles],
-                      cam, (235, 200, 120), offset=off)
-            # connective material straps (the authored connections)
-            for f3, anchor, color in ((lig_f, anchor_a, (120, 40, 140)),
-                                      (cap_f, anchor_a, (200, 30, 30))):
-                if float(np.linalg.norm(f3)) > 1e-12 or tick == 45:
-                    a2, _ = cam.project([anchor_a])
-                    b2, _ = cam.project([anchor_b])
-                    draw.line([float(a2[0][0]) + off[0],
-                               float(a2[0][1]) + off[1],
-                               float(b2[0][0]) + off[0],
-                               float(b2[0][1]) + off[1]], fill=color,
-                              width=3)
-            # area-scaled force arrows at the anchors
-            for f3, anchor in ((lig_f, anchor_b), (cap_f, anchor_b)):
-                if float(np.linalg.norm(f3)) > 1e-12:
-                    c2, _ = cam.project([anchor])
-                    t3 = anchor + f3 * scale
-                    t2, _ = cam.project([t3])
-                    draw_arrow(draw, c2[0] + off, t2[0] + off, (200, 30, 30))
-            # joint contact marker
-            if row['joint_gap_m'] is not None:
-                mid = (anchor_a + anchor_b) / 2.0
-                c2, _ = cam.project([mid])
-                x, y = float(c2[0][0]) + off[0], float(c2[0][1]) + off[1]
-                draw.ellipse([x - 5, y - 5, x + 5, y + 5],
-                             outline=(200, 30, 30), width=2)
-            draw.text((off[0] + 6, off[1] + 4),
-                      f'{name}: tick {tick} ({row["phase"]})',
-                      fill=(20, 20, 20), font=fonts['title'])
-            draw.text((off[0] + 6, off[1] + H_VP - 18),
-                      f'gap {row["gap_head_anchors_m"]*1e3:.1f} mm | '
-                      f'lig {row["lig_tension_n"]:.2f} N | '
-                      f'cap {row["cap_axial_n"]:.2f} N | '
-                      f'{row["contact_state"]} | rst '
-                      f'{row["restrained_direction_count"]}',
-                      fill=(30, 30, 30), font=fonts['small'])
-        for name, cam, off in cams_diag:
-            off2 = (off[0], off[1] + H_VP + 8)
-            for t in ground_tris:
-                p3, _ = cam.project(ground_v[t])
-                n = np.cross(ground_v[t[1]] - ground_v[t[0]],
-                             ground_v[t[2]] - ground_v[t[0]])
-                n = n / max(np.linalg.norm(n), 1e-30)
-                draw.polygon([tuple(p + np.array(off2)) for p in p3],
-                             fill=shade(n, (150, 160, 150)),
-                             outline=(60, 60, 80))
-            draw_bone(draw, va, [list(t) for t in run.bone_a.triangles],
-                      cam, (120, 170, 235), offset=off2)
-            draw_bone(draw, vb, [list(t) for t in run.bone_b.triangles],
-                      cam, (235, 200, 120), offset=off2)
-            draw.text((off2[0] + 6, off2[1] - 16),
+        # top row: diagnostic viewports, each rasterized and pasted into
+        # its own cell (per-viewport clipping, A4 F2)
+        for i, (name, cam) in enumerate(cams.items()):
+            vp = render_diag_viewport(name, cam, tick, row, va, vb, run,
+                                      ground_v, ground_tris, anchor_a,
+                                      anchor_b, lig_f, cap_f, scale, fonts)
+            img.paste(vp, (i * W_VP, 0))
+        # middle row: clean viewports (identical cameras, geometry only)
+        for i, (name, cam) in enumerate(cams.items()):
+            vp = render_clean_viewport(cam, va, vb, run, ground_v,
+                                       ground_tris)
+            img.paste(vp, (i * W_VP, H_VP + 8))
+            # declared clean caption row (unchanged sheet position:
+            # rows 352..362, the diagnostic cell's declared bottom edge;
+            # drawn after all pastes so no geometry can overpaint it)
+            draw.text((i * W_VP + 6, H_VP + 8 - 16),
                       f'{name} clean (no overlays)', fill=(90, 90, 90),
                       font=fonts['small'])
         # trace strip
