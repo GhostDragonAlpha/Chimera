@@ -320,3 +320,74 @@ PR (base astra/gait-capture) -> registry submit (args: task_id,
 attempt_id, agent_id = arrival-f11f7489a821465ea2c014fea51698f8, pr_url,
 head_sha, criteria_sha256; actor astra-codex) -> STOP (the Lieutenant owns
 review/accept/merge).
+
+
+## Amendment A1 (own commit; recorded BEFORE any bank/receipt)
+
+Triggering probes (all on this attempt, CPU, pre-bank, recorded verbatim):
+- P-A1.1 icosphere, schedule to 4000 Pa, 5.0 kg load on a single-pole tie,
+  tension-only foot link: the column lifted off (top_z 0.036 -> 1.162 m,
+  contact 0) because the thrust p*pi*R^2 = 31.4 N exceeded the load; the
+  load tie's reaction was found NOT applied to the membrane (defect in the
+  probed draft, fixed: the tie reaction now enters through the declared
+  guide ring).
+- P-A1.2 same at 4000 Pa with the reaction applied: the single-pole 49 N
+  tie force punctured the shell (closure_negative_volume refusal from the
+  UNMODIFIED M03 validator). Load introduction now distributes over the
+  declared guide/bottom rings (probed fix, no refusal).
+- P-A1.3 presettle identity: by tick 50 of P0 the per-tick residual r_tick
+  -> -0.0000 J with q ~ 1e-4 J/tick (integrator + ledger identity verified
+  in the constrained phase; the frozen ledger form is the M10 A1.8 form).
+
+Architecture re-issue (recorded before any receipt is built): a STANCE
+PUSH COLUMN cannot be demonstrated by a millimeter-stroke membrane
+actuator under a point-compressive load (P-A1.1/P-A1.2). The card's
+transmission demo is therefore re-issued as the HANGING BONE-CHAIN RIG,
+entirely in the sealed M10 law forms:
+- the vessel hangs from the declared overhead clamp (visible support,
+  M10 heritage; the clamp never leaves the inventory),
+- the BONE CHAIN hangs from the vessel's free pole through M05-form
+  tension ties: tissue -> humerus -> ulna -> radius -> foot(hand), rest
+  gaps declared; real B03 masses ride their chain elements; each bone
+  carries a declared ground contact (penalty, K_CONTACT) for the released
+  state,
+- the belt (extension) layout drives the free pole DOWNWARD when
+  pressurized: the pole push descends the chain, the foot presses the
+  ground, and EVERY stage force is a measured tie tension (T1 tissue
+  anchor, T2 humerus-ulna, T3 ulna-radius, T4 radius-foot) beside the
+  measured contact force.
+
+Gate re-derivation (all from statics of the declared rig, no measurement):
+- X3 whole-system statics: F_clamp_z + sum(F_contacts) == W_total within
+  rel 0.05 + k_c*x_floor in every settled window;
+- X3-stage: F_contact == W_chain_below_foot_link - T4 (foot equilibrium),
+  and T1 == W_chain - F_contact (chain top), each within the same window;
+- X4 activation-off: at p = 0 all stage tensions carry weights only and
+  the foot contact is bitwise 0 (the declared rest gap means the chain
+  hangs free); at hold the measured F_contact > 0 == the transmitted
+  thrust within window (the bitwise-0-vs-positive discriminator; the
+  power-off phases must recover the p=0 state within the declared
+  recovery window);
+- X5 connection-removal: releasing T2 (declared tick 450) drops the distal
+  chain onto its own bone contacts; the tissue-side measured chain loses
+  the distal weights (T1 drops by W(ulna)+W(radius)+W(foot) within window)
+  and the distal contacts pick them up; the departure bite stays 1e-3 m;
+- X3c guide audit is reformed: the clamp is DECLARED; the audited identity
+  is the whole-system statics above (a hidden support would violate it).
+
+Constant re-issues (with derivations): DP_WORK_PA 4000 -> 1000 Pa;
+M_LOAD_SYNTH_KG = 2.0, M_LOAD_LIMB_KG = 0.25 (compression-surrogate
+loads; the rig uses the chain weights as the load path, these declared
+loads remain as the hanging surrogates on the chain), foot inertial mass
+0.010 kg declared per shape (B03 counted hand mass stays 0.0 bitwise),
+C_FOOT = 200 1/s and C_BONE = 30 1/s (3.16x and 1.3x critical for the
+declared foot-contact and bone-tie modes), ring load introduction,
+bilateral strut REPLACED by the tension-only chain ties + per-bone
+contacts (the strut draft is superseded by this re-issue).
+
+Also recorded: site->world frame plumbing recovers each pinned blob
+region's own admitted world_from_local transform and asserts reproduction
+of the pinned world vertices to <=1e-12 (transform_mismatch refuses);
+B04's no_fusion_statement is honoured (no fitted-frame alignment is
+authored). The foot/hand remains an EXPLICITLY-UNRESOLVED TERMINAL with
+the B05 blocked-input missing-evidence strings carried verbatim.
