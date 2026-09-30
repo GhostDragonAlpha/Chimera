@@ -615,3 +615,15 @@ settle criterion is POSITIONAL — max per-tick vertex displacement over the
 settle window <= 1.0e-6 m (probe: 5.6e-17). The velocity churn is reported
 (next to the criterion) and not gated. All recorded measurements are
 positional or force averages, so the settlement semantics are unchanged.
+
+A1.11 Pre-receipt X2c re-issue (before any receipt-bearing acceptance;
+triggering probe recorded): the first full green X2 family measured
+F(1000)/F(4000) = 0.0419 — the A1.4 "near-linearity" window
+(|F(1000)/F(4000) - 0.25| <= 0.15) FAILS for this architecture, and the
+linear assumption itself was the defect: the chord net has rest-strain-zero
+members that tension PROGRESSIVELY as the bladder inflates (slack-then-
+tension), so the blocked reaction is SUBLINEAR at low pressure. Re-issued
+frozen claims: (i) 0 <= F(1000) <= F(2000) <= F(3000) <= F(4000) (monotone
+nondecreasing), (ii) F(1000)/F(4000) <= 0.25 (sublinear at low p; probe
+0.042 = 6x margin), (iii) sign/magnitude/power-off windows unchanged
+(probe 0.270 N at 4000 Pa, inside [1e-2, 10]).

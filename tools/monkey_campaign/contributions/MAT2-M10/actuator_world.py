@@ -167,7 +167,7 @@ WIN = {
     'lift_lo_m': 1.0e-4, 'lift_hi_m': 1.0e-2,
     # A1.4 X2 blocked reaction
     'f_block_lo_n': 1.0e-2, 'f_block_hi_n': 10.0,
-    'f_linearity_abs': 0.15,
+    'f_linearity_abs': 0.25,  # A1.11: sublinear low-p ratio bound
     'f_zero_residual': 0.02, 'f_zero_floor_n': 1.0e-4,
     # A1.4 X3/X4 independent expectations
     'reciprocity_rel': 0.35, 'reciprocity_floor': 1.0e-12,

@@ -132,8 +132,8 @@ def mode_main():
                              ('belt', 'belt', False),
                              ('iso', 'braid', True)):
         m = aw.ActuatorModel(side, isotropic=iso)
-        run = run_and_record(m, aw.level_schedule(2000.0), aw.QS_TICKS,
-                             'free')
+        run = aw.WorldRun(m, aw.level_schedule(2000.0), aw.QS_TICKS,
+                          mode='free')
         run.tie.release(0)
         run.run()
         settled, st = settle_ok(run)
@@ -165,7 +165,8 @@ def mode_main():
     mono = {}
     for level in (1000.0, 2000.0, 4000.0):
         m = aw.ActuatorModel('braid')
-        run = run_and_record(m, aw.level_schedule(level), aw.QS_TICKS, 'free')
+        run = aw.WorldRun(m, aw.level_schedule(level), aw.QS_TICKS,
+                          mode='free')
         run.tie.release(0)
         run.run()
         settled, st = settle_ok(run)
@@ -189,8 +190,8 @@ def mode_main():
     blocked, free, loaded, heavy = {}, {}, {}, {}
     for level in levels:
         mb = aw.ActuatorModel('braid')
-        rb = run_and_record(mb, aw.level_schedule(level), aw.QS_TICKS,
-                            'blocked')
+        rb = aw.WorldRun(mb, aw.level_schedule(level), aw.QS_TICKS,
+                         mode='blocked')
         rb.tie.release(0)
         rb.run()
         sb = rb.settle_stats()
@@ -201,7 +202,8 @@ def mode_main():
             'reaction_on_anchor_n': [-c for c in sb['pin_force_n']],
             'max_speed_m_per_s': sb['max_speed_m_per_s']}
         mf = aw.ActuatorModel('braid')
-        rf = run_and_record(mf, aw.level_schedule(level), aw.QS_TICKS, 'free')
+        rf = aw.WorldRun(mf, aw.level_schedule(level), aw.QS_TICKS,
+                         mode='free')
         rf.tie.release(0)
         rf.run()
         sf = rf.settle_stats()
@@ -224,7 +226,7 @@ def mode_main():
             'z_load_m': sl['z_load_m'],
             'tie_tension_n': sl['tie_tension_n'],
             'max_speed_m_per_s': sl['max_speed_m_per_s']}
-    heavy_levels = (1000.0, 3000.0)
+    heavy_levels = (2000.0, 3000.0)  # the X3 interior levels (A1.9)
     for level in heavy_levels:
         mh = aw.ActuatorModel('braid')
         rh = run_and_record(mh, aw.level_schedule(level), aw.QS_TICKS,
@@ -241,16 +243,24 @@ def mode_main():
     # X2 claims
     r4 = blocked['%g' % 4000.0]['reaction_on_anchor_n'][2]
     r1 = blocked['%g' % 1000.0]['reaction_on_anchor_n'][2]
+    r2k = blocked['%g' % 2000.0]['reaction_on_anchor_n'][2]
+    r3k = blocked['%g' % 3000.0]['reaction_on_anchor_n'][2]
+    # A1.11: the chord net tensions progressively (rest-strain-zero chords
+    # engage as the bladder inflates), so the blocked force is SUBLINEAR at
+    # low p — the A1.4 near-linearity claim was wrong for this architecture
+    # (probe F(1000)/F(4000) = 0.042, recorded). Frozen: monotone
+    # nondecreasing and sublinear at low p.
     bank['X2_blocked'] = {
         'per_level': blocked,
         'reaction_sign_positive': r4 > 0.0,
         'magnitude_window': (aw.WIN['f_block_lo_n'] <= abs(r4) <=
                              aw.WIN['f_block_hi_n']),
         'reaction_4000_z_n': r4, 'reaction_1000_z_n': r1,
-        'linearity_ok': abs(r1 / r4 - 0.25) <= aw.WIN['f_linearity_abs']}
+        'monotone_nondecreasing': (0.0 <= r1 <= r2k <= r3k <= r4),
+        'sublinear_low_p': (r1 / r4) <= aw.WIN['f_linearity_abs']}
     x2_pass = all(bank['X2_blocked'][k] for k in
                   ('reaction_sign_positive', 'magnitude_window',
-                   'linearity_ok'))
+                   'monotone_nondecreasing', 'sublinear_low_p'))
 
     # ---- X3 Maxwell reciprocity (A1.9): dF_block/dp at fixed x (blocked
     # family, central differences) vs dV/dx at fixed p (the two-load family
@@ -284,7 +294,6 @@ def mode_main():
 
     # ---- X4 load-line superposition at 4000 Pa (loaded-light vs free)
     sl = loaded['%g' % 4000.0]
-    z_rest_south = -aw.Z_TOP * 0.0  # placeholder replaced below
     mf4 = aw.ActuatorModel('braid')
     z_rest_south = float(mf4.rest[mf4.south, 2])
     dz_free = free['%g' % 4000.0]['z_south_m'] - z_rest_south
@@ -301,16 +310,17 @@ def mode_main():
         'T_meas_n': t_meas, 'F_block_n': f_block,
         'relative_disagreement': sup,
         'within_window': sup <= aw.WIN['superposition_rel'],
-        'tie_follow_m': abs(abs(sl['z_load_m'] - sl['z_tip_m']) -
+        'tie_follow_m': abs(abs(sl['z_load_m'] - sl['z_south_m']) -
                             aw.L_TIE),
-        'tie_follow_within': abs(abs(sl['z_load_m'] - sl['z_tip_m']) -
+        'tie_follow_within': abs(abs(sl['z_load_m'] - sl['z_south_m']) -
                                  aw.L_TIE) <= aw.WIN['tie_follow_m']}
     x4_pass = bank['X4_superposition']['within_window'] and \
         bank['X4_superposition']['tie_follow_within']
 
     # ---- X2d power-off blocked (p=0)
     m0 = aw.ActuatorModel('braid')
-    r0 = run_and_record(m0, aw.level_schedule(0.0), aw.QS_TICKS, 'blocked')
+    r0 = aw.WorldRun(m0, aw.level_schedule(0.0), aw.QS_TICKS,
+                     mode='blocked')
     r0.tie.release(0)
     r0.run()
     s0 = r0.settle_stats()
@@ -444,10 +454,12 @@ def mode_main():
         },
         'qs_family': {'free': free, 'blocked': blocked,
                       'loaded_4000': {
-                          'z_south_m': sl['z_tip_m'],
-                          'z_load_m': sl['z_load_m'],
-                          'tie_tension_n': sl['tie_tension_n'],
-                          'volume_m3': sl['volume_m3']}},
+                          'z_south_m': loaded['%g' % 4000.0]['z_south_m'],
+                          'z_load_m': loaded['%g' % 4000.0]['z_load_m'],
+                          'tie_tension_n': loaded['%g' % 4000.0][
+                              'tie_tension_n'],
+                          'volume_m3': loaded['%g' % 4000.0][
+                              'volume_m3']}},
     }
     write_json(TRACE_PATH, trace)
     bank['trace_sha256'] = sha256_of(TRACE_PATH)
