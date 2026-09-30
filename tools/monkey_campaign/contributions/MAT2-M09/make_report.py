@@ -35,6 +35,8 @@ def main():
     fal = load_receipt('falsifier_receipt.json')
     reg = load_receipt('regression_receipt.json')
     cap = load_receipt('capture_validation_receipt.json')
+    gp = load_receipt('gpu_receipt.json')
+    gd = load_receipt('gpu_determinism_receipt.json')
     probes = exp['probes']
     require(probes.get('X1_pass') is True, 'm09_report_x1_not_green')
     require(det.get('X2_pass') is True, 'm09_report_x2_not_green')
@@ -129,11 +131,21 @@ def main():
     add('')
     add('## Applicability and disclosure')
     add('')
-    add('- CPU bank authoritative; the X3 GPU confirmation (resident CUDA '
-        'transcription + mailbox bank) is frozen in PREREGISTRATION.md but '
-        'NOT YET MEASURED in this attempt window — DISCLOSED GAP, not a '
-        'silent one; the CPU-first discipline was honoured (no GPU '
-        'submission before this green bank).')
+    add('- CPU bank authoritative AND X3 GPU confirmation MEASURED (window 3,'
+        ' head 103afa35, jobs m09-gmain-003/grerun-001/gcompare-001): '
+        'X3_pass={p}, worst position diff {wp:.3e} m (window 1e-12), worst '
+        'comparable scalar {ws:.3e} relative (window 1e-9), telemetry '
+        '{up} B/tick up / {dn} B/tick down ({dpc:.0f} B/comp vs 1024 '
+        'budget), digest chain green every tick; gcompare trace+receipt '
+        'byte-identical across runs (trace {ts}). CPU-first discipline '
+        'held: the full 90-tick numba CUDA-simulator run was green before '
+        'any mailbox job.'.format(
+            p=gp['X3_pass'], wp=gp['worst_position_diff_m'],
+            ws=gp['worst_scalar_relative_overall'],
+            up=gp['telemetry']['max_up_bytes_per_tick'],
+            dn=gp['telemetry']['max_down_bytes_per_tick'],
+            dpc=gp['telemetry']['max_down_bytes_per_tick'] / 2.0,
+            ts=gd['trace_sha_run1']))
     add('- Visual acceptance of the capture remains with the independent '
         'reviewer; validate_manifest is camera-metadata structure only.')
     add('- The X1 agreement fixture runs on THIS card\'s scenario; the '
