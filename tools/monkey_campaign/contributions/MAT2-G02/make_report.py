@@ -22,7 +22,7 @@ FILES = ('PREREGISTRATION.md', 'attachment_patch.py', 'run_experiments.py',
          'experiment_receipt.json', 'experiment_trace.json',
          'experiment_receipt_rerun2.json', 'experiment_trace_rerun2.json',
          'determinism_receipt.json', 'falsifier_receipt.json',
-         'regression_receipt.json', 'experiment_profile.json',
+         'regression_receipt.json',
          'capture_manifest.json', 'capture_context.json',
          'capture_validation_receipt.json')
 
@@ -205,6 +205,10 @@ def main():
     add('- Offline CPU experiment executable over pinned inputs; no GPU '
         'submission (the scope is a 356-tick two-body fixture; prereg '
         'law 12).')
+    add('- experiment_profile.json is the single DECLARED live-field file '
+        '(wall-clock x1_wall_seconds); it is excluded from byte identity '
+        'by declaration and from the pinned file list above; every other '
+        'artifact regenerates byte-identically.')
     add('- The fixture constants are declared placeholders with the '
         'derivation recorded; they do NOT qualify the biological ports; '
         'the biological C17 debt remains explicitly-unresolved pending a '
