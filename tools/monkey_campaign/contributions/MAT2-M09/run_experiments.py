@@ -13,6 +13,11 @@ X1/X2 are green):
             executable (P1 receipt rows); writes falsifier_receipt.json.
   regression X4: the UNMODIFIED M05 and M06 suites on this revision;
             writes regression_receipt.json.
+  mirror    X3 CPU-FIRST step: the kernel-mirror transcription source is
+            validated BITWISE against AssemblyRun on the frozen 90-tick
+            fixture (every row value, both state_hash chains, the vertex
+            trajectories and the declared-order diagnostic block fold);
+            writes mirror_rehearsal_receipt.json.
 No RNG; no wall-clock in trace or receipt.
 """
 from __future__ import annotations
@@ -606,10 +611,47 @@ def mode_regression():
                      indent=1))
 
 
+def mode_mirror():
+    """X3 CPU-FIRST step: bitwise mirror validation on the frozen fixture
+    (prereg X3: 'kernel_mirror.py ... validated BITWISE against the CPU
+    world on the frozen fixture' BEFORE any GPU submission)."""
+    import kernel_mirror as km
+    import mirror_rehearsal as mr
+    res = mr.run_rehearsal(asm.TICKS)
+    bad = res['findings']
+    worst_pos = res['worst_position_diff_m']
+    receipt = {
+        'schema': 'chimera.m09_mirror_rehearsal.v1',
+        'fixture': {'ticks': asm.TICKS, 'dt_s': asm.DT_S,
+                    'substeps_per_tick': asm.N_SUB},
+        'declared_order': list(asm.DECLARED_ORDER),
+        'oracle_trace_sha256': asm.sha256_file(
+            HERE / 'experiment_trace.json'),
+        'worst_position_diff_m': worst_pos,
+        'worst_block_scalar_diff': res['worst_block_scalar_diff'],
+        'findings': bad[:24],
+        'rows_bitwise_identical': bool(res['rows_bitwise_identical']),
+        'state_hash_chains_identical':
+            bool(res['state_hash_chains_identical']),
+        'X3_mirror_bitwise_agreed': bool(
+            res['rows_bitwise_identical']
+            and res['state_hash_chains_identical'] and worst_pos == 0.0),
+        'note': 'kernel_mirror.py is the single transcription source for '
+                'the resident CUDA world; the GPU bank stays frozen-'
+                'declared until that transcription and its confirmation '
+                'run (X3 disclosure clause).',
+    }
+    (HERE / 'mirror_rehearsal_receipt.json').write_bytes(canonical(receipt))
+    print(json.dumps({k: v for k, v in receipt.items()
+                      if k.endswith(('identical', 'agreed'))
+                      or k.startswith('worst_')}, indent=1))
+
+
 def main(argv):
     mode = argv[1] if len(argv) > 1 else 'main'
     {'main': mode_main, 'rerun': mode_rerun, 'compare': mode_compare,
-     'falsify': mode_falsify, 'regression': mode_regression}[mode]()
+     'falsify': mode_falsify, 'regression': mode_regression,
+     'mirror': mode_mirror}[mode]()
     return 0
 
 

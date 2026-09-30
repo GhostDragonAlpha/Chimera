@@ -544,3 +544,40 @@ discipline requires):
    zero on all of [85, 89]; max bone speed <= 4.0 m/s; restrained
    direction count >= 1 on every bound tick and 0 with a BITWISE zero
    restraint matrix on every tick >= 85.
+
+
+## AMENDMENT A2 (X3 status; correction round 2026-09-29Z, attempt
+## fa6dbcc82b2f4f4c9036bc6c8227b241 — recorded BEFORE any GPU submission)
+
+1. X3 CPU-FIRST MIRROR (measured, green): kernel_mirror.py is written and
+   validated BITWISE against assembly.AssemblyRun on the frozen 90-tick
+   fixture: every row value, both state_hash chains, all vertex
+   trajectories/velocities and the declared-order diagnostic block fold
+   agree with worst difference 0.0 (receipt mirror_rehearsal_receipt.json,
+   schema chimera.m09_mirror_rehearsal.v1; the rehearsed oracle trace is
+   sha256 273dbc4f8c73a6f5..., the frozen X2 trace itself). The mirror is
+   the single transcription source for the resident CUDA world and fixes
+   its declared layout (flat 16-row state, 26 contact entries, per-bone
+   96-f64 diagnostic block, 5-f64 command block, the declared comparable
+   slots). Triggering observations from the mirror bring-up, all caught by
+   the bitwise rehearsal and none shipped: (a) the per-substep work/
+   damping partials must fold in the oracle's interleaved substep-then-
+   bone accumulation order — a bone-major fold diverged in the last bit
+   from tick 6; (b) the port views must share the world's single state
+   owner and the stages must write in place — private port views went
+   stale at the first ground contact (tick 21) and missed the contact set
+   entirely.
+2. RESIDENT CUDA TRANSCRIPTION + CONFIRMATION BANK: NOT COMPLETED in this
+   window; the started transcription was WITHDRAWN rather than committed
+   untested (the GPU-only debug path makes an unvalidated kernel file on
+   this physics branch a liability; M08 lane heritage). Per the X3
+   disclosure clause the arm stays frozen-declared and NOT measured — a
+   disclosed gap, never a silent one. No bound changed: the frozen
+   windows (1e-12 m positions, 1e-9 relative scalars, telemetry budgets,
+   declared-order digest, byte-identical fresh reruns) still govern the
+   future bank exactly as frozen above.
+3. CPU-FIRST LAW held: no GPU submission was made. The CPU baseline was
+   re-verified byte-identical at this revision before any mirror work
+   (X1 main run reproduced the committed trace/receipt bytes; X2 rerun
+   byte-identical, sha256 273dbc4f8c73a6f5...).
+
