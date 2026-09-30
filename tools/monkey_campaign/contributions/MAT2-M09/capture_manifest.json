@@ -1,0 +1,2556 @@
+{
+ "capture_sha256": "fa86c9823826fd8298638b05dd7c2ce690ae8f7ef75db224dcc73c205edcfaaf",
+ "profile_id": "material",
+ "run_id": "mat2-m09-assembly-visual-20260929-fa86c982",
+ "schema": "chimera.visual_capture_manifest.v1",
+ "sheet_layout": {
+  "frame_files": {
+   "0": "b7038e966dffa02c537a561feda2ae4bc485997db71371bdbeb76820bb575119",
+   "10": "90e637b8bc76f4cf98c18c92a18e0bbfb1f6584d85b288d4350769cd8e16eb4f",
+   "21": "a7ee870d761872bc7427246e14f88babd084179150dc743c37ef1ba165401731",
+   "30": "c692be442c1f2485bef87fce2739062dea415ce9d07f39fdb4c0d4ab5e8cf3db",
+   "44": "8419b9b31d2e5a6ee6d0616872fdf274e72de5687b419d7e40f22a12ab6f41a9",
+   "45": "5589963cca261c841a280fac1619708c5d355edeba357dc595d84436f809a90a",
+   "60": "0877a8b19ae1e6ca08de962acaca8dce4177b289d4a8baff04585ab35b567009",
+   "66": "5a52b5e9dc978299f6466bfc4089f65825a18ebb5f47c0a92a1c87e67e79b75f",
+   "70": "35edd1121d0feb8b4410412d7d6e9f953dc433bb724552a25e03a166e0b3786c",
+   "74": "9a341935b44c4653118ac449b5a0883bee03187400a69921a80fc1bd8356699e",
+   "85": "4868dfe4779bcdcc9c3777508329de37ad1dbd2a81054fc0a8acfb1d24cad356",
+   "89": "c3be711adb8405f79c43f130462fd5691ec9e2fe76f0ba8216d40948d3281379"
+  },
+  "honest_titles": "rendered inside every viewport: view name, mode and tick; diagnostic viewports carry the five declared diagnostic layers; footer carries the R/bound ratio and the bind/release ticks",
+  "pixel_size": [
+   2560,
+   840
+  ],
+  "rows": [
+   "top    diagnostic viewports [whole | side | front | close-up] with all five declared diagnostic layers",
+   "middle clean viewports (identical cameras, no labels, no overlays, depth-tested)",
+   "bottom ligament/capsule/gap trace strip + footer"
+  ],
+  "tick_to_seconds_map": "1 tick = 1/300 s simulated; frames are the declared capture ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second per frame (Amendment A1 schedule); frame t = capture tick t"
+ },
+ "subject_sha256": "b949374dd9a9b7918daf179d0bf415ab88e1032d52721c8fb794abe31b6ccf24",
+ "task_id": "M09",
+ "tick_interval": [
+  0,
+  89
+ ],
+ "views": [
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     12
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every capture tick; the SUBJECTS move (bones fall, assemble, held, released), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m09_assembly_whole_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "quaternion_wxyz_camera_to_frame",
+     "values": [
+      0.8491721723381909,
+      0.5259102856040069,
+      -0.025387969271234205,
+      -0.040993221862069114
+     ]
+    },
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 10
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 21
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 30
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 44
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 45
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 60
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 66
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 70
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 74
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 85
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 89
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared capture ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second per frame (Amendment A1 schedule)",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "vertical_fov_or_orthographic_span": 40.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 1); fixed camera; the bones fall separately, are assembled by the authored ligament/capsule straps, pressed through the joint contact, held by the ligament under pull, then released and independent",
+   "mode": "diagnostic",
+   "pair_id": "pair-whole",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M09/experiment_trace.json; every frame was rendered from a deterministic re-simulation whose per-tick state_hash equals the committed trace row bitwise (frame_sources.json); the connective material is the authored ligament/capsule straps and the M06 joint contact marker",
+    "sha256": "273dbc4f8c73a6f562c0260050f7d23012288af29426f4d7b8a191b35efeb744"
+   },
+   "view_id": "whole experiment at fixed distance",
+   "visibility": {
+    "label_ids": [
+     "bone_a (rod, 0.030 kg)",
+     "bone_b (tapered wedge, 0.018 kg)",
+     "ground (pinned support)",
+     "port:head bone_a",
+     "port:head bone_b"
+    ],
+    "layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "selected_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "bone_a (rod, 0.030 kg)",
+      "subject_id": "bone_a"
+     },
+     {
+      "label_id": "bone_b (tapered wedge, 0.018 kg)",
+      "subject_id": "bone_b"
+     },
+     {
+      "label_id": "ground (pinned support)",
+      "subject_id": "ground"
+     },
+     {
+      "label_id": "port:head bone_a",
+      "subject_id": "bone_a"
+     },
+     {
+      "label_id": "port:head bone_b",
+      "subject_id": "bone_b"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     12
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every capture tick; the SUBJECTS move (bones fall, assemble, held, released), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m09_assembly_whole_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "quaternion_wxyz_camera_to_frame",
+     "values": [
+      0.8491721723381909,
+      0.5259102856040069,
+      -0.025387969271234205,
+      -0.040993221862069114
+     ]
+    },
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 10
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 21
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 30
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 44
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 45
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 60
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 66
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 70
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 74
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 85
+     },
+     {
+      "distance_to_target": 0.6957729514719583,
+      "orientation": [
+       0.8491721723381909,
+       0.5259102856040069,
+       -0.025387969271234205,
+       -0.040993221862069114
+      ],
+      "position": [
+       -0.09,
+       -0.62,
+       0.34
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 89
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared capture ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second per frame (Amendment A1 schedule)",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "vertical_fov_or_orthographic_span": 40.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair; no labels, layers or diagnostic styling by design",
+   "mode": "clean",
+   "pair_id": "pair-whole",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M09/experiment_trace.json; every frame was rendered from a deterministic re-simulation whose per-tick state_hash equals the committed trace row bitwise (frame_sources.json); the connective material is the authored ligament/capsule straps and the M06 joint contact marker",
+    "sha256": "273dbc4f8c73a6f562c0260050f7d23012288af29426f4d7b8a191b35efeb744"
+   },
+   "view_id": "whole experiment at fixed distance",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     12
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every capture tick; the SUBJECTS move (bones fall, assemble, held, released), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m09_assembly_side_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "quaternion_wxyz_camera_to_frame",
+     "values": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ]
+    },
+    "orthographic_span": 0.55,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 10
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 21
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 30
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 44
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 45
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 60
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 66
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 70
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 74
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 85
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 89
+     }
+    ],
+    "secondary_cameras": [
+     {
+      "aspect_ratio": 1.7777777777777777,
+      "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every capture tick; the SUBJECTS move (bones fall, assemble, held, released), not the camera",
+      "coordinate_unit": "m",
+      "forward_axis": "-Z",
+      "frame_id": "mat2_m09_assembly_front_canvas_m",
+      "handedness": "right",
+      "near_far_planes": [
+       0.01,
+       100.0
+      ],
+      "orientation_convention": "quaternion_wxyz_camera_to_frame",
+      "orientation_convention_and_values": {
+       "convention": "quaternion_wxyz_camera_to_frame",
+       "values": [
+        -0.0,
+        0.0,
+        1.0,
+        0.0
+       ]
+      },
+      "orthographic_span": 0.55,
+      "projection": "orthographic",
+      "sample_mode": "fixed_bookmark",
+      "samples": [
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 0
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 10
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 21
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 30
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 44
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 45
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 60
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 66
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 70
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 74
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 85
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 89
+       }
+      ],
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared capture ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second per frame (Amendment A1 schedule)",
+      "up_axis": "+Y",
+      "vertical_fov_or_orthographic_span": 0.55,
+      "viewport_resolution": [
+       640,
+       360
+      ]
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared capture ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second per frame (Amendment A1 schedule)",
+    "up_axis": "+Y",
+    "vertical_fov_or_orthographic_span": 0.55,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "two side-by-side viewports (sheet columns 2-3): side (primary) and front (secondary, fully declared with the same 17 camera fields); the pinned ground support is rendered and labeled (nothing hidden)",
+   "mode": "diagnostic",
+   "pair_id": "pair-planes",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M09/experiment_trace.json; every frame was rendered from a deterministic re-simulation whose per-tick state_hash equals the committed trace row bitwise (frame_sources.json); the connective material is the authored ligament/capsule straps and the M06 joint contact marker",
+    "sha256": "273dbc4f8c73a6f562c0260050f7d23012288af29426f4d7b8a191b35efeb744"
+   },
+   "view_id": "orthogonal side and front",
+   "visibility": {
+    "label_ids": [
+     "bone_a (rod, 0.030 kg)",
+     "bone_b (tapered wedge, 0.018 kg)",
+     "ground (pinned support)",
+     "port:head bone_a",
+     "port:head bone_b"
+    ],
+    "layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "selected_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "bone_a (rod, 0.030 kg)",
+      "subject_id": "bone_a"
+     },
+     {
+      "label_id": "bone_b (tapered wedge, 0.018 kg)",
+      "subject_id": "bone_b"
+     },
+     {
+      "label_id": "ground (pinned support)",
+      "subject_id": "ground"
+     },
+     {
+      "label_id": "port:head bone_a",
+      "subject_id": "bone_a"
+     },
+     {
+      "label_id": "port:head bone_b",
+      "subject_id": "bone_b"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     12
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every capture tick; the SUBJECTS move (bones fall, assemble, held, released), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m09_assembly_side_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "quaternion_wxyz_camera_to_frame",
+     "values": [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ]
+    },
+    "orthographic_span": 0.55,
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 10
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 21
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 30
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 44
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 45
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 60
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 66
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 70
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 74
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 85
+     },
+     {
+      "distance_to_target": 2.0,
+      "orientation": [
+       0.0,
+       0.0,
+       1.0,
+       0.0
+      ],
+      "position": [
+       -0.03,
+       2.0,
+       0.03
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 89
+     }
+    ],
+    "secondary_cameras": [
+     {
+      "aspect_ratio": 1.7777777777777777,
+      "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every capture tick; the SUBJECTS move (bones fall, assemble, held, released), not the camera",
+      "coordinate_unit": "m",
+      "forward_axis": "-Z",
+      "frame_id": "mat2_m09_assembly_front_canvas_m",
+      "handedness": "right",
+      "near_far_planes": [
+       0.01,
+       100.0
+      ],
+      "orientation_convention": "quaternion_wxyz_camera_to_frame",
+      "orientation_convention_and_values": {
+       "convention": "quaternion_wxyz_camera_to_frame",
+       "values": [
+        -0.0,
+        0.0,
+        1.0,
+        0.0
+       ]
+      },
+      "orthographic_span": 0.55,
+      "projection": "orthographic",
+      "sample_mode": "fixed_bookmark",
+      "samples": [
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 0
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 10
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 21
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 30
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 44
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 45
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 60
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 66
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 70
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 74
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 85
+       },
+       {
+        "distance_to_target": 1.9736514383244068,
+        "orientation": [
+         -0.0,
+         0.0,
+         1.0,
+         0.0
+        ],
+        "position": [
+         -0.03,
+         0.12,
+         2.0
+        ],
+        "target": [
+         -0.03,
+         0.0,
+         0.03
+        ],
+        "tick": 89
+       }
+      ],
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared capture ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second per frame (Amendment A1 schedule)",
+      "up_axis": "+Y",
+      "vertical_fov_or_orthographic_span": 0.55,
+      "viewport_resolution": [
+       640,
+       360
+      ]
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared capture ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second per frame (Amendment A1 schedule)",
+    "up_axis": "+Y",
+    "vertical_fov_or_orthographic_span": 0.55,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "clean row: identical cameras and state to its diagnostic pair",
+   "mode": "clean",
+   "pair_id": "pair-planes",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M09/experiment_trace.json; every frame was rendered from a deterministic re-simulation whose per-tick state_hash equals the committed trace row bitwise (frame_sources.json); the connective material is the authored ligament/capsule straps and the M06 joint contact marker",
+    "sha256": "273dbc4f8c73a6f562c0260050f7d23012288af29426f4d7b8a191b35efeb744"
+   },
+   "view_id": "orthogonal side and front",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     12
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every capture tick; the SUBJECTS move (bones fall, assemble, held, released), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m09_assembly_closeup_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "quaternion_wxyz_camera_to_frame",
+     "values": [
+      0.8521947521567023,
+      0.46361684070448966,
+      0.11590421017612242,
+      0.21304868803917562
+     ]
+    },
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 10
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 21
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 30
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 44
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 45
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 60
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 66
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 70
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 74
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 85
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 89
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared capture ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second per frame (Amendment A1 schedule)",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 30.0,
+    "vertical_fov_or_orthographic_span": 30.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "single viewport (sheet column 4); oblique close-up of the loaded joint interface: contact marker, ligament (purple) and capsule (red) straps, area-scaled element force arrows",
+   "mode": "diagnostic",
+   "pair_id": "pair-interface",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M09/experiment_trace.json; every frame was rendered from a deterministic re-simulation whose per-tick state_hash equals the committed trace row bitwise (frame_sources.json); the connective material is the authored ligament/capsule straps and the M06 joint contact marker",
+    "sha256": "273dbc4f8c73a6f562c0260050f7d23012288af29426f4d7b8a191b35efeb744"
+   },
+   "view_id": "oblique close-up of the loaded interface",
+   "visibility": {
+    "label_ids": [
+     "bone_a (rod, 0.030 kg)",
+     "bone_b (tapered wedge, 0.018 kg)",
+     "port:head bone_a",
+     "port:head bone_b"
+    ],
+    "layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "bone_a",
+     "bone_b"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "bone_a",
+     "bone_b"
+    ],
+    "selected_ids": [
+     "bone_a",
+     "bone_b"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "bone_a (rod, 0.030 kg)",
+      "subject_id": "bone_a"
+     },
+     {
+      "label_id": "bone_b (tapered wedge, 0.018 kg)",
+      "subject_id": "bone_b"
+     },
+     {
+      "label_id": "port:head bone_a",
+      "subject_id": "bone_a"
+     },
+     {
+      "label_id": "port:head bone_b",
+      "subject_id": "bone_b"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     12
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 1.7777777777777777,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every capture tick; the SUBJECTS move (bones fall, assemble, held, released), not the camera",
+    "coordinate_unit": "m",
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m09_assembly_closeup_canvas_m",
+    "handedness": "right",
+    "near_far_planes": [
+     0.01,
+     100.0
+    ],
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "quaternion_wxyz_camera_to_frame",
+     "values": [
+      0.8521947521567023,
+      0.46361684070448966,
+      0.11590421017612242,
+      0.21304868803917562
+     ]
+    },
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 10
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 21
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 30
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 44
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 45
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 60
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 66
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 70
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 74
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 85
+     },
+     {
+      "distance_to_target": 0.4049691346263317,
+      "orientation": [
+       0.8521947521567023,
+       0.46361684070448966,
+       0.11590421017612242,
+       0.21304868803917562
+      ],
+      "position": [
+       0.13,
+       -0.3,
+       0.25
+      ],
+      "target": [
+       -0.03,
+       0.0,
+       0.03
+      ],
+      "tick": 89
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared capture ticks 0,10,21,30,44,45,60,66,70,74,85,89 at 1 video second per frame (Amendment A1 schedule)",
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 30.0,
+    "vertical_fov_or_orthographic_span": 30.0,
+    "viewport_resolution": [
+     640,
+     360
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair",
+   "mode": "clean",
+   "pair_id": "pair-interface",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-M09/experiment_trace.json; every frame was rendered from a deterministic re-simulation whose per-tick state_hash equals the committed trace row bitwise (frame_sources.json); the connective material is the authored ligament/capsule straps and the M06 joint contact marker",
+    "sha256": "273dbc4f8c73a6f562c0260050f7d23012288af29426f4d7b8a191b35efeb744"
+   },
+   "view_id": "oblique close-up of the loaded interface",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "bone_a",
+     "bone_b",
+     "ground"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  }
+ ]
+}
