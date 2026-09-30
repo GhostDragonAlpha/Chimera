@@ -549,3 +549,16 @@ No contact physics, no valve model, no biological claims. The box-beam draft
 and the meridian/hoop edge-stiffening variants remain in the module source
 as probed, abandoned layouts with their probe values recorded here; they
 carry no frozen claims.
+
+A1.7 Pre-receipt floor re-issue (still before any receipt exists; triggering
+probe recorded): the first full-bank run fired the per-tick ledger gate at
+the pre-settle transient with R_tick = 1.99e-06 J against the A1.4 floor of
+1.0e-6 J (the projection-exchange noise during the load's settle transient
+exceeds the A1.4 estimate). Re-issued by derivation: the per-tick projection
+exchange is bounded by the transient kinetic energy scale (~3.0e-4 J
+observed) times the relative per-substep projection correction (~1%) ~
+3.0e-6 J; frozen floor 1.0e-5 J (3x margin above the derivation, 5x above
+the probe). Applies to the per-tick R bound, the tie-work identity bound
+and the cumulative residual floor (1.0e-5 J, unchanged). The relative 5%
+turnover term is unchanged; the cumulative gate still bounds systematic
+violations (the FB3 boost injects ~1e-4 J/tick, 10x above the floor).
