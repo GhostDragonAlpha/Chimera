@@ -1,0 +1,34 @@
+{
+ "attempt_id": "22954da7b9704483960b563273e77b4a",
+ "capture_kind": "video",
+ "codec": {
+  "bitexact": true,
+  "codec": "ffv1",
+  "container": "matroska",
+  "ffmpeg_version": "ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+  "gop": 1,
+  "level": 3,
+  "standard": "E:/ChimeraWork/monkey-coordination/codec-benchmark/CODEC_STANDARD.md"
+ },
+ "criteria_sha256": "1e98a4f4465d4a50f21ce5c1d42b5ab51e9a7f96482f8f711d2c66ca4c53b5b7",
+ "frame_count": 24,
+ "limits": "Structural camera-metadata validation only; independent image/physics review remains mandatory.",
+ "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "profile_id": "material",
+ "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-M12].spec.ontology_qualification.task.verification_profile (read read-only)",
+ "render_source": "solver snapshot stream of BOTH resolutions loaded runs (6 declared ticks, diagnostic/clean sheet pairs); software rasterization of solver state, declared in the applicability boundary",
+ "resolution_bindings": {
+  "coarse": "066d3c2535793b52bf1b0d3e5d479295b98337c4b9ac4644670f41dd09420fca",
+  "reference": "10aff9217dee50722713c839bc9eb42fcfc9c080b8b087c4ad2454fef3954ec0"
+ },
+ "schema": "chimera.capture_validation_receipt.v1",
+ "structurally_valid": true,
+ "subject_path": "experiment_receipt.json",
+ "trace_path": "tools/monkey_campaign/contributions/MAT2-M12/experiment_trace.json",
+ "trace_sha256": "c2bf7bd16371469249b987d138fe64bd0e6678ea47476372465fe40ac3d62c1b",
+ "validator": "tools/monkey_campaign/visual_capture.py validate_manifest",
+ "video_path": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-M12\\22954da7b9704483960b563273e77b4a\\checkout\\tools\\monkey_campaign\\contributions\\MAT2-M12\\capture\\capture_mat2_m12_lod.mkv",
+ "video_sha256": "a99d661df675d5d79262a3a9b348bedd7475d510848d6bdc93782f85abe335cf",
+ "view_count": 6,
+ "visual_acceptance": false
+}
