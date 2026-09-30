@@ -604,6 +604,8 @@ class WorldRun:
         w_press_hold_total = 0.0
         settle_start = self.ticks - SETTLE_WINDOW
         x_before_tick = self.x.copy()
+        if 0 in self.snapshot_ticks:
+            self._snapshot(0, 0.0)
         for tick in range(self.ticks):
             dp = float(self.schedule_fn(tick))
             self.max_dp_seen = max(self.max_dp_seen, abs(dp))

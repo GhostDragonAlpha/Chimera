@@ -288,7 +288,7 @@
   "lesson": "a gate that cannot fail is not a measurement (M07 independent-review lesson)",
   "refusal_code": "vacuous_comparison_refused"
  },
- "trace_sha256": "05530438ad9056029891a8585b01e6993fa3fd8a7d1892d6adf28e75b60eda5b",
+ "trace_sha256": "3cd763032c9b0b7e2e9b23b1d35fc81db65868fcf67979f7b2dbbfd9c3bac60f",
  "windows": {
   "audit_bite_m": 0.001,
   "audit_window_m": 1e-09,
