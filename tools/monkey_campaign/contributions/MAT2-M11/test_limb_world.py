@@ -247,7 +247,7 @@ class P4CaptureGate(unittest.TestCase):
     W, H = 960, 540
 
     def _decode_frames(self):
-        video = CAPTURE / 'capture' / 'capture_mat2_m11_limb.mkv'
+        video = CAPTURE / 'capture_mat2_m11_limb.mkv'
         if not video.exists():
             self.skipTest('capture video not present')
         proc = subprocess.run(
@@ -421,4 +421,10 @@ def _default(o):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    _result = unittest.main(exit=False).result
+    print('named checks: executed=%d skipped=%d failures=%d errors=%d'
+          % (_result.testsRun - len(_result.skipped),
+             len(_result.skipped), len(_result.failures),
+             len(_result.errors)))
+    if _result.skipped or _result.failures or _result.errors:
+        raise SystemExit(1)
