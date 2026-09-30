@@ -581,3 +581,52 @@ discipline requires):
    (X1 main run reproduced the committed trace/receipt bytes; X2 rerun
    byte-identical, sha256 273dbc4f8c73a6f5...).
 
+
+## AMENDMENT A3 (X3 measured; resident bank 2026-09-30Z, attempt
+## fa6dbcc82b2f4f4c9036bc6c8227b241 — recorded AFTER the bank, BEFORE
+## the report claim)
+
+1. X3 RESIDENT GPU BANK (measured, green): the resident CUDA world
+   resident_bones.py — the mechanical transcription of the bitwise-
+   agreed kernel_mirror.py under the A2-declared layout — and the CPU
+   oracle stepped the SAME frozen 90-tick fixture in lockstep on the
+   mailbox GPU (candidate 76370e0f; jobs m09-gmain-003 /
+   m09-grerun-001 / m09-gcompare-001). Every measured value below is
+   from gpu_receipt.json (schema chimera.m09_gpu_bank.v1) and
+   gpu_determinism_receipt.json at that exact revision:
+   worst position difference 6.477457459297398e-15 m (frozen window
+   1e-12 m, vertex snapshot every tick, 16 rows); worst comparable
+   scalar 4.583847270645864e-12 relative (frozen window 1e-9,
+   floor 1.0; 1240 identically-zero pairs recorded as exact-zero
+   evidence under the self-tested vacuous guard); telemetry 40 B/tick
+   up and 1920 B/tick down (= 960 B per component, inside the 1024
+   B/component budget); the declared-order digest chain green every
+   tick; zero exceeded ticks; fresh reruns byte-identical (trace
+   sha256 0c1b464c... , receipts identical; X3_pass true in both runs
+   and in the gcompare verdict). X3 is MEASURED and green; no bound
+   changed.
+2. HARDWARE FINDINGS (both fixed before the green bank, zero blind
+   retries): (a) m09-gmain-001 — numba CUDA typing rejects
+   cuda.local.array shapes that are not integer literals (a BinOp of
+   freevar constants types as plain int64); fixed at efa3cf01 with
+   all 41 shapes literal and the new p_bone_local_array_literals AST
+   pin. (b) m09-gmain-002 — the on-device digest fold drifted the
+   host recompute by 1.1e-16 on one component (the M08 F3 scar:
+   fused device arithmetic vs the host fold); fixed at 76370e0f by
+   adopting the M08-proven tolerant form (tick slot exact, digest
+   1e-9 relative), regression-tested on the committed debug dump — a
+   stale or forged block still moves the digest O(1), nine orders
+   above the tolerance. The declared digest-folds-as-zero convention
+   is unchanged.
+3. T1 GATE FORM (the round-1 review F1 note, one line): the frozen
+   T1 1e-18 closed-form volume identity was unsatisfiable as written
+   (the declared closed-form constant is inexact for the declared
+   vertex layout); the implemented T1 gate is volume_rel_err <= 1e-12
+   (measured 0.0) plus closed_form_rel_dev <= 1e-2 (measured 6.237e-3
+   for bone_b, disclosed in experiment_receipt.json).
+4. CPU-FIRST discipline held across the whole arm: the kernel code
+   itself ran the full 90-tick fixture under the numba CUDA simulator
+   (X3_pass true, worst position 4.3680337125096e-15 m, worst scalar
+   8.168566201538646e-13) before the first mailbox submission, and
+   the CPU arms (X1/X2/FB1-FB6/X4/mirror) were re-verified green and
+   byte-identical at every staged revision.
