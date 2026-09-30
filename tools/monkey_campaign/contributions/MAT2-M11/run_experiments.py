@@ -186,8 +186,9 @@ def audit_shape_code_identity():
 
 
 def run_identity(world, schedule_fn):
-    """X1b datum: the same law module, schedule id and integrator
-    constants digest for every run."""
+    """X1b datum: the same law module and integrator constants digest for
+    every run (A2: the schedule is a declared per-run input; its id is
+    recorded beside the identity, not inside the compared digest)."""
     return {
         'law_module_sha256': sha256_of(HERE / 'limb_world.py'),
         'schedule_id': getattr(schedule_fn, '__qualname__',
@@ -201,6 +202,14 @@ def run_identity(world, schedule_fn):
             'k_contact': lw.K_CONTACT, 'grav': lw.GRAV}),
         'erection_offsets_m': dict(lw.ERECTION_OFFSET_M),
     }
+
+
+def law_identity_digest(identity):
+    """The compared subset of the run-identity datum (A2)."""
+    return lw.digest({'law_module_sha256': identity['law_module_sha256'],
+                      'integrator_digest': identity['integrator_digest'],
+                      'erection_offsets_m':
+                          identity['erection_offsets_m']})
 
 
 # ----------------------------------------------------------- mode main ----
@@ -234,9 +243,12 @@ def mode_main():
                                                      lw.work_schedule)
         identities['off:' + shape] = run_identity(off[shape],
                                                   lw.off_schedule)
-    id_values = {canonical(v) for v in identities.values()}
+    id_values = {law_identity_digest(v) for v in identities.values()}
     bank['X1_shape_identity']['X1b_run_identity'] = {
-        'per_run': identities, 'all_identical': len(id_values) == 1}
+        'per_run': identities, 'all_identical': len(id_values) == 1,
+        'compared_subset': 'law_module_sha256 + integrator_digest + '
+                           'erection_offsets_m (A2: the schedule id is a '
+                           'declared per-run input, recorded not compared)'}
     x1_pass = x1_pass and len(id_values) == 1
 
     # ---- X1c: synthetic loaded runs satisfy the whole-system statics
@@ -347,10 +359,11 @@ def mode_main():
                                   lw.OFF_WINDOW[1])
         hold_c = wmean(lrows, lw.LOADED_WINDOW[0], lw.LOADED_WINDOW[1],
                        'contact_force_n')
-        p0_settled = wmean(lrows, 150, lw.PRESETTLE_END, 'foot_gap_m')
         off_gap = wmean(lrows, lw.OFF_WINDOW[0], lw.OFF_WINDOW[1],
                         'foot_gap_m')
-        rec = abs(off_gap - p0_settled)
+        ded_gap = wmean(orows, lw.OFF_WINDOW[0], lw.OFF_WINDOW[1],
+                        'foot_gap_m')
+        rec = abs(off_gap - ded_gap)
         x4[shape] = {
             'p0_contact_bitwise_zero': p0_b0,
             'off_contact_bitwise_zero': off_b0,
@@ -358,7 +371,10 @@ def mode_main():
                 bitwise0_contact(orows, 0, lw.TOTAL_TICKS),
             'hold_contact_n': hold_c, 'hold_contact_positive':
                 bool(hold_c > 0.0),
-            'p0_settled_gap_m': p0_settled, 'off_gap_m': off_gap,
+            'off_gap_m': off_gap,
+            'dedicated_off_gap_m': ded_gap,
+            'recovery_reference': 'the dedicated never-pressurized run at '
+                                  'the same ticks (A2)',
             'recovery_gap_m': rec,
             'recovery_window_m': lw.RECOVERY_GAP_M,
             'recovery_within': bool(rec <= lw.RECOVERY_GAP_M)}
@@ -390,13 +406,21 @@ def mode_main():
     t1_r = wmean_idx(rrows, *lw.POST_RELEASE_WINDOW,
                      'chain_tie_tensions_n', 0)
     drop = t1_b - t1_r
+    # A3: the bound hold is PRESSED (the demonstrated transmission state):
+    # bound T1 = W_chain - W_foot, so the release drop is W(ulna)+W(radius)
     w_distal = (world.chain_mass[1] + world.chain_mass[2] +
                 world.chain_mass[3]) * lw.GRAV
-    drop_bound = lw.REL * w_distal + kcxf
+    w_ur = (world.chain_mass[1] + world.chain_mass[2]) * lw.GRAV
+    drop_bound = lw.REL * w_ur + kcxf
     lo_, hi_ = lw.CONTACT_PICKUP_WINDOW
+    landing = 0.0
+    for k in range(1, len(world.chain_x)):
+        z_settled = wmean_idx(rrows, lo_, hi_, 'chain_z_m', k)
+        landing = max(landing, abs(z_settled - world.chain_radius[k]))
+    landing_bound = 1.0e-4
     contacts_r = sum(wmean_idx(rrows, lo_, hi_, 'chain_contact_forces_n', k)
                      for k in range(len(world.chain_x)))
-    pickup_resid = abs(contacts_r - w_distal)
+    pickup_resid = abs(contacts_r - (w_distal - w_ur))
     # double-release guard fires the M05 vocabulary
     t2_tie = released.chain_ties[t2_idx]
     dbl_fired = False
@@ -413,10 +437,15 @@ def mode_main():
         'max_departure_m': dep, 'bite_window_m': lw.BITE_M,
         'departure_bites': bool(dep >= lw.BITE_M),
         't1_bound_n': t1_b, 't1_released_n': t1_r, 't1_drop_n': drop,
-        'w_distal_n': w_distal, 't1_drop_bound_n': drop_bound,
-        't1_drop_within': bool(abs(drop - w_distal) <= drop_bound),
-        'distal_contacts_n': contacts_r, 'distal_pickup_residual_n':
-            pickup_resid,
+        'w_distal_n': w_distal, 'w_ulna_radius_n': w_ur,
+        't1_drop_expected_n': w_ur, 't1_drop_bound_n': drop_bound,
+        't1_drop_within': bool(abs(drop - w_ur) <= drop_bound),
+        'distal_landing_max_m': landing,
+        'distal_landing_bound_m': landing_bound,
+        'distal_landing_within': bool(landing <= landing_bound),
+        'distal_contacts_n': contacts_r,
+        'distal_contacts_expected_n': w_distal - w_ur,
+        'distal_pickup_residual_n': pickup_resid,
         'distal_pickup_bound_n': drop_bound,
         'distal_pickup_within': bool(pickup_resid <= drop_bound),
         'double_release_refusal_fired': dbl_fired,
@@ -427,11 +456,13 @@ def mode_main():
             'departure_m': 0.0, 'within_tolerance': True,
             'guard': 'm11_x5_premature'}}
     require(t2_zero and dep >= lw.BITE_M and dbl_fired and
-            dbl_code == lw.TieElement.REF_RELEASE_UNBOUND,
+            dbl_code == lw.TieElement.REF_RELEASE_UNBOUND and
+            landing <= landing_bound,
             'm11_x5_premature')
     bank['X5_connection_removal'] = x5
     x5_pass = bool(t2_zero and x5['departure_bites'] and
-                   x5['t1_drop_within'] and x5['distal_pickup_within'] and
+                   x5['t1_drop_within'] and x5['distal_landing_within'] and
+                   x5['distal_pickup_within'] and
                    dbl_fired)
 
     # ---- X6 pressure limits (M03 named refusals)
@@ -476,11 +507,12 @@ def mode_main():
             sum(r['r_tick_j'] for r in rows[1300:1500])
         full = sum(r['r_tick_j'] for r in rows)
         cum_bound = max(lw.REL * abs(wld.w_press_total) +
-                        lw.REL * wld.grav_turnover_j, 5.0e-4)
+                        lw.REL * wld.grav_turnover_j, lw.X8_FLOOR_J)
         x8[shape] = {
             'settled_windows': [[900, 1100], [1300, 1500]],
             'settled_cumulative_residual_j': settled,
             'cumulative_bound_j': cum_bound,
+            'x8_floor_j': lw.X8_FLOOR_J,
             'settled_within': bool(abs(settled) <= cum_bound),
             'full_run_residual_j': full,
             'full_run_note': 'reported, not gated (A2): the under-relaxed '

@@ -522,3 +522,33 @@ scaffold's measured behavior.
 - The membrane's per-tick signed volume refuses loudly mid-run if the
   state inverts; treat any such refusal as a physics defect, not a guard
   to bypass (no occurrence in the probes).
+
+## Amendment A3 (own commit; recorded BEFORE the bank receipts)
+
+Trigger: the first full bank pass (probe-class, pre-acceptance) measured
+the X5 release identities against the A1 text and showed the A1 form
+assumed the bound hold has the foot FREE. The demonstrated transmission
+state has the foot PRESSED at hold (that is the X4 success criterion), so
+the bound chain top already excludes the foot weight:
+
+- P-A3.1 (probe, verbatim): bound hold T1 = 0.4105 N = W_chain - W_foot
+  (0.5086 - 0.0981); after releasing T2 at tick 450 the released T1 =
+  0.2207 N = W_humerus; the measured drop 0.18984 N = W(ulna)+W(radius)
+  = 0.18985 N static (residual 1.2e-5 N).
+- P-A3.2 (probe): the distal chain lands on its OWN bone contacts
+  (released settled z: ulna/radius/foot 0.00501/0.00500/0.00500 m vs their
+  contact rest heights R_BONE/R_FOOT = 5.0e-3; departures <= 1.0e-5 m);
+  distal window-mean contacts = 0.18728 N (radius W_r + foot W_f; the
+  ulna's microstatic contact aliases to ~0 at tick-end sampling).
+
+### X5 re-derivation (declared)
+
+- t1_drop := T1(bound hold) - T1(released) = W(ulna)+W(radius); window
+  REL*W(ulna)+W(radius) + k_c*x_floor.
+- NEW distal landing identity: each distal element's settled z within
+  1.0e-4 m of its own contact rest height.
+- The departure bite (1.0e-3 m within 100 ticks), the T2 bitwise-zero
+  clause and the double-release refusal clause are unchanged (measured
+  departure 2.01e-2 m; T2 = 0.0 bitwise; refusal fires).
+- The whole released-side accounting is disclosed in the receipt: distal
+  window contacts + distal tie tensions vs W(ulna)+W(radius)+W(foot).

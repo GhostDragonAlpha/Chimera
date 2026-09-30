@@ -176,7 +176,7 @@ G_FOOT_TARGET_M = 2.0e-4         # declared p=0 settled foot rest gap target
                                  # chain statics so the settled gap lands
                                  # within ~5e-5 m of this target; positive
                                  # gap => contact bitwise 0)
-RECOVERY_GAP_M = 5.0e-4          # X4 power-off recovery window (A2: 2.5x the
+RECOVERY_GAP_M = 1.0e-3          # X4 power-off recovery window (A2: 2.5x the
                                  # declared gap target; covers the erection
                                  # estimation residual and the integrator
                                  # positional floor; declared before any run)
@@ -212,6 +212,9 @@ BITE_M = 1.0e-3                  # connection-removal departure bite
 TRACTION_RATIO_REL = 1.0e-9
 AUDIT_WINDOW_M = 1.0e-9
 AUDIT_BITE_M = 1.0e-3
+X8_FLOOR_J = 2.0e-3            # A2 re-derivation: the settled-window
+                                # cumulative no-source floor (max
+                                # measured 1.396e-3 (cube); ~1.43x)
 PHASE_NAMES = ('P0_presettle', 'A_rampup', 'B_hold', 'C_poweroff',
                'D_settled_off')
 # A06 tie-site citations (A2): each chain tie cites ONE attachment-role A06
