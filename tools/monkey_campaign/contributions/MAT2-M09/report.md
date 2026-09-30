@@ -21,8 +21,9 @@ Candidate revision: see git log (prereg 6319a4fd -> Amendment A1 954de43f -> imp
 
 ## Capture and regression
 
-- capture: single-artifact video binding fa86c9823826fd82... (FFV1 +bitexact, ffmpeg 8.1.1-full_build-www.gyan.dev); validate_manifest CAMERA_METADATA_STRUCTURE_ONLY, structurally_valid True, 6 views; frames 12; every frame bound bitwise to the trace.
+- capture: single-artifact video binding 617f2c600f340cb7... (FFV1 +bitexact, ffmpeg 8.1.1-full_build-www.gyan.dev); validate_manifest CAMERA_METADATA_STRUCTURE_ONLY, structurally_valid True, 6 views; frames 12; every frame bound bitwise to the trace.
 - X4 regression: M05 suite exit 0, M06 suite exit 0 (both UNMODIFIED, this revision).
+- render cosmetics follow-up (visual-gate findings F1-F5, Amendment A4 of the preregistration): shade() input-scale fix (lambert-shaded fills), per-viewport rasterization (no cross-cell spill), diagnostic layer 1 rendered as navy port:head/triangle ID labels, ligament visible as a declared purple underlay beneath the red capsule core; registry profile snapshot + provenance written to evidence (registry_profile_snapshot.json); the merged original capture remains archived and the re-rendered capture re-pins the same trace state binding.
 
 ## Applicability and disclosure
 

@@ -630,3 +630,65 @@ discipline requires):
    8.168566201538646e-13) before the first mailbox submission, and
    the CPU arms (X1/X2/FB1-FB6/X4/mirror) were re-verified green and
    byte-identical at every staged revision.
+
+## AMENDMENT A4 (render cosmetics; post-merge visual-gate follow-up,
+## 2026-09-29Z, branch m09-render-cosmetics — recorded BEFORE the
+## re-render, observations quoted from the independent gate)
+
+Triggering record: the deferred visual_acceptance item was closed by the
+independent visual gate (reviewer sgt-m09-visual; REVIEW_EVIDENCE.md +
+VERDICT.json under kanban-reviews/MAT2-M09/visual-gate/; verdict PASS
+with findings F1-F5, measured on the MERGED capture fa86c9823826fd82...
+decoded from the mkv itself). No finding touches physics, state binding,
+integrity or honesty; all five are render/prose workmanship on the
+renderer and its declared prose. The merged original capture stays
+archived untouched as the merged original; every correction below is
+render-side or prose-side and is re-measured on the new capture.
+
+1. F1 shade() unit scale (renderer fix): the previous form multiplied
+   0..255 base channels by an extra 255 (int(min(255, c*lam*255))),
+   saturating every polygon fill to pure white (gate observation: the
+   render was effectively wireframe). Re-issued: shade() treats the
+   base scale as 0..255 with the named assert shade_base_not_0_255_scale;
+   fills are lambert-shaded.
+2. F2 per-viewport clipping (renderer fix): gate observation — the
+   close-up camera's projected ground polygon spilled across cells and
+   white-overpainted neighbouring viewports' overlays (close-up title
+   7-44 dark px vs 299-367 px elsewhere; close-up band 126 px vs
+   633-711 px). Re-issued: every diagnostic/clean viewport is
+   rasterized into its OWN 640x360 image and pasted into the sheet, so
+   no projected geometry can leave its cell. Frozen cameras unchanged.
+3. F3 diagnostic layer 1 RENDERED (was falsified, now rendered): gate
+   measurement — ZERO pixels of layer 1 "stable membrane/triangle/port
+   IDs" in every diagnostic cell of all 12 frames of the merged
+   original (exact (15,15,90) = 0; AA-tolerant navy scan = 0), so the
+   frozen line "Diagnostic layers (all five, in every diagnostic row)"
+   and the manifest honest_titles were falsified at pixel level for
+   layer 1. Re-issued by RENDERING the layer (preferred over prose
+   amendment): navy (15,15,90) "port:head bone_a" / "port:head bone_b"
+   ID labels with anchor markers plus tri0/tri1 face-triangle IDs,
+   drawn topmost in every diagnostic viewport; clean rows carry none.
+   The manifest honest_titles now states the layer-1 rendering
+   explicitly.
+4. F5 ligament visibility (renderer fix + declared convention): gate
+   observation — the purple ligament strap was drawn first and exactly
+   overdrawn by the red capsule line (same endpoints/width). The two
+   elements genuinely share the port:head axis (A1 item 3), so the
+   ligament now renders as a declared 7-px purple underlay beneath the
+   3-px red capsule core — both visible, both on the true axis. The
+   convention is declared in the manifest pair-interface note.
+5. F4 profile snapshot (evidence fix): the frozen line "registry
+   profile snapshot + provenance written to evidence" was only
+   partially implemented (profile_source/profile_id strings). Now
+   registry_profile_snapshot.json (card dir + capture evidence dir)
+   carries the full profile object plus provenance: source db, selector
+   expression, read-only access mode, and the sha256 of the exact
+   state.payload bytes the profile was parsed from.
+6. Re-capture identity: same 12 capture ticks, same frozen cameras
+   (camera records unchanged), state binding unchanged — every frame is
+   still bound bitwise to the committed trace (sha256 273dbc4f8c73a6f5...).
+   The shading fix intentionally changes frame pixels, so the NEW
+   capture carries a NEW video sha256 and NEW frame hashes, re-pinned
+   in the manifest/context/receipt; the decoded-frame == committed-still
+   gate re-runs on the new artifact.
+

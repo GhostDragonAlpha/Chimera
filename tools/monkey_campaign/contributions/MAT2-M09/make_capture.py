@@ -13,6 +13,7 @@ Run: python -B make_capture.py <attempt_capture_dir> <ffmpeg_path>
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import pathlib
 import sqlite3
@@ -50,11 +51,36 @@ def registry_profile():
         con.close()
     reg = json.loads(payload)
     card = reg['kanban']['cards']['MAT2-M09']
-    return card['spec']['ontology_qualification']['task'][
+    profile = card['spec']['ontology_qualification']['task'][
         'verification_profile']
+    # A4 (visual-gate F4): carry the exact payload identity the profile
+    # object was parsed from, so the snapshot is verifiable provenance
+    return profile, hashlib.sha256(payload.encode('utf-8')).hexdigest()
 
 
-PROFILE = registry_profile()
+PROFILE, REGISTRY_PAYLOAD_SHA256 = registry_profile()
+
+
+def profile_snapshot():
+    """A4 (F4): the frozen 'registry profile snapshot + provenance
+    written to evidence' line, made real — the full profile object plus
+    its read-only provenance, deterministic (no wall-clock fields)."""
+    return {
+        'schema': 'chimera.m09_registry_profile_snapshot.v1',
+        'profile': PROFILE,
+        'provenance': {
+            'source_db': REGISTRY_DB,
+            'selector': 'kanban.cards[MAT2-M09].spec.ontology_qualification'
+                        '.task.verification_profile',
+            'access_mode': 'sqlite read-only (file:...?mode=ro URI)',
+            'payload_sha256': REGISTRY_PAYLOAD_SHA256,
+            'payload_note': ('sha256 over the exact state.payload bytes '
+                             'the profile object was parsed from; '
+                             're-read the registry read-only to verify'),
+            'used_by': ('validate_manifest(manifest, context, PROFILE) '
+                        'in this module; PROFILE is never hand-copied'),
+        },
+    }
 
 
 def vis_diagnostic(subjects=None):
@@ -174,7 +200,10 @@ def main():
              vis_diagnostic(['bone_a', 'bone_b']),
              'single viewport (sheet column 4); oblique close-up of the '
              'loaded joint interface: contact marker, ligament (purple) '
-             'and capsule (red) straps, area-scaled element force arrows'),
+             'and capsule (red) straps — the ligament renders as a '
+             'declared 7-px purple underlay beneath the 3-px red capsule '
+             'core, both on the port:head axis (Amendment A4) — '
+             'area-scaled element force arrows'),
         view('pair-interface', PROFILE['views'][2], 'clean', cam_iface,
              None, vis_clean(),
              'clean row: identical camera and state to its diagnostic '
@@ -192,9 +221,11 @@ def main():
             'pixel_size': [2560, 840],
             'honest_titles': 'rendered inside every viewport: view name, '
                              'mode and tick; diagnostic viewports carry '
-                             'the five declared diagnostic layers; footer '
-                             'carries the R/bound ratio and the bind/'
-                             'release ticks',
+                             'the five declared diagnostic layers, layer 1 '
+                             'rendered as navy port:head/triangle ID '
+                             'labels (Amendment A4: rendered, not only '
+                             'declared); footer carries the R/bound ratio '
+                             'and the bind/release ticks',
             'rows': [
                 'top    diagnostic viewports [whole | side | front | '
                 'close-up] with all five declared diagnostic layers',
@@ -238,6 +269,11 @@ def main():
     receipt['profile_source'] = REGISTRY_DB + ' kanban.cards[MAT2-M09]' \
         '.spec.ontology_qualification.task.verification_profile ' \
         '(read read-only)'
+    receipt['profile_snapshot'] = ('registry_profile_snapshot.json '
+                                   '(card dir + evidence dir; full '
+                                   'profile object + provenance, '
+                                   'Amendment A4)')
+    receipt['registry_payload_sha256'] = REGISTRY_PAYLOAD_SHA256
     receipt['limits'] = ('Structural camera-metadata validation only; '
                          'independent image/physics review remains '
                          'mandatory.')
@@ -245,9 +281,12 @@ def main():
             (HERE / 'capture_manifest.json', manifest),
             (HERE / 'capture_context.json', context),
             (HERE / 'capture_validation_receipt.json', receipt),
+            (HERE / 'registry_profile_snapshot.json', profile_snapshot()),
             (evidence_dir / 'capture_manifest.json', manifest),
             (evidence_dir / 'capture_context.json', context),
-            (evidence_dir / 'validation_receipt.json', receipt)):
+            (evidence_dir / 'validation_receipt.json', receipt),
+            (evidence_dir / 'registry_profile_snapshot.json',
+             profile_snapshot())):
         target.write_text(json.dumps(payload, indent=1, ensure_ascii=False,
                                      sort_keys=True) + '\n',
                           encoding='utf-8')

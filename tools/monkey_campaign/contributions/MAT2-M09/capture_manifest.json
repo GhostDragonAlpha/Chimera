@@ -1,24 +1,24 @@
 {
- "capture_sha256": "fa86c9823826fd8298638b05dd7c2ce690ae8f7ef75db224dcc73c205edcfaaf",
+ "capture_sha256": "617f2c600f340cb74f9f5dde58cc1ae88cedda086ed5aae9e10f50ab625be60d",
  "profile_id": "material",
- "run_id": "mat2-m09-assembly-visual-20260929-fa86c982",
+ "run_id": "mat2-m09-assembly-visual-20260929-617f2c60",
  "schema": "chimera.visual_capture_manifest.v1",
  "sheet_layout": {
   "frame_files": {
-   "0": "b7038e966dffa02c537a561feda2ae4bc485997db71371bdbeb76820bb575119",
-   "10": "90e637b8bc76f4cf98c18c92a18e0bbfb1f6584d85b288d4350769cd8e16eb4f",
-   "21": "a7ee870d761872bc7427246e14f88babd084179150dc743c37ef1ba165401731",
-   "30": "c692be442c1f2485bef87fce2739062dea415ce9d07f39fdb4c0d4ab5e8cf3db",
-   "44": "8419b9b31d2e5a6ee6d0616872fdf274e72de5687b419d7e40f22a12ab6f41a9",
-   "45": "5589963cca261c841a280fac1619708c5d355edeba357dc595d84436f809a90a",
-   "60": "0877a8b19ae1e6ca08de962acaca8dce4177b289d4a8baff04585ab35b567009",
-   "66": "5a52b5e9dc978299f6466bfc4089f65825a18ebb5f47c0a92a1c87e67e79b75f",
-   "70": "35edd1121d0feb8b4410412d7d6e9f953dc433bb724552a25e03a166e0b3786c",
-   "74": "9a341935b44c4653118ac449b5a0883bee03187400a69921a80fc1bd8356699e",
-   "85": "4868dfe4779bcdcc9c3777508329de37ad1dbd2a81054fc0a8acfb1d24cad356",
-   "89": "c3be711adb8405f79c43f130462fd5691ec9e2fe76f0ba8216d40948d3281379"
+   "0": "9b6df049fbaf2dac7df87352f7cfbd6f1e071006b701adb6bc91d82fb4f44dc7",
+   "10": "1278eab5b320d1688c3c5c8a2814c2d6163e4e4093a3e331878442e6b304f577",
+   "21": "5c0a241d1bc81de3b28fe2ef9ae5e311cfbbee93542666d1dd025a05547710f7",
+   "30": "a87f970e5122da28fa025a3525a2279992e27a1a5223c4efaf6901e9eabad550",
+   "44": "2b59d8c39053207ba9be5904ba3c0895dfe288ad9236e00c491376f881f10613",
+   "45": "63e65fe5b74989539bd6dde90aa8c60b544ede2793412206e2fbb5e92f3cdeda",
+   "60": "8a5011970500067bf0b3c9bcb13b90a655f8ddf1eb3e4d3b82e29c714ad233b5",
+   "66": "dddc1bdc9f1172ace0782c6c17ffb5256d7487d5a4e935c8263b27810d7d58e2",
+   "70": "7d5e3cf4e40090d3830b51be8ae4c712fd4dc6f528020634d3a5f1be6adc55d3",
+   "74": "45dff308e9a20b81d6e7b7b2eb2f3fee667da7a0215fc37f14cd9dfa207c2287",
+   "85": "f217d10bcbe4c26dce2859945193451392530554a021bc99f4bbbc11f4b22ecf",
+   "89": "678f58447b372e51e4f6582682ddca1592357b0d16b7830b1e004d5d00ecfe85"
   },
-  "honest_titles": "rendered inside every viewport: view name, mode and tick; diagnostic viewports carry the five declared diagnostic layers; footer carries the R/bound ratio and the bind/release ticks",
+  "honest_titles": "rendered inside every viewport: view name, mode and tick; diagnostic viewports carry the five declared diagnostic layers, layer 1 rendered as navy port:head/triangle ID labels (Amendment A4: rendered, not only declared); footer carries the R/bound ratio and the bind/release ticks",
   "pixel_size": [
    2560,
    840
@@ -2185,7 +2185,7 @@
      360
     ]
    },
-   "cell_layout_note": "single viewport (sheet column 4); oblique close-up of the loaded joint interface: contact marker, ligament (purple) and capsule (red) straps, area-scaled element force arrows",
+   "cell_layout_note": "single viewport (sheet column 4); oblique close-up of the loaded joint interface: contact marker, ligament (purple) and capsule (red) straps — the ligament renders as a declared 7-px purple underlay beneath the 3-px red capsule core, both on the port:head axis (Amendment A4) — area-scaled element force arrows",
    "mode": "diagnostic",
    "pair_id": "pair-interface",
    "state_binding": {
