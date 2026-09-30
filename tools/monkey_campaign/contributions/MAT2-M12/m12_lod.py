@@ -296,17 +296,22 @@ def interface_invariants(world):
 
 def transverse_inertia(world):
     """Y2c: the declared transverse inertia of the assembled mass layout
-    about the erected axis (tissue vertices + chain point masses + load),
-    kg m^2. Declared aggregate (prereg section 10), computed from the same
-    builder data at both resolutions."""
+    about the erected axis AT ITS STATIC HANG (prereg section 3b/10
+    referent: tissue at the erected rest + chain at the declared static
+    hang (chain_x0) + load at its declared static hang), kg m^2. The
+    END-of-run positions are a different (physically settled, slightly
+    off-axis) state and are NOT this gate's referent."""
     axis = world.axis
     center = world.rest.mean(axis=0)
     d = world.rest - center
     along = d @ axis
     perp2 = (d * d).sum(axis=1) - along * along
     i_tissue = float((world.vertex_mass * perp2).sum())
+    load_static = world.rest[world.top_idx] - np.array(
+        [0.0, 0.0, float(world.load_tie.rest_length) +
+         world.load_mass * lw.GRAV / lw.K_TIE])
     i_points = 0.0
-    pts = [p for p in world.chain_x] + [world.load_x]
+    pts = [p for p in world.chain_x0] + [load_static]
     masses = list(world.chain_mass) + [float(world.load_mass)]
     for p, m in zip(pts, masses):
         dp = p - center

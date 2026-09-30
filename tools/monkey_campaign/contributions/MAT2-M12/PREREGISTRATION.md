@@ -439,3 +439,31 @@ probe-only tamper: ground contacts disabled), off schedule.
   The reference offset's Y4c verification is a bank gate.
 - No window of PREREGISTRATION section 5 required re-derivation: every
   probe landed inside its declared window with the declared constants.
+
+
+## Amendment A2 (own commit; recorded BEFORE the acceptance bank)
+
+Trigger: the first full bank pass (probe-class, pre-acceptance) ran green on
+Y3-Y8 but two gate MECHANICS defects surfaced (no physics window moved; no
+declared window re-derived):
+
+- P-A2.1 (Y2c referent defect): transverse_inertia measured the chain/load
+  point masses at their END-of-run positions. Physically the settled chain
+  rests slightly off-axis (a pendulum-settled hang), which dominated the
+  aggregate: measured I(coarse) 3.8714427292315055e-07 vs I(reference)
+  5.920864755770654e-07 kg m^2 (rel 0.346 -- the 0.10 window red). The
+  prereg referent (section 3b, "at rest") is the STATIC HANG: the tissue at
+  the erected rest + chain at chain_x0 + load at its declared static hang.
+  Corrected to that referent: I(coarse) 2.72842105263158e-07, I(reference)
+  2.7880150785742085e-07 kg m^2 (rel 0.02138 -- matches the build-data
+  arithmetic; the end-of-run lateral state was never the declared gate).
+- P-A2.2 (Y1b digest scope defect): the compared law-identity digest
+  included the schedule id, so loaded-vs-off runs of the SAME law differed.
+  The prereg's own heritage (M11 A2 form, carried in section 2 of the gate
+  map) puts the schedule BESIDE the compared digest. Corrected: the
+  compared digest covers law_module_sha256 + integrator_digest; the
+  schedule id is recorded per run and the named check asserts schedule-id
+  equality per schedule kind.
+
+Both corrections are audit mechanics, not physics: the rig constants, the
+declared remapping rules and every window of section 5 are unchanged.
