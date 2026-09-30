@@ -1,0 +1,18 @@
+{
+ "criteria_sha256": "f784d613aaebc3c2c24350a6cd4a5fb103f72f929f83b5fd9926395b55a040e8",
+ "profile": {
+  "camera_required_fields": [],
+  "clean_view_required": false,
+  "diagnostic_layers": [],
+  "falsifier": "Missing identities or a claimed pass unsupported by records fails; a screenshot is not a substitute.",
+  "id": "records",
+  "kind": "offline",
+  "nonvisual_reason": "A source/contract/measurement task whose truth requires records or numerical oracles, not a 3D image.",
+  "numerical_evidence_required": true,
+  "scenario": "Qualify only this task: Strength, force-length/velocity, compliance, limits and applicability are defined for the selected animal. Material-first addition: Separate source-backed biological parameters from chosen engineering active-pressure material parameters. No inferred density/stiffness/activation law from geometry alone. Profile procedure: Inspect actual records and their independent oracle. Use the task-owned subset of layers/behaviors. Inventory absent or unresolved components explicitly; do not require downstream skills to accept an upstream interface. Freeze exact applicable probes and views before execution.",
+  "subject": "Pinned definitions, ledgers and numerical evidence",
+  "views": []
+ },
+ "schema": "chimera.registry_profile_snapshot.v1",
+ "task_id": "A08"
+}
