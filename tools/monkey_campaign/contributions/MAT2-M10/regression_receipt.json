@@ -1,11 +1,12 @@
 {
  "criteria_sha256": "5e7560caa9efae9ec819c9127ab6ee6e7016e134bdf97e525f06cfedee31190c",
  "regression_ok": true,
+ "schema": "chimera.m10.regression_receipt.v1",
  "suites": {
   "M03": {
    "returncode": 0,
    "script": "test_pressure_membrane.py",
-   "tail": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.594s\n\nOK\n"
+   "tail": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.584s\n\nOK\n"
   },
   "M04": {
    "returncode": 0,
@@ -15,12 +16,12 @@
   "M05": {
    "returncode": 0,
    "script": "test_interface_exchange.py",
-   "tail": "held_then_separated (__main__.P7DynamicRun.test_t10_held_then_separated) ... ok\ntest_t7_per_tick_reciprocity (__main__.P7DynamicRun.test_t7_per_tick_reciprocity) ... ok\ntest_t8_determinism (__main__.P7DynamicRun.test_t8_determinism) ... ok\ntest_t9_bounds (__main__.P7DynamicRun.test_t9_bounds) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 1.896s\n\nOK\n"
+   "tail": "held_then_separated (__main__.P7DynamicRun.test_t10_held_then_separated) ... ok\ntest_t7_per_tick_reciprocity (__main__.P7DynamicRun.test_t7_per_tick_reciprocity) ... ok\ntest_t8_determinism (__main__.P7DynamicRun.test_t8_determinism) ... ok\ntest_t9_bounds (__main__.P7DynamicRun.test_t9_bounds) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 1.909s\n\nOK\n"
   },
   "M08": {
    "returncode": 0,
    "script": "test_resident_gpu_world.py",
-   "tail": " ... ok\ntest_X2_determinism_byte_identity (__main__.X2Determinism.test_X2_determinism_byte_identity) ... ok\ntest_X3_residency_profile_within_budget (__main__.X3Profile.test_X3_residency_profile_within_budget) ... ok\ntest_X4_bh_law_error_nearfield (__main__.X4BH.test_X4_bh_law_error_nearfield) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.047s\n\nOK\n"
+   "tail": " ... ok\ntest_X2_determinism_byte_identity (__main__.X2Determinism.test_X2_determinism_byte_identity) ... ok\ntest_X3_residency_profile_within_budget (__main__.X3Profile.test_X3_residency_profile_within_budget) ... ok\ntest_X4_bh_law_error_nearfield (__main__.X4BH.test_X4_bh_law_error_nearfield) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.021s\n\nOK\n"
   }
  }
 }

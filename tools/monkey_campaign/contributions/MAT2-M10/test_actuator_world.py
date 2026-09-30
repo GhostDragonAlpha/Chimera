@@ -166,6 +166,27 @@ class G7RegistryIdentity(unittest.TestCase):
         self.assertEqual(attempt.get('criteria_sha256'), expected)
 
 
+class ReceiptSchemas(unittest.TestCase):
+    """batch-gate receipt law: every bank *receipt*.json carries a
+    chimera.*.vN schema string (added with the round-1 corrections;
+    asserts the receipt-semantics change together with the gate)."""
+
+    EXPECTED = {
+        'experiment_receipt.json': 'chimera.m10.experiment_receipt.v1',
+        'falsifier_receipt.json': 'chimera.m10.falsifier_receipt.v1',
+        'determinism_receipt.json': 'chimera.m10.determinism_receipt.v1',
+        'regression_receipt.json': 'chimera.m10.regression_receipt.v1',
+    }
+
+    def test_bank_receipts_carry_schema(self):
+        import re
+        for name, schema in self.EXPECTED.items():
+            doc = load(name)
+            self.assertEqual(doc.get('schema'), schema, name)
+            self.assertRegex(schema, r'^chimera\.[a-z0-9_]+(\.[a-z0-9_]+)*'
+                                     r'\.v\d+$')
+
+
 class P4CaptureGate(unittest.TestCase):
     """Transform-list capture gate (F04 heritage): decoded video frames ==
     committed stills under IDENTITY only; identity diff 0 px, every other

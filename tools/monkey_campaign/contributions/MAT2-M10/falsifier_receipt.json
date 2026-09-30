@@ -100,5 +100,6 @@
   "fires_on_identically_zero_window": true,
   "lesson": "a gate that cannot fail is not a measurement (M07 independent-review lesson)",
   "refusal_code": "vacuous_comparison_refused"
- }
+ },
+ "schema": "chimera.m10.falsifier_receipt.v1"
 }

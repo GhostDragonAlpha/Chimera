@@ -32,6 +32,13 @@ FALSIFIER_PATH = HERE / 'falsifier_receipt.json'
 DETERMINISM_PATH = HERE / 'determinism_receipt.json'
 REGRESSION_PATH = HERE / 'regression_receipt.json'
 
+# receipt schemas (batch-gate law: every *receipt*.json carries a
+# chimera.*.vN schema; asserted by the named-check suite as well)
+SCHEMA_EXPERIMENT = 'chimera.m10.experiment_receipt.v1'
+SCHEMA_FALSIFIER = 'chimera.m10.falsifier_receipt.v1'
+SCHEMA_DETERMINISM = 'chimera.m10.determinism_receipt.v1'
+SCHEMA_REGRESSION = 'chimera.m10.regression_receipt.v1'
+
 CRITERIA_SHA256 = '5e7560caa9efae9ec819c9127ab6ee6e7016e134bdf97e525f06cfedee31190c'
 ATTEMPT_ID = '02cc9dbda6f3494f8d8de36e20b94c0f'
 ARRIVAL_ID = 'arrival-5c71030b5a614f89ac0716c1d99bfa0d'
@@ -110,7 +117,8 @@ def settle_ok(run):
 def mode_main():
     guard = vacuous_guard_selftest()
     pins = aw.verify_input_pins()
-    bank = {'criteria_sha256': CRITERIA_SHA256, 'attempt_id': ATTEMPT_ID,
+    bank = {'schema': SCHEMA_EXPERIMENT,
+            'criteria_sha256': CRITERIA_SHA256, 'attempt_id': ATTEMPT_ID,
             'arrival_id': ARRIVAL_ID, 'input_pins': pins,
             'p_vacuous_guard': guard, 'windows': aw.WIN,
             'classification_rule': aw.CLASSIFICATION_RULE}
@@ -477,7 +485,9 @@ def mode_main():
 # ----------------------------------------------------------- falsifiers ---
 def mode_falsify():
     guard = vacuous_guard_selftest()
-    receipt = {'criteria_sha256': CRITERIA_SHA256, 'p_vacuous_guard': guard}
+    receipt = {'schema': SCHEMA_FALSIFIER,
+               'criteria_sha256': CRITERIA_SHA256,
+               'p_vacuous_guard': guard}
 
     def dynamic(tamper=None):
         m = aw.ActuatorModel('braid')
@@ -672,7 +682,8 @@ def mode_compare():
     t1 = hashlib.sha256(c1.encode('utf-8')).hexdigest()
     t2 = hashlib.sha256(c2.encode('utf-8')).hexdigest()
     identical = t1 == t2
-    receipt = {'criteria_sha256': CRITERIA_SHA256,
+    receipt = {'schema': SCHEMA_DETERMINISM,
+               'criteria_sha256': CRITERIA_SHA256,
                'dynamic_run_sha256_main': t1,
                'dynamic_run_sha256_rerun': t2,
                'X2_trace_byte_identical': identical,
@@ -706,7 +717,8 @@ def mode_regression():
         checks[name] = {'script': script, 'returncode': proc.returncode,
                         'tail': (proc.stdout + proc.stderr)[-400:]}
     ok = all(v['returncode'] == 0 for v in checks.values())
-    receipt = {'criteria_sha256': CRITERIA_SHA256, 'suites': checks,
+    receipt = {'schema': SCHEMA_REGRESSION,
+               'criteria_sha256': CRITERIA_SHA256, 'suites': checks,
                'regression_ok': ok}
     write_json(REGRESSION_PATH, receipt)
     print('regression ok:', ok)
