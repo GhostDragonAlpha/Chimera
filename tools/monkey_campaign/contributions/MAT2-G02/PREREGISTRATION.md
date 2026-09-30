@@ -365,3 +365,57 @@ only the prediction literals are repaired to the exact closed forms:
   (unchanged). The T2 check asserts the CORRECTED literals; the window
   tightness (1e-15 relative) is unchanged. No experiment had run when this
   amendment was written.
+
+### Amendment A2 (2026-09-30, pre-experiment, dynamics analytics + schedule
+### + ledger bookkeeping)
+
+Development integration checks (not recorded experiments; no receipts
+written) exposed three analytics errors in the base laws 10/11 and T8. The
+frozen element law (laws 1-9) is untouched. Corrections, all derived from
+physics, none from measurements:
+
+1. Damping-ratio formula. Base T8 wrote zeta = c_v/(2*omega_t) — dimensionally
+   wrong. Correct: zeta = c_v/(2*m_B*omega_t) = c_v/(2*sqrt(k_t_patch*m_B)).
+   With the declared c_v = 2.0 N*s/m the fixture is zeta = 9.4017 — heavily
+   OVERDAMPED (base T8 claimed 0.18803). With c_v = 2.0 the pull response is
+   a two-time-constant creep (slow pole 0.2834 1/s) and the motion profile is
+   not demonstrable. AMENDED: c_v = 0.02 N*s/m -> zeta = 0.0940,
+   omega_d = 5.2949 rad/s (underdamped, declared).
+2. Schedule (base law 10 amended). A 15-tick squeeze followed by a hard pull
+   launches body B with the contact-spring energy (0.5*k_eff*g_static^2 =
+   1.19e-3 J -> ~0.35 m/s), which swamps the pull analysis. AMENDED schedule
+   (dt = 1/300 s, 356 ticks, interval [0, 355]): ticks 1..45 squeeze with a
+   LINEAR ACTUATOR RAMP -2.0 N -> 0 N (quasi-static: the 6.6-tick contact
+   oscillation period is resolved, so the contact unloads gently and body B
+   tracks the actuator); ticks 46..60 settle at 0 N; BIND at tick 61 (gap
+   ~4e-4 m, |v| ~ 8e-3 m/s); ticks 61..250 pull 0.03 N; RELEASE at tick 234
+   — the DERIVED first oscillation peak: omega_d*t at 173 pull ticks is
+   3.054 rad where the damped closed form is maximal and v ~ 0, and the
+   held tension k_t*gap = 0.0524 N still exceeds the 0.03 N pull, so after
+   release the net force flips outward and separation is demonstrated;
+   ticks 234..260 the 0.03 N pull continues; ticks 261..355 approach
+   2.0 N toward A (contact re-loads with NO patch present). CAPTURE_TICKS =
+   (0, 20, 150, 232, 233, 250, 320).
+3. T8 windows re-derived from the corrected closed form (static extension
+   F/k_t_patch = 0.053030 m; s = zeta*omega_t*t; window = derived value with
+   declared slack for XPBD/damping-model modelling error — never fitted):
+   (a) squeeze: penetration tracks the ramp, reaches its largest magnitude
+   at tick 1 (-2.0/1650 = -1.2121e-3 m); contact state loaded throughout the
+   ramp while p > 0; (b) gap at the release tick 233 in [0.055, 0.130] m
+   (damped closed form 0.0923 m); (c) U_release = U(233) in [0.9e-3, 4.8e-3]
+   J (0.5*k_t*gap(233)^2 at the window edges); (d) separation: max gap over
+   [235, 264] strictly greater than gap(234); (e) re-contact under the 2.0 N
+   approach: contact state loaded at some tick in [258, 300] with peak
+   penetration magnitude <= 0.015 m (approach-energy bound with the contact
+   damping ratio 0.435; the law-9 refusal guard stays at 0.03); (f) bitwise
+   post-release zero (unchanged from base T6).
+4. Ledger bookkeeping (base law 11 operating statement, same formula): work
+   terms are booked at the midpoint displacement dx = 0.5*(v0+v1)*dt (exact
+   for forces constant over the step, so the frozen |R| bound sees only
+   genuine spring-curvature drift, measured <= 1.9e-7 J per tick); the two
+   declared dampings book as Q from the forces AS EVALUATED
+   (Q = -f_damp*dx); W_contact is the ELASTIC penalty work only; and
+   E_diss_release enters Q_total at the release tick (this is what the FB4
+   arm attacks: dropping it must trip the residual bound).
+
+No experiment receipts exist yet; this amendment precedes mode_main.
