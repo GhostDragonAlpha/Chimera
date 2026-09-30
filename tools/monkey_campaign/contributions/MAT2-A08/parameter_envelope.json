@@ -1,0 +1,1981 @@
+{
+ "biological_registry": {
+  "actuator_row_count": 39,
+  "actuator_rows": [
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.089754,
+    "l0t_m": 0.0285,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "abd_poll_longus",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.010206,
+    "l0t_m": 0.019627,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "anconeus",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 58.2,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.070845,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Biceps long",
+     "note": "long head"
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "bicep_lh",
+    "pennation_deg": 7.0,
+    "pennation_rad": 0.12217305,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 5.4,
+      "pi_half": 1.6659,
+      "pi_high": 7.0659,
+      "pi_low": 3.7341,
+      "sd": 0.6,
+      "z": 11.4153
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 7.0,
+      "pi_half": 5.5531,
+      "pi_high": 12.5531,
+      "pi_low": 1.4469,
+      "sd": 2.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "INSIDE-2SD",
+      "inside_t_pi": true,
+      "mean": 8.8,
+      "pi_half": 4.7201,
+      "pi_high": 13.5201,
+      "pi_low": 4.0799,
+      "sd": 1.7,
+      "z": 1.0091
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 38.7,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.042526,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Biceps short",
+     "note": "short head"
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "bicep_sh",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 6.6,
+      "pi_half": 3.0542,
+      "pi_high": 9.6542,
+      "pi_low": 3.5458,
+      "sd": 1.1,
+      "z": 5.1356
+     },
+     "pennation": {
+      "class": "CONSISTENT-CENSORED(<5deg)"
+     },
+     "tendon_length": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 5.7,
+      "pi_half": 7.7743,
+      "pi_high": 13.4743,
+      "pi_low": -2.0743,
+      "sd": 2.8,
+      "z": 0.5169
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 135.6,
+    "l0m_m": 0.057,
+    "l0t_m": 0.03502,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Brachialis",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "brachialis",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "INSIDE-2SD",
+      "inside_t_pi": true,
+      "mean": 4.3,
+      "pi_half": 2.2212,
+      "pi_high": 6.5212,
+      "pi_low": 2.0788,
+      "sd": 0.8,
+      "z": 1.75
+     },
+     "pennation": {
+      "class": "CONSISTENT-CENSORED(<5deg)"
+     },
+     "tendon_length": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 2.9,
+      "pi_half": 3.6095,
+      "pi_high": 6.5095,
+      "pi_low": -0.7095,
+      "sd": 1.3,
+      "z": 0.4631
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 38.7,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.04335,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Brachioradialis",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "brachioradialis",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 11.1,
+      "pi_half": 4.1648,
+      "pi_high": 15.2648,
+      "pi_low": 6.9352,
+      "sd": 1.5,
+      "z": 0.7661
+     },
+     "pennation": {
+      "class": "CONSISTENT-CENSORED(<5deg)"
+     },
+     "tendon_length": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 3.6,
+      "pi_half": 4.9978,
+      "pi_high": 8.5978,
+      "pi_low": -1.3978,
+      "sd": 1.8,
+      "z": 0.4083
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 38.7,
+    "l0m_m": 0.085942,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Coracobrachialis",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "coracobrachialis",
+    "pennation_deg": 13.0,
+    "pennation_rad": 0.2268928,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 1.8,
+      "pi_half": 1.9436,
+      "pi_high": 3.7436,
+      "pi_low": -0.1436,
+      "sd": 0.7,
+      "z": 9.706
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 13.0,
+      "pi_half": 33.3186,
+      "pi_high": 46.3186,
+      "pi_low": -20.3186,
+      "sd": 12.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 5.1,
+      "pi_half": 2.4989,
+      "pi_high": 7.5989,
+      "pi_low": 2.6011,
+      "sd": 0.9,
+      "z": 5.4444
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 135.6,
+    "l0m_m": 0.0455,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Deltoid anterior",
+     "note": "anterior head"
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "deltoid_ant",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 5.2,
+      "pi_half": 3.0542,
+      "pi_high": 8.2542,
+      "pi_low": 2.1458,
+      "sd": 1.1,
+      "z": 0.5909
+     },
+     "pennation": {
+      "class": "CONSISTENT-CENSORED(<5deg)"
+     },
+     "tendon_length": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 0.3,
+      "pi_half": 1.3883,
+      "pi_high": 1.6883,
+      "pi_low": -1.0883,
+      "sd": 0.5,
+      "z": 0.2
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 116.1,
+    "l0m_m": 0.051036,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Deltoid middle",
+     "note": "middle head"
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "deltoid_med",
+    "pennation_deg": 20.0,
+    "pennation_rad": 0.34906585,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 2.7,
+      "pi_half": 1.1106,
+      "pi_high": 3.8106,
+      "pi_low": 1.5894,
+      "sd": 0.4,
+      "z": 6.009
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 20.0,
+      "pi_half": 24.9889,
+      "pi_high": 44.9889,
+      "pi_low": -4.9889,
+      "sd": 9.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 1.9,
+      "pi_half": 1.6659,
+      "pi_high": 3.5659,
+      "pi_low": 0.2341,
+      "sd": 0.6,
+      "z": 2.8333
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 406.5,
+    "l0m_m": 0.06898635,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Deltoid posterior",
+     "note": "posterior head"
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "deltoid_pos",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 4.7,
+      "pi_half": 1.6659,
+      "pi_high": 6.3659,
+      "pi_low": 3.0341,
+      "sd": 0.6,
+      "z": 3.6644
+     },
+     "pennation": {
+      "class": "CONSISTENT-CENSORED(<5deg)"
+     },
+     "tendon_length": {
+      "class": "INSIDE-2SD",
+      "inside_t_pi": true,
+      "mean": 1.5,
+      "pi_half": 2.2212,
+      "pi_high": 3.7212,
+      "pi_low": -0.7212,
+      "sd": 0.8,
+      "z": 1.625
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 44.8,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.039172,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Dorsoepitrochlearis",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "dorsoepitrochlearis",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 5.8,
+      "pi_half": 2.7765,
+      "pi_high": 8.5765,
+      "pi_low": 3.0235,
+      "sd": 1.0,
+      "z": 6.4492
+     },
+     "pennation": {
+      "class": "CONSISTENT-CENSORED(<5deg)"
+     },
+     "tendon_length": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 4.4,
+      "pi_half": 3.3319,
+      "pi_high": 7.7319,
+      "pi_low": 1.0681,
+      "sd": 1.2,
+      "z": 0.4023
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 72.0,
+    "l0m_m": 0.1173,
+    "l0t_m": 0.055,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Extensor carpi radialis longus",
+     "note": "name-order variant"
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "ext_carpi_rad_longus",
+    "pennation_deg": 8.9,
+    "pennation_rad": 0.1553343,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 5.7,
+      "pi_half": 2.7765,
+      "pi_high": 8.4765,
+      "pi_low": 2.9235,
+      "sd": 1.0,
+      "z": 6.03
+     },
+     "pennation": {
+      "class": "OUTSIDE-CENSORED(claim>=5deg)"
+     },
+     "tendon_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": true,
+      "mean": 10.0,
+      "pi_half": 5.2754,
+      "pi_high": 15.2754,
+      "pi_low": 4.7246,
+      "sd": 1.9,
+      "z": 2.3684
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.1225,
+    "l0t_m": 0.0365,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Extensor carpi radialis brevis",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "ext_carp_rad_brevis",
+    "pennation_deg": 1.0,
+    "pennation_rad": 0.01745329,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 3.1,
+      "pi_half": 2.4989,
+      "pi_high": 5.5989,
+      "pi_low": 0.6011,
+      "sd": 0.9,
+      "z": 10.1667
+     },
+     "pennation": {
+      "class": "CONSISTENT-CENSORED(<5deg)"
+     },
+     "tendon_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 10.1,
+      "pi_half": 4.4425,
+      "pi_high": 14.5425,
+      "pi_low": 5.6575,
+      "sd": 1.6,
+      "z": 4.0312
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.050385,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "ext_carpi_ulnaris",
+    "pennation_deg": 3.5,
+    "pennation_rad": 0.06108652,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.0457,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "ext_digitorum",
+    "pennation_deg": 3.0,
+    "pennation_rad": 0.05235988,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.0603,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "ext_digiti",
+    "pennation_deg": 2.6,
+    "pennation_rad": 0.04537856,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.044047,
+    "l0t_m": 0.030981,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "ext_indicis",
+    "pennation_deg": 6.3,
+    "pennation_rad": 0.10995574,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 60.0,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.042532,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "flex_carpi_radialis",
+    "pennation_deg": 3.1,
+    "pennation_rad": 0.05410521,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 96.0,
+    "l0m_m": 0.044632,
+    "l0t_m": 0.122492,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "flex_carpi_ulnaris",
+    "pennation_deg": 12.1,
+    "pennation_rad": 0.21118484,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.06132958,
+    "l0t_m": 0.04029373,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "flex_digit_profundus",
+    "pennation_deg": 6.9,
+    "pennation_rad": 0.12042772,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.072174,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "flex_digit_superficialis",
+    "pennation_deg": 5.5,
+    "pennation_rad": 0.09599311,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.028065,
+    "l0t_m": 0.060818,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "flex_poll_longus",
+    "pennation_deg": 6.93,
+    "pennation_rad": 0.12095132,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 174.3,
+    "l0m_m": 0.049413,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Infraspinatus",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "infraspinatus",
+    "pennation_deg": 15.0,
+    "pennation_rad": 0.26179939,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 2.5,
+      "pi_half": 1.3883,
+      "pi_high": 3.8883,
+      "pi_low": 1.1117,
+      "sd": 0.5,
+      "z": 4.8826
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 15.0,
+      "pi_half": 22.2124,
+      "pi_high": 37.2124,
+      "pi_low": -7.2124,
+      "sd": 8.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 4.0,
+      "pi_half": 3.6095,
+      "pi_high": 7.6095,
+      "pi_low": 0.3905,
+      "sd": 1.3,
+      "z": 2.9231
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": true,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 129.0,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "granularity-NOT-COMPARABLE",
+     "m23_row": "Latissimus dorsi",
+     "note": "osim splits into 3 actuators (sup/cen/inf); whole-muscle band cannot own per-part claims (aggregation would be a new model, not a screen)"
+    },
+    "osim_muscle": "lat_dorsi_sup",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 129.0,
+    "l0m_m": 0.1119,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "granularity-NOT-COMPARABLE",
+     "m23_row": "Latissimus dorsi",
+     "note": "osim splits into 3 actuators (sup/cen/inf); whole-muscle band cannot own per-part claims (aggregation would be a new model, not a screen)"
+    },
+    "osim_muscle": "lat_dorsi_cen",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 129.0,
+    "l0m_m": 0.1225,
+    "l0t_m": 0.0087,
+    "mapping": {
+     "kind": "granularity-NOT-COMPARABLE",
+     "m23_row": "Latissimus dorsi",
+     "note": "osim splits into 3 actuators (sup/cen/inf); whole-muscle band cannot own per-part claims (aggregation would be a new model, not a screen)"
+    },
+    "osim_muscle": "lat_dorsi_inf",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 27.0,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.023407,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "palmaris_longus",
+    "pennation_deg": 3.5,
+    "pennation_rad": 0.06108652,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 154.8,
+    "l0m_m": 0.0541,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "granularity-NOT-COMPARABLE",
+     "m23_row": "Pectoralis major",
+     "note": "osim splits into 2 actuators (sup/inf); whole-muscle band cannot own per-part claims (aggregation would be a new model, not a screen)"
+    },
+    "osim_muscle": "pectoralis_sup",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 116.1,
+    "l0m_m": 0.0648,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "granularity-NOT-COMPARABLE",
+     "m23_row": "Pectoralis major",
+     "note": "osim splits into 2 actuators (sup/inf); whole-muscle band cannot own per-part claims (aggregation would be a new model, not a screen)"
+    },
+    "osim_muscle": "pectoralis_inf",
+    "pennation_deg": 0.0,
+    "pennation_rad": 0.0,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 33.3,
+    "l0m_m": 0.025284,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "pronator_quad",
+    "pennation_deg": 9.9,
+    "pennation_rad": 0.1727876,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 48.3,
+    "l0m_m": 0.0416,
+    "l0t_m": 0.01254,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "pronator_teres",
+    "pennation_deg": 13.0,
+    "pennation_rad": 0.2268928,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 290.4,
+    "l0m_m": 0.05239,
+    "l0t_m": 0.008831,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Subscapularis",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "subscapularis",
+    "pennation_deg": 22.0,
+    "pennation_rad": 0.38397244,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 1.9,
+      "pi_half": 0.833,
+      "pi_high": 2.733,
+      "pi_low": 1.067,
+      "sd": 0.3,
+      "z": 11.13
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 22.0,
+      "pi_half": 8.3296,
+      "pi_high": 30.3296,
+      "pi_low": 13.6704,
+      "sd": 3.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": true,
+      "mean": 4.1,
+      "pi_half": 3.8872,
+      "pi_high": 7.9872,
+      "pi_low": 0.2128,
+      "sd": 1.4,
+      "z": 2.2978
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": true,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 30.0,
+    "l0m_m": 0.045107,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "MUSCLE-ABSENT",
+     "m23_row": null,
+     "note": "no M2-3 row (Pronator teres class, B06 S-PORT-09); measured set incomplete for the claim set"
+    },
+    "osim_muscle": "supinator",
+    "pennation_deg": 17.0,
+    "pennation_rad": 0.29670597,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "default-excluded"
+    },
+    "screens": null,
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 135.0,
+    "l0m_m": 0.069278,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Supraspinatus",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "supraspinatus",
+    "pennation_deg": 15.0,
+    "pennation_rad": 0.26179939,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 2.6,
+      "pi_half": 1.1106,
+      "pi_high": 3.7106,
+      "pi_low": 1.4894,
+      "sd": 0.4,
+      "z": 10.8195
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 15.0,
+      "pi_half": 13.8827,
+      "pi_high": 28.8827,
+      "pi_low": 1.1173,
+      "sd": 5.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "INSIDE-2SD",
+      "inside_t_pi": true,
+      "mean": 2.4,
+      "pi_half": 3.3319,
+      "pi_high": 5.7319,
+      "pi_low": -0.9319,
+      "sd": 1.2,
+      "z": 1.8333
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 77.4,
+    "l0m_m": 0.0815,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Teres major",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "teres_major",
+    "pennation_deg": 14.0,
+    "pennation_rad": 0.2443461,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 5.7,
+      "pi_half": 1.6659,
+      "pi_high": 7.3659,
+      "pi_low": 4.0341,
+      "sd": 0.6,
+      "z": 4.0833
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 14.0,
+      "pi_half": 33.3186,
+      "pi_high": 47.3186,
+      "pi_low": -19.3186,
+      "sd": 12.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 2.7,
+      "pi_half": 1.9436,
+      "pi_high": 4.6436,
+      "pi_low": 0.7564,
+      "sd": 0.7,
+      "z": 3.5714
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": true
+    },
+    "fmax_n": 174.0,
+    "l0m_m": 0.04029481,
+    "l0t_m": 0.002,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Teres minor",
+     "note": ""
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "teres_minor",
+    "pennation_deg": 12.0,
+    "pennation_rad": 0.20943951,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 1.8,
+      "pi_half": 1.1106,
+      "pi_high": 2.9106,
+      "pi_low": 0.6894,
+      "sd": 0.4,
+      "z": 5.5737
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 12.0,
+      "pi_half": 19.4358,
+      "pi_high": 31.4358,
+      "pi_low": -7.4358,
+      "sd": 7.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "INSIDE-2SD",
+      "inside_t_pi": true,
+      "mean": 1.4,
+      "pi_half": 2.7765,
+      "pi_high": 4.1765,
+      "pi_low": -1.3765,
+      "sd": 1.0,
+      "z": 1.2
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": true,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 135.6,
+    "l0m_m": 0.122492,
+    "l0t_m": 0.018409,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Triceps lateral",
+     "note": "lateral head"
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "tricep_lat",
+    "pennation_deg": 21.0,
+    "pennation_rad": 0.36651914,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 4.3,
+      "pi_half": 1.6659,
+      "pi_high": 5.9659,
+      "pi_low": 2.6341,
+      "sd": 0.6,
+      "z": 13.2487
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 21.0,
+      "pi_half": 5.5531,
+      "pi_high": 26.5531,
+      "pi_low": 15.4469,
+      "sd": 2.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 9.3,
+      "pi_half": 3.3319,
+      "pi_high": 12.6319,
+      "pi_low": 5.9681,
+      "sd": 1.2,
+      "z": 6.2159
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 116.1,
+    "l0m_m": 0.106152,
+    "l0t_m": 0.036031,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Triceps long",
+     "note": "long head"
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "tricep_lon",
+    "pennation_deg": 31.0,
+    "pennation_rad": 0.54105207,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 3.8,
+      "pi_half": 1.3883,
+      "pi_high": 5.1883,
+      "pi_low": 2.4117,
+      "sd": 0.5,
+      "z": 13.6304
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 31.0,
+      "pi_half": 22.2124,
+      "pi_high": 53.2124,
+      "pi_low": 8.7876,
+      "sd": 8.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 9.5,
+      "pi_half": 3.6095,
+      "pi_high": 13.1095,
+      "pi_low": 5.8905,
+      "sd": 1.3,
+      "z": 4.5361
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   },
+   {
+    "fingerprints": {
+     "fmax_floor_default": false,
+     "ofl_placeholder": false,
+     "tsl_placeholder": false
+    },
+    "fmax_n": 135.6,
+    "l0m_m": 0.093578,
+    "l0t_m": 0.010198,
+    "mapping": {
+     "kind": "1:1",
+     "m23_row": "Triceps medial",
+     "note": "ASSUMED head-name mapping: osim 'short' read as the medial head; Cheng & Scott 2000 name long/lateral/medial; declared, not measured"
+    },
+    "not_comparable": {
+     "mass": "no sealed claim exists (the osim carries no per-muscle mass property)",
+     "pcsa": "no sealed claim exists and no measured specific tension; PCSA=Fmax/sigma is not round-trip-stable (sealed memo sigma law)"
+    },
+    "osim_muscle": "tricep_sho",
+    "pennation_deg": 18.0,
+    "pennation_rad": 0.31415927,
+    "provenance": {
+     "note": "per-row derived-provisional vs provenance-unknown membership is the sealed memo adjudication (20260921 memo 22/6/11 verdict, pinned), not recomputed by this card; carrier force claims stay force_runtime_ready: false",
+     "row_class": "recomputed-fingerprint-only"
+    },
+    "screens": {
+     "fiber_length": {
+      "class": "OUTSIDE",
+      "inside_t_pi": false,
+      "mean": 4.2,
+      "pi_half": 1.1106,
+      "pi_high": 5.3106,
+      "pi_low": 3.0894,
+      "sd": 0.4,
+      "z": 12.8945
+     },
+     "pennation": {
+      "class": "INSIDE-1SD",
+      "inside_t_pi": true,
+      "mean": 18.0,
+      "pi_half": 19.4358,
+      "pi_high": 37.4358,
+      "pi_low": -1.4358,
+      "sd": 7.0,
+      "z": 0.0
+     },
+     "tendon_length": {
+      "class": "INSIDE-2SD",
+      "inside_t_pi": true,
+      "mean": 3.2,
+      "pi_half": 5.2754,
+      "pi_high": 8.4754,
+      "pi_low": -2.0754,
+      "sd": 1.9,
+      "z": 1.1475
+     }
+    },
+    "source_class": "declared_carrier_not_source_backed"
+   }
+  ],
+  "schema_note": "source-backed rows would carry measured_source pins; this sealed lineage carries NONE - every actuator row is a declared carrier claim whose measured upgrade is explicitly unresolved (U1-U3)"
+ },
+ "calculation_contracts": [
+  {
+   "consumable_parameters": "biological_registry rows carry declared_carrier_not_source_backed; force claims stay force_runtime_ready: false until U1/U3 resolve",
+   "id": "C07",
+   "input_status": {
+    "compliance": "explicitly unresolved (U6)",
+    "damping": "engineering only (M03 damping_per_s is the demonstrator source, never biology)",
+    "force_length_velocity": "explicitly unresolved (U4)",
+    "rom": "explicitly unresolved (U8); no human-norm torque substitution",
+    "strength": "declared carrier (provenance-flagged); measured upgrade explicitly unresolved (U1)"
+   },
+   "output_law": "Physical action limits; no human-norm torque substituted for this animal",
+   "required_inputs_catalog": "Selected animal parameters, ROM, force-length/velocity, compliance, damping",
+   "status": "OPEN INVENTORY (no new numerical result claimed)",
+   "title": "Actuator limits and passive response",
+   "verification_still_required": "independent parameter provenance and saturated/obstructed-motion controls"
+  },
+  {
+   "consumable_parameters": "routing geometry only; no invented stiffness, no geometry-inferred density/stiffness/activation",
+   "id": "C18",
+   "input_status": {
+    "endpoints_waypoints": "OWNED by sealed A06 registry (48 path records, 26 attachments, 22 bonds, 31 containment edges, 6 grasp endpoints; pinned sha)",
+    "joint_positions": "present in the sealed osim carrier (10 named joint definitions; engineering carrier)",
+    "wrapping_model": "not supported by the sealed model class; none invented"
+   },
+   "output_law": "Finite, physically attributed tendon forces and joint torques; l(q) and signed moment arms under a declared convention",
+   "required_inputs_catalog": "Owned endpoints/waypoints, joint positions, wrapping model if supported",
+   "status": "OPEN INVENTORY (no new numerical result claimed)",
+   "title": "Tendon routing and moment arms",
+   "verification_still_required": "finite differences/virtual work and unresolved-owner rejection"
+  }
+ ],
+ "checks": {
+  "P1_osim_parse_identity": true,
+  "P2_placeholder_census": true,
+  "P3_fcu_slot_swap": true,
+  "P4_screen_recomputation_agrees": true,
+  "P5_segment_screens": true,
+  "P6_namespaces_disjoint": true,
+  "P7_geometry_inference_census_zero": true,
+  "P8_inheritance_census_zero": true
+ },
+ "counts": {
+  "fiber_INSIDE-1SD": 2,
+  "fiber_INSIDE-2SD": 1,
+  "fiber_OUTSIDE": 16,
+  "fmax_floor_default": 11,
+  "granular_not_comparable": 5,
+  "matched_1to1": 19,
+  "muscle_absent": 15,
+  "ofl_placeholder_all": 14,
+  "osim_muscles_total": 39,
+  "pennation_CONSISTENT-CENSORED(<5deg)": 7,
+  "pennation_INSIDE-1SD": 11,
+  "pennation_OUTSIDE-CENSORED(claim>=5deg)": 1,
+  "segment_INSIDE-1SD": 3,
+  "t_pi_fiber_inside": 3,
+  "t_pi_tendon_inside": 12,
+  "tendon_INSIDE-1SD": 5,
+  "tendon_INSIDE-2SD": 5,
+  "tendon_OUTSIDE": 9,
+  "tsl_placeholder_all": 14
+ },
+ "engineering_registry": {
+  "carriers": {
+   "m03_schema": "chimera.material_state.v1",
+   "m04_assignments": 7,
+   "m04_schema": "chimera.passive_law.v1"
+  },
+  "row_count": 15,
+  "rows": [
+   {
+    "carrier": "host:pressure_state.json",
+    "carrier_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+    "id": "m03_damping_per_s",
+    "never_biological": true,
+    "note": "authored demonstrator active-pressure material constant (M03 sealed carrier); a modelling choice, never a biological measurement of the selected animal",
+    "provenance": "chosen_engineering",
+    "quantity": "damping_per_s",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "1/s",
+    "value": 240.0
+   },
+   {
+    "carrier": "host:pressure_state.json",
+    "carrier_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+    "id": "m03_dt_s",
+    "never_biological": true,
+    "note": "authored demonstrator active-pressure material constant (M03 sealed carrier); a modelling choice, never a biological measurement of the selected animal",
+    "provenance": "chosen_engineering",
+    "quantity": "dt_s",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "s",
+    "value": 0.0033333333333333335
+   },
+   {
+    "carrier": "host:pressure_state.json",
+    "carrier_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+    "id": "m03_edge_compliance",
+    "never_biological": true,
+    "note": "authored demonstrator active-pressure material constant (M03 sealed carrier); a modelling choice, never a biological measurement of the selected animal",
+    "provenance": "chosen_engineering",
+    "quantity": "edge_compliance",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "m/N",
+    "value": 0.025
+   },
+   {
+    "carrier": "host:pressure_state.json",
+    "carrier_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+    "id": "m03_max_delta_p",
+    "never_biological": true,
+    "note": "authored demonstrator active-pressure material constant (M03 sealed carrier); a modelling choice, never a biological measurement of the selected animal",
+    "provenance": "chosen_engineering",
+    "quantity": "max_delta_p",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "Pa",
+    "value": 5000.0
+   },
+   {
+    "carrier": "host:pressure_state.json",
+    "carrier_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+    "id": "m03_max_dv_dt",
+    "never_biological": true,
+    "note": "authored demonstrator active-pressure material constant (M03 sealed carrier); a modelling choice, never a biological measurement of the selected animal",
+    "provenance": "chosen_engineering",
+    "quantity": "max_dv_dt",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "m^3/s",
+    "value": 0.001
+   },
+   {
+    "carrier": "host:pressure_state.json",
+    "carrier_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+    "id": "m03_p_int_peak",
+    "never_biological": true,
+    "note": "authored demonstrator active-pressure material constant (M03 sealed carrier); a modelling choice, never a biological measurement of the selected animal",
+    "provenance": "chosen_engineering",
+    "quantity": "p_int_peak",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "Pa",
+    "value": 120.0
+   },
+   {
+    "carrier": "host:pressure_state.json",
+    "carrier_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+    "id": "m03_xpbd_iterations",
+    "never_biological": true,
+    "note": "authored demonstrator active-pressure material constant (M03 sealed carrier); a modelling choice, never a biological measurement of the selected animal",
+    "provenance": "chosen_engineering",
+    "quantity": "xpbd_iterations",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "count",
+    "value": 8
+   },
+   {
+    "carrier": "host:pressure_state.json",
+    "carrier_sha256": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+    "id": "m03_membrane_mass",
+    "never_biological": true,
+    "note": "authored demonstrator active-pressure material constant (M03 sealed carrier); a modelling choice, never a biological measurement of the selected animal",
+    "provenance": "chosen_engineering",
+    "quantity": "membrane_mass",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "kg",
+    "value": 0.05
+   },
+   {
+    "carrier": "host:arm_rigid_laws.json",
+    "carrier_sha256": "a9e971db4b36c1a6c35f9c27171ebd06787d5ffc96d58cd4b039e9e4e7f02d32",
+    "id": "m04_rigid_sternum",
+    "never_biological": true,
+    "note": "rigid-by-declaration arm region (M04 sealed carrier); the arm's only pinned stiffness state is an engineering choice, not tissue biology; 'density is never an input to stiffness' (M04 provenance note)",
+    "provenance": "chosen_engineering",
+    "quantity": "passive_law_profile",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "profile",
+    "value": "rigid"
+   },
+   {
+    "carrier": "host:arm_rigid_laws.json",
+    "carrier_sha256": "a9e971db4b36c1a6c35f9c27171ebd06787d5ffc96d58cd4b039e9e4e7f02d32",
+    "id": "m04_rigid_clavicle",
+    "never_biological": true,
+    "note": "rigid-by-declaration arm region (M04 sealed carrier); the arm's only pinned stiffness state is an engineering choice, not tissue biology; 'density is never an input to stiffness' (M04 provenance note)",
+    "provenance": "chosen_engineering",
+    "quantity": "passive_law_profile",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "profile",
+    "value": "rigid"
+   },
+   {
+    "carrier": "host:arm_rigid_laws.json",
+    "carrier_sha256": "a9e971db4b36c1a6c35f9c27171ebd06787d5ffc96d58cd4b039e9e4e7f02d32",
+    "id": "m04_rigid_scapula",
+    "never_biological": true,
+    "note": "rigid-by-declaration arm region (M04 sealed carrier); the arm's only pinned stiffness state is an engineering choice, not tissue biology; 'density is never an input to stiffness' (M04 provenance note)",
+    "provenance": "chosen_engineering",
+    "quantity": "passive_law_profile",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "profile",
+    "value": "rigid"
+   },
+   {
+    "carrier": "host:arm_rigid_laws.json",
+    "carrier_sha256": "a9e971db4b36c1a6c35f9c27171ebd06787d5ffc96d58cd4b039e9e4e7f02d32",
+    "id": "m04_rigid_humerus",
+    "never_biological": true,
+    "note": "rigid-by-declaration arm region (M04 sealed carrier); the arm's only pinned stiffness state is an engineering choice, not tissue biology; 'density is never an input to stiffness' (M04 provenance note)",
+    "provenance": "chosen_engineering",
+    "quantity": "passive_law_profile",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "profile",
+    "value": "rigid"
+   },
+   {
+    "carrier": "host:arm_rigid_laws.json",
+    "carrier_sha256": "a9e971db4b36c1a6c35f9c27171ebd06787d5ffc96d58cd4b039e9e4e7f02d32",
+    "id": "m04_rigid_ulna",
+    "never_biological": true,
+    "note": "rigid-by-declaration arm region (M04 sealed carrier); the arm's only pinned stiffness state is an engineering choice, not tissue biology; 'density is never an input to stiffness' (M04 provenance note)",
+    "provenance": "chosen_engineering",
+    "quantity": "passive_law_profile",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "profile",
+    "value": "rigid"
+   },
+   {
+    "carrier": "host:arm_rigid_laws.json",
+    "carrier_sha256": "a9e971db4b36c1a6c35f9c27171ebd06787d5ffc96d58cd4b039e9e4e7f02d32",
+    "id": "m04_rigid_radius",
+    "never_biological": true,
+    "note": "rigid-by-declaration arm region (M04 sealed carrier); the arm's only pinned stiffness state is an engineering choice, not tissue biology; 'density is never an input to stiffness' (M04 provenance note)",
+    "provenance": "chosen_engineering",
+    "quantity": "passive_law_profile",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "profile",
+    "value": "rigid"
+   },
+   {
+    "carrier": "host:arm_rigid_laws.json",
+    "carrier_sha256": "a9e971db4b36c1a6c35f9c27171ebd06787d5ffc96d58cd4b039e9e4e7f02d32",
+    "id": "m04_rigid_hand",
+    "never_biological": true,
+    "note": "rigid-by-declaration arm region (M04 sealed carrier); the arm's only pinned stiffness state is an engineering choice, not tissue biology; 'density is never an input to stiffness' (M04 provenance note)",
+    "provenance": "chosen_engineering",
+    "quantity": "passive_law_profile",
+    "registry": "engineering_active_pressure",
+    "source_status": "synthetic_authored",
+    "unit": "profile",
+    "value": "rigid"
+   }
+  ],
+  "schema_note": "chosen (authored) active-pressure material parameters and the arm passive-law declaration; disjoint from the biological registry by identity and by flag"
+ },
+ "identity": {
+  "arrival_id": "arrival-f9d11eb9da3f44a3842d11e8736d73e9",
+  "attempt_id": "91219426ace44ca8829000815780caaf",
+  "base_head": "362da5056f84b56b62a13cfb878dddb98538b18f",
+  "card_falsifier_verbatim": "Missing identities or a claimed pass unsupported by records fails; a screenshot is not a substitute.",
+  "card_observation_verbatim": "Do not inherit unrelated human or differently scaled masses/strengths",
+  "criteria_sha256": "f784d613aaebc3c2c24350a6cd4a5fb103f72f929f83b5fd9926395b55a040e8",
+  "date_frozen": "2026-09-30",
+  "definition_raw_sha256": "57ded6eb2f2cc6aa914d6f68c8efb55b215790fc7a9d0baa5dfd2c49fd1465c1",
+  "done_when_verbatim": "Strength, force-length/velocity, compliance, limits and applicability are defined for the selected animal. Material-first addition: Separate source-backed biological parameters from chosen engineering active-pressure material parameters. No inferred density/stiffness/activation law from geometry alone.",
+  "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+  "task_id": "MAT2-A08",
+  "task_id_short": "A08",
+  "title": "Define evidenced muscle/tendon parameter envelope"
+ },
+ "input_pins": {
+  "pins": {
+   "host:20260921_arm_architecture_options.md": "60e97cc8f7bf37c69d5230da7a1c030f91e5636ff7f958855fea592f2fd74e25",
+   "host:ASTRA_DATA_ROUND_20260929.md": "e082aa812af21031a1c3a6e41111fe078b86d04f0dfff1a40d6061ad87064986",
+   "host:M2-3_mulatta_morphometry.csv": "16ca8bcd9be48b3766125801eb05a8f4f10b446b4caed76d9fddeb2e45df71fa",
+   "host:M2-6_mulatta_inertials.csv": "1948a2d8399b5253461c6ed70eed87ea38c5df4083b75437e1e3dbd1a4ce93f3",
+   "host:M2-8_regressions.csv": "b185ee8e98b6e663defed0abd4d004fec053eb6417e027c54801070cd894ec22",
+   "host:MUSCLE_ATLAS.md": "e51c8bb211ec15ea9fbe84cfb6c8f5dae421d276b48f39b4703936d6c88d1a16",
+   "host:REPIN_STUDY.md": "99cde4758566784b5b98ad45db19f50beba2c81d8b1761428af19e32290c318b",
+   "host:arm_rigid_laws.json": "a9e971db4b36c1a6c35f9c27171ebd06787d5ffc96d58cd4b039e9e4e7f02d32",
+   "host:atlas_receipt.json": "51a591eb938e032ce32c2a09f8b089d9bdd3138d1fc367081c2093b2d52a7586",
+   "host:pressure_state.json": "8182da4720f26154dfff3c54711e66cb318cc7bb9c989de77b7ee0a2f2b2ec03",
+   "repo:tools/monkey_campaign/contributions/MAT2-A06/attachment_ownership.json": "f1f0430772258e8449fc354841becf2f1869783399e63f3f145565b8d0b1041c",
+   "repo:tools/monkey_campaign/contributions/MAT2-M02/data/macaque_arm/monkeyArm_current.osim": "4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895"
+  },
+  "verified": true
+ },
+ "law_statement": "no density/stiffness/activation law inferred from geometry alone; biological vs engineering parameters separated; no new fitting experiment run or authorized by this card; declared carrier values keep their honest provenance class",
+ "measured_reference": {
+  "applicability": "screening evidence only; n=6 order-of-magnitude screens; the M2-8 regressions recover the source sample's own mean body weight (~7.9 kg class), ABOVE the 5.4-6.9 kg book context; screens never flip sealed statuses",
+  "band_discipline": "|claim-mean| <= 1 SD INSIDE-1SD; <= 2 SD INSIDE-2SD; else OUTSIDE (boundaries inclusive)",
+  "censored_pennation": "M2-3 prints '-' below 5 deg; claims <5 deg are CONSISTENT-CENSORED, claims >=5 deg against '-' are OUTSIDE-CENSORED; no SD math on censored cells",
+  "n_subjects": 6,
+  "segment_screens": [
+   {
+    "claim": "hand",
+    "claim_kg": 0.049,
+    "class": "INSIDE-1SD",
+    "inside_t_pi": true,
+    "m26_column": "hand",
+    "m26_mean_g": 57.0,
+    "m26_sd_g": 11.0,
+    "sealed_atlas_class": "INSIDE-1SD",
+    "z": 0.7273
+   },
+   {
+    "claim": "humerus",
+    "claim_kg": 0.203,
+    "class": "INSIDE-1SD",
+    "inside_t_pi": true,
+    "m26_column": "upper_arm",
+    "m26_mean_g": 294.0,
+    "m26_sd_g": 119.0,
+    "sealed_atlas_class": "INSIDE-1SD",
+    "z": 0.7647
+   },
+   {
+    "claim": "radius_plus_ulna",
+    "claim_kg": 0.154,
+    "class": "INSIDE-1SD",
+    "inside_t_pi": true,
+    "m26_column": "forearm",
+    "m26_mean_g": 194.0,
+    "m26_sd_g": 78.0,
+    "sealed_atlas_class": "INSIDE-1SD",
+    "z": 0.5128
+   }
+  ],
+  "source": "host:M2-3_mulatta_morphometry.csv (license-internal; derived statistics only in this artifact)",
+  "t_pi_multiplier": 2.776546
+ },
+ "schema": "chimera.a08_parameter_envelope.v1",
+ "selected_animal": {
+  "book_context": "adult female; body-mass reference band 5.4-6.9 kg (Turnquist & Kessler 1989, midpoint 6.15 kg)",
+  "inheritance_law": "no human data and no differently scaled species data admissible; M. fascicularis tables sealed-inadmissible (S-MASS-08) and neither pinned nor read",
+  "species": "Macaca mulatta",
+  "two_mass_systems": {
+   "body_mass_reference_kg": [
+    5.4,
+    6.9
+   ],
+   "body_mass_reference_use": "normalization basis for every BW-normalized claim (re-pin study adjudication, Side B)",
+   "law": "register, do not repair; every mass claim names its system",
+   "walk_scene_dynamics_mass_kg": 10.038,
+   "walk_scene_mass_use": "the sealed W03 scene assembly mass, hash-anchored, uneditable; a DIFFERENT quantity (Side A)"
+  }
+ },
+ "unresolved_entries": [
+  {
+   "authorizing_rank": "requires a separately authorized measured source; carrier claims stay force_runtime_ready: false",
+   "id": "U1",
+   "missing_evidence": "measured maximum isometric force (or measured PCSA plus measured specific tension) for the selected animal; the sealed carrier Fmax values are 22 derived-provisional / 6 provenance-unknown / 11 hand-set defaults (20260921 memo verdict), not source-backed",
+   "parameter_class": "strength_measured_upgrade",
+   "status": "explicitly_unresolved"
+  },
+  {
+   "authorizing_rank": "operator gate 066485ae owner (Captain/operator decision); inference from surface geometry is not lawful",
+   "id": "U2",
+   "missing_evidence": "CT-derived muscle volumes; the CT distribution is recorded BLOCKED FOR SHIP (RESTRICTED_RECORDED CT-chain behind operator gate 066485ae); release requires separate authorization",
+   "parameter_class": "muscle_mass_and_pcsa",
+   "status": "explicitly_unresolved"
+  },
+  {
+   "authorizing_rank": "requires a measured source named by a Captain-authorized records lane",
+   "id": "U3",
+   "missing_evidence": "measured specific tension for M. mulatta; the sigma round trip is open (an unknown sigma may sit inside the carrier Fmax derivation), so PCSA=Fmax/sigma is not round-trip-stable",
+   "parameter_class": "specific_tension_sigma",
+   "status": "explicitly_unresolved"
+  },
+  {
+   "authorizing_rank": "requires a measured source; model-class shape is not a measurement",
+   "id": "U4",
+   "missing_evidence": "any measured force-velocity parameter source for the selected animal (the sealed model class fixes the relation SHAPE, but its measured parameters for this animal exist in no pinned source)",
+   "parameter_class": "force_length_velocity_dynamics",
+   "status": "explicitly_unresolved"
+  },
+  {
+   "authorizing_rank": "requires measured activation data under separate authorization",
+   "id": "U5",
+   "missing_evidence": "measured activation data; no activation law may be inferred from geometry alone (sealed A07 law)",
+   "parameter_class": "activation_dynamics",
+   "status": "explicitly_unresolved"
+  },
+  {
+   "authorizing_rank": "requires a measured source; C17-class real-port inputs remain blocked (A06/A07 lawful absence)",
+   "id": "U6",
+   "missing_evidence": "measured tendon elastic modulus or compliance for the selected animal; tendon_slack_length is a geometric length, not a stiffness; M04 rigid is an engineering declaration",
+   "parameter_class": "tendon_compliance_stiffness",
+   "status": "explicitly_unresolved"
+  },
+  {
+   "authorizing_rank": "requires a measured source",
+   "id": "U7",
+   "missing_evidence": "measured passive force-length parameters for the selected animal",
+   "parameter_class": "passive_force_length",
+   "status": "explicitly_unresolved"
+  },
+  {
+   "authorizing_rank": "requires a measured source; no human-norm torque substitution is lawful (C07 output law)",
+   "id": "U8",
+   "missing_evidence": "measured forelimb joint range-of-motion for this specimen class; the sealed walk-scene envelope and torque caps are authored engineering (DOC-derived x1.25), not animal ROM biology",
+   "parameter_class": "biological_rom_joint_limits",
+   "status": "explicitly_unresolved"
+  }
+ ],
+ "verification_profile": {
+  "camera_required_fields": [],
+  "capture_status": "not_required_by_profile (records/offline)",
+  "clean_view_required": false,
+  "id": "records",
+  "kind": "offline",
+  "nonvisual_reason": "A source/contract/measurement task whose truth requires records or numerical oracles, not a 3D image.",
+  "numerical_evidence_required": true
+ }
+}
