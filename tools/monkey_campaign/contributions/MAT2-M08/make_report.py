@@ -179,8 +179,9 @@ def main():
       'momentum ledger closes to 1e-12 with anchors included).'.format(
           ts=trace_sha))
     w('')
-    w('## Named checks (test_resident_gpu_world.py, all green on the GPU '
-      'box)')
+    w('## Named checks (test_resident_gpu_world.py; per-check verdicts '
+      'below are the receipt assertions, re-run on the GPU box at the '
+      'candidate head)')
     w('')
     w('- X1_gpu_direct_reference_agreement: PASS' if x1 else
       '- X1_gpu_direct_reference_agreement: FAIL')

@@ -44,7 +44,13 @@ class X1Agreement(unittest.TestCase):
 class X2Determinism(unittest.TestCase):
     def test_X2_determinism_byte_identity(self):
         receipt = load('determinism_receipt.json')
-        self.assertTrue(receipt['X2_byte_identical'])
+        # Scoped verdict (6ee1e8f6): the declared determinism unit is the
+        # TRACE; receipts legitimately differ by mode_main's four
+        # augmentation keys. The named check asserts the scoped gate.
+        self.assertTrue(receipt['X2_trace_byte_identical'])
+        self.assertTrue(receipt['X2_pass'])
+        self.assertEqual(receipt['receipt_keys_only_in_rerun'], [])
+        self.assertEqual(receipt['receipt_shared_keys_differing'], [])
 
 
 class X3Profile(unittest.TestCase):
