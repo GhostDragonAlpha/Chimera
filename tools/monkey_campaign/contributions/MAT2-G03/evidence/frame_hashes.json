@@ -1,0 +1,111 @@
+{
+ "capture_sha_definition": "sha256 of the FFV1 mkv file bytes; frame identity = ordered concat of the 21 per-frame PNG sha256 digests (raw 32-byte concatenation, frame_00..20); concat_sha256 c1f61642de9fc38aab2dfa43003f79e276beb7931fd94e6a495ca1e5ac8b7315",
+ "concat_sha256": "c1f61642de9fc38aab2dfa43003f79e276beb7931fd94e6a495ca1e5ac8b7315",
+ "frames": [
+  {
+   "frame": "frame_00.png",
+   "sha256": "b393360c742582750450d5e05eb3a2d14c32dc774837c7a97e988f7c1396dd6f",
+   "tick": 0
+  },
+  {
+   "frame": "frame_01.png",
+   "sha256": "c0f6a89a3944e13e6ded4d28924d8320cd1728a3307bad18e6c2dcc82bd1f2a4",
+   "tick": 1
+  },
+  {
+   "frame": "frame_02.png",
+   "sha256": "dd83da996618bbba2d08c578cf0517334197bf5c49a26290d906c1805324e186",
+   "tick": 2
+  },
+  {
+   "frame": "frame_03.png",
+   "sha256": "3fc516aef6f6d0d8fde024307fd29657af8b562247ba98e0921edaedaafe7d45",
+   "tick": 3
+  },
+  {
+   "frame": "frame_04.png",
+   "sha256": "d48e7c23a8bb760709235a195cd87c84b5873a4bdeff1738499a2bc5cee6b95c",
+   "tick": 4
+  },
+  {
+   "frame": "frame_05.png",
+   "sha256": "cc462aa5196aea75a862b4bea6ce4277abf1edd292f99446ced4dc119f2586b5",
+   "tick": 5
+  },
+  {
+   "frame": "frame_06.png",
+   "sha256": "e72b735275e36b91cd611587482d7a8110b5e65f4bdcba3de1ee9a4b93dc4f98",
+   "tick": 6
+  },
+  {
+   "frame": "frame_07.png",
+   "sha256": "fc1aaae5c5e9674505cdee85860c234ed905d293eb63c99fc366f4eafb5d46cf",
+   "tick": 7
+  },
+  {
+   "frame": "frame_08.png",
+   "sha256": "7c0945ec875fa6113d8cf71b65fa57d2ad257b3a4d9c64669afab53159d0dd48",
+   "tick": 8
+  },
+  {
+   "frame": "frame_09.png",
+   "sha256": "6e57702b2b8948de1f92c78a2bdc7f9d59f2dcd3b6db579239199f83f9bcf8d9",
+   "tick": 9
+  },
+  {
+   "frame": "frame_10.png",
+   "sha256": "2d4b26dd879c3be3dd8c540cc5f31d331c46d1d3d5deda04d09235e538ba4e51",
+   "tick": 10
+  },
+  {
+   "frame": "frame_11.png",
+   "sha256": "be41e7d145dd69241eab7b5a8b8640cd39b253609a3290a418c1d9359f1a8140",
+   "tick": 11
+  },
+  {
+   "frame": "frame_12.png",
+   "sha256": "ef1b2981053ab1ea3301dbffdb192d8ab7d6b041dec4420c4684b817aa03cd1a",
+   "tick": 12
+  },
+  {
+   "frame": "frame_13.png",
+   "sha256": "c7de11e1acfa0fda211326708086d58644ef7ffcb449802cbd2eb6dd0e44f178",
+   "tick": 13
+  },
+  {
+   "frame": "frame_14.png",
+   "sha256": "3e31a12afcc18437d8240abace4f8505097849e77aaaf3b088166b20a5778eb6",
+   "tick": 14
+  },
+  {
+   "frame": "frame_15.png",
+   "sha256": "0205394a95a50f82d39b4d153fd7c14e261629ffe7b9d3e2789f75e8b550d4b9",
+   "tick": 15
+  },
+  {
+   "frame": "frame_16.png",
+   "sha256": "4ae3889beabe70cb87c2596941c1eb4cf56dce7bcb4da4cd4509be58b889f35f",
+   "tick": 16
+  },
+  {
+   "frame": "frame_17.png",
+   "sha256": "14bb0ec02b67fe107a68682f6dc8dc23e4d987b5551c3faf53ddab1850e18b44",
+   "tick": 17
+  },
+  {
+   "frame": "frame_18.png",
+   "sha256": "6881b9851bbbdfd89ecfc206e63e625d0a902720483c99a146bba5ea04aa199e",
+   "tick": 18
+  },
+  {
+   "frame": "frame_19.png",
+   "sha256": "0364e21512ef659d4aa2a7557492f0d412c54d9eb0ad829b80fa048167d77e45",
+   "tick": 19
+  },
+  {
+   "frame": "frame_20.png",
+   "sha256": "683d217514b2c1b108b7b42ad0263ae91ac0ff787306b6fb361cedc99124d855",
+   "tick": 20
+  }
+ ]
+}

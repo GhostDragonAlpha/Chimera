@@ -1,0 +1,55 @@
+{
+ "bindings": {
+  "capture/capture_mat2_g03_pose_sweep_20260930.mkv": "62df0cd5486fb200fd67a45a607677f195c77507e343e276963321aed5c0d063",
+  "evidence/falsifier_receipt.json": "2bd2b2e146936dc7aea6586020e60c1c08459345b9fb7d9f7acf48dce8d227b6",
+  "sweep_trace.json": "4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929",
+  "tendon_sweep.json": "34f3df01a753af7585b1177077515114c33b59911f3a27d1e21faeed0c1c19a5"
+ },
+ "done_when_clauses": [
+  {
+   "check": "checks.P5_finiteness + W4 finiteness scan + named test_every_output_finite (14/14 rows evaluated, all isfinite)",
+   "clause": "Relevant pose-range outputs are finite",
+   "evidence": "tools/monkey_campaign/contributions/MAT2-G03/tendon_sweep.json",
+   "sha256": "34f3df01a753af7585b1177077515114c33b59911f3a27d1e21faeed0c1c19a5"
+  },
+  {
+   "check": "every arm carries analytic velocity-identity AND central-finite-difference values with residual within W2 (observed worst 9.639565621416546e-12 sweep / 2.377519188467847e-12 static); FK closure vs pinned M02 body_frames at default pose (1.1102230246251565e-16 <= 1e-12)",
+   "clause": "and independently checked",
+   "evidence": "tools/monkey_campaign/contributions/MAT2-G03/tendon_sweep.json",
+   "sha256": "34f3df01a753af7585b1177077515114c33b59911f3a27d1e21faeed0c1c19a5"
+  },
+  {
+   "check": "unresolved_owner law (null arms, never 0.0) + FB2 unresolved_zero_arm_refused bit=true + named test_unresolved_bodies_cannot_appear_as_zero_arms",
+   "clause": "unresolved bodies cannot appear as zero arms",
+   "evidence": "tools/monkey_campaign/contributions/MAT2-G03/evidence/falsifier_receipt.json",
+   "sha256": "2bd2b2e146936dc7aea6586020e60c1c08459345b9fb7d9f7acf48dce8d227b6"
+  }
+ ],
+ "done_when_verbatim": "Relevant pose-range outputs are finite and independently checked; unresolved bodies cannot appear as zero arms",
+ "gates": {
+  "capture_structurally_valid": true,
+  "decode_identity": true,
+  "falsifier_all_green": true,
+  "sweep_fk_closure": true,
+  "sweep_windows": true
+ },
+ "identity": {
+  "agent_id": "arrival-f0cc8f5a78794f8ea977ae87b8a75064",
+  "attempt_id": "39e6d5fbbba74fd7981bb5df3950b39c",
+  "base_sha256": "f6cbf7a996eff27495575375d64ba38ea3e77b2e",
+  "composed_against": "CARD_STARTER.md v2",
+  "criteria_sha256": "d489995ecb7c645013084987bbf3f5d54cd4abca2e7bec2d1afa6db0ff70c5aa",
+  "date_frozen": "2026-09-30",
+  "preregistration_sha256": "eef5a3cf642c8b6cd522d60ce93990b8a6a0f4d6677c73afb6d63c8e71dd0e74",
+  "scope_sha256": "cb5475f8486197a973edc4360b177fc31a629c4f0979ebf80dd76aae57996097",
+  "task_id": "G03",
+  "task_long": "MAT2-G03"
+ },
+ "profile": {
+  "id": "tendon-pose-sweep",
+  "kind": "motion",
+  "source": "agent_slots.sqlite3 kanban.cards[MAT2-G03].spec.ontology_qualification.task.verification_profile (read mode=ro at capture time)"
+ },
+ "schema": "chimera.qualification_receipt.v1",
+ "task_id": "G03"
+}
