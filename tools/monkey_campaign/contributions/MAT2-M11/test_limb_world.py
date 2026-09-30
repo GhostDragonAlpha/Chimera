@@ -360,7 +360,9 @@ class LayerPresenceGate(unittest.TestCase):
     def test_layer_presence_proof(self):
         evidence = load(str(CAPTURE / 'evidence' / 'cameras.json'))
         proof = evidence['layer_presence_proof']
-        layers = lw().LAYERS
+        sys.path.insert(0, str(HERE))
+        from render_run import LAYERS
+        layers = LAYERS
         for idx, layer in enumerate(layers):
             row = proof['per_layer'][layer]
             self.assertTrue(row['present'], layer)
@@ -395,7 +397,7 @@ class G8SingleCaptureIdentity(unittest.TestCase):
         self.assertEqual(list(bindings)[0], dyn_sha)
         self.assertEqual(manifest['capture_sha256'],
                          context['capture_sha256'])
-        self.assertEqual(crec['capture_sha256'],
+        self.assertEqual(crec.get('video_sha256'),
                          manifest['capture_sha256'])
         self.assertEqual(manifest['task_id'], 'M11')
         self.assertEqual(context['task_id'], 'M11')

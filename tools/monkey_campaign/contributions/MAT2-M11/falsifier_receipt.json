@@ -1,0 +1,90 @@
+{
+ "FB1_overlay_driven_motion": {
+  "bit": true,
+  "bite_m": 0.001,
+  "clean_control": {
+   "deviation_m": 0.0,
+   "guard": "m11_fb1_premature",
+   "metric_scope": "foot motion audit: re-integration of the foot from the recorded per-substep forces",
+   "within_tolerance": true
+  },
+  "tampered_deviation_m": 225.70034905724083,
+  "window_m": 1e-09
+ },
+ "FB2_area_independent_forces": {
+  "bit": true,
+  "bite": 1e-06,
+  "clean_control": {
+   "guard": "m11_fb2_premature",
+   "metric_scope": "M03 traction identity |F_i|/A_i/p worst relative error on the clean loaded run",
+   "ratio_worst": 4.736951571734001e-16,
+   "within_tolerance": true
+  },
+  "tampered_ratio_worst": 0.28358091893067355,
+  "window": 1e-09
+ },
+ "FB3_clipped_load_path": {
+  "bit": true,
+  "bite_threshold_n": 0.14899600355318596,
+  "clean_control": {
+   "guard": "m11_fb3_premature",
+   "max_reaction_dev_n": 0.0,
+   "metric_scope": "interface audit (applied chain-tie reaction == M05 law reaction, bitwise) on the clean dynamic run",
+   "within_tolerance": true
+  },
+  "tampered_audit": {
+   "max_force_law_dev_n": 0.0,
+   "max_reaction_dev_n": 0.8453228739260885,
+   "peak_law_force_n": 0.8453228739260885
+  }
+ },
+ "FB4_hidden_support": {
+  "bit": true,
+  "clean_control": {
+   "guard": "m11_fb4_premature",
+   "metric_scope": "scene inventory vs rendered subject list",
+   "missing_subject_ids": [],
+   "within_tolerance": true
+  },
+  "expected_code": "support_missing_from_scene",
+  "tampered_missing_subject_ids": [
+   "clamp_ring"
+  ]
+ },
+ "FB5_unaccounted_energy": {
+  "bit": true,
+  "bite_threshold_n": 0.14899600355318596,
+  "clean_control": {
+   "guard": "m11_fb5_premature",
+   "max_force_law_dev_n": 0.0,
+   "metric_scope": "state-determined tie force-law audit (bitwise zero) on the clean dynamic run",
+   "within_tolerance": true
+  },
+  "tampered_audit": {
+   "max_force_law_dev_n": 0.5239350887306364,
+   "max_reaction_dev_n": 0.0,
+   "peak_law_force_n": 0.5239350887306364
+  }
+ },
+ "FB6_synthetic_port_standin": {
+  "bit": true,
+  "clean_control": {
+   "bitwise_matches_pinned_b03": true,
+   "guard": "m11_fb6_premature",
+   "metric_scope": "assembly mass audit matches the pinned B03 document bitwise (clean build passes)",
+   "within_tolerance": true
+  },
+  "tampered_refusal_code": "synthetic_port_standin_refused:humerus",
+  "tampered_refusal_fired": true
+ },
+ "all_arms_bit": true,
+ "arrival_id": "arrival-f11f7489a821465ea2c014fea51698f8",
+ "attempt_id": "8de1349ae67840fc8b8a15fb647c5e4a",
+ "criteria_sha256": "0588c4140a9968160cd640507e02a5b0cefefa6238ff3107de4c232f0d7ea72e",
+ "p_vacuous_guard": {
+  "fires_on_identically_zero_window": true,
+  "lesson": "a gate that cannot fail is not a measurement (M07 independent-review lesson)",
+  "refusal_code": "vacuous_comparison_refused"
+ },
+ "schema": "chimera.m11.falsifier_receipt.v1"
+}

@@ -311,8 +311,8 @@ def _circle(draw, cam, center, radius, vp_w, vp_h, rgb, width=1):
         pts.append(center + np.array(
             [radius * math.cos(ang), radius * math.sin(ang), 0.0]))
     px, _ = cam.project(np.array(pts), vp_w, vp_h)
-    draw.line([(p[0][0], p[0][1]) for p in px] +
-              [(px[0][0], px[0][1])], fill=rgb, width=width)
+    pts2 = [(float(p[0]), float(p[1])) for p in px]
+    draw.line(pts2 + [pts2[0]], fill=rgb, width=width)
 
 
 def _ground(draw, cam, vp_w, vp_h):
@@ -403,8 +403,12 @@ def render_snapshot(model, snap, diag, only_layer=None):
                 for k in range(len(chain)):
                     _circle(vdraw, cam, chain[k], model.chain_radius[k],
                             VP_W, VP_H, (0, 150, 90), 1)
-            # L5: energy/work and simulation tick (HUD line)
+            # L5: energy/work and simulation tick (HUD line + an
+            # exact-color layer key marker; PIL text renders antialiased,
+            # so the text alone never contains the probe RGB)
             if 4 in layer_set or only_layer == 4:
+                vdraw.rectangle([VP_W - 10, VP_H - 10, VP_W - 6, VP_H - 6],
+                                fill=(140, 235, 140))
                 vdraw.text((4, VP_H - 14),
                            'tick %d | dp %.0f Pa | W_press_cum %.3e J | '
                            'foot_gap %.3e m'
@@ -592,9 +596,11 @@ def main():
         # is the state after T completed ticks = trace row T-1; snapshot 0
         # is the erected rest state)
         if tick == 0:
-            bind_gap = lw.G_FOOT_TARGET_M + \
-                float(model.erection['lift_m']) * 0.0  # erected state
-            bind_gap = None
+            # the declared rest state: erected placement, no completed
+            # trace row (the membrane identity binds instead)
+            require(abs(float(snap['volume_m3']) -
+                        float(model.volume_rest)) <= 1e-12,
+                    'bind_rest_volume_mismatch')
         else:
             row = row_lookup[tick - 1]
             require(abs(float(snap['foot_gap_m']) -

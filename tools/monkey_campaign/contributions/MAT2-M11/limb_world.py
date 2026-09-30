@@ -997,6 +997,25 @@ class LimbWorld:
         settle_start = self.ticks - SETTLE_WINDOW
         x_before_tick = self.x.copy()
         n_el = len(self.chain_x)
+        if 0 in self.snapshot_ticks:
+            # the declared rest state (M10 heritage): tick 0 is the
+            # erected state before any schedule tick runs
+            self.snapshots.append({
+                'tick': 0, 'x': self.x.copy(),
+                'load': self.load_x.copy(),
+                'chain': [p.copy() for p in self.chain_x],
+                'delta_p_pa': 0.0,
+                'volume_m3': float(self.volume_rest),
+                'pole_gap_m': self.pole_gap(),
+                'foot_gap_m': float(self.chain_x[-1][2] -
+                                    self.chain_radius[-1]),
+                'w_press_cum_j': 0.0,
+                'chain_tie_tensions_n': [float(t.last_tension)
+                                         for t in self.chain_ties],
+                'load_tie_tension_n':
+                    float(self.load_tie.last_tension),
+                'clamp_fz_n': 0.0,
+                'state_digest': self._state_digest(-1)})
         for tick in range(self.ticks):
             dp = float(self.schedule_fn(tick))
             self.max_dp_seen = max(self.max_dp_seen, abs(dp))
