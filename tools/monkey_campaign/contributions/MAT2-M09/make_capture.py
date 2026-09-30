@@ -64,7 +64,12 @@ PROFILE, REGISTRY_PAYLOAD_SHA256 = registry_profile()
 def profile_snapshot():
     """A4 (F4): the frozen 'registry profile snapshot + provenance
     written to evidence' line, made real — the full profile object plus
-    its read-only provenance, deterministic (no wall-clock fields)."""
+    its read-only provenance, deterministic (no wall-clock fields).
+    Round-2 law: the DURABLE identity is the canonical profile-object
+    sha (the live single-row registry store rewrites on coordinator
+    writes, so whole-store payload shas are capture-time-only)."""
+    canon = json.dumps(PROFILE, sort_keys=True,
+                       separators=(',', ':'), ensure_ascii=False)
     return {
         'schema': 'chimera.m09_registry_profile_snapshot.v1',
         'profile': PROFILE,
@@ -73,10 +78,20 @@ def profile_snapshot():
             'selector': 'kanban.cards[MAT2-M09].spec.ontology_qualification'
                         '.task.verification_profile',
             'access_mode': 'sqlite read-only (file:...?mode=ro URI)',
+            'profile_object_sha256':
+                hashlib.sha256(canon.encode('utf-8')).hexdigest(),
+            'profile_object_canonicalization':
+                'sha256 of json.dumps(profile, sort_keys=True, '
+                'separators=(",",":"), ensure_ascii=False)',
             'payload_sha256': REGISTRY_PAYLOAD_SHA256,
-            'payload_note': ('sha256 over the exact state.payload bytes '
-                             'the profile object was parsed from; '
-                             're-read the registry read-only to verify'),
+            'payload_note': ('whole-store payload_sha256 is CAPTURE-TIME-ONLY '
+                             'and NOT re-verifiable: the live registry '
+                             'single-row store rewrites on coordinator writes '
+                             '(observed 30 min post-commit). The durable '
+                             'identity is profile_object_sha256 above - '
+                             're-verify by re-reading the registry read-only, '
+                             'extracting the same profile object, '
+                             'canonicalizing identically, and comparing shas.'),
             'used_by': ('validate_manifest(manifest, context, PROFILE) '
                         'in this module; PROFILE is never hand-copied'),
         },
