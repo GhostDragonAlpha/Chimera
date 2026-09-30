@@ -1,7 +1,7 @@
 {
- "capture_sha256": "b3e57b89f17238eb6ed710bf18a637eb9da36ffad01df0834a1c981de59f28b3",
+ "capture_sha256": "49d2023ccd78ae26d3c87ebf39041039629b4e3b9a42a77d16bbe8fd1eaa948d",
  "profile_id": "attachment-fixture",
- "run_id": "g02-attachment-fixture-20260930-b3e57b89",
+ "run_id": "g02-attachment-fixture-20260930-49d2023c",
  "schema": "chimera.visual_capture_manifest.v1",
  "sheet_layout": {
   "footer_rect": [
@@ -18,7 +18,7 @@
      "trace_line_pixels": 1264
     },
     "frame": "frame_00.png",
-    "sha256": "4c9bd47f11eba7f09c83273c66648133f917250d5ecb6354255402df3932b648",
+    "sha256": "de2fb8478cdd2c2df80afbc955a00e552dd5c2d9007d89e9185111b4a665c775",
     "tick": 0
    },
    {
@@ -28,7 +28,7 @@
      "trace_line_pixels": 1264
     },
     "frame": "frame_01.png",
-    "sha256": "01a6e9cffe6efef36715a6e29ef8076e05e01f2063cc6d6d24c7489df7921fde",
+    "sha256": "95543f391718dd2d440ccfb3c73b59b3915abf73c7835f714b028149687d9ef3",
     "tick": 20
    },
    {
@@ -38,7 +38,7 @@
      "trace_line_pixels": 1264
     },
     "frame": "frame_02.png",
-    "sha256": "d4dec129c8ce063100bb735a122ea212f767c89341a647cb4cc029bacf86175a",
+    "sha256": "abdd43a70001c4be675eeddb096ecb07506745d64fe2f72f01536db332dce242",
     "tick": 150
    },
    {
@@ -48,7 +48,7 @@
      "trace_line_pixels": 1265
     },
     "frame": "frame_03.png",
-    "sha256": "5b6410c27b72aa7c366d61fb9c10675caca672aeca20163ab7df21c218c2f64b",
+    "sha256": "20b077671fe1c73e83b45c4c039b7fd2cac4a0b0fab2b65d50ae65b05c5a0072",
     "tick": 232
    },
    {
@@ -58,7 +58,7 @@
      "trace_line_pixels": 1265
     },
     "frame": "frame_04.png",
-    "sha256": "154178630d6a798ab9cb2d7130c42fa4c98521a46cff353cb958bac1aa31bdf5",
+    "sha256": "bd387b9652856493a01a3784c8ee26631c65fc9c1e49ec500ae39e349cf33aef",
     "tick": 233
    },
    {
@@ -68,7 +68,7 @@
      "trace_line_pixels": 1265
     },
     "frame": "frame_05.png",
-    "sha256": "c9f53dc125b609d67e75a236321f182a3857a9a89a11fef2ddadf82d6e90430d",
+    "sha256": "526c65cd6c6ecc616a422b767ad098ea4d14694a4ba823063e21ad7380638b7c",
     "tick": 250
    },
    {
@@ -78,7 +78,7 @@
      "trace_line_pixels": 1264
     },
     "frame": "frame_06.png",
-    "sha256": "8ef5a6e5b8015b65c75500e16a2fc604c042cb65ed82f907264ec11fce7167ad",
+    "sha256": "42ab71e8365f431f57c904ecce130e001683aacbde3c0f219a29dc3efc0911f5",
     "tick": 320
    }
   ],
@@ -1443,7 +1443,7 @@
      "fixture load and displacement traces"
     ]
    },
-   "cell_layout_note": "orthogonal patch view (axis-aligned, looking along +X); declared framing scope = the patch quad and seam; the diagnostic cell additionally renders the declared oblique secondary camera as a labeled picture-in-picture inset (secondary_cameras; the inset is gate-checked to hide no subject point and no label)",
+   "cell_layout_note": "orthogonal patch view (axis-aligned, looking along +X); declared framing scope = the patch quad and seam; the diagnostic cell additionally renders the declared oblique secondary camera as a labeled picture-in-picture inset (secondary_cameras) at its declared 288x76 resolution: the inset camera is in-frame-gated in the INSET coordinate space, every declared geometry signature is measured > 0 exact-color px INSIDE the declared rect (caption-only insets refuse to build), and the gate-checked inset hides no subject point and no label of the primary viewport",
    "mode": "diagnostic",
    "pair_id": "pair-2",
    "secondary_cameras": [
@@ -1679,7 +1679,33 @@
     "occlusion_mode": "depth_tested",
     "pixel_evidence": {
      "footer_min_trace_line_pixels": 1264,
-     "min_tile_nonbg_pixels": 8613,
+     "min_tile_nonbg_pixels": 9667,
+     "secondary_inset": {
+      "camera_frame_id": "g02_oblique_patch",
+      "gate": "every declared geometry signature > 0 exact-color px INSIDE the declared rect (render_run gate + check_capture_pixels inset check); a caption-only inset fails every signature gate",
+      "max_occluded_prepaste_pixels": 304,
+      "measurement": "post-paste tile stats; primary geometry occluded by the paste disclosed per frame (pixel_presence.json pip blocks)",
+      "min_caption_chip_pixels": 44,
+      "min_nonbg_pixels": 1082,
+      "min_signature_pixels_inside_rect": {
+       "body_a": 110,
+       "body_b": 436,
+       "patch": 4,
+       "seam": 37,
+       "stand": 92
+      },
+      "rect_px": [
+       344,
+       6,
+       632,
+       82
+      ],
+      "render_mode": "picture_in_picture_inset",
+      "viewport_resolution": [
+       288,
+       76
+      ]
+     },
      "source": "evidence/pixel_presence.json (render_run measured signatures)"
     },
     "required_subject_ids": [

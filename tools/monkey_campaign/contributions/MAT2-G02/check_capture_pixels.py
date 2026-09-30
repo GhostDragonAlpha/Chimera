@@ -14,10 +14,19 @@ committed manifest claims:
   clean rows must be geometry-only (zero label/triad/styling pixels);
 - perspective camera consistency: the measured seam-dot centroid must sit
   within 3 px of the record-predicted seam pixel;
+- every declared SECONDARY picture-in-picture inset (round-2 fix, the r2
+  blocker: the 288x76 oblique inset contained caption text only while a
+  'nonbg > 100' gate passed it) must contain, INSIDE its declared
+  rendered_rect_px, > 0 exact-color pixels of EVERY declared geometry
+  signature of its render (body_a/body_b/stand/patch/seam), its caption
+  chip, zero diagnostic-styling pixels, and its measured seam-dot
+  centroid must sit within 3 px of the inset-record prediction in the
+  INSET's coordinate space;
 - the shared diagnostic footer must carry the trace inset.
 
 CONTROL LAW: run against the PRE-FIX capture - it must RED (the old
-manifest claims observed_subject_ids for tiles with zero content).
+manifest claims observed_subject_ids for tiles with zero content), and
+against the r2 capture - it must RED on the caption-only inset.
 
 Usage:
     python -B check_capture_pixels.py <capture_dir>            # green path
@@ -40,10 +49,12 @@ HERE = pathlib.Path(__file__).resolve().parent
 BG = (246, 246, 248)
 BODY_A = (60, 90, 200)
 BODY_B = (200, 120, 60)
+STAND = (120, 120, 128)
 PATCH_T1 = (210, 60, 60)
 PATCH_T2 = (120, 60, 160)
 PATCH_CLEAN = (150, 150, 150)
 PATCH_OUTLINE = (20, 20, 20)
+PATCH_DIAGONAL = (255, 160, 40)
 SEAM_DIAG = (250, 220, 80)
 SEAM_CLEAN = (90, 90, 90)
 TRIAD = [(220, 40, 40), (40, 180, 40), (40, 40, 220)]
@@ -57,6 +68,16 @@ MIN_LABEL_PX_PER_LABEL = 30
 POINT_RADIUS = 8
 SEAM_RADIUS = 6
 MAX_SEAM_CENTROID_PX = 3.0
+MIN_PIP_CAPTION_CHIP_PX = 20
+# the inset renders CLEAN-styled geometry: every declared signature must
+# exist inside the declared rect (the r2 lesson: gate the exact draw
+# colors of the declared element, never a bare nonbg threshold)
+INSET_SIGNATURES = (('body_a', [BODY_A]), ('body_b', [BODY_B]),
+                    ('stand', [STAND]),
+                    ('patch', [PATCH_CLEAN, PATCH_OUTLINE]),
+                    ('seam', [SEAM_CLEAN]))
+INSET_FORBIDDEN = [LABEL_COLOR] + TRIAD + [PATCH_T1, PATCH_T2, SEAM_DIAG,
+                                           PATCH_DIAGONAL, TRACE_LINE]
 
 VIEWS = ['patch overview', 'loaded interface close-up',
          'orthogonal and oblique patch views']
@@ -257,13 +278,62 @@ def main(argv):
                     for colors, name in (
                             ([LABEL_COLOR], 'label'),
                             (TRIAD, 'triad'),
-                            ([PATCH_T1, PATCH_T2], 'diagnostic patch'),
+                            ([PATCH_T1, PATCH_T2, PATCH_DIAGONAL],
+                             'diagnostic patch'),
+                            ([SEAM_DIAG], 'diagnostic seam'),
                             ([TRACE_LINE], 'trace inset')):
                         n = int(mask(t, colors).sum())
                         check(n == 0,
                               f'{tile_key} tick {tick}: clean row has '
                               f'{n} {name} pixels (diagnostic styling in '
                               f'a clean viewport)')
+                # secondary picture-in-picture insets (round-2 fix): the
+                # declared rect must contain the inset render's OWN
+                # exact-color geometry signatures, its caption chip, no
+                # diagnostic styling, and an in-space seam consistency -
+                # a caption-only inset fails every signature gate
+                for sec in row.get('secondary_cameras') or []:
+                    rect = sec.get('rendered_rect_px')
+                    res = sec.get('viewport_resolution')
+                    check(bool(rect) and bool(res)
+                          and res[0] == rect[2] - rect[0]
+                          and res[1] == rect[3] - rect[1],
+                          f'{tile_key}: inset {sec.get("frame_id")} '
+                          f'rendered_rect_px {rect} contradicts '
+                          f'viewport_resolution {res}')
+                    if not (rect and res):
+                        continue
+                    ins = t[rect[1]:rect[3], rect[0]:rect[2]]
+                    for name, colors in INSET_SIGNATURES:
+                        n = int(mask(ins, colors).sum())
+                        check(n > 0,
+                              f'{tile_key} tick {tick}: inset '
+                              f'{sec.get("frame_id")} has {n} {name} px '
+                              f'inside declared rect {rect} (no rendered '
+                              f'inset geometry - caption-only inset)')
+                    chip = int(mask(ins, [TITLE_COLOR]).sum())
+                    check(chip >= MIN_PIP_CAPTION_CHIP_PX,
+                          f'{tile_key} tick {tick}: inset caption chip '
+                          f'{chip} < {MIN_PIP_CAPTION_CHIP_PX}')
+                    bad = int(mask(ins, INSET_FORBIDDEN).sum())
+                    check(bad == 0,
+                          f'{tile_key} tick {tick}: inset carries {bad} '
+                          f'diagnostic-styling px inside {rect}')
+                    # inset-space camera consistency: the measured seam
+                    # dot vs the inset record's own prediction at the
+                    # INSET resolution
+                    ipred = project_from_record(sec, seam, res[0], res[1])
+                    icen = centroid(mask(ins, [SEAM_CLEAN]))
+                    if ipred and icen:
+                        d = math.hypot(ipred[0] - icen[0],
+                                       ipred[1] - icen[1])
+                        check(d <= MAX_SEAM_CENTROID_PX,
+                              f'{tile_key} tick {tick}: inset seam '
+                              f'centroid '
+                              f'{tuple(round(v, 1) for v in icen)} vs '
+                              f'inset-record predicted '
+                              f'{tuple(round(v, 1) for v in ipred)} '
+                              f'delta {d:.1f}px')
                 table.append((tick, tile_key, nonbg, tp, len(measured)))
         footer = None
         layout = manifest['sheet_layout']

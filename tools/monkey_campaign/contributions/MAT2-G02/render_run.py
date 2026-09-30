@@ -22,6 +22,30 @@ viewports while the manifest claimed subjects in frame. This revision:
   the manifest if any required subject lacks pixel evidence (M09 lesson:
   observed_subject_ids are measured, never asserted).
 
+Round-2 corrections (review sgt-pr281-r2, the ONE r2 blocker): the
+declared oblique picture-in-picture inset (288x76) contained ZERO
+geometry pixels - draw_viewport() projected with the MODULE CONSTANTS
+VP_W/VP_H regardless of the target surface, so every inset geometry
+pixel landed outside the 288x76 image and PIL clipped it silently while
+the caption text alone satisfied the old 'nonbg > 100' gate. This
+revision:
+
+- draw_viewport() (and every projection-space gate: assert_in_frame,
+  draw_labels, ground_subjects) takes the TARGET surface dimensions as
+  parameters - no module constant appears in projection math; the PiP
+  inset renders at its declared 288x76 with its own oblique camera;
+- the secondary camera's in-frame gate runs in the INSET's coordinate
+  space (288x76), and the hide gates bind the tile-space projections to
+  the declared tile-space rect explicitly;
+- the inset content gate is EXACT-COLOR: every declared geometry
+  signature (body_a/body_b/stand/patch/seam) must have > 0 measured
+  pixels INSIDE the declared inset rect - caption text alone cannot
+  pass (the round-2 lesson: 'nonbg > threshold' is satisfiable by
+  caption text); the caption itself carries an exact-color chip;
+- tiles are measured POST-PASTE (the manifest pixel counts now describe
+  the committed pixels; the pre-paste occlusion of primary geometry
+  under the inset is measured and disclosed - review R2N1/R2O1).
+
 Sheet layout: 2 x 3 viewports of the declared 640x240 plus a shared
 diagnostic footer band (gap/displacement trace inset). Clean viewports
 carry geometry and title only - no labels, no overlays, no trace inset
@@ -71,6 +95,12 @@ FOOTER_RECT = [0, 3 * VP_H, SHEET[0], SHEET[1]]
 INSET_RECT = [8, 3 * VP_H + 4, SHEET[0] - 8, SHEET[1] - 4]
 # oblique secondary inset inside the pair-2 diagnostic viewport (tile px)
 PIP_RECT = [344, 6, 632, 82]
+# the inset is its OWN render surface: its declared viewport resolution
+# (round-2 fix: projection space binds to the declared rect, never to the
+# module viewport constants)
+PIP_W = PIP_RECT[2] - PIP_RECT[0]
+PIP_H = PIP_RECT[3] - PIP_RECT[1]
+MIN_PIP_CAPTION_CHIP_PX = 20
 
 BODY_A = (60, 90, 200)
 BODY_B = (200, 120, 60)
@@ -339,18 +369,21 @@ def cameras_for(_=None):
 
 
 # ----------------------------------------------------------------- gates
-def assert_in_frame(cam, points_by_name, margin=4):
+def assert_in_frame(cam, points_by_name, vp_w, vp_h, margin=4):
     """In-frame gate: every subject point of the camera's declared framing
-    scope must project inside the viewport with margin and sit inside the
-    clip planes - 'nothing hidden or clipped' becomes a checked
-    precondition, not prose."""
+    scope must project inside the TARGET SURFACE (vp_w x vp_h - the gate
+    runs in the coordinate space of the surface the camera renders onto:
+    640x240 for a tile, 288x76 for the PiP inset) with margin and sit
+    inside the clip planes - 'nothing hidden or clipped' becomes a checked
+    precondition, not prose. Round-2 fix: the secondary camera is checked
+    in the inset's own space, not the tile space."""
     bad = []
     for name, p in points_by_name.items():
-        pr = cam.project(p, VP_W, VP_H)
+        pr = cam.project(p, vp_w, vp_h)
         d = [p[i] - cam.position[i] for i in range(3)]
         depth = _dot(d, cam.basis[2])
-        if (pr is None or not (margin <= pr[0] <= VP_W - 1 - margin)
-                or not (margin <= pr[1] <= VP_H - 1 - margin)
+        if (pr is None or not (margin <= pr[0] <= vp_w - 1 - margin)
+                or not (margin <= pr[1] <= vp_h - 1 - margin)
                 or not (cam.near < depth < cam.far)):
             bad.append((name, p, pr, round(depth, 4)))
     if bad:
@@ -373,34 +406,41 @@ def scope_points(cam_scope, pts, gap):
 
 
 # ----------------------------------------------------------------- render
-def draw_viewport(draw, cam, row, diagnostic):
+def draw_viewport(draw, cam, row, diagnostic, vp_w, vp_h):
     """The geometry renderer: support stand, both bodies (wireframe + apex
     marker), the patch quad (diagnostic: the two declared triangles in
     distinct colors + seam diagonal; clean: neutral gray) and the seam
     dot; diagnostic adds the axis triad at the seam. Every call site is
-    in this file's tile loop (round-1 fix: it previously had NONE)."""
+    in this file's tile loop (round-1 fix: it previously had NONE).
+
+    Round-2 fix: vp_w/vp_h are the TARGET surface's dimensions and bind
+    every projection below - the same renderer serves a 640x240 tile and
+    the 288x76 PiP inset. (The r2 revision projected with the module
+    VP_W/VP_H constants regardless of the target, so the inset rendered
+    empty: every geometry pixel fell outside the 288x76 surface and PIL
+    clipped it without error.)"""
     gap = row['gap_m']
     pts = fixture_points(gap)
     for a, b in ((pts['stand'][0], pts['stand'][1]),
                  (pts['stand'][1], pts['stand'][2]),
                  (pts['stand'][2], pts['stand'][3]),
                  (pts['stand'][3], pts['stand'][0])):
-        pa, pb = cam.project(a, VP_W, VP_H), cam.project(b, VP_W, VP_H)
+        pa, pb = cam.project(a, vp_w, vp_h), cam.project(b, vp_w, vp_h)
         if pa and pb:
             draw.line([pa, pb], fill=STAND, width=2)
     for verts, color in ((pts['verts_a'], BODY_A),
                          (pts['verts_b'], BODY_B)):
         for a, b in BODY_EDGES:
-            pa, pb = (cam.project(verts[a], VP_W, VP_H),
-                      cam.project(verts[b], VP_W, VP_H))
+            pa, pb = (cam.project(verts[a], vp_w, vp_h),
+                      cam.project(verts[b], vp_w, vp_h))
             if pa and pb:
                 draw.line([pa, pb], fill=color, width=2)
-        pa = cam.project(verts[4], VP_W, VP_H)
+        pa = cam.project(verts[4], vp_w, vp_h)
         if pa:
             draw.ellipse([pa[0] - 2, pa[1] - 2, pa[0] + 2, pa[1] + 2],
                          fill=color)
     quad = pts['quad']
-    pts2 = [cam.project(p, VP_W, VP_H) for p in quad]
+    pts2 = [cam.project(p, vp_w, vp_h) for p in quad]
     if all(pts2):
         if diagnostic:
             draw.polygon([pts2[0], pts2[1], pts2[2]], fill=PATCH_T1)
@@ -409,17 +449,17 @@ def draw_viewport(draw, cam, row, diagnostic):
         else:
             draw.polygon(pts2, fill=PATCH_CLEAN)
         draw.line(pts2 + [pts2[0]], fill=PATCH_OUTLINE, width=1)
-    c = cam.project(pts['seam'], VP_W, VP_H)
+    c = cam.project(pts['seam'], vp_w, vp_h)
     if c:
         draw.ellipse([c[0] - 3, c[1] - 3, c[0] + 3, c[1] + 3],
                      fill=SEAM_DIAG if diagnostic else SEAM_CLEAN)
     if diagnostic:
-        o = cam.project(pts['seam'], VP_W, VP_H)
+        o = cam.project(pts['seam'], vp_w, vp_h)
         for vec, col in (((0.02, 0, 0), TRIAD[0]), ((0, 0.02, 0), TRIAD[1]),
                          ((0, 0, 0.02), TRIAD[2])):
             e = cam.project((pts['seam'][0] + vec[0],
                              pts['seam'][1] + vec[1],
-                             pts['seam'][2] + vec[2]), VP_W, VP_H)
+                             pts['seam'][2] + vec[2]), vp_w, vp_h)
             if o and e:
                 draw.line([o, e], fill=col, width=2)
 
@@ -432,16 +472,18 @@ def draw_title(draw, view_id, mode, tick):
     draw.text((10, 16), f'{mode} | tick {tick}', fill=TITLE_COLOR)
 
 
-def draw_labels(draw, cam, pts, labels):
+def draw_labels(draw, cam, pts, labels, vp_w, vp_h):
     """Port-ID labels at their subjects' projected anchors; placement is
     collision-avoiding and gate-checked (bbox in frame, no overlap). Each
     label carries a 3 px exact-color marker chip at its bbox left edge
-    (FreeType text antialiases; the chip is the measurable evidence)."""
+    (FreeType text antialiases; the chip is the measurable evidence).
+    vp_w/vp_h bind the projection AND the placement bounds to the target
+    surface (tile space for every call site)."""
     placed = []
     out = {}
     for label in labels:
         anchor = label_anchor(label, 0.0, pts)
-        pr = cam.project(anchor, VP_W, VP_H)
+        pr = cam.project(anchor, vp_w, vp_h)
         if pr is None:
             raise SystemExit(f'label_anchor_out_of_frame:{cam.name}:'
                              f'{label}')
@@ -458,8 +500,8 @@ def draw_labels(draw, cam, pts, labels):
         for (tx, ty) in cands:
             bb = [int(tx), int(ty), int(tx) + int(tw) + 6,
                   int(ty) + th + 1]
-            if not (2 <= bb[0] and bb[2] <= VP_W - 2
-                    and 2 <= bb[1] and bb[3] <= VP_H - 2):
+            if not (2 <= bb[0] and bb[2] <= vp_w - 2
+                    and 2 <= bb[1] and bb[3] <= vp_h - 2):
                 continue
             if any(not (bb[2] < o[0] or bb[0] > o[2]
                         or bb[3] < o[1] or bb[1] > o[3]) for o in placed):
@@ -474,6 +516,15 @@ def draw_labels(draw, cam, pts, labels):
         draw.text((chosen[0] + 5, chosen[1]), text, fill=LABEL_COLOR)
         out[label] = {'bbox_px': chosen, 'anchor_px': [pr[0], pr[1]]}
     return out
+
+
+def draw_pip_caption(draw):
+    """The declared inset label: exact-color chip (the measurable
+    evidence - the FreeType text antialiases, so text pixels alone are
+    NOT exact-color evidence; the round-2 blocker passed a content gate
+    on caption text) + the caption text."""
+    draw.rectangle([4, 4, 7, 14], fill=TITLE_COLOR)
+    draw.text((10, 4), 'oblique secondary', fill=TITLE_COLOR)
 
 
 def draw_trace_inset(draw, snap_rows, tick):
@@ -536,11 +587,13 @@ def measure_tile(arr, sigs, label_bboxes, triad_expected, label_expected):
     return stats
 
 
-def ground_subjects(arr, sigs, cam_rec, pts, gap, labels, diagnostic):
+def ground_subjects(arr, sigs, cam_rec, pts, gap, labels, diagnostic,
+                    vp_w, vp_h):
     """Per-subject pixel evidence: point subjects need signature pixels
     within a radius of the oracle-predicted anchor; area subjects need
     their color signature anywhere in the tile; diagnostic labels need
-    text pixels."""
+    text pixels. vp_w/vp_h bind the oracle reprojection to the measured
+    surface's coordinate space."""
     patch_colors = sigs['patch']
     seam_colors = sigs['seam']
     pmask = _mask(arr, patch_colors)
@@ -548,7 +601,7 @@ def ground_subjects(arr, sigs, cam_rec, pts, gap, labels, diagnostic):
     subjects = {}
     for label in LABELS:
         anchor_w = label_anchor(label, gap, pts)
-        pred = project_from_record(cam_rec, anchor_w, VP_W, VP_H)
+        pred = project_from_record(cam_rec, anchor_w, vp_w, vp_h)
         if label == 'fixture_body_a':
             ev = {'geometry_pixels': stats_body(arr, BODY_A),
                   'method': 'area_signature'}
@@ -659,21 +712,26 @@ def main():
             for mode in ('diagnostic', 'clean'):
                 diagnostic = mode == 'diagnostic'
                 tile_key = f'pair-{vi}:{mode}'
-                # ---- in-frame gate BEFORE any pixel is written
+                # ---- in-frame gate BEFORE any pixel is written; each
+                # camera is checked in ITS target surface's coordinate
+                # space (round-2 fix: the secondary camera is checked in
+                # the inset's own 288x76 space, not the tile's 640x240)
                 assert_in_frame(cam, scope_points(
-                    scope_by_cam[cam.name], pts, gap))
+                    scope_by_cam[cam.name], pts, gap), VP_W, VP_H)
                 if diagnostic and secondary is not None:
                     assert_in_frame(secondary, scope_points(
-                        scope_by_cam[secondary.name], pts, gap))
+                        scope_by_cam[secondary.name], pts, gap),
+                        PIP_W, PIP_H)
                 # ---- render the viewport (draw_viewport CALL SITE)
                 tile = Image.new('RGB', (VP_W, VP_H), BG)
                 tdraw = ImageDraw.Draw(tile)
-                draw_viewport(tdraw, cam, row, diagnostic)
+                draw_viewport(tdraw, cam, row, diagnostic, VP_W, VP_H)
                 draw_title(tdraw, view_id, mode, tick)
                 label_bboxes = {}
                 if diagnostic:
                     label_bboxes = draw_labels(tdraw, cam, pts,
-                                               labels_by_view[view_id])
+                                               labels_by_view[view_id],
+                                               VP_W, VP_H)
                 # ---- camera-consistency gate (reprojection oracle)
                 rec = json.loads(json.dumps(rec_by_tile[tile_key]))
                 pred = project_from_record(rec, pts['seam'], VP_W, VP_H)
@@ -689,16 +747,127 @@ def main():
                                                      round(pred[1], 2)],
                                     'drawn_px': list(drawn),
                                     'delta_px': round(delta, 3)})
+                # ---- diagnostic-only oblique inset (pair 2), composited
+                # BEFORE the tile measurement so every recorded tile
+                # number describes the committed post-paste pixels
+                # (review R2N1); pip_ev carries the inset's own evidence
+                pip_ev = None
+                if diagnostic and secondary is not None:
+                    # hide gates - explicit spaces: primary subject POINTS
+                    # project in TILE space (the primary viewport's own
+                    # coordinate space) and are compared against the
+                    # declared tile-space rect; the inset's own geometry
+                    # was already in-frame-gated in the INSET space above
+                    for name, p in scope_points(scope_by_cam[cam.name],
+                                                pts, gap).items():
+                        pr = cam.project(p, VP_W, VP_H)
+                        if pr and (PIP_RECT[0] <= pr[0] <= PIP_RECT[2]
+                                   and PIP_RECT[1] <= pr[1]
+                                   <= PIP_RECT[3]):
+                            raise SystemExit(
+                                f'pip_hides_geometry:{tile_key}:{name}: '
+                                f'{pr} vs {PIP_RECT}')
+                    for lab, info in label_bboxes.items():
+                        bb = info['bbox_px']
+                        if not (bb[2] < PIP_RECT[0] or bb[0] > PIP_RECT[2]
+                                or bb[3] < PIP_RECT[1]
+                                or bb[1] > PIP_RECT[3]):
+                            raise SystemExit(
+                                f'pip_hides_label:{tile_key}:{lab}: '
+                                f'{bb} vs {PIP_RECT}')
+                    # raster-level occlusion disclosure (review R2O1):
+                    # measure which primary geometry pixels the paste
+                    # will overwrite (point gates cannot see 2px lines)
+                    pre_arr = np.asarray(tile, dtype=np.uint8)
+                    pre_rect = pre_arr[PIP_RECT[1]:PIP_RECT[3],
+                                       PIP_RECT[0]:PIP_RECT[2]]
+                    occluded = {k: int(_mask(pre_rect, v).sum())
+                                for k, v in SIG_GEOMETRY_DIAG.items()}
+                    occluded_nonbg = int(np.any(
+                        pre_rect != np.array(BG, dtype=np.uint8),
+                        axis=-1).sum())
+                    # render the inset in ITS OWN coordinate space
+                    pip = Image.new('RGB', (PIP_W, PIP_H), BG)
+                    pdraw = ImageDraw.Draw(pip)
+                    draw_viewport(pdraw, secondary, row, False,
+                                  PIP_W, PIP_H)
+                    draw_pip_caption(pdraw)
+                    parr = np.asarray(pip, dtype=np.uint8)
+                    pstats = measure_tile(parr, SIG_GEOMETRY_CLEAN, None,
+                                          False, False)
+                    # EXACT-COLOR content gate (the round-2 lesson: a
+                    # 'nonbg > threshold' gate is satisfiable by caption
+                    # text alone): every declared geometry signature of
+                    # the inset render must have > 0 measured pixels
+                    for sig_name, n in pstats['signatures'].items():
+                        if n <= 0:
+                            raise SystemExit(
+                                f'subject_pixels_missing:{tile_key}:pip:'
+                                f'{sig_name}: tick {tick}: 0 exact-color '
+                                f'px of the declared inset geometry '
+                                f'inside {PIP_RECT}')
+                    chip = int(_mask(parr, [TITLE_COLOR]).sum())
+                    if chip < MIN_PIP_CAPTION_CHIP_PX:
+                        raise SystemExit(
+                            f'subject_pixels_missing:{tile_key}:pip:'
+                            f'caption_chip: tick {tick}: {chip} < '
+                            f'{MIN_PIP_CAPTION_CHIP_PX}')
+                    badpx = int(_mask(parr, [LABEL_COLOR, TRIAD[0],
+                                             TRIAD[1], TRIAD[2]]
+                                      + [PATCH_T1, PATCH_T2]).sum())
+                    if badpx != 0:
+                        raise SystemExit(
+                            f'pip_contains_diagnostic_styling:'
+                            f'{tile_key}: tick {tick}: {badpx}')
+                    # inset-space code-vs-code consistency oracle (the
+                    # inset render is bound to its own serialized record)
+                    sec_rec = json.loads(json.dumps(
+                        cams_out[f'{view_id}:diagnostic'][1]))
+                    spred = project_from_record(sec_rec, pts['seam'],
+                                                PIP_W, PIP_H)
+                    sdrawn = secondary.project(pts['seam'], PIP_W, PIP_H)
+                    sdelta = max(abs(spred[0] - sdrawn[0]),
+                                 abs(spred[1] - sdrawn[1]))
+                    if sdelta > 1.0:  # int() truncation bound per axis
+                        raise SystemExit(
+                            f'camera_consistency_failed:{tile_key}:pip: '
+                            f'predicted {spred} drawn {sdrawn} '
+                            f'delta {sdelta}')
+                    consistency.append(
+                        {'tile': f'{tile_key}:pip', 'tick': tick,
+                         'predicted_px': [round(spred[0], 2),
+                                          round(spred[1], 2)],
+                         'drawn_px': list(sdrawn),
+                         'delta_px': round(sdelta, 3)})
+                    tile.paste(pip, (PIP_RECT[0], PIP_RECT[1]))
+                    pip_ev = {'rect_px': list(PIP_RECT),
+                              'viewport_resolution': [PIP_W, PIP_H],
+                              'render_mode': 'picture_in_picture_inset',
+                              'camera_frame_id': sec_rec['frame_id'],
+                              'measurement': 'measured inside the '
+                                             'declared inset rect; tile '
+                                             'stats are post-paste',
+                              'signatures': pstats['signatures'],
+                              'caption_chip_pixels': chip,
+                              'nonbg_pixels': pstats['nonbg_pixels'],
+                              'occluded_prepaste_pixels': occluded,
+                              'occluded_prepaste_nonbg_pixels':
+                                  occluded_nonbg,
+                              'seam_anchor_px': list(sdrawn)}
+                # ---- measure the tile POST-paste (the recorded numbers
+                # describe exactly the committed pixels; review R2N1)
                 arr = np.asarray(tile, dtype=np.uint8)
                 sigs = SIG_GEOMETRY_DIAG if diagnostic else \
                     SIG_GEOMETRY_CLEAN
                 stats = measure_tile(arr, sigs, label_bboxes,
                                      diagnostic, diagnostic)
                 stats['label_bboxes'] = label_bboxes
+                if pip_ev is not None:
+                    stats['pip'] = pip_ev
                 # ---- subject grounding from the rendered pixels
                 subs = ground_subjects(arr, sigs, rec, pts, gap,
                                        labels_by_view[view_id],
-                                       diagnostic)
+                                       diagnostic, VP_W, VP_H)
                 missing = [s for s in required_by_tile[tile_key]
                            if not subs[s]['present']]
                 if diagnostic:
@@ -722,49 +891,6 @@ def main():
                 if missing:
                     raise SystemExit(f'subject_pixels_missing:'
                                      f'{tile_key}: tick {tick}: {missing}')
-                # ---- diagnostic-only oblique inset (pair 2)
-                if diagnostic and secondary is not None:
-                    for name, p in scope_points(scope_by_cam[cam.name],
-                                                pts, gap).items():
-                        pr = cam.project(p, VP_W, VP_H)
-                        if pr and (PIP_RECT[0] <= pr[0] <= PIP_RECT[2]
-                                   and PIP_RECT[1] <= pr[1]
-                                   <= PIP_RECT[3]):
-                            raise SystemExit(
-                                f'pip_hides_geometry:{tile_key}:{name}: '
-                                f'{pr} vs {PIP_RECT}')
-                    for lab, info in label_bboxes.items():
-                        bb = info['bbox_px']
-                        if not (bb[2] < PIP_RECT[0] or bb[0] > PIP_RECT[2]
-                                or bb[3] < PIP_RECT[1]
-                                or bb[1] > PIP_RECT[3]):
-                            raise SystemExit(
-                                f'pip_hides_label:{tile_key}:{lab}: '
-                                f'{bb} vs {PIP_RECT}')
-                    pip = Image.new('RGB', (PIP_RECT[2] - PIP_RECT[0],
-                                            PIP_RECT[3] - PIP_RECT[1]), BG)
-                    pdraw = ImageDraw.Draw(pip)
-                    draw_viewport(pdraw, secondary, row, False)
-                    pdraw.text((4, 4), 'oblique secondary',
-                               fill=TITLE_COLOR)
-                    tile.paste(pip, (PIP_RECT[0], PIP_RECT[1]))
-                    parr = np.asarray(tile, dtype=np.uint8)[
-                        PIP_RECT[1]:PIP_RECT[3], PIP_RECT[0]:PIP_RECT[2]]
-                    pstats = measure_tile(parr, SIG_GEOMETRY_CLEAN, None,
-                                          False, False)
-                    if pstats['nonbg_pixels'] <= 100:
-                        raise SystemExit(
-                            f'subject_pixels_missing:{tile_key}:pip: '
-                            f'tick {tick}')
-                    badpx = int(_mask(parr, [LABEL_COLOR, TRIAD[0],
-                                             TRIAD[1], TRIAD[2]]
-                                      + [PATCH_T1, PATCH_T2]).sum())
-                    if badpx != 0:
-                        raise SystemExit(
-                            f'pip_contains_diagnostic_styling:'
-                            f'{tile_key}: tick {tick}: {badpx}')
-                    presence_frames[tile_key][-1]['pip_nonbg_pixels'] = \
-                        pstats['nonbg_pixels']
                 sheet.paste(tile, (TILE_RECTS[tile_key][0],
                                    TILE_RECTS[tile_key][1]))
         draw_trace_inset(ImageDraw.Draw(sheet), snap_rows, tick)
@@ -792,6 +918,15 @@ def main():
                'presence grounded in exact-color signatures and '
                'oracle-predicted point hits inside the declared viewport '
                'rects (observed_subject_ids are MEASURED, never asserted)',
+        'pip_law': 'the declared picture-in-picture inset is measured '
+                   'like a viewport (round-2 fix): every declared '
+                   'geometry signature must have > 0 exact-color pixels '
+                   'INSIDE the declared inset rect (caption text alone '
+                   'cannot pass), the inset camera is in-frame-gated and '
+                   'consistency-oracled in the inset coordinate space, '
+                   'and the tile stats are measured POST-paste so they '
+                   'describe the committed pixels; the primary geometry '
+                   'occluded by the paste is measured and disclosed',
         'signature_colors': {
             'body_a': [list(BODY_A)], 'body_b': [list(BODY_B)],
             'stand': [list(STAND)],

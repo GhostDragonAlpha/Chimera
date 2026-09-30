@@ -57,11 +57,14 @@ def main():
         'zcode-glm-mat2-g02-a1, criteria sha256 '
         '03ee207b7b2c701ff189bf1ee9133ada87eea7a1bd760fe4cb24525fcc5e4c45. '
         'Isolated attempt-workspace checkout of E:/PythonChimera; candidate '
-        'branch codex/monkey-mat2-g02-983a9a8b1b on the sealed line tip '
-        'f6cbf7a9 (= origin/astra/gait-capture). Composed against '
-        'CARD_STARTER.md v2; round-1 corrections composed against '
-        'CARD_STARTER.md v3; house standards IMPLEMENTER_CHECKLIST.md '
-        '(G1-G9) and TOOLKIT.md (P1-P9) cited at the candidate commit.')
+        'lineage branch codex/monkey-mat2-g02-983a9a8b1b (unsquashed in the '
+        'attempt workspace); the r3 publication is ONE fresh trailered '
+        'commit on the sealed line tip 66f193c4 (= origin/astra/gait-'
+        'capture after the merged MAT2-M12 and agent-memory-backup PRs; '
+        'the r1/r2 publications sat on the earlier tip f6cbf7a9). '
+        'Composed against CARD_STARTER.md v3; '
+        'house standards IMPLEMENTER_CHECKLIST.md (G1-G9) and TOOLKIT.md '
+        '(P1-P9) cited at the candidate commit.')
     add('')
     add('## done_when clause map (executed on the exact candidate revision)')
     add('')
@@ -171,9 +174,37 @@ def main():
         f'min {pp["footer_min_trace_line_pixels"]} px, reprojection-oracle '
         f'max delta {pp["camera_consistency_max_delta_px"]} px); '
         'check_capture_pixels.py re-measures the committed frames against '
-        'the manifest (GREEN) and REDs on the pre-fix capture (control: '
-        '420 violations, five of six tiles at zero non-background '
-        'pixels).')
+        'the manifest (GREEN) and REDs on both preserved pre-fix '
+        'captures (controls, measured on this revision: the pre-round-1 '
+        'capture 420 violations, five of six tiles at zero non-'
+        'background pixels; the r2 capture 35 violations of which the '
+        'caption-only inset fails the inset signature gates - the r2 '
+        'blocker can no longer pass).')
+    insets = pp.get('secondary_insets') or {}
+    for tile_key, inset in sorted(insets.items()):
+        sigs = ', '.join(f'{k} {v}' for k, v in sorted(
+            inset['min_signature_pixels_inside_rect'].items()))
+        add(f'- Declared oblique picture-in-picture inset ({tile_key}, '
+            'round-2 fix): rendered at its declared '
+            f'{inset["viewport_resolution"][0]}x'
+            f'{inset["viewport_resolution"][1]} resolution by the SAME '
+            'draw_viewport() with the target-surface dimensions bound as '
+            'parameters (the r2 revision projected with module viewport '
+            'constants, so every inset geometry pixel landed outside the '
+            '288x76 surface and PIL clipped it to a caption-only rect); '
+            'the inset camera is in-frame-gated and consistency-oracled '
+            'in the INSET coordinate space; exact-color geometry '
+            'signatures measured INSIDE the declared rect '
+            f'{inset["rect_px"]} (minima over the 7 frames: {sigs}; '
+            f'caption chip min {inset["min_caption_chip_pixels"]} px, '
+            f'inset non-bg min {inset["min_nonbg_pixels"]} px); tile '
+            'stats are measured POST-paste so the manifest describes the '
+            'committed pixels; the paste occludes at most '
+            f'{inset["max_occluded_prepaste_pixels"]} primary geometry '
+            'px per frame (measured and disclosed - the inset hides no '
+            'subject POINT, verified by the tile-space hide gate, and '
+            'the r2 caption-only state measured 0 geometry px at this '
+            'rect).')
     add('- Honest limit: validate_manifest is structural only; independent '
         'image/physics review (the Sergeant gate) remains mandatory and is '
         'owned by the Lieutenant.')
@@ -230,6 +261,32 @@ def main():
         'determinism/falsifier/regression receipts identical; only the '
         'declared live-field experiment_profile.json differs, by '
         'declaration).')
+    add('- Round-2 corrections (review sgt-pr281-r2, CHANGES_REQUIRED on '
+        'ONE blocker): the declared oblique picture-in-picture inset '
+        '(288x76) contained ZERO geometry pixels - 354 non-bg px of '
+        'caption text only - because draw_viewport() projected with the '
+        'MODULE CONSTANTS VP_W/VP_H regardless of the target surface, '
+        'every inset geometry pixel landed outside the 288x76 image and '
+        'PIL clipped it silently, while assert_in_frame(secondary) '
+        'checked the 640x240 tile space and the pip content gate '
+        '(nonbg > 100) was satisfied by the caption text. Fixed: '
+        'draw_viewport() (and every projection-space gate: '
+        'assert_in_frame, draw_labels, ground_subjects) now takes the '
+        'TARGET surface dimensions as parameters - the inset renders at '
+        'its declared 288x76 with its own oblique camera; the secondary '
+        'in-frame gate runs in the inset coordinate space; the inset '
+        'content gate is EXACT-COLOR (every declared geometry signature '
+        'must have > 0 measured px inside the declared rect - caption '
+        'text alone cannot pass; the caption carries an exact-color '
+        'chip); check_capture_pixels.py gained the same inset gates '
+        'plus an inset-space seam-centroid consistency bound, and its '
+        'clean-row styling list gained PATCH_DIAGONAL and SEAM_DIAG '
+        '(review R2N2); tiles are measured POST-paste so manifest pixel '
+        'counts describe the committed pixels (review R2N1), with the '
+        'pre-paste occlusion of primary geometry under the inset '
+        'measured and disclosed per frame (review R2O1). The physics '
+        'chain is UNCHANGED: all receipts regenerate byte-identically '
+        '(trace 259b731d...).')
     add('- Refusals disclosure (review finding F6): the submit-time '
         'coordination record (LIEUTENANT_RESUME_v2.json, 2026-09-30 15:4x '
         'CDT entry) states "4 named refusals disclosed" for development '
