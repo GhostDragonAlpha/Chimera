@@ -816,6 +816,42 @@ def p_gates_declared():
     return {'gate_codes': sorted(gates), 'count': len(gates)}
 
 
+def p_bone_local_array_literals():
+    """Shape-literal law (m09-gmain-001 measured failure): numba CUDA
+    typing refuses cuda.local.array shapes that are not integer literals
+    (a BinOp of freevar constants types as plain int64). Every shape in
+    resident_bones.py must be a literal, and the literals are pinned to
+    the declared constants so the pinned layout cannot drift."""
+    import resident_bones as rb
+    src = (HERE / 'resident_bones.py').read_text(encoding='utf-8')
+    tree = ast.parse(src)
+    nonliteral = []
+    literals = set()
+    for node in ast.walk(tree):
+        if not (isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == 'array'
+                and isinstance(node.func.value, ast.Attribute)
+                and node.func.value.attr == 'local'):
+            continue
+        shape = node.args[0] if node.args else None
+        shapes = (shape.elts if isinstance(shape, ast.Tuple)
+                  else [shape])
+        for s in shapes:
+            if isinstance(s, ast.Constant) and isinstance(s.value, int):
+                literals.add(s.value)
+            else:
+                nonliteral.append(f'line{getattr(node, "lineno", "?")}')
+    pinned = {8: rb.N_VERT, 24: rb.N_VERT * 3, 26: rb.N_ENTRIES,
+              192: rb.NM_CAND, 128: rb.MAX_ACTIVE, 3: 3, 2: 2, 4: 4,
+              6: 6, 7: 7}
+    unknown = sorted(v for v in literals if v not in pinned)
+    ok = not nonliteral and not unknown
+    return {'ok': ok, 'nonliteral_shapes': nonliteral,
+            'literal_sizes': sorted(literals), 'unknown_literals': unknown,
+            'pins': {str(k): pinned[k] for k in sorted(pinned)}}
+
+
 def _gpu_debug_dump(gpu, block, tick, exc):
     """Debug evidence for a gate refusal (attempt scratch, not a claim):
     the failing tick's full named diagnostic blocks and partials."""
@@ -1015,6 +1051,7 @@ def _gpu_bank_body(gpu, oracle, pins):
         rows.append(row)
     layout = p_bone_layout()
     writer = p_bone_single_writer()
+    literals = p_bone_local_array_literals()
     gates = p_gates_declared()
     trace_sha = asm.sha256_file(HERE / 'experiment_trace.json')
     position_within = worst_pos <= AGREE_POS_WINDOW_M
@@ -1067,6 +1104,10 @@ def _gpu_bank_body(gpu, oracle, pins):
                           'sizes_match': layout['sizes_match']},
         'p_bone_single_writer': {'ok': writer['ok'],
                                  'violations': writer['violations']},
+        'p_bone_local_array_literals': {
+            'ok': literals['ok'],
+            'nonliteral_shapes': literals['nonliteral_shapes'],
+            'unknown_literals': literals['unknown_literals']},
         'oracle_trace_frozen': {
             'sha256': trace_sha,
             'expected': ORACLE_TRACE_FROZEN_SHA256,
@@ -1077,7 +1118,7 @@ def _gpu_bank_body(gpu, oracle, pins):
         position_within and scalars_within
         and receipt['telemetry']['within_budget'] and digest_green
         and not exceeded_ticks and receipt['vacuous_guard_selftest']
-        and layout['ok'] and writer['ok']
+        and layout['ok'] and writer['ok'] and literals['ok']
         and receipt['oracle_trace_frozen']['matches'])
     return rows, receipt
 

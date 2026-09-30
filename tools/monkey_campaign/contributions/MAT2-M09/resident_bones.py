@@ -117,6 +117,14 @@ def actuator_x_of(tick):
 # ===========================================================================
 # device helpers (transcribed from kernel_mirror / numpy semantics)
 # ===========================================================================
+#
+# Shape-literal law (measured on hardware, m09-gmain-001): numba CUDA
+# typing requires cuda.local.array shapes to be INTEGER LITERALS - a
+# BinOp of freevar constants (N_VERT * 3) types as plain int64 and the
+# overload refuses it (TypingError before any tick runs). The literals
+# below are pinned to the declared constants by
+# p_bone_local_array_literals (8=N_VERT, 24=N_VERT*3=N_EDGES, 26=
+# N_ENTRIES, 192=NM_CAND, 128=MAX_ACTIVE).
 
 @cuda.jit(device=True, inline=True)
 def norm3_seq(x, y, z):
@@ -673,11 +681,11 @@ def k_stage1_gravity_damp(V, VSTART_SUB, VGRAV, PASS, SUB, H, DAMPING,
     if comp >= PASS.shape[0]:
         return
     base = comp * N_VERT
-    tmp24 = cuda.local.array(N_VERT * 3, dtype=np.float64)
-    tmp8 = cuda.local.array(N_VERT, dtype=np.float64)
-    v0 = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    vg = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    dxw = cuda.local.array((N_VERT, 3), dtype=np.float64)
+    tmp24 = cuda.local.array(24, dtype=np.float64)
+    tmp8 = cuda.local.array(8, dtype=np.float64)
+    v0 = cuda.local.array((8, 3), dtype=np.float64)
+    vg = cuda.local.array((8, 3), dtype=np.float64)
+    dxw = cuda.local.array((8, 3), dtype=np.float64)
     for r in range(N_VERT):
         for c in range(3):
             v0[r, c] = V[base + r, c]
@@ -744,13 +752,13 @@ def k_stage2_element_act(X, V, TRIS, MASSES, INVM, REST_ANCHOR, REST_MEAN,
     h1 = cuda.local.array(3, dtype=np.float64)
     fbl = cuda.local.array(3, dtype=np.float64)
     fbc = cuda.local.array(3, dtype=np.float64)
-    lig_ld = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    cap_ld = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    ld = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    v_pre = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    dxw = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    tmp24 = cuda.local.array(N_VERT * 3, dtype=np.float64)
-    tmp8 = cuda.local.array(N_VERT, dtype=np.float64)
+    lig_ld = cuda.local.array((8, 3), dtype=np.float64)
+    cap_ld = cuda.local.array((8, 3), dtype=np.float64)
+    ld = cuda.local.array((8, 3), dtype=np.float64)
+    v_pre = cuda.local.array((8, 3), dtype=np.float64)
+    dxw = cuda.local.array((8, 3), dtype=np.float64)
+    tmp24 = cuda.local.array(24, dtype=np.float64)
+    tmp8 = cuda.local.array(8, dtype=np.float64)
     heads_of(X, REST_ANCHOR, REST_MEAN, h0, h1)
     dxh = h1[0] - h0[0]; dyh = h1[1] - h0[1]; dzh = h1[2] - h0[2]
     norm = norm3_seq(dxh, dyh, dzh)
@@ -844,29 +852,29 @@ def k_contact_stage(X, V, GX, GTRI, TRIS, MASSES, SYS, PASS, SUB, H):
     to the declared gate; SYS/PASS partials recorded per substep."""
     ta = cuda.local.array((3, 3), dtype=np.float64)
     tb = cuda.local.array((3, 3), dtype=np.float64)
-    lo = cuda.local.array((N_ENTRIES, 3), dtype=np.float64)
-    hi = cuda.local.array((N_ENTRIES, 3), dtype=np.float64)
-    centers = cuda.local.array((N_ENTRIES, 3), dtype=np.float64)
-    order = cuda.local.array(N_ENTRIES, dtype=np.int64)
-    cand_i = cuda.local.array(NM_CAND, dtype=np.int64)
-    cand_j = cuda.local.array(NM_CAND, dtype=np.int64)
-    act_a = cuda.local.array(MAX_ACTIVE, dtype=np.int64)
-    act_b = cuda.local.array(MAX_ACTIVE, dtype=np.int64)
-    act_gap = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
-    act_nx = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
-    act_ny = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
-    act_nz = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
-    act_jn = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
-    act_jt = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
-    act_ix = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
-    act_iy = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
-    act_iz = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
-    act_mode = cuda.local.array(MAX_ACTIVE, dtype=np.int64)
-    accum_jn = cuda.local.array(MAX_ACTIVE, dtype=np.float64)
+    lo = cuda.local.array((26, 3), dtype=np.float64)
+    hi = cuda.local.array((26, 3), dtype=np.float64)
+    centers = cuda.local.array((26, 3), dtype=np.float64)
+    order = cuda.local.array(26, dtype=np.int64)
+    cand_i = cuda.local.array(192, dtype=np.int64)
+    cand_j = cuda.local.array(192, dtype=np.int64)
+    act_a = cuda.local.array(128, dtype=np.int64)
+    act_b = cuda.local.array(128, dtype=np.int64)
+    act_gap = cuda.local.array(128, dtype=np.float64)
+    act_nx = cuda.local.array(128, dtype=np.float64)
+    act_ny = cuda.local.array(128, dtype=np.float64)
+    act_nz = cuda.local.array(128, dtype=np.float64)
+    act_jn = cuda.local.array(128, dtype=np.float64)
+    act_jt = cuda.local.array(128, dtype=np.float64)
+    act_ix = cuda.local.array(128, dtype=np.float64)
+    act_iy = cuda.local.array(128, dtype=np.float64)
+    act_iz = cuda.local.array(128, dtype=np.float64)
+    act_mode = cuda.local.array(128, dtype=np.int64)
+    accum_jn = cuda.local.array(128, dtype=np.float64)
     best = cuda.local.array(7, dtype=np.float64)
     imp_out = cuda.local.array((2, 3), dtype=np.float64)
     va = cuda.local.array(3, dtype=np.float64)
-    tmpk = cuda.local.array(N_VERT * 3, dtype=np.float64)
+    tmpk = cuda.local.array(24, dtype=np.float64)
 
     motion = 0.0
     for e in range(N_ENTRIES):
@@ -1182,10 +1190,10 @@ def k_ledger(V, VSTART_SUB, VGRAV, LD, MASSES, INVM, PASS, SUB, H, DAMPING):
         return
     base = comp * N_VERT
     dfac = 1.0 - DAMPING * H
-    tmp8 = cuda.local.array(N_VERT, dtype=np.float64)
-    v1 = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    v2 = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    v3 = cuda.local.array((N_VERT, 3), dtype=np.float64)
+    tmp8 = cuda.local.array(8, dtype=np.float64)
+    v1 = cuda.local.array((8, 3), dtype=np.float64)
+    v2 = cuda.local.array((8, 3), dtype=np.float64)
+    v3 = cuda.local.array((8, 3), dtype=np.float64)
     for r in range(N_VERT):
         for c in range(3):
             v1[r, c] = VGRAV[comp, SUB, r, c]
@@ -1225,9 +1233,9 @@ def k_stage4_project(X, V, MASSES, EDGES, RESTLEN, INVM, SYS, SUB, H):
     """Stage 4 (one thread): position integration + tolerance-driven XPBD
     per bone in the declared order; the projection's kinetic-energy
     exchange is recorded per substep."""
-    tmpk = cuda.local.array(N_VERT * 3, dtype=np.float64)
-    x_pre = cuda.local.array((N_VERT, 3), dtype=np.float64)
-    lam = cuda.local.array(N_EDGES, dtype=np.float64)
+    tmpk = cuda.local.array(24, dtype=np.float64)
+    x_pre = cuda.local.array((8, 3), dtype=np.float64)
+    lam = cuda.local.array(24, dtype=np.float64)
     kap = kinetic_bone(0, V, MASSES, tmpk)
     kbp = kinetic_bone(1, V, MASSES, tmpk)
     for b in range(N_BONES):
@@ -1290,8 +1298,8 @@ def k_tick_diag(X, V, PASS, SYS, VSTART_TICK, TRIS, EDGES, RESTLEN, MASSES,
     identity, the element energies at the end-of-tick configuration, the
     residual bound, both 96-f64 diagnostic blocks and the chained digest.
     System scalars live in component 0's block."""
-    tmpk = cuda.local.array(N_VERT * 3, dtype=np.float64)
-    tmp8 = cuda.local.array(N_VERT, dtype=np.float64)
+    tmpk = cuda.local.array(24, dtype=np.float64)
+    tmp8 = cuda.local.array(8, dtype=np.float64)
     h0 = cuda.local.array(3, dtype=np.float64)
     h1 = cuda.local.array(3, dtype=np.float64)
     heads_of(X, REST_ANCHOR, REST_MEAN, h0, h1)

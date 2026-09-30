@@ -58,6 +58,10 @@ class Layout(unittest.TestCase):
         scan = rx.p_bone_single_writer()
         self.assertTrue(scan['ok'], scan['violations'])
 
+    def test_P_bone_local_array_literals(self):
+        scan = rx.p_bone_local_array_literals()
+        self.assertTrue(scan['ok'], scan)
+
     def test_P_gates_declared(self):
         gates = rx.p_gates_declared()
         self.assertEqual(gates['count'], 10)
