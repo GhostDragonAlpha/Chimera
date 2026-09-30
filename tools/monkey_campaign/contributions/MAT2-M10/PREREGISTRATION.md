@@ -603,3 +603,15 @@ evaluated at the same state (clean runs: bitwise zero deviation, probe
 reaction must equal its negative (drop-reaction probe: 3.87e-1 N = fires;
 clean 0.0). FB3 gain re-issued to 2.0. FB5 keeps the interface audit plus
 the motion audit and the tip-position difference.
+
+A1.10 Pre-receipt settle-criterion re-issue (before any receipt exists;
+probe recorded): with the tie RELEASED the quasi-static free runs sustain a
+standing velocity field (~2.45 m/s on the free pole; explicit
+pressure-impulse / chord-projection churn, cf. A1.8) while the
+CONFIGURATION is stationary — probe: pole-gap constant to 5.6e-17 m per
+tick from tick ~500. The velocity threshold (1.0e-4 m/s) was the wrong
+settlement measure for an explicit force/projection solver. Re-issued: the
+settle criterion is POSITIONAL — max per-tick vertex displacement over the
+settle window <= 1.0e-6 m (probe: 5.6e-17). The velocity churn is reported
+(next to the criterion) and not gated. All recorded measurements are
+positional or force averages, so the settlement semantics are unchanged.

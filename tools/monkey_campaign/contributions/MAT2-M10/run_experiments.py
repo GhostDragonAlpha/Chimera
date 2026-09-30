@@ -101,7 +101,7 @@ def gap_delta(model, run):
 
 def settle_ok(run):
     st = run.settle_stats()
-    return st['max_speed_m_per_s'] <= aw.V_MAX_SETTLE, st
+    return st['position_drift_m'] <= aw.SETTLE_DRIFT_M, st
 
 
 # --------------------------------------------------------------- bank -----
@@ -126,7 +126,7 @@ def mode_main():
         'revision2_validated': True, 'revision2_region_count':
             summary2['region_count']}
 
-    # ---- X1 directional family (free runs, tie released, 2000 Pa)
+    # ---- X1 directional family (free runs, tie RELEASED, 2000 Pa)
     family = {}
     for label, side, iso in (('braid', 'braid', False),
                              ('belt', 'belt', False),
@@ -134,6 +134,8 @@ def mode_main():
         m = aw.ActuatorModel(side, isotropic=iso)
         run = run_and_record(m, aw.level_schedule(2000.0), aw.QS_TICKS,
                              'free')
+        run.tie.release(0)
+        run.run()
         settled, st = settle_ok(run)
         family[label] = {
             'delta_gap_m': gap_delta(m, run),
@@ -164,6 +166,8 @@ def mode_main():
     for level in (1000.0, 2000.0, 4000.0):
         m = aw.ActuatorModel('braid')
         run = run_and_record(m, aw.level_schedule(level), aw.QS_TICKS, 'free')
+        run.tie.release(0)
+        run.run()
         settled, st = settle_ok(run)
         require(settled, 'qs_run_not_settled:%g' % level)
         mono['%g' % level] = {'delta_gap_m': gap_delta(m, run),
@@ -177,15 +181,20 @@ def mode_main():
                         'monotone_epsilon_m'])}
     x1_pass = x1_pass and bank['X1e_monotonicity']['ordered']
 
-    # ---- X2/X3 blocked + free families at all levels (braid)
+    # ---- X2/X3 families at all levels (braid; A1.9): blocked (tie
+    # RELEASED), free (tie released), loaded light/heavy (tie attached).
+    # The A1.9 two-load family gives dV/dx at fixed p (Maxwell); the
+    # blocked family gives dF_block/dp at fixed x.
     levels = aw.LEVELS_PA
-    blocked, free = {}, {}
+    blocked, free, loaded, heavy = {}, {}, {}, {}
     for level in levels:
         mb = aw.ActuatorModel('braid')
         rb = run_and_record(mb, aw.level_schedule(level), aw.QS_TICKS,
                             'blocked')
+        rb.tie.release(0)
+        rb.run()
         sb = rb.settle_stats()
-        require(sb['max_speed_m_per_s'] <= aw.V_MAX_SETTLE,
+        require(sb['position_drift_m'] <= aw.SETTLE_DRIFT_M,
                 'blocked_run_not_settled:%g' % level)
         blocked['%g' % level] = {
             'pin_force_n': sb['pin_force_n'],
@@ -193,14 +202,42 @@ def mode_main():
             'max_speed_m_per_s': sb['max_speed_m_per_s']}
         mf = aw.ActuatorModel('braid')
         rf = run_and_record(mf, aw.level_schedule(level), aw.QS_TICKS, 'free')
+        rf.tie.release(0)
+        rf.run()
         sf = rf.settle_stats()
-        require(sf['max_speed_m_per_s'] <= aw.V_MAX_SETTLE,
+        require(sf['position_drift_m'] <= aw.SETTLE_DRIFT_M,
                 'free_run_not_settled:%g' % level)
         free['%g' % level] = {
             'delta_gap_m': gap_delta(mf, rf),
             'volume_m3': sf['volume_m3'],
             'z_south_m': sf['z_tip_m'],
             'max_speed_m_per_s': sf['max_speed_m_per_s']}
+        ml = aw.ActuatorModel('braid')
+        rl = run_and_record(ml, aw.level_schedule(level), aw.QS_TICKS,
+                            'loaded')
+        sl = rl.settle_stats()
+        require(sl['position_drift_m'] <= aw.SETTLE_DRIFT_M,
+                'loaded_run_not_settled:%g' % level)
+        loaded['%g' % level] = {
+            'volume_m3': sl['volume_m3'],
+            'z_south_m': sl['z_tip_m'],
+            'z_load_m': sl['z_load_m'],
+            'tie_tension_n': sl['tie_tension_n'],
+            'max_speed_m_per_s': sl['max_speed_m_per_s']}
+    heavy_levels = (1000.0, 3000.0)
+    for level in heavy_levels:
+        mh = aw.ActuatorModel('braid')
+        rh = run_and_record(mh, aw.level_schedule(level), aw.QS_TICKS,
+                            'loaded', load_mass=0.020)
+        sh = rh.settle_stats()
+        require(sh['position_drift_m'] <= aw.SETTLE_DRIFT_M,
+                'heavy_run_not_settled:%g' % level)
+        heavy['%g' % level] = {
+            'volume_m3': sh['volume_m3'],
+            'z_south_m': sh['z_tip_m'],
+            'z_load_m': sh['z_load_m'],
+            'tie_tension_n': sh['tie_tension_n'],
+            'max_speed_m_per_s': sh['max_speed_m_per_s']}
     # X2 claims
     r4 = blocked['%g' % 4000.0]['reaction_on_anchor_n'][2]
     r1 = blocked['%g' % 1000.0]['reaction_on_anchor_n'][2]
@@ -215,37 +252,43 @@ def mode_main():
                   ('reaction_sign_positive', 'magnitude_window',
                    'linearity_ok'))
 
-    # ---- X3 Betti reciprocity (central differences at interior levels)
+    # ---- X3 Maxwell reciprocity (A1.9): dF_block/dp at fixed x (blocked
+    # family, central differences) vs dV/dx at fixed p (the two-load family
+    # at the interior levels). The A1.4 form was mis-derived: differencing
+    # the FREE family across pressure levels carries the fixed-shape
+    # inflation term dV/dp|x (probe: 100x disagreement, recorded); the
+    # fixed-p form below is the correct Maxwell pair.
     rec = {}
-    for interior in (2000.0, 3000.0):
-        lo, hi = interior - 1000.0, interior + 1000.0
-        dfdp = ((blocked['%g' % hi]['reaction_on_anchor_n'][2] -
-                 blocked['%g' % lo]['reaction_on_anchor_n'][2]) /
-                (hi - lo))
-        dvdz = ((free['%g' % hi]['volume_m3'] -
-                 free['%g' % lo]['volume_m3']) /
-                (free['%g' % hi]['z_south_m'] -
-                 free['%g' % lo]['z_south_m']))
+    dfdp2000 = ((blocked['%g' % 3000.0]['reaction_on_anchor_n'][2] -
+                 blocked['%g' % 1000.0]['reaction_on_anchor_n'][2]) / 2000.0)
+    dfdp3000 = ((blocked['%g' % 4000.0]['reaction_on_anchor_n'][2] -
+                 blocked['%g' % 2000.0]['reaction_on_anchor_n'][2]) / 2000.0)
+    for interior, dfdp in ((2000.0, dfdp2000), (3000.0, dfdp3000)):
+        dz = (heavy['%g' % interior]['z_south_m'] -
+              loaded['%g' % interior]['z_south_m'])
+        dv = (heavy['%g' % interior]['volume_m3'] -
+              loaded['%g' % interior]['volume_m3'])
+        require(abs(dz) > 1e-9, 'reciprocity_degenerate_dx')
+        dvdz = dv / dz
         refuse_vacuous_comparison(dfdp, dvdz,
                                   'm10_reciprocity_vacuous_window')
         denom = max(abs(dfdp), abs(dvdz), aw.WIN['reciprocity_floor'])
         rel = abs(dfdp - dvdz) / denom
         rec['%g' % interior] = {
-            'dF_block_dp_m2': dfdp, 'dV_free_dz_m2': dvdz,
+            'dF_block_dp_m2': dfdp, 'dV_dx_at_fixed_p_m2': dvdz,
+            'dx_m': dz, 'dV_m3': dv,
             'relative_disagreement': rel,
             'within_window': rel <= aw.WIN['reciprocity_rel']}
     bank['X3_reciprocity'] = rec
     x3_pass = all(v['within_window'] for v in rec.values())
 
-    # ---- X4 load-line superposition at 4000 Pa (loaded run)
-    ml = aw.ActuatorModel('braid')
-    rl = run_and_record(ml, aw.level_schedule(4000.0), aw.QS_TICKS, 'loaded')
-    sl = rl.settle_stats()
-    require(sl['max_speed_m_per_s'] <= aw.V_MAX_SETTLE,
-            'loaded_run_not_settled')
-    z_rest_south = float(ml.rest[ml.south, 2])
+    # ---- X4 load-line superposition at 4000 Pa (loaded-light vs free)
+    sl = loaded['%g' % 4000.0]
+    z_rest_south = -aw.Z_TOP * 0.0  # placeholder replaced below
+    mf4 = aw.ActuatorModel('braid')
+    z_rest_south = float(mf4.rest[mf4.south, 2])
     dz_free = free['%g' % 4000.0]['z_south_m'] - z_rest_south
-    dz_loaded = sl['z_tip_m'] - z_rest_south
+    dz_loaded = sl['z_south_m'] - z_rest_south
     t_meas = sl['tie_tension_n']
     f_block = r4
     z_pred = dz_free * (1.0 - t_meas / f_block)
@@ -258,7 +301,8 @@ def mode_main():
         'T_meas_n': t_meas, 'F_block_n': f_block,
         'relative_disagreement': sup,
         'within_window': sup <= aw.WIN['superposition_rel'],
-        'tie_follow_m': abs(sl['z_load_m'] - sl['z_tip_m']) - aw.L_TIE,
+        'tie_follow_m': abs(abs(sl['z_load_m'] - sl['z_tip_m']) -
+                            aw.L_TIE),
         'tie_follow_within': abs(abs(sl['z_load_m'] - sl['z_tip_m']) -
                                  aw.L_TIE) <= aw.WIN['tie_follow_m']}
     x4_pass = bank['X4_superposition']['within_window'] and \
@@ -267,8 +311,10 @@ def mode_main():
     # ---- X2d power-off blocked (p=0)
     m0 = aw.ActuatorModel('braid')
     r0 = run_and_record(m0, aw.level_schedule(0.0), aw.QS_TICKS, 'blocked')
+    r0.tie.release(0)
+    r0.run()
     s0 = r0.settle_stats()
-    require(s0['max_speed_m_per_s'] <= aw.V_MAX_SETTLE,
+    require(s0['position_drift_m'] <= aw.SETTLE_DRIFT_M,
             'blocked_zero_run_not_settled')
     rz0 = -s0['pin_force_n'][2]
     bank['X2d_power_off'] = {
@@ -342,9 +388,10 @@ def mode_main():
                    'tie_return_within'))
 
     # ---- X6 pressure limits (named refusals, M03 codes)
-    src = aw.PressureSource(
+    src = pm.PressureSource(
         aw.SOURCE_ID, aw.P_EXT_PA, aw.P_EXT_PA, aw.MAX_DELTA_P_PA,
         aw.MAX_FLOW_M3_PER_S, aw.SOURCE_PROVENANCE)
+    shell = pm.Membrane(model.rest, model.tris, 'm10_limits_probe')
     limits = {}
     for name, fn in (
             ('pressure_source_delta_p_limit_exceeded',
@@ -354,7 +401,7 @@ def mode_main():
                  'bad', -1.0, 0.0, aw.MAX_DELTA_P_PA,
                  aw.MAX_FLOW_M3_PER_S, 'x')),
             ('pressure_source_undeclared',
-             lambda: model.triangle_tractions('not-a-source')),
+             lambda: shell.triangle_tractions('not-a-source')),
             ('pressure_source_flow_limit_exceeded',
              lambda: src.power_watts(2.0e-3))):
         try:
