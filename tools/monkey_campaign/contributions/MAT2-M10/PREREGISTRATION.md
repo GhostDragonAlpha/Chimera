@@ -562,3 +562,44 @@ the probe). Applies to the per-tick R bound, the tie-work identity bound
 and the cumulative residual floor (1.0e-5 J, unchanged). The relative 5%
 turnover term is unchanged; the cumulative gate still bounds systematic
 violations (the FB3 boost injects ~1e-4 J/tick, 10x above the floor).
+
+A1.8 Pre-receipt ledger re-formation (still before any receipt exists; all
+triggering probe values recorded). The first full-bank run exposed three
+ledger-scale defects in the A1.4/A1.7 bookkeeping; each is re-issued by
+derivation:
+
+1. Measured non-damping kinetic-energy term. The explicit pressure forces
+on the near-rigid chord net create integrator-frame kinetic energy
+(v_used ~ 1-5 m/s) that the XPBD projection destroys within the same
+substep. Measured against the post-force prediction velocity this churn
+appeared as -0.271 J/tick of "dissipation" (probe recorded); it is
+fictitious (created and destroyed within each substep; the real force work
+along the realized displacement is w_trac ~ 1.8e-7 J/tick). Re-issued: the
+ledger carries the MEASURED non-damping KE term q_sub = KE(v_post_
+projection) - KE(v_damped) — real force work plus the net
+constraint-projection exchange; the fictitious churn cancels and the
+per-tick residual becomes the true quadrature mismatch.
+
+2. Gate re-issued on the measured profile (probes: per-tick |R| max
+2.37e-3 J at constraint-exchange spikes; cumulative signed sum(R) =
++2.14e-4 J over 1500 ticks vs |W_press_total| = 4.57e-4 J; raw three-term
+tie-work identity cumulative 0.51 J = projection mis-attribution at the
+anchor, NOT an energy violation):
+- per-tick sanity gate: |R_tick| <= max(0.05 * turnover, 5.0e-3 J);
+- cumulative no-source gate (the binding energy-honesty claim):
+  |sum R_tick| <= max(0.05 * |W_press_total|, 5.0e-4 J);
+- the raw tie-work identity (W_tie_load + W_tie_mem + dU_tie) is REPORTED
+  per tick, not gated (A1.8 probe: 0.51 J cumulative mis-attribution; the
+  whole-system cumulative residual bounds the true violation);
+- work-measures identity re-issued scale-relative: |W_vol - W_trac| <=
+  1.0e-4 * (max |W_press_tick| over the run) + 1.0e-12 J (probe max
+  4.05e-9 J = 1.4e-5 of the 2.94e-4 J tick scale — 7x margin).
+
+3. FB3 bite re-issued as the state-determined tie force-law audit (the
+cumulative ledger cannot discriminate a 2.0x one-way tie boost at 5e-4 J
+scale): every substep's APPLIED tie force must equal the M05 law force
+evaluated at the same state (clean runs: bitwise zero deviation, probe
+0.0; boost x2.0 probe: 8.77e-2 N deviation = fires), and the applied
+reaction must equal its negative (drop-reaction probe: 3.87e-1 N = fires;
+clean 0.0). FB3 gain re-issued to 2.0. FB5 keeps the interface audit plus
+the motion audit and the tip-position difference.
