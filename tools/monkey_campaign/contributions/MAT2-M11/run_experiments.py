@@ -420,7 +420,12 @@ def mode_main():
     landing_bound = 1.0e-4
     contacts_r = sum(wmean_idx(rrows, lo_, hi_, 'chain_contact_forces_n', k)
                      for k in range(len(world.chain_x)))
-    pickup_resid = abs(contacts_r - (w_distal - w_ur))
+    # A3 recorded decomposition: the distal window contacts are the
+    # radius + foot rests (W_r + W_f); the ulna's microstatic contact
+    # aliases to ~0 at tick-end sampling (its landing identity above
+    # carries the claim)
+    w_rf = (world.chain_mass[2] + world.chain_mass[3]) * lw.GRAV
+    pickup_resid = abs(contacts_r - w_rf)
     # double-release guard fires the M05 vocabulary
     t2_tie = released.chain_ties[t2_idx]
     dbl_fired = False
@@ -444,7 +449,7 @@ def mode_main():
         'distal_landing_bound_m': landing_bound,
         'distal_landing_within': bool(landing <= landing_bound),
         'distal_contacts_n': contacts_r,
-        'distal_contacts_expected_n': w_distal - w_ur,
+        'distal_contacts_expected_n': w_rf,
         'distal_pickup_residual_n': pickup_resid,
         'distal_pickup_bound_n': drop_bound,
         'distal_pickup_within': bool(pickup_resid <= drop_bound),
