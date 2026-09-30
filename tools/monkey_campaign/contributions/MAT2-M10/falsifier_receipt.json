@@ -1,0 +1,105 @@
+{
+ "FB1_activation_writes_poses": {
+  "bit": true,
+  "bite_m": 0.001,
+  "clean_control": {
+   "deviation_m": 0.0,
+   "guard": "m10_fb1_premature",
+   "metric_scope": "motion audit: re-integration of the load from recorded per-substep forces",
+   "within_tolerance": true
+  },
+  "tampered_deviation_m": 6.9378993446583275,
+  "window_m": 1e-09
+ },
+ "FB2_isotropic_inflation": {
+  "belt_delta_gap_m": 0.0047133527304936695,
+  "bit": true,
+  "braid_delta_gap_m": -0.0003022827040748688,
+  "clean_control": {
+   "delta_gap_m": 0.0021273902811475565,
+   "guard": "m10_fb2_premature",
+   "metric_scope": "iso baseline extends at 2000 Pa",
+   "within_tolerance": true
+  },
+  "directional_delta_m": -0.0024296729852224253,
+  "window_m": -0.001
+ },
+ "FB3_work_without_source": {
+  "bit": true,
+  "clean_control": {
+   "guard": "m10_fb3_premature",
+   "max_force_law_dev_n": 0.0,
+   "metric_scope": "state-determined tie force-law audit on the clean dynamic run (bitwise zero)",
+   "within_tolerance": true
+  },
+  "tampered_audit": {
+   "max_force_law_dev_n": 0.08765396716016172,
+   "max_reaction_dev_n": 0.0,
+   "peak_law_force_n": 0.08765396716016172
+  }
+ },
+ "FB4_area_independent_forces": {
+  "bit": true,
+  "clean_control": {
+   "guard": "m10_fb4_premature",
+   "metric_scope": "M03 linear-field buoyancy identity F = rho g V (mixed-area mesh)",
+   "rel_error": 9.001474496912693e-16,
+   "within_tolerance": true
+  },
+  "clean_net_force_n": [
+   -1.2836953722228372e-16,
+   4.510281037539698e-16,
+   4.960945648220907
+  ],
+  "reference_n": [
+   0.0,
+   0.0,
+   4.9609456482209024
+  ],
+  "tampered_net_force_n": [
+   -1.3877787807814457e-17,
+   1.5092094240998222e-16,
+   4.961917361019907
+  ],
+  "tampered_rel_error": 0.00019587249446141765
+ },
+ "FB5_clipped_load_path": {
+  "bit": true,
+  "clean_control": {
+   "audit_dev_m": 0.0,
+   "guard": "m10_fb5_premature",
+   "metric_scope": "audit + tip position on the clean dynamic run",
+   "tip_peak_m": -0.04913999385194538,
+   "within_tolerance": true
+  },
+  "dropped_interface_audit": {
+   "max_force_law_dev_n": 0.0,
+   "max_reaction_dev_n": 0.38736009942489935,
+   "peak_law_force_n": 0.19368004971244968
+  },
+  "dropped_motion_audit_dev_m": 0.0,
+  "dropped_tip_peak_m": -0.04891380177597358,
+  "tip_difference_m": 0.0002261920759718053
+ },
+ "FB6_hidden_support": {
+  "bit": true,
+  "clean_control": {
+   "guard": "m10_fb6_premature",
+   "metric_scope": "scene inventory vs rendered subject list",
+   "missing_subject_ids": [],
+   "within_tolerance": true
+  },
+  "expected_code": "support_missing_from_scene",
+  "tampered_missing_subject_ids": [
+   "clamp_north_cap"
+  ]
+ },
+ "all_arms_bit": true,
+ "criteria_sha256": "5e7560caa9efae9ec819c9127ab6ee6e7016e134bdf97e525f06cfedee31190c",
+ "p_vacuous_guard": {
+  "fires_on_identically_zero_window": true,
+  "lesson": "a gate that cannot fail is not a measurement (M07 independent-review lesson)",
+  "refusal_code": "vacuous_comparison_refused"
+ },
+ "schema": "chimera.m10.falsifier_receipt.v1"
+}
