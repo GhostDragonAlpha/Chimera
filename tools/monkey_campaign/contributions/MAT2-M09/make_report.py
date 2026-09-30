@@ -133,15 +133,15 @@ def main():
     add('')
     add('- CPU bank authoritative AND X3 GPU confirmation MEASURED (window 3,'
         ' head 103afa35, jobs m09-gmain-003/grerun-001/gcompare-001): '
-        'X3_pass={p}, worst position diff {wp:.3e} m (window 1e-12), worst '
-        'comparable scalar {ws:.3e} relative (window 1e-9), telemetry '
+        'X3_pass={p}, worst position diff {wp} m (window 1e-12), worst '
+        'comparable scalar {ws} relative (window 1e-9), telemetry '
         '{up} B/tick up / {dn} B/tick down ({dpc:.0f} B/comp vs 1024 '
         'budget), digest chain green every tick; gcompare trace+receipt '
         'byte-identical across runs (trace {ts}). CPU-first discipline '
         'held: the full 90-tick numba CUDA-simulator run was green before '
         'any mailbox job.'.format(
-            p=gp['X3_pass'], wp=gp['worst_position_diff_m'],
-            ws=gp['worst_scalar_relative_overall'],
+            p=gp['X3_pass'], wp=repr(gp['worst_position_diff_m']),
+            ws=repr(gp['worst_scalar_relative_overall']),
             up=gp['telemetry']['max_up_bytes_per_tick'],
             dn=gp['telemetry']['max_down_bytes_per_tick'],
             dpc=gp['telemetry']['max_down_bytes_per_tick'] / 2.0,

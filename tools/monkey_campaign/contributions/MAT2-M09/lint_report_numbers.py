@@ -22,6 +22,7 @@ ARTIFACTS = ['experiment_receipt.json', 'determinism_receipt.json',
              'falsifier_receipt.json', 'regression_receipt.json',
              'capture_validation_receipt.json', 'experiment_trace.json',
              'capture_manifest.json', 'capture_context.json',
+             'gpu_receipt.json', 'gpu_determinism_receipt.json',
              'PREREGISTRATION.md']
 
 WHITELIST = {
@@ -59,7 +60,7 @@ WHITELIST = {
 }
 
 NUM_RE = re.compile(r'(?<![\w.])-?\d+\.\d+(?:[eE][+-]?\d+)?'
-                    r'|-?\d+[eE][+-]?\d+'
+                    r'|(?<![\w.])-?\d+[eE][+-]?\d+'
                     r'|(?<![\w.])\d+(?![\w.])')
 
 
