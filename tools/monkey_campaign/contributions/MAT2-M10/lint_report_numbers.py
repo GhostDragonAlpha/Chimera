@@ -43,7 +43,8 @@ WHITELIST = {
     '1e-12': 'declared floors (work measures / buoyancy)',
     '5e-4': 'cumulative ledger bound (A1.8)',
     '5e-3': 'per-tick ledger sanity floor (A1.8)',
-    '0.35': 'A1.9 reciprocity window',
+    '0.35': 'A1.9 reciprocity window (re-issued, derived in '
+            'x3_derivation_probes.json)',
     '1e-3': 'directional-delta window (A1.4 X1d)',
     '0.05': 'ledger relative term (A1.4/A1.8)',
     '1.2': 'tie-return factor (A1.4 X5e)',

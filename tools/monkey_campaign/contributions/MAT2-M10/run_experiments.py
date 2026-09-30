@@ -268,8 +268,11 @@ def mode_main():
     # family, central differences) vs dV/dx at fixed p (the two-load family
     # at the interior levels). The A1.4 form was mis-derived: differencing
     # the FREE family across pressure levels carries the fixed-shape
-    # inflation term dV/dp|x (probe: 100x disagreement, recorded); the
-    # fixed-p form below is the correct Maxwell pair.
+    # inflation term dV/dp|x — the triggering probe (the ~100x
+    # disagreement) is recorded AS DATA in x3_derivation_probes.json
+    # (a14_misderived_* fields) and restated in Amendment A1.9; the
+    # fixed-p form below is the correct Maxwell pair. The acceptance
+    # window is the A1.9 re-issued WIN['reciprocity_rel'].
     rec = {}
     dfdp2000 = ((blocked['%g' % 3000.0]['reaction_on_anchor_n'][2] -
                  blocked['%g' % 1000.0]['reaction_on_anchor_n'][2]) / 2000.0)
