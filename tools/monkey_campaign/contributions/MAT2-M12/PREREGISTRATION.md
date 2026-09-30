@@ -402,3 +402,40 @@ anchors -> push review/MAT2-M12 -> PR (base astra/gait-capture) -> registry
 submit (args: task_id MAT2-M12, attempt_id, agent_id =
 arrival-glm53f-m12-w1, pr_url, head_sha, criteria_sha256; actor astra-codex)
 -> STOP (the Lieutenant owns review/accept/merge).
+
+
+## Amendment A1 (own commit; recorded BEFORE the bank)
+
+Trigger: the declared coarse erection offset was PROBE-DERIVED (prereg
+section 1 rule 5). Probes on this attempt, CPU, pre-bank, recorded verbatim.
+All probes: coarse resolution, offset 0, free-hang (the probe_free_hang
+probe-only tamper: ground contacts disabled), off schedule.
+
+- P-A1.1 (first probe; metric REJECTED): foot-gap-based sag -- rows[0] foot
+  gap 3.179237071208419e-2 m, settled -8.938402469002187e-4 m, "sag"
+  3.2686210958984406e-2 m. Diagnosis: NOT vessel compliance. The sealed
+  chain placement (limb_world.py line 876: per-element drop from the pole)
+  starts the chain bunched within sum(drop) ~= 4.18e-2 m of the pole; the
+  chain settles to its taut hang through the P0 presettle phase (measured
+  T1 0.1922 -> 0.5086 N over 200 ticks; vessel pole settles
+  0.0470032 -> 0.045910 m). The foot-gap start is not an erection datum;
+  the metric was rejected and the probe re-issued in the sealed M11 A2 form.
+- P-A1.2 (adopted metric -- the sealed M11 A2 pole-sag form): pole sag :=
+  z_pole_target - settled pole z (lift-invariant; uncontaminated by the
+  chain's bunched-start settling). 600-tick probe: 1.0940713067333074e-3 m
+  (trail, 20-tick means ending at the listed tick: 200: 1.0743451109040889e-3,
+  400: 1.095249954234996e-3, 600: 1.0940713067333074e-3). 1500-tick probe
+  (the bank's history length): 1.0928872117499794e-3 m (trail: 900:
+  1.0932639105317096e-3, 1200: 1.0929824686764025e-3, 1400:
+  1.0929083423526845e-3, 1500: 1.0928872117499794e-3; drift 600->1500
+  ~1.2e-6 m -- converged).
+- DECLARED: ERECTION_OFFSET_M['coarse'] = 1.0928872117499794e-3 m (the
+  1500-tick value; probe history length == bank history length). The
+  reference resolution keeps the SEALED M11 offset 3.0312e-3 m (reused).
+- P-A1.3 (verification probe; contacts ENABLED, full 1500-tick off run,
+  coarse, with the declared offset): settled OFF-window (1400,1500) foot
+  gap 1.9999168685494353e-4 m (declared target 2.0e-4 m; deviation 8.3e-9 m
+  against the 1.0e-3 m window) and max OFF-window foot contact 0.0 bitwise.
+  The reference offset's Y4c verification is a bank gate.
+- No window of PREREGISTRATION section 5 required re-derivation: every
+  probe landed inside its declared window with the declared constants.
