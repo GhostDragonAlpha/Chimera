@@ -419,3 +419,15 @@ physics, none from measurements:
    arm attacks: dropping it must trip the residual bound).
 
 No experiment receipts exist yet; this amendment precedes mode_main.
+
+### Reference repair note (2026-09-30, recorded with the first receipts)
+
+The three attempt commits were rewritten on this UNPUBLISHED attempt branch
+(sole-owner workspace) solely to separate the `Agent:` trailer into its own
+trailer block (the batch-gates trailer check reads git trailer blocks, which
+require the separating blank line). TREES ARE UNCHANGED — the rewritten
+identities are: base prereg 49bd9a85 (was eda436eb), Amendment A1 a39a946e
+(was 945826a1), Amendment A2 951c963e (was 24b44ef2). Where the base prereg
+header and module docstrings cite the old shas, the surviving text is the
+commit SUBJECT plus this note; the chain order and content are provable from
+the branch history itself.
