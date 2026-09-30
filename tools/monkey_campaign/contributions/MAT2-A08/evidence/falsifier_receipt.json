@@ -1,0 +1,97 @@
+{
+ "F_all_green": true,
+ "arms": [
+  {
+   "arm": "FB1_geometry_only_inference",
+   "bit": true,
+   "clean_control": {
+    "guard": "a08_fb_premature",
+    "metric_scope": "recompute validator on the untampered emitted document",
+    "structurally_valid": true,
+    "within_tolerance": true
+   },
+   "expected_refusal": "geometry_only_inference_refused",
+   "observed": "geometry_only_inference_refused:abd_poll_longus:stiffness_from_geometry"
+  },
+  {
+   "arm": "FB2_human_norm_substitution",
+   "bit": true,
+   "clean_control": {
+    "guard": "a08_fb_premature",
+    "metric_scope": "recompute validator on the untampered emitted document",
+    "structurally_valid": true,
+    "within_tolerance": true
+   },
+   "expected_refusal": "human_norm_substitution_refused",
+   "observed": "human_norm_substitution_refused:abd_poll_longus:human"
+  },
+  {
+   "arm": "FB3_namespace_mixing",
+   "bit": true,
+   "clean_control": {
+    "guard": "a08_fb_premature",
+    "metric_scope": "recompute validator on the untampered emitted document",
+    "structurally_valid": true,
+    "within_tolerance": true
+   },
+   "expected_refusal": "engineering_value_in_biological_registry",
+   "observed": "engineering_value_in_biological_registry:m03_damping_per_s,screen_classification_mismatch:m03_damping_per_s:row"
+  },
+  {
+   "arm": "FB4_unauthorized_fitting",
+   "bit": true,
+   "clean_control": {
+    "guard": "a08_fb_premature",
+    "metric_scope": "recompute validator on the untampered emitted document",
+    "structurally_valid": true,
+    "within_tolerance": true
+   },
+   "expected_refusal": "fitting_unauthorized_refused",
+   "observed": "fitting_unauthorized_refused:/fitted_muscle_params"
+  },
+  {
+   "arm": "FB6_screen_flip",
+   "bit": true,
+   "clean_control": {
+    "guard": "a08_fb_premature",
+    "metric_scope": "recompute validator on the untampered emitted document",
+    "structurally_valid": true,
+    "within_tolerance": true
+   },
+   "expected_refusal": "screen_classification_mismatch",
+   "observed": "screen_classification_mismatch:bicep_lh:fiber_length:INSIDE-1SD"
+  },
+  {
+   "arm": "FB7_silent_default",
+   "bit": true,
+   "clean_control": {
+    "guard": "a08_fb_premature",
+    "metric_scope": "recompute validator on the untampered emitted document",
+    "structurally_valid": true,
+    "within_tolerance": true
+   },
+   "expected_refusal": "silent_default_refused",
+   "observed": "silent_default_refused:U1,unresolved_entry_incomplete:U1"
+  },
+  {
+   "arm": "FB5_source_pin_mutation",
+   "bit": true,
+   "clean_control": {
+    "guard": "a08_fb5_premature",
+    "metric_scope": "pin verifier on the untampered carrier bytes",
+    "structurally_valid": true,
+    "within_tolerance": true
+   },
+   "expected_refusal": "input_pin_drift",
+   "observed": "input_pin_drift:host:pressure_state.json"
+  }
+ ],
+ "clean_document_valid": true,
+ "note": "clean control runs FIRST on every arm; a bit without a passing clean control is refused (a08_fb_premature)",
+ "schema": "chimera.a08_falsifiers.v1",
+ "vacuous_comparison_guard": {
+  "fires_on_identically_zero_window": true,
+  "lesson": "a gate that cannot fail is not a measurement (M07 A8)",
+  "refusal_code": "vacuous_comparison_refused:a08_selftest"
+ }
+}
