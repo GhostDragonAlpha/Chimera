@@ -1,0 +1,10 @@
+{
+ "capture_sha256": "e31845779da9fcf1608f61d9504e70472481de5b8d7e4a857f1e3cb7578e193d",
+ "run_id": "mat2-m10-jack-visual-20260929-e3184577",
+ "subject_sha256": "3ede5d940d6894d5d1a8b955c0c2fc669fa50106c6ab9366fa585fe15594d34c",
+ "task_id": "M10",
+ "tick_interval": [
+  0,
+  1499
+ ]
+}

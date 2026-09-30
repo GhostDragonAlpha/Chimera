@@ -102,6 +102,37 @@ class Camera:
             py = oy + vp_h / 2.0 - y * scale
         return np.column_stack([px, py]), depth
 
+    def quat(self):
+        """wxyz quaternion of the camera-to-frame rotation (columns
+        right, up, -forward; forward -Z / up +Y convention)."""
+        m = np.column_stack([self.right, self.up, -self.forward])
+        tr = m[0, 0] + m[1, 1] + m[2, 2]
+        if tr > 0:
+            sq = math.sqrt(tr + 1.0) * 2
+            w = 0.25 * sq
+            x = (m[2, 1] - m[1, 2]) / sq
+            y = (m[0, 2] - m[2, 0]) / sq
+            z = (m[1, 0] - m[0, 1]) / sq
+        elif m[0, 0] > m[1, 1] and m[0, 0] > m[2, 2]:
+            sq = math.sqrt(1.0 + m[0, 0] - m[1, 1] - m[2, 2]) * 2
+            w = (m[2, 1] - m[1, 2]) / sq
+            x = 0.25 * sq
+            y = (m[0, 1] + m[1, 0]) / sq
+            z = (m[0, 2] + m[2, 0]) / sq
+        elif m[1, 1] > m[2, 2]:
+            sq = math.sqrt(1.0 + m[1, 1] - m[0, 0] - m[2, 2]) * 2
+            w = (m[0, 2] - m[2, 0]) / sq
+            x = (m[0, 1] + m[1, 0]) / sq
+            y = 0.25 * sq
+            z = (m[1, 2] + m[2, 1]) / sq
+        else:
+            sq = math.sqrt(1.0 + m[2, 2] - m[0, 0] - m[1, 1]) * 2
+            w = (m[1, 0] - m[0, 1]) / sq
+            x = (m[0, 2] + m[2, 0]) / sq
+            y = (m[1, 2] + m[2, 1]) / sq
+            z = 0.25 * sq
+        return [float(w), float(x), float(y), float(z)]
+
     def record(self, snap_ticks):
         samples = []
         for tick in snap_ticks:
@@ -110,6 +141,7 @@ class Camera:
                 'position': [float(c) for c in self.position],
                 'target': [float(c) for c in self.target],
                 'distance_to_target': self.dist,
+                'orientation': self.quat(),
                 'orientation_convention_and_values':
                     'quaternion_wxyz_camera_to_frame, forward -Z / up +Y; '
                     'fixed bookmark (pose constant across ticks)',
@@ -120,9 +152,13 @@ class Camera:
             'coordinate_unit': 'm',
             'handedness': 'right',
             'position': [float(c) for c in self.position],
+            'orientation_convention': 'quaternion_wxyz_camera_to_frame',
             'orientation_convention_and_values':
                 'quaternion_wxyz_camera_to_frame, forward -Z / up +Y, '
                 'fixed bookmark',
+            'forward_axis': '-Z',
+            'up_axis': '+Y',
+            'sample_mode': 'fixed_bookmark',
             'target': [float(c) for c in self.target],
             'distance_to_target': self.dist,
             'projection': self.projection,
@@ -272,12 +308,19 @@ def render_snapshot(model, snap, row_lookup, tick, diag):
     x_load = np.array(snap['x_load'], dtype=np.float64)
     dp = float(snap['delta_p_pa'])
     # binding assertions BEFORE any pixel is written (snapshot tick T is
-    # the state after T completed ticks = trace row T-1)
-    row = row_lookup[tick - 1]
-    require(abs(float(row['volume_m3']) - float(snap['volume_m3'])) <= 1e-9,
+    # the state after T completed ticks = trace row T-1; snapshot 0 is the
+    # rest state, bound to the model's own closed-mesh identity)
+    if tick == 0:
+        bind_volume = float(model.report['signed_volume_m3'])
+        bind_pole = float(model.rest[model.south, 2])
+    else:
+        row = row_lookup[tick - 1]
+        bind_volume = float(row['volume_m3'])
+        bind_pole = float(row['z_tip_m'])
+    require(abs(float(snap['volume_m3']) - bind_volume) <= 1e-9,
             'bind_volume_mismatch:%d' % tick)
     pole_z = float(verts[model.south, 2])
-    require(abs(pole_z - float(row['z_tip_m'])) <= 1e-9,
+    require(abs(pole_z - bind_pole) <= 1e-9,
             'bind_pole_mismatch:%d' % tick)
 
     cams = [
