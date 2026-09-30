@@ -49,10 +49,43 @@ SUBJECTS = ['actuator_shell', 'clamp_north_cap', 'tie_south_pole', 'load',
 LABELS = ['actuator_shell', 'actuator_shell/m:belt', 'port:pressure',
           'clamp_north_cap (visible support)', 'tie_south_pole',
           'bond:tie', 'load', 'source_m10_source']
+# diagnostic marker colors (exact RGB; the camera-consistency probe and the
+# committed-still gates key on them)
+CLAMP_RGB = (255, 70, 70)    # north clamp ring (declared support, above)
+LOAD_RGB = (60, 60, 225)     # load dot (declared below)
+ANCHOR_RGB = (0, 220, 120)   # south-pole tie anchor dot (declared above load)
+TIE_RGB = (0, 170, 255)      # tie line
 TICK_MAP = ('1 tick = 1/300 s simulated; frames are the declared snapshot '
             'ticks 0,300,400,700,1000,1100,1200,1350,1499; even frames are '
             'the diagnostic sheets, odd frames the clean sheets '
             '(1 video second per snapshot)')
+# fixed bookmarks (single source; A1.9 round: the close-up aim point moved
+# from the south pole (0,0,-0.05) to the loaded-interface midpoint (0,0,
+# -0.10) and pulled back along the SAME view direction (0.09,-0.13,0.03)
+# from 0.161 m to 0.26 m so the DECLARED content (the south-pole tie anchor,
+# the tie and the load) is inside the viewport once the perspective-depth
+# sign is fixed; recorded in the regenerated cameras.json all-fields
+# records. whole/side/front bookmarks unchanged.)
+CLOSEUP_TARGET = (0.0, 0.0, -0.10)
+_CLOSEUP_DIR_NORM = 0.1609347693943108  # |(0.09,-0.13,0.03)| original
+CLOSEUP_DIST = 0.26
+CLOSEUP_POSITION = tuple(
+    CLOSEUP_TARGET[i] + CLOSEUP_DIST *
+    ((0.09, -0.13, 0.03)[i] / _CLOSEUP_DIR_NORM) for i in range(3))
+BOOKMARKS = (
+    ('whole', dict(position=(0.30, -0.42, 0.26), target=(0.0, 0.0, -0.045),
+                   projection='perspective', fov_degrees=40)),
+    ('side', dict(position=(0.0, 0.62, -0.05), target=(0.0, 0.0, -0.05),
+                  projection='orthographic', span=0.40)),
+    ('front', dict(position=(0.62, 0.0, -0.05), target=(0.0, 0.0, -0.05),
+                   projection='orthographic', span=0.40)),
+    ('closeup', dict(position=CLOSEUP_POSITION, target=CLOSEUP_TARGET,
+                     projection='perspective', fov_degrees=30)))
+ORIGINS = [(4, 4), (484, 4), (4, 268), (484, 268)]
+NAMES = ['whole', 'side', 'front', 'close-up']
+# inclusive pixel rects of the four viewports on the sheet (leakage gate)
+VP_RECTS = {'whole': (4, 4, 479, 263), 'side': (484, 4, 959, 263),
+            'front': (4, 268, 479, 527), 'closeup': (484, 268, 959, 527)}
 
 TRACE_PATH = HERE / 'experiment_trace.json'
 
@@ -87,7 +120,11 @@ class Camera:
         rel = pts - self.position
         x = rel @ self.right
         y = rel @ self.up
-        z = rel @ (-self.forward)
+        # review r1 finding F2 fix: depth along +forward, so scene points
+        # in front of the camera have POSITIVE depth (the previous
+        # rel @ -forward made every depth negative and the perspective
+        # divide mirrored both axes: 180-deg rotated viewports)
+        z = rel @ self.forward
         ox, oy = vp_origin
         if self.projection == 'perspective':
             t = math.tan(math.radians(self.fov) / 2.0)
@@ -300,6 +337,74 @@ def read_bmp_rgb(data):
     return arr
 
 
+def _marker_stats(arr, rect, rgb):
+    """Exact-RGB marker stats inside an inclusive viewport rect:
+    pixel count and mean pixel row (image rows grow DOWNWARD)."""
+    x0, y0, x1, y1 = rect
+    sub = arr[y0:y1 + 1, x0:x1 + 1]
+    mask = np.all(sub == np.array(rgb, dtype=np.uint8), axis=2)
+    rows, cols = np.nonzero(mask)
+    return {'rgb': [int(c) for c in rgb], 'px_count': int(rows.size),
+            'mean_row': float(rows.mean()) if rows.size else None}
+
+
+def camera_consistency_proof(stills):
+    """Review r1 F2 required extension of the pixel probe: one SIGNED
+    geometric check per perspective viewport on each committed diagnostic
+    still — under the declared camera up (+Z-dominant), a declared-above
+    object (north clamp ring in 'whole'; the south-pole tie anchor dot in
+    'close-up') must land ABOVE (smaller pixel row) the declared-below
+    object (the load dot). Also asserts declared-content presence in the
+    close-up (anchor + tie + load pixels) and zero cross-viewport leakage
+    of the tie color outside the four viewport rects."""
+    proof = {'rule': 'declared-above marker mean pixel row < declared-below '
+                     'marker mean pixel row (rows grow downward), per '
+                     'perspective viewport, declared +Z-dominant camera up; '
+                     'measured on the committed diagnostic stills',
+             'viewports': {'whole': {'above': 'clamp_north_cap',
+                                     'below': 'load'},
+                           'closeup': {'above': 'tie_south_pole anchor dot',
+                                       'below': 'load'}},
+             'per_still': {}}
+    tie_mask_all = None
+    for fname, arr in sorted(stills.items()):
+        per = {}
+        for vp, above_rgb, below_rgb in (
+                ('whole', CLAMP_RGB, LOAD_RGB),
+                ('closeup', ANCHOR_RGB, LOAD_RGB)):
+            above = _marker_stats(arr, VP_RECTS[vp], above_rgb)
+            below = _marker_stats(arr, VP_RECTS[vp], below_rgb)
+            require(above['px_count'] > 0,
+                    'camera_consistency_content_missing:%s:%s' % (fname, vp))
+            require(below['px_count'] > 0,
+                    'camera_consistency_content_missing:%s:%s' % (fname, vp))
+            delta = below['mean_row'] - above['mean_row']
+            require(delta > 0.0,
+                    'camera_consistency_row_order_failed:%s:%s' % (fname,
+                                                                   vp))
+            per[vp] = {'above': above, 'below': below,
+                       'signed_row_delta_below_minus_above': float(delta),
+                       'consistent': True}
+        # declared close-up content: anchor, tie, load all present
+        close = VP_RECTS['closeup']
+        tie = _marker_stats(arr, close, TIE_RGB)
+        require(tie['px_count'] > 0,
+                'camera_consistency_content_missing:%s:closeup_tie' % fname)
+        per['closeup']['tie_px_count'] = tie['px_count']
+        # cross-viewport leakage: tie pixels only inside the four rects
+        mask = np.all(arr == np.array(TIE_RGB, dtype=np.uint8), axis=2)
+        allowed = np.zeros_like(mask)
+        for rect in VP_RECTS.values():
+            x0, y0, x1, y1 = rect
+            allowed[y0:y1 + 1, x0:x1 + 1] = True
+        outside = int(np.count_nonzero(mask & ~allowed))
+        require(outside == 0, 'viewport_leakage:%s:%d' % (fname, outside))
+        per['leakage'] = {'tie_rgb': [int(c) for c in TIE_RGB],
+                          'pixels_outside_viewports': outside}
+        proof['per_still'][fname] = per
+    return proof
+
+
 def render_snapshot(model, snap, row_lookup, tick, diag):
     sheet = np.full((H_SHEET, W_SHEET, 3), 24, dtype=np.uint8)
     img = Image.fromarray(sheet, 'RGB')
@@ -323,41 +428,36 @@ def render_snapshot(model, snap, row_lookup, tick, diag):
     require(abs(pole_z - bind_pole) <= 1e-9,
             'bind_pole_mismatch:%d' % tick)
 
-    cams = [
-        ('whole', Camera('whole', (0.30, -0.42, 0.26), (0.0, 0.0, -0.045),
-                         'perspective', fov_degrees=40)),
-        ('side', Camera('side', (0.0, 0.62, -0.05), (0.0, 0.0, -0.05),
-                        'orthographic', span=0.40)),
-        ('front', Camera('front', (0.62, 0.0, -0.05), (0.0, 0.0, -0.05),
-                         'orthographic', span=0.40)),
-        ('closeup', Camera('closeup', (0.09, -0.13, -0.02), (0.0, 0.0, -0.05),
-                           'perspective', fov_degrees=30)),
-    ]
-    origins = [(4, 4), (484, 4), (4, 268), (484, 268)]
-    names = ['whole', 'side', 'front', 'close-up']
-    for ci, (cname, cam) in enumerate(cams):
-        ox, oy = origins[ci]
-        vp = ((ox, oy), (VP_W, VP_H))
-        draw.rectangle([ox, oy, ox + VP_W, oy + VP_H],
-                       outline=(90, 92, 104))
-        draw_shell(draw, cam, verts, model.tris, vp)
+    cams = [Camera(cname, **kw) for cname, kw in BOOKMARKS]
+    # Each viewport renders on its OWN image which is then pasted onto the
+    # sheet: no viewport can draw outside its rectangle (the review r1 F2
+    # cross-viewport tie-line leakage class is impossible by construction).
+    for ci, cam in enumerate(cams):
+        ox, oy = ORIGINS[ci]
+        vp_img = Image.new('RGB', (VP_W, VP_H), (24, 24, 24))
+        vdraw = ImageDraw.Draw(vp_img)
+        vp = ((0, 0), (VP_W, VP_H))
+        vdraw.rectangle([0, 0, VP_W - 1, VP_H - 1], outline=(90, 92, 104))
+        draw_shell(vdraw, cam, verts, model.tris, vp)
         if diag:
-            draw_chords(draw, cam, verts, model.chords, vp)
-            draw_pressure_arrows(draw, cam, verts, model.tris, vp, dp)
-            # clamp ring (visible support) + tie + load
+            draw_chords(vdraw, cam, verts, model.chords, vp)
+            draw_pressure_arrows(vdraw, cam, verts, model.tris, vp, dp)
+            # clamp ring (visible support) + tie anchor dot + tie + load
             cl = verts[model.clamp_idx]
             px, _ = cam.project(cl, vp[0], vp[1][0], vp[1][1])
             for p in px:
-                if ox <= p[0] <= ox + VP_W and oy <= p[1] <= oy + VP_H:
-                    draw.ellipse([p[0] - 3, p[1] - 3, p[0] + 3, p[1] + 3],
-                                 fill=(255, 70, 70))
+                if 0 <= p[0] <= VP_W and 0 <= p[1] <= VP_H:
+                    vdraw.ellipse([p[0] - 3, p[1] - 3, p[0] + 3, p[1] + 3],
+                                  fill=CLAMP_RGB)
             sp = verts[model.south]
             pt, _ = cam.project(np.vstack([sp, x_load]), vp[0], vp[1][0],
                                 vp[1][1])
-            draw.line([(pt[0][0], pt[0][1]), (pt[1][0], pt[1][1])],
-                      fill=(0, 170, 255), width=2)
-            draw.ellipse([pt[1][0] - 5, pt[1][1] - 5, pt[1][0] + 5,
-                          pt[1][1] + 5], fill=(60, 60, 225))
+            vdraw.ellipse([pt[0][0] - 3, pt[0][1] - 3, pt[0][0] + 3,
+                           pt[0][1] + 3], fill=ANCHOR_RGB)
+            vdraw.line([(pt[0][0], pt[0][1]), (pt[1][0], pt[1][1])],
+                       fill=TIE_RGB, width=2)
+            vdraw.ellipse([pt[1][0] - 5, pt[1][1] - 5, pt[1][0] + 5,
+                           pt[1][1] + 5], fill=LOAD_RGB)
             # labels (stable IDs)
             for name, world_pt, col in (
                     ('clamp_north_cap (visible support)',
@@ -368,15 +468,16 @@ def render_snapshot(model, snap, row_lookup, tick, diag):
                      verts[model.north], (255, 200, 90))):
                 p, _ = cam.project(np.array([world_pt]), vp[0], vp[1][0],
                                    vp[1][1])
-                if ox <= p[0][0] <= ox + VP_W and oy <= p[0][1] <= oy + VP_H:
-                    draw.text((p[0][0] + 4, p[0][1] - 6), name, fill=col)
-            draw.text((ox + 4, oy + 2),
-                      '%s | diagnostic | tick %d | dp %.0f Pa'
-                      % (names[ci], tick, dp), fill=(230, 230, 230))
+                if 0 <= p[0][0] <= VP_W and 0 <= p[0][1] <= VP_H:
+                    vdraw.text((p[0][0] + 4, p[0][1] - 6), name, fill=col)
+            vdraw.text((4, 2),
+                       '%s | diagnostic | tick %d | dp %.0f Pa'
+                       % (NAMES[ci], tick, dp), fill=(230, 230, 230))
         else:
-            draw.text((ox + 4, oy + 2),
-                      '%s | clean | tick %d' % (names[ci], tick),
-                      fill=(160, 160, 160))
+            vdraw.text((4, 2),
+                       '%s | clean | tick %d' % (NAMES[ci], tick),
+                       fill=(160, 160, 160))
+        img.paste(vp_img, (ox, oy))
     mode = 'diagnostic' if diag else 'clean'
     footer = ('MAT2-M10 jack: clamped spherical pressure vessel, authored '
               '%s chord net | layers: %s | footer: dp=%.0f Pa, '
@@ -400,14 +501,7 @@ def main():
     snap_ticks = sorted(int(k) for k in dyn['snapshots'])
     row_lookup = {r['tick']: r for r in dyn['rows']}
     model = aw.ActuatorModel('braid')
-    cameras = [Camera('whole', (0.30, -0.42, 0.26), (0.0, 0.0, -0.045),
-                      'perspective', fov_degrees=40),
-               Camera('side', (0.0, 0.62, -0.05), (0.0, 0.0, -0.05),
-                      'orthographic', span=0.40),
-               Camera('front', (0.62, 0.0, -0.05), (0.0, 0.0, -0.05),
-                      'orthographic', span=0.40),
-               Camera('closeup', (0.09, -0.13, -0.02), (0.0, 0.0, -0.05),
-                      'perspective', fov_degrees=30)]
+    cameras = [Camera(cname, **kw) for cname, kw in BOOKMARKS]
     cam_records = {c.name: c.record(snap_ticks) for c in cameras}
     frame_hashes = {}
     still_hashes = {}
@@ -455,6 +549,13 @@ def main():
                         'topdown_misread_does_not_match': bool(top_down)}
         require(ok, 'row_order_proof_failed:' + fname)
         require(top_down, 'row_order_sensitivity_failed:' + fname)
+    # review r1 F2: the camera-consistency pixel probe runs on the
+    # COMMITTED stills (read back from disk, not the in-memory arrays)
+    cc_stills = {}
+    for fname in still_hashes:
+        cc_stills[fname] = read_bmp_rgb(
+            (frames_dir / (fname + '.bmp')).read_bytes())
+    cc_proof = camera_consistency_proof(cc_stills)
     (evidence_dir / 'cameras.json').write_text(
         json.dumps({'cameras': cam_records, 'view_ids': VIEW_IDS,
                     'subjects': SUBJECTS, 'labels': LABELS,
@@ -462,6 +563,9 @@ def main():
                     'still_indices': [0, 8, 10, 16],
                     'still_frame_indices_declared': aw.STILL_INDICES,
                     'row_order_proof': proof,
+                    'camera_consistency_proof': cc_proof,
+                    'viewport_rects': {k: list(v) for k, v in
+                                       VP_RECTS.items()},
                     'frame_raw_sha256': frame_hashes,
                     'still_hashes': still_hashes},
                    indent=1, sort_keys=True) + '\n', encoding='utf-8',

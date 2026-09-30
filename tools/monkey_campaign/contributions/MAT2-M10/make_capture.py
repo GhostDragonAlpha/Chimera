@@ -74,16 +74,12 @@ def registry_profile():
     return profile
 
 
-def vis_diagnostic():
+def vis_diagnostic(labels, subjects):
     return {'layers': list(PROFILE['diagnostic_layers']),
-            'label_ids': ['actuator_shell', 'actuator_shell/m:belt',
-                          'port:pressure',
-                          'clamp_north_cap (visible support)',
-                          'tie_south_pole', 'bond:tie', 'load',
-                          'source_m10_source'],
-            'selected_ids': SUBJECTS,
-            'required_subject_ids': SUBJECTS,
-            'observed_subject_ids': SUBJECTS,
+            'label_ids': list(labels),
+            'selected_ids': list(subjects),
+            'required_subject_ids': list(subjects),
+            'observed_subject_ids': list(subjects),
             'missing_subject_ids': [],
             'occlusion_mode': 'depth_tested',
             'tag_bindings': [
@@ -93,7 +89,7 @@ def vis_diagnostic():
                                 'tie_south_pole' if 'tie' in l else
                                 'source_m10_source' if 'source' in l else
                                 'actuator_shell')}
-                for l in LABELS]}
+                for l in labels]}
 
 
 def vis_clean():
@@ -112,6 +108,12 @@ SUBJECTS = ['actuator_shell', 'clamp_north_cap', 'tie_south_pole', 'load',
 LABELS = ['actuator_shell', 'actuator_shell/m:belt', 'port:pressure',
           'clamp_north_cap (visible support)', 'tie_south_pole',
           'bond:tie', 'load', 'source_m10_source']
+# review r1 F2: per-view declared subjects reflect what the viewport frame
+# actually contains (the close-up frames the loaded interface: the south
+# dome of the shell, the tie anchor, the tie and the load — the north clamp
+# and the pressure port are OUT of its frame)
+CLOSEUP_SUBJECTS = ['actuator_shell', 'tie_south_pole', 'load']
+CLOSEUP_LABELS = ['actuator_shell', 'tie_south_pole', 'bond:tie', 'load']
 
 
 def main():
@@ -174,7 +176,7 @@ def main():
 
     views = [
         view('pair-whole', VIEW_IDS[0], 'diagnostic', cams['whole'], None,
-             vis_diagnostic(),
+             vis_diagnostic(LABELS, SUBJECTS),
              'single viewport (sheet 0, top-left); fixed camera; the '
              'clamped spherical jack contracts under pressure and lifts '
              'the load through the declared tie'),
@@ -183,7 +185,7 @@ def main():
              'clean row: identical camera and state to its diagnostic '
              'pair; no labels, layers or diagnostic styling by design'),
         view('pair-planes', VIEW_IDS[1], 'diagnostic', cams['side'],
-             [cams['front']], vis_diagnostic(),
+             [cams['front']], vis_diagnostic(LABELS, SUBJECTS),
              'two side-by-side viewports (sheet 0 top-right, sheet 0 '
              'bottom-left): side (primary) and front (secondary, fully '
              'declared); the north clamp (visible support), the tie and '
@@ -193,13 +195,15 @@ def main():
              'clean row: identical cameras and state to its diagnostic '
              'pair'),
         view('pair-interface', VIEW_IDS[2], 'diagnostic', cams['closeup'],
-             None, vis_diagnostic(),
+             None, vis_diagnostic(CLOSEUP_LABELS, CLOSEUP_SUBJECTS),
              'single viewport (sheet 0 bottom-right); oblique close-up of '
              'the loaded interface: the south-pole tie anchor, the tie and '
-             'the load'),
+             'the load (A1.9 round: bookmark re-aimed so the declared '
+             'content is inside the frame; pixel-gated by the '
+             'camera-consistency probe)'),
         view('pair-interface', VIEW_IDS[2], 'clean', cams['closeup'], None,
              vis_clean(),
-             'clean row: identical camera and state to its diagnostic '
+             'clean row: identical cameras and state to its diagnostic '
              'pair'),
     ]
     manifest = {

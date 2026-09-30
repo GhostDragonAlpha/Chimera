@@ -13,6 +13,10 @@ the suite is the executable form of the done_when clauses:
   P4 capture gate: ffmpeg decode == committed stills under identity ONLY
      (explicit transform list identity/vflip/hflip/rot180) + stdlib
      row-order proof (cameras.json row_order_proof)
+  camera-consistency gate (review r1 F2): signed geometric row-order check
+     per perspective viewport (declared-above marker above declared-below
+     load under the declared up), declared close-up content presence and
+     zero cross-viewport leakage, recomputed from the committed BMP stills
   G7 registry identity: criteria sha across prereg/receipt/capture
 Run:  python -B test_actuator_world.py
 """
@@ -229,6 +233,73 @@ class P4CaptureGate(unittest.TestCase):
         for fname, row in proof.items():
             self.assertTrue(row['bmp_rows_match_payload'], fname)
             self.assertTrue(row['topdown_misread_does_not_match'], fname)
+
+
+class CameraConsistencyGate(unittest.TestCase):
+    """Review r1 F2 required probe: camera metadata vs PIXELS. One signed
+    geometric check per perspective viewport on every committed diagnostic
+    still — under the declared camera up (+Z-dominant), a declared-above
+    object (whole: north clamp ring; close-up: the south-pole tie anchor
+    dot) must land ABOVE (smaller pixel row) the declared-below object
+    (the load dot). Also gates declared close-up content presence
+    (anchor + tie + load) and zero cross-viewport leakage of the tie
+    color. Independently recomputed here from the committed BMP stills
+    (not trusted from cameras.json)."""
+
+    RECTS = {'whole': (4, 4, 479, 263), 'side': (484, 4, 959, 263),
+             'front': (4, 268, 479, 527), 'closeup': (484, 268, 959, 527)}
+    CLAMP = (255, 70, 70)
+    LOAD = (60, 60, 225)
+    ANCHOR = (0, 220, 120)
+    TIE = (0, 170, 255)
+
+    def _marker(self, arr, rect, rgb):
+        import numpy as np
+        x0, y0, x1, y1 = rect
+        sub = arr[y0:y1 + 1, x0:x1 + 1]
+        mask = np.all(sub == np.array(rgb, dtype=np.uint8), axis=2)
+        rows, _ = np.nonzero(mask)
+        return rows
+
+    def test_signed_row_order_and_content(self):
+        import numpy as np
+        evidence = load(str(CAPTURE / 'evidence' / 'cameras.json'))
+        proof = evidence.get('camera_consistency_proof')
+        self.assertIsNotNone(proof)
+        for fname, row in proof['per_still'].items():
+            for vp in ('whole', 'closeup'):
+                self.assertTrue(row[vp]['consistent'], (fname, vp))
+                self.assertGreater(row[vp]['signed_row_delta_below_minus_above'],
+                                   0.0, (fname, vp))
+            self.assertEqual(row['leakage']['pixels_outside_viewports'],
+                             0, fname)
+        # independent recompute from the committed stills
+        sys.path.insert(0, str(HERE))
+        from render_run import read_bmp_rgb
+        for fname in sorted(proof['per_still']):
+            path = CAPTURE / 'frames' / (fname + '.bmp')
+            self.assertTrue(path.exists(), str(path))
+            arr = read_bmp_rgb(path.read_bytes())
+            for vp, above_rgb in (('whole', self.CLAMP),
+                                  ('closeup', self.ANCHOR)):
+                above = self._marker(arr, self.RECTS[vp], above_rgb)
+                below = self._marker(arr, self.RECTS[vp], self.LOAD)
+                self.assertGreater(above.size, 0, (fname, vp, 'above'))
+                self.assertGreater(below.size, 0, (fname, vp, 'below'))
+                self.assertLess(float(above.mean()), float(below.mean()),
+                                (fname, vp, 'row order'))
+            # declared close-up content: tie pixels inside the viewport
+            tie = self._marker(arr, self.RECTS['closeup'], self.TIE)
+            self.assertGreater(tie.size, 0, (fname, 'closeup tie'))
+            # leakage: tie pixels only inside the four viewport rects
+            mask = np.all(arr == np.array(self.TIE, dtype=np.uint8), axis=2)
+            allowed = np.zeros_like(mask)
+            for rect in self.RECTS.values():
+                x0, y0, x1, y1 = rect
+                allowed[y0:y1 + 1, x0:x1 + 1] = True
+            self.assertEqual(
+                int(np.count_nonzero(mask & ~allowed)), 0,
+                (fname, 'viewport leakage'))
 
 
 def aw_window(key):
