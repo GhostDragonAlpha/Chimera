@@ -177,6 +177,21 @@ values (0.122492 m / 0.1225 m; 0.002 m; 30.0 N).
   == 0.002 m on 14.
 - P3: `flex_carpi_ulnaris` tendon_slack_length equals its own
   optimal_fiber_length (the documented slot swap; value 0.1225 m class).
+
+## Amendment A1 (pre-measurement, append-only; own commit)
+
+Timing: after the initial freeze commit, BEFORE any measurement or banking run
+(the generator had not yet been executed end-to-end). Reason: the frozen P3
+wording mis-stated the sealed memo's actual claim while transcribing it. The
+sealed memo says `flex_carpi_ulnaris` "even carries it as TENDON slack length"
+— i.e. the fiber-ceiling constant appears AS the tendon slack length, not that
+TSL equals that muscle's own fiber length. Corrected prediction:
+
+- P3 (amended): `flex_carpi_ulnaris` carries the fiber-ceiling constant
+  0.122492 m AS its `tendon_slack_length` while its own
+  `optimal_fiber_length` differs (osim declares 0.044632 m) — the documented
+  slot swap no measurement would produce. The amended form is what the
+  generator computes; no threshold or count changed.
 - P4: M2-3 mapping from pinned bytes — 19 matched 1:1, 5 granularity
   NOT-COMPARABLE, 15 MUSCLE-ABSENT; recomputed screen classes agree with the
   sealed atlas receipt counts: fiber OUTSIDE 16 / INSIDE-1SD 2 / INSIDE-2SD 1;
