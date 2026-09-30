@@ -41,11 +41,13 @@
  },
  "provenance": {
   "access_mode": "sqlite read-only (file:...?mode=ro URI)",
-  "payload_note": "sha256 over the exact state.payload bytes the profile object was parsed from; re-read the registry read-only to verify",
+  "payload_note": "whole-store payload_sha256 is CAPTURE-TIME-ONLY and NOT re-verifiable: the live registry single-row store rewrites on coordinator writes (observed 30 min post-commit). The durable identity is profile_object_sha256 above - re-verify by re-reading the registry read-only, extracting the same profile object, canonicalizing identically, and comparing shas.",
   "payload_sha256": "423227c1cc79dd663d1c1f76489fefd2b2baae5edaf1b5e582d37bf9d22bcc08",
   "selector": "kanban.cards[MAT2-M09].spec.ontology_qualification.task.verification_profile",
   "source_db": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3",
-  "used_by": "validate_manifest(manifest, context, PROFILE) in this module; PROFILE is never hand-copied"
+  "used_by": "validate_manifest(manifest, context, PROFILE) in this module; PROFILE is never hand-copied",
+  "profile_object_sha256": "68edbae1f18e85fc3cf779a1717a5e6ee29157edab7d29b442df58b2c2737b6a",
+  "profile_object_canonicalization": "sha256 of json.dumps(profile, sort_keys=True, separators=(\",\",\":\"), ensure_ascii=False)"
  },
  "schema": "chimera.m09_registry_profile_snapshot.v1"
 }
