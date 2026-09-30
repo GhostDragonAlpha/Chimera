@@ -409,3 +409,21 @@ No prose in reference fields; compound pins live in the report body.
   resistance or weights exist in the pinned sources; none is invented.
 - Anatomy completion does not itself prove climbing (card observation,
   verbatim).
+
+## Amendment A1 (pre-implementation, append-only; own commit)
+
+Timing: after the initial freeze commit 2640fa86, BEFORE any implementation
+artifact existed and before any generator run (no measurement has occurred).
+Reason: section 6.11 says the C01/C05/C06/C17/C18 contracts are carried
+"exactly as the completion map records them" but the section-4 pin table did
+not name the file those records are read from; A1 pins it so the phrase is
+byte-anchored and the carried catalog text is verbatim-from-bytes, never
+transcribed.
+
+- ADDED input pin (read at the candidate commit, verified like every other
+  pin; refusal code input_pin_drift unchanged):
+  | role | file | sha256 |
+  |---|---|---|
+  | completion-map catalog records (C01/C05/C06/C17/C18 titles, required inputs, result_status) | repo tools/monkey_campaign/monkey_completion_map.json | 3efbfb141299d7cad63724431f7e5269febe15eee68d812b80d91de324385b84 |
+- NO threshold, count, prediction, falsifier or structure change of any kind.
+- The pin count in P1 becomes 12 repo pins + 2 host pins = 14 pins total.
