@@ -132,27 +132,27 @@
  },
  "input_pins": {
   "a05_mutation_structure": {
-   "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/MAT2-G03/39e6d5fbbba74fd7981bb5df3950b39c/checkout/tools/monkey_campaign/contributions/MAT2-A05/mutation_structure.json",
+   "path": "tools/monkey_campaign/contributions/MAT2-A05/mutation_structure.json",
    "sha256": "48b037593f63ec473947d787077ab6fbcd3b364afd15765bff508e7d54f45649"
   },
   "a08_parameter_envelope": {
-   "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/MAT2-G03/39e6d5fbbba74fd7981bb5df3950b39c/checkout/tools/monkey_campaign/contributions/MAT2-A08/parameter_envelope.json",
+   "path": "tools/monkey_campaign/contributions/MAT2-A08/parameter_envelope.json",
    "sha256": "2fb43fd44f13e8b927142d72b79d36246ee7d71fd954a39ffeb12b74dc716424"
   },
   "a09_grasp_package": {
-   "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/MAT2-G03/39e6d5fbbba74fd7981bb5df3950b39c/checkout/tools/monkey_campaign/contributions/MAT2-A09/grasp_package.json",
+   "path": "tools/monkey_campaign/contributions/MAT2-A09/grasp_package.json",
    "sha256": "0a70adb1029d860ac9504683d77c2e94be2634724c63479f827fcbc8fcd97d24"
   },
   "completion_map": {
-   "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/MAT2-G03/39e6d5fbbba74fd7981bb5df3950b39c/checkout/tools/monkey_campaign/monkey_completion_map.json",
+   "path": "tools/monkey_campaign/monkey_completion_map.json",
    "sha256": "3efbfb141299d7cad63724431f7e5269febe15eee68d812b80d91de324385b84"
   },
   "m02_graph_pins": {
-   "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/MAT2-G03/39e6d5fbbba74fd7981bb5df3950b39c/checkout/tools/monkey_campaign/contributions/MAT2-M02/data/graph_pins.json",
+   "path": "tools/monkey_campaign/contributions/MAT2-M02/data/graph_pins.json",
    "sha256": "849f9988d1a6ccb451bb45d79f298dd954c4e5605acd19d7d882a5c70a285b97"
   },
   "m02_osim": {
-   "path": "E:/ChimeraWork/monkey-coordination/kanban-attempts/MAT2-G03/39e6d5fbbba74fd7981bb5df3950b39c/checkout/tools/monkey_campaign/contributions/MAT2-M02/data/macaque_arm/monkeyArm_current.osim",
+   "path": "tools/monkey_campaign/contributions/MAT2-M02/data/macaque_arm/monkeyArm_current.osim",
    "sha256": "4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895"
   },
   "osim_host_identity": {

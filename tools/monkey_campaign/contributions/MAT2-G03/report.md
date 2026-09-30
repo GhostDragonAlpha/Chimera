@@ -9,7 +9,7 @@ PREREGISTRATION.md frozen at commit ea1851f4 (before implementation).
 - Task MAT2-G03 (G03); criteria sha256 `d489995ecb7c645013084987bbf3f5d54cd4abca2e7bec2d1afa6db0ff70c5aa`
 - Attempt 39e6d5fbbba74fd7981bb5df3950b39c; agent arrival-f0cc8f5a78794f8ea977ae87b8a75064;
   base f6cbf7a996eff27495575375d64ba38ea3e77b2e (line tip, PR #277 merge)
-- Document: chimera.g03_tendon_pose_sweep.v1 revision 1; sha256 `c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b`
+- Document: chimera.g03_tendon_pose_sweep.v1 revision 1; sha256 `34f3df01a753af7585b1177077515114c33b59911f3a27d1e21faeed0c1c19a5`
 - Trace: chimera.g03_tendon_pose_sweep_trace.v1; sha256 `4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929`
 - Profile: tendon-pose-sweep / motion (read mode=ro from the registry at
   capture time); capture REQUIRED and delivered
@@ -96,7 +96,7 @@ view_toggle_state_hash_refused run in the capture self-check
 - 6 manifest rows = 3 profile views x
   diagnostic/clean on ONE FFV1 mkv (codec law: -c:v ffv1 -level 3 -g 1
   -fflags +bitexact; ffmpeg ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers)
-- capture sha256 `b6980bd297b33050f9a35ac09e7276f446d597f45b82eef41f6d650a671b6a58`; every view row's state_binding is kind trace
+- capture sha256 `62df0cd5486fb200fd67a45a607677f195c77507e343e276963321aed5c0d063`; every view row's state_binding is kind trace
   bound to sweep_trace.json (4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929); artifact_locator kind video
   seconds [0, 21]; fixed_bookmark cameras with identical samples covering
   ticks [0, 20] (camera-consistency law: view toggles preserve the trace
@@ -154,7 +154,7 @@ parameters-only per A06/A09 law): it is NOT evaluated here and NOT zeroed
 
 ## Commands and results
 
-- `python -B tendon_sweep.py --emit` -> emit OK; document sha256 c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b
+- `python -B tendon_sweep.py --emit` -> emit OK; document sha256 34f3df01a753af7585b1177077515114c33b59911f3a27d1e21faeed0c1c19a5
 - `python -B tendon_sweep.py --verify` -> verify OK (recompute-and-refuse)
 - `python -B tendon_sweep.py --falsify` -> F_all_green true (6 arms)
 - `python -B tendon_sweep.py --selftest` -> vacuous_guard_selftest OK
@@ -168,19 +168,19 @@ parameters-only per A06/A09 law): it is NOT evaluated here and NOT zeroed
 
 | artifact | sha256 |
 |---|---|
-| capture/capture_mat2_g03_pose_sweep_20260930.mkv | b6980bd297b33050f9a35ac09e7276f446d597f45b82eef41f6d650a671b6a58 |
+| capture/capture_mat2_g03_pose_sweep_20260930.mkv | 62df0cd5486fb200fd67a45a607677f195c77507e343e276963321aed5c0d063 |
 | evidence/falsifier_receipt.json | 2bd2b2e146936dc7aea6586020e60c1c08459345b9fb7d9f7acf48dce8d227b6 |
 | sweep_trace.json | 4f813a82793d26c027a8986cf2c50d1284d01d7005161ba0d5bd6e9bcc843929 |
-| tendon_sweep.json | c441f57d1c01c25ae6c3fc3de1d3c4b61fe8b7c2d8c23cc112633ca5688f532b |
+| tendon_sweep.json | 34f3df01a753af7585b1177077515114c33b59911f3a27d1e21faeed0c1c19a5 |
 | PREREGISTRATION.md | eef5a3cf642c8b6cd522d60ce93990b8a6a0f4d6677c73afb6d63c8e71dd0e74 |
-| tendon_sweep.py | d10a7f991853a6a197acede0a82f5b27613f91e70963f263677236537b8762e0 |
+| tendon_sweep.py | b4d4686ad0ada72509e9dfa2aedee101c322887e0fdfa7e0e53c95dff3d4f86e |
 | test_tendon_sweep.py | 6e865067c14adc8dcafacff2db668970618e2d2560b184c67b64491cce369f92 |
 | lint_report_numbers.py | c62c5286eefed6e361fc9aad10583415845aaf704819588e985f5c486fb4492a |
 | make_report.py | 1e1db3a9133b07a046bff7cd6aabcb1e071bc7bcead978db28032ac3007fca63 |
 | make_capture.py | 0d8d75b76eb757e85dd5daeb7118d30714983a437cc0ad876171938f3f8eb57b |
-| evidence/capture_manifest.json | fd6b91202839c3b7acc12c013c5ddeb43a872c4a9289b86412ceb56c05dd1861 |
+| evidence/capture_manifest.json | 692a0552b5c9fbc28406c05f05424c37b874e384f4511904fb67e2a66a84ba58 |
 | evidence/cameras.json | a12ae5b2221b9253515dd1758f5c2fe5a2d5c422f79ad3adc47c1b8ad0cbd95a |
-| evidence/frame_hashes.json | b9dad06922299747e5d24699111bb68d6411f9b5a67315cdac0f2089eb816e1f |
-| evidence/decode_roundtrip.json | 204152b2679997a0192f1ec3b39bd229901aa3af3c697fcb4c4390214c8451ea |
-| evidence/validation_receipt.json | 4b35cf0051d3cf3aafc7c8832cb548056a71813e99fa1491234994baa07b1c47 |
-| evidence/capture_context.json | 821b56212cb81f1a00bf05bbc025518fc2971b837807a9101417fb632e9ba06e |
+| evidence/frame_hashes.json | 4fa91e5b69a40230c20145c63c7f9d34ed8e2097d711f318339d7bf081fd14da |
+| evidence/decode_roundtrip.json | 26b3b62fd6ff5ab4bb2f727dce9e56163d9bfedf2cbf0b26576339d8be1cd8d1 |
+| evidence/validation_receipt.json | 8be7478610ac8aa75a29cdb3d9f8a788ec1c01178ced9a18f81ea6592372b663 |
+| evidence/capture_context.json | 4fc1097fa0647d1ae1a4948b5c1df80e728efe04e768731572140462c1aac18c |

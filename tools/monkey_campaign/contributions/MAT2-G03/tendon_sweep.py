@@ -178,7 +178,13 @@ def verify_pins():
         got = sha256_file(path)
         if got != sha:
             refuse("input_pin_drift", f"{name} {path} expected {sha} got {got}")
-        out[name] = {"path": str(path).replace("\\", "/"), "sha256": sha}
+        p = pathlib.Path(path)
+        try:
+            rel = p.resolve().relative_to(CHECKOUT.resolve())
+            recorded = str(rel).replace("\\", "/")
+        except ValueError:
+            recorded = str(p).replace("\\", "/")  # host pin: absolute
+        out[name] = {"path": recorded, "sha256": sha}
     return out
 
 
