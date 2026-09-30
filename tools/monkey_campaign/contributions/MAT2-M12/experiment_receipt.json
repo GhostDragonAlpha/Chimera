@@ -1,0 +1,1015 @@
+{
+ "Y1_resolution_identity": {
+  "Y1a_config_purity": {
+   "config_function": "configure_resolution",
+   "ok": true,
+   "violations": []
+  },
+  "Y1b_law_digest_equal": true,
+  "Y1b_run_identities": {
+   "loaded:coarse": {
+    "declared_config": {
+     "a_chord_total_m2": 0.00135,
+     "chord_section_m2": 4.090909090909091e-05,
+     "erection_offset_m": 0.0010928872117499794,
+     "rings_radials": [
+      6,
+      6
+     ]
+    },
+    "integrator_digest": "776719787316e5821940b6d6ff822ec61201561b50f1e14397290282c98f18c0",
+    "law_module": "MAT2-M11/limb_world.py",
+    "law_module_sha256": "91581b917d21c47fcccea3701ff22b52deb956fe3afe1a9435a0c9c682feb874",
+    "resolution": "coarse",
+    "schedule_id": "work_schedule"
+   },
+   "loaded:reference": {
+    "declared_config": {
+     "a_chord_total_m2": 0.00135,
+     "chord_section_m2": 9e-06,
+     "erection_offset_m": 0.0030312,
+     "rings_radials": [
+      12,
+      12
+     ]
+    },
+    "integrator_digest": "776719787316e5821940b6d6ff822ec61201561b50f1e14397290282c98f18c0",
+    "law_module": "MAT2-M11/limb_world.py",
+    "law_module_sha256": "91581b917d21c47fcccea3701ff22b52deb956fe3afe1a9435a0c9c682feb874",
+    "resolution": "reference",
+    "schedule_id": "work_schedule"
+   },
+   "off:coarse": {
+    "declared_config": {
+     "a_chord_total_m2": 0.00135,
+     "chord_section_m2": 4.090909090909091e-05,
+     "erection_offset_m": 0.0010928872117499794,
+     "rings_radials": [
+      6,
+      6
+     ]
+    },
+    "integrator_digest": "776719787316e5821940b6d6ff822ec61201561b50f1e14397290282c98f18c0",
+    "law_module": "MAT2-M11/limb_world.py",
+    "law_module_sha256": "91581b917d21c47fcccea3701ff22b52deb956fe3afe1a9435a0c9c682feb874",
+    "resolution": "coarse",
+    "schedule_id": "off_schedule"
+   },
+   "off:reference": {
+    "declared_config": {
+     "a_chord_total_m2": 0.00135,
+     "chord_section_m2": 9e-06,
+     "erection_offset_m": 0.0030312,
+     "rings_radials": [
+      12,
+      12
+     ]
+    },
+    "integrator_digest": "776719787316e5821940b6d6ff822ec61201561b50f1e14397290282c98f18c0",
+    "law_module": "MAT2-M11/limb_world.py",
+    "law_module_sha256": "91581b917d21c47fcccea3701ff22b52deb956fe3afe1a9435a0c9c682feb874",
+    "resolution": "reference",
+    "schedule_id": "off_schedule"
+   },
+   "released:coarse": {
+    "declared_config": {
+     "a_chord_total_m2": 0.00135,
+     "chord_section_m2": 4.090909090909091e-05,
+     "erection_offset_m": 0.0010928872117499794,
+     "rings_radials": [
+      6,
+      6
+     ]
+    },
+    "integrator_digest": "776719787316e5821940b6d6ff822ec61201561b50f1e14397290282c98f18c0",
+    "law_module": "MAT2-M11/limb_world.py",
+    "law_module_sha256": "91581b917d21c47fcccea3701ff22b52deb956fe3afe1a9435a0c9c682feb874",
+    "resolution": "coarse",
+    "schedule_id": "work_schedule"
+   },
+   "released:reference": {
+    "declared_config": {
+     "a_chord_total_m2": 0.00135,
+     "chord_section_m2": 9e-06,
+     "erection_offset_m": 0.0030312,
+     "rings_radials": [
+      12,
+      12
+     ]
+    },
+    "integrator_digest": "776719787316e5821940b6d6ff822ec61201561b50f1e14397290282c98f18c0",
+    "law_module": "MAT2-M11/limb_world.py",
+    "law_module_sha256": "91581b917d21c47fcccea3701ff22b52deb956fe3afe1a9435a0c9c682feb874",
+    "resolution": "reference",
+    "schedule_id": "work_schedule"
+   }
+  },
+  "Y1c_build_audits": {
+   "coarse": {
+    "belt_section_within_declaration": true,
+    "belt_split_abs_error_m2": 0.0,
+    "belt_split_floor_m2": 1e-15,
+    "chain_masses_kg": [
+     0.02250842664849005,
+     0.010258339533412961,
+     0.00910051480229847,
+     0.01
+    ],
+    "chord_k_bitwise_lawform": true,
+    "chord_section_m2": 4.090909090909091e-05,
+    "chord_section_times_n_m2": 0.00135,
+    "counts": {
+     "n_chords": 33,
+     "n_edges": 108,
+     "n_triangles": 72,
+     "n_vertices": 38
+    },
+    "counts_match_declared": true,
+    "declared_counts": {
+     "n_chords": 33,
+     "n_edges": 108,
+     "n_triangles": 72,
+     "n_vertices": 38,
+     "radials": 6,
+     "rings": 6
+    },
+    "edge_k_bitwise_lawform": true,
+    "load_mass_kg": 0.25,
+    "per_vertex_split_exact": true,
+    "resolution": "coarse",
+    "tissue_per_vertex_kg": 5.2631578947368424e-05,
+    "tissue_total_kg": 0.002
+   },
+   "reference": {
+    "belt_section_within_declaration": true,
+    "belt_split_abs_error_m2": 0.0,
+    "belt_split_floor_m2": 1e-15,
+    "chain_masses_kg": [
+     0.02250842664849005,
+     0.010258339533412961,
+     0.00910051480229847,
+     0.01
+    ],
+    "chord_k_bitwise_lawform": true,
+    "chord_section_m2": 9e-06,
+    "chord_section_times_n_m2": 0.00135,
+    "counts": {
+     "n_chords": 150,
+     "n_edges": 432,
+     "n_triangles": 288,
+     "n_vertices": 146
+    },
+    "counts_match_declared": true,
+    "declared_counts": {
+     "n_chords": 150,
+     "n_edges": 432,
+     "n_triangles": 288,
+     "n_vertices": 146,
+     "radials": 12,
+     "rings": 12
+    },
+    "edge_k_bitwise_lawform": true,
+    "load_mass_kg": 0.25,
+    "per_vertex_split_exact": true,
+    "resolution": "reference",
+    "tissue_per_vertex_kg": 1.3698630136986302e-05,
+    "tissue_total_kg": 0.002
+   }
+  }
+ },
+ "Y2_mass_inertia": {
+  "Y2a_bitwise_equal": true,
+  "Y2a_totals": {
+   "coarse": {
+    "chain_masses_kg": [
+     0.02250842664849005,
+     0.010258339533412961,
+     0.00910051480229847,
+     0.01
+    ],
+    "load_mass_kg": 0.25,
+    "per_vertex_split_exact": true,
+    "tissue_total_kg": 0.002
+   },
+   "reference": {
+    "chain_masses_kg": [
+     0.02250842664849005,
+     0.010258339533412961,
+     0.00910051480229847,
+     0.01
+    ],
+    "load_mass_kg": 0.25,
+    "per_vertex_split_exact": true,
+    "tissue_total_kg": 0.002
+   }
+  },
+  "Y2b_per_vertex_split_exact": true,
+  "Y2c_inertia": {
+   "coarse_kg_m2": 2.72842105263158e-07,
+   "reference_kg_m2": 2.7880150785742085e-07,
+   "rel_diff": 0.021375073040532048,
+   "window": 0.1,
+   "within": true
+  },
+  "Y2d_belt_edge_law_audits": {
+   "coarse": {
+    "belt_section_within_declaration": true,
+    "belt_split_abs_error_m2": 0.0,
+    "belt_split_floor_m2": 1e-15,
+    "chord_k_bitwise_lawform": true,
+    "chord_section_m2": 4.090909090909091e-05,
+    "chord_section_times_n_m2": 0.00135,
+    "edge_k_bitwise_lawform": true
+   },
+   "reference": {
+    "belt_section_within_declaration": true,
+    "belt_split_abs_error_m2": 0.0,
+    "belt_split_floor_m2": 1e-15,
+    "chord_k_bitwise_lawform": true,
+    "chord_section_m2": 9e-06,
+    "chord_section_times_n_m2": 0.00135,
+    "edge_k_bitwise_lawform": true
+   }
+  }
+ },
+ "Y3_interfaces": {
+  "Y3a_full_digests_recorded": {
+   "coarse": "bb00005206486bbc69fbce44aae4db218a79a8b3c84dab4f7ce438cb06e75207",
+   "reference": "caf60f63616b756d08e2d704a7c1c8fe6dd435858309fc10626390f5e15e70b4"
+  },
+  "Y3a_invariants": {
+   "coarse": {
+    "chain_radii_m": [
+     0.005,
+     0.005,
+     0.005,
+     0.005
+    ],
+    "chain_spec": [
+     {
+      "b03_counted_mass_kg": 0.0,
+      "contact_radius_m": 0.005,
+      "mass_kg": 0.02250842664849005,
+      "matter_id": "bone_humerus",
+      "name": "humerus",
+      "status": "declared_point_mass(real_b03_mass)",
+      "tie_id": "T1",
+      "tie_site_record": {
+       "declared_name": "ext_carpi_rad_longus-P1",
+       "location_m": [
+        2.342e-05,
+        -0.0882464,
+        0.00696635
+       ],
+       "owner_body": "humerus",
+       "record_id": "path.ext_carpi_rad_longus.0",
+       "role": "origin_attachment"
+      }
+     },
+     {
+      "b03_counted_mass_kg": 0.0,
+      "contact_radius_m": 0.005,
+      "mass_kg": 0.010258339533412961,
+      "matter_id": "bone_ulna",
+      "name": "ulna",
+      "status": "declared_point_mass(real_b03_mass)",
+      "tie_id": "T2",
+      "tie_site_record": {
+       "declared_name": "flex_carpi_ulnaris-P1",
+       "location_m": [
+        -0.00626395,
+        -0.00576911,
+        -0.00528576
+       ],
+       "owner_body": "ulna",
+       "record_id": "path.flex_carpi_ulnaris.0",
+       "role": "origin_attachment"
+      }
+     },
+     {
+      "b03_counted_mass_kg": 0.0,
+      "contact_radius_m": 0.005,
+      "mass_kg": 0.00910051480229847,
+      "matter_id": "bone_radius",
+      "name": "radius",
+      "status": "declared_point_mass(real_b03_mass)",
+      "tie_id": "T3",
+      "tie_site_record": {
+       "declared_name": "flex_poll_longus-P1",
+       "location_m": [
+        0.005328,
+        -0.0433027,
+        -0.00663943
+       ],
+       "owner_body": "radius",
+       "record_id": "path.flex_poll_longus.0",
+       "role": "origin_attachment"
+      }
+     },
+     {
+      "b03_counted_mass_kg": 0.0,
+      "contact_radius_m": 0.005,
+      "mass_kg": 0.01,
+      "matter_id": null,
+      "name": "foot",
+      "status": "explicitly_unresolved_terminal",
+      "tie_id": "T4",
+      "tie_site_record": {
+       "declared_name": "flex_carpi_radialis-P3",
+       "location_m": [
+        0.0107732,
+        -0.0114522,
+        -0.0001884
+       ],
+       "owner_body": "hand",
+       "record_id": "path.flex_carpi_radialis.2",
+       "role": "insertion_attachment"
+      }
+     }
+    ],
+    "chain_ties": [
+     {
+      "id": "T1",
+      "k": 600.0,
+      "rest": 0.01
+     },
+     {
+      "id": "T2",
+      "k": 600.0,
+      "rest": 0.01
+     },
+     {
+      "id": "T3",
+      "k": 600.0,
+      "rest": 0.01
+     },
+     {
+      "id": "T4",
+      "k": 600.0,
+      "rest": 0.01
+     }
+    ],
+    "g_foot_target_m": 0.0002,
+    "k_contact": 100000.0,
+    "load_mass_kg": 0.25,
+    "load_tie": {
+     "k": 600.0,
+     "rest": 0.05
+    }
+   },
+   "reference": {
+    "chain_radii_m": [
+     0.005,
+     0.005,
+     0.005,
+     0.005
+    ],
+    "chain_spec": [
+     {
+      "b03_counted_mass_kg": 0.0,
+      "contact_radius_m": 0.005,
+      "mass_kg": 0.02250842664849005,
+      "matter_id": "bone_humerus",
+      "name": "humerus",
+      "status": "declared_point_mass(real_b03_mass)",
+      "tie_id": "T1",
+      "tie_site_record": {
+       "declared_name": "ext_carpi_rad_longus-P1",
+       "location_m": [
+        2.342e-05,
+        -0.0882464,
+        0.00696635
+       ],
+       "owner_body": "humerus",
+       "record_id": "path.ext_carpi_rad_longus.0",
+       "role": "origin_attachment"
+      }
+     },
+     {
+      "b03_counted_mass_kg": 0.0,
+      "contact_radius_m": 0.005,
+      "mass_kg": 0.010258339533412961,
+      "matter_id": "bone_ulna",
+      "name": "ulna",
+      "status": "declared_point_mass(real_b03_mass)",
+      "tie_id": "T2",
+      "tie_site_record": {
+       "declared_name": "flex_carpi_ulnaris-P1",
+       "location_m": [
+        -0.00626395,
+        -0.00576911,
+        -0.00528576
+       ],
+       "owner_body": "ulna",
+       "record_id": "path.flex_carpi_ulnaris.0",
+       "role": "origin_attachment"
+      }
+     },
+     {
+      "b03_counted_mass_kg": 0.0,
+      "contact_radius_m": 0.005,
+      "mass_kg": 0.00910051480229847,
+      "matter_id": "bone_radius",
+      "name": "radius",
+      "status": "declared_point_mass(real_b03_mass)",
+      "tie_id": "T3",
+      "tie_site_record": {
+       "declared_name": "flex_poll_longus-P1",
+       "location_m": [
+        0.005328,
+        -0.0433027,
+        -0.00663943
+       ],
+       "owner_body": "radius",
+       "record_id": "path.flex_poll_longus.0",
+       "role": "origin_attachment"
+      }
+     },
+     {
+      "b03_counted_mass_kg": 0.0,
+      "contact_radius_m": 0.005,
+      "mass_kg": 0.01,
+      "matter_id": null,
+      "name": "foot",
+      "status": "explicitly_unresolved_terminal",
+      "tie_id": "T4",
+      "tie_site_record": {
+       "declared_name": "flex_carpi_radialis-P3",
+       "location_m": [
+        0.0107732,
+        -0.0114522,
+        -0.0001884
+       ],
+       "owner_body": "hand",
+       "record_id": "path.flex_carpi_radialis.2",
+       "role": "insertion_attachment"
+      }
+     }
+    ],
+    "chain_ties": [
+     {
+      "id": "T1",
+      "k": 600.0,
+      "rest": 0.01
+     },
+     {
+      "id": "T2",
+      "k": 600.0,
+      "rest": 0.01
+     },
+     {
+      "id": "T3",
+      "k": 600.0,
+      "rest": 0.01
+     },
+     {
+      "id": "T4",
+      "k": 600.0,
+      "rest": 0.01
+     }
+    ],
+    "g_foot_target_m": 0.0002,
+    "k_contact": 100000.0,
+    "load_mass_kg": 0.25,
+    "load_tie": {
+     "k": 600.0,
+     "rest": 0.05
+    }
+   }
+  },
+  "Y3a_invariants_equal": true,
+  "Y3b_in_Y2d": true
+ },
+ "Y4_force_response": {
+  "coarse": {
+   "X8_ledger": {
+    "bound_j": 0.002,
+    "full_run_residual_j": 0.012608645207852761,
+    "grav_turnover_j": 0.00722077670199156,
+    "settled_cumulative_residual_j": -5.3463471949820736e-05,
+    "w_press_total_j": 0.00012411388870922863,
+    "within": true
+   },
+   "contact_hold_n": 0.0893681950096641,
+   "contact_hold_positive": true,
+   "gap_off_m": 0.00019956355542895946,
+   "gap_off_within": true,
+   "off_contact_bitwise0": true,
+   "statics": {
+    "HOLD": {
+     "bound_n": 0.15899600355318597,
+     "f_clamp_z_n": 2.890551849894865,
+     "f_contacts_n": 0.0893681950096641,
+     "residual_n": -2.615918992532329e-08,
+     "w_total_n": 2.9799200710637193,
+     "window": [
+      1000,
+      1100
+     ],
+     "within": true
+    },
+    "OFF": {
+     "bound_n": 0.15899600355318597,
+     "f_clamp_z_n": 2.9799197821150147,
+     "f_contacts_n": 0.0,
+     "residual_n": -2.8894870451878774e-07,
+     "w_total_n": 2.9799200710637193,
+     "window": [
+      1400,
+      1500
+     ],
+     "within": true
+    },
+    "P0": {
+     "bound_n": 0.15899600355318597,
+     "f_clamp_z_n": 2.9814311360579007,
+     "f_contacts_n": 0.0,
+     "residual_n": 0.0015110649941814103,
+     "w_total_n": 2.9799200710637193,
+     "window": [
+      100,
+      200
+     ],
+     "within": true
+    }
+   },
+   "t1_hold_n": 0.41927736531364507,
+   "t1_static_bound_n": 0.41057777106371945,
+   "t1_window_n": 0.030528888553185973,
+   "t1_within": true
+  },
+  "reference": {
+   "X8_ledger": {
+    "bound_j": 0.002,
+    "full_run_residual_j": 0.021669918503304613,
+    "grav_turnover_j": 0.00830273090744621,
+    "settled_cumulative_residual_j": -0.0005064667953996794,
+    "w_press_total_j": 0.000240056700434432,
+    "within": true
+   },
+   "contact_hold_n": 0.09759620788161051,
+   "contact_hold_positive": true,
+   "gap_off_m": 0.00017554039739387667,
+   "gap_off_within": true,
+   "off_contact_bitwise0": true,
+   "statics": {
+    "HOLD": {
+     "bound_n": 0.15899600355318597,
+     "f_clamp_z_n": 2.8823239385278407,
+     "f_contacts_n": 0.09759620788161051,
+     "residual_n": 7.534573187584215e-08,
+     "w_total_n": 2.9799200710637193,
+     "window": [
+      1000,
+      1100
+     ],
+     "within": true
+    },
+    "OFF": {
+     "bound_n": 0.15899600355318597,
+     "f_clamp_z_n": 2.979907870635962,
+     "f_contacts_n": 0.0,
+     "residual_n": -1.220042775740282e-05,
+     "w_total_n": 2.9799200710637193,
+     "window": [
+      1400,
+      1500
+     ],
+     "within": true
+    },
+    "P0": {
+     "bound_n": 0.15899600355318597,
+     "f_clamp_z_n": 2.9810930244056784,
+     "f_contacts_n": 0.0,
+     "residual_n": 0.0011729533419591043,
+     "w_total_n": 2.9799200710637193,
+     "window": [
+      100,
+      200
+     ],
+     "within": true
+    }
+   },
+   "t1_hold_n": 0.41104945083399214,
+   "t1_static_bound_n": 0.41057777106371945,
+   "t1_window_n": 0.030528888553185973,
+   "t1_within": true
+  }
+ },
+ "Y5_cross_resolution": {
+  "contact_hold": {
+   "abs_diff": 0.00822801287194641,
+   "coarse": 0.0893681950096641,
+   "reference": 0.09759620788161051,
+   "window_n": 0.014903325,
+   "within": true
+  },
+  "gap_off": {
+   "abs_diff": 2.4023158035082793e-05,
+   "coarse": 0.00019956355542895946,
+   "reference": 0.00017554039739387667,
+   "window_m": 0.001,
+   "within": true
+  },
+  "recovery": {
+   "coarse": {
+    "abs_diff": 4.28131425984072e-07,
+    "gap_loaded_run_m": 0.00019956355542895946,
+    "gap_off_run_m": 0.00019999168685494353,
+    "window_m": 0.001,
+    "within": true
+   },
+   "reference": {
+    "abs_diff": 6.24002881601966e-06,
+    "gap_loaded_run_m": 0.00017554039739387667,
+    "gap_off_run_m": 0.00018178042620989633,
+    "window_m": 0.001,
+    "within": true
+   }
+  },
+  "t1_hold": {
+   "abs_diff": 0.008227914479652931,
+   "coarse": 0.41927736531364507,
+   "reference": 0.41104945083399214,
+   "window_n": 0.030528888553185973,
+   "within": true
+  }
+ },
+ "Y6_control_meaning": {
+  "coarse": {
+   "departure_bit": true,
+   "departure_bite_m": 0.001,
+   "distal_landing": [
+    {
+     "abs_diff": 7.713713151610152e-07,
+     "element": "ulna",
+     "rest_height_m": 0.005,
+     "settled_z_m": 0.005000771371315161,
+     "within": true
+    },
+    {
+     "abs_diff": 4.484841239641227e-07,
+     "element": "radius",
+     "rest_height_m": 0.005,
+     "settled_z_m": 0.005000448484123964,
+     "within": true
+    },
+    {
+     "abs_diff": 9.806649999988953e-07,
+     "element": "foot",
+     "rest_height_m": 0.005,
+     "settled_z_m": 0.004999019335000001,
+     "within": true
+    }
+   ],
+   "double_release_refused": true,
+   "drop_window_n": 0.019492275443565226,
+   "drop_within": true,
+   "max_departure_m": 0.02019539540665267,
+   "released_t2_bitwise0": true,
+   "t1_bound_n": 0.41927736531364507,
+   "t1_drop_n": 0.19854113093078657,
+   "t1_released_n": 0.2207362343828585,
+   "w_ur_n": 0.1898455088713045
+  },
+  "reference": {
+   "departure_bit": true,
+   "departure_bite_m": 0.001,
+   "distal_landing": [
+    {
+     "abs_diff": 5.3609503092768435e-06,
+     "element": "ulna",
+     "rest_height_m": 0.005,
+     "settled_z_m": 0.005005360950309277,
+     "within": true
+    },
+    {
+     "abs_diff": 6.119295401750546e-07,
+     "element": "radius",
+     "rest_height_m": 0.005,
+     "settled_z_m": 0.004999388070459825,
+     "within": true
+    },
+    {
+     "abs_diff": 9.806649999988953e-07,
+     "element": "foot",
+     "rest_height_m": 0.005,
+     "settled_z_m": 0.004999019335000001,
+     "within": true
+    }
+   ],
+   "double_release_refused": true,
+   "drop_window_n": 0.019492275443565226,
+   "drop_within": true,
+   "max_departure_m": 0.020085823679559994,
+   "released_t2_bitwise0": true,
+   "t1_bound_n": 0.41104945083399214,
+   "t1_drop_n": 0.19030104957129884,
+   "t1_released_n": 0.2207484012626933,
+   "w_ur_n": 0.1898455088713045
+  }
+ },
+ "Y7_render_binding": {
+  "coarse": {
+   "coverage_ok": true,
+   "identity_binding_bitwise": true,
+   "max_motion_from_rest_m": 0.008388468015902007,
+   "per_tick": [
+    {
+     "coverage": {
+      "mechanical_triangles": 72,
+      "mechanical_vertices": 38,
+      "rendered_triangles": 72,
+      "rendered_vertices": 38
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.0,
+     "ok": true,
+     "refusal": null,
+     "tick": 0,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 72,
+      "mechanical_vertices": 38,
+      "rendered_triangles": 72,
+      "rendered_vertices": 38
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.008388468015902007,
+     "ok": true,
+     "refusal": null,
+     "tick": 450,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 72,
+      "mechanical_vertices": 38,
+      "rendered_triangles": 72,
+      "rendered_vertices": 38
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.00807628570231875,
+     "ok": true,
+     "refusal": null,
+     "tick": 460,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 72,
+      "mechanical_vertices": 38,
+      "rendered_triangles": 72,
+      "rendered_vertices": 38
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.008158978527905583,
+     "ok": true,
+     "refusal": null,
+     "tick": 700,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 72,
+      "mechanical_vertices": 38,
+      "rendered_triangles": 72,
+      "rendered_vertices": 38
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.008171129129277937,
+     "ok": true,
+     "refusal": null,
+     "tick": 1100,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 72,
+      "mechanical_vertices": 38,
+      "rendered_triangles": 72,
+      "rendered_vertices": 38
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.0024103716500903302,
+     "ok": true,
+     "refusal": null,
+     "tick": 1350,
+     "window_m": 1e-09
+    }
+   ]
+  },
+  "reference": {
+   "coverage_ok": true,
+   "identity_binding_bitwise": true,
+   "max_motion_from_rest_m": 0.013054223743466457,
+   "per_tick": [
+    {
+     "coverage": {
+      "mechanical_triangles": 288,
+      "mechanical_vertices": 146,
+      "rendered_triangles": 288,
+      "rendered_vertices": 146
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.0,
+     "ok": true,
+     "refusal": null,
+     "tick": 0,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 288,
+      "mechanical_vertices": 146,
+      "rendered_triangles": 288,
+      "rendered_vertices": 146
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.01283505845542899,
+     "ok": true,
+     "refusal": null,
+     "tick": 450,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 288,
+      "mechanical_vertices": 146,
+      "rendered_triangles": 288,
+      "rendered_vertices": 146
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.012521118409891133,
+     "ok": true,
+     "refusal": null,
+     "tick": 460,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 288,
+      "mechanical_vertices": 146,
+      "rendered_triangles": 288,
+      "rendered_vertices": 146
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.012798825583536714,
+     "ok": true,
+     "refusal": null,
+     "tick": 700,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 288,
+      "mechanical_vertices": 146,
+      "rendered_triangles": 288,
+      "rendered_vertices": 146
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.013054223743466457,
+     "ok": true,
+     "refusal": null,
+     "tick": 1100,
+     "window_m": 1e-09
+    },
+    {
+     "coverage": {
+      "mechanical_triangles": 288,
+      "mechanical_vertices": 146,
+      "rendered_triangles": 288,
+      "rendered_vertices": 146
+     },
+     "deviation_m": 0.0,
+     "motion_from_rest_m": 0.006126782856240833,
+     "ok": true,
+     "refusal": null,
+     "tick": 1350,
+     "window_m": 1e-09
+    }
+   ]
+  }
+ },
+ "Y8_costs": {
+  "coarse": {
+   "limits": {
+    "frame_budget_s": 0.016666666666666666,
+    "tick_budget_s": 0.0033333333333333335
+   },
+   "loaded": {
+    "construction_s": 0.0025295999948866665,
+    "host_note": "single process, ambient desktop load, no GPU submission (CPU-only lane, prereg section 9)",
+    "peak_working_set_bytes": 37609472,
+    "run_s": 13.169077700003982,
+    "sim_seconds_per_tick": 0.008779385133335987,
+    "ticks": 1500
+   },
+   "off": {
+    "construction_s": 0.0026222000014968216,
+    "host_note": "single process, ambient desktop load, no GPU submission (CPU-only lane, prereg section 9)",
+    "peak_working_set_bytes": 41672704,
+    "run_s": 13.104083700003684,
+    "sim_seconds_per_tick": 0.008736055800002456,
+    "ticks": 1500
+   },
+   "peak_working_set_bytes": 45912064,
+   "released": {
+    "construction_s": 0.002233799998066388,
+    "host_note": "single process, ambient desktop load, no GPU submission (CPU-only lane, prereg section 9)",
+    "peak_working_set_bytes": 45912064,
+    "run_s": 13.195849299998372,
+    "sim_seconds_per_tick": 0.008797232866665582,
+    "ticks": 1500
+   },
+   "sim_seconds_per_tick": 0.008779385133335987,
+   "tick_within_limit": false,
+   "vram_payload_bytes": 923376
+  },
+  "reference": {
+   "limits": {
+    "frame_budget_s": 0.016666666666666666,
+    "tick_budget_s": 0.0033333333333333335
+   },
+   "loaded": {
+    "construction_s": 0.007004900005995296,
+    "host_note": "single process, ambient desktop load, no GPU submission (CPU-only lane, prereg section 9)",
+    "peak_working_set_bytes": 50589696,
+    "run_s": 23.709668099996634,
+    "sim_seconds_per_tick": 0.015806445399997756,
+    "ticks": 1500
+   },
+   "off": {
+    "construction_s": 0.006470799999078736,
+    "host_note": "single process, ambient desktop load, no GPU submission (CPU-only lane, prereg section 9)",
+    "peak_working_set_bytes": 55083008,
+    "run_s": 23.421060799999395,
+    "sim_seconds_per_tick": 0.01561404053333293,
+    "ticks": 1500
+   },
+   "peak_working_set_bytes": 59437056,
+   "released": {
+    "construction_s": 0.006535199994686991,
+    "host_note": "single process, ambient desktop load, no GPU submission (CPU-only lane, prereg section 9)",
+    "peak_working_set_bytes": 59437056,
+    "run_s": 23.379986600004486,
+    "sim_seconds_per_tick": 0.015586657733336324,
+    "ticks": 1500
+   },
+   "sim_seconds_per_tick": 0.015806445399997756,
+   "tick_within_limit": false,
+   "vram_payload_bytes": 928560
+  }
+ },
+ "Y8_selection": {
+  "qualified": {
+   "coarse": true,
+   "reference": true
+  },
+  "qualified_ids": [
+   "coarse",
+   "reference"
+  ],
+  "ranking_all": [
+   "coarse",
+   "reference"
+  ],
+  "rule": "argmin over qualified of sim_seconds_per_tick; ties by vram_payload_bytes (PREREGISTRATION section 5)",
+  "selected": "coarse"
+ },
+ "all_gates_green": true,
+ "arrival_id": "arrival-glm53f-m12-w1",
+ "attempt_id": "22954da7b9704483960b563273e77b4a",
+ "composed_against": "CARD_STARTER v2; PREREGISTRATION.md + Amendment A1",
+ "criteria_sha256": "1e98a4f4465d4a50f21ce5c1d42b5ab51e9a7f96482f8f711d2c66ca4c53b5b7",
+ "gate_flags": {
+  "Y1": true,
+  "Y2": true,
+  "Y3": true,
+  "Y4": true,
+  "Y5": true,
+  "Y6": true,
+  "Y7": true,
+  "Y8": true
+ },
+ "input_pins": {
+  "MAT2-A06/attachment_ownership.json": "f1f0430772258e8449fc354841becf2f1869783399e63f3f145565b8d0b1041c",
+  "MAT2-B03/material_volume_input.json": "6e8033f26c823f410eb5beb8fdaaefd4c0c37db61327a86221e087bc832b9ddc",
+  "MAT2-B04/frame_forest.json": "156ef55722e1ecda3238f3733131eb707f209cb93531d0e133227b00ebba8203",
+  "MAT2-B05/mechanical_port_requirements.json": "ef69ee740262cc5783e763517e4d27e0306f31d059b8273bb125486ad7647f3d",
+  "MAT2-M01/material_state.py": "b6b009713daa4b315c6b5cb43c7ad4e756123b50edcdd802eeebd55c6afd6c40",
+  "MAT2-M02/monkey_arm_independent_meshes.json": "51d8231e0d1eacd7f0d4b558699f011e35ff765f5d0e07ef5889ded27216a834",
+  "MAT2-M03/pressure_membrane.py": "3dd64f6465430380f1c0a53a95523c700cd51a6b1115e60f0df8afde2239c96e",
+  "MAT2-M04/passive_response.py": "68a696e1728066a3dce93db7b6c98f8bb4826322a84bbad20eeadf38350e326b",
+  "MAT2-M05/interface_exchange.py": "295e6c898ada14918f09b2b0633f5926c1623c9e09cd37258e516ab57450b9b9",
+  "MAT2-M11/limb_world.py": "91581b917d21c47fcccea3701ff22b52deb956fe3afe1a9435a0c9c682feb874"
+ },
+ "p_vacuous_guard": {
+  "selftest": "fired_and_passed"
+ },
+ "run_identity_count": 6,
+ "schema": "chimera.m12_experiment_receipt.v1",
+ "trace_sha256": "c2bf7bd16371469249b987d138fe64bd0e6678ea47476372465fe40ac3d62c1b"
+}

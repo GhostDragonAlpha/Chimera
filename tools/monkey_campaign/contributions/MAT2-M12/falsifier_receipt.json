@@ -1,0 +1,97 @@
+{
+ "FB1_stale_render": {
+  "bit": true,
+  "bite_m": 0.001,
+  "clean_control": {
+   "deviation_m": 0.0,
+   "guard": "m12_fb1_premature",
+   "metric_scope": "render binding audit: rendered vertex array vs the mechanical snapshot (identity binding) at the released tick 460",
+   "within_tolerance": true
+  },
+  "tampered_deviation_m": 0.00807628570231875,
+  "tampered_refusal": "render_binding_stale:coarse",
+  "window_m": 1e-09
+ },
+ "FB2_dropped_ring_remap": {
+  "bit": true,
+  "clean_control": {
+   "coverage": {
+    "mechanical_triangles": 0,
+    "mechanical_vertices": 38,
+    "rendered_triangles": 72,
+    "rendered_vertices": 38
+   },
+   "guard": "m12_fb2_premature",
+   "metric_scope": "render coverage: rendered vertex/triangle counts == mechanical counts (identity)",
+   "within_tolerance": true
+  },
+  "tampered_coverage": {
+   "mechanical_triangles": 0,
+   "mechanical_vertices": 38,
+   "rendered_triangles": 72,
+   "rendered_vertices": 32
+  },
+  "tampered_refusal": "render_vertex_coverage_refused:coarse"
+ },
+ "FB3_undeclared_strength_change": {
+  "bit": true,
+  "clean_control": {
+   "abs_error_m2": 0.0,
+   "guard": "m12_fb3_premature",
+   "metric_scope": "belt section audit: chord_section * n_chords within BELT_SPLIT_FLOOR_M2 of the declared A_CHORD_TOTAL (coarse, clean build)",
+   "within_tolerance": true
+  },
+  "tampered_abs_error_m2": 0.0010530000000000001,
+  "tampered_chord_section_m2": 9e-06,
+  "tampered_refusal_fires": true
+ },
+ "FB4_silent_mass_drift": {
+  "bit": true,
+  "clean_control": {
+   "guard": "m12_fb4_premature",
+   "metric_scope": "assembly mass audit: per-resolution tissue total == declared 2.0e-3 kg bitwise (clean builds, both resolutions)",
+   "totals_kg": {
+    "coarse": 0.002,
+    "reference": 0.002
+   },
+   "within_tolerance": true
+  },
+  "tampered_refusal_code": "mass_total_mismatch:coarse_tissue",
+  "tampered_total_kg": 0.0005205479452054794
+ },
+ "FB5_area_independent_forces": {
+  "bit": true,
+  "bite": 1e-06,
+  "clean_control": {
+   "guard": "m12_fb5_premature",
+   "metric_scope": "M03 traction identity |F_i|/A_i/p worst relative error on the clean coarse fixture (500 ticks)",
+   "ratio_worst": 4.458307361632001e-16,
+   "within_tolerance": true
+  },
+  "tampered_ratio_worst": 0.5849766559612233,
+  "window": 1e-09
+ },
+ "FB6_unaccounted_energy": {
+  "bit": true,
+  "bite_threshold_n": 0.020528888553185975,
+  "clean_control": {
+   "guard": "m12_fb6_premature",
+   "max_force_law_dev_n": 0.0,
+   "metric_scope": "tie-law audit: applied chain-tie force == M05 law force at the same state, bitwise (clean reference fixture, 500 ticks)",
+   "within_tolerance": true
+  },
+  "tampered": {
+   "max_force_law_dev_n": 0.5239350887306364,
+   "max_reaction_dev_n": 0.0,
+   "peak_law_force_n": 0.5239350887306364
+  }
+ },
+ "all_arms_bit": true,
+ "arrival_id": "arrival-glm53f-m12-w1",
+ "attempt_id": "22954da7b9704483960b563273e77b4a",
+ "criteria_sha256": "1e98a4f4465d4a50f21ce5c1d42b5ab51e9a7f96482f8f711d2c66ca4c53b5b7",
+ "p_vacuous_guard": {
+  "selftest": "fired_and_passed"
+ },
+ "schema": "chimera.m12_falsifier_receipt.v1"
+}
