@@ -4,9 +4,10 @@ white-out is fracture-specific or inherited. Headed, --enable-unsafe-webgpu.
 NOT part of test_phase6.py."""
 from playwright.sync_api import sync_playwright
 import os
+from pathlib import Path
 
-URL = "file:///E:/PythonChimera/ChimeraEngine/engine/spiace_phase6.html"
-OUT = "E:/PythonChimera/ChimeraEngine/engine"
+URL = (Path(__file__).resolve().parent / "spiace_phase6.html").as_uri()
+OUT = Path(__file__).resolve().parent.as_posix()
 
 with sync_playwright() as p:
     browser = p.chromium.launch(headless=False, args=["--enable-unsafe-webgpu"])

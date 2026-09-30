@@ -1,7 +1,7 @@
 
 import sys, json, math, subprocess
 from pathlib import Path
-NATIVE = Path('E:/PythonChimera/ChimeraEngine/native')
+NATIVE = Path(__file__).resolve().parent.parent / 'native'
 def read_chimera(path):
     gd = {}
     for line in open(path):

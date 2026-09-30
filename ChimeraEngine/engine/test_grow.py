@@ -27,8 +27,9 @@
 import math
 import time
 from playwright.sync_api import sync_playwright
+from pathlib import Path
 
-URL = "file:///E:/PythonChimera/ChimeraEngine/engine/spiace_grow.html"
+URL = (Path(__file__).resolve().parent / "spiace_grow.html").as_uri()
 fails = []
 
 def check(name, ok, detail=""):

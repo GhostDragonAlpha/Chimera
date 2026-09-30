@@ -1,4 +1,5 @@
 from playwright.sync_api import sync_playwright
+from pathlib import Path
 import time
 
 def test_spiace_phase1():
@@ -6,11 +7,11 @@ def test_spiace_phase1():
         browser = p.chromium.launch(headless=False, args=["--enable-unsafe-webgpu"])
         page = browser.new_page(viewport={"width": 1280, "height": 720})
 
-        page.goto("file:///E:/PythonChimera/ChimeraEngine/engine/spiace_phase1.html")
+        page.goto((Path(__file__).resolve().parent / "engine" / "spiace_phase1.html").as_uri())
         page.wait_for_timeout(5000)
 
         # Screenshot
-        page.screenshot(path="E:/PythonChimera/ChimeraEngine/engine/spiace_phase1_screenshot.png", full_page=False)
+        page.screenshot(path=(Path(__file__).resolve().parent / "engine" / "spiace_phase1_screenshot.png").as_posix(), full_page=False)
         print("Screenshot saved")
 
         # Check key elements
