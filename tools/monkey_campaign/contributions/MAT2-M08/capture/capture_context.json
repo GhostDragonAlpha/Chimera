@@ -1,0 +1,10 @@
+{
+ "capture_sha256": "20c9dc49540496de5ff2d827151a30ab8ca8263db07bc3c963cb1ebaca1914c3",
+ "run_id": "mat2-m08-resident-visual-20260929-20c9dc49",
+ "subject_sha256": "93afe68c2bc96524c29a93b10fc09fe2557de5e20eb013be49e096fcf5aa9812",
+ "task_id": "M08",
+ "tick_interval": [
+  0,
+  79
+ ]
+}
