@@ -1,0 +1,2 @@
+
+**MORPHOSOURCE CT SCANS ON MASTER (2026-09-19, 6946f3b9):** Full body CT of Macaca mulatta at 160um resolution. Two infant specimens (USNM 497135, 497136-3) from the Mormile Dissertation Infant CT scans collection (Smithsonian NMNH). License: Copyright Undetermined, Commercial Use NOT Permitted, 3D Printing Permitted. CRITICAL: these are INFANT specimens — adult scaling from Guimaraes/Oku does not apply directly. Bone geometry reference only. The ~400 MB TIF files are pinned by receipt (gitignored); metadata (manifests + license) committed.
