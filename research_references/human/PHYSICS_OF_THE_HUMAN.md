@@ -67,8 +67,8 @@
 
 | # | physics | proof | official source | measured data | membrane | status |
 |---|---|---|---|---|---|---|
-| 3.1 | The gait cycle: stance/swing/double support, joint kinematics per % cycle | S | **Van Criekinge et al. 2023** (246 adults, CC BY 4.0); Perry & Burnfield, *Gait Analysis* (textbook); Inman, Ralston & Todd 1981, *Human Walking* | `story/data/gait_normative.json` (in repo) | theHuman gait | **PROVEN** |
-| 3.2 | Ground reaction forces (the 1.1–1.2 BW peaks, the lever τ/F) | S | Van Criekinge 2023 | gait_normative (in repo) | theAnkle | **PROVEN** |
+| 3.1 | The gait cycle: stance/swing/double support, joint kinematics per % cycle | S | **Van Criekinge et al. 2023** (246 adults, CC BY 4.0); Perry & Burnfield, *Gait Analysis* (textbook); Inman, Ralston & Todd 1981, *Human Walking* | `story/data/gait_normative.json` (in repo; deleted by 2fb2f75f 2026-08-06, restored 2026-09-30, blob `ea801b08`, sha256 `45cc3941…2b57a`) | theHuman gait | **recoverable-committed-3b4ba121-restored-20260930** (`ingest_gait_osf.py --check` MATCHES) |
+| 3.2 | Ground reaction forces (the 1.1–1.2 BW peaks, the lever τ/F) | S | Van Criekinge 2023 | gait_normative (in repo; deleted by 2fb2f75f 2026-08-06, restored 2026-09-30, blob `ea801b08`) | theAnkle | **recoverable-committed-3b4ba121-restored-20260930** (`ingest_gait_osf.py --check` MATCHES) |
 | 3.3 | Inverted-pendulum walking mechanics; why speed selects step length | S+D | Kuo 2002, *J. Biomech. Eng.*; Kuo 2007, *Hum. Mov. Sci.* ("six determinants") | validated against 3.1 | theHuman gait | derived in tree |
 | 3.4 | Lateral sway & dynamic balance: COP inside base of support | S | Winter 1995, *Gait & Posture* — human balance and posture control | **HBEDB 1,930 trials + dos Santos dual-plate (in repo)** | theBalance | stub — data ready |
 | 3.5 | Directional gaits: turns, side-steps, backwards | S | CMU mocap trials (measured: 16_17+ turns, 136_09+ crouch, 111_03 crawl) | **CMU full DB (in repo)** | theStance, A3+G2 | stub — data ready |
