@@ -169,7 +169,10 @@ WIN = {
     'f_block_lo_n': 1.0e-2, 'f_block_hi_n': 10.0,
     'f_linearity_abs': 0.25,  # A1.11: sublinear low-p ratio bound
     'f_zero_residual': 0.02, 'f_zero_floor_n': 1.0e-4,
-    # A1.4 X3/X4 independent expectations
+    # A1.4 X3/X4 independent expectations. The X3 window was re-issued by
+    # Amendment A1.9 (0.20 -> 0.35, derived from the probe record
+    # x3_derivation_probes.json; review round 1 found the earlier 0.35
+    # cited an amendment that was never committed)
     'reciprocity_rel': 0.35, 'reciprocity_floor': 1.0e-12,
     'superposition_rel': 0.25, 'superposition_floor_m': 1.0e-4,
     'tie_follow_m': 5.0e-3,
@@ -518,12 +521,17 @@ class WorldRun:
 
     def __init__(self, model, schedule_fn, ticks, mode='free', tamper=None,
                  record_forces=False, snapshot_ticks=(),
-                 load_mass=M_LOAD_KG):
+                 load_mass=M_LOAD_KG, record_pin=False):
         require(mode in ('free', 'blocked', 'loaded'), 'run_mode_invalid')
         require(load_mass > 0.0, 'load_mass_invalid')
         self.load_mass = float(load_mass)
         self.model = model
         self.mode = mode
+        # A1.9 derivation probes only: per-substep pinned-vertex force
+        # record (settle-window noise floor). Default off; the bank runs
+        # are unchanged (no recorded physics depends on this flag).
+        self.record_pin = bool(record_pin)
+        self.pin_substep_fz = []
         self.tamper = dict(tamper or {})
         self.ticks = int(ticks)
         self.schedule_fn = schedule_fn
@@ -754,6 +762,8 @@ class WorldRun:
                         f_pin = m.vertex_mass * drift / (HS * HS)
                         self.pin_force_acc += f_pin
                         self.pin_force_n += 1
+                        if self.record_pin:
+                            self.pin_substep_fz.append(float(f_pin[2]))
                     self.v[tip] = drift / HS
                     self.x[tip] = hold
                 # 7. volume/work accumulation
