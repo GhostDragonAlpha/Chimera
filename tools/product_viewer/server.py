@@ -7,6 +7,7 @@ stdlib http.server only — no third-party server dependencies.
 from __future__ import annotations
 
 import collections
+import hashlib
 import json
 import math
 import sys
@@ -544,6 +545,7 @@ PAGE = """<!doctype html><html><head><meta charset="utf-8"><title>Chimera Produc
   <a href="/api/movie" target="_blank">movie (mp4 of the ring)</a> ·
   <a href="/api/health" target="_blank">health</a>
   </div>
+<!--CERTIFIED_WORLD-->
 <script>
 let misses=0, capOn=false, TAKE=false;
 // SELF-PACING LIVE VIEW: the engine's PNG readback is the measured bottleneck
@@ -676,6 +678,96 @@ tick(); tickGlass(); setInterval(state,1000); state();
 
 
 # ---------------------------------------------------------------------------
+# Certified world captures (sealed evidence surface; no engine required)
+# ---------------------------------------------------------------------------
+
+CERTIFIED_MANIFEST_PATH = Path(__file__).resolve().parent / "certified_world.json"
+
+
+def _sha256_file(path: Path) -> tuple[str, int]:
+    h = hashlib.sha256()
+    n = 0
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+            n += len(chunk)
+    return h.hexdigest(), n
+
+
+def load_certified_world(manifest_path: Path = CERTIFIED_MANIFEST_PATH) -> dict:
+    """Read + verify the sealed-capture manifest. NEVER raises.
+
+    Each entry gains verified:bool + refusal:str|None. An entry is verified
+    only when its file exists AND sha256 AND byte size match the pin. A
+    missing/malformed manifest is an honest entry-less state, not a crash.
+    """
+    result = {"schema": "chimera.viewer.certified_world.v1",
+              "manifest": str(manifest_path), "loaded": False,
+              "declared_limits": [], "entries": []}
+    try:
+        raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, ValueError) as e:
+        result["refusal"] = f"manifest unreadable: {e}"
+        return result
+    result["loaded"] = True
+    result["declared_limits"] = list(raw.get("declared_limits", []))
+    for ent in raw.get("entries", []):
+        e = dict(ent)
+        try:
+            f = Path(ent["file"])
+            if not f.is_file():
+                e["verified"], e["refusal"] = False, "file missing"
+            else:
+                sha, n = _sha256_file(f)
+                if sha != ent.get("sha256"):
+                    e["verified"] = False
+                    e["refusal"] = (f"sha256 mismatch (pinned "
+                                    f"{str(ent.get('sha256'))[:16]}, on disk {sha[:16]})")
+                elif n != int(ent.get("bytes", -1)):
+                    e["verified"] = False
+                    e["refusal"] = (f"byte size mismatch (pinned {ent.get('bytes')}, "
+                                    f"on disk {n})")
+                else:
+                    e["verified"], e["refusal"] = True, None
+        except (OSError, KeyError, TypeError, ValueError) as ex:
+            e["verified"], e["refusal"] = False, f"entry fault: {ex}"
+        result["entries"].append(e)
+    return result
+
+
+def certified_world_section(world: dict) -> str:
+    """Server-built HTML for the sealed captures. ZERO page JS: images are
+    plain <img> loads of a sha-verified local route. Refused entries are
+    named, never silently dropped. Nothing here claims a live engine frame."""
+    if not world.get("loaded"):
+        return ("<fieldset><legend>THE CERTIFIED WORLD</legend>"
+                "<div style=\"font-size:12px;color:#ef476f\">sealed-capture manifest "
+                f"not loaded: {world.get('refusal', 'unknown')}</div></fieldset>")
+    rows = []
+    for e in world["entries"]:
+        if e.get("verified"):
+            ident = e.get("identity_note", "")
+            rows.append(
+                "<figure style=\"margin:8px 0\">"
+                f"<img loading=\"lazy\" alt=\"{e['name']}\" "
+                "style=\"width:100%;border:1px solid #2a3138\" "
+                f"src=\"/api/world/certified/frame?name={e['name']}\">"
+                "<figcaption style=\"font-size:11px;color:#9aa4af\">"
+                f"{e.get('caption', '')}"
+                + (f" &mdash; {ident}" if ident else "")
+                + f" &middot; sha256 {e['sha256'][:16]}&hellip;</figcaption></figure>")
+        else:
+            rows.append(f"<div style=\"font-size:12px;color:#ef476f\">"
+                        f"{e.get('name', '?')}: NOT SERVED &mdash; "
+                        f"{e.get('refusal', 'unverified')}</div>")
+    lim = "".join("<div style=\"font-size:11px;color:#9aa4af\">&bull; "
+                  f"{s}</div>" for s in world.get("declared_limits", []))
+    return ("<fieldset><legend>THE CERTIFIED WORLD &mdash; the monkey in the forest "
+            "(SEALED CAPTURES: rendered offline, sha-pinned; the engine is NOT "
+            "rendering these)</legend>" + lim + "".join(rows) + "</fieldset>")
+
+
+# ---------------------------------------------------------------------------
 # HTTP handler
 # ---------------------------------------------------------------------------
 
@@ -721,7 +813,9 @@ class ViewerHandler(BaseHTTPRequestHandler):
         query = self.path.split("?")[1] if "?" in self.path else ""
         try:
             if path == "/" or path == "/index.html":
-                self._send(200, PAGE.encode("utf-8"), "text/html; charset=utf-8")
+                html = PAGE.replace("<!--CERTIFIED_WORLD-->",
+                                    certified_world_section(H.world))
+                self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
             elif path == "/api/live/glass":
                 st, png, ctype = H.engine.get("/glass")
                 if st == 200 and ctype.startswith("image/png"):
@@ -749,6 +843,35 @@ class ViewerHandler(BaseHTTPRequestHandler):
                 recs = H.ring.all_records()
                 self._json({"stats": H.ring.stats(),
                             "records": [r.meta() for r in recs]})
+            elif path == "/api/world/certified":
+                self._json({"ok": True, "schema": H.world.get("schema"),
+                            "manifest": H.world.get("manifest"),
+                            "loaded": H.world.get("loaded", False),
+                            "declared_limits": H.world.get("declared_limits", []),
+                            "entries": [{k: e.get(k) for k in
+                                         ("name", "section", "caption", "identity_note",
+                                          "sha256", "bytes", "verified", "refusal")}
+                                        for e in H.world["entries"]]})
+            elif path == "/api/world/certified/frame":
+                name = None
+                for kv in query.split("&"):
+                    if kv.startswith("name="):
+                        name = kv[5:]
+                rec = next((e for e in H.world["entries"]
+                            if e.get("name") == name), None)
+                if rec is None:
+                    self._json({"ok": False,
+                                "error": f"unknown certified capture '{name}'"}, 404)
+                elif not rec.get("verified"):
+                    self._json({"ok": False,
+                                "error": f"capture not served: {rec.get('refusal')}"}, 502)
+                else:
+                    sha, _ = _sha256_file(Path(rec["file"]))  # re-verify at serve time
+                    if sha != rec["sha256"]:
+                        self._json({"ok": False,
+                                    "error": "sha256 mismatch at serve time; refusing"}, 502)
+                    else:
+                        self._send(200, Path(rec["file"]).read_bytes(), "image/png")
             elif path == "/api/camera":
                 try:
                     self._json({"ok": True, "presets": H.camera.list_presets(),
@@ -973,6 +1096,7 @@ def make_server(engine_url: str, port: int, history: int = 240) -> ThreadingHTTP
         "engine": engine, "ring": ring, "camera": CameraPanel(engine),
         "started": time.time(), "capture_thread": capture,
         "mirror": EngineWindowMirror(engine_url, int(engine_port)),
+        "world": load_certified_world(),
     })
     server = ThreadingHTTPServer(("127.0.0.1", port), handler)
     server.daemon_threads = True
