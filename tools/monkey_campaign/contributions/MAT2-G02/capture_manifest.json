@@ -1,0 +1,1655 @@
+{
+ "capture_sha256": "d20a9174cbf143a17c8b958a3ede4d48a2d011d3398368245b3882637ea677e6",
+ "profile_id": "attachment-fixture",
+ "run_id": "g02-attachment-fixture-20260930-d20a9174",
+ "schema": "chimera.visual_capture_manifest.v1",
+ "sheet_layout": {
+  "frame_files": [
+   {
+    "frame": "frame_00.png",
+    "sha256": "2c5c9a5ef03a225cc41216d0500ec9807c83ccd33e7c88c595726d2edc25b64d",
+    "tick": 0
+   },
+   {
+    "frame": "frame_01.png",
+    "sha256": "1814a7126e120563f2e5ab874db6137fa1261f775b468f064b415a698f66285c",
+    "tick": 20
+   },
+   {
+    "frame": "frame_02.png",
+    "sha256": "a2134ad31ca8b2955c399cc2e152c7f96c6003623ecbc3fe7204274e38f386ef",
+    "tick": 150
+   },
+   {
+    "frame": "frame_03.png",
+    "sha256": "7624a32c278a0739be5bf1ef133a60d6da5aa836ce1640c9e4a689faddf0759d",
+    "tick": 232
+   },
+   {
+    "frame": "frame_04.png",
+    "sha256": "2aa364e984a8375c5e77455c1f909ce72b7a313418594e11fee99f15ec2b280e",
+    "tick": 233
+   },
+   {
+    "frame": "frame_05.png",
+    "sha256": "1168ed5fa02c9aa0449d8237adf1b58f5c5ff7542bb2b3502c95eb494aea92d8",
+    "tick": 250
+   },
+   {
+    "frame": "frame_06.png",
+    "sha256": "71b5142e3bb59e2fd3935fdc5cd6d9c57c8e4702b777e6d5d05fbcd165e2f922",
+    "tick": 320
+   }
+  ],
+  "honest_titles": "rendered inside every viewport: view name, mode and tick; diagnostic footer carries the gap/displacement trace inset",
+  "pixel_size": [
+   1280,
+   720
+  ],
+  "rows": [
+   "one row per registry view id: diagnostic (left) and clean (right) viewports of the same state"
+  ],
+  "tick_to_seconds_map": "one tick = 1/300 s (declared fixture tick); frames are the declared snapshot ticks at 1 video second per frame; the rendered state is bound to experiment_trace.json rows; frame t = snapshot tick t"
+ },
+ "subject_sha256": "e594336599cf0a78b12660f3f305417256230276d85795f1ba6a3cd70599016f",
+ "task_id": "G02",
+ "tick_interval": [
+  0,
+  320
+ ],
+ "views": [
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     7
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.6666666666666665,
+    "camera_motion_or_bookmark_sequence": "fixed bookmark; no motion across frames",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.3721894678789286,
+    "forward_axis": "+Z",
+    "frame_id": "g02_patch_overview",
+    "handedness": "right",
+    "label_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "near_far_planes": [
+     0.005,
+     5.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "unit quaternion w,x,y,z mapping camera coordinates to the declared rest frame",
+     "quaternion_wxyz": [
+      -0.47728582546634474,
+      0.7436053724775946,
+      -0.3940537127964805,
+      0.25292481543469897
+     ]
+    },
+    "position": [
+     -0.25,
+     -0.18,
+     0.16
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 20
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 150
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 232
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 233
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 250
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 320
+     }
+    ],
+    "state_or_tick_interval": [
+     0,
+     320
+    ],
+    "target": [
+     0.03,
+     0.01,
+     0.005
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "vertical_fov_or_orthographic_span": 40.0,
+    "viewport_resolution": [
+     640,
+     240
+    ],
+    "visibility_layers": [
+     "attachment patch geometry",
+     "authored frames and port IDs",
+     "fixture load and displacement traces"
+    ]
+   },
+   "cell_layout_note": "whole-fixture viewport; fixed bookmark camera; the patch quad, both bodies and the declared support stand are fully in frame (nothing hidden or clipped)",
+   "mode": "diagnostic",
+   "pair_id": "pair-0",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G02/experiment_trace.json: the per-tick fixture trace of the run; rendered state is bound to the committed receipts before any pixel is written",
+    "sha256": "259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b"
+   },
+   "view_id": "patch overview",
+   "visibility": {
+    "label_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "layers": [
+     "attachment patch geometry",
+     "authored frames and port IDs",
+     "fixture load and displacement traces"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "selected_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "iface:fixture-patch-p1",
+      "subject_id": "iface:fixture-patch-p1"
+     },
+     {
+      "label_id": "iface:fixture-patch-p2",
+      "subject_id": "iface:fixture-patch-p2"
+     },
+     {
+      "label_id": "fixture_body_a",
+      "subject_id": "fixture_body_a"
+     },
+     {
+      "label_id": "fixture_body_b",
+      "subject_id": "fixture_body_b"
+     },
+     {
+      "label_id": "port:patch",
+      "subject_id": "port:patch"
+     },
+     {
+      "label_id": "port:seam",
+      "subject_id": "port:seam"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     7
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.6666666666666665,
+    "camera_motion_or_bookmark_sequence": "fixed bookmark; no motion across frames",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.3721894678789286,
+    "forward_axis": "+Z",
+    "frame_id": "g02_patch_overview",
+    "handedness": "right",
+    "label_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "near_far_planes": [
+     0.005,
+     5.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "unit quaternion w,x,y,z mapping camera coordinates to the declared rest frame",
+     "quaternion_wxyz": [
+      -0.47728582546634474,
+      0.7436053724775946,
+      -0.3940537127964805,
+      0.25292481543469897
+     ]
+    },
+    "position": [
+     -0.25,
+     -0.18,
+     0.16
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 20
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 150
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 232
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 233
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 250
+     },
+     {
+      "distance_to_target": 0.3721894678789286,
+      "orientation": [
+       -0.47728582546634474,
+       0.7436053724775946,
+       -0.3940537127964805,
+       0.25292481543469897
+      ],
+      "position": [
+       -0.25,
+       -0.18,
+       0.16
+      ],
+      "target": [
+       0.03,
+       0.01,
+       0.005
+      ],
+      "tick": 320
+     }
+    ],
+    "state_or_tick_interval": [
+     0,
+     320
+    ],
+    "target": [
+     0.03,
+     0.01,
+     0.005
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40.0,
+    "vertical_fov_or_orthographic_span": 40.0,
+    "viewport_resolution": [
+     640,
+     240
+    ],
+    "visibility_layers": [
+     "attachment patch geometry",
+     "authored frames and port IDs",
+     "fixture load and displacement traces"
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and identical physical state to its diagnostic pair; no labels, layers or diagnostic styling by design",
+   "mode": "clean",
+   "pair_id": "pair-0",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G02/experiment_trace.json: the per-tick fixture trace of the run; rendered state is bound to the committed receipts before any pixel is written",
+    "sha256": "259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b"
+   },
+   "view_id": "patch overview",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     7
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.6666666666666665,
+    "camera_motion_or_bookmark_sequence": "fixed bookmark; no motion across frames",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.06184658438426491,
+    "forward_axis": "+Z",
+    "frame_id": "g02_loaded_interface_closeup",
+    "handedness": "right",
+    "label_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "near_far_planes": [
+     0.005,
+     5.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "unit quaternion w,x,y,z mapping camera coordinates to the declared rest frame",
+     "quaternion_wxyz": [
+      0.4351621464935993,
+      -0.5573454101893038,
+      0.5573454101893037,
+      -0.4351621464935993
+     ]
+    },
+    "position": [
+     -0.06,
+     0.008,
+     0.02
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 20
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 150
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 232
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 233
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 250
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 320
+     }
+    ],
+    "state_or_tick_interval": [
+     0,
+     320
+    ],
+    "target": [
+     0.0,
+     0.008,
+     0.005
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 25.0,
+    "vertical_fov_or_orthographic_span": 25.0,
+    "viewport_resolution": [
+     640,
+     240
+    ],
+    "visibility_layers": [
+     "attachment patch geometry",
+     "authored frames and port IDs",
+     "fixture load and displacement traces"
+    ]
+   },
+   "cell_layout_note": "loaded interface close-up; fixed bookmark camera centered on the patch plane",
+   "mode": "diagnostic",
+   "pair_id": "pair-1",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G02/experiment_trace.json: the per-tick fixture trace of the run; rendered state is bound to the committed receipts before any pixel is written",
+    "sha256": "259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b"
+   },
+   "view_id": "loaded interface close-up",
+   "visibility": {
+    "label_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "layers": [
+     "attachment patch geometry",
+     "authored frames and port IDs",
+     "fixture load and displacement traces"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "selected_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "iface:fixture-patch-p1",
+      "subject_id": "iface:fixture-patch-p1"
+     },
+     {
+      "label_id": "iface:fixture-patch-p2",
+      "subject_id": "iface:fixture-patch-p2"
+     },
+     {
+      "label_id": "fixture_body_a",
+      "subject_id": "fixture_body_a"
+     },
+     {
+      "label_id": "fixture_body_b",
+      "subject_id": "fixture_body_b"
+     },
+     {
+      "label_id": "port:patch",
+      "subject_id": "port:patch"
+     },
+     {
+      "label_id": "port:seam",
+      "subject_id": "port:seam"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     7
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.6666666666666665,
+    "camera_motion_or_bookmark_sequence": "fixed bookmark; no motion across frames",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.06184658438426491,
+    "forward_axis": "+Z",
+    "frame_id": "g02_loaded_interface_closeup",
+    "handedness": "right",
+    "label_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "near_far_planes": [
+     0.005,
+     5.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "unit quaternion w,x,y,z mapping camera coordinates to the declared rest frame",
+     "quaternion_wxyz": [
+      0.4351621464935993,
+      -0.5573454101893038,
+      0.5573454101893037,
+      -0.4351621464935993
+     ]
+    },
+    "position": [
+     -0.06,
+     0.008,
+     0.02
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 20
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 150
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 232
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 233
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 250
+     },
+     {
+      "distance_to_target": 0.06184658438426491,
+      "orientation": [
+       0.4351621464935993,
+       -0.5573454101893038,
+       0.5573454101893037,
+       -0.4351621464935993
+      ],
+      "position": [
+       -0.06,
+       0.008,
+       0.02
+      ],
+      "target": [
+       0.0,
+       0.008,
+       0.005
+      ],
+      "tick": 320
+     }
+    ],
+    "state_or_tick_interval": [
+     0,
+     320
+    ],
+    "target": [
+     0.0,
+     0.008,
+     0.005
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 25.0,
+    "vertical_fov_or_orthographic_span": 25.0,
+    "viewport_resolution": [
+     640,
+     240
+    ],
+    "visibility_layers": [
+     "attachment patch geometry",
+     "authored frames and port IDs",
+     "fixture load and displacement traces"
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and identical physical state to its diagnostic pair; no labels, layers or diagnostic styling by design",
+   "mode": "clean",
+   "pair_id": "pair-1",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G02/experiment_trace.json: the per-tick fixture trace of the run; rendered state is bound to the committed receipts before any pixel is written",
+    "sha256": "259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b"
+   },
+   "view_id": "loaded interface close-up",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     7
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.6666666666666665,
+    "camera_motion_or_bookmark_sequence": "fixed bookmark; no motion across frames",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.12,
+    "forward_axis": "+Z",
+    "frame_id": "g02_orthogonal_patch",
+    "handedness": "right",
+    "label_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "near_far_planes": [
+     0.005,
+     5.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "unit quaternion w,x,y,z mapping camera coordinates to the declared rest frame",
+     "quaternion_wxyz": [
+      0.5,
+      -0.5,
+      -0.5,
+      0.5
+     ]
+    },
+    "position": [
+     0.12,
+     0.01,
+     0.005
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 20
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 150
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 232
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 233
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 250
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 320
+     }
+    ],
+    "state_or_tick_interval": [
+     0,
+     320
+    ],
+    "target": [
+     0.0,
+     0.01,
+     0.005
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 20.0,
+    "vertical_fov_or_orthographic_span": 20.0,
+    "viewport_resolution": [
+     640,
+     240
+    ],
+    "visibility_layers": [
+     "attachment patch geometry",
+     "authored frames and port IDs",
+     "fixture load and displacement traces"
+    ]
+   },
+   "cell_layout_note": "orthogonal side view; the diagnostic row also declares a fully-declared oblique secondary camera (secondary_cameras in the camera record)",
+   "mode": "diagnostic",
+   "pair_id": "pair-2",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G02/experiment_trace.json: the per-tick fixture trace of the run; rendered state is bound to the committed receipts before any pixel is written",
+    "sha256": "259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b"
+   },
+   "view_id": "orthogonal and oblique patch views",
+   "visibility": {
+    "label_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "layers": [
+     "attachment patch geometry",
+     "authored frames and port IDs",
+     "fixture load and displacement traces"
+    ],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "selected_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "tag_bindings": [
+     {
+      "label_id": "iface:fixture-patch-p1",
+      "subject_id": "iface:fixture-patch-p1"
+     },
+     {
+      "label_id": "iface:fixture-patch-p2",
+      "subject_id": "iface:fixture-patch-p2"
+     },
+     {
+      "label_id": "fixture_body_a",
+      "subject_id": "fixture_body_a"
+     },
+     {
+      "label_id": "fixture_body_b",
+      "subject_id": "fixture_body_b"
+     },
+     {
+      "label_id": "port:patch",
+      "subject_id": "port:patch"
+     },
+     {
+      "label_id": "port:seam",
+      "subject_id": "port:seam"
+     }
+    ]
+   }
+  },
+  {
+   "artifact_locator": {
+    "kind": "video",
+    "seconds": [
+     0,
+     7
+    ]
+   },
+   "camera": {
+    "aspect_ratio": 2.6666666666666665,
+    "camera_motion_or_bookmark_sequence": "fixed bookmark; no motion across frames",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.12,
+    "forward_axis": "+Z",
+    "frame_id": "g02_orthogonal_patch",
+    "handedness": "right",
+    "label_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "near_far_planes": [
+     0.005,
+     5.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": {
+     "convention": "unit quaternion w,x,y,z mapping camera coordinates to the declared rest frame",
+     "quaternion_wxyz": [
+      0.5,
+      -0.5,
+      -0.5,
+      0.5
+     ]
+    },
+    "position": [
+     0.12,
+     0.01,
+     0.005
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 20
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 150
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 232
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 233
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 250
+     },
+     {
+      "distance_to_target": 0.12,
+      "orientation": [
+       0.5,
+       -0.5,
+       -0.5,
+       0.5
+      ],
+      "position": [
+       0.12,
+       0.01,
+       0.005
+      ],
+      "target": [
+       0.0,
+       0.01,
+       0.005
+      ],
+      "tick": 320
+     }
+    ],
+    "state_or_tick_interval": [
+     0,
+     320
+    ],
+    "target": [
+     0.0,
+     0.01,
+     0.005
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 20.0,
+    "vertical_fov_or_orthographic_span": 20.0,
+    "viewport_resolution": [
+     640,
+     240
+    ],
+    "visibility_layers": [
+     "attachment patch geometry",
+     "authored frames and port IDs",
+     "fixture load and displacement traces"
+    ]
+   },
+   "cell_layout_note": "clean row: identical camera and identical physical state to its diagnostic pair; no labels, layers or diagnostic styling by design",
+   "mode": "clean",
+   "pair_id": "pair-2",
+   "state_binding": {
+    "kind": "trace",
+    "note": "sha256 of contributions/MAT2-G02/experiment_trace.json: the per-tick fixture trace of the run; rendered state is bound to the committed receipts before any pixel is written",
+    "sha256": "259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b"
+   },
+   "view_id": "orthogonal and oblique patch views",
+   "visibility": {
+    "label_ids": [],
+    "layers": [],
+    "missing_subject_ids": [],
+    "observed_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "occlusion_mode": "depth_tested",
+    "required_subject_ids": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "selected_ids": [],
+    "tag_bindings": []
+   }
+  }
+ ]
+}

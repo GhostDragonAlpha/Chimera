@@ -34,6 +34,16 @@ WHITELIST = {
     '234': 'declared release tick (Amendment A2 schedule)',
     '61': 'declared bind tick (Amendment A2 schedule)',
     '74': 'A09 connection count (74-connection anatomy, carried context)',
+    '0.0940': 'Amendment A2 declared damping ratio zeta (derived: '
+              'c_v/(2*m*omega_t) with c_v 0.02; analytics, not measured)',
+    '9.4017': 'Amendment A2 overdamped zeta at the BASE c_v = 2.0 '
+              '(derived analytics constant)',
+    '2.0': 'declared base squeeze actuator constant and base c_v (prereg '
+           'law 10 / Amendment A2)',
+    '0.8': 'sealed MAT2-M05 twist constant cited in the areal derivation '
+           '(prereg law 4)',
+    '1.0e-4': 'frozen patch triangle area A1 (equals receipt A1_m2)',
+    '6.5e-5': 'frozen patch triangle area A2 (equals receipt A2_m2)',
 }
 
 
