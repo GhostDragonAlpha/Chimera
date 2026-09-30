@@ -1,0 +1,2283 @@
+{
+ "camera_consistency_proof": {
+  "per_still": {
+   "frame_00": {
+    "closeup": {
+     "above": {
+      "mean_row": 108.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       200,
+       60
+      ]
+     },
+     "below": {
+      "mean_row": 128.71428571428572,
+      "px_count": 35,
+      "rgb": [
+       0,
+       220,
+       120
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 20.714285714285722,
+     "tie_px_count": 26
+    },
+    "leakage": {
+     "pixels_outside_viewports": 0,
+     "tie_rgb": [
+      0,
+      170,
+      255
+     ]
+    },
+    "whole": {
+     "above": {
+      "mean_row": 98.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       70,
+       70
+      ]
+     },
+     "below": {
+      "mean_row": 133.0,
+      "px_count": 97,
+      "rgb": [
+       60,
+       60,
+       225
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 35.0
+    }
+   },
+   "frame_02": {
+    "closeup": {
+     "above": {
+      "mean_row": 104.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       200,
+       60
+      ]
+     },
+     "below": {
+      "mean_row": 124.71428571428571,
+      "px_count": 35,
+      "rgb": [
+       0,
+       220,
+       120
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 20.714285714285708,
+     "tie_px_count": 26
+    },
+    "leakage": {
+     "pixels_outside_viewports": 0,
+     "tie_rgb": [
+      0,
+      170,
+      255
+     ]
+    },
+    "whole": {
+     "above": {
+      "mean_row": 97.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       70,
+       70
+      ]
+     },
+     "below": {
+      "mean_row": 132.0,
+      "px_count": 97,
+      "rgb": [
+       60,
+       60,
+       225
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 35.0
+    }
+   },
+   "frame_10": {
+    "closeup": {
+     "above": {
+      "mean_row": 113.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       200,
+       60
+      ]
+     },
+     "below": {
+      "mean_row": 195.0,
+      "px_count": 55,
+      "rgb": [
+       0,
+       220,
+       120
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 82.0,
+     "tie_px_count": 136
+    },
+    "leakage": {
+     "pixels_outside_viewports": 0,
+     "tie_rgb": [
+      0,
+      170,
+      255
+     ]
+    },
+    "whole": {
+     "above": {
+      "mean_row": 97.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       70,
+       70
+      ]
+     },
+     "below": {
+      "mean_row": 132.0,
+      "px_count": 97,
+      "rgb": [
+       60,
+       60,
+       225
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 35.0
+    }
+   },
+   "frame_20": {
+    "closeup": {
+     "above": {
+      "mean_row": 110.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       200,
+       60
+      ]
+     },
+     "below": {
+      "mean_row": 195.0,
+      "px_count": 55,
+      "rgb": [
+       0,
+       220,
+       120
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 85.0,
+     "tie_px_count": 142
+    },
+    "leakage": {
+     "pixels_outside_viewports": 0,
+     "tie_rgb": [
+      0,
+      170,
+      255
+     ]
+    },
+    "whole": {
+     "above": {
+      "mean_row": 98.0,
+      "px_count": 37,
+      "rgb": [
+       255,
+       70,
+       70
+      ]
+     },
+     "below": {
+      "mean_row": 133.0,
+      "px_count": 97,
+      "rgb": [
+       60,
+       60,
+       225
+      ]
+     },
+     "consistent": true,
+     "signed_row_delta_below_minus_above": 35.0
+    }
+   }
+  },
+  "rule": "declared-above marker mean pixel row < declared-below marker mean pixel row (rows grow downward), per perspective viewport, declared +Z-dominant camera up; measured on the committed diagnostic stills",
+  "viewports": {
+   "closeup": {
+    "above": "free pole (T1 anchor)",
+    "below": "foot contact"
+   },
+   "whole": {
+    "above": "clamp_ring",
+    "below": "load_surrogate"
+   }
+  }
+ },
+ "cameras": {
+  "coarse": {
+   "closeup": {
+    "aspect_ratio": 1.8307692307692307,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.23822172712141462,
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m12_lod_coarse_closeup_sheet",
+    "handedness": "right",
+    "label_ids": [
+     "tissue_bladder",
+     "clamp_ring (visible support)",
+     "chain T1 humerus",
+     "chain T2 ulna",
+     "chain T3 radius",
+     "chain T4 foot(hand)",
+     "bond:load_surrogate",
+     "source_m11_source"
+    ],
+    "near_far_planes": [
+     0.005,
+     50.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+    "position": [
+     0.13395721253366552,
+     -0.18754009754713175,
+     0.09528074564014949
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 450
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 460
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 700
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 1100
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 1350
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+    "target": [
+     0.0,
+     0.0,
+     0.035
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 30,
+    "vertical_fov_or_orthographic_span": "vertical_fov_degrees=30",
+    "viewport_resolution": [
+     476,
+     260
+    ],
+    "visibility_layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ]
+   },
+   "front": {
+    "aspect_ratio": 1.8307692307692307,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.62,
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m12_lod_coarse_front_sheet",
+    "handedness": "right",
+    "label_ids": [
+     "tissue_bladder",
+     "clamp_ring (visible support)",
+     "chain T1 humerus",
+     "chain T2 ulna",
+     "chain T3 radius",
+     "chain T4 foot(hand)",
+     "bond:load_surrogate",
+     "source_m11_source"
+    ],
+    "near_far_planes": [
+     0.005,
+     50.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+    "orthographic_span": 0.46,
+    "position": [
+     0.62,
+     0.0,
+     0.19
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 450
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 460
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 700
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1100
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1350
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+    "target": [
+     0.0,
+     0.0,
+     0.19
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_or_orthographic_span": "orthographic_span_m=0.46",
+    "viewport_resolution": [
+     476,
+     260
+    ],
+    "visibility_layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ]
+   },
+   "side": {
+    "aspect_ratio": 1.8307692307692307,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.62,
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m12_lod_coarse_side_sheet",
+    "handedness": "right",
+    "label_ids": [
+     "tissue_bladder",
+     "clamp_ring (visible support)",
+     "chain T1 humerus",
+     "chain T2 ulna",
+     "chain T3 radius",
+     "chain T4 foot(hand)",
+     "bond:load_surrogate",
+     "source_m11_source"
+    ],
+    "near_far_planes": [
+     0.005,
+     50.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+    "orthographic_span": 0.46,
+    "position": [
+     0.0,
+     0.62,
+     0.19
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 450
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 460
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 700
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1100
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1350
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+    "target": [
+     0.0,
+     0.0,
+     0.19
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_or_orthographic_span": "orthographic_span_m=0.46",
+    "viewport_resolution": [
+     476,
+     260
+    ],
+    "visibility_layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ]
+   },
+   "whole": {
+    "aspect_ratio": 1.8307692307692307,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.5550675634551167,
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m12_lod_coarse_whole_sheet",
+    "handedness": "right",
+    "label_ids": [
+     "tissue_bladder",
+     "clamp_ring (visible support)",
+     "chain T1 humerus",
+     "chain T2 ulna",
+     "chain T3 radius",
+     "chain T4 foot(hand)",
+     "bond:load_surrogate",
+     "source_m11_source"
+    ],
+    "near_far_planes": [
+     0.005,
+     50.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+    "position": [
+     0.32,
+     -0.44,
+     0.3
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 450
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 460
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 700
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1100
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "coarse",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1350
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+    "target": [
+     0.0,
+     0.0,
+     0.19
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40,
+    "vertical_fov_or_orthographic_span": "vertical_fov_degrees=40",
+    "viewport_resolution": [
+     476,
+     260
+    ],
+    "visibility_layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ]
+   }
+  },
+  "reference": {
+   "closeup": {
+    "aspect_ratio": 1.8307692307692307,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.23822172712141462,
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m12_lod_reference_closeup_sheet",
+    "handedness": "right",
+    "label_ids": [
+     "tissue_bladder",
+     "clamp_ring (visible support)",
+     "chain T1 humerus",
+     "chain T2 ulna",
+     "chain T3 radius",
+     "chain T4 foot(hand)",
+     "bond:load_surrogate",
+     "source_m11_source"
+    ],
+    "near_far_planes": [
+     0.005,
+     50.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+    "position": [
+     0.13395721253366552,
+     -0.18754009754713175,
+     0.09528074564014949
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 450
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 460
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 700
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 1100
+     },
+     {
+      "distance_to_target": 0.23822172712141462,
+      "orientation": [
+       0.7537720336052248,
+       0.581974618826295,
+       0.18650252730457478,
+       0.24155759500715113
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.13395721253366552,
+       -0.18754009754713175,
+       0.09528074564014949
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.035
+      ],
+      "tick": 1350
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+    "target": [
+     0.0,
+     0.0,
+     0.035
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 30,
+    "vertical_fov_or_orthographic_span": "vertical_fov_degrees=30",
+    "viewport_resolution": [
+     476,
+     260
+    ],
+    "visibility_layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ]
+   },
+   "front": {
+    "aspect_ratio": 1.8307692307692307,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.62,
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m12_lod_reference_front_sheet",
+    "handedness": "right",
+    "label_ids": [
+     "tissue_bladder",
+     "clamp_ring (visible support)",
+     "chain T1 humerus",
+     "chain T2 ulna",
+     "chain T3 radius",
+     "chain T4 foot(hand)",
+     "bond:load_surrogate",
+     "source_m11_source"
+    ],
+    "near_far_planes": [
+     0.005,
+     50.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+    "orthographic_span": 0.46,
+    "position": [
+     0.62,
+     0.0,
+     0.19
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 450
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 460
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 700
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1100
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.5,
+       0.5,
+       0.5,
+       0.5
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.62,
+       0.0,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1350
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+    "target": [
+     0.0,
+     0.0,
+     0.19
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_or_orthographic_span": "orthographic_span_m=0.46",
+    "viewport_resolution": [
+     476,
+     260
+    ],
+    "visibility_layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ]
+   },
+   "side": {
+    "aspect_ratio": 1.8307692307692307,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.62,
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m12_lod_reference_side_sheet",
+    "handedness": "right",
+    "label_ids": [
+     "tissue_bladder",
+     "clamp_ring (visible support)",
+     "chain T1 humerus",
+     "chain T2 ulna",
+     "chain T3 radius",
+     "chain T4 foot(hand)",
+     "bond:load_surrogate",
+     "source_m11_source"
+    ],
+    "near_far_planes": [
+     0.005,
+     50.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+    "orthographic_span": 0.46,
+    "position": [
+     0.0,
+     0.62,
+     0.19
+    ],
+    "projection": "orthographic",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 450
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 460
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 700
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1100
+     },
+     {
+      "distance_to_target": 0.62,
+      "orientation": [
+       0.0,
+       0.0,
+       0.7071067811865475,
+       0.7071067811865476
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.0,
+       0.62,
+       0.19
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1350
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+    "target": [
+     0.0,
+     0.0,
+     0.19
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_or_orthographic_span": "orthographic_span_m=0.46",
+    "viewport_resolution": [
+     476,
+     260
+    ],
+    "visibility_layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ]
+   },
+   "whole": {
+    "aspect_ratio": 1.8307692307692307,
+    "camera_motion_or_bookmark_sequence": "fixed_bookmark: identical pose at every snapshot tick; the SUBJECT moves (solver-solved hanging rig), not the camera",
+    "coordinate_unit": "m",
+    "distance_to_target": 0.5550675634551167,
+    "forward_axis": "-Z",
+    "frame_id": "mat2_m12_lod_reference_whole_sheet",
+    "handedness": "right",
+    "label_ids": [
+     "tissue_bladder",
+     "clamp_ring (visible support)",
+     "chain T1 humerus",
+     "chain T2 ulna",
+     "chain T3 radius",
+     "chain T4 foot(hand)",
+     "bond:load_surrogate",
+     "source_m11_source"
+    ],
+    "near_far_planes": [
+     0.005,
+     50.0
+    ],
+    "occlusion_or_xray_mode": "depth_tested",
+    "orientation_convention": "quaternion_wxyz_camera_to_frame",
+    "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y, fixed bookmark",
+    "position": [
+     0.32,
+     -0.44,
+     0.3
+    ],
+    "projection": "perspective",
+    "sample_mode": "fixed_bookmark",
+    "samples": [
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 0
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 450
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 460
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 700
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1100
+     },
+     {
+      "distance_to_target": 0.5550675634551167,
+      "orientation": [
+       0.7360673681180132,
+       0.6021402425875683,
+       0.19580626040179558,
+       0.2393571938251908
+      ],
+      "orientation_convention_and_values": "quaternion_wxyz_camera_to_frame, forward -Z / up +Y; fixed bookmark (pose constant across ticks)",
+      "position": [
+       0.32,
+       -0.44,
+       0.3
+      ],
+      "resolution": "reference",
+      "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+      "target": [
+       0.0,
+       0.0,
+       0.19
+      ],
+      "tick": 1350
+     }
+    ],
+    "state_or_tick_interval": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+    "target": [
+     0.0,
+     0.0,
+     0.19
+    ],
+    "up_axis": "+Y",
+    "vertical_fov_degrees": 40,
+    "vertical_fov_or_orthographic_span": "vertical_fov_degrees=40",
+    "viewport_resolution": [
+     476,
+     260
+    ],
+    "visibility_layers": [
+     "stable membrane/triangle/port IDs",
+     "pressure and area-scaled force vectors",
+     "rest/current geometry and material directions",
+     "contact/bond state",
+     "energy/work and simulation tick"
+    ]
+   }
+  }
+ },
+ "frame_raw_sha256": {
+  "frame_00": {
+   "frame_index": 0,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "148fbc870fe6a03293504498cc8a179ef2a9421788c45a6d78b78c52c5e5a8ce",
+   "resolution": "coarse",
+   "snapshot_tick": 0,
+   "width": 960
+  },
+  "frame_01": {
+   "frame_index": 1,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "c590d07ecd20365f144955e36134bf23722ee826911c3463aba5c92440b333c0",
+   "resolution": "coarse",
+   "snapshot_tick": 0,
+   "width": 960
+  },
+  "frame_02": {
+   "frame_index": 2,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "5dcdcdf3f79f54158755f5b5a6892e3f913851660e0c6349932d0e55120a29aa",
+   "resolution": "reference",
+   "snapshot_tick": 0,
+   "width": 960
+  },
+  "frame_03": {
+   "frame_index": 3,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "f30eaa4092bfcb899da30b389e5feb9e8681c8ae8ffc7860f3afb595b26ac310",
+   "resolution": "reference",
+   "snapshot_tick": 0,
+   "width": 960
+  },
+  "frame_04": {
+   "frame_index": 4,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "c7495f5eecd2a76cd91a321a8437b77cada980dd5b043751f84ea9529527ce9d",
+   "resolution": "coarse",
+   "snapshot_tick": 450,
+   "width": 960
+  },
+  "frame_05": {
+   "frame_index": 5,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "23a75941e7cc50c42de982a024c91a3ac72f7f5fb60367fde8b719a31db7db5e",
+   "resolution": "coarse",
+   "snapshot_tick": 450,
+   "width": 960
+  },
+  "frame_06": {
+   "frame_index": 6,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "4533bbe3fffdc04395f1c12fa579bbc326be17eeec66cb592adc24401d49a0a6",
+   "resolution": "reference",
+   "snapshot_tick": 450,
+   "width": 960
+  },
+  "frame_07": {
+   "frame_index": 7,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "c344d787ba2a69c7f0df54348575fb3626df945242840f922377b19bea02e1fd",
+   "resolution": "reference",
+   "snapshot_tick": 450,
+   "width": 960
+  },
+  "frame_08": {
+   "frame_index": 8,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "13de03eab9c8d2cbc5acf28fce781e770f1a5545cf169b8d57e8d398c5997d27",
+   "resolution": "coarse",
+   "snapshot_tick": 460,
+   "width": 960
+  },
+  "frame_09": {
+   "frame_index": 9,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "0194e9f7bb76ca3ff16c9080d495ed860874620975a17dbc143fe555a1ff806f",
+   "resolution": "coarse",
+   "snapshot_tick": 460,
+   "width": 960
+  },
+  "frame_10": {
+   "frame_index": 10,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "722e5b62044ce6a82f2a9b110cc980052b59245b88a940dcae5ff2e4243ad1f6",
+   "resolution": "reference",
+   "snapshot_tick": 460,
+   "width": 960
+  },
+  "frame_11": {
+   "frame_index": 11,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "bab74400c0392befb3bb84864fdaae37b66de60268673b321e8e8b246c8ad6ac",
+   "resolution": "reference",
+   "snapshot_tick": 460,
+   "width": 960
+  },
+  "frame_12": {
+   "frame_index": 12,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "2659ba2edc4bd41b30f45607a558eea57ae9c47510debe2c5c2c1ac1275074d0",
+   "resolution": "coarse",
+   "snapshot_tick": 700,
+   "width": 960
+  },
+  "frame_13": {
+   "frame_index": 13,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "d211d2576e2c114adbf849251c1ff53eef9665cb7987f1e27fb6232948e4aafc",
+   "resolution": "coarse",
+   "snapshot_tick": 700,
+   "width": 960
+  },
+  "frame_14": {
+   "frame_index": 14,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "075e532eeeaf48853fdddbede255968c43d677747c18dd618fec9a2dcac5bb33",
+   "resolution": "reference",
+   "snapshot_tick": 700,
+   "width": 960
+  },
+  "frame_15": {
+   "frame_index": 15,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "fb5f875c6987d96712b24ac6e143f4c69f176187e4fe789201871a9cef2fee42",
+   "resolution": "reference",
+   "snapshot_tick": 700,
+   "width": 960
+  },
+  "frame_16": {
+   "frame_index": 16,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "0f67ae17cbb28d26b67d0f605056516d19769dbd4a9dc264efbc94b6cb89bcc9",
+   "resolution": "coarse",
+   "snapshot_tick": 1100,
+   "width": 960
+  },
+  "frame_17": {
+   "frame_index": 17,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "19096396094aa7698b8702470ffce2e91012beec8fe736a161f93c0b0d2c3a19",
+   "resolution": "coarse",
+   "snapshot_tick": 1100,
+   "width": 960
+  },
+  "frame_18": {
+   "frame_index": 18,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "d153318211d168e511fc47cd038f745ac3f7a353681b3d9c36b85199942ceb40",
+   "resolution": "reference",
+   "snapshot_tick": 1100,
+   "width": 960
+  },
+  "frame_19": {
+   "frame_index": 19,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "18dbfc4c72fe4eeca0e7ed0af188c275b9c15ed840bdc7ca7c68a096fb9a083e",
+   "resolution": "reference",
+   "snapshot_tick": 1100,
+   "width": 960
+  },
+  "frame_20": {
+   "frame_index": 20,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "a424dd5a0204080ee1fa4e356e7c51589f98cf247da39095465ddbd27e76c291",
+   "resolution": "coarse",
+   "snapshot_tick": 1350,
+   "width": 960
+  },
+  "frame_21": {
+   "frame_index": 21,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "f68bcefb499abfd43a0259635c9703c8cb0a3b8a8beadbe0cc94b846ce21f1fa",
+   "resolution": "coarse",
+   "snapshot_tick": 1350,
+   "width": 960
+  },
+  "frame_22": {
+   "frame_index": 22,
+   "height": 540,
+   "mode": "diagnostic",
+   "raw_payload_sha256": "7ef490fef79387ce388d1646ba4aa1627a3e546271fb7adc6e228a13a9be7c24",
+   "resolution": "reference",
+   "snapshot_tick": 1350,
+   "width": 960
+  },
+  "frame_23": {
+   "frame_index": 23,
+   "height": 540,
+   "mode": "clean",
+   "raw_payload_sha256": "1b00b092a2639b7cb92d04853d81c2423f7c9e2101bb38481bb09a08d55a5983",
+   "resolution": "reference",
+   "snapshot_tick": 1350,
+   "width": 960
+  }
+ },
+ "labels": [
+  "tissue_bladder",
+  "clamp_ring (visible support)",
+  "chain T1 humerus",
+  "chain T2 ulna",
+  "chain T3 radius",
+  "chain T4 foot(hand)",
+  "bond:load_surrogate",
+  "source_m11_source"
+ ],
+ "layer_presence_proof": {
+  "per_layer": {
+   "contact/bond state": {
+    "layer_index": 3,
+    "per_resolution": {
+     "coarse": {
+      "key_colors": {
+       "(0, 150, 90)": 296,
+       "(0, 170, 255)": 275
+      },
+      "pixels_present": 571,
+      "present": true
+     },
+     "reference": {
+      "key_colors": {
+       "(0, 150, 90)": 291,
+       "(0, 170, 255)": 272
+      },
+      "pixels_present": 563,
+      "present": true
+     }
+    }
+   },
+   "energy/work and simulation tick": {
+    "layer_index": 4,
+    "per_resolution": {
+     "coarse": {
+      "key_colors": {
+       "(140, 235, 140)": 100
+      },
+      "pixels_present": 100,
+      "present": true
+     },
+     "reference": {
+      "key_colors": {
+       "(140, 235, 140)": 100
+      },
+      "pixels_present": 100,
+      "present": true
+     }
+    }
+   },
+   "pressure and area-scaled force vectors": {
+    "layer_index": 1,
+    "per_resolution": {
+     "coarse": {
+      "key_colors": {
+       "(220, 30, 30)": 3847
+      },
+      "pixels_present": 3847,
+      "present": true
+     },
+     "reference": {
+      "key_colors": {
+       "(220, 30, 30)": 2512
+      },
+      "pixels_present": 2512,
+      "present": true
+     }
+    }
+   },
+   "rest/current geometry and material directions": {
+    "layer_index": 2,
+    "per_resolution": {
+     "coarse": {
+      "key_colors": {
+       "(255, 140, 0)": 606
+      },
+      "pixels_present": 606,
+      "present": true
+     },
+     "reference": {
+      "key_colors": {
+       "(255, 140, 0)": 1323
+      },
+      "pixels_present": 1323,
+      "present": true
+     }
+    }
+   },
+   "stable membrane/triangle/port IDs": {
+    "layer_index": 0,
+    "per_resolution": {
+     "coarse": {
+      "key_colors": {
+       "(255, 200, 90)": 63
+      },
+      "pixels_present": 63,
+      "present": true
+     },
+     "reference": {
+      "key_colors": {
+       "(255, 200, 90)": 63
+      },
+      "pixels_present": 63,
+      "present": true
+     }
+    }
+   }
+  },
+  "rule": "each declared layer rendered alone places >= 1 pixel of a layer key color (both resolutions probed)"
+ },
+ "layer_probe_meta": {
+  "layer_0_coarse": {
+   "mode": "diagnostic",
+   "resolution": "coarse",
+   "sha256": "fb4ab3f5b74da46ca4bff4390e3378a478cd3de605b4b553e6bf0a225ecc37fb",
+   "snapshot_tick": 450
+  },
+  "layer_0_reference": {
+   "mode": "diagnostic",
+   "resolution": "reference",
+   "sha256": "2a55ae8d445ea9e4c8dc589002cb6cf1402553cecaefbcfad1cb369599c1190a",
+   "snapshot_tick": 450
+  },
+  "layer_1_coarse": {
+   "mode": "diagnostic",
+   "resolution": "coarse",
+   "sha256": "70447711ebb784f2620b12171e9cbeff41844fac628dcc6e14daff804f728739",
+   "snapshot_tick": 450
+  },
+  "layer_1_reference": {
+   "mode": "diagnostic",
+   "resolution": "reference",
+   "sha256": "8a6b8028d0f6da5b1fc20513b856d8dae0599cededeba9d3a230d85369ef768e",
+   "snapshot_tick": 450
+  },
+  "layer_2_coarse": {
+   "mode": "diagnostic",
+   "resolution": "coarse",
+   "sha256": "9cf500b9aaf81df8d28c174d12a832caf68a4efd7b9f662af76550398ad4a60d",
+   "snapshot_tick": 450
+  },
+  "layer_2_reference": {
+   "mode": "diagnostic",
+   "resolution": "reference",
+   "sha256": "6d037cb82fb808d6419a58b5deaf0c7d3f96a0ce7996ca26573f42d659ec71cc",
+   "snapshot_tick": 450
+  },
+  "layer_3_coarse": {
+   "mode": "diagnostic",
+   "resolution": "coarse",
+   "sha256": "ef72682a58845ced49878c5dcf4e62ad1e5a71368b700da07838df4a3435ffd5",
+   "snapshot_tick": 450
+  },
+  "layer_3_reference": {
+   "mode": "diagnostic",
+   "resolution": "reference",
+   "sha256": "25f778a70d1c794a6d09a82959018d4e1af9b95299b2ede358d5252f605a5225",
+   "snapshot_tick": 450
+  },
+  "layer_4_coarse": {
+   "mode": "diagnostic",
+   "resolution": "coarse",
+   "sha256": "3eb16a1445325bdc265e786eda8582321bb6ae8bb8551aaa2141ea98425bb000",
+   "snapshot_tick": 450
+  },
+  "layer_4_reference": {
+   "mode": "diagnostic",
+   "resolution": "reference",
+   "sha256": "c4b5328891c89d1de10526bb5f41e7dbff486a3bd66fec0a867266c36e7dcaf2",
+   "snapshot_tick": 450
+  }
+ },
+ "resolutions": [
+  "coarse",
+  "reference"
+ ],
+ "row_order_proof": {
+  "frame_00": {
+   "bmp_rows_match_payload": true,
+   "topdown_misread_does_not_match": true
+  },
+  "frame_02": {
+   "bmp_rows_match_payload": true,
+   "topdown_misread_does_not_match": true
+  },
+  "frame_10": {
+   "bmp_rows_match_payload": true,
+   "topdown_misread_does_not_match": true
+  },
+  "frame_20": {
+   "bmp_rows_match_payload": true,
+   "topdown_misread_does_not_match": true
+  }
+ },
+ "sheet": [
+  960,
+  540
+ ],
+ "still_hashes": {
+  "frame_00": {
+   "mode": "diagnostic",
+   "path": "capture/frames/frame_00.bmp",
+   "resolution": "coarse",
+   "sha256": "2621e4b1bba8eb90e7935d88ab24f599b8457d120be7bf080eed8ef2fa4149af",
+   "snapshot_tick": 0
+  },
+  "frame_02": {
+   "mode": "diagnostic",
+   "path": "capture/frames/frame_02.bmp",
+   "resolution": "reference",
+   "sha256": "2bea6572975f2bff749f81b8cb14ad862655fc4849112ae36efff1c80552a6de",
+   "snapshot_tick": 0
+  },
+  "frame_10": {
+   "mode": "diagnostic",
+   "path": "capture/frames/frame_10.bmp",
+   "resolution": "reference",
+   "sha256": "0340ae2ccc3b1a4e3ea165cd2dccd066cc885b243b17e4fb15afc3f013e6aab5",
+   "snapshot_tick": 460
+  },
+  "frame_20": {
+   "mode": "diagnostic",
+   "path": "capture/frames/frame_20.bmp",
+   "resolution": "coarse",
+   "sha256": "2c781d8397575cbffebe4e66f411bc8bc6f77c249b402b8fe89c0877e7176e9d",
+   "snapshot_tick": 1350
+  }
+ },
+ "still_indices": [
+  0,
+  2,
+  10,
+  20
+ ],
+ "subjects": [
+  "tissue_bladder",
+  "clamp_ring",
+  "humerus",
+  "ulna",
+  "radius",
+  "foot",
+  "load_surrogate",
+  "source_m11_source"
+ ],
+ "tick_map": "1 tick = 1/300 s simulated; frames are the declared snapshot ticks 0,450,460,700,1100,1350 x {coarse, reference} (frame = si*4 + res*2 + mode: diagnostic even-within-pair, clean odd); 1 video second per frame",
+ "view_ids": [
+  "whole experiment at fixed distance",
+  "orthogonal side and front",
+  "oblique close-up of the loaded interface"
+ ],
+ "viewport_rects": {
+  "closeup": [
+   484,
+   268,
+   959,
+   527
+  ],
+  "front": [
+   4,
+   268,
+   479,
+   527
+  ],
+  "side": [
+   484,
+   4,
+   959,
+   263
+  ],
+  "whole": [
+   4,
+   4,
+   479,
+   263
+  ]
+ }
+}
