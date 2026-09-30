@@ -32,6 +32,7 @@ import hashlib
 import importlib.util
 import json
 import pathlib
+import re
 import subprocess
 import sys
 import time
@@ -673,11 +674,14 @@ def mode_regression():
                            '-s', str((CONTRIB / 'MAT2-M05').resolve()),
                            '-p', 'test_interface_exchange.py'],
                           capture_output=True, text=True, timeout=3000)
+    tail = (proc.stdout + proc.stderr)[-2000:]
+    tail = re.sub(r'Ran \d+ tests in \d+\.\d+s',
+                  'Ran <N> tests in <live>s', tail)
     receipt = {
         'schema': 'chimera.g02_regression.v1',
         'suite': target,
         'exit_code': proc.returncode,
-        'tail': (proc.stdout + proc.stderr)[-2000:],
+        'tail': tail,
         'P_regression_suite_green': proc.returncode == 0,
     }
     (HERE / 'regression_receipt.json').write_bytes(canonical(receipt))

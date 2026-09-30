@@ -53,12 +53,12 @@ Attempt 983a9a8b1be54457a6aa516319290aa1, agent zcode-glm-mat2-g02-a1, criteria 
 
 - PREREGISTRATION.md: fa30fe5c472c32266b5b1ea121d0c4d86e5e7b649572c42ef470a8df3532435c
 - attachment_patch.py: 63a31e9c3a83d2ae94939a6e8bcf99fe14dc8891224abfe9a1b9eac2cb353ff8
-- run_experiments.py: d6b4b62c3e2e1019167fd7a6d6c3ff6acf51afef61602fe3850bb3c01cd3d8ed
+- run_experiments.py: 162cd556004b62e57188dd400ce50346b0ebe36310cc901ffaab6ce75b8d0a4f
 - test_attachment_fixture.py: 130ebc84dd730d727e670b5a918f9dd9d5944d05880a9f0d8f2325e20f582d0b
 - lint_report_numbers.py: 49e8e52e3518c50a07caac0494235f252364963dd40885e8c5a181b157756c93
 - render_run.py: 4a86f23092df864385c7c49d666a1b4018c88314210043df5f125e28930b5bea
 - make_capture.py: 1b14480d85f1ad7085f576c8733aa3aaea0982fae813d3f33b2d903e60291125
-- make_report.py: e21b4b91a4e1d056257b634666a9511ab5ecf46b71d657211b78d8f52ae8c1a2
+- make_report.py: f3dcfd68a9f249028db6e4f96e30b1c3885346589b3128382d05d009f54221cf
 - KNOWN_SKIPS.md: 6cae2da6477ffd9ea0c82d2ea831b99d78352993a2e21496fe893f96cda6c2ce
 - .gitattributes: 705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da
 - experiment_receipt.json: e594336599cf0a78b12660f3f305417256230276d85795f1ba6a3cd70599016f
@@ -67,8 +67,7 @@ Attempt 983a9a8b1be54457a6aa516319290aa1, agent zcode-glm-mat2-g02-a1, criteria 
 - experiment_trace_rerun2.json: 259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b
 - determinism_receipt.json: 5f987e16b78cc9f6123ef142ffb6efd51632a3c761eb90e70ca2a7a5018b9d13
 - falsifier_receipt.json: 006dce6a8109a293ebf98c60981baaee43b31e820e37007652b22cefaf5d32e9
-- regression_receipt.json: 35a22496cfe73212c11edd12c927c5706b94a425928fd9fff0b26bc09f008a91
-- experiment_profile.json: 6b997d02b4992514030f0313941cc29d5eb2de20b3dd4d39ad0cd8f22658e787
+- regression_receipt.json: 25280220142e18a11ac8e5213dee4c7e8414d613c26fce6df8a00940bb775bea
 - capture_manifest.json: 45d96627a55d9cb256fc70a3b2ef044708c003fa5aa2f751896cc6404426aa37
 - capture_context.json: c816f0e9638c746f1b441d3ee995fff54d3240f707afd1f4bfd81ff36e9037bc
 - capture_validation_receipt.json: 5277a25910c25d5b403fcb0a10210a40a6b959cccf1f388ffdfa91e9503ebd24
@@ -76,5 +75,6 @@ Attempt 983a9a8b1be54457a6aa516319290aa1, agent zcode-glm-mat2-g02-a1, criteria 
 ## honest limits
 
 - Offline CPU experiment executable over pinned inputs; no GPU submission (the scope is a 356-tick two-body fixture; prereg law 12).
+- experiment_profile.json is the single DECLARED live-field file (wall-clock x1_wall_seconds); it is excluded from byte identity by declaration and from the pinned file list above; every other artifact regenerates byte-identically.
 - The fixture constants are declared placeholders with the derivation recorded; they do NOT qualify the biological ports; the biological C17 debt remains explicitly-unresolved pending a separately authorized measurement (A07 gate).
 - No fitting experiment was run; no friction constant was introduced; no lambda_min appears in any artifact.
