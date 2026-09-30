@@ -20,7 +20,11 @@ import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
+CONTRIB = HERE.parent
 sys.path.insert(0, str(HERE))
+for _p in (str(CONTRIB / 'MAT2-M03'), str(CONTRIB / 'MAT2-M07')):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 sys.path.insert(0, 'E:/PythonChimera/tools/monkey_campaign')
 
 import integrated_step as iw  # noqa: E402
@@ -168,7 +172,9 @@ def main():
         view('pair-whole', PROFILE['views'][0], 'clean', cam_whole, None,
              vis_clean(),
              'clean row: identical camera and state to its diagnostic pair; '
-             'no labels, layers or diagnostic styling by design'),
+             'no labels, layers or diagnostic styling by design; the '
+             'declared gray caption inside the cell is the only text '
+             '(Amendment A5: caption rendered inside its viewport)'),
         view('pair-planes', PROFILE['views'][1], 'diagnostic', cam_side,
              [cam_front], vis_diagnostic(),
              'two side-by-side viewports (sheet columns 2-3): side (primary '
@@ -177,17 +183,24 @@ def main():
              'are rendered and labeled (nothing hidden)'),
         view('pair-planes', PROFILE['views'][1], 'clean', cam_side,
              [cam_front], vis_clean(),
-             'clean row: identical cameras and state to its diagnostic pair'),
+             'clean row: identical cameras and state to its diagnostic '
+             'pair; geometry only - the declared gray caption inside the '
+             'cell is its only text (Amendment A5: caption rendered '
+             'inside its viewport)'),
         view('pair-interface', PROFILE['views'][2], 'diagnostic', cam_iface,
              None, vis_diagnostic(['membrane_A', 'plate_A',
                                    'wall_anchor_A']),
              'single viewport (sheet column 4); oblique close-up of the '
              'loaded interface: membrane-plate contact state and '
              'area-scaled pressure traction arrows computed on the CURRENT '
-             'GPU-solved geometry'),
+             'GPU-solved geometry; layer-1 navy membrane-triangle and port '
+             'ID labels rendered topmost'),
         view('pair-interface', PROFILE['views'][2], 'clean', cam_iface, None,
              vis_clean(),
-             'clean row: identical camera and state to its diagnostic pair'),
+             'clean row: identical camera and state to its diagnostic '
+             'pair; geometry only - the declared gray caption inside the '
+             'cell is its only text (Amendment A5: caption rendered '
+             'inside its viewport)'),
     ]
 
     manifest = {
@@ -200,18 +213,29 @@ def main():
         'capture_sha256': video_sha,
         'sheet_layout': {
             'pixel_size': [2560, 840],
-            'honest_titles': 'rendered inside every viewport: view name, '
-                             'mode and tick; diagnostic viewports carry the '
-                             'five declared diagnostic layers; footer '
-                             'carries the active-pair count, the measured '
-                             'residual and the steady-state telemetry cap',
+            'honest_titles': 'rendered inside every viewport: diagnostic '
+                             'viewports carry the view name and tick; clean '
+                             'viewports carry the declared gray clean '
+                             'caption inside the cell (Amendment A5); '
+                             'diagnostic viewports carry the five declared '
+                             'diagnostic layers, layer 1 (membrane/'
+                             'triangle/port IDs) rendered as navy m:t and '
+                             'port:maxwell_mount labels topmost of every '
+                             'diagnostic viewport (Amendment A5: rendered, '
+                             'not only declared); footer carries the GPU '
+                             'contact pair-event count (substep sum), the '
+                             'end-state display contact-triangle count, '
+                             'the measured residual and the steady-state '
+                             'telemetry cap',
             'rows': [
                 'top    diagnostic viewports [whole | side | front | '
                 'close-up] with all five declared diagnostic layers',
-                'middle clean viewports (identical cameras, no labels, no '
-                'overlays, depth-tested)',
-                'bottom delta-p / plate x / cumulative work traces over the '
-                'declared GPU snapshot ticks + footer',
+                'middle clean viewports (identical cameras; geometry only; '
+                'the declared gray caption inside the cell is their only '
+                'text; depth-tested)',
+                'bottom per-lane delta-p / plate x / cumulative work traces '
+                '(one lane per series) over the declared GPU snapshot '
+                'ticks + footer',
             ],
             'tick_to_seconds_map': TICK_MAP + '; frame t = snapshot tick t',
             'frame_files': frame_hashes,
@@ -249,12 +273,13 @@ def main():
                         'independent image/physics review remains mandatory.'
 
     for target, payload in (
-            (HERE / 'capture_manifest.json', manifest),
-            (HERE / 'capture_context.json', context),
-            (HERE / 'capture_validation_receipt.json', receipt),
             (evidence_dir / 'capture_manifest.json', manifest),
             (evidence_dir / 'capture_context.json', context),
             (evidence_dir / 'validation_receipt.json', receipt)):
+        # A5 F7: the card's committed copies of these artifacts live under
+        # capture/ in this directory; the loose duplicates the committed
+        # original also wrote at the contribution root are gone (attempt
+        # scratch, byte-identical duplicates of the committed evidence)
         target.write_text(json.dumps(payload, indent=1, ensure_ascii=False,
                                      sort_keys=True) + '\n', encoding='utf-8')
     print('video:', video_path)

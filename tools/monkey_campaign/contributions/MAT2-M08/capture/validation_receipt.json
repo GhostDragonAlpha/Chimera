@@ -12,8 +12,8 @@
  "trace_path": "tools/monkey_campaign/contributions/MAT2-M08/experiment_trace.json",
  "trace_sha256": "826a5e8fe32adcf67b6b63ace7e34e3a6bc50211e1137362dca1aa9891a29175",
  "validator": "tools/monkey_campaign/visual_capture.py validate_manifest",
- "video_path": "..\\..\\..\\..\\..\\..\\..\\MAT2-M08\\28c16b488fff4ad48e08508ccbba2dcb\\capture\\capture\\capture_mat2_m08_resident_20260929.mkv",
- "video_sha256": "20c9dc49540496de5ff2d827151a30ab8ca8263db07bc3c963cb1ebaca1914c3",
+ "video_path": "E:\\ChimeraWork\\_scratch\\sgt-m08-cosmetics\\capture\\capture\\capture_mat2_m08_resident_20260929.mkv",
+ "video_sha256": "3a98ee2ad78bf4337c66a5ce897c58e07b5e375737b618a204f580d79f6eb924",
  "view_count": 6,
  "visual_acceptance": false
 }

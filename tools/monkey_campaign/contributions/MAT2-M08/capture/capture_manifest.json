@@ -1,29 +1,29 @@
 {
- "capture_sha256": "20c9dc49540496de5ff2d827151a30ab8ca8263db07bc3c963cb1ebaca1914c3",
+ "capture_sha256": "3a98ee2ad78bf4337c66a5ce897c58e07b5e375737b618a204f580d79f6eb924",
  "profile_id": "material",
- "run_id": "mat2-m08-resident-visual-20260929-20c9dc49",
+ "run_id": "mat2-m08-resident-visual-20260929-3a98ee2a",
  "schema": "chimera.visual_capture_manifest.v1",
  "sheet_layout": {
   "frame_files": {
-   "0": "5a0bb7a23bc5725ff70bbf39cb778927dd9a3c17a1b0302e9b1cafdca58e1f34",
-   "10": "5d1d77b7912aca10c447659eb120b30310d68edaed6af06a3411ce58994b12a5",
-   "20": "bf110f362889550cc5a9a9a8450719933c5c678e5e59ffaed1bca3819eb20fd4",
-   "30": "a7f194ced0afd991c39ccdf50dd570c5cfa8f17f8ac3c7e5f4bb13d2c6e18e11",
-   "40": "76a2cdc40858db008f4217ba6a051e272556ad4175bb74289ee8505361982ec0",
-   "50": "fbcc1f6989cf352f6dcae81375108ca55d5a4b6e31fa8fda5211595e66893c0e",
-   "60": "51b25c8b29ad02eeb5e45200783f09d0501d02db2585a20c83b1ca6188615df7",
-   "70": "e56bb148a03a7174ace86f6683d693039d980eb81284758fda68b65bf524992f",
-   "79": "1722331e865b67255d9e67d63df86b94f038d1ba48054f169fcd30ce9c9deee5"
+   "0": "445d0f000337ccc9b37a6e7bba44274167a11f28b0633cb2715dce5b4d4e4adb",
+   "10": "8b8bcfdfd1e4827a6d1e9dc0201ca35e0a65245d67208333c8c5abbcd6d58578",
+   "20": "723acedcca270dae105446b0bee39bbac780f425481d88d8e9d6a2713b7f637c",
+   "30": "36a2b6073cfdec81c60924aacb744153b26f28cf8338d42b133ec2d125376a2b",
+   "40": "0991e5ea29aaa2b1dbb4e56de629b543e1eae115692c250d8a5621d63618ac7f",
+   "50": "42b6bdbf4f56d97f8d4cb1c1f39490431ac6933398d3266510fbfd4ece6d055d",
+   "60": "01859bb71fd0caabeacd97e2ee581186a801310be316b09f47390ea527915d80",
+   "70": "81c76838874070a7c60c2f4ea0ea6d8f614ec56ce7a681006d063fa823e5348f",
+   "79": "e0b986ab36beb0dbf2256d77a4be28bafd862a30d9afa35da612beeabf619e5b"
   },
-  "honest_titles": "rendered inside every viewport: view name, mode and tick; diagnostic viewports carry the five declared diagnostic layers; footer carries the active-pair count, the measured residual and the steady-state telemetry cap",
+  "honest_titles": "rendered inside every viewport: diagnostic viewports carry the view name and tick; clean viewports carry the declared gray clean caption inside the cell (Amendment A5); diagnostic viewports carry the five declared diagnostic layers, layer 1 (membrane/triangle/port IDs) rendered as navy m:t and port:maxwell_mount labels topmost of every diagnostic viewport (Amendment A5: rendered, not only declared); footer carries the GPU contact pair-event count (substep sum), the end-state display contact-triangle count, the measured residual and the steady-state telemetry cap",
   "pixel_size": [
    2560,
    840
   ],
   "rows": [
    "top    diagnostic viewports [whole | side | front | close-up] with all five declared diagnostic layers",
-   "middle clean viewports (identical cameras, no labels, no overlays, depth-tested)",
-   "bottom delta-p / plate x / cumulative work traces over the declared GPU snapshot ticks + footer"
+   "middle clean viewports (identical cameras; geometry only; the declared gray caption inside the cell is their only text; depth-tested)",
+   "bottom per-lane delta-p / plate x / cumulative work traces (one lane per series) over the declared GPU snapshot ticks + footer"
   ],
   "tick_to_seconds_map": "1 tick = 1/300 s simulated; frames are the declared GPU snapshot ticks 0,10,..,70,79 at 1 video second per frame; the steady-state stepping itself never leaves the device (telemetry <= 1024 B/component/tick, commands <= 256 B/tick); frame t = snapshot tick t"
  },
@@ -541,7 +541,7 @@
      360
     ]
    },
-   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair; no labels, layers or diagnostic styling by design",
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair; no labels, layers or diagnostic styling by design; the declared gray caption inside the cell is the only text (Amendment A5: caption rendered inside its viewport)",
    "mode": "clean",
    "pair_id": "pair-whole",
    "state_binding": {
@@ -1490,7 +1490,7 @@
      360
     ]
    },
-   "cell_layout_note": "clean row: identical cameras and state to its diagnostic pair",
+   "cell_layout_note": "clean row: identical cameras and state to its diagnostic pair; geometry only - the declared gray caption inside the cell is its only text (Amendment A5: caption rendered inside its viewport)",
    "mode": "clean",
    "pair_id": "pair-planes",
    "state_binding": {
@@ -1732,7 +1732,7 @@
      360
     ]
    },
-   "cell_layout_note": "single viewport (sheet column 4); oblique close-up of the loaded interface: membrane-plate contact state and area-scaled pressure traction arrows computed on the CURRENT GPU-solved geometry",
+   "cell_layout_note": "single viewport (sheet column 4); oblique close-up of the loaded interface: membrane-plate contact state and area-scaled pressure traction arrows computed on the CURRENT GPU-solved geometry; layer-1 navy membrane-triangle and port ID labels rendered topmost",
    "mode": "diagnostic",
    "pair_id": "pair-interface",
    "state_binding": {
@@ -2019,7 +2019,7 @@
      360
     ]
    },
-   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair",
+   "cell_layout_note": "clean row: identical camera and state to its diagnostic pair; geometry only - the declared gray caption inside the cell is its only text (Amendment A5: caption rendered inside its viewport)",
    "mode": "clean",
    "pair_id": "pair-interface",
    "state_binding": {

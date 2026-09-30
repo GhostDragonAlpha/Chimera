@@ -20,6 +20,28 @@ GPU diagnostic block volume before any pixel is written. The pinned ground
 and the Maxwell wall anchor are rendered and labeled in every whole/side
 view. Fixed bookmarks: the camera never moves; the SUBJECT moves.
 
+Amendment A5 render discipline (visual-gate findings, none physics):
+  F1 the trace strip draws one series per LANE (separate horizontal
+     bands); the committed original shared one band and the green series
+     exactly overpainted the red delta_p series (0 visible px).
+  F2 diagnostic layer 1 is RENDERED: navy (15,15,90) m:t0..3 membrane-
+     triangle ID labels plus the navy 'port:maxwell_mount' port ID at the
+     Maxwell mount anchor, drawn TOPMOST of every diagnostic viewport
+     (clean rows carry none). The committed original drew them first, so
+     the close-up's own plate/ground polygons erased all of them (0 px).
+  F3 the footer names its two contact quantities precisely: the GPU
+     diagnostic pair-event count (D_ACTIVE, summed over the tick's
+     substeps - a per-tick event integral, not an end-state) and the
+     display's end-state contact-triangle count, so the circles and the
+     footer agree on what each number is.
+  F4 clean captions are drawn INSIDE their clean viewport image.
+  F5 shade() treats base channels as 0..255 (named input-scale assert);
+     polygon fills are lambert-shaded, not saturated white.
+  F6 every viewport is rasterized into its OWN 640x360 image and pasted
+     into the sheet, so no camera's projected geometry can spill into
+     another cell (the committed original's cross-cell overpaint erased
+     the close-up layer-1 labels and the wall-anchor lines).
+
 CPU rasterizer, painter's algorithm (declared occlusion_mode depth_tested);
 software rasterization of GPU-solved state, declared as such (the engine's
 own splat pipeline is the reconciled residency pattern, not exercised here).
@@ -28,6 +50,7 @@ directory passed as argv[1].
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import pathlib
@@ -53,6 +76,7 @@ CONTACT_MARGIN_M = km.CONTACT_MARGIN_M
 W_VP, H_VP = 640, 360
 ASPECT = 16.0 / 9.0
 SHEET = (4 * W_VP, 2 * H_VP + 120)
+LBL = (15, 15, 90)          # diagnostic layer 1 ID color (navy)
 VIEW_IDS = ['whole experiment at fixed distance',
             'orthogonal side and front',
             'oblique close-up of the loaded interface']
@@ -182,8 +206,12 @@ LIGHT = LIGHT / np.linalg.norm(LIGHT)
 
 
 def shade(normal, base):
+    """Lambert shade a 0..255 base color (A5 F5: the input scale is
+    0..255, NOT 0..1 - the unit assumption is asserted by name)."""
+    require(all(0.0 <= float(c) <= 255.0 for c in base),
+            'shade_base_not_0_255_scale')
     lam = 0.35 + 0.65 * abs(float(np.dot(normal, LIGHT)))
-    return tuple(int(min(255, c * lam * 255)) for c in base)
+    return tuple(int(min(255.0, float(c) * lam)) for c in base)
 
 
 def draw_arrow(draw, start2, end2, color):
@@ -199,8 +227,7 @@ def draw_arrow(draw, start2, end2, color):
 
 
 def draw_membrane(draw, verts, tris, normals, cam, arrows=None,
-                  arrow_scale=1.0, offset=(0, 0), labels=False,
-                  fonts=None, max_label=4):
+                  arrow_scale=1.0):
     tri = verts[tris]
     centres = tri.mean(axis=1)
     _, depth = cam.project(centres)
@@ -209,13 +236,9 @@ def draw_membrane(draw, verts, tris, normals, cam, arrows=None,
         p3, _ = cam.project(tri[i])
         if not np.all(np.isfinite(p3)):
             continue
-        draw.polygon([tuple(p + np.array(offset)) for p in p3],
+        draw.polygon([tuple(p) for p in p3],
                      fill=shade(normals[i], (120, 170, 235)),
                      outline=(60, 60, 80))
-        if labels and fonts and i < max_label:
-            c2, _ = cam.project(centres[i])
-            draw.text((c2[0][0] + offset[0] + 3, c2[0][1] + offset[1] - 6),
-                      f'm:t{i}', fill=(15, 15, 90), font=fonts['small'])
     if arrows is not None:
         for i in range(arrows.shape[0]):
             mag = float(np.linalg.norm(arrows[i]))
@@ -226,10 +249,86 @@ def draw_membrane(draw, verts, tris, normals, cam, arrows=None,
             t2, _ = cam.project(tip3)
             if not (np.all(np.isfinite(c2)) and np.all(np.isfinite(t2))):
                 continue
-            draw_arrow(draw, c2[0] + offset, t2[0] + offset, (200, 30, 30))
+            draw_arrow(draw, c2[0], t2[0], (200, 30, 30))
 
 
-def draw_shell(draw, verts, tris, cam, color, offset=(0, 0)):
+def draw_layer1_ids(draw, centres, cam, fonts, wall):
+    """Diagnostic layer 1 'stable membrane/triangle/port IDs' (A5 F2):
+    navy m:t0..3 membrane-triangle ID labels plus the navy
+    'port:maxwell_mount' port ID at the Maxwell mount anchor, drawn
+    TOPMOST of every diagnostic viewport so no polygon can overpaint
+    them (the committed original drew them first and the close-up's own
+    plate/ground polygons erased all of them: 0 px in the close-up at
+    every tick)."""
+    for i in range(min(4, len(centres))):
+        c2, _ = cam.project([centres[i]])
+        x, y = float(c2[0][0]), float(c2[0][1])
+        draw.text((x + 3, y - 6), f'm:t{i}', fill=LBL, font=fonts['small'])
+    pw, _ = cam.project([wall])
+    x, y = float(pw[0][0]), float(pw[0][1])
+    draw.ellipse([x - 2, y - 2, x + 2, y + 2], fill=LBL)
+    draw.text((x + 6, y - 14), 'port:maxwell_mount', fill=LBL,
+              font=fonts['small'])
+
+
+def render_diag_viewport(name, cam, tick, verts, tris, normals, plate_v,
+                         ground_v, forces_now, arrow_scale,
+                         contact_centroids, wall, plate_centroid, fonts):
+    """One diagnostic viewport rasterized into its OWN image (A5 F6:
+    per-viewport clipping - nothing drawn here can leave the cell)."""
+    vp = Image.new('RGB', (W_VP, H_VP), (252, 252, 250))
+    d = ImageDraw.Draw(vp)
+    draw_membrane(d, verts, tris, normals, cam, arrows=forces_now,
+                  arrow_scale=arrow_scale)
+    draw_shell(d, plate_v, [(0, 1, 2), (0, 2, 3)], cam, (235, 200, 120))
+    draw_shell(d, ground_v, [(0, 1, 2), (0, 2, 3)], cam, (150, 160, 150))
+    # contact markers (red circles at contacted membrane centroids; the
+    # end-state display recomputation declared in the footer)
+    for c3 in contact_centroids:
+        c2, _ = cam.project([c3])
+        x, y = float(c2[0][0]), float(c2[0][1])
+        if math.isfinite(x) and math.isfinite(y):
+            d.ellipse([x - 4, y - 4, x + 4, y + 4],
+                      outline=(200, 30, 30), width=2)
+    # the declared Maxwell mount: wall anchor -> plate centroid
+    wa, _ = cam.project([wall])
+    pc, _ = cam.project([plate_centroid])
+    d.line([float(wa[0][0]), float(wa[0][1]),
+            float(pc[0][0]), float(pc[0][1])],
+           fill=(120, 40, 140), width=2)
+    d.text((float(wa[0][0]) - 30, float(wa[0][1]) + 8),
+           'wall_anchor (Maxwell mount)', fill=(120, 40, 140),
+           font=fonts['small'])
+    gx, _ = cam.project([(0.0, 0.0, -0.001)])
+    d.text((float(gx[0][0]) - 30, float(gx[0][1]) + 8),
+           'ground (pinned support)', fill=(40, 90, 40),
+           font=fonts['small'])
+    # layer 1 IDs drawn TOPMOST of the geometry/overlays (A5 F2)
+    tri = verts[tris]
+    centres = tri.mean(axis=1)
+    draw_layer1_ids(d, centres, cam, fonts, wall)
+    d.text((6, 4), f'{name}: tick {tick}', fill=(20, 20, 20),
+           font=fonts['title'])
+    return vp
+
+
+def render_clean_viewport(name, cam, verts, tris, normals, plate_v,
+                          ground_v, fonts):
+    """One clean viewport: identical camera and state, geometry only.
+    The declared gray caption is drawn INSIDE the viewport image (A5 F4:
+    the committed original drew it above the cell, inside the diagnostic
+    row); it is the clean cell's only text."""
+    vp = Image.new('RGB', (W_VP, H_VP), (252, 252, 250))
+    d = ImageDraw.Draw(vp)
+    draw_membrane(d, verts, tris, normals, cam)
+    draw_shell(d, plate_v, [(0, 1, 2), (0, 2, 3)], cam, (235, 200, 120))
+    draw_shell(d, ground_v, [(0, 1, 2), (0, 2, 3)], cam, (150, 160, 150))
+    d.text((6, 4), f'{name} clean (no overlays)', fill=(90, 90, 90),
+           font=fonts['small'])
+    return vp
+
+
+def draw_shell(draw, verts, tris, cam, color):
     tri = np.array([[verts[i] for i in t] for t in tris])
     centres = tri.mean(axis=1)
     _, depth = cam.project(centres)
@@ -240,7 +339,7 @@ def draw_shell(draw, verts, tris, cam, color, offset=(0, 0)):
             continue
         n = np.cross(tri[i][1] - tri[i][0], tri[i][2] - tri[i][0])
         n = n / max(np.linalg.norm(n), 1e-30)
-        draw.polygon([tuple(p + np.array(offset)) for p in p3],
+        draw.polygon([tuple(p) for p in p3],
                      fill=shade(n, color), outline=(60, 60, 80))
 
 
@@ -298,8 +397,11 @@ def main():
         active = int(gblock[km.D_ACTIVE])
         # contact/bond state markers: membrane triangles whose CURRENT gap
         # to any plate/ground triangle is within the declared margin
-        # (diagnostic recomputation from the snapshot for display; the
-        # per-tick authoritative count is the GPU diagnostic block)
+        # (end-state display recomputation from the snapshot for display;
+        # the per-tick GPU diagnostic count D_ACTIVE is a pair-event sum
+        # over the tick's substeps and is reported SEPARATELY in the
+        # footer, A5 F3 - the two numbers are different declared
+        # quantities and are both carried on-frame)
         contact_tris = set()
         plate_tris_v = [plate_v[[0, 1, 2]], plate_v[[0, 2, 3]]]
         ground_tris_v = [ground_v[[0, 1, 2]], ground_v[[0, 2, 3]]]
@@ -320,90 +422,69 @@ def main():
 
         img = Image.new('RGB', SHEET, (252, 252, 250))
         draw = ImageDraw.Draw(img)
-        cams_diag = [('whole', cams['whole'], (0, 0)),
-                     ('side', cams['side'], (W_VP, 0)),
-                     ('front', cams['front'], (2 * W_VP, 0)),
-                     ('closeup', cams['closeup'], (3 * W_VP, 0))]
         max_force = float(np.linalg.norm(forces_now, axis=1).max())
         arrow_scale = (0.02 / max_force) if max_force > 0 else 0.0
         plate_centroid = plate_v.mean(axis=0)
-        for name, cam, off in cams_diag:
-            draw_membrane(draw, verts, comp_a.membrane.triangles,
-                          membrane_now.normals, cam, arrows=forces_now,
-                          arrow_scale=arrow_scale, offset=off, labels=True,
-                          fonts=fonts)
-            draw_shell(draw, plate_v, [(0, 1, 2), (0, 2, 3)], cam,
-                       (235, 200, 120), offset=off)
-            draw_shell(draw, ground_v, [(0, 1, 2), (0, 2, 3)], cam,
-                       (150, 160, 150), offset=off)
-            # contact markers (red circles at contacted membrane centroids)
-            for c3 in contact_centroids:
-                c2, _ = cam.project([c3])
-                x, y = float(c2[0][0]) + off[0], float(c2[0][1]) + off[1]
-                if math.isfinite(x) and math.isfinite(y):
-                    draw.ellipse([x - 4, y - 4, x + 4, y + 4],
-                                 outline=(200, 30, 30), width=2)
-            # the declared Maxwell mount: wall anchor -> plate centroid
-            wa, _ = cam.project([wall])
-            pc, _ = cam.project([plate_centroid])
-            draw.line([float(wa[0][0]) + off[0], float(wa[0][1]) + off[1],
-                       float(pc[0][0]) + off[0], float(pc[0][1]) + off[1]],
-                      fill=(120, 40, 140), width=2)
-            wx, _ = cam.project([wall])
-            draw.text((wx[0][0] + off[0] - 30, wx[0][1] + off[1] + 8),
-                      'wall_anchor (Maxwell mount)', fill=(120, 40, 140),
-                      font=fonts['small'])
-            gx, _ = cam.project([(0.0, 0.0, -0.001)])
-            draw.text((gx[0][0] + off[0] - 30, gx[0][1] + off[1] + 8),
-                      'ground (pinned support)', fill=(40, 90, 40),
-                      font=fonts['small'])
-            draw.text((off[0] + 6, off[1] + 4),
-                      f'{name}: tick {tick}', fill=(20, 20, 20),
-                      font=fonts['title'])
-        for name, cam, off in cams_diag:
-            off2 = (off[0], off[1] + H_VP + 8)
-            draw_membrane(draw, verts, comp_a.membrane.triangles,
-                          membrane_now.normals, cam, offset=off2)
-            draw_shell(draw, plate_v, [(0, 1, 2), (0, 2, 3)], cam,
-                       (235, 200, 120), offset=off2)
-            draw_shell(draw, ground_v, [(0, 1, 2), (0, 2, 3)], cam,
-                       (150, 160, 150), offset=off2)
-            draw.text((off2[0] + 6, off2[1] - 16),
-                      f'{name} clean (no overlays)', fill=(90, 90, 90),
-                      font=fonts['small'])
-        # trace strip: the GPU-solved scalars across the declared snapshots
+        # top row: diagnostic viewports, each rasterized and pasted into
+        # its own cell (per-viewport clipping, A5 F6)
+        for i, (name, cam) in enumerate(cams.items()):
+            vp = render_diag_viewport(name, cam, tick, verts,
+                                      comp_a.membrane.triangles,
+                                      membrane_now.normals, plate_v,
+                                      ground_v, forces_now, arrow_scale,
+                                      contact_centroids, wall,
+                                      plate_centroid, fonts)
+            img.paste(vp, (i * W_VP, 0))
+        # middle row: clean viewports (identical cameras, geometry only;
+        # declared gray caption drawn inside its cell, A5 F4)
+        for i, (name, cam) in enumerate(cams.items()):
+            vp = render_clean_viewport(name, cam, verts,
+                                       comp_a.membrane.triangles,
+                                       membrane_now.normals, plate_v,
+                                       ground_v, fonts)
+            img.paste(vp, (i * W_VP, H_VP + 8))
+        # trace strip: one series per lane (A5 F1: the committed original
+        # plotted all three series on one shared band and the green
+        # cumulative-work series exactly overpainted the red delta_p
+        # series - 0 visible red px in every frame)
         strip_y = 2 * H_VP + 20
-        w_strip = SHEET[0] - 40
-        xs = [s for s in snap_ticks]
-        for series, slot, color in (
-                ('delta_p Pa', None, (200, 30, 30)),
-                ('plate x m', None, (30, 90, 200)),
-                ('cum w_press J', km.D_WPRESS, (30, 140, 60))):
+        x0, x1 = 170, SHEET[0] - 20
+        lane_h, lane_gap = 18, 3
+        lanes = (('delta_p Pa (red)', 'delta_p', (200, 30, 30)),
+                 ('plate x m (blue)', 'plate_x', (30, 90, 200)),
+                 ('cum w_press J (green)', 'wpress', (30, 140, 60)))
+        for li, (tag, key, color) in enumerate(lanes):
             vals = []
-            for t2 in xs:
+            for t2 in snap_ticks:
                 s2 = snaps[str(t2)]
-                if series == 'delta_p Pa':
+                if key == 'delta_p':
                     vals.append(s2['delta_p_pa'])
-                elif series == 'plate x m':
+                elif key == 'plate_x':
                     vals.append(float(np.array(
                         s2['plate_vertices_m'])[:, 0].mean()))
                 else:
-                    vals.append(float(s2['gpu_block'][slot]))
+                    vals.append(float(s2['gpu_block'][km.D_WPRESS]))
             lo, hi = min(vals), max(vals)
             rng = max(hi - lo, 1e-30)
-            pts = [(20 + (w_strip * i / (len(xs) - 1)),
-                    strip_y + 60 - 50 * (v - lo) / rng)
+            # lanes start BELOW the footer text row (y 738..752) so no
+            # text pixel can overpaint a series (A5 F1)
+            lane_top = strip_y + 14 + li * (lane_h + lane_gap)
+            pts = [(x0 + ((x1 - x0) * i / (len(snap_ticks) - 1)),
+                    lane_top + 15 - 12 * (v - lo) / rng)
                    for i, v in enumerate(vals)]
             draw.line(pts, fill=color, width=2)
+            draw.text((20, lane_top + 3), tag, fill=color,
+                      font=fonts['small'])
         draw.text((20, strip_y - 2),
-                  f'delta_p (red) | plate x (blue) | cumulative w_press '
-                  f'(green) over declared GPU snapshot ticks; '
-                  f'active contact pairs {active}, R_tick {resid:.3e} J, '
-                  f'steady-state telemetry {bytes_down} B/tick cap',
+                  f'GPU contact pair-events {active} (summed over the '
+                  f'tick\'s {km.N_SUB} substeps; end-state display contact '
+                  f'triangles {len(contact_tris)}), R_tick {resid:.3e} J, '
+                  f'steady-state telemetry {bytes_down} B/tick cap; trace '
+                  f'strip: one lane per series over the declared GPU '
+                  f'snapshot ticks',
                   fill=(30, 30, 30), font=fonts['footer'])
         frame_path = frames_dir / f'frame_{frame_no:02d}.png'
         img.save(frame_path)
-        import hashlib
         frame_hashes[str(tick)] = hashlib.sha256(
             frame_path.read_bytes()).hexdigest()
     (evidence_dir / 'frame_hashes.json').write_text(
