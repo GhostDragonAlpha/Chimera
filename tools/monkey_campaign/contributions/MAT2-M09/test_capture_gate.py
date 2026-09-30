@@ -7,8 +7,21 @@ every non-identity transform > 0. Uses the frames recorded in the capture
 manifest's sheet_layout.frame_files (indices independently recomputable:
 frame i <-> capture tick list order). Skips (with a loud note) only when
 ffmpeg is unavailable.
+
+Pin-first (regression V2 red fix, the F03 live-pointer class): the live
+stills are NOT trusted content. Before any decode comparison every live
+still is sha256-verified against the committed capture_manifest.json
+sheet_layout.frame_files pins (tick order) and the bound video against
+capture_validation_receipt.json video_sha256 == capture_manifest.json
+capture_sha256; drift raises the named refusals
+capture_stills_generation_mismatch_* / video_pin_mismatch instead of an
+unnamed pixel-diff error. The default capture dir is the sha-registered
+evidence-store home of the pinned generation (the pre-fix default pointed
+at the superseded fa6dbcc attempt-space stills left behind by the #270
+capture re-pin).
 Run: python -B test_capture_gate.py [capture_dir]
 """
+import hashlib
 import json
 import pathlib
 import shutil
@@ -20,14 +33,22 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 CAPTURE_DIR = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else \
-    pathlib.Path('E:/ChimeraWork/monkey-coordination/kanban-attempts/'
-                 'MAT2-M09/fa6dbcc82b2f4f4c9036bc6c8227b241/capture')
+    pathlib.Path('E:/ChimeraWork/monkey-coordination/'
+                 'evidence-store/MAT2-M09/visual')
 TRANSFORMS = ('identity', 'vflip', 'hflip')
 
 
 def require(ok, code):
     if not ok:
         raise ValueError(code)
+
+
+def sha256_file(path):
+    h = hashlib.sha256()
+    with open(path, 'rb') as f:
+        for block in iter(lambda: f.read(1 << 20), b''):
+            h.update(block)
+    return h.hexdigest()
 
 
 def main():
@@ -39,10 +60,20 @@ def main():
         return 0
     manifest = json.loads((HERE / 'capture_manifest.json').read_text(
         encoding='utf-8'))
+    receipt = json.loads((HERE / 'capture_validation_receipt.json')
+                         .read_text(encoding='utf-8'))
     frames = sorted((CAPTURE_DIR / 'frames').glob('frame_*.png'))
     require(len(frames) == 12, 'frame_count_mismatch')
-    video = pathlib.Path(cap_json_video(manifest))
+    video = pathlib.Path(receipt['video_path'])
     require(video.exists(), 'video_missing')
+    require(sha256_file(video) == receipt['video_sha256'] ==
+            manifest['capture_sha256'], 'video_pin_mismatch')
+    pins = manifest['sheet_layout']['frame_files']
+    for tick, src in zip(sorted(pins, key=int), frames):
+        live = sha256_file(src)
+        require(live == pins[tick],
+                f'capture_stills_generation_mismatch_tick_{tick}_'
+                f'live_{live[:16]}_pinned_{pins[tick][:16]}')
     worst_identity = 0
     min_nonidentity = None
     with tempfile.TemporaryDirectory() as td:
@@ -73,14 +104,6 @@ def main():
           f'frames; minimum non-identity diff {min_nonidentity} px '
           '(identity-only match proven)')
     return 0
-
-
-def cap_json_video(manifest):
-    import hashlib
-    # the video path is recorded in the validation receipt
-    receipt = json.loads((HERE / 'capture_validation_receipt.json')
-                         .read_text(encoding='utf-8'))
-    return receipt['video_path']
 
 
 if __name__ == '__main__':
