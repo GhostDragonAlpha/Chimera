@@ -12,7 +12,7 @@
   },
   {
    "name": "falsifier_receipt.json",
-   "sha256": "e6897d770b271846d6f34102f08c4b14628b803f24180bb59a552e6216faa1c0",
+   "sha256": "10dc672f72a42f2a98ecfda1d77beba8f28ad6010066f2c885c42ca3e58ac40e",
    "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-M11/numerical/falsifier_receipt.json"
   },
   {
@@ -27,7 +27,7 @@
   },
   {
    "name": "capture_manifest.json",
-   "sha256": "69e4f130c3889c91c93814a2bef32cd84ad298ef30615da460d2aaaf3038718f",
+   "sha256": "4b1eef52a4787b20bdda1a5ca179cacb7da8da4b05acb3f8085533f9ecdd5e41",
    "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-M11/camera/capture_manifest.json"
   },
   {
@@ -37,12 +37,12 @@
   },
   {
    "name": "capture_validation_receipt.json",
-   "sha256": "f86e871afb8aa2713b6285e53b178d314567e98cba96c4165aaba5f672bdc69c",
+   "sha256": "561d744b231a9c9c8a4bc7cf326d480926516d5cd86aa8765f6611fbdb0b80b2",
    "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-M11/camera/capture_validation_receipt.json"
   },
   {
    "name": "cameras.json",
-   "sha256": "bf49ebebc98c67093ca90e8338d42bb14fe7df13b019fcb5634bf06354e1abf1",
+   "sha256": "f680c3fd9232b1790df1d8ec524171ccb79f9181bc6bf17b7e3e72da37108f5e",
    "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-M11/camera/cameras.json"
   },
   {
@@ -57,17 +57,17 @@
   },
   {
    "name": "run_experiments.py",
-   "sha256": "839ecb5167dc4e83a2541f5320b7b6a43af504ccc0ea034b1fad98ac8ff7dc9f",
+   "sha256": "621db62531098119762eb37df2109ee8ff3871d278cabec5431aff781469cf20",
    "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-M11/source/run_experiments.py"
   },
   {
    "name": "render_run.py",
-   "sha256": "0cc66345b6acebdadf4f1986c71e48e42fad684562aa1e97cbec9810cfd3f486",
+   "sha256": "42d3abd5ce76fd7a447ea65788c8e4e72dec2e274f7d763c7ddca8f7e20b4027",
    "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-M11/source/render_run.py"
   },
   {
    "name": "make_capture.py",
-   "sha256": "9e18d5bddac646a5d64405589e19d80c9db133b5b20f1ad28f0aa4ef020b2413",
+   "sha256": "402d42e8a35652284e55823334fbfc1b394697b174d496ca3ec700fa5eecd2e5",
    "store_path": "E:/ChimeraWork/monkey-coordination/evidence-store/MAT2-M11/source/make_capture.py"
   }
  ],
