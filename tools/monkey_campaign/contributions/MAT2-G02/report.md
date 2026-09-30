@@ -1,13 +1,13 @@
 # MAT2-G02 report - Qualify finite-area anatomical attachments
 
-Attempt 983a9a8b1be54457a6aa516319290aa1, agent zcode-glm-mat2-g02-a1, criteria sha256 03ee207b7b2c701ff189bf1ee9133ada87eea7a1bd760fe4cb24525fcc5e4c45. Isolated attempt-workspace checkout of E:/PythonChimera; candidate branch codex/monkey-mat2-g02-983a9a8b1b on the sealed line tip f6cbf7a9 (= origin/astra/gait-capture). Composed against CARD_STARTER.md v2; house standards IMPLEMENTER_CHECKLIST.md (G1-G9) and TOOLKIT.md (P1-P9) cited at the candidate commit.
+Attempt 983a9a8b1be54457a6aa516319290aa1, agent zcode-glm-mat2-g02-a1, criteria sha256 03ee207b7b2c701ff189bf1ee9133ada87eea7a1bd760fe4cb24525fcc5e4c45. Isolated attempt-workspace checkout of E:/PythonChimera; candidate branch codex/monkey-mat2-g02-983a9a8b1b on the sealed line tip f6cbf7a9 (= origin/astra/gait-capture). Composed against CARD_STARTER.md v2; round-1 corrections composed against CARD_STARTER.md v3; house standards IMPLEMENTER_CHECKLIST.md (G1-G9) and TOOLKIT.md (P1-P9) cited at the candidate commit.
 
 ## done_when clause map (executed on the exact candidate revision)
 
 | clause | execution | result |
 | --- | --- | --- |
 | Actual patch geometry ... meet declared physical requirements | T1/T2/T4/T5 exact probes + X1 closed-form agreement (worst rel 0.0) | PASS |
-| Finite-area attachment forces and moments enter both connected material states | T3 reciprocity (bitwise force pairs, summed torque 1.890166565551713e-07 N*m ledger class; interface force sums bitwise zero; per-body received moments recorded in the trace) | PASS |
+| Finite-area attachment forces and moments enter both connected material states | T3 reciprocity (bitwise force pairs; worst summed torque 0.0 N*m against the frozen 1e-15 bound (receipt element_probes T3 block); interface force sums bitwise zero; per-body received moments recorded in the trace) | PASS |
 | Physical bond/removal semantics match the limb experiment | T6 release gate: bitwise post-release zero, E_diss_release == U(233) (0.002427747544017641 J), M01 documents bond 1 -> 0 with contact persisting, separation demonstrated (0.09958591295534305 m > gap(234) 0.09269256284395062 m), re-contact at tick 275 with no patch | PASS |
 
 ## declared physical requirements (the C17 law)
@@ -33,9 +33,10 @@ Attempt 983a9a8b1be54457a6aa516319290aa1, agent zcode-glm-mat2-g02-a1, criteria 
 
 ## capture identity (attachment-fixture/motion profile)
 
-- FFV1 level 3 g 1 with -fflags +bitexact (mkv); sha256 d20a9174cbf143a17c8b958a3ede4d48a2d011d3398368245b3882637ea677e6; ffmpeg: ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers.
+- FFV1 level 3 g 1 with -fflags +bitexact (mkv); sha256 b3e57b89f17238eb6ed710bf18a637eb9da36ffad01df0834a1c981de59f28b3; ffmpeg: ffmpeg version 8.1.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers.
 - validate_manifest (tools/monkey_campaign/visual_capture.py, registry profile read read-only): structurally_valid True, 6 view rows (3 registry views x diagnostic+clean pairs); subject sha256 e594336599cf0a78b12660f3f305417256230276d85795f1ba6a3cd70599016f; state binding = trace 259b731d40191fcfb968675e67c91f816dc4bd3ed0bad699125954fce753960b.
 - Full registry camera record on every row (frame_id, coordinate_unit, position, orientation_convention_and_values, target, distance_to_target, projection, vertical_fov, near_far_planes, aspect_ratio, viewport_resolution, sample mode/sequence, visibility, labels, occlusion, state interval); fixed bookmarks; clean pairs share the exact camera and the exact physical state; state hash preserved across view toggles: True.
+- Pixel-presence grounding (round-1 fix): draw_viewport() is called for all six viewports; every visibility claim is measured per frame in capture_pixel_presence.json (min tile non-bg pixels 2777, footer trace-inset line min 1264 px, reprojection-oracle max delta 0.985 px); check_capture_pixels.py re-measures the committed frames against the manifest (GREEN) and REDs on the pre-fix capture (control: 420 violations, five of six tiles at zero non-background pixels).
 - Honest limit: validate_manifest is structural only; independent image/physics review (the Sergeant gate) remains mandatory and is owned by the Lieutenant.
 
 ## regression
@@ -48,6 +49,8 @@ Attempt 983a9a8b1be54457a6aa516319290aa1, agent zcode-glm-mat2-g02-a1, criteria 
 - Amendment A2 (951c963e, pre-experiment): damping-ratio formula corrected (zeta = c_v/(2*m*omega_t); the declared c_v = 2.0 overdamped the soft patch at zeta 9.4017 -> c_v = 0.02, zeta 0.0940); schedule amended to a quasi-static squeeze ramp + settle + bind at rest + release at the derived oscillation peak; T8 windows re-derived from the corrected closed form; ledger bookkeeping statement added (midpoint displacement identity, damping booked as Q, elastic contact in W_contact, E_diss_release in Q at the release tick). Element laws 1-9 untouched.
 - Reference repair (8cbcd91b, recorded with the first receipts): the three attempt commits were rewritten on the UNPUBLISHED sole-owner attempt branch to separate the Agent: trailer into a proper trailer block; TREES UNCHANGED; identities recorded in PREREGISTRATION.md.
 - Receipt-index repair (this revision): the T8 receipt block indexed trace rows by tick instead of by row index (rows[i] holds tick i+1); the bound M01 document is now captured while still bound; the released document is emitted after the release tick executes.
+- Round-1 corrections (review sgt-pr281-r1, CHANGES_REQUIRED): the published capture had draw_viewport() defined with ZERO call sites - five of six viewports were uniform background while the manifest claimed all subjects observed. Fixed: draw_viewport() called for all six tiles (diagnostic rows with overlays and port labels; clean rows geometry-only); cameras re-derived with an in-frame gate (every declared subject point of the camera framing scope must project inside the viewport, checked per frame); the camera record made mathematically true (right-handed camera frame +X right/+Y up/-Z forward; quaternion = camera-to-frame rotation; an independent reprojection oracle reproduces drawn anchors from the serialized record alone); visibility rows are MEASURED (capture_pixel_presence.json, per-frame exact-color evidence) and make_capture refuses the build if any required subject lacks pixels; the sheet gained a declared footer band so the trace inset no longer overlaps a clean viewport. The physics chain is UNCHANGED: all receipts regenerate byte-identically (trace 259b731d..., experiment/determinism/falsifier/regression receipts identical; only the declared live-field experiment_profile.json differs, by declaration).
+- Refusals disclosure (review finding F6): the submit-time coordination record (LIEUTENANT_RESUME_v2.json, 2026-09-30 15:4x CDT entry) states "4 named refusals disclosed" for development of this attempt. No durable artifact of this attempt records their names or triggers (verified by the r1 reviewer across report.md, PREREGISTRATION.md, KNOWN_SKIPS.md, commit messages, the PR body and the attempt workspace; re-verified by this corrections pass). Their content is therefore recorded as UNRECOVERABLE - no names are invented. Durable process record: development-time refusals must be written into report.md or KNOWN_SKIPS.md when they happen, not left in a coordination log.
 
 ## file identities at freeze
 
@@ -55,10 +58,11 @@ Attempt 983a9a8b1be54457a6aa516319290aa1, agent zcode-glm-mat2-g02-a1, criteria 
 - attachment_patch.py: 63a31e9c3a83d2ae94939a6e8bcf99fe14dc8891224abfe9a1b9eac2cb353ff8
 - run_experiments.py: 162cd556004b62e57188dd400ce50346b0ebe36310cc901ffaab6ce75b8d0a4f
 - test_attachment_fixture.py: 130ebc84dd730d727e670b5a918f9dd9d5944d05880a9f0d8f2325e20f582d0b
-- lint_report_numbers.py: 49e8e52e3518c50a07caac0494235f252364963dd40885e8c5a181b157756c93
-- render_run.py: 4a86f23092df864385c7c49d666a1b4018c88314210043df5f125e28930b5bea
-- make_capture.py: 1b14480d85f1ad7085f576c8733aa3aaea0982fae813d3f33b2d903e60291125
-- make_report.py: f3dcfd68a9f249028db6e4f96e30b1c3885346589b3128382d05d009f54221cf
+- lint_report_numbers.py: 83ead5c577fbf0c083811c8efea971b7a9dbd0e2ca283a027fcfc65406643d80
+- render_run.py: 483cc1a7b4382e24d0989bc790bc988069a118c95047172e2b33879f123029c4
+- make_capture.py: 86bc9221824c8c052b53b7ffe08705ce0c2dbfbfc8f41c6926a3f98d4394d02f
+- make_report.py: f3a2003ddcaeb613a302134687dca354761e0124b35e4e761a507cd3200d3d4c
+- check_capture_pixels.py: dda96d2c415a009d190f9cc5b6c9e3fcf1883082cc4307fe236ea299f92d1012
 - KNOWN_SKIPS.md: 6cae2da6477ffd9ea0c82d2ea831b99d78352993a2e21496fe893f96cda6c2ce
 - .gitattributes: 705fd4d6451a31d36b3df7de96f83f30ac976c9b4a6d1e51671d8e2f33e2d0da
 - experiment_receipt.json: e594336599cf0a78b12660f3f305417256230276d85795f1ba6a3cd70599016f
@@ -68,9 +72,10 @@ Attempt 983a9a8b1be54457a6aa516319290aa1, agent zcode-glm-mat2-g02-a1, criteria 
 - determinism_receipt.json: 5f987e16b78cc9f6123ef142ffb6efd51632a3c761eb90e70ca2a7a5018b9d13
 - falsifier_receipt.json: 006dce6a8109a293ebf98c60981baaee43b31e820e37007652b22cefaf5d32e9
 - regression_receipt.json: 25280220142e18a11ac8e5213dee4c7e8414d613c26fce6df8a00940bb775bea
-- capture_manifest.json: 45d96627a55d9cb256fc70a3b2ef044708c003fa5aa2f751896cc6404426aa37
-- capture_context.json: c816f0e9638c746f1b441d3ee995fff54d3240f707afd1f4bfd81ff36e9037bc
-- capture_validation_receipt.json: 5277a25910c25d5b403fcb0a10210a40a6b959cccf1f388ffdfa91e9503ebd24
+- capture_manifest.json: 780e7c6bb70059a6b135b027e95ce64bc1e05468c0f7fb887fc0c9000428e992
+- capture_context.json: 63183864e3b300f275c1ba9d42c89b410bd6a50b1ca304dcb5404465c4133daa
+- capture_validation_receipt.json: 5d334ebceda6b70331b6edb018209a20daa336b225650ba595b7df71e6202972
+- capture_pixel_presence.json: 2f9e259ab6d7196c580d1787ebd6b25628652e60d8398f31658c649294dee580
 
 ## honest limits
 

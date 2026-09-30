@@ -15,7 +15,8 @@ HERE = pathlib.Path(__file__).resolve().parent
 RECEIPTS = ('experiment_receipt.json', 'determinism_receipt.json',
             'falsifier_receipt.json', 'regression_receipt.json',
             'experiment_profile.json', 'capture_manifest.json',
-            'capture_context.json', 'capture_validation_receipt.json')
+            'capture_context.json', 'capture_validation_receipt.json',
+            'capture_pixel_presence.json')
 
 # Whitelist: literal -> true reason (load-bearing only).
 WHITELIST = {

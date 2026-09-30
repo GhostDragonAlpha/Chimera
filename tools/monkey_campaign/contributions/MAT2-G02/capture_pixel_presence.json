@@ -1,0 +1,5274 @@
+{
+ "all_present": true,
+ "camera_consistency": [
+  {
+   "delta_px": 0.885,
+   "drawn_px": [
+    365,
+    151
+   ],
+   "predicted_px": [
+    365.89,
+    151.31
+   ],
+   "tick": 0,
+   "tile": "pair-0:diagnostic"
+  },
+  {
+   "delta_px": 0.885,
+   "drawn_px": [
+    365,
+    151
+   ],
+   "predicted_px": [
+    365.89,
+    151.31
+   ],
+   "tick": 0,
+   "tile": "pair-0:clean"
+  },
+  {
+   "delta_px": 0.391,
+   "drawn_px": [
+    47,
+    120
+   ],
+   "predicted_px": [
+    47.39,
+    120.0
+   ],
+   "tick": 0,
+   "tile": "pair-1:diagnostic"
+  },
+  {
+   "delta_px": 0.391,
+   "drawn_px": [
+    47,
+    120
+   ],
+   "predicted_px": [
+    47.39,
+    120.0
+   ],
+   "tick": 0,
+   "tile": "pair-1:clean"
+  },
+  {
+   "delta_px": 0.814,
+   "drawn_px": [
+    334,
+    120
+   ],
+   "predicted_px": [
+    334.12,
+    120.81
+   ],
+   "tick": 0,
+   "tile": "pair-2:diagnostic"
+  },
+  {
+   "delta_px": 0.814,
+   "drawn_px": [
+    334,
+    120
+   ],
+   "predicted_px": [
+    334.12,
+    120.81
+   ],
+   "tick": 0,
+   "tile": "pair-2:clean"
+  },
+  {
+   "delta_px": 0.42,
+   "drawn_px": [
+    365,
+    151
+   ],
+   "predicted_px": [
+    365.34,
+    151.42
+   ],
+   "tick": 20,
+   "tile": "pair-0:diagnostic"
+  },
+  {
+   "delta_px": 0.42,
+   "drawn_px": [
+    365,
+    151
+   ],
+   "predicted_px": [
+    365.34,
+    151.42
+   ],
+   "tick": 20,
+   "tile": "pair-0:clean"
+  },
+  {
+   "delta_px": 0.431,
+   "drawn_px": [
+    43,
+    120
+   ],
+   "predicted_px": [
+    43.43,
+    120.0
+   ],
+   "tick": 20,
+   "tile": "pair-1:diagnostic"
+  },
+  {
+   "delta_px": 0.431,
+   "drawn_px": [
+    43,
+    120
+   ],
+   "predicted_px": [
+    43.43,
+    120.0
+   ],
+   "tick": 20,
+   "tile": "pair-1:clean"
+  },
+  {
+   "delta_px": 0.817,
+   "drawn_px": [
+    334,
+    120
+   ],
+   "predicted_px": [
+    334.16,
+    120.82
+   ],
+   "tick": 20,
+   "tile": "pair-2:diagnostic"
+  },
+  {
+   "delta_px": 0.817,
+   "drawn_px": [
+    334,
+    120
+   ],
+   "predicted_px": [
+    334.16,
+    120.82
+   ],
+   "tick": 20,
+   "tile": "pair-2:clean"
+  },
+  {
+   "delta_px": 0.804,
+   "drawn_px": [
+    403,
+    143
+   ],
+   "predicted_px": [
+    403.8,
+    143.67
+   ],
+   "tick": 150,
+   "tile": "pair-0:diagnostic"
+  },
+  {
+   "delta_px": 0.804,
+   "drawn_px": [
+    403,
+    143
+   ],
+   "predicted_px": [
+    403.8,
+    143.67
+   ],
+   "tick": 150,
+   "tile": "pair-0:clean"
+  },
+  {
+   "delta_px": 0.633,
+   "drawn_px": [
+    337,
+    120
+   ],
+   "predicted_px": [
+    337.63,
+    120.0
+   ],
+   "tick": 150,
+   "tile": "pair-1:diagnostic"
+  },
+  {
+   "delta_px": 0.633,
+   "drawn_px": [
+    337,
+    120
+   ],
+   "predicted_px": [
+    337.63,
+    120.0
+   ],
+   "tick": 150,
+   "tile": "pair-1:clean"
+  },
+  {
+   "delta_px": 0.671,
+   "drawn_px": [
+    331,
+    120
+   ],
+   "predicted_px": [
+    331.64,
+    120.67
+   ],
+   "tick": 150,
+   "tile": "pair-2:diagnostic"
+  },
+  {
+   "delta_px": 0.671,
+   "drawn_px": [
+    331,
+    120
+   ],
+   "predicted_px": [
+    331.64,
+    120.67
+   ],
+   "tick": 150,
+   "tile": "pair-2:clean"
+  },
+  {
+   "delta_px": 0.985,
+   "drawn_px": [
+    432,
+    137
+   ],
+   "predicted_px": [
+    432.05,
+    137.98
+   ],
+   "tick": 232,
+   "tile": "pair-0:diagnostic"
+  },
+  {
+   "delta_px": 0.985,
+   "drawn_px": [
+    432,
+    137
+   ],
+   "predicted_px": [
+    432.05,
+    137.98
+   ],
+   "tick": 232,
+   "tile": "pair-0:clean"
+  },
+  {
+   "delta_px": 0.286,
+   "drawn_px": [
+    573,
+    120
+   ],
+   "predicted_px": [
+    573.29,
+    120.0
+   ],
+   "tick": 232,
+   "tile": "pair-1:diagnostic"
+  },
+  {
+   "delta_px": 0.286,
+   "drawn_px": [
+    573,
+    120
+   ],
+   "predicted_px": [
+    573.29,
+    120.0
+   ],
+   "tick": 232,
+   "tile": "pair-1:clean"
+  },
+  {
+   "delta_px": 0.588,
+   "drawn_px": [
+    330,
+    120
+   ],
+   "predicted_px": [
+    330.19,
+    120.59
+   ],
+   "tick": 232,
+   "tile": "pair-2:diagnostic"
+  },
+  {
+   "delta_px": 0.588,
+   "drawn_px": [
+    330,
+    120
+   ],
+   "predicted_px": [
+    330.19,
+    120.59
+   ],
+   "tick": 232,
+   "tile": "pair-2:clean"
+  },
+  {
+   "delta_px": 0.978,
+   "drawn_px": [
+    432,
+    137
+   ],
+   "predicted_px": [
+    432.08,
+    137.98
+   ],
+   "tick": 233,
+   "tile": "pair-0:diagnostic"
+  },
+  {
+   "delta_px": 0.978,
+   "drawn_px": [
+    432,
+    137
+   ],
+   "predicted_px": [
+    432.08,
+    137.98
+   ],
+   "tick": 233,
+   "tile": "pair-0:clean"
+  },
+  {
+   "delta_px": 0.55,
+   "drawn_px": [
+    573,
+    120
+   ],
+   "predicted_px": [
+    573.55,
+    120.0
+   ],
+   "tick": 233,
+   "tile": "pair-1:diagnostic"
+  },
+  {
+   "delta_px": 0.55,
+   "drawn_px": [
+    573,
+    120
+   ],
+   "predicted_px": [
+    573.55,
+    120.0
+   ],
+   "tick": 233,
+   "tile": "pair-1:clean"
+  },
+  {
+   "delta_px": 0.588,
+   "drawn_px": [
+    330,
+    120
+   ],
+   "predicted_px": [
+    330.19,
+    120.59
+   ],
+   "tick": 233,
+   "tile": "pair-2:diagnostic"
+  },
+  {
+   "delta_px": 0.588,
+   "drawn_px": [
+    330,
+    120
+   ],
+   "predicted_px": [
+    330.19,
+    120.59
+   ],
+   "tick": 233,
+   "tile": "pair-2:clean"
+  },
+  {
+   "delta_px": 0.579,
+   "drawn_px": [
+    434,
+    137
+   ],
+   "predicted_px": [
+    434.06,
+    137.58
+   ],
+   "tick": 250,
+   "tile": "pair-0:diagnostic"
+  },
+  {
+   "delta_px": 0.579,
+   "drawn_px": [
+    434,
+    137
+   ],
+   "predicted_px": [
+    434.06,
+    137.58
+   ],
+   "tick": 250,
+   "tile": "pair-0:clean"
+  },
+  {
+   "delta_px": 0.759,
+   "drawn_px": [
+    590,
+    120
+   ],
+   "predicted_px": [
+    590.76,
+    120.0
+   ],
+   "tick": 250,
+   "tile": "pair-1:diagnostic"
+  },
+  {
+   "delta_px": 0.759,
+   "drawn_px": [
+    590,
+    120
+   ],
+   "predicted_px": [
+    590.76,
+    120.0
+   ],
+   "tick": 250,
+   "tile": "pair-1:clean"
+  },
+  {
+   "delta_px": 0.582,
+   "drawn_px": [
+    330,
+    120
+   ],
+   "predicted_px": [
+    330.09,
+    120.58
+   ],
+   "tick": 250,
+   "tile": "pair-2:diagnostic"
+  },
+  {
+   "delta_px": 0.582,
+   "drawn_px": [
+    330,
+    120
+   ],
+   "predicted_px": [
+    330.09,
+    120.58
+   ],
+   "tick": 250,
+   "tile": "pair-2:clean"
+  },
+  {
+   "delta_px": 0.941,
+   "drawn_px": [
+    364,
+    151
+   ],
+   "predicted_px": [
+    364.94,
+    151.5
+   ],
+   "tick": 320,
+   "tile": "pair-0:diagnostic"
+  },
+  {
+   "delta_px": 0.941,
+   "drawn_px": [
+    364,
+    151
+   ],
+   "predicted_px": [
+    364.94,
+    151.5
+   ],
+   "tick": 320,
+   "tile": "pair-0:clean"
+  },
+  {
+   "delta_px": 0.508,
+   "drawn_px": [
+    40,
+    120
+   ],
+   "predicted_px": [
+    40.51,
+    120.0
+   ],
+   "tick": 320,
+   "tile": "pair-1:diagnostic"
+  },
+  {
+   "delta_px": 0.508,
+   "drawn_px": [
+    40,
+    120
+   ],
+   "predicted_px": [
+    40.51,
+    120.0
+   ],
+   "tick": 320,
+   "tile": "pair-1:clean"
+  },
+  {
+   "delta_px": 0.819,
+   "drawn_px": [
+    334,
+    120
+   ],
+   "predicted_px": [
+    334.19,
+    120.82
+   ],
+   "tick": 320,
+   "tile": "pair-2:diagnostic"
+  },
+  {
+   "delta_px": 0.819,
+   "drawn_px": [
+    334,
+    120
+   ],
+   "predicted_px": [
+    334.19,
+    120.82
+   ],
+   "tick": 320,
+   "tile": "pair-2:clean"
+  }
+ ],
+ "footer_rect": [
+  0,
+  720,
+  1280,
+  776
+ ],
+ "frames": [
+  {
+   "footer": {
+    "nonbg_pixels": 4540,
+    "tick": 0,
+    "trace_line_pixels": 1264
+   },
+   "frame": "frame_00.png",
+   "sha256": "4c9bd47f11eba7f09c83273c66648133f917250d5ecb6354255402df3932b648",
+   "tick": 0
+  },
+  {
+   "footer": {
+    "nonbg_pixels": 4593,
+    "tick": 20,
+    "trace_line_pixels": 1264
+   },
+   "frame": "frame_01.png",
+   "sha256": "01a6e9cffe6efef36715a6e29ef8076e05e01f2063cc6d6d24c7489df7921fde",
+   "tick": 20
+  },
+  {
+   "footer": {
+    "nonbg_pixels": 4569,
+    "tick": 150,
+    "trace_line_pixels": 1264
+   },
+   "frame": "frame_02.png",
+   "sha256": "d4dec129c8ce063100bb735a122ea212f767c89341a647cb4cc029bacf86175a",
+   "tick": 150
+  },
+  {
+   "footer": {
+    "nonbg_pixels": 4624,
+    "tick": 232,
+    "trace_line_pixels": 1265
+   },
+   "frame": "frame_03.png",
+   "sha256": "5b6410c27b72aa7c366d61fb9c10675caca672aeca20163ab7df21c218c2f64b",
+   "tick": 232
+  },
+  {
+   "footer": {
+    "nonbg_pixels": 4606,
+    "tick": 233,
+    "trace_line_pixels": 1265
+   },
+   "frame": "frame_04.png",
+   "sha256": "154178630d6a798ab9cb2d7130c42fa4c98521a46cff353cb958bac1aa31bdf5",
+   "tick": 233
+  },
+  {
+   "footer": {
+    "nonbg_pixels": 4608,
+    "tick": 250,
+    "trace_line_pixels": 1265
+   },
+   "frame": "frame_05.png",
+   "sha256": "c9f53dc125b609d67e75a236321f182a3857a9a89a11fef2ddadf82d6e90430d",
+   "tick": 250
+  },
+  {
+   "footer": {
+    "nonbg_pixels": 4551,
+    "tick": 320,
+    "trace_line_pixels": 1264
+   },
+   "frame": "frame_06.png",
+   "sha256": "8ef5a6e5b8015b65c75500e16a2fc604c042cb65ed82f907264ec11fce7167ad",
+   "tick": 320
+  }
+ ],
+ "law": "per-tile, per-frame measured pixel evidence; subject presence grounded in exact-color signatures and oracle-predicted point hits inside the declared viewport rects (observed_subject_ids are MEASURED, never asserted)",
+ "per_tile_frames": {
+  "pair-0:clean": [
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 2777,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 701,
+     "body_b": 997,
+     "patch": 57,
+     "seam": 37,
+     "stand": 383
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 701,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 997,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 32,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       374.1,
+       154.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 25,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       355.1,
+       151.7
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 52,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       366.3,
+       151.3
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       365.9,
+       151.3
+      ],
+      "present": true
+     }
+    },
+    "tick": 0,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 145
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 2954,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 862,
+     "body_b": 988,
+     "patch": 54,
+     "seam": 37,
+     "stand": 382
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 862,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 988,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 27,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       373.6,
+       154.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 27,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       354.5,
+       151.8
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 48,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       365.8,
+       151.4
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       365.3,
+       151.4
+      ],
+      "present": true
+     }
+    },
+    "tick": 20,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 153
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3307,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1238,
+     "body_b": 948,
+     "patch": 51,
+     "seam": 37,
+     "stand": 387
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1238,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 948,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 28,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       411.9,
+       146.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 23,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       393.1,
+       144.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 46,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       404.2,
+       143.7
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       403.8,
+       143.7
+      ],
+      "present": true
+     }
+    },
+    "tick": 150,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 156
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3239,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1240,
+     "body_b": 869,
+     "patch": 49,
+     "seam": 37,
+     "stand": 387
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1240,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 869,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 24,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       439.9,
+       140.9
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 25,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       421.4,
+       138.5
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 45,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       432.5,
+       138.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       432.1,
+       138.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 232,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 162
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3241,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1240,
+     "body_b": 869,
+     "patch": 49,
+     "seam": 37,
+     "stand": 387
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1240,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 869,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 24,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       440.0,
+       140.9
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 25,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       421.4,
+       138.5
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 43,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       432.5,
+       138.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       432.1,
+       138.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 233,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 162
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3253,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1242,
+     "body_b": 876,
+     "patch": 49,
+     "seam": 37,
+     "stand": 387
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1242,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 876,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 24,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       441.9,
+       140.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 25,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       423.4,
+       138.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 45,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       434.5,
+       137.6
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       434.1,
+       137.6
+      ],
+      "present": true
+     }
+    },
+    "tick": 250,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 163
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3061,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 919,
+     "body_b": 1004,
+     "patch": 57,
+     "seam": 37,
+     "stand": 382
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 919,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1004,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 32,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       373.2,
+       154.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 25,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       354.1,
+       151.9
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 52,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       365.4,
+       151.5
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       364.9,
+       151.5
+      ],
+      "present": true
+     }
+    },
+    "tick": 320,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 167
+   }
+  ],
+  "pair-0:diagnostic": [
+   {
+    "label_bbox_pixels": {
+     "fixture_body_a": 39,
+     "fixture_body_b": 39,
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "fixture_body_a": {
+      "anchor_px": [
+       142,
+       147
+      ],
+      "bbox_px": [
+       148,
+       130,
+       222,
+       142
+      ]
+     },
+     "fixture_body_b": {
+      "anchor_px": [
+       407,
+       106
+      ],
+      "bbox_px": [
+       413,
+       89,
+       488,
+       101
+      ]
+     },
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       374,
+       154
+      ],
+      "bbox_px": [
+       380,
+       137,
+       485,
+       149
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       355,
+       151
+      ],
+      "bbox_px": [
+       361,
+       157,
+       466,
+       169
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       366,
+       151
+      ],
+      "bbox_px": [
+       314,
+       134,
+       366,
+       146
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       365,
+       151
+      ],
+      "bbox_px": [
+       371,
+       120,
+       421,
+       132
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 234,
+    "missing": [],
+    "nonbg_pixels": 4698,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 648,
+     "body_b": 960,
+     "patch": 41,
+     "seam": 23,
+     "stand": 372
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 648,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 960,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 21,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       374.1,
+       154.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 20,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       355.1,
+       151.7
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 36,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       366.3,
+       151.3
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 23,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       365.9,
+       151.3
+      ],
+      "present": true
+     }
+    },
+    "tick": 0,
+    "title_pixels": 92,
+    "triad_pixels": 57,
+    "unique_colors": 363
+   },
+   {
+    "label_bbox_pixels": {
+     "fixture_body_a": 39,
+     "fixture_body_b": 39,
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "fixture_body_a": {
+      "anchor_px": [
+       142,
+       147
+      ],
+      "bbox_px": [
+       148,
+       130,
+       222,
+       142
+      ]
+     },
+     "fixture_body_b": {
+      "anchor_px": [
+       406,
+       106
+      ],
+      "bbox_px": [
+       412,
+       89,
+       487,
+       101
+      ]
+     },
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       373,
+       154
+      ],
+      "bbox_px": [
+       379,
+       137,
+       484,
+       149
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       354,
+       151
+      ],
+      "bbox_px": [
+       360,
+       157,
+       465,
+       169
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       365,
+       151
+      ],
+      "bbox_px": [
+       313,
+       134,
+       365,
+       146
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       365,
+       151
+      ],
+      "bbox_px": [
+       371,
+       120,
+       421,
+       132
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 234,
+    "missing": [],
+    "nonbg_pixels": 4871,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 797,
+     "body_b": 961,
+     "patch": 39,
+     "seam": 23,
+     "stand": 370
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 797,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 961,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 17,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       373.6,
+       154.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 22,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       354.5,
+       151.8
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 33,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       365.8,
+       151.4
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 23,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       365.3,
+       151.4
+      ],
+      "present": true
+     }
+    },
+    "tick": 20,
+    "title_pixels": 92,
+    "triad_pixels": 55,
+    "unique_colors": 364
+   },
+   {
+    "label_bbox_pixels": {
+     "fixture_body_a": 39,
+     "fixture_body_b": 39,
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "fixture_body_a": {
+      "anchor_px": [
+       142,
+       147
+      ],
+      "bbox_px": [
+       148,
+       130,
+       222,
+       142
+      ]
+     },
+     "fixture_body_b": {
+      "anchor_px": [
+       437,
+       101
+      ],
+      "bbox_px": [
+       443,
+       84,
+       518,
+       96
+      ]
+     },
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       411,
+       146
+      ],
+      "bbox_px": [
+       417,
+       129,
+       522,
+       141
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       393,
+       144
+      ],
+      "bbox_px": [
+       399,
+       150,
+       504,
+       162
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       404,
+       143
+      ],
+      "bbox_px": [
+       352,
+       126,
+       404,
+       138
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       403,
+       143
+      ],
+      "bbox_px": [
+       409,
+       112,
+       459,
+       124
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 234,
+    "missing": [],
+    "nonbg_pixels": 5231,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1183,
+     "body_b": 908,
+     "patch": 37,
+     "seam": 23,
+     "stand": 388
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1183,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 908,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 18,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       411.9,
+       146.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 19,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       393.1,
+       144.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 32,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       404.2,
+       143.7
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 23,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       403.8,
+       143.7
+      ],
+      "present": true
+     }
+    },
+    "tick": 150,
+    "title_pixels": 92,
+    "triad_pixels": 52,
+    "unique_colors": 368
+   },
+   {
+    "label_bbox_pixels": {
+     "fixture_body_a": 39,
+     "fixture_body_b": 39,
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "fixture_body_a": {
+      "anchor_px": [
+       142,
+       147
+      ],
+      "bbox_px": [
+       148,
+       130,
+       222,
+       142
+      ]
+     },
+     "fixture_body_b": {
+      "anchor_px": [
+       460,
+       98
+      ],
+      "bbox_px": [
+       466,
+       81,
+       541,
+       93
+      ]
+     },
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       439,
+       140
+      ],
+      "bbox_px": [
+       445,
+       123,
+       550,
+       135
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       421,
+       138
+      ],
+      "bbox_px": [
+       427,
+       144,
+       532,
+       156
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       432,
+       137
+      ],
+      "bbox_px": [
+       380,
+       120,
+       432,
+       132
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       432,
+       137
+      ],
+      "bbox_px": [
+       438,
+       106,
+       488,
+       118
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 234,
+    "missing": [],
+    "nonbg_pixels": 5178,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1187,
+     "body_b": 843,
+     "patch": 37,
+     "seam": 23,
+     "stand": 388
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1187,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 843,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 16,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       439.9,
+       140.9
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 21,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       421.4,
+       138.5
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 33,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       432.5,
+       138.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 23,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       432.1,
+       138.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 232,
+    "title_pixels": 92,
+    "triad_pixels": 50,
+    "unique_colors": 368
+   },
+   {
+    "label_bbox_pixels": {
+     "fixture_body_a": 39,
+     "fixture_body_b": 39,
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "fixture_body_a": {
+      "anchor_px": [
+       142,
+       147
+      ],
+      "bbox_px": [
+       148,
+       130,
+       222,
+       142
+      ]
+     },
+     "fixture_body_b": {
+      "anchor_px": [
+       460,
+       98
+      ],
+      "bbox_px": [
+       466,
+       81,
+       541,
+       93
+      ]
+     },
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       439,
+       140
+      ],
+      "bbox_px": [
+       445,
+       123,
+       550,
+       135
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       421,
+       138
+      ],
+      "bbox_px": [
+       427,
+       144,
+       532,
+       156
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       432,
+       137
+      ],
+      "bbox_px": [
+       380,
+       120,
+       432,
+       132
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       432,
+       137
+      ],
+      "bbox_px": [
+       438,
+       106,
+       488,
+       118
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 234,
+    "missing": [],
+    "nonbg_pixels": 5180,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1187,
+     "body_b": 843,
+     "patch": 37,
+     "seam": 23,
+     "stand": 388
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1187,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 843,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 16,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       440.0,
+       140.9
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 21,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       421.4,
+       138.5
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 31,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       432.5,
+       138.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 23,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       432.1,
+       138.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 233,
+    "title_pixels": 92,
+    "triad_pixels": 50,
+    "unique_colors": 368
+   },
+   {
+    "label_bbox_pixels": {
+     "fixture_body_a": 39,
+     "fixture_body_b": 39,
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "fixture_body_a": {
+      "anchor_px": [
+       142,
+       147
+      ],
+      "bbox_px": [
+       148,
+       130,
+       222,
+       142
+      ]
+     },
+     "fixture_body_b": {
+      "anchor_px": [
+       461,
+       98
+      ],
+      "bbox_px": [
+       467,
+       81,
+       542,
+       93
+      ]
+     },
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       441,
+       140
+      ],
+      "bbox_px": [
+       447,
+       123,
+       552,
+       135
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       423,
+       138
+      ],
+      "bbox_px": [
+       429,
+       144,
+       534,
+       156
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       434,
+       137
+      ],
+      "bbox_px": [
+       382,
+       120,
+       434,
+       132
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       434,
+       137
+      ],
+      "bbox_px": [
+       440,
+       106,
+       490,
+       118
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 234,
+    "missing": [],
+    "nonbg_pixels": 5184,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1189,
+     "body_b": 840,
+     "patch": 37,
+     "seam": 23,
+     "stand": 388
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1189,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 840,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 16,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       441.9,
+       140.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 21,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       423.4,
+       138.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 33,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       434.5,
+       137.6
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 23,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       434.1,
+       137.6
+      ],
+      "present": true
+     }
+    },
+    "tick": 250,
+    "title_pixels": 92,
+    "triad_pixels": 52,
+    "unique_colors": 377
+   },
+   {
+    "label_bbox_pixels": {
+     "fixture_body_a": 39,
+     "fixture_body_b": 39,
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "fixture_body_a": {
+      "anchor_px": [
+       142,
+       147
+      ],
+      "bbox_px": [
+       148,
+       130,
+       222,
+       142
+      ]
+     },
+     "fixture_body_b": {
+      "anchor_px": [
+       406,
+       106
+      ],
+      "bbox_px": [
+       412,
+       89,
+       487,
+       101
+      ]
+     },
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       373,
+       154
+      ],
+      "bbox_px": [
+       379,
+       137,
+       484,
+       149
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       354,
+       151
+      ],
+      "bbox_px": [
+       360,
+       157,
+       465,
+       169
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       365,
+       151
+      ],
+      "bbox_px": [
+       313,
+       134,
+       365,
+       146
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       364,
+       151
+      ],
+      "bbox_px": [
+       370,
+       120,
+       420,
+       132
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 234,
+    "missing": [],
+    "nonbg_pixels": 4970,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "fixture_body_a",
+     "fixture_body_b",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 856,
+     "body_b": 969,
+     "patch": 41,
+     "seam": 23,
+     "stand": 370
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 856,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 969,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 21,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       373.2,
+       154.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 20,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       354.1,
+       151.9
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 36,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       365.4,
+       151.5
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 23,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       364.9,
+       151.5
+      ],
+      "present": true
+     }
+    },
+    "tick": 320,
+    "title_pixels": 92,
+    "triad_pixels": 54,
+    "unique_colors": 379
+   }
+  ],
+  "pair-1:clean": [
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3448,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 214,
+     "body_b": 1771,
+     "patch": 404,
+     "seam": 37,
+     "stand": 244
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 214,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1771,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 65,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       40.0,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 81,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       60.4,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 239,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       46.8,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       47.4,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 0,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 147
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 4043,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 765,
+     "body_b": 1790,
+     "patch": 404,
+     "seam": 37,
+     "stand": 240
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 765,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1790,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 65,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       35.9,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 66,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       56.7,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 239,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       42.9,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       43.4,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 20,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 162
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3174,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 866,
+     "body_b": 1162,
+     "patch": 43,
+     "seam": 37,
+     "stand": 244
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 866,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1162,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 14,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       338.1,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 24,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       336.8,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 24,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       337.7,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       337.6,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 150,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 156
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3199,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 866,
+     "body_b": 849,
+     "patch": 370,
+     "seam": 37,
+     "stand": 244
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 866,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 849,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 59,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       580.2,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 86,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       561.2,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 241,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       573.8,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       573.3,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 232,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 159
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3201,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 866,
+     "body_b": 849,
+     "patch": 370,
+     "seam": 37,
+     "stand": 244
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 866,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 849,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 59,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       580.5,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 86,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       561.4,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 241,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       574.1,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       573.5,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 233,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 159
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 3210,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 866,
+     "body_b": 821,
+     "patch": 404,
+     "seam": 37,
+     "stand": 244
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 866,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 821,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 62,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       598.1,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 96,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       577.8,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 243,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       591.3,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       590.8,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 250,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 163
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 4104,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 805,
+     "body_b": 1781,
+     "patch": 408,
+     "seam": 37,
+     "stand": 235
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 805,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1781,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 65,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       32.9,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 68,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       53.9,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 240,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       39.9,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       40.5,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 320,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 171
+   }
+  ],
+  "pair-1:diagnostic": [
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       39,
+       136
+      ],
+      "bbox_px": [
+       45,
+       119,
+       150,
+       131
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       60,
+       121
+      ],
+      "bbox_px": [
+       66,
+       104,
+       171,
+       116
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       46,
+       119
+      ],
+      "bbox_px": [
+       52,
+       88,
+       104,
+       100
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       47,
+       120
+      ],
+      "bbox_px": [
+       53,
+       140,
+       103,
+       152
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 156,
+    "missing": [],
+    "nonbg_pixels": 4977,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 214,
+     "body_b": 1691,
+     "patch": 296,
+     "seam": 10,
+     "stand": 245
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 214,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1691,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 47,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       40.0,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 46,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       60.4,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 168,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       46.8,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 10,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       47.4,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 0,
+    "title_pixels": 92,
+    "triad_pixels": 329,
+    "unique_colors": 349
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       35,
+       136
+      ],
+      "bbox_px": [
+       41,
+       119,
+       146,
+       131
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       56,
+       121
+      ],
+      "bbox_px": [
+       62,
+       104,
+       167,
+       116
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       42,
+       119
+      ],
+      "bbox_px": [
+       48,
+       88,
+       100,
+       100
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       43,
+       120
+      ],
+      "bbox_px": [
+       49,
+       140,
+       99,
+       152
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 156,
+    "missing": [],
+    "nonbg_pixels": 5529,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 723,
+     "body_b": 1708,
+     "patch": 296,
+     "seam": 10,
+     "stand": 241
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 723,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1708,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 47,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       35.9,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 34,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       56.7,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 169,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       42.9,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 10,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       43.4,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 20,
+    "title_pixels": 92,
+    "triad_pixels": 330,
+    "unique_colors": 385
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       338,
+       136
+      ],
+      "bbox_px": [
+       344,
+       119,
+       449,
+       131
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       336,
+       121
+      ],
+      "bbox_px": [
+       342,
+       104,
+       447,
+       116
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       337,
+       119
+      ],
+      "bbox_px": [
+       285,
+       102,
+       337,
+       114
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       337,
+       120
+      ],
+      "bbox_px": [
+       287,
+       126,
+       337,
+       138
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 156,
+    "missing": [],
+    "nonbg_pixels": 4779,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 867,
+     "body_b": 1106,
+     "patch": 29,
+     "seam": 22,
+     "stand": 245
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 867,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1106,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 14,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       338.1,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 17,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       336.8,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 16,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       337.7,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 22,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       337.6,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 150,
+    "title_pixels": 92,
+    "triad_pixels": 294,
+    "unique_colors": 329
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 40,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       580,
+       136
+      ],
+      "bbox_px": [
+       475,
+       119,
+       580,
+       131
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       561,
+       121
+      ],
+      "bbox_px": [
+       456,
+       104,
+       561,
+       116
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       573,
+       119
+      ],
+      "bbox_px": [
+       579,
+       102,
+       631,
+       114
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       573,
+       120
+      ],
+      "bbox_px": [
+       579,
+       89,
+       629,
+       101
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 157,
+    "missing": [],
+    "nonbg_pixels": 4699,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 867,
+     "body_b": 811,
+     "patch": 273,
+     "seam": 17,
+     "stand": 245
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 867,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 811,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 50,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       580.2,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 64,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       561.2,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 163,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       573.8,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 17,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       573.3,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 232,
+    "title_pixels": 92,
+    "triad_pixels": 244,
+    "unique_colors": 355
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 40,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       580,
+       136
+      ],
+      "bbox_px": [
+       475,
+       119,
+       580,
+       131
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       561,
+       121
+      ],
+      "bbox_px": [
+       456,
+       104,
+       561,
+       116
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       574,
+       119
+      ],
+      "bbox_px": [
+       580,
+       102,
+       632,
+       114
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       573,
+       120
+      ],
+      "bbox_px": [
+       579,
+       89,
+       629,
+       101
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 157,
+    "missing": [],
+    "nonbg_pixels": 4709,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 867,
+     "body_b": 815,
+     "patch": 273,
+     "seam": 16,
+     "stand": 245
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 867,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 815,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 50,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       580.5,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 64,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       561.4,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 164,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       574.1,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 16,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       573.5,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 233,
+    "title_pixels": 92,
+    "triad_pixels": 248,
+    "unique_colors": 355
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 40,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       598,
+       136
+      ],
+      "bbox_px": [
+       493,
+       119,
+       598,
+       131
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       577,
+       121
+      ],
+      "bbox_px": [
+       472,
+       104,
+       577,
+       116
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       591,
+       119
+      ],
+      "bbox_px": [
+       539,
+       88,
+       591,
+       100
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       590,
+       120
+      ],
+      "bbox_px": [
+       540,
+       140,
+       590,
+       152
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 157,
+    "missing": [],
+    "nonbg_pixels": 4692,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 867,
+     "body_b": 793,
+     "patch": 305,
+     "seam": 17,
+     "stand": 245
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 867,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 793,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 53,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       598.1,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 75,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       577.8,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 170,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       591.3,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 17,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       590.8,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 250,
+    "title_pixels": 92,
+    "triad_pixels": 217,
+    "unique_colors": 356
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       32,
+       136
+      ],
+      "bbox_px": [
+       38,
+       119,
+       143,
+       131
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       53,
+       121
+      ],
+      "bbox_px": [
+       59,
+       104,
+       164,
+       116
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       39,
+       119
+      ],
+      "bbox_px": [
+       45,
+       88,
+       97,
+       100
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       40,
+       120
+      ],
+      "bbox_px": [
+       46,
+       140,
+       96,
+       152
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 156,
+    "missing": [],
+    "nonbg_pixels": 5588,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 762,
+     "body_b": 1697,
+     "patch": 299,
+     "seam": 10,
+     "stand": 236
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 762,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1697,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 47,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       32.9,
+       136.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 36,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       53.9,
+       121.1
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 168,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       39.9,
+       119.9
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 10,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       40.5,
+       120.0
+      ],
+      "present": true
+     }
+    },
+    "tick": 320,
+    "title_pixels": 92,
+    "triad_pixels": 330,
+    "unique_colors": 395
+   }
+  ],
+  "pair-2:clean": [
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 10052,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 56,
+     "body_b": 988,
+     "patch": 7541,
+     "seam": 37,
+     "stand": 469
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 56,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 988,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 72,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       428.6,
+       140.4
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 29,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       211.4,
+       140.4
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 252,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       339.0,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       334.1,
+       120.8
+      ],
+      "present": true
+     }
+    },
+    "tick": 0,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 159
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 10109,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 84,
+     "body_b": 988,
+     "patch": 7541,
+     "seam": 37,
+     "stand": 469
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 84,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 988,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 72,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       428.9,
+       140.4
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 29,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       211.1,
+       140.4
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 252,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       339.1,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       334.2,
+       120.8
+      ],
+      "present": true
+     }
+    },
+    "tick": 20,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 166
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 8826,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1250,
+     "body_b": 1038,
+     "patch": 5027,
+     "seam": 37,
+     "stand": 469
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1250,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1038,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 64,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       409.5,
+       136.8
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 29,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       230.5,
+       136.8
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 252,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       335.7,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       331.6,
+       120.7
+      ],
+      "present": true
+     }
+    },
+    "tick": 150,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 167
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 7822,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1344,
+     "body_b": 1065,
+     "patch": 3891,
+     "seam": 37,
+     "stand": 469
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1344,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1065,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 72,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       398.4,
+       134.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 35,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       241.6,
+       134.7
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 252,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       333.7,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       330.2,
+       120.6
+      ],
+      "present": true
+     }
+    },
+    "tick": 232,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 172
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 7824,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1344,
+     "body_b": 1065,
+     "patch": 3891,
+     "seam": 37,
+     "stand": 469
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1344,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1065,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 72,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       398.3,
+       134.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 35,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       241.7,
+       134.7
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 252,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       333.7,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       330.2,
+       120.6
+      ],
+      "present": true
+     }
+    },
+    "tick": 233,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 172
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 7724,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 1284,
+     "body_b": 1067,
+     "patch": 3846,
+     "seam": 37,
+     "stand": 469
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1284,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1067,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 64,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       397.6,
+       134.6
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 29,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       242.4,
+       134.6
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 252,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       333.6,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       330.1,
+       120.6
+      ],
+      "present": true
+     }
+    },
+    "tick": 250,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 174
+   },
+   {
+    "label_bbox_pixels": {},
+    "label_bboxes": {},
+    "label_expected": false,
+    "label_pixels_total": 0,
+    "missing": [],
+    "nonbg_pixels": 10294,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam"
+    ],
+    "signatures": {
+     "body_a": 176,
+     "body_b": 987,
+     "patch": 7604,
+     "seam": 37,
+     "stand": 469
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 176,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 987,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 81,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       429.1,
+       140.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 35,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       210.9,
+       140.5
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 252,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       339.1,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 37,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       334.2,
+       120.8
+      ],
+      "present": true
+     }
+    },
+    "tick": 320,
+    "title_pixels": 92,
+    "triad_pixels": 0,
+    "unique_colors": 176
+   }
+  ],
+  "pair-2:diagnostic": [
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 40,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       428,
+       140
+      ],
+      "bbox_px": [
+       434,
+       123,
+       539,
+       135
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       211,
+       140
+      ],
+      "bbox_px": [
+       217,
+       123,
+       322,
+       135
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       339,
+       120
+      ],
+      "bbox_px": [
+       345,
+       103,
+       397,
+       115
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       334,
+       120
+      ],
+      "bbox_px": [
+       340,
+       126,
+       390,
+       138
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 157,
+    "missing": [],
+    "nonbg_pixels": 11027,
+    "pip_nonbg_pixels": 354,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam",
+     "fixture_body_a",
+     "fixture_body_b"
+    ],
+    "signatures": {
+     "body_a": 56,
+     "body_b": 988,
+     "patch": 6399,
+     "seam": 25,
+     "stand": 470
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 56,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 988,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 66,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       428.6,
+       140.4
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 29,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       211.4,
+       140.4
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 206,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       339.0,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 25,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       334.1,
+       120.8
+      ],
+      "present": true
+     }
+    },
+    "tick": 0,
+    "title_pixels": 92,
+    "triad_pixels": 598,
+    "unique_colors": 480
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 40,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       428,
+       140
+      ],
+      "bbox_px": [
+       434,
+       123,
+       539,
+       135
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       211,
+       140
+      ],
+      "bbox_px": [
+       217,
+       123,
+       322,
+       135
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       339,
+       120
+      ],
+      "bbox_px": [
+       345,
+       103,
+       397,
+       115
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       334,
+       120
+      ],
+      "bbox_px": [
+       340,
+       126,
+       390,
+       138
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 157,
+    "missing": [],
+    "nonbg_pixels": 11084,
+    "pip_nonbg_pixels": 354,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam",
+     "fixture_body_a",
+     "fixture_body_b"
+    ],
+    "signatures": {
+     "body_a": 84,
+     "body_b": 988,
+     "patch": 6399,
+     "seam": 25,
+     "stand": 470
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 84,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 988,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 66,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       428.9,
+       140.4
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 29,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       211.1,
+       140.4
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 206,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       339.1,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 25,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       334.2,
+       120.8
+      ],
+      "present": true
+     }
+    },
+    "tick": 20,
+    "title_pixels": 92,
+    "triad_pixels": 598,
+    "unique_colors": 486
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 39,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       409,
+       136
+      ],
+      "bbox_px": [
+       415,
+       119,
+       520,
+       131
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       230,
+       136
+      ],
+      "bbox_px": [
+       236,
+       119,
+       341,
+       131
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       335,
+       120
+      ],
+      "bbox_px": [
+       341,
+       103,
+       393,
+       115
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       331,
+       120
+      ],
+      "bbox_px": [
+       281,
+       103,
+       331,
+       115
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 156,
+    "missing": [],
+    "nonbg_pixels": 9732,
+    "pip_nonbg_pixels": 354,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam",
+     "fixture_body_a",
+     "fixture_body_b"
+    ],
+    "signatures": {
+     "body_a": 1238,
+     "body_b": 1038,
+     "patch": 3990,
+     "seam": 22,
+     "stand": 470
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1238,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1038,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 58,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       409.5,
+       136.8
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 29,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       230.5,
+       136.8
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 162,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       335.7,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 22,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       331.6,
+       120.7
+      ],
+      "present": true
+     }
+    },
+    "tick": 150,
+    "title_pixels": 92,
+    "triad_pixels": 480,
+    "unique_colors": 524
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 40,
+     "port:patch": 39,
+     "port:seam": 40
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       398,
+       134
+      ],
+      "bbox_px": [
+       404,
+       117,
+       509,
+       129
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       241,
+       134
+      ],
+      "bbox_px": [
+       247,
+       117,
+       352,
+       129
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       333,
+       120
+      ],
+      "bbox_px": [
+       339,
+       103,
+       391,
+       115
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       330,
+       120
+      ],
+      "bbox_px": [
+       280,
+       103,
+       330,
+       115
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 158,
+    "missing": [],
+    "nonbg_pixels": 8708,
+    "pip_nonbg_pixels": 354,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam",
+     "fixture_body_a",
+     "fixture_body_b"
+    ],
+    "signatures": {
+     "body_a": 1330,
+     "body_b": 1062,
+     "patch": 2940,
+     "seam": 14,
+     "stand": 470
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1330,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1062,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 65,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       398.4,
+       134.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 35,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       241.6,
+       134.7
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 174,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       333.7,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 14,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       330.2,
+       120.6
+      ],
+      "present": true
+     }
+    },
+    "tick": 232,
+    "title_pixels": 92,
+    "triad_pixels": 409,
+    "unique_colors": 546
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 40,
+     "port:patch": 39,
+     "port:seam": 40
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       398,
+       134
+      ],
+      "bbox_px": [
+       404,
+       117,
+       509,
+       129
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       241,
+       134
+      ],
+      "bbox_px": [
+       247,
+       117,
+       352,
+       129
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       333,
+       120
+      ],
+      "bbox_px": [
+       339,
+       103,
+       391,
+       115
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       330,
+       120
+      ],
+      "bbox_px": [
+       280,
+       103,
+       330,
+       115
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 158,
+    "missing": [],
+    "nonbg_pixels": 8710,
+    "pip_nonbg_pixels": 354,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam",
+     "fixture_body_a",
+     "fixture_body_b"
+    ],
+    "signatures": {
+     "body_a": 1330,
+     "body_b": 1062,
+     "patch": 2940,
+     "seam": 14,
+     "stand": 470
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1330,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1062,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 65,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       398.3,
+       134.7
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 35,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       241.7,
+       134.7
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 174,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       333.7,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 14,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       330.2,
+       120.6
+      ],
+      "present": true
+     }
+    },
+    "tick": 233,
+    "title_pixels": 92,
+    "triad_pixels": 409,
+    "unique_colors": 546
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 40,
+     "port:patch": 39,
+     "port:seam": 40
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       397,
+       134
+      ],
+      "bbox_px": [
+       403,
+       117,
+       508,
+       129
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       242,
+       134
+      ],
+      "bbox_px": [
+       248,
+       117,
+       353,
+       129
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       333,
+       120
+      ],
+      "bbox_px": [
+       339,
+       103,
+       391,
+       115
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       330,
+       120
+      ],
+      "bbox_px": [
+       280,
+       103,
+       330,
+       115
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 158,
+    "missing": [],
+    "nonbg_pixels": 8613,
+    "pip_nonbg_pixels": 354,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam",
+     "fixture_body_a",
+     "fixture_body_b"
+    ],
+    "signatures": {
+     "body_a": 1275,
+     "body_b": 1064,
+     "patch": 2899,
+     "seam": 11,
+     "stand": 470
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 1275,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 1064,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 58,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       397.6,
+       134.6
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 29,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       242.4,
+       134.6
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 171,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       333.6,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 11,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       330.1,
+       120.6
+      ],
+      "present": true
+     }
+    },
+    "tick": 250,
+    "title_pixels": 92,
+    "triad_pixels": 407,
+    "unique_colors": 545
+   },
+   {
+    "label_bbox_pixels": {
+     "iface:fixture-patch-p1": 39,
+     "iface:fixture-patch-p2": 40,
+     "port:patch": 39,
+     "port:seam": 39
+    },
+    "label_bboxes": {
+     "iface:fixture-patch-p1": {
+      "anchor_px": [
+       429,
+       140
+      ],
+      "bbox_px": [
+       435,
+       123,
+       540,
+       135
+      ]
+     },
+     "iface:fixture-patch-p2": {
+      "anchor_px": [
+       210,
+       140
+      ],
+      "bbox_px": [
+       216,
+       123,
+       321,
+       135
+      ]
+     },
+     "port:patch": {
+      "anchor_px": [
+       339,
+       120
+      ],
+      "bbox_px": [
+       345,
+       103,
+       397,
+       115
+      ]
+     },
+     "port:seam": {
+      "anchor_px": [
+       334,
+       120
+      ],
+      "bbox_px": [
+       340,
+       126,
+       390,
+       138
+      ]
+     }
+    },
+    "label_expected": true,
+    "label_pixels_total": 157,
+    "missing": [],
+    "nonbg_pixels": 11272,
+    "pip_nonbg_pixels": 354,
+    "required": [
+     "iface:fixture-patch-p1",
+     "iface:fixture-patch-p2",
+     "port:patch",
+     "port:seam",
+     "fixture_body_a",
+     "fixture_body_b"
+    ],
+    "signatures": {
+     "body_a": 176,
+     "body_b": 987,
+     "patch": 6460,
+     "seam": 25,
+     "stand": 470
+    },
+    "subjects": {
+     "fixture_body_a": {
+      "geometry_pixels": 176,
+      "method": "area_signature",
+      "present": true
+     },
+     "fixture_body_b": {
+      "geometry_pixels": 987,
+      "method": "area_signature",
+      "present": true
+     },
+     "iface:fixture-patch-p1": {
+      "geometry_pixels": 74,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       429.1,
+       140.5
+      ],
+      "present": true
+     },
+     "iface:fixture-patch-p2": {
+      "geometry_pixels": 35,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       210.9,
+       140.5
+      ],
+      "present": true
+     },
+     "port:patch": {
+      "geometry_pixels": 206,
+      "method": "point_radius_patch",
+      "predicted_px": [
+       339.1,
+       120.0
+      ],
+      "present": true
+     },
+     "port:seam": {
+      "geometry_pixels": 25,
+      "method": "point_radius_seam",
+      "predicted_px": [
+       334.2,
+       120.8
+      ],
+      "present": true
+     }
+    },
+    "tick": 320,
+    "title_pixels": 92,
+    "triad_pixels": 602,
+    "unique_colors": 495
+   }
+  ]
+ },
+ "pip_rect_tile_px": [
+  344,
+  6,
+  632,
+  82
+ ],
+ "required_subjects": {
+  "pair-0:clean": [
+   "iface:fixture-patch-p1",
+   "iface:fixture-patch-p2",
+   "fixture_body_a",
+   "fixture_body_b",
+   "port:patch",
+   "port:seam"
+  ],
+  "pair-0:diagnostic": [
+   "iface:fixture-patch-p1",
+   "iface:fixture-patch-p2",
+   "fixture_body_a",
+   "fixture_body_b",
+   "port:patch",
+   "port:seam"
+  ],
+  "pair-1:clean": [
+   "iface:fixture-patch-p1",
+   "iface:fixture-patch-p2",
+   "port:patch",
+   "port:seam"
+  ],
+  "pair-1:diagnostic": [
+   "iface:fixture-patch-p1",
+   "iface:fixture-patch-p2",
+   "port:patch",
+   "port:seam"
+  ],
+  "pair-2:clean": [
+   "iface:fixture-patch-p1",
+   "iface:fixture-patch-p2",
+   "port:patch",
+   "port:seam"
+  ],
+  "pair-2:diagnostic": [
+   "iface:fixture-patch-p1",
+   "iface:fixture-patch-p2",
+   "port:patch",
+   "port:seam",
+   "fixture_body_a",
+   "fixture_body_b"
+  ]
+ },
+ "signature_colors": {
+  "body_a": [
+   [
+    60,
+    90,
+    200
+   ]
+  ],
+  "body_b": [
+   [
+    200,
+    120,
+    60
+   ]
+  ],
+  "label": [
+   [
+    10,
+    10,
+    30
+   ]
+  ],
+  "patch_clean": [
+   [
+    150,
+    150,
+    150
+   ],
+   [
+    20,
+    20,
+    20
+   ]
+  ],
+  "patch_diagnostic": [
+   [
+    210,
+    60,
+    60
+   ],
+   [
+    120,
+    60,
+    160
+   ],
+   [
+    20,
+    20,
+    20
+   ]
+  ],
+  "patch_diagonal": [
+   [
+    255,
+    160,
+    40
+   ]
+  ],
+  "seam_clean": [
+   [
+    90,
+    90,
+    90
+   ]
+  ],
+  "seam_diagnostic": [
+   [
+    250,
+    220,
+    80
+   ]
+  ],
+  "stand": [
+   [
+    120,
+    120,
+    128
+   ]
+  ],
+  "title": [
+   [
+    90,
+    90,
+    100
+   ]
+  ],
+  "trace_line": [
+   [
+    30,
+    160,
+    90
+   ]
+  ],
+  "triad": [
+   [
+    220,
+    40,
+    40
+   ],
+   [
+    40,
+    180,
+    40
+   ],
+   [
+    40,
+    40,
+    220
+   ]
+  ]
+ },
+ "tile_rects": {
+  "pair-0:clean": [
+   640,
+   0,
+   1280,
+   240
+  ],
+  "pair-0:diagnostic": [
+   0,
+   0,
+   640,
+   240
+  ],
+  "pair-1:clean": [
+   640,
+   240,
+   1280,
+   480
+  ],
+  "pair-1:diagnostic": [
+   0,
+   240,
+   640,
+   480
+  ],
+  "pair-2:clean": [
+   640,
+   480,
+   1280,
+   720
+  ],
+  "pair-2:diagnostic": [
+   0,
+   480,
+   640,
+   720
+  ]
+ }
+}
