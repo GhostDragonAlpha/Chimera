@@ -747,6 +747,8 @@ def main():
     receipt["validated_profile_kind"] = PROFILE["kind"]
     receipt["registry_criteria_sha256"] = ts.CRITERIA_SHA256
     receipt["frame_count"] = len(frame_hashes)
+    (evidence_dir / "capture_selfcheck.json").write_bytes(
+        ts.canonical_json(selfcheck))
     (evidence_dir / "validation_receipt.json").write_bytes(
         ts.canonical_json(receipt))
     (evidence_dir / "registry_verification_profile.json").write_bytes(

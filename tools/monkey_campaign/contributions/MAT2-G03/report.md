@@ -177,10 +177,11 @@ parameters-only per A06/A09 law): it is NOT evaluated here and NOT zeroed
 | test_tendon_sweep.py | 6e865067c14adc8dcafacff2db668970618e2d2560b184c67b64491cce369f92 |
 | lint_report_numbers.py | c62c5286eefed6e361fc9aad10583415845aaf704819588e985f5c486fb4492a |
 | make_report.py | 1e1db3a9133b07a046bff7cd6aabcb1e071bc7bcead978db28032ac3007fca63 |
-| make_capture.py | 0d8d75b76eb757e85dd5daeb7118d30714983a437cc0ad876171938f3f8eb57b |
+| make_capture.py | 66f725d4d0b6cf9c3588223a4805fa4e6952efdb2732eba370412dfb632c1e7e |
 | evidence/capture_manifest.json | 692a0552b5c9fbc28406c05f05424c37b874e384f4511904fb67e2a66a84ba58 |
 | evidence/cameras.json | a12ae5b2221b9253515dd1758f5c2fe5a2d5c422f79ad3adc47c1b8ad0cbd95a |
 | evidence/frame_hashes.json | 4fa91e5b69a40230c20145c63c7f9d34ed8e2097d711f318339d7bf081fd14da |
 | evidence/decode_roundtrip.json | 26b3b62fd6ff5ab4bb2f727dce9e56163d9bfedf2cbf0b26576339d8be1cd8d1 |
+| evidence/capture_selfcheck.json | 7a69136309e5ce5b07776679a5114028575a168e31f1137a8ba6725fa492c4ae |
 | evidence/validation_receipt.json | 8be7478610ac8aa75a29cdb3d9f8a788ec1c01178ced9a18f81ea6592372b663 |
 | evidence/capture_context.json | 4fc1097fa0647d1ae1a4948b5c1df80e728efe04e768731572140462c1aac18c |
