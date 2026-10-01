@@ -127,3 +127,11 @@ ChimeraEngine/engine_state.json
 # glm-wf-01: same class - gitignored per-checkout run artifacts (T2 membrane record) cited by tracked prose; retention decision belongs to the evidence-policy owner
 models/cad_bear/ca_run.json
 models/cad_bear/frost_binding.json
+# MAT2-B07: pinned 17ba94b9 blob paths inside the extracted engine-tree17
+# scratch layout (C09 anchor-class re-run; resolved via git cat-file
+# from the E:/PythonChimera object store, sha256-verified; not worktree files)
+ChimeraEngine/engine/coupled_articulation.hpp
+ChimeraEngine/engine/earth_environment.hpp
+ChimeraEngine/engine/force_models.hpp
+ChimeraEngine/engine/gait_controller.hpp
+tools/science_funnel/validation/visible_walk_20260923/native/gait_unit_viswalk_dump.cpp
