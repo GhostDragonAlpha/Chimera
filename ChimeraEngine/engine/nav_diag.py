@@ -97,7 +97,7 @@ print(f'arrivals={arrivals} first30={first30:.3f} last30={last30:.3f}')
 for s in range(12):
     if visits[s]>0:
         greedy=max(range(5),key=lambda i:Q[s][i])
-        print(f'  s{s} v={visits[s]} Q={[round(q,4) for q in Q[s]]} greedy=verb{greedy}')
+        print(f'  s{s} v={visits[s]} Q={[round(q,4) for q in Q[s]]} greedy={greedy}')
 def greedy_rollout(bx0):
     bx=float(bx0); y=ground_at(bx)-loY; v=0.0; contact=True; gt=0
     for tick in range(1,budget+1):
