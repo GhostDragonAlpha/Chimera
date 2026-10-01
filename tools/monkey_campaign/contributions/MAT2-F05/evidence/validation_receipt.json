@@ -1,0 +1,14 @@
+{
+ "mode": "CAMERA_METADATA_STRUCTURE_ONLY",
+ "structurally_valid": true,
+ "visual_acceptance": false,
+ "profile_id": "forest",
+ "view_count": 6,
+ "capture_kind": "image",
+ "limits": "No pixels, visibility, camera motion, label placement, physical state or reviewer identity authenticated. Independent capture and numerical review remain required.",
+ "fired": [],
+ "profile_source": "E:/ChimeraWork/monkey-coordination/agent_slots.sqlite3 kanban.cards[MAT2-F05].spec.ontology_qualification.task.verification_profile",
+ "validated_profile_id": "forest",
+ "validated_profile_kind": "visible_static",
+ "validator_module": "E:\\ChimeraWork\\monkey-coordination\\kanban-attempts\\MAT2-F05\\264ce332f8cb4db1833ae6eee612b668\\checkout\\tools\\monkey_campaign/visual_capture.py"
+}
