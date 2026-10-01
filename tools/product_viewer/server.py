@@ -981,13 +981,18 @@ class ViewerHandler(BaseHTTPRequestHandler):
 
     # -- helpers -----------------------------------------------------------
     def _send(self, code: int, body: bytes, ctype: str):
-        self.send_response(code)
-        self.send_header("Content-Type", ctype)
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
+        # The WHOLE send sits inside the guard: on Windows a client-side
+        # abort during the header flush raises ConnectionAbortedError
+        # [WinError 10053], sibling of BrokenPipeError/ConnectionResetError.
+        # Swallow it log-free like its siblings (sgt-review-287b finding).
         try:
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
             self.wfile.write(body)
-        except (BrokenPipeError, ConnectionResetError):
+        except (BrokenPipeError, ConnectionResetError,
+                ConnectionAbortedError):
             pass
 
     def _json(self, obj, code: int = 200):
@@ -1102,7 +1107,11 @@ class ViewerHandler(BaseHTTPRequestHandler):
                                 "fit_derivation": H.camera.derive_fit()})
                 except (EngineError, json.JSONDecodeError, KeyError) as e:
                     self._json({"ok": False, "error": str(e)}, 502)
-            if path == "/graph" or path == "/graph/":
+            # ONE if/elif chain: exactly ONE response per request. (This was
+            # a bare second `if`, so first-chain routes fell through into the
+            # terminal else and attempted an unsolicited second 404 -
+            # sgt-review-287b finding.)
+            elif path == "/graph" or path == "/graph/":
                 g = (Path(__file__).resolve().parents[2] / "docs" / "LEDGER_GRAPH.json")
                 if g.is_file():
                     payload = GRAPH_PAGE.replace("__DATA__", g.read_text(encoding="utf-8"))
