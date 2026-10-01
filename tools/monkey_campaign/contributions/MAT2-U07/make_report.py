@@ -37,6 +37,12 @@ def main() -> int:
     require(checks["verdict"] == "GREEN", "report_checks_not_green")
     require(capture["validation"]["structurally_valid"] is True,
             "report_capture_not_valid")
+    require(capture.get("pixel_gate", {}).get("verdict") == "GREEN",
+            "report_pixel_gate_not_green")
+    require(capture["pixel_gate"]["frames_with_body_palette"] > 0,
+            "report_body_palette_absent")
+    require(capture["pixel_gate"]["planted_defect_selftest"] == "GREEN",
+            "report_pixel_gate_selftest_not_green")
     require(receipt["verdict"]["P_all_green"] is True,
             "report_predictions_not_green")
 
@@ -115,9 +121,41 @@ def main() -> int:
                            capture["video"]["sha256"][:16],
                            capture["decode_probes_pixel_exact"],
                            capture["validation"]["structurally_valid"]),
+        "- Pixel gate (mechanical, AMENDMENT-A4): %s over %d decoded frames "
+        "of the committed video; %d non-uniform; body palette present in "
+        "%d frames; declared diagnostic layers green in %d of %d diagnostic "
+        "frames; planted-defect selftest %s (deliberately blank frame "
+        "refused)."
+        % (capture["pixel_gate"]["verdict"],
+           capture["pixel_gate"]["frames_decoded"],
+           capture["pixel_gate"]["frames_non_uniform"],
+           capture["pixel_gate"]["frames_with_body_palette"],
+           capture["pixel_gate"]["diagnostic_frames_green"],
+           capture["pixel_gate"]["diagnostic_frames_total"],
+           capture["pixel_gate"]["planted_defect_selftest"]),
         "- Pins: %d U07 rows + %d W10 certified-line rows, byte-exact."
         % (len(receipt["pin_rows"]),
            receipt["w10_layer"]["w10_pin_rows"]),
+        "",
+        "## Correction round r1 (review sgt-pr312-69772e91)",
+        "",
+        "- Prior review citation (not a new measurement): %d of %d "
+        "committed frames at head %s contained the body palette "
+        "(PIXEL-FAIL; see %s)."
+        % (capture["prior_review_citation"]["observed_frames_with_body_palette"],
+           capture["prior_review_citation"]["observed_frames_checked"],
+           "69772e9143d582cdd0d2d56c990c0a5b0e697509",
+           capture["prior_review_citation"]["source"]),
+        "- The view law is UNCHANGED frozen preregistration: the clean view "
+        "is the declared follow view and every camera position/target is a "
+        "body-anchored offset (PREREGISTRATION.md, the declared camera "
+        "arms and the frozen probes/views sections). The candidate's view "
+        "dicts omitted the pinned renderer's follow flag; this correction "
+        "restores conformance and re-derives every committed frame.",
+        "- The mechanical pixel-content gate now decodes EVERY declared "
+        "frame from the committed video and refuses uniform/empty renders "
+        "or missing declared layers (AMENDMENT-A4; hash pinned in the "
+        "receipts like the earlier amendments).",
         "",
         "## Verdict",
         "",

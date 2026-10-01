@@ -108,6 +108,34 @@ def decode_stills(video, indices):
     return out
 
 
+def decode_all_frames(video, n, written_shas):
+    """Decode EVERY declared frame of the committed video (correction r1,
+    AMENDMENT-A4): per-frame decoded-sha equality against the piped bytes
+    (upgrades the 3-probe law to all frames) + the RGB buffers for the
+    mechanical pixel gate."""
+    frames = []
+    exact = []
+    for idx in range(n):
+        proc = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-loglevel", "error", "-i", str(video),
+             "-vf", "select=eq(n\\,%d)" % idx, "-vsync", "0", "-frames:v", "1",
+             "-f", "rawvideo", "-pix_fmt", "bgr0", "-"],
+            capture_output=True, check=False)
+        require(proc.returncode == 0,
+                "capture_codec_violation:decode_all:" + str(idx))
+        data = proc.stdout
+        require(len(data) == W * H * 4,
+                "capture_pixel_gate:decode_size:idx%d:%d"
+                % (idx, len(data)))
+        ok = sha_bytes(data) == written_shas[idx]
+        exact.append({"frame": idx, "pixel_exact": ok})
+        require(ok, "capture_codec_violation:decode_all_mismatch:idx%d" % idx)
+        arr = np.frombuffer(data, dtype=np.uint8).reshape(H, W, 4)
+        rgb = np.ascontiguousarray(arr[:, :, [2, 1, 0]])  # bgr0 -> rgb
+        frames.append(rgb)
+    return frames, exact
+
+
 def visibility_row(diagnostic, layers, labels):
     if diagnostic:
         bindings = [{"label_id": label, "subject_id": label + "_subject"}
@@ -177,6 +205,43 @@ def main() -> int:
     side_identical = all(len(v) == 2 and v[0] == v[1]
                          for v in side_sha.values())
     require(len(side_sha) == 2, "capture_side_modes_missing")
+
+    # correction r1 (AMENDMENT-A4): the MECHANICAL pixel-content gate.
+    # Decode EVERY declared frame of the committed video and assert content:
+    # (a) non-uniform, (b) the body palette at the declared class floors,
+    # (c) the declared diagnostics layers / occluder where declared. Plus
+    # the planted-defect selftest (blank MUST fail; healthy MUST pass).
+    import pixel_gate as pg
+    all_decoded, all_exact = decode_all_frames(video_path, len(frames),
+                                               written_shas)
+    selftest = pg.selftest()
+    gate = pg.run_gate(all_decoded, metas)
+    require(gate["verdict"] == "GREEN",
+            "capture_pixel_gate_failed:" + str(gate["first_failure_code"]))
+    diag_green = sum(1 for r in gate["frames"]
+                     if r["diagnostic"] and not r["failures"])
+    diag_total = sum(1 for r in gate["frames"] if r["diagnostic"])
+    gate_receipt = {
+        "schema": "chimera.u07_pixel_gate_receipt.v1",
+        "task_id": "U07", "card_id": "MAT2-U07",
+        "attempt_id": vi7.ATTEMPT_ID,
+        "preregistration_sha256": vi7.prereg_sha256(),
+        "amendment_a4_sha256": vi7.amendment_a4_sha256(),
+        "video": {"path": video_path.name, "sha256": video_sha,
+                  "frames_decoded": len(all_decoded)},
+        "decode_all_frames_pixel_exact":
+            all(r["pixel_exact"] for r in all_exact),
+        "gate": gate,
+        "planted_defect_selftest": selftest,
+        "determinism": {"canonical_json": True, "newline": "\n",
+                        "command": "python -B run_capture_u07.py"},
+    }
+    (CAPTURE / "pixel_gate_receipt.json").write_bytes(
+        canonical(gate_receipt) + b"\n")
+    print("pixel gate: %d/%d frames with body palette; diag layers %d/%d; "
+          "selftest %s"
+          % (gate["frames_with_body_palette"], gate["frames_decoded"],
+             diag_green, diag_total, selftest["verdict"]))
 
     # frame index ranges per (view_id, mode); view_ids are the profile's
     # verbatim view names (validator law: capture_view_not_declared).
@@ -294,6 +359,14 @@ def main() -> int:
         "amendment_a1_sha256": vi7.amendment_a1_sha256(),
         "amendment_a2_sha256": vi7.amendment_a2_sha256(),
         "amendment_a3_sha256": vi7.amendment_a3_sha256(),
+        "amendment_a4_sha256": vi7.amendment_a4_sha256(),
+        "correction_round": {"round": "r1", "worker": "wk-u07-fix",
+                             "review_head_sha256":
+                             "69772e9143d582cdd0d2d56c990c0a5b0e697509",
+                             "reason": "sgt-pr312-69772e91 CHANGES-REQUIRED:"
+                                       " all 32 committed frames were "
+                                       "blank; U07_VIEWS follow law fixed "
+                                       "and the pixel-content gate added"},
         "registry_profile": profile,
         "state_binding": {"kind": "trace",
                           "R1_window": "trace_window_r1.json"},
@@ -306,6 +379,11 @@ def main() -> int:
                             "the declared CPU-line frame records (absent "
                             "inventory A1); the montage tick axis is the "
                             "frame index at 1 fps",
+        "pixel_gate_law": "decoded-pixel content gate on EVERY declared "
+                          "frame (correction r1, AMENDMENT-A4): non-uniform "
+                          "content; body palette at declared class floors; "
+                          "declared diagnostics layers and occluder where "
+                          "declared; planted-defect selftest embedded",
         "honesty_label": "RENDERED FIXTURE of the certified run's own "
                          "per-tick telemetry (W10 records-only renderer); "
                          "visual_acceptance false BY DESIGN; independent "
@@ -331,11 +409,29 @@ def main() -> int:
         "amendment_a1_sha256": vi7.amendment_a1_sha256(),
         "amendment_a2_sha256": vi7.amendment_a2_sha256(),
         "amendment_a3_sha256": vi7.amendment_a3_sha256(),
+        "amendment_a4_sha256": vi7.amendment_a4_sha256(),
         "profile_source": "registry read-only (mode=ro)",
         "video": {"path": video_path.name, "sha256": video_sha,
                   "frames": len(frames)},
         "side_view_repeat_identical": side_identical,
         "decode_probes_pixel_exact": all(r["pixel_exact"] for r in g4_rows),
+        "pixel_gate": {"verdict": gate["verdict"],
+                       "receipt": "pixel_gate_receipt.json",
+                       "frames_decoded": gate["frames_decoded"],
+                       "frames_non_uniform": gate["frames_non_uniform"],
+                       "frames_with_body_palette":
+                           gate["frames_with_body_palette"],
+                       "diagnostic_frames_green": diag_green,
+                       "diagnostic_frames_total": diag_total,
+                       "planted_defect_selftest": selftest["verdict"]},
+        "prior_review_citation": {
+            "source": "kanban-reviews/MAT2-U07/sgt-pr312-69772e91/"
+                      "REVIEW_EVIDENCE.md (head 69772e9143d582cdd0d2d"
+                      "56c990c0a5b0e697509)",
+            "observed_frames_checked": 32,
+            "observed_frames_with_body_palette": 0,
+            "disposition": "PIXEL-FAIL; correction r1 re-derives every "
+                           "committed frame through the mechanical gate"},
         "camera_fields_complete": True,
         "validation": {"mode": verdict["mode"],
                        "structurally_valid": verdict["structurally_valid"]},

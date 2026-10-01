@@ -61,3 +61,25 @@
   11/11 named checks, capture 32 frames validated, report generated, lint
   GREEN). The sealed runner run below is the evidence-producing execution.
 
+
+- D9 (correction-r1 sealed-dev run, 2026-10-02, job
+  6f44d32b2bf3415388605e3e3f61f4e9, base 69772e91, seal
+  5d5ba08c6bfa71cf39a85bccbd32bf8220ced6bc6d0d409bc965c46b6797c387): the
+  NEW mechanical pixel gate REFUSED its first sealed run —
+  `capture_pixel_gate_failed:pixel_gate:body_palette_missing:O_clean_t4500
+  :0/30` — and the census also showed the declared 200 px side-view floor
+  above the real render (137-144 px). This is the gate's designed bite,
+  recorded as an honest negative. Two facts established by the retained
+  frames.npy of that job: (1) the follow fix WORKS — every previously blank
+  view now renders the body (C_V1 presentation 385-418 px per frame,
+  close-target 6282-6385 px, side 137-144 px, frustum marker 112 px and
+  body-label marker 21 px on every diagnostic frame); (2) the frozen
+  occluder box FULLY conceals the body in the obstructed view (fill 17678
+  px, body 0 px) exactly as P9's numerics predicted
+  (target_inside_box_screen_footprint true). Corrected BEFORE the evidence
+  run and re-frozen: obstructed frames require the occluder fill (>= 100
+  px) with body_min_px 0 and a declared reason (demanding body pixels would
+  demand concealing the declared obstruction); side floors lowered to 100
+  px (census-justified). The planted-defect selftest and all 18 named
+  checks were GREEN in the same run; stages 1-2 GREEN, stage 3 refused —
+  the refusal is the pixel gate working as amended.

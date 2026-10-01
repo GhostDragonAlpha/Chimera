@@ -139,6 +139,12 @@ def amendment_a3_sha256() -> str:
     return sha_bytes((HERE / "AMENDMENT-A3.md").read_bytes())
 
 
+def amendment_a4_sha256() -> str:
+    """Correction r1 (review sgt-pr312-69772e91): the mechanical
+    pixel-content gate amendment; hash-pinned like A1-A3."""
+    return sha_bytes((HERE / "AMENDMENT-A4.md").read_bytes())
+
+
 def pin_path(group: str, parts: tuple) -> Path:
     if group == "blob":
         return PINNED_ROOT.joinpath(*parts)

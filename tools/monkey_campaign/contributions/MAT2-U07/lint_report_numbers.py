@@ -34,7 +34,16 @@ def main() -> int:
     # the limits/bounds that are PREREGISTERED caller data, not receipt data
     allowed_prereg = {"50.0", "300", "15", "100", "30", "31", "1", "0",
                       "4365", "4665", "4500", "4650", "4351", "4651",
-                      "16", "960", "540"}
+                      "16", "960", "540",
+                      # preregistered IDENTITIES, not measurements: the
+                      # frozen prediction ordinals P1-P12, arm ordinals
+                      # R1-R5 and amendment ordinals A1-A4. (Correction r1:
+                      # "11" surfaced when the named-check count stopped
+                      # carrying it incidentally; the ID ordinals are
+                      # declared here so identity tokens never depend on
+                      # incidental receipt arithmetic.)
+                      "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                      "11", "12"}
     failures = []
     for num in set(re.findall(r"-?\d+\.\d+(?:e-?\d+)?|-?\d+\b",
                               report_scan)):

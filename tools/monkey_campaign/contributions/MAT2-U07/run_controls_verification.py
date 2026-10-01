@@ -399,6 +399,7 @@ def stage_predictions(res1, res2, res3, res4, res5, reg, limits, render):
         "amendment_a1_sha256": vi7.amendment_a1_sha256(),
         "amendment_a2_sha256": vi7.amendment_a2_sha256(),
         "amendment_a3_sha256": vi7.amendment_a3_sha256(),
+        "amendment_a4_sha256": vi7.amendment_a4_sha256(),
         "note": "no frozen wall-clock end-to-end SLA exists (P06 "
                 "network-latency-sla-ms OPERATOR_DECISION_REQUESTED); the "
                 "ONLY qualified numeric is the frozen cadence law"}
@@ -473,6 +474,7 @@ def main() -> int:
         "amendment_a1_sha256": vi7.amendment_a1_sha256(),
         "amendment_a2_sha256": vi7.amendment_a2_sha256(),
         "amendment_a3_sha256": vi7.amendment_a3_sha256(),
+        "amendment_a4_sha256": vi7.amendment_a4_sha256(),
         "registry": reg,
         "pin_rows": rows, "pin_row_count": len(rows),
         "w10_layer": w10,

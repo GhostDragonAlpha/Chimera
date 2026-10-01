@@ -33,6 +33,7 @@ def main() -> int:
         "amendment_a1_sha256": suite_mod.vi7.amendment_a1_sha256(),
         "amendment_a2_sha256": suite_mod.vi7.amendment_a2_sha256(),
         "amendment_a3_sha256": suite_mod.vi7.amendment_a3_sha256(),
+        "amendment_a4_sha256": suite_mod.vi7.amendment_a4_sha256(),
         "executed": executed, "skipped": skipped, "failures": failures,
         "verdict": "GREEN" if failures == 0 and skipped == 0 else "RED",
         "claim": "%d executed, %d skipped" % (executed, skipped),

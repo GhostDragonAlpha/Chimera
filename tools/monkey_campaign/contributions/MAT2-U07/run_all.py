@@ -61,6 +61,13 @@ if __name__ == "__main__":
         "schema": "chimera.u07_sealed_run.v1",
         "card": "MAT2-U07",
         "attempt_id": "5e2bc3cb1fec4305911a1048b600723d",
+        "correction_round": {"round": "r1", "worker": "wk-u07-fix",
+                             "package_base_sha256":
+                             "69772e9143d582cdd0d2d56c990c0a5b0e697509",
+                             "reason": "sgt-pr312-69772e91 CHANGES-REQUIRED "
+                                       "(PIXEL-FAIL): U07_VIEWS follow law "
+                                       "fixed; mechanical pixel-content "
+                                       "gate added (AMENDMENT-A4)"},
         "stages": results,
         "pass": failed == 0,
         "determinism": {"canonical_json": True, "newline": "\n",

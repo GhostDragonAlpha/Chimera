@@ -198,5 +198,115 @@ class SeamLawChecks(unittest.TestCase):
         self.assertTrue(got["r3_demand_positive"])
 
 
+class PixelGateChecks(unittest.TestCase):
+    """The mechanical pixel-content gate (correction r1, AMENDMENT-A4).
+
+    The prior review's PIXEL-FAIL: every STRUCTURE gate passed while all 32
+    committed frames were blank. These checks prove the gate's own law on
+    synthetic frames: a deliberately blank frame FAILS; the historical
+    overlay-only defect FAILS body presence; content-bearing frames PASS."""
+
+    @staticmethod
+    def _meta(frame_id, view, diagnostic):
+        return {"frame_id": frame_id, "view": view, "tick": 4500,
+                "diagnostic": diagnostic}
+
+    def test_planted_blank_frame_refused(self):
+        import numpy as np
+        import pixel_gate as pg
+        frame = np.empty((540, 960, 3), dtype=np.uint8)
+        frame[:, :] = pg.BACKGROUND_RGB          # deliberately blank
+        row = pg.gate_frame(frame, self._meta(
+            "PLANTED", "C_V1_normal_follow_distance", False))
+        self.assertTrue(any(c.startswith("pixel_gate:uniform_frame:")
+                            for c in row["failures"]))
+        self.assertTrue(any(c.startswith("pixel_gate:body_palette_missing:")
+                            for c in row["failures"]))
+
+    def test_historical_overlay_only_clean_frame_refused(self):
+        import numpy as np
+        import pixel_gate as pg
+        frame = np.empty((540, 960, 3), dtype=np.uint8)
+        frame[:, :] = pg.BACKGROUND_RGB
+        frame[514:520, 12:172] = pg.OVERLAY_PALETTE["stride_bar_track"]
+        frame[10:16, 12:60] = pg.OVERLAY_PALETTE["tick_digits"]
+        row = pg.gate_frame(frame, self._meta(
+            "HISTORICAL", "C_V1_normal_follow_distance", False))
+        # non-uniform (structure alone would pass) yet BODY ABSENT: the
+        # exact defect the prior review caught must bite here
+        self.assertGreaterEqual(row["unique_colors"], 2)
+        self.assertTrue(any(c.startswith("pixel_gate:body_palette_missing:")
+                            for c in row["failures"]))
+
+    def test_content_bearing_frames_pass(self):
+        import numpy as np
+        import pixel_gate as pg
+        clean = np.empty((540, 960, 3), dtype=np.uint8)
+        clean[:, :] = pg.BACKGROUND_RGB
+        clean[200:240, 400:460] = pg.BODY_PALETTE["thorax"]
+        clean[240:340, 420:430] = pg.BODY_PALETTE["leg_left"]
+        clean[240:340, 432:442] = pg.BODY_PALETTE["leg_right"]
+        row = pg.gate_frame(clean, self._meta(
+            "OK_CLEAN", "C_V1_normal_follow_distance", False))
+        self.assertEqual(row["failures"], [])
+
+    def test_diagnostic_layers_required_and_sufficient(self):
+        import numpy as np
+        import pixel_gate as pg
+        diag = np.empty((540, 960, 3), dtype=np.uint8)
+        diag[:, :] = pg.BACKGROUND_RGB
+        diag[200:240, 400:460] = pg.BODY_PALETTE["thorax"]
+        diag[240:340, 420:430] = pg.BODY_PALETTE["leg_left"]
+        diag[240:340, 432:442] = pg.BODY_PALETTE["leg_right"]
+        body_only = pg.gate_frame(diag, self._meta(
+            "BODY_ONLY_DIAG", "C_V1_normal_follow_distance", True))
+        self.assertTrue(any("overlay_tick_missing" in c
+                            for c in body_only["failures"]))
+        self.assertTrue(any("frustum_marker_missing" in c
+                            for c in body_only["failures"]))
+        diag[10:16, 12:60] = pg.OVERLAY_PALETTE["tick_digits"]
+        diag[514:520, 12:172] = pg.OVERLAY_PALETTE["stride_bar_track"]
+        diag[514:520, 12:100] = pg.OVERLAY_PALETTE["stride_bar_fill"]
+        diag[10:18, 920:928] = pg.OVERLAY_PALETTE["corner_chip"]
+        diag[270:290, 470:490] = pg.FRUSTUM_MARKER_RGB
+        diag[300:310, 500:510] = pg.BODY_LABEL_MARKER_RGB
+        ok = pg.gate_frame(diag, self._meta(
+            "OK_DIAG", "C_V1_normal_follow_distance", True))
+        self.assertEqual(ok["failures"], [])
+
+    def test_occluder_law_bites(self):
+        import numpy as np
+        import pixel_gate as pg
+        occ = np.empty((540, 960, 3), dtype=np.uint8)
+        occ[:, :] = pg.BACKGROUND_RGB
+        occ[200:240, 400:460] = pg.BODY_PALETTE["thorax"]
+        occ[240:340, 420:430] = pg.BODY_PALETTE["leg_left"]
+        occ[240:340, 432:442] = pg.BODY_PALETTE["leg_right"]
+        missing = pg.gate_frame(occ, self._meta(
+            "OCC_ABSENT", "C_V2_obstructed", False))
+        self.assertTrue(any(c.startswith("pixel_gate:occluder_missing:")
+                            for c in missing["failures"]))
+        occ[100:180, 380:520] = pg.OCCLUDER_FILL_RGB
+        ok = pg.gate_frame(occ, self._meta(
+            "OCC_OK", "C_V2_obstructed", False))
+        self.assertEqual(ok["failures"], [])
+
+    def test_gate_selftest_record(self):
+        import pixel_gate as pg
+        rec = pg.selftest()
+        self.assertEqual(rec["verdict"], "GREEN")
+        self.assertTrue(rec["planted_blank_frame"]["refused_uniform"])
+        self.assertTrue(rec["planted_blank_frame"]["refused_body_absent"])
+        self.assertTrue(
+            rec["historical_overlay_only_frame"]["refused_body_absent"])
+        self.assertTrue(rec["occluder_absence_bites"])
+
+    def test_amendment_a4_pin_available(self):
+        import hashlib
+        got = hashlib.sha256(
+            (vi7.HERE / "AMENDMENT-A4.md").read_bytes()).hexdigest()
+        self.assertEqual(vi7.amendment_a4_sha256(), got)
+
+
 if __name__ == "__main__":
     unittest.main()

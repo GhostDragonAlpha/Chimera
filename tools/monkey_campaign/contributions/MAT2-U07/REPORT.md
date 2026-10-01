@@ -28,9 +28,16 @@ Generated from the sealed stage receipts; no hand-entered numbers.
 
 ## Checks and capture
 
-- Named checks: GREEN (11 executed, 0 skipped).
-- Capture: 32 frames, video sha df7934d13023bb88, decode probes pixel-exact True, validator True.
+- Named checks: GREEN (18 executed, 0 skipped).
+- Capture: 32 frames, video sha 05ad0e2283581b84, decode probes pixel-exact True, validator True.
+- Pixel gate (mechanical, AMENDMENT-A4): GREEN over 32 decoded frames of the committed video; 32 non-uniform; body palette present in 30 frames; declared diagnostic layers green in 6 of 6 diagnostic frames; planted-defect selftest GREEN (deliberately blank frame refused).
 - Pins: 20 U07 rows + 65 W10 certified-line rows, byte-exact.
+
+## Correction round r1 (review sgt-pr312-69772e91)
+
+- Prior review citation (not a new measurement): 0 of 32 committed frames at head 69772e9143d582cdd0d2d56c990c0a5b0e697509 contained the body palette (PIXEL-FAIL; see kanban-reviews/MAT2-U07/sgt-pr312-69772e91/REVIEW_EVIDENCE.md (head 69772e9143d582cdd0d2d56c990c0a5b0e697509)).
+- The view law is UNCHANGED frozen preregistration: the clean view is the declared follow view and every camera position/target is a body-anchored offset (PREREGISTRATION.md, the declared camera arms and the frozen probes/views sections). The candidate's view dicts omitted the pinned renderer's follow flag; this correction restores conformance and re-derives every committed frame.
+- The mechanical pixel-content gate now decodes EVERY declared frame from the committed video and refuses uniform/empty renders or missing declared layers (AMENDMENT-A4; hash pinned in the receipts like the earlier amendments).
 
 ## Verdict
 
