@@ -274,5 +274,40 @@ class HostManifest(unittest.TestCase):
         self.assertEqual(refused, [], f"unverified entries: {refused}")
 
 
+class SingleResponseChain(unittest.TestCase):
+    """Exactly ONE response per request (sgt-review-287b finding).
+
+    do_GET carried TWO route chains: the second began with a bare
+    `if path == "/graph"`, so every request answered by the FIRST chain fell
+    through into the second chain's terminal else and attempted an
+    unsolicited second 404 send. Client-invisible under HTTP/1.0 (one
+    request per connection), but it cost one swallowed socketserver
+    ConnectionAbortedError [WinError 10053] traceback per first-chain
+    request on Windows. Pinned here deterministically: a stubbed _send must
+    record exactly ONE call for a first-chain route (/api/world/certified),
+    for the page route (/), and for the terminal unknown-route else alike.
+    """
+
+    def _sends_for(self, path):
+        handler = type("SingleResponseHandler", (pv.ViewerHandler,), {
+            "world": {"schema": "chimera.viewer.certified_world.v1",
+                      "manifest": "test", "loaded": True,
+                      "declared_limits": [], "entries": []},
+        })
+        h = handler.__new__(handler)
+        calls = []
+        h._send = lambda code, body, ctype: calls.append(code)  # stubbed
+        h.path = path
+        h.do_GET()
+        return calls
+
+    def test_exactly_one_response_per_request(self):
+        # first-chain routes: one response, NO unsolicited second 404 send
+        self.assertEqual(self._sends_for("/api/world/certified"), [200])
+        self.assertEqual(self._sends_for("/"), [200])
+        # the second chain's own terminal else stays a single response too
+        self.assertEqual(self._sends_for("/nope"), [404])
+
+
 if __name__ == "__main__":
     unittest.main()
