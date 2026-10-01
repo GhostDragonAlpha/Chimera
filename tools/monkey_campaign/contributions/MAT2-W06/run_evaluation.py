@@ -61,17 +61,25 @@ def vacuous_guard_selftest() -> bool:
     return False
 
 
-# ---- FB5: the structural no-runs scanner ------------------------------------
-FORBID_MODULES = {"run_training", "scene_cpu", "policy_compat",
-                  "make_runbook", "subprocess", "socket", "urllib",
-                  "urllib.request", "http", "requests", "multiprocessing"}
+# ---- FB5: the structural no-runs scanner (addendum A4, three classes) -------
+# class (i): forbidden in EVERY file
+FORBID_MODULES = {"run_training", "socket", "urllib", "http", "requests",
+                  "multiprocessing", "urllib.request"}
 FORBID_CALLS = {"system", "popen", "spawn", "Popen", "urlopen",
                 "TrainablePolicy", "fitness", "spsa_iterate"}
+# classes (ii)/(iii): allowed ONLY in the addendum-declared replay file
+REPLAY_FILE = "run_replay_capture.py"
 
 
 def scan_no_run_paths(source_text: str, filename: str = "<string>") -> list:
-    """AST scan for run-launching constructs (FB5). Returns violations."""
+    """AST scan for run-launching constructs (FB5). Returns violations.
+
+    Class (i) training/run-launch paths are flagged everywhere. The pinned
+    replay import (tools.policy_compat...) and the declared capture-tool
+    subprocess use (ffmpeg encode/decode) are flagged in every file EXCEPT
+    the addendum-declared run_replay_capture.py."""
     violations = []
+    is_replay = (filename == REPLAY_FILE)
     tree = ast.parse(source_text, filename=filename)
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -79,10 +87,16 @@ def scan_no_run_paths(source_text: str, filename: str = "<string>") -> list:
                 root = alias.name.split(".")[0]
                 if alias.name in FORBID_MODULES or root in FORBID_MODULES:
                     violations.append("import:" + alias.name)
+                elif alias.name == "subprocess" and not is_replay:
+                    violations.append("import:subprocess_outside_replay")
         elif isinstance(node, ast.ImportFrom):
             root = (node.module or "").split(".")[0]
             if node.module in FORBID_MODULES or root in FORBID_MODULES:
                 violations.append("importfrom:" + str(node.module))
+            elif (node.module or "").startswith("tools.policy_compat") \
+                    and not is_replay:
+                violations.append("importfrom:pinned_replay_outside_replay:"
+                                  + str(node.module))
         elif isinstance(node, ast.Call):
             fn = node.func
             name = fn.id if isinstance(fn, ast.Name) else (
@@ -441,9 +455,17 @@ def main() -> int:
                                            "(trajectory sha cd4944d9...)"},
         "no_runs_law": {
             "FB5_scan_violations": no_run_violations,
-            "physics_runs_executed_by_this_card": 0,
             "training_runs_executed_by_this_card": 0,
-            "tuned_runs_executed_by_this_card": 0},
+            "tuned_runs_executed_by_this_card": 0,
+            "evaluation_rollouts_of_trained_candidates": 0,
+            "declared_capture_replays_of_the_sealed_line":
+                1 if (HERE / "capture" / "replay_receipt.json").exists()
+                else 0,
+            "law": ("zero training, zero tuned runs, zero evaluation "
+                    "rollouts of the trained candidates; the single "
+                    "declared capture replay of the sealed certified line "
+                    "(frozen P3 policy, ALLOW(frozen)) is the addendum A1 "
+                    "arm and produces no outcome number any verdict reads")},
         "deploy_treatment": {
             "trained_theta_tuple": deploy["block_trained_bundle"]["decision"],
             "frozen_relation": deploy["allow_frozen_relation"]["decision"],
