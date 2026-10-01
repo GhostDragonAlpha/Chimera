@@ -36,6 +36,7 @@ def main() -> int:
         "preregistration_sha256": vi.prereg_sha256(),
         "amendment_a1_sha256": vi.amendment_a1_sha256(),
         "amendment_a2_sha256": vi.amendment_a2_sha256(),
+        "amendment_a3_sha256": vi.amendment_a3_sha256(),
         "criteria_sha256": vi.CRITERIA_SHA256,
         "registry_revision": reg.get("registry_revision"),
         "executed": result.testsRun,

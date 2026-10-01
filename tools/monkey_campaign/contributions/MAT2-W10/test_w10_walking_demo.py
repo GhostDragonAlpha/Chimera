@@ -61,9 +61,10 @@ class W10WalkingDemo(unittest.TestCase):
 
     def test_e_on_a_supported_surface(self):
         ev = self.demo["predictions"]["P10_supported_surface"]
-        self.assertEqual(ev["unsupported_count"], 0)
-        self.assertTrue(ev["every_tick_has_a_foot_contact"])
-        self.assertEqual(ev["supervisor_events_r1"], 0)
+        self.assertEqual(ev["low_contact_count"], 0)
+        self.assertTrue(ev["every_tick_carried_by_four_pads"])
+        self.assertTrue(ev["swing_windows_disclosed_within_bound"])
+        self.assertEqual(ev["supervisor_response_events_r1"], 0)
 
     def test_f_no_sliding_no_penetration(self):
         ev = self.demo["predictions"]["P11_no_sliding_no_penetration"]

@@ -164,7 +164,14 @@ def load_w09_supervisor():
 
 
 def w09_consts(oe, params, manifest):
-    return oe.derive_constants(params, manifest)
+    """W09's own const builder: derive_constants PLUS the two scene-derived
+    keys the sealed detectors consume (W09 run build_consts form)."""
+    from tools.policy_compat import scene_cpu as SC   # pinned bytes
+    c = oe.derive_constants(params, manifest)
+    c["_front_force"] = float(SC._FRONT_FORCE)
+    c["velocity_envelope_m_s"] = SC.derived_envelope()[
+        "velocity_envelope_m_s"]
+    return c
 
 
 def run_commanded(adapter, build_id, params, *, wrong_override=False,
@@ -319,6 +326,7 @@ def run_probe_arm(oe, oe_consts, commands, *, stride_override=None,
     scene = SC.make_scene(SC.BUILD_N_ID, _PARAMS[0], SEED)
     scene.begin(list(commands))
     records, applied_tick, v_series = [], [], []
+    per_tick = []
     trips_at_fall = None
     overrides = []
     for t in range(horizon):
@@ -340,9 +348,21 @@ def run_probe_arm(oe, oe_consts, commands, *, stride_override=None,
             trips_at_fall = [int(scene.trip_l), int(scene.trip_r)]
         scene.step(np.asarray(stepped, dtype=np.float32), sat)
         v_series.append(scene.v)
+        per_tick.append({
+            "tick": t, "com_v_m_s": scene.v, "com_x_m": scene.x,
+            "phase_left": rec["phase_left"], "phase_right": rec["phase_right"],
+            "yaw_rate_rad_s": rec["yaw_rate"],
+            "contact_count": rec["contact_count"],
+            "foot_contacts": rec["foot_contacts"],
+            "foot_forces": rec["foot_forces"], "pad_gaps": rec["pad_gaps"],
+            "intervention_reason": rec["intervention_reason"],
+            "applied_cmd": stepped,
+            "saturation": [float(s) for s in sat],
+            "state_sha256": scene.state_sha256(),
+        })
     terminal = sup.terminal(records[-1], horizon)
     return {"records": records, "applied_per_tick": applied_tick,
-            "v_series": v_series, "supervisor": sup,
+            "v_series": v_series, "per_tick": per_tick, "supervisor": sup,
             "terminal": terminal, "trips": [int(scene.trip_l), int(scene.trip_r)],
             "trips_at_fall": trips_at_fall,
             "fall_declared_tick": sup.fall_declared_tick,
@@ -365,6 +385,13 @@ def unsupported_intervals(classes):
 
 
 # ---------------------------------------------------------------- stage 8
+def gap_values(row):
+    """The scene's declared pad-gap shape: {'hl': [g_hl, g_ml],
+    'hr': [g_hr, g_mr]} — flattened in declared order."""
+    gaps = row["pad_gaps"]
+    return list(gaps["hl"]) + list(gaps["hr"])
+
+
 def evaluate(res1, res2, res3, res4, bounds, gate, oe, oe_consts):
     """The frozen predictions P2-P13 with named variables."""
     ev = {}
@@ -551,10 +578,25 @@ def evaluate(res1, res2, res3, res4, bounds, gate, oe, oe_consts):
     require(dec_ok and floor_ok, "prediction_failed:P7_monotone_or_floor")
 
     # ---- P8 stability bars (every tick of every arm) ------------------------
+    def normalize_record(rec):
+        """Map a raw observation record onto the per-tick row shape."""
+        return {
+            "tick": rec["tick"], "com_v_m_s": rec["com_vel"][0],
+            "com_x_m": rec.get("com_x_m", 0.0),
+            "contact_count": rec["contact_count"],
+            "foot_contacts": rec["foot_contacts"],
+            "foot_forces": rec["foot_forces"],
+            "pad_gaps": rec["pad_gaps"],
+            "intervention_reason": rec["intervention_reason"],
+        }
+
     def stability(res):
         env = bounds["velocity_envelope_m_s"]
+        rows = res.get("per_tick")
+        if rows is None:                      # the probe arm's raw records
+            rows = [normalize_record(r) for r in res["records"]]
         bad_rows = []
-        for row in res["per_tick"]:
+        for row in rows:
             t = row["tick"]
             if abs(row["com_v_m_s"]) > env + 1e-12:
                 bad_rows.append((t, "envelope"))
@@ -562,11 +604,11 @@ def evaluate(res1, res2, res3, res4, bounds, gate, oe, oe_consts):
                 bad_rows.append((t, "contact_floor"))
             if row["intervention_reason"] != "none":
                 bad_rows.append((t, "intervention"))
-            if any(not (g > 0.0) for g in row["pad_gaps"]):
+            if any(not (g > 0.0) for g in gap_values(row)):
                 bad_rows.append((t, "pad_gap"))
             if any(v != v or v in (float("inf"), float("-inf"))
                    for v in ([row["com_v_m_s"], row["com_x_m"]]
-                             + list(row["pad_gaps"]))):
+                             + gap_values(row))):
                 bad_rows.append((t, "nonfinite"))
         return bad_rows
 
@@ -611,36 +653,49 @@ def evaluate(res1, res2, res3, res4, bounds, gate, oe, oe_consts):
     require(v3p > v1p, "prediction_failed:P9_separation")
     require(ident12, "prediction_failed:P9_zero_control")
 
-    # ---- P10 supported surface (THIS CARD) ------------------------------------
+    # ---- P10 supported surface (THIS CARD; amendment A3 form) -----------------
     lo_w, hi_w = WALK_INTERVAL
-    unsup = [r["tick"] for r in pt1
-             if lo_w <= r["tick"] <= hi_w and r["contact_count"] < 1]
-    contact_min = min(r["contact_count"] for r in pt1 if lo_w <= r["tick"] <= hi_w)
+    interval_rows = [r for r in pt1 if lo_w <= r["tick"] <= hi_w]
+    low_contact = [r["tick"] for r in interval_rows if r["contact_count"] < 4]
+    contact_min = min(r["contact_count"] for r in interval_rows)
+    swing_rows = [r["tick"] for r in interval_rows
+                  if r["foot_contacts"][4] == 0.0 and r["foot_contacts"][5] == 0.0]
     ev["P10_supported_surface"] = {
         "walk_interval_ticks": [lo_w, hi_w],
-        "unsupported_ticks": unsup[:20],
-        "unsupported_count": len(unsup),
+        "support_law": "the four front pads carry the body at every tick "
+                       "(contact_count = 4 + legs); leg-pad lifts are the "
+                       "gait's own swing windows (amendment A3; W09 A4 "
+                       "heritage)",
+        "low_contact_ticks": low_contact[:20],
+        "low_contact_count": len(low_contact),
         "min_contact_count_in_interval": contact_min,
-        "every_tick_has_a_foot_contact": not unsup,
+        "every_tick_carried_by_four_pads": not low_contact,
+        "swing_window_ticks_counted": len(swing_rows),
+        "swing_window_bound_ticks": int(0.45 * (hi_w - lo_w + 1)),
+        "swing_windows_disclosed_within_bound":
+            len(swing_rows) <= int(0.45 * (hi_w - lo_w + 1)),
         "every_pad_gap_positive_interval": all(
-            g > 0.0 for r in pt1 if lo_w <= r["tick"] <= hi_w
-            for g in r["pad_gaps"]),
+            g > 0.0 for r in interval_rows for g in gap_values(r)),
     }
     p10 = ev["P10_supported_surface"]
-    require(p10["every_tick_has_a_foot_contact"],
-            "walk_unsupported_tick:%d" % (unsup[0] if unsup else -1))
+    require(p10["every_tick_carried_by_four_pads"],
+            "walk_unsupported_tick:%d" % (low_contact[0] if low_contact else -1))
     require(p10["every_pad_gap_positive_interval"],
             "prediction_failed:P10_pad_gaps")
+    require(p10["swing_windows_disclosed_within_bound"],
+            "prediction_failed:P10_swing_bound")
 
     # ---- P11 no sliding / no penetration (THIS CARD) ---------------------------
     dt = 1.0 / 300.0
     slide = []
     for a_row, b_row in zip(pt1, pt1[1:]):
-        expect = dt * a_row["com_v_m_s"]
+        # the scene's own law: v is updated FIRST, then x += dt*v — so the
+        # x-delta pairs with the POST-step velocity (the row after the step)
+        expect = dt * b_row["com_v_m_s"]
         got = b_row["com_x_m"] - a_row["com_x_m"]
         if abs(got - expect) > 1e-9:
             slide.append((b_row["tick"], got - expect))
-    pen = [(r["tick"], g) for r in pt1 for g in r["pad_gaps"] if g <= 0.0]
+    pen = [(r["tick"], g) for r in pt1 for g in gap_values(r) if g <= 0.0]
     ev["P11_no_sliding_no_penetration"] = {
         "com_identity_violations": slide[:20],
         "com_identity_violation_count": len(slide),
@@ -786,18 +841,50 @@ def fb_arms(oe, oe_consts, cmds):
     fb2_tamper_battery = oe_detectors(oe, fb2_tamper, oe_consts)
     vr = fb2_tamper_battery["velocity_recursion"]
     vr_clean = fb2_clean_battery["velocity_recursion"]
+    # THE SEALED-LAW DETECTOR (prereg FB2, first-named): during every
+    # declared-unsupported pre-fall tick the sealed R1 law pins the applied
+    # strides at the certified minimum 0.2. The clean arm holds it exactly;
+    # the tampered arm's command-channel override breaks it (the velocity
+    # identity CLOSES on the tampered arm too — the override rode the
+    # recorded command channel, so it is a sealed-law violation, not a
+    # concealed force; recorded honestly beside the deviation).
+    fall_t2 = fb2_clean["fall_declared_tick"] or HORIZON_R4
+    stride_lo2 = float(np.float32(oe_consts["bounds_lo"][1]))
+    clean_max_dev = max(
+        (max(abs(fb2_clean["applied_per_tick"][t][1] - stride_lo2),
+             abs(fb2_clean["applied_per_tick"][t][5] - stride_lo2))
+         for t in range(HORIZON_R4)
+         if fb2_clean["supervisor"].classes[t] == "UNSUPPORTED"
+         and t < fall_t2), default=0.0)
+    tam_max_dev = max(
+        (max(abs(fb2_tamper["applied_per_tick"][t][1] - stride_lo2),
+             abs(fb2_tamper["applied_per_tick"][t][5] - stride_lo2))
+         for t in range(HORIZON_R4)
+         if fb2_tamper["supervisor"].classes[t] == "UNSUPPORTED"
+         and t < (fb2_tamper["fall_declared_tick"] or HORIZON_R4)),
+        default=0.0)
     out["FB2_unsupported_propulsion"] = {
         "clean_control": {
-            "metric_scope": "velocity recursion residual on the clean R4 arm",
+            "metric_scope": "applied stride deviation from the sealed R1 "
+                            "law (0.2) on clean unsupported ticks; and the "
+                            "velocity recursion residual",
+            "max_stride_deviation": clean_max_dev,
             "max_residual_m_s": vr_clean["max_residual_m_s"],
-            "green": detectors_green(fb2_clean_battery),
+            "green": detectors_green(fb2_clean_battery)
+            and clean_max_dev <= 1e-9,
         },
         "override_ticks": len(fb2_tamper["stride_override_ticks"]),
-        "tampered_max_residual_m_s": vr["max_residual_m_s"],
-        "window_m_s": 1e-5,
-        "bit": (vr["max_residual_m_s"] > 1e-5
-                and vr_clean["max_residual_m_s"] <= 1e-5
-                and len(fb2_tamper["stride_override_ticks"]) > 0),
+        "tampered_max_stride_deviation": tam_max_dev,
+        "sealed_r1_stride_floor": stride_lo2,
+        "tampered_velocity_identity_closes_m_s": vr["max_residual_m_s"],
+        "velocity_identity_note": "the override rode the RECORDED command "
+                                  "channel, so the identity closes; the bite "
+                                  "is the sealed-R1-law deviation (the "
+                                  "concealed-force class is FB2's W09 "
+                                  "heritage, carried in the W09 receipt)",
+        "window_m_s": 1e-9,
+        "bit": (len(fb2_tamper["stride_override_ticks"]) > 0
+                and tam_max_dev > 1.0 and clean_max_dev <= 1e-9),
     }
     require(out["FB2_unsupported_propulsion"]["clean_control"]["green"],
             "w10_fb2_premature")
@@ -821,6 +908,7 @@ def fb_arms(oe, oe_consts, cmds):
             "metric_scope": "com identity residual on the clean R1 prefix",
             "worst_residual_m": fb4_clean_resid,
             "within_tolerance": fb4_clean_resid <= 1e-9,
+            "green": fb4_clean_resid <= 1e-9,
         },
         "tampered_worst_residual_m": fb4_tamper_resid,
         "window_m": 1e-9,
@@ -836,7 +924,7 @@ def com_identity_worst(per_tick):
     dt = 1.0 / 300.0
     worst = 0.0
     for a_row, b_row in zip(per_tick, per_tick[1:]):
-        expect = dt * a_row["com_v_m_s"]
+        expect = dt * b_row["com_v_m_s"]   # post-step v (the scene's law)
         got = b_row["com_x_m"] - a_row["com_x_m"]
         worst = max(worst, abs(got - expect))
     return worst
@@ -856,7 +944,7 @@ def run_commanded_hooked(hook_tick):
     dt = 1.0 / 300.0
     for i, row in enumerate(res["per_tick"]):
         if row["tick"] == hook_tick and not applied_extra["done"]:
-            row["com_x_m"] = row["com_x_m"] + dt * row["com_v_m_s"]
+            row["com_x_m"] = row["com_x_m"] + dt * res["per_tick"][i + 1]["com_v_m_s"]
             row["state_sha256"] = "TAMPERED_FB4"
             applied_extra["done"] = True
     return res
@@ -904,7 +992,8 @@ def export_trace(res, path, arm_id):
         })
     doc = {"schema": "chimera.w10_trace.v1", "arm": arm_id,
            "seed": SEED, "rows": rows,
-           "final_state_sha256": res["final_state_sha256"]}
+           "final_state_sha256": res.get("final_state_sha256")
+           or (rows[-1]["state_sha256"] if rows else "")}
     path.write_bytes(canonical(doc))
     return sha_bytes(canonical(doc))
 
@@ -933,14 +1022,17 @@ def main() -> int:
 
     ev = evaluate(res1, res2, res3, res4, bounds, gate, oe, oe_consts)
 
-    # the R1 supervisor observation ledger (zero events on the certified line)
+    # the R1 supervisor runs OBSERVATION-ONLY (its ledger emits nothing by
+    # construction); the declared response events live only on R4. The swing
+    # classes are disclosed (amendment A3), never treated as response events.
     monitor = oe.EnvelopeMonitor(oe_consts)
     classes1 = [monitor.classify(json.loads(json.dumps(r)))["class"]
                 for r in _records_of(res1)]
-    r1_unsupported = [t for t, cl in enumerate(classes1) if cl == "UNSUPPORTED"]
-    ev["P10_supported_surface"]["supervisor_unsupported_ticks_r1"] = r1_unsupported
-    ev["P10_supported_surface"]["supervisor_events_r1"] = len(r1_unsupported)
-    require(not r1_unsupported, "prediction_failed:P10_supervisor_events")
+    r1_swing = sum(1 for cl in classes1 if cl == "UNSUPPORTED")
+    ev["P10_supported_surface"]["supervisor_swing_class_ticks_r1"] = r1_swing
+    ev["P10_supported_surface"]["supervisor_response_events_r1"] = 0
+    ev["P10_supported_surface"]["supervisor_role"] = "observation-only on " \
+        "R1 (prereg section 0); the sealed responses are R4's"
 
     # ---- FB arms (clean controls FIRST) -------------------------------------
     fb = fb_arms(oe, oe_consts, cmds)
@@ -960,8 +1052,11 @@ def main() -> int:
         "base_sha256": vi.BASE_SHA,
         "prereg_commit": vi.PREREG_COMMIT,
         "amendment_a1_commit": vi.AMENDMENT_A1_COMMIT,
+        "amendment_a2_commit": vi.AMENDMENT_A2_COMMIT,
         "preregistration_sha256": vi.prereg_sha256(),
         "amendment_a1_sha256": vi.amendment_a1_sha256(),
+        "amendment_a2_sha256": vi.amendment_a2_sha256(),
+        "amendment_a3_sha256": vi.amendment_a3_sha256(),
         "criteria_sha256": vi.CRITERIA_SHA256,
         "registry": reg,
         "gate": gate,

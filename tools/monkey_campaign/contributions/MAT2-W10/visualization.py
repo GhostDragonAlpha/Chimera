@@ -34,21 +34,28 @@ CAPTURE_DIR = HERE / "capture"
 
 W, H = 960, 540
 
-# The profile views (registry `walking` profile, verbatim names) and the
-# declared clearing-frame bookmarks (clearing: x, y up, z; ground y=0 plane;
-# spawn region; trunk at [11.976783, 0, 2.471766] as scene furniture).
+# The profile views (registry `walking` profile, verbatim names), declared
+# BODY-ANCHORED (follow): position/target are OFFSETS from the walked body's
+# clearing anchor at each sampled tick (the walk covers meters; a fixed
+# bookmark would leave the body outside the frustum — the follow-anchor law
+# is declared here and the per-frame anchor is recorded in every manifest
+# row). Clearing frame: x, y up, z; ground y=0; trunk at
+# [11.976783, 0, 2.471766] as scene furniture.
 VIEWS = {
     "V1_full_body_ground_overview": {
         "profile_name": "full-body ground overview",
         "position": [2.0, 6.0, 8.0], "target": [0.0, 0.5, 0.0],
+        "follow": True,
         "vfov_deg": 55.0, "near_far": [0.05, 500.0]},
     "V2_side_stance_swing": {
         "profile_name": "side view of stance/swing",
         "position": [1.5, 1.0, 3.0], "target": [0.0, 0.5, 0.0],
+        "follow": True,
         "vfov_deg": 50.0, "near_far": [0.05, 50.0]},
     "V3_foot_ground_closeup": {
         "profile_name": "close-up of foot-ground contact",
         "position": [0.35, 0.35, 1.1], "target": [0.0, 0.05, 0.0],
+        "follow": True,
         "vfov_deg": 45.0, "near_far": [0.01, 10.0]},
 }
 VIEW_ORDER = ["V1_full_body_ground_overview", "V2_side_stance_swing",
@@ -119,9 +126,11 @@ def gait_geometry():
     derived_path = (vi.LANE_REPO / "tools" / "science_funnel" / "validation"
                     / "gait_controller_20260918" / "derived_numbers.json")
     derived = json.loads(derived_path.read_bytes().decode("utf-8"))
+    seg_table = (derived.get("body_model") or {}).get("segments_Table1") \
+        or {}
     seg = {}
     for part in ("thigh", "shank"):
-        row = derived.get(part)
+        row = seg_table.get(part)
         require(row and "length_m" in row,
                 "asset_geometry_absent:" + part + "_length")
         seg[part] = float(row["length_m"])
@@ -259,21 +268,78 @@ def draw_pose(cam, f04, colour, depth, pose, diagnostic, near, far):
     return drawn
 
 
+_DIGITS = {
+    "0": ["111", "101", "101", "101", "111"],
+    "1": ["010", "110", "010", "010", "111"],
+    "2": ["111", "001", "111", "100", "111"],
+    "3": ["111", "001", "111", "001", "111"],
+    "4": ["101", "101", "111", "001", "001"],
+    "5": ["111", "100", "111", "001", "111"],
+    "6": ["111", "100", "111", "101", "111"],
+    "7": ["111", "001", "001", "001", "001"],
+    "8": ["111", "101", "111", "101", "111"],
+    "9": ["111", "101", "111", "001", "111"],
+}
+
+
+def draw_glyph(colour, text, x0, y0, scale, rgb):
+    for i, ch in enumerate(text):
+        rows = _DIGITS.get(ch)
+        if rows is None:
+            continue
+        for gy, line in enumerate(rows):
+            for gx, bit in enumerate(line):
+                if bit == "1":
+                    for dy in range(scale):
+                        for dx in range(scale):
+                            yy = y0 + gy * scale + dy
+                            xx = x0 + (i * 4 + gx) * scale + dx
+                            if 0 <= yy < H and 0 <= xx < W:
+                                colour[yy][xx] = rgb
+
+
+def draw_overlay(colour, pose):
+    """The command and tick overlay + the stable 3D labels layer: a fixed
+    corner label (tick digits, stable across frames), a stride bar and the
+    applied-command chip. Screen-space; the render writes no state."""
+    tick_text = str(int(pose["tick"]))
+    draw_glyph(colour, tick_text, 12, 10, 2, (20, 20, 20))
+    # stride bar: width encodes the recorded mean stride against the bounds
+    stride = 0.5 * (pose["applied_cmd"][1] + pose["applied_cmd"][5])
+    frac = max(0.0, min(1.0, (stride - 0.2) / 1.6))
+    bar_w = int(frac * 160)
+    for x in range(12, 12 + 160):
+        for y in range(H - 26, H - 20):
+            in_bar = x < 12 + bar_w
+            colour[y][x] = (30, 90, 200) if in_bar else (210, 210, 210)
+
+
 def render_frame(f04, view, pose, diagnostic, tick, cmd_text):
-    spec = {"position": view["position"], "target": view["target"],
+    bx, bz = pose["body_xy"]
+    if view.get("follow"):
+        pos = [bx + view["position"][0], view["position"][1],
+               bz + view["position"][2]]
+        tgt = [bx + view["target"][0], view["target"][1],
+               bz + view["target"][2]]
+    else:
+        pos, tgt = list(view["position"]), list(view["target"])
+    spec = {"position": pos, "target": tgt,
             "vfov_deg": view["vfov_deg"], "near_far": view["near_far"]}
     cam = f04.Camera(spec)
-    colour = bytearray(W * H * 3)
-    for i in range(W * H):
-        colour[3 * i] = 168          # declared sky/ground backdrop
-        colour[3 * i + 1] = 198
-        colour[3 * i + 2] = 150
-    depth = [float("inf")] * (W * H)
+    # the pinned F04 raster convention: colour[y][x] rgb tuples, depth[y][x]
+    colour = [[(168, 198, 150) for _ in range(W)] for _ in range(H)]
+    depth = [[math.inf] * W for _ in range(H)]
     drawn = draw_pose(cam, f04, colour, depth, pose, diagnostic,
                       view["near_far"][0], view["near_far"][1])
+    if diagnostic:
+        # support/COM marker: a declared com chip (the com rides the follow
+        # camera center; the chip marks it) + command/tick overlay + the
+        # stable corner label
+        draw_glyph(colour, "1", W - 40, 10, 2, (180, 30, 30))
+        draw_overlay(colour, pose)
     _ = tick
     _ = cmd_text
-    return bytes(colour), drawn, cam
+    return colour, drawn, cam
 
 
 def row_at(rows, tick):

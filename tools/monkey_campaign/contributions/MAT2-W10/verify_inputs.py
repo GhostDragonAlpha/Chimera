@@ -42,9 +42,11 @@ BASE_SHA = "273d7e592ceec83b272416cf4ce9f4e16a9e3720"
 PREREG = HERE / "PREREGISTRATION.md"
 AMENDMENT_A1 = HERE / "AMENDMENT-A1.md"
 AMENDMENT_A2 = HERE / "AMENDMENT-A2.md"
+AMENDMENT_A3 = HERE / "AMENDMENT-A3.md"
 PREREG_COMMIT = "2bbc6f3317310738667b99fb1f096dadfc39acd7"
 AMENDMENT_A1_COMMIT = "efe5b749870fdbd31895e14a409615a2a460bec1"
 AMENDMENT_A2_COMMIT = "3d0da80b378949b33e953a68ae37c5535c45f179"
+AMENDMENT_A3_COMMIT = "90a9367a4809d2b5e76f182ac8b6287be5646fa5"
 
 # Slot-scratch (runner TMP; never inside the contribution directory).
 SCRATCH = Path(os.environ.get("TMP", ".")) / ("w10_pins_" + ATTEMPT_ID[:8])
@@ -155,7 +157,7 @@ PINS = [
      "79cf207b8b53f07ef2f5ff8fa42133144feeccf75f7b2b0fd4cfe5fb0ce09b3a"),
     ("blob", ("tools", "monkey_campaign", "contributions", "MAT2-F01",
               "evidence", "pins_materialized", "gait_controller.hpp"),
-     "RECORDED_AT_RUN_TIME"),
+     "f0ffea12795bd47f7c48f5ed9b8aa98869725467d94a1081b1d942f6fba129bd"),
     ("blob", ("tools", "monkey_campaign", "contributions", "MAT2-B07",
               "adoption_record.json"),
      "638884569ac106cb7ed738381e804e4f936877f05fd572a5763064cdcb711a0a"),
@@ -258,6 +260,10 @@ def amendment_a1_sha256() -> str:
 
 def amendment_a2_sha256() -> str:
     return sha_bytes(AMENDMENT_A2.read_bytes())
+
+
+def amendment_a3_sha256() -> str:
+    return sha_bytes(AMENDMENT_A3.read_bytes())
 
 
 def require(condition, code: str) -> None:
@@ -415,9 +421,12 @@ def main() -> int:
         "base_sha256": BASE_SHA,
         "prereg_commit": PREREG_COMMIT,
         "amendment_a1_commit": AMENDMENT_A1_COMMIT,
+        "amendment_a2_commit": AMENDMENT_A2_COMMIT,
+        "amendment_a3_commit": AMENDMENT_A3_COMMIT,
         "preregistration_sha256": prereg_sha256(),
         "amendment_a1_sha256": amendment_a1_sha256(),
         "amendment_a2_sha256": amendment_a2_sha256(),
+        "amendment_a3_sha256": amendment_a3_sha256(),
         "criteria_sha256": CRITERIA_SHA256,
         "pins": rows,
         "registry": reg,

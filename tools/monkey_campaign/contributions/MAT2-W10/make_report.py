@@ -95,18 +95,23 @@ def main() -> int:
       "floor semantics carried (W08 P7; never a zero-speed claim) (P7) "
       "| PASS |")
     p10 = p["P10_supported_surface"]
-    w("| on a SUPPORTED SURFACE | unsupported ticks in the declared walk "
-      "interval [" + str(p10["walk_interval_ticks"][0]) + ", "
-      + str(p10["walk_interval_ticks"][1]) + "]: "
-      + str(p10["unsupported_count"]) + " (every tick has a foot contact; "
-      "min contact count " + str(p10["min_contact_count_in_interval"])
-      + "; the supervisor's ledger records "
-      + str(p10["supervisor_events_r1"]) + " events) (P10) | PASS |")
+    w("| on a SUPPORTED SURFACE | every tick of the declared walk interval ["
+      + str(p10["walk_interval_ticks"][0]) + ", "
+      + str(p10["walk_interval_ticks"][1]) + "] carried by the four front "
+      "pads (low-contact ticks " + str(p10["low_contact_count"])
+      + "; min contact count " + str(p10["min_contact_count_in_interval"])
+      + "); every pad gap > 0; the gait's own swing windows counted "
+      + str(p10["swing_window_ticks_counted"]) + " <= bound "
+      + str(p10["swing_window_bound_ticks"]) + " (amendment A3); the "
+      "observation supervisor emitted "
+      + str(p10["supervisor_response_events_r1"]) + " response events "
+      "(P10) | PASS |")
     cap13 = cap["P13_visual_binding"]
     w("| numerical and visual receipts MATCH | every rendered frame binds "
       "the state hash of its run record ("
       + str(cap13["pairs_checked"]) + " diagnostic/clean pairs, all "
-      "state-hash identical); decode pixel-exact at declared probe indices; "
+      "state-hash identical: " + str(cap13["pairs_state_hash_identical"])
+      + "); decode pixel-exact at declared probe indices; "
       "the tampered-binding arm FIRES (P13) | PASS |")
     fb5 = cap["fb5_all_differ"]
     w("| EXISTING MONKEY ASSET walking under player commands | the declared "
@@ -133,7 +138,9 @@ def main() -> int:
     w("- Base: `" + vi.BASE_SHA + "` (the seeded `origin/review/MAT2-W10` "
       "integrated tip). Preregistration committed separate-first: `"
       + vi.PREREG_COMMIT + "`; amendments: A1 `" + vi.AMENDMENT_A1_COMMIT
-      + "`, A2 `" + vi.AMENDMENT_A2_COMMIT + "`.")
+      + "`, A2 `" + vi.AMENDMENT_A2_COMMIT
+      + "`; A3 (P10 support-law correction) sha `"
+      + vi.amendment_a3_sha256() + "`.")
     w("- Preregistration sha256 `" + vi.prereg_sha256()
       + "`; amendment A1 `" + vi.amendment_a1_sha256() + "`; amendment A2 `"
       + vi.amendment_a2_sha256() + "`.")

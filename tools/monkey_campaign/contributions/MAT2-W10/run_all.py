@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import subprocess
 import sys
+from pathlib import Path
 
 HERE = __import__("pathlib").Path(__file__).resolve().parent
 PY = sys.executable
@@ -23,7 +24,10 @@ STEPS = [
     ("run_checks", "python -B run_checks.py"),
     ("make_report", "python -B make_report.py"),
     ("lint", "python -B lint_report_numbers.py"),
+    ("bundle", "python -B make_evidence_bundle.py"),
 ]
+
+BATCH_GATES = ("E:/ChimeraWork/monkey-coordination/card-kit/batch_gates.py")
 
 
 def main() -> int:
@@ -33,6 +37,19 @@ def main() -> int:
         if proc.returncode != 0:
             print("STEP RED: " + name + " exit " + str(proc.returncode))
             return proc.returncode
+    # the 12 card-kit gates run HERE, against the card dir WITH its produced
+    # receipts (the sealed tree alone carries no receipts by design)
+    print("== batch_gates (12) ==")
+    import os
+    import sys
+    json_out = Path(os.environ.get("TMP", ".")) / "gates12_w10.json"
+    proc = subprocess.run(
+        [sys.executable, "-B", BATCH_GATES, str(HERE),
+         "--json", str(json_out)],
+        cwd=str(HERE))
+    if proc.returncode != 0:
+        print("STEP RED: batch_gates exit " + str(proc.returncode))
+        return proc.returncode
     print("ALL STEPS GREEN")
     return 0
 
