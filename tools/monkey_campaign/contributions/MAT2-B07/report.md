@@ -7,7 +7,7 @@ GENERATED from the receipts by `make_report.py` (zero hand-transcribed numbers).
 | card | MAT2-B07 (task_id short form B07) |
 | attempt | 08d3db08d4d64179b2f95a516a2155bd (agent wk-b07-adopt, branch-3) |
 | criteria_sha256 | 5393a5d7707c370ce5c8ea072512a2b053d0abfb1d36dc952d509714150c77d2 |
-| preregistration_sha256 | b08ba98f32dd1710f602bb7a5e2849a282fdb443d326de0ccd5c9ea49ffccf6a |
+| preregistration_sha256 | 2f064ce21d0295444284818bcc6e731ac5a59cfca856ccd13d97e56663444e84 |
 | governing decision | Captain #4 ADOPT-WITH-AUTHORIZATIONS (msg-4def1f92578b44d9b57b381643eae245) |
 
 ## 1. done_when verification
@@ -31,14 +31,14 @@ the adopted assembly becomes the recorded BINDING TARGET (TC-7) for the runtime 
 | 2 | R-MASS-02 | closed_by_recorded_ruling |
 | 3 | R-MASS-03 | refusal_stands |
 | 4 | R-OWN-02/03 | closed_by_work_with_receipt |
-| 5 | R-OWN-04 | authorized_lane_open |
-| 6 | R-OWN-05 | authorized_lane_open |
+| 5 | R-OWN-04 | lane_evidence_delivered |
+| 6 | R-OWN-05 | lane_evidence_delivered |
 | 7 | R-FRM-02 | closed_by_work_with_receipt |
 | 8 | R-FRM-03 | closed_by_recorded_ruling_with_work_receipt |
 
 ## 4. Per-row readiness closure table (the sealed B06 receipt rows)
 
-Closure EVIDENCE per row; sealed statuses are never flipped here. assembly_readiness claimed by this record: false (honest count: 4 satisfied rows untouched; of the 10 gaps: 3 closed_by_work_with_receipt (R-OWN-02, R-OWN-03, R-FRM-02), 3 closed_by_recorded_ruling (R-MASS-02, R-MASS-04) or ruling with work receipt (R-FRM-03), 2 refusal_stands (R-MASS-03, R-PRT-01), 2 authorized_lane_open (R-OWN-04, R-OWN-05)).
+Closure EVIDENCE per row; sealed statuses are never flipped here. assembly_readiness claimed by this record: false (honest count: 4 satisfied rows untouched; of the 10 gaps: 3 closed_by_work_with_receipt (R-OWN-02, R-OWN-03, R-FRM-02), 3 closed_by_recorded_ruling (R-MASS-02, R-MASS-04) or ruling with work receipt (R-FRM-03), 2 refusal_stands (R-MASS-03, R-PRT-01), 2 lane_evidence_delivered (R-OWN-04, R-OWN-05; Amendment A1)).
 
 | requirement | domain | sealed status | closure class |
 |---|---|---|---|
@@ -49,8 +49,8 @@ Closure EVIDENCE per row; sealed statuses are never flipped here. assembly_readi
 | R-OWN-01 | ownership | evaluated_satisfied_at_scope | satisfied_row_untouched |
 | R-OWN-02 | ownership | evaluated_gap | closed_by_work_with_receipt |
 | R-OWN-03 | ownership | evaluated_gap | closed_by_work_with_receipt |
-| R-OWN-04 | ownership | evaluated_gap | authorized_lane_open |
-| R-OWN-05 | ownership | evaluated_gap | authorized_lane_open |
+| R-OWN-04 | ownership | evaluated_gap | lane_evidence_delivered |
+| R-OWN-05 | ownership | evaluated_gap | lane_evidence_delivered |
 | R-FRM-01 | frame | evaluated_satisfied_at_scope | satisfied_row_untouched |
 | R-FRM-02 | frame | evaluated_gap | closed_by_work_with_receipt |
 | R-FRM-03 | frame | evaluated_gap | closed_by_recorded_ruling_with_work_receipt |
@@ -73,7 +73,7 @@ Closure EVIDENCE per row; sealed statuses are never flipped here. assembly_readi
 
 ## 7. TC-7 body-domain bind + TC-12 rebind record
 
-- TC-7: body domain chimera.b07.adoption.a971dce72c1d494b481ba06acf8e0dd4; domain_tag material-assembly/buffy02-lineage; qualification_state: NOT runtime-qualified (TC-8 inputs absent)
+- TC-7: body domain chimera.b07.adoption.240b457bc9612111173314b49f453b80; domain_tag material-assembly/buffy02-lineage; qualification_state: NOT runtime-qualified (TC-8 inputs absent)
 - TC-12 executed here: the TC-7 bind record + the C09 anchor-class re-run against the CERTIFIED backend; the sealed certificate re-issue through the gate is NOT fabricated — 4 named prerequisites recorded (adopted-assembly scene; TC-3 drive-table re-declaration; TC-8 measured inputs; then the TC-6 certificate + C09 anchors on THAT body).
 - Certified line: NOT silently invalidated (symmetric clause); admitted mass 0.0 kg; the certified walking body stays 10.037998 kg.
 
@@ -108,26 +108,26 @@ Closure EVIDENCE per row; sealed statuses are never flipped here. assembly_readi
 ## 11. Refused steps (verbatim law, none forced)
 
 - Ports: 0/8 qualified; the honest refusal record (PORT_QUALIFICATION.md) stands; this attempt qualifies no port (auth item 3).
-- R-OWN-04: fitting lane authorized (auth item 5) and SEPARATELY dispatched — not executed here.
-- R-OWN-05: c17-stiffness lane owns measured attachment-interface sources; lead admission only on measured sources — none admitted here.
+- R-OWN-04: the authorized fitting lane DELIVERED (store-pinned receipts integrated here); no fitted candidate is adopted and the sealed outside statuses keep their per-axis excesses.
+- R-OWN-05: the measured-source matrix + bounded admission questions DELIVERED (store-pinned; integrated here); NOTHING admitted - the lane's own recommendation is admit-nothing-today; the Lieutenant admits.
 - Certificate re-issue for the adopted body: refused until the 4 TC-12 prerequisites exist (no fabrication).
 
 ## 12. Evidence index (sha256)
 
 | artifact | sha256 |
 |---|---|
-| ownership_mappings.json | c63adf4a15b97bab53ed29e2702ada87fbab75fc06501d40eac0506110de707d |
-| frame_bindings.json | 345176992b53a05dc6276929f49c621da15a2d59e7abef1274ee03a2a0c0aa5b |
-| adoption_record.json | f6952e8afc778f79a0ede05b61d73dd7c3fabd68789703552cd6136e25ef0199 |
+| ownership_mappings.json | 2e1d7534a6336949548c129f8a72ba89a6aadfba154d836fe513d11c3f4600bd |
+| frame_bindings.json | bbd9211fdfcdfb9eed86dbde28b05482b57088acb59e25f5c039e15dd2bcc59c |
+| adoption_record.json | 638884569ac106cb7ed738381e804e4f936877f05fd572a5763064cdcb711a0a |
 | c09_anchor_rerun/c09_anchor_rerun.json | a68baa487e5b90e8e1427538bf831a7a0a01da4a65adb24fbc050b9f90944c0d |
-| capture/capture_receipt.json | 1fc251bd033462f807e5d7209803939ac8c04f7890ac4b73fc1065b06bf451c9 |
+| capture/capture_receipt.json | 83fb856dd1bc4e975a73ea152da4d5d4574439d7d4cdeaecff67872efb172204 |
 | checks_receipt.json | 81da14d829d7ada4435cb9d2a510a104a1518f907fe65d1faf84171ec7b2ad57 |
-| PREREGISTRATION.md | b08ba98f32dd1710f602bb7a5e2849a282fdb443d326de0ccd5c9ea49ffccf6a |
+| PREREGISTRATION.md | 2f064ce21d0295444284818bcc6e731ac5a59cfca856ccd13d97e56663444e84 |
 | ownership_mappings.py | d3842fd859d506d3efa8a2c45ed110ac7bb207ffdfc222fc6a8ac4ffef24fef5 |
-| adoption_record.py | e204d5fbabcf2b9ec1bad2bba9d648749a78635c8c9105f2a5469b335e5d7246 |
-| test_b07_adoption.py | 77bf08991ebdcb3cb85b00e6aed320cd66ca4d90edfa897f7d8719f13e64a21b |
+| adoption_record.py | f20aab95cc6e1e4a89153d194310b7ac90981332d533dd9fce2b6c73bbc1fdf4 |
+| test_b07_adoption.py | 106ed2461342d405c1b638f4c900fd981183cc40d760c3a9fd05a032097fd32d |
 | c09_anchor_rerun.py | 3100e1af6b8943e0e3de6f1e49a7d62d051bcc2cb1fa8538b1548f342b735e74 |
 | make_capture.py | 9f6991a2aa850ccffe0c75e8813b9dda1be6676c5657c841fc060fc8c2124519 |
-| make_report.py | 01fa2aac9d45558e30f093946739b03aef75d3f211e6bf21861c63a4e258f1ca |
+| make_report.py | f662cff3f4cd3796c7f6cbec43823d328c29096e742c2cf0e8683f1c6dbf7592 |
 | lint_report_numbers.py | e9930216ed4d78e43dc0d349173c53b42162caacafc5e891bbdd706e6369eb23 |
 

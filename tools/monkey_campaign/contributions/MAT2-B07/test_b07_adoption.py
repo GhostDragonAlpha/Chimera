@@ -279,7 +279,8 @@ class AdoptionRecord(unittest.TestCase):
         lawful = {"closed_by_work_with_receipt",
                   "closed_by_recorded_ruling",
                   "closed_by_recorded_ruling_with_work_receipt",
-                  "refusal_stands", "authorized_lane_open"}
+                  "refusal_stands", "authorized_lane_open",
+                  "lane_evidence_delivered"}
         for item in items:
             self.assertEqual(item["ruling"], expected_rulings[item["item"]])
             self.assertIn(item["discharge"], lawful)

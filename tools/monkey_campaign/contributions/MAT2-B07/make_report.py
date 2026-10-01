@@ -246,11 +246,13 @@ def main():
     w("- Ports: %s" % ("0/8 qualified; the honest refusal record "
                        "(PORT_QUALIFICATION.md) stands; this attempt "
                        "qualifies no port (auth item 3)."))
-    w("- R-OWN-04: fitting lane authorized (auth item 5) and SEPARATELY "
-      "dispatched — not executed here.")
-    w("- R-OWN-05: c17-stiffness lane owns measured attachment-interface "
-      "sources; lead admission only on measured sources — none admitted "
-      "here.")
+    w("- R-OWN-04: the authorized fitting lane DELIVERED (store-pinned "
+      "receipts integrated here); no fitted candidate is adopted and the "
+      "sealed outside statuses keep their per-axis excesses.")
+    w("- R-OWN-05: the measured-source matrix + bounded admission "
+      "questions DELIVERED (store-pinned; integrated here); NOTHING "
+      "admitted - the lane's own recommendation is admit-nothing-today; "
+      "the Lieutenant admits.")
     w("- Certificate re-issue for the adopted body: refused until the %d "
       "TC-12 prerequisites exist (no fabrication)."
       % len(ar["tc12_rebind_record"]["reissue_prerequisites_named"]))

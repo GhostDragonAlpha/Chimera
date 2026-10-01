@@ -56,6 +56,13 @@ RUNTIME_CONTRACT_PATH = (STORE / "MAT2-B07" / "numerical"
 MASS_AUDIT_RECEIPT_PATH = PREREQ / "numerical" / "mass_audit_receipt.json"
 MASS_AUDIT_RECEIPT_SHA256 = ("3aea85bc7e07ebceb3d1f6f9e969fc9af14edc198620d2"
                              "8ef955da619d351922")
+FITTING_RECEIPT_PATH = STORE / "MAT2-B07" / "numerical" / "fitting_receipt.json"
+FITTING_RECEIPTS_MD_PATH = (STORE / "MAT2-B07" / "numerical"
+                            / "FITTING_RECEIPTS.md")
+MEASURED_SOURCES_PATH = (STORE / "MAT2-B07" / "numerical"
+                         / "MEASURED_SOURCES.md")
+ADMISSION_PROPOSAL_PATH = (STORE / "MAT2-B07" / "numerical"
+                           / "ADMISSION_PROPOSAL.md")
 
 OSIM_PATH = (CONTRIB / "MAT2-M02" / "data" / "macaque_arm"
              / "monkeyArm_current.osim")
@@ -210,17 +217,23 @@ def authorization_items():
         {"item": 5, "ruling": "R-OWN-04",
          "text": "the fitting lane for the 8 outside placements may be "
                  "dispatched under standard evidence discipline.",
-         "discharge": "authorized_lane_open",
-         "evidence": "authorization recorded; the lane is SEPARATELY "
-                     "DISPATCHED and is not executed inside this attempt "
-                     "(bounded disclosure, no forced pass)"},
+         "discharge": "lane_evidence_delivered",
+         "evidence": "lane wk-rown04-fitting landed measured fits for all "
+                     "8 outside placements (FITTING_RECEIPTS.md + "
+                     "fitting_receipt.json, store-pinned); integrated "
+                     "here; NO fitted candidate is adopted and the sealed "
+                     "outside statuses keep their exact per-axis excesses"},
         {"item": 6, "ruling": "R-OWN-05",
          "text": "the c17-stiffness lane completes measured "
                  "attachment-interface sources; lead admission ONLY on "
                  "measured sources.",
-         "discharge": "authorized_lane_open",
-         "evidence": "lane ownership unchanged (c17-stiffness lane); no "
-                     "admission is recorded here"},
+         "discharge": "lane_evidence_delivered",
+         "evidence": "lane wk-rown05-stiffness delivered the measured "
+                     "source matrix + the bounded admission questions "
+                     "(MEASURED_SOURCES.md + ADMISSION_PROPOSAL.md, "
+                     "store-pinned); integrated here; NOTHING is admitted "
+                     "(the lane's own recommendation: admit nothing today; "
+                     "the Lieutenant admits)"},
         {"item": 7, "ruling": "R-FRM-02",
          "text": "ulna-edge correspondence acceptance + packet-to-forest "
                  "binding proceed as attempt work.",
@@ -293,20 +306,27 @@ def per_row_table():
                       "item 4"},
         {"requirement_id": "R-OWN-04", "domain": "ownership",
          "sealed_status": "evaluated_gap",
-         "closure_class": "authorized_lane_open",
-         "evidence": "authorization item 5 (fitting lane may be dispatched; "
-                     "separately dispatched)",
-         "statement": "OPEN - the 8 measured-outside placements keep their "
-                      "exact per-axis excesses; resolving them needs the "
-                      "authorized fitting lane, not this card"},
+         "closure_class": "lane_evidence_delivered",
+         "evidence": "lane wk-rown04-fitting (authorized, item 5): "
+                     "measured fits for all 8 outside placements with "
+                     "disclosed residuals (fitting_receipt.json + "
+                     "FITTING_RECEIPTS.md, store-pinned)",
+         "statement": "the authorized fitting experiment has RUN and its "
+                      "measured correspondence evidence is integrated; the "
+                      "sealed outside placements keep their exact per-axis "
+                      "excesses; no fitted candidate is adopted and any "
+                      "status flip is a lawful re-evaluation's act"},
         {"requirement_id": "R-OWN-05", "domain": "ownership",
          "sealed_status": "evaluated_gap",
-         "closure_class": "authorized_lane_open",
-         "evidence": "authorization item 6 (c17-stiffness lane completes "
-                     "measured sources; lead admission only on measured "
-                     "sources)",
-         "statement": "OPEN - no measured attachment-interface source is "
-                      "admitted by this attempt"},
+         "closure_class": "lane_evidence_delivered",
+         "evidence": "lane wk-rown05-stiffness (authorized, item 6): the "
+                     "measured attachment-interface source matrix + the "
+                     "bounded admission questions (MEASURED_SOURCES.md + "
+                     "ADMISSION_PROPOSAL.md, store-pinned)",
+         "statement": "the measured-source evidence half is delivered and "
+                      "integrated; NOTHING is admitted (the lane's own "
+                      "recommendation: admit nothing today); the lead "
+                      "admission question is recorded for the Lieutenant"},
         {"requirement_id": "R-FRM-01", "domain": "frame",
          "sealed_status": "evaluated_satisfied_at_scope",
          "closure_class": "satisfied_row_untouched",
@@ -475,6 +495,10 @@ def main():
         "mass_audit_receipt": pin(MASS_AUDIT_RECEIPT_PATH,
                                   MASS_AUDIT_RECEIPT_SHA256),
         "osim_model": pin(OSIM_PATH, OSIM_SHA256),
+        "rown04_fitting_receipt": pin(FITTING_RECEIPT_PATH),
+        "rown04_fitting_receipts_md": pin(FITTING_RECEIPTS_MD_PATH),
+        "rown05_measured_sources": pin(MEASURED_SOURCES_PATH),
+        "rown05_admission_proposal": pin(ADMISSION_PROPOSAL_PATH),
     }
     b04 = json.loads(B04_PATH.read_text(encoding="utf-8"))
     producer = json.loads(PRODUCER_PATH.read_text(encoding="utf-8"))
@@ -624,8 +648,8 @@ def main():
                             "R-OWN-03, R-FRM-02), 3 closed_by_recorded_"
                             "ruling (R-MASS-02, R-MASS-04) or ruling with "
                             "work receipt (R-FRM-03), 2 refusal_stands "
-                            "(R-MASS-03, R-PRT-01), 2 authorized_lane_open "
-                            "(R-OWN-04, R-OWN-05)",
+                            "(R-MASS-03, R-PRT-01), 2 lane_evidence_"
+                            "delivered (R-OWN-04, R-OWN-05; Amendment A1)",
         },
         "tc7_body_domain_bind": tc7_bind(adoption_digest),
         "tc12_rebind_record": tc12_rebind(),
