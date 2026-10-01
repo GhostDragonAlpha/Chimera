@@ -27,7 +27,7 @@ def gen_terrain_py(gd):
     return terr,_,_
 gg=read_chimera(NATIVE/'genomes'/'beargoal.chimera')
 ter8,_,_=gen_terrain_py(gg); TSC8=int(gg['terrainScale'])
-p2=subprocess.Popen([str(NATIVE/'ca_core.exe'),str(NATIVE/'genomes'/'bearhill.chimera'),'selftest'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+p2=subprocess.Popen([str(NATIVE/'ca_core.exe'),'0',str(NATIVE/'genomes'/'bearhill.chimera'),'selftest'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
 lines2=[]
 for line in p2.stdout:
     lines2.append(line.strip())
