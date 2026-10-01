@@ -71,8 +71,12 @@ disclosure is a `"disclosure"` field on the `hero_tick150` entry in
 `tools/product_viewer/certified_world.json`, rendered by
 `certified_world_section()` in `tools/product_viewer/server.py` as one
 amber line between the hero image and its caption (server-built HTML, zero
-page JS). It passes through `load_certified_world()` untouched and appears in
-`/api/world/certified` like the other entry fields.
+page JS). It passes through `load_certified_world()` untouched and is
+projected by the `/api/world/certified` route's fixed key tuple (entries
+without a disclosure project `null`), so API consumers receive the
+disclosure too; the projection is asserted by
+`test_route_projects_disclosure_field` in
+`tools/product_viewer/tests/test_certified_world.py`.
 
 **Why:** Captain decision, docket 2026-09-30 (decision #1): the anomaly is
 DISCLOSED, not re-authored — VISUAL_DEFECTS.md Option A (disclosure-only, no
@@ -83,3 +87,13 @@ re-render, no sha re-pin, and the sealed-capture contract (served bytes equal
 the pinned file bytes) is unchanged. The disclosure is declared page copy for
 a known anomaly; it is not a refusal and does not alter the verification
 state of the entry.
+
+**Correction record (PR #291 review):** the original disclosure commit
+(da8b2c8a) stated that the disclosure "appears in /api/world/certified like
+the other entry fields". That claim was FALSE at that revision: the route
+projected a fixed key tuple `(name, section, caption, identity_note, sha256,
+bytes, verified, refusal)` that omitted `disclosure`. Caught in review (all
+other checks PASS); fixed by adding `disclosure` to the projection tuple,
+with `test_route_projects_disclosure_field` backing the claim. The original
+commit message is immutable and repeats the wrong claim; this note is the
+correction of record.

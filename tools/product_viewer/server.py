@@ -854,8 +854,9 @@ class ViewerHandler(BaseHTTPRequestHandler):
                             "loaded": H.world.get("loaded", False),
                             "declared_limits": H.world.get("declared_limits", []),
                             "entries": [{k: e.get(k) for k in
-                                         ("name", "section", "caption", "identity_note",
-                                          "sha256", "bytes", "verified", "refusal")}
+                                         ("name", "section", "caption", "disclosure",
+                                          "identity_note", "sha256", "bytes",
+                                          "verified", "refusal")}
                                         for e in H.world["entries"]]})
             elif path == "/api/world/certified/frame":
                 name = None
