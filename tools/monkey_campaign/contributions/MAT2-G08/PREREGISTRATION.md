@@ -427,5 +427,25 @@ nonfinite_value, dim_mismatch) and are cited via their sealed owners.
 
 ## 14. Amendments
 
-(none yet -- amendments after this freeze, both before the experiment runs;
-each amendment recorded here with its scope.)
+- a1 (pre-experiment, pre-implementation-commit; scope: the P6 response-class
+  registry and the A1 composition binding window -- no frozen window, verdict
+  law, battery or falsifier arm is changed):
+  (i) P6 adds the fourth DECLARED response class `declared_establishing`: an
+  approach-phase tick (the G06 P6 law marks the approach NOT supported while
+  the relocating channel establishes its press at the declared approach
+  impulse A_PRESS_NS = 0.0016 N*s with the holders already stuck at the
+  operating point). The declared class registry is:
+  declared_release, declared_solver_slip, declared_flight_hover,
+  declared_establishing. An unsupported tick outside the registry still
+  refuses `unsupported_state_unexplained`.
+  (ii) A1 continuous certified-value bindings: where the pinned receipts
+  record a MEASURED continuous value (e.g. conversion_worst_N, the recorded
+  collision-event jn/anchor values), the assembled line binds to the
+  certified value inside the COMPOSITION BINDING WINDOW 1e-9 absolute; a
+  larger deviation refuses `identity_binding_mismatch` and is reported
+  measured-vs-certified. Structural facts (ticks, booleans, counts, collision
+  tick lists) still bind EXACTLY (P4).
+  (iii) A4 ledger clarification: per-tick support states in the union ledger
+  are the recorded segment verdicts -- the G06 P6 verdicts (T segment) and
+  the delivered agg_supported_flag projections of the pinned G05 law
+  (R segment); no new support law is introduced.
