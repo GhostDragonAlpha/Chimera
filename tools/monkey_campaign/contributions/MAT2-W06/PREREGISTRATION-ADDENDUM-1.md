@@ -146,13 +146,22 @@ verdicts) is UNCHANGED by this addendum.
 
 ## A4. Vocabulary amendments
 
-- FB5 (the no-runs structural scan) splits into two declared classes:
-  (i) TRAINING/RUN-LAUNCH paths (`run_training`, `subprocess`, `socket`,
-  `urllib`, `spsa_iterate`, `TrainablePolicy`, `fitness` calls) remain
-  forbidden in EVERY contribution file; (ii) the PINNED REPLAY import
+- FB5 (the no-runs structural scan) splits into three declared classes:
+  (i) TRAINING/RUN-LAUNCH paths (`run_training`, `socket`, `urllib`,
+  `spsa_iterate`, `TrainablePolicy`, `fitness` calls) remain forbidden in
+  EVERY contribution file; (ii) the PINNED REPLAY import
   (`tools.policy_compat.runner.run_closed_loop` and its loader) is allowed
-  ONLY inside `run_replay_capture.py`, the file this addendum declares.
-  The bite arms for both classes stay in the named checks.
+  ONLY inside `run_replay_capture.py`, the file this addendum declares;
+  (iii) the CAPTURE-TOOL calls — the ffmpeg FFV1 encode and the G4 decode
+  check — are allowed ONLY inside `run_replay_capture.py`, with the exact
+  argv declared in A2 (encode:
+  `ffmpeg -y -loglevel error -framerate 10 -i <frames>/frame_%03d.png -c:v
+  ffv1 -level 3 -g 1 -fflags +bitexact <out>.mkv`; decode:
+  `ffmpeg -loglevel error -i <mkv> -map 0:v:0 -f rawvideo -pix_fmt rgb24 -`
+  piped and compared against the rendered PNG bytes). `subprocess` appears
+  in `run_replay_capture.py` ONLY for these two declared media operations —
+  it launches no simulation, no training and no evaluation. The bite arms
+  for all three classes stay in the named checks.
 - The static record-space rasters of the first capture are RETIRED from the
   profile-conformant capture manifest (the format validator forbids image
   rows under a motion profile: every row must be video-located). They
