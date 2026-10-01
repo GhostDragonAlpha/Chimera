@@ -1,0 +1,111 @@
+{
+  "scope": "Source-to-native kinematic geometry, dimensions and viewer routing; not muscle force, sealed bone material, full body or locomotion.",
+  "runtime": {
+    "engine_pid": 86852,
+    "game_pid": 84760,
+    "engine_port": 8124,
+    "game_port": 8224,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\anatomy-engine\\Release\\chimera_engine.exe",
+    "engine_arguments": [
+      "8124",
+      "--hidden",
+      "1600",
+      "900",
+      "--no-restore",
+      "--preserve-mesh-topology"
+    ],
+    "exe_sha256": "567548BDA005067820F421D05A2BB1E80BF07443F18C28ECB28340BF1BEF0F44",
+    "graph_hash": "0c22e6a4fcb650c5a984b91bc57ae78940683cd5c0c33ca968121f883ef9a246",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\macaque-anatomy\\scene.json",
+    "launched_utc": "2026-09-17T02:55:18.5211665Z",
+    "scope": "Macaque upper limb research geometry and modeled parameters; not full animal, raw scan certification, muscle volume, skin/fat geometry or living physics."
+  },
+  "source_revision": "4fb7dddeec06a0df9525c18f37234a824cb1b5b1",
+  "checks": [
+    {
+      "name": "private_anatomy_scene",
+      "pass_": true,
+      "detail": {}
+    },
+    {
+      "name": "source_triangle_indices_preserved",
+      "pass_": true,
+      "detail": {}
+    },
+    {
+      "name": "native_body_owner",
+      "pass_": true,
+      "detail": {}
+    },
+    {
+      "name": "source_frames_pose_0",
+      "pass_": true,
+      "detail": {
+        "max_error_m": 7.448790390052196e-09,
+        "vertices": 2761
+      }
+    },
+    {
+      "name": "bone_dimensions_preserved_0",
+      "pass_": true,
+      "detail": {
+        "max_edge_error_m": 1.5099372584290865e-08
+      }
+    },
+    {
+      "name": "source_frames_pose_1",
+      "pass_": true,
+      "detail": {
+        "max_error_m": 5.798534168099945e-08,
+        "vertices": 2761
+      }
+    },
+    {
+      "name": "bone_dimensions_preserved_1",
+      "pass_": true,
+      "detail": {
+        "max_edge_error_m": 5.075949177928314e-08
+      }
+    },
+    {
+      "name": "source_frames_pose_2",
+      "pass_": true,
+      "detail": {
+        "max_error_m": 7.31154611507967e-08,
+        "vertices": 2761
+      }
+    },
+    {
+      "name": "bone_dimensions_preserved_2",
+      "pass_": true,
+      "detail": {
+        "max_edge_error_m": 2.987661128304314e-08
+      }
+    },
+    {
+      "name": "outside_source_range_refused",
+      "pass_": true,
+      "detail": {}
+    },
+    {
+      "name": "refusal_preserves_surface",
+      "pass_": true,
+      "detail": {}
+    },
+    {
+      "name": "unqualified_bone_press_refused_by_viewer",
+      "pass_": true,
+      "detail": {}
+    },
+    {
+      "name": "refused_press_preserves_surface",
+      "pass_": true,
+      "detail": {}
+    },
+    {
+      "name": "reset_to_source_pose",
+      "pass_": true,
+      "detail": {}
+    }
+  ]
+}

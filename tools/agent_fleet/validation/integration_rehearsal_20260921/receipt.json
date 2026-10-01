@@ -1,0 +1,232 @@
+{
+  "lane": "agent/integration-rehearsal-20260921",
+  "date": "2026-09-21",
+  "agent": "GLM 5.3",
+  "kind": "DRY-RUN of master integration \u2014 no master push; everything in the scratch clone",
+  "clone": "E:/ChimeraWork/rehearsal-agent",
+  "branch": "agent/integration-rehearsal-20260921",
+  "master_never_pushed": {
+    "before": "6946f3b99f04b794bca948a1b2cdc44688c2354d",
+    "before_recorded_when": "before any work, from the fresh clone (.rehearsal_master_before.txt)",
+    "after": "6946f3b99f04b794bca948a1b2cdc44688c2354d",
+    "after_recorded_when": "after final push of the rehearsal branch",
+    "unchanged": true,
+    "method": "git ls-remote origin master"
+  },
+  "rule_0": {
+    "statement": "The 11 declared independent lanes can be merged onto the walk chain tip on top of master 6946f3b9 with only enumerated, resolvable conflicts, and the merged engine/walk state reproduces the chain's banked behavior.",
+    "prediction": "At most the predicted hot files conflict (.gitattributes, THE_CHECKLIST.md, pixel_truth/CT data, main.cpp-family instruments); gait_unit after the full sequence refuses at tick 122 exactly as receipt_wave27 banked.",
+    "falsifiers": {
+      "f1_master_unchanged": "git ls-remote origin master identical before/after (measured: see master_never_pushed).",
+      "f2_conflict_claims": "every conflict claim carries its file list; every clean claim is backed by a --no-ff merge commit in this clone (commit hashes below).",
+      "f3_missing_lane_reported": "a lane commit absent from canonical after 3 fetches is reported, not guessed (matter B 53aff9f9c).",
+      "f4_walk_state": "post-merge gait_unit must reproduce refusal tick=122 gait_impact_event_budget and the receipt_wave27 red enumeration; any drift is a finding.",
+      "RESULT_f1": "GREEN",
+      "RESULT_f2": "GREEN",
+      "RESULT_f3": "GREEN (matter B reported missing; wiseman aede5de9 + adapter bbbc4d67 landed mid-rehearsal and were then merged)",
+      "RESULT_f4": "GREEN (tick 122 exact; red set line-identical; machine red counter 16 = 13 named + 3 NOT-MEASURED, pass=false carried honestly)"
+    }
+  },
+  "chain": {
+    "tip_merged": "d981bc0492fb0040d481d2c75c07a8c7448d49e (wave 27a, origin/agent/gait-wave27-sinking-shoulder)",
+    "merge": "FAST-FORWARD from 6946f3b9, ZERO conflicts",
+    "why_no_conflicts_possible": "merge-base(6946f3b9, d981bc04) = 6946f3b9 \u2014 the chain already contains current master. Its base f0efbba7 = master + 19 early-campaign commits (gait waves 2-8, CT segmentation, bone-id).",
+    "commits_brought": 34,
+    "files_brought": 123,
+    "master_drift_since_32105f18": "67 commits; ChimeraEngine/engine/: 15 files +3149/-32 (tests_coupled_arm/gait_unit.cpp +199); tools/science_funnel/: 307 files +183039/-28. ALL inside the chain's history \u2014 inherited, not conflicted.",
+    "chain_proper": "e7dce7e2(w12) 554f40ed(w13) b5886451(w14) c3db49cd(w15) 47d30cb4(w16) c03ddf41(w17) 74fc0195(w19) 5c94fb4b(w20) 8a17c500(w21) 17b6bdde(w22) 3cf3674c(w23) ecddf6eb(w24) 40811bdd(w25) 6efb3ef0(w26) d981bc04(w27a)",
+    "wave18_off_chain": "17936d83 (partial-lean) is a superseded sibling: wave 19 'THE LEANED ENTRY, RECONCILED' has wave 17 (c03ddf41) as parent; wave 18's content lives in the chain via wave 19.",
+    "siblings_not_merged": "27b/27c are not part of the chain proper. Wave 27c landed on canonical mid-rehearsal: origin/agent/gait-wave27c-decay-seats = 4198dbdc (falsified at derivation), NOT a descendant of d981bc04. Left as a sibling.",
+    "tests_after": {
+      "gait_unit": "build OK (MSVC Release); run EXIT 0; refusal tick=122 gait_impact_event_budget = the banked wave-27 state; red set line-identical to receipt_wave27.json red_enumeration (13 named + 3 NOT-MEASURED; machine counter 16); pass=false carried honestly",
+      "creature_graph_tests": "19 passed, 27 subtests passed",
+      "science_funnel_root_baseline": "19 failed, 322 passed, 1 skipped, 16 errors, 24m51s (16 errors pre-existing at this state; names partially lost to a capture truncation \u2014 3 test_force_compiler ERROR names survived; full capture repeated at final state)"
+    }
+  },
+  "lanes": [
+    {
+      "name": "matter A",
+      "tip": "2d585c7b",
+      "branch": "agent/matter-skeleton-import-20260920",
+      "merge_commit": "b8b10168741916c7536c8380ede7ec3956d761b7",
+      "merge": "clean|conflicts: CONFLICTS",
+      "conflicts": [
+        ".gitattributes"
+      ],
+      "resolution": "union: keep master's `tools/science_funnel/data/** -text`, then matterA's `tools/science_funnel/data/morphosource_ct/** -text -whitespace` AFTER it (last-match-wins grants the specific class -whitespace).",
+      "tests_after": "n/a (data+attr only); CT .obj/manifest/json overlaps (31 predicted) auto-merged clean \u2014 identical content both sides"
+    },
+    {
+      "name": "reality gate",
+      "tip": "4d1c0ffa",
+      "branch": "agent/reality-fantasy-gate-20260920",
+      "merge_commit": "af19f7621fafc0c162b02180d5f13f171baeae88",
+      "merge": "clean",
+      "conflicts": [],
+      "depends_on": [
+        "matter A (gate adjudicates the CT/mount bundles matter A lands)"
+      ],
+      "tests_after": "n/a at this step (final battery covers tools/creature_graph)"
+    },
+    {
+      "name": "visual repair",
+      "tip": "1b08b29d",
+      "branch": "agent/triangle-monkey-grid-20260920",
+      "merge_commit": "5974fee5e1587ba7cdfcafd6120835b20fd5978f",
+      "merge": "clean",
+      "conflicts": [],
+      "tests_after": "engine compile check done after engdet (this lane + engdet both touch engine sources)"
+    },
+    {
+      "name": "engine determinism",
+      "tip": "ee2dec83",
+      "branch": "agent/engine-determinism-argc",
+      "merge_commit": "9a886562cecd286402c2e75632729b3607d50b7a",
+      "merge": "conflicts",
+      "conflicts": [
+        "tools/science_funnel/ct_skeleton_layer.py",
+        "tools/science_funnel/skeleton_movie.py"
+      ],
+      "resolution": "ct_skeleton_layer.py: THEIRS (strict superset, +20/-6 seat-height pin with loud drift refusal). skeleton_movie.py: NEEDS INTEGRATOR'S HAND \u2014 two divergent lineages (ours = master-line harness incl. visual's +103/-11; theirs = engdet's rewritten instrument, +262/-560 vs ours). Ours keeps the canonical path; theirs preserved verbatim as tools/science_funnel/skeleton_movie_engine_determinism.py (engdet records embed no path reference).",
+      "depends_on": [
+        "visual repair (predicted main.cpp hot spot auto-merged; the instrument files are the real clash)"
+      ],
+      "tests_after": "full engine build (visual engine.cpp/engine.hpp + engdet main.cpp/sort.comp together): chimera_engine.exe LINKS, exit 0, only LNK4315 FASTLINK warning"
+    },
+    {
+      "name": "workflow MCP",
+      "tip": "a672b16b",
+      "branch": "agent/workflow-mcp-20260920",
+      "merge_commit": "59f3bab64eb8b41365c78ce05e7f8d9d51c11925",
+      "merge": "clean",
+      "conflicts": [],
+      "depends_on": [
+        "visual repair \u2014 the branch CONTAINS 1b08b29d; only its 10 extra files landed"
+      ],
+      "tests_after": "folded into final battery"
+    },
+    {
+      "name": "workflow checklist",
+      "tip": "e9c8b394",
+      "branch": "agent/workflow-checklist-20260920",
+      "merge_commit": "9799463cf35b4dbe03b30758faf8daedfa7bfe07",
+      "merge": "clean",
+      "conflicts": [],
+      "tests_after": "n/a (creates docs/THE_CHECKLIST.md)"
+    },
+    {
+      "name": "constitution",
+      "tip": "c0e130c5",
+      "branch": "agent/constitution-bio-laws-20260920",
+      "merge_commit": "5d1a83de46e3b191f08c19887d645608753bce9f",
+      "merge": "conflicts",
+      "conflicts": [
+        "docs/THE_CHECKLIST.md"
+      ],
+      "resolution": "add/add; THEIRS is a strict superset (full checklist + 27-line 'THE CONSTITUTION POINTERS' appendix). docs/THE_GAME.md (constitution-only) merged clean.",
+      "depends_on": [
+        "workflow checklist (constitution amends the file the checklist lane creates)"
+      ]
+    },
+    {
+      "name": "research memo",
+      "tip": "fc45106c",
+      "branch": "agent/muscle-data-research-20260920",
+      "merge_commit": "5c4fadf91f4d1ac68a45d41068d0649d97d3c9d7",
+      "merge": "clean",
+      "conflicts": [],
+      "tests_after": "n/a (1 new doc)"
+    },
+    {
+      "name": "wiseman",
+      "tip": "aede5de9",
+      "branch": "landed on canonical MID-REHEARSAL (contained in agent/guimaraes-pairing-20260921, agent/pulley-rederivation-20260920)",
+      "merge_commit": "76cad47bcaa7503c8aa42aa70df487e405c9f7ce",
+      "merge": "clean",
+      "conflicts": [],
+      "tests_after": "folded into final battery",
+      "finding": "see risks R1 \u2014 its own tests refuse on a fresh clone (source_pin_drift)"
+    },
+    {
+      "name": "adapter",
+      "tip": "bbbc4d67",
+      "branch": "descendant of aede5de9 (landed mid-rehearsal)",
+      "merge_commit": "2043fc63fc54238d460106ffa9eecf709f80e0e8",
+      "merge": "clean",
+      "conflicts": [],
+      "depends_on": [
+        "wiseman"
+      ],
+      "tests_after": "folded into final battery \u2014 12 of its tests ERROR on a fresh clone (see R1)"
+    }
+  ],
+  "missing_lanes": [
+    {
+      "name": "matter B",
+      "tip": "53aff9f9c",
+      "status": "MISSING from canonical at 3 checks (fresh clone + two fetch --prune passes). NOT merged, NOT guessed.",
+      "branch_hint": "none found under any ref"
+    }
+  ],
+  "manifest_lane": {
+    "status": "agent/integration-manifest-20260921 NEVER landed during the rehearsal; the order below is DERIVED and measured"
+  },
+  "recommended_sequence": {
+    "order": [
+      "1. chain tip d981bc04 (fast-forward, 0 conflicts)",
+      "2. matter A 2d585c7b (1 conflict: .gitattributes \u2014 resolve union FIRST, before any data-dependent lane)",
+      "3. reality gate 4d1c0ffa (clean; gate rides on the landed data)",
+      "4. visual repair 1b08b29d (clean; BEFORE engdet \u2014 both touch the engine instrument family)",
+      "5. engine determinism ee2dec83 (2 add/add conflicts; one strict-superset take-theirs, one needs the integrator)",
+      "6. workflow MCP a672b16b (clean; MUST follow visual \u2014 it contains it)",
+      "7. workflow checklist e9c8b394 (clean; BEFORE constitution)",
+      "8. constitution c0e130c5 (1 add/add; strict-superset take-theirs; MUST follow checklist)",
+      "9. research memo fc45106c (clean)",
+      "10. wiseman aede5de9 (clean, additive data)",
+      "11. adapter bbbc4d67 (clean; MUST follow wiseman)"
+    ],
+    "measured_reasons": "the order is the conflict topology: chain FF first (contains master); data canonicalization (.gitattributes) before data consumers; visual before engdet (instrument clash) and before mcp (ancestor); checklist before constitution (amendment); wiseman before adapter (ancestor). Every deviation from a 'must' edge either fails or silently double-lands content.",
+    "blocked": [
+      "matter B 53aff9f9c \u2014 absent from canonical"
+    ]
+  },
+  "tests_final": {
+    "gait_unit": {
+      "build": "OK",
+      "exit": 0,
+      "refusal": "tick=122 gait_impact_event_budget (identical to chain-only state \u2014 no lane changed the walk membrane)",
+      "pass": false,
+      "red_falsifiers_machine_count": 16,
+      "red_set": "line-identical to receipt_wave27.json (13 named + 3 NOT-MEASURED F-G1/G2/G3)"
+    },
+    "creature_graph_tests": "19 passed, 27 subtests passed (0.08s)",
+    "science_funnel_root": {
+      "result": "20 failed, 352 passed, 1 skipped, 28 errors, 34m56s",
+      "delta_vs_chain_baseline": "+1 failed (test_workflow_commands.py::HonestAbsence::test_08_adjudicate_returns_structured_absence \u2014 MCP lane's own new test, needs a live engine server), +30 passed, +12 errors (ALL 12 = test_wiseman_osim.py setUpClass, see R1)",
+      "pre_existing_16_errors": "unchanged count at baseline (post-chain) and final: 7 test_force_arm + 9 test_force_compiler, cause model_semantic_replay_mismatch / setup Refusal \u2014 NOT introduced by any lane merge; environment/byte-replay class, pre-existing on the master+chain state in this clone"
+    },
+    "engine_build": "cmake full engine (ChimeraEngine/engine): chimera_engine.exe links, exit 0 (LNK4315 FASTLINK warning only) \u2014 covers visual engine.cpp/engine.hpp + engdet main.cpp/sort.comp coexisting"
+  },
+  "top_risks": [
+    {
+      "rank": 1,
+      "risk": "THE WISEMAN LANE'S PINS ARE BROKEN FOR ANY FRESH CLONE (commit-time CRLF\u2192LF normalization vs raw-download pins).",
+      "evidence": "tools/science_funnel/data/wiseman2026/models/Macaque_model.osim: committed bytes 375,571 (sha256 35e5235c\u2026), pin says 381,616 (sha256 d5c65cbc\u2026) \u2014 delta EXACTLY 6,045 = the file's LF count (committed file has 6,045 LFs, 0 CRLFs). wiseman's base fc45106c carries only enumerated -text rules, no blanket `tools/science_funnel/data/** -text`, so `* text=auto` normalized at commit while sha256_manifest.json pinned the raw downloads. All 12 test_wiseman_osim tests ERROR on this fresh clone with source_pin_drift; they passed on the lane because the lane worktree still held the raw bytes. This is the mirror image of the defect matter A already repaired for morphosource_ct ('source_obj_sha256 canonicalized to the committed LF bytes \u2014 the verifier's fresh clone refused and was RIGHT'). FIX before master integration: apply the matter-A repair pattern to wiseman2026 (canonicalize the recorded pins to the committed LF bytes) or commit the raw bytes under a -text rule."
+    },
+    {
+      "rank": 2,
+      "risk": "RUNNING THE SCIENCE_FUNNEL SUITE MUTATES COMMITTED EVIDENCE IN-TREE.",
+      "evidence": "After each tools/science_funnel/tests run, 15 committed evidence files under tools/science_funnel/validation/visual_proof_20260917/ and visual_proof_wave2_20260918/ (PNGs + manifest.json) were regenerated with the LOCAL environment's stamps (producer python 3.14.3 / zlib 1.3.1.zlib-ng vs recorded 3.11.15 / 1.3.2). Both runs in this rehearsal re-dirtied them; both were `git checkout --`-restored BEFORE the next merge/commit. An integrator who runs the suite before committing will contaminate the integration commits with machine-local evidence \u2014 on master this would be silent evidence forgery."
+    },
+    {
+      "rank": 3,
+      "risk": "THE LANE FAMILY IS STILL MOVING UNDER THE INTEGRATION PLAN \u2014 TIPS MUST BE PINNED BY HASH, NOT BY NAME.",
+      "evidence": "During this rehearsal: wiseman aede5de9 and adapter bbbc4d67 appeared on canonical mid-run; agent/gait-wave27c-decay-seats (4198dbdc) landed; 4 new branches appeared in one fetch; matter B 53aff9f9c remains absent after 3 fetches; wave-18's tip 17936d83 is OFF the chain proper (superseded by wave 19, parent = wave 17). The manifest lane never landed. Any sequence phrased in branch names will merge the wrong tip within days; every tip in this receipt is pinned by full hash and its merge commit exists in this clone."
+    }
+  ],
+  "receipt_files": [
+    "tools/agent_fleet/validation/integration_rehearsal_20260921/receipt.json",
+    "tools/agent_fleet/validation/integration_rehearsal_20260921/merge_log.txt"
+  ],
+  "commit_trailer": "Agent: GLM 5.3"
+}

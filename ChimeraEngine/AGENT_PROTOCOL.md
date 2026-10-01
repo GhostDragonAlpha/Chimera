@@ -552,8 +552,16 @@ powershell -NoProfile -Command "Start-Process -FilePath '<launcher>.cmd'"
   message completes, then grows live).
 - To put the window in front of the operator: screen-capture verify +
   SetForegroundWindow (`engine/scratch/_raise.ps1 <pid>` pattern).
-- Canonical launcher template: `E:/PythonChimera/bionic.cmd` (takes
-  session-id + task pointer; the generated per-task copy inlines the prompt).
+- Canonical launcher template: `E:/PythonChimera/bionic.cmd` takes
+  `session-id`, task pointer, and an optional exact LM Studio model ID. ZCode or
+  another dispatcher requesting a particular model **must pass that ID as the
+  third argument**; `BIONIC_MODEL` is the non-positional alternative. The launcher
+  forwards the exact ID through `pi-lmstudio.ps1`, so LM Studio JIT-loads the
+  requested weights. Omitting both means "use the currently loaded model" and must
+  not be reported as satisfying a per-model request. Example:
+  `bionic.cmd zcode-01 "Run MONKEY_RUN.md" "qwen3.8-flash-next-gsq-rco"`.
+  The generated per-task copy may inline the prompt but must preserve this model
+  argument; never restore a hardcoded model ID.
 - Note: a GUI app literally named "Bionic" also runs on this machine
   (`Bionic - PythonChimera`). If it grows a CLI/API, prefer it; until then
   pi-over-lmstudio is the scriptable bionic path.

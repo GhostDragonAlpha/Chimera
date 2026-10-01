@@ -1,0 +1,80 @@
+{
+ "lane": "TypeB-P3 CPU export and inference harness (astra-typeb-pilots-20260921, export/inference protocol)",
+ "date": "2026-09-21",
+ "agent": "GLM 5.3",
+ "base": "30821ef7 (agent/gait-wave38-calendar-guard, WAVE 38 SHIP); lane branch agent/typeb-p3-export-20260921",
+ "deliverable": "the policy manifest (Astra's missing piece #2), the dummy actor + deterministic CPU inference recipe, and both lane falsifiers -- the pipeline piece that will later freeze a trained actor and run it inside the exact engine loop",
+ "status": "DUMMY policy: fixed-seed weights, no training, no behavior claim. The manifest binds the CONTRACT.",
+
+ "rule0_prereg": {
+  "path": "tools/science_funnel/validation/typeb_p3_20260921/prereg.json",
+  "sha256_frozen": "6ec61b901b2e4754a730dfa6650c01636f9a9582c64439c19c72067fb4717433",
+  "frozen_before_any_build": true
+ },
+
+ "policy_manifest": {
+  "path": "tools/science_funnel/validation/typeb_p3_20260921/policy_manifest.json",
+  "manifest_hash_sha256": "9ca7e976dfb0dedd3f56dfa404673ee77c00801acb2753cdfd83604c480c35b7",
+  "binds": ["claim + named falsifiers", "CPU reference commit 30821ef7 + record-set digest + build env (python 3.14.3 / numpy 2.2.6 / win32)",
+            "horizon and tick conventions (300 Hz physics, 20 Hz policy, hold 15)", "baseline scene + receipts (wave-38 banked walk)",
+            "body digests (UNBOUND_dummy)", "reflex set version wave38-banked-reflex/1.0.0 + reset semantics", "physics version (UNBOUND_dummy)",
+            "observation schema: 64 declared fields, units, frames, availability, privileged_forbidden=true",
+            "action schema: 8 channels (2 legs x phase_off/stride_amp/lift_amp/stiff), units, bounds, limiter mapping, clock + zero-order hold",
+            "normalization: per-field mean/std/clip derived from the recorded slice, digest pinned",
+            "policy: 64->128->128->8 tanh, 25864 float32 params (103456 B raw), 25600 MACs/decision, weights sha 5fb2b7857d872fcc (npz 104894 B), seed 380121, training_backend NONE",
+            "inference: pure-numpy deterministic recipe, compute_dtype float32", "evaluation: fixed 900-tick/60-decision sequence over the recorded slice, seed 20260921", "receipts"],
+  "loader": "tools/science_funnel/typeb_export/policy_manifest.py::load_manifest -- validates structure, dims, param/MAC accounting, privileged-field ban, clock arithmetic, weights sha"
+ },
+
+ "recorded_trace_slice": {
+  "path": "tools/science_funnel/validation/typeb_p3_20260921/trace_slice_wave38.json",
+  "sha256": "69babe846e2447333b527c7fd8c190499e5ac1d55733dbd043edd0422245daa2",
+  "provenance": "REAL banked wave-38 run stdout (raw-byte harness at commit 30821ef7): gait phase clock (cycle_ticks=213), two_contact census, unload_class ticks, hind_step_class ticks, refused_tick=295, worst_ledger_J=30.219924. Channels the banked record does not carry (per-foot contacts/forces, body velocity, commands) are declared available=false and exercised through the mean-fill + availability-mask recipe. No channel is invented.",
+  "source_preserved_at": "tools/science_funnel/validation/typeb_p3_20260921/wave38_stdout_source.json"
+ },
+
+ "measured_results": {
+  "F-CPU-POLICY-BYTES": {
+   "pass": true, "fires": false,
+   "clause_a_fresh_process_byte_identity": "two fresh CPython processes replayed the fixed sequence (900 ticks, 60 decisions): action streams BYTE-IDENTICAL, sha256 e25406e86cbf5347..., 28800 bytes (900 ticks x 8 float32)",
+   "clause_b_component_pinning": "15/15 probes moved the manifest hash (14 preregistered single-field mutations: weights sha field, arch dims, activation, obs field name, obs order swap, normalization entry, action bound, action scale, hold_ticks, policy_hz, reset phase0, reflex version, physics version, eval seed -- plus a real seed+1 weight regeneration)",
+   "artifacts": ["actions_run1.bin", "actions_run2.bin", "hash_pin.json"]
+  },
+  "F-INFERENCE-BUDGET": {
+   "pass": true, "fires": false,
+   "protocol": "single process, batch one, perf_counter, 200 warmup + 3000 timed decisions, end-to-end act() (projection+normalize+forward+action map+clock), worst-case fully-available trace records",
+   "measured_ms": {"p50": 0.0008, "p95": 0.0646, "p99": 0.0674, "max": "see latency.json"},
+   "budget_ms": 50.0, "margin_vs_budget": "742x",
+   "prereg_prediction_p99_le_0.5ms": "HELD",
+   "peak_rss_mb": 29.18, "memory_budget_mb": 256.0,
+   "artifacts": ["latency.json"]
+  },
+  "tests": "14/14 PASS (python -m pytest tools/science_funnel/typeb_export/tests -q): schema/privilege audit, actor sizing (25864/25600), weight determinism, loader rejections, clock arithmetic, projection vs the RECORDED census (two-contact windows, unload/hind-step ticks, refusal tick 295, phase clock), mean-fill/mask semantics, hold semantics, bounds, reset, banked-stream reproduction",
+  "training_gate": "PASS (python tools/training_gate.py on the lane build)"
+ },
+
+ "named_root_causes_open": [
+  "the projector initially read 0.0 for a missing scalar under an available group -- fixed to declared-unavailable (mean-fill + mask 0): a missing value is never silently read as data",
+  "the slice extractor initially captured the census COUNT ('unload_class_ticks=35 @ ...') as a tick -- fixed by splitting at '@'",
+  "post-refusal ticks initially dropped the intervention group -- fixed: the intervention memory is exactly what survives refusal",
+  "the phase sin/cos encoding was declared but not implemented in the reader -- fixed and now census-tested"
+ ],
+
+ "owned_files": [
+  "tools/science_funnel/typeb_export/__init__.py",
+  "tools/science_funnel/typeb_export/policy_manifest.py",
+  "tools/science_funnel/typeb_export/dummy_actor.py",
+  "tools/science_funnel/typeb_export/observation_schema.py",
+  "tools/science_funnel/typeb_export/infer_numpy.py",
+  "tools/science_funnel/typeb_export/make_trace_slice.py",
+  "tools/science_funnel/typeb_export/build_policy_manifest.py",
+  "tools/science_funnel/typeb_export/run_f_cpu_policy_bytes.py",
+  "tools/science_funnel/typeb_export/run_f_inference_budget.py",
+  "tools/science_funnel/typeb_export/tests/__init__.py",
+  "tools/science_funnel/typeb_export/tests/test_typeb_export.py"
+ ],
+
+ "honest_summary": "Both lane falsifiers fired false (held) on a DUMMY policy: the frozen manifest reproduces byte-identical CPU action streams across fresh processes and pins every component by hash, and measured batch-one numpy inference sits 742x inside the 20 Hz decision budget with the preregistered p99 prediction held. The observation harness is tested against a REAL recorded slice of the wave-38 walk (contact census, phase clock, refusal tick), not a synthetic one; the channels the record does not carry are declared unavailable, not invented. No trained-policy claim is made; body/physics digests are recorded UNBOUND_dummy until a trained actor freezes.",
+
+ "record_state": "new files only under tools/science_funnel/typeb_export/ and tools/science_funnel/validation/typeb_p3_20260921/; pushed only on agent/typeb-p3-export-20260921"
+}

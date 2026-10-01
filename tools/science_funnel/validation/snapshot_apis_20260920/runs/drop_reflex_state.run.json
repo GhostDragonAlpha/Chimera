@@ -1,0 +1,1 @@
+{"mode":"probe","snapshot_tick":150,"restore_at":150,"drop_class":2,"body_bytes":3089,"n_states":149,"blind_matches_file":true,"roundtrip_ok":true,"refused_tick":299,"refused_class":"gait_positional_correction_budget","dims":{"n":18,"npts":8,"nd":12}}

@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.20)
+project(chimera_articulation_checks LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 17)
+find_package(Vulkan REQUIRED MODULE)
+add_executable(articulation_native native.cpp)
+add_executable(articulation_gpu gpu.cpp)
+target_link_libraries(articulation_gpu PRIVATE Vulkan::Vulkan)
+if(MSVC)
+  target_compile_options(articulation_native PRIVATE /W4 /fp:precise)
+  target_compile_options(articulation_gpu PRIVATE /W4 /fp:precise)
+endif()
+
+add_executable(body_surface body_surface.cpp ../membrane_tick.cpp)

@@ -1,0 +1,99 @@
+{
+  "schema": "chimera.scoped_validation.v1",
+  "recorded_utc": "2026-09-17T03:57:14.273822+00:00",
+  "candidate_commit": "d31fe18600ace6354eba8d518c4f581362195e8c",
+  "initial_implementation_commit": "ee52a99f44b68cfb6410f07287583aaf068c0083",
+  "graph_hash": "ff1d0c484d7e538bcd42a980ee3f3856358cbc68c39f85ac1bec069825e08792",
+  "runtime": {
+    "pid": 104736,
+    "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\earth-engine\\Release\\chimera_engine.exe",
+    "exe_sha256": "A6797F7BB5759C1A80A975E77F530ACDEA1540F8E160CCAA499E5FEA2D17E73A",
+    "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\earth-patch\\scene.json",
+    "scene_file_sha256": "91C4CAB6382E13E0FC27B858070F0D1DB6CF67BB199506B3D9A0B48437D3755B",
+    "graph_hash": "ff1d0c484d7e538bcd42a980ee3f3856358cbc68c39f85ac1bec069825e08792",
+    "scene_sha256": "aad9538c3d42850874192be69853b7c1362e3603d9f41185dd726fb263bedd1b",
+    "port": 8125,
+    "launched_utc": "2026-09-17T03:52:18.0479258Z"
+  },
+  "source_file_manifest_sha256": {
+    ".gitattributes": "21ecb41200e756dc4a738933a43a04964909963d47143aba8a546151c575282b",
+    "ChimeraEngine/engine/earth_environment.hpp": "b4747d349ce201ebadb74227b33725466d16edd860ed421ac590ad789178469a",
+    "ChimeraEngine/engine/graph_earth.hpp": "fc2d1c34bb6a48c9106e507020cbe552d9d00bcebeb4faa45108a8f99cf1d999",
+    "ChimeraEngine/engine/main.cpp": "dfa3ef734aaca34139b9a15e32c0b0ad1bb6f2740c63a380bdeed1ed58cf7edd",
+    "ChimeraEngine/engine/tests_environment/CMakeLists.txt": "26de0721036fc4805fa2a0784f59918a6cc3c1410e1ae7c15a1e9b532c1dccf9",
+    "ChimeraEngine/engine/tests_environment/native.cpp": "99290bd13bcca5c0c6b9650b80e19199f48db2b8e81c13016732acbf549cf82f",
+    "README.md": "ad59030d74bdf4c8f5fff685edb72c7f633fe63eddca1dfe929f7dba385a23c9",
+    "tools/creature_graph/data/authored/project_program.json": "a7e99bdf47deee1b82bbf4ccc32a61ccc4617baa251ddb390e5f6c04cdd4bbb7",
+    "tools/creature_graph/data/creature_graph.json": "70c77ffdb19d547a4f651ce18a7fd7a82f2b201fe938cea624742ab2b1baaa62",
+    "tools/science_funnel/data/earth/download_receipt.json": "bb7a1b051d23470e18fa757d6b7cb25a3ca4683b2b4f5ea67282f97d2fd58c63",
+    "tools/science_funnel/data/earth/nasa_atmosphere_metric.html": "c0092dc2c4f928a7a1b258a964b834fbe4209782e92e932cf776415fde049d4c",
+    "tools/science_funnel/data/earth/nasa_drag.html": "6b493992d4e3af838d82650800284c7242fa466449ea592217bad8c3352d9d2a",
+    "tools/science_funnel/data/earth/nga_wgs84.html": "a057b27276450e25c18f2fce6f60e396442410411f9c3662cc61e94fb6b6c09c",
+    "tools/science_funnel/earth.html": "d948e8624afae952368ae38122d128d21fc1ea46e460400dd20f17059685982c",
+    "tools/science_funnel/earth_scene.py": "1e663bc3cbf776b57e898ad55f91ecf1f88029584f80026cacb93312766c46d1",
+    "tools/science_funnel/run_earth.ps1": "90c74d55c09f8757f3bb68d352c27af33475bab2d27c4e038fd2858e330d67b0",
+    "tools/science_funnel/tests/qualify_earth_live.py": "e4e60e2c8b2c398491677137ef13567f8619bc78e30fbb896a4f13a23c1e3f65",
+    "tools/science_funnel/tests/test_earth_scene.py": "29a95ff3cbb8a376994a72142d9f7f5c35f2496546ef35ad6e63e4e82f091b70"
+  },
+  "scope": "Pinned NGA/JPL/NASA inputs -> graph planet/region/boundary entities -> native body-independent field sample -> macaque hand release scene with paired reaction and heat accounts -> shared native triangle/state snapshots. No requirement statuses advanced.",
+  "checks": {
+    "python": 22,
+    "native": 23,
+    "live": 20,
+    "graphify": 7,
+    "graph_rebuild_matches": true,
+    "historical_evidence_unchanged": 11,
+    "browser": "Independent review of actual controls and responsive rendering; targeted native-fault injection/recovery recorded in browser review."
+  },
+  "energy_sweep": {
+    "worst_J": 2.5871232239849107e-15
+  },
+  "momentum_sweep": {
+    "worst_N_s": 6.202464982382825e-17
+  },
+  "interpretation": "Small conservation residuals qualify numerical bookkeeping for this reduced model, not empirical accuracy of authored coefficients or solver convergence for arbitrary bodies.",
+  "exploratory_findings": [
+    {
+      "finding": "The first exploratory live support assertion compared the impact spike to static mg and failed.",
+      "resolution": "Measure static support only after settling for 0.05 s; retain the physical impact impulse. No physical law changed to satisfy the assertion.",
+      "record_type": "Narrative of exploratory failure; original console output is not represented as a saved raw artifact."
+    },
+    {
+      "finding": "Native fault state nested in a successful HTTP snapshot could appear connected/healthy.",
+      "resolution": "Separate transport health from solver health; show the native error, freeze valid geometry/readings and keep explicit reset recovery available."
+    },
+    {
+      "finding": "A runtime graph route pointed at mutable authoring data.",
+      "resolution": "Compile a graph snapshot named by content hash, serve that selected snapshot and refuse mismatch on reuse."
+    }
+  ],
+  "not_qualified": [
+    "complete Earth simulation",
+    "surveyed terrain or measured ground friction",
+    "weather, vegetation, water flow or sunlight",
+    "full animal or weight-bearing biological grasp",
+    "force-driven arm or closed tissue mechanics",
+    "GPU-resident dynamics",
+    "rolling, deformable contact or three-dimensional wind",
+    "Earth rotation and harmonics",
+    "empirical sample drag/thermal coefficients"
+  ],
+  "artifacts": {
+    "browser-controls.json": "10eefc5d9af2458666ba0a70736b55a733544f3faa5e353ac31c87e8120d2f66",
+    "browser-review-final.md": "534aee4eee47c3319343c069e6057b724eaa5d110ccca24f4432ed8884870dfb",
+    "browser-review-initial.md": "ff2b0db0ff416b2ebe827c256b385e47693c8e4d6dc9da73666bac618d2cbb0b",
+    "earth-contact.png": "9e6662cbf9c0040f0d794b6b927e8156df6582c2a68da54d4edd188a4633f1fb",
+    "earth-desktop.png": "27cc9af55f1bf907ce7211afec14d59619307da874786425d0c9e048f4c57b53",
+    "earth-mobile.png": "1b0b427f77dc11cb258c8eff7743a00554d1e4d765fd3afdda8494cdc3646394",
+    "earth-native-fault.png": "fcff8be7b8864d6e00b499b43ad5b70d090dbbaba768dd6aabc2cf45377c4e94",
+    "engine-build.log": "56034dec68b326928cd631d2a2703e94c5cbe3f818a943999c0f8e6c60f5d7a3",
+    "graph-roundtrip.json": "8bc8971d8a3e136b61da42bc475a92add5c2d844adf3fb1cb7d948ac7a42e825",
+    "listening-worlds.json": "bec6b7a64271af8778ec8da2ca7a57feb7b414865c2410fe035a1bc75646880b",
+    "live.json": "e2cc84994ffc7b2d22718e4ab0f18378dbe685455c53cea53f0ce0cfbec49aa1",
+    "native-build.log": "9f3572a6254cb7fbadc40436c4346ad1396d2d00e529a78d6bb617c2573b78c5",
+    "native.json": "56cbc6cb8ce34c524f33a02772e4eb385b1e3532b480e4db43ffe2a67954890e",
+    "python-checks.log": "e69168251a4de565c4a7e9dc1cd4a8d6ecd07f17ca951cbe5d5b52fd24a16085",
+    "runtime.json": "2b977686bb96cfe91366cfd27443771ba8b9017e9ba738f4de0f1e7fa4f5058b",
+    "scene.json": "91c4cab6382e13e0fc27b858070f0d1db6cf67bb199506b3d9a0b48437d3755b"
+  }
+}

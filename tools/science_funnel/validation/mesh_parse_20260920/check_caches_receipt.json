@@ -1,0 +1,17 @@
+{
+ "fences": {
+  "payload_pin_ok": true,
+  "import_route_is_cache": true,
+  "served_glb_matches_pin": true,
+  "derivation_byte_stable_and_committed": true,
+  "tampered_glb_refused": true,
+  "trap_refused": true,
+  "trap_no_false_positive": true,
+  "ghost_route_is_cache": true,
+  "ghost_bytes_match_pin": true,
+  "tampered_ghost_refused": true,
+  "input_drift_refused": true,
+  "manifest_restored": true
+ },
+ "pass": true
+}

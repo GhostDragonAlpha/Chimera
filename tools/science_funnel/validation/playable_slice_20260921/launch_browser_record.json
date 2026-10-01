@@ -1,0 +1,20 @@
+{
+ "falsifier": "F-SLICE-LAUNCH (browser half)",
+ "instrument": "agent-browser (real Chrome via CDP) against the slice server on 127.0.0.1:55623",
+ "sequence": [
+  "load 1 (pre-fix build): console error TypeError 'Assignment to constant variable' at :264 -- the top-level MESH_P rebuild threw Assignment-to-const, killing the boot IIFE: canvas black, grid/mesh/ghost absent. THE CONSOLE CHECK CAUGHT A REAL DEFECT.",
+  "fix: one program built once (let, with the uOff model offset); the dead rebuild removed",
+  "load 2 (fixed): zero console errors; grid/mesh/ghost all live; screenshot slice_shot_live.png (the stand-in body standing, the committed skeleton ghost riding it, real HUD numbers root_y 0.2553 m)",
+  "SEND TO MARKER: the MOCK[mock_carry] banner shows while carrying (slice_shot_carry.png); objective counts down 1.20 -> 0.24 m; arrival detected",
+  "THE FALL TEST (real): 'THE FALL (real): peak +2.9939 m, max |vy| 7.9013 m/s, landed root_y 0.2551 -- engine law' (slice_shot_fall.png)",
+  "RESTART: settled=true, start_state_sha256 84877cccfacf... -- the SAME byte-clean sha as measure_restart recorded (slice_shot_restart.png)"
+ ],
+ "console_errors_after_fix": 0,
+ "verdict": "PASS: first frame < 10 s (t_first_verts 7.33 s server-side; the page renders on the first /api/verts payload) and zero console errors after the fix",
+ "screenshots": [
+  "slice_shot_live.png",
+  "slice_shot_carry.png",
+  "slice_shot_fall.png",
+  "slice_shot_restart.png"
+ ]
+}

@@ -1,0 +1,3 @@
+{"do":"clickText","text":"Begin"}
+{"do":"wait","ms":1500}
+{"do":"shot","name":"05_world_started"}

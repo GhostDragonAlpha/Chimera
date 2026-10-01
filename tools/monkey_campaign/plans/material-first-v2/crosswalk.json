@@ -1,0 +1,989 @@
+{
+  "parent_scope_sha256": "01ea5cddca8d4795caa096945edf7eadcd1f3eb3e2f084fd2ee36a08cae12ef6",
+  "new_scope_sha256": "b972c38caa121c00c28666af1fa92460f25fb7e4c35017cf8f1e1ec7de7a7a18",
+  "rows": [
+    {
+      "task_id": "P01",
+      "prior_title": "Freeze the playable-monkey completion contract",
+      "new_title": "Freeze the playable-monkey completion contract",
+      "changed_fields": [
+        "done_when",
+        "ontology"
+      ],
+      "previous_record_sha256": "08506015c355e34a0c2aa5918b077f795be92a1ba8d087c1f1f65d0ff5f9ec5f",
+      "new_record_sha256": "6051eda0ae775650b84eb1254db1b191f7baf5df659aa57a25d1c15a110aa9dc",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "P02",
+      "prior_title": "Pin the active monkey and scene lineage",
+      "new_title": "Pin the active monkey and scene lineage",
+      "changed_fields": [
+        "done_when",
+        "ontology"
+      ],
+      "previous_record_sha256": "398e37c75c3d94c4da34b5bab5510e613af03e8d38bd5e39e044791a6635999f",
+      "new_record_sha256": "a3a970299cbb3380057e73c698bf25913ecc30ffeae3b7398931f9503f546bec",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "P03",
+      "prior_title": "Reconcile current work and receipts into existing ledger",
+      "new_title": "Reconcile current work and receipts into existing ledger",
+      "changed_fields": [
+        "done_when",
+        "ontology"
+      ],
+      "previous_record_sha256": "90ac0284498ee93d15da6963f92fdc3b5661f4f2199a4ef107b2f396044b3bf3",
+      "new_record_sha256": "93e64cdddea8d3747dacd50441bc068e4e58ebeb8363c67dc3872bbf231fd42f",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "P04",
+      "prior_title": "Apply fleet resource and gaming contract",
+      "new_title": "Apply fleet resource and gaming contract",
+      "changed_fields": [],
+      "previous_record_sha256": "1c7f5417f8a779050d7b14ec5f1f48cc14628acacd3f310e2453c780aa8363c9",
+      "new_record_sha256": "1c7f5417f8a779050d7b14ec5f1f48cc14628acacd3f310e2453c780aa8363c9",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "P05",
+      "prior_title": "Retain milestone recovery and artifact identity",
+      "new_title": "Retain milestone recovery and artifact identity",
+      "changed_fields": [],
+      "previous_record_sha256": "ec1ef6c95a3f0d59140a7ff503b97e80444432f650f2c2e046adf42ace42b37e",
+      "new_record_sha256": "ec1ef6c95a3f0d59140a7ff503b97e80444432f650f2c2e046adf42ace42b37e",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "P06",
+      "prior_title": "Choose release acceptance limits",
+      "new_title": "Choose release acceptance limits",
+      "changed_fields": [
+        "done_when",
+        "ontology"
+      ],
+      "previous_record_sha256": "8b3071a6be0515e9d6250c0f36fd0b7340508649316f1db83e0b163c727721ea",
+      "new_record_sha256": "d211fb5992a6d0165152325f5ec2b2c0001607a7c4e06bfd3793c21ca3b8489e",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "W01",
+      "prior_title": "Close tick-3 discrete forelimb parity defect",
+      "new_title": "Close tick-3 discrete forelimb parity defect",
+      "changed_fields": [],
+      "previous_record_sha256": "f598d677e2860dc0c85711b78df84f3e19370c9e9a42c207c5905392c3cea8c9",
+      "new_record_sha256": "f598d677e2860dc0c85711b78df84f3e19370c9e9a42c207c5905392c3cea8c9",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "W02",
+      "prior_title": "Close transcendental parity defects",
+      "new_title": "Close transcendental parity defects",
+      "changed_fields": [],
+      "previous_record_sha256": "cfc9531c6f8f03d561f6c90c9356a12e8fd1bb6a5f436c334327bbd464bc8655",
+      "new_record_sha256": "cfc9531c6f8f03d561f6c90c9356a12e8fd1bb6a5f436c334327bbd464bc8655",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "W03",
+      "prior_title": "Integrate frozen parity and walk anchors",
+      "new_title": "Integrate frozen parity and walk anchors",
+      "changed_fields": [
+        "done_when",
+        "ontology"
+      ],
+      "previous_record_sha256": "4b7e0c9c78fa6342e43cbb4baf4fe5918d769a95505e2ef258a9564a359df4c9",
+      "new_record_sha256": "5d2712c632d84f6a13313d4145ff1f6c74fda854b70990979345748999fc7384",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "W04",
+      "prior_title": "Bind training manifest and compatibility certificate",
+      "new_title": "Bind training manifest and compatibility certificate",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "ff18cefc16d9f5189ef2853e2e32473be6c303a7e23becd470b166054d9b6332",
+      "new_record_sha256": "942e60b48c1b4eb958e72e81ca7a37b587080461580821872f7f0b001734294e",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M11",
+        "B07"
+      ]
+    },
+    {
+      "task_id": "W05",
+      "prior_title": "Execute unchanged authorized walking runbook",
+      "new_title": "Execute the walking run qualified for the selected material dynamics",
+      "changed_fields": [
+        "title",
+        "done_when",
+        "ontology"
+      ],
+      "previous_record_sha256": "f95f9719232c433698a110aad30faaf153e134380fcfaba1a4e1b83cd2975e74",
+      "new_record_sha256": "77848756325196a547a764c6e0acde8346e43f29e12f992f3d1291c73397e7a0",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "W06",
+      "prior_title": "Evaluate trained walking outcomes",
+      "new_title": "Evaluate trained walking outcomes",
+      "changed_fields": [],
+      "previous_record_sha256": "188bf32cb15a6857eedabe7809130bc86441559309a770e86afd58ae2027f984",
+      "new_record_sha256": "188bf32cb15a6857eedabe7809130bc86441559309a770e86afd58ae2027f984",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "W07",
+      "prior_title": "Load accepted walking policy in native runtime",
+      "new_title": "Load accepted walking policy in native runtime",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "7c2fdb8460c572dba7351354d76aa2e4d0dd8e5cfd8c532d360b9f140ad05e9a",
+      "new_record_sha256": "9e8066da700da3e81dae391c5e9e132757d66b217f436c0a9c86fcdce45ee158",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M08"
+      ]
+    },
+    {
+      "task_id": "W08",
+      "prior_title": "Verify commanded start, stop, speed, and heading",
+      "new_title": "Verify commanded start, stop, speed, and heading",
+      "changed_fields": [],
+      "previous_record_sha256": "7f5c02cb72abced940958faad841e659e7db8d713b3fde64c2d786cf53a912af",
+      "new_record_sha256": "7f5c02cb72abced940958faad841e659e7db8d713b3fde64c2d786cf53a912af",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "W09",
+      "prior_title": "Implement explicit out-of-envelope behavior",
+      "new_title": "Implement explicit out-of-envelope behavior",
+      "changed_fields": [],
+      "previous_record_sha256": "a0b080d2f85d5a25f73f3576f1f0d6d3ad70ac7dcbb0ab965bbed080e932e0fe",
+      "new_record_sha256": "a0b080d2f85d5a25f73f3576f1f0d6d3ad70ac7dcbb0ab965bbed080e932e0fe",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "W10",
+      "prior_title": "Accept walking in the actual game scene",
+      "new_title": "Accept walking in the actual game scene",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "035408dd775666736ee26e68b445c61bc7cb99590b49a2a6fb81823c71d04792",
+      "new_record_sha256": "24703e563324bcd8499fde39e5361ed25fb2cfd822a7f0c49a6d44384e2754b8",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M12",
+        "U03",
+        "X02"
+      ]
+    },
+    {
+      "task_id": "U01",
+      "prior_title": "Map gameplay input to the existing command seam",
+      "new_title": "Map gameplay input to the existing command seam",
+      "changed_fields": [],
+      "previous_record_sha256": "59505c0ee56b5201334958b84bf589e2edd43e1b502997a83c055cd4b6f0b86e",
+      "new_record_sha256": "59505c0ee56b5201334958b84bf589e2edd43e1b502997a83c055cd4b6f0b86e",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "U02",
+      "prior_title": "Deliver a usable follow camera",
+      "new_title": "Deliver a usable follow camera",
+      "changed_fields": [],
+      "previous_record_sha256": "cd84703d1fb7e4785f566b71dddfbc18955bbf8bd48aa30693ff46a2d20c5c28",
+      "new_record_sha256": "cd84703d1fb7e4785f566b71dddfbc18955bbf8bd48aa30693ff46a2d20c5c28",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "U03",
+      "prior_title": "Handle focus loss and input release",
+      "new_title": "Handle focus loss and input release",
+      "changed_fields": [],
+      "previous_record_sha256": "c65bf761d807209b044ea6fae401552328269dcac043ff03565ede87f70358f8",
+      "new_record_sha256": "c65bf761d807209b044ea6fae401552328269dcac043ff03565ede87f70358f8",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "U04",
+      "prior_title": "Expose supported input settings",
+      "new_title": "Expose supported input settings",
+      "changed_fields": [],
+      "previous_record_sha256": "bc8c947b5e084f42b396edeee859a29fdca6cc7bd785ec43dc274c48b4e5282a",
+      "new_record_sha256": "bc8c947b5e084f42b396edeee859a29fdca6cc7bd785ec43dc274c48b4e5282a",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "U05",
+      "prior_title": "Define and implement climb intent seam",
+      "new_title": "Define and implement climb intent seam",
+      "changed_fields": [],
+      "previous_record_sha256": "2b377be575db747e78567005e6a3790bc27e0ea26d8625d52c41d78b10113020",
+      "new_record_sha256": "2b377be575db747e78567005e6a3790bc27e0ea26d8625d52c41d78b10113020",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "U06",
+      "prior_title": "Add readable control and state feedback",
+      "new_title": "Add readable control and state feedback",
+      "changed_fields": [],
+      "previous_record_sha256": "538873674b6ad6741030f20a6a880f24a378abe7323f9a8b237b2ca099ca5a56",
+      "new_record_sha256": "538873674b6ad6741030f20a6a880f24a378abe7323f9a8b237b2ca099ca5a56",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "U07",
+      "prior_title": "Measure controls during actual play",
+      "new_title": "Measure controls during actual play",
+      "changed_fields": [
+        "ontology"
+      ],
+      "previous_record_sha256": "810205deec189647857b01cf149dfa586a142f02c926d5d9176cdbbb80cdaf05",
+      "new_record_sha256": "8a9633768af3a6d9940877c8f3f7c295ef92253957031653f674ad794086f659",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "F01",
+      "prior_title": "Author the finite clearing and its spatial units",
+      "new_title": "Author the finite clearing and its spatial units",
+      "changed_fields": [],
+      "previous_record_sha256": "133225e17aa348f867a93ea56a10497d7db174d0559750ad8048a8c183f6d312",
+      "new_record_sha256": "133225e17aa348f867a93ea56a10497d7db174d0559750ad8048a8c183f6d312",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "F02",
+      "prior_title": "Build matching terrain rendering and collision",
+      "new_title": "Build matching terrain rendering and collision",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "8c40eb4e7d30506b7a17b28c40a3925f06eccffc78ba7b1a0e9ee1e0e7e2ff43",
+      "new_record_sha256": "908443e77f62b9e947231afd3cc200b51543a5d6b6bf797ccb31115281de0f56",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M06"
+      ]
+    },
+    {
+      "task_id": "F03",
+      "prior_title": "Implement one rigid climbable trunk asset",
+      "new_title": "Implement one rigid climbable trunk asset",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "50dc863552211ba618ba656e0bd478b79c08e571ab95bbc206163f7cdb0e8cb5",
+      "new_record_sha256": "bb78dfc22a831d102d9583ae8cb5d6bbad8077f45498403dcaafd8f307a093e4",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M06"
+      ]
+    },
+    {
+      "task_id": "F04",
+      "prior_title": "Verify ground and trunk contact geometry",
+      "new_title": "Verify ground and trunk contact geometry",
+      "changed_fields": [],
+      "previous_record_sha256": "ac5f1287a8738f97a1f28a128c87c38e2179aab7c4e4ed9e032af06d3df950bb",
+      "new_record_sha256": "ac5f1287a8738f97a1f28a128c87c38e2179aab7c4e4ed9e032af06d3df950bb",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "F05",
+      "prior_title": "Specify the terrain range for walking",
+      "new_title": "Specify the terrain range for walking",
+      "changed_fields": [],
+      "previous_record_sha256": "9164b64ad8fbc01a568708fb5ad551df3d6f600d45f7c304b904db7529325418",
+      "new_record_sha256": "9164b64ad8fbc01a568708fb5ad551df3d6f600d45f7c304b904db7529325418",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "F06",
+      "prior_title": "Implement and qualify terrain-aware walking",
+      "new_title": "Implement and qualify terrain-aware walking",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "f9ee0db82740ab74dc1d77eb80dc85664f9f5bf6cf92593201c8967c7305ffdf",
+      "new_record_sha256": "a7ab85e2eed608518f9af55de45199e653e12add93a06ea055eca512d09274c2",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "W10"
+      ]
+    },
+    {
+      "task_id": "F07",
+      "prior_title": "Place forest obstacles and scene boundaries",
+      "new_title": "Place forest obstacles and scene boundaries",
+      "changed_fields": [],
+      "previous_record_sha256": "6b579f3335a92de5d0098642ed5cacd43e276e82d1e57ea88051eab34b15af3b",
+      "new_record_sha256": "6b579f3335a92de5d0098642ed5cacd43e276e82d1e57ea88051eab34b15af3b",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "F08",
+      "prior_title": "Verify repeatable forest loading",
+      "new_title": "Verify repeatable forest loading",
+      "changed_fields": [
+        "ontology"
+      ],
+      "previous_record_sha256": "df33f24023ccda8b7d12e930aa7391b4e2c698ec842bf094b3ec81472472dfd0",
+      "new_record_sha256": "56296dc76eb28172e0901517751563e6898acdd4367624aed59d7f4fbdeca4d2",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "A01",
+      "prior_title": "Resolve ulna volar-side orientation evidence",
+      "new_title": "Resolve ulna volar-side orientation evidence",
+      "changed_fields": [],
+      "previous_record_sha256": "0950730290c4db39cb8bc02afaaef23c42b47c1084b7c5d18e5e46e5c79f2c6c",
+      "new_record_sha256": "0950730290c4db39cb8bc02afaaef23c42b47c1084b7c5d18e5e46e5c79f2c6c",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "A02",
+      "prior_title": "Validate U-STR and proposed radius consequence",
+      "new_title": "Validate U-STR and proposed radius consequence",
+      "changed_fields": [],
+      "previous_record_sha256": "b0d0e966b504ca3f0194e77ca948dc00f3ba14665a15a556da2236a0b08aca95",
+      "new_record_sha256": "b0d0e966b504ca3f0194e77ca948dc00f3ba14665a15a556da2236a0b08aca95",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "A03",
+      "prior_title": "Approve and implement supported ulna correspondence",
+      "new_title": "Approve and implement supported ulna correspondence",
+      "changed_fields": [],
+      "previous_record_sha256": "b932136863480979ebe85e4ba9a98e7846412c433bbf9691f2a0e8ca6e032812",
+      "new_record_sha256": "b932136863480979ebe85e4ba9a98e7846412c433bbf9691f2a0e8ca6e032812",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "A04",
+      "prior_title": "Determine hand assembly identity and palm orientation",
+      "new_title": "Determine hand assembly identity and palm orientation",
+      "changed_fields": [],
+      "previous_record_sha256": "de0e8a8f79cffe205bc05f4fafcb6859041cf83032741044375fe5a0a124cb54",
+      "new_record_sha256": "de0e8a8f79cffe205bc05f4fafcb6859041cf83032741044375fe5a0a124cb54",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "A05",
+      "prior_title": "Acquire or author evidenced hand/digit structure",
+      "new_title": "Acquire or author evidenced hand/digit structure",
+      "changed_fields": [],
+      "previous_record_sha256": "288d420140ae49c07e2ff1649e462b72e0b73066937bfffbb179dbb2df237342",
+      "new_record_sha256": "288d420140ae49c07e2ff1649e462b72e0b73066937bfffbb179dbb2df237342",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "A06",
+      "prior_title": "Resolve attachment and waypoint ownership",
+      "new_title": "Resolve attachment and waypoint ownership",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "91790aa32818934b03aa3df95e2d2625116b1efba5f30e4732159283d5b40625",
+      "new_record_sha256": "9c80dd93a630dfd731ba80241edccaabf59026e1cbaf257eaea2678d3111c275",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M05"
+      ]
+    },
+    {
+      "task_id": "A07",
+      "prior_title": "Resolve failed/outside attachment placements lawfully",
+      "new_title": "Resolve failed/outside attachment placements lawfully",
+      "changed_fields": [],
+      "previous_record_sha256": "f6d3f807f324cfd83bbe14141a4c515c84977187b2984c7275c67e2287f84ba7",
+      "new_record_sha256": "f6d3f807f324cfd83bbe14141a4c515c84977187b2984c7275c67e2287f84ba7",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "A08",
+      "prior_title": "Define evidenced muscle/tendon parameter envelope",
+      "new_title": "Define evidenced muscle/tendon parameter envelope",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "4acafe9283c7303cebfc5b9214fbd8a307e1bbc0a97de21eb37104ca56e715fa",
+      "new_record_sha256": "6be11f0fdc54ed8f7f3173332769fd729dbc12df3738137a5260da0daea3deec",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M10"
+      ]
+    },
+    {
+      "task_id": "A09",
+      "prior_title": "Issue the grasp anatomy input package",
+      "new_title": "Issue the grasp anatomy input package",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "62ef842fe0167bebf8fe1bfbbd989bffbf512100e9ce5fa3bab49cadf6191863",
+      "new_record_sha256": "343c89b0327e89d96fffcdeeee8faa46b710bcfc37206fb08b51b1dda10c7237",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M09"
+      ]
+    },
+    {
+      "task_id": "G01",
+      "prior_title": "Derive support and grip feasibility",
+      "new_title": "Derive support and grip feasibility",
+      "changed_fields": [],
+      "previous_record_sha256": "867b32efbeae7bee65cb567c8e0304eef107f7031a933064597c59c5c5005965",
+      "new_record_sha256": "867b32efbeae7bee65cb567c8e0304eef107f7031a933064597c59c5c5005965",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "G02",
+      "prior_title": "Qualify finite-area anatomical attachments",
+      "new_title": "Qualify finite-area anatomical attachments",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "66404ebe6c08a787d9ed2b9295d3c3b46dd23b7b4f51304167feae6f4981b92c",
+      "new_record_sha256": "b021c8ebf2faff7c1c18f6cbcae51216966047a15f2296f7de97d6778e234362",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M05"
+      ]
+    },
+    {
+      "task_id": "G03",
+      "prior_title": "Evaluate tendon lengths and moment arms",
+      "new_title": "Evaluate tendon lengths and moment arms",
+      "changed_fields": [],
+      "previous_record_sha256": "69e0ac5d6a4d4c082f1795eb55c2bdcaed1861cb9324758b01815ce06bbcde43",
+      "new_record_sha256": "69e0ac5d6a4d4c082f1795eb55c2bdcaed1861cb9324758b01815ce06bbcde43",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "G04",
+      "prior_title": "Implement and verify physical grip contact",
+      "new_title": "Implement and verify physical grip contact",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "a02b0c92671b79744cb7e05f6d87a649a0de206ad300446df5c196fb6be14317",
+      "new_record_sha256": "2edda67f2ff6e613172ec0b2b3e4f2a11ae4a8cc40b978ffc48796e14d6b0607",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M06",
+        "M11"
+      ]
+    },
+    {
+      "task_id": "G05",
+      "prior_title": "Implement contact/support observations",
+      "new_title": "Implement contact/support observations",
+      "changed_fields": [],
+      "previous_record_sha256": "f7d7d91ecdc7903b5f4974a2dce0eda7dad4085c9051a90b7e060e0d2ed01a28",
+      "new_record_sha256": "f7d7d91ecdc7903b5f4974a2dce0eda7dad4085c9051a90b7e060e0d2ed01a28",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "G06",
+      "prior_title": "Prove a supported limb-transfer sequence",
+      "new_title": "Prove a supported limb-transfer sequence",
+      "changed_fields": [],
+      "previous_record_sha256": "e849e27df5c68769fc5bc318af377f2597a57056e1af6d1ebc85964f89381154",
+      "new_record_sha256": "e849e27df5c68769fc5bc318af377f2597a57056e1af6d1ebc85964f89381154",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "G07",
+      "prior_title": "Measure unsupported release and falls",
+      "new_title": "Measure unsupported release and falls",
+      "changed_fields": [],
+      "previous_record_sha256": "4628cb5b7a53ff78727aa8755f82c64b1e806974ccb56b8bde2d2b325e3d0f9c",
+      "new_record_sha256": "4628cb5b7a53ff78727aa8755f82c64b1e806974ccb56b8bde2d2b325e3d0f9c",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "G08",
+      "prior_title": "Qualify climbing dynamics and numerical budget",
+      "new_title": "Qualify climbing dynamics and numerical budget",
+      "changed_fields": [],
+      "previous_record_sha256": "bb8892afa3c54d29acb1cd73b12c7e4dded3fc318e8949fd54887d927896e26c",
+      "new_record_sha256": "bb8892afa3c54d29acb1cd73b12c7e4dded3fc318e8949fd54887d927896e26c",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "K01",
+      "prior_title": "Freeze the climbing skill specification",
+      "new_title": "Freeze the climbing skill specification",
+      "changed_fields": [],
+      "previous_record_sha256": "fc3579c02fe5206efe0298a5478b0a73ef3041544c6dee16d6058f106d85a014",
+      "new_record_sha256": "fc3579c02fe5206efe0298a5478b0a73ef3041544c6dee16d6058f106d85a014",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "K02",
+      "prior_title": "Build reproducible climbing reset scenarios",
+      "new_title": "Build reproducible climbing reset scenarios",
+      "changed_fields": [],
+      "previous_record_sha256": "a441e41cfb52470b6bcdd826e9fc7614127a04895ec4062c2eeb4eab06f8ec89",
+      "new_record_sha256": "a441e41cfb52470b6bcdd826e9fc7614127a04895ec4062c2eeb4eab06f8ec89",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "K03",
+      "prior_title": "Train climbing under approved reservations",
+      "new_title": "Train climbing under approved reservations",
+      "changed_fields": [
+        "done_when",
+        "ontology"
+      ],
+      "previous_record_sha256": "f8838511a8a0f15d73e6b2f410db471d82a3257242c7710cbe15a722335d17a4",
+      "new_record_sha256": "668f19f5774713228f17be78aa6eb645caa53ef449976e300fa2dd0b07741baf",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "K04",
+      "prior_title": "Evaluate climb, hold and descend separately",
+      "new_title": "Evaluate climb, hold and descend separately",
+      "changed_fields": [],
+      "previous_record_sha256": "73dad518fe708d092cc862cd439878e7b395092f7d4b44a251c728a049368ed8",
+      "new_record_sha256": "73dad518fe708d092cc862cd439878e7b395092f7d4b44a251c728a049368ed8",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "K05",
+      "prior_title": "Integrate the accepted climbing policy",
+      "new_title": "Integrate the accepted climbing policy",
+      "changed_fields": [],
+      "previous_record_sha256": "7707bc013ff9093ea8c887f903de00f44d6ac3285ae99b9afd2c0379a6e827fe",
+      "new_record_sha256": "7707bc013ff9093ea8c887f903de00f44d6ac3285ae99b9afd2c0379a6e827fe",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "K06",
+      "prior_title": "Implement walk/climb skill arbitration",
+      "new_title": "Implement walk/climb skill arbitration",
+      "changed_fields": [],
+      "previous_record_sha256": "31db60abf9a70f80493b8499ce99397813ae44bb747a4c2da2a03d339e3d886b",
+      "new_record_sha256": "31db60abf9a70f80493b8499ce99397813ae44bb747a4c2da2a03d339e3d886b",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "K07",
+      "prior_title": "Verify boundary and failure behavior",
+      "new_title": "Verify boundary and failure behavior",
+      "changed_fields": [],
+      "previous_record_sha256": "e038eb2b55f682e3e60756b91aaa1ffd358c1f12ae959d2bb149d25e3bce8172",
+      "new_record_sha256": "e038eb2b55f682e3e60756b91aaa1ffd358c1f12ae959d2bb149d25e3bce8172",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "K08",
+      "prior_title": "Accept the complete ground-tree-ground loop",
+      "new_title": "Accept the complete ground-tree-ground loop",
+      "changed_fields": [],
+      "previous_record_sha256": "766317ce31c18a376d2c7eca44378e50a74245ca2f3381754d403761c589b4e6",
+      "new_record_sha256": "766317ce31c18a376d2c7eca44378e50a74245ca2f3381754d403761c589b4e6",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "X01",
+      "prior_title": "Define the small game's repeatable objective",
+      "new_title": "Define the small game's repeatable objective",
+      "changed_fields": [],
+      "previous_record_sha256": "f164445f88b3d2b8c9378f0e3144553aa9001285ce20f2b134d0640c22ac26c4",
+      "new_record_sha256": "f164445f88b3d2b8c9378f0e3144553aa9001285ce20f2b134d0640c22ac26c4",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "X02",
+      "prior_title": "Implement start, pause and session restart flow",
+      "new_title": "Implement start, pause and session restart flow",
+      "changed_fields": [],
+      "previous_record_sha256": "73ca7560096ac75f9a9905177d3f5ecd3fce4606b31ba401d6858caca40c33c5",
+      "new_record_sha256": "73ca7560096ac75f9a9905177d3f5ecd3fce4606b31ba401d6858caca40c33c5",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "X03",
+      "prior_title": "Implement the chosen fall/recovery experience",
+      "new_title": "Implement the chosen fall/recovery experience",
+      "changed_fields": [],
+      "previous_record_sha256": "3318d25387714e339f948cedc0cf79a512aeba15f0dd49f7f5b8160cfccf90cb",
+      "new_record_sha256": "3318d25387714e339f948cedc0cf79a512aeba15f0dd49f7f5b8160cfccf90cb",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "X04",
+      "prior_title": "Render readable animal and environment state",
+      "new_title": "Render readable animal and environment state",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "6ba8c044c0c99b6eb82407d67a778506bed47338674c24a65383e04c2913d479",
+      "new_record_sha256": "957affca2e0c2dc0569c7293f9fb1a5c90fc511aadc1a3712392eb32400b2d76",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M12"
+      ]
+    },
+    {
+      "task_id": "X05",
+      "prior_title": "Add grounded interaction audio",
+      "new_title": "Add grounded interaction audio",
+      "changed_fields": [],
+      "previous_record_sha256": "f0ff66cdc9a31e2848d903e83e63f3fbd4cc57091469739f31b47cdbbae7279d",
+      "new_record_sha256": "f0ff66cdc9a31e2848d903e83e63f3fbd4cc57091469739f31b47cdbbae7279d",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "X06",
+      "prior_title": "Wire physics teaching/inspection to live values",
+      "new_title": "Wire physics teaching/inspection to live values",
+      "changed_fields": [
+        "done_when",
+        "ontology"
+      ],
+      "previous_record_sha256": "1ab8fc0f03a6f36e23e386d735ef23faf668ba12b099b527ef6f0de48d8fc5df",
+      "new_record_sha256": "7a08f3754d7a440300903e8f566dd982c3951b011620c3f8ec7af03bd8ec19e5",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "X07",
+      "prior_title": "Run the stranger playthrough and human acceptance",
+      "new_title": "Run the stranger playthrough and human acceptance",
+      "changed_fields": [],
+      "previous_record_sha256": "434df2b2dc378353e690f88898dca992253328f5d96f5b9059d03573a12fbd78",
+      "new_record_sha256": "434df2b2dc378353e690f88898dca992253328f5d96f5b9059d03573a12fbd78",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "R01",
+      "prior_title": "Extend save/restore to the complete playable state",
+      "new_title": "Extend save/restore to the complete playable state",
+      "changed_fields": [
+        "done_when",
+        "ontology"
+      ],
+      "previous_record_sha256": "a6cbc9f3647ccd0ff83baddb490ef16c99b15b6af06e68110c8809fb4f04ea19",
+      "new_record_sha256": "a7be95320b607563a1114cf6248dfc046937316d9b34024c213149bb83a99a87",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "R02",
+      "prior_title": "Implement player settings and save lifecycle",
+      "new_title": "Implement player settings and save lifecycle",
+      "changed_fields": [],
+      "previous_record_sha256": "c11f4b9bbb70463fd1a161c9821b44a70ad16fc0d02b34e9f62206a909c01cdb",
+      "new_record_sha256": "c11f4b9bbb70463fd1a161c9821b44a70ad16fc0d02b34e9f62206a909c01cdb",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "R03",
+      "prior_title": "Profile representative ground/climb scenes",
+      "new_title": "Profile representative ground/climb scenes",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "89cd0232a2b84295ce2f2552e7dca09353f54a5cdcad70f8d73dcee7a3d2c90b",
+      "new_record_sha256": "ccb3c6fd1da7d5ab6ee0d180140eac7d4c8fc8a1f4e1954c578667b45e506fae",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M08",
+        "M12"
+      ]
+    },
+    {
+      "task_id": "R04",
+      "prior_title": "Fix measured runtime bottlenecks",
+      "new_title": "Fix measured runtime bottlenecks",
+      "changed_fields": [],
+      "previous_record_sha256": "972b68e84f87768ae6dc46bd852770d65ab017292b09fcbad81f21235d8ffcfc",
+      "new_record_sha256": "972b68e84f87768ae6dc46bd852770d65ab017292b09fcbad81f21235d8ffcfc",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "R05",
+      "prior_title": "Verify long sessions and resource teardown",
+      "new_title": "Verify long sessions and resource teardown",
+      "changed_fields": [],
+      "previous_record_sha256": "053d55a8cf6276ebcf3454746388c096e02d2f9238ad469cba36ba64b7dadbe8",
+      "new_record_sha256": "053d55a8cf6276ebcf3454746388c096e02d2f9238ad469cba36ba64b7dadbe8",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "R06",
+      "prior_title": "Exercise input/device/failure recovery",
+      "new_title": "Exercise input/device/failure recovery",
+      "changed_fields": [],
+      "previous_record_sha256": "1bb28b1545ae2ace8f3c17fd9c1b941f05196fd97e289e76e4ef530a3f34f3cf",
+      "new_record_sha256": "1bb28b1545ae2ace8f3c17fd9c1b941f05196fd97e289e76e4ef530a3f34f3cf",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "R07",
+      "prior_title": "Bind full release compatibility evidence",
+      "new_title": "Bind full release compatibility evidence",
+      "changed_fields": [],
+      "previous_record_sha256": "cefef7f1df3f4123526aae0600c5dfa5904e46a1335624fbed624c88bb3d282f",
+      "new_record_sha256": "cefef7f1df3f4123526aae0600c5dfa5904e46a1335624fbed624c88bb3d282f",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "S01",
+      "prior_title": "Audit distribution provenance and dependencies",
+      "new_title": "Audit distribution provenance and dependencies",
+      "changed_fields": [],
+      "previous_record_sha256": "ae4c0988f7c7a2c1bf06807e3e1af160659d094c685c75335414b0888b8ac22d",
+      "new_record_sha256": "ae4c0988f7c7a2c1bf06807e3e1af160659d094c685c75335414b0888b8ac22d",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "S02",
+      "prior_title": "Build a self-contained Windows package",
+      "new_title": "Build a self-contained Windows package",
+      "changed_fields": [],
+      "previous_record_sha256": "6aaf84cc4a993c04d08dbdd4aa716efb07fdcb85e2c0bd85e60a584a1a536316",
+      "new_record_sha256": "6aaf84cc4a993c04d08dbdd4aa716efb07fdcb85e2c0bd85e60a584a1a536316",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "S03",
+      "prior_title": "Verify install, launch, save and clean exit",
+      "new_title": "Verify install, launch, save and clean exit",
+      "changed_fields": [],
+      "previous_record_sha256": "71b3cd6045801f48c78cefc85965f6829d08047bac371000e74f16528bcf6278",
+      "new_record_sha256": "71b3cd6045801f48c78cefc85965f6829d08047bac371000e74f16528bcf6278",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "S04",
+      "prior_title": "Complete player help and failure diagnostics",
+      "new_title": "Complete player help and failure diagnostics",
+      "changed_fields": [],
+      "previous_record_sha256": "e1edb3ad77bf39cee9757e47bc207a362212b5c38b16cb1f04312d2e47e6ed38",
+      "new_record_sha256": "e1edb3ad77bf39cee9757e47bc207a362212b5c38b16cb1f04312d2e47e6ed38",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "S05",
+      "prior_title": "Accept playable-monkey feature completion",
+      "new_title": "Accept playable-monkey feature completion",
+      "changed_fields": [],
+      "previous_record_sha256": "3e24ead17bba9fd3fa8dfb2d8bc9fd34a33e918993d510ef3149daffd605a616",
+      "new_record_sha256": "3e24ead17bba9fd3fa8dfb2d8bc9fd34a33e918993d510ef3149daffd605a616",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "S06",
+      "prior_title": "Prepare public/demo release assets",
+      "new_title": "Prepare public/demo release assets",
+      "changed_fields": [],
+      "previous_record_sha256": "ed3a41388c8327e9e4da7bb268eedd16626e6a565ac03520002c9fbf0f8400d6",
+      "new_record_sha256": "ed3a41388c8327e9e4da7bb268eedd16626e6a565ac03520002c9fbf0f8400d6",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "B01",
+      "prior_title": "Close independent exporter review and multi-cell coupon",
+      "new_title": "Close independent exporter review and multi-cell coupon",
+      "changed_fields": [],
+      "previous_record_sha256": "9bcd32fbca5622773974cf6b6d764395b2f7ba8f4fb18cdb8fa53119fbc01706",
+      "new_record_sha256": "9bcd32fbca5622773974cf6b6d764395b2f7ba8f4fb18cdb8fa53119fbc01706",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "B02",
+      "prior_title": "Complete supported static exporter coverage",
+      "new_title": "Complete supported static exporter coverage",
+      "changed_fields": [],
+      "previous_record_sha256": "bf5756b817d5d25924ffb943d7d5d35b0fa2b291086689f889abfdf4329384dd",
+      "new_record_sha256": "bf5756b817d5d25924ffb943d7d5d35b0fa2b291086689f889abfdf4329384dd",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "B03",
+      "prior_title": "Produce real validated material-volume input",
+      "new_title": "Produce real validated material-volume input",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "62b1321fff84309ddd44addeac1050a73f4f34f44626d3ad0e3a1f28cac1e7c5",
+      "new_record_sha256": "c9318a4cdf9a64d2cd3a5f3eec9f30710a7d4defd11371ba70077d5e55b86b5e",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M02"
+      ]
+    },
+    {
+      "task_id": "B04",
+      "prior_title": "Author the real assembly frame forest explicitly",
+      "new_title": "Author the real assembly frame forest explicitly",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "ccc4c721967114eb6e6e10c218d934a0a9ca60f59a06eb41cd8815f018ad199c",
+      "new_record_sha256": "c0afae9bb00ddee9932255c1b84164c68da5e074b3a720429adb88548cc0f9e9",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M01"
+      ]
+    },
+    {
+      "task_id": "B05",
+      "prior_title": "Provide real mechanical port requirements",
+      "new_title": "Provide real mechanical port requirements",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "6a674d35f83a76f82721224553dc30920dff6bb783e2c324993b733e6c5c0a25",
+      "new_record_sha256": "cd9dd4bc6c13ad854797b5cb3943a06f330ff41e2802fd4ad3ea47033c104dbf",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M05"
+      ]
+    },
+    {
+      "task_id": "B06",
+      "prior_title": "Re-run real assembly readiness without substitutions",
+      "new_title": "Re-run real assembly readiness without substitutions",
+      "changed_fields": [],
+      "previous_record_sha256": "d7a88a2ffbd475e8fff85a782e4e919fa75da52a92e4d1bc33fcac53c9c78cb7",
+      "new_record_sha256": "d7a88a2ffbd475e8fff85a782e4e919fa75da52a92e4d1bc33fcac53c9c78cb7",
+      "evidence_disposition": "REUSE_ONLY_AFTER_INPUT_AND_DEPENDENCY_FRESHNESS_CHECK",
+      "added_dependencies": []
+    },
+    {
+      "task_id": "B07",
+      "prior_title": "Decide and qualify adoption by walking/climbing runtime",
+      "new_title": "Decide and qualify adoption by walking/climbing runtime",
+      "changed_fields": [
+        "done_when",
+        "depends_on",
+        "ontology"
+      ],
+      "previous_record_sha256": "5424e034b759883d0c91cb8800ead09d8cbb8ad3c20872a44791a2555d02d594",
+      "new_record_sha256": "9344fe57189bcde9fd1bcaf627e7156318339100937d23bfbdf5a675f3ee631a",
+      "evidence_disposition": "REQUALIFY_CHANGED_SCOPE_KEEP_OLD_RECEIPTS",
+      "added_dependencies": [
+        "M11"
+      ]
+    }
+  ],
+  "new_ids": [
+    "M01",
+    "M02",
+    "M03",
+    "M04",
+    "M05",
+    "M06",
+    "M07",
+    "M08",
+    "M09",
+    "M10",
+    "M11",
+    "M12"
+  ]
+}

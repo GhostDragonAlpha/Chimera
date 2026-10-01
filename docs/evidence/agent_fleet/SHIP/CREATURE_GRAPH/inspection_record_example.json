@@ -1,0 +1,80 @@
+{
+ "record": "inspection",
+ "utc": "2026-09-15T14:27:57.089+00:00",
+ "engine": {
+  "url": "http://127.0.0.1:8107/tick_state",
+  "ticks": 896406,
+  "ts_us": 28634228619,
+  "get_latency_ms": 21.095,
+  "sampling_hz": 300.0,
+  "limits": "one light GET per call; REST snapshot latency is not the tick path; no /frame, no LLM roundtrip"
+ },
+ "selected": "inst.band.shins",
+ "intervention": "graph-side inspection: select + live pressure join; intervention itself belongs to the engine lane (AN2/window)",
+ "cells": [
+  {
+   "graph_id": "inst.band.feet",
+   "engine_cell_index": 0,
+   "band_y": [
+    -0.019507,
+    0.338
+   ],
+   "v0_m3": 0.287914,
+   "live_V_m3": 0.287914,
+   "live_P_pa": 0,
+   "degenerate": false,
+   "match": "by band geometry",
+   "ts_us": 28634228619,
+   "ticks": 896406,
+   "sampling_hz": 300.0
+  },
+  {
+   "graph_id": "inst.band.shins",
+   "engine_cell_index": 3,
+   "band_y": [
+    0.338,
+    1.903
+   ],
+   "v0_m3": 0.334578,
+   "live_V_m3": 0.334578,
+   "live_P_pa": 0,
+   "degenerate": false,
+   "match": "by band geometry",
+   "ts_us": 28634228619,
+   "ticks": 896406,
+   "sampling_hz": 300.0
+  },
+  {
+   "graph_id": "inst.band.thighs",
+   "engine_cell_index": 2,
+   "band_y": [
+    1.903,
+    3.415
+   ],
+   "v0_m3": 0.693006,
+   "live_V_m3": 0.693006,
+   "live_P_pa": 0,
+   "degenerate": false,
+   "match": "by band geometry",
+   "ts_us": 28634228619,
+   "ticks": 896406,
+   "sampling_hz": 300.0
+  },
+  {
+   "graph_id": "inst.band.torso",
+   "engine_cell_index": 1,
+   "band_y": [
+    3.415,
+    9.97118
+   ],
+   "v0_m3": 12.5091,
+   "live_V_m3": 12.5091,
+   "live_P_pa": 0,
+   "degenerate": false,
+   "match": "by band geometry",
+   "ts_us": 28634228619,
+   "ticks": 896406,
+   "sampling_hz": 300.0
+  }
+ ]
+}

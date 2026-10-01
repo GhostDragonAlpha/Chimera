@@ -1,0 +1,25 @@
+{
+ "lane": "agent/cl-L5-transitive-20260921",
+ "date": "2026-09-21",
+ "agent": "GLM 5.3 (L5 lane, constraint-ledger program, TRANSITIVE INTERFERENCE)",
+ "base": "7181b8ce (agent/cl-L0-baseline-20260921, the frozen L0 interface; sparse partial clone at E:/ChimeraWork/l5-agent; master untouched; only this branch pushed)",
+ "rule_0": {
+  "statement": "THE L5 THEORY: interference between constraint laws propagates TRANSITIVELY THROUGH THE PHYSICS -- law -> force output -> force accumulation -> body state -> contact guard -> load-share sensor -> later law -- a closed loop that pure controller-expression (quantity-set-overlap) graphs structurally miss. A dependency graph whose edges are the controller-expression graph PLUS DECLARED PHYSICS SUMMARIES (which declared quantities flow through force accumulation, body-state integration, contact guards, sensors; unknown externals conservatively reach everything) flags the shared-carrier coupling that the first-order calculator calls independent, and keeps shared-read pairs independent. A description survives any result; a theory can lose.",
+  "prediction": "P1: on the synthetic shared-carrier fixture (two distinct force outputs leg.force.a / leg.force.b, one later load-share law reading only sensor.load_share), the frozen first-order interaction() verdicts for (A,C) and (B,C) are 'independent', while the L5 propagation flags BOTH with a carrier quantity and an evidenced physics path (force-accumulation -> body-state -> contact-guard -> sensor), and zero DIRECT-WRITE classes on those pairs. P2: on the read/read-only fixture (alarm_watch and audit_watch share one delayed read of contact.clamp; their writes are terminal sinks no record or physics stage consumes), both the first-order calculator and the L5 propagation return 'independent' with NO write-write class. P3: replaying the executable twin of the fixtures with a one-ulp perturbation of force_law_a's constant changes observables OUTSIDE the first-order cone of A (the pilot's named gap, expected-red for v1) but strictly INSIDE the L5 cone of A; a one-ulp perturbation of alarm_watch's constant changes only alarm.a (exactly its L5 cone). P4: the same one-ulp perturbation, applied to one left-leg pairmin_gap sample in the REAL registered-scene trace, changes only columns inside the predicted cone of the perturbed external (left-leg touch/hold columns) and leaves every right-leg column bit-identical.",
+  "falsifier": "F-MISSED-COUPLING: any replayable counterfactual (synthetic twin or real trace) whose changed-observable set is not a subset of the predicted L5 influence cone -- the cone UNDER-approximates influence, a soundness failure, lane RED. F-VACUOUS-CONE: every distinct fixture's propagation collapses to the full graph (every record reaching every quantity) -- a USEFULNESS failure, NOT a soundness failure; a full graph on a genuinely closed loop is conservative. The two are reported SEPARATELY: collapse fraction per fixture, split into structural collapse vs opaque-external collapse."
+ },
+ "commit_before_code": null,
+ "new_files_only": "tools/constraint_ledger/{interference2.py, tests_l5.py, l5_fixtures.py} + this receipt dir; NO existing module is edited (concurrent lanes share this tree class); trace_harness.cpp and gait_controller.hpp are READ-ONLY substrate",
+ "falsifier_numbers": {
+  "F-MISSED-COUPLING": "fires iff changed_observables - predicted_cone != empty-set on any registered counterfactual",
+  "F-VACUOUS-CONE": "fires iff for EVERY fixture in {shared_carrier, read_readonly} the collapse fraction == 1.0"
+ },
+ "gates_at_base_measured_before_code": {
+  "creature_graph_repo_root_cwd": "Ran 69 tests ... OK",
+  "creature_graph_tools_cwd": "Ran 69 tests ... OK (PYTHONPATH=repo root; without it test_project_spec cannot import 'tools' -- environment note, not a code defect)",
+  "matter_kernel": "Ran 9 tests ... OK (PYTHONPATH=. python tools/matter_kernel/test_definition.py)",
+  "training_gate": "PASS -- every target is Froude-consistent ... (g=9.8066, body derives 0.9924 m/s)"
+ },
+ "honest_scoping": "the two fixtures are DECLARED SYNTHETIC (schema-valid records in the pilot's chimpl form) -- they exercise the CALCULATOR, not the machinery; their provenance says so. The real-trace counterfactual (prediction P4) runs the pinned substrate's own harness on the registered scene and is the non-synthetic leg; if the toolchain cannot produce it, the gap is NAMED here and in the receipt, never silently dropped.",
+ "trailer_agent": "GLM 5.3"
+}

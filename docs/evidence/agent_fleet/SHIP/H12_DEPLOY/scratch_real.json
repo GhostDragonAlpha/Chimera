@@ -1,0 +1,26 @@
+{
+  "_readme": "H12 start-from-zero rehearsal: the REAL pieces on private ports, never touching the live stack (live: engine 8107, shell 8206, site 8210). The engine is a COPY of the exe in an isolated cwd (.h12_scratch/engine) on private port 8137, spawned DIRECTLY (no launch_chimera.bat) to validate the direct-exe supervisor fix. Shell and site are the real servers on 8246/8245, loopback, health-checked only. Torn down after the rehearsal.",
+  "pieces": [
+    {
+      "name": "real-engine-8137",
+      "argv": ["E:\\ChimeraWork\\slot-01\\.h12_scratch\\engine\\chimera_engine.exe", "8137", "--hidden"],
+      "cwd": ".h12_scratch/engine",
+      "check": {"url": "http://127.0.0.1:8137/tick_state", "mode": "ticks"},
+      "boot_seconds": 40
+    },
+    {
+      "name": "real-shell-8246",
+      "argv": ["python", "tools/game_shell/server.py", "8246"],
+      "cwd": ".",
+      "check": {"url": "http://127.0.0.1:8246/api/health", "mode": "ok_json"},
+      "boot_seconds": 10
+    },
+    {
+      "name": "real-site-8245",
+      "argv": ["python", "tools/website/server.py", "8245"],
+      "cwd": ".",
+      "check": {"url": "http://127.0.0.1:8245/", "mode": "status200"},
+      "boot_seconds": 10
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+ "B2": {
+  "clearCalls": 1,
+  "forceDuring": {
+   "fl": 0,
+   "fr": 0
+  },
+  "forceAfterFailedClear": {
+   "fl": 0,
+   "fr": 0
+  },
+  "forceAfterHonestClear": {
+   "fl": 0,
+   "fr": 0
+  },
+  "DEFECT_LIVE": true
+ },
+ "B3": {
+  "press": 2,
+  "pressEnd": 0,
+  "press0": 2,
+  "press2": 4,
+  "pressEndAfterEsc": 0,
+  "DEFECT_LIVE": true
+ },
+ "B1": {
+  "gravity429s": 1,
+  "judgeArmed": true,
+  "root_y": 0,
+  "root_vy": 0,
+  "engineNeverEnabled": true,
+  "DEFECT_LIVE": true
+ },
+ "B4": {
+  "arrivedAt": "the_balance",
+  "heldCellsBeforeNav": [
+   6009940,
+   0,
+   -8787.86,
+   715501
+  ],
+  "flipMs": 8,
+  "cellsAtFlip": [
+   6009940,
+   0,
+   -8787.86,
+   715501
+  ],
+  "maxAbsPaAtFlip": 6009940,
+  "calmAtFlip": false,
+  "DEFECT_LIVE": true
+ },
+ "B5": {
+  "whooshOnL1": 1,
+  "whooshAfterSwitch": 1,
+  "DEFECT_LIVE": true
+ },
+ "B6": {
+  "synthThrew": true,
+  "failureCounterExists": false,
+  "sndFailShown": false,
+  "newConsoleErrors": 0,
+  "DEFECT_LIVE": true
+ },
+ "consoleErrors": [
+  "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+  "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+ ],
+ "consoleErrorCount": 2
+}

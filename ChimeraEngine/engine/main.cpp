@@ -12,6 +12,11 @@
 #include "shared_mem.hpp"
 #include "http_server.hpp"
 #include "png_encoder.hpp"
+#include "membrane_tick.hpp"
+#include "graph_surface.hpp"
+#include "graph_thermal.hpp"
+#include "graph_earth.hpp"
+#include "importer.hpp"    // C1: /mesh_import (the aliveness law ingestion)
 
 #include <cstdio>
 #include <cstdlib>
@@ -31,6 +36,12 @@
 
 static Engine* g_engine = nullptr;
 static Physics g_physics;
+static GraphSurface g_science_surface;
+static std::mutex g_science_mutex;
+static GraphThermal g_thermal;
+static GraphEarth g_earth;
+static std::mutex g_thermal_frame_mutex;
+static std::map<uint64_t,GraphThermal::J> g_thermal_frames;
 static SharedRing g_ring("ChimeraPhysicsRing");
 
 // ── Pending membrane request (Vulkan work must stay on the main/render thread) ───────
@@ -41,6 +52,9 @@ struct MembraneRequest {
     float cam_radius = 12.0f;
     float cam_theta  = 0.0f;
     float cam_phi    = 0.3f;
+    float cam_pan_x  = 0.0f;     // CAM-PAN LAW (Defect C lane): /camera's optional
+    float cam_pan_y  = 0.0f;     // pan; default 0 keeps today's zeroed-pan behavior
+    float cam_target[3] = {0.f, 0.f, 0.f}; // /camera's optional orbit target
     float cam_full[8] = {};      // D6: r,theta,phi,target xyz,pan xy (recall)
     bool cam_full_set = false;       // true: apply all 8, ignore the r/theta/phi fields
     bool camera_only = false;         // true: only move the camera, keep the loaded membrane
@@ -81,6 +95,43 @@ static bool g_md_pending = false, g_md_applied = false;
 // ── Pending triangle mesh request (same handoff: Vulkan work stays on the render thread) ──
 struct MeshReq { std::vector<float> verts; std::vector<uint32_t> indices; uint32_t N=0, idxCount=0; float cam_radius=12.f, cam_theta=0.f, cam_phi=0.3f; uint32_t slot=0, mode=0; bool update_only=false; bool valid=false; };
 static MeshReq g_mesh_req;
+static MembraneTick g_tick;                    // THE MEMBRANE TICK (Appliance 1)
+
+// THE SESSION SNAPSHOT list, shared by status/restore/clear: order matters
+// (mesh first, then the tick payloads their sizes verify against, then the
+// other uploads). /tick_seal has no single blob — its INTENTS append to
+// session_snapshot/tick_seal_history.log and replay in order, so the whole
+// cell tree comes back exactly as authored. tick_seal_state is the tree's
+// own STATE blob (R-restore-doctor): it loads before the history replay so
+// a boot whose tree already round-trips executes ZERO seals — every
+// history entry then answers "already satisfied" — and it sits LAST in the
+// replay order because load_seal_state validates against the loaded mesh.
+static const char* const k_snapshot_endpoints[] = {
+    "mesh_bin", "tick_joints", "tick_classify", "tick_vertbind",
+    "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin",
+    "tick_body_bin", "tick_seal_state",
+    // AN2: the limb registry (segments + patch regions/constants) and the
+    // patch states (arm + per-path connection + cut stamps) restore after
+    // the seal tree they index into. A stale limb blob (any mesh change)
+    // refuses -- the staleness is visible, never silent.
+    "tick_limb_state", "tick_patch_state",
+};
+static std::vector<float> g_tick_verts;        // host mirror the tick tints
+static uint32_t g_tick_vcount = 0;
+// THE REPLAY JOURNAL GATE (R-restore-doctor): the snapshot write-through
+// at the bottom of the api lambda fires for EVERY successful POST it
+// sees — including the NESTED invoke_api calls the restore replay makes —
+// so every boot over the same snapshot re-appended its successfully
+// replayed seals to tick_seal_history.log (measured 60 -> 63 -> 66 -> 69
+// lines across R-after's single boot). The replay runs on ONE thread and
+// invoke_api is a nested call on that same thread, so a thread-local flag
+// suppresses journaling for exactly the replayed calls while the
+// operator's live POSTs (HTTP worker threads) still journal.
+static thread_local bool g_replay_in_flight = false;
+struct ReplayJournalGuard {
+    ReplayJournalGuard()  { g_replay_in_flight = true; }
+    ~ReplayJournalGuard() { g_replay_in_flight = false; }
+};
 static std::mutex g_mesh_mutex;
 static std::condition_variable g_mesh_cv;
 static bool g_mesh_pending = false, g_mesh_applied = false;
@@ -205,6 +256,21 @@ static double get_double(const std::string& body, const char* key, double def) {
     try { return std::stod(body.substr(p)); } catch (...) { return def; }
 }
 
+// C1r: boolean body fields WITHOUT stod. std::stod("true") THROWS (the
+// documented stod-on-booleans trap) and the catch silently returns the
+// default -- a cut-nerve request that flips itself back on. The value's
+// own first character is the truth: 't' -> true, 'f' -> false, anything
+// else -> the default.
+static bool get_bool(const std::string& body, const char* key, bool def) {
+    size_t p = find_colon_after(body, key);
+    if (p == std::string::npos) return def;
+    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
+    if (p >= body.size()) return def;
+    if (body[p] == 't') return true;
+    if (body[p] == 'f') return false;
+    return def;
+}
+
 static std::string get_string(const std::string& body, const char* key) {
     std::string needle = std::string("\"") + key + "\"";
     size_t pos = body.find(needle);
@@ -277,15 +343,6 @@ static std::string get_string(const std::string& body, const char* key) {
         out += body[p++];
     }
     return out;
-}
-
-static bool get_bool(const std::string& body, const char* key, bool def) {
-    size_t p = find_colon_after(body, key);
-    if (p == std::string::npos) return def;
-    while (p < body.size() && (body[p] == ' ' || body[p] == '\t')) ++p;
-    if (body.compare(p, 4, "true") == 0) return true;
-    if (body.compare(p, 5, "false") == 0) return false;
-    return def;
 }
 
 static bool parse_float_array(const std::string& body, const char* key, std::vector<float>& out) {
@@ -395,6 +452,156 @@ void handleSignal(int) {
 }
 #endif
 
+// ═══ F2 BEGIN: /frame fast path helpers — WIC JPEG + box downscale ═════════════════
+// Prereg (Rule 0, written BEFORE this code): docs/evidence/agent_fleet/
+// MATTER_KERNEL/SEAL_PREREGISTRATION.md, section "F2: /FRAME FAST PATH".
+// STATEMENT — a preview-quality fast path serves /frame in <= 200 ms.
+// DERIVATION — the floor is the stored-deflate PNG encoder (a second 14.7 MB
+// copy + bitwise CRC32 + Adler-32 over the full 2560x1440 buffer), so the
+// honest wins are JPEG (in-box WIC, no new libs) at ?q=, and the downscale
+// BEFORE encode so the encoder never sees the full buffer.
+// FALSIFIER — the fast path > 400 ms, or q85 artifacts the eye can see, or
+// the default PNG route's bytes change. Named successor: render-thread-side
+// staged downscale (engine.cpp surgery — not this file's to make).
+#include <wincodec.h>
+#include <objbase.h>
+#include <ocidl.h>
+#include <oleauto.h>
+#pragma comment(lib, "windowscodecs.lib")
+#pragma comment(lib, "ole32.lib")
+
+namespace f2 {
+
+// Unsigned int query param ("w=", "q=") — find-after-'?', exactly the
+// hand-rolled parse this replaces. 0 when absent.
+inline uint32_t query_uint(const std::string& path, const char* key) {
+    size_t q = path.find('?');
+    if (q == std::string::npos) return 0;
+    size_t k = path.find(key, q);
+    if (k == std::string::npos) return 0;
+    return static_cast<uint32_t>(strtoul(path.c_str() + k + strlen(key), nullptr, 10));
+}
+
+inline bool query_has(const std::string& path, const char* needle) {
+    size_t q = path.find('?');
+    return q != std::string::npos && path.find(needle, q) != std::string::npos;
+}
+
+// Box (area-average) downscale — same integer geometry as the nearest-skip
+// this replaces (step = w/want_w, nw = w/step, nh = h/step), so ?w= serves
+// the same SIZE it always did, just averaged instead of point-sampled.
+// Reads the full buffer, writes only nw*nh*4 (~2.4 MB at w=1024): a few ms.
+inline void box_downscale(const std::vector<uint8_t>& src, uint32_t w, uint32_t h,
+                          std::vector<uint8_t>& dst, uint32_t& nw, uint32_t& nh,
+                          uint32_t want_w) {
+    uint32_t step = w / want_w;
+    if (step < 1) step = 1;
+    nw = w / step;
+    nh = h / step;
+    dst.assign(static_cast<size_t>(nw) * nh * 4, 0);
+    const float inv = 1.0f / static_cast<float>(step * step);
+    for (uint32_t y = 0; y < nh; ++y) {
+        for (uint32_t x = 0; x < nw; ++x) {
+            float acc[4] = {0.f, 0.f, 0.f, 0.f};
+            for (uint32_t sy = 0; sy < step; ++sy) {
+                const uint8_t* row = src.data() + static_cast<size_t>(y * step + sy) * w * 4;
+                for (uint32_t sx = 0; sx < step; ++sx) {
+                    const uint8_t* p = row + static_cast<size_t>(x * step + sx) * 4;
+                    acc[0] += p[0]; acc[1] += p[1]; acc[2] += p[2]; acc[3] += p[3];
+                }
+            }
+            uint8_t* d = &dst[(static_cast<size_t>(y) * nw + x) * 4];
+            d[0] = static_cast<uint8_t>(acc[0] * inv + 0.5f);
+            d[1] = static_cast<uint8_t>(acc[1] * inv + 0.5f);
+            d[2] = static_cast<uint8_t>(acc[2] * inv + 0.5f);
+            d[3] = static_cast<uint8_t>(acc[3] * inv + 0.5f);
+        }
+    }
+}
+
+// Baseline JPEG through Windows Imaging Component (in-box, no new libs).
+// Alpha is dropped (JPEG has none). Returns false if COM/WIC refuses — the
+// caller falls back to the PNG path, so the route serves an IMAGE, never an
+// error body, even on WIC failure. COM init is per-thread and the HTTP
+// server serves every request on ONE accept thread, so the first fmt=jpg
+// request pays the init once and it holds for the process lifetime.
+inline bool jpeg_encode_wic(const uint8_t* rgba, uint32_t w, uint32_t h,
+                            uint32_t quality /*1..100*/, std::vector<uint8_t>& out) {
+    out.clear();
+    HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    if (FAILED(hr) && hr != RPC_E_CHANGED_MODE) return false;
+    const bool must_uninit = SUCCEEDED(hr);
+    bool ok = false;
+    IWICImagingFactory* fac = nullptr;
+    IStream* stream = nullptr; // CreateStreamOnHGlobal hands back an IStream*;
+                               // enc->Initialize(stream, ...) takes IStream* too.
+    IWICBitmapEncoder* enc = nullptr;
+    IWICBitmapFrameEncode* frame = nullptr;
+    IPropertyBag2* bag = nullptr;
+    IWICBitmap* bmp = nullptr;
+    IWICFormatConverter* conv = nullptr;
+    do {
+        if (FAILED(CoCreateInstance(CLSID_WICImagingFactory, nullptr,
+                                    CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&fac)))) break;
+        if (FAILED(CreateStreamOnHGlobal(nullptr, TRUE, &stream))) break;
+        if (FAILED(fac->CreateEncoder(GUID_ContainerFormatJpeg, nullptr, &enc))) break;
+        if (FAILED(enc->Initialize(stream, WICBitmapEncoderNoCache))) break;
+        if (FAILED(enc->CreateNewFrame(&frame, &bag))) break;
+        if (bag) {
+            // the JPEG encoder option "ImageQuality" is a VT_R4 in [0,1]
+            PROPBAG2 opt{};
+            opt.pstrName = const_cast<LPOLESTR>(L"ImageQuality");
+            VARIANT v;
+            VariantInit(&v);
+            v.vt = VT_R4;
+            v.fltVal = static_cast<float>(quality) / 100.0f;
+            bag->Write(1, &opt, &v);
+            VariantClear(&v);
+        }
+        if (FAILED(frame->Initialize(bag))) break;
+        const size_t bytes = static_cast<size_t>(w) * h * 4;
+        // WIC's CreateBitmapFromMemory takes a non-const BYTE* (it predates
+        // const-correct COM); rgba is read-only input here, so the const is
+        // cast, never written through.
+        if (FAILED(fac->CreateBitmapFromMemory(w, h, GUID_WICPixelFormat32bppRGBA,
+                                               w * 4, static_cast<UINT>(bytes),
+                                               reinterpret_cast<BYTE*>(const_cast<uint8_t*>(rgba)),
+                                               &bmp))) break;
+        if (FAILED(fac->CreateFormatConverter(&conv))) break;
+        if (FAILED(conv->Initialize(bmp, GUID_WICPixelFormat32bppBGR,
+                                    WICBitmapDitherTypeNone, nullptr, 0.0,
+                                    WICBitmapPaletteTypeCustom))) break;
+        if (FAILED(frame->SetSize(w, h))) break;
+        if (FAILED(frame->WriteSource(conv, nullptr))) break;
+        if (FAILED(frame->Commit())) break;
+        if (FAILED(enc->Commit())) break;
+        STATSTG st{};
+        if (FAILED(stream->Stat(&st, STATFLAG_NONAME))) break;
+        const ULONGLONG n64 = st.cbSize.QuadPart;
+        HGLOBAL hg = nullptr;
+        if (n64 == 0 || FAILED(GetHGlobalFromStream(stream, &hg))) break;
+        if (n64 > GlobalSize(hg)) break;
+        void* p = GlobalLock(hg);
+        if (!p) break;
+        out.assign(static_cast<uint8_t*>(p),
+                   static_cast<uint8_t*>(p) + static_cast<size_t>(n64));
+        GlobalUnlock(hg);
+        ok = true;
+    } while (false);
+    if (conv) conv->Release();
+    if (bmp) bmp->Release();
+    if (frame) frame->Release();
+    if (bag) bag->Release();
+    if (enc) enc->Release();
+    if (stream) stream->Release();
+    if (fac) fac->Release();
+    if (must_uninit) CoUninitialize();
+    return ok;
+}
+
+} // namespace f2
+// ═══ F2 END (file-scope helpers) ══════════════════════════════════════════════════
+
 int main(int argc, char** argv) {
     // 1 ms timer granularity for the frame-cap sleeps (Windows default is 15.6 ms).
     timeBeginPeriod(1);
@@ -428,20 +635,86 @@ int main(int argc, char** argv) {
     // operator sees it, never a downscale. (Every downscaled dyad frame in this
     // repo was sized to 384px because a 3D bear's silhouette survives it; panel
     // TEXT does not -- at 384px the instrument is unreadable to the eye.)
-    // argv[3]/argv[4] override for a box with a different panel.
+    // [width] [height] positional override for a box with a different panel
+    // (or the explicit --width/--height flags).
     cfg.width  = 2560;
     cfg.height = 1440;
     cfg.n_particles = 1200;
     cfg.G      = 1.0f;
     cfg.dt     = 0.02f;
-    if (argc > 3) {
-        int w = atoi(argv[3]), h = atoi(argv[4]);
-        if (w > 0 && h > 0) { cfg.width = (uint32_t)w; cfg.height = (uint32_t)h; }
-    }
 
-    // HTTP port: argv[1] overrides the default 8080 (e.g. NVIDIA SDK Manager squats 8080).
+    // ── ARGUMENT PARSING, BOUNDED (agent/engine-determinism-argc, 2026-09-20) ──
+    // The old parser read argv[4] under an `argc > 3` guard, so ANY launch with
+    // one token too many (e.g. `chimera_engine.exe 8097 --hidden --no-restore`,
+    // argc == 4) fed atoi a null pointer and died at startup through
+    // ucrtbase!invoke_watson with FAST_FAIL_INVALID_ARG -- no message, no exit
+    // code a script could use. This pre-pass never indexes at or past argv[argc]:
+    // a value flag's value is consumed only behind an `i + 1 < argc` check, and
+    // an unknown flag is a clean stderr usage message + exit code 1. The flags
+    // that act later in main (--no-restore near boot restore,
+    // --preserve-mesh-topology after engine init, the scene loaders) are
+    // recognized here so their spelling is validated once, in one place.
     int http_port = 8080;
-    if (argc > 1) { http_port = atoi(argv[1]); if (http_port <= 0) http_port = 8080; }
+    bool console_hidden = false;
+    bool have_board = false;
+    std::string board_file;
+    {
+        // value flags: the token AFTER the flag belongs to the flag (consumed in
+        // the scan below, so it can never be mistaken for a positional)
+        static const char* kValueFlags[] = {
+            "--width", "--height", "--science-surface", "--thermal-salvage", "--earth-patch",
+        };
+        static const char* kBoolFlags[] = {
+            "--hidden", "--no-restore", "--preserve-mesh-topology",
+        };
+        auto is_flag = [](const char* const* list, size_t n, const std::string& a) {
+            for (size_t i = 0; i < n; ++i) if (a == list[i]) return true;
+            return false;
+        };
+        std::vector<std::string> positional;
+        std::string bad;
+        for (int i = 1; i < argc; ++i) {
+            std::string a = argv[i];
+            if (!a.empty() && a[0] == '-') {
+                if (is_flag(kBoolFlags, sizeof(kBoolFlags) / sizeof(kBoolFlags[0]), a)) {
+                    if (a == "--hidden") console_hidden = true;
+                    continue;                                  // acts later in main
+                }
+                if (is_flag(kValueFlags, sizeof(kValueFlags) / sizeof(kValueFlags[0]), a)) {
+                    if (i + 1 >= argc) { bad = a + " requires a value"; break; }
+                    if (a == "--width")  cfg.width  = (uint32_t)atoi(argv[i + 1]);
+                    if (a == "--height") cfg.height = (uint32_t)atoi(argv[i + 1]);
+                    ++i;                                       // consume the value token
+                    continue;
+                }
+                bad = "unknown argument: " + a;
+                break;
+            }
+            positional.push_back(a);
+        }
+        if (bad.empty() && positional.size() >= 3 && positional.size() != 4) {
+            // legacy positional protocol was [port] [board] [width] [height]:
+            // a dangling width (or width+board-less triple) is malformed
+            bad = "bare [width height] override needs exactly 2 numbers "
+                  "after [port] [board] (got " + std::to_string(positional.size() - 2) + ")";
+        }
+        if (!bad.empty()) {
+            fprintf(stderr,
+                    "chimera_engine: %s\n"
+                    "usage: chimera_engine.exe [port] [board.json] [width height]\n"
+                    "       [--hidden] [--no-restore] [--preserve-mesh-topology]\n"
+                    "       [--width W] [--height H]\n"
+                    "       [--science-surface FILE] [--thermal-salvage FILE] [--earth-patch FILE]\n",
+                    bad.c_str());
+            return 1;
+        }
+        if (positional.size() >= 1) { http_port = atoi(positional[0].c_str()); if (http_port <= 0) http_port = 8080; }
+        if (positional.size() >= 2) { have_board = true; board_file = positional[1]; }
+        if (positional.size() == 4) {
+            int w = atoi(positional[2].c_str()), h = atoi(positional[3].c_str());
+            if (w > 0 && h > 0) { cfg.width = (uint32_t)w; cfg.height = (uint32_t)h; }
+        }
+    }
 
     // Physics init (passes cfg so it can set physical params)
     g_physics.init(cfg.n_particles, cfg);
@@ -452,16 +725,55 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Failed to initialize Vulkan engine\n");
         return 1;
     }
+    for (int i=1;i<argc;++i)
+        if(std::string(argv[i])=="--preserve-mesh-topology") engine.preserve_mesh_topology_=true;
     g_engine = &engine;
+    // Opt-in graph scene; existing sessions take no new path.
+    for (int i=1;i+1<argc;++i) if(std::string(argv[i])=="--science-surface") {
+        try {
+            g_science_surface.load(argv[i+1]);
+            auto mesh=g_science_surface.mesh();auto ids=g_science_surface.indices();
+            if(!engine.load_mesh(mesh,ids,uint32_t(mesh.size()/9),uint32_t(ids.size()))) throw std::runtime_error("surface mesh upload failed");
+            engine.set_mesh_mode(2);
+            engine.ui_.set_visible(false);
+            auto camera=g_science_surface.spec.at("camera").get<std::array<float,8>>();
+            for(float x:camera)GraphSurface::need(std::isfinite(x),"nonfinite graph camera");
+            engine.set_camera_full(camera.data());
+        } catch(const std::exception& ex) {fprintf(stderr,"science surface: %s\n",ex.what());return 2;}
+    }
 
-    // THE STUDIO: optional board file path (argv[2]); default is studio_board.json
-    // in the CWD — tools/studio_board.py writes it next to the exe.
-    // 2026-09-02: flags are not paths — `chimera_engine.exe 8090 --restore`
-    // made argv[2] == "--restore" the board path, GetFileAttributesExA failed,
-    // and the window booted "no board file" forever (the eye's #1 defect:
-    // "a raw developer/console message leaking into the product UI").
-    if (argc > 2 && std::string(argv[2]).rfind("--", 0) != 0)
-        engine.ui_.set_board_file(argv[2]);
+
+    for(int i=1;i+1<argc;++i) if(std::string(argv[i])=="--thermal-salvage") {
+        try {
+            chimera::forces::require(!g_science_surface.active,"exclusive_science_scene");
+            g_thermal.load(argv[i+1]);
+            auto view=g_thermal.render();
+            if(!engine.load_mesh(view.mesh,view.indices,uint32_t(view.mesh.size()/9),uint32_t(view.indices.size())))
+                throw std::runtime_error("thermal_mesh_upload_failed");
+            engine.set_mesh_mode(2);engine.ui_.set_visible(false);
+            auto camera=g_thermal.bundle.at("camera").get<std::array<float,8>>();
+            engine.set_camera_full(camera.data());
+            g_thermal.start();
+        }catch(const std::exception& ex){fprintf(stderr,"thermal salvage: %s\n",ex.what());return 2;}
+    }
+
+    for(int i=1;i+1<argc;++i) if(std::string(argv[i])=="--earth-patch") {
+        try {
+            chimera::forces::require(!g_science_surface.active&&!g_thermal.active(),"exclusive_earth_scene");
+            g_earth.load(argv[i+1]);auto view=g_earth.render();engine.preserve_mesh_topology_=true;
+            if(!engine.load_mesh(view.mesh,view.indices,uint32_t(view.mesh.size()/9),uint32_t(view.indices.size()))) throw std::runtime_error("earth_mesh_upload_failed");
+            engine.set_mesh_mode(2);engine.external_body_owner_=true;engine.ui_.set_visible(false);
+            float camera[8]={1.35f,.25f,.3f,0,.27f,0,0,0};engine.set_camera_full(camera);g_earth.start();
+        }catch(const std::exception& e){fprintf(stderr,"earth patch: %s\n",e.what());return 2;}
+    }
+
+    // THE STUDIO: optional board file path (the second positional); default is
+    // studio_board.json in the CWD — tools/studio_board.py writes it next to
+    // the exe. The positional comes from the bounded argument pre-pass above
+    // (flag tokens and value-flag values never land in it — 2026-09-02's
+    // "flags are not paths" fix, kept).
+    if (have_board)
+        engine.ui_.set_board_file(board_file);
 
     // ── HTTP server for Python shim communication ───────────────────────────────
     // F1: the handler is a NAMED function — the HTTP server and the console's
@@ -476,7 +788,125 @@ int main(int argc, char** argv) {
         size_t q = path.find('?');
         std::string p = (q == std::string::npos) ? path : path.substr(0, q);
 
-        if (p == "/state" && method == "GET") {
+        // The selected membrane body has one pose owner. A full mesh load starts
+        // a new body; independent editors and animation uploads cannot bypass it.
+        if(g_tick.body_active() && method=="POST") {
+            static const std::set<std::string> competing={"/hinge_bin","/joints_bin","/joints","/joint","/stride_bin","/stride","/gait_bin","/gait","/volp_bin","/volp","/matter","/skin_bin","/pose_apply","/tick_rig","/tick_flex","/tick_joints","/tick_classify","/tick_vertbind","/water_vis"};
+            bool mesh_update=false;
+            if(p=="/mesh_bin" && req_body.size()>=24) {float mode;std::memcpy(&mode,req_body.data()+20,4);mesh_update=mode>=100.f;}
+            if(competing.count(p) || mesh_update) {
+                body="{\"ok\":false,\"error\":\"shared_body_owns_surface\"}";content_type="application/json";return;
+            }
+        }
+        if(g_earth.active() && method=="POST" && p!="/earth_state") throw chimera::forces::Refusal("earth_scene_accepts_intent_controls_only");
+        if(p=="/earth_state" || p=="/earth_snapshot" || p=="/earth" || p=="/earth_graph") {
+            content_type="application/json";
+            try {
+                chimera::forces::require(g_earth.active(),"earth_scene_missing");
+                if(p=="/earth" || p=="/earth_graph") {
+                    chimera::forces::require(method=="GET","earth_method");
+                    std::ifstream f(g_earth.bundle.at(p=="/earth"?"page_file":"graph_file").get<std::string>(),std::ios::binary);
+                    chimera::forces::require(bool(f),"earth_page_missing");body.assign(std::istreambuf_iterator<char>(f),{});content_type=p=="/earth"?"text/html; charset=utf-8":"application/json";
+                } else if(p=="/earth_snapshot") {
+                    chimera::forces::require(method=="GET","earth_method");auto v=g_earth.render();body=GraphEarth::J{{"ok",true},{"state",v.state},{"vertices",v.mesh},{"indices",v.indices}}.dump();
+                } else if(method=="POST") {
+                    chimera::forces::require(req_body.size()<=4096,"earth_control_size");std::vector<std::set<std::string>> keys;
+                    auto cb=[&](int,GraphEarth::J::parse_event_t event,GraphEarth::J& v){if(event==GraphEarth::J::parse_event_t::object_start)keys.emplace_back();if(event==GraphEarth::J::parse_event_t::key)chimera::forces::require(keys.back().insert(v.get<std::string>()).second,"duplicate_json_key");if(event==GraphEarth::J::parse_event_t::object_end)keys.pop_back();return true;};
+                    body=g_earth.control(GraphEarth::J::parse(req_body,cb)).dump();
+                }else {chimera::forces::require(method=="GET","earth_method");body=g_earth.status().dump();}
+            }catch(const std::exception& e){body=GraphEarth::J{{"ok",false},{"error",e.what()}}.dump();}
+            return;
+        }
+        if(g_thermal.active() && method=="POST" && p!="/thermal_state")
+            throw chimera::forces::Refusal("thermal_scene_accepts_intent_controls_only");
+        if(p=="/thermal_state" && (method=="GET" || method=="POST")) {
+            content_type="application/json";
+            try {
+                if(method=="POST") {
+                    std::vector<std::set<std::string>> keys;
+                    auto cb=[&](int,GraphThermal::J::parse_event_t event,GraphThermal::J& v) {
+                        if(event==GraphThermal::J::parse_event_t::object_start)keys.emplace_back();
+                        if(event==GraphThermal::J::parse_event_t::key)
+                            chimera::forces::require(keys.back().insert(v.get<std::string>()).second,"duplicate_json_key");
+                        if(event==GraphThermal::J::parse_event_t::object_end)keys.pop_back();
+                        return true;
+                    };
+                    chimera::forces::require(req_body.size()<=4096,"thermal_control_size");
+                    body=g_thermal.control(GraphThermal::J::parse(req_body,cb)).dump();
+                }else body=g_thermal.status().dump();
+            }catch(const std::exception& e){body=GraphThermal::J{{"ok",false},{"error",e.what()}}.dump();}
+        } else if(p=="/thermal_frame" && method=="GET") {
+            content_type="application/json";
+            try {
+                chimera::forces::require(g_thermal.active(),"thermal_scene_missing");
+                using PhaseClock=std::chrono::steady_clock;
+                auto elapsed=[](PhaseClock::time_point a,PhaseClock::time_point b){return std::chrono::duration<double,std::milli>(b-a).count();};
+                const auto t0=PhaseClock::now();
+                const uint64_t want=engine.capture_arm_watermark()+1;
+                engine.request_capture();
+                const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(3);
+                while(!engine.capture_collected_since(want) && std::chrono::steady_clock::now()<deadline)
+                    Sleep(2);
+                chimera::forces::require(engine.capture_collected_since(want),"thermal_capture_timeout");
+                const auto t1=PhaseClock::now();
+                std::array<uint64_t,5> read_phases{};
+                std::vector<uint8_t> rgba;uint32_t width=0,height=0;uint64_t seq=0;
+                chimera::forces::require(engine.capture_frame(rgba,width,height,&seq,&read_phases) && seq>=want,
+                                         "thermal_capture_identity");
+                const auto t2=PhaseClock::now();
+                GraphThermal::J snapshot;
+                while(std::chrono::steady_clock::now()<deadline) {
+                    {std::lock_guard<std::mutex> lk(g_thermal_frame_mutex);
+                     auto it=g_thermal_frames.find(seq);if(it!=g_thermal_frames.end())snapshot=it->second;}
+                    if(!snapshot.is_null())break;
+                    Sleep(1);
+                }
+                chimera::forces::require(!snapshot.is_null(),"thermal_capture_state_missing");
+                const auto t3=PhaseClock::now();
+                const uint32_t target=(std::max)(320u,(std::min)(1600u,f2::query_uint(path,"w=")));
+                if(target<width) {
+                    std::vector<uint8_t> down;uint32_t nw=0,nh=0;
+                    f2::box_downscale(rgba,width,height,down,nw,nh,target);
+                    rgba.swap(down);width=nw;height=nh;
+                }
+                const auto t4=PhaseClock::now();
+                std::vector<uint8_t> encoded;
+                const bool jpg=f2::jpeg_encode_wic(rgba.data(),width,height,88,encoded);
+                if(!jpg)encoded=png::encode_rgba(rgba.data(),width,height);
+                const auto t5=PhaseClock::now();
+                body=GraphThermal::J{{"ok",true},{"mime",jpg?"image/jpeg":"image/png"},
+                    {"image_base64",GraphThermal::base64(encoded)},{"state",snapshot},
+                    {"capture_sequence",seq},{"width",width},{"height",height},
+                    {"timing_ms",{{"wait_collect",elapsed(t0,t1)},{"copy",elapsed(t1,t2)},{"state_lookup",elapsed(t2,t3)},
+                                  {"downscale",elapsed(t3,t4)},{"encode",elapsed(t4,t5)}}},
+                    {"read_phases_us",read_phases},
+                    {"read_phase_names",{"map","invalidate","bulk_copy","conversion_or_direct_read","unmap"}}}.dump();
+            }catch(const std::exception& e){body=GraphThermal::J{{"ok",false},{"error",e.what()}}.dump();}
+        } else if((p=="/thermal" || p=="/thermal_graph") && method=="GET") {
+            content_type=p=="/thermal"?"text/html; charset=utf-8":"application/json";
+            if(g_thermal.active()) {
+                auto key=p=="/thermal"?"page_file":"graph_file";
+                std::ifstream f(g_thermal.bundle.at(key).get<std::string>(),std::ios::binary);
+                if(f)body.assign(std::istreambuf_iterator<char>(f),{});
+                else{body="{\"ok\":false,\"error\":\"thermal_scene_asset_missing\"}";content_type="application/json";}
+            }else{body="{\"ok\":false,\"error\":\"thermal_scene_missing\"}";content_type="application/json";}
+        } else         if (p == "/science_surface" && (method == "GET" || method == "POST")) {
+            std::lock_guard<std::mutex> lk(g_science_mutex);
+            content_type="application/json";
+            try {
+                GraphSurface::need(g_science_surface.active,"no graph surface loaded");
+                if(method=="POST")g_science_surface.control(GraphSurface::J::parse(req_body));
+                body=g_science_surface.status().dump();
+            } catch(const std::exception& ex){body=GraphSurface::J{{"ok",false},{"error",ex.what()}}.dump();}
+        } else if ((p == "/science" || p == "/science_graph") && method == "GET") {
+            std::lock_guard<std::mutex> lk(g_science_mutex);
+            if(g_science_surface.active){
+                auto key=p=="/science"?"page_file":"graph_file";
+                std::ifstream f(g_science_surface.spec.at(key).get<std::string>(),std::ios::binary);
+                if(f){body.assign(std::istreambuf_iterator<char>(f),{});content_type=p=="/science"?"text/html; charset=utf-8":"application/json";}
+                else{body="{\"ok\":false,\"error\":\"scene asset missing\"}";content_type="application/json";}
+            }else{body="{\"ok\":false,\"error\":\"no graph surface loaded\"}";content_type="application/json";}
+        } else if (p == "/state" && method == "GET") {
             auto& parts = g_physics.particles();
             std::string json; json.reserve(200u * parts.size() + 64);
             json += "{\"n\":" + std::to_string(parts.size()) + ",\"particles\":[";
@@ -708,6 +1138,597 @@ int main(int argc, char** argv) {
                     body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
                 }
             }
+            content_type = "application/json";
+        // ═══ C1 BEGIN: /mesh_import — THE ALIVENESS LAW, one POST ═════════
+        } else if (p == "/mesh_import" && method == "POST") {
+            // Body = 1-byte source kind ('O' OBJ subset, 'G' glTF 2.0/GLB)
+            // + raw source bytes. The importer converts to the engine's
+            // full mesh format (or refuses BY NAME — a leaky/open surface
+            // never gets admitted) and the converted payload is applied
+            // through the SAME handoff /mesh_bin uses: g_mesh_req under
+            // g_mesh_mutex, acked by wait_for_shutdown. NOT a nested
+            // invoke_api replay — the accepted-import AV (2026-09-13,
+            // offline-clean importer) put the nested HTTP-thread handler
+            // call in the dock, and the direct handoff is the proven
+            // discipline. Deliberately NOT session-snapshotted: an import
+            // is reproducible from its source file, and a poisoned blob
+            // must never boot-loop the engine again.
+            content_type = "application/json";
+            if (req_body.empty()) {
+                body = "{\"ok\":false,\"error\":\"empty body: expected a "
+                       "1-byte kind ('O' OBJ, 'G' glTF) + source bytes\"}";
+            } else if (req_body[0] != 'O' && req_body[0] != 'G') {
+                body = "{\"ok\":false,\"error\":\"unknown source kind: the "
+                       "first byte must be 'O' (OBJ) or 'G' (glTF)\"}";
+            } else if (!g_engine) {
+                body = "{\"ok\":false,\"error\":\"engine not wired\"}";
+            } else if (g_tick.state_json().find("\"sealed\":true") !=
+                       std::string::npos) {
+                // THE STALE-SEAL GUARD (the accepted-import AV, root
+                // cause): MembraneTick::init() rebuilds the cell field but
+                // does NOT clear the seal tree, so step()'s seal block
+                // keeps reading verts9 through the RESIDENT creature's
+                // slot ids on the first tick after any mesh swap — far
+                // out of bounds when the old body had more vertices than
+                // the import. Until init() clears seal state, importing
+                // onto a sealed tick is refused BY NAME, never admitted.
+                body = "{\"ok\":false,\"error\":\"refused: the tick still "
+                       "holds sealed cells from the resident creature; "
+                       "restart the engine with --no-restore (or clear "
+                       "its session) before importing\"}";
+            } else {
+                importer::Stats st;
+                std::string bin, err;
+                if (!importer::import_mesh(req_body[0],
+                                           req_body.substr(1), bin, st, err)) {
+                    std::string esc;               // err is quote-free by
+                    for (size_t i = 0; i < err.size(); ++i)   // contract; belt
+                        esc += err[i] == '"' ? '\'' : err[i]; // and braces
+                    body = "{\"ok\":false,\"error\":\"refused: " + esc + "\"}";
+                } else if (bin.size() < 24) {
+                    body = "{\"ok\":false,\"error\":\"importer payload "
+                           "shorter than its own header\"}";
+                } else {
+                    // decode the payload with /mesh_bin's exact arithmetic
+                    uint32_t N = 0, IC = 0;
+                    float cr = 12.f, ct = 0.f, cp = 0.3f, slotmode = 0.f;
+                    std::memcpy(&N, bin.data() + 0, 4);
+                    std::memcpy(&IC, bin.data() + 4, 4);
+                    std::memcpy(&cr, bin.data() + 8, 4);
+                    std::memcpy(&ct, bin.data() + 12, 4);
+                    std::memcpy(&cp, bin.data() + 16, 4);
+                    std::memcpy(&slotmode, bin.data() + 20, 4);
+                    size_t expect = 24 + static_cast<size_t>(N) * 9 * 4 +
+                                    static_cast<size_t>(IC) * 4;
+                    if (bin.size() != expect || N == 0 || IC < 3 ||
+                        IC % 3 != 0) {
+                        body = "{\"ok\":false,\"error\":\"importer payload "
+                               "fails the mesh_bin size equation\"}";
+                    } else {
+                        std::vector<float> verts(static_cast<size_t>(N) * 9);
+                        std::vector<uint32_t> indices(IC);
+                        std::memcpy(verts.data(), bin.data() + 24,
+                                    static_cast<size_t>(N) * 9 * 4);
+                        std::memcpy(indices.data(),
+                                    bin.data() + 24 + static_cast<size_t>(N) * 9 * 4,
+                                    static_cast<size_t>(IC) * 4);
+                        {
+                            std::lock_guard<std::mutex> lk(g_mesh_mutex);
+                            g_mesh_req.verts = std::move(verts);
+                            g_mesh_req.indices = std::move(indices);
+                            g_mesh_req.N = N;
+                            g_mesh_req.idxCount = IC;
+                            g_mesh_req.cam_radius = cr;
+                            g_mesh_req.cam_theta = ct;
+                            g_mesh_req.cam_phi = cp;
+                            uint32_t sm = static_cast<uint32_t>(
+                                slotmode < 0 ? 0 : slotmode + 0.5f);
+                            // slotmode >= 100 = animation delta: never
+                            // produced by the importer, kept for shape
+                            g_mesh_req.update_only = (sm >= 100);
+                            if (g_mesh_req.update_only) sm -= 100;
+                            g_mesh_req.slot = sm / 10;
+                            g_mesh_req.mode = sm % 10;
+                            g_mesh_pending = true; g_mesh_applied = false;
+                        }
+                        std::unique_lock<std::mutex> lk(g_mesh_mutex);
+                        bool ok = wait_for_shutdown(g_mesh_cv, lk,
+                                                    std::chrono::seconds(15),
+                                                    []{ return g_mesh_applied; });
+                        if (ok) {
+                            char buf[256];
+                            snprintf(buf, sizeof(buf),
+                                     "{\"ok\":true,\"verts\":%u,\"tris\":%u,"
+                                     "\"volume\":%.9g,\"ymin\":%.9g,"
+                                     "\"ymax\":%.9g,\"winding_flipped\":%s}",
+                                     st.verts, st.tris, st.volume, st.ymin,
+                                     st.ymax,
+                                     st.winding_flipped ? "true" : "false");
+                            body = buf;
+                        } else {
+                            body = "{\"ok\":false,\"error\":\"timeout\"}";
+                        }
+                    }
+                }
+            }
+        // ═══ C1 END ═══════════════════════════════════════════════════════
+        } else if (p == "/tick_intent" && method == "POST") {
+            // THE MEMBRANE TICK intents (Appliance 1): a standing press.
+            // Force in newtons is a required input, never defaulted.
+            // Two forms: {"force_n", "foot"} (feet scene) or
+            // {"force_n", "joint_index"} (classified creature).
+            float force = get_double(req_body, "force_n", NAN);
+            int jidx = (int)get_double(req_body, "joint_index", -1.0);
+            if (jidx >= 0) {
+                body = g_tick.intent_joint(jidx, force)
+                     ? "{\"ok\":true}"
+                     : "{\"ok\":false,\"error\":\"refused: joint_index out of "
+                       "range or force must be positive\"}";
+            } else {
+                std::string foot = get_string(req_body, "foot");
+                if (g_tick.intent(force, foot)) {
+                    body = "{\"ok\":true}";
+                } else {
+                    body = "{\"ok\":false,\"error\":\"refused: force_n must be a "
+                           "positive number and foot L or R\"}";
+                }
+            }
+            content_type = "application/json";
+        } else if (p == "/tick_intent_clear" && method == "POST") {
+            g_tick.clear_intent();
+            body = "{\"ok\":true}";
+            content_type = "application/json";
+        } else if (p == "/tick_flex" && method == "POST") {
+            // TRAVEL (Appliance 2): pose intent -- flex the feet at the
+            // ankle pins, degrees. Poses are intents; flex 0 = authored rest.
+            float dl = get_double(req_body, "deg_L", 0.0);
+            float dr = get_double(req_body, "deg_R", 0.0);
+            if (g_tick.flex(dl, dr)) {
+                body = "{\"ok\":true}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"refused: flex angles must "
+                       "be finite and within +/-90 degrees\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/tick_rig" && method == "POST") {
+            // THE LEG (Appliance 3): the hinged chain config, posted by the
+            // authoring script. Lines: name|start|count|px|py|pz|parent
+            if (g_tick.load_rig(req_body)) body = "{\"ok\":true}";
+            else body = "{\"ok\":false,\"error\":\"empty rig\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_pose" && method == "POST") {
+            // A pose intent: {"joint": "knee_L", "deg": -40} or
+            // {"joint_index": 12, "deg": 30}
+            std::string joint = get_string(req_body, "joint");
+            float deg = (float)get_double(req_body, "deg", 0.0);
+            int jidx = (int)get_double(req_body, "joint_index", -1.0);
+            bool ok = jidx >= 0 ? g_tick.pose_index(jidx, deg)
+                                : g_tick.pose(joint, deg);
+            if (ok) body = "{\"ok\":true}";
+            else body = "{\"ok\":false,\"error\":\"refused: unknown joint or "
+                        "angle outside admitted limits\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_body_bin" && method == "POST") {
+            {
+                std::lock_guard<std::mutex> lk(g_volp_mutex);
+                g_volp_req=VolpReq{};g_volp_req.kind=4;
+                g_volp_req.blob.assign(req_body.begin(),req_body.end());
+                g_volp_pending=true;g_volp_applied=false;
+            }
+            std::unique_lock<std::mutex> lk(g_volp_mutex);
+            bool done=wait_for_shutdown(g_volp_cv,lk,std::chrono::seconds(60),[]{return g_volp_applied;});
+            body=done && g_volp_req.ok ? "{\"ok\":true,\"body_model\":\"JNT3_hierarchical\",\"actuation\":\"kinematic\"}" : "{\"ok\":false,\"error\":\"body_binding_refused_load_before_seals_and_controllers\"}";
+            content_type="application/json";
+        } else if (p == "/tick_classify" && method == "POST") {
+            // CA CLASSIFICATION (Appliance 4): per-triangle joint type.
+            body = g_tick.load_classify(req_body) ? "{\"ok\":true}"
+                 : "{\"ok\":false,\"error\":\"classification size mismatch "
+                   "(post after the mesh)\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_vertbind" && method == "POST") {
+            // TRAVEL binding: 15 bytes per vertex (3 pin indices + 3 weights)
+            body = g_tick.load_vertbind(req_body) ? "{\"ok\":true}"
+                 : "{\"ok\":false,\"error\":\"vertbind rejected (size or "
+                   "vertex count mismatch)\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_joints" && method == "POST") {
+            // The measured pins: [u32 n][f32 x,y,z * n]
+            body = g_tick.load_joint_pins(req_body) ? "{\"ok\":true}"
+                 : "{\"ok\":false,\"error\":\"joint pins rejected\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_seal" && method == "POST") {
+            // THE MITOSIS OP (recursive cut-and-weld): cut sealed cell k
+            // ("cell", default 0 = whole creature) with plane y into two
+            // sealed cells — the growth law. An intent whose state ALREADY
+            // exists (a replayed repeat: the plane already bounds the named
+            // cell, or the tree already partitions at this plane) answers
+            // ok:true with "seal":"already" — the idempotent skip (nothing
+            // published, nothing refused, nothing re-journaled below).
+            float y = (float)get_double(req_body, "y", 0.0);
+            int cell = (int)get_double(req_body, "cell", 0.0);
+            int outcome = MembraneTick::SEAL_CUT;
+            if (g_tick.seal(y, cell, &outcome)) {
+                body = outcome == MembraneTick::SEAL_ALREADY
+                     ? "{\"ok\":true,\"seal\":\"already\"}"
+                     : "{\"ok\":true}";
+            } else {
+                body = "{\"ok\":false,\"error\":\"refused: the cell index "
+                        "must exist, the plane must cross that cell's "
+                        "y-range, and the cut graph must close into loops\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/tick_seal_state" && method == "POST") {
+            // THE SEAL-TREE SNAPSHOT LOAD (R-restore-doctor): restore the
+            // mitosis tree directly from its state blob — zero cuts
+            // executed. The loader self-validates (vertex count + every
+            // cell's recomputed rest volume), so a stale blob (any mesh
+            // change since it was written) is REFUSED HERE WITHOUT
+            // MUTATION — and this endpoint answers ok:true with
+            // "seal_state":"skipped", NEVER a restore failure: the history
+            // replay right after us rebuilds the tree the honest way
+            // (executed cuts + already-skips) and re-snapshots it.
+            if (g_tick.load_seal_state(req_body)) {
+                body = "{\"ok\":true,\"seal_state\":\"loaded\"}";
+                printf("snapshot: seal-tree loaded (%zu B, zero cuts "
+                       "executed)\n", req_body.size());
+            } else {
+                body = "{\"ok\":true,\"seal_state\":\"skipped\"}";
+                printf("snapshot: seal-tree blob refused (stale or absent "
+                       "tree) -- falling back to the intent history\n");
+            }
+            fflush(stdout);
+            content_type = "application/json";
+        } else if (p == "/topology" && method == "GET") {
+            // THE WEB KERNEL: one-time triangle topology for the browser's
+            // own renderer.
+            std::vector<uint8_t> out;
+            g_tick.export_topology(out);
+            body.assign(reinterpret_cast<const char*>(out.data()), out.size());
+            content_type = "application/octet-stream";
+        } else if (p == "/verts" && method == "GET") {
+            // THE WEB KERNEL: the posed surface as state (pos+normal+color,
+            // 9 f32 per vertex), serialized under the tick lock.
+            std::vector<uint8_t> out;
+            g_tick.export_verts(g_tick_verts, out);
+            body.assign(reinterpret_cast<const char*>(out.data()), out.size());
+// C3 BEGIN — THE KERNEL STREAM: delta compression for /verts (the
+// internet-scale successor the web-kernel prereg named,
+// docs/evidence/agent_fleet/MATTER_KERNEL/SEAL_PREREGISTRATION.md).
+// Constraints stated before the mechanism: (1) the legacy framing
+// [u32 n][f32*9n] is untouched — every request without ?delta=1 is
+// answered exactly as before, so no existing consumer can regress;
+// (2) the delta chains against this route's previous DELTA-SERVED
+// export only (legacy pulls never advance the chain), which makes the
+// stream defined for ONE delta client — a u32 seq on every emission
+// lets a client detect a broken chain (dropped poll, interleaved
+// second viewer) and resync with one ?delta=key pull; (3) "unchanged"
+// is BIT-identical (memcmp), because idle exports are provably
+// byte-identical (apply_chain copies base_pos_ at rest; tint and
+// normals are pure functions of stable inputs); (4) a delta that
+// would not beat the full frame is never sent — the route falls back
+// to a keyframe; (5) the falsifier is a torn frame, so any size
+// inconsistency aborts to the legacy frame server-side and the CLIENT
+// refuses partial runs — nothing partial ever reaches a renderer.
+            {
+                bool want_delta = false, want_key = false;
+                size_t q3 = path.find('?');
+                if (q3 != std::string::npos) {
+                    size_t d3 = path.find("delta=", q3);
+                    if (d3 != std::string::npos) {
+                        size_t v3 = d3 + 6, e3 = v3;
+                        while (e3 < path.size() && path[e3] != '&') ++e3;
+                        std::string val = path.substr(v3, e3 - v3);
+                        want_key = (val == "key");     // forced keyframe: the resync pull
+                        want_delta = !want_key && (val == "1");
+                    }
+                }
+                if ((want_delta || want_key) && out.size() >= 4) {
+                    // Route-local cache under its own small mutex — NEVER
+                    // the tick lock: export_verts has already released
+                    // seal_mtx_, and the delta math runs on this request's
+                    // private copy, so the render loop is never blocked.
+                    static std::mutex c3_mtx;
+                    static std::vector<uint8_t> c3_prev;   // last delta-served export (legacy framing)
+                    static uint32_t c3_seq = 0;            // advances on every delta-framed emission
+                    static uint32_t c3_since_key = 0;      // runs-frames since the last keyframe
+                    static bool c3_has_prev = false;
+                    std::lock_guard<std::mutex> lk(c3_mtx);
+
+                    uint32_t n = 0;
+                    std::memcpy(&n, out.data(), 4);
+                    const size_t payload = static_cast<size_t>(n) * 36;
+                    bool chain_ok = c3_has_prev && c3_prev.size() == out.size();
+                    if (chain_ok)
+                        chain_ok = 0 == std::memcmp(out.data(), c3_prev.data(), 4);
+
+                    // one pass: runs of CHANGED vertices (36-byte stride,
+                    // bitwise compare — a pose recomputes values, but at
+                    // rest the recomputation is bit-identical)
+                    bool emit_key = want_key || !chain_ok || c3_since_key >= 60;
+                    std::vector<uint32_t> run_start, run_len;
+                    size_t changed = 0;
+                    if (!emit_key) {
+                        bool in_run = false;
+                        for (uint32_t v = 0; v < n; ++v) {
+                            bool ch = 0 != std::memcmp(out.data() + 4 + static_cast<size_t>(v) * 36,
+                                                       c3_prev.data() + 4 + static_cast<size_t>(v) * 36, 36);
+                            if (ch) {
+                                if (!in_run) { run_start.push_back(v); run_len.push_back(1); in_run = true; }
+                                else ++run_len.back();
+                                ++changed;
+                            } else {
+                                in_run = false;
+                            }
+                        }
+                        // the delta must never cost more than the full frame
+                        if (16 + run_start.size() * 8 + changed * 36 >= 4 + payload)
+                            emit_key = true;
+                    }
+
+                    std::vector<uint8_t> frame;
+                    if (emit_key) {
+                        // kernel framing: [u8 magic 0xD1][u8 flags][u16 rsvd]
+                        //                 [u32 n][u32 seq][u32 runs]
+                        frame.resize(16 + payload);        // resize zero-fills: rsvd=0, runs=0
+                        frame[0] = static_cast<char>(0xD1);
+                        frame[1] = 0;                      // flags 0 = keyframe
+                        std::memcpy(&frame[4], &n, 4);
+                        std::memcpy(&frame[8], &c3_seq, 4);
+                        if (n) std::memcpy(&frame[16], out.data() + 4, payload);
+                        c3_since_key = 0;
+                    } else {
+                        frame.resize(16 + run_start.size() * 8 + changed * 36);
+                        frame[0] = static_cast<char>(0xD1);
+                        frame[1] = 1;                      // flags 1 = runs
+                        std::memcpy(&frame[4], &n, 4);
+                        std::memcpy(&frame[8], &c3_seq, 4);
+                        uint32_t rc = static_cast<uint32_t>(run_start.size());
+                        std::memcpy(&frame[12], &rc, 4);
+                        size_t w = 16;
+                        for (size_t r = 0; r < run_start.size(); ++r) {
+                            uint32_t s = run_start[r], c = run_len[r];
+                            std::memcpy(&frame[w], &s, 4);
+                            std::memcpy(&frame[w + 4], &c, 4);
+                            std::memcpy(&frame[w + 8],
+                                        out.data() + 4 + static_cast<size_t>(s) * 36,
+                                        static_cast<size_t>(c) * 36);
+                            w += 8 + static_cast<size_t>(c) * 36;
+                        }
+                        ++c3_since_key;
+                    }
+                    ++c3_seq;
+                    c3_prev = out;       // the chain base is the EXPORTED state
+                    c3_has_prev = true;
+                    body.assign(reinterpret_cast<const char*>(frame.data()), frame.size());
+                }
+                // no ?delta=1|key (or an empty export): body already holds
+                // the legacy full frame — bit-for-bit the pre-C3 answer.
+            }
+// C3 END
+            content_type = "application/octet-stream";
+        } else if (p == "/tick_touch" && method == "POST") {
+            // THE TOUCH, three forms:
+            //  {"cam":[8],"px","py",force_n} — the WEB KERNEL: the browser
+            //    posts its own local camera + click pixel; the engine picks
+            //    with the player's view (the proven closed-loop picker).
+            //  {"hit":[x,y,z],force_n}          — a ready world point.
+            //  {"px","py",force_n}             — the engine's own camera.
+            content_type = "application/json";
+            size_t cp = req_body.find("\"cam\"");
+            if (cp != std::string::npos) {
+                float cam8[8];
+                size_t lb = req_body.find('[', cp);
+                float px2 = (float)get_double(req_body, "px", 0.5);
+                float py2 = (float)get_double(req_body, "py", 0.5);
+                float F = (float)get_double(req_body, "force_n", 0.0);
+                std::string err2;
+                float hit2[3];
+                float aspect = (float)get_double(req_body, "aspect", 2560.0 / 1440.0);
+                if (lb == std::string::npos ||
+                    sscanf(req_body.c_str() + lb + 1, "%f,%f,%f,%f,%f,%f,%f,%f",
+                           &cam8[0], &cam8[1], &cam8[2], &cam8[3], &cam8[4],
+                           &cam8[5], &cam8[6], &cam8[7]) != 8) {
+                    body = "{\"ok\":false,\"error\":\"cam must be 8 floats\"}";
+                } else if (g_tick.touch_press(px2, py2, F,
+                        [&](float out[3]) -> bool {
+                            return g_engine && g_engine->pick_cam(cam8, aspect, px2, py2,
+                                g_tick_verts, g_tick.tri_verts(), out);
+                        }, err2, hit2)) {
+                    body = std::string("{\"ok\":true,\"hit\":[")
+                         + std::to_string(hit2[0]) + "," + std::to_string(hit2[1])
+                         + "," + std::to_string(hit2[2]) + "]}";
+                } else {
+                    body = "{\"ok\":false,\"error\":\"the ray misses the body\"}";
+                }
+            } else if (req_body.find("\"hit\"") != std::string::npos) {
+                size_t hb = req_body.find('[', req_body.find("\"hit\""));
+                float hx = 0, hy = 0, hz = 0;
+                if (hb != std::string::npos)
+                    sscanf(req_body.c_str() + hb + 1, "%f,%f,%f", &hx, &hy, &hz);
+                float hit[3] = {hx, hy, hz};
+                // truthfulness (A1's finding): a press lands on skin or is
+                // refused — never ok:true with zero effect. The honest reach
+                // is a few Gaussians (r0 = 3 cm): beyond 15 cm it is theatre.
+                float d2 = g_tick.point_skin_dist2(hit);
+                if (d2 > 0.15f * 0.15f) {
+                    body = "{\"ok\":false,\"error\":\"the point is not on the body\"}";
+                } else if (g_tick.touch_press_at(hit,
+                        (float)get_double(req_body, "force_n", 0.0))) {
+                    body = "{\"ok\":true}";
+                } else {
+                    body = "{\"ok\":false,\"error\":\"force_n must be positive\"}";
+                }
+            } else {
+                float px = (float)get_double(req_body, "px", 0.5);
+                float py = (float)get_double(req_body, "py", 0.5);
+                float force = (float)get_double(req_body, "force_n", 0.0);
+                std::string err;
+                float hit[3];
+                if (g_tick.touch_press(px, py, force,
+                    [&](float out[3]) -> bool {
+                        return g_engine && g_engine->pick(px, py, g_tick_verts,
+                            g_tick.tri_verts(), out);
+                    }, err, hit)) {
+                    body = std::string("{\"ok\":true,\"hit\":[")
+                         + std::to_string(hit[0]) + "," + std::to_string(hit[1])
+                         + "," + std::to_string(hit[2]) + "]}";
+                } else {
+                    body = "{\"ok\":false,\"error\":\"" + err + "\"}";
+                }
+            }
+        } else if (p == "/tick_touch_clear" && method == "POST") {
+            g_tick.touch_clear();
+            body = "{\"ok\":true}";
+            content_type = "application/json";
+        } else if (p == "/tick_gait" && method == "POST") {
+            // THE GAIT CHECKPOINT MACHINE (fleet G1, lead-wired at the window):
+            // per-leg STANCE/LIFT/REACH/LOAD, every gate a measured number.
+            bool on = req_body.find("\"on\":true") != std::string::npos;
+            if (g_tick.set_gait(on)) body = "{\"ok\":true,\"gait_on\":" + std::string(on ? "true" : "false") + "}";
+            else body = "{\"ok\":false,\"error\":\"refused: needs gravity, stance, classification, pins 13-18, and a sealed feet cell\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_stance" && method == "POST") {
+            // THE STANCE SERVO (fleet 2/F1): ankles counter the body's lean
+            // while gravity holds — the balance rung of the movement law.
+            bool on = req_body.find("\"on\":true") != std::string::npos;
+            if (g_tick.set_stance(on)) body = "{\"ok\":true,\"stance_on\":" + std::string(on ? "true" : "false") + "}";
+            else body = "{\"ok\":false,\"error\":\"refused: the body must be classified and a support band must exist\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_gravity" && method == "POST") {
+            // THE MOVEMENT LAW (fleet C2, lead-wired at the build window):
+            // gravity + ground contact on the root — "a creature that cannot
+            // FALL cannot WALK". Default off until the F-bars pass.
+            size_t onk = req_body.find("\"on\"");
+            bool on = onk != std::string::npos &&
+                      req_body.find("true", onk) != std::string::npos;
+            if (g_tick.set_gravity(on)) body = "{\"ok\":true,\"gravity_on\":" + std::string(on ? "true" : "false") + "}";
+            else body = "{\"ok\":false,\"error\":\"refused: no scene\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_seal_split" && method == "POST") {
+            // THE COMPONENT SPLIT: a cell of disjoint closed surfaces
+            // (left+right after a band cut) divides per component.
+            int cell = (int)get_double(req_body, "cell", 0.0);
+            if (g_tick.split(cell)) body = "{\"ok\":true}";
+            else body = "{\"ok\":false,\"error\":\"refused: the cell index "
+                        "must exist and hold more than one closed surface\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_reflex" && method == "POST") {
+            // THE CREATURE ANSWERS (fleet C1r; lead-wired at window #8).
+            // DEFAULT OFF ON BOOT -- this route is the only arming path.
+            // Three PHYSICS reflexes: breathing (the torso cell's volume
+            // target oscillates; the pressure law and every gait
+            // measurement are structurally blind to it), flinch (a sealed
+            // cell's pressure crossing on a RISING edge flexes the touched
+            // side's binding-derived strut pin), startle (a pressure
+            // TRANSIENT biases the stance servo inside its existing cap).
+            // COMPACT-JSON HAZARD (R4_GAIT_VERIFY/PROTOCOL.md): the master
+            // "on" arms on the LITERAL substring "on":true -- a space
+            // ({"on": true}) parses as FALSE and silently disarms, the
+            // same law as /tick_gait and /tick_stance. Channel switches
+            // use get_bool, never stod (the stod-on-booleans trap).
+            //   {"on":true}                        arm all three
+            //   {"on":false}                       deterministic full off
+            //   {"breathing":false}                suspend the oscillator
+            //   {"pressure_coupling":false}        THE NERVE CUT (negative
+            //                                      control: the flinch and
+            //                                      startle detectors see
+            //                                      nothing; breathing is
+            //                                      not pressure-driven)
+            // Refusals name themselves (reflex_block in /tick_state); a
+            // partial arm is ok:true with the failed channels named.
+            bool has_on = req_body.find("\"on\"") != std::string::npos;
+            bool ok = true;
+            if (has_on) {
+                const bool on =
+                    req_body.find("\"on\":true") != std::string::npos;
+                ok = g_tick.set_reflex(on);
+            }
+            static const char* kReflexChannels[] = {
+                "breathing", "flinch", "startle", "pressure_coupling"};
+            for (const char* ch : kReflexChannels) {
+                if (find_colon_after(req_body, ch) == std::string::npos)
+                    continue;
+                g_tick.set_reflex_channel(ch, get_bool(req_body, ch, true));
+            }
+            body = std::string("{\"ok\":") + (ok ? "true," : "false,")
+                 + "\"reflex\":" + g_tick.reflex_summary_json() + "}";
+            content_type = "application/json";
+        } else if (p == "/tick_limb" && method == "POST") {
+            // AN2: THE ONE-LIMB PARTITION (prereg
+            // docs/evidence/agent_fleet/SHIP/ONE_LIMB/PREREG.md M1/M2).
+            // Derives the leg's segments from skeleton CONNECTIVITY (the
+            // pin graph over dominant-binding labels; a chain that does
+            // not match refuses BY NAME), splits the band components,
+            // merges the limb, seals it with TWO OBLIQUE walls through
+            // the knee/ankle pins (one generalized cut core with the
+            // horizontal seal), validates closure/orientation/volumes/
+            // coverage/mass/genus, and builds the sensor patch regions.
+            //   {"side":"L"}   |   {"side":"R"}
+            // Refuses while any rung is armed (surgery at authored rest).
+            // IDEMPOTENT: a replay of an executed partition answers
+            // "limb":"already" (the R-restore-doctor law).
+            std::string side = get_string(req_body, "side");
+            std::string report;
+            bool already = false;
+            if (g_tick.limb_partition(side, report, &already)) {
+                body = std::string("{\"ok\":true,\"limb\":\"")
+                     + (already ? "already" : "executed")
+                     + "\",\"report\":" + report + "}";
+            } else {
+                std::string esc;
+                for (char ch : report) {
+                    if (ch == '"' || ch == '\\') esc += '\\';
+                    esc += ch;
+                }
+                body = "{\"ok\":false,\"error\":\"" + esc + "\"}";
+            }
+            content_type = "application/json";
+        } else if (p == "/tick_limb_state" && method == "POST") {
+            // AN2: the limb REGISTRY blob replay (the restore path; the
+            // blob is self-validating: every segment's cell must exist
+            // with the stored piece count and a matching rest volume).
+            if (g_tick.limb_restore(req_body))
+                body = "{\"ok\":true,\"limb_state\":\"restored\"}";
+            else
+                body = "{\"ok\":false,\"error\":\"refused: the limb "
+                       "registry blob does not match this body (stale "
+                       "or the tree is not restored yet)\"}";
+            content_type = "application/json";
+        } else if (p == "/tick_patch" && method == "POST") {
+            // AN2: SENSOR PATCHES (prereg M3): finite receptor regions
+            // with their own filtered/saturated signal and an explicit
+            // finite transport delay; a path CUT is a real state.
+            //   {"on":true}                            arm the layer
+            //   {"on":false}                           deterministic off
+            //   {"path":"shin_L","connected":false}    THE PATH CUT
+            //   {"path":"shin_L","connected":true}     reconnect
+            // Compact-JSON hazard: "on" arms on the literal substring
+            // "on":true (the /tick_gait law); "connected" uses get_bool
+            // (never stod -- the stod-on-booleans trap).
+            std::string err;
+            bool ok = true;
+            if (find_colon_after(req_body, "path") != std::string::npos) {
+                std::string nm = get_string(req_body, "path");
+                bool conn = get_bool(req_body, "connected", true);
+                ok = g_tick.patch_connect(nm, conn, err);
+            }
+            if (ok && find_colon_after(req_body, "on") != std::string::npos) {
+                bool on = req_body.find("\"on\":true") != std::string::npos;
+                ok = g_tick.patch_arm(on, err);
+            }
+            body = std::string("{\"ok\":") + (ok ? "true" : "false")
+                 + (err.empty() ? "" : ",\"error\":\"" + err + "\"")
+                 + ",\"patches\":" + g_tick.patch_json() + "}";
+            content_type = "application/json";
+        } else if (p == "/tick_patch_state" && method == "POST") {
+            // AN2: the patch-state blob replay (arm + per-path connection
+            // + cut stamps; must match the restored limb registry).
+            if (g_tick.patch_restore(req_body))
+                body = "{\"ok\":true,\"patch_state\":\"restored\"}";
+            else
+                body = "{\"ok\":false,\"error\":\"refused: the "
+                       "patch-state blob does not match the limb "
+                       "registry\"}";
             content_type = "application/json";
         } else if (p == "/hinge_bin" && method == "POST") {
             // Binary protocol (little-endian):
@@ -1635,11 +2656,23 @@ int main(int argc, char** argv) {
             float cam_radius = get_float(req_body, "cam_radius", 12.0f);
             float cam_theta  = get_float(req_body, "cam_theta", 0.0f);
             float cam_phi    = get_float(req_body, "cam_phi", 0.3f);
+            // CAM-PAN LAW (Defect C lane): optional pan, default 0 — today's
+            // zeroed-pan behavior is bit-identical when the fields are absent.
+            float cam_pan_x  = get_float(req_body, "pan_x", 0.0f);
+            float cam_pan_y  = get_float(req_body, "pan_y", 0.0f);
+            float cam_tx     = get_float(req_body, "target_x", 0.0f);
+            float cam_ty     = get_float(req_body, "target_y", 0.0f);
+            float cam_tz     = get_float(req_body, "target_z", 0.0f);
             {
                 std::lock_guard<std::mutex> lk(g_mem_mutex);
                 g_mem_req.cam_radius = cam_radius;
                 g_mem_req.cam_theta  = cam_theta;
                 g_mem_req.cam_phi    = cam_phi;
+                g_mem_req.cam_pan_x  = cam_pan_x;
+                g_mem_req.cam_pan_y  = cam_pan_y;
+                g_mem_req.cam_target[0] = cam_tx;
+                g_mem_req.cam_target[1] = cam_ty;
+                g_mem_req.cam_target[2] = cam_tz;
                 g_mem_req.camera_only = true;
                 g_mem_req.valid = true;
                 g_mem_pending = true;
@@ -1650,25 +2683,136 @@ int main(int argc, char** argv) {
             body = ok ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"timeout\"}";
             content_type = "application/json";
         } else if ((p == "/frame" || p == "/stream") && method == "GET") {
+            // ══ G8 CONTRACT (2026-09-13, agent H3 "capture-readback") ══════════
+            // The capture is TWO-PHASE on the render thread: a request ARMS a
+            // copy into a staging-ring slot (recorded into the frame's cmdbuf);
+            // the GPU finishes it OFF the tick path; collect_readbacks() drains
+            // finished slots at the end of each rendered frame. The tick loop
+            // (same thread as Engine::frame()) NEVER waits on a readback now —
+            // the old synchronous servicing froze it ~910 ms per pull
+            // (docs/evidence/agent_fleet/SHIP/G8_CAPTURE/).
+            //
+            //  /frame   (default; "?sync=1" is the same thing spelled out)
+            //      STRICTLY FRESH — byte-identical contract to the pre-G8
+            //      route: THIS request's own capture is armed, then collected
+            //      before the answer (watermark wait, 3 s deadline). The wait
+            //      runs on the HTTP WORKER, not the render thread, so the tick
+            //      loop does not feel it; only other HTTP polls still queue
+            //      behind it on the single worker (unchanged). Every existing
+            //      caller (cpp_bridge.fetch_frame and its movie renderers, the
+            //      native labelers, the bench tools) keeps its exact
+            //      guarantee: the bytes POSTDATE the request.
+            //
+            //  /frame?async=1 — TWO-PHASE for burst/trailer/bench callers:
+            //      arms a capture (when a ring slot is free) and returns
+            //      IMMEDIATELY. The contract for an armed-not-collected call
+            //      is PRIOR FRAME BYTES: the last COLLECTED capture is encoded
+            //      and served as usual (image/png|jpeg) — chosen over an empty
+            //      202-style body or a Retry-After header because it keeps
+            //      every response an IMAGE for naive .read() callers. Only
+            //      when NO capture has ever completed does it answer the
+            //      legacy {"ok":false,"error":"no frame"} JSON body. Freshness
+            //      sits one arm-collect cycle (~2 frames) behind the default;
+            //      use the default when bytes must postdate a /membrane or
+            //      /camera POST (cpp_bridge.wait_for_frame_change also
+            //      self-heals: it refetches until the frame differs).
             if (g_engine) {
-                g_engine->request_capture();
-                auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
-                while (!g_engine->capture_ready()) {
-                    if (std::chrono::steady_clock::now() > deadline) { body = "{\"ok\":false,\"error\":\"capture timeout\"}"; break; }
-                    Sleep(5);
-                }
-                if (g_engine->capture_ready()) {
-                    std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
-                    if (g_engine->capture_frame(rgba, w, h)) {
-                        std::vector<uint8_t> encoded = png::encode_rgba(rgba.data(), w, h);
-                        body.assign(reinterpret_cast<const char*>(encoded.data()), encoded.size());
-                        content_type = "image/png";
-                    } else {
+                const bool want_async = f2::query_has(path, "async=1") &&
+                                        !f2::query_has(path, "sync=1");   // sync wins if both
+                std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
+                bool have_frame = false;
+                if (want_async) {
+                    // arm (if a slot is free) and serve whatever is already
+                    // collected — the two-phase answer, never a wait
+                    g_engine->request_capture_async();
+                    have_frame = g_engine->capture_frame(rgba, w, h);
+                    if (!have_frame) {
                         body = "{\"ok\":false,\"error\":\"no frame\"}";
                         content_type = "application/json";
                     }
                 } else {
-                    content_type = "application/json";
+                    // Strictly fresh: wait until a capture ARMED AT OR AFTER
+                    // this request is COLLECTED. The watermark (arm-sequence)
+                    // guard is load-bearing: a bare capture_ready() could be
+                    // satisfied by a stale slot an earlier ?async=1 pull left
+                    // in flight, silently serving pre-request pixels.
+                    const uint64_t want = g_engine->capture_arm_watermark() + 1;
+                    g_engine->request_capture();
+                    auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+                    while (!g_engine->capture_collected_since(want)) {
+                        if (std::chrono::steady_clock::now() > deadline) break;
+                        Sleep(5);
+                    }
+                    if (g_engine->capture_collected_since(want))
+                        have_frame = g_engine->capture_frame(rgba, w, h);
+                    if (!have_frame) {
+                        body = "{\"ok\":false,\"error\":\"capture timeout\"}";
+                        content_type = "application/json";
+                    }
+                }
+                if (have_frame) {
+                    // ══ F2 BEGIN: /frame fast path (prereg: docs/evidence/agent_fleet/ ══
+                    // ══ MATTER_KERNEL/SEAL_PREREGISTRATION.md — "F2: /FRAME FAST PATH") ══
+                    // The ~1.1 s floor lived in the ENCODE (stored-deflate PNG over the
+                    // full 14.7 MB buffer), not the capture: the encode path below is
+                    // UNTOUCHED (the capture fetch moved into the contract branches
+                    // above, and the capture servicing itself went two-phase async in
+                    // G8 — see the contract comment above this block). Wins, derived in
+                    // the prereg: ?w= downscales BEFORE encode (box average, was a
+                    // nearest skip); ?fmt=jpg encodes JPEG through in-box WIC at ?q=
+                    // (default 85; WIC failure falls back to the PNG path — an image,
+                    // never an error body). No params -> byte-identical full-res PNG,
+                    // exactly the route that stood here.
+                    static const bool f2_bench = []{
+                        char buf[8];
+                        return GetEnvironmentVariableA("CHIMERA_FRAME_BENCH", buf, sizeof(buf)) > 0;
+                    }();
+                    LARGE_INTEGER f2_qpf{}, f2_t0{}, f2_t1{}, f2_t2{}, f2_t3{};
+                    if (f2_bench) { QueryPerformanceFrequency(&f2_qpf); QueryPerformanceCounter(&f2_t0); }
+                    {
+                        if (f2_bench) QueryPerformanceCounter(&f2_t1);
+                        f2_t2 = f2_t1;
+                        uint32_t want_w = f2::query_uint(path, "w=");
+                        const bool want_jpg = f2::query_has(path, "fmt=jpg") ||
+                                              f2::query_has(path, "fmt=jpeg");
+                        uint32_t jpg_q = f2::query_uint(path, "q=");
+                        if (jpg_q < 1 || jpg_q > 100) jpg_q = 85;
+                        if (want_w && want_w < w) {
+                            std::vector<uint8_t> down;
+                            uint32_t nw = 0, nh = 0;
+                            f2::box_downscale(rgba, w, h, down, nw, nh, want_w);
+                            rgba.swap(down); w = nw; h = nh;
+                            if (f2_bench) QueryPerformanceCounter(&f2_t2);
+                        }
+                        std::vector<uint8_t> encoded;
+                        bool f2_jpeg_ok = false;
+                        if (want_jpg)
+                            f2_jpeg_ok = f2::jpeg_encode_wic(rgba.data(), w, h, jpg_q, encoded);
+                        if (f2_jpeg_ok) {
+                            content_type = "image/jpeg";
+                        } else {
+                            if (want_jpg)
+                                fprintf(stderr, "F2: WIC JPEG refused (w=%u h=%u q=%u) -- PNG fallback\n",
+                                        w, h, jpg_q);
+                            encoded = png::encode_rgba(rgba.data(), w, h);
+                            content_type = "image/png";
+                        }
+                        if (f2_bench) {
+                            QueryPerformanceCounter(&f2_t3);
+                            auto f2_ms = [](LARGE_INTEGER a, LARGE_INTEGER b, LARGE_INTEGER f) {
+                                return (double)(b.QuadPart - a.QuadPart) * 1000.0 /
+                                       (double)f.QuadPart;
+                            };
+                            fprintf(stderr,
+                                    "F2 /frame: copy %.1f ms | downscale %.1f ms | encode %.1f ms "
+                                    "-> %zu B (%s w=%u h=%u q=%u)\n",
+                                    f2_ms(f2_t0, f2_t1, f2_qpf), f2_ms(f2_t1, f2_t2, f2_qpf),
+                                    f2_ms(f2_t2, f2_t3, f2_qpf), encoded.size(),
+                                    f2_jpeg_ok ? "jpeg" : "png", w, h, f2_jpeg_ok ? jpg_q : 0u);
+                        }
+                        body.assign(reinterpret_cast<const char*>(encoded.data()), encoded.size());
+                        // ══ F2 END (route) ══════════════════════════════════════════════
+                    }
                 }
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
@@ -2024,6 +3168,11 @@ int main(int argc, char** argv) {
                      + ",\"bail_vbuf\":" + std::to_string(static_cast<unsigned long long>(u.rec_bail_vbuf_)) + "}"
                      + ",\"ring_n\":" + std::to_string(u.ft_ring_n_)
                      + ",\"ring\":[" + ring + "]"
+                     + ",\"ph_fence_us\":" + std::to_string(static_cast<unsigned long long>(g_engine->ph_fence_us_.load()))
+                     + ",\"ph_coll_us\":" + std::to_string(static_cast<unsigned long long>(g_engine->ph_coll_us_.load()))
+                     + ",\"ph_pres_us\":" + std::to_string(static_cast<unsigned long long>(g_engine->ph_pres_us_.load()))
+                     + ",\"rb_mem_type\":" + std::to_string(static_cast<unsigned long long>(g_engine->rb_mem_type_.load()))
+                     + ",\"rb_mem_flags\":" + std::to_string(static_cast<unsigned long long>(g_engine->rb_mem_flags_.load()))
                      + ",\"gpu\":\"" + u.gpu_name_ + "\""
                      + ",\"stage\":\"" + u.chrome_stage_ + "\""
                      + ",\"board\":{\"stages\":" + std::to_string(u.board().stages.size())
@@ -2060,6 +3209,10 @@ int main(int argc, char** argv) {
             } else {
                 body = "{\"ok\":false,\"error\":\"no engine\"}";
             }
+            content_type = "application/json";
+        } else if (p == "/tick_state" && method == "GET") {
+            // THE MEMBRANE TICK readback (Appliance 1)
+            body = g_tick.state_json();
             content_type = "application/json";
         } else if (p == "/console" && method == "GET") {
             // F1: the console's HTTP twin — what the glass shows, served
@@ -2484,14 +3637,18 @@ int main(int argc, char** argv) {
                         if (std::chrono::steady_clock::now() > dl) break;
                         Sleep(2);
                     }
+                    // G8: wait on the watermark, not capture_ready() — the served
+                    // frame must be one armed at/after THIS scrub landed, never a
+                    // stale slot an earlier /frame?async=1 pull left in flight.
+                    const uint64_t want = g_engine->capture_arm_watermark() + 1;
                     g_engine->request_capture();
                     auto dl2 = std::chrono::steady_clock::now() + std::chrono::seconds(3);
-                    while (!g_engine->capture_ready()) {
+                    while (!g_engine->capture_collected_since(want)) {
                         if (std::chrono::steady_clock::now() > dl2) break;
                         Sleep(2);
                     }
                     std::vector<uint8_t> rgba; uint32_t w = 0, h = 0;
-                    if (!g_engine->capture_ready() || !g_engine->capture_frame(rgba, w, h)) {
+                    if (!g_engine->capture_collected_since(want) || !g_engine->capture_frame(rgba, w, h)) {
                         std::lock_guard<std::mutex> lk(g_engine->cap_m_);
                         g_engine->cap_error_ = "capture timeout at frame " + std::to_string(i);
                         break;
@@ -2548,7 +3705,7 @@ int main(int argc, char** argv) {
             // SESSION SNAPSHOT status — what a restore would replay.
             body = "{";
             bool first = true;
-            for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin"}) {
+            for (const char* ep : k_snapshot_endpoints) {
                 std::ifstream f(std::string("session_snapshot/") + ep + ".blob", std::ios::binary | std::ios::ate);
                 if (!first) body += ",";
                 first = false;
@@ -2569,15 +3726,28 @@ int main(int argc, char** argv) {
                 // (Without this, default-on boot restore would resurrect a
                 // subject the operator deliberately removed.)
                 int cleared = 0;
-                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin"}) {
+                for (const char* ep : k_snapshot_endpoints) {
                     std::string fp = std::string("session_snapshot/") + ep + ".blob";
                     if (DeleteFileA(fp.c_str())) ++cleared;
                 }
+                if (DeleteFileA("session_snapshot/tick_seal_history.log")) ++cleared;
+                if (DeleteFileA("session_snapshot/tick_limb_history.log")) ++cleared;
+                if (DeleteFileA("session_snapshot/tick_limb_state.blob")) ++cleared;
+                if (DeleteFileA("session_snapshot/tick_patch_state.blob")) ++cleared;
                 body = "{\"ok\":true,\"cleared\":" + std::to_string(cleared) + "}";
             } else if (op == "restore") {
-                int done = 0, failed = 0;
+                int done = 0, failed = 0, seal_already = 0, seal_executed = 0;
                 std::string detail;
-                for (const char* ep : {"mesh_bin", "hinge_bin", "joints_bin", "gait_bin", "stride_bin", "water_bin"}) {
+                // THE REPLAY JOURNAL GATE: nothing the replay re-posts may
+                // re-journal itself (the amplification law: measured +3
+                // history lines per restore attempt before this guard).
+                ReplayJournalGuard replay_guard;
+                for (const char* ep : k_snapshot_endpoints) {
+                    // Registries index the FINAL seal tree; legacy snapshots
+                    // may need history replay to construct it first. Sensor
+                    // continuation must follow that registry construction.
+                    if (std::string(ep) == "tick_limb_state" ||
+                        std::string(ep) == "tick_patch_state") continue;
                     std::string fp = std::string("session_snapshot/") + ep + ".blob";
                     std::ifstream f(fp, std::ios::binary);
                     if (!f) continue;
@@ -2588,9 +3758,154 @@ int main(int argc, char** argv) {
                     done += okr ? 1 : 0; failed += okr ? 0 : 1;
                     detail += std::string(ep) + (okr ? ":ok " : ":FAIL ");
                 }
-                body = std::string("{\"ok\":") + (failed == 0 && done > 0 ? "true" : "false")
+                // THE MITOSIS TREE comes back through its intent history:
+                // every successful /tick_seal body was appended verbatim, so
+                // replaying the file in order rebuilds the same cells —
+                // EXCEPT that an intent whose state already exists now
+                // answers "seal":"already" (the idempotent skip) instead of
+                // executing-and-refusing, and SKIPPED entries are counted
+                // honestly instead of poisoning the restore with failures
+                // (measured before the fix: ok:false, failed 60-66, boot
+                // retry loop re-initializing the body three times per boot).
+                {
+                    std::ifstream hf("session_snapshot/tick_seal_history.log");
+                    std::string line;
+                    while (std::getline(hf, line)) {
+                        if (line.empty()) continue;
+                        std::string resp2, ct2;
+                        g_engine->invoke_api("POST", "/tick_seal", line, resp2, ct2);
+                        bool already =
+                            resp2.find("\"seal\":\"already\"") != std::string::npos;
+                        bool okr = resp2.find("\"ok\":true") != std::string::npos;
+                        if (already) {
+                            ++seal_already;
+                            detail += "seal:already ";
+                        } else if (okr) {
+                            ++done; ++seal_executed;
+                            detail += "seal:ok ";
+                        } else {
+                            ++failed;
+                            detail += "seal:FAIL ";
+                        }
+                    }
+                }
+                auto restore_limb_blob = [&]() -> int {
+                    std::ifstream lf("session_snapshot/tick_limb_state.blob",
+                                     std::ios::binary);
+                    if (!lf) return -1;  // absent is distinct from refused
+                    std::string blob((std::istreambuf_iterator<char>(lf)),
+                                     std::istreambuf_iterator<char>());
+                    std::string response, ct;
+                    g_engine->invoke_api("POST", "/tick_limb_state", blob,
+                                         response, ct);
+                    return response.find("\"ok\":true") != std::string::npos ? 1 : 0;
+                };
+                int limb_state_result = restore_limb_blob();
+                // AN2: THE LIMB PARTITION HISTORY (same two laws as the
+                // seal journal): replayed only when the registry blob
+                // could not do the job (a restored registry answers
+                // "limb":"already" -- the executed partition is a STATE,
+                // not an action to repeat). Sits AFTER the seal replay:
+                // the partition needs the band tree the seals build.
+                int limb_executed = 0;
+                {
+                    std::ifstream hf2("session_snapshot/tick_limb_history.log");
+                    std::string line2;
+                    while (std::getline(hf2, line2)) {
+                        if (line2.empty()) continue;
+                        std::string resp3, ct3;
+                        g_engine->invoke_api("POST", "/tick_limb", line2,
+                                             resp3, ct3);
+                        bool alr =
+                            resp3.find("\"limb\":\"already\"") != std::string::npos;
+                        bool okr3 = resp3.find("\"ok\":true") != std::string::npos;
+                        if (alr) {
+                            detail += "limb:already ";
+                        } else if (okr3) {
+                            ++limb_executed;
+                            detail += "limb:ok ";
+                        } else {
+                            ++failed;
+                            detail += "limb:FAIL ";
+                        }
+                    }
+                }
+                // A pre-partition tree can be rebuilt by its limb history.
+                // Reapply the saved registry's exact sensor parameters only
+                // after that construction, then restore sensor dynamics once.
+                if (limb_state_result == 0 && limb_executed > 0)
+                    limb_state_result = restore_limb_blob();
+                if (limb_state_result >= 0) {
+                    done += limb_state_result == 1 ? 1 : 0;
+                    failed += limb_state_result == 0 ? 1 : 0;
+                    detail += limb_state_result == 1
+                        ? "tick_limb_state:ok " : "tick_limb_state:FAIL ";
+                }
+                {
+                    std::ifstream pf("session_snapshot/tick_patch_state.blob",
+                                     std::ios::binary);
+                    if (pf) {
+                        std::string blob((std::istreambuf_iterator<char>(pf)),
+                                         std::istreambuf_iterator<char>());
+                        std::string response, ct;
+                        g_engine->invoke_api("POST", "/tick_patch_state", blob,
+                                             response, ct);
+                        const bool okr = response.find("\"ok\":true") != std::string::npos;
+                        done += okr ? 1 : 0; failed += okr ? 0 : 1;
+                        detail += okr ? "tick_patch_state:ok " : "tick_patch_state:FAIL ";
+                    }
+                }
+                // THE TREE RE-SNAPSHOT: if the replay EXECUTED cuts (the
+                // state blob was absent or stale and history rebuilt the
+                // tree), snapshot the fresh tree so the NEXT boot executes
+                // zero seals. Replayed-but-skipped trees are byte-identical
+                // and are NOT rewritten (byte-stable snapshot dir).
+                if (failed == 0 && (seal_executed > 0 || limb_executed > 0)) {
+                    std::vector<uint8_t> sb;
+                    g_tick.export_seal_state(sb);
+                    if (!sb.empty()) {
+                        CreateDirectoryA("session_snapshot", nullptr);
+                        std::ofstream sf("session_snapshot/tick_seal_state.blob",
+                                         std::ios::binary);
+                        if (sf) {
+                            sf.write(reinterpret_cast<const char*>(sb.data()),
+                                     (std::streamsize)sb.size());
+                            printf("snapshot: tick_seal_state written (%zu B, "
+                                   "%d seals executed)\n", sb.size(),
+                                   seal_executed);
+                        }
+                    }
+                    // AN2: the limb registry + patch state follow the tree
+                    std::vector<uint8_t> lb;
+                    g_tick.export_limb_state(lb);
+                    if (!lb.empty()) {
+                        std::ofstream lf("session_snapshot/tick_limb_state.blob",
+                                         std::ios::binary);
+                        if (lf)
+                            lf.write(reinterpret_cast<const char*>(lb.data()),
+                                     (std::streamsize)lb.size());
+                    }
+                    std::vector<uint8_t> pb;
+                    g_tick.export_patch_state(pb);
+                    if (!pb.empty()) {
+                        std::ofstream pf("session_snapshot/tick_patch_state.blob",
+                                         std::ios::binary);
+                        if (pf)
+                            pf.write(reinterpret_cast<const char*>(pb.data()),
+                                     (std::streamsize)pb.size());
+                    }
+                }
+                // THE OK RULE (R-restore-doctor): a boot whose seal tree
+                // came back through the STATE blob answers with done == 0
+                // and every history entry an already-skip — a full restore,
+                // not a failure. failed == 0 plus SOMETHING satisfied
+                // (executed or already) is the honest ok. A truly empty
+                // snapshot stays ok:false (nothing to restore).
+                body = std::string("{\"ok\":") + (failed == 0 && (done > 0 || seal_already > 0) ? "true" : "false")
                      + ",\"replayed\":" + std::to_string(done)
                      + ",\"failed\":" + std::to_string(failed)
+                     + ",\"seal_already\":" + std::to_string(seal_already)
+                     + ",\"seal_executed\":" + std::to_string(seal_executed)
                      + ",\"detail\":\"" + detail + "\"}";
 #ifdef CHIMERA_SHUTDOWN_TEST
                 printf("shutdown_test: session_result %s\n", body.c_str());
@@ -2619,6 +3934,103 @@ int main(int argc, char** argv) {
             std::ofstream f(fn, std::ios::binary);
             if (f) { f.write(req_body.data(), (std::streamsize)req_body.size()); printf("snapshot: %s (%zu B)\n", fn.c_str(), req_body.size()); }
             else fprintf(stderr, "snapshot: cannot write %s\n", fn.c_str());
+        }
+        // THE TICK PAYLOADS join the snapshot: classification, travel
+        // bindings, measured pins and the mitosis intents are the authored
+        // creature — a restart must not need a hand-run script to be the
+        // same animal. /tick_seal APPENDS (the tree is a history).
+        if (g_engine && method == "POST" &&
+            (p == "/tick_classify" || p == "/tick_vertbind" || p == "/tick_joints" || p == "/tick_body_bin") &&
+            body.find("\"ok\":true") != std::string::npos) {
+            CreateDirectoryA("session_snapshot", nullptr);
+            std::string fn = "session_snapshot/" + p.substr(1) + ".blob";
+            std::ofstream f(fn, std::ios::binary);
+            if (f) { f.write(req_body.data(), (std::streamsize)req_body.size()); printf("snapshot: %s (%zu B)\n", fn.c_str(), req_body.size()); }
+        }
+        // THE SEAL JOURNAL + THE TREE SNAPSHOT (R-restore-doctor's two
+        // laws): (1) only a seal that EXECUTED journals its intent, and
+        // never one the replay re-posted — the replay's thread-local gate
+        // stops the nested calls here, which is what grew the history
+        // +3 lines per restore attempt (measured 60->63->66->69 across
+        // R-after's single boot); an "already satisfied" skip produced no
+        // state change and journals nothing either. (2) An executed cut
+        // re-snapshots the TREE (tick_seal_state.blob) so the next boot
+        // restores by state and replays the history as pure no-ops.
+        if (g_engine && method == "POST" && p == "/tick_seal" &&
+            !g_replay_in_flight &&
+            body.find("\"ok\":true") != std::string::npos &&
+            body.find("\"seal\":\"already\"") == std::string::npos) {
+            CreateDirectoryA("session_snapshot", nullptr);
+            std::ofstream f("session_snapshot/tick_seal_history.log", std::ios::app);
+            if (f) { f << req_body << "\n"; printf("snapshot: tick_seal_history +1\n"); }
+            std::vector<uint8_t> sb;
+            g_tick.export_seal_state(sb);
+            if (!sb.empty()) {
+                std::ofstream sf("session_snapshot/tick_seal_state.blob",
+                                 std::ios::binary);
+                if (sf) {
+                    sf.write(reinterpret_cast<const char*>(sb.data()),
+                             (std::streamsize)sb.size());
+                    printf("snapshot: tick_seal_state written (%zu B)\n",
+                           sb.size());
+                }
+            }
+        }
+        // AN2 (same two laws): an EXECUTED limb partition journals its
+        // intent and re-snapshots the registry + patch state; an
+        // already-skip journals nothing. Every successful /tick_patch
+        // re-snapshots the patch state (arm + connections are state).
+        if (g_engine && method == "POST" && p == "/tick_limb" &&
+            !g_replay_in_flight &&
+            body.find("\"limb\":\"executed\"") != std::string::npos) {
+            CreateDirectoryA("session_snapshot", nullptr);
+            std::ofstream f("session_snapshot/tick_limb_history.log",
+                            std::ios::app);
+            if (f) { f << req_body << "\n"; printf("snapshot: tick_limb_history +1\n"); }
+            // LMB1 indexes the post-partition tree. Saving only the registry
+            // leaves a restart with old cells and an unrestorable registry.
+            std::vector<uint8_t> sb;
+            g_tick.export_seal_state(sb);
+            if (!sb.empty()) {
+                std::ofstream sf("session_snapshot/tick_seal_state.blob",
+                                 std::ios::binary);
+                if (sf)
+                    sf.write(reinterpret_cast<const char*>(sb.data()),
+                             (std::streamsize)sb.size());
+            }
+            std::vector<uint8_t> lb;
+            g_tick.export_limb_state(lb);
+            if (!lb.empty()) {
+                std::ofstream lf("session_snapshot/tick_limb_state.blob",
+                                 std::ios::binary);
+                if (lf)
+                    lf.write(reinterpret_cast<const char*>(lb.data()),
+                             (std::streamsize)lb.size());
+                printf("snapshot: tick_limb_state written (%zu B)\n", lb.size());
+            }
+            std::vector<uint8_t> pb;
+            g_tick.export_patch_state(pb);
+            if (!pb.empty()) {
+                std::ofstream pf("session_snapshot/tick_patch_state.blob",
+                                 std::ios::binary);
+                if (pf)
+                    pf.write(reinterpret_cast<const char*>(pb.data()),
+                             (std::streamsize)pb.size());
+            }
+        }
+        if (g_engine && method == "POST" && p == "/tick_patch" &&
+            !g_replay_in_flight && body.find("\"ok\":true") != std::string::npos) {
+            CreateDirectoryA("session_snapshot", nullptr);
+            std::vector<uint8_t> pb;
+            g_tick.export_patch_state(pb);
+            if (!pb.empty()) {
+                std::ofstream pf("session_snapshot/tick_patch_state.blob",
+                                 std::ios::binary);
+                if (pf)
+                    pf.write(reinterpret_cast<const char*>(pb.data()),
+                             (std::streamsize)pb.size());
+                printf("snapshot: tick_patch_state written (%zu B)\n", pb.size());
+            }
         }
 
         // F4: the recorder — every covered state change lands at the moment it
@@ -2694,8 +4106,16 @@ int main(int argc, char** argv) {
                     printf("session: boot restore -> %s\n", resp.c_str());
                     fflush(stdout);
                     if (g_shutdown_closing.load(std::memory_order_acquire)) return;
-                    bool ok = resp.find("\"failed\":0") != std::string::npos
-                           && resp.find("\"replayed\":0") == std::string::npos;
+                    // THE SUCCESS SIGNAL (R-restore-doctor): the body's own
+                    // "ok" is now authoritative — it is true whenever
+                    // failed == 0 AND something was actually satisfied
+                    // (executed seals OR already-skips), which covers the
+                    // state-blob boot (replayed:0, seal_already:N) that the
+                    // old replayed-count heuristic misread as failure and
+                    // retried. The "replayed":0,"failed":0 case stays a
+                    // success: an empty snapshot has nothing to restore.
+                    bool ok = resp.find("\"ok\":true") != std::string::npos
+                           && resp.find("\"failed\":0") != std::string::npos;
                     if (ok || resp.find("\"replayed\":0,\"failed\":0") != std::string::npos) {
                         // C6 (the eye, 2026-09-02): the boot camera targets the origin
                         // and crops the subject's feet. After a successful restore,
@@ -2715,6 +4135,12 @@ int main(int argc, char** argv) {
         }
     }
 
+#ifdef _WIN32
+    if (console_hidden) {
+        HWND cw = GetConsoleWindow();
+        if (cw) ShowWindow(cw, SW_HIDE);   // logs continue; the window retires
+    }
+#endif
     printf("Chimera Engine running at http://localhost:%d/state\n", http_port);
     printf("  /frame  -> PNG of the current render (membrane if one is loaded)\n");
     printf("  /membrane (POST) -> load a story membrane scene\n");
@@ -2765,10 +4191,14 @@ int main(int argc, char** argv) {
                     engine.set_camera_full(g_mem_req.cam_full);
                     g_mem_req.cam_full_set = false;
                 } else if (g_mem_req.camera_only) {
-                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi);
+                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi,
+                                      g_mem_req.cam_pan_x, g_mem_req.cam_pan_y,
+                                      g_mem_req.cam_target[0], g_mem_req.cam_target[1], g_mem_req.cam_target[2]);
                 } else {
                     engine.load_membrane(g_mem_req.term, g_mem_req.pos, g_mem_req.count);
-                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi);
+                    engine.set_camera(g_mem_req.cam_radius, g_mem_req.cam_theta, g_mem_req.cam_phi,
+                                      g_mem_req.cam_pan_x, g_mem_req.cam_pan_y,
+                                      g_mem_req.cam_target[0], g_mem_req.cam_target[1], g_mem_req.cam_target[2]);
                     g_membrane_active = true;
                 }
                 g_mem_req.camera_only = false;
@@ -2836,10 +4266,24 @@ int main(int argc, char** argv) {
                     engine.load_mesh(g_mesh_req.verts, g_mesh_req.indices, g_mesh_req.N, g_mesh_req.idxCount);
                     engine.set_mesh_mode(g_mesh_req.mode);
                 }
-                // cam_radius <= 0 = "keep the current camera": animation drivers stream
+                // THE MEMBRANE TICK: a slot-0 mesh is the cell field. Cells =
+                // triangles; capacity = mat.skin yield x cell area (prereg).
+                // The count drops to 0 first so the frame loop skips while
+                // the cell field rebuilds (the restore thread may be here).
+                if (g_mesh_req.slot == 0 && g_mesh_req.idxCount >= 3) {
+                    g_tick_vcount = 0;
+                    g_tick.init(g_mesh_req.idxCount / 3, g_mesh_req.indices,
+                                g_mesh_req.verts);
+                    g_tick_verts = g_mesh_req.verts;
+                    g_tick_vcount = g_mesh_req.N;
+                    engine.external_body_owner_.store(false);
+                }                // cam_radius <= 0 = "keep the current camera": animation drivers stream
                 // meshes every frame and must NOT steal the operator's orbit/zoom/pan.
                 if (!g_mesh_req.update_only && g_mesh_req.cam_radius > 0.0f)
-                    engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi);
+                    engine.set_camera(g_mesh_req.cam_radius, g_mesh_req.cam_theta, g_mesh_req.cam_phi,
+                                      0.f, 0.f,
+                                      engine.mesh_center()[0], engine.mesh_center()[1],
+                                      engine.mesh_center()[2]);   // ORBIT PIVOT LAW (membrane D)
                 g_mesh_req.update_only = false;
                 g_mesh_pending = false; g_mesh_applied = true; g_mesh_cv.notify_all();
             }
@@ -2908,6 +4352,11 @@ int main(int argc, char** argv) {
                 if (g_volp_req.kind == 1) {
                     g_volp_req.ok = engine.load_volp(g_volp_req.blob);
                     g_volp_req.blob.clear(); g_volp_req.blob.shrink_to_fit();
+                } else if (g_volp_req.kind == 4) {
+                    std::string raw(g_volp_req.blob.begin(),g_volp_req.blob.end());
+                    g_volp_req.ok=g_tick.load_body_binding(raw);
+                    if(g_volp_req.ok)engine.external_body_owner_.store(true);
+                    g_volp_req.blob.clear();
                 } else if (g_volp_req.kind == 3) {
                     g_volp_req.ok = engine.load_joints(g_volp_req.blob);
                     g_volp_req.blob.clear(); g_volp_req.blob.shrink_to_fit();
@@ -2935,6 +4384,36 @@ int main(int argc, char** argv) {
                 }
                 g_water_pending = false; g_water_applied = true; g_water_cv.notify_all();
             }
+        }
+
+        if(g_earth.active()) {
+            try {auto view=g_earth.render();if(!engine.update_mesh(view.mesh,uint32_t(view.mesh.size()/9))) throw std::runtime_error("earth_render_update_failed");}
+            catch(const std::exception& e){fprintf(stderr,"earth render: %s\n",e.what());}
+        }
+        GraphThermal::J thermal_frame_state;
+        if(g_thermal.active()) {
+            try {
+                auto view=g_thermal.render();
+                if(!engine.update_mesh(view.mesh,uint32_t(view.mesh.size()/9)))
+                    throw std::runtime_error("thermal_render_update_failed");
+                thermal_frame_state=std::move(view.state);
+                // This graph fixture declares a fixed observation frame. Reapply
+                // it so unrelated native view input cannot drift between trials.
+                const auto camera=g_thermal.bundle.at("camera").get<std::array<float,8>>();
+                engine.set_camera_full(camera.data());
+            }catch(const std::exception& e){fprintf(stderr,"thermal render: %s\n",e.what());}
+        }
+        unsigned surface_frame_revision=0;
+        if (g_science_surface.active) {
+            std::lock_guard<std::mutex> lk(g_science_mutex);
+            try {
+                bool changed=g_science_surface.step();
+                if(changed || g_science_surface.render_revision!=g_science_surface.revision) {
+                    auto mesh=g_science_surface.mesh();
+                    if(!engine.update_mesh(mesh,uint32_t(mesh.size()/9)))throw std::runtime_error("surface render update refused");
+                }
+                surface_frame_revision=g_science_surface.revision;
+            }catch(const std::exception& ex){g_science_surface.error=ex.what();}
         }
 
         // Apply a pending frost request (Vulkan work must stay on this thread).
@@ -3009,12 +4488,32 @@ int main(int argc, char** argv) {
         }
 
         // Render one frame (timed — the frame-stutter instrument)
+        const uint64_t thermal_capture_before=engine.capture_arm_watermark();
         auto ft0 = std::chrono::high_resolution_clock::now();
         if (!engine.frame()) {
             fprintf(stderr, "Frame failed\n");
             break;
         }
         auto ft1 = std::chrono::high_resolution_clock::now();
+        if(!thermal_frame_state.is_null()) {
+            const uint64_t revision=thermal_frame_state.at("scene_revision").get<uint64_t>();
+            g_thermal.rendered(revision);
+            thermal_frame_state["render_revision"]=revision;
+            std::array<float,8> frame_camera{};engine.camera_state(frame_camera.data());
+            thermal_frame_state["render_camera"]=frame_camera;
+            const uint64_t armed=engine.capture_arm_watermark();
+            std::lock_guard<std::mutex> lk(g_thermal_frame_mutex);
+            for(uint64_t seq=thermal_capture_before+1;seq<=armed;++seq)
+                g_thermal_frames[seq]=thermal_frame_state;
+            while(g_thermal_frames.size()>128)g_thermal_frames.erase(g_thermal_frames.begin());
+        }
+
+        if (surface_frame_revision) {
+            std::lock_guard<std::mutex> lk(g_science_mutex);
+            // This revision passed through frame submission. /frame separately
+            // waits for its own fresh GPU readback; this counter is not a fence.
+            g_science_surface.render_revision=surface_frame_revision;
+        }
 
         // Complete an armed frost snapshot: the frame just submitted recorded the
         // debug dispatch + readback copies; drain and hand the data back.
@@ -3038,6 +4537,23 @@ int main(int argc, char** argv) {
         if (ft_ms > 33.3) ft_over33++;
         // F2: every frame's time lands on the status bar's histogram ring
         engine.ui_.push_frame_time(static_cast<float>(ft_ms));
+
+        // THE MEMBRANE TICK (Appliance 1): per-frame cell update on the
+        // render thread; the tint streams to the GPU through update_mesh
+        // (in-place vertex upload, no reload, no camera).
+        if (g_tick.enabled_ && g_tick_vcount > 0) {
+            // measured frame dt for the tick's time-dependent physics
+            // (the hydraulic return decays in real seconds, HR prereg)
+            static auto tick_last = std::chrono::high_resolution_clock::now();
+            auto tick_now = std::chrono::high_resolution_clock::now();
+            float tick_dt = std::chrono::duration_cast<std::chrono::microseconds>(
+                tick_now - tick_last).count() / 1e6f;
+            tick_last = tick_now;
+            if (tick_dt < 0.f) tick_dt = 0.f;
+            if (tick_dt > 0.1f) tick_dt = 0.1f;
+            g_tick.step(g_tick_verts, tick_dt);
+            engine.update_mesh(g_tick_verts, g_tick_vcount);
+        }
 
         // Frame cap (frame-stutter fix): uncapped, the engine free-ran at 300-1800 FPS
         // and fought llama-server (65%% GPU) for every slice — each inference burst
@@ -3126,6 +4642,8 @@ int main(int argc, char** argv) {
     printf("shutdown: http_stopped\n");
     fflush(stdout);
     printf("Shutting down...\n");
+    g_thermal.stop();
+    g_earth.stop();
     engine.shutdown();
     printf("shutdown: engine_shutdown\n");
     fflush(stdout);

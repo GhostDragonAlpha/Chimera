@@ -1,0 +1,260 @@
+{
+ "arm_door": {
+  "V1_S1_cap_N_m": 6.247077,
+  "V1_S1_reproduction_ratio": 1.055767,
+  "conclusion": "the measured deposit arms carry Oku's own walk forces to within 5.6% of Oku's own ankle peak; an arm error cannot explain the 1.345x shortfall",
+  "law": "consumed banked, NOT recomputed (prereg D5)",
+  "triceps_only_reproduction_ratio": 0.898898,
+  "triceps_only_subenvelope_N_m": 5.318868
+ },
+ "class_matched_triceps_force_ratio": 0.491668,
+ "concentration": {
+  "all_shared_classes": [
+   "SOL",
+   "GAS",
+   "FDL",
+   "TA",
+   "EDL"
+  ],
+  "all_spread": 6.061526,
+  "concentrated": true,
+  "gas_row": {
+   "derived_N": 130.704715,
+   "oku_after_mean_N": 66.34,
+   "oku_after_peak_N": 166.36,
+   "oku_before_mean_N": 59.7,
+   "oku_before_peak_N": 125.8,
+   "ratio_vs_after_peak": 0.785674,
+   "ratio_vs_before_mean": 2.189359,
+   "ratio_vs_before_peak": 1.038988
+  },
+  "metric": "max(ratio)/min(ratio) over shared classes, primary = vs Oku before peak",
+  "plantar_shared_classes": [
+   "SOL",
+   "GAS_lumped_MG_plus_LG",
+   "FDL_whole_as_consumed"
+  ],
+  "plantar_spread": 6.061526,
+  "preregistered_threshold": 2.0,
+  "sol_row": {
+   "derived_N": 36.850732,
+   "oku_after_mean_N": 73.87,
+   "oku_after_peak_N": 180.21,
+   "oku_before_mean_N": 93.05,
+   "oku_before_peak_N": 214.99,
+   "ratio_vs_after_peak": 0.204488,
+   "ratio_vs_before_mean": 0.396032,
+   "ratio_vs_before_peak": 0.171407
+  }
+ },
+ "inputs_verified": {
+  "ankle_arms_book": true,
+  "derived_numbers_snapshot": true,
+  "k_fill_book": true,
+  "oku2021_xml": true,
+  "pennation_corrected_annotation": true
+ },
+ "lane": "ankle-adjudication-20260920",
+ "mass_context": {
+  "ankle_plantar_demand_N_m": 5.9171,
+  "coverage_geometric_scaled": 1.428588,
+  "coverage_linear_scaled": 1.213341,
+  "demand_source_animal_kg": 10.038,
+  "game_band_midpoint_kg": 6.15,
+  "geometric_scaled_torque_proportional_to_M_4_3_N_m": 3.079022,
+  "knee_coverage_geometric_scaled": 3.069902,
+  "knee_coverage_unscaled": 1.597454,
+  "law": "reported comparison only; the k-fill D5 raw-demand consumption is NOT changed",
+  "linear_mass_scaled_N_m": 3.625241,
+  "mass_ratio": 1.632195,
+  "mtp_coverage_geometric_scaled": 3.169985,
+  "mtp_coverage_unscaled": 1.649533,
+  "oku_walk_context_from_snapshot": {
+   "ankle_plantar_peak_pct_of_cycle": 25.0,
+   "ankle_plantar_peak_pct_of_stance": 36.592506,
+   "duty_factor": 0.6832,
+   "froude_measured": 0.27,
+   "grf_v_peak_pct_of_cycle": 3.0,
+   "grf_v_peak_xBW": 1.0823,
+   "timing_speed_m_s_simulated": 1.01,
+   "toe_off_pct_of_cycle": 68
+  }
+ },
+ "no_oku_counterpart": {
+  "EHL": {
+   "derived_N": 24.11858,
+   "note": "Oku's 2D model has no extensor hallucis longus"
+  },
+  "FHL": {
+   "derived_N": 29.99609,
+   "note": "Oku's 2D model has no flexor hallucis longus"
+  },
+  "PB": {
+   "derived_N": 57.1647,
+   "note": "Oku's 2D model has no peroneus brevis"
+  },
+  "PL": {
+   "derived_N": 146.5842,
+   "note": "Oku's 2D model has no peroneus longus"
+  }
+ },
+ "oku_2021_context": {
+  "doi": "10.1038/s42003-021-01831-w",
+  "level_walking": true,
+  "model_animal_kg": 10.038,
+  "model_total_note": "10.038 kg = HAT 8.184 + 2 x leg chain 0.927 (the k-fill D3 anchor)",
+  "no_grade": true,
+  "pmcid": "PMC7940622",
+  "segments_Table1_sum_HAT_plus_one_leg_kg": 9.111,
+  "source": "deposit_mass_20260921/literature/oku2021.xml (sha-pinned)",
+  "study_type": "forward dynamic simulation on a 2D neuromusculoskeletal model (nine links); the walk torques and per-muscle forces are model outputs, validated against measured timing, GRF profile and EMG ACTIVATION PATTERNS of five hindlimb muscles - not measured tendon forces",
+  "title": "Forward dynamic simulation of Japanese macaque bipedal locomotion demonstrates better energetic economy in a virtualised plantigrade posture"
+ },
+ "per_muscle_table": {
+  "EDL_whole_as_consumed": {
+   "derived_N": 11.49,
+   "oku_after_mean_N": 2.64,
+   "oku_after_peak_N": 20.24,
+   "oku_before_mean_N": 3.31,
+   "oku_before_peak_N": 24.2,
+   "ratio_vs_after_peak": 0.567688,
+   "ratio_vs_before_mean": 3.471299,
+   "ratio_vs_before_peak": 0.474793
+  },
+  "FDL_whole_as_consumed": {
+   "derived_N": 138.0639,
+   "oku_after_mean_N": 75.51,
+   "oku_after_peak_N": 173.33,
+   "oku_before_mean_N": 86.21,
+   "oku_before_peak_N": 204.57,
+   "ratio_vs_after_peak": 0.796538,
+   "ratio_vs_before_mean": 1.601484,
+   "ratio_vs_before_peak": 0.674898
+  },
+  "FDL_whole_law_corrected": {
+   "derived_N": 128.545197,
+   "oku_after_mean_N": 75.51,
+   "oku_after_peak_N": 173.33,
+   "oku_before_mean_N": 86.21,
+   "oku_before_peak_N": 204.57,
+   "ratio_vs_after_peak": 0.741621,
+   "ratio_vs_before_mean": 1.491071,
+   "ratio_vs_before_peak": 0.628368
+  },
+  "GAS_lumped_MG_plus_LG": {
+   "derived_N": 130.704715,
+   "oku_after_mean_N": 66.34,
+   "oku_after_peak_N": 166.36,
+   "oku_before_mean_N": 59.7,
+   "oku_before_peak_N": 125.8,
+   "ratio_vs_after_peak": 0.785674,
+   "ratio_vs_before_mean": 2.189359,
+   "ratio_vs_before_peak": 1.038988
+  },
+  "SOL": {
+   "derived_N": 36.850732,
+   "oku_after_mean_N": 73.87,
+   "oku_after_peak_N": 180.21,
+   "oku_before_mean_N": 93.05,
+   "oku_before_peak_N": 214.99,
+   "ratio_vs_after_peak": 0.204488,
+   "ratio_vs_before_mean": 0.396032,
+   "ratio_vs_before_peak": 0.171407
+  },
+  "TA": {
+   "derived_N": 21.585982,
+   "oku_after_mean_N": 14.05,
+   "oku_after_peak_N": 47.14,
+   "oku_before_mean_N": 19.66,
+   "oku_before_peak_N": 63.87,
+   "ratio_vs_after_peak": 0.457912,
+   "ratio_vs_before_mean": 1.097964,
+   "ratio_vs_before_peak": 0.337967
+  }
+ },
+ "schema": "chimera.ankle_adjudication.table.v1",
+ "sigma_diagnostic": {
+  "adopted": false,
+  "assumed_sigma_MPa": 0.3,
+  "contained_in_recommended_IQR": true,
+  "contained_in_reported_span": true,
+  "diagnostic_sigma_MPa": 0.403562,
+  "diagnostic_sigma_N_per_cm2": 40.356218,
+  "gap_factor": 1.345207,
+  "law": "diagnostic only: sigma that would close the ankle plantar gap, tested for containment in the cited literature range; NEVER adopted (F2)",
+  "literature": {
+   "citation": "Persad LS, Wang Z, Pino PA, Binder-Markey BI, Kaufman KR, Lieber RL (2024), 'Specific tension of human muscle in vivo: a systematic review', J Appl Physiol 137(4):945-962, DOI 10.1152/japplphysiol.00296.2024, PMCID PMC11486478",
+   "human_in_vivo_span_N_per_cm2": [
+    1.8,
+    72.7
+   ],
+   "recommended_IQR_N_per_cm2": [
+    20.0,
+    43.0
+   ],
+   "recommended_weighted_median_N_per_cm2": 26.8,
+   "status": "CITED CONTEXT ONLY - never adopted; no repo constant moves",
+   "studies_included": 30,
+   "traditional_mammalian_N_per_cm2": 22.5,
+   "values_counted": 96
+  },
+  "verdict": "NON_DISCRIMINATING"
+ },
+ "the_finding_under_adjudication": {
+  "dorsal_cap_N_m": 0.573906,
+  "dorsal_coverage": 0.512325,
+  "dorsal_demand_N_m": 1.1202,
+  "knee_coverage": 1.597454,
+  "mtp_coverage": 1.649533,
+  "plantar_cap_N_m": 4.398653,
+  "plantar_coverage": 0.74338,
+  "plantar_demand_N_m": 5.9171
+ },
+ "verdict_inputs": {
+  "A_architecture_side": {
+   "method_asymmetry_found": false,
+   "method_evidence": "Guimaraes 2026 pinned full text (PMC13425262_fulltext.xml, sha a1ded31fa6d615b4b1dabc91bec824c2b05b90ad37fbbcf709480027b3eb9d40): one uniform dissection protocol and one PCSA equation (cos(theta) x belly mass / (1060 kg/m3 x FL), Mendez & Keys 1960) for every hind limb muscle; no ankle-vs-knee methodological asymmetry; single M. mulatta specimen (id 127, 8.0 kg adult male, KU Leuven)",
+   "sol_row_conflict": {
+    "gas_ratio": 1.038988,
+    "reading": "Oku's simulation requires a SOL capability the measured Guimaraes SOL PCSA (124.136 mm2) cannot supply at physiological sigma, while GAS matches - the two published ankle datasets conflict at the SOL row specifically; a named dataset conflict, not a decided cause",
+    "sol_conflict_factor": 5.834067,
+    "sol_ratio": 0.171407
+   },
+   "status": "PARTIALLY_SUPPORTED_AS_SECONDARY"
+  },
+  "B_demand_side": {
+   "evidence": {
+    "knee_mtp_rule_out_global_constants": {
+     "knee_ratio_unscaled": 1.597454,
+     "mtp_ratio_unscaled": 1.649533
+    },
+    "mass_context": {
+     "coverage_geometric_scaled": 1.428588,
+     "coverage_linear_scaled": 1.213341,
+     "demand_source_kg": 10.038,
+     "game_animal_kg": 6.15,
+     "mass_ratio": 1.632195
+    },
+    "simulation_context": {
+     "demand_is": "forward-dynamic SIMULATION transient peak (not an animal measurement), level moderate walk (GRF peak 1.0823 xBW, Froude 0.27)",
+     "peak_flavor_of_B": "HELD (simulation transient peak at 25.0% of cycle)",
+     "speed_grade_flavor_of_B": "DEAD (level, Froude 0.27)",
+     "subjects_flavor_of_B": "HELD (10.038 kg modeled animal vs our 6.15 kg animal)"
+    }
+   },
+   "status": "PRIMARY"
+  },
+  "C_arm_side": {
+   "evidence": {
+    "V1_S1_cap_N_m": 6.247077,
+    "V1_S1_reproduction_ratio": 1.055767,
+    "conclusion": "the measured deposit arms carry Oku's own walk forces to within 5.6% of Oku's own ankle peak; an arm error cannot explain the 1.345x shortfall",
+    "law": "consumed banked, NOT recomputed (prereg D5)",
+    "triceps_only_reproduction_ratio": 0.898898,
+    "triceps_only_subenvelope_N_m": 5.318868
+   },
+   "status": "EXCLUDED"
+  },
+  "sigma_verdict": "NON_DISCRIMINATING"
+ }
+}

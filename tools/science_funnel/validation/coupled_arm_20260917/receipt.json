@@ -1,0 +1,58 @@
+{
+  "schema": "chimera.scoped_validation.v1",
+  "recorded_utc": "2026-09-17T06:09:00.475912+00:00",
+  "candidate_commit": "a6695aa4061c301de880de4894dc2c2190abd4c1",
+  "candidate_tree": "6a53513cfe8d8066767736b1851ef3be80f3c98e",
+  "graph_hash": "5363f23d0fcec15e34d346d872d9df132dce6ac395aaa3cf868aa28a2b19e52d",
+  "source_file_manifest_sha256": {
+    "README.md": "ea48c4ed5821d334da74165758e3b74f88495e10b84ce2379f4b36f328961ecb",
+    "tools/creature_graph/data/creature_graph.json": "4789e61307d3b3c66e5357286a4dda4c1583d91aa2dab7fb85723d2418f83ce2",
+    "tools/creature_graph/data/authored/project_program.json": "dc50c98ef06848e5825dd555205fa00c9e817972d6ce38a923826207f9a9b96e",
+    "tools/science_funnel/coupled_arm.py": "2a8a779e55ff77c96e8806cbc95858f2821dc83d64d6a48b41dce292b682828d",
+    "tools/science_funnel/tests/test_coupled_arm.py": "1212871e7db4cce3151db221e0fbc2d929509c04314f3d26c60357ad3c8b313b",
+    "tools/science_funnel/macaque_anatomy.py": "949954b74e35305828b54a496477e3c8725c1d9609a5f0071a44255137d8d267",
+    "tools/science_funnel/force_arm.py": "d14cee00e3bdd9816a3ae5bc6b3ffeefccaf2870354c9c1cf95eb8dd7d45ada0",
+    "tools/science_funnel/common.py": "ee4af6e15bff8f941c9b05ef7ce8ac171f6f20ce5673ef90a9f1adaa47bfb87c"
+  },
+  "manifest_note": "Hashes are committed Git blobs; the candidate tree pins remaining source/dependencies. Numeric capture helper is separately hashed as a proof artifact.",
+  "scope": "Analytic fixed-root multibody force ingredients for seven source coordinates; no new native runtime motion. Existing native force-arm qualification remains in its separate receipt.",
+  "checks": {
+    "coupled_physics": 10,
+    "existing_scalar_reduction": 7,
+    "graph_contracts": 14,
+    "total_python": 31,
+    "graphify": 7,
+    "historical_evidence_unchanged": 11,
+    "reference_case_count": 7,
+    "reference_cases_reproduce_exactly": true
+  },
+  "metrics": {
+    "smallest_mass_eigenvalue_kg_m2": 4.51734409134978e-06,
+    "largest_mass_condition_number": 1910.2316127073043,
+    "largest_free_dynamics_residual_N_m": 3.883070080756834e-16,
+    "elbow_inertia_kg_m2": 0.0019939687829337097
+  },
+  "source_revision": "4fb7dddeec06a0df9525c18f37234a824cb1b5b1",
+  "replay": [
+    "python -B -m unittest tools.science_funnel.tests.test_coupled_arm tools.science_funnel.tests.test_force_arm tools.creature_graph.tests.test_project_spec -v",
+    "python -B -m tools.science_funnel.coupled_arm",
+    "python -B -m tools.science_funnel.validation.coupled_arm_20260917.capture_reference"
+  ],
+  "interpretation": "Independent analytic two-link and finite-difference source FK oracles test force derivation. Exported snapshots aid later native parity; they are not trajectories or evidence that a seven-DOF creature runs. Replay defaults write scratch outputs and preserve this archived evidence.",
+  "not_qualified": [
+    "native coupled time stepping",
+    "six-DOF root dynamics and balance",
+    "joint/contact constraint integration",
+    "biological muscle actuation",
+    "watertight tissue mechanics",
+    "whole macaque",
+    "GPU residency or performance"
+  ],
+  "artifacts": {
+    "capture_reference.py": "9fb4102e3bfde3cd599b2ffb002ae258ede4ccb388b339a7803fb78494382913",
+    "checks.log": "97c15f42202cabe896912743e90bf1714be19bf4c1c258ae4a26784ae6ab51e0",
+    "graph-roundtrip.json": "a5336cc193303b185f55241ba4b24328abc6e0b8ab71dda2cffc9f2e4ad10a19",
+    "reference_at_rest.json": "32b66055a0fc6c54f3e2e3c4b1a0ffdfe984ca28934d05b9e54918960b7945f6",
+    "reference_cases.json": "4c622ecf7589d9b4f53c6735ac6b4bdd05c33517e271ff8f48a0801cdfbace99"
+  }
+}

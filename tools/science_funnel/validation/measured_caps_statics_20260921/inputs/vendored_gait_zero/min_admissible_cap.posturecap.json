@@ -1,0 +1,372 @@
+{
+ "derivation": "minimum admissible posture drive cap (posture-cap provenance, Task 1)",
+ "source": "copied+modified from gait_zero_20260919/derive_reachable_vault.py (wave 10)",
+ "rule_0_membrane": {
+  "statement": "The wave-10 combined-envelope infeasibility (ratio 1.3228 at the worst node, posture saturated at 10.0912 N.m) is an artifact of the posture-drive cap, not of the trunk-vault path itself: the minimum achievable combined stance+posture ratio over periodic collocated theta trajectories is a non-increasing function of the posture cap C, and it crosses 1.0 at a derivable cap C* inside [11.2125, 22.425] N.m.  C* is the biped's price tag, to be audited against the admitted musculature (PCSA x 0.3 MPa x moment arm) before any amendment.",
+  "prediction": "C* lies in (11.2125, 22.425] N.m: the 8-step sweep plus bisection finds a cap at which every collocation node's combined ratio is <= 1.0, with the binding node near phi ~ 0.75-0.85 where the knee ratio (1.3228 at wave 10) bounds the combined ratio and the posture demand saturates its constraint.",
+  "falsifier": "If at C = 22.425 N.m (2x the wave-10 cap) the best reachable trajectory still has combined ratio > 1.0 at any node, the infeasibility is NOT a posture-cap artifact, this membrane dies, the 11.2125 N.m cap is exonerated, and the wave-10 INFEASIBLE verdict stands as the final word on the admissible-vault path."
+ },
+ "status": "falsified",
+ "registered_before_compute": true,
+ "admissibility": "combined stance+posture ratio <= 1.0 at all 21 collocation nodes, periodic theta/theta-dot, T=0.71 s",
+ "sweep": {
+  "caps_Nm": [
+   11.2125,
+   12.814285714285715,
+   14.41607142857143,
+   16.017857142857142,
+   17.619642857142857,
+   19.22142857142857,
+   20.823214285714286,
+   22.425
+  ],
+  "bisection_tol_Nm": 0.02
+ },
+ "sweep_runs": [
+  {
+   "cap_Nm": 11.2125,
+   "success": true,
+   "message": "Optimization terminated successfully",
+   "objective": 0.8911832593575554,
+   "max_required_posture_Nm": 11.21250000000015,
+   "max_combined_ratio": 1.3203511848625433,
+   "worst_node": {
+    "phi": 0.75,
+    "posture_ratio": 1.0000000000000133,
+    "stance_ratio": 1.3203511848625433,
+    "leg_ratios": [
+     0.32328010529175116,
+     1.3203511848625433,
+     0.6816316050947584,
+     0.0005844696660210015
+    ]
+   },
+   "admissible": false,
+   "theta_reachable_deg": [
+    -11.8727,
+    -9.2027,
+    -4.9099,
+    1.06,
+    8.4059,
+    14.3175,
+    18.5658,
+    22.6865,
+    26.3144,
+    29.1629,
+    31.0383,
+    31.7997,
+    31.3388,
+    28.2483,
+    21.4005,
+    12.9096,
+    4.8029,
+    -2.3334,
+    -7.7041,
+    -11.088,
+    -12.5032
+   ]
+  },
+  {
+   "cap_Nm": 12.814285714285715,
+   "success": true,
+   "message": "Optimization terminated successfully",
+   "objective": 0.8719340226212985,
+   "max_required_posture_Nm": 12.81428571410586,
+   "max_combined_ratio": 1.2108124823994115,
+   "worst_node": {
+    "phi": 0.75,
+    "posture_ratio": 0.9999999999859646,
+    "stance_ratio": 1.2108124823994115,
+    "leg_ratios": [
+     0.202067661677199,
+     1.2108124823994115,
+     0.7124250985117468,
+     0.0003491385815211309
+    ]
+   },
+   "admissible": false,
+   "theta_reachable_deg": [
+    -11.8063,
+    -9.203,
+    -4.8692,
+    1.3078,
+    9.0304,
+    14.9799,
+    18.7936,
+    22.6853,
+    26.2862,
+    29.3137,
+    31.5112,
+    32.7689,
+    32.8646,
+    30.6674,
+    24.5349,
+    15.4847,
+    6.8118,
+    -0.8526,
+    -6.6713,
+    -10.5016,
+    -12.2385
+   ]
+  },
+  {
+   "cap_Nm": 14.41607142857143,
+   "success": true,
+   "message": "Optimization terminated successfully",
+   "objective": 0.8545720865658037,
+   "max_required_posture_Nm": 14.416071428571222,
+   "max_combined_ratio": 1.2194526951652065,
+   "worst_node": {
+    "phi": 0.75,
+    "posture_ratio": 0.8008060264014443,
+    "stance_ratio": 1.2194526951652065,
+    "leg_ratios": [
+     0.2115459734665625,
+     1.2194526951652065,
+     0.7100726916097186,
+     0.0003675373610074295
+    ]
+   },
+   "admissible": false,
+   "theta_reachable_deg": [
+    -12.4587,
+    -9.2027,
+    -4.1085,
+    2.865,
+    11.2959,
+    17.1127,
+    19.7727,
+    22.6867,
+    25.5115,
+    28.0362,
+    30.1002,
+    31.5459,
+    32.2021,
+    30.6672,
+    25.0326,
+    15.2837,
+    5.758,
+    -2.4818,
+    -8.5204,
+    -12.0798,
+    -13.4144
+   ]
+  },
+  {
+   "cap_Nm": 16.017857142857142,
+   "success": true,
+   "message": "Optimization terminated successfully",
+   "objective": 0.8414776605339427,
+   "max_required_posture_Nm": 16.017844759651197,
+   "max_combined_ratio": 1.1998845310454576,
+   "worst_node": {
+    "phi": 0.75,
+    "posture_ratio": 0.5918881075111033,
+    "stance_ratio": 1.1998845310454576,
+    "leg_ratios": [
+     0.19009948815774094,
+     1.1998845310454576,
+     0.7153820618156717,
+     0.0003259073762084209
+    ]
+   },
+   "admissible": false,
+   "theta_reachable_deg": [
+    -10.8918,
+    -6.9554,
+    -1.0469,
+    6.3265,
+    14.0429,
+    19.0014,
+    20.6456,
+    22.6868,
+    24.8404,
+    26.9594,
+    28.9187,
+    30.5603,
+    31.6864,
+    30.6673,
+    25.3823,
+    15.7384,
+    5.9998,
+    -2.2757,
+    -8.1568,
+    -11.4441,
+    -12.379
+   ]
+  },
+  {
+   "cap_Nm": 17.619642857142857,
+   "success": true,
+   "message": "Optimization terminated successfully",
+   "objective": 0.8294162335072824,
+   "max_required_posture_Nm": 17.61964284405547,
+   "max_combined_ratio": 1.140500361551189,
+   "worst_node": {
+    "phi": 0.75,
+    "posture_ratio": 0.09560728926763581,
+    "stance_ratio": 1.140500361551189,
+    "leg_ratios": [
+     0.12544306773564617,
+     1.140500361551189,
+     0.7310985948202682,
+     0.00020041855357617807
+    ]
+   },
+   "admissible": false,
+   "theta_reachable_deg": [
+    -10.9053,
+    -6.6938,
+    -0.3747,
+    7.4091,
+    15.2181,
+    20.1439,
+    21.6182,
+    22.6865,
+    24.0693,
+    25.6623,
+    27.4038,
+    29.1613,
+    30.7008,
+    30.6716,
+    26.2106,
+    17.1077,
+    6.7398,
+    -2.0238,
+    -8.2038,
+    -11.6022,
+    -12.526
+   ]
+  },
+  {
+   "cap_Nm": 19.22142857142857,
+   "success": true,
+   "message": "Optimization terminated successfully",
+   "objective": 0.8188238609456416,
+   "max_required_posture_Nm": 19.08759987386844,
+   "max_combined_ratio": 1.060059806880787,
+   "worst_node": {
+    "phi": 0.3,
+    "posture_ratio": 0.993037525953765,
+    "stance_ratio": 1.060059806880787,
+    "leg_ratios": [
+     1.060059806880787,
+     0.272101057825398,
+     0.9327077027230647,
+     0.00491685885623427
+    ]
+   },
+   "admissible": false,
+   "theta_reachable_deg": [
+    -10.8291,
+    -6.7216,
+    -0.3745,
+    7.5649,
+    15.2229,
+    19.8578,
+    20.8761,
+    22.6865,
+    25.0128,
+    26.5139,
+    28.3114,
+    30.2627,
+    32.1297,
+    32.8615,
+    28.7704,
+    19.8719,
+    8.9525,
+    -0.3275,
+    -6.9628,
+    -10.893,
+    -12.2014
+   ]
+  },
+  {
+   "cap_Nm": 20.823214285714286,
+   "success": true,
+   "message": "Optimization terminated successfully",
+   "objective": 0.8079981757415421,
+   "max_required_posture_Nm": 20.82320978712909,
+   "max_combined_ratio": 1.055360192904553,
+   "worst_node": {
+    "phi": 0.3,
+    "posture_ratio": 0.9999997839629784,
+    "stance_ratio": 1.055360192904553,
+    "leg_ratios": [
+     1.055360192904553,
+     0.2676117423609834,
+     0.9333007613759611,
+     0.004920641974957393
+    ]
+   },
+   "admissible": false,
+   "theta_reachable_deg": [
+    -10.4096,
+    -6.6436,
+    -0.5035,
+    7.385,
+    15.2094,
+    19.8712,
+    20.7593,
+    22.6837,
+    25.3263,
+    26.5246,
+    28.231,
+    30.311,
+    32.5053,
+    34.3775,
+    31.4509,
+    23.6756,
+    12.3639,
+    2.6394,
+    -4.4977,
+    -9.2984,
+    -11.2793
+   ]
+  },
+  {
+   "cap_Nm": 22.425,
+   "success": true,
+   "message": "Optimization terminated successfully",
+   "objective": 0.7985504865240138,
+   "max_required_posture_Nm": 22.42499999998911,
+   "max_combined_ratio": 1.0010860048982588,
+   "worst_node": {
+    "phi": 0.3,
+    "posture_ratio": 0.9999999999995144,
+    "stance_ratio": 1.0010860048982588,
+    "leg_ratios": [
+     1.0010860048982588,
+     0.21598669668537204,
+     0.939832259876514,
+     0.004962613900488175
+    ]
+   },
+   "admissible": false,
+   "theta_reachable_deg": [
+    -11.506,
+    -7.3479,
+    -0.7169,
+    7.8408,
+    15.2229,
+    19.302,
+    19.4183,
+    20.9,
+    23.477,
+    24.3678,
+    26.1621,
+    28.7028,
+    31.6715,
+    34.2968,
+    31.6083,
+    23.9138,
+    11.6239,
+    1.1799,
+    -6.3318,
+    -10.9475,
+    -12.6814
+   ]
+  }
+ ],
+ "verdict": "MEMBRANE FALSIFIED: no cap in [11.2125, 22.425] N.m admits a combined ratio <= 1.0; the wave-10 cap is exonerated and the INFEASIBLE verdict stands."
+}

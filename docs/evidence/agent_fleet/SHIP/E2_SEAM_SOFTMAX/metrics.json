@@ -1,0 +1,71 @@
+{
+  "lambda": 0.111288318,
+  "c": 0.17667149947808852,
+  "s": 0.6299166449933143,
+  "min_gap": 0.05703544616699219,
+  "w4_max": 0.007658249430643705,
+  "trunc_mass_max": 0.007658249430643638,
+  "fill": 5880,
+  "capped": 0,
+  "sum_err": 4.260800778865814e-08,
+  "rest_err": 3.11059321411733e-07,
+  "metric": {
+    "pre-W8 (reference)": {
+      "knee45": {
+        "crease": 193,
+        "max_deg": 161.90088492276837,
+        "winding_flips": 8
+      },
+      "hip20+knee45": {
+        "crease": 237,
+        "max_deg": 161.3861389302157,
+        "winding_flips": 14
+      }
+    },
+    "W8 (shipped OLD)": {
+      "knee45": {
+        "crease": 180,
+        "max_deg": 165.7446123995831,
+        "winding_flips": 2
+      },
+      "hip20+knee45": {
+        "crease": 212,
+        "max_deg": 164.6475200789331,
+        "winding_flips": 2
+      }
+    },
+    "SOFTMAX (NEW)": {
+      "knee45": {
+        "crease": 235,
+        "max_deg": 168.64841339273784,
+        "winding_flips": 14
+      },
+      "hip20+knee45": {
+        "crease": 255,
+        "max_deg": 168.34682513743624,
+        "winding_flips": 21
+      }
+    }
+  },
+  "drop_knee45": -0.3055555555555556,
+  "drop_compound": -0.20283018867924518,
+  "flip_band_w8": 4117,
+  "flip_band_softmax": 4117,
+  "dup_splits_w8": 0,
+  "dup_splits_softmax": 0,
+  "offline_verdict": "REFUTED",
+  "ab": {
+    "old": {
+      "pred_disp": 0.26062661167113493,
+      "observed_disp": 0.260626676239743,
+      "rest_disp": 2.407356265396403e-07,
+      "png_bytes": 3503097
+    },
+    "new": {
+      "pred_disp": 0.26143882073724,
+      "observed_disp": 0.26143879605178166,
+      "rest_disp": 7.450580596923828e-09,
+      "png_bytes": 3503097
+    }
+  }
+}

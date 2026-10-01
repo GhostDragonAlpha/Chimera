@@ -1,0 +1,26 @@
+﻿{
+    "retrieved_utc":  "2026-09-18T15:46:25.0806567Z",
+    "artifacts":  {
+                      "nature_tables_page":  {
+                                                 "url":  "https://www.nature.com/articles/s42003-021-01831-w/tables/1",
+                                                 "bytes":  3038,
+                                                 "sha256":  "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea"
+                                             },
+                      "nature_article_page":  {
+                                                  "url":  "https://www.nature.com/articles/s42003-021-01831-w",
+                                                  "bytes":  3038,
+                                                  "sha256":  "32ed63159c77e21ee19ca1b9aa3213ccf0218eb59539560b132a8e68ef0e18ea"
+                                              },
+                      "epmc_fulltext_xml":  {
+                                                "url":  "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7940622/fullTextXML",
+                                                "bytes":  252950,
+                                                "sha256":  "fcf9fff5df51f6608724039726575dd41ca32e7a026824d3564e91803b55131d"
+                                            },
+                      "banked_dossier":  {
+                                             "url":  "repo:docs/research/20260917_dbhunt_motion.md (banked 2026-09-17 dossier, commit 5a180eb4)",
+                                             "bytes":  17902,
+                                             "sha256":  "b90e6362d37efc2e5681516403d691e5736fe5cc4e8b763822d4d97f7a1ddd59"
+                                         }
+                  },
+    "route_note":  "nature.com serves these pages authlessly with a browser UA; a UA-less fetcher receives 406/303 (recorded). EuropePMC fullTextXML is the same article (PMC7940622) and is the digit-for-digit parse target; its sha256 matches the oku_bipedal lane pin of the same endpoint."
+}

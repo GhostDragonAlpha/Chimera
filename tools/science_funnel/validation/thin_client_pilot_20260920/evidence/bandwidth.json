@@ -1,0 +1,162 @@
+{
+ "FULL36@60": {
+  "achieved_hz": 51.0,
+  "median_payload_B": 11356,
+  "p95_payload_B": 11356,
+  "bytes_per_s_median_x_rate": 681360,
+  "bytes_per_s_achieved": 579156,
+  "MB_per_s_achieved": 0.579
+ },
+ "FULL36@30": {
+  "achieved_hz": 30.1,
+  "median_payload_B": 11356,
+  "p95_payload_B": 11356,
+  "bytes_per_s_median_x_rate": 340680,
+  "bytes_per_s_achieved": 341815,
+  "MB_per_s_achieved": 0.342
+ },
+ "FULL36@15": {
+  "achieved_hz": 15.1,
+  "median_payload_B": 11356,
+  "p95_payload_B": 11356,
+  "bytes_per_s_median_x_rate": 170340,
+  "bytes_per_s_achieved": 171475,
+  "MB_per_s_achieved": 0.171
+ },
+ "FULL36@10": {
+  "achieved_hz": 10.1,
+  "median_payload_B": 11356,
+  "p95_payload_B": 11356,
+  "bytes_per_s_median_x_rate": 113560,
+  "bytes_per_s_achieved": 114695,
+  "MB_per_s_achieved": 0.115
+ },
+ "POS12@60": {
+  "achieved_hz": 50.3,
+  "median_payload_B": 3820,
+  "p95_payload_B": 3820,
+  "bytes_per_s_median_x_rate": 229200,
+  "bytes_per_s_achieved": 192146,
+  "MB_per_s_achieved": 0.192
+ },
+ "POS12@30": {
+  "achieved_hz": 30.0,
+  "median_payload_B": 3820,
+  "p95_payload_B": 3820,
+  "bytes_per_s_median_x_rate": 114600,
+  "bytes_per_s_achieved": 114600,
+  "MB_per_s_achieved": 0.115
+ },
+ "POS12@15": {
+  "achieved_hz": 15.1,
+  "median_payload_B": 3820,
+  "p95_payload_B": 3820,
+  "bytes_per_s_median_x_rate": 57300,
+  "bytes_per_s_achieved": 57682,
+  "MB_per_s_achieved": 0.058
+ },
+ "POS12@10": {
+  "achieved_hz": 10.1,
+  "median_payload_B": 3820,
+  "p95_payload_B": 3820,
+  "bytes_per_s_median_x_rate": 38200,
+  "bytes_per_s_achieved": 38582,
+  "MB_per_s_achieved": 0.039
+ },
+ "POS16@60": {
+  "achieved_hz": 47.3,
+  "median_payload_B": 3820,
+  "p95_payload_B": 3820,
+  "bytes_per_s_median_x_rate": 229200,
+  "bytes_per_s_achieved": 180686,
+  "MB_per_s_achieved": 0.181
+ },
+ "POS16@30": {
+  "achieved_hz": 30.0,
+  "median_payload_B": 3820,
+  "p95_payload_B": 3820,
+  "bytes_per_s_median_x_rate": 114600,
+  "bytes_per_s_achieved": 114600,
+  "MB_per_s_achieved": 0.115
+ },
+ "POS16@15": {
+  "achieved_hz": 15.1,
+  "median_payload_B": 3820,
+  "p95_payload_B": 3820,
+  "bytes_per_s_median_x_rate": 57300,
+  "bytes_per_s_achieved": 57682,
+  "MB_per_s_achieved": 0.058
+ },
+ "POS16@10": {
+  "achieved_hz": 10.1,
+  "median_payload_B": 3820,
+  "p95_payload_B": 3820,
+  "bytes_per_s_median_x_rate": 38200,
+  "bytes_per_s_achieved": 38582,
+  "MB_per_s_achieved": 0.039
+ },
+ "Z12@60": {
+  "achieved_hz": 43.0,
+  "median_payload_B": 1139,
+  "p95_payload_B": 1139,
+  "bytes_per_s_median_x_rate": 68340,
+  "bytes_per_s_achieved": 48977,
+  "MB_per_s_achieved": 0.049
+ },
+ "Z12@30": {
+  "achieved_hz": 30.0,
+  "median_payload_B": 1139,
+  "p95_payload_B": 1139,
+  "bytes_per_s_median_x_rate": 34170,
+  "bytes_per_s_achieved": 34170,
+  "MB_per_s_achieved": 0.034
+ },
+ "Z12@15": {
+  "achieved_hz": 15.1,
+  "median_payload_B": 1139,
+  "p95_payload_B": 1139,
+  "bytes_per_s_median_x_rate": 17085,
+  "bytes_per_s_achieved": 17198,
+  "MB_per_s_achieved": 0.017
+ },
+ "Z12@10": {
+  "achieved_hz": 10.1,
+  "median_payload_B": 1139,
+  "p95_payload_B": 1139,
+  "bytes_per_s_median_x_rate": 11390,
+  "bytes_per_s_achieved": 11503,
+  "MB_per_s_achieved": 0.012
+ },
+ "DELTA@60": {
+  "achieved_hz": 45.7,
+  "median_payload_B": 64,
+  "p95_payload_B": 64,
+  "bytes_per_s_median_x_rate": 3840,
+  "bytes_per_s_achieved": 2924,
+  "MB_per_s_achieved": 0.003
+ },
+ "DELTA@30": {
+  "achieved_hz": 30.0,
+  "median_payload_B": 64,
+  "p95_payload_B": 64,
+  "bytes_per_s_median_x_rate": 1920,
+  "bytes_per_s_achieved": 1920,
+  "MB_per_s_achieved": 0.002
+ },
+ "DELTA@15": {
+  "achieved_hz": 15.1,
+  "median_payload_B": 64,
+  "p95_payload_B": 64,
+  "bytes_per_s_median_x_rate": 960,
+  "bytes_per_s_achieved": 966,
+  "MB_per_s_achieved": 0.001
+ },
+ "DELTA@10": {
+  "achieved_hz": 10.1,
+  "median_payload_B": 64,
+  "p95_payload_B": 64,
+  "bytes_per_s_median_x_rate": 640,
+  "bytes_per_s_achieved": 646,
+  "MB_per_s_achieved": 0.001
+ }
+}

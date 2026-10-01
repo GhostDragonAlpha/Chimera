@@ -1,0 +1,31 @@
+{
+  "graph_hash": "1035c46e70c85e9b2d923671f97292ca12d02df6f7a0c7c8c91d11cc244b8a6d",
+  "objects": 1514,
+  "relations": 170,
+  "new_graph_evidence": "ev.graph_workflow_fixture_20260916",
+  "new_status_promotions": 0,
+  "original_native_sources_modified": false,
+  "scope": "isolated prototype; not activated in Kilo or production",
+  "source_identity": {
+    "tools/agent_fleet/control.py": "c14475876c6fd04bae26d5a72961ad7e0eabc530c21736b29d05abd5764d7ce3",
+    "tools/agent_fleet/graph_workflow.py": "fae9880a44aa94973a5441ccc5a6b8d60686d28ded3b66c9bf0738427e1ae765",
+    "tools/agent_fleet/graph_workflow_runner.py": "0ba2dec9fdef0d93681b7bb8e8820733ef21618cbe969217af26a722977881d2",
+    "tools/agent_fleet/graph_workflow_service.py": "35d8d0e886832027b1c974c1856491e18c8b75247d83665a6311b88fb83b37f8",
+    "tools/agent_fleet/auxiliary_graph.py": "7219683533a747af2231a025af3def5cc0882b336fc9bcf52073455679de78fe",
+    "tools/agent_fleet/test_graph_workflow.py": "1a3754cb9d5b963ccc4b4554c3758ab02c7d36247ed8c86d007d03f46ecf5e5b",
+    "tools/creature_graph/project_documents.py": "bea5b4595fcb4c1d04b77a26324e3b12372b0856a58ffa861de902ff7d219f88",
+    "tools/creature_graph/build_graph.py": "7a8aa101bd95c385b2fa1f3e3ea9ad71dde86800780ccdef8bca1e0565217753",
+    "tools/creature_graph/graphify_projection.py": "440a8319387867bcedc91ae0dc3458cb89ba7c0f671f461a97aefd29a07c1260",
+    "tools/creature_graph/graphify_consumer.py": "c451eb2e37155119ea9c9764ef5d90880956a07345e10b05afe19a78698ad99f"
+  },
+  "post_measurement_source_changes": {
+    "changes": {
+      "tools/creature_graph/graphify_consumer.py": {
+        "measured_sha256": "c451eb2e37155119ea9c9764ef5d90880956a07345e10b05afe19a78698ad99f",
+        "final_sha256": "5f9b4a25b1f4298ae6c77257d9d5ecc5c086555c49ad6e4669c1150ffaab6bab"
+      }
+    },
+    "reason": "Removed one trailing source-line space for git diff --check; original evidence hash preserved.",
+    "revalidation": "consumer_final_format.log: all seven real-consumer checks pass on final source."
+  }
+}

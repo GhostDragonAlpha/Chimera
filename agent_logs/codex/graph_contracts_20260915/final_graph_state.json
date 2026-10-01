@@ -1,0 +1,777 @@
+{
+  "objects": 1488,
+  "relations": 144,
+  "graph_hash": "f001b29c0463bbaa3dd6c67a6a43a3cf96b24ab3b4e9f5678f4017b6e19ddc7d",
+  "new_evidence": {
+    "id": "ev.graph_contracts_20260915",
+    "kind": "evidence",
+    "name": "Graph contract repair checks, isolated worktree",
+    "status": "specified",
+    "validation": "passing",
+    "deps": [
+      "work.graph_contract_repairs_20260915"
+    ],
+    "captured_utc": "2026-09-15T21:26:57.199423+00:00",
+    "physical": {
+      "source_hashes": {
+        "schema.py": "3d710d1d3dd31ca7ecd5ff6429eff497bf75705686a4ae8e54dbd8ab8fe397c7",
+        "store.py": "0dedc8e579c33ee94287491a2269d7fdb4f262e9f2f34eed8b2330867f39b4bd",
+        "build_graph.py": "5612a8a3af72f101d4ed0a38745fbba77aae779920c2f7ad340d218dd7880b96",
+        "engine_live.py": "913c32fe850ef0d798ceecea6d6518afa7b362cf450a34e81dfeb0ad54099ada",
+        "gaps.py": "5022007a28a4f6f4d5de268ae7e179686fb555b46fce8ffdebecb7e5230ef4da",
+        "graphify_projection.py": "234ed6194e1b375f4ccec34857c6b41a21cd00f7fa7bdefd8d8746440d54a820",
+        "graphify_consumer.py": "fb122da8426d44d87e3cf2da01e3e95d98885569d2cc5733ee91b8fc4aefa5fe",
+        "acceptance.py": "d4fc41802a1fb17910fc43ba4aa194cf7b2d566559bc6078a7593f8ea4cdd6f8",
+        "tests/test_contracts.py": "e87875b704aeb83c0f5b9197a7d91532280c38fa14fb3cc485331208458376d0"
+      }
+    },
+    "provenance": {
+      "evidence_directory": "agent_logs/codex/graph_contracts_20260915",
+      "artifact_sha256": {
+        "contracts_recorded_measurement.log": "e0029ea055f776e8ddc053f07b3b65af5602bf0994857672ebfef505bc39cc7b",
+        "acceptance_results.json": "a4a43edc1f0f98d606e8858c82b8500aaf51cf8af023b97b8105e9baddbdf27f",
+        "bridge_final_1.json": "044b9bc532be7df9cc8a50c829bcee79e50207d96d8984adc2d1e915fd6a1057",
+        "bridge_final_2.json": "4d2fa04eaeece6166878c679ac87b119f027ee53bf241976da911985adeea2f5"
+      }
+    },
+    "notes": "19 positive contract tests; 25 offline acceptance checks with live block NOT_TESTED; two private Graphify seven-check round trips. Historical captures were not repaired retroactively.",
+    "capture_contract": 1,
+    "captured": {
+      "work.graph_contract_repairs_20260915": "af1b4d5034c9c00d"
+    },
+    "captured_dependencies": [
+      "work.graph_contract_repairs_20260915"
+    ],
+    "captured_relations": {},
+    "last_result": "passing"
+  },
+  "historical_validation": [
+    {
+      "id": "ev.band_seal_conservation",
+      "validation": "stale",
+      "last_result": "passing"
+    },
+    {
+      "id": "ev.reflex_controls_fail",
+      "validation": "stale",
+      "last_result": "failing"
+    },
+    {
+      "id": "ev.xpbd_fidelity_gap",
+      "validation": "stale",
+      "last_result": "failing"
+    },
+    {
+      "id": "ev.limb_restore_recipes_20260915",
+      "validation": "stale",
+      "last_result": "passing"
+    },
+    {
+      "id": "ev.limb_live_control_20260915",
+      "validation": "stale",
+      "last_result": "passing"
+    },
+    {
+      "id": "ev.limb_cold_restart_20260915",
+      "validation": "stale",
+      "last_result": "passing"
+    },
+    {
+      "id": "ev.limb_seal_history_20260915",
+      "validation": "stale",
+      "last_result": "passing"
+    }
+  ],
+  "six_queries": {
+    "q1_compartments_without_supported_boundaries": [
+      {
+        "compartment": "inst.band.feet",
+        "status": "verified",
+        "region": "region.band.feet",
+        "bounding_membranes": [
+          {
+            "membrane": "memb.septum.feet_shins",
+            "side": "A",
+            "status": "geometry_built",
+            "physically_supported": true,
+            "shared_wall_with": "region.band.shins"
+          }
+        ],
+        "distinct_supported_membranes": 1,
+        "closed_by_built_walls": null,
+        "closure_verification": "not established by this inventory query",
+        "verdict": "boundary support registered; closure unverified",
+        "note": "each membrane appears once per region. Wall count does not establish closure or load-bearing behavior; separate measured proof is required"
+      },
+      {
+        "compartment": "inst.band.shins",
+        "status": "verified",
+        "region": "region.band.shins",
+        "bounding_membranes": [
+          {
+            "membrane": "memb.septum.feet_shins",
+            "side": "B",
+            "status": "geometry_built",
+            "physically_supported": true,
+            "shared_wall_with": "region.band.feet"
+          },
+          {
+            "membrane": "memb.septum.shins_thighs",
+            "side": "A",
+            "status": "geometry_built",
+            "physically_supported": true,
+            "shared_wall_with": "region.band.thighs"
+          }
+        ],
+        "distinct_supported_membranes": 2,
+        "closed_by_built_walls": null,
+        "closure_verification": "not established by this inventory query",
+        "verdict": "boundary support registered; closure unverified",
+        "note": "each membrane appears once per region. Wall count does not establish closure or load-bearing behavior; separate measured proof is required"
+      },
+      {
+        "compartment": "inst.band.thighs",
+        "status": "verified",
+        "region": "region.band.thighs",
+        "bounding_membranes": [
+          {
+            "membrane": "memb.septum.shins_thighs",
+            "side": "B",
+            "status": "geometry_built",
+            "physically_supported": true,
+            "shared_wall_with": "region.band.shins"
+          },
+          {
+            "membrane": "memb.septum.thighs_torso",
+            "side": "A",
+            "status": "geometry_built",
+            "physically_supported": true,
+            "shared_wall_with": "region.band.torso"
+          }
+        ],
+        "distinct_supported_membranes": 2,
+        "closed_by_built_walls": null,
+        "closure_verification": "not established by this inventory query",
+        "verdict": "boundary support registered; closure unverified",
+        "note": "each membrane appears once per region. Wall count does not establish closure or load-bearing behavior; separate measured proof is required"
+      },
+      {
+        "compartment": "inst.band.torso",
+        "status": "verified",
+        "region": "region.band.torso",
+        "bounding_membranes": [
+          {
+            "membrane": "memb.septum.thighs_torso",
+            "side": "B",
+            "status": "geometry_built",
+            "physically_supported": true,
+            "shared_wall_with": "region.band.thighs"
+          }
+        ],
+        "distinct_supported_membranes": 1,
+        "closed_by_built_walls": null,
+        "closure_verification": "not established by this inventory query",
+        "verdict": "boundary support registered; closure unverified",
+        "note": "each membrane appears once per region. Wall count does not establish closure or load-bearing behavior; separate measured proof is required"
+      },
+      {
+        "compartment": "inst.comp.thigh_l",
+        "status": "specified",
+        "region": "region.seg.thigh_l",
+        "bounding_membranes": [
+          {
+            "membrane": "memb.septum.thigh_l_shin_l",
+            "side": "A",
+            "status": "specified",
+            "physically_supported": false,
+            "shared_wall_with": "region.seg.shin_l"
+          }
+        ],
+        "distinct_supported_membranes": 0,
+        "closed_by_built_walls": null,
+        "closure_verification": "not established by this inventory query",
+        "verdict": "boundary pending build",
+        "note": "each membrane appears once per region. Wall count does not establish closure or load-bearing behavior; separate measured proof is required"
+      },
+      {
+        "compartment": "inst.comp.shin_l",
+        "status": "specified",
+        "region": "region.seg.shin_l",
+        "bounding_membranes": [
+          {
+            "membrane": "memb.septum.thigh_l_shin_l",
+            "side": "B",
+            "status": "specified",
+            "physically_supported": false,
+            "shared_wall_with": "region.seg.thigh_l"
+          },
+          {
+            "membrane": "memb.septum.shin_l_foot_l",
+            "side": "A",
+            "status": "specified",
+            "physically_supported": false,
+            "shared_wall_with": "region.seg.foot_l"
+          }
+        ],
+        "distinct_supported_membranes": 0,
+        "closed_by_built_walls": null,
+        "closure_verification": "not established by this inventory query",
+        "verdict": "boundary pending build",
+        "note": "each membrane appears once per region. Wall count does not establish closure or load-bearing behavior; separate measured proof is required"
+      },
+      {
+        "compartment": "inst.comp.foot_l",
+        "status": "specified",
+        "region": "region.seg.foot_l",
+        "bounding_membranes": [
+          {
+            "membrane": "memb.septum.shin_l_foot_l",
+            "side": "B",
+            "status": "specified",
+            "physically_supported": false,
+            "shared_wall_with": "region.seg.shin_l"
+          }
+        ],
+        "distinct_supported_membranes": 0,
+        "closed_by_built_walls": null,
+        "closure_verification": "not established by this inventory query",
+        "verdict": "boundary pending build",
+        "note": "each membrane appears once per region. Wall count does not establish closure or load-bearing behavior; separate measured proof is required"
+      }
+    ],
+    "q2_placeholder_only_structures": [
+      {
+        "id": "inst.comp.foot_l",
+        "kind": "volume",
+        "status": "specified",
+        "name": "foot_l compartment (specified placeholder)",
+        "unknowns": [
+          "V0i unknown until partition",
+          "boundary geometry unknown (oblique planes/branch junctions)",
+          "mass share of the 13,824.5 kg inventory unknown"
+        ]
+      },
+      {
+        "id": "inst.comp.shin_l",
+        "kind": "volume",
+        "status": "specified",
+        "name": "shin_l compartment (specified placeholder)",
+        "unknowns": [
+          "V0i unknown until partition",
+          "boundary geometry unknown (oblique planes/branch junctions)",
+          "mass share of the 13,824.5 kg inventory unknown"
+        ]
+      },
+      {
+        "id": "inst.comp.thigh_l",
+        "kind": "volume",
+        "status": "specified",
+        "name": "thigh_l compartment (specified placeholder)",
+        "unknowns": [
+          "V0i unknown until partition",
+          "boundary geometry unknown (oblique planes/branch junctions)",
+          "mass share of the 13,824.5 kg inventory unknown"
+        ]
+      },
+      {
+        "id": "memb.septum.shin_l_foot_l",
+        "kind": "surface",
+        "status": "specified",
+        "name": "Septum shin_l | foot_l (specified)",
+        "unknowns": [
+          "orientation/normal",
+          "area",
+          "conforming geometry at the branch junction"
+        ]
+      },
+      {
+        "id": "memb.septum.thigh_l_shin_l",
+        "kind": "surface",
+        "status": "specified",
+        "name": "Septum thigh_l | shin_l (specified)",
+        "unknowns": [
+          "orientation/normal",
+          "area",
+          "conforming geometry at the branch junction"
+        ]
+      },
+      {
+        "id": "region.leg_l",
+        "kind": "region",
+        "status": "specified",
+        "name": "Left leg (selected limb)",
+        "unknowns": [
+          "volumetric extent pending the labeled-volume partition"
+        ]
+      },
+      {
+        "id": "region.seg.foot_l",
+        "kind": "region",
+        "status": "specified",
+        "name": "foot_l region",
+        "unknowns": [
+          "extent, volume, mass share"
+        ]
+      },
+      {
+        "id": "region.seg.shin_l",
+        "kind": "region",
+        "status": "specified",
+        "name": "shin_l region",
+        "unknowns": [
+          "extent, volume, mass share"
+        ]
+      },
+      {
+        "id": "region.seg.thigh_l",
+        "kind": "region",
+        "status": "specified",
+        "name": "thigh_l region",
+        "unknowns": [
+          "extent, volume, mass share"
+        ]
+      }
+    ],
+    "q3_active_params_missing_provenance": [
+      {
+        "parameter": "param.breath_period",
+        "value": 13.38,
+        "units": "s",
+        "gaps": [
+          "not validated against an independent reference (virtual-simulator provenance does not count)"
+        ]
+      },
+      {
+        "parameter": "param.contact_spring_k",
+        "value": 13562000.0,
+        "units": "N/m",
+        "gaps": [
+          "not validated against an independent reference (virtual-simulator provenance does not count)"
+        ]
+      },
+      {
+        "parameter": "param.kappa",
+        "value": 4.6e-10,
+        "units": "Pa^-1",
+        "gaps": [
+          "source partly unknown",
+          "not validated against an independent reference (virtual-simulator provenance does not count)"
+        ]
+      },
+      {
+        "parameter": "param.mass_inventory",
+        "value": 13824.5,
+        "units": "kg",
+        "gaps": [
+          "not validated against an independent reference (virtual-simulator provenance does not count)"
+        ]
+      },
+      {
+        "parameter": "param.sigma_skin",
+        "value": 4000.0,
+        "units": "N/m",
+        "gaps": [
+          "source partly unknown",
+          "not validated against an independent reference (virtual-simulator provenance does not count)"
+        ]
+      },
+      {
+        "parameter": "param.tau_recovery",
+        "value": 0.5,
+        "units": "s",
+        "gaps": [
+          "not validated against an independent reference (virtual-simulator provenance does not count)"
+        ]
+      }
+    ],
+    "q4_blockers_for_local_withdrawal": {
+      "experience": "experience.local_withdrawal",
+      "ready_now": [
+        {
+          "id": "work.partition_leg_l",
+          "kind": "work",
+          "status": "specified",
+          "blockers": [],
+          "authored_priority": 1,
+          "falsifier": "Derive segments from skeleton connectivity in the reference configuration"
+        },
+        {
+          "id": "work.septa_leg_l",
+          "kind": "work",
+          "status": "specified",
+          "blockers": [],
+          "authored_priority": 2,
+          "falsifier": "Matching internal interfaces wherever neighboring volume elements differ"
+        },
+        {
+          "id": "work.causal_demo_leg_l",
+          "kind": "work",
+          "status": "specified",
+          "blockers": [],
+          "authored_priority": 3,
+          "falsifier": "Smallest supported intervention: obstruct an actuator, disconnect a sensor path, or disable a finite attachment -- connected to EXISTING measured inputs and the EXISTING bounded actuator/intent system. No anatomical tendon-cut claim while a hidden actuator supplies the same force."
+        }
+      ],
+      "blocked_by": [
+        {
+          "id": "memb.septum.shin_l_foot_l",
+          "kind": "surface",
+          "status": "specified",
+          "blockers": [
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "memb.septum.thigh_l_shin_l",
+          "kind": "surface",
+          "status": "specified",
+          "blockers": [
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "inst.comp.foot_l",
+          "kind": "volume",
+          "status": "specified",
+          "blockers": [
+            "work.partition_leg_l",
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "inst.comp.shin_l",
+          "kind": "volume",
+          "status": "specified",
+          "blockers": [
+            "work.partition_leg_l",
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "inst.comp.thigh_l",
+          "kind": "volume",
+          "status": "specified",
+          "blockers": [
+            "work.partition_leg_l",
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "req.every_bone_sealed",
+          "kind": "requirement",
+          "status": "specified",
+          "blockers": [
+            "inst.comp.foot_l",
+            "inst.comp.shin_l",
+            "inst.comp.thigh_l"
+          ],
+          "authored_priority": null,
+          "falsifier": null
+        }
+      ]
+    },
+    "q5_evidence_at_risk_if_changed": {
+      "if_changed": "memb.septum.feet_shins",
+      "at_risk": {
+        "if_changed": "memb.septum.feet_shins",
+        "evidence_records_considered": 8,
+        "at_risk": [
+          {
+            "evidence": "ev.band_seal_conservation",
+            "validation": "stale",
+            "why": "directly measured against it"
+          }
+        ],
+        "unverifiable_captures": [
+          {
+            "evidence": "ev.band_seal_conservation",
+            "reasons": [
+              {
+                "dep": "ev.band_seal_conservation",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.reflex_controls_fail",
+            "reasons": [
+              {
+                "dep": "ev.reflex_controls_fail",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.xpbd_fidelity_gap",
+            "reasons": [
+              {
+                "dep": "ev.xpbd_fidelity_gap",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.limb_restore_recipes_20260915",
+            "reasons": [
+              {
+                "dep": "ev.limb_restore_recipes_20260915",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.limb_live_control_20260915",
+            "reasons": [
+              {
+                "dep": "ev.limb_live_control_20260915",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.limb_cold_restart_20260915",
+            "reasons": [
+              {
+                "dep": "ev.limb_cold_restart_20260915",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.limb_seal_history_20260915",
+            "reasons": [
+              {
+                "dep": "ev.limb_seal_history_20260915",
+                "reason": "capture empty/missing"
+              }
+            ]
+          }
+        ],
+        "coverage": "incomplete"
+      },
+      "also_material_water": {
+        "if_changed": "material.water",
+        "evidence_records_considered": 8,
+        "at_risk": [
+          {
+            "evidence": "ev.band_seal_conservation",
+            "validation": "stale",
+            "why": "directly measured against it"
+          },
+          {
+            "evidence": "ev.limb_restore_recipes_20260915",
+            "validation": "stale",
+            "why": "measured against inst.comp.thigh_l which uses it"
+          },
+          {
+            "evidence": "ev.limb_live_control_20260915",
+            "validation": "stale",
+            "why": "measured against inst.comp.shin_l which uses it"
+          },
+          {
+            "evidence": "ev.limb_cold_restart_20260915",
+            "validation": "stale",
+            "why": "measured against inst.comp.thigh_l which uses it"
+          }
+        ],
+        "unverifiable_captures": [
+          {
+            "evidence": "ev.band_seal_conservation",
+            "reasons": [
+              {
+                "dep": "ev.band_seal_conservation",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.reflex_controls_fail",
+            "reasons": [
+              {
+                "dep": "ev.reflex_controls_fail",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.xpbd_fidelity_gap",
+            "reasons": [
+              {
+                "dep": "ev.xpbd_fidelity_gap",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.limb_restore_recipes_20260915",
+            "reasons": [
+              {
+                "dep": "ev.limb_restore_recipes_20260915",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.limb_live_control_20260915",
+            "reasons": [
+              {
+                "dep": "ev.limb_live_control_20260915",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.limb_cold_restart_20260915",
+            "reasons": [
+              {
+                "dep": "ev.limb_cold_restart_20260915",
+                "reason": "capture empty/missing"
+              }
+            ]
+          },
+          {
+            "evidence": "ev.limb_seal_history_20260915",
+            "reasons": [
+              {
+                "dep": "ev.limb_seal_history_20260915",
+                "reason": "capture empty/missing"
+              }
+            ]
+          }
+        ],
+        "coverage": "incomplete"
+      }
+    },
+    "q6_next_ready_task": {
+      "next": {
+        "id": "work.partition_leg_l",
+        "kind": "work",
+        "status": "specified",
+        "blockers": [],
+        "authored_priority": 1,
+        "falsifier": "Derive segments from skeleton connectivity in the reference configuration",
+        "name": "Partition the left leg into per-bone volumetric regions",
+        "plan": "Derive segments from skeleton connectivity in the reference configuration; labeled-volume/interface partition (oblique planes allowed; branch junctions and conforming caps are the hard part); validate closure, orientation, positive volumes, disjoint interiors, parent coverage, mass conservation; recheck under joint motion; never reclassify per frame.",
+        "acceptance_test": "Acceptance = req.every_bone_sealed verification on the leg: count matches, cells conserve, press answers in the right bone's cell.",
+        "enables": [
+          "experience.local_withdrawal",
+          "experience.press_and_response"
+        ],
+        "evidence_it_would_add": {
+          "falsifier_statement": "Derive segments from skeleton connectivity in the reference configuration",
+          "acceptance_test": "Acceptance = req.every_bone_sealed verification on the leg: count matches, cells conserve, press answers in the right bone's cell.",
+          "would_attach_to": [
+            "experience.local_withdrawal",
+            "experience.press_and_response",
+            "inst.comp.foot_l",
+            "inst.comp.shin_l",
+            "inst.comp.thigh_l"
+          ]
+        }
+      },
+      "ready": [
+        {
+          "id": "work.partition_leg_l",
+          "kind": "work",
+          "status": "specified",
+          "blockers": [],
+          "authored_priority": 1,
+          "falsifier": "Derive segments from skeleton connectivity in the reference configuration"
+        },
+        {
+          "id": "work.septa_leg_l",
+          "kind": "work",
+          "status": "specified",
+          "blockers": [],
+          "authored_priority": 2,
+          "falsifier": "Matching internal interfaces wherever neighboring volume elements differ"
+        },
+        {
+          "id": "work.causal_demo_leg_l",
+          "kind": "work",
+          "status": "specified",
+          "blockers": [],
+          "authored_priority": 3,
+          "falsifier": "Smallest supported intervention: obstruct an actuator, disconnect a sensor path, or disable a finite attachment -- connected to EXISTING measured inputs and the EXISTING bounded actuator/intent system. No anatomical tendon-cut claim while a hidden actuator supplies the same force."
+        }
+      ],
+      "blocked": [
+        {
+          "id": "memb.septum.shin_l_foot_l",
+          "kind": "surface",
+          "status": "specified",
+          "blockers": [
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "memb.septum.thigh_l_shin_l",
+          "kind": "surface",
+          "status": "specified",
+          "blockers": [
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "inst.comp.foot_l",
+          "kind": "volume",
+          "status": "specified",
+          "blockers": [
+            "work.partition_leg_l",
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "inst.comp.shin_l",
+          "kind": "volume",
+          "status": "specified",
+          "blockers": [
+            "work.partition_leg_l",
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "inst.comp.thigh_l",
+          "kind": "volume",
+          "status": "specified",
+          "blockers": [
+            "work.partition_leg_l",
+            "work.septa_leg_l"
+          ],
+          "authored_priority": null,
+          "falsifier": "A compartment that cannot remain sealed when its neighbor is punctured is not a compartment."
+        },
+        {
+          "id": "req.every_bone_sealed",
+          "kind": "requirement",
+          "status": "specified",
+          "blockers": [
+            "inst.comp.foot_l",
+            "inst.comp.shin_l",
+            "inst.comp.thigh_l"
+          ],
+          "authored_priority": null,
+          "falsifier": null
+        }
+      ]
+    }
+  }
+}

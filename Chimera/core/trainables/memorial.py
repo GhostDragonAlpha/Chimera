@@ -94,7 +94,11 @@ for _tier in TIERS:
     _MIX_CUM.append(_acc)
 
 
-def seed() -> dict:
+def seed(rng=None) -> dict:
+    # protocol alignment 2026-09-18: the trainer passes seed(rng); this
+    # domain is a deterministic live-value fixture, so the rng is accepted
+    # and intentionally unused (a fixed point, not a random draw).
+    del rng  # noqa: F841
     """The live values, verbatim from CHIMERA_VISION.py:
     STAR = dict(brightness_k=6.0, bright_lights_yard=0.75)         (line 3153)
     SACRIFICE_WEIGHTS = {...8 kinds...}                            (line 3141)

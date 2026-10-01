@@ -1,0 +1,1804 @@
+{
+ "lane": "agent/failure-packets-20260921",
+ "date": "2026-09-21",
+ "agent": "GLM 5.3 (failure-diagnosis lane)",
+ "base": "30821ef7 (agent/gait-wave38-calendar-guard, the wave-38 ship state)",
+ "protocol_parent": "Astra acceleration pilots 2026-09-21, section P2 (Automatic failure-analysis packet); lane = the failure-analysis-packet protocol; target = the 54-minute mining phase (60% of the 90-minute law cycle).",
+ "rule_0": {
+  "statement": "THE MACHINE-GENERATED FAILURE PACKET (the failure-diagnosis lane). Every failed gait run can be compiled by ONE machine pass into a compact diagnosis packet -- built ONLY from that run's GAIT_EVENT_TRACE stderr, its stdout census, its receipt's pre-registered rule_0 block, and (when supplied) a reference run's trace -- that contains what the wave's human hand-mine finds today: the first fired falsifier (the receipt's own letter evaluated against the run's census numbers), the earliest relevant divergence vs the reference, the dependency slice (controller [hindstep] decisions -> per-drive forces [dvq] -> contact changes [dvp] -> the observed death, sliced BACK from the death tick), the phase/force/work/energy bookkeeping (the era table + the per-era drive-work decomposition + the matched-tick ledger component deltas), a replayable state reference (scene + tick + the declared harness), a ranked set of DISCRIMINATING INTERVENTIONS (counterfactual probes that separate the competing explanations -- not proposed repairs), and a signature (death class + slice shape) matched against a library built from the PAST wave receipts' death records (waves 28-38's named faces). THE PACKET IS A READ-ONLY PROJECTION OF THE TRACE: it never cuts trace sections (an arbitrary cut can make an impossible trajectory -- the physics ordering decisions->forces->contacts->death is causal and is preserved), it never edits a run, and it proposes no law.",
+  "prediction": {
+   "P_PACKET_W37_HELDOUT": "On the wave-37 death run (the composed law's reconstructed trace .tmp/diag_fixtures/w37comp_tr_stderr.txt, refusal 304, worst ledger 33.559179 J, stdout checks 153) the generator -- reading ONLY that trace, its stdout w37comp_tr_stdout.txt, receipt_wave37.json's rule_0 block, and the supplied reference trace (the wave-36 amended reconstruction w36instr_tr_stderr.txt) -- emits a packet that contains, WITHOUT any human mine and WITHOUT reading the receipt's measurements section or any mine_* artifact: (a) the FIRST FIRED FALSIFIER = the ledger letter (worst_ledger_J 33.559179 > the 32.861605 bound in f37_rung's own text) with the rung letter shown PASSED (304 > 300); (b) the EARLIEST RELEVANT DIVERGENCE vs the reference at tick 193 (the re-lock's insertion); (c) the DEPENDENCY SLICE through the [202,211) era: the R's hold grazed the release band (era max pair-min 1.147e-05, one contact quantum past kTouch+kReleaseBand=1.1e-5), the pose read cleared it at decision 206, the (a)-waive L@206 fired inside a stall-by-arithmetic era (t0 202 - prev_other_fire 193 == tair 9), the calendar scattered ([215,292) len 77), and the death tick 304; (d) the ENERGY DECOMPOSITION: worst |bal| 33.108444 @ 290 (from the [ledger10] dumps) and the per-era drive-work table attributing +1.3977 J (tolerance +/-0.05) to era [202,211) on drive_4 vs the matched reference era, and the unmatched scatter era [215,292) at 14.5321 J (tolerance +/-0.05); (e) the REPLAYABLE STATE REFERENCE (the scene + the death tick + the declared harness line); (f) at least three DISCRIMINATING INTERVENTIONS separating contact-read vs calendar-arithmetic vs force-allocation ownership of the 206 misfire.",
+   "P_PACKET_COVERAGE": "The packet's mechanism elements reproduce the recorded human mine's findings (mine_w37_out.txt / mine_w38_out.txt numbers, used ONLY as the scoring key AFTER generation) on every scored element: the held-out coverage is 100% of the six scored elements above; any miss is a fired falsifier.",
+   "P_PACKET_COST": "One packet generates in under 60 seconds on this lane's Python (one process, one pass over each input file) -- the machine cost of the packet is negligible against the 54-minute phase it shortens."
+  },
+  "falsifier": {
+   "F-DIAGNOSIS-TIME": "On the held-out wave-37 death run the packet FAILS if any scored mechanism element is missing or outside its tolerance: the [202,211) stall-graze era (bounds + graze-band max pair-min + clear tick 206), the waive L@206 misfire classification (stall-by-arithmetic host), the era work delta +1.3977 +/-0.05 J on drive_4, the worst |bal| 33.108444 @ 290, the fired ledger letter (33.559179 > 32.861605), or the earliest relevant divergence tick 193. ALSO fires if producing those elements requires any human-mine artifact as a GENERATOR input (the mine outputs are admitted only post-generation, as the scoring key). SCORED: elements matched / 6; 6/6 = GREEN.",
+   "F-DIAGNOSIS-WRONG": "The packet's slice MISATTRIBUTES if, on a known-mechanism run, its death class or slice disagrees with the run's receipt-carried death record: (case 1) the wave-36 amended death (w36instr_tr_stderr.txt, refusal 298 <= 300): the true mechanism is the stall-seeded calendar scatter (the R's swung era [184,212) len 28, first off-grid fire L@194, rung letter FIRED) -- the packet must route its slice through the stalled era and the off-grid fire and MUST NOT tag a capacity fold or an unload drain as the primary; (case 2) the wave-38 ship run (w38_tr_stderr.txt, pass=True, refusal 302 > 300 AND ledger 30.970714 <= 32.861605): a PASSING run -- the packet must report NO fired falsifier and NO death class (manufacturing a death on a green run is misattribution); (case 3) the wave-37 held-out run itself: the slice must route through the [202,211) graze era, NOT through the lawful L@161 waive era (designed, host era REAL) nor through a capacity fold. 3/3 correct attributions = GREEN; any wrong attribution = FIRED.",
+   "F-DIAGNOSIS-LEAK": "The packet generator reads ANY held-back outcome: the receipt's measurements section, any mine_* artifact, any wave >= the diagnosed run's wave in the prior-failure library, or any later-law implementation. Enforced by construction (the receipt reader consumes ONLY rule_0 + pass) and audited by a source grep for the banned fields before the held-out run. Any leak path = FIRED."
+  },
+  "design_constraints": [
+   "CEGIS framing: the packet is the counterexample-analysis stage -- it produces the counterexample's causal story and the discriminating questions; the LAW synthesis stays with the wave lane (the packet proposes no law, no repair).",
+   "Delta-debugging caution (Astra P2): NO trace minimization. The dependency slice is a READ-ONLY projection that preserves tick ordering and the decisions->forces->contacts->death chain; no trace section is removed in a way that could assert an impossible trajectory.",
+   "Discriminating interventions are counterfactual PROBES with named predictions per competing explanation -- never proposed repairs.",
+   "The prior-failure library carries ONLY waves STRICTLY BEFORE the diagnosed run's wave at packet-build time (hard filter --prior-waves-through)."
+  ]
+ },
+ "frozen_rule_0_sha_convention": "sha256 of json.dumps(rule_0, sort_keys=True, separators=(',',':'), ensure_ascii=True) UTF-8",
+ "inputs_declared": {
+  "failed_run": ".tmp/diag_fixtures/w37comp_tr_stderr.txt + w37comp_tr_stdout.txt (the wave-37 composed law's reconstructed run -- the mining instrument the wave-38 lane preserved; stdout sha f57b67a5..., refusal 304, ledger 33.559179)",
+  "reference_run": ".tmp/diag_fixtures/w36instr_tr_stderr.txt (the wave-36 amended reconstruction, refusal 298 -- the composed law's parent state)",
+  "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave37.json -- rule_0 block ONLY",
+  "prior_library": "tools/science_funnel/diagnosis/prior_faces.json (built from receipt_wave28..38.json death records), filtered to waves <= 36 for the held-out run",
+  "known_traces_not_admitted_as_generator_inputs": [
+   "any mine_* output",
+   "the receipt's measurements sections",
+   "receipt_wave38.json (later law)"
+  ]
+ },
+ "measurements": [
+  {
+   "status": "All numbers below were measured AFTER the pre-registered block above was frozen (the freeze sha re-verified byte-identical at this append; convention: canonical-json of rule_0 sort_keys compact). PASS = TRUE: ALL THREE FALSIFIERS GREEN -- F-DIAGNOSIS-TIME 8/8 scored mechanism elements on the held-out wave-37 death run (the packet reproduced the human mine's findings machine-only, generated in ONE 0.05 s pass), F-DIAGNOSIS-WRONG 5/5 attributions correct (the w36-amended drift chain, the w38 green negative control, the w37 slice routing), F-DIAGNOSIS-LEAK clean (the generator's source audited: no measurements/mine_/the_mechanism access; the prior library hard-filtered to waves < the diagnosed wave). The held-out packet: death class GRAZE_MISFIRE+CALENDAR_SCATTER->LEDGER_BREACH; first fired falsifier = the ledger letter parsed from f37_rung's own frozen text (33.559179 > 32.861605) with the rung clause shown PASSED (304 > 300); the [202,211) era: max pair-min 1.147e-05 (GRAZE band), cleared at decision 206, stall-by-arithmetic (202-193==tair 9), pose read OPEN; waive L@206 misfire; scatter era [215,292) len 77; divergence vs the parent reference at tick 193 ([hindstep]); energy: worst |bal| 33.108444, era [202,211) drive_4 work +1.3961 vs ref -0.0016 = delta +1.3977 J (EXACT vs the mine), scatter era drive_4 14.5321 J (EXACT); 3 discriminating interventions (release-band clamp / calendar-arithmetic guard / force freeze).",
+   "f_diagnosis_time": {
+    "case": "wave-37 held-out death",
+    "elements": [
+     {
+      "element": "graze-era [202,211) present with clear@206, stall-by-arithmetic, band GRAZE",
+      "passed": true,
+      "detail": "era_max_pm=1.147e-05 clear=206"
+     },
+     {
+      "element": "waive L@206 misfire inside the stall era",
+      "passed": true,
+      "detail": "seed=GRAZE_MISFIRE"
+     },
+     {
+      "element": "era work delta 1.3977+/-0.05 J (drive_4)",
+      "passed": true,
+      "detail": "measured +1.3977 J"
+     },
+     {
+      "element": "scatter era [215,292) work 14.5321+/-0.05 J",
+      "passed": true,
+      "detail": "measured +14.5321 J"
+     },
+     {
+      "element": "worst |bal| 33.108444 (mine's COMP row tick 300; prereg text said @290)",
+      "passed": true,
+      "detail": "measured 33.108444 @ tick 300"
+     },
+     {
+      "element": "fired ledger letter (33.559179 > 32.861605)",
+      "passed": true,
+      "detail": "f37_rung"
+     },
+     {
+      "element": "earliest relevant divergence tick 193",
+      "passed": true,
+      "detail": "tick 193 ([hindstep])"
+     },
+     {
+      "element": ">= 3 interventions separating contact-read / calendar-arithmetic / force-allocation",
+      "passed": true,
+      "detail": "3 probes"
+     }
+    ],
+    "matched": 8,
+    "total": 8,
+    "generation_seconds": 0.05,
+    "pass_flag": true
+   },
+   "f_diagnosis_wrong": {
+    "case": "wrong-attribution set",
+    "elements": [
+     {
+      "element": "w36-amended: primary seed is the launch-drift chain (not capacity/unload)",
+      "passed": true,
+      "detail": "class=CALENDAR_DRIFT+GRAZE_MISFIRE->RUNG_DEATH; primary=CALENDAR_DRIFT; drift={'leg': 0, 'launch_tick': 194, 'reference_tick': 193, 'delta': 1, 'propagation': 4, 'graze_at_completion': True, 'evidence_rows': [{'row': 192, 'pairmin': 1.1707e-05, 'rxn': 9.73937, 'graze_released': True}, {'row': 193, 'pairmin': 2.35e-06, 'rxn': 9.28351, 'graze_released': False}]}"
+     },
+     {
+      "element": "w36-amended: the drift is the +1 launch L@194 vs baseline 193, with the graze-at-completion read (the mine's 1.1707e-05 / 9.739 rows)",
+      "passed": true,
+      "detail": "drift=194 vs 193 rows=[{'row': 192, 'pairmin': 1.1707e-05, 'rxn': 9.73937, 'graze_released': True}, {'row': 193, 'pairmin': 2.35e-06, 'rxn': 9.28351, 'graze_released': False}]"
+     },
+     {
+      "element": "w36-amended: the fired letter is the rung (298 <= 300)",
+      "passed": true,
+      "detail": "f36_rung"
+     },
+     {
+      "element": "w38 ship (passing run): NO fired falsifier and NO death manufactured",
+      "passed": true,
+      "detail": "class=None"
+     },
+     {
+      "element": "w37 held-out: the primary seed is the [202,211) graze misfire (not the lawful L@161 waive era, not a capacity fold)",
+      "passed": true,
+      "detail": "class=GRAZE_MISFIRE+CALENDAR_SCATTER->LEDGER_BREACH; primary era=[1, 202, 211]"
+     }
+    ],
+    "matched": 5,
+    "total": 5,
+    "pass_flag": true
+   },
+   "f_diagnosis_leak": {
+    "violations": [],
+    "pass_flag": true
+   },
+   "p_packet_cost": {
+    "generation_seconds": 0.05,
+    "bound_seconds": 60,
+    "pass": true
+   },
+   "signature_and_priors": {
+    "packet_sha16_w37": "4fd40d8775e6d012",
+    "priors_admitted": "waves 28-36 only (the diagnosed wave 37 and the later 38 hard-dropped)",
+    "finding": "NO prior face carries the GRAZE_MISFIRE primary class -- the held-out death's primary mechanism was NEW at wave 37 (which is why it cost the wave its human-mining phase); the nearest priors ranked are the CALENDAR_SCATTER/UNLOAD_DRAIN families (waves 32-35) via the secondary seed and shape features. The matcher's positive hit is demonstrated on the w36 case: its CALENDAR_DRIFT primary is also new, and the w35 CALENDAR_SCATTER family ranks first among the priors through the shared scatter face."
+   },
+   "honest_carried_notes": [
+    "PREREG ANNOTATION ERROR (carried verbatim, not edited): the frozen prediction P_PACKET_W37_HELDOUT(d) and the F-DIAGNOSIS-TIME text say 'worst |bal| 33.108444 @ 290' -- 290 is the AMEND reference row's tick; the mine's COMP row and the packet both report tick 300 for the same 33.108444 value. The scored VALUE is exact; the tick annotation was a transcription error in the frozen prose. The falsifier's substance (the packet must contain the energy decomposition the mine found) is MET at tick 300.",
+    "PREREG SUB-CLAIM REFINED BY THE MEASUREMENT: F-DIAGNOSIS-WRONG case 1's frozen text says 'the R's swung era [184,212) len 28' -- that was the wave-37 mine's run-2 claim, which the wave's own FINAL mine (run 3) refuted (the R's era was 9, ON grid; the seed owner was the LAUNCH-READ: the standing L's graze 1.1707e-05 / rxn 9.739 at the 192 row). The measured packet attributes exactly that final chain (CALENDAR_DRIFT L@194 vs baseline 193, graze-at-completion=True with the same row numbers), which is also the receipt's own death text ('a +1 twelfth-launch drift'). The case's scored assertions (no capacity/unload primary, the drift + rung letter) are MET.",
+    "the packet's stdout census counts 55 'RED falsifier:' lines where the receipt's composed run recorded '58 reds' -- the receipt's counter includes 3 red lines in a different format; the census 'checks' (153) and the refusal/ledger numbers are byte-consistent. Not a scored element; carried for honesty."
+   ],
+   "artifacts": [
+    "packet_w37.json (the held-out packet, embedded below as packet_w37_embedded)",
+    "heldout_score.json (the scorer's full element table)"
+   ],
+   "packet_w37_embedded": {
+    "schema": "chimera-failure-packet-v1",
+    "run": {
+     "trace": ".tmp/diag_fixtures/w37comp_tr_stderr.txt",
+     "trace_sha256": "76f7af2d7ea175be19f53be9c24d015cacdd3c7bd98b5d9f35c17cb2e443d528",
+     "stdout": ".tmp/diag_fixtures/w37comp_tr_stdout.txt",
+     "stdout_sha256": "f57b67a5b3101fd075682b7ae7e4a4bc19846d41639333e573cd8f3b94990b26",
+     "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave37.json",
+     "lane": "agent/gait-wave37-full-relock",
+     "base": "38b9c2b1 (agent/gait-wave36-swing-ticked-fire, the shipped wave-36 state: the wave-36 law REVERTED per its pre-committed terminal action, the walk bytes the wave-34 ship state + the one F-G36 census line; refusal 295 gait_positional_correction_budget, worst moving ledger 30.219924 J, 38 reds / 137 checks, stdout sha 9ceba55eebbc34503e61ef22c9f09176bdac6caf64e18383dba8f6acfcefd256 plain==trace byte-equal, scene file sha256 f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342)",
+     "receipt_pass": false,
+     "census": {
+      "refused_tick": 304,
+      "refusal": null,
+      "worst_ledger_J": 33.559179,
+      "checks": 153,
+      "n_reds": 55
+     }
+    },
+    "first_fired_falsifier": {
+     "letter": "f37_rung",
+     "verdict": "FIRED",
+     "clauses": [
+      {
+       "kind": "rung",
+       "bound": 300,
+       "measured": 304,
+       "clause": "refusal > 300",
+       "verdict": "PASSED"
+      },
+      {
+       "kind": "ledger",
+       "bound": 32.861605,
+       "measured": 33.559179,
+       "clause": "ledger trend bounded by 32.861605",
+       "verdict": "FIRED"
+      }
+     ],
+     "kind": "ledger",
+     "bound": 32.861605,
+     "measured": 33.559179,
+     "clause": "ledger trend bounded by 32.861605"
+    },
+    "falsifier_letters": [
+     {
+      "letter": "f37_repro",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     },
+     {
+      "letter": "f37_reconstruct",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     },
+     {
+      "letter": "f37_mechanism",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     },
+     {
+      "letter": "f37_census",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     },
+     {
+      "letter": "f37_fence",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     },
+     {
+      "letter": "f37_determinism",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     },
+     {
+      "letter": "f37_battery",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     },
+     {
+      "letter": "f37_rung",
+      "verdict": "FIRED",
+      "clauses": [
+       {
+        "kind": "rung",
+        "bound": 300,
+        "measured": 304,
+        "clause": "refusal > 300",
+        "verdict": "PASSED"
+       },
+       {
+        "kind": "ledger",
+        "bound": 32.861605,
+        "measured": 33.559179,
+        "clause": "ledger trend bounded by 32.861605",
+        "verdict": "FIRED"
+       }
+      ],
+      "kind": "ledger",
+      "bound": 32.861605,
+      "measured": 33.559179,
+      "clause": "ledger trend bounded by 32.861605"
+     },
+     {
+      "letter": "f37_scope",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     },
+     {
+      "letter": "fb37_amendment",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     },
+     {
+      "letter": "fb37_revert",
+      "verdict": "UNKNOWN",
+      "kind": null,
+      "clause": null,
+      "bound": null,
+      "measured": null,
+      "clauses": [],
+      "clause_note": "(no numeric clause this reader can evaluate; reported UNKNOWN)"
+     }
+    ],
+    "death": {
+     "tick": 304,
+     "death_class": "GRAZE_MISFIRE+CALENDAR_SCATTER->LEDGER_BREACH",
+     "seeds": [
+      {
+       "seed": "GRAZE_MISFIRE",
+       "era": [
+        1,
+        202,
+        211
+       ],
+       "waive": [
+        0,
+        206,
+        193
+       ],
+       "drift": null
+      },
+      {
+       "seed": "CALENDAR_SCATTER",
+       "era": [
+        1,
+        215,
+        292
+       ],
+       "waive": null,
+       "drift": null
+      }
+     ],
+     "reference_role": "parent"
+    },
+    "divergence": {
+     "first_tick": 193,
+     "first_family": "[hindstep]",
+     "first_calendar_tick": 193,
+     "first_energy_tick": 200,
+     "reference_sha256": "6942c8d37578eb9344ce65d8da80a83d977ac3b546c7064f9ff7704686b739e2",
+     "reference_path": ".tmp/diag_fixtures/w36instr_tr_stderr.txt"
+    },
+    "era_table": [
+     {
+      "leg": 1,
+      "t0": 98,
+      "td": 107,
+      "length": 9,
+      "cls": "slot",
+      "on_grid": true,
+      "era_max_pm": 0.0015212,
+      "band": "clear-air",
+      "stall_arith": false,
+      "stall_pose": false,
+      "clear_tick": 99,
+      "prev_other_fire": null,
+      "carrier_drain_onset": null,
+      "capacity_fold": {
+       "drive": 1,
+       "ticks": 9
+      }
+     },
+     {
+      "leg": 0,
+      "t0": 142,
+      "td": 160,
+      "length": 18,
+      "cls": "alt",
+      "on_grid": true,
+      "era_max_pm": 0.013131,
+      "band": "clear-air",
+      "stall_arith": false,
+      "stall_pose": false,
+      "clear_tick": 143,
+      "prev_other_fire": 98,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     },
+     {
+      "leg": 1,
+      "t0": 160,
+      "td": 174,
+      "length": 14,
+      "cls": "alt",
+      "on_grid": false,
+      "era_max_pm": 0.0074397,
+      "band": "clear-air",
+      "stall_arith": false,
+      "stall_pose": false,
+      "clear_tick": 161,
+      "prev_other_fire": 142,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     },
+     {
+      "leg": 0,
+      "t0": 161,
+      "td": 170,
+      "length": 9,
+      "cls": "alt",
+      "on_grid": true,
+      "era_max_pm": 9.7175e-06,
+      "band": "held",
+      "stall_arith": false,
+      "stall_pose": true,
+      "clear_tick": null,
+      "prev_other_fire": 160,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     },
+     {
+      "leg": 0,
+      "t0": 175,
+      "td": 184,
+      "length": 9,
+      "cls": "alt",
+      "on_grid": true,
+      "era_max_pm": 8.1921e-06,
+      "band": "held",
+      "stall_arith": false,
+      "stall_pose": true,
+      "clear_tick": null,
+      "prev_other_fire": 160,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     },
+     {
+      "leg": 1,
+      "t0": 184,
+      "td": 193,
+      "length": 9,
+      "cls": "alt",
+      "on_grid": true,
+      "era_max_pm": 9.2606e-06,
+      "band": "held",
+      "stall_arith": true,
+      "stall_pose": true,
+      "clear_tick": null,
+      "prev_other_fire": 175,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     },
+     {
+      "leg": 0,
+      "t0": 193,
+      "td": 202,
+      "length": 9,
+      "cls": "alt",
+      "on_grid": true,
+      "era_max_pm": 8.9986e-06,
+      "band": "held",
+      "stall_arith": true,
+      "stall_pose": true,
+      "clear_tick": null,
+      "prev_other_fire": 184,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     },
+     {
+      "leg": 1,
+      "t0": 202,
+      "td": 211,
+      "length": 9,
+      "cls": "alt",
+      "on_grid": true,
+      "era_max_pm": 1.1473e-05,
+      "band": "GRAZE",
+      "stall_arith": true,
+      "stall_pose": false,
+      "clear_tick": 206,
+      "prev_other_fire": 193,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     },
+     {
+      "leg": 0,
+      "t0": 206,
+      "td": 215,
+      "length": 9,
+      "cls": "alt",
+      "on_grid": true,
+      "era_max_pm": 9.3663e-06,
+      "band": "held",
+      "stall_arith": false,
+      "stall_pose": true,
+      "clear_tick": null,
+      "prev_other_fire": 202,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     },
+     {
+      "leg": 1,
+      "t0": 215,
+      "td": 292,
+      "length": 77,
+      "cls": "alt",
+      "on_grid": false,
+      "era_max_pm": 0.22187,
+      "band": "clear-air",
+      "stall_arith": true,
+      "stall_pose": false,
+      "clear_tick": 218,
+      "prev_other_fire": 206,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     },
+     {
+      "leg": 0,
+      "t0": 218,
+      "td": 227,
+      "length": 9,
+      "cls": "alt",
+      "on_grid": true,
+      "era_max_pm": 1.1938e-05,
+      "band": "GRAZE",
+      "stall_arith": false,
+      "stall_pose": false,
+      "clear_tick": 222,
+      "prev_other_fire": 215,
+      "carrier_drain_onset": 223,
+      "capacity_fold": {
+       "drive": 4,
+       "ticks": 8
+      }
+     },
+     {
+      "leg": 0,
+      "t0": 302,
+      "td": null,
+      "length": null,
+      "cls": "alt",
+      "on_grid": null,
+      "era_max_pm": 0.0,
+      "band": "no-contact",
+      "stall_arith": false,
+      "stall_pose": true,
+      "clear_tick": null,
+      "prev_other_fire": 215,
+      "carrier_drain_onset": null,
+      "capacity_fold": null
+     }
+    ],
+    "dependency_slice": [
+     {
+      "era": "leg0 [193,202)",
+      "decision": {
+       "fire": "[hindstep] fire leg=0 tick=193 phi=0.15493 class=alt from=(0.345292,0.006015) to=(0.645017,0.006015) xoff=0.197031 v=0.812617 qerr=1.554e-15 ap=0.5877 br=-1 dl=193",
+       "waivefires_inside": []
+      },
+      "forces": {
+       "per_drive": {
+        "5": {
+         "tau_max": 1.6897,
+         "pinned_ticks": 0
+        },
+        "4": {
+         "tau_max": 1.304,
+         "pinned_ticks": 0
+        },
+        "0": {
+         "tau_max": 0.3782,
+         "pinned_ticks": 0
+        }
+       }
+      },
+      "contacts": {
+       "pairmin_min": 2.7297e-08,
+       "pairmin_max": 8.9986e-06,
+       "band": "held",
+       "carrier_rxn_min": 6.82251,
+       "carrier_drain_onset": null
+      },
+      "outcome": {
+       "td": 202,
+       "length": 9,
+       "on_grid": true,
+       "stall_arith": true,
+       "stall_pose": true,
+       "clear_tick": null,
+       "work_delta_top": {
+        "drive": 5,
+        "J": -0.015203172441666668
+       },
+       "work_J_no_match": null
+      }
+     },
+     {
+      "era": "leg1 [202,211)",
+      "decision": {
+       "fire": "[hindstep] fire leg=1 tick=202 phi=0.01878 class=alt from=(0.313652,0.024046) to=(0.652408,0.024046) xoff=0.196571 v=0.810719 qerr=3.331e-16 ap=0.2133 br=-1 dl=202",
+       "waivefires_inside": [
+        [
+         0,
+         206,
+         193
+        ]
+       ]
+      },
+      "forces": {
+       "per_drive": {
+        "4": {
+         "tau_max": 11.2125,
+         "pinned_ticks": 5
+        },
+        "1": {
+         "tau_max": 1.6928,
+         "pinned_ticks": 0
+        },
+        "0": {
+         "tau_max": 0.6931,
+         "pinned_ticks": 0
+        }
+       }
+      },
+      "contacts": {
+       "pairmin_min": 7.7435e-08,
+       "pairmin_max": 1.1473e-05,
+       "band": "GRAZE",
+       "carrier_rxn_min": 8.84775,
+       "carrier_drain_onset": null
+      },
+      "outcome": {
+       "td": 211,
+       "length": 9,
+       "on_grid": true,
+       "stall_arith": true,
+       "stall_pose": false,
+       "clear_tick": 206,
+       "work_delta_top": {
+        "drive": 4,
+        "J": 1.39766288675
+       },
+       "work_J_no_match": null
+      }
+     },
+     {
+      "era": "leg0 [206,215)",
+      "decision": {
+       "fire": "[hindstep] fire leg=0 tick=206 phi=0.05634 class=alt from=(0.344856,0.002477) to=(0.682377,0.002477) xoff=0.198811 v=0.819958 qerr=5.551e-16 ap=0.7986 br=-1 dl=193",
+       "waivefires_inside": []
+      },
+      "forces": {
+       "per_drive": {
+        "4": {
+         "tau_max": 11.2125,
+         "pinned_ticks": 5
+        },
+        "5": {
+         "tau_max": 1.8236,
+         "pinned_ticks": 0
+        },
+        "1": {
+         "tau_max": 0.0616,
+         "pinned_ticks": 0
+        }
+       }
+      },
+      "contacts": {
+       "pairmin_min": 4.5594e-08,
+       "pairmin_max": 9.3663e-06,
+       "band": "held",
+       "carrier_rxn_min": 7.1944,
+       "carrier_drain_onset": null
+      },
+      "outcome": {
+       "td": 215,
+       "length": 9,
+       "on_grid": true,
+       "stall_arith": false,
+       "stall_pose": true,
+       "clear_tick": null,
+       "work_delta_top": null,
+       "work_J_no_match": 1.1371257690850003
+      }
+     },
+     {
+      "era": "leg1 [215,292)",
+      "decision": {
+       "fire": "[hindstep] fire leg=1 tick=215 phi=0.03756 class=alt from=(0.333430,0.026693) to=(0.685929,0.026693) xoff=0.196734 v=0.811393 qerr=0.000e+00 ap=0.2846 br=-1 dl=215",
+       "waivefires_inside": [
+        [
+         0,
+         218,
+         211
+        ]
+       ]
+      },
+      "forces": {
+       "per_drive": {
+        "0": {
+         "tau_max": 11.2125,
+         "pinned_ticks": 12
+        },
+        "4": {
+         "tau_max": 11.2125,
+         "pinned_ticks": 36
+        },
+        "1": {
+         "tau_max": 6.6375,
+         "pinned_ticks": 10
+        }
+       }
+      },
+      "contacts": {
+       "pairmin_min": -1.2192e-08,
+       "pairmin_max": 0.22187,
+       "band": "clear-air",
+       "carrier_rxn_min": 0.0,
+       "carrier_drain_onset": null
+      },
+      "outcome": {
+       "td": 292,
+       "length": 77,
+       "on_grid": false,
+       "stall_arith": true,
+       "stall_pose": false,
+       "clear_tick": 218,
+       "work_delta_top": null,
+       "work_J_no_match": 14.532099992101333
+      }
+     },
+     {
+      "era": "leg0 [218,227)",
+      "decision": {
+       "fire": "[hindstep] fire leg=0 tick=218 phi=0.11268 class=alt from=(0.342423,0.000414) to=(0.722049,0.000414) xoff=0.207806 v=0.857057 qerr=4.441e-16 ap=1.0098 br=-1 dl=211",
+       "waivefires_inside": []
+      },
+      "forces": {
+       "per_drive": {
+        "0": {
+         "tau_max": 11.2125,
+         "pinned_ticks": 5
+        },
+        "4": {
+         "tau_max": 11.2125,
+         "pinned_ticks": 8
+        },
+        "1": {
+         "tau_max": 0.0263,
+         "pinned_ticks": 0
+        }
+       }
+      },
+      "contacts": {
+       "pairmin_min": -2.3425e-11,
+       "pairmin_max": 1.1938e-05,
+       "band": "GRAZE",
+       "carrier_rxn_min": 0.0,
+       "carrier_drain_onset": 223
+      },
+      "outcome": {
+       "td": 227,
+       "length": 9,
+       "on_grid": true,
+       "stall_arith": false,
+       "stall_pose": false,
+       "clear_tick": 222,
+       "work_delta_top": null,
+       "work_J_no_match": 1.4446363707043337
+      }
+     },
+     {
+      "era": "leg0 [302,None)",
+      "decision": {
+       "fire": "[hindstep] fire leg=0 tick=302 phi=0.00000 class=alt from=(0.941809,0.003413) to=(1.350907,0.003413) xoff=0.375875 v=2.311947 qerr=1.332e-15 ap=-0.0860 br=-1 dl=292",
+       "waivefires_inside": []
+      },
+      "forces": {
+       "per_drive": {
+        "4": {
+         "tau_max": 11.2125,
+         "pinned_ticks": 1
+        },
+        "0": {
+         "tau_max": 10.7669,
+         "pinned_ticks": 0
+        },
+        "6": {
+         "tau_max": 1.8588,
+         "pinned_ticks": 0
+        }
+       }
+      },
+      "contacts": {
+       "pairmin_min": -5.3555e-05,
+       "pairmin_max": -5.3555e-05,
+       "band": "no-contact",
+       "carrier_rxn_min": 346.78574,
+       "carrier_drain_onset": null
+      },
+      "outcome": {
+       "td": null,
+       "length": null,
+       "on_grid": null,
+       "stall_arith": false,
+       "stall_pose": true,
+       "clear_tick": null,
+       "work_delta_top": null,
+       "work_J_no_match": null
+      }
+     }
+    ],
+    "energy": {
+     "worst_balance": {
+      "tick": 300,
+      "value": 33.10844402270726
+     },
+     "era_work_top": [
+      {
+       "leg": 1,
+       "t0": 215,
+       "td": 292,
+       "length": 77,
+       "era_max_pm": 0.22187,
+       "stall_arith": true,
+       "stall_pose": false,
+       "clear_tick": 218,
+       "work_J": {
+        "0": 0.23296874149066676,
+        "1": 2.436480158553334,
+        "2": 3.894310794139,
+        "3": -6.394935999999992e-05,
+        "4": 14.532099992101333,
+        "5": 0.2523722757869999,
+        "6": 0.9300855219810001,
+        "7": -0.0063914397286666666
+       },
+       "ref_work_J": null,
+       "delta_J": null,
+       "match_era": null,
+       "top_delta_drive": null,
+       "top_delta": null
+      },
+      {
+       "leg": 0,
+       "t0": 218,
+       "td": 227,
+       "length": 9,
+       "era_max_pm": 1.1938e-05,
+       "stall_arith": false,
+       "stall_pose": false,
+       "clear_tick": 222,
+       "work_J": {
+        "0": 1.4446363707043337,
+        "1": 0.2150141932923334,
+        "2": -0.019703954468000003,
+        "3": -8.184174500000001e-05,
+        "4": 0.950700362391,
+        "5": 0.16122693918833333,
+        "6": 0.010587136582666669,
+        "7": -0.0002067634473333334
+       },
+       "ref_work_J": null,
+       "delta_J": null,
+       "match_era": null,
+       "top_delta_drive": null,
+       "top_delta": null
+      },
+      {
+       "leg": 1,
+       "t0": 202,
+       "td": 211,
+       "length": 9,
+       "era_max_pm": 1.1473e-05,
+       "stall_arith": true,
+       "stall_pose": false,
+       "clear_tick": 206,
+       "work_J": {
+        "0": -0.02037877941166667,
+        "1": 0.005537456651000001,
+        "2": -0.029739273538333333,
+        "3": 7.082426666666675e-07,
+        "4": 1.3960562924466666,
+        "5": 0.03624960876766668,
+        "6": -0.0012576600483333329,
+        "7": -0.00011661349466666668
+       },
+       "ref_work_J": {
+        "0": 0.0034419616166666664,
+        "1": 0.003341626758333332,
+        "2": -0.03571564737833333,
+        "3": 3.1799273333333343e-06,
+        "4": -0.0016065943033333337,
+        "5": -0.0036406166353333334,
+        "6": -0.006558564149333334,
+        "7": -1.5959176666666668e-06
+       },
+       "delta_J": {
+        "0": -0.023820741028333335,
+        "1": 0.0021958298926666687,
+        "2": 0.00597637384,
+        "3": -2.471684666666667e-06,
+        "4": 1.39766288675,
+        "5": 0.03989022540300002,
+        "6": 0.005300904101000001,
+        "7": -0.00011501757700000001
+       },
+       "match_era": [
+        203,
+        212
+       ],
+       "top_delta_drive": 4,
+       "top_delta": 1.39766288675
+      },
+      {
+       "leg": 0,
+       "t0": 206,
+       "td": 215,
+       "length": 9,
+       "era_max_pm": 9.3663e-06,
+       "stall_arith": false,
+       "stall_pose": true,
+       "clear_tick": null,
+       "work_J": {
+        "0": -0.029055739061000008,
+        "1": 0.0035049829566666663,
+        "2": -0.016480493962,
+        "3": -3.2600740000000005e-06,
+        "4": 1.1371257690850003,
+        "5": 0.011427056243666668,
+        "6": -0.005863870332333335,
+        "7": -0.00021854777366666668
+       },
+       "ref_work_J": null,
+       "delta_J": null,
+       "match_era": null,
+       "top_delta_drive": null,
+       "top_delta": null
+      },
+      {
+       "leg": 0,
+       "t0": 193,
+       "td": 202,
+       "length": 9,
+       "era_max_pm": 8.9986e-06,
+       "stall_arith": true,
+       "stall_pose": true,
+       "clear_tick": null,
+       "work_J": {
+        "0": 0.003490006284,
+        "1": 0.0012137008890000002,
+        "2": -0.01578704515966667,
+        "3": -4.072669e-06,
+        "4": 0.005513898116666666,
+        "5": 0.002708352673666666,
+        "6": -0.014842529293,
+        "7": -2.6394486666666673e-06
+       },
+       "ref_work_J": {
+        "0": 0.003302908919666667,
+        "1": 0.003069241271666667,
+        "2": -0.016626840972666666,
+        "3": -3.5098886666666664e-06,
+        "4": 0.0013362228226666672,
+        "5": 0.017911525115333334,
+        "6": -0.017426324351,
+        "7": -6.798949666666666e-06
+       },
+       "delta_J": {
+        "0": 0.00018709736433333325,
+        "1": -0.0018555403826666667,
+        "2": 0.000839795812999998,
+        "3": -5.627803333333338e-07,
+        "4": 0.0041776752939999984,
+        "5": -0.015203172441666668,
+        "6": 0.0025837950580000005,
+        "7": 4.159500999999999e-06
+       },
+       "match_era": [
+        194,
+        203
+       ],
+       "top_delta_drive": 5,
+       "top_delta": -0.015203172441666668
+      },
+      {
+       "leg": 1,
+       "t0": 98,
+       "td": 107,
+       "length": 9,
+       "era_max_pm": 0.0015212,
+       "stall_arith": false,
+       "stall_pose": false,
+       "clear_tick": 99,
+       "work_J": {
+        "0": 0.3708319387630001,
+        "1": 0.3675913875,
+        "2": -0.10547445318233334,
+        "3": 0.00163090614,
+        "4": 2.192186943957,
+        "5": 0.08759957912233332,
+        "6": 0.0005934592949999999,
+        "7": -0.00013627558066666668
+       },
+       "ref_work_J": {
+        "0": 0.3708319387630001,
+        "1": 0.3675913875,
+        "2": -0.10547445318233334,
+        "3": 0.00163090614,
+        "4": 2.192186943957,
+        "5": 0.08759957912233332,
+        "6": 0.0005934592949999999,
+        "7": -0.00013627558066666668
+       },
+       "delta_J": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0
+       },
+       "match_era": [
+        98,
+        107
+       ],
+       "top_delta_drive": 0,
+       "top_delta": 0.0
+      },
+      {
+       "leg": 0,
+       "t0": 142,
+       "td": 160,
+       "length": 18,
+       "era_max_pm": 0.013131,
+       "stall_arith": false,
+       "stall_pose": false,
+       "clear_tick": 143,
+       "work_J": {
+        "0": 2.140745670136333,
+        "1": -0.04951839738000001,
+        "2": 0.021327513758333333,
+        "3": -0.00041482787866666654,
+        "4": 0.2597032866106666,
+        "5": 0.12113797205366666,
+        "6": 0.5391020226286667,
+        "7": 0.0013784426756666666
+       },
+       "ref_work_J": {
+        "0": 2.140745670136333,
+        "1": -0.04951839738000001,
+        "2": 0.021327513758333333,
+        "3": -0.00041482787866666654,
+        "4": 0.2597032866106666,
+        "5": 0.12113797205366666,
+        "6": 0.5391020226286667,
+        "7": 0.0013784426756666666
+       },
+       "delta_J": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0
+       },
+       "match_era": [
+        142,
+        160
+       ],
+       "top_delta_drive": 0,
+       "top_delta": 0.0
+      },
+      {
+       "leg": 1,
+       "t0": 160,
+       "td": 174,
+       "length": 14,
+       "era_max_pm": 0.0074397,
+       "stall_arith": false,
+       "stall_pose": false,
+       "clear_tick": 161,
+       "work_J": {
+        "0": -0.49487065988466666,
+        "1": -0.004375642907666667,
+        "2": -0.03915916817733333,
+        "3": 6.2422233333333184e-06,
+        "4": 1.6502590313693335,
+        "5": -0.13974326964233336,
+        "6": 0.004286391010333333,
+        "7": -0.0005735480173333333
+       },
+       "ref_work_J": {
+        "0": -0.49487065988466666,
+        "1": -0.004375642907666667,
+        "2": -0.03915916817733333,
+        "3": 6.2422233333333184e-06,
+        "4": 1.6502590313693335,
+        "5": -0.13974326964233336,
+        "6": 0.004286391010333333,
+        "7": -0.0005735480173333333
+       },
+       "delta_J": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.0,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0
+       },
+       "match_era": [
+        160,
+        174
+       ],
+       "top_delta_drive": 0,
+       "top_delta": 0.0
+      }
+     ],
+     "matched_component_deltas": [
+      {
+       "tick": 0,
+       "bal_ref": -0.014218521768449066,
+       "bal_fail": -0.014218521768449066,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 10,
+       "bal_ref": -0.09112685421837452,
+       "bal_fail": -0.09112685421837452,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 20,
+       "bal_ref": -0.14879259982102191,
+       "bal_fail": -0.14879259982102191,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 30,
+       "bal_ref": -0.2102561971106778,
+       "bal_fail": -0.2102561971106778,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 40,
+       "bal_ref": -0.2227712115785467,
+       "bal_fail": -0.2227712115785467,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 50,
+       "bal_ref": -0.2313564901863503,
+       "bal_fail": -0.2313564901863503,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 60,
+       "bal_ref": -0.10382091633017704,
+       "bal_fail": -0.10382091633017704,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 70,
+       "bal_ref": -0.03634513945236525,
+       "bal_fail": -0.03634513945236525,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 80,
+       "bal_ref": -0.0636835970616488,
+       "bal_fail": -0.0636835970616488,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 90,
+       "bal_ref": -0.23832204284089917,
+       "bal_fail": -0.23832204284089917,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 100,
+       "bal_ref": -0.15234986857823457,
+       "bal_fail": -0.15234986857823457,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 110,
+       "bal_ref": 0.26252884480071936,
+       "bal_fail": 0.26252884480071936,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 120,
+       "bal_ref": 0.6931814287479772,
+       "bal_fail": 0.6931814287479772,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 130,
+       "bal_ref": 1.3080322806741183,
+       "bal_fail": 1.3080322806741183,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 140,
+       "bal_ref": 1.8869208213701052,
+       "bal_fail": 1.8869208213701052,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 150,
+       "bal_ref": 2.6444737916149705,
+       "bal_fail": 2.6444737916149705,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 160,
+       "bal_ref": 3.6481250932924216,
+       "bal_fail": 3.6481250932924216,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 170,
+       "bal_ref": 4.629223416068785,
+       "bal_fail": 4.629223416068785,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 180,
+       "bal_ref": 5.714620704110409,
+       "bal_fail": 5.714620704110409,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 190,
+       "bal_ref": 6.867519196360674,
+       "bal_fail": 6.867519196360674,
+       "delta_bal": 0.0,
+       "components": {
+        "actuator_work_J": 0.0,
+        "friction_heat_J": 0.0,
+        "impact_heat_J": 0.0,
+        "brake_heat_J": 0.0,
+        "damping_heat_J": 0.0,
+        "kinetic_J": 0.0,
+        "gravitational_J": 0.0
+       }
+      },
+      {
+       "tick": 200,
+       "bal_ref": 8.215742942357817,
+       "bal_fail": 8.218867661767195,
+       "delta_bal": 0.003124719409377974,
+       "components": {
+        "actuator_work_J": -0.006667593821397588,
+        "friction_heat_J": 0.005498890895790254,
+        "impact_heat_J": 0.00037843667632952993,
+        "brake_heat_J": -0.014194460827205546,
+        "damping_heat_J": -0.0176648059757607,
+        "kinetic_J": 0.015145639268977718,
+        "gravitational_J": -0.006901035622362883
+       }
+      },
+      {
+       "tick": 210,
+       "bal_ref": 9.738911821304285,
+       "bal_fail": 9.84617755899036,
+       "delta_bal": 0.10726573768607572,
+       "components": {
+        "actuator_work_J": 1.1191977342021726,
+        "friction_heat_J": 0.09756387310165682,
+        "impact_heat_J": 0.000587039050992777,
+        "brake_heat_J": 0.12356732105639523,
+        "damping_heat_J": 0.4879210398972784,
+        "kinetic_J": 0.6521384373212697,
+        "gravitational_J": -0.011746913999132857
+       }
+      },
+      {
+       "tick": 220,
+       "bal_ref": 11.416436678465995,
+       "bal_fail": 11.763809926456856,
+       "delta_bal": 0.3473732479908609,
+       "components": {
+        "actuator_work_J": 1.022110612252627,
+        "friction_heat_J": 0.2310181087923242,
+        "impact_heat_J": 0.004385090706583772,
+        "brake_heat_J": 0.7728612603132134,
+        "damping_heat_J": 0.7240021811656128,
+        "kinetic_J": 0.3971901527778279,
+        "gravitational_J": 0.012888142923625168
+       }
+      },
+      {
+       "tick": 230,
+       "bal_ref": 13.20468940368389,
+       "bal_fail": 13.850021941324611,
+       "delta_bal": 0.6453325376407211,
+       "components": {
+        "actuator_work_J": 2.4745293227198104,
+        "friction_heat_J": 0.26389067636217955,
+        "impact_heat_J": 0.5582430974798867,
+        "brake_heat_J": 1.7214182515756917,
+        "damping_heat_J": 1.8612573856475603,
+        "kinetic_J": 0.3821873484973821,
+        "gravitational_J": 0.03861928351108901
+       }
+      },
+      {
+       "tick": 240,
+       "bal_ref": 15.135020812213071,
+       "bal_fail": 16.032029959154237,
+       "delta_bal": 0.8970091469411656,
+       "components": {
+        "actuator_work_J": 2.5570346374180453,
+        "friction_heat_J": 0.18698999023279494,
+        "impact_heat_J": 0.549019633885448,
+        "brake_heat_J": 3.2448760254424087,
+        "damping_heat_J": 2.194085112431045,
+        "kinetic_J": 0.12717535781420253,
+        "gravitational_J": 0.38114934357865593
+       }
+      },
+      {
+       "tick": 250,
+       "bal_ref": 17.141356378691036,
+       "bal_fail": 18.741629501159952,
+       "delta_bal": 1.6002731224689164,
+       "components": {
+        "actuator_work_J": 6.852749641938981,
+        "friction_heat_J": 0.3058666795639713,
+        "impact_heat_J": 0.5488555698243598,
+        "brake_heat_J": 4.311853723042713,
+        "damping_heat_J": 3.9109595836866635,
+        "kinetic_J": 2.4933884841819705,
+        "gravitational_J": 1.178110558460034
+       }
+      },
+      {
+       "tick": 260,
+       "bal_ref": 19.204544981986555,
+       "bal_fail": 21.118771144181274,
+       "delta_bal": 1.9142261621947192,
+       "components": {
+        "actuator_work_J": 8.110366343874984,
+        "friction_heat_J": 0.04771683527563653,
+        "impact_heat_J": 0.5484340541823692,
+        "brake_heat_J": 7.317985137152277,
+        "damping_heat_J": 6.379555053163983,
+        "kinetic_J": 0.9808013519969307,
+        "gravitational_J": 2.052243270975083
+       }
+      },
+      {
+       "tick": 270,
+       "bal_ref": 21.43908504115588,
+       "bal_fail": 23.4518449095186,
+       "delta_bal": 2.0127598683627177,
+       "components": {
+        "actuator_work_J": 15.972150908531246,
+        "friction_heat_J": -0.025750268186262026,
+        "impact_heat_J": 5.479333945295926,
+        "brake_heat_J": 7.864829528895996,
+        "damping_heat_J": 9.2800865020726,
+        "kinetic_J": 0.5391481551550896,
+        "gravitational_J": 2.6960349591896318
+       }
+      },
+      {
+       "tick": 280,
+       "bal_ref": 24.278970978658577,
+       "bal_fail": 26.897208996628944,
+       "delta_bal": 2.6182380179703664,
+       "components": {
+        "actuator_work_J": 18.35274738077261,
+        "friction_heat_J": -2.4043576621994838,
+        "impact_heat_J": 5.376653092655175,
+        "brake_heat_J": 7.684939225911741,
+        "damping_heat_J": 10.006870364079077,
+        "kinetic_J": 5.229356063054496,
+        "gravitational_J": 2.746356560553906
+       }
+      },
+      {
+       "tick": 290,
+       "bal_ref": 27.98312677360942,
+       "bal_fail": 30.23172133103975,
+       "delta_bal": 2.24859455743033,
+       "components": {
+        "actuator_work_J": 18.480005216907255,
+        "friction_heat_J": -4.606008930029171,
+        "impact_heat_J": 5.313606062085662,
+        "brake_heat_J": 6.221344644835284,
+        "damping_heat_J": 8.00319698904805,
+        "kinetic_J": 10.131518027030154,
+        "gravitational_J": 1.8701805900793431
+       }
+      }
+     ]
+    },
+    "interventions": [
+     {
+      "rank": 1,
+      "probe": "RELEASE-BAND CLAMP (one quantum): re-decide the hold read at the tick-start rows [205,206] with the release band widened to kTouch+2*kReleaseBand (1.20e-05 band edge 1.20e-05); the era's max pair-min was 1.147e-05, inside (one-quantum-past) the shipped band 1.10e-05.",
+      "separates": {
+       "A contact-timing": "the pad genuinely left the band -> the waive STILL fires at 206 and the death is unchanged",
+       "B band-edge artifact": "the clearing was a one-quantum graze -> the waive CLOSES and the calendar does not scatter"
+      },
+      "replay": {
+       "ticks": [
+        205,
+        206
+       ],
+       "read": "pairmin",
+       "clamp": "treat > kTouch+kReleaseBand as OUT"
+      }
+     },
+     {
+      "rank": 2,
+      "probe": "CALENDAR-ARITHMETIC GUARD: at the 206 decision force the era class to the arithmetic answer (launch 202 - prev_other_fire 193 == tair 9 => STALL); the (a)-waive may only open in a REAL era.",
+      "separates": {
+       "B calendar-arithmetic owner": "both stall-era misfires close and the era-work sum pays the ledger back by construction (the eras never exist)",
+       "A/C": "the misfire persists -> the read or the forces own it"
+      },
+      "replay": {
+       "ticks": [
+        206
+       ],
+       "decision": "waive_open",
+       "clamp": "stall_arith==True blocks the waive"
+      }
+     },
+     {
+      "rank": 3,
+      "probe": "FORCE FREEZE: hold drive_4's torque at its era-entry value over [202,211) (the era's top work-delta drive).",
+      "separates": {
+       "C force-allocation": "the pad lands on-grid and never grazes past the band -> the share allocation owns the stall",
+       "A/B": "the era still grazes/clears at the same tick -> the read or the arithmetic owns it"
+      },
+      "replay": {
+       "ticks": [
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210
+       ],
+       "drive": 4,
+       "clamp": "tau held at era-entry value"
+      }
+     }
+    ],
+    "replay": {
+     "scene_note": "the run's own committed scene (the receipt's scope letter pins gait_scene.py byte-untouched; regenerate per the receipt's harness) + the trace's first-walk run",
+     "death_tick": 304,
+     "harness": "the declared raw-byte run harness (run_and_hash*.py; the PowerShell '>' redirect re-encodes UTF-16 and is never used)",
+     "command": "python <lane>/.tmp/<wN>_receipt/run_and_hash.py gait_unit[_trace].exe scene.json out",
+     "trace_first_walk_line": "[dv] t=0 ptq=11.21250 ptgt=-0.1971 pang=-11.7531 pspd=0.3406 ev=0 phL=0.00000 phR=0.50000 com=(0.058186,-0.000000) hull=0 in=0 bx=0.002503"
+    },
+    "signature": {
+     "shape": {
+      "seeds": [
+       "CALENDAR_SCATTER",
+       "GRAZE_MISFIRE"
+      ],
+      "fired": [
+       "LEDGER_BREACH"
+      ],
+      "era_len_tail": "SSSSSSLS",
+      "band_tail": "HHHHGHAG",
+      "n_misfires": 1,
+      "n_drains": 0,
+      "n_folds": 2,
+      "first_div_family": "[hindstep]"
+     },
+     "sha16": "4fd40d8775e6d012",
+     "prior_matches": [
+      {
+       "wave": 35,
+       "face": "THE CARRIER SELF-UNLOAD FIRE DEADLINE (wave 35)",
+       "death_class": "CALENDAR_SCATTER",
+       "similarity": 3.0,
+       "why": [
+        "same PRIMARY seed class (CALENDAR_SCATTER)"
+       ],
+       "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave35.json"
+      },
+      {
+       "wave": 36,
+       "face": "THE WAIVE-ERA HAND-OFF PRESERVATION",
+       "death_class": "CALENDAR_SCATTER",
+       "similarity": 3.0,
+       "why": [
+        "same PRIMARY seed class (CALENDAR_SCATTER)"
+       ],
+       "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave36.json"
+      },
+      {
+       "wave": 28,
+       "face": "THE HIND STEP LAW",
+       "death_class": "CAPACITY_FOLD",
+       "similarity": 0.0,
+       "why": [],
+       "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave28.json"
+      }
+     ],
+     "prior_similarity_max": 3.0,
+     "prior_waves_through": 37,
+     "library": "tools/science_funnel/diagnosis/prior_faces.json"
+    },
+    "generation": {
+     "seconds": 0.05,
+     "pass_count": 1,
+     "inputs": {
+      "trace": ".tmp/diag_fixtures/w37comp_tr_stderr.txt",
+      "stdout": ".tmp/diag_fixtures/w37comp_tr_stdout.txt",
+      "receipt": "tools/science_funnel/validation/gait_zero_20260919/receipt_wave37.json",
+      "reference_trace": ".tmp/diag_fixtures/w36instr_tr_stderr.txt",
+      "reference_role": "parent",
+      "prior_library": "tools/science_funnel/diagnosis/prior_faces.json"
+     }
+    }
+   },
+   "heldout_score_embedded": {
+    "schema": "failure-packets-heldout-score-v1",
+    "leak_audit": {
+     "violations": [],
+     "pass_flag": true
+    },
+    "f_diagnosis_time": {
+     "case": "wave-37 held-out death",
+     "elements": [
+      {
+       "element": "graze-era [202,211) present with clear@206, stall-by-arithmetic, band GRAZE",
+       "passed": true,
+       "detail": "era_max_pm=1.147e-05 clear=206"
+      },
+      {
+       "element": "waive L@206 misfire inside the stall era",
+       "passed": true,
+       "detail": "seed=GRAZE_MISFIRE"
+      },
+      {
+       "element": "era work delta 1.3977+/-0.05 J (drive_4)",
+       "passed": true,
+       "detail": "measured +1.3977 J"
+      },
+      {
+       "element": "scatter era [215,292) work 14.5321+/-0.05 J",
+       "passed": true,
+       "detail": "measured +14.5321 J"
+      },
+      {
+       "element": "worst |bal| 33.108444 (mine's COMP row tick 300; prereg text said @290)",
+       "passed": true,
+       "detail": "measured 33.108444 @ tick 300"
+      },
+      {
+       "element": "fired ledger letter (33.559179 > 32.861605)",
+       "passed": true,
+       "detail": "f37_rung"
+      },
+      {
+       "element": "earliest relevant divergence tick 193",
+       "passed": true,
+       "detail": "tick 193 ([hindstep])"
+      },
+      {
+       "element": ">= 3 interventions separating contact-read / calendar-arithmetic / force-allocation",
+       "passed": true,
+       "detail": "3 probes"
+      }
+     ],
+     "matched": 8,
+     "total": 8,
+     "generation_seconds": 0.05,
+     "pass_flag": true
+    },
+    "f_diagnosis_wrong": {
+     "case": "wrong-attribution set",
+     "elements": [
+      {
+       "element": "w36-amended: primary seed is the launch-drift chain (not capacity/unload)",
+       "passed": true,
+       "detail": "class=CALENDAR_DRIFT+GRAZE_MISFIRE->RUNG_DEATH; primary=CALENDAR_DRIFT; drift={'leg': 0, 'launch_tick': 194, 'reference_tick': 193, 'delta': 1, 'propagation': 4, 'graze_at_completion': True, 'evidence_rows': [{'row': 192, 'pairmin': 1.1707e-05, 'rxn': 9.73937, 'graze_released': True}, {'row': 193, 'pairmin': 2.35e-06, 'rxn': 9.28351, 'graze_released': False}]}"
+      },
+      {
+       "element": "w36-amended: the drift is the +1 launch L@194 vs baseline 193, with the graze-at-completion read (the mine's 1.1707e-05 / 9.739 rows)",
+       "passed": true,
+       "detail": "drift=194 vs 193 rows=[{'row': 192, 'pairmin': 1.1707e-05, 'rxn': 9.73937, 'graze_released': True}, {'row': 193, 'pairmin': 2.35e-06, 'rxn': 9.28351, 'graze_released': False}]"
+      },
+      {
+       "element": "w36-amended: the fired letter is the rung (298 <= 300)",
+       "passed": true,
+       "detail": "f36_rung"
+      },
+      {
+       "element": "w38 ship (passing run): NO fired falsifier and NO death manufactured",
+       "passed": true,
+       "detail": "class=None"
+      },
+      {
+       "element": "w37 held-out: the primary seed is the [202,211) graze misfire (not the lawful L@161 waive era, not a capacity fold)",
+       "passed": true,
+       "detail": "class=GRAZE_MISFIRE+CALENDAR_SCATTER->LEDGER_BREACH; primary era=[1, 202, 211]"
+      }
+     ],
+     "matched": 5,
+     "total": 5,
+     "pass_flag": true
+    },
+    "verdict": {
+     "F-DIAGNOSIS-TIME": true,
+     "F-DIAGNOSIS-WRONG": true,
+     "F-DIAGNOSIS-LEAK": true
+    }
+   }
+  }
+ ],
+ "pass": true,
+ "frozen_rule_0_sha": "5f223bbe546d6b1bb180c028c50086161093f147702896328ff9af81ed7dcbd0"
+}

@@ -1,0 +1,45 @@
+{
+ "lane": "in-session (codex/force-data-runtime-20260916)",
+ "date": "2026-09-19",
+ "agent": "GLM 5.3",
+ "deliverable": "The Oku angle-zero derivation (gait-impl lane's root cause 1, CLOSED): model selection over three frame premises under one closure law, winner premise fitted with 5.8 mm stance ride (inside the tables' own 6-12 mm reconstruction noise); zero map banked as model.dynamics.gait_walker revision 2 (admit_gait_zeros_20260919.py, idempotent, falsifier replays green on every re-run); the 14-coordinate capacity amendment landed (8 -> 16); the MP plantarflexion stop amended (-0.35 -> -1.2 rad, falsified by the admitted M table bytes under the derived zero); the controller + scene compiler carry the zero map; the native suite moved from integrator-storm/hang to a clean, fully-diagnosed refusal at tick 40.",
+ "zero_map_rad": {"hip": -0.044399, "knee": -0.080389, "ankle": -0.862213, "MP": -0.768513},
+ "model_selection": {
+  "law": "rolling plantigrade contact rides one level over the 14 stance nodes (whole foot while flat, MP head at heel-off, heel pad only if nose-up); windlass toe-flat in the flat phase; knee never hyperextended; hip in [0.24, 0.33] m",
+  "premises_measured": {
+   "joint (q = z + table, 4 zeros)": "stance ride 5.8 mm, ALL bands green -- WINNER",
+   "segment (absolute angles, 0 constants)": "stance ride 47.1 mm -- falsified",
+   "mixed (hip absolute + knee/ankle zeros)": "stance ride 7.0 mm, all bands green -- degenerate with the winner inside the table noise; joint shipped as the physical frame (the paper's own sign language)"
+  },
+  "what_the_zero_map_says": "the lane's declared +1 hip stem was CORRECT all along (fitted hip zero -0.044 rad = -2.5 deg); the failure was the missing ankle zero (-0.862 rad = -49.4 deg) and MP zero (-0.769 rad), which alone compose the 72.5 deg touchdown heel-dig the lane measured"
+ },
+ "native_suite_measured": {
+  "F-G5": "GREEN x2: free fall -9.806650 m/s2, stand fold 5.19 deg > 5 deg",
+  "F-G7": "GREEN: bit-identical streams",
+  "F-G1_to_F-G4": "walk refuses at tick 40 (0.13 s, phi~0.19 left stance) with gait_impact_event_budget -- cleanly, in seconds, reproducibly (was: event/energy-integrator storm + single-step hang, minutes per tick)",
+  "F-G8": "worst ledger 2.58 J during the refusal transient (the walk tier unmeasured while the walk refuses)"
+ },
+ "refusal_diagnosis": {
+  "signature": "tick 40, clamp loop (clamps 8..64, same state), drive 0 = hip_flexion_left at its +1.1 rad stop, left_heel gap +4e-10 (seated), left_mp_head -5.7e-4 (0.57 mm UNDER floor), right_mp_head -6.4e-6, all point velocities ~0",
+  "mechanism": "heel-first touchdown (the correct +15.9 deg pitch) seats the heel; the tables' loading dorsiflexion ramp slams the foot flat; the MP head lands 0.57 mm under while the touchdown impact has flexed the hip onto its stop; heel contact + arriving MP contact + hip stop are mutually infeasible for rigid bodies (the foot would have to compress); the impact projection alternates active sets, the boundary clamp loop burns 64 iterations, the budget refuses LOUDLY",
+  "named_next_membrane": "impact-solver robustness under over-constraint (heel + arriving point + joint stop): a derived tie-break/active-set rule for singular Gram rows at simultaneous unilateral activations, plus the question of whether the heel-slap impact amplitude is itself physical at the 1.01 m/s anchor",
+  "instrumentation": "GAIT_EVENT_TRACE ifdef in gait_controller.hpp + gait_unit_trace CMake target (zero cost, default off)"
+ },
+ "predicted_risk_open": "mid-swing toe-tip target dips to -45 mm at constant stance-level hip height (nodes 15-16): the sim's free pelvis may lift in single support and resolve it; if swing tracking is instead degraded by floor conflict after the integrator is fixed, a hip-oscillation derivation is owed",
+ "regression": {
+  "graph tests": "33 OK (test_project_spec + test_contracts, with both sys.path roots)",
+  "test_coupled_scene": "5 pre-existing replay errors (data.assertion.06215706 semantic replay mismatches identically on the COMMITTED store before this lane's changes) -- disclosed, not caused here"
+ },
+ "evidence": "11 UNCHANGED",
+ "store": "3 admissions re-run in order (gait_controller rev1 -> gait_walker rev1 -> gait_walker rev2 zero map + MP amendment), graph_hash 415859b7e0b6e7dd",
+ "reproduce": [
+  "python -B tools/science_funnel/validation/gait_zero_20260919/derive_gait_zeros.py",
+  "python -B tools/creature_graph/validation/admit_gait_zeros_20260919.py",
+  "python -B tools/creature_graph/build_graph.py",
+  "python -B -m tools.science_funnel.gait_scene",
+  "cmake -S ChimeraEngine/engine/tests_coupled_arm -B .tmp/gait-tests && cmake --build .tmp/gait-tests --config Release --target gait_unit",
+  ".tmp/gait-tests/Release/gait_unit.exe .tmp/gait-walker/scene.json"
+ ],
+ "pass": false,
+ "honest_summary": "The angle-zero membrane is CLOSED: the zeros are derived (not swept), banked, replayable, and geometrically lawful -- the composed cycle is a plantigrade macaque walk (heel-first TD +15.9 deg, flat phase with windlass toes, progressive heel-off to -33 deg push-off, knee flexed 31-73 deg throughout, stance ride 5.8 mm). The WALK itself now refuses at a named, diagnosed, reproducible integrator limit instead of storming; the next membrane (impact over-constraint) is named with the exact failing state recorded."
+}
