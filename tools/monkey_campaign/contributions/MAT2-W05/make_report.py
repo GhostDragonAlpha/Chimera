@@ -252,6 +252,34 @@ def main() -> int:
       "file/size bounds; commit-message metrics generated from these FINAL "
       "receipts.")
     w("")
+    w("## Evidence pins (G10: every pin hashes against the on-disk file)")
+    w("")
+    pins = [("runbook.json", RUNBOOK_BYTES),
+            ("w05_freeze_fill.json",
+             (HERE / "w05_freeze_fill.json").read_bytes()),
+            ("checks_receipt.json", checks_path.read_bytes()),
+            ("receipts/baseline_receipt.json",
+             (HERE / "receipts/baseline_receipt.json").read_bytes()),
+            ("receipts/recipe_equivalence_receipt.json",
+             (HERE / "receipts/recipe_equivalence_receipt.json").read_bytes()),
+            ("receipts/heldout_receipt.json",
+             (HERE / "receipts/heldout_receipt.json").read_bytes()),
+            ("receipts/deploy_check_receipt.json",
+             (HERE / "receipts/deploy_check_receipt.json").read_bytes()),
+            ("trained/trained_policy_manifest.json",
+             (HERE / "trained/trained_policy_manifest.json").read_bytes())]
+    for seed in SEEDS:
+        pins.append((f"receipts/seed_{seed}_receipt.json",
+                     (HERE / "receipts" / f"seed_{seed}_receipt.json")
+                     .read_bytes()))
+        pins.append((f"receipts/seed_{seed}_curve.json",
+                     (HERE / "receipts" / f"seed_{seed}_curve.json")
+                     .read_bytes()))
+        pins.append((f"trained/theta_{seed}.npz",
+                     (HERE / "trained" / f"theta_{seed}.npz").read_bytes()))
+    for rel, data in pins:
+        w("- " + rel + " | " + vi.sha_bytes(data))
+    w("")
     w("## Honest limitations (named, not skipped)")
     w("")
     w("- The P04 handoff/admission machinery governs GPU training launches "

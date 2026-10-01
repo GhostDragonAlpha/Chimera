@@ -107,6 +107,26 @@ Each seed's final theta evaluated deterministically on all three seed scenes (15
 - G7: registry identity read-only (card state OPEN, revision 1604); criteria sha identical across join/registry/prereg/checks.
 - G9: prereg committed separate-first; ONE publication commit on `review/MAT2-W05` with the full lineage; contribution within the file/size bounds; commit-message metrics generated from these FINAL receipts.
 
+## Evidence pins (G10: every pin hashes against the on-disk file)
+
+- runbook.json | f173a1c5993929e10bac3365a46739aad0f9856b640b5de66ae06eaac2e1d6b0
+- w05_freeze_fill.json | 258749b826bc1dcd86d2b3a127606e11792c3b014d904f0e105cea124a48bf63
+- checks_receipt.json | 69e315a1e1aa54eb0221127acd7e4a93ff9036eaedade1f21d6170ae68683677
+- receipts/baseline_receipt.json | 6ede18c05e9cd31b9c6cf493bfe471a1711439980dbe55723dfe4fc6f4bc3bb2
+- receipts/recipe_equivalence_receipt.json | bbb6dbd34dff0d9f8a3f4940e947eba428b330f25bff3c15b7fcbdb7bbf22bdd
+- receipts/heldout_receipt.json | 4deff1a2efec7112b975230fba24fa8818715fc378f453654e57a5cb05fce4f1
+- receipts/deploy_check_receipt.json | 766a7cbe6a2ccd67c739d82af5b32e859ee4bc3f3a558715fafc63dbab0ae635
+- trained/trained_policy_manifest.json | 02538194cad7f200985e628c55c86fb3fb6d2b76bfb6b44220fab7d32343571e
+- receipts/seed_20260919_receipt.json | b866e9b1e2a3d516a960a88362c95d2f8211d28b894cc4d8c16dcebc4dc8b896
+- receipts/seed_20260919_curve.json | 56e645a2a6ba7b594e0d98ab682c169e5132bca70abc233aa67eae19548fb450
+- trained/theta_20260919.npz | eacdafdb1de9034a39084f4fd81eaad8c4d3d9a09496c9d6b6758e2391388589
+- receipts/seed_20260920_receipt.json | 3d795b5ca523289c1ceac7dac72070875d8cc4b8e24e4ac2a5a64a9733e766ff
+- receipts/seed_20260920_curve.json | 185ac6e3afa5b891d4032256f59c1340421ae7c649ed5cac173adc18c2e4835c
+- trained/theta_20260920.npz | 89df7ac6ca3c94c547be5692da55c98e0e510050ff0b1e8df6912f2bb4d949aa
+- receipts/seed_20260921_receipt.json | 10c4090473c75ec99559dd9f1f13729d96c3c7d5cf037569c63253e308f472af
+- receipts/seed_20260921_curve.json | 145b2eb6069913719f7a1f575fad76a32764127ae62b736ad5209c2ce0c09972
+- trained/theta_20260921.npz | 7b11dd01f8495068f46def84a072d211fe47b778bfc0fbc3f53fe3e82a7fe1a7
+
 ## Honest limitations (named, not skipped)
 
 - The P04 handoff/admission machinery governs GPU training launches on the live controller; no live controller session is provisioned to this attempt. The operative admission of record for this CPU-only runbook is the frozen bounded-resource envelope (per-seed wall 5400 s, memory bound, no trajectory retention) plus the separate-first prereg; the GPU mailbox was unused (no GPU work exists under BQ-1).
