@@ -1,0 +1,135 @@
+{
+ "base": "http://127.0.0.1:8107",
+ "mode": "read-only",
+ "routes": {
+  "/tick_state": "200 1358B",
+  "/state": "200 104950B",
+  "/verts": "200 664528B",
+  "/topology": "200 439564B",
+  "/health": "200 9B BUT BODY 'Not found' -> NO ROUTE"
+ },
+ "log_replay": [],
+ "ts": "2026-09-14 08:32:25",
+ "state0": {
+  "ticks": 242704,
+  "enabled": true,
+  "cells": [
+   {
+    "v0": 0.287914,
+    "V": 0.287914,
+    "P": 0,
+    "pieces": 5550,
+    "caps": 199,
+    "ylo": -0.019507,
+    "yhi": 0.338
+   },
+   {
+    "v0": 12.5091,
+    "V": 12.5091,
+    "P": 0,
+    "pieces": 26442,
+    "caps": 380,
+    "ylo": 3.415,
+    "yhi": 9.97118
+   },
+   {
+    "v0": 0.693006,
+    "V": 0.693006,
+    "P": 0,
+    "pieces": 5604,
+    "caps": 104,
+    "ylo": 1.903,
+    "yhi": 3.415
+   },
+   {
+    "v0": 0.334578,
+    "V": 0.334578,
+    "P": 0,
+    "pieces": 1668,
+    "caps": 126,
+    "ylo": 0.338,
+    "yhi": 1.903
+   },
+   {
+    "v0": 4.65502e-09,
+    "V": 4.65502e-09,
+    "P": 0,
+    "pieces": 650,
+    "caps": 199,
+    "ylo": 0.338,
+    "yhi": 0.338
+   }
+  ],
+  "force_l": 0,
+  "force_r": 0,
+  "load_l": 0,
+  "load_r": 0,
+  "damage_sum": 0,
+  "failed": 0,
+  "capacity_sum": 1346990000.0,
+  "flex_l_deg": 0,
+  "flex_r_deg": 0,
+  "sealed": true,
+  "n_cells": 5,
+  "V_lower": 0.287914,
+  "V_upper": 12.5091,
+  "P_lower": 0,
+  "P_upper": 0,
+  "v0_lower": 0.287914,
+  "v0_upper": 12.5091,
+  "V_whole": 13.8246,
+  "conserve_pct": -0.000117273,
+  "seal_split": 203,
+  "seal_cuts": 203,
+  "seal_loops": 2,
+  "seal_caps": 199,
+  "dimple_m": 0,
+  "gravity_on": false,
+  "root_y": 0,
+  "root_vy": 0,
+  "g_contact_n": 0,
+  "stance_on": false,
+  "stance_ankle_deg": 0,
+  "stance_kp": 0,
+  "stance_lean_x": 0,
+  "stance_lean_z": 0,
+  "gait_on": false,
+  "gait_l": "STANCE",
+  "gait_r": "STANCE",
+  "gait_stride": 0,
+  "gait_depth_l": 0,
+  "gait_depth_r": 0,
+  "gait_clear_l": 0,
+  "gait_clear_r": 0,
+  "gait_lean_x": 0,
+  "gait_lean_z": 0,
+  "gait_p_max": 0,
+  "gait_hip_l_deg": 0,
+  "gait_hip_r_deg": 0,
+  "gait_knee_l_deg": 0,
+  "gait_knee_r_deg": 0,
+  "gait_feet_cell": -1,
+  "gait_block_l": "",
+  "gait_block_r": "",
+  "gait_log": [],
+  "has_scene": true
+ },
+ "bars": [
+  [
+   "V0",
+   "body live: has_scene=True sealed=True feetCell=0 (yhi=0.338) n_cells=5",
+   true
+  ],
+  [
+   "V-RO",
+   "/verts parses: 18459 verts, vert0.y=9.251716 (the 36-B stride)",
+   true
+  ],
+  [
+   "V-RO2",
+   "gait fields in /tick_state (gait_on=False, log entries=0) -- this binary INCLUDES the G1 build",
+   true
+  ]
+ ],
+ "verdict": "DRY-RUN (environment check only; no verdict)"
+}

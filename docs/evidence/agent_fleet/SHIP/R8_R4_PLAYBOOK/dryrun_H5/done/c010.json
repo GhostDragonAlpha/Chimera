@@ -1,0 +1,6 @@
+{"do":"click","x":1140,"y":453}
+{"do":"wait","ms":500}
+{"do":"text","max":700}
+{"do":"click","x":1125,"y":453}
+{"do":"wait","ms":500}
+{"do":"text","max":700}

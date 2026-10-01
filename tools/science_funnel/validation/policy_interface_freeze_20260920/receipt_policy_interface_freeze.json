@@ -1,0 +1,88 @@
+{
+ "lane": "lane/policy-interface-freeze-20260920",
+ "date": "2026-09-20",
+ "agent": "INTERFACE-FREEZE lane (trailer Agent: ifreeze)",
+ "base": "bd4bf630 (branch lane/policy-interface-freeze-20260920; a previous instance died pre-commit -- worktree verified clean at that sha before any work)",
+ "prereg": "PREREGISTRATION.md + prereg_policy_interface_freeze.json (frozen at ad85faab BEFORE the audit build, the table generation, and all code)",
+ "deliverable": "THE POLICY INTERFACE FROZEN before skill #1 trains: the 80-field observation interface table (JSON + doc), the aliasing audit on a live CPU walk, the versioned command record v1 + the family-adapter projection law, the certified option-transition schema v1 + validator + three declared examples, the backward-compatible deployment-inference freeze in policy_manifest.py, and the freeze-drift + projection test suite",
+ "falsifier_scoreboard": {
+  "F1_STATE_ALIASING": {
+   "verdict": "FIRED -- REPORTED per the pre-committed action; the 80-field table NOT amended",
+   "instrument": "scratch GAIT_EVENT_TRACE build of the HEAD gait_unit.cpp (cl.exe /O2 /W4 /fp:precise /EHsc, out-of-tree under .tmp/, NOTHING tracked built or modified); ONE live walk run on the pinned scene; the LAST walk run parsed (the mine_wave47 convention)",
+   "instrument_pins": {
+    "trace_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+    "trace_lines": 65870,
+    "trace_note": "BYTE-IDENTICAL to the wave-47 declared ship trace (the obs-split receipt's trace_source pin): this lane's instrument IS the wave-47 ship build",
+    "scene_file_sha256": "f6844eeae3dc87170a572ccdeedf326a6cac4f73d1448941808bd8b25a8db342",
+    "scene_correction": "CORRECTS THE PREREG'S declared_scene_note: the scene FILE sha is EXACTLY the wave-38 pin f6844ee -- the scene at HEAD is byte-identical to the pinned wave-38 scene. The generator's printed 'scene_sha256' (e61ad38) is an INTERNAL pre-canonicalization digest (computed before the scene_sha256 key is added), not the file sha; the prereg misread it as a derived-table drift. No derived-table drift exists.",
+    "run_harness": "run_aliasing_audit.ps1 (build + run + fence; raw bytes via cmd /c redirection)"
+   },
+   "fence": {
+    "v1_clause_as_frozen": "FIRED: the trace build's stdout (22530 B) != the ref-exe ship stdout (22184 B, sha 71065ac5...). DIAGNOSED: the difference is EXACTLY the committed post-wave-38 reporting -- 2 added stdout lines (F-G39/F-G40 'NOT MEASURED ... law REVERTED, read-only plumbing'); the ref stdout is a PURE SUBSEQUENCE of the trace build's stdout; walk headline byte-equal ('WALK refused_tick=302 worst_ledger_J=30.970714'); pass/reds/checks identical (False/49/173). The instrument did not perturb the walk -- the suite's reporting grew in committed waves. Carried as a red-with-diagnosis; nothing tuned.",
+    "v2_law": [
+     "LEG A (instrument inertness): the trace build and a no-trace build of the IDENTICAL source produce BYTE-IDENTICAL stdout -- measured: both sha 8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc (which is ALSO the wave-47 ship stdout sha -- LEG B first anchor)",
+     "LEG B (ship anchors): trace stdout == wave-47 ship sha 8c537cdb exact; ref-exe stdout (71065ac5) a pure subsequence with only the 2 committed plumbing additions; stderr refusal 'WALK REFUSED tick 302: gait_positional_correction_budget' byte-equal",
+     "VERDICT: GREEN (both legs)"
+    ]
+   },
+   "measurement": {
+    "ticks": 302,
+    "distinct_observations": 277,
+    "bitidentical_groups": 13,
+    "bitidentical_ticks": 38,
+    "aliased_pairs_frozen_clauses": 21,
+    "context_only_event_pairs": 13,
+    "breakdown": "17 pairs on body advance alone (the deciding quantity is com_vel_x_heading, field 21 -- undetermined by the walk record); 2 pairs on pad deformation rate + body advance (pad 3 rate -0.000790 vs -0.003335 and -0.000930 vs -0.003411 m/tick, both beyond kSinkRateMax 2.349e-3); 1 pair (12,25) on TOUCH PATTERN with equal contact count ((False,True,False,False) vs (True,False,False,False)) -- fields 9-14 (the per-foot slots) would separate it; 1 further body-advance pair (40,54); settle-window ticks dominate the bit-identical groups",
+    "bars_all_derived": "kTouch 1e-5 m and kSinkRateMax 2.349e-3 m/tick are the machinery's own (gait_controller.hpp:36; wave-27); the 0.05 m/s body-advance bar is the command-adapter receipt's frozen graded bar; settle [0,59] is the machinery's own F-Gfore convention. ZERO new free numbers.",
+    "honesty": "ALL 21 pairs are NECESSARY aliases of the RECORD SET (the prereg's declared scope): the differing label quantities live in channels the CPU walk trace does not determine (com_vel, per-foot slots on a 4-paw body, command echo). The finding is carried to the planner lane as the measured reason certified transitions must guard mode boundaries, and to the sensor path as the measured worth of actually DELIVERING com_vel (field 21) at deployment.",
+    "cross_checks": {
+     "hind_fires_vs_F-G28": "the trace's [hindstep] fire tick set == the stdout F-G28 census set (R fires [98,160,184,202,220,238,256,274,300] exact 9/9; L fires [142,161,175,193,211,229,247,265,291] all present in the census line; the quick receipt check's 'only-ref' extras {1,29,107,108,174} are prose digits the check regex grabbed from the census line's trailing text -- a check-script artifact, re-verified; only-mine EMPTY)",
+     "unload_census": "74 unique unload ticks parsed from the F-G26 line (the line's own count prints 75; the make_trace_slice honesty note about the count-then-@ format applies; the @-list is authoritative)",
+     "pad_split_reconstruction": "112/302 ticks carry a reconstructed hind pair (ordering 'lohi'; 113 (t,leg) samples); endpoint-signed pad channels 0-available (declared, never invented); split_abs/split_abs_rate live exactly there"
+    }
+   },
+   "walker_shape_finding": "THE 6-SLOT PER-FOOT GROUPS CANNOT BE ELEMENT-DETERMINED ON THIS BODY: the CPU walker has FOUR paws (fore_left/right with heel+MP pads; rear left/right); the schema's ml/mr slots name NO body. The frozen reader is all-or-nothing per vector, so foot_contacts/foot_forces ride UNAVAILABLE (mask 0, mean fill -- consistent with the P3 normalization's never-available 0/1). Declared, not amended: per-paw truth stays in the aggregate (contact_count/delta) and in the audit labels. A future body with 6 feet fills the slots honestly; a schema amendment for 4-paw bodies would be a versioned OBS_SCHEMA_VERSION 3 decision with its own falsifier."
+  },
+  "F2_FREEZE_DRIFT": {
+   "verdict": "GREEN (all pins hold at 126fdd74)",
+   "pins_measured": [
+    "observation_interface_v2.json regenerates from the live code byte-identically (sha e8c2d698dee0337414c48e8d2f6569c45f6f61828dabdeff6a4f1188b1c0671c, 68230 B; measured deterministic twice before the first commit)",
+    "FIELDS[:64] == the frozen 1b6d7749 v1 literal (legacy_v1_table.py)",
+    "table normalization == the pinned obs_section_v2.json (3de82a11)",
+    "P3 manifest loads with the pre-lane canonical hash BYTE-IDENTICAL: 9ca7e976dfb0dedd3f56dfa404673ee77c00801acb2753cdfd83604c480c35b7",
+    "P3 banked action stream replays 3 runs BYTE-IDENTICAL to e25406e86cbf5347683ee3824d385bc1d07bfd500e83eb6b9133a1e82d4bfbd9",
+    "the v2-wire-through-v1-adapter projection is BIT-IDENTICAL (float64 field bits + canonical projection bytes) to the v1 wire's",
+    "the certificate validator catches: privileged-invented field, unregistered fallback, undeclared payload version, missing timeout, invented op; the freeze block catches: non-determinism, graph-sha tamper, normalization-digest tamper, precision change, clock mismatch",
+    "pytest: 37 passed, 0 failed (23 pre-existing + 14 new; the ephemeral-trace skip was fixed to run: 0 skipped)"
+   ]
+  },
+  "fence_v1_red_carry": "the prereg's literal single-sha stdout clause FIRED on committed reporting growth (2 F-G39/40 lines); diagnosed and carried above; the amended fence measures the invariant the clause meant (instrument inertness) directly and both its legs are GREEN with the numbers inline"
+ },
+ "frozen_artifacts": {
+  "observation_interface": "tools/science_funnel/validation/policy_interface_freeze_20260920/observation_interface_v2.json (sha e8c2d698, 80 fields, per-field meaning/unit/frame/source/ordering/availability-rule/missing-value-semantics/normalization) + INTERFACE.md (the law + the only-legal-regeneration path) + typeb_export/interface_freeze.py (the deterministic generator)",
+  "command_record": "typeb_export/command_record.py (COMMAND_RECORD_VERSION 1, ADAPTER_VERSION 1; the projection law; the declared ranges/rate-limits/zero-speed/R4 semantics)",
+  "option_certificates": "typeb_export/option_certificate.py (CERTIFICATE_VERSION 1; validator; OptionRegistry with declared-name closure; declared examples walk_v1/recovery_v1/rear_up_v1 -- zero behavior claims)",
+  "manifest_extension": "typeb_export/policy_manifest.py (DEPLOYMENT_INFERENCE_VERSION 'deployment-inference/1.0.0'; the OPTIONAL inference_freeze block validated only when present; inference_freeze_block() builder; the extended manifest's hash dc736e0433b2d207def00428963d94e836d01ee2bb49fd2e5ec4beb22d1c4689 when the block is added to the P3 manifest)",
+  "schema_delegate": "typeb_export/observation_schema.py read_field() -- the purely-additive public field reader (guard semantics == projection semantics)",
+  "audit_instruments": "run_aliasing_audit.ps1 + fence_audit_stdout.py + mine_aliasing_audit.py + preserved mine_aliasing_audit_out.txt + aliased_pairs.json (this dir)"
+ },
+ "versioned_amendments_required": [
+  "NONE to the 80-field table by this lane (the pre-committed action held: F1 fired and was REPORTED, not expanded).",
+  "FORWARD (declared, not spent): if the planner lane wants the aliased-pair classes to be distinguishable at training time, the sensor path must DELIVER com_vel (field 21) and the per-foot slots must map a real body -- both are sensor-side deliveries under the FROZEN schema, no version bump needed; a 4-paw-specific per-foot layout would be OBS_SCHEMA_VERSION 3 with its own prereg.",
+  "FORWARD (declared, not spent): a v2 command record (rate limits, stopping targets) or a v2 certificate (richer guard grammar) bumps the respective version constants and the wire stays decodable by v1 adapters/registries per the law."
+ ],
+ "could_not_be_frozen_and_why": [
+  "YAW-RATE AUTHORITY: the typea receipt reserved commanded_heading for a later lane; no measured yaw authority exists, so the record CARRIES yaw_rate but the adapter routes NOTHING. The field is frozen into the wire so deriving the authority later changes no format.",
+  "COMMAND RATE LIMITS: no derivation exists (the machinery's own scales are translational/clock/joint per the wave-47 inventory); declaring a number would violate Rule 1. Declared UNLIMITED with the measured step-command evidence; the schema fields exist for v2.",
+  "THE STOPPING CRITERION (v_forward = 0): a different lane's job; only the zero-speed SEMANTICS are frozen (x_off = 0, legal command, not a stop bar).",
+  "PER-FOOT SLOT DETERMINACY on the current CPU body (4 paws vs 6 slots): structural, not amendable by this lane; declared unavailable per the mask convention.",
+  "CERTIFIED BEHAVIORS: the certificate schema is frozen; the certificates themselves are declared examples -- certification happens when a lane measures a real family against traces."
+ ],
+ "gates": {
+  "pytest": "37 passed, 0 failed, 0 skipped (typeb_export/tests: 23 pre-existing + 14 new)",
+  "training_gate": "PASS (exit 0: every target Froude-consistent -- no theHuman refusal on this base)",
+  "graph_suite": "NOT REACHED (zero engine bytes committed: the trace build was scratch, out-of-tree, untracked)"
+ },
+ "commits": ["ad85faab prereg", "f6c7283b interface table", "87eb2c50 aliasing audit", "e028d6fb command record v1", "056541bc option certificates", "126fdd74 manifest freeze + tests", "(this commit) receipt"],
+ "pass": true
+}

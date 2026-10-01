@@ -1,0 +1,196 @@
+{
+ "schema": "chimera.ankle_unblocked_statics.v1",
+ "lane": "ankle-unblocked-statics-20260921",
+ "branch": "agent/ankle-unblocked-statics-20260921",
+ "clone_of": "git@github.com-fleetdeploy:GhostDragonAlpha/Chimera.git @ eab707f5 (branch agent/measured-caps-statics-20260921, blobless sparse clone)",
+ "mission": "THE FOURTH SET - the measured-caps statics CLOSE-OUT with the ankle UNBLOCKED: re-price the wave-4 stance-hold statics AND the wave-10/25 margin wall at set (d) = measured knee + measured MTP + MEASURED ANKLE (V1_S1 BOTH directions, the ankle-arms lane b15ff31e now on canonical) + held hip/posture. Questions, each pre-registered below: (1) the stance-hold table at (d) - the ankle's worst ratio and over-cap count (the ankle lane's own statics-side table predicts 6 over-cap nodes at V1_S1; this lane verifies from the statics side); (2) the wall at (d) - does the statics lane's 1.0-crossing (0.977235 at (b)/(c)) SURVIVE the measured ankle (the wall's ankle term at phi=0.5 re-priced with cap 6.247077 instead of the doc 7.4), and does the 0.9 margin move; (3) the full binder map at (d) - which joint OWNS the wall now; (4) the k-gated (S2) variant of (d) stated as the inversion bracket; (5) the wave-8 MP-Jacobian-corrected variant of (d) carried NAMED (the windlass-class MP numbers predate the fix - the mission's 'use the corrected variant, named').",
+ "pre_registration": {
+  "written_before_first_verdict_computation": true,
+  "note": "This receipt was written BEFORE this lane's derive script existed. Every band below is DERIVED BY HAND from sha-verified banked artifacts that were READ first: the stance-hold snapshot's tau columns and the wave-10 deliverable's ratio columns are cap-INDEPENDENT (the statics receipt's own method), so the (d)-set ratios and the wall re-price arithmetic are PRIORS, not results. The measured block at the bottom is appended AFTER the run, unedited priors above.",
+  "inputs_pinned": {
+   "ankle_arms_book": {
+    "path": "tools/science_funnel/validation/ankle_unblocked_statics_20260921/inputs/ankle_arms_book.json",
+    "sha256": "7ce03069c1e033b52db0fb315d218eb2223e79a67a9018123da206d68adcb6f6",
+    "git_object": "blob f55ebe5f94109fe3c659c13cc6d46598591b9595 at commit b15ff31e (branch agent/ankle-arms-20260921, fetched from origin - ON canonical, the statics lane's base predated it)",
+    "provenance": "the ankle-arms lane's deliverable: source of every measured ankle cap in set (d) and of the (d)-S2 caps (plantar 0.748112, dorsal 0.149825); its cap_book.cap_law names the SIGN GATE ('plantar negative / dorsal positive'); its own receipt's consumption_map.stance_hold_ankle_nodes is the ankle lane's statics-side prediction this lane verifies"
+   },
+   "stance_hold_snapshot": {
+    "path": "tools/science_funnel/validation/ankle_unblocked_statics_20260921/inputs/stance_hold.snapshot.json",
+    "sha256": "71e40cd8a161938a3a358792076dda0f98966a8909ae564cec7774a61126a5e5",
+    "provenance": "byte copy of the statics lane's input (sha EQUALS the statics receipt's pin) = the wave-4 deliverable stance_hold.json at 4198dbdc; the banked demand table (cap-independent)"
+   },
+   "wave4_machinery_byte_copy": {
+    "path": "tools/science_funnel/validation/ankle_unblocked_statics_20260921/inputs/run_env_wave4/tools/science_funnel/validation/gait_zero_20260919/derive_stance_hold.py",
+    "sha256": "353d07f7f18a7fa371c43eef18e40d3160d58855a24b464ef587e526bd0f81c0",
+    "provenance": "byte copy of the statics lane's vendored wave-4 generator (724f2464) - the instrument: its stance_nodes must EQUAL the banked snapshot exactly (falsifier PD1, the instrument chain)"
+   },
+   "wave8_machinery_byte_copy": {
+    "path": "tools/science_funnel/validation/ankle_unblocked_statics_20260921/inputs/run_env/tools/science_funnel/validation/gait_zero_20260919/derive_stance_hold.py",
+    "sha256": "3c92d188b6aaf01c8cc4319262981b51ba95566370fb59e1ba4d0dd764562f70",
+    "provenance": "byte copy of the statics lane's vendored 4198dbdc head - carries the wave-8 MP-Jacobian fix (a8f3f8e4); source of the NAMED corrected-MP variant of (d) (the mission's 'use the corrected variant, named'). The statics receipt measured the knee/hip/ANKLE/posture columns bit-identical under both versions, so no ANKLE verdict depends on the choice - measured again here, never assumed"
+   },
+   "wave10_wall_deliverable": {
+    "path": "tools/science_funnel/validation/ankle_unblocked_statics_20260921/inputs/vendored_gait_zero/trunk_vault_reachable.wave10.json",
+    "sha256": "e922153318778e4cd8c1891f59454261c6d5be0a77aebdc5f78d2758ccd2faa7",
+    "provenance": "byte copy of the statics lane's vendored wave-10 collocation deliverable (4198dbdc): 21 periodic nodes, leg_ratios [hip, knee, ankle, mp] vs the (a) caps, posture_ratio vs cap 11.2125; max_ratio_to_cap 1.3227763257041534"
+   },
+   "hind_torque_book": {
+    "path": "tools/science_funnel/validation/hind_torque_book_20260921/hind_torque_book.json",
+    "sha256": "9fc5c0ba09f6ec183d5348bb21cc5dc18b5987240406ccdcdbb34e514e26f01c",
+    "provenance": "in-tree deliverable at THIS branch's base eab707f5 (sha equals the statics receipt's pin): source of the knee/MP caps in every set (V1_S1 9.576795 / 1.657925; S2 1.146859 / 0.198543)"
+   },
+   "statics_lane_committed_deliverable": {
+    "path": "tools/science_funnel/validation/ankle_unblocked_statics_20260921/inputs/statics_lane_committed_deliverable.json",
+    "sha256": "21d3dbbe2a477d67f7d7d5572f0171cd0c2e8cfe34a6cd1770ccd81abf06908a",
+    "provenance": "byte copy of the statics lane's committed measured_caps_statics.json at eab707f5 - THE instrument-chain reference: this lane re-derives sets (a)/(b)/(c) and their walls and asserts field-for-field EQUALITY against it before adding (d) (falsifier PD1)"
+   }
+  },
+  "cap_sets": {
+   "D_measured_ankle_unblocked": {
+    "hip": 11.2125, "knee": 9.576795,
+    "ankle_plantarflexion_tau_negative": 6.247077,
+    "ankle_dorsiflexion_tau_positive": 1.251106,
+    "mp": 1.657925, "posture": 11.2125,
+    "provenance": "(d) = the statics (b) set with the ankle UNBLOCKED: knee/MP the hind book MEASURED V1_S1 (unchanged from (b)); ankle plantarflexion 6.247077 and dorsiflexion 1.251106 - the ankle book's MEASURED V1_S1 wrap-arm caps, BOTH directions, direction-split by the ankle book's own cap_law sign gate (plantar negative / dorsal positive); hip/posture HELD exactly as at (a)/(b)/(c). NOTE the doc cap the wall wore at (a)-(c) was 7.4 - the measured plantar cap is TIGHTER (factor 0.8447): the statics receipt's (b)/(c) wall binder sat ON the ankle at 0.977235 BECAUSE the ankle was doc-held, named there - this set measures what the wall does once that term is priced honestly"
+   },
+   "D_S2_si_matched_gate": {
+    "hip": 11.2125, "knee": 1.146859,
+    "ankle_plantarflexion_tau_negative": 0.748112,
+    "ankle_dorsiflexion_tau_positive": 0.149825,
+    "mp": 0.198543, "posture": 11.2125,
+    "provenance": "the k-gated variant of (d): the ankle book's V1_S2 SI-matched caps (arms x k = 0.11975394, the pulley receipt's constant k, the hind book's S2 gate convention) with the hind book's S2 knee/MP; THE INVERSION BRACKET - stated on every verdict, no engine consumption until the operator resolves the deposit-vs-SI absolute scale"
+   }
+  },
+  "direction_law_named_before_compute": {
+   "stance_table": "sign-gated per the ankle book's cap_law verbatim: tau_ankle < 0 (plantarflexion) priced at 6.247077; tau_ankle > 0 (dorsiflexion) priced at 1.251106. The banked ankle column carries BOTH signs: dorsal +1.135..+1.236 N.m at phi 0.0-0.25, plantar -2.558..-7.215 N.m at phi 0.3-0.65 plus the entry node 0.449 - the split is not a convention choice, the data demands it",
+   "wall": "the wave-10 deliverable carries leg_ratios ONLY (positive, vs the (a) caps) - the ankle demand SIGN at a wall node is NOT recoverable from the artifact. NAMED LAW (the mission's own framing): the wall's ankle term re-prices at the PLANTAR cap (7.4/6.247077). Justification on the table: the wall's ankle-loaded band (phi 0.3-0.85, ratios 0.64-0.98) overlaps the wave-4 statics' plantar-signed loaded band (phi 0.3-0.65); in the banked statics the ankle demand is plantar-signed at EVERY node with |tau| > 2 N.m and the dorsal class never exceeds 1.236 N.m. DORSAL BRACKET stated alongside (term x 7.4/1.251106): if a wall node's ankle demand were dorsal the term is ~5.9x the banked ratio - the crossing verdict below is DIRECTION-ROBUST (both directions re-block the wall), only the magnitude moves",
+   "honest_limit": "the direction law for the wall is an ALIGNMENT decision, not a measurement - it is named here before compute and the bracket bounds the error; a signed-torque wave-10 artifact would retire it (named future work with the re-collocation hearing)"
+  },
+  "protocol_declared": {
+   "instrument": "the vendored wave-4 generator runs UNMODIFIED in inputs/run_env_wave4/; its stance_nodes must equal the banked snapshot's EXACTLY; THEN this lane re-derives the statics lane's (a)/(b)/(c) tables and walls with the statics lane's own laws (live pins 11.2125/6.6375/7.4/0.8875/11.2125; (b)/(c) knee/MP from the book; wall re-price law term x capA/capX, hip/ankle/posture headroom 1.0 at (b)/(c)) and asserts field-for-field equality against the committed deliverable (sha above). Only after the chain holds does (d) enter",
+   "ratio_law": "as the statics receipt: ratio = |tau|/cap with the ankle cap direction-split; over_cap := ratio > 1.0; binding node := argmax; worst-case of a set := max over joints and nodes; margin-binder HOLDING class := the largest sub-unity ratio",
+   "wall_reprice_law": "as the statics receipt: term(j) = banked leg_ratio(j) x capA(j)/capX(j), posture term carried as banked; crossing_1_0 := max combined <= 1.0 at every node; margin_0_9 := max combined <= 0.9 at every node. At (d) the ankle headroom is the PLANTAR factor 7.4/6.247077 = 1.184557 (named law above); the dorsal bracket wall is computed alongside as a named variant",
+   "scale_gate_stated_on_every_verdict": "S1 gate: sets (b)/(c)/(d) stand on the DEPOSIT arm scale (knee/MP arms: the pulley lane's; ankle arms: the ankle lane's, whose own SI2 cross-check fits k_ankle = 0.11976026 point-class - consistent with the MTP class and with the k = 0.11975394 used for the S2 caps). At the SI-matched scale the book collapses (knee 1.146859, MP 0.198543, ankle plantar 0.748112, dorsal 0.149825) and EVERY S1 verdict INVERTS (PD5). No engine consumption is lawful until the operator resolves the k divergence - the torque book's standing gate, inherited verbatim",
+   "determinism_protocol": "pure function of sha-verified inputs; two full in-process runs must agree byte-for-byte on the deliverable canonical JSON; the unittest re-invokes via subprocess and compares sha256",
+   "scope_law": "NO engine or source changes; the lane writes ONLY inside tools/science_funnel/validation/ankle_unblocked_statics_20260921/; the vendored machinery is re-run from BYTE COPIES inside the lane dir (the statics lane's own run_env is never executed in place); order-of-magnitude consumption verdict (book, not patch); no tolerance widened anywhere"
+  },
+  "pre_registered_predictions": {
+   "note": "delta := measured - expected per the bands; every number derived by hand above from the pinned columns BEFORE the script exists. A miss is a FIRED falsifier recorded with its number and never absorbed",
+   "PD1_instrument_chain": {
+    "prediction": "the vendored wave-4 rerun reproduces the banked stance_nodes EXACTLY (15 rows, every field); this lane's recomputed (a)/(b)/(c) stance tables and margin walls equal the statics lane's committed deliverable FIELD-FOR-FIELD (every ratio, over-set, binder, headroom factor, crossing flag) - the instrument chain from the statics receipt re-held on this lane's clone",
+    "band": "exact equality",
+    "derivation": "same shas, same code lineage, same laws - the statics lane's own falsifier P1-P8 all held at eab707f5"
+   },
+   "PD2_stance_table_d_ankle": {
+    "ankle_over_cap_nodes": 6,
+    "ankle_over_cap_phis": [0.449, 0.3, 0.35, 0.4, 0.45, 0.5],
+    "ankle_worst_ratio": {"expected": 1.154940, "band": [1.15, 1.16], "node_phi": 0.3},
+    "ankle_binding_phi": 0.3,
+    "dorsal_class_over_cap_nodes": 0,
+    "dorsal_worst_ratio": {"expected": 0.987926, "band": [0.98, 0.99], "node_phi": 0.25},
+    "ankle_worst_holding_ratio": {"expected": 0.987926, "band": [0.98, 0.99], "node_phi": 0.25},
+    "derivation": "plantar: 7.215/6.247077 = 1.154940; 7.197/6.247077 = 1.152059; 7.104/6.247077 = 1.137172; 6.774/6.247077 = 1.084347; 6.765/6.247077 = 1.082906; 6.273/6.247077 = 1.004150 - six over; 5.183/6.247077 = 0.829668 under. dorsal: 1.236/1.251106 = 0.987926 worst - all six hold. THE ANKLE LANE'S OWN PREDICTION VERIFIED FROM THE STATICS SIDE: their consumption_map.stance_hold_ankle_nodes lists exactly these six over (after=6, binding 7.215 @ phi=0.3, ratio_after 1.1549) and their falsifier consumption_stance_over_cap_count measured after=6",
+    "cross_check_note": "the ankle lane priced 'before' against the EXACT doc pin 7.396 (0.9755 at binding); this lane's (a)-(c) law keeps the statics lane's LIVE pin 7.4 (0.9750) - the rounding split the statics receipt already banked, named here"
+   },
+   "PD3_wall_d": {
+    "ankle_term_phi_0_5": {"expected": 1.157587, "band": [1.14, 1.18]},
+    "wall_max_combined": {"expected": 1.157587, "band": [1.14, 1.18], "binder": "ANKLE phi=0.5"},
+    "runner_up_term": {"expected": 1.157112, "band": [1.14, 1.18], "at": "ankle phi=0.85 (0.9768334 x 1.184557)"},
+    "crosses_1_0": false,
+    "margin_0_9_reachable": false,
+    "knee_term_phi_0_75": {"expected": 0.916792, "band": [0.91, 0.93]},
+    "dorsal_bracket_phi_0_5_term": {"expected": 5.780115, "band": [5.6, 5.9]},
+    "derivation": "banked ankle ratio at phi=0.5 is 0.9772347 x 7.4 = 7.231537 N.m demand; at the measured plantar cap 7.231537/6.247077 = 1.157587 = 0.9772347 x 1.184557. THE (b)/(c) CROSSING DOES NOT SURVIVE: the wall RE-BLOCKS at the measured ankle - the statics receipt's own finding F2 pointed here ('the binder migrates to the BLOCKED ankle'; the block was the only thing holding the wall under 1.0). The 0.9 margin does NOT move - it stays unreachable and the value moves AWAY from it (0.977235 -> 1.157587)",
+    "direction_robustness": "under the dorsal bracket the phi=0.5 term is 5.780115 - the re-block verdict holds under BOTH directions of the named law; only the magnitude is bracketed [1.1576, 5.7801]"
+   },
+   "PD4_binder_map_d": {
+    "table_worst_case_binder_banked_mp": {"joint": "mp", "phi": 0.25, "expected": 5.103970, "band": [5.0, 5.2]},
+    "table_worst_case_binder_wave8_corrected_mp_variant": {"joint": "hip", "phi": 0.65, "expected": 1.480669, "band": [1.46, 1.50]},
+    "wall_binder": {"joint": "ANKLE", "phi": 0.5, "state": "OVER-CAP - the ankle OWNS the wall now (at (b)/(c) it held it at 0.977235; the measured cap flips it to the binding over-cap term)"},
+    "margin_binder_holding_class": {"joint": "ANKLE dorsal", "phi": 0.25, "expected": 0.987926, "band": [0.98, 0.99]},
+    "ankle_over_cap_share_of_wall_nodes_over_1_0": "at (d) the wall's over-1.0 nodes are ankle-bound at phis ~0.45-0.5 (terms 1.145262-1.157587); knee/posture/hip terms stay as at (b)",
+    "derivation": "banked MP column 8.462/1.657925 = 5.103970 (unchanged, the table's worst); under the wave-8 corrected MP column the windlass class VANISHES (statics receipt: worst 0.0056) and the table's worst-case binder falls to the HIP 16.602/11.2125 = 1.480669 at phi=0.65; the margin-binder holding class migrates (a) ankle-plantar 0.975 @ 0.3 -> (d) ankle-DORSAL 0.987926 @ 0.25 - the last sub-unity ankle class is the dorsal double-support one"
+   },
+   "PD5_S2_inversion_bracket_d": {
+    "ankle_over_cap_nodes": 15,
+    "ankle_worst_ratio": {"expected": 9.644278, "band": [9.5, 9.75], "node_phi": 0.3},
+    "dorsal_worst_ratio": {"expected": 8.249625, "band": [8.1, 8.4], "node_phi": 0.25},
+    "knee_over_cap_nodes": 14,
+    "mp_over_cap_nodes": 6,
+    "mp_worst_ratio": {"expected": 42.620490, "band": [42.0, 43.3]},
+    "wall_max_combined": {"expected": 9.666383, "band": [9.5, 9.8], "binder": "ANKLE phi=0.5 (plantar law)"},
+    "knee_term_phi_0_75": {"expected": 7.655630, "band": [7.4, 7.9]},
+    "statement": "THE INVERSION BRACKET: at the SI-matched scale every (d) verdict inverts - the ankle is over-cap at ALL 15 nodes (7.215/0.748112 = 9.644278; the dorsal class too: 1.236/0.149825 = 8.249625), the knee at 14/15 (the statics lane's own P9 count-miss carried: the phi=0.05 knee 0.43 N.m stays under even 1.146859), the MP at 6/15 (banked column), and the wall re-blocks at 9.67 ankle-bound - the walker can neither hold nor vault. The count-prediction precedent stands: a wrong COUNT is a fired falsifier recorded with its number, the verdict stands on the bands",
+    "derivation": "0.9772347 x 7.4/0.748112 = 9.666383; 1.3227763 x 6.6375/1.146859 = 7.655630 (the statics lane's measured 7.65563); 8.462/0.198543 = 42.620490"
+   },
+   "PD6_determinism": "two full in-process derivations byte-identical on the deliverable sha256; the unittest's subprocess rerun matches",
+   "PD7_no_source_changes": "git status --porcelain names no file outside tools/science_funnel/validation/ankle_unblocked_statics_20260921/ (unittest-asserted)",
+   "PD8_ankle_inputs_sha_pinned": "the ankle book's content sha 7ce03069... equals the blob f55ebe5f at b15ff31e - the derive script REFUSES to run on any pin mismatch, and the unittest re-asserts the pin"
+   },
+  "the_wall_question_stated_plainly": "the statics receipt closed with the wall crossing 1.0 under (b)/(c) at 0.977235 ankle-HELD - held only because the measured ankle did not exist at that lane's base. The measured plantar cap (6.247077) is TIGHTER than the doc cap (7.4) by factor 0.8447, and the ankle was the binder: the pre-registered answer is that the crossing REVERTS - the 1.0 wall re-blocks at ~1.1576 ankle-bound at phi=0.5, and the honest statics verdict under measured caps for ALL loaded leg joints is that the banked wave-10 optimum is INFEASIBLE again, with the ANKLE the owning joint. If the wall instead stayed under 1.0, the statics lane's binder-migration story would need a re-hearing - that is the falsifier this lane risks"
+ },
+ "falsifiers_pre_registered": {
+  "instrument_chain": "PD1 fails -> this lane's instrument diverges from the committed statics chain and every (d) number is void (recorded, not tuned)",
+  "traceability": "every cap and demand carries {input, sha256, key_path}; the derive script REFUSES to run on any sha mismatch; the (d) ankle caps trace to the ankle book deliverable (itself git-object-pinned to b15ff31e); the (a)-(c) caps re-trace to the in-tree hind book and the committed statics deliverable",
+  "provenance_on_the_table": "every cap names its class: MEASURED_V1_S1_ANKLE_BOOK (plantar/dorsal, direction-split), MEASURED_V1_S1_BOOK (knee/MP), HELD_FROM_A (hip/posture), SI_MATCHED_GATE (S2)",
+  "delta_bands": "the pre_registered_predictions block; a band miss or a wrong crossing/binder verdict is a FIRED falsifier recorded with its number in the measured block",
+  "determinism": "PD6",
+  "no_source_changes": "PD7 (unittest-asserted)",
+  "ankle_inputs": "PD8 (unittest-asserted)"
+ },
+ "measured": {
+  "recorded_utc": "2026-09-21T09:35:00+00:00",
+  "note": "APPENDED AFTER THE RUN. The pre-registration block above is unedited; the derive script and this block were written per the protocol (receipt first, script second, measured third).",
+  "deliverable": {
+   "path": "tools/science_funnel/validation/ankle_unblocked_statics_20260921/ankle_unblocked_statics.json",
+   "sha256": "31c6e3fb717c310086e0bf023b8b45f6cf2335692e15e9794eaa325f402184ea"
+  },
+  "headline": {
+   "verdict": "THE FOURTH SET, MEASURED: at (d) = measured knee + measured MTP + MEASURED ankle (V1_S1 both directions, direction-split per the ankle book's sign gate) + held hip/posture - (1) the stance-hold ankle goes OVER-CAP at 6 of 15 nodes (phis 0.449/0.3/0.35/0.4/0.45/0.5), worst ratio 1.154940 at phi=0.3 - the ankle lane's own statics-side prediction (after=6, binding -7.215 @ 0.3) VERIFIED from the statics side; the dorsal class (phi 0.0-0.25) holds at all six nodes, worst 0.987926 at phi=0.25 - 98.8% of the measured dorsal cap. (2) THE STATICS LANE'S 1.0-CROSSING DOES NOT SURVIVE THE MEASURED ANKLE: the wall re-prices 1.322776 (a, knee-bound) -> 0.977235 (b)/(c, ankle doc-held, crossing) -> 1.157587 (d, ANKLE-bound at phi=0.5, OVER the wall) - the crossing REVERTS, direction-robust under the receipt's dorsal bracket (5.780115); the 0.9 margin does not move - it stays unreachable and the value travels AWAY from it. (3) THE BINDER MAP: the ANKLE OWNS the wall (all 8 over-1.0 nodes ankle-bound, phis 0.3-0.55 and 0.8-0.85; histogram ankle 9 / posture 7 / knee 4 / hip 1 of 21); the stance table's worst case stays the MP windlass class at 5.103970 on the banked demands, and under the NAMED wave-8 corrected-MP variant the MP class VANISHES and the table's worst falls to the POSTURE 1.530435 at phi=0.65; the margin-binder HOLDING class migrates (a) ankle-plantar 0.975 @ 0.3 -> (d) ankle-DORSAL 0.987926 @ 0.25. (4) THE k-GATED (S2) INVERSION BRACKET: at the SI-matched scale the ankle is over-cap at ALL 15 nodes (worst 9.644278 plantar @ 0.3; the dorsal class too: 8.249625 @ 0.25), knee 14/15, MP 6/15 (42.620490), wall 9.666383 ankle-bound at phi=0.5 - the walker can neither hold nor vault.",
+   "worst_case_ratio_per_set": {
+    "A_live_doc": 9.534648,
+    "B_measured_v1_s1": 5.10397,
+    "C_provisional_v2_s1": 1.825019,
+    "D_measured_ankle_unblocked": 5.10397,
+    "D_S2_si_matched_gate": 42.62049
+   },
+   "ankle_class_at_d": {
+    "plantar_over_cap_nodes": 6,
+    "plantar_over_cap_phis": [0.449, 0.3, 0.35, 0.4, 0.45, 0.5],
+    "plantar_worst_ratio": 1.15494,
+    "plantar_binding_phi": 0.3,
+    "dorsal_over_cap_nodes": 0,
+    "dorsal_worst_ratio": 0.987926,
+    "ankle_worst_holding": {"phi": 0.25, "ratio": 0.987926, "class": "dorsal"}
+   },
+   "margin_wall_per_set": {
+    "A_live_doc": {"max_combined": 1.322776, "binder": "knee phi=0.75", "crosses_1_0": false},
+    "B_measured_v1_s1": {"max_combined": 0.977235, "binder": "ankle phi=0.5 (HELD under the doc cap)", "crosses_1_0": true},
+    "C_provisional_v2_s1": {"max_combined": 0.977235, "binder": "ankle phi=0.5 (HELD)", "crosses_1_0": true},
+    "D_measured_ankle_unblocked": {"max_combined": 1.157587, "binder": "ankle phi=0.5 (OVER - owns the wall)", "crosses_1_0": false},
+    "D_dorsal_bracket": {"max_combined": 5.780115, "binder": "ankle phi=0.5", "crosses_1_0": false},
+    "D_S2_si_matched_gate": {"max_combined": 9.666383, "binder": "ankle phi=0.5", "crosses_1_0": false}
+   }
+  },
+  "falsifier_verdicts": {
+   "PD1_instrument_chain": "HELD IN FULL - the vendored wave-4 generator reproduced the banked snapshot EXACTLY (15 rows, every field), and this lane's recomputed (a)/(b)/(c)/(S2) stance tables, MP-variant tables and margin walls equal the statics lane's committed deliverable (sha 21d3dbbe...) FIELD-FOR-FIELD: 16 checks, all EQUAL. One lane-side tooling note: two of this lane's ADDED wall fields (ankle_term_at_phi_0_5, binder_histogram) initially failed the chain check for the trivial reason that the committed schema does not carry them - the check now excludes lane additions BY NAME (never absorbs a value); every inherited field was equal from the first run on",
+   "PD2_stance_table_d_ankle": "HELD - over-cap 6 nodes, exact set {0.449, 0.3, 0.35, 0.4, 0.45, 0.5}; worst 1.154940 in [1.15, 1.16] at phi=0.3; dorsal class 0 over, worst 0.987926 in [0.98, 0.99] at phi=0.25; ankle worst holding 0.987926 @ 0.25. The ankle lane's 6-over-cap prediction VERIFIED from the statics side. One lane-side BUG caught by the pre-registered bands and fixed before banking: the (d) table initially priced the dorsal nodes at the plantar cap (dorsal worst 0.197853, margin holder posture 0.952865) because the direction split was passed only to the S2 table - the PD2 dorsal band fired on the buggy build, the split was restored per the receipt's named law, and the fixed build lands IN BAND (0.987926)",
+   "PD3_wall_d": "HELD - ankle term at phi=0.5: 1.157587 in [1.14, 1.18]; wall max 1.157587 in [1.14, 1.18], binder ANKLE phi=0.5; crosses_1_0 FALSE (the (b)/(c) crossing REVERTS); margin_0_9 FALSE (0.977235 -> 1.157587, away from the margin); knee term 0.916792 in [0.91, 0.93]; dorsal bracket 5.780115 in [5.6, 5.9]",
+   "PD4_binder_map_d": "BANDS HELD except ONE FIRED SUB-PREDICTION - margin-binder holding class: ankle-DORSAL 0.987926 @ 0.25 as registered (band held); wall binder ANKLE @ 0.5 OVER as registered; table worst banked-MP 5.103970 in [5.0, 5.2] @ 0.25 as registered. FIRED AT ITS LETTER: the corrected-MP-variant table binder was registered HIP 1.480669 band [1.46, 1.50]; MEASURED POSTURE 1.530435 at phi=0.65 - the hand prior compared hip/knee and omitted the posture column's worst (17.160/11.2125 = 1.530435; hip 16.602/11.2125 = 1.480669, which would have been in band). Recorded with its numbers; not absorbed; the wall/binder/ankle verdicts are unaffected. Also SHARPENED (registered prose '~0.45-0.5', not a band): the wall's over-1.0 node set is wider - phis {0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.8, 0.85}, all eight ankle-bound (the histogram: ankle 9 / posture 7 / knee 4 / hip 1 of 21)",
+   "PD5_S2_inversion_bracket_d": "HELD - ankle over 15/15 (worst 9.644278 in [9.5, 9.75] @ 0.3; dorsal worst 8.249625 in [8.1, 8.4] @ 0.25); knee 14/15 (the statics lane's own P9 count precedent, carried); MP 6/15 worst 42.620490 in [42.0, 43.3]; wall 9.666383 in [9.5, 9.8] ankle-bound phi=0.5; knee term 7.655630 in [7.4, 7.9]",
+   "PD6_determinism": "HELD - two full in-process derivations byte-identical; the unittest's subprocess rerun matches the deliverable sha256 31c6e3fb717c310086e0bf023b8b45f6cf2335692e15e9794eaa325f402184ea",
+   "PD7_no_source_changes": "HELD - git status --porcelain names nothing outside tools/science_funnel/validation/ankle_unblocked_statics_20260921/ (unittest-asserted)",
+   "PD8_ankle_inputs_sha_pinned": "HELD - the ankle book content sha 7ce03069... equals git blob f55ebe5f at b15ff31e (unittest-asserted via git rev-parse); the derive script refuses to run on any pin mismatch"
+  },
+  "findings": [
+   "F1 - THE CROSSING REVERTS: the statics receipt closed with the wall crossing 1.0 under (b)/(c) at 0.977235 ankle-HELD - held only because the measured ankle did not exist at that lane's base (its own F5 named the ankle 'the margin wall's BINDING term under (b)/(c)'). The measured plantar cap (6.247077) is TIGHTER than the doc cap (7.4) by factor 0.8447, and the ankle was the binding term, so the crossing was an artifact of the block. The honest statics verdict under MEASURED caps for all loaded leg joints: the banked wave-10 optimum is INFEASIBLE again at S1 - the ANKLE owns the wall - and trivially at S2. The statics receipt's F2 pointed here ('clearing 1.0 needs the ankle pulley direction... or a re-collocation hearing'); what this lane adds is that the ankle's own measured direction does NOT clear it either - the S1 plantar book re-blocks the wall it was hoped to open",
+   "F2 - THE TWO LANES' INSTRUMENTS AGREE: the ankle lane's statics-side node table (their consumption_map.stance_hold_ankle_nodes, computed from the same sha-pinned wave-4 demands) predicted over=6 at exactly these phis with binding -7.215 @ 0.3; this lane's full 11-DOF statics re-derivation reproduces their count, set, and binding node to the digit (their ratio_after 1.1549 vs this lane's 1.154940). Cross-lane agreement on an ankle CONSUMER question - the first place the ankle book's caps meet the gait statics",
+   "F3 - THE LAST ANKLE HOLDER IS THE DORSAL CLASS, AND IT IS AT 98.8%: after the plantar class goes over at phi=0.3, the margin-binder holding class migrates (a) ankle-plantar 0.975 @ 0.3 -> (d) ankle-DORSAL 0.987926 @ 0.25 (demand 1.236 N.m against the measured dorsal cap 1.251106). The measured dorsal book is THIN (1.251106 N.m - the TA/EDL class): any demand growth in early stance dorsiflexion flips the last ankle holder over too. The 0.9 margin remains unreachable under every set; at (d) the ankle binds it from ABOVE at 1.1576",
+   "F4 - CAPABILITY READING (prose arithmetic on the measured sets, NOT a measured cap set): the ankle book's PROVISIONAL V2_S1 plantar cap 18.595726 would price the wall's phi=0.5 ankle term at 0.9772347 x 7.4/18.595726 = 0.388896 - under the V2 plantar book the crossing would survive and the wall's max would fall to the hip term 0.965501 at phi=0.3 (still above 0.9: the margin stays shut on hip+posture). The V2 set is PROVISIONAL by the standing order (the sigma caveat); consumed as direction, never as a cap",
+   "F5 - THE WAVE-8 CORRECTED-MP VARIANT AT (d) (the mission's 'use the corrected variant, named'): the MP windlass class VANISHES (worst ratio 0.003016 vs 5.103970 on the banked column) - the statics receipt's F3 artifact verdict confirmed at the fourth set; the ankle/knee/hip/posture columns are re-measured bit-identical between the wave-4 and wave-8 machinery (6 MP cells differ, all at the heel-branch nodes phi <= 0.25), so no ANKLE verdict depends on the choice. Under the corrected column the stance table's worst case falls to the POSTURE column 1.530435 @ 0.65 - the pre-registered band missed this (FIRED, PD4)",
+   "F6 - RE-COLLOCATION REMAINS THE OPEN DOOR: the wall verdict is measured AT THE BANKED wave-10 optimum under the statics receipt's re-price law - the optimum was fitted under the OLD caps and the ankle terms it carries are cap-independent demands; a re-collocation at the measured caps could redistribute the ankle load (and must, to test whether the re-block is a posture of this particular optimum or of the envelope). Named future work at the same order-of-magnitude discipline as the statics receipt's"
+  ],
+  "the_scale_gate_on_every_verdict": "S1 GATE: every (d) number above stands on the DEPOSIT arm scale - the ankle book's own SI2 cross-check fits k_ankle = 0.11976026 over the point-class arms, consistent with the MTP class and with the k = 0.11975394 used for the S2 caps. At the SI-matched scale the books collapse (knee 1.146859, MP 0.198543, ankle plantar 0.748112, dorsal 0.149825) and EVERY (d) verdict INVERTS: ankle over 15/15 (worst 9.644278), knee 14/15, MP 6/15 (42.620490), wall 9.666383 ankle-bound at phi=0.5 - the walker cannot hold or vault. No engine consumption is lawful until the operator resolves the deposit-vs-SI absolute-scale divergence (the torque book's standing gate, inherited verbatim).",
+  "tests": "python -B -m unittest tools.science_funnel.validation.ankle_unblocked_statics_20260921.test_ankle_unblocked_statics"
+ }
+}

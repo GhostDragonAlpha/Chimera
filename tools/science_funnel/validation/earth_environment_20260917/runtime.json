@@ -1,0 +1,11 @@
+{
+  "pid": 104736,
+  "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\earth-engine\\Release\\chimera_engine.exe",
+  "exe_sha256": "A6797F7BB5759C1A80A975E77F530ACDEA1540F8E160CCAA499E5FEA2D17E73A",
+  "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\earth-patch\\scene.json",
+  "scene_file_sha256": "91C4CAB6382E13E0FC27B858070F0D1DB6CF67BB199506B3D9A0B48437D3755B",
+  "graph_hash": "ff1d0c484d7e538bcd42a980ee3f3856358cbc68c39f85ac1bec069825e08792",
+  "scene_sha256": "aad9538c3d42850874192be69853b7c1362e3603d9f41185dd726fb263bedd1b",
+  "port": 8125,
+  "launched_utc": "2026-09-17T03:52:18.0479258Z"
+}

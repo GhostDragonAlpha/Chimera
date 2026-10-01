@@ -1,0 +1,771 @@
+{
+  "schema": "chimera.shared_body_observation.v1",
+  "candidate_commit": "c6a0670f648e1f13c601497652d14f186af834b8",
+  "captured_utc": "2026-09-17T02:28:32.884659+00:00",
+  "inputs_and_artifacts": {
+    "ChimeraEngine/engine/joint_binding.hpp": "7ab5504b38c26d8b9e0225630fab7ed2ffa0670b5af8c4ad9afa48a9eb21b8c2",
+    "ChimeraEngine/engine/membrane_tick.cpp": "e7868d2ff040fb84bbbc8c10a4ff5a94296f10b9f34a762c41884b35ec0cd504",
+    "ChimeraEngine/engine/membrane_tick.hpp": "22ba994fe64cdedf6901e39ed17bdf846a6b51b2f0863af175a4d4e86daefa70",
+    "ChimeraEngine/engine/main.cpp": "4a7d90dfce965c52c1aec71bc85bae8bd927e2da6ee4914463dfc4c2e9e3c629",
+    "ChimeraEngine/engine/engine.cpp": "82b20c3ccac1305798116f04fca113bd7c2652294f6206209aec52da64cd18da",
+    "ChimeraEngine/engine/engine.hpp": "e882c98e67094d62e0ac40c616283c2618e93a3c9d139e49ce25e4bfc0dfde5f",
+    "ChimeraEngine/engine/tests_articulation/body_surface.cpp": "72d10f53174f0e6299bfa6528d85e8443ad0897b770ce9650920d448bca9d2de",
+    "tools/game_shell/server.py": "f6ebb641abb7f4cfdfb320feb5ebe89a2102faabad921107f03ce2ef9323bb50",
+    "tools/game_shell/index.html": "e594dfc0ffae767b236e7de66ca4ffc69a07edc7c36dceb44a1208f6c88a60ee",
+    "tools/science_funnel/creature_scene.py": "7277ecf17bd598b3120a56e5c4a941c6641334cae658c7ba01a9418036cb4d8b",
+    "tools/science_funnel/tests/qualify_shared_body.py": "00960b7c1a50a0c98da382a79b84ef886adae006d2a7a55bb86a1a86b15d6e76",
+    "Saved/meshes/monkey_birth.bin": "550a5b3ec927ea13614ad250963b23e2948e76a238ac110da9889f339aabfa3c",
+    "Saved/meshes/monkey_joints.bin": "74b3ab044b7adaed4a0f9349a81f5d3c87441084b2ec8981f4e0afaba50c1662",
+    ".tmp/body-engine/Release/chimera_engine.exe": "747c7e3b7add4f5cdc58f4393c801a528296265528ceb7283dd0a58e3cedda24",
+    ".tmp/body-integration-build/Release/body_surface.exe": "58b409d29222cfbc75e0e842826b85e875a01298d9c275aa3c98465f4c507f1a",
+    ".tmp/shared-body-persistence/Release/test_p1_inventory.exe": "85961860e08734ac90a69114cc842b1214489c84d2d5eff6e72f2351234f3baf",
+    ".tmp/shared-body-persistence/Release/test_p1_persistence.exe": "37ee8045223e30a1c7db7eb406b254d7ba55426281414fa8e568cbde19786eb4"
+  },
+  "results": {
+    "shared_surface_final": {
+      "checks": [
+        {
+          "detail": {},
+          "name": "JNT3_admission",
+          "pass": true
+        },
+        {
+          "detail": {
+            "max_error": 4.76837158203125e-07
+          },
+          "name": "rest_geometry",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_hip_L",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_knee_L",
+          "pass": true
+        },
+        {
+          "detail": {
+            "max_error": 4.76837158203125e-07,
+            "vertices": 18459
+          },
+          "name": "full_mesh_independent_hierarchy_oracle",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "invalid_binding_transactional",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "competing_legacy_binding_refused",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "legacy_controller_not_silently_reused",
+          "pass": true
+        },
+        {
+          "detail": {
+            "displacement_m": 2.000820982046646,
+            "vertex": 9732
+          },
+          "name": "touch_reads_moved_surface",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "press_admission",
+          "pass": true
+        },
+        {
+          "detail": {
+            "expected_m": 0.003978873577297387,
+            "inward_m": 0.003978865962297462
+          },
+          "name": "press_uses_posed_normal",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "export_uses_authoritative_surface",
+          "pass": true
+        },
+        {
+          "detail": {
+            "state": ""
+          },
+          "name": "actual_monkey_seal",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_preserves_inventory",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_reset_reference_pressure",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "body_and_seal_restore",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "mesh_reload_clears_body_owner",
+          "pass": true
+        }
+      ],
+      "failed": 0,
+      "scope": "shared geometry, touch and seal state; not force-driven actuation or locomotion"
+    },
+    "p1_inventory_final": {
+      "raw_stdout": "PASS T1.seal1.executed\nPASS T1.seal1.json_parsed\nPASS T1.seal1.n_cells\nPASS T1.seal1.cell0.keys\nPASS T1.seal1.cell0.w_eq_v0_exact\nPASS T1.seal1.cell0.p_exact_zero\nPASS T1.seal1.cell0.not_degenerate\nPASS T1.seal1.cell0.v0_positive\nPASS T1.seal1.cell1.keys\nPASS T1.seal1.cell1.w_eq_v0_exact\nPASS T1.seal1.cell1.p_exact_zero\nPASS T1.seal1.cell1.not_degenerate\nPASS T1.seal1.cell1.v0_positive\nPASS T1.seal2.executed\nPASS T1.seal2.json_parsed\nPASS T1.seal2.n_cells\nPASS T1.seal2.cell0.keys\nPASS T1.seal2.cell0.w_eq_v0_exact\nPASS T1.seal2.cell0.p_exact_zero\nPASS T1.seal2.cell0.not_degenerate\nPASS T1.seal2.cell0.v0_positive\nPASS T1.seal2.cell1.keys\nPASS T1.seal2.cell1.w_eq_v0_exact\nPASS T1.seal2.cell1.p_exact_zero\nPASS T1.seal2.cell1.not_degenerate\nPASS T1.seal2.cell1.v0_positive\nPASS T1.seal2.cell2.keys\nPASS T1.seal2.cell2.w_eq_v0_exact\nPASS T1.seal2.cell2.p_exact_zero\nPASS T1.seal2.cell2.not_degenerate\nPASS T1.seal2.cell2.v0_positive\nPASS T1.v0_tiles_cube\nPASS T2.json_parsed\nPASS T2.cells_array_len\nPASS T2.legacy_cells_array_intact\nPASS T2.cell_keys_present\nPASS T2.cell_i_indexed\nPASS T2.w_eq_v0_per_cell\nPASS T2.w_sum_present\nPASS T2.w_sum_matches_cells\nPASS T2.seal_mass_kg_present\nPASS T2.seal_mass_kg_eq_wsum_times_1000\nPASS T2.seal_w_init_empty_fresh\nPASS T3.classification_loaded\nPASS T3.rest.state\nPASS T3.rest.cell0.w_eq_v0_exact\nPASS T3.rest.cell0.vol_eq_v0_exact\nPASS T3.rest.cell0.p_exact_zero\nPASS T3.rest.cell1.w_eq_v0_exact\nPASS T3.rest.cell1.vol_eq_v0_exact\nPASS T3.rest.cell1.p_exact_zero\nPASS T3.rest.cell2.w_eq_v0_exact\nPASS T3.rest.cell2.vol_eq_v0_exact\nPASS T3.rest.cell2.p_exact_zero\nPASS T3.press_armed\nPASS T3.tick1.cell0.w_invariant\nPASS T3.tick1.cell0.p_answers\nPASS T3.tick1.cell0.kappa_law\nPASS T3.tick1.cell1.w_invariant\nPASS T3.tick1.cell1.p_answers\nPASS T3.tick1.cell1.kappa_law\nPASS T3.tick1.cell2.w_invariant\nPASS T3.tick1.cell2.p_answers\nPASS T3.tick1.cell2.kappa_law\nPASS T3.tick1.sum_w_constant\nPASS T3.tick2.cell0.w_invariant\nPASS T3.tick2.cell0.p_answers\nPASS T3.tick2.cell0.kappa_law\nPASS T3.tick2.cell1.w_invariant\nPASS T3.tick2.cell1.p_answers\nPASS T3.tick2.cell1.kappa_law\nPASS T3.tick2.cell2.w_invariant\nPASS T3.tick2.cell2.p_answers\nPASS T3.tick2.cell2.kappa_law\nPASS T3.tick2.sum_w_constant\nPASS T3.tick3.cell0.w_invariant\nPASS T3.tick3.cell0.p_answers\nPASS T3.tick3.cell0.kappa_law\nPASS T3.tick3.cell1.w_invariant\nPASS T3.tick3.cell1.p_answers\nPASS T3.tick3.cell1.kappa_law\nPASS T3.tick3.cell2.w_invariant\nPASS T3.tick3.cell2.p_answers\nPASS T3.tick3.cell2.kappa_law\nPASS T3.tick3.sum_w_constant\nPASS T3.tick4.cell0.w_invariant\nPASS T3.tick4.cell0.p_answers\nPASS T3.tick4.cell0.kappa_law\nPASS T3.tick4.cell1.w_invariant\nPASS T3.tick4.cell1.p_answers\nPASS T3.tick4.cell1.kappa_law\nPASS T3.tick4.cell2.w_invariant\nPASS T3.tick4.cell2.p_answers\nPASS T3.tick4.cell2.kappa_law\nPASS T3.tick4.sum_w_constant\nPASS T3.tick5.cell0.w_invariant\nPASS T3.tick5.cell0.p_answers\nPASS T3.tick5.cell0.kappa_law\nPASS T3.tick5.cell1.w_invariant\nPASS T3.tick5.cell1.p_answers\nPASS T3.tick5.cell1.kappa_law\nPASS T3.tick5.cell2.w_invariant\nPASS T3.tick5.cell2.p_answers\nPASS T3.tick5.cell2.kappa_law\nPASS T3.tick5.sum_w_constant\nPASS T3.tick6.cell0.w_invariant\nPASS T3.tick6.cell0.p_answers\nPASS T3.tick6.cell0.kappa_law\nPASS T3.tick6.cell1.w_invariant\nPASS T3.tick6.cell1.p_answers\nPASS T3.tick6.cell1.kappa_law\nPASS T3.tick6.cell2.w_invariant\nPASS T3.tick6.cell2.p_answers\nPASS T3.tick6.cell2.kappa_law\nPASS T3.tick6.sum_w_constant\nPASS T3.tick7.cell0.w_invariant\nPASS T3.tick7.cell0.p_answers\nPASS T3.tick7.cell0.kappa_law\nPASS T3.tick7.cell1.w_invariant\nPASS T3.tick7.cell1.p_answers\nPASS T3.tick7.cell1.kappa_law\nPASS T3.tick7.cell2.w_invariant\nPASS T3.tick7.cell2.p_answers\nPASS T3.tick7.cell2.kappa_law\nPASS T3.tick7.sum_w_constant\nPASS T3.tick8.cell0.w_invariant\nPASS T3.tick8.cell0.p_answers\nPASS T3.tick8.cell0.kappa_law\nPASS T3.tick8.cell1.w_invariant\nPASS T3.tick8.cell1.p_answers\nPASS T3.tick8.cell1.kappa_law\nPASS T3.tick8.cell2.w_invariant\nPASS T3.tick8.cell2.p_answers\nPASS T3.tick8.cell2.kappa_law\nPASS T3.tick8.sum_w_constant\nPASS T3.tick9.cell0.w_invariant\nPASS T3.tick9.cell0.p_answers\nPASS T3.tick9.cell0.kappa_law\nPASS T3.tick9.cell1.w_invariant\nPASS T3.tick9.cell1.p_answers\nPASS T3.tick9.cell1.kappa_law\nPASS T3.tick9.cell2.w_invariant\nPASS T3.tick9.cell2.p_answers\nPASS T3.tick9.cell2.kappa_law\nPASS T3.tick9.sum_w_constant\nPASS T3.tick10.cell0.w_invariant\nPASS T3.tick10.cell0.p_answers\nPASS T3.tick10.cell0.kappa_law\nPASS T3.tick10.cell1.w_invariant\nPASS T3.tick10.cell1.p_answers\nPASS T3.tick10.cell1.kappa_law\nPASS T3.tick10.cell2.w_invariant\nPASS T3.tick10.cell2.p_answers\nPASS T3.tick10.cell2.kappa_law\nPASS T3.tick10.sum_w_constant\nPASS T3.deformation_reached_volume\nPASS T4.state_available\nPASS T4.cell_keys_present\nPASS T4.n_cells\nPASS T4.sealed_flag\nPASS T4.conserve_pct_finite\nPASS T4.V_lower_eq_cells0_vol\nPASS T4.V_upper_eq_cells1_vol\nPASS T4.P_lower_eq_cells0_p\nPASS T4.P_upper_eq_cells1_p\nP1_INVENTORY: 165/165 PASS\n",
+      "sha256": "5c9e403e3ecbd9ce755728e02b3d55dedf4509960e90e26375b61dbc688674eb"
+    },
+    "p1_persistence_final": {
+      "raw_stdout": "R1 NEW-FORMAT ROUND-TRIP: PASS\nR2 W ROUND-TRIP EXACTNESS: PASS\nR2b EXPORT BYTES == CRAFTED INPUT: PASS\nseal_state: legacy SEL1 (no inventory) -> w := v0 for 3 cells\nR3 LEGACY MIGRATION: PASS  [; fixture: stripped the 4 per-cell w bytes from the SEL2 export, magic rewound to 0x31534553]\nseal_state: refused, w invalid (cell 1)\nR4a REFUSAL NaN w: PASS\nseal_state: refused, w invalid (cell 1)\nR4b REFUSAL NEGATIVE w: PASS\nR4c REFUSAL TRAILING GARBAGE: PASS\nR4d REFUSAL VOLUME WITNESS (v0 off 5%): PASS\nR5 RESTORE SEMANTICS: PASS\nP1_PERSISTENCE: 9/9 PASS\n",
+      "sha256": "0b6ac60da0a38cc285d6f2f5965d5ba6191879fc49f4c01197ba54765bab6698"
+    },
+    "live_final": {
+      "scope": "Private reference scene: live geometry, routing, pose, touch, binding/seal replay; no dynamic actuation or locomotion qualification.",
+      "runtime": {
+        "engine_pid": 84676,
+        "game_pid": 97252,
+        "engine_port": 8123,
+        "game_port": 8223,
+        "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\body-engine\\Release\\chimera_engine.exe",
+        "exe_sha256": "747C7E3B7ADD4F5CDC58F4393C801A528296265528CEB7283DD0A58E3CEDDA24",
+        "graph_hash": "70905c49ee455e4198321e2ef0dfb39d50384534316940b1e790336e59f98ba7",
+        "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\creature-assembly\\scene.json",
+        "launched_utc": "2026-09-17T02:04:05.2278611Z",
+        "scope": "Shared geometry reference; kinematic actuation; CPU membrane solver; not locomotion qualification."
+      },
+      "checks": [
+        {
+          "name": "private_shared_body",
+          "pass_": true,
+          "detail": {}
+        },
+        {
+          "name": "proxy_uses_selected_engine",
+          "pass_": true,
+          "detail": {}
+        },
+        {
+          "name": "pose_hip_L",
+          "pass_": true,
+          "detail": {}
+        },
+        {
+          "name": "pose_knee_L",
+          "pass_": true,
+          "detail": {}
+        },
+        {
+          "name": "surface_moves_through_api",
+          "pass_": true,
+          "detail": {
+            "max_displacement_m": 2.000821113586426
+          }
+        },
+        {
+          "name": "pose_inventory",
+          "pass_": true,
+          "detail": {}
+        },
+        {
+          "name": "competing_writer_refused",
+          "pass_": true,
+          "detail": {}
+        },
+        {
+          "name": "refusal_preserves_pose",
+          "pass_": true,
+          "detail": {}
+        },
+        {
+          "name": "touch_current_surface",
+          "pass_": true,
+          "detail": {}
+        },
+        {
+          "name": "native_press_displacement",
+          "pass_": true,
+          "detail": {
+            "inward_m": 0.0039788661524653435,
+            "expected_m": 0.0039788735772973835
+          }
+        },
+        {
+          "name": "press_inventory",
+          "pass_": true,
+          "detail": {}
+        },
+        {
+          "name": "private_snapshot_restore",
+          "pass_": true,
+          "detail": {
+            "response": {
+              "ok": true,
+              "replayed": 3,
+              "failed": 0,
+              "seal_already": 1,
+              "seal_executed": 0,
+              "detail": "mesh_bin:ok tick_body_bin:ok tick_seal_state:ok seal:already "
+            }
+          }
+        },
+        {
+          "name": "restored_geometry",
+          "pass_": true,
+          "detail": {}
+        }
+      ]
+    },
+    "graph_final": {
+      "graph_hash": "454484bf476e47e41e77e90d095275f4fea75d8ff2f0538872ee783b09ed6ff6",
+      "objects": 5792,
+      "edges": 8858,
+      "historical_evidence_unchanged": 11,
+      "rebuild_matches": true,
+      "consumer_checks": [
+        {
+          "check": "node_identity_round_trip",
+          "expected": "all 5792 objects reversible + full record/spatial payload equal",
+          "observed": "5792/5792 ok",
+          "pass": true,
+          "evidence": {
+            "mismatches": []
+          }
+        },
+        {
+          "check": "edge_identity_round_trip",
+          "expected": "all 8858 relations with direction+note intact",
+          "observed": "missing=0 extra=0",
+          "pass": true,
+          "evidence": {
+            "missing_sample": [],
+            "extra_sample": []
+          }
+        },
+        {
+          "check": "multiplicity_preserved",
+          "expected": "no parallel groups in store (all pairs single-edged)",
+          "observed": "no parallel groups in store",
+          "pass": true
+        },
+        {
+          "check": "traversal_parity_2hop",
+          "expected": [
+            "ref.element.atomic_number.1",
+            "ref.element.atomic_number.10",
+            "ref.element.atomic_number.100",
+            "ref.element.atomic_number.101",
+            "ref.element.atomic_number.102",
+            "ref.element.atomic_number.103",
+            "ref.element.atomic_number.104",
+            "ref.element.atomic_number.105",
+            "ref.element.atomic_number.106",
+            "ref.element.atomic_number.107",
+            "ref.element.atomic_number.108",
+            "ref.element.atomic_number.109",
+            "ref.element.atomic_number.11",
+            "ref.element.atomic_number.110",
+            "ref.element.atomic_number.111",
+            "ref.element.atomic_number.112",
+            "ref.element.atomic_number.113",
+            "ref.element.atomic_number.114",
+            "ref.element.atomic_number.115",
+            "ref.element.atomic_number.116",
+            "ref.element.atomic_number.117",
+            "ref.element.atomic_number.118",
+            "ref.element.atomic_number.12",
+            "ref.element.atomic_number.13",
+            "ref.element.atomic_number.14",
+            "ref.element.atomic_number.15",
+            "ref.element.atomic_number.16",
+            "ref.element.atomic_number.17",
+            "ref.element.atomic_number.18",
+            "ref.element.atomic_number.19",
+            "ref.element.atomic_number.2",
+            "ref.element.atomic_number.20",
+            "ref.element.atomic_number.21",
+            "ref.element.atomic_number.22",
+            "ref.element.atomic_number.23",
+            "ref.element.atomic_number.24",
+            "ref.element.atomic_number.25",
+            "ref.element.atomic_number.26",
+            "ref.element.atomic_number.27",
+            "ref.element.atomic_number.28",
+            "ref.element.atomic_number.29",
+            "ref.element.atomic_number.3",
+            "ref.element.atomic_number.30",
+            "ref.element.atomic_number.31",
+            "ref.element.atomic_number.32",
+            "ref.element.atomic_number.33",
+            "ref.element.atomic_number.34",
+            "ref.element.atomic_number.35",
+            "ref.element.atomic_number.36",
+            "ref.element.atomic_number.37",
+            "ref.element.atomic_number.38",
+            "ref.element.atomic_number.39",
+            "ref.element.atomic_number.4",
+            "ref.element.atomic_number.40",
+            "ref.element.atomic_number.41",
+            "ref.element.atomic_number.42",
+            "ref.element.atomic_number.43",
+            "ref.element.atomic_number.44",
+            "ref.element.atomic_number.45",
+            "ref.element.atomic_number.46",
+            "ref.element.atomic_number.47",
+            "ref.element.atomic_number.48",
+            "ref.element.atomic_number.49",
+            "ref.element.atomic_number.5",
+            "ref.element.atomic_number.50",
+            "ref.element.atomic_number.51",
+            "ref.element.atomic_number.52",
+            "ref.element.atomic_number.53",
+            "ref.element.atomic_number.54",
+            "ref.element.atomic_number.55",
+            "ref.element.atomic_number.56",
+            "ref.element.atomic_number.57",
+            "ref.element.atomic_number.58",
+            "ref.element.atomic_number.59",
+            "ref.element.atomic_number.6",
+            "ref.element.atomic_number.60",
+            "ref.element.atomic_number.61",
+            "ref.element.atomic_number.62",
+            "ref.element.atomic_number.63",
+            "ref.element.atomic_number.64",
+            "ref.element.atomic_number.65",
+            "ref.element.atomic_number.66",
+            "ref.element.atomic_number.67",
+            "ref.element.atomic_number.68",
+            "ref.element.atomic_number.69",
+            "ref.element.atomic_number.7",
+            "ref.element.atomic_number.70",
+            "ref.element.atomic_number.71",
+            "ref.element.atomic_number.72",
+            "ref.element.atomic_number.73",
+            "ref.element.atomic_number.74",
+            "ref.element.atomic_number.75",
+            "ref.element.atomic_number.76",
+            "ref.element.atomic_number.77",
+            "ref.element.atomic_number.78",
+            "ref.element.atomic_number.79",
+            "ref.element.atomic_number.8",
+            "ref.element.atomic_number.80",
+            "ref.element.atomic_number.81",
+            "ref.element.atomic_number.82",
+            "ref.element.atomic_number.83",
+            "ref.element.atomic_number.84",
+            "ref.element.atomic_number.85",
+            "ref.element.atomic_number.86",
+            "ref.element.atomic_number.87",
+            "ref.element.atomic_number.88",
+            "ref.element.atomic_number.89",
+            "ref.element.atomic_number.9",
+            "ref.element.atomic_number.90",
+            "ref.element.atomic_number.91",
+            "ref.element.atomic_number.92",
+            "ref.element.atomic_number.93",
+            "ref.element.atomic_number.94",
+            "ref.element.atomic_number.95",
+            "ref.element.atomic_number.96",
+            "ref.element.atomic_number.97",
+            "ref.element.atomic_number.98",
+            "ref.element.atomic_number.99",
+            "source.material_reference.pubchem",
+            "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956"
+          ],
+          "observed": [
+            "ref.element.atomic_number.1",
+            "ref.element.atomic_number.10",
+            "ref.element.atomic_number.100",
+            "ref.element.atomic_number.101",
+            "ref.element.atomic_number.102",
+            "ref.element.atomic_number.103",
+            "ref.element.atomic_number.104",
+            "ref.element.atomic_number.105",
+            "ref.element.atomic_number.106",
+            "ref.element.atomic_number.107",
+            "ref.element.atomic_number.108",
+            "ref.element.atomic_number.109",
+            "ref.element.atomic_number.11",
+            "ref.element.atomic_number.110",
+            "ref.element.atomic_number.111",
+            "ref.element.atomic_number.112",
+            "ref.element.atomic_number.113",
+            "ref.element.atomic_number.114",
+            "ref.element.atomic_number.115",
+            "ref.element.atomic_number.116",
+            "ref.element.atomic_number.117",
+            "ref.element.atomic_number.118",
+            "ref.element.atomic_number.12",
+            "ref.element.atomic_number.13",
+            "ref.element.atomic_number.14",
+            "ref.element.atomic_number.15",
+            "ref.element.atomic_number.16",
+            "ref.element.atomic_number.17",
+            "ref.element.atomic_number.18",
+            "ref.element.atomic_number.19",
+            "ref.element.atomic_number.2",
+            "ref.element.atomic_number.20",
+            "ref.element.atomic_number.21",
+            "ref.element.atomic_number.22",
+            "ref.element.atomic_number.23",
+            "ref.element.atomic_number.24",
+            "ref.element.atomic_number.25",
+            "ref.element.atomic_number.26",
+            "ref.element.atomic_number.27",
+            "ref.element.atomic_number.28",
+            "ref.element.atomic_number.29",
+            "ref.element.atomic_number.3",
+            "ref.element.atomic_number.30",
+            "ref.element.atomic_number.31",
+            "ref.element.atomic_number.32",
+            "ref.element.atomic_number.33",
+            "ref.element.atomic_number.34",
+            "ref.element.atomic_number.35",
+            "ref.element.atomic_number.36",
+            "ref.element.atomic_number.37",
+            "ref.element.atomic_number.38",
+            "ref.element.atomic_number.39",
+            "ref.element.atomic_number.4",
+            "ref.element.atomic_number.40",
+            "ref.element.atomic_number.41",
+            "ref.element.atomic_number.42",
+            "ref.element.atomic_number.43",
+            "ref.element.atomic_number.44",
+            "ref.element.atomic_number.45",
+            "ref.element.atomic_number.46",
+            "ref.element.atomic_number.47",
+            "ref.element.atomic_number.48",
+            "ref.element.atomic_number.49",
+            "ref.element.atomic_number.5",
+            "ref.element.atomic_number.50",
+            "ref.element.atomic_number.51",
+            "ref.element.atomic_number.52",
+            "ref.element.atomic_number.53",
+            "ref.element.atomic_number.54",
+            "ref.element.atomic_number.55",
+            "ref.element.atomic_number.56",
+            "ref.element.atomic_number.57",
+            "ref.element.atomic_number.58",
+            "ref.element.atomic_number.59",
+            "ref.element.atomic_number.6",
+            "ref.element.atomic_number.60",
+            "ref.element.atomic_number.61",
+            "ref.element.atomic_number.62",
+            "ref.element.atomic_number.63",
+            "ref.element.atomic_number.64",
+            "ref.element.atomic_number.65",
+            "ref.element.atomic_number.66",
+            "ref.element.atomic_number.67",
+            "ref.element.atomic_number.68",
+            "ref.element.atomic_number.69",
+            "ref.element.atomic_number.7",
+            "ref.element.atomic_number.70",
+            "ref.element.atomic_number.71",
+            "ref.element.atomic_number.72",
+            "ref.element.atomic_number.73",
+            "ref.element.atomic_number.74",
+            "ref.element.atomic_number.75",
+            "ref.element.atomic_number.76",
+            "ref.element.atomic_number.77",
+            "ref.element.atomic_number.78",
+            "ref.element.atomic_number.79",
+            "ref.element.atomic_number.8",
+            "ref.element.atomic_number.80",
+            "ref.element.atomic_number.81",
+            "ref.element.atomic_number.82",
+            "ref.element.atomic_number.83",
+            "ref.element.atomic_number.84",
+            "ref.element.atomic_number.85",
+            "ref.element.atomic_number.86",
+            "ref.element.atomic_number.87",
+            "ref.element.atomic_number.88",
+            "ref.element.atomic_number.89",
+            "ref.element.atomic_number.9",
+            "ref.element.atomic_number.90",
+            "ref.element.atomic_number.91",
+            "ref.element.atomic_number.92",
+            "ref.element.atomic_number.93",
+            "ref.element.atomic_number.94",
+            "ref.element.atomic_number.95",
+            "ref.element.atomic_number.96",
+            "ref.element.atomic_number.97",
+            "ref.element.atomic_number.98",
+            "ref.element.atomic_number.99",
+            "source.material_reference.pubchem",
+            "source.operator_material_direction.29facaab418de39bd82217bd95ef83ae616a38b424ad83db7d09ecd1ec7e0956"
+          ],
+          "pass": true,
+          "evidence": {
+            "start": "req.element_identity_spine",
+            "out_degree": 119
+          }
+        },
+        {
+          "check": "graphify_query_health",
+          "expected": 5792,
+          "observed": 5792,
+          "pass": true,
+          "evidence": {
+            "mutations": 0,
+            "pathways": 0,
+            "features": 0,
+            "note": "creature objects must not pollute the DNA families"
+          }
+        },
+        {
+          "check": "because_of_honest_empty",
+          "expected": [],
+          "observed": [],
+          "pass": true
+        },
+        {
+          "check": "fts_search_finds_ingested",
+          "expected": "req_element_identity_spine",
+          "observed": [
+            "req_element_identity_spine"
+          ],
+          "pass": true,
+          "evidence": {
+            "query": "Periodic table guides composition and scientific table joins",
+            "n_hits": 1
+          }
+        }
+      ]
+    },
+    "shared_surface_exploratory": {
+      "checks": [
+        {
+          "detail": {},
+          "name": "JNT3_admission",
+          "pass": true
+        },
+        {
+          "detail": {
+            "max_error": 4.76837158203125e-07
+          },
+          "name": "rest_geometry",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_hip_L",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_knee_L",
+          "pass": true
+        },
+        {
+          "detail": {
+            "max_error": 4.76837158203125e-07,
+            "vertices": 18459
+          },
+          "name": "full_mesh_independent_hierarchy_oracle",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "invalid_binding_transactional",
+          "pass": false
+        },
+        {
+          "detail": {},
+          "name": "competing_legacy_binding_refused",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "legacy_controller_not_silently_reused",
+          "pass": true
+        },
+        {
+          "detail": {
+            "displacement_m": 2.000820982046646,
+            "vertex": 9732
+          },
+          "name": "touch_reads_moved_surface",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "press_admission",
+          "pass": true
+        },
+        {
+          "detail": {
+            "expected_m": 0.003978873577297387,
+            "inward_m": 0.003978865962297462
+          },
+          "name": "press_uses_posed_normal",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "export_uses_authoritative_surface",
+          "pass": true
+        },
+        {
+          "detail": {
+            "state": ""
+          },
+          "name": "actual_monkey_seal",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_preserves_inventory",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_reset_reference_pressure",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "body_and_seal_restore",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "mesh_reload_clears_body_owner",
+          "pass": true
+        }
+      ],
+      "failed": 1,
+      "scope": "shared geometry, touch and seal state; not force-driven actuation or locomotion"
+    },
+    "shared_surface_exploratory_fixed": {
+      "checks": [
+        {
+          "detail": {},
+          "name": "JNT3_admission",
+          "pass": true
+        },
+        {
+          "detail": {
+            "max_error": 4.76837158203125e-07
+          },
+          "name": "rest_geometry",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_hip_L",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_knee_L",
+          "pass": true
+        },
+        {
+          "detail": {
+            "max_error": 4.76837158203125e-07,
+            "vertices": 18459
+          },
+          "name": "full_mesh_independent_hierarchy_oracle",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "invalid_binding_transactional",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "competing_legacy_binding_refused",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "legacy_controller_not_silently_reused",
+          "pass": true
+        },
+        {
+          "detail": {
+            "displacement_m": 2.000820982046646,
+            "vertex": 9732
+          },
+          "name": "touch_reads_moved_surface",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "press_admission",
+          "pass": true
+        },
+        {
+          "detail": {
+            "expected_m": 0.003978873577297387,
+            "inward_m": 0.003978865962297462
+          },
+          "name": "press_uses_posed_normal",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "export_uses_authoritative_surface",
+          "pass": true
+        },
+        {
+          "detail": {
+            "state": ""
+          },
+          "name": "actual_monkey_seal",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_preserves_inventory",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "pose_reset_reference_pressure",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "body_and_seal_restore",
+          "pass": true
+        },
+        {
+          "detail": {},
+          "name": "mesh_reload_clears_body_owner",
+          "pass": true
+        }
+      ],
+      "failed": 0,
+      "scope": "shared geometry, touch and seal state; not force-driven actuation or locomotion"
+    }
+  },
+  "python_tests": {
+    "total": 15,
+    "command": "python -B -m unittest tools.creature_graph.tests.test_project_spec tools.science_funnel.tests.test_game_body_proxy -q",
+    "exit_code": 0
+  },
+  "browser": {
+    "url": "http://127.0.0.1:8223/",
+    "canvas_surface_owner": "native",
+    "screenshot_sha256": "56362a109af629d71910894e5038fe7ac0dd9dfeee07ec7cfb1de0ec07364220",
+    "observation": "Actual creature visible; pressure/local preview disabled in shared-body mode; private game engine routing verified separately."
+  },
+  "scope": "Whole-body hierarchical geometry, posed-normal touch, conserved water inventory, body binding/seal replay, proxy ownership. Kinematic actuation and CPU membrane reference only. Two demo seals; no layered anatomy, gait, force-driven actuation, fixed tick or GPU-resident dynamics qualification.",
+  "failures_retained": "First exploratory state-equality assertion compared nondeterministic timestamps and failed; final check excludes ts_us/ts_ms only. Native physical assertions were unchanged. Earlier UI inspection found wrong proxy engine; fixed and covered by routing check."
+}

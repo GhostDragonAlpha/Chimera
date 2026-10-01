@@ -150,7 +150,11 @@ SCENARIO_KEYS = ("o2", "parts", "water", "warmth", "burial", "ride")   # SCENARI
 # seed() -- the live UDirectorSubsystem numbers
 # =============================================================================
 
-def seed() -> dict:
+def seed(rng=None) -> dict:
+    # protocol alignment 2026-09-18: the trainer passes seed(rng); this
+    # domain is a deterministic live-value fixture, so the rng is accepted
+    # and intentionally unused (a fixed point, not a random draw).
+    del rng  # noqa: F841
     """The live vision numbers. Verbatim where the vision gives them; the three
     design-rule loci seeded at 0.0 -- exactly what the vision's unconditional `if`s do --
     so mutate() can walk them away from zero and the hard gates have something to catch."""

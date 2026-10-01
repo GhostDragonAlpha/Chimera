@@ -1,0 +1,139 @@
+{
+ "checks": [
+  {
+   "expected": "max |speed_rad_s| < 1e-06",
+   "name": "settled_speeds",
+   "note": "",
+   "observed": "1.23E-12",
+   "pass": true
+  },
+  {
+   "expected": "|balance_error_J| < 0.0001",
+   "name": "balance_residual",
+   "note": "",
+   "observed": "9.61E-12",
+   "pass": true
+  },
+  {
+   "expected": "|store_balance_error_J| < 0.0001",
+   "name": "store_ledger_closes",
+   "note": "",
+   "observed": "9.61E-12",
+   "pass": true
+  },
+  {
+   "expected": "mechanical_J == kinetic_J + gravitational_J (1e-9)",
+   "name": "mechanical_identity",
+   "note": "",
+   "observed": "0.000000000",
+   "pass": true
+  },
+  {
+   "expected": "native_coupled_arm",
+   "name": "scene_mode",
+   "note": "",
+   "observed": "native_coupled_arm",
+   "pass": true
+  },
+  {
+   "expected": "|target - final| < |target - reset(0)| (servo caps may stall the pose short: an angle request is not a guarantee)",
+   "name": "shoulder_moved_toward_target",
+   "note": "",
+   "observed": "23.359 vs 60.000",
+   "pass": true
+  },
+  {
+   "expected": "|target - final| < |target - reset(90)|",
+   "name": "elbow_moved_toward_target",
+   "note": "",
+   "observed": "27.033 vs 30.000",
+   "pass": true
+  },
+  {
+   "expected": "|angle - reset(0)| > 5 deg",
+   "name": "shoulder_changed",
+   "note": "",
+   "observed": "36.641",
+   "pass": true
+  },
+  {
+   "expected": "actuator_work_J > 0.005",
+   "name": "actuator_work_done",
+   "note": "",
+   "observed": "0.053394",
+   "pass": true
+  },
+  {
+   "expected": "battery_J < initial - 0.005",
+   "name": "store_spent",
+   "note": "",
+   "observed": "1.792009",
+   "pass": true
+  },
+  {
+   "expected": "mode off",
+   "name": "contact_off",
+   "note": "",
+   "observed": "off",
+   "pass": true
+  },
+  {
+   "expected": "python FK == engine FK within 1e-06 m",
+   "name": "fk_coherence",
+   "note": "",
+   "observed": "2.78E-17 m",
+   "pass": true
+  }
+ ],
+ "expected": "Both angle readouts move toward their targets from the reset pose and visibly change it; with the authored torque caps the servos may stall short of the commanded angles at a gravity/servo equilibrium (an angle request is not a guaranteed pose); the energy ledger shows actuator work and the 2 J store pays for it (store ledger closes).",
+ "numeric_verdict": "PASS",
+ "observed": {
+  "actuator_work_J": 0.05339365150469641,
+  "battery_J": 1.7920087748751927,
+  "contact_impact_heat_J": 0.0,
+  "elbow_deg": 32.96674036161998,
+  "friction_heat_J": 0.0,
+  "gap_m": 0.05555229028769926,
+  "hand_m": [
+   0.2427560689263268,
+   0.39855229028769923,
+   0.007835990781146291
+  ],
+  "mode": "off",
+  "reaction_N": 0.0,
+  "series_stats": {
+   "friction_heat_first": 0.0,
+   "friction_heat_last": 0.0,
+   "friction_heat_max": 0.0,
+   "hand_x_max": 0.2460817828432528,
+   "hand_x_min": 0.2419116385311958,
+   "slip_max": 0.046733044908795845
+  },
+  "settled": true,
+  "shoulder_deg": 36.64087215065285
+ },
+ "rule0": {
+  "admitted_utc": "2026-09-17 (before the first run of this lane)",
+  "falsifiers": {
+   "F1": "re-render from the recorded state is byte-identical (sha256)",
+   "F2": "python FK hand point == engine body.position_m within 1e-6 m",
+   "F3": "a corrupted penetrating state FAILS the template and renders visibly wrong; a template that passes it is worthless",
+   "F4": "every settled ledger closes (balance_error_J and store_balance_error_J within 1e-4 J -- 10x the repo live-qual bar for these 45-90 s windows -- and the mechanical identity holds); a leak falsifies the energy claims"
+  },
+  "prediction": "All five scenarios pass their numeric templates AND render the expected picture (hang / reach / press-at-plane / stick / slide-with-heat); a penetrating-hand corruption fails.",
+  "statement": "The live scene's own numeric state, rendered by a pure deterministic renderer and judged against a structured expected-physics template, is a valid verification record closing the loop between the numbers and the eye."
+ },
+ "scenario": "target_reach",
+ "verdict": "PASS",
+ "visual_judge": {
+  "findings": [
+   "Arm visibly swung out toward the dashed 60/60 target ghost and stalled short of it at 36.6/33.0 deg (authored torque caps)",
+   " hand far from the plane region",
+   " store visibly spent 2.0 to 1.79 J",
+   " actuator work 0.053 J."
+  ],
+  "judge": "GLM 5.3 Flash (dyad visual pass)",
+  "recorded_utc": "2026-09-18T22:22:11.965398+00:00",
+  "verdict": "PASS"
+ }
+}

@@ -1,0 +1,86 @@
+{
+  "check": "CHECK_1_engine_same_build_replay_and_checkpoint_resume",
+  "checkpoint": {
+    "body_is_reference_tick150": true,
+    "snapshot_sha256": "0d6f65f9169dc5fdcf1ee503cd6a4e5bba87a1a687ee82f1809de36267b3863b",
+    "tick": 150
+  },
+  "detail": "fresh-process replay IDENTICAL; restore at T=150 BIT-IDENTICAL on 152 ticks + 21888 action bytes; ship fence stdout/trace EXACT; all 4 forced drops moved the continuation: True",
+  "dump_nan_free": {
+    "checked_fields": 16308,
+    "pass": true
+  },
+  "forced_drops": {
+    "contact_warm_start": {
+      "first_diverging_tick": 150,
+      "moved_continuation": true,
+      "n_states": 145,
+      "roundtrip_ok": true
+    },
+    "controller_history": {
+      "first_diverging_tick": 150,
+      "moved_continuation": true,
+      "n_states": 61,
+      "roundtrip_ok": true
+    },
+    "reflex_state": {
+      "first_diverging_tick": 150,
+      "moved_continuation": true,
+      "n_states": 149,
+      "roundtrip_ok": true
+    },
+    "world_state": {
+      "first_diverging_tick": 150,
+      "moved_continuation": true,
+      "n_states": 58,
+      "roundtrip_ok": true
+    }
+  },
+  "pass": true,
+  "reasons": [],
+  "ref_runs": [
+    {
+      "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+      "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+      "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+      "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+    },
+    {
+      "actions_sha256": "09f6ce53e21c980dfadcc72b152f2c7952191de91851563f32fe7832282f8c27",
+      "states_sha256": "f1a477281ab0f833031e6cf2f99f853dbb263e9493b3f30df0005318016d64f1",
+      "stderr_sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+      "stdout_sha256": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+    }
+  ],
+  "replay_byte_identical": true,
+  "restore_bit_identity": {
+    "action_bytes_compared": 21888,
+    "action_bytes_identical": true,
+    "blind_phase_matches_snapshot_file": true,
+    "first_diverging_tick": null,
+    "pass": true,
+    "refusal_tick_and_class_identical": true,
+    "roundtrip_serialization_equal": true,
+    "state_hashes_identical": true,
+    "ticks_compared": 152
+  },
+  "ship_fence_legs": {
+    "stdout": {
+      "anchor": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+      "measured": "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc",
+      "pass": true
+    },
+    "trace_stderr": {
+      "anchor": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+      "measured": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481",
+      "pass": true
+    }
+  },
+  "walk_face": {
+    "body_bytes": 3089,
+    "identical_to_ship_face": true,
+    "n_states": 302,
+    "refused_class": "gait_positional_correction_budget",
+    "refused_tick": 302
+  }
+}

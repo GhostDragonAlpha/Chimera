@@ -1,0 +1,257 @@
+{
+  "purpose": "classify V1b: gravity contact on a fresh-classified body (no session restore), new binary a62c6b46",
+  "port": 8139,
+  "ts": "2026-09-14 09:37:29",
+  "boot": "empty cwd, born unsealed (asserted by Engine.start)",
+  "bring_alive": {
+    "name": "blob",
+    "a1": {
+      "sealed": true,
+      "n_cells": 2,
+      "V_whole": 8.33391,
+      "V_cells": [
+        4.16691,
+        4.16688
+      ],
+      "conserve_pct": -0.00140753,
+      "seal_loops": 1,
+      "seal_cuts": 128,
+      "seal_caps": 126,
+      "pass": true
+    },
+    "seal": {
+      "ok": true
+    }
+  },
+  "expect_weight_N": 81747.90719999999,
+  "arm": {
+    "ok": true,
+    "gravity_on": true
+  },
+  "polls": [
+    {
+      "gravity_on": true,
+      "g_contact_n": 6780920.0,
+      "root_y": 0.153897,
+      "root_vy": 11.3779,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00109865
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 2.91253,
+      "root_vy": -0.223719,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.000789616
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 2.80094,
+      "root_vy": -0.223719,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00104136
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 2.68829,
+      "root_vy": -0.223719,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00106423
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 2.57591,
+      "root_vy": -0.223719,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 2.46395,
+      "root_vy": -0.223719,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 2.35153,
+      "root_vy": -0.223719,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 2.23952,
+      "root_vy": -0.223719,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 2.1276,
+      "root_vy": -0.223719,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 2.0149,
+      "root_vy": -0.223719,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135353,
+      "root_y": 1.99002,
+      "root_vy": -5.67381e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08405e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08356e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08355e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.0839e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08371e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08394e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08395e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08388e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08399e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.0836e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08393e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.0838e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    },
+    {
+      "gravity_on": true,
+      "g_contact_n": 135618,
+      "root_y": 1.99,
+      "root_vy": -1.08363e-05,
+      "n_cells": 2,
+      "sealed": true,
+      "conserve_pct": -0.00140753
+    }
+  ],
+  "verdict": {
+    "gravity_on_last": true,
+    "g_contact_n_last": 135618,
+    "dev_pct_from_weight": 65.89782496597053,
+    "root_y_last": 1.99,
+    "abs_root_vy_max": 11.3779
+  },
+  "killed": "engine killed by PID (Engine.kill)"
+}

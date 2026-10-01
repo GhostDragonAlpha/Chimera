@@ -1,0 +1,1475 @@
+{
+ "schema": "chimera.matter_body.v1",
+ "specimen": {
+  "media_id": "000875604",
+  "species": "Macaca mulatta",
+  "specimen": "USNM 497136-3",
+  "modality": "X-Ray CT",
+  "resolution_um": 160,
+  "source": "MorphoSource CT 000875604; manual operator download (download_receipt.json); meshes_preview committed with mesh_receipt.json sha pinning",
+  "coordinate_frame": "CT millimetres (voxel 0.16 mm), the committed preview meshes' own frame, no transform applied"
+ },
+ "stage": {
+  "life_stage": "infant",
+  "scale": 1.0,
+  "allometric_scaling_applied": false,
+  "provenance": "MorphoSource media 000875604 metadata: Macaca mulatta USNM 497136-3, infant, 160 um CT (meshes/manifest.json source field + download_receipt.json)",
+  "negative_example": "the H2 per-bone 3.79-8.8x stretch factors (adjudicated FANTASY) -- this import shows scale 1.0 and an identity transform"
+ },
+ "units": {
+  "coordinates": "mm",
+  "thickness": "mm",
+  "density": "kg/mm^3",
+  "mass": "kg",
+  "cure_strength": "Pa (kernel convention)",
+  "note": "the kernel mass law (area x thickness x density) is unit-agnostic; these three agree, so mass is kg"
+ },
+ "membrane_layer": {
+  "layer": "bones (compartments) -- the first membrane layer",
+  "successors": [
+   "muscles: the next membrane layer over the bone compartments",
+   "skin eventually"
+  ],
+  "doctrine": "operator 2026-09-20: mesh data with triangles is all we need -- the triangles ARE the membranes"
+ },
+ "materials": {
+  "mat.bone_cortical": {
+   "density": 1.9e-06,
+   "young_modulus": 17000000000.0,
+   "yield": 100000000.0,
+   "hardness_vickers": 40.0,
+   "source": "COWIN 'Bone Mechanics Handbook'; CURREY 'Bones: Structure and Mechanics': cortical wet density 1800-2100 kg/m^3 (1900 used, = 1.9e-6 kg/mm^3); E ~15-20 GPa (17 used); tensile failure ~80-150 MPa (100 used, conservative); Vickers ~30-50 HV (40 used)",
+   "stage_note": "PROVISIONAL for infant: adult cortical range used as the cited UPPER ANCHOR; no infant-macaque tissue-density citation exists and infant bone is under-mineralized (RAUCH 2001, physiological osteoporosis of infancy), so compartment masses bias HIGH. Receipt mass_book names the deviation; it is never tuned away."
+  },
+  "mat.cartilage": {
+   "density": 1.06e-06,
+   "young_modulus": 10000000.0,
+   "yield": 13000000.0,
+   "hardness_vickers": 0.3,
+   "source": "YAMADA 1970 'Strength of Biological Materials' (Williams & Wilkins): cartilage tensile strength ~13 MPa, Young's modulus 7-25 MPa (10 used), density ~1.06 g/cm^3; the joint bond material at the measured touching edges"
+  }
+ },
+ "membranes": [
+  {
+   "id": "mem.bone_01",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_01.bin",
+   "thickness": 0.5806041970816694,
+   "mass": 0.03566596660476949,
+   "label": "axial_composite",
+   "side": "midline",
+   "confidence": "high",
+   "chain_kind": null,
+   "rank": 1,
+   "source_obj": "../meshes_preview/bone_01_4737869vox_lo.obj",
+   "source_obj_sha256": "b95cd329084d4b44ce5eb2fae66cd19a8599134d782fb6a020d67b9714afe9f7",
+   "vertices": 14658,
+   "faces": 30000,
+   "volume_mm3": 18771.56137093131,
+   "area_mm2": 32331.081079475643,
+   "voxel_volume_mm3": 19406.311424000003,
+   "voxel_delta_pct": -3.2708,
+   "vertex_sha256": "b934d05b70fcc29401e68f17a8f5e912ce612af4bab9e9222376e6f766f44df5",
+   "label_source": "bone_identification.json(v1)"
+  },
+  {
+   "id": "mem.bone_02",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_02.bin",
+   "thickness": 0.6654525245780579,
+   "mass": 0.0016355203101833609,
+   "label": "femur",
+   "side": "left",
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 2,
+   "source_obj": "../meshes_preview/bone_02_210240vox_lo.obj",
+   "source_obj_sha256": "c20aa8364c8d09623755fdbfbdc014d9548fdc3f6d89d1b998cacbaf37b49ed4",
+   "vertices": 15000,
+   "faces": 29998,
+   "volume_mm3": 860.8001632544004,
+   "area_mm2": 1293.5560862139732,
+   "voxel_volume_mm3": 861.1430400000002,
+   "voxel_delta_pct": -0.0398,
+   "vertex_sha256": "10130815de441fc525839f0bd87f5cc404fab9bc5b907a77aed80e3c78e3ea45",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_03",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_03.bin",
+   "thickness": 0.6573082641486325,
+   "mass": 0.001621971763849899,
+   "label": "femur",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 3,
+   "source_obj": "../meshes_preview/bone_03_208514vox_lo.obj",
+   "source_obj_sha256": "f7d638a01c2a34a19c0bc0240b058ccbf79d94cea467314c422d89b2b0ab9a99",
+   "vertices": 15006,
+   "faces": 30000,
+   "volume_mm3": 853.6693493946836,
+   "area_mm2": 1298.7351535894418,
+   "voxel_volume_mm3": 854.0733440000001,
+   "voxel_delta_pct": -0.0473,
+   "vertex_sha256": "23de94f5bc6df1c5c9b8730b68e503dcce0f714d3e3187179bfad7d6a7ed48a5",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_04",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_04.bin",
+   "thickness": 0.692136990961073,
+   "mass": 0.0014042458430767125,
+   "label": "humerus",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "fore",
+   "rank": 4,
+   "source_obj": "../meshes_preview/bone_04_180534vox_lo.obj",
+   "source_obj_sha256": "00a9a32628c0e6857864326473976f4a2cf07de8f34e8c2480803752bd923cc5",
+   "vertices": 14994,
+   "faces": 30000,
+   "volume_mm3": 739.0767595140592,
+   "area_mm2": 1067.818609850353,
+   "voxel_volume_mm3": 739.4672640000001,
+   "voxel_delta_pct": -0.0528,
+   "vertex_sha256": "8d9f53ca7c89ec6c121fcb3f4bd35f4afee0696bb16266128d94917ac61a38f8",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_05",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_05.bin",
+   "thickness": 0.6989224997820597,
+   "mass": 0.0013594082298111515,
+   "label": "humerus",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "fore",
+   "rank": 5,
+   "source_obj": "../meshes_preview/bone_05_174742vox_lo.obj",
+   "source_obj_sha256": "f06fefd372a57e8ba88f384f06cfa67036ffb973e44d444ad6f5b5e77a63fe2d",
+   "vertices": 14987,
+   "faces": 30000,
+   "volume_mm3": 715.4780156900797,
+   "area_mm2": 1023.6871983849173,
+   "voxel_volume_mm3": 715.7432320000001,
+   "voxel_delta_pct": -0.0371,
+   "vertex_sha256": "423b4f914b6e80b70372b6e98ee40dd4fc77968a92bdc1bae0747b7e3346a670",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_06",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_06.bin",
+   "thickness": 0.6059756035321878,
+   "mass": 0.0012020214749644828,
+   "label": "tibia",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 6,
+   "source_obj": "../meshes_preview/bone_06_154508vox_lo.obj",
+   "source_obj_sha256": "b1b15ff5e631ec4bac5353e0f2461c7d8561579ab1a78018bd83f3113838f901",
+   "vertices": 14999,
+   "faces": 29998,
+   "volume_mm3": 632.6428815602541,
+   "area_mm2": 1044.0071809370288,
+   "voxel_volume_mm3": 632.8647680000001,
+   "voxel_delta_pct": -0.0351,
+   "vertex_sha256": "6f9dbf09116aab8f76050e75eb7e61eb64a9786a5ad47312dd9566e04032b7e0",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_07",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_07.bin",
+   "thickness": 0.575990464499917,
+   "mass": 0.0011679323291043948,
+   "label": "tibia",
+   "side": "right",
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 7,
+   "source_obj": "../meshes_preview/bone_07_150102vox_lo.obj",
+   "source_obj_sha256": "5a2e24d5947dd2514205a8187599036ffa349af47fcde2d471f221511d0af157",
+   "vertices": 15004,
+   "faces": 30000,
+   "volume_mm3": 614.7012258444183,
+   "area_mm2": 1067.2072954855435,
+   "voxel_volume_mm3": 614.817792,
+   "voxel_delta_pct": -0.019,
+   "vertex_sha256": "6f4f8c8cbbbc966c6053173a7f9501a03813e84472e80cc74736d80f18d2f3c7",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_08",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_08.bin",
+   "thickness": 0.5116433176200114,
+   "mass": 0.0007943250618957993,
+   "label": "hand_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "fore",
+   "rank": 8,
+   "source_obj": "../meshes_preview/bone_08_102171vox_lo.obj",
+   "source_obj_sha256": "f053884c6f2b98107db180f95c9ed5bc5904c3144a8956be6d2a39ba79ef5924",
+   "vertices": 15016,
+   "faces": 30000,
+   "volume_mm3": 418.06582205042065,
+   "area_mm2": 817.1040403598331,
+   "voxel_volume_mm3": 418.49241600000005,
+   "voxel_delta_pct": -0.1019,
+   "vertex_sha256": "25d89c5606c924bc34ac3ecb8ab488f438fda90fac46a195eb2a0b3bd28098d3",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_09",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_09.bin",
+   "thickness": 0.49588592075876464,
+   "mass": 0.0007843097267633017,
+   "label": "hand_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "fore",
+   "rank": 9,
+   "source_obj": "../meshes_preview/bone_09_100874vox_lo.obj",
+   "source_obj_sha256": "10a1f1b21c2b535565048bea69764a99c1c2f35bd5356f004c909ebb89e76281",
+   "vertices": 15006,
+   "faces": 29998,
+   "volume_mm3": 412.7945930333167,
+   "area_mm2": 832.4386229834711,
+   "voxel_volume_mm3": 413.1799040000001,
+   "voxel_delta_pct": -0.0933,
+   "vertex_sha256": "34e885ef7e3d091e31ee02963bb56db9bded2b6479b52bb028f1b6baced8c222",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_10",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_10.bin",
+   "thickness": 0.6558777892095762,
+   "mass": 0.0007217401641021772,
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "fore",
+   "rank": 10,
+   "source_obj": "../meshes_preview/bone_10_92842vox_lo.obj",
+   "source_obj_sha256": "54678dbca44db5fa7a35c29fdb3baedaeea6fc7b890ad97ed619a8302a972f55",
+   "vertices": 15007,
+   "faces": 30000,
+   "volume_mm3": 379.8632442643038,
+   "area_mm2": 579.1677207457989,
+   "voxel_volume_mm3": 380.2808320000001,
+   "voxel_delta_pct": -0.1098,
+   "vertex_sha256": "bb4700f8dd27397bf291048df7a069d0f309a005ddb313a80157c7839424fe91",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_11",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_11.bin",
+   "thickness": 0.6421947845831466,
+   "mass": 0.0007038709678950312,
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "fore",
+   "rank": 11,
+   "source_obj": "../meshes_preview/bone_11_90563vox_lo.obj",
+   "source_obj_sha256": "2e1e286207faf65486984b3cf703f8d7ebaef6bc58577917b43ce2b53948f3fa",
+   "vertices": 14986,
+   "faces": 30000,
+   "volume_mm3": 370.45840415527954,
+   "area_mm2": 576.8629908692685,
+   "voxel_volume_mm3": 370.9460480000001,
+   "voxel_delta_pct": -0.1315,
+   "vertex_sha256": "ca1e6cf63fba924d05980132db41f016661d50f9cf071502fe39e4eb47bf994d",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_12",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_12.bin",
+   "thickness": 0.6487346135387492,
+   "mass": 0.0006845172910573082,
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "fore",
+   "rank": 12,
+   "source_obj": "../meshes_preview/bone_12_88112vox_lo.obj",
+   "source_obj_sha256": "9f90a8c2d3c23cb296c2be900af8e1d8a922f1597d6ebfa684561da45cc9c9ed",
+   "vertices": 14997,
+   "faces": 30000,
+   "volume_mm3": 360.27225845121484,
+   "area_mm2": 555.3461321972388,
+   "voxel_volume_mm3": 360.90675200000004,
+   "voxel_delta_pct": -0.1758,
+   "vertex_sha256": "b9e5dc6e3e9fb54da0a015b5b5080bb1e95fdc8dfea26559e6605c60a7a4d6e6",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_13",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_13.bin",
+   "thickness": 0.6377061084728667,
+   "mass": 0.0006727115749483169,
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "fore",
+   "rank": 13,
+   "source_obj": "../meshes_preview/bone_13_86590vox_lo.obj",
+   "source_obj_sha256": "6e7e1c988e78805d20a180447dd57b17b5eb1e2182b3bd975eb8cdbc786ec3a6",
+   "vertices": 14984,
+   "faces": 30000,
+   "volume_mm3": 354.0587236570089,
+   "area_mm2": 555.2067307382135,
+   "voxel_volume_mm3": 354.67264000000006,
+   "voxel_delta_pct": -0.1731,
+   "vertex_sha256": "d29b8205c059900120df03c4710983690a986fdf61e7ee6871203d0acae96aae",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_14",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_14.bin",
+   "thickness": 0.39005656685284995,
+   "mass": 0.0004545292889965505,
+   "label": "unpaired",
+   "side": null,
+   "confidence": null,
+   "chain_kind": null,
+   "rank": 14,
+   "source_obj": "../meshes_preview/bone_14_58499vox_lo.obj",
+   "source_obj_sha256": "1e51c0b691c107a945cab0deb89e19d3b0092c57afcec76cd249ffc7c4f1fae5",
+   "vertices": 14976,
+   "faces": 29998,
+   "volume_mm3": 239.22594157713186,
+   "area_mm2": 613.3108936155421,
+   "voxel_volume_mm3": 239.61190400000004,
+   "voxel_delta_pct": -0.1611,
+   "vertex_sha256": "820a844ad435ef5e4e08df62657552e4aa19990731e3fa98f7ce114bb63316c3",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_15",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_15.bin",
+   "thickness": 0.6791051039201538,
+   "mass": 0.00042423988482199684,
+   "label": "foot_class",
+   "side": "left",
+   "confidence": "medium(chain+rank, no within-10% homolog)",
+   "chain_kind": "hind",
+   "rank": 15,
+   "source_obj": "../meshes_preview/bone_15_54574vox_lo.obj",
+   "source_obj_sha256": "f7111f3f1767eac74c510df8667c24798f5f065280ecabb9a65f0f7e7b6ad536",
+   "vertices": 14995,
+   "faces": 30000,
+   "volume_mm3": 223.28414990631413,
+   "area_mm2": 328.79174168681686,
+   "voxel_volume_mm3": 223.53510400000005,
+   "voxel_delta_pct": -0.1123,
+   "vertex_sha256": "49f771067e58155063e041479a02feb1b64a0ea04d0176e4198b78061a592383",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_16",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_16.bin",
+   "thickness": 0.3772780295126155,
+   "mass": 0.0004233476106344902,
+   "label": "unpaired",
+   "side": null,
+   "confidence": null,
+   "chain_kind": null,
+   "rank": 16,
+   "source_obj": "../meshes_preview/bone_16_54463vox_lo.obj",
+   "source_obj_sha256": "52dfdd47f851a67b738f0f3dd369de833dd501381a849e2fedaac43fa08645dc",
+   "vertices": 14999,
+   "faces": 30000,
+   "volume_mm3": 222.81453191288958,
+   "area_mm2": 590.5844350404694,
+   "voxel_volume_mm3": 223.08044800000005,
+   "voxel_delta_pct": -0.1192,
+   "vertex_sha256": "1efe979b07cec33b6c58521d82dae4defb80cce8e5a4a39202b0b9fc6e0cc6bf",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_17",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_17.bin",
+   "thickness": 0.6820138402033306,
+   "mass": 0.00042152878449894455,
+   "label": "foot_class",
+   "side": "right",
+   "confidence": "medium(chain+rank, no within-10% homolog)",
+   "chain_kind": "hind",
+   "rank": 17,
+   "source_obj": "../meshes_preview/bone_17_54226vox_lo.obj",
+   "source_obj_sha256": "74c14826c748245762fb45d966eb12ffb6796503c7fd8043744f4f8dae4f1a8a",
+   "vertices": 15002,
+   "faces": 30000,
+   "volume_mm3": 221.85725499944454,
+   "area_mm2": 325.29729152314803,
+   "voxel_volume_mm3": 222.10969600000004,
+   "voxel_delta_pct": -0.1137,
+   "vertex_sha256": "f29baae2e852375611ecf66d2127ba4c5f09acfb0f9d9a730394e70bcc5cf255",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_18",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_18.bin",
+   "thickness": 0.35930544014574506,
+   "mass": 0.0004121112237036596,
+   "label": "foot_class",
+   "side": null,
+   "confidence": "medium(chain+rank, no within-10% homolog)",
+   "chain_kind": "hind",
+   "rank": 18,
+   "source_obj": "../meshes_preview/bone_18_53022vox_lo.obj",
+   "source_obj_sha256": "c752e9458b6d267c741da1be256737758528e7d7542c92472a3d458a9fa38a50",
+   "vertices": 14964,
+   "faces": 30000,
+   "volume_mm3": 216.9006440545577,
+   "area_mm2": 603.6664626246023,
+   "voxel_volume_mm3": 217.17811200000003,
+   "voxel_delta_pct": -0.1278,
+   "vertex_sha256": "7e59b9dd9bf9f7417acd187e41264159cbcda0d2ff968a0b49400b2c64c5eff9",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_19",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_19.bin",
+   "thickness": 0.37677997329224594,
+   "mass": 0.0003481389741029074,
+   "label": "unpaired",
+   "side": null,
+   "confidence": null,
+   "chain_kind": null,
+   "rank": 19,
+   "source_obj": "../meshes_preview/bone_19_44805vox_lo.obj",
+   "source_obj_sha256": "526d8da177574a3d9d3b248b5b78c8096a02990e00523b383b87721189265a25",
+   "vertices": 14985,
+   "faces": 30000,
+   "volume_mm3": 183.2310390015302,
+   "area_mm2": 486.3077976265175,
+   "voxel_volume_mm3": 183.52128000000002,
+   "voxel_delta_pct": -0.1582,
+   "vertex_sha256": "0161c1909a66d95164756a0050646aaa7c61dc15a3ce50bfafbcdd8f937cc667",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_20",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_20.bin",
+   "thickness": 0.4569362938886918,
+   "mass": 0.0002654398316410791,
+   "label": "fibula",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 20,
+   "source_obj": "../meshes_preview/bone_20_34255vox_lo.obj",
+   "source_obj_sha256": "6ab6c392b5d65670c88c37f1de7d1b6c0e79a31fa80850b6497d8c35ac771b9b",
+   "vertices": 15002,
+   "faces": 30000,
+   "volume_mm3": 139.70517454793637,
+   "area_mm2": 305.7432215747084,
+   "voxel_volume_mm3": 140.30848000000003,
+   "voxel_delta_pct": -0.43,
+   "vertex_sha256": "ed0b7071f0de63dfabebcdbe7c89c015efdf532fe8e8a2839c3148124aed07da",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_21",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_21.bin",
+   "thickness": 0.44227134368214593,
+   "mass": 0.00025701279497083063,
+   "label": "fibula",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 21,
+   "source_obj": "../meshes_preview/bone_21_33153vox_lo.obj",
+   "source_obj_sha256": "b4a43a6499e5dd4131678a582e7b002d94fa6de43bd7dcde2e7aba4ad6d5d8e9",
+   "vertices": 15003,
+   "faces": 30000,
+   "volume_mm3": 135.26989208991085,
+   "area_mm2": 305.8527169400498,
+   "voxel_volume_mm3": 135.79468800000004,
+   "voxel_delta_pct": -0.3865,
+   "vertex_sha256": "90f115df81fb3031bb9334473a9b8258f8298215217b957ca01faeff3c59a1f2",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_22",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_22.bin",
+   "thickness": 0.5154513877444894,
+   "mass": 0.00024852926303889263,
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 22,
+   "source_obj": "../meshes_preview/bone_22_31952vox_lo.obj",
+   "source_obj_sha256": "15272ed8bab2e9e9c584d5a78a0983c525863368c31f10fcec5311b3351835bf",
+   "vertices": 13048,
+   "faces": 26104,
+   "volume_mm3": 130.8048752836277,
+   "area_mm2": 253.7676265767821,
+   "voxel_volume_mm3": 130.87539200000003,
+   "voxel_delta_pct": -0.0539,
+   "vertex_sha256": "18221a8c7990bd5215251c39cd46d23c7eb32e70c253c8b7fef088c78268149b",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_23",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_23.bin",
+   "thickness": 0.5122577925534112,
+   "mass": 0.0002456699658410924,
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 23,
+   "source_obj": "../meshes_preview/bone_23_31588vox_lo.obj",
+   "source_obj_sha256": "6afe670eeae573511787ba1b6853de714462a99e0703d01daba85150b7c4b6bd",
+   "vertices": 13221,
+   "faces": 26450,
+   "volume_mm3": 129.29998202162759,
+   "area_mm2": 252.41193770253082,
+   "voxel_volume_mm3": 129.38444800000002,
+   "voxel_delta_pct": -0.0653,
+   "vertex_sha256": "9564d890e7f67a1b1fb9f7e5da66c55cf9e0b32aee7911b721a5032199eab109",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_24",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_24.bin",
+   "thickness": 0.7288504565260346,
+   "mass": 0.00019747608468083144,
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 24,
+   "source_obj": "../meshes_preview/bone_24_25423vox_lo.obj",
+   "source_obj_sha256": "5e93fd0604d82285ce1f15f613795cf6931257c2a2b09794954948370c660892",
+   "vertices": 7376,
+   "faces": 14748,
+   "volume_mm3": 103.93478141096392,
+   "area_mm2": 142.60096907444463,
+   "voxel_volume_mm3": 104.13260800000002,
+   "voxel_delta_pct": -0.19,
+   "vertex_sha256": "c1728827ecaaad669bdd2668f709e5b14dcfdde725b7e067904d9a7a58d66122",
+   "label_source": "bone_identification_v3.json"
+  },
+  {
+   "id": "mem.bone_25",
+   "material": "mat.bone_cortical",
+   "triangles": "tris/bone_25.bin",
+   "thickness": 0.6996449272898005,
+   "mass": 0.00019737042645920493,
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "chain_kind": "hind",
+   "rank": 25,
+   "source_obj": "../meshes_preview/bone_25_25400vox_lo.obj",
+   "source_obj_sha256": "e73d847f2d937e3af921821ca8569b57c31456a29d3653c5efa03c45276e7f43",
+   "vertices": 7616,
+   "faces": 15228,
+   "volume_mm3": 103.87917182063417,
+   "area_mm2": 148.4741299033335,
+   "voxel_volume_mm3": 104.03840000000002,
+   "voxel_delta_pct": -0.153,
+   "vertex_sha256": "1e7e5c69a3662c13769e77bde99e64042603c291bd2bf2f5525e0b78c3eb1c33",
+   "label_source": "bone_identification_v3.json"
+  }
+ ],
+ "bonds": [
+  {
+   "id": "bond.joint_02_06",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_02",
+    "mem.bone_06"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 2.91,
+   "measured_gap_mm": 2.91,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [2, 6], gap_mm 2.91",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "knee joint (left, femur (side left) to tibia): femorotibial apposition, the hind chain's touching_edge at the derived gap valley (2.91 mm at the (2.91, 3.04) shared cut interval)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -2.0943951,
+     0.17453293
+    ],
+    "range_source": "gait2392_thelen2003muscle.osim knee_l/r knee_angle [-2.0943951, 0.17453293] rad, one-sided flexion (parsed from the sha-pinned committed record); Rajagopal2016.osim walker_knee_l/r knee_angle [0.0, 2.0944] recorded as the same-class context (one-sided, opposite sign convention); adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a and 3; gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
+  },
+  {
+   "id": "bond.joint_02_15",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_02",
+    "mem.bone_15"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 1.01,
+   "measured_gap_mm": 1.01,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [2, 15], gap_mm 1.01",
+   "joint_class": {
+    "class": "positional_contact",
+    "reading": "curl apposition (hind, left): the pes fragment mem.bone_15 carried against the femur mem.bone_02 in the scanned curled fetal pose - a positional contact, NOT an anatomical articulation (the pose_contacts finding of this definition, applied here to the in-chain appositions); flagged for anatomical review",
+    "dof_count": 0,
+    "dof_form": "NONE - no anatomical joint exists at this contact to own a coordinate (the corpse-pose apposition class); the bond keeps its cure and B2 failure semantics exactly like every bond - the class record binds poses only",
+    "range_rad": null,
+    "range_source": "none exists to cite: no anatomical joint is claimed at this contact - no range is invented; the pose_contacts wording is the precedent",
+    "pivot_form": "none",
+    "pivot_record": "no rotation center: a pose that would rotate this bond has no anatomical record to cite and is refused by name",
+    "citations": "this definition's pose_contacts section; docs/THE_ARTICULATION_LAW.md sections 0 and 3(3)"
+   }
+  },
+  {
+   "id": "bond.joint_03_07",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_03",
+    "mem.bone_07"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 2.83,
+   "measured_gap_mm": 2.83,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [3, 7], gap_mm 2.83",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "knee joint (right, femur to tibia (side right)): femorotibial apposition, the hind chain's touching_edge at the derived gap valley (2.83 mm)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -2.0943951,
+     0.17453293
+    ],
+    "range_source": "gait2392_thelen2003muscle.osim knee_l/r knee_angle [-2.0943951, 0.17453293] rad, one-sided flexion (parsed from the sha-pinned committed record); Rajagopal2016.osim walker_knee_l/r knee_angle [0.0, 2.0944] recorded as the same-class context (one-sided, opposite sign convention); adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a and 3; gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
+  },
+  {
+   "id": "bond.joint_03_17",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_03",
+    "mem.bone_17"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.69,
+   "measured_gap_mm": 0.69,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [3, 17], gap_mm 0.69",
+   "joint_class": {
+    "class": "positional_contact",
+    "reading": "curl apposition (hind, right): the pes fragment mem.bone_17 carried against the femur mem.bone_03 in the scanned curled fetal pose - a positional contact, NOT an anatomical articulation (the pose_contacts finding of this definition, applied here to the in-chain appositions); flagged for anatomical review",
+    "dof_count": 0,
+    "dof_form": "NONE - no anatomical joint exists at this contact to own a coordinate (the corpse-pose apposition class); the bond keeps its cure and B2 failure semantics exactly like every bond - the class record binds poses only",
+    "range_rad": null,
+    "range_source": "none exists to cite: no anatomical joint is claimed at this contact - no range is invented; the pose_contacts wording is the precedent",
+    "pivot_form": "none",
+    "pivot_record": "no rotation center: a pose that would rotate this bond has no anatomical record to cite and is refused by name",
+    "citations": "this definition's pose_contacts section; docs/THE_ARTICULATION_LAW.md sections 0 and 3(3)"
+   }
+  },
+  {
+   "id": "bond.joint_04_08",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_04",
+    "mem.bone_08"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.73,
+   "measured_gap_mm": 0.73,
+   "evidence": "bone_identification_v3.json chain fore touching_edge [4, 8], gap_mm 0.73",
+   "joint_class": {
+    "class": "positional_contact",
+    "reading": "curl apposition (fore, chain A): the hand membrane mem.bone_08 carried against the humerus mem.bone_04 in the scanned curled fetal pose - a positional contact, NOT an anatomical articulation (the pose_contacts finding of this definition, applied here to the in-chain appositions); flagged for anatomical review",
+    "dof_count": 0,
+    "dof_form": "NONE - no anatomical joint exists at this contact to own a coordinate (the corpse-pose apposition class); the bond keeps its cure and B2 failure semantics exactly like every bond - the class record binds poses only",
+    "range_rad": null,
+    "range_source": "none exists to cite: no anatomical joint is claimed at this contact - no range is invented; the pose_contacts wording is the precedent",
+    "pivot_form": "none",
+    "pivot_record": "no rotation center: a pose that would rotate this bond has no anatomical record to cite and is refused by name",
+    "citations": "this definition's pose_contacts section; docs/THE_ARTICULATION_LAW.md sections 0 and 3(3)"
+   }
+  },
+  {
+   "id": "bond.joint_04_10",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_04",
+    "mem.bone_10"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 2.0,
+   "measured_gap_mm": 2.0,
+   "evidence": "bone_identification_v3.json chain fore touching_edge [4, 10], gap_mm 2.0",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "elbow (forelimb A): humero-antebrachial apposition - the humerus membrane articulates with BOTH forearm membranes (the elbow's two osseous appositions of one anatomical hinge, carried by this bond and bond.joint_04_12)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) per anatomical hinge - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     0.34906585,
+     2.44346095
+    ],
+    "range_source": "monkeyArm_current.osim (macaca forelimb) elbow elbow_flexion [0.34906585, 2.44346095] rad, one-sided (parsed from the sha-pinned committed record) - the closest-species record in the held set; Rajagopal2016.osim elbow_l/r [0.0, 2.618] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
+  },
+  {
+   "id": "bond.joint_04_12",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_04",
+    "mem.bone_12"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.93,
+   "measured_gap_mm": 0.93,
+   "evidence": "bone_identification_v3.json chain fore touching_edge [4, 12], gap_mm 0.93",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "elbow (forelimb A): humero-antebrachial apposition - the humerus membrane articulates with BOTH forearm membranes (the elbow's two osseous appositions of one anatomical hinge, carried by this bond and bond.joint_04_10)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) per anatomical hinge - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     0.34906585,
+     2.44346095
+    ],
+    "range_source": "monkeyArm_current.osim (macaca forelimb) elbow elbow_flexion [0.34906585, 2.44346095] rad, one-sided (parsed from the sha-pinned committed record) - the closest-species record in the held set; Rajagopal2016.osim elbow_l/r [0.0, 2.618] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
+  },
+  {
+   "id": "bond.joint_05_09",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_05",
+    "mem.bone_09"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.86,
+   "measured_gap_mm": 0.86,
+   "evidence": "bone_identification_v3.json chain fore touching_edge [5, 9], gap_mm 0.86",
+   "joint_class": {
+    "class": "positional_contact",
+    "reading": "curl apposition (fore, chain B): the hand membrane mem.bone_09 carried against the humerus mem.bone_05 in the scanned curled fetal pose - a positional contact, NOT an anatomical articulation (the pose_contacts finding of this definition, applied here to the in-chain appositions); flagged for anatomical review",
+    "dof_count": 0,
+    "dof_form": "NONE - no anatomical joint exists at this contact to own a coordinate (the corpse-pose apposition class); the bond keeps its cure and B2 failure semantics exactly like every bond - the class record binds poses only",
+    "range_rad": null,
+    "range_source": "none exists to cite: no anatomical joint is claimed at this contact - no range is invented; the pose_contacts wording is the precedent",
+    "pivot_form": "none",
+    "pivot_record": "no rotation center: a pose that would rotate this bond has no anatomical record to cite and is refused by name",
+    "citations": "this definition's pose_contacts section; docs/THE_ARTICULATION_LAW.md sections 0 and 3(3)"
+   }
+  },
+  {
+   "id": "bond.joint_05_11",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_05",
+    "mem.bone_11"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 2.27,
+   "measured_gap_mm": 2.27,
+   "evidence": "bone_identification_v3.json chain fore touching_edge [5, 11], gap_mm 2.27",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "elbow (forelimb B): humero-antebrachial apposition - the humerus membrane articulates with BOTH forearm membranes (the elbow's two osseous appositions of one anatomical hinge, carried by this bond and bond.joint_05_13)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) per anatomical hinge - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     0.34906585,
+     2.44346095
+    ],
+    "range_source": "monkeyArm_current.osim (macaca forelimb) elbow elbow_flexion [0.34906585, 2.44346095] rad, one-sided (parsed from the sha-pinned committed record) - the closest-species record in the held set; Rajagopal2016.osim elbow_l/r [0.0, 2.618] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
+  },
+  {
+   "id": "bond.joint_05_13",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_05",
+    "mem.bone_13"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.86,
+   "measured_gap_mm": 0.86,
+   "evidence": "bone_identification_v3.json chain fore touching_edge [5, 13], gap_mm 0.86",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "elbow (forelimb B): humero-antebrachial apposition - the humerus membrane articulates with BOTH forearm membranes (the elbow's two osseous appositions of one anatomical hinge, carried by this bond and bond.joint_05_11)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (hinge) per anatomical hinge - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     0.34906585,
+     2.44346095
+    ],
+    "range_source": "monkeyArm_current.osim (macaca forelimb) elbow elbow_flexion [0.34906585, 2.44346095] rad, one-sided (parsed from the sha-pinned committed record) - the closest-species record in the held set; Rajagopal2016.osim elbow_l/r [0.0, 2.618] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
+  },
+  {
+   "id": "bond.joint_06_20",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_06",
+    "mem.bone_20"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.48,
+   "measured_gap_mm": 0.48,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [6, 20], gap_mm 0.48",
+   "joint_class": {
+    "class": "syndesmosis_nodof",
+    "reading": "tibiofibular syndesmosis (left): the apposed shafts of tibia and fibula, measured gap 0.48 mm",
+    "dof_count": 0,
+    "dof_form": "NONE - fusion class (law doc section 3(4)): today's bond semantics IS the law for this class, stated explicitly instead of by omission - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": null,
+    "range_source": "CITED ABSENCE: no tibiofibular joint exists in any held model (Rajagopal2016.osim: ten PinJoints - ankle/subtalar/mtp/elbow/radioulnar per side - and none tibiofibular; gait2392_thelen2003muscle.osim: none; monkeyArm_current.osim: none); no range exists to cite and none is invented",
+    "pivot_form": "none",
+    "pivot_record": "the measured sphere fits of tarsal_cycle_pivots_20260921 converge on this bond and DISCRIMINATE real from null - and bind NOTHING: geometric admissibility is not a DOF; the class record refuses every pose through this bond (out_of_anatomical_range), the law doc A5 refusal",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4 and 3(4); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
+  },
+  {
+   "id": "bond.joint_06_25",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_06",
+    "mem.bone_25"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.66,
+   "measured_gap_mm": 0.66,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [6, 25], gap_mm 0.66",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "tibiocrural apposition (left): the pes's tarsal trochlear region against the tibia - tarsal 3-cycle A (06-20-25) DRIVER bond",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
+  },
+  {
+   "id": "bond.joint_07_18",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_07",
+    "mem.bone_18"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 1.79,
+   "measured_gap_mm": 1.79,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [7, 18], gap_mm 1.79",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "tibiocrural apposition (right): tibiopodal contact of the pes fragment mem.bone_18",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form). This bond is NOT among the six measured cycle bonds: no fit or seat reading exists for it; the first pose through it pre-registers its derivation and inherits the falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
+  },
+  {
+   "id": "bond.joint_07_21",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_07",
+    "mem.bone_21"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.45,
+   "measured_gap_mm": 0.45,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [7, 21], gap_mm 0.45",
+   "joint_class": {
+    "class": "syndesmosis_nodof",
+    "reading": "tibiofibular syndesmosis (right): the apposed shafts of tibia and fibula, measured gap 0.45 mm",
+    "dof_count": 0,
+    "dof_form": "NONE - fusion class (law doc section 3(4)): today's bond semantics IS the law for this class, stated explicitly instead of by omission - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": null,
+    "range_source": "CITED ABSENCE: no tibiofibular joint exists in any held model (Rajagopal2016.osim: ten PinJoints - ankle/subtalar/mtp/elbow/radioulnar per side - and none tibiofibular; gait2392_thelen2003muscle.osim: none; monkeyArm_current.osim: none); no range exists to cite and none is invented",
+    "pivot_form": "none",
+    "pivot_record": "the measured sphere fits of tarsal_cycle_pivots_20260921 converge on this bond and DISCRIMINATE real from null - and bind NOTHING: geometric admissibility is not a DOF; the class record refuses every pose through this bond (out_of_anatomical_range), the law doc A5 refusal",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4 and 3(4); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
+  },
+  {
+   "id": "bond.joint_07_24",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_07",
+    "mem.bone_24"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.86,
+   "measured_gap_mm": 0.86,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [7, 24], gap_mm 0.86",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "tibiocrural apposition (right): the pes's tarsal trochlear region against the tibia - tarsal 3-cycle B (07-21-24) DRIVER bond",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
+  },
+  {
+   "id": "bond.joint_10_12",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_10",
+    "mem.bone_12"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.38,
+   "measured_gap_mm": 0.38,
+   "evidence": "bone_identification_v3.json chain fore touching_edge [10, 12], gap_mm 0.38",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "radioulnar articulation (forelimb A): the apposed shafts of the two forearm membranes (the bond carries the radioulnar complex's apposition; the proximal and distal pivots are not distinguished at membrane granularity)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (pronation-supination pivot) - the same paired-bone morphology that holds NO DOF as the tibiofibular syndesmosis by cited absence: THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -1.57079633,
+     1.57079633
+    ],
+    "range_source": "monkeyArm_current.osim ulnar_radial radial_pronation [-1.57079633, 1.57079633] rad (parsed from the sha-pinned committed record); Rajagopal2016.osim radioulnar_l/r pro_sup [0.0, 1.57079633] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
+  },
+  {
+   "id": "bond.joint_11_13",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_11",
+    "mem.bone_13"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.47,
+   "measured_gap_mm": 0.47,
+   "evidence": "bone_identification_v3.json chain fore touching_edge [11, 13], gap_mm 0.47",
+   "joint_class": {
+    "class": "hinge_revolute",
+    "reading": "radioulnar articulation (forelimb B): the apposed shafts of the two forearm membranes (the bond carries the radioulnar complex's apposition; the proximal and distal pivots are not distinguished at membrane granularity)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (pronation-supination pivot) - the same paired-bone morphology that holds NO DOF as the tibiofibular syndesmosis by cited absence: THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -1.57079633,
+     1.57079633
+    ],
+    "range_source": "monkeyArm_current.osim ulnar_radial radial_pronation [-1.57079633, 1.57079633] rad (parsed from the sha-pinned committed record); Rajagopal2016.osim radioulnar_l/r pro_sup [0.0, 1.57079633] same-class context; adult-band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM, AXIS DERIVATION OPEN: the engine's 8-float hinge record (pivot J, axis A, theta_rad; the gait engine's hinge columns, law doc section 1.3a) is the wire form; no axis derivation is registered for this bond yet - the first pose through it pre-registers the axis derivation with zero free numbers and inherits the law doc A1-A5 falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.3a, 1.4 and 3; monkeyArm_current.osim (sha256 4148aee2c8dda1dcb0918496ad7c5e1adcf4ebabde0a68a3e0dc67faec67b895; limblab/monkeyArmModel @ 4fb7ddde, MIT); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e)"
+   }
+  },
+  {
+   "id": "bond.joint_20_25",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_20",
+    "mem.bone_25"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 2.47,
+   "measured_gap_mm": 2.47,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [20, 25], gap_mm 2.47",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "fibulotarsal apposition (left): the lateral malleolar contact of the pes - tarsal 3-cycle A (06-20-25) LOOP bond; measured loop-seat margin 0.357668256426 mm at the registered band",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
+  },
+  {
+   "id": "bond.joint_21_24",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_21",
+    "mem.bone_24"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 2.9,
+   "measured_gap_mm": 2.9,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [21, 24], gap_mm 2.9",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "fibulotarsal apposition (right): the lateral malleolar contact of the pes - tarsal 3-cycle B (07-21-24) LOOP bond; measured loop-seat margin 0.040529146675 mm at the registered band - THIN, RECORDED THIN: the practical edge of the band on this cycle; a future pose needing margin narrows the band lawfully (a pre-registered, derived narrowing of the class's own range record), never widens the committed 3.0 mm cut; the class-prescribed pin-axis form is the receipt's named lawful route to widen the margin itself",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form) The receipt's own words: the successor class amendment (a hinge-axis or contact-frame pivot form prescribed per class) is the lawful way to widen it.",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
+  },
+  {
+   "id": "bond.joint_22_25",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_22",
+    "mem.bone_25"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 0.99,
+   "measured_gap_mm": 0.99,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [22, 25], gap_mm 0.99",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "intertarsal apposition within the left pes (fragments mem.bone_22 - mem.bone_25)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned; the held models carry NO intertarsal record; the class's cited band is applied as the class record and the joint-level gap is named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form). This bond is NOT among the six measured cycle bonds: no fit or seat reading exists for it; the first pose through it pre-registers its derivation and inherits the falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
+  },
+  {
+   "id": "bond.joint_23_24",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_23",
+    "mem.bone_24"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 1.01,
+   "measured_gap_mm": 1.01,
+   "evidence": "bone_identification_v3.json chain hind touching_edge [23, 24], gap_mm 1.01",
+   "joint_class": {
+    "class": "condyled_gliding",
+    "reading": "intertarsal apposition within the right pes (fragments mem.bone_23 - mem.bone_24)",
+    "dof_count": 1,
+    "dof_form": "one revolute coordinate (the held PinJoint record of the tarsal complex) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     -0.34906585,
+     0.34906585
+    ],
+    "range_source": "Rajagopal2016.osim subtalar_l/r subtalar_angle [-0.34906585, 0.34906585] rad (parsed from the sha-pinned committed record; symmetric both sides) - the tarsal-class cited band and the registered band of tarsal_cycle_pivots_20260921; same-model adjacent records: ankle_l/r [-0.6981317, 0.52359878], mtp_l/r [-0.52359878, 0.52359878]; gait2392 wide bands (+/-1.57079633) context only; adult-human band, species and stage deviation named, never tuned; the held models carry NO intertarsal record; the class's cited band is applied as the class record and the joint-level gap is named, never tuned",
+    "pivot_form": "pin_axis",
+    "pivot_record": "PRESCRIBED FORM (the held PinJoint records), AXIS DERIVATION OPEN - and the measured evidence recorded beside it, never as prescription: the transplanted sphere-form fits of tarsal_cycle_pivots_20260921 converge on this bond, seat through the registered band, and DISCRIMINATE real from null (the receipt's class verdict; the prescription gap that receipt named is filled here by the cited PinJoint form). This bond is NOT among the six measured cycle bonds: no fit or seat reading exists for it; the first pose through it pre-registers its derivation and inherits the falsifiers",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 1.4, 3 and 5B; Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); tools/science_funnel/validation/tarsal_cycle_pivots_20260921/receipt.json"
+   }
+  },
+  {
+   "id": "bond.joint_01_02",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_01",
+    "mem.bone_02"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 1.44,
+   "measured_gap_mm": 1.44,
+   "refined_gap_mm": 1.403,
+   "closest_points_mm": {
+    "on_01": [
+     61.142,
+     42.844,
+     41.118
+    ],
+    "on_02": [
+     59.904,
+     42.598,
+     41.731
+    ]
+   },
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933, The Anatomy of the Rhesus Monkey)",
+   "evidence": "axial_adjacency_20260920 measured law gap 1.44 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json; adopted by lane agent/axial-limb-adjacency-20260920 successor agent/hip-bond-adoption-20260921 from candidate_bonds.json bond.joint_01_02 (pre-registered GREEN, rest_length = the law gap per the refinement_law: bonds are defined on the vertex metric); receipt tools/science_funnel/validation/hip_adoption_20260921/receipt.json",
+   "joint_class": {
+    "class": "ball_and_socket",
+    "reading": "hip joint (left): femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933) - the bond's anatomical_reading promoted verbatim to the class record by lane agent/joint-class-records-20260921",
+    "dof_count": 3,
+    "dof_form": "three named rotational coordinates (the OpenSim ball-and-socket record: flexion, adduction, rotation) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     [
+      -2.0943951,
+      2.0943951
+     ],
+     [
+      -2.0943951,
+      2.0943951
+     ],
+     [
+      -2.0943951,
+      2.0943951
+     ]
+    ],
+    "range_source": "gait2392_thelen2003muscle.osim hip_l: hip_flexion_l/adduction_l/rotation_l, each [-2.0943951, 2.0943951] rad (parsed from the sha-pinned committed record; the hip lane's registered band edge R); Rajagopal2016.osim hip per-axis bands [-0.52359878, 2.0943951] / [-0.87266463, 0.52359878] / [-0.6981317, 0.6981317] recorded as the same-class context; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "sphere_fit",
+    "pivot_record": "REGISTERED: the femoral-head center fit of hip_pivot_proof_20260921/battery.json (radius 3.044128510081 mm, rms_residual 0.155477725893 mm; predicate P6' v2, law doc 5B - real-vs-null discriminating); the axis is the bilateral line through the two hip pivots, sign set by the recorded curl (law doc section 3)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 3, 5, 5A, 5B; gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); Hartman & Straus 1933, The Anatomy of the Rhesus Monkey"
+   }
+  },
+  {
+   "id": "bond.joint_01_03",
+   "material": "mat.cartilage",
+   "members": [
+    "mem.bone_01",
+    "mem.bone_03"
+   ],
+   "cure_strength": 13000000.0,
+   "rest_length_mm": 1.49,
+   "measured_gap_mm": 1.49,
+   "refined_gap_mm": 1.343,
+   "closest_points_mm": {
+    "on_01": [
+     59.633,
+     43.14,
+     25.066
+    ],
+    "on_03": [
+     58.322,
+     43.093,
+     24.777
+    ]
+   },
+   "anatomical_reading": "hip joint: femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933)",
+   "evidence": "axial_adjacency_20260920 measured law gap 1.49 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json; adopted by lane agent/axial-limb-adjacency-20260920 successor agent/hip-bond-adoption-20260921 from candidate_bonds.json bond.joint_01_03 (pre-registered GREEN, rest_length = the law gap per the refinement_law: bonds are defined on the vertex metric); receipt tools/science_funnel/validation/hip_adoption_20260921/receipt.json",
+   "joint_class": {
+    "class": "ball_and_socket",
+    "reading": "hip joint (right): femoral head apposed to the acetabular region of the composite pelvis mass (Hartman & Straus 1933) - the bond's anatomical_reading promoted verbatim to the class record by lane agent/joint-class-records-20260921",
+    "dof_count": 3,
+    "dof_form": "three named rotational coordinates (the OpenSim ball-and-socket record: flexion, adduction, rotation) - THE CLASS RECORD BINDS THE DOFS, not the geometry",
+    "range_rad": [
+     [
+      -2.0943951,
+      2.0943951
+     ],
+     [
+      -2.0943951,
+      2.0943951
+     ],
+     [
+      -2.0943951,
+      2.0943951
+     ]
+    ],
+    "range_source": "gait2392_thelen2003muscle.osim hip_r: hip_flexion_r/adduction_r/rotation_r, each [-2.0943951, 2.0943951] rad (parsed from the sha-pinned committed record; the hip lane's registered band edge R); Rajagopal2016.osim hip per-axis bands [-0.52359878, 2.0943951] / [-0.87266463, 0.52359878] / [-0.6981317, 0.6981317] recorded as the same-class context; adult-human band, species and stage deviation named, never tuned",
+    "pivot_form": "sphere_fit",
+    "pivot_record": "REGISTERED: the femoral-head center fit of hip_pivot_proof_20260921/battery.json (radius 2.682250273053 mm, rms_residual 0.147474758014 mm; predicate P6' v2, law doc 5B - real-vs-null discriminating); the axis is the bilateral line through the two hip pivots, sign set by the recorded curl (law doc section 3)",
+    "citations": "docs/THE_ARTICULATION_LAW.md sections 3, 5, 5A, 5B; gait2392_thelen2003muscle.osim (sha256 18e5b3e406a619a78d109e81e6e2cd4f58681a967808fb52a992bbd2b27db019); Rajagopal2016.osim (sha256 4ed1b573715b5747a203f6ea1dfdbbc6480ce8f24cf70fb00447591b1f599a1e); Hartman & Straus 1933, The Anatomy of the Rhesus Monkey"
+   }
+  }
+ ],
+ "pose_contacts": {
+  "status": "RECORDED, NOT BONDED -- the discovered (unpre-registered) curl appositions from axial_adjacency_20260920 are the specimen's actual contacts in the curled fetal pose it was CT-scanned in: real measured geometry, NOT anatomical joints. A standing-pose animal would not have them. The biological law's stage/pose honesty applies to pose: they ride this metadata section, never the bond graph, so no connected component merges through them.",
+  "measured_source": "tools/science_funnel/validation/axial_adjacency_20260920/candidate_bonds.json (pre_registered: false entries, verbatim); receipt of the same lane",
+  "contacts": [
+   {
+    "id": "pose.joint_01_08",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_08"
+    ],
+    "measured_gap_mm": 0.68,
+    "refined_gap_mm": 0.681,
+    "closest_points_mm": {
+     "on_01": [
+      137.894,
+      32.19,
+      40.069
+     ],
+     "on_08": [
+      138.24,
+      32.72,
+      40.32
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "fore_chain_min04"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 0.68 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_09",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_09"
+    ],
+    "measured_gap_mm": 0.56,
+    "refined_gap_mm": 0.0,
+    "closest_points_mm": {
+     "on_01": [
+      127.734,
+      10.687,
+      21.46
+     ],
+     "on_09": [
+      143.2,
+      22.64,
+      19.36
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "fore_chain_min05"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 0.56 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_11",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_11"
+    ],
+    "measured_gap_mm": 2.75,
+    "refined_gap_mm": 0.0,
+    "closest_points_mm": {
+     "on_01": [
+      111.319,
+      12.211,
+      23.265
+     ],
+     "on_11": [
+      110.08,
+      11.84,
+      20.4
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "fore_chain_min05"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 2.75 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_13",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_13"
+    ],
+    "measured_gap_mm": 2.83,
+    "refined_gap_mm": 0.0,
+    "closest_points_mm": {
+     "on_01": [
+      87.466,
+      55.778,
+      28.531
+     ],
+     "on_13": [
+      114.72,
+      29.36,
+      13.12
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "fore_chain_min05"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 2.83 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_15",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_15"
+    ],
+    "measured_gap_mm": 0.85,
+    "refined_gap_mm": 0.823,
+    "closest_points_mm": {
+     "on_01": [
+      59.782,
+      43.848,
+      37.8
+     ],
+     "on_15": [
+      58.96,
+      43.84,
+      37.76
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "hind_chain_min02"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 0.85 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   },
+   {
+    "id": "pose.joint_01_17",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_17"
+    ],
+    "measured_gap_mm": 0.64,
+    "refined_gap_mm": 0.592,
+    "closest_points_mm": {
+     "on_01": [
+      58.904,
+      44.821,
+      27.901
+     ],
+     "on_17": [
+      58.32,
+      44.8,
+      28.0
+     ]
+    },
+    "components": [
+     "axial_composite",
+     "hind_chain_min03"
+    ],
+    "anatomical_reading": "discovered (unpre-registered): curl apposition; anatomical joint type NOT claimed -- flagged for anatomical review",
+    "evidence": "axial_adjacency_20260920 measured law gap 0.64 mm (identify_bones_v2 metric, cut 3.0 mm); receipt tools/science_funnel/validation/axial_adjacency_20260920/receipt.json"
+   }
+  ]
+ },
+ "refused_joints": {
+  "status": "HONEST REFUSALS -- measured on the law metric and never tuned away; no bond is claimed. The 8-component reading stands as anatomy for these pairs.",
+  "measured_source": "tools/science_funnel/validation/axial_adjacency_20260920/receipt.json pre_registered_outcomes + verdicts",
+  "refusals": [
+   {
+    "id": "refusal.shoulder_01_04",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_04"
+    ],
+    "pair_prediction": "P3 shoulder A",
+    "measured_gap_mm": 5.0,
+    "verdict": "REFUSED (law gap 5.00 mm > 3.0 mm cut) -- falsifier F2 fired: at CT this specimen's shoulder carries a real cartilage-plus-soft-tissue gap; no bond."
+   },
+   {
+    "id": "refusal.shoulder_01_05",
+    "members": [
+     "mem.bone_01",
+     "mem.bone_05"
+    ],
+    "pair_prediction": "P4 shoulder B",
+    "measured_gap_mm": 4.6,
+    "verdict": "REFUSED (law gap 4.60 mm > 3.0 mm cut) -- falsifier F2 fired; no bond."
+   },
+   {
+    "id": "refusal.singleton_16",
+    "members": [
+     "mem.bone_16"
+    ],
+    "pair_prediction": "P5",
+    "measured_row_minimum_mm": 5.82,
+    "composite_gap_mm": 22.9,
+    "femur2_gap_mm": 5.82,
+    "verdict": "REFUSED -- falsifier F3 fired (both pre-registered partners > 3.0 mm; nothing in the full row is <= 3.0); stays isolated."
+   },
+   {
+    "id": "refusal.singleton_14",
+    "members": [
+     "mem.bone_14"
+    ],
+    "pair_prediction": "P6",
+    "measured_row_minimum_mm": 6.99,
+    "row_minimum_partner": "foot_class rank 24",
+    "composite_gap_mm": 29.75,
+    "verdict": "REFUSED -- falsifier F3 fired; stays isolated."
+   },
+   {
+    "id": "refusal.singleton_19",
+    "members": [
+     "mem.bone_19"
+    ],
+    "pair_prediction": "P6",
+    "measured_row_minimum_mm": 7.71,
+    "row_minimum_partner": "foot_class rank 22",
+    "composite_gap_mm": 36.93,
+    "metric_artifact": "the true surface gap to the composite is 0.0 mm (refined): a composite preview vertex lies on a singleton-19 triangle face -- face-face contact invisible to the committed vertex-vertex law metric. NAMED successor law work (a surface-metric adjacency class owned by a lane that owns that law); NOT self-granted here; 19 stays isolated in this graph.",
+    "verdict": "REFUSED on the law metric -- falsifier F3 fired; stays isolated."
+   }
+  ]
+ },
+ "adoption": {
+  "lane": "agent/hip-bond-adoption-20260921",
+  "receipt": "tools/science_funnel/validation/hip_adoption_20260921/receipt.json",
+  "preregistration_sha256": "pinned in tools/science_funnel/validation/hip_adoption_20260921/preregistration.sha256 (receipt pre-state hash 620292c0209561fdea65af0241ef1e5211a193812670c61ca5cb690c1dad478d, hashed before any edit)",
+  "base_commit": "3539fdb9",
+  "bond_source": "axial_adjacency_20260920 candidate_bonds.json pre_registered:true entries, verbatim fields",
+  "rest_length_law": "rest_length_mm = the measured LAW gap (vertex metric) per the measurement lane's refinement_law; refined_gap_mm recorded as metadata, never substituted",
+  "class_law": "2 hip bonds (joint class) joined the graph; 6 curl appositions (pose class) recorded in pose_contacts, no graph edges; 2 shoulders + 3 singletons (refusal class) recorded in refused_joints",
+  "components_before": 8,
+  "components_after": 6,
+  "component_consequence": "the two femoral chains joined the composite's component through the hip bonds; the fore chains and singletons did not merge (curl contacts carry no graph edges)",
+  "geometry_untouched": "bonds + metadata only; every triangle blob, vertex record, thickness and mass is byte-identical to the pre-adoption definition"
+ }
+}

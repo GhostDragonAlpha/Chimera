@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/CoolProp/CoolProp",
+  "revision": "104168453d2adcc7ee0bdcbcebbaa82e60d30a71",
+  "retrieved_utc": "2026-09-16T17:30:51.5318394Z",
+  "artifacts": [
+    {
+      "url": "https://raw.githubusercontent.com/CoolProp/CoolProp/104168453d2adcc7ee0bdcbcebbaa82e60d30a71/dev/fluids/Water.json",
+      "path": "Water.json",
+      "sha256": "540f8e84f721e526e2f9acff775cd9dbddcf2ef35284440ea501b7dd37ac53ac"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CoolProp/CoolProp/104168453d2adcc7ee0bdcbcebbaa82e60d30a71/dev/fluids/Ethanol.json",
+      "path": "Ethanol.json",
+      "sha256": "df844ab4e859424745e83126bfb784bd51142710acc1b14e2b2ba5e45607ebc8"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/CoolProp/CoolProp/104168453d2adcc7ee0bdcbcebbaa82e60d30a71/LICENSE",
+      "path": "LICENSE",
+      "sha256": "9bf835333ef602af4cb19338b9f9d43671e174fa029b00280e9bdba6ea4719b2"
+    }
+  ]
+}

@@ -1,0 +1,448 @@
+{
+ "command": "render_creature",
+ "status": "rendered",
+ "taken_utc": "2026-09-20T18:49:07+00:00",
+ "source": "ct_skeleton",
+ "render_path": {
+  "compose": "ct_skeleton_triangle.layer_triangle_mesh (indexed TRIANGLE geometry)",
+  "upload": "/mesh_bin (the engine triangle pipeline: depth-tested, stencil-marking)",
+  "camera": "/camera + settle-capture /frame (the banked determinism pattern)",
+  "splat_route_reachable": false
+ },
+ "engine": {
+  "url": "http://127.0.0.1:58553",
+  "port": 58553,
+  "pid": 166208,
+  "exe": "E:\\ChimeraWork\\mcp-agent\\.tmp\\wfmcp_build\\Release\\chimera_engine.exe",
+  "exe_sha256": "16ca3c1854289470ffed05dd4ac3789cf4a0a6163fb69d2e239e4383fc3c34dd",
+  "self_started": true
+ },
+ "payload": {
+  "vertices": 355831,
+  "triangles": 712522,
+  "layer_record": {
+   "schema": "chimera.ct_skeleton_triangle.v1",
+   "lane": "agent/triangle-monkey-grid-20260920",
+   "specimen": "000875604",
+   "bones": 25,
+   "vertices": 355831,
+   "triangles": 712522,
+   "registration": {
+    "trunk_axis_ct": [
+     0.978686,
+     -0.197791,
+     0.055243
+    ],
+    "trunk_pca_explained_variance": null,
+    "trunk_span_mm": 149.158,
+    "skull_end_ct_mm": [
+     207.54,
+     21.856,
+     35.061
+    ],
+    "pelvis_end_ct_mm": [
+     61.561,
+     51.358,
+     26.821
+    ],
+    "scale_scene_per_mm": 3.23148227,
+    "rotation_ct_to_walker": [
+     [
+      -0.05635628,
+      0.0,
+      0.99841072
+     ],
+     [
+      0.97868636,
+      -0.19779087,
+      0.05524292
+     ],
+     [
+      0.19747653,
+      0.98024424,
+      0.01114676
+     ]
+    ],
+    "translation_m": [
+     -0.075324,
+     -0.497432,
+     -0.202934
+    ],
+    "dorsal_ct_to_scene": "+y_ct -> +Z_scene (left); trunk axis -> +Y_scene (up)",
+    "trunk_midpoint_scene_m": [
+     0.0,
+     -0.089776,
+     0.0
+    ]
+   },
+   "scale_scene_per_mm": 3.23148227,
+   "units": "scene metres (walker/free-root frame: +Y up, +X forward, +Z left)",
+   "endpoint": "/mesh_bin (engine triangle pipeline: depth-tested, stencil-marking)",
+   "pivot": "bbox",
+   "pivot_offset_m": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "bbox_min_m": [
+    -0.097674,
+    -0.459388,
+    -0.155264
+   ],
+   "bbox_max_m": [
+    0.097192,
+    0.159609,
+    0.09832
+   ],
+   "source": "ct_skeleton (committed infant CT skeleton, pinned registration)"
+  }
+ },
+ "camera": {
+  "radius_m": 1.008712,
+  "a_pose": {
+   "theta": 0.6,
+   "phi": 0.3,
+   "lift_m": 0.4,
+   "target": [
+    0.0,
+    0.4,
+    0.0
+   ]
+  },
+  "orbit": {
+   "frames": 12,
+   "phi": 0.0
+  }
+ },
+ "a_pose": {
+  "png": ".tmp\\wfmcp_e2e\\render3\\a_pose.png",
+  "frame_whxh": [
+   2560,
+   1369
+  ],
+  "warm_object_pixels": 104058,
+  "grain": {
+   "grain_median_local_variance": 347.9455,
+   "grain_p90_local_variance": 1066.4197,
+   "window": 5,
+   "interior_pixels": 51485
+  },
+  "whole_hull_coverage": {
+   "coverage": 0.397,
+   "object_pixels_in_hull": 104058,
+   "hull_pixels": 262104
+  }
+ },
+ "per_bone_coverage": {
+  "bones": [
+   {
+    "bone": "bone_01_4737869vox_lo.obj",
+    "coverage": 0.4761,
+    "object_pixels_in_hull": 81659,
+    "hull_pixels": 171520
+   },
+   {
+    "bone": "bone_02_210240vox_lo.obj",
+    "coverage": 0.5711,
+    "object_pixels_in_hull": 4589,
+    "hull_pixels": 8036
+   },
+   {
+    "bone": "bone_03_208514vox_lo.obj",
+    "coverage": 0.4187,
+    "object_pixels_in_hull": 4629,
+    "hull_pixels": 11055
+   },
+   {
+    "bone": "bone_04_180534vox_lo.obj",
+    "coverage": 0.41,
+    "object_pixels_in_hull": 3077,
+    "hull_pixels": 7505
+   },
+   {
+    "bone": "bone_05_174742vox_lo.obj",
+    "coverage": 0.5316,
+    "object_pixels_in_hull": 3191,
+    "hull_pixels": 6003
+   },
+   {
+    "bone": "bone_06_154508vox_lo.obj",
+    "coverage": 0.5195,
+    "object_pixels_in_hull": 4429,
+    "hull_pixels": 8525
+   },
+   {
+    "bone": "bone_07_150102vox_lo.obj",
+    "coverage": 0.5694,
+    "object_pixels_in_hull": 5629,
+    "hull_pixels": 9885
+   },
+   {
+    "bone": "bone_08_102171vox_lo.obj",
+    "coverage": 0.5627,
+    "object_pixels_in_hull": 2077,
+    "hull_pixels": 3691
+   },
+   {
+    "bone": "bone_09_100874vox_lo.obj",
+    "coverage": 0.5257,
+    "object_pixels_in_hull": 3711,
+    "hull_pixels": 7059
+   },
+   {
+    "bone": "bone_10_92842vox_lo.obj",
+    "coverage": 0.7675,
+    "object_pixels_in_hull": 4890,
+    "hull_pixels": 6371
+   },
+   {
+    "bone": "bone_11_90563vox_lo.obj",
+    "coverage": 0.8237,
+    "object_pixels_in_hull": 4070,
+    "hull_pixels": 4941
+   },
+   {
+    "bone": "bone_12_88112vox_lo.obj",
+    "coverage": 0.744,
+    "object_pixels_in_hull": 4030,
+    "hull_pixels": 5417
+   },
+   {
+    "bone": "bone_13_86590vox_lo.obj",
+    "coverage": 0.7023,
+    "object_pixels_in_hull": 3584,
+    "hull_pixels": 5103
+   },
+   {
+    "bone": "bone_14_58499vox_lo.obj",
+    "coverage": 0.6482,
+    "object_pixels_in_hull": 1404,
+    "hull_pixels": 2166
+   },
+   {
+    "bone": "bone_15_54574vox_lo.obj",
+    "coverage": 0.6142,
+    "object_pixels_in_hull": 1955,
+    "hull_pixels": 3183
+   },
+   {
+    "bone": "bone_16_54463vox_lo.obj",
+    "coverage": 0.6198,
+    "object_pixels_in_hull": 3176,
+    "hull_pixels": 5124
+   },
+   {
+    "bone": "bone_17_54226vox_lo.obj",
+    "coverage": 0.4948,
+    "object_pixels_in_hull": 958,
+    "hull_pixels": 1936
+   },
+   {
+    "bone": "bone_18_53022vox_lo.obj",
+    "coverage": 0.6097,
+    "object_pixels_in_hull": 1478,
+    "hull_pixels": 2424
+   },
+   {
+    "bone": "bone_19_44805vox_lo.obj",
+    "coverage": 0.5388,
+    "object_pixels_in_hull": 2590,
+    "hull_pixels": 4807
+   },
+   {
+    "bone": "bone_20_34255vox_lo.obj",
+    "coverage": 0.4417,
+    "object_pixels_in_hull": 1721,
+    "hull_pixels": 3896
+   },
+   {
+    "bone": "bone_21_33153vox_lo.obj",
+    "coverage": 0.6111,
+    "object_pixels_in_hull": 2423,
+    "hull_pixels": 3965
+   },
+   {
+    "bone": "bone_22_31952vox_lo.obj",
+    "coverage": 0.5938,
+    "object_pixels_in_hull": 997,
+    "hull_pixels": 1679
+   },
+   {
+    "bone": "bone_23_31588vox_lo.obj",
+    "coverage": 0.5634,
+    "object_pixels_in_hull": 893,
+    "hull_pixels": 1585
+   },
+   {
+    "bone": "bone_24_25423vox_lo.obj",
+    "coverage": 0.5756,
+    "object_pixels_in_hull": 735,
+    "hull_pixels": 1277
+   },
+   {
+    "bone": "bone_25_25400vox_lo.obj",
+    "coverage": 0.5328,
+    "object_pixels_in_hull": 699,
+    "hull_pixels": 1312
+   }
+  ],
+  "median_coverage_all_bones": 0.5694,
+  "bones_at_zero": 0,
+  "macro": {
+   "skull": {
+    "coverage": 0.5415,
+    "object_pixels_in_hull": 8004,
+    "hull_pixels": 14780
+   },
+   "spine_ribs": {
+    "coverage": 0.498,
+    "object_pixels_in_hull": 30933,
+    "hull_pixels": 62112
+   },
+   "limbs": {
+    "coverage": 0.3789,
+    "object_pixels_in_hull": 68151,
+    "hull_pixels": 179873
+   }
+  }
+ },
+ "orbit": {
+  "pngs": [
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f000.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f001.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f002.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f003.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f004.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f005.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f006.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f007.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f008.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f009.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f010.png",
+   ".tmp\\wfmcp_e2e\\render3\\orbit\\orbit_f011.png"
+  ],
+  "warm_pixel_counts": [
+   63311,
+   84212,
+   114439,
+   132295,
+   147468,
+   143301,
+   126730,
+   104678,
+   79987,
+   56836,
+   53015,
+   52999
+  ],
+  "boundary_touches": [
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false
+  ],
+  "clip_scan": {
+   "frames": 12,
+   "counts": [
+    63311,
+    84212,
+    114439,
+    132295,
+    147468,
+    143301,
+    126730,
+    104678,
+    79987,
+    56836,
+    53015,
+    52999
+   ],
+   "collapse_ratio": 0.5,
+   "clip_events": [],
+   "clip": false
+  },
+  "grain_per_frame": [
+   {
+    "grain_median_local_variance": 454.0438,
+    "grain_p90_local_variance": 1296.3109,
+    "window": 5,
+    "interior_pixels": 14392
+   },
+   {
+    "grain_median_local_variance": 421.9729,
+    "grain_p90_local_variance": 1235.77,
+    "window": 5,
+    "interior_pixels": 31799
+   },
+   {
+    "grain_median_local_variance": 348.2832,
+    "grain_p90_local_variance": 1176.9917,
+    "window": 5,
+    "interior_pixels": 62799
+   },
+   {
+    "grain_median_local_variance": 264.3177,
+    "grain_p90_local_variance": 1156.2403,
+    "window": 5,
+    "interior_pixels": 85625
+   },
+   {
+    "grain_median_local_variance": 181.3045,
+    "grain_p90_local_variance": 1150.4955,
+    "window": 5,
+    "interior_pixels": 106993
+   },
+   {
+    "grain_median_local_variance": 116.4356,
+    "grain_p90_local_variance": 1111.621,
+    "window": 5,
+    "interior_pixels": 109244
+   },
+   {
+    "grain_median_local_variance": 33.5991,
+    "grain_p90_local_variance": 1059.053,
+    "window": 5,
+    "interior_pixels": 91273
+   },
+   {
+    "grain_median_local_variance": 20.1869,
+    "grain_p90_local_variance": 1070.96,
+    "window": 5,
+    "interior_pixels": 66417
+   },
+   {
+    "grain_median_local_variance": 40.2353,
+    "grain_p90_local_variance": 1055.2961,
+    "window": 5,
+    "interior_pixels": 41968
+   },
+   {
+    "grain_median_local_variance": 89.7928,
+    "grain_p90_local_variance": 1139.5623,
+    "window": 5,
+    "interior_pixels": 22333
+   },
+   {
+    "grain_median_local_variance": 194.7551,
+    "grain_p90_local_variance": 1145.5415,
+    "window": 5,
+    "interior_pixels": 13056
+   },
+   {
+    "grain_median_local_variance": 296.5098,
+    "grain_p90_local_variance": 1357.9628,
+    "window": 5,
+    "interior_pixels": 10103
+   }
+  ]
+ },
+ "out_dir": ".tmp\\wfmcp_e2e\\render3"
+}

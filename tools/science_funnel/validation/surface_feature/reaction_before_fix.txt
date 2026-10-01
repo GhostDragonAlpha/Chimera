@@ -1,0 +1,28 @@
+[
+  {
+    "pass": true,
+    "test": "energy_derivative",
+    "value": 5.933018278735909e-07
+  },
+  {
+    "pass": true,
+    "test": "fixed_geometry_gamma_energy",
+    "value": 2.0
+  },
+  {
+    "pass": true,
+    "test": "fixed_geometry_gamma_force",
+    "value": 2.0
+  },
+  {
+    "pass": true,
+    "test": "water_settles",
+    "value": 5.093564789444989e-13
+  },
+  {
+    "pass": false,
+    "test": "water_force_balance",
+    "value": 0.0004999999957938496
+  }
+]
+water_force_balance

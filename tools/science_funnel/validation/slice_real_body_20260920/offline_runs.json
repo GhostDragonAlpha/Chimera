@@ -1,0 +1,128 @@
+{
+    "verdict":  [
+                    {
+                        "falsifier":  "F-BODY-CLOSURE+CAP-offline",
+                        "runs":  3,
+                        "identical_hashes":  true,
+                        "all_pass":  true
+                    },
+                    {
+                        "falsifier":  "F-SLICE-MOCK-TRUTH",
+                        "runs":  3,
+                        "identical_hashes":  true,
+                        "all_pass":  true
+                    },
+                    {
+                        "falsifier":  "F-SLICE-NO-SPLAT",
+                        "runs":  3,
+                        "identical_hashes":  true,
+                        "all_pass":  true
+                    },
+                    {
+                        "falsifier":  "F-PAYLOAD-PIN",
+                        "runs":  3,
+                        "identical_hashes":  true,
+                        "all_pass":  true
+                    },
+                    {
+                        "falsifier":  "F-ALIGNMENT",
+                        "runs":  3,
+                        "identical_hashes":  true,
+                        "all_pass":  true
+                    }
+                ],
+    "schema":  "chimera.real_body_20260920.offline_runs.v1",
+    "note":  "3-run determinism bank (each falsifier script executed 3x, exit 0 each; artifact sha256 per run, identical across runs)",
+    "runs":  [
+                 {
+                     "run":  1,
+                     "falsifier":  "F-BODY-CLOSURE+CAP-offline",
+                     "exit_code":  0,
+                     "artifact_sha256":  "0dc064224c6438df3aff065c88de058f01ed94f0f4c3e6659c41f853123dcc29"
+                 },
+                 {
+                     "run":  1,
+                     "falsifier":  "F-SLICE-MOCK-TRUTH",
+                     "exit_code":  0,
+                     "artifact_sha256":  "7e0d255fe5d978efcec0c5d6a6627c97e2b4f641313c39c9a7e137bc355984f6"
+                 },
+                 {
+                     "run":  1,
+                     "falsifier":  "F-SLICE-NO-SPLAT",
+                     "exit_code":  0,
+                     "artifact_sha256":  "20fcbc720d6667db1183a75566cc74f86847e276156486bffec11479e0420031"
+                 },
+                 {
+                     "run":  1,
+                     "falsifier":  "F-PAYLOAD-PIN",
+                     "exit_code":  0,
+                     "artifact_sha256":  "c8ba65331009d142e4dab35403df0129404f563518ae20994fe0ada60850d60d"
+                 },
+                 {
+                     "run":  1,
+                     "falsifier":  "F-ALIGNMENT",
+                     "exit_code":  0,
+                     "artifact_sha256":  "6cada08c9419e44f021884bf62e3688472732339b0f7bc2d285217bb4b714eb9"
+                 },
+                 {
+                     "run":  2,
+                     "falsifier":  "F-BODY-CLOSURE+CAP-offline",
+                     "exit_code":  0,
+                     "artifact_sha256":  "0dc064224c6438df3aff065c88de058f01ed94f0f4c3e6659c41f853123dcc29"
+                 },
+                 {
+                     "run":  2,
+                     "falsifier":  "F-SLICE-MOCK-TRUTH",
+                     "exit_code":  0,
+                     "artifact_sha256":  "7e0d255fe5d978efcec0c5d6a6627c97e2b4f641313c39c9a7e137bc355984f6"
+                 },
+                 {
+                     "run":  2,
+                     "falsifier":  "F-SLICE-NO-SPLAT",
+                     "exit_code":  0,
+                     "artifact_sha256":  "20fcbc720d6667db1183a75566cc74f86847e276156486bffec11479e0420031"
+                 },
+                 {
+                     "run":  2,
+                     "falsifier":  "F-PAYLOAD-PIN",
+                     "exit_code":  0,
+                     "artifact_sha256":  "c8ba65331009d142e4dab35403df0129404f563518ae20994fe0ada60850d60d"
+                 },
+                 {
+                     "run":  2,
+                     "falsifier":  "F-ALIGNMENT",
+                     "exit_code":  0,
+                     "artifact_sha256":  "6cada08c9419e44f021884bf62e3688472732339b0f7bc2d285217bb4b714eb9"
+                 },
+                 {
+                     "run":  3,
+                     "falsifier":  "F-BODY-CLOSURE+CAP-offline",
+                     "exit_code":  0,
+                     "artifact_sha256":  "0dc064224c6438df3aff065c88de058f01ed94f0f4c3e6659c41f853123dcc29"
+                 },
+                 {
+                     "run":  3,
+                     "falsifier":  "F-SLICE-MOCK-TRUTH",
+                     "exit_code":  0,
+                     "artifact_sha256":  "7e0d255fe5d978efcec0c5d6a6627c97e2b4f641313c39c9a7e137bc355984f6"
+                 },
+                 {
+                     "run":  3,
+                     "falsifier":  "F-SLICE-NO-SPLAT",
+                     "exit_code":  0,
+                     "artifact_sha256":  "20fcbc720d6667db1183a75566cc74f86847e276156486bffec11479e0420031"
+                 },
+                 {
+                     "run":  3,
+                     "falsifier":  "F-PAYLOAD-PIN",
+                     "exit_code":  0,
+                     "artifact_sha256":  "c8ba65331009d142e4dab35403df0129404f563518ae20994fe0ada60850d60d"
+                 },
+                 {
+                     "run":  3,
+                     "falsifier":  "F-ALIGNMENT",
+                     "exit_code":  0,
+                     "artifact_sha256":  "6cada08c9419e44f021884bf62e3688472732339b0f7bc2d285217bb4b714eb9"
+                 }
+             ]
+}

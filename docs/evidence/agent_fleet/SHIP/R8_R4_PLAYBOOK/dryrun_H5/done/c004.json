@@ -1,0 +1,13 @@
+{"do":"move","x":545,"y":390}
+{"do":"down"}
+{"do":"wait","ms":3000}
+{"do":"shot","name":"06_press_hold_3s"}
+{"do":"text","max":1200}
+{"do":"wait","ms":3000}
+{"do":"shot","name":"07_press_hold_6s"}
+{"do":"up"}
+{"do":"wait","ms":800}
+{"do":"shot","name":"08_released"}
+{"do":"wait","ms":4000}
+{"do":"shot","name":"09_recovery"}
+{"do":"text","max":1200}

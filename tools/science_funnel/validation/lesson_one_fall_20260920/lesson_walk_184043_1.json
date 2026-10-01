@@ -1,0 +1,426 @@
+{
+ "base": "http://127.0.0.1:8912",
+ "at": "2026-09-22T23:40:46.052Z",
+ "timeline": {
+  "t_launch": 0,
+  "t_page_load": 0.17,
+  "t_first_gl": 0.47,
+  "t_understood": 0.51,
+  "t_ready": 0.78,
+  "t_fall_triggered": 0.89,
+  "t_landed": 5.73,
+  "t_understood_state": 5.73
+ },
+ "trace": [
+  {
+   "t": 0.12,
+   "stage": "launch"
+  },
+  {
+   "t": 0.28,
+   "stage": "first-gl"
+  },
+  {
+   "t": 0.62,
+   "stage": "understood"
+  },
+  {
+   "t": 0.63,
+   "stage": "ready-wait"
+  },
+  {
+   "t": 0.89,
+   "stage": "fall-trigger"
+  },
+  {
+   "t": 1,
+   "stage": "fall-watch"
+  },
+  {
+   "t": 5.85,
+   "stage": "understood-state"
+  },
+  {
+   "t": 5.85,
+   "stage": "every-key"
+  },
+  {
+   "t": 7.86,
+   "stage": "verdicts"
+  },
+  {
+   "t": 7.87,
+   "stage": "artifact"
+  }
+ ],
+ "stage": "artifact",
+ "channel": "chromium-bundled (MACHINE_FINDINGS: installed Chrome cannot navigate on this machine)",
+ "stranger_reading": {
+  "guideVisible": true,
+  "guideText": "LESSON ONE — THE FALL\n\nThis animal is real: a monkey's body built from CT scan data, obeying real physics. Right now it stands still because the floor holds it — the upward hold exactly balances its weight.\n\nPress F and the lesson drops the body. Watch gravity win, watch the floor catch it, and watch the two forces balance again. That balance is where the body rests.\n\nKeys: F drop · R reset · H help · arrows orbit · +/− zoom",
+  "keyRows": [
+   {
+    "key": "F",
+    "text": "F DROP the body — the fall"
+   },
+   {
+    "key": "R",
+    "text": "R reset the lesson (same body)"
+   },
+   {
+    "key": "H",
+    "text": "H show / hide this help"
+   },
+   {
+    "key": "ArrowLeft",
+    "text": "ArrowLeft orbit camera left"
+   },
+   {
+    "key": "ArrowRight",
+    "text": "ArrowRight orbit camera right"
+   },
+   {
+    "key": "ArrowUp",
+    "text": "ArrowUp orbit camera up"
+   },
+   {
+    "key": "ArrowDown",
+    "text": "ArrowDown orbit camera down"
+   },
+   {
+    "key": "+",
+    "text": "+ zoom in"
+   },
+   {
+    "key": "-",
+    "text": "- zoom out"
+   }
+  ]
+ },
+ "page_names_drop_key": true,
+ "boot_ready_phase": "idle",
+ "fall_acked_by_server": true,
+ "settled_state": {
+  "teach": {
+   "t1": true,
+   "t2": true,
+   "t3": true
+  },
+  "understood": true,
+  "displayed": {
+   "height": "0.1246",
+   "speed": "0.0004",
+   "hold": "135567.0",
+   "weight": "135618.3",
+   "holdFrac": 0.19992428015546126,
+   "phase": "done",
+   "attractor": 0.12464112903214866
+  }
+ },
+ "fall_verdict": {
+  "phase": "done",
+  "max_root_y": 0.8959,
+  "max_abs_vy": 3.7438,
+  "landed_root_y": 0.1247,
+  "contact_first_s": 0.012
+ },
+ "surface_airborne": null,
+ "surface_catch": null,
+ "surface_log_n": 31,
+ "surface_log_head": [
+  {
+   "t": 1.04,
+   "h": "0.0000",
+   "sp": "0.0000",
+   "hold": "0.0",
+   "phase": "seated"
+  },
+  {
+   "t": 1.2,
+   "h": "0.0000",
+   "sp": "0.0000",
+   "hold": "0.0",
+   "phase": "seated"
+  },
+  {
+   "t": 1.35,
+   "h": "0.5525",
+   "sp": "2.6326",
+   "hold": "0.0",
+   "phase": "running"
+  },
+  {
+   "t": 1.51,
+   "h": "0.7833",
+   "sp": "1.5286",
+   "hold": "0.0",
+   "phase": "running"
+  },
+  {
+   "t": 1.67,
+   "h": "0.8958",
+   "sp": "-0.1429",
+   "hold": "71526.3",
+   "phase": "running"
+  },
+  {
+   "t": 1.83,
+   "h": "0.8686",
+   "sp": "-0.2236",
+   "hold": "135515.0",
+   "phase": "running"
+  }
+ ],
+ "surface_log_tail": [
+  {
+   "t": 4.94,
+   "h": "0.2004",
+   "sp": "-0.2237",
+   "hold": "135618.0",
+   "phase": "running"
+  },
+  {
+   "t": 5.1,
+   "h": "0.1604",
+   "sp": "-0.2237",
+   "hold": "135618.0",
+   "phase": "running"
+  },
+  {
+   "t": 5.25,
+   "h": "0.1319",
+   "sp": "-0.2134",
+   "hold": "160514.0",
+   "phase": "running"
+  },
+  {
+   "t": 5.42,
+   "h": "0.1246",
+   "sp": "0.0130",
+   "hold": "136738.0",
+   "phase": "settling"
+  },
+  {
+   "t": 5.57,
+   "h": "0.1246",
+   "sp": "0.0130",
+   "hold": "136738.0",
+   "phase": "settling"
+  },
+  {
+   "t": 5.73,
+   "h": "0.1246",
+   "sp": "0.0004",
+   "hold": "135567.0",
+   "phase": "done"
+  }
+ ],
+ "understood_state": {
+  "teach": {
+   "t1": true,
+   "t2": true,
+   "t3": true
+  },
+  "understood": true,
+  "doneVisible": true,
+  "beacon": []
+ },
+ "beacon_entries": [],
+ "beacon_empty": true,
+ "key_results": {
+  "F": true,
+  "ArrowLeft": true,
+  "ArrowRight": true,
+  "ArrowUp": true,
+  "ArrowDown": true,
+  "+": true,
+  "-": true,
+  "H": true,
+  "R": true
+ },
+ "keys_on_page": [
+  "F",
+  "R",
+  "H",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "ArrowDown",
+  "+",
+  "-"
+ ],
+ "every_named_key_works": true,
+ "peak_vy_estimate": {
+  "server_verdict": 3.7438,
+  "used": 3.7438
+ },
+ "fall_shape": {
+  "peak": {
+   "measured": 0.8959,
+   "bar": [
+    0.9009,
+    0.02
+   ],
+   "pass": true
+  },
+  "max_speed": {
+   "measured": 3.7438,
+   "server_verdict": 3.7438,
+   "bar": [
+    3.6792,
+    0.05
+   ],
+   "pass": false
+  },
+  "landed": {
+   "measured": 0.1247,
+   "bar": [
+    0.1246,
+    0.002
+   ],
+   "pass": true
+  }
+ },
+ "page_series_n": 70,
+ "page_series_peak_abs_vy": 3.22205,
+ "surface_settled": {
+  "hold": 135618,
+  "weight": 135614.245,
+  "rel_err": 0.000027688831656325312
+ },
+ "number_trace": {
+  "height": {
+   "displayed": "0.1246",
+   "engine": 0.124641,
+   "match": true
+  },
+  "speed": {
+   "displayed": "0.0004",
+   "engine": -1.65943e-7,
+   "match": false
+  },
+  "hold": {
+   "displayed": "135567.0",
+   "engine": 135618,
+   "match": false
+  },
+  "weight": {
+   "displayed": "135618.3",
+   "engine_constant_n": 135618.345,
+   "match": true
+  }
+ },
+ "falsifiers": {
+  "F-LESSON-60": {
+   "measured": {
+    "t_page_load": 0.17,
+    "t_ready": 0.78,
+    "t_fall_triggered": 0.89,
+    "t_landed": 5.73
+   },
+   "bar_s": 60,
+   "pass": true
+  },
+  "F-NUMBERS-ENGINE": {
+   "note": "displayed values are computed in-page from lastStatusJson (the engine response stored verbatim); verified live below",
+   "number_trace": {
+    "height": {
+     "displayed": "0.1246",
+     "engine": 0.124641,
+     "match": true
+    },
+    "speed": {
+     "displayed": "0.0004",
+     "engine": -1.65943e-7,
+     "match": false
+    },
+    "hold": {
+     "displayed": "135567.0",
+     "engine": 135618,
+     "match": false
+    },
+    "weight": {
+     "displayed": "135618.3",
+     "engine_constant_n": 135618.345,
+     "match": true
+    }
+   },
+   "pass": false
+  },
+  "F-FALL-SHAPE": {
+   "peak": {
+    "measured": 0.8959,
+    "bar": [
+     0.9009,
+     0.02
+    ],
+    "pass": true
+   },
+   "max_speed": {
+    "measured": 3.7438,
+    "server_verdict": 3.7438,
+    "bar": [
+     3.6792,
+     0.05
+    ],
+    "pass": false
+   },
+   "landed": {
+    "measured": 0.1247,
+    "bar": [
+     0.1246,
+     0.002
+    ],
+    "pass": true
+   }
+  },
+  "F-SURFACES-LIVE": {
+   "airborne": null,
+   "catch": null,
+   "settled": {
+    "hold": 135618,
+    "weight": 135614.245,
+    "rel_err": 0.000027688831656325312
+   },
+   "surface_log_n": 31,
+   "pass": false
+  },
+  "F-KEYS-NAMED-WORK": {
+   "keys": [
+    "F",
+    "R",
+    "H",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowUp",
+    "ArrowDown",
+    "+",
+    "-"
+   ],
+   "results": {
+    "F": true,
+    "ArrowLeft": true,
+    "ArrowRight": true,
+    "ArrowUp": true,
+    "ArrowDown": true,
+    "+": true,
+    "-": true,
+    "H": true,
+    "R": true
+   },
+   "pass": true
+  },
+  "F-ZERO-ERRORS": {
+   "beacon": 0,
+   "harness": 0,
+   "aborted_polls_by_design": 0,
+   "pass": true
+  },
+  "F-TIMELINE-HONEST": {
+   "recorded": true,
+   "pass": true
+  }
+ },
+ "console_errors": [],
+ "pass": false
+}

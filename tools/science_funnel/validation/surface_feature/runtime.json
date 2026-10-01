@@ -1,0 +1,11 @@
+{
+  "pid": 80948,
+  "exe": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\science-engine\\Release\\chimera_engine.exe",
+  "exe_sha256": "5564A7D3637154A57800D742E1F74EFA07537C552F976C7E0F16DA3E7E137460",
+  "cwd": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\science-engine\\Release",
+  "scene": "E:\\ChimeraWork\\codex-graph-workflow-20260916\\.tmp\\surface-feature\\surface_scene.json",
+  "scene_sha256": "6569D9A64DBF7770AB8EA500167CF35489A472D157E16C59F5ACA88A514EA80D",
+  "graph_hash": "e7de576ea38643c88c5750d18b75170c8ca5dd43590f87d4557f22f6493cb549",
+  "port": 8107,
+  "launched_utc": "2026-09-16T18:12:51.9694605Z"
+}

@@ -1,0 +1,425 @@
+{
+ "constants": {
+  "rho_bone_kg_mm3": 1.9e-06,
+  "rho_bone_kg_m3": 1900.0,
+  "rho_cartilage_kg_mm3": 1.06e-06,
+  "cure_cartilage_pa": 13000000.0,
+  "citations": [
+   "COWIN 'Bone Mechanics Handbook'; CURREY 'Bones: Structure and Mechanics': cortical wet density 1800-2100 kg/m^3 (1900 used, = 1.9e-6 kg/mm^3); E ~15-20 GPa (17 used); tensile failure ~80-150 MPa (100 used, conservative); Vickers ~30-50 HV (40 used)",
+   "YAMADA 1970 'Strength of Biological Materials' (Williams & Wilkins): cartilage tensile strength ~13 MPa, Young's modulus 7-25 MPa (10 used), density ~1.06 g/cm^3; the joint bond material at the measured touching edges"
+  ]
+ },
+ "laws": {
+  "volume": "V = |sum_faces (1/6) v_a.(v_b x v_c)| on the resident float32 triangles",
+  "area": "kernel validator accumulation over the committed blob",
+  "thickness": "t = V/A (equivalent shell thickness; conserves V; the only derived parameter)",
+  "mass": "m = A*t*rho = V*rho"
+ },
+ "compartments": [
+  {
+   "rank": 3,
+   "id": "mem.bone_03",
+   "label": "femur",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_03_269762vox_lo.obj",
+   "vertices": 14997,
+   "faces": 29996,
+   "volume_mm3_mesh": 1104.41978,
+   "area_mm2": 1265.094168,
+   "thickness_mm_equivalent": 0.872994128,
+   "mass_g": 2.098398,
+   "volume_mm3_voxel_book": 1104.945152,
+   "volume_delta_pct": -0.0475,
+   "vertex_sha256": "6fa0dae54b20d914af95bb629fe239a10618605245db25c42a6ab45b7042395c"
+  },
+  {
+   "rank": 5,
+   "id": "mem.bone_05",
+   "label": "humerus",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_05_234649vox_lo.obj",
+   "vertices": 14993,
+   "faces": 29998,
+   "volume_mm3_mesh": 960.741437,
+   "area_mm2": 1229.451453,
+   "thickness_mm_equivalent": 0.7814391,
+   "mass_g": 1.825409,
+   "volume_mm3_voxel_book": 961.122304,
+   "volume_delta_pct": -0.0396,
+   "vertex_sha256": "51c707ecf2a9d821c084ea379dd71b0881cd45951ec951b82ab0dbaa22b17948"
+  },
+  {
+   "rank": 7,
+   "id": "mem.bone_07",
+   "label": "tibia",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_07_165292vox_lo.obj",
+   "vertices": 15006,
+   "faces": 30000,
+   "volume_mm3_mesh": 676.68689,
+   "area_mm2": 1060.837589,
+   "thickness_mm_equivalent": 0.63787982,
+   "mass_g": 1.285705,
+   "volume_mm3_voxel_book": 677.036032,
+   "volume_delta_pct": -0.0516,
+   "vertex_sha256": "f655e9aba013c11163f6cd0fe9dc2953b3c9a940260c2495407b06e2369c5410"
+  },
+  {
+   "rank": 8,
+   "id": "mem.bone_08",
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_08_128172vox_lo.obj",
+   "vertices": 15004,
+   "faces": 30000,
+   "volume_mm3_mesh": 524.648262,
+   "area_mm2": 883.717032,
+   "thickness_mm_equivalent": 0.593683547,
+   "mass_g": 0.996832,
+   "volume_mm3_voxel_book": 524.992512,
+   "volume_delta_pct": -0.0656,
+   "vertex_sha256": "2fd10d20b223e2044bcdaa95eb5ef83bd5464036654882206c2c95602a2b2cd3"
+  },
+  {
+   "rank": 9,
+   "id": "mem.bone_09",
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_09_127314vox_lo.obj",
+   "vertices": 15002,
+   "faces": 30000,
+   "volume_mm3_mesh": 521.186961,
+   "area_mm2": 817.426031,
+   "thickness_mm_equivalent": 0.637595257,
+   "mass_g": 0.990255,
+   "volume_mm3_voxel_book": 521.478144,
+   "volume_delta_pct": -0.0558,
+   "vertex_sha256": "c3e908e4674ac4836f6d67d428cb7cb3be24f7d9cf18a00459c3ca1d84f7f4a1"
+  },
+  {
+   "rank": 10,
+   "id": "mem.bone_10",
+   "label": "hand_class",
+   "side": null,
+   "confidence": "transferred(high envelope 0.042, unique at fore position 2)",
+   "source_obj": "../meshes_preview/bone_10_124371vox_lo.obj",
+   "vertices": 15016,
+   "faces": 30000,
+   "volume_mm3_mesh": 509.4599,
+   "area_mm2": 970.087498,
+   "thickness_mm_equivalent": 0.525169019,
+   "mass_g": 0.967974,
+   "volume_mm3_voxel_book": 509.423616,
+   "volume_delta_pct": 0.0071,
+   "vertex_sha256": "112b4130bf2e02c138a5eece340337d767ed0a1e6618c5e9d5c6773e14785177"
+  },
+  {
+   "rank": 11,
+   "id": "mem.bone_11",
+   "label": "hand_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_11_121635vox_lo.obj",
+   "vertices": 14993,
+   "faces": 29998,
+   "volume_mm3_mesh": 498.202265,
+   "area_mm2": 992.110825,
+   "thickness_mm_equivalent": 0.502163924,
+   "mass_g": 0.946584,
+   "volume_mm3_voxel_book": 498.21696,
+   "volume_delta_pct": -0.0029,
+   "vertex_sha256": "b470d3d5c0fc318d8f0da75a3813e49db98d2d50f2fffea26c786a937bea37c7"
+  },
+  {
+   "rank": 12,
+   "id": "mem.bone_12",
+   "label": "forearm_class",
+   "side": null,
+   "confidence": "transferred(high envelope 0.087, unique at fore position 1)",
+   "source_obj": "../meshes_preview/bone_12_102189vox_lo.obj",
+   "vertices": 15005,
+   "faces": 30000,
+   "volume_mm3_mesh": 418.395418,
+   "area_mm2": 661.480479,
+   "thickness_mm_equivalent": 0.632513628,
+   "mass_g": 0.794951,
+   "volume_mm3_voxel_book": 418.566144,
+   "volume_delta_pct": -0.0408,
+   "vertex_sha256": "46c18669d9adb45834ff26ab0615fecb806809725a421e05009d075996fecb59"
+  },
+  {
+   "rank": 16,
+   "id": "mem.bone_16",
+   "label": "foot_class",
+   "side": null,
+   "confidence": "transferred(high envelope 0.025, unique at hind position 3)",
+   "source_obj": "../meshes_preview/bone_16_63613vox_lo.obj",
+   "vertices": 15005,
+   "faces": 30000,
+   "volume_mm3_mesh": 260.283547,
+   "area_mm2": 336.150436,
+   "thickness_mm_equivalent": 0.774306734,
+   "mass_g": 0.494539,
+   "volume_mm3_voxel_book": 260.558848,
+   "volume_delta_pct": -0.1057,
+   "vertex_sha256": "c430a0857d8f4de812dc305aca7f64af22f13589014513eb335b6d8d7aafb1da"
+  },
+  {
+   "rank": 17,
+   "id": "mem.bone_17",
+   "label": "foot_class",
+   "side": null,
+   "confidence": "transferred(high envelope 0.030, unique at hind position 3)",
+   "source_obj": "../meshes_preview/bone_17_62995vox_lo.obj",
+   "vertices": 15001,
+   "faces": 30000,
+   "volume_mm3_mesh": 257.777299,
+   "area_mm2": 340.632153,
+   "thickness_mm_equivalent": 0.7567615,
+   "mass_g": 0.489777,
+   "volume_mm3_voxel_book": 258.02752,
+   "volume_delta_pct": -0.097,
+   "vertex_sha256": "7024338184d4174f91044df6f9b4185a00fa19f0eda6c2481b1a468e9fb98eee"
+  },
+  {
+   "rank": 19,
+   "id": "mem.bone_19",
+   "label": "fibula",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_19_44548vox_lo.obj",
+   "vertices": 14999,
+   "faces": 29998,
+   "volume_mm3_mesh": 181.906711,
+   "area_mm2": 391.198576,
+   "thickness_mm_equivalent": 0.464998398,
+   "mass_g": 0.345623,
+   "volume_mm3_voxel_book": 182.468608,
+   "volume_delta_pct": -0.3079,
+   "vertex_sha256": "1f95d580f2a1c559bbe54680e569f337fd72179bcbd16e2b7b16e47edf386e03"
+  },
+  {
+   "rank": 20,
+   "id": "mem.bone_20",
+   "label": "fibula",
+   "side": null,
+   "confidence": "transferred(high envelope 0.052, unique at hind position 2)",
+   "source_obj": "../meshes_preview/bone_20_43835vox_lo.obj",
+   "vertices": 14995,
+   "faces": 30000,
+   "volume_mm3_mesh": 179.066889,
+   "area_mm2": 382.151107,
+   "thickness_mm_equivalent": 0.468576136,
+   "mass_g": 0.340227,
+   "volume_mm3_voxel_book": 179.54816,
+   "volume_delta_pct": -0.268,
+   "vertex_sha256": "ce8dc632272babadbcda39b656388e2ed93caad2157211634fbb594ff5013bd6"
+  },
+  {
+   "rank": 21,
+   "id": "mem.bone_21",
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_21_40306vox_lo.obj",
+   "vertices": 12497,
+   "faces": 24982,
+   "volume_mm3_mesh": 164.998996,
+   "area_mm2": 235.051195,
+   "thickness_mm_equivalent": 0.701970463,
+   "mass_g": 0.313498,
+   "volume_mm3_voxel_book": 165.093376,
+   "volume_delta_pct": -0.0572,
+   "vertex_sha256": "f054296f8f70cc64e65cf21540767ca5bf3e60d85ca03ed3d8bdf28a371e4cd3"
+  },
+  {
+   "rank": 24,
+   "id": "mem.bone_24",
+   "label": "foot_class",
+   "side": null,
+   "confidence": "high",
+   "source_obj": "../meshes_preview/bone_24_24799vox_lo.obj",
+   "vertices": 7430,
+   "faces": 14856,
+   "volume_mm3_mesh": 101.392035,
+   "area_mm2": 138.535424,
+   "thickness_mm_equivalent": 0.731885259,
+   "mass_g": 0.192645,
+   "volume_mm3_voxel_book": 101.576704,
+   "volume_delta_pct": -0.1818,
+   "vertex_sha256": "7c7349d6bc1aaaf490001bbc157d877cb41dcc55da4729216fa4e8e238d4febe"
+  }
+ ],
+ "bonds": [
+  {
+   "id": "bond.joint_03_19",
+   "pair": [
+    3,
+    19
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 2.97,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_05_09",
+   "pair": [
+    5,
+    9
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 2.71,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_05_11",
+   "pair": [
+    5,
+    11
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 1.48,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_07_19",
+   "pair": [
+    7,
+    19
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 0.53,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_07_24",
+   "pair": [
+    7,
+    24
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 2.62,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_08_09",
+   "pair": [
+    8,
+    9
+   ],
+   "chain_kind": "fore",
+   "rest_length_mm": 0.7,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_19_24",
+   "pair": [
+    19,
+    24
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 2.94,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  },
+  {
+   "id": "bond.joint_21_24",
+   "pair": [
+    21,
+    24
+   ],
+   "chain_kind": "hind",
+   "rest_length_mm": 0.93,
+   "material": "mat.cartilage",
+   "cure_strength_pa": 13000000.0
+  }
+ ],
+ "totals": {
+  "compartments": 14,
+  "bonds": 8,
+  "total_mass_g": 12.0824,
+  "total_volume_mm3_mesh": 6359.1664,
+  "total_volume_mm3_voxel": 6363.0541,
+  "total_volume_delta_pct": -0.061,
+  "total_mass_if_voxel_volume_g": 12.0898,
+  "body_mass_band_kg": [
+   0.4,
+   0.55
+  ],
+  "skeleton_fraction_of_body_band_pct": [
+   2.2,
+   3.02
+  ],
+  "skeleton_fraction_band_pct": [
+   8.0,
+   15.0
+  ],
+  "prange_regression_predicted_g": [
+   26.08,
+   36.9
+  ],
+  "prange_source": "Prange, Anderson & Rahn 1979 (Am Nat 113:103-122): M_skel = 0.0708 * M_body^1.09 (adult-taxon)",
+  "named_deviations": [
+   "PARTIAL skeleton: the import covers the 14 v3-identified bones of the 25-rank segmentation; 10 nonaxial bones are unidentified and the axial composite is unlabeled, so they stay OUT (never invented) -- the imported mass is checked as a subset of the full specimen book, never as a whole skeleton",
+   "adult cortical density (1900 kg/m^3) is the cited UPPER ANCHOR: infant bone is under-mineralized (Rauch 2001), so true compartment masses sit below these numbers",
+   "the CT bone threshold (148, 95th percentile) includes partially mineralized growth cartilage in this infant, so volumes include some non-bone mineralized tissue",
+   "the cortical tissue density is applied to whole-bone volume (porous trabecular cores included), biasing masses HIGH; all biases point the same direction and are named, not tuned"
+  ],
+  "import_set": "the v3-labeled ranks only (bone_identification_v3.json is the ONLY label source; v1's superseded B labels are not resurrected)",
+  "identified_ranks": [
+   3,
+   5,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   16,
+   17,
+   19,
+   20,
+   21,
+   24
+  ],
+  "unimported_ranks": [
+   1,
+   2,
+   4,
+   6,
+   13,
+   14,
+   15,
+   18,
+   22,
+   23,
+   25
+  ],
+  "full_specimen_volume_mm3_voxel": 30857.3061,
+  "full_specimen_mass_g": 58.6289,
+  "full_specimen_fraction_of_body_band_pct": [
+   10.66,
+   14.66
+  ],
+  "excluded_measured_edges": {
+   "2-16": 1.24,
+   "4-20": 0.47,
+   "6-10": 0.36,
+   "12-15": 0.57,
+   "14-23": 0.96,
+   "14-25": 0.92,
+   "23-25": 0.72
+  }
+ }
+}

@@ -1,0 +1,21 @@
+﻿{
+    "license":  "CC0 (Creative Commons Zero)",
+    "files":  [
+                  {
+                      "path":  "mammal_gait.txt",
+                      "url":  "https://datadryad.org/api/v2/files/863883/download",
+                      "resolved_url":  "https://datadryad.org/dataset/doi:10.5061/dryad.z08kprrd5",
+                      "bytes":  22684,
+                      "sha256":  "8bb2721238badedbb82a32d67e06e1b4629ec0dc67a511d3a5abafea575612d7"
+                  },
+                  {
+                      "path":  "tetrapod_gait.txt",
+                      "url":  "https://datadryad.org/api/v2/files/863883/download",
+                      "resolved_url":  "https://datadryad.org/dataset/doi:10.5061/dryad.z08kprrd5",
+                      "bytes":  19848,
+                      "sha256":  "7e621f0b59154f5f2136db340a512708bcbab9e6fa5f99dd35712f72b355753d"
+                  }
+              ],
+    "source":  "Dryad API v2 (token auth) - Granatosky tetrapod gait analytic tables",
+    "retrieved_utc":  "2026-09-19T05:16:00.4548813Z"
+}

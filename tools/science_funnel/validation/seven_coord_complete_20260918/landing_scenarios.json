@@ -1,0 +1,390 @@
+{
+ "schema": "chimera.coupled_arm7_landing_scenarios.v1",
+ "note": "Pinned stop-landing scenarios for the seven-coordinate qualification ladder (F4). landed=true entries are verified stop landings: the wall clamp pins q within 1e-9 at a tick with a nonzero stop impulse and the ledger closes on every tick. landed=false entries are honestly-measured stalls: the bound is unreachable by drive+gravity under the authored servo contract; the verifier reproduces the stall distance deterministically. targets are degrees; absent coordinates stay at defaults.",
+ "scenarios": [
+  {
+   "stage": 3,
+   "coord": "shoulder_flexion",
+   "side": 0,
+   "targets": {
+    "shoulder_flexion": -75.00000005753945
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  },
+  {
+   "stage": 3,
+   "coord": "shoulder_flexion",
+   "side": 1,
+   "targets": {
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  },
+  {
+   "stage": 3,
+   "coord": "elbow_flexion",
+   "side": 0,
+   "targets": {
+    "elbow_flexion": 19.99999997714667
+   },
+   "power": false,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 3,
+   "coord": "elbow_flexion",
+   "side": 1,
+   "targets": {
+    "elbow_flexion": 139.99999984002667,
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 3,
+   "coord": "radial_pronation",
+   "side": 0,
+   "targets": {
+    "radial_pronation": -90.0000001836389
+   },
+   "power": false,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 3,
+   "coord": "radial_pronation",
+   "side": 1,
+   "targets": {
+    "radial_pronation": 90.0000001836389,
+    "shoulder_flexion": -75.00000005753945
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 5,
+   "coord": "shoulder_flexion",
+   "side": 0,
+   "targets": {
+    "shoulder_flexion": -75.00000005753945
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  },
+  {
+   "stage": 5,
+   "coord": "shoulder_flexion",
+   "side": 1,
+   "targets": {
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  },
+  {
+   "stage": 5,
+   "coord": "elbow_flexion",
+   "side": 0,
+   "targets": {
+    "elbow_flexion": 19.99999997714667
+   },
+   "power": false,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 5,
+   "coord": "elbow_flexion",
+   "side": 1,
+   "targets": {
+    "elbow_flexion": 139.99999984002667,
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 5,
+   "coord": "radial_pronation",
+   "side": 0,
+   "targets": {
+    "radial_pronation": -90.0000001836389
+   },
+   "power": false,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 5,
+   "coord": "radial_pronation",
+   "side": 1,
+   "targets": {
+    "radial_pronation": 90.0000001836389,
+    "shoulder_flexion": -75.00000005753945
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 5,
+   "coord": "wrist_flexion",
+   "side": 0,
+   "targets": {
+    "wrist_flexion": -75.00000005753945
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  },
+  {
+   "stage": 5,
+   "coord": "wrist_flexion",
+   "side": 1,
+   "targets": {
+    "wrist_flexion": 90.0000001836389,
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 5,
+   "coord": "wrist_abduction",
+   "side": 0,
+   "targets": {
+    "wrist_abduction": -59.999999931439994
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 5,
+   "coord": "wrist_abduction",
+   "side": 1,
+   "targets": {
+    "wrist_abduction": 44.99999980534054,
+    "shoulder_flexion": 90.0000001836389,
+    "elbow_flexion": 139.99999984002667
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "shoulder_flexion",
+   "side": 0,
+   "targets": {
+    "shoulder_flexion": -75.00000005753945
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  },
+  {
+   "stage": 7,
+   "coord": "shoulder_flexion",
+   "side": 1,
+   "targets": {
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  },
+  {
+   "stage": 7,
+   "coord": "elbow_flexion",
+   "side": 0,
+   "targets": {
+    "elbow_flexion": 19.99999997714667
+   },
+   "power": false,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "elbow_flexion",
+   "side": 1,
+   "targets": {
+    "elbow_flexion": 139.99999984002667,
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "radial_pronation",
+   "side": 0,
+   "targets": {
+    "radial_pronation": -90.0000001836389
+   },
+   "power": false,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "radial_pronation",
+   "side": 1,
+   "targets": {
+    "radial_pronation": 90.0000001836389,
+    "shoulder_flexion": -75.00000005753945
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "wrist_flexion",
+   "side": 0,
+   "targets": {
+    "wrist_flexion": -75.00000005753945,
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "wrist_flexion",
+   "side": 1,
+   "targets": {
+    "wrist_flexion": 90.0000001836389,
+    "shoulder_flexion": 90.0000001836389,
+    "elbow_flexion": 139.99999984002667
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "wrist_abduction",
+   "side": 0,
+   "targets": {
+    "wrist_abduction": -59.999999931439994
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "wrist_abduction",
+   "side": 1,
+   "targets": {
+    "wrist_abduction": 44.99999980534054
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  },
+  {
+   "stage": 7,
+   "coord": "shoulder_adduction",
+   "side": 0,
+   "targets": {
+    "shoulder_adduction": -99.99999988573333,
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "shoulder_adduction",
+   "side": 1,
+   "targets": {
+    "shoulder_adduction": 50.00000022934557,
+    "shoulder_flexion": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": true,
+   "diff": 0.0
+  },
+  {
+   "stage": 7,
+   "coord": "shoulder_rotation",
+   "side": 0,
+   "targets": {
+    "shoulder_rotation": -79.99999990858667
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  },
+  {
+   "stage": 7,
+   "coord": "shoulder_rotation",
+   "side": 1,
+   "targets": {
+    "shoulder_rotation": 90.0000001836389
+   },
+   "power": true,
+   "load": 0.0,
+   "landed": false,
+   "skip": true,
+   "diff": 1000000000.0
+  }
+ ]
+}

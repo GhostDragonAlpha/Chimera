@@ -1,0 +1,18 @@
+.......warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+.warning: You appear to have cloned an empty repository.
+....................................................................................................................................................................................................................................................................................................................s
+----------------------------------------------------------------------
+Ran 318 tests in 237.155s
+
+OK (skipped=1)
+stopped pid 74524 (transition recorded: test teardown controlled transition)
+stopped pid 58272 (transition recorded: test teardown controlled transition)
+stopped pid 44728 (transition recorded: test teardown controlled transition)
+stopped pid 73512 (transition recorded: test teardown controlled transition)
+stopped pid 70732 (transition recorded: test teardown controlled transition)
+stopped pid 76628 (transition recorded: test teardown controlled transition)
+LOCK_PROBE_MUTATED {"writers": 3, "duration_s": 5.0, "ops": 838, "lock_errors": 12, "other_refusals": 562, "p50_ms": 0.0, "p95_ms": 110.0, "p99_ms": 235.0, "max_ms": 328.0}
+SCALE_PROBE_MIXED {"writers": 8, "duration_s": 20.2, "ops": 1504, "lock_errors": 0, "other_refusals": 96, "p50_ms": 16.0, "p95_ms": 281.0, "p99_ms": 2672.0, "max_ms": 8172.0, "threads": 8, "spawn_cost_ms": 4.7}
+LOCK_PROBE_GUARD {"writers": 3, "duration_s": 5.1, "ops": 502, "lock_errors": 0, "other_refusals": 92, "p50_ms": 15.0, "p95_ms": 125.0, "p99_ms": 453.0, "max_ms": 1250.0}
+SCALE_PROBE_SATURATED {"ops": 712, "lock_or_err": 0, "p50_ms": 15.0, "p95_ms": 141.0, "max_ms": 5234.0}

@@ -1,0 +1,28 @@
+{
+ "schema": "chimera.skeleton_movie_rule0.v1",
+ "lane": "agent/skeleton-movie-20260919",
+ "admitted_utc": "2026-09-20T05:59:25+00:00",
+ "rule0": "no falsifier, no build -- this record is registered BEFORE rendering (mission order)",
+ "statement": "A rotating skeleton MOVIE of the mounted CT skeleton, judged by the dyad (Ollama qwen3.8 vision), is a falsifiable visual proof of the mounting: the judgment must distinguish the true mount from a wrong-state probe, or the visual proof has no power.",
+ "prediction": "The true movie is judged an articulated skeleton (skull, spine, limb bones in anatomical arrangement, upright trunk); a wrong-state probe is judged differently (probe P1: trunk rotated 90 deg -- spine horizontal, anatomically wrong posture; probe P2: bones scaled x2 from the trunk midpoint -- oversized grains).",
+ "probes": [
+  {
+   "id": "P1_trunk_rot90",
+   "transform": "the placed splats rotated 90 degrees about the scene Z axis (left) through the trunk midpoint: the spine lies horizontal instead of upright",
+   "expected": "judged NOT an upright articulated skeleton (lying/sideways arrangement)"
+  },
+  {
+   "id": "P2_scale_x2",
+   "transform": "the placed splats scaled x2 about the trunk midpoint: every bone twice its mounted size",
+   "expected": "judged differently from the true mount (oversized/zoomed grains)"
+  }
+ ],
+ "falsifiers": {
+  "F1_discrimination": "the vision judgment of the TRUE movie must describe an articulated skeleton in anatomical arrangement AND the judgment of each probe must differ from it. If the vision model cannot distinguish truth from probe, the visual proof has NO POWER and FAILS honestly -- judgments recorded verbatim either way.",
+  "F2_determinism": "two identical render+encode runs produce bit-identical frame PNG sha256 hashes and bit-identical MP4 sha256 hashes; hashes recorded. Any drift kills the proof.",
+  "F3_own_port": "the engine instance runs ONLY on this agent's own bind-tested free port; port 8127 (operator live scene) and every other process's port are never touched; if a port is occupied another is chosen; no process this agent did not start is ever killed."
+ },
+ "judgment_protocol": "senses.watch (Ollama lane: qwen3.8, think:false, num_ctx sized to the frame count), one watch call per movie with the IDENTICAL prompt for true and probes; judgments recorded verbatim in judgement_true.json / judgement_p1_trunk_rot90.json / judgement_p2_scale_x2.json.",
+ "render_protocol": "ct_skeleton_layer.layer_splat_buffer (the committed registration: scale 3.2315 scene-units/mm pinned to HAT 0.482 m, one trunk-PCA rotation, ~118k splats) POSTed to /membrane_bin of a lane-owned chimera_engine.exe (splat shell) on the agent's own port; camera orbit radius derived from the splat bounding box and the engine 45 deg vertical FOV; frames fetched via GET /frame with the settle-capture pattern (cpp_bridge._settle_capture) so every frame is the POSTED camera's view, not the previous one; MP4 via cpp_bridge.encode_movie (ffmpeg libx264).",
+ "engine_isolated": true
+}

@@ -1,0 +1,21 @@
+#NEXUS
+[created by the 10kTree Website - http://10kTrees.fas.harvard.edu]
+BEGIN TREES;
+translate
+1 Alouatta_palliata,
+2 Plecturocebus_discolor,
+3 Cebus_capucinus,
+4 Allochrocebus_l''hoesti,
+5 Chlorocebus_aethiops,
+6 Eulemur_rufifrons,
+7 Eulemur_rubriventer,
+8 Hapalemur_aureus,
+9 Lagothrix_lagotricha,
+10 Lemur_catta,
+11 Lophocebus_albigena,
+12 Papio_anubis,
+13 Piliocolobus_tephrosceles,
+14 Saimiri_sciureus;
+tree consensus_14species = (((((4:8.627245,5:8.627244):6.247934,(11:5.769163,12:5.769163):9.106015):6.535196,13:21.410374):25.401447,(((1:14.760241,9:14.760240):6.561060,(3:18.569905,14:18.569905):2.751396):1.411478,2:22.732778):24.079043):26.191197,((7:4.153704,6:4.153705):10.865892,(8:9.280517,10:9.280517):5.739079):57.983421);
+END;<br />
+

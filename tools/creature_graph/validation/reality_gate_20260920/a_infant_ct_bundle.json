@@ -1,0 +1,376 @@
+{
+ "allometry": {
+  "expectation_exclusions": [
+   "000875604"
+  ],
+  "ratios": {
+   "femur:tibia": {
+    "from": [
+     "bundle chains: ranks 2/6",
+     "bundle chains: ranks 3/7"
+    ],
+    "n": 2,
+    "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+    "value": 1.0427019205024053
+   },
+   "forearm:tibia": {
+    "from": [
+     "bundle chains: ranks 10/6",
+     "bundle chains: ranks 11/6",
+     "bundle chains: ranks 10/7",
+     "bundle chains: ranks 11/7"
+    ],
+    "n": 4,
+    "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+    "value": 0.9744264619553624
+   },
+   "humerus:femur": {
+    "from": [
+     "bundle chains: ranks 4/2",
+     "bundle chains: ranks 5/2",
+     "bundle chains: ranks 4/3",
+     "bundle chains: ranks 5/3"
+    ],
+    "n": 4,
+    "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+    "value": 0.9157657262138319
+   },
+   "humerus:forearm": {
+    "from": [
+     "bundle chains: rank 4 vs mean [10, 12]",
+     "bundle chains: rank 5 vs mean [11, 13]"
+    ],
+    "n": 2,
+    "source": "chimera.ct_bone_identification.v3 chain lengths (pose-free within-bundle ratios)",
+    "value": 0.9798941425936143
+   }
+  },
+  "stage": "infant"
+ },
+ "components": [
+  {
+   "confidence": "high",
+   "elongation": 7.01,
+   "id": "000875604_bone_2",
+   "kind": "anatomy",
+   "length_mm": 44.94,
+   "segment_label": "femur",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 7.11,
+   "id": "000875604_bone_3",
+   "kind": "anatomy",
+   "length_mm": 45.16,
+   "segment_label": "femur",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 7.23,
+   "id": "000875604_bone_4",
+   "kind": "anatomy",
+   "length_mm": 41.82,
+   "segment_label": "humerus",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 6.84,
+   "id": "000875604_bone_5",
+   "kind": "anatomy",
+   "length_mm": 40.69,
+   "segment_label": "humerus",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 8.25,
+   "id": "000875604_bone_6",
+   "kind": "anatomy",
+   "length_mm": 43.14,
+   "segment_label": "tibia",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 8.2,
+   "id": "000875604_bone_7",
+   "kind": "anatomy",
+   "length_mm": 43.27,
+   "segment_label": "tibia",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 2.19,
+   "id": "000875604_bone_8",
+   "kind": "anatomy",
+   "length_mm": 24.44,
+   "segment_label": "hand_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 2.22,
+   "id": "000875604_bone_9",
+   "kind": "anatomy",
+   "length_mm": 24.62,
+   "segment_label": "hand_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 9.57,
+   "id": "000875604_bone_10",
+   "kind": "anatomy",
+   "length_mm": 40.57,
+   "segment_label": "forearm_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 9.64,
+   "id": "000875604_bone_11",
+   "kind": "anatomy",
+   "length_mm": 40.2,
+   "segment_label": "forearm_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 9.36,
+   "id": "000875604_bone_12",
+   "kind": "anatomy",
+   "length_mm": 43.92,
+   "segment_label": "forearm_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 9.47,
+   "id": "000875604_bone_13",
+   "kind": "anatomy",
+   "length_mm": 43.71,
+   "segment_label": "forearm_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "medium(chain+rank, no within-10% homolog)",
+   "elongation": 1.79,
+   "id": "000875604_bone_15",
+   "kind": "anatomy",
+   "length_mm": 14.1,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "medium(chain+rank, no within-10% homolog)",
+   "elongation": 1.81,
+   "id": "000875604_bone_17",
+   "kind": "anatomy",
+   "length_mm": 14.14,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "medium(chain+rank, no within-10% homolog)",
+   "elongation": 1.13,
+   "id": "000875604_bone_18",
+   "kind": "anatomy",
+   "length_mm": 12.89,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 13.18,
+   "id": "000875604_bone_20",
+   "kind": "anatomy",
+   "length_mm": 37.97,
+   "segment_label": "fibula",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 14.65,
+   "id": "000875604_bone_21",
+   "kind": "anatomy",
+   "length_mm": 38.08,
+   "segment_label": "fibula",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 2.26,
+   "id": "000875604_bone_22",
+   "kind": "anatomy",
+   "length_mm": 11.17,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 2.26,
+   "id": "000875604_bone_23",
+   "kind": "anatomy",
+   "length_mm": 11.17,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 1.79,
+   "id": "000875604_bone_24",
+   "kind": "anatomy",
+   "length_mm": 8.97,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  },
+  {
+   "confidence": "high",
+   "elongation": 1.79,
+   "id": "000875604_bone_25",
+   "kind": "anatomy",
+   "length_mm": 8.98,
+   "segment_label": "foot_class",
+   "source": "chimera.ct_bone_identification.v3 (000875604)",
+   "species": "Macaca mulatta",
+   "stage": {
+    "confirmed": true,
+    "label": "infant",
+    "provenance": "MorphoSource CT 000875604, Macaca mulatta USNM 497136-3, infant, 160um (tools/science_funnel/data/morphosource_ct/meshes/manifest.json source field)"
+   }
+  }
+ ],
+ "description": "the first reality creature: a stage-true infant Macaca mulatta, measured, not constructed",
+ "name": "infant_ct_specimen_000875604",
+ "schema": "chimera.creature_bundle.v1",
+ "species": [
+  {
+   "name": "Macaca mulatta",
+   "provenance": "mesh_receipt.json source_ct Macaca_mulatta-USNM497136-3-160um-000875604.tif; pinned NCBI taxdmp extract tax_id 9544"
+  }
+ ]
+}

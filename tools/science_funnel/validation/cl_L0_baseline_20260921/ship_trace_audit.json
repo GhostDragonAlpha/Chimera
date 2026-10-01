@@ -1,0 +1,44 @@
+{
+ "trace": ".tmp/l0_receipt/trace_pin.jsonl",
+ "trace_sha256": "33fbdfb071fdae8bf54444cba56564d2405d3e28c9a6a6525d7f922cade73f26",
+ "meta": {
+  "meta": true,
+  "tick_hz": 300,
+  "tair": 9,
+  "T_CYCLE": 0.71,
+  "DUTY_SAMPLED": 0.683,
+  "TOE_OFF": 0.68,
+  "cycle_ticks": 213,
+  "walk_ticks": 2130
+ },
+ "rows": 296,
+ "bit_pairs_checked": 2960,
+ "decimal_only_checked": 1184,
+ "mismatches": [],
+ "lossless": true,
+ "decimal_only_note": "t and phase are recorded as %.17g decimals WITHOUT bits columns; %.17g is a round-trip-exact representation for binary64 (verified here by float() round-trip), but the recorded artifact cannot be bit-verified for them -- NAMED instrument upgrade: add t_bits/phase_bits",
+ "declared_initial_state_row0": {
+  "touch": [
+   0,
+   0
+  ],
+  "leg0": {
+   "mode": 0,
+   "t": 0,
+   "held": 0,
+   "clear_tick": -1,
+   "plant_y": 0,
+   "plant_y_bits": 0,
+   "phase": 0
+  },
+  "leg1": {
+   "mode": 0,
+   "t": 0,
+   "held": 0,
+   "clear_tick": -1,
+   "plant_y": 0,
+   "plant_y_bits": 0,
+   "phase": 0.5
+  }
+ }
+}

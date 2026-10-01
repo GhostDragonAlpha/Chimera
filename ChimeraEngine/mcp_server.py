@@ -284,5 +284,109 @@ def hunt_stage(name: str, r: str = "1.0") -> str:
     return _run_node("hunt_shot.js", "splat", matches[0].name, str(out), r)
 
 
+# ---------------------------------------------------------------------------
+# THE WORKFLOW COMMANDS (2026-09-20, lane agent/workflow-mcp-20260920; the
+# operator's directive: "these are complicated issues that an agent cannot keep
+# straight on its own; we need tools to guide an agent through our workflow,
+# like repeatable commands running on an MCP server"). Thin wrappers over
+# tools/science_funnel/workflow_commands.py -- each returns MEASURED NUMBERS
+# (one JSON object), never a prose verdict. ADDITIVE ONLY: every tool above is
+# untouched. reality_gate is RESOLVED AT RUNTIME (branch
+# agent/reality-fantasy-gate-20260920, not this lineage): its commands return
+# the structured honest absence here -- never a crash, never a silent pass.
+# Rule 0 receipt: tools/science_funnel/validation/workflow_mcp_20260920/receipt.json
+# ---------------------------------------------------------------------------
+sys.path.insert(0, str(REPO))          # tools.* imports from the repo root
+
+
+def _workflow_call(fn, *args, **kwargs) -> str:
+    """One error shape for the whole command surface: an infrastructure
+    refusal comes back as JSON with the refusal code, never a stack trace."""
+    import json as _json
+    try:
+        return _json.dumps(fn(*args, **kwargs), indent=1)
+    except Exception as e:                                # noqa: BLE001
+        return _json.dumps({"error": "workflow_command_refused",
+                            "command": getattr(fn, "__name__", "?"),
+                            "detail": f"{type(e).__name__}: {e}"}, indent=1)
+
+
+@mcp.tool()
+def render_creature(source: str = "ct_skeleton", out_dir: str = "",
+                    orbit_frames: int = 12) -> str:
+    """Render <mesh-or-scene> through the engine's TRIANGLE pipeline ONLY
+    (the committed infant skeleton under its pinned registration, or an .obj
+    mesh path) and return the render path + the pixel_truth numbers for the
+    output stills. NO splat route is reachable from this command: the only
+    upload is the indexed mesh to /mesh_bin (conformance-tested). A self-
+    started engine binds a bind-tested free port; 8127 is refused by code."""
+    from tools.science_funnel import workflow_commands as wc
+    return _workflow_call(wc.render_creature, source,
+                          out_dir or None, int(orbit_frames))
+
+
+@mcp.tool()
+def verify_visual(frames_dir: str, masks_dir: str = "", roi_dir: str = "",
+                  render_record: str = "", guide_reference: int = 0) -> str:
+    """pixel_truth end-to-end over a frames dir (grain, coverage with caller
+    masks, object-seen / guide-seen with caller ROIs, clipscan) -- the metric
+    table with the PRE-ENCODED thresholds as pass/fail per gate, each gate
+    carrying its provenance. A gate whose instrument is absent is reported
+    not_measured with the reason -- named honestly, never assumed."""
+    from tools.science_funnel import workflow_commands as wc
+    return _workflow_call(
+        wc.verify_visual, frames_dir, masks_dir or None, roi_dir or None,
+        "*.png", render_record or None, guide_reference or None)
+
+
+@mcp.tool()
+def adjudicate(bundle: str) -> str:
+    """The reality/fantasy gate on a chimera.creature_bundle.v1 manifest:
+    {category, violations[]}, every violation itemized with its measured
+    numbers, never silent. reality_gate is RESOLVED AT RUNTIME; on a lineage
+    without it (this one, until the integrator merges) the structured honest
+    absence is returned with the gate branch named."""
+    from tools.science_funnel import workflow_commands as wc
+    return _workflow_call(wc.adjudicate, bundle)
+
+
+@mcp.tool()
+def bio_stage(bundle: str) -> str:
+    """The bundle's stage label + evidence, or FAILED as unadmittable
+    (missing stage = failed, like a missing sha256). The admission-required
+    metadata check (the biological law's clause c)."""
+    from tools.science_funnel import workflow_commands as wc
+    return _workflow_call(wc.bio_stage, bundle)
+
+
+@mcp.tool()
+def bio_check(bundle: str) -> str:
+    """'Does this biologically check out': L1 stage consistency, L2 allometric
+    coherence, L3 taxonomic coherence, L4 physics bars -> {category,
+    violations}. Requires the reality gate; honest absence otherwise."""
+    from tools.science_funnel import workflow_commands as wc
+    return _workflow_call(wc.bio_check, bundle)
+
+
+@mcp.tool()
+def bio_fantasy_acknowledge(bundle: str, out: str = "") -> str:
+    """The developer-driven construction mode: records the violation-manifest
+    acknowledgment on the bundle (written to <bundle>.acknowledged.json by
+    default), THEN the gate admits to the fantasy category. The violation is
+    never silent, never accidental."""
+    from tools.science_funnel import workflow_commands as wc
+    return _workflow_call(wc.bio_fantasy_acknowledge, bundle, out or None)
+
+
+@mcp.tool()
+def checklist() -> str:
+    """THE_CHECKLIST as a machine-readable walk: every step's id, its law home
+    pointer, and the command that satisfies it -- or an honestly-named
+    'needs_judgment' where no command exists. An agent is DRIVEN by this: run
+    the commandable steps, do not pretend the judgment steps are commands."""
+    from tools.science_funnel import workflow_commands as wc
+    return _workflow_call(wc.checklist)
+
+
 if __name__ == "__main__":
     mcp.run()

@@ -1,0 +1,98 @@
+{
+ "schema": "chimera.hind_step.v1",
+ "lane": "agent/gait-wave28-hind-step",
+ "base": "d981bc04",
+ "scene_sha256": "e61ad3864472453f2b2a77a71ca0579f1b78e905b2495f581a9f87f27502333c",
+ "instrument": "FK-midpoint paw reference (the CoP-based first instrument corrected; see the receipt)",
+ "envelope": {
+  "off_td_m": 0.18097975501581814,
+  "off_to_m": -0.17996663945599436,
+  "stance_span_m": 0.36094639447181254,
+  "v_bound_m_s": 0.2088816450000002
+ },
+ "advance": {
+  "v_worst_m_s": 0.7355999999999946,
+  "v_worst_tick": 85,
+  "k_step_floor_m": 0.004903999999999964,
+  "k_step_floor_form": "2 * v_worst * dt (the wave-26 kWaitFloor shape)"
+ },
+ "triggers": {
+  "shipped": "clock lift slot + pads live (phi >= TOE_OFF && touching_prev_, latched)",
+  "a_absolute_envelope_cross": {
+   "L": null,
+   "R": 93
+  },
+  "b_own_column_cross": {
+   "L": 40,
+   "R": 100
+  },
+  "c_slot_first_live_tick": {
+   "L": null,
+   "R": 98
+  },
+  "d_raw_slip_first_above_bound": {
+   "L": 121,
+   "R": 55
+  },
+  "d_rejection_designed_residual_adm_runs": [
+   {
+    "leg": "R",
+    "beg": 55,
+    "end": 63
+   },
+   {
+    "leg": "R",
+    "beg": 65,
+    "end": 75
+   },
+   {
+    "leg": "R",
+    "beg": 77,
+    "end": 91
+   },
+   {
+    "leg": "L",
+    "beg": 121,
+    "end": 121
+   }
+  ],
+  "e_hull_rejection": "the loaded CoM-out-of-hull face is a continuous regime from tick 84 (38 ticks), no derivable threshold",
+  "ankle_wall_witness_rad_at_120": 0.0032
+ },
+ "calendar": {
+  "t_air_ticks": 9,
+  "predicted_R_fire": 98,
+  "predicted_R_td": 107,
+  "predicted_L_slot_note": "the L slot ~204 (the wave-16 derivation) measured on the clock series"
+ },
+ "l_r_true_offset_series_example": {
+  "60": {
+   "L": 0.11908301505141324,
+   "R": -0.13098205395306983
+  },
+  "70": {
+   "L": 0.0945061376687114,
+   "R": -0.14132453866448536
+  },
+  "80": {
+   "L": 0.06803214769137235,
+   "R": -0.15491233286291117
+  },
+  "90": {
+   "L": 0.03831490192773737,
+   "R": -0.17200078848147687
+  },
+  "100": {
+   "L": 0.01977964317266138,
+   "R": -0.17828857292871683
+  },
+  "110": {
+   "L": 0.011036254784597535,
+   "R": -0.17498337062599126
+  },
+  "120": {
+   "L": 0.007781128771125009,
+   "R": -0.15969926333254236
+  }
+ }
+}

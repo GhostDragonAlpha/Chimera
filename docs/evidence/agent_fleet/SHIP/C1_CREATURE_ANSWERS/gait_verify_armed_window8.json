@@ -1,0 +1,819 @@
+{
+ "base": "http://127.0.0.1:8165",
+ "mode": "armed",
+ "routes": {
+  "/tick_state": "200 3289B",
+  "/state": "200 104950B",
+  "/verts": "200 664528B",
+  "/topology": "200 439564B",
+  "/health": "200 9B BUT BODY 'Not found' -> NO ROUTE"
+ },
+ "log_replay": [
+  {
+   "t": "L OFF->STANCE@t34107",
+   "ok": true,
+   "why": "enable carries the frozen geometry + channels"
+  },
+  {
+   "t": "L STANCE->LIFT@t34108",
+   "ok": true,
+   "why": "LIFT inside the what-if envelope (patch 0.5711 m)"
+  },
+  {
+   "t": "R STANCE->RECOVER@t34122",
+   "ok": true,
+   "why": "support_lost audited: lost foot's world min-y 0.0011 m >= -1e-3 (the floor graze, measured)"
+  },
+  {
+   "t": "L LIFT->LOAD@t34122",
+   "ok": true,
+   "why": "support_lost audited: lost foot's world min-y 0.0011 m >= -1e-3 (the floor graze, measured)"
+  },
+  {
+   "t": "L LOAD->STANCE@t34175",
+   "ok": true,
+   "why": "bearing depth 0.0104 m >= 0.008, |vy| 8.29e-04 settled"
+  },
+  {
+   "t": "R RECOVER->STANCE@t34175",
+   "ok": true,
+   "why": "bearing depth 0.0104 m >= 0.008, |vy| 8.29e-04 settled"
+  },
+  {
+   "t": "R STANCE->LIFT@t34176",
+   "ok": true,
+   "why": "LIFT inside the what-if envelope (patch 0.5711 m)"
+  },
+  {
+   "t": "R LIFT->REACH@t34284",
+   "ok": true,
+   "why": "measured clearance miny 0.0500 >= 0.05"
+  },
+  {
+   "t": "L STANCE->RECOVER@t34309",
+   "ok": true,
+   "why": "support_lost audited: lost foot's world min-y 0.0002 m >= -1e-3 (the floor graze, measured)"
+  },
+  {
+   "t": "R REACH->LOAD@t34309",
+   "ok": true,
+   "why": "support_lost audited: lost foot's world min-y 0.0002 m >= -1e-3 (the floor graze, measured)"
+  },
+  {
+   "t": "L RECOVER->STANCE@t34564",
+   "ok": true,
+   "why": "bearing depth 0.0099 m >= 0.008, |vy| 9.41e-04 settled"
+  },
+  {
+   "t": "R LOAD->STANCE@t34564",
+   "ok": true,
+   "why": "bearing depth 0.0099 m >= 0.008, |vy| 9.41e-04 settled"
+  },
+  {
+   "t": "L STANCE->LIFT@t34565",
+   "ok": true,
+   "why": "LIFT inside the what-if envelope (patch 0.5711 m)"
+  },
+  {
+   "t": "R STANCE->RECOVER@t34867",
+   "ok": true,
+   "why": "support_lost audited: lost foot's world min-y 0.0000 m >= -1e-3 (the floor graze, measured)"
+  },
+  {
+   "t": "L LIFT->LOAD@t34867",
+   "ok": true,
+   "why": "support_lost audited: lost foot's world min-y 0.0000 m >= -1e-3 (the floor graze, measured)"
+  },
+  {
+   "t": "R STANCE->LIFT@t35088",
+   "ok": true,
+   "why": "LIFT inside the what-if envelope (patch 0.5711 m)"
+  }
+ ],
+ "ts": "2026-09-15 00:43:13",
+ "state0": {
+  "ts_us": 111969913415,
+  "ts_ms": 111969913,
+  "ticks": 32590,
+  "enabled": true,
+  "cells": [
+   {
+    "v0": 0.287914,
+    "V": 0.284209,
+    "P": 27979900.0,
+    "pieces": 5396,
+    "caps": 126,
+    "ylo": -0.019507,
+    "yhi": 0.338,
+    "degenerate": false
+   },
+   {
+    "v0": 12.5091,
+    "V": 12.5091,
+    "P": 0,
+    "pieces": 26442,
+    "caps": 380,
+    "ylo": 3.415,
+    "yhi": 9.97118,
+    "degenerate": false
+   },
+   {
+    "v0": 0.693006,
+    "V": 0.69653,
+    "P": -11054200.0,
+    "pieces": 5604,
+    "caps": 104,
+    "ylo": 1.903,
+    "yhi": 3.415,
+    "degenerate": false
+   },
+   {
+    "v0": 0.334578,
+    "V": 0.335428,
+    "P": -5527070.0,
+    "pieces": 1668,
+    "caps": 126,
+    "ylo": 0.338,
+    "yhi": 1.903,
+    "degenerate": false
+   }
+  ],
+  "force_l": 0,
+  "force_r": 0,
+  "load_l": 0,
+  "load_r": 0,
+  "damage_sum": 0,
+  "failed": 0,
+  "capacity_sum": 1346990000.0,
+  "flex_l_deg": 0,
+  "flex_r_deg": 0,
+  "sealed": true,
+  "n_cells": 4,
+  "V_lower": 0.284209,
+  "V_upper": 12.5091,
+  "P_lower": 27979900.0,
+  "P_upper": 0,
+  "v0_lower": 0.287914,
+  "v0_upper": 12.5091,
+  "V_whole": 13.8252,
+  "conserve_pct": -2.75923e-05,
+  "seal_split": 0,
+  "seal_cuts": 630,
+  "seal_loops": 0,
+  "seal_caps": 0,
+  "seal_refusal": "",
+  "dimple_m": 0,
+  "gravity_on": true,
+  "root_y": 0.00399643,
+  "root_vy": -0.175196,
+  "g_contact_n": 136023,
+  "stance_on": true,
+  "stance_ankle_deg": 0.480043,
+  "stance_kp": 3.53082,
+  "stance_lean_x": 0,
+  "stance_lean_z": 0.0093205,
+  "gait_on": true,
+  "gait_l": "LIFT",
+  "gait_r": "STANCE",
+  "gait_stride": 0,
+  "gait_depth_l": 0,
+  "gait_depth_r": 0.0021944,
+  "gait_clear_l": 0.0472264,
+  "gait_clear_r": -0.0472264,
+  "gait_lean_x": 0,
+  "gait_lean_z": 0.00209683,
+  "gait_p_max": 27979900.0,
+  "gait_hip_l_deg": -6.07801,
+  "gait_hip_r_deg": 0,
+  "gait_knee_l_deg": 10.4771,
+  "gait_knee_r_deg": 0,
+  "gait_feet_cell": 0,
+  "gait_strut_pin_l": 17,
+  "gait_strut_pin_r": 18,
+  "gait_clear_pin_l": 15,
+  "gait_clear_pin_r": 16,
+  "gait_enable_block": "",
+  "gait_block_l": "",
+  "gait_block_r": "other:LIFT",
+  "reflex_on": true,
+  "reflex_breathing": true,
+  "reflex_breath_cell": 1,
+  "reflex_breath_period_s": 13.3772,
+  "reflex_breath_amp_frac": 0.00753743,
+  "reflex_breath_disp_m": -0.000799203,
+  "reflex_breath_phase_deg": 213.255,
+  "reflex_flinch": true,
+  "reflex_flinch_pin_l": -1,
+  "reflex_flinch_pin_r": -1,
+  "reflex_flinch_env_l": 0,
+  "reflex_flinch_env_r": 0,
+  "reflex_flinch_last_cell": -1,
+  "reflex_flinch_last_tick": 0,
+  "reflex_startle": true,
+  "reflex_startle_env": 0.0861053,
+  "reflex_startle_bias_deg": 2.02459,
+  "reflex_startle_last_tick": 32223,
+  "reflex_p_coupling": true,
+  "reflex_quiet_s": 0,
+  "reflex_block": "flinch:no_drive_resolution (arm gait once to measure this body's drive pins; the resolution persists after disarming)",
+  "gait_log": [
+   {
+    "tick": 32541,
+    "leg": "L",
+    "from": "OFF",
+    "to": "STANCE",
+    "gates": {
+     "why": "enable",
+     "patchL": 0.571148,
+     "patchR": 0.571148,
+     "homeL": 0.721249,
+     "homeR": 0.72125,
+     "chLiftL": 0.0546314,
+     "chLiftR": 0.0546333,
+     "dminyHL": -0.866107,
+     "dminyHR": -0.866107,
+     "dminyKL": -0.141897,
+     "dminyKR": -0.141897,
+     "dczHL": -0.151521,
+     "dczHR": -0.151528,
+     "dczKL": -0.0879011,
+     "dczKR": -0.0879045,
+     "rateKL": 3.42174,
+     "rateKR": 3.4217,
+     "rateHL": 0.649578,
+     "rateHR": 0.649577,
+     "strutPinL": 17,
+     "strutPinR": 18,
+     "clearPinL": 15,
+     "clearPinR": 16,
+     "dminyH20L": -0.819103,
+     "dminyH20R": -0.819103,
+     "dczH20L": -0.232694,
+     "dczH20R": -0.232695,
+     "liftSignL": -1,
+     "liftSignR": -1,
+     "reachDirL": 1,
+     "reachDirR": 1,
+     "sinkChL": 0.0184929,
+     "sinkChR": 0.0184936,
+     "headroom": 0.348035,
+     "feetCell": 0
+    }
+   },
+   {
+    "tick": 32542,
+    "leg": "L",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.0144655,
+     "dR": 0.0144655,
+     "minyL": -0.0144655,
+     "minyR": -0.0144655,
+     "cL": 3.72529e-09,
+     "cR": -3.72529e-09,
+     "lean": 0.00181058,
+     "vy": 0.00575542,
+     "pmax": 733804,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.719227,
+     "reachDir": 1
+    }
+   }
+  ],
+  "has_scene": true
+ },
+ "v7_worst": {
+  "pin": "HL",
+  "window_s": 0.1010169999935897,
+  "pose_prev_deg": -9.85672,
+  "pose_now_deg": -13.7058,
+  "rate_deg_s": 38.103289547742,
+  "cap_deg_s": 37.21807786454748,
+  "stamp_prev": 111977.403799,
+  "stamp_now": 111977.504816,
+  "phases": [
+   "LIFT",
+   "STANCE"
+  ]
+ },
+ "v7_clock": "engine ts_us, per-poll",
+ "v7_disarm_pairs_skipped": 0,
+ "run": {
+  "strides": 3,
+  "run_s": 3.3011152999970363,
+  "swing_depth_worst": 0.0,
+  "load_exit_depths": [
+   0.0103841,
+   0.00985169
+  ],
+  "contact_min": 78219.1,
+  "contact_max": 328379,
+  "conserve_worst": 0.000303563,
+  "teleport_overshoot": 1.0237844545980097,
+  "recover_entries": 3
+ },
+ "final_state": {
+  "ts_us": 111983513382,
+  "ts_ms": 111983513,
+  "ticks": 36651,
+  "enabled": true,
+  "cells": [
+   {
+    "v0": 0.287914,
+    "V": 0.287914,
+    "P": 0,
+    "pieces": 5396,
+    "caps": 126,
+    "ylo": -0.019507,
+    "yhi": 0.338,
+    "degenerate": false
+   },
+   {
+    "v0": 12.5091,
+    "V": 12.5091,
+    "P": 0,
+    "pieces": 26442,
+    "caps": 380,
+    "ylo": 3.415,
+    "yhi": 9.97118,
+    "degenerate": false
+   },
+   {
+    "v0": 0.693006,
+    "V": 0.693006,
+    "P": 0,
+    "pieces": 5604,
+    "caps": 104,
+    "ylo": 1.903,
+    "yhi": 3.415,
+    "degenerate": false
+   },
+   {
+    "v0": 0.334578,
+    "V": 0.334578,
+    "P": 0,
+    "pieces": 1668,
+    "caps": 126,
+    "ylo": 0.338,
+    "yhi": 1.903,
+    "degenerate": false
+   }
+  ],
+  "force_l": 0,
+  "force_r": 0,
+  "load_l": 0,
+  "load_r": 0,
+  "damage_sum": 0,
+  "failed": 0,
+  "capacity_sum": 1346990000.0,
+  "flex_l_deg": 0,
+  "flex_r_deg": 0,
+  "sealed": true,
+  "n_cells": 4,
+  "V_lower": 0.287914,
+  "V_upper": 12.5091,
+  "P_lower": 0,
+  "P_upper": 0,
+  "v0_lower": 0.287914,
+  "v0_upper": 12.5091,
+  "V_whole": 13.8246,
+  "conserve_pct": -0.000117273,
+  "seal_split": 0,
+  "seal_cuts": 630,
+  "seal_loops": 0,
+  "seal_caps": 0,
+  "seal_refusal": "",
+  "dimple_m": 0,
+  "gravity_on": true,
+  "root_y": 0.00950712,
+  "root_vy": -1.10175e-08,
+  "g_contact_n": 135618,
+  "stance_on": false,
+  "stance_ankle_deg": 0,
+  "stance_kp": 3.53082,
+  "stance_lean_x": 0,
+  "stance_lean_z": 0.000305712,
+  "gait_on": false,
+  "gait_l": "STANCE",
+  "gait_r": "STANCE",
+  "gait_stride": 3,
+  "gait_depth_l": 0.00638235,
+  "gait_depth_r": 0,
+  "gait_clear_l": -0.0101515,
+  "gait_clear_r": 0.0101515,
+  "gait_lean_x": 0,
+  "gait_lean_z": -0.00214875,
+  "gait_p_max": 6948290.0,
+  "gait_hip_l_deg": 0,
+  "gait_hip_r_deg": 0,
+  "gait_knee_l_deg": 0,
+  "gait_knee_r_deg": 0,
+  "gait_feet_cell": 0,
+  "gait_strut_pin_l": 17,
+  "gait_strut_pin_r": 18,
+  "gait_clear_pin_l": 15,
+  "gait_clear_pin_r": 16,
+  "gait_enable_block": "",
+  "gait_block_l": "",
+  "gait_block_r": "",
+  "reflex_on": true,
+  "reflex_breathing": true,
+  "reflex_breath_cell": 1,
+  "reflex_breath_period_s": 13.3772,
+  "reflex_breath_amp_frac": 0.00753743,
+  "reflex_breath_disp_m": -0.000904332,
+  "reflex_breath_phase_deg": 218.353,
+  "reflex_flinch": true,
+  "reflex_flinch_pin_l": -1,
+  "reflex_flinch_pin_r": -1,
+  "reflex_flinch_env_l": 0,
+  "reflex_flinch_env_r": 0,
+  "reflex_flinch_last_cell": -1,
+  "reflex_flinch_last_tick": 0,
+  "reflex_startle": true,
+  "reflex_startle_env": 0,
+  "reflex_startle_bias_deg": 2.02459,
+  "reflex_startle_last_tick": 35403,
+  "reflex_p_coupling": true,
+  "reflex_quiet_s": 5.18547,
+  "reflex_block": "flinch:no_drive_resolution (arm gait once to measure this body's drive pins; the resolution persists after disarming)",
+  "gait_log": [
+   {
+    "tick": 34122,
+    "leg": "L",
+    "from": "LIFT",
+    "to": "LOAD",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "minyL": 0.0139568,
+     "minyR": 0.00107563,
+     "cL": 0.0128812,
+     "cR": -0.0128812,
+     "lean": 7.11977e-05,
+     "vy": 0.366173,
+     "pmax": 7615260.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 34175,
+    "leg": "L",
+    "from": "LOAD",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.0103841,
+     "dR": 0.0103841,
+     "minyL": -0.0103841,
+     "minyR": -0.0103841,
+     "cL": 0,
+     "cR": 0,
+     "lean": 4.58956e-06,
+     "vy": -0.000829112,
+     "pmax": 4725.51,
+     "prelax": true,
+     "stride": 1
+    }
+   },
+   {
+    "tick": 34175,
+    "leg": "R",
+    "from": "RECOVER",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.0103841,
+     "dR": 0.0103841,
+     "minyL": -0.0103841,
+     "minyR": -0.0103841,
+     "cL": 0,
+     "cR": 0,
+     "lean": 4.58956e-06,
+     "vy": -0.000829112,
+     "pmax": 4725.51,
+     "prelax": true
+    }
+   },
+   {
+    "tick": 34176,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.0103822,
+     "dR": 0.0103822,
+     "minyL": -0.0103822,
+     "minyR": -0.0103822,
+     "cL": 0,
+     "cR": 0,
+     "lean": 4.52995e-06,
+     "vy": 0.000544222,
+     "pmax": 1575.17,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.721245,
+     "reachDir": 1
+    }
+   },
+   {
+    "tick": 34284,
+    "leg": "R",
+    "from": "LIFT",
+    "to": "REACH",
+    "gates": {
+     "dL": 0.00864223,
+     "dR": 0,
+     "minyL": -0.00864223,
+     "minyR": 0.0500002,
+     "cL": -0.0586424,
+     "cR": 0.0586424,
+     "lean": 0.000787348,
+     "vy": -0.0320251,
+     "pmax": 36015100.0,
+     "miny": 0.0500002
+    }
+   },
+   {
+    "tick": 34309,
+    "leg": "L",
+    "from": "STANCE",
+    "to": "RECOVER",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "minyL": 0.000150032,
+     "minyR": 0.0557329,
+     "cL": -0.0555828,
+     "cR": 0.0555828,
+     "lean": 0.0101602,
+     "vy": -0.180992,
+     "pmax": 76212700.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 34309,
+    "leg": "R",
+    "from": "REACH",
+    "to": "LOAD",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "minyL": 0.000150032,
+     "minyR": 0.0557329,
+     "cL": -0.0555828,
+     "cR": 0.0555828,
+     "lean": 0.0101602,
+     "vy": -0.180992,
+     "pmax": 76212700.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 34564,
+    "leg": "L",
+    "from": "RECOVER",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.00985169,
+     "dR": 0.00985169,
+     "minyL": -0.00985169,
+     "minyR": -0.00985169,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00120491,
+     "vy": 0.000940961,
+     "pmax": 517330,
+     "prelax": false
+    }
+   },
+   {
+    "tick": 34564,
+    "leg": "R",
+    "from": "LOAD",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.00985169,
+     "dR": 0.00985169,
+     "minyL": -0.00985169,
+     "minyR": -0.00985169,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00120491,
+     "vy": 0.000940961,
+     "pmax": 517330,
+     "prelax": false,
+     "stride": 2
+    }
+   },
+   {
+    "tick": 34565,
+    "leg": "L",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.00987819,
+     "dR": 0.00987819,
+     "minyL": -0.00987819,
+     "minyR": -0.00987819,
+     "cL": 9.31323e-10,
+     "cR": -9.31323e-10,
+     "lean": 0.00120166,
+     "vy": 0.000451621,
+     "pmax": 517780,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.722591,
+     "reachDir": 1
+    }
+   },
+   {
+    "tick": 34867,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "RECOVER",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "minyL": 0.00565743,
+     "minyR": 9.05246e-06,
+     "cL": 0.00564837,
+     "cR": -0.00564837,
+     "lean": 0.00644603,
+     "vy": -0.214688,
+     "pmax": 85619400.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 34867,
+    "leg": "L",
+    "from": "LIFT",
+    "to": "LOAD",
+    "gates": {
+     "dL": 0,
+     "dR": 0,
+     "minyL": 0.00565743,
+     "minyR": 9.05246e-06,
+     "cL": 0.00564837,
+     "cR": -0.00564837,
+     "lean": 0.00644603,
+     "vy": -0.214688,
+     "pmax": 85619400.0,
+     "why": "support_lost"
+    }
+   },
+   {
+    "tick": 35087,
+    "leg": "L",
+    "from": "LOAD",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.0103631,
+     "dR": 0.0103631,
+     "minyL": -0.0103631,
+     "minyR": -0.0103631,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00224686,
+     "vy": -0.00048891,
+     "pmax": 993031,
+     "prelax": false,
+     "stride": 3
+    }
+   },
+   {
+    "tick": 35087,
+    "leg": "R",
+    "from": "RECOVER",
+    "to": "STANCE",
+    "gates": {
+     "dL": 0.0103631,
+     "dR": 0.0103631,
+     "minyL": -0.0103631,
+     "minyR": -0.0103631,
+     "cL": -9.31323e-10,
+     "cR": 9.31323e-10,
+     "lean": 0.00224686,
+     "vy": -0.00048891,
+     "pmax": 993031,
+     "prelax": false
+    }
+   },
+   {
+    "tick": 35088,
+    "leg": "R",
+    "from": "STANCE",
+    "to": "LIFT",
+    "gates": {
+     "dL": 0.0104121,
+     "dR": 0.0104121,
+     "minyL": -0.0104121,
+     "minyR": -0.0104121,
+     "cL": 0,
+     "cR": 0,
+     "lean": 0.00224015,
+     "vy": 0.000763367,
+     "pmax": 985155,
+     "whatif": true,
+     "patch": 0.571148,
+     "z0": 0.723748,
+     "reachDir": 1
+    }
+   },
+   {
+    "tick": 35099,
+    "leg": "R",
+    "from": "LIFT",
+    "to": "STANCE",
+    "gates": {
+     "why": "cut",
+     "vy": -0.0446823,
+     "dL": 0.00638235,
+     "dR": 0,
+     "knee": 2.57039,
+     "hip": -1.49114
+    }
+   }
+  ],
+  "has_scene": true
+ },
+ "bars": [
+  [
+   "V0",
+   "body live: has_scene=True sealed=True feetCell=0 (yhi=0.338) n_cells=4",
+   true
+  ],
+  [
+   "V1a",
+   "/tick_gravity arms (gravity_on=True)",
+   true
+  ],
+  [
+   "V1b",
+   "settled=True (worst |root_vy| 3.83e-01); g_contact_n 129967 N vs m*g 135618 N (dev 4.167% <= 0.5%)",
+   false
+  ],
+  [
+   "V1c",
+   "rest pressures exactly 0 (max 2.04e+06 Pa), root_y -0.00726 m (the derived +9.5 mm rise branch)",
+   false
+  ],
+  [
+   "V2",
+   "/tick_stance arms (stance_on=True); kp=3.531 rad/(m s) -> |S| ~ 0.283 m/rad (prereg 0.283)",
+   true
+  ],
+  [
+   "V3a",
+   "/tick_gait arms (gait_on=True, feetCell=0)",
+   true
+  ],
+  [
+   "V3b",
+   "INDEPENDENT /verts patch audit: harness L/R 0.5705/0.5716 m vs engine 0.5711/0.5711 m (worst 0.1% <= 20%)",
+   true
+  ],
+  [
+   "V4",
+   "3 strides in 3.3 s; 16 logged transitions, 16 replay OK (3 measured RECOVER aborts seen)",
+   true
+  ],
+  [
+   "V5",
+   "single support: worst swing depth 0.00 mm < 2 mm; LOAD-exit depths [10.38, 9.85] mm in [8,12] mm -> True",
+   true
+  ],
+  [
+   "V7",
+   "teleport audit (engine ts_us, per-poll): worst commanded-rate overshoot vs the MEASURED caps = 1.02x (bar <= 1.10); worst = pin HL (-9.86->-13.71 deg in 101.0 ms, phases LIFT/STANCE)",
+   true
+  ],
+  [
+   "V8",
+   "|conserve_pct| worst 3.04e-04 <= 0.01 through every phase",
+   true
+  ],
+  [
+   "V9a",
+   "cut mid-swing (L/R = ('STANCE', 'LIFT'), held pose [0, -0.75, 0, 1.29] deg): one poll later gait_on=false, both legs STANCE, pins 13-16 at EXACTLY 0",
+   true
+  ],
+  [
+   "V9b",
+   "the measured abort entry: {\"why\": \"cut\", \"vy\": -0.0446823, \"dL\": 0.00638235, \"dR\": 0, \"knee\": 2.57039, \"hip\": -1.49114}",
+   true
+  ],
+  [
+   "V9c",
+   "after the cut: stride count frozen at 3; |root_vy| transient peak 2.21e-01 > 0.001 (the stumble number, measured)",
+   true
+  ],
+  [
+   "V10",
+   "teardown (both rungs disarmed=True): settled=True, g_contact_n 135618 N (dev 0.000%), max|P| 0.00e+00 Pa == 0, ankles0=True, root back at -0.00726: False",
+   false
+  ]
+ ]
+}

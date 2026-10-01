@@ -1,0 +1,40 @@
+{
+  "_comment": "chimera.visible_monkey.volume_spec.v1 -- THE VOLUME ROUTE CONTRACT (CT/MRI -> segmentation -> marching cubes). Pattern: the morphosource_ct pipeline laws (p95 threshold measured per specimen, morphological open+close, min-component filter, marching cubes at 0.5, mm scaling, sha256 receipt, <=30k-face previews). One spec per specimen/modality; nothing is hardcoded. Run: python -B tools/science_funnel/visible_monkey_volume_route.py build volume_spec.json",
+
+  "schema": "chimera.visible_monkey.volume_spec.v1",
+  "specimen_id": "visible_monkey_mri",
+
+  "modality": "ct_mri_density",
+  "_modality_note": "ct_mri_density = the proven density-histogram route (paired 3T MRI + CT). 'serial_section_rgb' = the 2,967 color section images -- a THIRD modality whose thresholds differ (color space, not density): the route is HOOKED and refuses modality_untested until calibrated against real data (UNTESTED-against-real-data, honestly).",
+
+  "collection_record": { "file": "collection_record.json" },
+
+  "volume": {
+    "path": "E:/ChimeraWork/visible_monkey_data/mri/t1_stack.tif",
+    "reader": "auto",
+    "dtype": "uint16",
+    "offset": 0,
+    "_note": "reader auto tries imageio then PIL. offset is the signed shift applied after reading (the morphosource ImageJ stacks used -32768); the manifest records it."
+  },
+
+  "voxel_mm": [0.5, 0.5, 0.5],
+  "_voxel_note": "the REAL voxel spacing comes from the landed DICOM headers, measured at run time when available and recorded here; never copied from another specimen",
+
+  "segmentation": {
+    "threshold": { "law": "density_percentile", "percentile": 95 },
+    "_threshold_note": "THE LAW, not a number: p95 of the measured density histogram (morphosource_ct measured 118 for 000875604, 148 for 000875599 -- two specimens, two numbers, one law). 'law': 'fixed' is legal only with fixed_value + reason, recorded in the manifest.",
+    "morphology": { "open_iterations": 1, "close_iterations": 1 },
+    "min_component_voxels": 1000,
+    "marching_cubes_level": 0.5,
+    "max_components": 25
+  },
+
+  "outputs": {
+    "meshes_dir": "E:/ChimeraWork/visible_monkey_data/volume_route/meshes",
+    "preview_dir": "E:/ChimeraWork/visible_monkey_data/volume_route/meshes_preview",
+    "preview_max_faces": 30000,
+    "manifest": "E:/ChimeraWork/visible_monkey_data/volume_route/manifest.json",
+    "receipt": "E:/ChimeraWork/visible_monkey_data/volume_route/mesh_receipt.json",
+    "_note": "bulk meshes stay OUT of git (gitignored); the receipt (sha256 per file) and manifest land in the validation appendix"
+  }
+}

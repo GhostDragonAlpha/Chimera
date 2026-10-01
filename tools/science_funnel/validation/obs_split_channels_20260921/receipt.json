@@ -1,0 +1,63 @@
+{
+ "lane": "agent/obs-split-channels-20260921",
+ "date": "2026-09-21",
+ "agent": "OBSERVATION-SPLIT-CHANNELS lane -- the Type-A half of the TYPE-B convergence (trailer Agent: GLM 5.3)",
+ "base": "9808dc94 (agent/typea-command-adapter-20260921, the adapter base); P3's harness imported byte-exact from agent/typeb-p3-export-20260921 @ 1b6d7749; branch agent/obs-split-channels-20260921",
+ "deliverable": "the pad-split observation channels -- per hind leg {g_heel, g_mp} (the individual pad gaps computed inside gap_of and erased by its min), their per-tick deltas {dg_heel, dg_mp}, the derived {split, split_rate, split_abs, split_abs_rate} -- added to P3's observation schema (OBS_DIM 64 -> 80, OBS_SCHEMA_VERSION 2) with the manifest's v2 observation section; the class backfill over the wave-47 preserved trace outputs",
+ "prereg": {"path": "prereg.json", "commit": "97fd15fb", "frozen_before_build": true},
+ "trace_source": {"file": "the wave-47 declared ship trace (f106fc54 build), preserved at w47-agent/.tmp/w47_receipt/base_tr_stderr.txt", "sha256": "c6f9b6c00a1d549a4bc709724d2f62f8f28b37823696de4689e1950651c37481", "lines": 65870, "verified_before_every_use": true, "parse": "mine_wave47.py conventions VERBATIM (LAST walk run, [dvfa]/[dvfl] first-sample per (t,leg), [hindstep] dedup; refusal (302, gait_positional_correction_budget), 18 fires, 17 tds -- row-identical to the wave-47 mine's header)"},
+ "channels": {
+  "group": "pad_split",
+  "new_fields": 16,
+  "list": ["pad_g_heel_hl", "pad_g_heel_hr", "pad_g_mp_hl", "pad_g_mp_hr",
+           "pad_dg_heel_hl", "pad_dg_heel_hr", "pad_dg_mp_hl", "pad_dg_mp_hr",
+           "pad_split_hl", "pad_split_hr", "pad_split_rate_hl", "pad_split_rate_hr",
+           "pad_split_abs_hl", "pad_split_abs_hr", "pad_split_abs_rate_hl", "pad_split_abs_rate_hr"],
+  "semantics": "g_heel/g_mp = the heel/MP endpoint gaps BEFORE gap_of's min (hpp: gap_of computes gh, gm then returns min(gh,gm)); dg = per-tick deltas (prev_state caller-owned, delivery-gap masked); split = g_heel - g_mp (the signed rotational DOF); split_abs = |split| = 2*(pad_y - gmin), the exact wave-46/47 calibrated quantity; split_abs_rate = its per-tick delta -- the wave-47 class quantity",
+  "mask_convention": "carried: the pair not delivered this tick (pre-contact, swing) -> mask 0 + mean fill; first delivered sample -> deltas masked; ordering 'lohi' (reconstructed, endpoint identity NOT in the record) -> the six endpoint-signed channels DECLARED UNAVAILABLE, never invented; split_abs/split_abs_rate ordering-free, live under both orderings",
+  "manifest_observation_section": "obs_section_v2.json (dim 80; normalization = P3's recipe over the lane record set; split channels measured: pad_split_abs_hl mean 0.0245889 std 0.0197011, pad_split_abs_hr mean 0.0596163 std 0.0175734; endpoint fields declared 0/1 never-available on this record set)",
+  "actor_contract": "the P4 trainer lane resizes the actor input 64 -> 80; P3's frozen 64-dim manifest/actor untouched and still replaying byte-identically"
+ },
+ "measurements": {
+  "F-CHANNELS-DISTINCT": {
+   "status": "GREEN",
+   "control": "the band's printed pair: 452/452 whole-file [dvfl] lines carry |g1-g2| = 0 -- gap_of is pair-based, so the band view reads the SAME pair-min twice; a channel set built on the band pair is a duplicate and FAILS the identity gate (the wave-45 'un-minned read is degenerate' verdict, re-measured)",
+   "treatment": "the reconstructed individual pair (g_lo = gmin, g_hi = 2*pad_y - g_lo, split_abs = g_hi - g_lo) over the declared LAST-run parse: 113 (t,leg) band samples (every one also [dvfa]-partnered): (a) reconstruction identity max residual 1.388e-17 m (<= 1e-9); (b) split_abs > kTouch = 1e-5 m on 112/113 samples = 99.1%; max split_abs +79.661 mm, min +0.005 mm; (c) non-degenerate: std(split_abs) 2.5506e-2 m > 0, corr(split_abs, gmin) = +0.157 (the split is NOT the min channel rescaled)"
+  },
+  "F-CHANNELS-SEPARATE": {
+   "status": "GREEN",
+   "projection": "the V2 schema over the 113 reconstructed (t,leg) samples, identity normalization, ordering 'lohi': pad_split_abs mask=1 on 113/113; endpoint-signed channels mask=0 on ALL records (0 available -- declared unavailable, never invented); signed split channels mask=0 under 'lohi'; round-trip max |projected - reconstructed| = 3.676e-09 m (float32 path)",
+   "census": "the 18-era table FROM the projected channels row-identical to mine_wave47_out.txt (fire/ct/leg/label/class/span/nSamp all equal; leverMax/era-rate/maxInc to the printed precision)",
+   "cross_check": "12/12 never-crossed leverMax MATCH the wave-45 printed maxima at +/-0.001 mm (161: -3.142, 175: -0.003, 184: +0.151, 193: -0.497, 220: +6.902, 229: +9.125, 238: +7.476, 247: +11.577, 256: +0.468, 265: +16.426, 291: -6.416, 300: +0.551)",
+   "class_envelopes": "LIFT (n=5) leverMax +6.902..+16.426 mm, era-rate +0.767..+1.825 mm/tick, per-tick maxInc +0.872..+2.233 mm/tick; STALL (n=7) leverMax -6.416..+0.551 mm, era-rate -0.713..+0.275 mm/tick, per-tick maxInc -2.506..+0.536 mm/tick -- all six MATCH the frozen envelopes",
+   "separating_windows": "LEVEL (0.551, 6.902) mm; era-RATE (0.275, 0.767) mm/tick; per-tick INC (0.536, 0.872) mm/tick -- ALL THREE INTACT, measured from the projected pad_split_abs channel series"
+  },
+  "F-CHANNELS-INERT": {
+   "status": "GREEN",
+   "scope_diff": "git diff --name-only 9808dc94: 25 paths, 0 outside the declared scope (typeb_export/**, this receipt dir, the declared P3 fixtures import); ChimeraEngine/ Chimera/ LightEngine/ diff EMPTY -- zero engine bytes, no build, no engine run",
+   "legacy_block": "FIELDS[:64] equals the frozen 1b6d7749 v1 table field-for-field (legacy_v1_table.py literal)",
+   "banked_replay": "P3's frozen manifest + actor replayed through the V2 schema: action stream BYTE-IDENTICAL, sha256 e25406e86cbf5347683ee3824d385bc1d07bfd500e83eb6b9133a1e82d4bfbd9 (28800 bytes, 900 ticks / 60 decisions) -- her F-CPU-POLICY-BYTES clause (a) record reproduces on this lane",
+   "artifact_pins": "P3's policy_manifest.json / dummy_actor.npz / trace_slice_wave38.json (69babe84) / prereg.json (6ec61b90) byte-pinned GREEN",
+   "declared_v2_delta": "the ONLY value-level change on legacy records is the sensor_health aggregates, which observe the availability mask itself at the consumer's declared dim (64 for a v1 consumer -- hence the byte-identical replay; 80 for a v2 consumer) -- their definition line is unchanged"
+  }
+ },
+ "prediction_reconciliation": {
+  "carried": "the prereg's P2 face (v) predicted the pad_split_abs mask=1 count as 'exactly the 452 reconstructed samples'; 452 was the WHOLE-FILE [dvfl] line count (all runs, undeduped). The declared parse convention (LAST walk run, first-sample per (t,leg)) yields 113 deduped band samples, all reconstructed, all mask=1 -- the substantive face (mask=1 on exactly the reconstructed set, 0 elsewhere) held; the printed denominator was the wrong census. The 452/452 collapsed-pair CONTROL is whole-file and unaffected. Carried verbatim; nothing tuned.",
+  "note": "one (t,leg) band sample inside the era windows lacks a [dvfa] partner and is (correctly) not reconstructed -- the era census needs both reads, exactly as mine_wave47's ser did; every census row reproduced regardless."
+ },
+ "gates": {
+  "pytest": "23 passed (P3's 14 -- the one declared amendment: the 64-dim assertion now asserts the versioned contract 80 = 64 frozen legacy + 16 pad -- plus 9 new pad-channel/legacy tests), 0 failed",
+  "training_gate": "REFUSED (no theHuman numbers.json -- nothing to derive against): the EXPECTED state for a sensing-contract lane that ships no trained policy; the refusal is recorded, not hidden",
+  "graph_suite": "NOT REACHED (zero engine bytes)"
+ },
+ "falsifier_scoreboard": {
+  "F-CHANNELS-DISTINCT": "GREEN (control 452/452 collapsed; treatment 112/113 above kTouch, max +79.661 mm, corr +0.157)",
+  "F-CHANNELS-SEPARATE": "GREEN (census row-identical; cross-check 12/12; envelopes 6/6 MATCH; windows 3/3 INTACT through the projected channels)",
+  "F-CHANNELS-INERT": "GREEN (scope 0 outside; legacy block frozen; banked replay byte-identical e25406e8; artifact pins GREEN)"
+ },
+ "files": {
+  "schema_extension": ["tools/science_funnel/typeb_export/observation_schema.py (the V2 amendment)", "tools/science_funnel/typeb_export/pad_channels.py (the trace -> V2 records bridge + the projected-channel census)", "tools/science_funnel/typeb_export/legacy_v1_table.py (the frozen 1b6d7749 literal)", "tools/science_funnel/typeb_export/tests/test_obs_split_channels.py (9 new tests)", "tools/science_funnel/typeb_export/tests/test_typeb_export.py (the one declared amendment)"],
+  "receipt_dir": ["prereg.json (frozen at 97fd15fb BEFORE the build)", "mine_pad_channels.py + mine_pad_channels_out.txt (the declared instrument + this run's preserved output)", "band_channels_wave47.json (the extracted channel inputs, pinned to the trace sha)", "obs_section_v2.json + gen_obs_section.py (the manifest's observation section)", "run_mine.ps1 (the raw-stdout run harness)", "mine_wave47_out.txt (the frozen reference, copied from gait_zero_20260919)"]
+ },
+ "pass": true
+}
