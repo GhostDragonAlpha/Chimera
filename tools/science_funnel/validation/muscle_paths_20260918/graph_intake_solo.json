@@ -1,0 +1,12 @@
+{
+ "test": "tools.science_funnel.tests.test_macaque_anatomy.AnatomyContract.test_graph_intake_is_idempotent_and_connected",
+ "recorded_utc": "2026-09-18T23:59:00+00:00",
+ "outcome": "not_completed_on_this_machine",
+ "attempts": [
+  {"context": "inside full funnel discovery (unittest discover, background)", "result": "still running when the discovery run was killed near test_store_relate_guard"},
+  {"context": "solo run, timeout 280 s", "result": "killed at timeout, no output"},
+  {"context": "solo run, timeout 550 s", "result": "killed at timeout, no output"}
+ ],
+ "diagnosis": "the test performs a full graph rebuild plus pinned-mesh world computation; on this shared host several parallel lanes run the same heavy suites concurrently and the test exceeds 550 s wall. It is a pre-existing heavy test, unchanged by this lane (this lane adds no engine or mesh work); 12 of 13 anatomy checks pass in the discovery log.",
+ "host_contention_evidence": "process listing during the runs showed four unittest-discovery python processes from other lanes alongside this lane's"
+}

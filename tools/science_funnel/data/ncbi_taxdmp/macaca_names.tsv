@@ -1,0 +1,186 @@
+tax_id	name_txt	unique_name	name_class
+9539	macaque		common name
+9539	macaques		genbank common name
+9539	Macaca		scientific name
+9540	Macaca arctoides Geoffroy Saint-Hilaire, 1830		authority
+9540	bear macaque		common name
+9540	stump-tail macaque		common name
+9540	stump-tailed macaque		genbank common name
+9540	Macaca arctoides		scientific name
+9540	Macaca speciosa		synonym
+9541	Macaca fascicularis Raffles, 1821		authority
+9541	Simia fascicularis Raffles, 1821		authority
+9541	cynomolgus macaque		common name
+9541	cynomolgus monkey		common name
+9541	cynomolgus monkeys		common name
+9541	long-tailed macaque		common name
+9541	crab-eating macaque		genbank common name
+9541	Cynomolgus		includes
+9541	Macaca fascicularis		scientific name
+9541	Macaca cynomolgus		synonym
+9541	Macaca irus		synonym
+9541	Simia fascicularis		synonym
+9541	USNM 83271	USNM 83271 <type material>	type material
+9541	USNM-83271	USNM-83271 <type material>	type material
+9541	USNM83271	USNM83271 <type material>	type material
+9541	USNM:83271	USNM:83271 <type material>	type material
+9542	Inuus fuscatus Blyth, 1875		authority
+9542	Japanese monkey		common name
+9542	Japanese monkeys		common name
+9542	Japanese macaque	Japanese macaque <Macaca fuscata>	genbank common name
+9542	Macaca fuscata		scientific name
+9542	Inuus fuscatus		synonym
+9543	Japanese macaque	Japanese macaque <Macaca fuscata fuscata>	genbank common name
+9543	Macaca fuscata fuscata		scientific name
+9544	Cercopithecus mulatta Zimmermann, 1780		authority
+9544	Macaca mulatta (Zimmermann, 1780)		authority
+9544	rhesus macaque		common name
+9544	rhesus macaques		common name
+9544	rhesus monkeys		common name
+9544	Rhesus monkey		genbank common name
+9544	Macaca mulatta		scientific name
+9544	Cercopithecus mulatta		synonym
+9544	USNM 20120	USNM 20120 <type material>	type material
+9544	USNM-20120	USNM-20120 <type material>	type material
+9544	USNM20120	USNM20120 <type material>	type material
+9544	USNM:20120	USNM:20120 <type material>	type material
+9545	Macaca nemestrina (Linnaeus, 1766)		authority
+9545	Simia nemestrina Linnaeus, 1766		authority
+9545	pigtail macaque		common name
+9545	pigtail monkey		common name
+9545	pig-tailed macaque		genbank common name
+9545	Macaca nemestrina		scientific name
+9545	Simia nemestrina		synonym
+9545	USNM 19211	USNM 19211 <type material>	type material
+9545	USNM-19211	USNM-19211 <type material>	type material
+9545	USNM19211	USNM19211 <type material>	type material
+9545	USNM:19211	USNM:19211 <type material>	type material
+9546	Simia sylvanus Linnaeus, 1758		authority
+9546	Barbary macaque		common name
+9546	Barbary ape		genbank common name
+9546	Macaca sylvanus		scientific name
+9546	Simia sylvanus		synonym
+9548	Cercocebus radiatus Geoffroy Saint-Hilaire, 1812		authority
+9548	bonnet macaque		genbank common name
+9548	Macaca radiata		scientific name
+9548	Cercocebus radiatus		synonym
+9549	Macaca sp.		scientific name
+9551	Macaca assamensis (M'Clelland, 1840)		authority
+9551	Macacus assamensis McClelland, 1840		authority
+9551	Assam macaque		genbank common name
+9551	Macaca assamensis		scientific name
+9551	Macaca assamenses		synonym
+9551	Macacus assamensis		synonym
+9552	Simia sinica Linnaeus, 1771		authority
+9552	toque monkey		common name
+9552	toque macaque		genbank common name
+9552	Macaca sinica		scientific name
+9552	Simia sinica		synonym
+40843	Macaca togeanus (Sody, 1949)		authority
+40843	Macaca tonkeana Meyer, 1899		authority
+40843	Tonkean macaque		genbank common name
+40843	Macaca tonkeana		scientific name
+40843	Macaca balantak		synonym
+40843	Macaca balantak x tonkeana		synonym
+40843	Macaca togeanus		synonym
+54600	Cynocephalus niger Desmarest, 1822		authority
+54600	Celebes crested macaque		genbank common name
+54600	Macaca nigra		scientific name
+54600	Cynocephalus niger		synonym
+54600	USNM 217573	USNM 217573 <type material>	type material
+54600	USNM-217573	USNM-217573 <type material>	type material
+54600	USNM217573	USNM217573 <type material>	type material
+54600	USNM:217573	USNM:217573 <type material>	type material
+54601	Simia silenus Linnaeus, 1758		authority
+54601	liontail macaque		genbank common name
+54601	Macaca silenus		scientific name
+54601	Simia silenus		synonym
+54602	Macacus thibetanus Milne-Edwards, 1870		authority
+54602	Pere David's macaque		genbank common name
+54602	Macaca thibetana		scientific name
+54602	Macacus thibetanus		synonym
+54602	USNM 252157	USNM 252157 <type material>	type material
+54602	USNM-252157	USNM-252157 <type material>	type material
+54602	USNM252157	USNM252157 <type material>	type material
+54602	USNM:252157	USNM:252157 <type material>	type material
+78449	Macacus cyclopis Swinhoe, 1863		authority
+78449	Taiwan macaque		genbank common name
+78449	Macaca cyclopis		scientific name
+78449	Macacus cyclopis		synonym
+90381	Papio brunnescens Matschie, 1901		authority
+90381	Macaca brunnescens		scientific name
+90381	Papio brunnescens		synonym
+90382	Macaca hecki (Matschie, 1901)		authority
+90382	Papio hecki Matschie, 1901		authority
+90382	Heck's macaque		genbank common name
+90382	Macaca hecki		scientific name
+90382	Papio hecki		synonym
+90383	Macacus maurus Schinz, 1825		authority
+90383	moor macaque		genbank common name
+90383	Macaca maura		scientific name
+90383	Macaca maurus		synonym
+90383	Macacus maurus		synonym
+90384	Papio nigrescens Temminck, 1849		authority
+90384	Macaca nigrescens		scientific name
+90384	Papio nigrescens		synonym
+90385	Macaca ochreata (Ogilby, 1841)		authority
+90385	Papio ochreatus Ogilby, 1841		authority
+90385	booted macaque		genbank common name
+90385	Macaca ochreata		scientific name
+90385	Papio ochreatus		synonym
+90386	Macaca fascicularis philippinensis Geoffroy Saint-Hilaire, 1843		authority
+90386	Philippine long-tailed macaque		genbank common name
+90386	Macaca fascicularis philippinensis		scientific name
+90387	Inuus leoninus Blyth, 1863		authority
+90387	Macaca leonina (Blyth, 1863)		authority
+90387	Northern pig-tailed macaque		genbank common name
+90387	Macaca leonina		scientific name
+90387	Inuus leoninus		synonym
+90387	Macaca nemestrina leonina		synonym
+90387	USNM 104441	USNM 104441 <type material>	type material
+90387	USNM-104441	USNM-104441 <type material>	type material
+90387	USNM104441	USNM104441 <type material>	type material
+90387	USNM:104441	USNM:104441 <type material>	type material
+90388	Macaca nemestrina nemestrina		scientific name
+168259	Macaca maura x tonkeana		scientific name
+171293	Macaca hecki x tonkeana		scientific name
+179089	Macaca fuscata yakui Kuroda, 1941		authority
+179089	Macaca fuscata yakui		scientific name
+230653	Macacus pagensis Miller, 1903		authority
+230653	Mentawai macaque		genbank common name
+230653	Macaca pagensis		scientific name
+230653	Macaca nemestrina pagensis		synonym
+230653	Macacus pagensis		synonym
+230653	USNM 121653	USNM 121653 <type material>	type material
+230653	USNM-121653	USNM-121653 <type material>	type material
+230653	USNM121653	USNM121653 <type material>	type material
+230653	USNM:121653	USNM:121653 <type material>	type material
+244255	Macaca siberu Fuentes & Olson, 1995		authority
+244255	Siberut macaque		genbank common name
+244255	Macaca siberu		scientific name
+244255	Macaca nemestrina siberu		synonym
+257877	Macaca thibetana thibetana		scientific name
+402888	Macaca munzala Sinha, Datta, Madhusudan & Mishra, 2005		authority
+402888	Arunachal macaque		genbank common name
+402888	Macaca munzala		scientific name
+439030	Macaca radiata radiata		scientific name
+1215360	Macaca fascicularis fascicularis		scientific name
+1411634	Macaca assamensis assamensis		scientific name
+1449913	Macaca mulatta lasiotus (Gray, 1868)		authority
+1449913	Macaca mulatta lasiotus		scientific name
+1449913	Macaca mulatta lasiota		synonym
+1654737	Macaca mulatta brevicaudatus (Elliot, 1913)		authority
+1654737	Macaca mulatta brevicaudus		scientific name
+1654737	Macaca mulatta brevicaudatus		synonym
+1747270	Macaca fascicularis aureus Geoffroy Saint-Hilaire, 1831		authority
+1747270	Macaca fascicularis aureus		scientific name
+1747270	Macaca fascicularis aurea		synonym
+1885588	Macaca leucogenys Li, Zhao & Fan, 2015		authority
+1885588	Macaca leucogenys Li, Zhao, Fan 2015		authority
+1885588	Macaca leucogenys		scientific name
+2008792	Macaca mulatta vestita (Milne-Edwards, 1892)		authority
+2008792	Macaca mulatta vestita		scientific name
+2623225	unclassified Macaca		scientific name
+2838830	Macaca sp. XT-2021		scientific name
+3016450	Macaca mulatta x Macaca fascicularis		equivalent name
+3016450	Macaca fascicularis x Macaca mulatta		scientific name

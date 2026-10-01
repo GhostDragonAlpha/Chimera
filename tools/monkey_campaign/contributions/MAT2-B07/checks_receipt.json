@@ -1,1 +1,0 @@
-{"card_id":"MAT2-B07","determinism":{"canonical_json":true,"command":"python -B make_report.py (suite run inside the generator)","newline":"\n"},"schema":"chimera.b07_checks_receipt.v1","suite":{"executed":27,"exit":0,"ok":true,"skipped":0,"summary_line":"27 executed, 0 skipped"},"task_id":"B07"}

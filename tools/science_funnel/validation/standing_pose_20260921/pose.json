@@ -1,0 +1,374 @@
+{
+ "base_commit": "52f101c1",
+ "derivations": {
+  "driver": {
+   "L": {
+    "axis": [
+     0.330508327523,
+     -0.125396983699,
+     -0.935435642851
+    ],
+    "band_mm": 0.083161873871,
+    "pivot_mm": [
+     36.83565478293,
+     32.260135932044,
+     46.224951880972
+    ]
+   },
+   "R": {
+    "axis": [
+     0.330508327523,
+     -0.125396983699,
+     -0.935435642851
+    ],
+    "band_mm": 0.079898136736,
+    "pivot_mm": [
+     43.784032845164,
+     29.623876636742,
+     26.559001107115
+    ]
+   }
+  },
+  "elbow": {
+   "L": {
+    "axis": [
+     0.246641605422,
+     0.524813032972,
+     -0.814701907999
+    ],
+    "forced_theta": 0.34906585,
+    "pivot_mm": [
+     124.123268127441,
+     47.15071105957,
+     46.962596893311
+    ],
+    "probe_d_minus_mm": 41.376434147372,
+    "probe_d_plus_mm": 61.897119431705,
+    "probe_rad": 0.41887902,
+    "sigma": -1
+   },
+   "R": {
+    "axis": [
+     0.389110844493,
+     0.859819293084,
+     0.330610849699
+    ],
+    "forced_theta": 0.34906585,
+    "pivot_mm": [
+     133.251106262207,
+     40.98518371582,
+     8.803704023361
+    ],
+    "probe_d_minus_mm": 53.518919207733,
+    "probe_d_plus_mm": 35.783410439015,
+    "probe_rad": 0.41887902,
+    "sigma": 1
+   }
+  },
+  "hip": {
+   "L": {
+    "band_mm": 0.155477725893,
+    "e1": [
+     -0.061471266067,
+     0.062735053276,
+     -0.996135330434
+    ],
+    "e2": [
+     0.889948688886,
+     0.455304927922,
+     -0.026244118577
+    ],
+    "e3": [
+     0.451898898647,
+     -0.888122590468,
+     -0.083819148776
+    ],
+    "flex_sign_committed": -1,
+    "pivot_mm": [
+     58.481285783297,
+     40.201005541148,
+     43.245619125234
+    ]
+   },
+   "R": {
+    "band_mm": 0.147474758014,
+    "e1": [
+     -0.061471266067,
+     0.062735053276,
+     -0.996135330434
+    ],
+    "e2": [
+     0.527888751532,
+     0.849056422054,
+     0.020896367528
+    ],
+    "e3": [
+     0.84708603427,
+     -0.524564109771,
+     -0.085309702177
+    ],
+    "flex_sign_committed": -1,
+    "pivot_mm": [
+     57.206718169476,
+     41.501776979145,
+     22.591386466803
+    ]
+   }
+  },
+  "knee": {
+   "L": {
+    "axis": [
+     -0.061471266067,
+     0.062735053276,
+     -0.996135330434
+    ],
+    "pivot_mm": [
+     75.359996795654,
+     3.920000553131,
+     38.959999084473
+    ],
+    "probe_d_minus_mm": 40.905545442299,
+    "probe_d_plus_mm": 5.709064935691,
+    "probe_rad": 0.41887902,
+    "sigma": -1
+   },
+   "R": {
+    "axis": [
+     -0.061471266067,
+     0.062735053276,
+     -0.996135330434
+    ],
+    "pivot_mm": [
+     88.799999237061,
+     20.39999961853,
+     16.479999542236
+    ],
+    "probe_d_minus_mm": 34.986775777164,
+    "probe_d_plus_mm": 1.824957025735,
+    "probe_rad": 0.41887902,
+    "sigma": -1
+   }
+  },
+  "trunk_axis": [
+   0.978688173205,
+   -0.197780483642,
+   0.055247985664
+  ]
+ },
+ "lane": "agent/standing-pose-20260921",
+ "objective": {
+  "J_pose": 2.8e-11,
+  "J_rest": 3.887680202248,
+  "V_pose_mm2": 2.1e-11,
+  "V_rest_mm2": 1.943840101124,
+  "d_pose": 0.0,
+  "d_rest": 0.010404074223,
+  "form": "J = V + kappa*d; V = population variance of the four posed pad centroids along their scatter's least principal axis (lambda_min/4); d = (trunk_axis . n_hat)^2; pads = mem.bone_08/09/22/23",
+  "kappa": 186.834509190512
+ },
+ "pose_bonds": {
+  "bond.joint_01_02.adduction": {
+   "bond": "bond.joint_01_02",
+   "coordinate": "adduction",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": -0.136981171595
+  },
+  "bond.joint_01_02.flexion": {
+   "bond": "bond.joint_01_02",
+   "coordinate": "flexion",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.178118396022
+  },
+  "bond.joint_01_02.rotation": {
+   "bond": "bond.joint_01_02",
+   "coordinate": "rotation",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.172180846468
+  },
+  "bond.joint_01_03.adduction": {
+   "bond": "bond.joint_01_03",
+   "coordinate": "adduction",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.037106507698
+  },
+  "bond.joint_01_03.flexion": {
+   "bond": "bond.joint_01_03",
+   "coordinate": "flexion",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.097980355552
+  },
+  "bond.joint_01_03.rotation": {
+   "bond": "bond.joint_01_03",
+   "coordinate": "rotation",
+   "range_rad": [
+    -2.0943951,
+    2.0943951
+   ],
+   "theta": 0.297787360205
+  },
+  "bond.joint_02_06": {
+   "coordinate": "knee_angle",
+   "theta": -0.216633291473
+  },
+  "bond.joint_02_15": {
+   "class": "positional_contact",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_03_07": {
+   "coordinate": "knee_angle",
+   "theta": -0.145775817309
+  },
+  "bond.joint_03_17": {
+   "class": "positional_contact",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_04_08": {
+   "class": "positional_contact",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_04_10": {
+   "coordinate": "elbow_flexion",
+   "theta": 0.34906585
+  },
+  "bond.joint_04_12": {
+   "coordinate": "elbow_flexion",
+   "theta": 0.34906585
+  },
+  "bond.joint_05_09": {
+   "class": "positional_contact",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_05_11": {
+   "coordinate": "elbow_flexion",
+   "theta": 0.34906585
+  },
+  "bond.joint_05_13": {
+   "coordinate": "elbow_flexion",
+   "theta": 0.34906585
+  },
+  "bond.joint_06_20": {
+   "class": "syndesmosis_nodof",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_06_25": {
+   "coordinate": "subtalar_class",
+   "theta": 0.005198046168
+  },
+  "bond.joint_07_18": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  },
+  "bond.joint_07_21": {
+   "class": "syndesmosis_nodof",
+   "coordinate": null,
+   "theta": null
+  },
+  "bond.joint_07_24": {
+   "coordinate": "subtalar_class",
+   "theta": -0.019472050549
+  },
+  "bond.joint_10_12": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  },
+  "bond.joint_11_13": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  },
+  "bond.joint_20_25": {
+   "coordinate": null,
+   "note": "loop bond: no pose variable (the FK tree spans <= 2 edges of the 3-cycle); the seat is measured at the pose",
+   "theta": null
+  },
+  "bond.joint_21_24": {
+   "coordinate": null,
+   "note": "loop bond: no pose variable (the FK tree spans <= 2 edges of the 3-cycle); the seat is measured at the pose",
+   "theta": null
+  },
+  "bond.joint_22_25": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  },
+  "bond.joint_23_24": {
+   "coordinate": "at_rest",
+   "theta": 0.0
+  }
+ },
+ "preregistration_sha256": "63e9def46d2c7a40215e8eda5c1599565203aed639d648bc97a97d6cbccc9348",
+ "schema": "chimera.standing_pose.v1",
+ "solver": {
+  "bounds_source": "the committed definition's joint_class records, parsed at run time",
+  "constraint_violation_max_mm": 0.0,
+  "constraints": "hip seats: 3.0 - law_gap(posed femur, composite) >= 0 (both sides); tarsal loop seats (amendment 2): 3.0 - law_gap(posed loop members) >= 0 for cycles A (20-25) and B (21-24) \u2014 the committed cut as the derived band narrowing the class record pre-registered",
+  "env": "OMP_NUM_THREADS=1, OPENBLAS_NUM_THREADS=1, MKL_NUM_THREADS=1",
+  "ftol": 1e-12,
+  "iterations": 9,
+  "library": "scipy.optimize.minimize",
+  "maxiter": 400,
+  "message": "Optimization terminated successfully",
+  "method": "SLSQP",
+  "start": "the feasible rest projection x0 = zeros(10)",
+  "status": 0,
+  "success": true
+ },
+ "trailer": "Agent: GLM 5.3",
+ "variables": {
+  "names": [
+   "hipL_flexion",
+   "hipL_adduction",
+   "hipL_rotation",
+   "hipR_flexion",
+   "hipR_adduction",
+   "hipR_rotation",
+   "kneeL",
+   "kneeR",
+   "driverL_06_25",
+   "driverR_07_24"
+  ],
+  "the_pose_of_record": "x_R12 (the house record rounding)",
+  "x_R12": [
+   0.178118396022,
+   -0.136981171595,
+   0.172180846468,
+   0.097980355552,
+   0.037106507698,
+   0.297787360205,
+   -0.216633291473,
+   -0.145775817309,
+   0.005198046168,
+   -0.019472050549
+  ],
+  "x_full": [
+   0.178118396022,
+   -0.136981171595,
+   0.172180846468,
+   0.097980355552,
+   0.037106507698,
+   0.297787360205,
+   -0.216633291473,
+   -0.145775817309,
+   0.005198046168,
+   -0.019472050549
+  ]
+ }
+}

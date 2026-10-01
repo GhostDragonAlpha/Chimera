@@ -1,0 +1,122 @@
+[
+    {
+        "content":  {
+                        "value":  [
+                                      {
+                                          "ok":  false,
+                                          "pmc":  "PMC7812139",
+                                          "error":  "The remote server returned an error: (404) Not Found.",
+                                          "oa_url":  "https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=PMC7812139"
+                                      },
+                                      {
+                                          "ok":  false,
+                                          "pmc":  "PMC7495296",
+                                          "error":  "The remote server returned an error: (404) Not Found.",
+                                          "oa_url":  "https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi?id=PMC7495296"
+                                      }
+                                  ],
+                        "Count":  2
+                    },
+        "log":  "download_oa_log.json"
+    },
+    {
+        "content":  {
+                        "value":  [
+                                      {
+                                          "url":  "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7812139/supplementaryFiles",
+                                          "inner":  "End of Central Directory record could not be found.",
+                                          "step":  "zip PMC7812139",
+                                          "zip_bytes":  230,
+                                          "ok":  false,
+                                          "error":  "Exception calling \".ctor\" with \"3\" argument(s): \"End of Central Directory record could not be found.\""
+                                      },
+                                      {
+                                          "url":  "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7495296/supplementaryFiles",
+                                          "inner":  "End of Central Directory record could not be found.",
+                                          "step":  "zip PMC7495296",
+                                          "zip_bytes":  230,
+                                          "ok":  false,
+                                          "error":  "Exception calling \".ctor\" with \"3\" argument(s): \"End of Central Directory record could not be found.\""
+                                      },
+                                      {
+                                          "ok":  false,
+                                          "step":  "pdf PMC7812139_article.pdf",
+                                          "tries":  [
+                                                        {
+                                                            "error":  "The remote server returned an error: (404) Not Found.",
+                                                            "url":  "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7812139/fullTextPDF"
+                                                        },
+                                                        {
+                                                            "error":  "The remote server returned an error: (403) Forbidden.",
+                                                            "url":  "https://europepmc.org/articles/PMC7812139?pdf=render"
+                                                        }
+                                                    ]
+                                      },
+                                      {
+                                          "ok":  false,
+                                          "step":  "pdf PMC7495296_article.pdf",
+                                          "tries":  [
+                                                        {
+                                                            "error":  "The remote server returned an error: (404) Not Found.",
+                                                            "url":  "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC7495296/fullTextPDF"
+                                                        },
+                                                        {
+                                                            "error":  "The remote server returned an error: (403) Forbidden.",
+                                                            "url":  "https://europepmc.org/articles/PMC7495296?pdf=render"
+                                                        }
+                                                    ]
+                                      }
+                                  ],
+                        "Count":  4
+                    },
+        "log":  "download_europepmc_log.json"
+    },
+    {
+        "content":  {
+                        "value":  [
+                                      {
+                                          "url":  "https://pmc.ncbi.nlm.nih.gov/articles/instance/7812139/bin/JOA-238-321-s001.tif",
+                                          "magic_ok":  false,
+                                          "ok":  false,
+                                          "bytes":  1817,
+                                          "head":  "\n\n\n\n\u003chtml\u003e\n  \u003chead\u003e\n    \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"\u003e\n    \u003ctitle\u003ePreparing to download ...\u003c/title\u003e\n    \u003cstyle type=\"text/css\"\u003e\n      body{font-size:1rem;line-h",
+                                          "file":  "JOA-238-321-s001.tif"
+                                      },
+                                      {
+                                          "url":  "https://pmc.ncbi.nlm.nih.gov/articles/instance/7812139/bin/JOA-238-321-s002.tif",
+                                          "magic_ok":  false,
+                                          "ok":  false,
+                                          "bytes":  1817,
+                                          "head":  "\n\n\n\n\u003chtml\u003e\n  \u003chead\u003e\n    \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"\u003e\n    \u003ctitle\u003ePreparing to download ...\u003c/title\u003e\n    \u003cstyle type=\"text/css\"\u003e\n      body{font-size:1rem;line-h",
+                                          "file":  "JOA-238-321-s002.tif"
+                                      },
+                                      {
+                                          "url":  "https://pmc.ncbi.nlm.nih.gov/articles/PMC7812139/pdf/",
+                                          "magic_ok":  false,
+                                          "ok":  false,
+                                          "bytes":  1816,
+                                          "head":  "\n\n\n\n\u003chtml\u003e\n  \u003chead\u003e\n    \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"\u003e\n    \u003ctitle\u003ePreparing to download ...\u003c/title\u003e\n    \u003cstyle type=\"text/css\"\u003e\n      body{font-size:1rem;line-h",
+                                          "file":  "PMC7812139_article.pdf"
+                                      },
+                                      {
+                                          "url":  "https://pmc.ncbi.nlm.nih.gov/articles/PMC7495296/pdf/",
+                                          "magic_ok":  false,
+                                          "ok":  false,
+                                          "bytes":  1816,
+                                          "head":  "\n\n\n\n\u003chtml\u003e\n  \u003chead\u003e\n    \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"\u003e\n    \u003ctitle\u003ePreparing to download ...\u003c/title\u003e\n    \u003cstyle type=\"text/css\"\u003e\n      body{font-size:1rem;line-h",
+                                          "file":  "PMC7495296_article.pdf"
+                                      },
+                                      {
+                                          "url":  "https://pmc.ncbi.nlm.nih.gov/articles/instance/7495296/bin/JOA-237-774-s004.pdf",
+                                          "magic_ok":  false,
+                                          "ok":  false,
+                                          "bytes":  1817,
+                                          "head":  "\n\n\n\n\u003chtml\u003e\n  \u003chead\u003e\n    \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"\u003e\n    \u003ctitle\u003ePreparing to download ...\u003c/title\u003e\n    \u003cstyle type=\"text/css\"\u003e\n      body{font-size:1rem;line-h",
+                                          "file":  "JOA-237-774-s004.pdf"
+                                      }
+                                  ],
+                        "Count":  5
+                    },
+        "log":  "download_pmc_cookie_log.json"
+    }
+]

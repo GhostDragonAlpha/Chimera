@@ -1,0 +1,16 @@
+{"do":"move","x":500,"y":400}
+{"do":"down"}
+{"do":"wait","ms":1500}
+{"do":"shot","name":"23_press_after_rest"}
+{"do":"up"}
+{"do":"wait","ms":600}
+{"do":"text","max":1500}
+{"do":"move","x":300,"y":300}
+{"do":"down"}
+{"do":"move","x":450,"y":350,"steps":10}
+{"do":"up"}
+{"do":"wait","ms":800}
+{"do":"shot","name":"24_after_orbit"}
+{"do":"click","x":1390,"y":109}
+{"do":"wait","ms":1000}
+{"do":"text","max":800}

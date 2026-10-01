@@ -1,0 +1,404 @@
+[
+ {
+  "src": "region.body_interior",
+  "rel": "contains",
+  "dst": "region.band.feet",
+  "note": "4-band partition"
+ },
+ {
+  "src": "region.body_interior",
+  "rel": "contains",
+  "dst": "region.band.shins",
+  "note": "4-band partition"
+ },
+ {
+  "src": "region.body_interior",
+  "rel": "contains",
+  "dst": "region.band.thighs",
+  "note": "4-band partition"
+ },
+ {
+  "src": "region.body_interior",
+  "rel": "contains",
+  "dst": "region.band.torso",
+  "note": "4-band partition"
+ },
+ {
+  "src": "memb.skin",
+  "rel": "bounds_region",
+  "dst": "region.band.feet",
+  "note": "exterior wall"
+ },
+ {
+  "src": "memb.skin",
+  "rel": "bounds_region",
+  "dst": "region.band.shins",
+  "note": "exterior wall"
+ },
+ {
+  "src": "memb.skin",
+  "rel": "bounds_region",
+  "dst": "region.band.thighs",
+  "note": "exterior wall"
+ },
+ {
+  "src": "memb.skin",
+  "rel": "bounds_region",
+  "dst": "region.band.torso",
+  "note": "exterior wall"
+ },
+ {
+  "src": "memb.skin",
+  "rel": "bounds_region",
+  "dst": "region.body_interior",
+  "note": "the seal itself"
+ },
+ {
+  "src": "memb.septum.feet_shins",
+  "rel": "bounds_region",
+  "dst": "region.band.feet",
+  "note": "side A"
+ },
+ {
+  "src": "memb.septum.feet_shins",
+  "rel": "bounds_region",
+  "dst": "region.band.shins",
+  "note": "side B (same wall)"
+ },
+ {
+  "src": "memb.septum.shins_thighs",
+  "rel": "bounds_region",
+  "dst": "region.band.shins",
+  "note": "side A"
+ },
+ {
+  "src": "memb.septum.shins_thighs",
+  "rel": "bounds_region",
+  "dst": "region.band.thighs",
+  "note": "side B (same wall)"
+ },
+ {
+  "src": "memb.septum.thighs_torso",
+  "rel": "bounds_region",
+  "dst": "region.band.thighs",
+  "note": "side A"
+ },
+ {
+  "src": "memb.septum.thighs_torso",
+  "rel": "bounds_region",
+  "dst": "region.band.torso",
+  "note": "side B (same wall)"
+ },
+ {
+  "src": "memb.septum.thigh_l_shin_l",
+  "rel": "bounds_region",
+  "dst": "region.seg.thigh_l",
+  "note": "side A (planned)"
+ },
+ {
+  "src": "memb.septum.thigh_l_shin_l",
+  "rel": "bounds_region",
+  "dst": "region.seg.shin_l",
+  "note": "side B (same wall, planned)"
+ },
+ {
+  "src": "memb.septum.shin_l_foot_l",
+  "rel": "bounds_region",
+  "dst": "region.seg.shin_l",
+  "note": "side A (planned)"
+ },
+ {
+  "src": "memb.septum.shin_l_foot_l",
+  "rel": "bounds_region",
+  "dst": "region.seg.foot_l",
+  "note": "side B (same wall, planned)"
+ },
+ {
+  "src": "region.leg_l",
+  "rel": "contains",
+  "dst": "region.seg.thigh_l",
+  "note": "skeleton connectivity"
+ },
+ {
+  "src": "region.leg_l",
+  "rel": "contains",
+  "dst": "region.seg.shin_l",
+  "note": "skeleton connectivity"
+ },
+ {
+  "src": "region.leg_l",
+  "rel": "contains",
+  "dst": "region.seg.foot_l",
+  "note": "terminal segment (explicit)"
+ },
+ {
+  "src": "seg.thigh_l",
+  "rel": "attached_to",
+  "dst": "seg.shin_l",
+  "note": "knee articulation (measured pin frame.knee_l)"
+ },
+ {
+  "src": "seg.shin_l",
+  "rel": "attached_to",
+  "dst": "seg.foot_l",
+  "note": "ankle articulation (measured pin frame.ankle_l)"
+ },
+ {
+  "src": "seg.thigh_l",
+  "rel": "inside",
+  "dst": "region.leg_l",
+  "note": "membership: bone path of the limb"
+ },
+ {
+  "src": "seg.shin_l",
+  "rel": "inside",
+  "dst": "region.leg_l",
+  "note": "membership"
+ },
+ {
+  "src": "seg.foot_l",
+  "rel": "inside",
+  "dst": "region.leg_l",
+  "note": "membership"
+ },
+ {
+  "src": "seg.thigh_l",
+  "rel": "transmits_force_to",
+  "dst": "seg.shin_l",
+  "note": "knee contact"
+ },
+ {
+  "src": "seg.shin_l",
+  "rel": "transmits_force_to",
+  "dst": "seg.thigh_l",
+  "note": "reaction (Newton's 3rd) -- cycle is physical"
+ },
+ {
+  "src": "seg.shin_l",
+  "rel": "transmits_force_to",
+  "dst": "seg.foot_l",
+  "note": "ankle contact"
+ },
+ {
+  "src": "seg.foot_l",
+  "rel": "transmits_force_to",
+  "dst": "seg.shin_l",
+  "note": "reaction -- cycle is physical"
+ },
+ {
+  "src": "actuator.joint_servos",
+  "rel": "transmits_force_to",
+  "dst": "seg.shin_l",
+  "note": "knee servo intent (force/torque-capped; NOT contractile tissue)"
+ },
+ {
+  "src": "sensor.scalar_cell_pressure",
+  "rel": "carries_signal_to",
+  "dst": "pathway.pressure_to_intent",
+  "note": "per-cell pressure events; delay = one outer tick (3.33 ms)"
+ },
+ {
+  "src": "pathway.pressure_to_intent",
+  "rel": "carries_signal_to",
+  "dst": "actuator.joint_servos",
+  "note": "flex intent to the binding-derived strut pin"
+ },
+ {
+  "src": "inst.band.feet",
+  "rel": "uses_material",
+  "dst": "material.water",
+  "note": "fluid inventory"
+ },
+ {
+  "src": "inst.band.feet",
+  "rel": "uses_model",
+  "dst": "model.water_compressibility",
+  "note": "pressure law"
+ },
+ {
+  "src": "inst.band.feet",
+  "rel": "inside",
+  "dst": "region.body_interior",
+  "note": "4-band partition"
+ },
+ {
+  "src": "inst.band.shins",
+  "rel": "uses_material",
+  "dst": "material.water",
+  "note": "fluid inventory"
+ },
+ {
+  "src": "inst.band.shins",
+  "rel": "uses_model",
+  "dst": "model.water_compressibility",
+  "note": "pressure law"
+ },
+ {
+  "src": "inst.band.shins",
+  "rel": "inside",
+  "dst": "region.body_interior",
+  "note": "4-band partition"
+ },
+ {
+  "src": "inst.band.thighs",
+  "rel": "uses_material",
+  "dst": "material.water",
+  "note": "fluid inventory"
+ },
+ {
+  "src": "inst.band.thighs",
+  "rel": "uses_model",
+  "dst": "model.water_compressibility",
+  "note": "pressure law"
+ },
+ {
+  "src": "inst.band.thighs",
+  "rel": "inside",
+  "dst": "region.body_interior",
+  "note": "4-band partition"
+ },
+ {
+  "src": "inst.band.torso",
+  "rel": "uses_material",
+  "dst": "material.water",
+  "note": "fluid inventory"
+ },
+ {
+  "src": "inst.band.torso",
+  "rel": "uses_model",
+  "dst": "model.water_compressibility",
+  "note": "pressure law"
+ },
+ {
+  "src": "inst.band.torso",
+  "rel": "inside",
+  "dst": "region.body_interior",
+  "note": "4-band partition"
+ },
+ {
+  "src": "memb.skin",
+  "rel": "uses_material",
+  "dst": "material.skin_membrane",
+  "note": "surface material"
+ },
+ {
+  "src": "memb.skin",
+  "rel": "uses_model",
+  "dst": "model.press_indentation",
+  "note": "press answer (qualified reduced)"
+ },
+ {
+  "src": "memb.skin",
+  "rel": "uses_model",
+  "dst": "model.exponential_recovery",
+  "note": "recovery (NOT healing)"
+ },
+ {
+  "src": "inst.comp.thigh_l",
+  "rel": "uses_material",
+  "dst": "material.water",
+  "note": "planned fluid inventory"
+ },
+ {
+  "src": "inst.comp.thigh_l",
+  "rel": "uses_model",
+  "dst": "model.water_compressibility",
+  "note": "per-region pressure law"
+ },
+ {
+  "src": "inst.comp.shin_l",
+  "rel": "uses_material",
+  "dst": "material.water",
+  "note": "planned fluid inventory"
+ },
+ {
+  "src": "inst.comp.shin_l",
+  "rel": "uses_model",
+  "dst": "model.water_compressibility",
+  "note": "per-region pressure law"
+ },
+ {
+  "src": "inst.comp.foot_l",
+  "rel": "uses_material",
+  "dst": "material.water",
+  "note": "planned fluid inventory"
+ },
+ {
+  "src": "inst.comp.foot_l",
+  "rel": "uses_model",
+  "dst": "model.water_compressibility",
+  "note": "per-region pressure law"
+ },
+ {
+  "src": "seg.thigh_l",
+  "rel": "derived_from",
+  "dst": "frame.hip_l",
+  "note": "measured pin"
+ },
+ {
+  "src": "seg.thigh_l",
+  "rel": "derived_from",
+  "dst": "frame.knee_l",
+  "note": "measured pin"
+ },
+ {
+  "src": "seg.shin_l",
+  "rel": "derived_from",
+  "dst": "frame.knee_l",
+  "note": "measured pin"
+ },
+ {
+  "src": "seg.shin_l",
+  "rel": "derived_from",
+  "dst": "frame.ankle_l",
+  "note": "measured pin"
+ },
+ {
+  "src": "seg.foot_l",
+  "rel": "derived_from",
+  "dst": "frame.ankle_l",
+  "note": "proximal end"
+ },
+ {
+  "src": "inst.band.feet",
+  "rel": "derived_from",
+  "dst": "frame.ankle_l",
+  "note": "band cut at measured ankle height"
+ },
+ {
+  "src": "inst.band.shins",
+  "rel": "derived_from",
+  "dst": "frame.ankle_l",
+  "note": "band cut at measured ankle height"
+ },
+ {
+  "src": "inst.band.shins",
+  "rel": "derived_from",
+  "dst": "frame.knee_l",
+  "note": "band cut at measured knee height"
+ },
+ {
+  "src": "inst.band.thighs",
+  "rel": "derived_from",
+  "dst": "frame.knee_l",
+  "note": "band cut at measured knee height"
+ },
+ {
+  "src": "inst.band.thighs",
+  "rel": "derived_from",
+  "dst": "frame.hip_l",
+  "note": "band cut at measured hip height"
+ },
+ {
+  "src": "inst.band.torso",
+  "rel": "derived_from",
+  "dst": "frame.hip_l",
+  "note": "band cut at measured hip height"
+ },
+ {
+  "src": "param.kappa",
+  "rel": "derived_from",
+  "dst": "material.water",
+  "note": "the fluid's compressibility"
+ }
+]

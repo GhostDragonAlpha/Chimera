@@ -1,0 +1,14 @@
+{"do":"move","x":500,"y":400}
+{"do":"down"}
+{"do":"wait","ms":2500}
+{"do":"shot","name":"15_heal_press_hold"}
+{"do":"up"}
+{"do":"wait","ms":600}
+{"do":"shot","name":"16_heal_06s"}
+{"do":"wait","ms":1200}
+{"do":"shot","name":"17_heal_18s"}
+{"do":"wait","ms":2000}
+{"do":"shot","name":"18_heal_38s"}
+{"do":"wait","ms":3000}
+{"do":"shot","name":"19_heal_68s"}
+{"do":"text","max":1400}

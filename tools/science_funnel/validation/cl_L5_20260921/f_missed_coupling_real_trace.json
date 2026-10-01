@@ -1,0 +1,113 @@
+{
+ "base_deterministic": true,
+ "base_refusal_meta": {
+  "DUTY_SAMPLED": 0.683,
+  "TOE_OFF": 0.68,
+  "T_CYCLE": 0.71,
+  "cycle_ticks": 213,
+  "meta": true,
+  "tair": 9,
+  "tick_hz": 300,
+  "walk_ticks": 2130
+ },
+ "base_rows": 301,
+ "counterfactual": {
+  "adjudication": {
+   "left_changed_cols": [
+    "leg0.phase"
+   ],
+   "right_input_first_divergence": null,
+   "right_unwitnessed": [],
+   "right_witnessed": [],
+   "row0_ok": true,
+   "row0_violations": []
+  },
+  "diff": {
+   "diffs": {
+    "leg0.phase": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     43,
+     44,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     51,
+     52,
+     53,
+     54,
+     55,
+     56,
+     57,
+     58,
+     59,
+     60
+    ]
+   },
+   "first_row": 0,
+   "row_count_changed": null
+  },
+  "pert_deterministic": true,
+  "rung": [
+   "ulp",
+   1
+  ]
+ },
+ "discharged": true,
+ "f_missed_coupling_fires": false,
+ "ladder": [
+  {
+   "changed": true,
+   "n_diff_cols": 1,
+   "rung": [
+    "ulp",
+    1
+   ]
+  }
+ ],
+ "notes": []
+}

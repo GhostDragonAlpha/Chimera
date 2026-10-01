@@ -1,0 +1,79 @@
+{
+ "what": "H14 page poll cost (measured)",
+ "date_utc": "2026-09-14T13:42:05.524Z",
+ "engine": "http://127.0.0.1:8141",
+ "game": "http://127.0.0.1:8241",
+ "phase_s": 45,
+ "engine_exe": "E:\\ChimeraWork\\slot-01\\.tmp\\build_tick\\Release\\chimera_engine.exe",
+ "phases": {
+  "no_page": {
+   "ticks_per_min": 17949.08345769205,
+   "wall_s": 44.897,
+   "gained": 13431,
+   "polls": 412
+  },
+  "page_idle": {
+   "ticks_per_min": 17944.63590883824,
+   "wall_s": 44.975,
+   "gained": 13451,
+   "polls": 414
+  },
+  "page_active": {
+   "ticks_per_min": 17937.965536409116,
+   "wall_s": 44.975,
+   "gained": 13446,
+   "polls": 415
+  },
+  "no_page_again": {
+   "ticks_per_min": 17943.114038992255,
+   "wall_s": 44.932,
+   "gained": 13437,
+   "polls": 412
+  }
+ },
+ "poll_bytes": {
+  "idle_player_bytes_per_min": {
+   "verts": 2717925.3,
+   "state": 152536,
+   "total": 2870461.3,
+   "verts_pulls": 142,
+   "steady_state_p50_bytes": 316,
+   "window_s": 45
+  },
+  "active_player_bytes_per_min": {
+   "verts": 75088522.7,
+   "state": 142134.7,
+   "total": 75230657.3,
+   "verts_pulls": 207,
+   "keyframe_pulls": 83,
+   "steady_state_mean_bytes": 4481.4,
+   "steady_state_max_bytes": 89856,
+   "window_s": 45,
+   "pose": "knee_L oscillated 25<->0 deg every 2 s (the shell /api/pose)"
+  },
+  "verts_steady_state_overall": {
+   "n": 263,
+   "mean": 4481.4,
+   "p50": 316,
+   "max": 89856
+  },
+  "state_bytes": {
+   "min": 0,
+   "note": "see per-phase rates; state polls are 1.4 Hz and near-constant size"
+  },
+  "full_frame_bytes": 664528,
+  "direct_delta_pull_1": {
+   "bytes": 664540,
+   "kernel_flags": 0,
+   "note": "flags 0 = keyframe (full), flags 1 = runs (delta)"
+  },
+  "direct_delta_pull_2_after_3s_idle": {
+   "bytes": 16,
+   "kernel_flags": 1
+  },
+  "full_vs_steady_delta_ratio": 2102.9
+ },
+ "notes": [
+  "direct pulls happen AFTER the page closed; the first may still carry settle/pose residue, the second is the honest idle-world delta answer"
+ ]
+}

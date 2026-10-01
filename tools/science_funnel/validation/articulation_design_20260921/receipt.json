@@ -1,0 +1,53 @@
+{
+ "schema": "chimera.rule0_receipt.v1",
+ "lane": "agent/articulation-semantics-20260921",
+ "base_commit": "1dc38688 (agent/hip-bond-adoption-20260921, the verified adoption head; sparse clone E:/ChimeraWork/artic-agent, docs/ retained minus heavy evidence, Saved/ and the other lanes excluded — kernel code + docs needed)",
+ "scope": "THE DESIGN LANE THE pose_contacts DISCOVERY MADE TIMELY: survey whether the matter kernel articulates today (it does not — no rotational quantity exists anywhere in tools/matter_kernel; 'rigid after cure' is an ABSENCE, not a stated law), design the articulation law from the four candidates derivation admits, and preregister the minimal proof (the hip bond bond.joint_01_02 articulating through its anatomical range with every kernel law intact). No committed byte of the kernel, the engine, or the skeleton definition is changed by this lane.",
+ "rule_0": {
+  "statement": "A bonded matter skeleton articulates kernel-conformantly under THE JOINTS-ARE-MATERIALS LAW: an articulation-class bond keeps every field it has (material, members, cure 13 MPa, rest_length = the measured law gap) and gains three records — joint_class (cited), pivot_mm (DERIVED from committed geometry, for the hip the femoral-head center fit on bone_02's committed vertices), and a closed anatomical range (CITED to the sha-pinned OpenSim records already held on this lineage, adult band with the infant stage gap named, never tuned). A pose is top-level recorded state (the pose_contacts move, repeated for state: default theta=0 IS the scanned corpse-pose); posed geometry is the RIGID Rodrigues transform of the child membrane about (pivot, axis), so mass is exactly invariant and theta=0 reproduces the committed bytes; cure keeps its number and gains its rotational reader (dislocation = bond failure at exactly cure*A at any theta); a pose enters physics only through a named force or torque.",
+  "prediction": "The §5 preregistration of docs/THE_ARTICULATION_LAW.md, verbatim: P1 rest identity (posed bone_02 bytes hash-equal tris/bone_02.bin at theta=0) · P2 seat through range (closest-point gap posed bone_02<->bone_01 stays <= the 3.0 mm touching-class cut at the cited range endpoints) · P3 cure invariance (glue.py pull_bond: identical failure_force_n = cure*A at theta=0 and at each endpoint) · P4 mass exact (derived mass of posed bone_02 equals rest to float equality) · P5 range stop (beyond the recorded range refuses out_of_anatomical_range, never clamps) · P6 the control's teeth (the SAME protocol on the NULL pivot — the recorded closest-points midpoint — BREACHES the 3.0 mm cut at range extremes; if the null arm passes, the pivot derivation does no work and the design's pivot law is void).",
+  "falsifiers": {
+   "F1_pivot_or_class": "P2 fails on the head-fit pivot at either endpoint -> the pivot derivation or the joint_class record is wrong; successor: acetabular-side re-fit or re-class. VOID as written.",
+   "F2_cure_not_rotation_invariant": "P3 fails -> cure is not a rotation-invariant failure law -> 'joints are materials' is void; the kinematic-joint candidate (C2) inherits the question. VOID.",
+   "F3_resampling": "P4 fails -> the transform resamples -> the design broke the mass law (L2), not the kernel. VOID.",
+   "F4_tuned_pivot": "The pivot derivation needs a number with no source and no derivation from committed geometry — e.g. a sweep over head-region inlier rules until P2 passes — Rule 1 violation. VOID by definition.",
+   "F6_refusal": "A proof lane that edits the committed definition or its receipts (hip adoption F1/F5 discipline) instead of reading them: VOID."
+  }
+ },
+ "rule_1_derivation_plan": "No number is chosen. Every number this design carries is DERIVED from committed geometry (pivot fits, the bilateral flexion axis through the two recorded hip pivots, its flexion SIGN from the recorded fetal curl), CITED (the ranges: monkeyArm_current.osim 7 rotational coordinates with ranges; Rajagopal2016.osim 10 literal PinJoint records; gait2392 hip 3x[-2.0944,+2.0944] rad — all sha-pinned by their download receipts), or already committed (the 3.0 mm touching-class cut, cure 13 MPa, the mass tolerance). The adult-band ranges carry the stage caveat in the open: no infant-macaque range citation exists in the held set; the deviation is named when measured, never tuned away (the mat.bone_cortical stage_note precedent).",
+ "design_decision": {
+  "chosen": "C3 — the joints-are-materials law (§3 of the doc)",
+  "rejected_C1_status_quo": "articulation = fracture: under the only committed bond semantics a pose change requires F > cure*A at the hip; also 'rigid after cure' is not a stated law but an absence",
+  "rejected_C2_kinematic_hinge_tree": "(a) cure becomes dead data (L3 dies); (b) the bond graph is NOT a tree — 22 nodes, 23 edges, 4 independent cycles, two measured tarsal 3-cycles (06-20-25, 07-21-24) — and the engine's own FK loader rejects non-tree chains; (c) a representation choice answering no question C3 leaves open",
+  "rejected_C4_constraint_membranes": "the joint gap is EMPTY in the scan — straddling triangles would be invented geometry and their stiffness a free number (L1 dies)"
+ },
+ "survey_answer": "THE KERNEL DOES NOT ARTICULATE TODAY. tools/matter_kernel's rotational-keyword grep returns one hit: the English word 'moment' in tensile.py's docstring. The four committed laws (sourced constants L1; mass derived from geometry L2; bonds are materials with required per-bond cure L3; force is a required input L4) have no rotational clause; glue.py's pull law F_fail = min(cure*A_glue, yield_a*A_a, yield_b*A_b) is normal-pull only. Rotation exists in the house in exactly three places, all reused by the design: the engine's hinge columns (ChimeraEngine/engine/shaders/joints.comp: per-joint 8-float [J, axis, 0, theta] + ROM limits j_rom_ + FK/LBS + the M1 matter pass; a TREE), the captured-pivot statics (docs/THE_CATEGORIES.md joint v1 / lever v6: rotation emerges from pull + fulcrum; torque law exact to 0.000; the saddle captures the arm so rotation is the only free DOF), and the gait engines' published ranges (tools/train_stand.py reads m.jnt_range 'from the model. No defaults'; seat_in_limits: the keyframe sat 10.4 deg beyond the body's own declared hip stop — THE REWARD WAS NEVER THE DEFECT). KERNEL_SPEC.md is cited by the kernel but is NOT committed on this branch (honesty line, §1.1).",
+ "falsifier_status": "PREREGISTERED-ONLY — UN-PROVEN, HONESTLY. The proof's load-bearing number (the pivot) is a NEW measurement on committed geometry whose inlier rule must itself be pre-registered before fitting (F4); the house pattern for that is a preregistered measurement lane (axial_adjacency_20260920 -> hip_adoption_20260921), not an in-design-doc derivation. Building the pivot-free half of the battery here was considered and REFUSED: greens on bookkeeping while the seat claim goes unmeasured is the Phase-8 'passing run in which the channel did nothing' disease. §6 of the doc records this fence; §5 records the exact fenced sketch for the successor lane (read-only validation dir, preregistration.sha256 banked before any measurement, two arms: head-fit pivot vs null midpoint control).",
+ "inputs": [
+  "tools/matter_kernel/{definition,glue,tensile,scratch,drape,residency,constants}.py",
+  "tools/science_funnel/data/morphosource_ct/matter_skeleton/infant_skeleton.body.json",
+  "tools/science_funnel/validation/{matter_skeleton_20260920,axial_adjacency_20260920,hip_adoption_20260921}/",
+  "docs/evidence/agent_fleet/MATTER_KERNEL/{B1_DESIGN_DRAFT,B2_PREREGISTRATION,FEET_PREREGISTRATION}.md",
+  "ChimeraEngine/engine/shaders/joints.comp",
+  "ChimeraEngine/engine/engine.cpp",
+  "docs/THE_MASTER_LIST.md (H15)",
+  "docs/THE_CATEGORIES.md (joint v1, lever v6)",
+  "docs/THE_LOCOMOTION_LANE.md",
+  "tools/train_stand.py",
+  "ChimeraEngine/walker.py",
+  "tools/chimera_gait.py",
+  "tools/science_funnel/data/macaque_arm/monkeyArm_current.osim + download_receipt.json (limblab/monkeyArmModel @4fb7ddde, MIT, sha256-pinned; the operator's brief names this the Wiseman lineage)",
+  "research_references/human/opensim/{Rajagopal2016,gait2392_thelen2003muscle}.osim"
+ ],
+ "outputs": [
+  "docs/THE_ARTICULATION_LAW.md (the design doc; sha256 pinned in preregistration.sha256 beside this receipt, hashed over the LF-canonical committed bytes)"
+ ],
+ "measurements": "NONE — this is the design lane's honesty: every quantity the design needs is either already committed, derived in the doc, or named as the successor measurement lane's pre-registered act.",
+ "verdicts": {
+  "deliverable": "design doc + preregistration + this receipt, committed and pushed on agent/articulation-semantics-20260921",
+  "proof_built": false,
+  "proof_built_reason": "see falsifier_status; the fence is §6 of the doc",
+  "kernel_articulates_today": false
+ },
+ "fresh_clone_verification": "planned at commit time: the doc's staged blob sha256 re-hashed after git add and compared to preregistration.sha256 (the 2d585c7b law: hashes are pinned to the committed bytes, not the worktree's)"
+}

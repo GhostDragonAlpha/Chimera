@@ -1,0 +1,7 @@
+{"do":"shot","name":"12_slider_try"}
+{"do":"click","x":1190,"y":453}
+{"do":"key","key":"ArrowLeft"}
+{"do":"key","key":"ArrowLeft"}
+{"do":"key","key":"ArrowLeft"}
+{"do":"wait","ms":400}
+{"do":"text","max":700}

@@ -1,0 +1,322 @@
+{
+ "tile": "P2_x3_y1",
+ "pass": "A",
+ "strategy": "row-wise muscle-major, forward panel order",
+ "reader": "vtrans",
+ "columns_seen": [
+  "[Mm7 FL sliver]",
+  "Mm7 PCSA (mm2)"
+ ],
+ "notes": [
+  "Mm7 APB+FPB merged cell confirmed here (100.1 spans two rows)",
+  "Mm7 OPP='APB' marker, conn='FDP' marker, EI='absent (cfr. EDST)' confirmed",
+  "Mm7 EDM marker bottom-cut: reads '(cfr. EDO?)' -- DEGRADED here"
+ ],
+ "cells": [
+  {
+   "m": "APB",
+   "g": "Thenar",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "100.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": {
+    "span": [
+     "APB",
+     "FPB"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "FPB",
+   "g": "Thenar",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": {
+    "span": [
+     "APB",
+     "FPB"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "ADP",
+   "g": "Thenar",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "44.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "OPP",
+   "g": "Thenar",
+   "s": "Mm7",
+   "f": "mass_g",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "APB",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "OPP",
+   "g": "Thenar",
+   "s": "Mm7",
+   "f": "fl_mm",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "APB",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "OPP",
+   "g": "Thenar",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "APB",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "anchor"
+   }
+  },
+  {
+   "m": "ADM",
+   "g": "Hypothenar",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "29.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDM",
+   "g": "Hypothenar",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "23.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ODM",
+   "g": "Hypothenar",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "24.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "LUMB",
+   "g": "Intermediate",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "10.5",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "IOD",
+   "g": "Intermediate",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "157.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "IOP",
+   "g": "Intermediate",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "45.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "C5",
+   "g": "Intermediate",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "16.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDS",
+   "g": "Flexor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "242.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FCR",
+   "g": "Flexor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "146.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "PL",
+   "g": "Flexor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "79.8",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FCU",
+   "g": "Flexor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "218.1",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "FDP",
+   "g": "Flexor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "371.3",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "conn. FDS-FDP",
+   "g": "Flexor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "FDP",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "ECRL",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "27.6",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ECRB",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "92.7",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "ED",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "54.4",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EI",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "CLEAR",
+   "marker": "absent (cfr. EDST)",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  },
+  {
+   "m": "EDST",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": "25.0",
+   "leg": "CLEAR",
+   "marker": null,
+   "merge": null
+  },
+  {
+   "m": "EDM",
+   "g": "Extensor",
+   "s": "Mm7",
+   "f": "pcsa_mm2",
+   "v": null,
+   "leg": "DEGRADED",
+   "marker": "absent (cfr. ED..) bottom-cut",
+   "merge": {
+    "span": [
+     "mass_g",
+     "fl_mm",
+     "pcsa_mm2"
+    ],
+    "role": "covered"
+   }
+  }
+ ],
+ "crop_sha256": "4f60af1110e48ed13cbc67c9f607764bd5d6b91e965f5f309b96433efb843751"
+}

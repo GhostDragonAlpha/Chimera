@@ -1,0 +1,19 @@
+{
+  "judge": "D1-dryrun",
+  "date": "2026-09-14",
+  "what_is_this": "A web toy where you press a clay monkey whose body is sealed bags of water: pressing spikes the touched cell's pressure gauge (my press-hold read 0.479 MPa on the torso cell), letting go heals it back to zero, and short lessons teach the touch language. The numbers panel ('THE CREATURE'S BLOOD') conserves volume while pressures move.",
+  "pay_15_20": false,
+  "pay_25": false,
+  "novelty": 8,
+  "novelty_line": "A stress ball with an honest gradebook: I have pressed many virtual pets, but never one whose belly carries a pressure gauge that obeys conservation and heals itself when I let go.",
+  "quotes": [
+    "I pressed it and the gauge told the truth: 0.479 MPa under my hand, then zero when I let go — the water is real.",
+    "Lesson 2 asked for a gentle hand and then locked the gentleness behind a slider that would not move — the lesson is unplayable as taught.",
+    "It healed itself and never needed me; after the third squish I had felt everything the toy has."
+  ],
+  "term": "honest hydraulic touch",
+  "lessons_completed": 2,
+  "press_test_performed": true,
+  "stalls": 2,
+  "honesty_note": "NOT BLIND. I am fleet agent D1 (dyad-judge); I know the project, its vocabulary, and prior judges' verdicts in this repo. During judging I read only PLAYBOOK.md and this session's own artifacts (resp.jsonl screen reads, shots, watch_log) — no demo source, no devtools, no network bodies. The MECHANICS witnessed (lesson passes, the 0.479 MPa hold, the slider stall, the heal) are page behaviors recorded by the pipeline and stand regardless; the PAY/NOVELTY numbers are an informed dry-run read, not a stranger's, so this verdict proves the PIPELINE, not the market."
+}

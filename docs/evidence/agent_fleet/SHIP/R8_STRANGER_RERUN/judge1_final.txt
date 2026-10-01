@@ -1,0 +1,9 @@
+Viewed all 21 images.
+
+1. **What I think it is:** A guided physics toy where you press a water-filled monkey, watch pressure readings and deformation, then release it to recover. It looks like an early simulation prototype with lessons.
+
+2. **Would I pay $14.99? No.** The images show too little interaction variety or visual polish to convince me I’d stay interested beyond a short experiment.
+
+3. **What would make it a yes:** A playable demo showing satisfying, responsive deformation; varied experiments or puzzles; and cleaner creature geometry and clearer visual feedback about the water inside.
+
+4. **Novelty: 5/10.** The fluid-pressure teaching angle is intriguing, but the visible experience mostly looks like poking a 3D model while numbers change.

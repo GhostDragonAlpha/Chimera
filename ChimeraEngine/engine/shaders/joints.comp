@@ -19,11 +19,11 @@
 //    FK chain, own rotation first, every level about its own FIXED REST
 //    pivot:
 //
-//        p' = R_own( R_parent( ... R_root( p ) ) )
+//        p' = R_root( ... R_parent( R_own( p ) ) )
 //
 //    accumulated root->own as an affine (M, T) with
 //        R_k = Rodrigues(a_k, theta_k),  t_k = J_k - R_k J_k,
-//        M <- R_k M,  T <- R_k T + t_k  per level.
+//        T <- T + M t_k,  M <- M R_k  per level (old M in T).
 //    Term 2 is the same accumulation STOPPING BEFORE the band joint (the
 //    parent's world frame; identity when the band joint is parentless). At
 //    any angle the output is a convex combination of two rigid motions of
@@ -32,8 +32,7 @@
 //    vertex inherits 100% of every ancestor's arc plus its own blended arc.
 //    At rest (all thetas 0) every R_k is exactly I and t_k exactly 0, so the
 //    rest pose is bit-identical by construction.
-//    NOTE: chains deeper than 8 truncate (named boundary; this skeleton's
-//    deepest chain is 4: spine_lower -> shoulder -> elbow -> wrist).
+//    Chains deeper than 8 are rejected by the loader before GPU publication.
 //
 // THE MATTER PASS (M1, 2026-09-04): the posed surface is a COMMAND; matter
 // is the surface itself carrying constraints. After the pose (or in
@@ -230,7 +229,7 @@ void main() {
                                 vec3(-ak.z, 0.0,  ak.x),
                                 vec3( ak.y, -ak.x, 0.0));
             vec3 off = Jk - Rk * Jk;                // the pivot's translation
-            T1 = Rk * T1 + off;  M1 = Rk * M1;
+            T1 += M1 * off;  M1 = M1 * Rk;
         }
         for (int k = depth2 - 1; k >= 0; --k) {     // term 2: its own full chain
             uint po = uint(chain2[k]) * 8u;
@@ -244,15 +243,17 @@ void main() {
                                 vec3(-ak.z, 0.0,  ak.x),
                                 vec3( ak.y, -ak.x, 0.0));
             vec3 off = Jk - Rk * Jk;
-            T2 = Rk * T2 + off;  M2 = Rk * M2;
+            T2 += M2 * off;  M2 = M2 * Rk;
         }
         for (uint kk = 0; kk < 2; ++kk) {            // 0 = position, 1 = normal
             vec3 v = vec3(rest[i * 9 + kk * 3 + 0],
                           rest[i * 9 + kk * 3 + 1],
                           rest[i * 9 + kk * 3 + 2]);
-            vec3 r1 = M1 * v + T1;                  // band joint's world frame
-            vec3 r2 = M2 * v + T2;                  // parent's world frame
-            vec3 o = wgt * r1 + (1.0 - wgt) * r2;   // the convex blend — the cure
+            // Positions translate; normal directions do not.
+            vec3 r1 = M1 * v + ((kk == 0u) ? T1 : vec3(0.0));
+            vec3 r2 = M2 * v + ((kk == 0u) ? T2 : vec3(0.0));
+            vec3 o = wgt * r1 + (1.0 - wgt) * r2;
+            if (kk == 1u && dot(o,o) > 1e-20) o = normalize(o);
             if (kk == 0u) P = o;
             vout[i * 9 + kk * 3 + 0] = o.x;
             vout[i * 9 + kk * 3 + 1] = o.y;

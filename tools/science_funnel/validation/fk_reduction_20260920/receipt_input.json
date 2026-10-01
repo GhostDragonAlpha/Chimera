@@ -1,0 +1,138 @@
+{
+ "fence": {
+  "plain": {
+   "stdout_shas": [
+    "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+   ],
+   "n": 3
+  },
+  "reduce": {
+   "stdout_shas": [
+    "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+   ],
+   "n": 3
+  },
+  "census": {
+   "stdout_shas": [
+    "8c537cdb7cb8c43cf9423cb50056787bcc31ee487d70d3c2a1e73ed5d60b06cc"
+   ],
+   "n": 4
+  }
+ },
+ "census_reconciliation": {
+  "census1": {
+   "site_sum": 80333,
+   "reported_total": 80333,
+   "pinned_fk_hits": 86549,
+   "exact_match": false,
+   "per_tick": 266.003
+  },
+  "census2": {
+   "site_sum": 80333,
+   "reported_total": 80333,
+   "pinned_fk_hits": 86549,
+   "exact_match": false,
+   "per_tick": 266.003
+  },
+  "census3": {
+   "site_sum": 86549,
+   "reported_total": 86549,
+   "pinned_fk_hits": 86549,
+   "exact_match": true,
+   "per_tick": 286.586
+  },
+  "census4": {
+   "site_sum": 86549,
+   "reported_total": 86549,
+   "pinned_fk_hits": 86549,
+   "exact_match": true,
+   "per_tick": 286.586
+  }
+ },
+ "census_sites": {
+  "S_MECH": 0,
+  "S_CAP": 1,
+  "S_FORE": 1,
+  "S_LAWFE": 969,
+  "S_RATE": 35520,
+  "S_FSE0": 8880,
+  "S_FSP0": 8880,
+  "S_FSP1": 8880,
+  "S_IMP": 3443,
+  "S_PCEC": 3443,
+  "S_PCUB": 1273,
+  "S_PCAR": 1384,
+  "S_PCDU": 1272,
+  "S_ES": 2395,
+  "S_EE": 2395,
+  "S_PIN1": 0,
+  "S_PIN2": 0,
+  "S_CROSS": 140,
+  "S_BISECT_GAP": 6216,
+  "S_REFLEX": 303,
+  "S_HULL": 303,
+  "S_SAT": 243,
+  "S_STATUS": 304,
+  "S_U0": 304,
+  "S_RESET": 0
+ },
+ "census_calls": {
+  "C_FS_MAIN": 2395,
+  "C_FS_DRV": 126,
+  "C_FS_CON": 6216,
+  "C_FS_CROSS": 140,
+  "C_FS_WALL": 3,
+  "C_IMP_ENT": 3300,
+  "C_IMP_PIN": 0,
+  "C_IMP_CROSS": 140,
+  "C_IMP_WALL": 3,
+  "C_ADV_TRIAL": 1209,
+  "C_ADV_BISECT": 0,
+  "C_ADV_RETRY": 0,
+  "C_CAUGHT": 3299,
+  "C_CLAMP": 0,
+  "C_EVT_CON": 140,
+  "C_EVT_WALL": 3
+ },
+ "wall_ab": {
+  "pairs": [
+   [
+    50.5,
+    45.6
+   ],
+   [
+    62.7,
+    44.5
+   ],
+   [
+    55.6,
+    38.4
+   ]
+  ],
+  "plain_mean_s": 56.27,
+  "reduce_mean_s": 42.83,
+  "delta_s": -13.43,
+  "delta_pct": -23.9,
+  "caveat": "shared-box state factor carried (tickcost F3b RED); the state-independent currency is the evaluate count"
+ },
+ "trace_ab": {
+  "common_prefix_bytes": 1177780,
+  "plain_bytes": 3014934,
+  "reduce_bytes": 3535214,
+  "identical_over_common_window": true,
+  "split_cause": "the harness 120 s WALL-CLOCK window guard (gait_unit.cpp), fired at different ticks on today's loaded shared box; not a physics byte",
+  "reference_anchor_c6f9b6c0": "machine-state-bound (wave-47 era, ~30 s/process box); NOT reproducible at this box state -- carried, per the prereg decision rule"
+ },
+ "bounds": {
+  "evals_before_per_walk": 86549,
+  "evals_removed_per_walk": 29297,
+  "evals_after_per_walk": 57252,
+  "evals_before_per_tick": 286.59,
+  "evals_removed_per_tick": 97.01,
+  "evals_after_per_tick": 189.58,
+  "reduction_pct": 33.9,
+  "fk_ms_saved_per_tick_tickcost_state": 13.82,
+  "fk_ms_saved_per_tick_receipt_state": 6.79,
+  "budget_ms": 3.333
+ }
+}

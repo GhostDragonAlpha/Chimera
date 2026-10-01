@@ -1,0 +1,42 @@
+{
+  "what": "HTTP 429 storm measured during funnel runs 1-2 (2026-09-14 07:24-07:33 local), caused by a co-tenant loopback client sharing the game shell's single per-IP stream bucket",
+  "honesty_note": "transcript.json on disk holds the FINAL clean PASS run (run 4); runs 1-2 transcripts were overwritten by successive runs. The numbers below were captured in-session from those runs' live output and are recorded here as the storm evidence.",
+  "co_tenant_processes_observed": [
+    "node.exe PID 8528: judge_drive.js http://127.0.0.1:8206 .  (another fleet agent's probe, live during runs 1-2, exited before run 4)",
+    "a second headless Playwright Chrome (user-data-dir playwright_chromiumdev_profile-*) with the game open, polling from 127.0.0.1"
+  ],
+  "run2_measurements": {
+    "session_wall_s": 121.74,
+    "game_page_opened_at_s": 4.207,
+    "first_429_at_s": 1.6,
+    "comment_on_timing": "the first 429 preceded my game page's first request by ~2.6 s: the bucket was already drained externally before this session joined it",
+    "total_http_429": 494,
+    "console_errors_429": 495,
+    "last_429_at_s": 120.9,
+    "fours29_per_10s_bucket": { "0-10": 63, "10-20": 67, "20-30": 62, "30-40": 42, "40-50": 33, "50-60": 32, "60-70": 31, "70-80": 32, "80-90": 33, "90-100": 24, "100-110": 39, "110-120": 32, "120+": 4 },
+    "my_page_requests_by_url": {
+      "/api/verts?delta=1": 325,
+      "/api/verts?delta=key": 457,
+      "/api/state": 166,
+      "/api/pose": 12,
+      "/api/touch_hit": 3,
+      "/api/touch_clear": 1,
+      "/api/topology": 1,
+      "/api/progress": 4,
+      "/lessons.json": 1,
+      "/sound.js": 1
+    },
+    "my_page_total_requests": 971,
+    "my_page_successful_rate": "477 successful of 971 (the rest 429) = 4.1 req/s = the documented solo poll (verts 3 Hz + state 1.4 Hz)",
+    "storm_amplification": "during the storm each pollVerts tick costs TWO requests: ?delta=1 fails (429), then the catch-path pullKey() immediately pulls ?delta=key (also 429) -> measured 6.7 Hz combined verts polling vs 3 Hz intended; 429 responses do not consume bucket tokens (server denies before accounting), but the retry doubles request pressure and keeps CPU on the server",
+    "stranger_facing_symptom": "the lesson verdict froze on 'the goal is met -- now LET GO, and let the body heal.' while judge pollState calls were 429-starved; run 1: L2 held 30 s (cap) with goalMet=true; run 2: L1 held the full 90 s cap with goalMet=true. The player did everything right; the lesson never latched. Nothing in the lesson verdict names the starvation (only the small #link-state line can show 'the world is silent -- retrying...').",
+    "physics_was_never_the_problem": "run 2 L2 mid-press blood: cell 0 at 5.377 MPa (bar: 0.05 MPa), judge goalMet=true one poll after the press"
+  },
+  "clean_run_contrast": {
+    "run3_game_requests_total": 221,
+    "run4_game_requests_total": 254,
+    "http_429": 0,
+    "solo_rate": "~254 req/min vs bucket 600/min refill + 240 burst: a SOLO player cannot trip the bucket (confirmed empirically by runs 3-4: zero 429s)",
+    "conclusion": "the trip requires a second active loopback session; on the public deployment buckets key on CF-Connecting-IP, so players behind one shared NAT IP are the real-world exposure"
+  }
+}

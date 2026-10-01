@@ -1,0 +1,222 @@
+{
+ "name": "byhand-before",
+ "started": "2026-09-15T04:58:22.315Z",
+ "url": "http://127.0.0.1:8206/?debug=1",
+ "lessons": [
+  {
+   "id": "wake_the_cell",
+   "control": "force slider drag + click-hold the belly + let go",
+   "actions": [
+    "drag slider to 50000 N",
+    "press belly 2200 ms",
+    "click \"let go\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — you pressed, the cell woke, and the water healed itself. the world is real.",
+   "judgeLine": "judge: wake_the_cell phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false",
+   "midHoldCells": [
+    0,
+    2734980,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "the_gentle_hand",
+   "control": "force slider drag + click-hold a foot + let go",
+   "actions": [
+    "WRONG: press foot at 50000 N",
+    "drag slider to 6000 N",
+    "press foot 2200 ms",
+    "click \"let go\""
+   ],
+   "passed": false,
+   "sentence": "the creature waits.",
+   "judgeLine": "judge: the_gentle_hand phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=0 holding=false",
+   "overForceHint": "the creature waits.",
+   "overForceCells": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "gentleCells": [
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "the_healing",
+   "control": "click-hold any part + let go + wait",
+   "actions": [
+    "press belly 2200 ms",
+    "click \"let go\"",
+    "waited for the heal: true"
+   ],
+   "passed": true,
+   "sentence": "PASSED — you let go, and the body healed itself. it never needed you.",
+   "judgeLine": "judge: the_healing phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false"
+  },
+  {
+   "id": "bend_the_knee",
+   "control": "single auto-wish chip (no angle control)",
+   "actions": [
+    "click the single pose chip",
+    "ONE click passed the lesson (self-granted)",
+    "clicked the chip again: verdict \"PASSED — and the body stands at rest again.\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — and the body stands at rest again.",
+   "judgeLine": "judge: bend_the_knee phase=goal goalMet=true passed=true touchTarget=null lastTouchForce=0 holding=false",
+   "note": "DEFECT: no angle control -- one chip posts the goal verbatim",
+   "controlsSeen": {
+    "slider": false,
+    "oldChip": true
+   }
+  },
+  {
+   "id": "the_whole_body",
+   "control": "click-hold belly, then click-hold the shins, let go",
+   "actions": [
+    "press belly 2200 ms",
+    "press shin 5000 ms (a human stare)",
+    "click \"let go\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — two rooms woke under one hand, and the whole body went quiet together.",
+   "judgeLine": "judge: the_whole_body phase=release goalMet=true passed=true touchTarget=set lastTouchForce=20200 holding=false",
+   "shinHoldCells": [
+    0,
+    50052.4,
+    0,
+    13567200
+   ],
+   "afterBelly": {
+    "goalMet": false,
+    "note": "touchTarget=set lastTouchForce=20200 holding=true"
+   },
+   "afterShin": {
+    "goalMet": true,
+    "note": "touchTarget=set lastTouchForce=20200 holding=false"
+   },
+   "note": "shin goal latched={\"goalMet\":true,\"note\":\"touchTarget=set lastTouchForce=20200 holding=false\"}"
+  },
+  {
+   "id": "the_balance",
+   "control": "single auto-wish chip",
+   "actions": [
+    "click the single chip once",
+    "click the (still visible) chip again",
+    "second click changed nothing: \"PASSED — and the body stands at rest again.\" (was \"PASSED — two opposite wishes held at once. that balance is yours.\")"
+   ],
+   "passed": true,
+   "sentence": "PASSED — and the body stands at rest again.",
+   "judgeLine": "judge: the_balance phase=goal goalMet=true passed=true touchTarget=null lastTouchForce=0 holding=false pair[ankle_L=true ankle_R=true]",
+   "note": "DEFECT: the chip posts BOTH wishes in one click; after the pass it stays visible but inert"
+  },
+  {
+   "id": "the_heavy_hand",
+   "control": "force slider to max + click-hold the belly + let go",
+   "actions": [
+    "drag slider to 50000 N",
+    "press belly 5000 ms",
+    "click \"let go\""
+   ],
+   "passed": false,
+   "sentence": "the creature waits.",
+   "judgeLine": "judge: the_heavy_hand phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=50000 holding=false",
+   "torsoPeakPa": 2734980,
+   "lessonWantsPa": 3000000,
+   "note": "DEFECT: the belly at the slider MAX reaches 2734980 Pa -- the lesson as pointed asks 3000000 Pa and can never latch"
+  },
+  {
+   "id": "the_cascade",
+   "control": "force slider to max + click-hold the belly + let go",
+   "actions": [
+    "press belly 3000 ms",
+    "click \"let go\""
+   ],
+   "passed": true,
+   "sentence": "PASSED — the belly woke and the legs slept through it. sealed means sealed.",
+   "judgeLine": "judge: the_cascade phase=release goalMet=true passed=true touchTarget=set lastTouchForce=50000 holding=false",
+   "midHoldCells": [
+    0,
+    2734980,
+    0,
+    0
+   ]
+  },
+  {
+   "id": "the_stand",
+   "control": "NONE (the page arms gravity by itself at lesson start)",
+   "actions": [
+    "(no action available; waiting)",
+    "world: gravity_on=true root_y=0.0095"
+   ],
+   "passed": true,
+   "sentence": "PASSED — the world turned on its own weight, and the creature stood still in it.",
+   "judgeLine": "judge: the_stand phase=goal goalMet=true passed=true touchTarget=null lastTouchForce=0 holding=false armed=true",
+   "note": "DEFECT: nothing to do -- watch whether the lesson passes with zero action -- PASSED WITH ZERO PLAYER ACTION",
+   "passedOverride": true,
+   "world": "gravity_on=true root_y=0.0095"
+  },
+  {
+   "id": "the_graduation",
+   "control": "click-hold three different parts + let go",
+   "actions": [
+    "belly, left foot, left shin -- 2000 ms each",
+    "click \"let go\""
+   ],
+   "passed": false,
+   "sentence": "the creature waits.",
+   "judgeLine": "judge: the_graduation phase=goal goalMet=false passed=false touchTarget=set lastTouchForce=20200 holding=false woken=2/3",
+   "cellsPerPress": [
+    [
+     0,
+     1031210,
+     0,
+     0
+    ],
+    [
+     0,
+     662.945,
+     0,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     12912100
+    ]
+   ],
+   "judgeRest": " touchTarget=set lastTouchForce=20200 holding=false woken=2/3"
+  }
+ ],
+ "checks": {
+  "arrows": {
+   "from": "1 / 10",
+   "afterNext": "2 / 10",
+   "afterPrev": "1 / 10",
+   "nextWorks": true,
+   "prevWorks": true
+  },
+  "keyboardBeyond5": {
+   "pressed7": "1 / 10",
+   "changed": false
+  },
+  "waterMissMessage": "you touched only water.",
+  "bloodLabels": [
+   "cell 0: V=0.288 m3  P=0.000 MPa",
+   "cell 1: V=12.509 m3  P=0.000 MPa",
+   "cell 2: V=0.693 m3  P=0.000 MPa",
+   "cell 3: V=0.335 m3  P=0.000 MPa"
+  ]
+ },
+ "pageErrors": [],
+ "finished": "2026-09-15T05:00:55.391Z",
+ "distinctSentences": false,
+ "passedCount": 7
+}

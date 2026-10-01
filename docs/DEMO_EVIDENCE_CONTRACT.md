@@ -50,3 +50,50 @@ was the exact GPU submission or physics certification.
 The writer CLI refuses to overwrite an existing output path and creates parent
 directories only under the requested output directory. Failed validations are
 preserved in their output record.
+
+## Certified-world hero disclosure record
+
+**What:** the hero still `hero_tick150` (sha256
+`9efd86ce3054e9eccb1c1996768e8a00c447186701ff6a5beb49777a72375e2b`) contains a
+known render anomaly: the small sharp-edged white disc upper-right of the sky
+is an AUTHORED decorative cloud cluster (`sky-sun/sky_sun.py` `build_clouds`,
+layer 6, one 12-blob cluster at 6.3-6.6 km, az ~200 deg el ~28 deg) whose
+stacked alpha Gaussians read as a "second sun" beside the single authored sun.
+Diagnosis (pinned root cause, HIGH confidence): DEFECT 1 in the Sergeant lane
+report `world-build-20260928/visual-defects/VISUAL_DEFECTS.md` (2026-09-29);
+not a duplicate sun, flare, bloom pass, or blending double. Both later
+records that touch the region (`composition3-trunk/RESEAT_RECEIPT.md`,
+`game-loop-design/GAME_LOOP_R3_STUDY.md` section 5) defer to that diagnosis
+and record the Captain question as open.
+
+**Where:** the demo page's certified-world sealed-captures surface. The
+disclosure is a `"disclosure"` field on the `hero_tick150` entry in
+`tools/product_viewer/certified_world.json`, rendered by
+`certified_world_section()` in `tools/product_viewer/server.py` as one
+amber line between the hero image and its caption (server-built HTML, zero
+page JS). It passes through `load_certified_world()` untouched and is
+projected by the `/api/world/certified` route's fixed key tuple (entries
+without a disclosure project `null`), so API consumers receive the
+disclosure too; the projection is asserted by
+`test_route_projects_disclosure_field` in
+`tools/product_viewer/tests/test_certified_world.py`.
+
+**Why:** Captain decision, docket 2026-09-30 (decision #1): the anomaly is
+DISCLOSED, not re-authored — VISUAL_DEFECTS.md Option A (disclosure-only, no
+pixels change) was selected over Option B (re-author `build_clouds`, which
+would invalidate every downstream composed buffer) and Option C (scene-scoped
+re-framing, ineffective for the hero). The hero is not re-authored; no
+re-render, no sha re-pin, and the sealed-capture contract (served bytes equal
+the pinned file bytes) is unchanged. The disclosure is declared page copy for
+a known anomaly; it is not a refusal and does not alter the verification
+state of the entry.
+
+**Correction record (PR #291 review):** the original disclosure commit
+(da8b2c8a) stated that the disclosure "appears in /api/world/certified like
+the other entry fields". That claim was FALSE at that revision: the route
+projected a fixed key tuple `(name, section, caption, identity_note, sha256,
+bytes, verified, refusal)` that omitted `disclosure`. Caught in review (all
+other checks PASS); fixed by adding `disclosure` to the projection tuple,
+with `test_route_projects_disclosure_field` backing the claim. The original
+commit message is immutable and repeats the wrong claim; this note is the
+correction of record.

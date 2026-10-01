@@ -1,0 +1,3498 @@
+{
+ "admission": {
+  "admitted": 0,
+  "note": "F1 STOP: zero admission, measured rates are the finding"
+ },
+ "constants": {
+  "LAW_TOLERANCE": 0.02,
+  "PCSA_FACTOR": 943.3962264150942,
+  "REGISTER_CUT": 0.8,
+  "RHO_KG_M3": 1060.0,
+  "SHARE_FLAG_REL": 0.5
+ },
+ "decimal_register": {
+  "fl_mm": {
+   "mode_coverage": 1.0,
+   "mode_decimals": 1,
+   "n": 218,
+   "register_law": "holds"
+  },
+  "mass_g": {
+   "mode_coverage": 1.0,
+   "mode_decimals": 1,
+   "n": 218,
+   "register_law": "holds"
+  },
+  "pcsa_mm2": {
+   "mode_coverage": 1.0,
+   "mode_decimals": 1,
+   "n": 218,
+   "register_law": "holds"
+  }
+ },
+ "implied_rho_g_cm3": {
+  "max": 1.4992,
+  "median": 1.1004,
+  "min": 0.7824,
+  "n": 218,
+  "p25": 1.0946,
+  "p75": 1.115
+ },
+ "law_dev_percentiles": {
+  "5": 0.012054,
+  "25": 0.034156,
+  "50": 0.03767,
+  "75": 0.053632,
+  "95": 0.13504
+ },
+ "law_pass_rate": 0.0872,
+ "law_rows": [
+  {
+   "fl_mm": "10.4",
+   "implied_rho_g_cm3": 1.155,
+   "law": "FAIL",
+   "mass_g": "0.8",
+   "muscle": "ADM",
+   "pcsa_mm2": "66.6",
+   "pcsa_pred": 72.5689,
+   "rel_dev": 0.082252,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "14.3",
+   "implied_rho_g_cm3": 1.0758,
+   "law": "PASS",
+   "mass_g": "0.4",
+   "muscle": "ADM",
+   "pcsa_mm2": "26.0",
+   "pcsa_pred": 26.3887,
+   "rel_dev": 0.01473,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "14.5",
+   "implied_rho_g_cm3": 1.1661,
+   "law": "FAIL",
+   "mass_g": "0.7",
+   "muscle": "ADM",
+   "pcsa_mm2": "41.4",
+   "pcsa_pred": 45.5433,
+   "rel_dev": 0.090974,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "15.9",
+   "implied_rho_g_cm3": 1.101,
+   "law": "FAIL",
+   "mass_g": "0.8",
+   "muscle": "ADM",
+   "pcsa_mm2": "45.7",
+   "pcsa_pred": 47.4665,
+   "rel_dev": 0.037215,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "14.1",
+   "implied_rho_g_cm3": 1.0892,
+   "law": "FAIL",
+   "mass_g": "0.9",
+   "muscle": "ADM",
+   "pcsa_mm2": "58.6",
+   "pcsa_pred": 60.2168,
+   "rel_dev": 0.026849,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "14.9",
+   "implied_rho_g_cm3": 1.1453,
+   "law": "FAIL",
+   "mass_g": "0.5",
+   "muscle": "ADM",
+   "pcsa_mm2": "29.3",
+   "pcsa_pred": 31.6576,
+   "rel_dev": 0.074472,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "13.6",
+   "implied_rho_g_cm3": 1.0038,
+   "law": "FAIL",
+   "mass_g": "0.4",
+   "muscle": "ADM",
+   "pcsa_mm2": "29.3",
+   "pcsa_pred": 27.7469,
+   "rel_dev": 0.055972,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "11.9",
+   "implied_rho_g_cm3": 1.2179,
+   "law": "FAIL",
+   "mass_g": "1.2",
+   "muscle": "ADP",
+   "pcsa_mm2": "82.8",
+   "pcsa_pred": 95.1324,
+   "rel_dev": 0.129634,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "12.9",
+   "implied_rho_g_cm3": 1.1695,
+   "law": "FAIL",
+   "mass_g": "0.7",
+   "muscle": "ADP",
+   "pcsa_mm2": "46.4",
+   "pcsa_pred": 51.192,
+   "rel_dev": 0.093609,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "22.0",
+   "implied_rho_g_cm3": 1.0986,
+   "law": "FAIL",
+   "mass_g": "1.6",
+   "muscle": "ADP",
+   "pcsa_mm2": "66.2",
+   "pcsa_pred": 68.6106,
+   "rel_dev": 0.035135,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "18.6",
+   "implied_rho_g_cm3": 1.1094,
+   "law": "FAIL",
+   "mass_g": "1.3",
+   "muscle": "ADP",
+   "pcsa_mm2": "63.0",
+   "pcsa_pred": 65.9363,
+   "rel_dev": 0.044532,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "12.8",
+   "implied_rho_g_cm3": 1.1161,
+   "law": "FAIL",
+   "mass_g": "0.9",
+   "muscle": "ADP",
+   "pcsa_mm2": "63.0",
+   "pcsa_pred": 66.3325,
+   "rel_dev": 0.05024,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "19.9",
+   "implied_rho_g_cm3": 1.1136,
+   "law": "FAIL",
+   "mass_g": "0.8",
+   "muscle": "ADP",
+   "pcsa_mm2": "36.1",
+   "pcsa_pred": 37.9255,
+   "rel_dev": 0.048133,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "13.9",
+   "implied_rho_g_cm3": 1.1342,
+   "law": "FAIL",
+   "mass_g": "0.7",
+   "muscle": "ADP",
+   "pcsa_mm2": "44.4",
+   "pcsa_pred": 47.5092,
+   "rel_dev": 0.065443,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "10.2",
+   "implied_rho_g_cm3": 1.14,
+   "law": "FAIL",
+   "mass_g": "1.4",
+   "muscle": "APB",
+   "pcsa_mm2": "120.4",
+   "pcsa_pred": 129.4858,
+   "rel_dev": 0.070168,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "12.8",
+   "implied_rho_g_cm3": 1.0179,
+   "law": "FAIL",
+   "mass_g": "0.4",
+   "muscle": "APB",
+   "pcsa_mm2": "30.7",
+   "pcsa_pred": 29.4811,
+   "rel_dev": 0.041344,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "23.7",
+   "implied_rho_g_cm3": 1.1136,
+   "law": "FAIL",
+   "mass_g": "0.9",
+   "muscle": "APB",
+   "pcsa_mm2": "34.1",
+   "pcsa_pred": 35.8252,
+   "rel_dev": 0.048155,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "16.3",
+   "implied_rho_g_cm3": 1.1227,
+   "law": "FAIL",
+   "mass_g": "1.4",
+   "muscle": "APB",
+   "pcsa_mm2": "76.5",
+   "pcsa_pred": 81.0279,
+   "rel_dev": 0.055881,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "12.9",
+   "implied_rho_g_cm3": 1.0729,
+   "law": "PASS",
+   "mass_g": "0.4",
+   "muscle": "APB",
+   "pcsa_mm2": "28.9",
+   "pcsa_pred": 29.2526,
+   "rel_dev": 0.012054,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "11.7",
+   "implied_rho_g_cm3": 1.1816,
+   "law": "FAIL",
+   "mass_g": "0.6",
+   "muscle": "APB",
+   "pcsa_mm2": "43.4",
+   "pcsa_pred": 48.3793,
+   "rel_dev": 0.102922,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "10.4",
+   "implied_rho_g_cm3": 0.9606,
+   "law": "FAIL",
+   "mass_g": "1.0",
+   "muscle": "APB",
+   "pcsa_mm2": "100.1",
+   "pcsa_pred": 90.7112,
+   "rel_dev": 0.103502,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "23.4",
+   "implied_rho_g_cm3": 1.1052,
+   "law": "FAIL",
+   "mass_g": "4.5",
+   "muscle": "APL",
+   "pcsa_mm2": "174.0",
+   "pcsa_pred": 181.4224,
+   "rel_dev": 0.040912,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "25.8",
+   "implied_rho_g_cm3": 1.1156,
+   "law": "FAIL",
+   "mass_g": "3.5",
+   "muscle": "APL",
+   "pcsa_mm2": "121.6",
+   "pcsa_pred": 127.9801,
+   "rel_dev": 0.049852,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "30.9",
+   "implied_rho_g_cm3": 1.0964,
+   "law": "FAIL",
+   "mass_g": "5.6",
+   "muscle": "APL",
+   "pcsa_mm2": "165.3",
+   "pcsa_pred": 170.9715,
+   "rel_dev": 0.033172,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "24.0",
+   "implied_rho_g_cm3": 1.102,
+   "law": "FAIL",
+   "mass_g": "4.7",
+   "muscle": "APL",
+   "pcsa_mm2": "177.7",
+   "pcsa_pred": 184.7484,
+   "rel_dev": 0.038151,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "19.2",
+   "implied_rho_g_cm3": 1.1139,
+   "law": "FAIL",
+   "mass_g": "2.9",
+   "muscle": "APL",
+   "pcsa_mm2": "135.6",
+   "pcsa_pred": 142.4921,
+   "rel_dev": 0.048369,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "21.8",
+   "implied_rho_g_cm3": 1.0959,
+   "law": "FAIL",
+   "mass_g": "4.2",
+   "muscle": "APL",
+   "pcsa_mm2": "175.8",
+   "pcsa_pred": 181.7552,
+   "rel_dev": 0.032765,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "23.4",
+   "implied_rho_g_cm3": 1.0812,
+   "law": "PASS",
+   "mass_g": "1.9",
+   "muscle": "APL",
+   "pcsa_mm2": "75.1",
+   "pcsa_pred": 76.6005,
+   "rel_dev": 0.019589,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "33.5",
+   "implied_rho_g_cm3": 1.0474,
+   "law": "PASS",
+   "mass_g": "0.6",
+   "muscle": "Anc",
+   "pcsa_mm2": "17.1",
+   "pcsa_pred": 16.8966,
+   "rel_dev": 0.012035,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "12.9",
+   "implied_rho_g_cm3": 1.2708,
+   "law": "FAIL",
+   "mass_g": "0.3",
+   "muscle": "Anc",
+   "pcsa_mm2": "18.3",
+   "pcsa_pred": 21.9394,
+   "rel_dev": 0.165886,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "15.1",
+   "implied_rho_g_cm3": 1.2264,
+   "law": "FAIL",
+   "mass_g": "0.4",
+   "muscle": "Anc",
+   "pcsa_mm2": "21.6",
+   "pcsa_pred": 24.9906,
+   "rel_dev": 0.135676,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "12.9",
+   "implied_rho_g_cm3": 1.0996,
+   "law": "FAIL",
+   "mass_g": "0.6",
+   "muscle": "Anc",
+   "pcsa_mm2": "42.3",
+   "pcsa_pred": 43.8789,
+   "rel_dev": 0.035983,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "17.6",
+   "implied_rho_g_cm3": 0.9549,
+   "law": "FAIL",
+   "mass_g": "0.2",
+   "muscle": "Anc",
+   "pcsa_mm2": "11.9",
+   "pcsa_pred": 10.7204,
+   "rel_dev": 0.110032,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "14.8",
+   "implied_rho_g_cm3": 1.0898,
+   "law": "FAIL",
+   "mass_g": "0.1",
+   "muscle": "Anc",
+   "pcsa_mm2": "6.2",
+   "pcsa_pred": 6.3743,
+   "rel_dev": 0.027344,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "5.7",
+   "implied_rho_g_cm3": 1.3158,
+   "law": "FAIL",
+   "mass_g": "0.3",
+   "muscle": "Anc",
+   "pcsa_mm2": "40.0",
+   "pcsa_pred": 49.6524,
+   "rel_dev": 0.1944,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "55.4",
+   "implied_rho_g_cm3": 1.1003,
+   "law": "FAIL",
+   "mass_g": "18.0",
+   "muscle": "B",
+   "pcsa_mm2": "295.3",
+   "pcsa_pred": 306.5186,
+   "rel_dev": 0.0366,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "31.4",
+   "implied_rho_g_cm3": 1.064,
+   "law": "PASS",
+   "mass_g": "11.7",
+   "muscle": "B",
+   "pcsa_mm2": "350.2",
+   "pcsa_pred": 351.5202,
+   "rel_dev": 0.003756,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "103.0",
+   "implied_rho_g_cm3": 1.0994,
+   "law": "FAIL",
+   "mass_g": "21.3",
+   "muscle": "B",
+   "pcsa_mm2": "188.1",
+   "pcsa_pred": 195.0907,
+   "rel_dev": 0.035833,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "57.5",
+   "implied_rho_g_cm3": 1.1011,
+   "law": "FAIL",
+   "mass_g": "19.4",
+   "muscle": "B",
+   "pcsa_mm2": "306.4",
+   "pcsa_pred": 318.2937,
+   "rel_dev": 0.037367,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "154.7",
+   "implied_rho_g_cm3": 1.1015,
+   "law": "FAIL",
+   "mass_g": "28.9",
+   "muscle": "BR",
+   "pcsa_mm2": "169.6",
+   "pcsa_pred": 176.2389,
+   "rel_dev": 0.03767,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "139.4",
+   "implied_rho_g_cm3": 1.1161,
+   "law": "FAIL",
+   "mass_g": "14.5",
+   "muscle": "BR",
+   "pcsa_mm2": "93.2",
+   "pcsa_pred": 98.1294,
+   "rel_dev": 0.050234,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "177.2",
+   "implied_rho_g_cm3": 1.099,
+   "law": "FAIL",
+   "mass_g": "25.2",
+   "muscle": "BR",
+   "pcsa_mm2": "129.4",
+   "pcsa_pred": 134.1624,
+   "rel_dev": 0.035498,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "154.0",
+   "implied_rho_g_cm3": 1.1001,
+   "law": "FAIL",
+   "mass_g": "24.7",
+   "muscle": "BR",
+   "pcsa_mm2": "145.8",
+   "pcsa_pred": 151.311,
+   "rel_dev": 0.036421,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "123.9",
+   "implied_rho_g_cm3": 1.0984,
+   "law": "FAIL",
+   "mass_g": "8.9",
+   "muscle": "BR",
+   "pcsa_mm2": "65.4",
+   "pcsa_pred": 67.7662,
+   "rel_dev": 0.034916,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "139.4",
+   "implied_rho_g_cm3": 1.0991,
+   "law": "FAIL",
+   "mass_g": "18.8",
+   "muscle": "BR",
+   "pcsa_mm2": "122.7",
+   "pcsa_pred": 127.2299,
+   "rel_dev": 0.035604,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "128.5",
+   "implied_rho_g_cm3": 1.0985,
+   "law": "FAIL",
+   "mass_g": "8.3",
+   "muscle": "BR",
+   "pcsa_mm2": "58.8",
+   "pcsa_pred": 60.9353,
+   "rel_dev": 0.035042,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "76.4",
+   "implied_rho_g_cm3": 1.1015,
+   "law": "FAIL",
+   "mass_g": "41.0",
+   "muscle": "Bb",
+   "pcsa_mm2": "487.2",
+   "pcsa_pred": 506.2728,
+   "rel_dev": 0.037673,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "67.5",
+   "implied_rho_g_cm3": 1.0665,
+   "law": "PASS",
+   "mass_g": "34.1",
+   "muscle": "Bb",
+   "pcsa_mm2": "473.7",
+   "pcsa_pred": 476.5898,
+   "rel_dev": 0.006063,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "118.3",
+   "implied_rho_g_cm3": 1.1003,
+   "law": "FAIL",
+   "mass_g": "42.5",
+   "muscle": "Bb",
+   "pcsa_mm2": "326.5",
+   "pcsa_pred": 338.9209,
+   "rel_dev": 0.036648,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "79.4",
+   "implied_rho_g_cm3": 1.1008,
+   "law": "FAIL",
+   "mass_g": "45.8",
+   "muscle": "Bb",
+   "pcsa_mm2": "524.0",
+   "pcsa_pred": 544.1757,
+   "rel_dev": 0.037076,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "5.8",
+   "implied_rho_g_cm3": 1.1017,
+   "law": "FAIL",
+   "mass_g": "0.2",
+   "muscle": "C5",
+   "pcsa_mm2": "31.3",
+   "pcsa_pred": 32.5309,
+   "rel_dev": 0.037838,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "10.6",
+   "implied_rho_g_cm3": 1.2252,
+   "law": "FAIL",
+   "mass_g": "0.1",
+   "muscle": "C5",
+   "pcsa_mm2": "7.7",
+   "pcsa_pred": 8.9,
+   "rel_dev": 0.134828,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "30.7",
+   "implied_rho_g_cm3": 0.7945,
+   "law": "FAIL",
+   "mass_g": "0.1",
+   "muscle": "C5",
+   "pcsa_mm2": "4.1",
+   "pcsa_pred": 3.073,
+   "rel_dev": 0.334222,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "21.9",
+   "implied_rho_g_cm3": 1.156,
+   "law": "FAIL",
+   "mass_g": "0.2",
+   "muscle": "C5",
+   "pcsa_mm2": "7.9",
+   "pcsa_pred": 8.6155,
+   "rel_dev": 0.083047,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "7.9",
+   "implied_rho_g_cm3": 1.4634,
+   "law": "FAIL",
+   "mass_g": "0.2",
+   "muscle": "C5",
+   "pcsa_mm2": "17.3",
+   "pcsa_pred": 23.8834,
+   "rel_dev": 0.275649,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "7.7",
+   "implied_rho_g_cm3": 0.7824,
+   "law": "FAIL",
+   "mass_g": "0.1",
+   "muscle": "C5",
+   "pcsa_mm2": "16.6",
+   "pcsa_pred": 12.2519,
+   "rel_dev": 0.354892,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "12.0",
+   "implied_rho_g_cm3": 1.1172,
+   "law": "FAIL",
+   "mass_g": "3.2",
+   "muscle": "CB",
+   "pcsa_mm2": "238.7",
+   "pcsa_pred": 251.5723,
+   "rel_dev": 0.051168,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "13.2",
+   "implied_rho_g_cm3": 1.4992,
+   "law": "FAIL",
+   "mass_g": "1.5",
+   "muscle": "CB",
+   "pcsa_mm2": "75.8",
+   "pcsa_pred": 107.2041,
+   "rel_dev": 0.292938,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "38.9",
+   "implied_rho_g_cm3": 1.0893,
+   "law": "FAIL",
+   "mass_g": "2.0",
+   "muscle": "CB",
+   "pcsa_mm2": "47.2",
+   "pcsa_pred": 48.5037,
+   "rel_dev": 0.026878,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "16.6",
+   "implied_rho_g_cm3": 1.1015,
+   "law": "FAIL",
+   "mass_g": "3.2",
+   "muscle": "CB",
+   "pcsa_mm2": "175.0",
+   "pcsa_pred": 181.8595,
+   "rel_dev": 0.037719,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "92.1",
+   "implied_rho_g_cm3": 1.1044,
+   "law": "FAIL",
+   "mass_g": "10.1",
+   "muscle": "DET",
+   "pcsa_mm2": "99.3",
+   "pcsa_pred": 103.456,
+   "rel_dev": 0.040172,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "81.8",
+   "implied_rho_g_cm3": 0.8689,
+   "law": "FAIL",
+   "mass_g": "8.6",
+   "muscle": "DET",
+   "pcsa_mm2": "121.0",
+   "pcsa_pred": 99.1835,
+   "rel_dev": 0.219961,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "75.6",
+   "implied_rho_g_cm3": 1.1057,
+   "law": "FAIL",
+   "mass_g": "8.1",
+   "muscle": "DET",
+   "pcsa_mm2": "96.9",
+   "pcsa_pred": 101.0782,
+   "rel_dev": 0.041336,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "73.7",
+   "implied_rho_g_cm3": 1.1062,
+   "law": "FAIL",
+   "mass_g": "9.4",
+   "muscle": "DET",
+   "pcsa_mm2": "115.3",
+   "pcsa_pred": 120.3246,
+   "rel_dev": 0.041759,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "37.3",
+   "implied_rho_g_cm3": 1.1044,
+   "law": "FAIL",
+   "mass_g": "8.7",
+   "muscle": "ECRB",
+   "pcsa_mm2": "211.2",
+   "pcsa_pred": 220.0415,
+   "rel_dev": 0.040181,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "29.2",
+   "implied_rho_g_cm3": 1.1042,
+   "law": "FAIL",
+   "mass_g": "6.5",
+   "muscle": "ECRB",
+   "pcsa_mm2": "201.6",
+   "pcsa_pred": 210.0026,
+   "rel_dev": 0.040012,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "42.6",
+   "implied_rho_g_cm3": 1.1005,
+   "law": "FAIL",
+   "mass_g": "10.3",
+   "muscle": "ECRB",
+   "pcsa_mm2": "219.7",
+   "pcsa_pred": 228.0981,
+   "rel_dev": 0.036818,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "44.1",
+   "implied_rho_g_cm3": 1.1047,
+   "law": "FAIL",
+   "mass_g": "9.5",
+   "muscle": "ECRB",
+   "pcsa_mm2": "195.0",
+   "pcsa_pred": 203.2259,
+   "rel_dev": 0.040477,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "32.4",
+   "implied_rho_g_cm3": 1.0948,
+   "law": "FAIL",
+   "mass_g": "5.2",
+   "muscle": "ECRB",
+   "pcsa_mm2": "146.6",
+   "pcsa_pred": 151.4093,
+   "rel_dev": 0.031763,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "43.7",
+   "implied_rho_g_cm3": 1.095,
+   "law": "FAIL",
+   "mass_g": "7.9",
+   "muscle": "ECRB",
+   "pcsa_mm2": "165.1",
+   "pcsa_pred": 170.5453,
+   "rel_dev": 0.031929,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "40.3",
+   "implied_rho_g_cm3": 1.0975,
+   "law": "FAIL",
+   "mass_g": "4.1",
+   "muscle": "ECRB",
+   "pcsa_mm2": "92.7",
+   "pcsa_pred": 95.9783,
+   "rel_dev": 0.034156,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "73.9",
+   "implied_rho_g_cm3": 1.099,
+   "law": "FAIL",
+   "mass_g": "8.0",
+   "muscle": "ECRL",
+   "pcsa_mm2": "98.5",
+   "pcsa_pred": 102.1268,
+   "rel_dev": 0.035513,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "82.9",
+   "implied_rho_g_cm3": 1.107,
+   "law": "FAIL",
+   "mass_g": "5.8",
+   "muscle": "ECRL",
+   "pcsa_mm2": "63.2",
+   "pcsa_pred": 66.0036,
+   "rel_dev": 0.042476,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "91.0",
+   "implied_rho_g_cm3": 1.1001,
+   "law": "FAIL",
+   "mass_g": "9.4",
+   "muscle": "ECRL",
+   "pcsa_mm2": "93.9",
+   "pcsa_pred": 97.4497,
+   "rel_dev": 0.036426,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "70.8",
+   "implied_rho_g_cm3": 1.0978,
+   "law": "FAIL",
+   "mass_g": "6.7",
+   "muscle": "ECRL",
+   "pcsa_mm2": "86.2",
+   "pcsa_pred": 89.2762,
+   "rel_dev": 0.034457,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "69.8",
+   "implied_rho_g_cm3": 1.0898,
+   "law": "FAIL",
+   "mass_g": "4.8",
+   "muscle": "ECRL",
+   "pcsa_mm2": "63.1",
+   "pcsa_pred": 64.8754,
+   "rel_dev": 0.027366,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "70.6",
+   "implied_rho_g_cm3": 1.096,
+   "law": "FAIL",
+   "mass_g": "6.5",
+   "muscle": "ECRL",
+   "pcsa_mm2": "84.0",
+   "pcsa_pred": 86.8566,
+   "rel_dev": 0.032889,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "74.4",
+   "implied_rho_g_cm3": 1.1201,
+   "law": "FAIL",
+   "mass_g": "2.3",
+   "muscle": "ECRL",
+   "pcsa_mm2": "27.6",
+   "pcsa_pred": 29.1641,
+   "rel_dev": 0.053632,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "27.4",
+   "implied_rho_g_cm3": 1.107,
+   "law": "FAIL",
+   "mass_g": "6.1",
+   "muscle": "ECU",
+   "pcsa_mm2": "201.1",
+   "pcsa_pred": 210.0262,
+   "rel_dev": 0.0425,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "25.5",
+   "implied_rho_g_cm3": 1.1497,
+   "law": "FAIL",
+   "mass_g": "4.6",
+   "muscle": "ECU",
+   "pcsa_mm2": "156.9",
+   "pcsa_pred": 170.1813,
+   "rel_dev": 0.078042,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "75.2",
+   "implied_rho_g_cm3": 1.0994,
+   "law": "FAIL",
+   "mass_g": "7.3",
+   "muscle": "ECU",
+   "pcsa_mm2": "88.3",
+   "pcsa_pred": 91.5797,
+   "rel_dev": 0.035812,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "29.3",
+   "implied_rho_g_cm3": 1.1059,
+   "law": "FAIL",
+   "mass_g": "6.5",
+   "muscle": "ECU",
+   "pcsa_mm2": "200.6",
+   "pcsa_pred": 209.2859,
+   "rel_dev": 0.041502,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "23.5",
+   "implied_rho_g_cm3": 1.0911,
+   "law": "FAIL",
+   "mass_g": "3.3",
+   "muscle": "ECU",
+   "pcsa_mm2": "128.7",
+   "pcsa_pred": 132.4769,
+   "rel_dev": 0.02851,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "27.7",
+   "implied_rho_g_cm3": 1.1092,
+   "law": "FAIL",
+   "mass_g": "4.2",
+   "muscle": "ECU",
+   "pcsa_mm2": "136.7",
+   "pcsa_pred": 143.042,
+   "rel_dev": 0.044337,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "28.5",
+   "implied_rho_g_cm3": 1.1126,
+   "law": "FAIL",
+   "mass_g": "2.8",
+   "muscle": "ECU",
+   "pcsa_mm2": "88.3",
+   "pcsa_pred": 92.6845,
+   "rel_dev": 0.047306,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "36.7",
+   "implied_rho_g_cm3": 1.1054,
+   "law": "FAIL",
+   "mass_g": "6.0",
+   "muscle": "ED",
+   "pcsa_mm2": "147.9",
+   "pcsa_pred": 154.2337,
+   "rel_dev": 0.041066,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "24.8",
+   "implied_rho_g_cm3": 1.1063,
+   "law": "FAIL",
+   "mass_g": "3.8",
+   "muscle": "ED",
+   "pcsa_mm2": "138.5",
+   "pcsa_pred": 144.5526,
+   "rel_dev": 0.041872,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "47.9",
+   "implied_rho_g_cm3": 1.1077,
+   "law": "FAIL",
+   "mass_g": "5.9",
+   "muscle": "ED",
+   "pcsa_mm2": "111.2",
+   "pcsa_pred": 116.2012,
+   "rel_dev": 0.043039,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "39.5",
+   "implied_rho_g_cm3": 1.1007,
+   "law": "FAIL",
+   "mass_g": "6.4",
+   "muscle": "ED",
+   "pcsa_mm2": "147.2",
+   "pcsa_pred": 152.8541,
+   "rel_dev": 0.03699,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "40.8",
+   "implied_rho_g_cm3": 1.1156,
+   "law": "FAIL",
+   "mass_g": "3.4",
+   "muscle": "ED",
+   "pcsa_mm2": "74.7",
+   "pcsa_pred": 78.6164,
+   "rel_dev": 0.049816,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "71.8",
+   "implied_rho_g_cm3": 1.0961,
+   "law": "FAIL",
+   "mass_g": "5.8",
+   "muscle": "ED",
+   "pcsa_mm2": "73.7",
+   "pcsa_pred": 76.2075,
+   "rel_dev": 0.032904,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "36.4",
+   "implied_rho_g_cm3": 1.111,
+   "law": "FAIL",
+   "mass_g": "2.2",
+   "muscle": "ED",
+   "pcsa_mm2": "54.4",
+   "pcsa_pred": 57.0185,
+   "rel_dev": 0.045923,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "24.5",
+   "implied_rho_g_cm3": 1.0855,
+   "law": "FAIL",
+   "mass_g": "1.5",
+   "muscle": "EDQQ",
+   "pcsa_mm2": "56.4",
+   "pcsa_pred": 57.759,
+   "rel_dev": 0.023528,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "15.3",
+   "implied_rho_g_cm3": 1.0828,
+   "law": "FAIL",
+   "mass_g": "1.1",
+   "muscle": "EDQQ",
+   "pcsa_mm2": "66.4",
+   "pcsa_pred": 67.8259,
+   "rel_dev": 0.021023,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "30.4",
+   "implied_rho_g_cm3": 1.0943,
+   "law": "FAIL",
+   "mass_g": "1.7",
+   "muscle": "EDQQ",
+   "pcsa_mm2": "51.1",
+   "pcsa_pred": 52.7557,
+   "rel_dev": 0.031384,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "31.7",
+   "implied_rho_g_cm3": 1.0769,
+   "law": "PASS",
+   "mass_g": "1.7",
+   "muscle": "EDQQ",
+   "pcsa_mm2": "49.8",
+   "pcsa_pred": 50.5922,
+   "rel_dev": 0.015659,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "30.8",
+   "implied_rho_g_cm3": 1.1596,
+   "law": "FAIL",
+   "mass_g": "0.8",
+   "muscle": "EDQQ",
+   "pcsa_mm2": "22.4",
+   "pcsa_pred": 24.5038,
+   "rel_dev": 0.085856,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "50.0",
+   "implied_rho_g_cm3": 1.0997,
+   "law": "FAIL",
+   "mass_g": "1.6",
+   "muscle": "EDQQ",
+   "pcsa_mm2": "29.1",
+   "pcsa_pred": 30.1887,
+   "rel_dev": 0.036062,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "26.9",
+   "implied_rho_g_cm3": 1.0326,
+   "law": "FAIL",
+   "mass_g": "0.6",
+   "muscle": "EDQQ",
+   "pcsa_mm2": "21.6",
+   "pcsa_pred": 21.0423,
+   "rel_dev": 0.026504,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "26.6",
+   "implied_rho_g_cm3": 1.1082,
+   "law": "FAIL",
+   "mass_g": "1.3",
+   "muscle": "EDST",
+   "pcsa_mm2": "44.1",
+   "pcsa_pred": 46.1058,
+   "rel_dev": 0.043505,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "17.7",
+   "implied_rho_g_cm3": 1.061,
+   "law": "PASS",
+   "mass_g": "0.8",
+   "muscle": "EDST",
+   "pcsa_mm2": "42.6",
+   "pcsa_pred": 42.6394,
+   "rel_dev": 0.000924,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "28.1",
+   "implied_rho_g_cm3": 1.0365,
+   "law": "FAIL",
+   "mass_g": "0.9",
+   "muscle": "EDST",
+   "pcsa_mm2": "30.9",
+   "pcsa_pred": 30.2155,
+   "rel_dev": 0.022653,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "27.6",
+   "implied_rho_g_cm3": 1.0979,
+   "law": "FAIL",
+   "mass_g": "1.2",
+   "muscle": "EDST",
+   "pcsa_mm2": "39.6",
+   "pcsa_pred": 41.0172,
+   "rel_dev": 0.034552,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "26.2",
+   "implied_rho_g_cm3": 1.1667,
+   "law": "FAIL",
+   "mass_g": "0.7",
+   "muscle": "EDST",
+   "pcsa_mm2": "22.9",
+   "pcsa_pred": 25.2052,
+   "rel_dev": 0.091459,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "21.1",
+   "implied_rho_g_cm3": 1.1386,
+   "law": "FAIL",
+   "mass_g": "0.8",
+   "muscle": "EDST",
+   "pcsa_mm2": "33.3",
+   "pcsa_pred": 35.7686,
+   "rel_dev": 0.069015,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "23.6",
+   "implied_rho_g_cm3": 1.1864,
+   "law": "FAIL",
+   "mass_g": "0.7",
+   "muscle": "EDST",
+   "pcsa_mm2": "25.0",
+   "pcsa_pred": 27.9821,
+   "rel_dev": 0.106571,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "22.4",
+   "implied_rho_g_cm3": 1.136,
+   "law": "FAIL",
+   "mass_g": "1.0",
+   "muscle": "EPL",
+   "pcsa_mm2": "39.3",
+   "pcsa_pred": 42.1159,
+   "rel_dev": 0.066861,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "30.5",
+   "implied_rho_g_cm3": 1.0809,
+   "law": "PASS",
+   "mass_g": "0.6",
+   "muscle": "EPL",
+   "pcsa_mm2": "18.2",
+   "pcsa_pred": 18.5586,
+   "rel_dev": 0.019323,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "26.4",
+   "implied_rho_g_cm3": 1.1196,
+   "law": "FAIL",
+   "mass_g": "1.2",
+   "muscle": "EPL",
+   "pcsa_mm2": "40.6",
+   "pcsa_pred": 42.8816,
+   "rel_dev": 0.053208,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "29.7",
+   "implied_rho_g_cm3": 1.1192,
+   "law": "FAIL",
+   "mass_g": "1.2",
+   "muscle": "EPL",
+   "pcsa_mm2": "36.1",
+   "pcsa_pred": 38.117,
+   "rel_dev": 0.052916,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "31.2",
+   "implied_rho_g_cm3": 1.1685,
+   "law": "FAIL",
+   "mass_g": "0.7",
+   "muscle": "EPL",
+   "pcsa_mm2": "19.2",
+   "pcsa_pred": 21.1659,
+   "rel_dev": 0.092882,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "39.8",
+   "implied_rho_g_cm3": 1.1318,
+   "law": "FAIL",
+   "mass_g": "1.0",
+   "muscle": "EPL",
+   "pcsa_mm2": "22.2",
+   "pcsa_pred": 23.7034,
+   "rel_dev": 0.063426,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "22.2",
+   "implied_rho_g_cm3": 1.1917,
+   "law": "FAIL",
+   "mass_g": "0.5",
+   "muscle": "EPL",
+   "pcsa_mm2": "18.9",
+   "pcsa_pred": 21.2477,
+   "rel_dev": 0.11049,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "30.5",
+   "implied_rho_g_cm3": 1.0997,
+   "law": "FAIL",
+   "mass_g": "10.2",
+   "muscle": "FCR",
+   "pcsa_mm2": "304.1",
+   "pcsa_pred": 315.4964,
+   "rel_dev": 0.036122,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "28.2",
+   "implied_rho_g_cm3": 1.0993,
+   "law": "FAIL",
+   "mass_g": "5.8",
+   "muscle": "FCR",
+   "pcsa_mm2": "187.1",
+   "pcsa_pred": 194.0318,
+   "rel_dev": 0.035725,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "45.5",
+   "implied_rho_g_cm3": 1.0974,
+   "law": "FAIL",
+   "mass_g": "10.8",
+   "muscle": "FCR",
+   "pcsa_mm2": "216.3",
+   "pcsa_pred": 223.927,
+   "rel_dev": 0.03406,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "35.5",
+   "implied_rho_g_cm3": 1.0976,
+   "law": "FAIL",
+   "mass_g": "9.5",
+   "muscle": "FCR",
+   "pcsa_mm2": "243.8",
+   "pcsa_pred": 252.4581,
+   "rel_dev": 0.034295,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "25.4",
+   "implied_rho_g_cm3": 1.0947,
+   "law": "FAIL",
+   "mass_g": "5.7",
+   "muscle": "FCR",
+   "pcsa_mm2": "205.0",
+   "pcsa_pred": 211.707,
+   "rel_dev": 0.031681,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "39.4",
+   "implied_rho_g_cm3": 1.1012,
+   "law": "FAIL",
+   "mass_g": "8.3",
+   "muscle": "FCR",
+   "pcsa_mm2": "191.3",
+   "pcsa_pred": 198.7358,
+   "rel_dev": 0.037415,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "27.7",
+   "implied_rho_g_cm3": 1.1119,
+   "law": "FAIL",
+   "mass_g": "4.5",
+   "muscle": "FCR",
+   "pcsa_mm2": "146.1",
+   "pcsa_pred": 153.2593,
+   "rel_dev": 0.046714,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "27.1",
+   "implied_rho_g_cm3": 1.0993,
+   "law": "FAIL",
+   "mass_g": "17.3",
+   "muscle": "FCU",
+   "pcsa_mm2": "580.7",
+   "pcsa_pred": 602.2419,
+   "rel_dev": 0.035769,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "19.4",
+   "implied_rho_g_cm3": 1.1028,
+   "law": "FAIL",
+   "mass_g": "12.3",
+   "muscle": "FCU",
+   "pcsa_mm2": "574.9",
+   "pcsa_pred": 598.1327,
+   "rel_dev": 0.038842,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "29.9",
+   "implied_rho_g_cm3": 1.0992,
+   "law": "FAIL",
+   "mass_g": "19.0",
+   "muscle": "FCU",
+   "pcsa_mm2": "578.1",
+   "pcsa_pred": 599.4826,
+   "rel_dev": 0.035668,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "36.5",
+   "implied_rho_g_cm3": 1.0969,
+   "law": "FAIL",
+   "mass_g": "18.1",
+   "muscle": "FCU",
+   "pcsa_mm2": "452.1",
+   "pcsa_pred": 467.8211,
+   "rel_dev": 0.033605,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "19.8",
+   "implied_rho_g_cm3": 1.1009,
+   "law": "FAIL",
+   "mass_g": "9.0",
+   "muscle": "FCU",
+   "pcsa_mm2": "412.9",
+   "pcsa_pred": 428.8165,
+   "rel_dev": 0.037117,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "23.4",
+   "implied_rho_g_cm3": 1.1034,
+   "law": "FAIL",
+   "mass_g": "13.8",
+   "muscle": "FCU",
+   "pcsa_mm2": "534.5",
+   "pcsa_pred": 556.3619,
+   "rel_dev": 0.039294,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "30.1",
+   "implied_rho_g_cm3": 1.0968,
+   "law": "FAIL",
+   "mass_g": "7.2",
+   "muscle": "FCU",
+   "pcsa_mm2": "218.1",
+   "pcsa_pred": 225.6629,
+   "rel_dev": 0.033514,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "16.6",
+   "implied_rho_g_cm3": 1.0796,
+   "law": "PASS",
+   "mass_g": "0.5",
+   "muscle": "FDM",
+   "pcsa_mm2": "27.9",
+   "pcsa_pred": 28.4155,
+   "rel_dev": 0.018143,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "16.3",
+   "implied_rho_g_cm3": 1.1021,
+   "law": "FAIL",
+   "mass_g": "0.3",
+   "muscle": "FDM",
+   "pcsa_mm2": "16.7",
+   "pcsa_pred": 17.3631,
+   "rel_dev": 0.038191,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "11.7",
+   "implied_rho_g_cm3": 1.0526,
+   "law": "PASS",
+   "mass_g": "0.5",
+   "muscle": "FDM",
+   "pcsa_mm2": "40.6",
+   "pcsa_pred": 40.3161,
+   "rel_dev": 0.007042,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "18.1",
+   "implied_rho_g_cm3": 1.0962,
+   "law": "FAIL",
+   "mass_g": "0.5",
+   "muscle": "FDM",
+   "pcsa_mm2": "25.2",
+   "pcsa_pred": 26.0607,
+   "rel_dev": 0.033026,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "9.7",
+   "implied_rho_g_cm3": 1.0466,
+   "law": "PASS",
+   "mass_g": "0.6",
+   "muscle": "FDM",
+   "pcsa_mm2": "59.1",
+   "pcsa_pred": 58.3544,
+   "rel_dev": 0.012777,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "16.3",
+   "implied_rho_g_cm3": 1.0487,
+   "law": "PASS",
+   "mass_g": "0.4",
+   "muscle": "FDM",
+   "pcsa_mm2": "23.4",
+   "pcsa_pred": 23.1508,
+   "rel_dev": 0.010763,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "50.5",
+   "implied_rho_g_cm3": 1.0986,
+   "law": "FAIL",
+   "mass_g": "33.2",
+   "muscle": "FDP",
+   "pcsa_mm2": "598.4",
+   "pcsa_pred": 620.213,
+   "rel_dev": 0.03517,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "39.5",
+   "implied_rho_g_cm3": 1.1009,
+   "law": "FAIL",
+   "mass_g": "24.6",
+   "muscle": "FDP",
+   "pcsa_mm2": "565.7",
+   "pcsa_pred": 587.5328,
+   "rel_dev": 0.03716,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "54.2",
+   "implied_rho_g_cm3": 1.0999,
+   "law": "FAIL",
+   "mass_g": "42.9",
+   "muscle": "FDP",
+   "pcsa_mm2": "719.6",
+   "pcsa_pred": 746.7103,
+   "rel_dev": 0.036306,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "44.8",
+   "implied_rho_g_cm3": 1.101,
+   "law": "FAIL",
+   "mass_g": "36.6",
+   "muscle": "FDP",
+   "pcsa_mm2": "742.0",
+   "pcsa_pred": 770.721,
+   "rel_dev": 0.037265,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "38.1",
+   "implied_rho_g_cm3": 1.0997,
+   "law": "FAIL",
+   "mass_g": "20.2",
+   "muscle": "FDP",
+   "pcsa_mm2": "482.1",
+   "pcsa_pred": 500.1733,
+   "rel_dev": 0.036134,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "42.6",
+   "implied_rho_g_cm3": 1.0991,
+   "law": "FAIL",
+   "mass_g": "39.2",
+   "muscle": "FDP",
+   "pcsa_mm2": "837.2",
+   "pcsa_pred": 868.1017,
+   "rel_dev": 0.035597,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "39.9",
+   "implied_rho_g_cm3": 1.1002,
+   "law": "FAIL",
+   "mass_g": "16.3",
+   "muscle": "FDP",
+   "pcsa_mm2": "371.3",
+   "pcsa_pred": 385.3975,
+   "rel_dev": 0.036579,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "26.6",
+   "implied_rho_g_cm3": 1.097,
+   "law": "FAIL",
+   "mass_g": "13.0",
+   "muscle": "FDS",
+   "pcsa_mm2": "445.5",
+   "pcsa_pred": 461.0583,
+   "rel_dev": 0.033745,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "27.1",
+   "implied_rho_g_cm3": 1.0973,
+   "law": "FAIL",
+   "mass_g": "10.2",
+   "muscle": "FDS",
+   "pcsa_mm2": "343.0",
+   "pcsa_pred": 355.079,
+   "rel_dev": 0.034018,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "41.0",
+   "implied_rho_g_cm3": 1.1001,
+   "law": "FAIL",
+   "mass_g": "13.4",
+   "muscle": "FDS",
+   "pcsa_mm2": "297.1",
+   "pcsa_pred": 308.3295,
+   "rel_dev": 0.03642,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "34.9",
+   "implied_rho_g_cm3": 1.1036,
+   "law": "FAIL",
+   "mass_g": "13.4",
+   "muscle": "FDS",
+   "pcsa_mm2": "347.9",
+   "pcsa_pred": 362.2209,
+   "rel_dev": 0.039536,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "30.8",
+   "implied_rho_g_cm3": 1.1088,
+   "law": "FAIL",
+   "mass_g": "7.1",
+   "muscle": "FDS",
+   "pcsa_mm2": "207.9",
+   "pcsa_pred": 217.4712,
+   "rel_dev": 0.044011,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "48.3",
+   "implied_rho_g_cm3": 1.0992,
+   "law": "FAIL",
+   "mass_g": "14.0",
+   "muscle": "FDS",
+   "pcsa_mm2": "263.7",
+   "pcsa_pred": 273.4482,
+   "rel_dev": 0.035649,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "25.5",
+   "implied_rho_g_cm3": 1.1015,
+   "law": "FAIL",
+   "mass_g": "6.8",
+   "muscle": "FDS",
+   "pcsa_mm2": "242.1",
+   "pcsa_pred": 251.5723,
+   "rel_dev": 0.037652,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "13.3",
+   "implied_rho_g_cm3": 1.0703,
+   "law": "PASS",
+   "mass_g": "0.4",
+   "muscle": "FPB",
+   "pcsa_mm2": "28.1",
+   "pcsa_pred": 28.3728,
+   "rel_dev": 0.009615,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "17.3",
+   "implied_rho_g_cm3": 1.1202,
+   "law": "FAIL",
+   "mass_g": "0.5",
+   "muscle": "FPB",
+   "pcsa_mm2": "25.8",
+   "pcsa_pred": 27.2658,
+   "rel_dev": 0.053759,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "16.8",
+   "implied_rho_g_cm3": 1.0227,
+   "law": "FAIL",
+   "mass_g": "0.5",
+   "muscle": "FPB",
+   "pcsa_mm2": "29.1",
+   "pcsa_pred": 28.0773,
+   "rel_dev": 0.036426,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "17.1",
+   "implied_rho_g_cm3": 1.0785,
+   "law": "PASS",
+   "mass_g": "0.9",
+   "muscle": "FPB",
+   "pcsa_mm2": "48.8",
+   "pcsa_pred": 49.6524,
+   "rel_dev": 0.017168,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "7.8",
+   "implied_rho_g_cm3": 1.1208,
+   "law": "FAIL",
+   "mass_g": "2.6",
+   "muscle": "IOD",
+   "pcsa_mm2": "297.4",
+   "pcsa_pred": 314.4654,
+   "rel_dev": 0.054268,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "9.3",
+   "implied_rho_g_cm3": 1.049,
+   "law": "PASS",
+   "mass_g": "1.4",
+   "muscle": "IOD",
+   "pcsa_mm2": "143.5",
+   "pcsa_pred": 142.0166,
+   "rel_dev": 0.010445,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "28.7",
+   "implied_rho_g_cm3": 1.0843,
+   "law": "FAIL",
+   "mass_g": "3.0",
+   "muscle": "IOD",
+   "pcsa_mm2": "96.4",
+   "pcsa_pred": 98.6128,
+   "rel_dev": 0.02244,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "10.0",
+   "implied_rho_g_cm3": 1.0925,
+   "law": "FAIL",
+   "mass_g": "2.8",
+   "muscle": "IOD",
+   "pcsa_mm2": "256.3",
+   "pcsa_pred": 264.1509,
+   "rel_dev": 0.029721,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "9.1",
+   "implied_rho_g_cm3": 1.0847,
+   "law": "FAIL",
+   "mass_g": "1.6",
+   "muscle": "IOD",
+   "pcsa_mm2": "162.1",
+   "pcsa_pred": 165.8719,
+   "rel_dev": 0.02274,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "10.1",
+   "implied_rho_g_cm3": 1.0996,
+   "law": "FAIL",
+   "mass_g": "2.3",
+   "muscle": "IOD",
+   "pcsa_mm2": "207.1",
+   "pcsa_pred": 214.8328,
+   "rel_dev": 0.035995,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "8.9",
+   "implied_rho_g_cm3": 1.0681,
+   "law": "PASS",
+   "mass_g": "1.5",
+   "muscle": "IOD",
+   "pcsa_mm2": "157.8",
+   "pcsa_pred": 158.9994,
+   "rel_dev": 0.007543,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "7.5",
+   "implied_rho_g_cm3": 1.176,
+   "law": "FAIL",
+   "mass_g": "0.8",
+   "muscle": "IOP",
+   "pcsa_mm2": "90.7",
+   "pcsa_pred": 100.6289,
+   "rel_dev": 0.098669,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "9.9",
+   "implied_rho_g_cm3": 1.1331,
+   "law": "FAIL",
+   "mass_g": "0.7",
+   "muscle": "IOP",
+   "pcsa_mm2": "62.4",
+   "pcsa_pred": 66.7048,
+   "rel_dev": 0.064535,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "25.7",
+   "implied_rho_g_cm3": 1.1027,
+   "law": "FAIL",
+   "mass_g": "0.7",
+   "muscle": "IOP",
+   "pcsa_mm2": "24.7",
+   "pcsa_pred": 25.6956,
+   "rel_dev": 0.038747,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "11.6",
+   "implied_rho_g_cm3": 1.0897,
+   "law": "FAIL",
+   "mass_g": "0.9",
+   "muscle": "IOP",
+   "pcsa_mm2": "71.2",
+   "pcsa_pred": 73.1945,
+   "rel_dev": 0.02725,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "9.4",
+   "implied_rho_g_cm3": 1.1024,
+   "law": "FAIL",
+   "mass_g": "0.6",
+   "muscle": "IOP",
+   "pcsa_mm2": "57.9",
+   "pcsa_pred": 60.2168,
+   "rel_dev": 0.038474,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "9.2",
+   "implied_rho_g_cm3": 1.1283,
+   "law": "FAIL",
+   "mass_g": "0.9",
+   "muscle": "IOP",
+   "pcsa_mm2": "86.7",
+   "pcsa_pred": 92.2888,
+   "rel_dev": 0.060557,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "10.9",
+   "implied_rho_g_cm3": 1.2045,
+   "law": "FAIL",
+   "mass_g": "0.6",
+   "muscle": "IOP",
+   "pcsa_mm2": "45.7",
+   "pcsa_pred": 51.9301,
+   "rel_dev": 0.11997,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "38.1",
+   "implied_rho_g_cm3": 1.0446,
+   "law": "PASS",
+   "mass_g": "0.8",
+   "muscle": "LUMB",
+   "pcsa_mm2": "20.1",
+   "pcsa_pred": 19.8088,
+   "rel_dev": 0.014698,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "26.1",
+   "implied_rho_g_cm3": 1.1552,
+   "law": "FAIL",
+   "mass_g": "0.6",
+   "muscle": "LUMB",
+   "pcsa_mm2": "19.9",
+   "pcsa_pred": 21.6873,
+   "rel_dev": 0.082411,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "43.1",
+   "implied_rho_g_cm3": 1.0974,
+   "law": "FAIL",
+   "mass_g": "0.7",
+   "muscle": "LUMB",
+   "pcsa_mm2": "14.8",
+   "pcsa_pred": 15.322,
+   "rel_dev": 0.034067,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "30.0",
+   "implied_rho_g_cm3": 1.1628,
+   "law": "FAIL",
+   "mass_g": "0.9",
+   "muscle": "LUMB",
+   "pcsa_mm2": "25.8",
+   "pcsa_pred": 28.3019,
+   "rel_dev": 0.0884,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "24.0",
+   "implied_rho_g_cm3": 1.2255,
+   "law": "FAIL",
+   "mass_g": "0.5",
+   "muscle": "LUMB",
+   "pcsa_mm2": "17.0",
+   "pcsa_pred": 19.6541,
+   "rel_dev": 0.13504,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "37.1",
+   "implied_rho_g_cm3": 1.1231,
+   "law": "FAIL",
+   "mass_g": "0.5",
+   "muscle": "LUMB",
+   "pcsa_mm2": "12.0",
+   "pcsa_pred": 12.7142,
+   "rel_dev": 0.056176,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "43.3",
+   "implied_rho_g_cm3": 1.0997,
+   "law": "FAIL",
+   "mass_g": "0.5",
+   "muscle": "LUMB",
+   "pcsa_mm2": "10.5",
+   "pcsa_pred": 10.8937,
+   "rel_dev": 0.036142,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "26.4",
+   "implied_rho_g_cm3": 1.193,
+   "law": "FAIL",
+   "mass_g": "0.4",
+   "muscle": "ODM",
+   "pcsa_mm2": "12.7",
+   "pcsa_pred": 14.2939,
+   "rel_dev": 0.111508,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "8.8",
+   "implied_rho_g_cm3": 0.9509,
+   "law": "FAIL",
+   "mass_g": "0.2",
+   "muscle": "ODM",
+   "pcsa_mm2": "23.9",
+   "pcsa_pred": 21.4408,
+   "rel_dev": 0.114696,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "13.7",
+   "implied_rho_g_cm3": 1.0033,
+   "law": "FAIL",
+   "mass_g": "0.4",
+   "muscle": "ODM",
+   "pcsa_mm2": "29.1",
+   "pcsa_pred": 27.5444,
+   "rel_dev": 0.056475,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "11.9",
+   "implied_rho_g_cm3": 0.9659,
+   "law": "FAIL",
+   "mass_g": "0.3",
+   "muscle": "ODM",
+   "pcsa_mm2": "26.1",
+   "pcsa_pred": 23.7831,
+   "rel_dev": 0.097418,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "7.0",
+   "implied_rho_g_cm3": 0.9099,
+   "law": "FAIL",
+   "mass_g": "0.2",
+   "muscle": "ODM",
+   "pcsa_mm2": "31.4",
+   "pcsa_pred": 26.9542,
+   "rel_dev": 0.16494,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "10.4",
+   "implied_rho_g_cm3": 1.1726,
+   "law": "FAIL",
+   "mass_g": "0.3",
+   "muscle": "ODM",
+   "pcsa_mm2": "24.6",
+   "pcsa_pred": 27.2134,
+   "rel_dev": 0.096032,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "6.0",
+   "implied_rho_g_cm3": 1.1806,
+   "law": "FAIL",
+   "mass_g": "0.6",
+   "muscle": "OPP",
+   "pcsa_mm2": "84.7",
+   "pcsa_pred": 94.3396,
+   "rel_dev": 0.10218,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "7.9",
+   "implied_rho_g_cm3": 1.2595,
+   "law": "FAIL",
+   "mass_g": "0.4",
+   "muscle": "OPP",
+   "pcsa_mm2": "40.2",
+   "pcsa_pred": 47.7669,
+   "rel_dev": 0.158413,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "15.0",
+   "implied_rho_g_cm3": 1.071,
+   "law": "PASS",
+   "mass_g": "0.4",
+   "muscle": "OPP",
+   "pcsa_mm2": "24.9",
+   "pcsa_pred": 25.1572,
+   "rel_dev": 0.010225,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "8.8",
+   "implied_rho_g_cm3": 1.0238,
+   "law": "FAIL",
+   "mass_g": "0.4",
+   "muscle": "OPP",
+   "pcsa_mm2": "44.4",
+   "pcsa_pred": 42.8816,
+   "rel_dev": 0.035408,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "6.0",
+   "implied_rho_g_cm3": 1.1038,
+   "law": "FAIL",
+   "mass_g": "0.2",
+   "muscle": "OPP",
+   "pcsa_mm2": "30.2",
+   "pcsa_pred": 31.4465,
+   "rel_dev": 0.03964,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "18.0",
+   "implied_rho_g_cm3": 1.1001,
+   "law": "FAIL",
+   "mass_g": "3.4",
+   "muscle": "PL",
+   "pcsa_mm2": "171.7",
+   "pcsa_pred": 178.1971,
+   "rel_dev": 0.03646,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "19.9",
+   "implied_rho_g_cm3": 1.1064,
+   "law": "FAIL",
+   "mass_g": "3.6",
+   "muscle": "PL",
+   "pcsa_mm2": "163.5",
+   "pcsa_pred": 170.6646,
+   "rel_dev": 0.041981,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "23.8",
+   "implied_rho_g_cm3": 1.0986,
+   "law": "FAIL",
+   "mass_g": "4.5",
+   "muscle": "PL",
+   "pcsa_mm2": "172.1",
+   "pcsa_pred": 178.3732,
+   "rel_dev": 0.035169,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "23.5",
+   "implied_rho_g_cm3": 1.0919,
+   "law": "FAIL",
+   "mass_g": "3.7",
+   "muscle": "PL",
+   "pcsa_mm2": "144.2",
+   "pcsa_pred": 148.5347,
+   "rel_dev": 0.029183,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "16.7",
+   "implied_rho_g_cm3": 1.0822,
+   "law": "FAIL",
+   "mass_g": "2.1",
+   "muscle": "PL",
+   "pcsa_mm2": "116.2",
+   "pcsa_pred": 118.6307,
+   "rel_dev": 0.020489,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "17.3",
+   "implied_rho_g_cm3": 1.0975,
+   "law": "FAIL",
+   "mass_g": "2.7",
+   "muscle": "PL",
+   "pcsa_mm2": "142.2",
+   "pcsa_pred": 147.2352,
+   "rel_dev": 0.034199,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "19.3",
+   "implied_rho_g_cm3": 1.1038,
+   "law": "FAIL",
+   "mass_g": "1.7",
+   "muscle": "PL",
+   "pcsa_mm2": "79.8",
+   "pcsa_pred": 83.0971,
+   "rel_dev": 0.039677,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "45.9",
+   "implied_rho_g_cm3": 1.1068,
+   "law": "FAIL",
+   "mass_g": "1.9",
+   "muscle": "PQ",
+   "pcsa_mm2": "37.4",
+   "pcsa_pred": 39.0513,
+   "rel_dev": 0.042284,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "20.7",
+   "implied_rho_g_cm3": 1.1328,
+   "law": "FAIL",
+   "mass_g": "1.7",
+   "muscle": "PQ",
+   "pcsa_mm2": "72.5",
+   "pcsa_pred": 77.477,
+   "rel_dev": 0.064238,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "13.7",
+   "implied_rho_g_cm3": 1.119,
+   "law": "FAIL",
+   "mass_g": "2.6",
+   "muscle": "PQ",
+   "pcsa_mm2": "169.6",
+   "pcsa_pred": 179.0387,
+   "rel_dev": 0.052719,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "14.6",
+   "implied_rho_g_cm3": 1.0937,
+   "law": "FAIL",
+   "mass_g": "1.6",
+   "muscle": "PQ",
+   "pcsa_mm2": "100.2",
+   "pcsa_pred": 103.3859,
+   "rel_dev": 0.030816,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "15.5",
+   "implied_rho_g_cm3": 1.1385,
+   "law": "FAIL",
+   "mass_g": "1.2",
+   "muscle": "PQ",
+   "pcsa_mm2": "68.0",
+   "pcsa_pred": 73.0371,
+   "rel_dev": 0.068967,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "6.6",
+   "implied_rho_g_cm3": 1.1158,
+   "law": "FAIL",
+   "mass_g": "1.4",
+   "muscle": "PQ",
+   "pcsa_mm2": "190.1",
+   "pcsa_pred": 200.1144,
+   "rel_dev": 0.050043,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "32.2",
+   "implied_rho_g_cm3": 1.1312,
+   "law": "FAIL",
+   "mass_g": "1.1",
+   "muscle": "PQ",
+   "pcsa_mm2": "30.2",
+   "pcsa_pred": 32.2278,
+   "rel_dev": 0.062921,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "28.7",
+   "implied_rho_g_cm3": 1.1022,
+   "law": "FAIL",
+   "mass_g": "7.5",
+   "muscle": "PT",
+   "pcsa_mm2": "237.1",
+   "pcsa_pred": 246.5321,
+   "rel_dev": 0.038259,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "24.7",
+   "implied_rho_g_cm3": 1.0996,
+   "law": "FAIL",
+   "mass_g": "5.5",
+   "muscle": "PT",
+   "pcsa_mm2": "202.5",
+   "pcsa_pred": 210.068,
+   "rel_dev": 0.036026,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "19.9",
+   "implied_rho_g_cm3": 1.0945,
+   "law": "FAIL",
+   "mass_g": "7.0",
+   "muscle": "PT",
+   "pcsa_mm2": "321.4",
+   "pcsa_pred": 331.8479,
+   "rel_dev": 0.031484,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "31.7",
+   "implied_rho_g_cm3": 1.0994,
+   "law": "FAIL",
+   "mass_g": "8.5",
+   "muscle": "PT",
+   "pcsa_mm2": "243.9",
+   "pcsa_pred": 252.9611,
+   "rel_dev": 0.03582,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "27.8",
+   "implied_rho_g_cm3": 1.094,
+   "law": "FAIL",
+   "mass_g": "4.2",
+   "muscle": "PT",
+   "pcsa_mm2": "138.1",
+   "pcsa_pred": 142.5275,
+   "rel_dev": 0.031064,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "23.2",
+   "implied_rho_g_cm3": 1.0923,
+   "law": "FAIL",
+   "mass_g": "6.3",
+   "muscle": "PT",
+   "pcsa_mm2": "248.6",
+   "pcsa_pred": 256.1809,
+   "rel_dev": 0.029592,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "19.3",
+   "implied_rho_g_cm3": 1.1157,
+   "law": "FAIL",
+   "mass_g": "3.4",
+   "muscle": "PT",
+   "pcsa_mm2": "157.9",
+   "pcsa_pred": 166.1942,
+   "rel_dev": 0.049906,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "20.8",
+   "implied_rho_g_cm3": 1.0889,
+   "law": "FAIL",
+   "mass_g": "4.0",
+   "muscle": "SUP",
+   "pcsa_mm2": "176.6",
+   "pcsa_pred": 181.4224,
+   "rel_dev": 0.026581,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "15.1",
+   "implied_rho_g_cm3": 1.1148,
+   "law": "FAIL",
+   "mass_g": "2.7",
+   "muscle": "SUP",
+   "pcsa_mm2": "160.4",
+   "pcsa_pred": 168.6867,
+   "rel_dev": 0.049125,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "37.2",
+   "implied_rho_g_cm3": 1.1014,
+   "law": "FAIL",
+   "mass_g": "3.2",
+   "muscle": "SUP",
+   "pcsa_mm2": "78.1",
+   "pcsa_pred": 81.1524,
+   "rel_dev": 0.037613,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "9.0",
+   "implied_rho_g_cm3": 1.1003,
+   "law": "FAIL",
+   "mass_g": "4.8",
+   "muscle": "SUP",
+   "pcsa_mm2": "484.7",
+   "pcsa_pred": 503.1447,
+   "rel_dev": 0.036659,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "10.7",
+   "implied_rho_g_cm3": 1.1136,
+   "law": "FAIL",
+   "mass_g": "2.7",
+   "muscle": "SUP",
+   "pcsa_mm2": "226.6",
+   "pcsa_pred": 238.0533,
+   "rel_dev": 0.048112,
+   "specimen": "Mm5"
+  },
+  {
+   "fl_mm": "10.5",
+   "implied_rho_g_cm3": 1.1098,
+   "law": "FAIL",
+   "mass_g": "3.8",
+   "muscle": "SUP",
+   "pcsa_mm2": "326.1",
+   "pcsa_pred": 341.4196,
+   "rel_dev": 0.04487,
+   "specimen": "Mm6"
+  },
+  {
+   "fl_mm": "14.8",
+   "implied_rho_g_cm3": 1.1009,
+   "law": "FAIL",
+   "mass_g": "2.4",
+   "muscle": "SUP",
+   "pcsa_mm2": "147.3",
+   "pcsa_pred": 152.9832,
+   "rel_dev": 0.037149,
+   "specimen": "Mm7"
+  },
+  {
+   "fl_mm": "59.1",
+   "implied_rho_g_cm3": 1.0995,
+   "law": "FAIL",
+   "mass_g": "114.1",
+   "muscle": "Tb",
+   "pcsa_mm2": "1755.9",
+   "pcsa_pred": 1821.3453,
+   "rel_dev": 0.035932,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "38.2",
+   "implied_rho_g_cm3": 1.0989,
+   "law": "FAIL",
+   "mass_g": "83.8",
+   "muscle": "Tb",
+   "pcsa_mm2": "1996.3",
+   "pcsa_pred": 2069.5446,
+   "rel_dev": 0.035392,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "54.0",
+   "implied_rho_g_cm3": 1.0993,
+   "law": "FAIL",
+   "mass_g": "118.7",
+   "muscle": "Tb",
+   "pcsa_mm2": "1999.6",
+   "pcsa_pred": 2073.7247,
+   "rel_dev": 0.035745,
+   "specimen": "Mm3"
+  },
+  {
+   "fl_mm": "49.9",
+   "implied_rho_g_cm3": 1.0988,
+   "law": "FAIL",
+   "mass_g": "134.4",
+   "muscle": "Tb",
+   "pcsa_mm2": "2451.1",
+   "pcsa_pred": 2540.9309,
+   "rel_dev": 0.035354,
+   "specimen": "Mm4"
+  },
+  {
+   "fl_mm": "44.6",
+   "implied_rho_g_cm3": 1.1081,
+   "law": "FAIL",
+   "mass_g": "3.0",
+   "muscle": "conn. FDS-FDP",
+   "pcsa_mm2": "60.7",
+   "pcsa_pred": 63.4571,
+   "rel_dev": 0.043449,
+   "specimen": "Mm1"
+  },
+  {
+   "fl_mm": "41.4",
+   "implied_rho_g_cm3": 1.0009,
+   "law": "FAIL",
+   "mass_g": "1.5",
+   "muscle": "conn. FDS-FDP",
+   "pcsa_mm2": "36.2",
+   "pcsa_pred": 34.181,
+   "rel_dev": 0.059067,
+   "specimen": "Mm2"
+  },
+  {
+   "fl_mm": "38.0",
+   "implied_rho_g_cm3": 1.1264,
+   "law": "FAIL",
+   "mass_g": "2.2",
+   "muscle": "conn. FDS-FDP",
+   "pcsa_mm2": "51.4",
+   "pcsa_pred": 54.6177,
+   "rel_dev": 0.058913,
+   "specimen": "Mm5"
+  }
+ ],
+ "n_checkable_rows": 218,
+ "n_law_pass": 19,
+ "share_ratio_flags": [
+  {
+   "field": "mass_g",
+   "median_share": 0.00225,
+   "muscle": "ADM",
+   "share": 0.00988,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00225,
+   "muscle": "ADM",
+   "share": 0.00339,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00225,
+   "muscle": "ADM",
+   "share": 0.00551,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00428,
+   "muscle": "ADP",
+   "share": 0.00988,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00428,
+   "muscle": "ADP",
+   "share": 0.00964,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00393,
+   "muscle": "APB",
+   "share": 0.00157,
+   "specimen": "Mm2"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00393,
+   "muscle": "APB",
+   "share": 0.01377,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.015,
+   "muscle": "APL",
+   "share": 0.03183,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.015,
+   "muscle": "APL",
+   "share": 0.02844,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.015,
+   "muscle": "APL",
+   "share": 0.02617,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00157,
+   "muscle": "Anc",
+   "share": 0.00068,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00157,
+   "muscle": "Anc",
+   "share": 0.00413,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.08123,
+   "muscle": "BR",
+   "share": 0.12729,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00054,
+   "muscle": "C5",
+   "share": 0.00027,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00054,
+   "muscle": "C5",
+   "share": 0.00135,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00054,
+   "muscle": "C5",
+   "share": 0.00138,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.02758,
+   "muscle": "ECRB",
+   "share": 0.05708,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.02758,
+   "muscle": "ECRB",
+   "share": 0.05349,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.02758,
+   "muscle": "ECRB",
+   "share": 0.05647,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.02517,
+   "muscle": "ECRL",
+   "share": 0.05269,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.02517,
+   "muscle": "ECRL",
+   "share": 0.04401,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.01955,
+   "muscle": "ECU",
+   "share": 0.03622,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.01955,
+   "muscle": "ECU",
+   "share": 0.03857,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.01686,
+   "muscle": "ED",
+   "share": 0.03732,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.01686,
+   "muscle": "ED",
+   "share": 0.03927,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.01686,
+   "muscle": "ED",
+   "share": 0.0303,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00455,
+   "muscle": "EDQQ",
+   "share": 0.00878,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00455,
+   "muscle": "EDQQ",
+   "share": 0.01083,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00455,
+   "muscle": "EDQQ",
+   "share": 0.00826,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00365,
+   "muscle": "EDST",
+   "share": 0.00768,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00365,
+   "muscle": "EDST",
+   "share": 0.00964,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00321,
+   "muscle": "EPL",
+   "share": 0.00768,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00321,
+   "muscle": "EPL",
+   "share": 0.00677,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00321,
+   "muscle": "EPL",
+   "share": 0.00689,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.02892,
+   "muscle": "FCR",
+   "share": 0.06257,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.02892,
+   "muscle": "FCR",
+   "share": 0.05619,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.02892,
+   "muscle": "FCR",
+   "share": 0.06198,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.05088,
+   "muscle": "FCU",
+   "share": 0.09879,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.05088,
+   "muscle": "FCU",
+   "share": 0.09343,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.05088,
+   "muscle": "FCU",
+   "share": 0.09917,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00137,
+   "muscle": "FDM",
+   "share": 0.00406,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00137,
+   "muscle": "FDM",
+   "share": 0.00551,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.11489,
+   "muscle": "FDP",
+   "share": 0.22173,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.11489,
+   "muscle": "FDP",
+   "share": 0.2654,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.11489,
+   "muscle": "FDP",
+   "share": 0.22452,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.04005,
+   "muscle": "FDS",
+   "share": 0.07794,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.04005,
+   "muscle": "FDS",
+   "share": 0.09479,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.04005,
+   "muscle": "FDS",
+   "share": 0.09366,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00353,
+   "muscle": "FPB",
+   "share": 0.00157,
+   "specimen": "Mm2"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00353,
+   "muscle": "FPB",
+   "share": 0.00134,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00353,
+   "muscle": "FPB",
+   "share": 0.00549,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00353,
+   "muscle": "FPB",
+   "share": 0.00609,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00803,
+   "muscle": "IOD",
+   "share": 0.01756,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00803,
+   "muscle": "IOD",
+   "share": 0.01557,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00803,
+   "muscle": "IOD",
+   "share": 0.02066,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00275,
+   "muscle": "IOP",
+   "share": 0.00659,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00275,
+   "muscle": "IOP",
+   "share": 0.00609,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00275,
+   "muscle": "IOP",
+   "share": 0.00826,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00236,
+   "muscle": "LUMB",
+   "share": 0.00549,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00236,
+   "muscle": "LUMB",
+   "share": 0.00689,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.0011,
+   "muscle": "ODM",
+   "share": 0.0022,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.0011,
+   "muscle": "ODM",
+   "share": 0.00413,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.01413,
+   "muscle": "PL",
+   "share": 0.02305,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.01413,
+   "muscle": "PL",
+   "share": 0.02342,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00696,
+   "muscle": "PQ",
+   "share": 0.01317,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00696,
+   "muscle": "PQ",
+   "share": 0.01515,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.0223,
+   "muscle": "PT",
+   "share": 0.0461,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.0223,
+   "muscle": "PT",
+   "share": 0.04265,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.0223,
+   "muscle": "PT",
+   "share": 0.04683,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.0126,
+   "muscle": "SUP",
+   "share": 0.02964,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.0126,
+   "muscle": "SUP",
+   "share": 0.02573,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.0126,
+   "muscle": "SUP",
+   "share": 0.03306,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "mass_g",
+   "median_share": 0.00843,
+   "muscle": "conn. FDS-FDP",
+   "share": 0.02415,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.01272,
+   "muscle": "Anc",
+   "share": 0.02818,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.01272,
+   "muscle": "Anc",
+   "share": 0.02346,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.01033,
+   "muscle": "C5",
+   "share": 0.00488,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.01033,
+   "muscle": "C5",
+   "share": 0.02094,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.01033,
+   "muscle": "C5",
+   "share": 0.01931,
+   "specimen": "Mm4"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.01382,
+   "muscle": "CB",
+   "share": 0.02654,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.03132,
+   "muscle": "ECU",
+   "share": 0.0513,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.03482,
+   "muscle": "ED",
+   "share": 0.05438,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.03482,
+   "muscle": "ED",
+   "share": 0.08451,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.02795,
+   "muscle": "EDQQ",
+   "share": 0.05885,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.02944,
+   "muscle": "EPL",
+   "share": 0.04685,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.02639,
+   "muscle": "FCU",
+   "share": 0.03992,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.03077,
+   "muscle": "FDS",
+   "share": 0.05685,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.0118,
+   "muscle": "IOD",
+   "share": 0.01958,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.01083,
+   "muscle": "IOP",
+   "share": 0.01753,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.03199,
+   "muscle": "LUMB",
+   "share": 0.05742,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.00992,
+   "muscle": "ODM",
+   "share": 0.02221,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.02041,
+   "muscle": "PQ",
+   "share": 0.03861,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.02041,
+   "muscle": "PQ",
+   "share": 0.00935,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.02041,
+   "muscle": "PQ",
+   "share": 0.00777,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.02041,
+   "muscle": "PQ",
+   "share": 0.0427,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "fl_mm",
+   "median_share": 0.01489,
+   "muscle": "SUP",
+   "share": 0.02538,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00711,
+   "muscle": "ADM",
+   "share": 0.01905,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00711,
+   "muscle": "ADM",
+   "share": 0.01248,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01008,
+   "muscle": "ADP",
+   "share": 0.02048,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01008,
+   "muscle": "ADP",
+   "share": 0.01891,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00945,
+   "muscle": "APB",
+   "share": 0.01609,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00945,
+   "muscle": "APB",
+   "share": 0.00459,
+   "specimen": "Mm2"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00945,
+   "muscle": "APB",
+   "share": 0.04264,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.02518,
+   "muscle": "APL",
+   "share": 0.04407,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.02518,
+   "muscle": "APL",
+   "share": 0.04265,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00329,
+   "muscle": "Anc",
+   "share": 0.00523,
+   "specimen": "Mm4"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00329,
+   "muscle": "Anc",
+   "share": 0.0015,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00329,
+   "muscle": "Anc",
+   "share": 0.01704,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00267,
+   "muscle": "C5",
+   "share": 0.00418,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00267,
+   "muscle": "C5",
+   "share": 0.00115,
+   "specimen": "Mm2"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00267,
+   "muscle": "C5",
+   "share": 0.00062,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00267,
+   "muscle": "C5",
+   "share": 0.00098,
+   "specimen": "Mm4"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00267,
+   "muscle": "C5",
+   "share": 0.0042,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00267,
+   "muscle": "C5",
+   "share": 0.00707,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01648,
+   "muscle": "CB",
+   "share": 0.0319,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01648,
+   "muscle": "CB",
+   "share": 0.00719,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01316,
+   "muscle": "ECRL",
+   "share": 0.02051,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01316,
+   "muscle": "ECRL",
+   "share": 0.02038,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.02688,
+   "muscle": "ECU",
+   "share": 0.04183,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00637,
+   "muscle": "EDST",
+   "share": 0.01065,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.04064,
+   "muscle": "FCR",
+   "share": 0.06663,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.04064,
+   "muscle": "FCR",
+   "share": 0.06223,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.08806,
+   "muscle": "FCU",
+   "share": 0.13419,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00496,
+   "muscle": "FDM",
+   "share": 0.01434,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00496,
+   "muscle": "FDM",
+   "share": 0.00997,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.10962,
+   "muscle": "FDP",
+   "share": 0.20309,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.05954,
+   "muscle": "FDS",
+   "share": 0.10313,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00683,
+   "muscle": "FPB",
+   "share": 0.01184,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.03975,
+   "muscle": "IOD",
+   "share": 0.01468,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.03975,
+   "muscle": "IOD",
+   "share": 0.06722,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01212,
+   "muscle": "IOP",
+   "share": 0.00376,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01212,
+   "muscle": "IOP",
+   "share": 0.01882,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01212,
+   "muscle": "IOP",
+   "share": 0.02103,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01212,
+   "muscle": "IOP",
+   "share": 0.01947,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00298,
+   "muscle": "LUMB",
+   "share": 0.00553,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00298,
+   "muscle": "LUMB",
+   "share": 0.00447,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.004,
+   "muscle": "ODM",
+   "share": 0.0017,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.004,
+   "muscle": "ODM",
+   "share": 0.01021,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.004,
+   "muscle": "ODM",
+   "share": 0.01048,
+   "specimen": "Mm7"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00601,
+   "muscle": "OPP",
+   "share": 0.01132,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00601,
+   "muscle": "OPP",
+   "share": 0.00982,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01286,
+   "muscle": "PQ",
+   "share": 0.005,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01286,
+   "muscle": "PQ",
+   "share": 0.02584,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01286,
+   "muscle": "PQ",
+   "share": 0.0221,
+   "specimen": "Mm5"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.01286,
+   "muscle": "PQ",
+   "share": 0.04612,
+   "specimen": "Mm6"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.05989,
+   "muscle": "SUP",
+   "share": 0.0236,
+   "specimen": "Mm1"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.05989,
+   "muscle": "SUP",
+   "share": 0.02398,
+   "specimen": "Mm2"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.05989,
+   "muscle": "SUP",
+   "share": 0.0119,
+   "specimen": "Mm3"
+  },
+  {
+   "field": "pcsa_mm2",
+   "median_share": 0.00811,
+   "muscle": "conn. FDS-FDP",
+   "share": 0.01671,
+   "specimen": "Mm5"
+  }
+ ],
+ "stop_floor": {
+  "F1_STOP_FIRED": true,
+  "agreement_floor": 0.8,
+  "agreement_floor_met": true,
+  "agreement_measured": 1.0,
+  "law_pass_floor": 0.9,
+  "law_pass_floor_met": false,
+  "law_pass_measured": 0.0872
+ }
+}

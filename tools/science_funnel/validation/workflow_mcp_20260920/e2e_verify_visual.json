@@ -1,0 +1,269 @@
+{
+ "schema": "chimera.workflow_commands.v1",
+ "lane": "agent/workflow-mcp-20260920",
+ "command": "verify_visual",
+ "status": "verified",
+ "taken_utc": "2026-09-20T18:51:33+00:00",
+ "frames_dir": ".tmp\\wfmcp_e2e\\render3\\orbit",
+ "frames": [
+  "orbit_f000.png",
+  "orbit_f001.png",
+  "orbit_f002.png",
+  "orbit_f003.png",
+  "orbit_f004.png",
+  "orbit_f005.png",
+  "orbit_f006.png",
+  "orbit_f007.png",
+  "orbit_f008.png",
+  "orbit_f009.png",
+  "orbit_f010.png",
+  "orbit_f011.png"
+ ],
+ "masks_dir": ".tmp\\wfmcp_e2e\\render3\\orbit\\masks",
+ "roi_dir": null,
+ "clip_scan": {
+  "frames": 12,
+  "counts": [
+   63311,
+   84212,
+   114439,
+   132295,
+   147468,
+   143301,
+   126730,
+   104678,
+   79987,
+   56836,
+   53015,
+   52999
+  ],
+  "collapse_ratio": 0.5,
+  "clip_events": [],
+  "clip": false
+ },
+ "grain_per_frame": [
+  {
+   "grain_median_local_variance": 454.0438,
+   "grain_p90_local_variance": 1296.3109,
+   "window": 5,
+   "interior_pixels": 14392
+  },
+  {
+   "grain_median_local_variance": 421.9729,
+   "grain_p90_local_variance": 1235.77,
+   "window": 5,
+   "interior_pixels": 31799
+  },
+  {
+   "grain_median_local_variance": 348.2832,
+   "grain_p90_local_variance": 1176.9917,
+   "window": 5,
+   "interior_pixels": 62799
+  },
+  {
+   "grain_median_local_variance": 264.3177,
+   "grain_p90_local_variance": 1156.2403,
+   "window": 5,
+   "interior_pixels": 85625
+  },
+  {
+   "grain_median_local_variance": 181.3045,
+   "grain_p90_local_variance": 1150.4955,
+   "window": 5,
+   "interior_pixels": 106993
+  },
+  {
+   "grain_median_local_variance": 116.4356,
+   "grain_p90_local_variance": 1111.621,
+   "window": 5,
+   "interior_pixels": 109244
+  },
+  {
+   "grain_median_local_variance": 33.5991,
+   "grain_p90_local_variance": 1059.053,
+   "window": 5,
+   "interior_pixels": 91273
+  },
+  {
+   "grain_median_local_variance": 20.1869,
+   "grain_p90_local_variance": 1070.96,
+   "window": 5,
+   "interior_pixels": 66417
+  },
+  {
+   "grain_median_local_variance": 40.2353,
+   "grain_p90_local_variance": 1055.2961,
+   "window": 5,
+   "interior_pixels": 41968
+  },
+  {
+   "grain_median_local_variance": 89.7928,
+   "grain_p90_local_variance": 1139.5623,
+   "window": 5,
+   "interior_pixels": 22333
+  },
+  {
+   "grain_median_local_variance": 194.7551,
+   "grain_p90_local_variance": 1145.5415,
+   "window": 5,
+   "interior_pixels": 13056
+  },
+  {
+   "grain_median_local_variance": 296.5098,
+   "grain_p90_local_variance": 1357.9628,
+   "window": 5,
+   "interior_pixels": 10103
+  }
+ ],
+ "coverage_per_frame": [
+  {
+   "frame": "orbit_f000.png",
+   "coverage": 0.2475,
+   "object_pixels_in_hull": 63302,
+   "hull_pixels": 255806
+  },
+  {
+   "frame": "orbit_f001.png",
+   "coverage": 0.3332,
+   "object_pixels_in_hull": 84198,
+   "hull_pixels": 252675
+  },
+  {
+   "frame": "orbit_f002.png",
+   "coverage": 0.4082,
+   "object_pixels_in_hull": 114439,
+   "hull_pixels": 280337
+  },
+  {
+   "frame": "orbit_f003.png",
+   "coverage": 0.4368,
+   "object_pixels_in_hull": 132295,
+   "hull_pixels": 302875
+  },
+  {
+   "frame": "orbit_f004.png",
+   "coverage": 0.4921,
+   "object_pixels_in_hull": 147468,
+   "hull_pixels": 299670
+  },
+  {
+   "frame": "orbit_f005.png",
+   "coverage": 0.5197,
+   "object_pixels_in_hull": 143301,
+   "hull_pixels": 275757
+  },
+  {
+   "frame": "orbit_f006.png",
+   "coverage": 0.532,
+   "object_pixels_in_hull": 126705,
+   "hull_pixels": 238160
+  },
+  {
+   "frame": "orbit_f007.png",
+   "coverage": 0.4466,
+   "object_pixels_in_hull": 104678,
+   "hull_pixels": 234403
+  },
+  {
+   "frame": "orbit_f008.png",
+   "coverage": 0.3139,
+   "object_pixels_in_hull": 79987,
+   "hull_pixels": 254845
+  },
+  {
+   "frame": "orbit_f009.png",
+   "coverage": 0.2083,
+   "object_pixels_in_hull": 56836,
+   "hull_pixels": 272865
+  },
+  {
+   "frame": "orbit_f010.png",
+   "coverage": 0.1861,
+   "object_pixels_in_hull": 53015,
+   "hull_pixels": 284820
+  },
+  {
+   "frame": "orbit_f011.png",
+   "coverage": 0.1877,
+   "object_pixels_in_hull": 52999,
+   "hull_pixels": 282321
+  }
+ ],
+ "object_seen_per_frame": [],
+ "guide_seen_per_frame": [],
+ "gates": [
+  {
+   "metric": "clipscan_collapse_events",
+   "value": 0,
+   "gate": "<= 0",
+   "pass": true,
+   "threshold_provenance": "FALSIFIER_C_CLIP (triangle_monkey_20260920): frame count < 0.5x neighbor median = clip collapse; repaired engine passes all frames"
+  },
+  {
+   "metric": "clipscan_new_boundary_touch",
+   "value": 0,
+   "gate": "<= 0",
+   "pass": true,
+   "threshold_provenance": "FALSIFIER_C_CLIP edge-clip clause (banked AFTER carried 1 event in the operator's extreme pan scenario radius 1.0 + pan_x -0.93; the default orbit does not reproduce that scenario)"
+  },
+  {
+   "metric": "grain_median_local_variance",
+   "value": 188.0298,
+   "gate": null,
+   "pass": null,
+   "threshold_provenance": "reported_not_gated: banked 341.39 (splat) vs 339.50 (mesh) median local variance -- non-discriminating for marching-cubes geometry (triangle_monkey_20260920 A); a gate here would be theatre",
+   "note": "reported, not gated (see provenance)",
+   "not_measured_reason": "reported, not gated (see provenance)"
+  },
+  {
+   "metric": "whole_hull_coverage_a_pose",
+   "value": 0.397,
+   "gate": ">= 0.3259",
+   "pass": true,
+   "threshold_provenance": "midband of banked fixed-pose whole-hull coverage: splat 0.2561 vs mesh 0.3957 (triangle_monkey_20260920 A) -- the protocol-matched measurement"
+  },
+  {
+   "metric": "whole_hull_coverage_median",
+   "value": 0.3707,
+   "gate": ">= 0.3259",
+   "pass": true,
+   "threshold_provenance": "same provenance as whole_hull_coverage_a_pose; the median carries the gate for arbitrary caller frames"
+  },
+  {
+   "metric": "whole_hull_coverage_min_frame",
+   "value": 0.1861,
+   "gate": null,
+   "pass": null,
+   "threshold_provenance": "REPORTED, not gated: orbit theta varies the curled skeleton's hull-void area (measured min 0.1861 on the verified e2e orbit); the protocol-matched gate is the a-pose value above",
+   "note": "reported",
+   "not_measured_reason": "reported"
+  },
+  {
+   "metric": "per_bone_median_coverage",
+   "value": 0.5694,
+   "gate": ">= 0.3441",
+   "pass": true,
+   "threshold_provenance": "midband of banked paired presentations: splat 0.1201 vs mesh 0.568 (median all bones) -- the decisive instrument"
+  },
+  {
+   "metric": "bones_at_zero",
+   "value": 0,
+   "gate": "<= 0",
+   "pass": true,
+   "threshold_provenance": "count discriminator: splat 5, mesh 0"
+  },
+  {
+   "metric": "object_seen",
+   "value": null,
+   "gate": null,
+   "pass": null,
+   "threshold_provenance": "midband of splat 0.0 vs mesh 0.5191",
+   "note": "no --roi supplied: region-of-interest instruments need ROIs",
+   "not_measured_reason": "no --roi supplied: region-of-interest instruments need ROIs"
+  }
+ ],
+ "reds": [],
+ "n_gates_pass": 6,
+ "n_gates_fail": 0,
+ "n_gates_not_measured": 3
+}

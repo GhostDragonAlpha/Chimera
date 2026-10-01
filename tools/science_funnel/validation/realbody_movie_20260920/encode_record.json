@@ -1,0 +1,38 @@
+{
+ "schema": "chimera.realbody_movie_20260920.encode.v1",
+ "measured_mean_fps": 21.17,
+ "frames": 429,
+ "crf_ladder": [
+  {
+   "crf": 20,
+   "mb": 0.68
+  }
+ ],
+ "cut": "truetime (ffconcat per-frame durations = measured dt)",
+ "implied_duration_s": 20.26,
+ "crf_used": 20,
+ "mp4": {
+  "path": "E:\\ChimeraWork\\rbmovie-agent\\CHIMERA_PROOF\\REAL_BODY_SLICE\\real_body_slice.mp4",
+  "bytes": 711734,
+  "sha256": "428c05af722bd85b122207ee45df2353671103252b49ec3a808763cb4f42c207"
+ },
+ "ffprobe": {
+  "programs": [],
+  "stream_groups": [],
+  "streams": [
+   {
+    "width": 640,
+    "height": 360,
+    "avg_frame_rate": "8975/504",
+    "nb_frames": "359",
+    "side_data_list": [
+     {}
+    ]
+   }
+  ],
+  "format": {
+   "duration": "20.160000",
+   "size": "711734"
+  }
+ }
+}

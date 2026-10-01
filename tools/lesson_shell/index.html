@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CHIMERA — Lesson One: The Fall</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#12151acc;--line:#1d232b;--text:#c9d3db;--muted:#7b8792;
+        --accent:#7fd4c1;--warn:#dfb26a;--bad:#e07f7f;--good:#7ddba3;--hold:#6fa8dc;--weight:#dfb26a}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);overflow:hidden;
+        font:13px/1.5 "Segoe UI",system-ui,sans-serif}
+  #gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .panel{position:absolute;background:var(--panel);border:1px solid var(--line);
+        border-radius:8px;padding:10px 12px;backdrop-filter:blur(4px)}
+  #guide{top:14px;left:14px;max-width:430px}
+  #guide h1{margin:0 0 6px;font-size:15px;color:var(--accent);letter-spacing:.4px}
+  #guide p{margin:6px 0}
+  #keys{right:14px;top:14px;min-width:230px}
+  #keys .row{display:flex;gap:8px;margin:3px 0;align-items:baseline}
+  #keys .k{color:var(--accent);font-weight:600;min-width:74px}
+  #physics{left:14px;bottom:14px;width:520px}
+  #physics .big{font-size:12px;color:var(--muted)}
+  #physics .num{font-size:20px;font-weight:600;color:var(--text)}
+  .bars{margin-top:6px}
+  .barrow{display:flex;align-items:center;gap:8px;margin:4px 0}
+  .barlabel{width:96px;color:var(--muted);font-size:12px}
+  .bartrack{flex:1;height:14px;background:#0e1114;border:1px solid var(--line);border-radius:4px;position:relative}
+  .barfill{height:100%;border-radius:3px;transition:width .08s linear}
+  #holdFill{background:var(--hold)}
+  #weightFill{background:var(--weight);opacity:.75}
+  .barval{width:110px;text-align:right;font-size:12px}
+  #teach{position:absolute;left:50%;transform:translateX(-50%);bottom:190px;width:640px;
+        text-align:center;pointer-events:none}
+  .tline{display:none;margin:5px auto;padding:8px 16px;border-radius:8px;max-width:640px;
+        background:#141a20ee;border:1px solid var(--line);font-size:15px}
+  .tline.on{display:block}
+  #t1{border-color:#8a5a3b;color:#f0c9a0} #t2{border-color:#3b5a8a;color:#a8c8f0}
+  #t3{border-color:#3b8a5a;color:#a0f0c0}
+  #done{display:none;margin:8px auto;padding:10px 18px;border-radius:8px;max-width:660px;
+        background:#101a14ee;border:1px solid var(--good);color:var(--good);font-size:14px}
+  #done.on{display:block}
+  #traceWrap{position:absolute;right:14px;bottom:14px;background:var(--panel);
+        border:1px solid var(--line);border-radius:8px;padding:8px}
+  #trace{display:block;background:#0e1114;border-radius:4px}
+  #help{display:none;top:14px;left:14px;max-width:430px}
+  #help.on{display:block}
+  #bootstatus{display:none;left:50%;top:16px;transform:translateX(-50%);
+        background:#2a2416ee;border:1px solid var(--warn);color:var(--warn);
+        padding:8px 18px;border-radius:8px;font-weight:600}
+  #bootstatus.on{display:block}
+  #src{color:var(--muted);font-size:11px;margin-top:6px}
+  .kbadge{border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--accent)}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="guide" class="panel">
+  <h1>LESSON ONE — THE FALL</h1>
+  <p>This animal is <b>real</b>: a monkey's body built from CT scan data,
+     obeying real physics. Right now it stands still because the floor
+     <b>holds</b> it — the upward hold exactly balances its <b>weight</b>.</p>
+  <p>Press <span class="kbadge">F</span> and the lesson drops the body.
+     Watch gravity win, watch the floor catch it, and watch the two
+     forces balance again. That balance is where the body rests.</p>
+  <p id="guideKeys"></p>
+</div>
+
+<div id="help" class="panel">
+  <h1>HELP</h1>
+  <p>Every number on this page comes from the physics engine running the
+     body — nothing here is a drawing or a canned animation. The bars show
+     the two vertical forces: <span style="color:var(--weight)">WEIGHT</span>
+     (the pull of gravity, m·g) and <span style="color:var(--hold)">FLOOR
+     HOLD</span> (the force the floor is exerting right now). While the body
+     falls, the hold is zero and the weight is not — that mismatch IS the
+     fall. When the body settles, the hold equals the weight — that
+     equality IS the rest.</p>
+  <p>Press <span class="kbadge">H</span> to close this.</p>
+</div>
+
+<div id="keys" class="panel">
+  <h1 style="margin:0 0 6px;font-size:13px;color:var(--accent)">KEYS</h1>
+  <div id="keyRows"></div>
+  <div id="src">sources: engine /tick_state (height, speed, floor hold) ·
+     weight = m·g, banked engine constants (membrane_tick)</div>
+</div>
+
+<div id="physics" class="panel">
+  <div style="display:flex;gap:26px">
+    <div><div class="big">HEIGHT (root_y)</div><div class="num" id="numHeight">—</div></div>
+    <div><div class="big">SPEED (root_vy)</div><div class="num" id="numSpeed">—</div></div>
+    <div><div class="big">PHASE</div><div class="num" id="numPhase" style="font-size:15px">booting…</div></div>
+  </div>
+  <div class="bars">
+    <div class="barrow"><div class="barlabel">FLOOR HOLD</div>
+      <div class="bartrack"><div class="barfill" id="holdFill" style="width:0%"></div></div>
+      <div class="barval" id="holdVal">—</div></div>
+    <div class="barrow"><div class="barlabel">WEIGHT (m·g)</div>
+      <div class="bartrack"><div class="barfill" id="weightFill" style="width:20%"></div></div>
+      <div class="barval" id="weightVal">—</div></div>
+  </div>
+  <div id="src" style="margin-top:4px">hold bar scale: 1 block = weight; a catch can spike
+     above it (engine caps at 50× weight) — the number is exact, the bar clips at 5×.</div>
+</div>
+
+<div id="teach">
+  <div class="tline" id="t1">① GRAVITY — nothing holds the body. Weight pulls; nothing pushes back. That mismatch is the fall.</div>
+  <div class="tline" id="t2">② CONTACT — the floor catches it. Its hold grows until it can carry the whole weight.</div>
+  <div class="tline" id="t3">③ BALANCE — the floor's hold now equals the weight. That is where the body rests.</div>
+  <div id="done">LESSON ONE UNDERSTOOD: things fall because of gravity, land because of
+     contact, and rest where the forces balance. Press <span class="kbadge">R</span> to run it again.</div>
+</div>
+
+<div id="traceWrap">
+  <canvas id="trace" width="560" height="150"></canvas>
+  <div style="color:var(--muted);font-size:11px;margin-top:4px">the fall trace — height (m) vs time (s);
+     dashed line = the engine's rest height (derived attractor)</div>
+</div>
+
+<div id="bootstatus" class="panel">…booting the real body (the engine is importing the CT skeleton)…</div>
+
+<script>
+'use strict';
+// ── the error beacon (the repo's page-error ledger pattern) ─────────────
+window.__CHIMERA_BEACON = [];
+window.addEventListener('error', e => window.__CHIMERA_BEACON.push('error: ' + e.message));
+window.addEventListener('unhandledrejection', e =>
+  window.__CHIMERA_BEACON.push('unhandledrejection: ' + String(e.reason)));
+const _ce = console.error.bind(console);
+console.error = (...a) => { window.__CHIMERA_BEACON.push('console.error: ' + a.join(' ')); _ce(...a); };
+
+// ── ONE key list: the card and the handler share this table ─────────────
+// (the dead-keys lesson: the handler is CHECKED against the page's own list)
+const KEYLIST = [
+  {key:'F', label:'DROP the body — the fall'},
+  {key:'R', label:'reset the lesson (same body)'},
+  {key:'H', label:'show / hide this help'},
+  {key:'ArrowLeft',  label:'orbit camera left'},
+  {key:'ArrowRight', label:'orbit camera right'},
+  {key:'ArrowUp',    label:'orbit camera up'},
+  {key:'ArrowDown',  label:'orbit camera down'},
+  {key:'+', label:'zoom in'},
+  {key:'-', label:'zoom out'},
+];
+const keyRows = document.getElementById('keyRows');
+for (const k of KEYLIST) {
+  const r = document.createElement('div'); r.className = 'row';
+  r.innerHTML = '<span class="k">' + k.key + '</span><span>' + k.label + '</span>';
+  keyRows.appendChild(r);
+}
+document.getElementById('guideKeys').innerHTML =
+  'Keys: <span class="kbadge">F</span> drop · <span class="kbadge">R</span> reset · ' +
+  '<span class="kbadge">H</span> help · arrows orbit · <span class="kbadge">+/−</span> zoom';
+
+// the walkthrough reads these — every displayed value is derived IN-PAGE
+// from lastStatusJson (the engine's own response bytes) by these functions
+window.__CHIMERA_LESSON = {
+  view: {yaw: 0.7, pit: 0.42, dist: 2.4},
+  lastStatusJson: null,      // /api/status response, verbatim
+  displayed: {},             // what the page shows, computed from it
+  understood: false,
+  fallTriggered: false,
+  teachShown: {t1: false, t2: false, t3: false},
+  bootTs: null,              // first rendered verts frame (performance.now)
+};
+
+// ── the banked constants (displayed once, source printed on the page) ───
+const MASS_KG = 13824.5, G = 9.81, WEIGHT_N = MASS_KG * G;
+
+// ── GL setup (the slice's proven shape; no new rendering tricks) ────────
+const cv = document.getElementById('gl');
+const gl = cv.getContext('webgl2', {antialias: true});
+function resize(){ cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
+addEventListener('resize', resize); resize();
+function prog(vs, fs){
+  const mk = (t, s) => { const h = gl.createShader(t); gl.shaderSource(h, s); gl.compileShader(h);
+    if (!gl.getShaderParameter(h, gl.COMPILE_STATUS)) throw new Error('shader: ' + gl.getShaderInfoLog(h));
+    return h; };
+  const p = gl.createProgram(); gl.attachShader(p, mk(gl.VERTEX_SHADER, vs));
+  gl.attachShader(p, mk(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error('link: ' + gl.getProgramInfoLog(p));
+  return p;
+}
+const PM = prog(`#version 300 es
+  in vec3 aP; in vec3 aN; in vec3 aC; uniform mat4 uVP;
+  out vec3 vN; out vec3 vC;
+  void main(){ vN=aN; vC=aC; gl_Position=uVP*vec4(aP,1.0); }`,
+`#version 300 es
+  precision highp float; in vec3 vN; in vec3 vC; uniform vec4 uA; out vec4 o;
+  void main(){ float d=max(dot(normalize(vN),normalize(vec3(0.5,0.9,0.35))),0.0)*0.75+0.25;
+    o=vec4(vC*d, uA.a); }`);
+const PL = prog(`#version 300 es
+  in vec3 aP; uniform mat4 uVP; void main(){ gl_Position=uVP*vec4(aP,1.0); }`,
+`#version 300 es
+  precision highp float; uniform vec4 uC; out vec4 o; void main(){ o=uC; }`);
+const U = (p, n) => gl.getUniformLocation(p, n);
+
+let vaoMesh = null, vboMesh = null, idxCount = 0;
+function meshFromTopo(topoBuf, vertBuf){
+  const tris = new DataView(topoBuf).getUint32(0, true);
+  const idx = new Uint32Array(topoBuf, 4, tris * 3);
+  if (!vaoMesh){ vaoMesh = gl.createVertexArray(); vboMesh = gl.createBuffer();
+    gl.bindVertexArray(vaoMesh); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer()); }
+  gl.bindVertexArray(vaoMesh);
+  gl.bindBuffer(gl.ARRAY_BUFFER, vboMesh);
+  gl.bufferData(gl.ARRAY_BUFFER, vertBuf, gl.DYNAMIC_DRAW);
+  const st = 36;
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, st, 0);
+  gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 3, gl.FLOAT, false, st, 12);
+  gl.enableVertexAttribArray(2); gl.vertexAttribPointer(2, 3, gl.FLOAT, false, st, 24);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.getParameter(gl.ELEMENT_ARRAY_BUFFER_BINDING));
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW);
+  idxCount = idx.length;
+  gl.bindVertexArray(null);
+}
+let gridVao = null, gridN = 0;
+function buildGrid(){
+  const g = [], R = 2.2, s = 0.25;
+  for (let x = -R; x <= R + 1e-6; x += s) g.push(x, 0, -R, x, 0, R);
+  for (let z = -R; z <= R + 1e-6; z += s) g.push(-R, 0, z, R, 0, z);
+  gridN = g.length / 3;
+  gridVao = gl.createVertexArray(); const vb = gl.createBuffer();
+  gl.bindVertexArray(gridVao); gl.bindBuffer(gl.ARRAY_BUFFER, vb);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(g), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
+  gl.bindVertexArray(null);
+}
+buildGrid();
+
+// the ghost: the committed standing pose (declared overlay), client-side OBJ
+let ghost = null, ghostBase = null, ghostCenter = [0, 0, 0];
+async function loadGhost(){
+  try {
+    const txt = await (await fetch('/api/ghost')).text();
+    if (!txt || txt[0] !== 'v' && !/^v /.test(txt.split('\n')[0])) return;
+    const vs = [], tr = [];
+    for (const line of txt.split('\n')){
+      if (line.startsWith('v ')){ const p = line.trim().split(/\s+/); vs.push(+p[1], +p[2], +p[3]); }
+      else if (line.startsWith('f ')){ const p = line.trim().split(/\s+/).slice(1).map(x => parseInt(x) - 1);
+        for (let i = 1; i < p.length - 1; i++) tr.push(p[0], p[i], p[i + 1]); }
+    }
+    const vao = gl.createVertexArray(), vb = gl.createBuffer(), ib = gl.createBuffer();
+    gl.bindVertexArray(vao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vs), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(tr), gl.STATIC_DRAW);
+    gl.bindVertexArray(null);
+    ghost = {vao, n: tr.length};
+    ghostBase = new Float32Array(vs);
+    let mny = 1e9, mxy = -1e9, mnx = 1e9, mxx = -1e9, mnz = 1e9, mxz = -1e9;
+    for (let i = 0; i < vs.length; i += 3){
+      mnx = Math.min(mnx, vs[i]); mxx = Math.max(mxx, vs[i]);
+      mny = Math.min(mny, vs[i+1]); mxy = Math.max(mxy, vs[i+1]);
+      mnz = Math.min(mnz, vs[i+2]); mxz = Math.max(mxz, vs[i+2]);
+    }
+    ghostCenter = [(mnx+mxx)/2, (mny+mxy)/2, (mnz+mxz)/2];
+    for (let i = 0; i < ghostBase.length; i += 3){
+      ghostBase[i] -= ghostCenter[0]; ghostBase[i+1] -= ghostCenter[1]; ghostBase[i+2] -= ghostCenter[2];
+    }
+  } catch (e) { /* the ghost is a declared overlay; its absence is not an error */ }
+}
+loadGhost();
+
+// ── camera + render ─────────────────────────────────────────────────────
+const view = window.__CHIMERA_LESSON.view;
+function mat(){ // orbit camera around the body center
+  const cp = Math.cos(view.pit), sp = Math.sin(view.pit);
+  const cy = Math.cos(view.yaw), sy = Math.sin(view.yaw);
+  const eye = [view.dist * cp * sy, 0.55 + view.dist * sp, view.dist * cp * cy];
+  const c = [0, 0.28 + Math.max(0, (window.__CHIMERA_LESSON.displayed.height || 0)) * 0.6, 0];
+  let f = [c[0]-eye[0], c[1]-eye[1], c[2]-eye[2]];
+  const fl = Math.hypot(...f); f = f.map(v => v / fl);
+  let r = [f[2], 0, -f[0]]; const rl = Math.hypot(...r) || 1; r = r.map(v => v / rl);
+  const u = [r[1]*f[2]-r[2]*f[1], r[2]*f[0]-r[0]*f[2], r[0]*f[1]-r[1]*f[0]];
+  const m = [r[0],u[0],-f[0],0, r[1],u[1],-f[1],0, r[2],u[2],-f[2],0,
+             -(r[0]*eye[0]+r[1]*eye[1]+r[2]*eye[2]),
+             -(u[0]*eye[0]+u[1]*eye[1]+u[2]*eye[2]),
+             (f[0]*eye[0]+f[1]*eye[1]+f[2]*eye[2]), 1];
+  const t = 1/Math.tan(0.9/2), ar = cv.width/Math.max(1, cv.height), n = 0.02, fx = 40;
+  const p = [t/ar,0,0,0, 0,t,0,0, 0,0,(fx+n)/(n-fx),-1, 0,0,2*fx*n/(n-fx),0];
+  const o = new Array(16);
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++){
+    let s = 0; for (let k = 0; k < 4; k++) s += p[k*4+i] * m[j*4+k]; o[j*4+i] = s;
+  }
+  return new Float32Array(o);
+}
+function draw(){
+  gl.viewport(0, 0, cv.width, cv.height);
+  gl.clearColor(0.043, 0.051, 0.063, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.enable(gl.DEPTH_TEST);
+  const vp = mat();
+  gl.useProgram(PL); gl.uniformMatrix4fv(U(PL, 'uVP'), false, vp);
+  gl.uniform4f(U(PL, 'uC'), 0.16, 0.19, 0.22, 1);
+  gl.bindVertexArray(gridVao); gl.drawArrays(gl.LINES, 0, gridN);
+  if (vaoMesh && idxCount){
+    gl.useProgram(PM); gl.uniformMatrix4fv(U(PM, 'uVP'), false, vp);
+    gl.uniform4f(U(PM, 'uA'), 0, 0, 0, 1);
+    gl.bindVertexArray(vaoMesh); gl.drawElements(gl.TRIANGLES, idxCount, gl.UNSIGNED_INT, 0);
+  }
+  if (ghost){ // the declared overlay rides the real root's Y delta
+    gl.useProgram(PM); gl.uniformMatrix4fv(U(PM, 'uVP'), false, vp);
+    gl.uniform4f(U(PM, 'uA'), 0, 0, 0, 0.16);
+    gl.bindVertexArray(ghost.vao);
+    gl.drawElements(gl.TRIANGLES, ghost.n, gl.UNSIGNED_INT, 0);
+  }
+  gl.bindVertexArray(null);
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+// ── polling: serialized chains with hard timeouts (the fragility lesson) ─
+async function jfetch(url, ms){
+  const r = await fetch(url, {signal: AbortSignal.timeout(ms)});
+  return r;
+}
+async function pollVerts(){
+  try {
+    const r = await jfetch('/api/verts', 8000);
+    const ct = r.headers.get('content-type') || '';
+    if (!ct.includes('octet-stream')) { setTimeout(pollVerts, 500); return; } // booting
+    const b = await r.arrayBuffer();
+    if (window.__CHIMERA_LESSON.bootTs === null) window.__CHIMERA_LESSON.bootTs = Date.now();  // epoch: the harness compares wall clock
+    if (!idxCount){
+      const t = await (await jfetch('/api/topology', 8000)).arrayBuffer();
+      meshFromTopo(t, b);
+    } else {
+      gl.bindVertexArray(vaoMesh);
+      gl.bindBuffer(gl.ARRAY_BUFFER, vboMesh);
+      gl.bufferData(gl.ARRAY_BUFFER, b, gl.DYNAMIC_DRAW);
+      gl.bindVertexArray(null);
+    }
+  } catch (e) { /* link state shows in PHASE */ }
+  setTimeout(pollVerts, 160);
+}
+pollVerts();
+pollStatus();          // start the status/teaching poller (run-1 lesson: defined but never started)
+
+// the number-trace: displayed values are computed HERE from the engine's
+// own response bytes — nothing on the page invents a physics number
+function fmt(x, d){ return Number(x).toFixed(d); }
+const els = ['numHeight','numSpeed','numPhase','holdFill','holdVal','weightVal',
+             't1','t2','t3','done'].map(id => [id, document.getElementById(id)]);
+const el = Object.fromEntries(els);
+let traceSamples = [];   // client-side trace: {t, y}
+let traceT0 = null;
+let fallArmed = false;   // a fall session is running or done (server phase)
+async function pollStatus(){
+  let st = null;
+  try {
+    const r = await jfetch('/api/status', 6000);
+    st = await r.json();
+  } catch (e) { st = null; }
+  if (st) window.__CHIMERA_LESSON.lastStatusJson = JSON.stringify(st);
+  const D = window.__CHIMERA_LESSON.displayed;
+  if (st && st.engine){
+    const e = st.engine;
+    const w = (st.constants && st.constants.weight_n) || WEIGHT_N;
+    const hold = Number(e.g_contact_n) || 0;
+    D.height = fmt(e.root_y, 4); D.speed = fmt(e.root_vy, 4);
+    D.hold = fmt(hold, 1); D.weight = fmt(w, 1);
+    D.holdFrac = Math.min(hold / w, 5) / 5;   // bar clips at 5× weight
+    D.phase = st.phase;
+    D.attractor = (st.boot && st.boot.attractor_y != null) ? st.boot.attractor_y : null;
+    // the trace: one sample per poll (>= 1 per 100 ms while polling)
+    if (traceT0 === null) traceT0 = performance.now();
+    traceSamples.push({t: (performance.now() - traceT0) / 1000, y: Number(e.root_y)});
+    if (traceSamples.length > 3000) traceSamples.splice(0, 500);
+    window.__CHIMERA_LESSON.traceLen = traceSamples.length;
+    // the page's OWN surface series (the F-SURFACES-LIVE evidence at the
+    // page's own cadence: every poll, one line)
+    const SL = window.__CHIMERA_LESSON.surfaceLog ||
+               (window.__CHIMERA_LESSON.surfaceLog = []);
+    SL.push({ t: Date.now(), root_y: Number(e.root_y), root_vy: Number(e.root_vy),
+              hold: Number(e.g_contact_n) || 0, phase: st.phase });
+    if (SL.length > 2000) SL.splice(0, 800);
+    drawTrace(D);
+  }
+  updateDom(st, D);
+  setTimeout(pollStatus, st && st.phase === 'running' ? 50 : 250);
+}
+function updateDom(st, D){
+  if (D.height != null){
+    el.numHeight.textContent = D.height + ' m';
+    el.numSpeed.textContent = D.speed + ' m/s';
+    el.holdFill.style.width = (D.holdFrac * 100).toFixed(1) + '%';
+    el.holdVal.textContent = D.hold + ' N';
+    el.weightVal.textContent = D.weight + ' N';
+  }
+  el.numPhase.textContent = st ? (st.phase === 'idle' ? 'ready — press F'
+    : st.phase === 'running' ? 'THE FALL — live'
+    : st.phase === 'seated' ? 're-seated…'
+    : st.phase === 'settling' ? 'settling…'
+    : st.phase === 'done' ? 'landed — balanced'
+    : st.phase) : 'booting…';
+  document.getElementById('bootstatus').className =
+    (st && st.phase === 'booting') || !st ? 'panel on' : 'panel';
+  // ── the teaching beat: driven by the ENGINE's phases, never a timer ──
+  // Lines fire only during an ACTIVE lesson (fallTriggered): a stale
+  // in-flight poll after R must not re-light them (run-5 lesson)
+  const T = window.__CHIMERA_LESSON.teachShown;
+  const active = window.__CHIMERA_LESSON.fallTriggered === true;
+  if (active && st && st.engine && st.phase === 'running' && st.engine.gravity_on === true){
+    const w = (st.constants && st.constants.weight_n) || WEIGHT_N;
+    const hold = Number(st.engine.g_contact_n) || 0;
+    // AIRBORNE on either leg: the launch (the body springs up, hold already
+    // 0) AND the descent (hold still 0) -- gravity wins whenever nothing
+    // pushes back. Both legs are the lesson's first beat.
+    const airborne = hold < 0.05 * w && Math.abs(Number(st.engine.root_vy)) > 0.05;
+    if (airborne){ T.t1 = true; el.t1.classList.add('on'); }
+  }
+  if (active && st && st.engine && (st.phase === 'running' || st.phase === 'settling')){
+    const w = (st.constants && st.constants.weight_n) || WEIGHT_N;
+    const hold = Number(st.engine.g_contact_n) || 0;
+    if ((window.__CHIMERA_LESSON.teachShown.t1 || window.__CHIMERA_LESSON.teachShown.t2) &&
+        hold >= 0.05 * w){
+      window.__CHIMERA_LESSON.teachShown.t2 = true; el.t2.classList.add('on');
+    }
+  }
+  if (active && st && st.fall && st.fall.phase === 'done' && st.engine &&
+      Math.abs((Number(st.engine.g_contact_n) || 0) - WEIGHT_N) < 0.02 * WEIGHT_N){
+    T.t3 = true; el.t3.classList.add('on');
+    const alldone = T.t1 && T.t2 && T.t3;
+    window.__CHIMERA_LESSON.understood = alldone;
+    if (alldone) el.done.classList.add('on');
+  }
+}
+// ── the trace canvas ────────────────────────────────────────────────────
+const tc = document.getElementById('trace'), tctx = tc.getContext('2d');
+function drawTrace(D){
+  tctx.clearRect(0, 0, tc.width, tc.height);
+  tctx.strokeStyle = '#1d232b'; tctx.strokeRect(0.5, 0.5, tc.width - 1, tc.height - 1);
+  const win = 12;                        // seconds shown
+  const s = traceSamples.filter(p => p.t > traceSamples[traceSamples.length - 1].t - win);
+  if (s.length < 2) return;
+  const X = t => 4 + (t - s[0].t) / win * (tc.width - 8);
+  const Y = y => tc.height - 6 - Math.max(0, Math.min(1.0, y)) * (tc.height - 12);
+  if (D.attractor != null){              // the engine's rest height, dashed
+    tctx.strokeStyle = '#3b8a5a'; tctx.setLineDash([4, 4]);
+    tctx.beginPath(); tctx.moveTo(0, Y(D.attractor)); tctx.lineTo(tc.width, Y(D.attractor)); tctx.stroke();
+    tctx.setLineDash([]);
+  }
+  tctx.strokeStyle = '#7fd4c1'; tctx.lineWidth = 1.6; tctx.beginPath();
+  for (let i = 0; i < s.length; i++){
+    const x = X(s[i].t), y = Y(s[i].y);
+    i ? tctx.lineTo(x, y) : tctx.moveTo(x, y);
+  }
+  tctx.stroke(); tctx.lineWidth = 1;
+}
+
+// ── the keyboard rail: ONE handler, checked against the page's OWN list ─
+const KEYS_ONLY = new Set(KEYLIST.map(k => k.key));
+addEventListener('keydown', e => {
+  if (!KEYS_ONLY.has(e.key)) return;
+  e.preventDefault();
+  const act = KEYLIST.find(k => k.key === e.key);
+  switch (act.key){
+    case 'F':
+      if (window.__CHIMERA_LESSON.fallTriggered) return;   // one lesson per press
+      // armed only on the server's own ack (a press during boot is not a trigger)
+      fetch('/api/fall', {method: 'POST'})
+        .then(r => r.json())
+        .then(j => { window.__CHIMERA_LESSON.fallTriggered = j.ok === true; })
+        .catch(() => {});
+      break;
+    case 'R':
+      window.__CHIMERA_LESSON.fallTriggered = false;
+      window.__CHIMERA_LESSON.teachShown = {t1: false, t2: false, t3: false};
+      window.__CHIMERA_LESSON.understood = false;
+      el.t1.classList.remove('on'); el.t2.classList.remove('on');
+      el.t3.classList.remove('on'); el.done.classList.remove('on');
+      traceSamples = []; traceT0 = performance.now();
+      fetch('/api/reset', {method: 'POST'}).catch(() => {});
+      break;
+    case 'H': {
+      const h = document.getElementById('help');
+      h.classList.toggle('on');
+      break;
+    }
+    case 'ArrowLeft':  view.yaw -= 0.12; break;
+    case 'ArrowRight': view.yaw += 0.12; break;
+    case 'ArrowUp':    view.pit = Math.min(1.35, view.pit + 0.08); break;
+    case 'ArrowDown':  view.pit = Math.max(0.05, view.pit - 0.08); break;
+    case '+': view.dist = Math.max(0.9, view.dist - 0.2); break;
+    case '-': view.dist = Math.min(6.0, view.dist + 0.2); break;
+  }
+});
+</script>
+</body>
+</html>

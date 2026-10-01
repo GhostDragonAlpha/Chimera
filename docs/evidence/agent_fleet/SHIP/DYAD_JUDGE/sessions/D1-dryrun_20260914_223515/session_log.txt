@@ -1,0 +1,17 @@
+2026-09-15T03:35:17.651Z {"ok":true,"did":"goto","url":"http://127.0.0.1:8206","ms":407}
+2026-09-15T03:35:17.651Z {"ok":true,"did":"ready","cmdDir":"cmd"}
+2026-09-15T03:35:18.120Z {"ok":true,"did":"shot","file":"shots\\cap_0001.png"}
+2026-09-15T03:35:18.175Z {"ok":true,"did":"shot","file":"shots\\01_landing.png"}
+2026-09-15T03:35:23.589Z {"ok":true,"did":"wait","ms":5000}
+2026-09-15T03:35:24.083Z {"ok":true,"did":"shot","file":"shots\\cap_0002.png"}
+2026-09-15T03:35:24.162Z {"ok":true,"did":"shot","file":"shots\\02_landing_settled.png"}
+2026-09-15T03:35:24.584Z {"ok":true,"did":"text","text":"C H I M E R A\n\na creature of water and skin. touch it, and it answers.\n\nPLAY\n\nyour progress is kept under your name — the world remembers you."}
+2026-09-15T03:35:25.003Z {"ok":true,"did":"click","x":720,"y":484}
+2026-09-15T03:35:25.490Z {"ok":true,"did":"shot","file":"shots\\cap_0003.png"}
+2026-09-15T03:35:46.999Z {"ok":true,"did":"shot","file":"shots\\cap_0004.png"}
+2026-09-15T03:36:08.067Z {"ok":true,"did":"shot","file":"shots\\cap_0005.png"}
+2026-09-15T03:36:28.018Z {"ok":true,"did":"shot","file":"shots\\cap_0006.png"}
+2026-09-15T03:36:48.275Z {"ok":true,"did":"shot","file":"shots\\cap_0007.png"}
+2026-09-15T03:37:08.129Z {"ok":true,"did":"shot","file":"shots\\cap_0008.png"}
+2026-09-15T03:37:28.420Z {"ok":true,"did":"shot","file":"shots\\cap_0009.png"}
+2026-09-15T03:37:48.288Z {"ok":true,"did":"shot","file":"shots\\cap_0010.png"}
