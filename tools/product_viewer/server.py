@@ -866,12 +866,24 @@ class ViewerHandler(BaseHTTPRequestHandler):
                     self._json({"ok": False,
                                 "error": f"capture not served: {rec.get('refusal')}"}, 502)
                 else:
-                    sha, _ = _sha256_file(Path(rec["file"]))  # re-verify at serve time
-                    if sha != rec["sha256"]:
+                    # Serve-time guard (PR #287 round 2): read ONCE, hash exactly
+                    # those bytes, serve the hashed bytes. A file deleted or made
+                    # unreadable AFTER startup must yield a NAMED 502 refusal - not
+                    # an OSError escaping do_GET (which catches only EngineError)
+                    # and not a second, unverified read (TOCTOU).
+                    try:
+                        data = Path(rec["file"]).read_bytes()
+                    except OSError as e:
                         self._json({"ok": False,
-                                    "error": "sha256 mismatch at serve time; refusing"}, 502)
+                                    "error": f"capture unreadable at serve time: {e}"},
+                                   502)
                     else:
-                        self._send(200, Path(rec["file"]).read_bytes(), "image/png")
+                        if hashlib.sha256(data).hexdigest() != rec["sha256"]:
+                            self._json({"ok": False,
+                                        "error": "sha256 mismatch at serve time; refusing"},
+                                       502)
+                        else:
+                            self._send(200, data, "image/png")
             elif path == "/api/camera":
                 try:
                     self._json({"ok": True, "presets": H.camera.list_presets(),

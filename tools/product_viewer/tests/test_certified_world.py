@@ -184,6 +184,84 @@ class CertifiedWorldRoutes(unittest.TestCase):
         self.assertIn("SEALED CAPTURES", html)
 
 
+class ServeTimeGuard(unittest.TestCase):
+    """Serving-state guard (PR #287 round 2): the load-time pins do NOT
+    transfer to serve time. A pinned file deleted or MUTATED after startup
+    must yield a NAMED 502 JSON refusal - the connection must ANSWER, never
+    a raw disconnect (the round-1 defect: FileNotFoundError escaped
+    do_GET, which catches only EngineError, and killed the request thread).
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        tmp = Path(tempfile.mkdtemp(prefix="viewer_servetime_"))
+        cls._tmp = tmp
+        cls.vanish = tmp / "vanish.png"
+        cls.mutate = tmp / "mutate.png"
+        entries = []
+        for name, p in (("vanish_me", cls.vanish), ("mutate_me", cls.mutate)):
+            sha = _write_png(p, b"\x89PNG-servetime-" + name.encode())
+            entries.append({"name": name, "file": str(p), "sha256": sha,
+                            "bytes": p.stat().st_size, "caption": name})
+        manifest = tmp / "certified_world.json"
+        manifest.write_text(json.dumps({
+            "schema": "chimera.viewer.certified_world.v1",
+            "declared_limits": [], "entries": entries,
+        }), encoding="utf-8")
+        engine = pv.EngineClient("http://127.0.0.1:1")   # deliberately dead
+        handler = type("BoundHandler", (pv.ViewerHandler,), {
+            "engine": engine,
+            "ring": pv.RingBuffer(4),
+            "camera": pv.CameraPanel(engine),
+            "started": 0.0,
+            "capture_thread": None,
+            "mirror": pv.EngineWindowMirror("http://127.0.0.1:1", 1),
+            # sergeant lesson: pass the manifest path EXPLICITLY (the
+            # load-time default argument bound at def time)
+            "world": load_certified_world(manifest),
+        })
+        cls.httpd = ThreadingHTTPServer(("127.0.0.1", 0), handler)
+        cls.httpd.daemon_threads = True
+        cls.port = cls.httpd.server_address[1]
+        import threading
+        cls.thread = threading.Thread(target=cls.httpd.serve_forever, daemon=True)
+        cls.thread.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.httpd.shutdown()
+        cls.httpd.server_close()
+        shutil.rmtree(cls._tmp, ignore_errors=True)
+
+    def _get(self, path: str):
+        try:
+            with urllib.request.urlopen(f"http://127.0.0.1:{self.port}{path}",
+                                        timeout=10) as r:
+                return r.status, r.read(), r.headers.get("Content-Type", "")
+        except urllib.error.HTTPError as e:
+            return e.code, e.read(), e.headers.get("Content-Type", "")
+
+    def test_deleted_after_startup_named_502_not_disconnect(self):
+        # serving state: entry verified at startup, file then DELETED
+        self.vanish.unlink()
+        st, body, ctype = self._get("/api/world/certified/frame?name=vanish_me")
+        self.assertEqual(st, 502)          # ANSWERED: no RemoteDisconnected
+        self.assertIn("application/json", ctype)
+        d = json.loads(body)
+        self.assertFalse(d["ok"])
+        self.assertIn("unreadable at serve time", d["error"])
+
+    def test_mutated_after_startup_named_502(self):
+        # serving state: file OVERWRITTEN with different bytes after startup
+        self.mutate.write_bytes(b"\x89PNG-mutated-after-startup")
+        st, body, ctype = self._get("/api/world/certified/frame?name=mutate_me")
+        self.assertEqual(st, 502)
+        self.assertIn("application/json", ctype)
+        d = json.loads(body)
+        self.assertFalse(d["ok"])
+        self.assertIn("sha256 mismatch at serve time", d["error"])
+
+
 class HostManifest(unittest.TestCase):
     """The committed manifest on THIS campaign host: everything verifies."""
 
