@@ -1,0 +1,1 @@
+{"determinism_byte_identical":true,"note":"two full builds from the pinned bytes; canonical receipt bytes compared; no wall-clock, no RNG","pass_sha256":"cdc00269b928fcdd858a618acc8a824e6ea0f7a332e8673a3d0492d65b87b1e5","schema":"chimera.mat2_f05.determinism.v1","second_sha256":"cdc00269b928fcdd858a618acc8a824e6ea0f7a332e8673a3d0492d65b87b1e5"}
