@@ -1004,10 +1004,21 @@ class ViewerHandler(BaseHTTPRequestHandler):
         query = self.path.split("?")[1] if "?" in self.path else ""
         try:
             if path == "/" or path == "/index.html":
-                html = PAGE.replace("<!--CERTIFIED_WORLD-->",
-                                    certified_world_section(H.world)
-                                    ).replace("<!--WALKFILM_PLAYLIST-->",
-                                              walkfilm_section(H.walkfilm))
+                # Post-merge integration (battery-found): the two sealed-
+                # capture surfaces are INDEPENDENT - a handler state may carry
+                # world, walkfilm, or both (the same defensive getattr idiom
+                # the handler already uses for mirror/capture_thread). A
+                # missing surface simply leaves its invisible placeholder
+                # comment; make_server injects both. Crash proof: the merged
+                # chained-replace version raised AttributeError for any
+                # single-surface handler state.
+                html = PAGE
+                if getattr(H, "world", None) is not None:
+                    html = html.replace("<!--CERTIFIED_WORLD-->",
+                                        certified_world_section(H.world))
+                if getattr(H, "walkfilm", None) is not None:
+                    html = html.replace("<!--WALKFILM_PLAYLIST-->",
+                                        walkfilm_section(H.walkfilm))
                 self._send(200, html.encode("utf-8"), "text/html; charset=utf-8")
             elif path == "/api/live/glass":
                 st, png, ctype = H.engine.get("/glass")
